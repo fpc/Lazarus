@@ -1,17 +1,17 @@
 object Form1: TForm1
   Left = 332
-  Height = 278
+  Height = 317
   Top = 127
-  Width = 535
+  Width = 495
   Caption = 'Form1'
-  ClientHeight = 278
-  ClientWidth = 535
+  ClientHeight = 317
+  ClientWidth = 495
   LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 243
+    Height = 282
     Top = 0
-    Width = 535
+    Width = 495
     AxisList = <    
       item
         Marks.LabelBrush.Style = bsClear
@@ -38,6 +38,8 @@ object Form1: TForm1
     )
     Align = alClient
     object BarSeries: TBarSeries
+      AxisIndexX = 1
+      AxisIndexY = 0
       BarBrush.Color = clRed
       Depth = 20
       DepthBrightnessDelta = -32
@@ -48,13 +50,13 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Height = 35
-    Top = 243
-    Width = 535
+    Top = 282
+    Width = 495
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 35
-    ClientWidth = 535
+    ClientWidth = 495
     TabOrder = 1
     object lblShape: TLabel
       AnchorSideLeft.Control = cb3D
@@ -139,6 +141,20 @@ object Form1: TForm1
       OnChange = seLevelsChange
       TabOrder = 2
       Value = 3
+    end
+    object cbRotated: TCheckBox
+      AnchorSideLeft.Control = seLevels
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cmbShape
+      AnchorSideTop.Side = asrCenter
+      Left = 358
+      Height = 19
+      Top = 8
+      Width = 61
+      BorderSpacing.Left = 12
+      Caption = 'Rotated'
+      OnChange = cbRotatedChange
+      TabOrder = 3
     end
   end
   object RandomChartSource1: TRandomChartSource

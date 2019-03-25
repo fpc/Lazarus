@@ -34,8 +34,9 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="BarShapes_Demo.lpr"/>
+        <Filename Value="barshapes_demo.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BarShapes_Demo"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
