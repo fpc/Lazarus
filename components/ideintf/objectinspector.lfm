@@ -3,16 +3,20 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   Height = 818
   Top = 62
   Width = 293
+  HorzScrollBar.Page = 191
+  HorzScrollBar.Range = 191
+  VertScrollBar.Page = 240
+  VertScrollBar.Range = 240
   BorderStyle = bsSizeToolWin
   Caption = 'ObjectInspectorDlg'
   ClientHeight = 818
   ClientWidth = 293
   KeyPreview = True
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 795
+    Height = 21
+    Top = 797
     Width = 293
     Panels = <    
       item
@@ -24,23 +28,23 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   end
   object AvailPersistentComboBox: TComboBox
     Left = 0
-    Height = 23
+    Height = 35
     Top = 0
     Width = 293
     Align = alTop
-    ItemHeight = 15
+    ItemHeight = 0
     OnCloseUp = AvailComboBoxCloseUp
     Style = csDropDownList
     TabOrder = 0
   end
   object PnlClient: TPanel
     Left = 0
-    Height = 772
-    Top = 23
+    Height = 762
+    Top = 35
     Width = 293
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 772
+    ClientHeight = 762
     ClientWidth = 293
     TabOrder = 2
     object ComponentPanel: TPanel
@@ -58,10 +62,10 @@ object ObjectInspectorDlg: TObjectInspectorDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CompFilterLabel
         AnchorSideTop.Side = asrCenter
-        Left = 77
-        Height = 23
-        Top = 3
-        Width = 213
+        Left = 88
+        Height = 25
+        Top = 4
+        Width = 202
         ButtonWidth = 23
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 5
@@ -71,9 +75,9 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       end
       object CompFilterLabel: TLabel
         Left = 3
-        Height = 15
+        Height = 19
         Top = 7
-        Width = 69
+        Width = 80
         Caption = 'Co&mponents'
         FocusControl = CompFilterEdit
         ParentColor = False
@@ -83,7 +87,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   object MainPopupMenu: TPopupMenu
     OnPopup = MainPopupMenuPopup
     OnClose = MainPopupMenuClose
-    Left = 32
-    Top = 64
+    left = 32
+    top = 64
   end
 end
