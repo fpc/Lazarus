@@ -4408,7 +4408,7 @@ end;
 procedure TMainIDE.mnuRunParametersClicked(Sender: TObject);
 begin
   if Project1=nil then exit;
-  if ShowRunParamsOptsDlg(Project1.RunParameterOptions)=mrOK then
+  if ShowRunParamsOptsDlg(Project1.RunParameterOptions, Project1.HistoryLists)=mrOK then
   begin
     Project1.Modified:=true;
     Project1.SessionModified:=true;

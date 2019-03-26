@@ -62,9 +62,6 @@ const
   hlMakeResourceStringLengths = 'MakeResourceStringLengths';
   hlCodeToolsDirectories = 'CodeToolsDirectories';
   hlCompilerOptsImExport = 'CompilerOptsImExport';
-  hlLaunchingApplication = 'LaunchingApplication';
-  hlCmdLineParameters = 'CommandLineParameters';
-  hlWorkingDirectory = 'WorkingDirectory';
   hlCleanBuildFileMask = 'CleanBuildFileMask';
 
 type

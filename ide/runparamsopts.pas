@@ -175,6 +175,7 @@ type
     procedure UserOverridesEditButtonClick(Sender: TObject);
     procedure UserOverridesDeleteButtonClick(Sender: TObject);
   private
+    fHistoryLists: THistoryLists;
     fOptions: TRunParamsOptions;
     fSaveToOptions: TRunParamsOptions;
     fLastSelectedMode: TRunParamsOptionsMode;
@@ -199,9 +200,10 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     property Options: TRunParamsOptions Write SetOptions;
+    property HistoryLists: THistoryLists read fHistoryLists write fHistoryLists;
   end;
 
-function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult;
+function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions; HistoryLists: THistoryLists): TModalResult;
 
 implementation
 
@@ -210,6 +212,10 @@ implementation
 const
   DefaultLauncherTitle = '''Lazarus Run Output''';
   DefaultLauncherApplication = '$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)';
+
+  hlLaunchingApplication = 'LaunchingApplication';
+  hlCmdLineParameters = 'CommandLineParameters';
+  hlWorkingDirectory = 'WorkingDirectory';
 
 function FindTerminalInPath(const ATerm: String = ''): String;
 var
@@ -260,13 +266,15 @@ begin
   DefaultLaunchingApplicationPathPlusParams:=Result;
 end;
 
-function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult;
+function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions;
+  HistoryLists: THistoryLists): TModalResult;
 var
   RunParamsOptsForm: TRunParamsOptsDlg;
 begin
   Result := mrCancel;
   RunParamsOptsForm := TRunParamsOptsDlg.Create(nil);
   try
+    RunParamsOptsForm.HistoryLists := HistoryLists;
     RunParamsOptsForm.Options := RunParamsOptions;
     Result := RunParamsOptsForm.ShowModal;
   finally
@@ -968,7 +976,7 @@ begin
   HostApplicationEdit.Text := AMode.HostApplicationFilename;
 
   // WorkingDirectoryComboBox
-  List:=InputHistories.HistoryLists.GetList(hlWorkingDirectory,true,rltFile);
+  List:=HistoryLists.GetList(hlWorkingDirectory,true,rltFile);
   List.AppendEntry(AMode.WorkingDirectory);
   WorkingDirectoryComboBox.Items.Assign(List);
   WorkingDirectoryComboBox.Text := AMode.WorkingDirectory;
@@ -979,7 +987,7 @@ begin
 
   // UseLaunchingApplicationComboBox
   UseLaunchingApplicationCheckBox.Checked := AMode.UseLaunchingApplication;
-  List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true,rltFile);
+  List := HistoryLists.GetList(hlLaunchingApplication,true,rltFile);
   List.AppendEntry(AMode.LaunchingApplicationPathPlusParams);
   S := FindTerminalInPath;
   if S <> '' then
@@ -997,7 +1005,7 @@ begin
   UseLaunchingApplicationComboBox.Enabled := UseLaunchingApplicationCheckBox.Checked;
 
   // CmdLineParametersComboBox
-  List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true,rltCaseSensitive);
+  List:=HistoryLists.GetList(hlCmdLineParameters,true,rltCaseSensitive);
   List.AppendEntry(AMode.CmdLineParams);
   CmdLineParametersComboBox.Items.Assign(List);
   CmdLineParametersComboBox.Text := AMode.CmdLineParams;
@@ -1108,7 +1116,7 @@ procedure TRunParamsOptsDlg.SaveToOptionsMode(const AMode: TRunParamsOptionsMode
     ListType: TRecentListType);
   begin
     AComboBox.AddHistoryItem(AComboBox.Text,20,true,false);
-    InputHistories.HistoryLists.GetList(History,true,ListType).Assign(AComboBox.Items);
+    HistoryLists.GetList(History,true,ListType).Assign(AComboBox.Items);
   end;
 
 begin

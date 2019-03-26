@@ -64,7 +64,7 @@ uses
   CompOptsModes, ProjectResources, LazConf, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
   TransferMacros, ProjectDefs, FileReferenceList, EditDefineTree,
-  LazarusIDEStrConsts, ProjPackCommon, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, InputHistory, ProjPackCommon, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;
@@ -709,6 +709,7 @@ type
     FAutoCreateForms: boolean;
     FChangeStampSaved: integer;
     FEnableI18NForLFM: boolean;
+    FHistoryLists: THistoryLists;
     FLastCompileComplete: boolean;
     FMacroEngine: TTransferMacroList;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
@@ -1102,6 +1103,7 @@ type
     property ProjResources: TProjectResources read GetProjResources;
 
     property RunParameterOptions: TRunParamsOptions read GetRunParameterOptions;
+    property HistoryLists: THistoryLists read FHistoryLists;
     property SourceDirectories: TFileReferenceList read GetSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
@@ -2717,6 +2719,8 @@ begin
 
   FResources := TProjectResources.Create(Self);
   ProjResources.OnModified := @EmbeddedObjectModified;
+
+  FHistoryLists := THistoryLists.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -2745,6 +2749,7 @@ begin
   FreeThenNil(FPublishOptions);
   FreeThenNil(FRunParameters);
   FreeThenNil(FDefineTemplates);
+  FreeThenNil(FHistoryLists);
 
   inherited Destroy;
 end;
@@ -2976,6 +2981,9 @@ begin
 
   if FFileVersion>=11 then
     RunParameterOptions.Load(FXMLConfig,Path+'RunParams/',fPathDelimChanged,rpsLPS);
+  HistoryLists.Clear;
+  if FFileVersion>=12 then
+    HistoryLists.LoadFromXMLConfig(FXMLConfig,Path+'HistoryLists/');
 
   // call hooks to read their info (e.g. DebugBoss)
   if Assigned(OnLoadProjectInfo) then
@@ -3324,6 +3332,8 @@ begin
   SaveSessionInfo(Path);
   // save the Run and Build parameter options
   RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPS);
+  // save history lists
+  HistoryLists.SaveToXMLConfig(FXMLConfig,Path+'HistoryLists/');
 
   // Notifiy hooks
   if Assigned(OnSaveProjectInfo) then
