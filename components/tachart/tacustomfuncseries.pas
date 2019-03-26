@@ -44,44 +44,59 @@ type
 
   TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
 
-  TDrawFuncHelper = class
-  strict private
-  type
-    TOnPoint = procedure (AXg, AXa: Double) of object;
-  var
-    FAxisToGraphXr, FAxisToGraphYr, FGraphToAxisXr: TTransformFunc;
+  TCustomDrawFuncHelper = class
+  private
     FCalc: TTransformFunc;
     FChart: TChart;
-    FDomainExclusions: TIntervalList;
     FDrawer: IChartDrawer;
-    FExtent: TDoubleRect;
     FExtentYMax: PDouble;
     FExtentYMin: PDouble;
-    FGraphStep: Double;
     FImageToGraph: TImageToGraphFunc;
     FNearestPointParams: ^TNearestPointParams;
     FNearestPointResults: ^TNearestPointResults;
     FMakeDP: TMakeDoublePoint;
     FPrev: TDoublePoint;
     FPrevInExtent: Boolean;
-    FSeries: TCustomChartSeries;
-
     procedure CalcAt(AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
     procedure CheckForNearestPoint(AXg, AXa: Double);
-    procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
     procedure LineTo(AXg, AXa: Double);
     procedure MoveTo(AXg, AXa: Double);
     procedure UpdateExtent(AXg, AXa: Double);
     function XRange: TDoubleInterval;
+  protected
+    type
+      TOnPoint = procedure (AXg, AXa: Double) of object;
+  protected
+    FAxisToGraphXr, FAxisToGraphYr, FGraphToAxisXr: TTransformFunc;
+    FExtent: TDoubleRect;
+    FGraphStep: Double;
+    FSeries: TCustomChartSeries;
+    procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); virtual; abstract;
   public
-    constructor Create(
-      ASeries: TCustomChartSeries; ADomainExclusions:
-      TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+    constructor Create(ASeries: TCustomChartSeries; ACalc: TTransformFunc; AStep: Integer);
     procedure CalcAxisExtentY(AMinX, AMaxX: Double; var AMinY, AMaxY: Double);
     procedure DrawFunction(ADrawer: IChartDrawer);
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean;
+  end;
+
+  TDrawFuncHelper = class(TCustomDrawFuncHelper)
+  private
+    FDomainExclusions: TIntervalList;
+  protected
+    procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
+  public
+    constructor Create(ASeries: TCustomChartSeries; ADomainExclusions: TIntervalList;
+      ACalc: TTransformFunc; AStep: Integer);
+  end;
+
+  TPointsDrawFuncHelper = class(TDrawFuncHelper)
+  protected
+    procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
+  public
+    constructor Create(ASeries: TBasicPointSeries; AMinX, AMaxX: Double;
+      ACalc: TTransformFunc; AStep: Integer);
   end;
 
 implementation
@@ -96,16 +111,17 @@ begin
   Result.Y := AX;
 end;
 
-{ TDrawFuncHelper }
 
-procedure TDrawFuncHelper.CalcAt(
+{ TCustomDrawFuncHelper }
+
+procedure TCustomDrawFuncHelper.CalcAt(
   AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
 begin
   APt := FMakeDP(AXg, FAxisToGraphYr(FCalc(AXa)));
   AIn := (FExtent.a <= APt) and (APt <= FExtent.b);
 end;
 
-procedure TDrawFuncHelper.CalcAxisExtentY(
+procedure TCustomDrawFuncHelper.CalcAxisExtentY(
   AMinX, AMaxX: Double; var AMinY, AMaxY: Double);
 begin
   FExtentYMin := @AMinY;
@@ -114,7 +130,7 @@ begin
     ForEachPoint(AMinX, AMaxX, @UpdateExtent, @UpdateExtent);
 end;
 
-procedure TDrawFuncHelper.CheckForNearestPoint(AXg, AXa: Double);
+procedure TCustomDrawFuncHelper.CheckForNearestPoint(AXg, AXa: Double);
 var
   inExtent: Boolean;
   gp: TDoublePoint;
@@ -131,14 +147,12 @@ begin
   FNearestPointResults^.FValue.X := AXa;
 end;
 
-constructor TDrawFuncHelper.Create(
-  ASeries: TCustomChartSeries; ADomainExclusions: TIntervalList;
+constructor TCustomDrawFuncHelper.Create( ASeries: TCustomChartSeries;
   ACalc: TTransformFunc; AStep: Integer);
 begin
   FChart := ASeries.ParentChart;
   FExtent := FChart.CurrentExtent;
   FSeries := ASeries;
-  FDomainExclusions := ADomainExclusions;
   FCalc := ACalc;
 
   with FSeries do
@@ -160,47 +174,14 @@ begin
   FGraphStep := FImageToGraph(AStep) - FImageToGraph(0);
 end;
 
-procedure TDrawFuncHelper.DrawFunction(ADrawer: IChartDrawer);
+procedure TCustomDrawFuncHelper.DrawFunction(ADrawer: IChartDrawer);
 begin
   FDrawer := ADrawer;
   with XRange do
     ForEachPoint(FStart, FEnd, @MoveTo, @LineTo);
 end;
 
-procedure TDrawFuncHelper.ForEachPoint(
-  AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
-var
-  hint: Integer;
-  xa, xg1, xa1, dx: Double;
-begin
-  if FGraphStep = 0 then exit;
-
-  hint := 0;
-  xa := FGraphToAxisXr(AXg);
-  if FDomainExclusions.Intersect(xa, xa, hint) then
-    AXg := FAxisToGraphXr(xa);
-
-  if AXg < AXMax then
-    AOnMoveTo(AXg, xa);
-
-  dx := abs(FGraphStep);
-  while AXg < AXMax do begin
-    xg1 := AXg + dx;
-    xa1 := FGraphToAxisXr(xg1);
-    if FDomainExclusions.Intersect(xa, xa1, hint) then begin
-      AOnLineTo(FAxisToGraphXr(xa), xa);
-      xg1 := FAxisToGraphXr(xa1);
-      if xg1 < AXMax then
-        AOnMoveTo(xg1, xa1);
-    end
-    else
-      AOnLineTo(xg1, xa1);
-    AXg := xg1;
-    xa := xa1;
-  end;
-end;
-
-function TDrawFuncHelper.GetNearestPoint(
+function TCustomDrawFuncHelper.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 var
@@ -228,7 +209,7 @@ begin
   Result := AResults.FDist < Sqr(AParams.FRadius) + 1;
 end;
 
-procedure TDrawFuncHelper.LineTo(AXg, AXa: Double);
+procedure TCustomDrawFuncHelper.LineTo(AXg, AXa: Double);
 var
   p, t: TDoublePoint;
   inExtent: Boolean;
@@ -245,26 +226,131 @@ begin
   FPrev := p;
 end;
 
-procedure TDrawFuncHelper.MoveTo(AXg, AXa: Double);
+procedure TCustomDrawFuncHelper.MoveTo(AXg, AXa: Double);
 begin
   CalcAt(AXg, AXa, FPrev, FPrevInExtent);
   if FPrevInExtent then
     FDrawer.MoveTo(FChart.GraphToImage(FPrev));
 end;
 
-procedure TDrawFuncHelper.UpdateExtent(AXg, AXa: Double);
+procedure TCustomDrawFuncHelper.UpdateExtent(AXg, AXa: Double);
 begin
   Unused(AXg);
   UpdateMinMax(FCalc(AXa), FExtentYMin^, FExtentYMax^);
 end;
 
-function TDrawFuncHelper.XRange: TDoubleInterval;
+function TCustomDrawFuncHelper.XRange: TDoubleInterval;
 begin
   if FSeries.IsRotated then
     Result := DoubleInterval(FExtent.a.Y, FExtent.b.Y)
   else
     Result := DoubleInterval(FExtent.a.X, FExtent.b.X);
 end;
+
+
+{ TDrawFuncHelper }
+
+constructor TDrawFuncHelper.Create(ASeries: TCustomChartSeries;
+  ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+begin
+  inherited Create(ASeries, ACalc, AStep);
+  FDomainExclusions := ADomainExclusions;
+end;
+
+procedure TDrawFuncHelper.ForEachPoint(
+  AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
+var
+  hint: Integer;
+  xa, xg1, xa1, dx: Double;
+  fxg: array of double;
+  i, j: Integer;
+begin
+  if FGraphStep = 0 then exit;
+
+  dx := abs(FGraphStep);
+  hint := 0;
+  xa := FGraphToAxisXr(AXg);
+  if Assigned(FDomainExclusions) and FDomainExclusions.Intersect(xa, xa, hint) then
+    AXg := FAxisToGraphXr(xa);
+
+  if AXg < AXMax then
+    AOnMoveTo(AXg, xa);
+
+  while AXg < AXMax do begin
+    xg1 := AXg + dx;
+    xa1 := FGraphToAxisXr(xg1);
+    if Assigned(FDomainExclusions) and FDomainExclusions.Intersect(xa, xa1, hint) then
+    begin
+      AOnLineTo(FAxisToGraphXr(xa), xa);
+      xg1 := FAxisToGraphXr(xa1);
+      if xg1 < AXMax then
+        AOnMoveTo(xg1, xa1);
+    end
+    else
+      AOnLineTo(xg1, xa1);
+    AXg := xg1;
+    xa := xa1;
+  end;
+end;
+
+
+{ TPointsDrawFuncHelper }
+
+type
+  TBasicPointSeriesAccess = class(TBasicPointSeries);
+
+constructor TPointsDrawFuncHelper.Create(
+  ASeries: TBasicPointSeries; AMinX, AMaxX: Double; ACalc: TTransformFunc;
+  AStep: Integer);
+begin
+  inherited Create(ASeries, nil, ACalc, AStep);
+  FExtent.a.X := Min(AMinX, AMaxX);
+  FExtent.b.X := Max(AMaxX, AMinX);
+end;
+
+procedure TPointsDrawFuncHelper.ForEachPoint(
+  AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
+var
+  xa, xg1, xa1, dx, xfg: Double;
+  i, j, n: Integer;
+  ser: TBasicPointSeriesAccess;
+begin
+  if FGraphStep = 0 then exit;
+
+  if not (FSeries is TBasicPointSeries) then
+    raise EChartError.Create('[TPointsDrawFuncHelper.ForEachPoint] Series must be a TBasicPointSeries');
+
+  ser := TBasicPointSeriesAccess(FSeries);
+  n := Length(ser.FGraphPoints);
+  dx := abs(FGraphStep);
+
+  j := -1;
+  for i := 0 to High(ser.FGraphPoints) do begin
+    if (j = -1) and (AXg < ser.FGraphPoints[i].X) then begin
+      j := i;
+      xfg := ser.FGraphPoints[i].X;
+      break;
+    end;
+  end;
+
+  xa := FAxisToGraphXr(AXg);
+  AOnMoveTo(AXg, xa);
+  while AXg < AXMax do begin
+    xg1 := AXg + dx;
+    xa1 := FGraphToAxisXr(xg1);
+    if (j >= 0) and (xg1 > xfg) then begin
+      xg1 := xfg;
+      xa1 := ser.GetXValue(j + ser.FLoBound);
+      inc(j);
+      while (j < n) and (xfg > ser.FGraphPoints[j].X) do inc(j);   // skip unordered points
+      if j < n then xfg := ser.FGraphPoints[j].X else xfg := Infinity;
+    end;
+    AOnLineTo(xg1, xa1);
+    AXg := xg1;
+    xa := xa1;
+  end;
+end;
+
 
 { TBasicFuncSeries }
 

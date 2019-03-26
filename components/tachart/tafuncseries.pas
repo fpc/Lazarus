@@ -1375,6 +1375,9 @@ end;
 procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
 
   procedure DrawSpline(ASpline: TSpline);
+  var
+    ext: TDoubleRect;
+    xmin, xmax: Double;
   begin
     ADrawer.SetBrushParams(bsClear, clTAColor);
     if ASpline.FIsUnorderedX then begin
@@ -1385,7 +1388,11 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       if not Pen.EffVisible then exit;
       ADrawer.Pen := Pen;
     end;
-    with TDrawFuncHelper.Create(Self, ASpline.FIntervals, @ASpline.Calculate, Step) do
+    ext := FChart.CurrentExtent;
+
+    xmin := IfThen(csoExtrapolateLeft in FOptions, ext.a.x, Max(ext.a.x, ASpline.FX[0]));
+    xmax := IfThen(csoExtrapolateRight in Options, ext.b.x, Min(ext.b.x, ASpline.FX[High(ASpline.FX)]));
+    with TPointsDrawFuncHelper.Create(Self, xmin, xmax, @ASpline.Calculate, Step) do
       try
         DrawFunction(ADrawer);
       finally
@@ -1474,6 +1481,8 @@ function TCubicSplineSeries.GetNearestPoint(
 var
   s: TSpline;
   r: TNearestPointResults;
+  xmin, xmax: Double;
+  ext: TDoubleRect;
 begin
   Result := inherited GetNearestPoint(AParams, AResults);
   if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
@@ -1481,10 +1490,13 @@ begin
     if IsEmpty then exit;
     if not RequestValidChartScaling then exit;
 
+    ext := FChart.CurrentExtent;
     for s in FSplines do begin
       if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
         continue;
-      with TDrawFuncHelper.Create(Self, s.FIntervals, @s.Calculate, Step) do
+      xmin := IfThen(csoExtrapolateLeft in FOptions, ext.a.x, Max(ext.a.x, s.FX[0]));
+      xmax := IfThen(csoExtrapolateRight in Options, ext.b.x, Min(ext.b.x, s.FX[High(s.FX)]));
+      with TPointsDrawFuncHelper.Create(Self, xmin, xmax, @s.Calculate, Step) do
         try
           if not GetNearestPoint(AParams, r) or
              Result and (AResults.FDist <= r.FDist)

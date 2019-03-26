@@ -279,7 +279,8 @@ type
     procedure SetPointer(AValue: TSeriesPointer);
     procedure SetStacked(AValue: Boolean);
     procedure SetStackedNaN(AValue: TStackedNaN);
-  strict protected
+  //strict
+  protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
     FMinXRange: Double;

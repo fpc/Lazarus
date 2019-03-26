@@ -110,9 +110,7 @@ independently of zoom level.
       </element>
       <element name="TChart.Extent">
         <short>Manual overrides for the chart extent borders.</short>
-        <descr>
-          <p>The <var>Extent</var> defines the unzoomed viewport of the chart.</p>
-          <p>Values entered here override any other automatic extent calculation.</p>
+        <descr><p>The <var>Extent</var> defines the unzoomed viewport of the chart.</p><p>Values entered here override any other automatic extent calculation.</p>
         </descr>
       </element>
       <element name="TBasicChartSeries">
@@ -356,9 +354,7 @@ chart margin and the space reserved for series marks.
       </element>
       <element name="TChart.DisableRedrawing">
         <short>Disables redrawing of the chart</short>
-        <descr>
-          <p>Useful when many data points are added.</p>
-          <p>Must be accompanied by <var>EnableRedrawing</var>, otherwise the chart will
+        <descr><p>Useful when many data points are added.</p><p>Must be accompanied by <var>EnableRedrawing</var>, otherwise the chart will
 not be updated any more.</p>
         </descr>
       </element>
@@ -414,8 +410,7 @@ of the changes.
         <descr>The <var>LogicalExtent</var> does not contain the the inner margins and the
 space reserved for the series labels. It is given in graph coordinates.
 </descr>
-        <seealso>
-          <link id="TChart.CurrentExtent">CurrentExtent</link>
+        <seealso><link id="TChart.CurrentExtent">CurrentExtent</link>
         </seealso>
       </element>
       <element name="TChart.MinDataSpace">
