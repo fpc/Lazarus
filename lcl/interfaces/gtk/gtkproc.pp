@@ -47,10 +47,10 @@ uses
     glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   Math, // Math after gtk to get the correct Float type
-  LMessages, LCLMessageGlue, LCLProc, LCLStrConsts, LCLIntf, LCLType,
-  DynHashArray, Masks, GraphType, GraphMath, Graphics, Controls,
-  Forms, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, GtkFontCache, GTKGlobals, GtkDef, GtkExtra, GtkDebug;
+  LazUTF8, LMessages, LCLMessageGlue, LCLProc, LCLStrConsts, LCLIntf, LCLType,
+  DynHashArray, Masks, GraphType, GraphMath, Graphics, Controls, Forms, Menus,
+  StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs, FileUtil, LazFileUtils,
+  ImgList, GtkFontCache, GTKGlobals, GtkDef, GtkExtra, GtkDebug;
 
 const
   GtkListItemGtkListTag = 'GtkList';

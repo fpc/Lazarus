@@ -47,7 +47,7 @@ uses
   // rtl+fcl
   Types, Classes, SysUtils,
   // LazUtils
-  FPCAdds,
+  FPCAdds, LazUTF8,
   // gtk
   {$IFDEF gtk2}
     glib2, gdk2pixbuf, gdk2, gtk2, Pango, gtk2proc,
@@ -66,7 +66,7 @@ uses
   LCLPlatformDef, InterfaceBase,
   FileUtil, Translations, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts,
   LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
-  Graphics, Menus, Maps, Themes,
+  Graphics, Menus, Maps, LazLoggerBase, LazFileUtils, LazStringUtils, Themes,
   // widgetset
   GtkDebug, GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, WSLCLClasses;
 

@@ -92,7 +92,6 @@ type
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -1212,16 +1211,6 @@ begin
     // unlock combobox
     Dec(WidgetInfo^.ChangeLock);
   end;
-end;
-
-class procedure TGtkWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
-  NewReadOnly: boolean);
-var
-  Widget: PGtkWidget;
-begin
-  Widget := PGtkCombo(ACustomComboBox.Handle)^.entry;
-  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
-    gtk_entry_set_editable(PGtkEntry(Widget), not NewReadOnly);
 end;
 
 class function  TGtkWSCustomComboBox.GetItems(

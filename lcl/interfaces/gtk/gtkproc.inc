@@ -4491,6 +4491,8 @@ var
   begin
     {$IfDef GTK1}
     //debugln('UpdateTabCloseBtn ',GetWidgetDebugReport(NoteBookWidget));
+    Img:=nil;
+    Mask:=nil;
     GetNoteBookCloseBtnImage(GetControlWindow(NoteBookWidget), Img, Mask);
     {$EndIf}
     //debugln('UpdateTabCloseBtn ',dbgs(nboShowCloseButtons in TheNotebook.Options),' ',dbgs(Img<>nil));
@@ -5004,7 +5006,7 @@ var
 begin
   Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
   SignalID := g_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
-  if (SignalID<0) or (SignalID>$ffffff) then
+  if SignalID>$ffffff then
     RaiseGDBException('SignalConnected');
 
   while (Handler <> nil) do begin
@@ -5905,7 +5907,7 @@ begin
     OldCheckMenuItemDrawProc(MenuItem,Area);
     exit;
   end;
-  IconSize:=LCLMenuItem.GetIconSize;
+  IconSize:=LCLMenuItem.GetIconSize(0);
   IconWidth:=IconSize.X;
   IconHeight:=IconSize.Y;
 
@@ -5998,7 +6000,7 @@ begin
       CurToggleSize:=OldCheckMenuItemToggleSize;
       LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
       if LCLMenuItem<>nil then begin
-        IconSize:=LCLMenuItem.GetIconSize;
+        IconSize:=LCLMenuItem.GetIconSize(0);
         {if IconSize.X>100 then
           debugln('MenuSizeRequest LCLMenuItem=',LCLMenuItem.Name,' ',LCLMenuItem.Caption,
             ' ');}
@@ -6124,7 +6126,7 @@ var
     if LCLMenuItem.HasIcon then
     begin
       {$IFNDEF Gtk2}
-      IconSize := LCLMenuItem.GetIconSize;
+      IconSize := LCLMenuItem.GetIconSize(0);
       IconWidth := IconSize.X;
       IconHeight := IconSize.Y;
       // set the toggle width

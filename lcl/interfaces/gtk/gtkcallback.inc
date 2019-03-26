@@ -1537,7 +1537,7 @@ begin
     // send the message directly to the LCL
     NotifyApplicationUserInput(AWinControl, MessE.Msg);
     DeliverMessage(AWinControl, MessE);
-  end
+  end;
   if event^.Button in [6, 7] then
   begin
     // this is a mouse wheel horizontal-scroll event

@@ -27,7 +27,7 @@ type
 
   { TGtkWSCustomImageList }
 
-  TGtkWSCustomImageList = class(TWSCustomImageList)
+  TGtkWSCustomImageListResolution = class(TWSCustomImageListResolution)
   published
   end;
 
