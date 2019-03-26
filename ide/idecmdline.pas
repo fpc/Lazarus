@@ -300,9 +300,11 @@ end;
 
 function IsVersionRequested: boolean;
 begin
-  Result := (ParamsAndCfgCount=1) and
-            (ParamIsOption(1, '--version') or
-             ParamIsOption(1, '-v'));
+  //Don't use ParamsAndCfgCount here, because ATM (2019-03-24) GetParamsAndCfgFile adds
+  //ParamStrUtf8(0) to it and may add more in the future
+  Result := (ParamCount=1) and
+            ((ParamStr(1)='--version') or
+            (ParamStr(1)='-v'));
 end;
 
 function GetLanguageSpecified : string;
