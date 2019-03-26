@@ -2926,7 +2926,8 @@ begin
   while Result <> nil do begin
     if ALeftSum < Result.FLeftSizeSum then begin
       Result := Result.FLeft;
-      aStartPosition := aStartPosition + Result.FPositionOffset;
+      if Result <> nil then
+        aStartPosition := aStartPosition + Result.FPositionOffset;
       continue;
     end;
 
@@ -2939,7 +2940,8 @@ begin
       ALeftSum := ALeftSum - Result.FSize;
       aSizesBeforeSum := aSizesBeforeSum + Result.FSize;
       Result := Result.FRight;
-      aStartPosition := aStartPosition + Result.FPositionOffset;
+      if Result <> nil then
+        aStartPosition := aStartPosition + Result.FPositionOffset;
       continue;
     end;
   end;
