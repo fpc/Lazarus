@@ -747,7 +747,6 @@ end;
 
 procedure TPrinter.SetOrientation(const AValue: TPrinterOrientation);
 begin
-  CheckPrinting(False);
   DoSetOrientation(aValue);
 end;
 

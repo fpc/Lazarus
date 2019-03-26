@@ -163,6 +163,10 @@ type
   { TCairoPsCanvas }
 
   TCairoPsCanvas = class(TCairoFileCanvas)
+  private
+    fHandle: Pcairo_t;
+    procedure GetPageProperties(out aWidth, aHeight: double; out orStr:string);
+    procedure UpdatePageTransform;
   protected
     function CreateCairoHandle: HDC; override;
   public
@@ -1515,28 +1519,60 @@ end;
 
 { TCairoPsCanvas }
 
+procedure TCairoPsCanvas.GetPageProperties(out aWidth, aHeight: double; out
+  orStr: string);
+begin
+  if Orientation in [poLandscape, poReverseLandscape] then begin
+    orStr := '%%PageOrientation: Landscape';
+    aWidth := PaperHeight*ScaleY; //switch H, W
+    aHeight := PaperWidth*ScaleX;
+  end else begin
+    orStr := '%%PageOrientation: Portait';
+    aWidth := PaperWidth*ScaleX;
+    aHeight := PaperHeight*ScaleY;
+  end;
+
+end;
+
+procedure TCairoPsCanvas.UpdatePageTransform;
+var
+  W, H: double;
+  Dummy: string;
+begin
+  GetPageProperties(W, H, Dummy);
+
+  cairo_identity_matrix(fHandle);
+
+  case Orientation of
+    poLandscape: begin
+      cairo_translate(fHandle, 0, H);
+      cairo_rotate(fHandle, -PI/2);
+    end;
+    poReverseLandscape: begin
+      cairo_translate(fHandle, W, 0);
+      cairo_rotate(fHandle, PI/2);
+    end;
+    poReversePortrait: begin
+      cairo_translate(fHandle, W, H);
+      cairo_rotate(fHandle, PI);
+    end;
+  end;
+
+end;
+
 function TCairoPsCanvas.CreateCairoHandle: HDC;
 var
   s: string;
   W, H: Double;
-  acr: Pcairo_t;
 begin
-  if Orientation in [poLandscape, poReverseLandscape] then begin
-    s := '%%PageOrientation: Landscape';
-    W := PaperHeight*ScaleY; //switch H, W
-    H := PaperWidth*ScaleX;
-  end else begin
-    s := '%%PageOrientation: Portait';
-    W := PaperWidth*ScaleX;
-    H := PaperHeight*ScaleY;
-  end;
+  GetPageProperties(W, H, s);
 
   //Sizes are in Points, 72DPI (1pt = 1/72")
   if fStream<>nil then
     sf := cairo_ps_surface_create_for_stream(@WriteToStream, fStream, W, H)
   else
     sf := cairo_ps_surface_create(PChar(FOutputFileName), W, H);
-  acr := cairo_create(sf);
+  fHandle := cairo_create(sf);
 
   cairo_ps_surface_dsc_begin_setup(sf);
   cairo_ps_surface_dsc_comment(sf, PChar(s));
@@ -1549,26 +1585,23 @@ begin
   end;
 
   //rotate and move
-  case Orientation of
-    poLandscape: begin
-      cairo_translate(acr, 0, H);
-      cairo_rotate(acr, -PI/2);
-    end;
-    poReverseLandscape: begin
-      cairo_translate(acr, W, 0);
-      cairo_rotate(acr, PI/2);
-    end;
-    poReversePortrait: begin
-      cairo_translate(acr, W, H);
-      cairo_rotate(acr, PI);
-    end;
-  end;
-  result := {%H-}HDC(acr);
+  UpdatePageTransform;
+
+  result := {%H-}HDC(fHandle);
 end;
 
 procedure TCairoPsCanvas.UpdatePageSize;
+var
+  W, H: Double;
+  S: string;
 begin
-  cairo_ps_surface_set_size(sf, PaperWidth*ScaleX, PaperHeight*ScaleY);
+  GetPageProperties(W, H, S);
+
+  cairo_ps_surface_dsc_begin_page_setup(sf);
+  cairo_ps_surface_dsc_comment(sf, PChar(s));
+  cairo_ps_surface_set_size(sf, W, H);
+
+  UpdatePageTransform;
 end;
 
 constructor TCairoPngCanvas.Create(APrinter: TPrinter);
