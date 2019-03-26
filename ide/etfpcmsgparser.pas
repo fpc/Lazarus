@@ -1506,6 +1506,8 @@ const
   patLD: String = '/usr/bin/ld: ';
 var
   MsgLine: TMessageLine;
+  Urgency: TMessageLineUrgency;
+  s: string;
 begin
   if CompareMem(PChar(patUndefinedSymbol),p,length(patUndefinedSymbol)) then
   begin
@@ -1522,11 +1524,17 @@ begin
     MsgLine:=CreateMsgLine;
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCLinker;
+    s:=p;
+    Urgency:=mluHint;
     if fMsgIsStdErr then
-      MsgLine.Urgency:=mluError
-    else
-      MsgLine.Urgency:=mluHint;
-    MsgLine.Msg:='linker: '+p;
+    begin
+      Urgency:=mluWarning;
+      if (Pos('link.res',s)>0) and (Pos(' -T',s)>0) then
+        // /usr/bin/ld: warning: /path/link.res contains output sections; did you forget -T?
+        Urgency:=mluVerbose;
+    end;
+    MsgLine.Urgency:=Urgency;
+    MsgLine.Msg:='linker: '+s;
     inherited AddMsgLine(MsgLine);
     exit(true);
   end;
