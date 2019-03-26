@@ -1522,7 +1522,10 @@ begin
     MsgLine:=CreateMsgLine;
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluHint;
+    if fMsgIsStdErr then
+      MsgLine.Urgency:=mluError
+    else
+      MsgLine.Urgency:=mluHint;
     MsgLine.Msg:='linker: '+p;
     inherited AddMsgLine(MsgLine);
     exit(true);
@@ -2975,6 +2978,8 @@ begin
   end;
 
   Handled:=true;
+
+  //debugln(['TIDEFPCParser.ReadLine ',IsStdErr,' ',Line]);
 
   // check for (msgid) message
   if CheckForMsgId(p) then exit;
