@@ -8240,12 +8240,12 @@ begin
     if OldPosition < Position then
     begin
       // column will be moved up so move down other entries
-      Move(FPositionToIndex[OldPosition + 1], FPositionToIndex[OldPosition], (Position - OldPosition) * SizeOf(Cardinal));
+      System.Move(FPositionToIndex[OldPosition + 1], FPositionToIndex[OldPosition], (Position - OldPosition) * SizeOf(Cardinal));
     end
     else
     begin
       // column will be moved down so move up other entries
-      Move(FPositionToIndex[Position], FPositionToIndex[Position + 1], (OldPosition - Position) * SizeOf(Cardinal));
+      System.Move(FPositionToIndex[Position], FPositionToIndex[Position + 1], (OldPosition - Position) * SizeOf(Cardinal));
     end;
     FPositionToIndex[Position] := Column.Index;
   end;
@@ -8490,7 +8490,7 @@ begin
       begin
         // Index found. Move all higher entries one step down and remove the last entry.
         if I < Upper then
-          Move(FPositionToIndex[I + 1], FPositionToIndex[I], (Upper - I) * SizeOf(TColumnIndex));
+          System.Move(FPositionToIndex[I + 1], FPositionToIndex[I], (Upper - I) * SizeOf(TColumnIndex));
       end;
       // Decrease all indices, which are greater than the index to be deleted.
       if FPositionToIndex[I] > OldIndex then
