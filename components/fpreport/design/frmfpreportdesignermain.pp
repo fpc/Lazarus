@@ -2022,7 +2022,7 @@ procedure TFPReportDesignerForm.SaveDesignToFile(AFileName : string);
 
 Var
   WS: TFPReportJSONStreamer;
-  S : String;
+  S : UTF8String;
   FS : TFileStream;
   DD : TJSONObject;
 
@@ -2183,7 +2183,8 @@ procedure TFPReportDesignerForm.LoadDesignFromFile(const AFilename: string);
 
 var
   rs: TFPReportJSONStreamer;
-  fs: TFileStream;
+  ms : TMemoryStream;
+  uts : UTF8String;
   DD,lJSON: TJSONObject;
   Errs : TStrings;
   OldName : TComponentName;
@@ -2194,12 +2195,16 @@ begin
   if not FileExists(AFilename) then
     raise Exception.CreateFmt('The file "%s" can not be found', [AFilename]);
 
-  fs := TFileStream.Create(AFilename, fmOpenRead or fmShareDenyNone);
+  ms := TMemoryStream.Create();
   try
-    lJSON := TJSONObject(GetJSON(fs));
+    ms.LoadFromFile(AFilename);
+    ms.Position := 0;
+    SetLength(uts,ms.Size);
+    Move(ms.Memory^,uts[Low(uts)],Length(uts));
   finally
-    FreeAndNil(fs);
+    FreeAndNil(ms);
   end;
+  lJSON := TJSONObject(GetJSON(uts));
   StopDesigning;
   ResetReport;
   OldName:=FReport.Name;
