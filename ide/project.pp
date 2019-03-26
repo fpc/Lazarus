@@ -7413,7 +7413,7 @@ begin
   for i:=0 to Count-1 do
     if SaveSession or not Items[i].InSession then
       Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, ALegacyList, Cnt);
-  FXMLConfig.SetListItemCount(Path+'BuildModes',Cnt,ALegacyList);
+  FXMLConfig.SetListItemCount(Path+'BuildModes/',Cnt,ALegacyList);
 end;
 
 procedure TProjectBuildModes.SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig;
@@ -7427,7 +7427,7 @@ begin
   for i:=0 to Count-1 do
     if Items[i].InSession and SaveSession then
       Items[i].SaveToXMLConfig(FXMLConfig, Path, false, ALegacyList, Cnt);
-  FXMLConfig.SetListItemCount(Path+'BuildModes',Cnt,ALegacyList);
+  FXMLConfig.SetListItemCount(Path+'BuildModes/',Cnt,ALegacyList);
 end;
 
 
