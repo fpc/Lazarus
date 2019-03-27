@@ -78,10 +78,6 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseZeroLevel(AValue: Boolean);
     procedure SetZeroLevel(AValue: Double);
-  strict protected
-    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
-    function ToolTargetDistance(const AParams: TNearestPointParams;
-      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   protected
     procedure BarOffsetWidth(
       AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
@@ -90,9 +86,12 @@ type
     procedure DrawHexPrism(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
     procedure DrawPyramidBar(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
     procedure DrawRectBar(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
+    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     function GetZeroLevel: Double; override;
+    function ToolTargetDistance(const AParams: TNearestPointParams;
+      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
   public
     procedure Assign(ASource: TPersistent); override;
@@ -1157,7 +1156,6 @@ procedure TBarSeries.Draw(ADrawer: IChartDrawer);
 var
   pointIndex, stackIndex: Integer;
   scaled_depth: Integer;
-  scaled_depth2: Integer;
 
   procedure DrawBar(const AR: TRect);
   var
@@ -1165,9 +1163,6 @@ var
     defaultDrawing: Boolean = true;
     c: TColor;
     ic: IChartTCanvasDrawer;
-    pts: TPointArray;
-    a, b, cx, cy, factor: Double;
-    h: Integer;
   begin
     ADrawer.Pen := BarPen;
     ADrawer.Brush := BarBrush;
@@ -1239,7 +1234,6 @@ begin
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
   scaled_depth := ADrawer.Scale(Depth);
-  scaled_depth2 := scaled_depth div 2;
   if UseZeroLevel then
     zero := ZeroLevel
   else

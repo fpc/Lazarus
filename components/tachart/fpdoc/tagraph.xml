@@ -285,8 +285,7 @@ For example, <link id="TASeries.TPieSeries">pie series</link> displays a separat
 In addition to the viewport requested for zooming it also contains the inner
 chart margin and the space reserved for series marks.
 </descr>
-        <seealso>
-          <link id="TChart.LogicalExtent">LogicalExtent</link>
+        <seealso><link id="TChart.LogicalExtent">LogicalExtent</link>
         </seealso>
       </element>
       <element name="TChart.XGraphMax">

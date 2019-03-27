@@ -91,7 +91,7 @@ type
       ACalc: TTransformFunc; AStep: Integer);
   end;
 
-  TPointsDrawFuncHelper = class(TDrawFuncHelper)
+  TPointsDrawFuncHelper = class(TCustomDrawFuncHelper)
   protected
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
   public
@@ -262,8 +262,6 @@ procedure TDrawFuncHelper.ForEachPoint(
 var
   hint: Integer;
   xa, xg1, xa1, dx: Double;
-  fxg: array of double;
-  i, j: Integer;
 begin
   if FGraphStep = 0 then exit;
 
@@ -303,7 +301,7 @@ constructor TPointsDrawFuncHelper.Create(
   ASeries: TBasicPointSeries; AMinX, AMaxX: Double; ACalc: TTransformFunc;
   AStep: Integer);
 begin
-  inherited Create(ASeries, nil, ACalc, AStep);
+  inherited Create(ASeries, ACalc, AStep);
   FExtent.a.X := Min(AMinX, AMaxX);
   FExtent.b.X := Max(AMaxX, AMinX);
 end;
@@ -318,7 +316,10 @@ begin
   if FGraphStep = 0 then exit;
 
   if not (FSeries is TBasicPointSeries) then
-    raise EChartError.Create('[TPointsDrawFuncHelper.ForEachPoint] Series must be a TBasicPointSeries');
+    raise EChartError.CreateFmt(
+      '[%s.ForEachPoint] Series %s must be a TBasicPointSeries',
+      [ClassName, NameOrClassName(FSeries)]
+    );
 
   ser := TBasicPointSeriesAccess(FSeries);
   n := Length(ser.FGraphPoints);

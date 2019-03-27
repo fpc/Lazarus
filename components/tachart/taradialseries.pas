@@ -465,7 +465,6 @@ var
   procedure DrawArc3D(ASlice: TPieSlice; AInside: Boolean);
   var
     i, numSteps: Integer;
-    a: Double;
     p: Array of TPoint;
     angle1, angle2: Double;
     clr: TColor;
@@ -627,14 +626,12 @@ var
 var
   prevLabelPoly: TPointArray = nil;
   ps: TPieSlice;
-  r: TPoint;
 begin
   if IsEmpty then exit;
 
   Marks.SetAdditionalAngle(0);
   Measure(ADrawer);
   innerRadius := CalcInnerRadius;
-  r := FixAspectRatio(Point(FRadius, FRadius));
 
   if Depth > 0 then begin
     scaled_depth := ADrawer.Scale(Depth);

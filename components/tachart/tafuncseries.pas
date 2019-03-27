@@ -199,6 +199,7 @@ type
   TCubicSplineSeries = class(TBasicPointSeries)
   strict private
     FBadDataPen: TBadDataChartPen;
+    FCachedExtent: TDoubleRect;
     FOptions: TCubicSplineOptions;
     FSplineType: TCubicSplineType;
     FPen: TChartPen;
@@ -226,6 +227,7 @@ type
   var
     FSplines: array of TSpline;
     procedure FreeSplines;
+    procedure GetSplineXRange(ASpline: TSpline; out AXMin, AXMax: Double);
     function IsUnorderedVisible: Boolean; inline;
     procedure PrepareCoeffs;
     procedure SetBadDataPen(AValue: TBadDataChartPen);
@@ -1376,7 +1378,6 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
 
   procedure DrawSpline(ASpline: TSpline);
   var
-    ext: TDoubleRect;
     xmin, xmax: Double;
   begin
     ADrawer.SetBrushParams(bsClear, clTAColor);
@@ -1388,10 +1389,7 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       if not Pen.EffVisible then exit;
       ADrawer.Pen := Pen;
     end;
-    ext := FChart.CurrentExtent;
-
-    xmin := IfThen(csoExtrapolateLeft in FOptions, ext.a.x, Max(ext.a.x, ASpline.FX[0]));
-    xmax := IfThen(csoExtrapolateRight in Options, ext.b.x, Min(ext.b.x, ASpline.FX[High(ASpline.FX)]));
+    GetSplineXRange(ASpline, xmin, xmax);
     with TPointsDrawFuncHelper.Create(Self, xmin, xmax, @ASpline.Calculate, Step) do
       try
         DrawFunction(ADrawer);
@@ -1427,12 +1425,19 @@ var
   extChg: Boolean = false;
   s: TSpline;
 begin
-  Result := Source.BasicExtent;  // was: inherited Extent;
+  Result := Source.BasicExtent;
   if SplineType = cstHermiteMonotone then
     exit;
+
+  if not (FCachedExtent = EmptyExtent) then begin
+    Result := FCachedExtent;
+    exit;
+  end;
+
   if FSplines = nil then
     PrepareCoeffs;
-  if FSplines = nil then exit;
+  if FSplines = nil then
+    exit;
   for s in FSplines do begin
     if s.IsFewPoints then continue;
     minv := Result.a.Y;
@@ -1446,6 +1451,7 @@ begin
     Result.a.Y := extY.FStart;
     Result.b.Y := extY.FEnd;
   end;
+  FCachedExtent := Result;
 end;
 
 procedure TCubicSplineSeries.FreeSplines;
@@ -1455,6 +1461,7 @@ begin
   for s in FSplines do
     s.Free;
   FSplines := nil;
+  FCachedExtent := EmptyExtent;
 end;
 
 procedure TCubicSplineSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -1482,7 +1489,6 @@ var
   s: TSpline;
   r: TNearestPointResults;
   xmin, xmax: Double;
-  ext: TDoubleRect;
 begin
   Result := inherited GetNearestPoint(AParams, AResults);
   if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
@@ -1490,12 +1496,11 @@ begin
     if IsEmpty then exit;
     if not RequestValidChartScaling then exit;
 
-    ext := FChart.CurrentExtent;
     for s in FSplines do begin
       if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
         continue;
-      xmin := IfThen(csoExtrapolateLeft in FOptions, ext.a.x, Max(ext.a.x, s.FX[0]));
-      xmax := IfThen(csoExtrapolateRight in Options, ext.b.x, Min(ext.b.x, s.FX[High(s.FX)]));
+
+      GetSplineXRange(s, xmin, xmax);
       with TPointsDrawFuncHelper.Create(Self, xmin, xmax, @s.Calculate, Step) do
         try
           if not GetNearestPoint(AParams, r) or
@@ -1510,6 +1515,22 @@ begin
         end;
     end;
   end;
+end;
+
+procedure TCubicSplineSeries.GetSplineXRange(ASpline: TSpline;
+  out AXMin, AXMax: Double);
+var
+  ext: TDoubleRect;
+begin
+  ext := FChart.CurrentExtent;
+  AXmin := IfThen(
+    (csoExtrapolateLeft in FOptions) and (ASpline = FSplines[0]),
+    ext.a.x, Max(ext.a.x, AxisToGraphX(ASpline.FX[0]))
+  );
+  AXmax := IfThen(
+    (csoExtrapolateRight in FOptions) and (ASpline = FSplines[High(FSplines)]),
+    ext.b.x, Min(ext.b.x, AxisToGraphX(ASpline.FX[High(ASpline.FX)]))
+  );
 end;
 
 function TCubicSplineSeries.IsUnorderedVisible: Boolean;
