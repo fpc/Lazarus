@@ -9848,12 +9848,45 @@ msgstr "Nome do pacote FPDoc. Padrão é o nome do arquivo de projeto."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "Há um erro de sintaxe no elemento fpdoc \"%s\":%s%s"
 
+#: lazarusidestrconsts.lisfppkgcompilernotexecutable
+msgid "The compiler [%s] configured for Fppkg is not an executable."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgcompilernotexists
+msgid "The compiler [%s] configured for Fppkg does not exist."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgcompilernotfound
+msgid "Could not find the compiler [%s] configured for Fppkg."
+msgstr ""
+
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr "há um problema com o executável do compilador Free Pascal,"
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 msgid "Failed to generate the configuration file \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
+msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfpcmkcfgmissing
+msgid "Could not find the fpcmkcfg configuration tool, which is needed to create the configuration files."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfpcmkcfgneeded
+msgid "An up-to-date version is needed to create the configuration files."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold
+msgctxt "lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold"
+msgid "It is probably too old to create the configuration files."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfpcmkcfgtooold
+msgid "The fpcmkcfg configuration tool it too old [%s]."
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkginstallationpath
@@ -9864,12 +9897,22 @@ msgstr "O prefixo da instalação do compilador Free Pascal é requerido ao cria
 msgid "Problem with Fppkg configuration"
 msgstr "Problema com a configuração do Fppkg"
 
+#: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
+msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgrtlnotfound
+msgid "Fppkg reports that the RTL is not installed."
+msgstr ""
+
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
 msgstr "Ocorreu um problema ao tentar criar uma nova configuração Fppkg: %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
-msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
+#, fuzzy,badformat
+#| msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
+msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
 msgstr "Falha ao criar uma nova configuração Fppkg. Você deverá corrigir a configuração manualmente ou reinstalar o Free Pascal."
 
 #: lazarusidestrconsts.lisframe
@@ -10460,7 +10503,9 @@ msgid "Incorrect configuration directory found"
 msgstr "Encontrada configuração de diretórios incorreta"
 
 #: lazarusidestrconsts.lisincorrectfppkgconfiguration
-msgid "the Fppkg configuration is corrupt."
+#, fuzzy,badformat
+#| msgid "the Fppkg configuration is corrupt."
+msgid "there is a problem with the Fppkg configuration. (%s)"
 msgstr "A configuração do Fppkg está corrompida."
 
 #: lazarusidestrconsts.lisindentationforpascalsources
