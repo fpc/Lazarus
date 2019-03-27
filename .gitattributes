@@ -6059,6 +6059,7 @@ docs/xml/lazutils/extendedstrings.xml svneol=native#text/plain
 docs/xml/lazutils/fileutil.xml svneol=native#text/plain
 docs/xml/lazutils/fpcadds.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/fpmake.xml svneol=native#text/plain
+docs/xml/lazutils/graphtype.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/html2textrender.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_dom.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlcfg.xml svneol=native#text/plain
@@ -6171,7 +6172,6 @@ docs/xml/lcl/forms/tapplication_queueasynccall.pas svneol=native#text/plain
 docs/xml/lcl/fpmake.xml svneol=native#text/plain
 docs/xml/lcl/graphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/graphmath.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/graphtype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/graphutil.xml svneol=native#text/plain
 docs/xml/lcl/grids.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/groupededit.xml svneol=native#text/plain
@@ -6218,7 +6218,6 @@ docs/xml/lcl/interfaces/win32/win32int.xml svneol=native#text/xml
 docs/xml/lcl/intfgraphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/jsonpropstorage.xml svneol=native#text/plain
 docs/xml/lcl/lazcanvas.xml svneol=native#text/plain
-docs/xml/lcl/lazconfigstorage.xml svneol=native#text/plain
 docs/xml/lcl/lazdeviceapis.xml svneol=native#text/plain
 docs/xml/lcl/lazdialogs.xml svneol=native#text/plain
 docs/xml/lcl/lazfreetypeintfdrawer.xml svneol=native#text/plain
@@ -6240,7 +6239,6 @@ docs/xml/lcl/lcltranslator.xml svneol=native#text/plain
 docs/xml/lcl/lcltype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclunicodedata.xml svneol=native#text/plain
 docs/xml/lcl/lclversion.xml svneol=native#text/plain
-docs/xml/lcl/lconvencoding.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/ldocktree.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lmessages.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lresources.xml svneol=LF#text/xml eol=lf
