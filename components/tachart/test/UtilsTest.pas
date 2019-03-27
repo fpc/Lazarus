@@ -151,6 +151,23 @@ begin
   AssertTrue(FIList.Intersect(l, r, hint));
   AssertEquals(501.0, l);
   AssertEquals(502.0, r);
+  FIList.Epsilon := DEFAULT_EPSILON; // don't alter other tests
+
+  FIList.Clear;
+  FIList.AddRange(10.0, 20.0, [ioOpenStart, ioOpenEnd]);
+  FIList.AddRange(30.0, 40.0, [ioOpenStart, ioOpenEnd]);
+  l := 0.0;
+  r := 100.0;
+  hint := 0;
+  AssertTrue(FIList.Intersect(l, r, hint));
+  AssertEquals(10.0, l);
+  AssertEquals(20.0, r);
+  l := 0.0;
+  r := 100.0;
+  hint := 1;
+  AssertTrue(FIList.Intersect(l, r, hint));
+  AssertEquals(10.0, l);
+  AssertEquals(20.0, r);
 end;
 
 procedure TIntervalListTest.Merge;

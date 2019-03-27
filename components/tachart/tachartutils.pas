@@ -715,16 +715,24 @@ begin
   if not (ioOpenStart in ALimits) then AStart -= FEpsilon;
   if not (ioOpenEnd in ALimits) then AEnd += FEpsilon;
   if AStart > AEnd then exit;
-  i := 0;
-  while (i <= High(FIntervals)) and (FIntervals[i].FEnd < AStart) do
-    i += 1;
+
+  // In most cases we will be adding ranges in the ascending order,
+  // so the code here is optimized for this case
+
+  // Find index of the first interval, having its FEnd >= AStart
+  i := High(FIntervals) + 1;
+  while (i > 0) and (FIntervals[i-1].FEnd >= AStart) do
+    i -= 1;
   if i <= High(FIntervals) then
     AStart := Min(AStart, FIntervals[i].FStart);
+
+  // Find index of the last interval, having its FStart <= AEnd
   j := High(FIntervals);
   while (j >= 0) and (FIntervals[j].FStart > AEnd) do
     j -= 1;
   if j >= 0 then
     AEnd := Max(AEnd, FIntervals[j].FEnd);
+
   if i < j then begin
     for k := j + 1 to High(FIntervals) do
       FIntervals[i + k - j] := FIntervals[j];
@@ -774,30 +782,23 @@ end;
 
 function TIntervalList.Intersect(
   var ALeft, ARight: Double; var AHint: Integer): Boolean;
-var
-  fi, li: Integer;
 begin
   Result := false;
-  if Length(FIntervals) = 0 then exit;
+  if (Length(FIntervals) = 0) or (ALeft > ARight) then exit;
 
   AHint := EnsureRange(AHint, 0, High(FIntervals));
-  while (AHint > 0) and (FIntervals[AHint].FStart >= ARight) do
+  while (AHint > 0) and (FIntervals[AHint].FStart > ALeft) do
     Dec(AHint);
 
   while
     (AHint <= High(FIntervals)) and (FIntervals[AHint].FStart < ARight)
   do begin
     if FIntervals[AHint].FEnd > ALeft then begin
-      if not Result then fi := AHint;
-      li := AHint;
-      Result := true;
+      ALeft := FIntervals[AHint].FStart;
+      ARight := FIntervals[AHint].FEnd;
+      exit(true);
     end;
     Inc(AHint);
-  end;
-
-  if Result then begin
-    ALeft := FIntervals[fi].FStart;
-    ARight := FIntervals[li].FEnd;
   end;
 end;
 
