@@ -1697,7 +1697,7 @@ begin
 
       if proc.ExitStatus <> 0 then
         begin
-        Note := lisFppkgFpcmkcfgCheckFailed + ' ' + lifFppkgFpcmkcfgProbTooOld + ' ' + lisFppkgRecentFpcmkcfgNeeded;
+        Note := lisFppkgFpcmkcfgCheckFailed + ' ' + lisFppkgFpcmkcfgProbTooOld + ' ' + lisFppkgRecentFpcmkcfgNeeded;
         Result := sddqInvalid;
         end
       else

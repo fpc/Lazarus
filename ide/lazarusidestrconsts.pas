@@ -1061,7 +1061,7 @@ resourcestring
   lisFppkgFpcmkcfgNeeded = 'An up-to-date version is needed to create the ' +
     'configuration files.';
   lisFppkgFpcmkcfgTooOld = 'The fpcmkcfg configuration tool it too old [%s].';
-  lifFppkgFpcmkcfgProbTooOld = 'It is probably too old to create the configuration files.';
+  lisFppkgFpcmkcfgProbTooOld = 'It is probably too old to create the configuration files.';
   lisFppkgFpcmkcfgMissing = 'Could not find the fpcmkcfg configuration tool, ' +
     'which is needed to create the configuration files.';
   lisFppkgRtlNotFound = 'Fppkg reports that the RTL is not installed.';
