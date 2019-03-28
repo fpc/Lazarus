@@ -24,11 +24,9 @@
       </element>
       <element name="TChartSeries.AddXY">
         <short>Add a new point to the series.</short>
-        <descr>
-          <p>Requires <link id="TChartSeries.ListSource">editable data source</link>.</p>
+        <descr><p>Requires <link id="TChartSeries.ListSource">editable data source</link>.</p>
         </descr>
-        <errors>
-          <link id="TASources.EEditableSourceRequired">EEditableSourceRequired</link>
+        <errors><link id="TASources.EEditableSourceRequired">EEditableSourceRequired</link>
         </errors>
       </element>
       <element name="TChartSeries.ListSource">

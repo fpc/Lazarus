@@ -92,11 +92,13 @@ type
   end;
 
   TPointsDrawFuncHelper = class(TCustomDrawFuncHelper)
+  private
+    FStartIndex: Integer;
   protected
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
   public
     constructor Create(ASeries: TBasicPointSeries; AMinX, AMaxX: Double;
-      ACalc: TTransformFunc; AStep: Integer);
+      AStartIndex: Integer; ACalc: TTransformFunc; AStep: Integer);
   end;
 
 implementation
@@ -298,12 +300,13 @@ type
   TBasicPointSeriesAccess = class(TBasicPointSeries);
 
 constructor TPointsDrawFuncHelper.Create(
-  ASeries: TBasicPointSeries; AMinX, AMaxX: Double; ACalc: TTransformFunc;
-  AStep: Integer);
+  ASeries: TBasicPointSeries; AMinX, AMaxX: Double; AStartIndex: Integer;
+  ACalc: TTransformFunc; AStep: Integer);
 begin
   inherited Create(ASeries, ACalc, AStep);
   FExtent.a.X := Min(AMinX, AMaxX);
   FExtent.b.X := Max(AMaxX, AMinX);
+  FStartIndex := AStartIndex;
 end;
 
 procedure TPointsDrawFuncHelper.ForEachPoint(
@@ -325,17 +328,12 @@ begin
   n := Length(ser.FGraphPoints);
   dx := abs(FGraphStep);
 
-  j := -1;
-  for i := 0 to High(ser.FGraphPoints) do begin
-    if (j = -1) and (AXg < ser.FGraphPoints[i].X) then begin
-      j := i;
-      xfg := ser.FGraphPoints[i].X;
-      break;
-    end;
-  end;
-
   xa := FAxisToGraphXr(AXg);
+  j := FStartIndex - ser.FLoBound;
+  while (j < n) and (xa > ser.FGraphPoints[j].X) do inc(j);
+  if j < n then xfg := ser.FGraphPoints[j].X else exit;
   AOnMoveTo(AXg, xa);
+
   while AXg < AXMax do begin
     xg1 := AXg + dx;
     xa1 := FGraphToAxisXr(xg1);

@@ -221,7 +221,6 @@ type
       function IsFewPoints: Boolean; inline;
       function PrepareCoeffs(
         ASource: TCustomChartSource; var AIndex: Integer): Boolean;
-      procedure PrepareIntervals;
     end;
 
   var
@@ -1313,19 +1312,6 @@ begin
   Result := ok = 1;
 end;
 
-procedure TCubicSplineSeries.TSpline.PrepareIntervals;
-begin
-  FIntervals := TIntervalList.Create;
-  try
-    if not (csoExtrapolateLeft in FOwner.Options) then
-      FIntervals.AddRange(NegInfinity, FX[0], [ioOpenStart, ioOpenEnd]);
-    if not (csoExtrapolateRight in FOwner.Options) then
-      FIntervals.AddRange(FX[High(FX)], SafeInfinity, [ioOpenStart, ioOpenEnd]);
-  except
-    FreeAndNil(FIntervals);
-    raise;
-  end;
-end;
 
 { TCubicSplineSeries }
 
@@ -1390,7 +1376,9 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       ADrawer.Pen := Pen;
     end;
     GetSplineXRange(ASpline, xmin, xmax);
-    with TPointsDrawFuncHelper.Create(Self, xmin, xmax, @ASpline.Calculate, Step) do
+    if xmin > xmax then
+      exit;
+    with TPointsDrawFuncHelper.Create(Self, xmin, xmax, ASpline.FStartIndex, @ASpline.Calculate, Step) do
       try
         DrawFunction(ADrawer);
       finally
@@ -1501,7 +1489,9 @@ begin
         continue;
 
       GetSplineXRange(s, xmin, xmax);
-      with TPointsDrawFuncHelper.Create(Self, xmin, xmax, @s.Calculate, Step) do
+      if xmax > xmin then
+        exit;
+      with TPointsDrawFuncHelper.Create(Self, xmin, xmax, s.FStartIndex, @s.Calculate, Step) do
         try
           if not GetNearestPoint(AParams, r) or
              Result and (AResults.FDist <= r.FDist)
@@ -1547,7 +1537,7 @@ begin
   while i < Source.Count do begin
     s := TSpline.Create(self);
     if s.PrepareCoeffs(Source, i) then begin
-      s.PrepareIntervals;
+      //s.PrepareIntervals;
       SetLength(FSplines, Length(FSplines) + 1);
       FSplines[High(FSplines)] := s;
     end
