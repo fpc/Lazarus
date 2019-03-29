@@ -59,6 +59,10 @@ msgstr "Séries de surfaces"
 msgid "Auto scale"
 msgstr "Échelle automatique"
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Séries de barres"

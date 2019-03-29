@@ -36,8 +36,7 @@
       </element>
       <element name="TChartSeries.Clear">
         <short>Remove all points from the series.</short>
-        <descr>
-          <p>Requires <link id="TChartSeries.ListSource">editable data source</link>.</p>
+        <descr><p>Requires <link id="TChartSeries.ListSource">editable data source</link>.</p>
         </descr>
       </element>
       <element name="TChartSeries.Delete">

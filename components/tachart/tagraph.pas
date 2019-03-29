@@ -1336,7 +1336,7 @@ var
 begin
   ts := GetToolset;
   if
-    PtInRect(FClipRect, Point(X, Y)) and
+//    PtInRect(FClipRect, Point(X, Y)) and
     (ts <> nil) and ts.Dispatch(Self, evidMouseDown, Shift, Point(X, Y))
   then
     exit;

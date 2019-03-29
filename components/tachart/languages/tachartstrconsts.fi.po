@@ -49,6 +49,10 @@ msgstr "Aluekuvaaja"
 msgid "Auto scale"
 msgstr "Automaattinen skaalaus"
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Pylväskuvaaja"

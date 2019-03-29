@@ -60,6 +60,10 @@ msgstr "面积图系列"
 msgid "Auto scale"
 msgstr "自动缩放"
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "条形图系列"

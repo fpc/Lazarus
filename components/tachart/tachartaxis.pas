@@ -81,6 +81,10 @@ type
 
   { TChartAxis }
 
+  TChartAxisHitTest = (ahtTitle, ahtLine, ahtLabels,
+    ahtAxisStart, ahtAxisCenter, ahtAxisEnd);
+  TChartAxisHitTests = set of TChartAxisHitTest;
+
   TChartAxis = class(TChartBasicAxis)
   strict private
     FListener: TListener;
@@ -92,6 +96,7 @@ type
     FAxisRect: TRect;
     FGroupIndex: Integer;
     FTitleRect: TRect;
+    FTitlePolygon: TPointArray;
     function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
   strict private
     FAlignment: TChartAxisAlignment;
@@ -144,6 +149,7 @@ type
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
+    function GetHitTestInfoAt(APoint: TPoint; ADelta: Integer): TChartAxisHitTests; virtual;
     procedure Draw;
     procedure DrawTitle(ASize: Integer);
     function GetChart: TCustomChart; inline;
@@ -265,7 +271,7 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits, TAChartStrConsts, {%H-}TAGeometry, TAMath;
+  LResources, Math, PropEdits, TAChartStrConsts, TAGeometry, TAMath;
 
 var
   VIdentityTransform: TChartAxisTransformations;
@@ -458,6 +464,77 @@ begin
   inherited;
 end;
 
+function TChartAxis.GetHitTestInfoAt(APoint: TPoint;
+  ADelta: Integer): TChartAxisHitTests;
+var
+  R: TRect;
+  w, h, loc: Integer;
+  p: Integer;
+begin
+  Result := [];
+  if IsPointInPolygon(APoint, FTitlePolygon) then
+    Include(Result, ahtTitle)
+  else begin
+    R := FAxisRect;
+    case FAlignment of
+      calLeft:
+        begin
+          R.Right := R.Left + Max(ADelta, TickInnerLength);
+          R.Left := R.Left - Max(ADelta, TickLength);
+        end;
+      calRight:
+        begin
+          R.Left := R.Right - Max(ADelta, TickInnerLength);
+          R.Right := R.Right + Max(ADelta, TickLength);
+        end;
+      calTop:
+        begin
+          R.Bottom := R.Top + Max(ADelta, TickInnerLength);
+          R.Top := R.Top - Max(ADelta, TickLength);
+        end;
+      calBottom:
+        begin
+          R.Top := R.Bottom - Max(ADelta, TickInnerLength);
+          R.Bottom := R.Bottom + Max(ADelta, TickLength);
+        end;
+    end;
+    if IsPointInRect(APoint, R) then
+      Include(Result, ahtLine)
+    else if IsPointInside(APoint) then
+      Include(Result, ahtLabels);
+
+    if Result = [] then
+      exit;
+
+    R := FHelper.FClipRect^;
+    if IsVertical then begin
+      h := R.Bottom - R.Top;
+      p := APoint.Y - R.Top;
+      if p < h div 4 then
+        loc := +1
+      else if p > h - h div 4 then
+        loc := -1
+      else
+        loc := 0;
+    end else begin
+      w := abs(R.Right - R.Left);
+      p := abs(APoint.X - R.Left);
+      if p < w div 4 then
+        loc := -1
+      else if p > w - w div 4 then
+        loc := +1
+      else
+        loc := 0;
+    end;
+    if IsFlipped then loc := -loc;
+    case loc of
+      -1: Include(Result, ahtAxisStart);
+       0: Include(Result, ahtAxisCenter);
+      +1: Include(Result, ahtAxisEnd);
+    end;
+  end;
+end;
+
 procedure TChartAxis.Draw;
 
   procedure DrawMinors(AFixedCoord: Integer; AMin, AMax: Double);
@@ -520,7 +597,6 @@ end;
 procedure TChartAxis.DrawTitle(ASize: Integer);
 var
   p: TPoint;
-  dummy: TPointArray = nil;
   d: Integer;
 begin
   if not Visible or (ASize = 0) or (FTitlePos = MaxInt) then exit;
@@ -536,7 +612,7 @@ begin
   end;
   TPointBoolArr(p)[IsVertical] := FTitlePos;
   p += FHelper.FZOffset;
-  Title.DrawLabel(FHelper.FDrawer, p, p, Title.Caption, dummy);
+  Title.DrawLabel(FHelper.FDrawer, p, p, Title.Caption, FTitlePolygon);
 end;
 
 function TChartAxis.GetAlignment: TChartAxisAlignment;

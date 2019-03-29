@@ -60,6 +60,10 @@ msgstr "Ploto sekos"
 msgid "Auto scale"
 msgstr "Automatinis mastelis"
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Stulpelių sekos"

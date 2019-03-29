@@ -59,6 +59,10 @@ msgstr "Terület"
 msgid "Auto scale"
 msgstr "Automatikus méretezés"
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Sávok"

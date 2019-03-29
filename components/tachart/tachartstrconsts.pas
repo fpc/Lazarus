@@ -64,13 +64,13 @@ resourcestring
   rsPanningByDrag = 'Panning by drag';
   rsPanningByClick = 'Panning by click';
   rsPanningByMousewheel = 'Panning by mouse wheel';
-  //rsReticule = 'Reticule';
   rsDataPointClick = 'Data point click';
   rsDataPointDrag = 'Data point drag';
   rsDataPointHint = 'Data point hint';
   rsDataPointCrossHair = 'Data point crosshair';
   rsUserDefinedTool = 'User-defined';
   rsDistanceMeasurement = 'Distance measurement';
+  rsAxisClickTool = 'Axis click';
 
   // Chart sources
   rsSourceNotEditable = 'Editable chart source required';

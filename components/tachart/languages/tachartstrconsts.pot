@@ -49,6 +49,10 @@ msgstr ""
 msgid "Auto scale"
 msgstr ""
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr ""

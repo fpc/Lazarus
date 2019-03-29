@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fpdoc-descriptions><package name="TAChartLazarusPkg"><module name="TAChartAxisUtils"><element name="TChartBasicAxis"><short><var>TChartBasicAxis</var> is the ancestor of the chart's axis class</short><descr><p>The basic axis consists of</p>
-<ul><li>ticks (short line strokes perpendicular to the axis direction)</li><li><link id="TChartBasicAxis.Marks">marks</link>, i.e. labels placed at the tick positions</li><li><link id="TChartBasicAxis.Grid">grid lines</link> starting at the tick positions and running across the entire chart</li><li>an optional <link id="TChartBasicAxis.Arrow">arrow</link> at the end of the axis line</li>
+<fpdoc-descriptions><package name="TAChartLazarusPkg"><module name="TAChartAxisUtils"><element name="TChartBasicAxis"><short><var>TChartBasicAxis</var> is the ancestor of the chart's axis class</short><descr><p>The basic axis consists of</p><ul><li>ticks (short line strokes perpendicular to the axis direction)</li><li><link id="TChartBasicAxis.Marks">marks</link>, i.e. labels placed at the tick positions</li><li><link id="TChartBasicAxis.Grid">grid lines</link> starting at the tick positions and running across the entire chart</li><li>an optional <link id="TChartBasicAxis.Arrow">arrow</link> at the end of the axis line</li>
           </ul>
         </descr><seealso><link id="TAChartAxis.TChartAxis"/>
         </seealso>

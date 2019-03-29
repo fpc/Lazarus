@@ -21,7 +21,7 @@ uses
   Controls, CustomTimer, GraphMath, Forms, LCLPlatformDef, InterfaceBase,
   LCLType, LCLIntf,
   // TAChart
-  TAChartUtils, TADrawUtils, TAGraph, TATypes;
+  TAChartUtils, TADrawUtils, TAChartAxis, TAGraph, TATypes;
 
 type
 
@@ -582,6 +582,28 @@ type
     property Size: Integer read FSize write FSize default -1;
     property Targets;
   end;
+
+  TAxisClickTool = class;
+  TAxisClickEvent = procedure (ASender: TAxisClickTool; Axis: TChartAxis;
+    AHit: TChartAxisHitTests) of object;
+
+  TAxisClickTool = class(TChartTool)
+  private
+    FAxis: TChartAxis;
+    FGrabRadius: Integer;
+    FHitTest: TChartAxisHitTests;
+    FOnClick: TAxisClickEvent;
+  protected
+    function GetHitTestInfo(APoint: TPoint): boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+  published
+    property GrabRadius: Integer read FGrabRadius write FGrabRadius default 4;
+    property OnClick: TAxisClickEvent read FOnClick write FOnClick;
+  end;
+
 
   procedure Register;
 
@@ -1998,6 +2020,45 @@ begin
   end;
 end;
 
+
+{ TAxisClickTool }
+
+constructor TAxisClickTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SetPropDefaults(Self, ['GrabRadius']);
+end;
+
+function TAxisClickTool.GetHitTestInfo(APoint: TPoint): Boolean;
+var
+  ax: TChartAxis;
+begin
+  for ax in FChart.AxisList do begin
+    FHitTest := ax.GetHitTestInfoAt(APoint, FGrabRadius);
+    if FHitTest <> [] then begin
+      FAxis := ax;
+      Result := true;
+      exit;
+    end;
+  end;
+  Result := false;
+  FAxis := nil;
+  FHitTest := [];
+end;
+
+procedure TAxisClickTool.MouseDown(APoint: TPoint);
+begin
+  if GetHitTestInfo(APoint) then
+    Activate;
+end;
+
+procedure TAxisClickTool.MouseUp(APoint: TPoint);
+begin
+  if FHitTest <> [] then
+    if Assigned(FOnClick) then FOnClick(Self, FAxis, FHitTest);
+end;
+
+
 procedure SkipObsoleteProperties;
 const
   PROPORTIONAL_NOTE = 'Obsolete, use TZoomDragTool.RatioLimit=zlrProportional instead';
@@ -2020,6 +2081,7 @@ initialization
   RegisterChartToolClass(TDataPointDragTool, @rsDataPointDrag);
   RegisterChartToolClass(TDataPointHintTool, @rsDataPointHint);
   RegisterChartToolClass(TDataPointCrosshairTool, @rsDataPointCrosshair);
+  RegisterChartToolClass(TAxisClickTool, @rsAxisClickTool);
   RegisterChartToolClass(TUserDefinedTool, @rsUserDefinedTool);
 
   SkipObsoleteProperties;

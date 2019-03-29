@@ -62,6 +62,10 @@ msgstr "Діаграма з областями"
 msgid "Auto scale"
 msgstr "Автоматичний масштаб"
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Гістограма"

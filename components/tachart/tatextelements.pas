@@ -57,6 +57,7 @@ type
     FOverlapPolicy: TChartMarksOverlapPolicy;
     FShape: TChartLabelShape;
     FTextFormat: TChartTextFormat;
+    FTextRect: TRect;
     procedure SetAlignment(AValue: TAlignment);
     procedure SetCalloutAngle(AValue: Cardinal);
     procedure SetClipped(AValue: Boolean);
@@ -95,6 +96,7 @@ type
       const AText: String; var APrevLabelPoly: TPointArray);
     function GetLabelPolygon(
       ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
+    function GetTextRect: TRect;
     function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
     function MeasureLabelHeight(ADrawer: IChartDrawer; const AText: String): TSize;
     procedure SetInsideDir(dx, dy: Double);
@@ -453,6 +455,11 @@ end;
 function TChartTextElement.GetLinkPen: TChartPen;
 begin
   Result := nil;
+end;
+
+function TChartTextElement.GetTextRect: TRect;
+begin
+  Result := FTextRect;
 end;
 
 function TChartTextElement.GetTextShiftNeeded: Boolean;

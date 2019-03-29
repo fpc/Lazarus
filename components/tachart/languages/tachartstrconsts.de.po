@@ -61,6 +61,10 @@ msgstr "Fläche-Diagramm"
 msgid "Auto scale"
 msgstr "Auto-Skalierung"
 
+#: tachartstrconsts.rsaxisclicktool
+msgid "Axis click"
+msgstr "Klick auf Achse"
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Säulen/Balken-Diagramm"
@@ -516,4 +520,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-
