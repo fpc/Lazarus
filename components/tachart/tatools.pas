@@ -60,6 +60,7 @@ type
     property DrawingMode: TChartToolDrawingMode
       read FDrawingMode write SetDrawingMode default tdmDefault;
   strict protected
+    FIgnoreClipRect: Boolean;
     procedure Activate; override;
     procedure Cancel; virtual;
     procedure Deactivate; override;
@@ -763,11 +764,12 @@ begin
   case AEventId of
     evidKeyDown       : KeyDown       (APoint);
     evidKeyUp         : KeyUp         (APoint);
-    evidMouseDown     : MouseDown     (APoint);
-    evidMouseMove     : MouseMove     (APoint);
-    evidMouseUp       : MouseUp       (APoint);
     evidMouseWheelDown: MouseWheelDown(APoint);
     evidMouseWheelUp  : MouseWheelUp  (APoint);
+    evidMouseMove     : MouseMove     (APoint);
+    evidMouseUp       : MouseUp       (APoint);
+    evidMouseDown     : if FIgnoreClipRect or PtInRect(FChart.ClipRect, APoint) then
+                          MouseDown(APoint);
   end;
   ev := FEventsAfter[AEventId];
   if Assigned(ev) then
@@ -2027,6 +2029,7 @@ constructor TAxisClickTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   SetPropDefaults(Self, ['GrabRadius']);
+  FIgnoreClipRect := true;      // Allow mousedown outside cliprect
 end;
 
 function TAxisClickTool.GetHitTestInfo(APoint: TPoint): Boolean;
@@ -2048,14 +2051,20 @@ end;
 
 procedure TAxisClickTool.MouseDown(APoint: TPoint);
 begin
-  if GetHitTestInfo(APoint) then
+  if GetHitTestInfo(APoint) then begin
     Activate;
+    Handled;
+  end;
 end;
 
 procedure TAxisClickTool.MouseUp(APoint: TPoint);
 begin
-  if FHitTest <> [] then
+  if FHitTest <> [] then begin
+    GetHitTestInfo(APoint);
     if Assigned(FOnClick) then FOnClick(Self, FAxis, FHitTest);
+  end;
+  Deactivate;
+  Handled;
 end;
 
 

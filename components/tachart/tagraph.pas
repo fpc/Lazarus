@@ -1335,10 +1335,7 @@ var
   ts: TBasicChartToolset;
 begin
   ts := GetToolset;
-  if
-//    PtInRect(FClipRect, Point(X, Y)) and
-    (ts <> nil) and ts.Dispatch(Self, evidMouseDown, Shift, Point(X, Y))
-  then
+  if (ts <> nil) and ts.Dispatch(Self, evidMouseDown, Shift, Point(X, Y)) then
     exit;
   inherited;
 end;
