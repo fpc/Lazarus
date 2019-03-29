@@ -1508,7 +1508,7 @@ msgstr "Arquivos do editor"
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
 msgid "Identifier completion"
-msgstr "Complemento identificador"
+msgstr "Complementação de identificador"
 
 #: lazarusidestrconsts.dlgedinvert
 msgid "Invert"
@@ -2238,7 +2238,7 @@ msgstr "Aplicação servidora"
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
-msgstr "Complemento identificador"
+msgstr "Complementação de identificador"
 
 #: lazarusidestrconsts.dlgidentifierpolicy
 msgid "Identifier policy"
@@ -3359,7 +3359,7 @@ msgstr "&Perguntar antes de substituir"
 
 #: lazarusidestrconsts.dlgpropertycompletion
 msgid "Property completion"
-msgstr "Complemento propriedade"
+msgstr "Complementação de propriedade"
 
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
@@ -3913,7 +3913,7 @@ msgstr "Usar arquivo padrão de configuração do compilador (fpc.cfg)"
 
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
-msgstr "Ícones na caixa de complemento de código"
+msgstr "Ícones na caixa de complementação de código"
 
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
@@ -4877,11 +4877,11 @@ msgstr "Verificar (selecionar) automaticamente arquivos modificados"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
-msgstr "Auto completar: desligado"
+msgstr "Auto complementação: desligado"
 
 #: lazarusidestrconsts.lisautocompletionon
 msgid "Auto completion: on"
-msgstr "Auto completar: ligado"
+msgstr "Auto complementação: ligado"
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
@@ -4938,7 +4938,7 @@ msgstr "Usar automaticamente identificador único possível"
 
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
-msgstr "Complementos e Dicas"
+msgstr "Complementação e Dicas"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
@@ -5975,7 +5975,7 @@ msgstr "&Classe"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
-msgstr "Complemento Classe"
+msgstr "Complementação de classe"
 
 #: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
 msgid "Classes and properties exist. Values were not checked."
@@ -8214,7 +8214,7 @@ msgstr "Padrão"
 
 #: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
 msgid "Default class visibility section of new methods. For example code completion on OnShow:="
-msgstr "Seção padrão visibilidade de classe de novos métodos. Por exemplo complemento de código no OnShow:="
+msgstr "Seção padrão visibilidade de classe de novos métodos. Por exemplo complementação de código no OnShow:="
 
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
@@ -8230,15 +8230,15 @@ msgstr "Seção padrão de métodos"
 
 #: lazarusidestrconsts.lisdelayforcompletionbox
 msgid "Delay for completion box"
-msgstr ""
+msgstr "Atraso para caixa de complementação"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
-msgstr "Atraso para dicas longas na caixa de conclusão"
+msgstr "Atraso para dicas longas na caixa de complementação"
 
 #: lazarusidestrconsts.lisdelayforhints
 msgid "Delay for hints"
-msgstr ""
+msgstr "Atraso para dicas"
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -9850,15 +9850,15 @@ msgstr "Há um erro de sintaxe no elemento fpdoc \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfppkgcompilernotexecutable
 msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr ""
+msgstr "O compilador [%s] configurado para o Fppkg não é um executável."
 
 #: lazarusidestrconsts.lisfppkgcompilernotexists
 msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr ""
+msgstr "O compilador [%s] configurado para o Fppkg não existe."
 
 #: lazarusidestrconsts.lisfppkgcompilernotfound
 msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr ""
+msgstr "Impossível localizar o compilador [%s] configurado para o Fppkg."
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -9866,28 +9866,28 @@ msgstr "há um problema com o executável do compilador Free Pascal,"
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 msgid "Failed to generate the configuration file \"%s\"."
-msgstr ""
+msgstr "Falha ao gerar o arquivo de configuração \"%s\"."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
-msgstr ""
+msgstr "Falha na obtenção da versão da ferramenta de configuração \"fpmkcfg\"."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgmissing
 msgid "Could not find the fpcmkcfg configuration tool, which is needed to create the configuration files."
-msgstr ""
+msgstr "Impossível localizar a ferramenta de configuração \"fpcmkcfg\", que é necessária para criar os arquivos de configuração."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgneeded
 msgid "An up-to-date version is needed to create the configuration files."
-msgstr ""
+msgstr "Uma versão atualizada é necessária para criar os arquivos de configuração."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold
 msgctxt "lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold"
 msgid "It is probably too old to create the configuration files."
-msgstr ""
+msgstr "É provavelmente muito antigo para criar os arquivos de configuração."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgtooold
 msgid "The fpcmkcfg configuration tool it too old [%s]."
-msgstr ""
+msgstr "A ferramenta de configuração \"fpcmkcfg\" é muito antiga [%s]."
 
 #: lazarusidestrconsts.lisfppkginstallationpath
 msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
@@ -9899,21 +9899,19 @@ msgstr "Problema com a configuração do Fppkg"
 
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
-msgstr ""
+msgstr "Tenha certeza de que uma versão recente esteja instalada e disponível no caminho ou juntamente com o executável do compilador."
 
 #: lazarusidestrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
-msgstr ""
+msgstr "Fppkg reporta que o RTL não está instalado."
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
 msgstr "Ocorreu um problema ao tentar criar uma nova configuração Fppkg: %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
-#, fuzzy,badformat
-#| msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
 msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
-msgstr "Falha ao criar uma nova configuração Fppkg. Você deverá corrigir a configuração manualmente ou reinstalar o Free Pascal."
+msgstr "Falha ao criar uma nova configuração Fppkg (%s). Você deverá corrigir a configuração manualmente ou reinstalar o Free Pascal."
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -10503,10 +10501,8 @@ msgid "Incorrect configuration directory found"
 msgstr "Encontrada configuração de diretórios incorreta"
 
 #: lazarusidestrconsts.lisincorrectfppkgconfiguration
-#, fuzzy,badformat
-#| msgid "the Fppkg configuration is corrupt."
 msgid "there is a problem with the Fppkg configuration. (%s)"
-msgstr "A configuração do Fppkg está corrompida."
+msgstr "Há um problema com a configuração do Fppkg. (%s)"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -11926,11 +11922,11 @@ msgstr "\"String\" em minúsculas dada como parâmetro."
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckbox
 msgid "Maximize compatibility of project files (LPI and LPS)"
-msgstr ""
+msgstr "Maximizar a compatibilidade dos arquivos de projeto (LPI e LPS)."
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
 msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Verifique se você deseja abrir projetos em versões legadas do Lazarus (2.0 e mais antigas)."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
@@ -19500,7 +19496,7 @@ msgstr "Quando ativo, as opções atuais são salvas para um modelo, que é usad
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"
-msgstr "Quando há somente um item de complemento possível usá-lo imediatamente, sem exibir a caixa de complementos"
+msgstr "Quando há somente um item de complementação possível usá-lo imediatamente, sem exibir a caixa de complementação"
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
@@ -19540,7 +19536,7 @@ msgstr "Sem um executável \"make\" apropriado, não será possível a compilaç
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
 msgid "Without the proper FPC sources code browsing and completion will be very limited."
-msgstr "Sem os fontes FPC apropriados a navegação  de código e complementação será bem limitada."
+msgstr "Sem os fontes FPC apropriados a navegação e complementação de código será bem limitada."
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
@@ -20100,7 +20096,7 @@ msgstr "Anexar ao programa"
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
-msgstr "Complemento modelo de código"
+msgstr "Complementação de modelo de código"
 
 #: lazarusidestrconsts.srkmecblockcopy
 msgid "Copy Block"
@@ -21294,7 +21290,7 @@ msgstr "Exibir unidades"
 
 #: lazarusidestrconsts.srkmecwordcompletion
 msgid "Word Completion"
-msgstr "Complemento de palavras"
+msgstr "Complementação de palavras"
 
 #: lazarusidestrconsts.srkmecwordendleft
 msgid "Move cursor word-end left"
