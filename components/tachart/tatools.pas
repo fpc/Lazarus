@@ -21,7 +21,7 @@ uses
   Controls, CustomTimer, GraphMath, Forms, LCLPlatformDef, InterfaceBase,
   LCLType, LCLIntf,
   // TAChart
-  TAChartUtils, TADrawUtils, TAChartAxis, TAGraph, TATypes;
+  TAChartUtils, TADrawUtils, TAChartAxis, TAGraph, TATypes, TATextElements;
 
 type
 
@@ -604,17 +604,15 @@ type
     property OnClick: TAxisClickEvent read FOnClick write FOnClick;
   end;
 
-  TTitleFootHitTest = (tfhtTitle, tfhtFoot);
-  TTitleFootHitTests = set of TTitleFootHitTest;
   TTitleFootClickEvent = procedure (ASender: TChartTool;
-    AHitInfo: TTitleFootHitTests) of object;
+    ATitle: TChartTitle) of object;
 
   TTitleFootClickTool = class(TChartTool)
   private
-    FHitTest: TTitleFootHitTests;
     FOnClick: TTitleFootClickEvent;
+    FTitle: TChartTitle;
   protected
-    function GetHitTestInfo(APoint: TPoint): Boolean;
+    function GetHit(APoint: TPoint): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
@@ -2094,19 +2092,19 @@ begin
   FIgnoreClipRect := true;      // Allow mousedown outside cliprect
 end;
 
-function TTitleFootClickTool.GetHitTestInfo(APoint: TPoint): Boolean;
+function TTitleFootClickTool.GetHit(APoint: TPoint): Boolean;
 begin
-  FHitTest := [];
+  FTitle := nil;
   if IsPointInPolygon(APoint, FChart.Title.Polygon) then
-    Include(FHitTest, tfhtTitle)
+    FTitle := FChart.Title
   else if IsPointInPolygon(APoint, FChart.Foot.Polygon) then
-    Include(FHitTest, tfhtFoot);
-  Result := FHitTest <> [];
+    FTitle := FChart.Foot;
+  Result := FTitle <> nil;
 end;
 
 procedure TTitleFootClickTool.MouseDown(APoint: TPoint);
 begin
-  if GetHitTestInfo(APoint) then begin
+  if GetHit(APoint) then begin
     Activate;
     Handled;
   end;
@@ -2115,8 +2113,8 @@ end;
 procedure TTitleFootClickTool.MouseUp(APoint: TPoint);
 begin
   if IsActive then begin
-    GetHitTestInfo(APoint);
-    if Assigned(FOnClick) then FOnClick(Self, FHitTest);
+    GetHit(APoint);
+    if Assigned(FOnClick) then FOnClick(Self, FTitle);
   end;
 end;
 
