@@ -647,6 +647,7 @@ type
     constructor Create(AGrid: TCustomGrid; aItemClass: TCollectionItemClass);
     function Add: TGridColumn;
     procedure Clear;
+    function ColumnByTitle(const aTitle: string): TGridColumn;
     function RealIndex(Index: Integer): Integer;
     function IndexOf(Column: TGridColumn): Integer;
     function IsDefault: boolean;
@@ -12866,6 +12867,18 @@ begin
   BeginUpdate;
   inherited Clear;
   EndUpdate
+end;
+
+function TGridColumns.ColumnByTitle(const aTitle: string): TGridColumn;
+var
+  i: Integer;
+begin
+  result := nil;
+  for i:=0 to Count-1 do
+    if SameText(Items[i].Title.Caption, aTitle) then begin
+      result := Items[i];
+      break;
+    end;
 end;
 
 function TGridColumns.RealIndex(Index: Integer): Integer;

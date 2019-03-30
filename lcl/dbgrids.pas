@@ -312,6 +312,8 @@ type
     procedure RemoveAutoColumns;
   public
     function  Add: TColumn;
+    function  ColumnByFieldname(const aFieldname: string): TColumn;
+    function  ColumnByTitle(const aTitle: string): TColumn;
     procedure LinkFields;
     procedure ResetColumnsOrder(ColumnOrder: TColumnOrder);
     property Items[Index: Integer]: TColumn read GetColumn write SetColumn; default;
@@ -4274,6 +4276,23 @@ begin
       RemoveAutoColumns;
   end;
   result := TColumn( inherited add );
+end;
+
+function TDBGridColumns.ColumnByFieldname(const aFieldname: string): TColumn;
+var
+  i: Integer;
+begin
+  result := nil;
+  for i:=0 to Count-1 do
+    if CompareText(Items[i].FieldName, aFieldname)=0 then begin
+      result := Items[i];
+      break;
+    end;
+end;
+
+function TDBGridColumns.ColumnByTitle(const aTitle: string): TColumn;
+begin
+  result := TColumn(inherited ColumnByTitle(aTitle));
 end;
 
 procedure TDBGridColumns.LinkFields;
