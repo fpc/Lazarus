@@ -2696,7 +2696,7 @@ begin
     if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
        GetDwarfDataAddress(Addr, TFpDwarfSymbolType(FOwner))
     then begin
-      if not (IsReadableMem(Addr) and (LocToAddr(Addr) > 4)) then
+      if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
         exit;
       Addr.Address := Addr.Address - AddressSize;
       if MemManager.ReadSignedInt(Addr, 4, i) then begin
