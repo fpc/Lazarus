@@ -284,6 +284,10 @@ msgstr "Csillag (teljes)"
 msgid "Function series"
 msgstr "Függvény"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "Hatszög"

@@ -287,6 +287,10 @@ msgstr ""
 msgid "Function series"
 msgstr "Funktionskurva"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr ""

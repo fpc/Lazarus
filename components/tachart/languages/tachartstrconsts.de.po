@@ -286,6 +286,10 @@ msgstr "Stern (voll)"
 msgid "Function series"
 msgstr "Funktions-Diagramm"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr "Klick auf Titel/Fußnote"
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "Sechseck"

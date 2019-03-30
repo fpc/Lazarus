@@ -71,6 +71,7 @@ resourcestring
   rsUserDefinedTool = 'User-defined';
   rsDistanceMeasurement = 'Distance measurement';
   rsAxisClickTool = 'Axis click';
+  rsHeaderFooterClickTool = 'Header/footer click';
 
   // Chart sources
   rsSourceNotEditable = 'Editable chart source required';

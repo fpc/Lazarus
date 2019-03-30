@@ -287,6 +287,10 @@ msgstr "Зірка (повна)"
 msgid "Function series"
 msgstr "Діаграма за функцією"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "Шестикутник"

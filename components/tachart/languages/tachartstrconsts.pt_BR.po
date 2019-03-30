@@ -284,6 +284,10 @@ msgstr "Estrela (cheio)"
 msgid "Function series"
 msgstr "Série Função"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "Hexágono"

@@ -302,9 +302,9 @@ chart margin and the space reserved for series marks.
       </element>
       <element name="TChart.YGraphMax">
         <short>Returns the maximum y value of the chart, in graph coordinates</short>
-        <descr>Deprecated, use <link id="TChart.CurrentExtent">CurrentExtent</link> instead.</descr>
-        <seealso>
-          <link id=""/>
+        <descr>Deprecated, use <link id="TChart.CurrentExtent">CurrentExtent</link> instead.
+</descr>
+        <seealso><link id=""/>
         </seealso>
       </element>
       <element name="TChart.YGraphMin">

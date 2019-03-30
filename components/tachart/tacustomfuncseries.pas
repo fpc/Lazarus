@@ -313,7 +313,7 @@ procedure TPointsDrawFuncHelper.ForEachPoint(
   AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
 var
   xa, xg1, xa1, dx, xfg: Double;
-  i, j, n: Integer;
+  j, n: Integer;
   ser: TBasicPointSeriesAccess;
 begin
   if FGraphStep = 0 then exit;

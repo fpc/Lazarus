@@ -133,6 +133,7 @@ type
     FFont: TFont;
     FFrame: TChartTitleFramePen;
     FMargin: TChartDistance;
+    FPolygon: TPointArray;
     FText: TStrings;
 
     procedure SetBrush(AValue: TBrush);
@@ -153,6 +154,7 @@ type
     procedure Measure(
       ADrawer: IChartDrawer; ADir, ALeft, ARight: Integer; var AY: Integer);
     procedure UpdateBidiMode;
+    property Polygon: TPointArray read FPolygon;
   published
     property Alignment default taCenter;
     property Brush: TBrush read FBrush write SetBrush;
@@ -609,11 +611,9 @@ begin
 end;
 
 procedure TChartTitle.Draw(ADrawer: IChartDrawer);
-var
-  dummy: TPointArray = nil;
 begin
   if not Visible or (Text.Count = 0) then exit;
-  DrawLabel(ADrawer, FCenter, FCenter, Text.Text, dummy);
+  DrawLabel(ADrawer, FCenter, FCenter, Text.Text, FPolygon);
 end;
 
 function TChartTitle.GetFrame: TChartPen;

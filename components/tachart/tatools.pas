@@ -584,9 +584,8 @@ type
     property Targets;
   end;
 
-  TAxisClickTool = class;
-  TAxisClickEvent = procedure (ASender: TAxisClickTool; Axis: TChartAxis;
-    AHit: TChartAxisHitTests) of object;
+  TAxisClickEvent = procedure (ASender: TChartTool; Axis: TChartAxis;
+    AHitInfo: TChartAxisHitTests) of object;
 
   TAxisClickTool = class(TChartTool)
   private
@@ -603,6 +602,25 @@ type
   published
     property GrabRadius: Integer read FGrabRadius write FGrabRadius default 4;
     property OnClick: TAxisClickEvent read FOnClick write FOnClick;
+  end;
+
+  TTitleFootHitTest = (tfhtTitle, tfhtFoot);
+  TTitleFootHitTests = set of TTitleFootHitTest;
+  TTitleFootClickEvent = procedure (ASender: TChartTool;
+    AHitInfo: TTitleFootHitTests) of object;
+
+  TTitleFootClickTool = class(TChartTool)
+  private
+    FHitTest: TTitleFootHitTests;
+    FOnClick: TTitleFootClickEvent;
+  protected
+    function GetHitTestInfo(APoint: TPoint): Boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+  published
+    property OnClick: TTitleFootClickEvent read FOnClick write FOnClick;
   end;
 
 
@@ -2068,6 +2086,41 @@ begin
 end;
 
 
+{ TTitleFootClickTool }
+
+constructor TTitleFootClickTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIgnoreClipRect := true;      // Allow mousedown outside cliprect
+end;
+
+function TTitleFootClickTool.GetHitTestInfo(APoint: TPoint): Boolean;
+begin
+  FHitTest := [];
+  if IsPointInPolygon(APoint, FChart.Title.Polygon) then
+    Include(FHitTest, tfhtTitle)
+  else if IsPointInPolygon(APoint, FChart.Foot.Polygon) then
+    Include(FHitTest, tfhtFoot);
+  Result := FHitTest <> [];
+end;
+
+procedure TTitleFootClickTool.MouseDown(APoint: TPoint);
+begin
+  if GetHitTestInfo(APoint) then begin
+    Activate;
+    Handled;
+  end;
+end;
+
+procedure TTitleFootClickTool.MouseUp(APoint: TPoint);
+begin
+  if IsActive then begin
+    GetHitTestInfo(APoint);
+    if Assigned(FOnClick) then FOnClick(Self, FHitTest);
+  end;
+end;
+
+
 procedure SkipObsoleteProperties;
 const
   PROPORTIONAL_NOTE = 'Obsolete, use TZoomDragTool.RatioLimit=zlrProportional instead';
@@ -2091,6 +2144,7 @@ initialization
   RegisterChartToolClass(TDataPointHintTool, @rsDataPointHint);
   RegisterChartToolClass(TDataPointCrosshairTool, @rsDataPointCrosshair);
   RegisterChartToolClass(TAxisClickTool, @rsAxisClickTool);
+  RegisterChartToolClass(TTitleFootClickTool, @rsHeaderFooterClickTool);
   RegisterChartToolClass(TUserDefinedTool, @rsUserDefinedTool);
 
   SkipObsoleteProperties;

@@ -284,6 +284,10 @@ msgstr "Étoile (remplie)"
 msgid "Function series"
 msgstr "Séries de fonctions"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "Hexagone"

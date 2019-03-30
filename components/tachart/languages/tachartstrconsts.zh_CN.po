@@ -285,6 +285,10 @@ msgstr "星(完全的)"
 msgid "Function series"
 msgstr "函数系列"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "六角形"

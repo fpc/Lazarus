@@ -284,6 +284,10 @@ msgstr "Звезда (полная)"
 msgid "Function series"
 msgstr "Диаграмма по функции"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "Шестиугольник"

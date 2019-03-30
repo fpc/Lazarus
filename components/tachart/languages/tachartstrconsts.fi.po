@@ -274,6 +274,10 @@ msgstr ""
 msgid "Function series"
 msgstr "Funktiokuvaaja"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr ""

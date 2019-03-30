@@ -285,6 +285,10 @@ msgstr "Žvaigždė (pilna)"
 msgid "Function series"
 msgstr "Funkcijos sekos"
 
+#: tachartstrconsts.rsheaderfooterclicktool
+msgid "Header/footer click"
+msgstr ""
+
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
 msgstr "Šešiakampis"
