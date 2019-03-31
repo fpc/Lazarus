@@ -44,7 +44,6 @@ uses
   Classes, SysUtils,
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls, LCLProc,
   pkgglobals, process,
-  {$IF FPC_FULLVERSION>30100}UTF8Process,{$ENDIF}
   fpmkunit,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
@@ -54,7 +53,7 @@ uses
   MacroDefIntf, GDBMIDebugger, DbgIntfDebuggerBase, IDEDialogs,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEImagesIntf,
   AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc, FppkgHelper,
-  IDEProcs;
+  IDEProcs, GenerateFppkgConfigurationDlg;
   
 type
   TInitialSetupDialog = class;
@@ -156,7 +155,6 @@ type
     fLastParsedMakeExe: string;
     fLastParsedDebugger: string;
     fLastParsedFppkgPrefix: string;
-    fLastParsedFppkgLibPath: string;
     FIdleConnected: boolean;
     ImgIDError: LongInt;
     ImgIDWarning: LongInt;
@@ -194,7 +192,6 @@ type
     procedure ThreadTerminated(Sender: TObject); // called in main thread by fSearchFpcSourceThread.OnTerminate
     procedure TranslateResourceStrings;
     function CheckFppkgQuality(APrefix: string; out LibPath, Note: string): TSDFilenameQuality;
-    function CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -795,11 +792,7 @@ begin
   LazDirLabel.Caption:=SimpleFormat(
     lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
 
-  {$IFDEF WINDOWS}
-  FppkgLabel.Caption:=Format(lisFppkgInstallationPath, [GetFPCVer+PathDelim+'units', GetFPCVer+PathDelim+'fpmkinst']);
-  {$ELSE}
-  FppkgLabel.Caption:=Format(lisFppkgInstallationPath, ['lib/fpc', 'lib64/fpc']);
-  {$ENDIF WINDOWS}
+  FppkgLabel.Caption:=lisFppkgConfiguration;
   FppkgBrowseButton.Caption:=lisPathEditBrowse;
   FppkgWriteConfigButton.Caption:=lisCreateFppkgConfig;
 
@@ -1377,7 +1370,7 @@ end;
 procedure TInitialSetupDialog.UpdateFppkgNote;
 var
   CurCaption: String;
-  Msg, FppkgMsg, Note: string;
+  FppkgMsg, Note: string;
   Quality: TSDFilenameQuality;
   {$IF FPC_FULLVERSION>30100}
   ImageIndex: Integer;
@@ -1390,26 +1383,15 @@ begin
 
   Quality := CheckFppkgConfiguration(FppkgMsg);
 
-  Msg := '';
-  if CheckFppkgQuality(CurCaption,fLastParsedFppkgLibPath,Note)<>sddqCompatible then
-    Msg := Note;
-  if (CheckFPCExeQuality(fLastParsedCompiler,Note, CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible) then
-    Msg := Msg + lisWarning + lisFppkgCompilerProblem +Note;
-  if CheckFpcmkcfgQuality(Note) <> sddqCompatible then
-    Msg := Msg + lisWarning + Note;
-
   if Quality=sddqCompatible then
-    Note := lisOk
-  else
-    Note := lisError + Format(lisIncorrectFppkgConfiguration, [FppkgMsg]) + LineEnding;
-
-  if Msg<>'' then
   begin
-    Note := Note + LineEnding + Msg;
+    Note := lisOk;
     FppkgWriteConfigButton.Enabled := False;
   end
   else
   begin
+    Note := lisError + Format(lisIncorrectFppkgConfiguration, [FppkgMsg]) + LineEnding;
+    Note := Note + LineEnding + lisFppkgFixConfiguration;
     FppkgWriteConfigButton.Enabled := True;
   end;
 
@@ -1587,148 +1569,23 @@ begin
 end;
 
 procedure TInitialSetupDialog.FppkgWriteConfigButtonClick(Sender: TObject);
-var
-  Msg: string;
 {$IF FPC_FULLVERSION>30100}
-  FpcmkcfgExecutable, CompConfigFilename: string;
-  Proc: TProcessUTF8;
-  Fppkg: TFppkgHelper;
+var
+  Dialog: TGenerateFppkgConfigurationDialog;
 {$ENDIF}
 begin
   {$IF FPC_FULLVERSION>30100}
+  Dialog := TGenerateFppkgConfigurationDialog.Create(Self);
   try
-    FpcmkcfgExecutable := FindFPCTool('fpcmkcfg'+GetExecutableExt, EnvironmentOptions.GetParsedCompilerFilename);
-    if FpcmkcfgExecutable<>'' then
-    begin
-      Proc := TProcessUTF8.Create(nil);
-      try
-        Proc.Options := proc.Options + [poWaitOnExit];
-        // Write fppkg.cfg
-        Proc.Executable := FpcmkcfgExecutable;
-        proc.Parameters.Add('-p');
-        proc.Parameters.Add('-3');
-        proc.Parameters.Add('-o');
-        proc.Parameters.Add(GetFppkgConfigFile(False, False));
-        proc.Parameters.Add('-d');
-        proc.Parameters.Add('globalpath='+fLastParsedFppkgLibPath);
-        proc.Parameters.Add('-d');
-        {$IFDEF WINDOWS}
-        proc.Parameters.Add('globalprefix='+fLastParsedFppkgLibPath);
-        {$ELSE}
-        proc.Parameters.Add('globalprefix='+fLastParsedFppkgPrefix);
-        {$ENDIF}
-        proc.Execute;
-
-        Fppkg:=TFppkgHelper.Instance;
-
-        if proc.ExitStatus <> 0 then
-          IDEMessageDialog(lisFppkgProblem, Format(lisFppkgCreateFileFailed, [GetFppkgConfigFile(False, False)]), mtWarning, [mbOK])
-        else
-          begin
-          Fppkg:=TFppkgHelper.Instance;
-          Fppkg.ReInitialize;
-
-          // Write default compiler configuration file
-          CompConfigFilename := Fppkg.GetCompilerConfigurationFileName;
-          if CompConfigFilename <> '' then
-            begin
-            proc.Parameters.Clear;
-            proc.Parameters.Add('-p');
-            proc.Parameters.Add('-4');
-            proc.Parameters.Add('-o');
-            proc.Parameters.Add(CompConfigFilename);
-            proc.Parameters.Add('-d');
-            proc.Parameters.Add('fpcbin='+EnvironmentOptions.GetParsedCompilerFilename);
-            proc.Execute;
-
-            if proc.ExitStatus <> 0 then
-              IDEMessageDialog(lisFppkgProblem, Format(lisFppkgCreateFileFailed, [CompConfigFilename]), mtWarning, [mbOK]);
-            end;
-          end;
-
-        Fppkg.ReInitialize;
-      finally
-        Proc.Free;
-      end;
-    end;
-  except
-    on E: Exception do
-      IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfException, [E.Message]), mtWarning, [mbOK]);
+    Dialog.Compiler := fLastParsedCompiler;
+    Dialog.FppkgCfgFilename := GetFppkgConfigFile(False, False);
+    Dialog.ShowModal;
+  finally
+    Dialog.Free;
   end;
 
   fLastParsedFppkgPrefix := '';
   UpdateFppkgNote;
-  {$ENDIF}
-
-  if CheckFppkgConfiguration(Msg)<>sddqCompatible then
-  begin
-    IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfFailed, [Msg]),
-      mtWarning, [mbOK]);
-  end;
-end;
-
-function TInitialSetupDialog.CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;
-{$IF FPC_FULLVERSION>30100}
-var
-  FpcmkcfgExecutable: string;
-  Proc: TProcessUTF8;
-  S: string;
-  Ver: TFPVersion;
-{$ENDIF}
-begin
-  Result := sddqCompatible;
-  Note:='';
-  {$IF FPC_FULLVERSION>30100}
-  FpcmkcfgExecutable := FindFPCTool('fpcmkcfg'+GetExecutableExt, EnvironmentOptions.GetParsedCompilerFilename);
-  if FpcmkcfgExecutable = '' then
-    begin
-    Note := lisFppkgFpcmkcfgMissing + ' ' + lisFppkgRecentFpcmkcfgNeeded;
-    Result := sddqInvalid;
-    end
-  else
-    begin
-    Proc := TProcessUTF8.Create(nil);
-    try
-      Proc.Options := proc.Options + [poWaitOnExit,poUsePipes];
-      // Write fppkg.cfg
-      Proc.Executable := FpcmkcfgExecutable;
-      proc.Parameters.Add('-V');
-      proc.Execute;
-
-      if proc.ExitStatus <> 0 then
-        begin
-        Note := lisFppkgFpcmkcfgCheckFailed + ' ' + lisFppkgFpcmkcfgProbTooOld + ' ' + lisFppkgRecentFpcmkcfgNeeded;
-        Result := sddqInvalid;
-        end
-      else
-        begin
-        SetLength(S, Proc.Output.NumBytesAvailable);
-        Proc.Output.Read(S[1], Proc.Output.NumBytesAvailable);
-        Ver := TFPVersion.Create;
-        try
-          S := Copy(S, pos(':', S)+2);
-          Ver.AsString := Trim(S);
-          if Ver.Major = -1 then
-            begin
-            Note := lisFppkgFpcmkcfgCheckFailed + ' ' + lisFppkgFpcmkcfgNeeded + lisFppkgRecentFpcmkcfgNeeded;
-            Result := sddqInvalid;
-            end
-          else if not ((Ver.Major = 0) or (Ver.Major > 3) or (((Ver.Major = 3)) and (Ver.Minor>1))) then
-            begin
-            // fpcmkcfg's version must be > 3.1. Older versions need other
-            // parameters. Version 0 is also allowed, because it is probably
-            // self-built.
-            Note := Format( lisFppkgFpcmkcfgTooOld, [Ver.AsString]) + ' ' + lisFppkgFpcmkcfgNeeded + ' ' + lisFppkgRecentFpcmkcfgNeeded;
-            Result := sddqInvalid;
-            end;
-        finally
-          Ver.Free;
-        end;
-        end;
-    finally
-      Proc.Free;
-    end;
-    end;
   {$ENDIF}
 end;
 

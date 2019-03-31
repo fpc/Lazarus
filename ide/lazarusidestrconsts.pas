@@ -1042,10 +1042,9 @@ resourcestring
   lisIncorrectFppkgConfiguration = 'there is a problem with the Fppkg configuration. (%s)';
   lisFppkgCompilerProblem = 'there is a problem with the Free Pascal compiler executable, ';
   lisFppkgInstallationPath = 'The prefix of the Free Pascal Compiler installation ' +
-    'is required to create new configuration files for Fppkg. For example it has ' +
-    'the units "%s" and/or "%s"';
+    'is required. For example it has the units "%s" and/or "%s"';
   lisSelectFPCPath = 'Select the path where FPC is installed';
-  lisCreateFppkgConfig = 'Create new Fppkg configuration';
+  lisCreateFppkgConfig = 'Restore Fppkg configuration';
   lisFppkgProblem = 'Problem with Fppkg configuration';
   lisFreePascalPrefix = 'Free Pascal compiler prefix';
   lisFppkgWriteConfException = 'A problem occurred while trying to create a new ' +
@@ -1068,6 +1067,21 @@ resourcestring
   lisFppkgCompilerNotFound = 'Could not find the compiler [%s] configured for Fppkg.';
   lisFppkgCompilerNotExists = 'The compiler [%s] configured for Fppkg does not exist.';
   lisFppkgCompilerNotExecutable = 'The compiler [%s] configured for Fppkg is not an executable.';
+  lisGenerateFppkgConfigurationCaption = 'Generate new Fppkg configuration files.';
+  lisGenerateFppkgConfiguration = 'Use this screen to generate new Fppkg configuration-files ' +
+    'with the fpcmkcfg tool.';
+  lisFppkgConfGenProblems = 'Warnings have to be resolved first';
+  lisFppkgFilesToBeWritten = 'Files to be written:';
+  lisGenerateFppkgCfg = 'Fppkg configuration: %s';
+  lisGenerateFppkgCompCfg = 'Fppkg compiler configuration: %s';
+  lisFppkgWriteConfigFile = 'Write new configuration files';
+  lisFppkgPrefix = 'Fpc prefix: %s';
+  lisFppkgLibPrefix = 'Fpc library prefix: %s';
+  lisFppkgConfiguration = 'Fppkg is the Free Pascal package manager. When it is not ' +
+    'configured properly, it may be impossible to resolve dependencies on Free Pascal ' +
+    'packages.';
+  lisFppkgFixConfiguration = 'You could try to restore the configuration files automatically, ' +
+    'or adapt fppkg.cfg manually.';
 
   // file dialogs
   lisOpenFile = 'Open File';
