@@ -47,6 +47,7 @@ type
     FMaxUndoSteps: Integer; // steps of undo/redo in each cycle
 
     FExpectUndoneList: array of record
+      SyncActive: Boolean;
       FullText: String;
       Caret: TPoint;
       CellData: TCellsData;
@@ -155,6 +156,9 @@ end;
 
 function TTestSyncroEdit.CurrentCell: Integer;
 begin
+  if not FCurModule^.Active then
+    Result := -1
+  else
   if FCurModule^ = FSyncroModule then
     Result := FSyncroModule.CurrentCell
   else
@@ -166,6 +170,9 @@ var
   cells: TSynPluginSyncronizedEditList;
   i, l: Integer;
 begin
+  Result := nil;
+  if not FCurModule^.Active then
+    exit;
   if FCurModule^ = FSyncroModule then
     cells := FSyncroModule.Cells
   else
@@ -229,6 +236,7 @@ begin
 
   l := Length(FExpectUndoneList);
   SetLength(FExpectUndoneList, l+1);
+  FExpectUndoneList[l].SyncActive := FCurModule^.Active;
   FExpectUndoneList[l].FullText := t;
   FExpectUndoneList[l].Caret := SynEdit.CaretObj.LineBytePos;
   FExpectUndoneList[l].CellData := CopyCells;
@@ -260,6 +268,7 @@ begin
 
   l := Length(FExpectUndoneList);
   SetLength(FExpectUndoneList, l+1);
+  FExpectUndoneList[l].SyncActive := FCurModule^.Active;
   FExpectUndoneList[l].FullText := t;
   FExpectUndoneList[l].Caret := SynEdit.CaretObj.LineBytePos;
   FExpectUndoneList[l].CellData := CopyCells;
@@ -293,6 +302,7 @@ begin
 
   l := Length(FExpectUndoneList);
   SetLength(FExpectUndoneList, l+1);
+  FExpectUndoneList[l].SyncActive := FCurModule^.Active;
   FExpectUndoneList[l].FullText := t;
   FExpectUndoneList[l].Caret := SynEdit.CaretObj.LineBytePos;
   FExpectUndoneList[l].CellData := CopyCells;
@@ -324,6 +334,9 @@ begin
     for j := 1 to UCnt do begin
 debugln(['!!!! undo',j]);
       SynEdit.Undo;
+      if not FExpectUndoneList[l-j].SyncActive then
+        SyncRunning := False; // undone gone before template activation, template will be off, even in redo
+
       TestIsFullText(Format('%s UNDONE %d', [AName, j]), FExpectUndoneList[l-j].FullText);
       TestIsCaret(Format('%s UNDONE %d', [AName, j]), FExpectUndoneList[l-j].Caret.x, FExpectUndoneList[l-j].Caret.y);
       if SyncRunning then begin // no cells, if expected to have gone inactive
@@ -1283,6 +1296,28 @@ end;
 
     {%endregion}
 
+    // Test UNDO, going back before template started
+    ReCreateEdit;
+    SynEdit.Options := SynEdit.Options - [eoGroupUndo, eoSmartTabDelete, eoSmartTabs] + [eoAutoIndent];
+    SetTestText(0);
+    TestKeyAt('key before active', 1, 1, VK_1, [],
+      ['1abc foo',
+       'foo abc xy',
+       '  abc foo',
+       '',
+       'foo',
+       ''],
+      False);
+    SetCaretAndSel(1,2, 1,4);
+    StartSyncroMode;
+    TestKeyAt('Insert at Cell FOO (1 of 2), pos=1', 1, 2, VK_M, [],
+      ['1abc foo',
+       'mfoo abc xy',
+       '  abc mfoo',
+       '',
+       'foo',
+       '']);
+
 
     //External Edit inside current/other cell (or while caret outside any cell)
 
@@ -1334,9 +1369,11 @@ procedure TTestSyncroEdit.SyncroTemplateEdit;
     Cells: TSynPluginSyncronizedEditList;
     i: Integer;
   begin
-    ReCreateEdit;
-    SynEdit.Options := SynEdit.Options - [eoGroupUndo, eoSmartTabDelete, eoSmartTabs] + [eoAutoIndent];
-    SetTestText(TextIdx);
+    if TextIdx >= 0 then begin
+      ReCreateEdit;
+      SynEdit.Options := SynEdit.Options - [eoGroupUndo, eoSmartTabDelete, eoSmartTabs] + [eoAutoIndent];
+      SetTestText(TextIdx);
+    end;
 
     Cells := TSynPluginSyncronizedEditList.Create;
     for i := 0 to Length(ACells) - 1 do begin
@@ -1505,6 +1542,22 @@ procedure TTestSyncroEdit.SyncroTemplateEdit;
     InitTestText([c(14,2, 18,2, 1),  c(20,2, 25,2, 2),  c(31,2, 34,2, 3),  c(34,2, 38,2, 1),  c(45,2, 48,2, 4),  c(48,2, 52,2, 1)]);
     TestKeyAt('', 34,2, VK_1, [],
      ['abc foo',
+      'foo property Name: TType read Get1Name write SetName; xy',
+      'foo',
+      '']);
+
+    // Test UNDO, going back before template started
+    ReCreateEdit;
+    SynEdit.Options := SynEdit.Options - [eoGroupUndo, eoSmartTabDelete, eoSmartTabs] + [eoAutoIndent];
+    SetTestText(0);
+    TestKeyAt('Key before template', 2,1, VK_9, [],
+     ['a9bc foo',
+      'foo property Name: TType read GetName write SetName; xy',
+      'foo',
+      ''], False);
+    InitTestText([c(14,2, 18,2, 1),  c(20,2, 25,2, 2),  c(31,2, 34,2, 3),  c(34,2, 38,2, 1),  c(45,2, 48,2, 4),  c(48,2, 52,2, 1)], -1);
+    TestKeyAt('Key in template', 34,2, VK_1, [],
+     ['a9bc foo',
       'foo property Name: TType read Get1Name write SetName; xy',
       'foo',
       '']);
