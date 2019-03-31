@@ -226,7 +226,7 @@ type
   var
     FSplines: array of TSpline;
     procedure FreeSplines;
-    procedure GetSplineXRange(ASpline: TSpline; out AXMin, AXMax: Double);
+    function GetSplineXRange(ASpline: TSpline; out AXMin, AXMax: Double): Boolean;
     function IsUnorderedVisible: Boolean; inline;
     procedure PrepareCoeffs;
     procedure SetBadDataPen(AValue: TBadDataChartPen);
@@ -1379,8 +1379,7 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       if not Pen.EffVisible then exit;
       ADrawer.Pen := Pen;
     end;
-    GetSplineXRange(ASpline, xmin, xmax);
-    if xmin > xmax then
+    if not GetSplineXRange(ASpline, xmin, xmax) then
       exit;
     with TPointsDrawFuncHelper.Create(Self, xmin, xmax, ASpline.FStartIndex, @ASpline.Calculate, Step) do
       try
@@ -1492,9 +1491,8 @@ begin
       if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
         continue;
 
-      GetSplineXRange(s, xmin, xmax);
-      if xmax > xmin then
-        exit;
+      if not GetSplineXRange(s, xmin, xmax) then
+        continue;
       with TPointsDrawFuncHelper.Create(Self, xmin, xmax, s.FStartIndex, @s.Calculate, Step) do
         try
           if not GetNearestPoint(AParams, r) or
@@ -1511,20 +1509,27 @@ begin
   end;
 end;
 
-procedure TCubicSplineSeries.GetSplineXRange(ASpline: TSpline;
-  out AXMin, AXMax: Double);
+function TCubicSplineSeries.GetSplineXRange(ASpline: TSpline;
+  out AXMin, AXMax: Double): Boolean;
 var
   ext: TDoubleRect;
 begin
   ext := FChart.CurrentExtent;
-  AXmin := IfThen(
-    (csoExtrapolateLeft in FOptions) and (ASpline = FSplines[0]),
-    ext.a.x, Max(ext.a.x, AxisToGraphX(ASpline.FX[0]))
-  );
-  AXmax := IfThen(
-    (csoExtrapolateRight in FOptions) and (ASpline = FSplines[High(FSplines)]),
-    ext.b.x, Min(ext.b.x, AxisToGraphX(ASpline.FX[High(ASpline.FX)]))
-  );
+
+  if (csoExtrapolateLeft in FOptions) and (ASpline = FSplines[0]) then
+    AXmin := ext.a.x
+  else
+    AXmin := Max(ext.a.x, AxisToGraphX(ASpline.FX[0]));
+
+  if AXmin > ext.b.x then
+    exit(false);
+
+  if (csoExtrapolateRight in FOptions) and (ASpline = FSplines[High(FSplines)]) then
+    AXmax := ext.b.x
+  else
+    AXmax := Min(ext.b.x, AxisToGraphX(ASpline.FX[High(ASpline.FX)]));
+
+  Result := AXMin <= AXMax;
 end;
 
 function TCubicSplineSeries.IsUnorderedVisible: Boolean;
@@ -1541,7 +1546,6 @@ begin
   while i < Source.Count do begin
     s := TSpline.Create(self);
     if s.PrepareCoeffs(Source, i) then begin
-      //s.PrepareIntervals;
       SetLength(FSplines, Length(FSplines) + 1);
       FSplines[High(FSplines)] := s;
     end
