@@ -1319,7 +1319,10 @@ procedure TCubicSplineSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TCubicSplineSeries then
     with TCubicSplineSeries(ASource) do begin
-      Self.Pen := FPen;
+      Self.BadDataPen.Assign(FBadDataPen);
+      Self.FOptions := FOptions;
+      Self.FPen.Assign(FPen);
+      Self.FSplineType := FSplineType;
       Self.FStep := FStep;
     end;
   inherited Assign(ASource);
