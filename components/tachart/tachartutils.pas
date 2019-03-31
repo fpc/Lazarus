@@ -847,6 +847,7 @@ procedure TBroadcaster.Broadcast(ASender: TObject);
 var
   ListCopy: array of Pointer;
   Exceptions: TStringList;
+  Aborted: Boolean;
   i: Integer;
 begin
   if Locked then exit;
@@ -860,22 +861,28 @@ begin
     ListCopy[i] := List^[i];
 
   Exceptions := nil;
+  Aborted := False;
   try
     for i := 0 to High(ListCopy) do
     try
       TListener(ListCopy[i]).Notify(ASender);
     except
-      on E: Exception do begin
-        if not Assigned(Exceptions) then begin
-          Exceptions := TStringList.Create;
-          Exceptions.Duplicates := dupIgnore;
-          Exceptions.Sorted := true; // required by dupIgnore
+      on E: Exception do
+        if E is EAbort then
+          Aborted := true
+        else begin
+          if not Assigned(Exceptions) then begin
+            Exceptions := TStringList.Create;
+            Exceptions.Duplicates := dupIgnore;
+            Exceptions.Sorted := true; // required by dupIgnore
+          end;
+          Exceptions.Add(E.Message);
         end;
-        Exceptions.Add(E.Message);
-      end;
     end;
     if Assigned(Exceptions) then
       raise EBroadcasterError.Create(Trim(Exceptions.Text));
+    if Aborted then
+      Abort;
   finally
     Exceptions.Free;
   end;
