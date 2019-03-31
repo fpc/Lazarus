@@ -1139,6 +1139,8 @@ begin
   Pos2 := Pos;
   if not FEditing then
     DoBeforeEdit(Pos.x, Pos.y, aCount, aLineBrkCnt, IsUndoing or IsRedoing);
+  if not Active then
+    exit;
 
   edit := FEditing or  IsUndoing or IsRedoing;
   if (not edit) then begin
