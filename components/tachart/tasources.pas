@@ -397,11 +397,6 @@ var
     p += 1;
   end;
 
-  function SourceClassString: String;
-  begin
-    Result := IfThen(FSource.Name <> '', FSource.Name, FSource.ClassName);
-  end;
-
   function StrToFloatOrDateTime(const AStr: String): Double;
   begin
     if (AStr = '') or (AStr = '?') then
@@ -411,7 +406,7 @@ var
          not TryStrToFloat(AStr, Result) and
          not TryStrToDateTime(AStr, Result)
       then
-        raise EListSourceStringError.CreateFmt(rsListSourceNumericError, [SourceClassString, AStr]);
+        raise EListSourceStringError.CreateFmt(rsListSourceNumericError, [NameOrClassName(FSource), AStr]);
     end;
   end;
 
@@ -421,7 +416,7 @@ var
       Result := clTAColor
     else
     if not TryStrToInt(AStr, Result) then
-      raise EListSourceStringError.CreateFmt(rsListSourceColorError, [SourceClassString, AStr]);
+      raise EListSourceStringError.CreateFmt(rsListSourceColorError, [NameOrClassName(FSource), AStr]);
   end;
 
 var
@@ -436,7 +431,7 @@ begin
     // Text must be quoted if it contains '|'.
     if (Cardinal(parts.Count) <> FSource.XCount + FSource.YCount + 2) then
       raise EListSourceStringError.CreateFmt(
-        rsListSourceStringFormatError, [SourceClassString, ChopString(AString, 20)]);
+        rsListSourceStringFormatError, [NameOrClassName(FSource), ChopString(AString, 20)]);
 
     with ADataItem^ do begin
       if FSource.XCount > 0 then begin
