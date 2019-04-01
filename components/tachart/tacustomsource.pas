@@ -162,7 +162,7 @@ type
     function GetIndex(AIndex: Integer): Integer;
     function GetValue(AIndex: Integer): Double;
     function IsErrorBarValueStored(AIndex: Integer): Boolean;
-    procedure SetKind(AValue: TChartErrorbarKind);
+    procedure SetKind(AValue: TChartErrorBarKind);
     procedure SetIndex(AIndex, AValue: Integer);
     procedure SetValue(AIndex: Integer; AValue: Double);
   public
@@ -742,7 +742,7 @@ begin
   Result := FValue[AIndex];
 end;
 
-function TChartErrorBarData.IsErrorbarValueStored(AIndex: Integer): Boolean;
+function TChartErrorBarData.IsErrorBarValueStored(AIndex: Integer): Boolean;
 begin
   if AIndex = 0 then
     Result := FValue[0] <> 0
@@ -840,7 +840,7 @@ begin
     jxn := -1;
   end;
   if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := YErrorbarData.IndexPlus - 1;  // -1 because YList is offset by 1
+    jyp := YErrorBarData.IndexPlus - 1;  // -1 because YList is offset by 1
     jyn := YErrorBarData.IndexMinus - 1;
   end else begin
     jyp := -1;
@@ -876,7 +876,7 @@ begin
   inherited Create(AOwner);
   FXCount := 1;
   FYCount := 1;
-  for i:=Low(FErrorBardata) to High(FErrorBarData) do begin
+  for i:=Low(FErrorBarData) to High(FErrorBarData) do begin
     FErrorBarData[i] := TChartErrorBarData.Create;
     FErrorBarData[i].OnChange := @ChangeErrorBars;
   end;
@@ -1031,7 +1031,7 @@ begin
   Result := TCustomChartSourceEnumerator.Create(Self);
 end;
 
-function TCustomChartSource.GetErrorbarData(AIndex: Integer): TChartErrorBarData;
+function TCustomChartSource.GetErrorBarData(AIndex: Integer): TChartErrorBarData;
 begin
   Result := FErrorBarData[AIndex];
 end;
@@ -1152,7 +1152,7 @@ end;
 
 function TCustomChartSource.GetHasErrorBars(Which: Integer): Boolean;
 var
-  errbar: TChartErrorbarData;
+  errbar: TChartErrorBarData;
 begin
   Result := false;
   errbar := FErrorBarData[Which];
@@ -1212,10 +1212,10 @@ begin
   Result := false;
 end;
 
-procedure TCustomChartSource.SetErrorbarData(AIndex: Integer;
+procedure TCustomChartSource.SetErrorBarData(AIndex: Integer;
   AValue: TChartErrorBarData);
 begin
-  FErrorbarData[AIndex] := AValue;
+  FErrorBarData[AIndex] := AValue;
   Notify;
 end;
 
