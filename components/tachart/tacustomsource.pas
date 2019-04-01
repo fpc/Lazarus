@@ -929,15 +929,16 @@ begin
     jyn := YErrorBarData.IndexMinus - 1;
   end;
 
-  for i := 0 to Count - 1 do begin
-    h := NumberOr(Item[i]^.Y);
-    for j := 0 to YCount - 2 do
-      if (j <> jyp) and (j <> jyn) then begin
-        h += NumberOr(Item[i]^.YList[j]);
-        // If some of the Y values are negative, h may be non-monotonic.
-        UpdateMinMax(h, Result.a.Y, Result.b.Y);
-      end;
-  end;
+  for i := 0 to Count - 1 do
+    with Item[i]^ do begin
+      h := NumberOr(Y);
+      for j := 0 to High(YList) do
+        if (j <> jyp) and (j <> jyn) then begin
+          h += NumberOr(YList[j]);
+          // If some of the Y values are negative, h may be non-monotonic.
+          UpdateMinMax(h, Result.a.Y, Result.b.Y);
+        end;
+    end;
 end;
 
 { Calculates the extent including multiple y values (non-stacked) }
