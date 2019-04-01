@@ -690,14 +690,16 @@ end;
 
 procedure TListChartSource.SetXCount(AValue: Cardinal);
 var
-  i: Integer;
+  i, nx: Integer;
 begin
   if AValue < FXCountMin then
     raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
   if AValue = FXCount then exit;
   FXCount := AValue;
+  nx := Max(FXCount - 1, 0);
   for i := 0 to Count - 1 do
-    SetLength(Item[i]^.XList, Max(FXCount - 1, 0));
+    SetLength(Item[i]^.XList, nx);
+  InvalidateCaches;
   Notify;
 end;
 
@@ -767,14 +769,16 @@ end;
 
 procedure TListChartSource.SetYCount(AValue: Cardinal);
 var
-  i: Integer;
+  i, ny: Integer;
 begin
   if AValue < FYCountMin then
     raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'y']);
   if AValue = FYCount then exit;
   FYCount := AValue;
+  ny := Max(FYCount - 1, 0);
   for i := 0 to Count - 1 do
-    SetLength(Item[i]^.YList, Max(FYCount - 1, 0));
+    SetLength(Item[i]^.YList, ny);
+  InvalidateCaches;
   Notify;
 end;
 
