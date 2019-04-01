@@ -1081,7 +1081,7 @@ begin
         if Which = 0 then begin
           pidx := FErrorBarData[0].IndexPlus;
           nidx := FErrorBarData[0].IndexMinus;
-          if not InRange(pidx, 0, XCount) then exit;
+          if not InRange(pidx, 0, XCount-1) then exit;
           if (nidx <> -1) and not InRange(nidx, 0, XCount-1) then exit;
           AUpperDelta := Item[APointIndex]^.GetX(pidx);
           if nidx = -1 then
