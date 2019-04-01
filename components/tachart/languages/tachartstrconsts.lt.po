@@ -329,6 +329,10 @@ msgstr "Kairys skliaustas"
 msgid "Left triangle"
 msgstr "Trikampis kairėn"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Tiesinė"

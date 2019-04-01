@@ -330,6 +330,10 @@ msgstr "Klammer links"
 msgid "Left triangle"
 msgstr "Dreieck nach links"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr "Klick auf Legende"
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Linear"

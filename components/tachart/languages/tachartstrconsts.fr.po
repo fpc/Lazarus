@@ -328,6 +328,10 @@ msgstr "Parenthèse gauche"
 msgid "Left triangle"
 msgstr "Triangle à gauche"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Linéaire"

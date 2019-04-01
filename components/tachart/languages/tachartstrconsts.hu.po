@@ -328,6 +328,10 @@ msgstr "Zárójel (bal)"
 msgid "Left triangle"
 msgstr "Háromszög (balra)"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Lineáris"

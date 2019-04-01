@@ -173,6 +173,7 @@ type
     FGroupTitles: TStrings;
     FInverted: Boolean;
     FItemFillOrder: TLegendItemFillOrder;
+    FLegendRect: TRect;
     FMarginX: TChartDistance;
     FMarginY: TChartDistance;
     FSpacing: TChartDistance;
@@ -214,6 +215,7 @@ type
     procedure AddGroups(AItems: TChartLegendItems);
     procedure Assign(Source: TPersistent); override;
     procedure Draw(var AData: TChartLegendDrawingData);
+    function IsPointInBounds(APoint: TPoint): Boolean;
     procedure Prepare(var AData: TChartLegendDrawingData; var AClipRect: TRect);
     procedure SortItemsByOrder(AItems: TChartLegendItems);
     procedure UpdateBidiMode;
@@ -715,6 +717,11 @@ begin
     Result.Y := ADrawer.Scale(FixedItemHeight);
 end;
 
+function TChartLegend.IsPointInBounds(APoint: TPoint): Boolean;
+begin
+  Result := IsPointInRect(APoint, FLegendRect);
+end;
+
 procedure TChartLegend.Prepare(
   var AData: TChartLegendDrawingData; var AClipRect: TRect);
 var
@@ -772,6 +779,7 @@ begin
         AClipRect.Bottom -= legendSize.Y + 2 * margY;
     end;
   AData.FBounds := Bounds(x, y, legendSize.X, legendSize.Y);
+  FLegendRect := Rect(x, y, x + legendSize.X, y + legendSize.Y);
 end;
 
 procedure TChartLegend.SetAlignment(AValue: TLegendAlignment);

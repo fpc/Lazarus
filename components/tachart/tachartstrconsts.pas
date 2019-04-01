@@ -72,6 +72,7 @@ resourcestring
   rsDistanceMeasurement = 'Distance measurement';
   rsAxisClickTool = 'Axis click';
   rsHeaderFooterClickTool = 'Header/footer click';
+  rsLegendClickTool = 'Legend click';
 
   // Chart sources
   rsSourceNotEditable = 'Editable chart source required';

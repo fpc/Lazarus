@@ -151,10 +151,10 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     procedure Draw(ADrawer: IChartDrawer);
+    function IsPointInBounds(APoint: TPoint): boolean;
     procedure Measure(
       ADrawer: IChartDrawer; ADir, ALeft, ARight: Integer; var AY: Integer);
     procedure UpdateBidiMode;
-    property Polygon: TPointArray read FPolygon;
   published
     property Alignment default taCenter;
     property Brush: TBrush read FBrush write SetBrush;
@@ -629,6 +629,11 @@ end;
 function TChartTitle.GetLabelFont: TFont;
 begin
   Result := Font;
+end;
+
+function TChartTitle.IsPointInBounds(APoint: TPoint): Boolean;
+begin
+  Result := IsPointInPolygon(APoint, FPolygon);
 end;
 
 procedure TChartTitle.Measure(ADrawer: IChartDrawer;

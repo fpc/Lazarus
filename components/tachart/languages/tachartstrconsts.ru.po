@@ -328,6 +328,10 @@ msgstr "Скобка слева"
 msgid "Left triangle"
 msgstr "Треугольник с вершиной слева"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Линейный масштаб"

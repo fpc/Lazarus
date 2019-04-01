@@ -331,6 +331,10 @@ msgstr "Дужка ліворуч"
 msgid "Left triangle"
 msgstr "Трикутник з вершиною ліворуч"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Лінійний масштаб"

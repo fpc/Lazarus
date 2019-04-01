@@ -331,6 +331,10 @@ msgstr ""
 msgid "Left triangle"
 msgstr ""
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Linjär"

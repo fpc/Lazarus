@@ -329,6 +329,10 @@ msgstr "左括号"
 msgid "Left triangle"
 msgstr "左三角形"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "线性的(Linear)"

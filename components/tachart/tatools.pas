@@ -21,7 +21,8 @@ uses
   Controls, CustomTimer, GraphMath, Forms, LCLPlatformDef, InterfaceBase,
   LCLType, LCLIntf,
   // TAChart
-  TAChartUtils, TADrawUtils, TAChartAxis, TAGraph, TATypes, TATextElements;
+  TAChartUtils, TADrawUtils, TAChartAxis, TALegend, TAGraph,
+  TATypes, TATextElements;
 
 type
 
@@ -619,6 +620,21 @@ type
     procedure MouseUp(APoint: TPoint); override;
   published
     property OnClick: TTitleFootClickEvent read FOnClick write FOnClick;
+  end;
+
+  TLegendClickEvent = procedure  (ASender: TChartTool;
+    ALegend: TChartLegend) of object;
+
+  TLegendClickTool = class(TChartTool)
+  private
+    FOnClick: TLegendClickEvent;
+    FLegend: TChartLegend;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+  published
+    property OnClick: TLegendClickEvent read FOnClick write FOnClick;
   end;
 
 
@@ -2077,7 +2093,7 @@ procedure TAxisClickTool.MouseUp(APoint: TPoint);
 begin
   if FHitTest <> [] then begin
     GetHitTestInfo(APoint);
-    if Assigned(FOnClick) then FOnClick(Self, FAxis, FHitTest);
+    if Assigned(FOnClick) and (FAxis <> nil) then FOnClick(Self, FAxis, FHitTest);
   end;
   Deactivate;
   Handled;
@@ -2095,9 +2111,9 @@ end;
 function TTitleFootClickTool.GetHit(APoint: TPoint): Boolean;
 begin
   FTitle := nil;
-  if IsPointInPolygon(APoint, FChart.Title.Polygon) then
+  if FChart.Title.IsPointInBounds(APoint) then
     FTitle := FChart.Title
-  else if IsPointInPolygon(APoint, FChart.Foot.Polygon) then
+  else if FChart.Foot.IsPointInBounds(APoint) then
     FTitle := FChart.Foot;
   Result := FTitle <> nil;
 end;
@@ -2114,10 +2130,37 @@ procedure TTitleFootClickTool.MouseUp(APoint: TPoint);
 begin
   if IsActive then begin
     GetHit(APoint);
-    if Assigned(FOnClick) then FOnClick(Self, FTitle);
+    if Assigned(FOnClick) and (FTitle <> nil) then FOnClick(Self, FTitle);
   end;
 end;
 
+
+{ TLegendClickTool }
+
+constructor TLegendClickTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIgnoreClipRect := true;      // Allow mousedown outside cliprect
+end;
+
+procedure TLegendClickTool.MouseDown(APoint: TPoint);
+begin
+  if FChart.Legend.IsPointInBounds(APoint) then begin
+    Activate;
+    Handled;
+  end;
+end;
+
+procedure TLegendClickTool.MouseUp(APoint: TPoint);
+begin
+  if IsActive and FChart.Legend.IsPointInBounds(APoint) then begin
+    FLegend := FChart.Legend;
+    if Assigned(FOnClick) and (FLegend <> nil) then FOnClick(Self, FLegend);
+  end else
+    FLegend := nil;
+end;
+
+{ -------- }
 
 procedure SkipObsoleteProperties;
 const
@@ -2143,6 +2186,7 @@ initialization
   RegisterChartToolClass(TDataPointCrosshairTool, @rsDataPointCrosshair);
   RegisterChartToolClass(TAxisClickTool, @rsAxisClickTool);
   RegisterChartToolClass(TTitleFootClickTool, @rsHeaderFooterClickTool);
+  RegisterChartToolClass(TLegendClickTool, @rsLegendClickTool);
   RegisterChartToolClass(TUserDefinedTool, @rsUserDefinedTool);
 
   SkipObsoleteProperties;

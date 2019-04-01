@@ -328,6 +328,10 @@ msgstr "Colchete esquerdo"
 msgid "Left triangle"
 msgstr "Triângulo esquerdo"
 
+#: tachartstrconsts.rslegendclicktool
+msgid "Legend click"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Linear"
