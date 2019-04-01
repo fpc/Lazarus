@@ -329,7 +329,7 @@ begin
   dx := abs(FGraphStep);
 
   xa := FAxisToGraphXr(AXg);
-  j := FStartIndex - ser.FLoBound;
+  j := Max(0, FStartIndex - ser.FLoBound);
   while (j < n) and (xa > ser.FGraphPoints[j].X) do inc(j);
   if j < n then xfg := ser.FGraphPoints[j].X else exit;
   AOnMoveTo(AXg, xa);
