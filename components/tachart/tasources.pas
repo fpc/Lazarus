@@ -719,31 +719,18 @@ var
   oldX: Double;
 
   procedure UpdateExtent;
-  var
-    it: PChartDataItem;
   begin
-    if not FExtentIsValid then exit;
+    if (not FExtentIsValid) or (XCount = 0) then exit;
 
     if not IsNan(AValue) then begin
-      if AValue <= FExtent.a.X then
+      if AValue < FExtent.a.X then
         FExtent.a.X := AValue
-      else if AValue >= FExtent.b.X then
+      else if AValue > FExtent.b.X then
         FExtent.b.X := AValue;
     end;
 
-    if IsNan(oldX) then exit;
-    if oldX = FExtent.b.X then begin
-      FExtent.b.X := NegInfinity;
-      for it in Self do
-        if not IsNan(it^.X) then
-          FExtent.b.X := Max(FExtent.b.X, it^.X);
-    end;
-    if oldX = FExtent.a.X then begin
-      FExtent.a.X := SafeInfinity;
-      for it in Self do
-        if not IsNan(it^.X) then
-          FExtent.a.X := Min(FExtent.a.X, it^.X);
-    end;
+    if not IsNan(oldX) then
+      FExtentIsValid := (oldX <> FExtent.a.X) and (oldX <> FExtent.b.X);
   end;
 
 begin
@@ -754,7 +741,7 @@ begin
   UpdateExtent;
   if Sorted then begin
     if IsNan(AValue) then
-      raise EChartError.Create('X = NaN in a sorted source');
+      raise EChartError.CreateFmt('X = NaN in sorted source %s', [NameOrClassName(Self)]);
     if AValue > oldX then
       while (Result < Count - 1) and (Item[Result + 1]^.X < AValue) do
         Inc(Result)
@@ -797,31 +784,18 @@ var
   oldY: Double;
 
   procedure UpdateExtent;
-  var
-    it: PChartDataItem;
   begin
-    if not FExtentIsValid then exit;
+    if (not FExtentIsValid) or (YCount = 0) then exit;
 
     if not IsNan(AValue) then begin
-      if AValue <= FExtent.a.Y then
+      if AValue < FExtent.a.Y then
         FExtent.a.Y := AValue
-      else if AValue >= FExtent.b.Y then
+      else if AValue > FExtent.b.Y then
         FExtent.b.Y := AValue;
     end;
 
-    if IsNan(oldY) then exit;
-    if oldY = FExtent.b.Y then begin
-      FExtent.b.Y := NegInfinity;
-      for it in Self do
-        if not IsNan(it^.Y) then
-          FExtent.b.Y := Max(FExtent.b.Y, it^.Y);
-    end;
-    if oldY = FExtent.a.Y then begin
-      FExtent.a.Y := SafeInfinity;
-      for it in Self do
-        if not IsNan(it^.Y) then
-          FExtent.a.Y := Min(FExtent.a.Y, it^.Y);
-    end;
+    if not IsNan(oldY) then
+      FExtentIsValid := (oldY <> FExtent.a.Y) and (oldY <> FExtent.b.Y);
   end;
 
 begin
