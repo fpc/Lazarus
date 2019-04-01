@@ -608,8 +608,8 @@ procedure TListChartSource.Delete(AIndex: Integer);
 begin
   with Item[AIndex]^ do begin
     FExtentIsValid := FExtentIsValid and
-      (FExtent.a.X < X) and (X < FExtent.b.X) and
-      (FExtent.a.Y < Y) and (Y < FExtent.b.Y);
+      (((FExtent.a.X < X) and (X < FExtent.b.X)) or (XCount = 0)) and
+      (((FExtent.a.Y < Y) and (Y < FExtent.b.Y)) or (YCount = 0));
     if FValuesTotalIsValid then
       FValuesTotal -= NumberOr(Y);
   end;
