@@ -16,7 +16,7 @@ unit RegisterDBF;
 interface
 
 uses
-  Classes, SysUtils, LResources, Dbf, LazarusPackageIntf, PropEdits;
+  Classes, SysUtils, LResources, Dbf, LazarusPackageIntf, PropEdits, MacroIntf;
 
 resourcestring
   dbfsAllDbasefiles = 'DBase Files';
@@ -60,9 +60,17 @@ begin
     Tdbf, 'TableName', TDbfFileNamePropertyEditor);
 end;
 
+function TargetPath: string;
+begin
+  Result:='$TargetFile()';
+  IDEMacros.SubstituteMacros(Result);
+  Result:=ExtractFilePath(Result);
+end;
+
 procedure Register;
 begin
   RegisterUnit('DBF',@RegisterUnitDBF);
+  DbfBasePath:=@TargetPath;
 end;
 
 end.
