@@ -53,7 +53,10 @@ uses
   MacroDefIntf, GDBMIDebugger, DbgIntfDebuggerBase, IDEDialogs,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEImagesIntf,
   AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc, FppkgHelper,
-  IDEProcs, GenerateFppkgConfigurationDlg;
+  {$IF FPC_FULLVERSION>30100}
+  GenerateFppkgConfigurationDlg,
+  {$ENDIF}
+  IDEProcs;
   
 type
   TInitialSetupDialog = class;
