@@ -1541,22 +1541,31 @@ procedure TCubicSplineSeries.PrepareCoeffs;
 var
   i: Integer = 0;
   j: Integer = 0;
+  sCount: Integer = 0;
   s: TSpline;
 begin
   FreeSplines;
   SetLength(FX, Source.Count);
   SetLength(FY, Source.Count);
-  while i < Source.Count do begin
-    s := TSpline.Create(self);
-    if s.PrepareCoeffs(Source, i, j) then begin
-      SetLength(FSplines, Length(FSplines) + 1);
-      FSplines[High(FSplines)] := s;
-    end
-    else
-      s.Free;
+  SetLength(FSplines, Source.Count);
+  try
+    while i < Source.Count do begin
+      s := TSpline.Create(self);
+      try
+        if s.PrepareCoeffs(Source, i, j) then begin
+          FSplines[sCount] := s;
+          s := nil;
+          sCount += 1;
+        end;
+      finally
+        s.Free;
+      end;
+    end;
+    SetLength(FX, j);
+    SetLength(FY, j);
+  finally
+    SetLength(FSplines, sCount);
   end;
-  SetLength(FX, j);
-  SetLength(FY, j);
 end;
 
 procedure TCubicSplineSeries.SetBadDataPen(AValue: TBadDataChartPen);
