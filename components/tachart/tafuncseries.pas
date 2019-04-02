@@ -1271,7 +1271,7 @@ end;
 
 function TCubicSplineSeries.TSpline.IsFewPoints: Boolean;
 begin
-  Result := Length(FOwner.FX) < 2;
+  Result := (FLastCacheIndex <= FFirstCacheIndex);   // less than 2 points
 end;
 
 function TCubicSplineSeries.TSpline.PrepareCoeffs(ASource: TCustomChartSource;
@@ -1296,7 +1296,7 @@ begin
     ASourceIndex += 1;
   end;
   FLastCacheIndex := ACacheIndex - 1;
-  if FLastCacheIndex = FFirstCacheIndex then exit(false);
+  if FLastCacheIndex < FFirstCacheIndex then exit(false);  // No points
   if IsFewPoints then exit(true);
   ok := 0;
   n := ACacheIndex - FFirstCacheIndex;
@@ -1418,7 +1418,7 @@ begin
   if SplineType = cstHermiteMonotone then
     exit;
 
-  if not (FCachedExtent = EmptyExtent) then begin
+  if (FCachedExtent <> EmptyExtent) then begin
     Result := FCachedExtent;
     exit;
   end;
