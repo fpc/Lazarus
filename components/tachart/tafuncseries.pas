@@ -1317,6 +1317,8 @@ procedure TCubicSplineSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TCubicSplineSeries then
     with TCubicSplineSeries(ASource) do begin
+      if (Self.FOptions <> FOptions) or (Self.FSplineType <> FSplineType) then
+        Self.FreeSplines;
       Self.BadDataPen.Assign(FBadDataPen);
       Self.FOptions := FOptions;
       Self.FPen.Assign(FPen);
