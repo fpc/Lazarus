@@ -60,6 +60,7 @@ type
     FCompiler: string;
     procedure SetCompiler(AValue: string);
     procedure SetFppkgCfgFilename(AValue: string);
+    function CheckIfWritable(Filename: string): Boolean;
   private
     fLastParsedFpcPrefix: string;
     fLastParsedFpcLibPath: string;
@@ -150,6 +151,7 @@ var
   Ver: TFPVersion;
 begin
   Result := sddqInvalid;
+  LibPath := '';
 
   if APrefix='' then
   begin
@@ -157,11 +159,10 @@ begin
     Exit;
   end;
 
-  LibPath := '';
   APrefix:=TrimFilename(APrefix);
   if not FileExistsCached(APrefix) then
   begin
-    Note:= lisWarning + lisFreePascalPrefix + ' ' + lisISDDirectoryNotFound + LineEnding;
+    Note:= lisWarning + lisFreePascalPrefix + ' ' + lisISDDirectoryNotFound + '.' + LineEnding;
   end
   else if not DirPathExistsCached(APrefix) then
   begin
@@ -243,9 +244,9 @@ begin
   if CheckFppkgQuality(CurCaption,fLastParsedFpcLibPath,Note)<>sddqCompatible then
     Msg := Note;
   if (CheckFPCExeQuality(FCompiler, Note, CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible) then
-    Msg := Msg + lisWarning + lisFppkgCompilerProblem +Note;
+    Msg := Msg + lisWarning + lisFppkgCompilerProblem +Note + LineEnding;
   if CheckFpcmkcfgQuality(Note) <> sddqCompatible then
-    Msg := Msg + lisWarning + Note;
+    Msg := Msg + lisWarning + Note + LineEnding;
 
   Note := lisFppkgFilesToBeWritten + LineEnding;
   Note := Note + Format(lisGenerateFppkgCfg, [FppkgCfgFilename]) + LineEnding;
@@ -257,10 +258,15 @@ begin
   {$ENDIF}
   Note := Note + Format(lisGenerateFppkgCompCfg, [FileName]) + LineEnding;
 
+  if CheckIfWritable(FileName) then
+    Msg := Msg + lisWarning + ueFileROText1 + FileName + ueFileROText2 + LineEnding;
+  if CheckIfWritable(FppkgCfgFilename) then
+    Msg := Msg + lisWarning + ueFileROText1 + FppkgCfgFilename + ueFileROText2 + LineEnding;
+
   if Msg<>'' then
   begin
     WarningsLabel.Visible := True;
-    Note := Note + LineEnding + Msg;
+    Note := Msg + LineEnding + Note;
     FppkgWriteConfigButton.Enabled := False;
   end
   else
@@ -269,8 +275,12 @@ begin
     FppkgWriteConfigButton.Enabled := True;
   end;
 
-  Note := Note + LineEnding + Format(lisFppkgPrefix, [fLastParsedFpcPrefix]) + LineEnding;
-  Note := Note + Format(lisFppkgLibPrefix, [fLastParsedFpcLibPath]) + LineEnding;
+  if fLastParsedFpcLibPath<>'' then
+  begin
+    // If the fLastParsedFpcLibPath is empty, these two lines contain garbage
+    Note := Note + LineEnding + Format(lisFppkgPrefix, [fLastParsedFpcPrefix]) + LineEnding;
+    Note := Note + Format(lisFppkgLibPrefix, [fLastParsedFpcLibPath]) + LineEnding;
+  end;
 
   InfoMemo.Text := Note;
 end;
@@ -461,6 +471,17 @@ begin
   end
   else
     ModalResult := mrOK;
+end;
+
+function TGenerateFppkgConfigurationDialog.CheckIfWritable(Filename: string): Boolean;
+begin
+  Result := True;
+  if (FileName<>'') then
+  begin
+    Filename := ExpandFileNameUTF8(Filename);
+    if FileExistsUTF8(Filename) then
+      Result := not FileIsWritable(FileName)
+  end;
 end;
 
 
