@@ -431,7 +431,7 @@ Function  TElementEditor.CurrentXML : String;
 
 Var
   I : Integer;
-  S,L,LT : String;
+  S,L,LT,T : String;
 
 begin
   Result:='';
@@ -446,9 +446,9 @@ begin
     LT:=Trim(lbxSeeAlso.Items[i]);
     if (LT<>'') then
       begin
-      SplitLinkText(LT,L,LT);
-      If (LT<>'') then
-        S:=S+'<link id="'+L+'">'+LT+'</link>'
+      SplitLinkText(LT,L,T);
+      If (T<>'') then
+        S:=S+'<link id="'+L+'">'+T+'</link>'
       else
         S:=S+'<link id="'+L+'"/>';
       end;
