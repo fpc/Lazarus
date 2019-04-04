@@ -1067,8 +1067,8 @@ resourcestring
   lisFppkgCompilerNotFound = 'Could not find the compiler [%s] configured for Fppkg.';
   lisFppkgCompilerNotExists = 'The compiler [%s] configured for Fppkg does not exist.';
   lisFppkgCompilerNotExecutable = 'The compiler [%s] configured for Fppkg is not an executable.';
-  lisGenerateFppkgConfigurationCaption = 'Generate new Fppkg configuration files.';
-  lisGenerateFppkgConfiguration = 'Use this screen to generate new Fppkg configuration-files ' +
+  lisGenerateFppkgConfigurationCaption = 'Generate new Fppkg configuration files';
+  lisGenerateFppkgConfiguration = 'Use this screen to generate new Fppkg configuration files ' +
     'with the fpcmkcfg tool.';
   lisFppkgConfGenProblems = 'Warnings have to be resolved first';
   lisFppkgFilesToBeWritten = 'Files to be written:';
