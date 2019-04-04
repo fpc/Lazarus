@@ -41,6 +41,7 @@ uses
   BasicCodeTools, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   PackageIntf,
   // IDE
+  TransferMacros,
   LazConf;
 
 const
@@ -50,6 +51,7 @@ const
     'Both'
     );
 function StringToBuildMethod(const BuildMethod: string): TBuildMethod;
+function GetFPCVer: String;
 
 // file operations
 function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
@@ -700,6 +702,12 @@ begin
     result := bmBoth
   else
     result := bmLazarus;
+end;
+
+function GetFPCVer: String;
+begin
+  Result:='$(FPCVer)';
+  GlobalMacroList.SubstituteStr(Result);
 end;
 
 function ChompEndNumber(const s: string): string;

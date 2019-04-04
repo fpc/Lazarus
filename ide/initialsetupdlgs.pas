@@ -187,7 +187,6 @@ type
     procedure UpdateDebuggerNote;
     procedure UpdateFppkgNote;
     function FirstErrorNode: TTreeNode;
-    function GetFPCVer: string;
     function GetFirstCandidate(Candidates: TSDFileInfoList;
       MinQuality: TSDFilenameQuality = sddqCompatible): TSDFileInfo;
     function QualityToImgIndex(Quality: TSDFilenameQuality): integer;
@@ -1161,12 +1160,6 @@ begin
     if Result.ImageIndex=ImgIDError then exit;
   end;
   Result:=nil;
-end;
-
-function TInitialSetupDialog.GetFPCVer: string;
-begin
-  Result:='$(FPCVer)';
-  GlobalMacroList.SubstituteStr(Result);
 end;
 
 function TInitialSetupDialog.GetFirstCandidate(Candidates: TSDFileInfoList;
