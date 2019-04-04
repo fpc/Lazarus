@@ -1,0 +1,251 @@
+object TitleFootEditor: TTitleFootEditor
+  Left = 608
+  Height = 467
+  Top = 235
+  Width = 561
+  Caption = 'Title/footer editor'
+  ClientHeight = 467
+  ClientWidth = 561
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 427
+    Width = 549
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = 'Apply to &all'
+    HelpButton.DefaultCaption = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowGlyphs = [pbOK, pbCancel, pbClose]
+  end
+  object ParamsPanel: TPanel
+    Left = 8
+    Height = 219
+    Top = 200
+    Width = 545
+    Align = alBottom
+    BorderSpacing.Around = 8
+    BevelOuter = bvNone
+    ClientHeight = 219
+    ClientWidth = 545
+    TabOrder = 2
+    object rgAlignment: TRadioGroup
+      AnchorSideLeft.Control = ParamsPanel
+      AnchorSideTop.Control = ParamsPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 52
+      Top = 0
+      Width = 264
+      Anchors = [akTop, akLeft, akBottom]
+      AutoFill = True
+      Caption = 'Alignment'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 32
+      ClientWidth = 260
+      Columns = 3
+      ItemIndex = 0
+      Items.Strings = (
+        'Left'
+        'Center'
+        'Right'
+      )
+      OnClick = rgAlignmentClick
+      TabOrder = 0
+    end
+    object gbShapeBrushPenMargins: TGroupBox
+      Left = 288
+      Height = 216
+      Top = 0
+      Width = 255
+      Caption = 'Title/footer background'
+      ClientHeight = 196
+      ClientWidth = 251
+      TabOrder = 1
+      inline ShapeBrushPenMarginsFrame1: TShapeBrushPenMarginsFrame
+        Left = 8
+        Height = 188
+        Width = 235
+        Align = alClient
+        BorderSpacing.Left = 8
+        BorderSpacing.Right = 8
+        BorderSpacing.Bottom = 8
+        ClientHeight = 188
+        ClientWidth = 235
+        inherited cmbShape: TComboBox
+          AnchorSideLeft.Control = ShapeBrushPenMarginsFrame1
+          AnchorSideTop.Control = ShapeBrushPenMarginsFrame1
+          AnchorSideRight.Control = ShapeBrushPenMarginsFrame1
+          Width = 235
+        end
+        inherited gbBackground: TGroupBox
+          AnchorSideLeft.Control = ShapeBrushPenMarginsFrame1
+          Width = 110
+          ClientWidth = 106
+          inherited cbFillColor: TColorButton
+            Left = 66
+          end
+        end
+        inherited gbBorder: TGroupBox
+          AnchorSideRight.Control = ShapeBrushPenMarginsFrame1
+          Left = 125
+          Width = 110
+          ClientWidth = 106
+          inherited cbBorderColor: TColorButton
+            Left = 68
+          end
+        end
+        inherited gbMargins: TGroupBox
+          AnchorSideBottom.Control = ShapeBrushPenMarginsFrame1
+          Height = 96
+          Width = 235
+          ClientHeight = 76
+          ClientWidth = 231
+          inherited seTopMargin: TSpinEdit
+            Left = 90
+          end
+          inherited seBottomMargin: TSpinEdit
+            Left = 90
+            Top = 45
+          end
+          inherited seLeftMargin: TSpinEdit
+            Left = 32
+            Top = 23
+          end
+          inherited seRightMargin: TSpinEdit
+            Left = 148
+            Top = 23
+          end
+          inherited Bevel2: TBevel
+            Left = 90
+            Height = 14
+          end
+        end
+        inherited Bevel1: TBevel
+          Left = 117
+        end
+      end
+    end
+    object gbFont: TGroupBox
+      Left = 0
+      Height = 106
+      Top = 88
+      Width = 264
+      Caption = 'Font'
+      ClientHeight = 86
+      ClientWidth = 260
+      TabOrder = 2
+      inline FontFrame1: TFontFrame
+        Left = 8
+        Height = 78
+        Width = 244
+        Align = alClient
+        BorderSpacing.Left = 8
+        BorderSpacing.Right = 8
+        BorderSpacing.Bottom = 8
+        ClientHeight = 78
+        ClientWidth = 244
+        inherited cmbFontName: TComboBox
+          AnchorSideLeft.Control = FontFrame1
+          AnchorSideTop.Control = FontFrame1
+          AnchorSideRight.Control = FontFrame1
+          Width = 244
+        end
+        inherited cbFontColor: TColorButton
+          AnchorSideRight.Control = FontFrame1
+          Left = 212
+        end
+        inherited cbBold: TCheckBox
+          AnchorSideLeft.Control = FontFrame1
+        end
+      end
+    end
+  end
+  object MemoPanel: TPanel
+    Left = 8
+    Height = 159
+    Top = 33
+    Width = 545
+    Align = alClient
+    BorderSpacing.Left = 8
+    BorderSpacing.Right = 8
+    BevelOuter = bvNone
+    ClientHeight = 159
+    ClientWidth = 545
+    Constraints.MinHeight = 100
+    TabOrder = 1
+    object lblText: TLabel
+      AnchorSideLeft.Control = MemoPanel
+      AnchorSideTop.Control = MemoPanel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 21
+      Caption = 'Text'
+      ParentColor = False
+    end
+    object mmoText: TMemo
+      AnchorSideLeft.Control = lblText
+      AnchorSideTop.Control = lblText
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = MemoPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = MemoPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 140
+      Top = 19
+      Width = 545
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 4
+      OnChange = mmoTextChange
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object PanelTop: TPanel
+    Left = 0
+    Height = 33
+    Top = 0
+    Width = 561
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 33
+    ClientWidth = 561
+    TabOrder = 0
+    object cbShow: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 49
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 6
+      Caption = 'Show'
+      Checked = True
+      OnChange = cbShowChange
+      State = cbChecked
+      TabOrder = 0
+    end
+  end
+end

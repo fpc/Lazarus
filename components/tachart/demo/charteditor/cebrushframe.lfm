@@ -1,0 +1,58 @@
+object BrushFrame: TBrushFrame
+  Left = 0
+  Height = 24
+  Top = 0
+  Width = 228
+  ClientHeight = 24
+  ClientWidth = 228
+  TabOrder = 0
+  DesignLeft = 722
+  DesignTop = 395
+  object cbBrushStyle: TChartComboBox
+    AnchorSideLeft.Control = lblBrushStyle
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = cbBrushColor
+    Left = 48
+    Height = 24
+    Top = 0
+    Width = 144
+    Mode = ccmBrushStyle
+    PenPattern = '1|1'
+    PointerStyle = psNone
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 23
+    ItemHeight = 16
+    ItemIndex = 0
+    TabOrder = 0
+    OnChange = cbBrushStyleChange
+  end
+  object lblBrushStyle: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbBrushStyle
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 15
+    Top = 5
+    Width = 25
+    Caption = 'Style'
+    ParentColor = False
+  end
+  object cbBrushColor: TColorButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbBrushStyle
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 197
+    Height = 25
+    Top = 0
+    Width = 31
+    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 5
+    BorderWidth = 2
+    ButtonColorSize = 16
+    ButtonColor = clBlack
+    OnColorChanged = cbBrushColorColorChanged
+  end
+end

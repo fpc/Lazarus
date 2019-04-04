@@ -1,0 +1,786 @@
+object SeriesEditor: TSeriesEditor
+  Left = 509
+  Height = 497
+  Top = 284
+  Width = 525
+  Caption = 'SeriesEditor'
+  ClientHeight = 497
+  ClientWidth = 525
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '2.1.0.0'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 457
+    Width = 513
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object nbSeriesTypes: TNotebook
+    Left = 0
+    Height = 299
+    Top = 152
+    Width = 525
+    PageIndex = 0
+    Align = alClient
+    TabOrder = 1
+    object pgLineSeries: TPage
+      object gbLineSeriesLineStyle: TGroupBox
+        AnchorSideLeft.Control = pgLineSeries
+        AnchorSideTop.Control = pgLineSeries
+        AnchorSideRight.Control = Bevel1
+        Left = 8
+        Height = 117
+        Top = 8
+        Width = 246
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 8
+        Caption = 'Connecting lines'
+        ClientHeight = 97
+        ClientWidth = 242
+        TabOrder = 0
+        inline LineSeriesPenFrame: TPenFrame
+          AnchorSideTop.Control = cbLineSeriesShowLines
+          AnchorSideTop.Side = asrBottom
+          Left = 16
+          Height = 52
+          Top = 33
+          Width = 211
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 12
+          ClientHeight = 52
+          ClientWidth = 211
+          inherited cbPenStyle: TChartComboBox
+            AnchorSideTop.Control = LineSeriesPenFrame
+            Width = 127
+          end
+          inherited lblPenStyle: TLabel
+            AnchorSideLeft.Control = LineSeriesPenFrame
+          end
+          inherited cbPenWidth: TChartComboBox
+            Width = 127
+          end
+          inherited cbPenColor: TColorButton
+            AnchorSideRight.Control = LineSeriesPenFrame
+            Left = 180
+          end
+          inherited Bevel1: TBevel
+            Left = 175
+          end
+        end
+        object cbLineSeriesShowLines: TCheckBox
+          AnchorSideLeft.Control = gbLineSeriesLineStyle
+          AnchorSideTop.Control = gbLineSeriesLineStyle
+          Left = 16
+          Height = 19
+          Top = 6
+          Width = 54
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 6
+          Caption = 'Visible'
+          OnChange = cbLineSeriesShowLinesChange
+          TabOrder = 1
+        end
+      end
+      object gbLineSeriesPointer: TGroupBox
+        AnchorSideLeft.Control = Bevel1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = gbLineSeriesLineStyle
+        AnchorSideRight.Control = pgLineSeries
+        AnchorSideRight.Side = asrBottom
+        Left = 270
+        Height = 274
+        Top = 8
+        Width = 247
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Right = 8
+        Caption = 'Series pointer'
+        ClientHeight = 254
+        ClientWidth = 243
+        TabOrder = 1
+        object cbLineSeriesShowPoints: TCheckBox
+          AnchorSideLeft.Control = gbLineSeriesPointer
+          AnchorSideTop.Control = gbLineSeriesPointer
+          Left = 8
+          Height = 19
+          Top = 6
+          Width = 54
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 6
+          Caption = 'Visible'
+          OnChange = cbLineSeriesShowPointsChange
+          TabOrder = 0
+        end
+        inline LineSeriesPointerFrame: TPointerFrame
+          AnchorSideLeft.Control = cbLineSeriesShowPoints
+          AnchorSideTop.Control = cbLineSeriesShowPoints
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = gbLineSeriesPointer
+          AnchorSideRight.Side = asrBottom
+          Left = 8
+          Top = 33
+          Width = 227
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ClientWidth = 227
+          TabOrder = 1
+          inherited Bevel1: TBevel
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+            AnchorSideRight.Control = LineSeriesPointerFrame
+            Width = 227
+          end
+          inherited PointerBrushFrame: TBrushFrame
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+            AnchorSideTop.Control = LineSeriesPointerFrame.Label2
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = LineSeriesPointerFrame
+            AnchorSideRight.Side = asrBottom
+            Left = 16
+            Top = 104
+            Width = 211
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 16
+            BorderSpacing.Top = 6
+            BorderSpacing.Bottom = 8
+            ClientWidth = 211
+            inherited cbBrushStyle: TChartComboBox
+              AnchorSideTop.Control = LineSeriesPointerFrame.PointerBrushFrame
+              Width = 127
+            end
+            inherited lblBrushStyle: TLabel
+              AnchorSideLeft.Control = LineSeriesPointerFrame.PointerBrushFrame
+            end
+            inherited cbBrushColor: TColorButton
+              AnchorSideRight.Control = LineSeriesPointerFrame.PointerBrushFrame
+              Left = 180
+            end
+          end
+          inherited cbPointerStyle: TChartComboBox
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+            AnchorSideRight.Control = LineSeriesPointerFrame
+            Width = 211
+          end
+          inherited Label2: TLabel
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+          end
+          inherited Bevel2: TBevel
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+            AnchorSideRight.Control = LineSeriesPointerFrame
+            Width = 227
+          end
+          inherited Label3: TLabel
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+          end
+          inherited PointerPenFrame: TPenFrame
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+            AnchorSideTop.Control = LineSeriesPointerFrame.Label3
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = LineSeriesPointerFrame
+            AnchorSideRight.Side = asrBottom
+            Left = 16
+            Top = 161
+            Width = 211
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 16
+            BorderSpacing.Top = 6
+            ClientWidth = 211
+            TabOrder = 2
+            inherited cbPenStyle: TChartComboBox
+              AnchorSideTop.Control = LineSeriesPointerFrame.PointerPenFrame
+              Width = 127
+            end
+            inherited lblPenStyle: TLabel
+              AnchorSideLeft.Control = LineSeriesPointerFrame.PointerPenFrame
+            end
+            inherited cbPenWidth: TChartComboBox
+              Width = 127
+            end
+            inherited cbPenColor: TColorButton
+              AnchorSideRight.Control = LineSeriesPointerFrame.PointerPenFrame
+              Left = 180
+            end
+            inherited Bevel1: TBevel
+              Left = 175
+            end
+          end
+          inherited Bevel3: TBevel
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+            AnchorSideTop.Control = LineSeriesPointerFrame
+            AnchorSideRight.Control = LineSeriesPointerFrame
+            Width = 227
+          end
+          inherited Label1: TLabel
+            AnchorSideLeft.Control = LineSeriesPointerFrame
+            AnchorSideTop.Control = LineSeriesPointerFrame
+          end
+        end
+      end
+      object Bevel1: TBevel
+        AnchorSideLeft.Control = pgLineSeries
+        AnchorSideLeft.Side = asrCenter
+        Left = 254
+        Height = 104
+        Top = 152
+        Width = 16
+        Shape = bsSpacer
+      end
+    end
+    object pgBarSeries: TPage
+      object gbBarSeriesBorder: TGroupBox
+        AnchorSideLeft.Control = pgBarSeries
+        AnchorSideTop.Control = gbBarSeriesBrush
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Bevel2
+        Left = 8
+        Height = 92
+        Top = 76
+        Width = 243
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 16
+        Caption = 'Border'
+        ClientHeight = 72
+        ClientWidth = 239
+        TabOrder = 0
+        inline BarSeriesPenFrame: TPenFrame
+          AnchorSideTop.Side = asrBottom
+          Left = 16
+          Height = 52
+          Top = 8
+          Width = 220
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 12
+          ClientHeight = 52
+          ClientWidth = 220
+          inherited cbPenStyle: TChartComboBox
+            AnchorSideTop.Control = BarSeriesPenFrame
+            Width = 136
+          end
+          inherited lblPenStyle: TLabel
+            AnchorSideLeft.Control = BarSeriesPenFrame
+          end
+          inherited cbPenWidth: TChartComboBox
+            Width = 136
+          end
+          inherited cbPenColor: TColorButton
+            AnchorSideRight.Control = BarSeriesPenFrame
+            Left = 189
+          end
+          inherited Bevel1: TBevel
+            Left = 184
+          end
+        end
+      end
+      object gbBarSeriesBrush: TGroupBox
+        AnchorSideLeft.Control = pgBarSeries
+        AnchorSideTop.Control = pgBarSeries
+        AnchorSideRight.Control = Bevel2
+        Left = 8
+        Height = 52
+        Top = 8
+        Width = 243
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 8
+        Caption = 'Bar brush'
+        ClientHeight = 32
+        ClientWidth = 239
+        TabOrder = 1
+        inline BarSeriesBrushFrame: TBrushFrame
+          AnchorSideLeft.Control = gbBarSeriesBrush
+          AnchorSideTop.Control = gbBarSeriesBrush
+          Left = 16
+          Width = 220
+          BorderSpacing.Left = 16
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ClientWidth = 220
+          inherited cbBrushStyle: TChartComboBox
+            AnchorSideTop.Control = BarSeriesBrushFrame
+            Width = 136
+          end
+          inherited lblBrushStyle: TLabel
+            AnchorSideLeft.Control = BarSeriesBrushFrame
+          end
+          inherited cbBrushColor: TColorButton
+            AnchorSideRight.Control = BarSeriesBrushFrame
+            Left = 189
+          end
+        end
+      end
+      object gbBarShape: TGroupBox
+        AnchorSideLeft.Control = Bevel2
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = gbBarSeriesBrush
+        AnchorSideRight.Control = pgBarSeries
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = gbBarSeriesBrush
+        AnchorSideBottom.Side = asrBottom
+        Left = 267
+        Height = 52
+        Top = 8
+        Width = 244
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Right = 8
+        Caption = 'Bar shape'
+        ClientHeight = 32
+        ClientWidth = 240
+        TabOrder = 2
+        object cbBarShape: TComboBox
+          AnchorSideLeft.Control = gbBarShape
+          AnchorSideTop.Control = gbBarShape
+          AnchorSideRight.Control = gbBarShape
+          AnchorSideRight.Side = asrBottom
+          Left = 8
+          Height = 23
+          Top = 0
+          Width = 224
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'Rectangular'
+            'Cylindrical'
+            'Hexagonal prism'
+            'Pyramid'
+            'Conical'
+          )
+          OnChange = cbBarShapeChange
+          Style = csDropDownList
+          TabOrder = 0
+          Text = 'Rectangular'
+        end
+      end
+      object Bevel2: TBevel
+        AnchorSideLeft.Control = pgBarSeries
+        AnchorSideLeft.Side = asrCenter
+        Left = 251
+        Height = 11
+        Top = 208
+        Width = 16
+        Shape = bsSpacer
+      end
+    end
+    object pgAreaSeries: TPage
+      object gbAreaSeriesBrush: TGroupBox
+        AnchorSideLeft.Control = pgAreaSeries
+        AnchorSideTop.Control = pgAreaSeries
+        AnchorSideRight.Control = Bevel3
+        Left = 8
+        Height = 57
+        Top = 0
+        Width = 246
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 8
+        Caption = 'Area fill'
+        ClientHeight = 37
+        ClientWidth = 242
+        TabOrder = 0
+        inline AreaSeriesBrushFrame: TBrushFrame
+          AnchorSideLeft.Control = gbAreaSeriesBrush
+          AnchorSideTop.Control = gbAreaSeriesBrush
+          AnchorSideRight.Control = gbAreaSeriesBrush
+          AnchorSideRight.Side = asrBottom
+          Left = 8
+          Width = 226
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ClientWidth = 226
+          inherited cbBrushStyle: TChartComboBox
+            AnchorSideTop.Control = AreaSeriesBrushFrame
+            Width = 142
+          end
+          inherited lblBrushStyle: TLabel
+            AnchorSideLeft.Control = AreaSeriesBrushFrame
+          end
+          inherited cbBrushColor: TColorButton
+            AnchorSideRight.Control = AreaSeriesBrushFrame
+            Left = 195
+          end
+        end
+      end
+      object gbAreaContourPen: TGroupBox
+        AnchorSideLeft.Control = gbAreaSeriesBrush
+        AnchorSideTop.Control = gbAreaSeriesBrush
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Bevel3
+        Left = 8
+        Height = 116
+        Top = 73
+        Width = 246
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 16
+        Caption = 'Border'
+        ClientHeight = 96
+        ClientWidth = 242
+        TabOrder = 1
+        object cbAreaShowContourLines: TCheckBox
+          AnchorSideLeft.Control = gbAreaContourPen
+          AnchorSideTop.Control = gbAreaContourPen
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 54
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          Caption = 'Visible'
+          OnChange = cbAreaShowContourLinesChange
+          TabOrder = 0
+        end
+        inline AreaSeriesContourPenFrame: TPenFrame
+          AnchorSideLeft.Control = gbAreaContourPen
+          AnchorSideTop.Control = cbAreaShowContourLines
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = gbAreaContourPen
+          AnchorSideRight.Side = asrBottom
+          Left = 16
+          Top = 35
+          Width = 218
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ClientWidth = 218
+          TabOrder = 1
+          inherited cbPenStyle: TChartComboBox
+            AnchorSideTop.Control = AreaSeriesContourPenFrame
+            Width = 134
+          end
+          inherited lblPenStyle: TLabel
+            AnchorSideLeft.Control = AreaSeriesContourPenFrame
+          end
+          inherited cbPenWidth: TChartComboBox
+            Width = 134
+          end
+          inherited cbPenColor: TColorButton
+            AnchorSideRight.Control = AreaSeriesContourPenFrame
+            Left = 187
+          end
+          inherited Bevel1: TBevel
+            Left = 182
+          end
+        end
+      end
+      object Bevel3: TBevel
+        AnchorSideLeft.Control = pgAreaSeries
+        AnchorSideLeft.Side = asrCenter
+        Left = 254
+        Height = 104
+        Top = 152
+        Width = 16
+        Shape = bsSpacer
+      end
+      object gbAreaDropLinePen: TGroupBox
+        AnchorSideLeft.Control = Bevel3
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = gbAreaSeriesBrush
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pgAreaSeries
+        AnchorSideRight.Side = asrBottom
+        Left = 270
+        Height = 116
+        Top = 73
+        Width = 247
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 16
+        BorderSpacing.Right = 8
+        Caption = 'Drop lines'
+        ClientHeight = 96
+        ClientWidth = 243
+        TabOrder = 2
+        object cbAreaShowDropLines: TCheckBox
+          AnchorSideLeft.Control = gbAreaDropLinePen
+          AnchorSideTop.Control = gbAreaDropLinePen
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 54
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          Caption = 'Visible'
+          OnChange = cbAreaShowDropLinesChange
+          TabOrder = 0
+        end
+        inline AreaSeriesDropLinesPenFrame: TPenFrame
+          AnchorSideLeft.Control = gbAreaDropLinePen
+          AnchorSideTop.Control = cbAreaShowDropLines
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = gbAreaDropLinePen
+          AnchorSideRight.Side = asrBottom
+          Left = 16
+          Top = 35
+          Width = 219
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ClientWidth = 219
+          TabOrder = 1
+          inherited cbPenStyle: TChartComboBox
+            AnchorSideTop.Control = AreaSeriesDropLinesPenFrame
+            Width = 135
+          end
+          inherited lblPenStyle: TLabel
+            AnchorSideLeft.Control = AreaSeriesDropLinesPenFrame
+          end
+          inherited cbPenWidth: TChartComboBox
+            Width = 135
+          end
+          inherited cbPenColor: TColorButton
+            AnchorSideRight.Control = AreaSeriesDropLinesPenFrame
+            Left = 188
+          end
+        end
+      end
+    end
+  end
+  object PanelTop: TPanel
+    Left = 0
+    Height = 152
+    Top = 0
+    Width = 525
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 152
+    ClientWidth = 525
+    TabOrder = 2
+    object cbShowSeries: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 49
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 6
+      Caption = 'Show'
+      Checked = True
+      OnChange = cbShowSeriesChange
+      State = cbChecked
+      TabOrder = 0
+    end
+    object gbLegendText: TGroupBox
+      AnchorSideLeft.Control = PanelTop
+      AnchorSideTop.Control = cbShowSeries
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Bevel4
+      Left = 8
+      Height = 110
+      Top = 33
+      Width = 246
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'Legend text'
+      ClientHeight = 90
+      ClientWidth = 242
+      TabOrder = 1
+      object edSeriesTitle: TEdit
+        AnchorSideLeft.Control = gbLegendText
+        AnchorSideTop.Control = gbLegendText
+        AnchorSideRight.Control = gbLegendText
+        AnchorSideRight.Side = asrBottom
+        Left = 8
+        Height = 23
+        Top = 4
+        Width = 226
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 4
+        BorderSpacing.Right = 8
+        OnChange = edSeriesTitleChange
+        TabOrder = 0
+        Text = 'edSeriesTitle'
+      end
+      object cbShowInLegend: TCheckBox
+        AnchorSideLeft.Control = edSeriesTitle
+        AnchorSideTop.Control = edSeriesTitle
+        AnchorSideTop.Side = asrBottom
+        Left = 8
+        Height = 19
+        Top = 33
+        Width = 101
+        BorderSpacing.Top = 6
+        Caption = 'Show in legend'
+        OnChange = cbShowInLegendChange
+        TabOrder = 1
+      end
+      object cbLegendMultiplicity: TComboBox
+        AnchorSideLeft.Control = Label1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Control = edSeriesTitle
+        AnchorSideRight.Side = asrBottom
+        Left = 87
+        Height = 23
+        Top = 53
+        Width = 147
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 8
+        ItemHeight = 15
+        ItemIndex = 0
+        Items.Strings = (
+          'single item per series'
+          'marks text per data point'
+        )
+        OnChange = cbLegendMultiplicityChange
+        Style = csDropDownList
+        TabOrder = 2
+        Text = 'single item per series'
+      end
+      object Label1: TLabel
+        AnchorSideLeft.Control = edSeriesTitle
+        AnchorSideTop.Control = cbLegendMultiplicity
+        AnchorSideTop.Side = asrCenter
+        Left = 8
+        Height = 15
+        Top = 57
+        Width = 71
+        Caption = 'Legend items'
+        ParentColor = False
+      end
+    end
+    object gbMarks: TGroupBox
+      AnchorSideLeft.Control = Bevel4
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = gbLegendText
+      AnchorSideRight.Control = PanelTop
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = gbLegendText
+      AnchorSideBottom.Side = asrBottom
+      Left = 270
+      Height = 110
+      Top = 33
+      Width = 247
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Right = 8
+      Caption = 'Marks'
+      ClientHeight = 90
+      ClientWidth = 243
+      TabOrder = 2
+      object lblSeriesMarksStyle: TLabel
+        AnchorSideLeft.Control = gbMarks
+        AnchorSideTop.Control = cbMarksStyle
+        AnchorSideTop.Side = asrCenter
+        Left = 16
+        Height = 15
+        Top = 4
+        Width = 25
+        BorderSpacing.Left = 16
+        Caption = 'Style'
+        ParentColor = False
+      end
+      object cbMarksStyle: TComboBox
+        AnchorSideLeft.Control = edMarksFormat
+        AnchorSideTop.Control = gbMarks
+        AnchorSideRight.Control = gbMarks
+        AnchorSideRight.Side = asrBottom
+        Left = 62
+        Height = 23
+        Top = 0
+        Width = 173
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        ItemHeight = 15
+        ItemIndex = 1
+        Items.Strings = (
+          'User-defined'
+          'No labels'
+          'Value'
+          'Percent'
+          'Label'
+          'Label and percent'
+          'Label and value'
+          'Legend'
+          'Percent and total'
+          'Label, percent, and total'
+          'X value'
+        )
+        OnChange = cbMarksStyleChange
+        Style = csDropDownList
+        TabOrder = 0
+        Text = 'No labels'
+      end
+      object Label2: TLabel
+        AnchorSideLeft.Control = lblSeriesMarksStyle
+        AnchorSideTop.Control = edMarksFormat
+        AnchorSideTop.Side = asrCenter
+        Left = 16
+        Height = 15
+        Top = 35
+        Width = 38
+        Caption = 'Format'
+        ParentColor = False
+      end
+      object edMarksFormat: TEdit
+        AnchorSideLeft.Control = Label2
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbMarksStyle
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = gbMarks
+        AnchorSideRight.Side = asrBottom
+        Left = 62
+        Height = 23
+        Top = 31
+        Width = 173
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 8
+        BorderSpacing.Right = 8
+        OnEditingDone = edMarksFormatEditingDone
+        TabOrder = 1
+        Text = 'edMarksFormat'
+      end
+      object cbShowMarks: TCheckBox
+        AnchorSideLeft.Control = edMarksFormat
+        AnchorSideTop.Control = edMarksFormat
+        AnchorSideTop.Side = asrBottom
+        Left = 62
+        Height = 19
+        Top = 62
+        Width = 156
+        BorderSpacing.Top = 8
+        Caption = 'Show at series data points'
+        OnChange = cbShowMarksChange
+        TabOrder = 2
+      end
+    end
+    object Bevel4: TBevel
+      AnchorSideLeft.Control = PanelTop
+      AnchorSideLeft.Side = asrCenter
+      Left = 254
+      Height = 104
+      Top = 48
+      Width = 16
+      Shape = bsSpacer
+    end
+  end
+end

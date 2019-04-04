@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="charteditordemo"/>
+      <Scaled Value="True"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
+      <Icon Value="0"/>
+    </General>
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0"/>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="TAChartLazarusPkg"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="charteditordemo.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ChartEditorDemo"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cemain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ceMain"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cetitlefootdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TitleFootEditor"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ceTitleFootDlg"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ceutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ceUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ceaxisdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AxisEditor"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ceAxisDlg"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cefontframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FontFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="ceFontFrame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="celegenddlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LegendEditor"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ceLegendDlg"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ceshapebrushpenmarginsframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ShapeBrushPenMarginsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="ceShapeBrushPenMarginsFrame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cebrushframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BrushFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="ceBrushFrame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cepenframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PenFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="cePenFrame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ceseriesdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SeriesEditor"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ceSeriesDlg"/>
+      </Unit>
+      <Unit/>
+      <Unit>
+        <Filename Value="cepointerframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PointerFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="cePointerFrame"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="charteditordemo"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

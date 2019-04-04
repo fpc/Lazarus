@@ -1,0 +1,243 @@
+object ShapeBrushPenMarginsFrame: TShapeBrushPenMarginsFrame
+  Left = 0
+  Height = 187
+  Top = 0
+  Width = 230
+  ClientHeight = 187
+  ClientWidth = 230
+  Constraints.MinWidth = 230
+  TabOrder = 0
+  DesignLeft = 1498
+  DesignTop = 388
+  object cmbShape: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 23
+    Top = 0
+    Width = 230
+    Anchors = [akTop, akLeft, akRight]
+    Enabled = False
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'Rectangle'
+      'Ellipse'
+      'Rounded rectangle'
+      'Rounded sides'
+    )
+    OnChange = cmbShapeChange
+    Style = csDropDownList
+    TabOrder = 0
+    Text = 'Rectangle'
+  end
+  object gbBackground: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cmbShape
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Bevel1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 53
+    Top = 31
+    Width = 108
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    Caption = 'Background'
+    ClientHeight = 33
+    ClientWidth = 104
+    TabOrder = 1
+    object cbFilled: TCheckBox
+      AnchorSideLeft.Control = gbBackground
+      AnchorSideTop.Control = cbFillColor
+      AnchorSideTop.Side = asrCenter
+      Left = 10
+      Height = 19
+      Top = 3
+      Width = 48
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 10
+      Caption = 'Filled'
+      OnChange = cbFilledChange
+      TabOrder = 0
+    end
+    object cbFillColor: TColorButton
+      AnchorSideTop.Control = gbBackground
+      AnchorSideRight.Control = gbBackground
+      AnchorSideRight.Side = asrBottom
+      Left = 64
+      Height = 25
+      Top = 0
+      Width = 32
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
+      BorderWidth = 2
+      ButtonColorSize = 16
+      ButtonColor = clBlack
+      Visible = False
+      OnColorChanged = cbFillColorColorChanged
+    end
+  end
+  object gbBorder: TGroupBox
+    AnchorSideLeft.Control = Bevel1
+    AnchorSideTop.Control = gbBackground
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = gbBackground
+    AnchorSideBottom.Side = asrBottom
+    Left = 123
+    Height = 53
+    Top = 31
+    Width = 107
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    Caption = 'Border'
+    ClientHeight = 33
+    ClientWidth = 103
+    TabOrder = 2
+    object cbShowBorder: TCheckBox
+      AnchorSideLeft.Control = gbBorder
+      AnchorSideTop.Control = cbBorderColor
+      AnchorSideTop.Side = asrCenter
+      Left = 10
+      Height = 19
+      Top = 3
+      Width = 54
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 10
+      Caption = 'Visible'
+      OnChange = cbShowBorderChange
+      TabOrder = 0
+    end
+    object cbBorderColor: TColorButton
+      AnchorSideTop.Control = gbBorder
+      AnchorSideRight.Control = gbBorder
+      AnchorSideRight.Side = asrBottom
+      Left = 65
+      Height = 25
+      Top = 0
+      Width = 30
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
+      BorderWidth = 2
+      ButtonColorSize = 16
+      ButtonColor = clBlack
+      Visible = False
+      OnColorChanged = cbBorderColorColorChanged
+    end
+  end
+  object gbMargins: TGroupBox
+    AnchorSideLeft.Control = gbBackground
+    AnchorSideTop.Control = gbBackground
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = gbBorder
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 95
+    Top = 92
+    Width = 230
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 8
+    Caption = 'Margins'
+    ClientHeight = 75
+    ClientWidth = 226
+    TabOrder = 3
+    object seTopMargin: TSpinEdit
+      AnchorSideLeft.Control = gbMargins
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = gbMargins
+      Left = 88
+      Height = 23
+      Top = 0
+      Width = 50
+      Alignment = taRightJustify
+      BorderSpacing.Bottom = 4
+      OnChange = seTopMarginChange
+      TabOrder = 0
+    end
+    object seBottomMargin: TSpinEdit
+      AnchorSideLeft.Control = gbMargins
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = Bevel2
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = gbMargins
+      AnchorSideBottom.Side = asrBottom
+      Left = 88
+      Height = 23
+      Top = 44
+      Width = 50
+      Alignment = taRightJustify
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Top = 4
+      BorderSpacing.Bottom = 8
+      OnChange = seBottomMarginChange
+      TabOrder = 3
+    end
+    object seLeftMargin: TSpinEdit
+      AnchorSideTop.Control = Bevel2
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seTopMargin
+      Left = 30
+      Height = 23
+      Top = 22
+      Width = 50
+      Alignment = taRightJustify
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 8
+      OnChange = seLeftMarginChange
+      TabOrder = 1
+    end
+    object seRightMargin: TSpinEdit
+      AnchorSideLeft.Control = seTopMargin
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Bevel2
+      AnchorSideTop.Side = asrCenter
+      Left = 146
+      Height = 23
+      Top = 22
+      Width = 50
+      Alignment = taRightJustify
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      OnChange = seRightMarginChange
+      TabOrder = 2
+    end
+    object Bevel2: TBevel
+      AnchorSideLeft.Control = gbMargins
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = seTopMargin
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = seBottomMargin
+      Left = 88
+      Height = 13
+      Top = 27
+      Width = 50
+      Anchors = [akTop, akLeft, akBottom]
+      Shape = bsSpacer
+    end
+  end
+  object Bevel1: TBevel
+    AnchorSideLeft.Control = cmbShape
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = cmbShape
+    AnchorSideTop.Side = asrBottom
+    Left = 115
+    Height = 50
+    Top = 23
+    Width = 1
+    Shape = bsSpacer
+  end
+end
