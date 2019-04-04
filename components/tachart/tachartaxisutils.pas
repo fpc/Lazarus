@@ -686,6 +686,7 @@ procedure TChartBasicAxis.Assign(ASource: TPersistent);
 begin
   if ASource is TChartBasicAxis then
     with TChartBasicAxis(ASource) do begin
+      Self.FArrow.Assign(Arrow);
       Self.FGrid.Assign(Grid);
       Self.FMarks.Assign(Marks);
       Self.FTickColor := TickColor;
