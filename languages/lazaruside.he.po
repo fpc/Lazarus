@@ -8167,7 +8167,7 @@ msgid "Create Filter"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatefppkgconfig
-msgid "Create new Fppkg configuration"
+msgid "Restore Fppkg configuration"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatefunction
@@ -10440,8 +10440,24 @@ msgstr ""
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr ""
 
+#: lazarusidestrconsts.lisfppkgconfgenproblems
+msgid "Warnings have to be resolved first"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgconfiguration
+msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 msgid "Failed to generate the configuration file \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfilestobewritten
+msgid "Files to be written:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfixconfiguration
+msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
@@ -10466,7 +10482,15 @@ msgid "The fpcmkcfg configuration tool it too old [%s]."
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkginstallationpath
-msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+msgid "The prefix of the Free Pascal Compiler installation is required. For example it has the units \"%s\" and/or \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkglibprefix
+msgid "Fpc library prefix: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgprefix
+msgid "Fpc prefix: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgproblem
@@ -10487,6 +10511,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
 msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgwriteconfigfile
+msgid "Write new configuration files"
 msgstr ""
 
 #: lazarusidestrconsts.lisframe
@@ -10584,6 +10612,22 @@ msgstr "פונקציה"
 msgctxt "lazarusidestrconsts.lisgeneral"
 msgid "General"
 msgstr "כללי"
+
+#: lazarusidestrconsts.lisgeneratefppkgcfg
+msgid "Fppkg configuration: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisgeneratefppkgcompcfg
+msgid "Fppkg compiler configuration: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisgeneratefppkgconfiguration
+msgid "Use this screen to generate new Fppkg configuration files with the fpcmkcfg tool."
+msgstr ""
+
+#: lazarusidestrconsts.lisgeneratefppkgconfigurationcaption
+msgid "Generate new Fppkg configuration files"
+msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"

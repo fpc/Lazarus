@@ -7689,7 +7689,9 @@ msgid "Create Filter"
 msgstr "Criar filtro"
 
 #: lazarusidestrconsts.liscreatefppkgconfig
-msgid "Create new Fppkg configuration"
+#, fuzzy
+#| msgid "Create new Fppkg configuration"
+msgid "Restore Fppkg configuration"
 msgstr "Criar nova configuração Fppkg"
 
 #: lazarusidestrconsts.liscreatefunction
@@ -9864,9 +9866,25 @@ msgstr "Impossível localizar o compilador [%s] configurado para o Fppkg."
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr "há um problema com o executável do compilador Free Pascal,"
 
+#: lazarusidestrconsts.lisfppkgconfgenproblems
+msgid "Warnings have to be resolved first"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgconfiguration
+msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 msgid "Failed to generate the configuration file \"%s\"."
 msgstr "Falha ao gerar o arquivo de configuração \"%s\"."
+
+#: lazarusidestrconsts.lisfppkgfilestobewritten
+msgid "Files to be written:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgfixconfiguration
+msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
+msgstr ""
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
@@ -9890,8 +9908,18 @@ msgid "The fpcmkcfg configuration tool it too old [%s]."
 msgstr "A ferramenta de configuração \"fpcmkcfg\" é muito antiga [%s]."
 
 #: lazarusidestrconsts.lisfppkginstallationpath
-msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+#, fuzzy
+#| msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+msgid "The prefix of the Free Pascal Compiler installation is required. For example it has the units \"%s\" and/or \"%s\""
 msgstr "O prefixo da instalação do compilador Free Pascal é requerido ao criar novos arquivos de configuração para o Fppkg. Por exemplo, ele tem as unidades \"%s\" e/ou \"%s\""
+
+#: lazarusidestrconsts.lisfppkglibprefix
+msgid "Fpc library prefix: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgprefix
+msgid "Fpc prefix: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisfppkgproblem
 msgid "Problem with Fppkg configuration"
@@ -9912,6 +9940,10 @@ msgstr "Ocorreu um problema ao tentar criar uma nova configuração Fppkg: %s"
 #: lazarusidestrconsts.lisfppkgwriteconffailed
 msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
 msgstr "Falha ao criar uma nova configuração Fppkg (%s). Você deverá corrigir a configuração manualmente ou reinstalar o Free Pascal."
+
+#: lazarusidestrconsts.lisfppkgwriteconfigfile
+msgid "Write new configuration files"
+msgstr ""
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -10006,6 +10038,22 @@ msgstr "Função"
 msgctxt "lazarusidestrconsts.lisgeneral"
 msgid "General"
 msgstr "Geral"
+
+#: lazarusidestrconsts.lisgeneratefppkgcfg
+msgid "Fppkg configuration: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisgeneratefppkgcompcfg
+msgid "Fppkg compiler configuration: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisgeneratefppkgconfiguration
+msgid "Use this screen to generate new Fppkg configuration files with the fpcmkcfg tool."
+msgstr ""
+
+#: lazarusidestrconsts.lisgeneratefppkgconfigurationcaption
+msgid "Generate new Fppkg configuration files"
+msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
