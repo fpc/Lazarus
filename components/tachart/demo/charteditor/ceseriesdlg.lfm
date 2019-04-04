@@ -2,13 +2,13 @@ object SeriesEditor: TSeriesEditor
   Left = 509
   Height = 450
   Top = 284
-  Width = 567
+  Width = 600
   ActiveControl = cbShowSeries
   Caption = 'SeriesEditor'
   ClientHeight = 450
-  ClientWidth = 567
+  ClientWidth = 600
   Constraints.MinHeight = 450
-  Constraints.MinWidth = 450
+  Constraints.MinWidth = 600
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -19,7 +19,7 @@ object SeriesEditor: TSeriesEditor
     Left = 6
     Height = 34
     Top = 410
-    Width = 555
+    Width = 588
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
@@ -36,8 +36,8 @@ object SeriesEditor: TSeriesEditor
     Left = 0
     Height = 254
     Top = 150
-    Width = 567
-    PageIndex = 2
+    Width = 600
+    PageIndex = 0
     Align = alClient
     TabOrder = 1
     object pgLineSeries: TPage
@@ -46,16 +46,16 @@ object SeriesEditor: TSeriesEditor
         AnchorSideTop.Control = pgLineSeries
         AnchorSideRight.Control = Bevel1
         Left = 8
-        Height = 116
+        Height = 113
         Top = 8
-        Width = 267
+        Width = 284
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Left = 8
         BorderSpacing.Top = 8
         Caption = 'Connecting lines'
-        ClientHeight = 96
-        ClientWidth = 263
+        ClientHeight = 93
+        ClientWidth = 280
         TabOrder = 0
         inline LineSeriesPenFrame: TPenFrame
           AnchorSideTop.Control = cbLineSeriesShowLines
@@ -63,34 +63,33 @@ object SeriesEditor: TSeriesEditor
           AnchorSideRight.Control = gbLineSeriesLineStyle
           AnchorSideRight.Side = asrBottom
           Left = 8
-          Height = 55
+          Height = 52
           Top = 33
-          Width = 247
+          Width = 264
           Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           BorderSpacing.Right = 8
           BorderSpacing.Bottom = 8
-          ClientHeight = 55
-          ClientWidth = 247
+          ClientHeight = 52
+          ClientWidth = 264
           TabOrder = 1
           inherited cbPenStyle: TChartComboBox
             AnchorSideTop.Control = LineSeriesPenFrame
-            Width = 163
+            Width = 180
           end
           inherited lblPenStyle: TLabel
             AnchorSideLeft.Control = LineSeriesPenFrame
           end
           inherited cbPenWidth: TChartComboBox
-            Width = 163
+            Width = 180
           end
           inherited cbPenColor: TColorButton
             AnchorSideRight.Control = LineSeriesPenFrame
-            Left = 216
+            Left = 233
           end
           inherited Bevel1: TBevel
-            Left = 211
+            Left = 228
           end
         end
         object cbLineSeriesShowLines: TCheckBox
@@ -113,16 +112,16 @@ object SeriesEditor: TSeriesEditor
         AnchorSideTop.Control = gbLineSeriesLineStyle
         AnchorSideRight.Control = pgLineSeries
         AnchorSideRight.Side = asrBottom
-        Left = 291
-        Height = 235
+        Left = 308
+        Height = 231
         Top = 8
-        Width = 268
+        Width = 284
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Right = 8
         Caption = 'Series pointer'
-        ClientHeight = 215
-        ClientWidth = 264
+        ClientHeight = 211
+        ClientWidth = 280
         TabOrder = 1
         object cbLineSeriesShowPoints: TCheckBox
           AnchorSideLeft.Control = gbLineSeriesPointer
@@ -144,21 +143,21 @@ object SeriesEditor: TSeriesEditor
           AnchorSideRight.Control = gbLineSeriesPointer
           AnchorSideRight.Side = asrBottom
           Left = 8
-          Height = 174
+          Height = 170
           Top = 33
-          Width = 248
+          Width = 264
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           BorderSpacing.Right = 8
           BorderSpacing.Bottom = 8
-          ClientHeight = 174
-          ClientWidth = 248
+          ClientHeight = 170
+          ClientWidth = 264
           TabOrder = 1
           inherited Bevel1: TBevel
             AnchorSideLeft.Control = LineSeriesPointerFrame
             AnchorSideRight.Control = LineSeriesPointerFrame
-            Width = 248
+            Width = 264
           end
           inherited PointerBrushFrame: TBrushFrame
             AnchorSideLeft.Control = LineSeriesPointerFrame
@@ -167,28 +166,27 @@ object SeriesEditor: TSeriesEditor
             AnchorSideRight.Control = LineSeriesPointerFrame
             AnchorSideRight.Side = asrBottom
             Top = 69
-            Width = 248
+            Width = 264
             Anchors = [akTop, akLeft, akRight]
-            AutoSize = False
             BorderSpacing.Top = 2
             BorderSpacing.Bottom = 8
-            ClientWidth = 248
+            ClientWidth = 264
             TabOrder = 2
             inherited cbBrushStyle: TChartComboBox
               AnchorSideTop.Control = LineSeriesPointerFrame.PointerBrushFrame
-              Width = 164
+              Width = 180
             end
             inherited lblBrushStyle: TLabel
               AnchorSideLeft.Control = LineSeriesPointerFrame.PointerBrushFrame
             end
             inherited cbBrushColor: TColorButton
               AnchorSideRight.Control = LineSeriesPointerFrame.PointerBrushFrame
-              Left = 217
+              Left = 233
             end
           end
           inherited cbPointerStyle: TChartComboBox
             AnchorSideLeft.Control = LineSeriesPointerFrame
-            Width = 162
+            Width = 178
           end
           inherited Label2: TLabel
             AnchorSideLeft.Control = LineSeriesPointerFrame
@@ -196,7 +194,7 @@ object SeriesEditor: TSeriesEditor
           inherited Bevel2: TBevel
             AnchorSideLeft.Control = LineSeriesPointerFrame
             AnchorSideRight.Control = LineSeriesPointerFrame
-            Width = 248
+            Width = 264
           end
           inherited Label3: TLabel
             AnchorSideLeft.Control = LineSeriesPointerFrame
@@ -207,54 +205,55 @@ object SeriesEditor: TSeriesEditor
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = LineSeriesPointerFrame
             AnchorSideRight.Side = asrBottom
+            Height = 52
             Top = 118
-            Width = 248
+            Width = 264
             Anchors = [akTop, akLeft, akRight]
-            AutoSize = False
             BorderSpacing.Top = 2
-            ClientWidth = 248
+            ClientHeight = 52
+            ClientWidth = 264
             TabOrder = 3
             inherited cbPenStyle: TChartComboBox
               AnchorSideTop.Control = LineSeriesPointerFrame.PointerPenFrame
-              Width = 164
+              Width = 180
             end
             inherited lblPenStyle: TLabel
               AnchorSideLeft.Control = LineSeriesPointerFrame.PointerPenFrame
             end
             inherited cbPenWidth: TChartComboBox
-              Width = 164
+              Width = 180
             end
             inherited cbPenColor: TColorButton
               AnchorSideRight.Control = LineSeriesPointerFrame.PointerPenFrame
-              Left = 217
+              Left = 233
             end
             inherited Bevel1: TBevel
-              Left = 212
+              Left = 228
             end
           end
           inherited Bevel3: TBevel
             AnchorSideLeft.Control = LineSeriesPointerFrame
             AnchorSideTop.Control = LineSeriesPointerFrame
             AnchorSideRight.Control = LineSeriesPointerFrame
-            Width = 248
+            Width = 264
           end
           inherited Label1: TLabel
             AnchorSideLeft.Control = LineSeriesPointerFrame
             AnchorSideTop.Control = LineSeriesPointerFrame
           end
           inherited lblPointerSize: TLabel
-            Left = 170
+            Left = 186
           end
           inherited sePointerSize: TSpinEdit
             AnchorSideRight.Control = LineSeriesPointerFrame
-            Left = 198
+            Left = 214
           end
         end
       end
       object Bevel1: TBevel
         AnchorSideLeft.Control = pgLineSeries
         AnchorSideLeft.Side = asrCenter
-        Left = 275
+        Left = 292
         Height = 104
         Top = 152
         Width = 16
@@ -288,7 +287,6 @@ object SeriesEditor: TSeriesEditor
           Top = 8
           Width = 247
           Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           BorderSpacing.Right = 8
@@ -337,7 +335,6 @@ object SeriesEditor: TSeriesEditor
           Left = 8
           Width = 247
           Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
           BorderSpacing.Left = 8
           BorderSpacing.Right = 8
           BorderSpacing.Bottom = 8
@@ -435,7 +432,6 @@ object SeriesEditor: TSeriesEditor
           Left = 8
           Width = 247
           Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
           BorderSpacing.Left = 8
           BorderSpacing.Right = 8
           BorderSpacing.Bottom = 8
@@ -459,13 +455,14 @@ object SeriesEditor: TSeriesEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = Bevel3
         Left = 8
-        Height = 116
+        Height = 115
         Top = 65
         Width = 267
         Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         BorderSpacing.Top = 8
         Caption = 'Border'
-        ClientHeight = 96
+        ClientHeight = 95
         ClientWidth = 263
         TabOrder = 1
         object cbAreaShowContourLines: TCheckBox
@@ -488,14 +485,15 @@ object SeriesEditor: TSeriesEditor
           AnchorSideRight.Control = gbAreaContourPen
           AnchorSideRight.Side = asrBottom
           Left = 8
+          Height = 52
           Top = 35
           Width = 247
           Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           BorderSpacing.Right = 8
           BorderSpacing.Bottom = 8
+          ClientHeight = 52
           ClientWidth = 247
           TabOrder = 1
           inherited cbPenStyle: TChartComboBox
@@ -534,14 +532,15 @@ object SeriesEditor: TSeriesEditor
         AnchorSideRight.Control = pgAreaSeries
         AnchorSideRight.Side = asrBottom
         Left = 291
-        Height = 116
+        Height = 115
         Top = 65
         Width = 268
         Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         BorderSpacing.Top = 8
         BorderSpacing.Right = 8
         Caption = 'Drop lines'
-        ClientHeight = 96
+        ClientHeight = 95
         ClientWidth = 264
         TabOrder = 2
         object cbAreaShowDropLines: TCheckBox
@@ -564,14 +563,15 @@ object SeriesEditor: TSeriesEditor
           AnchorSideRight.Control = gbAreaDropLinePen
           AnchorSideRight.Side = asrBottom
           Left = 8
+          Height = 52
           Top = 35
           Width = 248
           Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           BorderSpacing.Right = 8
           BorderSpacing.Bottom = 8
+          ClientHeight = 52
           ClientWidth = 248
           TabOrder = 1
           inherited cbPenStyle: TChartComboBox
@@ -599,12 +599,12 @@ object SeriesEditor: TSeriesEditor
     Left = 0
     Height = 150
     Top = 0
-    Width = 567
+    Width = 600
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 150
-    ClientWidth = 567
+    ClientWidth = 600
     TabOrder = 0
     object cbShowSeries: TCheckBox
       Left = 8
@@ -628,14 +628,14 @@ object SeriesEditor: TSeriesEditor
       Left = 8
       Height = 109
       Top = 33
-      Width = 267
+      Width = 284
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 8
       BorderSpacing.Bottom = 8
       Caption = 'Legend text'
       ClientHeight = 89
-      ClientWidth = 263
+      ClientWidth = 280
       TabOrder = 1
       object edSeriesTitle: TEdit
         AnchorSideLeft.Control = gbLegendText
@@ -645,7 +645,7 @@ object SeriesEditor: TSeriesEditor
         Left = 8
         Height = 23
         Top = 4
-        Width = 247
+        Width = 264
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
         BorderSpacing.Top = 4
@@ -677,7 +677,7 @@ object SeriesEditor: TSeriesEditor
         Left = 87
         Height = 23
         Top = 58
-        Width = 168
+        Width = 185
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
         BorderSpacing.Top = 6
@@ -713,16 +713,16 @@ object SeriesEditor: TSeriesEditor
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = gbLegendText
       AnchorSideBottom.Side = asrBottom
-      Left = 291
+      Left = 308
       Height = 109
       Top = 33
-      Width = 268
+      Width = 284
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 8
       Caption = 'Marks'
       ClientHeight = 89
-      ClientWidth = 264
+      ClientWidth = 280
       TabOrder = 2
       object lblSeriesMarksStyle: TLabel
         AnchorSideLeft.Control = gbMarks
@@ -744,7 +744,7 @@ object SeriesEditor: TSeriesEditor
         Left = 54
         Height = 23
         Top = 4
-        Width = 202
+        Width = 218
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 4
         BorderSpacing.Right = 8
@@ -789,7 +789,7 @@ object SeriesEditor: TSeriesEditor
         Left = 54
         Height = 23
         Top = 33
-        Width = 202
+        Width = 218
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
         BorderSpacing.Top = 6
@@ -815,7 +815,7 @@ object SeriesEditor: TSeriesEditor
     object Bevel4: TBevel
       AnchorSideLeft.Control = PanelTop
       AnchorSideLeft.Side = asrCenter
-      Left = 275
+      Left = 292
       Height = 94
       Top = 48
       Width = 16
