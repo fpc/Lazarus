@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -61,7 +61,7 @@ msgstr "Автоматический масштаб"
 
 #: tachartstrconsts.rsaxisclicktool
 msgid "Axis click"
-msgstr ""
+msgstr "Щелчок по оси"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
@@ -286,7 +286,7 @@ msgstr "Диаграмма по функции"
 
 #: tachartstrconsts.rsheaderfooterclicktool
 msgid "Header/footer click"
-msgstr ""
+msgstr "Щелчок по колонтитулам"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
@@ -330,7 +330,7 @@ msgstr "Треугольник с вершиной слева"
 
 #: tachartstrconsts.rslegendclicktool
 msgid "Legend click"
-msgstr ""
+msgstr "Щелчок по легенде"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
