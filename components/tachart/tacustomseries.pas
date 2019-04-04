@@ -792,7 +792,7 @@ begin
       Self.Source := FSource;
       Self.Styles := FStyles;
     end;
-  inherited Assign(Source);
+  inherited Assign(ASource);
 end;
 
 procedure TChartSeries.BeforeDraw;
