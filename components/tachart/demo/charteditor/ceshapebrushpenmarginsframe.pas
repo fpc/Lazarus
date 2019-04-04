@@ -89,7 +89,7 @@ begin
   bs := FBrush.Style;
   FBrush.Color := cbFillColor.ButtonColor;
   FBrush.Style := bs;
-  if FBrush.Style <> bsClear then
+//  if FBrush.Style <> bsClear then
     DoChanged;
 end;
 

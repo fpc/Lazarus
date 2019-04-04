@@ -77,6 +77,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
   private
     FSeries: TBasicChartSeries;
@@ -136,6 +137,9 @@ procedure TSeriesEditor.FormCreate(Sender: TObject);
 begin
   BoldHeaders(self);
 
+  cbLegendMultiplicity.DropdownCount := DEFAULT_DROPDOWN_COUNT;
+  cbMarksStyle.DropdownCount := DEFAULT_DROPDOWN_COUNT;
+
   LineSeriesPenFrame.OnChange := @ChangedHandler;
   BarSeriesPenFrame.OnChange := @ChangedHandler;
   BarSeriesBrushFrame.OnChange := @ChangedHandler;
@@ -144,6 +148,14 @@ end;
 procedure TSeriesEditor.FormDestroy(Sender: TObject);
 begin
   FSavedSeries.Free;
+end;
+
+procedure TSeriesEditor.FormShow(Sender: TObject);
+begin
+  AutoSize := true;
+  Constraints.MinWidth := Width;
+  Constraints.MinHeight := Height;
+  AutoSize := false;
 end;
 
 procedure TSeriesEditor.OKButtonClick(Sender: TObject);

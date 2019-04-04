@@ -3,6 +3,7 @@ object BrushFrame: TBrushFrame
   Height = 24
   Top = 0
   Width = 228
+  AutoSize = True
   ClientHeight = 24
   ClientWidth = 228
   TabOrder = 0
@@ -14,7 +15,7 @@ object BrushFrame: TBrushFrame
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = cbBrushColor
     Left = 48
-    Height = 24
+    Height = 22
     Top = 0
     Width = 144
     Mode = ccmBrushStyle
@@ -33,7 +34,7 @@ object BrushFrame: TBrushFrame
     AnchorSideTop.Side = asrCenter
     Left = 0
     Height = 15
-    Top = 5
+    Top = 4
     Width = 25
     Caption = 'Style'
     ParentColor = False
@@ -46,7 +47,7 @@ object BrushFrame: TBrushFrame
     AnchorSideRight.Side = asrBottom
     Left = 197
     Height = 25
-    Top = 0
+    Top = -1
     Width = 31
     Anchors = [akTop, akRight]
     BorderSpacing.Left = 5

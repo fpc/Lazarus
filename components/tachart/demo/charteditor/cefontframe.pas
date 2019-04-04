@@ -59,7 +59,8 @@ begin
   inherited;
   cmbFontName.Items.Assign(Screen.Fonts);
   cmbFontName.Items.Insert(0, 'default');
-  for i:=0 to High(FONT_SIZES) do cmbFontSize.Items.Add(FONT_SIZES[i]);
+  for i:=0 to High(FONT_SIZES) do
+    cmbFontSize.Items.Add(FONT_SIZES[i]);
   cbFontColor.Width := cbFontColor.Height;
 
   cmbFontName.DropdownCount := DEFAULT_DROPDOWN_COUNT;
@@ -158,6 +159,7 @@ begin
   seOrientation.Value := AFont.Orientation div 10;
   cbFontColor.ButtonColor := ColorToRGB(AFont.Color);
   seOrientation.Visible := WithOrientation;
+  lblOrientation.Visible := WithOrientation;
 
   cbBold.Checked := fsBold in AFont.Style;
   cbItalic.Checked := fsItalic in AFont.Style;

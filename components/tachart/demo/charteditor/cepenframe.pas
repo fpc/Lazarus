@@ -28,6 +28,7 @@ type
     procedure DoChanged;
 
   public
+    constructor Create(AOwner: TComponent); override;
     procedure Prepare(APen: TPen);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
 
@@ -38,6 +39,14 @@ implementation
 {$R *.lfm}
 
 { TPenFrame }
+
+constructor TPenFrame.Create(AOwner: TComponent);
+begin
+  inherited;
+  cbPenStyle.DropdownCount := DEFAULT_DROPDOWN_COUNT;
+  cbPenWidth.DropdownCount := DEFAULT_DROPDOWN_COUNT;
+  cbPenColor.Width := cbPenColor.Height;
+end;
 
 procedure TPenFrame.cbPenColorColorChanged(Sender: TObject);
 begin

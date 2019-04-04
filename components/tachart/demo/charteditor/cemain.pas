@@ -29,8 +29,8 @@ type
     MenuItem1: TMenuItem;
     mnuSeries: TMenuItem;
     mnuChartLegend: TMenuItem;
-    mnuLeftAxisTitle: TMenuItem;
-    mnuBottomAxisTitle: TMenuItem;
+    mnuLeftAxis: TMenuItem;
+    mnuBottomAxis: TMenuItem;
     MenuItem2: TMenuItem;
     mnuChartFooter: TMenuItem;
     mnuChartTitle: TMenuItem;
@@ -47,11 +47,11 @@ type
     procedure ChartToolset1TitleFootClickTool1Click(ASender: TChartTool;
       ATitle: TChartTitle);
     procedure FormCreate(Sender: TObject);
-    procedure mnuBottomAxisTitleClick(Sender: TObject);
+    procedure mnuBottomAxisClick(Sender: TObject);
     procedure mnuChartFooterClick(Sender: TObject);
     procedure mnuChartLegendClick(Sender: TObject);
     procedure mnuChartTitleClick(Sender: TObject);
-    procedure mnuLeftAxisTitleClick(Sender: TObject);
+    procedure mnuLeftAxisClick(Sender: TObject);
   private
     procedure EditAxis(AAxis: TChartAxis; APage: TAxisEditorPage);
     procedure EditLegend(ALegend: TChartLegend);
@@ -92,7 +92,7 @@ begin
 
   for i := 0 to Chart1.SeriesCount-1 do begin
     item := TMenuItem.Create(MainMenu1);
-    item.Caption := TCustomChartSeries(Chart1.Series[i]).Title;
+    item.Caption := TCustomChartSeries(Chart1.Series[i]).Title + '...';
     item.OnClick := @MenuSeriesClick;
     item.Tag := PtrInt(Chart1.Series[i]);
     item.ImageIndex := ChartImageList1.FirstSeriesIndex + i;
@@ -100,7 +100,7 @@ begin
   end;
 end;
 
-procedure TMainForm.mnuBottomAxisTitleClick(Sender: TObject);
+procedure TMainForm.mnuBottomAxisClick(Sender: TObject);
 begin
   EditAxis(Chart1.BottomAxis, aepTitle);
 end;
@@ -217,7 +217,7 @@ begin
   EditTitleFoot(Chart1.Title);
 end;
 
-procedure TMainForm.mnuLeftAxisTitleClick(Sender: TObject);
+procedure TMainForm.mnuLeftAxisClick(Sender: TObject);
 begin
   EditAxis(Chart1.LeftAxis, aepTitle);
 end;

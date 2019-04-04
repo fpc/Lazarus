@@ -3,6 +3,7 @@ object PenFrame: TPenFrame
   Height = 56
   Top = 0
   Width = 230
+  AutoSize = True
   ClientHeight = 56
   ClientWidth = 230
   TabOrder = 0

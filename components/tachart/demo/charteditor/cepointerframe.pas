@@ -21,15 +21,12 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    lblPointerWidth: TLabel;
-    lblPointerHeight: TLabel;
+    lblPointerSize: TLabel;
     PointerPenFrame: TPenFrame;
     PointerBrushFrame: TBrushFrame;
-    sePointerWidth: TSpinEdit;
-    sePointerHeight: TSpinEdit;
+    sePointerSize: TSpinEdit;
     procedure cbPointerStyleChange(Sender: TObject);
-    procedure sePointerHeightChange(Sender: TObject);
-    procedure sePointerWidthChange(Sender: TObject);
+    procedure sePointerSizeChange(Sender: TObject);
   private
     FPointer: TSeriesPointer;
     FOnChange: TNotifyEvent;
@@ -38,6 +35,7 @@ type
     function GetChart: TChart;
 
   public
+    constructor Create(AOwner: TComponent); override;
     procedure Prepare(APointer: TSeriesPointer);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -49,21 +47,22 @@ implementation
 type
   TSeriesPointerAccess = class(TSeriesPointer);
 
+constructor TPointerFrame.Create(AOwner: TComponent);
+begin
+  inherited;
+  cbPointerStyle.DropdownCount := DEFAULT_DROPDOWN_COUNT;
+end;
+
 procedure TPointerFrame.cbPointerStyleChange(Sender: TObject);
 begin
   FPointer.Style := cbPointerStyle.PointerStyle;
   DoChange;
 end;
 
-procedure TPointerFrame.sePointerHeightChange(Sender: TObject);
+procedure TPointerFrame.sePointerSizeChange(Sender: TObject);
 begin
-  FPointer.VertSize := sePointerHeight.Value;
-  DoChange;
-end;
-
-procedure TPointerFrame.sePointerWidthChange(Sender: TObject);
-begin
-  FPointer.HorizSize := sePointerWidth.Value;
+  FPointer.HorizSize := sePointerSize.Value;
+  FPointer.VertSize := sePointerSize.Value;
   DoChange;
 end;
 
@@ -81,8 +80,7 @@ procedure TPointerFrame.Prepare(APointer: TSeriesPointer);
 begin
   FPointer := APointer;
   cbPointerStyle.PointerStyle := APointer.Style;
-  sePointerWidth.Value := APointer.HorizSize;
-  sePointerHeight.Value := APointer.VertSize;
+  sePointerSize.Value := APointer.HorizSize;
   PointerBrushFrame.Prepare(APointer.Brush);
   PointerPenFrame.Prepare(APointer.Pen);
 end;

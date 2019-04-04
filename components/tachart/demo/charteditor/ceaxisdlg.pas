@@ -17,12 +17,12 @@ type
   TAxisEditorPage = (aepTitle, aepLabels, aepGrid, aepLine);
 
   TAxisEditor = class(TForm)
+    ButtonPanel: TButtonPanel;
     GridPenFrame: TPenFrame;
     Bevel1: TBevel;
     Bevel2: TBevel;
     Bevel3: TBevel;
     Bevel4: TBevel;
-    ButtonPanel: TButtonPanel;
     cbAxisLineVisible: TCheckBox;
     cbGridVisible: TCheckBox;
     cbPenColor: TColorButton;
@@ -44,7 +44,7 @@ type
     gbTitleFont: TGroupBox;
     gbLabelFont: TGroupBox;
     gbShapeFillBorder: TGroupBox;
-    GroupBox1: TGroupBox;
+    gbTitleShapeBrushPenMargins: TGroupBox;
     gbLabels: TGroupBox;
     gbTicks: TGroupBox;
     gbFrame: TGroupBox;

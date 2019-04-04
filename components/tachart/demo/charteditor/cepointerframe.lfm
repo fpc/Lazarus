@@ -1,9 +1,10 @@
 object PointerFrame: TPointerFrame
   Left = 0
-  Height = 213
+  Height = 171
   Top = 0
   Width = 320
-  ClientHeight = 213
+  AutoSize = True
+  ClientHeight = 171
   ClientWidth = 320
   TabOrder = 0
   DesignLeft = 658
@@ -17,7 +18,7 @@ object PointerFrame: TPointerFrame
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 5
-    Top = 90
+    Top = 59
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 7
@@ -29,57 +30,56 @@ object PointerFrame: TPointerFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 16
-    Top = 104
-    Width = 304
+    Top = 69
+    Width = 320
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 16
-    BorderSpacing.Top = 6
+    AutoSize = False
+    BorderSpacing.Top = 2
     BorderSpacing.Bottom = 8
-    ClientWidth = 304
+    ClientWidth = 320
+    TabOrder = 2
     inherited cbBrushStyle: TChartComboBox
       AnchorSideTop.Control = PointerBrushFrame
-      Width = 220
+      Width = 236
     end
     inherited lblBrushStyle: TLabel
       AnchorSideLeft.Control = PointerBrushFrame
     end
     inherited cbBrushColor: TColorButton
       AnchorSideRight.Control = PointerBrushFrame
-      Left = 273
+      Left = 289
     end
   end
   object cbPointerStyle: TChartComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 16
+    AnchorSideRight.Control = lblPointerSize
+    Left = 0
     Height = 22
     Top = 21
-    Width = 304
+    Width = 234
     Mode = ccmPointerStyle
     PenPattern = '1|1'
     PointerStyle = psNone
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 16
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 8
     ItemHeight = 16
     ItemIndex = 0
-    TabOrder = 1
+    TabOrder = 0
     OnChange = cbPointerStyleChange
   end
   object Label2: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = sePointerWidth
+    AnchorSideTop.Control = sePointerSize
     AnchorSideTop.Side = asrBottom
     Left = 12
     Height = 15
-    Top = 83
+    Top = 52
     Width = 15
     BorderSpacing.Left = 12
-    BorderSpacing.Top = 12
+    BorderSpacing.Top = 8
     Caption = 'Fill'
     Color = clForm
     Font.Style = [fsBold]
@@ -96,7 +96,7 @@ object PointerFrame: TPointerFrame
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 5
-    Top = 147
+    Top = 108
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 7
@@ -108,10 +108,10 @@ object PointerFrame: TPointerFrame
     AnchorSideTop.Side = asrBottom
     Left = 12
     Height = 15
-    Top = 140
+    Top = 101
     Width = 39
     BorderSpacing.Left = 12
-    BorderSpacing.Top = 12
+    BorderSpacing.Top = 8
     Caption = 'Border'
     Color = clForm
     Font.Style = [fsBold]
@@ -125,30 +125,29 @@ object PointerFrame: TPointerFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 16
-    Top = 161
-    Width = 304
+    Top = 118
+    Width = 320
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 16
-    BorderSpacing.Top = 6
-    ClientWidth = 304
-    TabOrder = 2
+    AutoSize = False
+    BorderSpacing.Top = 2
+    ClientWidth = 320
+    TabOrder = 3
     inherited cbPenStyle: TChartComboBox
       AnchorSideTop.Control = PointerPenFrame
-      Width = 220
+      Width = 236
     end
     inherited lblPenStyle: TLabel
       AnchorSideLeft.Control = PointerPenFrame
     end
     inherited cbPenWidth: TChartComboBox
-      Width = 220
+      Width = 236
     end
     inherited cbPenColor: TColorButton
       AnchorSideRight.Control = PointerPenFrame
-      Left = 273
+      Left = 289
     end
     inherited Bevel1: TBevel
-      Left = 268
+      Left = 284
     end
   end
   object Bevel3: TBevel
@@ -181,53 +180,37 @@ object PointerFrame: TPointerFrame
     ParentFont = False
     Transparent = False
   end
-  object lblPointerWidth: TLabel
-    AnchorSideLeft.Control = cbPointerStyle
-    AnchorSideTop.Control = sePointerWidth
+  object lblPointerSize: TLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = sePointerSize
     AnchorSideTop.Side = asrCenter
-    Left = 16
+    AnchorSideRight.Control = sePointerSize
+    Left = 242
     Height = 15
-    Top = 52
-    Width = 32
-    Caption = 'Width'
-    FocusControl = sePointerWidth
+    Top = 25
+    Width = 20
+    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 8
+    Caption = 'Size'
+    FocusControl = sePointerSize
     ParentColor = False
   end
-  object sePointerWidth: TSpinEdit
-    AnchorSideLeft.Control = lblPointerWidth
+  object sePointerSize: TSpinEdit
+    AnchorSideLeft.Control = lblPointerSize
     AnchorSideLeft.Side = asrBottom
-    Left = 56
-    Height = 23
-    Top = 48
-    Width = 50
-    BorderSpacing.Left = 8
-    OnChange = sePointerWidthChange
-    TabOrder = 3
-  end
-  object lblPointerHeight: TLabel
-    AnchorSideLeft.Control = sePointerWidth
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = sePointerHeight
+    AnchorSideTop.Control = cbPointerStyle
     AnchorSideTop.Side = asrCenter
-    Left = 122
-    Height = 15
-    Top = 52
-    Width = 36
-    BorderSpacing.Left = 16
-    Caption = 'Height'
-    FocusControl = sePointerHeight
-    ParentColor = False
-  end
-  object sePointerHeight: TSpinEdit
-    AnchorSideLeft.Control = lblPointerHeight
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = sePointerWidth
-    Left = 166
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 270
     Height = 23
-    Top = 48
+    Top = 21
     Width = 50
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
     BorderSpacing.Left = 8
-    OnChange = sePointerHeightChange
-    TabOrder = 4
+    BorderSpacing.Top = 6
+    OnChange = sePointerSizeChange
+    TabOrder = 1
   end
 end

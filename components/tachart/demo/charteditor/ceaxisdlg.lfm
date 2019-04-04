@@ -3,7 +3,7 @@ object AxisEditor: TAxisEditor
   Height = 487
   Top = 270
   Width = 548
-  ActiveControl = ButtonPanel.CancelButton
+  ActiveControl = cbShow
   Caption = 'Axis title editor'
   ClientHeight = 487
   ClientWidth = 548
@@ -13,26 +13,6 @@ object AxisEditor: TAxisEditor
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
-  object ButtonPanel: TButtonPanel
-    Left = 6
-    Height = 34
-    Top = 447
-    Width = 536
-    OKButton.Name = 'OKButton'
-    OKButton.DefaultCaption = True
-    OKButton.OnClick = OKButtonClick
-    HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = 'Apply to &all'
-    HelpButton.DefaultCaption = False
-    HelpButton.OnClick = HelpButtonClick
-    CloseButton.Name = 'CloseButton'
-    CloseButton.DefaultCaption = True
-    CancelButton.Name = 'CancelButton'
-    CancelButton.DefaultCaption = True
-    TabOrder = 0
-    ShowButtons = [pbOK, pbCancel, pbHelp]
-    ShowGlyphs = [pbOK, pbCancel, pbClose]
-  end
   object PageControl: TPageControl
     Left = 0
     Height = 408
@@ -62,8 +42,9 @@ object AxisEditor: TAxisEditor
           AnchorSideTop.Control = TitleMemoPanel
           Left = 0
           Height = 15
-          Top = 0
+          Top = 2
           Width = 21
+          BorderSpacing.Top = 2
           Caption = 'Text'
           ParentColor = False
         end
@@ -76,8 +57,8 @@ object AxisEditor: TAxisEditor
           AnchorSideBottom.Control = TitleMemoPanel
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 140
-          Top = 19
+          Height = 138
+          Top = 21
           Width = 528
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Top = 4
@@ -92,7 +73,7 @@ object AxisEditor: TAxisEditor
           AnchorSideRight.Side = asrBottom
           Left = 474
           Height = 19
-          Top = -2
+          Top = 0
           Width = 54
           Alignment = taLeftJustify
           Anchors = [akTop, akRight]
@@ -188,7 +169,7 @@ object AxisEditor: TAxisEditor
             end
           end
         end
-        object GroupBox1: TGroupBox
+        object gbTitleShapeBrushPenMargins: TGroupBox
           AnchorSideLeft.Control = Bevel1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = rgTitleAlignment
@@ -204,7 +185,7 @@ object AxisEditor: TAxisEditor
           Caption = 'Title background'
           ClientHeight = 183
           ClientWidth = 251
-          TabOrder = 2
+          TabOrder = 3
           inline TitleShapeBrushPenMarginsFrame: TShapeBrushPenMarginsFrame
             Left = 8
             Height = 175
@@ -300,7 +281,7 @@ object AxisEditor: TAxisEditor
           Alignment = taRightJustify
           BorderSpacing.Top = 8
           OnChange = seTitleDistanceChange
-          TabOrder = 3
+          TabOrder = 2
         end
       end
     end
@@ -360,7 +341,7 @@ object AxisEditor: TAxisEditor
           Width = 74
           Caption = 'Maximum'
           OnChange = cbAutoMaxChange
-          TabOrder = 1
+          TabOrder = 2
         end
         object seMinimum: TFloatSpinEdit
           AnchorSideLeft.Control = cbAutoMin
@@ -381,7 +362,7 @@ object AxisEditor: TAxisEditor
           MaxValue = 1E308
           MinValue = -1E308
           OnChange = seMinimumChange
-          TabOrder = 2
+          TabOrder = 1
           Value = 0
         end
         object seMaximum: TFloatSpinEdit
@@ -432,7 +413,7 @@ object AxisEditor: TAxisEditor
         Caption = 'Label font'
         ClientHeight = 84
         ClientWidth = 250
-        TabOrder = 1
+        TabOrder = 3
         inline LabelFontFrame: TFontFrame
           Left = 8
           Height = 84
@@ -468,7 +449,7 @@ object AxisEditor: TAxisEditor
         Caption = 'Label background'
         ClientHeight = 216
         ClientWidth = 263
-        TabOrder = 2
+        TabOrder = 4
         inline LabelShapeBrushPenMarginsFrame: TShapeBrushPenMarginsFrame
           Left = 8
           Height = 208
@@ -548,7 +529,7 @@ object AxisEditor: TAxisEditor
         Caption = 'Labels'
         ClientHeight = 93
         ClientWidth = 252
-        TabOrder = 3
+        TabOrder = 1
         object cbLabelsVisible: TCheckBox
           AnchorSideLeft.Control = gbLabels
           AnchorSideTop.Control = gbLabels
@@ -644,7 +625,7 @@ object AxisEditor: TAxisEditor
         Caption = 'Ticks'
         ClientHeight = 63
         ClientWidth = 252
-        TabOrder = 4
+        TabOrder = 2
         object seTickLength: TSpinEdit
           AnchorSideTop.Control = gbTicks
           Left = 96
@@ -719,7 +700,7 @@ object AxisEditor: TAxisEditor
         AnchorSideRight.Control = gbFrame
         AnchorSideRight.Side = asrBottom
         Left = 16
-        Height = 119
+        Height = 115
         Top = 16
         Width = 280
         Anchors = [akTop, akLeft, akRight]
@@ -727,7 +708,7 @@ object AxisEditor: TAxisEditor
         BorderSpacing.Left = 16
         BorderSpacing.Top = 16
         Caption = 'Grid lines'
-        ClientHeight = 99
+        ClientHeight = 95
         ClientWidth = 276
         TabOrder = 0
         object cbGridVisible: TCheckBox
@@ -750,52 +731,32 @@ object AxisEditor: TAxisEditor
           AnchorSideRight.Control = gbGrid
           AnchorSideRight.Side = asrBottom
           Left = 16
+          Height = 52
           Top = 35
           Width = 244
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           BorderSpacing.Right = 16
           BorderSpacing.Bottom = 8
+          ClientHeight = 52
           ClientWidth = 244
           TabOrder = 1
           inherited cbPenStyle: TChartComboBox
             AnchorSideTop.Control = GridPenFrame
-            AnchorSideRight.Control = GridPenFrame.Bevel4
-            Height = 22
             Width = 160
-            TabOrder = 2
           end
           inherited lblPenStyle: TLabel
             AnchorSideLeft.Control = GridPenFrame
-            Top = 4
           end
           inherited cbPenWidth: TChartComboBox
-            AnchorSideRight.Control = GridPenFrame.Bevel4
-            Height = 22
-            Top = 30
             Width = 160
-            TabOrder = 3
-          end
-          inherited lblPenWidth: TLabel
-            Top = 34
           end
           inherited cbPenColor: TColorButton
-            AnchorSideTop.Control = GridPenFrame.Bevel4
             AnchorSideRight.Control = GridPenFrame
             Left = 213
-            Top = 14
           end
-          object Bevel4: TBevel[5]
-            AnchorSideTop.Control = GridPenFrame.cbPenStyle
-            AnchorSideRight.Control = GridPenFrame.cbPenColor
-            AnchorSideBottom.Control = GridPenFrame.cbPenWidth
-            AnchorSideBottom.Side = asrBottom
+          inherited Bevel1: TBevel
             Left = 208
-            Height = 52
-            Top = 0
-            Width = 5
-            Anchors = [akTop, akRight, akBottom]
-            Shape = bsSpacer
           end
         end
       end
@@ -837,40 +798,33 @@ object AxisEditor: TAxisEditor
           AnchorSideRight.Control = gbFrame
           AnchorSideRight.Side = asrBottom
           Left = 16
+          Height = 52
           Top = 35
           Width = 252
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           BorderSpacing.Right = 16
           BorderSpacing.Bottom = 8
+          ClientHeight = 52
           ClientWidth = 252
           TabOrder = 1
           inherited cbPenStyle: TChartComboBox
             AnchorSideTop.Control = FramePenFrame
-            Height = 22
             Width = 167
           end
           inherited lblPenStyle: TLabel
             AnchorSideLeft.Control = FramePenFrame
-            Top = 4
           end
           inherited cbPenWidth: TChartComboBox
-            Height = 22
-            Top = 30
             Width = 167
-          end
-          inherited lblPenWidth: TLabel
-            Top = 34
           end
           inherited cbPenColor: TColorButton
             AnchorSideRight.Control = nil
             Left = 220
-            Top = 14
             Anchors = [akTop]
           end
           inherited Bevel1: TBevel
             Left = 215
-            Height = 52
           end
         end
       end
@@ -881,14 +835,14 @@ object AxisEditor: TAxisEditor
         AnchorSideRight.Control = gbFrame
         AnchorSideRight.Side = asrBottom
         Left = 8
-        Height = 119
+        Height = 115
         Top = 143
         Width = 288
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Top = 16
         Caption = 'Axis line'
-        ClientHeight = 99
+        ClientHeight = 95
         ClientWidth = 284
         TabOrder = 1
         object cbAxisLineVisible: TCheckBox
@@ -911,39 +865,32 @@ object AxisEditor: TAxisEditor
           AnchorSideRight.Control = gbAxisLine
           AnchorSideRight.Side = asrBottom
           Left = 16
+          Height = 52
           Top = 35
           Width = 252
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           BorderSpacing.Right = 16
           BorderSpacing.Bottom = 8
+          ClientHeight = 52
           ClientWidth = 252
           TabOrder = 1
           inherited cbPenStyle: TChartComboBox
             AnchorSideTop.Control = AxisLinePenFrame
-            Height = 22
             Width = 168
           end
           inherited lblPenStyle: TLabel
             AnchorSideLeft.Control = AxisLinePenFrame
-            Top = 4
           end
           inherited cbPenWidth: TChartComboBox
-            Height = 22
-            Top = 30
             Width = 168
-          end
-          inherited lblPenWidth: TLabel
-            Top = 34
           end
           inherited cbPenColor: TColorButton
             AnchorSideRight.Control = AxisLinePenFrame
             Left = 221
-            Top = 14
           end
           inherited Bevel1: TBevel
             Left = 216
-            Height = 52
           end
         end
       end
@@ -1066,7 +1013,7 @@ object AxisEditor: TAxisEditor
     BevelOuter = bvNone
     ClientHeight = 33
     ClientWidth = 548
-    TabOrder = 2
+    TabOrder = 0
     object cbShow: TCheckBox
       Left = 8
       Height = 19
@@ -1081,5 +1028,25 @@ object AxisEditor: TAxisEditor
       State = cbChecked
       TabOrder = 0
     end
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 447
+    Width = 536
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = 'Apply to &all'
+    HelpButton.DefaultCaption = False
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowGlyphs = [pbOK, pbCancel, pbClose]
   end
 end

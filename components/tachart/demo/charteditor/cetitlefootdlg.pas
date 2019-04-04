@@ -63,6 +63,7 @@ type
 
 procedure TTitleFootEditor.cbShowChange(Sender: TObject);
 begin
+  FTitle.Visible := cbShow.Checked;
   lblText.Visible := cbShow.Checked;
   mmoText.Visible := cbShow.Checked;
   rgAlignment.Visible := cbShow.Checked;
@@ -74,6 +75,7 @@ procedure TTitleFootEditor.ChangedHandler(Sender: TObject);
 begin
   GetChart.Invalidate;
   mmoText.Font.Assign(FTitle.Font);
+  mmoText.Color := FTitle.Brush.Color;
 end;
 
 procedure TTitleFootEditor.FormCloseQuery(Sender: TObject;
@@ -90,6 +92,7 @@ procedure TTitleFootEditor.FormCreate(Sender: TObject);
 begin
   BoldHeaders(Self);
   FontFrame1.OnChange := @ChangedHandler;
+  ShapeBrushPenMarginsFrame1.OnChange := @ChangedHandler;
 end;
 
 procedure TTitleFootEditor.FormDestroy(Sender: TObject);

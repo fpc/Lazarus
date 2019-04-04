@@ -3,6 +3,7 @@ object TitleFootEditor: TTitleFootEditor
   Height = 467
   Top = 235
   Width = 561
+  ActiveControl = cbShow
   Caption = 'Title/footer editor'
   ClientHeight = 467
   ClientWidth = 561
@@ -80,7 +81,7 @@ object TitleFootEditor: TTitleFootEditor
       Caption = 'Title/footer background'
       ClientHeight = 196
       ClientWidth = 251
-      TabOrder = 1
+      TabOrder = 2
       inline ShapeBrushPenMarginsFrame1: TShapeBrushPenMarginsFrame
         Left = 8
         Height = 188
@@ -153,7 +154,7 @@ object TitleFootEditor: TTitleFootEditor
       Caption = 'Font'
       ClientHeight = 86
       ClientWidth = 260
-      TabOrder = 2
+      TabOrder = 1
       inline FontFrame1: TFontFrame
         Left = 8
         Height = 78

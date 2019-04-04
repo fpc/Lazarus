@@ -23,6 +23,7 @@ type
     procedure DoChanged;
 
   public
+    constructor Create(AOwner: TComponent); override;
     procedure Prepare(ABrush: TBrush);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
 
@@ -31,6 +32,13 @@ type
 implementation
 
 {$R *.lfm}
+
+constructor TBrushFrame.Create(AOwner: TComponent);
+begin
+  inherited;
+  cbBrushStyle.DropDownCount := DEFAULT_DROPDOWN_COUNT;
+  cbBrushColor.Width := cbBrushColor.Height;
+end;
 
 procedure TBrushFrame.cbBrushStyleChange(Sender: TObject);
 begin
