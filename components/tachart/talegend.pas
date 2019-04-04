@@ -965,10 +965,14 @@ procedure TChartSeriesLegend.Assign(Source: TPersistent);
 begin
   if Source is TChartSeriesLegend then
     with TChartSeriesLegend(Source) do begin
+      Self.FFormat := FFormat;
+      Self.FGroupIndex := FGroupIndex;
       Self.FMultiplicity := FMultiplicity;
       Self.FOnDraw := FOnDraw;
+      Self.FOrder := FOrder;
       Self.FTextFormat := FTextFormat;
       Self.FUserItemsCount := FUserItemsCount;
+      Self.FVisible := FVisible;
     end;
 
   inherited Assign(Source);
