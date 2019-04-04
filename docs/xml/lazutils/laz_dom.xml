@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      Laz_DOM
+    ====================================================================
+    -->
+    <module name="Laz_DOM">
+      <short>
+        Provides an implementation of DOM Interfaces
+      </short>
+      <descr>
+        <var>laz_dom.pas</var> provides an implementation of the Interfaces for the DOM (Document Object Model). Classes in this unit are aliased to the UTF-8 implementation provided in <var>laz2_dom.pas</var>.
+      </descr>
 
-<!--
-  ====================================================================
-    Laz_DOM
-  ====================================================================
--->
+      <element name="SysUtils"/>
+      <element name="Classes"/>
+      <element name="Laz2_DOM"/>
 
-<module name="Laz_DOM">
-<short></short>
-<descr>
-</descr>
+      <element name="TDOMImplementation" link="#LazUtils.Laz2_DOM.TDOMImplementation"/>
+      <element name="TDOMDocumentFragment" link="#LazUtils.Laz2_DOM.TDOMDocumentFragment"/>
+      <element name="TDOMDocument" link="#LazUtils.Laz2_DOM.TDOMDocument"/>
+      <element name="TDOMNode" link="#LazUtils.Laz2_DOM.TDOMNode"/>
+      <element name="TDOMNodeList" link="#LazUtils.Laz2_DOM.TDOMNodeList"/>
+      <element name="TDOMNamedNodeMap" link="#LazUtils.Laz2_DOM.TDOMNamedNodeMap"/>
+      <element name="TDOMCharacterData" link="#LazUtils.Laz2_DOM.TDOMCharacterData"/>
+      <element name="TDOMAttr" link="#LazUtils.Laz2_DOM.TDOMAttr"/>
+      <element name="TDOMElement" link="#LazUtils.Laz2_DOM.TDOMElement"/>
+      <element name="TDOMText" link="#LazUtils.Laz2_DOM.TDOMText"/>
+      <element name="TDOMComment" link="#LazUtils.Laz2_DOM.TDOMComment"/>
+      <element name="TDOMCDATASection" link="#LazUtils.Laz2_DOM.TDOMCDATASection"/>
+      <element name="TDOMDocumentType" link="#LazUtils.Laz2_DOM.TDOMDocumentType"/>
+      <element name="TDOMNotation" link="#LazUtils.Laz2_DOM.TDOMNotation"/>
+      <element name="TDOMEntity" link="#LazUtils.Laz2_DOM.TDOMEntity"/>
+      <element name="TDOMEntityReference" link="#LazUtils.Laz2_DOM.TDOMEntityReference"/>
+      <element name="TDOMProcessingInstruction" link="#LazUtils.Laz2_DOM.TDOMProcessingInstruction"/>
 
-</module> <!-- Laz_DOM -->
+      <element name="DOMString" link="#LazUtils.Laz2_DOM.DOMString"/>
+      <element name="DOMPChar" link="#LazUtils.Laz2_DOM.DOMPChar"/>
+      <element name="EDOMError" link="#LazUtils.Laz2_DOM.EDOMError"/>
 
-</package>
+    </module>
+    <!-- Laz_DOM -->
+
+  </package>
 </fpdoc-descriptions>

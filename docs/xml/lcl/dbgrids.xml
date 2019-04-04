@@ -2859,11 +2859,12 @@
       <!-- procedure visibility: private -->
       <element name="TCustomDBGrid.ReadColumns">
         <short></short>
-        <descr></descr>
+        <descr>
+          <remark>
+            Not used in the current implementation.
+          </remark>
+        </descr>
         <seealso></seealso>
-        <remark>
-          <p>Not used in the current implementation.</p>
-        </remark>
       </element>
       <!-- argument visibility: default -->
       <element name="TCustomDBGrid.ReadColumns.Reader">
@@ -2873,11 +2874,12 @@
       <!-- procedure visibility: private -->
       <element name="TCustomDBGrid.SetColumns">
         <short></short>
-        <descr></descr>
+        <descr>
+          <remark>
+            Not used in the current implementation.
+          </remark>
+        </descr>
         <seealso></seealso>
-        <remark>
-          <p>Not used in the current implementation.</p>
-        </remark>
       </element>
       <!-- argument visibility: default -->
       <element name="TCustomDBGrid.SetColumns.AValue">
@@ -3180,11 +3182,12 @@
       <!-- procedure visibility: private -->
       <element name="TCustomDBGrid.WriteColumns">
         <short></short>
-        <descr></descr>
+        <descr>
+          <remark>
+            Not used in the current implementation.
+          </remark>
+        </descr>
         <seealso></seealso>
-        <remark>
-          <p>Not used in the current implementation.</p>
-        </remark>
       </element>
       <!-- argument visibility: default -->
       <element name="TCustomDBGrid.WriteColumns.Writer">
@@ -3383,13 +3386,12 @@
 
       <!-- procedure visibility: protected -->
       <element name="TCustomDBGrid.DefineProperties" link="#rtl.Classes.TComponent.DefineProperties">
-        <descr></descr>
-        <seealso></seealso>
-        <remark>
-          <p>
+        <descr>
+          <remark>
             Provides an empty implementation that avoids calling the  inherited DefineProperties method.  TCustomGrid defines ColWidths, RowHeights and Cells properties which do not use facilities available in the data-aware grid control.
-          </p>
-        </remark>
+          </remark>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument visibility: default -->
       <element name="TCustomDBGrid.DefineProperties.Filer">
