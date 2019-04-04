@@ -81,7 +81,7 @@ type
 
   { TChartAxis }
 
-  TChartAxisHitTest = (ahtTitle, ahtLine, ahtLabels,
+  TChartAxisHitTest = (ahtTitle, ahtLine, ahtLabels, ahtGrid,
     ahtAxisStart, ahtAxisCenter, ahtAxisEnd);
   TChartAxisHitTests = set of TChartAxisHitTest;
 
@@ -470,6 +470,7 @@ var
   R: TRect;
   w, h, loc: Integer;
   p: Integer;
+  t: TChartValueText;
 begin
   Result := [];
   if IsPointInPolygon(APoint, FTitlePolygon) then
@@ -501,7 +502,24 @@ begin
     if IsPointInRect(APoint, R) then
       Include(Result, ahtLine)
     else if IsPointInside(APoint) then
-      Include(Result, ahtLabels);
+      Include(Result, ahtLabels)
+    else begin
+      R := FHelper.FClipRect^;
+      for t in FMarkValues do begin
+        p := FHelper.GraphToImage(FHelper.FAxisTransf(t.FValue));
+        if IsVertical then begin
+          R.Top := p - ADelta;
+          R.Bottom := p + ADelta;
+        end else begin
+          R.Left := p - ADelta;
+          R.Right := p + ADelta;
+        end;
+        if IsPointInRect(APoint, R) then begin
+          Include(Result, ahtGrid);
+          break;
+        end;
+      end;
+    end;
 
     if Result = [] then
       exit;
