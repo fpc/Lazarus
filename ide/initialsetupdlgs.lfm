@@ -139,7 +139,7 @@ object InitialSetupDialog: TInitialSetupDialog
           ''
         )
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 1
       end
       object LazDirBrowseButton: TButton
@@ -223,7 +223,7 @@ object InitialSetupDialog: TInitialSetupDialog
           ''
         )
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
     end
@@ -284,7 +284,7 @@ object InitialSetupDialog: TInitialSetupDialog
           ''
         )
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
       object ScanLabel: TLabel
@@ -386,7 +386,7 @@ object InitialSetupDialog: TInitialSetupDialog
           ''
         )
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
     end
@@ -447,7 +447,7 @@ object InitialSetupDialog: TInitialSetupDialog
           ''
         )
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
     end
