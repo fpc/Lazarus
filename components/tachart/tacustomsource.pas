@@ -189,6 +189,12 @@ type
   strict protected
     FBasicExtent: TDoubleRect;
     FBasicExtentIsValid: Boolean;
+    FCumulativeExtent: TDoubleRect;
+    FCumulativeExtentIsValid: Boolean;
+    FXListExtent: TDoubleRect;
+    FXListExtentIsValid: Boolean;
+    FYListExtent: TDoubleRect;
+    FYListExtentIsValid: Boolean;
     FValuesTotal: Double;
     FValuesTotalIsValid: Boolean;
     FXCount: Cardinal;
@@ -309,7 +315,7 @@ begin
   AItem.Color := clTAColor;
   AItem.Text := '';
   for i := 0 to High(AItem.XList) do
-    Aitem.XList[i] := 0;
+    AItem.XList[i] := 0;
   for i := 0 to High(AItem.YList) do
     AItem.YList[i] := 0;
 end;
@@ -832,39 +838,63 @@ var
   jyp, jyn: Integer;
 begin
   Result := Extent;
-  if (YCount < 2) and (XCount < 2) then exit;
 
-  // Skip the x and y values used for error bars when calculating the list extent.
-  if UseXList and (XErrorBarData.Kind = ebkChartSource) then begin
-    jxp := XErrorBarData.IndexPlus - 1;  // -1 because XList is offset by 1
-    jxn := XErrorBarData.IndexMinus - 1;
-  end else begin
-    jxp := -1;
-    jxn := -1;
-  end;
-  if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := YErrorBarData.IndexPlus - 1;  // -1 because YList is offset by 1
-    jyn := YErrorBarData.IndexMinus - 1;
-  end else begin
-    jyp := -1;
-    jyn := -1;
-  end;
+  if UseXList and (XCount > 1) then begin
+    if not FXListExtentIsValid then begin
+      FXListExtent := EmptyExtent;
 
-  if UseXList and (XCount > 1) then
-    for i := 0 to Count - 1 do
-      with Item[i]^ do begin
-        for j := 0 to High(XList) do
-          if (j <> jxp) and (j <> jxn) then
-            UpdateMinMax(XList[j], Result.a.X, Result.b.X);
+      // Skip the x values used for error bars when calculating the list extent.
+      if XErrorBarData.Kind = ebkChartSource then begin
+        jxp := XErrorBarData.IndexPlus - 1;  // -1 because XList index is offset by 1
+        jxn := XErrorBarData.IndexMinus - 1;
+      end else begin
+        jxp := -1;
+        jxn := -1;
       end;
-  for i := 0 to Count - 1 do
-    with Item[i]^ do begin
-      for j := 0 to High(YList) do
-        if (j <> jyp) and (j <> jyn) then
-          UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
-    end
 
+      for i := 0 to Count - 1 do
+        with Item[i]^ do begin
+          for j := 0 to High(XList) do
+            if (j <> jxp) and (j <> jxn) then
+              UpdateMinMax(XList[j], FXListExtent.a.X, FXListExtent.b.X);
+        end;
+
+      FXListExtentIsValid := true;
+    end;
+
+    Result.a.X := Min(Result.a.X, FXListExtent.a.X);
+    Result.b.X := Max(Result.b.X, FXListExtent.b.X);
+  end;
+
+  if (YCount > 1) then begin
+    if not FYListExtentIsValid then begin
+      FYListExtent := EmptyExtent;
+
+      // Skip the y values used for error bars when calculating the list extent.
+      if YErrorBarData.Kind = ebkChartSource then begin
+        jyp := YErrorBarData.IndexPlus - 1;  // -1 because YList index is offset by 1
+        jyn := YErrorBarData.IndexMinus - 1;
+      end else begin
+        jyp := -1;
+        jyn := -1;
+      end;
+
+      for i := 0 to Count - 1 do
+        with Item[i]^ do begin
+          for j := 0 to High(YList) do
+            if (j <> jyp) and (j <> jyn) then
+              UpdateMinMax(YList[j], FYListExtent.a.Y, FYListExtent.b.Y);
+        end;
+
+      FYListExtentIsValid := true;
+    end;
+
+    Result.a.Y := Min(Result.a.Y, FYListExtent.a.Y);
+    Result.b.Y := Max(Result.b.Y, FYListExtent.b.Y);
+  end;
 end;
+
+
 
 class procedure TCustomChartSource.CheckFormat(const AFormat: String);
 begin
@@ -919,28 +949,40 @@ function TCustomChartSource.ExtentCumulative: TDoubleRect;
 var
   h: Double;
   i, j: Integer;
-  jyp: Integer = -1;
-  jyn: Integer = -1;
+  jyp, jyn: Integer;
 begin
   Result := Extent;
-  if YCount < 2 then exit;
 
-  // Skip the y values used for error bars in calculating the cumulative sum.
-  if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := YErrorBarData.IndexPlus - 1;  // -1 because YList index is offset by 1
-    jyn := YErrorBarData.IndexMinus - 1;
-  end;
+  if (YCount > 1) then begin
+    if not FCumulativeExtentIsValid then begin
+      FCumulativeExtent := EmptyExtent;
 
-  for i := 0 to Count - 1 do
-    with Item[i]^ do begin
-      h := NumberOr(Y);
-      for j := 0 to High(YList) do
-        if (j <> jyp) and (j <> jyn) then begin
-          h += NumberOr(YList[j]);
-          // If some of the Y values are negative, h may be non-monotonic.
-          UpdateMinMax(h, Result.a.Y, Result.b.Y);
+      // Skip the y values used for error bars when calculating the cumulative sum.
+      if YErrorBarData.Kind = ebkChartSource then begin
+        jyp := YErrorBarData.IndexPlus - 1;  // -1 because YList index is offset by 1
+        jyn := YErrorBarData.IndexMinus - 1;
+      end else begin
+        jyp := -1;
+        jyn := -1;
+      end;
+
+      for i := 0 to Count - 1 do
+        with Item[i]^ do begin
+          h := NumberOr(Y);
+          for j := 0 to High(YList) do
+            if (j <> jyp) and (j <> jyn) then begin
+              h += NumberOr(YList[j]);
+              // If some of the Y values are negative, h may be non-monotonic.
+              UpdateMinMax(h, FCumulativeExtent.a.Y, FCumulativeExtent.b.Y);
+            end;
         end;
+
+      FCumulativeExtentIsValid := true;
     end;
+
+    Result.a.Y := Min(Result.a.Y, FCumulativeExtent.a.Y);
+    Result.b.Y := Max(Result.b.Y, FCumulativeExtent.b.Y);
+  end;
 end;
 
 { Calculates the extent including multiple y values (non-stacked) }

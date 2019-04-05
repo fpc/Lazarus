@@ -555,6 +555,12 @@ procedure TListChartSource.ClearCaches;
 begin
   FBasicExtent := EmptyExtent;
   FBasicExtentIsValid := true;
+  FCumulativeExtent := EmptyExtent;
+  FCumulativeExtentIsValid := true;
+  FXListExtent := EmptyExtent;
+  FXListExtentIsValid := true;
+  FYListExtent := EmptyExtent;
+  FYListExtentIsValid := true;
   FValuesTotal := 0;
   FValuesTotalIsValid := true;
 end;
@@ -613,6 +619,9 @@ begin
     if FValuesTotalIsValid then
       FValuesTotal -= NumberOr(Y);
   end;
+  FCumulativeExtentIsValid := false;
+  FXListExtentIsValid := false;
+  FYListExtentIsValid := false;
   Dispose(Item[AIndex]);
   FData.Delete(AIndex);
   Notify;
@@ -711,7 +720,7 @@ begin
   with Item[AIndex]^ do
     for i := 0 to Min(High(AXList), High(XList)) do
       XList[i] := AXList[i];
-  // wp: Update x extent here ?
+  FXListExtentIsValid := false;
 end;
 
 function TListChartSource.SetXValue(AIndex: Integer; AValue: Double): Integer;
@@ -777,6 +786,8 @@ begin
   with Item[AIndex]^ do
     for i := 0 to Min(High(AYList), High(YList)) do
       YList[i] := AYList[i];
+  FCumulativeExtentIsValid := false;
+  FYListExtentIsValid := false;
 end;
 
 procedure TListChartSource.SetYValue(AIndex: Integer; AValue: Double);
@@ -867,6 +878,9 @@ begin
   end;
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AY);
+  FCumulativeExtentIsValid := false;
+  FXListExtentIsValid := false;
+  FYListExtentIsValid := false;
   Notify;
 end;
 
