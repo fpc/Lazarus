@@ -287,22 +287,22 @@ const
   DIST = 4;
   MARGIN = 2;
 var
-  ts: TTextStyle;
   alignmnt: TAlignment;
   x1, x2, y: Integer;
-  txt: String;
   bs: TBrushStyle;
   symwidth, symheight: Integer;
   R: TRect;
+  penClr: TColor;
 begin
   if Assigned(OnDrawItem) then
     OnDrawItem(Self, AIndex, ARect, AState)
   else begin
-    if odFocused in AState then begin
+    if [odFocused, odSelected] * AState = [odFocused] then
       Canvas.Brush.Color := clHighlight;
-      Canvas.Font.Color := clHighlightText;
-    end;
-    Canvas.FillRect(ARect);
+    {$IFNDEF MSWINDOWS}
+    if DroppedDown then
+    {$ENDIF}
+      Canvas.FillRect(ARect);
 
     if (BiDiMode <> bdLeftToRight) then
       case FAlignment of
@@ -317,16 +317,19 @@ begin
     symwidth := IfThen(FMode = ccmPointerStyle, symheight * 6 div 4, SymbolWidth);
 
     case alignmnt of
-      taLeftJustify  : x1 := IfThen(DroppedDown, MARGIN, MARGIN * 2);
-      taRightJustify : x1 := ARect.Right - MARGIN - symwidth;
+      taLeftJustify  : x1 := ARect.Left + MARGIN;
+      taRightJustify : x1 := ARect.Right - 1 - MARGIN - symwidth;
       taCenter       : x1 := (ARect.Left + ARect.Right - symwidth) div 2;
     end;
     x2 := x1 + symwidth;
+    inc(x1, MARGIN*2);
 
-    if (odSelected in AState) or (odFocused in AState) then
-      Canvas.Pen.Color := clHighlightText
+    if [odSelected, odFocused] * AState <> [] then
+      Canvas.Pen.Color := Canvas.Font.Color
     else
       Canvas.Pen.Color := FPenColor;
+    penClr := Canvas.Pen.Color;
+    Canvas.Pen.Width := 1;
     Canvas.Pen.Cosmetic := FCosmetic;
     case FMode of
       ccmBrushStyle:
@@ -336,14 +339,19 @@ begin
             Canvas.Brush.Color := clWhite;
             Canvas.Brush.Style := bsSolid;
             Canvas.FillRect(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
+          end else begin
+            Canvas.Pen.Color := penClr;
+            Canvas.Line(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
+            Canvas.Line(x1, ARect.Bottom - MARGIN, x2, ARect.Top + MARGIN);
           end;
           Canvas.Brush.Color := FBrushColor;
           Canvas.Brush.Style := bs;
           if (bs = bsImage) or (bs = bsPattern) then
             Canvas.Brush.Bitmap := FBrushBitmap; // AFTER assigning Brush.Style!
-          Canvas.Pen.Color := clBlack;
+          Canvas.Pen.Color := penClr;
           Canvas.Pen.Style := psSolid;
-          Canvas.Rectangle(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN)
+          Canvas.Rectangle(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
+          Canvas.Brush.Style := bsClear;
         end;
       ccmPenStyle:
         begin
@@ -366,23 +374,22 @@ begin
         end;
       ccmPointerStyle:
         begin
-          R := Rect(MARGIN, MARGIN, MARGIN + symheight, MARGIN + symheight);
-          OffsetRect(R, ARect.Left + (symWidth - symheight) div 2, ARect.Top);
+          case alignmnt of
+            taLeftJustify: x2 := x1 + symheight;
+            taRightJustify: x1 := x2 - symheight;
+          end;
+          R := Rect(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
           DrawPointer(Canvas, R, GetPointerStyle(AIndex), FPenColor, FBrushColor);
+          Canvas.Brush.Style := bsClear;
         end;
     end;
 
     if (ccoNames in FOptions) and (FAlignment <> taCenter) then begin
-      ts := Canvas.TextStyle;
-      ts.Layout := tlCenter;
-      ts.Opaque := false;
-      ts.EndEllipsis := true;
-      txt := Items[AIndex];
       case alignmnt of
         taLeftJustify  : ARect.Left := x2 + DIST;
-        taRightJustify : ARect.Left := x1 - DIST - Canvas.TextWidth(txt);
+        taRightJustify : ARect.Left := x1 - DIST - Canvas.TextWidth(Items[AIndex]) - 1;
       end;
-      Canvas.TextRect(ARect, ARect.Left, ARect.Top, txt, ts);
+      inherited DrawItem(AIndex, ARect, AState);
     end;
   end;
 end;
