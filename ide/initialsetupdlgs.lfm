@@ -1,8 +1,8 @@
 object InitialSetupDialog: TInitialSetupDialog
   AnchorSideBottom.Side = asrBottom
-  Left = 311
+  Left = 298
   Height = 385
-  Top = 238
+  Top = 241
   Width = 620
   Caption = 'InitialSetupDialog'
   ClientHeight = 385
@@ -147,7 +147,7 @@ object InitialSetupDialog: TInitialSetupDialog
         )
         ParentFont = False
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 1
       end
       object LazDirBrowseButton: TButton
@@ -237,7 +237,7 @@ object InitialSetupDialog: TInitialSetupDialog
         )
         ParentFont = False
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
     end
@@ -303,7 +303,7 @@ object InitialSetupDialog: TInitialSetupDialog
         )
         ParentFont = False
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
       object ScanLabel: TLabel
@@ -413,7 +413,7 @@ object InitialSetupDialog: TInitialSetupDialog
         )
         ParentFont = False
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
     end
@@ -479,7 +479,7 @@ object InitialSetupDialog: TInitialSetupDialog
         )
         ParentFont = False
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
     end
@@ -547,7 +547,7 @@ object InitialSetupDialog: TInitialSetupDialog
         )
         ParentFont = False
         ReadOnly = True
-        ScrollBars = ssAutoBoth
+        ScrollBars = ssAutoVertical
         TabOrder = 2
       end
       object FppkgWriteConfigButton: TButton
