@@ -1227,6 +1227,9 @@ procedure TCustomChartSource.InvalidateCaches;
 begin
   FBasicExtentIsValid := false;
   FValuesTotalIsValid := false;
+  FCumulativeExtentIsValid := false;
+  FXListExtentIsValid := false;
+  FYListExtentIsValid := false;
 end;
 
 function TCustomChartSource.IsErrorBarDataStored(AIndex: Integer): Boolean;
