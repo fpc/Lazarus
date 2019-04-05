@@ -335,19 +335,12 @@ type
 
   TCompilationToolOptions = class(TLazCompilationToolOptions)
   private
-    FParsers: TStrings;
     FParsedCommandStamp: integer;
     FParsedCommand: string;
-    function GetHasParser(aParserName: string): boolean;
-    procedure SetHasParser(aParserName: string; const AValue: boolean);
-    procedure SetParsers(const AValue: TStrings);
   protected
     procedure SetCommand(AValue: string); override;
     procedure SubstituteMacros(var s: string); virtual;
   public
-    constructor Create(TheOwner: TLazCompilerOptions); override;
-    destructor Destroy; override;
-    procedure Clear; override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;
     procedure Assign(Src: TLazCompilationToolOptions); override;
@@ -359,9 +352,6 @@ type
     function CreateExtTool(const WorkingDir, ToolTitle, CompileHint: string): TAbstractExternalTool;
     function GetParsedCommand: string; // resolved macros
     function HasCommands: boolean; // true if there is something to execute
-  public
-    property Parsers: TStrings read FParsers write SetParsers;
-    property HasParser[aParserName: string]: boolean read GetHasParser write SetHasParser;
   end;
 
   TCompilerMsgIdFlag = record
@@ -4206,37 +4196,6 @@ end;
 
 { TCompilationToolOptions }
 
-function TCompilationToolOptions.GetHasParser(aParserName: string): boolean;
-begin
-  Result:=FParsers.IndexOf(aParserName)>=0;
-end;
-
-procedure TCompilationToolOptions.SetHasParser(aParserName: string;
-  const AValue: boolean);
-var
-  i: Integer;
-begin
-  i:=FParsers.IndexOf(aParserName);
-  if i>=0 then begin
-    if AValue then exit;
-    FParsers.Delete(i);
-  end else begin
-    if not AValue then exit;
-    FParsers.Add(aParserName);
-  end;
-  Owner.IncreaseChangeStamp;
-end;
-
-procedure TCompilationToolOptions.SetParsers(const AValue: TStrings);
-begin
-  if FParsers.Equals(AValue) then Exit;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TCompilationToolOptions.SetParsers ',AValue.Text]);
-  {$ENDIF}
-  FParsers.Assign(AValue);
-  Owner.IncreaseChangeStamp;
-end;
-
 procedure TCompilationToolOptions.SetCommand(AValue: string);
 begin
   inherited SetCommand(AValue);
@@ -4246,24 +4205,6 @@ end;
 procedure TCompilationToolOptions.SubstituteMacros(var s: string);
 begin
   IDEMacros.SubstituteMacros(s);
-end;
-
-constructor TCompilationToolOptions.Create(TheOwner: TLazCompilerOptions);
-begin
-  inherited Create(TheOwner);
-  FParsers:=TStringList.Create;
-end;
-
-destructor TCompilationToolOptions.Destroy;
-begin
-  FreeAndNil(FParsers);
-  inherited Destroy;
-end;
-
-procedure TCompilationToolOptions.Clear;
-begin
-  inherited Clear;
-  Parsers.Clear;
 end;
 
 procedure TCompilationToolOptions.Assign(Src: TLazCompilationToolOptions);

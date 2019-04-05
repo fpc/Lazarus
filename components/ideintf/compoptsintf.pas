@@ -125,17 +125,24 @@ type
     FOwner: TLazCompilerOptions;
     FCommand: string;
   protected
+    FParsers: TStrings;
     FCompileReasons: TCompileReasons;
+    function GetHasParser(aParserName: string): boolean; virtual;
+    procedure SetHasParser(aParserName: string; const AValue: boolean); virtual;
+    procedure SetParsers(const AValue: TStrings); virtual;
     procedure SetCommand(AValue: string); virtual;
     procedure SetCompileReasons(const {%H-}AValue: TCompileReasons); virtual;
   public
     constructor Create(TheOwner: TLazCompilerOptions); virtual;
+    destructor Destroy; override;
     procedure Clear; virtual;
     procedure Assign(Src: TLazCompilationToolOptions); virtual;
   public
     property Owner: TLazCompilerOptions read FOwner;
     property Command: string read FCommand write SetCommand;
     property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
+    property Parsers: TStrings read FParsers write SetParsers;
+    property HasParser[aParserName: string]: boolean read GetHasParser write SetHasParser;
   end;
 
   TLazCompilationToolClass = class of TLazCompilationToolOptions;
@@ -472,18 +479,57 @@ constructor TLazCompilationToolOptions.Create(TheOwner: TLazCompilerOptions);
 begin
   FOwner:=TheOwner;
   FCompileReasons:=crAll; // This default can be used in some comparisons.
+  FParsers:=TStringList.Create;
+end;
+
+destructor  TLazCompilationToolOptions.Destroy;
+begin
+  FreeAndNil(FParsers);
+  inherited Destroy;
 end;
 
 procedure TLazCompilationToolOptions.Clear;
 begin
   Command:='';
   FCompileReasons := crAll;
+  FParsers.Clear;
 end;
 
 procedure TLazCompilationToolOptions.Assign(Src: TLazCompilationToolOptions);
 begin
   Command:=Src.Command;
   FCompileReasons := Src.CompileReasons;
+end;
+
+function TLazCompilationToolOptions.GetHasParser(aParserName: string): boolean;
+begin
+  Result:=FParsers.IndexOf(aParserName)>=0;
+end;
+
+procedure TLazCompilationToolOptions.SetHasParser(aParserName: string;
+  const AValue: boolean);
+var
+  i: Integer;
+begin
+  i:=FParsers.IndexOf(aParserName);
+  if i>=0 then begin
+    if AValue then exit;
+    FParsers.Delete(i);
+  end else begin
+    if not AValue then exit;
+    FParsers.Add(aParserName);
+  end;
+  Owner.IncreaseChangeStamp;
+end;
+
+procedure TLazCompilationToolOptions.SetParsers(const AValue: TStrings);
+begin
+  if FParsers.Equals(AValue) then Exit;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TCompilationToolOptions.SetParsers ',AValue.Text]);
+  {$ENDIF}
+  FParsers.Assign(AValue);
+  Owner.IncreaseChangeStamp;
 end;
 
 procedure TLazCompilationToolOptions.SetCommand(AValue: string);
