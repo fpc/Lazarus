@@ -308,6 +308,8 @@ begin
   AItem.Y := 0;
   AItem.Color := clTAColor;
   AItem.Text := '';
+  for i := 0 to High(AItem.XList) do
+    Aitem.XList[i] := 0;
   for i := 0 to High(AItem.YList) do
     AItem.YList[i] := 0;
 end;
