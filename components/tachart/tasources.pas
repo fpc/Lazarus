@@ -553,8 +553,8 @@ end;
 
 procedure TListChartSource.ClearCaches;
 begin
-  FExtent := EmptyExtent;
-  FExtentIsValid := true;
+  FBasicExtent := EmptyExtent;
+  FBasicExtentIsValid := true;
   FValuesTotal := 0;
   FValuesTotalIsValid := true;
 end;
@@ -607,9 +607,9 @@ end;
 procedure TListChartSource.Delete(AIndex: Integer);
 begin
   with Item[AIndex]^ do begin
-    FExtentIsValid := FExtentIsValid and
-      (((FExtent.a.X < X) and (X < FExtent.b.X)) or (XCount = 0)) and
-      (((FExtent.a.Y < Y) and (Y < FExtent.b.Y)) or (YCount = 0));
+    FBasicExtentIsValid := FBasicExtentIsValid and
+      (((FBasicExtent.a.X < X) and (X < FBasicExtent.b.X)) or (XCount = 0)) and
+      (((FBasicExtent.a.Y < Y) and (Y < FBasicExtent.b.Y)) or (YCount = 0));
     if FValuesTotalIsValid then
       FValuesTotal -= NumberOr(Y);
   end;
@@ -720,17 +720,17 @@ var
 
   procedure UpdateExtent;
   begin
-    if (not FExtentIsValid) or (XCount = 0) then exit;
+    if (not FBasicExtentIsValid) or (XCount = 0) then exit;
 
     if not IsNan(AValue) then begin
-      if AValue < FExtent.a.X then
-        FExtent.a.X := AValue
-      else if AValue > FExtent.b.X then
-        FExtent.b.X := AValue;
+      if AValue < FBasicExtent.a.X then
+        FBasicExtent.a.X := AValue
+      else if AValue > FBasicExtent.b.X then
+        FBasicExtent.b.X := AValue;
     end;
 
     if not IsNan(oldX) then
-      FExtentIsValid := (oldX <> FExtent.a.X) and (oldX <> FExtent.b.X);
+      FBasicExtentIsValid := (oldX <> FBasicExtent.a.X) and (oldX <> FBasicExtent.b.X);
   end;
 
 begin
@@ -785,17 +785,17 @@ var
 
   procedure UpdateExtent;
   begin
-    if (not FExtentIsValid) or (YCount = 0) then exit;
+    if (not FBasicExtentIsValid) or (YCount = 0) then exit;
 
     if not IsNan(AValue) then begin
-      if AValue < FExtent.a.Y then
-        FExtent.a.Y := AValue
-      else if AValue > FExtent.b.Y then
-        FExtent.b.Y := AValue;
+      if AValue < FBasicExtent.a.Y then
+        FBasicExtent.a.Y := AValue
+      else if AValue > FBasicExtent.b.Y then
+        FBasicExtent.b.Y := AValue;
     end;
 
     if not IsNan(oldY) then
-      FExtentIsValid := (oldY <> FExtent.a.Y) and (oldY <> FExtent.b.Y);
+      FBasicExtentIsValid := (oldY <> FBasicExtent.a.Y) and (oldY <> FBasicExtent.b.Y);
   end;
 
 begin
@@ -861,9 +861,9 @@ end;
 
 procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
 begin
-  if FExtentIsValid then begin
-    if FXCount > 0 then UpdateMinMax(AX, FExtent.a.X, FExtent.b.X);
-    if FYCount > 0 then UpdateMinMax(AY, FExtent.a.Y, FExtent.b.Y);
+  if FBasicExtentIsValid then begin
+    if FXCount > 0 then UpdateMinMax(AX, FBasicExtent.a.X, FBasicExtent.b.X);
+    if FYCount > 0 then UpdateMinMax(AY, FBasicExtent.a.Y, FBasicExtent.b.Y);
   end;
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AY);
