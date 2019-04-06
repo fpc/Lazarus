@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls,
-  ListFilterEdit, fgl,
+  ListFilterEdit,
   ProjPackCommon,
   PackageDefs,
   LazarusIDEStrConsts,
@@ -34,7 +34,7 @@ type
     destructor Destroy; override;
   end;
 
-function ShowAddFPMakeDependencyDlg(AProjPack: IProjPack;
+function ShowAddFPMakeDependencyDlg({%H-}AProjPack: IProjPack;
   out AResultDependencies: TPkgDependencyList): TModalResult;
 
 implementation

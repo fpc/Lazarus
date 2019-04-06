@@ -70,7 +70,7 @@ uses
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf, IDEWindowIntf,
   // IDE
-  LazConf, LazarusIDEStrConsts, Project, PublishModule, BuildLazDialog,
+  LazConf, LazarusIDEStrConsts, Project, BuildLazDialog,
   ProgressDlg, EnvironmentOpts, IDEDefs, PackageDefs;
 
 type

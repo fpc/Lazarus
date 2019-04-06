@@ -724,7 +724,6 @@ type
 procedure TPackageEditorForm.ItemsPopupMenuPopup(Sender: TObject);
 var
   UserSelection: PackageSelTypes;
-  SingleSelectedNode: TPkgDependency;
   SingleSelectedFile: TPkgFile;
   SingleSelectedDep: TPkgDependency;
 
