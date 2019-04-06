@@ -1048,6 +1048,8 @@ function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean
 procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
 function GetFPCTargetOS(TargetOS: string): string; // normalize
 function GetFPCTargetCPU(TargetCPU: string): string; // normalize
+function IsPas2jsTargetOS(TargetOS: string): boolean;
+function IsPas2jsTargetCPU(TargetCPU: string): boolean;
 
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
 
@@ -1438,7 +1440,7 @@ begin
   try
     buf:='';
     if (MainThreadID=GetCurrentThreadId) and not Quiet then begin
-      DbgOut(['Hint: (lazarus) [RunTool] ',Filename]);
+      DbgOut(['Hint: (lazarus) [RunTool] "',Filename,'"']);
       for i:=0 to Params.Count-1 do
         dbgout(' "',Params[i],'"');
       Debugln;
@@ -1743,7 +1745,7 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         CurPos := i + 1; // skip space
 
         if IsUpLine(CurPos,'SET TO ') then begin
-          // MACRO name SET TO
+          // MACRO name SET TO "value"
           Inc(CurPos, 7);
           SymbolValue:=DeQuote(copy(Line, CurPos, len));
           DefineSymbol(SymbolName, SymbolValue);
@@ -3619,11 +3621,21 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
   begin
     aList.Add('ARMV3');
     aList.Add('ARMV4');
+    aList.Add('ARMV4T');
     aList.Add('ARMV5');
+    aList.Add('ARMV5T');
+    aList.Add('ARMV5TE');
+    aList.Add('ARMV5TEJ');
     aList.Add('ARMV6');
+    aList.Add('ARMV6K');
+    aList.Add('ARMV6T2');
+    aList.Add('ARMV6Z');
+    aList.Add('ARMV6M');
     aList.Add('ARMV7');
     aList.Add('ARMV7A');
+    aList.Add('ARMV7R');
     aList.Add('ARMV7M');
+    aList.Add('ARMV7EM');
     aList.Add('CORTEXM3');
   end;
 
@@ -3731,6 +3743,18 @@ end;
 function GetFPCTargetCPU(TargetCPU: string): string;
 begin
   Result:=LowerCase(TargetCPU);
+end;
+
+function IsPas2jsTargetOS(TargetOS: string): boolean;
+begin
+  TargetOS:=LowerCase(TargetOS);
+  Result:=(TargetOS='browser') or (TargetOS='nodejs');
+end;
+
+function IsPas2jsTargetCPU(TargetCPU: string): boolean;
+begin
+  TargetCPU:=LowerCase(TargetCPU);
+  Result:=Pos('ecmascript',TargetCPU)>0;
 end;
 
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean;
@@ -8562,10 +8586,11 @@ begin
     CompilerDate:=-1;
     if FileExistsCached(Compiler) then begin
       CompilerDate:=FileAgeCached(Compiler);
-      ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);// contains TargetOS and TargetCPU
+      ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);// add -TTargetOS and -PTargetCPU
       BaseDir:='';
 
-      // get version, OS and CPU
+      // check if this is a FPC compatible compiler and get version, OS and CPU
+      // Note: fpc.exe calls the real compiler depending on -T and -P
       InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
       Info:=RunFPCInfo(Compiler,InfoTypes,ExtraOptions);
       if ParseFPCInfo(Info,InfoTypes,Infos) then begin
@@ -8573,6 +8598,8 @@ begin
         RealTargetOS:=Infos[fpciTargetOS];
         RealTargetCPU:=Infos[fpciTargetProcessor];
         FullVersion:=Infos[fpciFullVersion];
+        if FullVersion='' then
+          debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine compiler version: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
       end else begin
         RealTargetOS:=TargetOS;
         if RealTargetOS='' then
@@ -8581,23 +8608,29 @@ begin
         if RealTargetCPU='' then
           RealTargetCPU:=GetCompiledTargetCPU;
       end;
-      // run fpc/pas2js and parse output
-      HasPPUs:=false;
-      RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
-                    IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
 
-      //debugln(['TPCTargetConfigCache.Update UnitPaths="',UnitPaths.Text,'"']);
-      //debugln(['TPCTargetConfigCache.Update UnitScopes="',UnitScopes.Text,'"']);
-      //debugln(['TPCTargetConfigCache.Update IncludePaths="',IncludePaths.Text,'"']);
+      if FullVersion<>'' then begin
+        // run fpc/pas2js and parse output
 
-      if Defines.Contains('PAS2JS') and Defines.Contains('PAS2JS_FULLVERSION') then
-        Kind:=pcPas2js
-      else if Defines.Contains('FPC') and Defines.Contains('FPC_FULLVERSION') then
-        Kind:=pcFPC
-      else begin
-        IsCompilerExecutable(Compiler,KindErrorMsg,Kind,false);
-        if KindErrorMsg<>'' then
-          debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine type of compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
+        if (Pos('-Fr',ExtraOptions)<1) and (Pos('-Fr',Caches.ExtraOptions)>0) then
+          ExtraOptions:=Trim(ExtraOptions+' '+Caches.ExtraOptions);
+        RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
+                      IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
+        //debugln(['TPCTargetConfigCache.Update UnitPaths="',UnitPaths.Text,'"']);
+        //debugln(['TPCTargetConfigCache.Update UnitScopes="',UnitScopes.Text,'"']);
+        //debugln(['TPCTargetConfigCache.Update IncludePaths="',IncludePaths.Text,'"']);
+      end;
+
+      if Defines<>nil then begin
+        if Defines.Contains('PAS2JS') and Defines.Contains('PAS2JS_FULLVERSION') then
+          Kind:=pcPas2js
+        else if Defines.Contains('FPC') and Defines.Contains('FPC_FULLVERSION') then
+          Kind:=pcFPC
+        else begin
+          IsCompilerExecutable(Compiler,KindErrorMsg,Kind,false);
+          if KindErrorMsg<>'' then
+            debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine type of compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
+        end;
       end;
       if Kind=pcFPC then
         RealTargetCPUCompiler:=FindDefaultTargetCPUCompiler(TargetCPU,true);
@@ -8634,13 +8667,15 @@ begin
       //  for e in Units do
       //    debugln(['  ',E^.Name,' ',E^.Value]);
       //end;
-      if (UnitPaths.Count=0) then begin
+      if (UnitPaths<>nil) and (UnitPaths.Count=0) then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
       end;
       // check if the system ppu exists
-      HasPPUs:=(Kind=pcFPC) and (CompareFileExt(Units['system'],'ppu',false)=0);
-      if CTConsoleVerbosity>=-1 then begin
+      HasPPUs:=(Kind=pcFPC) and (Units<>nil)
+          and (CompareFileExt(Units['system'],'ppu',false)=0);
+      // check compiler version define
+      if (CTConsoleVerbosity>=-1) and (Defines<>nil) then begin
         case Kind of
           pcFPC:
             if not Defines.Contains('FPC_FULLVERSION') then
