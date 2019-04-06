@@ -3016,7 +3016,6 @@ function TStandardCodeTool.SetApplicationStatement(const APropertyName,
 var
   StartPos, ConstStartPos, EndPos: integer;
   NewStatement: String;
-  MainBeginNode: TCodeTreeNode;
   Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
