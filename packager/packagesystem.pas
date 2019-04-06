@@ -405,7 +405,7 @@ type
                             ShowAbort: boolean;
                             BuildItem: TLazPkgGraphBuildItem = nil): TModalResult;
     function CompilePackageUsingFPMake(APackageName: string; Flags: TPkgCompileFlags;
-                                       ShowAbort: boolean;
+                                       {%H-}ShowAbort: boolean;
                                        BuildItem: TLazPkgGraphBuildItem = nil): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
     function WriteMakefileCompiled(APackage: TLazPackage;
@@ -4292,10 +4292,8 @@ function TLazPackageGraph.CompilePackageUsingFPMake(APackageName: string; Flags:
 
 var
   PkgCompileTool: TAbstractExternalTool;
-  FPCParser: TFPCParser;
   CompilerFilename: String;
   EffectiveCompilerParams: String;
-  ExtToolData: TLazPkgGraphExtToolData;
 begin
   Result:=mrCancel;
 
@@ -4319,8 +4317,7 @@ begin
         else
           PkgCompileTool.Reference(Self,Classname);
         try
-          FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
-
+          PkgCompileTool.AddParsers(SubToolFPC);
           PkgCompileTool.AddParsers(SubToolMake);
           PkgCompileTool.Process.Executable:=CompilerFilename;
           PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
