@@ -122,9 +122,9 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
-    procedure lvWatchesDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure lvWatchesDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
+    procedure lvWatchesDragDrop(Sender, Source: TObject; {%H-}X, {%H-}Y: Integer);
+    procedure lvWatchesDragOver(Sender, Source: TObject; {%H-}X, {%H-}Y: Integer;
+      {%H-}State: TDragState; var Accept: Boolean);
     procedure lvWatchesSelectItem(Sender: TObject; {%H-}AItem: TListItem; {%H-}Selected: Boolean);
     procedure popAddClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);

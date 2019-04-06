@@ -129,7 +129,7 @@ begin
 
   if DebugBoss = nil then
     exit;
-  if DebugBoss.PseudoTerminal = nil then
+  if DebugBoss.{%H-}PseudoTerminal = nil then
     exit;
 
 (* Even if the IDE is initialised this can be called before the TTY is set up,  *)
@@ -176,7 +176,7 @@ begin
 
   if DebugBoss = nil then
     exit;
-  if DebugBoss.PseudoTerminal = nil then
+  if DebugBoss.{%H-}PseudoTerminal = nil then
     exit;
 
 (* Even if the IDE is initialised this can be called before the TTY is set up,  *)
@@ -271,7 +271,7 @@ begin
 
 // Requires -dDBG_WITH_DEBUGGER_DEBUG
 
-    if DebugBoss.PseudoTerminal <> nil then begin
+    if DebugBoss.{%H-}PseudoTerminal <> nil then begin
       //DebugLn(DBG_VERBOSE, ['TPseudoConsoleDlg.AddOutput PseudoTerminal.DevicePtyMaster=',
       //                  DebugBoss.PseudoTerminal.DevicePtyMaster]);
 {$IFDEF USE_SLAVE_HANDLE }
@@ -279,7 +279,7 @@ begin
       //DebugLn(DBG_VERBOSE, ['TPseudoConsoleDlg.AddOutput PseudoTerminal.Devicename="', s, '"']);
       ttyHandle := fileopen(s, fmOpenWrite)
 {$ELSE                   }
-      ttyHandle := DebugBoss.PseudoTerminal.DevicePtyMaster;
+      ttyHandle := DebugBoss.{%H-}PseudoTerminal.DevicePtyMaster;
 {$ENDIF USE_SLAVE_HANDLE }
       //DebugLn(DBG_VERBOSE, ['TPseudoConsoleDlg.AddOutput ttyHandle=', ttyHandle]);
       getCharHeightAndWidth(Memo1.Font, fCharHeight, fCharWidth)
@@ -498,7 +498,7 @@ var
     enq=  #$22A0;                       // ⊠
     ack=  #$2713;                       // ✓
     bel=  #$237E;                       // ⍾
-    bsW=  #$232B;                       // ⌫
+    //bsW=  #$232B;                       // ⌫
     bsB=  #$2196;                       // ↖ The ECMA glyph is slightly curved
     bs=   bsB;                          //   and has no Unicode representation.
     ht=   #$2AAB;                       // ⪫
@@ -506,7 +506,7 @@ var
     vt=   #$2A5B;                       // ⩛
     ff=   #$21A1;                       // ↡
     crW=  #$2aaa;                       // ⪪ ECMA the same
-    crB=  #$25bf;                       // ▿
+    //crB=  #$25bf;                       // ▿
     cr=   crW;
     so=   #$2297;                       // ⊗
     si=   #$2299;                       // ⊙
@@ -524,13 +524,13 @@ var
     esc=  #$2296;                       // ⊖
     fs=   #$25F0;                       // ◰ Nota bene: these rotate widdershins
     gsW=  #$25F1;                       // ◱ ECMA the same
-    gsB=  #$25b5;                       // ▵
+    //gsB=  #$25b5;                       // ▵
     gs=   gsW;
     rsW=  #$25F2;                       // ◲ ECMA the same
-    rsB=  #$25c3;                       // ◃
+    //rsB=  #$25c3;                       // ◃
     rs=   rsW;
     usW=  #$25F3;                       // ◳ ECMA the same
-    usB=  #$25b9;                       // ▹
+    //usB=  #$25b9;                       // ▹
     us=   usW;
     del=  #$2425;                       // ␥
     bar=  #$033c;                       // ̼'
