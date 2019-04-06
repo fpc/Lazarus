@@ -743,14 +743,15 @@ var
   end;
 
 begin
+  if Sorted then
+    if IsNan(AValue) then
+      raise EChartError.CreateFmt('X = NaN in sorted source %s', [NameOrClassName(Self)]);
   oldX := Item[AIndex]^.X;
   Result := AIndex;
   if IsEquivalent(oldX, AValue) then exit;
   Item[AIndex]^.X := AValue;
   UpdateExtent;
   if Sorted then begin
-    if IsNan(AValue) then
-      raise EChartError.CreateFmt('X = NaN in sorted source %s', [NameOrClassName(Self)]);
     if AValue > oldX then
       while (Result < Count - 1) and (Item[Result + 1]^.X < AValue) do
         Inc(Result)
