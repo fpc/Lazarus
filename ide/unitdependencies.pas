@@ -1806,6 +1806,7 @@ begin
     Height:=200;
     NodeStyle.GapBottom:=5;
     Parent:=GroupsTabSheet;
+    Options := Options + [lgoMinimizeEdgeLens];
     OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
     Images:=IDEImages.Images_16;
   end;
@@ -1820,6 +1821,7 @@ begin
     Align:=alClient;
     NodeStyle.GapBottom:=5;
     Parent:=UnitGraphPanel;
+    Options := Options + [lgoMinimizeEdgeLens];
     OnSelectionChanged:=@UnitsLvlGraphSelectionChanged;
     OnMouseDown:=@UnitsLvlGraphMouseDown;
     Images:=IDEImages.Images_16;

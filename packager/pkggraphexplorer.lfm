@@ -60,6 +60,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       NodeStyle.Coloring = lgncRGB
       OnDblClick = LvlGraphControl1DblClick
       OnSelectionChanged = LvlGraphControl1SelectionChanged
+      Options = [lgoAutoLayout, lgoMinimizeEdgeLens, lgoHighlightNodeUnderMouse, lgoHighlightEdgeNearMouse, lgoMouseSelects]
       ParentColor = True
       ParentShowHint = False
       PopupMenu = PkgPopupMenu
