@@ -457,8 +457,9 @@ type
     );
   TLvlGraphControlFlags = set of TLvlGraphControlFlag;
 
-  TLvlGraphMinimizeOverlappingsEvent = procedure(MinPos: integer = 0;
-      NodeGapInFront: integer = 1; NodeGapBehind: integer = 1) of object;
+  TLvlGraphMinimizeOverlappingsEvent = procedure(var MinPos: integer;
+      var NodeGapInFront: integer; var NodeGapBehind: integer;
+      var Handled: Boolean) of object;
   TLvlGraphDrawStep = (
     lgdsBackground,
     lgdsHeader,
@@ -2728,10 +2729,13 @@ end;
 
 procedure TCustomLvlGraphControl.DoMinimizeOverlappings(MinPos: integer;
   NodeGapInFront: integer; NodeGapBehind: integer);
+var
+  Handled: Boolean;
 begin
+  Handled := False;
   if Assigned(OnMinimizeOverlappings) then
-    OnMinimizeOverlappings(MinPos,NodeGapInFront,NodeGapBehind)
-  else
+    OnMinimizeOverlappings(MinPos,NodeGapInFront,NodeGapBehind,Handled);
+  if not Handled then
     Graph.MinimizeOverlappings(MinPos,NodeGapInFront,NodeGapBehind);
 end;
 
@@ -3008,8 +3012,7 @@ begin
       FPixelPerWeight);
 
     // position nodes without overlapping
-    DoMinimizeOverlappings;
-    Graph.MinimizeOverlappings(HeaderHeight,GapInFront,GapBehind);
+    DoMinimizeOverlappings(HeaderHeight,GapInFront,GapBehind);
 
     // node colors
     if NodeStyle.Coloring=lgncRGB then
