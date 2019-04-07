@@ -9,6 +9,8 @@
   for details about the license.
 }
 unit LvlGraphCtrl;
+{off $DEFINE LvlGraphConsistencyCheck}
+{off $DEFINE CheckMinXGraph}
 
 {$mode objfpc}{$H+}
 
@@ -25,7 +27,6 @@ uses
 type
   TLazCtrlPalette = array of TFPColor;
 
-{off $DEFINE CheckMinXGraph}
 const
   DefaultLvlGraphNodeImageEffect = gdeNormal;
 type
@@ -3070,7 +3071,6 @@ begin
 end;
 
 procedure TLvlGraph.CreateTopologicalLevels(HighLevels: boolean);
-{$DEFINE LvlGraphConsistencyCheck}
 var
   ExtNodes: TAvlTree; // tree of TGraphLevelerNode sorted by Node
   MaxLevel: Integer;
