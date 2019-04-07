@@ -120,6 +120,7 @@ type
   TLvlGraphEdge = class(TPersistent)
   private
     FBackEdge: boolean;
+    FNoGapCircle: boolean; // a circle between 2 nodes, with no levels between => both edges paint in the same location
     FDrawnAt: TRect;
     FHighlighted: boolean;
     FSource: TLvlGraphNode;
@@ -2429,6 +2430,25 @@ var
   s: integer;
 begin
   r:=Edge.DrawnAt;
+  if Edge.FNoGapCircle then begin
+    if EdgeStyle.Shape = lgesCurved then begin
+      if Edge.BackEdge then begin
+        SourceStraighenFactor := -0.4;
+        TargetStraighenFactor :=  0.4;
+      end else begin
+        SourceStraighenFactor :=  0.4;
+        TargetStraighenFactor := -0.4;
+      end;
+    end else begin
+      if Edge.BackEdge then begin
+        inc(r.Top, 2);
+        inc(r.Bottom, 2);
+      end else begin
+        dec(r.Top);
+        dec(r.Bottom);
+      end;
+    end;
+  end;
   s:=round(Edge.Weight*PixelPerWeight);
   if s>1 then begin
     case EdgeStyle.Shape of
@@ -3399,16 +3419,32 @@ end;
 procedure TLvlGraph.MarkBackEdges;
 var
   i: Integer;
-  Node: TLvlGraphNode;
-  j: Integer;
+  Node, OtherNode: TLvlGraphNode;
+  j, k: Integer;
   Edge: TLvlGraphEdge;
 begin
+  for i:=0 to NodeCount-1 do
+    for j := 0 to Nodes[i].OutEdgeCount-1 do
+      Nodes[i].OutEdges[j].FNoGapCircle := False;
   for i:=0 to NodeCount-1 do begin
     Node:=Nodes[i];
     for j:=Node.OutEdgeCount-1 downto 0 do begin // Edges may be removed/replaced
       Edge:=Node.OutEdges[j];
       if Edge.IsBackEdge then
         Edge.RevertDirection;
+      if Edge.Source.Level.Index = Edge.Target.Level.Index - 1 then begin
+        // check for circles of exactly 2 nodes, with no levels between
+        OtherNode := Edge.Source;
+        for k := 0 to OtherNode.OutEdgeCount - 1 do begin
+          if (OtherNode.OutEdges[k] <> Edge) and
+             (OtherNode.OutEdges[k].Target = Node) and
+             (not OtherNode.OutEdges[k].BackEdge)
+          then begin
+            Edge.FNoGapCircle := True;
+            OtherNode.OutEdges[k].FNoGapCircle := True;
+          end;
+        end;
+      end;
     end;
   end;
 end;
