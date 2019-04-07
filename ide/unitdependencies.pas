@@ -232,6 +232,7 @@ type
     fImgIndexProject: integer;
     fImgIndexUnit: integer;
     fImgIndexPackage: integer;
+    fImgIndexPackageRequired: integer;
     fImgIndexDirectory: integer;
     fImgIndexOverlayImplUses: integer;
     fImgIndexOverlayIntfCycle: integer;
@@ -548,7 +549,8 @@ begin
 
   fImgIndexProject   := IDEImages.LoadImage('item_project');
   fImgIndexUnit      := IDEImages.LoadImage('item_unit');
-  fImgIndexPackage   := IDEImages.LoadImage('pkg_required');
+  fImgIndexPackage          := IDEImages.LoadImage('item_package');
+  fImgIndexPackageRequired   := IDEImages.LoadImage('pkg_required');
   fImgIndexDirectory := IDEImages.LoadImage('pkg_files');
   fImgIndexOverlayImplUses := IDEImages.LoadImage('pkg_core_overlay');
   fImgIndexOverlayIntfCycle := IDEImages.LoadImage('ce_cycleinterface');
@@ -1742,6 +1744,7 @@ begin
     NodeStyle.GapBottom:=5;
     Parent:=GroupsTabSheet;
     OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
+    Images:=IDEImages.Images_16;
   end;
 
   GroupsSplitter.Top:=GroupsLvlGraph.Height;
@@ -1756,6 +1759,7 @@ begin
     Parent:=GroupsTabSheet;
     OnSelectionChanged:=@UnitsLvlGraphSelectionChanged;
     OnMouseDown:=@UnitsLvlGraphMouseDown;
+    Images:=IDEImages.Images_16;
   end;
 end;
 
@@ -1826,7 +1830,7 @@ var
   i: Integer;
   RequiredPkg: TIDEPackage;
   GroupObj: TObject;
-  GraphGroup: TLvlGraphNode;
+  GraphGroup, ReqNode: TLvlGraphNode;
   UnitNode: TAVLTreeNode;
   GrpUnit: TUDUnit;
   UsedUnit: TUDUnit;
@@ -1846,9 +1850,11 @@ begin
       // project
       GroupObj:=LazarusIDE.ActiveProject;
       GraphGroup.Selected:=true;
+      GraphGroup.ImageIndex := fImgIndexProject;
     end else begin
       // package
       GroupObj:=PackageEditingInterface.FindPackageWithName(Group.Name);
+      GraphGroup.ImageIndex := fImgIndexPackage;
     end;
     if GroupObj<>nil then begin
       // add lpk dependencies
@@ -1859,7 +1865,9 @@ begin
           // add for each dependency an edge in the Graph
           for i:=0 to PkgList.Count-1 do begin
             RequiredPkg:=TIDEPackage(PkgList[i]);
-            Graph.GetEdge(GraphGroup,Graph.GetNode(RequiredPkg.Name,true),true);
+            ReqNode:=Graph.GetNode(RequiredPkg.Name,true);
+            ReqNode.ImageIndex := fImgIndexPackage;
+            Graph.GetEdge(GraphGroup,ReqNode,true);
           end;
         end;
       finally
@@ -1951,6 +1959,7 @@ begin
       GroupUnit:=TUDUnit(NewUnits.GetNodeData(AVLNode)^.Value);
       SourceGraphNode:=Graph.GetNode(UnitToCaption(GroupUnit),true);
       SourceGraphNode.Data:=GroupUnit;
+      SourceGraphNode.ImageIndex := fImgIndexUnit;
       if GroupUnit.UsesUnits<>nil then begin
         for i:=0 to GroupUnit.UsesUnits.Count-1 do begin
           CurUses:=TUDUses(GroupUnit.UsesUnits[i]);
@@ -1959,6 +1968,7 @@ begin
           if not NewGroups.Contains(UsedUnit.Group.Name) then continue;
           TargetGraphNode:=Graph.GetNode(UnitToCaption(UsedUnit),true);
           TargetGraphNode.Data:=UsedUnit;
+          TargetGraphNode.ImageIndex := fImgIndexUnit;
           Graph.GetEdge(SourceGraphNode,TargetGraphNode,true);
         end;
       end;
@@ -2173,7 +2183,7 @@ begin
     if IsProjectGroup(Node.Group) then
       Result:=fImgIndexProject
     else
-      Result:=fImgIndexPackage;
+      Result:=fImgIndexPackageRequired;
   udnDirectory: Result:=fImgIndexDirectory;
   //udnInterface: ;
   //udnImplementation: ;
