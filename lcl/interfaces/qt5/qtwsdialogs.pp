@@ -444,10 +444,10 @@ begin
   {------------------------------------------------------------------------------
     Code to call the dialog
    ------------------------------------------------------------------------------}
-  if FileDialog is TSaveDialog then
+  if (FileDialog is TSaveDialog) or (FileDialog is TSavePictureDialog) then
     QtFileDialog.setAcceptMode(QFileDialogAcceptSave)
   else
-  if FileDialog is TOpenDialog then
+  if (FileDialog is TOpenDialog) or (FileDialog is TOpenPictureDialog) then
     QtFileDialog.setAcceptMode(QFileDialogAcceptOpen)
   else
   if ACommonDialog is TSelectDirectoryDialog then
