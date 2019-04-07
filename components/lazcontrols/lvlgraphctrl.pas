@@ -3643,7 +3643,7 @@ begin
   Result:=TAvlTree.Create;
   Visited:=TAvlTree.Create;
   try
-    Search(Source);
+    Search(Target);
   finally
     Visited.Free;
   end;
