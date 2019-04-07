@@ -673,7 +673,7 @@ procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph); overload;
 procedure LvlGraphHighlightNode(Node: TLvlGraphNode;
   HighlightedElements: TAvlTree; FollowIn, FollowOut: boolean);
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
-procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer);
+procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer; StraightenLeft, StraightenRight: Single);
 function NodeAVLTreeToNodeArray(Nodes: TAvlTree; RemoveHidden: boolean; FreeTree: boolean): TLvlGraphNodeArray;
 function NodeArrayAsString(Nodes: TLvlGraphNodeArray): String;
 
@@ -1040,32 +1040,36 @@ begin
   Result:=LNode1.IndexInLevel-LNode2.IndexInLevel;
 end;
 
-procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas;
-  x1, y1, x2, y2: integer);
-var
-  b: TBezier;
-  Points: PPoint;
-  Count: Longint;
-  p: PPoint;
-  i: Integer;
+procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas; x1, y1, x2,
+  y2: integer; StraightenLeft, StraightenRight: Single);
+//var
+//  b: TBezier;
+//  Points: PPoint;
+//  Count: Longint;
+//  p: PPoint;
+//  i: Integer;
 begin
-  Canvas.PolyBezier([Point(x1,y1),Point(x1+10,y1),Point(x2-10,y2),Point(x2,y2)]);
+  Canvas.PolyBezier([
+    Point(x1,y1),
+    Point(x1+10,y1-Trunc(0.5+10*StraightenLeft)),
+    Point(x2-10,y2+Trunc(0.5+10*StraightenRight)),
+    Point(x2,y2)]);
   exit;
-  b:=Bezier(Point(x1,y1),Point(x1+10,y1),Point(x2-10,y2),Point(x2,y2));
-  Points:=nil;
-  Count:=0;
-  Bezier2Polyline(b,Points,Count);
-  //debugln(['DrawCurvedLvlLeftToRightEdge Count=',Count]);
-  if Count=0 then exit;
-  p:=Points;
-  Canvas.MoveTo(p^);
-  //debugln(['DrawCurvedLvlLeftToRightEdge Point0=',dbgs(p^)]);
-  for i:=1 to Count-1 do begin
-    inc(p);
-    //debugln(['DrawCurvedLvlLeftToRightEdge Point',i,'=',dbgs(p^)]);
-    Canvas.LineTo(p^);
-  end;
-  Freemem(Points);
+  //b:=Bezier(Point(x1,y1),Point(x1+10,y1),Point(x2-10,y2),Point(x2,y2));
+  //Points:=nil;
+  //Count:=0;
+  //Bezier2Polyline(b,Points,Count);
+  ////debugln(['DrawCurvedLvlLeftToRightEdge Count=',Count]);
+  //if Count=0 then exit;
+  //p:=Points;
+  //Canvas.MoveTo(p^);
+  ////debugln(['DrawCurvedLvlLeftToRightEdge Point0=',dbgs(p^)]);
+  //for i:=1 to Count-1 do begin
+  //  inc(p);
+  //  //debugln(['DrawCurvedLvlLeftToRightEdge Point',i,'=',dbgs(p^)]);
+  //  Canvas.LineTo(p^);
+  //end;
+  //Freemem(Points);
 end;
 
 function NodeAVLTreeToNodeArray(Nodes: TAvlTree; RemoveHidden: boolean;
@@ -2814,8 +2818,39 @@ end;
 procedure TCustomLvlGraphControl.DoDrawEdge(Edge: TLvlGraphEdge);
 var
   r: TRect;
-  s: integer;
+  s, Ascend, FarAscend: integer;
+  Source, Target, FarSource, FarTarget: TLvlGraphNode;
+  SourceStraighenFactor, TargetStraighenFactor: Single;
 begin
+  SourceStraighenFactor := 0;
+  TargetStraighenFactor := 0;
+  if EdgeStyle.Shape = lgesCurved then begin
+    Source := Edge.Source;
+    Target := Edge.Target;
+    Ascend := (Source.DrawCenter - Target.DrawCenter) * 1024
+              div (Target.Level.DrawPosition - Source.Level.DrawPosition);
+    if (not Source.Visible) and (Source.OutEdgeCount = 1) and (Source.InEdgeCount = 1) then begin
+      FarSource := Source.InEdges[0].Source;
+      FarAscend := (FarSource.DrawCenter - Source.DrawCenter) * 1024
+              div (Source.Level.DrawPosition - FarSource.Level.DrawPosition);
+      if ((Ascend < 0) and (FarAscend < 0)) then
+        SourceStraighenFactor := Max(Ascend, FarAscend) / 1024
+      else
+      if ((Ascend > 0) and (FarAscend > 0)) then
+        SourceStraighenFactor := Min(Ascend, FarAscend) / 1024;
+    end;
+    if (not Target.Visible) and (Target.OutEdgeCount = 1) and (Target.InEdgeCount = 1) then begin
+      FarTarget := Target.OutEdges[0].Target;
+      FarAscend := (Target.DrawCenter - FarTarget.DrawCenter) * 1024
+              div (FarTarget.Level.DrawPosition - Target.Level.DrawPosition);
+      if ((Ascend < 0) and (FarAscend < 0)) then
+        TargetStraighenFactor := Max(Ascend, FarAscend) / 1024
+      else
+      if ((Ascend > 0) and (FarAscend > 0)) then
+        TargetStraighenFactor := Min(Ascend, FarAscend) / 1024;
+    end;
+  end;
+
   r:=Edge.DrawnAt;
   if Edge.FNoGapCircle then begin
     if EdgeStyle.Shape = lgesCurved then begin
@@ -2842,14 +2877,14 @@ begin
     lgesStraight: Canvas.Line(r);
     lgesCurved:
       begin
-        DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top,r.Right,r.Bottom);
-        DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top+s,r.Right,r.Bottom+s);
+        DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top,r.Right,r.Bottom, SourceStraighenFactor, TargetStraighenFactor);
+        DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top+s,r.Right,r.Bottom+s, SourceStraighenFactor, TargetStraighenFactor);
       end;
     end;
   end else begin
     case EdgeStyle.Shape of
     lgesStraight: Canvas.Line(r);
-    lgesCurved: DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top,r.Right,r.Bottom);
+    lgesCurved: DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top,r.Right,r.Bottom, SourceStraighenFactor, TargetStraighenFactor);
     end;
   end;
 end;
