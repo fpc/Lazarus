@@ -240,6 +240,7 @@ type
     procedure InternalRemoveLevel(Lvl: TLvlGraphLevel);
   protected
     procedure SelectionChanged;
+    function NewLevelAtIndex(AnIndex, ASubGraphIndex: integer): TLvlGraphLevel;
   public
     Data: Pointer; // free for user data
     constructor Create;
@@ -282,6 +283,7 @@ type
     procedure FindIndependentGraphs;
     procedure CreateTopologicalLevels(HighLevels, ReduceBackEdges: boolean); // create levels from edges
     procedure MinimizeEdgeLens(HighLevels: boolean); // requires that BackEdge have been processed by procedure MarkBackEdges
+    procedure LimitLevelHeights(MaxHeight: integer; MaxHeightRel: Single);
     procedure SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode); // split long edges by adding hidden nodes
     procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
       HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer; out PixelPerWeight: single);
@@ -363,6 +365,8 @@ const
   DefaultLvlGraphEdgeHighlightColor     = clBlack;
   DefaultLvlGraphEdgeBackColor          = clRed;
   DefaultLvlGraphEdgeBackHighlightColor = clBlue;
+  DefaultMaxLevelHeightAbs              = 0;
+  DefaultMaxLevelHeightRel              = single(1.5);
 
 type
 
@@ -448,6 +452,28 @@ type
     property BackHighlightColor: TColor read FBackHighlightColor write SetBackHighlightColor default DefaultLvlGraphEdgeBackHighlightColor;
   end;
 
+  { TLvlGraphLimits }
+
+  TLvlGraphLimits = class(TPersistent)
+  private
+    FControl: TCustomLvlGraphControl;
+    FMaxLevelHeightAbs: integer;
+    FMaxLevelHeightRel: single;
+    procedure SetMaxLevelHeightAbs(AValue: integer);
+    procedure SetMaxLevelHeightRel(AValue: single);
+  public
+    constructor Create(AControl: TCustomLvlGraphControl);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    function Equals(Obj: TObject): boolean; override;
+    property Control: TCustomLvlGraphControl read FControl;
+  published
+    // Maximum amount of visible (user specified nodes) in a level. (0 = ignore)
+    property MaxLevelHeightAbs: integer read FMaxLevelHeightAbs write SetMaxLevelHeightAbs default DefaultMaxLevelHeightAbs;
+    // Relative max amount of visible nodes per level. Limit := Max(3, sqr(NodeCount) * MaxLevelHeightRel) / (0 = ignore)
+    property MaxLevelHeightRel: single read FMaxLevelHeightRel write SetMaxLevelHeightRel default DefaultMaxLevelHeightRel;
+  end;
+
   TLvlGraphControlFlag =  (
     lgcNeedInvalidate,
     lgcNeedAutoLayout,
@@ -481,6 +507,7 @@ type
     FGraph: TLvlGraph;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
+    FLimits: TLvlGraphLimits;
     FNodeStyle: TLvlGraphNodeStyle;
     FNodeUnderMouse: TLvlGraphNode;
     FOnDrawStep: TLvlGraphDrawEvent;
@@ -556,6 +583,7 @@ type
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property EdgeNearMouse: TLvlGraphEdge read FEdgeNearMouse write SetEdgeNearMouse;
     property EdgeStyle: TLvlGraphEdgeStyle read FEdgeStyle;
+    property Limits: TLvlGraphLimits read FLimits;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
     property ScrollTop: integer read FScrollTop write SetScrollTop;
@@ -1124,6 +1152,60 @@ end;
 function CompareLGNodeWithEdgeLenMinimizerNode(GNode, ANode: Pointer): integer;
 begin
   Result:=ComparePointer(GNode,ANode);
+end;
+
+{ TLvlGraphLimits }
+
+procedure TLvlGraphLimits.SetMaxLevelHeightAbs(AValue: integer);
+begin
+  if FMaxLevelHeightAbs = AValue then Exit;
+  FMaxLevelHeightAbs := AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphLimits.SetMaxLevelHeightRel(AValue: single);
+begin
+  if FMaxLevelHeightRel = AValue then Exit;
+  FMaxLevelHeightRel := AValue;
+  Control.Invalidate;
+end;
+
+constructor TLvlGraphLimits.Create(AControl: TCustomLvlGraphControl);
+begin
+  FControl:=AControl;
+  FMaxLevelHeightAbs := DefaultMaxLevelHeightAbs;
+  FMaxLevelHeightRel := DefaultMaxLevelHeightRel;
+end;
+
+destructor TLvlGraphLimits.Destroy;
+begin
+  FControl.FLimits:=nil;
+  inherited Destroy;
+end;
+
+procedure TLvlGraphLimits.Assign(Source: TPersistent);
+var
+  Src: TLvlGraphLimits;
+begin
+  if Source is TLvlGraphLimits then begin
+    Src:=TLvlGraphLimits(Source);
+    MaxLevelHeightAbs := Src.MaxLevelHeightAbs;
+    MaxLevelHeightRel := Src.MaxLevelHeightRel;
+  end;
+  inherited Assign(Source);
+end;
+
+function TLvlGraphLimits.Equals(Obj: TObject): boolean;
+var
+  Src: TLvlGraphLimits;
+begin
+  Result:=inherited Equals(Obj);
+  if not Result then exit;
+  if Obj is TLvlGraphLimits then begin
+    Src:=TLvlGraphLimits(Obj);
+    Result:=(MaxLevelHeightAbs=Src.MaxLevelHeightAbs)
+        and (MaxLevelHeightRel=Src.MaxLevelHeightRel);
+  end;
 end;
 
 constructor TGraphEdgeLenMinimizerTree.Create;
@@ -2189,9 +2271,17 @@ begin
 end;
 
 constructor TLvlGraphLevel.Create(TheGraph: TLvlGraph; TheIndex: integer);
+var
+  i: Integer;
 begin
   FGraph:=TheGraph;
-  FGraph.fLevels.Add(Self);
+  if TheIndex < FGraph.fLevels.Count then begin
+    FGraph.fLevels.Insert(TheIndex, Self);
+    for i := TheIndex + 1 to FGraph.fLevels.Count - 1 do
+      TLvlGraphLevel(FGraph.fLevels[i]).FIndex := TLvlGraphLevel(FGraph.fLevels[i]).Index + 1;
+  end
+  else
+    FGraph.fLevels.Add(Self);
   FIndex:=TheIndex;
   fNodes:=TFPList.Create;
   if Graph<>nil then
@@ -2957,6 +3047,7 @@ begin
   FGraph.OnStructureChanged:=@GraphStructureChanged;
   FNodeStyle:=TLvlGraphNodeStyle.Create(Self);
   FEdgeStyle:=TLvlGraphEdgeStyle.Create(Self);
+  FLimits:=TLvlGraphLimits.Create(Self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange:=@ImageListChange;
   ShowHint:=true;
@@ -2973,6 +3064,7 @@ begin
   FGraph.OnStructureChanged:=nil;
   FGraph.Free;
   FGraph:=nil;
+  FreeAndNil(FLimits);
   FreeAndNil(FEdgeStyle);
   FreeAndNil(FNodeStyle);
   inherited Destroy;
@@ -3029,6 +3121,9 @@ begin
 
     if lgoMinimizeEdgeLens in Options then
       Graph.MinimizeEdgeLens(lgoHighLevels in Options);
+
+    if (Limits.MaxLevelHeightAbs > 0) or (Limits.MaxLevelHeightRel > 0) then
+      Graph.LimitLevelHeights(Limits.MaxLevelHeightAbs, Limits.MaxLevelHeightRel);
 
     Graph.SplitLongEdges(EdgeStyle.SplitMode);
 
@@ -3451,6 +3546,19 @@ begin
   Invalidate;
   if OnSelectionChanged<>nil then
     OnSelectionChanged(Self);
+end;
+
+function TLvlGraph.NewLevelAtIndex(AnIndex, ASubGraphIndex: integer
+  ): TLvlGraphLevel;
+var
+  i: Integer;
+begin
+  Result := FLevelClass.Create(Self,AnIndex);
+  SubGraphs[ASubGraphIndex].FHighestLevel := SubGraphs[ASubGraphIndex].HighestLevel + 1;
+  for i := ASubGraphIndex+1 to SubGraphCount - 1 do begin
+    SubGraphs[i].FLowestLevel := SubGraphs[i].LowestLevel + 1;
+    SubGraphs[i].FHighestLevel := SubGraphs[i].HighestLevel + 1;
+  end
 end;
 
 procedure TLvlGraph.CreateTopologicalLevels(HighLevels, ReduceBackEdges: boolean);
@@ -4029,6 +4137,102 @@ begin
 
   finally
     NodeTree.Free;
+  end;
+end;
+
+procedure TLvlGraph.LimitLevelHeights(MaxHeight: integer; MaxHeightRel: Single);
+var
+  SubGraphIdx, LowLevelIdx, HighLevelIdx, CurLevelIdx: Integer;
+  CurNodeCount, CurMaxHeight: Integer;
+  i, j, w, LevelsNeeded, TargetLvlCnt: Integer;
+  CurLevel: TLvlGraphLevel;
+  CurNode: TLvlGraphNode;
+  NodeWeights: array of record
+    Node: TLvlGraphNode;
+    Weight: integer;
+  end;
+  CurrentSubGraph: TLvlGraphSubGraph;
+begin
+  if LevelCount = 0 then
+    exit;
+  NodeWeights := nil;
+  For SubGraphIdx := 0 to SubGraphCount-1 do begin
+    CurrentSubGraph := SubGraphs[SubGraphIdx];
+  //For SubGraphIdx := 0 to Max(0, FSubGraphCount-1) do begin
+    // Find Lowest/Highest level for subgraph
+    LowLevelIdx := CurrentSubGraph.LowestLevel;
+    HighLevelIdx := CurrentSubGraph.HighestLevel;
+    CurNodeCount := 0;
+    for i := LowLevelIdx to HighLevelIdx do
+      CurNodeCount := CurNodeCount + Levels[i].Count;
+
+    // Calculate CurMaxHeight for SubGraph
+    if MaxHeightRel > 0 then begin
+      if MaxHeight > 0 then
+        CurMaxHeight := Min(MaxHeight, Max(3, Trunc(0.5 + sqrt(CurNodeCount)*MaxHeightRel)))
+      else
+        CurMaxHeight := Max(3, Trunc(0.5 + sqrt(CurNodeCount)*MaxHeightRel));
+    end
+    else
+      CurMaxHeight := MaxHeight;
+    if CurMaxHeight <= 0 then Continue;
+
+    // Process each level
+    CurLevelIdx := HighLevelIdx + 1;
+    while CurLevelIdx > LowLevelIdx do begin
+      dec(CurLevelIdx);
+      CurLevel := Levels[CurLevelIdx];
+      if CurLevel.Count <= CurMaxHeight then
+        continue;
+
+      if Length(NodeWeights) < CurLevel.Count then
+        SetLength(NodeWeights, CurLevel.Count + 8);
+
+      for i := 0 to CurLevel.Count - 1 do begin
+        CurNode := CurLevel.Nodes[i];
+        if CurNode.InEdgeCount = 0 then
+          w := CurNodeCount * CurNode.OutEdgeCount
+        else
+        if CurNode.OutEdgeCount = 0 then
+          w := -CurNodeCount * CurNode.InEdgeCount
+        else
+          w := CurNode.OutEdgeCount - CurNode.InEdgeCount;
+        // if w=0 then // find outher criteria; edge length...
+        //DebugLn(w=0, ['LimitLevelHeights has node with zero weight. L=', CurLevel.Index, ' N=',CurNode.IndexInLevel, ' ', CurNode.Caption]);
+
+        j := 0;
+        while (j < i) and (NodeWeights[j].Weight < w) do
+          inc(j);
+        if j < i then
+          move(NodeWeights[j], NodeWeights[j+1], (i-j) * SizeOf(NodeWeights[0]));
+        NodeWeights[j].Node := CurNode;
+        NodeWeights[j].Weight := w;
+      end;
+
+      LevelsNeeded := (CurLevel.Count-1) div CurMaxHeight + 1;
+      assert(LevelsNeeded > 1, 'LimitLevelHeights: LevelsNeeded > 1');
+      for i := 0 to LevelsNeeded-2 do
+        NewLevelAtIndex(CurLevelIdx+1, SubGraphIdx);
+
+      i := CurLevel.Count;
+      while LevelsNeeded > 1 do begin
+        TargetLvlCnt := i div LevelsNeeded;
+        j := min(i, CurMaxHeight); // Nodes with no InEdge should be moved until MaxHeight, even if the distribution of nodes will be uneven
+        dec(LevelsNeeded);
+        CurLevel := Levels[CurLevelIdx+LevelsNeeded];
+        while ( (TargetLvlCnt > 0) or
+                ( (j > 0) and (NodeWeights[i-1].Weight>=CurNodeCount) )
+              ) and
+              not( (i<=MaxHeight) and (NodeWeights[i-1].Weight<=-CurNodeCount) )  // Keep as many Nodes with no outedge, in the left most column
+        do begin
+          dec(i);
+          NodeWeights[i].Node.Level := CurLevel;
+          dec(TargetLvlCnt);
+          dec(j);
+        end;
+      end;
+
+    end;
   end;
 end;
 
