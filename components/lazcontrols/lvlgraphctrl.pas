@@ -70,6 +70,7 @@ type
     procedure SetCaption(AValue: string);
     procedure SetColor(AValue: TFPColor);
     procedure OnLevelDestroy;
+    procedure SetDrawCenter(AValue: integer);
     procedure SetDrawSize(AValue: integer);
     procedure SetImageEffect(AValue: TGraphicsDrawEffect);
     procedure SetImageIndex(AValue: integer);
@@ -81,6 +82,7 @@ type
     procedure SetVisible(AValue: boolean);
     procedure UnbindLevel;
     procedure SelectionChanged;
+    function GetDrawCenter: integer;
   protected
     property SubGraph: Integer read FSubGraph write SetSubGraph;
   public
@@ -115,7 +117,7 @@ type
     property PrevSelected: TLvlGraphNode read FPrevSelected;
     property DrawPosition: integer read FDrawPosition write FDrawPosition; // position in a level
     property DrawSize: integer read FDrawSize write SetDrawSize default 1;
-    function DrawCenter: integer;
+    property DrawCenter: integer read GetDrawCenter write SetDrawCenter;
     function DrawPositionEnd: integer;// = DrawPosition+Max(InSize,OutSize)
     property DrawnCaptionRect: TRect read FDrawnCaptionRect; // last draw position of caption with scrolling
     property InWeight: single read FInWeight; // total weight of InEdges
@@ -293,6 +295,7 @@ type
     procedure MinimizeOverlappings(MinPos: integer = 0;
       NodeGapAbove: integer = 1; NodeGapBelow: integer = 1;
       aLevel: integer = -1); // set all Node.Position to minimize overlappings
+    procedure StraightenGraph;
     procedure SetColors(Palette: TLazCtrlPalette);
 
     // debugging
@@ -306,13 +309,14 @@ type
     lgoReduceBackEdges, // CreateTopologicalLevels (AutoLayout) will attempts to find an order with less BackEdges
     lgoHighLevels, // put nodes topologically at higher levels
     lgoMinimizeEdgeLens, // If nodes are not fixed to a level by neighbours on both side, find the level which reduces total edge len the most
+    lgoStraightenGraph, // Minimize vertical up/down movement of edges
     lgoHighlightNodeUnderMouse, // when mouse over node highlight node and its edges
     lgoHighlightEdgeNearMouse, // when mouse near an edge highlight edge and its edges, lgoHighlightNodeUnderMouse takes precedence
     lgoMouseSelects
     );
   TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
 const
-  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,
+  DefaultLvlGraphCtrlOptions = [lgoAutoLayout, lgoStraightenGraph,
           lgoHighlightNodeUnderMouse,lgoHighlightEdgeNearMouse,lgoMouseSelects];
 
 type
@@ -3150,6 +3154,9 @@ begin
     // position nodes without overlapping
     DoMinimizeOverlappings(HeaderHeight,GapInFront,GapBehind);
 
+    if lgoStraightenGraph in Options then
+      Graph.StraightenGraph;
+
     // node colors
     if NodeStyle.Coloring=lgncRGB then
       ColorNodesRandomRGB;
@@ -4533,6 +4540,297 @@ begin
   end;
 end;
 
+procedure TLvlGraph.StraightenGraph;
+const
+  DRAWPOS_UNKOWN = low(integer);
+type
+  TNodeInfo = record
+    TheNode: TLvlGraphNode;
+    TheNodeIdx: Integer;
+    TheLevelIdx: Integer;
+    DrawPosGapAbove: integer;
+    CurDrawPos, TmpDrawPos: Integer;
+  end;
+  PNodeInfo = ^TNodeInfo;
+var
+  NodeInfos: array of array of TNodeInfo;
+
+  function GetWantedDrawPosByAvgIn(NInfo: PNodeInfo): integer;
+  var
+    Node: TLvlGraphNode;
+    i: Integer;
+  begin
+    Node := NInfo^.TheNode;
+    if Node.InEdgeCount = 0 then
+      exit(DRAWPOS_UNKOWN);
+    Result := 0;
+    for i := 0 to Node.InEdgeCount - 1 do
+      Result := Result + Node.InEdges[i].Source.DrawCenter;
+    Result := (Result div (Node.InEdgeCount));
+  end;
+
+  function GetWantedDrawPosByAvgOut(NInfo: PNodeInfo): integer;
+  var
+    Node: TLvlGraphNode;
+    i: Integer;
+  begin
+    Node := NInfo^.TheNode;
+    if Node.OutEdgeCount = 0 then
+      exit(DRAWPOS_UNKOWN);
+    Result := 0;
+    for i := 0 to Node.OutEdgeCount - 1 do
+      Result := Result + Node.OutEdges[i].Target.DrawCenter;
+    Result := (Result div (Node.OutEdgeCount));
+  end;
+
+  procedure PreComputeWantedPositions(ALvlIdx, AnInWeight, AnOutWeight: integer);
+  var
+    Level: TLvlGraphLevel;
+    NodeIdx: Integer;
+    NInfo: PNodeInfo;
+  begin
+    Level := Levels[ALvlIdx];
+    if Level.Count = 0 then
+      exit;
+
+    if (AnInWeight > 0) and (AnOutWeight > 0) then
+      for NodeIdx := 0 to Level.Count - 1 do begin
+        NInfo := @NodeInfos[ALvlIdx, NodeIdx];
+        if (NInfo^.TheNode.OutEdgeCount > 0) and (NInfo^.TheNode.InEdgeCount > 0) then
+          NInfo^.TmpDrawPos := (
+            GetWantedDrawPosByAvgOut(NInfo) * AnOutWeight * NInfo^.TheNode.OutEdgeCount +
+            GetWantedDrawPosByAvgIn(NInfo) * AnInWeight * NInfo^.TheNode.InEdgeCount
+            ) div (AnOutWeight * NInfo^.TheNode.OutEdgeCount + AnInWeight * NInfo^.TheNode.InEdgeCount)
+        else
+        if (NInfo^.TheNode.OutEdgeCount > 0) then
+          NInfo^.TmpDrawPos := GetWantedDrawPosByAvgOut(NInfo)
+        else
+          NInfo^.TmpDrawPos := GetWantedDrawPosByAvgIn(NInfo);
+      end
+    else
+    if AnOutWeight > 0 then
+      for NodeIdx := 0 to Level.Count - 1 do begin
+        NInfo := @NodeInfos[ALvlIdx, NodeIdx];
+        NInfo^.TmpDrawPos := GetWantedDrawPosByAvgOut(NInfo);
+      end
+    else
+      for NodeIdx := 0 to Level.Count - 1 do begin
+        NInfo := @NodeInfos[ALvlIdx, NodeIdx];
+        NInfo^.TmpDrawPos := GetWantedDrawPosByAvgIn(NInfo);
+      end;
+
+  end;
+
+  procedure AdjustNodesInLevel(ALvlIdx, AMinDrawPos, AMaxDrawPos: integer);
+  var
+    Level: TLvlGraphLevel;
+    i, NodeIdx: Integer;
+    PushUpNeeded, PushUpAllowed, FreeGapAbove: Integer;
+    CurGroupWeight, CurGroupCnt, WantedPos: Integer;
+    NInfo, NInfoPrev, PushNode, PushNodePrev: PNodeInfo;
+    Node: TLvlGraphNode;
+  begin
+    Level := Levels[ALvlIdx];
+    if Level.Count = 0 then
+      exit;
+
+    NInfoPrev := @NodeInfos[ALvlIdx, 0];
+    if (NInfoPrev^.TmpDrawPos <> DRAWPOS_UNKOWN) and
+       (NInfoPrev^.TmpDrawPos >= AMinDrawPos + NInfoPrev^.DrawPosGapAbove)
+    then
+      NInfoPrev^.CurDrawPos := NInfoPrev^.TmpDrawPos
+    else
+      NInfoPrev^.CurDrawPos := AMinDrawPos + NInfoPrev^.DrawPosGapAbove;
+    NInfoPrev^.TheNode.DrawCenter := NInfoPrev^.CurDrawPos;
+
+    for NodeIdx := 1 to Level.Count - 1 do begin
+      NInfo := @NodeInfos[ALvlIdx, NodeIdx];
+      Node := NInfo^.TheNode;
+      if NInfo^.TmpDrawPos <> DRAWPOS_UNKOWN then begin
+        NInfo^.CurDrawPos := NInfo^.TmpDrawPos;
+        PushUpNeeded := (NInfoPrev^.CurDrawPos + NInfo^.DrawPosGapAbove) - NInfo^.TmpDrawPos;
+      end
+      else begin
+        NInfo^.CurDrawPos := NInfoPrev^.CurDrawPos + NInfo^.DrawPosGapAbove;
+        PushUpNeeded := 0;
+      end;
+
+      if PushUpNeeded > 0 then begin
+        NInfo^.CurDrawPos := NInfo^.TmpDrawPos + PushUpNeeded; // default pos
+        PushUpAllowed := 0;
+        // try to push up prev node
+        CurGroupWeight := 0; // negative: nodes have up-pull / positive: nodes have down-pull
+        CurGroupCnt := 0;
+        PushNode := NInfo;
+        while (PushNode <> nil) do begin
+          if PushNode^.TmpDrawPos <> DRAWPOS_UNKOWN then begin
+            CurGroupWeight := CurGroupWeight + PushNode^.TmpDrawPos - PushNode^.CurDrawPos;
+            inc(CurGroupCnt);
+          end;
+
+          if PushNode^.TheNodeIdx = 0 then begin
+            PushNodePrev := nil;
+            i := AMinDrawPos;
+          end
+          else begin
+            PushNodePrev := @NodeInfos[ALvlIdx, PushNode^.TheNodeIdx-1];
+            i := PushNodePrev^.CurDrawPos;
+          end;
+
+          FreeGapAbove := PushNode^.CurDrawPos - PushNode^.DrawPosGapAbove - i;
+          if (FreeGapAbove = 0) and (PushNodePrev = nil) then
+            break; // can not push any further
+          if (FreeGapAbove > 0) then begin
+            // push
+            if CurGroupWeight >= 0 then
+              break; // can not pull up
+            Assert((CurGroupCnt > 0) or (CurGroupWeight = 0), 'AdjustNodesInLevel: (CurGroupCnt > 0) or (CurGroupWeight = 0)');
+            i := 0;
+            if CurGroupCnt > 0 then
+              i := -(CurGroupWeight - CurGroupCnt div 2) div CurGroupCnt;
+            i := Min(Min(i, PushUpNeeded), FreeGapAbove);
+            PushUpAllowed := PushUpAllowed + i;
+            PushUpNeeded := PushUpNeeded - i;
+
+            if (PushUpNeeded <= 0) or (i < FreeGapAbove) then
+              break;
+            CurGroupWeight := CurGroupWeight + i * CurGroupCnt;
+          end;
+
+          PushNode := PushNodePrev;
+        end; // while (PushNode <> nil) do begin
+
+        if NInfo^.CurDrawPos - PushUpAllowed > AMaxDrawPos then // force pushup
+          PushUpAllowed := NInfo^.CurDrawPos - AMaxDrawPos;
+
+        if PushUpAllowed > 0 then begin
+          WantedPos := NInfo^.CurDrawPos - PushUpAllowed;
+          NInfo^.CurDrawPos := WantedPos;
+          NInfo^.TheNode.DrawCenter := WantedPos;
+          PushNode := NInfo;
+          i := 0; // the current (first) node wants to move
+          while (PushNode <> nil) and (PushNode^.TheNodeIdx > 0) do begin
+            WantedPos := WantedPos - PushNode^.DrawPosGapAbove;
+            PushNodePrev := @NodeInfos[ALvlIdx, PushNode^.TheNodeIdx-1];
+            if PushNodePrev^.CurDrawPos <= WantedPos then
+              break;
+            PushNodePrev^.CurDrawPos := WantedPos;
+            PushNodePrev^.TheNode.DrawCenter := WantedPos;
+            PushNode := PushNodePrev;
+          end;
+        end;
+      end
+
+      else // if PushUpNeeded > 0 then begin
+      if (NInfoPrev^.TmpDrawPos = DRAWPOS_UNKOWN) then begin
+        // re-distribute nodes with unknown weight to avg between upper/lower
+        // They depend on the nodes on the other side, but that is a cyclic dependecy....
+        PushNode := NInfoPrev;
+        CurGroupCnt := 1;
+        while (PushNode <> nil) and (PushNode^.TmpDrawPos = DRAWPOS_UNKOWN) do begin
+          PushNodePrev := PushNode; // node below
+          inc(CurGroupCnt);
+          if PushNode^.TheNodeIdx > 0 then
+            PushNode := @NodeInfos[ALvlIdx, PushNode^.TheNodeIdx-1]
+          else
+            PushNode := nil;
+        end;
+        FreeGapAbove := 0;
+        if PushNode <> nil then
+          FreeGapAbove := NInfo^.CurDrawPos - NInfo^.DrawPosGapAbove - NInfoPrev^.CurDrawPos;
+        PushNode := NInfoPrev;
+        PushNodePrev := NInfo;
+        while (PushNode <> nil) and (PushNode^.TmpDrawPos = DRAWPOS_UNKOWN) do begin
+          i := FreeGapAbove div CurGroupCnt;
+          WantedPos := PushNodePrev^.CurDrawPos - PushNodePrev^.DrawPosGapAbove - i;
+          FreeGapAbove := FreeGapAbove - i;
+          dec(CurGroupCnt);
+          PushNode^.CurDrawPos := WantedPos;
+          PushNode^.TheNode.DrawCenter := WantedPos;
+          PushNodePrev := PushNode;
+          if PushNode^.TheNodeIdx > 0 then
+            PushNode := @NodeInfos[ALvlIdx, PushNode^.TheNodeIdx-1]
+          else
+            PushNode := nil;
+        end;
+      end;
+
+      Node.DrawCenter := NInfo^.CurDrawPos;
+      NInfoPrev:= NInfo;
+    end;
+  end;
+
+  procedure ProcessSubGraph(ALowLevelIdx, AHighLevelIdx: integer);
+  var
+    MaxLevelCount, LvlIdx: integer;
+    j, c, MaxDrawPos, MaxLvlIdx: integer;
+    Node: TLvlGraphNode;
+    Level: TLvlGraphLevel;
+    NInfo, NInfoPrev: PNodeInfo;
+  begin
+    if AHighLevelIdx <= ALowLevelIdx then
+      exit;
+    MaxLvlIdx := -1;
+    MaxLevelCount := 0;
+    MaxDrawPos := 0;
+    SetLength(NodeInfos, LevelCount);
+    NInfoPrev := nil;
+    for LvlIdx := ALowLevelIdx to AHighLevelIdx do begin
+      Level := Levels[LvlIdx];
+      if Level.Count > MaxLevelCount then
+        MaxLevelCount := Level.Count;
+      SetLength(NodeInfos[LvlIdx], Level.Count);
+      c := Level.Count - 1;
+      for j := 0 to c do begin
+        Node := Level.Nodes[j];
+        NInfo := @NodeInfos[LvlIdx,j];
+        NInfo^.TheNode := Node;
+        NInfo^.TheNodeIdx := j;
+        NInfo^.TheLevelIdx := LvlIdx;
+        NInfo^.CurDrawPos := Node.DrawCenter;
+        if j = 0 then
+          NInfo^.DrawPosGapAbove := NInfo^.CurDrawPos
+        else
+          NInfo^.DrawPosGapAbove := NInfo^.CurDrawPos - NInfoPrev^.CurDrawPos;
+        NInfoPrev := NInfo;
+      end;
+      if (c > 0) and (Node.DrawCenter > MaxDrawPos) then begin
+        MaxDrawPos := Node.DrawCenter;
+        MaxLvlIdx := LvlIdx;
+      end;
+    end;
+    if MaxLvlIdx < 0 then
+      exit;
+
+
+    for LvlIdx := MaxLvlIdx+1 to AHighLevelIdx do begin
+      PreComputeWantedPositions(LvlIdx, 1, 0);
+      AdjustNodesInLevel(LvlIdx, 0, MaxDrawPos);
+    end;
+    for LvlIdx := MaxLvlIdx-1 downto ALowLevelIdx do begin
+      PreComputeWantedPositions(LvlIdx, 0, 1);
+      AdjustNodesInLevel(LvlIdx, 0, MaxDrawPos);
+    end;
+
+    for j := 0 to 1 do begin
+      for LvlIdx := ALowLevelIdx to AHighLevelIdx do begin
+        PreComputeWantedPositions(LvlIdx, 1, 1);
+        AdjustNodesInLevel(LvlIdx, 0, MaxDrawPos);
+      end;
+      for LvlIdx := AHighLevelIdx downto ALowLevelIdx do begin
+        PreComputeWantedPositions(LvlIdx, 1, 1);
+        AdjustNodesInLevel(LvlIdx, 0, MaxDrawPos);
+      end;
+    end;
+  end;
+
+var
+  i: Integer;
+begin
+  For i := 0 to SubGraphCount-1 do
+    ProcessSubGraph(SubGraphs[i].LowestLevel, SubGraphs[i].HighestLevel);
+end;
+
 procedure TLvlGraph.SetColors(Palette: TLazCtrlPalette);
 var
   i: Integer;
@@ -4828,6 +5126,11 @@ begin
     fLevel:=nil;
 end;
 
+procedure TLvlGraphNode.SetDrawCenter(AValue: integer);
+begin
+  DrawPosition := AValue-(DrawSize div 2);
+end;
+
 procedure TLvlGraphNode.SetDrawSize(AValue: integer);
 begin
   if FDrawSize=AValue then Exit;
@@ -5113,7 +5416,7 @@ begin
   end;
 end;
 
-function TLvlGraphNode.DrawCenter: integer;
+function TLvlGraphNode.GetDrawCenter: integer;
 begin
   Result:=DrawPosition+(DrawSize div 2);
 end;
