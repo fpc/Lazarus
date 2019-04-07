@@ -453,10 +453,25 @@ type
     property Items[Index: Integer]: TCustomDesktopOpt read GetItem; default;
   end;
 
+  { TIDESubOptions }
+
+  TIDESubOptions = class(TPersistent)
+  private
+    FPath: string;
+  public
+    procedure ReadFromXml(AnXmlConf: TRttiXMLConfig);
+    procedure WriteToXml(AnXmlConf: TRttiXMLConfig);
+    procedure ReadFromXml(AnXmlConf: TRttiXMLConfig; APath: String); virtual; abstract;
+    procedure WriteToXml(AnXmlConf: TRttiXMLConfig; APath: String); virtual; abstract;
+    procedure Assign(Source: TPersistent); override;
+    property Path: String read FPath;
+  end;
+
   { TEnvironmentOptions - class for storing environment options }
 
   TEnvironmentOptions = class(TIDEEnvironmentOptions)
   private
+    fRegisteredSubConfig: TObjectList;
     FDebuggerAutoCloseAsm: boolean;
     // config file
     FFilename: string;
@@ -645,6 +660,7 @@ type
     function GetMakeFilename: string;
     function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
+    function GetSubConfig(Index: Integer): TIDESubOptions;
     function GetTestBuildDirectory: string;
     procedure LoadNonDesktop(Path: String);
     procedure SaveNonDesktop(Path: String);
@@ -671,6 +687,10 @@ type
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
     procedure DoAfterWrite(Restore: boolean); override;
+    procedure RegisterSubConfig(ASubConfig: TIDESubOptions; APath: String);
+    procedure UnRegisterSubConfig(ASubConfig: TIDESubOptions);
+    function SubConfigCount: integer;
+    property SubConfig[Index: Integer]: TIDESubOptions read GetSubConfig;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1084,6 +1104,24 @@ end;
 function dbgs(u: TMessageLineUrgency): string;
 begin
   WriteStr(Result, u);
+end;
+
+{ TIDESubOptions }
+
+procedure TIDESubOptions.ReadFromXml(AnXmlConf: TRttiXMLConfig);
+begin
+  ReadFromXml(AnXmlConf, FPath);
+end;
+
+procedure TIDESubOptions.WriteToXml(AnXmlConf: TRttiXMLConfig);
+begin
+  WriteToXml(AnXmlConf, FPath);
+end;
+
+procedure TIDESubOptions.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  FPath := TIDESubOptions(Source).FPath;
 end;
 
 { TDesktopOIOptions }
@@ -1615,6 +1653,7 @@ var
   u: TMessageLineUrgency;
 begin
   inherited Create;
+  fRegisteredSubConfig := TObjectList.Create(False);
   for o:=low(FParseValues) to high(FParseValues) do
     FParseValues[o].ParseStamp:=CTInvalidChangeStamp;
 
@@ -1773,6 +1812,7 @@ destructor TEnvironmentOptions.Destroy;
 var
   i: Integer;
 begin
+  FreeAndNil(fRegisteredSubConfig);
   FreeAndNil(FDesktops);
   FreeAndNil(FDesktop);
   FreeAndNil(FLastDesktopBeforeDebug);
@@ -1835,6 +1875,36 @@ begin
   //if not Restore then
   //  Save(False);
   inherited DoAfterWrite(Restore);
+end;
+
+procedure TEnvironmentOptions.RegisterSubConfig(ASubConfig: TIDESubOptions;
+  APath: String);
+var
+  i: Integer;
+begin
+  if (APath = '') or (APath = '/') then
+    raise Exception.Create('Empty SubConfig path');
+  if APath[Length(APath)-1] <> '/' then
+    APath := APath + '/';
+  if APath[1] = '/' then
+    delete(APath,1 ,1);
+  for i := 0 to SubConfigCount - 1 do
+    if SubConfig[i].FPath = APath then
+      raise Exception.Create('Duplicate SubConfig path');
+  fRegisteredSubConfig.Add(ASubConfig);
+  ASubConfig.FPath := APath;
+  if FXMLCfg <> nil then
+    ASubConfig.ReadFromXml(FXMLCfg, APath);
+end;
+
+procedure TEnvironmentOptions.UnRegisterSubConfig(ASubConfig: TIDESubOptions);
+begin
+  fRegisteredSubConfig.Remove(ASubConfig);
+end;
+
+function TEnvironmentOptions.SubConfigCount: integer;
+begin
+  Result := fRegisteredSubConfig.Count;
 end;
 
 procedure TEnvironmentOptions.EnableDebugDesktop;
@@ -2272,6 +2342,9 @@ begin
     Desktop.Assign(ActiveDesktop, False);
     Desktop.ExportSettingsToIDE(Self);
 
+    for i := 0 to SubConfigCount - 1 do
+      SubConfig[i].ReadFromXml(FXMLCfg);
+
     FileUpdated;
   except
     on E: Exception do
@@ -2604,6 +2677,9 @@ begin
       FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
       FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
     end;
+
+    for i := 0 to SubConfigCount - 1 do
+      SubConfig[i].WriteToXml(FXMLCfg);
 
     FXMLCfg.Flush;
     FileUpdated;
@@ -3204,6 +3280,11 @@ end;
 function TEnvironmentOptions.GetMsgViewColors(c: TMsgWndColor): TColor;
 begin
   Result:=fMsgViewColors[c];
+end;
+
+function TEnvironmentOptions.GetSubConfig(Index: Integer): TIDESubOptions;
+begin
+  Result := TIDESubOptions(fRegisteredSubConfig[Index]);
 end;
 
 function TEnvironmentOptions.GetTestBuildDirectory: string;
