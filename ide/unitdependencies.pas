@@ -1653,6 +1653,8 @@ var
   Pkg: TIDEPackage;
   j: Integer;
   PkgFile: TLazPackageFile;
+  GraphGroup: TLvlGraphNode;
+  UnitGroup: TUGGroup;
 begin
   FNewUsesGraph.TargetAll:=true;
 
@@ -1686,6 +1688,31 @@ begin
       AFilename:=SrcEdit.FileName;
       if FilenameIsPascalUnit(AFilename) then
         FNewUsesGraph.AddStartUnit(AFilename);
+    end;
+  end;
+
+  if udwNeedUpdateUnitsLvlGraph in FFlags then begin
+    GraphGroup:=GroupsLvlGraph.Graph.FirstSelected;
+    while GraphGroup<>nil do begin
+      UnitGroup:=TUGGroup(GraphGroup.Data);
+      if UnitGroup<>nil then begin
+        if UnitGroup.Units.FindLowest = nil then begin
+          Pkg := PackageEditingInterface.FindPackageWithName(UnitGroup.Name);
+          if (Pkg <> nil) and (Pkg.FileCount > 0) and (FilenameIsAbsolute(Pkg.Filename)) then begin
+            for j:=0 to Pkg.FileCount-1 do begin
+              PkgFile:=Pkg.Files[j];
+              if PkgFile.Removed then continue;
+              if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+              if not PkgFile.InUses then continue;
+              aFilename:=PkgFile.GetFullFilename;
+              if FilenameIsAbsolute(AFilename)
+              and FilenameIsPascalUnit(AFilename) then
+                FNewUsesGraph.AddStartUnit(AFilename);
+            end;
+          end;
+        end;
+      end;
+      GraphGroup:=GraphGroup.NextSelected;
     end;
   end;
 
@@ -1912,6 +1939,7 @@ var
   TargetGraphNode: TLvlGraphNode;
   NewGroups: TStringToPointerTree;
   UsedUnit: TUDUnit;
+  Pkg: TIDEPackage;
 begin
   Exclude(FFlags,udwNeedUpdateUnitsLvlGraph);
   NewGroups:=TStringToPointerTree.Create(false);
@@ -1924,6 +1952,11 @@ begin
       if UnitGroup<>nil then begin
         NewGroups[UnitGroup.Name]:=UnitGroup;
         AVLNode:=UnitGroup.Units.FindLowest;
+        if AVLNode = nil then begin
+          Pkg := PackageEditingInterface.FindPackageWithName(UnitGroup.Name);
+          if (Pkg <> nil) and (Pkg.FileCount > 0) and (FilenameIsAbsolute(Pkg.Filename)) then
+            Include(FFlags,udwNeedUpdateUnitsLvlGraph);
+        end;
         while AVLNode<>nil do begin
           GroupUnit:=TUDUnit(AVLNode.Data);
           NewUnits[GroupUnit.Filename]:=GroupUnit;
@@ -1932,6 +1965,8 @@ begin
       end;
       GraphGroup:=GraphGroup.NextSelected;
     end;
+    if udwNeedUpdateUnitsLvlGraph in FFlags then
+      StartParsing;
 
     // check if something changed
     Graph:=UnitsLvlGraph.Graph;
