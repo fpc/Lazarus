@@ -48,8 +48,9 @@ uses
   // IdeIntf
   IDECommands, PackageIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, IDEOptionDefs, Project,
-  PackageDefs, PackageSystem, PackageEditor, CleanPkgDeps;
+  LazarusIDEStrConsts, IDEOptionDefs, Project, DependencyGraphOptions,
+  EnvironmentOpts, MainIntf, PackageDefs, PackageSystem, PackageEditor,
+  CleanPkgDeps;
   
 const
   GroupPrefixProject = '-Project-';
@@ -63,6 +64,7 @@ type
   TPkgGraphExplorerDlg = class(TForm)
     ButtonPanel1: TButtonPanel;
     CleanPkgDepsMenuItem: TMenuItem;
+    GraphOptionsMenuItem: TMenuItem;
     PkgTreeView: TTreeView;
     InfoMemo: TMemo;
     LvlGraphControl1: TLvlGraphControl;
@@ -73,6 +75,7 @@ type
     UninstallMenuItem: TMenuItem;
     procedure CleanPkgDepsMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure GraphOptionsMenuItemClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure LvlGraphControl1DblClick(Sender: TObject);
     procedure LvlGraphControl1SelectionChanged(Sender: TObject);
@@ -87,6 +90,7 @@ type
     procedure PkgTreeViewSelectionChanged(Sender: TObject);
     procedure UninstallMenuItemClick(Sender: TObject);
   private
+    FPackageGraphOpts: TLvlGraphOptions;
     FOnOpenProject: TOnOpenProject;
     FOnUninstallPackage: TOnPkgEvent;
     ImgIndexProject: integer;
@@ -100,6 +104,9 @@ type
     FChangedDuringLock: boolean;
     FUpdateLock: integer;
     FUpdatingSelection: boolean;
+    procedure DoLoadedOpts(Sender: TObject);
+    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; AGraph: TLvlGraph
+      );
     procedure OpenDependencyOwner(DependencyOwner: TObject);
     procedure SetupComponents;
     function GetPackageImageIndex(Pkg: TLazPackage; InstallPkgList: TFPList): integer;
@@ -214,6 +221,18 @@ end;
 procedure TPkgGraphExplorerDlg.FormCreate(Sender: TObject);
 begin
   ButtonPanel1.OKButton.Caption:= lisClose;
+  GraphOptionsMenuItem.Caption := ShowOptions;
+end;
+
+procedure TPkgGraphExplorerDlg.GraphOptionsMenuItemClick(Sender: TObject);
+begin
+  if ShowDependencyGraphOptions(FPackageGraphOpts, LvlGraphControl1.Graph,
+    UnitDepOptionsForPackage, @GraphOptsApplyClicked) = mrOK then begin
+    FPackageGraphOpts.WriteToGraph(LvlGraphControl1);
+    UpdateLvlGraph;
+    LvlGraphControl1.AutoLayout;
+    MainIDEInterface.SaveEnvironment;
+  end;
 end;
 
 procedure TPkgGraphExplorerDlg.HelpButtonClick(Sender: TObject);
@@ -452,10 +471,17 @@ begin
   Caption:=lisMenuPackageGraph;
 
   SetupComponents;
+
+  FPackageGraphOpts := TLvlGraphOptions.Create;
+  FPackageGraphOpts.OnLoaded := @DoLoadedOpts;
+  EnvironmentOptions.RegisterSubConfig(FPackageGraphOpts, 'Packages/PackageGraph');
 end;
 
 destructor TPkgGraphExplorerDlg.Destroy;
 begin
+  if EnvironmentOptions <> nil then
+    EnvironmentOptions.UnRegisterSubConfig(FPackageGraphOpts);
+  FPackageGraphOpts.Free;
   inherited Destroy;
 end;
 
@@ -701,6 +727,19 @@ begin
     if Assigned(OnOpenProject) then
       OnOpenProject(Self,TProject(DependencyOwner));
   end;
+end;
+
+procedure TPkgGraphExplorerDlg.DoLoadedOpts(Sender: TObject);
+begin
+  FPackageGraphOpts.WriteToGraph(LvlGraphControl1);
+end;
+
+procedure TPkgGraphExplorerDlg.GraphOptsApplyClicked(AnOpts: TLvlGraphOptions;
+  AGraph: TLvlGraph);
+begin
+  AnOpts.WriteToGraph(LvlGraphControl1);
+  UpdateLvlGraph;
+  MainIDEInterface.SaveEnvironment;
 end;
 
 function TPkgGraphExplorerDlg.FindLvlGraphNodeWithText(const s: string): TLvlGraphNode;

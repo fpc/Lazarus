@@ -121,5 +121,9 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       Caption = 'Unneeded dependencies'
       OnClick = CleanPkgDepsMenuItemClick
     end
+    object GraphOptionsMenuItem: TMenuItem
+      Caption = 'GraphOptionsMenuItem'
+      OnClick = GraphOptionsMenuItemClick
+    end
   end
 end

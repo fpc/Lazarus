@@ -458,4 +458,12 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
     left = 465
     top = 175
   end
+  object GraphPopupMenu: TPopupMenu
+    left = 207
+    top = 70
+    object GraphOptsMenuItem: TMenuItem
+      Caption = 'GraphOptsMenuItem'
+      OnClick = GraphOptsMenuItemClick
+    end
+  end
 end

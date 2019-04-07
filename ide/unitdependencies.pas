@@ -50,7 +50,8 @@ uses
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf, IDECommands, IDEDialogs,
   // IDE
-  IDEOptionDefs, LazarusIDEStrConsts, UnusedUnitsDlg;
+  IDEOptionDefs, LazarusIDEStrConsts, UnusedUnitsDlg, DependencyGraphOptions,
+  MainIntf, EnvironmentOpts;
 
 const
   GroupPrefixProject = '-Project-';
@@ -156,6 +157,9 @@ type
     AllUnitsShowDirsSpeedButton: TSpeedButton;
     AllUnitsShowGroupNodesSpeedButton: TSpeedButton;
     AllUnitsTreeView: TTreeView; // Node.Data is TUDNode
+    GraphPopupMenu: TPopupMenu;
+    GraphOptsMenuItem: TMenuItem;
+    PopupMenu1: TPopupMenu;
     UnitGraphFilter: TCheckListBox;
     MainPageControl: TPageControl;
     UnitGraphOptionSplitter: TSplitter;
@@ -194,6 +198,7 @@ type
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure GraphOptsMenuItemClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure SelUnitsTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
@@ -226,6 +231,8 @@ type
     procedure UnitsTVPopupMenuPopup(Sender: TObject);
     procedure UnitsTVUnusedUnitsMenuItemClick(Sender: TObject);
   private
+    FPackageGraphOpts: TLvlGraphOptions;
+    FUnitGraphOpts: TLvlGraphOptions;
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
     FPendingUnitDependencyRoute: TStrings;
@@ -250,6 +257,7 @@ type
     FGroupLvlGraphSelectionsList: TStringList;
     function CreateAllUnitsTree: TUDNode;
     function CreateSelUnitsTree: TUDNode;
+    procedure DoLoadedOpts(Sender: TObject);
     procedure ExpandPendingUnitDependencyRoute(RootNode: TUDNode);
     procedure ConvertUnitNameRouteToPath(Route: TStrings); // inserts missing links
     procedure AddUsesSubNodes(UDNode: TUDNode);
@@ -257,6 +265,8 @@ type
       ParentTVNode: TTreeNode; ParentUDNode: TUDNode; Expand: boolean);
     procedure FreeUsesGraph;
     function GetPopupTV_UDNode(out UDNode: TUDNode): boolean;
+    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; AGraph: TLvlGraph
+      );
     procedure SelectNextSearchTV(TV: TTreeView; StartTVNode: TTreeNode;
       SearchNext, SkipStart: boolean);
     function FindNextTVNode(StartNode: TTreeNode;
@@ -571,11 +581,19 @@ begin
 
   Caption:=lisMenuViewUnitDependencies;
   RefreshButton.Caption:=dlgUnitDepRefresh;
+  GraphOptsMenuItem.Caption := ShowOptions;
 
   MainPageControl.ActivePage:=UnitsTabSheet;
 
   SetupUnitsTabSheet;
   SetupGroupsTabSheet;
+
+  FPackageGraphOpts := TLvlGraphOptions.Create;
+  FPackageGraphOpts.OnLoaded := @DoLoadedOpts;
+  FUnitGraphOpts := TLvlGraphOptions.Create;
+  FUnitGraphOpts.OnLoaded := @DoLoadedOpts;
+  EnvironmentOptions.RegisterSubConfig(FPackageGraphOpts, 'UnitDependencies/PackageGraph');
+  EnvironmentOptions.RegisterSubConfig(FUnitGraphOpts, 'UnitDependencies/UnitGraph');
 
   StartParsing;
 end;
@@ -615,6 +633,27 @@ begin
   AllUnitsFilterEdit.TextHint:=ResStrFilter;
   AllUnitsSearchEdit.TextHint:=ResStrSearch;
   SelUnitsSearchEdit.TextHint:=ResStrSearch;
+end;
+
+procedure TUnitDependenciesWindow.GraphOptsMenuItemClick(Sender: TObject);
+begin
+  if GraphPopupMenu.PopupComponent = GroupsLvlGraph then begin
+    if ShowDependencyGraphOptions(FPackageGraphOpts, GroupsLvlGraph.Graph,
+      UnitDepOptionsForPackage, @GraphOptsApplyClicked) = mrOK then begin
+      FPackageGraphOpts.WriteToGraph(GroupsLvlGraph);
+      UpdateGroupsLvlGraph;
+      MainIDEInterface.SaveEnvironment;
+    end;
+  end
+  else
+  begin
+    if ShowDependencyGraphOptions(FUnitGraphOpts, UnitsLvlGraph.Graph,
+      UnitDepOptionsForUnit, @GraphOptsApplyClicked) = mrOK then begin
+      FUnitGraphOpts.WriteToGraph(UnitsLvlGraph);
+      UpdateUnitsLvlGraph;
+      MainIDEInterface.SaveEnvironment;
+    end;
+  end;
 end;
 
 procedure TUnitDependenciesWindow.RefreshButtonClick(Sender: TObject);
@@ -815,6 +854,12 @@ begin
   FreeAndNil(FNewUsesGraph);
   FreeAndNil(FPendingUnitDependencyRoute);
   FreeAndNil(FGroupLvlGraphSelectionsList);
+  if EnvironmentOptions <> nil then begin
+    EnvironmentOptions.UnRegisterSubConfig(FPackageGraphOpts);
+    EnvironmentOptions.UnRegisterSubConfig(FUnitGraphOpts);
+  end;
+  FreeAndNil(FPackageGraphOpts);
+  FreeAndNil(FUnitGraphOpts);
 end;
 
 procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject
@@ -1478,6 +1523,14 @@ begin
   Result:=RootNode;
 end;
 
+procedure TUnitDependenciesWindow.DoLoadedOpts(Sender: TObject);
+begin
+  if Sender = FPackageGraphOpts then
+    FPackageGraphOpts.WriteToGraph(GroupsLvlGraph)
+  else
+    FUnitGraphOpts.WriteToGraph(UnitsLvlGraph);
+end;
+
 procedure TUnitDependenciesWindow.ExpandPendingUnitDependencyRoute(RootNode: TUDNode);
 var
   i: Integer;
@@ -1809,6 +1862,7 @@ begin
     Options := Options + [lgoMinimizeEdgeLens];
     OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
     Images:=IDEImages.Images_16;
+    PopupMenu := GraphPopupMenu;
   end;
 
   GroupsSplitter.Top:=GroupsLvlGraph.Height;
@@ -1825,6 +1879,7 @@ begin
     OnSelectionChanged:=@UnitsLvlGraphSelectionChanged;
     OnMouseDown:=@UnitsLvlGraphMouseDown;
     Images:=IDEImages.Images_16;
+    PopupMenu := GraphPopupMenu;
   end;
 end;
 
@@ -2181,6 +2236,22 @@ begin
   if (TVNode=nil) or not (TObject(TVNode.Data) is TUDNode) then exit;
   UDNode:=TUDNode(TVNode.Data);
   Result:=true;
+end;
+
+procedure TUnitDependenciesWindow.GraphOptsApplyClicked(
+  AnOpts: TLvlGraphOptions; AGraph: TLvlGraph);
+begin
+  if AGraph = GroupsLvlGraph.Graph then begin
+    AnOpts.WriteToGraph(GroupsLvlGraph);
+    UpdateGroupsLvlGraph;
+    GroupsLvlGraph.AutoLayout;
+  end
+  else begin
+    AnOpts.WriteToGraph(UnitsLvlGraph);
+    UpdateUnitsLvlGraph;
+    UnitsLvlGraph.AutoLayout;
+  end;
+  MainIDEInterface.SaveEnvironment;
 end;
 
 procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;

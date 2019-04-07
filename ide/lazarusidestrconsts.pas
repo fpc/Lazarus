@@ -6532,6 +6532,37 @@ resourcestring
   dbgEventWatchScopeEnded = 'Watchpoint for "%s" out of scope %s';
   dbgEventUnknownWatchPointScopeEnded = 'Unknown Watchpoint out of scope %s';
   rsAddNewTerm = 'Add new term';
+  LvlGraphSplitNone = 'None';
+  LvlGraphSplitSeparate = 'Separate';
+  LvlGraphSplitMergeAtSourc = 'Merge at source';
+  LvlGraphSplitMergeAtTarge = 'Merge at target';
+  LvlGraphSplitMergeAtHighe = 'Merge at highest';
+  LvlGraphShapeStraight = 'Straight';
+  LvlGraphShapeCurved = 'Curved';
+  LvlGraphShapeMinimizeEdge = 'Minimize edges len';
+  LvlGraphShapeCalculateLay = 'Calculate layout from high-edge';
+  LvlGraphStraightenGraph = 'Straighten graph';
+  LvlGraphNamesAboveNode = 'Names above node';
+  LvlGraphExtraSpacing = 'Extra spacing (x/y)';
+  LvlGraphAddHorizontalSpacing = 'Add horizontal spacing between columns';
+  LvlGraphAddVerticalSpacingAr = 'Add vertical spacing around nodes';
+  LvlGraphShapeEdgesSplitMo = 'Edges split mode';
+  LvlGraphShapeEdgesShape = 'Edges shape';
+  LvlGraphShapeNodes = 'Nodes';
+  LvlGraphOptEdges = 'Edges';
+  LvlGraphOptEdgeLen = 'Edge len';
+  LvlGraphOptLevels = 'Levels';
+  LvlGraphOptCrossings = 'Crossings';
+  LvlGraphOptSplitpoints = 'Splitpoints';
+  LvlGraphOptInfo = 'Info';
+  LvlGraphOptLimitHeightOfLvl = 'Limit height of Levels';
+  LvlGraphOptAbsoluteLimi = 'Absolute limit for height of levels';
+  LvlGraphOptLimitRelativ = 'Limit relative to node-count for height of levels.%0s'
+    +'Limit = min(3, val*sqrt(NodeCount))';
+  ShowOptions = 'Show options';
+  UnitDepOptionsForPackage = 'Options for Package graph';
+  UnitDepOptionsForUnit = 'Options for Unit graph';
+  LvlGraphReduceBackedges = 'Reduce backedges';
 
 implementation
 
