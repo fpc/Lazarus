@@ -43,8 +43,11 @@ type
 
   TQtComboStrings = class(TStringList)
   private
+    FSorted: Boolean;
     FWinControl: TWinControl;
     FOwner: TQtComboBox;
+    FChanging: boolean;
+    procedure SetSorted(AValue: Boolean);
   protected
     procedure Put(Index: Integer; const S: string); override;
     {$IFNDEF HAS_INHERITED_INSERTITEM}
@@ -54,13 +57,18 @@ type
   public
     constructor Create(AWinControl: TWinControl; AOwner: TQtComboBox);
     destructor Destroy; override;
+    function Add(const S: String): Integer; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    function Find(const S: String; out Index: Integer): Boolean;
+    function IndexOf(const S: String): Integer; override;
+    procedure Insert(Index: Integer; const S: String); override;
     procedure Sort; override;
     procedure Exchange(AIndex1, AIndex2: Integer); override;
   public
     property Owner: TQtComboBox read FOwner;
+    property Sorted: Boolean read FSorted write SetSorted;
   end;
 
 
@@ -463,6 +471,24 @@ end;
 
 { TQtComboStrings }
 
+procedure TQtComboStrings.SetSorted(AValue: Boolean);
+var
+  i: Integer;
+begin
+  if FSorted=AValue then Exit;
+  FSorted:=AValue;
+  if not FSorted then Exit;
+
+  for i := 0 to Count - 2 do
+  begin
+    if UTF8CompareText(Strings[i], Strings[i + 1]) < 0 then
+    begin
+      Sort;
+      Break;
+    end;
+  end;
+end;
+
 procedure TQtComboStrings.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
@@ -470,6 +496,7 @@ begin
   FOwner.setItemText(Index, S);
   FOwner.EndUpdate;
 end;
+
 {$IFNDEF HAS_INHERITED_INSERTITEM}
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
 var
@@ -490,6 +517,7 @@ begin
   FOwner.EndUpdate;
 end;
 {$ENDIF}
+
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 var
   FSavedIndex: Integer;
@@ -516,6 +544,8 @@ begin
   inherited Create;
   FWinControl := AWinControl;
   FOwner := AOwner;
+  FSorted := TComboBox(AOwner.LCLObject).Sorted;
+  FChanging := False;
 end;
 
 destructor TQtComboStrings.Destroy;
@@ -524,12 +554,38 @@ begin
   inherited Destroy;
 end;
 
-procedure TQtComboStrings.Assign(Source: TPersistent);
+function TQtComboStrings.Add(const S: String): Integer;
 begin
+  if FSorted then
+  begin
+    Find(S, Result);
+    FChanging := True;
+    Insert(Result, S);
+    FChanging := False;
+  end else
+    Result := inherited Add(S);
+end;
+
+procedure TQtComboStrings.Assign(Source: TPersistent);
+var
+  AList: TStringList;
+begin
+  if (Source = Self) or (Source = nil) then Exit;
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
     FOwner.BeginUpdate;
-    inherited Assign(Source);
+    if Sorted then
+    begin
+      AList := TStringList.Create;
+      try
+        AList.Assign(Source);
+        AList.Sort;
+        inherited Assign(AList);
+      finally
+        AList.Free;
+      end;
+    end else
+      inherited Assign(Source);
     FOwner.EndUpdate;
   end;
 end;
@@ -555,6 +611,56 @@ begin
     FOwner.removeItem(Index);
     FOwner.EndUpdate;
   end;
+end;
+
+function TQtComboStrings.Find(const S: String; out Index: Integer): Boolean;
+var
+  L, R, I: Integer;
+  CompareRes: PtrInt;
+begin
+  Result := False;
+  // Use binary search.
+  L := 0;
+  R := Count - 1;
+  while (L <= R) do
+  begin
+    I := L + (R - L) div 2;
+    CompareRes := UTF8CompareText(S, Strings[I]);
+    if (CompareRes > 0) then
+      L := I + 1
+    else
+    begin
+      R := I - 1;
+      if (CompareRes = 0) then
+      begin
+        Result := True;
+        L := I; // forces end of while loop
+      end;
+    end;
+  end;
+  Index := L;
+end;
+
+function TQtComboStrings.IndexOf(const S: String): Integer;
+begin
+  Result := -1;
+  if FSorted then
+  begin
+    //Binary Search
+    if not Find(S, Result) then
+      Result := -1;
+  end else
+    Result := inherited IndexOf(S);
+end;
+
+procedure TQtComboStrings.Insert(Index: Integer; const S: String);
+begin
+  if FSorted and not FChanging then
+  begin
+    inherited Insert(Index, S);
+    Sort;
+  end else
+    inherited Insert(Index, S);
 end;
 
 procedure TQtComboStrings.Sort;
