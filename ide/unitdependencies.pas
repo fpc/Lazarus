@@ -239,6 +239,7 @@ type
     fImgIndexOverlayImplCycle: integer;
     fAllUnitsTVSearchStartNode: TTreeNode;
     fSelUnitsTVSearchStartNode: TTreeNode;
+    FGroupLvlGraphSelectionsList: TStringList;
     function CreateAllUnitsTree: TUDNode;
     function CreateSelUnitsTree: TUDNode;
     procedure ExpandPendingUnitDependencyRoute(RootNode: TUDNode);
@@ -269,6 +270,7 @@ type
     procedure AddAdditionalFilesAsStartUnits;
     procedure SetupGroupsTabSheet;
     procedure SetupUnitsTabSheet;
+    procedure StoreGroupLvlGraphSelections;
     procedure UpdateUnitsButtons;
     procedure UpdateAll;
     procedure UpdateGroupsLvlGraph;
@@ -544,6 +546,7 @@ procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
   Name := NonModalIDEWindowNames[nmiwUnitDependenciesName];
 
+  FGroupLvlGraphSelectionsList := TStringList.Create;
   FPendingUnitDependencyRoute:=TStringList.Create;
   CreateUsesGraph(FUsesGraph,FGroups);
 
@@ -779,6 +782,7 @@ begin
   FreeAndNil(FNewGroups);
   FreeAndNil(FNewUsesGraph);
   FreeAndNil(FPendingUnitDependencyRoute);
+  FreeAndNil(FGroupLvlGraphSelectionsList);
 end;
 
 procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject
@@ -1835,6 +1839,20 @@ begin
   UpdateUnitsButtons;
 end;
 
+procedure TUnitDependenciesWindow.StoreGroupLvlGraphSelections;
+var
+  SelNode: TLvlGraphNode;
+begin
+  SelNode := GroupsLvlGraph.Graph.FirstSelected;
+  if SelNode = nil then
+    exit;
+  FGroupLvlGraphSelectionsList.Clear;
+  while SelNode <> nil do begin
+    FGroupLvlGraphSelectionsList.Add(SelNode.Caption);
+    SelNode := SelNode.NextSelected;
+  end;
+end;
+
 procedure TUnitDependenciesWindow.UpdateUnitsButtons;
 begin
   SearchCustomFilesComboBox.Enabled:=SearchCustomFilesCheckBox.Checked;
@@ -1864,19 +1882,25 @@ var
 begin
   Exclude(FFlags,udwNeedUpdateGroupsLvlGraph);
   GroupsLvlGraph.BeginUpdate;
+  GroupsLvlGraph.OnSelectionChanged:=nil;
   Graph:=GroupsLvlGraph.Graph;
+
+  StoreGroupLvlGraphSelections;
   Graph.Clear;
   AVLNode:=Groups.Groups.FindLowest;
   while AVLNode<>nil do begin
     Group:=TUGGroup(AVLNode.Data);
     AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
     GraphGroup:=Graph.GetNode(Group.Name,true);
+    if FGroupLvlGraphSelectionsList.IndexOf(Group.Name) >= 0 then
+      GraphGroup.Selected := True;
     GraphGroup.Data:=Group;
     GroupObj:=nil;
     if IsProjectGroup(Group) then begin
       // project
       GroupObj:=LazarusIDE.ActiveProject;
-      GraphGroup.Selected:=true;
+      GraphGroup.Selected:=(FGroupLvlGraphSelectionsList.Count=0) or
+        (FGroupLvlGraphSelectionsList.IndexOf(Group.Name)>= 0);
       GraphGroup.ImageIndex := fImgIndexProject;
     end else begin
       // package
@@ -1893,6 +1917,8 @@ begin
           for i:=0 to PkgList.Count-1 do begin
             RequiredPkg:=TIDEPackage(PkgList[i]);
             ReqNode:=Graph.GetNode(RequiredPkg.Name,true);
+            if FGroupLvlGraphSelectionsList.IndexOf(RequiredPkg.Name) >= 0 then
+              ReqNode.Selected := True;
             ReqNode.ImageIndex := fImgIndexPackage;
             Graph.GetEdge(GraphGroup,ReqNode,true);
           end;
@@ -1910,12 +1936,17 @@ begin
         for i:=0 to GrpUnit.UsesUnits.Count-1 do begin
           UsedUnit:=TUDUnit(TUDUses(GrpUnit.UsesUnits[i]).UsesUnit);
           if (UsedUnit.Group=nil) or (UsedUnit.Group=Group) then continue;
-          Graph.GetEdge(GraphGroup,Graph.GetNode(UsedUnit.Group.Name,true),true);
+          ReqNode := Graph.GetNode(UsedUnit.Group.Name,true);
+            if FGroupLvlGraphSelectionsList.IndexOf(UsedUnit.Group.Name) >= 0 then
+              ReqNode.Selected := True;
+          Graph.GetEdge(GraphGroup,ReqNode,true);
         end;
       end;
     end;
   end;
   GroupsLvlGraph.EndUpdate;
+  GroupsLvlGraph.OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
+  FGroupLvlGraphSelectionsList.Clear;
 end;
 
 procedure TUnitDependenciesWindow.UpdateUnitsLvlGraph;
@@ -1953,9 +1984,9 @@ begin
         NewGroups[UnitGroup.Name]:=UnitGroup;
         AVLNode:=UnitGroup.Units.FindLowest;
         if AVLNode = nil then begin
-          Pkg := PackageEditingInterface.FindPackageWithName(UnitGroup.Name);
+            Pkg := PackageEditingInterface.FindPackageWithName(UnitGroup.Name);
           if (Pkg <> nil) and (Pkg.FileCount > 0) and (FilenameIsAbsolute(Pkg.Filename)) then
-            Include(FFlags,udwNeedUpdateUnitsLvlGraph);
+              Include(FFlags,udwNeedUpdateUnitsLvlGraph);
         end;
         while AVLNode<>nil do begin
           GroupUnit:=TUDUnit(AVLNode.Data);
@@ -2052,7 +2083,10 @@ procedure TUnitDependenciesWindow.FreeUsesGraph;
 begin
   FreeAndNil(FAllUnitsRootUDNode);
   FreeAndNil(FSelUnitsRootUDNode);
+  StoreGroupLvlGraphSelections;
+  GroupsLvlGraph.OnSelectionChanged:=nil;
   GroupsLvlGraph.Clear;
+  GroupsLvlGraph.OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
   UnitsLvlGraph.Clear;
   FreeAndNil(FGroups);
   FreeAndNil(FUsesGraph);
