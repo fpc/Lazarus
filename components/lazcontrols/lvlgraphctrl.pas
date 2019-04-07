@@ -281,6 +281,7 @@ type
 
     procedure FindIndependentGraphs;
     procedure CreateTopologicalLevels(HighLevels, ReduceBackEdges: boolean); // create levels from edges
+    procedure MinimizeEdgeLens(HighLevels: boolean); // requires that BackEdge have been processed by procedure MarkBackEdges
     procedure SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode); // split long edges by adding hidden nodes
     procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
       HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer; out PixelPerWeight: single);
@@ -302,6 +303,7 @@ type
     lgoAutoLayout, // automatic graph layout after graph was changed
     lgoReduceBackEdges, // CreateTopologicalLevels (AutoLayout) will attempts to find an order with less BackEdges
     lgoHighLevels, // put nodes topologically at higher levels
+    lgoMinimizeEdgeLens, // If nodes are not fixed to a level by neighbours on both side, find the level which reduces total edge len the most
     lgoHighlightNodeUnderMouse, // when mouse over node highlight node and its edges
     lgoHighlightEdgeNearMouse, // when mouse near an edge highlight edge and its edges, lgoHighlightNodeUnderMouse takes precedence
     lgoMouseSelects
@@ -734,6 +736,71 @@ type
     procedure ConsistencyCheck;
   end;
 
+  (** For MinimizeEdgeLens **)
+  TGraphEdgeLenMinimizerTree = class;
+
+  { TGraphEdgeLenMinimizerNode }
+
+  TGraphEdgeLenMinimizerNode = class(TAVLTreeNode)
+  protected
+    FTree: TGraphEdgeLenMinimizerTree;
+    function GetLevel: Integer; virtual;
+    procedure SetLevel(AValue: Integer); virtual;
+    function GetInSibling(Index: Integer): TGraphEdgeLenMinimizerNode;  virtual;
+    function GetOutSibling(Index: Integer): TGraphEdgeLenMinimizerNode;  virtual;
+    function GetOutSiblingDistance(Index: Integer): Integer; virtual;
+    class function MapLevel(ALvl, {%H-}LvlCount: Integer): integer; virtual;
+  public
+    Node: TLvlGraphNode;
+    NextExtNodeTowardsLowerLevel: TGraphEdgeLenMinimizerNode;
+    MaxLevel, LevelDiff, VisitedId: Integer;
+    MinSubGraphLevel, MaxSubGraphLevel: Integer;
+    (* gelOnlyPush:
+         Nodes that have no shorten-able OutEdges.
+         Either no OutEdges at all, or all OutEdges are directly (len=1) connected
+         to another gelOnlyPush
+         Only move them, to make space for a moved none-gelOnlyPush node.
+    *)
+    Flags: set of (gelOnlyPush);
+  public
+    property Level: Integer read GetLevel write SetLevel;
+    function OutSiblingCount: Integer; virtual;
+    property OutSibling[Index: Integer]: TGraphEdgeLenMinimizerNode read GetOutSibling;
+    property OutSiblingDistance[Index: Integer]: Integer read GetOutSiblingDistance;
+    function InSiblingCount: Integer; virtual;
+    property InSibling[Index: Integer]: TGraphEdgeLenMinimizerNode read GetInSibling;
+  end;
+
+  TGraphEdgeLenMinimizerNodeClass = class of TGraphEdgeLenMinimizerNode;
+
+  { TGraphEdgeLenMinimizerReverseNode }
+
+  TGraphEdgeLenMinimizerReverseNode = class(TGraphEdgeLenMinimizerNode)
+  protected
+    function GetLevel: Integer; override;
+    procedure SetLevel(AValue: Integer); override;
+    function GetInSibling(Index: Integer): TGraphEdgeLenMinimizerNode;  override;
+    function GetOutSibling(Index: Integer): TGraphEdgeLenMinimizerNode;  override;
+    function GetOutSiblingDistance(Index: Integer): Integer; override;
+    class function MapLevel(ALvl, LvlCount: Integer): integer; override;
+  public
+    function OutSiblingCount: Integer; override;
+    function InSiblingCount: Integer; override;
+  end;
+
+  { TGraphEdgeLenMinimizerTree }
+
+  TGraphEdgeLenMinimizerTree = class(TAvlTree)
+  public
+    Graph: TLvlGraph;
+    ExtNodeWithHighestLevel, ExtNodeWithLowestLevel :TGraphEdgeLenMinimizerNode;
+    constructor Create;
+    function GetTreeNode(Node: TLvlGraphNode): TGraphEdgeLenMinimizerNode;
+    function AddGraphNode(Node: TLvlGraphNode): TGraphEdgeLenMinimizerNode;
+    function MapLevel(ALvl: Integer): integer;
+  end;
+
+
 procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph);
 var
   g: TMinXGraph;
@@ -1044,6 +1111,141 @@ destructor TLvlGraphSubGraph.Destroy;
 begin
   FGraph.fSubGraphs.Remove(Self);
   inherited Destroy;
+end;
+
+{ TGraphEdgeLenMinimizerTree }
+
+function CompareEdgeLenMinimizerNodes(Node1, Node2: Pointer): integer;
+begin
+  Result:=ComparePointer(Node1,Node2);
+end;
+
+function CompareLGNodeWithEdgeLenMinimizerNode(GNode, ANode: Pointer): integer;
+begin
+  Result:=ComparePointer(GNode,ANode);
+end;
+
+constructor TGraphEdgeLenMinimizerTree.Create;
+begin
+  inherited Create(@CompareEdgeLenMinimizerNodes);
+  NodeClass := TGraphEdgeLenMinimizerNode;
+end;
+
+function TGraphEdgeLenMinimizerTree.GetTreeNode(Node: TLvlGraphNode): TGraphEdgeLenMinimizerNode;
+begin
+  Result:=TGraphEdgeLenMinimizerNode(FindKey(Pointer(Node),@CompareLGNodeWithEdgeLenMinimizerNode));
+end;
+
+function TGraphEdgeLenMinimizerTree.AddGraphNode(Node: TLvlGraphNode
+  ): TGraphEdgeLenMinimizerNode;
+begin
+  Result:=TGraphEdgeLenMinimizerNode(NodeClass.Create);
+  Result.FTree := Self;
+  Result.Node:=Node;
+  Result.Data:=Node;
+  if ExtNodeWithHighestLevel = nil then
+    ExtNodeWithHighestLevel := Result
+  else
+    ExtNodeWithLowestLevel.NextExtNodeTowardsLowerLevel := Result;
+  ExtNodeWithLowestLevel := Result;
+  Add(Result);
+end;
+
+function TGraphEdgeLenMinimizerTree.MapLevel(ALvl: Integer): integer;
+begin
+  Result := TGraphEdgeLenMinimizerNodeClass(NodeClass).MapLevel(ALvl, Graph.LevelCount);
+end;
+
+{ TGraphEdgeLenMinimizerNode }
+
+function TGraphEdgeLenMinimizerNode.GetLevel: Integer;
+begin
+  Result := Node.Level.Index;
+end;
+
+procedure TGraphEdgeLenMinimizerNode.SetLevel(AValue: Integer);
+begin
+  Node.Level := FTree.Graph.Levels[AValue];
+end;
+
+function TGraphEdgeLenMinimizerNode.GetInSibling(Index: Integer
+  ): TGraphEdgeLenMinimizerNode;
+begin
+  Result := FTree.GetTreeNode(Node.InEdges[Index].Source);
+end;
+
+function TGraphEdgeLenMinimizerNode.GetOutSiblingDistance(Index: Integer
+  ): Integer;
+begin
+  Result := Node.OutEdges[Index].Target.Level.Index - Node.Level.Index;
+end;
+
+function TGraphEdgeLenMinimizerNode.GetOutSibling(Index: Integer
+  ): TGraphEdgeLenMinimizerNode;
+begin
+  Result := FTree.GetTreeNode(Node.OutEdges[Index].Target);
+end;
+
+class function TGraphEdgeLenMinimizerNode.MapLevel(ALvl, LvlCount: Integer
+  ): integer;
+begin
+  Result := ALvl;
+end;
+
+function TGraphEdgeLenMinimizerNode.OutSiblingCount: Integer;
+begin
+  Result := Node.OutEdgeCount;
+end;
+
+function TGraphEdgeLenMinimizerNode.InSiblingCount: Integer;
+begin
+  Result := Node.InEdgeCount;
+end;
+
+{ TGraphEdgeLenMinimizerReverseNode }
+
+function TGraphEdgeLenMinimizerReverseNode.GetInSibling(Index: Integer
+  ): TGraphEdgeLenMinimizerNode;
+begin
+  Result := FTree.GetTreeNode(Node.OutEdges[Index].Target);
+end;
+
+function TGraphEdgeLenMinimizerReverseNode.GetOutSibling(Index: Integer
+  ): TGraphEdgeLenMinimizerNode;
+begin
+  Result := FTree.GetTreeNode(Node.InEdges[Index].Source);
+end;
+
+function TGraphEdgeLenMinimizerReverseNode.GetOutSiblingDistance(Index: Integer
+  ): Integer;
+begin
+  Result := Node.Level.Index - Node.InEdges[Index].Source.Level.Index;
+end;
+
+class function TGraphEdgeLenMinimizerReverseNode.MapLevel(ALvl,
+  LvlCount: Integer): integer;
+begin
+  Result := LvlCount - 1 - ALvl;
+end;
+
+procedure TGraphEdgeLenMinimizerReverseNode.SetLevel(AValue: Integer);
+begin
+  Node.Level := FTree.Graph.Levels[MinSubGraphLevel + MaxSubGraphLevel - AValue];
+end;
+
+function TGraphEdgeLenMinimizerReverseNode.GetLevel: Integer;
+begin
+  Result := MinSubGraphLevel + MaxSubGraphLevel - Node.Level.Index;
+end;
+
+function TGraphEdgeLenMinimizerReverseNode.OutSiblingCount: Integer;
+begin
+  Result := Node.InEdgeCount;
+end;
+
+function TGraphEdgeLenMinimizerReverseNode.InSiblingCount: Integer;
+begin
+  Result := Node.OutEdgeCount;
 end;
 
 { TLvlGraphEdgeStyle }
@@ -2780,6 +2982,9 @@ begin
 
     Graph.MarkBackEdges;
 
+    if lgoMinimizeEdgeLens in Options then
+      Graph.MinimizeEdgeLens(lgoHighLevels in Options);
+
     Graph.SplitLongEdges(EdgeStyle.SplitMode);
 
     // permutate nodes within levels to avoid crossings
@@ -3505,6 +3710,282 @@ begin
   {$IFDEF LvlGraphConsistencyCheck}
   ConsistencyCheck(False);
   {$ENDIF}
+end;
+
+procedure TLvlGraph.MinimizeEdgeLens(HighLevels: boolean);
+(* This method can only minize edges in certain graphs.
+   Therefore some edges may not be fully minimized.
+
+  Possible TODOs
+  * gelOnlyPush:
+    - For Edges with len>1, check if the target node is reachable via len=1 nodes.
+    If yes the edge cannot be shortened
+    - Collect all InEntries for each entire group, so that CalculateCostForMoveUp can
+    calculate the cost for the entire group at once.
+  * Check for nodes in front of the current node, that are free to pull up.
+    If a node has several InEdges, they may prevent it from moving.
+    And in turn the node itself may prevent any of those sources from moving.
+*)
+var
+  NodeTree: TGraphEdgeLenMinimizerTree; // tree of TGraphEdgeLenMinimizerNode sorted by Node
+  VisitingId: Integer;
+
+  procedure UpdateMaxLevelsForSiblings(ExtNode: TGraphEdgeLenMinimizerNode);
+  var
+    i: Integer;
+    Sibling: TGraphEdgeLenMinimizerNode;
+  begin
+    for i := 0 to ExtNode.InSiblingCount - 1 do begin
+      Sibling := ExtNode.InSibling[i];
+      Sibling.MaxLevel := Min(Sibling.MaxLevel, ExtNode.MaxLevel-1);
+      Assert(Sibling.MaxLevel >= Sibling.Level, 'UpdateMaxLevelsForSiblings: Sibling.MinLevel <= Sibling.Level');
+      Assert(Sibling.Level < ExtNode.Level, 'UpdateMaxLevelsForSiblings: Sibling.Level > ExtNode.Level');
+    end;
+  end;
+
+  procedure MaybeMarkOnlyPush(ExtNode: TGraphEdgeLenMinimizerNode);
+  var
+    i: Integer;
+    Sibling: TGraphEdgeLenMinimizerNode;
+  begin
+    for i := 0 to ExtNode.OutSiblingCount - 1 do begin
+      if ExtNode.OutSiblingDistance[i] > 1 then exit;
+      Sibling := ExtNode.OutSibling[i];
+      assert(Sibling.Level - ExtNode.Level = 1, 'MaybeMarkOnlyPush: Dist = 1');
+      if not (gelOnlyPush in Sibling.Flags) then exit;
+    end;
+    Include(ExtNode.Flags, gelOnlyPush);
+  end;
+
+  function CalculateCostForMoveUp(CalcExtNode: TGraphEdgeLenMinimizerNode; var CalcNewLevel: Integer): Integer;
+    function CheckInEdgeSavingsQuick(InEdgeExtNode: TGraphEdgeLenMinimizerNode; MaxSavingNeeded: Integer): Integer;
+    var
+      i, j, l, d, SiblingCanSave: Integer;
+      InSibling, ReverseSibling: TGraphEdgeLenMinimizerNode;
+    begin
+      Result := 0;
+      l := InEdgeExtNode.Level - 1;
+      for i := 0 to InEdgeExtNode.InSiblingCount - 1 do begin
+        InSibling := InEdgeExtNode.InSibling[i];
+        SiblingCanSave := 0;
+        if InSibling.Level < l then
+          continue;
+        if InSibling.InSiblingCount >= InSibling.OutSiblingCount-1 then
+          continue;
+        for j := 0 to InSibling.OutSiblingCount - 1 do begin
+          ReverseSibling := InSibling.OutSibling[j];
+          d := ReverseSibling.Level - InSibling.Level;
+          if (ReverseSibling = InEdgeExtNode) then
+            continue;
+          if d <= 1 then
+            break;
+          if d < MaxSavingNeeded then
+            MaxSavingNeeded := d;
+        end;
+        if (d <= 1) and (ReverseSibling <> InEdgeExtNode) then begin // loop aborted
+          continue;
+        end;
+        for j := 0 to InSibling.OutSiblingCount - 1 do begin
+          ReverseSibling := InSibling.OutSibling[j];
+          if (ReverseSibling = InEdgeExtNode) then
+            continue;
+          d := ReverseSibling.Level - InSibling.Level;
+          SiblingCanSave := SiblingCanSave + Min(MaxSavingNeeded, d);
+        end;
+        SiblingCanSave := SiblingCanSave - InSibling.InSiblingCount;
+        Result := Result + max(0, SiblingCanSave);
+      end;
+    end;
+    procedure SetNewLevelDiffRecursive(TargetExtNode: TGraphEdgeLenMinimizerNode; TargetNewLevel: Integer;
+      out CostChangesAtLevel: integer);
+    var
+      Diff, i, SiblingCostChangesAtLevel: Integer;
+      FirstMove: Boolean;
+      SiblingNode: TGraphEdgeLenMinimizerNode;
+    begin
+      Assert(TargetNewLevel <= TargetExtNode.MaxLevel, 'CalculateCostForMoveUp(): TargetNewLevel < MaxLevel');
+      Assert(TargetNewLevel < LevelCount, 'CalculateCostForMoveUp(): TargetNewLevel < LevelCount');
+      CostChangesAtLevel := TargetExtNode.Level + 1; // Applies, if this node is NOT pushed
+      Diff := TargetNewLevel - TargetExtNode.Level;
+      FirstMove := TargetExtNode.VisitedId <> VisitingId; // The same node may be pushed several times, if more than one edge leads here
+      TargetExtNode.VisitedId := VisitingId;
+      if FirstMove then
+        TargetExtNode.LevelDiff := 0
+      else
+        CostChangesAtLevel := TargetExtNode.MaxLevel+1; // correct limit has been applied before / in case next line does exit
+      if Diff <= TargetExtNode.LevelDiff then
+        exit;
+      TargetExtNode.LevelDiff := Diff;
+      CostChangesAtLevel := TargetExtNode.MaxLevel+1; // Best case we can go to MaxLevel, then cost goes to infinite
+      if (TargetExtNode.InSiblingCount > 1) then       // One InEdge is from the pushing node
+        CostChangesAtLevel := TargetExtNode.Level + Diff + 1; // could be more, if the nodes can be pulled free of cost
+      for i := 0 to TargetExtNode.InSiblingCount - 1 do begin
+        SiblingNode := TargetExtNode.InSibling[i];
+        if SiblingNode.VisitedId <> VisitingId then
+          SiblingNode.LevelDiff := 0;
+      end;
+      for i := 0 to TargetExtNode.OutSiblingCount - 1 do begin
+        SiblingNode := TargetExtNode.OutSibling[i];
+        SetNewLevelDiffRecursive(SiblingNode, TargetNewLevel + 1, SiblingCostChangesAtLevel);
+        if SiblingCostChangesAtLevel - 1 < CostChangesAtLevel then
+          CostChangesAtLevel := SiblingCostChangesAtLevel - 1;
+      end;
+    end;
+    function DoCalculateCostForMoveUp(ExtNode: TGraphEdgeLenMinimizerNode): Integer;
+    var
+      i: Integer;
+      SiblingNode: TGraphEdgeLenMinimizerNode;
+    begin
+      Result := 0;
+      if (ExtNode.VisitedId = VisitingId) or (ExtNode.LevelDiff = 0) then
+        exit;
+      ExtNode.VisitedId := VisitingId;
+      // InEdges get longer
+      for i := 0 to ExtNode.InSiblingCount - 1 do
+        Result := Result + ExtNode.LevelDiff - ExtNode.InSibling[i].LevelDiff;
+      for i := 0 to ExtNode.OutSiblingCount - 1 do begin
+        SiblingNode := ExtNode.OutSibling[i];
+        Result := Result - ExtNode.LevelDiff + SiblingNode.LevelDiff;
+        Result := Result + DoCalculateCostForMoveUp(SiblingNode);
+      end;
+    end;
+  var
+    NextCostChangesAtLevel, i: Integer;
+  begin
+    inc(VisitingId);
+    SetNewLevelDiffRecursive(CalcExtNode, CalcNewLevel, NextCostChangesAtLevel);
+    dec(NextCostChangesAtLevel); // the last level use-able without extra cost
+    Assert(NextCostChangesAtLevel <= CalcExtNode.MaxLevel, 'CalculateCostForMoveUp: NextCostChangesAtLevel <= CalcExtNode.MaxLevel');
+    Assert(NextCostChangesAtLevel >= CalcNewLevel, 'CalculateCostForMoveUp: NextCostChangesAtLevel >= CalcNewLevel');
+    if (NextCostChangesAtLevel > CalcNewLevel) and (NextCostChangesAtLevel <= CalcExtNode.MaxLevel) then begin
+      CalcNewLevel := NextCostChangesAtLevel;
+      inc(VisitingId);
+      SetNewLevelDiffRecursive(CalcExtNode, CalcNewLevel, NextCostChangesAtLevel);
+    end;
+    inc(VisitingId);
+    Result := DoCalculateCostForMoveUp(CalcExtNode);
+    if Result >= 0 then
+      Result := Result - CheckInEdgeSavingsQuick(CalcExtNode, CalcNewLevel - CalcExtNode.Level)
+    else
+    if Result = 0 then begin
+      inc(Result); // zero cost should be moved only, if it might block on of its InEdges
+      for i := 0 to CalcExtNode.InSiblingCount - 1 do begin
+        if CalcExtNode.InSibling[i].Level = CalcExtNode.Level - 1 then begin
+          dec(Result); // return 0 => at least one node that might be blocked
+          exit;
+        end;
+      end;
+    end;
+  end;
+
+  procedure PushLevelUpRecursive(ExtNode: TGraphEdgeLenMinimizerNode; NewLevel: Integer);
+  var
+    i: Integer;
+  begin
+    Assert(NewLevel < LevelCount, 'PushLevelUpRecursive: NewLevel < LevelCount');
+    if ExtNode.Level >= NewLevel then
+      exit;
+    ExtNode.Level:=NewLevel;
+
+    for i := 0 to ExtNode.OutSiblingCount - 1 do
+      PushLevelUpRecursive(ExtNode.OutSibling[i], NewLevel + 1);
+  end;
+
+  function TryMoveNode(ExtNode: TGraphEdgeLenMinimizerNode): boolean;
+  var
+    BestCost, ConsecutiveBadCost, Cost, BestLvl, i, mx: Integer;
+  begin
+    Result := False;
+    BestCost := 0;
+    ConsecutiveBadCost := 0;
+
+    mx := ExtNode.MaxLevel-1;
+    i := ExtNode.Level;
+    while i < mx do begin
+      inc(i);
+      Cost := CalculateCostForMoveUp(ExtNode, i);
+      if Cost > 0 then begin
+        ConsecutiveBadCost := ConsecutiveBadCost + 1;
+        if ConsecutiveBadCost >= 3 then
+          break; // give up
+      end
+      else
+      if Cost <= BestCost then begin
+        ConsecutiveBadCost := 0;
+        BestCost := Cost;
+        BestLvl := i;
+      end;
+    end;
+
+    inc(mx);
+    Cost := CalculateCostForMoveUp(ExtNode, mx);
+    if Cost <= BestCost then begin
+      BestCost := Cost;
+      BestLvl := mx;
+    end;
+
+    //DebugLn([' BestCost: ',ExtNode.Node.Caption, ' from ', ExtNode.Level, ' to idx ', BestLvl,' (', ExtNode.Level+1 ,'..', ExtNode.MaxLevel,')  cost ', BestCost ]);
+    Result := BestCost < 0;
+    if Result then
+      PushLevelUpRecursive(ExtNode, BestLvl);
+  end;
+
+var
+  i, l, j: Integer;
+  ExtNode: TGraphEdgeLenMinimizerNode;
+  DidMove: Boolean;
+  CurrentSubGraph: TLvlGraphSubGraph;
+begin
+  NodeTree:=TGraphEdgeLenMinimizerTree.Create;
+  NodeTree.Graph:=Self;
+  VisitingId := 0;
+  if HighLevels then
+    NodeTree.NodeClass := TGraphEdgeLenMinimizerReverseNode;
+
+  try
+    // init NodeTree // Add highest level first, so nodes can be linked in initial order
+    for j := LevelCount-1 downto 0 do begin
+      l := NodeTree.MapLevel(j);
+      for i := 0 to Levels[l].Count - 1 do begin
+        ExtNode := NodeTree.AddGraphNode(Levels[l].Nodes[i]);
+        CurrentSubGraph := SubGraphs[ExtNode.Node.SubGraph];
+        ExtNode.MaxLevel := CurrentSubGraph.HighestLevel;
+        ExtNode.MinSubGraphLevel := CurrentSubGraph.LowestLevel;
+        ExtNode.MaxSubGraphLevel := CurrentSubGraph.HighestLevel;
+      end;
+    end;
+
+    // Update MaxLevel
+    ExtNode := NodeTree.ExtNodeWithHighestLevel;
+    while ExtNode <> nil do begin
+      UpdateMaxLevelsForSiblings(ExtNode);
+      ExtNode := ExtNode.NextExtNodeTowardsLowerLevel;
+    end;
+
+    // gelOnlyPush: Mark nodes, with no outgoing edges that could be shortened (push would push entire subtree)
+    ExtNode := NodeTree.ExtNodeWithHighestLevel;
+    while ExtNode <> nil do begin
+      if ExtNode.MaxLevel > ExtNode.Level then
+        MaybeMarkOnlyPush(ExtNode);
+      ExtNode := ExtNode.NextExtNodeTowardsLowerLevel;
+    end;
+
+    repeat
+      DidMove := False;
+      ExtNode := TGraphEdgeLenMinimizerNode(NodeTree.FindLowest);
+      while ExtNode<> nil do begin
+        if (ExtNode.OutSiblingCount > 0) and (ExtNode.MaxLevel > ExtNode.Level) and
+           not(gelOnlyPush in ExtNode.Flags)
+        then
+          if TryMoveNode(ExtNode) then
+            DidMove := True;
+        ExtNode := TGraphEdgeLenMinimizerNode(ExtNode.Successor);
+      end;
+    until not DidMove;
+
+  finally
+    NodeTree.Free;
+  end;
 end;
 
 procedure TLvlGraph.SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode);
