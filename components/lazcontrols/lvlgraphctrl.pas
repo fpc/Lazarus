@@ -280,7 +280,7 @@ type
     property LevelClass: TLvlGraphLevelClass read FLevelClass;
 
     procedure FindIndependentGraphs;
-    procedure CreateTopologicalLevels(HighLevels: boolean); // create levels from edges
+    procedure CreateTopologicalLevels(HighLevels, ReduceBackEdges: boolean); // create levels from edges
     procedure SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode); // split long edges by adding hidden nodes
     procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
       HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer; out PixelPerWeight: single);
@@ -300,6 +300,7 @@ type
 type
   TLvlGraphCtrlOption = (
     lgoAutoLayout, // automatic graph layout after graph was changed
+    lgoReduceBackEdges, // CreateTopologicalLevels (AutoLayout) will attempts to find an order with less BackEdges
     lgoHighLevels, // put nodes topologically at higher levels
     lgoHighlightNodeUnderMouse, // when mouse over node highlight node and its edges
     lgoHighlightEdgeNearMouse, // when mouse near an edge highlight edge and its edges, lgoHighlightNodeUnderMouse takes precedence
@@ -2775,7 +2776,7 @@ begin
     Graph.FindIndependentGraphs;
 
     // distribute the nodes on levels and mark back edges
-    Graph.CreateTopologicalLevels(lgoHighLevels in Options);
+    Graph.CreateTopologicalLevels(lgoHighLevels in Options, lgoReduceBackEdges in Options);
 
     Graph.MarkBackEdges;
 
@@ -3203,7 +3204,7 @@ begin
     OnSelectionChanged(Self);
 end;
 
-procedure TLvlGraph.CreateTopologicalLevels(HighLevels: boolean);
+procedure TLvlGraph.CreateTopologicalLevels(HighLevels, ReduceBackEdges: boolean);
 var
   ExtNodes: TAvlTree; // tree of TGraphLevelerNode sorted by Node
   MaxLevel: Integer;
@@ -3250,6 +3251,200 @@ var
     ExtNode.InPath:=false;
   end;
 
+  procedure DoReduceBackEdges(var MaxLevel: integer; StartLevel, SubGraphIdx: integer);
+  var
+    MaybeReduceMaxLevel: Boolean;
+
+    function IncomingBackEdgeCount(ExtReceivingNode: TGraphLevelerNode;
+      PretendLevel: Integer; out HasSiblingOnPretendLevel: Boolean;
+      out NextLowelSiblingAtLevel: integer): integer;
+    var
+      Node: TLvlGraphNode;
+      i, c: Integer;
+      ExtFromNode: TGraphLevelerNode;
+    begin
+      Result := 0;
+      HasSiblingOnPretendLevel := False;
+      NextLowelSiblingAtLevel := StartLevel-1;
+      Node := ExtReceivingNode.Node;
+      if HighLevels then
+        c := Node.OutEdgeCount
+      else
+        c := Node.InEdgeCount;
+      for i := 0 to c - 1 do begin
+        if HighLevels then
+          ExtFromNode := GetExtNode(Node.OutEdges[i].Target)
+        else
+          ExtFromNode := GetExtNode(Node.InEdges[i].Source);
+        if ExtFromNode.Level >= PretendLevel then // include equal => they will need to be pushed up, if the node is inserted at this level
+          inc(Result);
+        if ExtFromNode.Level = PretendLevel then
+          HasSiblingOnPretendLevel := True
+        else
+        if (ExtFromNode.Level > NextLowelSiblingAtLevel) and (ExtFromNode.Level < PretendLevel) then
+          NextLowelSiblingAtLevel := ExtFromNode.Level;
+      end;
+    end;
+    procedure AdjustSiblingLevels(ExtAdjustNode: TGraphLevelerNode; NewLevel: integer; Force: Boolean = False);
+    var
+      i, c, OldLevel: Integer;
+      ExtSiblingNode: TGraphLevelerNode;
+      Node: TLvlGraphNode;
+    begin
+      if ExtAdjustNode.InPath then
+        exit;
+      ExtAdjustNode.InPath := True;
+
+      if (ExtAdjustNode.Level > NewLevel) and not force then begin
+        Node := ExtAdjustNode.Node;
+        if HighLevels then
+          c := Node.OutEdgeCount
+        else
+          c := Node.InEdgeCount;
+        for i := 0 to c - 1 do begin
+          if HighLevels then
+            ExtSiblingNode := GetExtNode(Node.OutEdges[i].Target)
+          else
+            ExtSiblingNode := GetExtNode(Node.InEdges[i].Source);
+          if (ExtSiblingNode.Level >= NewLevel) and (ExtSiblingNode.Level < ExtAdjustNode.Level) then
+            NewLevel := ExtSiblingNode.Level + 1;
+        end;
+        if HighLevels then
+          c := Node.InEdgeCount
+        else
+          c := Node.OutEdgeCount;
+        // check backlinks
+        for i := 0 to c - 1 do begin
+          if HighLevels then
+            ExtSiblingNode := GetExtNode(Node.InEdges[i].Source)
+          else
+            ExtSiblingNode := GetExtNode(Node.OutEdges[i].Target);
+          if (ExtSiblingNode.Level = NewLevel) then
+            NewLevel := ExtSiblingNode.Level + 1;
+        end;
+      end;
+
+      if (ExtAdjustNode.Level = NewLevel) and not Force then begin
+        ExtAdjustNode.InPath := False;
+        exit;
+      end;
+
+      OldLevel := ExtAdjustNode.Level;
+      ExtAdjustNode.Level := NewLevel;
+      if NewLevel > MaxLevel then
+          MaxLevel := NewLevel;
+      if OldLevel = MaxLevel then
+        MaybeReduceMaxLevel := True;
+
+      Node := ExtAdjustNode.Node;
+      if HighLevels then
+        c := Node.InEdgeCount
+      else
+        c := Node.OutEdgeCount;
+      for i := 0 to c - 1 do begin
+        if HighLevels then
+          ExtSiblingNode := GetExtNode(Node.InEdges[i].Source)
+        else
+          ExtSiblingNode := GetExtNode(Node.OutEdges[i].Target);
+        if ExtSiblingNode.Level >= OldLevel then // do not adjust other BackEdges
+          AdjustSiblingLevels(ExtSiblingNode, NewLevel + 1);
+      end;
+      // maybe new backegdes on the InEdge side
+      if HighLevels then
+        c := Node.OutEdgeCount
+      else
+        c := Node.InEdgeCount;
+      for i := 0 to c - 1 do begin
+        if HighLevels then
+          ExtSiblingNode := GetExtNode(Node.OutEdges[i].Target)
+        else
+          ExtSiblingNode := GetExtNode(Node.InEdges[i].Source);
+        if ExtSiblingNode.Level = NewLevel then // do not adjust other BackEdges
+          AdjustSiblingLevels(ExtSiblingNode, NewLevel + 1);
+      end;
+
+      ExtAdjustNode.InPath := False;
+    end;
+  var
+    AVLNode: TAVLTreeNode;
+    ExtNode, ExtTargetNode: TGraphLevelerNode;
+    Node: TLvlGraphNode;
+    LvlIdx, LowerLvl, BackEdgeCnt, TotalBackEdgeCnt: Integer;
+    i, c, j, BestLvl: integer;
+    BackEdgeList: array of TGraphLevelerNode;
+    SiblingOnLvl: Boolean;
+  begin
+    SetLength(BackEdgeList, NodeCount);
+    MaybeReduceMaxLevel := False;
+    AVLNode := ExtNodes.FindLowest;
+    while AVLNode <> nil do begin
+      ExtNode := TGraphLevelerNode(AVLNode.Data);
+      AVLNode := AVLNode.Successor;
+      Node := ExtNode.Node;
+      if (Node.SubGraph <> SubGraphIdx) then
+        Continue;
+
+      BackEdgeCnt := 0;
+      if HighLevels then
+        c := Node.InEdgeCount
+      else
+        c := Node.OutEdgeCount;
+      if c > Length(BackEdgeList) then
+        SetLength(BackEdgeList, c);
+      LvlIdx := ExtNode.Level;
+      for i := 0 to c - 1 do begin
+        if HighLevels then
+          ExtTargetNode := GetExtNode(Node.InEdges[i].Source)
+        else
+          ExtTargetNode := GetExtNode(Node.OutEdges[i].Target);
+        if ExtTargetNode.Level <  LvlIdx then begin
+          j := 0;
+          while (j < BackEdgeCnt) and (BackEdgeList[j].Level < ExtTargetNode.Level) do
+            inc(j);
+          move(BackEdgeList[j], BackEdgeList[j+1], (BackEdgeCnt-j)*SizeOf(TGraphLevelerNode));
+          BackEdgeList[j] := ExtTargetNode;
+          inc(BackEdgeCnt);
+        end;
+      end;
+      if BackEdgeCnt = 0 then
+        Continue;
+
+      BestLvl := ExtNode.Level;
+      TotalBackEdgeCnt := BackEdgeCnt + IncomingBackEdgeCount(ExtNode, BestLvl, SiblingOnLvl, LowerLvl);
+      BestLvl := LowerLvl + 1;
+      while BackEdgeCnt > 0 do begin
+        dec(BackEdgeCnt);
+        i := BackEdgeList[BackEdgeCnt].Level;
+        while (BackEdgeCnt > 0) and (BackEdgeList[BackEdgeCnt - 1].Level = i) do
+          dec(BackEdgeCnt);
+        c := BackEdgeCnt + IncomingBackEdgeCount(ExtNode, i, SiblingOnLvl, LowerLvl);
+        if c < TotalBackEdgeCnt then begin
+          BestLvl := LowerLvl + 1;
+          TotalBackEdgeCnt := c;
+        end;
+      end;
+
+      if BestLvl < ExtNode.Level then begin
+        ExtNode.Level := BestLvl;
+        AdjustSiblingLevels(ExtNode, BestLvl, True);
+      end;
+
+    end;
+
+    if MaybeReduceMaxLevel then begin
+      MaxLevel := StartLevel;
+      AVLNode := ExtNodes.FindLowest;
+      while AVLNode <> nil do begin
+        ExtNode := TGraphLevelerNode(AVLNode.Data);
+        AVLNode := AVLNode.Successor;
+        if ExtNode.Node.SubGraph <> SubGraphIdx then
+          continue;
+        if ExtNode.Level > MaxLevel then
+          MaxLevel := ExtNode.Level;
+      end;
+    end;
+  end;
+
 var
   i, g, GroupMinLevel: Integer;
   Node: TLvlGraphNode;
@@ -3282,8 +3477,12 @@ begin
           Continue;
         Traverse(GetExtNode(Node), GroupMinLevel);
       end;
+
+      if ReduceBackEdges then
+        DoReduceBackEdges(MaxLevel, CurrentSubGraph.FLowestLevel, CurrentSubGraph.Index);
       CurrentSubGraph.FHighestLevel := MaxLevel;
     end;
+
     // set levels
     LevelCount:=Max(LevelCount,MaxLevel+1);
     for i:=0 to NodeCount-1 do begin
