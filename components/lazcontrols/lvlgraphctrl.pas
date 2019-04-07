@@ -3566,6 +3566,8 @@ begin
   OldGraph:=Source.Graph;
   Source.FOutEdges.Remove(Self);
   Target.FInEdges.Remove(Self);
+  Source.FOutWeight-=FWeight;
+  Target.FInWeight-=FWeight;
   FSource:=nil;
   FTarget:=nil;
   if OldGraph<>nil then
