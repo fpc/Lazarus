@@ -1984,9 +1984,15 @@ begin
         NewGroups[UnitGroup.Name]:=UnitGroup;
         AVLNode:=UnitGroup.Units.FindLowest;
         if AVLNode = nil then begin
+          if IsProjectGroup(UnitGroup.Name) and (LazarusIDE.ActiveProject.FileCount <> 0) then begin
+            Include(FFlags,udwNeedUpdateUnitsLvlGraph)
+          end
+          else begin
             Pkg := PackageEditingInterface.FindPackageWithName(UnitGroup.Name);
-          if (Pkg <> nil) and (Pkg.FileCount > 0) and (FilenameIsAbsolute(Pkg.Filename)) then
+            if (Pkg <> nil) and (Pkg.FileCount > 0) and (FilenameIsAbsolute(Pkg.Filename))
+            then
               Include(FFlags,udwNeedUpdateUnitsLvlGraph);
+          end
         end;
         while AVLNode<>nil do begin
           GroupUnit:=TUDUnit(AVLNode.Data);
