@@ -476,7 +476,7 @@ type
     function MakeOptionsString(Flags: TCompilerCmdLineOptions): String; virtual;
     function GetSyntaxOptionsString(Kind: TPascalCompiler): string; virtual;
     function CreatePPUFilename(const SourceFileName: string): string; override;
-    function CreateTargetFilename: string; virtual;
+    function CreateTargetFilename: string; override;
     function GetTargetFileExt: string; virtual;
     function GetTargetFilePrefix: string; virtual;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList // list of TAdditionalCompilerOptions
@@ -532,8 +532,7 @@ type
     function GetUnparsedPath(Option: TParsedCompilerOptString;
                              InheritedOption: TInheritedCompilerOption;
                              RelativeToBaseDir: boolean): string;
-    function ShortenPath(const SearchPath: string;
-                         MakeAlwaysRelative: boolean): string;
+    function ShortenPath(const SearchPath: string): string;
     function GetCustomOptions(Parsed: TCompilerOptionsParseType): string;
     function TrimCustomOptions(o: string): string; override;
     function GetOptionsForCTDefines: string;
@@ -1156,7 +1155,7 @@ procedure TBaseCompilerOptions.SetIncludePaths(const AValue: String);
 var
   NewValue: String;
 begin
-  NewValue:=ShortenPath(AValue,false);
+  NewValue:=ShortenPath(AValue);
   if IncludePath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosIncludePath,NewValue);
   {$IFDEF VerboseIDEModified}
@@ -1204,7 +1203,7 @@ procedure TBaseCompilerOptions.SetSrcPath(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=ShortenPath(AValue,false);
+  NewValue:=ShortenPath(AValue);
   if SrcPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosSrcPath,NewValue);
   {$IFDEF VerboseIDEModified}
@@ -1217,7 +1216,7 @@ procedure TBaseCompilerOptions.SetDebugPath(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=ShortenPath(AValue,false);
+  NewValue:=ShortenPath(AValue);
   if DebugPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosDebugPath,NewValue);
   {$IFDEF VerboseIDEModified}
@@ -1396,7 +1395,7 @@ procedure TBaseCompilerOptions.SetLibraryPaths(const AValue: String);
 var
   NewValue: String;
 begin
-  NewValue:=ShortenPath(AValue,false);
+  NewValue:=ShortenPath(AValue);
   if Libraries=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosLibraryPath,NewValue);
   {$IFDEF VerboseIDEModified}
@@ -1430,7 +1429,7 @@ procedure TBaseCompilerOptions.SetUnitPaths(const AValue: String);
 var
   NewValue: String;
 begin
-  NewValue:=ShortenPath(AValue,false);
+  NewValue:=ShortenPath(AValue);
   if OtherUnitFiles=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosUnitPath,NewValue);
   {$IFDEF VerboseIDEModified}
@@ -1453,7 +1452,7 @@ procedure TBaseCompilerOptions.SetObjectPath(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=ShortenPath(AValue,false);
+  NewValue:=ShortenPath(AValue);
   if ObjectPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosObjectPath,NewValue);
   {$IFDEF VerboseIDEModified}
@@ -1562,7 +1561,7 @@ begin
   SrcPath := sp(aXMLConfig.GetValue(p+'SrcPath/Value', ''));
 
   { Conditionals }
-  FConditionals:=ConvertLineEndings(UTF8Trim(
+  FConditionals:=LineBreaksToSystemLineBreaks(UTF8Trim(
     aXMLConfig.GetValue(Path+'Conditionals/Value',DefaultConditionals),[]));
   TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(aXMLConfig,
                                        Path+'BuildMacros/',PathDelimChange);
@@ -2537,14 +2536,9 @@ begin
   SetUnitPaths(RemoveSearchPaths(GetUnitPaths,RemSearchPath));
 end;
 
-function TBaseCompilerOptions.ShortenPath(const SearchPath: string;
-  MakeAlwaysRelative: boolean): string;
+function TBaseCompilerOptions.ShortenPath(const SearchPath: string): string;
 begin
-  Result:=TrimSearchPath(SearchPath,'');
-  if MakeAlwaysRelative then
-    Result:=CreateRelativeSearchPath(Result,BaseDirectory)
-  else
-    Result:=ShortenSearchPath(Result,BaseDirectory,BaseDirectory);
+  Result:=ShortenSearchPath(TrimSearchPath(SearchPath,''),BaseDirectory,BaseDirectory);
 end;
 
 {------------------------------------------------------------------------------
@@ -4487,10 +4481,10 @@ procedure TIDEBuildMacro.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
 begin
   FIdentifier:=AXMLConfig.GetValue(Path+'Identifier/Value','');
   if not IsValidIdent(FIdentifier) then FIdentifier:='';
-  FDescription:=ConvertLineEndings(AXMLConfig.GetValue(Path+'Description/Value',''));
+  FDescription:=LineBreaksToSystemLineBreaks(AXMLConfig.GetValue(Path+'Description/Value',''));
   LoadStringList(AXMLConfig,FValues,Path+'Values/');
   LoadStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
-  FDefaultValue:=ConvertLineEndings(AXMLConfig.GetValue(Path+'Default/Value',''));
+  FDefaultValue:=LineBreaksToSystemLineBreaks(AXMLConfig.GetValue(Path+'Default/Value',''));
 
   while ValueDescriptions.Count>Values.Count do
     ValueDescriptions.Delete(ValueDescriptions.Count-1);
