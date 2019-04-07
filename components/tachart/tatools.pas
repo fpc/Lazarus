@@ -1038,7 +1038,7 @@ var
 var
   i, ai: Integer;
 begin
-  if Tools.Count = 0 then exit(false);
+  if (Tools.Count = 0) or (not AChart.ScalingValid) then exit(false);
 
   SetLength(candidates, Tools.Count);
   candidateCount := 0;
