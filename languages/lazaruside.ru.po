@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-04-04 17:55+0300\n"
+"PO-Revision-Date: 2019-04-08 01:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -11788,6 +11788,7 @@ msgid "Less"
 msgstr "Скрыть подробности"
 
 #: lazarusidestrconsts.lislevels
+msgctxt "lazarusidestrconsts.lislevels"
 msgid "Levels"
 msgstr "Уровни"
 
@@ -19670,6 +19671,116 @@ msgstr "корректен"
 msgid "Rescan lpl files"
 msgstr "Пересмотреть файлы LPL"
 
+#: lazarusidestrconsts.lvlgraphaddhorizontalspacing
+msgid "Add horizontal spacing between columns"
+msgstr "Добавлять отступ между столбцами по горизонтали"
+
+#: lazarusidestrconsts.lvlgraphaddverticalspacingar
+msgid "Add vertical spacing around nodes"
+msgstr "Добавлять отступ между узлами по вертикали"
+
+#: lazarusidestrconsts.lvlgraphextraspacing
+msgid "Extra spacing (x/y)"
+msgstr "Дополнительный отступ (x/y)"
+
+#: lazarusidestrconsts.lvlgraphnamesabovenode
+msgid "Names above node"
+msgstr "Имена над узлами"
+
+#: lazarusidestrconsts.lvlgraphoptabsolutelimi
+msgid "Absolute limit for height of levels"
+msgstr "Абсолютный предел высоты уровней"
+
+#: lazarusidestrconsts.lvlgraphoptcrossings
+msgid "Crossings"
+msgstr "Пересечения"
+
+#: lazarusidestrconsts.lvlgraphoptedgelen
+msgid "Edge len"
+msgstr "Длина связей"
+
+#: lazarusidestrconsts.lvlgraphoptedges
+msgid "Edges"
+msgstr "Связи"
+
+#: lazarusidestrconsts.lvlgraphoptinfo
+msgid "Info"
+msgstr "Сведения"
+
+#: lazarusidestrconsts.lvlgraphoptlevels
+msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
+msgid "Levels"
+msgstr "Уровни"
+
+#: lazarusidestrconsts.lvlgraphoptlimitheightoflvl
+msgid "Limit height of Levels"
+msgstr "Ограничивать высоту уровней"
+
+#: lazarusidestrconsts.lvlgraphoptlimitrelativ
+msgid "Limit relative to node-count for height of levels.%0sLimit = min(3, val*sqrt(NodeCount))"
+msgstr "Предел высоты уровней относительно количества узлов.%0sПредел = min(3, val*sqrt(NodeCount))"
+
+#: lazarusidestrconsts.lvlgraphoptsplitpoints
+msgid "Splitpoints"
+msgstr "Точки разделения"
+
+#: lazarusidestrconsts.lvlgraphreducebackedges
+msgid "Reduce backedges"
+msgstr "Уменьшать обратные связи"
+
+#: lazarusidestrconsts.lvlgraphshapecalculatelay
+msgid "Calculate layout from high-edge"
+msgstr "Размещать с высокого уровня"
+
+#: lazarusidestrconsts.lvlgraphshapecurved
+msgid "Curved"
+msgstr "Изогнутая"
+
+#: lazarusidestrconsts.lvlgraphshapeedgesshape
+msgid "Edges shape"
+msgstr "Форма связей"
+
+#: lazarusidestrconsts.lvlgraphshapeedgessplitmo
+msgid "Edges split mode"
+msgstr "Режим разделения связей"
+
+#: lazarusidestrconsts.lvlgraphshapeminimizeedge
+msgid "Minimize edges len"
+msgstr "Уменьшать длину связей"
+
+#: lazarusidestrconsts.lvlgraphshapenodes
+msgid "Nodes"
+msgstr "Узлы"
+
+#: lazarusidestrconsts.lvlgraphshapestraight
+msgid "Straight"
+msgstr "Прямая"
+
+#: lazarusidestrconsts.lvlgraphsplitmergeathighe
+msgid "Merge at highest"
+msgstr "Объединять в наивысшем"
+
+#: lazarusidestrconsts.lvlgraphsplitmergeatsourc
+msgid "Merge at source"
+msgstr "Объединять в начале"
+
+#: lazarusidestrconsts.lvlgraphsplitmergeattarge
+msgid "Merge at target"
+msgstr "Объединять в конце"
+
+#: lazarusidestrconsts.lvlgraphsplitnone
+msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
+msgid "None"
+msgstr "Нет"
+
+#: lazarusidestrconsts.lvlgraphsplitseparate
+msgid "Separate"
+msgstr "Отдельные"
+
+#: lazarusidestrconsts.lvlgraphstraightengraph
+msgid "Straighten graph"
+msgstr "Расправлять диаграмму"
+
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
 msgstr "Добавлять модуль пакета в выражение uses"
@@ -19948,6 +20059,10 @@ msgstr "Начать новый поиск"
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Номера версий"
+
+#: lazarusidestrconsts.showoptions
+msgid "Show options"
+msgstr "Показать параметры"
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
@@ -21654,6 +21769,14 @@ msgstr "ЗАМ"
 #: lazarusidestrconsts.uepreadonly
 msgid "Readonly"
 msgstr "Только чтение"
+
+#: lazarusidestrconsts.unitdepoptionsforpackage
+msgid "Options for Package graph"
+msgstr "Параметры диаграммы пакетов"
+
+#: lazarusidestrconsts.unitdepoptionsforunit
+msgid "Options for Unit graph"
+msgstr "Параметры диаграммы модулей"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

@@ -11710,6 +11710,7 @@ msgid "Less"
 msgstr "Vähemmän"
 
 #: lazarusidestrconsts.lislevels
+msgctxt "lazarusidestrconsts.lislevels"
 msgid "Levels"
 msgstr "Tasot"
 
@@ -19535,6 +19536,118 @@ msgstr "kelvollinen"
 msgid "Rescan lpl files"
 msgstr "Käy läpi lpl tiedostot"
 
+#: lazarusidestrconsts.lvlgraphaddhorizontalspacing
+msgid "Add horizontal spacing between columns"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphaddverticalspacingar
+msgid "Add vertical spacing around nodes"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphextraspacing
+msgid "Extra spacing (x/y)"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphnamesabovenode
+msgid "Names above node"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptabsolutelimi
+msgid "Absolute limit for height of levels"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptcrossings
+msgid "Crossings"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptedgelen
+msgid "Edge len"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptedges
+msgid "Edges"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptinfo
+msgid "Info"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptlevels
+#, fuzzy
+msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
+msgid "Levels"
+msgstr "Tasot"
+
+#: lazarusidestrconsts.lvlgraphoptlimitheightoflvl
+msgid "Limit height of Levels"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptlimitrelativ
+msgid "Limit relative to node-count for height of levels.%0sLimit = min(3, val*sqrt(NodeCount))"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptsplitpoints
+msgid "Splitpoints"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphreducebackedges
+msgid "Reduce backedges"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapecalculatelay
+msgid "Calculate layout from high-edge"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapecurved
+msgid "Curved"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapeedgesshape
+msgid "Edges shape"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapeedgessplitmo
+msgid "Edges split mode"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapeminimizeedge
+msgid "Minimize edges len"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapenodes
+msgid "Nodes"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapestraight
+msgid "Straight"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitmergeathighe
+msgid "Merge at highest"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitmergeatsourc
+msgid "Merge at source"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitmergeattarge
+msgid "Merge at target"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitnone
+#, fuzzy
+msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
+msgid "None"
+msgstr "Ei yhtään"
+
+#: lazarusidestrconsts.lvlgraphsplitseparate
+msgid "Separate"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphstraightengraph
+msgid "Straighten graph"
+msgstr ""
+
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
 msgstr "Lisää paketin käännösyksikkö uses-lauseeseen"
@@ -19813,6 +19926,10 @@ msgstr "Aloita uusi etsintä"
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Versionumerointi"
+
+#: lazarusidestrconsts.showoptions
+msgid "Show options"
+msgstr ""
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
@@ -21516,6 +21633,14 @@ msgstr "Korvaa"
 #: lazarusidestrconsts.uepreadonly
 msgid "Readonly"
 msgstr "Vain luettavissa"
+
+#: lazarusidestrconsts.unitdepoptionsforpackage
+msgid "Options for Package graph"
+msgstr ""
+
+#: lazarusidestrconsts.unitdepoptionsforunit
+msgid "Options for Unit graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

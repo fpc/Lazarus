@@ -12305,6 +12305,7 @@ msgid "Less"
 msgstr ""
 
 #: lazarusidestrconsts.lislevels
+msgctxt "lazarusidestrconsts.lislevels"
 msgid "Levels"
 msgstr "Úrovne"
 
@@ -20751,6 +20752,118 @@ msgstr ""
 msgid "Rescan lpl files"
 msgstr ""
 
+#: lazarusidestrconsts.lvlgraphaddhorizontalspacing
+msgid "Add horizontal spacing between columns"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphaddverticalspacingar
+msgid "Add vertical spacing around nodes"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphextraspacing
+msgid "Extra spacing (x/y)"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphnamesabovenode
+msgid "Names above node"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptabsolutelimi
+msgid "Absolute limit for height of levels"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptcrossings
+msgid "Crossings"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptedgelen
+msgid "Edge len"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptedges
+msgid "Edges"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptinfo
+msgid "Info"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptlevels
+#, fuzzy
+msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
+msgid "Levels"
+msgstr "Úrovne"
+
+#: lazarusidestrconsts.lvlgraphoptlimitheightoflvl
+msgid "Limit height of Levels"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptlimitrelativ
+msgid "Limit relative to node-count for height of levels.%0sLimit = min(3, val*sqrt(NodeCount))"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphoptsplitpoints
+msgid "Splitpoints"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphreducebackedges
+msgid "Reduce backedges"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapecalculatelay
+msgid "Calculate layout from high-edge"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapecurved
+msgid "Curved"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapeedgesshape
+msgid "Edges shape"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapeedgessplitmo
+msgid "Edges split mode"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapeminimizeedge
+msgid "Minimize edges len"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapenodes
+msgid "Nodes"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphshapestraight
+msgid "Straight"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitmergeathighe
+msgid "Merge at highest"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitmergeatsourc
+msgid "Merge at source"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitmergeattarge
+msgid "Merge at target"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphsplitnone
+#, fuzzy
+msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
+msgid "None"
+msgstr "Nič"
+
+#: lazarusidestrconsts.lvlgraphsplitseparate
+msgid "Separate"
+msgstr ""
+
+#: lazarusidestrconsts.lvlgraphstraightengraph
+msgid "Straighten graph"
+msgstr ""
+
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
 msgstr "Pridať jednotku balíčka do sekcie uses"
@@ -21035,6 +21148,10 @@ msgstr "Začať nové hľadanie"
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Číslovanie verzií"
+
+#: lazarusidestrconsts.showoptions
+msgid "Show options"
+msgstr ""
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
@@ -22828,6 +22945,14 @@ msgstr "OVR"
 #: lazarusidestrconsts.uepreadonly
 msgid "Readonly"
 msgstr "Len na čítanie"
+
+#: lazarusidestrconsts.unitdepoptionsforpackage
+msgid "Options for Package graph"
+msgstr ""
+
+#: lazarusidestrconsts.unitdepoptionsforunit
+msgid "Options for Unit graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
