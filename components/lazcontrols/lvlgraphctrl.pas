@@ -3418,7 +3418,7 @@ end;
 procedure TLvlGraph.MinimizeOverlappings(MinPos: integer;
   NodeGapAbove: integer; NodeGapBelow: integer; aLevel: integer);
 var
-  i: Integer;
+  i, Below: Integer;
   Level: TLvlGraphLevel;
   Node: TLvlGraphNode;
   Last: TLvlGraphNode;
@@ -3431,12 +3431,15 @@ begin
     Last:=nil;
     for i:=0 to Level.Count-1 do begin
       Node:=Level[i];
+      Below := 0;
+      if (Last <> nil) and Last.Visible then
+        Below := NodeGapBelow;
       if Last=nil then
         Node.DrawPosition:=MinPos+NodeGapAbove
       else if Node.Visible then
-        Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+NodeGapBelow+NodeGapAbove)
+        Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+Below+NodeGapAbove)
       else
-        Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+1);
+        Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+1+Below);
       //debugln(['TLvlGraph.MinimizeOverlappings Level=',aLevel,' Node=',Node.Caption,' Size=',Node.DrawSize,' Position=',Node.DrawPosition]);
       Last:=Node;
     end;
