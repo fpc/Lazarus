@@ -13,6 +13,11 @@ unit LvlGraphCtrl;
 {off $DEFINE CheckMinXGraph}
 
 {$mode objfpc}{$H+}
+{$IFDEF LvlGraphConsistencyCheck}
+  {$ASSERTIONS ON}
+{$ELSE}
+  {$ASSERTIONS OFF}
+{$ENDIF}
 
 interface
 
@@ -57,6 +62,7 @@ type
     FOverlayIndex: integer;
     FPrevSelected: TLvlGraphNode;
     FSelected: boolean;
+    FSubGraph: Integer;
     FVisible: boolean;
     function GetIndexInLevel: integer;
     function GetInEdges(Index: integer): TLvlGraphEdge; inline;
@@ -71,9 +77,12 @@ type
     procedure SetLevel(AValue: TLvlGraphLevel);
     procedure SetOverlayIndex(AValue: integer);
     procedure SetSelected(AValue: boolean);
+    procedure SetSubGraph(AValue: Integer);
     procedure SetVisible(AValue: boolean);
     procedure UnbindLevel;
     procedure SelectionChanged;
+  protected
+    property SubGraph: Integer read FSubGraph write SetSubGraph;
   public
     Data: Pointer; // free for user data
     constructor Create(TheGraph: TLvlGraph; TheCaption: string; TheLevel: TLvlGraphLevel);
@@ -177,6 +186,23 @@ type
   end;
   TLvlGraphLevelClass = class of TLvlGraphLevel;
 
+  { TLvlGraphSubGraph }
+
+  TLvlGraphSubGraph = class(TPersistent)
+  private
+    FGraph: TLvlGraph;
+    FHighestLevel: integer;
+    FIndex: integer;
+    FLowestLevel: integer;
+  public
+    constructor Create(TheGraph: TLvlGraph; TheIndex: integer);
+    destructor Destroy; override;
+    property Graph: TLvlGraph read FGraph;
+    property Index: integer read FIndex;
+    property LowestLevel: integer read FLowestLevel;
+    property HighestLevel: integer read FHighestLevel;
+  end;
+
   TOnLvlGraphStructureChanged = procedure(Sender, Element: TObject;
                                                Operation: TOperation) of object;
 
@@ -200,12 +226,15 @@ type
     FOnInvalidate: TNotifyEvent;
     FNodes: TFPList; // list of TLvlGraphNode
     fLevels: TFPList;
+    fSubGraphs: TFPList;
     FCaseSensitive: Boolean;
     FOnSelectionChanged: TNotifyEvent;
     FOnStructureChanged: TOnLvlGraphStructureChanged;
     function GetLevelCount: integer;
     function GetLevels(Index: integer): TLvlGraphLevel;
     function GetNodes(Index: integer): TLvlGraphNode;
+    function GetSubGraphCount: integer;
+    function GetSubGraphs(Index: integer): TLvlGraphSubGraph;
     procedure SetLevelCount(AValue: integer);
     procedure InternalRemoveNode(Node: TLvlGraphNode);
     procedure InternalRemoveLevel(Lvl: TLvlGraphLevel);
@@ -243,11 +272,14 @@ type
       CreateIfNotExists: boolean): TLvlGraphEdge;
     property EdgeClass: TLvlGraphEdgeClass read FEdgeClass;
 
+    property SubGraphs[Index: integer]: TLvlGraphSubGraph read GetSubGraphs;
+    property SubGraphCount: integer read GetSubGraphCount;
     // levels
     property Levels[Index: integer]: TLvlGraphLevel read GetLevels;
     property LevelCount: integer read GetLevelCount write SetLevelCount;
     property LevelClass: TLvlGraphLevelClass read FLevelClass;
 
+    procedure FindIndependentGraphs;
     procedure CreateTopologicalLevels(HighLevels: boolean); // create levels from edges
     procedure SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode); // split long edges by adding hidden nodes
     procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
@@ -995,6 +1027,22 @@ begin
       Result+=dbgs(o);
     end;
   Result:='['+Result+']';
+end;
+
+{ TLvlGraphSubGraph }
+
+constructor TLvlGraphSubGraph.Create(TheGraph: TLvlGraph; TheIndex: integer);
+begin
+  inherited Create;
+  FGraph := TheGraph;
+  FIndex := TheIndex;
+  FGraph.fSubGraphs.Insert(TheIndex, Self);
+end;
+
+destructor TLvlGraphSubGraph.Destroy;
+begin
+  FGraph.fSubGraphs.Remove(Self);
+  inherited Destroy;
 end;
 
 { TLvlGraphEdgeStyle }
@@ -2724,6 +2772,8 @@ begin
     end else
       HeaderHeight:=0;
 
+    Graph.FindIndependentGraphs;
+
     // distribute the nodes on levels and mark back edges
     Graph.CreateTopologicalLevels(lgoHighLevels in Options);
 
@@ -2929,6 +2979,26 @@ begin
   Result:=TLvlGraphNode(FNodes[Index]);
 end;
 
+function TLvlGraph.GetSubGraphCount: integer;
+begin
+  Result:=fSubGraphs.Count;
+  if Result=0 then begin
+    Result:=1;
+    TLvlGraphSubGraph.Create(Self,0);
+  end;
+end;
+
+function TLvlGraph.GetSubGraphs(Index: integer): TLvlGraphSubGraph;
+begin
+  if fSubGraphs.Count = 0 then
+    GetSubGraphCount;
+  Result:=TLvlGraphSubGraph(fSubGraphs[Index]);
+  if fSubGraphs.Count=1 then begin
+    Result.FLowestLevel:=0;
+    Result.FHighestLevel:=LevelCount-1;
+  end;
+end;
+
 procedure TLvlGraph.SetLevelCount(AValue: integer);
 begin
   if AValue<1 then
@@ -2964,11 +3034,13 @@ begin
   FLevelClass:=TLvlGraphLevel;
   FNodes:=TFPList.Create;
   fLevels:=TFPList.Create;
+  fSubGraphs := TFPList.Create;
 end;
 
 destructor TLvlGraph.Destroy;
 begin
   Clear;
+  FreeAndNil(fSubGraphs);
   FreeAndNil(fLevels);
   FreeAndNil(FNodes);
   inherited Destroy;
@@ -2982,6 +3054,8 @@ begin
     Nodes[NodeCount-1].Free;
   for i:=LevelCount-1 downto 0 do
     Levels[i].Free;
+  for i:=fSubGraphs.Count-1 downto 0 do
+    TLvlGraphSubGraph(fSubGraphs[i]).Free;
 end;
 
 procedure TLvlGraph.Invalidate;
@@ -3077,6 +3151,38 @@ begin
   end;
 end;
 
+procedure TLvlGraph.FindIndependentGraphs;
+  procedure ApplySubGraphRecursively(Node: TLvlGraphNode; SubGraph: integer);
+  var
+    i: Integer;
+  begin
+    assert((node.SubGraph < 0) or (Node.SubGraph = SubGraph), 'ApplySubGraphRecursively: node already in other subgraph');
+    if Node.SubGraph >= 0 then
+      exit;
+    node.SubGraph := SubGraph;
+    for i := 0 to node.InEdgeCount - 1 do
+      ApplySubGraphRecursively(Node.InEdges[i].Source, SubGraph);
+    for i := 0 to node.OutEdgeCount - 1 do
+      ApplySubGraphRecursively(Node.OutEdges[i].Target, SubGraph);
+  end;
+var
+  i: Integer;
+  Node: TLvlGraphNode;
+  CurrentSubGraph: TLvlGraphSubGraph;
+begin
+  CurrentSubGraph := SubGraphs[0];
+  for i:=0 to NodeCount-1 do
+    Nodes[i].FSubGraph := -1;
+  for i:=0 to NodeCount-1 do begin
+    Node := Nodes[i];
+    if Node.SubGraph >= 0 then Continue;
+    if CurrentSubGraph = nil then
+      CurrentSubGraph:=TLvlGraphSubGraph.Create(Self, SubGraphCount);
+    ApplySubGraphRecursively(Node, CurrentSubGraph.Index);
+    CurrentSubGraph := nil;
+  end;
+end;
+
 procedure TLvlGraph.InternalRemoveLevel(Lvl: TLvlGraphLevel);
 var
   i: Integer;
@@ -3107,7 +3213,7 @@ var
     Result:=TGraphLevelerNode(ExtNodes.FindKey(Pointer(Node),@CompareLGNodeWithLevelerNode).Data);
   end;
 
-  procedure Traverse(ExtNode: TGraphLevelerNode);
+  procedure Traverse(ExtNode: TGraphLevelerNode; MinLevel: Integer);
   var
     Node: TLvlGraphNode;
     e: Integer;
@@ -3118,6 +3224,8 @@ var
     if ExtNode.Visited then exit;
     ExtNode.InPath:=true;
     ExtNode.Visited:=true;
+    if ExtNode.Level < MinLevel then
+      ExtNode.Level := MinLevel;
     Node:=ExtNode.Node;
     if HighLevels then
       Cnt:=Node.OutEdgeCount
@@ -3132,7 +3240,7 @@ var
         ExtNextNode:=GetExtNode(Edge.Source);
       end;
       if not ExtNextNode.InPath then begin
-        Traverse(ExtNextNode);
+        Traverse(ExtNextNode, MinLevel);
         ExtNode.Level:=Max(ExtNode.Level,ExtNextNode.Level+1);
       end;
       // else node is part of a cycle
@@ -3143,9 +3251,10 @@ var
   end;
 
 var
-  i: Integer;
+  i, g, GroupMinLevel: Integer;
   Node: TLvlGraphNode;
   ExtNode: TGraphLevelerNode;
+  CurrentSubGraph: TLvlGraphSubGraph;
 begin
   //WriteDebugReport('TLvlGraph.CreateTopologicalLevels START');
   {$IFDEF LvlGraphConsistencyCheck}
@@ -3161,18 +3270,29 @@ begin
       ExtNodes.Add(ExtNode);
     end;
     // traverse all nodes
-    MaxLevel:=0;
-    for i:=0 to NodeCount-1 do begin
-      Node:=Nodes[i];
-      Traverse(GetExtNode(Node));
+    MaxLevel:=-1;
+    for g := 0 to SubGraphCount - 1 do begin
+      inc(MaxLevel);
+      CurrentSubGraph := SubGraphs[g];
+      CurrentSubGraph.FLowestLevel := MaxLevel;
+      GroupMinLevel := MaxLevel;
+      for i:=0 to NodeCount-1 do begin
+        Node:=Nodes[i];
+        if (Node.SubGraph <> CurrentSubGraph.Index) then
+          Continue;
+        Traverse(GetExtNode(Node), GroupMinLevel);
+      end;
+      CurrentSubGraph.FHighestLevel := MaxLevel;
     end;
     // set levels
     LevelCount:=Max(LevelCount,MaxLevel+1);
     for i:=0 to NodeCount-1 do begin
       Node:=Nodes[i];
       ExtNode:=GetExtNode(Node);
-      if HighLevels then
-        Node.Level:=Levels[MaxLevel-ExtNode.Level]
+      if HighLevels then begin
+        CurrentSubGraph := SubGraphs[ExtNode.Node.SubGraph];
+        Node.Level:=Levels[CurrentSubGraph.LowestLevel + CurrentSubGraph.HighestLevel - ExtNode.Level];
+      end
       else
         Node.Level:=Levels[ExtNode.Level];
     end;
@@ -3873,6 +3993,15 @@ begin
     end;
   end;
   SelectionChanged;
+end;
+
+procedure TLvlGraphNode.SetSubGraph(AValue: Integer);
+begin
+  if FSubGraph = AValue then Exit;
+  if (AValue < 0) or (AValue >= FGraph.SubGraphCount) then
+    raise Exception.Create('subgraph index out of range');
+
+  FSubGraph := AValue;
 end;
 
 procedure TLvlGraphNode.SetVisible(AValue: boolean);
