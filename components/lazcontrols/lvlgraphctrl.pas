@@ -698,7 +698,7 @@ type
     constructor Create(aLevel: TMinXLevel; aIndex: integer);
     destructor Destroy; override;
     procedure UnbindFromSwitchList;
-    procedure BindToSwitchList;
+    function BindToSwitchList(AtEnd: Boolean=False): integer;
     procedure ComputeCrossingCount(out Crossing, SwitchCrossing: integer);
     function ComputeSwitchDiff: integer;
     property SwitchDiff: integer read FSwitchDiff write SetSwitchDiff;
@@ -1390,9 +1390,22 @@ begin
   NextSameSwitchPair:=nil;
 end;
 
-procedure TMinXPair.BindToSwitchList;
+function TMinXPair.BindToSwitchList(AtEnd: Boolean): integer;
+var
+  n: TMinXPair;
 begin
-  NextSameSwitchPair:=Graph.SameSwitchDiffPairs[Graph.SameSwitchDiffPair0+SwitchDiff];
+  Result := 0;
+  n:=Graph.SameSwitchDiffPairs[Graph.SameSwitchDiffPair0+SwitchDiff];
+  if AtEnd and (n<> nil) then begin
+    while n.NextSameSwitchPair <> nil do begin
+      n:=n.NextSameSwitchPair;
+      inc(Result);
+    end;
+    n.NextSameSwitchPair:=Self;
+    PrevSameSwitchPair:=n;
+    exit;
+  end;
+  NextSameSwitchPair:=n;
   Graph.SameSwitchDiffPairs[Graph.SameSwitchDiffPair0+SwitchDiff]:=Self;
   if NextSameSwitchPair<>nil then
     NextSameSwitchPair.PrevSameSwitchPair:=Self;
@@ -1650,15 +1663,43 @@ begin
 end;
 
 procedure TMinXGraph.SwitchCrossingPairs(MaxRun: int64; var Run: int64);
+(* Calculating how many rounds to go for ZeroRun
+   Switching a node with SwitchDiff=0, can move other zero-nodes (i.e.,
+   remove them in one place, and create another in a new place)
+   Extra loops are needed to:
+   - run such new nodes
+   - re-run and switch back the original nodes, to test the zero-nodes
+     that were removed.
+   Sucessful swaps (unblocking actual crossings) can be found even at
+   high multiplies of LastInsertIdx (the count of zero-nodes)
+*)
 var
   Pair: TMinXPair;
+  LastInsertIdx, ZeroRun: Integer;
 begin
+  ZeroRun := 0;
   while (MaxRun>0) and (BestCrossCount<>0) do begin
     //debugln(['TMinXGraph.SwitchCrossingPairs ',MaxRun,' ',Run]);
     Pair:=FindBestPair;
     Run+=1;
-    if (Pair=nil) or (Pair.SwitchDiff=0) then exit;
+    if (Pair=nil) then exit;
+    if (Pair.SwitchDiff=0) then begin
+      dec(ZeroRun);
+      if ZeroRun = 0 then
+        exit;
+    end
+    else
+      ZeroRun := 0;
     SwitchPair(Pair);
+    if (Pair.SwitchDiff=0) then begin
+      Pair.UnbindFromSwitchList;
+      LastInsertIdx := Pair.BindToSwitchList(True);
+      If ZeroRun = -1 then
+        if CrossCount < BestCrossCount + BestCrossCount div 8 then // add 12% to BestCrossCount
+          ZeroRun := 8 * LastInsertIdx+1 // closer to a new BestCrossCount, search harder
+        else
+          ZeroRun := 2 * LastInsertIdx+1;
+    end;
     MaxRun-=1;
   end;
 end;
