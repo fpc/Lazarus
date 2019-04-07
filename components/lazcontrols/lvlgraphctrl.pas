@@ -1284,7 +1284,8 @@ begin
   Cnt:=0;
   for i:=0 to length(Levels)-1 do begin
     Level:=Levels[i];
-    SetLength(Level.Pairs,length(Level.Nodes)-1);
+    if length(Level.Nodes) > 0 then
+      SetLength(Level.Pairs,length(Level.Nodes)-1);
     for n:=0 to length(Level.Pairs)-1 do begin
       if First then begin
         Pair:=TMinXPair.Create(Level,n);
