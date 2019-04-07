@@ -49,7 +49,7 @@ function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
 function gdk_gl_context_attrlist_share_new(attrlist: Plongint;
                sharelist: PGdkGLContext; direct: TGLBool): PGdkGLContext;
 function gdk_gl_context_ref(context: PGdkGLContext): PGdkGLContext;
-procedure gdk_gl_context_unref(context:PGdkGLContext);
+function gdk_gl_context_unref(context:PGdkGLContext): PGdkGLContext;
 function gdk_gl_make_current(drawable: PGdkDrawable;
                              context: PGdkGLContext): boolean;
 procedure gdk_gl_swap_buffers(drawable: PGdkDrawable);
@@ -279,7 +279,8 @@ begin
   g_return_if_fail (GTK_IS_GL_AREA(obj),'');
 
   gl_area := GTK_GL_AREA(obj);
-  gdk_gl_context_unref(gl_area^.glcontext);
+  if gl_area^.glcontext <> nil then // avoid double-free
+    gl_area^.glcontext := gdk_gl_context_unref(gl_area^.glcontext);
 
   if Assigned(GTK_OBJECT_CLASS(parent_class)^.destroy) then
     GTK_OBJECT_CLASS(parent_class)^.destroy(obj);
@@ -430,10 +431,11 @@ begin
   Result:=context;
 end;
 
-procedure gdk_gl_context_unref(context: PGdkGLContext);
+function gdk_gl_context_unref(context: PGdkGLContext):PGdkGLContext;
 var
   PrivateContext: PGdkGLContextPrivate;
 begin
+  Result:=context;
   g_return_if_fail(context<>nil,'');
 
   PrivateContext:=PGdkGLContextPrivate(context);
@@ -447,6 +449,7 @@ begin
     PrivateContext^.glxcontext:=nil;
     g_free(PrivateContext);
     //DebugLn(['gdk_gl_context_unref END']);
+    Result:=nil;
   end;
 end;
 

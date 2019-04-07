@@ -734,6 +734,7 @@ end;
 class function TWSOpenGLControl.GetDoubleBuffered(const AWinControl: TWinControl): Boolean;
 begin
   Result := False;
+  if AWinControl=nil then ;
 end;
 
 initialization
