@@ -127,6 +127,8 @@ type
     FWeight: single;
     procedure SetHighlighted(AValue: boolean);
     procedure SetWeight(AValue: single);
+  protected
+    procedure RevertDirection;
   public
     Data: Pointer; // free for user data
     constructor Create(TheSource: TLvlGraphNode; TheTarget: TLvlGraphNode);
@@ -135,7 +137,7 @@ type
     property Target: TLvlGraphNode read FTarget;
     property Weight: single read FWeight write SetWeight; // >=0
     function IsBackEdge: boolean;
-    property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
+    property BackEdge: boolean read FBackEdge; // edge had its direction reverted (source <> target exchanged)
     property Highlighted: boolean read FHighlighted write SetHighlighted;
     property DrawnAt: TRect read FDrawnAt;  // last drawn with scrolling
     function GetVisibleSourceNodes: TLvlGraphNodeArray;
@@ -1993,7 +1995,8 @@ begin
         Edge:=Node.OutEdges[k];
         TargetNode:=Edge.Target;
         if Edge.Highlighted<>Highlighted then continue;
-        if TargetNode.Level.Index>Level.Index then begin
+        // compare Level in case MarkBackEdges was skipped
+        if (TargetNode.Level.Index>Level.Index) and (not Edge.BackEdge) then begin
           // normal dependency
           // => draw line from right of Node to left of TargetNode
           if Edge.Highlighted then
@@ -2133,6 +2136,7 @@ begin
           if not TargetNode.Visible then
             x2+=NodeStyle.Width div 2;
         end else begin
+          // This code is only reachable if MarkBackEdges was skipped
           // cycle dependency
           // => draw line from left of Node to right of TargetNode
           if not Node.Visible then
@@ -2703,6 +2707,8 @@ begin
     // distribute the nodes on levels and mark back edges
     Graph.CreateTopologicalLevels(lgoHighLevels in Options);
 
+    Graph.MarkBackEdges;
+
     Graph.SplitLongEdges(EdgeStyle.SplitMode);
 
     // permutate nodes within levels to avoid crossings
@@ -3105,12 +3111,11 @@ var
         Edge:=Node.InEdges[e];
         ExtNextNode:=GetExtNode(Edge.Source);
       end;
-      if ExtNextNode.InPath then begin
-        Edge.FBackEdge:=true // edge is part of a cycle
-      end else begin
+      if not ExtNextNode.InPath then begin
         Traverse(ExtNextNode);
         ExtNode.Level:=Max(ExtNode.Level,ExtNextNode.Level+1);
       end;
+      // else node is part of a cycle
     end;
     MaxLevel:=Max(MaxLevel,ExtNode.Level);
     // backtrack
@@ -3121,8 +3126,6 @@ var
   i: Integer;
   Node: TLvlGraphNode;
   ExtNode: TGraphLevelerNode;
-  j: Integer;
-  Edge: TLvlGraphEdge;
 begin
   //WriteDebugReport('TLvlGraph.CreateTopologicalLevels START');
   {$IFDEF LvlGraphConsistencyCheck}
@@ -3131,16 +3134,11 @@ begin
   ExtNodes:=TAvlTree.Create(@CompareGraphLevelerNodes);
   try
     // init ExtNodes
-    // clear BackEdge flags
     for i:=0 to NodeCount-1 do begin
       Node:=Nodes[i];
       ExtNode:=TGraphLevelerNode.Create;
       ExtNode.Node:=Node;
       ExtNodes.Add(ExtNode);
-      for j:=0 to Node.OutEdgeCount-1 do begin
-        Edge:=Node.OutEdges[j];
-        Edge.fBackEdge:=false;
-      end;
     end;
     // traverse all nodes
     MaxLevel:=0;
@@ -3166,15 +3164,16 @@ begin
   end;
   //WriteDebugReport('TLvlGraph.CreateTopologicalLevels END');
   {$IFDEF LvlGraphConsistencyCheck}
-  ConsistencyCheck(true);
+  ConsistencyCheck(False);
   {$ENDIF}
 end;
 
 procedure TLvlGraph.SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode);
 // replace edges over several levels into several short edges by adding hidden nodes
 type
+  THiddenGraphNodeArray = Array [boolean] of TLvlGraphNodeArray;
   TNodeInfo = record
-    HiddenNodes: TLvlGraphNodeArray;
+    HiddenNodes: THiddenGraphNodeArray;
     LongInEdges, LongOutEdges: integer;
   end;
   PNodeInfo = ^TNodeInfo;
@@ -3194,7 +3193,7 @@ var
   NextNode: TLvlGraphNode;
   AVLNode: TAvlTreeNode;
   P2PItem: PPointerToPointerItem;
-  MergeAtSourceNode: Boolean;
+  MergeAtSourceNode, EdgeBack: Boolean;
   SourceInfo: PNodeInfo;
   TargetInfo: PNodeInfo;
 begin
@@ -3207,7 +3206,8 @@ begin
       SourceNode:=Nodes[n];
       New(SourceInfo);
       FillByte(SourceInfo^,SizeOf(TNodeInfo),0);
-      SetLength(SourceInfo^.HiddenNodes,LevelCount);
+      SetLength(SourceInfo^.HiddenNodes[False],LevelCount);
+      SetLength(SourceInfo^.HiddenNodes[True],LevelCount);
       for e:=0 to SourceNode.OutEdgeCount-1 do begin
         Edge:=SourceNode.OutEdges[e];
         if Edge.Target.Level.Index-SourceNode.Level.Index<=1 then continue;
@@ -3232,6 +3232,7 @@ begin
         //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,'(',SourceNode.Level.Index,') ',TargetNode.Caption,'(',TargetNode.Level.Index,')']);
         EdgeWeight:=Edge.Weight;
         EdgeData:=Edge.Data;
+        EdgeBack:=Edge.BackEdge;
         // remove long edge
         Edge.Free;
         // create merged hidden nodes
@@ -3246,9 +3247,9 @@ begin
           end;
           //debugln(['TLvlGraph.SplitLongEdges ',SourceNode.Caption,'=',SourceInfo^.LongOutEdges,' ',TargetNode.Caption,'=',TargetInfo^.LongInEdges,' MergeAtSourceNode=',MergeAtSourceNode]);
           if MergeAtSourceNode then
-            HiddenNodes:=SourceInfo^.HiddenNodes
+            HiddenNodes:=SourceInfo^.HiddenNodes[EdgeBack]
           else
-            HiddenNodes:=TargetInfo^.HiddenNodes;
+            HiddenNodes:=TargetInfo^.HiddenNodes[EdgeBack];
           // create hidden nodes
           for l:=SourceNode.Level.Index+1 to TargetNode.Level.Index-1 do
             if HiddenNodes[l]=nil then
@@ -3266,6 +3267,7 @@ begin
             NextNode:=TargetNode;
           Edge:=GetEdge(LastNode,NextNode,true);
           Edge.Weight:=Edge.Weight+EdgeWeight;
+          Edge.FBackEdge:=EdgeBack;
           if Edge.Data=nil then
             Edge.Data:=EdgeData;
           LastNode:=NextNode;
@@ -3403,9 +3405,10 @@ var
 begin
   for i:=0 to NodeCount-1 do begin
     Node:=Nodes[i];
-    for j:=0 to Node.OutEdgeCount-1 do begin
+    for j:=Node.OutEdgeCount-1 downto 0 do begin // Edges may be removed/replaced
       Edge:=Node.OutEdges[j];
-      Edge.fBackEdge:=Edge.IsBackEdge;
+      if Edge.IsBackEdge then
+        Edge.RevertDirection;
     end;
   end;
 end;
@@ -3516,7 +3519,9 @@ begin
         raise Exception.Create('');
       if Edge.Target.FInEdges.IndexOf(Edge)<0 then
         raise Exception.Create('');
-      if WithBackEdge and (Edge.BackEdge<>Edge.IsBackEdge) then
+      // An edge can EITHER be marked "BackEdge" or be "IsBackEdge" (aka target is before source).
+      // An egge is not allowed ot be both.
+      if WithBackEdge and Edge.BackEdge and Edge.IsBackEdge then
         raise Exception.Create('Edge.BackEdge '+Edge.AsString+' Edge.BackEdge='+dbgs(Edge.BackEdge)+' Edge.IsBackEdge='+dbgs(Edge.IsBackEdge)+' Source.Index='+dbgs(Edge.Source.Level.Index)+' Target.Index='+dbgs(Edge.Target.Level.Index));
     end;
     for j:=0 to Node.InEdgeCount-1 do begin
@@ -3583,6 +3588,26 @@ begin
   Result:=Source.Level.Index>=Target.Level.Index;
 end;
 
+procedure TLvlGraphEdge.RevertDirection;
+var
+  t: TLvlGraphNode;
+begin
+  Source.FOutEdges.Remove(Self);
+  Target.FInEdges.Remove(Self);
+  Source.FOutWeight-=FWeight;
+  Target.FInWeight-=FWeight;
+
+  t := FSource;
+  FSource := FTarget;
+  FTarget := t;
+
+  Source.FOutEdges.Add(Self);
+  Target.FInEdges.Add(Self);
+  Source.FOutWeight+=FWeight;
+  Target.FInWeight+=FWeight;
+  FBackEdge := not FBackEdge;
+end;
+
 function TLvlGraphEdge.GetVisibleSourceNodes: TLvlGraphNodeArray;
 // return all visible nodes connected in Source direction
 begin
@@ -3610,6 +3635,12 @@ var
   end;
 
 begin
+  if BackEdge then begin
+    FBackEdge := False;
+    Result := GetVisibleTargetNodesAsAVLTree;
+    FBackEdge := True;
+    exit;
+  end;
   Result:=TAvlTree.Create;
   Visited:=TAvlTree.Create;
   try
@@ -3646,6 +3677,12 @@ var
   end;
 
 begin
+  if BackEdge then begin
+    FBackEdge := False;
+    Result := GetVisibleSourceNodesAsAVLTree;
+    FBackEdge := True;
+    exit;
+  end;
   Result:=TAvlTree.Create;
   Visited:=TAvlTree.Create;
   try
@@ -3909,28 +3946,52 @@ begin
   Result:=NodeAVLTreeToNodeArray(GetVisibleSourceNodesAsAVLTree,true,true);
 end;
 
-function TLvlGraphNode.GetVisibleSourceNodesAsAVLTree: TAvlTree;
-// return all visible nodes connected in Source direction
-
-  procedure Search(Node: TLvlGraphNode);
-  var
-    i: Integer;
-  begin
-    if Node=nil then exit;
-    if Node.Visible then begin
-      Result.Add(Node);
-    end else begin
-      for i:=0 to Node.InEdgeCount-1 do
-        Search(Node.InEdges[i].Source);
-    end;
-  end;
-
+procedure SearchForTargets(Node: TLvlGraphNode; AResult, Visited: TAvlTree);
 var
   i: Integer;
 begin
+  if Node=nil then exit;
+  if Visited.Find(Node)<>nil then exit;
+  Visited.Add(Node);
+  if Node.Visible then begin
+    AResult.Add(Node);
+  end else begin
+    for i:=0 to Node.OutEdgeCount-1 do
+      SearchForTargets(Node.OutEdges[i].Target, AResult, Visited);
+  end;
+end;
+
+procedure SearchForSources(Node: TLvlGraphNode; AResult: TAvlTree);
+var
+  i: Integer;
+begin
+  if Node=nil then exit;
+  if Node.Visible then begin
+    AResult.Add(Node);
+  end else begin
+    for i:=0 to Node.InEdgeCount-1 do
+      SearchForSources(Node.InEdges[i].Source, AResult);
+  end;
+end;
+
+function TLvlGraphNode.GetVisibleSourceNodesAsAVLTree: TAvlTree;
+// return all visible nodes connected in Source direction
+var
+  i: Integer;
+  Visited: TAvlTree;
+begin
   Result:=TAvlTree.Create;
-  for i:=0 to InEdgeCount-1 do
-    Search(InEdges[i].Source);
+  Visited:=TAvlTree.Create;
+  try
+    for i:=0 to InEdgeCount-1 do
+      if not InEdges[i].BackEdge then
+        SearchForSources(InEdges[i].Source, Result);
+    for i:=0 to OutEdgeCount-1 do
+      if OutEdges[i].BackEdge then
+        SearchForTargets(OutEdges[i].Target, Result, Visited);
+  finally
+    Visited.Free;
+  end;
 end;
 
 function TLvlGraphNode.GetVisibleTargetNodes: TLvlGraphNodeArray;
@@ -3943,30 +4004,17 @@ function TLvlGraphNode.GetVisibleTargetNodesAsAVLTree: TAvlTree;
 // return all visible nodes connected in Target direction
 var
   Visited: TAvlTree;
-
-  procedure Search(Node: TLvlGraphNode);
-  var
-    i: Integer;
-  begin
-    if Node=nil then exit;
-    if Visited.Find(Node)<>nil then exit;
-    Visited.Add(Node);
-    if Node.Visible then begin
-      Result.Add(Node);
-    end else begin
-      for i:=0 to Node.OutEdgeCount-1 do
-        Search(Node.OutEdges[i].Target);
-    end;
-  end;
-
-var
   i: Integer;
 begin
   Result:=TAvlTree.Create;
   Visited:=TAvlTree.Create;
   try
     for i:=0 to OutEdgeCount-1 do
-      Search(OutEdges[i].Target);
+      if not OutEdges[i].BackEdge then
+        SearchForTargets(OutEdges[i].Target, Result, Visited);
+    for i:=0 to InEdgeCount-1 do
+      if InEdges[i].BackEdge then
+        SearchForSources(InEdges[i].Source, Result);
   finally
     Visited.Free;
   end;
