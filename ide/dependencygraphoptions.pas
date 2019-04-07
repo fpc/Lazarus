@@ -1,6 +1,7 @@
 unit DependencyGraphOptions;
 
 {$mode objfpc}{$H+}
+{off $DEFINE WITH_RANDOM_SEED} // ONLY applies, after "apply" or "ok" when the graph is redrawn
 
 interface
 
@@ -27,6 +28,9 @@ type
     FOnLoaded: TNotifyEvent;
     FReduceBackEdges: Boolean;
     FStraightenGraph: Boolean;
+    {$IFDEF WITH_RANDOM_SEED}
+    FTestRandomSeed: integer;
+    {$ENDIF}
   public
     constructor Create;
     procedure ReadFromXml(AnXmlConf: TRttiXMLConfig; APath: String); override;
@@ -46,6 +50,9 @@ type
     property StraightenGraph: Boolean read FStraightenGraph write FStraightenGraph;
     property LimitLvlHeighAbs: integer read FLimitLvlHeighAbs write FLimitLvlHeighAbs;
     property LimitLvlHeighRel: Single read FLimitLvlHeighRel write FLimitLvlHeighRel;
+    {$IFDEF WITH_RANDOM_SEED}
+    property TestRandomSeed: integer read FTestRandomSeed write FTestRandomSeed;
+    {$ENDIF}
 
     property OnLoaded: TNotifyEvent read FOnLoaded write FOnLoaded;
   end;
@@ -106,6 +113,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
   private
+    {$IFDEF WITH_RANDOM_SEED}
+    spinTestRandomSeed: TSpinEdit;
+    {$ENDIF}
     FApplyCallback: TApplyOptionsProc;
     FGraph: TLvlGraph;
     FOptions: TLvlGraphOptions;
@@ -191,6 +201,14 @@ begin
   spinLvlLimitRel.Hint      := Format(LvlGraphOptLimitRelativ, [LineEnding]);
   spinHorizSpacing.Hint     := Format(LvlGraphAddHorizontalSpacing, [LineEnding]);
   spinVertSpacing.Hint      := Format(LvlGraphAddVerticalSpacingAr, [LineEnding]);
+
+  {$IFDEF WITH_RANDOM_SEED}
+  spinTestRandomSeed := TSpinEdit.Create(Self);
+  spinTestRandomSeed.Parent := OptionsGroup;
+  spinTestRandomSeed.Hint := 'Random seed for testing. Set to none zero to activate';
+  spinTestRandomSeed.ShowHint := True;
+  {$ENDIF}
+
 
   PopulateEdgeSplit;
   PopulateEdgeShape;
@@ -305,6 +323,9 @@ begin
   Options.ExtraSpacingVert := spinVertSpacing.Value;
   Options.LimitLvlHeighAbs := spinLvlLimitAbs.Value;
   Options.LimitLvlHeighRel := spinLvlLimitRel.Value;
+  {$IFDEF WITH_RANDOM_SEED}
+  Options.TestRandomSeed := spinTestRandomSeed.Value;
+  {$ENDIF}
 end;
 
 procedure TDependencyGraphOptDialog.ReadFromOpts;
@@ -320,6 +341,9 @@ begin
   spinVertSpacing.Value := Options.ExtraSpacingVert;
   spinLvlLimitAbs.Value := Options.LimitLvlHeighAbs;
   spinLvlLimitRel.Value := Options.LimitLvlHeighRel;
+  {$IFDEF WITH_RANDOM_SEED}
+  spinTestRandomSeed.Value := Options.TestRandomSeed;
+  {$ENDIF}
 end;
 
 procedure TDependencyGraphOptDialog.UpdateInfo;
@@ -464,6 +488,10 @@ begin
     AValue.Options := AValue.Options - [lgoStraightenGraph];
   AValue.Limits.MaxLevelHeightAbs := LimitLvlHeighAbs;
   AValue.Limits.MaxLevelHeightRel := LimitLvlHeighRel;
+  {$IFDEF WITH_RANDOM_SEED}
+  if TestRandomSeed <> 0 then
+    RandSeed := TestRandomSeed; // graph autolayout should be triggered before anything else uses random
+  {$ENDIF}
 end;
 
 procedure TLvlGraphOptions.ReadFromGraph(AValue: TLvlGraphControl);
