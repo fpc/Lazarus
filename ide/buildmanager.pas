@@ -2135,13 +2135,31 @@ end;
 function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 
+  function TryTarget(CompilerFilename, TargetOS, TargetCPU: String): boolean;
+  var
+    ConfigCache: TPCTargetConfigCache;
+  begin
+    Result:=false;
+    ConfigCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
+                                 CompilerFilename,'',TargetOS,TargetCPU,true);
+    if ConfigCache=nil then exit;
+    if ConfigCache.NeedsUpdate then begin
+      // ask compiler
+      if not ConfigCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename,
+                                CodeToolBoss.CompilerDefinesCache.ExtraOptions,nil)
+      then
+        exit;
+    end;
+    FFPCVer:=ConfigCache.GetFPCVer;
+    FFPC_FULLVERSION:=ConfigCache.GetFPC_FULLVERSION;
+    Result:=FFPC_FULLVERSION>0;
+  end;
+
   procedure Compute;
   var
     TargetOS: String;
     TargetCPU: String;
-    CompilerFilename: String;
-    ConfigCache: TPCTargetConfigCache;
-    s: string;
+    CompilerFilename, s: String;
   begin
     FFPC_FULLVERSION:=0;
     if OverrideFPCVer<>'' then begin
@@ -2155,22 +2173,26 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
       // Not from the fpc.exe, but from the real compiler
       CompilerFilename:=GetFPCompilerFilename;
       if not IsCTExecutable(CompilerFilename,s) then exit;
+
+      // 1. try with project target OS/CPU
       TargetOS:=GetTargetOS;
       TargetCPU:=GetTargetCPU;
-      ConfigCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                                   CompilerFilename,'',TargetOS,TargetCPU,true);
-      if ConfigCache=nil then exit;
-      if ConfigCache.NeedsUpdate then begin
-        // ask compiler
-        if not ConfigCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename,
-                                  CodeToolBoss.CompilerDefinesCache.ExtraOptions,nil)
-        then
-          exit;
-      end;
-      FFPCVer:=ConfigCache.GetFPCVer;
-      FFPC_FULLVERSION:=ConfigCache.GetFPC_FULLVERSION;
-    end else
-      FFPC_FULLVERSION:=FPCVersionToNumber(FFPCVer);
+      if IsPas2jsTargetOS(TargetOS) or IsPas2jsTargetCPU(TargetCPU) then
+        // skip
+      else if TryTarget(CompilerFilename,TargetOS,TargetCPU) then
+        exit;
+
+      // 2. try with IDE target OS/CPU
+      TargetOS:=GetCompiledTargetOS;
+      TargetCPU:=GetCompiledTargetCPU;
+      if TryTarget(CompilerFilename,TargetOS,TargetCPU) then exit;
+
+      // 3. try with no target OS/CPU - using whatever the compiler supports
+      TargetOS:='';
+      TargetCPU:='';
+      if TryTarget(CompilerFilename,TargetOS,TargetCPU) then exit;
+    end;
+    FFPC_FULLVERSION:=FPCVersionToNumber(FFPCVer);
   end;
 
 begin
@@ -2588,7 +2610,7 @@ begin
     // compute macro values
 
     if ParseOpts.MacroValuesParsing then begin
-      if ConsoleVerbosity>=-1 then
+      if ConsoleVerbosity>=0 then
         debugln(['Warning: (lazarus) [TBuildManager.OnGetBuildMacroValues] cycle computing macros of ',dbgsname(Options.Owner)]);
       exit;
     end;
@@ -2752,7 +2774,7 @@ var
   OldTargetOS: String;
   OldTargetCPU: String;
   OldLCLWidgetType: String;
-  FPCTargetChanged: Boolean;
+  PCTargetChanged: Boolean;
   LCLTargetChanged: Boolean;
   CompilerTargetOS: string;
   CompilerTargetCPU: string;
@@ -2817,11 +2839,11 @@ begin
   fTargetOS:=GetFPCTargetOS(fTargetOS);
   fTargetCPU:=GetFPCTargetCPU(fTargetCPU);
 
-  FPCTargetChanged:=(OldTargetOS<>fTargetOS)
+  PCTargetChanged:=(OldTargetOS<>fTargetOS)
                     or (OldTargetCPU<>fTargetCPU)
                     or (CodeToolBoss.DefineTree.FindDefineTemplateByName(
                          StdDefTemplLazarusSources,true)=nil);
-  if FPCTargetChanged then
+  if PCTargetChanged then
   begin
     IncreaseBuildMacroChangeStamp;
     CodeToolBoss.DefineTree.ClearCache;
@@ -2831,9 +2853,9 @@ begin
   fLCLWidgetType:=GetEffectiveLCLWidgetType;
   LCLTargetChanged:=(OldLCLWidgetType<>fLCLWidgetType);
 
-  if FPCTargetChanged or LCLTargetChanged then begin
+  if PCTargetChanged or LCLTargetChanged then begin
     if ConsoleVerbosity>=0 then
-      DebugLn(['Hint: (lazarus) [TBuildManager.SetBuildTarget] Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
+      DebugLn(['Hint: (lazarus) [TBuildManager.SetBuildTarget] Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' Changed: OS/CPU=',PCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
