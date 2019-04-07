@@ -612,6 +612,13 @@ end;
 
 procedure TListChartSource.Delete(AIndex: Integer);
 begin
+  // Optimization
+  if IsUpdating then begin
+    Dispose(Item[AIndex]);
+    FData.Delete(AIndex);
+    exit;
+  end;
+
   with Item[AIndex]^ do begin
     FBasicExtentIsValid := FBasicExtentIsValid and
       (((FBasicExtent.a.X < X) and (X < FBasicExtent.b.X)) or (XCount = 0)) and
@@ -873,6 +880,7 @@ end;
 
 procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
 begin
+  if IsUpdating then exit; // Optimization
   if FBasicExtentIsValid then begin
     if FXCount > 0 then UpdateMinMax(AX, FBasicExtent.a.X, FBasicExtent.b.X);
     if FYCount > 0 then UpdateMinMax(AY, FBasicExtent.a.Y, FBasicExtent.b.Y);

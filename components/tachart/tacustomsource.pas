@@ -219,6 +219,7 @@ type
   public
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
+    procedure BeginUpdate; override;
     procedure EndUpdate; override;
   public
     class procedure CheckFormat(const AFormat: String);
@@ -928,6 +929,17 @@ begin
   Unused(Sender);
   InvalidateCaches;
   Notify;
+end;
+
+procedure TCustomChartSource.BeginUpdate;
+begin
+  // Caches will be eventually invalidated in a corresponding EndUpdate() call.
+  // Since, at this moment, we are already sure, that caches will be invalidated,
+  // it's better to invalidate them immediately - this will prevent useless efforts
+  // to keep caches coherent between BeginUpdate() and EndUpdate() calls.
+  if FUpdateCount = 0 then
+    InvalidateCaches;
+  Inc(FUpdateCount);
 end;
 
 procedure TCustomChartSource.EndUpdate;
