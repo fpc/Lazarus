@@ -74,6 +74,13 @@ begin
   {$ENDIF}
 end;
 
+procedure DebugLnEnter();
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  DebugLogger.DebugLnEnter();
+  {$ENDIF}
+end;
+
 procedure DebugLnEnter(const s: string);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
@@ -103,6 +110,13 @@ procedure DebugLnEnter(const s1, s2: string; const s3: string; const s4: string;
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnEnter(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18);
+  {$ENDIF}
+end;
+
+procedure DebugLnExit();
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  DebugLogger.DebugLnExit();
   {$ENDIF}
 end;
 
@@ -209,6 +223,13 @@ begin
   {$ENDIF}
 end;
 
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled);
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  DebugLogger.DebugLnEnter(LogEnabled);
+  {$ENDIF}
+end;
+
 procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
@@ -238,6 +259,13 @@ procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; c
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnEnter(LogEnabled, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18);
+  {$ENDIF}
+end;
+
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled);
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  DebugLogger.DebugLnExit(LogEnabled);
   {$ENDIF}
 end;
 

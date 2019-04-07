@@ -20,7 +20,8 @@ procedure DebugLn(const s1, s2: string; const s3: string = '';
                   const s13: string = ''; const s14: string = ''; const s15: string = '';
                   const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
 
-procedure DebugLnEnter(const s: string = ''); inline; overload;
+procedure DebugLnEnter(); inline; overload;
+procedure DebugLnEnter(const s: string); inline; overload;
 procedure DebugLnEnter(Args: array of const); {inline;} overload;
 procedure DebugLnEnter(s: string; Args: array of const); {inline;} overload;
 procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
@@ -30,7 +31,8 @@ procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
                        const s13: string = ''; const s14: string = ''; const s15: string = '';
                        const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
 
-procedure DebugLnExit(const s: string = ''); inline; overload;
+procedure DebugLnExit(); inline; overload;
+procedure DebugLnExit(const s: string); inline; overload;
 procedure DebugLnExit(Args: array of const); {inline;} overload;
 procedure DebugLnExit(s: string; Args: array of const); {inline;} overload;
 procedure DebugLnExit (const s1, s2: string; const s3: string = '';
@@ -63,7 +65,8 @@ procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const 
                   const s13: string = ''; const s14: string = ''; const s15: string = '';
                   const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled); overload;
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string); overload;
 procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
 procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
 procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
@@ -73,7 +76,8 @@ procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; c
                        const s13: string = ''; const s14: string = ''; const s15: string = '';
                        const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled); overload;
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string); overload;
 procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
 procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
 procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';

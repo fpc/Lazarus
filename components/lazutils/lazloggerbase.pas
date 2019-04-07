@@ -185,7 +185,8 @@ type
                       const s13: string = ''; const s14: string = ''; const s15: string = '';
                       const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-    procedure DebugLnEnter(const s: string = ''); overload;
+    procedure DebugLnEnter(); overload;
+    procedure DebugLnEnter(const s: string); overload;
     procedure DebugLnEnter(Args: array of const); overload;
     procedure DebugLnEnter(s: string; Args: array of const); overload;
     procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
@@ -195,7 +196,8 @@ type
                            const s13: string = ''; const s14: string = ''; const s15: string = '';
                            const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-    procedure DebugLnExit(const s: string = ''); overload;
+    procedure DebugLnExit(); overload;
+    procedure DebugLnExit(const s: string); overload;
     procedure DebugLnExit(Args: array of const); overload;
     procedure DebugLnExit(s: string; Args: array of const); overload;
     procedure DebugLnExit(const s1, s2: string; const s3: string = '';
@@ -228,7 +230,8 @@ type
                       const s13: string = ''; const s14: string = ''; const s15: string = '';
                       const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-    procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+    procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled); overload;
+    procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string); overload;
     procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
     procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
     procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
@@ -238,7 +241,8 @@ type
                            const s13: string = ''; const s14: string = ''; const s15: string = '';
                            const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-    procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+    procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled); overload;
+    procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string); overload;
     procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
     procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
     procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
@@ -972,6 +976,11 @@ begin
   DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
 end;
 
+procedure TLazLogger.DebugLnEnter();
+begin
+  IncreaseIndent;
+end;
+
 procedure TLazLogger.DebugLnEnter(const s: string);
 begin
   DoDebugLn(s);
@@ -999,6 +1008,11 @@ procedure TLazLogger.DebugLnEnter(const s1, s2: string; const s3: string; const 
 begin
   DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
   IncreaseIndent;
+end;
+
+procedure TLazLogger.DebugLnExit();
+begin
+  DecreaseIndent;
 end;
 
 procedure TLazLogger.DebugLnExit(const s: string);
@@ -1094,6 +1108,11 @@ begin
   DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
 end;
 
+procedure TLazLogger.DebugLnEnter(LogEnabled: TLazLoggerLogEnabled);
+begin
+  IncreaseIndent(LogEnabled);
+end;
+
 procedure TLazLogger.DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string);
 begin
   if LogEnabled.Enabled then
@@ -1125,6 +1144,11 @@ begin
   if LogEnabled.Enabled then
     DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
   IncreaseIndent(LogEnabled);
+end;
+
+procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled);
+begin
+  DecreaseIndent(LogEnabled);
 end;
 
 procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string);
