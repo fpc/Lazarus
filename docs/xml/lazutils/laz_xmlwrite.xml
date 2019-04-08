@@ -1,81 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      Laz_XMLWrite
+    ====================================================================
+    -->
+    <module name="Laz_XMLWrite">
+      <short></short>
+      <descr></descr>
 
-<!--
-  ====================================================================
-    Laz_XMLWrite
-  ====================================================================
--->
+      <element name="Classes"/>
+      <element name="laz2_DOM"/>
+      <element name="laz2_XMLWrite"/>
 
-<module name="Laz_XMLWrite">
-<short></short>
-<descr>
-</descr>
+      <element name="WriteXML" link="laz2_XMLWrite.WriteXML"/>
+      <element name="WriteXML.Element" link="laz2_XMLWrite.WriteXML.Element"/>
+      <element name="WriteXML.AFileName" link="laz2_XMLWrite.WriteXML.AFileName"/>
+      <element name="WriteXML.AStream" link="laz2_XMLWrite.WriteXML.AStream"/>
 
-<!-- procedure Visibility: default -->
-<element name="WriteXMLFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="WriteXMLFile" link="laz2_XMLWrite.WriteXMLFile"/>
+      <element name="WriteXMLFile.doc" link="laz2_XMLWrite.WriteXMLFile.doc"/>
+      <element name="WriteXMLFile.AFileName" link="laz2_XMLWrite.WriteXMLFile.AFileName"/>
+      <element name="WriteXMLFile.AFile" link="laz2_XMLWrite.WriteXMLFile.AFile"/>
+      <element name="WriteXMLFile.AStream" link="laz2_XMLWrite.WriteXMLFile.AStream"/>
 
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.doc">
-<short></short>
-</element>
+    </module>
+    <!-- Laz_XMLWrite -->
 
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.AFileName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.AFile">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.AStream">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="WriteXML">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="WriteXML.Element">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="WriteXML.AFileName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="WriteXML.AFile">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="WriteXML.AStream">
-<short></short>
-</element>
-
-</module> <!-- Laz_XMLWrite -->
-
-</package>
+  </package>
 </fpdoc-descriptions>

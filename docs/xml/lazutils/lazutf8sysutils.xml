@@ -1,51 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      lazutf8sysutils
+    ====================================================================
+    -->
+    <module name="lazutf8sysutils">
+      <short></short>
+      <descr></descr>
 
-<!--
-  ====================================================================
-    lazutf8sysutils
-  ====================================================================
--->
+      <!-- function Visibility: default -->
+      <element name="NowUTC">
+        <short>Deprecated; use the function from the LazSysUtils unit</short>
+      </element>
 
-<module name="lazutf8sysutils">
-<short></short>
-<descr>
-</descr>
+      <!-- function result Visibility: default -->
+      <element name="NowUTC.Result">
+        <short></short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="NowUTC">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: default -->
+      <element name="GetTickCount64">
+        <short>Deprecated; use the function from the LazSysUtils unit</short>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="NowUTC.Result">
-<short></short>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="GetTickCount64.Result">
+        <short></short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="GetTickCount64">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetTickCount64.Result">
-<short></short>
-</element>
-
-</module> <!-- lazutf8sysutils -->
-
-</package>
+    </module>
+    <!-- lazutf8sysutils -->
+  </package>
 </fpdoc-descriptions>

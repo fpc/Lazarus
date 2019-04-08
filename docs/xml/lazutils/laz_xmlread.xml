@@ -1,135 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+     ====================================================================
+      Laz_XMLRead
+     ====================================================================
+      -->
+    <module name="Laz_XMLRead">
+      <short></short>
+      <descr></descr>
 
-<!--
-  ====================================================================
-    Laz_XMLRead
-  ====================================================================
--->
+      <!-- unresolved externals -->
+      <element name="Classes"/>
+      <element name="laz2_DOM"/>
+      <element name="laz2_XMLRead"/>
 
-<module name="Laz_XMLRead">
-<short></short>
-<descr>
-</descr>
+      <element name="EXMLReadError" link="laz2_XMLRead.EXMLReadError"/>
+      <element name="ReadXMLFile" link="laz2_XMLRead.ReadXMLFile"/>
+      <element name="ReadXMLFile.ADoc" link="laz2_XMLRead.ReadXMLFile.ADoc"/>
+      <element name="ReadXMLFile.AFilename" link="laz2_XMLRead.ReadXMLFile.AFileName"/>
+      <element name="ReadXMLFile.f" link="laz2_XMLRead.ReadXMLFile.f"/>
 
-<!-- class Visibility: default -->
-<element name="EXMLReadError">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="ReadXMLFragment" link="laz2_XMLRead.ReadXMLFragment"/>
+      <element name="ReadXMLFragment.AParentNode" link="laz2_XMLRead.ReadXMLFragment.AParentNode"/>
+      <element name="ReadXMLFragment.AFilename" link="laz2_XMLRead.ReadXMLFragment.AFileName"/>
+      <element name="ReadXMLFragment.f" link="laz2_XMLRead.ReadXMLFragment.f"/>
 
-<!-- variable Visibility: public -->
-<element name="EXMLReadError.Position">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="ReadDTDFile" link="laz2_XMLRead.ReadDTDFile"/>
+      <element name="ReadDTDFile.ADoc" link="laz2_XMLRead.ReadDTDFile.ADoc"/>
+      <element name="ReadDTDFile.AFilename" link="laz2_XMLRead.ReadDTDFile.AFileName"/>
+      <element name="ReadDTDFile.f" link="laz2_XMLRead.ReadDTDFile.f"/>
 
-<!-- variable Visibility: public -->
-<element name="EXMLReadError.LineCol">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+    </module>
+    <!-- Laz_XMLRead -->
 
-<!-- variable Visibility: public -->
-<element name="EXMLReadError.Descr">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="ReadXMLFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadXMLFile.ADoc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadXMLFile.AFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadXMLFile.f">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="ReadXMLFragment">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadXMLFragment.AParentNode">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadXMLFragment.AFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadXMLFragment.f">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="ReadDTDFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadDTDFile.ADoc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadDTDFile.AFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadDTDFile.f">
-<short></short>
-</element>
-
-</module> <!-- Laz_XMLRead -->
-
-</package>
+  </package>
 </fpdoc-descriptions>

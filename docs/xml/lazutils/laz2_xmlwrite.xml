@@ -1,109 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      laz2_XMLWrite
+    ====================================================================
+    -->
+    <module name="laz2_XMLWrite">
+      <short>
+        Provides routines used to write XML content to a file, text file, or stream
+      </short>
+      <descr>
+        <p>
+          <var>laz2_xmlwrite.pas</var> provides procedures and types used to write XML content to a file, text file, or stream. laz2_xmlwrite.pas has classes in its implementation section that are used to perform serialization of XML content to the storage destination.
+        </p>
+        <p>
+          Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org <br/>
+          Modified in 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru <br/>
+          Converted to use UTF-8 instead of widestrings by Mattias Gaertner.
+        </p>
+      </descr>
 
-<!--
-  ====================================================================
-    laz2_XMLWrite
-  ====================================================================
--->
+      <!-- unresolved externals -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazUTF8"/>
+      <element name="lazUTF8Classes"/>
+      <element name="laz2_DOM"/>
+      <element name="laz2_XMLUtils"/>
 
-<module name="laz2_XMLWrite">
-<short></short>
-<descr>
-</descr>
+      <!-- enumeration type Visibility: default -->
+      <element name="TXMLWriterFlag">
+        <short>
+          Represent options enabled when writing XML content
+        </short>
+        <descr>
+          <var>TXMLWriterFlag</var> is an enumerated type with values that represent options enabled when writing XML content. Values in TXMLWriterFlag are stored in the <var>TXMLWriterFlags</var> set type, and passed as an argument to the WriteXMLFile and WriteXML routines.
+        </descr>
+        <seealso>
+          <link id="TXMLWriterFlags"/>
+          <ink id="WriteXMLFile"/>
+          <ink id="WriteXML"/>
+        </seealso>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TXMLWriterFlag.xwfSpecialCharsInAttributeValue">
+        <short>
+          Enables writing Carriage Return (Decimal 13) characters in attribute values instead of the numeric character entity &amp;xD;
+        </short>
+      </element>
+      <element name="TXMLWriterFlag.xwfPreserveWhiteSpace">
+        <short>Preserves whitespace in DOM Text nodes</short>
+      </element>
 
-<!-- enumeration type Visibility: default -->
-<element name="TXMLWriterFlag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- set type Visibility: default -->
+      <element name="TXMLWriterFlags">
+        <short>Set type used to store TXMLWriterFlag values</short>
+        <descr>
+          <p>
+            <var>TXMLWriterFlags</var> is a set type used to store 0 or more values from the <var>TXMLWriterFlag</var> enumeration. TXMLWriterFlags indicates the options enabled when writing XML content. TXMLWriterFlags is the type passed as an argument to the <var>WriteXMLFile</var> procedure.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLWriterFlag"/>
+          <link id="WriteXMLFile"/>
+        </seealso>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TXMLWriterFlag.xwfSpecialCharsInAttributeValue">
-<short></short>
-</element>
+      <!-- procedure Visibility: default -->
+      <element name="WriteXMLFile">
+        <short>
+          Writes an XML document to a file, text file, or stream
+        </short>
+        <descr>
+          <p>
+            <var>WriteXMLFile</var> is an overloaded procedure used to write an XML document to a file, text file, or stream. Overloaded variants provide the implementation details for each of the destinations, and create either TTextXMLWriter or TStreamXMLWriter class instances to store the XML document.
+          </p>
+          <p>
+            AFileName indicates the file name on the local file system where the XML content is stored. AFileName can contain UTF-8 encoded values, and must represent a valid file name. If the file in AFileName already exists, an exception will be raised.
+          </p>
+          <p>
+            Flags contains values from the TXMLWriterFlag enumeration. Use Flags to enable XML writing options in the routine. The default value for the argument is an empty set (<b>[]</b>), and indicates that no options are enabled in the routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="WriteXML"/>
+        </seealso>
+      </element>
 
-<!-- set type Visibility: default -->
-<element name="TXMLWriterFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXMLFile.doc">
+        <short>XML document written in the routine</short>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="WriteXMLFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXMLFile.AFileName">
+        <short>File name where the XML content is stored</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.doc">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXMLFile.AFile">
+        <short>Text file type where the content is written</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.AFileName">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXMLFile.AStream">
+        <short>Stream where the XML document is stored</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.Flags">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXMLFile.Flags">
+        <short>Options enabled when writing the XML content</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.AFile">
-<short></short>
-</element>
+      <!-- procedure Visibility: default -->
+      <element name="WriteXML">
+        <short>
+          Writes a DOM Node to a file, text file, or stream
+        </short>
+        <descr>
+          <p>
+            <var>WriteXML</var> is an overloaded procedure used to write a DOM Node to a file, text file, or stream. WriteXML calls one of the overloaded WriteXMLFile routines for a specific destination.
+          </p>
+          <p>
+            Element is a TDOMNode parameter that represents the DOM Document Node with the XML content written in the method. WriteXML ensures that Element is cast to a TXMLDocument type when calling the WriteXMLFile routine.
+          </p>
+          <p>
+            AFileName indicates the file name on the local file system where the XML content is stored. AFileName can contain UTF-8 encoded values, and must represent a valid file name. If the file in AFileName already exists, an exception will be raised.
+          </p>
+          <p>
+            Flags contains values from the TXMLWriterFlag enumeration. Use Flags to enable XML writing options in the routine. The default value for the argument is an empty set (<b>[]</b>), and indicates that no options are enabled in the routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="WriteXMLFile"/>
+        </seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXMLFile.AStream">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXML.Element">
+        <short>DOM Node with the XML content written in the method</short>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="WriteXML">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXML.AFileName">
+        <short>File name where the XML content is stored</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXML.Element">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXML.AFile">
+        <short>Text file type where the content is written</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXML.AFileName">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="WriteXML.AStream">
+        <short>Stream where the XML document is stored</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXML.AFile">
-<short></short>
-</element>
+      <element name="WriteXML.Flags">
+        <short>Options enabled when writing the XML content</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="WriteXML.AStream">
-<short></short>
-</element>
+    </module>
+    <!-- laz2_XMLWrite -->
 
-</module> <!-- laz2_XMLWrite -->
-
-</package>
+  </package>
 </fpdoc-descriptions>
