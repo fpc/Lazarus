@@ -102,7 +102,6 @@ type
   public
     procedure Execute; override;
     constructor Create(AFileName: String; ADebugger: TFpLldbDebugger);
-    destructor Destroy; override;
     procedure FreeDwarf;
 
     property ImageLoaderList: TDbgImageLoaderList read FImageLoaderList;
@@ -338,13 +337,6 @@ begin
   FFileName := AFileName;
   FDebugger := ADebugger;
   inherited Create(False);
-end;
-
-destructor TDwarfLoaderThread.Destroy;
-begin
-  if FreeOnTerminate then
-    FreeDwarf;
-  inherited Destroy;
 end;
 
 procedure TDwarfLoaderThread.FreeDwarf;
@@ -1037,8 +1029,6 @@ end;
 
 procedure TFpLldbDebuggerCommandDisassemble.DoExecute;
 var
-  memLoc: TFpDbgMemLocation;
-  ALinesAfter: Integer;
   DInstr: TLldbInstructionDisassem;
   Sym: TFpDbgSymbol;
   StartRange, EndRange: TDBGPtr;
@@ -1266,7 +1256,6 @@ end;
 
 function TFpLldbDebugger.GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
 var
-  t: TThreadEntry;
   s: TCallStackBase;
   f: TCallStackEntry;
   r: TRegisters;
@@ -1386,12 +1375,6 @@ begin
   FLastContext[0] := Result;
   Result.AddReference;
 end;
-
-type
-  TLldbDwarfTypeIdentifier = class(TFpDwarfSymbolType)
-  public
-    property InformationEntry;
-  end;
 
 procedure TFpLldbDebugger.DoWatchFreed(Sender: TObject);
 begin
