@@ -96,6 +96,7 @@ type
     FDebugger: TFpLldbDebugger;
     FImageLoaderList: TDbgImageLoaderList;
     FDwarfInfo: TFpDwarfInfo;
+    FIsSuccess: Boolean;
     FMemReader: TFpLldbDbgMemReader;
     FMemManager: TFpDbgMemManager;
     FReaderErrors: String;
@@ -109,6 +110,7 @@ type
     property MemReader: TFpLldbDbgMemReader read FMemReader;
     property MemManager: TFpDbgMemManager read FMemManager;
     property ReaderErrors: String read FReaderErrors;
+    property IsSuccess: Boolean read FIsSuccess;
   end;
 
 const
@@ -298,38 +300,47 @@ var
   AnImageLoader: TDbgImageLoader;
 begin
   debugln(DBG_VERBOSE, ['THREAD TFpLldbDebugger.LoadDwarf ']);
-  AnImageLoader := TDbgImageLoader.Create(FFileName);
-  if not AnImageLoader.IsValid then begin
-    FreeAndNil(AnImageLoader);
-    exit;
+  try
+    AnImageLoader := TDbgImageLoader.Create(FFileName);
+    if not AnImageLoader.IsValid then begin
+      FreeAndNil(AnImageLoader);
+      exit;
+    end;
+    if Terminated then
+      exit;
+
+    FImageLoaderList := TDbgImageLoaderList.Create(True);
+    AnImageLoader.AddToLoaderList(FImageLoaderList);
+    FReaderErrors := AnImageLoader.ReaderErrors;
+    if Terminated then
+      exit;
+
+  {$IFdef WithWinMemReader}
+    FMemReader := TFpLldbAndWin32DbgMemReader.Create(FDebugger);
+  {$Else}
+    FMemReader := TFpLldbDbgMemReader.Create(FDebugger);
+  {$ENDIF}
+    FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+    FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
+    if Terminated then
+      exit;
+
+
+    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
+    FDwarfInfo.MemManager := FMemManager;
+    if Terminated then
+      exit;
+
+    FDwarfInfo.LoadCompilationUnits;
+    debugln(DBG_VERBOSE, ['finish THREAD TFpLldbDebugger.LoadDwarf ']);
+
+    FIsSuccess := True;
+  except
+    on E: Exception do begin
+      FReaderErrors := FReaderErrors + E.Message;
+      debugln(DBG_ERRORS, ['LoaderThread failed ', E.ClassName, ', ', E.Message]);
+    end;
   end;
-  if Terminated then
-    exit;
-
-  FImageLoaderList := TDbgImageLoaderList.Create(True);
-  AnImageLoader.AddToLoaderList(FImageLoaderList);
-  FReaderErrors := AnImageLoader.ReaderErrors;
-  if Terminated then
-    exit;
-
-{$IFdef WithWinMemReader}
-  FMemReader := TFpLldbAndWin32DbgMemReader.Create(FDebugger);
-{$Else}
-  FMemReader := TFpLldbDbgMemReader.Create(FDebugger);
-{$ENDIF}
-  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
-  FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
-  if Terminated then
-    exit;
-
-
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
-  FDwarfInfo.MemManager := FMemManager;
-  if Terminated then
-    exit;
-
-  FDwarfInfo.LoadCompilationUnits;
-  debugln(DBG_VERBOSE, ['finish THREAD TFpLldbDebugger.LoadDwarf ']);
 end;
 
 constructor TDwarfLoaderThread.Create(AFileName: String; ADebugger: TFpLldbDebugger);
@@ -1136,11 +1147,18 @@ begin
   if Loader <> nil then begin
     debugln(DBG_VERBOSE, ['Getting dwarf from FDwarfLoaderThread ']);
     Loader.WaitFor;
+    Result := Loader.ReaderErrors;
+    if not Loader.IsSuccess then begin
+      Result := 'Failed loading Dwarf debug info';
+      Loader.FreeDwarf;
+      Loader.Free;
+      exit;
+    end;
+
     FImageLoaderList := Loader.ImageLoaderList;
     FMemReader := Loader.MemReader;
     FMemManager := Loader.MemManager;
     FDwarfInfo := Loader.DwarfInfo;
-    Result := Loader.ReaderErrors;
     Loader.Free;
 
     if FDwarfInfo.Image64Bit then
@@ -1151,31 +1169,38 @@ begin
   end;
 
   debugln(DBG_VERBOSE, ['TFpLldbDebugger.LoadDwarf ']);
-  AnImageLoader := TDbgImageLoader.Create(FileName);
-  if not AnImageLoader.IsValid then begin
-    FreeAndNil(AnImageLoader);
-    exit;
+  try
+    AnImageLoader := TDbgImageLoader.Create(FileName);
+    if not AnImageLoader.IsValid then begin
+      FreeAndNil(AnImageLoader);
+      exit;
+    end;
+    FImageLoaderList := TDbgImageLoaderList.Create(True);
+    AnImageLoader.AddToLoaderList(FImageLoaderList);
+    Result := AnImageLoader.ReaderErrors;
+  {$IFdef WithWinMemReader}
+    FMemReader := TFpLldbAndWin32DbgMemReader.Create(Self);
+  {$Else}
+    FMemReader := TFpLldbDbgMemReader.Create(Self);
+  {$ENDIF}
+    FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+    FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
+
+    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
+    FDwarfInfo.MemManager := FMemManager;
+    FDwarfInfo.LoadCompilationUnits;
+
+    if FDwarfInfo.Image64Bit then
+      FPrettyPrinter := TFpPascalPrettyPrinter.Create(8)
+    else
+      FPrettyPrinter := TFpPascalPrettyPrinter.Create(4);
+  except
+    on E: Exception do begin
+      Result := Result + E.Message;
+      debugln(DBG_ERRORS, ['LoaderThread failed ', E.ClassName, ', ', E.Message]);
+      UnLoadDwarf;
+    end;
   end;
-  FImageLoaderList := TDbgImageLoaderList.Create(True);
-  AnImageLoader.AddToLoaderList(FImageLoaderList);
-  Result := AnImageLoader.ReaderErrors;
-{$IFdef WithWinMemReader}
-  FMemReader := TFpLldbAndWin32DbgMemReader.Create(Self);
-{$Else}
-  FMemReader := TFpLldbDbgMemReader.Create(Self);
-{$ENDIF}
-  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
-  FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
-
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
-  FDwarfInfo.MemManager := FMemManager;
-  FDwarfInfo.LoadCompilationUnits;
-
-  if FDwarfInfo.Image64Bit then
-    FPrettyPrinter := TFpPascalPrettyPrinter.Create(8)
-  else
-    FPrettyPrinter := TFpPascalPrettyPrinter.Create(4);
-  //FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
 end;
 
 procedure TFpLldbDebugger.UnLoadDwarf;
