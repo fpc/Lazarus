@@ -2148,7 +2148,7 @@ end;
 
   Returns the current widget Width and Height
 
-  Note: Windows.GetWindowInfo doesnt exist in wince, but
+  Note: Windows.GetWindowInfo doesnt exist in WinCE, but
   we can use GetWindowLong and other APIs for most information
 
   Also GetWindowPlacement doesnt exist
@@ -2197,7 +2197,7 @@ begin
   if not Result then Exit;
 
   // No special handling for maximized windows
-  // they do not exist in wince anyway, they are
+  // they do not exist in WinCE anyway, they are
   // emulated by calculating the desktop size
   Width := R.Right - R.Left;
   Height := R.Bottom - R.Top;
@@ -2216,11 +2216,21 @@ begin
     if (WindowInfo^.WinControl is TCustomForm) then
     begin
       // The borders are not given by the same constants in Win32 and WinCE
-      // Bug http://bugs.freepascal.org/view.php?id=11456
+      // Bug https://bugs.freepascal.org/view.php?id=11456
+      //     https://bugs.freepascal.org/view.php?id=25966
       //
+      // SM_CXSIZEFRAME,SM_CYSIZEFRAME are not supported on Windows CE
       // SM_CXSIZEFRAME returns 3 in my tests, but the real border
       // is only 1 pixel wide, like SM_CXBORDER
       {$IFDEF WinCE}
+        if ((Style and WS_THICKFRAME) <> 0) {bsSizeable} or
+           ((Style and (WS_BORDER or WS_POPUP)) = (WS_BORDER or WS_POPUP)) {bsDialog} then
+        begin
+          // thick, sizing border
+          // add twice, top+bottom border
+          Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
+          Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
+        end else
         if (Style and WS_BORDER) <> 0 then
         begin
           // thin, non-sizing border
@@ -2228,14 +2238,14 @@ begin
           Dec(Height, 2*Windows.GetSystemMetrics(SM_CYBORDER));
         end;
       {$ELSE}
-        if (Style and WS_THICKFRAME) <> 0 then
+        if (Style and and (WS_CHILD or WS_THICKFRAME)) = WS_THICKFRAME then
         begin
           // thick, sizing border
           // add twice, top+bottom border
           Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
           Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
         end else
-        if (Style and WS_BORDER) <> 0 then
+        if (Style and (WS_CHILD or WS_BORDER)) = WS_BORDER then
         begin
           // thin, non-sizing border
           Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
