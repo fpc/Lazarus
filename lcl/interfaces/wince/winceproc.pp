@@ -1246,6 +1246,7 @@ begin
       else Result := Wince_5;
     end;
     6: Result := Wince_6;
+    7: Result := wince_7;
     end;
   end;
 end;
