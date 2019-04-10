@@ -3,15 +3,17 @@ object GenericListEditForm: TGenericListEditForm
   Height = 301
   Top = 526
   Width = 343
+  ActiveControl = Memo1
+  BorderIcons = [biSystemMenu]
   Caption = 'GenericListEditForm'
   ClientHeight = 301
   ClientWidth = 343
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 265
+    Height = 29
+    Top = 266
     Width = 331
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -23,20 +25,21 @@ object GenericListEditForm: TGenericListEditForm
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 0
+    TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
   end
   object Memo1: TMemo
-    Left = 0
-    Height = 259
-    Top = 0
-    Width = 343
+    Left = 6
+    Height = 254
+    Top = 6
+    Width = 331
     Align = alClient
+    BorderSpacing.Around = 6
     Lines.Strings = (
       ''
     )
     ScrollBars = ssAutoVertical
-    TabOrder = 1
+    TabOrder = 0
   end
 end
