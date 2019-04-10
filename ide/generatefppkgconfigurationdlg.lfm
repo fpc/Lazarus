@@ -1,79 +1,82 @@
 object GenerateFppkgConfigurationDialog: TGenerateFppkgConfigurationDialog
-  Left = 1498
-  Height = 731
-  Top = 614
-  Width = 937
+  Left = 1739
+  Height = 403
+  Top = 486
+  Width = 487
+  BorderIcons = [biSystemMenu]
   Caption = 'GenerateFppkgConfigurationDialog'
-  ClientHeight = 731
-  ClientWidth = 937
-  DesignTimePPI = 192
+  ClientHeight = 403
+  ClientWidth = 487
   OnCreate = FormCreate
   Position = poOwnerFormCenter
   LCLVersion = '2.1.0.0'
   object FppkgLabel: TLabel
-    Left = 12
-    Height = 36
-    Top = 12
-    Width = 913
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 475
     Align = alTop
-    BorderSpacing.Around = 12
+    BorderSpacing.Around = 6
     Caption = 'FppkgLabel'
-    ParentColor = False
     WordWrap = True
   end
   object FppkgPrefixLabel: TLabel
-    Left = 12
-    Height = 36
-    Top = 60
-    Width = 913
+    Left = 6
+    Height = 17
+    Top = 29
+    Width = 475
     Align = alTop
-    BorderSpacing.Around = 12
+    BorderSpacing.Around = 6
     Caption = 'FppkgPrefixLabel'
-    ParentColor = False
     WordWrap = True
   end
   object FpcPrefixCombobox: TComboBox
-    Left = 12
-    Height = 53
-    Top = 108
-    Width = 913
+    Left = 6
+    Height = 29
+    Top = 52
+    Width = 475
     Align = alTop
-    BorderSpacing.Around = 12
+    BorderSpacing.Around = 6
     ItemHeight = 0
     OnChange = FpcPrefixComboboxChange
     TabOrder = 0
     Text = 'FpcPrefixCombobox'
   end
   object InfoMemo: TMemo
-    Left = 12
-    Height = 402
-    Top = 237
-    Width = 913
+    Left = 6
+    Height = 232
+    Top = 122
+    Width = 475
     Align = alClient
-    BorderSpacing.Around = 12
+    BorderSpacing.Around = 6
     Lines.Strings = (
       'InfoMemo'
     )
     ReadOnly = True
-    TabOrder = 1
+    ScrollBars = ssAutoVertical
+    TabOrder = 2
   end
   object BtnPanel: TPanel
-    Left = 20
-    Height = 52
-    Top = 659
-    Width = 897
+    Left = 10
+    Height = 29
+    Top = 364
+    Width = 467
     Align = alBottom
-    BorderSpacing.Around = 20
+    AutoSize = True
+    BorderSpacing.Around = 10
     BevelOuter = bvNone
-    ClientHeight = 52
-    ClientWidth = 897
-    TabOrder = 2
+    ClientHeight = 29
+    ClientWidth = 467
+    TabOrder = 3
     object FppkgWriteConfigButton: TButton
-      Left = 546
-      Height = 52
+      AnchorSideTop.Control = BtnPanel
+      AnchorSideRight.Control = BtnPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 286
+      Height = 29
       Top = 0
-      Width = 351
-      Align = alRight
+      Width = 181
+      Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'FppkgWriteConfigButton'
       OnClick = FppkgWriteConfigButtonClick
@@ -81,32 +84,32 @@ object GenerateFppkgConfigurationDialog: TGenerateFppkgConfigurationDialog
     end
     object WarningsLabel: TLabel
       Left = 0
-      Height = 52
+      Height = 29
       Top = 0
-      Width = 546
+      Width = 467
       Align = alClient
       AutoSize = False
       Caption = 'WarningsLabel'
       Layout = tlCenter
-      ParentColor = False
     end
   end
   object BrowsePanel: TPanel
-    Left = 12
-    Height = 52
-    Top = 173
-    Width = 913
+    Left = 6
+    Height = 29
+    Top = 87
+    Width = 475
     Align = alTop
-    BorderSpacing.Around = 12
+    AutoSize = True
+    BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 52
-    ClientWidth = 913
-    TabOrder = 3
+    ClientHeight = 29
+    ClientWidth = 475
+    TabOrder = 1
     object BrowseButton: TButton
       Left = 0
-      Height = 52
+      Height = 29
       Top = 0
-      Width = 206
+      Width = 108
       Align = alLeft
       AutoSize = True
       Caption = 'BrowseButton'
