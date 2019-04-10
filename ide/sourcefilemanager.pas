@@ -2533,7 +2533,7 @@ begin
       exit(mrCancel);
   end else
   begin
-    if AnUnitInfo.Modified or AnUnitInfo.NeedsSaveToDisk then
+    if AnUnitInfo.Modified or (MainIDE.CheckFilesOnDiskEnabled and AnUnitInfo.NeedsSaveToDisk) then
     begin
       // save source to file
       DestFilename := AnUnitInfo.Filename;
