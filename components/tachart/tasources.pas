@@ -841,17 +841,10 @@ end;
 
 function CompareDataItemX(AItem1, AItem2: Pointer): Integer;
 var
-  i: Integer;
   item1: PChartDataItem absolute AItem1;
   item2: PChartDataItem absolute AItem2;
 begin
   Result := CompareFloat(item1^.X, item2^.X);
-  if Result = 0 then
-    for i := 0 to Min(High(item1^.XList), High(item2^.XList)) do begin
-      Result := CompareFloat(item1^.XList[i], item2^.XList[i]);
-      if Result <> 0 then
-        exit;
-    end;
 end;
 
 procedure TListChartSource.Sort;
