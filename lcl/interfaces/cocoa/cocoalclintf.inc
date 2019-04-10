@@ -171,6 +171,42 @@ type
     procedure keyUp(theEvent: NSEvent); override;
   end;
 
+  TCocoaSheetDelegate = objcclass(NSObject)
+  public
+    ended: Boolean;
+    retCode: NSInteger;
+    procedure alertDidEnd(alert:NSAlert; returncode: NSInteger; contextInfo: Pointer); message 'alertDidEnd:::';
+  end;
+
+
+procedure TCocoaSheetDelegate.alertDidEnd(alert:NSAlert;
+  returncode: NSInteger; contextInfo: Pointer);
+begin
+  ended := true;
+  retCode := returnCode;
+end;
+
+// it's placed as a separate function for an easier code management
+function RunSheetAsModal(anAlert: NSAlert; ownerWindow: NSWindow): Integer;
+var
+  alertDel: TCocoaSheetDelegate;
+begin
+  alertDel:= TCocoaSheetDelegate.alloc.init;
+  try
+    anAlert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo(
+      ownerWindow, alertDel, ObjCSelector('alertDidEnd:::'), nil);
+
+    while not alertDel.ended do
+      CocoaWidgetSet.AppProcessMessages;
+
+    Result := alertDel.retCode;
+
+  finally
+    alertDel.release;
+  end;
+
+end;
+
 {------------------------------------------------------------------------------
   Func:    CocoaPromptUser
   Params:  DialogCaption - Dialog caption
@@ -182,6 +218,9 @@ type
            EscapeResult  - Result value of escape
            sheetOfWindow - Shows the prompt as a sheet to the specified NSWindow,
                            if nil, the prompt is shown as an application modal dialog
+           modalSheet    - (only used if sheetOfWindow is not null).
+                           if true, the function doesn't return until the sheet
+                           is closed
   Returns: The result value of pushed button
 
   Shows modal dialog or window sheet with the specified caption, message
@@ -194,7 +233,7 @@ function CocoaPromptUser(const DialogCaption : string;
                                            ButtonCount   : LongInt;
                                            DefaultIndex  : LongInt;
                                            EscapeResult  : LongInt;
-                                           sheetOfWindow : NSWindow) : LongInt;
+  sheetOfWindow : NSWindow; modalSheet: Boolean) : LongInt;
 {Implements MessageDlg.}
 
 const
@@ -275,10 +314,15 @@ begin
 
       if Assigned(sheetOfWindow) then
       begin
-        anAlert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo(
-          sheetOfWindow, nil, nil, nil
-        );
-        Result := 0;
+        if not (modalSheet) then
+        begin
+          anAlert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo(
+            sheetOfWindow, nil, nil, nil
+          );
+          Result := 0;
+        end
+        else
+          Result := RunSheetAsModal(anAlert, sheetOfWindow);
       end
       else
       begin
@@ -337,6 +381,115 @@ begin
   Result := CocoaPromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount,
     DefaultIndex, EscapeResult);
 end;  {TCocoaWidgetSet.PromptUser}
+
+{------------------------------------------------------------------------------
+  Method:  MessageBox
+------------------------------------------------------------------------------}
+function TCocoaWidgetSet.MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
+  uType: Cardinal): Integer;
+var
+  DialogType : LongInt;
+  ButtonsArray : array[0..3] of LongInt;
+  ButtonsCount : LongInt;
+  DefButtonIndex: LongInt;
+  SheetWnd : NSWindow;
+begin
+  FillChar(ButtonsArray, SizeOf(ButtonsArray), 0);
+
+  if (uType and MB_RETRYCANCEL) = MB_RETRYCANCEL then
+  begin
+    ButtonsCount := 2;
+    ButtonsArray[0] := idButtonRetry;
+    ButtonsArray[1] := idButtonCancel;
+  end
+  else
+  if (uType and MB_YESNO) = MB_YESNO then
+  begin
+    ButtonsCount := 2;
+    ButtonsArray[0] := idButtonYes;
+    ButtonsArray[1] := idButtonNo;
+  end
+  else
+  if (uType and MB_YESNOCANCEL) = MB_YESNOCANCEL then
+  begin
+    ButtonsCount := 3;
+    ButtonsArray[0] := idButtonYes;
+    ButtonsArray[1] := idButtonNo;
+    ButtonsArray[2] := idButtonCancel;
+  end
+  else
+  if (uType and MB_ABORTRETRYIGNORE) = MB_ABORTRETRYIGNORE then
+  begin
+    ButtonsCount := 3;
+    ButtonsArray[0] := idButtonAbort;
+    ButtonsArray[1] := idButtonRetry;
+    ButtonsArray[2] := idButtonIgnore;
+  end
+  else
+  if (uType and MB_OKCANCEL) = MB_OKCANCEL then
+  begin
+    ButtonsCount := 2;
+    ButtonsArray[0] := idButtonOk;
+    ButtonsArray[1] := idButtonCancel;
+  end
+  else
+  begin
+    ButtonsCount := 1;
+    ButtonsArray[0] := idButtonOk;
+  end;
+
+  if (uType and MB_ICONINFORMATION) = MB_ICONINFORMATION then
+    DialogType := idDialogInfo
+  else
+  if (uType and MB_ICONWARNING) = MB_ICONWARNING then
+    DialogType := idDialogWarning
+  else
+  if (uType and MB_ICONQUESTION) = MB_ICONQUESTION then
+    DialogType := idDialogConfirm
+  else
+  if (uType and MB_ICONERROR) = MB_ICONERROR then
+    DialogType := idDialogError
+  else
+    DialogType := idDialogInfo;
+
+  if (uType and MB_DEFBUTTON2) = MB_DEFBUTTON2 then
+    DefButtonIndex := Pred(2)
+  else
+  if (uType and MB_DEFBUTTON3) = MB_DEFBUTTON3 then
+    DefButtonIndex := Pred(3)
+  else
+  if (uType and MB_DEFBUTTON4) = MB_DEFBUTTON4 then
+    DefButtonIndex := Pred(4)
+  else
+    DefButtonIndex := Pred(1);
+
+  if HWnd = 0 then
+    SheetWnd := Nil
+  else
+    SheetWnd := NSView(HWnd).window();
+
+  Result := CocoaPromptUser(
+    string(lpCaption),
+    string(lpText),
+    DialogType,
+    @ButtonsArray,
+    ButtonsCount,
+    DefButtonIndex,
+    0 {EscapeResult},
+    SheetWnd, true);
+
+  case Result of
+    idButtonOk : Result := IDOK;
+    idButtonNo : Result := IDNO;
+    idButtonYes : Result := IDYES;
+    idButtonCancel : Result := IDCANCEL;
+    idButtonRetry : Result := IDRETRY;
+    idButtonAbort : Result := IDABORT;
+    idButtonIgnore : Result := IDIGNORE;
+  else
+    Result := IDCANCEL;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmaps

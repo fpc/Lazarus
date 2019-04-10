@@ -130,6 +130,8 @@ type
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
       EscapeResult: Longint): Longint; override;
+    function MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
+      uType: Cardinal): Integer; override;
     function GetAppHandle: THandle; override;
     function CreateThemeServices: TThemeServices; override;
 
@@ -220,7 +222,7 @@ procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const Scr
 function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
     EscapeResult: Longint;
-    sheetOfWindow: NSWindow = nil): Longint;
+    sheetOfWindow: NSWindow = nil; modalSheet: Boolean = false): Longint;
 
 implementation
 
