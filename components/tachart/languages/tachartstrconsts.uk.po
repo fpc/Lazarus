@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-19 16:42+0200\n"
+"PO-Revision-Date: 2019-04-10 21:47+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -32,19 +32,19 @@ msgstr "Вставити рядок"
 
 #: tachartstrconsts.desmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Перемістити вниз"
 
 #: tachartstrconsts.desmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Перемістити вгору"
 
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
-msgstr ""
+msgstr "Значення повинне бути цілим."
 
 #: tachartstrconsts.desnonumber
 msgid "Non-numeric value."
-msgstr ""
+msgstr "Нечислове значення."
 
 #: tachartstrconsts.destext
 msgid "Text"
@@ -64,7 +64,7 @@ msgstr "Автоматичний масштаб"
 
 #: tachartstrconsts.rsaxisclicktool
 msgid "Axis click"
-msgstr ""
+msgstr "Клацання осі"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
@@ -189,27 +189,27 @@ msgstr "Трикутник з вершиною донизу"
 
 #: tachartstrconsts.rserrfitdimerror
 msgid "Non-matching count of x and y values."
-msgstr ""
+msgstr "Невідповідна кількість значень x і y."
 
 #: tachartstrconsts.rserrfitmoreparamsthanvalues
 msgid "There are more fitting parameters than data values."
-msgstr ""
+msgstr "Параметрів апроксимування більше, ніж значень даних."
 
 #: tachartstrconsts.rserrfitnobasefunctions
 msgid "Not enough user-provided base functions."
-msgstr ""
+msgstr "Не вистачає наданих користувачем базових функцій."
 
 #: tachartstrconsts.rserrfitnofitparams
 msgid "No fit parameters specified."
-msgstr ""
+msgstr "Не задачі параметри апроксимації."
 
 #: tachartstrconsts.rserrfitsingular
 msgid "Fitting matrix is (nearly) singular."
-msgstr ""
+msgstr "Матриця апроксимування (майже) одинична."
 
 #: tachartstrconsts.rserrillegalfitparamcount
 msgid "The number of fit parameters cannot be less than 1."
-msgstr ""
+msgstr "Число параметрів апроксимації не може бути меншим від 1."
 
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
@@ -289,7 +289,7 @@ msgstr "Діаграма за функцією"
 
 #: tachartstrconsts.rsheaderfooterclicktool
 msgid "Header/footer click"
-msgstr ""
+msgstr "Клацання верхнього/нижнього колонтитулів"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
@@ -333,7 +333,7 @@ msgstr "Трикутник з вершиною ліворуч"
 
 #: tachartstrconsts.rslegendclicktool
 msgid "Legend click"
-msgstr ""
+msgstr "Клацання легенди"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -345,15 +345,15 @@ msgstr "Графік"
 
 #: tachartstrconsts.rslistsourcecolorerror
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
-msgstr ""
+msgstr "%0:s.DataPoints рядок \"%1:s\" не є цілим числом."
 
 #: tachartstrconsts.rslistsourcenumericerror
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
-msgstr ""
+msgstr "%0:s.DataPoints рядок \"%1:s\" не є правильним числом."
 
 #: tachartstrconsts.rslistsourcestringformaterror
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
-msgstr ""
+msgstr "Число значень даних в %0:s.DataPoints рядку \"%1:s\" відрізняється від очікуваного з XCount і YCount."
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
@@ -461,18 +461,16 @@ msgid "Right triangle"
 msgstr "Трикутник з вершиною праворуч"
 
 #: tachartstrconsts.rssourcecounterror
-#, fuzzy
-#| msgid "%0:s requires a chart source with at least %1:d \"%2:s\" value(s) per data point."
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
 msgstr "%0:s потребує джерела діаграми з принаймні %1:d %2:s значенням(и) на точку даних."
 
 #: tachartstrconsts.rssourcecounterror2
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "Цей примірник %0:s повинен мати принаймні %1:d %2:s значень на точку даних."
 
 #: tachartstrconsts.rssourcenoteditable
 msgid "Editable chart source required"
-msgstr ""
+msgstr "Потрібне джерело діаграми, доступне для редагування"
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"

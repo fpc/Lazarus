@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-19 17:06+0200\n"
+"PO-Revision-Date: 2019-04-10 22:50+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -316,7 +316,7 @@ msgstr "Екстра 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagehorizwheel
 msgid "Horizontal-Wheel"
-msgstr ""
+msgstr "Горизонтальне коліщатко"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
@@ -2715,11 +2715,11 @@ msgstr "Колесо вниз"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelleft
 msgid "Wheel left"
-msgstr ""
+msgstr "Коліщатко праворуч"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelright
 msgid "Wheel right"
-msgstr ""
+msgstr "Коліщатко ліворуч"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelup
 msgid "Wheel up"
@@ -7662,10 +7662,8 @@ msgid "Create Filter"
 msgstr "Створити фільтр"
 
 #: lazarusidestrconsts.liscreatefppkgconfig
-#, fuzzy
-#| msgid "Create new Fppkg configuration"
 msgid "Restore Fppkg configuration"
-msgstr "Створити нову конфігурацію Fppkg"
+msgstr "Відновити конфігурацію Fppkg"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
@@ -8205,7 +8203,7 @@ msgstr "Типовий розділ методів"
 
 #: lazarusidestrconsts.lisdelayforcompletionbox
 msgid "Delay for completion box"
-msgstr ""
+msgstr "Затримка для вікна завершення"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -8213,7 +8211,7 @@ msgstr "Затримка виведення довгих підказок у в�
 
 #: lazarusidestrconsts.lisdelayforhints
 msgid "Delay for hints"
-msgstr ""
+msgstr "Затримка для підказок"
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -9823,15 +9821,15 @@ msgstr "Є синтаксична помилка  в елементі fpdoc \"%s
 
 #: lazarusidestrconsts.lisfppkgcompilernotexecutable
 msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr ""
+msgstr "Компілятор [%s] сконфігурований для Fppkg не є виконуваним файлом."
 
 #: lazarusidestrconsts.lisfppkgcompilernotexists
 msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr ""
+msgstr "Компілятор [%s] сконфігурований для Fppkg не існує."
 
 #: lazarusidestrconsts.lisfppkgcompilernotfound
 msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr ""
+msgstr "Не знайдено компілятор [%s] сконфігурований для Fppkg."
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -9839,58 +9837,56 @@ msgstr "виникла проблема з виконуваним файлом �
 
 #: lazarusidestrconsts.lisfppkgconfgenproblems
 msgid "Warnings have to be resolved first"
-msgstr ""
+msgstr "Спочатку слід опрацювати попередження"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
-msgstr ""
+msgstr "Fppkg - це менеджер пакунків Free Pascal. Якщо він сконфігурований неправильно, йому може не вдатись розв'язати залежності пакунків Free Pascal."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 msgid "Failed to generate the configuration file \"%s\"."
-msgstr ""
+msgstr "Не вдалось створити файл конфігурації \"%s\"."
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
 msgid "Files to be written:"
-msgstr ""
+msgstr "Файли, що будуть записані:"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
 msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
-msgstr ""
+msgstr "Ви можете спробувати відновити файли конфігурації автоматично або налаштувати fppkg.cfg вручну."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
-msgstr ""
+msgstr "Не вдалось отримати версію засобу конфігурування fpcmkcfg."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgmissing
 msgid "Could not find the fpcmkcfg configuration tool, which is needed to create the configuration files."
-msgstr ""
+msgstr "Не вдалось знайти засобу конфігурування fpcmkcfg, необхідного для створення файлів конфігурації."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgneeded
 msgid "An up-to-date version is needed to create the configuration files."
-msgstr ""
+msgstr "Для створення файлів конфігурації потрібна оновлена версія."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold
 msgctxt "lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold"
 msgid "It is probably too old to create the configuration files."
-msgstr ""
+msgstr "Вона можлио занадто стара для створення файлів конфігурації."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgtooold
 msgid "The fpcmkcfg configuration tool it too old [%s]."
-msgstr ""
+msgstr "Засіб конфігурування fpcmkcfg занадто старий [%s]."
 
 #: lazarusidestrconsts.lisfppkginstallationpath
-#, fuzzy
-#| msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
 msgid "The prefix of the Free Pascal Compiler installation is required. For example it has the units \"%s\" and/or \"%s\""
-msgstr "Для створення файлів нової конфігурації Fppkg потрібен префікс встановлення компілятора Free Pascal. Наприклад, він містить модулі \"%s\" і/або \"%s\""
+msgstr "Потрібен префікс встановлення компілятора Free Pascal. Наприклад, він містить модулі \"%s\" і/або \"%s\""
 
 #: lazarusidestrconsts.lisfppkglibprefix
 msgid "Fpc library prefix: %s"
-msgstr ""
+msgstr "Префікс бібліотеки Fpc: %s"
 
 #: lazarusidestrconsts.lisfppkgprefix
 msgid "Fpc prefix: %s"
-msgstr ""
+msgstr "Префікс Fpc: %s"
 
 #: lazarusidestrconsts.lisfppkgproblem
 msgid "Problem with Fppkg configuration"
@@ -9898,25 +9894,23 @@ msgstr "Проблема з конфігурацією Fppkg"
 
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
-msgstr ""
+msgstr "Переконайтесь, що остання версія встановлена і доступна на шляху поруч з виконуваним файлом компілятора."
 
 #: lazarusidestrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
-msgstr ""
+msgstr "Fppkg повідомляє, що RTL не встановлено."
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
 msgstr "Під час спроби створити нову конфігурацію Fppkg виникла проблема: %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
-#, fuzzy,badformat
-#| msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
 msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
-msgstr "Не вдалось створити нову конфігурацію Fppkg. Потрібно виправити конфігурацію вручну або перевстановити Free Pascal."
+msgstr "Не вдалось створити нову конфігурацію Fppkg (%s). Потрібно виправити конфігурацію вручну або перевстановити Free Pascal."
 
 #: lazarusidestrconsts.lisfppkgwriteconfigfile
 msgid "Write new configuration files"
-msgstr ""
+msgstr "Напишіть новий файл конфігурації"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -10014,19 +10008,19 @@ msgstr "Загальне"
 
 #: lazarusidestrconsts.lisgeneratefppkgcfg
 msgid "Fppkg configuration: %s"
-msgstr ""
+msgstr "Конфігурація Fppkg: %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgcompcfg
 msgid "Fppkg compiler configuration: %s"
-msgstr ""
+msgstr "Конфігурація компілятора Fppkg: %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgconfiguration
 msgid "Use this screen to generate new Fppkg configuration files with the fpcmkcfg tool."
-msgstr ""
+msgstr "Скористайтесь цим екраном для створення нових файлів конфігурації Fppkg за допомогою засобу конфігурування fpcmkcfg."
 
 #: lazarusidestrconsts.lisgeneratefppkgconfigurationcaption
 msgid "Generate new Fppkg configuration files"
-msgstr ""
+msgstr "Створити нові файли конфігурації Fppkg"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
@@ -10523,10 +10517,8 @@ msgid "Incorrect configuration directory found"
 msgstr "Знайдена неправильна тека конфігурації"
 
 #: lazarusidestrconsts.lisincorrectfppkgconfiguration
-#, fuzzy,badformat
-#| msgid "the Fppkg configuration is corrupt."
 msgid "there is a problem with the Fppkg configuration. (%s)"
-msgstr "конфігурація Fppkg пошкоджена."
+msgstr "виникла проблема з конфігурацією Fppkg. (%s)"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -11942,11 +11934,11 @@ msgstr "Рядок у нижньому регістрі, поданий як п�
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckbox
 msgid "Maximize compatibility of project files (LPI and LPS)"
-msgstr ""
+msgstr "Максимізувати сумісність файлів проекту (LPI і LPS)"
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
 msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Перевірте це, якщо потрібно відкривати проект у застарілих (2.0 і нижче) версіях Lazarus."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
@@ -19685,115 +19677,113 @@ msgstr "Переглянути файли LPL"
 
 #: lazarusidestrconsts.lvlgraphaddhorizontalspacing
 msgid "Add horizontal spacing between columns"
-msgstr ""
+msgstr "Додати горизонтальний проміжок між стовпцями"
 
 #: lazarusidestrconsts.lvlgraphaddverticalspacingar
 msgid "Add vertical spacing around nodes"
-msgstr ""
+msgstr "Додати вертикальний проміжок навколо вузлів"
 
 #: lazarusidestrconsts.lvlgraphextraspacing
 msgid "Extra spacing (x/y)"
-msgstr ""
+msgstr "Додатковий простір (x/y)"
 
 #: lazarusidestrconsts.lvlgraphnamesabovenode
 msgid "Names above node"
-msgstr ""
+msgstr "Назви під вузлами"
 
 #: lazarusidestrconsts.lvlgraphoptabsolutelimi
 msgid "Absolute limit for height of levels"
-msgstr ""
+msgstr "Абсолютна межа висоти рівнів"
 
 #: lazarusidestrconsts.lvlgraphoptcrossings
 msgid "Crossings"
-msgstr ""
+msgstr "Перетини"
 
 #: lazarusidestrconsts.lvlgraphoptedgelen
 msgid "Edge len"
-msgstr ""
+msgstr "Довжина зв'язку"
 
 #: lazarusidestrconsts.lvlgraphoptedges
 msgid "Edges"
-msgstr ""
+msgstr "Зв'язки"
 
 #: lazarusidestrconsts.lvlgraphoptinfo
 msgid "Info"
-msgstr ""
+msgstr "Інформація"
 
 #: lazarusidestrconsts.lvlgraphoptlevels
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
 msgid "Levels"
 msgstr "Рівні"
 
 #: lazarusidestrconsts.lvlgraphoptlimitheightoflvl
 msgid "Limit height of Levels"
-msgstr ""
+msgstr "Обмежити висоту рівнів"
 
 #: lazarusidestrconsts.lvlgraphoptlimitrelativ
 msgid "Limit relative to node-count for height of levels.%0sLimit = min(3, val*sqrt(NodeCount))"
-msgstr ""
+msgstr "Обмежити висоту рівнів залежно від кількості вузлів.%0sLimit = min(3, val*sqrt(NodeCount))"
 
 #: lazarusidestrconsts.lvlgraphoptsplitpoints
 msgid "Splitpoints"
-msgstr ""
+msgstr "Точки поділу"
 
 #: lazarusidestrconsts.lvlgraphreducebackedges
 msgid "Reduce backedges"
-msgstr ""
+msgstr "Зменшити зворотні зв'язки"
 
 #: lazarusidestrconsts.lvlgraphshapecalculatelay
 msgid "Calculate layout from high-edge"
-msgstr ""
+msgstr "Розраховувати розмітку з верхнього рівня"
 
 #: lazarusidestrconsts.lvlgraphshapecurved
 msgid "Curved"
-msgstr ""
+msgstr "Криволінійні"
 
 #: lazarusidestrconsts.lvlgraphshapeedgesshape
 msgid "Edges shape"
-msgstr ""
+msgstr "Форма зв'язків"
 
 #: lazarusidestrconsts.lvlgraphshapeedgessplitmo
 msgid "Edges split mode"
-msgstr ""
+msgstr "Режим розділення зв'язків"
 
 #: lazarusidestrconsts.lvlgraphshapeminimizeedge
 msgid "Minimize edges len"
-msgstr ""
+msgstr "Мінімізувати довжину зв'язків"
 
 #: lazarusidestrconsts.lvlgraphshapenodes
 msgid "Nodes"
-msgstr ""
+msgstr "Вузли"
 
 #: lazarusidestrconsts.lvlgraphshapestraight
 msgid "Straight"
-msgstr ""
+msgstr "Прямі"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
-msgstr ""
+msgstr "З'єднувати в найвищому"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeatsourc
 msgid "Merge at source"
-msgstr ""
+msgstr "З'єднувати на початку"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeattarge
 msgid "Merge at target"
-msgstr ""
+msgstr "З'єднувати в кінці"
 
 #: lazarusidestrconsts.lvlgraphsplitnone
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
 msgid "None"
-msgstr "Відсутнє"
+msgstr "Немає"
 
 #: lazarusidestrconsts.lvlgraphsplitseparate
 msgid "Separate"
-msgstr ""
+msgstr "Окремі"
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
-msgstr ""
+msgstr "Вирівняти діаграму"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
@@ -20076,7 +20066,7 @@ msgstr "Нумерація версій"
 
 #: lazarusidestrconsts.showoptions
 msgid "Show options"
-msgstr ""
+msgstr "Показати параметри"
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
@@ -21786,11 +21776,11 @@ msgstr "Тільки для читання"
 
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
-msgstr ""
+msgstr "Параметри діаграми пакунків"
 
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
-msgstr ""
+msgstr "Параметри діаграми модулів"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
