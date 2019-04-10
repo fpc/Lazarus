@@ -180,6 +180,9 @@ type
   TUserDefinedTool = class(TChartTool)
   end;
 
+  TZoomDirection = (zdLeft, zdUp, zdRight, zdDown);
+  TZoomDirectionSet = set of TZoomDirection;
+
   { TBasicZoomTool }
 
   TBasicZoomTool = class(TChartTool)
@@ -190,6 +193,7 @@ type
     FExtDst: TDoubleRect;
     FExtSrc: TDoubleRect;
     FFullZoom: Boolean;
+    FLimitToExtent: TZoomDirectionSet;
     FTimer: TCustomTimer;
 
     procedure OnTimer(ASender: TObject);
@@ -206,6 +210,8 @@ type
       read FAnimationInterval write FAnimationInterval default 0;
     property AnimationSteps: Cardinal
       read FAnimationSteps write FAnimationSteps default 0;
+    property LimitToExtent: TZoomDirectionSet
+      read FLimitToExtent write FLimitToExtent default [];
   end;
 
   TZoomRatioLimit = (zrlNone, zrlProportional, zrlFixedX, zrlFixedY);
@@ -1126,12 +1132,32 @@ begin
 end;
 
 procedure TBasicZoomTool.DoZoom(const ANewExtent: TDoubleRect; AFull: Boolean);
+
+  function ValidatedNewExtent: TDoubleRect;
+  var
+    fullExt: TDoubleRect;
+  begin
+    Result := ANewExtent;
+    if LimitToExtent <> [] then begin
+      fullExt := FChart.GetFullExtent;
+      if (zdRight in LimitToExtent) and (Result.b.X > fullExt.b.X) then
+        Result.b.X := fullExt.b.X;
+      if (zdUp in LimitToExtent) and (Result.b.Y > fullExt.b.Y) then
+        Result.b.Y := fullExt.b.Y;
+      if (zdLeft in LimitToExtent) and (Result.a.X < fullExt.a.X) then
+        Result.a.X := fullExt.a.X;
+      if (zdDown in LimitToExtent) and (Result.a.Y < fullExt.a.Y) then
+        Result.a.Y := fullExt.a.Y;
+    end;
+  end;
+
+
 begin
   if (AnimationInterval = 0) or (AnimationSteps = 0) then begin
     if AFull then
       FChart.ZoomFull
     else
-      FChart.LogicalExtent := ANewExtent;
+      FChart.LogicalExtent := ValidatedNewExtent;
     if IsActive then
       Deactivate;
     exit;
@@ -1139,7 +1165,7 @@ begin
   if not IsActive then
     Activate;
   FExtSrc := FChart.LogicalExtent;
-  FExtDst := ANewExtent;
+  FExtDst := ValidatedNewExtent;
   FFullZoom := AFull;
   FCurrentStep := 0;
   FTimer.Interval := AnimationInterval;
