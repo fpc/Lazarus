@@ -7689,10 +7689,8 @@ msgid "Create Filter"
 msgstr "Criar filtro"
 
 #: lazarusidestrconsts.liscreatefppkgconfig
-#, fuzzy
-#| msgid "Create new Fppkg configuration"
 msgid "Restore Fppkg configuration"
-msgstr "Criar nova configuração Fppkg"
+msgstr "Restaurar configuração Fppkg"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
@@ -9868,11 +9866,11 @@ msgstr "há um problema com o executável do compilador Free Pascal,"
 
 #: lazarusidestrconsts.lisfppkgconfgenproblems
 msgid "Warnings have to be resolved first"
-msgstr ""
+msgstr "Avisos devem ser solucionados primeiro"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
-msgstr ""
+msgstr "Fppkg é o gerenciador de pacotes do Free Pascal. Quando ele não está apropriadamente configurado, pode ser impossível solucionar dependências nos pacotes Free Pascal."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 msgid "Failed to generate the configuration file \"%s\"."
@@ -9880,11 +9878,11 @@ msgstr "Falha ao gerar o arquivo de configuração \"%s\"."
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
 msgid "Files to be written:"
-msgstr ""
+msgstr "Arquivos à serem gravados:"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
 msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
-msgstr ""
+msgstr "Você pode tentar restaurar os arquivos de configuração automaticamente, ou adaptar o fppkg.cfg manualmente."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
@@ -9908,18 +9906,16 @@ msgid "The fpcmkcfg configuration tool it too old [%s]."
 msgstr "A ferramenta de configuração \"fpcmkcfg\" é muito antiga [%s]."
 
 #: lazarusidestrconsts.lisfppkginstallationpath
-#, fuzzy
-#| msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
 msgid "The prefix of the Free Pascal Compiler installation is required. For example it has the units \"%s\" and/or \"%s\""
-msgstr "O prefixo da instalação do compilador Free Pascal é requerido ao criar novos arquivos de configuração para o Fppkg. Por exemplo, ele tem as unidades \"%s\" e/ou \"%s\""
+msgstr "O prefixo da instalação do compilador Free Pascal é requerido. Por exemplo, ele tem as unidades \"%s\" e/ou \"%s\""
 
 #: lazarusidestrconsts.lisfppkglibprefix
 msgid "Fpc library prefix: %s"
-msgstr ""
+msgstr "Prefixo da biblioteca Fpc: %s"
 
 #: lazarusidestrconsts.lisfppkgprefix
 msgid "Fpc prefix: %s"
-msgstr ""
+msgstr "Prefixo Fpc: %s"
 
 #: lazarusidestrconsts.lisfppkgproblem
 msgid "Problem with Fppkg configuration"
@@ -9943,7 +9939,7 @@ msgstr "Falha ao criar uma nova configuração Fppkg (%s). Você deverá corrigi
 
 #: lazarusidestrconsts.lisfppkgwriteconfigfile
 msgid "Write new configuration files"
-msgstr ""
+msgstr "Gravar novos arquivos de configuração"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -10041,19 +10037,19 @@ msgstr "Geral"
 
 #: lazarusidestrconsts.lisgeneratefppkgcfg
 msgid "Fppkg configuration: %s"
-msgstr ""
+msgstr "Configuração Fppkg: %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgcompcfg
 msgid "Fppkg compiler configuration: %s"
-msgstr ""
+msgstr "Configuração compilador Fppkg: %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgconfiguration
 msgid "Use this screen to generate new Fppkg configuration files with the fpcmkcfg tool."
-msgstr ""
+msgstr "Use esta tela para gerar novos arquivos de configuração Fppkg com a ferramenta fpcmkcfg."
 
 #: lazarusidestrconsts.lisgeneratefppkgconfigurationcaption
 msgid "Generate new Fppkg configuration files"
-msgstr ""
+msgstr "Gerar novos arquivos de configuração Fppkg"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
@@ -19728,115 +19724,113 @@ msgstr "Reexaminar arquivos lpl"
 
 #: lazarusidestrconsts.lvlgraphaddhorizontalspacing
 msgid "Add horizontal spacing between columns"
-msgstr ""
+msgstr "Adicionar espaçamento horizontal entre colunas"
 
 #: lazarusidestrconsts.lvlgraphaddverticalspacingar
 msgid "Add vertical spacing around nodes"
-msgstr ""
+msgstr "Adicionar espaçamento vertical ao redor dos nós"
 
 #: lazarusidestrconsts.lvlgraphextraspacing
 msgid "Extra spacing (x/y)"
-msgstr ""
+msgstr "Espaçamento extra (x/y)"
 
 #: lazarusidestrconsts.lvlgraphnamesabovenode
 msgid "Names above node"
-msgstr ""
+msgstr "Nomes sobre nós"
 
 #: lazarusidestrconsts.lvlgraphoptabsolutelimi
 msgid "Absolute limit for height of levels"
-msgstr ""
+msgstr "Limite absoluto para níveis de altura"
 
 #: lazarusidestrconsts.lvlgraphoptcrossings
 msgid "Crossings"
-msgstr ""
+msgstr "Cruzamentos"
 
 #: lazarusidestrconsts.lvlgraphoptedgelen
 msgid "Edge len"
-msgstr ""
+msgstr "Comprimento bordas"
 
 #: lazarusidestrconsts.lvlgraphoptedges
 msgid "Edges"
-msgstr ""
+msgstr "Bordas"
 
 #: lazarusidestrconsts.lvlgraphoptinfo
 msgid "Info"
-msgstr ""
+msgstr "Informações"
 
 #: lazarusidestrconsts.lvlgraphoptlevels
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
 msgid "Levels"
 msgstr "Níveis"
 
 #: lazarusidestrconsts.lvlgraphoptlimitheightoflvl
 msgid "Limit height of Levels"
-msgstr ""
+msgstr "Limite de altura de níveis"
 
 #: lazarusidestrconsts.lvlgraphoptlimitrelativ
 msgid "Limit relative to node-count for height of levels.%0sLimit = min(3, val*sqrt(NodeCount))"
-msgstr ""
+msgstr "Limite relativo à contagem de nós para altura de níveis.%0sLimite = min(3, val*sqrt(NodeCount))"
 
 #: lazarusidestrconsts.lvlgraphoptsplitpoints
 msgid "Splitpoints"
-msgstr ""
+msgstr "Pontos de separação"
 
 #: lazarusidestrconsts.lvlgraphreducebackedges
 msgid "Reduce backedges"
-msgstr ""
+msgstr "Reduzir bordas anteriores"
 
 #: lazarusidestrconsts.lvlgraphshapecalculatelay
 msgid "Calculate layout from high-edge"
-msgstr ""
+msgstr "Calcular o \"layout\" a partir da borda alta"
 
 #: lazarusidestrconsts.lvlgraphshapecurved
 msgid "Curved"
-msgstr ""
+msgstr "Curva"
 
 #: lazarusidestrconsts.lvlgraphshapeedgesshape
 msgid "Edges shape"
-msgstr ""
+msgstr "Forma das bordas"
 
 #: lazarusidestrconsts.lvlgraphshapeedgessplitmo
 msgid "Edges split mode"
-msgstr ""
+msgstr "Modo de separação das bordas"
 
 #: lazarusidestrconsts.lvlgraphshapeminimizeedge
 msgid "Minimize edges len"
-msgstr ""
+msgstr "Minimizar comprimento bordas"
 
 #: lazarusidestrconsts.lvlgraphshapenodes
 msgid "Nodes"
-msgstr ""
+msgstr "Nós"
 
 #: lazarusidestrconsts.lvlgraphshapestraight
 msgid "Straight"
-msgstr ""
+msgstr "Retilínea"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
-msgstr ""
+msgstr "Mesclar no mais alto"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeatsourc
 msgid "Merge at source"
-msgstr ""
+msgstr "Mesclar na fonte"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeattarge
 msgid "Merge at target"
-msgstr ""
+msgstr "Mesclar no alvo"
 
 #: lazarusidestrconsts.lvlgraphsplitnone
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
 msgid "None"
 msgstr "Nenhum"
 
 #: lazarusidestrconsts.lvlgraphsplitseparate
 msgid "Separate"
-msgstr ""
+msgstr "Separar"
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
-msgstr ""
+msgstr "Arrumar o gráfico"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
@@ -20119,7 +20113,7 @@ msgstr "Numeração versão"
 
 #: lazarusidestrconsts.showoptions
 msgid "Show options"
-msgstr ""
+msgstr "Exibir opções"
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
@@ -21829,11 +21823,11 @@ msgstr "Somente leitura"
 
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
-msgstr ""
+msgstr "Opções para o gráfico de pacotes"
 
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
-msgstr ""
+msgstr "Opções para o gráfico de unidades"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

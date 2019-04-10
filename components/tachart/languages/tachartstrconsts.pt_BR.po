@@ -61,7 +61,7 @@ msgstr "Escala auto"
 
 #: tachartstrconsts.rsaxisclicktool
 msgid "Axis click"
-msgstr ""
+msgstr "Clique no eixo"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
@@ -286,7 +286,7 @@ msgstr "Série Função"
 
 #: tachartstrconsts.rsheaderfooterclicktool
 msgid "Header/footer click"
-msgstr ""
+msgstr "Clique no cabeçalho/rodapé"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
@@ -330,7 +330,7 @@ msgstr "Triângulo esquerdo"
 
 #: tachartstrconsts.rslegendclicktool
 msgid "Legend click"
-msgstr ""
+msgstr "Clique na legenda"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
