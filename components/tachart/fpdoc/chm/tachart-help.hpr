@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<docproject>
+  <options>
+    <option name="ostarget" value="Win32"/>
+    <option name="cputarget" value="i386"/>
+    <option name="format" value="CHM"/>
+    <option name="hide-protected" value="false"/>
+    <option name="warn-no-node" value="false"/>
+    <option name="show-private" value="false"/>
+    <option name="stop-on-parser-error" value="false"/>
+    <option name="parse-impl" value="false"/>
+    <option name="dont-trim" value="false"/>
+    <option name="emit-notes" value="false"/>
+	<option name="css-file" value="fpdoc.css"/>
+	<option name="auto-toc"/>
+	<option name="auto-index"/>
+	<option name="make-searchable"/>
+	<option name="content"/>
+  </options>
+  <packages>
+    <package name="TAChartLazarusPkg" output="tachart.chm" content="tachart.xct">
+      <units>
+        <unit file="..\..\tagraph.pas" options=""/>
+        <unit file="..\..\tachartaxis.pas" options=""/>
+        <unit file="..\..\tachartaxisutils.pas" options=""/>
+        <unit file="..\..\tachartutils.pas" options=""/>
+        <unit file="..\..\tacustomseries.pas" options=""/>
+		<unit file="..\..\tacustomsource.pas" options=""/>
+        <unit file="..\..\tadbsource.pas" options=""/>
+        <unit file="..\..\tadrawutils.pas" options=""/>
+        <unit file="..\..\tageometry.pas" options=""/>
+        <unit file="..\..\talegend.pas" options=""/>
+        <unit file="..\..\tamath.pas" options=""/>
+        <unit file="..\..\taseries.pas" options=""/>
+        <unit file="..\..\tasources.pas" options=""/>
+        <unit file="..\..\tatypes.pas" options=""/>
+      </units>
+      <descriptions>
+        <description file="..\tagraph.xml"/>
+        <description file="..\tachartaxis.xml"/>
+        <description file="..\tachartaxisutils.xml"/>
+        <description file="..\tachartutils.xml"/>
+        <description file="..\tacustomseries.xml"/>
+		<description file="..\tacustomsource.xml"/>
+        <description file="..\tadbsource.xml"/>
+        <description file="..\tadrawutils.xml"/>
+        <description file="..\tageometry.xml"/>
+        <description file="..\talegend.xml"/>
+        <description file="..\tamath.xml"/>
+        <description file="..\taseries.xml"/>
+        <description file="..\tasources.xml"/>
+        <description file="..\tatypes.xml"/>
+      </descriptions>
+      <imports/>
+    </package>
+  </packages>
+</docproject>
