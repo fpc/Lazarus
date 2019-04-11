@@ -1104,7 +1104,7 @@ msgstr "הפוך סדר קיפול בתפריט קופץ"
 #: lazarusidestrconsts.dlgcogdb
 #, fuzzy
 #| msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
-msgid "Generate debugging info for GDB (slower / increases exe-size)"
+msgid "Generate info for the debugger (slower / increases exe-size)"
 msgstr "צור מידע ניפוי שגיאות עבור GDB (מאט את ההידור)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
@@ -1120,7 +1120,7 @@ msgid "Include files (-Fi):"
 msgstr "כלול קבצים (-FI):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-msgid "Info for GDB"
+msgid "Debugger info"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcolibraries
@@ -1799,7 +1799,9 @@ msgid "Extra line spacing"
 msgstr "מרווח שורה מוגדל"
 
 #: lazarusidestrconsts.dlgextsymb
-msgid "Use external gdb debug symbols file"
+#, fuzzy
+#| msgid "Use external gdb debug symbols file"
+msgid "Use external debug symbols file"
 msgstr "השתמש בקובץ סמלים חצוני של מנפה השגיאות gdb"
 
 #: lazarusidestrconsts.dlgfileexts

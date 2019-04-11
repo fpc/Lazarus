@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-04-08 01:44+0300\n"
+"PO-Revision-Date: 2019-04-11 15:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -1060,8 +1060,8 @@ msgid "Reverse fold-order in Popup"
 msgstr "Обратить порядок элементов во всплывающем меню"
 
 #: lazarusidestrconsts.dlgcogdb
-msgid "Generate debugging info for GDB (slower / increases exe-size)"
-msgstr "Генерировать отладочную информацию для GDB (медленнее / больше размер)"
+msgid "Generate info for the debugger (slower / increases exe-size)"
+msgstr "Генерировать отладочную информацию (медленнее / больше размер)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 msgid "Use Heaptrc unit (check for mem-leaks)"
@@ -1072,8 +1072,8 @@ msgid "Include files (-Fi):"
 msgstr "Включаемые файлы (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-msgid "Info for GDB"
-msgstr "Информация для GDB"
+msgid "Debugger info"
+msgstr "Отладочная информация"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1702,8 +1702,8 @@ msgid "Extra line spacing"
 msgstr "Межстрочный интервал"
 
 #: lazarusidestrconsts.dlgextsymb
-msgid "Use external gdb debug symbols file"
-msgstr "Использовать внешний файл отладочных символов GDB"
+msgid "Use external debug symbols file"
+msgstr "Использовать внешний файл отладочных символов"
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"

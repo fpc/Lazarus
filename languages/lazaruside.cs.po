@@ -1065,7 +1065,9 @@ msgid "Reverse fold-order in Popup"
 msgstr "Opačné pořadí svinutí v Popup"
 
 #: lazarusidestrconsts.dlgcogdb
-msgid "Generate debugging info for GDB (slower / increases exe-size)"
+#, fuzzy
+#| msgid "Generate debugging info for GDB (slower / increases exe-size)"
+msgid "Generate info for the debugger (slower / increases exe-size)"
 msgstr "Vytvářet ladící informace pro GDB (pomalejší / Větší velikost exe souboru)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
@@ -1077,7 +1079,9 @@ msgid "Include files (-Fi):"
 msgstr "Zahrnout soubory (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-msgid "Info for GDB"
+#, fuzzy
+#| msgid "Info for GDB"
+msgid "Debugger info"
 msgstr "Infomace pro GDB"
 
 #: lazarusidestrconsts.dlgcolibraries
@@ -1707,7 +1711,9 @@ msgid "Extra line spacing"
 msgstr "Dodatečné mezery řádku"
 
 #: lazarusidestrconsts.dlgextsymb
-msgid "Use external gdb debug symbols file"
+#, fuzzy
+#| msgid "Use external gdb debug symbols file"
+msgid "Use external debug symbols file"
 msgstr "Používat externí soubor ladících symbolů GDB"
 
 #: lazarusidestrconsts.dlgfileexts

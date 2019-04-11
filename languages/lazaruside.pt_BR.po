@@ -1059,7 +1059,9 @@ msgid "Reverse fold-order in Popup"
 msgstr "Inverter ordem-retração no \"Popup\""
 
 #: lazarusidestrconsts.dlgcogdb
-msgid "Generate debugging info for GDB (slower / increases exe-size)"
+#, fuzzy
+#| msgid "Generate debugging info for GDB (slower / increases exe-size)"
+msgid "Generate info for the debugger (slower / increases exe-size)"
 msgstr "Gerar informações de depuração para GDB (mais lento / aumenta o tamanho do .exe)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
@@ -1071,7 +1073,9 @@ msgid "Include files (-Fi):"
 msgstr "Arquivos de inclusão (-Fi)"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-msgid "Info for GDB"
+#, fuzzy
+#| msgid "Info for GDB"
+msgid "Debugger info"
 msgstr "Info para GDB"
 
 #: lazarusidestrconsts.dlgcolibraries
@@ -1701,7 +1705,9 @@ msgid "Extra line spacing"
 msgstr "Espaços extra linhas"
 
 #: lazarusidestrconsts.dlgextsymb
-msgid "Use external gdb debug symbols file"
+#, fuzzy
+#| msgid "Use external gdb debug symbols file"
+msgid "Use external debug symbols file"
 msgstr "Usar arquivo depuração externo gdb"
 
 #: lazarusidestrconsts.dlgfileexts
