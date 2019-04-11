@@ -1092,7 +1092,9 @@ var
   cmd: TFpLldbDebuggerCommandDisassemble;
 begin
   Result := False;
-  if (Debugger = nil) or not(Debugger.State = dsPause) or FIsDisassembling then
+  if (Debugger = nil) or not(Debugger.State = dsPause) or FIsDisassembling or
+     (TFpLldbDebugger(Debugger).FDwarfInfo = nil)
+  then
     exit;
   FIsDisassembling := True;
   cmd := TFpLldbDebuggerCommandDisassemble.Create(self, AnAddr, ALinesBefore, ALinesAfter);
