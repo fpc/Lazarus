@@ -122,7 +122,7 @@ type
 
   TFpDwarfV3FreePascalSymbolTypeArray = class(TFpDwarfFreePascalSymbolTypeArray)
   private type
-    TArrayOrStringType = (iasUnknown, iasArray, iasShortString, iasAnsiString);
+    TArrayOrStringType = (iasUnknown, iasArray, iasShortString, iasAnsiString, iasUnicodeString);
   private
     FArrayOrStringType: TArrayOrStringType;
     function GetInternalStringType: TArrayOrStringType;
@@ -588,6 +588,7 @@ function TFpDwarfV3FreePascalSymbolTypeArray.GetInternalStringType: TArrayOrStri
 var
   Info: TDwarfInformationEntry;
   t: Cardinal;
+  t2: TFpDbgSymbol;
 begin
   Result := FArrayOrStringType;
   if Result <> iasUnknown then
@@ -598,6 +599,10 @@ begin
 
   Info := InformationEntry.FirstChild;
   if Info = nil then exit;
+
+  t2 := TypeInfo;
+  if (t2 = nil) or (t2.Kind <> skChar) then
+    exit;
 
   while Info.HasValidScope do begin
     t := Info.AbbrevTag;
@@ -610,7 +615,10 @@ begin
       // This is a string
       // TODO: check the location parser, if it is a reference
       //FIsShortString := iasShortString;
-      FArrayOrStringType := iasAnsiString;
+      if (t2.Size = 2) then
+        FArrayOrStringType := iasUnicodeString
+      else
+        FArrayOrStringType := iasAnsiString;
       Result := FArrayOrStringType;
       break;
     end;
@@ -623,7 +631,7 @@ end;
 function TFpDwarfV3FreePascalSymbolTypeArray.GetTypedValueObject(
   ATypeCast: Boolean): TFpDwarfValue;
 begin
-  if GetInternalStringType in [iasShortString, iasAnsiString] then
+  if GetInternalStringType in [iasShortString, iasAnsiString, iasUnicodeString] then
     Result := TFpDwarfV3ValueFreePascalString.Create(Self)
   else
     Result := inherited GetTypedValueObject(ATypeCast);
@@ -636,6 +644,8 @@ begin
       SetKind(skString);
     iasAnsiString:
       SetKind(skString); // TODO
+    iasUnicodeString:
+      SetKind(skWideString);
     else
       inherited KindNeeded;
   end;
@@ -651,7 +661,7 @@ begin
   If not Result then
     exit;
 
-  assert(TypeCastTargetType.Kind = skString, 'TFpDwarfValueArray.IsValidTypeCast: TypeCastTargetType.Kind = skArray');
+  assert(TypeCastTargetType.Kind in [skString, skWideString], 'TFpDwarfValueArray.IsValidTypeCast: TypeCastTargetType.Kind = skArray');
 
   f := TypeCastSourceValue.FieldFlags;
   if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
@@ -695,6 +705,7 @@ var
   t, t2: TFpDbgSymbol;
   LowBound, HighBound: Int64;
   Addr: TFpDbgMemLocation;
+  WResult: UnicodeString;
 begin
   if FValueDone then
     exit(FValue);
@@ -725,11 +736,21 @@ begin
   if HighBound - LowBound > 5000 then
     HighBound := LowBound + 5000;
 
-  SetLength(Result, HighBound-LowBound+1);
+  if t.Kind = skWideString then begin
+    SetLength(WResult, HighBound-LowBound+1);
 
-  if not MemManager.ReadMemory(Addr, HighBound-LowBound+1, @Result[1]) then begin
-    Result := '';
-    FLastError := MemManager.LastError;
+    if not MemManager.ReadMemory(Addr, (HighBound-LowBound+1)*2, @WResult[1]) then begin
+      WResult := '';
+      FLastError := MemManager.LastError;
+    end;
+    Result := WResult;
+  end else begin
+    SetLength(Result, HighBound-LowBound+1);
+
+    if not MemManager.ReadMemory(Addr, HighBound-LowBound+1, @Result[1]) then begin
+      Result := '';
+      FLastError := MemManager.LastError;
+    end;
   end;
 
   FValue := Result;
