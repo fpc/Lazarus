@@ -251,6 +251,7 @@ const
   DT_SINGLELINE = $20;
   DT_EXPANDTABS = $40;
   DT_NOCLIP = $100;
+  //DT_EXTERNALLEADING = $200;
   DT_CALCRECT = $400;
   DT_NOPREFIX = $800;
   DT_INTERNAL = $1000;
@@ -258,6 +259,9 @@ const
   DT_END_ELLIPSIS = $8000;
   DT_MODIFYSTRING = $10000;
   DT_RTLREADING =  $20000;
+  //DT_WORDREADING = $40000;
+  //DT_HIDEPREFIX = $100000;
+  //DT_PREFIXONLY = $200000;
 
 //==============================================
 // Draw frame constants
