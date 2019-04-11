@@ -30,6 +30,10 @@ type
   TWStrTA = type WideString;
   TPWChr = ^WideChar;
 
+  TUStrA = UnicodeString;
+  TUStrTA = type UnicodeString;
+  //TPUChr = ^UnicodeChar;
+
   TShortRec = record // looks like shortstring
     length: byte;
     st: array [1..5] of char;

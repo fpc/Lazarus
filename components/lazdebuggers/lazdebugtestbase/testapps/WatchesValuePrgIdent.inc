@@ -81,6 +81,12 @@
   pre__PWideChar2{e} := @pre__WideString2{e}[1];
   {$ENDIF}
 
+  pre__UnicodeString1{e}   _OP_ UnicodeString  (succ(CHR1)              );
+  pre__UnicodeString2{e}   _OP_ UnicodeString  (CHR1+'aBcX0123'         );
+  pre__UnicodeString3{e}   _OP_ UnicodeString  (     ''                 );
+  pre__UnicodeString4{e}   _OP_ TUStrA      (CHR1+'B'#0'X'#9'b'#10#13);
+  pre__UnicodeString5{e}   _OP_ TUStrTA     (CHR1+'YcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij');
+
 // wide string char...
 
   // types that may get confused with strings

@@ -258,6 +258,7 @@ function weWideChar(AExpVal: char; ATypeName: String=#1): TWatchExpectationResul
 function weAnsiStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 function weShortStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 function weWideStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
+function weUniStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 
 function wePointer(AExpVal: TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult;
 function wePointerAddr(AExpVal: Pointer; ATypeName: String=''): TWatchExpectationResult;
@@ -429,6 +430,16 @@ begin
   if ATypeName = #1 then ATypeName := 'WideString';
   Result.ExpResultKind := rkWideString;
   Result.ExpSymKind := skAnsiString; // TODO
+  Result.ExpTypeName := ATypeName;
+  Result.ExpTextData := AExpVal;
+end;
+
+function weUniStr(AExpVal: string; ATypeName: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  if ATypeName = #1 then ATypeName := 'UnicodeString';
+  Result.ExpResultKind := rkWideString;
+  Result.ExpSymKind := skWideString; // TODO
   Result.ExpTypeName := ATypeName;
   Result.ExpTextData := AExpVal;
 end;

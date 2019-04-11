@@ -678,9 +678,27 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'WideString5'+e,    weWideStr(AChr1+'XcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
       'TWStrTA'))                                                         .IgnKindPtr;
 
+    t.Add(AName, p+'WideString2'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex;
+    t.Add(AName, p+'WideString2'+e+'[2]',  weWideChar('a'))       .CharFromIndex;
+    t.Add(AName, p+'WideString5'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex;
+    t.Add(AName, p+'WideString5'+e+'[2]',  weWideChar('X'))       .CharFromIndex;
+
 //TODO wePWidechar
     t.Add(AName, p+'PWideChar'+e,      wePointer(weWideStr(''), 'PWideChar'));
     t.Add(AName, p+'PWideChar2'+e,     wePointer(weWideStr(AChr1+'abcX0123'), 'TPWChr')).SkipIf(ALoc = tlConst);
+
+    t.Add(AName, p+'UnicodeString1'+e,    weUniStr(Succ(AChr1)))              .IgnKindPtr(stDwarf2).IgnData(stDwarf3Up);
+    t.Add(AName, p+'UnicodeString2'+e,    weUniStr(AChr1+'aBcX0123'))         .IgnKindPtr(stDwarf2).IgnData(stDwarf3Up);
+    t.Add(AName, p+'UnicodeString3'+e,    weUniStr(''))                       .IgnKindPtr(stDwarf2).IgnData(stDwarf3Up);
+    t.Add(AName, p+'UnicodeString4'+e,    weUniStr(AChr1+'B'#0'X'#9'b'#10#13)).IgnKindPtr(stDwarf2).IgnData(stDwarf2+stDwarf3Up); // #00 terminated in dwarf2
+    t.Add(AName, p+'UnicodeString5'+e,    weUniStr(AChr1+'YcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
+      'TUStrTA'))                                                         .IgnKindPtr(stDwarf2).IgnData(stDwarf3Up);
+
+//todo dwarf 3
+    t.Add(AName, p+'UnicodeString2'+e+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+    t.Add(AName, p+'UnicodeString2'+e+'[2]',    weWideChar('a'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+    t.Add(AName, p+'UnicodeString5'+e+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+    t.Add(AName, p+'UnicodeString5'+e+'[2]',    weWideChar('Y'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
 
 
     // TODO
@@ -827,6 +845,8 @@ begin
 //t.Add( 'gvAnsiDynArray2',   weShortStr('Lbc1',               'ShortStr10'));
 //t.Add( 'gvaDynDynArrayInt[0]',   weShortStr('Lbc1',               'ShortStr10'));
 //t.Add( 'argCharDynArray',   weShortStr('Lbc1',               'ShortStr10'));
+//t.Add( 'gvUnicodeString2',    weWideStr('BaBcX0123'))         ;
+//t.Add('gvUnicodeString2[1]',    weWideChar('B')) ;
 //t.EvaluateWatches;
 //t.CheckResults;
 //exit;
