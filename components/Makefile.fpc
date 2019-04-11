@@ -77,6 +77,7 @@ bigide:
 	$(MAKE) -C lclextensions
 	$(MAKE) -C virtualtreeview
 	$(MAKE) -C onlinepackagemanager
+	$(MAKE) -C pas2js
 
 all: base bigide
 
@@ -120,6 +121,7 @@ clean:
 	$(MAKE) -C lclextensions clean
 	$(MAKE) -C virtualtreeview clean
 	$(MAKE) -C onlinepackagemanager clean
+	$(MAKE) -C pas2js clean
 
 cleanall: clean
 
@@ -163,4 +165,5 @@ distclean:
 	$(MAKE) -C lclextensions distclean
 	$(MAKE) -C virtualtreeview distclean
 	$(MAKE) -C onlinepackagemanager distclean
+	$(MAKE) -C pas2js distclean
 

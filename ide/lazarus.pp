@@ -75,7 +75,7 @@ uses
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript,
     EditorMacroScript,
-    laz.virtualtreeview_package, OnlinePackageManager,
+    laz.virtualtreeview_package, OnlinePackageManager, Pas2jsDsgn,
     LazDebuggerFpLldb,
   {$ENDIF}
   MainBase;

@@ -402,7 +402,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/macroscript/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/lclextensions/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
   -Fu../components/virtualtreeview/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
-  -Fu../components/onlinepackagemanager/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+  -Fu../components/onlinepackagemanager/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/pas2js/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_OPT+= -WG
