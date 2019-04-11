@@ -301,8 +301,6 @@ properly:
 
   Just download and install the .exe file. You can get the files from:
   http://sourceforge.net/project/showfiles.php?group_id=89339 (stable release)
-	or
-  http://snapshots.lazarus.shikami.org/lazarus/ (snapshots)
 
 
   Thanks to Joe for this Step-by-step description:
