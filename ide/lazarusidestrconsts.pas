@@ -2379,9 +2379,9 @@ resourcestring
   dlgLevel4Opt = '4 (-O3 + aggressive optimizations, beware)';
   dlgTargetOS = 'Target OS';
   dlgTargetCPUFamily = 'Target CPU family';
-  dlgCOInfoForGDB = 'Info for GDB';
+  dlgCOInfoForGDB = 'Debugger info';
   dlgCOOtherDebuggingInfo = 'Other debugging info';
-  dlgCOGDB = 'Generate debugging info for GDB (slower / increases exe-size)';
+  dlgCOGDB = 'Generate info for the debugger (slower / increases exe-size)';
   dlgCOSymbolType = 'Type of debug info';
   dlgCOSymbolTypeAuto = 'Automatic';
   dlgCOSymbolTypeStabs = 'Stabs';
@@ -2395,7 +2395,7 @@ resourcestring
   dlgGPROF = 'Generate code for gprof';
   lisOnly32bit = 'only 32bit';
   dlgCOStrip = 'Strip symbols from executable';
-  dlgExtSymb = 'Use external gdb debug symbols file';
+  dlgExtSymb = 'Use external debug symbols file';
   dlgLinkSmart = 'Link smart';
   dlgPassOptsLinker = 'Pass options to linker with "-k", delimiter is space';
   dlgWin32GUIApp = 'Win32 gui application';
