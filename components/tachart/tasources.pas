@@ -522,11 +522,20 @@ begin
     raise EXListEmptyError.Create('AddXListYList: XList is empty');
   if Length(AY) = 0 then
     raise EYListEmptyError.Create('AddXListYList: YList is empty');
-  Result := Add(AX[0], AY[0], ALabel, AColor);
-  if Length(AX) > 1 then
-    SetXList(Result, AX[1..High(AX)]);
-  if Length(AY) > 1 then
-    SetYList(Result, AY[1..High(AY)]);
+
+  { Optimization: prevent useless notifications.
+    Don't call BeginUpdate() to avoid invalidating the caches. }
+  Inc(FUpdateCount);
+  try
+    Result := Add(AX[0], AY[0], ALabel, AColor);
+    if Length(AX) > 1 then
+      SetXList(Result, AX[1..High(AX)]);
+    if Length(AY) > 1 then
+      SetYList(Result, AY[1..High(AY)]);
+  finally
+    Dec(FUpdateCount);
+  end;
+  Notify;
 end;
 
 function TListChartSource.AddXYList(
@@ -535,9 +544,18 @@ function TListChartSource.AddXYList(
 begin
   if Length(AY) = 0 then
     raise EYListEmptyError.Create('AddXYList: Y List is empty');
-  Result := Add(AX, AY[0], ALabel, AColor);
-  if Length(AY) > 1 then
-    SetYList(Result, AY[1..High(AY)]);
+
+  Inc(FUpdateCount); // Optimization: prevent useless notifications.
+                     // We don't call BeginUpdate() to achieve this,
+                     // to avoid invalidating the caches.
+  try
+    Result := Add(AX, AY[0], ALabel, AColor);
+    if Length(AY) > 1 then
+      SetYList(Result, AY[1..High(AY)]);
+  finally
+    Dec(FUpdateCount);
+  end;
+  Notify;
 end;
 
 procedure TListChartSource.Clear; inline;
@@ -689,10 +707,7 @@ procedure TListChartSource.SetSorted(AValue: Boolean);
 begin
   if FSorted = AValue then exit;
   FSorted := AValue;
-  if Sorted then begin
-    Sort;
-    Notify;
-  end;
+  if Sorted then Sort;
 end;
 
 procedure TListChartSource.SetText(AIndex: Integer; AValue: String);
@@ -728,6 +743,7 @@ begin
     for i := 0 to Min(High(AXList), High(XList)) do
       XList[i] := AXList[i];
   FXListExtentIsValid := false;
+  Notify;
 end;
 
 function TListChartSource.SetXValue(AIndex: Integer; AValue: Double): Integer;
@@ -796,6 +812,7 @@ begin
       YList[i] := AYList[i];
   FCumulativeExtentIsValid := false;
   FYListExtentIsValid := false;
+  Notify;
 end;
 
 procedure TListChartSource.SetYValue(AIndex: Integer; AValue: Double);
@@ -850,6 +867,7 @@ end;
 procedure TListChartSource.Sort;
 begin
   FData.Sort(@CompareDataItemX);
+  Notify;
 end;
 
 procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
