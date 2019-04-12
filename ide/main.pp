@@ -2206,6 +2206,8 @@ begin
   MainIDEBar.itmGotoLine.OnClick := @SourceEditorManager.GotoLineClicked;
   MainIDEBar.itmJumpBack.OnClick := @SourceEditorManager.JumpBackClicked;
   MainIDEBar.itmJumpForward.OnClick := @SourceEditorManager.JumpForwardClicked;
+  MainIDEBar.itmJumpToNextError.OnClick := @SourceEditorManager.JumpToNextErrorClicked;
+  MainIDEBar.itmJumpToPrevError.OnClick := @SourceEditorManager.JumpToPrevErrorClicked;
   MainIDEBar.itmAddJumpPoint.OnClick := @SourceEditorManager.AddJumpPointClicked;
   MainIDEBar.itmJumpHistory.OnClick := @SourceEditorManager.ViewJumpHistoryClicked;
   MainIDEBar.itmJumpToNextBookmark.OnClick := @SourceEditorManager.BookMarkNextClicked;
