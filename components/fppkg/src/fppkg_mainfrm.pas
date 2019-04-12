@@ -46,7 +46,7 @@ uses
   pkgFppkg,
   //IDE interface
   {$IFDEF LazarusIDEPackage}
-    PackageIntf, IDECommands, contnrs, fppkg_lpk,
+    PackageIntf, IDECommands, contnrs, fppkg_lpk, IDEOptionsIntf,
   {$ENDIF}
   // Repository handler objects
   fprepos,
@@ -854,7 +854,7 @@ procedure TFppkgForm.LoadFppkgConfiguration;
 var
   i: Integer;
 begin
-  FFPpkg.InitializeGlobalOptions('');
+  FFPpkg.InitializeGlobalOptions(IDEEnvironmentOptions.GetParsedFppkgConfig);
 
   FFPpkg.Options.GlobalSection.Downloader := 'FPC';
 

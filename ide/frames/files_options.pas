@@ -41,7 +41,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs, IDEUtils,
   // IDE
-  LazarusIDEStrConsts, InputHistory, LazConf, DialogProcs, InitialSetupProc;
+  LazarusIDEStrConsts, InputHistory, LazConf, DialogProcs, InitialSetupProc, Classes;
 
 type
 
@@ -76,6 +76,9 @@ type
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
     TestBuildDirLabel:TLabel;
+    FppkgConfigurationFileLabel: TLabel;
+    FppkgConfigurationFileComboBox: TComboBox;
+    FppkgConfigurationFileButton: TButton;
     procedure CompilerTranslationFileButtonClick(Sender:TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
@@ -93,6 +96,8 @@ type
     FOldRealTestDir: string;
     fOldCompilerMessagesFilename: string;
     fOldRealCompilerMessagesFilename: string;
+    fOldFppkcConfigurationFilename: string;
+    fOldRealFppkcConfigurationFilename: string;
     FOldMaxRecentOpenFiles: integer;
     FOldMaxRecentProjectFiles: integer;
     FOldOpenLastProjectAtStart: boolean;
@@ -255,6 +260,7 @@ begin
 
   CompilerPathLabel.Caption:=Format(dlgFpcExecutable,[GetDefaultCompilerFilename]);
   FPCSourceDirLabel.Caption:=dlgFpcSrcPath;
+  FppkgConfigurationFileLabel.Caption:=dlgFppkgConfigurationFile;
   MakePathLabel.Caption:=dlgMakeExecutable;
   with MakePathComboBox.Items do
   begin
@@ -306,6 +312,7 @@ begin
     MakeFilename:=MakePathComboBox.Text;
     TestBuildDirectory:=TestBuildDirComboBox.Text;
     CompilerMessagesFilename:=CompilerTranslationFileComboBox.Text;
+    FppkgConfigFile:=FppkgConfigurationFileComboBox.Text;
   end;
   // check lazarus directory
   if not CheckLazarusDir([mbIgnore,mbCancel]) then exit;
@@ -374,6 +381,13 @@ begin
       CompilerTranslationFileComboBox.Items.Assign(CompilerMessagesFileHistory);
     SetComboBoxText(CompilerTranslationFileComboBox,CompilerMessagesFilename,cstFilename,MaxComboBoxCount);
 
+    // fppkg configuration  file
+    fOldFppkcConfigurationFilename:=FppkgConfigFile;
+    fOldRealCompilerMessagesFilename:=GetParsedFppkgConfig;
+    if FppkgConfigFileHistory.Count>0 then
+      FppkgConfigurationFileComboBox.Items.Assign(FppkgConfigFileHistory);
+    SetComboBoxText(FppkgConfigurationFileComboBox,FppkgConfigFile,cstFilename,MaxComboBoxCount);
+
     // recent files and directories
     FOldMaxRecentOpenFiles := MaxRecentOpenFiles;
     MaxRecentOpenFilesSpin.Value := MaxRecentOpenFiles;
@@ -411,6 +425,8 @@ begin
     TestBuildDirectory:=TestBuildDirComboBox.Text;
     CompilerMessagesFileHistory.Assign(CompilerTranslationFileComboBox.Items);
     CompilerMessagesFilename:=CompilerTranslationFileComboBox.Text;
+    FppkgConfigFileHistory.Assign(FppkgConfigurationFileComboBox.Items);
+    FppkgConfigFile:=FppkgConfigurationFileComboBox.Text;
 
     // recent files and directories
     MaxRecentOpenFiles := MaxRecentOpenFilesSpin.Value;
@@ -433,6 +449,7 @@ begin
     MakeFilename:=FOldMakeFilename;
     TestBuildDirectory:=FOldTestDir;
     CompilerMessagesFilename:=fOldCompilerMessagesFilename;
+    FppkgConfigFile:=fOldFppkcConfigurationFilename;
 
     // recent files and directories
     MaxRecentOpenFiles := FOldMaxRecentOpenFiles;

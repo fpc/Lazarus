@@ -1391,6 +1391,7 @@ var
   OldLazDir: String;
   Note: string;
   OI: TSimpleWindowLayout;
+  ConfigFile: string;
 begin
   {$IFDEF DebugSearchFPCSrcThread}
   ShowSetupDialog:=true;
@@ -1444,9 +1445,10 @@ begin
     ShowSetupDialog:=true;
   end;
 
+  ConfigFile:=EnvironmentOptions.GetParsedFppkgConfig;
   // check fppkg configuration
   if (not ShowSetupDialog)
-  and (CheckFppkgConfiguration(Note)<>sddqCompatible)
+  and (CheckFppkgConfiguration(ConfigFile, Note)<>sddqCompatible)
   then begin
     debugln('Warning: (lazarus) fppkg not properly configured.');
     ShowSetupDialog:=true;

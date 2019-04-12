@@ -1,3 +1,23 @@
+{ Dialog to write fppkg-configuration files (fppkg.cfg and default) using the
+  fpcmkcfg tool that comes with fpc.
+
+  Copyright (C) 2019 Joost van der Sluis/CNOC joost@cnoc.nl
+
+  This source is free software; you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or (at your option)
+  any later version.
+
+  This code is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
+
+  A copy of the GNU General Public License is available on the World Wide Web
+  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+  to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
+  Boston, MA 02110-1335, USA.
+}
 unit GenerateFppkgConfigurationDlg;
 
 {$mode objfpc}{$H+}
@@ -58,19 +78,21 @@ type
     procedure FppkgWriteConfigButtonClick(Sender: TObject);
   private
     FCompiler: string;
+    FFppkgCfgFilename: string;
+    fLastParsedFpcPrefix: string;
+    fLastParsedFpcLibPath: string;
     procedure SetCompiler(AValue: string);
     procedure SetFppkgCfgFilename(AValue: string);
     function CheckIfWritable(Filename: string): Boolean;
-  private
-    fLastParsedFpcPrefix: string;
-    fLastParsedFpcLibPath: string;
-    FFppkgCfgFilename: string;
     function CheckFppkgQuality(APrefix: string; out LibPath, Note: string): TSDFilenameQuality;
     procedure UpdateFppkgNote;
     procedure SearchFppkgFpcPrefixCandidates;
     function CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;
   public
+    // Filename of the Free Pascal compiler that has to be written to the
+    // configuration-files.
     property Compiler: string read FCompiler write SetCompiler;
+    // Filename of the configuration file that has to be written.
     property FppkgCfgFilename: string read FFppkgCfgFilename write SetFppkgCfgFilename;
   end;
 
@@ -258,10 +280,10 @@ begin
   {$ENDIF}
   Note := Note + Format(lisGenerateFppkgCompCfg, [FileName]) + LineEnding;
 
-  if CheckIfWritable(FileName) then
-    Msg := Msg + lisWarning + ueFileROText1 + FileName + ueFileROText2 + LineEnding;
-  if CheckIfWritable(FppkgCfgFilename) then
+  if not CheckIfWritable(FppkgCfgFilename) then
     Msg := Msg + lisWarning + ueFileROText1 + FppkgCfgFilename + ueFileROText2 + LineEnding;
+  if not CheckIfWritable(FileName) then
+    Msg := Msg + lisWarning + ueFileROText1 + FileName + ueFileROText2 + LineEnding;
 
   if Msg<>'' then
   begin
@@ -316,7 +338,7 @@ begin
     Proc := TProcessUTF8.Create(nil);
     try
 
-      Proc.Options := proc.Options + [poWaitOnExit,poUsePipes];
+      Proc.Options := proc.Options + [poNoConsole, poWaitOnExit,poUsePipes];
       // Write fppkg.cfg
       Proc.Executable := FpcmkcfgExecutable;
       proc.Parameters.Add('-V');
@@ -397,6 +419,17 @@ var
   Proc: TProcessUTF8;
   Fppkg: TFppkgHelper;
 {$ENDIF}
+
+  procedure ShowFpcmkcfgError;
+  begin
+    SetLength(Msg, Proc.Output.NumBytesAvailable);
+    if Msg <> '' then
+      begin
+      Proc.Output.Read(Msg[1], Proc.Output.NumBytesAvailable);
+      IDEMessageDialog(lisFppkgProblem, Format(lisFppkgCreateFileFailed, [GetFppkgConfigFile(False, False), Msg]), mtWarning, [mbOK])
+      end;
+  end;
+
 begin
   {$IF FPC_FULLVERSION>30100}
   try
@@ -405,13 +438,13 @@ begin
     begin
       Proc := TProcessUTF8.Create(nil);
       try
-        Proc.Options := proc.Options + [poWaitOnExit];
+        Proc.Options := proc.Options + [poWaitOnExit, poNoConsole, poUsePipes, poStderrToOutPut];
         // Write fppkg.cfg
         Proc.Executable := FpcmkcfgExecutable;
         proc.Parameters.Add('-p');
         proc.Parameters.Add('-3');
         proc.Parameters.Add('-o');
-        proc.Parameters.Add(GetFppkgConfigFile(False, False));
+        proc.Parameters.Add(FppkgCfgFilename);
         proc.Parameters.Add('-d');
         proc.Parameters.Add('globalpath='+fLastParsedFpcLibPath);
         proc.Parameters.Add('-d');
@@ -425,7 +458,7 @@ begin
         Fppkg:=TFppkgHelper.Instance;
 
         if proc.ExitStatus <> 0 then
-          IDEMessageDialog(lisFppkgProblem, Format(lisFppkgCreateFileFailed, [GetFppkgConfigFile(False, False)]), mtWarning, [mbOK])
+          ShowFpcmkcfgError
         else
           begin
           Fppkg:=TFppkgHelper.Instance;
@@ -445,7 +478,7 @@ begin
             proc.Execute;
 
             if proc.ExitStatus <> 0 then
-              IDEMessageDialog(lisFppkgProblem, Format(lisFppkgCreateFileFailed, [CompConfigFilename]), mtWarning, [mbOK]);
+              ShowFpcmkcfgError
             end;
           end;
 
@@ -462,8 +495,7 @@ begin
   fLastParsedFpcPrefix := '';
   UpdateFppkgNote;
   {$ENDIF}
-
-  if CheckFppkgConfiguration(Msg)<>sddqCompatible then
+  if CheckFppkgConfiguration(FFppkgCfgFilename, Msg)<>sddqCompatible then
   begin
     IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfFailed, [Msg]),
       mtWarning, [mbOK]);
@@ -480,7 +512,7 @@ begin
   begin
     Filename := ExpandFileNameUTF8(Filename);
     if FileExistsUTF8(Filename) then
-      Result := not FileIsWritable(FileName)
+      Result := FileIsWritable(FileName)
   end;
 end;
 

@@ -80,7 +80,7 @@ type
     sdfFPCSrcDirNeedsUpdate,
     sdfMakeExeFilenameNeedsUpdate,
     sdfDebuggerFilenameNeedsUpdate,
-    sdfFppkgFpcPrefixNeedsUpdate
+    sdfFppkgConfigFileNeedsUpdate
     );
   TSDFlags = set of TSDFlag;
 
@@ -107,7 +107,8 @@ function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TSDFileInfoList;
 
 // Fppkg
-function CheckFppkgConfiguration(out Msg: string): TSDFilenameQuality;
+function CheckFppkgConfiguration(var ConfigFile: string; out Msg: string): TSDFilenameQuality;
+function CheckFppkgConfigFile(const AFilename: string; out Note: string): TSDFilenameQuality;
 
 // Make
 // Checks a given file to see if it is a valid make executable
@@ -832,15 +833,45 @@ begin
   end;
 end;
 
-function CheckFppkgConfiguration(out Msg: string): TSDFilenameQuality;
+function CheckFppkgConfiguration(var ConfigFile: string; out Msg: string): TSDFilenameQuality;
 var
   Fppkg: TFppkgHelper;
 begin
   Fppkg := TFppkgHelper.Instance;
+  Fppkg.OverrideConfigurationFilename := ConfigFile;
+
   if Fppkg.IsProperlyConfigured(Msg) then
     Result := sddqCompatible
   else
     Result := sddqInvalid;
+  ConfigFile := Fppkg.GetConfigurationFileName;
+end;
+
+function CheckFppkgConfigFile(const AFilename: string; out Note: string): TSDFilenameQuality;
+begin
+  Note := '';
+  if AFilename='' then
+  begin
+    Result := sddqCompatible;
+  end
+  else
+  begin
+    if not FileExistsCached(AFilename) then
+    begin
+      Result := sddqIncomplete;
+      Note:=lisFileNotFound;
+    end
+    else
+    begin
+      if DirectoryExists(AFilename) then
+      begin
+        Result := sddqInvalid;
+        Note:=lisFileIsDirectory;
+      end
+      else
+        Result := sddqCompatible;
+    end;
+  end;
 end;
 
 function CheckMakeExeQuality(AFilename: string; out Note: string

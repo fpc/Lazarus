@@ -283,7 +283,8 @@ type
     eopFPDocPaths,
     eopCompilerMessagesFilename,
     eopDebuggerFilename,
-    eopDebuggerSearchPath
+    eopDebuggerSearchPath,
+    eopFppkgConfigFile
     );
   TEnvOptParseTypes = set of TEnvOptParseType;
 
@@ -646,6 +647,7 @@ type
     FActiveDesktopName: string;
     FAutoSaveActiveDesktop: Boolean;
     FDebugDesktopName: string;
+    FFppkgConfigFileHistory: TStringList;
 
     function GetActiveDesktop: TDesktopOpt;
     function GetCompilerFilename: string;
@@ -662,6 +664,7 @@ type
     function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetSubConfig(Index: Integer): TIDESubOptions;
     function GetTestBuildDirectory: string;
+    function GetFppkgConfigFile: string;
     procedure LoadNonDesktop(Path: String);
     procedure SaveNonDesktop(Path: String);
     procedure SetCompilerFilename(const AValue: string);
@@ -674,6 +677,7 @@ type
     procedure SetDebuggerFilename(AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
+    procedure SetFppkgConfigFile(AValue: string);
     procedure SetMsgColors(u: TMessageLineUrgency; AValue: TColor);
     procedure SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
     procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
@@ -711,6 +715,7 @@ type
     function GetParsedFPDocPaths: string;
     function GetParsedDebuggerFilename: string;
     function GetParsedDebuggerSearchPath: string;
+    function GetParsedFppkgConfig: string; override;
     function GetParsedValue(o: TEnvOptParseType): string;
 
     // macros
@@ -824,6 +829,8 @@ type
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage write FDebuggerShowStopMessage;
     property DebuggerResetAfterRun: boolean read FDebuggerResetAfterRun write FDebuggerResetAfterRun;
     property DebuggerAutoCloseAsm: boolean read FDebuggerAutoCloseAsm write FDebuggerAutoCloseAsm;
+    property FppkgConfigFile: string read GetFppkgConfigFile write SetFppkgConfigFile;
+    property FppkgConfigFileHistory: TStringList read FFppkgConfigFileHistory write FFppkgConfigFileHistory;
     // ShowCompileDialog and AutoCloseCompileDialog are currently not used.
     // But maybe someone will implement them again. Keep them till 1.4.2
     property ShowCompileDialog: boolean read  FShowCompileDialog write FShowCompileDialog;
@@ -1000,7 +1007,8 @@ const
     'FPDocPath', // eopFPDocPaths
     'CompMsgFile', // eopCompilerMessagesFilename
     'Debugger', // eopDebuggerFilename
-    'DebugPath' // eopDebuggerSearchPath
+    'DebugPath', // eopDebuggerSearchPath
+    'FppkgConfig' // eopFppkgConfigFile
   );
 
 function dbgs(o: TEnvOptParseType): string; overload;
@@ -1746,7 +1754,8 @@ begin
   FDebuggerFileHistory:=TStringList.Create;
   FDebuggerProperties := TStringList.Create;
   FDebuggerEventLogColors:=DebuggerDefaultColors;
-
+  FppkgConfigFile:='';
+  FFppkgConfigFileHistory:=TStringList.Create;
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
   FTestBuildDirHistory:=TStringList.Create;
   CompilerMessagesFilename:='';
@@ -2000,6 +2009,8 @@ begin
   LoadRecentList(FXMLCfg,FMakeFileHistory,Path+'MakeFilename/History/',rltFile);
   if FMakeFileHistory.Count=0 then
     GetDefaultMakeFilenames(FMakeFileHistory);
+  FppkgConfigFile:=FXMLCfg.GetValue(Path+'FppkgConfigFile/Value',FppkgConfigFile);
+  LoadRecentList(FXMLCfg,FFppkgConfigFileHistory,Path+'FppkgConfigFile/History/',rltFile);
 
   TestBuildDirectory:=FXMLCfg.GetValue(Path+'TestBuildDirectory/Value',TestBuildDirectory);
   LoadRecentList(FXMLCfg,FTestBuildDirHistory,Path+'TestBuildDirectory/History/',rltFile);
@@ -2395,6 +2406,8 @@ begin
   SaveRecentList(FXMLCfg,FTestBuildDirHistory,Path+'TestBuildDirectory/History/');
   FXMLCfg.SetDeleteValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
   SaveRecentList(FXMLCfg,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/');
+  FXMLCfg.SetDeleteValue(Path+'FppkgConfigFile/Value',FppkgConfigFile,'');
+  SaveRecentList(FXMLCfg,FFppkgConfigFileHistory,Path+'FppkgConfigFile/History/');
   SaveRecentList(FXMLCfg,FManyBuildModesSelection,Path+'ManyBuildModesSelection/');
 
   // Primary-config verification
@@ -2807,6 +2820,11 @@ begin
   Result:=GetParsedValue(eopDebuggerSearchPath);
 end;
 
+function TEnvironmentOptions.GetParsedFppkgConfig: string;
+begin
+  Result:=GetParsedValue(eopFppkgConfigFile);
+end;
+
 function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
 var
   SpacePos: SizeInt;
@@ -2860,7 +2878,7 @@ begin
         eopFPDocPaths,eopDebuggerSearchPath:
           // search path
           ParsedValue:=TrimSearchPath(ParsedValue,GetParsedLazarusDirectory,true);
-        eopCompilerFilename,eopMakeFilename,eopDebuggerFilename:
+        eopCompilerFilename,eopMakeFilename,eopDebuggerFilename,eopFppkgConfigFile:
           // program
           begin
             ParsedValue:=Trim(ParsedValue);
@@ -3267,6 +3285,11 @@ begin
   Result:=FParseValues[eopLazarusDirectory].UnparsedValue;
 end;
 
+function TEnvironmentOptions.GetFppkgConfigFile: string;
+begin
+  Result:=FParseValues[eopFppkgConfigFile].UnparsedValue;
+end;
+
 function TEnvironmentOptions.GetMakeFilename: string;
 begin
   Result:=FParseValues[eopMakeFilename].UnparsedValue;
@@ -3315,6 +3338,11 @@ end;
 procedure TEnvironmentOptions.SetDebuggerFilename(AValue: string);
 begin
   SetParseValue(eopDebuggerFilename,UTF8Trim(AValue));
+end;
+
+procedure TEnvironmentOptions.SetFppkgConfigFile(AValue: string);
+begin
+  SetParseValue(eopFppkgConfigFile,UTF8Trim(AValue));
 end;
 
 initialization

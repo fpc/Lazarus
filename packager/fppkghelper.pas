@@ -32,8 +32,10 @@ type
     {$ENDIF}
     FIsProperlyConfigured: TFppkgPropConfigured;
     FConfStatusMessage: string;
+    FOverrideConfigurationFilename: string;
     function HasFPCPackagesOnly(const PackageName: string): Boolean;
     procedure InitializeFppkg;
+    procedure SetOverrideConfigurationFilename(AValue: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -43,11 +45,13 @@ type
     function GetPackageUnitPath(const PackageName: string): string;
     function IsProperlyConfigured(out Message: string): Boolean;
     function GetCompilerFilename: string;
+    function GetConfigurationFileName: string;
     function GetCompilerConfigurationFileName: string;
     // Temporary solution, because fpc 3.2.0 does not has support for package-variants
     // in TFPPackage
     function GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
     procedure ReInitialize;
+    property OverrideConfigurationFilename: string read FOverrideConfigurationFilename write SetOverrideConfigurationFilename;
   end;
 
 implementation
@@ -68,7 +72,7 @@ begin
   FPpkg := TpkgFPpkg.Create(nil);
   try
     try
-      FPpkg.InitializeGlobalOptions('');
+      FPpkg.InitializeGlobalOptions(FOverrideConfigurationFilename);
       FPpkg.InitializeCompilerOptions;
 
       FPpkg.CompilerOptions.CheckCompilerValues;
@@ -499,7 +503,7 @@ begin
     FPpkg := TpkgFPpkg.Create(nil);
     try
       try
-        FPpkg.InitializeGlobalOptions('');
+        FPpkg.InitializeGlobalOptions(FOverrideConfigurationFilename);
         Result:=ConcatPaths([FPpkg.Options.GlobalSection.CompilerConfigDir, FPpkg.Options.CommandLineSection.CompilerConfig])
       except
         on E: Exception do
@@ -510,6 +514,22 @@ begin
     end;
     end
   {$ENDIF}
+end;
+
+function TFppkgHelper.GetConfigurationFileName: string;
+begin
+  Result := '';
+  {$IF FPC_FULLVERSION>30100}
+  if Assigned(FFPpkg) then
+    Result:=FFPpkg.ConfigurationFilename;
+  {$ENDIF}
+end;
+
+procedure TFppkgHelper.SetOverrideConfigurationFilename(AValue: string);
+begin
+  if FOverrideConfigurationFilename = AValue then Exit;
+  FOverrideConfigurationFilename := AValue;
+  ReInitialize;
 end;
 
 finalization
