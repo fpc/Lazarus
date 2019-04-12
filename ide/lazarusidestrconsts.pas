@@ -1052,7 +1052,7 @@ resourcestring
   lisFppkgWriteConfFailed = 'Failed to create a new Fppkg configuration (%s) You ' +
     'will have to fix the configuration manually or reinstall Free Pascal.';
   lisNoFppkgPrefix = 'empty Free Pascal compiler prefix.';
-  lisFppkgCreateFileFailed = 'Failed to generate the configuration file "%s".';
+  lisFppkgCreateFileFailed = 'Failed to generate the configuration file "%s": %s';
   lisFppkgRecentFpcmkcfgNeeded = 'Make sure a recent version is installed and ' +
     'available in the path or alongside the compiler-executable.';
   lisFppkgFpcmkcfgCheckFailed = 'Failed to retrieve the version of the fpcmkcfg ' +
@@ -1077,11 +1077,11 @@ resourcestring
   lisFppkgWriteConfigFile = 'Write new configuration files';
   lisFppkgPrefix = 'Fpc prefix: %s';
   lisFppkgLibPrefix = 'Fpc library prefix: %s';
-  lisFppkgConfiguration = 'Fppkg is the Free Pascal package manager. When it is not ' +
-    'configured properly, it may be impossible to resolve dependencies on Free Pascal ' +
-    'packages.';
+  lisFppkgConfiguration = 'The configuration file typically has the name "fppkg.cfg". ' +
+    'When incorrect it may be impossible to resolve dependencies on Free Pascal ' +
+    'packages. Leave empty to use the default.';
   lisFppkgFixConfiguration = 'You could try to restore the configuration files automatically, ' +
-    'or adapt fppkg.cfg manually.';
+    'or adapt the configuration file manually.';
 
   // file dialogs
   lisOpenFile = 'Open File';
@@ -1463,6 +1463,7 @@ resourcestring
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakeExecutable = '"Make" executable';
   dlgCompilerMessages = 'Compiler messages language file (*.msg)';
+  dlgFppkgConfigurationFile = 'Fppkg configuration file (e.g. fppkg.cfg)';
   lisSetThisToTranslateTheCompilerMessagesToAnotherLang = 'Set this to '
     +'translate the compiler messages to another language (i.e. not English). '
     +'For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg.';
