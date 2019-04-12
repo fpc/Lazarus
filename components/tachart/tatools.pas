@@ -61,11 +61,13 @@ type
     property DrawingMode: TChartToolDrawingMode
       read FDrawingMode write SetDrawingMode default tdmDefault;
   strict protected
+    FCurrentDrawer: IChartDrawer;
     FIgnoreClipRect: Boolean;
     procedure Activate; override;
     procedure Cancel; virtual;
     procedure Deactivate; override;
     function EffectiveDrawingMode: TChartToolEffectiveDrawingMode;
+    function GetCurrentDrawer: IChartDrawer; inline;
     function GetIndex: Integer; override;
     function IsActive: Boolean;
     procedure KeyDown(APoint: TPoint); virtual;
@@ -80,7 +82,7 @@ type
     procedure RestoreCursor;
     procedure SetCursor;
     procedure SetIndex(AValue: Integer); override;
-    procedure StartTransparency;
+    procedure StartTransparency(ADrawer: IChartDrawer);
 
     property EscapeCancels: Boolean
       read FEscapeCancels write FEscapeCancels default false;
@@ -542,15 +544,16 @@ type
 
   TDataPointDrawTool = class;
 
-  TChartDataPointDrawEvent = procedure (ASender: TDataPointDrawTool) of object;
+  TChartDataPointDrawEvent = procedure (ASender: TDataPointDrawTool;
+    ADrawer: IChartDrawer) of object;
 
   TDataPointDrawTool = class(TDataPointTool)
   strict private
     FOnDraw: TChartDataPointDrawEvent;
   strict protected
     FPen: TChartPen;
-    procedure DoDraw; virtual;
-    procedure DoHide; virtual;
+    procedure DoDraw(ADrawer: IChartDrawer); virtual;
+    procedure DoHide(ADrawer: IChartDrawer); virtual;
     procedure SetPen(AValue: TChartPen);
   public
     constructor Create(AOwner: TComponent); override;
@@ -574,8 +577,8 @@ type
     FShape: TChartCrosshairShape;
     FSize: Integer;
   strict protected
-    procedure DoDraw; override;
-    procedure DoHide; override;
+    procedure DoDraw(ADrawer: IChartDrawer); override;
+    procedure DoHide(ADrawer: IChartDrawer); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
@@ -748,6 +751,7 @@ end;
 procedure TChartTool.AfterDraw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   Unused(AChart, ADrawer);
+  FCurrentDrawer := AChart.Drawer;
   if not IsActive then
     FChart := nil;
 end;
@@ -820,6 +824,7 @@ procedure TChartTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   Unused(ADrawer);
   FChart := AChart;
+  FCurrentDrawer := ADrawer;
 end;
 
 function TChartTool.EffectiveDrawingMode: TChartToolEffectiveDrawingMode;
@@ -848,6 +853,17 @@ begin
     Result := -1
   else
     Result := Toolset.Tools.IndexOf(Self);
+end;
+
+function TChartTool.GetCurrentDrawer: IChartDrawer;
+begin
+  if FCurrentDrawer <> nil then
+    Result := FCurrentDrawer
+  else
+  if Assigned(FChart) then
+    Result := FChart.Drawer
+  else
+    Result := nil;
 end;
 
 function TChartTool.GetParentComponent: TComponent;
@@ -999,10 +1015,10 @@ begin
     FToolset.Tools.Add(Self);
 end;
 
-procedure TChartTool.StartTransparency;
+procedure TChartTool.StartTransparency(ADrawer: IChartDrawer);
 begin
   if EffectiveDrawingMode = tdmNormal then
-    Chart.Drawer.SetTransparency(Transparency);
+    ADrawer.SetTransparency(Transparency);
 end;
 
 { TChartTools }
@@ -1257,7 +1273,7 @@ procedure TZoomDragTool.Cancel;
 begin
   if not IsActive then exit;
   if EffectiveDrawingMode = tdmXor then
-    Draw(FChart, FChart.Drawer)
+    Draw(FChart, GetCurrentDrawer)
   else
     FChart.StyleChanged(Self);
   Deactivate;
@@ -1286,7 +1302,7 @@ procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if not IsActive or IsAnimating then exit;
   inherited;
-  StartTransparency;
+  StartTransparency(ADrawer);
   PrepareDrawingModePen(ADrawer, Frame);
   ADrawer.SetBrush(Brush);
   ADrawer.Rectangle(CalculateDrawRect);
@@ -1323,7 +1339,7 @@ begin
   if not IsActive then exit;
 
   if EffectiveDrawingMode = tdmXor then
-    Draw(FChart, FChart.Drawer);
+    Draw(FChart, GetCurrentDrawer);
 
   with FSelectionRect do
     dragDir := DRAG_DIR[Sign(Right - Left), Sign(Bottom - Top)];
@@ -1366,7 +1382,7 @@ procedure TZoomDragTool.SetSelectionRect(AValue: TRect);
 begin
   if (FSelectionRect = AValue) or not IsActive or IsAnimating then exit;
   case EffectiveDrawingMode of
-    tdmXor: with FChart.Drawer do begin
+    tdmXor: with GetCurrentDrawer do begin
       SetXor(true);
       Pen := Frame;
       Brush := Self.Brush;
@@ -1974,19 +1990,20 @@ begin
   inherited;
 end;
 
-procedure TDataPointDrawTool.DoDraw;
+procedure TDataPointDrawTool.DoDraw(ADrawer: IChartDrawer);
 begin
   if Assigned(OnDraw) then
-    OnDraw(Self);
+    OnDraw(Self, ADrawer);
 end;
 
-procedure TDataPointDrawTool.DoHide;
+procedure TDataPointDrawTool.DoHide(ADrawer: IChartDrawer);
 begin
+  if ADrawer = nil then exit;
   case EffectiveDrawingMode of
     tdmXor: begin
-      FChart.Drawer.SetXor(true);
-      DoDraw;
-      FChart.Drawer.SetXor(false);
+      ADrawer.SetXor(true);
+      DoDraw(ADrawer);
+      ADrawer.SetXor(false);
     end;
     tdmNormal:
       FChart.StyleChanged(Self);
@@ -1997,13 +2014,13 @@ procedure TDataPointDrawTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   inherited;
   PrepareDrawingModePen(ADrawer, FPen);
-  DoDraw;
+  DoDraw(ADrawer);
   ADrawer.SetXor(false);
 end;
 
 procedure TDataPointDrawTool.Hide;
 begin
-  DoHide;
+  DoHide(GetCurrentDrawer);
   Deactivate;
 end;
 
@@ -2020,35 +2037,35 @@ begin
   SetPropDefaults(Self, ['Shape', 'Size']);
 end;
 
-procedure TDataPointCrosshairTool.DoDraw;
+procedure TDataPointCrosshairTool.DoDraw(ADrawer: IChartDrawer);
 var
   p: TPoint;
   ps: TFPPenStyle;
 begin
   if not CrosshairPen.Visible then
     ps := CrosshairPen.Style;
-  PrepareDrawingModePen(FChart.Drawer, CrosshairPen);
+  PrepareDrawingModePen(ADrawer, CrosshairPen);
   p := FChart.GraphToImage(Position);
   if Shape in [ccsVertical, ccsCross] then
     if Size < 0 then
-      FChart.DrawLineVert(FChart.Drawer, p.X)
+      FChart.DrawLineVert(ADrawer, p.X)
     else
-      FChart.Drawer.Line(p - Point(0, Size), p + Point(0, Size));
+      ADrawer.Line(p - Point(0, Size), p + Point(0, Size));
   if Shape in [ccsHorizontal, ccsCross] then
     if Size < 0 then
-      FChart.DrawLineHoriz(FChart.Drawer, p.Y)
+      FChart.DrawLineHoriz(ADrawer, p.Y)
     else
-      FChart.Drawer.Line(p - Point(Size, 0), p + Point(Size, 0));
+      ADrawer.Line(p - Point(Size, 0), p + Point(Size, 0));
   if not CrosshairPen.Visible then
-    FChart.Drawer.SetPenParams(ps, CrosshairPen.Color);
+    ADrawer.SetPenParams(ps, CrosshairPen.Color);
   inherited;
 end;
 
-procedure TDataPointCrosshairTool.DoHide;
+procedure TDataPointCrosshairTool.DoHide(ADrawer: IChartDrawer);
 begin
   if FSeries = nil then exit;
   FSeries := nil;
-  inherited;
+  inherited DoHide(ADrawer);
 end;
 
 procedure TDataPointCrosshairTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
@@ -2068,15 +2085,19 @@ begin
 end;
 
 procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);
+var
+  id: IChartDrawer;
 begin
-  DoHide;
+  id := GetCurrentDrawer;
+  if Assigned(id) then
+    DoHide(id);
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
   FPosition := FNearestGraphPoint;
-  if EffectiveDrawingMode = tdmXor then begin
-    FChart.Drawer.SetXor(true);
-    DoDraw;
-    if Assigned(FChart) then FChart.Drawer.SetXor(false);
+  if (EffectiveDrawingMode = tdmXor) and Assigned(id) then begin
+    id.SetXor(true);
+    DoDraw(id);
+    id.SetXor(false);
   end;
 end;
 
