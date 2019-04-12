@@ -877,6 +877,7 @@ var
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
   if Count = 0 then exit;
+  if not RequestValidChartScaling then exit;
 
   FindExtentInterval(ParentChart.CurrentExtent, Source.IsSorted);
   with Extent do
