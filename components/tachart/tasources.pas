@@ -545,9 +545,9 @@ begin
   if Length(AY) = 0 then
     raise EYListEmptyError.Create('AddXYList: Y List is empty');
 
-  Inc(FUpdateCount); // Optimization: prevent useless notifications.
-                     // We don't call BeginUpdate() to achieve this,
-                     // to avoid invalidating the caches.
+  { Optimization: prevent useless notifications.
+    Don't call BeginUpdate() to avoid invalidating the caches. }
+  Inc(FUpdateCount);
   try
     Result := Add(AX, AY[0], ALabel, AColor);
     if Length(AY) > 1 then
