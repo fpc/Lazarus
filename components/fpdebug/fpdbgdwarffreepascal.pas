@@ -5,7 +5,7 @@ unit FpDbgDwarfFreePascal;
 interface
 
 uses
-  Classes, SysUtils, Types, FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo,
+  Classes, SysUtils, Types, math, FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo,
   FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools, DbgIntfBaseTypes,
   LazLoggerBase;
 
@@ -604,6 +604,8 @@ begin
   if (t2 = nil) or (t2.Kind <> skChar) then
     exit;
 
+  // TODO: check lowbound = 1 (const)
+
   while Info.HasValidScope do begin
     t := Info.AbbrevTag;
     if (t = DW_TAG_enumeration_type) then
@@ -704,8 +706,10 @@ function TFpDwarfV3ValueFreePascalString.GetAsString: AnsiString;
 var
   t, t2: TFpDbgSymbol;
   LowBound, HighBound: Int64;
-  Addr: TFpDbgMemLocation;
+  Addr, Addr2: TFpDbgMemLocation;
   WResult: UnicodeString;
+  i: Int64;
+  dummy: pointer;
 begin
   if FValueDone then
     exit(FValue);
@@ -728,6 +732,25 @@ begin
   Addr := DataAddr;
   if not IsReadableLoc(Addr) then
     exit;
+
+  if t.Kind = skWideString then begin
+    if (t2 is TFpDwarfSymbolTypeSubRange) and (LowBound = 1) then begin
+      i := TFpDwarfSymbolTypeSubRange(t2).InformationEntry.AttribIdx(DW_AT_upper_bound, dummy);
+      if (i >=0) and
+         (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.AttribForm[i] = DW_FORM_block1) and
+         (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize))
+      then begin
+        // fpc issue 0035359
+        // read data and check for DW_OP_shr ?
+        Addr2 := Addr;
+        Addr2.Address := Addr2.Address - AddressSize;
+        if MemManager.ReadSignedInt(Addr2, AddressSize, i) then begin
+          if (i shr 1) = HighBound then
+            HighBound := i;
+        end
+      end;
+    end;
+  end;
 
   if HighBound < LowBound then
     exit; // empty string
