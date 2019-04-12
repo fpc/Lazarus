@@ -746,12 +746,12 @@ begin
       //DebugLn(['TConfigMemStorage.Modify Node="',Node.Name,'" StartPos="',StartPos,'"']);
       // child node
       if Node.Children=nil then begin
-        if Mode in [cmsmDelete,cmsmDeleteValue] then exit;
+        if Mode in [cmsmDelete,cmsmDeleteValue,cmsmGet] then exit;
         CreateChilds(Node);
       end;
       ChildNode:=Node.Children.FindKey(StartPos,@ComparePCharWithConfigMemStorageNode);
       if ChildNode=nil then begin
-        if Mode in [cmsmDelete,cmsmDeleteValue] then exit;
+        if Mode in [cmsmDelete,cmsmDeleteValue,cmsmGet] then exit;
         NewName:='';
         SetLength(NewName,p-StartPos);
         if NewName<>'' then

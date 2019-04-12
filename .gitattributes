@@ -3491,6 +3491,7 @@ components/lazutils/paswstring.pas svneol=native#text/pascal
 components/lazutils/stringhashlist.pas svneol=native#text/pascal
 components/lazutils/test/TestLazStorageMem.lpi svneol=native#text/plain
 components/lazutils/test/TestLazStorageMem.lpr svneol=native#text/plain
+components/lazutils/test/testconfigmemstorage.pas svneol=native#text/pascal
 components/lazutils/test/testlazstoragememcase1.pas svneol=native#text/plain
 components/lazutils/textstrings.pas svneol=native#text/pascal
 components/lazutils/translations.pas svneol=native#text/pascal
