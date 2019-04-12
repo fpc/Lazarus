@@ -1026,6 +1026,7 @@ var
   ti: TFpDbgSymbol;
   IsPChar: Boolean;
   v: String;
+  w: WideString;
 begin
   Result := nil;
   assert(Count >= 2, 'TFpPascalExpressionPartBracketIndex.DoGetResultValue: Count >= 2');
@@ -1112,7 +1113,31 @@ begin
           end;
 
           TmpVal2 := TFpDbgValueConstChar.Create(v[Offs]);
-        end
+        end;
+      skWideString: begin
+          //TODO: move to FpDwarfValue.member ??
+          if (svfInteger in TmpIndex.FieldFlags) then
+            Offs := TmpIndex.AsInteger
+          else
+          if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
+          then
+            Offs := Int64(TmpIndex.AsCardinal)
+          else
+          begin
+            SetError('Can not calculate Index');
+            TmpVal.ReleaseReference;
+            exit;
+          end;
+
+          w := TmpVal.AsWideString;
+          if (Offs < 1) or (Offs > Length(w)) then begin
+            SetError('Index out of range');
+            TmpVal.ReleaseReference;
+            exit;
+          end;
+
+          TmpVal2 := TFpDbgValueConstChar.Create(w[Offs]);
+        end;
       else
         begin
           SetError(fpErrTypeHasNoIndex, [GetText]);

@@ -256,6 +256,21 @@ type
     constructor Create(AValue: AnsiString);
   end;
 
+  { TFpDbgValueConstWideChar }
+
+  TFpDbgValueConstWideChar = class(TFpDbgValue) // skChar / Not for strings
+  private
+    FValue: String;
+    FSigned: Boolean;
+  protected
+    property Value: String read FValue write FValue;
+    function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
+    function GetAsString: AnsiString; override;
+  public
+    constructor Create(AValue: AnsiString);
+  end;
+
   { TFpDbgValueConstFloat }
 
   TFpDbgValueConstFloat = class(TFpDbgValue)
@@ -533,6 +548,29 @@ begin
 end;
 
 constructor TFpDbgValueConstChar.Create(AValue: AnsiString);
+begin
+  inherited Create;
+  FValue := AValue;
+end;
+
+{ TFpDbgValueConstWideChar }
+
+function TFpDbgValueConstWideChar.GetKind: TDbgSymbolKind;
+begin
+  Result := skChar;
+end;
+
+function TFpDbgValueConstWideChar.GetFieldFlags: TFpDbgValueFieldFlags;
+begin
+  Result := [svfString]
+end;
+
+function TFpDbgValueConstWideChar.GetAsString: AnsiString;
+begin
+  Result := Value;
+end;
+
+constructor TFpDbgValueConstWideChar.Create(AValue: AnsiString);
 begin
   inherited Create;
   FValue := AValue;

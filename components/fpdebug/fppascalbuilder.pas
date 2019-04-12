@@ -711,6 +711,15 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     Result := True;
   end;
 
+  procedure DoWideString;
+  begin
+    APrintedValue := QuoteText(AValue.AsString);
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skWideString, ResTypeName);
+    end;
+    Result := True;
+  end;
+
   procedure DoFloat;
   begin
     APrintedValue := FloatToStr(AValue.AsFloat);
@@ -1011,7 +1020,7 @@ begin
     skAnsiString: ;
     skCurrency: ;
     skVariant: ;
-    skWideString: ;
+    skWideString: DoWideString;
     skEnum:      DoEnum;
     skEnumValue: DoEnumVal;
     skSet:       DoSet;
