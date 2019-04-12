@@ -1119,6 +1119,8 @@ type
     procedure GotoLineClicked(Sender: TObject);
     procedure JumpBackClicked(Sender: TObject);
     procedure JumpForwardClicked(Sender: TObject);
+    procedure JumpToNextErrorClicked(Sender: TObject);
+    procedure JumpToPrevErrorClicked(Sender: TObject);
     procedure AddJumpPointClicked(Sender: TObject);
     procedure AddCustomJumpPoint(ACaretXY: TPoint; ATopLine: integer;
                   AEditor: TSourceEditor; DeleteForwardHistory: boolean);
@@ -1175,7 +1177,7 @@ type
     procedure CloseFile(AEditor: TSourceEditorInterface);
     procedure HideHint;
     // history jumping
-    procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
+    procedure HistoryJump(Sender: TObject; JumpAction: TJumpHistoryAction);
   private
     // Hints
     FHints: TSourceEditorHintWindowManager;
@@ -10345,6 +10347,16 @@ begin
   if ActiveSourceWindow <> nil then HistoryJump(Sender,jhaForward);
 end;
 
+procedure TSourceEditorManager.JumpToNextErrorClicked(Sender: TObject);
+begin
+  LazarusIDE.DoJumpToNextError(true);
+end;
+
+procedure TSourceEditorManager.JumpToPrevErrorClicked(Sender: TObject);
+begin
+  LazarusIDE.DoJumpToNextError(false);
+end;
+
 procedure TSourceEditorManager.JumpToImplementationClicked(Sender: TObject);
 begin
   JumpToSection(jmpImplementation);
@@ -10937,15 +10949,16 @@ begin
 end;
 
 procedure TSourceEditorManager.HistoryJump(Sender: TObject;
-  CloseAction: TJumpHistoryAction);
-var NewCaretXY: TPoint;
+  JumpAction: TJumpHistoryAction);
+var
+  NewCaretXY: TPoint;
   NewTopLine: integer;
   NewEditor: TSourceEditor;
 begin
   if Assigned(OnJumpToHistoryPoint) then begin
     NewCaretXY.X:=-1;
     NewEditor:=nil;
-    OnJumpToHistoryPoint(NewCaretXY,NewTopLine,NewEditor,CloseAction);
+    OnJumpToHistoryPoint(NewCaretXY,NewTopLine,NewEditor,JumpAction);
     if NewEditor<>nil then begin
       ActiveEditor := NewEditor;
       ShowActiveWindowOnTop(True);
