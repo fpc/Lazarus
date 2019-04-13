@@ -528,6 +528,7 @@ var
   p: Integer;
   pn: TCocoaPen;
   opn: TCocoaPen;
+  r: TRect;
 begin
 
   ctx := CheckDC(DC);
@@ -545,7 +546,10 @@ begin
       ctx.Pen:=pn;
       ctx.ROP2:=R2_NOTXORPEN;
       ctx.Pen.Apply(ctx, true);
-      ctx.Frame(Rect);
+      r:=Rect;
+      dec(r.Right);
+      dec(r.Bottom);
+      ctx.Frame(r);
     finally
       ctx.ROP2:=p;
       ctx.Pen:=opn;
