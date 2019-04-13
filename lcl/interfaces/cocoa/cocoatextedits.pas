@@ -195,7 +195,8 @@ type
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
 
-    procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext; const r: TRect; isSelected: Boolean);
+    procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
+      const r: TRect; isSelected: Boolean);
   end;
 
   { TCocoaComboBox }
@@ -273,8 +274,11 @@ type
   TCocoaReadOnlyView = objcclass (NSView)
     itemIndex: Integer;
     combobox: TCocoaReadOnlyComboBox;
+    isMouseOver: Boolean;
     procedure drawRect(dirtyRect: NSRect); override;
     procedure mouseUp(event: NSEvent); override;
+    procedure mouseEntered(theEvent: NSEvent); override;
+    procedure mouseExited(theEvent: NSEvent); override;
   end;
 
   { TCocoaReadOnlyComboBox }
@@ -532,7 +536,7 @@ begin
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
     ctx.InitDraw(Round(dirtyRect.size.width), Round(dirtyRect.size.height));
-    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), false);
+    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), isMouseOver);
   finally
     ctx.Free;
   end;
@@ -548,6 +552,20 @@ begin
     combobox.menu.performActionForItemAtIndex(itemIndex);
     combobox.menu.cancelTracking;
   end;
+end;
+
+procedure TCocoaReadOnlyView.mouseEntered(theEvent: NSEvent);
+begin
+  isMouseOver := true;
+  inherited mouseEntered(theEvent);
+  lclInvalidate;
+end;
+
+procedure TCocoaReadOnlyView.mouseExited(theEvent: NSEvent);
+begin
+  isMouseOver := false;
+  inherited mouseExited(theEvent);
+  lclInvalidate;
 end;
 
 { TCocoaComboBoxItemCell }
@@ -1098,6 +1116,7 @@ var
   nsstr: NSString;
   lItems: array of NSMenuItem;
   menuItem: TCocoaReadOnlyView;
+  track: NSTrackingArea;
 begin
   if FOwner <> nil then
     fOwner.reloadData;
@@ -1127,6 +1146,13 @@ begin
         menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FReadOnlyOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
         menuItem.itemIndex := i;
         menuItem.combobox := FReadOnlyOwner;
+
+        track:=NSTrackingArea(NSTrackingArea.alloc).initWithRect_options_owner_userInfo(
+          menuItem.bounds
+          , NSTrackingMouseEnteredAndExited or NSTrackingActiveAlways
+          , menuItem, nil);
+        menuItem.addTrackingArea(track);
+        track.release;
         lItems[i].setView(menuItem);
       end;
 

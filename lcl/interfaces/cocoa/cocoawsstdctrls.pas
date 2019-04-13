@@ -649,6 +649,8 @@ begin
   itemstruct.DC := HDC(ctx);
   itemstruct.ItemState := [];
   if isSelected then Include(itemstruct.ItemState, odSelected);
+  // we don't distingiush at the moment
+  if isSelected then Include(itemstruct.ItemState, odFocused);
 
   LCLSendDrawListItemMsg(Target, @itemstruct);
 end;
