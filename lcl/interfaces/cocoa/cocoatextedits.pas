@@ -297,6 +297,8 @@ type
     procedure resetCursorRects; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     function stringValue: NSString; override;
+    // drawing
+    procedure drawRect(dirtyRect: NSRect); override;
     // mouse
     function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -1449,6 +1451,42 @@ begin
     Result:=selectedItem.title
   else
     Result:=inherited stringValue;
+end;
+
+procedure TCocoaReadOnlyComboBox.drawRect(dirtyRect: NSRect);
+var
+  ctx : TCocoaContext;
+  r   : NSRect;
+  rr  : NSRect;
+  dr  : TRect;
+begin
+  inherited drawRect(dirtyRect);
+
+  // if ownerDrawn style, then need to call "DrawItem" event
+  if isOwnerDrawn and Assigned(callback) then
+  begin
+    ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+    try
+      // todo: it's possible to query "cell" using titleRectForBounds method
+      //       it actually returns somewhat desired offsets.
+      //       (however, one should be careful and take layout offsets into account!)
+      //       on the other hand, "cells" themselves are being deprecated...
+      dr := lclFrame;
+      Types.OffsetRect(dr, -dr.Left, -dr.Top);
+      SubLayoutFromFrame( lclGetFrameToLayoutDelta, dr);
+
+      // magic offsets are based on the macOS 10.13.6 visual style
+      // but hard-coding is never reliable
+      inc(dr.Left, 11);
+      inc(dr.Top, 5);
+      dec(dr.Right,18);
+      dec(dr.Bottom, 2);
+
+      callback.ComboBoxDrawItem(lastSelectedItemIndex, ctx, dr, false);
+    finally
+      ctx.Free;
+    end;
+  end;
 end;
 
 function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
