@@ -5766,7 +5766,6 @@ docs/html/build_chm.bat svneol=native#text/x-msdos-program
 docs/html/build_chm.sh svneol=native#text/plain
 docs/html/build_html.bat svneol=native#text/x-msdos-program
 docs/html/build_html.sh svneol=native#text/plain
-docs/html/build_lcl_chm.sh svneol=native#text/plain
 docs/html/build_lcl_docs.lpi svneol=native#text/plain
 docs/html/build_lcl_docs.lpr svneol=native#text/plain
 docs/html/fpdoc.css svneol=native#text/css

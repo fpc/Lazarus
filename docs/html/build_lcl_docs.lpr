@@ -9,8 +9,8 @@ program update_lcl_docs;
 {$ENDIF}
 
 uses
-  Classes, Sysutils, GetOpts, LazFileUtils, FileUtil, UTF8Process, LazUtilities,
-  Process;
+  Classes, Sysutils, GetOpts, Process,
+  LazFileUtils, FileUtil, UTF8Process, LazUtilities, LazStringUtils;
 
 var
   DefaultFPDocExe: string = 'fpdoc';
