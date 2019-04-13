@@ -488,7 +488,8 @@ begin
     ItemState := [];
     if isRowSelected(row) then Include(ItemState, odSelected);
     if lclIsEnabled then Include(ItemState, odDisabled);
-    if Assigned(window) and (window.firstResponder = self) then Include(ItemState, odFocused);
+    if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
+      Include(ItemState, odFocused);
 
     callback.DrawRow(row, ctx, NSRectToRect(rectOfRow(row)), ItemState);
   finally
