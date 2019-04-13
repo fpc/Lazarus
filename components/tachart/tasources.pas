@@ -319,7 +319,7 @@ function TListChartSourceStrings.Get(Index: Integer): String;
     if IsNaN(AValue) then
       Result := '|'
     else
-      Result := Format('%g|', [AValue], DefSeparatorSettings);
+      Result := FloatToStr(AValue, DefSeparatorSettings) + '|';
   end;
 
 var
