@@ -1463,7 +1463,9 @@ begin
   inherited drawRect(dirtyRect);
 
   // if ownerDrawn style, then need to call "DrawItem" event
-  if isOwnerDrawn and Assigned(callback) then
+  if isOwnerDrawn and Assigned(callback)
+    and (lastSelectedItemIndex>=0) and (lastSelectedItemIndex<list.Count)
+  then
   begin
     ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
     try
