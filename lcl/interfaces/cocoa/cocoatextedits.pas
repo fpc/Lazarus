@@ -1526,8 +1526,11 @@ procedure TCocoaReadOnlyComboBox.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
   begin
+    // a typical Apple "mouseDown" loop. The popup is shown on mouseDown event
+    // The event only exists, whenever the popup is closed (for whatever reason)
+    if Assigned(callback) then callback.ComboBoxWillPopUp;
     inherited mouseDown(event);
-
+    if Assigned(callback) then callback.ComboBoxWillDismiss;
     callback.MouseUpDownEvent(event, true);
   end;
 end;

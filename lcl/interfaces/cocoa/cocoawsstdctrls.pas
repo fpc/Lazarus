@@ -59,6 +59,8 @@ type
   { TLCLComboboxCallback }
 
   TLCLComboboxCallback = class(TLCLCommonCallback, IComboBoxCallback)
+  public
+    isShowPopup: Boolean;
     procedure ComboBoxWillPopUp;
     procedure ComboBoxWillDismiss;
     procedure ComboBoxSelectionDidChange;
@@ -75,6 +77,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
+    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; override;
     {class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;}
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -621,12 +624,14 @@ end;
 
 procedure TLCLComboboxCallback.ComboBoxWillPopUp;
 begin
+  isShowPopup := true;
   LCLSendDropDownMsg(Target);
 end;
 
 procedure TLCLComboboxCallback.ComboBoxWillDismiss;
 begin
   LCLSendCloseUpMsg(Target);
+  isShowPopup := false;
 end;
 
 procedure TLCLComboboxCallback.ComboBoxSelectionDidChange;
@@ -1667,6 +1672,26 @@ begin
   begin
     //todo: consider the use of border style
     //ComboBoxSetBorderStyle(TCocoaComboBox(ACustomComboBox.Handle), ABorderStyle);
+  end;
+
+end;
+
+class function TCocoaWSCustomComboBox.GetDroppedDown(
+  const ACustomComboBox: TCustomComboBox): Boolean;
+var
+  cb  : ICommonCallback;
+  obj : TObject;
+begin
+  Result:=false;
+  if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+    Exit;
+
+  cb := NSView(ACustomComboBox.Handle).lclGetCallback;
+  if Assigned(cb) then
+  begin
+    obj := cb.GetCallbackObject;
+    if (obj is TLCLComboboxCallback) then
+      Result := TLCLComboboxCallback(obj).isShowPopup;
   end;
 
 end;
