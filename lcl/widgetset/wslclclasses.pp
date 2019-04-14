@@ -81,6 +81,8 @@ type
 
 
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
+function IsWSComponentInheritsFrom(const AComponent: TComponentClass;
+  InheritFromClass: TWSLCLComponentClass): Boolean;
 procedure RegisterWSComponent(const AComponent: TComponentClass;
                               const AWSComponent: TWSLCLComponentClass;
                               const AWSPrivate: TWSPrivateClass = nil;
@@ -124,12 +126,10 @@ var
   WSLazAccessibleObjectClass: TWSObjectClass;
   WSLazDeviceAPIsClass: TWSObjectClass;
 
-function FindWSComponentClass(
-  const AComponent: TComponentClass): TWSLCLComponentClass;
+function FindClassNode(const AComponent: TComponentClass): PClassNode;
 var
   idx: Integer;
   cls: TClass;
-  Node: PClassNode;
 begin
   if MWSRegisterIndex = nil then
     DoInitialization;
@@ -141,12 +141,35 @@ begin
     idx := MWSRegisterIndex.IndexOf(cls.ClassName);
     if idx <> -1 then
     begin
-      Node := PClassNode(MWSRegisterIndex.Objects[idx]);
-      Result := TWSLCLComponentClass(Node^.VClass);
-      Exit;
+      Result := PClassNode(MWSRegisterIndex.Objects[idx]);
+      Break;
     end;
     cls := cls.ClassParent;
   end;
+end;
+
+function FindWSComponentClass(
+  const AComponent: TComponentClass): TWSLCLComponentClass;
+var
+  Node: PClassNode;
+begin
+  Node := FindClassNode(AComponent);
+  if Assigned(Node) then
+    Result := TWSLCLComponentClass(Node^.VClass)
+  else
+    Result := nil;
+end;
+
+function IsWSComponentInheritsFrom(const AComponent: TComponentClass;
+  InheritFromClass: TWSLCLComponentClass): Boolean;
+var
+  Node: PClassNode;
+begin
+  Node := FindClassNode(AComponent);
+  if Assigned(Node) then
+    Result := TWSLCLComponentClass(Node^.WSClass).InheritsFrom(InheritFromClass)
+  else
+    Result := false;
 end;
 
 type
