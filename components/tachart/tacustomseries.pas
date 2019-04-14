@@ -1940,15 +1940,15 @@ begin
   {FLoBound and FUpBound fields may be outdated here (if axis' range has been
    changed after the last series' painting). FLoBound and FUpBound will be fully
    updated later, in a PrepareGraphPoints() call. But we need them now. If data
-   source is sorted, obtaining FLoBound and FUpBound is very fast (binary search) -
-   so we call FindExtentInterval() with True as the second parameter. If data
-   source is not sorted, obtaining FLoBound and FUpBound requires enumerating all
-   the data points to see, if they are in the current chart's viewport. But this
-   is exactly what we are going to do in the loop below, so obtaining true FLoBound
-   and FUpBound values makes no sense in this case - so we call FindExtentInterval()
-   with False as the second parameter, thus setting FLoBound to 0 and FUpBound to
-   Count-1}
-  FindExtentInterval(ParentChart.CurrentExtent, Source.IsSorted);
+   source is sorted by X in the ascending order, obtaining FLoBound and FUpBound
+   is very fast (binary search) - so we call FindExtentInterval() with True as
+   the second parameter. Otherwise, obtaining FLoBound and FUpBound requires
+   enumerating all the data points to see, if they are in the current chart's
+   viewport. But this is exactly what we are going to do in the loop below, so
+   obtaining true FLoBound and FUpBound values makes no sense in this case - so
+   we call FindExtentInterval() with False as the second parameter, thus setting
+   FLoBound to 0 and FUpBound to Count-1}
+  FindExtentInterval(ParentChart.CurrentExtent, Source.IsSortedByXAsc);
 
   with Extent do
     center := AxisToGraphY((a.y + b.y) * 0.5);

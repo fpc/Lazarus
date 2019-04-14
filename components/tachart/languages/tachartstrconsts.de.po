@@ -471,6 +471,10 @@ msgstr "Diese %0:s-Instanz muss mindestens %1:d %2:s-Wert(e) pro Datenpunkt zur 
 msgid "Editable chart source required"
 msgstr "Editierbare Chart-Datenquelle erforderlich"
 
+#: tachartstrconsts.rssourcesorterror
+msgid "Selected sorting parameters are not supported by %s."
+msgstr ""
+
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
 msgstr "Stern (Linien)"

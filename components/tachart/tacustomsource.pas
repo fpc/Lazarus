@@ -71,9 +71,10 @@ type
 type
   EBufferError = class(EChartError);
   EEditableSourceRequired = class(EChartError);
+  EListSourceStringError = class(EChartError);
+  ESortError = class(EChartError);
   EXCountError = class(EChartError);
   EYCountError = class(EChartError);
-  EListSourceStringError = class(EChartError);
 
   TChartValueText = record
     FText: String;
@@ -175,8 +176,10 @@ type
     property IndexPlus: Integer index 0 read GetIndex write SetIndex default -1;
     property ValueMinus: Double index 1 read GetValue write SetValue stored IsErrorBarValueStored;
     property ValuePlus: Double index 0 read GetValue write SetValue stored IsErrorBarValueStored;
-
   end;
+
+  TChartSortBy = (sbX, sbY, sbColor, sbText, sbCustom);
+  TChartSortDir = (sdAscending, sdDescending);
 
   TCustomChartSource = class(TBasicChartSource)
   strict private
@@ -197,6 +200,9 @@ type
     FYListExtentIsValid: Boolean;
     FValuesTotal: Double;
     FValuesTotalIsValid: Boolean;
+    FSortBy: TChartSortBy;
+    FSortDir: TChartSortDir;
+    FSortIndex: Cardinal;
     FXCount: Cardinal;
     FYCount: Cardinal;
     function CalcExtentXYList(UseXList: Boolean): TDoubleRect;
@@ -207,12 +213,19 @@ type
     function GetHasErrorBars(Which: Integer): Boolean;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
     procedure InvalidateCaches;
+    procedure SetSortBy(AValue: TChartSortBy); virtual;
+    procedure SetSortDir(AValue: TChartSortDir); virtual;
+    procedure SetSortIndex(AValue: Cardinal); virtual;
     procedure SetXCount(AValue: Cardinal); virtual; abstract;
     procedure SetYCount(AValue: Cardinal); virtual; abstract;
     property XErrorBarData: TChartErrorBarData index 0 read GetErrorBarData
       write SetErrorBarData stored IsErrorBarDataStored;
     property YErrorBarData: TChartErrorBarData index 1 read GetErrorBarData
       write SetErrorBarData stored IsErrorBarDataStored;
+  protected
+    property SortBy: TChartSortBy read FSortBy write SetSortBy default sbX;
+    property SortDir: TChartSortDir read FSortDir write SetSortDir default sdAscending;
+    property SortIndex: Cardinal read FSortIndex write SetSortIndex default 0;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -247,6 +260,7 @@ type
     function IsXErrorIndex(AXIndex: Integer): Boolean;
     function IsYErrorIndex(AYIndex: Integer): Boolean;
     function IsSorted: Boolean; virtual;
+    function IsSortedByXAsc: Boolean;
     procedure ValuesInRange(
       AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); virtual;
     function ValuesTotal: Double; virtual;
@@ -288,7 +302,7 @@ procedure SetDataItemDefaults(var AItem: TChartDataItem);
 implementation
 
 uses
-  Math, StrUtils, SysUtils, TAMath;
+  Math, StrUtils, SysUtils, TAMath, TAChartStrConsts;
 
 function CompareChartValueTextPtr(AItem1, AItem2: Pointer): Integer;
 begin
@@ -895,8 +909,6 @@ begin
   end;
 end;
 
-
-
 class procedure TCustomChartSource.CheckFormat(const AFormat: String);
 begin
   Format(AFormat, [0.0, 0.0, '', 0.0, 0.0]);
@@ -907,6 +919,9 @@ var
   i: Integer;
 begin
   inherited Create(AOwner);
+  FSortBy := sbX;
+  FSortDir := sdAscending;
+  FSortIndex := 0;
   FXCount := 1;
   FYCount := 1;
   for i:=Low(FErrorBarData) to High(FErrorBarData) do begin
@@ -1011,7 +1026,8 @@ end;
 
 // ALB -> leftmost item where X >= AXMin, or Count if no such item
 // ALB -> rightmost item where X <= AXMax, or -1 if no such item
-// If the source is sorted, performs binary search. Otherwise, skips NaNs.
+// If the source is sorted by X in the ascending order, performs
+// binary search. Otherwise, skips NaNs.
 procedure TCustomChartSource.FindBounds(
   AXMin, AXMax: Double; out ALB, AUB: Integer);
 
@@ -1041,7 +1057,7 @@ procedure TCustomChartSource.FindBounds(
 
 begin
   EnsureOrder(AXMin, AXMax);
-  if IsSorted then begin
+  if IsSortedByXAsc then begin
     ALB := FindLB(AXMin, 0, Count - 1);
     AUB := FindUB(AXMax, 0, Count - 1);
   end
@@ -1250,6 +1266,16 @@ begin
     Result := (FIndex[AIndex] <> -1) or (FValue[AIndex] <> -1) or (FKind <> ebkNone);
 end;
 
+function TCustomChartSource.IsSorted: Boolean; inline;
+begin
+  Result := false;
+end;
+
+function TCustomChartSource.IsSortedByXAsc: Boolean;
+begin
+  Result := IsSorted and (FSortBy = sbX) and (FSortDir = sdAscending) and (FSortIndex = 0);
+end;
+
 function TCustomChartSource.IsXErrorIndex(AXIndex: Integer): Boolean;
 begin
   Result :=
@@ -1267,16 +1293,29 @@ begin
     (AYIndex > -1);
 end;
 
-function TCustomChartSource.IsSorted: Boolean;
-begin
-  Result := false;
-end;
-
 procedure TCustomChartSource.SetErrorBarData(AIndex: Integer;
   AValue: TChartErrorBarData);
 begin
   FErrorBarData[AIndex] := AValue;
   Notify;
+end;
+
+procedure TCustomChartSource.SetSortBy(AValue: TChartSortBy);
+begin
+  if FSortBy <> AValue then
+    raise ESortError.CreateFmt(rsSourceSortError, [ClassName]);
+end;
+
+procedure TCustomChartSource.SetSortDir(AValue: TChartSortDir);
+begin
+  if FSortDir <> AValue then
+    raise ESortError.CreateFmt(rsSourceSortError, [ClassName]);
+end;
+
+procedure TCustomChartSource.SetSortIndex(AValue: Cardinal);
+begin
+  if FSortIndex <> AValue then
+    raise ESortError.CreateFmt(rsSourceSortError, [ClassName]);
 end;
 
 procedure TCustomChartSource.SortValuesInRange(
@@ -1421,7 +1460,7 @@ begin
     cnt += 1;
   end;
 
-  if not IsSorted and not IsValueTextsSorted(AValues, start, cnt - 1) then begin
+  if not IsSortedByXAsc and not IsValueTextsSorted(AValues, start, cnt - 1) then begin
     SortValuesInRange(AValues, start, cnt - 1);
     if aipUseMinLength in AParams.FIntervals.Options then
       cnt := EnsureMinLength(start, cnt - 1);

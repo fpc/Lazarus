@@ -472,6 +472,10 @@ msgstr "Цей примірник %0:s повинен мати принаймн�
 msgid "Editable chart source required"
 msgstr "Потрібне джерело діаграми, доступне для редагування"
 
+#: tachartstrconsts.rssourcesorterror
+msgid "Selected sorting parameters are not supported by %s."
+msgstr ""
+
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
 msgstr "Зірка (з ліній)"

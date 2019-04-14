@@ -879,7 +879,7 @@ begin
   if Count = 0 then exit;
   if not RequestValidChartScaling then exit;
 
-  FindExtentInterval(ParentChart.CurrentExtent, Source.IsSorted);
+  FindExtentInterval(ParentChart.CurrentExtent, Source.IsSortedByXAsc);
   with Extent do
     center := AxisToGraphY((a.y + b.y) * 0.5);
   UpdateLabelDirectionReferenceLevel(0, 0, center);
