@@ -380,6 +380,24 @@ begin
   end;
 end;
 
+procedure TCustomUpDown.AdjustPos(incPos: Boolean);
+var
+  anewpos: Integer;
+begin
+  if FUseWS then begin
+    if incPos then anewpos := Position + Increment
+    else anewpos := Position - Increment;
+
+    if (anewpos < Min) then anewpos := Min
+    else if (anewpos > Max) then anewpos := Max;
+    SetPosition(anewpos);
+  end else begin
+    if incPos then TCustomSpeedButton(FMaxBtn).Click
+    else TCustomSpeedButton(FMinBtn).Click;
+  end;
+
+end;
+
 procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word;
   ShiftState : TShiftState);
 var
@@ -392,16 +410,28 @@ begin
       udVertical:
         case Key of
           VK_Up:
-            begin TCustomSpeedButton(FMaxBtn).Click; ConsumeKey := True; end;
+            begin
+              AdjustPos(True);
+              ConsumeKey := True;
+            end;
           VK_Down:
-            begin TCustomSpeedButton(FMinBtn).Click; ConsumeKey := True; end;
+            begin
+              AdjustPos(False);
+              ConsumeKey := True;
+            end;
         end;
       udHorizontal:
         case Key of
           VK_Left:
-            begin TCustomSpeedButton(FMinBtn).Click; ConsumeKey := True; end;
+            begin
+              AdjustPos(False);
+              ConsumeKey := True;
+            end;
           VK_Right:
-            begin TCustomSpeedButton(FMaxBtn).Click; ConsumeKey := True; end;
+            begin
+              AdjustPos(True);
+              ConsumeKey := True;
+            end;
         end;
     end;
   end;
@@ -412,16 +442,17 @@ end;
 procedure TCustomUpDown.AssociateMouseWheel(Sender: TObject;
   Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
   var Handled: Boolean);
+
 begin
   //debugln('TCustomUpDown.AssociateMouseWheel A: Handled = ',DbgS(Handled));
   if (WheelDelta > 0) then
   begin
-    TCustomSpeedButton(FMaxBtn).Click;
+    AdjustPos(True);
     Handled := True;
   end
   else if (WheelDelta < 0) then
   begin
-    TCustomSpeedButton(FMinBtn).Click;
+    AdjustPos(False);
     Handled := True;
   end;
   //debugln('TCustomUpDown.AssociateMouseWheel End: Handled = ',DbgS(Handled));
@@ -447,14 +478,14 @@ end;
 function TCustomUpDown.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
-  if not Result then
+  if not Result and not FUseWS then
     TCustomSpeedButton(FMinBtn).Click;
 end;
 
 function TCustomUpDown.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
-  if not Result then
+  if not Result and not FUseWS then
     TCustomSpeedButton(FMaxBtn).Click;
 end;
 
@@ -462,7 +493,7 @@ function TCustomUpDown.DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint): B
 begin
   Result := inherited DoMouseWheelLeft(Shift, MousePos);
   if not Result then
-    if Orientation=udHorizontal then
+    if (Orientation=udHorizontal) and not FUseWS  then
       TCustomSpeedButton(FMinBtn).Click;
 end;
 
@@ -470,7 +501,7 @@ function TCustomUpDown.DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint): 
 begin
   Result := inherited DoMouseWheelRight(Shift, MousePos);
   if not Result then
-    if Orientation=udHorizontal then
+    if (Orientation=udHorizontal) and not FUseWS then
       TCustomSpeedButton(FMaxBtn).Click;
 end;
 

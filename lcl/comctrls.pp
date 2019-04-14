@@ -1912,6 +1912,7 @@ type
     procedure UpdateUpDownPositionText;
   protected
     class procedure WSRegisterClass; override;
+    procedure AdjustPos(incPos: Boolean);
     procedure InitializeWnd; override;
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure AssociateMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
