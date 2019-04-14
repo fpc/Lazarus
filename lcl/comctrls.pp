@@ -1891,6 +1891,7 @@ type
     FPosition: SmallInt;
     FThousands: Boolean;
     FWrap: Boolean;
+    FUseWS: Boolean;
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
     function GetFlat: Boolean;
@@ -1911,6 +1912,7 @@ type
     procedure UpdateUpDownPositionText;
   protected
     class procedure WSRegisterClass; override;
+    procedure InitializeWnd; override;
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure AssociateMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint; var Handled: Boolean);
