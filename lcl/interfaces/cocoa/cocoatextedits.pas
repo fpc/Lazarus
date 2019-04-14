@@ -190,7 +190,8 @@ type
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
 
-    procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext; const r: TRect; isSelected: Boolean);
+    procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
+      const r: TRect; isSelected: Boolean);
   end;
 
   { TCocoaComboBox }
@@ -268,8 +269,11 @@ type
   TCocoaReadOnlyView = objcclass (NSView)
     itemIndex: Integer;
     combobox: TCocoaReadOnlyComboBox;
+    isMouseOver: Boolean;
     procedure drawRect(dirtyRect: NSRect); override;
     procedure mouseUp(event: NSEvent); override;
+    procedure mouseEntered(theEvent: NSEvent); override;
+    procedure mouseExited(theEvent: NSEvent); override;
   end;
 
   { TCocoaReadOnlyComboBox }
@@ -292,6 +296,8 @@ type
     procedure resetCursorRects; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     function stringValue: NSString; override;
+    // drawing
+    procedure drawRect(dirtyRect: NSRect); override;
     // mouse
     function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -525,7 +531,7 @@ begin
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
     ctx.InitDraw(Round(dirtyRect.size.width), Round(dirtyRect.size.height));
-    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), false);
+    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), isMouseOver);
   finally
     ctx.Free;
   end;
@@ -541,6 +547,20 @@ begin
     combobox.menu.performActionForItemAtIndex(itemIndex);
     combobox.menu.cancelTracking;
   end;
+end;
+
+procedure TCocoaReadOnlyView.mouseEntered(theEvent: NSEvent);
+begin
+  isMouseOver := true;
+  inherited mouseEntered(theEvent);
+  lclInvalidate;
+end;
+
+procedure TCocoaReadOnlyView.mouseExited(theEvent: NSEvent);
+begin
+  isMouseOver := false;
+  inherited mouseExited(theEvent);
+  lclInvalidate;
 end;
 
 { TCocoaComboBoxItemCell }
@@ -1085,6 +1105,7 @@ var
   nsstr: NSString;
   lItems: array of NSMenuItem;
   menuItem: TCocoaReadOnlyView;
+  track: NSTrackingArea;
 begin
   if FOwner <> nil then
     fOwner.reloadData;
@@ -1114,6 +1135,13 @@ begin
         menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FReadOnlyOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
         menuItem.itemIndex := i;
         menuItem.combobox := FReadOnlyOwner;
+
+        track:=NSTrackingArea(NSTrackingArea.alloc).initWithRect_options_owner_userInfo(
+          menuItem.bounds
+          , NSTrackingMouseEnteredAndExited or NSTrackingActiveAlways
+          , menuItem, nil);
+        menuItem.addTrackingArea(track);
+        track.release;
         lItems[i].setView(menuItem);
       end;
 
@@ -1440,6 +1468,44 @@ begin
     Result:=inherited stringValue;
 end;
 
+procedure TCocoaReadOnlyComboBox.drawRect(dirtyRect: NSRect);
+var
+  ctx : TCocoaContext;
+  r   : NSRect;
+  rr  : NSRect;
+  dr  : TRect;
+begin
+  inherited drawRect(dirtyRect);
+
+  // if ownerDrawn style, then need to call "DrawItem" event
+  if isOwnerDrawn and Assigned(callback)
+    and (lastSelectedItemIndex>=0) and (lastSelectedItemIndex<list.Count)
+  then
+  begin
+    ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+    try
+      // todo: it's possible to query "cell" using titleRectForBounds method
+      //       it actually returns somewhat desired offsets.
+      //       (however, one should be careful and take layout offsets into account!)
+      //       on the other hand, "cells" themselves are being deprecated...
+      dr := lclFrame;
+      Types.OffsetRect(dr, -dr.Left, -dr.Top);
+      SubLayoutFromFrame( lclGetFrameToLayoutDelta, dr);
+
+      // magic offsets are based on the macOS 10.13.6 visual style
+      // but hard-coding is never reliable
+      inc(dr.Left, 11);
+      inc(dr.Top, 5);
+      dec(dr.Right,18);
+      dec(dr.Bottom, 2);
+
+      callback.ComboBoxDrawItem(lastSelectedItemIndex, ctx, dr, false);
+    finally
+      ctx.Free;
+    end;
+  end;
+end;
+
 function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
@@ -1449,8 +1515,11 @@ procedure TCocoaReadOnlyComboBox.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
   begin
+    // a typical Apple "mouseDown" loop. The popup is shown on mouseDown event
+    // The event only exists, whenever the popup is closed (for whatever reason)
+    if Assigned(callback) then callback.ComboBoxWillPopUp;
     inherited mouseDown(event);
-
+    if Assigned(callback) then callback.ComboBoxWillDismiss;
     callback.MouseUpDownEvent(event, true);
   end;
 end;
