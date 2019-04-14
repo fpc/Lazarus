@@ -293,7 +293,7 @@ procedure TUpdownCommonCallback.Change(NewValue: Double; isUpPressed: Boolean;
 const
   UpDownDir : array [Boolean] of TUpDownDirection = (updUp, updDown);
 begin
-  if Assigned( TAccessUpDown(Target).OnChanging ) then
+  if Assigned( TAccessUpDown(Target).OnChangingEx ) then
     TAccessUpDown(Target).OnChangingEx(Target, Allowed,
       Round(NewValue), UpDownDir[isUpPressed]);
 end;
