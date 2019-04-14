@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-04-11 15:38+0300\n"
+"PO-Revision-Date: 2019-04-15 02:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -2055,6 +2055,10 @@ msgstr "Исполнимый файл компилятора (например, 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
 msgstr "Каталог исходного кода FPC"
+
+#: lazarusidestrconsts.dlgfppkgconfigurationfile
+msgid "Fppkg configuration file (e.g. fppkg.cfg)"
+msgstr "Файл настройки Fppkg (например, fppkg.cfg)"
 
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
@@ -9835,20 +9839,20 @@ msgid "Warnings have to be resolved first"
 msgstr "Сначала требуется устранить предупреждения"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
-msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
-msgstr "Fppkg - это диспетчер пакетов Free Pascal. Если он некорректно настроен, может оказаться невозможным разрешение зависимостей от пакетов Free Pascal."
+msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
+msgstr "Файл настройки обычно называется \"fppkg.cfg\". Если он некорректен, может оказаться невозможным разрешение зависимостей от пакетов Free Pascal. Оставьте пустым для использования параметров по умолчанию."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
-msgid "Failed to generate the configuration file \"%s\"."
-msgstr "Невозможно создать файл настройки \"%s\"."
+msgid "Failed to generate the configuration file \"%s\": %s"
+msgstr "Невозможно создать файл настройки \"%s\": %s"
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
 msgid "Files to be written:"
 msgstr "Будут записаны следующие файлы:"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
-msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
-msgstr "Вы можете восстановить файлы настройки автоматически либо исправить fppkg.cfg вручную."
+msgid "You could try to restore the configuration files automatically, or adapt the configuration file manually."
+msgstr "Вы можете восстановить файлы настройки автоматически либо исправить вручную."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."

@@ -2064,6 +2064,10 @@ msgstr "Виконуваний файл компілятора (наприкла
 msgid "FPC source directory"
 msgstr "Тека сирців FPC"
 
+#: lazarusidestrconsts.dlgfppkgconfigurationfile
+msgid "Fppkg configuration file (e.g. fppkg.cfg)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
 msgstr "Відмітка"
@@ -9846,11 +9850,15 @@ msgid "Warnings have to be resolved first"
 msgstr "Спочатку слід опрацювати попередження"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
-msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
+#, fuzzy
+#| msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
+msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
 msgstr "Fppkg - це менеджер пакунків Free Pascal. Якщо він сконфігурований неправильно, йому може не вдатись розв'язати залежності пакунків Free Pascal."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
-msgid "Failed to generate the configuration file \"%s\"."
+#, fuzzy,badformat
+#| msgid "Failed to generate the configuration file \"%s\"."
+msgid "Failed to generate the configuration file \"%s\": %s"
 msgstr "Не вдалось створити файл конфігурації \"%s\"."
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
@@ -9858,7 +9866,9 @@ msgid "Files to be written:"
 msgstr "Файли, що будуть записані:"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
-msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
+#, fuzzy
+#| msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
+msgid "You could try to restore the configuration files automatically, or adapt the configuration file manually."
 msgstr "Ви можете спробувати відновити файли конфігурації автоматично або налаштувати fppkg.cfg вручну."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed

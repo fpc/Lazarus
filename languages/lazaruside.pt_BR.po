@@ -2061,6 +2061,10 @@ msgstr "Executável do compilador (ex.%s)"
 msgid "FPC source directory"
 msgstr "Diretório Fonte FPC"
 
+#: lazarusidestrconsts.dlgfppkgconfigurationfile
+msgid "Fppkg configuration file (e.g. fppkg.cfg)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
 msgstr "Marca-Texto"
@@ -9875,11 +9879,15 @@ msgid "Warnings have to be resolved first"
 msgstr "Avisos devem ser solucionados primeiro"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
-msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
+#, fuzzy
+#| msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
+msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
 msgstr "Fppkg é o gerenciador de pacotes do Free Pascal. Quando ele não está apropriadamente configurado, pode ser impossível solucionar dependências nos pacotes Free Pascal."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
-msgid "Failed to generate the configuration file \"%s\"."
+#, fuzzy,badformat
+#| msgid "Failed to generate the configuration file \"%s\"."
+msgid "Failed to generate the configuration file \"%s\": %s"
 msgstr "Falha ao gerar o arquivo de configuração \"%s\"."
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
@@ -9887,7 +9895,9 @@ msgid "Files to be written:"
 msgstr "Arquivos à serem gravados:"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
-msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
+#, fuzzy
+#| msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
+msgid "You could try to restore the configuration files automatically, or adapt the configuration file manually."
 msgstr "Você pode tentar restaurar os arquivos de configuração automaticamente, ou adaptar o fppkg.cfg manualmente."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed

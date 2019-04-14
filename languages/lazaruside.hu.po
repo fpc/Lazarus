@@ -2065,6 +2065,10 @@ msgstr "Fordító program (pl. %s)"
 msgid "FPC source directory"
 msgstr "FPC forráskód könyvtára"
 
+#: lazarusidestrconsts.dlgfppkgconfigurationfile
+msgid "Fppkg configuration file (e.g. fppkg.cfg)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
 msgstr "Kiemelés"
@@ -9865,11 +9869,11 @@ msgid "Warnings have to be resolved first"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgconfiguration
-msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
+msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
-msgid "Failed to generate the configuration file \"%s\"."
+msgid "Failed to generate the configuration file \"%s\": %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
@@ -9877,7 +9881,7 @@ msgid "Files to be written:"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
-msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
+msgid "You could try to restore the configuration files automatically, or adapt the configuration file manually."
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
