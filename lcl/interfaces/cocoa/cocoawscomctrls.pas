@@ -19,7 +19,7 @@ uses
   WSComCtrls,
   // Cocoa WS
   CocoaPrivate, CocoaScrollers, CocoaTabControls, CocoaUtils,
-  CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls, CocoaGDIObjects;
+  CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls, CocoaGDIObjects, CocoaButtons;
 
 type
 
@@ -214,6 +214,12 @@ type
 
   TCocoaWSCustomUpDown = class(TWSCustomUpDown)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetIncrement(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetMaxPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetMinPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetWrap(const AUpDown: TCustomUpDown; ADoWrap: Boolean); override;
   end;
 
   { TCarbonWSUpDown }
@@ -260,6 +266,103 @@ type
   end;
 
 implementation
+
+type
+
+  { TUpdownCommonCallback }
+
+  TUpdownCommonCallback = class(TLCLCommonCallback, IStepperCallback)
+    procedure BeforeChange(var Allowed: Boolean);
+    procedure Change(NewValue: Double; isUpPressed: Boolean; var Allowed: Boolean);
+    procedure UpdownClick(isUpPressed: Boolean);
+  end;
+
+type
+  TAccessUpDown = class(TCustomUpDown);
+
+{ TUpdownCommonCallback }
+
+procedure TUpdownCommonCallback.BeforeChange(var Allowed: Boolean);
+begin
+  if Assigned( TAccessUpDown(Target).OnChanging ) then
+    TAccessUpDown(Target).OnChanging(Target, Allowed);
+end;
+
+procedure TUpdownCommonCallback.Change(NewValue: Double; isUpPressed: Boolean;
+  var Allowed: Boolean);
+const
+  UpDownDir : array [Boolean] of TUpDownDirection = (updUp, updDown);
+begin
+  if Assigned( TAccessUpDown(Target).OnChanging ) then
+    TAccessUpDown(Target).OnChangingEx(Target, Allowed,
+      Round(NewValue), UpDownDir[isUpPressed]);
+end;
+
+procedure TUpdownCommonCallback.UpdownClick(isUpPressed: Boolean);
+const
+  UpDownBtn : array [Boolean] of TUDBtnType = (btPrev, btNext);
+begin
+  if Assigned( TAccessUpDown(Target).OnClick ) then
+    TAccessUpDown(Target).OnClick( Target, UpDownBtn[isUpPressed]);
+end;
+
+{ TCocoaWSCustomUpDown }
+
+class function TCocoaWSCustomUpDown.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lResult: TCocoaStepper;
+begin
+  lResult := TCocoaStepper.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(lResult) then
+  begin
+    lResult.callback := TUpdownCommonCallback.Create(lResult, AWinControl);
+    //small constrol size looks like carbon
+    //lResult.setControlSize(NSSmallControlSize);
+    lResult.setTarget(lResult);
+    lResult.setAction(objcselector('stepperAction:'));
+
+  end;
+  Result := TLCLIntfHandle(lResult);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetMinPosition(
+  const AUpDown: TCustomUpDown; AValue: Double);
+begin
+  writeln('koko!111');
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  writeln('koko!222');
+  TCocoaStepper(AUpDown.Handle).setMinValue(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetMaxPosition(
+  const AUpDown: TCustomUpDown; AValue: Double);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).setMaxValue(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetPosition(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).lastValue := AValue;
+  TCocoaStepper(AUpDown.Handle).setDoubleValue(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetIncrement(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).setIncrement(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetWrap(const AUpDown: TCustomUpDown;
+  ADoWrap: Boolean);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).setValueWraps(ADoWrap);
+end;
 
 { TStatusBarCallback }
 

@@ -98,7 +98,47 @@ type
     procedure setState(astate: NSInteger); override;
   end;
 
+
+  IStepperCallback = interface(ICommonCallback)
+    procedure BeforeChange(var Allowed: Boolean);
+    procedure Change(NewValue: Double; isUpPressed: Boolean; var Allowed: Boolean);
+    procedure UpdownClick(isUpPressed: Boolean);
+  end;
+
+  { TCocoaStepper }
+
+  TCocoaStepper = objcclass(NSStepper)
+    callback: IStepperCallback;
+    lastValue: Double;
+    procedure stepperAction(sender: NSObject); message 'stepperAction:';
+  end;
+
 implementation
+
+{ TCocoaStepper }
+
+procedure TCocoaStepper.stepperAction(sender: NSObject);
+var
+  newval      : Double;
+  allowChange : Boolean;
+  updownpress : Boolean;
+begin
+  newval := doubleValue;
+  allowChange := true;
+  updownpress := newval > lastValue;
+
+  if Assigned(callback) then begin
+    callback.BeforeChange(allowChange);
+    callback.Change(newval, updownpress, allowChange);
+  end;
+
+  if not allowChange then
+    setDoubleValue(lastValue)
+  else
+    lastValue := doubleValue;
+
+  if Allowchange and Assigned(callback) then callback.UpdownClick(updownpress);
+end;
 
 { TCocoaButton }
 
