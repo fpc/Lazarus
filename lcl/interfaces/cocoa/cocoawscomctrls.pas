@@ -302,6 +302,7 @@ procedure TUpdownCommonCallback.UpdownClick(isUpPressed: Boolean);
 const
   UpDownBtn : array [Boolean] of TUDBtnType = (btPrev, btNext);
 begin
+  TAccessUpDown(Target).Position := NSStepper(Owner).intValue;
   if Assigned( TAccessUpDown(Target).OnClick ) then
     TAccessUpDown(Target).OnClick( Target, UpDownBtn[isUpPressed]);
 end;
