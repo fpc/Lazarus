@@ -181,12 +181,11 @@ type
   protected
     FOwner: TCocoaComboBox;
     FReadOnlyOwner: TCocoaReadOnlyComboBox;
-    FPreChangeListCount: Integer;
-    procedure Changed; override;
-    procedure Changing; override;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     // Pass only 1 owner and nil for the other ones
     constructor Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
+    procedure Delete(Index: Integer); override;
   end;
 
   IComboboxCallBack = interface(ICommonCallBack)
@@ -1110,65 +1109,58 @@ end;
 
 { TCocoaComboBoxList }
 
-procedure TCocoaComboBoxList.Changed;
+procedure TCocoaComboBoxList.InsertItem(Index: Integer; const S: string;
+  O: TObject);
 var
-  i: Integer;
-  nsstr: NSString;
-  lItems: array of NSMenuItem;
-  menuItem: TCocoaReadOnlyView;
+  astr     : NSString;
+  mn       : NSMenuItem;
+  menuItem : TCocoaReadOnlyView;
   track: NSTrackingArea;
 begin
-  if FOwner <> nil then
-    fOwner.reloadData;
-  if FReadOnlyOwner <> nil then
+  inherited InsertItem(Index, S, O);
+  if FReadOnlyOwner =nil then Exit;
+
+  // Adding an item with its final name will cause it to be deleted,
+  // so we need to first add all items with unique names, and then
+  // rename all of them, see bug 30847
+  astr := nsstr('@@@add');
+  if Index >= FReadOnlyOwner.numberOfItems then
   begin
-    // store the current item
-    FReadOnlyOwner.lastSelectedItemIndex := FReadOnlyOwner.indexOfSelectedItem;
+    FReadOnlyOwner.addItemWithTitle(astr);
+    Index := FReadOnlyOwner.numberOfItems-1;
+  end else
+    FReadOnlyOwner.insertItemWithTitle_atIndex(astr, Index);
 
-    FReadOnlyOwner.removeAllItems();
-    // Adding an item with its final name will cause it to be deleted,
-    // so we need to first add all items with unique names, and then
-    // rename all of them, see bug 30847
-    SetLength(lItems, Count);
-    for i := 0 to Count-1 do
-    begin
-      nsstr := NSStringUtf8(Format('unique_item_%d', [i]));
-      FReadOnlyOwner.addItemWithTitle(nsstr);
-      lItems[i] := FReadOnlyOwner.lastItem;
-      nsstr.release;
-    end;
-    for i := 0 to Count-1 do
-    begin
-      nsstr := NSStringUtf8(Strings[i]);
-      lItems[i].setTitle(nsstr);
-      if FReadOnlyOwner.isOwnerDrawn then
-      begin
-        menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FReadOnlyOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
-        menuItem.itemIndex := i;
-        menuItem.combobox := FReadOnlyOwner;
+  mn := FReadOnlyOwner.itemAtIndex(Index);
+  if not Assigned(mn) then Exit;
 
-        track:=NSTrackingArea(NSTrackingArea.alloc).initWithRect_options_owner_userInfo(
-          menuItem.bounds
-          , NSTrackingMouseEnteredAndExited or NSTrackingActiveAlways
-          , menuItem, nil);
-        menuItem.addTrackingArea(track);
-        track.release;
-        lItems[i].setView(menuItem);
-      end;
+  astr := NSStringUtf8(S);
+  mn.setTitle(astr);
+  astr.release;
 
-      nsstr.release;
-    end;
-    SetLength(lItems, 0);
+  if FReadOnlyOwner.isOwnerDrawn then
+  begin
+    menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FReadOnlyOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
+    menuItem.itemIndex := Index;
+    menuItem.combobox := FReadOnlyOwner;
 
-    // reset the selected item
-    FReadOnlyOwner.selectItemAtIndex(FReadOnlyOwner.lastSelectedItemIndex);
+    track:=NSTrackingArea(NSTrackingArea.alloc).initWithRect_options_owner_userInfo(
+      menuItem.bounds
+      , NSTrackingMouseEnteredAndExited or NSTrackingActiveAlways
+      , menuItem, nil);
+    menuItem.addTrackingArea(track);
+    track.release;
+    mn.setView(menuItem);
   end;
-  inherited Changed;
+
 end;
 
-procedure TCocoaComboBoxList.Changing;
+procedure TCocoaComboBoxList.Delete(Index: Integer);
 begin
-  FPreChangeListCount := Count;
+  inherited Delete(Index);
+  if FReadOnlyOwner = nil then Exit;
+  if (Index>=0) and (Index < FReadOnlyOwner.numberOfItems) then
+    FReadOnlyOwner.removeItemAtIndex(Index);
 end;
 
 constructor TCocoaComboBoxList.Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
