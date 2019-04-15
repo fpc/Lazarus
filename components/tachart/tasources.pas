@@ -27,6 +27,7 @@ type
   private
     FOnCompare: TChartSortCompare;
     procedure SetSorted(AValue: Boolean);
+    procedure SetOnCompare(AValue: TChartSortCompare);
   protected
     FData: TFPList;
     FSorted: Boolean;
@@ -36,7 +37,7 @@ type
     procedure SetSortDir(AValue: TChartSortDir); override;
     procedure SetSortIndex(AValue: Cardinal); override;
     property Sorted: Boolean read FSorted write SetSorted default false;
-    property OnCompare: TChartSortCompare read FOnCompare write FOnCompare;
+    property OnCompare: TChartSortCompare read FOnCompare write SetOnCompare;
   public
     function IsSorted: Boolean; override;
     procedure Sort;
@@ -600,6 +601,13 @@ begin
   if FSortIndex = AValue then exit;
   FSortIndex := AValue;
   Sort;
+end;
+
+procedure TCustomSortedChartSource.SetOnCompare(AValue: TChartSortCompare);
+begin
+  if FOnCompare = AValue then exit;
+  FOnCompare := AValue;
+  if Assigned(FOnCompare) and (FSortBy = sbCustom) and Sorted then Sort;
 end;
 
 procedure TCustomSortedChartSource.Sort;
