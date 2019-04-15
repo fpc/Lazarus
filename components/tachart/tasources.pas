@@ -529,23 +529,23 @@ procedure TCustomSortedChartSource.ExecSort(ACompare: TChartSortCompare);
 
   procedure QuickSort(L, R: Longint);
   var
-    I, J : Longint;
-    P, Q : Pointer;
+    I, J: Longint;
+    P, Q: Pointer;
   begin
    repeat
      I := L;
      J := R;
-     P := FData[(L + R) div 2];
+     P := FData.List^[(L + R) div 2];
      repeat
-       while ACompare(P, FData[i]) > 0 do
+       while ACompare(P, FData.List^[I]) > 0 do
          I := I + 1;
-       while ACompare(P, FData[J]) < 0 do
+       while ACompare(P, FData.List^[J]) < 0 do
          J := J - 1;
        If I <= J then
        begin
-         Q := FData[I];
-         FData[I] := FData[J];
-         FData[J] := Q;
+         Q := FData.List^[I];
+         FData.List^[I] := FData.List^[J];
+         FData.List^[J] := Q;
          I := I + 1;
          J := J - 1;
        end;
