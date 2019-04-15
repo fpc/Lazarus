@@ -579,28 +579,28 @@ procedure TCustomSortedChartSource.SetSortBy(AValue: TChartSortBy);
 begin
   if FSortBy = AValue then exit;
   FSortBy := AValue;
-  Sort;
+  if Sorted then Sort;
 end;
 
 procedure TCustomSortedChartSource.SetSorted(AValue: Boolean);
 begin
   if FSorted = AValue then exit;
   FSorted := AValue;
-  Sort;
+  if Sorted then Sort;
 end;
 
 procedure TCustomSortedChartSource.SetSortDir(AValue: TChartSortDir);
 begin
   if FSortDir = AValue then exit;
   FSortDir := AValue;
-  Sort;
+  if Sorted then Sort;
 end;
 
 procedure TCustomSortedChartSource.SetSortIndex(AValue: Cardinal);
 begin
   if FSortIndex = AValue then exit;
   FSortIndex := AValue;
-  Sort;
+  if Sorted then Sort;
 end;
 
 procedure TCustomSortedChartSource.SetOnCompare(AValue: TChartSortCompare);
@@ -612,6 +612,7 @@ end;
 
 procedure TCustomSortedChartSource.Sort;
 begin
+  if csLoading in ComponentState then exit;
   if (FSortBy = sbCustom) then begin
     if Assigned(FOnCompare) then ExecSort(FOnCompare);
   end else
