@@ -577,7 +577,7 @@ begin
   QuickSort(0, FData.Count-1);
 end;
 
-function TCustomSortedChartSource.IsSorted: Boolean; inline;
+function TCustomSortedChartSource.IsSorted: Boolean;
 begin
   Result := FSorted;
 end;
@@ -1171,7 +1171,7 @@ begin
   Result := @FCurItem;
 end;
 
-function TRandomChartSource.IsSorted: Boolean; inline;
+function TRandomChartSource.IsSorted: Boolean;
 begin
   Result := not RandomX;
 end;
@@ -1278,7 +1278,7 @@ begin
   Result := @FItem;
 end;
 
-function TUserDefinedChartSource.IsSorted: Boolean; inline;
+function TUserDefinedChartSource.IsSorted: Boolean;
 begin
   Result := FSorted;
 end;

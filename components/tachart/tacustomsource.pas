@@ -1266,7 +1266,7 @@ begin
     Result := (FIndex[AIndex] <> -1) or (FValue[AIndex] <> -1) or (FKind <> ebkNone);
 end;
 
-function TCustomChartSource.IsSorted: Boolean; inline;
+function TCustomChartSource.IsSorted: Boolean;
 begin
   Result := false;
 end;
