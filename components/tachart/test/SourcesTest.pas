@@ -29,6 +29,7 @@ type
     procedure AssertItemEquals(
       const AItem: TChartDataItem; AX, AY: Double; AText: String = '';
       AColor: TChartColor = clTAColor);
+    function Compare(AItem1, AItem2: Pointer): Integer;
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -41,6 +42,7 @@ type
     procedure Enum;
     procedure Extent;
     procedure Multi;
+    procedure Sort;
   end;
 
   { TRandomSourceTest }
@@ -667,6 +669,67 @@ begin
     AssertTrue('Empty YList', E is TListChartSource.EYListEmptyError);
   end;
   *)
+end;
+
+function TListSourceTest.Compare(AItem1, AItem2: Pointer): Integer;
+var
+  item1: PChartDataItem absolute AItem1;
+  item2: PChartDataItem absolute AItem2;
+begin
+  Result := CompareValue(item1^.X + item1^.XList[0], item2^.X + item2^.XList[0]);
+end;
+
+procedure TListSourceTest.Sort;
+begin
+  FSource.Clear;
+  FSource.XCount := 2;
+  FSource.YCount := 2;
+  FSource.AddXListYList([1, -0.1], [10, 100], 'A');     // x1+x2 = 0.9
+  FSource.AddXListYList([9, 0.9], [90, -900], 'M');     // x1+x2 = 9.9
+  FSource.AddXListYList([5, -0.5], [50, 50], 'D');      // x1+x2 = 4.5
+
+  FSource.SortBy := sbX;
+  FSource.SortIndex := 0;
+  FSource.SortDir := sdAscending;
+  FSource.Sorted := true;
+  AssertEquals(1, FSource[0]^.X);
+  AssertEquals(5, FSource[1]^.X);
+  AssertEquals(9, FSource[2]^.X);
+
+  FSource.SortBy := sbX;
+  FSource.SortIndex := 1;
+  AssertEquals(-0.5, FSource[0]^.XList[0]);
+  AssertEquals(-0.1, FSource[1]^.XList[0]);
+  AssertEquals( 0.9, FSource[2]^.XList[0]);
+
+  FSource.SortBy := sbY;
+  FSource.SortIndex := 0;
+  AssertEquals(10, FSource[0]^.Y);
+  AssertEquals(50, FSource[1]^.Y);
+  AssertEquals(90, FSource[2]^.Y);
+
+  FSource.SortBy := sbY;
+  FSource.SortIndex := 1;
+  FSource.SortDir := sdDescending;
+  AssertEquals(100, FSource[0]^.YList[0]);
+  AssertEquals(50, FSource[1]^.YList[0]);
+  AssertEquals(-900, FSource[2]^.YList[0]);
+
+  FSource.SortBy := sbText;
+  FSource.SortDir := sdDescending;
+  AssertEquals('M', FSource[0]^.Text);
+  AssertEquals('D', FSource[1]^.Text);
+  AssertEquals('A', FSource[2]^.Text);
+
+  FSource.OnCompare := @Compare;
+  FSource.SortBy := sbCustom;
+  FSource.SortDir := sdAscending;
+  AssertEquals(1, FSource[0]^.X);
+  AssertEquals(5, FSource[1]^.X);
+  AssertEquals(9, FSource[2]^.X);
+
+  FSource.OnCompare := nil;
+  FSource.Sorted := false;
 end;
 
 procedure TListSourceTest.SetUp;
