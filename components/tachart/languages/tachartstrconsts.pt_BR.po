@@ -471,7 +471,7 @@ msgstr "Fonte editável de gráfico requerida"
 
 #: tachartstrconsts.rssourcesorterror
 msgid "Selected sorting parameters are not supported by %s."
-msgstr ""
+msgstr "Parâmetros de ordenação selecionados não são suportados por %s."
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
