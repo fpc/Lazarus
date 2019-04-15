@@ -29,9 +29,11 @@ type
     procedure SetSorted(AValue: Boolean);
     procedure SetOnCompare(AValue: TChartSortCompare);
   protected
+    FCompareProc: TChartSortCompare;
     FData: TFPList;
     FSorted: Boolean;
     function DefaultCompare(AItem1, AItem2: Pointer): Integer; virtual; abstract;
+    function DoCompare(AItem1, AItem2: Pointer): Integer; virtual;
     procedure ExecSort(ACompare: TChartSortCompare); virtual;
     procedure SetSortBy(AValue: TChartSortBy); override;
     procedure SetSortDir(AValue: TChartSortDir); override;
@@ -523,6 +525,11 @@ end;
 
 { TCustomSortedChartSource }
 
+function TCustomSortedChartSource.DoCompare(AItem1, AItem2: Pointer): Integer;
+begin
+  Result := FCompareProc(AItem1, AItem2);
+end;
+
 { Built-in sorting algorithm of the ChartSource, a standard QuickSort.
   Copied from the classes unit because the compare function must be a method. }
 procedure TCustomSortedChartSource.ExecSort(ACompare: TChartSortCompare);
@@ -614,9 +621,14 @@ procedure TCustomSortedChartSource.Sort;
 begin
   if csLoading in ComponentState then exit;
   if (FSortBy = sbCustom) then begin
-    if Assigned(FOnCompare) then ExecSort(FOnCompare);
-  end else
-    ExecSort(@DefaultCompare);
+    if not Assigned(FOnCompare) then exit;
+    FCompareProc := FOnCompare;
+  end else begin
+    if (FSortBy = sbX) and (FSortIndex <> 0) and (FSortIndex >= FXCount) then exit;
+    if (FSortBy = sbY) and (FSortIndex <> 0) and (FSortIndex >= FYCount) then exit;
+    FCompareProc := @DefaultCompare;
+  end;
+  ExecSort(@DoCompare);
   Notify;
 end;
 
