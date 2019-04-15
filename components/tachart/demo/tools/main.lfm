@@ -237,7 +237,7 @@ object Form1: TForm1
       Shift = [ssCtrl]
       OnAfterKeyUp = ChartToolset1DataPointCrosshairTool1AfterKeyUp
       GrabRadius = 200
-      OnDraw = ChartToolset1DataPointCrosshairTool1Draw
+      OnCustomDraw = ChartToolset1DataPointCrosshairTool1CustomDraw
     end
   end
   object RandomChartSource1: TRandomChartSource

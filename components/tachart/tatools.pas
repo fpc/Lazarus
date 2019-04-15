@@ -544,17 +544,24 @@ type
 
   TDataPointDrawTool = class;
 
-  TChartDataPointDrawEvent = procedure (ASender: TDataPointDrawTool;
-    ADrawer: IChartDrawer) of object;
+  TChartDataPointCustomDrawEvent = procedure (
+    ASender: TDataPointDrawTool; ADrawer: IChartDrawer) of object;
+
+  TChartDataPointDrawEvent = procedure (
+    ASender: TDataPointDrawTool) of object;
 
   TDataPointDrawTool = class(TDataPointTool)
   strict private
+    FOnCustomDraw: TChartDataPointCustomDrawEvent;
     FOnDraw: TChartDataPointDrawEvent;
   strict protected
     FPen: TChartPen;
     procedure DoDraw(ADrawer: IChartDrawer); virtual;
     procedure DoHide(ADrawer: IChartDrawer); virtual;
     procedure SetPen(AValue: TChartPen);
+    // deprecated
+    procedure DoDraw; virtual; deprecated;
+    procedure DoHide; virtual; deprecated;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -563,7 +570,10 @@ type
   published
     property DrawingMode;
     property GrabRadius default 20;
-    property OnDraw: TChartDataPointDrawEvent read FOnDraw write FOnDraw;
+    property OnCustomDraw: TChartDataPointCustomDrawEvent
+      read FOnCustomDraw write FOnCustomDraw;
+    property OnDraw: TChartDataPointDrawEvent
+      read FOnDraw write FOnDraw; deprecated 'Use OnCustomDraw';
     property MouseInsideOnly;
   end;
 
@@ -1990,10 +2000,22 @@ begin
   inherited;
 end;
 
+procedure TDataPointDrawTool.DoDraw;
+begin
+  DoDraw(GetCurrentDrawer);
+end;
+
 procedure TDataPointDrawTool.DoDraw(ADrawer: IChartDrawer);
 begin
+  if Assigned(OnCustomDraw) then
+    OnCustomDraw(Self, ADrawer);
   if Assigned(OnDraw) then
-    OnDraw(Self, ADrawer);
+    OnDraw(Self);
+end;
+
+procedure TDataPointDrawTool.DoHide;
+begin
+  DoHide(GetCurrentDrawer);
 end;
 
 procedure TDataPointDrawTool.DoHide(ADrawer: IChartDrawer);
