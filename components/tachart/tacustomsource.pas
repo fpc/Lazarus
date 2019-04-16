@@ -1437,7 +1437,7 @@ begin
   AValues[start].FValue := SafeNan;
   for i := 0 to Count - 1 do begin
     with Item[I]^ do
-      v := IfThen(AParams.FUseY, Y, X);
+      v := IfThen(AParams.FUseY, Y, IfThen(XCount > 0, X, I));
     if IsNan(v) then continue;
     if v < AParams.FMin then begin
       if v > lo.FValue then

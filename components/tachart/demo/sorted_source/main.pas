@@ -14,7 +14,6 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    Button1: TButton;
     Chart: TChart;
     cbSortBy: TComboBox;
     cbXCount0: TCheckBox;
@@ -27,7 +26,6 @@ type
     ListChartSource: TListChartSource;
     SettingsPanel: TPanel;
     TabControl: TTabControl;
-    procedure Button1Click(Sender: TObject);
     procedure cbSortByChange(Sender: TObject);
     procedure cbXCount0Change(Sender: TObject);
     procedure DataPointClickToolPointClick(ATool: TChartTool; APoint: TPoint);
@@ -93,7 +91,8 @@ begin
 
   PieSeries := TPieSeries.Create(Chart);
   PieSeries.Title := 'Pies';
-  PieSeries.Marks.Style := smsLabelValue;
+  PieSeries.Marks.Style := smsCustom;
+  PieSeries.Marks.Format := '%2:s' + LineEnding + '%0:.9g';
   Chart.AddSeries(PieSeries);
   TabControl.Tabs.Add('Pie series');
 
@@ -158,14 +157,17 @@ begin
   PolarSeries.Pointer.Style := psCircle;
   PolarSeries.Pointer.HorizSize := 6;
   PolarSeries.Pointer.VertSize := 6;
+  PolarSeries.Marks.Style := smsCustom;
+  PolarSeries.Marks.Format := '%2:s' + LineEnding + '%0:.9g';
   Chart.AddSeries(PolarSeries);
   TabControl.Tabs.Add('Polar series');
 
   for i:=0 to Chart.SeriesCount-1 do begin
     ser := Chart.Series[i] as TChartSeries;
-    if ser <> PieSeries then
-      ser.Marks.Style := smsLabel;
+    if (ser <> PieSeries) and (ser <> PolarSeries) then
+      ser.Marks.Style := smsValue;
     ser.Marks.LinkPen.Color := clGray;
+    ser.Marks.Alignment := taCenter;
   end;
 
   TabControlChange(nil);
@@ -201,15 +203,6 @@ begin
   end;
   ListChartSource.Sorted := true;
   UpdateGrid;
-end;
-
-procedure TMainForm.Button1Click(Sender: TObject);
-begin
-  if ListChartSource[0]^.Text <> 'abc' then
-    ListChartSource[0]^.Text := 'abc'
-  else
-    ListChartSource[0]^.Text := 'ABC';
-  chart.Invalidate;
 end;
 
 procedure TMainForm.cbXCount0Change(Sender: TObject);
