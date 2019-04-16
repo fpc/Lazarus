@@ -31,7 +31,6 @@ type
     procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   public
     function IsSorted: Boolean; override;
 
@@ -42,6 +41,7 @@ type
 implementation
 
 uses
+  Math,
   TAChartUtils;
 
 { TCustomAxisChartSource }
@@ -50,12 +50,8 @@ constructor TCustomAxisChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FItem.Color := clTAColor;
+  FItem.XList := nil;
   FItem.YList := nil;
-end;
-
-destructor TCustomAxisChartSource.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TCustomAxisChartSource.GetCount: Integer;
@@ -71,7 +67,12 @@ var
   v: Double;
 begin
   Result := @FItem;
-  if AxisFrom = nil then exit;
+  if AxisFrom = nil then begin
+    FItem.Text := '';
+    FItem.X := NaN;
+    FItem.Y := NaN;
+    exit;
+  end;
   with AxisFrom.Value[AIndex] do begin
     FItem.Text := FText;
     v := FValue;
