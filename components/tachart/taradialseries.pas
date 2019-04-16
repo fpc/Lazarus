@@ -1418,7 +1418,10 @@ begin
   if Length(FAngleCache) = Count then exit;
   SetLength(FAngleCache, Count);
   for i := 0 to Count - 1 do begin
-    SinCos(Source[i]^.X, s, c);
+    if Source.XCount > 0 then
+      SinCos(Source[i]^.X, s, c)
+    else
+      SinCos(i, s, c);
     FAngleCache[i].FSin := s;
     FAngleCache[i].FCos := c;
   end;

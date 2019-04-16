@@ -920,12 +920,18 @@ end;
 
 function TChartSeries.GetGraphPointX(AIndex: Integer): Double;
 begin
-  Result := AxisToGraphX(Source[AIndex]^.X);
+  if Source.XCount = 0 then
+    Result := AxisToGraphX(Index)
+  else
+    Result := AxisToGraphX(Source[AIndex]^.X);
 end;
 
 function TChartSeries.GetGraphPointX(AIndex, AXIndex: Integer): Double;
 begin
-  Result := AxisToGraphX(Source[AIndex]^.GetX(AXIndex));
+  if Source.XCount = 0 then
+    Result := AxisToGraphX(AIndex)
+  else
+    Result := AxisToGraphX(Source[AIndex]^.GetX(AXIndex));
 end;
 
 function TChartSeries.GetGraphPointY(AIndex: Integer): Double;
@@ -988,7 +994,7 @@ end;
 
 class procedure TChartSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
-  AXCount := 1;
+  AXCount := 0;
   AYCount := 1;
 end;
 
@@ -1004,15 +1010,18 @@ end;
 
 function TChartSeries.GetXValue(AIndex: Integer): Double;
 begin
-  Result := Source[AIndex]^.X;
+  if Source.XCount > 0 then
+    Result := Source[AIndex]^.X
+  else
+    Result := AIndex;
 end;
 
 function TChartSeries.GetXValues(AIndex, AXIndex: Integer): Double;
 begin
-  if AXIndex = 0 then
-    Result := Source[AIndex]^.X
+  if AXIndex > 0 then
+    Result := Source[AIndex]^.XList[AXIndex - 1]
   else
-    Result := Source[AIndex]^.XList[AXIndex - 1];
+    Result := Source[AIndex]^.X;
 end;
 
 function TChartSeries.GetYImgValue(AIndex: Integer): Integer;
@@ -1777,12 +1786,17 @@ begin
   FindExtentInterval(AExtent, AFilterByExtent);
 
   SetLength(FGraphPoints, Max(FUpBound - FLoBound + 1, 0));
-  if (AxisIndexX < 0) and (AxisIndexY < 0) then
+  if (AxisIndexX < 0) and (AxisIndexY < 0) then begin
     // Optimization: bypass transformations in the default case.
-    for i := FLoBound to FUpBound do
-      with Source[i]^ do
-        FGraphPoints[i - FLoBound] := DoublePoint(X, Y)
-  else
+    if Source.XCount > 0 then
+      for i := FLoBound to FUpBound do
+        with Source[i]^ do
+          FGraphPoints[i - FLoBound] := DoublePoint(X, Y)
+    else
+      for i := FLoBound to FUpBound do
+        with Source[i]^ do
+          FGraphPoints[i - FLoBound] := DoublePoint(i, Y);
+  end else
     for i := FLoBound to FUpBound do
       FGraphPoints[i - FLoBound] := GetGraphPoint(i);
 end;

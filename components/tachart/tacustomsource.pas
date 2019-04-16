@@ -827,6 +827,9 @@ begin
       end else
         for i:=0 to Count - 1 do
           UpdateMinMax(Item[i]^.X, FBasicExtent.a.X, FBasicExtent.b.X);
+    end else begin
+      UpdateMinMax(0, FBasicExtent.a.X, FBasicExtent.b.X);
+      UpdateMinMax(Count-1, FBasicExtent.a.X, FBasicExtent.b.X);
     end;
 
     if YCount > 0 then begin

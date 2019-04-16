@@ -1280,21 +1280,32 @@ var
   n, ok: Integer;
 begin
   FIsUnorderedX := false;
-  while (ASourceIndex < ASource.Count) and IsNan(ASource[ASourceIndex]^.Point) do
-    ASourceIndex += 1;
+  if ASource.XCount > 0 then
+    while (ASourceIndex < ASource.Count) and IsNan(ASource[ASourceIndex]^.Point) do
+      ASourceIndex += 1;
   FSourceStartIndex := ASourceIndex;
   FFirstCacheIndex := ACacheIndex;
-  while (ASourceIndex < ASource.Count) and not IsNan(ASource[ASourceIndex]^.Point) do begin
-    with ASource[ASourceIndex]^ do
-      if (ACacheIndex > FFirstCacheIndex) and (FOwner.FX[ACacheIndex - 1] >= X) then
-        FIsUnorderedX := true
-      else begin
-        FOwner.FX[ACacheIndex] := X;
+  if ASource.XCount > 0 then
+    while (ASourceIndex < ASource.Count) and not IsNan(ASource[ASourceIndex]^.Point) do begin
+      with ASource[ASourceIndex]^ do
+        if (ACacheIndex > FFirstCacheIndex) and (FOwner.FX[ACacheIndex - 1] >= X) then
+          FIsUnorderedX := true
+        else begin
+          FOwner.FX[ACacheIndex] := X;
+          FOwner.FY[ACacheIndex] := Y;
+          ACacheIndex += 1;
+        end;
+      ASourceIndex += 1;
+    end
+  else
+    while ASourceIndex < ASource.Count do begin
+      with ASource[ASourceIndex]^ do begin
+        FOwner.FX[ACacheIndex] := ASourceIndex;
         FOwner.FY[ACacheIndex] := Y;
         ACacheIndex += 1;
       end;
-    ASourceIndex += 1;
-  end;
+      ASourceIndex += 1;
+    end;
   FLastCacheIndex := ACacheIndex - 1;
   if FLastCacheIndex < FFirstCacheIndex then exit(false);  // No points
   if IsFewPoints then exit(true);
@@ -1654,20 +1665,25 @@ procedure TFitSeries.CalcXRange(out AXMin, AXMax: Double);
 var
   ext: TDoubleRect;
 begin
-  with Source.BasicExtent do begin
-    ext.a := AxisToGraph(a);
-    ext.b := AxisToGraph(b);
-  end;
-  NormalizeRect(ext);
-  if IsRotated then begin
-    AXMin := GraphToAxisY(ext.a.Y);
-    AXMax := GraphToAxisY(ext.b.Y);
+  if Source.XCount > 0 then begin
+    with Source.BasicExtent do begin
+      ext.a := AxisToGraph(a);
+      ext.b := AxisToGraph(b);
+    end;
+    NormalizeRect(ext);
+    if IsRotated then begin
+      AXMin := GraphToAxisY(ext.a.Y);
+      AXMax := GraphToAxisY(ext.b.Y);
+    end else begin
+      AXMin := GraphToAxisX(ext.a.X);
+      AXMax := GraphToAxisX(ext.b.X);
+    end;
+    EnsureOrder(AXMin, AXMax);
+    FFitRange.Intersect(AXMin, AXMax);
   end else begin
-    AXMin := GraphToAxisX(ext.a.X);
-    AXMax := GraphToAxisX(ext.b.X);
+    AXMin := 0;
+    AXMax := Source.Count - 1;
   end;
-  EnsureOrder(AXMin, AXMax);
-  FFitRange.Intersect(AXMin, AXMax);
 end;
 
 procedure TFitSeries.Assign(ASource: TPersistent);
@@ -1786,7 +1802,10 @@ var
 
   function IsValidPoint(AX, AY: Double): Boolean; inline;
   begin
-    Result := not IsNaN(AX) and not IsNaN(AY) and InRange(AX, xmin, xmax);
+    if Source.XCount > 0 then
+      Result := not IsNaN(AX) and not IsNaN(AY) and InRange(AX, xmin, xmax)
+    else
+      Result := not IsNaN(AY);
   end;
 
   procedure TryFit;
@@ -1816,7 +1835,10 @@ var
     for i := 0 to ns - 1 do
       with Source.Item[i]^ do
         if IsValidPoint(X, Y) then begin
-          xv[j] := TransformX(X);
+          if Source.XCount > 0 then
+            xv[j] := TransformX(X)
+          else
+            xv[j] := TransformX(i);
           yv[j] := TransformY(Y);
           if hasErrorBars and Source.GetYErrorBarLimits(i, yp, yn) then
             dy[j] := abs(TransformY(yp) - TransformY(yn)) / 2;

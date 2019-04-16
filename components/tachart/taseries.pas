@@ -1243,6 +1243,7 @@ begin
   SetLength(heights, Source.YCount + 1);
   for pointIndex := FLoBound to FUpBound do begin
     p := Source[pointIndex]^.Point;
+    if Source.XCount = 0 then p.X := pointIndex + FLoBound;
     if SkipMissingValues(pointIndex) then
       continue;
     p.X := AxisToGraphX(p.X);
@@ -1518,19 +1519,25 @@ begin
     UpdateMinMax(GraphToAxisY(ZeroLevel), Result.a.Y, Result.b.Y);
 
   // Show first and last bars fully.
-  i := 0;
-  x := NearestXNumber(i, +1);       // --> x is in graph units
-  if not IsNan(x) then begin
-    BarOffsetWidth(x, i, ofs, w);
-    x := GraphToAxisX(x + ofs - w); // x is in graph units, Extent in axis units!
-    Result.a.X := Min(Result.a.X, x);
-  end;
-  i := Count - 1;
-  x := NearestXNumber(i, -1);
-  if not IsNan(x) then begin
-    BarOffsetWidth(x, i, ofs, w);
-    x := GraphToAxisX(x + ofs + w);
-    Result.b.X := Max(Result.b.X, x);
+  if Source.XCount = 0 then begin
+    BarOffsetWidth(x, 0, ofs, w);
+    Result.a.X -= (ofs + w);
+    Result.b.X += (ofs + w);
+  end else begin
+    i := 0;
+    x := NearestXNumber(i, +1);       // --> x is in graph units
+    if not IsNan(x) then begin
+      BarOffsetWidth(x, i, ofs, w);
+      x := GraphToAxisX(x + ofs - w); // x is in graph units, Extent in axis units!
+      Result.a.X := Min(Result.a.X, x);
+    end;
+    i := Count - 1;
+    x := NearestXNumber(i, -1);
+    if not IsNan(x) then begin
+      BarOffsetWidth(x, i, ofs, w);
+      x := GraphToAxisX(x + ofs + w);
+      Result.b.X := Max(Result.b.X, x);
+    end;
   end;
 end;
 
@@ -1600,6 +1607,8 @@ begin
   // Iterate through all points of the series
   for pointIndex := 0 to Count - 1 do begin
     sp := Source[pointindex]^.Point;
+    if Source.XCount = 0 then
+      sp.X := pointIndex;
     if IsNan(sp) then
       continue;
     sp.X := AxisToGraphX(sp.X);
