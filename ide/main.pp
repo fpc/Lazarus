@@ -3314,8 +3314,6 @@ begin
   ecAbortBuild:               DoAbortBuild(false);
   ecBuildFile:                DoBuildFile(false);
   ecRunFile:                  DoRunFile;
-  ecJumpToPrevError:          DoJumpToNextError(false);
-  ecJumpToNextError:          DoJumpToNextError(true);
   ecFindInFiles:              DoFindInFiles;
   ecFindProcedureDefinition,
   ecFindProcedureMethod:      DoJumpToOtherProcedureSection;
@@ -3381,9 +3379,8 @@ begin
     // custom commands
     IDECmd:=IDECommandList.FindIDECommand(Command);
     //DebugLn('TMainIDE.OnProcessIDECommand Command=',dbgs(Command),' ',dbgs(IDECmd));
-    if (IDECmd<>nil) then begin
+    if IDECmd<>nil then
       Handled:=IDECmd.Execute(IDECmd);
-    end;
   end;
   //DebugLn('TMainIDE.OnProcessIDECommand Handled=',dbgs(Handled),' Command=',dbgs(Command));
 end;
