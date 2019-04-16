@@ -95,7 +95,14 @@ begin
         lCustData := 0;
       Flags := PSD_MARGINS or PSD_ENABLEPAGESETUPHOOK;
       hWndOwner := GetOwnerHandle(Self);
-      // TODO: check that no need to div by 1000 values below
+      //pmDefault corresponds to PSD_INWININIINTLMEASURE which is 0;
+      if Units=pmMillimeters then
+        Flags := Flags or PSD_INHUNDREDTHSOFMILLIMETERS
+      else
+      if units=pmInches      then
+        Flags := Flags or PSD_INTHOUSANDTHSOFINCHES;
+      // while the gui uses units millimeters or inches, in code the margins
+      // should be specified in hundreds of mms or thoudsands of inches
       rtMargin.Left := MarginLeft;
       rtMargin.Top := MarginTop;
       rtMargin.Right := MarginRight;
