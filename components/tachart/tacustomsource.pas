@@ -809,30 +809,41 @@ var
 begin
   if FBasicExtentIsValid then
     exit(FBasicExtent);
+
   FBasicExtent := EmptyExtent;
 
-  if XCount > 0 then begin
-    if HasXErrorBars then
-      for i := 0 to Count - 1 do begin
-        GetXErrorBarLimits(i, vhi, vlo);
-        UpdateMinMax(vhi, FBasicExtent.a.X, FBasicExtent.b.X);
-        UpdateMinMax(vlo, FBasicExtent.a.X, FBasicExtent.b.X);
-      end
-    else
-      for i:=0 to Count - 1 do
-        UpdateMinMax(Item[i]^.X, FBasicExtent.a.X, FBasicExtent.b.X);
-  end;
+  if Count > 0 then begin
+    if XCount > 0 then begin
+      if HasXErrorBars then
+        for i := 0 to Count - 1 do begin
+          GetXErrorBarLimits(i, vhi, vlo);
+          UpdateMinMax(vhi, FBasicExtent.a.X, FBasicExtent.b.X);
+          UpdateMinMax(vlo, FBasicExtent.a.X, FBasicExtent.b.X);
+        end
+      else
+      if (FSortBy = sbX) and (FSortIndex = 0) then begin
+        UpdateMinMax(Item[0]^.X, FBasicExtent.a.X, FBasicExtent.b.X);
+        UpdateMinMax(Item[Count-1]^.X, FBasicExtent.a.X, FBasicExtent.b.X);
+      end else
+        for i:=0 to Count - 1 do
+          UpdateMinMax(Item[i]^.X, FBasicExtent.a.X, FBasicExtent.b.X);
+    end;
 
-  if YCount > 0 then begin
-    if HasYErrorBars then
-      for i := 0 to Count - 1 do begin
-        GetYErrorBarLimits(i, vhi, vlo);
-        UpdateMinMax(vhi, FBasicExtent.a.Y, FBasicExtent.b.Y);
-        UpdateMinMax(vlo, FBasicExtent.a.Y, FBasicExtent.b.Y);
-      end
-    else
-      for i:=0 to Count - 1 do
-        UpdateMinMax(Item[i]^.Y, FBasicExtent.a.Y, FBasicExtent.b.Y);
+    if YCount > 0 then begin
+      if HasYErrorBars then
+        for i := 0 to Count - 1 do begin
+          GetYErrorBarLimits(i, vhi, vlo);
+          UpdateMinMax(vhi, FBasicExtent.a.Y, FBasicExtent.b.Y);
+          UpdateMinMax(vlo, FBasicExtent.a.Y, FBasicExtent.b.Y);
+        end
+      else
+      if (FSortBy = sbY) and (FSortIndex = 0) then begin
+        UpdateMinMax(Item[0]^.Y, FBasicExtent.a.Y, FBasicExtent.b.Y);
+        UpdateMinMax(Item[Count-1]^.Y, FBasicExtent.a.Y, FBasicExtent.b.Y);
+      end else
+        for i:=0 to Count - 1 do
+          UpdateMinMax(Item[i]^.Y, FBasicExtent.a.Y, FBasicExtent.b.Y);
+    end;
   end;
 
   FBasicExtentIsValid := true;
