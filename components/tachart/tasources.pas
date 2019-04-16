@@ -593,7 +593,7 @@ procedure TCustomSortedChartSource.SetSorted(AValue: Boolean);
 begin
   if FSorted = AValue then exit;
   FSorted := AValue;
-  if Sorted then Sort;
+  if Sorted then Sort else Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSortDir(AValue: TChartSortDir);
