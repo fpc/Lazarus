@@ -428,7 +428,6 @@ class procedure TCocoaWSMenuItem.Do_SetCheck(const ANSMenuItem: NSMenuItem; cons
 const
   menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
-  ANSMenuItem.setOnStateImage(NSMenuCheckmark);
   ANSMenuItem.setState( menustate[Checked] );
 end;
 
@@ -550,6 +549,12 @@ begin
     {$else}
     item.setEnabled(AMenuItem.Enabled);
     {$endif}
+
+    if AMenuItem.RadioItem then
+      item.setOnStateImage( NSMenuRadio )
+    else
+      item.setOnStateImage(NSMenuCheckmark);
+
     Do_SetCheck(item, AMenuItem.Checked);
 
     if AMenuItem.HasIcon and ((AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap)) then
@@ -715,7 +720,11 @@ begin
   Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
   if not Result then Exit;
   //todo: disable relative radio items
-  NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuRadio );
+  if RadioItem then
+    NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuRadio )
+  else
+    NSMenuItem(AMenuItem.Handle).setOnStateImage(NSMenuCheckmark);
+
   NSMenuItem(AMenuItem.Handle).setState( menustate[RadioItem] );
 end;
 
