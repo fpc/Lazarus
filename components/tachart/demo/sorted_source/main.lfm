@@ -1,0 +1,187 @@
+object MainForm: TMainForm
+  Left = 326
+  Height = 515
+  Top = 127
+  Width = 795
+  Caption = 'MainForm'
+  ClientHeight = 515
+  ClientWidth = 795
+  OnCreate = FormCreate
+  LCLVersion = '2.1.0.0'
+  object SettingsPanel: TPanel
+    Left = 6
+    Height = 23
+    Top = 486
+    Width = 783
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ClientHeight = 23
+    ClientWidth = 783
+    TabOrder = 0
+    object cbSortBy: TComboBox
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SettingsPanel
+      Left = 45
+      Height = 23
+      Top = 0
+      Width = 208
+      BorderSpacing.Left = 8
+      ItemHeight = 15
+      Items.Strings = (
+        'Population (descending)'
+        'Population (ascending)'
+        'Name'
+      )
+      OnChange = cbSortByChange
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = SettingsPanel
+      AnchorSideTop.Control = cbSortBy
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 15
+      Top = 4
+      Width = 37
+      Caption = 'Sort by'
+      ParentColor = False
+    end
+    object cbXCount0: TCheckBox
+      AnchorSideLeft.Control = cbSortBy
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbSortBy
+      AnchorSideTop.Side = asrCenter
+      Left = 277
+      Height = 19
+      Top = 2
+      Width = 80
+      BorderSpacing.Left = 24
+      Caption = 'XCount = 0'
+      Checked = True
+      OnChange = cbXCount0Change
+      State = cbChecked
+      TabOrder = 1
+    end
+  end
+  object TabControl: TTabControl
+    Left = 0
+    Height = 480
+    Top = 0
+    Width = 795
+    OnChange = TabControlChange
+    Align = alClient
+    TabOrder = 1
+    object Chart: TChart
+      Left = 2
+      Height = 475
+      Top = 3
+      Width = 527
+      AxisList = <      
+        item
+          Grid.Color = 15066597
+          Grid.Style = psSolid
+          Marks.LabelBrush.Style = bsClear
+          Marks.Range.UseMin = True
+          Minors = <>
+          Title.LabelFont.Orientation = 900
+          Title.LabelFont.Style = [fsBold]
+          Title.Visible = True
+          Title.Caption = 'Population (in millions)'
+          Title.LabelBrush.Style = bsClear
+        end      
+        item
+          Grid.Visible = False
+          Intervals.MaxLength = 80
+          Intervals.MinLength = 30
+          Alignment = calBottom
+          Marks.LabelBrush.Style = bsClear
+          Minors = <>
+          Title.LabelFont.Style = [fsBold]
+          Title.Visible = True
+          Title.Caption = 'Continent'
+          Title.LabelBrush.Style = bsClear
+        end>
+      BackColor = clWhite
+      Foot.Alignment = taLeftJustify
+      Foot.Brush.Color = clBtnFace
+      Foot.Brush.Style = bsClear
+      Foot.Font.Color = clGray
+      Foot.Font.Style = [fsItalic]
+      Foot.Text.Strings = (
+        'Source: https://en.wikipedia.org/wiki/World_population'
+      )
+      Foot.Visible = True
+      Frame.Color = clGray
+      Margins.Left = 32
+      Margins.Right = 32
+      Title.Brush.Color = clBtnFace
+      Title.Font.Color = clBlue
+      Title.Text.Strings = (
+        'TAChart'
+      )
+      Toolset = ChartToolset
+      Align = alClient
+      Color = clNone
+    end
+    object Grid: TStringGrid
+      Left = 529
+      Height = 475
+      Top = 3
+      Width = 264
+      Align = alRight
+      ColCount = 4
+      TabOrder = 2
+      OnPrepareCanvas = GridPrepareCanvas
+      ColWidths = (
+        34
+        37
+        64
+        124
+      )
+      Cells = (
+        3
+        1
+        0
+        'x'
+        2
+        0
+        'y'
+        3
+        0
+        'Text'
+      )
+    end
+  end
+  object Button1: TButton
+    Left = 508
+    Height = 25
+    Top = 484
+    Width = 75
+    Caption = 'Button1'
+    OnClick = Button1Click
+    TabOrder = 2
+  end
+  object ListChartSource: TListChartSource
+    left = 192
+    top = 112
+  end
+  object ChartToolset: TChartToolset
+    left = 192
+    top = 184
+    object ZoomDragTool: TZoomDragTool
+      Shift = [ssLeft]
+      Brush.Style = bsClear
+    end
+    object PanDragTool: TPanDragTool
+      Shift = [ssRight]
+    end
+    object DataPointClickTool: TDataPointClickTool
+      Shift = [ssCtrl, ssLeft]
+      OnPointClick = DataPointClickToolPointClick
+    end
+  end
+end
