@@ -3176,7 +3176,7 @@ begin
   for i:=0 to UnitCount-1 do
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
-        Path+'Units/'+FXMLConfig.GetListItemXPath('Unit', i, UseLegacyLists)+'/',True,SaveSession,fCurStorePathDelim);
+        Path+'Units/'+FXMLConfig.GetListItemXPath('Unit', SaveUnitCount, UseLegacyLists)+'/',True,SaveSession,fCurStorePathDelim);
       inc(SaveUnitCount);
     end;
   FXMLConfig.SetListItemCount(Path+'Units/',SaveUnitCount,UseLegacyLists);
