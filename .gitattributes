@@ -8265,10 +8265,6 @@ images/debugger/evaluate_no_hist_200.png -text svneol=unset#image/png
 images/debugger/evaluate_up.png -text
 images/debugger/evaluate_up_150.png -text svneol=unset#image/png
 images/debugger/evaluate_up_200.png -text svneol=unset#image/png
-images/designer/Order_back_one.png -text
-images/designer/Order_forward_one.png -text
-images/designer/Order_move_back.png -text
-images/designer/Order_move_front.png -text
 images/designer/add_item_above.png -text svneol=unset#image/png
 images/designer/add_item_above_150.png -text
 images/designer/add_item_above_200.png -text
@@ -8338,12 +8334,16 @@ images/designer/mirror_horizontal_200.png -text svneol=unset#image/png
 images/designer/mirror_vertical.png -text
 images/designer/mirror_vertical_150.png -text svneol=unset#image/png
 images/designer/mirror_vertical_200.png -text svneol=unset#image/png
+images/designer/order_back_one.png -text svneol=unset#image/png
 images/designer/order_back_one_150.png -text svneol=unset#image/png
 images/designer/order_back_one_200.png -text svneol=unset#image/png
+images/designer/order_forward_one.png -text svneol=unset#image/png
 images/designer/order_forward_one_150.png -text svneol=unset#image/png
 images/designer/order_forward_one_200.png -text svneol=unset#image/png
+images/designer/order_move_back.png -text svneol=unset#image/png
 images/designer/order_move_back_150.png -text svneol=unset#image/png
 images/designer/order_move_back_200.png -text svneol=unset#image/png
+images/designer/order_move_front.png -text svneol=unset#image/png
 images/designer/order_move_front_150.png -text svneol=unset#image/png
 images/designer/order_move_front_200.png -text svneol=unset#image/png
 images/designer/scale.png -text
@@ -8451,6 +8451,9 @@ images/menu/bug_small.png -text
 images/menu/menu_abort_build.png -text svneol=unset#image/png
 images/menu/menu_abort_build_150.png -text
 images/menu/menu_abort_build_200.png -text
+images/menu/menu_add_jump_point_to_history.png -text svneol=unset#image/png
+images/menu/menu_add_jump_point_to_history_150.png -text svneol=unset#image/png
+images/menu/menu_add_jump_point_to_history_200.png -text svneol=unset#image/png
 images/menu/menu_build.png -text svneol=unset#image/png
 images/menu/menu_build_150.png -text
 images/menu/menu_build_200.png -text
@@ -8589,6 +8592,9 @@ images/menu/menu_jumpto_procedurebegin_200.png -text svneol=unset#image/png
 images/menu/menu_jumpto_procedureheader.png -text svneol=unset#image/png
 images/menu/menu_jumpto_procedureheader_150.png -text svneol=unset#image/png
 images/menu/menu_jumpto_procedureheader_200.png -text svneol=unset#image/png
+images/menu/menu_jumpto_section.png -text svneol=unset#image/png
+images/menu/menu_jumpto_section_150.png -text svneol=unset#image/png
+images/menu/menu_jumpto_section_200.png -text svneol=unset#image/png
 images/menu/menu_manage_desktops.png -text svneol=unset#image/png
 images/menu/menu_manage_desktops_150.png -text
 images/menu/menu_manage_desktops_200.png -text
@@ -8700,12 +8706,18 @@ images/menu/menu_search_jumpforward_200.png -text
 images/menu/menu_search_next_bookmark.png -text
 images/menu/menu_search_next_bookmark_150.png -text
 images/menu/menu_search_next_bookmark_200.png -text
+images/menu/menu_search_next_error.png -text svneol=unset#image/png
+images/menu/menu_search_next_error_150.png -text svneol=unset#image/png
+images/menu/menu_search_next_error_200.png -text svneol=unset#image/png
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
 images/menu/menu_search_openfile_atcursor_150.png -text
 images/menu/menu_search_openfile_atcursor_200.png -text
 images/menu/menu_search_previous_bookmark.png -text
 images/menu/menu_search_previous_bookmark_150.png -text
 images/menu/menu_search_previous_bookmark_200.png -text
+images/menu/menu_search_previous_error.png -text svneol=unset#image/png
+images/menu/menu_search_previous_error_150.png -text svneol=unset#image/png
+images/menu/menu_search_previous_error_200.png -text svneol=unset#image/png
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_search_replace_150.png -text
 images/menu/menu_search_replace_200.png -text
@@ -8823,6 +8835,9 @@ images/menu/menu_view_forms_200.png -text
 images/menu/menu_view_inspector.png -text svneol=unset#image/png
 images/menu/menu_view_inspector_150.png -text
 images/menu/menu_view_inspector_200.png -text
+images/menu/menu_view_jump_history.png -text svneol=unset#image/png
+images/menu/menu_view_jump_history_150.png -text svneol=unset#image/png
+images/menu/menu_view_jump_history_200.png -text svneol=unset#image/png
 images/menu/menu_view_messages.png -text
 images/menu/menu_view_messages_150.png -text
 images/menu/menu_view_messages_200.png -text

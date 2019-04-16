@@ -55,6 +55,7 @@ items directory:
 	item_unit.png
 
 menu directory:
+	menu_add_jump_point_to_history.png
 	menu_clear_all_bookmarks.png
 	menu_clear_file_bookmarks.png
 	menu_close.png
@@ -78,6 +79,7 @@ menu directory:
 	menu_jumpto_initialization.png
 	menu_jumpto_interface.png
 	menu_jumpto_interfaceuses.png
+	menu_jumpto_section.png
 	menu_manage_desktops.png
 	menu_manage_source_editors.png
 	menu_new.png
@@ -106,8 +108,10 @@ menu directory:
 	menu_search_jumpback.png
 	menu_search_jumpforward.png
 	menu_search_next_bookmark.png
+	menu_search_next_error.png    (used 'state_error.png' created by Roland Hahn)
 	menu_search_openfile_atcursor.png
 	menu_search_previous_bookmark.png
+	menu_search_previous_error.png    (used 'state_error.png' created by Roland Hahn)
 	menu_search_replace.png
 	menu_search_set_bookmark.png
 	menu_set_free_bookmark.png
@@ -135,6 +139,7 @@ menu directory:
 	menu_view_components.png
 	menu_view_forms.png
 	menu_view_inspector.png
+	menu_view_jump_history.png
 	menu_view_messages.png
 	menu_view_restriction_browser.png
 	menu_view_search_results.png
