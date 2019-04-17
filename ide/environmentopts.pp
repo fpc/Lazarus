@@ -1848,6 +1848,7 @@ begin
   FreeAndNil(FDbgConfigStore);
   FreeAndNil(FXMLCfg);
   FreeAndNil(FLastOpenPackages);
+  FreeAndNil(FFppkgConfigFileHistory);
   inherited Destroy;
 end;
 
