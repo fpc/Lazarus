@@ -168,6 +168,8 @@ type
   TLldbDebuggerCommandRunLaunch = class(TLldbDebuggerCommandRun)
   private
     FRunInstr: TLldbInstruction;
+    FLaunchWarnings: String;
+    procedure CollectDwarfLoadErrors(Sender: TObject);
     procedure ExceptBreakInstructionFinished(Sender: TObject);
     procedure LaunchInstructionSucceeded(Sender: TObject);
     procedure TargetCreated(Sender: TObject);
@@ -227,6 +229,7 @@ type
 
   TlldbInternalBreakPoint = class
   private
+    FDwarfLoadErrors: String;
     FName: String;
     FBeforePrologue: Boolean;
     FId: Integer;
@@ -246,6 +249,7 @@ type
     property BreakId: Integer read FId;
     property OnFail: TNotifyEvent read FOnFail write FOnFail;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
+    property DwarfLoadErrors: String read FDwarfLoadErrors;
   end;
 
   { TLldbDebuggerCommandRegister }
@@ -2320,6 +2324,7 @@ begin
     SetDebuggerState(dsError);
     Finished;
   end;
+  CollectDwarfLoadErrors(Sender);
 
   If StrMatches(TargetInstr.Res, [''{}, '','('{}, ')',''], found) then begin
     if (found[1] = 'i386') or (found[1] = 'i686') then begin
@@ -2373,13 +2378,26 @@ begin
     Instr := TLldbInstructionSettingSet.Create('target.run-args', Debugger.Arguments)
   else
     Instr := TLldbInstructionSettingClear.Create('target.run-args');
+  Instr.OnFinish := @CollectDwarfLoadErrors;
   QueueInstruction(Instr);
   Instr.ReleaseReference;
 
+  Debugger.FBreakErrorBreak.OnFinish := @CollectDwarfLoadErrors;
+  Debugger.FRunErrorBreak.OnFinish   := @CollectDwarfLoadErrors;
+  Debugger.FExceptionBreak.OnFinish  := @ExceptBreakInstructionFinished;
   Debugger.FBreakErrorBreak.Enable;
   Debugger.FRunErrorBreak.Enable;
-  Debugger.FExceptionBreak.OnFinish := @ExceptBreakInstructionFinished;
   Debugger.FExceptionBreak.Enable;
+end;
+
+procedure TLldbDebuggerCommandRunLaunch.CollectDwarfLoadErrors(Sender: TObject);
+begin
+  if Sender is TlldbInternalBreakPoint then begin
+    FLaunchWarnings := FLaunchWarnings + TlldbInternalBreakPoint(Sender).DwarfLoadErrors;
+    TlldbInternalBreakPoint(Sender).OnFinish := nil;
+  end
+  else
+    FLaunchWarnings := FLaunchWarnings + TLldbInstruction(Sender).DwarfLoadErrors;
 end;
 
 procedure TLldbDebuggerCommandRunLaunch.ExceptBreakInstructionFinished(Sender: TObject
@@ -2388,6 +2406,7 @@ var
   Instr: TLldbInstruction;
   BrkId: Integer;
 begin
+  CollectDwarfLoadErrors(Sender);
   Debugger.FBreakErrorBreak.OnFinish := nil;
 
   Debugger.FExceptionInfo.FReg0Cmd := '';
@@ -2406,6 +2425,7 @@ begin
     Instr := TLldbInstructionBreakAddCommands.Create(BrkId, [
       Debugger.FExceptionInfo.FReg0Cmd, Debugger.FExceptionInfo.FReg2Cmd, Debugger.FExceptionInfo.FExceptClassCmd, Debugger.FExceptionInfo.FExceptMsgCmd
     ]);
+    Instr.OnFinish := @CollectDwarfLoadErrors;
     QueueInstruction(Instr);
     Instr.ReleaseReference;
   end;
@@ -2414,6 +2434,7 @@ begin
   if BrkId > 0 then begin
     Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
     Instr := TLldbInstructionBreakAddCommands.Create(BrkId, [Debugger.FExceptionInfo.FReg0Cmd]);
+    Instr.OnFinish := @CollectDwarfLoadErrors;
     QueueInstruction(Instr);
     Instr.ReleaseReference;
   end;
@@ -2422,6 +2443,7 @@ begin
   if BrkId > 0 then begin
     Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
     Instr := TLldbInstructionBreakAddCommands.Create(BrkId, [Debugger.FExceptionInfo.FReg0Cmd]);
+    Instr.OnFinish := @CollectDwarfLoadErrors;
     QueueInstruction(Instr);
     Instr.ReleaseReference;
   end;
@@ -2437,13 +2459,11 @@ begin
 end;
 
 procedure TLldbDebuggerCommandRunLaunch.LaunchInstructionSucceeded(Sender: TObject);
-var
-  LaunchWarnings: String;
 begin
-  LaunchWarnings := TLldbInstructionProcessLaunch(Sender).Errors;
-  Debugger.DoAfterLaunch(LaunchWarnings);
+  CollectDwarfLoadErrors(Sender);
+  Debugger.DoAfterLaunch(FLaunchWarnings);
   if (not TLldbDebuggerProperties(Debugger.GetProperties).IgnoreLaunchWarnings) and
-     (LaunchWarnings <> '') and
+     (FLaunchWarnings <> '') and
      assigned(Debugger.OnFeedback)
   then begin
     case Debugger.OnFeedback(self,
@@ -2451,7 +2471,7 @@ begin
                + 'Press "Ok" to continue debugging.%0:s'
                + 'Press "Stop" to end the debug session.',
                [LineEnding]),
-             LaunchWarnings, ftWarning, [frOk, frStop]
+             FLaunchWarnings, ftWarning, [frOk, frStop]
          ) of
       frOk: begin
         end;
@@ -2607,6 +2627,7 @@ end;
 
 procedure TlldbInternalBreakPoint.DoFinshed(Sender: TObject);
 begin
+  FDwarfLoadErrors := TLldbInstruction(Sender).DwarfLoadErrors;
   if OnFinish <> nil then
     OnFinish(Self);
 end;
