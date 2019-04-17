@@ -921,7 +921,7 @@ end;
 function TChartSeries.GetGraphPointX(AIndex: Integer): Double;
 begin
   if Source.XCount = 0 then
-    Result := AxisToGraphX(Index)
+    Result := AxisToGraphX(AIndex)
   else
     Result := AxisToGraphX(Source[AIndex]^.X);
 end;
