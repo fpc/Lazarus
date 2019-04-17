@@ -123,7 +123,7 @@ type
       AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
+    destructor Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
     function GetNearestPoint(const AParams: TNearestPointParams;
@@ -1153,7 +1153,7 @@ end;
 
 class procedure TBoxAndWhiskerSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
-  AXCount := 1;
+  AXCount := 0;
   AYCount := 5;
 end;
 
@@ -1592,7 +1592,7 @@ end;
 
 class procedure TOpenHighLowCloseSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
-  AXCount := 1;
+  AXCount := 0;
   AYCount := 4;
 end;
 

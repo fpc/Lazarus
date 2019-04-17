@@ -1684,11 +1684,14 @@ var
   wl, wr: Double;
   i: Integer;
 begin
-  i := AIndex - 1;
-  wl := Abs(AX - NearestXNumber(i, -1));
-  i := AIndex + 1;
-  wr := Abs(AX - NearestXNumber(i, +1));
-  Result := NumberOr(SafeMin(wl, wr), 1.0);
+  if Source.XCount > 0 then begin
+    i := AIndex - 1;
+    wl := Abs(AX - NearestXNumber(i, -1));
+    i := AIndex + 1;
+    wr := Abs(AX - NearestXNumber(i, +1));
+    Result := NumberOr(SafeMin(wl, wr), 1.0);
+  end else
+    Result := 1.0;
 end;
 
 function TBasicPointSeries.GetZeroLevel: Double;
@@ -2013,7 +2016,7 @@ var
   x, prevX: Double;
   i: Integer;
 begin
-  if Count < 2 then begin
+  if (Count < 2) or (Source.XCount = 0) then begin
     FMinXRange := 1.0;
     exit;
   end;

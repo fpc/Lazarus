@@ -1071,6 +1071,10 @@ procedure TCustomChartSource.FindBounds(
 
 begin
   EnsureOrder(AXMin, AXMax);
+  if (XCount = 0) then begin
+    ALB := trunc(AXMin);
+    AUB := ceil(AXMax);
+  end else
   if IsSortedByXAsc then begin
     ALB := FindLB(AXMin, 0, Count - 1);
     AUB := FindUB(AXMax, 0, Count - 1);
@@ -1095,7 +1099,7 @@ function TCustomChartSource.FormatItem(
   const AFormat: String; AIndex, AYIndex: Integer): String;
 begin
   with Item[AIndex]^ do
-    Result := FormatItemXYText(AFormat, X, GetY(AYIndex), Text);
+    Result := FormatItemXYText(AFormat, IfThen(XCount > 0, X, double(AIndex)), GetY(AYIndex), Text);
 end;
 
 function TCustomChartSource.FormatItemXYText(
@@ -1137,7 +1141,7 @@ begin
   ALowerDelta := 0;
 
   if Which = 0 then
-    v := Item[APointIndex]^.X
+    v := IfThen(XCount > 0, Item[APointIndex]^.X, APointIndex)
   else
     v := Item[APointIndex]^.Y;
 
@@ -1199,7 +1203,7 @@ var
   v, dxp, dxn: Double;
 begin
   Result := GetErrorBarValues(APointIndex, 0, dxp, dxn);
-  v := Item[APointIndex]^.X;
+  v := IfThen(XCount > 0, Item[APointIndex]^.X, APointIndex);
   if Result and not IsNaN(v) then begin
     AUpperLimit := v + dxp;
     ALowerLimit := v - dxn;
@@ -1380,7 +1384,7 @@ procedure TCustomChartSource.ValuesInRange(
     ADest.FValue := AValue;
     with Item[AIndex]^ do begin
       if AParams.FUseY then begin
-        nx := X;
+        nx := IfThen(XCount > 0, X, AIndex);
         ny := AValue;
       end
       else begin
@@ -1501,7 +1505,12 @@ var
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.b.Y then exit(GetX(AIndex));
+      if Y = Extent.b.Y then begin
+        if XCount > 0 then
+          exit(GetX(AIndex))
+        else
+          exit(i);
+      end;
   Result := 0.0;
 end;
 
@@ -1511,7 +1520,12 @@ var
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.a.Y then exit(GetX(AIndex));
+      if Y = Extent.a.Y then begin
+        if XCount > 0 then
+          exit(GetX(AIndex))
+        else
+          exit(i);
+      end;
   Result := 0.0;
 end;
 
