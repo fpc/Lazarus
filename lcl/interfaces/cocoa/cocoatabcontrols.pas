@@ -59,6 +59,7 @@ type
     leftmost : Integer;         // index of the left-most tab shown
 
   public
+    ignoreChange: Boolean;
     callback: ITabControlCallback;
 
     fulltabs : NSMutableArray;  // the full list of NSTabViewItems
@@ -466,6 +467,7 @@ end;
 procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
 begin
+  if ignoreChange then Exit;
   if Assigned(callback) then
   begin
     callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );

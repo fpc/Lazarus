@@ -815,7 +815,9 @@ begin
   i := TCocoaTabControl(ATabControl.Handle).fulltabs.indexOfObject( tb.tabPage );
   if (i = NSNotFound) then Exit;
 
+  TCocoaTabControl(ATabControl.Handle).ignoreChange := True;
   TCocoaTabControl(ATabControl.Handle).extselectTabViewItemAtIndex(NSInteger(i));
+  TCocoaTabControl(ATabControl.Handle).ignoreChange := False;
 end;
 
 class procedure TCocoaWSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
