@@ -186,6 +186,7 @@ type
     // Pass only 1 owner and nil for the other ones
     constructor Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
     procedure Delete(Index: Integer); override;
+    procedure Clear; override;
   end;
 
   IComboboxCallBack = interface(ICommonCallBack)
@@ -1161,6 +1162,13 @@ begin
   if FReadOnlyOwner = nil then Exit;
   if (Index>=0) and (Index < FReadOnlyOwner.numberOfItems) then
     FReadOnlyOwner.removeItemAtIndex(Index);
+end;
+
+procedure TCocoaComboBoxList.Clear;
+begin
+  inherited Clear;
+  if FReadOnlyOwner <> nil then
+    FReadOnlyOwner.removeAllItems;
 end;
 
 constructor TCocoaComboBoxList.Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
