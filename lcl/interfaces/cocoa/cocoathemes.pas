@@ -57,9 +57,7 @@ type
     function HasTransparentParts({%H-}Details: TThemedElementDetails): Boolean; override;
 *)
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
-(*
     function GetOption(AOption: TThemeOption): Integer; override;
-*)
   end;
 
 implementation
@@ -784,8 +782,9 @@ begin
     Result := inherited GetDetailSize(Details);
   end;
 end;
+*)
 
-function TCarbonThemeServices.GetOption(AOption: TThemeOption): Integer;
+function TCocoaThemeServices.GetOption(AOption: TThemeOption): Integer;
 begin
   case AOption of
     toShowButtonImages: Result := 0;
@@ -795,6 +794,7 @@ begin
   end;
 end;
 
+(*
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.InternalDrawParentBackground
   Params:  Window - Handle to window
