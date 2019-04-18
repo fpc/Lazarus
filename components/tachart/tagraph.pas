@@ -167,6 +167,8 @@ type
     var ADoDefaultDrawing: Boolean) of object;
   TChartDrawEvent = procedure (
     ASender: TChart; ADrawer: IChartDrawer) of object;
+  TChartExtentValidateEvent = procedure (
+    ASender: TChart; var ALogicalExtent: TDoubleRect; var AllowChange: Boolean) of object;
 
   TChartRenderingParams = record
     FClipRect: TRect;
@@ -213,6 +215,7 @@ type
     FOnDrawLegend: TChartDrawLegendEvent;
     FProportional: Boolean;
     FSeries: TChartSeriesList;
+    FSetLogicalExtentCounter: Integer;
     FTitle: TChartTitle;
     FToolset: TBasicChartToolset;
 
@@ -232,6 +235,7 @@ type
     FOnAfterPaint: TChartEvent;
     FOnExtentChanged: TChartEvent;
     FOnExtentChanging: TChartEvent;
+    FOnExtentValidate: TChartExtentValidateEvent;
     FPrevLogicalExtent: TDoubleRect;
     FScale: TDoublePoint;    // Coordinates transformation
     FScalingValid: Boolean;
@@ -263,7 +267,7 @@ type
     procedure SetFrame(Value: TChartPen);
     procedure SetGUIConnector(AValue: TChartGUIConnector);
     procedure SetLegend(Value: TChartLegend);
-    procedure SetLogicalExtent(const AValue: TDoubleRect);
+    procedure SetLogicalExtent(AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetMarginsExternal(AValue: TChartMargins);
     procedure SetMinDataSpace(const AValue: Integer);
@@ -453,7 +457,9 @@ type
     property OnExtentChanged: TChartEvent
       read FOnExtentChanged write FOnExtentChanged;
     property OnExtentChanging: TChartEvent
-      read FOnExtentChanging write FOnExtentChanging;
+      read FOnExtentChanging write FOnExtentChanging; deprecated 'Used OnExtentValidate instead';
+    property OnExtentValidate: TChartExtentValidateEvent
+      read FOnExtentValidate write FOnExtentValidate;
 
   published
     property Align;
@@ -505,6 +511,7 @@ uses
 
 const
   SScalingNotInitialized = '[%s.%s]: Image-graph scaling not yet initialized.';
+  SNestedSetLogicalExtentCall = '%s: Don''t set LogicalExtent in OnExtentValidation handler - modify %s parameter instead.';
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -1675,10 +1682,24 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
+procedure TChart.SetLogicalExtent(AValue: TDoubleRect);
 var
+  AllowChange: Boolean;
   w, h: Double;
 begin
+  if FSetLogicalExtentCounter <> 0 then
+    raise EChartError.CreateFmt(SNestedSetLogicalExtentCall, [NameOrClassName(Self), 'ALogicalExtent']);
+
+  if Assigned(OnExtentValidate) then begin
+    AllowChange := true;
+    Inc(FSetLogicalExtentCounter);
+    try
+      OnExtentValidate(Self, AValue, AllowChange);
+    finally
+      Dec(FSetLogicalExtentCounter);
+    end;
+    if not AllowChange then exit;
+  end;
   if FLogicalExtent = AValue then exit;
   w := Abs(AValue.a.X - AValue.b.X);
   h := Abs(AValue.a.Y - AValue.b.Y);
