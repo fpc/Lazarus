@@ -297,13 +297,30 @@ procedure TListSourceTest.Bounds;
 
   procedure CheckAll;
   begin
+    Check2(1, 2, 2, 3);
+    Check2(1, 2, 1.9, 3.1);
+    Check2(2, 1, 2.1, 2.9);
     Check(1, 1, 2);
     Check(1, 0, 1.9);
-    Check(0, -1, 0.9);
-    Check(5, 4, 5.1);
-    Check(4, 3, 4.9);
+    Check(0, -1, 0.9);          // below left-most point
+    Check(5, 4, 5.1);           // above right-most point
+    Check(4, 3, 4.9);           // just below right-most point
     Check2(2, 4, 3, 1e100);
     Check2(0, 1, -1e100, 2);
+  end;
+
+  procedure CheckAll_XCount0;
+  begin
+    Check2(2, 3, 2, 3);
+    Check2(2, 3, 1.9, 3.1);
+    Check2(3, 2, 2.1, 2.9);
+    Check(2, 2, 2);
+    Check(2, 1, 1.9);
+    Check(0, -1, -0.1);   // below left-most point
+    Check(5, 4, 4.1);     // above right-most point
+    Check(4, 3,  3.9);    // just below right-most point
+    Check2(2, 4, 2, 1e100);
+    Check2(0, 1, -1e100, 1);
   end;
 
 begin
@@ -317,6 +334,11 @@ begin
   CheckAll;
   FSource.Sorted := false;
   CheckAll;
+
+  FSource.XCount := 0;
+  CheckAll_XCount0;
+
+  FSource.XCount := 1;
   FSource.SetXValue(1, SafeNan);
   Check(2, 0, 2);
   FSource.SetXValue(0, SafeNan);

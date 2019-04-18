@@ -1039,7 +1039,7 @@ begin
 end;
 
 // ALB -> leftmost item where X >= AXMin, or Count if no such item
-// ALB -> rightmost item where X <= AXMax, or -1 if no such item
+// AUB -> rightmost item where X <= AXMax, or -1 if no such item
 // If the source is sorted by X in the ascending order, performs
 // binary search. Otherwise, skips NaNs.
 procedure TCustomChartSource.FindBounds(
@@ -1072,8 +1072,12 @@ procedure TCustomChartSource.FindBounds(
 begin
   EnsureOrder(AXMin, AXMax);
   if (XCount = 0) then begin
-    ALB := trunc(AXMin);
-    AUB := ceil(AXMax);
+    if AXMin > Count-1 then ALB := Count
+      else if AXMin < 0 then ALB := 0
+      else ALB := ceil(AXMin);
+    if AXMax > Count-1 then AUB := Count - 1
+      else if AXMax < 0 then AUB := -1
+      else AUB := trunc(AXMax);
   end else
   if IsSortedByXAsc then begin
     ALB := FindLB(AXMin, 0, Count - 1);
