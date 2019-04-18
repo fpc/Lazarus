@@ -239,7 +239,10 @@ begin
     end;
     {$IFDEF CHMLOADTIMES}
     DebugLn(['CHMLOADTIMES: ',Format('Loading chm files took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
+
     {$ENDIF}
+
+
   finally
     fHelpConnection.EndUpdate;
     CHMFiles.Free;
@@ -448,7 +451,6 @@ var
   i: Integer;
   DB: TFPDocHTMLHelpDatabase;
   BaseURL: THelpBaseURLObject;
-  HelpDB: THelpDatabase;
 begin
   inherited Create(TheOwner);
   fHelpConnection := TLHelpConnection.Create;
@@ -456,9 +458,7 @@ begin
   AddSupportedMimeType('application/x-chm');
   for i := 0 to HelpDatabases.Count-1 do
   begin
-    HelpDB := HelpDatabases.Items[i];
-    if not (HelpDB is TFPDocHTMLHelpDatabase) then continue;
-    DB := TFPDocHTMLHelpDatabase(HelpDB);
+    DB := TFPDocHTMLHelpDatabase(HelpDatabases.Items[i]);
     BaseURL := THelpBaseURLObject(DB.BasePathObject);
     if (DB.ID = 'RTLUnits') and (BaseURL.BaseURL = '') then
     begin
@@ -537,7 +537,7 @@ begin
 
   SearchPath := GetHelpFilesPath;
   // Start up help viewer if needed - and tell it to hide
-  if not (fHelpConnection.ServerRunning) then
+  if not(fHelpConnection.ServerRunning) then
   begin
     fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName, true);
     Response := fHelpConnection.RunMiscCommand(mrVersion);
