@@ -63,6 +63,7 @@ type
     class function  GetCocoaTabPageFromHandle(AHandle: HWND): TCocoaTabPage;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetProperties(const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
     //
@@ -580,6 +581,18 @@ begin
 
     Result := TLCLIntfHandle(tv);
   end;
+end;
+
+class procedure TCocoaWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
+var
+  tv: TCocoaTabPageView;
+  ndx: Integer;
+begin
+  tv := TCocoaTabPageView(AWinControl.Handle);
+  ndx := tv.tabView.exttabIndexOfTabViewItem(tv.tabPage);
+  if ndx >= 0 then
+    tv.tabview.exttabRemoveTabViewItem(tv.tabPage);
+  TCocoaWSWinControl.DestroyHandle(AWinControl);
 end;
 
 class procedure TCocoaWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
