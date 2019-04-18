@@ -4678,8 +4678,9 @@ var
   PkgDependency: TPkgDependency;
 begin
   PkgDependency:=FindDependencyByNameInList(FirstRequiredDependency,pdlRequires,PackageName);
-  if PkgDependency=nil then exit(false);
-  RemoveRequiredDependency(PkgDependency);
+  Result := Assigned(PkgDependency);
+  if Result then
+    RemoveRequiredDependency(PkgDependency);
 end;
 
 procedure TProject.LockUnitComponentDependencies;
