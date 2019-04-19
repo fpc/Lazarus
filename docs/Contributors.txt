@@ -238,5 +238,6 @@ Zdravko Gabrovski
 Zeljan Rikalo
 Zheng Jian Ping aka "robsean" - Simplified Chinese translation
 Žilvinas Ledas
+Zoë Peterson
 
 #and special thanks to the FPC team.
