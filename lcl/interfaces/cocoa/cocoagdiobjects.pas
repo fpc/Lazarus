@@ -2019,6 +2019,7 @@ var
   {$else}
   lCanvas: TCanvas;
   lDrawer: TCDDrawer;
+  sz : TSize;
   {$endif}
 begin
   {$ifdef CocoaUseHITheme}
@@ -2042,8 +2043,18 @@ begin
   try
     lDrawer := GetDrawer(dsMacOSX);
     lCanvas.Handle := HDC(Self);
+
+    // drawer seems to be using the additional pixel in size
+    // see bug #35172
+    // why is this "custom drawer" is being used anyway?!
+    // it's much faster to draw the 3d frame directly or use the themes
+
+    sz := Types.Size(ARect);
+    dec(sz.cx);
+    dec(sz.cy);
     lDrawer.DrawFrame3D(lCanvas, Types.Point(ARect.Left, ARect.Top),
-      Types.Size(ARect), FrameWidth, Style);
+      sz, FrameWidth, Style);
+    InflateRect(ARect, -FrameWidth, -FrameWidth);
   finally
     lCanvas.Handle := 0;
     lCanvas.Free;
