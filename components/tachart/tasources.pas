@@ -1494,12 +1494,14 @@ begin
     // data is still sorted by Y or by Origin's custom algorithm
     FSorted := (FSortBy in [sbX, sbColor, sbText]) and Origin.IsSorted;
     FXCount := Origin.XCount;
+    // FYCount is set below, in the UpdateYOrder() call
   end else begin
     FSortBy := sbX;
     FSortDir := sdAscending;
     FSortIndex := 0;
     FSorted := false;
-    FXCount := 0;
+    FXCount := MaxInt;
+    FYCount := MaxInt;
   end;
 
   if
@@ -1517,6 +1519,8 @@ end;
 constructor TCalculatedChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
+  FYCount := MaxInt;
   FAccumulationRange := 2;
   FIndex := -1;
   FHistory := TChartSourceBuffer.Create;
