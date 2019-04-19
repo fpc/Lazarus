@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, TAGraph, TAFuncSeries, TASeries, TATools, Forms,
-  Controls, Graphics, Dialogs, Types;
+  Controls, Graphics, Dialogs, Types, TAChartUtils;
 
 type
 
@@ -18,8 +18,8 @@ type
     Chart1ConstantLine2: TConstantLine;
     Chart1FuncSeries1: TFuncSeries;
     Chart1FuncSeries2: TFuncSeries;
-    procedure Chart1AfterDrawBackWall(ASender: TChart; ACanvas: TCanvas;
-      const ARect: TRect);
+    procedure Chart1ExtentValidate(ASender: TChart;
+      var ALogicalExtent: TDoubleRect; var AllowChange: Boolean);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1FuncSeries2Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
@@ -35,18 +35,26 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, TAChartUtils;
+  Math;
 
 { TForm1 }
 
-{ In the trunk version of Lazarus, you can use the event Chart.OnExtentChanging
-  for updating the domain exclusions - its name is more intuitive... }
+{ In old Lazarus versions you can update the domain exclusions to a new extent
+  in the OnAfterDrawBackWall event. In Laz 2.1 or later, you can use the event
+  OnExtentValidate instead - its name is a bit more intuitive... }
+(*
 procedure TForm1.Chart1AfterDrawBackWall(ASender: TChart; ACanvas: TCanvas;
   const ARect: TRect);
 begin
-  Unused(ASender);
-  Unused(ACanvas);
-  Unused(ARect);
+  Unused(ASender, ACanvas, ARect);
+  UpdateDomainExclusions;
+end;
+*)
+
+procedure TForm1.Chart1ExtentValidate(ASender: TChart;
+  var ALogicalExtent: TDoubleRect; var AllowChange: Boolean);
+begin
+  Unused(ASender, ALogicalExtent, AllowChange);
   UpdateDomainExclusions;
 end;
 

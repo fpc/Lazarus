@@ -511,7 +511,7 @@ uses
 
 const
   SScalingNotInitialized = '[%s.%s]: Image-graph scaling not yet initialized.';
-  SNestedSetLogicalExtentCall = '%s: Don''t set LogicalExtent in OnExtentValidation handler - modify %s parameter instead.';
+  SNestedSetLogicalExtentCall = '%s: Don''t set LogicalExtent in OnExtentValidate handler - modify %s parameter instead.';
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
