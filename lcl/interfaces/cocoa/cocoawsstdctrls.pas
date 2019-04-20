@@ -1354,6 +1354,7 @@ begin
   nr.size.width:=AParams.Width;
 
   txt := TCocoaTextView.alloc.initwithframe(nr);
+  txt.setAllowsUndo(true);
   // setting up a default system font (to be consistent with other widgetsets)
   txt.setFont( NSFont.systemFontOfSize( NSFont.systemFontSizeForControlSize(NSRegularControlSize) ));
   txt.setRichText(false);

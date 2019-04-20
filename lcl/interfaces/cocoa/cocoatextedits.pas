@@ -105,10 +105,13 @@ type
   public
     callback: ICommonCallback;
     FEnabled: Boolean;
+    FUndoManager: NSUndoManager;
 
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
 
+    procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
+    function undoManager: NSUndoManager; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -902,9 +905,28 @@ begin
   inherited flagsChanged(event);
 end;
 
+procedure TCocoaTextView.dealloc;
+begin
+  if Assigned(FUndoManager) then
+    FUndoManager.release;
+  inherited dealloc;
+end;
+
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
+end;
+
+function TCocoaTextView.undoManager: NSUndoManager;
+begin
+  if allowsUndo then
+  begin
+    if not Assigned(FUndoManager) then
+      FUndoManager := NSUndoManager.alloc.init;
+    Result := FUndoManager;
+  end
+  else
+    Result := nil;
 end;
 
 function TCocoaTextView.lclGetCallback: ICommonCallback;

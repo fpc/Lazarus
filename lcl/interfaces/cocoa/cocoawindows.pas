@@ -384,7 +384,9 @@ begin
     callback.DidResignKeyNotification;
 end;
 
-procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: id);
+procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: NSResponder);
+var
+  undoManager: NSUndoManager;
 begin
   // todo: system keys could be overriden. thus need to review the current
   //       keyboard configuration first. See "Key Bindings" at
@@ -398,13 +400,28 @@ begin
     if Assigned(event.charactersIgnoringModifiers.UTF8String) then
     begin
       case event.charactersIgnoringModifiers.UTF8String^ of
-        // redo/undo are not implemented in either of TextControls?
-        //'Z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('redo:'), atarget, asender);
         'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
         'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
         'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
         'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
-        //'z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), atarget, asender);
+        'z':
+        begin
+          undoManager := atarget.undoManager;
+          if Assigned(undoManager) and undoManager.canUndo then
+          begin
+            handled := true;
+            undoManager.undo;
+          end;
+        end;
+        'Z':
+        begin
+          undoManager := atarget.undoManager;
+          if Assigned(undoManager) and undoManager.canRedo then
+          begin
+            handled := true;
+            undoManager.redo;
+          end;
+        end;
       end;
     end;
   end;
