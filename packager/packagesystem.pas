@@ -4908,6 +4908,7 @@ begin
   s:=s+'var'+e;
   s:=s+'  P : TPackage;'+e;
   s:=s+'  T : TTarget;'+e;
+  s:=s+'  D : TDependency;'+e;
   s:=s+''+e;
 
   if Assigned(FppkgInterface) then
@@ -4927,7 +4928,7 @@ begin
   ARequirement := APackage.FirstRequiredDependency;
   while assigned(ARequirement) do
   begin
-    s:=s+'    P.Dependencies.Add('''+lowercase(ARequirement.PackageName)+''');'+e;
+    s:=s+'    D := P.Dependencies.Add('''+lowercase(ARequirement.PackageName)+''');'+e;
     ARequirement := ARequirement.NextRequiresDependency;
   end;
 

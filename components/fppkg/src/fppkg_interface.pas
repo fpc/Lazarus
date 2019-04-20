@@ -50,7 +50,7 @@ begin
   Result := TFppkgEnvironmentOptions(TFppkgEnvironmentOptions.GetInstance).UseFPMakeWhenPossible;
 end;
 
-function TFppkgInterfaceEx.ConstructFpMakeInterfaceSection(APackage: TIDEPackage): string;
+  function TFppkgInterfaceEx.ConstructFpMakeInterfaceSection(APackage: TIDEPackage): string;
 var
   VariantList: TFppkgPackageVariantList;
   Variant: TFppkgPackageVariant;
@@ -96,7 +96,38 @@ var
   Variant: TFppkgPackageVariant;
   i, j, k: Integer;
   Found: Boolean;
-  FppkgFileOptions: TFppkgPackageFileIDEOptions;
+  FilterStr: string;
+
+  function ProcessTargetInfo(AFile: TLazPackageFile; variable: string; out FilterStr: string): Boolean;
+  var
+    FppkgFileOptions: TFppkgPackageFileIDEOptions;
+  begin
+    FppkgFileOptions := TFppkgPackageFileIDEOptions(AFile.GetOptionsInstanceOf(TFppkgPackageFileIDEOptions));
+    FppkgFileOptions.ParseOptions;
+
+    FilterStr := '';
+
+    Result := not (not FppkgFileOptions.AvailableOnAllTargetCPUs and (FppkgFileOptions.AvailableOnTargetCPUs=[])) and
+              not (not FppkgFileOptions.AvailableOnAllTargetOSes and (FppkgFileOptions.AvailableOnTargetOSes=[]));
+    if result then
+    begin
+      if (FppkgFileOptions.AvailableOnTargetCPUs <> []) then
+      begin
+        if FppkgFileOptions.AvailableOnAllTargetCPUs then
+          FilterStr:='    '+variable+'.CPUs := AllCPUs - ['+CPUSToString(FppkgFileOptions.AvailableOnTargetCPUs)+'];'+LineEnding
+        else
+          FilterStr:='    '+variable+'.CPUs := ['+CPUSToString(FppkgFileOptions.AvailableOnTargetCPUs)+'];'+LineEnding
+      end;
+      if (FppkgFileOptions.AvailableOnTargetOSes <> []) then
+      begin
+        if FppkgFileOptions.AvailableOnAllTargetOSes then
+          FilterStr:=FilterStr + '    '+variable+'.OSes := AllOSes - ['+OSesToString(FppkgFileOptions.AvailableOnTargetOSes)+'];'+LineEnding
+        else
+          FilterStr:=FilterStr + '    '+variable+'.OSes := ['+OSesToString(FppkgFileOptions.AvailableOnTargetOSes)+'];'+LineEnding
+      end;
+    end;
+  end;
+
 begin
   Result := '';
   VariantList := TFppkgPackageVariantList.Create(True);
@@ -124,16 +155,17 @@ begin
               end;
             end;
 
-          if not Found then
-            Result := Result + '    t.Dependencies.AddUnit('''+APackage.files[i].Unit_Name+''');' + LineEnding;
+          if not Found and ProcessTargetInfo(APackage.Files[i], 'D', FilterStr) then
+            begin
+            Result := Result + '    D := T.Dependencies.AddUnit('''+APackage.files[i].Unit_Name+''');' + LineEnding;
+            Result := Result + FilterStr;
+            end;
           end;
 
       for i := 0 to APackage.FileCount-1 do
         if (APackage.Files[i].FileType=pftUnit) then
           begin
           Found := False;
-          FppkgFileOptions := TFppkgPackageFileIDEOptions(APackage.Files[i].GetOptionsInstanceOf(TFppkgPackageFileIDEOptions));
-          FppkgFileOptions.ParseOptions;
 
           for j := 0 to VariantList.Count -1 do
             begin
@@ -143,34 +175,23 @@ begin
               if Variant.Items[k].PackageFiles.IndexOf(APackage.Files[i].GetShortFilename(False)) > -1 then
                 begin
                 Found := True;
-                //if (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
-                //  Result := Result + '    ' + GetComponentName(Variant.Items[k].Name) +'VariantItem.Targets.AddUnit('''+APackage.Files[i].GetShortFilename(False)+''');' + LineEnding;
-                //else
-                  Result := Result + '    ' + GetComponentName(Variant.Items[k].Name) +'VariantItem.Targets.AddImplicitUnit('''+APackage.Files[i].GetShortFilename(False)+''');' + LineEnding;
+                if ProcessTargetInfo(APackage.Files[i], 'T', FilterStr) then
+                  begin
+                  Result := Result + '    T := ' + GetComponentName(Variant.Items[k].Name) +'VariantItem.Targets.AddImplicitUnit('''+APackage.Files[i].GetShortFilename(False)+''');' + LineEnding;
+                  Result:=Result+FilterStr;
+                  end;
                 end;
               end;
             end;
 
           if not found then
             begin
-            //if (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
-            //  Result:=Result+'    T:=P.Targets.AddUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+LineEnding)
-            //else
+            if ProcessTargetInfo(APackage.Files[i], 'T', FilterStr) then
+              begin
               Result:=Result+'    T := P.Targets.AddImplicitUnit('''+APackage.Files[i].GetShortFilename(False)+''');'+LineEnding;
-              if (FppkgFileOptions.AvailableOnTargetCPUs <> []) then
-              begin
-                if FppkgFileOptions.AvailableOnAllTargetCPUs then
-                  Result:=Result+'    T.CPUs := AllCPUs - ['+CPUSToString(FppkgFileOptions.AvailableOnTargetCPUs)+'];'+LineEnding
-                else
-                  Result:=Result+'    T.CPUs := ['+CPUSToString(FppkgFileOptions.AvailableOnTargetCPUs)+'];'+LineEnding
+              Result:=Result+FilterStr;
               end;
-              if (FppkgFileOptions.AvailableOnTargetOSes <> []) then
-              begin
-                if FppkgFileOptions.AvailableOnAllTargetOSes then
-                  Result:=Result+'    T.OSes := AllOSes - ['+OSesToString(FppkgFileOptions.AvailableOnTargetOSes)+'];'+LineEnding
-                else
-                  Result:=Result+'    T.OSes := ['+OSesToString(FppkgFileOptions.AvailableOnTargetOSes)+'];'+LineEnding
-              end;
+
             end;
           end;
     finally
