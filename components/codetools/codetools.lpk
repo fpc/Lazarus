@@ -3,6 +3,7 @@
   <Package Version="4">
     <Name Value="CodeTools"/>
     <Type Value="RunAndDesignTime"/>
+    <BuildMethod Value="Both"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -168,6 +169,12 @@
         <Filename Value="memcheck.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MemCheck"/>
+        <CustomOptions Items="FPMake" Version="2">
+          <_FPMake Items="AllCPUs/AllOSes">
+            <_AllCPUs Value="False"/>
+            <_AllOSes Value="False"/>
+          </_FPMake>
+        </CustomOptions>
       </Item36>
       <Item37>
         <Filename Value="memcheck_laz.inc"/>
@@ -285,7 +292,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
 </CONFIG>
