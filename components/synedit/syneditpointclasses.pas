@@ -447,7 +447,7 @@ type
 
   TSynEditScreenCaretPainterSystem = class(TSynEditScreenCaretPainter)
   protected
-    //procedure BeginScroll(dx, dy: Integer; const rcScroll, rcClip: TRect); override;
+    procedure BeginScroll(dx, dy: Integer; const rcScroll, rcClip: TRect); override;
     procedure FinishScroll(dx, dy: Integer; const rcScroll, rcClip: TRect; Success: Boolean); override;
     procedure BeginPaint(rcClip: TRect); override;
     //procedure FinishPaint(rcClip: TRect); override; // unhide, currently done by editor
@@ -2778,6 +2778,19 @@ begin
 end;
 
 { TSynEditScreenCaretPainterSystem }
+
+procedure TSynEditScreenCaretPainterSystem.BeginScroll(dx, dy: Integer;
+  const rcScroll, rcClip: TRect);
+begin
+  {$IFDEF LCLGTK1}
+  HideCaret;
+  {$ENDIF}
+  {$IFDEF LCLGTK2}
+  HideCaret;
+  {$ENDIF}
+
+  inherited BeginScroll(dx, dy, rcScroll, rcClip);
+end;
 
 procedure TSynEditScreenCaretPainterSystem.FinishScroll(dx, dy: Integer; const rcScroll,
   rcClip: TRect; Success: Boolean);
