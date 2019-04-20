@@ -1585,7 +1585,7 @@ begin
     COLOR_SCROLLBAR:
       Result := NSColor.scrollBarColor;
     COLOR_BTNFACE:
-      Result := NSColor.controlColor;
+      Result := NSColor.controlBackgroundColor;
     COLOR_BTNSHADOW:
       Result := NSColor.controlShadowColor;
     COLOR_BTNHIGHLIGHT:
