@@ -732,6 +732,7 @@ begin
   end;
 
   TCocoaWSWinControl.DestroyHandle(AWinControl);
+  if Assigned(win) then win.release;
 end;
 
 
