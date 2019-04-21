@@ -8478,7 +8478,7 @@ begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
   rev := GetLazarusRevision;
-  if (rev = '') or (rev = 'Unknown') then
+  if (rev = '') or (rev = 'Unknown') or (rev = 'Unversioned directory') then
     NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString])
   else
     NewCaption := Format(lisLazarusEditorV + ' ' + lisLazarusSVNRev,
