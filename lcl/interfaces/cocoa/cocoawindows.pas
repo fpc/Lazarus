@@ -171,9 +171,6 @@ type
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     procedure flagsChanged(event: NSEvent); override;
-    // NSDraggingDestinationCategory
-    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
-    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
     // windows
     function makeFirstResponder(r: NSResponder): LCLObjCBoolean; override;
     // menu support
@@ -201,6 +198,7 @@ type
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
   public
+    wincallback: IWindowCallback;
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     preventKeyOnShow: Boolean;
     ownwin: NSWindow;
@@ -218,6 +216,9 @@ type
     procedure dealloc; override;
     procedure setHidden(aisHidden: LCLObjCBoolean); override;
     procedure didAddSubview(aview: NSView); override;
+    // NSDraggingDestinationCategory
+    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
   end;
 
 procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
@@ -1082,14 +1083,14 @@ begin
     inherited flagsChanged(event);
 end;
 
-function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
+function TCocoaWindowContent.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
 begin
   Result := NSDragOperationNone;
-  if (callback <> nil) and (callback.AcceptFilesDrag) then
+  if (wincallback <> nil) and (wincallback.AcceptFilesDrag) then
     Result := sender.draggingSourceOperationMask();
 end;
 
-function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
+function TCocoaWindowContent.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
 var
   draggedURLs{, lClasses}: NSArray;
   lFiles: array of string;
@@ -1124,8 +1125,8 @@ begin
     end;
   end;}
 
-  if (Length(lFiles) > 0) and (callback <> nil)  then
-    callback.DropFiles(lFiles);
+  if (Length(lFiles) > 0) and (wincallback <> nil)  then
+    wincallback.DropFiles(lFiles);
   Result := True;
 end;
 

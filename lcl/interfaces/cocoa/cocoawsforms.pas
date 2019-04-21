@@ -119,6 +119,7 @@ type
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); override;
 
+    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
@@ -293,6 +294,7 @@ begin
   cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cb.window := win;
   cnt.callback := cb;
+  cnt.wincallback := cb;
   cnt.preventKeyOnShow := true;
   TCocoaPanel(win).callback := cb;
 
@@ -446,7 +448,9 @@ end;
 
 function TLCLWindowCallback.AcceptFilesDrag: Boolean;
 begin
-  Result := Assigned(Target) and Assigned(TCustomForm(Target).OnDropFiles);
+  Result := Assigned(Target)
+    and TCustomForm(Target).AllowDropFiles
+    and Assigned(TCustomForm(Target).OnDropFiles);
 end;
 
 procedure TLCLWindowCallback.DropFiles(const FileNames: array of string);
@@ -617,6 +621,7 @@ begin
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cnt.callback := cb;
+  cnt.wincallback := cb;
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
@@ -670,17 +675,14 @@ begin
       {$endif}
     end;
 
-    cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
+    cnt.wincallback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
     // Don't call addChildWindow_ordered here because this function can cause
     // events to arrive for this window, creating a second call to TCocoaWSCustomForm.CreateHandle
     // while the first didn't finish yet, instead delay the call
     cnt.popup_parent := AParams.WndParent;
-
-    // support for drag & drop
-    win.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1));
 
     if IsFormDesign(AWinControl) then begin
       ds:=(TCocoaDesignOverlay.alloc).initWithFrame(cnt.frame);
@@ -693,7 +695,6 @@ begin
   end
   else
   begin
-    cnt.callback := TLCLCommonCallback.Create(cnt, AWinControl);
     if AParams.WndParent <> 0 then
     begin
       lDestView := GetNSObjectView(NSObject(AParams.WndParent));
@@ -844,6 +845,21 @@ class procedure TCocoaWSCustomForm.SetModalResult(const ACustomForm: TCustomForm
 begin
   if (CocoaWidgetSet.CurModalForm = NSView(ACustomForm.Handle).window) and (ANewValue <> 0) then
     CloseModal(ACustomForm);
+end;
+
+class procedure TCocoaWSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
+  AValue: Boolean);
+var
+  view : NSView;
+begin
+  if AForm.HandleAllocated then
+  begin
+    view := NSView(AForm.Handle);
+    if AValue then
+      view.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1))
+    else
+      view.unregisterDraggedTypes
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
