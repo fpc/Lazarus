@@ -37,6 +37,8 @@ type
 const
   EndOfLine: shortstring = LineEnding;
 
+function IsNumber(s: String): Boolean;
+
 // Functions for line endings
 function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): integer;
 function ChangeLineEndings(const s, NewLineEnding: string): string;
@@ -81,6 +83,16 @@ function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
 
 
 implementation
+
+function IsNumber(s: String): Boolean;
+var
+  i: Integer;
+begin
+  i := Length(s);
+  while (i >= 1) and (s[i] in ['0'..'9']) do
+    dec(i);
+  Result := i = 0;
+end;
 
 function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): integer;
 var

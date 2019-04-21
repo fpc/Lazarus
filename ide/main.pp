@@ -8478,11 +8478,11 @@ begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
   rev := GetLazarusRevision;
-  if (rev = '') or (rev = 'Unknown') or (rev = 'Unversioned directory') then
-    NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString])
-  else
+  if IsNumber(rev) then
     NewCaption := Format(lisLazarusEditorV + ' ' + lisLazarusSVNRev,
-                         [GetLazarusVersionString, rev]);
+                         [GetLazarusVersionString, rev])
+  else
+    NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
   NewTitle := NewCaption;
   if MainBarSubTitle <> '' then
     NewCaption := AddToCaption(NewCaption, MainBarSubTitle)
