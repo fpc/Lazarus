@@ -729,10 +729,11 @@ begin
     if Assigned(win.parentWindow) then
       win.parentWindow.removeChildWindow(win);
     win.close;
+    win.setContentView(nil);
+    win.release;
   end;
 
   TCocoaWSWinControl.DestroyHandle(AWinControl);
-  if Assigned(win) then win.release;
 end;
 
 
