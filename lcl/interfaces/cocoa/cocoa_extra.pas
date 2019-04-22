@@ -56,10 +56,18 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
+  NSAppearance = objcclass external(NSObject)
+    function name: NSString; message 'name';
+    class function currentAppearance: NSAppearance; message 'currentAppearance';
+  end;
+
   NSApplicationFix = objccategory external (NSApplication)
     procedure activateIgnoringOtherApps_(flag: ObjCBool); message 'activateIgnoringOtherApps:';
     function nextEventMatchingMask_untilDate_inMode_dequeue_(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: ObjCBool): NSEvent; message 'nextEventMatchingMask:untilDate:inMode:dequeue:';
     procedure postEvent_atStart_(event: NSEvent; flag: ObjCBool); message 'postEvent:atStart:';
+
+    function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
+    function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
   end;
 
   NSButtonFix = objccategory external(NSButton)
@@ -151,6 +159,8 @@ type
     procedure setHasShadow_(hasShadow_: ObjCBool); message 'setHasShadow:';
     procedure setIgnoresMouseEvents_(flag: ObjCBool); message 'setIgnoresMouseEvents:';
     {$endif}
+    // 10.14
+    function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
   end;
 
   NSTableColumnFix = objccategory external (NSTableColumn)
@@ -198,6 +208,8 @@ const
   NSAppKitVersionNumber10_10 = 1343;
   NSAppKitVersionNumber10_11 = 1404;
   NSAppKitVersionNumber10_12 = 1504;
+  NSAppKitVersionNumber10_13 = 1561;
+  NSAppKitVersionNumber10_14 = 1641.10;
 
 
 const

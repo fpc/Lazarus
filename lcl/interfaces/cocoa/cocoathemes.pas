@@ -22,7 +22,7 @@ uses
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   customdrawndrawers,
   // widgetset
-  CocoaUtils, CocoaGDIObjects;
+  CocoaUtils, CocoaGDIObjects, Cocoa_Extra;
   
 type
   { TCocoaThemeServices }
@@ -60,7 +60,92 @@ type
     function GetOption(AOption: TThemeOption): Integer; override;
   end;
 
+// "dark" is not a good reference, as Apple might add more and more themes
+function IsDarkPossible: Boolean; inline;
+
+// returns if the application appearance is set to dark
+function IsAppDark: Boolean;
+
+// returns if the window appearance is set to dark
+function IsWinDark(win: NSWindow): Boolean;
+
+// returns true, if currently drawn (Painted) UI control is in Dark theme.
+// The method would likely return FALSE outside of Paint event.
+function IsPaintDark: Boolean;
+
+// returns true, if Appear is assigned and bears name of Dark theme
+function IsAppearDark(Appear: NSAppearance): Boolean; inline;
+
+// weak-referenced NSAppearnceClass. Returns nil on any OS prior to 10.13
+function NSAppearanceClass: pobjc_class;
+
 implementation
+
+var
+  _NSAppearanceClass : pobjc_class = nil;
+  _NSAppearanceClassRead: Boolean = false;
+
+function NSAppearanceClass: pobjc_class;
+begin
+  if not _NSAppearanceClassRead then
+  begin
+    _NSAppearanceClass := objc_getClass('NSAppearance');
+    _NSAppearanceClassRead := true;
+  end;
+  Result := _NSAppearanceClass;
+end;
+
+function IsAppearDark(Appear: NSAppearance): Boolean; inline;
+begin
+  Result := Assigned(Appear)
+            and Appear.name.isEqualToString(NSSTR('NSAppearanceNameVibrantDark'))
+end;
+
+function IsDarkPossible: Boolean; inline;
+begin
+  Result := NSAppKitVersionNumber > NSAppKitVersionNumber10_12;
+end;
+
+function IsAppDark: Boolean;
+var
+  Appear: NSAppearance;
+begin
+  if not isDarkPossible then
+  begin
+    Result := false;
+    Exit;
+  end;
+  if (not NSApplication(NSApp).respondsToSelector(ObjCSelector('appearance'))) then begin
+    Result := false;
+    Exit;
+  end;
+
+  Result := IsAppearDark(NSApplication(NSApp).appearance);
+end;
+
+function IsWinDark(win: NSWindow): Boolean;
+begin
+  if not Assigned(win) or not isDarkPossible then
+  begin
+    Result := false;
+    Exit;
+  end;
+  if (not NSApplication(win).respondsToSelector(ObjCSelector('appearance'))) then begin
+    Result := false;
+    Exit;
+  end;
+
+  Result := IsAppearDark(win.appearance);
+end;
+
+function IsPaintDark: Boolean;
+var
+  cls : pobjc_class;
+begin
+  cls := NSAppearanceClass;
+  if not Assigned(cls) then Exit;
+  Result := IsAppearDark(objc_msgSend(cls, ObjCSelector('currentAppearance')));
+end;
 
 { TCocoaThemeServices }
 
