@@ -69,8 +69,8 @@ function IsAppDark: Boolean;
 // returns if the window appearance is set to dark
 function IsWinDark(win: NSWindow): Boolean;
 
+// Returns the appearance object that is active on the current thread.
 // returns true, if currently drawn (Painted) UI control is in Dark theme.
-// The method would likely return FALSE outside of Paint event.
 function IsPaintDark: Boolean;
 
 // returns true, if Appear is assigned and bears name of Dark theme
