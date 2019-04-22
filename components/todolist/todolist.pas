@@ -62,10 +62,10 @@ uses
   // FCL, RTL
   Classes, SysUtils, Math, StrUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
+  LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, XMLPropStorage,
   // LazUtils
-  LazUTF8Classes, LazFileUtils, LazFileCache, LazLoggerBase,
+  LazUTF8Classes, LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazTracer,
   // Codetools
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf

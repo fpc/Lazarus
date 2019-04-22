@@ -22,8 +22,14 @@ unit LldbDebugger;
 interface
 
 uses
-  Classes, SysUtils, math, DbgIntfDebuggerBase, DbgIntfBaseTypes, LazLoggerBase,
-  LazClasses, LazFileUtils, Maps, LCLProc, strutils, DebugProcess,
+  Classes, SysUtils, strutils, math,
+  // LazUtils
+  LazClasses, LazFileUtils, LazLoggerBase, LazStringUtils, Maps,
+  // DebuggerIntf
+  DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  // CmdLineDebuggerBase
+  DebugProcess,
+  // LazDebuggerLldb
   LldbInstructions, LldbHelper;
 
 type

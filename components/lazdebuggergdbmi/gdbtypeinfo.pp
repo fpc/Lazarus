@@ -35,8 +35,6 @@ interface
 
 uses
   Classes, SysUtils, math,
-  // LCL
-  LclProc,
   // LazUtils
   LazLoggerBase, LazStringUtils,
   // DebuggerIntf

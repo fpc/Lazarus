@@ -5,7 +5,11 @@ unit GDBMIDebugInstructions;
 interface
 
 uses
-  Classes, SysUtils, math, CmdLineDebugger, GDBMIMiscClasses, LazLoggerBase, LazClasses;
+  Classes, SysUtils, math,
+  // LazUtils
+  LazLoggerBase, LazClasses,
+  // LazDebuggerGdbmi
+  CmdLineDebugger, GDBMIMiscClasses;
 
 type
 

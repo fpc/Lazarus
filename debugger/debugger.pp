@@ -42,7 +42,8 @@ uses
   // LCL
   LCLProc,
   // LazUtils
-  Laz2_XMLCfg, LazFileUtils, LazLoggerBase, LazConfigStorage, LazClasses, Maps,
+  Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazLoggerBase, LazConfigStorage,
+  LazClasses, Maps,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase;
 

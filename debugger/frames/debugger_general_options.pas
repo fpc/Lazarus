@@ -27,9 +27,9 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   // LCL
-  Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, LCLProc,
+  Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache,
+  FileUtil, LazFileUtils, LazStringUtils, LazFileCache,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeIntf

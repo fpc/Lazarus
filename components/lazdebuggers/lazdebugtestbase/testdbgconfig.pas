@@ -21,7 +21,8 @@ unit TestDbgConfig;
 interface
 
 uses
-  Classes, SysUtils, LCLProc;
+  Classes, SysUtils,
+  LazStringUtils;
 
 var
   AppDir, ConfDir: String;

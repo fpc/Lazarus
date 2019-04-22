@@ -18,8 +18,15 @@ unit LldbInstructions;
 interface
 
 uses
-  SysUtils, math, Classes, LazLoggerBase, DbgIntfDebuggerBase, DbgIntfBaseTypes,
-  strutils, DebugInstructions, LldbHelper;
+  SysUtils, Classes, strutils,
+  // LazUtils
+  LazLoggerBase,
+  // DebuggerIntf
+  DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  // CmdLineDebuggerBase
+  DebugInstructions,
+  // LazDebuggerLldb
+  LldbHelper;
 
 type
 

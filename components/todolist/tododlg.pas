@@ -29,10 +29,14 @@ unit ToDoDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, ButtonPanel, Menus, Spin,
-  TodoList, ToDoListStrConsts, IDECommands, LCLType,
-  MenuIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf;
+  Classes, SysUtils,
+  // LCL
+  LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  Buttons, ButtonPanel, Menus, Spin,
+  // IdeIntf
+  IDECommands, MenuIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
+  // TodoList
+  TodoList, ToDoListStrConsts;
 
 type
 

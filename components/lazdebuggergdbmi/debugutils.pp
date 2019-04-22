@@ -35,7 +35,11 @@ unit DebugUtils;
 interface 
 
 uses
-  DbgIntfBaseTypes, Classes, LCLProc, LazUTF8;
+  Classes,
+  // LazUtils
+  LazLoggerBase, LazUTF8,
+  // DebuggerIntf
+  DbgIntfBaseTypes;
 
 type
 

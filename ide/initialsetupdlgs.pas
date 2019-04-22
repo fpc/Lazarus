@@ -40,19 +40,24 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils,
-  Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls, LCLProc,
-  pkgglobals, process,
-  fpmkunit,
+  // RTL + FCL
+  Classes, SysUtils, pkgglobals, process, fpmkunit,
+  // LCL
+  Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
   // LazUtils
-  FileUtil, LazUTF8, LazUTF8Classes, LazFileUtils, LazFileCache, LazLoggerBase,
-  // Other
-  MacroDefIntf, GDBMIDebugger, DbgIntfDebuggerBase, IDEDialogs,
-  TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEImagesIntf,
-  AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc, FppkgHelper,
+  FileUtil, LazUTF8, LazUTF8Classes, LazFileUtils, LazStringUtils, LazFileCache,
+  LazLoggerBase,
+  // IdeIntf
+  MacroDefIntf, IDEDialogs, IDEImagesIntf,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // LazDebuggerGdbmi
+  GDBMIDebugger,
+  // IDE
+  TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
+  AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc,
   {$IF FPC_FULLVERSION>30100}
   GenerateFppkgConfigurationDlg,
   {$ENDIF}

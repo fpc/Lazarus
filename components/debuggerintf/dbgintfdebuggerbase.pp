@@ -48,7 +48,7 @@ uses
   // LCL
   LCLProc,
   // LazUtils
-  LazClasses, LazLoggerBase, LazFileUtils, Maps, LazMethodList,
+  LazClasses, LazLoggerBase, LazFileUtils, LazStringUtils, Maps, LazMethodList,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal;
 

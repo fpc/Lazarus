@@ -57,16 +57,17 @@ uses
   Classes, SysUtils, strutils, math, fgl, Variants,
   // LCL
   Controls, Dialogs, Forms,
-  LCLProc,
   // LazUtils
-  FileUtil, LazUTF8, LazClasses, LazLoggerBase, Maps,
+  FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, Maps,
   // IdeIntf
   BaseIDEIntf,
   {$IFDEF Darwin}
   LazFileUtils,
   {$ENDIF}
-  DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal, GdbmiStringConstants;
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
+  // LazDebuggerGdbmi
+  DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses, GdbmiStringConstants;
 
 type
   TGDBMIProgramInfo = record
