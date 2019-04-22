@@ -519,7 +519,7 @@ end;
 function TFppkgHelper.GetConfigurationFileName: string;
 begin
   Result := '';
-  {$IF FPC_FULLVERSION>30100}
+  {$IF FPC_FULLVERSION>30200}
   if Assigned(FFPpkg) then
     Result:=FFPpkg.ConfigurationFilename;
   {$ENDIF}
