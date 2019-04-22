@@ -715,6 +715,9 @@ class procedure TCocoaWSCustomForm.DestroyHandle(const AWinControl: TWinControl
   );
 var
   win : NSWindow;
+  cb  : ICommonCallback;
+  obj : TObject;
+  wcb : TLCLWindowCallback;
 begin
   if not AWinControl.HandleAllocated then
     Exit;
@@ -730,6 +733,14 @@ begin
       win.parentWindow.removeChildWindow(win);
     win.close;
     win.setContentView(nil);
+    cb := win.lclGetCallback();
+    if Assigned(cb) then
+    begin
+      obj := cb.GetCallbackObject;
+      if (obj is TLCLWindowCallback) then
+        TLCLWindowCallback(obj).window := nil;
+    end;
+    win.lclClearCallback();
     win.release;
   end;
 
