@@ -6647,12 +6647,11 @@ function TGtk2WidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType : Cardinal): integer;
 var Dialog, ALabel : PGtkWidget;
     ButtonCount, DefButton, ADialogResult : Integer;
-    DialogType : Cardinal;
 
     procedure CreateButton(const ALabel : PChar; const RetValue : integer);
     var AButton : PGtkWidget;
     begin
-      AButton:= gtk_button_new_with_label(ALabel);
+      AButton:= gtk_button_new_with_mnemonic(Ampersands2Underscore(ALabel));
       Inc(ButtonCount);
       if ButtonCount = DefButton then begin
         gtk_window_set_focus(PGtkWindow(Dialog), AButton);
@@ -6683,45 +6682,39 @@ begin
   gtk_window_set_default_size(PGtkWindow(Dialog), 100, 100);
   ALabel:= gtk_label_new(lpText);
   gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.vbox), ALabel);
-  DialogType:= (uType and $0000000F);
-  if DialogType = MB_OKCANCEL
-  then begin
-    CreateButton(PChar(rsMbOK), IDOK);
-    CreateButton(PChar(rsMbCancel), IDCANCEL);
-  end
-  else begin
-    if DialogType = MB_ABORTRETRYIGNORE
-    then begin
-      CreateButton(PChar(rsMbAbort), IDABORT);
-      CreateButton(PChar(rsMbRetry), IDRETRY);
-      CreateButton(PChar(rsMbIgnore), IDIGNORE);
-    end
-    else begin
-      if DialogType = MB_YESNOCANCEL
-      then begin
+  case (uType and $0000000F) of
+    MB_OKCANCEL:
+      begin
+        CreateButton(PChar(rsMbOK), IDOK);
+        CreateButton(PChar(rsMbCancel), IDCANCEL);
+      end;
+    MB_ABORTRETRYIGNORE:
+      begin
+        CreateButton(PChar(rsMbAbort), IDABORT);
+        CreateButton(PChar(rsMbRetry), IDRETRY);
+        CreateButton(PChar(rsMbIgnore), IDIGNORE);
+      end;
+    MB_YESNOCANCEL:
+      begin
         CreateButton(PChar(rsMbYes), IDYES);
         CreateButton(PChar(rsMbNo), IDNO);
         CreateButton(PChar(rsMbCancel), IDCANCEL);
-      end
-      else begin
-        if DialogType = MB_YESNO
-        then begin
-          CreateButton(PChar(rsMbYes), IDYES);
-          CreateButton(PChar(rsMbNo), IDNO);
-        end
-        else begin
-          if DialogType = MB_RETRYCANCEL
-          then begin
-            CreateButton(PChar(rsMbRetry), IDRETRY);
-            CreateButton(PChar(rsMbCancel), IDCANCEL);
-          end
-          else begin
-            { We have no buttons to show. Create the default of OK button }
-            CreateButton(PChar(rsMbOK), IDOK);
-          end;
-        end;
       end;
-    end;
+    MB_YESNO:
+      begin
+        CreateButton(PChar(rsMbYes), IDYES);
+        CreateButton(PChar(rsMbNo), IDNO);
+      end;
+    MB_RETRYCANCEL:
+      begin
+        CreateButton(PChar(rsMbRetry), IDRETRY);
+        CreateButton(PChar(rsMbCancel), IDCANCEL);
+      end;
+    else
+      begin
+        { We have no buttons to show. Create the default of OK button }
+        CreateButton(PChar(rsMbOK), IDOK);
+      end;
   end;
   gtk_window_set_title(PGtkWindow(Dialog), lpCaption);
   gtk_window_set_position(PGtkWindow(Dialog), GTK_WIN_POS_CENTER);
