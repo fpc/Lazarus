@@ -277,12 +277,20 @@ begin
   Result := '';
 
   if Lang = '' then
-    for i := 1 to Paramcount - 1 do
-      if (ParamStrUTF8(i) = '--LANG') or (ParamStrUTF8(i) = '-l') or
-        (ParamStrUTF8(i) = '--lang') then
-        Lang := ParamStrUTF8(i + 1);
+    for i := 1 to ParamCount do
+      if (ParamStrUTF8(i) = '-l') or (UTF8LowerCase(ParamStrUTF8(i)) = '--lang') then
+      begin
+        if i < ParamCount then
+          Lang := ParamStrUTF8(i + 1);
+      end
+      else
+        if UTF8StartsText('--lang=', UTF8LowerCase(ParamStrUTF8(i))) then
+        begin
+          Lang := ParamStrUTF8(i);
+          UTF8Delete(Lang, 1, Length('--lang='));
+        end;
 
-  //Win32 user may decide to override locale with LANG variable.
+  //User can decide to override locale with LANG variable.
   if Lang = '' then
     Lang := GetEnvironmentVariableUTF8('LANG');
 
