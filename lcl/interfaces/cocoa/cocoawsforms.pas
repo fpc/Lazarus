@@ -683,15 +683,6 @@ begin
     // events to arrive for this window, creating a second call to TCocoaWSCustomForm.CreateHandle
     // while the first didn't finish yet, instead delay the call
     cnt.popup_parent := AParams.WndParent;
-
-    if IsFormDesign(AWinControl) then begin
-      ds:=(TCocoaDesignOverlay.alloc).initWithFrame(cnt.frame);
-      ds.callback := cnt.callback;
-      ds.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
-      cnt.addSubview_positioned_relativeTo(ds, NSWindowAbove, nil);
-      cnt.overlay := ds;
-    end;
-
   end
   else
   begin
@@ -706,6 +697,24 @@ begin
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);
     end;
+  end;
+
+  if IsFormDesign(AWinControl) then begin
+    ds:=(TCocoaDesignOverlay.alloc).initWithFrame(cnt.frame);
+    ds.callback := cnt.callback;
+    ds.setFrame( NSMakeRect(0,0, cnt.frame.size.width, cnt.frame.size.height));
+    ds.setAutoresizingMask(
+      //NSViewWidthSizable or NSViewHeightSizable
+      NSViewMinXMargin
+      or NSViewWidthSizable
+      or NSViewMaxXMargin
+      or NSViewMinYMargin
+      or NSViewHeightSizable
+      or NSViewMaxYMargin
+    );
+
+    cnt.addSubview_positioned_relativeTo(ds, NSWindowAbove, nil);
+    cnt.overlay := ds;
   end;
 
   Result := TLCLIntfHandle(cnt);
