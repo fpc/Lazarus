@@ -583,7 +583,6 @@ begin
     end;
 
     //debugln(['TheFileName=',TheFileName,' len=',OriginalFile.SourceLength,' Cnt=',OriginalFile.LineCount,' TempSearch=',TempSearch]);
-    ProcessMessages;
 
     NewMatchEndPos:=1;
     repeat
@@ -945,15 +944,15 @@ begin
 
   DisplayFileName := FileName;
   //DebugLn(['TSearchForm.UpdateProgress DisplayFileName="',dbgstr(DisplayFileName),'"']);
-  lblProgress.Caption:= DisplayFileName;
-  while (lblProgress.Left + lblProgress.Width)> lblProgress.Parent.ClientWidth-12 do
+  while (lblProgress.Left + lblProgress.Canvas.TextWidth(DisplayFileName)) > lblProgress.Parent.ClientWidth-12 do
   begin
     ShorterFileName:= PadAndShorten(DisplayFileName);
     if ShorterFileName=DisplayFileName then break;
     DisplayFileName:=ShorterFileName;
     //DebugLn(['TSearchForm.UpdateProgress Padded DisplayFileName="',dbgstr(DisplayFileName),'"']);
-    lblProgress.Caption := DisplayFileName;
   end;
+  lblProgress.Caption := DisplayFileName;
+  Application.ProcessMessages;
 end;
 
 procedure TSearchProgressForm.SearchFile(const aFilename: string);
