@@ -1339,7 +1339,7 @@ begin
     NewMatrix.x0 := 0.0;
     NewMatrix.y0 := 0.0;
     pango_matrix_translate(@NewMatrix, X, Y);
-    pango_matrix_rotate(@NewMatrix, AFont^.LogFont.lfEscapement div 10);
+    pango_matrix_rotate(@NewMatrix, AFont^.LogFont.lfEscapement / 10);
 
     pango_context_set_matrix(WidgetCont, @NewMatrix);
     pango_layout_context_changed(AFont^.GDIFontObject);

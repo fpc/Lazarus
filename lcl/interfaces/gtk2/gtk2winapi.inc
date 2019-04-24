@@ -2530,16 +2530,16 @@ var
     var TextLeft,TextTop: Integer);
   var
     OffsX, OffsY: integer;
-    Angle: Integer;
+    Angle: Double;
     Size: TSize;
     R: TRect;
   begin
     R := SavedRect;
     OffsX := R.Right - R.Left;
     OffsY := R.Bottom - R.Top;
-    Size.cX := OffsX;
+    Size.cx := OffsX;
     Size.cy := OffsY;
-    Angle := AFontAngle div 10;
+    Angle := AFontAngle / 10;
     if Angle < 0 then
       Angle := 360 + Angle;
 
