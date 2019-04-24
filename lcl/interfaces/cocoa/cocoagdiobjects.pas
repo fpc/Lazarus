@@ -2936,6 +2936,7 @@ const
   );
 var
   ACallBacks: CGPatternCallbacks;
+  CGDataProvider: CGDataProviderRef;
 begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
@@ -2944,7 +2945,9 @@ begin
     if (FBitmap <> nil) then FBitmap.Release;
     FBitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
     if FImage <> nil then CGImageRelease(FImage);
-    FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
+    CGDataProvider := CGDataProviderCreateWithData(nil, @HATCH_DATA[AHatch], 8, nil);
+    FImage := CGImageMaskCreate(8, 8, 1, 1, 1, CGDataProvider, nil, 0);
+    CGDataProviderRelease(CGDataProvider);
     FColored := False;
     if FCGPattern <> nil then CGPatternRelease(FCGPattern);
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
