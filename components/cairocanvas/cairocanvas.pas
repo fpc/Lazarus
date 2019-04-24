@@ -246,9 +246,9 @@ begin
       cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
     end;
     pmCopy: cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
-    pmXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
+ {   pmXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
     pmNotXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
-{    pmNop,
+    pmNop,
     pmNot,
     pmCopy,
     pmNotCopy,
@@ -1614,7 +1614,10 @@ end;
 function TCairoSvgCanvas.CreateCairoHandle: HDC;
 begin
   //Sizes are in Points, 72DPI (1pt = 1/72")
-  sf := cairo_svg_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
+  if fStream<>nil then
+    sf := cairo_svg_surface_create_for_stream(@WriteToStream, fStream, PaperWidth*ScaleX, PaperHeight*ScaleY)
+  else
+    sf := cairo_svg_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
   result := {%H-}HDC(cairo_create(sf));
 end;
 
