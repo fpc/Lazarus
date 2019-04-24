@@ -185,6 +185,7 @@ type
     FOwner: TCocoaComboBox;
     FReadOnlyOwner: TCocoaReadOnlyComboBox;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+    procedure Changed; override;
   public
     // Pass only 1 owner and nil for the other ones
     constructor Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
@@ -1141,6 +1142,9 @@ var
   track: NSTrackingArea;
 begin
   inherited InsertItem(Index, S, O);
+
+  if FOwner <> nil then FOwner.noteNumberOfItemsChanged;
+
   if FReadOnlyOwner =nil then Exit;
 
   // Adding an item with its final name will cause it to be deleted,
@@ -1178,9 +1182,16 @@ begin
 
 end;
 
+procedure TCocoaComboBoxList.Changed;
+begin
+  inherited Changed;
+  if Assigned(FOwner) then FOwner.reloadData;
+end;
+
 procedure TCocoaComboBoxList.Delete(Index: Integer);
 begin
   inherited Delete(Index);
+  if FOwner <> nil then FOwner.noteNumberOfItemsChanged;
   if FReadOnlyOwner = nil then Exit;
   if (Index>=0) and (Index < FReadOnlyOwner.numberOfItems) then
     FReadOnlyOwner.removeItemAtIndex(Index);
@@ -1257,10 +1268,17 @@ end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
   row: NSInteger):id;
+var
+  ns : NSString;
 begin
-  if not Assigned(list) or (row<0) or (row>=list.Count)
-    then Result:=nil
-    else Result:=NSStringUtf8(list[row]);
+  if not Assigned(list) or (row<0) or (row>=list.Count) then
+    Result:=nil
+  else
+  begin
+    ns := NSStringUtf8(list[row]);
+    Result := ns;
+    ns.autorelease;
+  end;
 end;
 
 function TCocoaComboBox.comboBox_indexOfItemWithStringValue(
