@@ -603,8 +603,8 @@ begin
   WriteLn('[TCocoaWSCustomTabControl.UpdateProperties] ACustomPage='+IntToStr(PtrInt(ACustomPage)));
   {$ENDIF}
   if not Assigned(ACustomPage) or not ACustomPage.HandleAllocated then Exit;
-  lTabPage := TCocoaTabPage(ACustomPage.Handle);
-  SetProperties(ACustomPage, lTabPage);
+  lTabPage := GetCocoaTabPageFromHandle(ACustomPage.Handle);
+  if Assigned(lTabPage) then SetProperties(ACustomPage, lTabPage);
 end;
 
 class procedure TCocoaWSCustomPage.SetProperties(
