@@ -366,7 +366,7 @@ function TRunParamsOptions.Load(XMLConfig: TXMLConfig; const Path: string;
 var
   Cnt, I: Integer;
   NewMode: TRunParamsOptionsMode;
-  ModePath: string;
+  ModePath, NewActiveModeName: string;
 begin
   //don't clear!  needed for merging lpi and lps
 
@@ -385,7 +385,11 @@ begin
 
   if ASaveIn=rpsLPS then
   begin
-    ActiveModeName := XMLConfig.GetValue(Path + 'Modes/ActiveMode', '');
+    NewActiveModeName := XMLConfig.GetValue(Path + 'Modes/ActiveMode', '');
+    // sanity check -> modes from LPI could be modified independently on LPS and
+    // NewActiveModeName doesn't have to exist any more
+    if Assigned(Find(NewActiveModeName)) then
+      ActiveModeName := NewActiveModeName;
     if (GetActiveMode=nil) and (Count>0) then
       ActiveModeName := Modes[0].Name;
   end;
