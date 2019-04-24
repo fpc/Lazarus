@@ -688,7 +688,6 @@ begin
   Result := nil;
   if ATabControl = nil then Exit;
   if not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   Result := TCocoaTabControl(ATabControl.Handle);
 end;
 
@@ -698,23 +697,16 @@ var
   lTabControl: TCustomTabControl = nil;
   lTabStyle: NSTabViewType = NSTopTabsBezelBorder;
 begin
-  if (AWinControl is TPageControl) then
+  lTabControl := TCustomTabControl(AWinControl);
+  lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
+  lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
+  lControl.setTabViewType(lTabStyle);
+  lControl.lclEnabled := AWinControl.Enabled;
+  Result := TLCLIntfHandle(lControl);
+  if Result <> 0 then
   begin
-    lTabControl := TCustomTabControl(AWinControl);
-    lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
-    lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
-    lControl.setTabViewType(lTabStyle);
-    lControl.lclEnabled := AWinControl.Enabled;
-    Result := TLCLIntfHandle(lControl);
-    if Result <> 0 then
-    begin
-      lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
-      lControl.setDelegate(lControl);
-    end;
-  end
-  else
-  begin
-    Result := TCocoaWSCustomGroupBox.CreateHandle(AWinControl, AParams);
+    lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
+    lControl.setDelegate(lControl);
   end;
 end;
 
@@ -727,7 +719,6 @@ begin
   WriteLn('[TCocoaWSCustomTabControl.AddPage] AChild='+IntToStr(PtrInt(AChild)));
   {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
@@ -746,7 +737,6 @@ var
   lTabPage: TCocoaTabPage;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
@@ -762,7 +752,6 @@ var
   lTabPage: NSTabViewItem;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lTabPage := NSTabViewItem(lTabControl.fulltabs.objectAtIndex(AIndex));
@@ -778,7 +767,6 @@ var
 begin
   Result := -1;
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   pt.x := Round(AClientPos.x + lTabControl.contentRect.origin.x);
@@ -807,7 +795,6 @@ begin
   WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
   {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   if (AIndex<0) or (AIndex>=ATabControl.PageCount) then Exit;
   tb := TCocoaTabPageView(ATabControl.Page[AIndex].Handle);
   if not Assigned(tb) then Exit;
@@ -826,7 +813,6 @@ var
   lOldTabStyle, lTabStyle: NSTabViewType;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
@@ -840,7 +826,6 @@ var
   lOldTabStyle, lTabStyle: NSTabViewType;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
