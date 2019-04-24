@@ -99,6 +99,7 @@ type
        const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
        WithThemeSpace: Boolean); override;
 
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TCocoaWSCustomListBox }
@@ -153,6 +154,8 @@ type
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
     class procedure Paste(const ACustomEdit: TCustomEdit); override;
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
+
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
   
   { TCocoaMemoStrings }
@@ -330,6 +333,12 @@ function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
 procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
+
+// Sets the control text and then calls controls callback (if any)
+// with TextChange (CM_TEXTCHANGED) event.
+// Cocoa control do not fire a notification, if text is changed programmatically
+// LCL expects a change notification in either way. (by software or by user)
+procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
 
 implementation
 
@@ -1088,6 +1097,13 @@ begin
   NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), nil, id(ACustomEdit.Handle));
 end;
 
+class procedure TCocoaWSCustomEdit.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+  if (AWinControl.HandleAllocated) then
+    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
+end;
+
 { TCocoaMemoStrings }
 
 constructor TCocoaMemoStrings.Create(ATextView: TCocoaTextView);
@@ -1790,6 +1806,13 @@ begin
   // once it's resolved, TCocoaWSCustomComboBox.GetPreferredSize could be removed
 end;
 
+class procedure TCocoaWSCustomComboBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+  if (AWinControl.HandleAllocated) then
+    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
+end;
+
 { TCocoaWSToggleBox }
 
 class function TCocoaWSToggleBox.CreateHandle(const AWinControl:TWinControl;
@@ -2102,6 +2125,16 @@ begin
   view := GetListBox(ACustomListBox);
   if not Assigned(view) then Exit();
   view.scrollRowToVisible(NewTopIndex);
+end;
+
+procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
+var
+  cb: ICommonCallBack;
+begin
+  SetNSControlValue(ctrl, text);
+  cb := ctrl.lclGetcallback;
+  if Assigned(cb) then // cb.SendOnChange;
+    cb.SendOnTextChanged;
 end;
 
 end.

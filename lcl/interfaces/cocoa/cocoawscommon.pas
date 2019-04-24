@@ -1747,15 +1747,12 @@ end;
 class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
 var
   obj: NSObject;
-  text:string;
 begin
   if not AWinControl.HandleAllocated then
     Exit;
   obj := NSObject(AWinControl.Handle);
-  text:=AText;
-  DeleteAmpersands(text);
   if obj.isKindOfClass_(NSControl) then
-    SetNSControlValue(NSControl(obj), text);
+    SetNSControlValue(NSControl(obj), AText);
 end;
 
 class function TCocoaWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
