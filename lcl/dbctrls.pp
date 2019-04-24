@@ -672,6 +672,7 @@ Type
     property BorderSpacing;
     property Caption;
     property Color;
+    property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DoubleBuffered;
@@ -780,6 +781,7 @@ Type
     property BorderStyle;
     property CharCase;
     property Color;
+    property Constraints;
     property DataField;
     property DataSource;
     property DoubleBuffered;
@@ -1240,6 +1242,7 @@ Type
     property Field: TField read GetField;
   published
     property BorderSpacing;
+    property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
 
@@ -1434,6 +1437,7 @@ type
     property ClientHeight;
     property ClientWidth;
     property Color default clBackground;
+    property Constraints;
     property ConfirmDelete;
     property DataSource;
     property Direction;
