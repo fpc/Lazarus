@@ -1,12 +1,11 @@
 object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   Left = 341
   Height = 420
-  Top = 320
-  Width = 481
-  AutoSize = True
+  Top = 318
+  Width = 645
   Caption = 'Compiler Options'
   ClientHeight = 420
-  ClientWidth = 481
+  ClientWidth = 645
   Constraints.MinHeight = 194
   Constraints.MinWidth = 390
   OnClose = FormClose
@@ -20,9 +19,9 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 400
-    Height = 28
-    Top = 386
+    Left = 564
+    Height = 29
+    Top = 385
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -33,29 +32,30 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     Constraints.MinWidth = 75
     Default = True
     Kind = bkClose
-    TabOrder = 0
+    TabOrder = 1
   end
   object PageControl1: TPageControl
     AnchorSideBottom.Control = CloseButton
-    Left = 0
-    Height = 380
-    Top = 0
-    Width = 481
+    Left = 6
+    Height = 373
+    Top = 6
+    Width = 633
     ActivePage = CmdLineParamsTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     TabIndex = 0
-    TabOrder = 1
+    TabOrder = 0
     object CmdLineParamsTabSheet: TTabSheet
       Caption = 'CmdLineParams'
-      ClientHeight = 351
-      ClientWidth = 477
+      ClientHeight = 342
+      ClientWidth = 629
       object CmdLineMemo: TMemo
         AnchorSideBottom.Control = RelativePathsCheckBox
         Left = 6
-        Height = 315
+        Height = 306
         Top = 6
-        Width = 465
+        Width = 617
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
@@ -71,8 +71,8 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 24
-        Top = 327
-        Width = 155
+        Top = 318
+        Width = 184
         Anchors = [akLeft, akBottom]
         Caption = 'RelativePathsCheckBox'
         Checked = True
@@ -85,10 +85,10 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = RelativePathsCheckBox
         AnchorSideBottom.Side = asrBottom
-        Left = 176
+        Left = 205
         Height = 24
-        Top = 327
-        Width = 128
+        Top = 318
+        Width = 151
         BorderSpacing.Left = 15
         Caption = 'MultilineCheckBox'
         Checked = True
@@ -99,8 +99,8 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     end
     object InheritedParamsTabSheet: TTabSheet
       Caption = 'InheritedParams'
-      ClientHeight = 351
-      ClientWidth = 477
+      ClientHeight = 342
+      ClientWidth = 629
       object InhTreeView: TTreeView
         Left = 0
         Height = 287
