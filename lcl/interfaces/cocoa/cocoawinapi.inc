@@ -1549,6 +1549,11 @@ begin
 end;
 
 function SysColorToNSColor(nIndex: Integer): NSColor;
+const
+  ToolTipBack     = $C9FCF9;
+  ToolTipBack1010 = $EDEDED;
+  ToolTipBack1014 = $f0f0f0;
+  ToolTipBack1014Dark = $343434;
 begin
   case NIndex of
     COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION,
@@ -1572,7 +1577,7 @@ begin
       Result := NSColor.selectedTextBackgroundColor;
     COLOR_MENUHILIGHT:
       Result := NSColor.selectedMenuItemColor;
-    COLOR_INFOTEXT, COLOR_WINDOWTEXT:
+    COLOR_WINDOWTEXT:
       Result := NSColor.controlTextColor;
     COLOR_APPWORKSPACE:
       Result := NSColor.windowBackgroundColor;
@@ -1598,8 +1603,27 @@ begin
       Result := NSColor.controlDarkShadowColor;
     COLOR_3DLIGHT:
       Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
+
+    // macOS doesn't provide any API to get the hint window colors.
+    // default = macosx10.4 yellow color. (See InitInternals below)
+    // it's likely the tooltip color will change in future.
+    // Thus the variable is left public, so a user of LCL
+    // would be able to initialize it properly on start
+    COLOR_INFOTEXT:
+      Result := NSColor.controlTextColor;
     COLOR_INFOBK:
-      Result := ColorToNSColor(ColorToolTip);
+    begin
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+      begin
+        if IsPaintDark then
+          Result := ColorToNSColor(ToolTipBack1014Dark)
+        else
+          Result := ColorToNSColor(ToolTipBack1014);
+      end else if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
+        Result := ColorToNSColor(ToolTipBack1010)
+      else
+        Result := ColorToNSColor(ToolTipBack);
+    end;
   else
     Result := nil;
   end;

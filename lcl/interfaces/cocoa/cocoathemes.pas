@@ -85,6 +85,10 @@ var
   _NSAppearanceClass : pobjc_class = nil;
   _NSAppearanceClassRead: Boolean = false;
 
+const
+  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
+  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
+
 function NSAppearanceClass: pobjc_class;
 begin
   if not _NSAppearanceClassRead then
@@ -98,7 +102,11 @@ end;
 function IsAppearDark(Appear: NSAppearance): Boolean; inline;
 begin
   Result := Assigned(Appear)
-            and Appear.name.isEqualToString(NSSTR('NSAppearanceNameVibrantDark'))
+            and (
+            Appear.name.isEqualToString(NSSTR(DarkName))
+            or
+            Appear.name.isEqualToString(NSSTR(DarkNameVibrant))
+            )
 end;
 
 function IsDarkPossible: Boolean; inline;

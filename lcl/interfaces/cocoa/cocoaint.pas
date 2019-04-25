@@ -207,11 +207,6 @@ var
   CocoaBasePPI : Integer = 96; // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   MainPool : NSAutoreleasePool = nil;
 
-  ColorToolTip : TColorRef = $C9FCF9; // default = macosx10.4 yellow color. (See InitInternals below)
-                                      // it's likely the tooltip color will change in future.
-                                      // Thus the variable is left public, so a user of LCL
-                                      // would be able to initialize it properly on start
-
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
@@ -524,14 +519,6 @@ begin
   // MacOSX 10.6 reports a lot of warnings during initialization process
   // adding the autorelease pool for the whole Cocoa widgetset
   MainPool := NSAutoreleasePool.alloc.init;
-
-  // Apple doesn't provide any reasonable way of aquiring tooltip bk color
-  // todo: The tooltip color could be different depending on "light" or "dark"
-  //       mode selected in the system. Thus actual Theme Drawing should be used
-  //       and implemeneted.
-  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
-    ColorTooltip := $EDEDED;
-
 end;
 
 procedure InternalFinal;
