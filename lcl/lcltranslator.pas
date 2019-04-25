@@ -94,7 +94,7 @@ var
 
 function FindLocaleFileName(LCExt: string; Lang: string; Dir: string; LocaleFileName: string): string;
 var
-  T: string;
+  T, CurParam: string;
   i: integer;
 
   function GetLocaleFileName(const LangID, LCExt: string; Dir: string; LocaleFileName: string): string;
@@ -278,17 +278,20 @@ begin
 
   if Lang = '' then
     for i := 1 to ParamCount do
-      if (ParamStrUTF8(i) = '-l') or (UTF8LowerCase(ParamStrUTF8(i)) = '--lang') then
+    begin
+      CurParam := ParamStrUTF8(i);
+      if (CurParam = '-l') or (UTF8LowerCase(CurParam) = '--lang') then
       begin
         if i < ParamCount then
           Lang := ParamStrUTF8(i + 1);
       end
       else
-        if UTF8StartsText('--lang=', UTF8LowerCase(ParamStrUTF8(i))) then
+        if UTF8StartsText('--lang=', CurParam) then
         begin
-          Lang := ParamStrUTF8(i);
+          Lang := CurParam;
           UTF8Delete(Lang, 1, Length('--lang='));
         end;
+    end;
 
   //User can decide to override locale with LANG variable.
   if Lang = '' then
