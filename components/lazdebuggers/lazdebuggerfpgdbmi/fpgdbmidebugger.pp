@@ -94,6 +94,7 @@ type
     property CurrentCommand;
     property TargetPID;
   protected
+    procedure ClearWatchEvalList;
     procedure DoWatchFreed(Sender: TObject);
     function EvaluateExpression(AWatchValue: TWatchValue;
                                 AExpression: String;
@@ -347,7 +348,7 @@ end;
 
 procedure TFpGDBMIDebuggerCommandEvaluate.DoCancel;
 begin
-  FOwner.FpDebugger.FWatchEvalList.Clear;
+  FOwner.FpDebugger.ClearWatchEvalList;
   FOwner.FEvaluationCmdObj := nil;
   inherited DoCancel;
 end;
@@ -735,13 +736,8 @@ begin
   if OldState in [dsPause, dsInternalPause] then begin
     for i := 0 to MAX_CTX_CACHE-1 do
       ReleaseRefAndNil(FLastContext[i]);
-    if not(State in [dsPause, dsInternalPause]) then begin
-      for i := 0 to FWatchEvalList.Count - 1 do begin
-        TWatchValue(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
-        //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
-      end;
-      FWatchEvalList.Clear;
-    end;
+    if not(State in [dsPause, dsInternalPause]) then
+      ClearWatchEvalList;
   end;
 end;
 
@@ -948,6 +944,17 @@ begin
   move(FLastContext[0], FLastContext[1], (MAX_CTX_CACHE-1) + SizeOf(FLastContext[0]));
   FLastContext[0] := Result;
   // TODO Result.AddReference;
+end;
+
+procedure TFpGDBMIDebugger.ClearWatchEvalList;
+var
+  i: Integer;
+begin
+  for i := 0 to FWatchEvalList.Count - 1 do begin
+    TWatchValue(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
+    //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
+  end;
+  FWatchEvalList.Clear;
 end;
 
 type
@@ -1164,6 +1171,7 @@ destructor TFpGDBMIDebugger.Destroy;
 begin
   CurrentDebugger := nil;
   UnLoadDwarf;
+  ClearWatchEvalList;
   FWatchEvalList.Free;
   inherited Destroy;
 end;
