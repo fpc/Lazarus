@@ -377,6 +377,7 @@ type
     FSize: TSize;
     FViewPortOfs: TPoint;
     FWindowOfs: TPoint;
+    boxview : NSBox; // the view is used to draw Frame3d
     function GetFont: TCocoaFont;
     function GetTextColor: TColor;
     procedure SetBkColor(AValue: TColor);
@@ -1650,7 +1651,7 @@ begin
 
   if Assigned(ctx) then
     ctx.release;
-
+  if Assigned(boxview) then boxview.release;
   inherited Destroy;
 end;
 
@@ -2013,53 +2014,42 @@ end;
 
 procedure TCocoaContext.Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
 var
-  {$ifdef CocoaUseHITheme}
-  I, D: Integer;
-  DrawInfo: HIThemeGroupBoxDrawInfo;
-  {$else}
-  lCanvas: TCanvas;
-  lDrawer: TCDDrawer;
-  sz : TSize;
-  {$endif}
+  dx,dy: integer;
+  ns : NSRect;
+  r  : TRect;
 begin
-  {$ifdef CocoaUseHITheme}
-  if Style = bvRaised then
+  if Style = bvNone then Exit;
+
+  if (Style = bvRaised) or (Style = bvLowered) then
   begin
-    GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
-
-    // draw frame as group box
-    DrawInfo.version := 0;
-    DrawInfo.state := kThemeStateActive;
-    DrawInfo.kind := kHIThemeGroupBoxKindPrimary;
-
-    for I := 1 to FrameWidth do
+    if not Assigned(boxview) then
     begin
-      HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo, CGContext, kHIThemeOrientationNormal);
-      InflateRect(ARect, -D, -D);
+      boxview := NSBox.alloc.initWithFrame(NSMakeRect(0,0,0,0));
+      boxview.setTitle(NSString.string_);
+      boxview.setTitlePosition(NSNoTitle);
     end;
-  end;
-  {$else}
-  lCanvas := TCanvas.Create;
-  try
-    lDrawer := GetDrawer(dsMacOSX);
-    lCanvas.Handle := HDC(Self);
 
-    // drawer seems to be using the additional pixel in size
-    // see bug #35172
-    // why is this "custom drawer" is being used anyway?!
-    // it's much faster to draw the 3d frame directly or use the themes
+    dx:=3; // layout<->frame adjustement for the box
+    dy:=3; // (should be aquired using 10.7 apis)
+    if Style=bvRaised then
+      boxview.setBoxType(NSBoxPrimary)
+    else
+      boxview.setBoxType(NSBoxSecondary);
+    r:=ARect;
+    InflateRect(r, dx, dy);
+    dec(r.Bottom);
+    dec(r.Right);
+    ns := RectToNSRect(r);
+    // used for size only, position is ignored
+    boxview.setFrame(ns);
+    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, ns.origin.y);
 
-    sz := Types.Size(ARect);
-    dec(sz.cx);
-    dec(sz.cy);
-    lDrawer.DrawFrame3D(lCanvas, Types.Point(ARect.Left, ARect.Top),
-      sz, FrameWidth, Style);
-    InflateRect(ARect, -FrameWidth, -FrameWidth);
-  finally
-    lCanvas.Handle := 0;
-    lCanvas.Free;
+    boxview.displayRectIgnoringOpacity_inContext(
+      NSMakeRect(0,0,ns.size.width, ns.size.height)
+      , ctx);
+
+    CGContextTranslateCTM(ctx.lclCGContext, -ns.origin.x, -ns.origin.y);
   end;
-  {$endif}
   AttachedBitmap_SetModified();
 end;
 
