@@ -769,6 +769,9 @@ class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
 var
   res : Boolean;
   mnu : NSMenuItem;
+  view : NSView;
+  w : NSWindow;
+  px, py: Integer;
 begin
   if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then
   begin
@@ -781,8 +784,21 @@ begin
     end;}
 
     // New method for 10.6+
+    px := x;
+    py := y;
+    view := nil;
+    w :=NSApp.keyWindow;
+    if Assigned(w) then
+    begin
+      view := w.contentView;
+      if Assigned(view) then
+      begin
+        view.lclScreenToLocal(px, py);
+        py := Round(view.frame.size.height - py);
+      end;
+    end;
     res := TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
-      nil, LCLCoordsToCocoa(nil, X, Y), nil);
+      nil, NSMakePoint(px, py), view);
 
     // for whatever reason a context menu will not fire the "action"
     // of the specified target. Thus we're doing it here manually. :(
