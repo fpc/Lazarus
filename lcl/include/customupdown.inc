@@ -268,6 +268,7 @@ procedure TCustomUpDown.InitializeWnd;
 begin
   inherited InitializeWnd;
   if not FUseWS then Exit;
+  TWSCustomUpDownClass(WidgetSetClass).SetMinPosition(Self, FMin);
   TWSCustomUpDownClass(WidgetSetClass).SetMaxPosition(Self, FMax);
   TWSCustomUpDownClass(WidgetSetClass).SetPosition(Self, FPosition);
   TWSCustomUpDownClass(WidgetSetClass).SetIncrement(Self, FIncrement);
