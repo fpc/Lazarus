@@ -331,9 +331,7 @@ end;
 class procedure TCocoaWSCustomUpDown.SetMinPosition(
   const AUpDown: TCustomUpDown; AValue: Double);
 begin
-  writeln('koko!111');
   if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
-  writeln('koko!222');
   TCocoaStepper(AUpDown.Handle).setMinValue(AValue);
 end;
 
