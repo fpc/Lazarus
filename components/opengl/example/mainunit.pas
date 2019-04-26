@@ -15,24 +15,31 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  OpenGLContext, GL, GLU;
+  ExtCtrls, OpenGLContext, GL, GLU, CocoaInt
+  ,CocoaWSCommon, CocoaPrivate;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    Panel1: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure OpenGLControl1Paint(Sender: TObject);
     procedure OpenGLControl1Resize(Sender: TObject);
     procedure OnAppIdle(Sender: TObject; var Done: Boolean);
+    procedure Panel1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer
+      );
   private
   public
     cube_rotationx: GLFloat;
     cube_rotationy: GLFloat;
     cube_rotationz: GLFloat;
     OpenGLControl1: TOpenGLControl;
+    procedure OpenGLMouseMove(Sender: TObject; Shift: TShiftState;
+                                  X, Y: Integer);
   end;
+
 
 var
   Form1: TForm1; 
@@ -52,16 +59,24 @@ begin
     Parent:=Self;
     OnPaint:=@OpenGLControl1Paint;
     OnResize:=@OpenGLControl1Resize;
+    OnMouseMove:=@OpenGLMouseMove;
     AutoResizeViewport:=true;
   end;
   
   Application.AddOnIdleHandler(@OnAppIdle);
 end;
 
+procedure TForm1.OpenGLMouseMove(Sender: TObject; Shift: TShiftState;
+                              X, Y: Integer);
+begin
+  Caption:=Format('%d %d',[x,y]);
+end;
+
 procedure TForm1.OpenGLControl1Paint(Sender: TObject);
 var
   Speed: Double;
 begin
+  writeln('paint');
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
@@ -139,7 +154,14 @@ procedure TForm1.OnAppIdle(Sender: TObject; var Done: Boolean);
 begin
   Done:=false;
   //DebugLn(['TForm1.OnAppIdle ']);
+  //OpenGLControl1.Paint;
   OpenGLControl1.Invalidate;
+end;
+
+procedure TForm1.Panel1MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  Caption:=Format('panel: %d %d',[x,y]);
 end;
 
 end.

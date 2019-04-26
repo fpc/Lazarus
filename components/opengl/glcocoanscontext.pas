@@ -25,6 +25,7 @@ interface
 
 uses
   Classes, SysUtils, types, CocoaWSCommon, CocoaPrivate, CocoaUtils, LCLType,
+  LMessages, LCLMessageGlue,
   Controls, LazLoggerBase, WSLCLClasses, gl, MacOSAll, CocoaAll;
 
 function LBackingScaleFactor(Handle: HWND): single;
@@ -533,10 +534,31 @@ begin
 end;
 
 procedure TCocoaOpenGLView.drawRect(dirtyRect: NSRect);
+var
+  ctx : NSGraphicsContext;
+  PS  : TPaintStruct;
+  r   : NSRect;
 begin
+  ctx := NSGraphicsContext.currentContext;
   inherited drawRect(dirtyRect);
   if CheckMainThread and Assigned(callback) then
-    callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+  begin
+    if ctx = nil then
+    begin
+      // In macOS 10.14 (mojave) current context is nil
+      // we still can paint anything releated to OpenGL!
+      // todo: consider creating a dummy context (for a bitmap)
+      FillChar(PS, SizeOf(TPaintStruct), 0);
+      r := frame;
+      r.origin.x:=0;
+      r.origin.y:=0;
+      PS.hdc := HDC(0);
+      PS.rcPaint := NSRectToRect(r);
+      LCLSendPaintMsg(Owner, HDC(0), @PS);
+    end
+    else
+      callback.Draw(ctx, bounds, dirtyRect);
+  end;
 end;
 
 end.
