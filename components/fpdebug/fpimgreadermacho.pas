@@ -353,11 +353,11 @@ begin
   // those .o files a dSYM-bundle could be used, which could be generated
   // with dsymutil.
 
-  // PLoader.FileName in Contents/MacOs
+  // PLoader.FileName in Contents/MacOS
   ALoader:=nil;
 
   fname := PLoader.FileName;
-  i := pos('/Contents/MacOs', fname);
+  i := pos('/Contents/MacOS', fname);
   if i > 0 then delete(fname, i, Length(fname));
   dSYMFilename:=ChangeFileExt(PLoader.FileName, '.dSYM');
   dSYMFilename:=dSYMFilename+'/Contents/Resources/DWARF/'+ExtractFileName(fname); // TDbgProcess.Name
