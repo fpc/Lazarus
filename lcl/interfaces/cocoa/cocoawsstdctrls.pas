@@ -1715,6 +1715,8 @@ end;
 
 class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:
   TCustomComboBox):integer;
+var
+  idx : NSInteger;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
   begin
@@ -1723,9 +1725,13 @@ begin
   end;
 
   if ACustomComboBox.ReadOnly then
-    Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
+    idx := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
   else
-    Result := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
+    idx := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
+  if idx = NSNotFound then
+    Result := -1
+  else
+    Result := Integer(idx);
 end;
 
 class procedure TCocoaWSCustomComboBox.SetItemIndex(const ACustomComboBox:
@@ -2019,7 +2025,10 @@ begin
   if not Assigned(view) then Exit(-1);
 
   indexset:=view.selectedRowIndexes();
-  result:=indexset.firstIndex;
+  if indexset.count = 0 then
+    Result := -1
+  else
+    Result := indexset.firstIndex;
 end;
 
 class function TCocoaWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
