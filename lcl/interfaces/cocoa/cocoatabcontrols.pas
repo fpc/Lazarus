@@ -182,7 +182,7 @@ var
   i : integer;
 begin
   arr := aview.tabViewItems;
-  for i :=arr.count - 1 downto 0 do
+  for i := Integer(arr.count) - 1  downto 0 do
     aview.removeTabViewItem( arr.objectAtIndex(i) );
 end;
 
