@@ -599,8 +599,12 @@ begin
 end;
 
 procedure TCocoaTabControl.exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
+var
+  idx : NSInteger;
 begin
-  removeTabViewItem(lTabPage);
+  idx := indexOfTabViewItem(lTabPage);
+  if (idx>=0) and (idx<>NSNotFound) then
+    removeTabViewItem(lTabPage);
 
   fulltabs.removeObject(lTabPage);
 
