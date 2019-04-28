@@ -82,7 +82,7 @@ type
     procedure lclClearCallback; override;
 
     // Own methods, mostly convenience methods
-    function getIndexOfColumn(ACol: NSTableColumn): NSInteger; message 'getIndexOfColumn:';
+    function getIndexOfColumn(ACol: NSTableColumn): Integer; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
 
     function initWithFrame(frameRect: NSRect): id; override;
@@ -497,9 +497,15 @@ begin
   end;
 end;
 
-function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
+function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): Integer;
+var
+  idx : NSUInteger;
 begin
-  Result := tableColumns.indexOfObject(ACol);
+  idx := tableColumns.indexOfObject(ACol);
+  if idx = NSNotFound then
+    Result := -1
+  else
+    Result := Integer(idx);
 end;
 
 procedure TCocoaTableListView.reloadDataForRow_column(ARow, ACol: NSInteger);
