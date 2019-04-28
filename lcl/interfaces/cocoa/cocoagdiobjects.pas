@@ -2042,12 +2042,14 @@ begin
     ns := RectToNSRect(r);
     // used for size only, position is ignored
     boxview.setFrame(ns);
-    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, ns.origin.y);
+    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, FSize.cy - ns.origin.y);
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
 
     boxview.displayRectIgnoringOpacity_inContext(
       NSMakeRect(0,0,ns.size.width, ns.size.height)
       , ctx);
 
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
     CGContextTranslateCTM(ctx.lclCGContext, -ns.origin.x, -ns.origin.y);
   end;
   AttachedBitmap_SetModified();
