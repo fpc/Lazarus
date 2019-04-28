@@ -2760,7 +2760,10 @@ begin
         CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
       end;
     PS_USERSTYLE:
-      CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0], Length(Dashes));
+      if Length(Dashes) > 0 then
+        CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0], Length(Dashes))
+      else
+        CGContextSetLineDash(ADC.CGContext, 0, nil, 0)
   else
     CGContextSetLineDash(ADC.CGContext, 0, nil, 0);
   end;

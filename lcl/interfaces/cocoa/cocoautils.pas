@@ -670,10 +670,16 @@ end;
 
 function CGRectToRect(const c: CGRect): TRect;
 begin
+  if CGRectIsEmpty(c) <> 0 then
+    Result := Rect(0,0,0,0)
+  else if CGRectIsInfinite(c) <> 0 then
+    Result:= Rect(Low(Integer), Low(Integer), High(Integer), High(Integer))
+  else begin
   Result.Left := Round(c.origin.x);
   Result.Top := Round(c.origin.y);
   Result.Right := Round(c.origin.x + c.size.width);
   Result.Bottom := Round(c.origin.y + c.size.height);
+end;
 end;
 
 function RectToNSRect(const r: TRect): NSRect;
