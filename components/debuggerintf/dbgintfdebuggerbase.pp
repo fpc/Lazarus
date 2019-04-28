@@ -1804,6 +1804,7 @@ type
     FExitCode: Integer;
     FExternalDebugger: String;
     FFileName: String;
+    FIsInReset: Boolean;
     FLocals: TLocalsSupplier;
     FLineInfo: TDBGLineInfo;
     //FUnitInfoProvider, FInternalUnitInfoProvider: TDebuggerUnitInfoProvider;
@@ -1933,7 +1934,9 @@ type
     function GetLocation: TDBGLocationRec; virtual;
     procedure LockCommandProcessing; virtual;
     procedure UnLockCommandProcessing; virtual;
+    procedure BeginReset; virtual;
     function  NeedReset: Boolean; virtual;
+    property  IsInReset: Boolean read FIsInReset;
     procedure AddNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
     procedure RemoveNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
   public
@@ -5869,6 +5872,11 @@ end;
 procedure TDebuggerIntf.UnLockCommandProcessing;
 begin
   // nothing
+end;
+
+procedure TDebuggerIntf.BeginReset;
+begin
+  FIsInReset := True;
 end;
 
 function TDebuggerIntf.NeedReset: Boolean;

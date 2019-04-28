@@ -2337,6 +2337,7 @@ begin
   OldState := State;
   if OldState = dsNone then Exit;
 
+  FDebugger.BeginReset;
   EndDebugging;
 //  OnDebuggerChangeState(FDebugger, OldState);
 //  InitDebugger;

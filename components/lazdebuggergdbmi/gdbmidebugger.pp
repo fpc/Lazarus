@@ -969,6 +969,7 @@ type
 
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
+    procedure BeginReset; override;
     function GetLocation: TDBGLocationRec; override;
     function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; override;
 
@@ -7753,6 +7754,13 @@ begin
   end;
 end;
 
+procedure TGDBMIDebugger.BeginReset;
+begin
+  inherited BeginReset;
+  FInstructionQueue.ForceTimeOutAll(500);
+  ReadLine(True, 1);
+end;
+
 function TGDBMIDebugger.GetLocation: TDBGLocationRec;
 begin
   Result := FCurrentLocation;
@@ -10616,6 +10624,8 @@ end;
 procedure TGDBMIDebuggerCommand.SetDebuggerErrorState(const AMsg: String;
   const AInfo: String);
 begin
+  if FTheDebugger.IsInReset then
+    exit;
   FTheDebugger.SetErrorState(AMsg, AInfo);
 end;
 
@@ -10733,6 +10743,8 @@ begin
 
   if (ATimeOut = -1) and (DefaultTimeOut > 0)
   then ATimeOut := DefaultTimeOut;
+  if FTheDebugger.IsInReset then
+    ATimeOut := 500;
 
   try
     DoLockQueueExecuteForInstr;

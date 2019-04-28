@@ -261,6 +261,7 @@ type
     procedure SetKnownThread(AThread: Integer);
     procedure SetKnownThreadAndFrame(AThread, AFrame: Integer);
     procedure RunInstruction(AnInstruction: TGDBInstruction); // Wait for instruction to be finished, not queuing
+    procedure ForceTimeOutAll(ATimeOut: Integer);
     property CurrentThreadId: Integer read FCurrentThreadId;
     property CurrentStackFrame: Integer read FCurrentStackFrame;
     property Flags: TGDBInstructionQueueFlags read FFlags;
@@ -1026,6 +1027,8 @@ begin
         break;
       end;
       if FDebugger.ReadLineTimedOut then begin
+        if FDebugger.IsInReset then
+          break;
         NewInstr := FCurrentInstruction.GetTimeOutVerifier;
         if NewInstr <> nil then begin
           NewInstr.AddReference;
@@ -1155,6 +1158,12 @@ begin
   SetCurrentInstruction(AnInstruction);
   ExecuteCurrentInstruction;
   FinishCurrentInstruction;
+end;
+
+procedure TGDBInstructionQueue.ForceTimeOutAll(ATimeOut: Integer);
+begin
+  if FCurrentInstruction <> nil then
+    FCurrentInstruction.FTimeOut := ATimeOut;
 end;
 
 initialization
