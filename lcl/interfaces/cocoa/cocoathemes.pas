@@ -30,9 +30,8 @@ type
   TCocoaThemeServices = class(TThemeServices)
   private
   protected
-    BezelToolBar : NSBezelStyle;
     BtnCell      : NSButtonCell;
-    procedure SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails);
+    function SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails): Boolean;
     procedure SetButtonCellToDetails(btn: NSButtonCell; Details: TThemedElementDetails);
 
     procedure CellDrawStart(dst: TCocoaContext; const r: Trect; out cur: NSGraphicsContext; out dstRect: NSRect);
@@ -56,6 +55,8 @@ type
 *)
     function GetCellForDetails(Details: TThemedElementDetails): NSCell;
   public
+    BezelToolBar : NSBezelStyle;
+    BezelButton  : NSBezelStyle;
     constructor Create;
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
 (*
@@ -280,32 +281,24 @@ var
   lState: TCDControlState = [];
   lDrawer: TCDDrawer;
   lPt: TPoint;
-  cl : NSCell;
-  acc : TCocoaContextAccess;
-  dr  : NSRect;
-
   cur : NSGraphicsContext;
+  nsr : NSRect;
+  b   : NSButtonCell;
 begin
-  cl := GetCellForDetails(Details);
-  if Assigned(cl) then
-  begin
-    acc := TCocoaContextAccess(DC);
-
-    cur := NSGraphicsContext.currentContext;
-    NSGraphicsContext.setCurrentContext( acc.ctx );
-
-    acc.SetCGFillping(acc.CGContext, 0, -acc.Size.cy);
-    try
-      LCLToNSRect( R, acc.size.cy, dr);
-      cl.drawWithFrame_inView (dr, nil );
-    finally
-      acc.SetCGFillping(acc.CGContext, 0, -acc.Size.cy);
-      NSGraphicsContext.setCurrentContext( cur );
+  b := NSButtonCell.alloc.initTextCell(NSString.string_);
+  try
+    // ideally, all uttons are drawn via Cocoa
+    if SetButtonCellType(b, Details) then
+    begin
+      SetButtonCellToDetails(b, Details);
+      CellDrawStart(DC, R, cur, nsr);
+      CellDrawFrame(b, nsr);
+      CellDrawEnd(DC, cur);
+      Exit;
     end;
-
-    Exit;
+  finally
+    b.release;
   end;
-
 
   lCDButton := TCDButtonStateEx.Create;
   lCanvas := TCanvas.Create;
@@ -629,7 +622,8 @@ constructor TCocoaThemeServices.Create;
 begin
   inherited Create;
   BtnCell := NSButtonCell.alloc.initTextCell(NSSTR(''));
-  BezelToolBar := NSSmallSquareBezelStyle;
+  BezelToolBar := NSSmallSquareBezelStyle; // can be resized at any size
+  BezelButton := NSSmallSquareBezelStyle;
 end;
 
 (*function TCarbonThemeServices.DrawWindowElement(DC: TCarbonDeviceContext;
@@ -943,14 +937,46 @@ begin
 end;
 *)
 
-procedure TCocoaThemeServices.SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails);
+function TCocoaThemeServices.SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails): Boolean;
+var
+  BtnType    : NSButtonType;
+  BezelStyle : NSBezelStyle;
+  useBezel   : Boolean;
 begin
+  Result := true;
+  BtnType := NSMomentaryPushButton;
+  BezelStyle := NSRoundedBezelStyle;
+  useBezel := false;
   if Details.Element = teToolBar then
   begin
-    btn.setButtonType(NSOnOffButton);
-    btn.setBezelStyle(BezelToolBar);
-    btn.setBezeled(true);
+    BtnType := NSOnOffButton;
+    BezelStyle := BezelToolBar;
+    useBezel := true;
+  end else if Details.Element = teButton then
+  begin
+    useBezel := false;
+    case Details.Part of
+      BP_CHECKBOX:    BtnType := NSSwitchButton;
+      BP_RADIOBUTTON: BtnType := NSRadioButton;
+      BP_PUSHBUTTON:
+      begin
+        BtnType := NSPushOnPushOffButton;
+        BezelStyle := BezelButton;
+        useBezel := true;
+      end;
+    else
+      Result := false;
+    end;
+  end else
+    Result := false;
+
+  if Result then
+  begin
+    btn.setButtonType(BtnType);
+    btn.setBezelStyle(BezelStyle);
+    btn.setBezeled(useBezel);
   end;
+
 end;
 
 procedure TCocoaThemeServices.SetButtonCellToDetails(btn: NSButtonCell; Details: TThemedElementDetails);
