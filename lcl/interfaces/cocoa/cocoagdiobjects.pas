@@ -2017,6 +2017,7 @@ var
   dx,dy: integer;
   ns : NSRect;
   r  : TRect;
+  yy : double;
 begin
   if Style = bvNone then Exit;
 
@@ -2037,12 +2038,11 @@ begin
       boxview.setBoxType(NSBoxSecondary);
     r:=ARect;
     InflateRect(r, dx, dy);
-    dec(r.Bottom);
-    dec(r.Right);
     ns := RectToNSRect(r);
     // used for size only, position is ignored
     boxview.setFrame(ns);
-    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, FSize.cy - ns.origin.y);
+    yy := ns.size.height+ns.origin.y;
+    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, yy);
     CGContextScaleCTM(ctx.lclCGContext, 1, -1);
 
     boxview.displayRectIgnoringOpacity_inContext(
@@ -2050,7 +2050,7 @@ begin
       , ctx);
 
     CGContextScaleCTM(ctx.lclCGContext, 1, -1);
-    CGContextTranslateCTM(ctx.lclCGContext, -ns.origin.x, -ns.origin.y);
+    CGContextTranslateCTM(ctx.lclCGContext, -ns.origin.x,-yy);
   end;
   AttachedBitmap_SetModified();
 end;
