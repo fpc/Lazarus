@@ -1522,7 +1522,7 @@ begin
 
   // Show first and last bars fully.
   if Source.XCount = 0 then begin
-    BarOffsetWidth(x, 0, ofs, w);
+    BarOffsetWidth(0.0, 0, ofs, w);
     Result.a.X -= (ofs + w);
     Result.b.X += (ofs + w);
   end else begin
