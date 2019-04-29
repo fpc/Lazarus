@@ -2417,33 +2417,32 @@ begin
       else
         raise EChartError.CreateFmt('[%s.BuildPalette] Palette not supported', [NameOrClassName(Self)]);
       end;
-
-      if FPaletteMin < FPaletteMax then begin
-        cmin := FPaletteMin;
-        cmax := FPaletteMax;
-      end else
-      if FPaletteMax < FPaletteMin then begin
-        cmin := FPaletteMax;
-        cmax := FPaletteMin;
-      end else
-        exit;
-
-      with FBuiltInColorSource do begin
-        ex := Extent;
-        if (ex.a.x = ex.b.x) then
-          exit;
-        factor := (cmax - cmin) / (ex.b.x - ex.a.x);
-        for i:=0 to Count-1 do
-          Item[i]^.X := (Item[i]^.X - ex.a.x) * factor + cmin;
-      end;
-
-      if FColorSource = nil then
-        UpdateColorExtent;
-
     finally
       EndUpdate;
     end;
   end;
+
+  if FPaletteMin < FPaletteMax then begin
+    cmin := FPaletteMin;
+    cmax := FPaletteMax;
+  end else
+  if FPaletteMax < FPaletteMin then begin
+    cmin := FPaletteMax;
+    cmax := FPaletteMin;
+  end else
+    exit;
+
+  with FBuiltInColorSource do begin
+    ex := Extent;
+    if (ex.a.x = ex.b.x) then
+      exit;
+    factor := (cmax - cmin) / (ex.b.x - ex.a.x);
+    for i:=0 to Count-1 do
+      Item[i]^.X := (Item[i]^.X - ex.a.x) * factor + cmin;
+  end;
+
+  if FColorSource = nil then
+    UpdateColorExtent;
 end;
 
 function TCustomColorMapSeries.ColorByValue(AValue: Double): TColor;
