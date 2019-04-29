@@ -83,9 +83,6 @@ implementation
 uses
   LCLIntf, Math, SysUtils;
 
-type
-  TCustomChartSourceAccess = class(TCustomChartSource);
-
 { TCustomAnimatedChartSource }
 
 procedure TCustomAnimatedChartSource.Changed(ASender: TObject);
@@ -95,7 +92,7 @@ begin
     FXCount := Origin.XCount;
     FYCount := Origin.YCount;
   end else begin
-    FXCount := MaxInt;
+    FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
     FYCount := MaxInt;
   end;
   Notify;
@@ -104,7 +101,7 @@ end;
 constructor TCustomAnimatedChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FXCount := MaxInt;
+  FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
   FYCount := MaxInt;
   FListener := TListener.Create(@FOrigin, @Changed);
   FTimer := TCustomTimer.Create(nil);

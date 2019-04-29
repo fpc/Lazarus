@@ -1500,7 +1500,7 @@ begin
     FSortDir := sdAscending;
     FSortIndex := 0;
     FSorted := false;
-    FXCount := MaxInt;
+    FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
     FYCount := MaxInt;
   end;
 
@@ -1548,7 +1548,7 @@ procedure TCalculatedChartSource.ExtractItem(AIndex: Integer);
 
   function YByOrder(AOrderIndex: Integer): Double;
   begin
-    if AOrderIndex = 0 then
+    if AOrderIndex <= 0 then
       Result := FItem.Y
     else
       Result := FItem.YList[AOrderIndex - 1];
@@ -1559,11 +1559,14 @@ var
   i: Integer;
 begin
   FItem := Origin[AIndex]^;
-  SetLength(t, High(FYOrder));
-  for i := 1 to High(FYOrder) do
-    t[i - 1] := YByOrder(FYOrder[i]);
-  FItem.Y := YByOrder(FYOrder[0]);
-  FItem.YList := t;
+  if Length(FYOrder) > 0 then begin
+    SetLength(t, High(FYOrder));
+    for i := 1 to High(FYOrder) do
+      t[i - 1] := YByOrder(FYOrder[i]);
+    FItem.Y := YByOrder(FYOrder[0]);
+    FItem.YList := t;
+  end else
+    FItem.YList := nil;
 end;
 
 function TCalculatedChartSource.GetCount: Integer;
@@ -1678,7 +1681,7 @@ var
 begin
   if FOrigin = nil then begin
     FOriginYCount := 0;
-    FYCount := 0;
+    FYCount := MaxInt;    // Allow source to be used by any series while Origin = nil
     FYOrder := nil;
     FItem.YList := nil;
     Changed(nil);
@@ -1686,6 +1689,9 @@ begin
   end;
 
   FOriginYCount := FOrigin.YCount;
+  if FOriginYCount = 0 then
+    FYOrder := nil
+  else
   if ReorderYList = '' then begin
     SetLength(FYOrder, FOriginYCount);
     for i := 0 to High(FYOrder) do

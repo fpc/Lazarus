@@ -469,6 +469,8 @@ var
   ext: TDoubleRect;
   i: Integer;
 begin
+  if IsEmpty then exit;
+
   with Extent do begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);
