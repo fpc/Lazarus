@@ -2041,7 +2041,7 @@ begin
     ns := RectToNSRect(r);
     // used for size only, position is ignored
     boxview.setFrame(ns);
-    yy := ns.size.height+ns.origin.y;
+    yy := ns.size.height+ns.origin.y+1;
     CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, yy);
     CGContextScaleCTM(ctx.lclCGContext, 1, -1);
 
