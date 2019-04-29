@@ -720,16 +720,20 @@ end;
 
 procedure TListChartSource.ClearCaches;
 begin
+  // When updating, we are not allowed to set "Valid" for caches - cached
+  // data is not synchronized with real data when updating, so setting "Valid"
+  // could lead to reading outdated cache contents, when calling methods like
+  // BasicExtent() when still in update mode
   FBasicExtent := EmptyExtent;
-  FBasicExtentIsValid := true;
+  FBasicExtentIsValid := not IsUpdating;
   FCumulativeExtent := EmptyExtent;
-  FCumulativeExtentIsValid := true;
+  FCumulativeExtentIsValid := not IsUpdating;
   FXListExtent := EmptyExtent;
-  FXListExtentIsValid := true;
+  FXListExtentIsValid := not IsUpdating;
   FYListExtent := EmptyExtent;
-  FYListExtentIsValid := true;
+  FYListExtentIsValid := not IsUpdating;
   FValuesTotal := 0;
-  FValuesTotalIsValid := true;
+  FValuesTotalIsValid := not IsUpdating;
 end;
 
 procedure TListChartSource.CopyFrom(ASource: TCustomChartSource);

@@ -849,7 +849,8 @@ begin
     end;
   end;
 
-  FBasicExtentIsValid := true;
+  FBasicExtentIsValid := not IsUpdating;  // When updating, we are not allowed
+    // to set "Valid" for caches - see comment in TListChartSource.ClearCaches()
   Result := FBasicExtent;
 end;
 
@@ -888,7 +889,8 @@ begin
               UpdateMinMax(XList[j], FXListExtent.a.X, FXListExtent.b.X);
         end;
 
-      FXListExtentIsValid := true;
+      FXListExtentIsValid := not IsUpdating;  // When updating, we are not allowed
+        // to set "Valid" for caches - see comment in TListChartSource.ClearCaches()
     end;
 
     Result.a.X := Min(Result.a.X, FXListExtent.a.X);
@@ -915,7 +917,8 @@ begin
               UpdateMinMax(YList[j], FYListExtent.a.Y, FYListExtent.b.Y);
         end;
 
-      FYListExtentIsValid := true;
+      FYListExtentIsValid := not IsUpdating;  // When updating, we are not allowed
+        // to set "Valid" for caches - see comment in TListChartSource.ClearCaches()
     end;
 
     Result.a.Y := Min(Result.a.Y, FYListExtent.a.Y);
@@ -1018,7 +1021,8 @@ begin
             end;
         end;
 
-      FCumulativeExtentIsValid := true;
+      FCumulativeExtentIsValid := not IsUpdating;  // When updating, we are not allowed
+        // to set "Valid" for caches - see comment in TListChartSource.ClearCaches()
     end;
 
     Result.a.Y := Min(Result.a.Y, FCumulativeExtent.a.Y);
@@ -1499,7 +1503,8 @@ begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
       FValuesTotal += NumberOr(Y);
-  FValuesTotalIsValid := true;
+  FValuesTotalIsValid := not IsUpdating;  // When updating, we are not allowed
+    // to set "Valid" for caches - see comment in TListChartSource.ClearCaches()
   Result := FValuesTotal;
 end;
 
