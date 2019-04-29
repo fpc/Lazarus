@@ -821,7 +821,7 @@ begin
           UpdateMinMax(vlo, FBasicExtent.a.X, FBasicExtent.b.X);
         end
       else
-      if (FSortBy = sbX) and (FSortIndex = 0) then begin
+      if IsSorted and (FSortBy = sbX) and (FSortIndex = 0) then begin
         UpdateMinMax(Item[0]^.X, FBasicExtent.a.X, FBasicExtent.b.X);
         UpdateMinMax(Item[Count-1]^.X, FBasicExtent.a.X, FBasicExtent.b.X);
       end else
@@ -840,7 +840,7 @@ begin
           UpdateMinMax(vlo, FBasicExtent.a.Y, FBasicExtent.b.Y);
         end
       else
-      if (FSortBy = sbY) and (FSortIndex = 0) then begin
+      if IsSorted and (FSortBy = sbY) and (FSortIndex = 0) then begin
         UpdateMinMax(Item[0]^.Y, FBasicExtent.a.Y, FBasicExtent.b.Y);
         UpdateMinMax(Item[Count-1]^.Y, FBasicExtent.a.Y, FBasicExtent.b.Y);
       end else
