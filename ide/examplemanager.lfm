@@ -10,17 +10,17 @@ object ExampleManagerForm: TExampleManagerForm
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '2.1.0.0'
   object ProjectsGroupBox: TGroupBox
     Left = 0
-    Height = 326
+    Height = 331
     Top = 123
     Width = 457
     Align = alClient
     BorderSpacing.Top = 3
     Caption = 'Projects'
-    ClientHeight = 310
-    ClientWidth = 455
+    ClientHeight = 312
+    ClientWidth = 453
     TabOrder = 1
     object ProjectsListBox: TListBox
       AnchorSideLeft.Control = ProjectsGroupBox
@@ -31,22 +31,22 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideBottom.Control = ProjectsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 276
-      Top = 28
-      Width = 443
+      Height = 272
+      Top = 34
+      Width = 441
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
       MultiSelect = True
       OnSelectionChange = ProjectsListBoxSelectionChange
-      ScrollWidth = 441
+      ScrollWidth = 439
       TabOrder = 2
       TopIndex = -1
     end
     object ProjectFilter: TListFilterEdit
       AnchorSideLeft.Control = ProjectsListBox
       Left = 6
-      Height = 21
+      Height = 27
       Top = 1
       Width = 221
       OnAfterFilter = ProjectFilterAfterFilter
@@ -62,9 +62,9 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideTop.Control = ProjectFilter
       AnchorSideTop.Side = asrCenter
       Left = 252
-      Height = 22
-      Top = 0
-      Width = 108
+      Height = 24
+      Top = 2
+      Width = 121
       BorderSpacing.Left = 25
       Caption = 'Relative paths'
       OnClick = cbRelativePathClick
@@ -73,8 +73,8 @@ object ExampleManagerForm: TExampleManagerForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 455
+    Height = 29
+    Top = 460
     Width = 858
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -91,7 +91,7 @@ object ExampleManagerForm: TExampleManagerForm
   object ActionGroupBox: TGroupBox
     AnchorSideLeft.Side = asrBottom
     Left = 465
-    Height = 326
+    Height = 331
     Top = 123
     Width = 405
     Align = alRight
@@ -99,18 +99,19 @@ object ExampleManagerForm: TExampleManagerForm
     BorderSpacing.Left = 3
     BorderSpacing.Top = 3
     Caption = 'Action'
-    ClientHeight = 310
-    ClientWidth = 403
+    ClientHeight = 312
+    ClientWidth = 401
     TabOrder = 2
     object OpenSelectedButton: TBitBtn
       AnchorSideLeft.Control = ActionGroupBox
       AnchorSideTop.Control = ActionGroupBox
       AnchorSideRight.Control = lblCenter
       Left = 6
-      Height = 25
+      Height = 29
       Top = 6
-      Width = 189
+      Width = 188
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Open First Selected'
       Enabled = False
@@ -124,10 +125,11 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideRight.Control = lblCenter
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 25
-      Top = 43
-      Width = 190
+      Height = 29
+      Top = 47
+      Width = 189
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
       Caption = 'Build All Selected'
@@ -142,11 +144,12 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideTop.Control = ActionGroupBox
       AnchorSideRight.Control = ActionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 208
-      Height = 25
+      Left = 207
+      Height = 29
       Top = 6
-      Width = 189
+      Width = 188
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Select All'
       OnClick = SelectAllButtonClick
@@ -159,11 +162,12 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ActionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 208
-      Height = 25
-      Top = 43
-      Width = 189
+      Left = 207
+      Height = 29
+      Top = 47
+      Width = 188
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
       Caption = 'Select None'
@@ -180,9 +184,9 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideBottom.Control = ActionGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 230
-      Top = 74
-      Width = 391
+      Height = 224
+      Top = 82
+      Width = 389
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ReadOnly = True
@@ -193,7 +197,7 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideLeft.Control = ActionGroupBox
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = ActionGroupBox
-      Left = 201
+      Left = 200
       Height = 1
       Top = 0
       Width = 1
@@ -211,13 +215,14 @@ object ExampleManagerForm: TExampleManagerForm
     ClientWidth = 870
     TabOrder = 0
     object cbIncludeAllDirs: TCheckBox
+      AnchorSideTop.Control = edRootDirectory
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = edRootDirectory
       AnchorSideRight.Side = asrBottom
-      Left = 289
-      Height = 22
-      Top = 56
-      Width = 175
+      Left = 270
+      Height = 24
+      Top = 54
+      Width = 194
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 3
       Caption = 'Include all subdirectories'
@@ -229,7 +234,7 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 8
-      Height = 21
+      Height = 27
       Top = 24
       Width = 456
       ShowHidden = False
@@ -259,8 +264,8 @@ object ExampleManagerForm: TExampleManagerForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
-      ClientHeight = 99
-      ClientWidth = 367
+      ClientHeight = 96
+      ClientWidth = 365
       Columns = 4
       Items.Strings = (
         'example'
@@ -280,9 +285,9 @@ object ExampleManagerForm: TExampleManagerForm
     end
     object lbRootDirectory: TLabel
       Left = 8
-      Height = 15
+      Height = 17
       Top = 8
-      Width = 85
+      Width = 99
       Caption = 'Root Directory'
       ParentColor = False
     end
@@ -291,9 +296,9 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideBottom.Control = SelectPanel
       AnchorSideBottom.Side = asrBottom
       Left = 8
-      Height = 15
-      Top = 94
-      Width = 88
+      Height = 17
+      Top = 92
+      Width = 102
       Anchors = [akLeft, akBottom]
       BorderSpacing.Bottom = 11
       Caption = 'lbProjectCount'
@@ -302,7 +307,7 @@ object ExampleManagerForm: TExampleManagerForm
   end
   object Splitter1: TSplitter
     Left = 457
-    Height = 329
+    Height = 334
     Top = 120
     Width = 5
     Align = alRight

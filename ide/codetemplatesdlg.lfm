@@ -11,17 +11,17 @@ object CodeTemplateDialog: TCodeTemplateDialog
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object FilenameGroupBox: TGroupBox
     Left = 6
-    Height = 43
+    Height = 46
     Top = 6
     Width = 717
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FilenameGroupBox'
-    ClientHeight = 23
+    ClientHeight = 27
     ClientWidth = 713
     TabOrder = 0
     object FilenameEdit: TFileNameEdit
@@ -29,7 +29,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideRight.Control = FilenameGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 27
       Top = 0
       Width = 701
       FileName = 'FilenameEdit'
@@ -48,12 +48,12 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object TemplatesGroupBox: TGroupBox
     Left = 6
     Height = 167
-    Top = 55
+    Top = 58
     Width = 717
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 147
+    ClientHeight = 148
     ClientWidth = 713
     TabOrder = 1
     object TemplateListBox: TListBox
@@ -63,9 +63,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 135
+      Height = 136
       Top = 6
-      Width = 547
+      Width = 555
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -73,20 +73,23 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BorderSpacing.Bottom = 6
       ItemHeight = 0
       OnSelectionChange = TemplateListBoxSelectionChange
-      ScrollWidth = 545
+      ScrollWidth = 553
       TabOrder = 0
+      TopIndex = -1
     end
     object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
       AnchorSideRight.Control = TemplatesGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 559
-      Height = 25
+      Left = 567
+      Height = 29
       Top = 6
-      Width = 148
+      Width = 140
       Anchors = [akTop, akRight]
+      AutoSize = True
       BorderSpacing.Right = 6
       Caption = 'AddButton'
+      Constraints.MinWidth = 140
       OnClick = AddButtonClick
       TabOrder = 1
     end
@@ -96,11 +99,12 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = AddButton
       AnchorSideRight.Side = asrBottom
-      Left = 559
-      Height = 25
-      Top = 37
-      Width = 148
+      Left = 567
+      Height = 29
+      Top = 41
+      Width = 140
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'DeleteButton'
       OnClick = DeleteButtonClick
@@ -112,11 +116,12 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DeleteButton
       AnchorSideRight.Side = asrBottom
-      Left = 559
-      Height = 25
-      Top = 68
-      Width = 148
+      Left = 567
+      Height = 29
+      Top = 76
+      Width = 140
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'RenameButton'
       OnClick = RenameButtonClick
@@ -128,13 +133,13 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Control = Owner
     AnchorSideBottom.Control = FilenameGroupBox
     Left = 6
-    Height = 274
-    Top = 228
+    Height = 268
+    Top = 231
     Width = 717
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 254
+    ClientHeight = 249
     ClientWidth = 713
     TabOrder = 2
     inline TemplateSynEdit: TSynEdit
@@ -145,7 +150,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 170
+      Height = 165
       Top = 78
       Width = 701
       BorderSpacing.Around = 6
@@ -674,10 +679,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = EditTemplateGroupBox
       AnchorSideRight.Control = EditTemplateGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 168
+      Left = 210
       Height = 70
       Top = 2
-      Width = 543
+      Width = 501
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       AutoSize = True
@@ -701,21 +706,21 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideLeft.Control = EditTemplateGroupBox
       AnchorSideTop.Control = EditTemplateGroupBox
       Left = 0
-      Height = 81
+      Height = 95
       Top = 0
-      Width = 158
+      Width = 200
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 81
-      ClientWidth = 158
+      ClientHeight = 95
+      ClientWidth = 200
       TabOrder = 0
       object KeepSubIndentCheckBox: TCheckBox
         AnchorSideLeft.Control = OptionsPanel
         AnchorSideTop.Control = OptionsPanel
         Left = 6
-        Height = 19
+        Height = 24
         Top = 6
-        Width = 152
+        Width = 194
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         Caption = 'KeepSubIndentCheckBox'
@@ -728,9 +733,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
         AnchorSideTop.Control = KeepSubIndentCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 19
-        Top = 25
-        Width = 130
+        Height = 24
+        Top = 30
+        Width = 167
         BorderSpacing.Left = 6
         Caption = 'UseMacrosCheckBox'
         OnChange = UseMacrosCheckBoxChange
@@ -744,9 +749,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 25
-        Top = 50
-        Width = 125
+        Height = 29
+        Top = 60
+        Width = 140
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'InsertMacroButton'
@@ -757,8 +762,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 508
+    Height = 29
+    Top = 505
     Width = 717
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -779,7 +784,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Enabled = False
     CompilerMode = pcmObjFPC
     NestedComments = True
-    left = 304
-    top = 344
+    TypeHelpers = False
+    Left = 304
+    Top = 344
   end
 end
