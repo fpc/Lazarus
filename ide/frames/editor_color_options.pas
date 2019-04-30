@@ -1480,16 +1480,20 @@ begin
 
 
   UseSyntaxHighlightCheckBox.ImageIndex := IDEImages.LoadImage('laz_highlighter');
+  UseSyntaxHighlightCheckBox.Caption := dlgUseHighlight;
   UseSyntaxHighlightCheckBox.Hint := dlgUseSyntaxHighlight;
   LanguageButton.Hint := dlgLang;
   ColorSchemeButton.Hint := dlgClrScheme;
   FileExtensionsComboBox.hint := dlgFileExts;
   SetAttributeToDefaultButton.ImageIndex := IDEImages.LoadImage('restore_default');
   SetAttributeToDefaultButton.Hint := dlgSetElementDefault;
+  SetAttributeToDefaultButton.Caption := dlgReset;
   SetAllAttributesToDefaultButton.ImageIndex := IDEImages.LoadImage('restore_defaults');
   SetAllAttributesToDefaultButton.Hint := dlgSetAllElementDefault;
+  SetAllAttributesToDefaultButton.Caption := dlgResetAll;
   btnExport.ImageIndex := IDEImages.LoadImage('laz_save');
-  btnExport.Hint := lisExport;
+  btnExport.Caption := lisExport;
+  //btnExport.Hint := lisExport;
 
   lbLocalGlobal.Caption := dlgThisElementUsesColor;
   rbGlobalAttr.Caption := dlgUseSchemeDefaults;

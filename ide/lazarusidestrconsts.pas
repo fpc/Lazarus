@@ -1722,6 +1722,7 @@ resourcestring
 
   dlgUndoAfterSave = 'Undo after save';
   dlgFindTextatCursor = 'Find text at cursor';
+  dlgUseHighlight = 'Use Highlight';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgUseCodeFolding = 'Code Folding';
   dlgCodeFoldEnableFold = 'Fold';
@@ -1944,6 +1945,8 @@ resourcestring
   dlgFileExts = 'File extensions';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
+  dlgReset = 'Reset';
+  dlgResetAll = 'Reset all';
   dlgThisElementUsesColor = 'The element uses (and edits) the schemes:';
   dlgUseSchemeDefaults = '- Scheme globals -';
   dlgUseSchemeLocal    = 'selected language';
