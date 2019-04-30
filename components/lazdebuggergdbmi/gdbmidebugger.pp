@@ -56,9 +56,10 @@ uses
 {$ENDIF}
   Classes, SysUtils, strutils, math, fgl, Variants,
   // LCL
-  Controls, Dialogs, Forms,
+  Controls, Dialogs, Forms, process,
   // LazUtils
   FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, Maps,
+  UTF8Process,
   // IdeIntf
   BaseIDEIntf,
   {$IFDEF Darwin}
@@ -986,6 +987,21 @@ type
   end;
 
   TGDBMIDebugger = class(TGDBMIDebuggerBase)
+  private
+    {$IFDEF MSWindows}
+    FDbgControlProcess: TProcessUTF8;
+    procedure MaybeStartDebugControl(Sender: TObject);
+    function ReadFromDebugControlProcess(ATimeOut: Integer = 100): String;
+    {$ENDIF}
+  protected
+    function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
+    {$IFDEF MSWindows}
+    procedure InterruptTarget; override;
+    {$ENDIF}
+  public
+    {$IFDEF MSWindows}
+    destructor Destroy; override;
+    {$ENDIF}
   end;
 
   {%region       *****  TGDBMINameValueList and Parsers  *****   }
@@ -1681,6 +1697,117 @@ begin
   lcCpu := LowerCase(CpuName);
   if (lcCpu='ia64') or (lcCpu='x86_64') or (lcCpu='aarch64') or (lcCpu='powerpc64')
   then Result := 8;
+end;
+
+{$IFDEF MSWindows}
+procedure TGDBMIDebugger.MaybeStartDebugControl(Sender: TObject);
+var
+  s: String;
+begin
+  s := ExtractFilePath(ExternalDebugger) + DirectorySeparator + 'LazGDeBugControl.exe';
+  if FDbgControlProcess <> nil then begin
+    if (FTargetInfo.TargetPtrSize = SizeOf(Pointer)) or
+       (FDbgControlProcess.Executable <> s)
+    then begin
+      FDbgControlProcess.Terminate(0);
+      FreeAndNil(FDbgControlProcess);
+    end;
+  end;
+
+  if FTargetInfo.TargetPtrSize = SizeOf(Pointer) then
+    exit;
+
+  if FileExists(s) then begin
+
+    FDbgControlProcess := TProcessUTF8.Create(nil);
+    try
+      FDbgControlProcess.Executable := s;
+      FDbgControlProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
+      FDbgControlProcess.ShowWindow := swoNone;
+    except
+      FreeAndNil(FDbgControlProcess);
+    end;
+    if FDbgControlProcess = nil then
+      exit;
+
+    try
+      FDbgControlProcess.Execute;
+    except
+        FDbgControlProcess.Free;
+        DebugLn('Exception while executing debugger controller');
+    end;
+  end;
+  if (FDbgControlProcess <> nil) and (ReadFromDebugControlProcess(1500) <> 'Ready') then begin
+    FDbgControlProcess.Terminate(0);
+    FreeAndNil(FDbgControlProcess);
+  end;
+end;
+
+function TGDBMIDebugger.ReadFromDebugControlProcess(ATimeOut: Integer): String;
+var
+  TotalBytesAvailable: dword;
+  i: Integer;
+begin
+  Result := '';
+  if FDbgControlProcess = nil then
+    exit;
+  TotalBytesAvailable := 0;
+  i := 0;
+  while (ATimeOut > 0) and (FDbgControlProcess.Running) do begin
+    if Windows.PeekNamedPipe(FDbgControlProcess.Output.Handle, nil, 0, nil, @TotalBytesAvailable, nil) and
+       (TotalBytesAvailable > 0)
+    then
+      break;
+    sleep(20);
+    ATimeOut := ATimeOut - 20;
+    TotalBytesAvailable := 0;
+    inc(i);
+    if (i and 7) = 0 then Application.ProcessMessages;
+  end;
+
+  if TotalBytesAvailable > 0 then begin
+    SetLength(Result, TotalBytesAvailable+1);
+    FDbgControlProcess.Output.Read(Result[1], TotalBytesAvailable);
+    while (TotalBytesAvailable > 0) and (Result[TotalBytesAvailable] in [#10,#13]) do
+      dec(TotalBytesAvailable);
+    SetLength(Result, TotalBytesAvailable);
+  end;
+  debugln(DBG_VERBOSE, ['ReadFromDebugControlProcess ',Length(Result), ' ',Result, ' ' , ATimeOut]);
+end;
+
+procedure TGDBMIDebugger.InterruptTarget;
+var
+  s: string;
+begin
+  if (FDbgControlProcess <> nil) and (FDbgControlProcess.Running) then begin
+    s := IntToStr(TargetPID) + LineEnding;
+    FDbgControlProcess.Input.Write(s[1], Length(s));
+    if ReadFromDebugControlProcess(750) = 'OK' then
+      exit;
+    FDbgControlProcess.Terminate(0);
+    FreeAndNil(FDbgControlProcess);
+  end;
+  inherited InterruptTarget;
+end;
+
+destructor TGDBMIDebugger.Destroy;
+begin
+  if FDbgControlProcess <> nil then begin
+    FDbgControlProcess.Terminate(0);
+    FreeAndNil(FDbgControlProcess);
+  end;
+  inherited Destroy;
+end;
+
+{$ENDIF}
+
+function TGDBMIDebugger.CreateCommandStartDebugging(
+  AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging;
+begin
+  Result:= inherited CreateCommandStartDebugging(AContinueCommand);
+  {$IFDEF MSWindows}
+  Result.OnExecuted := @MaybeStartDebugControl;
+  {$ENDIF}
 end;
 
 { TGDBMIDebuggerCommandRegisterUpdate }
@@ -13492,7 +13619,7 @@ end;
 
 procedure Register;
 begin
-  RegisterDebugger(TGDBMIDebuggerBase);
+  RegisterDebugger(TGDBMIDebugger);
 end;
 
 initialization
