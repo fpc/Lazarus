@@ -53,7 +53,7 @@ type
 
   { TSSHGDBMIDebugger }
 
-  TSSHGDBMIDebugger = class(TGDBMIDebugger)
+  TSSHGDBMIDebugger = class(TGDBMIDebuggerBase)
   private
   protected
     function ParseInitialization: Boolean; override;

@@ -41,7 +41,7 @@ type
 
   { TGDBMIServerDebugger }
 
-  TGDBMIServerDebugger = class(TGDBMIDebugger)
+  TGDBMIServerDebugger = class(TGDBMIDebuggerBase)
   private
   protected
     function CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; override;
@@ -151,7 +151,7 @@ begin
   Result := inherited DoExecute;
   if (not FSuccess) then exit;
 
-  if not TGDBMIDebugger(FTheDebugger).AsyncModeEnabled then begin
+  if not TGDBMIDebuggerBase(FTheDebugger).AsyncModeEnabled then begin
     SetDebuggerErrorState(GDBMiSNoAsyncMode);
     FSuccess := False;
     exit;
