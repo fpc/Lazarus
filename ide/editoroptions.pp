@@ -6793,8 +6793,8 @@ begin
         if OGutterProv is TSynGutterLOvProviderModifiedLines then begin
           Attri := GetUsedAttr(ahaModifiedLine);
           if Attri <> nil then begin
-            OGutterProv.Color := Attri.Foreground;
-            TSynGutterLOvProviderModifiedLines(OGutterProv).ColorSaved := Attri.FrameColor;
+            OGutterProv.Color := Attri.FrameColor;
+            TSynGutterLOvProviderModifiedLines(OGutterProv).ColorSaved := Attri.Foreground;
           end;
         end
         else
