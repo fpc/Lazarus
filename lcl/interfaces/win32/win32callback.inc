@@ -493,7 +493,7 @@ end;
 
 procedure TWindowProcHelper.CalcClipRgn(PaintRegion: HRGN);
 var
-  nSize, BytesCount: DWORD;
+  nSize: DWORD;
   RgnData: PRgnData;
   WindowOrg: Windows.POINT;
   XFRM: TXFORM;
@@ -527,8 +527,7 @@ begin
     XFRM.eM11:=-1; XFRM.eM12:=0;
     XFRM.eM21:=0;  XFRM.eM22:=1;
 
-    // ToDo: BytesCount is not initialized.
-    MirroredPaintRgn := ExtCreateRegion(@XFRM, BytesCount, RgnData^);
+    MirroredPaintRgn := ExtCreateRegion(@XFRM, nSize, RgnData^);
     Windows.SelectClipRgn(CurDoubleBuffer.DC, MirroredPaintRgn);
     Windows.DeleteObject(MirroredPaintRgn);
     Freemem(RgnData);
