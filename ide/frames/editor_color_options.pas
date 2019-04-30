@@ -287,8 +287,21 @@ begin
   TheTree.Canvas.Brush.Color := c;
   TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
 
+  // Special draw overview line gutter
+  if (AttriIdx = ord(ahaOverviewGutter)) then begin
+    TextY := (NodeRect.Bottom - NodeRect.Top - 4) Div 2;
+    TheTree.Canvas.Brush.Color := Attri.Foreground;
+    TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Top+2+TextY);
+    TheTree.Canvas.Brush.Color := Attri.Background;
+    TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2+TextY, NodeRect.Left+5, NodeRect.Bottom-2);
+    TextY := FullAbcWidth div 4;
+    TheTree.Canvas.Brush.Color := Attri.FrameColor;
+    TheTree.Canvas.FillRect(NodeRect.Left+2+TextY, NodeRect.Top+3, NodeRect.Left+FullAbcWidth-2-TextY, NodeRect.Bottom-3);
+    exit;
+  end;
+
   // Special draw Modified line gutter
-  if (AttriIdx = ord(ahaModifiedLine)) then begin
+  if (AttriIdx = ord(ahaModifiedLine))then begin
     TextY := NodeRect.Bottom - NodeRect.Top - 4;
     TheTree.Canvas.Brush.Color := Attri.Foreground;
     TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+5, NodeRect.Bottom-2);

@@ -525,6 +525,12 @@ begin
 end;
 
 procedure TSynColorAttrEditor.UpdateAll;
+  function IsAhaElement(Element: TColorSchemeAttribute; aha: TAdditionalHilightAttribute): Boolean;
+  begin
+    Result := (FCurrentColorScheme <> nil) and
+              (FCurrentColorScheme.AttributeByEnum[aha] <> nil) and
+              (Element.StoredName = FCurrentColorScheme.AttributeByEnum[aha].StoredName);
+  end;
 begin
   if (FCurHighlightElement = nil) or UpdatingColor then
     Exit;
@@ -536,22 +542,21 @@ begin
     BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
     FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
     if FCurrentColorScheme <> nil then begin
-      if (FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] <> nil) and
-         (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine].StoredName)
-      then begin
+      if IsAhaElement(FCurHighlightElement, ahaModifiedLine) then begin
         ForeGroundUseDefaultCheckBox.Caption := dlgSavedLineColor;
         FrameColorUseDefaultCheckBox.Caption := dlgUnsavedLineColor;
       end else
-      if (FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree] <> nil) and
-         (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree].StoredName)
-      then begin
+      if IsAhaElement(FCurHighlightElement, ahaCodeFoldingTree) then begin
         FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
       end else
-      if (FCurrentColorScheme.AttributeByEnum[ahaCaretColor] <> nil) and
-         (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCaretColor].StoredName)
-      then begin
+      if IsAhaElement(FCurHighlightElement, ahaCaretColor) then begin
         ForeGroundUseDefaultCheckBox.Caption := dlgCaretForeColor;
         BackGroundUseDefaultCheckBox.Caption := dlgCaretBackColor;
+      end else
+      if IsAhaElement(FCurHighlightElement, ahaOverviewGutter) then begin
+        ForeGroundUseDefaultCheckBox.Caption := dlgOverviewGutterBack1Color;
+        BackGroundUseDefaultCheckBox.Caption := dlgOverviewGutterBack2Color;
+        FrameColorUseDefaultCheckBox.Caption := dlgOverviewGutterPageColor;
       end;
     end;
 

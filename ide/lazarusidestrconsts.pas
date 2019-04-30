@@ -1982,6 +1982,9 @@ resourcestring
   dlgGutterCollapsedColor = 'Collapsed';
   dlgCaretForeColor = 'Color (NotXor)';
   dlgCaretBackColor = 'Multi/2nd (NotXor)';
+  dlgOverviewGutterBack1Color = 'Background 1';
+  dlgOverviewGutterBack2Color = 'Background 2';
+  dlgOverviewGutterPageColor = 'Page';
   dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';
@@ -2176,6 +2179,7 @@ resourcestring
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgCaretColor                   = 'Caret';
+  dlgOverviewGutterColor          = 'Overview Gutter';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
   dlgIfDefBlockActive             = 'Active $IFDEF code';
   dlgIfDefBlockTmpActive          = 'Included mixed state $IFDEF code';

@@ -62,7 +62,7 @@ uses
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat,
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
-  SynEditMarkupFoldColoring, SynEditMarkup,
+  SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview,
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
@@ -123,7 +123,7 @@ const
     '',  // ahaRightMargin
     '',  // ahaSpecialVisibleChars
     '',  // ahaTopInfoHint
-    '', // ahaCaretColor
+    '', '', // ahaCaretColor, ahaOverviewGutter
     '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
     '', '', '',  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
     '', '', '', '', // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
@@ -165,6 +165,7 @@ const
     { ahaSpecialVisibleChars } agnText,
     { ahaTopInfoHint }         agnLine,
     { ahaCaretColor }          agnText,
+    { ahaOverviewGutter }      agnGutter,
     { ahaIfDefBlockInactive }  agnIfDef,
     { ahaIfDefBlockActive }    agnIfDef,
     { ahaIfDefBlockTmpActive } agnIfDef,
@@ -223,6 +224,7 @@ const
     { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaCaretColor }         [hafBackColor, hafForeColor],
+    { ahaOverviewGutter }     [hafBackColor, hafForeColor, hafFrameColor],
     { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockActive }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockTmpActive }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
@@ -2568,6 +2570,7 @@ begin
   AdditionalHighlightAttributes[ahaSpecialVisibleChars] := dlgAddHiSpecialVisibleChars;
   AdditionalHighlightAttributes[ahaTopInfoHint]         := dlgTopInfoHint;
   AdditionalHighlightAttributes[ahaCaretColor]          := dlgCaretColor;
+  AdditionalHighlightAttributes[ahaOverviewGutter]      := dlgOverviewGutterColor;
   AdditionalHighlightAttributes[ahaIfDefBlockInactive]  := dlgIfDefBlockInactive;
   AdditionalHighlightAttributes[ahaIfDefBlockActive]    := dlgIfDefBlockActive;
   AdditionalHighlightAttributes[ahaIfDefBlockTmpActive] := dlgIfDefBlockTmpActive;
@@ -6704,6 +6707,8 @@ var
   IDESynEdit: TIDESynEditor;
   aha: TAdditionalHilightAttribute;
   col: TColor;
+  OGutter: TSynGutterLineOverview;
+  OGutterProv: TSynGutterLineOverviewProvider;
 begin
   ASynEdit.BeginUpdate;
   try
@@ -6780,6 +6785,35 @@ begin
     SetGutterColorByClass(ahaModifiedLine,    TSynGutterChanges);
     SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
     SetGutterColorByClass(ahaGutterSeparator, TSynGutterSeparator);
+
+    OGutter := TSynGutterLineOverview(ASynEdit.RightGutter.Parts.ByClass[TSynGutterLineOverview, 0]);
+    if OGutter <> nil then begin
+      for i := 0 to OGutter.Providers.Count - 1 do begin
+        OGutterProv := OGutter.Providers[i];
+        if OGutterProv is TSynGutterLOvProviderModifiedLines then begin
+          Attri := GetUsedAttr(ahaModifiedLine);
+          if Attri <> nil then begin
+            OGutterProv.Color := Attri.Foreground;
+            TSynGutterLOvProviderModifiedLines(OGutterProv).ColorSaved := Attri.FrameColor;
+          end;
+        end
+        else
+        if OGutterProv is TSynGutterLOvProviderCurrentPage then begin
+          Attri := GetUsedAttr(ahaOverviewGutter);
+          if Attri <> nil then begin
+            OGutterProv.Color := Attri.FrameColor;
+          end;
+        end
+        else
+        if OGutterProv is TIDESynGutterLOvProviderPascal then begin
+          Attri := GetUsedAttr(ahaOverviewGutter);
+          if Attri <> nil then begin
+            OGutterProv.Color := Attri.Foreground;
+            TIDESynGutterLOvProviderPascal(OGutterProv).Color2 := Attri.Background;
+          end;
+        end;
+      end;
+    end;
 
     if ASynEdit is TIDESynEditor then
     begin

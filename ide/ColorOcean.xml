@@ -43,6 +43,7 @@
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
           <ahaGutter Background="clNavy"/>
           <ahaRightMargin Foreground="clSilver"/>
+          <ahaOverviewGutter Foreground="4210752" Background="6579300" FrameColor="clBlue"/>
           <ahaIdentComplWindowHighlight Foreground="clAqua"/>
           <ahaIdentComplWindow Background="8388649"/>
           <ahaOutlineLevel1Color Foreground="clRed"/>
