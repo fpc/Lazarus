@@ -1944,8 +1944,9 @@ resourcestring
   dlgFileExts = 'File extensions';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
-  dlgUseSchemeDefaults = 'Use (and edit) global scheme settings';
-  dlgUseSchemeLocal    = 'Use local scheme settings';
+  dlgThisElementUsesColor = 'The element uses (and edits) the schemes:';
+  dlgUseSchemeDefaults = '- Scheme globals -';
+  dlgUseSchemeLocal    = 'selected language';
   dlgColor = 'Color';
   dlgColors = 'Colors';
   lisHeaderColors = 'Header colors';

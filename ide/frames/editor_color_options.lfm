@@ -18,13 +18,13 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 192
-    Top = 251
+    Height = 232
+    Top = 211
     Width = 640
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 192
+    ClientHeight = 232
     ClientWidth = 640
     Constraints.MinHeight = 192
     TabOrder = 1
@@ -41,7 +41,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     object ToolBar1: TToolBar
       Left = 3
       Height = 24
-      Top = 15
+      Top = 37
       Width = 634
       AutoSize = True
       BorderSpacing.Left = 3
@@ -52,49 +52,21 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       ShowCaptions = True
       ShowHint = True
       TabOrder = 0
-      object tbtnGlobal: TToolButton
-        Tag = 1
-        Left = 1
-        Top = 0
-        AutoSize = True
-        Caption = 'tbtnGlobal'
-        Down = True
-        Grouped = True
-        OnClick = tglGlobalChange
-        Style = tbsCheck
-      end
-      object tbtnLocal: TToolButton
-        Tag = 1
-        Left = 65
-        Top = 0
-        AutoSize = True
-        Caption = 'tbtnLocal'
-        Grouped = True
-        OnClick = tglGlobalChange
-        Style = tbsCheck
-      end
       object SetAttributeToDefaultButton: TToolButton
-        Left = 245
+        Left = 115
         Top = 0
         OnClick = SetAttributeToDefaultButtonClick
         ShowCaption = False
       end
       object ToolButton3: TToolButton
-        Left = 237
+        Left = 107
         Height = 22
         Top = 0
         Caption = 'ToolButton3'
         Style = tbsSeparator
       end
-      object ToolButton1: TToolButton
-        Left = 123
-        Height = 22
-        Top = 0
-        Caption = 'ToolButton1'
-        Style = tbsSeparator
-      end
       object tbnColor: TToolButton
-        Left = 131
+        Left = 1
         Top = 0
         AutoSize = True
         Caption = 'tbnColor'
@@ -104,7 +76,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         Style = tbsCheck
       end
       object tbnPrior: TToolButton
-        Left = 186
+        Left = 56
         Top = 0
         AutoSize = True
         Caption = 'tbnPrior'
@@ -121,231 +93,37 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlElementAttributes
       AnchorSideBottom.Side = asrBottom
-      Height = 153
-      Top = 39
+      Height = 171
+      Top = 61
       Width = 640
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ClientHeight = 153
+      ClientHeight = 171
       ClientWidth = 640
       TabOrder = 1
-      inherited ForeGroundLabel: TLabel
-        Top = 7
-        Width = 91
-      end
-      inherited BackGroundLabel: TLabel
-        Top = 32
-        Width = 93
-      end
       inherited ForeGroundUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
-        Height = 19
-        Width = 192
       end
       inherited ForegroundColorBox: TColorBox
         AnchorSideTop.Control = SynColorAttrEditor1
         AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 204
-        Height = 22
-        Width = 200
       end
       inherited BackGroundColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 204
-        Height = 22
-        Top = 28
-        Width = 200
       end
       inherited BackGroundUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
-        Height = 19
-        Top = 30
-        Width = 194
       end
       inherited FrameColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 204
-        Height = 22
-        Top = 53
-        Width = 200
       end
       inherited FrameColorUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
-        Height = 19
-        Top = 55
-        Width = 191
       end
       inherited pnlUnderline: TPanel
         AnchorSideLeft.Control = SynColorAttrEditor1
-        Height = 40
-        Top = 102
-        Width = 145
-        ClientHeight = 40
-        ClientWidth = 145
-        inherited TextUnderlineRadioPanel: TPanel
-          Height = 21
-          Top = 19
-          Width = 134
-          ClientHeight = 21
-          ClientWidth = 134
-          inherited TextUnderlineRadioOn: TRadioButton
-            Height = 19
-            Width = 36
-          end
-          inherited TextUnderlineRadioOff: TRadioButton
-            Left = 43
-            Height = 19
-            Width = 37
-          end
-          inherited TextUnderlineRadioInvert: TRadioButton
-            Left = 83
-            Height = 19
-            Width = 50
-          end
-        end
-        inherited TextUnderlineCheckBox: TCheckBox
-          Height = 19
-          Width = 145
-        end
       end
-      inherited pnlBold: TPanel
-        Left = 157
-        Height = 40
-        Top = 102
-        Width = 134
-        ClientHeight = 40
-        ClientWidth = 134
-        inherited TextBoldRadioPanel: TPanel
-          Height = 21
-          Top = 19
-          Width = 134
-          ClientHeight = 21
-          ClientWidth = 134
-          inherited TextBoldRadioInvert: TRadioButton
-            Left = 83
-            Height = 19
-            Width = 50
-          end
-          inherited TextBoldRadioOn: TRadioButton
-            Height = 19
-            Width = 36
-          end
-          inherited TextBoldRadioOff: TRadioButton
-            Left = 43
-            Height = 19
-            Width = 37
-          end
-        end
-        inherited TextBoldCheckBox: TCheckBox
-          Height = 19
-          Width = 118
-        end
-      end
-      inherited pnlItalic: TPanel
-        Left = 297
-        Height = 40
-        Top = 102
-        Width = 134
-        ClientHeight = 40
-        ClientWidth = 134
-        inherited TextItalicRadioPanel: TPanel
-          Height = 21
-          Top = 19
-          Width = 134
-          ClientHeight = 21
-          ClientWidth = 134
-          inherited TextItalicRadioInvert: TRadioButton
-            Left = 83
-            Height = 19
-            Width = 50
-          end
-          inherited TextItalicRadioOn: TRadioButton
-            Height = 19
-            Width = 36
-          end
-          inherited TextItalicRadioOff: TRadioButton
-            Left = 43
-            Height = 19
-            Width = 37
-          end
-        end
-        inherited TextItalicCheckBox: TCheckBox
-          Height = 19
-          Width = 119
-        end
-      end
-      inherited FrameStyleBox: TComboBox
-        Left = 307
-        Height = 21
-        Top = 78
-      end
-      inherited FrameEdgesBox: TComboBox
-        Left = 204
-        Height = 21
-        Top = 78
-      end
-      inherited ColumnPosBevel: TPanel
-        Left = 204
-        Top = 145
-      end
-      inherited ForeAlphaLabel: TLabel
-        Left = 414
-        Top = 7
-        Width = 82
-      end
-      inherited BackAlphaLabel: TLabel
-        Left = 414
-        Top = 32
-        Width = 84
-      end
-      inherited FrameAlphaLabel: TLabel
-        Left = 414
-        Top = 57
-        Width = 92
-      end
-      inherited ForeAlphaSpin: TSpinEdit
-        Left = 502
-        Height = 23
-        Top = 3
-      end
-      inherited BackAlphaSpin: TSpinEdit
-        Left = 504
-        Height = 23
-        Top = 28
-      end
-      inherited FrameAlphaSpin: TSpinEdit
-        Left = 512
-        Height = 23
-        Top = 53
-      end
-      inherited ForePriorLabel: TLabel
-        Left = 567
-        Top = 7
-        Width = 76
-      end
-      inherited BackPriorLabel: TLabel
-        Left = 569
-        Top = 32
-        Width = 78
-      end
-      inherited FramePriorLabel: TLabel
-        Left = 577
-        Top = 57
-        Width = 86
-      end
-      inherited ForePriorSpin: TSpinEdit
-        Left = 649
-        Height = 23
-        Top = 3
-      end
-      inherited BackPriorSpin: TSpinEdit
-        Left = 653
-        Height = 23
-        Top = 28
-      end
-      inherited FramePriorSpin: TSpinEdit
-        Left = 669
-        Height = 23
-        Top = 53
+      inherited MarkupFoldColorUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
       end
     end
     object PriorityEditor: TPanel
@@ -357,21 +135,21 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = pnlElementAttributes
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 153
-      Top = 39
+      Height = 171
+      Top = 61
       Width = 640
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ClientHeight = 153
+      ClientHeight = 171
       ClientWidth = 640
       Constraints.MinHeight = 140
       TabOrder = 2
       object ForePriorPanel: TPanel
         Left = 1
-        Height = 151
+        Height = 169
         Top = 1
         Width = 170
         Align = alLeft
-        ClientHeight = 151
+        ClientHeight = 169
         ClientWidth = 170
         TabOrder = 0
         object ForePriorLabel: TLabel
@@ -385,7 +163,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object ForePriorList: TTreeView
           Left = 1
-          Height = 102
+          Height = 120
           Top = 16
           Width = 168
           Align = alClient
@@ -406,7 +184,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         object ForePriorValPanel: TPanel
           Left = 1
           Height = 31
-          Top = 119
+          Top = 137
           Width = 168
           Align = alBottom
           AutoSize = True
@@ -443,18 +221,17 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             OnClick = ForePriorUpDownClick
             Position = 0
             TabOrder = 1
-            Wrap = False
           end
         end
       end
       object BackPriorPanel: TPanel
         Left = 177
-        Height = 151
+        Height = 169
         Top = 1
         Width = 170
         Align = alLeft
         BorderSpacing.Left = 6
-        ClientHeight = 151
+        ClientHeight = 169
         ClientWidth = 170
         TabOrder = 1
         object BackPriorLabel: TLabel
@@ -468,7 +245,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object BackPriorList: TTreeView
           Left = 1
-          Height = 102
+          Height = 120
           Top = 16
           Width = 168
           Align = alClient
@@ -489,7 +266,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         object BackPriorValPanel: TPanel
           Left = 1
           Height = 31
-          Top = 119
+          Top = 137
           Width = 168
           Align = alBottom
           AutoSize = True
@@ -526,18 +303,17 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             OnClick = ForePriorUpDownClick
             Position = 0
             TabOrder = 1
-            Wrap = False
           end
         end
       end
       object FramePriorPanel: TPanel
         Left = 353
-        Height = 151
+        Height = 169
         Top = 1
         Width = 170
         Align = alLeft
         BorderSpacing.Left = 6
-        ClientHeight = 151
+        ClientHeight = 169
         ClientWidth = 170
         TabOrder = 2
         object FramePriorLabel: TLabel
@@ -551,7 +327,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object FramePriorList: TTreeView
           Left = 1
-          Height = 102
+          Height = 120
           Top = 16
           Width = 168
           Align = alClient
@@ -572,7 +348,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         object FramePriorValPanel: TPanel
           Left = 1
           Height = 31
-          Top = 119
+          Top = 137
           Width = 168
           Align = alBottom
           AutoSize = True
@@ -609,18 +385,17 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             OnClick = ForePriorUpDownClick
             Position = 0
             TabOrder = 1
-            Wrap = False
           end
         end
       end
       object StylePriorPanel: TPanel
         Left = 529
-        Height = 151
+        Height = 169
         Top = 1
         Width = 170
         Align = alLeft
         BorderSpacing.Left = 6
-        ClientHeight = 151
+        ClientHeight = 169
         ClientWidth = 170
         TabOrder = 3
         object StylePriorLabel: TLabel
@@ -634,7 +409,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object StylePriorList: TTreeView
           Left = 1
-          Height = 102
+          Height = 120
           Top = 16
           Width = 168
           Align = alClient
@@ -655,7 +430,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         object StylePriorValPanel: TPanel
           Left = 1
           Height = 31
-          Top = 119
+          Top = 137
           Width = 168
           Align = alBottom
           AutoSize = True
@@ -692,9 +467,57 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             OnClick = ForePriorUpDownClick
             Position = 0
             TabOrder = 1
-            Wrap = False
           end
         end
+      end
+    end
+    object PanelElementAttr: TPanel
+      Left = 0
+      Height = 22
+      Top = 15
+      Width = 640
+      Align = alTop
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 22
+      ClientWidth = 640
+      TabOrder = 3
+      object rbLocalAttr: TRadioButton
+        AnchorSideLeft.Control = lbLocalGlobal
+        AnchorSideLeft.Side = asrBottom
+        Left = 84
+        Height = 19
+        Top = 0
+        Width = 79
+        BorderSpacing.Left = 6
+        BorderSpacing.Bottom = 3
+        Caption = 'rbLocalAttr'
+        OnChange = tglGlobalChange
+        TabOrder = 0
+      end
+      object rbGlobalAttr: TRadioButton
+        AnchorSideLeft.Control = rbLocalAttr
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbLocalAttr
+        Left = 173
+        Height = 19
+        Top = 0
+        Width = 85
+        BorderSpacing.Left = 10
+        Caption = 'rbGlobalAttr'
+        OnChange = tglGlobalChange
+        TabOrder = 1
+      end
+      object lbLocalGlobal: TLabel
+        AnchorSideTop.Control = rbLocalAttr
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 2
+        Width = 72
+        BorderSpacing.Left = 6
+        Caption = 'lbLocalGlobal'
+        ParentColor = False
       end
     end
   end
@@ -724,17 +547,17 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlElementAttributes
     Left = 0
-    Height = 226
+    Height = 186
     Top = 25
     Width = 640
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    ClientHeight = 226
+    ClientHeight = 186
     ClientWidth = 640
     TabOrder = 2
     object ColorElementTree: TTreeView
       Left = 0
-      Height = 220
+      Height = 180
       Top = 6
       Width = 200
       Align = alLeft
@@ -762,7 +585,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = ColorElementTree
       AnchorSideBottom.Side = asrBottom
       Left = 207
-      Height = 220
+      Height = 180
       Top = 6
       Width = 433
       BorderSpacing.Left = 1
@@ -1294,7 +1117,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 201
-      Height = 226
+      Height = 186
       Top = 0
       Width = 5
     end

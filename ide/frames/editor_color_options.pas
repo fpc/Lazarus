@@ -29,7 +29,8 @@ uses
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazUTF8,
   // LCL
-  LCLProc, LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, ComCtrls, Dialogs, Menus,
+  LCLProc, LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, ComCtrls, Dialogs,
+  Menus, Buttons,
   // LazControls
   DividerBevel,
   // SynEdit
@@ -50,6 +51,10 @@ type
   { TEditorColorOptionsFrame }
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
+    lbLocalGlobal: TLabel;
+    PanelElementAttr: TPanel;
+    rbLocalAttr: TRadioButton;
+    rbGlobalAttr: TRadioButton;
     StylePriorEdit: TEdit;
     StylePriorLabel: TLabel;
     BackPriorList: TTreeView;
@@ -84,9 +89,6 @@ type
     SynColorAttrEditor1: TSynColorAttrEditor;
     ToolBar: TToolBar;
     ToolBar1: TToolBar;
-    tbtnGlobal: TToolButton;
-    tbtnLocal: TToolButton;
-    ToolButton1: TToolButton;
     ToolButton3: TToolButton;
     tbnColor: TToolButton;
     tbnPrior: TToolButton;
@@ -855,13 +857,13 @@ begin
 
     CanGlobal := (FCurHighlightElement.GetSchemeGlobal <> nil) and
                             not FIsEditingDefaults;
-    tbtnGlobal.Enabled := CanGlobal;
-    tbtnLocal.Enabled := CanGlobal;
-    tbtnGlobal.AllowAllUp := not CanGlobal;
-    tbtnLocal.AllowAllUp := not CanGlobal;
-    tbtnGlobal.Down := FCurHighlightElement.IsUsingSchemeGlobals and
+    rbGlobalAttr.Enabled := CanGlobal;
+    rbLocalAttr.Enabled := CanGlobal;
+    //rbGlobalAttr.AllowAllUp := not CanGlobal;
+    //rbLocalAttr.AllowAllUp := not CanGlobal;
+    rbGlobalAttr.Checked := FCurHighlightElement.IsUsingSchemeGlobals and
                        CanGlobal;
-    tbtnLocal.Down  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
+    rbLocalAttr.Checked  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
                        CanGlobal;
 
     if FCurHighlightElement.IsUsingSchemeGlobals then
@@ -1489,8 +1491,9 @@ begin
   btnExport.ImageIndex := IDEImages.LoadImage('laz_save');
   btnExport.Hint := lisExport;
 
-  tbtnGlobal.Caption := dlgUseSchemeDefaults;
-  tbtnLocal.Caption := dlgUseSchemeLocal;
+  lbLocalGlobal.Caption := dlgThisElementUsesColor;
+  rbGlobalAttr.Caption := dlgUseSchemeDefaults;
+  rbLocalAttr.Caption := dlgUseSchemeLocal;
 
   tbnColor.Caption := dlgColors;
   tbnPrior.Caption := dlgPriorities;
@@ -1633,7 +1636,7 @@ begin
     exit;
 
   if (FCurHighlightElement.GetSchemeGlobal <> nil) then begin
-    FCurHighlightElement.UseSchemeGlobals := tbtnGlobal.Down;
+    FCurHighlightElement.UseSchemeGlobals := rbGlobalAttr.Checked;
     ShowCurAttribute;
     UpdateCurrentScheme;
   end;
