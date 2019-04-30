@@ -91,6 +91,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure Setup;
     procedure UpdateAll;
+    procedure DoResized;
     // CurrentColorScheme must be set before CurHighlightElement
     property CurHighlightElement: TColorSchemeAttribute read FCurHighlightElement write SetCurHighlightElement;
     property CurrentColorScheme: TColorSchemeLanguage read FCurrentColorScheme write FCurrentColorScheme;
@@ -272,6 +273,32 @@ begin
   end;
 end;
 
+procedure TSynColorAttrEditor.DoResized;
+var
+  S: TSpinEdit;
+begin
+  S := FramePriorSpin;
+  if not S.Visible then
+    S := FrameAlphaSpin;
+  if Width > S.Left + S.Width + FrameStyleBox.Width + FrameEdgesBox.Width + 15 then
+  begin
+    FrameEdgesBox.AnchorSide[akTop].Control := S;
+    FrameEdgesBox.AnchorSide[akTop].Side := asrTop;
+    FrameEdgesBox.AnchorSide[akLeft].Control := S;
+    FrameEdgesBox.AnchorSide[akLeft].Side := asrBottom;
+    FrameEdgesBox.BorderSpacing.Top := 0;
+    FrameEdgesBox.BorderSpacing.Left := 6;
+  end
+  else begin
+    FrameEdgesBox.AnchorSide[akTop].Control := FrameColorBox;
+    FrameEdgesBox.AnchorSide[akTop].Side := asrBottom;
+    FrameEdgesBox.AnchorSide[akLeft].Control := FrameColorBox;
+    FrameEdgesBox.AnchorSide[akLeft].Side := asrTop;
+    FrameEdgesBox.BorderSpacing.Top := 3;
+    FrameEdgesBox.BorderSpacing.Left := 0;
+  end;
+end;
+
 procedure TSynColorAttrEditor.FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
 var
@@ -402,6 +429,7 @@ procedure TSynColorAttrEditor.pnlElementAttributesResize(Sender: TObject);
 var
   MinAnchor: TControl;
   MinWidth: Integer;
+  S: TSpinEdit;
 
   procedure CheckControl(Other: TControl);
   var w,h: Integer;
@@ -426,7 +454,10 @@ begin
 
   ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
   Constraints.MinHeight := pnlItalic.Top + pnlItalic.Height;
-  Constraints.MinWidth := BackPriorSpin.Left + BackPriorSpin.Width;
+  S := BackPriorSpin;
+  if not S.Visible then
+    S := BackAlphaSpin;
+  Constraints.MinWidth := S.Left + S.Width;
 end;
 
 procedure TSynColorAttrEditor.TextStyleRadioOnChange(Sender: TObject);

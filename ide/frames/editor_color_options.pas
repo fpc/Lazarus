@@ -178,6 +178,8 @@ type
     procedure ColorSchemeMenuItemClick(Sender: TObject);
     procedure SetLanguageItem(ALanguage: String);
     procedure SetColorSchemeItem(AScheme: String);
+  protected
+    procedure DoOnChangeBounds; override;
   public
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
@@ -867,6 +869,7 @@ begin
     else
       SynColorAttrEditor1.CurHighlightElement := FCurHighlightElement;
     //SynColorAttrEditor1.UpdateAll;
+    SynColorAttrEditor1.DoResized;
     FillPriorEditor;
   finally
     EnableAlign;
@@ -1414,6 +1417,12 @@ begin
   for i := 0 to ColorSchemeMenu.Items.Count - 1 do
     ColorSchemeMenu.Items[i].Checked := ColorSchemeMenu.Items[i].Caption = AScheme;
   ColorSchemeButton.Caption := AScheme;
+end;
+
+procedure TEditorColorOptionsFrame.DoOnChangeBounds;
+begin
+  if SynColorAttrEditor1 <> nil then
+    SynColorAttrEditor1.DoResized;
 end;
 
 constructor TEditorColorOptionsFrame.Create(TheOwner: TComponent);
