@@ -619,6 +619,17 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     Result := True;
   end;
 
+  procedure DoUnknown;
+  begin
+    APrintedValue := 'Unknown type';
+    if svfAddress in AValue.FieldFlags then
+      APrintedValue := APrintedValue + '($'+IntToHex(AValue.Address.Address, AnAddressSize*2) + ')'
+    else
+    if svfDataAddress in AValue.FieldFlags then
+      APrintedValue := APrintedValue + '($'+IntToHex(AValue.DataAddress.Address, AnAddressSize*2) + ')';
+    Result := True;
+  end;
+
   procedure DoInt;
   var
     n: Integer;
@@ -1029,7 +1040,7 @@ begin
     skClass:     DoStructure;
     skInterface: ;
     skArray:     DoArray;
-    skNone:      DoPointer(true);
+    skNone:      DoUnknown;
   end;
 
   if (ADBGTypeInfo <> nil) and (ADBGTypeInfo^ <> nil) then

@@ -201,6 +201,9 @@ type
     property DataAddressCache[AIndex: Integer]: TFpDbgMemLocation read GetDataAddressCache write SetDataAddressCache;
   end;
 
+  TFpDwarfValueUnknown = class(TFpDwarfValue)
+  end;
+
   { TFpDwarfValueSized }
 
   TFpDwarfValueSized = class(TFpDwarfValue)
@@ -2691,7 +2694,7 @@ begin
       if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
         exit;
       Addr.Address := Addr.Address - AddressSize;
-      if MemManager.ReadSignedInt(Addr, 4, i) then begin
+      if MemManager.ReadSignedInt(Addr, AddressSize, i) then begin
         Result := Integer(i)+1;
         exit;
       end
@@ -3286,7 +3289,7 @@ end;
 
 function TFpDwarfSymbolType.GetTypedValueObject(ATypeCast: Boolean): TFpDwarfValue;
 begin
-  Result := nil;
+  Result := TFpDwarfValueUnknown.Create(Self);
 end;
 
 function TFpDwarfSymbolType.GetValueBounds(AValueObj: TFpDwarfValue; out ALowBound,

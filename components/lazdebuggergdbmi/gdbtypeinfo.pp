@@ -34,8 +34,15 @@ unit GDBTypeInfo;
 interface
 
 uses
-  Classes, SysUtils, LclProc, math, LazLoggerBase, DebugUtils,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses;
+  Classes, SysUtils, math,
+  // LCL
+  LclProc,
+  // LazUtils
+  LazLoggerBase, LazStringUtils,
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  // LazDebuggerGdbmi
+  DebugUtils, GDBMIMiscClasses;
 
 (*
   ptype = {
@@ -1282,13 +1289,6 @@ begin
 end;
 
 function TGDBExpressionPartArray.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
-  function IsNumber(s: String): Boolean;
-  var i: Integer;
-  begin
-    i := Length(s);
-    while (i >= 1) and (s[i] in ['0'..'9']) do dec(i);
-    Result := i = 0;
-  end;
 var
   i, j: Integer;
   IdxPart, IdxPart2: TGDBExpressionPartArrayIdx;

@@ -19,7 +19,7 @@ interface
 
 uses
   SysUtils, math, Classes, LazLoggerBase, DbgIntfDebuggerBase, DbgIntfBaseTypes,
-  DebugInstructions, LldbHelper;
+  strutils, DebugInstructions, LldbHelper;
 
 type
 
@@ -47,9 +47,11 @@ type
 
   TLldbInstruction = class(TDBGInstruction)
   private
+    FDwarfLoadErrors: String;
     FOwningCommand: TObject;
     function GetQueue: TLldbInstructionQueue;
   protected
+    function MaskQuotedText(ALine: String): String;
     function ProcessInputFromDbg(const AData: String): Boolean; override;
     procedure SetContentReceieved; reintroduce;
 
@@ -57,6 +59,7 @@ type
     property NextInstruction;
   public
     property OwningCommand: TObject read FOwningCommand write FOwningCommand;
+    property DwarfLoadErrors: String read FDwarfLoadErrors;
   end;
 
   { TLldbInstructionSettingSet }
@@ -119,13 +122,10 @@ type
   { TLldbInstructionProcessLaunch }
 
   TLldbInstructionProcessLaunch = class(TLldbInstruction)
-  private
-    FErrors: String;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(AOpenTerminal: Boolean);
-    property Errors: String read FErrors;
   end;
 
   { TLldbInstructionProcessStep }
@@ -546,12 +546,42 @@ begin
   Result := TLldbInstructionQueue(inherited Queue);
 end;
 
+function TLldbInstruction.MaskQuotedText(ALine: String): String;
+var
+  p: PChar;
+  q: Boolean;
+  i: Integer;
+begin
+  Result := ALine;
+  if Result = '' then
+    Exit;
+  UniqueString(Result);
+  p := @Result[1];
+  q := False;
+  for i := Length(Result) - 1 downto 0 do begin
+    if p^ = '''' then
+      q := not q;
+    if q then
+      p^ := ' ';
+    // The closing ' remains in text...
+    inc(p);
+  end;
+end;
+
 function TLldbInstruction.ProcessInputFromDbg(const AData: String): Boolean;
+var
+  s: String;
 begin
   Result := False;
   if LeftStr(AData, 7) = 'error: ' then begin
-    Result := True;
+    s := MaskQuotedText(LowerCase(AData));
+    if (StrContains(s, 'debug map time') and StrContains(s, 'file will be ignored'))
+    then begin
+      FDwarfLoadErrors := FDwarfLoadErrors + AData + LineEnding;
+      exit;
+    end;
 
+    Result := True;
     HandleError(ifeContentError);
     exit;
   end;
@@ -692,21 +722,14 @@ end;
 
 function TLldbInstructionProcessLaunch.ProcessInputFromDbg(const AData: String
   ): Boolean;
+var
+  s: String;
 begin
   if StrStartsWith(AData, 'Process ') and (pos(' launched:', AData) > 8) then begin
     SetContentReceieved;
   end
   else
-  if LeftStr(AData, 7) = 'error: ' then begin
-    if StrContains(LowerCase(AData), 'launch failed') or
-       StrContains(LowerCase(AData), 'process')
-    then
-      Result := inherited
-    else
-      FErrors := FErrors + AData + LineEnding;
-  end
-  else
-    Result := inherited;
+    inherited;
   Result := True; // Ignore any "process stopped", before "launched"
 end;
 

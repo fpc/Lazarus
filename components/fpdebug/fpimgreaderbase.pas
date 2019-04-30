@@ -202,7 +202,7 @@ begin
   {$IFDEF MacOS}
   if (RightStr(AFileName,4) = '.app') then begin
     s := ExtractFileName(AFileName);
-    s := AFileName + PathDelim + 'Contents' + PathDelim + 'MacOs' + PathDelim + copy(s, 1, Length(s) - 4);
+    s := AFileName + PathDelim + 'Contents' + PathDelim + 'MacOS' + PathDelim + copy(s, 1, Length(s) - 4);
     if (FileExists(s)) then AFileName := s
   end;
   {$ENDIF}
