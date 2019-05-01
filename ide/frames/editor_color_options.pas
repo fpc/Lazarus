@@ -1213,14 +1213,21 @@ begin
   DefaultSchemeGrp := ColorSchemeFactory.ColorSchemeGroup[ColorSchemeButton.Caption];
   if DefaultSchemeGrp = nil then
     exit;
-  if FIsEditingDefaults then
+  if FIsEditingDefaults or FCurHighlightElement.IsUsingSchemeGlobals then
     DefaultColorScheme := DefaultSchemeGrp.DefaultColors
   else
     DefaultColorScheme := DefaultSchemeGrp.ColorScheme[FCurrentColorScheme.Language];
 
   if OnlySelected then begin
     DefAttri := DefaultColorScheme.Attribute[FCurHighlightElement.StoredName];
-    FCurHighlightElement.Assign(DefAttri);
+    if FCurHighlightElement.IsUsingSchemeGlobals then begin
+      // reset the globol settings for the element
+      FCurHighlightElement.GetSchemeGlobal.Assign(DefAttri);
+    end
+    else begin
+      FCurHighlightElement.Assign(DefAttri);
+      FCurHighlightElement.UseSchemeGlobals := False; // keep editing locals, for single elem reset, this should not change.
+    end;
   end else begin
     FCurrentColorScheme.Assign(DefaultColorScheme);
   end;
@@ -1240,6 +1247,7 @@ begin
   FindCurHighlightElement;
   UpdateCurrentScheme;
   ShowCurAttribute;
+  SynColorAttrEditor1.UpdateAll; // force update
 end;
 
 function TEditorColorOptionsFrame.GetColorSchemeForLang(const LanguageName: String): String;
