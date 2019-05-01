@@ -484,9 +484,9 @@ begin
           Data^.FFullPath := TPackageData(PackageList.Objects[I]).FFullPath;
           if not LoadPackageData(Data^.FFullPath, Data) then
             MessageDlgEx(rsCreateRepositoryPackageFrm_Error0, mtError, [mbOk], Self);
-          Data^.FLazCompatibility := '1.6, 1.8, Trunk';
-          Data^.FFPCCompatibility := '2.6.4, 3.0.0, 3.0.2, 3.0.4';
-          Data^.FSupportedWidgetSet := 'win32/64, gtk2, carbon';
+          Data^.FLazCompatibility := '1.8, 2.0, Trunk';
+          Data^.FFPCCompatibility := '3.0.0, 3.0.2, 3.0.4';
+          Data^.FSupportedWidgetSet := 'win32/64, gtk2';
           Data^.FDataType := 1;
         end;
         FVSTPackages.FullExpand;
@@ -1046,7 +1046,10 @@ begin
       MetaPkg.RepositoryDate := now;
       MetaPkg.PackageBaseDir := RootData^.FPackageBaseDir;
       if Trim(RootData^.FDisplayName) <> '' then
-        MetaPkg.DisplayName := RootData^.FDisplayName
+      begin
+        MetaPkg.Name := RootData^.FDisplayName;
+        MetaPkg.DisplayName := RootData^.FDisplayName;
+      end
       else
         MetaPkg.DisplayName := RootData^.FName;
       MetaPkg.HomePageURL := RootData^.FHomePageURL;
