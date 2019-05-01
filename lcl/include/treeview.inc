@@ -3961,7 +3961,7 @@ begin
   if ANode<>nil then
   begin
     NodeRect:=ANode.DisplayRect(false);
-    NodeMidY:=(NodeRect.Top+NodeRect.Bottom) div 2;
+    NodeMidY:=NodeRect.Top + (NodeRect.Bottom-NodeRect.Top) div 2;
     AnInsertMarkNode:=ANode;
     if (X>AnInsertMarkNode.DisplayExpandSignRight) then
       if Y>=NodeMidY then begin
@@ -5284,7 +5284,7 @@ begin
     if not CustomDrawItem(Node, DrawState, cdPrePaint, PaintImages) then Exit;
   end;
 
-  VertMid := (NodeRect.Top + NodeRect.Bottom) div 2;
+  VertMid := NodeRect.Top + (NodeRect.Bottom - NodeRect.Top) div 2;
   HasExpandSign := ShowButtons and Node.HasChildren and ((tvoShowRoot in Options) or (Node.Parent <> nil));
   VertDelta := Ord(FDefItemHeight and 3 = 2);
   //DebugLn(['[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid]);
@@ -5311,7 +5311,7 @@ begin
       if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
       begin
         if PaintImages then
-          StateImageRes.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImageRes.Height) div 2,
+          StateImageRes.Draw(Canvas, x + 1, NodeRect.Top +(NodeRect.Bottom - NodeRect.Top - StateImageRes.Height) div 2,
             Node.StateIndex, True);
         Inc(x, StateImageRes.Width + FDefItemSpace);
       end;
@@ -5337,21 +5337,21 @@ begin
       	  if (Node.OverlayIndex >= 0) then begin
             OverlayIndex:=Node.OverlayIndex;
             if Images.HasOverlays then begin
-              ImageRes.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
+              ImageRes.DrawOverlay(Canvas, x + 1, NodeRect.Top + (NodeRect.Bottom - NodeRect.Top - ImageRes.Height) div 2,
                  ImgIndex, OverlayIndex, Node.FNodeEffect);
             end else begin
               // draw the Overlay using the image from the list
               // set an Overlay
               Images.OverLay(OverlayIndex,0);
               // draw overlay
-              ImageRes.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
+              ImageRes.DrawOverlay(Canvas, x + 1, NodeRect.Top + (NodeRect.Bottom - NodeRect.Top - ImageRes.Height) div 2,
                  ImgIndex, 0, Node.FNodeEffect);
               // reset the Overlay
               Images.OverLay(-1,0);
             end;
           end
           else begin
-            ImageRes.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
+            ImageRes.Draw(Canvas, x + 1, NodeRect.Top + (NodeRect.Bottom - NodeRect.Top - ImageRes.Height) div 2,
                ImgIndex, Node.FNodeEffect);
           end;
         end;
