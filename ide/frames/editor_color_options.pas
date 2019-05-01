@@ -264,7 +264,7 @@ begin
   end;
   NodeRect := Node.DisplayRect(true);
   FullAbcWidth := TheTree.Canvas.TextExtent(COLOR_NODE_PREFIX).cx;
-  TextY := (NodeRect.Top + NodeRect.Bottom - TheTree.Canvas.TextHeight(Node.Text)) div 2;
+  TextY := NodeRect.Top + (NodeRect.Bottom - NodeRect.Top - TheTree.Canvas.TextHeight(Node.Text)) div 2;
   TheTree.Canvas.FillRect(NodeRect);
   TheTree.Canvas.TextOut(NodeRect.Left+FullAbcWidth, TextY, copy(Node.Text, 1+length(COLOR_NODE_PREFIX), MaxInt)); // Attri.Name);
 
@@ -398,7 +398,7 @@ begin
       TheTree.Canvas.Font.Color := c;
       TheTree.Canvas.Font.Style := Attri.Style;
       TheTree.Canvas.Font.Height := -(NodeRect.Bottom - NodeRect.Top - 7);
-      TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(s)) div 2;
+      TextY := NodeRect.Top + (NodeRect.Bottom - NodeRect.Top - canvas.TextHeight(s)) div 2;
       AbcWidth := TheTree.Canvas.TextExtent(s).cx;
       SetBkMode(TheTree.Canvas.Handle, TRANSPARENT);
       TheTree.Canvas.TextOut(NodeRect.Left+(FullAbcWidth - AbcWidth) div 2, TextY, s);
