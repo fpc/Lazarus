@@ -378,7 +378,7 @@ end;
 procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
   if not Assigned(menuItemCallback) then Exit;
-  menuItemCallback.ItemSelected;
+  //todo: call "measureItem"
 end;
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
@@ -472,6 +472,10 @@ begin
       Parent := AllocCocoaMenu(AMenuItem.Parent.Caption);
       Parent.setDelegate(TCocoaMenuItem(ParObj));
       NSMenuItem(ParObj).setSubmenu(Parent);
+
+      // no longer respond to clicks. LCL might still need to get an event
+      // yet the menu should not close
+      NSMenuItem(ParObj).setAction(nil);
     end
     else
       Parent:=TCocoaMenu(NSMenuItem(ParObj).submenu);
