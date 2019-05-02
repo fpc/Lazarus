@@ -1715,7 +1715,9 @@ begin
     end;
   end;
 
-  if FTargetInfo.TargetPtrSize = SizeOf(Pointer) then
+  if (FTargetInfo.TargetPtrSize = SizeOf(Pointer)) or
+     (FDbgControlProcess <> nil)
+  then
     exit;
 
   if FileExists(s) then begin
