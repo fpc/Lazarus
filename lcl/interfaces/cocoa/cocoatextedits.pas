@@ -64,7 +64,6 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     // key
-    procedure keyUp(event: NSEvent); override;
     procedure textDidChange(notification: NSNotification); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -87,7 +86,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // key
-    procedure keyUp(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -117,9 +115,6 @@ type
     procedure resetCursorRects; override;
 
     procedure changeColor(sender: id); override;
-    // key
-    procedure keyUp(event: NSEvent); override;
-    procedure flagsChanged(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -255,7 +250,6 @@ type
     procedure comboBoxSelectionDidChange(notification: NSNotification); message 'comboBoxSelectionDidChange:';
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
     //
-    procedure keyUp(event: NSEvent); override;
     procedure setStringValue(avalue: NSString); override;
     function lclGetFrameToLayoutDelta: TRect; override;
     // mouse
@@ -802,20 +796,6 @@ begin
     inherited resetCursorRects;
 end;
 
-procedure TCocoaTextField.keyUp(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
-end;
-
 procedure TCocoaTextField.textDidChange(notification: NSNotification);
 begin
   if callback <> nil then
@@ -883,27 +863,6 @@ procedure TCocoaTextView.changeColor(sender: id);
 begin
   //preventing text color from being changed
   //inherited changeColor(sender);
-end;
-
-procedure TCocoaTextView.keyUp(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
-end;
-
-procedure TCocoaTextView.flagsChanged(event: NSEvent);
-begin
-  if Assigned(callback) then callback.KeyEvent(event);
-  // don't skip inherited or else key input won't work
-  inherited flagsChanged(event);
 end;
 
 procedure TCocoaTextView.dealloc;
@@ -1062,20 +1021,6 @@ end;
 procedure TCocoaSecureTextField.lclClearCallback;
 begin
   callback := nil;
-end;
-
-procedure TCocoaSecureTextField.keyUp(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
 end;
 
 procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
@@ -1354,21 +1299,6 @@ procedure TCocoaComboBox.comboBoxSelectionIsChanging(notification: NSNotificatio
 begin
   userSel := true;
   callback.ComboBoxSelectionIsChanging;
-end;
-
-procedure TCocoaComboBox.keyUp(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
-  inherited keyUp(event);
 end;
 
 function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;

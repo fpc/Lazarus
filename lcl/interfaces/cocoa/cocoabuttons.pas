@@ -75,7 +75,7 @@ type
     procedure lclClearCallback; override;
     // keyboard
     procedure keyDown(event: NSEvent); override;
-    procedure keyUp(event: NSEvent); override;
+    function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -304,10 +304,15 @@ begin
   inherited keyDown(event);
 end;
 
-procedure TCocoaButton.keyUp(event: NSEvent);
+function TCocoaButton.performKeyEquivalent(event: NSEvent): LCLObjCBoolean;
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
+  // "Return" is a keyEquivalent for a "default" button"
+  // LCL provides its own mechanism for handling default buttons
+  if (keyEquivalent.length = 1) and (keyEquivalentModifierMask = 0) and
+     (keyEquivalent.characterAtIndex(0) = NSCarriageReturnCharacter) then
+    Result := False
+  else
+    Result := inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaButton.mouseUp(event: NSEvent);

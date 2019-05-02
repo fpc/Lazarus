@@ -448,12 +448,37 @@ begin
 end;
 
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
+var
+  cb : ICommonCallback;
+  wnd: TCocoaWindow;
+  allowcocoa : Boolean;
 begin
-  // https://stackoverflow.com/questions/4001565/missing-keyup-events-on-meaningful-key-combinations-e-g-select-till-beginning
-  if (theEvent.type_ = NSKeyUp) and
-     ((theEvent.modifierFlags and NSCommandKeyMask) = NSCommandKeyMask)
-  then
-    self.keyWindow.sendEvent(theEvent);
+  if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
+     (theEvent.type_ = NSFlagsChanged) then begin
+    cb := self.keyWindow.firstResponder.lclGetCallback;
+    if Assigned(cb) then
+    begin
+      try
+        if self.keyWindow.isKindOfClass_(TCocoaWindow) then begin
+          wnd := TCocoaWindow(self.keyWindow);
+          wnd._keyEvCallback := cb;
+          wnd._calledKeyEvAfter := False;
+        end
+        else
+          wnd := nil;
+        cb.KeyEvBefore(theEvent, allowcocoa);
+        if allowcocoa then
+          inherited sendEvent(theEvent);
+        if (not Assigned(wnd)) or (not wnd._calledKeyEvAfter) then
+          cb.KeyEvAfter;
+      finally
+        if Assigned(wnd) then
+          wnd._keyEvCallback := nil;
+      end;
+      Exit;
+    end;
+  end;
+
   inherited sendEvent(theEvent);
 
   if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);

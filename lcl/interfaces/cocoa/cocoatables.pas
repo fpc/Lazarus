@@ -103,7 +103,6 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     // key
-    procedure keyUp(event: NSEvent); override;
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
     procedure lclSetImagesInCell(aimagesInCell: Boolean); message 'lclSetImagesInCell:';
@@ -575,21 +574,6 @@ end;
 procedure TCocoaTableListView.mouseMoved(event: NSEvent);
 begin
   inherited mouseMoved(event);
-end;
-
-procedure TCocoaTableListView.keyUp(event: NSEvent);
-var
-  allow : Boolean;
-begin
-  if not Assigned(callback) then
-    inherited KeyUp(event)
-  else
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(allow);
-    if allow then inherited KeyUp(event);
-    callback.KeyEvAfter;
-  end;
 end;
 
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView

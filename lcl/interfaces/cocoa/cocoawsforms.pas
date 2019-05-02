@@ -58,6 +58,9 @@ type
     function AcceptFilesDrag: Boolean;
     procedure DropFiles(const FileNames: array of string);
 
+    function HasCancelControl: Boolean;
+    function HasDefaultControl: Boolean;
+
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
@@ -457,6 +460,42 @@ procedure TLCLWindowCallback.DropFiles(const FileNames: array of string);
 begin
   if Assigned(Target) then
     TCustomForm(Target).IntfDropFiles(FileNames);
+end;
+
+function TLCLWindowCallback.HasCancelControl: Boolean;
+{ TODO: Should this be solved differently?  TForm/TApplication could expose a
+  property to avoid duplicating them here and in TApplication.DoEscapeKey }
+var
+  lControl: TControl;
+begin
+  if Assigned(Target) and
+     (anoEscapeForCancelControl in Application.Navigation) then
+  begin
+    lControl := TCustomForm(Target).CancelControl;
+    Result := Assigned(lControl) and lControl.Enabled and lControl.Visible;
+  end
+  else
+    Result := False;
+end;
+
+function TLCLWindowCallback.HasDefaultControl: Boolean;
+{ TODO: Should this be solved differently?  TForm/TApplication could expose a
+  property to avoid duplicating them here and in TApplication.DoReturnKey }
+var
+  lControl: TControl;
+begin
+  if Assigned(Target) and
+     (anoReturnForDefaultControl in Application.Navigation) then
+  begin
+    lControl := TCustomForm(Target).ActiveDefaultControl;
+    if lControl = nil then
+      lControl := TCustomForm(Target).DefaultControl;
+    Result := Assigned(lControl) and
+      ((lControl.Parent = nil) or lControl.Parent.CanFocus) and
+      lControl.Enabled and lControl.Visible;
+  end
+  else
+    Result := False;
 end;
 
 { TCocoaWSScrollingWinControl}

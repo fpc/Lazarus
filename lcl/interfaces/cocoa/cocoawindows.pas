@@ -74,6 +74,9 @@ type
     function AcceptFilesDrag: Boolean;
     procedure DropFiles(const FileNames: array of string);
 
+    function HasCancelControl: Boolean;
+    function HasDefaultControl: Boolean;
+
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
@@ -138,6 +141,8 @@ type
     procedure windowDidEnterFullScreen(notification: NSNotification); message 'windowDidEnterFullScreen:';
     procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
+    _keyEvCallback: ICommonCallback;
+    _calledKeyEvAfter: Boolean;
     callback: IWindowCallback;
     keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
@@ -164,13 +169,7 @@ type
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
     // key
-    // in practice those key-handling methods should NOT be needed, because a window
-    // always have TCocoaWindowContent view. However, on some instances
-    // the focus is not switched to CocoaWindowContent, and the window itself
-    // remains the firstResponder. (ie CodeCompletion window, see bug #34301)
     procedure keyDown(event: NSEvent); override;
-    procedure keyUp(event: NSEvent); override;
-    procedure flagsChanged(event: NSEvent); override;
     // windows
     function makeFirstResponder(r: NSResponder): LCLObjCBoolean; override;
     // menu support
@@ -221,109 +220,9 @@ type
     function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
   end;
 
-procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
 
 implementation
 
-
-function NeedsReturn(rsp: NSResponder): Boolean;
-var
-  t, a, r, l: Boolean;
-begin
-  if Assigned(rsp) then begin
-    t := false; a := false; r := false; l := false;
-    rsp.lclExpectedKeys(t, a, r, l);
-    Result := r;
-  end else
-    Result := false;
-end;
-
-function AllowKeyEqForResponders(first: NSResponder; event: NSEvent): Boolean;
-begin
-  Result := not (
-    // "Return" is a keyEquivalent for a "default" button
-    // LCL provides its own mechanism for handling default buttons
-    (event.keyCode = kVK_Return) and ((event.modifierFlags and KeysModifiers)= 0) and NeedsReturn(first)
-  );
-end;
-
-// Cocoa emulation routine.
-//
-// For whatever reason, the default keyDown: event processing, is triggerring
-// some macOSX hot keys PRIOR to reaching keyDown: (Which is a little bit unpredictable)
-// So the below Key-event-Path is a light version of what is described, in Cocoa
-// documentation.
-// first - run controls and menus, for performKeyEquivalent
-// then pass keyDown through
-//
-// The order can be reverted and let Controls do the key processing first
-// and menu to handle the event after.
-
-procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
-var
-  r : NSResponder;
-  fr : NSResponder;
-  mn : NSMenu;
-  cb : ICommonCallback;
-  allowcocoa : Boolean;
-begin
-  fr := win.firstResponder;
-  r := fr;
-  allowcocoa := true;
-
-  if Assigned(fr) then
-  begin
-    cb := fr.lclGetCallback;
-    if Assigned(cb) then
-    begin
-      cb.KeyEvPrepare(event);
-      cb.KeyEvBefore(allowcocoa);
-    end;
-  end else
-    cb := nil;
-
-  // try..finally here is to handle "Exit"s
-  // rather than excepting any exceptions to happen
-  try
-    if not allowcocoa then Exit;
-
-    processed := false;
-
-    // let controls to performKeyEquivalent first
-    if AllowKeyEqForResponders(fr, event) then
-      while Assigned(r) and not processed do begin
-        if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
-          processed := r.performKeyEquivalent(event);
-        if not processed then r := r.nextResponder;
-      end;
-
-    if processed then Exit;
-
-    // let menus do the hot key, if controls don't like it.
-    if not processed then
-    begin
-      mn := NSApplication(NSApp).mainMenu;
-      if Assigned(mn) then
-        processed := mn.performKeyEquivalent(event);
-    end;
-    if processed then Exit;
-
-    r := fr;
-    while Assigned(r) and not processed do begin
-      if r.respondsToSelector(objcselector('keyDown:')) then
-      begin
-        r.keyDown(event);
-        processed := true;
-      end;
-      if not processed then r := r.nextResponder;
-    end;
-
-  finally
-    if Assigned(cb) then
-      cb.KeyEvAfter;
-  end;
-
-end;
 
 { TCocoaDesignOverlay }
 
@@ -432,21 +331,40 @@ function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): LCLObjCBoolea
 var
   resp : NSResponder;
   wn   : NSWindow;
-  view : NSTextView;
 begin
   Result := false;
-  // only respond to key, if focused
 
+  // If the form has a default or cancel button, capture Return and Escape to
+  // prevent further processing.  Actually clicking the buttons is handled in
+  // the LCL in response to the keyUp
+  if Assigned(wincallback) and (event.modifierFlags_ = 0) and
+     (event.charactersIgnoringModifiers.length = 1) and
+     (((event.charactersIgnoringModifiers.characterAtIndex(0) = NSCarriageReturnCharacter) and
+       wincallback.HasDefaultControl) or
+      ((event.charactersIgnoringModifiers.characterAtIndex(0) = 27{Escape}) and
+       wincallback.HasCancelControl)) then
+  begin
+    Result := true;
+    Exit;
+  end;
+
+  // Support Cut/Copy/Paste if the firstResponder is an NSTextView.
+  // This could be done in TCocoaFieldEditor and TCocoaTextView's
+  // performKeyEquivalent, but that wouldn't work for non-LCL edits.
+  // Xcode Cocoa apps rely on the commands existing in the main menu
   wn := window;
-  if not Assigned(wn) then Exit;
-  resp := wn.firstResponder;
-  if (not Assigned(resp)) or (not resp.isKindOfClass_(NSTextView)) then Exit;
+  if Assigned(wn) then
+  begin
+    resp := wn.firstResponder;
+    if Assigned(resp) and resp.isKindOfClass_(NSTextView) and
+       resp.lclIsEnabled then
+    begin
+      NSResponderHotKeys(self, event, Result, resp);
+      if Result then Exit;
+    end;
+  end;
 
-  if (not resp.lclIsEnabled) then Exit;
-
-  NSResponderHotKeys(self, event, Result, resp);
-  if not Result then
-    Result:=inherited performKeyEquivalent(event);
+  Result := inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaWindowContent.resolvePopupParent();
@@ -1060,27 +978,31 @@ begin
       inherited sendEvent(event);
   end
   else
-  if event.type_ = NSKeyDown then
-    WindowPerformKeyDown(self, event, prc)
-  else
     inherited sendEvent(event);
 end;
 
 procedure TCocoaWindow.keyDown(event: NSEvent);
+var
+  mn : NSMenu;
+  allowcocoa : Boolean;
 begin
+  if performKeyEquivalent(event) then
+    Exit;
+
+  mn := NSApp.MainMenu;
+  if Assigned(mn) and mn.performKeyEquivalent(event) then
+    Exit;
+
+  if Assigned(_keyEvCallback) then
+  begin
+    allowcocoa := True;
+    _calledKeyEvAfter := True;
+    _keyEvCallback.KeyEvAfterDown(allowcocoa);
+    if not allowcocoa then
+      Exit;
+  end;
+
   inherited keyDown(event);
-end;
-
-procedure TCocoaWindow.keyUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
-end;
-
-procedure TCocoaWindow.flagsChanged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited flagsChanged(event);
 end;
 
 function TCocoaWindowContent.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
