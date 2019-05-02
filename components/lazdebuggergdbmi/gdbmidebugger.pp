@@ -105,7 +105,8 @@ type
     tfFlagHasTypeShortstring,
     //tfFlagHasTypePShortString,
     tfFlagHasTypePointer,
-    tfFlagHasTypeByte
+    tfFlagHasTypeByte,
+    tfFlagMaybeDwarf3
     //tfFlagHasTypeChar
   );
   TGDBMITargetFlags = set of TGDBMITargetFlag;
@@ -2621,6 +2622,8 @@ begin
   HadTimeout := HadTimeout and LastExecwasTimeOut;
   if R.State <> dsError
   then begin
+    if LeftStr(R.Values, 17) = 'type = ^Exception'
+    then include(TargetInfo^.TargetFlags, tfFlagMaybeDwarf3);
     if UpperCase(LeftStr(R.Values, 17)) = UpperCase('type = ^EXCEPTION')
     then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
   end;
@@ -5813,6 +5816,10 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
 
     FTheDebugger.QueueExecuteLock;
     try
+      if (tfFlagMaybeDwarf3 in TargetInfo^.TargetFlags) then begin
+        ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
+      end
+      else
       if (dfImplicidTypes in FTheDebugger.DebuggerFlags)
       then begin
         if (tfFlagHasTypeException in TargetInfo^.TargetFlags) then begin
@@ -11545,7 +11552,7 @@ begin
   if dfImplicidTypes in FTheDebugger.DebuggerFlags
   then begin
     S := Format(AExpression, AValues);
-    UseShortString := tfFlagHasTypeShortstring in TargetInfo^.TargetFlags;
+    UseShortString := TargetInfo^.TargetFlags * [tfFlagHasTypeShortstring, tfFlagMaybeDwarf3] = [tfFlagHasTypeShortstring];
     if UseShortString
     then s := Format('^^shortstring(%s+%d)^^', [S, TargetInfo^.TargetPtrSize * 3])
     else s := Format('^^char(%s+%d)^', [S, TargetInfo^.TargetPtrSize * 3]);
