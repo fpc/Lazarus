@@ -94,10 +94,6 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
-    // key
-    procedure keyDown(event: NSEvent); override;
-    procedure keyUp(event: NSEvent); override;
-    procedure flagsChanged(event: NSEvent); override;
     // other
     procedure resetCursorRects; override;
   end;
@@ -507,24 +503,6 @@ begin
   if Assigned(callback)
     then callback.scrollWheel(event)
     else inherited scrollWheel(event);
-end;
-
-procedure TCocoaOpenGLView.keyDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyDown(event);
-end;
-
-procedure TCocoaOpenGLView.keyUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
-end;
-
-procedure TCocoaOpenGLView.flagsChanged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited flagsChanged(event);
 end;
 
 procedure TCocoaOpenGLView.resetCursorRects;
