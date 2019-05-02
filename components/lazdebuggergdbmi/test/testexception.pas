@@ -109,16 +109,20 @@ begin
 
     dbg.Run;
     TstName := 'All - raise';
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception',   1, FGotExceptCount);
     TestEquals(TstName+' Got class',         'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',           'foo', FGotExceptMsg, 060000);
     TestEquals(TstName+' Got location Line',  113, FGotExceptionLocation.SrcLine);
     TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
-    TestMatches(TstName+' Got location Proc', '^main$', FGotExceptionLocation.FuncName);
+    TestMatches(TstName+' Got location Proc', '^\$?main$', FGotExceptionLocation.FuncName);
     TestTrue(TstName+' Got type', FGotExceptType = deInternal);
 
     dbg.Run;
     TstName := 'All - raise at 2 down';
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got exception 2', 2, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'at1', FGotExceptMsg, 060000);
@@ -129,6 +133,8 @@ begin
 
     dbg.Run;
     TstName := 'All - raise at 1 down';
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got exception 3', 3, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'at2', FGotExceptMsg, 060000);
@@ -139,6 +145,8 @@ begin
 
     dbg.Run;
     TstName := 'All - raise subclass';
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+'Got exception 4', 4, FGotExceptCount);
     TestEquals(TstName+' Got class', 'MyESome', FGotExceptClass);
     // not yet MakePrintable
@@ -166,6 +174,8 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got run err', 1, FGotExceptCount);
     TestMatches(TstName+' Got class', 'RunError', FGotExceptClass);
     //TestEquals(TstName+' Got msg',   'at2', FGotExceptMsg, 060000);
@@ -189,6 +199,9 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
+
     TestEquals(TstName+' Got Assert', 1, FGotExceptCount);
     TestMatches(TstName+' Got class', 'EAssertionFailed', FGotExceptClass);
     TestMatches(TstName+' Got msg',   'denied', FGotExceptMsg, 060000);
@@ -212,6 +225,8 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
@@ -232,6 +247,8 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
@@ -252,6 +269,8 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
@@ -272,6 +291,8 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
@@ -292,6 +313,8 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
@@ -313,6 +336,8 @@ begin
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
+    LogText('### '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
@@ -359,6 +384,8 @@ begin
     end;
 
     dbg.Run;
+    LogText('### 1 '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
 
     dbg.StepOver;
@@ -368,6 +395,8 @@ begin
 
 
     dbg.Run;
+    LogText('### 2 '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 2 exception', 2, FGotExceptCount);
 
     dbg.StepOver;
@@ -377,6 +406,8 @@ begin
 
 
     dbg.Run;
+    LogText('### 3 '+TstName+'   '+TestExeName);
+    TestTrue(TstName+'State=Pause', dbg.State = dsPause);
     TestEquals(TstName+' Got 3 exception', 3, FGotExceptCount);
 
     dbg.StepOver;
