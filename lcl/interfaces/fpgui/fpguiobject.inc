@@ -289,8 +289,14 @@ begin
 end;
 
 function TFpGuiWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
+var
+  DC: TFPGUIDeviceContext;
+  p: TPoint;
 begin
-  Result:=clNone;
+  DC := TFPGUIDeviceContext(CanvasHandle);
+  p := Point(X,Y);
+  p := DC.PreparePointOffsets(p);
+  Result := DC.fpgCanvas.Pixels[p.x, p.y];
 end;
 
 procedure TFpGuiWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
