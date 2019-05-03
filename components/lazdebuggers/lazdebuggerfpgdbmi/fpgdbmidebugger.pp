@@ -1072,34 +1072,28 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       end;
     end;
 
-    case ResValue.Kind of
-      skNone: begin
-          // maybe type
-          TiSym := ResValue.DbgSymbol;
-          if (TiSym <> nil) and (TiSym.SymbolType = stType) then begin
-            if GetTypeAsDeclaration(AResText, TiSym) then
-              AResText := Format('{Type=} %1s', [AResText])
-            else
-            if GetTypeName(AResText, TiSym) then
-              AResText := Format('{Type=} %1s', [AResText])
-            else
-              AResText := '{Type=} unknown';
-            Result := True;
-            if AWatchValue <> nil then begin
-              if not IsWatchValueAlive then exit;
-              AWatchValue.Value    := AResText;
-              AWatchValue.Validity := ddsValid; // TODO ddsError ?
-            end;
-            exit;
-          end;
-        end;
+    TiSym := ResValue.DbgSymbol;
+    if (ResValue.Kind = skNone) and (TiSym <> nil) and (TiSym.SymbolType = stType) then begin
+      if GetTypeAsDeclaration(AResText, TiSym) then
+        AResText := Format('{Type=} %1s', [AResText])
       else
-      begin
-        if defNoTypeInfo in EvalFlags then
-          FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt)
-        else
-          FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, DispFormat, RepeatCnt);
+      if GetTypeName(AResText, TiSym) then
+        AResText := Format('{Type=} %1s', [AResText])
+      else
+        AResText := '{Type=} unknown';
+      Result := True;
+      if AWatchValue <> nil then begin
+        if not IsWatchValueAlive then exit;
+        AWatchValue.Value    := AResText;
+        AWatchValue.Validity := ddsValid; // TODO ddsError ?
       end;
+      exit;
+    end
+    else begin
+      if defNoTypeInfo in EvalFlags then
+        FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt)
+      else
+        FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, DispFormat, RepeatCnt);
     end;
     if not IsWatchValueAlive then exit;
 
