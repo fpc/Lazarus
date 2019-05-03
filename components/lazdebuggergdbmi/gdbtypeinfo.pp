@@ -433,7 +433,7 @@ type
   end;
 
 
-function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
+function ParseTypeFromGdb(ATypeText: string): TGDBPTypeResult;
 function GDBMIMaybeApplyBracketsToExpr(e: string): string;
 
 function dbgs(AFlag: TGDBPTypeResultFlag): string; overload;
@@ -818,11 +818,38 @@ begin
   end;
 end;
 
-function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
+function ParseTypeFromGdb(ATypeText: string): TGDBPTypeResult;
 var
-  i: SizeInt;
+  i, j: SizeInt;
 begin
   i := pos('type = ', ATypeText);
+  if i = 1 then begin
+    // deal with https://sourceware.org/bugzilla/show_bug.cgi?id=16016
+    i := i + 7;
+    if ATypeText[i] = '^' then inc(i);
+    if (UpperCase(copy(ATypeText, i, 9)) <> 'TOBJECT =') then begin
+      while (i < Length(ATypeText)) and not(ATypeText[i] in [#0..#32,'=',':']) do
+        inc(i);
+      if (UpperCase(copy(ATypeText, i, 9)) = ' = CLASS ') and
+         (Length(ATypeText) > i + 9) and
+         (ATypeText[i+9] in [#10, #13])
+      then begin
+        j := i + 10;
+        if (ATypeText[j] in [#10, #13]) then inc(j);
+        if (uppercase(copy(ATypeText, j, 8)) = '  PUBLIC') and
+           (Length(ATypeText) > j + 8) and
+           (ATypeText[j+8] in [#10, #13])
+        then
+          j := j + 8
+        else
+          j := i + 9;
+        ATypeText := copy(ATypeText, 1, i+2) + 'record ' + copy(ATypeText, j, Length(ATypeText));
+        // TODO remove the "public \n" line
+      end;
+    end;
+    i := 1;
+  end;
+
   if i < 1
   then Result := ParseTypeFromGdb(PChar(ATypeText), length(ATypeText))
   else Result := ParseTypeFromGdb((@ATypeText[i])+7, length(ATypeText)-6-i);
