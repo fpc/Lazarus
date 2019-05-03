@@ -473,6 +473,7 @@ Type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
+    function IsUnbound: boolean;
   public
     constructor Create(AOwner: TComponent); override;
     property KeyValue: Variant read GetKeyValue write SetKeyValue;

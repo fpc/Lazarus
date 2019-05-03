@@ -30,6 +30,11 @@ begin
   FLookup.UpdateData(ItemIndex, FScrollListDataset);
 end;
 
+function TDBLookupListBox.IsUnbound: boolean;
+begin
+  Result := (FDataLink.DataSource = nil) or (DataField = '');
+end;
+
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);
 begin
   if FDataLink.Active then
@@ -54,15 +59,18 @@ end;
 procedure TDBLookupListBox.DoSelectionChange(User: Boolean);
 begin
   if User then
-  begin
-    if FDataLink.CanModify then
-    begin
-      FDataLink.Modified;
-      FDataLink.UpdateRecord;
-    end
+    if IsUnbound then
+      UpdateData(Self)
     else
-      DataChange(Self);
-  end;
+    begin
+      if FDataLink.CanModify then
+      begin
+        FDataLink.Modified;
+        FDataLink.UpdateRecord;
+      end
+      else
+        DataChange(Self);
+    end;
   inherited DoSelectionChange(User);
 end;
 
