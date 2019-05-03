@@ -37,7 +37,7 @@ function KeycodeToWindowsVirtKey(KeyCode: word): Byte;
 function DebugMessage(msg: TfpgMessageRec): string;
 
 implementation
-{$DEFINE FPGUIDEBUGCOLOR}
+{.$DEFINE FPGUIDEBUGCOLOR}
 {
   Converts from TColor to TfpgColor
 
@@ -48,12 +48,17 @@ var
   RGBColor: TColorRef;
   RGBTriple: fpg_base.TRGBTriple;
 begin
-  if (AColor and $FF000000)<>0 then begin
-    if AColor=clDefault then begin
+  if (AColor and $FF000000)<>0 then
+  begin
+    if AColor=clDefault then
+    begin
       Result:=fpg_base.clWindowBackground;
       exit;
-    end else begin
-      if (AColor and $80000000)<>0 then begin
+    end
+    else
+    begin
+      if (AColor and $80000000)<>0 then
+      begin
         Result:=GetSysColorRGB(AColor and $FF);
         exit;
       end;
