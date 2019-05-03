@@ -10,14 +10,15 @@ The official fpGUI website is:
 Getting the source code
 -----------------------
 The Lazarus svn does not contain the fpGUI sources. You can get the
-fpGUI sources via the fpGUI Git repository as follows:
+latest stable fpGUI sources via the Git repository as follows:
 
-  git clone git://git.code.sf.net/p/fpgui/code fpgui-code
+  git clone git://github.com/graemeg/fpgui.git fpgui-code
+  cd fpgui-code
+  git checkout maint
 
-...or you can download a zip archive of the latest code, using
-the mirror repository on GitHub.
+...or you can download a zip archive of the latest stable code:
 
-  https://github.com/graemeg/fpGUI/archive/master.zip
+  https://github.com/graemeg/fpGUI/archive/maint.zip
 
 
 Setup to compile LCL-fpGUI
@@ -27,7 +28,7 @@ Setup to compile LCL-fpGUI
    Copy the 'src' directory from the fpGUI sources into your Lazarus
    directory as follows:
 
-     <fpgui>/src/ ⇒ <lazarus>/lcl/interfaces/fpgui/src/
+     <fpgui>/src/  ==>  <lazarus>/lcl/interfaces/fpgui/src/
 
  Option 2)
    Use your file systems's symbolic linking function to simply link
