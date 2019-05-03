@@ -147,12 +147,31 @@ type
     property Color: NSColor read FColor write SetColor;
   end;
 
+type
+  TCocoaStatDashes = record
+    Len  : integer;
+    Dash : array [0..5] of CGFloat;
+  end;
+  PCocoaStatDashes = ^TCocoaStatDashes;
+
 const
-  // use the same pen shapes that are used for carbon
-  CocoaDashStyle: Array [0..1] of CGFloat = (3, 1);
-  CocoaDotStyle: Array [0..1] of CGFloat = (1, 1);
-  CocoaDashDotStyle: Array [0..3] of CGFloat = (3, 1, 1, 1);
-  CocoaDashDotDotStyle: Array [0..5] of CGFloat = (3, 1, 1, 1, 1, 1);
+  CocoaPenDash : array [Boolean] of
+    array [PS_DASH..PS_DASHDOTDOT] of TCocoaStatDashes = (
+    // cosmetic = false (geometry)
+    (
+      (len: 2; dash: (3,1,0,0,0,0)), // PS_DASH        = 1;      { ------- }
+      (len: 2; dash: (1,1,0,0,0,0)), // PS_DOT         = 2;      { ....... }
+      (len: 4; dash: (3,1,1,1,0,0)), // PS_DASHDOT     = 3;      { _._._._ }
+      (len: 6; dash: (3,1,1,1,1,1))  // PS_DASHDOTDOT  = 4;      { _.._.._ }
+    ),
+    // cosmetic = true (windows like cosmetic)
+    (
+      (len: 2; dash: (18,6,0,0,0,0)), // PS_DASH        = 1;      { ------- }
+      (len: 2; dash: (3,3,0,0,0,0)),  // PS_DOT         = 2;      { ....... }
+      (len: 4; dash: (9,6,3,6,0,0)),  // PS_DASHDOT     = 3;      { _._._._ }
+      (len: 6; dash: (9,3,3,3,3,3))   // PS_DASHDOTDOT  = 4;      { _.._.._ }
+    )
+  );
 
 type
   TCocoaDashes = array of CGFloat;
@@ -2693,21 +2712,30 @@ end;
 
 { TCocoaPen }
 
+procedure CalcDashes(
+  const Src: array of CGFloat;
+  var Dst: array of CGFloat;
+  out Len: Integer;
+  mul: CGFloat;
+  ofs: CGFloat = 0.0 // pixels are "half" offset in Cocoa drawing
+  );
+var
+  i: Integer;
+begin
+  Len := Min(length(Src), length(Dst));
+  for i := 0 to Len - 1 do
+    Dst[i] := Src[i] * mul + ofs;
+end;
+
 procedure TCocoaPen.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
-
-  function GetDashes(Source: TCocoaDashes): TCocoaDashes;
-  var
-    i: Integer;
-  begin
-    Result := Source;
-    for i := Low(Result) to High(Result) do
-      Result[i] := Result[i] * FWidth;
-  end;
-
 var
   AR, AG, AB, AA: CGFloat;
   AROP2: Integer;
-  ADashes: TCocoaDashes;
+  ADashes: array [0..15] of CGFloat;
+  ADashLen: Integer;
+  StatDash: PCocoaStatDashes;
+  isCosm  : Boolean;
+  WidthMul : array [Boolean] of CGFloat;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
@@ -2739,25 +2767,14 @@ begin
   end;
 
   case FStyle of
-    PS_DASH:
+    PS_DASH..PS_DASHDOTDOT:
       begin
-        ADashes := GetDashes(CocoaDashStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
-      end;
-    PS_DOT:
-      begin
-        ADashes := GetDashes(CocoaDotStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
-      end;
-    PS_DASHDOT:
-      begin
-        ADashes := GetDashes(CocoaDashDotStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
-      end;
-    PS_DASHDOTDOT:
-      begin
-        ADashes := GetDashes(CocoaDashDotDotStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+        isCosm := not IsGeometric;
+        WidthMul[false]:=1.0;
+        WidthMul[true]:=Width;
+        StatDash := @CocoaPenDash[isCosm][FStyle];
+        CalcDashes( Slice(StatDash^.dash, StatDash^.len), ADashes, ADashLen, WidthMul[isCosm]);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], ADashLen);
       end;
     PS_USERSTYLE:
       if Length(Dashes) > 0 then
