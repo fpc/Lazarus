@@ -177,18 +177,11 @@ end;
   Initializes the application
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-//var
-//  Display: String;
 begin
-  // This doesn't hurt. on other playforms than X it just will do nothing
-//  Display := GetEnvironmentVariableUTF8('DISPLAY');
   fpgApplication.Initialize;
-  //GFApplication.QuitWhenLastWindowCloses := False;
 
-  //if fpgStyleManager.SetStyle('win8') then begin
-  //  fpgStyle:=fpgStyleManager.Style;
-  //end;
-
+  ScreenInfo.PixelsPerInchX := fpgApplication.Screen_dpi_x;
+  ScreenInfo.PixelsPerInchY := fpgApplication.Screen_dpi_y;
 end;
 
 {------------------------------------------------------------------------------
