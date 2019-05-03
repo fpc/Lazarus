@@ -300,7 +300,7 @@ begin
     {$IFdef MSWindows}
     end
     else
-    if t3 div 64 > Step then begin;
+    if t3 div 64 > Step then begin
       ProcessWhileWaitForHandles;
       inc(Step);
       try
@@ -312,6 +312,17 @@ begin
     {$EndIf}
 
   end;
+  {$IFdef MSWindows}
+  if Step = IDLE_STEP_COUNT-1 then begin
+    ProcessWhileWaitForHandles;
+    Application.Idle(false);
+    try
+      Application.ProcessMessages;
+    except
+      Application.HandleException(Application);
+    end;
+  end;
+  {$EndIf}
 end;
 {$ELSE win32}
 begin
