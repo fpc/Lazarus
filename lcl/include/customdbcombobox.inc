@@ -34,6 +34,7 @@ end;
 
 procedure TCustomDBComboBox.Change;
 begin
+  inherited Change;
   FDetectedEvents := FDetectedEvents or DBCBEVENT_CHANGE;
   PostMessage(Handle, LM_DEFERREDEDIT, 0, 0);
 end;
