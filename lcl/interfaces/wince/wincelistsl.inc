@@ -314,7 +314,7 @@ begin
   Top := FSender.Top;
   Width := FSender.Width;
   Height := ComboHeight;
-  LCLBoundsToWin32Bounds(FSender, Left, Top, Width, Height);
+  LCLBoundsToWin32Bounds(FSender, Left, Top);
   MoveWindow(FSender.Handle, Left, Top, Width, Height, true);
   LCLControlSizeNeedsUpdate(FSender, true);
 end;

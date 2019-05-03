@@ -164,7 +164,7 @@ begin
     Width := CreateParams.Width;
     Height := CreateParams.Height;
 
-    LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
+    LCLBoundsToWin32Bounds(AWinControl, Left, Top);
     if AWinControl is TCustomControl then
       if TCustomControl(AWinControl).BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
@@ -392,7 +392,7 @@ var
 begin
   IntfLeft := ALeft; IntfTop := ATop;
   IntfWidth := AWidth; IntfHeight := AHeight;
-  LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
+  LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop);
   {$IFDEF VerboseSizeMsg}
   Debugln('TWinCEWSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
     ' LCL=',dbgs(ALeft),',',dbgs(ATop),',',dbgs(AWidth)+','+dbgs(AHeight),

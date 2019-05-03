@@ -75,8 +75,7 @@ function LCLControlSizeNeedsUpdate(Sender: TWinControl;
 
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
-procedure LCLBoundsToWin32Bounds(Sender: TObject;
-  var Left, Top, Width, Height: Integer);
+procedure LCLBoundsToWin32Bounds(Sender: TObject; var Left, Top: Integer);
 procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
