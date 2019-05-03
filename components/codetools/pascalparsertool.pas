@@ -1162,6 +1162,7 @@ begin
   // start new section
   CreateChildNode;
   CurNode.Desc:=NewSection;
+  CurNode.StartPos:=SectionStart;
   if (OldSubSection<>ctnNone)
   and (Scanner.CompilerMode=cmOBJFPC)
   and (Scanner.Values.IsDefined('VER2_4')) then begin
