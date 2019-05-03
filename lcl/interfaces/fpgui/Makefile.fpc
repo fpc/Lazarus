@@ -5,7 +5,7 @@ main=lcl
 packages=rtl
 
 [target]
-units=lcl.pas
+units=src/corelib/$(fpGUIPlatform)/fpgui_toolkit.pas lcl.pas
 
 [prerules]
 ifneq ($(findstring $(OS_TARGET),$(UNIXs)),)
@@ -26,10 +26,12 @@ options=-gl -dfpgui
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
-    corelib gui corelib/$(fpGUIPlatform) \
+    src src/corelib src/corelib/$(fpGUIPlatform) src/gui src/reportengine src/3rdparty/regex/ \
     .. .
+
+includedir=src src/corelib src/corelib/$(fpGUIPlatform)
+
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/fpgui
-includedir=corelib corelib/$(fpGUIPlatform)
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -37,6 +39,7 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.rsj) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
