@@ -57,6 +57,7 @@ type
   private
     {$IFdef MSWindows}
     FAggressiveWaitTime: Cardinal;
+    FLastWrite: QWord;
     {$EndIf}
     FDbgProcess: TProcessUTF8;   // The process used to call the debugger
     FLineEnds: TStringDynArray;  // List of strings considered as lineends
@@ -264,11 +265,10 @@ begin
       exit;
 
     t2 := GetTickCount64;
-    if t2 < t
-    then t3 := t2 + (High(t) - t)
-    else t3 := t2 - t;
-
     if (FullTimeOut > 0) then begin
+      if t2 < t
+      then t3 := t2 + (High(t) - t)
+      else t3 := t2 - t;
       if (t3 >= FullTimeOut)
       then begin
         ATimeOut := 0;
@@ -280,6 +280,9 @@ begin
     end;
 
     {$IFdef MSWindows}
+    if t2 < FLastWrite
+    then t3 := t2 + (High(FLastWrite) - FLastWrite)
+    else t3 := t2 - FLastWrite;
     if (t3 > FAggressiveWaitTime) or (FAggressiveWaitTime = 0) then begin
     {$EndIf}
       ProcessWhileWaitForHandles;
@@ -614,6 +617,9 @@ begin
     // for windows and *nix (1 or 2 character line ending)
     LE := LineEnding;
     FDbgProcess.Input.Write(LE[1], Length(LE));
+    {$IFdef MSWindows}
+    FLastWrite := GetTickCount64;
+    {$EndIf}
   end
   else begin
     DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
