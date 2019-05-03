@@ -27,7 +27,7 @@ uses
   Classes, Types, SysUtils, Math,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages,
-  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Graph, Themes,
+  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Themes,
   // Bindings
   fpg_main, fpg_form, fpguiproc, fpg_base, fpg_dialogs,// fpg_stylemanager, fpg_style_win8,
   // Widgetset
@@ -92,7 +92,7 @@ var
 
 implementation
 
-uses 
+uses
   FpGuiWSFactory,
   // todo: remove unneeded here and move RegisterWSXXX to FpGuiWSFactory unit
   FpGuiWSButtons,
