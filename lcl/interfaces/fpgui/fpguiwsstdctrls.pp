@@ -187,6 +187,7 @@ type
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
   end;
 
   { TFpGuiWSCustomCheckBox }
@@ -482,6 +483,11 @@ class procedure TFpGuiWSButton.SetText(const AWinControl: TWinControl;
   const AText: String);
 begin
   TFPGUIPrivateButton(AWinControl.Handle).SetText(AText);
+end;
+
+class procedure TFpGuiWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
+begin
+  TFPGUIPrivateButton(AButton.Handle).Button.Default := ADefault;
 end;
 
 {------------------------------------------------------------------------------
