@@ -317,15 +317,20 @@ end;
 
 constructor TFPGUIDeviceContext.Create(AFPGUIPrivate: TFPGUIPrivateWidget);
 begin
-  if Assigned(AFPGUIPrivate) then begin
+  // The Widget.Visible check is just for extra precaution.
+  if Assigned(AFPGUIPrivate) and AFPGUIPrivate.Widget.Visible then
+  begin
     fpgCanvas := AFPGUIPrivate.Widget.Canvas;
-    fpgCanvas.BeginDraw(false);
+    fpgCanvas.BeginDraw;
     FPrivateWidget:=AFPGUIPrivate;
     FPrivateWidget.DC:=HDC(Self);
-  end else begin
+  end
+  else
+  begin
     fpgCanvas := nil;
     FPrivateWidget := nil;
   end;
+
   with FOrg do begin
     X:=0;
     Y:=0;
