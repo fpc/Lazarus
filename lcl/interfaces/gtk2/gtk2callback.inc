@@ -3502,11 +3502,6 @@ begin
   GetMem(Buffer,BufLength);
   Assert(Assigned(Buffer) and (BufLength>0), 'SetData: GTK2 clipboard Buffer=Nil or empty.');
   MemStream.Read(Buffer^,BufLength);
-  {$IFDEF GTK_REMOVE_CLIPBOARD_NULL}
-  // Issue #21453. gtk_selection_data_set adds the required null. Remove it here.
-  if PChar(Buffer+BufLength-1)^ = #0 then
-    dec(BufLength);
-  {$ENDIF}
   gtk_selection_data_set(SelectionData,SelectionData^.Target,8,Buffer,BufLength);
   FreeMem(Buffer);
 end;
