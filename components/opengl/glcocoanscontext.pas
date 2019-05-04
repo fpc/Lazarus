@@ -430,7 +430,11 @@ end;
 procedure TCocoaOpenGLView.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseDown(event);
+  begin
+    // do not pass mouseDown below or it will pass it to the parent control
+    // causing double events
+    //inherited mouseDown(event);
+  end;
 end;
 
 procedure TCocoaOpenGLView.mouseUp(event: NSEvent);
