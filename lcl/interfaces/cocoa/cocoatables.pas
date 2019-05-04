@@ -49,6 +49,7 @@ type
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
+    procedure GetRowHeight(rowidx: Integer; var height: Integer);
   end;
 
   { TCocoaStringList }
@@ -74,6 +75,8 @@ type
     isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
     isCustomDraw : Boolean;
+    isDynamicRowHeight: Boolean;
+    CustomRowHeight: Integer;
 
     smallimages : NSMutableDictionary;
 
@@ -137,9 +140,9 @@ type
     procedure tableView_mouseDownInHeaderOfTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:mouseDownInHeaderOfTableColumn:';}
     procedure tableView_didClickTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didClickTableColumn:';
     {procedure tableView_didDragTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didDragTableColumn:';
-    function tableView_toolTipForCell_rect_tableColumn_row_mouseLocation(tableView: NSTableView; cell: NSCell; rect: NSRectPointer; tableColumn: NSTableColumn; row: NSInteger; mouseLocation: NSPoint): NSString; message 'tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:';
+    function tableView_toolTipForCell_rect_tableColumn_row_mouseLocation(tableView: NSTableView; cell: NSCell; rect: NSRectPointer; tableColumn: NSTableColumn; row: NSInteger; mouseLocation: NSPoint): NSString; message 'tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:';}
     function tableView_heightOfRow(tableView: NSTableView; row: NSInteger): CGFloat; message 'tableView:heightOfRow:';
-    function tableView_typeSelectStringForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSString; message 'tableView:typeSelectStringForTableColumn:row:';
+    {function tableView_typeSelectStringForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSString; message 'tableView:typeSelectStringForTableColumn:row:';
     function tableView_nextTypeSelectMatchFromRow_toRow_forString(tableView: NSTableView; startRow: NSInteger; endRow: NSInteger; searchString: NSString): NSInteger; message 'tableView:nextTypeSelectMatchFromRow:toRow:forString:';
     function tableView_shouldTypeSelectForEvent_withCurrentSearchString(tableView: NSTableView; event: NSEvent; searchString: NSString): Boolean; message 'tableView:shouldTypeSelectForEvent:withCurrentSearchString:';
     function tableView_shouldShowCellExpansionForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldShowCellExpansionForTableColumn:row:';
@@ -250,6 +253,9 @@ function AllocCocoaTableListView: TCocoaTableListView;
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
 function LCLGetTopRow(tbl: NSTableView): Integer;
+
+const
+  DefaultRowHeight = 16; // per "rowHeight" property docs
 
 implementation
 
@@ -615,6 +621,22 @@ procedure TCocoaTableListView.tableView_didClickTableColumn(
 begin
   if Assigned(callback) then
     callback.ColumnClicked(getIndexOfColumn(tableColumn));
+end;
+
+function TCocoaTableListView.tableView_heightOfRow(tableView: NSTableView;
+  row: NSInteger): CGFloat;
+var
+  h : integer;
+begin
+  h := CustomRowHeight;
+  if h = 0 then h := DefaultRowHeight;
+
+  if isDynamicRowHeight and Assigned(callback) then
+  begin
+    callback.GetRowHeight(Integer(row), h);
+    if h<=0 then h:=1; // must be positive (non-zero)
+  end;
+  Result := h;
 end;
 
 type

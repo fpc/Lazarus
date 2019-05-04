@@ -129,6 +129,7 @@ type
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState);
+    procedure GetRowHeight(rowidx: Integer; var h: Integer);
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
@@ -1791,6 +1792,11 @@ procedure TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
   const r: TRect; state: TOwnerDrawState);
 begin
   // todo: check for custom draw listviews event
+end;
+
+procedure TLCLListViewCallback.GetRowHeight(rowidx: Integer; var h: Integer);
+begin
+
 end;
 
 { TCocoaWSTrackBar }

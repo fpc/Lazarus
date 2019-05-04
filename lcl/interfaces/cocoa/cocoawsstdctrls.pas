@@ -243,6 +243,7 @@ type
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet); virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState); virtual;
+    procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -612,6 +613,12 @@ begin
   DrawStruct.DC := HDC(ctx);
   DrawStruct.ItemID :=  rowIdx;
   LCLSendDrawListItemMsg(Target, @DrawStruct);
+end;
+
+procedure TLCLListBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);
+begin
+  if TCustomListBox(Target).Style = lbOwnerDrawVariable then
+    TCustomListBox(Target).MeasureItem(rowidx, h);
 end;
 
 { TLCLCheckBoxCallback }
@@ -1950,6 +1957,9 @@ procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 begin
   if not Assigned(list) then Exit;
   list.isCustomDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+  list.isDynamicRowHeight := AStyle = lbOwnerDrawVariable;
+  //todo: if flag isCustomRowHeight changes in runtime
+  //      noteHeightOfRowsWithIndexesChanged, should be sent to listview
 end;
 
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
@@ -1972,6 +1982,15 @@ begin
   list.setDelegate(list);
   list.setAllowsMultipleSelection(lclListBox.MultiSelect);
   list.readOnly := true;
+  // LCL ItemHeight for TListBox can only be set during Recreation of Handle
+  if TCustomListBox(AWinControl).ItemHeight>0 then
+  begin
+    // Cocoa default is 16.
+    // Note that it might be different of Retina monitors
+    list.CustomRowHeight := TCustomListBox(AWinControl).ItemHeight;
+    list.setRowHeight(list.CustomRowHeight);
+  end;
+
   ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
 
   scroll := EmbedInScrollView(list);
