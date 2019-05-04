@@ -30,7 +30,7 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate,
+  cocoa_extra, CocoaPrivate, CocoaThemes,
   // LCL
   LCLType;
 
@@ -196,6 +196,11 @@ type
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
 
+  TCellCocoaTableListView1013 = objcclass(TCellCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
+    // overriding the highlight color for dark theme
+    procedure highlightSelectionInClipRect(clipRect: NSRect); override;
+  end;
+
   // View based NSTableView
 
   TCocoaTableListItem = objcclass(NSView)
@@ -304,6 +309,13 @@ begin
   else
     Result := TCellCocoaTableListView.alloc;
   {$ELSE}
+
+  // this is required for "dark theme" support on 10.13
+  if (NSAppkitVersionNumber >= NSAppKitVersionNumber10_13)
+    and (NSAppkitVersionNumber < NSAppKitVersionNumber10_14)
+  then
+    Result := TCellCocoaTableListView1013.alloc
+  else
     Result := TCellCocoaTableListView.alloc;
   {$ENDIF}
 end;
@@ -1184,6 +1196,42 @@ begin
     insertRowsAtIndexes_withAnimation(rows, 0)
   else
     removeRowsAtIndexes_withAnimation(rows, 0);
+end;
+
+{ TCellCocoaTableListView1013 }
+
+procedure TCellCocoaTableListView1013.highlightSelectionInClipRect(clipRect: NSRect
+  );
+var
+  r   : NSInteger;
+  rows : NSRange;
+  cnt  : integer;
+  focused: Boolean;
+  hicolor: NSColor;
+begin
+  if not IsPaintDark then begin
+    inherited highlightSelectionInClipRect(clipRect);
+    Exit;
+  end;
+
+
+  focused := Assigned(window) and (window.firstResponder = Self);
+  if focused then
+    hicolor := NSColor.alternateSelectedControlColor
+  else
+    // the default color is NSColor.secondarySelectedControlColor;
+    hicolor := NSColor.darkGrayColor;
+
+  rows := rowsInRect(clipRect);
+  cnt := rows.length;
+  r := rows.location;
+  hicolor.setFill;
+  while cnt>0 do
+  begin
+    if isRowSelected(r) then NSRectFill(rectOfRow(r));
+    inc(r);
+    dec(cnt);
+  end;
 end;
 
 end.
