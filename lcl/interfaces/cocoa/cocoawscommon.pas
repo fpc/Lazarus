@@ -46,8 +46,6 @@ type
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
     _UTF8Character : TUTF8Char;
-    class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
-    class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
     procedure KeyEvBeforeDown(var AllowCocoaHandle: boolean);
@@ -154,6 +152,11 @@ function HWNDToTargetObject(AFormHandle: HWND): TObject;
 
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 
+function ButtonStateToShiftState(BtnState: PtrUInt): TShiftState;
+function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
+function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt;
+function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUInteger): TShiftState;
+
 implementation
 
 uses
@@ -161,6 +164,35 @@ uses
 
 var
   LastMouse: TLastMouseInfo;
+
+function ButtonStateToShiftState(BtnState: PtrUInt): TShiftState;
+begin
+  Result := [];
+  if BtnState and MK_SHIFT > 0 then Include(Result, ssShift);
+  if BtnState and MK_CONTROL > 0 then Include(Result, ssCtrl);
+  if BtnState and MK_ALT > 0 then Include(Result, ssAlt);
+  if BtnState and MK_LBUTTON > 0 then Include(Result, ssLeft);
+  if BtnState and MK_RBUTTON > 0 then Include(Result, ssRight);
+  if BtnState and MK_MBUTTON > 0 then Include(Result, ssMiddle);
+  if BtnState and MK_XBUTTON1 > 0 then Include(Result, ssExtra1);
+  if BtnState and MK_XBUTTON2 > 0 then Include(Result, ssExtra2);
+  // what MK_xxx used for Meta?
+end;
+
+function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUInteger): TShiftState;
+begin
+  Result := [];
+  if AModifiers and NSShiftKeyMask <> 0 then Include(Result, ssShift);
+  if AModifiers and NSControlKeyMask <> 0 then Include(Result, ssCtrl);
+  if AModifiers and NSAlternateKeyMask <> 0 then Include(Result, ssAlt);
+  if AModifiers and NSCommandKeyMask <> 0 then Include(Result, ssMeta);
+
+  if AMouseButtons and (1 shl 0) <> 0 then Include(Result, ssLeft);
+  if AMouseButtons and (1 shl 1) <> 0 then Include(Result, ssRight);
+  if AMouseButtons and (1 shl 2) <> 0 then Include(Result, ssMiddle);
+  if AMouseButtons and (1 shl 3) <> 0 then Include(Result, ssExtra1);
+  if AMouseButtons and (1 shl 4) <> 0 then Include(Result, ssExtra2);
+end;
 
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 const
@@ -244,7 +276,7 @@ begin
   FHasCaret := AValue;
 end;
 
-class function TLCLCommonCallback.CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
+function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
 begin
   Result := 0;
   if AModifiers and NSShiftKeyMask <> 0 then
@@ -255,7 +287,7 @@ begin
     Result := Result or MK_ALT;
 end;
 
-class function TLCLCommonCallback.CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt;
+function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt;
 begin
   Result := 0;
   if AMouseButtons and (1 shl 0) <> 0 then
@@ -1022,7 +1054,7 @@ begin
   Msg.Button := MButton;
   Msg.X := round(clPt.X);
   Msg.Y := round(clPt.Y);
-  Msg.State :=  TShiftState(integer(CocoaModifiersToKeyState(Event.modifierFlags)));
+  Msg.State := CocoaModifiersToShiftState(Event.modifierFlags, NSEvent.pressedMouseButtons);
 
   // Some info on event.deltaY can be found here:
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
