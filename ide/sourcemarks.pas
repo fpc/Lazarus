@@ -437,7 +437,7 @@ end;
 
 function TSourceMark.Compare(OtherMark: TSourceMark): integer;
 begin
-  Result:=PtrInt(SourceEditorID)-PtrInt(OtherMark.SourceEditorID);
+  Result:=ComparePointers(Pointer(SourceEditorID), Pointer(OtherMark.SourceEditorID));
   if Result<>0 then exit;
   Result:=Line-OtherMark.Line;
   if Result<>0 then exit;
