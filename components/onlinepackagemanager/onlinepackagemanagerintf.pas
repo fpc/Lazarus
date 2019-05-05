@@ -68,6 +68,9 @@ begin
   end;
   RegisterIDEMenuCommand(itmPkgGraphSection, 'Online Package Manager',
     rsLazarusPackageManager, nil, @IDEMenuSectionClicked, IDECommand, 'pkg_opm');
+
+  RegisterIDEMenuCommand(ComponentPalettePageDropDownExtraEntries, 'Online Package Manager',
+    rsLazarusPackageManager, nil, @IDEMenuSectionClicked, nil, 'pkg_opm');
 end;
 
 initialization
