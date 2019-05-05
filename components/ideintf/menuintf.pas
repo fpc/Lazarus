@@ -411,6 +411,9 @@ var
     PkgEditMenuSectionDirectory: TIDEMenuSection; // e.g. change all properties of all files in a directory and ub directories moved ..
     PkgEditMenuSectionDependency: TIDEMenuSection; // e.g. open package, remove dependency
 
+  // Component Palette, pages drop down. (no submenus allowed / only top level / must have OnClick(Proc))
+  ComponentPalettePageDropDownExtraEntries: TIDEMenuSection = nil;
+
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
 function RegisterIDEMenuSection(Parent: TIDEMenuSection;
@@ -1933,5 +1936,9 @@ begin
   end;
 end;
 
+initialization
+  ComponentPalettePageDropDownExtraEntries := TIDEMenuSection.Create('');
+finalization
+  ComponentPalettePageDropDownExtraEntries.Free;
 end.
 

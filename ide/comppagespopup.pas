@@ -36,8 +36,8 @@ interface
 uses
   Classes, SysUtils, math, FileUtil, LazLoggerBase, Forms, Controls, Graphics,
   LMessages, Dialogs, ComCtrls, ExtCtrls, Buttons, LCLIntf, LCLType,
-  IDEImagesIntf, LazarusIDEStrConsts, MainBar, ComponentPalette_Options,
-  MainBase;
+  IDEImagesIntf, MenuIntf, LazarusIDEStrConsts, MainBar,
+  ComponentPalette_Options, MainBase;
 
 type
 
@@ -181,9 +181,17 @@ procedure TDlgCompPagesPopup.TreeView1Click(Sender: TObject);
 var
   i: integer;
   SelNode: TTreeNode;
+  e: TIDEMenuItem;
 begin
   SelNode:=TreeView1.Selected;
   if (SelNode=nil) or (SelNode.ImageIndex=1) then exit;
+  if (SelNode.Data <> nil) then begin
+    e := TIDEMenuItem(SelNode.Data);
+    Close;
+    e.DoOnClick;
+    exit;
+  end;
+
   if SelNode=fViewAllNode then
     MainIDE.DoShowComponentList
   else if SelNode=fOptionsNode then
@@ -270,6 +278,8 @@ end;
 procedure TDlgCompPagesPopup.BuildList;
 var
   i: integer;
+  e: TIDEMenuItem;
+  n: TTreeNode;
 begin
   TreeView1.BeginUpdate;
   TreeView1.Items.Clear;
@@ -293,6 +303,12 @@ begin
   fViewAllNode:=TreeView1.Items.AddChild(nil, lisCompPalComponentList);
   fViewAllNode.ImageIndex:=IDEImages.GetImageIndex('item_package');
   fViewAllNode.SelectedIndex:=fViewAllNode.ImageIndex;
+
+  for i := 0 to ComponentPalettePageDropDownExtraEntries.Count - 1 do begin
+    e := ComponentPalettePageDropDownExtraEntries.Items[i];
+    n := TreeView1.Items.AddChildObject(nil, e.Caption, Pointer(e));
+    n.ImageIndex := e.ImageIndex;
+  end;
 
   // add 'Options'
   fOptionsNode:=TreeView1.Items.AddChild(nil, lisOptions);
