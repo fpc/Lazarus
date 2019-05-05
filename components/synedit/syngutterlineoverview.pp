@@ -349,7 +349,7 @@ begin
   if Result <> 0 then exit;
   Result := Column - Other.Column;
   if Result <> 0 then exit;
-  Result := ComparePointers(Pointer(self), PtrUInt(Other)));
+  Result := ComparePointers(Pointer(self), Pointer(Other));
 end;
 
 function TSynGutterLOvMark.CompareByLine(Other: TSynGutterLOvMark): Integer;
@@ -360,7 +360,7 @@ begin
   if Result <> 0 then exit;
   Result := Priority - Other.Priority;
   if Result <> 0 then exit;
-  Result := ComparePointers(Pointer(self), PtrUInt(Other)));
+  Result := ComparePointers(Pointer(self), Pointer(Other));
 end;
 
 procedure TSynGutterLOvMark.DoChange;
@@ -459,7 +459,7 @@ function TSynGutterLOvLineMarks.Compare(Other: TSynGutterLOvLineMarks): Integer;
 begin
   Result := PixLine - Other.PixLine;
   if Result <> 0 then exit;
-  Result := ComparePointers(Pointer(self), PtrUInt(Other)));
+  Result := ComparePointers(Pointer(self), Pointer(Other));
 end;
 
 constructor TSynGutterLOvLineMarks.Create;
