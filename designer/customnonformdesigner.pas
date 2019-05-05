@@ -75,7 +75,9 @@ var
 begin
   Form1 := TNonFormProxyDesignerForm(Data1) as INonFormDesigner;
   Form2 := TNonFormProxyDesignerForm(Data2) as INonFormDesigner;
+  {$PUSH}{$Q-} // Overflow is allowed to occur
   Result := Integer(PtrInt(Form1.LookupRoot) - PtrInt(Form2.LookupRoot));
+  {$POP}
 end;
 
 function CompareLookupRootAndNonFormDesignerForm(Key, Data: Pointer): integer;
@@ -85,7 +87,9 @@ var
 begin
   LookupRoot := TComponent(Key);
   Form := TNonFormProxyDesignerForm(Data) as INonFormDesigner;
+  {$PUSH}{$Q-} // Overflow is allowed to occur
   Result := Integer(PtrInt(LookupRoot) - PtrInt(Form.LookupRoot));
+  {$POP}
 end;
 
 { TCustomNonFormDesignerForm }
