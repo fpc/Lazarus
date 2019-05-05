@@ -3122,7 +3122,8 @@ var
     if (ptprfPointer in PTypeResult.Flags)
     and ( (PTypeResult.Kind in [ptprkSimple, ptprkRecord, ptprkEnum, ptprkSet])
           or ( (gtcfClassIsPointer in FCreationFlags) and
-               (PTypeResult.Kind in [ptprkProcedure, ptprkFunction])  )
+               (PTypeResult.Kind in [ptprkProcedure, ptprkFunction]) and
+               not(ptprfDeclarationInBrackets in PTypeResult.Flags)  )
         )
     then begin
       ProcessSimplePointer;
@@ -3206,6 +3207,7 @@ var
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
           if (gtcfClassIsPointer in FCreationFlags) // Dwarf
           and (ptprfPointer in PTypeResult.Flags)
+          and not(ptprfDeclarationInBrackets in PTypeResult.Flags)
           then begin
             ProcessSimplePointer;
             exit;
@@ -3223,6 +3225,7 @@ var
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
           if (gtcfClassIsPointer in FCreationFlags) // Dwarf
           and (ptprfPointer in PTypeResult.Flags)
+          and not(ptprfDeclarationInBrackets in PTypeResult.Flags)
           then begin
             ProcessSimplePointer;
             exit;
