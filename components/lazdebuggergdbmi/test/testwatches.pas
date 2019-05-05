@@ -1659,6 +1659,7 @@ begin
 
 
   // MIXED symbol info types
+  FCurrentExpArray := @ExpectBreakFooArray;
   if FDoStatIntArray then
   Add('VarStatIntArray',  wdfDefault,     '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
@@ -1891,9 +1892,8 @@ begin
   if not TestControlCanTest(ControlTestWatch) then exit;
 
   FDoStatIntArray := TestControlCanTest(ControlTestWatchUnstable);
-  // GDB 7.0 with fpc 2.4.x has issues with "array of int"
-  FDoStatIntArray := FDoStatIntArray and
-                     not ((pos('2.4.', CompilerInfo.Name) > 0) and (DebuggerInfo.Version = 70000));
+  // GDB 7.0 has issues with "array of int"
+  FDoStatIntArray := FDoStatIntArray and not (DebuggerInfo.Version = 70000);
 
   ClearTestErrors;
 
