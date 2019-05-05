@@ -641,7 +641,7 @@ begin
     LogText(Compiler.LastCompileCommandLine+LineEnding + '*******************' +LineEnding+LineEnding );
   except
     On E: Exception do begin
-      TestTrue('Compile '+PrgName + ' GOT: '+ Compiler.LastCompileOutput, False);
+      TestTrue('Compile '+PrgName + ' GOT: '+ E.Message+ LineEnding + Compiler.LastCompileOutput, False);
       AssertTestErrors;
     end;
   end;
