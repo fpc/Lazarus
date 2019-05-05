@@ -3053,8 +3053,8 @@ var
     // Enter, Return and Backspace should be sent to LCL in UTF8KeyPress,
     // so skip them here
 
-    Result :=
-      ((AQtKey >= QtKey_Escape) and (AQtKey <= QtKey_Backtab)) or
+    Result := (AQtKey = QtKey_Backtab) or // issue #35448
+      // ((AQtKey >= QtKey_Escape) and (AQtKey <= QtKey_Backtab)) or
       ((AQtKey >= QtKey_Insert) and (AQtKey <= QtKey_Clear)) or
       ((AQtKey >= QtKey_Home) and (AQtKey <= QtKey_PageDown)) or
       ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
