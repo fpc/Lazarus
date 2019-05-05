@@ -75,7 +75,7 @@ end;
 
 function CompareIntervals(Item1, Item2: Pointer): Integer;
 begin
-  result := {%H-}PtrInt(Item1)-{%H-}PtrInt(Item2);
+  result := Integer({%H-}PtrInt(Item1)-{%H-}PtrInt(Item2));
 end;
 
 procedure TfrCSVExportFilter.OnEndPage;
