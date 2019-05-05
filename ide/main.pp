@@ -5126,19 +5126,14 @@ end;
 
 procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
 var
-  zPos: TPoint;
   btn: TControl;
 begin
   btn := Sender as TControl;
-  zPos:=point(btn.Width div 2,btn.Height);
-  zPos:=btn.ClientToScreen(zPos);
   if DlgCompPagesPopup=nil then
     Application.CreateForm(TDlgCompPagesPopup, DlgCompPagesPopup);
   if DlgCompPagesPopup.LastCanShowCheck then
   begin
-    DlgCompPagesPopup.Left:=zPos.x-(DlgCompPagesPopup.Width div 2);
-    DlgCompPagesPopup.Top:=zPos.y;
-    DlgCompPagesPopup.FixBounds;
+    DlgCompPagesPopup.PositionForControl := btn;
     DlgCompPagesPopup.PopupParent := GetParentForm(btn);
     DlgCompPagesPopup.Show;
   end;

@@ -34,10 +34,10 @@ unit CompPagesPopup;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, LMessages,
-  Dialogs, ComCtrls, ExtCtrls, Buttons, LCLIntf,
-  IDEImagesIntf,
-  LazarusIDEStrConsts, MainBar, ComponentPalette_Options, MainBase;
+  Classes, SysUtils, math, FileUtil, LazLoggerBase, Forms, Controls, Graphics,
+  LMessages, Dialogs, ComCtrls, ExtCtrls, Buttons, LCLIntf, LCLType,
+  IDEImagesIntf, LazarusIDEStrConsts, MainBar, ComponentPalette_Options,
+  MainBase;
 
 type
 
@@ -67,6 +67,7 @@ type
     procedure DoCreate; override;
     procedure DoClose(var CloseAction: TCloseAction); override;
   public
+    PositionForControl: TControl;
     procedure FixBounds;
     procedure CanShowCheck;
     property LastCanShowCheck: Boolean read fLastCanShowCheck;
@@ -133,17 +134,47 @@ begin
 end;
 
 procedure TDlgCompPagesPopup.FixBounds;
+var
+  Mon: TRect;
+  zPos: TPoint;
+  margin, y: Integer;
 begin
-  if (self.Height+100)>screen.Height then
-    self.Height:=screen.Height-self.Top-100
-  else
-    self.Height:=Round(2*screen.Height/3) - self.Top;
+  zPos:=point(PositionForControl.Width div 2,PositionForControl.Height);
+  zPos:=PositionForControl.ClientToScreen(zPos);
 
-  if (self.Left+self.Width+50)>screen.Width then
-    self.Left:=self.Left-(self.Width div 2)+10;
+  Mon := Screen.MonitorFromPoint(zPos).WorkareaRect;
+  Self.Height := TreeView1.Items.GetLastSubNode.Top + TreeView1.Items.GetLastSubNode.Height + TreeView1.Top + 20;
 
-  if self.Height<400 then
-    self.Height:=400;
+  Self.Left := zPos.x - Self.Width div 2;
+  Self.Top:= zPos.y;
+
+  if (self.Left) < Mon.Left then
+    Self.Left := Mon.Left;
+
+  if (self.Left+self.Width) > Mon.Left + Mon.Width then
+    Self.Left := Max(Mon.Left, Mon.Left + Mon.Width - Self.Width);
+
+  margin := Min(Scale96ToScreen(150), PositionForControl.Top + PositionForControl.Height);
+  if margin > Mon.Height div 4 then
+    margin := 0;
+  if (self.Height + margin) > Mon.Height then
+    self.Height := Mon.Height - margin;
+
+  if (self.Top+self.Height) > Mon.Top + Mon.Height then begin
+    y := zPos.y - PositionForControl.Height - Self.Height;
+    if y > Mon.Top then begin
+      Self.Top := y // show above button
+    end
+    else begin
+      // overlap button, try to go right or left of it
+      Self.Top := Mon.Top + Mon.Height - Self.Height;
+      if zPos.x + PositionForControl.Width div 2 <= Mon.Left + Mon.Width - Self.Width then
+        Self.Left := zPos.x + PositionForControl.Width div 2
+      else;
+        Self.Left := Max(Mon.Left, zPos.x - PositionForControl.Width div 2 - Self.Width);
+    end;
+  end;
+
 end;
 
 procedure TDlgCompPagesPopup.TreeView1Click(Sender: TObject);
@@ -272,6 +303,8 @@ begin
   TreeView1.FullExpand;
   Panel2.Caption:=Format(lisTotalPages,
                          [IntToStr(MainIDEBar.ComponentPageControl.PageCount)]);
+
+  FixBounds;
 end;
 
 end.
