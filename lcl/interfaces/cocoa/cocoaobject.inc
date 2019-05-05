@@ -222,6 +222,13 @@ begin
 
   // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
 
+  // Must release the Main autorelease pool here.
+  // Some objects still in the pool my depend on releasing Widgetset objects
+  // (i.e. images). If autorelease pool is released After the widgetset object
+  // then it finalization of WS dependent objects would fail (suppressed AVs)
+  // and would cause leaks. (see #35400)
+  InternalFinal;
+
   CocoaWidgetSet := nil;
 end;
 

@@ -532,6 +532,16 @@ begin
   Result:=inherited runModalForWindow(theWindow);
 end;
 
+
+procedure InternalFinal;
+begin
+  if Assigned(MainPool) then
+  begin
+    MainPool.release;
+    MainPool := nil;
+  end;
+end;
+
 // the implementation of the utility methods
 {$I cocoaobject.inc}
 // the implementation of the winapi compatibility methods
@@ -545,12 +555,6 @@ begin
   // adding the autorelease pool for the whole Cocoa widgetset
   MainPool := NSAutoreleasePool.alloc.init;
 end;
-
-procedure InternalFinal;
-begin
-  if Assigned(MainPool) then MainPool.release;
-end;
-
 
 procedure TCocoaWidgetSet.DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
 var
@@ -668,7 +672,6 @@ end;
 
 initialization
 //  {$I Cocoaimages.lrs}
-
   InternalInit;
 
 finalization
