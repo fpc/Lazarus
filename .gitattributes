@@ -11861,6 +11861,7 @@ tools/install/rpm/lazarus.spec.template svneol=native#text/plain
 tools/install/slacktgz/build.sh svneol=native#text/plain
 tools/install/slacktgz/slack-desc svneol=native#text/plain
 tools/install/smart_strip.sh svneol=native#text/plain
+tools/install/win/ChineseSimplified_from_inno_6_0.isl svneol=native#text/plain
 tools/install/win/RemovedFiles32.iss svneol=native#text/plain
 tools/install/win/RemovedFiles64.iss svneol=native#text/plain
 tools/install/win/ReplaceText/ReplaceText.lpi svneol=native#text/pascal

@@ -275,6 +275,7 @@ Name: ru; MessagesFile: lazarus.ru.isl
 ;Slovak.isl not avail with latest inno setup
 ;Name: sk; MessagesFile: compiler:Languages\Slovak.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
+Name: zh_CN; MessagesFile: lazarus.zh_CN.isl
 
 [Code]
 type
