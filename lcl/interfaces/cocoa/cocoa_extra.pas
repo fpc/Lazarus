@@ -212,21 +212,15 @@ const
   NSAppKitVersionNumber10_14 = 1641.10;
 
 
-const
-  //kCGBaseWindowLevelKey = 0;
-  //kCGMinimumWindowLevelKey = 1;
-  //kCGDesktopWindowLevelKey = 2;
-  //kCGBackstopMenuLevelKey = 3;
-  NSNormalWindowLevel = 4;
-  NSFloatingWindowLevel = 5;
-  NSSubmenuWindowLevel = 6;
-  NSTornOffMenuWindowLevel = 6;
-  //kCGDockWindowLevelKey = 7; deprecated
-  NSMainMenuWindowLevel = 8;
-  NSStatusWindowLevel = 9;
-  NSModalPanelWindowLevel = 10;
-  NSPopUpMenuWindowLevel = 11;
-  NSScreenSaverWindowLevel = 12;
+function NSNormalWindowLevel: NSInteger; inline;
+function NSFloatingWindowLevel: NSInteger; inline;
+function NSSubmenuWindowLevel: NSInteger; inline;
+function NSTornOffMenuWindowLevel: NSInteger; inline;
+function NSMainMenuWindowLevel: NSInteger; inline;
+function NSStatusWindowLevel: NSInteger; inline;
+function NSModalPanelWindowLevel: NSInteger; inline;
+function NSPopUpMenuWindowLevel: NSInteger; inline;
+function NSScreenSaverWindowLevel: NSInteger; inline;
   //kCGScreenSaverWindowLevelKey = 13;
   //kCGMaximumWindowLevelKey = 14;
   //kCGOverlayWindowLevelKey = 15;
@@ -272,6 +266,51 @@ const
   NSTableViewAnimationSlideRight = $40; // Animates a row in by sliding from the right. Animates a row out by sliding towards the right.
 
 implementation
+
+function NSNormalWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGNormalWindowLevelKey);
+end;
+
+function NSFloatingWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGFloatingWindowLevelKey);
+end;
+
+function NSSubmenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGTornOffMenuWindowLevelKey);
+end;
+
+function NSTornOffMenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGTornOffMenuWindowLevelKey);
+end;
+
+function NSMainMenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGMainMenuWindowLevelKey);
+end;
+
+function NSStatusWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGStatusWindowLevelKey);
+end;
+
+function NSModalPanelWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGModalPanelWindowLevelKey);
+end;
+
+function NSPopUpMenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGPopUpMenuWindowLevelKey);
+end;
+
+function NSScreenSaverWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGScreenSaverWindowLevelKey);
+end;
 
 end.
 

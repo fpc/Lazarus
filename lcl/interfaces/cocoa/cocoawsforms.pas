@@ -182,16 +182,17 @@ uses
   CocoaInt;
 
 const
-  // The documentation says we should use NSNormalWindowLevel=4 for normal forms,
-  // but in practice this causes the issue http://bugs.freepascal.org/view.php?id=28473
-  // The only value that works is zero =(
-  FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
- { fsNormal          } 0,
- { fsMDIChild        } 0,
- { fsMDIForm         } 0,
- { fsStayOnTop       } 9, // NSStatusWindowLevel
- { fsSplash          } 9, // NSStatusWindowLevel
- { fsSystemStayOnTop } 10  // NSModalPanelWindowLevel
+  // The documentation is using constants like "NSNormalWindowLevel=4" for normal forms,
+  // however, these are macros of a function call to CGWindowLevelKey()
+  // where "Key" values of kCGNormalWindowLevelKey=4.
+
+  FormStyleToWindowLevelKey: array[TFormStyle] of NSInteger = (
+ { fsNormal          } kCGNormalWindowLevelKey,
+ { fsMDIChild        } kCGNormalWindowLevelKey,
+ { fsMDIForm         } kCGNormalWindowLevelKey,
+ { fsStayOnTop       } kCGFloatingWindowLevelKey,
+ { fsSplash          } kCGFloatingWindowLevelKey,
+ { fsSystemStayOnTop } kCGFloatingWindowLevelKey  // NSModalPanelWindowLevel
   );
   // Window levels make the form always stay on top, so if it is supposed to
   // stay on top of the app only, then a workaround is to hide it while the app
@@ -200,8 +201,8 @@ const
  { fsNormal          } False,
  { fsMDIChild        } False,
  { fsMDIForm         } False,
- { fsStayOnTop       } True,
- { fsSplash          } True,
+ { fsStayOnTop       } false,
+ { fsSplash          } false,
  { fsSystemStayOnTop } False
   );
 
@@ -219,24 +220,12 @@ procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 var
   lvl : NSInteger;
 begin
-  if not (AFormStyle in [fsNormal, fsMDIChild, fsMDIForm]) then
-  begin
-    lvl := FormStyleToWindowLevel[AFormStyle];
-    {$ifdef BOOLFIX}
-    win.setHidesOnDeactivate_(Ord(FormStyleToHideOnDeactivate[AFormStyle]));
-    {$else}
-    win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
-    {$endif}
-  end
-  else
-  begin
-    lvl := 0;
-    {$ifdef BOOLFIX}
-    win.setHidesOnDeactivate_(Ord(false));
-    {$else}
-    win.setHidesOnDeactivate(false);
-    {$endif}
-  end;
+  lvl := CGWindowLevelForKey(FormStyleToWindowLevelKey[AFormStyle]);
+  {$ifdef BOOLFIX}
+  win.setHidesOnDeactivate_(Ord(FormStyleToHideOnDeactivate[AFormStyle]));
+  {$else}
+  win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
+  {$endif}
   win.setLevel(lvl);
   if win.isKindOfClass(TCocoaWindow) then
     TCocoaWindow(win).keepWinLevel := lvl;
