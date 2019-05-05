@@ -75,7 +75,9 @@ end;
 
 function CompareIntervals(Item1, Item2: Pointer): Integer;
 begin
+  {$PUSH}{$Q-} // Overflow is allowed to occur
   result := Integer({%H-}PtrInt(Item1)-{%H-}PtrInt(Item2));
+  {$POP}
 end;
 
 procedure TfrCSVExportFilter.OnEndPage;
