@@ -44,7 +44,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazUtilities,
   // LCL
   LCLIntf, LCLType, LCLProc, Graphics, Controls, Clipbrd, ImgList,
   // SynEdit
@@ -1571,7 +1571,7 @@ end;
 
 function TSynObjectListItem.Compare(Other: TSynObjectListItem): Integer;
 begin
-  Result := PtrUInt(self) - PtrUInt(Other);
+  Result := ComparePointers(Pointer(self), Pointer(Other));
 end;
 
 constructor TSynObjectListItem.Create(AOwner: TComponent);
