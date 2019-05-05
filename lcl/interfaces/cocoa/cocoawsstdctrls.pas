@@ -2126,6 +2126,7 @@ begin
   if not Assigned(list) then Exit();
 
   list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
+  list.scrollRowToVisible(AIndex);
 end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
