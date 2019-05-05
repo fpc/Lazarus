@@ -30,7 +30,7 @@ uses
   Classes, Graphics, Controls, LCLProc, LCLType, LCLIntf, Forms, LMessages,
   FPCanvas, sysutils, math, SynGutterBase, SynEditTypes, LazSynEditText,
   SynEditTextBuffer, SynEditMarks, SynEditMiscClasses, SynEditFoldedView,
-  SynEditMouseCmds;
+  SynEditMouseCmds, LazUtilities;
 
 type
   TSynGutterLineOverview = class;
@@ -349,9 +349,7 @@ begin
   if Result <> 0 then exit;
   Result := Column - Other.Column;
   if Result <> 0 then exit;
-  {$PUSH}{$Q-} // Overflow is allowed to occur
-  Result := Integer(PtrUint(self) - PtrUInt(Other));
-  {$POP}
+  Result := ComparePointers(Pointer(self), PtrUInt(Other)));
 end;
 
 function TSynGutterLOvMark.CompareByLine(Other: TSynGutterLOvMark): Integer;
@@ -362,9 +360,7 @@ begin
   if Result <> 0 then exit;
   Result := Priority - Other.Priority;
   if Result <> 0 then exit;
-  {$PUSH}{$Q-} // Overflow is allowed to occur
-  Result := Integer(PtrUint(self) - PtrUInt(Other));
-  {$POP}
+  Result := ComparePointers(Pointer(self), PtrUInt(Other)));
 end;
 
 procedure TSynGutterLOvMark.DoChange;
@@ -463,9 +459,7 @@ function TSynGutterLOvLineMarks.Compare(Other: TSynGutterLOvLineMarks): Integer;
 begin
   Result := PixLine - Other.PixLine;
   if Result <> 0 then exit;
-  {$PUSH}{$Q-} // Overflow is allowed to occur
-  Result := Integer(PtrUint(self) - PtrUInt(Other));
-  {$POP}
+  Result := ComparePointers(Pointer(self), PtrUInt(Other)));
 end;
 
 constructor TSynGutterLOvLineMarks.Create;
