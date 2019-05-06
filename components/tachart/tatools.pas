@@ -1388,23 +1388,32 @@ begin
   FFrame.Assign(AValue);
 end;
 
+
 procedure TZoomDragTool.SetSelectionRect(AValue: TRect);
+var
+  rOld, rNew: TRect;
 begin
   if (FSelectionRect = AValue) or not IsActive or IsAnimating then exit;
   case EffectiveDrawingMode of
-    tdmXor: with GetCurrentDrawer do begin
-      SetXor(true);
-      Pen := Frame;
-      Brush := Self.Brush;
-      Rectangle(CalculateDrawRect);
-      FSelectionRect := AValue;
-      Rectangle(CalculateDrawRect);
-      SetXor(false);
-    end;
-    tdmNormal: begin
-      FSelectionRect := AValue;
-      FChart.StyleChanged(Self);
-    end;
+    tdmXor:
+      with GetCurrentDrawer do begin
+        rOld := CalculateDrawRect;
+        FSelectionRect := AValue;
+        rNew := CalculateDrawRect;
+        if rOld = rNew then   // avoid unnecessary flicker when xor-painting the same rect
+          exit;
+        SetXor(true);
+        Pen := Frame;
+        Brush := Self.Brush;
+        Rectangle(rOld);
+        Rectangle(rNew);
+        SetXor(false);
+      end;
+    tdmNormal:
+      begin
+        FSelectionRect := AValue;
+        FChart.StyleChanged(Self);
+      end;
   end;
 end;
 
