@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources, LazUTF8,
   Graphics,GraphType, Controls, Forms, Dialogs,LR_E_TXT,
-  LCLType,LCLIntf,lr_utils,lr_class;
+  LCLType,LCLIntf, LCLProc,lr_utils,lr_class;
 
 type
 
@@ -75,7 +75,7 @@ end;
 
 function CompareIntervals(Item1, Item2: Pointer): Integer;
 begin
-  result := ComparePointers({%H-}Pointer(Item1)-{%H-}Pointer(Item2));
+  result := ComparePointers({%H-}Pointer(Item1), {%H-}Pointer(Item2));
 end;
 
 procedure TfrCSVExportFilter.OnEndPage;
