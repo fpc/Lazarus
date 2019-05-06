@@ -2381,8 +2381,8 @@ resourcestring
   dlgOptimizationLevels = 'Optimization levels';
   dlgOtherOptimizations = 'Other optimizations';
   lisSmallerRatherThanFaster = 'Smaller rather than faster';
-  dlgLevelNoneOpt = '0 (no optimization)';
-  dlgLevel1Opt = '1 (quick, debugger friendly)';
+  dlgLevelNoneOpt = '0 (no optimization, for debugging)';
+  dlgLevel1Opt = '1 (quick, debugger friendly with small limitations)';
   dlgLevel2Opt = '2 (-O1 + quick optimizations)';
   dlgLevel3Opt = '3 (-O2 + slow optimizations)';
   dlgLevel4Opt = '4 (-O3 + aggressive optimizations, beware)';
