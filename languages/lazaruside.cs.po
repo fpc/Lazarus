@@ -2430,7 +2430,9 @@ msgid "Guide lines Left,Top"
 msgstr "Vodící čáry Vlevo, Nahoře"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+#, fuzzy
+#| msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr "1 (rychlé a přátelské k ladění)"
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2446,7 +2448,9 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + agresivní optimalizace, opatrně)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
+#, fuzzy
+#| msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr "0 (bez zvláštní optimalizace)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3152,6 +3156,24 @@ msgstr "Ostatní optimalizace"
 msgid "Other unit files (-Fu):"
 msgstr "Jiné soubory jednotek (-Fu)"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "Strana"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Přepsání bloku"
@@ -3432,6 +3454,16 @@ msgstr "&Nahradit s"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Hlášení"
+
+#: lazarusidestrconsts.dlgreset
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "Nulovat"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3862,6 +3894,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Hledaný &Text"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -3941,6 +3977,10 @@ msgstr "Kreslení oddělovače"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Použít standardní konfigurační soubor překladače (fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr "Ikony v boxu doplňování kódu"
@@ -3958,11 +3998,15 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Chyba při nahrávání uživatelského schéma ze souboru %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
+#, fuzzy
+#| msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr "Použít (a upravit) nastavení globálního schéma"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+#, fuzzy
+#| msgid "Use local scheme settings"
+msgid "selected language"
 msgstr "Použít nastavení místního schéma"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -14722,6 +14766,7 @@ msgid "package unit"
 msgstr "jednotka balíčku"
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "Strana"
 
@@ -16849,6 +16894,7 @@ msgid "Rescan"
 msgstr "Přeskenovat"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "Nulovat"
 

@@ -2475,7 +2475,9 @@ msgid "Guide lines Left,Top"
 msgstr "Kairioji bei viršutinė orientavimo linija"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+#, fuzzy
+#| msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr "1 (įprastų instrukcijų sekos keičiamos greitesniais ekvivalentais)"
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2491,7 +2493,9 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (lygis 3 + agresyvus optimizavimas, būkit atsargūs)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
+#, fuzzy
+#| msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr "0 (jokių papildomų optimizacijų)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3211,6 +3215,24 @@ msgstr "Kiti optimizavimai"
 msgid "Other unit files (-Fu):"
 msgstr "Kitų modulių failai (-Fu):"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "Lapas"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Pakeisti bloką"
@@ -3495,6 +3517,16 @@ msgstr "&Pakeisti šiuo"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Ataskaita"
+
+#: lazarusidestrconsts.dlgreset
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "Atstatyti"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3929,6 +3961,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Ieškomasis t&ekstas"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -4008,6 +4044,10 @@ msgstr "Skyriklio rodymas"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Naudoti standartinį kompiliatoriaus nustatymų failą (fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr ""
@@ -4025,11 +4065,15 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Nepavyko įkelti naudotojo schemos  failo „%s“"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
+#, fuzzy
+#| msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr "Naudoti (ir keisti) globalias schemos nuostatas"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+#, fuzzy
+#| msgid "Use local scheme settings"
+msgid "selected language"
 msgstr "Naudoti vietines schemos nuostatas"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -14870,6 +14914,7 @@ msgid "package unit"
 msgstr "paketo modulis"
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "Lapas"
 
@@ -17017,6 +17062,7 @@ msgid "Rescan"
 msgstr "Peržiūrėti iš naujo"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "Atstatyti"
 

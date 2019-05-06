@@ -2496,7 +2496,9 @@ msgid "Guide lines Left,Top"
 msgstr "显示指示线(Guide Lines)"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+#, fuzzy
+#| msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr "1 (快速,调试友好)"
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2512,7 +2514,9 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + 积极优化,小心)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
+#, fuzzy
+#| msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr "0 (没有优化)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3237,6 +3241,24 @@ msgstr "其他优化"
 msgid "Other unit files (-Fu):"
 msgstr "其他单元文件(-Fu):"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "页"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "覆盖语句块"
@@ -3519,6 +3541,16 @@ msgstr "替换用(&h)"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "报告"
+
+#: lazarusidestrconsts.dlgreset
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "重置"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 #, fuzzy
@@ -3957,6 +3989,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "查找文本(&T)"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -4042,6 +4078,10 @@ msgstr "Canvas不允许画图"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "使用标准编译器配置文件(fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 #, fuzzy
 msgid "Icons in code completion box"
@@ -4062,11 +4102,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlguseschemedefaults
 #, fuzzy
-msgid "Use (and edit) global scheme settings"
+#| msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr "使用局部方案设置"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+#, fuzzy
+#| msgid "Use local scheme settings"
+msgid "selected language"
 msgstr "使用局部方案设置"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -15059,6 +15102,7 @@ msgid "package unit"
 msgstr "包单元"
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "页"
 
@@ -17237,6 +17281,7 @@ msgid "Rescan"
 msgstr "重新扫描"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "重置"
 

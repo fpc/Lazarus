@@ -2423,7 +2423,9 @@ msgid "Guide lines Left,Top"
 msgstr "Напрямні: ліва, верхня"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+#, fuzzy
+#| msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr "1 (швидко та дружньо до зневаджувача)"
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2439,7 +2441,9 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (Рівень 3 + агресивні оптимізації, обережно)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
+#, fuzzy
+#| msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr " 0 (без оптимізації)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3145,6 +3149,24 @@ msgstr "Інші оптимізації"
 msgid "Other unit files (-Fu):"
 msgstr "Інші файли модулів (-Fu):"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "Сторінка"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Переписати блок"
@@ -3421,6 +3443,16 @@ msgstr "&Замінити на"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Звіт"
+
+#: lazarusidestrconsts.dlgreset
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "Скинути"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3845,6 +3877,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Текст для пошуку"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -3924,6 +3960,10 @@ msgstr "Показ роздільника"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Використати стандартний файл налаштувань (fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr "Піктограми у вікні завершення коду"
@@ -3941,11 +3981,15 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Не вдалося завантажити файл користувацької схеми %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
+#, fuzzy
+#| msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr "Використовувати (і змінювати) параметри глобальної схеми"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+#, fuzzy
+#| msgid "Use local scheme settings"
+msgid "selected language"
 msgstr "Використовувати параметри локальної схеми"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -14671,6 +14715,7 @@ msgid "package unit"
 msgstr "модуль пакунка"
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "Сторінка"
 
@@ -16794,6 +16839,7 @@ msgid "Rescan"
 msgstr "Пересканувати"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "Скинути"
 

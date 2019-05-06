@@ -2486,7 +2486,7 @@ msgid "Guide lines Left,Top"
 msgstr "Kleur voor links, boven"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2504,7 +2504,7 @@ msgstr ""
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy
 #| msgid "Level 0 (no extra optimizations)"
-msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr "Level 0 (geen extra optimalisaties)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3232,6 +3232,23 @@ msgstr ""
 msgid "Other unit files (-Fu):"
 msgstr "Andere unit bestanden (-Fu)"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr ""
@@ -3516,6 +3533,15 @@ msgstr "&Vervang Door"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Rapporteer"
+
+#: lazarusidestrconsts.dlgreset
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr ""
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 #, fuzzy
@@ -3965,6 +3991,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Zoek tekst"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -4050,6 +4080,10 @@ msgstr ""
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Gebruik standaard compiler configuratie bestand (fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr ""
@@ -4067,11 +4101,11 @@ msgid "Failed to load user-scheme file %s"
 msgstr ""
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr ""
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+msgid "selected language"
 msgstr ""
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -15194,6 +15228,7 @@ msgid "package unit"
 msgstr ""
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr ""
 
@@ -17488,6 +17523,7 @@ msgid "Rescan"
 msgstr ""
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr ""
 

@@ -2473,7 +2473,9 @@ msgid "Guide lines Left,Top"
 msgstr "Kılavuz Çizgiler Sol, Üst"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+#, fuzzy
+#| msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr "1 (hızlı, hata ayıklayıcı dostu)"
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2489,7 +2491,9 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + agresif optimizasyonlar, dikkatli olun)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
+#, fuzzy
+#| msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr "0 (optimizasyon yok)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3209,6 +3213,24 @@ msgstr "Diğer optimizasyonlar"
 msgid "Other unit files (-Fu):"
 msgstr "Diğer birim dosyaları (-Fu):"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "Sayfa"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Üstüne yaz blok"
@@ -3490,6 +3512,16 @@ msgstr "&İle değiştirin"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Rapor"
+
+#: lazarusidestrconsts.dlgreset
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "Reset"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3914,6 +3946,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Bulmak için & Metin"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -3993,6 +4029,10 @@ msgstr "Bölücü Çizimi"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Standart derleyici yapılandırma dosyasını (fpc.cfg) kullanın"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr ""
@@ -4010,11 +4050,15 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Kullanıcı düzeni dosyası %s yüklenemedi"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
+#, fuzzy
+#| msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr "Genel şema ayarlarını kullan (ve düzenle)"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+#, fuzzy
+#| msgid "Use local scheme settings"
+msgid "selected language"
 msgstr "Yerel düzen ayarlarını kullan"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -14954,6 +14998,7 @@ msgid "package unit"
 msgstr "Paket birimi"
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "Sayfa"
 
@@ -17159,6 +17204,7 @@ msgid "Rescan"
 msgstr "Yeniden tara"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "Reset"
 

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-04-15 02:16+0300\n"
+"PO-Revision-Date: 2019-05-07 01:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2415,8 +2415,8 @@ msgid "Guide lines Left,Top"
 msgstr "Левая и верхняя линии позиционирования"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
-msgstr "1 (быстро и дружественно к отладчику)"
+msgid "1 (quick, debugger friendly with small limitations)"
+msgstr "1 (быстро и, с небольшими ограничениями, дружественно к отладчику)"
 
 #: lazarusidestrconsts.dlglevel2opt
 msgid "2 (-O1 + quick optimizations)"
@@ -2431,8 +2431,8 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + агрессивные оптимизации, будьте осторожны)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
-msgstr "0 (без оптимизации)"
+msgid "0 (no optimization, for debugging)"
+msgstr "0 (без оптимизации, для отладки)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
@@ -3137,6 +3137,23 @@ msgstr "Прочие оптимизации"
 msgid "Other unit files (-Fu):"
 msgstr "Другие модули (-Fu):"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr "Фон 1"
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr "Фон 2"
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr "Поле обзора"
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "Страница"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Заменять выделение"
@@ -3413,6 +3430,15 @@ msgstr "За&менить на"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Отчёт"
+
+#: lazarusidestrconsts.dlgreset
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "Сбросить"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr "Сбросить всё"
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3837,6 +3863,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Н&айти текст"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr "Этот элемент использует (и меняет) схемы:"
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -3916,6 +3946,10 @@ msgstr "Отображение разделителя"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Использовать стандартный файл настройки компилятора (fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr "Включить подсветку"
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr "Значки в окне автозавершения кода"
@@ -3933,12 +3967,12 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Не удалось загрузить файл пользовательской схемы %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
-msgstr "Использовать (и менять) глобальную схему"
+msgid "- Scheme globals -"
+msgstr "- Глобальная схема -"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
-msgstr "Использовать локальную схему"
+msgid "selected language"
+msgstr "выбранный язык"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -14655,6 +14689,7 @@ msgid "package unit"
 msgstr "модуль пакета"
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "Вкладка"
 
@@ -16778,6 +16813,7 @@ msgid "Rescan"
 msgstr "Пересмотреть"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "Сброс"
 

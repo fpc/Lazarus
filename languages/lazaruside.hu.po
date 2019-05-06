@@ -2428,7 +2428,9 @@ msgid "Guide lines Left,Top"
 msgstr "Segédvonalak balra, fent"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+#, fuzzy
+#| msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr "1 (gyors, hibakereső-barát)"
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2444,7 +2446,9 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + aggresszív optimalizálás, óvatosan)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
+#, fuzzy
+#| msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr "0 (nincs optimalizálás)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3150,6 +3154,24 @@ msgstr "Egyéb Optimalizálások"
 msgid "Other unit files (-Fu):"
 msgstr "Egyéb unit fájlok (-Fu):"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "Lap"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Kijelölés felülírása"
@@ -3430,6 +3452,16 @@ msgstr "Csere erre:"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Jelentés"
+
+#: lazarusidestrconsts.dlgreset
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "Alaphelyzet"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3860,6 +3892,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Keresendő szöveg"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -3939,6 +3975,10 @@ msgstr "Elválasztó rajzolása"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Szabványos fordító beállításfájl használata (fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr "Ikonok a kódkiegészítés dobozban"
@@ -3956,11 +3996,15 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Nem sikerült betölteni a felhasználói sémafájlt: %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
+#, fuzzy
+#| msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr "Globális sémabeállítások használata (és szerkesztése)"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+#, fuzzy
+#| msgid "Use local scheme settings"
+msgid "selected language"
 msgstr "Helyi sémabeállítások használata"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -14746,6 +14790,7 @@ msgid "package unit"
 msgstr "csomag unit"
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "Lap"
 
@@ -16873,6 +16918,7 @@ msgid "Rescan"
 msgstr "Frissítés"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "Alaphelyzet"
 

@@ -2491,7 +2491,9 @@ msgid "Guide lines Left,Top"
 msgstr "Linee Guida sinistra, alto"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "1 (quick, debugger friendly)"
+#, fuzzy
+#| msgid "1 (quick, debugger friendly)"
+msgid "1 (quick, debugger friendly with small limitations)"
 msgstr "1 (veloce, compatibile con debugger)"
 
 #: lazarusidestrconsts.dlglevel2opt
@@ -2511,7 +2513,9 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "0 (no optimization)"
+#, fuzzy
+#| msgid "0 (no optimization)"
+msgid "0 (no optimization, for debugging)"
 msgstr "0 (nessuna ottimizzazione)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -3234,6 +3238,24 @@ msgstr "Altre ottimizzazione"
 msgid "Other unit files (-Fu):"
 msgstr "Altri file unit (-Fu):"
 
+#: lazarusidestrconsts.dlgoverviewgutterback1color
+msgid "Background 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterback2color
+msgid "Background 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewguttercolor
+msgid "Overview Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverviewgutterpagecolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
+msgid "Page"
+msgstr "Pagina"
+
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Sovrascrivi blocco"
@@ -3518,6 +3540,16 @@ msgstr "&Sostituisci con"
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
 msgstr "Rapporto"
+
+#: lazarusidestrconsts.dlgreset
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgreset"
+msgid "Reset"
+msgstr "Ripristina"
+
+#: lazarusidestrconsts.dlgresetall
+msgid "Reset all"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3942,6 +3974,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Testo da trovare"
 
+#: lazarusidestrconsts.dlgthiselementusescolor
+msgid "The element uses (and edits) the schemes:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
@@ -4021,6 +4057,10 @@ msgstr "Disegno di separatori"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Usa file di configurazione compilatore standard (fpc.cfg)"
 
+#: lazarusidestrconsts.dlgusehighlight
+msgid "Use Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
 msgstr ""
@@ -4040,11 +4080,15 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Caricamento fallito del file schema utente %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use (and edit) global scheme settings"
+#, fuzzy
+#| msgid "Use (and edit) global scheme settings"
+msgid "- Scheme globals -"
 msgstr "Usa (e edita) impostazioni globali di schema"
 
 #: lazarusidestrconsts.dlguseschemelocal
-msgid "Use local scheme settings"
+#, fuzzy
+#| msgid "Use local scheme settings"
+msgid "selected language"
 msgstr "Usa impostazioni locali di schema"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
@@ -14942,6 +14986,7 @@ msgid "package unit"
 msgstr "unit del pacchetto "
 
 #: lazarusidestrconsts.lispage
+msgctxt "lazarusidestrconsts.lispage"
 msgid "Page"
 msgstr "Pagina"
 
@@ -17097,6 +17142,7 @@ msgid "Rescan"
 msgstr "Ri-ricerca"
 
 #: lazarusidestrconsts.lisreset
+msgctxt "lazarusidestrconsts.lisreset"
 msgid "Reset"
 msgstr "Ripristina"
 
