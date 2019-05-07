@@ -1,0 +1,61 @@
+object RestFieldOptionsDialog: TRestFieldOptionsDialog
+  Left = 459
+  Height = 176
+  Top = 264
+  Width = 367
+  Caption = 'Expose connection field options'
+  ClientHeight = 176
+  ClientWidth = 367
+  Position = poMainFormCenter
+  LCLVersion = '2.1.0.0'
+  object BPFieldOptions: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 128
+    Width = 355
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object CGFieldOptions: TCheckGroup
+    Left = 0
+    Height = 122
+    Top = 0
+    Width = 367
+    Align = alClient
+    AutoFill = True
+    Caption = '&Minimal field Options'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 104
+    ClientWidth = 365
+    ColumnLayout = clVerticalThenHorizontal
+    Columns = 3
+    Items.Strings = (
+      'In Key'
+      'In Insert'
+      'In Update'
+      'Required'
+      'Filter'
+      'Order By'
+      'Order By Desc'
+    )
+    TabOrder = 1
+    Data = {
+      0700000002020202020202
+    }
+  end
+end

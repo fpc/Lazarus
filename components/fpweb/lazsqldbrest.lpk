@@ -10,7 +10,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="reglazsqldbrest.pp"/>
         <HasRegisterProc Value="True"/>
@@ -19,10 +19,12 @@
       <Item2>
         <Filename Value="frmsqldbrestdispatchini.pp"/>
         <UnitName Value="frmsqldbrestdispatchini"/>
+        <ResourceBaseClass Value="Form"/>
       </Item2>
       <Item3>
         <Filename Value="frmsqldbrestselectconn.pp"/>
         <UnitName Value="frmsqldbrestselectconn"/>
+        <ResourceBaseClass Value="Form"/>
       </Item3>
       <Item4>
         <Filename Value="reslazsqldbrest.pp"/>
@@ -31,24 +33,32 @@
       <Item5>
         <Filename Value="frmsqldbrestselecttables.pp"/>
         <UnitName Value="frmsqldbrestselecttables"/>
+        <ResourceBaseClass Value="Form"/>
       </Item5>
+      <Item6>
+        <Filename Value="dlgeditsqldbrestschema.pp"/>
+        <UnitName Value="dlgeditsqldbrestschema"/>
+      </Item6>
     </Files>
-    <RequiredPkgs Count="5">
+    <RequiredPkgs Count="6">
       <Item1>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="sqldbrestschemadesigner"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCLBase"/>
+        <PackageName Value="IDEIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="LazUtils"/>
+        <PackageName Value="LCLBase"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LazUtils"/>
       </Item5>
+      <Item6>
+        <PackageName Value="FCL"/>
+      </Item6>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

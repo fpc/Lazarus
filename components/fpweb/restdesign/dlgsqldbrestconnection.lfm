@@ -1,0 +1,251 @@
+object SQLDBRestConnectionEditorForm: TSQLDBRestConnectionEditorForm
+  Left = 386
+  Height = 540
+  Top = 256
+  Width = 368
+  Caption = 'SQL Connection'
+  ClientHeight = 540
+  ClientWidth = 368
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poMainFormCenter
+  LCLVersion = '2.1.0.0'
+  object EHostName: TEdit
+    Left = 89
+    Height = 27
+    Top = 79
+    Width = 185
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+  end
+  object EDatabaseName: TEdit
+    Left = 89
+    Height = 27
+    Top = 112
+    Width = 273
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+  end
+  object LEUserName: TLabel
+    Left = 8
+    Height = 24
+    Top = 150
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'User'
+    FocusControl = EUserName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LCBType: TLabel
+    Left = 8
+    Height = 31
+    Top = 40
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Type'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEHostName: TLabel
+    Left = 8
+    Height = 27
+    Top = 79
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Hostname'
+    FocusControl = EHostName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object CBType: TComboBox
+    Left = 89
+    Height = 31
+    Top = 40
+    Width = 185
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object LEDatabaseName: TLabel
+    Left = 8
+    Height = 27
+    Top = 112
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Database'
+    FocusControl = EDatabaseName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object EUserName: TEdit
+    Left = 89
+    Height = 27
+    Top = 147
+    Width = 185
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 4
+  end
+  object EPassword: TEdit
+    Left = 89
+    Height = 27
+    Top = 184
+    Width = 185
+    Anchors = [akTop, akLeft, akRight]
+    EchoMode = emPassword
+    PasswordChar = '*'
+    TabOrder = 5
+  end
+  object LEPassword: TLabel
+    Left = 8
+    Height = 27
+    Top = 184
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Password'
+    FocusControl = EPassword
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object ERole: TEdit
+    Left = 89
+    Height = 27
+    Top = 223
+    Width = 185
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 6
+  end
+  object BPConnection: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 492
+    Width = 356
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 8
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object MParams: TMemo
+    Left = 8
+    Height = 160
+    Top = 320
+    Width = 348
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 7
+  end
+  object LERole: TLabel
+    Left = 8
+    Height = 27
+    Top = 223
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Role'
+    FocusControl = ERole
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LMParams: TLabel
+    Left = 8
+    Height = 17
+    Top = 296
+    Width = 125
+    Caption = 'Additonal Parameters:'
+    FocusControl = MParams
+    ParentColor = False
+  end
+  object ECharset: TEdit
+    Left = 89
+    Height = 27
+    Top = 259
+    Width = 80
+    TabOrder = 9
+  end
+  object Label2: TLabel
+    Left = 32
+    Height = 17
+    Top = 264
+    Width = 50
+    Caption = 'Char. set'
+    FocusControl = ECharset
+    ParentColor = False
+  end
+  object SBTest: TSpeedButton
+    Left = 211
+    Height = 25
+    Top = 288
+    Width = 145
+    Anchors = [akTop, akRight]
+    Caption = 'Test connection'
+    Glyph.Data = {
+      36040000424D3604000000000000360000002800000010000000100000000100
+      2000000000000004000064000000640000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000527BC6FF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000317BEFFF527BC6FF296BC6FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000397BE7FF007BFFFF0073F7FF527BC6FF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000009CFFFF008CFFFF008CFFFF527BC6FF000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000B5FFFF008CFFFF0094FFFF527BC6FF527B
+      C6FF000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000B5FFFF08C6FFFF009CFFFF009C
+      FFFF527BC6FF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000B5FFFF08BDFFFF00AD
+      FFFF009CFFFF527BC6FF00000000000000000000000000000000000000000000
+      00000000000000000000527BC6FF527BC6FF527BC6FF00C6FFFF08FFFFFF31F7
+      FFFF10BDFFFF00ADFFFF527BC6FF527BC6FF0000000000000000000000000000
+      0000000000000000000029ADFFFF00C6FFFF00EFFFFF00F7FFFF00F7FFFF00FF
+      FFFF4AEFFFFF18CEFFFF00A5FFFF527BC6FF0000000000000000000000000000
+      0000000000000000000039A5FFFF00C6FFFF00EFFFFF00F7FFFF00EFFFFF00DE
+      FFFF00FFFFFF00FFFFFF39EFFFFF08C6FFFF527BC6FF00000000000000000000
+      000000000000000000000000000008C6FFFF39E7FFFF4AEFFFFF42F7FFFF18FF
+      FFFF00FFFFFF00FFFFFF08FFFFFF21FFFFFF527BC6FF00000000000000000000
+      0000000000000000000000000000000000000000000031D6FFFF08F7FFFF00FF
+      FFFF00F7FFFF00D6FFFF00B5FFFF527BC6FF0000000000000000000000000000
+      00000000000000000000000000000000000000000000000000000000000031D6
+      FFFF00F7FFFF00EFFFFF00ADFFFF00A5FFFF527BC6FF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000031D6FFFF42DEFFFF10D6FFFF5AA5FFFF527BC6FF000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000031D6FFFF52A5FFFF527BC6FF
+    }
+    OnClick = SBTestClick
+  end
+  object EName: TEdit
+    Left = 89
+    Height = 27
+    Top = 8
+    Width = 185
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+  end
+  object LEHostName1: TLabel
+    Left = 8
+    Height = 27
+    Top = 8
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Alias'
+    FocusControl = EName
+    Layout = tlCenter
+    ParentColor = False
+  end
+end

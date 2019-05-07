@@ -75,7 +75,9 @@ Type
   TSQLDBRestSchemaComponentEditor = class(TComponentEditor)
   private
     procedure DoLoadSchemaFromConnection(S: TSQLDBRestSchema);
+    procedure EditSchema(S: TSQLDBRestSchema);
     procedure FillSchema(S: TSQLDBRestSchema; Conn: TSQLDBRestConnection; Opts: TRestFieldOptions; AllTables: Boolean);
+    function GetSchemaConnections(S: TSQLDBRestSchema): TSQLDBRestConnectionList;
     function GetTableList(aConn: TSQLConnection; aList: TStrings): Boolean;
   public
     procedure ExecuteVerb(Index: Integer); override;
@@ -121,6 +123,7 @@ uses
   frmsqldbrestselectconn,
   frmsqldbrestdispatchini,
   frmsqldbrestselecttables,
+  dlgeditsqldbrestschema,
   reslazsqldbrest;
 
 Var
@@ -307,6 +310,7 @@ begin
     exit;
   aSchema:=D.ExposeConnection(Designer.LookupRoot,C,Nil,aOptions);
   aSchema.Name:=Designer.CreateUniqueComponentName(aSchema.ClassName);
+  Designer.Modified;
   // Todo: add Aschema to form.
 end;
 
@@ -413,6 +417,7 @@ begin
     aCount:=S.Resources.Count;
     S.PopulateResources(SQLC,sTables,Opts);
     ShowMessage(Format(SAddedNTables,[S.Resources.Count-aCount]));
+    Designer.Modified;
   finally
     T.Free;
     if SQLC<>Conn.SingleConnection then
@@ -460,6 +465,59 @@ begin
   end;
 end;
 
+Function TSQLDBRestSchemaComponentEditor.GetSchemaConnections(S : TSQLDBRestSchema) : TSQLDBRestConnectionList;
+
+Var
+  C : TComponent;
+  I : Integer;
+  D : TSQLDBRestDispatcher;
+
+begin
+  C:=S.Owner;
+  Result:=Nil;
+  While (Result=Nil) and (C<>Nil) do
+    begin
+    I:=0;
+    While (Result=Nil) and (I<C.ComponentCount-1) do
+      begin
+      if C.Components[i] is TSQLDBRestDispatcher then
+        begin
+        D:=C.Components[i] as TSQLDBRestDispatcher;
+        if D.Schemas.IndexOfSchema(S.Name)<>-1 then
+          Result:=D.Connections;
+        end;
+      Inc(I)
+      end;
+    C:=C.Owner;
+    end;
+end;
+
+procedure TSQLDBRestSchemaComponentEditor.EditSchema(S : TSQLDBRestSchema);
+
+Var
+  Frm : TSQLDBRestSchemaEditorForm;
+  cList : TSQLDBRestConnectionList;
+
+begin
+  Frm:=TSQLDBRestSchemaEditorForm.Create(Application);
+  try
+    Frm.Schema:=S;
+    cList:=GetSchemaConnections(S);
+    Frm.Connections:=cList;
+    if Frm.ShowModal=mrOK then
+      begin
+      if Frm.SchemaModified then
+        S.Resources.Assign(frm.Schema.Resources);
+      if Frm.ConnectionsModified then
+        if MessageDlg(Format(SConnectionsChangedUpdateDispatcher, [LineEnding]), mtInformation, [mbYes, mbNo], 0) = mrYes then
+          cList.Assign(frm.Connections);
+      Designer.Modified;
+      end;
+  finally
+    frm.Free;
+  end;
+end;
+
 procedure TSQLDBRestSchemaComponentEditor.ExecuteVerb(Index: Integer);
 
 Var
@@ -469,7 +527,8 @@ Var
 begin
   S:=Component as TSQLDBRestSchema;
   Case Index of
-    0,1 :
+    0 : EditSchema(S);
+    1,2 :
       begin
       FN:=Component.Name+'.json';
       if GetFileName(FN, Format(SJSONFilesFilter, [allFilesMask]), Index=0) then
@@ -481,12 +540,12 @@ begin
           Designer.Modified;
           end;
       end;
-    2 :
+    3 :
       begin
       DoLoadSchemaFromConnection(S);
       Designer.Modified;
       end;
-    3 :
+    4 :
       begin
       S.Resources.Clear;
       Designer.Modified;
@@ -497,16 +556,17 @@ end;
 function TSQLDBRestSchemaComponentEditor.GetVerb(Index: Integer): string;
 begin
   Case Index of
-    0 : Result:=SSaveSchemaToJSONFile;
-    1 : Result:=SLoadSchemaFromJSONFile;
-    2 : Result:=SLoadSchemaFromConnection;
-    3 : Result:=SClearSchema;
+    0 : Result:=SEditSchema;
+    1 : Result:=SSaveSchemaToJSONFile;
+    2 : Result:=SLoadSchemaFromJSONFile;
+    3 : Result:=SLoadSchemaFromConnection;
+    4 : Result:=SClearSchema;
   end;
 end;
 
 function TSQLDBRestSchemaComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=4;
+  Result:=5;
 end;
 
 function TSQLDBConnectionTypePropertyEditor.GetAttributes: TPropertyAttributes;

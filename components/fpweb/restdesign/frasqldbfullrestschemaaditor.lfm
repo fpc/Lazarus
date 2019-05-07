@@ -1,0 +1,84 @@
+object SchemaEditorFrame: TSchemaEditorFrame
+  Left = 0
+  Height = 614
+  Top = 0
+  Width = 797
+  ClientHeight = 614
+  ClientWidth = 797
+  LCLVersion = '2.1.0.0'
+  TabOrder = 0
+  DesignLeft = 527
+  DesignTop = 287
+  inline fraConn: TfraConnections
+    Height = 614
+    Width = 203
+    Align = alLeft
+    ClientHeight = 614
+    ClientWidth = 203
+    inherited TVConnections: TTreeView
+      Height = 557
+      Width = 203
+    end
+    inherited ToolBar1: TToolBar
+      Width = 203
+    end
+    inherited Label1: TLabel
+      Width = 203
+    end
+  end
+  object splConnection: TSplitter
+    Left = 203
+    Height = 614
+    Top = 0
+    Width = 5
+  end
+  inline fraSchema: TSQLDBRestSchemaEditorFrame
+    Left = 208
+    Height = 614
+    Width = 589
+    Align = alClient
+    ClientHeight = 614
+    ClientWidth = 589
+    TabOrder = 2
+    inherited PResources: TPanel
+      Height = 614
+      Width = 170
+      ClientHeight = 614
+      ClientWidth = 170
+      inherited TBResources: TToolBar
+        Width = 170
+        EdgeInner = esRaised
+        EdgeOuter = esLowered
+        inherited ToolButton4: TToolButton
+          Left = 1
+          Top = 30
+        end
+        inherited ToolButton5: TToolButton
+          Left = 31
+          Top = 30
+        end
+      end
+      inherited TVResources: TTreeView
+        Height = 557
+        Width = 170
+      end
+      inherited LResources: TLabel
+        Width = 170
+      end
+    end
+    inherited Splitter1: TSplitter
+      Left = 170
+      Height = 614
+    end
+    inherited PDock: TPanel
+      Left = 175
+      Height = 614
+      Width = 414
+      ClientHeight = 614
+      ClientWidth = 414
+      inherited LFrame: TLabel
+        Width = 414
+      end
+    end
+  end
+end

@@ -8,8 +8,8 @@ unit lazsqldbrest;
 interface
 
 uses
-  reglazsqldbrest, frmsqldbrestdispatchini, frmsqldbrestselectconn, 
-  reslazsqldbrest, frmsqldbrestselecttables, LazarusPackageIntf;
+  reglazsqldbrest, frmsqldbrestdispatchini, frmsqldbrestselectconn, reslazsqldbrest, frmsqldbrestselecttables, 
+  dlgeditsqldbrestschema, LazarusPackageIntf;
 
 implementation
 

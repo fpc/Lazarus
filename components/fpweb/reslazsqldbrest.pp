@@ -13,13 +13,16 @@ Resourcestring
   SExposeAConnection = 'Expose a connection';
   SSaveSettingsToIni = 'Save settings to INI file';
   SLoadSettingsFromIni = 'Load settings from INI file';
-  SJSONFilesFilter = 'JSON Files|*.json|All files|%s';
+  SJSONFilesFilter = 'Schema files|*.srs|JSON Files|*.json|All files|%s';
   SSaveSchemaToJSONFile = 'Save schema to JSON file';
   SLoadSchemaFromJSONFile = 'Load schema from JSON file';
   SLoadSchemaFromConnection = 'Load schema from connection';
   SErrNoConnectionsFound = 'No connections found on form/frame or datamodule';
   SAddedNTables = 'Added %d tables as resources';
   SClearSchema = 'Clear schema';
+  SEditSchema = 'Edit schema';
+  SConnectionsChangedUpdateDispatcher = 'The list of connections was modified. %s'+
+                                        'Do you wish to update the dispatcher connection list?';
 
 implementation
 

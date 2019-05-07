@@ -1,0 +1,28 @@
+object EditFrameForm: TEditFrameForm
+  Left = 588
+  Height = 361
+  Top = 294
+  Width = 455
+  Caption = 'Edit '
+  ClientHeight = 361
+  ClientWidth = 455
+  OnCloseQuery = FormCloseQuery
+  OnShow = FormShow
+  LCLVersion = '2.1.0.0'
+  object BPFrame: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 313
+    Width = 443
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

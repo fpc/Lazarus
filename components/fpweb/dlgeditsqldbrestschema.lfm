@@ -1,0 +1,127 @@
+object SQLDBRestSchemaEditorForm: TSQLDBRestSchemaEditorForm
+  Left = 573
+  Height = 515
+  Top = 284
+  Width = 809
+  Caption = 'Edit Schema'
+  ClientHeight = 515
+  ClientWidth = 809
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '2.1.0.0'
+  object BPSchema: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 467
+    Width = 797
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  inline fraEditor: TSchemaEditorFrame
+    Height = 461
+    Width = 809
+    Align = alClient
+    ClientHeight = 461
+    ClientWidth = 809
+    TabOrder = 1
+    inherited fraConn: TfraConnections
+      Height = 461
+      Width = 203
+      Align = alLeft
+      ClientHeight = 461
+      ClientWidth = 203
+      inherited TVConnections: TTreeView
+        Height = 404
+        Width = 203
+      end
+      inherited ToolBar1: TToolBar
+        Width = 203
+        inherited TBSep1: TToolButton
+          Height = 30
+        end
+        inherited ToolButton1: TToolButton
+          Height = 30
+        end
+      end
+      inherited Label1: TLabel
+        Width = 203
+      end
+    end
+    inherited splConnection: TSplitter
+      Height = 461
+    end
+    inherited fraSchema: TSQLDBRestSchemaEditorFrame
+      Left = 208
+      Height = 461
+      Width = 601
+      Align = alClient
+      ClientHeight = 461
+      ClientWidth = 601
+      TabOrder = 2
+      inherited PResources: TPanel
+        Height = 461
+        Width = 170
+        ClientHeight = 461
+        ClientWidth = 170
+        inherited TBResources: TToolBar
+          Width = 170
+          EdgeInner = esRaised
+          EdgeOuter = esLowered
+          inherited ToolButton1: TToolButton
+            Height = 30
+          end
+          inherited ToolButton2: TToolButton
+            Height = 30
+          end
+          inherited ToolButton4: TToolButton
+            Left = 1
+            Top = 30
+          end
+          inherited ToolButton5: TToolButton
+            Left = 31
+            Top = 30
+          end
+        end
+        inherited TVResources: TTreeView
+          Height = 404
+          Width = 170
+        end
+        inherited LResources: TLabel
+          Width = 170
+        end
+      end
+      inherited Splitter1: TSplitter
+        Left = 170
+        Height = 461
+      end
+      inherited PDock: TPanel
+        Left = 175
+        Height = 461
+        Width = 426
+        ClientHeight = 461
+        ClientWidth = 426
+        inherited LFrame: TLabel
+          Width = 426
+        end
+      end
+    end
+  end
+  object PSSchema: TXMLPropStorage
+    StoredValues = <>
+    RootNodePath = 'Editor'
+    Active = False
+    OnSaveProperties = PSSchemaSaveProperties
+    OnRestoreProperties = PSSchemaRestoreProperties
+    left = 464
+    top = 296
+  end
+end

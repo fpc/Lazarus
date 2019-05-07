@@ -1,0 +1,196 @@
+object SQLDBRestFieldEditFrame: TSQLDBRestFieldEditFrame
+  Left = 0
+  Height = 455
+  Top = 0
+  Width = 473
+  ClientHeight = 455
+  ClientWidth = 473
+  TabOrder = 0
+  DesignLeft = 499
+  DesignTop = 339
+  object LPublicName: TLabel
+    Left = 24
+    Height = 27
+    Top = 8
+    Width = 92
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Public name'
+    FocusControl = EPublicName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object EGeneratorName: TEdit
+    Left = 120
+    Height = 27
+    Top = 72
+    Width = 200
+    TabOrder = 0
+    TextHint = 'Name of sequence to generate value'
+  end
+  object EPublicName: TEdit
+    Left = 120
+    Height = 27
+    Top = 8
+    Width = 200
+    TabOrder = 1
+    TextHint = 'Name as seen by users'
+  end
+  object EFieldName: TEdit
+    Left = 120
+    Height = 27
+    Top = 40
+    Width = 200
+    TabOrder = 2
+    TextHint = 'Fieldname in database'
+  end
+  object CBFieldType: TComboBox
+    Left = 120
+    Height = 31
+    Top = 104
+    Width = 152
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 3
+  end
+  object CBNativeFieldType: TComboBox
+    Left = 120
+    Height = 31
+    Top = 136
+    Width = 152
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 4
+  end
+  object SEMaxLen: TSpinEdit
+    Left = 120
+    Height = 27
+    Top = 168
+    Width = 50
+    TabOrder = 5
+  end
+  object CGFieldOptions: TCheckGroup
+    Left = 6
+    Height = 120
+    Top = 200
+    Width = 459
+    AutoFill = True
+    Caption = '&Options'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 102
+    ClientWidth = 457
+    ColumnLayout = clVerticalThenHorizontal
+    Columns = 3
+    Items.Strings = (
+      'In Key'
+      'In Insert'
+      'In Update'
+      'Required'
+      'Filter'
+      'Order By'
+      'Order By Desc'
+    )
+    OnItemClick = CGFieldOptionsItemClick
+    TabOrder = 6
+    Data = {
+      0700000002020202020202
+    }
+  end
+  object CGFilters: TCheckGroup
+    Left = 7
+    Height = 105
+    Top = 320
+    Width = 458
+    AutoFill = True
+    Caption = '&Allowed Filters'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 87
+    ClientWidth = 456
+    ColumnLayout = clVerticalThenHorizontal
+    Columns = 2
+    Items.Strings = (
+      'Equal (=)'
+      'Less than (<)'
+      'Greater than (>)'
+      'Less than or equal (<=)'
+      'Greater than or equal (>=)'
+      'Null (is null)'
+    )
+    TabOrder = 7
+    Data = {
+      06000000020202020202
+    }
+  end
+  object LPublicName1: TLabel
+    Left = 24
+    Height = 27
+    Top = 40
+    Width = 92
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Field &name'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LPublicName2: TLabel
+    Left = 8
+    Height = 27
+    Top = 72
+    Width = 108
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Seq&uence name'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LPublicName3: TLabel
+    Left = 6
+    Height = 27
+    Top = 104
+    Width = 108
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Field type'
+    FocusControl = CBFieldType
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LPublicName4: TLabel
+    Left = 8
+    Height = 27
+    Top = 140
+    Width = 108
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Native field type'
+    FocusControl = CBNativeFieldType
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LSEMaxLen: TLabel
+    Left = 6
+    Height = 27
+    Top = 168
+    Width = 108
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Max length'
+    FocusControl = SEMaxLen
+    Layout = tlCenter
+    ParentColor = False
+  end
+end
