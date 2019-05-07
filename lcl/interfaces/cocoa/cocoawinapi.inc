@@ -2495,6 +2495,7 @@ begin
           Result := 64 else}
           Result := 16;
       end;
+    SM_CXDRAG,SM_CYDRAG: Result := 5;
     SM_CXHTHUMB, SM_CYVTHUMB:
       Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
     SM_SWSCROLLBARSPACING:
