@@ -200,8 +200,9 @@ type
 
     procedure OnTimer(ASender: TObject);
   protected
-    procedure DoZoom(const ANewExtent: TDoubleRect; AFull: Boolean);
+    procedure DoZoom(ANewExtent: TDoubleRect; AFull: Boolean);
     function IsAnimating: Boolean; inline;
+    function IsProportional: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -241,6 +242,8 @@ type
     procedure SetSelectionRect(AValue: TRect);
   strict protected
     procedure Cancel; override;
+  protected
+    function IsProportional: Boolean; override;
   public
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
@@ -274,6 +277,8 @@ type
     function ZoomRatioIsStored: boolean;
   strict protected
     procedure DoZoomStep(const APoint: TPoint; const AFactor: TDoublePoint);
+  protected
+    function IsProportional: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -1157,33 +1162,122 @@ begin
   inherited Destroy;
 end;
 
-procedure TBasicZoomTool.DoZoom(const ANewExtent: TDoubleRect; AFull: Boolean);
+procedure TBasicZoomTool.DoZoom(ANewExtent: TDoubleRect; AFull: Boolean);
 
-  function ValidatedNewExtent: TDoubleRect;
-  var
-    fullExt: TDoubleRect;
+  procedure ValidateNewSize(LimitLo, LimitHi: TZoomDirection;
+    const PrevSize, NewSize, MaxSize, ImageMaxSize: Double; out Scale: Double;
+    out AllowProportionalAdjustment: Boolean);
   begin
-    Result := ANewExtent;
-    if LimitToExtent <> [] then begin
-      fullExt := FChart.GetFullExtent;
-      if (zdRight in LimitToExtent) and (Result.b.X > fullExt.b.X) then
-        Result.b.X := fullExt.b.X;
-      if (zdUp in LimitToExtent) and (Result.b.Y > fullExt.b.Y) then
-        Result.b.Y := fullExt.b.Y;
-      if (zdLeft in LimitToExtent) and (Result.a.X < fullExt.a.X) then
-        Result.a.X := fullExt.a.X;
-      if (zdDown in LimitToExtent) and (Result.a.Y < fullExt.a.Y) then
-        Result.a.Y := fullExt.a.Y;
+    // if new size is only a bit different than previous size, this may be due to
+    // limited precision of floating-point calculations, so - if change in size
+    // is smaller than half of the pixel - set Scale to 0, disable proportional
+    // adjustments and exit; in this case, change in size will be reverted for
+    // the current dimension, and adjusting the other dimension will be performed
+    // independently
+    if (NewSize > PrevSize * (1 - 0.5 / abs(ImageMaxSize))) and
+       (NewSize < PrevSize * (1 + 0.5 / abs(ImageMaxSize))) then begin
+      Scale := 0;
+      AllowProportionalAdjustment := false;
+      exit;
+    end;
+
+    Scale := 1;
+    AllowProportionalAdjustment := true;
+
+    // if new size is within the limit - allow change
+    if NewSize <= MaxSize then exit;
+
+    // if size is not growing - allow change
+    if NewSize <= PrevSize then exit;
+
+    // if there is no both-sides extent limitation - allow change
+    if not (LimitLo in LimitToExtent) or not (LimitHi in LimitToExtent) then exit;
+
+    if PrevSize >= MaxSize then
+      // if previous size already reaches or exceeds the limit - do NOT allow change
+      Scale := 0
+    else
+      // if previous size is within the limit - allow change, but make the new size
+      // smaller than requested
+      Scale := (MaxSize - PrevSize) / (NewSize - PrevSize);
+  end;
+
+  procedure AdjustNewSizeAndPosition(LimitLo, LimitHi: TZoomDirection;
+    var NewSizeLo, NewSizeHi: Double; const MaxSizeLo, MaxSizeHi: Double);
+  var
+    Diff: Double;
+  begin
+    if (LimitLo in LimitToExtent) and (LimitHi in LimitToExtent) then begin
+      Diff := NewSizeHi - NewSizeLo - (MaxSizeHi - MaxSizeLo);
+      if Diff > 0 then begin
+        NewSizeLo := MaxSizeLo - 0.5 * Diff;
+        NewSizeHi := MaxSizeHi + 0.5 * Diff;
+      end else
+      if NewSizeLo < MaxSizeLo then begin
+        NewSizeLo := MaxSizeLo;
+        NewSizeHi := MaxSizeHi + Diff;
+      end else
+      if NewSizeHi > MaxSizeHi then begin
+        NewSizeLo := MaxSizeLo - Diff;
+        NewSizeHi := MaxSizeHi;
+      end;
+    end else
+    if LimitLo in LimitToExtent then begin
+      if NewSizeLo < MaxSizeLo then begin
+        NewSizeHi := MaxSizeLo + (NewSizeHi - NewSizeLo);
+        NewSizeLo := MaxSizeLo;
+      end;
+    end else
+    if LimitHi in LimitToExtent then begin
+      if NewSizeHi > MaxSizeHi then begin
+        NewSizeLo := MaxSizeHi - (NewSizeHi - NewSizeLo);
+        NewSizeHi := MaxSizeHi;
+      end;
     end;
   end;
 
-
+var
+  FullExt: TDoubleRect;
+  ScaleX, ScaleY: Double;
+  AllowProportionalAdjustmentX, AllowProportionalAdjustmentY: Boolean;
 begin
+  if not AFull then
+    // perform the actions below even when LimitToExtent is empty - this will
+    // correct sub-pixel changes in viewport size (occuring due to limited
+    // precision of floating-point calculations), which will result in a more
+    // smooth visual behavior
+    with ANewExtent do begin
+      FullExt := FChart.GetFullExtent;
+
+      ValidateNewSize(zdLeft, zdRight, FChart.LogicalExtent.b.X - FChart.LogicalExtent.a.X,
+        b.X - a.X, FullExt.b.X - FullExt.a.X,
+        FChart.XGraphToImage(FullExt.b.X) - FChart.XGraphToImage(FullExt.a.X),
+        ScaleX, AllowProportionalAdjustmentX);
+      ValidateNewSize(zdDown, zdUp, FChart.LogicalExtent.b.Y - FChart.LogicalExtent.a.Y,
+        b.Y - a.Y, FullExt.b.Y - FullExt.a.Y,
+        FChart.YGraphToImage(FullExt.b.Y) - FChart.YGraphToImage(FullExt.a.Y),
+        ScaleY, AllowProportionalAdjustmentY);
+
+      if AllowProportionalAdjustmentX and AllowProportionalAdjustmentY and
+         IsProportional then begin
+          ScaleX := Min(ScaleX, ScaleY);
+          ScaleY := ScaleX;
+        end;
+
+      a.X := WeightedAverage(FChart.LogicalExtent.a.X, a.X, ScaleX);
+      b.X := WeightedAverage(FChart.LogicalExtent.b.X, b.X, ScaleX);
+      a.Y := WeightedAverage(FChart.LogicalExtent.a.Y, a.Y, ScaleY);
+      b.Y := WeightedAverage(FChart.LogicalExtent.b.Y, b.Y, ScaleY);
+
+      AdjustNewSizeAndPosition(zdLeft, zdRight, a.X, b.X, FullExt.a.X, FullExt.b.X);
+      AdjustNewSizeAndPosition(zdDown, zdUp, a.Y, b.Y, FullExt.a.Y, FullExt.b.Y);
+    end;
+
   if (AnimationInterval = 0) or (AnimationSteps = 0) then begin
     if AFull then
       FChart.ZoomFull
     else
-      FChart.LogicalExtent := ValidatedNewExtent;
+      FChart.LogicalExtent := ANewExtent;
     if IsActive then
       Deactivate;
     exit;
@@ -1191,7 +1285,7 @@ begin
   if not IsActive then
     Activate;
   FExtSrc := FChart.LogicalExtent;
-  FExtDst := ValidatedNewExtent;
+  FExtDst := ANewExtent;
   FFullZoom := AFull;
   FCurrentStep := 0;
   FTimer.Interval := AnimationInterval;
@@ -1201,6 +1295,11 @@ end;
 function TBasicZoomTool.IsAnimating: Boolean;
 begin
   Result := FTimer.Enabled;
+end;
+
+function TBasicZoomTool.IsProportional: Boolean;
+begin
+  Result := false;
 end;
 
 procedure TBasicZoomTool.OnTimer(ASender: TObject);
@@ -1318,6 +1417,11 @@ begin
   ADrawer.Rectangle(CalculateDrawRect);
   ADrawer.SetXor(false);
   ADrawer.SetTransparency(0);
+end;
+
+function TZoomDragTool.IsProportional: Boolean;
+begin
+  Result := AdjustSelection and (RatioLimit = zrlProportional);
 end;
 
 procedure TZoomDragTool.MouseDown(APoint: TPoint);
@@ -1447,6 +1551,11 @@ begin
   ext.b := center + sz * (DoublePoint(1, 1) - ratio) / AFactor;
   DoZoom(ext, false);
   Handled;
+end;
+
+function TBasicZoomStepTool.IsProportional: Boolean;
+begin
+  Result := true;
 end;
 
 function TBasicZoomStepTool.ZoomFactorIsStored: boolean;
