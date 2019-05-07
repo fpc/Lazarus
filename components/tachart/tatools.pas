@@ -1184,21 +1184,25 @@ procedure TBasicZoomTool.DoZoom(ANewExtent: TDoubleRect; AFull: Boolean);
     Scale := 1;
     AllowProportionalAdjustment := true;
 
+    // if there is no both-sides extent limitation - allow change
+    if not (LimitLo in LimitToExtent) or not (LimitHi in LimitToExtent) then exit;
+
     // if new size is within the limit - allow change
     if NewSize <= MaxSize then exit;
 
     // if size is not growing - allow change
     if NewSize <= PrevSize then exit;
 
-    // if there is no both-sides extent limitation - allow change
-    if not (LimitLo in LimitToExtent) or not (LimitHi in LimitToExtent) then exit;
-
-    if PrevSize >= MaxSize then
-      // if previous size already reaches or exceeds the limit - do NOT allow change
-      Scale := 0
-    else
-      // if previous size is within the limit - allow change, but make the new size
-      // smaller than requested
+    if PrevSize >= MaxSize then begin
+      // if previous size already reaches or exceeds the limit - set Scale to 0,
+      // disable proportional adjustments and exit; in this case, change in size
+      // will be reverted for the current dimension, and adjusting the other
+      // dimension will be performed independently
+      Scale := 0;
+      AllowProportionalAdjustment := false;
+    end else
+      // if previous size is within the limit - allow change, but make the new
+      // size smaller than requested
       Scale := (MaxSize - PrevSize) / (NewSize - PrevSize);
   end;
 
