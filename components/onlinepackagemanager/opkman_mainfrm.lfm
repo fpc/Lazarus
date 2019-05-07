@@ -3,6 +3,7 @@ object MainFrm: TMainFrm
   Height = 650
   Top = 168
   Width = 900
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Online Package Manager'
   ClientHeight = 650
   ClientWidth = 900
