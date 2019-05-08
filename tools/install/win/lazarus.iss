@@ -78,10 +78,14 @@ Name: delusersettings; Description: {cm:DelUserConf}; GroupDescription: {cm:Clea
 Name: installhelp; Description: {cm:InstallChm}; Types: custom full
 #endif
 #endif
+
 #if FPCTargetOS=="win32"
 #if IDEWidgetSet!="qt"
-Name: installqtintfdll; Description: {cm:InstallQt}; Types: custom full compact
+Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full; Flags: checkablealone
+#else
+Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full compact; Flags: checkablealone fixed
 #endif
+Name: install4qtintfdll/global; Description: {cm:InstallQt}; Types: full; Flags: dontinheritcheck
 #endif
 #ifdef HasOpenSSL
 #if HasOpenSSL!=""
@@ -123,9 +127,9 @@ Source: environmentoptions.xml; DestDir: {app}; AfterInstall: UpdateEnvironmentO
 #if IDEWidgetSet=="qt"
 Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
 #else
-Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: installqtintfdll; Tasks: 
+Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: install4qtintfdll/global
 #endif
-Source: {#QtInfDir}\*.dll; DestDir: {app} 
+Source: {#QtInfDir}\*.dll; DestDir: {app}; Components: install4qtintfdll
 #if FPCVersion=="2.2.0"
 Source: {#BuildDir}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\cpp.exe; DestDir: {app}\ide; MinVersion: 1,0
 #endif

@@ -6,7 +6,8 @@
 DelUserConf=Delete all user configuration files from previous installs
 CleanUp=Clean up:
 
-InstallQt=Globally install Qt interface DLL
+InstallQtLocal=Install Qt4 interface DLL
+InstallQt=Globally install Qt4 interface DLL
 InstallChm=Install CHM help files
 InstallOpenSSL=Install openssl libraries (required by OnlinePackageManager)
 InstallOpenSSLGlobal=Globally Install openssl libraries
