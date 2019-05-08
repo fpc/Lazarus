@@ -151,8 +151,8 @@ type
 
     procedure IncreaseIndent; overload; override;
     procedure DecreaseIndent; overload; override;
-    procedure IncreaseIndent(LogEnabled: TLazLoggerLogEnabled); overload; virtual;
-    procedure DecreaseIndent(LogEnabled: TLazLoggerLogEnabled); overload; virtual;
+    procedure IncreaseIndent(LogEnabled: TLazLoggerLogEnabled); overload; override;
+    procedure DecreaseIndent(LogEnabled: TLazLoggerLogEnabled); overload; override;
     procedure IndentChanged; override;
     procedure CreateIndent; virtual;
     function GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler; override;
