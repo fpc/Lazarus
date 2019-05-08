@@ -41,6 +41,7 @@ AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
 #if FPCTargetCPU=="x86_64"
 ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64
 #endif
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
