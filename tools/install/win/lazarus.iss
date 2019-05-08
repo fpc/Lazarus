@@ -20,6 +20,8 @@ EnableISX=true
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
 #define QtInfDir GetEnv('QTINFDIR')
+#define HasOpenSSL GetEnv('HASOPENSSL')
+#define OpenSSLDir GetEnv('OPENSSLDIR')
 #define IDEWidgetSet GetEnv('IDE_WidgetSet')
 #define OutputFileName GetEnv('OutputFileName')
 #define CHMHELPFILES GetEnv('CHMHELPFILES')
@@ -71,14 +73,20 @@ Name: delusersettings; Description: {cm:DelUserConf}; GroupDescription: {cm:Clea
 ;unchecked checkedonce
 
 [Components]
+#ifdef CHMHELPFILES
+#if CHMHELPFILES!=""
+Name: installhelp; Description: {cm:InstallChm}; Types: custom full
+#endif
+#endif
 #if FPCTargetOS=="win32"
 #if IDEWidgetSet!="qt"
 Name: installqtintfdll; Description: {cm:InstallQt}; Types: custom full compact
 #endif
 #endif
-#ifdef CHMHELPFILES
-#if CHMHELPFILES!=""
-Name: installhelp; Description: {cm:InstallChm}; Types: custom full
+#ifdef HasOpenSSL
+#if HasOpenSSL!=""
+Name: installopenssl; Description: {cm:InstallOpenSSL}; Types: custom full compact; Flags: checkablealone
+Name: installopenssl/global; Description: {cm:InstallOpenSSLGlobal}; Types: full; Flags: dontinheritcheck
 #endif
 #endif
 Name: association; Description: {cm:AssociateGroup}; Types: custom full
@@ -126,6 +134,14 @@ Source: {#BuildDir}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\cpp.exe; DestDir: {ap
 #ifdef CHMHELPFILES
 #if CHMHELPFILES!=""
 Source: {#CHMHELPFILES}\*.*; DestDir: {app}\docs\chm; Components: installhelp; Flags: recursesubdirs
+Source: {#CHMHELPFILES}\*.*; DestDir: {app}\docs\chm; Components: installhelp; Flags: recursesubdirs
+#endif
+#endif
+
+#ifdef HasOpenSSL
+#if HasOpenSSL!=""
+Source: {#OpenSSLDir}\*.*; DestDir: {app}; Components: installopenssl; Flags: recursesubdirs
+Source: {#OpenSSLDir}\*.*; DestDir: {sys}; Components: installopenssl/global; Flags: sharedfile replacesameversion
 #endif
 #endif
 

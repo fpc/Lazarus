@@ -8,6 +8,8 @@ CleanUp=Clean up:
 
 InstallQt=Globally install Qt interface DLL
 InstallChm=Install CHM help files
+InstallOpenSSL=Install openssl libraries (required by OnlinePackageManager)
+InstallOpenSSLGlobal=Globally Install openssl libraries
 AssociateGroup=Associate file extensions
 
 CheckSecondClick=Create a new secondary installation

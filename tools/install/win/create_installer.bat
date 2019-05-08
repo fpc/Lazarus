@@ -109,6 +109,12 @@ SET PATCHDIR=%CD%\..\patches
 :: it should have the debugger with the name gdb.exe in its bin subdirectory
 SET GDBDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\gdb
 
+:: OPENSSL
+SET OPENSSLDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\openssl
+for /F %%i in ('dir /b "%OPENSSLDIR%\*.*"') do (
+   SET HASOPENSSL=1
+)
+
 :: Path to the directory containing the qtinf dll matching the qt4.pas from 
 :: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
 SET QTINFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt
