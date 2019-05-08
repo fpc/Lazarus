@@ -15,6 +15,7 @@ EnableISX=true
 #endif
 #define FPCVersion GetEnv('FPCVersion')
 #define FPCTargetOS GetEnv('FPCTargetOS')
+#define FPCTargetCPU GetEnv('FPCTARGETCPU')
 #define FPCFullTarget GetEnv('FPCFullTarget')
 #define AppName "Lazarus"
 #define SetupDate GetEnv('DateStamp')
@@ -38,7 +39,9 @@ AppPublisher=Lazarus Team
 AppPublisherURL=http://www.lazarus.freepascal.org/
 AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
+#if FPCTargetCPU=="x86_64"
 ArchitecturesInstallIn64BitMode=x64
+#endif
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
 AppendDefaultDirName=no
@@ -68,6 +71,7 @@ UsePreviousLanguage=no
 UninstallDisplayIcon={app}\lazarus.exe
 DisableWelcomePage=no
 DisableDirPage=no
+
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
