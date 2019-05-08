@@ -20,6 +20,8 @@ EnableISX=true
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
 #define QtInfDir GetEnv('QTINFDIR')
+#define HasQT5 GetEnv('HASQT5')
+#define Qt5InfDir GetEnv('QT5INFDIR')
 #define HasOpenSSL GetEnv('HASOPENSSL')
 #define OpenSSLDir GetEnv('OPENSSLDIR')
 #define IDEWidgetSet GetEnv('IDE_WidgetSet')
@@ -80,13 +82,25 @@ Name: installhelp; Description: {cm:InstallChm}; Types: custom full
 #endif
 
 #if FPCTargetOS=="win32"
-#if IDEWidgetSet!="qt"
+;// #if IDEWidgetSet!="qt"
 Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full; Flags: checkablealone
-#else
-Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full compact; Flags: checkablealone fixed
-#endif
+;// #else
+;//Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full compact; Flags: checkablealone fixed
+;// #endif
 Name: install4qtintfdll/global; Description: {cm:InstallQt}; Types: full; Flags: dontinheritcheck
 #endif
+
+#ifdef HasQT5
+#if HasQT5!=""
+#if IDEWidgetSet!="qt"
+Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom full; Flags: checkablealone
+#else
+Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom full compact; Flags: checkablealone fixed
+#endif
+Name: install5qtintfdll/global; Description: {cm:InstallQt5Global}; Types: full; Flags: dontinheritcheck
+#endif
+#endif
+
 #ifdef HasOpenSSL
 #if HasOpenSSL!=""
 Name: installopenssl; Description: {cm:InstallOpenSSL}; Types: custom full compact; Flags: checkablealone
@@ -123,15 +137,27 @@ Name: {code:GetPCPForDelete}userschemes\*.xml; Type: files; Tasks: delusersettin
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
 Source: environmentoptions.xml; DestDir: {app}; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
+
 #if FPCTargetOS=="win32"
-#if IDEWidgetSet=="qt"
-Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
-#else
+;//#if IDEWidgetSet=="qt"
+;//Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
+;//#else
 Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: install4qtintfdll/global
-#endif
+;//#endif
 Source: {#QtInfDir}\*.dll; DestDir: {app}; Components: install4qtintfdll
 #if FPCVersion=="2.2.0"
 Source: {#BuildDir}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\cpp.exe; DestDir: {app}\ide; MinVersion: 1,0
+#endif
+#endif
+
+#ifdef HasQT5
+#if HasQT5!=""
+#if IDEWidgetSet=="qt"
+Source: {#Qt5InfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
+#else
+Source: {#Qt5InfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: install5qtintfdll/global
+#endif
+Source: {#Qt5InfDir}\*.dll; DestDir: {app}; Components: install5qtintfdll
 #endif
 #endif
 

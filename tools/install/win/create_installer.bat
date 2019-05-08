@@ -119,6 +119,11 @@ for /F %%i in ('dir /b "%OPENSSLDIR%\*.*"') do (
 :: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
 SET QTINFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt
 
+SET QT5INFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt5
+for /F %%i in ('dir /b "%QT5INFDIR%\*.*"') do (
+   SET HASQT5=1
+)
+
 ::---------------------------------------------------------------------
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%

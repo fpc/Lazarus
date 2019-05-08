@@ -8,6 +8,8 @@ CleanUp=Clean up:
 
 InstallQtLocal=Install Qt4 interface DLL
 InstallQt=Globally install Qt4 interface DLL
+InstallQt5Local=Install Qt5 interface DLL
+InstallQt5Global=Globally install Qt5 interface DLL
 InstallChm=Install CHM help files
 InstallOpenSSL=Install openssl libraries (required by OnlinePackageManager)
 InstallOpenSSLGlobal=Globally Install openssl libraries
