@@ -58,6 +58,7 @@ type
     fGroups: TStringList;   // Objects have group TreeNodes
     fLastCloseUp: QWord;
     fLastCanShowCheck: Boolean;
+    procedure AppDeactivated(Sender: TObject);
     procedure FindGroups;
     procedure BuildTreeItem(aPageCapt: string);
     procedure BuildList;
@@ -68,6 +69,7 @@ type
     procedure DoClose(var CloseAction: TCloseAction); override;
   public
     PositionForControl: TControl;
+    destructor Destroy; override;
     procedure FixBounds;
     procedure CanShowCheck;
     property LastCanShowCheck: Boolean read fLastCanShowCheck;
@@ -97,6 +99,7 @@ end;
 procedure TDlgCompPagesPopup.FormShow(Sender: TObject);
 begin
   BuildList;
+  Application.AddOnDeactivateHandler(@AppDeactivated);
 end;
 
 procedure TDlgCompPagesPopup.FormDeactivate(Sender: TObject);
@@ -121,9 +124,16 @@ end;
 procedure TDlgCompPagesPopup.DoClose(var CloseAction: TCloseAction);
 begin
   inherited DoClose(CloseAction);
+  Application.RemoveOnDeactivateHandler(@AppDeactivated);
 
   if CloseAction = caHide then
     fLastCloseUp := GetTickCount64;
+end;
+
+destructor TDlgCompPagesPopup.Destroy;
+begin
+  Application.RemoveOnDeactivateHandler(@AppDeactivated);
+  inherited Destroy;
 end;
 
 procedure TDlgCompPagesPopup.DoCreate;
@@ -241,6 +251,11 @@ begin
   for i := fGroups.Count-1 downto 0 do
     if Assigned(fGroups.Objects[i]) then
       fGroups.Delete(i);
+end;
+
+procedure TDlgCompPagesPopup.AppDeactivated(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TDlgCompPagesPopup.BuildTreeItem(aPageCapt: string);
