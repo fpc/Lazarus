@@ -19,33 +19,9 @@ uses
   Classes, Types, TAChartUtils, TACustomSource;
 
 type
-  TChartSortCompare = function(AItem1, AItem2: Pointer): Integer of object;
-
-  { TCustomSortedChartSource }
-
-  TCustomSortedChartSource = class(TCustomChartSource)
-  private
-    FOnCompare: TChartSortCompare;
-    procedure SetSorted(AValue: Boolean);
-    procedure SetOnCompare(AValue: TChartSortCompare);
-  protected
-    FCompareProc: TChartSortCompare;
-    FData: TFPList;
-    FSorted: Boolean;
-    function DefaultCompare(AItem1, AItem2: Pointer): Integer; virtual; abstract;
-    function DoCompare(AItem1, AItem2: Pointer): Integer; virtual;
-    procedure ExecSort(ACompare: TChartSortCompare); virtual;
-    procedure SetSortBy(AValue: TChartSortBy); override;
-    procedure SetSortDir(AValue: TChartSortDir); override;
-    procedure SetSortIndex(AValue: Cardinal); override;
-    property Sorted: Boolean read FSorted write SetSorted default false;
-    property OnCompare: TChartSortCompare read FOnCompare write SetOnCompare;
-  public
-    function IsSorted: Boolean; override;
-    procedure Sort;
-  end;
 
   { TListChartSource }
+
   TListChartSource = class(TCustomSortedChartSource)
   private
     FDataPoints: TStrings;
@@ -58,9 +34,6 @@ type
     procedure SetDataPoints(AValue: TStrings);
     procedure UpdateCachesAfterAdd(AX, AY: Double);
   protected
-    function DefaultCompare(AItem1, AItem2: Pointer): Integer; override;
-    function GetCount: Integer; override;
-    function GetItem(AIndex: Integer): PChartDataItem; override;
     procedure Loaded; override;
     procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
@@ -301,18 +274,6 @@ type
     procedure Insert(Index: Integer; const S: String); override;
   end;
 
-function CompareFloat(x1, x2: Double): Integer;
-begin
-  if IsNaN(x1) and IsNaN(x2) then
-    Result := 0
-  else if IsNaN(x1) then
-    Result := +1
-  else if IsNaN(x2) then
-    Result := -1
-  else
-    Result := CompareValue(x1, x2);
-end;
-
 procedure Register;
 begin
   RegisterComponents(
@@ -523,116 +484,6 @@ begin
 end;
 
 
-{ TCustomSortedChartSource }
-
-function TCustomSortedChartSource.DoCompare(AItem1, AItem2: Pointer): Integer;
-begin
-  Result := FCompareProc(AItem1, AItem2);
-end;
-
-{ Built-in sorting algorithm of the ChartSource, a standard QuickSort.
-  Copied from the classes unit because the compare function must be a method. }
-procedure TCustomSortedChartSource.ExecSort(ACompare: TChartSortCompare);
-
-  procedure QuickSort(L, R: Longint);
-  var
-    I, J: Longint;
-    P, Q: Pointer;
-  begin
-   repeat
-     I := L;
-     J := R;
-     P := FData.List^[(L + R) div 2];
-     repeat
-       while ACompare(P, FData.List^[I]) > 0 do
-         I := I + 1;
-       while ACompare(P, FData.List^[J]) < 0 do
-         J := J - 1;
-       If I <= J then
-       begin
-         Q := FData.List^[I];
-         FData.List^[I] := FData.List^[J];
-         FData.List^[J] := Q;
-         I := I + 1;
-         J := J - 1;
-       end;
-     until I > J;
-     if J - L < R - I then
-     begin
-       if L < J then
-         QuickSort(L, J);
-       L := I;
-     end
-     else
-     begin
-       if I < R then
-         QuickSort(I, R);
-       R := J;
-     end;
-   until L >= R;
-  end;
-
-begin
-  if FData.Count < 2 then exit;
-  QuickSort(0, FData.Count-1);
-end;
-
-function TCustomSortedChartSource.IsSorted: Boolean;
-begin
-  Result := FSorted;
-end;
-
-procedure TCustomSortedChartSource.SetSortBy(AValue: TChartSortBy);
-begin
-  if FSortBy = AValue then exit;
-  FSortBy := AValue;
-  if Sorted then Sort;
-end;
-
-procedure TCustomSortedChartSource.SetSorted(AValue: Boolean);
-begin
-  if FSorted = AValue then exit;
-  FSorted := AValue;
-  if Sorted then Sort else Notify;
-end;
-
-procedure TCustomSortedChartSource.SetSortDir(AValue: TChartSortDir);
-begin
-  if FSortDir = AValue then exit;
-  FSortDir := AValue;
-  if Sorted then Sort;
-end;
-
-procedure TCustomSortedChartSource.SetSortIndex(AValue: Cardinal);
-begin
-  if FSortIndex = AValue then exit;
-  FSortIndex := AValue;
-  if Sorted then Sort;
-end;
-
-procedure TCustomSortedChartSource.SetOnCompare(AValue: TChartSortCompare);
-begin
-  if FOnCompare = AValue then exit;
-  FOnCompare := AValue;
-  if Assigned(FOnCompare) and (FSortBy = sbCustom) and Sorted then Sort;
-end;
-
-procedure TCustomSortedChartSource.Sort;
-begin
-  if csLoading in ComponentState then exit;
-  if (FSortBy = sbCustom) then begin
-    if not Assigned(FOnCompare) then exit;
-    FCompareProc := FOnCompare;
-  end else begin
-    if (FSortBy = sbX) and (FSortIndex <> 0) and (FSortIndex >= FXCount) then exit;
-    if (FSortBy = sbY) and (FSortIndex <> 0) and (FSortIndex >= FYCount) then exit;
-    FCompareProc := @DefaultCompare;
-  end;
-  ExecSort(@DoCompare);
-  Notify;
-end;
-
-
 { TListChartSource }
 
 function TListChartSource.Add(
@@ -711,7 +562,7 @@ procedure TListChartSource.Clear; inline;
 var
   i: Integer;
 begin
-  for i := 0 to FData.Count - 1 do
+  for i := 0 to Count - 1 do
     Dispose(Item[i]);
   FData.Clear;
   ClearCaches;
@@ -775,7 +626,6 @@ end;
 constructor TListChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FData := TFPList.Create;
   FDataPoints := TListChartSourceStrings.Create(Self);
   ClearCaches;
 end;
@@ -789,21 +639,6 @@ begin
     FXCount := FXCountMin;
   if FYCount < FYCountMin then
     FYCount := FYCountMin;
-end;
-
-function TListChartSource.DefaultCompare(AItem1, AItem2: Pointer): Integer;
-var
-  item1: PChartDataItem absolute AItem1;
-  item2: PChartDataItem absolute AItem2;
-begin
- case FSortBy of
-   sbX: Result := CompareFloat(item1^.GetX(FSortIndex), item2^.GetX(FSortIndex));
-   sbY: Result := CompareFloat(item1^.GetY(FSortIndex), item2^.GetY(FSortIndex));
-   sbColor: Result := CompareValue(item1^.Color, item2^.Color);
-   sbText: Result := CompareText(item1^.Text, item2^.Text);
-   sbCustom: Result := FOnCompare(AItem1, AItem2);
- end;
- if FSortDir = sdDescending then Result := -Result;
 end;
 
 procedure TListChartSource.Delete(AIndex: Integer);
@@ -834,18 +669,7 @@ destructor TListChartSource.Destroy;
 begin
   Clear;
   FreeAndNil(FDataPoints);
-  FreeAndNil(FData);
   inherited;
-end;
-
-function TListChartSource.GetCount: Integer;
-begin
-  Result := FData.Count;
-end;
-
-function TListChartSource.GetItem(AIndex: Integer): PChartDataItem;
-begin
-  Result := PChartDataItem(FData.Items[AIndex]);
 end;
 
 function TListChartSource.NewItem: PChartDataItem;
@@ -935,10 +759,12 @@ begin
   if IsSortedByXAsc then
     if IsNan(AValue) then
       raise EChartError.CreateFmt('X = NaN in sorted source %s', [NameOrClassName(Self)]);
-  oldX := Item[AIndex]^.X;
   Result := AIndex;
-  if IsEquivalent(oldX, AValue) then exit;
-  Item[AIndex]^.X := AValue;
+  with Item[AIndex]^ do begin
+    if IsEquivalent(X, AValue) then exit; // IsEquivalent() can compare also NaNs
+    oldX := X;
+    X := AValue;
+  end;
   UpdateExtent;
   if IsSortedByXAsc then begin
     if AValue > oldX then
@@ -1001,9 +827,11 @@ var
   end;
 
 begin
-  oldY := Item[AIndex]^.Y;
-  if IsEquivalent(oldY, AValue) then exit;
-  Item[AIndex]^.Y := AValue;
+  with Item[AIndex]^ do begin
+    if IsEquivalent(Y, AValue) then exit; // IsEquivalent() can compare also NaNs
+    oldY := Y;
+    Y := AValue;
+  end;
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AValue) - NumberOr(oldY);
   UpdateExtent;
