@@ -3953,16 +3953,12 @@ var
   end;
 
 begin
-  if ([goCellHints, goTruncCellHints]*Options = []) then
+  if not ShowHint then
     exit;
 
   cell := MouseToCell(APoint);
   if (cell.x = -1) or (cell.y = -1) then
-  begin
-    Hint := FSavedHint;
-    Application.Hint := GetLongHint(FSavedHint);
     exit;
-  end;
 
   txt1 := '';          // Hint returned by OnGetCellHint
   txt2 := '';          // Hint returned by GetTruncCellHintText
@@ -3970,7 +3966,7 @@ begin
   txt := '';           // Hint to be displayed as popup
   PrepareCellHints(cell.x, cell.y); // in DBGrid, set the active record to cell.y
   try
-    if (goCellHints in Options) then
+    if (goCellHints in Options) and (FCellHintPriority <> chpTruncOnly) then
       txt1 := GetCellHintText(cell.x, cell.y);
     if (goTruncCellHints in Options) then begin
       txt2 := GetTruncCellHintText(cell.x, cell.y);
@@ -3987,31 +3983,24 @@ begin
   case FCellHintPriority of
     chpAll:
       begin
-        AddToHint(txt, txt1);
+        AddToHint(txt, GetShortHint(FSavedHint));
+        AddToHint(txt, GetShortHint(txt1));
         AddToHint(txt, txt2);
-        if (txt <> '') then begin
-          if FSavedHint = '' then
-            AppHint := txt
-          else begin
-            txt := GetShortHint(FSavedHint) + LineEnding + txt;
-            AppHint := GetLongHint(FSavedHint) + LineEnding + txt;
-          end;
-        end else
-        begin
-          txt := GetShortHint(FSavedHint);
-          AppHint := GetLongHint(FSavedHint);
-        end;
+        AddToHint(AppHint, GetLongHint(FSavedHint));
+        AddToHint(AppHint, GetLongHint(txt1));
       end;
     chpAllNoDefault:
       begin
-        AddToHint(txt, txt1);
+        AddToHint(txt, GetShortHint(txt1));
         AddToHint(txt, txt2);
-        AppHint := txt;
+        AddToHint(AppHint, GetLongHint(txt1));
       end;
     chpTruncOnly:
       begin
         AddToHint(txt, txt2);
         AppHint := txt;
+        if Pos('|', AppHint) = 0 then
+          AppHint := AppHint + '|';
       end;
   end;
 
@@ -4021,7 +4010,7 @@ begin
   if (AppHint = '') then AppHint := FSavedhint;
     *)
 
-  if (txt <> '') and not EditorMode and not (csDesigning in ComponentState) then begin
+  if not EditorMode and not (csDesigning in ComponentState) then begin
     Hint := txt;
     //set Application.Hint as well (issue #0026957)
     Application.Hint := GetLongHint(AppHint);
@@ -6752,13 +6741,19 @@ begin
           AllowOutboundEvents := obe;
         end;
 
-        //if we are not over a cell, and we use cellhint, we need to empty Application.Hint
-        if (p.X < 0) and ([goCellHints, goTruncCellHints]*Options <> []) and
-          (FCellHintPriority <> chpAll)
-        then begin
-          Application.Hint := '';
-          Hint := '';
-        end;
+        // if we are not over a cell
+        if p.X < 0 then
+          begin
+            // empty hints
+            Application.Hint := '';
+            Hint := '';
+            // if FCellHintPriority = chpAll, restore default hint
+            if ShowHint and (FCellHintPriority = chpAll) then
+              begin
+                Hint := FSavedHint;
+                Application.Hint := GetLongHint(FSavedHint);
+              end;
+          end;
 
         with FGCache do
           if (MouseCell.X <> p.X) or (MouseCell.Y <> p.Y) then begin
@@ -8072,12 +8067,14 @@ procedure TCustomGrid.CMMouseEnter(var Message: TLMessage);
 begin
   inherited;
   FSavedHint := Hint;
+  // Note: disable hint when entering grid's border, we'll manage our own hints
+  Application.Hint := '';
+  Application.CancelHint;
 end;
 
 procedure TCustomGrid.CMMouseLeave(var Message: TLMessage);
 begin
-  if [goCellHints, goTruncCellHints] * Options <> [] then
-    Hint := FSavedHint;
+  Hint := FSavedHint;
   ResetHotCell;
   inherited CMMouseLeave(Message);
 end;
@@ -8554,6 +8551,8 @@ end;
 function TCustomGrid.GetTruncCellHintText(ACol, ARow: Integer): string;
 begin
   Result := GetCells(ACol, ARow);
+  if Assigned(FOnGetCellHint) and (FCellHintPriority = chpTruncOnly) then
+    FOnGetCellHint(self, ACol, ARow, result);
 end;
 
 function TCustomGrid.GetCells(ACol, ARow: Integer): string;

@@ -1668,7 +1668,8 @@ begin
       Result := F.DisplayText
     else
       Result := '(blob)';
-  if Assigned(OnGetCellHint) then begin
+  // pass to OnGetCellHint() only if chpTruncOnly
+  if Assigned(OnGetCellHint) and (CellHintPriority = chpTruncOnly) then begin
     C := ColumnFromGridColumn(ACol) as TColumn;
     FOnGetCellHint(self, C, Result);
   end;
