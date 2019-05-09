@@ -28,11 +28,11 @@ type
     FXCountMin: Cardinal;
     FYCountMin: Cardinal;
     procedure AddAt(
-      APos: Integer; AX, AY: Double; const ALabel: String; AColor: TChartColor);
+      APos: Integer; const AX, AY: Double; const ALabel: String; AColor: TChartColor);
     procedure ClearCaches;
     function NewItem: PChartDataItem;
-    procedure SetDataPoints(AValue: TStrings);
-    procedure UpdateCachesAfterAdd(AX, AY: Double);
+    procedure SetDataPoints(const AValue: TStrings);
+    procedure UpdateCachesAfterAdd(const AX, AY: Double);
   protected
     procedure Loaded; override;
     procedure SetXCount(AValue: Cardinal); override;
@@ -47,22 +47,22 @@ type
     destructor Destroy; override;
   public
     function Add(
-      AX, AY: Double; const ALabel: String = '';
-      AColor: TChartColor = clTAColor): Integer;
-    function AddXListYList(const AX, AY: array of Double; ALabel: String = '';
-      AColor: TChartColor = clTAColor): Integer;
+      const AX, AY: Double; const ALabel: String = '';
+      const AColor: TChartColor = clTAColor): Integer;
+    function AddXListYList(const AX, AY: array of Double; const ALabel: String = '';
+      const AColor: TChartColor = clTAColor): Integer;
     function AddXYList(
-      AX: Double; const AY: array of Double; const ALabel: String = '';
-      AColor: TChartColor = clTAColor): Integer;
+      const AX: Double; const AY: array of Double; const ALabel: String = '';
+      const AColor: TChartColor = clTAColor): Integer;
     procedure Clear;
     procedure CopyFrom(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer);
     procedure SetColor(AIndex: Integer; AColor: TChartColor);
-    procedure SetText(AIndex: Integer; AValue: String);
-    function SetXValue(AIndex: Integer; AValue: Double): Integer;
+    procedure SetText(AIndex: Integer; const AValue: String);
     procedure SetXList(AIndex: Integer; const AXList: array of Double);
+    function SetXValue(AIndex: Integer; const AValue: Double): Integer;
     procedure SetYList(AIndex: Integer; const AYList: array of Double);
-    procedure SetYValue(AIndex: Integer; AValue: Double);
+    procedure SetYValue(AIndex: Integer; const AValue: Double);
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
     property XCount;
@@ -114,10 +114,10 @@ type
     procedure SetPointsNumber(AValue: Integer);
     procedure SetRandomX(AValue: Boolean);
     procedure SetRandSeed(AValue: Integer);
-    procedure SetXMax(AValue: Double);
-    procedure SetXMin(AValue: Double);
-    procedure SetYMax(AValue: Double);
-    procedure SetYMin(AValue: Double);
+    procedure SetXMax(const AValue: Double);
+    procedure SetXMin(const AValue: Double);
+    procedure SetYMax(const AValue: Double);
+    procedure SetYMin(const AValue: Double);
     procedure SetYNanPercent(AValue: TPercent);
   protected
     procedure ChangeErrorBars(Sender: TObject); override;
@@ -258,7 +258,7 @@ type
   strict private
     FSource: TListChartSource;
     FLoadingCache: TStringList;
-    procedure Parse(AString: String; ADataItem: PChartDataItem);
+    procedure Parse(const AString: String; ADataItem: PChartDataItem);
   private
     procedure LoadingFinished;
   protected
@@ -313,7 +313,7 @@ end;
 
 function TListChartSourceStrings.Get(Index: Integer): String;
 
-  function NumberStr(AValue: Double): String;
+  function NumberStr(const AValue: Double): String;
   begin
     if IsNaN(AValue) then
       Result := '|'
@@ -382,7 +382,7 @@ begin
 end;
 
 procedure TListChartSourceStrings.Parse(
-  AString: String; ADataItem: PChartDataItem);
+  const AString: String; ADataItem: PChartDataItem);
 var
   p: Integer = 0;
   parts: TStrings;
@@ -487,7 +487,8 @@ end;
 { TListChartSource }
 
 function TListChartSource.Add(
-  AX, AY: Double; const ALabel: String; AColor: TChartColor): Integer;
+  const AX, AY: Double; const ALabel: String = '';
+  const AColor: TChartColor = clTAColor): Integer;
 begin
   Result := FData.Count;
   if IsSortedByXAsc then
@@ -502,7 +503,7 @@ begin
 end;
 
 procedure TListChartSource.AddAt(
-  APos: Integer; AX, AY: Double; const ALabel: String; AColor: TChartColor);
+  APos: Integer; const AX, AY: Double; const ALabel: String; AColor: TChartColor);
 var
   pcd: PChartDataItem;
 begin
@@ -516,7 +517,7 @@ begin
 end;
 
 function TListChartSource.AddXListYList(const AX, AY: array of Double;
-  ALabel: String = ''; AColor: TChartColor = clTAColor): Integer;
+  const ALabel: String = ''; const AColor: TChartColor = clTAColor): Integer;
 begin
   if Length(AX) = 0 then
     raise EXListEmptyError.Create('AddXListYList: XList is empty');
@@ -539,8 +540,8 @@ begin
 end;
 
 function TListChartSource.AddXYList(
-  AX: Double; const AY: array of Double;
-  const ALabel: String; AColor: TChartColor): Integer;
+  const AX: Double; const AY: array of Double;
+  const ALabel: String = ''; const AColor: TChartColor = clTAColor): Integer;
 begin
   if Length(AY) = 0 then
     raise EYListEmptyError.Create('AddXYList: Y List is empty');
@@ -688,7 +689,7 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.SetDataPoints(AValue: TStrings);
+procedure TListChartSource.SetDataPoints(const AValue: TStrings);
 begin
   if FDataPoints = AValue then exit;
   BeginUpdate;
@@ -700,7 +701,7 @@ begin
   end;
 end;
 
-procedure TListChartSource.SetText(AIndex: Integer; AValue: String);
+procedure TListChartSource.SetText(AIndex: Integer; const AValue: String);
 begin
   with Item[AIndex]^ do begin
     if Text = AValue then exit;
@@ -736,7 +737,7 @@ begin
   Notify;
 end;
 
-function TListChartSource.SetXValue(AIndex: Integer; AValue: Double): Integer;
+function TListChartSource.SetXValue(AIndex: Integer; const AValue: Double): Integer;
 var
   oldX: Double;
 
@@ -807,7 +808,7 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.SetYValue(AIndex: Integer; AValue: Double);
+procedure TListChartSource.SetYValue(AIndex: Integer; const AValue: Double);
 var
   oldY: Double;
 
@@ -838,7 +839,7 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
+procedure TListChartSource.UpdateCachesAfterAdd(const AX, AY: Double);
 begin
   if IsUpdating then exit; // Optimization
   if FBasicExtentIsValid then begin
@@ -1044,14 +1045,14 @@ begin
   Reset;
 end;
 
-procedure TRandomChartSource.SetXMax(AValue: Double);
+procedure TRandomChartSource.SetXMax(const AValue: Double);
 begin
   if FXMax = AValue then exit;
   FXMax := AValue;
   Reset;
 end;
 
-procedure TRandomChartSource.SetXMin(AValue: Double);
+procedure TRandomChartSource.SetXMin(const AValue: Double);
 begin
   if FXMin = AValue then exit;
   FXMin := AValue;
@@ -1065,7 +1066,7 @@ begin
   Reset;
 end;
 
-procedure TRandomChartSource.SetYMax(AValue: Double);
+procedure TRandomChartSource.SetYMax(const AValue: Double);
 begin
   if FYMax = AValue then exit;
   FYMax := AValue;
@@ -1073,7 +1074,7 @@ begin
   Notify;
 end;
 
-procedure TRandomChartSource.SetYMin(AValue: Double);
+procedure TRandomChartSource.SetYMin(const AValue: Double);
 begin
   if FYMin = AValue then exit;
   FYMin := AValue;

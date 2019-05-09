@@ -93,11 +93,11 @@ type
     YList: TDoubleDynArray;
     function GetX(AIndex: Integer): Double;
     function GetY(AIndex: Integer): Double;
-    procedure SetX(AIndex: Integer; AValue: Double);
-    procedure SetX(AValue: Double);
-    procedure SetY(AIndex: Integer; AValue: Double);
-    procedure SetY(AValue: Double);
-    procedure MultiplyY(ACoeff: Double);
+    procedure SetX(AIndex: Integer; const AValue: Double);
+    procedure SetX(const AValue: Double);
+    procedure SetY(AIndex: Integer; const AValue: Double);
+    procedure SetY(const AValue: Double);
+    procedure MultiplyY(const ACoeff: Double);
     function Point: TDoublePoint; inline;
   end;
   PChartDataItem = ^TChartDataItem;
@@ -165,7 +165,7 @@ type
     function IsErrorBarValueStored(AIndex: Integer): Boolean;
     procedure SetKind(AValue: TChartErrorBarKind);
     procedure SetIndex(AIndex, AValue: Integer);
-    procedure SetValue(AIndex: Integer; AValue: Double);
+    procedure SetValue(AIndex: Integer; const AValue: Double);
   public
     constructor Create;
     procedure Assign(ASource: TPersistent); override;
@@ -245,7 +245,7 @@ type
     function FormatItem(
       const AFormat: String; AIndex, AYIndex: Integer): String; inline;
     function FormatItemXYText(
-      const AFormat: String; AX, AY: Double; AText: String): String;
+      const AFormat: String; const AX, AY: Double; const AText: String): String;
     function GetEnumerator: TCustomChartSourceEnumerator;
     function GetXErrorBarLimits(APointIndex: Integer;
       out AUpperLimit, ALowerLimit: Double): Boolean;
@@ -383,7 +383,7 @@ end;
 
 procedure TValuesInRangeParams.RoundToImage(var AValue: Double);
 
-  function A2I(AX: Double): Integer; inline;
+  function A2I(const AX: Double): Integer; inline;
   begin
     Result := FGraphToImage(FAxisToGraph(AX));
   end;
@@ -535,7 +535,7 @@ begin
     Result := YList[AIndex - 1];
 end;
 
-procedure TChartDataItem.MultiplyY(ACoeff: Double);
+procedure TChartDataItem.MultiplyY(const ACoeff: Double);
 var
   i: Integer;
 begin
@@ -550,7 +550,7 @@ begin
   Result.Y := Y;
 end;
 
-procedure TChartDataItem.SetX(AValue: Double);
+procedure TChartDataItem.SetX(const AValue: Double);
 var
   i: Integer;
 begin
@@ -559,7 +559,7 @@ begin
     XList[i] := AValue;
 end;
 
-procedure TChartDataItem.SetX(AIndex: Integer; AValue: Double);
+procedure TChartDataItem.SetX(AIndex: Integer; const AValue: Double);
 begin
   if AIndex = 0 then
     X := AValue
@@ -567,7 +567,7 @@ begin
     XList[AIndex - 1] := AValue;
 end;
 
-procedure TChartDataItem.SetY(AValue: Double);
+procedure TChartDataItem.SetY(const AValue: Double);
 var
   i: Integer;
 begin
@@ -576,7 +576,7 @@ begin
     YList[i] := AValue;
 end;
 
-procedure TChartDataItem.SetY(AIndex: Integer; AValue: Double);
+procedure TChartDataItem.SetY(AIndex: Integer; const AValue: Double);
 begin
   if AIndex = 0 then
     Y := AValue
@@ -818,7 +818,7 @@ begin
   Changed;
 end;
 
-procedure TChartErrorBarData.SetValue(AIndex: Integer; AValue: Double);
+procedure TChartErrorBarData.SetValue(AIndex: Integer; const AValue: Double);
 begin
   if FValue[AIndex] = AValue then exit;
   FValue[AIndex] := AValue;
@@ -1080,7 +1080,7 @@ end;
 procedure TCustomChartSource.FindBounds(
   AXMin, AXMax: Double; out ALB, AUB: Integer);
 
-  function FindLB(X: Double; L, R: Integer): Integer;
+  function FindLB(const X: Double; L, R: Integer): Integer;
   begin
     while L <= R do begin
       Result := (R - L) div 2 + L;
@@ -1092,7 +1092,7 @@ procedure TCustomChartSource.FindBounds(
     Result := L;
   end;
 
-  function FindUB(X: Double; L, R: Integer): Integer;
+  function FindUB(const X: Double; L, R: Integer): Integer;
   begin
     while L <= R do begin
       Result := (R - L) div 2 + L;
@@ -1138,11 +1138,11 @@ function TCustomChartSource.FormatItem(
   const AFormat: String; AIndex, AYIndex: Integer): String;
 begin
   with Item[AIndex]^ do
-    Result := FormatItemXYText(AFormat, IfThen(XCount > 0, X, double(AIndex)), GetY(AYIndex), Text);
+    Result := FormatItemXYText(AFormat, IfThen(XCount > 0, X, Double(AIndex)), GetY(AYIndex), Text);
 end;
 
 function TCustomChartSource.FormatItemXYText(
-  const AFormat: String; AX, AY: Double; AText: String): String;
+  const AFormat: String; const AX, AY: Double; const AText: String): String;
 const
   TO_PERCENT = 100;
 var
@@ -1437,7 +1437,7 @@ procedure TCustomChartSource.ValuesInRange(
 var
   prevImagePos: Integer = MaxInt;
 
-  function IsTooClose(AValue: Double): Boolean;
+  function IsTooClose(const AValue: Double): Boolean;
   var
     imagePos: Integer;
   begin
