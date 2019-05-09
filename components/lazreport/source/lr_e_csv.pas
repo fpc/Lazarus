@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources, LazUTF8,
   Graphics,GraphType, Controls, Forms, Dialogs,LR_E_TXT,
-  LCLType,LCLIntf, LCLProc,lr_utils,lr_class;
+  LCLType,LCLIntf,lr_utils,lr_class;
 
 type
 
@@ -71,11 +71,6 @@ begin
   FQuoteChar := '"';
   FSeparator := ',';
   BandTypes := [btMasterHeader,btMasterData,btColumnHeader];
-end;
-
-function CompareIntervals(Item1, Item2: Pointer): Integer;
-begin
-  result := ComparePointers({%H-}Pointer(Item1), {%H-}Pointer(Item2));
 end;
 
 procedure TfrCSVExportFilter.OnEndPage;
