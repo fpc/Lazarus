@@ -321,7 +321,7 @@ resourcestring
   rsOptions_InputBox_Info1 = 'Please select a folder!';
   rsOptions_InputBox_Conf0 = 'Delete selected extension ("%s")?';
   rsOptions_InputBox_Conf1 = 'Delete selected folder ("%s")?';
-  rsOptions_rbOpenSSL_Item0 = 'Automatically download files';
+  rsOptions_rbOpenSSL_Item0 = 'Automatically download files from "https://packages.lazarus-ide.org/"';
   rsOptions_rbOpenSSL_Item1 = 'Show confirmation dialog before download';
   rsOptions_rbOpenSSL_Item2 = 'Never download files';
 
