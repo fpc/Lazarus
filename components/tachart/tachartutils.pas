@@ -495,9 +495,18 @@ begin
 end;
 
 function IsEquivalent(const A1, A2: Double): Boolean;
+{$IF SizeOf(Double) = SizeOf(QWord)}
+var
+  Q1 : QWord absolute A1;
+  Q2 : QWord absolute A2;
 begin
-  Result := CompareDWord(A1, A2, SizeOf(A1) div SizeOf(DWord)) = 0;
+  Result := Q1 = Q2;
 end;
+{$ELSE}
+begin
+  Result := CompareByte(A1, A2, SizeOf(A1)) = 0;
+end;
+{$ENDIF}
 
 function IsNan(const APoint: TDoublePoint): Boolean;
 begin
