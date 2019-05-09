@@ -5515,4 +5515,11 @@ object MainFrm: TMainFrm
       31BD197F77577C0DD7F6E7DE2A83B82AAD2CFF0FEDE4991B
     }
   end
+  object tmWait: TTimer
+    Enabled = False
+    Interval = 300
+    OnTimer = tmWaitTimer
+    left = 312
+    top = 235
+  end
 end

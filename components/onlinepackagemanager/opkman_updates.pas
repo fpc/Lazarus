@@ -30,17 +30,15 @@ unit opkman_updates;
 interface
 
 uses
-  Classes, SysUtils, fpjson, fpjsonrtti, jsonparser, dateutils,
+  {$IFDEF MSWINDOWS}windows, opkman_const,{$ENDIF}
+  Classes, SysUtils, Controls, fpjson, fpjsonrtti, jsonparser, dateutils,
   // LazUtils
-  LazIDEIntf,
+  LazIDEIntf, LazFileUtils,
   // OpkMan
   opkman_serializablepackages, opkman_options, opkman_common, opkman_visualtree,
-  {$IFDEF MSWINDOWS}
-    opkman_const,
-    {$IFDEF FPC311}zipper,{$ELSE}opkman_zip,{$ENDIF}
-  {$ENDIF}
-  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF}
-  ;
+  opkman_OpenSSLfrm,
+  {$IFDEF FPC311}zipper,{$ELSE}opkman_zip,{$ENDIF}
+  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
 
 const
   OpkVersion = 1;
@@ -131,7 +129,7 @@ var
   Updates: TUpdates = nil;
 
 implementation
-
+uses opkman_mainfrm;
 { TUpdatePackage }
 
 procedure TUpdatePackage.Clear;
@@ -248,6 +246,7 @@ end;
 constructor TUpdates.Create;
 begin
   inherited Create(True);
+  FOpenSSLAvailable := False;
   FSP_Temp := TSerializablePackages.Create;
   FreeOnTerminate := True;
   OnTerminate := @DoTerminated;
@@ -316,38 +315,79 @@ end;
 
 procedure TUpdates.CheckForOpenSSL;
 {$IFDEF MSWINDOWS}
+  function SystemFolder: String;
+  var
+    SysPath: WideString;
+  begin
+    SetLength(SysPath, Windows.MAX_PATH);
+    SetLength(SysPath, Windows.GetSystemDirectoryW(PWideChar(SysPath), Windows.MAX_PATH));
+    Result := AppendPathDelim(String(SysPath));
+  end;
+
+  function IsOpenSSLAvailable: Boolean;
+  var
+    ParamPath, SysPath: String;
+  begin
+    ParamPath := ExtractFilePath(ParamStr(0));
+    SysPath := SystemFolder;
+    Result := (FileExists(ParamPath + 'libeay32.dll') and FileExists(ParamPath + 'ssleay32.dll')) or
+              (FileExists(SysPath + 'libeay32.dll') and FileExists(SysPath + 'ssleay32.dll'));
+  end;
+
 var
-  ParamPath, libeaydll, ssleaydll, ZipFile: String;
+  ZipFile: String;
   UnZipper: TUnZipper;
+  CanDownload: Boolean;
 {$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
-  ParamPath := ExtractFilePath(ParamStr(0));
-  libeaydll := ParamPath + 'libeay32.dll';
-  ssleaydll := ParamPath + 'ssleay32.dll';
-  FOpenSSLAvailable := FileExists(libeaydll) and FileExists(ssleaydll);
+  FOpenSSLAvailable := IsOpenSSLAvailable;
   if not FOpenSSLAvailable then
   begin
-    ZipFile := ParamPath + ExtractFileName(cOpenSSLURL);
-    try
-      FHTTPClient.Get(cOpenSSLURL, ZipFile);
-    except
+    case Options.OpenSSLDownloadType of
+      0: CanDownload := True; //automatically download
+      1: begin //ask questions
+           OpenSSLFrm := TOpenSSLFrm.Create(MainFrm);
+           try
+             OpenSSLFrm.ShowModal;
+             CanDownload := (OpenSSLFrm.ModalResult = mrYes);
+             if OpenSSLFrm.cbPermanent.Checked then
+             begin
+                case OpenSSLFrm.ModalResult of
+                   mrYes: Options.OpenSSLDownloadType := 0;
+                   mrNo:  Options.OpenSSLDownloadType := 2;
+                end
+             end;
+           finally
+             OpenSSLFrm.Free;
+           end;
+         end;
+      2: CanDownload := False;//never download
     end;
-    if FileExists(ZipFile) then
+
+    if CanDownload then
     begin
-      UnZipper := TUnZipper.Create;
+      ZipFile := ExtractFilePath(ParamStr(0)) + ExtractFileName(cOpenSSLURL);
       try
-        try
-          UnZipper.FileName := ZipFile;
-          UnZipper.Examine;
-          UnZipper.UnZipAllFiles;
-        except
-        end;
-      finally
-        UnZipper.Free;
+        FHTTPClient.Get(cOpenSSLURL, ZipFile);
+      except
       end;
-      DeleteFile(ZipFile);
-      FOpenSSLAvailable := FileExists(libeaydll) and FileExists(ssleaydll);
+      if FileExists(ZipFile) then
+      begin
+        UnZipper := TUnZipper.Create;
+        try
+          try
+            UnZipper.FileName := ZipFile;
+            UnZipper.Examine;
+            UnZipper.UnZipAllFiles;
+          except
+          end;
+        finally
+          UnZipper.Free;
+        end;
+        DeleteFile(ZipFile);
+        FOpenSSLAvailable := IsOpenSSLAvailable;
+      end;
     end;
   end;
   {$ELSE}
@@ -357,7 +397,9 @@ end;
 
 function TUpdates.IsTimeToUpdate: Boolean;
 begin
-  Result := (FOpenSSLAvailable) and (not FBusyUpdating) and (not FNeedToBreak);
+  Result := False;
+  if (not FOpenSSLAvailable) or FBusyUpdating or FNeedToBreak then
+    Exit;
   case Options.CheckForUpdates of
     0: Result := MinutesBetween(Now, Options.LastUpdate) >= 5;
     1: Result := HoursBetween(Now, Options.LastUpdate) >= 1;

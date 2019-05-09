@@ -52,10 +52,10 @@ object OptionsFrm: TOptionsFrm
     Height = 498
     Top = 6
     Width = 623
-    ActivePage = tsGeneral
+    ActivePage = tsOpenSSL
     Align = alClient
     BorderSpacing.Around = 6
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
@@ -500,6 +500,42 @@ object OptionsFrm: TOptionsFrm
             TabOrder = 1
           end
         end
+      end
+    end
+    object tsOpenSSL: TTabSheet
+      Caption = 'OpenSSL'
+      ClientHeight = 470
+      ClientWidth = 615
+      object rbOpenSSL: TRadioGroup
+        AnchorSideLeft.Control = tsOpenSSL
+        AnchorSideTop.Control = tsOpenSSL
+        AnchorSideRight.Control = tsOpenSSL
+        AnchorSideRight.Side = asrBottom
+        Left = 10
+        Height = 113
+        Top = 10
+        Width = 595
+        Anchors = [akTop, akLeft, akRight]
+        AutoFill = True
+        BorderSpacing.Left = 10
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 10
+        Caption = 'In order to work properly, OPM needs the OpenSSL libraries: "libeay32.dll" and "ssleay32.dll"'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 93
+        ClientWidth = 591
+        Items.Strings = (
+          'Automatically download files'
+          'Show confirmation dialog before download'
+          'Never download files'
+        )
+        TabOrder = 0
       end
     end
     object tsFolders: TTabSheet

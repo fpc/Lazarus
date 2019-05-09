@@ -1,0 +1,92 @@
+object OpenSSLFrm: TOpenSSLFrm
+  Left = 559
+  Height = 146
+  Top = 373
+  Width = 605
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
+  Caption = 'OpenSSLFrm'
+  ClientHeight = 146
+  ClientWidth = 605
+  OnCreate = FormCreate
+  PopupMode = pmExplicit
+  PopupParent = MainFrm.Owner
+  Position = poOwnerFormCenter
+  LCLVersion = '2.1.0.0'
+  object Bp: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 106
+    Width = 593
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+    object cbPermanent: TCheckBox
+      Left = 0
+      Height = 32
+      Top = 2
+      Width = 179
+      Align = alLeft
+      Caption = 'Do not ask this question again'
+      TabOrder = 4
+    end
+  end
+  object lbMessage1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 17
+    Top = 19
+    Width = 605
+    Alignment = taCenter
+    Anchors = [akLeft, akRight]
+    AutoSize = False
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    ParentColor = False
+    ParentFont = False
+  end
+  object pnBuffer: TPanel
+    Left = 0
+    Height = 18
+    Top = 0
+    Width = 605
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 1
+  end
+  object lbMessage2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbMessage1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 17
+    Top = 41
+    Width = 622
+    Alignment = taCenter
+    AutoSize = False
+    BorderSpacing.Top = 5
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    ParentColor = False
+    ParentFont = False
+  end
+end

@@ -20,12 +20,12 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Online Package Manager is a tool that automates the process of installing, upgrading, configuring Lazarus packages. The packages are stored in the main repository(see repository column) as zip files, along with a JSON file. The JSON contains all necessary information about the packages. On request the packages are downloaded/extracted/compiled/installed into the IDE. If available, it's also possible to update a previously installed package from the maintainer webpage.
+    <Description Value="Online Package Manager is a tool that automates the process of installing, upgrading, configuring Lazarus packages. The packages are stored in the main repository(see repository column) as zip files, along with a JSON file. The JSON contains all necessary information about the packages. On request the packages are downloaded/extracted/compiled/installed into the IDE. If available, it&apos;s also possible to update a previously installed package from the maintainer webpage.
 
 For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
     <License Value="GPL"/>
     <Version Major="1" Release="1" Build="2"/>
-    <Files Count="29">
+    <Files Count="30">
       <Item1>
         <Filename Value="onlinepackagemanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -148,6 +148,10 @@ For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
         <Filename Value="opkman_maindm.pas"/>
         <UnitName Value="opkman_maindm"/>
       </Item29>
+      <Item30>
+        <Filename Value="opkman_opensslfrm.pas"/>
+        <UnitName Value="opkman_opensslfrm"/>
+      </Item30>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

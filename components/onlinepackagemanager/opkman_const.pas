@@ -321,7 +321,9 @@ resourcestring
   rsOptions_InputBox_Info1 = 'Please select a folder!';
   rsOptions_InputBox_Conf0 = 'Delete selected extension ("%s")?';
   rsOptions_InputBox_Conf1 = 'Delete selected folder ("%s")?';
-
+  rsOptions_rbOpenSSL_Item0 = 'Automatically download files';
+  rsOptions_rbOpenSSL_Item1 = 'Show confirmation dialog before download';
+  rsOptions_rbOpenSSL_Item2 = 'Never download files';
 
   //packagelist form
   rsPackageListFrm_Caption0 = 'Installed package list';
@@ -499,6 +501,15 @@ resourcestring
   //colors form
   rsColors_Caption = 'Colors';
   rsColors_CD_Title = 'Select color';
+
+  //OpenSSL form
+  rsOpenSSLFrm_Caption = 'Download OpenSSL libraries';
+  rsOpenSSLFrm_Bp_OKButton_Caption = 'Yes';
+  rsOpenSSLFrm_Bp_CancelButton_Caption = 'No';
+  rsOpenSSLFrm_chPermanent_Caption = 'Do not ask this question again';
+  rsOpenSSLFrm_lbMessage1_Caption = 'In order to work properly, OPM needs the OpenSSL libraries: "libeay32.dll" and "ssleay32.dll"';
+  rsOpenSSLFrm_lbMessage2_Caption = 'It''s OK to download the files from "https://packages.lazarus-ide.org/" ?';
+
 
 implementation
 

@@ -101,11 +101,13 @@ type
     pnBottom: TPanel;
     pnProfilesMain: TPanel;
     pnProfilesLeft: TPanel;
+    rbOpenSSL: TRadioGroup;
     rbHintFormOptions: TRadioGroup;
     SDD: TSelectDirectoryDialog;
     seProxyPort: TSpinEdit;
     spDaysToShowNewPackages: TSpinEdit;
     spConTimeOut: TSpinEdit;
+    tsOpenSSL: TTabSheet;
     tsFolders: TTabSheet;
     tsProfiles: TTabSheet;
     tsGeneral: TTabSheet;
@@ -431,6 +433,8 @@ begin
   Options.ProxyUser := edProxyUser.Text;
   Options.ProxyPassword := edProxyPassword.Text;
 
+  Options.OpenSSLDownloadType:= rbOpenSSL.ItemIndex;
+
   Options.LocalRepositoryPackages := edLocalRepositoryPackages.Text;
   Options.LocalRepositoryArchive := edLocalRepositoryArchive.Text;
   Options.LocalRepositoryUpdate := edLocalRepositoryUpdate.Text;
@@ -514,6 +518,7 @@ begin
   rbHintFormOptions.ItemIndex := Options.HintFormOption;
   cbUseDefaultTheme.Checked := Options.UseDefaultTheme;
   cbUseDefaultTheme.Caption := rsOptions_cbUseDefaultTheme_Caption;
+
   tsProxy.Caption := rsOptions_tsProxy_Caption;
   cbProxy.Caption := rsOptions_cbProxy_Caption;
   gbProxySettings.Caption := rsOptions_gbProxySettings_Caption;
@@ -528,6 +533,13 @@ begin
   //seProxyPort.Top := edProxyServer.Top + (edProxyServer.Height - seProxyPort.Height) div 2;
   edProxyUser.Text := Options.ProxyUser;
   edProxyPassword.Text := Options.ProxyPassword;
+
+  rbOpenSSL.Caption := rsOpenSSLFrm_lbMessage1_Caption;
+  rbOpenSSL.Items.Clear;
+  rbOpenSSL.Items.Add(rsOptions_rbOpenSSL_Item0);
+  rbOpenSSL.Items.Add(rsOptions_rbOpenSSL_Item1);
+  rbOpenSSL.Items.Add(rsOptions_rbOpenSSL_Item2);
+  rbOpenSSL.ItemIndex := Options.OpenSSLDownloadType;
 
   tsFolders.Caption := rsOptions_tsFolders_Caption;
   lbLocalRepositoryPackages.Caption := rsOptions_lbLocalRepositoryPackages_Caption;

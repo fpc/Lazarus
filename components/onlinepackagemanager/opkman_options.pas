@@ -83,6 +83,7 @@ type
     FUserProfile: Integer;
     FExcludedFiles: String;
     FExcludedFolders: String;
+    FOpenSSLDownloadType: Integer;
     procedure CheckColors;
     function GetLocalRepositoryArchiveExpanded:string;
     function GetLocalRepositoryPackagesExpanded:string;
@@ -122,6 +123,7 @@ type
     property ProxyPort: Word read FProxySettings.FPort write FProxySettings.FPort;
     property ProxyUser: String read FProxySettings.FUser write FProxySettings.FUser;
     property ProxyPassword: String read FProxySettings.FPassword write FProxySettings.FPassword;
+    property OpenSSLDownloadType: Integer read FOpenSSLDownloadType write FOpenSSLDownloadType;
     property LocalRepositoryPackages: String read FLocalRepositoryPackages write FLocalRepositoryPackages;
     property LocalRepositoryArchive: String read FLocalRepositoryArchive write FLocalRepositoryArchive;
     property LocalRepositoryUpdate: String read FLocalRepositoryUpdate write FLocalRepositoryUpdate;
@@ -211,6 +213,8 @@ begin
   FProxySettings.FUser := FXML.GetValue('Proxy/User/Value', '');
   FProxySettings.FPassword := FXML.GetValue('Proxy/Password/Value', '');
 
+  FOpenSSLDownloadType := FXML.GetValue('OpenSSL/DownloadType/Value', 1);
+
   FLocalRepositoryPackages := FXML.GetValue('Folders/LocalRepositoryPackages/Value', '');
   FLocalRepositoryArchive := FXML.GetValue('Folders/LocalRepositoryArchive/Value', '');
   FLocalRepositoryUpdate := FXML.GetValue('Folders/LocalRepositoryUpdate/Value', '');
@@ -235,6 +239,7 @@ begin
   FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
   FXML.SetDeleteValue('General/ConTimeOut/Value', FConTimeOut, 10);
   FXML.SetDeleteValue('General/DaysToShowNewPackages/Value', FDaysToShowNewPackages, 31);
+
   FXML.SetDeleteValue('General/ShowRegularIcons/Value', FShowRegularIcons, True);
   FXML.SetDeleteValue('General/UseDefaultTheme/Value', FUseDefaultTheme, True);
   FXML.SetDeleteValue('General/HintFormOption/Value', FHintFormOption, 0);
@@ -245,6 +250,8 @@ begin
   FXML.SetDeleteValue('Proxy/Port/Value', FProxySettings.FPort, 0);
   FXML.SetDeleteValue('Proxy/User/Value', FProxySettings.FUser, '');
   FXML.SetDeleteValue('Proxy/Password/Value', FProxySettings.FPassword, '');
+
+  FXML.SetDeleteValue('OpenSSL/DownloadType/Value', FOpenSSLDownloadType, 1);
 
   FXML.SetDeleteValue('Folders/LocalRepositoryPackages/Value', FLocalRepositoryPackages, '');
   FXML.SetDeleteValue('Folders/LocalRepositoryArchive/Value', FLocalRepositoryArchive, '');
@@ -281,6 +288,8 @@ begin
   FProxySettings.FPort := 0;
   FProxySettings.FUser := '';
   FProxySettings.FPassword := '';
+
+  FOpenSSLDownloadType := 1;
 
   FLocalRepositoryPackages := FLocalPackagesDefault;
   FLocalRepositoryArchive := FLocalArchiveDefault;

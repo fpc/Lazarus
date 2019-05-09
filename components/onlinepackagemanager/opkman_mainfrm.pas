@@ -113,6 +113,7 @@ type
     tbCreate: TToolButton;
     tbUpdate: TToolButton;
     tbOpenRepo: TToolButton;
+    tmWait: TTimer;
     procedure bReturnClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -155,6 +156,7 @@ type
     procedure spExpandClick(Sender: TObject);
     procedure tbUninstallClick(Sender: TObject);
     procedure tbUpdateClick(Sender: TObject);
+    procedure tmWaitTimer(Sender: TObject);
   private
     FHintTimeOut: Integer;
     FFormIsHiden: Boolean;
@@ -208,6 +210,7 @@ begin
   spClear.Images := MainDM.Images;
   spClear.ImageIndex := IMG_CLEAR;
   FHintTimeOut := Application.HintHidePause;
+  Updates := nil;
   Application.HintHidePause := 1000000;
   Application.AddOnDeactivateHandler(@DoDeactivate, False);
 end;
@@ -234,11 +237,21 @@ begin
   begin
     SetupControls;
     SetupColors;
-    GetPackageList;
-    Updates := TUpdates.Create;
-    Updates.StartUpdate;
+    tmWait.Enabled := True;
   end
 end;
+
+procedure TMainFrm.tmWaitTimer(Sender: TObject);
+begin
+  tmWait.Enabled := False;
+  if (Options.CheckForUpdates <> 5) then
+  begin
+    Updates := TUpdates.Create;
+    Updates.StartUpdate;
+  end;
+  GetPackageList;
+end;
+
 
 procedure TMainFrm.GetPackageList(const ARepositoryHasChanged: Boolean = False);
 begin

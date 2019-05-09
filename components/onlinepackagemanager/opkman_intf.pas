@@ -29,7 +29,7 @@ unit opkman_intf;
 interface
 
 uses
-  Classes, SysUtils, Forms, Dialogs, Controls, contnrs, fpjson, ExtCtrls, md5,
+  Classes, SysUtils, Forms, Dialogs, Controls, contnrs, fpjson, ExtCtrls,
   dateutils,
   // IdeIntf
   LazIDEIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf, IDECommands,
