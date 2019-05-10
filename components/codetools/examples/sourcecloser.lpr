@@ -533,10 +533,10 @@ begin
   Node:=Tool.Tree.Root;
   while (Node<>nil) do begin
     if Node.Desc=ctnImplementation then begin
-      // delete implementation section including the 'implementation' keyword
-      StartPos:=Node.StartPos;
+      // delete implementation section excluding the 'implementation' keyword
+      StartPos:=Node.StartPos+length('implementation');
       EndPos:=Node.NextBrother.StartPos;
-      DeleteNode(Tool, Node, StartPos, EndPos, Changer,false);
+      DeleteNode(Tool, Node, StartPos, EndPos, Changer, true);
     end else if Node.Desc in [ctnInitialization,ctnFinalization] then begin
       // delete the content of the finalization and initialization section
       Tool.MoveCursorToNodeStart(Node);
