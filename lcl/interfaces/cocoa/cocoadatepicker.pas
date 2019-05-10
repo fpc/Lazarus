@@ -84,13 +84,22 @@ begin
   inherited setFrame(aframe);
   if not autoResize then Exit;
 
-  fsz:=fittingSize;
+  if Self.respondsToSelector(objcselector('fittingSize')) then
+    fsz:=fittingSize
+  else
+  begin
+    // hardcoded size of a Calendar for MacOSX 10.6
+    // as can be seen in Interface Builder
+    fsz.width := 139;
+    fsz.height := 148;
+  end;
+
   if (fsz.width=0) or (fsz.height=0) then Exit;
   sz:=frame.size;
   //don't resize if too small already
   if (sz.width<fsz.width) or (sz.height<fsz.height) then Exit;
 
-  if retainAspectRatio and (fsz.height>0) and (sz.height<>0) then
+  if retainAspectRatio and (fsz.height>0) then
   begin
     rt:=fsz.width/fsz.height;
     fsz.width:=fsz.width * sz.width / (sz.height*rt);
