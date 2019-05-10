@@ -557,6 +557,8 @@ begin
     ContextNode:=FindImplementationNode;
     if ContextNode=nil then
       ContextNode:=FindMainBeginEndNode;
+    if ContextNode=nil then
+      ContextNode:=FindInterfaceNode;
     if ContextNode=nil then begin
       MoveCursorToNodeStart(Tree.Root);
       RaiseExceptionFmt(20170421202000,ctsIdentifierNotFound,[GetIdentifier(@TypeName[1])]);
@@ -565,7 +567,9 @@ begin
     try
       Params.SetIdentifier(Self,@TypeName[1],nil);
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];
-      //DebugLn(['TEventsCodeTool.FindMethodTypeInfo TypeName=',TypeName,' MainFilename=',MainFilename]);
+      {$IFDEF VerboseMethodPropEdit}
+      DebugLn(['TEventsCodeTool.FindMethodTypeInfo TypeName=',TypeName,' MainFilename=',MainFilename,' ContextNode=',ContextNode.DescAsString]);
+      {$ENDIF}
       FindIdentifierInContext(Params);
       // find proc node
       if Params.NewNode.Desc<>ctnTypeDefinition then begin
@@ -891,6 +895,9 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
     Result:=false;
     if APropertyPath<>'' then begin
       // find unit of property
+      {$IFDEF VerboseMethodPropEdit}
+      debugln(['FindPropertyType APropertyPath="',APropertyPath,'"']);
+      {$ENDIF}
       Tool:=nil;
       FindContext:=CleanFindContext;
       if APropertyUnitName='' then begin
@@ -906,14 +913,23 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
         DebugLn(['FindPropertyType FindDeclarationOfPropertyPath failed: ',Tool.MainFilename,' APropertyPath=',APropertyPath]);
         exit;
       end;
+      {$IFDEF VerboseMethodPropEdit}
+      debugln(['FindPropertyType SUCCESS Tool=',Tool.MainFilename,' Found APropertyPath="',APropertyPath,'" Found=',FindContextToString(FindContext)]);
+      {$ENDIF}
       if FindContext.Node.Desc<>ctnProperty then
         FindContext.Tool.RaiseException(20170421202114,
           APropertyPath+' is not a property.'
           +' See '+FindContext.Tool.MainFilename
           +' '+FindContext.Tool.CleanPosToStr(FindContext.Node.StartPos));
       // find type
+      {$IFDEF VerboseMethodPropEdit}
+      debugln(['FindPropertyType ATypeInfo^.Name=',ATypeInfo^.Name]);
+      {$ENDIF}
       FindContext:=(FindContext.Tool as TEventsCodeTool)
                                               .FindMethodTypeInfo(ATypeInfo,'');
+      {$IFDEF VerboseMethodPropEdit}
+      debugln(['FindPropertyType SUCCESS Found MethodTypeInfo="',FindContextToString(FindContext),'"']);
+      {$ENDIF}
     end else
       FindContext:=FindMethodTypeInfo(ATypeInfo,APropertyUnitName);
     Result:=true;
@@ -931,7 +947,10 @@ begin
   Result:=false;
   try
     if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnObjCClass])) or (AMethodName='')
-    or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
+    or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then begin
+      debugln(['TEventsCodeTool.CreateMethod failed, missing parameter']);
+      exit;
+    end;
     if CallAncestorMethod<>'' then
       AddOverride:=true;
     {$IFDEF VerboseMethodPropEdit}
@@ -949,13 +968,23 @@ begin
     if UseTypeInfoForParameters then begin
       // do not lookup the declaration in the source, use RTTI instead
       ATypeData:=GetTypeData(ATypeInfo);
-      if ATypeData=nil then exit(false);
+      if ATypeData=nil then begin
+        {$IFDEF VerboseMethodPropEdit}
+        DebugLn('ERROR: [TEventsCodeTool.CreateMethod] GetTypeData failed');
+        {$ENDIF}
+        exit;
+      end;
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
                          +MethodTypeDataToStr(ATypeData,
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end else begin
       // search typeinfo in source
-      if not FindPropertyType(FindContext) then exit;
+      if not FindPropertyType(FindContext) then begin
+        {$IFDEF VerboseMethodPropEdit}
+        DebugLn('ERROR: [TEventsCodeTool.CreateMethod] FindPropertyType failed');
+        {$ENDIF}
+        exit;
+      end;
       AddNeededUnits(FindContext);
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
              +FindContext.Tool.ExtractProcHead(FindContext.Node,
