@@ -26,7 +26,16 @@ type
     function lclGetCallback: ICommonCallback; override;
 
     procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
 
     function acceptsFirstResponder: LCLObjCBoolean; override;
 
@@ -80,6 +89,8 @@ var
   fsz : NSSize;
   sz  : NSSize;
   rt  : double;
+  wr  : double;
+  hr  : double;
 begin
   inherited setFrame(aframe);
   if not autoResize then Exit;
@@ -96,15 +107,74 @@ begin
 
   if (fsz.width=0) or (fsz.height=0) then Exit;
   sz:=frame.size;
-  //don't resize if too small already
-  if (sz.width<fsz.width) or (sz.height<fsz.height) then Exit;
+  // resize even if too small already
 
-  if retainAspectRatio and (fsz.height>0) then
+  if retainAspectRatio and (fsz.height>0) and (fsz.width>0)then
   begin
     rt:=fsz.width/fsz.height;
-    fsz.width:=fsz.width * sz.width / (sz.height*rt);
+    wr:=sz.width / fsz.width;
+    hr:=sz.height / fsz.height;
+    if wr > hr then
+      fsz.width:=fsz.width * sz.width / (sz.height*rt)
+    else
+      fsz.height:=fsz.height * sz.height / (sz.width / rt);
   end;
   setBoundsSize(fsz);
+end;
+
+procedure TCocoaDatePicker.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaDatePicker.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaDatePicker.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaDatePicker.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaDatePicker.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    //inherited mouseDragged(event)
+    ;
+end;
+
+procedure TCocoaDatePicker.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaDatePicker.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaDatePicker.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaDatePicker.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 end.

@@ -104,10 +104,6 @@ class function TCocoaWSCustomCalendar.CreateHandle(const AWinControl: TWinContro
 var
   dp: TCocoaDatePicker;
   Params: TCreateParams;
-  sz: NSSize;
-  rt: double;
-  fsz: NSSize;
-  w: double;
 begin
   dp:= AllocDatePicker(AWinControl, AParams);
   dp.autoResize := true;
