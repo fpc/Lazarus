@@ -12813,8 +12813,8 @@ begin
   Result.Code:=nil;
   Result.Data:=nil;
   ActiveSrcEdit:=nil;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
-  then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
+    exit;
   {$IFDEF VerboseOnPropHookCreateMethod}
   debugln('');
   debugln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
