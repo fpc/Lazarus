@@ -182,7 +182,7 @@ object MainForm: TMainForm
         Action = ASaveSchemaAs
       end
       object MIRecent: TMenuItem
-        Caption = 'MIRecent'
+        Caption = 'Recent schemas'
       end
       object MISep2: TMenuItem
         Caption = '-'

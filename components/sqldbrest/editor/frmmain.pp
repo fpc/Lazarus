@@ -242,6 +242,7 @@ begin
   IPSMain.IniFileName:=FN;
   IPSMain.Active:=True;
   IPSMain.Restore;
+  MRUSchema.ShowRecentFiles;
   fraEditor.OnSchemaChanged:=@DoSchemaChanged;
   if Application.HasOption('c','connections') then
     fraEditor.LoadConnections(Application.GetOptionValue('c','connections'));
