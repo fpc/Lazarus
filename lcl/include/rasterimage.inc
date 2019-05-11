@@ -586,6 +586,9 @@ begin
     if AImage.Description.Format = ricfNone then Exit; // empty image
 
     img := GetRawImagePtr;
+    if img = @AImage then //copy to self => no op
+      exit;
+    img^.FreeData;
     img^.Description := AImage.Description;
     if ADataOwner
     then begin
