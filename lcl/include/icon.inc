@@ -449,9 +449,9 @@ begin
         NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
         Move(RawMsk.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
 
-        // prevent cleanup
-        RawMsk.MaskSize := 0;
-        RawMsk.Mask := nil;
+        //// prevent cleanup
+        //RawMsk.MaskSize := 0;
+        //RawMsk.Mask := nil;
       end;
       RawMsk.FreeData;
     end
