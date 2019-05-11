@@ -1818,7 +1818,6 @@ components/fpweb/languages/weblazideintf.ru.po svneol=native#text/plain
 components/fpweb/languages/weblazideintf.uk.po svneol=native#text/plain
 components/fpweb/languages/weblazideintf.zh_CN.po svneol=native#text/plain
 components/fpweb/lazweb.pp svneol=native#text/plain
-components/fpweb/lazwebextra.lpk svneol=native#text/plain
 components/fpweb/weblaz.lpk svneol=native#text/plain
 components/fpweb/weblaz.pas svneol=native#text/plain
 components/fpweb/weblazideintf.pp svneol=native#text/plain
