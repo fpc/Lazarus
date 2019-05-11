@@ -444,15 +444,10 @@ begin
     and RawImage_FromBitmap(RawMsk, ASource.MaskHandle, ASource.MaskHandle)
     then begin
       NewImage.FImage.MaskSize := RawMsk.MaskSize;
-      if NewImage.FImage.MaskSize > 0
-      then begin
-        NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
-        Move(RawMsk.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
-
-        //// prevent cleanup
-        //RawMsk.MaskSize := 0;
-        //RawMsk.Mask := nil;
-      end;
+      NewImage.FImage.Mask := RawMsk.Mask;
+      //// prevent cleanup
+      RawMsk.MaskSize := 0;
+      RawMsk.Mask := nil;
       RawMsk.FreeData;
     end
     else begin
