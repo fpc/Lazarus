@@ -540,6 +540,11 @@ begin
   rbOpenSSL.Items.Add(rsOptions_rbOpenSSL_Item1);
   rbOpenSSL.Items.Add(rsOptions_rbOpenSSL_Item2);
   rbOpenSSL.ItemIndex := Options.OpenSSLDownloadType;
+  {$IFDEF MSWINDOWS}
+  tsOpenSSL.TabVisible := True;
+  {$ELSE}
+  tsOpenSSL.TabVisible := False;
+  {$ENDIF}
 
   tsFolders.Caption := rsOptions_tsFolders_Caption;
   lbLocalRepositoryPackages.Caption := rsOptions_lbLocalRepositoryPackages_Caption;

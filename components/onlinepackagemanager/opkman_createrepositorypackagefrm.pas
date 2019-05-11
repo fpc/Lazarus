@@ -686,7 +686,11 @@ end;
 
 procedure TCreateRepositoryPackagesFrm.bOptionsClick(Sender: TObject);
 begin
+  {$IFDEF MSWINDOWS}
+  MainFrm.ShowOptions(4);
+  {$ELSE}
   MainFrm.ShowOptions(3);
+  {$ENDIF}
 end;
 
 procedure TCreateRepositoryPackagesFrm.bCancelClick(Sender: TObject);
