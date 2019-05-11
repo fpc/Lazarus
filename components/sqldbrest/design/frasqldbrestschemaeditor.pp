@@ -603,6 +603,7 @@ end;
 
 procedure TSQLDBRestSchemaEditorFrame.ClearSchema;
 begin
+  RemoveCurrentFrame(False);
   Schema.Resources.Clear;
   ShowResources;
 end;
@@ -702,26 +703,28 @@ Var
   S : String;
 
 begin
-  if FSchemaNode=Nil then
-    begin
-    S:=Schema.Name;
-    if S='' then
-      S:=SSchema;
-    FSchemaNode:=TVResources.Items.AddChild(Nil,SSchema);
-    FSchemaNode.Data:=Schema;
-    FSchemaNode.ImageIndex:=idxConnection;
-    end
-  else
-    FSchemaNode.DeleteChildren;
+  RemoveCurrentFrame(False);
+  TVResources.Selected:=Nil; // Force refresh
   With TVResources.Items do
     try
       BeginUpdate;
+      if FSchemaNode=Nil then
+        begin
+        S:=Schema.Name;
+        if S='' then
+          S:=SSchema;
+        FSchemaNode:=TVResources.Items.AddChild(Nil,SSchema);
+        FSchemaNode.Data:=Schema;
+        FSchemaNode.ImageIndex:=idxConnection;
+        end
+      else
+        FSchemaNode.DeleteChildren;
       for I:=0 to Schema.Resources.Count-1 do
         AddResourceToTree(Schema.Resources[i] as TMySQLDBRestResource);
+      FSchemaNode.Expand(False);
     finally
       EndUpdate;
     end;
-  FSchemaNode.Expand(False);
   TVResources.Selected:=FSchemaNode;
 end;
 

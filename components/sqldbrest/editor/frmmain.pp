@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  ActnList, Menus, IniPropStorage, frasqldbfullrestschemaaditor;
+  ActnList, Menus, IniPropStorage, frasqldbfullrestschemaaditor, mrumanager;
 
 type
 
@@ -23,15 +23,17 @@ type
     alMain: TActionList;
     ILMain: TImageList;
     IPSMain: TIniPropStorage;
-    MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
-    MenuItem3: TMenuItem;
-    MenuItem4: TMenuItem;
-    MenuItem5: TMenuItem;
-    MenuItem6: TMenuItem;
-    MenuItem7: TMenuItem;
-    MenuItem8: TMenuItem;
-    MenuItem9: TMenuItem;
+    MIRecent: TMenuItem;
+    MFile: TMenuItem;
+    MIReadConnections: TMenuItem;
+    MRUSchema: TMRUMenuManager;
+    MWriteConnections: TMenuItem;
+    MISchemaLoad: TMenuItem;
+    MISchemaSave: TMenuItem;
+    MISaveSchemaAs: TMenuItem;
+    MISchemaNew: TMenuItem;
+    MISep2: TMenuItem;
+    MIQuit: TMenuItem;
     N1: TMenuItem;
     MMain: TMainMenu;
     fraEditor: TSchemaEditorFrame;
@@ -42,12 +44,16 @@ type
     TreeView1: TTreeView;
     procedure AFileReadConnectionsExecute(Sender: TObject);
     procedure AFileWriteConnectionsExecute(Sender: TObject);
+    procedure ALoadSchemaExecute(Sender: TObject);
     procedure aQuitExecute(Sender: TObject);
+    procedure ASaveSchemaAsExecute(Sender: TObject);
+    procedure ASaveSchemaExecute(Sender: TObject);
     procedure ASchemaNewExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure IPSMainRestoreProperties(Sender: TObject);
     procedure IPSMainSaveProperties(Sender: TObject);
+    procedure MRUSchemaRecentFile(Sender: TObject; const AFileName: String);
   private
     FBaseCaption,
     FFileName : String;
@@ -99,9 +105,25 @@ begin
       fraEditor.SaveConnections(FileName);
 end;
 
+procedure TMainForm.ALoadSchemaExecute(Sender: TObject);
+begin
+  if CheckSave then
+    LoadSchema;
+end;
+
 procedure TMainForm.aQuitExecute(Sender: TObject);
 begin
   Close
+end;
+
+procedure TMainForm.ASaveSchemaAsExecute(Sender: TObject);
+begin
+  SaveSchemaAs;
+end;
+
+procedure TMainForm.ASaveSchemaExecute(Sender: TObject);
+begin
+  SaveSchema
 end;
 
 function TMainForm.SaveSchema : Boolean;
@@ -168,6 +190,7 @@ procedure TMainForm.LoadSchemaFile(const aFileName: String);
 begin
   fraEditor.LoadSchema(aFileName);
   FFileName:=aFileName;
+  MRUSchema.AddToRecent(aFileName);
   SetCaption;
 end;
 
@@ -175,6 +198,7 @@ procedure TMainForm.SaveSchemaFile(const aFileName: String);
 begin
   FraEditor.SaveSchema(aFileName);
   FFileName:=aFileName;
+  MRUSchema.AddToRecent(aFileName);
   SetCaption;
 end;
 
@@ -195,7 +219,11 @@ end;
 procedure TMainForm.ASchemaNewExecute(Sender: TObject);
 begin
   if CheckSave then
+    begin
     fraEditor.ClearSchema;
+    FFileName:='';
+    SetCaption;
+    end;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -231,6 +259,11 @@ end;
 procedure TMainForm.IPSMainSaveProperties(Sender: TObject);
 begin
   fraEditor.SaveSession(IPSMain);
+end;
+
+procedure TMainForm.MRUSchemaRecentFile(Sender: TObject; const AFileName: String);
+begin
+  LoadSchemaFile(aFileName);
 end;
 
 end.

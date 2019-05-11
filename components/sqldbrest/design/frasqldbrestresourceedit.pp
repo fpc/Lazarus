@@ -143,6 +143,7 @@ procedure TSQLDBRestResourceEditFrame.SetResource(AValue: TSQLDBRestResource);
 begin
   if FResource=AValue then Exit;
   FResource:=AValue;
+  fraFields.Resource:=Resource;
   ShowResource;
 end;
 

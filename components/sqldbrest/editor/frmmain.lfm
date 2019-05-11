@@ -11,7 +11,7 @@ object MainForm: TMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poDesktopCenter
-  SessionProperties = 'Width;Top;Left;Height'
+  SessionProperties = 'Height;Left;Top;Width;MRUSchema.Recent'
   LCLVersion = '2.1.0.0'
   inline fraEditor: TSchemaEditorFrame
     Height = 433
@@ -123,18 +123,21 @@ object MainForm: TMainForm
       Category = 'Schema'
       Caption = 'Load schema'
       ImageIndex = 1
+      OnExecute = ALoadSchemaExecute
       ShortCut = 16463
     end
     object ASaveSchema: TAction
       Category = 'Schema'
       Caption = 'Save schema'
       ImageIndex = 0
+      OnExecute = ASaveSchemaExecute
       ShortCut = 16467
     end
     object ASaveSchemaAs: TAction
       Category = 'Schema'
       Caption = 'Save schema as'
       ImageIndex = 4
+      OnExecute = ASaveSchemaAsExecute
     end
     object ASchemaNew: TAction
       Category = 'Schema'
@@ -155,33 +158,36 @@ object MainForm: TMainForm
     Images = ILMain
     left = 39
     top = 10
-    object MenuItem1: TMenuItem
+    object MFile: TMenuItem
       Caption = 'File'
-      object MenuItem2: TMenuItem
+      object MIReadConnections: TMenuItem
         Action = AFileReadConnections
       end
-      object MenuItem3: TMenuItem
+      object MWriteConnections: TMenuItem
         Action = AFileWriteConnections
       end
       object N1: TMenuItem
         Caption = '-'
       end
-      object MenuItem7: TMenuItem
+      object MISchemaNew: TMenuItem
         Action = ASchemaNew
       end
-      object MenuItem4: TMenuItem
+      object MISchemaLoad: TMenuItem
         Action = ALoadSchema
       end
-      object MenuItem5: TMenuItem
+      object MISchemaSave: TMenuItem
         Action = ASaveSchema
       end
-      object MenuItem6: TMenuItem
+      object MISaveSchemaAs: TMenuItem
         Action = ASaveSchemaAs
       end
-      object MenuItem8: TMenuItem
+      object MIRecent: TMenuItem
+        Caption = 'MIRecent'
+      end
+      object MISep2: TMenuItem
         Caption = '-'
       end
-      object MenuItem9: TMenuItem
+      object MIQuit: TMenuItem
         Action = aQuit
       end
     end
@@ -738,5 +744,12 @@ object MainForm: TMainForm
     Options = [ofFileMustExist, ofEnableSizing]
     left = 40
     top = 352
+  end
+  object MRUSchema: TMRUMenuManager
+    MenuItem = MIRecent
+    MenuCaptionMask = '%0:d.  %1:s'
+    OnRecentFile = MRUSchemaRecentFile
+    left = 541
+    top = 88
   end
 end
