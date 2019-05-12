@@ -220,8 +220,20 @@ type
     function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
   end;
 
+function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 
 implementation
+
+function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
+var
+  m : NSString;
+begin
+  m := ev.charactersIgnoringModifiers;
+  if m.length <> 1 then
+    Result := #0
+  else
+    Result := System.WideChar(m.characterAtIndex(0));
+end;
 
 
 { TCocoaDesignOverlay }
@@ -287,6 +299,7 @@ end;
 procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: NSResponder);
 var
   undoManager: NSUndoManager;
+  ch : System.WideChar;
 begin
   // todo: system keys could be overriden. thus need to review the current
   //       keyboard configuration first. See "Key Bindings" at
@@ -297,30 +310,28 @@ begin
   begin
     if ((event.modifierFlags and NSCommandKeyMask) = 0) then Exit;
 
-    if Assigned(event.charactersIgnoringModifiers.UTF8String) then
-    begin
-      case event.charactersIgnoringModifiers.UTF8String^ of
-        'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
-        'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
-        'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
-        'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
-        'z':
+    ch := NSEventRawKeyChar(event);
+    case ch of
+      'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
+      'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
+      'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
+      'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
+      'z':
+      begin
+        undoManager := atarget.undoManager;
+        if Assigned(undoManager) and undoManager.canUndo then
         begin
-          undoManager := atarget.undoManager;
-          if Assigned(undoManager) and undoManager.canUndo then
-          begin
-            handled := true;
-            undoManager.undo;
-          end;
+          handled := true;
+          undoManager.undo;
         end;
-        'Z':
+      end;
+      'Z':
+      begin
+        undoManager := atarget.undoManager;
+        if Assigned(undoManager) and undoManager.canRedo then
         begin
-          undoManager := atarget.undoManager;
-          if Assigned(undoManager) and undoManager.canRedo then
-          begin
-            handled := true;
-            undoManager.redo;
-          end;
+          handled := true;
+          undoManager.redo;
         end;
       end;
     end;
@@ -331,21 +342,22 @@ function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): LCLObjCBoolea
 var
   resp : NSResponder;
   wn   : NSWindow;
+  ch   : System.WideChar;
 begin
   Result := false;
 
   // If the form has a default or cancel button, capture Return and Escape to
   // prevent further processing.  Actually clicking the buttons is handled in
   // the LCL in response to the keyUp
-  if Assigned(wincallback) and (event.modifierFlags_ = 0) and
-     (event.charactersIgnoringModifiers.length = 1) and
-     (((event.charactersIgnoringModifiers.characterAtIndex(0) = NSCarriageReturnCharacter) and
-       wincallback.HasDefaultControl) or
-      ((event.charactersIgnoringModifiers.characterAtIndex(0) = 27{Escape}) and
-       wincallback.HasCancelControl)) then
+  if Assigned(wincallback) and (event.modifierFlags_ = 0) then
   begin
-    Result := true;
-    Exit;
+    ch := NSEventRawKeyChar(event);
+    if (((ch = System.WideChar(NSCarriageReturnCharacter)) and wincallback.HasDefaultControl)
+      or ((ch = #27{Escape}) and wincallback.HasCancelControl)) then
+    begin
+      Result := true;
+      Exit;
+    end;
   end;
 
   // Support Cut/Copy/Paste if the firstResponder is an NSTextView.
