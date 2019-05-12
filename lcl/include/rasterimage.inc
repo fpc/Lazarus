@@ -596,6 +596,10 @@ begin
       img^.Mask := nil;
       img^.MaskSize := 0;
     end;
+    if img^.Palette = AImage.Palette then begin
+      img^.Palette := nil;
+      img^.PaletteSize := 0;
+    end;
     img^.FreeData;
 
     img^.Description := AImage.Description;
