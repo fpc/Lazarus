@@ -519,7 +519,8 @@ begin
     begin
       CheckSynchronize;
       NSApp.updateWindows;
-      TCrackerApplication(Application).ProcessAsyncCallQueue;
+      if Assigned(Application) then
+        TCrackerApplication(Application).ProcessAsyncCallQueue;
       Result := nil
     end
     else if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
