@@ -508,7 +508,7 @@ resourcestring
   rsOpenSSLFrm_Bp_CancelButton_Caption = 'No';
   rsOpenSSLFrm_chPermanent_Caption = 'Do not ask this question again';
   rsOpenSSLFrm_lbMessage1_Caption = 'In order to work properly, OPM needs the OpenSSL libraries: "libeay32.dll" and "ssleay32.dll"';
-  rsOpenSSLFrm_lbMessage2_Caption = 'It''s OK to download the files from "https://packages.lazarus-ide.org/" ?';
+  rsOpenSSLFrm_lbMessage2_Caption = 'Download these files from "https://packages.lazarus-ide.org/"?';
 
 
 implementation
