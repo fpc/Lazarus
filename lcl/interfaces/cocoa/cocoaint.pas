@@ -156,6 +156,7 @@ type
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
+    procedure AppRunMessages(onlyOne: Boolean);
     procedure AppWaitMessage; override;
     procedure AppProcessMessages; override;
     procedure AppTerminate; override;

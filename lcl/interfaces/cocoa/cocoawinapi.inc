@@ -2247,7 +2247,7 @@ begin
   Result:=inherited SetCaretRespondToFocus(handle, ShowHideOnFocus);
 end;
 
-function TCocoaWidgetSet.RectVisible(dc: HDC; const ARect: TRect): Boolean;
+function TCocoaWidgetSet.RectVisible(dc: hdc; const ARect: TRect): Boolean;
 var
   ClipBox: CGRect;
   ctx : TCocoaContext;

@@ -89,12 +89,7 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCocoaWidgetSet.AppProcessMessages
-
-  Handle all pending messages
- ------------------------------------------------------------------------------}
-procedure TCocoaWidgetSet.AppProcessMessages;
+procedure TCocoaWidgetSet.AppRunMessages(onlyOne: Boolean);
 var
   event: NSEvent;
   pool:NSAutoReleasePool;
@@ -116,7 +111,17 @@ begin
                      // Thus we have to check the clipboard on every loop
 
     pool.release;
-  until event = nil;
+  until onlyOne or (event = nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSet.AppProcessMessages
+
+  Handle all pending messages
+ ------------------------------------------------------------------------------}
+procedure TCocoaWidgetSet.AppProcessMessages;
+begin
+  AppRunMessages(false);
 end;
 
 {------------------------------------------------------------------------------
@@ -125,25 +130,8 @@ end;
   Passes execution control to Cocoa
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppWaitMessage;
-var
-  event : NSEvent;
-  pool:NSAutoReleasePool;
 begin
-  pool := NSAutoreleasePool.alloc.init;
-  {$ifdef BOOLFIX}
-  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, Ord(true));
-  {$else}
-  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
-  {$endif}
-  if event <> nil then
-  begin
-    NSApp.sendEvent(event);
-    NSApp.updateWindows;
-  end;
-
-  SyncClipboard(); // NSPasteboard doesn't provide any notifications regarding the change
-                   // Thus we have to check the clipboard on every loop
-  pool.release;
+  AppRunMessages(true);
 end;
 
 {------------------------------------------------------------------------------
