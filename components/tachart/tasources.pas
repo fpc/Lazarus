@@ -695,7 +695,7 @@ begin
   BeginUpdate;
   try
     FDataPoints.Assign(AValue);
-    if Sorted then Sort;
+    if IsSorted then Sort;
   finally
     EndUpdate;
   end;

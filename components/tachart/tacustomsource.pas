@@ -1675,55 +1675,72 @@ end;
 
 function TCustomSortedChartSource.IsSorted: Boolean;
 begin
-  Result := FSorted;
+  case FSortBy of
+    sbX:
+      Result := FSorted and ((FSortIndex = 0) or (FSortIndex < FXCount));
+    sbY:
+      Result := FSorted and ((FSortIndex = 0) or (FSortIndex < FYCount));
+    sbColor, sbText:
+      Result := FSorted;
+    sbCustom:
+      Result := FSorted and Assigned(FOnCompare);
+  end;
 end;
 
 procedure TCustomSortedChartSource.SetOnCompare(AValue: TChartSortCompare);
 begin
   if FOnCompare = AValue then exit;
   FOnCompare := AValue;
-  if Assigned(FOnCompare) and (FSortBy = sbCustom) and Sorted then Sort;
+  if IsSorted then Sort else Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSortBy(AValue: TChartSortBy);
 begin
   if FSortBy = AValue then exit;
   FSortBy := AValue;
-  if Sorted then Sort;
+  if IsSorted then Sort else Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSortDir(AValue: TChartSortDir);
 begin
   if FSortDir = AValue then exit;
   FSortDir := AValue;
-  if Sorted then Sort;
+  if IsSorted then Sort else Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSorted(AValue: Boolean);
 begin
   if FSorted = AValue then exit;
   FSorted := AValue;
-  if Sorted then Sort else Notify;
+  if IsSorted then Sort else Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSortIndex(AValue: Cardinal);
 begin
   if FSortIndex = AValue then exit;
   FSortIndex := AValue;
-  if Sorted then Sort;
+  if IsSorted then Sort else Notify;
 end;
 
 procedure TCustomSortedChartSource.Sort;
+var
+  SaveSorted: Boolean;
 begin
   if csLoading in ComponentState then exit;
-  if (FSortBy = sbCustom) then begin
-    if not Assigned(FOnCompare) then exit;
-    FCompareProc := FOnCompare;
-  end else begin
-    if (FSortBy = sbX) and (FSortIndex <> 0) and (FSortIndex >= FXCount) then exit;
-    if (FSortBy = sbY) and (FSortIndex <> 0) and (FSortIndex >= FYCount) then exit;
-    FCompareProc := @DefaultCompare;
+
+  // Avoid useless sorting and notification
+  SaveSorted := FSorted;
+  try
+    FSorted := true;
+    if not IsSorted then exit;
+  finally
+    FSorted := SaveSorted;
   end;
+
+  if FSortBy = sbCustom then
+    FCompareProc := FOnCompare
+  else
+    FCompareProc := @DefaultCompare;
   ExecSort(@DoCompare);
   Notify;
 end;
