@@ -1221,6 +1221,32 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Версия"
 
+#: opkman_const.rsopensslfrm_bp_cancelbutton_caption
+msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
+msgid "No"
+msgstr "Нет"
+
+#: opkman_const.rsopensslfrm_bp_okbutton_caption
+msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
+msgid "Yes"
+msgstr "Да"
+
+#: opkman_const.rsopensslfrm_caption
+msgid "Download OpenSSL libraries"
+msgstr "Загрузка библиотек OpenSSL"
+
+#: opkman_const.rsopensslfrm_chpermanent_caption
+msgid "Do not ask this question again"
+msgstr "Не спрашивать в следующий раз"
+
+#: opkman_const.rsopensslfrm_lbmessage1_caption
+msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
+msgstr "Для корректной работы OPM требуется наличие библиотек OpenSSL: \"libeay32.dll\" и \"ssleay32.dll\""
+
+#: opkman_const.rsopensslfrm_lbmessage2_caption
+msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
+msgstr "Загрузить эти файлы с \"https://packages.lazarus-ide.org/\"?"
+
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
 msgstr "Для вступления изменений в силу требуется пересобрать IDE. Сделать это сейчас?"
@@ -1488,6 +1514,18 @@ msgstr "Показывается по SHIFT, перемещается за ку�
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
 msgstr "Выключена"
+
+#: opkman_const.rsoptions_rbopenssl_item0
+msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
+msgstr "Автоматически загружать файлы с \"https://packages.lazarus-ide.org/\""
+
+#: opkman_const.rsoptions_rbopenssl_item1
+msgid "Show confirmation dialog before download"
+msgstr "Спрашивать перед загрузкой"
+
+#: opkman_const.rsoptions_rbopenssl_item2
+msgid "Never download files"
+msgstr "Никогда не загружать файлы"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"

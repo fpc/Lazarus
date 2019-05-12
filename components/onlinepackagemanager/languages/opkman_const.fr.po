@@ -1222,6 +1222,34 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Version"
 
+#: opkman_const.rsopensslfrm_bp_cancelbutton_caption
+#, fuzzy
+msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
+msgid "No"
+msgstr "Non"
+
+#: opkman_const.rsopensslfrm_bp_okbutton_caption
+#, fuzzy
+msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
+msgid "Yes"
+msgstr "Oui"
+
+#: opkman_const.rsopensslfrm_caption
+msgid "Download OpenSSL libraries"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_chpermanent_caption
+msgid "Do not ask this question again"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_lbmessage1_caption
+msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
+msgstr ""
+
+#: opkman_const.rsopensslfrm_lbmessage2_caption
+msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
+msgstr ""
+
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
 msgstr "Afin que les modifications soient effectives, vous devez reconstruire l'EDI. Voulez-vous le faire maintenant ?"
@@ -1489,6 +1517,18 @@ msgstr "C'est déclenché par la touche MAJ ; se déplace avec la souris"
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
 msgstr "Désactivé"
+
+#: opkman_const.rsoptions_rbopenssl_item0
+msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
+msgstr ""
+
+#: opkman_const.rsoptions_rbopenssl_item1
+msgid "Show confirmation dialog before download"
+msgstr ""
+
+#: opkman_const.rsoptions_rbopenssl_item2
+msgid "Never download files"
+msgstr ""
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
