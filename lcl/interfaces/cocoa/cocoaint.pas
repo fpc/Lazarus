@@ -492,6 +492,9 @@ begin
     or (tp = NSOtherMouseDragged);
 end;
 
+type
+  TCrackerApplication = class(TApplication);
+
 function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
   mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean
   ): NSEvent;
@@ -505,22 +508,35 @@ begin
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
     expiration, mode, deqFlag);
   {$endif}
-  if Assigned(Result)
-    and ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
-    and Assigned(TrackedControl)
-  then
+  if Assigned(Result) then
   begin
-    if Result.type_ = NSLeftMouseUp then
+    if (Result.type_ = NSApplicationDefined)
+      and (Result.subtype = LCLEventSubTypeMessage)
+      and (Result.data1 = LM_NULL)
+      and (Result.data2 = WidgetSet.AppHandle)
+    then
     begin
-      //todo: send callback!
-      TrackedControl := nil;
+      CheckSynchronize;
+      NSApp.updateWindows;
+      TCrackerApplication(Application).ProcessAsyncCallQueue;
+      Result := nil
     end
-    else
-    if isMouseMoveEvent(Result.type_) then
+    else if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
+      and Assigned(TrackedControl)
+    then
     begin
-      cb := TrackedControl.lclGetCallback;
-      if Assigned(cb) then cb.MouseMove(Result);
-    end;
+      if Result.type_ = NSLeftMouseUp then
+      begin
+        //todo: send callback!
+        TrackedControl := nil;
+      end
+      else
+      if isMouseMoveEvent(Result.type_) then
+      begin
+        cb := TrackedControl.lclGetCallback;
+        if Assigned(cb) then cb.MouseMove(Result);
+      end
+     end;
   end;
 
 end;

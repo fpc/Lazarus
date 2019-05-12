@@ -108,10 +108,7 @@ begin
     {$endif}
     if event <> nil then
     begin
-      if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
-        CheckSynchronize
-      else
-        NSApp.sendEvent(event);
+      NSApp.sendEvent(event);
       NSApp.updateWindows;
     end;
 
@@ -140,10 +137,7 @@ begin
   {$endif}
   if event <> nil then
   begin
-    if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
-      CheckSynchronize
-    else
-      NSApp.sendEvent(event);
+    NSApp.sendEvent(event);
     NSApp.updateWindows;
   end;
 
