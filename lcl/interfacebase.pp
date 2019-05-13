@@ -70,7 +70,8 @@ type
     lcAccessibilitySupport,     // Indicates that accessibility is implemented, mostly for TCustomControl descendents as native widgests should have in-built accessibility
     lcRadialGradientBrush,      // Indicates that the function CreateBrushWithRadialGradient is supported, i.e. we can create a brush with a radial gradient pattern
     lcTransparentWindow,        // ability to pass mouse messages through a window (on win32 LM_NCHITTEST with HTTRANSPARENT result)
-    lcTextHint                  // native TextHint support
+    lcTextHint,                 // native TextHint support
+    lcNativeTaskDialog          // task dialog under mswindows for widgetsets different than win32/wince. Used in LCLTaskDialog. eg Qt/Qt5 must set this option to false otherwise taskdialog segfaults.
   );
 
   { TDialogButton }

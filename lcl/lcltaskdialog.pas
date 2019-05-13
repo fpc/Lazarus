@@ -126,7 +126,7 @@ interface
 {$MODE DELPHI}
 
 uses
-  LCLType, LCLStrConsts, LCLIntf,
+  LCLType, LCLStrConsts, LCLIntf, InterfaceBase,
   {$IFDEF MSWINDOWS}
   Windows, CommCtrl, Messages,
   {$ENDIF}
@@ -803,7 +803,8 @@ begin
       aParent := 0;
   Dialog.OnButtonClicked := aOnButtonClicked;
   {$ifdef MSWINDOWS}
-  if Assigned(TaskDialogIndirect) and not aNonNative and
+  if (WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and
+    Assigned(TaskDialogIndirect) and not aNonNative and
      not (tdfQuery in aFlags) and (Selection='') then begin
     Dialog.Emulated := False;
     // use Vista/Seven TaskDialog implementation (not tdfQuery nor Selection)
@@ -887,13 +888,15 @@ begin
       IconBorder := 10 else
       IconBorder := 24;
 
-     if (LAZ_ICONS[aDialogIcon]<>'') {$IFDEF MSWINDOWS}or (WIN_ICONS[aDialogIcon]<>nil){$ENDIF} then
+     if (LAZ_ICONS[aDialogIcon]<>'') {$IFDEF MSWINDOWS}or
+      ((WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and (WIN_ICONS[aDialogIcon]<>nil)){$ENDIF} then
      begin
       Image := TImage.Create(Dialog.Form);
       Image.Parent := Par;
       {$IFDEF MSWINDOWS}
-      if WIN_ICONS[aDialogIcon]<>nil then
-        IconHandle := LoadIcon(0,WIN_ICONS[aDialogIcon])
+      if (WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and
+        (WIN_ICONS[aDialogIcon]<>nil) then
+          IconHandle := LoadIcon(0,WIN_ICONS[aDialogIcon])
       else
         IconHandle := 0;
       {$ELSE}
@@ -1085,7 +1088,7 @@ begin
       if XB<>0 then
         AddBevel else
         inc(Y,16);
-      if (LAZ_FOOTERICONS[aFooterIcon]<>'') {$IFDEF MSWINDOWS}or (WIN_FOOTERICONS[aFooterIcon]<>nil){$ENDIF} then
+      if (LAZ_FOOTERICONS[aFooterIcon]<>'') {$IFDEF MSWINDOWS}or ((WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and (WIN_FOOTERICONS[aFooterIcon]<>nil)){$ENDIF} then
       begin
         Image := TImage.Create(Dialog.Form);
         Image.Parent := Par;
@@ -1095,7 +1098,7 @@ begin
         try
           Bmp.Transparent := true;
           {$IFDEF MSWINDOWS}
-          if WIN_FOOTERICONS[aFooterIcon]<>nil then
+          if (WIN_FOOTERICONS[aFooterIcon]<>nil) and (WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) then
           begin
             IconHandle := LoadIcon(0,WIN_FOOTERICONS[aFooterIcon]);
             if IconHandle<>0 then
@@ -1125,8 +1128,9 @@ begin
             else
             begin
               {$IFDEF MSWINDOWS}
-              DrawIconEx(Bmp.Canvas.Handle,0,0,Ico.Handle,Bmp.Width,Bmp.Height,0,
-                Bmp.Canvas.Brush.{%H-}Handle,DI_NORMAL);
+              if (WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) then
+                DrawIconEx(Bmp.Canvas.Handle,0,0,Ico.Handle,Bmp.Width,Bmp.Height,0,
+                  Bmp.Canvas.Brush.{%H-}Handle,DI_NORMAL);
               {$ENDIF}
             end;
             Image.Picture.Bitmap := Bmp;
@@ -1191,8 +1195,11 @@ begin
       Dialog.Form.Element[element].Caption := CR(Text)
     {$IFDEF MSWINDOWS}
     else
-      SendMessageW(Dialog.Wnd,TDM_UPDATE_ELEMENT_TEXT,ord(element),
-        {%H-}NativeInt(PWideChar(_WS(Text))))
+    begin
+      if (WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) then
+        SendMessageW(Dialog.Wnd,TDM_UPDATE_ELEMENT_TEXT,ord(element),
+          {%H-}NativeInt(PWideChar(_WS(Text))))
+    end
     {$ENDIF};
   tdeEdit:
     if Dialog.Emulated then

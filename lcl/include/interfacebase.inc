@@ -90,7 +90,8 @@ begin
     lcModalWindow,
     lcReceivesLMClearCutCopyPasteReliably,
     lcSendsUTF8KeyPress,
-    lcEmulatedMDI: Result := LCL_CAPABILITY_YES;
+    lcEmulatedMDI,
+    lcNativeTaskDialog: Result := LCL_CAPABILITY_YES;
   else
     Result := LCL_CAPABILITY_NO;
   end;
