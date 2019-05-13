@@ -98,7 +98,9 @@ type
     Context: string;
     Duplicate: boolean;
     constructor Create(const TheIdentifierLow, TheOriginal, TheTranslated: string);
-    procedure ModifyFlag(const AFlag: string; Check: boolean);
+    // Can accept the comma separated list of flags
+    // Returns true if the Flags property has been modified
+    function ModifyFlag(const AFlags: string; Check: boolean): boolean;
   end;
 
   { TPOFile }
@@ -142,7 +144,7 @@ type
     procedure UpdateStrings(InputLines:TStrings; SType: TStringsType);
     procedure SaveToStrings(OutLst: TStrings);
     procedure SaveToFile(const AFilename: string);
-    procedure UpdateItem(const Identifier: string; Original: string);
+    procedure UpdateItem(const Identifier, Original: string; const Flags: string = '');
     procedure FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
       Translation, Comments, Context, Flags, PreviousID: string; LineNr: Integer = -1);
     procedure UpdateTranslation(BasePOFile: TPOFile);
@@ -206,6 +208,8 @@ procedure UpdatePoFileTranslations(const BasePOFilename: string; BasePOFile: TPO
 const
   sFuzzyFlag = 'fuzzy';
   sBadFormatFlag = 'badformat';
+  sFormatFlag = 'object-pascal-format';
+  sNoFormatFlag = 'no-object-pascal-format';
 
 
 implementation
@@ -958,6 +962,7 @@ begin
     while (LineStart^ in [#10,#13]) do inc(LineStart);
   end;
   AddEntry(LineNr);
+  FModified := false;
 end;
 
 procedure TPOFile.RemoveIdentifiers(AIdentifiers: TStrings);
@@ -1492,7 +1497,7 @@ begin
   end;
 end;
 
-procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
+procedure TPOFile.UpdateItem(const Identifier, Original: string; const Flags: string);
 var
   Item: TPOFileItem;
 begin
@@ -1508,11 +1513,13 @@ begin
         Item.ModifyFlag(sFuzzyFlag, true);
       end;
       Item.Original:=Original;
+      if Flags <> '' then
+        Item.ModifyFlag(Flags, true);
     end;
   end
   else // in this case new item will be added
     FModified := true;
-  FillItem(Item, Identifier, Original, '', '', '', '', '');
+  FillItem(Item, Identifier, Original, '', '', '', Flags, '');
 end;
 
 procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
@@ -1521,6 +1528,7 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
   function VerifyItemFormatting(var Item: TPOFileItem): boolean;
   var
     HasBadFormatFlag: boolean;
+    i: integer;
   begin
     // this function verifies item formatting and sets its flags if the formatting is bad
     Result := true;
@@ -1557,6 +1565,19 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
         Item.ModifyFlag(sBadFormatFlag, false);
         FModified := true;
       end;
+    end;
+
+    if Item.Original <> '' then
+    begin
+      i:=0;
+      if (ExtractFormatArgs(Item.Original, i) <> '') and (i = 0) then
+      begin
+        if Item.ModifyFlag(sFormatFlag, pos(sNoFormatFlag, Item.Flags) = 0) then
+          FModified := true;
+      end
+      else
+        if Item.ModifyFlag(sFormatFlag, false) then
+          FModified := true;
     end;
   end;
 
@@ -1632,7 +1653,7 @@ begin
   UntagAll;
   for i:=0 to BasePOFile.Items.Count-1 do begin
     Item := TPOFileItem(BasePOFile.Items[i]);
-    UpdateItem(Item.IdentifierLow, Item.Original);
+    UpdateItem(Item.IdentifierLow, Item.Original, Item.Flags);
   end;
   RemoveTaggedItems(0); // get rid of any item not existing in BasePOFile
   InvalidateStatistics;
@@ -1694,23 +1715,56 @@ begin
   Translation:=TheTranslated;
 end;
 
-procedure TPOFileItem.ModifyFlag(const AFlag: string; Check: boolean);
+function TPOFileItem.ModifyFlag(const AFlags: string; Check: boolean): boolean;
+var
+  F, MF: TStringList;
+
+  procedure ProcessFlag(const AFlag: string);
+  var
+    i: Integer;
+  begin
+    i := F.IndexOf(AFlag);
+    if (i<0) and Check then
+    begin
+      F.Add(AFlag);
+      Result := true;
+    end
+    else
+    begin
+      if (i>=0) and (not Check) then
+      begin
+        F.Delete(i);
+        Result := true;
+      end;
+    end;
+  end;
+
 var
   i: Integer;
-  F: TStringList;
 begin
+  Result := false;
+  MF := nil;
   F := TStringList.Create;
   try
     F.CommaText := Flags;
-    i := F.IndexOf(AFlag);
-    if (i<0) and Check then
-      F.Add(AFlag)
+
+    if Pos(',', AFlags) = 0 then
+      ProcessFlag(AFlags)
     else
-    if (i>=0) and (not Check) then
-      F.Delete(i);
+    begin
+      MF := TStringList.Create;
+      MF.CommaText := AFlags;
+      for i := 0 to MF.Count - 1 do
+        ProcessFlag(MF[i]);
+    end;
+
+    if not Result then
+      exit;
     Flags := F.CommaText;
+    Flags := StringReplace(Flags, ',', ', ', [rfReplaceAll]);
   finally
     F.Free;
+    MF.Free;
   end;
 end;
 
