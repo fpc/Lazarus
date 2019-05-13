@@ -756,26 +756,25 @@ var
   aTarget: TIDECompileTarget;
   aMode: TPGBuildMode;
   TVNode: TTreeNode;
+  i: Integer;
 begin
   if FProjectGroup=nil then exit;
-
   aTarget:=TIDECompileTarget(SelectedTarget);
   if (aTarget<>nil) and aTarget.Removed then
-  begin
-    aTarget.Parent.ProjectGroup.ReAddTarget(aTarget);
-  end else begin
+    aTarget.Parent.ProjectGroup.ReAddTarget(aTarget)
+  else begin
     InitIDEFileDialog(OpenDialogTarget);
-    With OpenDialogTarget do
-    begin
-      Filter := lisLazarusProjectsLpi + '|*.lpi'
-       + '|' + lisLazarusPackagesLpk + '|*.lpk'
-       + '|' + lisLazarusProjectGroupsLpg + '|*.lpg'
-       + '|' + lisPascalFilePasPpP + '|*.pas;*.pp;*.p';
-      If Execute then
+    OpenDialogTarget.Filter := lisLazarusProjectsLpi + '|*.lpi'
+     + '|' + lisLazarusPackagesLpk + '|*.lpk'
+     + '|' + lisLazarusProjectGroupsLpg + '|*.lpg'
+     + '|' + lisPascalFilePasPpP + '|*.pas;*.pp;*.p';
+    If OpenDialogTarget.Execute then
+      for i:=0 to OpenDialogTarget.Files.Count-1 do
       begin
-        aTarget:=FProjectGroup.AddTarget(FileName) as TIDECompileTarget;
+        aTarget:=FProjectGroup.AddTarget(OpenDialogTarget.Files[i]) as TIDECompileTarget;
         aTarget.LoadTarget(true);
-        if aTarget.BuildModeCount>1 then begin
+        if aTarget.BuildModeCount>1 then
+        begin
           aMode:=aTarget.BuildModes[0];
           aMode.Compile:=true;
           // ToDo: implement changed notification
@@ -783,7 +782,6 @@ begin
           TVNode.StateIndex:=NSIChecked;
         end;
       end;
-    end;
     StoreIDEFileDialog(OpenDialogTarget);
   end;
 end;
