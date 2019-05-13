@@ -785,6 +785,7 @@ end;
 var
   PngImg: TPortableNetworkGraphic;
   IconHandle: HICON;
+  ARadioOffset: integer;
 begin
   if (byte(aCommonButtons)=0) and (Buttons='') then begin
     aCommonButtons := [cbOk];
@@ -986,6 +987,15 @@ begin
       end;
     // add radio buttons
     if Radios<>'' then
+    begin
+      {$IFDEF MSWINDOWS}
+      if WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_NO then
+        ARadioOffset := 1
+      else
+        ARadioOffset := 0;
+      {$ELSE}
+      ARadioOffset := 1;
+      {$ENDIF}
       with TStringList.Create do
       try
         Text := SysUtils.trim(Radios);
@@ -994,13 +1004,13 @@ begin
           Rad[i] := TRadioButton.Create(Dialog.Form);
           with Rad[i] do begin
             Parent := Par;
-            SetBounds(X+16,Y,aWidth-32-X,6-FontHeight);
+            SetBounds(X+16,Y,aWidth-32-X, (6-FontHeight) + ARadioOffset);
             Caption := NoCR(Strings[i]);
             if aHint<>'' then begin
               ShowHint := true;
               Hint := aHint; // note shown as Hint
             end;
-            inc(Y,Height);
+            inc(Y,Height + ARadioOffset);
             if (i=0) or (i+200=aRadioDef) then
               Checked := true;
           end;
@@ -1009,6 +1019,7 @@ begin
       finally
         Free;
       end;
+    end;
     // add selection list or query editor
     if Selection<>'' then begin
       List := TStringList.Create;
