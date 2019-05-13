@@ -1510,10 +1510,11 @@ var
   R: TRect;
 begin
   if not IsValidDC(DC) then Exit(False);
-  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+  {ellipse under Qt4 needs an offset - issue #35568}
+  R := NormalizeRect(Rect(X1, Y1, X2 - 1, Y2 - 1));
   if IsRectEmpty(R) then Exit(True);
 
-  TQtDeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top{ - 1});
+  TQtDeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
   Result := True;
 end;
 
