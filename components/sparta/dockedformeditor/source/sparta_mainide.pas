@@ -1345,6 +1345,7 @@ var
   LPageCtrl: TModulePageControl;
 begin
   Result := nil;
+  Application.ProcessMessages;
   if (FormEditingHook = nil) or (GlobalDesignHook = nil) then
     Exit;
   LForm := FormEditingHook.GetDesignerForm(GlobalDesignHook.LookupRoot);
