@@ -4635,6 +4635,7 @@ components/sqldbrest/demo/restmodule/demorestmodule.lpr svneol=native#text/plain
 components/sqldbrest/demo/restmodule/demorestmodule.res -text
 components/sqldbrest/demo/restmodule/dmmyrest.lfm svneol=native#text/plain
 components/sqldbrest/demo/restmodule/dmmyrest.pp svneol=native#text/plain
+components/sqldbrest/design/build304.pp svneol=native#text/plain
 components/sqldbrest/design/dlgrestfieldoptions.lfm svneol=native#text/plain
 components/sqldbrest/design/dlgrestfieldoptions.pp svneol=native#text/plain
 components/sqldbrest/design/dlgsqldbrestconnection.lfm svneol=native#text/plain

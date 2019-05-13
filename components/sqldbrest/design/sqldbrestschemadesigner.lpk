@@ -10,7 +10,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="21">
+    <Files Count="22">
       <Item1>
         <Filename Value="dlgrestfieldoptions.lfm"/>
         <Type Value="LFM"/>
@@ -95,6 +95,10 @@
         <Filename Value="sqldbschemaedittools.lfm"/>
         <Type Value="LFM"/>
       </Item21>
+      <Item22>
+        <Filename Value="build304.pp"/>
+        <UnitName Value="build304"/>
+      </Item22>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>

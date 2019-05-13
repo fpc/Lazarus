@@ -10,7 +10,7 @@ interface
 uses
   dlgrestfieldoptions, dlgsqldbrestconnection, fraconnections, fraschematableseditor, frasqldbfullrestschemaaditor, 
   frasqldbrestfieldedit, frasqldbrestresourceedit, fraSQLDBRestSchemaEditor, frmeditframedialog, sqldbschemaedittools, 
-  frasqldbresourcefields, LazarusPackageIntf;
+  frasqldbresourcefields, build304, LazarusPackageIntf;
 
 implementation
 
