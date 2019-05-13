@@ -10,10 +10,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: iputils.slongversion
+#, object-pascal-format
 msgid "Version %.2f"
 msgstr "Версія %.2f"
 
 #: iputils.sshortversion
+#, object-pascal-format
 msgid "v%.2f"
 msgstr "v%.2f"
 

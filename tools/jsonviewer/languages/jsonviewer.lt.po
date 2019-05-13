@@ -13,6 +13,7 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "Masyvas (elementų: %d)"
 
@@ -38,7 +39,7 @@ msgid "JSON document modified"
 msgstr "JSON dokumente yra pakitimų"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid ""
 #| "The JSON data was changed but not saved.\n"
 #| "What do want to do ?\n"
@@ -50,6 +51,7 @@ msgstr ""
 "Ką renkatės?\n"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "Nario pavadinimas „%s“ dubliuojasi."
 
@@ -58,6 +60,7 @@ msgid "Filename needed for generated code"
 msgstr ""
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Elemento nr. %d"
 
@@ -66,10 +69,12 @@ msgid "Empty document"
 msgstr "Tuščias dokumentas"
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Nepavyko sukurti aplanko „%s“ sąrankos failams"
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "Klaidinga vertė arba ne tas tipas:  „%s“"
 
@@ -82,6 +87,7 @@ msgid "New object member"
 msgstr "Naujas objekto narys"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "Įveskite naujojo nario pavadinimą (tipas: %s)"
 
@@ -94,6 +100,7 @@ msgid "null"
 msgstr "null"
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "Objektas (narių: %d)"
 

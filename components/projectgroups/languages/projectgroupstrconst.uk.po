@@ -21,6 +21,7 @@ msgid "Abort loading project group"
 msgstr "Перервати завантаження групи проектів"
 
 #: projectgroupstrconst.lisactivetarget
+#, object-pascal-format
 msgid "Target: %s"
 msgstr "Ціль: %s"
 
@@ -33,10 +34,12 @@ msgid "Be patient!"
 msgstr "Будьте терплячі!"
 
 #: projectgroupstrconst.lisbuildmode
+#, object-pascal-format
 msgid ", build mode \"%s\""
 msgstr ", режим збирання \"%s\""
 
 #: projectgroupstrconst.lisbuildmode2
+#, object-pascal-format
 msgid "Build Mode \"%s\""
 msgstr "Режим збирання \"%s\""
 
@@ -45,14 +48,17 @@ msgid "Build mode not found"
 msgstr "Режим збирання не знайдено"
 
 #: projectgroupstrconst.lisbuildmodenotfound2
+#, object-pascal-format
 msgid "Build mode \"%s\" not found."
 msgstr "Режим збирання \"%s\" не знайдено."
 
 #: projectgroupstrconst.liscompilepackage
+#, object-pascal-format
 msgid "Compile Package %s"
 msgstr "Компіляція пакунка %s"
 
 #: projectgroupstrconst.liscompileproject
+#, object-pascal-format
 msgid "Compile Project %s"
 msgstr "Компіляція проекту %s"
 
@@ -61,6 +67,7 @@ msgid "Discard changes"
 msgstr "Відкинути зміни"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, object-pascal-format
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -75,6 +82,7 @@ msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr "Для кореневої групи проектів дозволено лише тип цілі \"projectgroup\"."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
+#, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
 msgstr "Помилка читання файлу групи проектів \"%s\"%s%s"
 
@@ -91,6 +99,7 @@ msgid "Invalid File"
 msgstr "Неправильний файл"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
+#, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
 msgstr "Неправильна назва файлу XML \"%s\"."
 
@@ -175,6 +184,7 @@ msgid "Package not found"
 msgstr "Пакунок не знайдено"
 
 #: projectgroupstrconst.lispackagenotfound2
+#, object-pascal-format
 msgid "Package \"%s\" not found."
 msgstr "Пакунок \"%s\" не знайдено."
 
@@ -188,10 +198,12 @@ msgid "Please save your changes before reloading the project group."
 msgstr "Збережіть ваші зміни перед перезавантаженням групи проектів."
 
 #: projectgroupstrconst.lisprojectgroup
+#, object-pascal-format
 msgid "Project group %s"
 msgstr "Група проектів %s"
 
 #: projectgroupstrconst.lisprojectgroup2
+#, object-pascal-format
 msgid "Project Group: %s"
 msgstr "Група проектів: %s"
 
@@ -224,6 +236,7 @@ msgid "Project group modified"
 msgstr "Групу проектів змінено"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, object-pascal-format
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
@@ -336,6 +349,7 @@ msgid "Copy file name"
 msgstr "Копіювати назву файлу"
 
 #: projectgroupstrconst.listargetcount
+#, object-pascal-format
 msgid "%d targets"
 msgstr "Цілей: %d"
 
@@ -433,6 +447,7 @@ msgid "Uninstall selected target"
 msgstr "Видалити вибрану ціль"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
+#, object-pascal-format
 msgid "The lazbuild%s was not found."
 msgstr "Програму lazbuild%s не знайдено."
 
@@ -441,14 +456,17 @@ msgid "There is still another build in progress."
 msgstr "Все ще триває інший процес збирання."
 
 #: projectgroupstrconst.lisunabletocreatefile
+#, object-pascal-format
 msgid "Unable to create file \"%s\": %s"
 msgstr "Неможливо створити файл \"%s\": %s"
 
 #: projectgroupstrconst.lisunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\""
 msgstr "Неможливо завантажити файл \"%s\""
 
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
+#, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "Неможливо записати файл групи проектів \"%s\"%s%s"
 
@@ -457,6 +475,7 @@ msgid "Write error"
 msgstr "Помилка запису"
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
+#, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "Синтаксична помилка XML у файлі \"%s\": %s"
 

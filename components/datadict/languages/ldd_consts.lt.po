@@ -120,10 +120,12 @@ msgid "Applications|*"
 msgstr "Programos|*"
 
 #: ldd_consts.sapplyingddtodataset
+#, object-pascal-format
 msgid "Applying data dictionary to dataset %s"
 msgstr "Duomenų žodynas pritaikomas duomenims %s"
 
 #: ldd_consts.sapplyingddtofield
+#, object-pascal-format
 msgid "Applying data dictionary to field %s"
 msgstr "Duomenų žodynas pritaikomas laukui %s"
 
@@ -212,10 +214,12 @@ msgid "Not yet implemented"
 msgstr "Dar neįgyvendinta"
 
 #: ldd_consts.swarningnoddforfield
+#, object-pascal-format
 msgid "Warning: No definition in data dictionary for field %s"
 msgstr "Įspėjimas: duomenų žodyno laukas %s nėra apibrėžtas"
 
 #: ldd_consts.swrongselection
+#, object-pascal-format
 msgid "Wrong selection count : %d"
 msgstr "Netinkamas išrinktųjų kiekis: %d"
 

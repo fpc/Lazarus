@@ -199,15 +199,17 @@ msgid "Create/Edit private repository"
 msgstr "Crear/Editar repositorio privado"
 
 #: opkman_const.rscreaterepositoryfrm_conf1
+#, object-pascal-format
 msgid "Are you sure you wish to delete package: \"%s\"?"
 msgstr "Seguro desea eliminar el paquete: \"%s\"?"
 
 #: opkman_const.rscreaterepositoryfrm_conf2
+#, object-pascal-format
 msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
 msgstr "El siguiente archivo: \"%s\" ya existe en el repositorio actual. Sobrescribe?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Cannot open private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -219,7 +221,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Cannot save private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -235,11 +237,12 @@ msgid "Cannot add package to repository!"
 msgstr "¡No se puede agregar paquete al repositorio!"
 
 #: opkman_const.rscreaterepositoryfrm_error5
+#, object-pascal-format
 msgid "Cannot delete package: \"%s\"!"
 msgstr "¡No se puede eliminar paquete: \"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following directory: \"%s\" is not empty.\n"
 #| "It's recommended to save the repository to an empty directory. Continue?\n"
@@ -251,7 +254,7 @@ msgstr ""
 "Se recomienda guardar el repositorio en un directorio vacío. Continua?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -263,7 +266,7 @@ msgstr ""
 "¡Cada repositorio y paquete de Lazarus debe ser único!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following Lazarus package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -505,6 +508,7 @@ msgid "Cannot create JSON file:"
 msgstr "No se puede crear archivo JSON:"
 
 #: opkman_const.rscreaterepositorypackagefrm_error3
+#, object-pascal-format
 msgid "Cannot send file: \"%s\""
 msgstr "No se puede enviar archivo: \"%s\""
 
@@ -588,6 +592,7 @@ msgid "Repository package successfully created."
 msgstr "Paquete de repositorio creado correctamente."
 
 #: opkman_const.rscreaterepositorypackagefrm_message8
+#, object-pascal-format
 msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Enviando archivos (\"%s\"). Por favor espere..."
 
@@ -780,14 +785,17 @@ msgstr ""
 "Solo actualiza si confías en el administrador del paquete. ¿Continuar?\n"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
+#, object-pascal-format
 msgid "%s packages successfully loaded from file!"
 msgstr "%s ¡paquetes cargados correctamente desde archivo!"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
+#, object-pascal-format
 msgid "%s packages successfully saved to file!"
 msgstr "%s ¡paquetes correctamente guardados en archivo!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
+#, object-pascal-format
 msgid "Cannot create directory \"%s\". Operation aborted."
 msgstr ""
 
@@ -844,6 +852,7 @@ msgid "Please check one or more packages!"
 msgstr "¡Por favor marca uno o mas paquetes!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
+#, object-pascal-format
 msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "El paquete \"%s\" tiene dependencia en el paquete \"%s\". Resolver dependencia?"
 
@@ -854,10 +863,12 @@ msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "¡No resolver dependencias puede llevar a la instalación de fallas!"
 
 #: opkman_const.rsmainfrm_rspackageinformation
+#, object-pascal-format
 msgid "Quick package information for \"%s\""
 msgstr ""
 
 #: opkman_const.rsmainfrm_rspackagerating
+#, object-pascal-format
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "Su voto para el paquete \"%s\" es: %s. ¡Gracias por su voto!"
 
@@ -866,11 +877,12 @@ msgid "This will delete all non-installed packages from local repository. Contin
 msgstr "Esto va a eliminar todos los paquetes no instalados del repositorio local. ¿Continuar?"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup1
+#, object-pascal-format
 msgid "%s packages deleted!"
 msgstr "%s paquetes eliminados!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "%sAre you sure you wish to uninstall the checked packages?\n"
 #| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
@@ -882,6 +894,7 @@ msgstr ""
 "Tenga en cuenta: para que los cambios tengan efecto, debe reconstruir el IDE.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
+#, object-pascal-format
 msgid "Cannot uninstall package \"%s\"!"
 msgstr "¡No se puede desinstalar el paquete \"%s\"!"
 
@@ -1486,10 +1499,12 @@ msgid "Add new exclusion"
 msgstr "Agregar nueva exclusión"
 
 #: opkman_const.rsoptions_inputbox_conf0
+#, object-pascal-format
 msgid "Delete selected extension (\"%s\")?"
 msgstr "¿desea eliminar la extensión seleccionada (\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_conf1
+#, object-pascal-format
 msgid "Delete selected folder (\"%s\")?"
 msgstr "Eliminar carpeta seleccionada (\"%s\")?"
 
@@ -1682,6 +1697,7 @@ msgid "Update package list"
 msgstr "Actualizar lista de paquetes"
 
 #: opkman_const.rspackagesfound
+#, object-pascal-format
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
 msgstr "(%s paquetes de repositorios encontrados, contienen %s archivos lpk, tamaño total %s)"
 
@@ -1738,6 +1754,7 @@ msgid "Cannot install package:"
 msgstr "No se puede instalar el paquete:"
 
 #: opkman_const.rsprogressfrm_error4
+#, object-pascal-format
 msgctxt "opkman_const.rsprogressfrm_error4"
 msgid "Dependency \"%s\" not found!"
 msgstr "¡Dependencia \"%s\" no encontrada!"
@@ -1774,6 +1791,7 @@ msgid "Success."
 msgstr "Éxito."
 
 #: opkman_const.rsprogressfrm_info2
+#, object-pascal-format
 msgid "Contacting download site for \"%s\" (%s)"
 msgstr "Contactando sitio de descarga para  \"%s\" (%s)"
 
@@ -1865,10 +1883,12 @@ msgid "Repositories"
 msgstr "Repositorios"
 
 #: opkman_const.rsrepositories_confirmation0
+#, object-pascal-format
 msgid "Delete selected repository \"%s\"?"
 msgstr "¿Eliminar los repositorios seleccionados \"%s\"?"
 
 #: opkman_const.rsrepositories_info1
+#, object-pascal-format
 msgid "The following repository: \"%s\" is already in the list."
 msgstr "Los siguientes repositorios: \"%s\" ya están en la lista."
 

@@ -13,54 +13,67 @@ msgstr ""
 "Language: lt\n"
 
 #: ipconst.cacheadding
+#, object-pascal-format
 msgid "Caching item (%s = %s)"
 msgstr "Elementas dedamas į podėlį (%s = %s)"
 
 #: ipconst.cachecheckfreshness
+#, object-pascal-format
 msgid "Checking Freshness (%s)"
 msgstr "Tikrinamas naujumas (%s)"
 
 #: ipconst.cachedirnotexist
+#, object-pascal-format
 msgid "Cache directory %s does not exist."
 msgstr "Podėlio aplankas %s neegzistuoja."
 
 #: ipconst.cacheretrieving
+#, object-pascal-format
 msgid "Loading from Cache (%s = %s)"
 msgstr "Įkeliama iš podėlio (%s = %s)"
 
 #: ipconst.httpcantloadgraphic
+#, object-pascal-format
 msgid "Unable to load graphic %s"
 msgstr "Neina įkelti grafiką %s"
 
 #: ipconst.httpconnect
+#, object-pascal-format
 msgid "Connected: (%s)"
 msgstr "Prijungta: (%s)"
 
 #: ipconst.httpdisconnect
+#, object-pascal-format
 msgid "Disconnected: (%s), %s Total bytes received"
 msgstr "Atsijungta: (%s), viso %s bitų priimta"
 
 #: ipconst.httpdownload
+#, object-pascal-format
 msgid "Download: (%s), Error downloading"
 msgstr "Atsiųsti: (%s), klaida atsiunčiant"
 
 #: ipconst.httpget
+#, object-pascal-format
 msgid "GET: (%s)"
 msgstr "GET: (%s)"
 
 #: ipconst.httpgeterror
+#, object-pascal-format
 msgid "GET: (%s) FAILED"
 msgstr "GET: (%s) NEPAVYKO"
 
 #: ipconst.httpgotheader
+#, object-pascal-format
 msgid "Download: (%s), Got Header Data"
 msgstr "Atsiųsti: (%s), gauti antraštės duomenys"
 
 #: ipconst.httphead
+#, object-pascal-format
 msgid "HEAD: (%s)"
 msgstr "HEAD: (%s)"
 
 #: ipconst.httpheaderror
+#, object-pascal-format
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) NEPAVYKO"
 
@@ -69,22 +82,27 @@ msgid "No Header Data for Entity"
 msgstr "Esybėje nėra antraštės duomenų"
 
 #: ipconst.httppost
+#, object-pascal-format
 msgid "POST: (%s)"
 msgstr "POST: (%s)"
 
 #: ipconst.httpposterror
+#, object-pascal-format
 msgid "POST: (%s) FAILED"
 msgstr "POST: (%s) NEPAVYKO"
 
 #: ipconst.httpprogress
+#, object-pascal-format
 msgid "Progress Made: (%s), %s bytes received"
 msgstr "Eiga: (%s), %s baitų parsiųsta"
 
 #: ipconst.httpsizemismatch
+#, object-pascal-format
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
 msgstr "Atsiųsti: (%s), neatitinka dydis, tikėtasi %s, gauta %s"
 
 #: ipconst.providerunknownformat
+#, object-pascal-format
 msgid "Don't know how to handle %s"
 msgstr "Nežinau kaip atdoroti %s"
 
@@ -93,10 +111,12 @@ msgid "Invalid picture format"
 msgstr "Klaidingas paveikslo formatas"
 
 #: ipconst.providerunknownrequest
+#, object-pascal-format
 msgid "Unknown request type \"%s\""
 msgstr "Nežinomas užklausos tipas „%s“"
 
 #: ipconst.saccessprocerr
+#, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"
 msgstr "Įkeliant „%s“ įvyko Win32 klaida: %s"
 
@@ -113,6 +133,7 @@ msgid "Attempting to write "
 msgstr "Mėginama rašyti "
 
 #: ipconst.sbadframelistobject
+#, object-pascal-format
 msgid "Unrecognized object of class %s in GIF Frame List"
 msgstr "GIF kadrų sąraše neatpažintas %s klasės objektas"
 
@@ -183,6 +204,7 @@ msgid "Resource fork present"
 msgstr "Resursų šakos dovanėlė"
 
 #: ipconst.sbrokerdownloadreq
+#, object-pascal-format
 msgid "Download %s?"
 msgstr "Atsiųsti %s?"
 
@@ -211,6 +233,7 @@ msgid "Cannot write to stream"
 msgstr "Neina rašyti srautan"
 
 #: ipconst.scounttoosmall
+#, object-pascal-format
 msgid "%s: new count too small"
 msgstr "%s: naujasis kiekis permažas"
 
@@ -219,10 +242,12 @@ msgid "Destroying"
 msgstr "Naikinama"
 
 #: ipconst.seventconnect
+#, object-pascal-format
 msgid "Connect: Loc: %s Rem: %s"
 msgstr "Prijungti: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
+#, object-pascal-format
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Užverti:   vieta: %s liko: %s"
 
@@ -372,6 +397,7 @@ msgid "Invalid value type specified"
 msgstr "Nurodytas klaidingas reikšmės tipas"
 
 #: ipconst.shtmllineerror
+#, object-pascal-format
 msgid "Error \"%s\" at line %d, position %d"
 msgstr "Klaida „%s“ eilutėje %d, pozicijoje %d"
 
@@ -404,11 +430,12 @@ msgid "Unknown token"
 msgstr "Nežinoma leksema"
 
 #: ipconst.shtmlunsupprotocol
+#, object-pascal-format
 msgid "Unsupported protocol in URL:%s"
 msgstr "URL nurodytas nepalaikomas protokolas:%s"
 
 #: ipconst.sicmpecho
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Echo reply (Hop number: %d)\n"
 #| "             Status = %d\n"
@@ -432,26 +459,32 @@ msgstr ""
 "             IpFlags = %d\n"
 
 #: ipconst.sicmpechostring
+#, object-pascal-format
 msgid "Echo string: %s"
 msgstr "Aido eilutė: %s"
 
 #: ipconst.sicmppingstart
+#, object-pascal-format
 msgid "Pinging %s with %d bytes data"
 msgstr "Skimbetelėjamas %s su %d baitų duomenų"
 
 #: ipconst.sicmpthreadexecute
+#, object-pascal-format
 msgid "Thread %d executing (Hop number = %d)"
 msgstr "Gija %d vykdoma (Hop numeris = %d)"
 
 #: ipconst.sicmpthreadterminate
+#, object-pascal-format
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Gija %d baigia darbą (Hop numeris = %d)"
 
 #: ipconst.sicmptracecomplete
+#, object-pascal-format
 msgid "Trace complete (%s), %d hops"
 msgstr "Sekimas baigtas (%s), %d peršokimų"
 
 #: ipconst.sicmptracestart
+#, object-pascal-format
 msgid "Trace to %s started"
 msgstr "Pradėtas %s sekimas"
 
@@ -552,6 +585,7 @@ msgid "Unknown status"
 msgstr "Nežinomas statusas"
 
 #: ipconst.slesszero
+#, object-pascal-format
 msgid "%s: new col count %d is less than zero"
 msgstr "%s: naujasis stulpelių kiekis %d mažesnis nei nulis"
 
@@ -952,10 +986,12 @@ msgid "You must specify a file name for TIpMemMapStream"
 msgstr "„TIpMemMapStream“ reikalauja kad nurodytumėt failo pavadinimą"
 
 #: ipconst.smemmapmustbeclosed
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
 msgstr "%s metodas reikalauja kad TIpMemMapStream objektas būtų užvertas"
 
 #: ipconst.smemmapmustbeopen
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
 msgstr "%s metodas reikalauja kad TIpMemMapStream objektas būtų atvertas"
 
@@ -1091,6 +1127,7 @@ msgid "Stream not assigned"
 msgstr "Srautas nepriskirtas"
 
 #: ipconst.snotenoughdata
+#, object-pascal-format
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
 msgstr "Eilėje (%s baitų) trūksta duomenų skaitymo užklausų (%s baitų) įvykdymui"
 
@@ -1099,6 +1136,7 @@ msgid "Not enough system timers available"
 msgstr "Permažai sisteminių laikmačių"
 
 #: ipconst.snowinsock2err
+#, object-pascal-format
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
 msgstr "%s reikalauja WinSock2, tačiau šioje sistemoje yra tik WinSock1"
 
@@ -1254,14 +1292,17 @@ msgid "When origin is soFromEnd, Offset must be <= 0"
 msgstr "Kai pradžia yra soFromEnd, Offset turi būti <= 0"
 
 #: ipconst.spngbadbitdepth
+#, object-pascal-format
 msgid "Unsupported Bit Depth of %d"
 msgstr "Nepalaikomas %d bitų gylis"
 
 #: ipconst.spngbadchunktype
+#, object-pascal-format
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Neatpažintas dalies tipas: %s"
 
 #: ipconst.spngbadcolortype
+#, object-pascal-format
 msgid "Unrecognized color type of %d"
 msgstr "Neatpažintas %d spalvos tipas"
 
@@ -1278,6 +1319,7 @@ msgid "Invalid Palette Length"
 msgstr "Klaidingas paletės ilgis"
 
 #: ipconst.spngbadpixeldepth
+#, object-pascal-format
 msgid "Unrecognized pixel depth of %d"
 msgstr "Neatpažintas %d pikselių gylis"
 
@@ -1286,6 +1328,7 @@ msgid "Invalid PNG Signature"
 msgstr "Klaidingas PNG parašas"
 
 #: ipconst.spngbitdepth
+#, object-pascal-format
 msgid "Bit Depth: %d"
 msgstr "Gylis bitais: %d"
 
@@ -1298,22 +1341,27 @@ msgid "PNG Saving is not supported"
 msgstr "PNG išsaugojimas nepalaikomas"
 
 #: ipconst.spngchunkidandlength
+#, object-pascal-format
 msgid "PNG Chunk: %s  Length: %d"
 msgstr "PNG dalis: %s  ilgis: %d"
 
 #: ipconst.spngcolortype
+#, object-pascal-format
 msgid "Color Type: %d"
 msgstr "Spalvos tipas: %d"
 
 #: ipconst.spngcompressionmethod
+#, object-pascal-format
 msgid "Compression Method: %d"
 msgstr "Glaudinimo metodas: %d"
 
 #: ipconst.spngdefilterpass
+#, object-pascal-format
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
 msgstr "Pass nefiltruojamas %d  Dydis: %dx%d  Nuo: %dx%d"
 
 #: ipconst.spngeffectivefilter
+#, object-pascal-format
 msgid "Effective filter is %s"
 msgstr "Efektyvus filtras yra %s"
 
@@ -1322,10 +1370,12 @@ msgid "**** ERROR ****"
 msgstr "**** KLAIDA ****"
 
 #: ipconst.spngfilterchange
+#, object-pascal-format
 msgid "Filter changed on Row %d to %x"
 msgstr "%d eilutėje esantis filtras pakeistas į %x"
 
 #: ipconst.spngfiltermethod
+#, object-pascal-format
 msgid "Filter Method: %d"
 msgstr "Filtro metodas: %d"
 
@@ -1338,6 +1388,7 @@ msgid "gAMA chunk is short"
 msgstr "Pertrumpa gAMA dalis"
 
 #: ipconst.spnggammacorrection
+#, object-pascal-format
 msgid "Gamma Correction: %f"
 msgstr "Gama korekcija: %f"
 
@@ -1350,14 +1401,17 @@ msgid "IHDR chunk is short."
 msgstr "Pertrumpa IHDR dalis."
 
 #: ipconst.spngimagesize
+#, object-pascal-format
 msgid "Image size is %dx%d pixels"
 msgstr "Paveikslo dydis pikseliais yra %dx%d"
 
 #: ipconst.spnginterlacemethod
+#, object-pascal-format
 msgid "Interlace Method: %d"
 msgstr "Progresinis metodas: %d"
 
 #: ipconst.spngmemoryrequired
+#, object-pascal-format
 msgid "Memory required for image: %d bytes"
 msgstr "Paveikslui reikia atminties: %d baitų"
 
@@ -1370,6 +1424,7 @@ msgid "IHDR Chunk is missing"
 msgstr "Nėra IHDR dalies"
 
 #: ipconst.spngmodificationdate
+#, object-pascal-format
 msgid "Modification Date: %s"
 msgstr "Modifikavimo data: %s"
 
@@ -1378,6 +1433,7 @@ msgid "PNG Clipboard support is not supported."
 msgstr "Iškarpinė nepalaiko PNG."
 
 #: ipconst.spngpaletteentry
+#, object-pascal-format
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
 msgstr "Paletės %d įrašas: Raudona = %d, Žalia = %d, Mėlyna = %d"
 
@@ -1386,6 +1442,7 @@ msgid "Too many palette entries"
 msgstr "Perdaug paletės įrašų"
 
 #: ipconst.spngpalettetransparency
+#, object-pascal-format
 msgid "Palette Transparency: %d  Alpha %d"
 msgstr "Paletės skaidrumas: %d  alfa %d"
 
@@ -1398,6 +1455,7 @@ msgid "tIME chunk is short."
 msgstr "tIME dalis trumpa."
 
 #: ipconst.spngtransparentcolor
+#, object-pascal-format
 msgid "Transparent Color: %x"
 msgstr "Permatoma spalva: %x"
 
@@ -1410,6 +1468,7 @@ msgid "Chunk data is truncated"
 msgstr "Dalies duomenys nukirsti"
 
 #: ipconst.spngunsupportedfeature
+#, object-pascal-format
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
 msgstr "PNG faile rasta %s dalis. Esamos versijos PNG dekoderis nepalaiko šios savybės"
 
@@ -1473,10 +1532,12 @@ msgid "-ERR"
 msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
+#, object-pascal-format
 msgid "%s can not be called in transaction state"
 msgstr "Esant transakcijos veiksenai, %s vykdyti negalima"
 
 #: ipconst.spop3nottransacting
+#, object-pascal-format
 msgid "%s can not be called in authentication state"
 msgstr "Esant tapatumo nustatymo veiksenai, %s vykdyti negalima"
 
@@ -1485,6 +1546,7 @@ msgid "+OK"
 msgstr "+ OK"
 
 #: ipconst.sposreqd
+#, object-pascal-format
 msgid "%s: count must be positive"
 msgstr "%s: kiekis turi būti teigiamas"
 
@@ -1646,6 +1708,7 @@ msgid "Disconnected"
 msgstr "Atsijungta"
 
 #: ipconst.sraserr
+#, object-pascal-format
 msgid "Ras Error (%d): on API '%s'"
 msgstr "„Ras“ klaida (%d): iššaukė API „%s“"
 
@@ -1718,14 +1781,17 @@ msgid "Renamed disk file to "
 msgstr "Diske failas pervardytas į "
 
 #: ipconst.srowcoloor
+#, object-pascal-format
 msgid "%s: either row %d or col %d is out of range"
 msgstr "%s: eilutė %d arba stulpelis %d peržengia ribas"
 
 #: ipconst.srowoor
+#, object-pascal-format
 msgid "%s: row number is out of range"
 msgstr "%s: eilutės skaičius peržengia ribas"
 
 #: ipconst.srowrowoor
+#, object-pascal-format
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
 msgstr "TIpTerminalArray.ScrollRows: pradžios eilutė %d arba galo eilutė %d peržengia ribas"
 
@@ -1946,6 +2012,7 @@ msgid "Unknown response code"
 msgstr "Nežinomas atsako kodas"
 
 #: ipconst.ssockserr
+#, object-pascal-format
 msgid "SOCKS request refused - %d"
 msgstr "Atsisakyta SOCKS užklausos - %d"
 
@@ -2254,10 +2321,12 @@ msgid "Count <> Len or Count > 63"
 msgstr "Kiekis <> Ilgis arba Kiekis > 63"
 
 #: ipconst.swebimagecannotload
+#, object-pascal-format
 msgid "Cannot load %s"
 msgstr "Neina įkelti %s"
 
 #: ipconst.swebimagenotfound
+#, object-pascal-format
 msgid "%s was not found"
 msgstr "%s nerastas"
 
@@ -2266,6 +2335,7 @@ msgid "Cannot load image from stream"
 msgstr "Neina įkelti paveikslas iš srauto"
 
 #: ipconst.swinsockerr
+#, object-pascal-format
 msgid "WinSock Error (%d): %s, on API '%s'"
 msgstr "WinSock klaida (%d): %s, iššaukta API „%s“"
 

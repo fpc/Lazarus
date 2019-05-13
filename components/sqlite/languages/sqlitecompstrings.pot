@@ -6,6 +6,7 @@ msgid "Add"
 msgstr ""
 
 #: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+#, object-pascal-format
 msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
 msgstr ""
 
@@ -38,6 +39,7 @@ msgid "File name not set: it's not possible to create/edit a table."
 msgstr ""
 
 #: sqlitecompstrings.sfilepath
+#, object-pascal-format
 msgid "File Path: %s"
 msgstr ""
 
@@ -62,6 +64,7 @@ msgid "Field type not recognized."
 msgstr ""
 
 #: sqlitecompstrings.stablename
+#, object-pascal-format
 msgid "Table Name: %s"
 msgstr ""
 

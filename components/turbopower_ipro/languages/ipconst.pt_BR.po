@@ -12,54 +12,67 @@ msgstr ""
 "X-Generator: Poedit 1.8.13\n"
 
 #: ipconst.cacheadding
+#, object-pascal-format
 msgid "Caching item (%s = %s)"
 msgstr "Armazenando item (%s = %s)"
 
 #: ipconst.cachecheckfreshness
+#, object-pascal-format
 msgid "Checking Freshness (%s)"
 msgstr "Verificando Novidade (%s)"
 
 #: ipconst.cachedirnotexist
+#, object-pascal-format
 msgid "Cache directory %s does not exist."
 msgstr "Diretório \"Cache\" %s não existe."
 
 #: ipconst.cacheretrieving
+#, object-pascal-format
 msgid "Loading from Cache (%s = %s)"
 msgstr "Carregando do \"Cache\" (%s = %s)"
 
 #: ipconst.httpcantloadgraphic
+#, object-pascal-format
 msgid "Unable to load graphic %s"
 msgstr "Impossível carregar gráfico %s"
 
 #: ipconst.httpconnect
+#, object-pascal-format
 msgid "Connected: (%s)"
 msgstr "Conectado: (%s)"
 
 #: ipconst.httpdisconnect
+#, object-pascal-format
 msgid "Disconnected: (%s), %s Total bytes received"
 msgstr "Desconectado: (%s), %s Total \"bytes\" recebidos."
 
 #: ipconst.httpdownload
+#, object-pascal-format
 msgid "Download: (%s), Error downloading"
 msgstr "Baixar: (%s), Erro ao baixar"
 
 #: ipconst.httpget
+#, object-pascal-format
 msgid "GET: (%s)"
 msgstr "GET: (%s)"
 
 #: ipconst.httpgeterror
+#, object-pascal-format
 msgid "GET: (%s) FAILED"
 msgstr "GET: (%s) FALHOU"
 
 #: ipconst.httpgotheader
+#, object-pascal-format
 msgid "Download: (%s), Got Header Data"
 msgstr "Baixar: (%s), Cabeçalho Dados Obtido"
 
 #: ipconst.httphead
+#, object-pascal-format
 msgid "HEAD: (%s)"
 msgstr "HEAD: (%s)"
 
 #: ipconst.httpheaderror
+#, object-pascal-format
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) FALHOU"
 
@@ -68,22 +81,27 @@ msgid "No Header Data for Entity"
 msgstr "Nenhum dado de cabeçalho para a entidade"
 
 #: ipconst.httppost
+#, object-pascal-format
 msgid "POST: (%s)"
 msgstr "POST: (%s)"
 
 #: ipconst.httpposterror
+#, object-pascal-format
 msgid "POST: (%s) FAILED"
 msgstr "POST: (%s) FALHOU"
 
 #: ipconst.httpprogress
+#, object-pascal-format
 msgid "Progress Made: (%s), %s bytes received"
 msgstr "Progresso Feito: (%s), %s \"bytes\" recebidos"
 
 #: ipconst.httpsizemismatch
+#, object-pascal-format
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
 msgstr "Baixar: (%s), Tamanho não combina, esperando %s, obtido %s"
 
 #: ipconst.providerunknownformat
+#, object-pascal-format
 msgid "Don't know how to handle %s"
 msgstr "Não sabe como manipular %s"
 
@@ -92,10 +110,12 @@ msgid "Invalid picture format"
 msgstr "Formato figura inválido"
 
 #: ipconst.providerunknownrequest
+#, object-pascal-format
 msgid "Unknown request type \"%s\""
 msgstr "Tipo requisição desconhecido \"%s\""
 
 #: ipconst.saccessprocerr
+#, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"
 msgstr "Erro Win32 carregando \"%s\" ponteiro: %s"
 
@@ -112,6 +132,7 @@ msgid "Attempting to write "
 msgstr "Tentando escrever"
 
 #: ipconst.sbadframelistobject
+#, object-pascal-format
 msgid "Unrecognized object of class %s in GIF Frame List"
 msgstr "Objeto da classe %s não reconhecido na lista quadro GIF"
 
@@ -182,6 +203,7 @@ msgid "Resource fork present"
 msgstr "Gargalo de recurso presente"
 
 #: ipconst.sbrokerdownloadreq
+#, object-pascal-format
 msgid "Download %s?"
 msgstr "Baixar %s?"
 
@@ -210,6 +232,7 @@ msgid "Cannot write to stream"
 msgstr "Impossível escrever para o fluxo"
 
 #: ipconst.scounttoosmall
+#, object-pascal-format
 msgid "%s: new count too small"
 msgstr "%s: nova contagem muito pequena"
 
@@ -218,10 +241,12 @@ msgid "Destroying"
 msgstr "Destruindo"
 
 #: ipconst.seventconnect
+#, object-pascal-format
 msgid "Connect: Loc: %s Rem: %s"
 msgstr "Conectar: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
+#, object-pascal-format
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Fechar: Loc: %s Rem: %s"
 
@@ -371,6 +396,7 @@ msgid "Invalid value type specified"
 msgstr "Tipo valor especificado inválido"
 
 #: ipconst.shtmllineerror
+#, object-pascal-format
 msgid "Error \"%s\" at line %d, position %d"
 msgstr "Erro \"%s\" na linha %d, posição %d"
 
@@ -403,10 +429,12 @@ msgid "Unknown token"
 msgstr "Sílaba desconhecida"
 
 #: ipconst.shtmlunsupprotocol
+#, object-pascal-format
 msgid "Unsupported protocol in URL:%s"
 msgstr "Protocolo não suportado na URL: %s"
 
 #: ipconst.sicmpecho
+#, object-pascal-format
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"
@@ -423,26 +451,32 @@ msgstr ""
 "             IpFlags = %d"
 
 #: ipconst.sicmpechostring
+#, object-pascal-format
 msgid "Echo string: %s"
 msgstr "Sequência de caracteres Eco: %s"
 
 #: ipconst.sicmppingstart
+#, object-pascal-format
 msgid "Pinging %s with %d bytes data"
 msgstr "Pingando %s com %d bytes dados"
 
 #: ipconst.sicmpthreadexecute
+#, object-pascal-format
 msgid "Thread %d executing (Hop number = %d)"
 msgstr "Thread %d executando (Número salto = %d)"
 
 #: ipconst.sicmpthreadterminate
+#, object-pascal-format
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Thread %d terminando (Número salto = %d)"
 
 #: ipconst.sicmptracecomplete
+#, object-pascal-format
 msgid "Trace complete (%s), %d hops"
 msgstr "Trace completo (%s), %d saltos"
 
 #: ipconst.sicmptracestart
+#, object-pascal-format
 msgid "Trace to %s started"
 msgstr "Trace para %s iniciado"
 
@@ -543,6 +577,7 @@ msgid "Unknown status"
 msgstr "Estado desconhecido"
 
 #: ipconst.slesszero
+#, object-pascal-format
 msgid "%s: new col count %d is less than zero"
 msgstr "%s: nova contagem col. %d menor que zero"
 
@@ -943,10 +978,12 @@ msgid "You must specify a file name for TIpMemMapStream"
 msgstr "Você deve especificar um nome de arquivo para \"TIpMemMapStream\""
 
 #: ipconst.smemmapmustbeclosed
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
 msgstr "O método %s requer que a instância de \"TIpMemMapStram\" seja fechada"
 
 #: ipconst.smemmapmustbeopen
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
 msgstr "O método %s requer que a instância de \"TIpMemMapStream\" seja aberta"
 
@@ -1082,6 +1119,7 @@ msgid "Stream not assigned"
 msgstr "Fluxo não atribuído"
 
 #: ipconst.snotenoughdata
+#, object-pascal-format
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
 msgstr "Dados insuficientes na fila (%s bytes) para satisfazer requisição leitura (%s bytes)"
 
@@ -1090,6 +1128,7 @@ msgid "Not enough system timers available"
 msgstr "Cronômetros disponíveis de sistema insuficientes"
 
 #: ipconst.snowinsock2err
+#, object-pascal-format
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
 msgstr "%s requer WinSock 2, e o sistema tem somente WinSock 1"
 
@@ -1245,14 +1284,17 @@ msgid "When origin is soFromEnd, Offset must be <= 0"
 msgstr "Quando origem é \"soFromEnd\", deslocamento deve ser <=  0"
 
 #: ipconst.spngbadbitdepth
+#, object-pascal-format
 msgid "Unsupported Bit Depth of %d"
 msgstr "Profundidade \"Bit\" %d não suportado"
 
 #: ipconst.spngbadchunktype
+#, object-pascal-format
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Tipo Pedaço não reconhecido: %s"
 
 #: ipconst.spngbadcolortype
+#, object-pascal-format
 msgid "Unrecognized color type of %d"
 msgstr "Tipo cor de %d não reconhecido"
 
@@ -1269,6 +1311,7 @@ msgid "Invalid Palette Length"
 msgstr "Comprimento Paleta inválido"
 
 #: ipconst.spngbadpixeldepth
+#, object-pascal-format
 msgid "Unrecognized pixel depth of %d"
 msgstr "Profundidade pixel de %d não reconhecida"
 
@@ -1277,6 +1320,7 @@ msgid "Invalid PNG Signature"
 msgstr "Assinatura PNG inválida"
 
 #: ipconst.spngbitdepth
+#, object-pascal-format
 msgid "Bit Depth: %d"
 msgstr "Profundidade Bit: %d"
 
@@ -1289,22 +1333,27 @@ msgid "PNG Saving is not supported"
 msgstr "Salvamento PNG não suportado"
 
 #: ipconst.spngchunkidandlength
+#, object-pascal-format
 msgid "PNG Chunk: %s  Length: %d"
 msgstr "Pedaço PNG: %s Comprimento: %d"
 
 #: ipconst.spngcolortype
+#, object-pascal-format
 msgid "Color Type: %d"
 msgstr "Tipo Cor: %d"
 
 #: ipconst.spngcompressionmethod
+#, object-pascal-format
 msgid "Compression Method: %d"
 msgstr "Método Compressão: %d"
 
 #: ipconst.spngdefilterpass
+#, object-pascal-format
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
 msgstr "Passo filtro %d Tam: %dx%d de: %dx%d"
 
 #: ipconst.spngeffectivefilter
+#, object-pascal-format
 msgid "Effective filter is %s"
 msgstr "Filtro efetivo é %s"
 
@@ -1313,10 +1362,12 @@ msgid "**** ERROR ****"
 msgstr "**** ERRO ****"
 
 #: ipconst.spngfilterchange
+#, object-pascal-format
 msgid "Filter changed on Row %d to %x"
 msgstr "Filtro alterado na Linha %d para %x"
 
 #: ipconst.spngfiltermethod
+#, object-pascal-format
 msgid "Filter Method: %d"
 msgstr "Método Filtro: %d"
 
@@ -1329,6 +1380,7 @@ msgid "gAMA chunk is short"
 msgstr "Pedaço gAMA é curto"
 
 #: ipconst.spnggammacorrection
+#, object-pascal-format
 msgid "Gamma Correction: %f"
 msgstr "Correção Gamma: %f"
 
@@ -1341,14 +1393,17 @@ msgid "IHDR chunk is short."
 msgstr "Pedaço IHDR é curto"
 
 #: ipconst.spngimagesize
+#, object-pascal-format
 msgid "Image size is %dx%d pixels"
 msgstr "Tamanho imagem é %dx%d pixels"
 
 #: ipconst.spnginterlacemethod
+#, object-pascal-format
 msgid "Interlace Method: %d"
 msgstr "Método Interlace: %d"
 
 #: ipconst.spngmemoryrequired
+#, object-pascal-format
 msgid "Memory required for image: %d bytes"
 msgstr "Memória requerida pela imagem: %d bytes"
 
@@ -1361,6 +1416,7 @@ msgid "IHDR Chunk is missing"
 msgstr "Pedaço IHDR está faltando"
 
 #: ipconst.spngmodificationdate
+#, object-pascal-format
 msgid "Modification Date: %s"
 msgstr "Data Modificação: %s"
 
@@ -1369,6 +1425,7 @@ msgid "PNG Clipboard support is not supported."
 msgstr "Suporte Área de Transferência PNG não suportado"
 
 #: ipconst.spngpaletteentry
+#, object-pascal-format
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
 msgstr "Entrada Paleta %d - Vermelho: %d  Verde: %d  Azul: %d"
 
@@ -1377,6 +1434,7 @@ msgid "Too many palette entries"
 msgstr "Muitas entradas na paleta"
 
 #: ipconst.spngpalettetransparency
+#, object-pascal-format
 msgid "Palette Transparency: %d  Alpha %d"
 msgstr "Transparência Paleta: %d  Alpha %d"
 
@@ -1389,6 +1447,7 @@ msgid "tIME chunk is short."
 msgstr "Pedaço tIME é curto"
 
 #: ipconst.spngtransparentcolor
+#, object-pascal-format
 msgid "Transparent Color: %x"
 msgstr "Cor Transparente: %x"
 
@@ -1401,6 +1460,7 @@ msgid "Chunk data is truncated"
 msgstr "Pedaço dados está truncado"
 
 #: ipconst.spngunsupportedfeature
+#, object-pascal-format
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
 msgstr "Um pedaço %s foi encontrado no arquivo PNG. Este recurso não é suportado nesta versão do decodificador PNG"
 
@@ -1464,10 +1524,12 @@ msgid "-ERR"
 msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
+#, object-pascal-format
 msgid "%s can not be called in transaction state"
 msgstr "%s não pode ser chamado em estado transacional"
 
 #: ipconst.spop3nottransacting
+#, object-pascal-format
 msgid "%s can not be called in authentication state"
 msgstr "%s não pode ser chamado em estado de autenticação"
 
@@ -1476,6 +1538,7 @@ msgid "+OK"
 msgstr "+OK"
 
 #: ipconst.sposreqd
+#, object-pascal-format
 msgid "%s: count must be positive"
 msgstr "%s: contagem deve ser positiva"
 
@@ -1637,6 +1700,7 @@ msgid "Disconnected"
 msgstr "Desconectado"
 
 #: ipconst.sraserr
+#, object-pascal-format
 msgid "Ras Error (%d): on API '%s'"
 msgstr "Erro RAS (%d): na API \"%s\""
 
@@ -1709,14 +1773,17 @@ msgid "Renamed disk file to "
 msgstr "Arquivo disco renomeado para"
 
 #: ipconst.srowcoloor
+#, object-pascal-format
 msgid "%s: either row %d or col %d is out of range"
 msgstr "%s: tanto linha %d ou coluna %d está(ão) fora de faixa"
 
 #: ipconst.srowoor
+#, object-pascal-format
 msgid "%s: row number is out of range"
 msgstr "%s: número linha está fora de faixa"
 
 #: ipconst.srowrowoor
+#, object-pascal-format
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
 msgstr "TIpTerminalArray.ScrollRows: tanto linha inicial %d ou a linha final %d está(ão) fora de faixa"
 
@@ -1937,6 +2004,7 @@ msgid "Unknown response code"
 msgstr "Código resposta desconhecido"
 
 #: ipconst.ssockserr
+#, object-pascal-format
 msgid "SOCKS request refused - %d"
 msgstr "Requisição SOCKS recusada - %d"
 
@@ -2245,10 +2313,12 @@ msgid "Count <> Len or Count > 63"
 msgstr "Conta. <> Tam. ou Conta. > 63"
 
 #: ipconst.swebimagecannotload
+#, object-pascal-format
 msgid "Cannot load %s"
 msgstr "Impossível carregar %s"
 
 #: ipconst.swebimagenotfound
+#, object-pascal-format
 msgid "%s was not found"
 msgstr "%s não encontrado"
 
@@ -2257,6 +2327,7 @@ msgid "Cannot load image from stream"
 msgstr "Impossível carregar imagem do fluxo"
 
 #: ipconst.swinsockerr
+#, object-pascal-format
 msgid "WinSock Error (%d): %s, on API '%s'"
 msgstr "Erro WinSock (%d): %s, na API \"%s\""
 

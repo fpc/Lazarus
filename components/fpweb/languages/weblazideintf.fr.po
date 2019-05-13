@@ -16,6 +16,7 @@ msgid "Apache Module"
 msgstr "Module Apache"
 
 #: weblazideintf.rsapachemodule2
+#, object-pascal-format
 msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgstr "Module Apache%sUn module Apache en Free Pascal utilisant les modules Web. Le fichier principal de la bibliothèque est automatiquement géré par Lazarus."
 
@@ -24,6 +25,7 @@ msgid "CGI Application"
 msgstr "Application CGI"
 
 #: weblazideintf.rscgiapplicati2
+#, object-pascal-format
 msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "Application CGI%sUne application CGI (Common Gateway Interface) en Free Pascal utilisant les modules Web. Le programme source est automatiquement géré par Lazarus."
 
@@ -32,6 +34,7 @@ msgid "Custom CGI Application"
 msgstr "Application CGI personnalisée"
 
 #: weblazideintf.rscustomcgiapp2
+#, object-pascal-format
 msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "Application CGI%sUne application CGI (Common Gateway Interface) en Free Pascal utilisant les modules Web. Le programme source est automatiquement géré par Lazarus."
 
@@ -40,6 +43,7 @@ msgid "Custom FastCGI Application"
 msgstr "Application FastCGI personnalisée"
 
 #: weblazideintf.rscustomfastcg2
+#, object-pascal-format
 msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "Application FastCGI personnalisée%sUn programme FastCGI (Common Gateway Interface) en Free Pascal. Le code source du programme est automatiquement géré par Lazarus."
 
@@ -48,6 +52,7 @@ msgid "FastCGI Application"
 msgstr "Application FastCGI"
 
 #: weblazideintf.rsfastcgiappli2
+#, object-pascal-format
 msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "Application FastCGI%sUne application FastCGI (Common Gateway Interface) en Free Pascal utilisant les modules Web. Le programme source est automatiquement géré par Lazarus."
 
@@ -56,6 +61,7 @@ msgid "HTML Web Module"
 msgstr "Module Web HTML"
 
 #: weblazideintf.rshtmlwebmodul2
+#, object-pascal-format
 msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgstr "Module Web HTML%sUn module de données Web pour produire du HTML pur."
 
@@ -72,6 +78,7 @@ msgid "Web DataProvider Module"
 msgstr "Module Web DataProvider"
 
 #: weblazideintf.rswebdataprovi2
+#, object-pascal-format
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgstr "Module WEB DataProvider%sUn module de données pour manipuler les requêtes des applications WEB (HTTP) qui utilisent les composants WebDataProvider."
 
@@ -80,6 +87,7 @@ msgid "Web Ext.Direct Module"
 msgstr "Module Web Ext.Direct"
 
 #: weblazideintf.rswebextdirect2
+#, object-pascal-format
 msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Module Web Ext.Direct%sUn module de données pour répartir les requêtes Ext.Direct des applications WEB (HTTP) applications qui utilisent les composants TJSONRPCHandler."
 
@@ -88,6 +96,7 @@ msgid "Web JSON-RPC Module"
 msgstr "Module Web JSON-RPC"
 
 #: weblazideintf.rswebjsonrpcmo2
+#, object-pascal-format
 msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Module WEB JSON-RPC %sUn module de données pour répartir les requêtes JSON-RPC des applications WEB (HTTP) qui utilisent les composants TJSONRPCHandler."
 
@@ -96,6 +105,7 @@ msgid "Web Module"
 msgstr "Module Web"
 
 #: weblazideintf.rswebmoduleada
+#, object-pascal-format
 msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgstr "Module Web%sUn module de données pour applications WEB (HTTP)."
 

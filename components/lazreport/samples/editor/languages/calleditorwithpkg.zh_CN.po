@@ -13,6 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: maincalleditor.ceractivereport
+#, object-pascal-format
 msgid "Active report: %s"
 msgstr "激活报告: %s"
 
@@ -73,6 +74,7 @@ msgid "Index"
 msgstr "索引"
 
 #: maincalleditor.cerindexfields
+#, object-pascal-format
 msgid "Index Fields: %s"
 msgstr "索引字段:%s"
 

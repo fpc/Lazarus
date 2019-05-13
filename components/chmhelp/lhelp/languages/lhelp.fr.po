@@ -20,10 +20,12 @@ msgid "&About ..."
 msgstr "&À propos..."
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
 msgstr "Impossible de prendre en charge ce type de contenu. \"%s\" pour l'URL :%s%s"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "Impossible de prendre en charge ce type de contenu. \"%s\" pour l'URL :%s%s"
 
@@ -80,6 +82,7 @@ msgid "Index Loading ..."
 msgstr "Chargement de l'index..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
 msgstr "    --ipcname  :  Le nom du serveur IPC à l'écoute de%s              programmes qui souhaiteraient contrôler le visionneur"
 
@@ -92,10 +95,12 @@ msgid "LHelp"
 msgstr "LHelp"
 
 #: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
 msgid "LHelp - %s"
 msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr "LHelp (visionneur de fichier CHM)%sVersion %s%sCopyright (C) Andrew Haines, %sContributeurs Lazarus"
 
@@ -104,10 +109,12 @@ msgid "  LHelp options:"
 msgstr "  Options de LHelp :"
 
 #: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
 msgid "Loaded: %s in %sms"
 msgstr "%s chargé en %sms"
 
 #: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
 msgid "Loading: %s"
 msgstr "Chargement de : %s"
 
@@ -116,6 +123,7 @@ msgid "No Results"
 msgstr "Pas de résultats"
 
 #: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
 msgid "%s not found!"
 msgstr "%s introuvable !"
 
@@ -168,6 +176,7 @@ msgid "Show contents"
 msgstr "Afficher le contenu"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
 msgid "Supported URL type(s): (%s)"
 msgstr "Type(s) d'URL pris en charge : (%s)"
 

@@ -14,6 +14,7 @@ msgid "Education"
 msgstr ""
 
 #: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
+#, object-pascal-format
 msgid "Add an entry to the %sNew ...%s dialog to create a new program"
 msgstr ""
 
@@ -34,6 +35,7 @@ msgid "Add menu item"
 msgstr "Menüeintrag hinzufügen"
 
 #: eduoptions.ersaddtonewdialog
+#, object-pascal-format
 msgid "Add to %sNew ...%s dialog"
 msgstr "Zum %sNeu ...%s Dialog hinzufügen"
 

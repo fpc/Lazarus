@@ -66,6 +66,7 @@ msgid "Quick SQL check OK"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
+#, object-pascal-format
 msgid ""
 "Probable syntax error in SQL statement:\n"
 "%s"

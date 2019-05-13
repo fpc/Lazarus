@@ -13,6 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: sdb_consts.scancelrecordsexported
+#, object-pascal-format
 msgid "Exported %d before user canceled."
 msgstr "导出%d在用户取消以前."
 
@@ -69,6 +70,7 @@ msgid "DataExporter has no Dataset assigned."
 msgstr "DataExporter没有Dataset assigned(分配的数据集?)."
 
 #: sdb_consts.serropeningdataset
+#, object-pascal-format
 msgid "Could not open dataset for exporting: %s"
 msgstr "不能打开dataset(数据集)用于导出: %s"
 
@@ -77,10 +79,12 @@ msgid "Execute ..."
 msgstr "执行..."
 
 #: sdb_consts.snrecordsexported
+#, object-pascal-format
 msgid "Successfully exported %d records."
 msgstr "成功导出%d记录."
 
 #: sdb_consts.sprogress
+#, object-pascal-format
 msgid "Exporting %d records"
 msgstr "导出%d记录"
 

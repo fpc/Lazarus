@@ -40,6 +40,7 @@ msgid "Insert your SQL statements here"
 msgstr "Insira suas declarações SQL aqui"
 
 #: registersqldb.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
 msgid "Editing %s"
 msgstr "Editando %s"
 

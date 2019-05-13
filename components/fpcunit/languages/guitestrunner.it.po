@@ -16,38 +16,47 @@ msgid "All Tests"
 msgstr "Tutti i Test"
 
 #: guitestrunner.rserrors
+#, object-pascal-format
 msgid "%s    Errors: %s"
 msgstr "%s    Errori: %s"
 
 #: guitestrunner.rsexception
+#, object-pascal-format
 msgid "Exception: %s"
 msgstr "Eccezione: %s"
 
 #: guitestrunner.rsexceptioncla
+#, object-pascal-format
 msgid "Exception class: %s"
 msgstr "Classe eccezione: %s"
 
 #: guitestrunner.rsexceptionmes
+#, object-pascal-format
 msgid "Exception message: %s"
 msgstr "Messaggio dell'eccezione: %s"
 
 #: guitestrunner.rsfailures
+#, object-pascal-format
 msgid "%s     Failures: %s"
 msgstr "%s     Insuccessi: %s"
 
 #: guitestrunner.rslinenumber
+#, object-pascal-format
 msgid "Line number: %s"
 msgstr "Numero di riga: %s"
 
 #: guitestrunner.rsmessage
+#, object-pascal-format
 msgid "Message: %s"
 msgstr "Messaggio: %s"
 
 #: guitestrunner.rsmethodname
+#, object-pascal-format
 msgid "Method name: %s"
 msgstr "Nome metodo: %s"
 
 #: guitestrunner.rsnumberofexec
+#, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Numero di test eseguiti: %s Tempo impiegato: %s"
 
@@ -56,14 +65,17 @@ msgid "Run "
 msgstr "Esegui"
 
 #: guitestrunner.rsrunning
+#, object-pascal-format
 msgid "Running %s"
 msgstr "Esecuzione %s"
 
 #: guitestrunner.rsruns
+#, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Esecuzioni: %s/%s"
 
 #: guitestrunner.rsunitname
+#, object-pascal-format
 msgid "Unit name: %s"
 msgstr "Nome unit: %s"
 

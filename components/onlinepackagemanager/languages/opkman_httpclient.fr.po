@@ -20,18 +20,22 @@ msgid "Chunk too big"
 msgstr "Bloc trop important"
 
 #: opkman_httpclient.serrinvalidprotocol
+#, object-pascal-format
 msgid "Invalid protocol: \"%s\""
 msgstr "Protocole incorrect : \"%s\""
 
 #: opkman_httpclient.serrinvalidprotocolversion
+#, object-pascal-format
 msgid "Invalid protocol version in response: \"%s\""
 msgstr "Version de protocole incorrecte en réponse : \"%s\""
 
 #: opkman_httpclient.serrinvalidstatuscode
+#, object-pascal-format
 msgid "Invalid response status code: %s"
 msgstr "Code de statut de réponse incorrect : %s"
 
 #: opkman_httpclient.serrmaxredirectsreached
+#, object-pascal-format
 msgid "Maximum allowed redirects reached: %d"
 msgstr "Nombre maximum de redirections autorisées atteint : %d"
 
@@ -40,6 +44,7 @@ msgid "Error reading data from socket"
 msgstr "Erreur de lecture des données du socket"
 
 #: opkman_httpclient.serrunexpectedresponse
+#, object-pascal-format
 msgid "Unexpected response status code: %d"
 msgstr "Code de statut de réponse inattendu : %d"
 

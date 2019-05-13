@@ -25,6 +25,7 @@ msgid "closing bracket not found"
 msgstr "闭合括号未找到"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
+#, object-pascal-format
 msgid "%s, found unexpected %s at %s"
 msgstr "%s,发现异常%s在%s"
 
@@ -33,10 +34,12 @@ msgid "record end not found"
 msgstr "record end未找到"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
+#, object-pascal-format
 msgid "adds %s to IncPath"
 msgstr "添加%s到包含目录"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
+#, object-pascal-format
 msgid "adds %s to SrcPath"
 msgstr "添加 %s 到源代码目录"
 
@@ -49,18 +52,22 @@ msgid "an LCL project"
 msgstr "一个LCL工程"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
+#, object-pascal-format
 msgid "Anonymous %s definitions are not allowed"
 msgstr "匿名%s定义不被允许"
 
 #: codetoolsstrconsts.ctsawithoutb
+#, object-pascal-format
 msgid "%s without %s"
 msgstr "%s没有%s"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
+#, object-pascal-format
 msgid "base type of \"%s\" not found"
 msgstr "基本类型\"%s\"未发现"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
+#, object-pascal-format
 msgid "begin at %s without end"
 msgstr "begin在%s缺少end"
 
@@ -69,14 +76,17 @@ msgid "binary operator"
 msgstr "二进制操作"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket close expected, but %s found"
 msgstr "要求括号闭合, 但是找到 %s"
 
 #: codetoolsstrconsts.ctsbracketnotfound
+#, object-pascal-format
 msgid "bracket %s not found"
 msgstr "括号%s未找到"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket open expected, but %s found"
 msgstr "要求括号打开, 但是找到%s"
 
@@ -101,18 +111,22 @@ msgid "class node without parent node"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassnotfound
+#, object-pascal-format
 msgid "class \"%s\" not found"
 msgstr "类\"%s\"未找到"
 
 #: codetoolsstrconsts.ctsclassnotfound2
+#, object-pascal-format
 msgid "class not found \"%s\""
 msgstr "类未找到\"%s\""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
+#, object-pascal-format
 msgid "\"class of\" definition not resolved: %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclasssnotfound
+#, object-pascal-format
 msgid "Class %s not found"
 msgstr "类%s未找到"
 
@@ -161,6 +175,7 @@ msgid "Debugger Directory"
 msgstr "调试器目录"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
+#, object-pascal-format
 msgid "default ancestor %s not found"
 msgstr ""
 
@@ -201,6 +216,7 @@ msgid "default java class ancestor JLObject not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "default parameter expected, but %s found"
 msgstr ""
 
@@ -225,6 +241,7 @@ msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "定义LCLwidgetset,如LCLgtk"
 
 #: codetoolsstrconsts.ctsdefinemacroname
+#, object-pascal-format
 msgid "Define Macro %s"
 msgstr "定义宏 %s"
 
@@ -241,6 +258,7 @@ msgid "Designer Directory"
 msgstr "设计器目录"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "dispid parameter expected, but %s found"
 msgstr ""
 
@@ -253,6 +271,7 @@ msgid "Doc Editor Directory"
 msgstr "Doc编辑器目录"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
+#, object-pascal-format
 msgid "duplicate identifier: %s"
 msgstr ""
 
@@ -273,6 +292,7 @@ msgid "end of file"
 msgstr "文件末尾"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
+#, object-pascal-format
 msgid "expected end., but %s found"
 msgstr "要求end., 但是%s找到"
 
@@ -305,30 +325,37 @@ msgid "error in paramlist"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexpected
+#, object-pascal-format
 msgid "\"%s\" expected"
 msgstr "\"%s\"被要求"
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+#, object-pascal-format
 msgid "expected a method type, but found %s"
 msgstr "要求一个method类型,但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
+#, object-pascal-format
 msgid "expected (, but found %s"
 msgstr "要求(, 但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
+#, object-pascal-format
 msgid "expected ), but found %s"
 msgstr "要求), 但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
+#, object-pascal-format
 msgid "expected :=, but %s found"
 msgstr "要求:=, 但是%s找到"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
+#, object-pascal-format
 msgid "expected identifier, but found %s"
 msgstr "要求标识符,但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+#, object-pascal-format
 msgid "expected ; of statement, but found %s"
 msgstr "要求;of statement,但是找到%s"
 
@@ -349,6 +376,7 @@ msgid "Forward"
 msgstr "向前"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
+#, object-pascal-format
 msgid "Forward class definition not resolved: %s"
 msgstr ""
 
@@ -369,6 +397,7 @@ msgid "Free Pascal Source Directory"
 msgstr "Free Pascal源代码目录"
 
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
+#, object-pascal-format
 msgid "Free Pascal Sources, %s"
 msgstr "Free Pascal源代码,%s"
 
@@ -391,6 +420,7 @@ msgid "HasError"
 msgstr "HasError"
 
 #: codetoolsstrconsts.ctshelperisnotallowed
+#, object-pascal-format
 msgid "Helper after %s is not allowed"
 msgstr ""
 
@@ -399,6 +429,7 @@ msgid "IDE Directory"
 msgstr "IDE目录"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
+#, object-pascal-format
 msgid "identifier expected, but %s found"
 msgstr "要求标识符,但是%s找到"
 
@@ -407,6 +438,7 @@ msgid "unexpected end of file (identifier expected)"
 msgstr ""
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
+#, object-pascal-format
 msgid "identifier expected, but keyword %s found"
 msgstr "要求标识符, 但是关键字%s找到"
 
@@ -415,10 +447,12 @@ msgid "identifier"
 msgstr "标识符"
 
 #: codetoolsstrconsts.ctsidentifieralreadydefined
+#, object-pascal-format
 msgid "Identifier %s already defined"
 msgstr "标识符%s已经定义"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
+#, object-pascal-format
 msgid "identifier not found: %s"
 msgstr "标识符未找到:%s"
 
@@ -451,10 +485,12 @@ msgid "If TargetOS<>win32 then"
 msgstr ""
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
+#, object-pascal-format
 msgid "illegal circle using unit: %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsillegalqualifier
+#, object-pascal-format
 msgid "illegal qualifier %s found"
 msgstr ""
 
@@ -467,18 +503,22 @@ msgid "Include circle detected"
 msgstr ""
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+#, object-pascal-format
 msgid "include directories: %s"
 msgstr "包含目录:%s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
+#, object-pascal-format
 msgid "include file not found \"%s\""
 msgstr "包含文件未找到\"%s\""
 
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
+#, object-pascal-format
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
 msgstr "不相容的类型: 要求\"%s\" 但是得到\"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "index parameter expected, but %s found"
 msgstr "要求索引参数, 但是%s找到"
 
@@ -503,26 +543,32 @@ msgid "interface section not found"
 msgstr "接口部分未找到"
 
 #: codetoolsstrconsts.ctsinvalidclassname
+#, object-pascal-format
 msgid "invalid class name=\"%s\""
 msgstr "无效类名=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
+#, object-pascal-format
 msgid "invalid class name \"%s\""
 msgstr "无效类名\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
+#, object-pascal-format
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidmode
+#, object-pascal-format
 msgid "invalid mode \"%s\""
 msgstr "无效模式\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
+#, object-pascal-format
 msgid "invalid mode switch \"%s\""
 msgstr "无效模式开关\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
+#, object-pascal-format
 msgid "invalid operator %s"
 msgstr "无效运算符%s"
 
@@ -539,10 +585,12 @@ msgid "invalid type"
 msgstr "无效类型"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
+#, object-pascal-format
 msgid "invalid variable name \"%s\""
 msgstr "无效变量名\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
+#, object-pascal-format
 msgid "invalid variable type \"%s\""
 msgstr "无效变量类型\"%s\""
 
@@ -551,6 +599,7 @@ msgid "keyword"
 msgstr "关键字"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
+#, object-pascal-format
 msgid "keyword (e.g. %s) expected, but %s found"
 msgstr "要求关键字 (例如 %s), 但是 %s找到"
 
@@ -567,6 +616,7 @@ msgid "Lazarus Sources"
 msgstr "Lazarus源代码"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
+#, object-pascal-format
 msgid "method \"%s\" has no declaration"
 msgstr ""
 
@@ -575,6 +625,7 @@ msgid "method name"
 msgstr "方法名称"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+#, object-pascal-format
 msgid "Method signature %s not found in class"
 msgstr ""
 
@@ -599,18 +650,22 @@ msgid "missing type identifier"
 msgstr "缺少类型标识符"
 
 #: codetoolsstrconsts.ctsnameddirectory
+#, object-pascal-format
 msgid "%s Directory"
 msgstr "%s目录"
 
 #: codetoolsstrconsts.ctsnamedproject
+#, object-pascal-format
 msgid "%s Project"
 msgstr "%s工程"
 
 #: codetoolsstrconsts.ctsneededbymode
+#, object-pascal-format
 msgid " (needed by mode \"%s\")"
 msgstr " (需要的模式\"%s\")"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
+#, object-pascal-format
 msgid "Nested %s definitions are not allowed"
 msgstr ""
 
@@ -627,6 +682,7 @@ msgid "nodefault specifier defined twice"
 msgstr ""
 
 #: codetoolsstrconsts.ctsnopascalcodefound
+#, object-pascal-format
 msgid "no pascal code found (first token is %s)"
 msgstr ""
 
@@ -635,6 +691,7 @@ msgid "No scanner available"
 msgstr "没有扫描仪可用"
 
 #: codetoolsstrconsts.ctsnoscannerfound
+#, object-pascal-format
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr ""
 
@@ -643,18 +700,22 @@ msgid "Not enough actual generic parameters"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
+#, object-pascal-format
 msgid "old method not found: %s"
 msgstr "旧method未找到: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
+#, object-pascal-format
 msgid "operand expected but %s found"
 msgstr "操作数(operand)被要求. 但是%s找到"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
+#, object-pascal-format
 msgid "operand expected, but %s found"
 msgstr "操作数(operand)被要求. 但是%s找到"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
 msgstr "要求运算符,但是%s找到 "
@@ -664,15 +725,18 @@ msgid "unexpected end of file (operator expected)"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
+#, object-pascal-format
 msgid "operator expected but %s found"
 msgstr "要求运算符 但是%s找到 "
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr "要求运算符,但是%s找到 "
 
 #: codetoolsstrconsts.ctsothercompilerdefines
+#, object-pascal-format
 msgid "%s Compiler Defines"
 msgstr "%s编译器定义"
 
@@ -713,6 +777,7 @@ msgid "processor specific"
 msgstr "指定处理器"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
+#, object-pascal-format
 msgid "property type expected, but %s found"
 msgstr "要求属性类型, 但%s找到"
 
@@ -721,10 +786,12 @@ msgid "property Current not found"
 msgstr "属性当前未找到"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
+#, object-pascal-format
 msgid "property specifier already defined: %s"
 msgstr "属性区分符已经定义: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
+#, object-pascal-format
 msgid "qualifier expected but %s found"
 msgstr "限定词(qualifier)被要求, 但是%s找到"
 
@@ -741,10 +808,12 @@ msgid "Runtime library"
 msgstr "运行时库"
 
 #: codetoolsstrconsts.ctsscannedfiles
+#, object-pascal-format
 msgid "Scanned files: %s"
 msgstr "扫描文件:%s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
+#, object-pascal-format
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; 被要求在\"%s\"属性分类符(specifier),但是%s找到"
 
@@ -753,10 +822,12 @@ msgid "semicolon not found"
 msgstr "分号未找到"
 
 #: codetoolsstrconsts.ctssetsincpathto
+#, object-pascal-format
 msgid "sets IncPath to %s"
 msgstr "设置IncPath到%s"
 
 #: codetoolsstrconsts.ctssetssrcpathto
+#, object-pascal-format
 msgid "sets SrcPath to %s"
 msgstr "设置SrcPath到%s"
 
@@ -769,6 +840,7 @@ msgid "source is not unit"
 msgstr "代码不是单元"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
+#, object-pascal-format
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "源代码未找到:单元%s.检查你的FPC源代码目录."
 
@@ -777,6 +849,7 @@ msgid "SrcPath Initialization"
 msgstr "SrcPath初始化"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
+#, object-pascal-format
 msgid "expected %s, but %s found"
 msgstr "要求%s , 但是%s被找到"
 
@@ -785,6 +858,7 @@ msgid "string constant"
 msgstr "字符串常量"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
+#, object-pascal-format
 msgid "Syntax Error in expression \"%s\""
 msgstr "表达式语法错误\"%s\""
 
@@ -793,6 +867,7 @@ msgid "Term has no simple type"
 msgstr ""
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
+#, object-pascal-format
 msgid "then expected, but %s found"
 msgstr "要求then, 但是%s被找到 "
 
@@ -833,26 +908,32 @@ msgid "unexpected end of source"
 msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
+#, object-pascal-format
 msgid "unexpected keyword \"%s\""
 msgstr "意外关键字\"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
+#, object-pascal-format
 msgid "unexpected keyword %s"
 msgstr "意外关键字%s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in asm block found"
 msgstr "意外关键字\"%s\"在asm语句块中找到"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in begin..end found"
 msgstr "意外关键字\"%s\"在begin..end语句块中找到"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
+#, object-pascal-format
 msgid "unexpected section keyword %s found"
 msgstr ""
 
@@ -861,6 +942,7 @@ msgid "unexpected subrange operator '..' found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsunitnotfound
+#, object-pascal-format
 msgid "unit not found: %s"
 msgstr "单元未找到: %s"
 
@@ -869,6 +951,7 @@ msgid "UnitPath Initialization"
 msgstr "UnitPath初始化"
 
 #: codetoolsstrconsts.ctsunknownfunction
+#, object-pascal-format
 msgid "Unknown function %s"
 msgstr "未知的函数%s"
 
@@ -877,6 +960,7 @@ msgid "(unknown mainfilename)"
 msgstr "(未知主文件名)"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
+#, object-pascal-format
 msgid "(unknown subdescriptor %s)"
 msgstr "(未知的子描述符: %s)"
 
@@ -897,6 +981,7 @@ msgid "var is only allowed in generics, end of class not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctswordnotfound
+#, object-pascal-format
 msgid "\"%s\" not found"
 msgstr "\"%s\"未找到"
 

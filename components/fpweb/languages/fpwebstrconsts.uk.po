@@ -158,6 +158,7 @@ msgid "Submit"
 msgstr "Відіслати"
 
 #: fpwebstrconsts.shtmltagproperty
+#, object-pascal-format
 msgid "Tag property: %s"
 msgstr "Властивість тега: %s"
 

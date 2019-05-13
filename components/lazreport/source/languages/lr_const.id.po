@@ -256,6 +256,7 @@ msgid "0"
 msgstr "0"
 
 #: lr_const.sclassobjectnotfound
+#, object-pascal-format
 msgid "Class Object \"%s\" not found"
 msgstr "Class Object \"%s\" tidak ditemukan"
 
@@ -754,6 +755,7 @@ msgid "Version"
 msgstr ""
 
 #: lr_const.sduplicatedobjectname
+#, object-pascal-format
 msgid "An object named \"%s\" already exists"
 msgstr ""
 
@@ -1777,6 +1779,7 @@ msgid "Invalid report format"
 msgstr ""
 
 #: lr_const.sinvalidvariablename
+#, object-pascal-format
 msgid "\"%s\" is not a valid variable name."
 msgstr ""
 
@@ -1834,6 +1837,7 @@ msgid "Object inspector"
 msgstr "Inspektor obyek"
 
 #: lr_const.sobjectnotfound
+#, object-pascal-format
 msgid "Object \"%s\" not found"
 msgstr ""
 
@@ -2580,10 +2584,12 @@ msgid "Report file"
 msgstr "File laporan"
 
 #: lr_const.sreportcorruptoldknowversion
+#, object-pascal-format
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
 msgstr ""
 
 #: lr_const.sreportcorruptunknownversion
+#, object-pascal-format
 msgid "This report is corrupt, frVersion=%d"
 msgstr ""
 

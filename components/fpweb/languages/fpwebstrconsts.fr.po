@@ -156,6 +156,7 @@ msgid "Submit"
 msgstr "Soumettre"
 
 #: fpwebstrconsts.shtmltagproperty
+#, object-pascal-format
 msgid "Tag property: %s"
 msgstr "Propriété de balise : %s"
 

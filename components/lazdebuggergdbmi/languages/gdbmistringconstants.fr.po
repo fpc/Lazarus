@@ -17,70 +17,87 @@ msgid "Debugger"
 msgstr "Débogueur"
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, object-pascal-format
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"Ok\" pour retirer les points d'arrêt et continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
+#, object-pascal-format
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
 msgstr "Le débogueur n'a pas pu placer un point d'arrêt sur le point d'entrée de l'application. %0:sCeci peut être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
+#, object-pascal-format
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
 msgstr "Le débogueur n'a pas pu lancer l'application. %0:sCeci pourrait être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+#, object-pascal-format
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
 msgstr "Le débogueur n'a pas pu obtenir le PID de l'application.%0:sCeci peut être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+#, object-pascal-format
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "Le débogueur n'a pas pu s'initialiser. %0:sL'application a été lancée (et arrêtée) avant que le débogueur n'ait pu mettre un point d'arrêt. %0:sCela peut être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmierroronruncommand
+#, object-pascal-format
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"Ok\" pour continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, object-pascal-format
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sEn plus de l'erreur, l'avertissement suivant a été rencontré : %0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
+#, object-pascal-format
 msgid "Error in: %1:s %0:s"
 msgstr "Erreur en : %1:s %0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommanderror
+#, object-pascal-format
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
 msgstr "%0:sLa commande GDB : %0:s\"%1:s\"%0:sa renvoyé l'erreur : %0:s\"%2:s\"%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+#, object-pascal-format
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
 msgstr "%0:sLa commande GDB : %0:s\"%1:s\"%0:sn'a pas renvoyé de résultat.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedread
+#, object-pascal-format
 msgid "%0:sCould not read output from GDB.%0:s"
 msgstr "%0:sImpossible de lire la sortie de GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+#, object-pascal-format
 msgid "%0:sCould not send a command to GDB.%0:s"
 msgstr "%0:sImpossible d'envoyer une commande à GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfogdbgone
+#, object-pascal-format
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sLe processus GDB n'est plus en cours d'exécution.%0:s"
 
 #: gdbmistringconstants.gdbmieventlogdebugoutput
+#, object-pascal-format
 msgid "Debug Output: %s"
 msgstr "Sortie de débogage : %s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
+#, object-pascal-format
 msgid "GDB has encountered an internal error: %s"
 msgstr "GDB a rencontré une erreur interne : %s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
+#, object-pascal-format
 msgid "File '%s' has no debug symbols"
 msgstr "Le fichier \"%s\" n'a pas de symboles de débogage"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
+#, object-pascal-format
 msgid "Process Exit: %s"
 msgstr "Sortie du processus : %s"
 
@@ -89,6 +106,7 @@ msgid "Process Exit: normally"
 msgstr "Sortie du processus : normale"
 
 #: gdbmistringconstants.gdbmieventlogprocessstart
+#, object-pascal-format
 msgid "Process Start: %s"
 msgstr "Démarrage du processus : %s"
 
@@ -97,6 +115,7 @@ msgid "Failed to create process for GDB"
 msgstr "Impossible de créer de processus pour GDB"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
+#, object-pascal-format
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
 msgstr "L'EDI a été incapable d'arrêter le processus GDB. Ce processus est peut-être resté en fonctionnement hors de contrôle de l'EDI. %0:sPour être sûr que ce processus n'affecte pas votre système, vous devez le localiser et l'arrêter vous-même."
 
@@ -105,18 +124,22 @@ msgid "GDB did not terminate"
 msgstr "GDB ne s'est pas arrêté"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
+#, object-pascal-format
 msgid "Unrecoverable error: \"%s\""
 msgstr "Erreur irrécupérable : \"%s\""
 
 #: gdbmistringconstants.gdbmigdbinternalerror
+#, object-pascal-format
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
 msgstr "GDB a rencontré une erreur interne : %0:sAppuyez sur \"Ok\" pour continuer le débogage. Ceci peut ne PAS être sûr.%0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
+#, object-pascal-format
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
 msgstr "Pendant l'exécution de la commande : %0:s\"%2:s\"%0:sGDB a signalé : %0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, object-pascal-format
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "Appuyez sur \"Ignorer\" pour continuer le débogage. Ceci peut ne PAS être sûr. Appuyez sur \"Abandonner\" pour arrêter le débogage. %0:sException : %1:s avec le message \"%2:s\"%0:sContexte : %4:s. État : %5:s %0:s%0:s%3:s"
 
@@ -125,10 +148,12 @@ msgid "The debugger experienced an unknown condition"
 msgstr "Le débogueur a rencontré une condition inconnue"
 
 #: gdbmistringconstants.gdbmitimeoutforcmd
+#, object-pascal-format
 msgid "Time-out for command: \"%s\""
 msgstr "Dépassement de délai pour la commande : \"%s\""
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+#, object-pascal-format
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
 msgstr "Le débogueur a rencontré une situation inattendue %1:s%0:s%0:sAppuyez sur \"Ok\" pour continuer le débogage (en pause).%0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
 
@@ -137,6 +162,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "Le débogueur GNU avec SSH permet le débogage à distance via une connexion SSH. Voir \"docs/RemoteDebugging.txt\" pour plus de détails. Le chemin doit contenir le client SSH. Utilisez SSH_Startup_Options pour le nom de l'hôte et pour le nom d'utilisateur optionnel. Utilisez Remote_GDB_Exe comme nom de fichier de GDB sur l'ordinateur distant."
 
 #: gdbmistringconstants.lisresponsecontinue
+#, object-pascal-format
 msgid "Response: %sContinue?"
 msgstr "Réponse : %sVoulez-vous continuer ?"
 
@@ -145,6 +171,7 @@ msgid "Timeout has occurred:"
 msgstr "Une temporisation est survenue :"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, object-pascal-format
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Résultat inattendu :%sLe débogueur va s'arrêter."
 
@@ -165,6 +192,7 @@ msgid "Failed to load application executable"
 msgstr "Impossible de charger l'exécutable de l'application"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
+#, object-pascal-format
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr "Le débogueur a été incapable de mettre les points d'arrêt pendant l'initialisation. %0:sVeuillez vérifier que tous les fichiers sources ont été compilés avec les informations de débogage. %0:sAppuyez sur \"Ok\" pour ignorer cet avertissement et continuer."
 

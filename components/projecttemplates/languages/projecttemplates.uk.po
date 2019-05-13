@@ -22,14 +22,17 @@ msgid "&OK"
 msgstr "&Гаразд"
 
 #: projecttemplates.serrcouldnotcreatedir
+#, object-pascal-format
 msgid "Could not create directory \"%s\""
 msgstr "Неможливо створити теку \"%s\""
 
 #: projecttemplates.serrfailedtocopyfile
+#, object-pascal-format
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Неможливо скопіювати файл \"%s\" в \"%s\""
 
 #: projecttemplates.serrnosuchtemplate
+#, object-pascal-format
 msgid "\"%s\": No such template."
 msgstr "\"%s\": Немає такого шаблона."
 

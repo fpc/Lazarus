@@ -12,6 +12,7 @@ msgstr ""
 "Language: pt_BR\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+#, object-pascal-format
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Um lado livre de um \"splitter\" não deve estar ancorado: Nó=\"%s\" Tipo=%s Âncoras[%s]=\"%s\""
 
@@ -24,18 +25,22 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Quantidade de \"pixels\" que o mouse deve arrastar antes que arrastar se inicie"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Âncora não é \"splitter\": Nó=\"%s\" Âncoras[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
+#, object-pascal-format
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Âncora não encontrada: Nó=\"%s\" Âncoras[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Âncora no lado errado do \"splitter\": Nó=\"%s\" Âncora[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+#, object-pascal-format
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Uma página não deve estar ancorada: Nó=\"%s\" Pai=%s Tipo Pai=%s Âncoras[%s]=\"%s\""
 
@@ -56,6 +61,7 @@ msgid "control is already a docksite"
 msgstr "controle já é um local de ancoragem"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+#, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Local de ancoragem customizado \"%s\" só pode ter um local."
 
@@ -68,6 +74,7 @@ msgid "Docking options"
 msgstr "Opções Ancoragem"
 
 #: anchordockstr.adrsdraganddockc
+#, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Use o mouse para arrastar e ancorar a janela \"%s\""
 
@@ -92,6 +99,7 @@ msgid "Enlarge"
 msgstr "Alongar"
 
 #: anchordockstr.adrsenlargeside
+#, object-pascal-format
 msgid "Enlarge %s side"
 msgstr "Alongar lado %s"
 
@@ -196,18 +204,22 @@ msgid "No captions for floating sites"
 msgstr "Sem títulos para locais flutuantes"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
+#, object-pascal-format
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Nenhum filho permitido para o Nó=\"%s\" Tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
+#, object-pascal-format
 msgid "Not supported: %s has parent %s"
 msgstr "Não suportado: %s tem pai %s"
 
 #: anchordockstr.adrsquit
+#, object-pascal-format
 msgid "Quit %s"
 msgstr "Sair %s"
 
 #: anchordockstr.adrsrequestedbutcreated
+#, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "%s requerido, mas %s criado"
 
@@ -248,6 +260,7 @@ msgid "Tab position"
 msgstr "Posição Aba"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+#, object-pascal-format
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
 msgstr "Existe outro gerenciador de âncoras instalado. Apenas um pacote de ancoragem deve estar instalado. Favor desinstalar o gerenciador %s e reiniciar a IDE"
 
@@ -256,6 +269,7 @@ msgid "top"
 msgstr "topo"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+#, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "Para usar a ancoragem, deve-se primeiro desinstalar %s"
 

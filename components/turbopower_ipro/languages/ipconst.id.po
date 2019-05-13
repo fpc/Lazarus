@@ -10,54 +10,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ipconst.cacheadding
+#, object-pascal-format
 msgid "Caching item (%s = %s)"
 msgstr "Men-cache item (%s = %s)"
 
 #: ipconst.cachecheckfreshness
+#, object-pascal-format
 msgid "Checking Freshness (%s)"
 msgstr "Memeriksa Kesegaran (%s)"
 
 #: ipconst.cachedirnotexist
+#, object-pascal-format
 msgid "Cache directory %s does not exist."
 msgstr "Direktori cache %s tidak ada."
 
 #: ipconst.cacheretrieving
+#, object-pascal-format
 msgid "Loading from Cache (%s = %s)"
 msgstr "Mengambil dari Cache (%s = %s)"
 
 #: ipconst.httpcantloadgraphic
+#, object-pascal-format
 msgid "Unable to load graphic %s"
 msgstr "Tidak bisa mengambil grafik %s"
 
 #: ipconst.httpconnect
+#, object-pascal-format
 msgid "Connected: (%s)"
 msgstr "Tersambung: (%s)"
 
 #: ipconst.httpdisconnect
+#, object-pascal-format
 msgid "Disconnected: (%s), %s Total bytes received"
 msgstr "Diputuskan: (%s), %s Total byte diterima"
 
 #: ipconst.httpdownload
+#, object-pascal-format
 msgid "Download: (%s), Error downloading"
 msgstr "Download: (%s), Kesalahan men-download"
 
 #: ipconst.httpget
+#, object-pascal-format
 msgid "GET: (%s)"
 msgstr "GET: (%s)"
 
 #: ipconst.httpgeterror
+#, object-pascal-format
 msgid "GET: (%s) FAILED"
 msgstr "GET: (%s) GAGAL"
 
 #: ipconst.httpgotheader
+#, object-pascal-format
 msgid "Download: (%s), Got Header Data"
 msgstr "Download: (%s), Didapat Data Header"
 
 #: ipconst.httphead
+#, object-pascal-format
 msgid "HEAD: (%s)"
 msgstr "HEAD: (%s)"
 
 #: ipconst.httpheaderror
+#, object-pascal-format
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) GAGAL"
 
@@ -66,22 +79,27 @@ msgid "No Header Data for Entity"
 msgstr "Tidak ada Data Header untuk Entitas"
 
 #: ipconst.httppost
+#, object-pascal-format
 msgid "POST: (%s)"
 msgstr "POST: (%s)"
 
 #: ipconst.httpposterror
+#, object-pascal-format
 msgid "POST: (%s) FAILED"
 msgstr "POST: (%s) GAGAL"
 
 #: ipconst.httpprogress
+#, object-pascal-format
 msgid "Progress Made: (%s), %s bytes received"
 msgstr "Progres Dibuat: (%s), %s byte diterima"
 
 #: ipconst.httpsizemismatch
+#, object-pascal-format
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
 msgstr "Download: (%s), Ukuran salah mengharapkan %s , didapat %s"
 
 #: ipconst.providerunknownformat
+#, object-pascal-format
 msgid "Don't know how to handle %s"
 msgstr "Tidak tahu bagaimana untuk menangani %s"
 
@@ -90,10 +108,12 @@ msgid "Invalid picture format"
 msgstr "Format gambar tidak benar"
 
 #: ipconst.providerunknownrequest
+#, object-pascal-format
 msgid "Unknown request type \"%s\""
 msgstr "Tipe permintaan \"%s\" tidak dikenal"
 
 #: ipconst.saccessprocerr
+#, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"
 msgstr "Kesalahan Win32 mengambil '%s' pointer: %s"
 
@@ -110,6 +130,7 @@ msgid "Attempting to write "
 msgstr "Mencoba untuk menulis "
 
 #: ipconst.sbadframelistobject
+#, object-pascal-format
 msgid "Unrecognized object of class %s in GIF Frame List"
 msgstr "Obyek kelas %s dalam Daftar Bingkai GIF tidak dikenal"
 
@@ -181,6 +202,7 @@ msgid "Resource fork present"
 msgstr "Garpu sumber daya ada"
 
 #: ipconst.sbrokerdownloadreq
+#, object-pascal-format
 msgid "Download %s?"
 msgstr "Download %s?"
 
@@ -209,6 +231,7 @@ msgid "Cannot write to stream"
 msgstr "Tidak bisa menulis ke stream"
 
 #: ipconst.scounttoosmall
+#, object-pascal-format
 msgid "%s: new count too small"
 msgstr "%s: jumlah baru terlalu kecil"
 
@@ -217,11 +240,12 @@ msgid "Destroying"
 msgstr "Menghancurkan"
 
 #: ipconst.seventconnect
+#, object-pascal-format
 msgid "Connect: Loc: %s Rem: %s"
 msgstr "Sambung: Lok: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "Close:   Loc: %s Rem: %s"
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Tutup:   Lok: %s Rem: %s"
@@ -375,6 +399,7 @@ msgid "Invalid value type specified"
 msgstr "Tipe nilai yang ditetapkan tidak benar"
 
 #: ipconst.shtmllineerror
+#, object-pascal-format
 msgid "Error \"%s\" at line %d, position %d"
 msgstr "Kesalahan \"%s\" di baris %d, posisi %d"
 
@@ -407,10 +432,12 @@ msgid "Unknown token"
 msgstr "Token tidak dikenal"
 
 #: ipconst.shtmlunsupprotocol
+#, object-pascal-format
 msgid "Unsupported protocol in URL:%s"
 msgstr "Protokol dalam URL tidak didukung:%s"
 
 #: ipconst.sicmpecho
+#, object-pascal-format
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"
@@ -421,26 +448,32 @@ msgid ""
 msgstr ""
 
 #: ipconst.sicmpechostring
+#, object-pascal-format
 msgid "Echo string: %s"
 msgstr "String echo: %s"
 
 #: ipconst.sicmppingstart
+#, object-pascal-format
 msgid "Pinging %s with %d bytes data"
 msgstr "Ping %s dengan %d byte data"
 
 #: ipconst.sicmpthreadexecute
+#, object-pascal-format
 msgid "Thread %d executing (Hop number = %d)"
 msgstr "Thread %d berjalan (nomor Hop = %d)"
 
 #: ipconst.sicmpthreadterminate
+#, object-pascal-format
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Thread %d berakhir (nomor Hop = %d)"
 
 #: ipconst.sicmptracecomplete
+#, object-pascal-format
 msgid "Trace complete (%s), %d hops"
 msgstr "Pelacakan selesai (%s), %d hops"
 
 #: ipconst.sicmptracestart
+#, object-pascal-format
 msgid "Trace to %s started"
 msgstr "Melacak %s dimulai"
 
@@ -541,6 +574,7 @@ msgid "Unknown status"
 msgstr "Status tidak dikenal"
 
 #: ipconst.slesszero
+#, object-pascal-format
 msgid "%s: new col count %d is less than zero"
 msgstr "%s: jumlah kol baru %d kurang dari nol"
 
@@ -941,10 +975,12 @@ msgid "You must specify a file name for TIpMemMapStream"
 msgstr "Anda harus menetapkan nama file untuk TIpMemMapStream"
 
 #: ipconst.smemmapmustbeclosed
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
 msgstr "Metode %s memerlukan turunan TIpMemMapStream untuk ditutup"
 
 #: ipconst.smemmapmustbeopen
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
 msgstr "Metode %s memerlukan turunan TIpMemMapStream untuk dibuka"
 
@@ -1083,6 +1119,7 @@ msgid "Stream not assigned"
 msgstr "Stream tidak ditempati"
 
 #: ipconst.snotenoughdata
+#, object-pascal-format
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
 msgstr "Data tidak cukup dalam antrian (%s byte) untuk memuaskan permintaan baca (%s byte)"
 
@@ -1091,6 +1128,7 @@ msgid "Not enough system timers available"
 msgstr "Timer sistem tidak cukup tersedia"
 
 #: ipconst.snowinsock2err
+#, object-pascal-format
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
 msgstr "%s memerlukan WinSock 2, dan sistem ini hanya memiliki WinSock 1"
 
@@ -1251,14 +1289,17 @@ msgid "When origin is soFromEnd, Offset must be <= 0"
 msgstr "Ketika asal adalah soFromEnd, Ofset harus <= 0"
 
 #: ipconst.spngbadbitdepth
+#, object-pascal-format
 msgid "Unsupported Bit Depth of %d"
 msgstr "Kedalaman Bit %d Tidak Didukung"
 
 #: ipconst.spngbadchunktype
+#, object-pascal-format
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Tipe Chunk Tidak Dikenal: %s"
 
 #: ipconst.spngbadcolortype
+#, object-pascal-format
 msgid "Unrecognized color type of %d"
 msgstr "Tipe warna %d tidak dikenal"
 
@@ -1275,6 +1316,7 @@ msgid "Invalid Palette Length"
 msgstr "Panjang Palet Tidak Bena"
 
 #: ipconst.spngbadpixeldepth
+#, object-pascal-format
 msgid "Unrecognized pixel depth of %d"
 msgstr "Kedalaman pixel %d tidak dikenal"
 
@@ -1283,6 +1325,7 @@ msgid "Invalid PNG Signature"
 msgstr "Tanda PNG Tidak Benar"
 
 #: ipconst.spngbitdepth
+#, object-pascal-format
 msgid "Bit Depth: %d"
 msgstr "Kedalaman Bit: %d"
 
@@ -1295,22 +1338,27 @@ msgid "PNG Saving is not supported"
 msgstr "Penyimpanan PNG tidak didukung"
 
 #: ipconst.spngchunkidandlength
+#, object-pascal-format
 msgid "PNG Chunk: %s  Length: %d"
 msgstr "PNG Chunk: %s  Panjang: %d"
 
 #: ipconst.spngcolortype
+#, object-pascal-format
 msgid "Color Type: %d"
 msgstr "Tipe Warna: %d"
 
 #: ipconst.spngcompressionmethod
+#, object-pascal-format
 msgid "Compression Method: %d"
 msgstr "Metode Kompresi: %d"
 
 #: ipconst.spngdefilterpass
+#, object-pascal-format
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
 msgstr "Unfiltering Pass %d  Ukuran: %dx%d  Dari: %dx%d"
 
 #: ipconst.spngeffectivefilter
+#, object-pascal-format
 msgid "Effective filter is %s"
 msgstr "Filter efektif adalah %s"
 
@@ -1319,10 +1367,12 @@ msgid "**** ERROR ****"
 msgstr "**** SALAH ****"
 
 #: ipconst.spngfilterchange
+#, object-pascal-format
 msgid "Filter changed on Row %d to %x"
 msgstr "Filter berubah pada Baris %d ke %x"
 
 #: ipconst.spngfiltermethod
+#, object-pascal-format
 msgid "Filter Method: %d"
 msgstr "Metode Filter: %d"
 
@@ -1335,6 +1385,7 @@ msgid "gAMA chunk is short"
 msgstr "Bagian Gama pendek"
 
 #: ipconst.spnggammacorrection
+#, object-pascal-format
 msgid "Gamma Correction: %f"
 msgstr "Koreksi Gama: %f"
 
@@ -1347,14 +1398,17 @@ msgid "IHDR chunk is short."
 msgstr "Bagian IHDR pendek."
 
 #: ipconst.spngimagesize
+#, object-pascal-format
 msgid "Image size is %dx%d pixels"
 msgstr "Ukuran gambar adalah %dx%d pixel"
 
 #: ipconst.spnginterlacemethod
+#, object-pascal-format
 msgid "Interlace Method: %d"
 msgstr "Metode Interlace: %d"
 
 #: ipconst.spngmemoryrequired
+#, object-pascal-format
 msgid "Memory required for image: %d bytes"
 msgstr "Memori yang diperlukan untuk gambar: %d byte"
 
@@ -1367,6 +1421,7 @@ msgid "IHDR Chunk is missing"
 msgstr "IHDR Chunk hilang"
 
 #: ipconst.spngmodificationdate
+#, object-pascal-format
 msgid "Modification Date: %s"
 msgstr "Tanggal Modifikasi: %s"
 
@@ -1375,6 +1430,7 @@ msgid "PNG Clipboard support is not supported."
 msgstr "Dukungan Clipboard PNG tidak didukung"
 
 #: ipconst.spngpaletteentry
+#, object-pascal-format
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
 msgstr "Entri Palet %d - Merah: %d   Hijau: %d   Biru: %d"
 
@@ -1383,6 +1439,7 @@ msgid "Too many palette entries"
 msgstr "Terlalu banyak entri palet"
 
 #: ipconst.spngpalettetransparency
+#, object-pascal-format
 msgid "Palette Transparency: %d  Alpha %d"
 msgstr "Transparansi Palet: %d  Alfa %d"
 
@@ -1395,6 +1452,7 @@ msgid "tIME chunk is short."
 msgstr "Bagian Jam pendek"
 
 #: ipconst.spngtransparentcolor
+#, object-pascal-format
 msgid "Transparent Color: %x"
 msgstr "Warna Transparan: %x"
 
@@ -1407,6 +1465,7 @@ msgid "Chunk data is truncated"
 msgstr "Bagian data terpotong"
 
 #: ipconst.spngunsupportedfeature
+#, object-pascal-format
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
 msgstr "Bagian %s ditemukan dalam file PNG. Fitur ini tidak didukung dalam versi dekoder PNG"
 
@@ -1470,10 +1529,12 @@ msgid "-ERR"
 msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
+#, object-pascal-format
 msgid "%s can not be called in transaction state"
 msgstr ""
 
 #: ipconst.spop3nottransacting
+#, object-pascal-format
 msgid "%s can not be called in authentication state"
 msgstr ""
 
@@ -1482,6 +1543,7 @@ msgid "+OK"
 msgstr "+OK"
 
 #: ipconst.sposreqd
+#, object-pascal-format
 msgid "%s: count must be positive"
 msgstr "%s: jumlah harus positif"
 
@@ -1647,6 +1709,7 @@ msgid "Disconnected"
 msgstr "Terputus"
 
 #: ipconst.sraserr
+#, object-pascal-format
 msgid "Ras Error (%d): on API '%s'"
 msgstr "Ras Salah (%d): pada API '%s'"
 
@@ -1719,14 +1782,17 @@ msgid "Renamed disk file to "
 msgstr "Mengganti file disk ke "
 
 #: ipconst.srowcoloor
+#, object-pascal-format
 msgid "%s: either row %d or col %d is out of range"
 msgstr "%s: baik baris %d ataupun kolom %d di luar jangkauan"
 
 #: ipconst.srowoor
+#, object-pascal-format
 msgid "%s: row number is out of range"
 msgstr "%s: nomor baris di luar jangkauan"
 
 #: ipconst.srowrowoor
+#, object-pascal-format
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
 msgstr "TIpTerminalArray.ScrollRows: baik baris awal %d ataupun baris akhir %d di luar jangkauan"
 
@@ -1947,6 +2013,7 @@ msgid "Unknown response code"
 msgstr "Kode respon tidak dikenal"
 
 #: ipconst.ssockserr
+#, object-pascal-format
 msgid "SOCKS request refused - %d"
 msgstr "Permintaan SOCKS ditolak - %d"
 
@@ -2259,10 +2326,12 @@ msgid "Count <> Len or Count > 63"
 msgstr "Count <> Len atau Count > 63"
 
 #: ipconst.swebimagecannotload
+#, object-pascal-format
 msgid "Cannot load %s"
 msgstr "Tidak bisa mengambil %s"
 
 #: ipconst.swebimagenotfound
+#, object-pascal-format
 msgid "%s was not found"
 msgstr "%s tidak ditemukan"
 
@@ -2271,6 +2340,7 @@ msgid "Cannot load image from stream"
 msgstr "Tidak bisa mengambil gambar dari stream"
 
 #: ipconst.swinsockerr
+#, object-pascal-format
 msgid "WinSock Error (%d): %s, on API '%s'"
 msgstr "WinSock Salah (%d): %s, pada API '%s'"
 

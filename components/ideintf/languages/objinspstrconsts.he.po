@@ -83,6 +83,7 @@ msgid "On Add, Check for Duplicate in Items"
 msgstr "בהוספה, בדוק אם יש פריטים כפולים"
 
 #: objinspstrconsts.cgcheckduplicatemsg
+#, object-pascal-format
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "הפריט \"%s\" כבר ברשימה. להוסיף בכל זאת?"
 
@@ -111,6 +112,7 @@ msgid "Delete the Item"
 msgstr "מחק את הפריט"
 
 #: objinspstrconsts.clbdeletequest
+#, object-pascal-format
 msgid "Delete the Item %d \"%s\"?"
 msgstr "למחוק את הפריט %d \"%s\" ?"
 
@@ -184,7 +186,7 @@ msgid "Edit Fields ..."
 msgstr "ערוך שדות ..."
 
 #: objinspstrconsts.fesfieldcantbec
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Field %s cannot be created!"
 msgstr "אי אפשר ליצור את השדה s%"
 
@@ -295,10 +297,12 @@ msgid "Set value"
 msgstr "קבע ערך"
 
 #: objinspstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
 msgid "Unable to find parser for tool \"%s\""
 msgstr ""
 
 #: objinspstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
 msgid "Unable to find parser with name \"%s\""
 msgstr ""
 
@@ -368,7 +372,7 @@ msgid "0 lines, 0 chars"
 msgstr "אפס שורות, אפס תווים"
 
 #: objinspstrconsts.ois1linedchars
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "1 line, %d chars"
 msgstr "שורה אחת, תווים d%"
 
@@ -479,7 +483,7 @@ msgid "Clear picture"
 msgstr "נקה תמונה"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "שם הרכיב   %s%s%s אינו מזהה חוקי"
@@ -533,7 +537,7 @@ msgid "&Delete"
 msgstr "מחק"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "למחוק פריט %s%s%s ?"
@@ -547,7 +551,7 @@ msgid "Delete selected field(s)"
 msgstr "מחק את השדה(ות) שנבחרו"
 
 #: objinspstrconsts.oisdlinesdchars
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "%d lines, %d chars"
 msgstr "שורות d%, תווים d%"
 
@@ -568,12 +572,13 @@ msgid "Error loading image"
 msgstr "שגיאה בעריכת דמות"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "שגיאה בטעינת דמות %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
+#, object-pascal-format
 msgid "Error while deleting action:%s%s"
 msgstr "שגיאה בזמן מחיקת פעולה: %s%s"
 
@@ -640,17 +645,18 @@ msgid "Invalid property value"
 msgstr "ערך לא חוקי של תכונה"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
 msgstr "זה לא שם חוקי של מתודה %s%s%"
 
 #: objinspstrconsts.oisitemsselected
+#, object-pascal-format
 msgid "%u items selected"
 msgstr "פריטים %u נבחרו"
 
 #: objinspstrconsts.oisjumptodeclarationof
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Jump to declaration of %s"
 msgstr "קפוץ להצהרה של s%"
 
@@ -783,7 +789,7 @@ msgid "Properties"
 msgstr "תכונות"
 
 #: objinspstrconsts.oispropertiesof
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Properties of %s"
 msgstr "תכונות של s%"
 
@@ -860,6 +866,7 @@ msgid "Set"
 msgstr "קבע"
 
 #: objinspstrconsts.oissetmaxconstraints
+#, object-pascal-format
 msgid "Set MaxHeight=%d, MaxWidth=%d"
 msgstr ""
 
@@ -868,6 +875,7 @@ msgid "Use current size as Max Constraints"
 msgstr ""
 
 #: objinspstrconsts.oissetminconstraints
+#, object-pascal-format
 msgid "Set MinHeight=%d, MinWidth=%d"
 msgstr ""
 
@@ -876,7 +884,7 @@ msgid "Use current size as Min Constraints"
 msgstr ""
 
 #: objinspstrconsts.oissettodefault
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Set to default: %s"
 msgstr "קבע כברירת מחדל: s%"
 
@@ -1238,25 +1246,25 @@ msgid "Test Input"
 msgstr "קלט נסיון"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "המזהה %s%s%s אינו מתודה. לחץ ביטול כדי לבטל את הפעולה, לחץ התעלם כדי לכפות אותו."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "המתודה %s%s%s אינה תואמת למאורע זה (s%). לחץ ביטול כדי לבטל את הפעולה, לחץ התעלם כדי לכפות אותו."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "המתודה %s%s%s אינה מסוג published. לחץ ביטול כדי לבטל, לחץ התעלם כדי לכפות זאת."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr "לא יכוללשנות את ההורה של הפקד %s%s%s להורה חדש %s%s%s.%s%s"

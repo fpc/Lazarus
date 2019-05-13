@@ -13,10 +13,12 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #: iputils.slongversion
+#, object-pascal-format
 msgid "Version %.2f"
 msgstr "版本%.2f"
 
 #: iputils.sshortversion
+#, object-pascal-format
 msgid "v%.2f"
 msgstr "v%.2f"
 

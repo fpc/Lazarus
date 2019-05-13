@@ -13,21 +13,25 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "część ścieżki w %s nie istnieje lub jest popsutym dowiązaniem symbolicznym"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "część ścieżki w %s nie istnieje lub jest popsutym dowiązaniem symbolicznym"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
 msgstr "część ścieżki w %s nie jest katalogiem"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "część ścieżki w %s nie jest katalogiem"
@@ -37,6 +41,7 @@ msgid "boolean"
 msgstr ""
 
 #: lazutilsstrconsts.lrscannotexecute
+#, object-pascal-format
 msgid "can not execute %s"
 msgstr ""
 
@@ -53,22 +58,27 @@ msgid "Invalid number of function arguments"
 msgstr ""
 
 #: lazutilsstrconsts.lrsevalunknownfunction
+#, object-pascal-format
 msgid "Unknown function: \"%s\""
 msgstr ""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
+#, object-pascal-format
 msgid "Unknown variable: \"%s\""
 msgstr ""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
+#, object-pascal-format
 msgid "file \"%s\" does not exist"
 msgstr "plik \"%s\" nie istnieje"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+#, object-pascal-format
 msgid "file \"%s\" is a directory and not an executable"
 msgstr ""
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
+#, object-pascal-format
 msgid "%s has a circular symbolic link"
 msgstr "%s ma zapętlone dowązanie symboliczne"
 
@@ -77,19 +87,23 @@ msgid "insufficient memory"
 msgstr "brak pamięci"
 
 #: lazutilsstrconsts.lrsinvalidcharset
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
 msgid "The char set in mask \"%s\" is not valid!"
 msgstr ""
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
+#, object-pascal-format
 msgid "%s is not a symbolic link"
 msgstr ""
 
 #: lazutilsstrconsts.lrsisnotexecutable
+#, object-pascal-format
 msgid "%s is not executable"
 msgstr "%s nie jest wykonywalny"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
+#, object-pascal-format
 msgid "List index exceeds bounds (%d)"
 msgstr ""
 
@@ -143,10 +157,12 @@ msgid "Invalid primary expression"
 msgstr ""
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
+#, object-pascal-format
 msgid "program file not found %s"
 msgstr ""
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
+#, object-pascal-format
 msgid "read access denied for %s"
 msgstr ""
 
@@ -176,10 +192,12 @@ msgid "string"
 msgstr ""
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+#, object-pascal-format
 msgid "Unable to create config directory \"%s\""
 msgstr ""
 
 #: lazutilsstrconsts.lrsvarnoconversion
+#, object-pascal-format
 msgid "Conversion from %s to %s not possible"
 msgstr "Konwersja z %s na %s jest niemożliwa"
 

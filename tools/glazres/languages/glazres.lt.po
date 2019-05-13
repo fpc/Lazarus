@@ -27,43 +27,52 @@ msgid "Save resourcefile as"
 msgstr "Ištekliaus failą įrašyti kaip"
 
 #: glazresmain.errconverttotext
+#, object-pascal-format
 msgid "ERROR: unable to convert Delphi form to text: \"%s\""
 msgstr "KLAIDA: napvyko „Delphi“ formą konvertuoti į tekstą: „%s“"
 
 #: glazresmain.errcreate
+#, object-pascal-format
 msgid "ERROR: Cannot create \"%s\""
 msgstr "KLAIDA: nepavyko sukurti „%s“"
 
 #: glazresmain.errfileisresource
+#, object-pascal-format
 msgid "ERROR: Cannot add resource file to itself (\"%s\")"
 msgstr "KLAIDA: neina ištekliaus failo įdėti į patį save („%s“)"
 
 #: glazresmain.errfilenotfound
+#, object-pascal-format
 msgid "ERROR: File not found: \"%s\""
 msgstr "KLAIDA: failas nerastas: „%s“"
 
 #: glazresmain.errnoresourcename
+#, object-pascal-format
 msgid "ERROR: No resourcename found for \"%s\""
 msgstr "KLAIDA: nerastas „%s“ skirtas ištekliaus pavadinimas"
 
 #: glazresmain.errread
+#, object-pascal-format
 msgid "ERROR: Cannot read from \"%s\""
 msgstr "KLAIDA: nepavyko skaityti iš „%s“"
 
 #: glazresmain.msgcreatinglrs
+#, object-pascal-format
 msgid "Creating \"%s\""
 msgstr "Kuriamas „%s“"
 
 #: glazresmain.msgprocessing
+#, object-pascal-format
 msgid "Processing \"%s\""
 msgstr "Dorojamas „%s“"
 
 #: glazresmain.msgresourcenametype
+#, object-pascal-format
 msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr "Ištekliaus pavadinimas = „%s“, tipas = „%s“"
 
 #: glazresmain.msgsuccess
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Done.\n"
 #| "Number of resources added: %d.\n"

@@ -436,6 +436,7 @@ msgid "Whitespace"
 msgstr "Espacio en blanco"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
+#, object-pascal-format
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "La pulsación de tecla \"%s\" ya está asignada a otro comando del editor. (%s)"
 
@@ -796,14 +797,17 @@ msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.
 msgstr "Documento XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
+#, object-pascal-format
 msgid "Page: %d"
 msgstr "Página: %d"
 
 #: syneditstrconst.syns_scrollinfofmt
+#, object-pascal-format
 msgid "%d - %d"
 msgstr "%d - %d"
 
 #: syneditstrconst.syns_scrollinfofmttop
+#, object-pascal-format
 msgid "Top Line: %d"
 msgstr "Línea superior: %d"
 

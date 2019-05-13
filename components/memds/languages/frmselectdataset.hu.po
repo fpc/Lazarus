@@ -28,6 +28,7 @@ msgid "&Dataset to copy from:"
 msgstr "Adatkészlet másolása innen:"
 
 #: frmselectdataset.serrcomponentnotfound
+#, object-pascal-format
 msgid "Error: Component \"%s\" not found"
 msgstr "Hiba: A(z) \"%s\" komponens nincs meg"
 

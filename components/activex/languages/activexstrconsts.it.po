@@ -35,6 +35,7 @@ msgid "Import Type Library ..."
 msgstr "Importa una libreria di tipi ..."
 
 #: activexstrconsts.axselectdirectorytostorepackageplpk
+#, object-pascal-format
 msgid "Select directory to store package %sP.lpk"
 msgstr "Scegliere la cartella per il pacchetto %sP.lpk"
 

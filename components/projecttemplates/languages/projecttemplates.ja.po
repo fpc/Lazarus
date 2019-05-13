@@ -20,14 +20,17 @@ msgid "&OK"
 msgstr ""
 
 #: projecttemplates.serrcouldnotcreatedir
+#, object-pascal-format
 msgid "Could not create directory \"%s\""
 msgstr "ディレクトリを作成できませんでした \"%s\""
 
 #: projecttemplates.serrfailedtocopyfile
+#, object-pascal-format
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr " \"%s\" から \"%s\" へのファイルのコピーに失敗しました"
 
 #: projecttemplates.serrnosuchtemplate
+#, object-pascal-format
 msgid "\"%s\": No such template."
 msgstr "\"%s\": そのようなテンプレートはありません"
 

@@ -18,14 +18,17 @@ msgid "&OK"
 msgstr "&Aceptar"
 
 #: projecttemplates.serrcouldnotcreatedir
+#, object-pascal-format
 msgid "Could not create directory \"%s\""
 msgstr "No se puede crear el directorio \"%s\""
 
 #: projecttemplates.serrfailedtocopyfile
+#, object-pascal-format
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Ha fallado la copia del archivo \"%s\" a \"%s\""
 
 #: projecttemplates.serrnosuchtemplate
+#, object-pascal-format
 msgid "\"%s\": No such template."
 msgstr "\"%s\": No existe plantilla."
 

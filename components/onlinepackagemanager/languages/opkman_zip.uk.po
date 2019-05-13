@@ -18,10 +18,12 @@ msgid "Changing buffer size is not allowed while (un)zipping."
 msgstr "Не можна змінювати розмір буфера під час упаковування/розпаковування."
 
 #: opkman_zip.serrcorruptzip
+#, object-pascal-format
 msgid "Corrupt ZIP file %s."
 msgstr "Файл ZIP %s пошкоджений."
 
 #: opkman_zip.serrencryptionnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr "Неможливо розархівувати \"%s\": шифрування не підтримується."
 
@@ -30,22 +32,27 @@ msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "Не дозволяється змінювати назву вихідного файлу під час упаковування/розпаковування."
 
 #: opkman_zip.serrfiledoesnotexist
+#, object-pascal-format
 msgid "File \"%s\" does not exist."
 msgstr "Файл \"%s\" не знайдено."
 
 #: opkman_zip.serrinvalidcrc
+#, object-pascal-format
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "Неправильна контрольна сума CRC при розпаковуванні %s."
 
 #: opkman_zip.serrmaxentries
+#, object-pascal-format
 msgid "Encountered %d file entries; maximum supported is %d."
 msgstr "Виявлено %d файлових записів; найбільше підтримується %d."
 
 #: opkman_zip.serrmissingarchivename
+#, object-pascal-format
 msgid "Missing archive filename in streamed entry %d."
 msgstr "У виведеному запису %d відсутня назва архівного файлу."
 
 #: opkman_zip.serrmissingfilename
+#, object-pascal-format
 msgid "Missing filename in entry %d."
 msgstr "Запис %d не містить назви файлу."
 
@@ -58,14 +65,17 @@ msgid "No stream is opened."
 msgstr "Не відкрито жодного потоку."
 
 #: opkman_zip.serrpatchsetnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr "Неможливо розархівувати \"%s\": набори замінюваних даних не підтримуються."
 
 #: opkman_zip.serrpostoolarge
+#, object-pascal-format
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "Позиція/зсув %d більші, ніж найбільше підтримуване %d."
 
 #: opkman_zip.serrunsupportedcompressionformat
+#, object-pascal-format
 msgid "Unsupported compression format %d."
 msgstr "Формат стискання %d не підтримується."
 

@@ -21,10 +21,12 @@ msgid "&About ..."
 msgstr "&Apie…"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
 msgstr "Neįmanoma apdoroti šio tipo turinio. „%s“ adresui: %s%s"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "Neįmanoma apdoroti šio tipo poturinio „%s“ adresui: %s%s"
 
@@ -81,6 +83,7 @@ msgid "Index Loading ..."
 msgstr "Indeksas įkeliamas…"
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
 msgstr "    --ipcname  :  Pasiklausomo „IPC“ serverio pavadinimas, kuris%s             skirtas programoms, norinčioms kontroliuoti žiūryklę"
 
@@ -93,10 +96,12 @@ msgid "LHelp"
 msgstr "LHelp"
 
 #: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
 msgid "LHelp - %s"
 msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr "LHelp („CHM“ failų žiūryklė)%sLaida %s%sAutoriaus teisės (C) Andrew Haines, %sLazarus talkininkai"
 
@@ -105,10 +110,12 @@ msgid "  LHelp options:"
 msgstr "  LHelp parinktys:"
 
 #: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
 msgid "Loaded: %s in %sms"
 msgstr "Įkelta: %s per %s ms"
 
 #: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
 msgid "Loading: %s"
 msgstr "Įkeliama: %s"
 
@@ -117,6 +124,7 @@ msgid "No Results"
 msgstr "Rezultatų nėra"
 
 #: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
 msgid "%s not found!"
 msgstr "„%s“ nerasta!"
 
@@ -169,6 +177,7 @@ msgid "Show contents"
 msgstr "Rodyti turinį"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
 msgid "Supported URL type(s): (%s)"
 msgstr "Palaikomas adreso tipas(-ai): (%s)"
 

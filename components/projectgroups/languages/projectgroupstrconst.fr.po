@@ -20,6 +20,7 @@ msgid "Abort loading project group"
 msgstr "Arrêter le chargement du groupe de projets"
 
 #: projectgroupstrconst.lisactivetarget
+#, object-pascal-format
 msgid "Target: %s"
 msgstr "Cible : %s"
 
@@ -32,10 +33,12 @@ msgid "Be patient!"
 msgstr "Patientez !"
 
 #: projectgroupstrconst.lisbuildmode
+#, object-pascal-format
 msgid ", build mode \"%s\""
 msgstr "- mode de construction \"%s\""
 
 #: projectgroupstrconst.lisbuildmode2
+#, object-pascal-format
 msgid "Build Mode \"%s\""
 msgstr "Mode de construction  \"%s\""
 
@@ -44,14 +47,17 @@ msgid "Build mode not found"
 msgstr "Mode de construction introuvable"
 
 #: projectgroupstrconst.lisbuildmodenotfound2
+#, object-pascal-format
 msgid "Build mode \"%s\" not found."
 msgstr "Le mode de construction \"%s\" est introuvable."
 
 #: projectgroupstrconst.liscompilepackage
+#, object-pascal-format
 msgid "Compile Package %s"
 msgstr "Compiler le paquet %s"
 
 #: projectgroupstrconst.liscompileproject
+#, object-pascal-format
 msgid "Compile Project %s"
 msgstr "Compiler le projet %s"
 
@@ -60,6 +66,7 @@ msgid "Discard changes"
 msgstr "Ignorer les modifications"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, object-pascal-format
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -74,6 +81,7 @@ msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr "Seul le type de cible \"projectgroup\" est autorisé comme groupe de projets racine."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
+#, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
 msgstr "Erreur de lecture du fichier de groupe de projets \"%s\"%s%s"
 
@@ -90,6 +98,7 @@ msgid "Invalid File"
 msgstr "Fichier incorrect"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
+#, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
 msgstr "Nom de fichier XML incorrect : \"%s\"."
 
@@ -174,6 +183,7 @@ msgid "Package not found"
 msgstr "Paquet non trouvé"
 
 #: projectgroupstrconst.lispackagenotfound2
+#, object-pascal-format
 msgid "Package \"%s\" not found."
 msgstr "Paquet \"%s\" non trouvé."
 
@@ -187,10 +197,12 @@ msgid "Please save your changes before reloading the project group."
 msgstr "Veuillez enregistrer les modifications avant de recharger le groupe de projets."
 
 #: projectgroupstrconst.lisprojectgroup
+#, object-pascal-format
 msgid "Project group %s"
 msgstr "Groupe de projets %s"
 
 #: projectgroupstrconst.lisprojectgroup2
+#, object-pascal-format
 msgid "Project Group: %s"
 msgstr "Groupe de projets : %s"
 
@@ -223,6 +235,7 @@ msgid "Project group modified"
 msgstr "Groupe de projets modifié"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, object-pascal-format
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
@@ -335,6 +348,7 @@ msgid "Copy file name"
 msgstr "Copier le nom du fichier"
 
 #: projectgroupstrconst.listargetcount
+#, object-pascal-format
 msgid "%d targets"
 msgstr "%d cibles"
 
@@ -432,6 +446,7 @@ msgid "Uninstall selected target"
 msgstr "Désinstaller la cible choisie"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
+#, object-pascal-format
 msgid "The lazbuild%s was not found."
 msgstr "Le lazbuild%s est introuvable."
 
@@ -440,14 +455,17 @@ msgid "There is still another build in progress."
 msgstr "Il y a encore une construction en cours."
 
 #: projectgroupstrconst.lisunabletocreatefile
+#, object-pascal-format
 msgid "Unable to create file \"%s\": %s"
 msgstr "Impossible de créer le fichier \"%s\" : %s"
 
 #: projectgroupstrconst.lisunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\""
 msgstr "Impossible de charger le fichier \"%s\""
 
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
+#, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "Impossible d'écrire le fichier du groupe de projets \"%s\"%s%s"
 
@@ -456,6 +474,7 @@ msgid "Write error"
 msgstr "Erreur d'écriture"
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
+#, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "Erreur de syntaxe XML dans le fichier \"%s\" : %s"
 

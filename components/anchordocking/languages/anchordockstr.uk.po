@@ -14,6 +14,7 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+#, object-pascal-format
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Вільна сторона роздільника не повинна бути заякорена: Вузол=\"%s\" Тип=%s Якорі[%s]=\"%s\""
 
@@ -26,18 +27,22 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "К-сть пікселів, на яку мишка повинна переміститись перед початком перетягування"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Якір не є роздільником: Вузол=\"%s\" Якорі[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
+#, object-pascal-format
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Якір не знайдено: Вузол=\"%s\" Якорі[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Якір до неправильної сторони роздільника: Вузол=\"%s\" Якорі[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+#, object-pascal-format
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Сторінка не повинна бути заякорена: Вузол=\"%s\" Предок=%s ТипПредка=%s Якорі[%s]=\"%s\""
 
@@ -58,6 +63,7 @@ msgid "control is already a docksite"
 msgstr "об'єкт вже є областю стикування"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+#, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Власна область стикування \"%s\" може мати лише одну область."
 
@@ -70,6 +76,7 @@ msgid "Docking options"
 msgstr "Параметри стикування"
 
 #: anchordockstr.adrsdraganddockc
+#, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Викор. мишку для перетягування і стикування вікна \"%s\""
 
@@ -94,6 +101,7 @@ msgid "Enlarge"
 msgstr "Збільшити"
 
 #: anchordockstr.adrsenlargeside
+#, object-pascal-format
 msgid "Enlarge %s side"
 msgstr "Збільшити %s сторону"
 
@@ -198,18 +206,22 @@ msgid "No captions for floating sites"
 msgstr "Не показувати назви плаваючих областей"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
+#, object-pascal-format
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Не дозволено мати нащадків для вузла=\"%s\" Тип=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
+#, object-pascal-format
 msgid "Not supported: %s has parent %s"
 msgstr "Не підтримується: %s має предка %s"
 
 #: anchordockstr.adrsquit
+#, object-pascal-format
 msgid "Quit %s"
 msgstr "Вийти з %s"
 
 #: anchordockstr.adrsrequestedbutcreated
+#, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "Дано запит на %s, але створено %s"
 
@@ -250,6 +262,7 @@ msgid "Tab position"
 msgstr "Позиція вкладки"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+#, object-pascal-format
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
 msgstr "Менеджер стикування вже встановлено. Одночасно може бути встановлено лише один пакет стикування. Видаліть інший менеджер стикування %s і перезапустіть ІСР"
 
@@ -258,6 +271,7 @@ msgid "top"
 msgstr "верхній"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+#, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "Щоб використовувати якірне стикування, спочатку видаліть %s"
 

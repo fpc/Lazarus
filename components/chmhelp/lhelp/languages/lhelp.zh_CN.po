@@ -21,10 +21,12 @@ msgid "&About ..."
 msgstr "关于...(&A)"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
 msgstr "不能处理这个目录(content)的类型.\"%s\"对于url:%s%s"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "不能处理这个子目录(subcontent)的类型.\"%s\"对于url:%s%s"
 
@@ -81,6 +83,7 @@ msgid "Index Loading ..."
 msgstr "索引加载..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
 msgstr "    --ipcname  :IPC服务器来监听想要控制查看器%s       程序 的名称"
 
@@ -93,10 +96,12 @@ msgid "LHelp"
 msgstr "LHelp"
 
 #: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
 msgid "LHelp - %s"
 msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr "LHelp (CHM文件查看器)%s版本%s%s版权(C) Andrew Haines, %sLazarus贡献值"
 
@@ -105,10 +110,12 @@ msgid "  LHelp options:"
 msgstr "  LHelp选项:"
 
 #: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
 msgid "Loaded: %s in %sms"
 msgstr "加载:%s在%sms"
 
 #: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
 msgid "Loading: %s"
 msgstr "加载:%s"
 
@@ -117,6 +124,7 @@ msgid "No Results"
 msgstr "没有结果(Results)"
 
 #: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
 msgid "%s not found!"
 msgstr "%s未找到!"
 
@@ -169,6 +177,7 @@ msgid "Show contents"
 msgstr "显示目录(contents)"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
 msgid "Supported URL type(s): (%s)"
 msgstr "支持的URL类型:(%s)"
 

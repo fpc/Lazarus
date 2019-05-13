@@ -21,10 +21,12 @@ msgid "&About ..."
 msgstr "&O..."
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr ""
 
@@ -81,6 +83,7 @@ msgid "Index Loading ..."
 msgstr "Wczytywanie indeksu..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
 msgstr ""
 
@@ -93,10 +96,12 @@ msgid "LHelp"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
 msgid "LHelp - %s"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr "LHelp (Przeglądarki plików CHM)%sWersja %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 
@@ -105,10 +110,12 @@ msgid "  LHelp options:"
 msgstr "  Opcje LHelp:"
 
 #: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
 msgid "Loaded: %s in %sms"
 msgstr "Wczytano: %s w %sms"
 
 #: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
 msgid "Loading: %s"
 msgstr "Wczytywanie: %s"
 
@@ -117,6 +124,7 @@ msgid "No Results"
 msgstr "Brak wynikẘ"
 
 #: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
 msgid "%s not found!"
 msgstr "Nie znaleziono %s"
 
@@ -169,6 +177,7 @@ msgid "Show contents"
 msgstr "Pokaż zawartość"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
 msgid "Supported URL type(s): (%s)"
 msgstr "Obsługiwane typy URL: (%s)"
 

@@ -251,6 +251,7 @@ msgid "0"
 msgstr "0"
 
 #: lr_const.sclassobjectnotfound
+#, object-pascal-format
 msgid "Class Object \"%s\" not found"
 msgstr "Об'єкт \"%s\" класу не знайдено"
 
@@ -739,6 +740,7 @@ msgid "Version"
 msgstr "Версія"
 
 #: lr_const.sduplicatedobjectname
+#, object-pascal-format
 msgid "An object named \"%s\" already exists"
 msgstr "Об'єкт з іменем \"%s\" вже існує"
 
@@ -1716,6 +1718,7 @@ msgid "Invalid report format"
 msgstr "Неправильний формат звіту"
 
 #: lr_const.sinvalidvariablename
+#, object-pascal-format
 msgid "\"%s\" is not a valid variable name."
 msgstr "\"%s\" не є правильною назвою змінної."
 
@@ -1773,6 +1776,7 @@ msgid "Object inspector"
 msgstr "Інспектор об'єктів"
 
 #: lr_const.sobjectnotfound
+#, object-pascal-format
 msgid "Object \"%s\" not found"
 msgstr "Об'єкт \"%s\" не знайдено"
 
@@ -2515,10 +2519,12 @@ msgid "Report file"
 msgstr "Файл звіту"
 
 #: lr_const.sreportcorruptoldknowversion
+#, object-pascal-format
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
 msgstr "Цей звіт пошкоджено, можливо він потребує \"LRE_OLDV%d_FRF_READ\"=true"
 
 #: lr_const.sreportcorruptunknownversion
+#, object-pascal-format
 msgid "This report is corrupt, frVersion=%d"
 msgstr "Цей звіт пошкоджено, frVersion=%d"
 

@@ -12,10 +12,12 @@ msgstr ""
 "X-Generator: Poedit 1.7.7\n"
 
 #: favoritesstr.saddtofavoritess
+#, object-pascal-format
 msgid "Add to favorites: %s"
 msgstr "Добавить в избранное: %s"
 
 #: favoritesstr.sremovefromfavoritess
+#, object-pascal-format
 msgid "Remove from favorites: %s"
 msgstr "Удалить из избранного: %s"
 

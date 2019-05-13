@@ -21,19 +21,22 @@ msgid "Chunk too big"
 msgstr "Chunk(块)太大"
 
 #: opkman_httpclient.serrinvalidprotocol
+#, object-pascal-format
 msgid "Invalid protocol: \"%s\""
 msgstr "无效协议:\"%s\""
 
 #: opkman_httpclient.serrinvalidprotocolversion
+#, object-pascal-format
 msgid "Invalid protocol version in response: \"%s\""
 msgstr "无效协议版本在响应:\"%s\""
 
 #: opkman_httpclient.serrinvalidstatuscode
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Invalid response status code: %s"
 msgstr "无效响应状态代码(response status code):%d"
 
 #: opkman_httpclient.serrmaxredirectsreached
+#, object-pascal-format
 msgid "Maximum allowed redirects reached: %d"
 msgstr "最大允许重定向到达(reached):%d"
 
@@ -42,6 +45,7 @@ msgid "Error reading data from socket"
 msgstr "读取数据从socket(套接字)错误"
 
 #: opkman_httpclient.serrunexpectedresponse
+#, object-pascal-format
 msgid "Unexpected response status code: %d"
 msgstr "意外响应状态代码(response status code):%d"
 

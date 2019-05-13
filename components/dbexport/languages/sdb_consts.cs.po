@@ -11,6 +11,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.5\n"
 
 #: sdb_consts.scancelrecordsexported
+#, object-pascal-format
 msgid "Exported %d before user canceled."
 msgstr "Před zrušením bylo exportováno %d položek."
 
@@ -67,6 +68,7 @@ msgid "DataExporter has no Dataset assigned."
 msgstr "DataExporter nemá přiřazený Dataset."
 
 #: sdb_consts.serropeningdataset
+#, object-pascal-format
 msgid "Could not open dataset for exporting: %s"
 msgstr "Není možné otevřít dataset pro exportování: %s"
 
@@ -75,12 +77,13 @@ msgid "Execute ..."
 msgstr "Spustit ..."
 
 #: sdb_consts.snrecordsexported
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "Succesfully exported %d records."
 msgid "Successfully exported %d records."
 msgstr "Úspěšně exportováno %d položek."
 
 #: sdb_consts.sprogress
+#, object-pascal-format
 msgid "Exporting %d records"
 msgstr "Exportuji %d položek"
 

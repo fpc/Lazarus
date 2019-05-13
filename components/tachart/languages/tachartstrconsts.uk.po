@@ -212,6 +212,7 @@ msgid "The number of fit parameters cannot be less than 1."
 msgstr "Число параметрів апроксимації не може бути меншим від 1."
 
 #: tachartstrconsts.rserrinvalidresulttype
+#, object-pascal-format
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Тип значення виразу повинен бути цілим або дійсним. Отримано \"%s\"."
 
@@ -344,14 +345,17 @@ msgid "Line series"
 msgstr "Графік"
 
 #: tachartstrconsts.rslistsourcecolorerror
+#, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
 msgstr "%0:s.DataPoints рядок \"%1:s\" не є цілим числом."
 
 #: tachartstrconsts.rslistsourcenumericerror
+#, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
 msgstr "%0:s.DataPoints рядок \"%1:s\" не є правильним числом."
 
 #: tachartstrconsts.rslistsourcestringformaterror
+#, object-pascal-format
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
 msgstr "Число значень даних в %0:s.DataPoints рядку \"%1:s\" відрізняється від очікуваного з XCount і YCount."
 
@@ -461,10 +465,12 @@ msgid "Right triangle"
 msgstr "Трикутник з вершиною праворуч"
 
 #: tachartstrconsts.rssourcecounterror
+#, object-pascal-format
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
 msgstr "%0:s потребує джерела діаграми з принаймні %1:d %2:s значенням(и) на точку даних."
 
 #: tachartstrconsts.rssourcecounterror2
+#, object-pascal-format
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
 msgstr "Цей примірник %0:s повинен мати принаймні %1:d %2:s значень на точку даних."
 
@@ -473,6 +479,7 @@ msgid "Editable chart source required"
 msgstr "Потрібне джерело діаграми, доступне для редагування"
 
 #: tachartstrconsts.rssourcesorterror
+#, object-pascal-format
 msgid "Selected sorting parameters are not supported by %s."
 msgstr ""
 
@@ -527,6 +534,7 @@ msgid "Edit axis transformations"
 msgstr "Редактор масштабів осей"
 
 #: tachartstrconsts.tasfailedsubcomponentrename
+#, object-pascal-format
 msgid "Failed to rename components: %s"
 msgstr "Неможливо перейменувати компоненти: %s"
 

@@ -17,38 +17,47 @@ msgid "All Tests"
 msgstr "所有测试"
 
 #: guitestrunner.rserrors
+#, object-pascal-format
 msgid "%s    Errors: %s"
 msgstr "%s错误:%s"
 
 #: guitestrunner.rsexception
+#, object-pascal-format
 msgid "Exception: %s"
 msgstr "异常:%s"
 
 #: guitestrunner.rsexceptioncla
+#, object-pascal-format
 msgid "Exception class: %s"
 msgstr "异常类: %s"
 
 #: guitestrunner.rsexceptionmes
+#, object-pascal-format
 msgid "Exception message: %s"
 msgstr "异常信息: %s"
 
 #: guitestrunner.rsfailures
+#, object-pascal-format
 msgid "%s     Failures: %s"
 msgstr "%s失败:%s"
 
 #: guitestrunner.rslinenumber
+#, object-pascal-format
 msgid "Line number: %s"
 msgstr "行号: %s"
 
 #: guitestrunner.rsmessage
+#, object-pascal-format
 msgid "Message: %s"
 msgstr "信息: %s"
 
 #: guitestrunner.rsmethodname
+#, object-pascal-format
 msgid "Method name: %s"
 msgstr "Method名称: %s"
 
 #: guitestrunner.rsnumberofexec
+#, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "执行测试的次数: %s经过时间: %s"
 
@@ -57,14 +66,17 @@ msgid "Run "
 msgstr "运行"
 
 #: guitestrunner.rsrunning
+#, object-pascal-format
 msgid "Running %s"
 msgstr "运行%s"
 
 #: guitestrunner.rsruns
+#, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "运行:%s%s"
 
 #: guitestrunner.rsunitname
+#, object-pascal-format
 msgid "Unit name: %s"
 msgstr "Unit名称: %s"
 

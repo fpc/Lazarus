@@ -14,6 +14,7 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 
 #: sdb_consts.scancelrecordsexported
+#, object-pascal-format
 msgid "Exported %d before user canceled."
 msgstr "До скасування користувачем експортовано %d."
 
@@ -70,6 +71,7 @@ msgid "DataExporter has no Dataset assigned."
 msgstr "В DataExporter не призначено набору даних."
 
 #: sdb_consts.serropeningdataset
+#, object-pascal-format
 msgid "Could not open dataset for exporting: %s"
 msgstr "Не можу відкрити набір даних для експорту: %s"
 
@@ -78,10 +80,12 @@ msgid "Execute ..."
 msgstr "Виконати ..."
 
 #: sdb_consts.snrecordsexported
+#, object-pascal-format
 msgid "Successfully exported %d records."
 msgstr "Успішно експортовано %d записів."
 
 #: sdb_consts.sprogress
+#, object-pascal-format
 msgid "Exporting %d records"
 msgstr "Експортується %d записів"
 

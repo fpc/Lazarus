@@ -21,6 +21,7 @@ msgid "Abort loading project group"
 msgstr "Nutraukti projekto grupės įkrovą"
 
 #: projectgroupstrconst.lisactivetarget
+#, object-pascal-format
 msgid "Target: %s"
 msgstr "Tikslas: %s"
 
@@ -33,10 +34,12 @@ msgid "Be patient!"
 msgstr "Kantrybės!"
 
 #: projectgroupstrconst.lisbuildmode
+#, object-pascal-format
 msgid ", build mode \"%s\""
 msgstr ", darymo rėžimas „%s“"
 
 #: projectgroupstrconst.lisbuildmode2
+#, object-pascal-format
 msgid "Build Mode \"%s\""
 msgstr "Darymo rėžimas „%s“"
 
@@ -45,14 +48,17 @@ msgid "Build mode not found"
 msgstr "Nerastas darymo rėžimas"
 
 #: projectgroupstrconst.lisbuildmodenotfound2
+#, object-pascal-format
 msgid "Build mode \"%s\" not found."
 msgstr "Nerastas darymo rėžimas „%s“."
 
 #: projectgroupstrconst.liscompilepackage
+#, object-pascal-format
 msgid "Compile Package %s"
 msgstr "Kompiliuoti paketą „%s“"
 
 #: projectgroupstrconst.liscompileproject
+#, object-pascal-format
 msgid "Compile Project %s"
 msgstr "Kompiliuoti paketą „%s“"
 
@@ -61,7 +67,7 @@ msgid "Discard changes"
 msgstr "Atsisakyti pakeitimų"
 
 #: projectgroupstrconst.liserrnosuchfile
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Could not find target file\n"
 #| "\"%s\"\n"
@@ -80,6 +86,7 @@ msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr "Šakninėje projekto gruėje galimas „projectgroup“ šaltnio tipas."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
+#, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
 msgstr "Skaitant projekto grupės failą „%s“ įvyko klaida%s%s"
 
@@ -96,6 +103,7 @@ msgid "Invalid File"
 msgstr "Klaidingas failas"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
+#, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
 msgstr "Klaidingas „XML“ failo pavadinimas „%s“."
 
@@ -180,6 +188,7 @@ msgid "Package not found"
 msgstr "Paketas nerastas"
 
 #: projectgroupstrconst.lispackagenotfound2
+#, object-pascal-format
 msgid "Package \"%s\" not found."
 msgstr "Paketas „%s“ nerastas."
 
@@ -193,10 +202,12 @@ msgid "Please save your changes before reloading the project group."
 msgstr "Prieš iš naujo įkeliant projekto grupę reikia įrašyti pakeitimus."
 
 #: projectgroupstrconst.lisprojectgroup
+#, object-pascal-format
 msgid "Project group %s"
 msgstr "Projekto grupė „%s“"
 
 #: projectgroupstrconst.lisprojectgroup2
+#, object-pascal-format
 msgid "Project Group: %s"
 msgstr "Projekto grupė: %s"
 
@@ -229,7 +240,7 @@ msgid "Project group modified"
 msgstr "Projekto grupė pakeista"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Project group \"%s\" is modified.\n"
 #| "What do you want to do?\n"
@@ -345,6 +356,7 @@ msgid "Copy file name"
 msgstr "Kopijuoti failo pavadinimą"
 
 #: projectgroupstrconst.listargetcount
+#, object-pascal-format
 msgid "%d targets"
 msgstr "Tikslų: %d"
 
@@ -442,6 +454,7 @@ msgid "Uninstall selected target"
 msgstr "Išdiegti pažymėta tikslą"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
+#, object-pascal-format
 msgid "The lazbuild%s was not found."
 msgstr "Programa „lazbuild“%s nerasta."
 
@@ -450,14 +463,17 @@ msgid "There is still another build in progress."
 msgstr "Šiuo metu vis dar vykdomas kitas darymas."
 
 #: projectgroupstrconst.lisunabletocreatefile
+#, object-pascal-format
 msgid "Unable to create file \"%s\": %s"
 msgstr "Nepavyko sukurti failo „%s“: %s"
 
 #: projectgroupstrconst.lisunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\""
 msgstr "Nepavyko įkelti failo „%s“"
 
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
+#, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "Nepavyko rašyti į projekto grupės failą „%s“%s%s"
 
@@ -466,6 +482,7 @@ msgid "Write error"
 msgstr "Klaida rašant"
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
+#, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "„XML“ sintaksės klaida faile „%s“: %s"
 

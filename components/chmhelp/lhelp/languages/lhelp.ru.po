@@ -18,10 +18,12 @@ msgid "&About ..."
 msgstr "&О программе ..."
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
 msgstr "Невозможно обработать данный тип содержимого. \"%s\" для адреса:%s%s"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "Невозможно обработать данный тип содержимого. \"%s\" для адреса:%s%s"
 
@@ -78,6 +80,7 @@ msgid "Index Loading ..."
 msgstr "Загрузка указателя ..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
 msgstr "    --ipcname  :  Имя отслеживаемого сервера IPC для%s              программ, управляющих данной программой просмотра"
 
@@ -91,10 +94,12 @@ msgid "LHelp"
 msgstr "LHelp"
 
 #: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
 msgid "LHelp - %s"
 msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr "LHelp (программа просмотра файлов CHM)%sВерсия %s%s(C) Andrew Haines, %sучастники проекта Lazarus"
 
@@ -103,10 +108,12 @@ msgid "  LHelp options:"
 msgstr "  Параметры LHelp:"
 
 #: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
 msgid "Loaded: %s in %sms"
 msgstr "Загружено: %s за %s мс"
 
 #: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
 msgid "Loading: %s"
 msgstr "Загрузка: %s"
 
@@ -115,6 +122,7 @@ msgid "No Results"
 msgstr "Результаты отсутствуют"
 
 #: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
 msgid "%s not found!"
 msgstr "%s не найден!"
 
@@ -167,6 +175,7 @@ msgid "Show contents"
 msgstr "Показывать содержание"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
 msgid "Supported URL type(s): (%s)"
 msgstr "Поддерживаемые типы адресов: (%s)"
 

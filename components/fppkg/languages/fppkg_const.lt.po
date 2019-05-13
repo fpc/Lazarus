@@ -69,6 +69,7 @@ msgid "fppkg options"
 msgstr "„fppkg“ parinktys"
 
 #: fppkg_const.rsfppkgsfailedresultds
+#, object-pascal-format
 msgid "Fppkg %s failed: Result %d%s%s"
 msgstr "„Fppkg“ nesėkmė dorojant „%s“: rezultatas %d%s%s"
 

@@ -28,6 +28,7 @@ msgid "&Dataset to copy from:"
 msgstr "Kopijuoti iš duomenų &aibės:"
 
 #: frmselectdataset.serrcomponentnotfound
+#, object-pascal-format
 msgid "Error: Component \"%s\" not found"
 msgstr "Klaida: nerastas komponentas „%s“"
 

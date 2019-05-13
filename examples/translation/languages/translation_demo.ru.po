@@ -43,6 +43,7 @@ msgid "Six"
 msgstr "шесть"
 
 #: stringsunit.rssumofselectednumbers
+#, object-pascal-format
 msgid "Sum of selected numbers: %s"
 msgstr "Сумма выбранных чисел: %s"
 
@@ -51,6 +52,7 @@ msgid "Three"
 msgstr "три"
 
 #: stringsunit.rstodayis
+#, object-pascal-format
 msgctxt "stringsunit.rstodayis"
 msgid "Today is %s"
 msgstr "Сегодня: %s"
@@ -70,11 +72,13 @@ msgid "Wine"
 msgstr "Вино"
 
 #: stringsunit.rsyouselected
+#, object-pascal-format
 msgctxt "stringsunit.rsyouselected"
 msgid "You selected %s."
 msgstr "Ваш выбор: %s."
 
 #: stringsunit.rsyouselectedat
+#, object-pascal-format
 msgctxt "stringsunit.rsyouselectedat"
 msgid "You selected %0:s at %1:s."
 msgstr "Ваш выбор: %0:s в %1:s."

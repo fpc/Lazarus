@@ -73,6 +73,7 @@ msgid "Create cont&ent file"
 msgstr "Cont&ent-Datei erzeugen "
 
 #: lazdemsg.sdataforelement
+#, object-pascal-format
 msgid "Documentation for element \"%s\":"
 msgstr "Dokumentation für Element \"%s\":"
 
@@ -81,14 +82,17 @@ msgid "&Delete"
 msgstr "Löschen"
 
 #: lazdemsg.sdeletemodule
+#, object-pascal-format
 msgid "Are you sure you want to delete module \"%s\" ?"
 msgstr "Wollen Sie das Modul  \"%s\" wirklich löschen?"
 
 #: lazdemsg.sdeletepackage
+#, object-pascal-format
 msgid "Are you sure you want to delete package \"%s\" ?"
 msgstr "Wollen Sie das sPackage \"%s\"  wirklich löschen?"
 
 #: lazdemsg.sdeletetopic
+#, object-pascal-format
 msgid "Are you sure you want to delete topic \"%s\" ?"
 msgstr "Wollen Sie den Eintrag \"%s\" wirklich löschen?"
 
@@ -105,26 +109,32 @@ msgid "Change description file"
 msgstr "Beschreibungsdatei ändern"
 
 #: lazdemsg.serrfpdoc
+#, object-pascal-format
 msgid "Building failed with exit code %d. Please check log."
 msgstr "Das Anlegen schlug mit dem Code %d fehl. Prüfen Sie das Protokoll."
 
 #: lazdemsg.serrnomoduleforelement
+#, object-pascal-format
 msgid "No module found to insert element \"%s\""
 msgstr "Kein Modul gefunden, um Element \"%s\" einzufügen"
 
 #: lazdemsg.serrnonodeformodule
+#, object-pascal-format
 msgid "No node found for module \"%s\""
 msgstr "Kein Knoten für das Modul \"%s\" gefunden"
 
 #: lazdemsg.serrnonodeforpackage
+#, object-pascal-format
 msgid "No node found for package \"%s\""
 msgstr "Kein Knoten für das Package \"%s\" gefunden"
 
 #: lazdemsg.serrnonodefortopic
+#, object-pascal-format
 msgid "No parent node found to insert topic \"%s\""
 msgstr "Kein Elternknoten für das Einfügen des Eintrags \"%s\" gefunden"
 
 #: lazdemsg.serrnopackageformodule
+#, object-pascal-format
 msgid "No package found to insert module \"%s\""
 msgstr "Kein Package gefunden, um Modul \"%s\" einzufügen"
 
@@ -133,10 +143,12 @@ msgid "Errors"
 msgstr "Fehler"
 
 #: lazdemsg.serrunknowndomelement
+#, object-pascal-format
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
 msgstr "Unbekanntes DOM-Element als Vorgänger des gewählten Elements: \"%s\""
 
 #: lazdemsg.sfilemodified
+#, object-pascal-format
 msgid "Document \"%s\" was modified, would you like to save it?"
 msgstr "Dokument \"%s\" wurde verändert, wollen Sie es speichern?"
 
@@ -359,6 +371,7 @@ msgid "Make new document from source file"
 msgstr "Neues Dokument aus Quelldatei erstellen"
 
 #: lazdemsg.smarkselection
+#, object-pascal-format
 msgid "Mark selection %s"
 msgstr "Auswahl %s markieren"
 
@@ -669,6 +682,7 @@ msgid "&Save"
 msgstr "&Speichern"
 
 #: lazdemsg.ssavebeforebuildquestion
+#, object-pascal-format
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
 msgstr ""
 
@@ -697,10 +711,12 @@ msgid "Show p&rivate methods"
 msgstr "p&rivate Methoden anzeigen"
 
 #: lazdemsg.sskelerrorwithfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
 msgstr "makeskel meldete einen Fehler (%d). Trotzdem versuchen, die produzierte Datei zu laden?"
 
 #: lazdemsg.sskelerrorwithoutfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d) and produced no file."
 msgstr "makeskel hat einen Fehler (%d) gemeldet und keine Datei erzeugt."
 
@@ -709,6 +725,7 @@ msgid "Sources"
 msgstr "Quellen"
 
 #: lazdemsg.sstartnodenotfound
+#, object-pascal-format
 msgid "Start element \"%s\" could not be found"
 msgstr "Startelement \"%s\" nicht gefunden"
 

@@ -26,6 +26,7 @@ msgid "closing bracket not found"
 msgstr "закриту дужку не знайдено"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
+#, object-pascal-format
 msgid "%s, found unexpected %s at %s"
 msgstr "%s, знайдено неочікуване %s в %s"
 
@@ -34,10 +35,12 @@ msgid "record end not found"
 msgstr "кінець запису не знайдено"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
+#, object-pascal-format
 msgid "adds %s to IncPath"
 msgstr "додає %s до шляхів файлів для включення"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
+#, object-pascal-format
 msgid "adds %s to SrcPath"
 msgstr "додає %s до шляху текстів програм"
 
@@ -50,18 +53,22 @@ msgid "an LCL project"
 msgstr "проект LCL"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
+#, object-pascal-format
 msgid "Anonymous %s definitions are not allowed"
 msgstr "Анонімні %s визначення не дозволені"
 
 #: codetoolsstrconsts.ctsawithoutb
+#, object-pascal-format
 msgid "%s without %s"
 msgstr "%s без %s"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
+#, object-pascal-format
 msgid "base type of \"%s\" not found"
 msgstr "не знайдено основний тип \"%s\""
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
+#, object-pascal-format
 msgid "begin at %s without end"
 msgstr "початок на %s без кінця"
 
@@ -70,14 +77,17 @@ msgid "binary operator"
 msgstr "бінарний оператор"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket close expected, but %s found"
 msgstr "очікується закрита дужка, але знайдено %s"
 
 #: codetoolsstrconsts.ctsbracketnotfound
+#, object-pascal-format
 msgid "bracket %s not found"
 msgstr "не знайдено дужку %s"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket open expected, but %s found"
 msgstr "очікується відкрита дужка, але знайдено %s"
 
@@ -102,18 +112,22 @@ msgid "class node without parent node"
 msgstr "опис класу без предка"
 
 #: codetoolsstrconsts.ctsclassnotfound
+#, object-pascal-format
 msgid "class \"%s\" not found"
 msgstr "не знайдено клас \"%s\""
 
 #: codetoolsstrconsts.ctsclassnotfound2
+#, object-pascal-format
 msgid "class not found \"%s\""
 msgstr "не знайдено клас \"%s\""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
+#, object-pascal-format
 msgid "\"class of\" definition not resolved: %s"
 msgstr "Не знайдено раніше згаданий \"class of\": %s"
 
 #: codetoolsstrconsts.ctsclasssnotfound
+#, object-pascal-format
 msgid "Class %s not found"
 msgstr "Класу %s не знайдено"
 
@@ -162,6 +176,7 @@ msgid "Debugger Directory"
 msgstr "Тека зневаджувача"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
+#, object-pascal-format
 msgid "default ancestor %s not found"
 msgstr "типового предка %s не знайдено"
 
@@ -202,6 +217,7 @@ msgid "default java class ancestor JLObject not found"
 msgstr "не знайдено типовий клас-предок java JLObject"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "default parameter expected, but %s found"
 msgstr "очікується типовий параметр, але знайдено %s"
 
@@ -226,6 +242,7 @@ msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "Визначити LCLwidgetset, напр. LCLgtk"
 
 #: codetoolsstrconsts.ctsdefinemacroname
+#, object-pascal-format
 msgid "Define Macro %s"
 msgstr "Визначити макрос %s"
 
@@ -242,6 +259,7 @@ msgid "Designer Directory"
 msgstr "Тека проектувальника"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "dispid parameter expected, but %s found"
 msgstr "очікується параметр dispid, але знайдено %s"
 
@@ -254,6 +272,7 @@ msgid "Doc Editor Directory"
 msgstr "Тека редактора документації"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
+#, object-pascal-format
 msgid "duplicate identifier: %s"
 msgstr "дублюється ідентифікатор: %s"
 
@@ -274,6 +293,7 @@ msgid "end of file"
 msgstr "кінець файлу"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
+#, object-pascal-format
 msgid "expected end., but %s found"
 msgstr "очікується end., а знайдено %s"
 
@@ -306,30 +326,37 @@ msgid "error in paramlist"
 msgstr "помилка у списку параметрів"
 
 #: codetoolsstrconsts.ctsexpected
+#, object-pascal-format
 msgid "\"%s\" expected"
 msgstr "\"%s\" очікується"
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+#, object-pascal-format
 msgid "expected a method type, but found %s"
 msgstr "очікувався тип методу, а знайдено %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
+#, object-pascal-format
 msgid "expected (, but found %s"
 msgstr "очікується (, але знайдено %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
+#, object-pascal-format
 msgid "expected ), but found %s"
 msgstr "очікується ), але знайдено %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
+#, object-pascal-format
 msgid "expected :=, but %s found"
 msgstr "очікується :=, але знайдено %s"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
+#, object-pascal-format
 msgid "expected identifier, but found %s"
 msgstr "очікується ідентифікатор, але знайдено %s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+#, object-pascal-format
 msgid "expected ; of statement, but found %s"
 msgstr "очікувалось ; інструкції, а знайдено %s"
 
@@ -350,6 +377,7 @@ msgid "Forward"
 msgstr "Вперед"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
+#, object-pascal-format
 msgid "Forward class definition not resolved: %s"
 msgstr "Не знайдено опису раніше оголошеного класу: %s"
 
@@ -370,6 +398,7 @@ msgid "Free Pascal Source Directory"
 msgstr "Тека сирців FreePascal"
 
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
+#, object-pascal-format
 msgid "Free Pascal Sources, %s"
 msgstr "Сирці FreePascal, %s"
 
@@ -392,6 +421,7 @@ msgid "HasError"
 msgstr "HasError"
 
 #: codetoolsstrconsts.ctshelperisnotallowed
+#, object-pascal-format
 msgid "Helper after %s is not allowed"
 msgstr "Помічник після %s не допускається"
 
@@ -400,6 +430,7 @@ msgid "IDE Directory"
 msgstr "Тека ІСР"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
+#, object-pascal-format
 msgid "identifier expected, but %s found"
 msgstr "очікується ідентифікатор, але знайдено %s"
 
@@ -408,6 +439,7 @@ msgid "unexpected end of file (identifier expected)"
 msgstr "неочікуваний кінець файла (очікується ідентифікатор)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
+#, object-pascal-format
 msgid "identifier expected, but keyword %s found"
 msgstr "очікується ідентифікатор, але знайдено ключове слово %s"
 
@@ -416,10 +448,12 @@ msgid "identifier"
 msgstr "ідентифікатор"
 
 #: codetoolsstrconsts.ctsidentifieralreadydefined
+#, object-pascal-format
 msgid "Identifier %s already defined"
 msgstr "Ідентифікатор %s вже визначено"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
+#, object-pascal-format
 msgid "identifier not found: %s"
 msgstr "не знайдено ідентифікатор: %s"
 
@@ -452,10 +486,12 @@ msgid "If TargetOS<>win32 then"
 msgstr "Якщо TargetOS<>win32, то"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
+#, object-pascal-format
 msgid "illegal circle using unit: %s"
 msgstr "неправильне циклічне використання модуля: %s"
 
 #: codetoolsstrconsts.ctsillegalqualifier
+#, object-pascal-format
 msgid "illegal qualifier %s found"
 msgstr "знайдено некоректний визначник %s"
 
@@ -468,18 +504,22 @@ msgid "Include circle detected"
 msgstr "Знайдено циклічне включення"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+#, object-pascal-format
 msgid "include directories: %s"
 msgstr "включити теки: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
+#, object-pascal-format
 msgid "include file not found \"%s\""
 msgstr "не знайдний файл включення \"%s\""
 
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
+#, object-pascal-format
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
 msgstr "несумісні типи: очікувалось \"%s\", але одержано \"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "index parameter expected, but %s found"
 msgstr "очікується індексний параметр, але знайдено %s"
 
@@ -504,26 +544,32 @@ msgid "interface section not found"
 msgstr "не знайдено розділ interface"
 
 #: codetoolsstrconsts.ctsinvalidclassname
+#, object-pascal-format
 msgid "invalid class name=\"%s\""
 msgstr "неправильна назва класу=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
+#, object-pascal-format
 msgid "invalid class name \"%s\""
 msgstr "неправильна назва класу \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
+#, object-pascal-format
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "неправильне значення прапорця \"%s\" для директиви %s"
 
 #: codetoolsstrconsts.ctsinvalidmode
+#, object-pascal-format
 msgid "invalid mode \"%s\""
 msgstr "неправильний режим \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
+#, object-pascal-format
 msgid "invalid mode switch \"%s\""
 msgstr "неправильний перемикач режиму \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
+#, object-pascal-format
 msgid "invalid operator %s"
 msgstr "невірний оператор %s"
 
@@ -540,10 +586,12 @@ msgid "invalid type"
 msgstr "неправильний тип"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
+#, object-pascal-format
 msgid "invalid variable name \"%s\""
 msgstr "неправильна назва змінної \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
+#, object-pascal-format
 msgid "invalid variable type \"%s\""
 msgstr "неправильний тип змінної \"%s\""
 
@@ -552,6 +600,7 @@ msgid "keyword"
 msgstr "ключове слово"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
+#, object-pascal-format
 msgid "keyword (e.g. %s) expected, but %s found"
 msgstr "очікується ключове слово (напр., %s), але знайдено %s"
 
@@ -568,6 +617,7 @@ msgid "Lazarus Sources"
 msgstr "Сирці Lazarus"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
+#, object-pascal-format
 msgid "method \"%s\" has no declaration"
 msgstr "метод \"%s\" не оголошено"
 
@@ -576,6 +626,7 @@ msgid "method name"
 msgstr "назва методу"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+#, object-pascal-format
 msgid "Method signature %s not found in class"
 msgstr "Підпис методу %s не знайдено у класі"
 
@@ -600,18 +651,22 @@ msgid "missing type identifier"
 msgstr "відсутній ідентифікатор типу"
 
 #: codetoolsstrconsts.ctsnameddirectory
+#, object-pascal-format
 msgid "%s Directory"
 msgstr "Тека %s"
 
 #: codetoolsstrconsts.ctsnamedproject
+#, object-pascal-format
 msgid "%s Project"
 msgstr "Проект %s"
 
 #: codetoolsstrconsts.ctsneededbymode
+#, object-pascal-format
 msgid " (needed by mode \"%s\")"
 msgstr " (потрібно за режимом \"%s\")"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
+#, object-pascal-format
 msgid "Nested %s definitions are not allowed"
 msgstr "Вкладені визначення %s не дозволені"
 
@@ -628,6 +683,7 @@ msgid "nodefault specifier defined twice"
 msgstr "модифікатор nodefault визначено двічі"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
+#, object-pascal-format
 msgid "no pascal code found (first token is %s)"
 msgstr "не знайдено код Паскалю (перший елемент - %s)"
 
@@ -636,6 +692,7 @@ msgid "No scanner available"
 msgstr "Немає доступного 'сканера'"
 
 #: codetoolsstrconsts.ctsnoscannerfound
+#, object-pascal-format
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr "Не знайдено 'сканера' для \"%s\". Якщо це файл, що включається, то відкрийте спочатку головний код."
 
@@ -644,18 +701,22 @@ msgid "Not enough actual generic parameters"
 msgstr "Не вистачає фактичних універсальних параметрів"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
+#, object-pascal-format
 msgid "old method not found: %s"
 msgstr "не знайдено старий метод: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
+#, object-pascal-format
 msgid "operand expected but %s found"
 msgstr "очікується операнд але знайдено %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
+#, object-pascal-format
 msgid "operand expected, but %s found"
 msgstr "очікується операнд, але знайдено %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
 msgstr "очікується оператор, але знайдено %s"
@@ -665,15 +726,18 @@ msgid "unexpected end of file (operator expected)"
 msgstr "неочікуваний кінець файла (очікується оператор)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
+#, object-pascal-format
 msgid "operator expected but %s found"
 msgstr "очікується оператор але знайдено %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr "очікується оператор, але знайдено %s"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
+#, object-pascal-format
 msgid "%s Compiler Defines"
 msgstr "Параметри компілятора %s"
 
@@ -714,6 +778,7 @@ msgid "processor specific"
 msgstr "залежить від процесора"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
+#, object-pascal-format
 msgid "property type expected, but %s found"
 msgstr "очікується тип властивості, але знайдено %s"
 
@@ -722,10 +787,12 @@ msgid "property Current not found"
 msgstr "властивість Current не знайдено"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
+#, object-pascal-format
 msgid "property specifier already defined: %s"
 msgstr "специфікатор властивості вже визначено: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
+#, object-pascal-format
 msgid "qualifier expected but %s found"
 msgstr "очікувалось посилання, але знайдено %s"
 
@@ -742,10 +809,12 @@ msgid "Runtime library"
 msgstr "Бібліотека часу виконання"
 
 #: codetoolsstrconsts.ctsscannedfiles
+#, object-pascal-format
 msgid "Scanned files: %s"
 msgstr "Проскановані файли: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
+#, object-pascal-format
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; очікується після модифікатора властивості \"%s\", але знайдено %s"
 
@@ -754,10 +823,12 @@ msgid "semicolon not found"
 msgstr "не знайдено крапку з комою"
 
 #: codetoolsstrconsts.ctssetsincpathto
+#, object-pascal-format
 msgid "sets IncPath to %s"
 msgstr "встановлює шляхи включених файлів у %s"
 
 #: codetoolsstrconsts.ctssetssrcpathto
+#, object-pascal-format
 msgid "sets SrcPath to %s"
 msgstr "встановлює шляхи кодів у %s"
 
@@ -770,6 +841,7 @@ msgid "source is not unit"
 msgstr "код не є модулем"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
+#, object-pascal-format
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "текст програми не знайдено: модуль %s. Перевірте теку сирців FPC."
 
@@ -778,6 +850,7 @@ msgid "SrcPath Initialization"
 msgstr "Ініціалізація шляхів до текстів програм"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
+#, object-pascal-format
 msgid "expected %s, but %s found"
 msgstr "очікувалось %s, але знайдено %s"
 
@@ -786,6 +859,7 @@ msgid "string constant"
 msgstr "рядкова константа"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
+#, object-pascal-format
 msgid "Syntax Error in expression \"%s\""
 msgstr "Помилка синтаксису у виразі \"%s\""
 
@@ -794,6 +868,7 @@ msgid "Term has no simple type"
 msgstr "Визначення не має простого типу"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
+#, object-pascal-format
 msgid "then expected, but %s found"
 msgstr "очікується then,  але знайдено %s"
 
@@ -834,26 +909,32 @@ msgid "unexpected end of source"
 msgstr "неочікуваний кінець коду"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
+#, object-pascal-format
 msgid "unexpected keyword \"%s\""
 msgstr "неочікуване ключове слово \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
+#, object-pascal-format
 msgid "unexpected keyword %s"
 msgstr "неочікуване ключове слово %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in asm block found"
 msgstr "знайдено неочікуване ключове слово \"%s\" в асемблерному блоці"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in begin..end found"
 msgstr "знайдено неочікуване ключове слово \"%s\" в операторних дужках (begin...end)"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "знайдено неочікуване ключове слово \"%s\" при читанні блоків у зворотному порядку"
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
+#, object-pascal-format
 msgid "unexpected section keyword %s found"
 msgstr "знайдено неочікуване ключове слово розділу %s"
 
@@ -862,6 +943,7 @@ msgid "unexpected subrange operator '..' found"
 msgstr "знайдено неочікуваний оператор піддіапазону '..'"
 
 #: codetoolsstrconsts.ctsunitnotfound
+#, object-pascal-format
 msgid "unit not found: %s"
 msgstr "не знайдено модуль: %s"
 
@@ -870,6 +952,7 @@ msgid "UnitPath Initialization"
 msgstr "Ініціалізація шляхів до модулів"
 
 #: codetoolsstrconsts.ctsunknownfunction
+#, object-pascal-format
 msgid "Unknown function %s"
 msgstr "Невідома функція %s"
 
@@ -878,6 +961,7 @@ msgid "(unknown mainfilename)"
 msgstr "(невідома назва головного файлу)"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
+#, object-pascal-format
 msgid "(unknown subdescriptor %s)"
 msgstr "(невідомий субдескриптор %s)"
 
@@ -898,6 +982,7 @@ msgid "var is only allowed in generics, end of class not found"
 msgstr "var дозволено лише в загальних, кінець класу не знайдено"
 
 #: codetoolsstrconsts.ctswordnotfound
+#, object-pascal-format
 msgid "\"%s\" not found"
 msgstr "\"%s\" не знайдено"
 

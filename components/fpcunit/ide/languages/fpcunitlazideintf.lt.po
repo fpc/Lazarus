@@ -16,6 +16,7 @@ msgid "FPCUnit Console Test Application"
 msgstr "FPCUnit testo pulte programa"
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
+#, object-pascal-format
 msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgstr "FPCUnit testo pulte programa%sPrograma, kuri pulte vykdys FPCUnit testuojamus atvejus.%sLazarus automatiškai rūpinsis programos pirminiu kodu."
 
@@ -24,6 +25,7 @@ msgid "FPCUnit Test Application"
 msgstr "FPCUnit testo programa"
 
 #: fpcunitlazideintf.sfpcuntestappdesc
+#, object-pascal-format
 msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgstr "FPCUnit testo programa%sPrograma, vykdanti FPCUnit testuojamus atvejus.%sLazarus automatiškai rūpinsis programos pirminiu kodu."
 
@@ -32,6 +34,7 @@ msgid "FPCUnit Test Case"
 msgstr "FPCUnit testavimo atvejis"
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
+#, object-pascal-format
 msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgstr "FPCUnit testavimo atvejis%sModulis, kuriame aprašytas FPCUnit testavimo atvejis."
 

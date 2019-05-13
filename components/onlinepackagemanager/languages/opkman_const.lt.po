@@ -197,20 +197,24 @@ msgid "Create/Edit private repository"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_conf1
+#, object-pascal-format
 msgid "Are you sure you wish to delete package: \"%s\"?"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_conf2
+#, object-pascal-format
 msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_error1
+#, object-pascal-format
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\""
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_error3
+#, object-pascal-format
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\""
@@ -221,22 +225,26 @@ msgid "Cannot add package to repository!"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_error5
+#, object-pascal-format
 msgid "Cannot delete package: \"%s\"!"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_info1
+#, object-pascal-format
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
 "It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_info3
+#, object-pascal-format
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_info5
+#, object-pascal-format
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
@@ -470,6 +478,7 @@ msgid "Cannot create JSON file:"
 msgstr "Nepavyko sukurti „JSON“ failo:"
 
 #: opkman_const.rscreaterepositorypackagefrm_error3
+#, object-pascal-format
 msgid "Cannot send file: \"%s\""
 msgstr "Nepavyksta siųsti failą: %s"
 
@@ -549,6 +558,7 @@ msgid "Repository package successfully created."
 msgstr "Sėkmingai sukurtas saugyklos paketas."
 
 #: opkman_const.rscreaterepositorypackagefrm_message8
+#, object-pascal-format
 msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Siunčiami failai („%s“). Luktelėkite…"
 
@@ -739,14 +749,17 @@ msgstr ""
 "Naujinkite tik jei pasitikite paketo plėtotoju. Tęsti?\n"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
+#, object-pascal-format
 msgid "%s packages successfully loaded from file!"
 msgstr "%s paketų sėkmingai įkelta iš failo!"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
+#, object-pascal-format
 msgid "%s packages successfully saved to file!"
 msgstr "%s paketų sėkmingai įrašyta į failą!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
+#, object-pascal-format
 msgid "Cannot create directory \"%s\". Operation aborted."
 msgstr ""
 
@@ -803,6 +816,7 @@ msgid "Please check one or more packages!"
 msgstr "Pažymėkite vieną ar kelius paketus!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
+#, object-pascal-format
 msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Paketas „%s“ yra priklausomas nuo paketo „%s“. Išspręsti priklausomybę?"
 
@@ -813,10 +827,12 @@ msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "Neišsprendus priklausomybes gali nepavykti diegimas!"
 
 #: opkman_const.rsmainfrm_rspackageinformation
+#, object-pascal-format
 msgid "Quick package information for \"%s\""
 msgstr ""
 
 #: opkman_const.rsmainfrm_rspackagerating
+#, object-pascal-format
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "Tavo balsas už paketą „%s“ yra: %s. Ačių kad balsavote!"
 
@@ -825,11 +841,12 @@ msgid "This will delete all non-installed packages from local repository. Contin
 msgstr "Šitai iš vietinės saugyklos pašalins visus neįdiegtus paketus. Tęsti?"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup1
+#, object-pascal-format
 msgid "%s packages deleted!"
 msgstr "%s paketų pašalinta!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "%sAre you sure you wish to uninstall the checked packages?\n"
 #| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
@@ -841,6 +858,7 @@ msgstr ""
 "Pastaba: kad pokyčiai įsigaliotų būtina iš naujo daryti IKA.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
+#, object-pascal-format
 msgid "Cannot uninstall package \"%s\"!"
 msgstr "Nepavyksta įdiegti paketo „%s“!"
 
@@ -1439,10 +1457,12 @@ msgid "Add new exclusion"
 msgstr "Pridėti naują išbraukimą"
 
 #: opkman_const.rsoptions_inputbox_conf0
+#, object-pascal-format
 msgid "Delete selected extension (\"%s\")?"
 msgstr "Šalinti pažymėtą plėtinį („%s“)?"
 
 #: opkman_const.rsoptions_inputbox_conf1
+#, object-pascal-format
 msgid "Delete selected folder (\"%s\")?"
 msgstr "Šalinti pažymėtą aplanką („%s“)?"
 
@@ -1633,7 +1653,7 @@ msgid "Update package list"
 msgstr "Naujinti paketų sąrašą"
 
 #: opkman_const.rspackagesfound
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "(%s packages found)"
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
 msgstr "(rasta paketų: %s)"
@@ -1691,6 +1711,7 @@ msgid "Cannot install package:"
 msgstr "Nepavyko įdiegti paketo:"
 
 #: opkman_const.rsprogressfrm_error4
+#, object-pascal-format
 msgctxt "opkman_const.rsprogressfrm_error4"
 msgid "Dependency \"%s\" not found!"
 msgstr "Priklausinys „%s“ nerastas!"
@@ -1727,6 +1748,7 @@ msgid "Success."
 msgstr "Sėkmingai."
 
 #: opkman_const.rsprogressfrm_info2
+#, object-pascal-format
 msgid "Contacting download site for \"%s\" (%s)"
 msgstr "Susisiekiama su atsisiuntimo tinklapiu dėl „%s“ (%s)"
 
@@ -1813,10 +1835,12 @@ msgid "Repositories"
 msgstr "Saugyklos"
 
 #: opkman_const.rsrepositories_confirmation0
+#, object-pascal-format
 msgid "Delete selected repository \"%s\"?"
 msgstr "Šalinti parinktą saugyklą „%s“?"
 
 #: opkman_const.rsrepositories_info1
+#, object-pascal-format
 msgid "The following repository: \"%s\" is already in the list."
 msgstr ""
 

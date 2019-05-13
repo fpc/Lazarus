@@ -120,10 +120,12 @@ msgid "Applications|*"
 msgstr "Alkalmazások|*"
 
 #: ldd_consts.sapplyingddtodataset
+#, object-pascal-format
 msgid "Applying data dictionary to dataset %s"
 msgstr "Adatkészlet alkalmazása e mezőre: %s"
 
 #: ldd_consts.sapplyingddtofield
+#, object-pascal-format
 msgid "Applying data dictionary to field %s"
 msgstr "Adatszótár alkalmazása e mezőre: %s"
 
@@ -212,10 +214,12 @@ msgid "Not yet implemented"
 msgstr "Még nincs megvalósítva"
 
 #: ldd_consts.swarningnoddforfield
+#, object-pascal-format
 msgid "Warning: No definition in data dictionary for field %s"
 msgstr "Figyelem! Nincs definíció az adatszótárban a mezőhöz: %s"
 
 #: ldd_consts.swrongselection
+#, object-pascal-format
 msgid "Wrong selection count : %d"
 msgstr "Rossz a kijelölések száma: %d"
 

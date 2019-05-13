@@ -16,70 +16,87 @@ msgid "Debugger"
 msgstr "Hibakereső"
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, object-pascal-format
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "A hibakereső hibát észlelt amikor megpróbálta futtatni/léptetni az alkalmazást:%0:s%0:s%1:s%0:s%0:sAz \"Ok\"-ra nyomva eltávolítja a töréspontot és folytatja a hibakeresés (szünetel) valamint javíthatja a hibát vagy válasszon másik futtatóparancsot.%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
+#, object-pascal-format
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
 msgstr "A hibakereső nem tud töréspontot beállítani az alkalmazás belépési pontjára.%0:sEzt hiányzó hibakeresési infók okozhatják."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
+#, object-pascal-format
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
 msgstr "A hibakereső nem tudja futtatni az alkalmazást.%0:sEzt hiányzó hibakeresési infók okozhatják."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+#, object-pascal-format
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
 msgstr "A hibakereső nem tudta megszerezni az alkalmazás folyamatazonosítóját (PID).%0:sEzt hiányzó hibakeresési infók okozhatják."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+#, object-pascal-format
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "A hibakereső nem tudta előkészíteni magát.%0:sAz alkalmazás futott (és leállt) mielőtt a hibakereső töréspontokat állított volna be. %0:sEzt hiányzó hibakeresési infók okozhatják."
 
 #: gdbmistringconstants.gdbmierroronruncommand
+#, object-pascal-format
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "A hibakereső hibát észlelt amikor megpróbálta futtatni/léptetni az alkalmazást:%0:s%0:s%1:s%0:s%0:sAz \"Ok\"-ra nyomva folytatható a hibakeresés (szünetel) és javítsa a hibát vagy válasszon másik futtatóparancsot.%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, object-pascal-format
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sA hiba mellett a következő figyelmeztetés jelent meg:%0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
+#, object-pascal-format
 msgid "Error in: %1:s %0:s"
 msgstr "Hiba itt: %1:s %0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommanderror
+#, object-pascal-format
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
 msgstr "%0:sEz a GDB parancs:%0:s\"%1:s\"%0:sa következő hibát eredményezte:%0:s\"%2:s\"%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+#, object-pascal-format
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
 msgstr "%0:sEz GDB parancs:%0:s\"%1:s\"%0:snem adott eredményt.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedread
+#, object-pascal-format
 msgid "%0:sCould not read output from GDB.%0:s"
 msgstr "%0:sNem olvasható a GDB kimenete.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+#, object-pascal-format
 msgid "%0:sCould not send a command to GDB.%0:s"
 msgstr "%0:sNem lehet parancsot küldeni a GDB-nek.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfogdbgone
+#, object-pascal-format
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sA GDB folyamat már nem fut.%0:s"
 
 #: gdbmistringconstants.gdbmieventlogdebugoutput
+#, object-pascal-format
 msgid "Debug Output: %s"
 msgstr "Hibakeresési kimenet: %s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
+#, object-pascal-format
 msgid "GDB has encountered an internal error: %s"
 msgstr "A GDB belső hibát észlelt: %s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
+#, object-pascal-format
 msgid "File '%s' has no debug symbols"
 msgstr "Nincsenek hibakeresési infók a fájlban: %s"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
+#, object-pascal-format
 msgid "Process Exit: %s"
 msgstr "Folyamat kilépése: %s"
 
@@ -88,6 +105,7 @@ msgid "Process Exit: normally"
 msgstr "Folyamat kilépése: normál"
 
 #: gdbmistringconstants.gdbmieventlogprocessstart
+#, object-pascal-format
 msgid "Process Start: %s"
 msgstr "Folyamat indítása: %s"
 
@@ -96,6 +114,7 @@ msgid "Failed to create process for GDB"
 msgstr "Nem sikerült a GDB folyamat létrehozása"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
+#, object-pascal-format
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
 msgstr "Az ide nem tudta leállítani a GDB folyamatot. Lehetséges, hogy a folyamat az ide irányítása nélkül fut tovább.%0:sHogy a folyamat biztosan ne legyen hatással a rendszerre, meg kell találni és kézzel leállítani."
 
@@ -104,18 +123,22 @@ msgid "GDB did not terminate"
 msgstr "A GDB nem állt le"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
+#, object-pascal-format
 msgid "Unrecoverable error: \"%s\""
 msgstr "Helyrehozhatatlan hiba: \"%s\""
 
 #: gdbmistringconstants.gdbmigdbinternalerror
+#, object-pascal-format
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
 msgstr "A GDB belső hibát észlelt:%0:sAz \"Ok\"-ra nyomva folytatható a hibakeresés, Ez NEM biztonságos.%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
+#, object-pascal-format
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
 msgstr "A következő parancs végrehajtása közben: %0:s\"%2:s\"%0:sa GDB üzenete:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, object-pascal-format
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "A \"Kihagyás\"-ra nyomva folytatható a hibakeresés, Ez NEM biztonságos. A \"Megszakítás\"-ra nyomva befejeződik a hibakeresés.%0:sKivétel: %1:s a következő üzenettel: \"%2:s\"%0:sHely: %4:s. Állapot: %5:s %0:s%0:s%3:s"
 
@@ -124,10 +147,12 @@ msgid "The debugger experienced an unknown condition"
 msgstr "A hibakereső ismeretlen helyzetet észlelt"
 
 #: gdbmistringconstants.gdbmitimeoutforcmd
+#, object-pascal-format
 msgid "Time-out for command: \"%s\""
 msgstr "A parancs túllépte az időt: \"%s\""
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+#, object-pascal-format
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
 msgstr "A hibakereső váratlan helyzetbe került: %1:s%0:s%0:sAz \"Ok\"-ra nyomva folytatható a hibakeresés (szünetel).%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
 
@@ -136,6 +161,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "A GNU hibakereső SSH-n keresztül lehetővé teszi a távoli hibakeresést. Részletek a docs/RemoteDebugging.txt fájlban. Az elsődleges elérési útvonalak (path) egyikének tartalmaznia kell az SSH klienst. Az SSH_Startup_Options használatával kell megadni a gazdagép és felhasználó nevét, a Remote_GDB_Exe használatával pedig a távoli gépen található GDB fájlnevét."
 
 #: gdbmistringconstants.lisresponsecontinue
+#, object-pascal-format
 msgid "Response: %sContinue?"
 msgstr "Válasz: %sFolytatás?"
 
@@ -144,6 +170,7 @@ msgid "Timeout has occurred:"
 msgstr "Időtúllépés történt:"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, object-pascal-format
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Váratlan eredmény:%sA hibakereső le fog állni."
 
@@ -164,6 +191,7 @@ msgid "Failed to load application executable"
 msgstr "Nem sikerült betölteni a futtatható alkalmazást"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
+#, object-pascal-format
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr "A hibakereső nem tudta elhelyezni az összes megszakítási pontot az előkészítés folyamán.%0:s Ellenőrizni kell, hogy az összes forráskód hibakeresési információkkal lett-e lefordítva!%0:sAz 'OK'-t választva figyelmen kívül hagyhatja ezt és folytathatja a futtatást."
 

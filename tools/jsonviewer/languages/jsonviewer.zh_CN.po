@@ -13,6 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "数组(%d元素)"
 
@@ -38,7 +39,7 @@ msgid "JSON document modified"
 msgstr "JSON文件已修改"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid ""
 #| "The JSON data was changed but not saved.\n"
 #| "What do want to do ?\n"
@@ -50,6 +51,7 @@ msgstr ""
 "你想做什么?\n"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "复制成员名\"%s\"."
 
@@ -58,6 +60,7 @@ msgid "Filename needed for generated code"
 msgstr ""
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Element nr. %d"
 
@@ -66,10 +69,12 @@ msgid "Empty document"
 msgstr "空文档 "
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "不能创建配置文件目录\"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "无效值或错误类型:\"%s\""
 
@@ -82,6 +87,7 @@ msgid "New object member"
 msgstr "新建对象成员"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "输入新成员(类型:%s)名称"
 
@@ -94,6 +100,7 @@ msgid "null"
 msgstr "null"
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "对象(%d members成员)"
 

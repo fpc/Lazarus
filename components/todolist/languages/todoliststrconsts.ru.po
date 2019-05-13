@@ -36,6 +36,7 @@ msgid "Packages"
 msgstr "Пакеты"
 
 #: todoliststrconsts.lispackageshint
+#, object-pascal-format
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
 msgstr "Расширить множества \"%s\" и \"%s\" модулями используемых пакетов"
 

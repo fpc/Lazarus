@@ -14,10 +14,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: favoritesstr.saddtofavoritess
+#, object-pascal-format
 msgid "Add to favorites: %s"
 msgstr "Ajouter aux favoris :%s"
 
 #: favoritesstr.sremovefromfavoritess
+#, object-pascal-format
 msgid "Remove from favorites: %s"
 msgstr "Retirer des favoris :%s"
 

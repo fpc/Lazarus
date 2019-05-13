@@ -75,6 +75,7 @@ msgid "Create cont&ent file"
 msgstr "Vytvořit soubor s obsahem"
 
 #: lazdemsg.sdataforelement
+#, object-pascal-format
 msgid "Documentation for element \"%s\":"
 msgstr "Dokumentace pro element \"%s\":"
 
@@ -83,14 +84,17 @@ msgid "&Delete"
 msgstr "Odstranit"
 
 #: lazdemsg.sdeletemodule
+#, object-pascal-format
 msgid "Are you sure you want to delete module \"%s\" ?"
 msgstr "Opravdu chcete odstranit modul \"%s\"?"
 
 #: lazdemsg.sdeletepackage
+#, object-pascal-format
 msgid "Are you sure you want to delete package \"%s\" ?"
 msgstr "Opravdu chcete odstranit balíček \"%s\"?"
 
 #: lazdemsg.sdeletetopic
+#, object-pascal-format
 msgid "Are you sure you want to delete topic \"%s\" ?"
 msgstr "Opravdu chcete odstranit téma \"%s\"?"
 
@@ -107,26 +111,32 @@ msgid "Change description file"
 msgstr "Změnit popisný soubor"
 
 #: lazdemsg.serrfpdoc
+#, object-pascal-format
 msgid "Building failed with exit code %d. Please check log."
 msgstr "Sestavování selhalo s exit-kódem %d. Prosím, zkontrolujte log."
 
 #: lazdemsg.serrnomoduleforelement
+#, object-pascal-format
 msgid "No module found to insert element \"%s\""
 msgstr "Nebyl nalezen modul pro vložení elementu \"%s\""
 
 #: lazdemsg.serrnonodeformodule
+#, object-pascal-format
 msgid "No node found for module \"%s\""
 msgstr "Nebyl nalezen uzel pro modul \"%s\""
 
 #: lazdemsg.serrnonodeforpackage
+#, object-pascal-format
 msgid "No node found for package \"%s\""
 msgstr "Nebyl nalezen uzel pro balík \"%s\""
 
 #: lazdemsg.serrnonodefortopic
+#, object-pascal-format
 msgid "No parent node found to insert topic \"%s\""
 msgstr "Nenalezen rodičovský uzel k vložení titulku \"%s\""
 
 #: lazdemsg.serrnopackageformodule
+#, object-pascal-format
 msgid "No package found to insert module \"%s\""
 msgstr "Nenalezen balíček k vložení modulu \"%s\""
 
@@ -135,10 +145,12 @@ msgid "Errors"
 msgstr "Chyby"
 
 #: lazdemsg.serrunknowndomelement
+#, object-pascal-format
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
 msgstr "Neznámý DOM element jako rodič pro vybraný element \"%s\""
 
 #: lazdemsg.sfilemodified
+#, object-pascal-format
 msgid "Document \"%s\" was modified, would you like to save it?"
 msgstr "Dokument \"%s\" byl upraven, přejete si uložit jej?"
 
@@ -363,6 +375,7 @@ msgid "Make new document from source file"
 msgstr "Vytvořit nový dokumen ze zdrojového souboru"
 
 #: lazdemsg.smarkselection
+#, object-pascal-format
 msgid "Mark selection %s"
 msgstr "Označit výběr %s"
 
@@ -673,6 +686,7 @@ msgid "&Save"
 msgstr "Uložit"
 
 #: lazdemsg.ssavebeforebuildquestion
+#, object-pascal-format
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
 msgstr ""
 
@@ -703,10 +717,12 @@ msgid "Show p&rivate methods"
 msgstr "Zobrazit privátní metody"
 
 #: lazdemsg.sskelerrorwithfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
 msgstr "makeskel nahlásil error (%d). Pokusit se o načtení vyprodukovaného souboru?"
 
 #: lazdemsg.sskelerrorwithoutfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d) and produced no file."
 msgstr "makeskel nahlásil error (%d) a nevyprodukoval žádný soubor."
 
@@ -715,6 +731,7 @@ msgid "Sources"
 msgstr "Zdroje"
 
 #: lazdemsg.sstartnodenotfound
+#, object-pascal-format
 msgid "Start element \"%s\" could not be found"
 msgstr "Úvodní element \"%s\" nebyl nalezen"
 

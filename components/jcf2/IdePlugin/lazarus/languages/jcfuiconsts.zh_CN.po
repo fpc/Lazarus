@@ -17,6 +17,7 @@ msgid "About JEDI Code Format"
 msgstr "关于JEDI代码格式"
 
 #: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+#, object-pascal-format
 msgid "Find more information on the web at: %s"
 msgstr "找到更多信息在网上在:%s"
 
@@ -29,6 +30,7 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr ""
 
 #: jcfuiconsts.lisaboutversion
+#, object-pascal-format
 msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr ""
 
@@ -364,6 +366,7 @@ msgid "Remove empty '//' comments"
 msgstr "移除空的'//'注释"
 
 #: jcfuiconsts.lisedatlinecol
+#, object-pascal-format
 msgid "%sAt line %s col %s"
 msgstr ""
 
@@ -372,10 +375,12 @@ msgid "Error"
 msgstr "错误"
 
 #: jcfuiconsts.lisedexception
+#, object-pascal-format
 msgid "Exception %s"
 msgstr "异常%s"
 
 #: jcfuiconsts.lisedin
+#, object-pascal-format
 msgid "%s in %s"
 msgstr "%s在%s"
 
@@ -384,18 +389,22 @@ msgid "JCF Parse error"
 msgstr "JCF解析错误"
 
 #: jcfuiconsts.lisednear
+#, object-pascal-format
 msgid "%s near %s"
 msgstr "%s靠近%s"
 
 #: jcfuiconsts.lisedtype
+#, object-pascal-format
 msgid "Type: %s%s"
 msgstr "类型: %s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsexception
+#, object-pascal-format
 msgid "Error writing settings file %s:%s%s"
 msgstr "错误写入设置文件%s:%s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
 msgid "Error writing settings file: %s is read only"
 msgstr "错误写入设置文件:%s是只读的"
 
@@ -416,6 +425,7 @@ msgid "Show confirmation dialog before format"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
+#, object-pascal-format
 msgid "Date file written: %s"
 msgstr "编写文件日期:%s"
 
@@ -448,6 +458,7 @@ msgid "Settings file is:"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+#, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "写入这个文件的版本: %s"
 
@@ -520,10 +531,12 @@ msgid "JEDI Code Format of all open windows?"
 msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+#, object-pascal-format
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
 msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
+#, object-pascal-format
 msgid "JEDI Code Format of %sStart formatting?"
 msgstr "JEDI代码格式关于%s 开始格式化?"
 
@@ -808,6 +821,7 @@ msgid "&Var declarations"
 msgstr "变量声明(Var declarations)(&V)"
 
 #: jcfuiconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr ""
 

@@ -17,10 +17,12 @@ msgid "Changing buffer size is not allowed while (un)zipping."
 msgstr "更改缓冲区大小是不运行的 在(解)压缩时."
 
 #: opkman_zip.serrcorruptzip
+#, object-pascal-format
 msgid "Corrupt ZIP file %s."
 msgstr "损坏的ZIP文件%s."
 
 #: opkman_zip.serrencryptionnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr "不能解压缩项目\"%s\":加密不支持."
 
@@ -29,22 +31,27 @@ msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "更改输出文件名称是不运行的 在(解)压缩时."
 
 #: opkman_zip.serrfiledoesnotexist
+#, object-pascal-format
 msgid "File \"%s\" does not exist."
 msgstr "文件\"%s\"不存在."
 
 #: opkman_zip.serrinvalidcrc
+#, object-pascal-format
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "无效的CRC checksum 在解压缩%s."
 
 #: opkman_zip.serrmaxentries
+#, object-pascal-format
 msgid "Encountered %d file entries; maximum supported is %d."
 msgstr "遇到%d文件入口(entries);最大支持是%d."
 
 #: opkman_zip.serrmissingarchivename
+#, object-pascal-format
 msgid "Missing archive filename in streamed entry %d."
 msgstr "丢失档案文件名在流的入口(entry)%d."
 
 #: opkman_zip.serrmissingfilename
+#, object-pascal-format
 msgid "Missing filename in entry %d."
 msgstr "丢失文件名在入口(entry)%d."
 
@@ -57,14 +64,17 @@ msgid "No stream is opened."
 msgstr "没有流是打开的."
 
 #: opkman_zip.serrpatchsetnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr "不能解压缩项目\"%s\": patch sets (补丁集)不支持."
 
 #: opkman_zip.serrpostoolarge
+#, object-pascal-format
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "位置/补偿(offset)%d大于支持的%d最大值."
 
 #: opkman_zip.serrunsupportedcompressionformat
+#, object-pascal-format
 msgid "Unsupported compression format %d."
 msgstr "不支持压缩格式%d."
 

@@ -16,10 +16,12 @@ msgid "Changing buffer size is not allowed while (un)zipping."
 msgstr "Изменение размера буфера не разрешается во время упаковки/распаковки."
 
 #: opkman_zip.serrcorruptzip
+#, object-pascal-format
 msgid "Corrupt ZIP file %s."
 msgstr "Файл ZIP %s повреждён."
 
 #: opkman_zip.serrencryptionnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr "Невозможно разархивировать \"%s\": шифрование не поддерживается."
 
@@ -28,22 +30,27 @@ msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "Изменение имени файла вывода не разрешается во время упаковки/распаковки."
 
 #: opkman_zip.serrfiledoesnotexist
+#, object-pascal-format
 msgid "File \"%s\" does not exist."
 msgstr "Файл \"%s\" не существует."
 
 #: opkman_zip.serrinvalidcrc
+#, object-pascal-format
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "Неверная контрольная сумма CRC при распаковке %s."
 
 #: opkman_zip.serrmaxentries
+#, object-pascal-format
 msgid "Encountered %d file entries; maximum supported is %d."
 msgstr "Обнаруженное количество файловых записей (%d) больше максимально возможного %d."
 
 #: opkman_zip.serrmissingarchivename
+#, object-pascal-format
 msgid "Missing archive filename in streamed entry %d."
 msgstr "В выводимой записи %d отсутствует имя архивного файла."
 
 #: opkman_zip.serrmissingfilename
+#, object-pascal-format
 msgid "Missing filename in entry %d."
 msgstr "Запись %d не содержит имя файла."
 
@@ -56,14 +63,17 @@ msgid "No stream is opened."
 msgstr "Ни одного потока не открыто."
 
 #: opkman_zip.serrpatchsetnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr "Невозможно разархивировать \"%s\": наборы заменяемых данных не поддерживаются."
 
 #: opkman_zip.serrpostoolarge
+#, object-pascal-format
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "Позиция/смещение %d больше максимально допустимого %d."
 
 #: opkman_zip.serrunsupportedcompressionformat
+#, object-pascal-format
 msgid "Unsupported compression format %d."
 msgstr "Формат сжатия %d не поддерживается."
 

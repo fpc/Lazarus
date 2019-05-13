@@ -121,6 +121,7 @@ msgid "All Languages"
 msgstr "所有语言"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+#, object-pascal-format
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr "不能写入文件%s%s%s%s你可以按\"重试\"来再次刷新这个翻译家族并继续."
 
@@ -151,20 +152,22 @@ msgid "&Copy"
 msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Creating icon nr. %d of %d"
 msgstr "创建icon nr. %d关于%"
 
 #: pocheckerconsts.scurrenttest
+#, object-pascal-format
 msgid "Test: %s on %s"
 msgstr "测试:%s对%s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
+#, object-pascal-format
 msgid "[Line %d] %s"
 msgstr "[行: %d]%s"
 
 #: pocheckerconsts.sduplicateoriginals
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
 msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "该(未翻译)值\"%s\" 被用于超过1个记录:"
@@ -174,7 +177,7 @@ msgid "Duplicate Originals"
 msgstr ""
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "An unrecoverable error occurred\n"
 #| "%s\n"
@@ -189,7 +192,7 @@ msgstr ""
 "请关闭该程序\n"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Error creating an instance of TPoFamily:\n"
 #| "%s\n"
@@ -201,15 +204,17 @@ msgstr ""
 "%s\n"
 
 #: pocheckerconsts.serrorsbytest
+#, object-pascal-format
 msgid "Errors / warnings reported by %s for:"
 msgstr "错误/警告被报告由%s关于:"
 
 #: pocheckerconsts.sfile
+#, object-pascal-format
 msgid "File %s"
 msgstr ""
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following non-existent files were removed from the list:\n"
 #| "%s\n"
@@ -225,6 +230,7 @@ msgid "Fuzzy strings"
 msgstr ""
 
 #: pocheckerconsts.sfuzzystringstotal
+#, object-pascal-format
 msgid "Fuzzy strings (total: %s)"
 msgstr "模糊的(Fuzzy)字符串(总计:%s)"
 
@@ -241,10 +247,12 @@ msgid "GUI Po-file checking tool"
 msgstr "GUI Po-文件检查工具"
 
 #: pocheckerconsts.sidentifiernotfoundin
+#, object-pascal-format
 msgid "Identifier [%s] not found in %s"
 msgstr "标识符[%s]未找到在%s"
 
 #: pocheckerconsts.sincompatibleformatargs
+#, object-pascal-format
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[行: %d]不兼容 和/或 无效format()参数对于:"
 
@@ -257,14 +265,17 @@ msgid "Last search path:"
 msgstr ""
 
 #: pocheckerconsts.slineinfilename
+#, object-pascal-format
 msgid "[Line %d] in %s:"
 msgstr "[行: %d]在%s:"
 
 #: pocheckerconsts.slinenr
+#, object-pascal-format
 msgid "[Line: %d]"
 msgstr "[行: %d]"
 
 #: pocheckerconsts.smissingmasteridentifier
+#, object-pascal-format
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "标识符[%s]找到在%s,但是它在%s中不存在"
 
@@ -281,6 +292,7 @@ msgid "Note: translation is fuzzy"
 msgstr "注意:翻译是模糊不清的"
 
 #: pocheckerconsts.snrerrorsfound
+#, object-pascal-format
 msgid "Found %d errors."
 msgstr "发现%d错误."
 
@@ -289,15 +301,17 @@ msgid "Mismatch in number of items for master and child"
 msgstr "不匹配的主项和子项的项目的数字"
 
 #: pocheckerconsts.snrofitemsmismatchd
+#, object-pascal-format
 msgid "%s: %d items"
 msgstr "%s: %d项目"
 
 #: pocheckerconsts.snrwarningsfound
+#, object-pascal-format
 msgid "Found %d warnings."
 msgstr "找到%d警告."
 
 #: pocheckerconsts.sopenfail
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Unable to open file:\n"
 #| "\"%s\"\n"
@@ -309,7 +323,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: pocheckerconsts.sopenfailexternal
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Unable to open file\n"
 #| "\"%s\"\n"
@@ -343,14 +357,17 @@ msgid "Original"
 msgstr "原始"
 
 #: pocheckerconsts.spercfuzzy
+#, object-pascal-format
 msgid "%s: %5.1f%% fuzzy strings."
 msgstr "%s:%5.1f%%模糊不清的字符串."
 
 #: pocheckerconsts.sperctranslated
+#, object-pascal-format
 msgid "%s: %5.1f%% translated strings."
 msgstr "%s:%5.1f%%已翻译的字符串."
 
 #: pocheckerconsts.spercuntranslated
+#, object-pascal-format
 msgid "%s: %5.1f%% untranslated strings."
 msgstr "%s:%5.1f%%未翻译的字符串."
 
@@ -359,6 +376,7 @@ msgid "Processing translation family..."
 msgstr "处理(Processing)翻译家族..."
 
 #: pocheckerconsts.sprocessingtranslationfamilyof
+#, object-pascal-format
 msgid "Processing translation family %s of %s"
 msgstr "处理(Processing)翻译家族%s属于(of) %s"
 
@@ -383,7 +401,7 @@ msgid "Save &As ..."
 msgstr ""
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Error saving file:\n"
 #| "%s\n"
@@ -419,7 +437,7 @@ msgid "Show statistics graph"
 msgstr "显示统计图"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Translated: %d (%.1f%%)\n"
 #| "Untranslated: %d (%.1f%%)\n"
@@ -437,37 +455,43 @@ msgstr ""
 "错误在选择的测试中: %d\n"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+#, object-pascal-format
 msgid "The following %s missing master .po file(s) were removed from the list:"
 msgstr "下面的%s缺少主要的.po文件 将被移除从该列表:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
+#, object-pascal-format
 msgid "The following %s orphaned .po file(s) found:"
 msgstr "下面%s孤立的.po文件找到:"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "Total errors found: %d"
 msgid "Total errors: %d"
 msgstr "全部错误找到:%d"
 
 #: pocheckerconsts.stotalerrorsnonfuzzy
+#, object-pascal-format
 msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
 msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
+#, object-pascal-format
 msgid "Total fuzzy strings: %s"
 msgstr "全部模糊不清的字符串: %s"
 
 #: pocheckerconsts.stotaltranslatedstrings
+#, object-pascal-format
 msgid "Total translated strings: %s (%.1f%%)"
 msgstr "总计翻译的字符串: %s (%.1f%%)"
 
 #: pocheckerconsts.stotaluntranslatedstrings
+#, object-pascal-format
 msgid "Total untranslated strings: %s"
 msgstr "全部未翻译的字符串: %s"
 
 #: pocheckerconsts.stotalwarnings
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "Total warnings found: %d"
 msgid "Total warnings: %d"
 msgstr "全部警告找到:%d"
@@ -477,6 +501,7 @@ msgid "Translated strings"
 msgstr ""
 
 #: pocheckerconsts.stranslatedstringstotal
+#, object-pascal-format
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr "翻译的字符串(总计: %s [%.1f%%)"
 
@@ -507,6 +532,7 @@ msgid "Untranslated strings"
 msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
+#, object-pascal-format
 msgid "Untranslated strings (total: %s)"
 msgstr "未翻译的字符串(总计:%s)"
 

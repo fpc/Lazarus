@@ -21,6 +21,7 @@ msgid "Abort loading project group"
 msgstr "取消(Abort)加载工程组"
 
 #: projectgroupstrconst.lisactivetarget
+#, object-pascal-format
 msgid "Target: %s"
 msgstr "目标:%s"
 
@@ -33,10 +34,12 @@ msgid "Be patient!"
 msgstr "要有耐心!"
 
 #: projectgroupstrconst.lisbuildmode
+#, object-pascal-format
 msgid ", build mode \"%s\""
 msgstr ",构建模式\"%s\""
 
 #: projectgroupstrconst.lisbuildmode2
+#, object-pascal-format
 msgid "Build Mode \"%s\""
 msgstr "构建模式%s"
 
@@ -45,14 +48,17 @@ msgid "Build mode not found"
 msgstr "构建模式未找到"
 
 #: projectgroupstrconst.lisbuildmodenotfound2
+#, object-pascal-format
 msgid "Build mode \"%s\" not found."
 msgstr "构建模式\"%s\"未找到"
 
 #: projectgroupstrconst.liscompilepackage
+#, object-pascal-format
 msgid "Compile Package %s"
 msgstr "编译包%s"
 
 #: projectgroupstrconst.liscompileproject
+#, object-pascal-format
 msgid "Compile Project %s"
 msgstr "编译工程%s"
 
@@ -61,7 +67,7 @@ msgid "Discard changes"
 msgstr "放弃(Discard)更改"
 
 #: projectgroupstrconst.liserrnosuchfile
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Could not find target file\n"
 #| "\"%s\"\n"
@@ -80,6 +86,7 @@ msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr "仅目标(target)类型\"工程组\"被允许用于root工程组."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
+#, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
 msgstr "错误 读取工程组文件\"%s\"%s%s"
 
@@ -96,6 +103,7 @@ msgid "Invalid File"
 msgstr "无效文件"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
+#, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
 msgstr "无效XML 文件名称\"%s\"."
 
@@ -180,6 +188,7 @@ msgid "Package not found"
 msgstr "包未找到"
 
 #: projectgroupstrconst.lispackagenotfound2
+#, object-pascal-format
 msgid "Package \"%s\" not found."
 msgstr "包\"%s\"未找到."
 
@@ -193,10 +202,12 @@ msgid "Please save your changes before reloading the project group."
 msgstr "请保存你的更改 在重新加载该工程组前."
 
 #: projectgroupstrconst.lisprojectgroup
+#, object-pascal-format
 msgid "Project group %s"
 msgstr "工程组%s"
 
 #: projectgroupstrconst.lisprojectgroup2
+#, object-pascal-format
 msgid "Project Group: %s"
 msgstr "工程组:%s"
 
@@ -229,7 +240,7 @@ msgid "Project group modified"
 msgstr "工程组已修改"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Project group \"%s\" is modified.\n"
 #| "What do you want to do?\n"
@@ -345,6 +356,7 @@ msgid "Copy file name"
 msgstr "复制文件名称"
 
 #: projectgroupstrconst.listargetcount
+#, object-pascal-format
 msgid "%d targets"
 msgstr "%d目标(targets)"
 
@@ -442,6 +454,7 @@ msgid "Uninstall selected target"
 msgstr "卸载选择的目标(target)"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
+#, object-pascal-format
 msgid "The lazbuild%s was not found."
 msgstr "lazbuild%s未找到."
 
@@ -450,14 +463,17 @@ msgid "There is still another build in progress."
 msgstr "这里仍然有另一个构建在进程中."
 
 #: projectgroupstrconst.lisunabletocreatefile
+#, object-pascal-format
 msgid "Unable to create file \"%s\": %s"
 msgstr "不能创建文件\"%s\": %s"
 
 #: projectgroupstrconst.lisunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\""
 msgstr "不能加载文件\"%s\""
 
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
+#, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "不能写入工程组文件\"%s\"%s%s"
 
@@ -466,6 +482,7 @@ msgid "Write error"
 msgstr "写入错误"
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
+#, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "XML语法错误在文件\"%s\": %s"
 

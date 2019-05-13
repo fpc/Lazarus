@@ -15,54 +15,67 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 
 #: ipconst.cacheadding
+#, object-pascal-format
 msgid "Caching item (%s = %s)"
 msgstr "Кешування елемента (%s = %s)"
 
 #: ipconst.cachecheckfreshness
+#, object-pascal-format
 msgid "Checking Freshness (%s)"
 msgstr "Перевірка новизни (%s)"
 
 #: ipconst.cachedirnotexist
+#, object-pascal-format
 msgid "Cache directory %s does not exist."
 msgstr "Каталог кешу %s не існує."
 
 #: ipconst.cacheretrieving
+#, object-pascal-format
 msgid "Loading from Cache (%s = %s)"
 msgstr "Завантаження з кешу (%s = %s)"
 
 #: ipconst.httpcantloadgraphic
+#, object-pascal-format
 msgid "Unable to load graphic %s"
 msgstr "Неможливо завантажити зображення %s"
 
 #: ipconst.httpconnect
+#, object-pascal-format
 msgid "Connected: (%s)"
 msgstr "З'єднано: (%s)"
 
 #: ipconst.httpdisconnect
+#, object-pascal-format
 msgid "Disconnected: (%s), %s Total bytes received"
 msgstr "Від'єднано: (%s), Всього отримано %s байт"
 
 #: ipconst.httpdownload
+#, object-pascal-format
 msgid "Download: (%s), Error downloading"
 msgstr "Завантаження: (%s), Помилка завантаження"
 
 #: ipconst.httpget
+#, object-pascal-format
 msgid "GET: (%s)"
 msgstr "GET: (%s)"
 
 #: ipconst.httpgeterror
+#, object-pascal-format
 msgid "GET: (%s) FAILED"
 msgstr "GET: (%s) не вдалося"
 
 #: ipconst.httpgotheader
+#, object-pascal-format
 msgid "Download: (%s), Got Header Data"
 msgstr "Завантаження: (%s), Отримані дані заголовка"
 
 #: ipconst.httphead
+#, object-pascal-format
 msgid "HEAD: (%s)"
 msgstr "HEAD: (%s)"
 
 #: ipconst.httpheaderror
+#, object-pascal-format
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) не вдалося"
 
@@ -71,22 +84,27 @@ msgid "No Header Data for Entity"
 msgstr "Для сутності відсутні дані заголовка"
 
 #: ipconst.httppost
+#, object-pascal-format
 msgid "POST: (%s)"
 msgstr "POST: (%s)"
 
 #: ipconst.httpposterror
+#, object-pascal-format
 msgid "POST: (%s) FAILED"
 msgstr "POST: (%s) не вдалося"
 
 #: ipconst.httpprogress
+#, object-pascal-format
 msgid "Progress Made: (%s), %s bytes received"
 msgstr "Прогрес: (%s), отримано %s байт"
 
 #: ipconst.httpsizemismatch
+#, object-pascal-format
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
 msgstr "Завантаження: (%s), Невідповідність розміру: очікувалось %s , отримано %s"
 
 #: ipconst.providerunknownformat
+#, object-pascal-format
 msgid "Don't know how to handle %s"
 msgstr "Невідомо, як обробити %s"
 
@@ -95,10 +113,12 @@ msgid "Invalid picture format"
 msgstr "Неправильний формат зображення"
 
 #: ipconst.providerunknownrequest
+#, object-pascal-format
 msgid "Unknown request type \"%s\""
 msgstr "Невідомий тип запиту \"%s\""
 
 #: ipconst.saccessprocerr
+#, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"
 msgstr "Помилка Win32 при завантаженні вказівника '%s': %s"
 
@@ -115,6 +135,7 @@ msgid "Attempting to write "
 msgstr "Спроба запису"
 
 #: ipconst.sbadframelistobject
+#, object-pascal-format
 msgid "Unrecognized object of class %s in GIF Frame List"
 msgstr "Невпізнаний об'єкт класу %s в списку фреймів GIF"
 
@@ -185,6 +206,7 @@ msgid "Resource fork present"
 msgstr "Наявне розгалуження ресурсу"
 
 #: ipconst.sbrokerdownloadreq
+#, object-pascal-format
 msgid "Download %s?"
 msgstr "Завантажити %s?"
 
@@ -213,6 +235,7 @@ msgid "Cannot write to stream"
 msgstr "Неможливо записати в потік"
 
 #: ipconst.scounttoosmall
+#, object-pascal-format
 msgid "%s: new count too small"
 msgstr "%s: нова кількість надто мала"
 
@@ -221,10 +244,12 @@ msgid "Destroying"
 msgstr "Знищення"
 
 #: ipconst.seventconnect
+#, object-pascal-format
 msgid "Connect: Loc: %s Rem: %s"
 msgstr "З'єднання: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
+#, object-pascal-format
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Закриття:   Loc: %s Rem: %s"
 
@@ -374,6 +399,7 @@ msgid "Invalid value type specified"
 msgstr "Задано неправильний тип значення"
 
 #: ipconst.shtmllineerror
+#, object-pascal-format
 msgid "Error \"%s\" at line %d, position %d"
 msgstr "Помилка \"%s\" в рядку %d, позиція %d"
 
@@ -406,10 +432,12 @@ msgid "Unknown token"
 msgstr "Невідомий символ"
 
 #: ipconst.shtmlunsupprotocol
+#, object-pascal-format
 msgid "Unsupported protocol in URL:%s"
 msgstr "Непідтримуваний протокол в URL:%s"
 
 #: ipconst.sicmpecho
+#, object-pascal-format
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"
@@ -426,26 +454,32 @@ msgstr ""
 "             Прапорці IP = %d"
 
 #: ipconst.sicmpechostring
+#, object-pascal-format
 msgid "Echo string: %s"
 msgstr "Ехо-рядок: %s"
 
 #: ipconst.sicmppingstart
+#, object-pascal-format
 msgid "Pinging %s with %d bytes data"
 msgstr "Пінг %s %d байтами даних"
 
 #: ipconst.sicmpthreadexecute
+#, object-pascal-format
 msgid "Thread %d executing (Hop number = %d)"
 msgstr "Виконання потоку %d (Номер стрибка = %d)"
 
 #: ipconst.sicmpthreadterminate
+#, object-pascal-format
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Завершення виконання потоку %d (Номер стрибка = %d)"
 
 #: ipconst.sicmptracecomplete
+#, object-pascal-format
 msgid "Trace complete (%s), %d hops"
 msgstr "Стеження завершене (%s), %d стрибків"
 
 #: ipconst.sicmptracestart
+#, object-pascal-format
 msgid "Trace to %s started"
 msgstr "Почате стеження за %s"
 
@@ -546,6 +580,7 @@ msgid "Unknown status"
 msgstr "Невідомий статус"
 
 #: ipconst.slesszero
+#, object-pascal-format
 msgid "%s: new col count %d is less than zero"
 msgstr "%s: нова к-сть стовпців %d є меншою від нуля"
 
@@ -946,10 +981,12 @@ msgid "You must specify a file name for TIpMemMapStream"
 msgstr "Ви повинні вказати ім'я файлу для TIpMemMapStream"
 
 #: ipconst.smemmapmustbeclosed
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
 msgstr "Метод %s потребує закриття екземпляру TIpMemMapStream"
 
 #: ipconst.smemmapmustbeopen
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
 msgstr "Метод %s потребує відкриття екземпляру TIpMemMapStream"
 
@@ -1085,6 +1122,7 @@ msgid "Stream not assigned"
 msgstr "Потік не призначений"
 
 #: ipconst.snotenoughdata
+#, object-pascal-format
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
 msgstr "Недостатньо даних у черзі (%s байт) для виконання запиту на читання (%s байт)"
 
@@ -1093,6 +1131,7 @@ msgid "Not enough system timers available"
 msgstr "Недостатньо системних таймерів"
 
 #: ipconst.snowinsock2err
+#, object-pascal-format
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
 msgstr "%s потребує WinSock 2, але ця система має лише WinSock 1"
 
@@ -1248,14 +1287,17 @@ msgid "When origin is soFromEnd, Offset must be <= 0"
 msgstr "Коли початком є soFromEnd, зсув має бути <= 0"
 
 #: ipconst.spngbadbitdepth
+#, object-pascal-format
 msgid "Unsupported Bit Depth of %d"
 msgstr "Непідтримувана бітова глибина %d"
 
 #: ipconst.spngbadchunktype
+#, object-pascal-format
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Нерозпізнаний тип послідовності %s"
 
 #: ipconst.spngbadcolortype
+#, object-pascal-format
 msgid "Unrecognized color type of %d"
 msgstr "Неопізнаний тип кольору %d"
 
@@ -1272,6 +1314,7 @@ msgid "Invalid Palette Length"
 msgstr "Неправильна довжина палітри"
 
 #: ipconst.spngbadpixeldepth
+#, object-pascal-format
 msgid "Unrecognized pixel depth of %d"
 msgstr "Непідтримувана глибина пікселя %d"
 
@@ -1280,6 +1323,7 @@ msgid "Invalid PNG Signature"
 msgstr "Неправильний підпис PNG"
 
 #: ipconst.spngbitdepth
+#, object-pascal-format
 msgid "Bit Depth: %d"
 msgstr "Глибина: %d"
 
@@ -1292,22 +1336,27 @@ msgid "PNG Saving is not supported"
 msgstr "Збереження PNG не підтримується"
 
 #: ipconst.spngchunkidandlength
+#, object-pascal-format
 msgid "PNG Chunk: %s  Length: %d"
 msgstr "Послідовність PNG: %s Довжина: %d"
 
 #: ipconst.spngcolortype
+#, object-pascal-format
 msgid "Color Type: %d"
 msgstr "Тип кольору: %d"
 
 #: ipconst.spngcompressionmethod
+#, object-pascal-format
 msgid "Compression Method: %d"
 msgstr "Метод стиснення: %d"
 
 #: ipconst.spngdefilterpass
+#, object-pascal-format
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
 msgstr "Прохід дефільтрування %d  Розмір: %dx%d  Від: %dx%d"
 
 #: ipconst.spngeffectivefilter
+#, object-pascal-format
 msgid "Effective filter is %s"
 msgstr "Ефективний фільтр - %s"
 
@@ -1316,10 +1365,12 @@ msgid "**** ERROR ****"
 msgstr "**** ПОМИЛКА ****"
 
 #: ipconst.spngfilterchange
+#, object-pascal-format
 msgid "Filter changed on Row %d to %x"
 msgstr "Фільтр змінився в рядку %d на %x"
 
 #: ipconst.spngfiltermethod
+#, object-pascal-format
 msgid "Filter Method: %d"
 msgstr "Метод фільтрування: %d"
 
@@ -1332,6 +1383,7 @@ msgid "gAMA chunk is short"
 msgstr "Послідовність gAMA - коротка"
 
 #: ipconst.spnggammacorrection
+#, object-pascal-format
 msgid "Gamma Correction: %f"
 msgstr "Корекція гами: %f"
 
@@ -1344,14 +1396,17 @@ msgid "IHDR chunk is short."
 msgstr "Послідовність IHDR - коротка."
 
 #: ipconst.spngimagesize
+#, object-pascal-format
 msgid "Image size is %dx%d pixels"
 msgstr "Розмір зображення %dx%d пікселів"
 
 #: ipconst.spnginterlacemethod
+#, object-pascal-format
 msgid "Interlace Method: %d"
 msgstr "Метод черезрядковості: %d"
 
 #: ipconst.spngmemoryrequired
+#, object-pascal-format
 msgid "Memory required for image: %d bytes"
 msgstr "Необхідна пам'ять для зображення: %d байт"
 
@@ -1364,6 +1419,7 @@ msgid "IHDR Chunk is missing"
 msgstr "Відсутня послідовність IHDR"
 
 #: ipconst.spngmodificationdate
+#, object-pascal-format
 msgid "Modification Date: %s"
 msgstr "Дата модифікації: %s"
 
@@ -1372,6 +1428,7 @@ msgid "PNG Clipboard support is not supported."
 msgstr "Буфер обміну для PNG не підтримується."
 
 #: ipconst.spngpaletteentry
+#, object-pascal-format
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
 msgstr "Елемент палітри %d - Червоний: %d   Зелений: %d   Синій: %d"
 
@@ -1380,6 +1437,7 @@ msgid "Too many palette entries"
 msgstr "Забагато елементів в палітрі"
 
 #: ipconst.spngpalettetransparency
+#, object-pascal-format
 msgid "Palette Transparency: %d  Alpha %d"
 msgstr "Прозорість палітри: %d  Альфа %d"
 
@@ -1392,6 +1450,7 @@ msgid "tIME chunk is short."
 msgstr "Послідовність tIME - коротка."
 
 #: ipconst.spngtransparentcolor
+#, object-pascal-format
 msgid "Transparent Color: %x"
 msgstr "Прозорий колір: %x"
 
@@ -1404,6 +1463,7 @@ msgid "Chunk data is truncated"
 msgstr "Дані послідовності обрізані"
 
 #: ipconst.spngunsupportedfeature
+#, object-pascal-format
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
 msgstr "Послідовність %s була знайдена в файлі PNG. Ця функція не підтримується у цій версії PNG декодера"
 
@@ -1467,10 +1527,12 @@ msgid "-ERR"
 msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
+#, object-pascal-format
 msgid "%s can not be called in transaction state"
 msgstr "%s не може бути викликаний в стані транзакції"
 
 #: ipconst.spop3nottransacting
+#, object-pascal-format
 msgid "%s can not be called in authentication state"
 msgstr "%s не може бути викликаний в стані ідентифікації"
 
@@ -1479,6 +1541,7 @@ msgid "+OK"
 msgstr "+OK"
 
 #: ipconst.sposreqd
+#, object-pascal-format
 msgid "%s: count must be positive"
 msgstr "%s: кількість повинна бути додатньою"
 
@@ -1640,6 +1703,7 @@ msgid "Disconnected"
 msgstr "Від'єднано"
 
 #: ipconst.sraserr
+#, object-pascal-format
 msgid "Ras Error (%d): on API '%s'"
 msgstr "Помилка Ras (%d): в API '%s'"
 
@@ -1712,14 +1776,17 @@ msgid "Renamed disk file to "
 msgstr "Файл на диску перейменований на"
 
 #: ipconst.srowcoloor
+#, object-pascal-format
 msgid "%s: either row %d or col %d is out of range"
 msgstr "%s: рядок %d або стовпчик %d вийшли за межі діапазону"
 
 #: ipconst.srowoor
+#, object-pascal-format
 msgid "%s: row number is out of range"
 msgstr "%s: к-сть рядків зв межами діапазону"
 
 #: ipconst.srowrowoor
+#, object-pascal-format
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
 msgstr "TIpTerminalArray.ScrollRows: початковий рядок %d або кінцевий рядок %d вийшли за межі діапазону"
 
@@ -1940,6 +2007,7 @@ msgid "Unknown response code"
 msgstr "Невідомий код відповіді"
 
 #: ipconst.ssockserr
+#, object-pascal-format
 msgid "SOCKS request refused - %d"
 msgstr "SOCKS-запит відхилено  - %d"
 
@@ -2248,10 +2316,12 @@ msgid "Count <> Len or Count > 63"
 msgstr "Count <> Len або Count > 63"
 
 #: ipconst.swebimagecannotload
+#, object-pascal-format
 msgid "Cannot load %s"
 msgstr "Неможливо завантажити %s"
 
 #: ipconst.swebimagenotfound
+#, object-pascal-format
 msgid "%s was not found"
 msgstr "%s не знайдено"
 
@@ -2260,6 +2330,7 @@ msgid "Cannot load image from stream"
 msgstr "Не можу завантажити зображення з потоку"
 
 #: ipconst.swinsockerr
+#, object-pascal-format
 msgid "WinSock Error (%d): %s, on API '%s'"
 msgstr "Помилка WinSock (%d): %s, в API '%s'"
 

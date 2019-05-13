@@ -124,6 +124,7 @@ msgid "Method type column"
 msgstr "Столбец типа метода"
 
 #: debuggerstrconst.drslen
+#, object-pascal-format
 msgid "Len=%d: "
 msgstr "Длина=%d: "
 

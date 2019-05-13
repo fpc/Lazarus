@@ -16,10 +16,12 @@ msgid "Changing buffer size is not allowed while (un)zipping."
 msgstr "Alterar o tamanho do buffer não é permitido ao (des)compactar."
 
 #: opkman_zip.serrcorruptzip
+#, object-pascal-format
 msgid "Corrupt ZIP file %s."
 msgstr "Arquivo compactado corrompido %s."
 
 #: opkman_zip.serrencryptionnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr "Impossível descompactar item \"%s\": encriptação não suportada."
 
@@ -28,22 +30,27 @@ msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "Alterar o nome de arquivo de saída não é permitido ao (des)compactar."
 
 #: opkman_zip.serrfiledoesnotexist
+#, object-pascal-format
 msgid "File \"%s\" does not exist."
 msgstr "Arquivo \"%s\" não existe."
 
 #: opkman_zip.serrinvalidcrc
+#, object-pascal-format
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "Checksum CRC inválido ao descompactar %s."
 
 #: opkman_zip.serrmaxentries
+#, object-pascal-format
 msgid "Encountered %d file entries; maximum supported is %d."
 msgstr "Encontrado %d entradas de arquivos; máximo suportado é %d."
 
 #: opkman_zip.serrmissingarchivename
+#, object-pascal-format
 msgid "Missing archive filename in streamed entry %d."
 msgstr "Nome de arquivo faltando na entrada transmitida %d."
 
 #: opkman_zip.serrmissingfilename
+#, object-pascal-format
 msgid "Missing filename in entry %d."
 msgstr "Nome de arquivo faltando na entrada %d."
 
@@ -56,14 +63,17 @@ msgid "No stream is opened."
 msgstr "Nenhum stream está aberto."
 
 #: opkman_zip.serrpatchsetnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr "Impossível descompactar item \"%s\": \"patch sets\" não suportados."
 
 #: opkman_zip.serrpostoolarge
+#, object-pascal-format
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "Posição/deslocamento %d é maior que o máximo suportado %d."
 
 #: opkman_zip.serrunsupportedcompressionformat
+#, object-pascal-format
 msgid "Unsupported compression format %d."
 msgstr "Formato de compressão não suportado %d."
 

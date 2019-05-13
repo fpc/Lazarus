@@ -249,6 +249,7 @@ msgid "0"
 msgstr "0"
 
 #: lr_const.sclassobjectnotfound
+#, object-pascal-format
 msgid "Class Object \"%s\" not found"
 msgstr "Classe Objeto \"%s\" não encontrado"
 
@@ -737,6 +738,7 @@ msgid "Version"
 msgstr "Versão"
 
 #: lr_const.sduplicatedobjectname
+#, object-pascal-format
 msgid "An object named \"%s\" already exists"
 msgstr "Um objeto chamado \"%s\" já existe"
 
@@ -1714,6 +1716,7 @@ msgid "Invalid report format"
 msgstr "Formato relatório inválido"
 
 #: lr_const.sinvalidvariablename
+#, object-pascal-format
 msgid "\"%s\" is not a valid variable name."
 msgstr "\"%s\" não é um nome de variável válido"
 
@@ -1771,6 +1774,7 @@ msgid "Object inspector"
 msgstr "Inspetor de Objetos"
 
 #: lr_const.sobjectnotfound
+#, object-pascal-format
 msgid "Object \"%s\" not found"
 msgstr "Objeto \"%s\" não encontrado"
 
@@ -2513,10 +2517,12 @@ msgid "Report file"
 msgstr "Arquivo relatório"
 
 #: lr_const.sreportcorruptoldknowversion
+#, object-pascal-format
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
 msgstr "Este relatório está corrompido, provavelmente necessita \"LRE_OLDV%d_FRF_READ\"=true"
 
 #: lr_const.sreportcorruptunknownversion
+#, object-pascal-format
 msgid "This report is corrupt, frVersion=%d"
 msgstr "Este relatório está corrompido, frVersion=%d"
 

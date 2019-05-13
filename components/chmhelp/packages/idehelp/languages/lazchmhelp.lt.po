@@ -29,6 +29,7 @@ msgid "Missing lhelp"
 msgstr "Trūkstamas žinynas"
 
 #: lazchmhelp.help_unabletofindthelhelpviewerpleasecompilethelhelppro
+#, object-pascal-format
 msgid "Unable to find the lhelp viewer:%s%s%sPlease compile the lhelp project:%s%s"
 msgstr "Nepavyko rasti „lhelp“ žiūryklės:%s%s%sPirma kompiliuokite „lhelp“ projektą:%s%s"
 

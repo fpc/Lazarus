@@ -15,6 +15,7 @@ msgid "FPCUnit Console Test Application"
 msgstr "FPCUnit Konzolová Testovací Aplikace"
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
+#, object-pascal-format
 msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgstr "FPCUnit Konzolová Testovací Aplikace%sAplikace ke spouštění FPCUnit testů v konzole.%sZdrojový kód aplikace je automaticky udržován Lazarusem."
 
@@ -23,6 +24,7 @@ msgid "FPCUnit Test Application"
 msgstr "FPCUnit Testovací aplikace"
 
 #: fpcunitlazideintf.sfpcuntestappdesc
+#, object-pascal-format
 msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgstr "FPCUnit Testovací aplikace%sAplikace ke spouštění FPCUnit testů.%sZdrojový kód aplikace je automaticky udržován Lazarusem."
 
@@ -31,6 +33,7 @@ msgid "FPCUnit Test Case"
 msgstr "FPCUnit Definice testů"
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
+#, object-pascal-format
 msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgstr "FPCUnit Definice testů%sUnit obsahující definice testů FPCUnit."
 

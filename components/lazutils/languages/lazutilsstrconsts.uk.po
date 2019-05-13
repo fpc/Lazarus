@@ -13,21 +13,25 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "складова %s не існує або є посиланням на відсутній об'єкт"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "складова %s не існує або є посиланням на відсутній об'єкт"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
 msgstr "складова %s не є каталогом"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "складова %s не є каталогом"
@@ -37,6 +41,7 @@ msgid "boolean"
 msgstr "логічний тип"
 
 #: lazutilsstrconsts.lrscannotexecute
+#, object-pascal-format
 msgid "can not execute %s"
 msgstr "неможливо виконати %s"
 
@@ -53,22 +58,27 @@ msgid "Invalid number of function arguments"
 msgstr "Неправильне число аргументів функції"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
+#, object-pascal-format
 msgid "Unknown function: \"%s\""
 msgstr "Невідома функція: \"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
+#, object-pascal-format
 msgid "Unknown variable: \"%s\""
 msgstr "Невідома змінна: \"%s\""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
+#, object-pascal-format
 msgid "file \"%s\" does not exist"
 msgstr "файл \"%s\" не знайдено"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+#, object-pascal-format
 msgid "file \"%s\" is a directory and not an executable"
 msgstr "файл \"%s\" є текою, а не виконуваним файлом"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
+#, object-pascal-format
 msgid "%s has a circular symbolic link"
 msgstr "%s має циклічне символьне посилання"
 
@@ -77,19 +87,23 @@ msgid "insufficient memory"
 msgstr "нестача пам'яті"
 
 #: lazutilsstrconsts.lrsinvalidcharset
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
 msgid "The char set in mask \"%s\" is not valid!"
 msgstr "Невірний набір символів по масці \"%s\"!"
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
+#, object-pascal-format
 msgid "%s is not a symbolic link"
 msgstr "%s не є символьним посиланням"
 
 #: lazutilsstrconsts.lrsisnotexecutable
+#, object-pascal-format
 msgid "%s is not executable"
 msgstr "%s не є виконуваним"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
 msgstr "Індекс списку виходить за межі (%d)"
@@ -145,10 +159,12 @@ msgid "Invalid primary expression"
 msgstr "Неправильний первинний вираз"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
+#, object-pascal-format
 msgid "program file not found %s"
 msgstr "файл програми %s не знайдено"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
+#, object-pascal-format
 msgid "read access denied for %s"
 msgstr "необхідний доступ для читання до %s"
 
@@ -178,10 +194,12 @@ msgid "string"
 msgstr "рядковий тип"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+#, object-pascal-format
 msgid "Unable to create config directory \"%s\""
 msgstr "Не вдалось створити теку конфігурації \"%s\""
 
 #: lazutilsstrconsts.lrsvarnoconversion
+#, object-pascal-format
 msgid "Conversion from %s to %s not possible"
 msgstr "Перетворення з %s до %s неможливе"
 

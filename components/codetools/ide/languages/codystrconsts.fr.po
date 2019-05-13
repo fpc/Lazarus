@@ -37,10 +37,12 @@ msgid "Already defined"
 msgstr "Déjà défini"
 
 #: codystrconsts.crsalreadydefinedat
+#, object-pascal-format
 msgid "Already defined at %s"
 msgstr "Déjà défini à %s"
 
 #: codystrconsts.crsandmoreidentifiers
+#, object-pascal-format
 msgid "... and %s more identifiers"
 msgstr "... et %s identificateurs supplémentaires"
 
@@ -65,6 +67,7 @@ msgid "by fpc.cfg"
 msgstr "par fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
+#, object-pascal-format
 msgid "Add Assign method to class %s"
 msgstr "Ajoutez la méthode Assign à la classe %s"
 
@@ -125,6 +128,7 @@ msgid "private"
 msgstr "privé"
 
 #: codystrconsts.crscamproperty
+#, object-pascal-format
 msgid "%s property"
 msgstr "propriété %s"
 
@@ -149,6 +153,7 @@ msgid "There is no inherited method."
 msgstr "Il n'y a pas de méthode héritée."
 
 #: codystrconsts.crscamvar
+#, object-pascal-format
 msgid "%s var"
 msgstr "Variable %s"
 
@@ -157,6 +162,7 @@ msgid "?visibility?"
 msgstr "? visibilité ?"
 
 #: codystrconsts.crscamwrittenbyproperty
+#, object-pascal-format
 msgid "%s, written by property %s"
 msgstr "%s, écrit par la propriété %s"
 
@@ -231,6 +237,7 @@ msgid "Uses path"
 msgstr "Chemin des fichiers utilisés"
 
 #: codystrconsts.crscuallfiles
+#, object-pascal-format
 msgid "%s|All files (%s)|%s"
 msgstr "%s|Tous les fichiers (%s)|%s"
 
@@ -255,6 +262,7 @@ msgid "The file seems to be a binary. Proceed?"
 msgstr "Le fichier semble de type binaire. Faut-il continuer ?"
 
 #: codystrconsts.crscuunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\"%s%s"
 msgstr "Impossible de charger le fichier \"%s\"%s%s"
 
@@ -279,6 +287,7 @@ msgid "Declare Variable ..."
 msgstr "Déclarer la variable..."
 
 #: codystrconsts.crsdeclarevariable3
+#, object-pascal-format
 msgid "Declare variable \"%s\""
 msgstr "Déclarer la variable \"%s\""
 
@@ -295,10 +304,12 @@ msgid "Distance"
 msgstr "Distance"
 
 #: codystrconsts.crsdvisakeyword
+#, object-pascal-format
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" est un mot-clé."
 
 #: codystrconsts.crserror
+#, object-pascal-format
 msgid "Error: %s"
 msgstr "Erreur : %s"
 
@@ -331,6 +342,7 @@ msgid "File"
 msgstr "Fichier"
 
 #: codystrconsts.crsfiledoesnotexistanymore
+#, object-pascal-format
 msgid "File \"%s\" does not exist anymore."
 msgstr "Le fichier \"%s\" n'existe plus."
 
@@ -399,6 +411,7 @@ msgid "Identifier not found"
 msgstr "identificateur non trouvé"
 
 #: codystrconsts.crsidentifiernotfoundinunit
+#, object-pascal-format
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr "Identificateur \"%s\" introuvable dans l'unité \"%s\". Il se peut que l'identificateur n'existe pas pour cette plateforme ou qu'il ait été supprimé ou renommé."
 
@@ -420,6 +433,7 @@ msgid "Impossible dependency"
 msgstr "Dépendance impossible"
 
 #: codystrconsts.crsin
+#, object-pascal-format
 msgid "in \"%s\""
 msgstr "dans \"%s\""
 
@@ -472,14 +486,17 @@ msgid "Links"
 msgstr "Liens"
 
 #: codystrconsts.crsloaddictionaryafter
+#, object-pascal-format
 msgid "Load dictionary after %s"
 msgstr "Charger le dictionnaire après %s"
 
 #: codystrconsts.crslocalvariableof
+#, object-pascal-format
 msgid "Local variable of %s"
 msgstr "Variable locale de %s"
 
 #: codystrconsts.crsmainsourcefile
+#, object-pascal-format
 msgid "Main source file: %s"
 msgstr "Fichier de code source principal : %s"
 
@@ -488,6 +505,7 @@ msgid "Mbytes"
 msgstr "Méga-octets"
 
 #: codystrconsts.crsmemberof
+#, object-pascal-format
 msgid "%s member of %s %s"
 msgstr "%s membre de %s %s"
 
@@ -496,6 +514,7 @@ msgid "Menu item caption:"
 msgstr "Légende de l'élément de menu :"
 
 #: codystrconsts.crsminutes
+#, object-pascal-format
 msgid "%s minutes"
 msgstr "%s minutes"
 
@@ -532,6 +551,7 @@ msgid "On clipboard"
 msgstr "Dans le presse-papier"
 
 #: codystrconsts.crsonlydescendantsof
+#, object-pascal-format
 msgid "Only descendants of %s"
 msgstr "Seulement les descendants de %s"
 
@@ -568,6 +588,7 @@ msgid "Package"
 msgstr "Paquet"
 
 #: codystrconsts.crspackage2
+#, object-pascal-format
 msgid "Package: %s"
 msgstr "Paquet : %s"
 
@@ -576,10 +597,12 @@ msgid "Package not found"
 msgstr "Paquet introuvable"
 
 #: codystrconsts.crspackagenotfounditshouldbein
+#, object-pascal-format
 msgid "Package \"%s\" not found. It should be in \"%s\"."
 msgstr "Paquet \"%s\" non trouvé. Il devrait être dans \"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
+#, object-pascal-format
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr "Paquets : %s, Unités : %s, Identificateurs : %s%sBase de données : %s"
 
@@ -600,6 +623,7 @@ msgid "Please open a project first."
 msgstr "Veuillez d'abord ouvrir un projet."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+#, object-pascal-format
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr "Veuillez placer le curseur de l'éditeur de source sur un identificateur dans une instruction.%sPar exemple :%sMaVar:=3;"
 
@@ -624,10 +648,12 @@ msgid "Please specify a type"
 msgstr "Veuillez spécifier un type"
 
 #: codystrconsts.crsppu
+#, object-pascal-format
 msgid "PPU: %s"
 msgstr "\"PPU\" : %s"
 
 #: codystrconsts.crsppufilesofproject
+#, object-pascal-format
 msgid "PPU files of project \"%s\""
 msgstr "Fichiers PPU du projet \"%s\""
 
@@ -656,10 +682,12 @@ msgid "Published"
 msgstr "Publié"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+#, object-pascal-format
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr "Voulez-vous vraiment supprimer le paquet de la base de données ?%sRemarque : cela ne change ni le code source ni une quelconque configuration.%s%s\"%s\""
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+#, object-pascal-format
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr "Voulez-vous vraiment supprimer l'unité de la base de données ?%sRemarque : cela ne change ni le code source ni une quelconque configuration.%s%sunité : \"%s\""
 
@@ -676,6 +704,7 @@ msgid "Report"
 msgstr "Rapport"
 
 #: codystrconsts.crssavedictionaryevery
+#, object-pascal-format
 msgid "Save dictionary every %s"
 msgstr "Enregistrer le dictionnaire chaque %s"
 
@@ -684,6 +713,7 @@ msgid "Save dictionary now"
 msgstr "Enregistrer le dictionnaire tout de suite"
 
 #: codystrconsts.crssavetofile
+#, object-pascal-format
 msgid "Save to file %s"
 msgstr "Enregistrer dans le fichier %s"
 
@@ -692,6 +722,7 @@ msgid "Scanning ..."
 msgstr "Parcours..."
 
 #: codystrconsts.crsscanningsunits
+#, object-pascal-format
 msgid "Scanning: %s units ..."
 msgstr "Parcours : %s unités..."
 
@@ -700,6 +731,7 @@ msgid "searching ..."
 msgstr "recherche en cours..."
 
 #: codystrconsts.crsseconds
+#, object-pascal-format
 msgid "%s seconds"
 msgstr "%s secondes"
 
@@ -712,6 +744,7 @@ msgid "Show CodeTools Node Info ..."
 msgstr "Afficher les informations du nœud des outils de code..."
 
 #: codystrconsts.crsshowcodydict
+#, object-pascal-format
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Afficher le dictionnaire Cody pour \"%s\""
 
@@ -740,6 +773,7 @@ msgid "Size of .ppu file"
 msgstr "Taille du fichier .ppu"
 
 #: codystrconsts.crssource
+#, object-pascal-format
 msgid "Source: %s"
 msgstr "Source : %s"
 
@@ -756,18 +790,22 @@ msgid "The dictionary is saved in intervals"
 msgstr "Le dictionnaire est enregistré par intervalles"
 
 #: codystrconsts.crstheidentifierisalreadydefined
+#, object-pascal-format
 msgid "The identifier \"%s\" is already defined."
 msgstr "L'identificateur \"%s\" déjà défini."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+#, object-pascal-format
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
 msgstr "Il y a déjà un paquet chargé portant le même nom.%sPaquet ouvert : %s%sNouveau paquet : %s%sUn seul paquet peut être chargé à un moment donné."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+#, object-pascal-format
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
 msgstr "L'unité cible porte le même nom que l'unité en cours.%s Free Pascal ne le permet pas."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+#, object-pascal-format
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
 msgstr "L'unité \"%s\"%sfait partie de \"%s\".%sElle ne peut pas utiliser une autre paquet portant le même nom :%s\"%s\""
 
@@ -784,14 +822,17 @@ msgid "Type"
 msgstr "Type"
 
 #: codystrconsts.crsunabletodelete
+#, object-pascal-format
 msgid "Unable to delete \"%s\""
 msgstr "Impossible de supprimer \"%s\""
 
 #: codystrconsts.crsunabletoreadfile
+#, object-pascal-format
 msgid "Unable to read file \"%s\"."
 msgstr "Impossible de lire le fichier \"%s\"."
 
 #: codystrconsts.crsunabletorenameto
+#, object-pascal-format
 msgid "unable to rename \"%s\" to \"%s\""
 msgstr "impossible de renommer \"%s\" en \"%s\""
 
@@ -800,6 +841,7 @@ msgid "Unit"
 msgstr "Unité"
 
 #: codystrconsts.crsunit2
+#, object-pascal-format
 msgid "Unit: %s"
 msgstr "Unité : %s"
 
@@ -824,6 +866,7 @@ msgid "Unit shared libraries"
 msgstr "Bibliothèques des unités partagées"
 
 #: codystrconsts.crsunitss
+#, object-pascal-format
 msgid "Units: %s"
 msgstr "Unités : %s"
 

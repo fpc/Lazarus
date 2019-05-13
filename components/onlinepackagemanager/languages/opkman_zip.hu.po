@@ -16,10 +16,12 @@ msgid "Changing buffer size is not allowed while (un)zipping."
 msgstr "A puffer méretének megváltoztatása (ki)tömörítés közben nem lehetséges."
 
 #: opkman_zip.serrcorruptzip
+#, object-pascal-format
 msgid "Corrupt ZIP file %s."
 msgstr "Sérült ZIP fájl: %s"
 
 #: opkman_zip.serrencryptionnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr "A(z) \"%s\" elem nem csomagolható ki: a titkosítás nincs támogatva."
 
@@ -28,22 +30,27 @@ msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "A kimeneti fájl nevének megváltoztatása (ki)tömörítés közben nem lehetséges."
 
 #: opkman_zip.serrfiledoesnotexist
+#, object-pascal-format
 msgid "File \"%s\" does not exist."
 msgstr "A fájl nem létezik: \"%s\""
 
 #: opkman_zip.serrinvalidcrc
+#, object-pascal-format
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "Érvénytelen CRC ellenőrző összeg kitömörítés közben: %s"
 
 #: opkman_zip.serrmaxentries
+#, object-pascal-format
 msgid "Encountered %d file entries; maximum supported is %d."
 msgstr "%d fájlbejegyzés található; legfeljebb %d van támogatva."
 
 #: opkman_zip.serrmissingarchivename
+#, object-pascal-format
 msgid "Missing archive filename in streamed entry %d."
 msgstr "Hiányzik az archívumfájl neve az adatfolyambeli bejegyzésből: %d"
 
 #: opkman_zip.serrmissingfilename
+#, object-pascal-format
 msgid "Missing filename in entry %d."
 msgstr "Hiányzó fájlnév bejegyzés: %d"
 
@@ -56,14 +63,17 @@ msgid "No stream is opened."
 msgstr "Nincs megnyitva adatfolyam."
 
 #: opkman_zip.serrpatchsetnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr "A(z) \"%s\" elem nem csomagolható ki: a foltkészletek nincsenek támogatva."
 
 #: opkman_zip.serrpostoolarge
+#, object-pascal-format
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "A pozíció (%d) nagyobb mint a támogatott legnagyobb: %d"
 
 #: opkman_zip.serrunsupportedcompressionformat
+#, object-pascal-format
 msgid "Unsupported compression format %d."
 msgstr "Nem támogatott tömörítési formátum: %d"
 

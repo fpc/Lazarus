@@ -20,10 +20,12 @@ msgid "&About ..."
 msgstr "&Sobre ..."
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
 msgstr "Impossível lidar com este tipo de conteúdo. \"%s\" para a url:%s%s"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "Impossível lidar com este tipo de subconteúdo. \"%s\" para a url:%s%s"
 
@@ -80,6 +82,7 @@ msgid "Index Loading ..."
 msgstr "Carregando Índice ..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
 msgstr "    --ipcname  :  O nome o servidor IPC ouvindo%s              programas que querem controlar o visualizador"
 
@@ -92,10 +95,12 @@ msgid "LHelp"
 msgstr "LHelp"
 
 #: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
 msgid "LHelp - %s"
 msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr "LHelp (visualizador de arquivos CHM)%sVersão %s%sCopyright (C) Andrew Haines, %scolaboradores Lazarus"
 
@@ -104,10 +109,12 @@ msgid "  LHelp options:"
 msgstr "  opções LHelp:"
 
 #: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
 msgid "Loaded: %s in %sms"
 msgstr "Carregado(s): %s em %sms"
 
 #: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
 msgid "Loading: %s"
 msgstr "Carregando: %s"
 
@@ -116,6 +123,7 @@ msgid "No Results"
 msgstr "Nenhum resultado"
 
 #: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
 msgid "%s not found!"
 msgstr "%s não encontrado!"
 
@@ -168,6 +176,7 @@ msgid "Show contents"
 msgstr "Exibir conteúdo"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
 msgid "Supported URL type(s): (%s)"
 msgstr "Tipo de URL suportado: (%s)"
 

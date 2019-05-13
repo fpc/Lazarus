@@ -13,6 +13,7 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "Tableau (%d éléments)"
 
@@ -38,6 +39,7 @@ msgid "JSON document modified"
 msgstr "Document JSON modifié"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, object-pascal-format
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
@@ -46,6 +48,7 @@ msgstr ""
 "Que voulez-vous faire ?"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "Nom de membre en doublon \"%s\"."
 
@@ -54,6 +57,7 @@ msgid "Filename needed for generated code"
 msgstr "Nom de fichier nécessaire pour le code généré"
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Élément n° %d"
 
@@ -62,10 +66,12 @@ msgid "Empty document"
 msgstr "Document vide"
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Impossible de créer le répertoire de configuration des fichiers \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "Valeur incorrecte ou type erroné : \"%s\""
 
@@ -78,6 +84,7 @@ msgid "New object member"
 msgstr "Nouveau membre objet"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "Entrez un nouveau nom pour le nouveau membre (type : %s)"
 
@@ -90,6 +97,7 @@ msgid "null"
 msgstr "nul"
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "Objet (%d membres)"
 

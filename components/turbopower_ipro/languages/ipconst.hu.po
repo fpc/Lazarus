@@ -12,54 +12,67 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: ipconst.cacheadding
+#, object-pascal-format
 msgid "Caching item (%s = %s)"
 msgstr "Elem gyorsítótárazása (%s = %s)"
 
 #: ipconst.cachecheckfreshness
+#, object-pascal-format
 msgid "Checking Freshness (%s)"
 msgstr "Frissesség ellenőrzése (%s)"
 
 #: ipconst.cachedirnotexist
+#, object-pascal-format
 msgid "Cache directory %s does not exist."
 msgstr "Gyorsítótár könyvtára (%s) nem létezik."
 
 #: ipconst.cacheretrieving
+#, object-pascal-format
 msgid "Loading from Cache (%s = %s)"
 msgstr "Betöltés gyorsítótárból (%s = %s)"
 
 #: ipconst.httpcantloadgraphic
+#, object-pascal-format
 msgid "Unable to load graphic %s"
 msgstr "Nem lehet betölteni a grafikát: %s"
 
 #: ipconst.httpconnect
+#, object-pascal-format
 msgid "Connected: (%s)"
 msgstr "Csatlakozva: (%s)"
 
 #: ipconst.httpdisconnect
+#, object-pascal-format
 msgid "Disconnected: (%s), %s Total bytes received"
 msgstr "Kapcsolat bontva: (%s), Összesen %s bájt érkezett"
 
 #: ipconst.httpdownload
+#, object-pascal-format
 msgid "Download: (%s), Error downloading"
 msgstr "Letöltés: (%s), Hiba letöltés közben"
 
 #: ipconst.httpget
+#, object-pascal-format
 msgid "GET: (%s)"
 msgstr "GET: (%s)"
 
 #: ipconst.httpgeterror
+#, object-pascal-format
 msgid "GET: (%s) FAILED"
 msgstr "GET: (%s) FAILED"
 
 #: ipconst.httpgotheader
+#, object-pascal-format
 msgid "Download: (%s), Got Header Data"
 msgstr "Letöltés: (%s), Fejléc-adat érkezett"
 
 #: ipconst.httphead
+#, object-pascal-format
 msgid "HEAD: (%s)"
 msgstr "HEAD: (%s)"
 
 #: ipconst.httpheaderror
+#, object-pascal-format
 msgid "HEAD: (%s) FAILED"
 msgstr "HEAD: (%s) FAILED"
 
@@ -68,22 +81,27 @@ msgid "No Header Data for Entity"
 msgstr "Nincs fejlécadat az elemhez"
 
 #: ipconst.httppost
+#, object-pascal-format
 msgid "POST: (%s)"
 msgstr "POST: (%s)"
 
 #: ipconst.httpposterror
+#, object-pascal-format
 msgid "POST: (%s) FAILED"
 msgstr "POST: (%s) FAILED"
 
 #: ipconst.httpprogress
+#, object-pascal-format
 msgid "Progress Made: (%s), %s bytes received"
 msgstr "Folyamat állapota: (%s), %s bájt fogadva"
 
 #: ipconst.httpsizemismatch
+#, object-pascal-format
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
 msgstr "Letöltés: (%s), Méreteltérés, %s a várt, de %s érkezett"
 
 #: ipconst.providerunknownformat
+#, object-pascal-format
 msgid "Don't know how to handle %s"
 msgstr "Nincs ismert kezelési módszer ehhez: %s"
 
@@ -92,10 +110,12 @@ msgid "Invalid picture format"
 msgstr "Érvénytelen képformátum"
 
 #: ipconst.providerunknownrequest
+#, object-pascal-format
 msgid "Unknown request type \"%s\""
 msgstr "A kérés típusa ismeretlen: \"%s\""
 
 #: ipconst.saccessprocerr
+#, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"
 msgstr "Win32 hiba a(z) '%s' mutató betöltése közben: %s"
 
@@ -112,6 +132,7 @@ msgid "Attempting to write "
 msgstr "Kísérlet az írásra: "
 
 #: ipconst.sbadframelistobject
+#, object-pascal-format
 msgid "Unrecognized object of class %s in GIF Frame List"
 msgstr "Ismeretlen %s osztályú objektum a GIF képkockalistában"
 
@@ -182,6 +203,7 @@ msgid "Resource fork present"
 msgstr "Erőforrás-elágazás"
 
 #: ipconst.sbrokerdownloadreq
+#, object-pascal-format
 msgid "Download %s?"
 msgstr "%s letöltése?"
 
@@ -210,6 +232,7 @@ msgid "Cannot write to stream"
 msgstr "Nem lehet írni az adatfolyamot"
 
 #: ipconst.scounttoosmall
+#, object-pascal-format
 msgid "%s: new count too small"
 msgstr "%s: az új szám túl kicsi"
 
@@ -218,10 +241,12 @@ msgid "Destroying"
 msgstr "Megsemmisítés"
 
 #: ipconst.seventconnect
+#, object-pascal-format
 msgid "Connect: Loc: %s Rem: %s"
 msgstr "Kapcsolódás: Helyi: %s  Távoli: %s"
 
 #: ipconst.seventdisconnect
+#, object-pascal-format
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Bontás: Helyi: %s  Távoli: %s"
 
@@ -371,6 +396,7 @@ msgid "Invalid value type specified"
 msgstr "A megadott értéktípus érvénytelen"
 
 #: ipconst.shtmllineerror
+#, object-pascal-format
 msgid "Error \"%s\" at line %d, position %d"
 msgstr "Hiba: \"%s\" a %d. sorban a %d. pozícióban"
 
@@ -403,11 +429,12 @@ msgid "Unknown token"
 msgstr "Ismeretlen vezérjel"
 
 #: ipconst.shtmlunsupprotocol
+#, object-pascal-format
 msgid "Unsupported protocol in URL:%s"
 msgstr "Nem támogatott protokoll az URL-ben: %s"
 
 #: ipconst.sicmpecho
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Echo reply (Hop number: %d)\n"
 #| "             Status = %d\n"
@@ -431,26 +458,32 @@ msgstr ""
 "             IpFlags = %d\n"
 
 #: ipconst.sicmpechostring
+#, object-pascal-format
 msgid "Echo string: %s"
 msgstr "Vízhang szövege: %s"
 
 #: ipconst.sicmppingstart
+#, object-pascal-format
 msgid "Pinging %s with %d bytes data"
 msgstr "%s pingelése %d bájt adattal"
 
 #: ipconst.sicmpthreadexecute
+#, object-pascal-format
 msgid "Thread %d executing (Hop number = %d)"
 msgstr "A(z) %d. szál fut (Ugrás száma = %d)"
 
 #: ipconst.sicmpthreadterminate
+#, object-pascal-format
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr "A(z) %d. szál leáll (Ugrás száma = %d)"
 
 #: ipconst.sicmptracecomplete
+#, object-pascal-format
 msgid "Trace complete (%s), %d hops"
 msgstr "Nyomkövetés teljesítve (%s), %d ugrás"
 
 #: ipconst.sicmptracestart
+#, object-pascal-format
 msgid "Trace to %s started"
 msgstr "Nyomkövetés %s irányába elindítva"
 
@@ -551,6 +584,7 @@ msgid "Unknown status"
 msgstr "Ismeretlen állapot"
 
 #: ipconst.slesszero
+#, object-pascal-format
 msgid "%s: new col count %d is less than zero"
 msgstr "%s: az új oszlopszám (%d) kevesebb mint nulla"
 
@@ -951,10 +985,12 @@ msgid "You must specify a file name for TIpMemMapStream"
 msgstr "Meg kell adni egy fájlnevet a TIpMemMapStream számára"
 
 #: ipconst.smemmapmustbeclosed
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
 msgstr "A(z) %s metódus megköveteli a TIpMemMapStream példány bezárását"
 
 #: ipconst.smemmapmustbeopen
+#, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
 msgstr "A(z) %s metódus megköveteli a TIpMemMapStream példány megnyitását"
 
@@ -1090,6 +1126,7 @@ msgid "Stream not assigned"
 msgstr "Adatfolyam nincs hozzárendelve"
 
 #: ipconst.snotenoughdata
+#, object-pascal-format
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
 msgstr "Nincs elegendő adat (%s bájt) az olvasási kérés teljesítéséhez (%s bájt)"
 
@@ -1098,6 +1135,7 @@ msgid "Not enough system timers available"
 msgstr "Nincs elég elérhető rendszeridőzítő"
 
 #: ipconst.snowinsock2err
+#, object-pascal-format
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
 msgstr "A(z) %s megköveteli a WinSock 2 jelenlétét, de ezen a rendszeren csak WinSock 1 van"
 
@@ -1253,14 +1291,17 @@ msgid "When origin is soFromEnd, Offset must be <= 0"
 msgstr "Amikor a kezdőpont soFromEnd, az eltolásnak <= 0 kell lennie"
 
 #: ipconst.spngbadbitdepth
+#, object-pascal-format
 msgid "Unsupported Bit Depth of %d"
 msgstr "Nem támogatott bitmélység (%d)"
 
 #: ipconst.spngbadchunktype
+#, object-pascal-format
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Ismeretlen adatblokk típus: %s"
 
 #: ipconst.spngbadcolortype
+#, object-pascal-format
 msgid "Unrecognized color type of %d"
 msgstr "A(z) %d színtípusa ismeretlen"
 
@@ -1277,6 +1318,7 @@ msgid "Invalid Palette Length"
 msgstr "Érvénytelen palettahosszúság"
 
 #: ipconst.spngbadpixeldepth
+#, object-pascal-format
 msgid "Unrecognized pixel depth of %d"
 msgstr "Ismeretlen képpontmélység: %d"
 
@@ -1285,6 +1327,7 @@ msgid "Invalid PNG Signature"
 msgstr "Érvénytelen PNG ismertető jegy"
 
 #: ipconst.spngbitdepth
+#, object-pascal-format
 msgid "Bit Depth: %d"
 msgstr "Bitmélység: %d"
 
@@ -1297,22 +1340,27 @@ msgid "PNG Saving is not supported"
 msgstr "PNG mentés nincs támogatva"
 
 #: ipconst.spngchunkidandlength
+#, object-pascal-format
 msgid "PNG Chunk: %s  Length: %d"
 msgstr "PNG adatblokk: %s  Hossz: %d"
 
 #: ipconst.spngcolortype
+#, object-pascal-format
 msgid "Color Type: %d"
 msgstr "Színtípus: %d"
 
 #: ipconst.spngcompressionmethod
+#, object-pascal-format
 msgid "Compression Method: %d"
 msgstr "Tömörítési eljárás: %d"
 
 #: ipconst.spngdefilterpass
+#, object-pascal-format
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
 msgstr "Kiszűrés-menet: %d  Méret: %dx%d  Forrás: %dx%d"
 
 #: ipconst.spngeffectivefilter
+#, object-pascal-format
 msgid "Effective filter is %s"
 msgstr "Az alkalmazandó szűrő: %s"
 
@@ -1321,10 +1369,12 @@ msgid "**** ERROR ****"
 msgstr "**** HIBA ****"
 
 #: ipconst.spngfilterchange
+#, object-pascal-format
 msgid "Filter changed on Row %d to %x"
 msgstr "A szűrő a(z) %d. sorban megváltozott erre: %x"
 
 #: ipconst.spngfiltermethod
+#, object-pascal-format
 msgid "Filter Method: %d"
 msgstr "Szűrő metódus: %d"
 
@@ -1337,6 +1387,7 @@ msgid "gAMA chunk is short"
 msgstr "Rövid gAMA adatblokk"
 
 #: ipconst.spnggammacorrection
+#, object-pascal-format
 msgid "Gamma Correction: %f"
 msgstr "Gamma-korrekció: %f"
 
@@ -1349,14 +1400,17 @@ msgid "IHDR chunk is short."
 msgstr "Rövid IHDR adatblokk."
 
 #: ipconst.spngimagesize
+#, object-pascal-format
 msgid "Image size is %dx%d pixels"
 msgstr "A kép mérete %dx%d képpont"
 
 #: ipconst.spnginterlacemethod
+#, object-pascal-format
 msgid "Interlace Method: %d"
 msgstr "Átfedés metódus: %d"
 
 #: ipconst.spngmemoryrequired
+#, object-pascal-format
 msgid "Memory required for image: %d bytes"
 msgstr "Memóriára van szükség a képhez: %d bájt"
 
@@ -1369,6 +1423,7 @@ msgid "IHDR Chunk is missing"
 msgstr "Hiányzó IHDR adatblokk"
 
 #: ipconst.spngmodificationdate
+#, object-pascal-format
 msgid "Modification Date: %s"
 msgstr "A módosítás dátuma: %s"
 
@@ -1377,6 +1432,7 @@ msgid "PNG Clipboard support is not supported."
 msgstr "PNG Vágólap használata nincs támogatva."
 
 #: ipconst.spngpaletteentry
+#, object-pascal-format
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
 msgstr "%d. palettabejegyzés - Vörös: %d   Zöld: %d   Kék: %d"
 
@@ -1385,6 +1441,7 @@ msgid "Too many palette entries"
 msgstr "Túl sok palettabejegyzés"
 
 #: ipconst.spngpalettetransparency
+#, object-pascal-format
 msgid "Palette Transparency: %d  Alpha %d"
 msgstr "Paletta átlátszósága: %d  Alfa %d"
 
@@ -1397,6 +1454,7 @@ msgid "tIME chunk is short."
 msgstr "Rövid tIME adatblokk."
 
 #: ipconst.spngtransparentcolor
+#, object-pascal-format
 msgid "Transparent Color: %x"
 msgstr "Átlátszó szín: %x"
 
@@ -1409,6 +1467,7 @@ msgid "Chunk data is truncated"
 msgstr "Az adatblokk meg lett csonkítva"
 
 #: ipconst.spngunsupportedfeature
+#, object-pascal-format
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
 msgstr "Egy %s adatblok található a PNG fájlban. Ez nincs támogatva a PNG dekódoló ezen változatában."
 
@@ -1472,10 +1531,12 @@ msgid "-ERR"
 msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
+#, object-pascal-format
 msgid "%s can not be called in transaction state"
 msgstr "%s nem hívható átviteli közben"
 
 #: ipconst.spop3nottransacting
+#, object-pascal-format
 msgid "%s can not be called in authentication state"
 msgstr "%s nem hívható hitelesítés közben"
 
@@ -1484,6 +1545,7 @@ msgid "+OK"
 msgstr "+OK"
 
 #: ipconst.sposreqd
+#, object-pascal-format
 msgid "%s: count must be positive"
 msgstr "%s: számnak pozitívnak kell lennie"
 
@@ -1645,6 +1707,7 @@ msgid "Disconnected"
 msgstr "Kapcsolat bontva"
 
 #: ipconst.sraserr
+#, object-pascal-format
 msgid "Ras Error (%d): on API '%s'"
 msgstr "RAS hiba (%d): a következő API-n: '%s'"
 
@@ -1717,14 +1780,17 @@ msgid "Renamed disk file to "
 msgstr "A fájl át lett nevezve a lemezen erre: "
 
 #: ipconst.srowcoloor
+#, object-pascal-format
 msgid "%s: either row %d or col %d is out of range"
 msgstr "%s: a sor (%d) és az oszlop (%d) száma is kívül esik a tartományon"
 
 #: ipconst.srowoor
+#, object-pascal-format
 msgid "%s: row number is out of range"
 msgstr "%s: a sor száma kívül esik a tartományon"
 
 #: ipconst.srowrowoor
+#, object-pascal-format
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
 msgstr "TIpTerminalArray.ScrollRows: a kezdő (%d) és befejező (%d) sorszám is kívül esik a tartományon"
 
@@ -1945,6 +2011,7 @@ msgid "Unknown response code"
 msgstr "Ismeretlen válaszkód"
 
 #: ipconst.ssockserr
+#, object-pascal-format
 msgid "SOCKS request refused - %d"
 msgstr "SOCKS kérés elutasítva - %d"
 
@@ -2253,10 +2320,12 @@ msgid "Count <> Len or Count > 63"
 msgstr "Count <> Len vagy Count > 63"
 
 #: ipconst.swebimagecannotload
+#, object-pascal-format
 msgid "Cannot load %s"
 msgstr "Beolvasás sikertelen: %s"
 
 #: ipconst.swebimagenotfound
+#, object-pascal-format
 msgid "%s was not found"
 msgstr "%s nem található"
 
@@ -2265,6 +2334,7 @@ msgid "Cannot load image from stream"
 msgstr "Nem lehet képet betölteni az adatfolyamból"
 
 #: ipconst.swinsockerr
+#, object-pascal-format
 msgid "WinSock Error (%d): %s, on API '%s'"
 msgstr "WinSock hiba (%d): %s, a következő API-n: '%s'"
 

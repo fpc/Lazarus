@@ -13,10 +13,12 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: favoritesstr.saddtofavoritess
+#, object-pascal-format
 msgid "Add to favorites: %s"
 msgstr "添加到收藏夹: %s"
 
 #: favoritesstr.sremovefromfavoritess
+#, object-pascal-format
 msgid "Remove from favorites: %s"
 msgstr "从收藏夹中删除: %s"
 

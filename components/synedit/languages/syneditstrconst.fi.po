@@ -429,6 +429,7 @@ msgid "Whitespace"
 msgstr "Välilyönti"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
+#, object-pascal-format
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Näppäinyhdistelmä \"%s\" on jo annettu toiselle editorin komennolle. (%s)"
 
@@ -789,14 +790,17 @@ msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.
 msgstr "XML dokumentit (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
+#, object-pascal-format
 msgid "Page: %d"
 msgstr "Sivu: %d"
 
 #: syneditstrconst.syns_scrollinfofmt
+#, object-pascal-format
 msgid "%d - %d"
 msgstr ""
 
 #: syneditstrconst.syns_scrollinfofmttop
+#, object-pascal-format
 msgid "Top Line: %d"
 msgstr "Ylärivi: %d"
 

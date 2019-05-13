@@ -39,6 +39,7 @@ msgid "Insert your SQL statements here"
 msgstr "Vložte své SQL dotazy sem"
 
 #: registersqldb.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
 msgid "Editing %s"
 msgstr "Upraviji %s"
 

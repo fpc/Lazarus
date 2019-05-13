@@ -13,21 +13,25 @@ msgstr ""
 "X-Generator: Poedit 2.1.1\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "un composant répertoire dans %s n'existe pas ou est un lien symbolique ballant"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "un composant répertoire dans %s n'existe pas ou est un lien symbolique ballant"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
 msgstr "un composant répertoire dans %s n'est pas un répertoire"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "un composant répertoire dans %s n'est pas un répertoire"
@@ -37,6 +41,7 @@ msgid "boolean"
 msgstr "booléen"
 
 #: lazutilsstrconsts.lrscannotexecute
+#, object-pascal-format
 msgid "can not execute %s"
 msgstr "ne peut pas exécuter %s"
 
@@ -53,22 +58,27 @@ msgid "Invalid number of function arguments"
 msgstr "Nombre incorrect d'arguments de fonction"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
+#, object-pascal-format
 msgid "Unknown function: \"%s\""
 msgstr "Fonction \"%s\" inconnue"
 
 #: lazutilsstrconsts.lrsevalunknownvariable
+#, object-pascal-format
 msgid "Unknown variable: \"%s\""
 msgstr "Variable \"%s\" inconnue"
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
+#, object-pascal-format
 msgid "file \"%s\" does not exist"
 msgstr "le fichier \"%s\" n'existe pas"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+#, object-pascal-format
 msgid "file \"%s\" is a directory and not an executable"
 msgstr "le fichier \"%s\" est un répertoire et non un exécutable"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
+#, object-pascal-format
 msgid "%s has a circular symbolic link"
 msgstr "%s a un lien symbolique circulaire"
 
@@ -77,19 +87,23 @@ msgid "insufficient memory"
 msgstr "mémoire insuffisante"
 
 #: lazutilsstrconsts.lrsinvalidcharset
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
 msgid "The char set in mask \"%s\" is not valid!"
 msgstr "Le jeu de caractères placé dans le masque \"%s\" est incorrect !"
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
+#, object-pascal-format
 msgid "%s is not a symbolic link"
 msgstr "%s n'est pas un lien symbolique"
 
 #: lazutilsstrconsts.lrsisnotexecutable
+#, object-pascal-format
 msgid "%s is not executable"
 msgstr "%s n'est pas exécutable"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
 msgstr "L'index de la liste est hors limites (%d)"
@@ -145,10 +159,12 @@ msgid "Invalid primary expression"
 msgstr "Expression primaire incorrecte"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
+#, object-pascal-format
 msgid "program file not found %s"
 msgstr "fichier programme \"%s\" non trouvé"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
+#, object-pascal-format
 msgid "read access denied for %s"
 msgstr "accès en lecture refusé pour %s"
 
@@ -178,10 +194,12 @@ msgid "string"
 msgstr "chaîne"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+#, object-pascal-format
 msgid "Unable to create config directory \"%s\""
 msgstr "Impossible de créer le répertoire de configuration \"%s\""
 
 #: lazutilsstrconsts.lrsvarnoconversion
+#, object-pascal-format
 msgid "Conversion from %s to %s not possible"
 msgstr "Conversion de %s vers %s impossible"
 

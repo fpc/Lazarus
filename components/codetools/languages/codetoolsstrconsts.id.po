@@ -23,6 +23,7 @@ msgid "closing bracket not found"
 msgstr ""
 
 #: codetoolsstrconsts.crsfoundunexpectedat
+#, object-pascal-format
 msgid "%s, found unexpected %s at %s"
 msgstr ""
 
@@ -31,10 +32,12 @@ msgid "record end not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
+#, object-pascal-format
 msgid "adds %s to IncPath"
 msgstr "menambah %s ke IncPath"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
+#, object-pascal-format
 msgid "adds %s to SrcPath"
 msgstr "menambah %s ke SrcPath"
 
@@ -47,18 +50,22 @@ msgid "an LCL project"
 msgstr "sebuah proyek LCL"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
+#, object-pascal-format
 msgid "Anonymous %s definitions are not allowed"
 msgstr "Definisi anonim %s tidak dibolehkan"
 
 #: codetoolsstrconsts.ctsawithoutb
+#, object-pascal-format
 msgid "%s without %s"
 msgstr "%s tanpa %s"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
+#, object-pascal-format
 msgid "base type of \"%s\" not found"
 msgstr "dasar type dari \"%s\" tidak ditemukan"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
+#, object-pascal-format
 msgid "begin at %s without end"
 msgstr ""
 
@@ -67,14 +74,17 @@ msgid "binary operator"
 msgstr "operator biner"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket close expected, but %s found"
 msgstr "kurung tutup diharapkan, tapi %s ditemukan"
 
 #: codetoolsstrconsts.ctsbracketnotfound
+#, object-pascal-format
 msgid "bracket %s not found"
 msgstr "kurung %s tidak ditemukan"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket open expected, but %s found"
 msgstr "kurung buka diharapkan, tapi %s ditemukan"
 
@@ -99,21 +109,23 @@ msgid "class node without parent node"
 msgstr "node class tanpa node parent"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "kelas %s%s%s tidak ditemukan"
 
 #: codetoolsstrconsts.ctsclassnotfound2
+#, object-pascal-format
 msgid "class not found \"%s\""
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
+#, object-pascal-format
 msgid "\"class of\" definition not resolved: %s"
 msgstr "definisi \"class of\" tidak terpecahkan: %s"
 
 #: codetoolsstrconsts.ctsclasssnotfound
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Class %s not found"
 msgstr "Kelas %s%s%s tidak ditemukan"
 
@@ -162,6 +174,7 @@ msgid "Debugger Directory"
 msgstr "Direktori Debugger"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
+#, object-pascal-format
 msgid "default ancestor %s not found"
 msgstr ""
 
@@ -202,6 +215,7 @@ msgid "default java class ancestor JLObject not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "default parameter expected, but %s found"
 msgstr "parameter default diharapkan, tapi %s yang ditemukan"
 
@@ -226,6 +240,7 @@ msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefinemacroname
+#, object-pascal-format
 msgid "Define Macro %s"
 msgstr "Definisikan Makro %s"
 
@@ -242,6 +257,7 @@ msgid "Designer Directory"
 msgstr "Direktori Desainer"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "dispid parameter expected, but %s found"
 msgstr ""
 
@@ -254,6 +270,7 @@ msgid "Doc Editor Directory"
 msgstr "Direktori Editor Doc"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
+#, object-pascal-format
 msgid "duplicate identifier: %s"
 msgstr "duplikasi pengenal: %s"
 
@@ -274,6 +291,7 @@ msgid "end of file"
 msgstr ""
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
+#, object-pascal-format
 msgid "expected end., but %s found"
 msgstr "diharapkan end, tapi %s ditemukan"
 
@@ -308,30 +326,37 @@ msgid "error in paramlist"
 msgstr "kesalahan dalam paramlist"
 
 #: codetoolsstrconsts.ctsexpected
+#, object-pascal-format
 msgid "\"%s\" expected"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+#, object-pascal-format
 msgid "expected a method type, but found %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexpectedbutfound
+#, object-pascal-format
 msgid "expected (, but found %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
+#, object-pascal-format
 msgid "expected ), but found %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
+#, object-pascal-format
 msgid "expected :=, but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
+#, object-pascal-format
 msgid "expected identifier, but found %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+#, object-pascal-format
 msgid "expected ; of statement, but found %s"
 msgstr ""
 
@@ -352,6 +377,7 @@ msgid "Forward"
 msgstr "Maju"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
+#, object-pascal-format
 msgid "Forward class definition not resolved: %s"
 msgstr "Definisi forward class tidak terpecahkan: %s"
 
@@ -372,6 +398,7 @@ msgid "Free Pascal Source Directory"
 msgstr "Direktori Sumber Free Pascal"
 
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
+#, object-pascal-format
 msgid "Free Pascal Sources, %s"
 msgstr "Sumber Free Pascal, %s"
 
@@ -394,6 +421,7 @@ msgid "HasError"
 msgstr ""
 
 #: codetoolsstrconsts.ctshelperisnotallowed
+#, object-pascal-format
 msgid "Helper after %s is not allowed"
 msgstr ""
 
@@ -402,6 +430,7 @@ msgid "IDE Directory"
 msgstr "Direktori IDE"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
+#, object-pascal-format
 msgid "identifier expected, but %s found"
 msgstr "pengenal diharapkan, tapi %s ditemukan"
 
@@ -410,6 +439,7 @@ msgid "unexpected end of file (identifier expected)"
 msgstr "akhir file tidak diharapkan (pengenal diharapkan)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
+#, object-pascal-format
 msgid "identifier expected, but keyword %s found"
 msgstr "pengenal diharapkan, tapi keyword %s ditemukan"
 
@@ -418,10 +448,12 @@ msgid "identifier"
 msgstr "pengenal"
 
 #: codetoolsstrconsts.ctsidentifieralreadydefined
+#, object-pascal-format
 msgid "Identifier %s already defined"
 msgstr "Pengenal %s sudah didefinisikan"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
+#, object-pascal-format
 msgid "identifier not found: %s"
 msgstr "pengenal tidak ditemukan: %s"
 
@@ -454,10 +486,12 @@ msgid "If TargetOS<>win32 then"
 msgstr "Jika TargetOS<>win32 lalu"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
+#, object-pascal-format
 msgid "illegal circle using unit: %s"
 msgstr "lingkaran tidak benar menggunakan unit: %s"
 
 #: codetoolsstrconsts.ctsillegalqualifier
+#, object-pascal-format
 msgid "illegal qualifier %s found"
 msgstr "pembatas %s yang ditemukan tidak benar"
 
@@ -470,18 +504,22 @@ msgid "Include circle detected"
 msgstr "Lingkaran Include terdeteksi"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+#, object-pascal-format
 msgid "include directories: %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsincludefilenotfound
+#, object-pascal-format
 msgid "include file not found \"%s\""
 msgstr "file include tidak ditemukan \"%s\""
 
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
+#, object-pascal-format
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
 msgstr "tipe tidak sama: diharapkan \"%s\" tapi didapat \"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "index parameter expected, but %s found"
 msgstr "parameter indeks diharapkan, tapi %s yang ditemukan"
 
@@ -506,30 +544,34 @@ msgid "interface section not found"
 msgstr "bagian interface tidak ditemukan"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "nama kelas tidak benar=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "nama kelas tidak benar %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
+#, object-pascal-format
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "Nilai tanda tidak benar \"%s\" untuk direktif %s"
 
 #: codetoolsstrconsts.ctsinvalidmode
+#, object-pascal-format
 msgid "invalid mode \"%s\""
 msgstr "Mode tidak benar \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
+#, object-pascal-format
 msgid "invalid mode switch \"%s\""
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidoperator
+#, object-pascal-format
 msgid "invalid operator %s"
 msgstr ""
 
@@ -546,13 +588,13 @@ msgid "invalid type"
 msgstr "tipe tidak benar"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "nama variabel tidak benar %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "tipe variabel tidak benar %s%s%s"
@@ -562,6 +604,7 @@ msgid "keyword"
 msgstr "keyword"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
+#, object-pascal-format
 msgid "keyword (e.g. %s) expected, but %s found"
 msgstr "keyword (contoh. %s) diharapkan, tapi %s ditemukan"
 
@@ -578,6 +621,7 @@ msgid "Lazarus Sources"
 msgstr "Sumber Lazarus"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
+#, object-pascal-format
 msgid "method \"%s\" has no declaration"
 msgstr ""
 
@@ -586,6 +630,7 @@ msgid "method name"
 msgstr "nama method"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+#, object-pascal-format
 msgid "Method signature %s not found in class"
 msgstr ""
 
@@ -610,18 +655,22 @@ msgid "missing type identifier"
 msgstr "pengenal type tidak ada"
 
 #: codetoolsstrconsts.ctsnameddirectory
+#, object-pascal-format
 msgid "%s Directory"
 msgstr " Direktori %s"
 
 #: codetoolsstrconsts.ctsnamedproject
+#, object-pascal-format
 msgid "%s Project"
 msgstr "%s Proyek"
 
 #: codetoolsstrconsts.ctsneededbymode
+#, object-pascal-format
 msgid " (needed by mode \"%s\")"
 msgstr ""
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
+#, object-pascal-format
 msgid "Nested %s definitions are not allowed"
 msgstr "Pengulangan definisi %s tidak dibolehkan"
 
@@ -638,6 +687,7 @@ msgid "nodefault specifier defined twice"
 msgstr "pemisah non default didefinisikan dua kali"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
+#, object-pascal-format
 msgid "no pascal code found (first token is %s)"
 msgstr "Tidak ada kode pascal ditemukan (token pertama adalah %s)"
 
@@ -646,6 +696,7 @@ msgid "No scanner available"
 msgstr "Tidak ada pemindai yang tersedia"
 
 #: codetoolsstrconsts.ctsnoscannerfound
+#, object-pascal-format
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr "Tidak ada pemindai ditemukan untuk \"%s\". Jika ini adalah file include, silahkan buka sumber utama lebih dulu."
 
@@ -654,18 +705,22 @@ msgid "Not enough actual generic parameters"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
+#, object-pascal-format
 msgid "old method not found: %s"
 msgstr "metode lama tidak ditemukan: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
+#, object-pascal-format
 msgid "operand expected but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
+#, object-pascal-format
 msgid "operand expected, but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
 msgstr ""
@@ -675,15 +730,18 @@ msgid "unexpected end of file (operator expected)"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
+#, object-pascal-format
 msgid "operator expected but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
+#, object-pascal-format
 msgid "%s Compiler Defines"
 msgstr "%s Defininisi Kompilator"
 
@@ -724,6 +782,7 @@ msgid "processor specific"
 msgstr "spesifik prosesor"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
+#, object-pascal-format
 msgid "property type expected, but %s found"
 msgstr "properti type diharapkan, tapi %s yang ditemukan"
 
@@ -732,10 +791,12 @@ msgid "property Current not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
+#, object-pascal-format
 msgid "property specifier already defined: %s"
 msgstr "pemisah properti sudah didefinisikan: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
+#, object-pascal-format
 msgid "qualifier expected but %s found"
 msgstr "pembatas diharapkan tapi %s ditemukan"
 
@@ -752,10 +813,12 @@ msgid "Runtime library"
 msgstr "Librari Runtime"
 
 #: codetoolsstrconsts.ctsscannedfiles
+#, object-pascal-format
 msgid "Scanned files: %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
+#, object-pascal-format
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; diharapkan setelah \"%s\" pemisah properti, tetapi %s ditemukan"
 
@@ -764,10 +827,12 @@ msgid "semicolon not found"
 msgstr "titik koma tidak ditemukan"
 
 #: codetoolsstrconsts.ctssetsincpathto
+#, object-pascal-format
 msgid "sets IncPath to %s"
 msgstr "set IncPath ke %s"
 
 #: codetoolsstrconsts.ctssetssrcpathto
+#, object-pascal-format
 msgid "sets SrcPath to %s"
 msgstr "set SrcPath ke %s"
 
@@ -780,7 +845,7 @@ msgid "source is not unit"
 msgstr "sumber bukan unit"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "sumber tidak ditemukan: unit %s"
@@ -790,7 +855,7 @@ msgid "SrcPath Initialization"
 msgstr "Inisialisasi SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "%s diharapkan, tapi %s ditemukan"
@@ -800,6 +865,7 @@ msgid "string constant"
 msgstr "konstan string"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
+#, object-pascal-format
 msgid "Syntax Error in expression \"%s\""
 msgstr "Kesalahan sintaks dalam ekspresi \"%s\""
 
@@ -808,6 +874,7 @@ msgid "Term has no simple type"
 msgstr "Term tidak mempunyai tipe sederhana"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
+#, object-pascal-format
 msgid "then expected, but %s found"
 msgstr ""
 
@@ -848,26 +915,32 @@ msgid "unexpected end of source"
 msgstr "akhir sumber tidak diharapkan"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
+#, object-pascal-format
 msgid "unexpected keyword \"%s\""
 msgstr "kata kunci tidak diharapkan \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
+#, object-pascal-format
 msgid "unexpected keyword %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in asm block found"
 msgstr "keyword \"%s\" yang tidak diharapkan dalam blok asm ditemukan"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in begin..end found"
 msgstr "keyword \"%s\" yang tidak diharapkan dalam begin..end ditemukan"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "keyword \"%s\" yang tidak diharapkan ditemukan saat pembacaan blok mundur"
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
+#, object-pascal-format
 msgid "unexpected section keyword %s found"
 msgstr ""
 
@@ -876,6 +949,7 @@ msgid "unexpected subrange operator '..' found"
 msgstr "operator sub jangkauan  '..' yang tidak diharapkan ditemukan"
 
 #: codetoolsstrconsts.ctsunitnotfound
+#, object-pascal-format
 msgid "unit not found: %s"
 msgstr "unit tidak ditemukan: %s"
 
@@ -884,6 +958,7 @@ msgid "UnitPath Initialization"
 msgstr "Inisialisasi UnitPath"
 
 #: codetoolsstrconsts.ctsunknownfunction
+#, object-pascal-format
 msgid "Unknown function %s"
 msgstr "Fungsi tidak dikenal %s"
 
@@ -892,6 +967,7 @@ msgid "(unknown mainfilename)"
 msgstr "(nama file utama tidak dikenal)"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
+#, object-pascal-format
 msgid "(unknown subdescriptor %s)"
 msgstr "(subdeskriptor tidak dikenal %s)"
 
@@ -912,6 +988,7 @@ msgid "var is only allowed in generics, end of class not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctswordnotfound
+#, object-pascal-format
 msgid "\"%s\" not found"
 msgstr "\"%s\" tidak ditemukan"
 

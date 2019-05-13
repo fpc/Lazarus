@@ -37,10 +37,12 @@ msgid "Already defined"
 msgstr "Már definiálva van"
 
 #: codystrconsts.crsalreadydefinedat
+#, object-pascal-format
 msgid "Already defined at %s"
 msgstr "Már definiálva van itt: %s"
 
 #: codystrconsts.crsandmoreidentifiers
+#, object-pascal-format
 msgid "... and %s more identifiers"
 msgstr "... és további %s azonosító"
 
@@ -65,6 +67,7 @@ msgid "by fpc.cfg"
 msgstr "az fpc.cfg-ben"
 
 #: codystrconsts.crscamaddassignmethodtoclass
+#, object-pascal-format
 msgid "Add Assign method to class %s"
 msgstr "Assign metódus hozzáadása a(z) %s osztályhoz"
 
@@ -125,6 +128,7 @@ msgid "private"
 msgstr "private"
 
 #: codystrconsts.crscamproperty
+#, object-pascal-format
 msgid "%s property"
 msgstr "%s tulajdonság"
 
@@ -149,6 +153,7 @@ msgid "There is no inherited method."
 msgstr "Nincs örökölt metódus."
 
 #: codystrconsts.crscamvar
+#, object-pascal-format
 msgid "%s var"
 msgstr "%s változó"
 
@@ -157,6 +162,7 @@ msgid "?visibility?"
 msgstr "?láthatóság?"
 
 #: codystrconsts.crscamwrittenbyproperty
+#, object-pascal-format
 msgid "%s, written by property %s"
 msgstr "%s, a(z) %s tulajdonság által írva"
 
@@ -231,6 +237,7 @@ msgid "Uses path"
 msgstr "Használat útvonala"
 
 #: codystrconsts.crscuallfiles
+#, object-pascal-format
 msgid "%s|All files (%s)|%s"
 msgstr "%s|Minden fájl (%s)|%s"
 
@@ -255,6 +262,7 @@ msgid "The file seems to be a binary. Proceed?"
 msgstr "A fájl binárisnak tűnik. Folytatás?"
 
 #: codystrconsts.crscuunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\"%s%s"
 msgstr "Fájl betöltése nem lehetséges: \"%s\"%s%s"
 
@@ -279,6 +287,7 @@ msgid "Declare Variable ..."
 msgstr "Változó deklarálása ..."
 
 #: codystrconsts.crsdeclarevariable3
+#, object-pascal-format
 msgid "Declare variable \"%s\""
 msgstr "Változó deklarálása: \"%s\""
 
@@ -295,10 +304,12 @@ msgid "Distance"
 msgstr "Távolság"
 
 #: codystrconsts.crsdvisakeyword
+#, object-pascal-format
 msgid "\"%s\" is a keyword."
 msgstr "A(z) \"%s\" egy kulcsszó."
 
 #: codystrconsts.crserror
+#, object-pascal-format
 msgid "Error: %s"
 msgstr "Hiba: %s"
 
@@ -331,6 +342,7 @@ msgid "File"
 msgstr "Fájl"
 
 #: codystrconsts.crsfiledoesnotexistanymore
+#, object-pascal-format
 msgid "File \"%s\" does not exist anymore."
 msgstr "Az \"%s\" fájl már nem létezik."
 
@@ -399,6 +411,7 @@ msgid "Identifier not found"
 msgstr "Azonosító nem található"
 
 #: codystrconsts.crsidentifiernotfoundinunit
+#, object-pascal-format
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr "A(z) \"%s\" azonosító nem található a(z) \"%s\" unit-ban. Lehetséges, hogy az azonosító nem létezik ezen a platformon vagy esetleg törölték/átnevezték."
 
@@ -420,6 +433,7 @@ msgid "Impossible dependency"
 msgstr "Lehetetlen függőség"
 
 #: codystrconsts.crsin
+#, object-pascal-format
 msgid "in \"%s\""
 msgstr "itt: \"%s\""
 
@@ -472,14 +486,17 @@ msgid "Links"
 msgstr "Hivatkozások"
 
 #: codystrconsts.crsloaddictionaryafter
+#, object-pascal-format
 msgid "Load dictionary after %s"
 msgstr "Szótár betöltése ennyi idő után: %s"
 
 #: codystrconsts.crslocalvariableof
+#, object-pascal-format
 msgid "Local variable of %s"
 msgstr "%s helyi változója"
 
 #: codystrconsts.crsmainsourcefile
+#, object-pascal-format
 msgid "Main source file: %s"
 msgstr "Fő-forrásfájl: %s"
 
@@ -488,6 +505,7 @@ msgid "Mbytes"
 msgstr "Mbájt"
 
 #: codystrconsts.crsmemberof
+#, object-pascal-format
 msgid "%s member of %s %s"
 msgstr "%s tagja ennek: %s %s"
 
@@ -496,6 +514,7 @@ msgid "Menu item caption:"
 msgstr "Menüelem szövege:"
 
 #: codystrconsts.crsminutes
+#, object-pascal-format
 msgid "%s minutes"
 msgstr "%s perc"
 
@@ -532,6 +551,7 @@ msgid "On clipboard"
 msgstr "A vágólapon"
 
 #: codystrconsts.crsonlydescendantsof
+#, object-pascal-format
 msgid "Only descendants of %s"
 msgstr "Csak %s leszármazottai"
 
@@ -568,6 +588,7 @@ msgid "Package"
 msgstr "Csomag"
 
 #: codystrconsts.crspackage2
+#, object-pascal-format
 msgid "Package: %s"
 msgstr "Csomag: %s"
 
@@ -576,10 +597,12 @@ msgid "Package not found"
 msgstr "Csomag nem található"
 
 #: codystrconsts.crspackagenotfounditshouldbein
+#, object-pascal-format
 msgid "Package \"%s\" not found. It should be in \"%s\"."
 msgstr "A(z) \"%s\" csomag nem található. Itt kellene lennie: \"%s\""
 
 #: codystrconsts.crspackagesunitsidentifiersfile
+#, object-pascal-format
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr "Csomagok: %s, Unit-ok: %s, Azonosítók: %s%sAdatbázisok: %s"
 
@@ -600,6 +623,7 @@ msgid "Please open a project first."
 msgstr "Előbb meg kell nyitni egy projektet!"
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+#, object-pascal-format
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr "Helyezze a forráskódszerkesztő beszúrási jelét egy azonosítóra valamelyik állományban!%sPéldául:%sMyVar:=3;"
 
@@ -624,10 +648,12 @@ msgid "Please specify a type"
 msgstr "Adjon meg egy típust!"
 
 #: codystrconsts.crsppu
+#, object-pascal-format
 msgid "PPU: %s"
 msgstr "PPU: %s"
 
 #: codystrconsts.crsppufilesofproject
+#, object-pascal-format
 msgid "PPU files of project \"%s\""
 msgstr "A(z) \"%s\" projekt PPU fájljai"
 
@@ -656,10 +682,12 @@ msgid "Published"
 msgstr "Published"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+#, object-pascal-format
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr "Valóban törölhető a csomag az adatbázisból?%sMegjegyzés: Ez nem változtatja meg a forrást vagy a beállításokat.%s%s\"%s\""
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+#, object-pascal-format
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr "Valóban törölhető a unit az adatbázisból?%sMegjegyzés: Ez nem változtatja meg a forrást vagy a beállításokat.%s%sUnit: \"%s\""
 
@@ -676,6 +704,7 @@ msgid "Report"
 msgstr "Jelentés"
 
 #: codystrconsts.crssavedictionaryevery
+#, object-pascal-format
 msgid "Save dictionary every %s"
 msgstr "Szótár mentése ennyi időnként: %s"
 
@@ -684,6 +713,7 @@ msgid "Save dictionary now"
 msgstr "Szótár mentése most"
 
 #: codystrconsts.crssavetofile
+#, object-pascal-format
 msgid "Save to file %s"
 msgstr "Mentés fájlba: %s"
 
@@ -692,6 +722,7 @@ msgid "Scanning ..."
 msgstr "Ellenőrzés ..."
 
 #: codystrconsts.crsscanningsunits
+#, object-pascal-format
 msgid "Scanning: %s units ..."
 msgstr "Ellenőrzés: %s unit ..."
 
@@ -700,6 +731,7 @@ msgid "searching ..."
 msgstr "keresés ..."
 
 #: codystrconsts.crsseconds
+#, object-pascal-format
 msgid "%s seconds"
 msgstr "%s másodperc"
 
@@ -712,6 +744,7 @@ msgid "Show CodeTools Node Info ..."
 msgstr "CodeTools csomópont-információk megjelenítése ..."
 
 #: codystrconsts.crsshowcodydict
+#, object-pascal-format
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Cody szótár megjelenítése ehhez: \"%s\""
 
@@ -740,6 +773,7 @@ msgid "Size of .ppu file"
 msgstr "A .ppu fájl mérete"
 
 #: codystrconsts.crssource
+#, object-pascal-format
 msgid "Source: %s"
 msgstr "Forrás: %s"
 
@@ -756,18 +790,22 @@ msgid "The dictionary is saved in intervals"
 msgstr "A szótár megadott időközönként lesz mentve"
 
 #: codystrconsts.crstheidentifierisalreadydefined
+#, object-pascal-format
 msgid "The identifier \"%s\" is already defined."
 msgstr "A(z) \"%s\" azonosító már létezik."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+#, object-pascal-format
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
 msgstr "Már be van töltve egy csomag azonos névvel.%sNyitott csomag: %s%sÚj csomag: %s%sCsak egy csomag tölthető be egyidőben."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+#, object-pascal-format
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
 msgstr "A cél-unit neve megegyezik az aktuális unit nevével.%sA Free Pascal nem támogatja ezt."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+#, object-pascal-format
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
 msgstr "A(z) \"%s\" unit%s a(z) \"%s\" része.%sNem használhat másik csomagot azonos névvel:%s\"%s\""
 
@@ -784,14 +822,17 @@ msgid "Type"
 msgstr "Típus"
 
 #: codystrconsts.crsunabletodelete
+#, object-pascal-format
 msgid "Unable to delete \"%s\""
 msgstr "Nem törölhető: \"%s\""
 
 #: codystrconsts.crsunabletoreadfile
+#, object-pascal-format
 msgid "Unable to read file \"%s\"."
 msgstr "Nem olvasható a fájl: \"%s\""
 
 #: codystrconsts.crsunabletorenameto
+#, object-pascal-format
 msgid "unable to rename \"%s\" to \"%s\""
 msgstr "\"%s\" nem nevezhető át erre: \"%s\""
 
@@ -800,6 +841,7 @@ msgid "Unit"
 msgstr "Unit"
 
 #: codystrconsts.crsunit2
+#, object-pascal-format
 msgid "Unit: %s"
 msgstr "Unit: %s"
 
@@ -824,6 +866,7 @@ msgid "Unit shared libraries"
 msgstr "Unit megosztott függvénytárai"
 
 #: codystrconsts.crsunitss
+#, object-pascal-format
 msgid "Units: %s"
 msgstr "Unit-ok: %s"
 

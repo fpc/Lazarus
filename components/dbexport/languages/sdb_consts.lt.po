@@ -13,6 +13,7 @@ msgstr ""
 "Language: lt\n"
 
 #: sdb_consts.scancelrecordsexported
+#, object-pascal-format
 msgid "Exported %d before user canceled."
 msgstr "Prieš naudotojui nutraukiant, eksportuota: %d."
 
@@ -69,6 +70,7 @@ msgid "DataExporter has no Dataset assigned."
 msgstr "DataExporter neturi priskirto Dataset."
 
 #: sdb_consts.serropeningdataset
+#, object-pascal-format
 msgid "Could not open dataset for exporting: %s"
 msgstr "Eksportuojant nepavyko atverti duomenų: %s"
 
@@ -77,10 +79,12 @@ msgid "Execute ..."
 msgstr "Vykdyti…"
 
 #: sdb_consts.snrecordsexported
+#, object-pascal-format
 msgid "Successfully exported %d records."
 msgstr "Sėkmingai eksportuota laukų: %d."
 
 #: sdb_consts.sprogress
+#, object-pascal-format
 msgid "Exporting %d records"
 msgstr "Eksportuojama įrašų: %d"
 

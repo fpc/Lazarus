@@ -108,6 +108,7 @@ msgid "Page breaks"
 msgstr "Разрывы страниц"
 
 #: le_e_spreadsheet_consts.spagename
+#, object-pascal-format
 msgid "Page %d"
 msgstr "Страница %d"
 

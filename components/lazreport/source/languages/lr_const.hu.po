@@ -249,6 +249,7 @@ msgid "0"
 msgstr "0"
 
 #: lr_const.sclassobjectnotfound
+#, object-pascal-format
 msgid "Class Object \"%s\" not found"
 msgstr "Az osztályobjektum nem található: \"%s\""
 
@@ -737,6 +738,7 @@ msgid "Version"
 msgstr "Változat"
 
 #: lr_const.sduplicatedobjectname
+#, object-pascal-format
 msgid "An object named \"%s\" already exists"
 msgstr "Egy \"%s\" nevű objektum már létezik"
 
@@ -1714,6 +1716,7 @@ msgid "Invalid report format"
 msgstr "Érvénytelen jelentésformátum"
 
 #: lr_const.sinvalidvariablename
+#, object-pascal-format
 msgid "\"%s\" is not a valid variable name."
 msgstr "A(z) \"%s\" nem érvényes változónév."
 
@@ -1771,6 +1774,7 @@ msgid "Object inspector"
 msgstr "Objektum felügyelő"
 
 #: lr_const.sobjectnotfound
+#, object-pascal-format
 msgid "Object \"%s\" not found"
 msgstr "Az objektum nem található: \"%s\""
 
@@ -2513,10 +2517,12 @@ msgid "Report file"
 msgstr "Jelentés &fájl"
 
 #: lr_const.sreportcorruptoldknowversion
+#, object-pascal-format
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
 msgstr "Ez a jelentés sérült. Valószínűleg szüksége van erre: \"LRE_OLDV%d_FRF_READ\"=true"
 
 #: lr_const.sreportcorruptunknownversion
+#, object-pascal-format
 msgid "This report is corrupt, frVersion=%d"
 msgstr "Ez a jelentés sérült. frVersion=%d"
 

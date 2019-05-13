@@ -180,15 +180,17 @@ msgid "Create/Edit private repository"
 msgstr "Luo/muokkaa paikallista säilöä"
 
 #: opkman_const.rscreaterepositoryfrm_conf1
+#, object-pascal-format
 msgid "Are you sure you wish to delete package: \"%s\"?"
 msgstr "Tahdotko varmasti poistaa paketin: \"%s\"?"
 
 #: opkman_const.rscreaterepositoryfrm_conf2
+#, object-pascal-format
 msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
 msgstr "Tiedosto: \"%s\" on jo nykyisessä säilössä. Korvataanko?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Cannot open private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -200,7 +202,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Cannot save private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -216,11 +218,12 @@ msgid "Cannot add package to repository!"
 msgstr "Ei voi lisätä pakettia säilöön!"
 
 #: opkman_const.rscreaterepositoryfrm_error5
+#, object-pascal-format
 msgid "Cannot delete package: \"%s\"!"
 msgstr "Ei voi poistaa pakettia: \"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following directory: \"%s\" is not empty.\n"
 #| "It's recommended to save the repository to an empty directory. Continue?\n"
@@ -232,7 +235,7 @@ msgstr ""
 "On suositeltavaa tallettaa säilö tyhjään hakemistoon. Jatka?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -244,7 +247,7 @@ msgstr ""
 "Jokaisen säilön ja Lazarus paketin pitää olla yksilöllinen!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following Lazarus package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -459,6 +462,7 @@ msgid "Cannot create JSON file:"
 msgstr "Ei voi luoda JSON tiedostoa:"
 
 #: opkman_const.rscreaterepositorypackagefrm_error3
+#, object-pascal-format
 msgid "Cannot send file: \"%s\""
 msgstr "Ei voi lähettää tiedostoa: \"%s\""
 
@@ -538,6 +542,7 @@ msgid "Repository package successfully created."
 msgstr "Säilöpaketti luotiin onnistuneesti."
 
 #: opkman_const.rscreaterepositorypackagefrm_message8
+#, object-pascal-format
 msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Lähettää tiedostoja (\"%s\"). Odota..."
 
@@ -727,14 +732,17 @@ msgstr ""
 "Asenna vain jos luotat paketin ylläpitäjään. Jatketaanko?\n"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
+#, object-pascal-format
 msgid "%s packages successfully loaded from file!"
 msgstr "%s pakettia ladattiin onnistuneesti tiedostosta!"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
+#, object-pascal-format
 msgid "%s packages successfully saved to file!"
 msgstr "%s pakettia talletettiin onnistuneesti tiedostoon!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
+#, object-pascal-format
 msgid "Cannot create directory \"%s\". Operation aborted."
 msgstr "Ei voi luoda hakemistoa \"%s\". Keskeytetään."
 
@@ -791,6 +799,7 @@ msgid "Please check one or more packages!"
 msgstr "Valitse yksi tai useampi paketti!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
+#, object-pascal-format
 msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Paketti \"%s\" riippuu paketista \"%s\". Selvitä riippuvuus?"
 
@@ -799,10 +808,12 @@ msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "Selvittämätön riippuvuus voi johtaa asennuksen epäonnistumiseen! Jatketaanko?"
 
 #: opkman_const.rsmainfrm_rspackageinformation
+#, object-pascal-format
 msgid "Quick package information for \"%s\""
 msgstr "Nopea tieto paketille \"%s\""
 
 #: opkman_const.rsmainfrm_rspackagerating
+#, object-pascal-format
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "Luokituksesi paketille \"%s\" on: %s. Kiitos äänestyksestä!"
 
@@ -811,11 +822,12 @@ msgid "This will delete all non-installed packages from local repository. Contin
 msgstr "Tämä poistaa kaikki asentamattomat paketit paikallisesta säilöstä. Jatketaanko?"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup1
+#, object-pascal-format
 msgid "%s packages deleted!"
 msgstr "%s pakettia poistettu!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "%sAre you sure you wish to uninstall the checked packages?\n"
 #| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
@@ -827,6 +839,7 @@ msgstr ""
 "Huomio: muutokset tulevat voimaan vasta kun IDE kootaan uudelleen.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
+#, object-pascal-format
 msgid "Cannot uninstall package \"%s\"!"
 msgstr "Ei voi poistaa paketin \"%s\" asennusta!"
 
@@ -1418,10 +1431,12 @@ msgid "Add new exclusion"
 msgstr "Lisää uusi rajaus"
 
 #: opkman_const.rsoptions_inputbox_conf0
+#, object-pascal-format
 msgid "Delete selected extension (\"%s\")?"
 msgstr "Poista valittu pääte (\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_conf1
+#, object-pascal-format
 msgid "Delete selected folder (\"%s\")?"
 msgstr "Poista valittu kansio (\"%s\")?"
 
@@ -1612,6 +1627,7 @@ msgid "Update package list"
 msgstr "Päivitä pakettiluettelo"
 
 #: opkman_const.rspackagesfound
+#, object-pascal-format
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
 msgstr "(%s säilöpakettia, sisältävät %s lpk tiedostoa, koko kaikkiaan %s)"
 
@@ -1668,6 +1684,7 @@ msgid "Cannot install package:"
 msgstr "Ei voi asentaa pakettia:"
 
 #: opkman_const.rsprogressfrm_error4
+#, object-pascal-format
 msgctxt "opkman_const.rsprogressfrm_error4"
 msgid "Dependency \"%s\" not found!"
 msgstr "Riippuvuutta \"%s\" ei löydy!"
@@ -1704,6 +1721,7 @@ msgid "Success."
 msgstr "Onnistui."
 
 #: opkman_const.rsprogressfrm_info2
+#, object-pascal-format
 msgid "Contacting download site for \"%s\" (%s)"
 msgstr "Ottaa yhteyttä latauspaikkaan \"%s\" (%s)"
 
@@ -1790,10 +1808,12 @@ msgid "Repositories"
 msgstr "Säilöt"
 
 #: opkman_const.rsrepositories_confirmation0
+#, object-pascal-format
 msgid "Delete selected repository \"%s\"?"
 msgstr "Poista valittu säilö \"%s\"?"
 
 #: opkman_const.rsrepositories_info1
+#, object-pascal-format
 msgid "The following repository: \"%s\" is already in the list."
 msgstr "Säilö: \"%s\" on jo luettelossa."
 

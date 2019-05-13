@@ -2,10 +2,12 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: favoritesstr.saddtofavoritess
+#, object-pascal-format
 msgid "Add to favorites: %s"
 msgstr ""
 
 #: favoritesstr.sremovefromfavoritess
+#, object-pascal-format
 msgid "Remove from favorites: %s"
 msgstr ""
 

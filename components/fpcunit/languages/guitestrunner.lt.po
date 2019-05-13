@@ -17,38 +17,47 @@ msgid "All Tests"
 msgstr "Visi testavimai"
 
 #: guitestrunner.rserrors
+#, object-pascal-format
 msgid "%s    Errors: %s"
 msgstr "%s    Klaidos: %s"
 
 #: guitestrunner.rsexception
+#, object-pascal-format
 msgid "Exception: %s"
 msgstr "Išimtinė situacija: %s"
 
 #: guitestrunner.rsexceptioncla
+#, object-pascal-format
 msgid "Exception class: %s"
 msgstr "Išimtinės situacijos klasė: %s"
 
 #: guitestrunner.rsexceptionmes
+#, object-pascal-format
 msgid "Exception message: %s"
 msgstr "Išimtinės situacijos pranešimas: %s"
 
 #: guitestrunner.rsfailures
+#, object-pascal-format
 msgid "%s     Failures: %s"
 msgstr "%s     Nesėkmės: %s"
 
 #: guitestrunner.rslinenumber
+#, object-pascal-format
 msgid "Line number: %s"
 msgstr "Eilutės numeris: %s"
 
 #: guitestrunner.rsmessage
+#, object-pascal-format
 msgid "Message: %s"
 msgstr "Pranešimas: %s"
 
 #: guitestrunner.rsmethodname
+#, object-pascal-format
 msgid "Method name: %s"
 msgstr "Metodo pavadinimas: %s"
 
 #: guitestrunner.rsnumberofexec
+#, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Įvykdyta testavimų: %s Užtruktą: %s"
 
@@ -57,14 +66,17 @@ msgid "Run "
 msgstr "Vykdyti "
 
 #: guitestrunner.rsrunning
+#, object-pascal-format
 msgid "Running %s"
 msgstr "Vykdoma %s"
 
 #: guitestrunner.rsruns
+#, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Vykdymų: %s/%s"
 
 #: guitestrunner.rsunitname
+#, object-pascal-format
 msgid "Unit name: %s"
 msgstr "Modulio pavadinimas: %s"
 

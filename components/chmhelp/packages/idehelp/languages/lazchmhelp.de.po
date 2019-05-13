@@ -27,6 +27,7 @@ msgid "Missing lhelp"
 msgstr "Fehlendes lhelp"
 
 #: lazchmhelp.help_unabletofindthelhelpviewerpleasecompilethelhelppro
+#, object-pascal-format
 msgid "Unable to find the lhelp viewer:%s%s%sPlease compile the lhelp project:%s%s"
 msgstr "Kann das lhelp-Anzeigeprogramm:%s%s%snicht finden. Bitte kompilieren Sie das lhelp-Projekt:%s%s"
 

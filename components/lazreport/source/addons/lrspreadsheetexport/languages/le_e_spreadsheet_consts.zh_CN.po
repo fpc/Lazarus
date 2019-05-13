@@ -113,6 +113,7 @@ msgid "Page breaks"
 msgstr "分页符"
 
 #: le_e_spreadsheet_consts.spagename
+#, object-pascal-format
 msgid "Page %d"
 msgstr "页: %d"
 

@@ -2,6 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: heaptrcview.rsdtimes
+#, object-pascal-format
 msgid " (%d times)"
 msgstr ""
 
@@ -50,30 +51,37 @@ msgid ".trc file"
 msgstr ""
 
 #: heaptrcview.stacklineformat
+#, object-pascal-format
 msgid "%s"
 msgstr ""
 
 #: heaptrcview.stacklineformatwithfile
+#, object-pascal-format
 msgid "%s file: %s : %d; "
 msgstr ""
 
 #: heaptrcview.stacktraceformat
+#, object-pascal-format
 msgid "Leak: %d bytes x %d times"
 msgstr ""
 
 #: heaptrcview.stacktraceformatsingle
+#, object-pascal-format
 msgid "Leak: %d bytes"
 msgstr ""
 
 #: heaptrcview.strleakingblockscount
+#, object-pascal-format
 msgid "Leaking Blocks Count: %d"
 msgstr ""
 
 #: heaptrcview.strleakingmemsize
+#, object-pascal-format
 msgid "Leaking Mem Size: %d"
 msgstr ""
 
 #: heaptrcview.strtotalmemalloc
+#, object-pascal-format
 msgid "Total Mem allocated: %d"
 msgstr ""
 

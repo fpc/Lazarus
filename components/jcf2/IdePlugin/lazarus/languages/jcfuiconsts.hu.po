@@ -16,6 +16,7 @@ msgid "About JEDI Code Format"
 msgstr "JEDI Code Format névjegye"
 
 #: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+#, object-pascal-format
 msgid "Find more information on the web at: %s"
 msgstr "További információk találhatók a web-en: %s"
 
@@ -28,6 +29,7 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Ez a program még fejlesztés alatt van. Az alapos tesztelés és a bejelentett hibák javítás ellenére, nincs garancia semmire. Készítsen biztonsági másolatot, vagy még inkább használjon forráskód kezelő rendszert!"
 
 #: jcfuiconsts.lisaboutversion
+#, object-pascal-format
 msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Változat: $VERSION$%s$DATE$%s%sEz a program megpróbálja egységesen és olvashatóan elrendezni a Delphi Object-Pascal forráskódokat.%s%sCopyright Anthony Steele 1999-2008"
 
@@ -363,6 +365,7 @@ msgid "Remove empty '//' comments"
 msgstr "Üres '//' megjegyzések eltávolítása"
 
 #: jcfuiconsts.lisedatlinecol
+#, object-pascal-format
 msgid "%sAt line %s col %s"
 msgstr "%s itt: %s. sor, %s. oszlop"
 
@@ -371,10 +374,12 @@ msgid "Error"
 msgstr "Hiba"
 
 #: jcfuiconsts.lisedexception
+#, object-pascal-format
 msgid "Exception %s"
 msgstr "Kivétel: %s"
 
 #: jcfuiconsts.lisedin
+#, object-pascal-format
 msgid "%s in %s"
 msgstr "%s itt: %s"
 
@@ -383,18 +388,22 @@ msgid "JCF Parse error"
 msgstr "JCF elemzés hiba"
 
 #: jcfuiconsts.lisednear
+#, object-pascal-format
 msgid "%s near %s"
 msgstr "%s a következőnél: %s"
 
 #: jcfuiconsts.lisedtype
+#, object-pascal-format
 msgid "Type: %s%s"
 msgstr "Típus: %s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsexception
+#, object-pascal-format
 msgid "Error writing settings file %s:%s%s"
 msgstr "Hiba a beállításfájl írásakor: %s:%s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
 msgid "Error writing settings file: %s is read only"
 msgstr "Hiba a beállításfájl írásakor: a(z) %s csak olvasható"
 
@@ -415,6 +424,7 @@ msgid "Show confirmation dialog before format"
 msgstr "Párbeszédablak megjelenítése formázás előtt"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
+#, object-pascal-format
 msgid "Date file written: %s"
 msgstr "A fájl írásának időpontja: %s"
 
@@ -447,6 +457,7 @@ msgid "Settings file is:"
 msgstr "A beállítási fájl:"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+#, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "A fájlt író változat: %s"
 
@@ -519,10 +530,12 @@ msgid "JEDI Code Format of all open windows?"
 msgstr "JEDI Code Format futtatása minden nyitott állományon?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+#, object-pascal-format
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
 msgstr "JEDI Code Format: %sBiztosan formázni akarja mind a %s fájlt a projektben?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
+#, object-pascal-format
 msgid "JEDI Code Format of %sStart formatting?"
 msgstr "JEDI Code Format: %sFormázás indítása?"
 
@@ -804,6 +817,7 @@ msgid "&Var declarations"
 msgstr "Változók deklarációi"
 
 #: jcfuiconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr "A(z) \"%s\" beállításfájl nem létezik.%sA formázó jobban működik ha meg van adva egy érvényes beállításfájl amit használhat"
 

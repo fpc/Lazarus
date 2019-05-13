@@ -13,10 +13,12 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 
 #: favoritesstr.saddtofavoritess
+#, object-pascal-format
 msgid "Add to favorites: %s"
 msgstr "Įdėti į parankinius: %s"
 
 #: favoritesstr.sremovefromfavoritess
+#, object-pascal-format
 msgid "Remove from favorites: %s"
 msgstr "Pašalinti iš parankinių: %s"
 

@@ -12,6 +12,7 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+#, object-pascal-format
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Un côté libre du séparateur ne doit pas être ancré : Nœud = \"%s\" Type = %s Ancres[%s] = \"%s\""
 
@@ -24,18 +25,22 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Nombre de pixels que la souris doit déplacer avant que le déplacement ne commence"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "L'ancre n'est pas un séparateur : Nœud  = \"%s\" Ancres[%s] = \"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
+#, object-pascal-format
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Ancre introuvable : Nœud = \"%s\" Ancres[%s] = \"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Ancre du mauvais côté du séparateur : Nœud = \"%s\" Ancres[%s] = \"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+#, object-pascal-format
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Une page ne doit pas être ancrée : Nœud = \"%s\" Parent = %s Type du parent = %s Ancres[%s] = \"%s\""
 
@@ -56,6 +61,7 @@ msgid "control is already a docksite"
 msgstr "le contrôle est déjà une zone d'amarrage"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+#, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "La zone d'amarrage \"%s\" ne peut contenir qu'une seule zone."
 
@@ -68,6 +74,7 @@ msgid "Docking options"
 msgstr "Options d'amarrage"
 
 #: anchordockstr.adrsdraganddockc
+#, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Utiliser la souris pour déplacer et amarrer la fenêtre \"%s\""
 
@@ -92,6 +99,7 @@ msgid "Enlarge"
 msgstr "Agrandir"
 
 #: anchordockstr.adrsenlargeside
+#, object-pascal-format
 msgid "Enlarge %s side"
 msgstr "Agrandir le côté %s"
 
@@ -196,18 +204,22 @@ msgid "No captions for floating sites"
 msgstr "Pas d'étiquettes pour les zones d'amarrage"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
+#, object-pascal-format
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Pas d'enfants autorisés pour le Nœud = \"%s\" Type = %s"
 
 #: anchordockstr.adrsnotsupportedhasparent
+#, object-pascal-format
 msgid "Not supported: %s has parent %s"
 msgstr "Non pris en charge : %s a comme parent %s"
 
 #: anchordockstr.adrsquit
+#, object-pascal-format
 msgid "Quit %s"
 msgstr "Quitter %s"
 
 #: anchordockstr.adrsrequestedbutcreated
+#, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "%s demandé, mais %s créé"
 
@@ -248,6 +260,7 @@ msgid "Tab position"
 msgstr "Position d'onglet"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+#, object-pascal-format
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
 msgstr "Il y a un autre gestionnaire d'amarrage installé. Seul un paquet d'amarrage peut être installé à un moment donné. Veuillez désinstaller le gestionnaire d'amarrage %s et relancer l'EDI"
 
@@ -256,6 +269,7 @@ msgid "top"
 msgstr "sommet"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+#, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "Pour utiliser l'amarrage par ancres vous devez tout d'abord désinstaller %s"
 

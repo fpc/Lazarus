@@ -16,10 +16,12 @@ msgid "Changing buffer size is not allowed while (un)zipping."
 msgstr "La modification de la taille du buffer n'est pas autorisée pendant la compression ou la décompression."
 
 #: opkman_zip.serrcorruptzip
+#, object-pascal-format
 msgid "Corrupt ZIP file %s."
 msgstr "Le fichier ZIP \"%s\" est corrompu."
 
 #: opkman_zip.serrencryptionnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr "Impossible de décompresser l'élément \"%s\" : le cryptage n'est pas pris en charge."
 
@@ -28,22 +30,27 @@ msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "La modification du nom du fichier de sortie n'est pas autorisée pendant la compression ou la décompression."
 
 #: opkman_zip.serrfiledoesnotexist
+#, object-pascal-format
 msgid "File \"%s\" does not exist."
 msgstr "Le fichier \"%s\" n'existe pas."
 
 #: opkman_zip.serrinvalidcrc
+#, object-pascal-format
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "CRC incorrect lors de la décompression de \"%s\"."
 
 #: opkman_zip.serrmaxentries
+#, object-pascal-format
 msgid "Encountered %d file entries; maximum supported is %d."
 msgstr "%d entrées de fichiers trouvées ; le maximum est de %d."
 
 #: opkman_zip.serrmissingarchivename
+#, object-pascal-format
 msgid "Missing archive filename in streamed entry %d."
 msgstr "Le nom du fichier d'archive est manquant pour l'entrée %d."
 
 #: opkman_zip.serrmissingfilename
+#, object-pascal-format
 msgid "Missing filename in entry %d."
 msgstr "Nom de fichier manquant pour l'entrée %d."
 
@@ -56,14 +63,17 @@ msgid "No stream is opened."
 msgstr "Aucun flux n'est ouvert."
 
 #: opkman_zip.serrpatchsetnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr "Impossible de décompresser l'élément \"%s\" : les ensembles de patchs ne sont pas pris en charge."
 
 #: opkman_zip.serrpostoolarge
+#, object-pascal-format
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "La position ou le décalage %d est plus grand que le maximum supporté %d."
 
 #: opkman_zip.serrunsupportedcompressionformat
+#, object-pascal-format
 msgid "Unsupported compression format %d."
 msgstr "Le format de compression %d n'est pas pris en charge."
 

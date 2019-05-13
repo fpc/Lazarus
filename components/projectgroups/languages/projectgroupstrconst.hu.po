@@ -20,6 +20,7 @@ msgid "Abort loading project group"
 msgstr "A projektcsoport betöltésének megszakítása"
 
 #: projectgroupstrconst.lisactivetarget
+#, object-pascal-format
 msgid "Target: %s"
 msgstr "Cél: %s"
 
@@ -32,10 +33,12 @@ msgid "Be patient!"
 msgstr "Türelem!"
 
 #: projectgroupstrconst.lisbuildmode
+#, object-pascal-format
 msgid ", build mode \"%s\""
 msgstr ", építési mód \"%s\""
 
 #: projectgroupstrconst.lisbuildmode2
+#, object-pascal-format
 msgid "Build Mode \"%s\""
 msgstr "Építési mód \"%s\""
 
@@ -44,14 +47,17 @@ msgid "Build mode not found"
 msgstr "Építési mód nem található."
 
 #: projectgroupstrconst.lisbuildmodenotfound2
+#, object-pascal-format
 msgid "Build mode \"%s\" not found."
 msgstr "A(z) \"%s\" építési mód nem található."
 
 #: projectgroupstrconst.liscompilepackage
+#, object-pascal-format
 msgid "Compile Package %s"
 msgstr "Csomag fordítása: %s"
 
 #: projectgroupstrconst.liscompileproject
+#, object-pascal-format
 msgid "Compile Project %s"
 msgstr "Projekt fordítása: %s"
 
@@ -60,7 +66,7 @@ msgid "Discard changes"
 msgstr "Változások eldobása"
 
 #: projectgroupstrconst.liserrnosuchfile
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Could not find target file\n"
 #| "\"%s\"\n"
@@ -79,6 +85,7 @@ msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr "Csak a \"projektgroup\" típus lehet a projektcsoport gyökere."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
+#, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
 msgstr "Hiba a projektcsoport fájljának olvasása közben: \"%s\"%s%s"
 
@@ -95,6 +102,7 @@ msgid "Invalid File"
 msgstr "Érvénytelen fájl"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
+#, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
 msgstr "Érvénytelen XML fájlnév: \"%s\"."
 
@@ -179,6 +187,7 @@ msgid "Package not found"
 msgstr "Csomag nem található"
 
 #: projectgroupstrconst.lispackagenotfound2
+#, object-pascal-format
 msgid "Package \"%s\" not found."
 msgstr "A(z) \"%s\" csomag nem található."
 
@@ -192,10 +201,12 @@ msgid "Please save your changes before reloading the project group."
 msgstr "Menteni kell a változásokat mielőtt újra betölti a projektcsoportot."
 
 #: projectgroupstrconst.lisprojectgroup
+#, object-pascal-format
 msgid "Project group %s"
 msgstr "Projektcsoport: %s"
 
 #: projectgroupstrconst.lisprojectgroup2
+#, object-pascal-format
 msgid "Project Group: %s"
 msgstr "Projektcsoport: %s"
 
@@ -228,7 +239,7 @@ msgid "Project group modified"
 msgstr "Projektcsoport módosítva"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Project group \"%s\" is modified.\n"
 #| "What do you want to do?\n"
@@ -344,6 +355,7 @@ msgid "Copy file name"
 msgstr "Fájlnév másolása"
 
 #: projectgroupstrconst.listargetcount
+#, object-pascal-format
 msgid "%d targets"
 msgstr "%d cél"
 
@@ -441,6 +453,7 @@ msgid "Uninstall selected target"
 msgstr "A kiválasztott cél eltávolítása"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
+#, object-pascal-format
 msgid "The lazbuild%s was not found."
 msgstr "A lazbuild%s nem található."
 
@@ -449,14 +462,17 @@ msgid "There is still another build in progress."
 msgstr "Egy másik építési még folyamatban van."
 
 #: projectgroupstrconst.lisunabletocreatefile
+#, object-pascal-format
 msgid "Unable to create file \"%s\": %s"
 msgstr "A(z) \"%s\" fájl létrehozása nem lehetséges: %s"
 
 #: projectgroupstrconst.lisunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\""
 msgstr "A(z) \"%s\" fájl betöltése nem lehetséges"
 
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
+#, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "Nem lehet írni a projektcsoport fájlját: \"%s\"%s%s"
 
@@ -465,6 +481,7 @@ msgid "Write error"
 msgstr "Írási hiba"
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
+#, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "XML szintaxis hiba a(z) \"%s\" fájlban: %s"
 

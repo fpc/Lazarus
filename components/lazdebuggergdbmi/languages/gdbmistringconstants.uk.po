@@ -17,86 +17,103 @@ msgid "Debugger"
 msgstr "Зневаджувач"
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Зневаджувач зазнав помилки під час спроби запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\", щоб видалити точки зупинки і продовжити зневаджування (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
 msgstr "Зневаджувач не може встановити точку зупинки в точку входу застосунку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunerror"
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
 msgstr "Зневаджувач не може запустити застосунок.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunnopiderror"
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
 msgstr "Зневаджувач не зміг отримати PID застосунку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "Зневаджувач не зміг себе ініціалізувати.%0:sЗастосунок запустився (і завершився) перш ніж зневаджувач міг встановити точки зупинки. %0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmierroronruncommand
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Зневаджувач зазнав помилки при спробі запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\" щоб продовжити зневаджування (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierroronruncommandwithwarning"
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sНа доповнення до помилки зустрілось таке попередження:%0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstategenericinfo"
 msgid "Error in: %1:s %0:s"
 msgstr "Помилка в: %1:s %0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommanderror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfocommanderror"
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
 msgstr "%0:sКоманда GDB:%0:s\"%1:s\"%0:sповернула помилку:%0:s\"%2:s\"%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfocommandnoresult"
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
 msgstr "%0:sКоманда GDB:%0:s\"%1:s\"%0:sне повернув жодного результату.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedread
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedread"
 msgid "%0:sCould not read output from GDB.%0:s"
 msgstr "%0:sНе можу прочитати вивід GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedwrite"
 msgid "%0:sCould not send a command to GDB.%0:s"
 msgstr "%0:sНе можу відправити команду до GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfogdbgone
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfogdbgone"
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sПроцес GDB більше не запущений.%0:s"
 
 #: gdbmistringconstants.gdbmieventlogdebugoutput
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogdebugoutput"
 msgid "Debug Output: %s"
 msgstr "Повідомлення зневадження: %s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventloggdbinternalerror"
 msgid "GDB has encountered an internal error: %s"
 msgstr "GDB зазнав внутрішньої помилки: %s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlognosymbols"
 msgid "File '%s' has no debug symbols"
 msgstr "Файл '%s' не має зневаджувальних символів"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogprocessexitcode"
 msgid "Process Exit: %s"
 msgstr "Вихід з процесу: %s"
@@ -107,6 +124,7 @@ msgid "Process Exit: normally"
 msgstr "Вихід з процесу: нормально"
 
 #: gdbmistringconstants.gdbmieventlogprocessstart
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogprocessstart"
 msgid "Process Start: %s"
 msgstr "Запуск процесу: '%s'"
@@ -116,6 +134,7 @@ msgid "Failed to create process for GDB"
 msgstr "Не вдалося створити процес для GDB"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
 msgstr "ІСР не вдалося зупинити процес GDB. Можливо цей процес продовжує працювати за межами впливу ІСР.%0:sЩоб уникнути перешкоджання цього процесу системі, відшукайте і припиніть його самостійно."
@@ -126,21 +145,25 @@ msgid "GDB did not terminate"
 msgstr "GDB не зупинено"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmifatalerroroccurred"
 msgid "Unrecoverable error: \"%s\""
 msgstr "Критична помилка: \"%s\""
 
 #: gdbmistringconstants.gdbmigdbinternalerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
 msgstr "В GDB трапилась внутрішня помилка: %0:sНатисніть \"Гаразд\", щоб продовжити зневаджування. Це може бути НЕБЕЗПЕЧНО.%0:sНатисніть \"Закінчити\" для припинення сеансу зневаджування."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
 msgstr "Під час виконання команди: %0:s\"%2:s\"%0:sgdb повідомив:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "Натисніть кнопку \"Пропустити\" щоб продовжити зневаджування. Це може бути небезпечно. Натисніть кнопку \"Скасувати\", щоб зупинити відладчик.%0:sВиняток: %1:s з повідомленням \"%2:s\"%0:sКонтекст: %4:s. Стан: %5:s %0:s%0:s%3:s"
@@ -151,11 +174,13 @@ msgid "The debugger experienced an unknown condition"
 msgstr "Налагоджувач потрапив в невідомий стан"
 
 #: gdbmistringconstants.gdbmitimeoutforcmd
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmitimeoutforcmd"
 msgid "Time-out for command: \"%s\""
 msgstr "Таймаут для команди: \"%s\""
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmiwarningunknowbreakpoint"
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
 msgstr "Зневаджувач досяг несподіваного %1:s%0:s%0:sНатисніть \"Гаразд\", щоб продовжити зневаджування (пауза).%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
@@ -165,6 +190,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "Зневаджувач GNU через SSH дозволяє проводити віддалене зневадження через з’єднання SSH. Детальніше дивіться у файлі docs/RemoteDebugging.txt. Клієнт SSH має міститися в шляху. Використайте SSH_Startup_Options для задання назви віддаленої машини і, за потреби, назви користувача. Параметром Remote_GDB_Exe задається назва файлу GDB на віддаленій машині."
 
 #: gdbmistringconstants.lisresponsecontinue
+#, object-pascal-format
 msgid "Response: %sContinue?"
 msgstr "Відповідь: %sПродовжити?"
 
@@ -173,6 +199,7 @@ msgid "Timeout has occurred:"
 msgstr "Час вийшов:"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, object-pascal-format
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Неочікуваний результат:%sЗневаджувач завершить роботу."
 
@@ -193,6 +220,7 @@ msgid "Failed to load application executable"
 msgstr "Не вдалось завантажити виконуваний файл застосунка"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
+#, object-pascal-format
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr "Зневаджувачу не вдалось установити всі точки зупинки при ініціалізації.%0:sСлід перевірити, що всі сирці були скомпільовані зі зневаджувальною інформацією.%0:sНатисніть Гаразд, щоб знехтувати і продовжити."
 

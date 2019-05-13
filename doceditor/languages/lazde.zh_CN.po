@@ -75,6 +75,7 @@ msgid "Create cont&ent file"
 msgstr "创建目录文件(&e)"
 
 #: lazdemsg.sdataforelement
+#, object-pascal-format
 msgid "Documentation for element \"%s\":"
 msgstr "文档对于element \"%s\":"
 
@@ -83,14 +84,17 @@ msgid "&Delete"
 msgstr "删除(&D)"
 
 #: lazdemsg.sdeletemodule
+#, object-pascal-format
 msgid "Are you sure you want to delete module \"%s\" ?"
 msgstr "你真的想删除模块\"%s\"?"
 
 #: lazdemsg.sdeletepackage
+#, object-pascal-format
 msgid "Are you sure you want to delete package \"%s\" ?"
 msgstr "你真的想删除包\"%s\"?"
 
 #: lazdemsg.sdeletetopic
+#, object-pascal-format
 msgid "Are you sure you want to delete topic \"%s\" ?"
 msgstr "你真的想删除topic(主题?)\"%s\"?"
 
@@ -107,26 +111,32 @@ msgid "Change description file"
 msgstr "更改描述文件"
 
 #: lazdemsg.serrfpdoc
+#, object-pascal-format
 msgid "Building failed with exit code %d. Please check log."
 msgstr "构建失败 出口代码%d.请检查日志."
 
 #: lazdemsg.serrnomoduleforelement
+#, object-pascal-format
 msgid "No module found to insert element \"%s\""
 msgstr "没有模块找到来插入元素\"%s\""
 
 #: lazdemsg.serrnonodeformodule
+#, object-pascal-format
 msgid "No node found for module \"%s\""
 msgstr "没有节点找到对于模块\"%s\""
 
 #: lazdemsg.serrnonodeforpackage
+#, object-pascal-format
 msgid "No node found for package \"%s\""
 msgstr "没有节点找到对于包\"%s\""
 
 #: lazdemsg.serrnonodefortopic
+#, object-pascal-format
 msgid "No parent node found to insert topic \"%s\""
 msgstr "没有父节点找到来插入主题\"%s\""
 
 #: lazdemsg.serrnopackageformodule
+#, object-pascal-format
 msgid "No package found to insert module \"%s\""
 msgstr "没有包找到来插入模块\"%s\""
 
@@ -135,10 +145,12 @@ msgid "Errors"
 msgstr "错误"
 
 #: lazdemsg.serrunknowndomelement
+#, object-pascal-format
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
 msgstr "未知DOM元素作为父类用于选择元素\"%s\""
 
 #: lazdemsg.sfilemodified
+#, object-pascal-format
 msgid "Document \"%s\" was modified, would you like to save it?"
 msgstr "文档\"%s\"已被修改,你想要保存它?"
 
@@ -361,6 +373,7 @@ msgid "Make new document from source file"
 msgstr "从源代码文件制作新文档"
 
 #: lazdemsg.smarkselection
+#, object-pascal-format
 msgid "Mark selection %s"
 msgstr "标记选择%s"
 
@@ -671,6 +684,7 @@ msgid "&Save"
 msgstr "保存(&S)"
 
 #: lazdemsg.ssavebeforebuildquestion
+#, object-pascal-format
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
 msgstr "你没有保存变更在\"%s\".%s它们应该被保存 以便于可见于构建文件.保存它们?"
 
@@ -699,10 +713,12 @@ msgid "Show p&rivate methods"
 msgstr "显示私有方法(&r)"
 
 #: lazdemsg.sskelerrorwithfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
 msgstr "makeskel报告一个错误(%d).无论如何都尝试加载产生的文件?"
 
 #: lazdemsg.sskelerrorwithoutfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d) and produced no file."
 msgstr "makeskel报告一个错误(%d)并且无产生文件."
 
@@ -711,6 +727,7 @@ msgid "Sources"
 msgstr "源文件"
 
 #: lazdemsg.sstartnodenotfound
+#, object-pascal-format
 msgid "Start element \"%s\" could not be found"
 msgstr "开始元素\"%s\"不能被找到"
 

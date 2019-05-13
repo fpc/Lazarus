@@ -38,6 +38,7 @@ msgid "Import Type Library ..."
 msgstr "Importuoti tipo biblioteką…"
 
 #: activexstrconsts.axselectdirectorytostorepackageplpk
+#, object-pascal-format
 msgid "Select directory to store package %sP.lpk"
 msgstr "Parinkite aplanką į kurį talpinti paketą %sP.lpk"
 

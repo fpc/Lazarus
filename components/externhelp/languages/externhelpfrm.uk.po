@@ -33,6 +33,7 @@ msgid "Delete item"
 msgstr "Видалити елемент"
 
 #: externhelpfrm.ehrsdirectorynotfound
+#, object-pascal-format
 msgid "Directory not found: %s"
 msgstr "Теку не знайдено: %s"
 
@@ -45,6 +46,7 @@ msgid "External"
 msgstr "Зовнішні"
 
 #: externhelpfrm.ehrsfilenotfound
+#, object-pascal-format
 msgid "File not found: %s"
 msgstr "Файл не знайдено: %s"
 

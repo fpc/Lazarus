@@ -26,6 +26,7 @@ msgid "Packages"
 msgstr "Paketit"
 
 #: todoliststrconsts.lispackageshint
+#, object-pascal-format
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
 msgstr "Laajentaa \"%s\" ja \"%s\" asetukset käytettyjen pakettien käännösyksiköillä"
 

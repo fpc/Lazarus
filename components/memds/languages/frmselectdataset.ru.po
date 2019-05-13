@@ -26,6 +26,7 @@ msgid "&Dataset to copy from:"
 msgstr "&Набор данных для копирования из него:"
 
 #: frmselectdataset.serrcomponentnotfound
+#, object-pascal-format
 msgid "Error: Component \"%s\" not found"
 msgstr "Ошибка: компонент \"%s\" не найден"
 

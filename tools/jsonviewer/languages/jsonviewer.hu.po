@@ -12,6 +12,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "Tömb (%d elem)"
 
@@ -37,7 +38,7 @@ msgid "JSON document modified"
 msgstr "JSON dokumentum módosítva"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The JSON data in \"%s\" was changed but not saved.\n"
 #| "What do want to do ?\n"
@@ -49,6 +50,7 @@ msgstr ""
 "Mit szeretne tenni?\n"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "Többszörös tagnév: \"%s\"."
 
@@ -57,6 +59,7 @@ msgid "Filename needed for generated code"
 msgstr "Fájlnév szükséges a létrehozott kód számára"
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Elemszám: %d"
 
@@ -65,10 +68,12 @@ msgid "Empty document"
 msgstr "Üres dokumentum"
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Nem sikerült létrehozni a beállítások könyvtárát: \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "Érvénytelen érték vagy rossz típus: \"%s\""
 
@@ -81,6 +86,7 @@ msgid "New object member"
 msgstr "Új objektum-tag"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "Az új tag nevének megadása (típus: %s)"
 
@@ -93,6 +99,7 @@ msgid "null"
 msgstr "NULL"
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "Objektum (%d tag)"
 

@@ -16,6 +16,7 @@ msgid "About JEDI Code Format"
 msgstr "Sobre Formatador de Código \"JEDI\""
 
 #: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+#, object-pascal-format
 msgid "Find more information on the web at: %s"
 msgstr "Encontre mais informações na web em: %s"
 
@@ -28,6 +29,7 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Este programa ainda está em desenvolvimento. Apesar de testes rigorosos e remoção  de falhas reportadas, nenhuma garantia é dada. Favor fazer cópias de segurança, ou melhor ainda, usar um sistema de controle de código fonte."
 
 #: jcfuiconsts.lisaboutversion
+#, object-pascal-format
 msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Versão $VERSION$%S$DATE$%s%sEste programa tenta padronizar e tornar legível o \"layout\" de qualquer código fonte Delphi Object-Pascal.%s%sCopyright Anthony Steele 1999-2008"
 
@@ -363,6 +365,7 @@ msgid "Remove empty '//' comments"
 msgstr "Remover comentários vazios '//'"
 
 #: jcfuiconsts.lisedatlinecol
+#, object-pascal-format
 msgid "%sAt line %s col %s"
 msgstr "%sNa linha %s coluna %s"
 
@@ -371,10 +374,12 @@ msgid "Error"
 msgstr "Erro"
 
 #: jcfuiconsts.lisedexception
+#, object-pascal-format
 msgid "Exception %s"
 msgstr "Exceção %s"
 
 #: jcfuiconsts.lisedin
+#, object-pascal-format
 msgid "%s in %s"
 msgstr "%s em %s"
 
@@ -383,18 +388,22 @@ msgid "JCF Parse error"
 msgstr "Erro análise JCF"
 
 #: jcfuiconsts.lisednear
+#, object-pascal-format
 msgid "%s near %s"
 msgstr "%s perto %s"
 
 #: jcfuiconsts.lisedtype
+#, object-pascal-format
 msgid "Type: %s%s"
 msgstr "Tipo: %s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsexception
+#, object-pascal-format
 msgid "Error writing settings file %s:%s%s"
 msgstr "Erro gravado arquivo de configurações %s:%s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
 msgid "Error writing settings file: %s is read only"
 msgstr "Erro gravando arquivo de configurações: %s é apenas leitura"
 
@@ -415,6 +424,7 @@ msgid "Show confirmation dialog before format"
 msgstr "Exibir diálogo de confirmação antes de formatar"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
+#, object-pascal-format
 msgid "Date file written: %s"
 msgstr "Data gravação arquivo: %s"
 
@@ -447,6 +457,7 @@ msgid "Settings file is:"
 msgstr "Arquivo de configurações é:"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+#, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "Versão que gravou este arquivo: %s"
 
@@ -519,10 +530,12 @@ msgid "JEDI Code Format of all open windows?"
 msgstr "Formatar código JEDI de todas as janelas abertas?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+#, object-pascal-format
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
 msgstr "Formatar código JEDI de %sTem certeza que deseja formatar todos %s arquivos no projeto?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
+#, object-pascal-format
 msgid "JEDI Code Format of %sStart formatting?"
 msgstr "Formatar código JEDI de %sIniciar formatação?"
 
@@ -804,6 +817,7 @@ msgid "&Var declarations"
 msgstr "Declarações &Var"
 
 #: jcfuiconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr "O arquivo de configurações \"%s\" não existe.%s O formatador funcionará melhor se estiver configurado para usar um arquivo de configurações válido"
 

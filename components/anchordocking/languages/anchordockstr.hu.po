@@ -12,6 +12,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+#, object-pascal-format
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Egy elválasztó szabad oldala nem rögzíthető: Csomópont=\"%s\" Típus=%s Horgonyok[%s]=\"%s\""
 
@@ -24,18 +25,22 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Ennyi képpontot kell mozdulnia az egérnek mielőtt a húzás elkezdődik"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Rögzítés nem elválasztóhoz: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
+#, object-pascal-format
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Rögzítési hely nem található: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Rögzítés az elválasztó rossz oldalához: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+#, object-pascal-format
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Egy lap nem rögzíthető: Csomópont=\"%s\" Szülő:%s Szülőtípus=%s Horgonyok[%s]=\"%s\""
 
@@ -56,6 +61,7 @@ msgid "control is already a docksite"
 msgstr "a vezérlő már dokkterület"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+#, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Az \"%s\" dokkterület csak egy területet tartalmazhat."
 
@@ -68,6 +74,7 @@ msgid "Docking options"
 msgstr "Dokkolás beállításai"
 
 #: anchordockstr.adrsdraganddockc
+#, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Használja az egeret a(z) \"%s\" ablak húzásához és dokkolásához"
 
@@ -92,6 +99,7 @@ msgid "Enlarge"
 msgstr "Bővítés"
 
 #: anchordockstr.adrsenlargeside
+#, object-pascal-format
 msgid "Enlarge %s side"
 msgstr "Bővítés %s"
 
@@ -196,18 +204,22 @@ msgid "No captions for floating sites"
 msgstr "Nincs cím a lebegő területek esetén"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
+#, object-pascal-format
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Gyermekek nincsenek engedélyezve: Csomópont=\"%s\" Típus=\"%s\""
 
 #: anchordockstr.adrsnotsupportedhasparent
+#, object-pascal-format
 msgid "Not supported: %s has parent %s"
 msgstr "Nincs támogatva: %s szülője %s"
 
 #: anchordockstr.adrsquit
+#, object-pascal-format
 msgid "Quit %s"
 msgstr "Kilépés - %s"
 
 #: anchordockstr.adrsrequestedbutcreated
+#, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "a kért %s helyett %s lett létrehozva"
 
@@ -248,6 +260,7 @@ msgid "Tab position"
 msgstr "Lappozíció"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+#, object-pascal-format
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
 msgstr "Már telepítve van egy másik dokkmester. Egyszerre csak egy dokkoló csomag lehet telepítve. Távolítsa el a másik dokkmestert (%s) és indítsa újra az IDE-t!"
 
@@ -256,6 +269,7 @@ msgid "top"
 msgstr "fel"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+#, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "Az ablakok rögzítésének használatához először el kell távolítani ezt: %s"
 

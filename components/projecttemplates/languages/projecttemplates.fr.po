@@ -21,14 +21,17 @@ msgid "&OK"
 msgstr "&OK"
 
 #: projecttemplates.serrcouldnotcreatedir
+#, object-pascal-format
 msgid "Could not create directory \"%s\""
 msgstr "Impossible de créer le répertoire \"%s\""
 
 #: projecttemplates.serrfailedtocopyfile
+#, object-pascal-format
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Échec de la copie du fichier \"%s\" vers \"%s\""
 
 #: projecttemplates.serrnosuchtemplate
+#, object-pascal-format
 msgid "\"%s\": No such template."
 msgstr "\"%s\" : modèle inexistant."
 

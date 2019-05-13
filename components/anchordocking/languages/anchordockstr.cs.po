@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%sA free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Volná strana děliče nesmí být ukotvena: Uzel=\"%s\" Typ=%s Kotvy[%s]=\"%s\""
@@ -27,19 +27,22 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Počet pixelů které musí myš táhnout, než posouvání začne"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva není dělič: Uzel=\"%s\" Kotvy[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
+#, object-pascal-format
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva nenalezena: Uzel=\"%s\" Kotvy[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva na špatnou stranu děliče: Uzel=\"%s\" Kotvy[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%sA page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Stránka nesmí být kotvena: Uzel=\"%s\" Rodič=%s Typ Rodiče=%s Kotvy[%s]=\"%s\""
@@ -61,6 +64,7 @@ msgid "control is already a docksite"
 msgstr "prvek již je dokován"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+#, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Vlastní dok \"%s\" může mít pouze jednu stranu."
 
@@ -73,6 +77,7 @@ msgid "Docking options"
 msgstr "Nastavení kotvení"
 
 #: anchordockstr.adrsdraganddockc
+#, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Použijte myš k uchopení a ukotvení okna \"%s\""
 
@@ -97,6 +102,7 @@ msgid "Enlarge"
 msgstr "Rozšířit"
 
 #: anchordockstr.adrsenlargeside
+#, object-pascal-format
 msgid "Enlarge %s side"
 msgstr "Rozšířit směrem %s"
 
@@ -201,18 +207,22 @@ msgid "No captions for floating sites"
 msgstr "Skrýt popisky samostatných položek"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
+#, object-pascal-format
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Žádní potomci nejsou povolení pro Uzel=\"%s\" Typ=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
+#, object-pascal-format
 msgid "Not supported: %s has parent %s"
 msgstr "Nepodporováno: %s má rodiče %s"
 
 #: anchordockstr.adrsquit
+#, object-pascal-format
 msgid "Quit %s"
 msgstr "Ukončit %s"
 
 #: anchordockstr.adrsrequestedbutcreated
+#, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "%s požadováno,ale %s vytvořeno"
 
@@ -253,6 +263,7 @@ msgid "Tab position"
 msgstr "Pozice záložek"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+#, object-pascal-format
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
 msgstr "Už je instalován jiný správce ukotvení. Může být instalován najednou pouze jeden ukotvovací balíček. Prosíme odinstalujte jiný správce ukotvení %sa restartujte IDE"
 
@@ -261,6 +272,7 @@ msgid "top"
 msgstr "nahoru"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+#, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "K použití anchordicking musíte nejdříve odinstalovat %s"
 

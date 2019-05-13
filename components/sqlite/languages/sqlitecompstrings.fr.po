@@ -17,6 +17,7 @@ msgid "Add"
 msgstr "Ajouter"
 
 #: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+#, object-pascal-format
 msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
 msgstr "Une table nommée \"%s\" existe déjà. Êtes-vous sûr de vouloir remplacer cette table ? %s Toutes les données enregistrées seront perdues."
 
@@ -49,6 +50,7 @@ msgid "File name not set: it's not possible to create/edit a table."
 msgstr "Le nom du fichier n'est pas renseigné : impossible de créer ou de modifier la table."
 
 #: sqlitecompstrings.sfilepath
+#, object-pascal-format
 msgid "File Path: %s"
 msgstr "Chemin du fichier : %s"
 
@@ -73,6 +75,7 @@ msgid "Field type not recognized."
 msgstr "Type de champ non reconnu."
 
 #: sqlitecompstrings.stablename
+#, object-pascal-format
 msgid "Table Name: %s"
 msgstr "Nom de la table : %s"
 

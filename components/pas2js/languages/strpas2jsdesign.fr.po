@@ -52,6 +52,7 @@ msgid "Web server processes"
 msgstr "Processus serveur Web"
 
 #: strpas2jsdesign.swebserverscount
+#, object-pascal-format
 msgid "Number of webserver processes: %s"
 msgstr "Nombre de processus serveur Web : %s"
 

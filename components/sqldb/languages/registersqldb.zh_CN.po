@@ -41,6 +41,7 @@ msgid "Insert your SQL statements here"
 msgstr "在此处插入你的SQL语句"
 
 #: registersqldb.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
 msgid "Editing %s"
 msgstr "编辑%s"
 

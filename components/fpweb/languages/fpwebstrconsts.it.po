@@ -157,6 +157,7 @@ msgid "Submit"
 msgstr "Invia"
 
 #: fpwebstrconsts.shtmltagproperty
+#, object-pascal-format
 msgid "Tag property: %s"
 msgstr "Proprietà tag: %s"
 

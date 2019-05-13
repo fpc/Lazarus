@@ -22,6 +22,7 @@ msgid "Delete item"
 msgstr ""
 
 #: externhelpfrm.ehrsdirectorynotfound
+#, object-pascal-format
 msgid "Directory not found: %s"
 msgstr ""
 
@@ -34,6 +35,7 @@ msgid "External"
 msgstr ""
 
 #: externhelpfrm.ehrsfilenotfound
+#, object-pascal-format
 msgid "File not found: %s"
 msgstr ""
 

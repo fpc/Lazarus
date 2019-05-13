@@ -121,10 +121,12 @@ msgid "Applications|*"
 msgstr "应用程序|*"
 
 #: ldd_consts.sapplyingddtodataset
+#, object-pascal-format
 msgid "Applying data dictionary to dataset %s"
 msgstr "应用数据字典到dataset%s"
 
 #: ldd_consts.sapplyingddtofield
+#, object-pascal-format
 msgid "Applying data dictionary to field %s"
 msgstr "应用数据字典到字段%s"
 
@@ -213,10 +215,12 @@ msgid "Not yet implemented"
 msgstr "Not yet implemented(尚未实现)"
 
 #: ldd_consts.swarningnoddforfield
+#, object-pascal-format
 msgid "Warning: No definition in data dictionary for field %s"
 msgstr "警告:没有定义在数据字典对于字段%s"
 
 #: ldd_consts.swrongselection
+#, object-pascal-format
 msgid "Wrong selection count : %d"
 msgstr "错误的选择计数:%d"
 

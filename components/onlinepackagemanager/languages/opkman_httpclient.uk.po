@@ -22,18 +22,22 @@ msgid "Chunk too big"
 msgstr "Послідовність занадто довга"
 
 #: opkman_httpclient.serrinvalidprotocol
+#, object-pascal-format
 msgid "Invalid protocol: \"%s\""
 msgstr "Некоректний протокол: \"%s\""
 
 #: opkman_httpclient.serrinvalidprotocolversion
+#, object-pascal-format
 msgid "Invalid protocol version in response: \"%s\""
 msgstr "Некоректна версія протоколу у відповіді: \"%s\""
 
 #: opkman_httpclient.serrinvalidstatuscode
+#, object-pascal-format
 msgid "Invalid response status code: %s"
 msgstr "Некоректний код стану у відповіді: %s"
 
 #: opkman_httpclient.serrmaxredirectsreached
+#, object-pascal-format
 msgid "Maximum allowed redirects reached: %d"
 msgstr "Досягнуто найбільше дозволене число перенаправлень: %d"
 
@@ -42,6 +46,7 @@ msgid "Error reading data from socket"
 msgstr "Помилка читання даних зі сокета"
 
 #: opkman_httpclient.serrunexpectedresponse
+#, object-pascal-format
 msgid "Unexpected response status code: %d"
 msgstr "Несподіваний код стану у відповіді: %d"
 

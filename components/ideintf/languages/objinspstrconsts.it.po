@@ -87,6 +87,7 @@ msgid "On Add, Check for Duplicate in Items"
 msgstr "Quando aggiungi, verifica se ci sono elementi duplicati"
 
 #: objinspstrconsts.cgcheckduplicatemsg
+#, object-pascal-format
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "L'elemento \"%s\" è già in lista. Aggiungerlo comunque?"
 
@@ -115,6 +116,7 @@ msgid "Delete the Item"
 msgstr "Cancella la voce"
 
 #: objinspstrconsts.clbdeletequest
+#, object-pascal-format
 msgid "Delete the Item %d \"%s\"?"
 msgstr "Cancella la voce %d \"%s\"?"
 
@@ -186,6 +188,7 @@ msgid "Edit Fields ..."
 msgstr "Edita campi..."
 
 #: objinspstrconsts.fesfieldcantbec
+#, object-pascal-format
 msgid "Field %s cannot be created!"
 msgstr "Il campo %s non può essere creato!"
 
@@ -297,10 +300,12 @@ msgid "Set value"
 msgstr "Imposta valore"
 
 #: objinspstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
 msgid "Unable to find parser for tool \"%s\""
 msgstr "unable to find parser for tool \"%s\""
 
 #: objinspstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
 msgid "Unable to find parser with name \"%s\""
 msgstr ""
 
@@ -358,6 +363,7 @@ msgid "0 lines, 0 chars"
 msgstr "0 righe, 0 caratteri"
 
 #: objinspstrconsts.ois1linedchars
+#, object-pascal-format
 msgid "1 line, %d chars"
 msgstr "1 riga, %d caratteri"
 
@@ -463,6 +469,7 @@ msgid "Clear picture"
 msgstr "Pulisci immagine"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
+#, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Il nome del componente \"%s\" non è un identificatore valido"
 
@@ -515,6 +522,7 @@ msgid "&Delete"
 msgstr "&Elimina"
 
 #: objinspstrconsts.oisdeleteitem
+#, object-pascal-format
 msgid "Delete item \"%s\"?"
 msgstr "Cancellare la voce \"%s\"?"
 
@@ -527,6 +535,7 @@ msgid "Delete selected field(s)"
 msgstr "Cancellare i campi selezionati"
 
 #: objinspstrconsts.oisdlinesdchars
+#, object-pascal-format
 msgid "%d lines, %d chars"
 msgstr "%d righe, %d caratteri"
 
@@ -547,10 +556,12 @@ msgid "Error loading image"
 msgstr "Errore nel caricamento dell'immagine"
 
 #: objinspstrconsts.oiserrorloadingimage2
+#, object-pascal-format
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Errore nel caricamento dell'immagine \"%s\":%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
+#, object-pascal-format
 msgid "Error while deleting action:%s%s"
 msgstr "Errore nella cancellazione dell'azione:%s%s"
 
@@ -615,14 +626,17 @@ msgid "Invalid property value"
 msgstr "Valore proprietà non valido"
 
 #: objinspstrconsts.oisisnotavalidmethodname
+#, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" non è un nome valido per un metodo."
 
 #: objinspstrconsts.oisitemsselected
+#, object-pascal-format
 msgid "%u items selected"
 msgstr "%u voci selezionate"
 
 #: objinspstrconsts.oisjumptodeclarationof
+#, object-pascal-format
 msgid "Jump to declaration of %s"
 msgstr "Salta alla dichiarazione di %s"
 
@@ -753,6 +767,7 @@ msgid "Properties"
 msgstr "Proprietà"
 
 #: objinspstrconsts.oispropertiesof
+#, object-pascal-format
 msgid "Properties of %s"
 msgstr "Proprietà di %s"
 
@@ -829,6 +844,7 @@ msgid "Set"
 msgstr "Imposta"
 
 #: objinspstrconsts.oissetmaxconstraints
+#, object-pascal-format
 msgid "Set MaxHeight=%d, MaxWidth=%d"
 msgstr "Imposta MaxHeight=%d, MaxWidth=%d"
 
@@ -837,6 +853,7 @@ msgid "Use current size as Max Constraints"
 msgstr "Usa la dimensione corrente come Max Constraints"
 
 #: objinspstrconsts.oissetminconstraints
+#, object-pascal-format
 msgid "Set MinHeight=%d, MinWidth=%d"
 msgstr "Imposta MinHeight=%d, MinWidth=%d"
 
@@ -845,6 +862,7 @@ msgid "Use current size as Min Constraints"
 msgstr "Usa la dimensione corrente come Min Constraints"
 
 #: objinspstrconsts.oissettodefault
+#, object-pascal-format
 msgid "Set to default: %s"
 msgstr "Imposta al valore predefinito: %s"
 
@@ -1192,18 +1210,22 @@ msgid "Test Input"
 msgstr "Prova Input"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
+#, object-pascal-format
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "L'identificatore \"%s\" non è un metodo.%sPremere Annulla per disfare, %sIgnora per forzarlo."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
+#, object-pascal-format
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Il metodo \"%s\" è incompatibile con questo evento (%s).%sPremere Annulla per disfare, %sIgnora per forzarlo."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
+#, object-pascal-format
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Il metodo \"%s\" non è pubblicato.%sPremere Annulla per disfare, %sIgnora per forzarlo."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+#, object-pascal-format
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr "Impossibile cambiare il padre del controllo \"%s\" con il nuovo padre \"%s\".%s%s"
 

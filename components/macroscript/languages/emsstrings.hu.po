@@ -40,10 +40,12 @@ msgid "Error in EditorMacroScript"
 msgstr "EditorMacroScript hiba"
 
 #: emsstrings.emsselftestfailed
+#, object-pascal-format
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
 msgstr "Az EditorMacroScript (pascalscript makrók) hibát érzékelt és ki lett kapcsolva.%0:sA csomag önellenőrzése sikertelenül zárult a következő üzenettel::%0:s\"%1:s\""
 
 #: emsstrings.emsselftestfailedlasttime
+#, object-pascal-format
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
 msgstr "Az EditorMacroScript (pascalscript makrók) hibát érzékelt és ki lett kapcsolva.%0:sA csomag önellenőrzése nem futott végig az IDE legutóbbi indításakor."
 

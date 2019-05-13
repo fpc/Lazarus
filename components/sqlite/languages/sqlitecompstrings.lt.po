@@ -17,6 +17,7 @@ msgid "Add"
 msgstr "Pridėti"
 
 #: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+#, object-pascal-format
 msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
 msgstr "Lenetelė pavadinimu „%s“ jau egzistuoja. Ar tikrai norite pakeisti šią lentelę?%sVisi duomenys bus prarasti."
 
@@ -49,6 +50,7 @@ msgid "File name not set: it's not possible to create/edit a table."
 msgstr "Nenurodytas lauko pavadinimas, tad neįmanoma sukurti ar keisti lentelės."
 
 #: sqlitecompstrings.sfilepath
+#, object-pascal-format
 msgid "File Path: %s"
 msgstr "Failo kelias: %s"
 
@@ -73,6 +75,7 @@ msgid "Field type not recognized."
 msgstr "Nepažystamas lauko tipas."
 
 #: sqlitecompstrings.stablename
+#, object-pascal-format
 msgid "Table Name: %s"
 msgstr "Lentelės pavadinimas: %s"
 

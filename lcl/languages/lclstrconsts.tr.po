@@ -12,14 +12,17 @@ msgstr ""
 "X-Generator: Poedit 2.1.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
+#, object-pascal-format
 msgid "Browser \"%s\" not executable."
 msgstr "\"%s\" tarayıcısı çalıştırılabilir değil."
 
 #: lclstrconsts.hhshelpbrowsernotfound
+#, object-pascal-format
 msgid "Browser \"%s\" not found."
 msgstr "\"%s\" tarayıcısı bulunamadı."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
+#, object-pascal-format
 msgid "Error while executing \"%s\":%s%s"
 msgstr "\"%s\" çalıştırılırken hata:%s%s"
 
@@ -28,14 +31,17 @@ msgid "Unable to find a HTML browser."
 msgstr "HTML tarayıcı bulunamıyor."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
+#, object-pascal-format
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
 msgstr "HTML Tarayıcı bulunamadı.%sLütfen Araçlar -> Seçenekler -> Yardım -> Yardım Seçenekleri içinde bir tane tanımlayın"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
+#, object-pascal-format
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "\"%s\" yardım veritabanı, \"%s\" dosyasını bulamadı."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
+#, object-pascal-format
 msgid "The macro %s in BrowserParams will be replaced by the URL."
 msgstr "BrowserParams içindeki %s betiği(makro) URL ile değiştirilecek."
 
@@ -73,6 +79,7 @@ msgid "Unknown"
 msgstr "Bilinmeyen"
 
 #: lclstrconsts.lislclresourcesnotfound
+#, object-pascal-format
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "%s adlı kaynak bulunamadı"
@@ -98,6 +105,7 @@ msgid "Active Caption"
 msgstr "Etkin Başlık"
 
 #: lclstrconsts.rsallfiles
+#, object-pascal-format
 msgid "All files (%s)|%s|%s"
 msgstr "Tüm dosyalar (%s)|%s|%s"
 
@@ -110,6 +118,7 @@ msgid "Aqua"
 msgstr "Su Rengi"
 
 #: lclstrconsts.rsascannothaveasparent
+#, object-pascal-format
 msgid "Class %s cannot have %s as parent."
 msgstr "%s sınıfında ata olarak %s olamaz."
 
@@ -179,19 +188,22 @@ msgid "Case sensitive"
 msgstr "Büyük/küçük harfe duyarlı"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
-#, fuzzy
+#, fuzzy, object-pascal-format
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "'%s' sınıfı kontrolü, '%s' sınıfından bir kontrolü mirasçı olarak barındıramaz"
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
+#, object-pascal-format
 msgid "Control '%s' has no parent form or frame"
 msgstr "'%s' kontrolü bir üst pencereye ya da çerçeveye sahip değil"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
+#, object-pascal-format
 msgid "Control '%s' has no parent window"
 msgstr "'%s' kontrolü bir üst pencereye sahip değil"
 
 #: lclstrconsts.rscontrolisnotaparent
+#, object-pascal-format
 msgid "'%s' is not a parent of '%s'"
 msgstr "'%s', '%s' nin atası değil"
 
@@ -259,10 +271,12 @@ msgid "Error"
 msgstr "Hata"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
+#, object-pascal-format
 msgid "Error creating device context for %s.%s"
 msgstr "%s için aygıt bağlamı oluşturulurken hata.%s"
 
 #: lclstrconsts.rserroroccurredinataddressframe
+#, object-pascal-format
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "%s @ %s içinde hata oluştu. Adres %s%s Çerçeve %s"
 
@@ -279,10 +293,12 @@ msgid "Directory must exist"
 msgstr "Dizin var olmak zorunda"
 
 #: lclstrconsts.rsfddirectorynotexist
+#, object-pascal-format
 msgid "The directory \"%s\" does not exist."
 msgstr "\"%s\" dizini mevcut değil."
 
 #: lclstrconsts.rsfdfilealreadyexists
+#, object-pascal-format
 msgid "The file \"%s\" already exists. Overwrite ?"
 msgstr "\"%s\" adlı dosya zaten var. Üzerine yazılsın mı?"
 
@@ -291,10 +307,12 @@ msgid "File must exist"
 msgstr "Dosya var olmak zorunda"
 
 #: lclstrconsts.rsfdfilenotexist
+#, object-pascal-format
 msgid "The file \"%s\" does not exist."
 msgstr "\"%s\" dosyası mevcut değil."
 
 #: lclstrconsts.rsfdfilereadonly
+#, object-pascal-format
 msgid "The file \"%s\" is not writable."
 msgstr "\"%s\" dosyası yazılabilir değil."
 
@@ -319,6 +337,7 @@ msgid "Path must exist"
 msgstr "Yol var olmak zorunda"
 
 #: lclstrconsts.rsfdpathnoexist
+#, object-pascal-format
 msgid "The path \"%s\" does not exist."
 msgstr "\"%s\" yolu mevcut değil."
 
@@ -327,6 +346,7 @@ msgid "Select Directory"
 msgstr "Dizin seç"
 
 #: lclstrconsts.rsfileinfofilenotfound
+#, object-pascal-format
 msgid "(file not found: \"%s\")"
 msgstr "(dosya bulunamadı: \"%s\")"
 
@@ -368,10 +388,12 @@ msgid "Form"
 msgstr ""
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+#, object-pascal-format
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
 msgstr "Form kaynağı %s bulunamadı. Kaynak dosyası olmayan formlar için CreateNew constructor mutlaka kullanılmalı. RequireDerivedFormResource adlı global değişkene bakın."
 
 #: lclstrconsts.rsformstreamingerror
+#, object-pascal-format
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Form akışı \"%s\" hatası: %s"
 
@@ -494,6 +516,7 @@ msgid "Help"
 msgstr "Yardım"
 
 #: lclstrconsts.rshelpalreadyregistered
+#, object-pascal-format
 msgid "%s: Already registered"
 msgstr "%s: Zaten kaydedilmiş"
 
@@ -510,43 +533,52 @@ msgid "Help Error"
 msgstr "Yardım hatası"
 
 #: lclstrconsts.rshelphelpcontextnotfound
+#, object-pascal-format
 msgid "Help context %s not found."
 msgstr "%s yardım bağlamı bulunamadı."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
+#, object-pascal-format
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "%s yardım bağlamı, \"%s\" veritabanı içinde bulunamadı."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
+#, object-pascal-format
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Yardım Veritabanı \"%s\", \"%s\" türündeki yardım sayfası için bir görüntüleyici bulamadı"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
+#, object-pascal-format
 msgid "Help Database \"%s\" not found"
 msgstr "Yardım Veritabanı \"%s\" bulunamadı"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
+#, object-pascal-format
 msgid "Help for directive \"%s\" not found."
 msgstr "Direktif \"%s\" için yardım bulunamadı."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
+#, object-pascal-format
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Direktif \"%s\" için yardım, \"%s\" Veritabanında bulunamadı."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
+#, object-pascal-format
 msgid "Help keyword \"%s\" not found."
 msgstr "Yardım anahtar sözcüğü \"%s\" bulunamadı."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
+#, object-pascal-format
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Yardım anahtar sözcüğü \"%s\", \"%s\" veritabanı içinde bulunamadı."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
+#, object-pascal-format
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Yardım düğümü \"%s\" Yardım Veritabanına sahip değil"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "No help found for line %d, column %d of %s."
 msgstr "%s'nin satır %d, sütun %d için yardım bulunamadı."
 
@@ -559,6 +591,7 @@ msgid "No help found for this topic"
 msgstr "Bu konu için yardım bulunamadı"
 
 #: lclstrconsts.rshelpnotregistered
+#, object-pascal-format
 msgid "%s: Not registered"
 msgstr "%s: Kaydedilmemiş"
 
@@ -567,6 +600,7 @@ msgid "Help Selector Error"
 msgstr "Yardım Seçici Hatası"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
+#, object-pascal-format
 msgid "There is no viewer for help type \"%s\""
 msgstr "\"%s\" yardım türü için bir görüntüleyici yok"
 
@@ -637,10 +671,12 @@ msgid "Inactive Caption"
 msgstr "Etkin Olmayan Başlık"
 
 #: lclstrconsts.rsindexoutofbounds
+#, object-pascal-format
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "%s Dizin %d sınırların dışında 0.. %d"
 
 #: lclstrconsts.rsindexoutofrange
+#, object-pascal-format
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Tanımlayıcı sınırın dışında Cell[Col=%d Row=%d]"
 
@@ -658,10 +694,12 @@ msgid "Insert"
 msgstr "Ekle"
 
 #: lclstrconsts.rsinvaliddate
+#, object-pascal-format
 msgid "Invalid Date : %s"
 msgstr "Geçersiz tarih : %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
+#, object-pascal-format
 msgid "Invalid Date: %s. Must be between %s and %s"
 msgstr "Geçersiz tarih : %s. %s ve %s arasında olmalı"
 
@@ -678,6 +716,7 @@ msgid "Invalid stream format"
 msgstr "Geçersiz akış biçimi"
 
 #: lclstrconsts.rsisalreadyassociatedwith
+#, object-pascal-format
 msgid "%s is already associated with %s"
 msgstr "%s, zaten %s ile birleştirilmiş durumda"
 
@@ -694,6 +733,7 @@ msgid "Lime"
 msgstr "Limon"
 
 #: lclstrconsts.rslistindexexceedsbounds
+#, object-pascal-format
 msgid "List index exceeds bounds (%d)"
 msgstr "Liste tanımlayıcısı sınırları aşıyor (%d)"
 
@@ -870,6 +910,7 @@ msgid "Post"
 msgstr "Gönder"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
+#, object-pascal-format
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
 msgstr "%s%sYok saymak için OK düğmesine basın ve veri bozulmasını göze alın.%sProgramı sonlandırmak için Sonlandır düğmesine basın."
 
@@ -883,6 +924,7 @@ msgid "Prompt on replace"
 msgstr "Değiştirirken sor"
 
 #: lclstrconsts.rspropertydoesnotexist
+#, object-pascal-format
 msgid "Property %s does not exist"
 msgstr "%s özelliği mevcut değil"
 
@@ -1007,6 +1049,7 @@ msgid "Replace all"
 msgstr "Tümünü değiştir"
 
 #: lclstrconsts.rsresourcenotfound
+#, object-pascal-format
 msgctxt "lclstrconsts.rsresourcenotfound"
 msgid "Resource %s not found"
 msgstr "%s adlı kaynak bulunamadı"
@@ -1095,26 +1138,32 @@ msgid "Unsupported bitmap format."
 msgstr "Desteklenmeyen bitmap biçimi."
 
 #: lclstrconsts.rsunsupportedclipboardformat
+#, object-pascal-format
 msgid "Unsupported clipboard format: %s"
 msgstr "Desteklenmeyen pano biçimi: %s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
+#, object-pascal-format
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
 msgstr " DİKKAT: %d adet serbest bırakılmamış DC var, ayrıntılı döküm aşağıda:"
 
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
+#, object-pascal-format
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
 msgstr " DİKKAT: %d adet serbest bırakılmamış GDIObject var, ayrıntılı döküm aşağıda:"
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
+#, object-pascal-format
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
 msgstr " DİKKAT: Kuyrukta %d adet mesaj kaldı! Onları serbest bırakacağım"
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
+#, object-pascal-format
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " DİKKAT: %d adet TimerInfo yapısı kaldı, onları serbest bırakacağım"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
+#, object-pascal-format
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr " DİKKAT: %s adet kaldırılmamış LM_PAINT/LM_GtkPAINT mesaj bağlantısı kaldı."
 
@@ -1179,6 +1228,7 @@ msgid "Invalid action unregistration"
 msgstr "Geçersiz eylem kaydı silme"
 
 #: lclstrconsts.sinvalidcharset
+#, object-pascal-format
 msgid "The char set in mask \"%s\" is not valid!"
 msgstr "Maskede \"%s\" ile gösterilen karakter geçerli değil!"
 
@@ -1294,22 +1344,27 @@ msgid "No timers available"
 msgstr "Kullanılabilir zamanlayıcı yok"
 
 #: lclstrconsts.sparentrequired
+#, object-pascal-format
 msgid "Control \"%s\" has no parent window."
 msgstr "\"%s\" Kontrolü bir üst pencereye sahip değil."
 
 #: lclstrconsts.sparexpected
+#, object-pascal-format
 msgid "Wrong token type: %s expected"
 msgstr "Yanlış işaret(token) türü: %s beklendi"
 
 #: lclstrconsts.sparinvalidfloat
+#, object-pascal-format
 msgid "Invalid floating point number: %s"
 msgstr "Geçersiz kayar nokta değeri: %s"
 
 #: lclstrconsts.sparinvalidinteger
+#, object-pascal-format
 msgid "Invalid integer number: %s"
 msgstr "Geçersiz tamsayı değeri: %s"
 
 #: lclstrconsts.sparlocinfo
+#, object-pascal-format
 msgid " (at %d,%d, stream offset %d)"
 msgstr ""
 
@@ -1322,19 +1377,22 @@ msgid "Unterminated string"
 msgstr "Sonlandırılmamış dizge(string)"
 
 #: lclstrconsts.sparwrongtokensymbol
+#, object-pascal-format
 msgid "Wrong token symbol: %s expected but %s found"
 msgstr "Yanlış işaret(token) sembolü: %s beklendi fakat %s bulundu"
 
 #: lclstrconsts.sparwrongtokentype
+#, object-pascal-format
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Yanlış işaret(token) türü: %s beklendi fakat %s bulundu"
 
 #: lclstrconsts.sshellctrlsbytes
+#, object-pascal-format
 msgid "%s bytes"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidpath
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"
@@ -1347,7 +1405,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Invalid relative pathname:\n"
 #| "\"%s\"\n"
@@ -1365,7 +1423,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"
@@ -1378,10 +1436,12 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlskb
+#, object-pascal-format
 msgid "%s kB"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsmb
+#, object-pascal-format
 msgid "%s MB"
 msgstr ""
 
@@ -1390,7 +1450,7 @@ msgid "Name"
 msgstr "Ad"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The selected item does not exist on disk:\n"
 #| "\"%s\"\n"

@@ -21,18 +21,22 @@ msgid "Chunk too big"
 msgstr "Dalis per didelė"
 
 #: opkman_httpclient.serrinvalidprotocol
+#, object-pascal-format
 msgid "Invalid protocol: \"%s\""
 msgstr "Klaidingas protokolas: „%s“"
 
 #: opkman_httpclient.serrinvalidprotocolversion
+#, object-pascal-format
 msgid "Invalid protocol version in response: \"%s\""
 msgstr "Atsaku gautas klaidinga protokolo laida: „%s“"
 
 #: opkman_httpclient.serrinvalidstatuscode
+#, object-pascal-format
 msgid "Invalid response status code: %s"
 msgstr "Klaidingas atsako busenos kodas: %s"
 
 #: opkman_httpclient.serrmaxredirectsreached
+#, object-pascal-format
 msgid "Maximum allowed redirects reached: %d"
 msgstr "Pasiektas leistinas peradresavimų kiekis: %d"
 
@@ -41,6 +45,7 @@ msgid "Error reading data from socket"
 msgstr "Skaitant duomenis iš prievado įvyko klaida"
 
 #: opkman_httpclient.serrunexpectedresponse
+#, object-pascal-format
 msgid "Unexpected response status code: %d"
 msgstr "Netikėtas atsako busenos kodas: %d"
 

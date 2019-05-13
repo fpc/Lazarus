@@ -26,42 +26,52 @@ msgid "Save resourcefile as"
 msgstr "Salvar arquivo de recurso como"
 
 #: glazresmain.errconverttotext
+#, object-pascal-format
 msgid "ERROR: unable to convert Delphi form to text: \"%s\""
 msgstr "Erro: Incapaz de converter formulário Delphi para texto: \"%s\""
 
 #: glazresmain.errcreate
+#, object-pascal-format
 msgid "ERROR: Cannot create \"%s\""
 msgstr "Erro: Incapaz de criar \"%s\""
 
 #: glazresmain.errfileisresource
+#, object-pascal-format
 msgid "ERROR: Cannot add resource file to itself (\"%s\")"
 msgstr "Erro: Incapaz de adicionar arquivo de recurso a si mesmo (\"%s\")"
 
 #: glazresmain.errfilenotfound
+#, object-pascal-format
 msgid "ERROR: File not found: \"%s\""
 msgstr "Erro: Arquivo não encontrado: \"%s\""
 
 #: glazresmain.errnoresourcename
+#, object-pascal-format
 msgid "ERROR: No resourcename found for \"%s\""
 msgstr "Erro: Nenhum nome de recurso encontrado para \"%s\""
 
 #: glazresmain.errread
+#, object-pascal-format
 msgid "ERROR: Cannot read from \"%s\""
 msgstr "Erro: Incapaz de ler de \"%s\""
 
 #: glazresmain.msgcreatinglrs
+#, object-pascal-format
 msgid "Creating \"%s\""
 msgstr "Criando \"%s\""
 
 #: glazresmain.msgprocessing
+#, object-pascal-format
 msgid "Processing \"%s\""
 msgstr "Processando \"%s\""
 
 #: glazresmain.msgresourcenametype
+#, object-pascal-format
 msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr " Nome de recurso = \"%s\", Tipo = \"%s\""
 
 #: glazresmain.msgsuccess
+#, object-pascal-format
 msgid ""
 "Done.\n"
 "Number of resources added: %d."

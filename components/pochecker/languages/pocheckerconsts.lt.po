@@ -121,6 +121,7 @@ msgid "All Languages"
 msgstr "Visos kalbos"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+#, object-pascal-format
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr "Nepavyksta rašyti į failą%s%s%s%sPaspaudus „Kartoti“ bus naujintas ši vertimų šeima ir tęsiama toliau."
 
@@ -151,19 +152,22 @@ msgid "&Copy"
 msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
+#, object-pascal-format
 msgid "Creating icon nr. %d of %d"
 msgstr "Kuriama ikona nr. %d iš %d"
 
 #: pocheckerconsts.scurrenttest
+#, object-pascal-format
 msgid "Test: %s on %s"
 msgstr "Testas: %s testuoja %s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
+#, object-pascal-format
 msgid "[Line %d] %s"
 msgstr "[Eilutė %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
 msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "Vertė (neversta) „%s“ panaudota daugiau nei viename įraše:"
@@ -173,7 +177,7 @@ msgid "Duplicate Originals"
 msgstr ""
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "An unrecoverable error occurred\n"
 #| "%s\n"
@@ -188,7 +192,7 @@ msgstr ""
 "Baikite darbą programa\n"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Error creating an instance of TPoFamily:\n"
 #| "%s\n"
@@ -200,15 +204,17 @@ msgstr ""
 "%s\n"
 
 #: pocheckerconsts.serrorsbytest
+#, object-pascal-format
 msgid "Errors / warnings reported by %s for:"
 msgstr "%s praneštos klaidos/perspėjimai apie:"
 
 #: pocheckerconsts.sfile
+#, object-pascal-format
 msgid "File %s"
 msgstr ""
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following non-existent files were removed from the list:\n"
 #| "%s\n"
@@ -224,6 +230,7 @@ msgid "Fuzzy strings"
 msgstr ""
 
 #: pocheckerconsts.sfuzzystringstotal
+#, object-pascal-format
 msgid "Fuzzy strings (total: %s)"
 msgstr "Neaiškūs vertimai (viso: %s)"
 
@@ -240,10 +247,12 @@ msgid "GUI Po-file checking tool"
 msgstr "Įrankio PO failų tikrinimui grafinė sąsaja"
 
 #: pocheckerconsts.sidentifiernotfoundin
+#, object-pascal-format
 msgid "Identifier [%s] not found in %s"
 msgstr "Ieškota identifikatoriaus [%s], tačiau %s jo neturi"
 
 #: pocheckerconsts.sincompatibleformatargs
+#, object-pascal-format
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Eilutė: %d] Nesuderinamų ir/arba klaidingų „format()“ argumentų turi:"
 
@@ -256,14 +265,17 @@ msgid "Last search path:"
 msgstr ""
 
 #: pocheckerconsts.slineinfilename
+#, object-pascal-format
 msgid "[Line %d] in %s:"
 msgstr "[Eilutė: %d] faile %s:"
 
 #: pocheckerconsts.slinenr
+#, object-pascal-format
 msgid "[Line: %d]"
 msgstr "[Eilutė: %d]"
 
 #: pocheckerconsts.smissingmasteridentifier
+#, object-pascal-format
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Identifikatorių [%s] turi „%s“, tačiau jo neturi „%s“"
 
@@ -280,6 +292,7 @@ msgid "Note: translation is fuzzy"
 msgstr "Pastaba: vertimas neaiškus"
 
 #: pocheckerconsts.snrerrorsfound
+#, object-pascal-format
 msgid "Found %d errors."
 msgstr "Rasta klaidų: %d."
 
@@ -288,15 +301,17 @@ msgid "Mismatch in number of items for master and child"
 msgstr "Elementų kiekiai pagrindiniame ir su juo siejamame faile skiriasi"
 
 #: pocheckerconsts.snrofitemsmismatchd
+#, object-pascal-format
 msgid "%s: %d items"
 msgstr "%s: elementų - %d"
 
 #: pocheckerconsts.snrwarningsfound
+#, object-pascal-format
 msgid "Found %d warnings."
 msgstr "Rasta perspėjimų: %d."
 
 #: pocheckerconsts.sopenfail
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Unable to open file:\n"
 #| "\"%s\"\n"
@@ -308,7 +323,7 @@ msgstr ""
 "„%s“\n"
 
 #: pocheckerconsts.sopenfailexternal
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Unable to open file\n"
 #| "\"%s\"\n"
@@ -342,14 +357,17 @@ msgid "Original"
 msgstr "Originalas"
 
 #: pocheckerconsts.spercfuzzy
+#, object-pascal-format
 msgid "%s: %5.1f%% fuzzy strings."
 msgstr "%s: %5.1f%% neaiškių vertimų."
 
 #: pocheckerconsts.sperctranslated
+#, object-pascal-format
 msgid "%s: %5.1f%% translated strings."
 msgstr "%s: %5.1f%% pilnų vertimų."
 
 #: pocheckerconsts.spercuntranslated
+#, object-pascal-format
 msgid "%s: %5.1f%% untranslated strings."
 msgstr "%s: %5.1f%% neversta."
 
@@ -358,6 +376,7 @@ msgid "Processing translation family..."
 msgstr "Dorojama vertimų šeima…"
 
 #: pocheckerconsts.sprocessingtranslationfamilyof
+#, object-pascal-format
 msgid "Processing translation family %s of %s"
 msgstr "Dorojama vertimų šeima %s iš %s"
 
@@ -382,7 +401,7 @@ msgid "Save &As ..."
 msgstr ""
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Error saving file:\n"
 #| "%s\n"
@@ -418,7 +437,7 @@ msgid "Show statistics graph"
 msgstr "Rodyti statistikos grafiką"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Translated: %d (%.1f%%)\n"
 #| "Untranslated: %d (%.1f%%)\n"
@@ -436,37 +455,43 @@ msgstr ""
 "Klaidų pažymėtuose testuose: %d\n"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+#, object-pascal-format
 msgid "The following %s missing master .po file(s) were removed from the list:"
 msgstr "Šie trūkstami %s pagrindiniai „.po“ failai bus pašalinti iš sąrašo:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
+#, object-pascal-format
 msgid "The following %s orphaned .po file(s) found:"
 msgstr "Rasti šie %s „.po“ failai-našlaičiai:"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "Total errors found: %d"
 msgid "Total errors: %d"
 msgstr "Viso rasta klaidų: %d"
 
 #: pocheckerconsts.stotalerrorsnonfuzzy
+#, object-pascal-format
 msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
 msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
+#, object-pascal-format
 msgid "Total fuzzy strings: %s"
 msgstr "Viso neaiškių vertimų: %s"
 
 #: pocheckerconsts.stotaltranslatedstrings
+#, object-pascal-format
 msgid "Total translated strings: %s (%.1f%%)"
 msgstr "Viso pilnų vertimų: %s (%.1f%%)"
 
 #: pocheckerconsts.stotaluntranslatedstrings
+#, object-pascal-format
 msgid "Total untranslated strings: %s"
 msgstr "Viso neišversta: %s"
 
 #: pocheckerconsts.stotalwarnings
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "Total warnings found: %d"
 msgid "Total warnings: %d"
 msgstr "Viso rasta perspėjimų: %d"
@@ -476,6 +501,7 @@ msgid "Translated strings"
 msgstr ""
 
 #: pocheckerconsts.stranslatedstringstotal
+#, object-pascal-format
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr "Išversta (viso: %s [%.1f%%])"
 
@@ -504,6 +530,7 @@ msgid "Untranslated strings"
 msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
+#, object-pascal-format
 msgid "Untranslated strings (total: %s)"
 msgstr "Neišversta (viso: %s)"
 

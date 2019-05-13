@@ -19,14 +19,17 @@ msgid "&OK"
 msgstr "&OK"
 
 #: projecttemplates.serrcouldnotcreatedir
+#, object-pascal-format
 msgid "Could not create directory \"%s\""
 msgstr "Nemohu vytvořit složku \"%s\""
 
 #: projecttemplates.serrfailedtocopyfile
+#, object-pascal-format
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Chyba při kopírování souboru \"%s\" do \"%s\""
 
 #: projecttemplates.serrnosuchtemplate
+#, object-pascal-format
 msgid "\"%s\": No such template."
 msgstr "\"%s\": Není šablona."
 

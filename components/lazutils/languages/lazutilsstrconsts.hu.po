@@ -12,21 +12,25 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "a(z) %s könyvtárkomponense nem létezik vagy döglött szimbolikus hivatkozás"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr "a(z) %s könyvtárkomponense nem létezik vagy döglött szimbolikus hivatkozás"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
 msgstr "a(z) %s könyvtárkomponense nem egy könyvtár"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "a(z) %s könyvtárkomponense nem egy könyvtár"
@@ -36,6 +40,7 @@ msgid "boolean"
 msgstr "logikai"
 
 #: lazutilsstrconsts.lrscannotexecute
+#, object-pascal-format
 msgid "can not execute %s"
 msgstr "nem futtatható: %s"
 
@@ -52,22 +57,27 @@ msgid "Invalid number of function arguments"
 msgstr "Az eljárás paramétereinek száma nem megfelelő"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
+#, object-pascal-format
 msgid "Unknown function: \"%s\""
 msgstr "Ismeretlen eljárás: \"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
+#, object-pascal-format
 msgid "Unknown variable: \"%s\""
 msgstr "Ismeretlen változó: \"%s\""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
+#, object-pascal-format
 msgid "file \"%s\" does not exist"
 msgstr "a(z) \"%s\" fájl  nem létezik"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+#, object-pascal-format
 msgid "file \"%s\" is a directory and not an executable"
 msgstr "a(z) \"%s\" egy könyvtár és nem egy futtatható fájl"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
+#, object-pascal-format
 msgid "%s has a circular symbolic link"
 msgstr "A(z) %s körkörös szimbolikus hivatkozást tartalmaz"
 
@@ -76,19 +86,23 @@ msgid "insufficient memory"
 msgstr "kevés a memória"
 
 #: lazutilsstrconsts.lrsinvalidcharset
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
 msgid "The char set in mask \"%s\" is not valid!"
 msgstr "A karakterkészlet a \"%s\" maszkban érvénytelen!"
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
+#, object-pascal-format
 msgid "%s is not a symbolic link"
 msgstr "A(z) \"%s\" nem szimbolikus hivatkozás"
 
 #: lazutilsstrconsts.lrsisnotexecutable
+#, object-pascal-format
 msgid "%s is not executable"
 msgstr "A(z) %s nem futtatható"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
+#, object-pascal-format
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
 msgstr "A lista indexe a határon kívülre esik (%d)"
@@ -144,10 +158,12 @@ msgid "Invalid primary expression"
 msgstr "Érvénytelen elsődleges kifejezés"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
+#, object-pascal-format
 msgid "program file not found %s"
 msgstr "programfájl nem található: %s"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
+#, object-pascal-format
 msgid "read access denied for %s"
 msgstr "olvasási hozzáférés megtagadva ehhez: %s"
 
@@ -177,10 +193,12 @@ msgid "string"
 msgstr "karakterlánc"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+#, object-pascal-format
 msgid "Unable to create config directory \"%s\""
 msgstr "Nem lehet létrehozni a beállítások könyvtárát: \"%s\""
 
 #: lazutilsstrconsts.lrsvarnoconversion
+#, object-pascal-format
 msgid "Conversion from %s to %s not possible"
 msgstr "Az átalakítás nem lehetséges erről: %s, erre %s"
 

@@ -37,6 +37,7 @@ msgid "Packages"
 msgstr "包"
 
 #: todoliststrconsts.lispackageshint
+#, object-pascal-format
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
 msgstr "展开(Extends)\"%s\"和\"%s\"选项 从使用的包单元"
 

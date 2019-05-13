@@ -18,6 +18,7 @@ msgid "FPCUnit Console Test Application"
 msgstr "Консольний тестовий застосунок FPCUnit"
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
+#, object-pascal-format
 msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgstr "Консольний тестовий застосунок FPCUnit%sЗастосунок для запуску тестів FPCUnit у режимі консолі.%sСирці застосунку автоматично підтримуються Lazarus."
 
@@ -26,6 +27,7 @@ msgid "FPCUnit Test Application"
 msgstr "Тестовий застосунок FPCUnit"
 
 #: fpcunitlazideintf.sfpcuntestappdesc
+#, object-pascal-format
 msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgstr "Тестовий застосунок FPCUnit%sЗастосунок для запуску тестів FPCUnit.%sСирці застостунку автоматично підтримуються Lazarus."
 
@@ -34,6 +36,7 @@ msgid "FPCUnit Test Case"
 msgstr "Тест FPCUnit"
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
+#, object-pascal-format
 msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgstr "Тест FPCUnit%sМодуль, що містить тест FPCUnit."
 

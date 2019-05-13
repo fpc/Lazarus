@@ -12,6 +12,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: heaptrcview.rsdtimes
+#, object-pascal-format
 msgid " (%d times)"
 msgstr " (%d alkalommal)"
 
@@ -60,30 +61,37 @@ msgid ".trc file"
 msgstr ".trc fájl"
 
 #: heaptrcview.stacklineformat
+#, object-pascal-format
 msgid "%s"
 msgstr "%s"
 
 #: heaptrcview.stacklineformatwithfile
+#, object-pascal-format
 msgid "%s file: %s : %d; "
 msgstr "%s fájl: %s : %d;"
 
 #: heaptrcview.stacktraceformat
+#, object-pascal-format
 msgid "Leak: %d bytes x %d times"
 msgstr "Szivárgás: %d bájt x %d alkalommal"
 
 #: heaptrcview.stacktraceformatsingle
+#, object-pascal-format
 msgid "Leak: %d bytes"
 msgstr "Szivárgás: %d bájt"
 
 #: heaptrcview.strleakingblockscount
+#, object-pascal-format
 msgid "Leaking Blocks Count: %d"
 msgstr "Szivárgó blokkok száma: %d"
 
 #: heaptrcview.strleakingmemsize
+#, object-pascal-format
 msgid "Leaking Mem Size: %d"
 msgstr "Szivárgó memória mérete: %d"
 
 #: heaptrcview.strtotalmemalloc
+#, object-pascal-format
 msgid "Total Mem allocated: %d"
 msgstr "Teljes lefoglalt memória: %d"
 

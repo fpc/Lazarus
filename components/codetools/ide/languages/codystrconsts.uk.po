@@ -39,10 +39,12 @@ msgid "Already defined"
 msgstr "Вже визначений"
 
 #: codystrconsts.crsalreadydefinedat
+#, object-pascal-format
 msgid "Already defined at %s"
 msgstr "Вже визначений в %s"
 
 #: codystrconsts.crsandmoreidentifiers
+#, object-pascal-format
 msgid "... and %s more identifiers"
 msgstr "... і ще %s ідентифікатор(ів)"
 
@@ -67,6 +69,7 @@ msgid "by fpc.cfg"
 msgstr "в fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
+#, object-pascal-format
 msgid "Add Assign method to class %s"
 msgstr "Додати метод Assign до класу %s"
 
@@ -127,6 +130,7 @@ msgid "private"
 msgstr "приватний"
 
 #: codystrconsts.crscamproperty
+#, object-pascal-format
 msgid "%s property"
 msgstr "%s властивість"
 
@@ -151,6 +155,7 @@ msgid "There is no inherited method."
 msgstr "Немає успадкованого методу."
 
 #: codystrconsts.crscamvar
+#, object-pascal-format
 msgid "%s var"
 msgstr "%s змінна"
 
@@ -159,6 +164,7 @@ msgid "?visibility?"
 msgstr "?видимість?"
 
 #: codystrconsts.crscamwrittenbyproperty
+#, object-pascal-format
 msgid "%s, written by property %s"
 msgstr "%s, записаний властивістю %s"
 
@@ -233,6 +239,7 @@ msgid "Uses path"
 msgstr "Шлях Uses"
 
 #: codystrconsts.crscuallfiles
+#, object-pascal-format
 msgid "%s|All files (%s)|%s"
 msgstr "%s|Всі файли (%s)|%s"
 
@@ -257,6 +264,7 @@ msgid "The file seems to be a binary. Proceed?"
 msgstr "Ймовірно файл є двійковим. Продовжити?"
 
 #: codystrconsts.crscuunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\"%s%s"
 msgstr "Не можу завантажити файл \"%s\"%s%s"
 
@@ -281,6 +289,7 @@ msgid "Declare Variable ..."
 msgstr "Оголосити змінну ..."
 
 #: codystrconsts.crsdeclarevariable3
+#, object-pascal-format
 msgid "Declare variable \"%s\""
 msgstr "Оголосити змінну \"%s\""
 
@@ -297,10 +306,12 @@ msgid "Distance"
 msgstr "Відстань"
 
 #: codystrconsts.crsdvisakeyword
+#, object-pascal-format
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" це ключове слово."
 
 #: codystrconsts.crserror
+#, object-pascal-format
 msgid "Error: %s"
 msgstr "Помилка: %s"
 
@@ -333,6 +344,7 @@ msgid "File"
 msgstr "Файл"
 
 #: codystrconsts.crsfiledoesnotexistanymore
+#, object-pascal-format
 msgid "File \"%s\" does not exist anymore."
 msgstr "Файл \"%s\" більше не існує."
 
@@ -401,6 +413,7 @@ msgid "Identifier not found"
 msgstr "Ідентифікатор не знайдено"
 
 #: codystrconsts.crsidentifiernotfoundinunit
+#, object-pascal-format
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr "Ідентифікатор \"%s\" у модулі \"%s\" не знайдено. Можливо він не існує для даної платформи або був вилучений/перейменований."
 
@@ -422,6 +435,7 @@ msgid "Impossible dependency"
 msgstr "Неможлива залежність"
 
 #: codystrconsts.crsin
+#, object-pascal-format
 msgid "in \"%s\""
 msgstr "в \"%s\""
 
@@ -474,14 +488,17 @@ msgid "Links"
 msgstr "Зв'язки"
 
 #: codystrconsts.crsloaddictionaryafter
+#, object-pascal-format
 msgid "Load dictionary after %s"
 msgstr "Завантажити словник після %s"
 
 #: codystrconsts.crslocalvariableof
+#, object-pascal-format
 msgid "Local variable of %s"
 msgstr "Локальні змінні %s"
 
 #: codystrconsts.crsmainsourcefile
+#, object-pascal-format
 msgid "Main source file: %s"
 msgstr "Основний файл коду: %s"
 
@@ -490,6 +507,7 @@ msgid "Mbytes"
 msgstr "МБ"
 
 #: codystrconsts.crsmemberof
+#, object-pascal-format
 msgid "%s member of %s %s"
 msgstr "%s членів %s %s"
 
@@ -498,6 +516,7 @@ msgid "Menu item caption:"
 msgstr "Підпис елемента меню:"
 
 #: codystrconsts.crsminutes
+#, object-pascal-format
 msgid "%s minutes"
 msgstr "%s хвилин"
 
@@ -534,6 +553,7 @@ msgid "On clipboard"
 msgstr "На буфер обміну"
 
 #: codystrconsts.crsonlydescendantsof
+#, object-pascal-format
 msgid "Only descendants of %s"
 msgstr "Тільки нащадки %s"
 
@@ -570,6 +590,7 @@ msgid "Package"
 msgstr "Пакунок"
 
 #: codystrconsts.crspackage2
+#, object-pascal-format
 msgid "Package: %s"
 msgstr "Пакунок: %s"
 
@@ -578,10 +599,12 @@ msgid "Package not found"
 msgstr "Пакунок не знайдено"
 
 #: codystrconsts.crspackagenotfounditshouldbein
+#, object-pascal-format
 msgid "Package \"%s\" not found. It should be in \"%s\"."
 msgstr "Пакунок \"%s\" не знайдено. Він повинен бути в \"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
+#, object-pascal-format
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr "Пакунків: %s, модулів: %s, ідентифікаторів: %s%sБаза даних: %s"
 
@@ -602,6 +625,7 @@ msgid "Please open a project first."
 msgstr "Спочатку відкрийте проект."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+#, object-pascal-format
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr "Встановіть курсор редактора сирцевого коду на ідентифікатор в операторі.%sНаприклад:%sMyVar:=3;"
 
@@ -626,10 +650,12 @@ msgid "Please specify a type"
 msgstr "Вкажіть тип"
 
 #: codystrconsts.crsppu
+#, object-pascal-format
 msgid "PPU: %s"
 msgstr "PPU: %s"
 
 #: codystrconsts.crsppufilesofproject
+#, object-pascal-format
 msgid "PPU files of project \"%s\""
 msgstr "Файли PPU проекту \"%s\""
 
@@ -658,10 +684,12 @@ msgid "Published"
 msgstr "Опублікований"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+#, object-pascal-format
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr "Справді видалити пакунок з бази даних?%sПримітка: Сирці і конфігурація не зміняться.%s%s\"%s\""
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+#, object-pascal-format
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr "Справді видалити модуль з бази даних?%sПримітка: Сирці і конфігурація не зміняться.%s%sмодуль: \"%s\""
 
@@ -678,6 +706,7 @@ msgid "Report"
 msgstr "Звіт"
 
 #: codystrconsts.crssavedictionaryevery
+#, object-pascal-format
 msgid "Save dictionary every %s"
 msgstr "Зберігати словник кожні %s"
 
@@ -686,6 +715,7 @@ msgid "Save dictionary now"
 msgstr "Зберегти словник зараз"
 
 #: codystrconsts.crssavetofile
+#, object-pascal-format
 msgid "Save to file %s"
 msgstr "Зберегти у файл %s"
 
@@ -694,6 +724,7 @@ msgid "Scanning ..."
 msgstr "Триває пошук ..."
 
 #: codystrconsts.crsscanningsunits
+#, object-pascal-format
 msgid "Scanning: %s units ..."
 msgstr "Триває пошук: %s модулів ..."
 
@@ -702,6 +733,7 @@ msgid "searching ..."
 msgstr "пошук ..."
 
 #: codystrconsts.crsseconds
+#, object-pascal-format
 msgid "%s seconds"
 msgstr "%s секунд"
 
@@ -714,6 +746,7 @@ msgid "Show CodeTools Node Info ..."
 msgstr "Показати дані про вузол CodeTools ..."
 
 #: codystrconsts.crsshowcodydict
+#, object-pascal-format
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Показати словник Cody для \"%s\""
 
@@ -742,6 +775,7 @@ msgid "Size of .ppu file"
 msgstr "Розмір .ppu файлу"
 
 #: codystrconsts.crssource
+#, object-pascal-format
 msgid "Source: %s"
 msgstr "Вихідний код: %s"
 
@@ -758,18 +792,22 @@ msgid "The dictionary is saved in intervals"
 msgstr "Словник зберігається з зазначеним інтервалом часу"
 
 #: codystrconsts.crstheidentifierisalreadydefined
+#, object-pascal-format
 msgid "The identifier \"%s\" is already defined."
 msgstr "Ідентифікатор \"%s\" вже визначений."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+#, object-pascal-format
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
 msgstr "Пакет з такою назвою вже завантажено.%sВідкритий пакет: %s%sНовий пакет: %s%sМоже бути завантажений тільки один такий пакет."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+#, object-pascal-format
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
 msgstr "Цільовий модуль має таку ж назву, як поточний модуль.%s Free Pascal цього не підтримує."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+#, object-pascal-format
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
 msgstr "Модуль \"%s\"%sє частиною \"%s\".%sВін не може використовувати інший пакунок з такою ж назвою:%s\"%s\""
 
@@ -786,14 +824,17 @@ msgid "Type"
 msgstr "Тип"
 
 #: codystrconsts.crsunabletodelete
+#, object-pascal-format
 msgid "Unable to delete \"%s\""
 msgstr "Неможливо видалити \"%s\""
 
 #: codystrconsts.crsunabletoreadfile
+#, object-pascal-format
 msgid "Unable to read file \"%s\"."
 msgstr "Неможливо прочитати файл \"%s\"."
 
 #: codystrconsts.crsunabletorenameto
+#, object-pascal-format
 msgid "unable to rename \"%s\" to \"%s\""
 msgstr "неможливо змінити назву файлу \"%s\" на \"%s\""
 
@@ -802,6 +843,7 @@ msgid "Unit"
 msgstr "Модуль"
 
 #: codystrconsts.crsunit2
+#, object-pascal-format
 msgid "Unit: %s"
 msgstr "Модуль: %s"
 
@@ -826,6 +868,7 @@ msgid "Unit shared libraries"
 msgstr "Спільні бібліотеки модулів"
 
 #: codystrconsts.crsunitss
+#, object-pascal-format
 msgid "Units: %s"
 msgstr "Модулі: %s"
 

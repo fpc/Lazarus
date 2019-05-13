@@ -16,86 +16,103 @@ msgid "Debugger"
 msgstr ""
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "デバッガがアプリケーション%0:s%0:s%1:s%0:s%0:sの実行／ステップ実行を試みた際にエラーが発生しました。ブレークポイントを削除しデバッグ（一時停止）を継続する場合は \"Ok\" を押し、問題を修正し、あるいは別の実行コマンドを選択してください。%0:sデバッグセッションを終了する場合は \"停止\" を押してください。"
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
 msgstr "デバッガはブレークポイントをアプリケーションのエントリポイントにセットできませんでした。%0:sこれはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunerror"
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
 msgstr "デバッガはアプリケーションを実行できませんでした。%0:sこれはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunnopiderror"
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
 msgstr "デバッガはアプリケーションのPIDを取得できませんでした。%0:sこれはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "デバッガは自身を初期化できませんでした。%0:sアプリケーションはデバッガがブレークポイントを設置する前に開始（そして終了）しました。%0:sこれはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
 
 #: gdbmistringconstants.gdbmierroronruncommand
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "デバッガがアプリケーション%0:s%0:s%1:s%0:s%0:sの実行／ステップ実行を試みた際にエラーが発生しました。ブレークポイントを削除しデバッギング（一時停止）を継続する場合は \"Ok\" を押し、問題を修正し、あるいは別の実行コマンドを選択してください。%0:sデバッグセッションを終了する場合は \"停止\" を押してください。"
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierroronruncommandwithwarning"
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sエラーに加え、下記の警告が出されました。:%0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstategenericinfo"
 msgid "Error in: %1:s %0:s"
 msgstr "エラー: %1:s %0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommanderror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfocommanderror"
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
 msgstr "%0:sGDBコマンド:%0:s\"%1:s\"%0:sはエラー:%0:s\"%2:s\"%0:sを返しました。"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfocommandnoresult"
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
 msgstr "%0:sGDBコマンド:%0:s\"%1:s\"%0:sはいかなる結果も返しませんでした。:%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedread
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedread"
 msgid "%0:sCould not read output from GDB.%0:s"
 msgstr "%0:sGDBからの出力を読めませんでした。%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedwrite"
 msgid "%0:sCould not send a command to GDB.%0:s"
 msgstr "%0:sGDBにコマンドを送れませんでした。%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfogdbgone
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfogdbgone"
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sGDBプロセスは今はもう実行されていません。%0:s"
 
 #: gdbmistringconstants.gdbmieventlogdebugoutput
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogdebugoutput"
 msgid "Debug Output: %s"
 msgstr "デバッグ出力：%s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventloggdbinternalerror"
 msgid "GDB has encountered an internal error: %s"
 msgstr "GDB が内部エラーに遭遇しました：%s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlognosymbols"
 msgid "File '%s' has no debug symbols"
 msgstr "ファイル '%s' にはデバッグシンボルがありません"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogprocessexitcode"
 msgid "Process Exit: %s"
 msgstr "プロセス終了：%s"
@@ -106,6 +123,7 @@ msgid "Process Exit: normally"
 msgstr "プロセス終了：正常"
 
 #: gdbmistringconstants.gdbmieventlogprocessstart
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogprocessstart"
 msgid "Process Start: %s"
 msgstr "プロセス開始：%s"
@@ -115,6 +133,7 @@ msgid "Failed to create process for GDB"
 msgstr ""
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
 msgstr "GDB プロセスを終了できませんでした。このプロセスは IDE の制御外でまだ稼動しているものと思われます。%0:s確実にプロセスを終了させるには、あなた自身がプロセスを特定して終了させなければなりません。"
@@ -125,21 +144,25 @@ msgid "GDB did not terminate"
 msgstr "GDB が終了できません"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmifatalerroroccurred"
 msgid "Unrecoverable error: \"%s\""
 msgstr "修復不可能なエラー：\"%s\""
 
 #: gdbmistringconstants.gdbmigdbinternalerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
 msgstr "GDB が内部エラーに遭遇しました：%0:sデバッグを継続する場合は \"Ok\" を押してください。これは安全ではないでしょう。%0:sデバッグセッションは終了する場合は \"停止\" を押してください。"
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
 msgstr "実行中のコマンド：%0:s\"%2:s\"%0:sGDB レポート：%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "デバッグを継続する場合は\"Ignore\"を押してください。これは安全ではないでしょう。デバッグを停止する場合は\"Abort\"を押してください。%0:s例外： %1:s メッセージ \"%2:s\"%0:sコンテクスト: %4:s. 状態: %5:s %0:s%0:s%3:s"
@@ -150,11 +173,13 @@ msgid "The debugger experienced an unknown condition"
 msgstr "デバッガが未知の状態に遭遇しました"
 
 #: gdbmistringconstants.gdbmitimeoutforcmd
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmitimeoutforcmd"
 msgid "Time-out for command: \"%s\""
 msgstr "コマンド \"%s\"が時間切れ"
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmiwarningunknowbreakpoint"
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
 msgstr "デバッガは予期しない状態に達しました %1:s%0:s%0:sデバッギング（一時停止）を継続する場合は\"Ok\"を押してください。%0:sデバッグセッションを終了する場合は\"Stop\"を押してください。"
@@ -164,6 +189,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr ""
 
 #: gdbmistringconstants.lisresponsecontinue
+#, object-pascal-format
 msgid "Response: %sContinue?"
 msgstr ""
 
@@ -172,6 +198,7 @@ msgid "Timeout has occurred:"
 msgstr ""
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, object-pascal-format
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr ""
 
@@ -192,6 +219,7 @@ msgid "Failed to load application executable"
 msgstr ""
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
+#, object-pascal-format
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr ""
 

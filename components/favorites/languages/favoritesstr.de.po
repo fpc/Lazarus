@@ -13,10 +13,12 @@ msgstr ""
 "Language: de\n"
 
 #: favoritesstr.saddtofavoritess
+#, object-pascal-format
 msgid "Add to favorites: %s"
 msgstr "Zu Favoriten hinzufügen: %s"
 
 #: favoritesstr.sremovefromfavoritess
+#, object-pascal-format
 msgid "Remove from favorites: %s"
 msgstr "Aus Favoriten entfernen: %s"
 

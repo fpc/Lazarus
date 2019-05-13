@@ -14,6 +14,7 @@ msgid "Apache Module"
 msgstr "Modul Apache"
 
 #: weblazideintf.rsapachemodule2
+#, object-pascal-format
 msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgstr "Modul Apache%sNačítatelný modul Apache ve Free Pascalu využívající webové moduly. Hlavní soubor knihovny je automaticky spravován Lazarusem."
 
@@ -22,6 +23,7 @@ msgid "CGI Application"
 msgstr "Aplikace CGI"
 
 #: weblazideintf.rscgiapplicati2
+#, object-pascal-format
 msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "Aplikace CGI%sProgram CGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
 
@@ -30,6 +32,7 @@ msgid "Custom CGI Application"
 msgstr "Vlastní aplikace CGI"
 
 #: weblazideintf.rscustomcgiapp2
+#, object-pascal-format
 msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "Vlastní aplikace CGI%sProgram CGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
 
@@ -38,6 +41,7 @@ msgid "Custom FastCGI Application"
 msgstr "Vlastní aplikace FastCGI"
 
 #: weblazideintf.rscustomfastcg2
+#, object-pascal-format
 msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "Vlastní aplikace FastCGI%sProgram FastCGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
 
@@ -46,6 +50,7 @@ msgid "FastCGI Application"
 msgstr "Alikace FastCGI"
 
 #: weblazideintf.rsfastcgiappli2
+#, object-pascal-format
 msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "Aplikace FastCGI%sProgram FastCGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
 
@@ -54,6 +59,7 @@ msgid "HTML Web Module"
 msgstr "Webový HTML modul"
 
 #: weblazideintf.rshtmlwebmodul2
+#, object-pascal-format
 msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgstr "Webový HTML modul%sWebový modul pro vytváření přísného HTML."
 
@@ -70,6 +76,7 @@ msgid "Web DataProvider Module"
 msgstr ""
 
 #: weblazideintf.rswebdataprovi2
+#, object-pascal-format
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgstr ""
 
@@ -78,6 +85,7 @@ msgid "Web Ext.Direct Module"
 msgstr ""
 
 #: weblazideintf.rswebextdirect2
+#, object-pascal-format
 msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr ""
 
@@ -86,6 +94,7 @@ msgid "Web JSON-RPC Module"
 msgstr ""
 
 #: weblazideintf.rswebjsonrpcmo2
+#, object-pascal-format
 msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr ""
 
@@ -94,6 +103,7 @@ msgid "Web Module"
 msgstr "Webový modul"
 
 #: weblazideintf.rswebmoduleada
+#, object-pascal-format
 msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgstr "Webový modul%sDatový modul pro webové (HTTP) aplikace."
 

@@ -42,6 +42,7 @@ msgid "update repository"
 msgstr ""
 
 #: fppkg_mainfrm.serractionfailed
+#, object-pascal-format
 msgid ""
 "Failed to %s: \n"
 "\n"
@@ -49,6 +50,7 @@ msgid ""
 msgstr ""
 
 #: fppkg_mainfrm.smsgactionsucceeded
+#, object-pascal-format
 msgid "%s succeeded."
 msgstr ""
 

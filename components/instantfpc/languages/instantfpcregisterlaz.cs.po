@@ -10,10 +10,12 @@ msgid "InstantFPC script"
 msgstr "InstantFPC script"
 
 #: instantfpcregisterlaz.rssinglefilefr
+#, object-pascal-format
 msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
 msgstr "%s%sJednosouborový program Free Pascalu  spouštěný pomocí InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilepr
+#, object-pascal-format
 msgid "%s%sSingle file program using InstantFPC to compile and execute"
 msgstr "%s%sJednosouborový program využívající InsfantFPC ke kompilaci a běhu."
 

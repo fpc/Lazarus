@@ -13,6 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "Pole (%d elementů)"
 
@@ -38,7 +39,7 @@ msgid "JSON document modified"
 msgstr "JSON dokument upraven"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The JSON data in \"%s\" was changed but not saved.\n"
 #| "What do want to do ?\n"
@@ -50,6 +51,7 @@ msgstr ""
 "Co si přejete udělat?\n"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "Duplicitní jméno člena \"%s\"."
 
@@ -58,6 +60,7 @@ msgid "Filename needed for generated code"
 msgstr ""
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Element # %d"
 
@@ -66,10 +69,12 @@ msgid "Empty document"
 msgstr "Prázdný dokument"
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Nemohu vytvořit složku konfiguračních souborů \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "Neplatná hodnota nebo špatný typ: \"%s\""
 
@@ -82,6 +87,7 @@ msgid "New object member"
 msgstr "Nový prvek objektu"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "Zadejte jméno pro nového člena (druh: %s)"
 
@@ -94,6 +100,7 @@ msgid "null"
 msgstr "null"
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "Objekt (%d prvků)"
 

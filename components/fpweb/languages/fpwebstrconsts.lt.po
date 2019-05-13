@@ -156,6 +156,7 @@ msgid "Submit"
 msgstr "Išsiųsti"
 
 #: fpwebstrconsts.shtmltagproperty
+#, object-pascal-format
 msgid "Tag property: %s"
 msgstr "Gairės savybė: %s"
 

@@ -36,6 +36,7 @@ msgid "Import Type Library ..."
 msgstr "Típustár importálása ..."
 
 #: activexstrconsts.axselectdirectorytostorepackageplpk
+#, object-pascal-format
 msgid "Select directory to store package %sP.lpk"
 msgstr "Könyvtár választása a(z) %sP.lpk csomag tárolásához"
 

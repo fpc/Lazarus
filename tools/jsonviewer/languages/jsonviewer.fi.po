@@ -2,6 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "Taulukko (%d elementtiä)"
 
@@ -27,7 +28,7 @@ msgid "JSON document modified"
 msgstr "JSON dokumenttia muokattu"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The JSON data in \"%s\" was changed but not saved.\n"
 #| "What do want to do ?\n"
@@ -39,6 +40,7 @@ msgstr ""
 "Mitä tehdään ?\n"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "Kahdennettu jäsenen nimi \"%s\"."
 
@@ -47,6 +49,7 @@ msgid "Filename needed for generated code"
 msgstr "Luotu koodi tarvitsee tiedoston nimen"
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Elementin numero %d"
 
@@ -55,10 +58,12 @@ msgid "Empty document"
 msgstr "Tyhjä dokumentti"
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Ei voitu luoda asetustiedostojen hakemistoa \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "Vääränlainen arvo tai väärä tyyppi: \"%s\""
 
@@ -71,6 +76,7 @@ msgid "New object member"
 msgstr "Uusi olio jäsen"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "Nimeä uusi jäsen (tyyppi: %s)"
 
@@ -83,6 +89,7 @@ msgid "null"
 msgstr ""
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "Olio (%d jäsentä)"
 

@@ -41,6 +41,7 @@ msgid "Insert your SQL statements here"
 msgstr "Čia įterpiami SQL sakiniai"
 
 #: registersqldb.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
 msgid "Editing %s"
 msgstr "%s redaguojamas"
 

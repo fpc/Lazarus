@@ -14,6 +14,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+#, object-pascal-format
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = „%0:s“, tipas = %1:s, prieraišos[%2:s] = „%3:s“"
 
@@ -26,18 +27,22 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Pelės judesio kelias pikseliais, po kurio pradedamas tempimo veiksmas"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Prieraiša nėra skyriklis: mazgas = „%0:s“, prieraišos[%1:s] = „%2:s“"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
+#, object-pascal-format
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Prieraiša nerasta: mazgas = „%s“, prieraišos[%s] = „%s“"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+#, object-pascal-format
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Prieraiša netinka skyriklio kraštinei: mazgas = „%s“, prieraišos[%s] = „%s“"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+#, object-pascal-format
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Lapas turi būti be prieraišų: mazgas = „%s“, tėvas = %s, tėvo tipas = %s, prieraišos[%s] = „%s“"
 
@@ -58,6 +63,7 @@ msgid "control is already a docksite"
 msgstr "Valdiklis jau yra vieta pritvirtinimui"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+#, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Savoje pritvirtinimo vietoje „%s“ gali būti tik viena vieta pritvirtinimui."
 
@@ -70,6 +76,7 @@ msgid "Docking options"
 msgstr "Pritvirtinimo parinktys"
 
 #: anchordockstr.adrsdraganddockc
+#, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Langas „%s“ tempiamas ir pritvirtinamas naudojant pelę"
 
@@ -94,6 +101,7 @@ msgid "Enlarge"
 msgstr "Išdidinti"
 
 #: anchordockstr.adrsenlargeside
+#, object-pascal-format
 msgid "Enlarge %s side"
 msgstr "Išdidinti kraštinę „%s“"
 
@@ -198,18 +206,22 @@ msgid "No captions for floating sites"
 msgstr "Nerodyti antraščių plaukiojančioms vietoms pritvirtinimui"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
+#, object-pascal-format
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Vaikai negalimi mazge = „%s“, tipas = „%s“"
 
 #: anchordockstr.adrsnotsupportedhasparent
+#, object-pascal-format
 msgid "Not supported: %s has parent %s"
 msgstr "Nepalaikoma: %s turi tėvą %s"
 
 #: anchordockstr.adrsquit
+#, object-pascal-format
 msgid "Quit %s"
 msgstr "Baigti „%s“ darbą"
 
 #: anchordockstr.adrsrequestedbutcreated
+#, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "Pareikalauta „%s“, tačiau sukurta „%s“"
 
@@ -250,6 +262,7 @@ msgid "Tab position"
 msgstr "Ąselės vieta"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+#, object-pascal-format
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
 msgstr "Kitokia pritvirtinimų valdyklė „%s“ jau yra įdiegta. Kadangi vienu metu gali būti įdiegta tik viena valdyklė, išdiekite esančia ir IKA startuokite iš naujo."
 
@@ -258,6 +271,7 @@ msgid "top"
 msgstr "viršutinis"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+#, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "Norint naudoti prieraišų pritvirtinimą, būtina išdiegti „%s“"
 

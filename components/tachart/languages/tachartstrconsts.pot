@@ -199,6 +199,7 @@ msgid "The number of fit parameters cannot be less than 1."
 msgstr ""
 
 #: tachartstrconsts.rserrinvalidresulttype
+#, object-pascal-format
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr ""
 
@@ -331,14 +332,17 @@ msgid "Line series"
 msgstr ""
 
 #: tachartstrconsts.rslistsourcecolorerror
+#, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
 msgstr ""
 
 #: tachartstrconsts.rslistsourcenumericerror
+#, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
 msgstr ""
 
 #: tachartstrconsts.rslistsourcestringformaterror
+#, object-pascal-format
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
 msgstr ""
 
@@ -448,10 +452,12 @@ msgid "Right triangle"
 msgstr ""
 
 #: tachartstrconsts.rssourcecounterror
+#, object-pascal-format
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
 msgstr ""
 
 #: tachartstrconsts.rssourcecounterror2
+#, object-pascal-format
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
 msgstr ""
 
@@ -460,6 +466,7 @@ msgid "Editable chart source required"
 msgstr ""
 
 #: tachartstrconsts.rssourcesorterror
+#, object-pascal-format
 msgid "Selected sorting parameters are not supported by %s."
 msgstr ""
 
@@ -514,6 +521,7 @@ msgid "Edit axis transformations"
 msgstr ""
 
 #: tachartstrconsts.tasfailedsubcomponentrename
+#, object-pascal-format
 msgid "Failed to rename components: %s"
 msgstr ""
 

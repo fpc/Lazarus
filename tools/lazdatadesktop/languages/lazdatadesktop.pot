@@ -69,6 +69,7 @@ msgid "Enter a descriptive name for the connection"
 msgstr ""
 
 #: lazdatadeskstr.sconnectionnameexists
+#, object-pascal-format
 msgid ""
 "There is already a connection named \"%s\"\n"
 "Would you like to override the connection data ?"
@@ -83,12 +84,14 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr ""
 
 #: lazdatadeskstr.sddmodified
+#, object-pascal-format
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?"
 msgstr ""
 
 #: lazdatadeskstr.sdeleteobject
+#, object-pascal-format
 msgid "Delete this %s"
 msgstr ""
 
@@ -144,10 +147,12 @@ msgid "No table selected. Please select a table"
 msgstr ""
 
 #: lazdatadeskstr.serrunknowndirective
+#, object-pascal-format
 msgid "Unknown directive: %s (args: %s)"
 msgstr ""
 
 #: lazdatadeskstr.serrunknowntype
+#, object-pascal-format
 msgid "Unknown object type: %d"
 msgstr ""
 
@@ -156,14 +161,17 @@ msgid "Execute SQL"
 msgstr ""
 
 #: lazdatadeskstr.sexecutingsqlstatement
+#, object-pascal-format
 msgid "%s : Executing SQL statement:"
 msgstr ""
 
 #: lazdatadeskstr.sexecutingsqlstatementcount
+#, object-pascal-format
 msgid "%s : Executing script SQL statement nr. %d:"
 msgstr ""
 
 #: lazdatadeskstr.sexecutiontime
+#, object-pascal-format
 msgid "Execution time: %s"
 msgstr ""
 
@@ -440,6 +448,7 @@ msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
+#, object-pascal-format
 msgid "Connect to a database of type %s"
 msgstr ""
 
@@ -655,10 +664,12 @@ msgid "Load SQL"
 msgstr ""
 
 #: lazdatadeskstr.snamefor
+#, object-pascal-format
 msgid "Enter a name for the new %s"
 msgstr ""
 
 #: lazdatadeskstr.snew
+#, object-pascal-format
 msgid "New %s"
 msgstr ""
 
@@ -679,6 +690,7 @@ msgid "Enter a name for the new domain:"
 msgstr ""
 
 #: lazdatadeskstr.snewfield
+#, object-pascal-format
 msgid "Create new field in table %s"
 msgstr ""
 
@@ -687,6 +699,7 @@ msgid "Enter a name for the new field:"
 msgstr ""
 
 #: lazdatadeskstr.snewforeignkey
+#, object-pascal-format
 msgid "Create new foreign key in table %s"
 msgstr ""
 
@@ -695,6 +708,7 @@ msgid "Enter a name for the new foreign key:"
 msgstr ""
 
 #: lazdatadeskstr.snewindex
+#, object-pascal-format
 msgid "Create new index on table %s"
 msgstr ""
 
@@ -703,6 +717,7 @@ msgid "Enter a name for the new index:"
 msgstr ""
 
 #: lazdatadeskstr.snewobject
+#, object-pascal-format
 msgid "Create new %s"
 msgstr ""
 
@@ -799,6 +814,7 @@ msgid "Ready to execute SQL statements"
 msgstr ""
 
 #: lazdatadeskstr.srecordsfetched
+#, object-pascal-format
 msgid "Records fetched: %d"
 msgstr ""
 
@@ -807,6 +823,7 @@ msgid "Retry the statement"
 msgstr ""
 
 #: lazdatadeskstr.srowsaffected
+#, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
 msgstr ""
 
@@ -819,14 +836,17 @@ msgid "Save changes"
 msgstr ""
 
 #: lazdatadeskstr.sscriptaborted
+#, object-pascal-format
 msgid "Script was aborted after %d statements"
 msgstr ""
 
 #: lazdatadeskstr.sscriptcompleted
+#, object-pascal-format
 msgid "Executed %d statements from script"
 msgstr ""
 
 #: lazdatadeskstr.sscripterrorcount
+#, object-pascal-format
 msgid "%d script statements resulted in errors"
 msgstr ""
 
@@ -843,10 +863,12 @@ msgid "Sequence"
 msgstr ""
 
 #: lazdatadeskstr.ssqlerrorcode
+#, object-pascal-format
 msgid "SQL Error code: %d"
 msgstr ""
 
 #: lazdatadeskstr.ssqlexecutedok
+#, object-pascal-format
 msgid "%s : Statement executed succesfully."
 msgstr ""
 
@@ -855,6 +877,7 @@ msgid "SQL files|*.sql|All files|*.*"
 msgstr ""
 
 #: lazdatadeskstr.ssqlstatus
+#, object-pascal-format
 msgid "SQL State: %s"
 msgstr ""
 
@@ -871,10 +894,12 @@ msgid "Table"
 msgstr ""
 
 #: lazdatadeskstr.sunknownconnection
+#, object-pascal-format
 msgid "Unknown connection: %s"
 msgstr ""
 
 #: lazdatadeskstr.sunknowndictionary
+#, object-pascal-format
 msgid "Unknown data dictionary: %s"
 msgstr ""
 

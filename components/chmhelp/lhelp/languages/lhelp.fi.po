@@ -10,10 +10,12 @@ msgid "&About ..."
 msgstr "Tietoja..."
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
 msgstr "Ei pysty hallitsemaan tämän tyyppistä sisältöä. \"%s\" url:%s%s"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "Ei pysty hallitsemaan tämän tyyppistä sisältöä. \"%s\" url:%s%s"
 
@@ -70,6 +72,7 @@ msgid "Index Loading ..."
 msgstr "Hakemistoa ladataan ..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
 msgstr "    --ipcname  :  IPC palvelimen nimi, kuuntelee%s              ohjelmia mitkä tahtovat ohjata tiedoston näyttäjää"
 
@@ -82,10 +85,12 @@ msgid "LHelp"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
 msgid "LHelp - %s"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr "LHelp (CHM tiedoston näyttäjä)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 
@@ -94,10 +99,12 @@ msgid "  LHelp options:"
 msgstr "  LHelp asetukset:"
 
 #: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
 msgid "Loaded: %s in %sms"
 msgstr "Ladattu: %s  %s ms"
 
 #: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
 msgid "Loading: %s"
 msgstr "Ladataan: %s"
 
@@ -106,6 +113,7 @@ msgid "No Results"
 msgstr "Ei tuloksia"
 
 #: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
 msgid "%s not found!"
 msgstr "%s ei löytynyt!"
 
@@ -158,6 +166,7 @@ msgid "Show contents"
 msgstr "Näytä sisältö"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
 msgid "Supported URL type(s): (%s)"
 msgstr "Tuetut URL tyyppi(/tyypit): (%s)"
 

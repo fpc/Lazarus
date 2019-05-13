@@ -27,43 +27,52 @@ msgid "Save resourcefile as"
 msgstr "保持资源文件为"
 
 #: glazresmain.errconverttotext
+#, object-pascal-format
 msgid "ERROR: unable to convert Delphi form to text: \"%s\""
 msgstr "错误:不能转换Delphi窗体(form)为文本:\"%s\""
 
 #: glazresmain.errcreate
+#, object-pascal-format
 msgid "ERROR: Cannot create \"%s\""
 msgstr "错误:不能创建\"%s\""
 
 #: glazresmain.errfileisresource
+#, object-pascal-format
 msgid "ERROR: Cannot add resource file to itself (\"%s\")"
 msgstr "错误:不能添加资源文件到它自身(\"%s\")"
 
 #: glazresmain.errfilenotfound
+#, object-pascal-format
 msgid "ERROR: File not found: \"%s\""
 msgstr "错误:文件未找到:\"%s\""
 
 #: glazresmain.errnoresourcename
+#, object-pascal-format
 msgid "ERROR: No resourcename found for \"%s\""
 msgstr "错误:没有资源名称找到对于\"%s\""
 
 #: glazresmain.errread
+#, object-pascal-format
 msgid "ERROR: Cannot read from \"%s\""
 msgstr "错误:不能读取从\"%s\""
 
 #: glazresmain.msgcreatinglrs
+#, object-pascal-format
 msgid "Creating \"%s\""
 msgstr "创建\"%s\""
 
 #: glazresmain.msgprocessing
+#, object-pascal-format
 msgid "Processing \"%s\""
 msgstr "处理(Processing)\"%s\""
 
 #: glazresmain.msgresourcenametype
+#, object-pascal-format
 msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr "资源名称= \"%s\",类型= \"%s\""
 
 #: glazresmain.msgsuccess
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Done.\n"
 #| "Number of resources added: %d.\n"

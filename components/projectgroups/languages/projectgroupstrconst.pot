@@ -10,6 +10,7 @@ msgid "Abort loading project group"
 msgstr ""
 
 #: projectgroupstrconst.lisactivetarget
+#, object-pascal-format
 msgid "Target: %s"
 msgstr ""
 
@@ -22,10 +23,12 @@ msgid "Be patient!"
 msgstr ""
 
 #: projectgroupstrconst.lisbuildmode
+#, object-pascal-format
 msgid ", build mode \"%s\""
 msgstr ""
 
 #: projectgroupstrconst.lisbuildmode2
+#, object-pascal-format
 msgid "Build Mode \"%s\""
 msgstr ""
 
@@ -34,14 +37,17 @@ msgid "Build mode not found"
 msgstr ""
 
 #: projectgroupstrconst.lisbuildmodenotfound2
+#, object-pascal-format
 msgid "Build mode \"%s\" not found."
 msgstr ""
 
 #: projectgroupstrconst.liscompilepackage
+#, object-pascal-format
 msgid "Compile Package %s"
 msgstr ""
 
 #: projectgroupstrconst.liscompileproject
+#, object-pascal-format
 msgid "Compile Project %s"
 msgstr ""
 
@@ -50,6 +56,7 @@ msgid "Discard changes"
 msgstr ""
 
 #: projectgroupstrconst.liserrnosuchfile
+#, object-pascal-format
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -61,6 +68,7 @@ msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr ""
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
+#, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
 msgstr ""
 
@@ -77,6 +85,7 @@ msgid "Invalid File"
 msgstr ""
 
 #: projectgroupstrconst.lisinvalidxmlfilename
+#, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
 msgstr ""
 
@@ -161,6 +170,7 @@ msgid "Package not found"
 msgstr ""
 
 #: projectgroupstrconst.lispackagenotfound2
+#, object-pascal-format
 msgid "Package \"%s\" not found."
 msgstr ""
 
@@ -174,10 +184,12 @@ msgid "Please save your changes before reloading the project group."
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroup
+#, object-pascal-format
 msgid "Project group %s"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroup2
+#, object-pascal-format
 msgid "Project Group: %s"
 msgstr ""
 
@@ -210,6 +222,7 @@ msgid "Project group modified"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, object-pascal-format
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
@@ -320,6 +333,7 @@ msgid "Copy file name"
 msgstr ""
 
 #: projectgroupstrconst.listargetcount
+#, object-pascal-format
 msgid "%d targets"
 msgstr ""
 
@@ -417,6 +431,7 @@ msgid "Uninstall selected target"
 msgstr ""
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
+#, object-pascal-format
 msgid "The lazbuild%s was not found."
 msgstr ""
 
@@ -425,14 +440,17 @@ msgid "There is still another build in progress."
 msgstr ""
 
 #: projectgroupstrconst.lisunabletocreatefile
+#, object-pascal-format
 msgid "Unable to create file \"%s\": %s"
 msgstr ""
 
 #: projectgroupstrconst.lisunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\""
 msgstr ""
 
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
+#, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr ""
 
@@ -441,6 +459,7 @@ msgid "Write error"
 msgstr ""
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
+#, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
 msgstr ""
 

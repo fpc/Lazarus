@@ -16,6 +16,7 @@ msgid "Apache Module"
 msgstr "Módulo Apache"
 
 #: weblazideintf.rsapachemodule2
+#, object-pascal-format
 msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgstr "Módulo Apache%sUm módulo Apache carregável no Free Pascal usando módulos web. O arquivo biblioteca principal é mantido automaticamente pelo Lazarus."
 
@@ -24,6 +25,7 @@ msgid "CGI Application"
 msgstr "Aplicação CGI"
 
 #: weblazideintf.rscgiapplicati2
+#, object-pascal-format
 msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "Aplicação CGI%sUm programa CGI (Common Gateway Interface) em Free Pascal usando módulos web. O fonte do programa é mantido automaticamente pelo Lazarus."
 
@@ -32,6 +34,7 @@ msgid "Custom CGI Application"
 msgstr "Aplicação CGI personalizada"
 
 #: weblazideintf.rscustomcgiapp2
+#, object-pascal-format
 msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "Aplicação CGI personalizada%sUm programa CGI (Common Gateway Interface) em Free Pascal. O fonte do programa é mantido automaticamente pelo Lazarus."
 
@@ -40,6 +43,7 @@ msgid "Custom FastCGI Application"
 msgstr "Aplicação FastCGI personalizada"
 
 #: weblazideintf.rscustomfastcg2
+#, object-pascal-format
 msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "Aplicação FastCGI personalizada%sUm programa FastCGI (Common Gateway Interface) em Free Pascal. O fonte do programa é mantido automaticamente pelo Lazarus."
 
@@ -48,6 +52,7 @@ msgid "FastCGI Application"
 msgstr "Aplicação FastCGI"
 
 #: weblazideintf.rsfastcgiappli2
+#, object-pascal-format
 msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "Aplicação FastCGI%sUm programa FastCGI (Common Gateway Interface) em Free Pascal usando módulos web. O fonte do programa é mantido automaticamente pelo Lazarus."
 
@@ -56,6 +61,7 @@ msgid "HTML Web Module"
 msgstr "Módulo Web HTML"
 
 #: weblazideintf.rshtmlwebmodul2
+#, object-pascal-format
 msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgstr "Módulo Web HTML%sUm módulo de dados Web para geração HTML."
 
@@ -72,6 +78,7 @@ msgid "Web DataProvider Module"
 msgstr "Módulo Web DataProvider"
 
 #: weblazideintf.rswebdataprovi2
+#, object-pascal-format
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgstr "Módulo Web Dataprovider%sUm módulo de dados para lidar com requisições de dados para aplicações WEB (HTTP) usando componentes WebDataProvider."
 
@@ -80,6 +87,7 @@ msgid "Web Ext.Direct Module"
 msgstr "Módulo Web Ext.Direct"
 
 #: weblazideintf.rswebextdirect2
+#, object-pascal-format
 msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Módulo Web Ext.Direct%sUm módulo de dados para despachar requisições Ext.Direct em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
 
@@ -88,6 +96,7 @@ msgid "Web JSON-RPC Module"
 msgstr "Módulo Web JSON-RPC"
 
 #: weblazideintf.rswebjsonrpcmo2
+#, object-pascal-format
 msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Módulo Web JSON-RPC%sUm módulo de dados para despachar requisições JSON-RPC em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
 
@@ -96,6 +105,7 @@ msgid "Web Module"
 msgstr "Módulo Web"
 
 #: weblazideintf.rswebmoduleada
+#, object-pascal-format
 msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgstr "Módulo Web%sUm módulo de dados para aplicações Web (HTTP)."
 

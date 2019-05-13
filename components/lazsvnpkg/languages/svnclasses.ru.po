@@ -86,6 +86,7 @@ msgid "File status"
 msgstr "Статус файла"
 
 #: svnclasses.rsindexoutofboundsd
+#, object-pascal-format
 msgid "Index out of bounds (%d)"
 msgstr "Индекс за границами диапазона (%d)"
 
@@ -94,14 +95,17 @@ msgid "LazarusSVN Commit"
 msgstr "Фиксация изменений / LazarusSVN"
 
 #: svnclasses.rslazarussvndiff
+#, object-pascal-format
 msgid "%s - LazarusSVN Diff ..."
 msgstr "%s - разница Diff / LazarusSVN ..."
 
 #: svnclasses.rslazarussvnlog
+#, object-pascal-format
 msgid "%s - LazarusSVN Log ..."
 msgstr "%s - журнал / LazarusSVN ..."
 
 #: svnclasses.rslazarussvnupdate
+#, object-pascal-format
 msgid "%s - LazarusSVN Update ..."
 msgstr "%s - обновление / LazarusSVN ..."
 

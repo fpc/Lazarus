@@ -17,6 +17,7 @@ msgid "Apache Module"
 msgstr "Apache模块"
 
 #: weblazideintf.rsapachemodule2
+#, object-pascal-format
 msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgstr "Apache模块%s一个Apache加载模块在Free Pascal使用webmodules中.这个主库文件是由Lazarus自动地维护"
 
@@ -25,6 +26,7 @@ msgid "CGI Application"
 msgstr "CGI应用程序"
 
 #: weblazideintf.rscgiapplicati2
+#, object-pascal-format
 msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "CGI应用%s一个CGI (通用网关接口)程序在Free Pascal使用webmodules中.这个程序的source是由Lazarus自动地维护"
 
@@ -33,6 +35,7 @@ msgid "Custom CGI Application"
 msgstr "自定义CGI应用程序"
 
 #: weblazideintf.rscustomcgiapp2
+#, object-pascal-format
 msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "Custom CGI应用%s一个CGI (通用网关接口)程序在Free Pasca中.这个程序的source是由Lazarus自动地维护"
 
@@ -41,6 +44,7 @@ msgid "Custom FastCGI Application"
 msgstr "自定义FastCGI应用程序"
 
 #: weblazideintf.rscustomfastcg2
+#, object-pascal-format
 msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr "自定义FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中.这个程序的source是由Lazarus自动地维护."
 
@@ -49,6 +53,7 @@ msgid "FastCGI Application"
 msgstr "FastCGI应用程序"
 
 #: weblazideintf.rsfastcgiappli2
+#, object-pascal-format
 msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgstr "FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
 
@@ -57,6 +62,7 @@ msgid "HTML Web Module"
 msgstr "HTML Web模块"
 
 #: weblazideintf.rshtmlwebmodul2
+#, object-pascal-format
 msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgstr "HTML WEB模块%s一个Web datamodule用于产生静态HTML."
 
@@ -73,6 +79,7 @@ msgid "Web DataProvider Module"
 msgstr "Web DataProvider模块"
 
 #: weblazideintf.rswebdataprovi2
+#, object-pascal-format
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgstr "WEB DataProvider模块%s一个datamodule使用WebDataProvider组件来处理数据请求用于 WEB (HTTP)应用."
 
@@ -81,6 +88,7 @@ msgid "Web Ext.Direct Module"
 msgstr "Web Ext.Direct模块"
 
 #: weblazideintf.rswebextdirect2
+#, object-pascal-format
 msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "WEB Ext.Direct模块%s一个datamodule使用TJSONRPCHandler组件来发出Ext.Direct请求在WEB (HTTP)应用中."
 
@@ -89,6 +97,7 @@ msgid "Web JSON-RPC Module"
 msgstr "Web JSON-RPC模块"
 
 #: weblazideintf.rswebjsonrpcmo2
+#, object-pascal-format
 msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "WEB JSON-RPC模块%s一个datamodule使用TJSONRPCHandler组件来发出JSON-RPCt请求在WEB (HTTP)应用中."
 
@@ -97,6 +106,7 @@ msgid "Web Module"
 msgstr "Web模块"
 
 #: weblazideintf.rswebmoduleada
+#, object-pascal-format
 msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgstr "WEB模块%s一个datamodule用于WEB (HTTP)应用程序."
 

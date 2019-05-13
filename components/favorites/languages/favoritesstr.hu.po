@@ -12,10 +12,12 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: favoritesstr.saddtofavoritess
+#, object-pascal-format
 msgid "Add to favorites: %s"
 msgstr "Hozzáadás a kedvencekhez: %s"
 
 #: favoritesstr.sremovefromfavoritess
+#, object-pascal-format
 msgid "Remove from favorites: %s"
 msgstr "Eltávolítás a kedvencek közül: %s"
 

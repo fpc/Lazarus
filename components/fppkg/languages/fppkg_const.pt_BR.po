@@ -68,6 +68,7 @@ msgid "fppkg options"
 msgstr "Opções \"fppkg\""
 
 #: fppkg_const.rsfppkgsfailedresultds
+#, object-pascal-format
 msgid "Fppkg %s failed: Result %d%s%s"
 msgstr "Fppkg %s falhou: Resultado %d%s%s"
 

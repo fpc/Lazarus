@@ -2,6 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: maincalleditor.ceractivereport
+#, object-pascal-format
 msgid "Active report: %s"
 msgstr ""
 
@@ -62,6 +63,7 @@ msgid "Index"
 msgstr ""
 
 #: maincalleditor.cerindexfields
+#, object-pascal-format
 msgid "Index Fields: %s"
 msgstr ""
 

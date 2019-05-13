@@ -10,19 +10,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Leser %s%s%s ikke kjørbar."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Leser %s%s%s ikke funnet."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Feil ved kjøring av %s%s%s:%s%s"
@@ -32,16 +32,18 @@ msgid "Unable to find a HTML browser."
 msgstr "Ikke istand til å finne en HTML-leser."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
+#, object-pascal-format
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Hjelp-databasen %s%s%s var ikke istand til å finne fil %s%s%s."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
+#, object-pascal-format
 msgid "The macro %s in BrowserParams will be replaced by the URL."
 msgstr "Makroen %s i BrowserParams blir erstattet av URL-en."
 
@@ -79,6 +81,7 @@ msgid "Unknown"
 msgstr "Ukjent"
 
 #: lclstrconsts.lislclresourcesnotfound
+#, object-pascal-format
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "Resurs %s ikke funnet"
@@ -106,6 +109,7 @@ msgid "Active Caption"
 msgstr ""
 
 #: lclstrconsts.rsallfiles
+#, object-pascal-format
 msgid "All files (%s)|%s|%s"
 msgstr "Alle filer (%s)|%s|%s"
 
@@ -118,6 +122,7 @@ msgid "Aqua"
 msgstr ""
 
 #: lclstrconsts.rsascannothaveasparent
+#, object-pascal-format
 msgid "Class %s cannot have %s as parent."
 msgstr ""
 
@@ -187,18 +192,22 @@ msgid "Case sensitive"
 msgstr "Skill mellom store/små bokstaver"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
+#, object-pascal-format
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
+#, object-pascal-format
 msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentwindow
+#, object-pascal-format
 msgid "Control '%s' has no parent window"
 msgstr ""
 
 #: lclstrconsts.rscontrolisnotaparent
+#, object-pascal-format
 msgid "'%s' is not a parent of '%s'"
 msgstr ""
 
@@ -265,10 +274,12 @@ msgid "Error"
 msgstr "Feil"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
+#, object-pascal-format
 msgid "Error creating device context for %s.%s"
 msgstr "Feil ved opprettelse av enhetskontekst for %s.%s"
 
 #: lclstrconsts.rserroroccurredinataddressframe
+#, object-pascal-format
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "Feil forekom i %s ved %sadresse %s%s ramme %s"
 
@@ -285,10 +296,12 @@ msgid "Directory must exist"
 msgstr "Mappe må eksistere"
 
 #: lclstrconsts.rsfddirectorynotexist
+#, object-pascal-format
 msgid "The directory \"%s\" does not exist."
 msgstr "Mappen \"%s\" eksisterer ikke."
 
 #: lclstrconsts.rsfdfilealreadyexists
+#, object-pascal-format
 msgid "The file \"%s\" already exists. Overwrite ?"
 msgstr "Filen \"%s\" eksisterer allerede. Overskrive ?"
 
@@ -297,10 +310,12 @@ msgid "File must exist"
 msgstr "Fil må eksistere"
 
 #: lclstrconsts.rsfdfilenotexist
+#, object-pascal-format
 msgid "The file \"%s\" does not exist."
 msgstr "Filen \"%s\" eksisterer ikke."
 
 #: lclstrconsts.rsfdfilereadonly
+#, object-pascal-format
 msgid "The file \"%s\" is not writable."
 msgstr "Filen \"%s\" er ikke skrivbar."
 
@@ -325,6 +340,7 @@ msgid "Path must exist"
 msgstr "Bane må eksistere"
 
 #: lclstrconsts.rsfdpathnoexist
+#, object-pascal-format
 msgid "The path \"%s\" does not exist."
 msgstr "Banen \"%s\" eksisterer ikke."
 
@@ -333,6 +349,7 @@ msgid "Select Directory"
 msgstr "Velg mappe"
 
 #: lclstrconsts.rsfileinfofilenotfound
+#, object-pascal-format
 msgid "(file not found: \"%s\")"
 msgstr "(fil ikke funnet: \"%s\")"
 
@@ -374,10 +391,12 @@ msgid "Form"
 msgstr ""
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+#, object-pascal-format
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
 msgstr ""
 
 #: lclstrconsts.rsformstreamingerror
+#, object-pascal-format
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Form streaming \"%s\" feil: %s"
 
@@ -504,6 +523,7 @@ msgid "Help"
 msgstr "Hjelp"
 
 #: lclstrconsts.rshelpalreadyregistered
+#, object-pascal-format
 msgid "%s: Already registered"
 msgstr "%s: Allerede registrert"
 
@@ -524,54 +544,58 @@ msgid "Help Error"
 msgstr "Hjelp-feil"
 
 #: lclstrconsts.rshelphelpcontextnotfound
+#, object-pascal-format
 msgid "Help context %s not found."
 msgstr "Hjelp-kontekst %s ikke funnet."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Hjelp-kontekst %s ikke funnet i database %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Hjelp-database %s%s%s fant ingen viser for en hjelpeside av type %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Hjelp-database %s%s%s ikke funnet"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
+#, object-pascal-format
 msgid "Help for directive \"%s\" not found."
 msgstr ""
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
+#, object-pascal-format
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Hjelp-nøkkelord %s%s%s ikke funnet."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Hjelp-nøkkelord %s%s%s ikke funnet i database %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Hjelpnode %s%s%s har ingen Hjelp-database"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
+#, object-pascal-format
 msgid "No help found for line %d, column %d of %s."
 msgstr "Ingen hjelp funnet for linje %d, kolonne %d av %s."
 
@@ -588,6 +612,7 @@ msgid "No help found for this topic"
 msgstr "Hjelp ikke funnet"
 
 #: lclstrconsts.rshelpnotregistered
+#, object-pascal-format
 msgid "%s: Not registered"
 msgstr "%s: Ikke registrert"
 
@@ -596,7 +621,7 @@ msgid "Help Selector Error"
 msgstr "Hjelp-selektor-feil"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Det er ingen viser for hjelpetype %s%s%s"
@@ -670,12 +695,13 @@ msgid "Inactive Caption"
 msgstr ""
 
 #: lclstrconsts.rsindexoutofbounds
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid "%s Index %d out of bounds 0-%d"
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "%s Indeks %d utenfor område 0-%d"
 
 #: lclstrconsts.rsindexoutofrange
+#, object-pascal-format
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Indeks utenfor område Celle[Kol=%d Rekke=%d]"
 
@@ -693,10 +719,12 @@ msgid "Insert"
 msgstr "Insert"
 
 #: lclstrconsts.rsinvaliddate
+#, object-pascal-format
 msgid "Invalid Date : %s"
 msgstr "Ugyldig dato : %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
+#, object-pascal-format
 msgid "Invalid Date: %s. Must be between %s and %s"
 msgstr "Ugyldig dato: %s. Må være mellom %s og %s"
 
@@ -713,6 +741,7 @@ msgid "Invalid stream format"
 msgstr "Ugyldig stream format"
 
 #: lclstrconsts.rsisalreadyassociatedwith
+#, object-pascal-format
 msgid "%s is already associated with %s"
 msgstr "%s er allerede assosiert med %s"
 
@@ -729,6 +758,7 @@ msgid "Lime"
 msgstr ""
 
 #: lclstrconsts.rslistindexexceedsbounds
+#, object-pascal-format
 msgid "List index exceeds bounds (%d)"
 msgstr "Liste-indeks overskrider grenser (%d)"
 
@@ -907,6 +937,7 @@ msgid "Post"
 msgstr ""
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
+#, object-pascal-format
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
 msgstr ""
 
@@ -920,6 +951,7 @@ msgid "Prompt on replace"
 msgstr ""
 
 #: lclstrconsts.rspropertydoesnotexist
+#, object-pascal-format
 msgid "Property %s does not exist"
 msgstr "Egenskap %s eksisterer ikke"
 
@@ -1044,6 +1076,7 @@ msgid "Replace all"
 msgstr "Erstatt alle"
 
 #: lclstrconsts.rsresourcenotfound
+#, object-pascal-format
 msgctxt "lclstrconsts.rsresourcenotfound"
 msgid "Resource %s not found"
 msgstr "Resurs %s ikke funnet"
@@ -1132,26 +1165,32 @@ msgid "Unsupported bitmap format."
 msgstr "Ikke støttet bitmap-format."
 
 #: lclstrconsts.rsunsupportedclipboardformat
+#, object-pascal-format
 msgid "Unsupported clipboard format: %s"
 msgstr "Ikke støttet utklippstavleformat: %s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
+#, object-pascal-format
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
 msgstr " ADVARSEL: Det er %d ikke-frigitte DCs, her er detaljer:"
 
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
+#, object-pascal-format
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
 msgstr " ADVARSEL: Det er %d ikke-frigitte GDIObjekter, her er detaljer:"
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
+#, object-pascal-format
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
 msgstr " ADVARSEL: Det er %d meldinger igjen i køen! De blir frigitt"
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
+#, object-pascal-format
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " ADVARSEL: Det er %d TimerInfo-strukturer igjen, De blir frigitt"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
+#, object-pascal-format
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr " ADVARSEL: Det er %s ikke-fjernede LM_PAINT/LM_GtkPAINT meldingslenker igjen."
 
@@ -1216,6 +1255,7 @@ msgid "Invalid action unregistration"
 msgstr "Ugyldig handlings-avregistrering"
 
 #: lclstrconsts.sinvalidcharset
+#, object-pascal-format
 msgid "The char set in mask \"%s\" is not valid!"
 msgstr "Tegnsettet i maske \"%s\" er ikke gyldig!"
 
@@ -1331,22 +1371,27 @@ msgid "No timers available"
 msgstr "Ingen timere tilgjengelig"
 
 #: lclstrconsts.sparentrequired
+#, object-pascal-format
 msgid "Control \"%s\" has no parent window."
 msgstr ""
 
 #: lclstrconsts.sparexpected
+#, object-pascal-format
 msgid "Wrong token type: %s expected"
 msgstr ""
 
 #: lclstrconsts.sparinvalidfloat
+#, object-pascal-format
 msgid "Invalid floating point number: %s"
 msgstr ""
 
 #: lclstrconsts.sparinvalidinteger
+#, object-pascal-format
 msgid "Invalid integer number: %s"
 msgstr ""
 
 #: lclstrconsts.sparlocinfo
+#, object-pascal-format
 msgid " (at %d,%d, stream offset %d)"
 msgstr ""
 
@@ -1359,18 +1404,22 @@ msgid "Unterminated string"
 msgstr ""
 
 #: lclstrconsts.sparwrongtokensymbol
+#, object-pascal-format
 msgid "Wrong token symbol: %s expected but %s found"
 msgstr ""
 
 #: lclstrconsts.sparwrongtokentype
+#, object-pascal-format
 msgid "Wrong token type: %s expected but %s found"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsbytes
+#, object-pascal-format
 msgid "%s bytes"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidpath
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
 msgid ""
 "Invalid pathname:\n"
@@ -1378,6 +1427,7 @@ msgid ""
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
+#, object-pascal-format
 msgid ""
 "Invalid relative pathname:\n"
 "\"%s\"\n"
@@ -1386,6 +1436,7 @@ msgid ""
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidroot
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
@@ -1393,10 +1444,12 @@ msgid ""
 msgstr ""
 
 #: lclstrconsts.sshellctrlskb
+#, object-pascal-format
 msgid "%s kB"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsmb
+#, object-pascal-format
 msgid "%s MB"
 msgstr ""
 
@@ -1405,6 +1458,7 @@ msgid "Name"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
+#, object-pascal-format
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\""

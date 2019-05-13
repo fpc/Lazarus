@@ -20,14 +20,17 @@ msgid "&OK"
 msgstr "&Tinka"
 
 #: projecttemplates.serrcouldnotcreatedir
+#, object-pascal-format
 msgid "Could not create directory \"%s\""
 msgstr "Nepavyko sukurti aplanko „%s“"
 
 #: projecttemplates.serrfailedtocopyfile
+#, object-pascal-format
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Nepavyko kopijuoti failą „%s“ į „%s“"
 
 #: projecttemplates.serrnosuchtemplate
+#, object-pascal-format
 msgid "\"%s\": No such template."
 msgstr "„%s“: nėra tokio šablono."
 

@@ -17,10 +17,12 @@ msgid "Changing buffer size is not allowed while (un)zipping."
 msgstr "Išplėtimo/glaudinimo metu negalima keisti buferio dydžio."
 
 #: opkman_zip.serrcorruptzip
+#, object-pascal-format
 msgid "Corrupt ZIP file %s."
 msgstr "ZIP failas „%s“ yra sugedęs."
 
 #: opkman_zip.serrencryptionnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr "Nepavyko išplėsti elemento „%s“: šifravimas nepalaikomas."
 
@@ -29,22 +31,27 @@ msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "Išplėtimo/glaudinimo metu negalima keisti išvesties failo pavadinimo."
 
 #: opkman_zip.serrfiledoesnotexist
+#, object-pascal-format
 msgid "File \"%s\" does not exist."
 msgstr "Tokio failo nėra: %s."
 
 #: opkman_zip.serrinvalidcrc
+#, object-pascal-format
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "Išplėtimo metu gautas klaidingas CRC: %s."
 
 #: opkman_zip.serrmaxentries
+#, object-pascal-format
 msgid "Encountered %d file entries; maximum supported is %d."
 msgstr "Rasta %d  failo įrašų; maksimalus palaikomas kiekis yra %d."
 
 #: opkman_zip.serrmissingarchivename
+#, object-pascal-format
 msgid "Missing archive filename in streamed entry %d."
 msgstr "Sraute trūksta elemento %d archyvo failo pavadinimo."
 
 #: opkman_zip.serrmissingfilename
+#, object-pascal-format
 msgid "Missing filename in entry %d."
 msgstr "Trūksta elemento %d failo pavadinimo."
 
@@ -57,14 +64,17 @@ msgid "No stream is opened."
 msgstr "Srautas nėra atvertas."
 
 #: opkman_zip.serrpatchsetnotsupported
+#, object-pascal-format
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr "Nepavyko išplėsti elemento „%s“:  pataisų sąrankos nepalaikomos."
 
 #: opkman_zip.serrpostoolarge
+#, object-pascal-format
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "Pozicija %d yra didesnė nei palaikoma maksimali %d."
 
 #: opkman_zip.serrunsupportedcompressionformat
+#, object-pascal-format
 msgid "Unsupported compression format %d."
 msgstr "Nepalaikomas kompresijos formatas %d."
 

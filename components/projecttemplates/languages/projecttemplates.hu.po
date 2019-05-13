@@ -20,14 +20,17 @@ msgid "&OK"
 msgstr "&OK"
 
 #: projecttemplates.serrcouldnotcreatedir
+#, object-pascal-format
 msgid "Could not create directory \"%s\""
 msgstr "Nem lehet létrehozni a könyvtárat: \"%s\""
 
 #: projecttemplates.serrfailedtocopyfile
+#, object-pascal-format
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "A fájl másolása nem sikerült innen: \"%s\", ide: \"%s\""
 
 #: projecttemplates.serrnosuchtemplate
+#, object-pascal-format
 msgid "\"%s\": No such template."
 msgstr "\"%s\": Nincs ilyen sablon."
 

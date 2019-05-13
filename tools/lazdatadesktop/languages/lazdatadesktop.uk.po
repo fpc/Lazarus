@@ -81,6 +81,7 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Введіть описове ім'я з'єднання"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, object-pascal-format
 msgid ""
 "There is already a connection named \"%s\"\n"
 "Would you like to override the connection data ?"
@@ -97,6 +98,7 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Хочете створити нове з'єднання для цієї бази даних ?"
 
 #: lazdatadeskstr.sddmodified
+#, object-pascal-format
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?"
@@ -105,6 +107,7 @@ msgstr ""
 "Що ви хочете зробити зі змінами?"
 
 #: lazdatadeskstr.sdeleteobject
+#, object-pascal-format
 msgid "Delete this %s"
 msgstr "Видалити цей %s"
 
@@ -162,10 +165,12 @@ msgid "No table selected. Please select a table"
 msgstr "Не вибрано жодної таблиці. Виберіть певні таблиці"
 
 #: lazdatadeskstr.serrunknowndirective
+#, object-pascal-format
 msgid "Unknown directive: %s (args: %s)"
 msgstr "Невідома директива: %s (args: %s)"
 
 #: lazdatadeskstr.serrunknowntype
+#, object-pascal-format
 msgid "Unknown object type: %d"
 msgstr "Невідомий тип об'єкту: %d"
 
@@ -174,14 +179,17 @@ msgid "Execute SQL"
 msgstr "Виконати SQL"
 
 #: lazdatadeskstr.sexecutingsqlstatement
+#, object-pascal-format
 msgid "%s : Executing SQL statement:"
 msgstr "%s : Виконання інструкції SQL:"
 
 #: lazdatadeskstr.sexecutingsqlstatementcount
+#, object-pascal-format
 msgid "%s : Executing script SQL statement nr. %d:"
 msgstr "%s : Виконання інструкції сценарію SQL номер %d:"
 
 #: lazdatadeskstr.sexecutiontime
+#, object-pascal-format
 msgid "Execution time: %s"
 msgstr "Час виконання: %s"
 
@@ -458,6 +466,7 @@ msgid "Connections/Dictionaries"
 msgstr "З’єднання/Словники"
 
 #: lazdatadeskstr.sld_connecttoadatabase
+#, object-pascal-format
 msgid "Connect to a database of type %s"
 msgstr "З'єднатися з базою даних типу %s"
 
@@ -673,10 +682,12 @@ msgid "Load SQL"
 msgstr "Завантажити SQL"
 
 #: lazdatadeskstr.snamefor
+#, object-pascal-format
 msgid "Enter a name for the new %s"
 msgstr "Введіть назву для нового %s"
 
 #: lazdatadeskstr.snew
+#, object-pascal-format
 msgid "New %s"
 msgstr "Новий %s"
 
@@ -697,6 +708,7 @@ msgid "Enter a name for the new domain:"
 msgstr "Введіть назву нового домену:"
 
 #: lazdatadeskstr.snewfield
+#, object-pascal-format
 msgid "Create new field in table %s"
 msgstr "Створити нове поле в таблиці %s"
 
@@ -705,6 +717,7 @@ msgid "Enter a name for the new field:"
 msgstr "Введіть назву нового поля:"
 
 #: lazdatadeskstr.snewforeignkey
+#, object-pascal-format
 msgid "Create new foreign key in table %s"
 msgstr "Створити новий зовнішній ключ в таблиці %s"
 
@@ -713,6 +726,7 @@ msgid "Enter a name for the new foreign key:"
 msgstr "Введіть назву нового зовнішнього ключа:"
 
 #: lazdatadeskstr.snewindex
+#, object-pascal-format
 msgid "Create new index on table %s"
 msgstr "Створити новий індекс в таблиці %s"
 
@@ -721,6 +735,7 @@ msgid "Enter a name for the new index:"
 msgstr "Введіть назву нового індекса:"
 
 #: lazdatadeskstr.snewobject
+#, object-pascal-format
 msgid "Create new %s"
 msgstr "Створити новий %s"
 
@@ -819,6 +834,7 @@ msgid "Ready to execute SQL statements"
 msgstr "Готовий виконувати інструкції SQL"
 
 #: lazdatadeskstr.srecordsfetched
+#, object-pascal-format
 msgid "Records fetched: %d"
 msgstr "Вибрано записів: %d"
 
@@ -827,6 +843,7 @@ msgid "Retry the statement"
 msgstr "Повторити інструкцію"
 
 #: lazdatadeskstr.srowsaffected
+#, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
 msgstr "Запит виконано успішно: %d рядків змінено."
 
@@ -839,14 +856,17 @@ msgid "Save changes"
 msgstr "Зберегти зміни"
 
 #: lazdatadeskstr.sscriptaborted
+#, object-pascal-format
 msgid "Script was aborted after %d statements"
 msgstr "Сценарій перервано після %d інструкцій"
 
 #: lazdatadeskstr.sscriptcompleted
+#, object-pascal-format
 msgid "Executed %d statements from script"
 msgstr "Виконано %d інструкцій сценарію"
 
 #: lazdatadeskstr.sscripterrorcount
+#, object-pascal-format
 msgid "%d script statements resulted in errors"
 msgstr "%d інструкцій сценарію завершено з помилками"
 
@@ -863,10 +883,12 @@ msgid "Sequence"
 msgstr "Послідовність"
 
 #: lazdatadeskstr.ssqlerrorcode
+#, object-pascal-format
 msgid "SQL Error code: %d"
 msgstr "Код помилки SQL: %d"
 
 #: lazdatadeskstr.ssqlexecutedok
+#, object-pascal-format
 msgid "%s : Statement executed succesfully."
 msgstr "%s : Інструкцію виконано успішно."
 
@@ -875,6 +897,7 @@ msgid "SQL files|*.sql|All files|*.*"
 msgstr "Файли SQL|*.sql|Всі файли|*.*"
 
 #: lazdatadeskstr.ssqlstatus
+#, object-pascal-format
 msgid "SQL State: %s"
 msgstr "Стан SQL: %s"
 
@@ -891,10 +914,12 @@ msgid "Table"
 msgstr "Таблиця"
 
 #: lazdatadeskstr.sunknownconnection
+#, object-pascal-format
 msgid "Unknown connection: %s"
 msgstr "Невідоме з'єднання: %s"
 
 #: lazdatadeskstr.sunknowndictionary
+#, object-pascal-format
 msgid "Unknown data dictionary: %s"
 msgstr "Невідомий словник даних: %s"
 

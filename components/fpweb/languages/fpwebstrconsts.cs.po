@@ -155,6 +155,7 @@ msgid "Submit"
 msgstr "Odeslat"
 
 #: fpwebstrconsts.shtmltagproperty
+#, object-pascal-format
 msgid "Tag property: %s"
 msgstr "Vlastost tagu: %s"
 

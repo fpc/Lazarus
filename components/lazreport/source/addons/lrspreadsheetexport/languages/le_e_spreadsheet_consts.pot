@@ -96,6 +96,7 @@ msgid "Page breaks"
 msgstr ""
 
 #: le_e_spreadsheet_consts.spagename
+#, object-pascal-format
 msgid "Page %d"
 msgstr ""
 

@@ -16,6 +16,7 @@ msgid "About JEDI Code Format"
 msgstr "Apie JEDI kodo formatą"
 
 #: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+#, object-pascal-format
 msgid "Find more information on the web at: %s"
 msgstr "Daugiau informacijos rasite internete: %s"
 
@@ -28,6 +29,7 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Ši programa vis dar kuriama. Nepaisant kruopštaus testavimo ir praneštų ydų taisymo, garantijos nesuteikiamos. Todėl darykite atsargines kopijas, arba naudokite geresnę pirminio kodo valdymo sistemą."
 
 #: jcfuiconsts.lisaboutversion
+#, object-pascal-format
 msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Laida $VERSION$%s$DATE$%s%sŠi programa siekia standartizuoti ir daryti įskaitomesniu bet kokį Delphi ar objektinio paskalio pirminį kodą.%s%sAutorinės teisės priklauso Anthony Steele 1999-2008"
 
@@ -363,6 +365,7 @@ msgid "Remove empty '//' comments"
 msgstr "Šalinti tuščius „//“ komentarus"
 
 #: jcfuiconsts.lisedatlinecol
+#, object-pascal-format
 msgid "%sAt line %s col %s"
 msgstr "%sTies eilutę %s, bei stulpeliu  %s"
 
@@ -371,10 +374,12 @@ msgid "Error"
 msgstr "Klaida"
 
 #: jcfuiconsts.lisedexception
+#, object-pascal-format
 msgid "Exception %s"
 msgstr "Išimtinė situacija %s"
 
 #: jcfuiconsts.lisedin
+#, object-pascal-format
 msgid "%s in %s"
 msgstr "%s, įeinantis į  %s"
 
@@ -383,18 +388,22 @@ msgid "JCF Parse error"
 msgstr "JCF nagrinėjimo klaida"
 
 #: jcfuiconsts.lisednear
+#, object-pascal-format
 msgid "%s near %s"
 msgstr "%s greta %s"
 
 #: jcfuiconsts.lisedtype
+#, object-pascal-format
 msgid "Type: %s%s"
 msgstr "Tipas: %s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsexception
+#, object-pascal-format
 msgid "Error writing settings file %s:%s%s"
 msgstr "Klaida įvyko įrašant nustatymų failą %s:%s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
 msgid "Error writing settings file: %s is read only"
 msgstr "Įrašant nustatymų failą įvyko klaida: %s tik skaitymui"
 
@@ -415,6 +424,7 @@ msgid "Show confirmation dialog before format"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
+#, object-pascal-format
 msgid "Date file written: %s"
 msgstr "Failo įrašymo data: %s"
 
@@ -447,6 +457,7 @@ msgid "Settings file is:"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+#, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "Versija, kuria įrašutas šis failas: %s"
 
@@ -519,10 +530,12 @@ msgid "JEDI Code Format of all open windows?"
 msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+#, object-pascal-format
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
 msgstr "JEDI kodo formatas%sAr tikrai formatuoti visus %s projekto failus?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
+#, object-pascal-format
 msgid "JEDI Code Format of %sStart formatting?"
 msgstr "JEDI kodo formatas%sPradėti formatavimą?"
 
@@ -804,6 +817,7 @@ msgid "&Var declarations"
 msgstr "&Kintamųjų apibrėžtys"
 
 #: jcfuiconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr "Nustatymų failas „%s“ neegzistuoja.%sFormatuotojas dirbs geriau, jei jam bus nurodytas tinkamas nustatymų failas."
 

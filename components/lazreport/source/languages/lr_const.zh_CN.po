@@ -250,6 +250,7 @@ msgid "0"
 msgstr "0"
 
 #: lr_const.sclassobjectnotfound
+#, object-pascal-format
 msgid "Class Object \"%s\" not found"
 msgstr "类对象\"%s\"未找到"
 
@@ -738,6 +739,7 @@ msgid "Version"
 msgstr "版本"
 
 #: lr_const.sduplicatedobjectname
+#, object-pascal-format
 msgid "An object named \"%s\" already exists"
 msgstr "一个对象名称\"%s\"已经存在"
 
@@ -1715,6 +1717,7 @@ msgid "Invalid report format"
 msgstr "无效报告格式"
 
 #: lr_const.sinvalidvariablename
+#, object-pascal-format
 msgid "\"%s\" is not a valid variable name."
 msgstr ""
 
@@ -1772,6 +1775,7 @@ msgid "Object inspector"
 msgstr "对象查看器"
 
 #: lr_const.sobjectnotfound
+#, object-pascal-format
 msgid "Object \"%s\" not found"
 msgstr "对象\"%s\"未找到"
 
@@ -2514,10 +2518,12 @@ msgid "Report file"
 msgstr "报告文件"
 
 #: lr_const.sreportcorruptoldknowversion
+#, object-pascal-format
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
 msgstr ""
 
 #: lr_const.sreportcorruptunknownversion
+#, object-pascal-format
 msgid "This report is corrupt, frVersion=%d"
 msgstr ""
 

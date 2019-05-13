@@ -190,15 +190,17 @@ msgid "Create/Edit private repository"
 msgstr "创建/编辑私有存储库"
 
 #: opkman_const.rscreaterepositoryfrm_conf1
+#, object-pascal-format
 msgid "Are you sure you wish to delete package: \"%s\"?"
 msgstr "你真的想删除包\"%s\"?"
 
 #: opkman_const.rscreaterepositoryfrm_conf2
+#, object-pascal-format
 msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
 msgstr "下面文件:\"%s\"已经存在在该当前存储库.覆盖?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Cannot open private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -210,7 +212,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Cannot save private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -226,11 +228,12 @@ msgid "Cannot add package to repository!"
 msgstr "不能添加包到存储库!"
 
 #: opkman_const.rscreaterepositoryfrm_error5
+#, object-pascal-format
 msgid "Cannot delete package: \"%s\"!"
 msgstr "不能删除包:\"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following directory: \"%s\" is not empty.\n"
 #| "It's recommended to save the repository to an empty directory. Continue?\n"
@@ -242,7 +245,7 @@ msgstr ""
 "建议保存该存储库到一个空目录.继续?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -254,7 +257,7 @@ msgstr ""
 "每个存储库和Lazarus软件包必需是独一无二的!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "The following Lazarus package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -469,6 +472,7 @@ msgid "Cannot create JSON file:"
 msgstr "不能创建JSON文件:"
 
 #: opkman_const.rscreaterepositorypackagefrm_error3
+#, object-pascal-format
 msgid "Cannot send file: \"%s\""
 msgstr "不能发送文件:\"%s\""
 
@@ -548,6 +552,7 @@ msgid "Repository package successfully created."
 msgstr "存储库包成功地创建."
 
 #: opkman_const.rscreaterepositorypackagefrm_message8
+#, object-pascal-format
 msgid "Sending files (\"%s\"). Please wait..."
 msgstr "发送文件(\"%s\").请等候..."
 
@@ -733,14 +738,17 @@ msgid ""
 msgstr ""
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
+#, object-pascal-format
 msgid "%s packages successfully loaded from file!"
 msgstr "%s软件包成功地加载从文件!"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
+#, object-pascal-format
 msgid "%s packages successfully saved to file!"
 msgstr "%s软件包成功地保存到文件!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
+#, object-pascal-format
 msgid "Cannot create directory \"%s\". Operation aborted."
 msgstr "不能创建目录\"%s\".操作放弃(aborted)."
 
@@ -797,6 +805,7 @@ msgid "Please check one or more packages!"
 msgstr "请检查一个包或更多软件包!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
+#, object-pascal-format
 msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "软件包\"%s\"依赖于软件包\"%s\".解决依赖关系?"
 
@@ -805,10 +814,12 @@ msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_rspackageinformation
+#, object-pascal-format
 msgid "Quick package information for \"%s\""
 msgstr ""
 
 #: opkman_const.rsmainfrm_rspackagerating
+#, object-pascal-format
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "你投票软件包\"%s\"是:%s.谢谢你的投票!"
 
@@ -817,16 +828,19 @@ msgid "This will delete all non-installed packages from local repository. Contin
 msgstr "这将删除所有非安装的软件包从本地存储库.继续?"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup1
+#, object-pascal-format
 msgid "%s packages deleted!"
 msgstr "%s包删除!"
 
 #: opkman_const.rsmainfrm_rsuninstall
+#, object-pascal-format
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 
 #: opkman_const.rsmainfrm_rsuninstall_error
+#, object-pascal-format
 msgid "Cannot uninstall package \"%s\"!"
 msgstr "不能卸载包 \"%s\"!"
 
@@ -1420,10 +1434,12 @@ msgid "Add new exclusion"
 msgstr "添加新排除(exclusion)"
 
 #: opkman_const.rsoptions_inputbox_conf0
+#, object-pascal-format
 msgid "Delete selected extension (\"%s\")?"
 msgstr "删除选择扩展名(\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_conf1
+#, object-pascal-format
 msgid "Delete selected folder (\"%s\")?"
 msgstr "删除选择文件夹(\"%s\")?"
 
@@ -1614,6 +1630,7 @@ msgid "Update package list"
 msgstr "更新包列表"
 
 #: opkman_const.rspackagesfound
+#, object-pascal-format
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
 msgstr "(%s存储库软件包找到,包含%s lpk文件,全部大小%s)"
 
@@ -1670,6 +1687,7 @@ msgid "Cannot install package:"
 msgstr "不能安装包:"
 
 #: opkman_const.rsprogressfrm_error4
+#, object-pascal-format
 msgctxt "opkman_const.rsprogressfrm_error4"
 msgid "Dependency \"%s\" not found!"
 msgstr "依赖\"%s\"未找到!"
@@ -1706,6 +1724,7 @@ msgid "Success."
 msgstr "成功."
 
 #: opkman_const.rsprogressfrm_info2
+#, object-pascal-format
 msgid "Contacting download site for \"%s\" (%s)"
 msgstr "联络(Contacting)下载站点对于\"%s\" (%s)"
 
@@ -1792,10 +1811,12 @@ msgid "Repositories"
 msgstr "存储库"
 
 #: opkman_const.rsrepositories_confirmation0
+#, object-pascal-format
 msgid "Delete selected repository \"%s\"?"
 msgstr "删除选择存储库\"%s\"?"
 
 #: opkman_const.rsrepositories_info1
+#, object-pascal-format
 msgid "The following repository: \"%s\" is already in the list."
 msgstr "下面的存储库:\"%s\"已经在列表."
 

@@ -119,10 +119,12 @@ msgid "Applications|*"
 msgstr "Aplikace|*"
 
 #: ldd_consts.sapplyingddtodataset
+#, object-pascal-format
 msgid "Applying data dictionary to dataset %s"
 msgstr "Aplikuji datový slovník na dataset %s"
 
 #: ldd_consts.sapplyingddtofield
+#, object-pascal-format
 msgid "Applying data dictionary to field %s"
 msgstr "Aplikuji datový slovník na pole %s"
 
@@ -211,10 +213,12 @@ msgid "Not yet implemented"
 msgstr "Není zatím iplementováno"
 
 #: ldd_consts.swarningnoddforfield
+#, object-pascal-format
 msgid "Warning: No definition in data dictionary for field %s"
 msgstr "Varování: Žádná definice v datovém slovníku pro pole %s"
 
 #: ldd_consts.swrongselection
+#, object-pascal-format
 msgid "Wrong selection count : %d"
 msgstr "Špatný výběr: %d"
 

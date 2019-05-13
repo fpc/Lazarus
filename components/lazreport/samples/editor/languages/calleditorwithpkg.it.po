@@ -13,6 +13,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 
 #: maincalleditor.ceractivereport
+#, object-pascal-format
 msgid "Active report: %s"
 msgstr "Report attivo: %s"
 
@@ -73,6 +74,7 @@ msgid "Index"
 msgstr "Indice"
 
 #: maincalleditor.cerindexfields
+#, object-pascal-format
 msgid "Index Fields: %s"
 msgstr "Campi indice: %s"
 

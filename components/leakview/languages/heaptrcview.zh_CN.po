@@ -13,6 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: heaptrcview.rsdtimes
+#, object-pascal-format
 msgid " (%d times)"
 msgstr " (%d时间)"
 
@@ -61,30 +62,37 @@ msgid ".trc file"
 msgstr ".trc文件"
 
 #: heaptrcview.stacklineformat
+#, object-pascal-format
 msgid "%s"
 msgstr "%s"
 
 #: heaptrcview.stacklineformatwithfile
+#, object-pascal-format
 msgid "%s file: %s : %d; "
 msgstr "%s文件: %s : %d; "
 
 #: heaptrcview.stacktraceformat
+#, object-pascal-format
 msgid "Leak: %d bytes x %d times"
 msgstr "泄露:%d字节x%d倍(times)"
 
 #: heaptrcview.stacktraceformatsingle
+#, object-pascal-format
 msgid "Leak: %d bytes"
 msgstr "泄露:%d字节"
 
 #: heaptrcview.strleakingblockscount
+#, object-pascal-format
 msgid "Leaking Blocks Count: %d"
 msgstr "泄露块计数:%d"
 
 #: heaptrcview.strleakingmemsize
+#, object-pascal-format
 msgid "Leaking Mem Size: %d"
 msgstr "溢出内存大小: %d"
 
 #: heaptrcview.strtotalmemalloc
+#, object-pascal-format
 msgid "Total Mem allocated: %d"
 msgstr "总内存分配: %d"
 

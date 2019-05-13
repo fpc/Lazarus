@@ -122,10 +122,12 @@ msgid "Applications|*"
 msgstr "Додатки|*"
 
 #: ldd_consts.sapplyingddtodataset
+#, object-pascal-format
 msgid "Applying data dictionary to dataset %s"
 msgstr "Застосовую словник даних до набору даних %s"
 
 #: ldd_consts.sapplyingddtofield
+#, object-pascal-format
 msgid "Applying data dictionary to field %s"
 msgstr "Застосовую словник даних до поля %s"
 
@@ -206,10 +208,12 @@ msgid "Not yet implemented"
 msgstr "Ще не реалізовано"
 
 #: ldd_consts.swarningnoddforfield
+#, object-pascal-format
 msgid "Warning: No definition in data dictionary for field %s"
 msgstr "Попередження: Для поля %s відсутнє визначення в словнику даних"
 
 #: ldd_consts.swrongselection
+#, object-pascal-format
 msgid "Wrong selection count : %d"
 msgstr "Невірна кількість виборів : %d"
 

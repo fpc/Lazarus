@@ -16,86 +16,103 @@ msgid "Debugger"
 msgstr "Depurador"
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0::sPressione \"Ok\" para remover os pontos de parada e continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
 msgstr "O depurador não pode ajustar um ponto-de-parada no ponto de entrada da aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunerror"
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
 msgstr "O depurador não pode rodar a aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunnopiderror"
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
 msgstr "O depurador falhou ao obter o PID da aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "O depurador foi incapaz de se inicializar.%0:sA aplicação rodou (e terminou) antes que o depurador pudesse ajustar qualquer ponto-de-parada. %0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmistringconstants.gdbmierroronruncommand
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierroronruncommandwithwarning"
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sAlém do Erro, o seguinte aviso foi encontrado:%0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstategenericinfo"
 msgid "Error in: %1:s %0:s"
 msgstr "Erro em: %1:s %0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommanderror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfocommanderror"
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
 msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:sretornou o erro:%0:s\"%2:s\"%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfocommandnoresult"
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
 msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:snão retornou nenhum resultado.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedread
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedread"
 msgid "%0:sCould not read output from GDB.%0:s"
 msgstr "%0:sImpossível ler a saída do GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedwrite"
 msgid "%0:sCould not send a command to GDB.%0:s"
 msgstr "%0:sImpossível enviar um comando ao GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfogdbgone
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmierrorstateinfogdbgone"
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sO processo GDB não está em execução.%0:s"
 
 #: gdbmistringconstants.gdbmieventlogdebugoutput
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogdebugoutput"
 msgid "Debug Output: %s"
 msgstr "Saída da Depuração: %s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventloggdbinternalerror"
 msgid "GDB has encountered an internal error: %s"
 msgstr "GDB encontrou um erro interno: %s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlognosymbols"
 msgid "File '%s' has no debug symbols"
 msgstr "Arquivo '%s' não tem símbolos de depuração"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogprocessexitcode"
 msgid "Process Exit: %s"
 msgstr "Término do Processo: %s"
@@ -106,6 +123,7 @@ msgid "Process Exit: normally"
 msgstr "Término do Processo: normal"
 
 #: gdbmistringconstants.gdbmieventlogprocessstart
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmieventlogprocessstart"
 msgid "Process Start: %s"
 msgstr "Início do Processo: %s"
@@ -115,6 +133,7 @@ msgid "Failed to create process for GDB"
 msgstr "Falha ao criar processo para GDB"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
 msgstr "A IDE foi incapaz de finalizar o processo GDB. Este processo pode ter sido deixado rodando fora do controle da IDE.%0:sPara certificar-se que o processo não está afetando seu sistema, você deve localizá-lo e encerrá-lo por si mesmo."
@@ -125,21 +144,25 @@ msgid "GDB did not terminate"
 msgstr "GDB não finalizou"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmifatalerroroccurred"
 msgid "Unrecoverable error: \"%s\""
 msgstr "Erro irrecuperável: \"%s\""
 
 #: gdbmistringconstants.gdbmigdbinternalerror
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
 msgstr "GDB encontrou um erro interno: %0:sPressione \"Ok\" para continuar depurando. Isto pode NÃO ser seguro.%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
 msgstr "Ao executar o comando: %0:s\"%2:s\"%0:sgdb reportou:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "Pressione \"Ignorar\" para continuar depurando. Isto pode não ser seguro. Pressione \"Abortar\" para parar o depurador.%0:sExceção: %1:s com a mensagem \"%2:s\"%0:sContexto: %4:s. Estado: %5:s %0:s%0:s%3:s"
@@ -150,11 +173,13 @@ msgid "The debugger experienced an unknown condition"
 msgstr "O depurador experimentou uma condição desconhecida"
 
 #: gdbmistringconstants.gdbmitimeoutforcmd
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmitimeoutforcmd"
 msgid "Time-out for command: \"%s\""
 msgstr "Tempo expirado para o comando: \"%s\""
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+#, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmiwarningunknowbreakpoint"
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
 msgstr "O depurador encontrou um inesperado %1:s%0:s%0:sPressione \"Ok\" para continuar depurando (pausado).%0:sPressione \"Parar\" para encerrar a sessão de depuração."
@@ -164,6 +189,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "O depurador GNU através de SSH permite depurar remotamente via conexão SSH. Veja docs/RemoteDebugginf.txt para detalhes. O caminho deve conter o cliente SSH. Use SSH_Startup_Options para o nome do servidor e nome de usuário opcional. Use Remote_GDB_Exe para o nome de arquivo do GDB no computador remoto."
 
 #: gdbmistringconstants.lisresponsecontinue
+#, object-pascal-format
 msgid "Response: %sContinue?"
 msgstr "Resposta: %sContinuar ?"
 
@@ -172,6 +198,7 @@ msgid "Timeout has occurred:"
 msgstr "Tempo limite ocorreu:"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, object-pascal-format
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Resultado inesperado:%sO depurador irá finalizar"
 
@@ -192,6 +219,7 @@ msgid "Failed to load application executable"
 msgstr "Falha ao carregar executável da aplicação"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
+#, object-pascal-format
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr "O depurador foi incapaz de ajustar todos os pontos de parada durante a inicialização.%0:sVocê pode querer verificar se todos os fontes foram compilados com informação de depuração.%0:sPressione OK para ignorar e continuar."
 

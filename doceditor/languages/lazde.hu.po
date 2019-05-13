@@ -74,6 +74,7 @@ msgid "Create cont&ent file"
 msgstr "Tartalomfájl létrehozása"
 
 #: lazdemsg.sdataforelement
+#, object-pascal-format
 msgid "Documentation for element \"%s\":"
 msgstr "A(z) \"%s\" elem dokumentációja:"
 
@@ -82,14 +83,17 @@ msgid "&Delete"
 msgstr "&Törlés"
 
 #: lazdemsg.sdeletemodule
+#, object-pascal-format
 msgid "Are you sure you want to delete module \"%s\" ?"
 msgstr "Biztosan törölhető a következő modul: \"%s\"?"
 
 #: lazdemsg.sdeletepackage
+#, object-pascal-format
 msgid "Are you sure you want to delete package \"%s\" ?"
 msgstr "Biztosan törölhető a következő csomag: \"%s\"?"
 
 #: lazdemsg.sdeletetopic
+#, object-pascal-format
 msgid "Are you sure you want to delete topic \"%s\" ?"
 msgstr "Biztosan törölhető a következő téma: \"%s\"?"
 
@@ -106,26 +110,32 @@ msgid "Change description file"
 msgstr "A leírásfájl megváltoztatása"
 
 #: lazdemsg.serrfpdoc
+#, object-pascal-format
 msgid "Building failed with exit code %d. Please check log."
 msgstr "Az építés sikertelen volt a következő kilépési kóddal: %d. Ellenőrizze a naplót!"
 
 #: lazdemsg.serrnomoduleforelement
+#, object-pascal-format
 msgid "No module found to insert element \"%s\""
 msgstr "Nincs modul a(z) \"%s\" elem beszúrásához"
 
 #: lazdemsg.serrnonodeformodule
+#, object-pascal-format
 msgid "No node found for module \"%s\""
 msgstr "Nincs csomópont a(z) \"%s\" modul számára"
 
 #: lazdemsg.serrnonodeforpackage
+#, object-pascal-format
 msgid "No node found for package \"%s\""
 msgstr "Nincs csomópont a(z) \"%s\" csomag számára"
 
 #: lazdemsg.serrnonodefortopic
+#, object-pascal-format
 msgid "No parent node found to insert topic \"%s\""
 msgstr "Nincs szülő csomópont a(z) \"%s\" téma beszúrásához"
 
 #: lazdemsg.serrnopackageformodule
+#, object-pascal-format
 msgid "No package found to insert module \"%s\""
 msgstr "Nincs csomag a(z) \"%s\" modul beszúrásához"
 
@@ -134,10 +144,12 @@ msgid "Errors"
 msgstr "Hibák"
 
 #: lazdemsg.serrunknowndomelement
+#, object-pascal-format
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
 msgstr "A kijelölt elem szülője ismeretlen DOM elem: \"%s\""
 
 #: lazdemsg.sfilemodified
+#, object-pascal-format
 msgid "Document \"%s\" was modified, would you like to save it?"
 msgstr "A(z) \"%s\" dokumentum megváltozott. Szeretné menteni?"
 
@@ -360,6 +372,7 @@ msgid "Make new document from source file"
 msgstr "Új dokumentum létrehozása forrásfájlból"
 
 #: lazdemsg.smarkselection
+#, object-pascal-format
 msgid "Mark selection %s"
 msgstr "Kiválasztás megjelölése: %s"
 
@@ -670,6 +683,7 @@ msgid "&Save"
 msgstr "&Mentés"
 
 #: lazdemsg.ssavebeforebuildquestion
+#, object-pascal-format
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
 msgstr "Nem mentett változtatások ebben: \"%s\".%sMenteni kell őket, hogy láthatóak legyenek az épített dokumentációban. Mentés?"
 
@@ -698,10 +712,12 @@ msgid "Show p&rivate methods"
 msgstr "Privát metódusok megjelenítése"
 
 #: lazdemsg.sskelerrorwithfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
 msgstr "A makeskel hibát jelzett (%d). Mindenképpen be legyen töltve a létrehozott fájl?"
 
 #: lazdemsg.sskelerrorwithoutfile
+#, object-pascal-format
 msgid "makeskel reported an error (%d) and produced no file."
 msgstr "A makeskel hibát jelzett (%d) és nem hozott létre fájlt."
 
@@ -710,6 +726,7 @@ msgid "Sources"
 msgstr "Források"
 
 #: lazdemsg.sstartnodenotfound
+#, object-pascal-format
 msgid "Start element \"%s\" could not be found"
 msgstr "A kezdő elem nem található: \"%s\""
 

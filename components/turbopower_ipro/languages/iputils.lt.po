@@ -11,10 +11,12 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: iputils.slongversion
+#, object-pascal-format
 msgid "Version %.2f"
 msgstr "Versija %.2f"
 
 #: iputils.sshortversion
+#, object-pascal-format
 msgid "v%.2f"
 msgstr "v%.2f"
 

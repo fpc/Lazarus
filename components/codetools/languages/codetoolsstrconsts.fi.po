@@ -17,6 +17,7 @@ msgid "closing bracket not found"
 msgstr "lopettavaa sulkua ei löydy"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
+#, object-pascal-format
 msgid "%s, found unexpected %s at %s"
 msgstr "%s, löydettiin yllättäen %s kohdassa %s"
 
@@ -25,10 +26,12 @@ msgid "record end not found"
 msgstr "tietueen loppua ei löydy"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
+#, object-pascal-format
 msgid "adds %s to IncPath"
 msgstr "lisää %s IncPath:iin"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
+#, object-pascal-format
 msgid "adds %s to SrcPath"
 msgstr "lisää %s SrcPath:iin"
 
@@ -41,18 +44,22 @@ msgid "an LCL project"
 msgstr "LCL projekti"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
+#, object-pascal-format
 msgid "Anonymous %s definitions are not allowed"
 msgstr "Nimettömät %s määritykset ovat kiellettyjä"
 
 #: codetoolsstrconsts.ctsawithoutb
+#, object-pascal-format
 msgid "%s without %s"
 msgstr "%s ilman %s"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
+#, object-pascal-format
 msgid "base type of \"%s\" not found"
 msgstr "\"%s\":n kantatyyppiä ei löydy"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
+#, object-pascal-format
 msgid "begin at %s without end"
 msgstr "begin %s:ssa ilman end"
 
@@ -61,14 +68,17 @@ msgid "binary operator"
 msgstr "binaaritoiminto"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket close expected, but %s found"
 msgstr "odotettiin lopettavaa sulkua, saatiin %s"
 
 #: codetoolsstrconsts.ctsbracketnotfound
+#, object-pascal-format
 msgid "bracket %s not found"
 msgstr "sulkua %s ei löydy"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
+#, object-pascal-format
 msgid "bracket open expected, but %s found"
 msgstr "odotettiin avaavaa sulkua, saatiin %s"
 
@@ -93,18 +103,22 @@ msgid "class node without parent node"
 msgstr "lapsisolmu ilman emosolmua"
 
 #: codetoolsstrconsts.ctsclassnotfound
+#, object-pascal-format
 msgid "class \"%s\" not found"
 msgstr "luokkaa \"%s\" ei löydy"
 
 #: codetoolsstrconsts.ctsclassnotfound2
+#, object-pascal-format
 msgid "class not found \"%s\""
 msgstr "luokkaa ei löydy \"%s\""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
+#, object-pascal-format
 msgid "\"class of\" definition not resolved: %s"
 msgstr "\"class of\" määritystä ei löydy: %s"
 
 #: codetoolsstrconsts.ctsclasssnotfound
+#, object-pascal-format
 msgid "Class %s not found"
 msgstr "luokkaa %s ei löydy"
 
@@ -153,6 +167,7 @@ msgid "Debugger Directory"
 msgstr "Virheenjäljittimen hakemisto"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
+#, object-pascal-format
 msgid "default ancestor %s not found"
 msgstr "oletus-emoa %s ei löydy"
 
@@ -193,6 +208,7 @@ msgid "default java class ancestor JLObject not found"
 msgstr "Oletus java kantaluokkaa JLObject ei löydy"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "default parameter expected, but %s found"
 msgstr "Odotettiin oletus-parametria, saatiin %s"
 
@@ -217,6 +233,7 @@ msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "Määrittele LCLwidgetset, esim. LCLgtk"
 
 #: codetoolsstrconsts.ctsdefinemacroname
+#, object-pascal-format
 msgid "Define Macro %s"
 msgstr "Määrittele makro %s"
 
@@ -233,6 +250,7 @@ msgid "Designer Directory"
 msgstr "Lomake-editorin hakemisto"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "dispid parameter expected, but %s found"
 msgstr "odotettiin dispid parametria, saatiin %s"
 
@@ -245,6 +263,7 @@ msgid "Doc Editor Directory"
 msgstr "Doc Editor hakemisto"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
+#, object-pascal-format
 msgid "duplicate identifier: %s"
 msgstr "Samanlaiset tunnisteet: %s"
 
@@ -265,6 +284,7 @@ msgid "end of file"
 msgstr "tiedoston loppu"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
+#, object-pascal-format
 msgid "expected end., but %s found"
 msgstr "odotettiin end., saatiin %s"
 
@@ -297,30 +317,37 @@ msgid "error in paramlist"
 msgstr "virhe parametriluettelossa"
 
 #: codetoolsstrconsts.ctsexpected
+#, object-pascal-format
 msgid "\"%s\" expected"
 msgstr "odotettiin \"%s\""
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+#, object-pascal-format
 msgid "expected a method type, but found %s"
 msgstr "odotettiin metodin tyyppiä, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
+#, object-pascal-format
 msgid "expected (, but found %s"
 msgstr "odotettiin (, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
+#, object-pascal-format
 msgid "expected ), but found %s"
 msgstr "odotettiin ), saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
+#, object-pascal-format
 msgid "expected :=, but %s found"
 msgstr "odotettiin :=, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
+#, object-pascal-format
 msgid "expected identifier, but found %s"
 msgstr "odotettiin tunnistetta, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+#, object-pascal-format
 msgid "expected ; of statement, but found %s"
 msgstr "odotettiin komennon ;, saatiin %s"
 
@@ -341,6 +368,7 @@ msgid "Forward"
 msgstr "Eteenpäin"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
+#, object-pascal-format
 msgid "Forward class definition not resolved: %s"
 msgstr "Etukäteen määriteltyä luokkaa ei löydy: %s"
 
@@ -361,6 +389,7 @@ msgid "Free Pascal Source Directory"
 msgstr "Free Pascal lähdehakemisto"
 
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
+#, object-pascal-format
 msgid "Free Pascal Sources, %s"
 msgstr "Free Pascal lähdekoodit, %s"
 
@@ -383,6 +412,7 @@ msgid "HasError"
 msgstr ""
 
 #: codetoolsstrconsts.ctshelperisnotallowed
+#, object-pascal-format
 msgid "Helper after %s is not allowed"
 msgstr "Avustaja %s:n jälkeen on kielletty"
 
@@ -391,6 +421,7 @@ msgid "IDE Directory"
 msgstr "IDE hakemisto"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
+#, object-pascal-format
 msgid "identifier expected, but %s found"
 msgstr "odotettiin tunnistetta, saatiin %s"
 
@@ -399,6 +430,7 @@ msgid "unexpected end of file (identifier expected)"
 msgstr "odottamaton tiedoston loppu (odotettiin tunnistetta)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
+#, object-pascal-format
 msgid "identifier expected, but keyword %s found"
 msgstr "odotettiin tunnistetta, saatiin avainsana %s"
 
@@ -407,10 +439,12 @@ msgid "identifier"
 msgstr "tunniste"
 
 #: codetoolsstrconsts.ctsidentifieralreadydefined
+#, object-pascal-format
 msgid "Identifier %s already defined"
 msgstr "Tunniste %s on jo määritelty"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
+#, object-pascal-format
 msgid "identifier not found: %s"
 msgstr "tunnistetta %s ei löydy"
 
@@ -443,10 +477,12 @@ msgid "If TargetOS<>win32 then"
 msgstr ""
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
+#, object-pascal-format
 msgid "illegal circle using unit: %s"
 msgstr "Laiton kehäriippuvuus käännösyksikössä: %s"
 
 #: codetoolsstrconsts.ctsillegalqualifier
+#, object-pascal-format
 msgid "illegal qualifier %s found"
 msgstr "Löytyi laiton tarkenne %s"
 
@@ -459,18 +495,22 @@ msgid "Include circle detected"
 msgstr "Havaittiin Include kehäriippuvuus"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+#, object-pascal-format
 msgid "include directories: %s"
 msgstr "include hakemistot: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
+#, object-pascal-format
 msgid "include file not found \"%s\""
 msgstr "include tiedostoja ei löydy \"%s\""
 
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
+#, object-pascal-format
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
 msgstr "yhteensopimattomat tyypit: odotettiin \"%s\" mutta saatiin \"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
+#, object-pascal-format
 msgid "index parameter expected, but %s found"
 msgstr "odotettiin osoitin-parametria, mutta saatiin %s"
 
@@ -495,26 +535,32 @@ msgid "interface section not found"
 msgstr "interface osiota ei löydy"
 
 #: codetoolsstrconsts.ctsinvalidclassname
+#, object-pascal-format
 msgid "invalid class name=\"%s\""
 msgstr "Kelvoton luokan nimi=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
+#, object-pascal-format
 msgid "invalid class name \"%s\""
 msgstr "Kelvoton luokan nimi \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
+#, object-pascal-format
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "Kelvoton lipun arvo \"%s\" ohjeelle %s"
 
 #: codetoolsstrconsts.ctsinvalidmode
+#, object-pascal-format
 msgid "invalid mode \"%s\""
 msgstr "Kelvoton moodi \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
+#, object-pascal-format
 msgid "invalid mode switch \"%s\""
 msgstr "Kelvoton moodin valitsin \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
+#, object-pascal-format
 msgid "invalid operator %s"
 msgstr "Kelvoton operaattori %s"
 
@@ -531,10 +577,12 @@ msgid "invalid type"
 msgstr "Kelvoton tyyppi"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
+#, object-pascal-format
 msgid "invalid variable name \"%s\""
 msgstr "Kelvoton muuttujan nimi \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
+#, object-pascal-format
 msgid "invalid variable type \"%s\""
 msgstr "Kelvoton muuttujan tyyppi \"%s\""
 
@@ -543,6 +591,7 @@ msgid "keyword"
 msgstr "avainsana"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
+#, object-pascal-format
 msgid "keyword (e.g. %s) expected, but %s found"
 msgstr "odotettiin avainsanaa (esim. %s), mutta saatiin %s"
 
@@ -559,6 +608,7 @@ msgid "Lazarus Sources"
 msgstr "Lazarus lähdekoodit"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
+#, object-pascal-format
 msgid "method \"%s\" has no declaration"
 msgstr "metodilla \"%s\" ei ole määrittelyä"
 
@@ -567,6 +617,7 @@ msgid "method name"
 msgstr "metodin nimi"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+#, object-pascal-format
 msgid "Method signature %s not found in class"
 msgstr "Metodin tunnistetta %s ei löydy luokasta"
 
@@ -591,18 +642,22 @@ msgid "missing type identifier"
 msgstr "puuttuva tyypin tunniste"
 
 #: codetoolsstrconsts.ctsnameddirectory
+#, object-pascal-format
 msgid "%s Directory"
 msgstr "%s hakemisto"
 
 #: codetoolsstrconsts.ctsnamedproject
+#, object-pascal-format
 msgid "%s Project"
 msgstr "%s projekti"
 
 #: codetoolsstrconsts.ctsneededbymode
+#, object-pascal-format
 msgid " (needed by mode \"%s\")"
 msgstr " (moodi \"%s\" tarvitsee)"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
+#, object-pascal-format
 msgid "Nested %s definitions are not allowed"
 msgstr "Sisäkkäiset %s määritykset ovat kiellettyjä"
 
@@ -619,6 +674,7 @@ msgid "nodefault specifier defined twice"
 msgstr "nodefault-tarkenne määriteltiin kahdesti"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
+#, object-pascal-format
 msgid "no pascal code found (first token is %s)"
 msgstr "Pascal-koodia ei löydy (ensimmäinen sana on %s)"
 
@@ -627,6 +683,7 @@ msgid "No scanner available"
 msgstr "Scanneria ei ole saatavilla"
 
 #: codetoolsstrconsts.ctsnoscannerfound
+#, object-pascal-format
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr "Skanneria ei löydy \"%s\":lle. Jos tämä on include-tiedosto, avaa ensin pää-lähdetiedosto."
 
@@ -635,18 +692,22 @@ msgid "Not enough actual generic parameters"
 msgstr "Ei tarpeeksi varsinaisia yleisiä parametereja"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
+#, object-pascal-format
 msgid "old method not found: %s"
 msgstr "vanhaa metodia ei löydy: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
+#, object-pascal-format
 msgid "operand expected but %s found"
 msgstr "odotettiin operandia, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
+#, object-pascal-format
 msgid "operand expected, but %s found"
 msgstr "odotettiin operandia, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
 msgstr "odotettiin operaattoria, mutta saatiin %s"
@@ -656,15 +717,18 @@ msgid "unexpected end of file (operator expected)"
 msgstr "odottamaton tiedoston loppu (odotettiin operaattoria)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
+#, object-pascal-format
 msgid "operator expected but %s found"
 msgstr "odotettiin operaattoria, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+#, object-pascal-format
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr "odotettiin operaattoria, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
+#, object-pascal-format
 msgid "%s Compiler Defines"
 msgstr "%s kääntäjän määritteet"
 
@@ -705,6 +769,7 @@ msgid "processor specific"
 msgstr "prosessori-riippuvainen"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
+#, object-pascal-format
 msgid "property type expected, but %s found"
 msgstr "odotettiin ominaisuutta, mutta saatiin %s"
 
@@ -713,10 +778,12 @@ msgid "property Current not found"
 msgstr "ominaisuutta Current ei löydy"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
+#, object-pascal-format
 msgid "property specifier already defined: %s"
 msgstr "ominaisuus-tarkenne on jo määritelty: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
+#, object-pascal-format
 msgid "qualifier expected but %s found"
 msgstr "odotettiin tarkennetta, mutta saatiin %s"
 
@@ -733,10 +800,12 @@ msgid "Runtime library"
 msgstr "Ajonaikainen kirjasto"
 
 #: codetoolsstrconsts.ctsscannedfiles
+#, object-pascal-format
 msgid "Scanned files: %s"
 msgstr "Käyty läpi tiedostot: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
+#, object-pascal-format
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "odotettiin ; \"%s\" ominaisuuuden jälkeen, mutta saatiin %s"
 
@@ -745,10 +814,12 @@ msgid "semicolon not found"
 msgstr "puolipistettä ei löydy"
 
 #: codetoolsstrconsts.ctssetsincpathto
+#, object-pascal-format
 msgid "sets IncPath to %s"
 msgstr "aseta IncPath arvoksi %s"
 
 #: codetoolsstrconsts.ctssetssrcpathto
+#, object-pascal-format
 msgid "sets SrcPath to %s"
 msgstr "aseta SrcPath arvoksi %s"
 
@@ -761,6 +832,7 @@ msgid "source is not unit"
 msgstr "lähde ei ole käännösyksikkö"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
+#, object-pascal-format
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "lähdettä ei löydy: käännösyksikkö %s. Tarkista FPC lähdehakemisto."
 
@@ -769,6 +841,7 @@ msgid "SrcPath Initialization"
 msgstr "SrcPath alustus"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
+#, object-pascal-format
 msgid "expected %s, but %s found"
 msgstr "odotettiin %s, mutta saatiin %s"
 
@@ -777,6 +850,7 @@ msgid "string constant"
 msgstr "tekstivakio"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
+#, object-pascal-format
 msgid "Syntax Error in expression \"%s\""
 msgstr "Kielioppivirhe lausekkeessa \"%s\""
 
@@ -785,6 +859,7 @@ msgid "Term has no simple type"
 msgstr "Termillä ei ole yksinkertaista tyyppiä"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
+#, object-pascal-format
 msgid "then expected, but %s found"
 msgstr "odotettiin then, mutta saatiin %s"
 
@@ -825,26 +900,32 @@ msgid "unexpected end of source"
 msgstr "odottamaton lähdekoodin loppu"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
+#, object-pascal-format
 msgid "unexpected keyword \"%s\""
 msgstr "odottamaton avainsana \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
+#, object-pascal-format
 msgid "unexpected keyword %s"
 msgstr "odottamaton avainsana %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in asm block found"
 msgstr "odottamaton avainsana \"%s\" löydettiin asm-lohkossa"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" in begin..end found"
 msgstr "odottamaton avainsana \"%s\" löydettiin begin..end sisällä"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
+#, object-pascal-format
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "odottamaton avainsana \"%s\" löydettiin kun lohkoja luettiin taaksepäin"
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
+#, object-pascal-format
 msgid "unexpected section keyword %s found"
 msgstr "odottamaton osion avainsana %s löytyi"
 
@@ -853,6 +934,7 @@ msgid "unexpected subrange operator '..' found"
 msgstr "odottamaton osaväli operaattori '..' löytyi"
 
 #: codetoolsstrconsts.ctsunitnotfound
+#, object-pascal-format
 msgid "unit not found: %s"
 msgstr "käännösyksikköä %s ei löydy"
 
@@ -861,6 +943,7 @@ msgid "UnitPath Initialization"
 msgstr "UnitPath alustus"
 
 #: codetoolsstrconsts.ctsunknownfunction
+#, object-pascal-format
 msgid "Unknown function %s"
 msgstr "Tuntematon funktio %s"
 
@@ -869,6 +952,7 @@ msgid "(unknown mainfilename)"
 msgstr "(tuntematon päätiedosto)"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
+#, object-pascal-format
 msgid "(unknown subdescriptor %s)"
 msgstr "(tuntematon alikuvaus %s)"
 
@@ -889,6 +973,7 @@ msgid "var is only allowed in generics, end of class not found"
 msgstr "var on sallittu vain generics:ssa, luokan loppua ei löydy"
 
 #: codetoolsstrconsts.ctswordnotfound
+#, object-pascal-format
 msgid "\"%s\" not found"
 msgstr "\"%s\" ei löydy"
 

@@ -38,10 +38,12 @@ msgid "Already defined"
 msgstr "已经定义"
 
 #: codystrconsts.crsalreadydefinedat
+#, object-pascal-format
 msgid "Already defined at %s"
 msgstr "已经定义在 %s"
 
 #: codystrconsts.crsandmoreidentifiers
+#, object-pascal-format
 msgid "... and %s more identifiers"
 msgstr "...和%s更多的标识符"
 
@@ -66,6 +68,7 @@ msgid "by fpc.cfg"
 msgstr "通过fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
+#, object-pascal-format
 msgid "Add Assign method to class %s"
 msgstr "添加Assign方法到类%s"
 
@@ -126,6 +129,7 @@ msgid "private"
 msgstr "private(私有)"
 
 #: codystrconsts.crscamproperty
+#, object-pascal-format
 msgid "%s property"
 msgstr "%s属性"
 
@@ -150,6 +154,7 @@ msgid "There is no inherited method."
 msgstr "这里没有继承的方法."
 
 #: codystrconsts.crscamvar
+#, object-pascal-format
 msgid "%s var"
 msgstr "%s var"
 
@@ -158,6 +163,7 @@ msgid "?visibility?"
 msgstr "?可视性?"
 
 #: codystrconsts.crscamwrittenbyproperty
+#, object-pascal-format
 msgid "%s, written by property %s"
 msgstr "%s,经由属性写入%s"
 
@@ -232,6 +238,7 @@ msgid "Uses path"
 msgstr "使用路径"
 
 #: codystrconsts.crscuallfiles
+#, object-pascal-format
 msgid "%s|All files (%s)|%s"
 msgstr "%s|所有文件(%s)|%s"
 
@@ -256,6 +263,7 @@ msgid "The file seems to be a binary. Proceed?"
 msgstr "该文件似乎是二进制的.继续?"
 
 #: codystrconsts.crscuunabletoloadfile
+#, object-pascal-format
 msgid "Unable to load file \"%s\"%s%s"
 msgstr "不能加载\"%s\"%s%s"
 
@@ -280,6 +288,7 @@ msgid "Declare Variable ..."
 msgstr "声明变量..."
 
 #: codystrconsts.crsdeclarevariable3
+#, object-pascal-format
 msgid "Declare variable \"%s\""
 msgstr "声明变量\"%s\""
 
@@ -296,10 +305,12 @@ msgid "Distance"
 msgstr ""
 
 #: codystrconsts.crsdvisakeyword
+#, object-pascal-format
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\"是一个关键字."
 
 #: codystrconsts.crserror
+#, object-pascal-format
 msgid "Error: %s"
 msgstr "错误: %s"
 
@@ -332,6 +343,7 @@ msgid "File"
 msgstr "文件"
 
 #: codystrconsts.crsfiledoesnotexistanymore
+#, object-pascal-format
 msgid "File \"%s\" does not exist anymore."
 msgstr "文件\"%s\"现在不在存在."
 
@@ -400,6 +412,7 @@ msgid "Identifier not found"
 msgstr "标识符未找到"
 
 #: codystrconsts.crsidentifiernotfoundinunit
+#, object-pascal-format
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr "标识符\"%s\"未找到在单元\"%s\".可能该标识符不存在对于这个平台或者可能标识符被删除/重命名."
 
@@ -421,6 +434,7 @@ msgid "Impossible dependency"
 msgstr "不可能的依赖"
 
 #: codystrconsts.crsin
+#, object-pascal-format
 msgid "in \"%s\""
 msgstr "在\"%s\"中"
 
@@ -473,14 +487,17 @@ msgid "Links"
 msgstr "链接"
 
 #: codystrconsts.crsloaddictionaryafter
+#, object-pascal-format
 msgid "Load dictionary after %s"
 msgstr "加载字典在%s后"
 
 #: codystrconsts.crslocalvariableof
+#, object-pascal-format
 msgid "Local variable of %s"
 msgstr "局部变量关于%s"
 
 #: codystrconsts.crsmainsourcefile
+#, object-pascal-format
 msgid "Main source file: %s"
 msgstr "Main source文件: %s"
 
@@ -489,6 +506,7 @@ msgid "Mbytes"
 msgstr "MB"
 
 #: codystrconsts.crsmemberof
+#, object-pascal-format
 msgid "%s member of %s %s"
 msgstr ""
 
@@ -497,6 +515,7 @@ msgid "Menu item caption:"
 msgstr "菜单项目标题:"
 
 #: codystrconsts.crsminutes
+#, object-pascal-format
 msgid "%s minutes"
 msgstr "%s分钟"
 
@@ -533,6 +552,7 @@ msgid "On clipboard"
 msgstr "在剪贴板上"
 
 #: codystrconsts.crsonlydescendantsof
+#, object-pascal-format
 msgid "Only descendants of %s"
 msgstr ""
 
@@ -569,6 +589,7 @@ msgid "Package"
 msgstr "包"
 
 #: codystrconsts.crspackage2
+#, object-pascal-format
 msgid "Package: %s"
 msgstr "包:%s"
 
@@ -577,10 +598,12 @@ msgid "Package not found"
 msgstr "包未找到"
 
 #: codystrconsts.crspackagenotfounditshouldbein
+#, object-pascal-format
 msgid "Package \"%s\" not found. It should be in \"%s\"."
 msgstr "包\"%s\"未找到.它应该在\"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
+#, object-pascal-format
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr "包:%s,单元:%s,标识符:%s%s数据库:%s"
 
@@ -601,6 +624,7 @@ msgid "Please open a project first."
 msgstr "请先打开一个工程."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+#, object-pascal-format
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr ""
 
@@ -625,10 +649,12 @@ msgid "Please specify a type"
 msgstr "请指定一种类型"
 
 #: codystrconsts.crsppu
+#, object-pascal-format
 msgid "PPU: %s"
 msgstr "PPU: %s"
 
 #: codystrconsts.crsppufilesofproject
+#, object-pascal-format
 msgid "PPU files of project \"%s\""
 msgstr "工程\"%s\"的PPU文件"
 
@@ -657,10 +683,12 @@ msgid "Published"
 msgstr "发布"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+#, object-pascal-format
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr ""
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+#, object-pascal-format
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr ""
 
@@ -677,6 +705,7 @@ msgid "Report"
 msgstr "报告"
 
 #: codystrconsts.crssavedictionaryevery
+#, object-pascal-format
 msgid "Save dictionary every %s"
 msgstr ""
 
@@ -685,6 +714,7 @@ msgid "Save dictionary now"
 msgstr "现在保存字典"
 
 #: codystrconsts.crssavetofile
+#, object-pascal-format
 msgid "Save to file %s"
 msgstr "保存到文件%s"
 
@@ -693,6 +723,7 @@ msgid "Scanning ..."
 msgstr "扫描..."
 
 #: codystrconsts.crsscanningsunits
+#, object-pascal-format
 msgid "Scanning: %s units ..."
 msgstr "扫描: %s单元..."
 
@@ -701,6 +732,7 @@ msgid "searching ..."
 msgstr "搜索..."
 
 #: codystrconsts.crsseconds
+#, object-pascal-format
 msgid "%s seconds"
 msgstr "%s秒"
 
@@ -713,6 +745,7 @@ msgid "Show CodeTools Node Info ..."
 msgstr "显示CodeTools节点信息..."
 
 #: codystrconsts.crsshowcodydict
+#, object-pascal-format
 msgid "Show Cody Dictionary for \"%s\""
 msgstr ""
 
@@ -741,6 +774,7 @@ msgid "Size of .ppu file"
 msgstr ".ppu文件的大小"
 
 #: codystrconsts.crssource
+#, object-pascal-format
 msgid "Source: %s"
 msgstr "源文件: %s"
 
@@ -757,18 +791,22 @@ msgid "The dictionary is saved in intervals"
 msgstr ""
 
 #: codystrconsts.crstheidentifierisalreadydefined
+#, object-pascal-format
 msgid "The identifier \"%s\" is already defined."
 msgstr "标识符\"%s\" 已经定义"
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+#, object-pascal-format
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
 msgstr ""
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+#, object-pascal-format
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
 msgstr ""
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+#, object-pascal-format
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
 msgstr ""
 
@@ -785,14 +823,17 @@ msgid "Type"
 msgstr "类型"
 
 #: codystrconsts.crsunabletodelete
+#, object-pascal-format
 msgid "Unable to delete \"%s\""
 msgstr "不能删除\"%s\""
 
 #: codystrconsts.crsunabletoreadfile
+#, object-pascal-format
 msgid "Unable to read file \"%s\"."
 msgstr "不能读取文件\"%s\"."
 
 #: codystrconsts.crsunabletorenameto
+#, object-pascal-format
 msgid "unable to rename \"%s\" to \"%s\""
 msgstr "不能重命名\"%s\"到\"%s\""
 
@@ -801,6 +842,7 @@ msgid "Unit"
 msgstr "单元"
 
 #: codystrconsts.crsunit2
+#, object-pascal-format
 msgid "Unit: %s"
 msgstr "单元: %s"
 
@@ -825,6 +867,7 @@ msgid "Unit shared libraries"
 msgstr "单元共享库"
 
 #: codystrconsts.crsunitss
+#, object-pascal-format
 msgid "Units: %s"
 msgstr "单元:%s"
 

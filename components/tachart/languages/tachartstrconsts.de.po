@@ -211,6 +211,7 @@ msgid "The number of fit parameters cannot be less than 1."
 msgstr "Die Anzahl der Fitparameter kann nicht kleiner als 1 sein."
 
 #: tachartstrconsts.rserrinvalidresulttype
+#, object-pascal-format
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Der Typ des Ausdrucksergebnisses muss integer oder float sein, ist aber \"%s\"."
 
@@ -343,14 +344,17 @@ msgid "Line series"
 msgstr "Linien-Diagramm"
 
 #: tachartstrconsts.rslistsourcecolorerror
+#, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
 msgstr "Der %0:s.DataPoints-String \"%1:s\" ist keine ganze Zahl."
 
 #: tachartstrconsts.rslistsourcenumericerror
+#, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
 msgstr "Der %0:s.DataPoints-String \"%1:s\" ist keine gültige Zahl."
 
 #: tachartstrconsts.rslistsourcestringformaterror
+#, object-pascal-format
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
 msgstr "Die Anzahl der Datenwerte im %s.DataPoints-String \"%s\" entspricht nicht der, die aufgrund von XCount und YCount erwartet wird."
 
@@ -460,10 +464,12 @@ msgid "Right triangle"
 msgstr "Dreieck nach rechs"
 
 #: tachartstrconsts.rssourcecounterror
+#, object-pascal-format
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
 msgstr "%0:s benötigt eine Datenquelle mit mindestens %1:d %2:s-Wert(en) pro Datenpunkt."
 
 #: tachartstrconsts.rssourcecounterror2
+#, object-pascal-format
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
 msgstr "Diese %0:s-Instanz muss mindestens %1:d %2:s-Wert(e) pro Datenpunkt zur Verfügung stellen."
 
@@ -472,6 +478,7 @@ msgid "Editable chart source required"
 msgstr "Editierbare Chart-Datenquelle erforderlich"
 
 #: tachartstrconsts.rssourcesorterror
+#, object-pascal-format
 msgid "Selected sorting parameters are not supported by %s."
 msgstr ""
 
@@ -526,6 +533,7 @@ msgid "Edit axis transformations"
 msgstr "Achsentransformation bearbeiten"
 
 #: tachartstrconsts.tasfailedsubcomponentrename
+#, object-pascal-format
 msgid "Failed to rename components: %s"
 msgstr "Fehler beim Umbenennen von Komponenten: %s"
 

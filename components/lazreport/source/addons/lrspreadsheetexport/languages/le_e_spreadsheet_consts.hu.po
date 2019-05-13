@@ -112,6 +112,7 @@ msgid "Page breaks"
 msgstr "Oldaltörések"
 
 #: le_e_spreadsheet_consts.spagename
+#, object-pascal-format
 msgid "Page %d"
 msgstr "%d oldal"
 

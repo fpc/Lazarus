@@ -13,6 +13,7 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 
 #: heaptrcview.rsdtimes
+#, object-pascal-format
 msgid " (%d times)"
 msgstr " (kartai: %d)"
 
@@ -61,30 +62,37 @@ msgid ".trc file"
 msgstr "failas „.trc“"
 
 #: heaptrcview.stacklineformat
+#, object-pascal-format
 msgid "%s"
 msgstr "%s"
 
 #: heaptrcview.stacklineformatwithfile
+#, object-pascal-format
 msgid "%s file: %s : %d; "
 msgstr "failas „%s“: %s : %d; "
 
 #: heaptrcview.stacktraceformat
+#, object-pascal-format
 msgid "Leak: %d bytes x %d times"
 msgstr "Nuotėkis: baitų - %d x kartų %d"
 
 #: heaptrcview.stacktraceformatsingle
+#, object-pascal-format
 msgid "Leak: %d bytes"
 msgstr "Nuotėkis: baitų - %d"
 
 #: heaptrcview.strleakingblockscount
+#, object-pascal-format
 msgid "Leaking Blocks Count: %d"
 msgstr "Nutekėjusių blokų kiekis: %d"
 
 #: heaptrcview.strleakingmemsize
+#, object-pascal-format
 msgid "Leaking Mem Size: %d"
 msgstr "Nutekėjusios atminties dydis: %d"
 
 #: heaptrcview.strtotalmemalloc
+#, object-pascal-format
 msgid "Total Mem allocated: %d"
 msgstr "Viso paskirta atminties: %d"
 

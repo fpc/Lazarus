@@ -22,10 +22,12 @@ msgid "InstantFPC script"
 msgstr "Сценарій InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilefr
+#, object-pascal-format
 msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
 msgstr "%s%sПрограма Free Pascal в одному файлі, що виконується за допомогою InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilepr
+#, object-pascal-format
 msgid "%s%sSingle file program using InstantFPC to compile and execute"
 msgstr "%s%sПрограма в одному файлі, що використовує InstantFPC для компіляції й виконання"
 

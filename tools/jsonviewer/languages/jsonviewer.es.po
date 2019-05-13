@@ -10,6 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "Matriz (%d elementos)"
 
@@ -35,7 +36,7 @@ msgid "JSON document modified"
 msgstr "Documento JSON modificado"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 #| msgid ""
 #| "The JSON data was changed but not saved.\n"
 #| "What do want to do ?\n"
@@ -47,6 +48,7 @@ msgstr ""
 "¿Que deseas hacer?\n"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "Nombre de miembro duplicado \"%s\"."
 
@@ -55,6 +57,7 @@ msgid "Filename needed for generated code"
 msgstr ""
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Elemento num. %d"
 
@@ -63,10 +66,12 @@ msgid "Empty document"
 msgstr "Documento vacío"
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "No se pudo crear el directorio de archivos de configuración \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "Valor no válido o tipo incorrecto: \"%s\""
 
@@ -79,6 +84,7 @@ msgid "New object member"
 msgstr "Nuevo miembro de objeto"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "Introduzca un nombre para el nuevo miembro (tipo: %s)"
 
@@ -91,6 +97,7 @@ msgid "null"
 msgstr "nulo"
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "Objeto (%d miembros)"
 

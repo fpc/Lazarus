@@ -14,6 +14,7 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 
 #: msgjsonviewer.sarray
+#, object-pascal-format
 msgid "Array (%d elements)"
 msgstr "Масив (%d елементів)"
 
@@ -39,6 +40,7 @@ msgid "JSON document modified"
 msgstr "Документ JSON змінено"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, object-pascal-format
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
@@ -47,6 +49,7 @@ msgstr ""
 "Що треба зробити ?"
 
 #: msgjsonviewer.sduplicatemembername
+#, object-pascal-format
 msgid "Duplicate member name \"%s\"."
 msgstr "Член з іменем \"%s\" вже існує."
 
@@ -55,6 +58,7 @@ msgid "Filename needed for generated code"
 msgstr "Для згенерованого коду потрібна назва файлу"
 
 #: msgjsonviewer.selement
+#, object-pascal-format
 msgid "Element nr. %d"
 msgstr "Елемент номер %d"
 
@@ -63,10 +67,12 @@ msgid "Empty document"
 msgstr "Порожній документ"
 
 #: msgjsonviewer.serrcreatingconfigdir
+#, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Не вдалось створити теку файлів конфігурації \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
+#, object-pascal-format
 msgid "Invalid value or wrong type: \"%s\""
 msgstr "Невірне значення або не той тип: \"%s\""
 
@@ -79,6 +85,7 @@ msgid "New object member"
 msgstr "Новий член об'єкту"
 
 #: msgjsonviewer.snewmembername
+#, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
 msgstr "Введіть ім'я нового члена (тип: %s)"
 
@@ -91,6 +98,7 @@ msgid "null"
 msgstr "порожньо"
 
 #: msgjsonviewer.sobject
+#, object-pascal-format
 msgid "Object (%d members)"
 msgstr "Об'єкт (%d членів)"
 

@@ -53,6 +53,7 @@ msgid "update repository"
 msgstr "оновлення сховища"
 
 #: fppkg_mainfrm.serractionfailed
+#, object-pascal-format
 msgid ""
 "Failed to %s: \n"
 "\n"
@@ -63,6 +64,7 @@ msgstr ""
 "%s"
 
 #: fppkg_mainfrm.smsgactionsucceeded
+#, object-pascal-format
 msgid "%s succeeded."
 msgstr "Дію \"%s\" виконано успішно."
 

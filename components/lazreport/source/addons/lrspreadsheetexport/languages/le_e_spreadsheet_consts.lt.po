@@ -113,6 +113,7 @@ msgid "Page breaks"
 msgstr "Lapų lūžiai"
 
 #: le_e_spreadsheet_consts.spagename
+#, object-pascal-format
 msgid "Page %d"
 msgstr "Lapas %d"
 

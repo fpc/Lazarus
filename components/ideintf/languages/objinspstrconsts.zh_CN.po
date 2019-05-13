@@ -87,6 +87,7 @@ msgid "On Add, Check for Duplicate in Items"
 msgstr ""
 
 #: objinspstrconsts.cgcheckduplicatemsg
+#, object-pascal-format
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "\"%s\"项目已经列出.还要添加它?"
 
@@ -115,6 +116,7 @@ msgid "Delete the Item"
 msgstr "删除项目"
 
 #: objinspstrconsts.clbdeletequest
+#, object-pascal-format
 msgid "Delete the Item %d \"%s\"?"
 msgstr "删除项目%d \"%s\"?"
 
@@ -186,6 +188,7 @@ msgid "Edit Fields ..."
 msgstr "编辑字段..."
 
 #: objinspstrconsts.fesfieldcantbec
+#, object-pascal-format
 msgid "Field %s cannot be created!"
 msgstr "字段%s不能被创建"
 
@@ -297,10 +300,12 @@ msgid "Set value"
 msgstr "设置值"
 
 #: objinspstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
 msgid "Unable to find parser for tool \"%s\""
 msgstr "不能找到剖析器对于工具\"%s\""
 
 #: objinspstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
 msgid "Unable to find parser with name \"%s\""
 msgstr ""
 
@@ -358,6 +363,7 @@ msgid "0 lines, 0 chars"
 msgstr "0行,0字符"
 
 #: objinspstrconsts.ois1linedchars
+#, object-pascal-format
 msgid "1 line, %d chars"
 msgstr "1行,%d字符"
 
@@ -461,6 +467,7 @@ msgid "Clear picture"
 msgstr "清除图片"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
+#, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "组件名\"%s\"不是一个有效的标识符"
 
@@ -513,6 +520,7 @@ msgid "&Delete"
 msgstr "删除(&D)"
 
 #: objinspstrconsts.oisdeleteitem
+#, object-pascal-format
 msgid "Delete item \"%s\"?"
 msgstr "删除项目\"%s\"?"
 
@@ -525,6 +533,7 @@ msgid "Delete selected field(s)"
 msgstr "删除选择的字段"
 
 #: objinspstrconsts.oisdlinesdchars
+#, object-pascal-format
 msgid "%d lines, %d chars"
 msgstr "%d行, %d字符"
 
@@ -545,10 +554,12 @@ msgid "Error loading image"
 msgstr "加载图片错误"
 
 #: objinspstrconsts.oiserrorloadingimage2
+#, object-pascal-format
 msgid "Error loading image \"%s\":%s%s"
 msgstr "加载图片\"%s\":%s%s错误"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
+#, object-pascal-format
 msgid "Error while deleting action:%s%s"
 msgstr "当删除动作:%s%s时错误"
 
@@ -613,14 +624,17 @@ msgid "Invalid property value"
 msgstr "无效属性值"
 
 #: objinspstrconsts.oisisnotavalidmethodname
+#, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected
+#, object-pascal-format
 msgid "%u items selected"
 msgstr ""
 
 #: objinspstrconsts.oisjumptodeclarationof
+#, object-pascal-format
 msgid "Jump to declaration of %s"
 msgstr "跳转到%s声明(declaration)"
 
@@ -751,6 +765,7 @@ msgid "Properties"
 msgstr "属性"
 
 #: objinspstrconsts.oispropertiesof
+#, object-pascal-format
 msgid "Properties of %s"
 msgstr "%s 的属性"
 
@@ -827,6 +842,7 @@ msgid "Set"
 msgstr "设置"
 
 #: objinspstrconsts.oissetmaxconstraints
+#, object-pascal-format
 msgid "Set MaxHeight=%d, MaxWidth=%d"
 msgstr "设置最大高度=%d,最大宽度=%d"
 
@@ -835,6 +851,7 @@ msgid "Use current size as Max Constraints"
 msgstr "使用当前尺寸为最大限制"
 
 #: objinspstrconsts.oissetminconstraints
+#, object-pascal-format
 msgid "Set MinHeight=%d, MinWidth=%d"
 msgstr "设置最小高度=%d,最小宽度=%d"
 
@@ -843,6 +860,7 @@ msgid "Use current size as Min Constraints"
 msgstr "使用当前尺寸为最小限制"
 
 #: objinspstrconsts.oissettodefault
+#, object-pascal-format
 msgid "Set to default: %s"
 msgstr "设为默认: %s"
 
@@ -1190,18 +1208,22 @@ msgid "Test Input"
 msgstr "测试输入"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
+#, object-pascal-format
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "该标识符\"%s\"不是一个方法.%s按取消撤销,%s按忽略强制执行."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
+#, object-pascal-format
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "该方法\"%s\"与此事件(%s)不兼容.%s按取消撤销,%s按忽略强制执行."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
+#, object-pascal-format
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "该方法\"%s\"没有published.%s按取消撤销,%s按忽略强制执行."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+#, object-pascal-format
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr ""
 

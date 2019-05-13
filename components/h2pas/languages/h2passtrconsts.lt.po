@@ -61,6 +61,7 @@ msgid "Add \"search and replace\" tool before H2Pas"
 msgstr "Prieš „H2Pas“ įdėti įrankį „rasti ir pakeisti“"
 
 #: h2passtrconsts.h2paddthesehfilestoh2pasproject
+#, object-pascal-format
 msgid "Add these .h files to H2Pas project?%s%s%s"
 msgstr "Šiuos „.h“ įdėti į „H2Pas“ projektą?%s%s%s"
 
@@ -73,6 +74,7 @@ msgid "After H2Pas"
 msgstr "Po „H2Pas“"
 
 #: h2passtrconsts.h2pambiguousmerges
+#, object-pascal-format
 msgid "Ambiguous merges:%s%s"
 msgstr "Neaiškūs suliejimai:%s%s"
 
@@ -97,10 +99,12 @@ msgid "C header file converter"
 msgstr "C antraštės failo konverteris"
 
 #: h2passtrconsts.h2pcheaderfilehhallfiles
+#, object-pascal-format
 msgid "C header file (*.h)|*.h|All files (*.*)|%s"
 msgstr "„C“ antraštės failas (*.h)|*.h|Visi failai (*.*)|%s"
 
 #: h2passtrconsts.h2pcheaderfilenotfound
+#, object-pascal-format
 msgid "C header file \"%s\" not found"
 msgstr "Nerastas „C“ antraštės failas „%s“"
 
@@ -165,6 +169,7 @@ msgid "Delete selected .h files"
 msgstr "Naikinti pažymėtus „.h“ failus"
 
 #: h2passtrconsts.h2pdeletethesehfilesfromlist
+#, object-pascal-format
 msgid "Delete these .h files from list?%s%s%s"
 msgstr "Iš sąrašo naikinti šiuos „.h“ failus?%s%s%s"
 
@@ -173,6 +178,7 @@ msgid "Delete tool"
 msgstr "Naikinti įrankį"
 
 #: h2passtrconsts.h2pdeletionoffailed
+#, object-pascal-format
 msgid "deletion of \"%s\" failed"
 msgstr "nepavyko pašalinti „%s“"
 
@@ -189,6 +195,7 @@ msgid "Do not exit"
 msgstr "Darbo nebaigti"
 
 #: h2passtrconsts.h2pdoyoureallywanttodelete
+#, object-pascal-format
 msgid "Do you really want to delete \"%s\"?"
 msgstr "Ar tikrai naikinti „%s“?"
 
@@ -213,10 +220,12 @@ msgid "Error"
 msgstr "Klaida"
 
 #: h2passtrconsts.h2perrorconvertingclipboardtexttotexttool
+#, object-pascal-format
 msgid "Error converting clipboard text to text tool:%s%s"
 msgstr "Tekstą iškarpinėje konvertuojant į teksto įrankį įvyko klaida:%s%s"
 
 #: h2passtrconsts.h2perrorconvertingputtingtoolontoclipboard
+#, object-pascal-format
 msgid "Error converting putting tool onto clipboard:%s%s"
 msgstr "Dėjimo įrankį konvertuojant į iškarpinę įvyko klaida:%s%s"
 
@@ -225,18 +234,22 @@ msgid "ERROR: file not found"
 msgstr "KLAIDA: failas nerastas"
 
 #: h2passtrconsts.h2perrorreadingglobalconfig
+#, object-pascal-format
 msgid "Error reading global config:%s%s"
 msgstr "Įkeliant globalią konfiguraciją įvyko klaida:%s%s"
 
 #: h2passtrconsts.h2perrorreadingprojectfromfile
+#, object-pascal-format
 msgid "Error reading project from file%s%s%s%s%s"
 msgstr "Įkeliant failą iš projekto įvyko klaida%s%s%s%s%s"
 
 #: h2passtrconsts.h2perrorwritingglobalconfig
+#, object-pascal-format
 msgid "Error writing global config:%s%s"
 msgstr "Globalioje konfiguracijoje yra klaida:%s%s"
 
 #: h2passtrconsts.h2pfile
+#, object-pascal-format
 msgid "File: %s"
 msgstr "Failas: %s"
 
@@ -253,6 +266,7 @@ msgid "File not found"
 msgstr "Failas nerastas"
 
 #: h2passtrconsts.h2pfilenotfound2
+#, object-pascal-format
 msgid "File not found: \"%s\""
 msgstr "Failas nerastas: „%s“"
 
@@ -261,15 +275,17 @@ msgid "FindExplicitTypes FAILED reading const section"
 msgstr "„FindExplicitTypes“ įrankiui nepavyko skaityti konstantų sekcijos"
 
 #: h2passtrconsts.h2pfindexplicittypesfailedreadingtypedefinition
+#, object-pascal-format
 msgid "FindExplicitTypes FAILED reading type definition %s"
 msgstr "„FindExplicitTypes“ įrankiui nepavyko skaityti tipo apibrėžties „%s“"
 
 #: h2passtrconsts.h2pfindexplicittypesfailedrereadingtypedefinition
+#, object-pascal-format
 msgid "FindExplicitTypes FAILED Rereading type definition %s"
 msgstr "„FindExplicitTypes“ įrankiui nepavyko iš naujo skaityti apibrėžties „%s“"
 
 #: h2passtrconsts.h2pfixessectiontypeofaliasdefinitionsinpascalunitchec
-#, fuzzy,badformat
+#, fuzzy, badformat, object-pascal-format
 msgid "Fixes section type of alias definitions in pascal unit%sChecks all alias definitions of the form%sconst LeftSide = RightSide;%slooks up RightSide in the unit and if RightSide is a type or var, changes the section accordingly"
 msgstr "Paskalio modulyje taiso pseudonimų apibrėžčių sekcijos tipą%sTikrina visas pseudonimų apibrėžtis, kurios turi formą%sconst Kairė_pusė = Dešinė_pusė;%Jei modulyje „Dešinė_pusė“ tipas yra „var“, tai atitinkamai modifikuoja sekciją"
 
@@ -278,6 +294,7 @@ msgid "Fix forward definitions by reordering"
 msgstr "Išankstines apibrėžtis taisyti perrikiuojant"
 
 #: h2passtrconsts.h2pfixopenarraysreplacearrayofwitharrayofconst
+#, object-pascal-format
 msgid "Fix open arrays%sReplace \"array of )\" with \"array of const)\""
 msgstr "Taisyti atvirus masyvus%s„array of )“ keičia į „array of const)“"
 
@@ -302,6 +319,7 @@ msgid "H2Pas project"
 msgstr "„H2Pas“ projektas"
 
 #: h2passtrconsts.h2ph2pasprojecth2ph2pallfiles
+#, object-pascal-format
 msgid "H2Pas project (*.h2p)|*.h2p|All files (*.*)|%s"
 msgstr "„H2Pas“ projektas (*.h2p)|*.h2p|Visi failai (*.*)|%s"
 
@@ -318,6 +336,7 @@ msgid "Included by:"
 msgstr "Įtraukia šis:"
 
 #: h2passtrconsts.h2pincludedby2
+#, object-pascal-format
 msgid "%s (included by %s)"
 msgstr "%s („%s“ įtraukia)"
 
@@ -338,6 +357,7 @@ msgid "Merge all but this"
 msgstr "Sulieti visus, išskyrus šitą"
 
 #: h2passtrconsts.h2pmergedinto
+#, object-pascal-format
 msgid "Merged into: %s"
 msgstr "Sulieti į: %s"
 
@@ -394,6 +414,7 @@ msgid "Options"
 msgstr "Nuostatos"
 
 #: h2passtrconsts.h2poutput
+#, object-pascal-format
 msgid "Output: %s"
 msgstr "Išvestis: %s"
 
@@ -414,10 +435,12 @@ msgid "Please enable at least one c header file that is not merged."
 msgstr "Įgalinkite bent vieną „C“ antraštės failą, kuris nėra sulietas."
 
 #: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
+#, object-pascal-format
 msgid "Post H2Pas - a set of common tools to run after H2Pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directives%sphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - Add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - Removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - Fix section type of alias definitions%sphReplaceConstFunctionsInUnit - Replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - Replace simple type cast functions with types%sphFixForwardDefinitions - Fix forward definitions by reordering%sphAddUnitsToUsesSection - Add units to uses section%s"
 msgstr "„H2Pas“ baigiamieji žingsniai - įprastų įrankių rinkinys, vykdomas po „H2Pas“ vykdymo%s„phReplaceUnitFilenameWithUnitName“ - keičia „unit failo_pavadinimas;“ į „unit pavadinimas;“%s„phRemoveIncludeDirectives“ - šalina įtraukimo direktyvas%s„phRemoveSystemTypes“ - šalina pakartotines tipų apibrėžtis, tokias kaip „PLongint“%s„phFixH2PasMissingIFDEFsInUnit“ - funkcijose įterpia trūkstamus „IFDEF“%s„phReduceCompilerDirectivesInUnit“ - šalina nereikialingas direktyvas%s„phRemoveRedefinedPointerTypes“ - šalina pakartotines rodyklių apibrėžtis%s„phRemoveEmptyTypeVarConstSections“ - šalina tuščias „type“/„var“/„const“ sekcijas%s„phReplaceImplicitTypes“ - parametruose ieško numanomų tipų ir jiems prideda tipą%s„phFixArrayOfParameterType“ - „array of )“ keičia į „array of const)“%s„phRemoveRedefinitionsInUnit“ - šalina pakartotines tipų, kntamųjų, konstantų ir ištekliaus tekstų apibrėžtis%s„phFixAliasDefinitionsInUnit“ - taiso apibrėžšių pseudonimų sekcijos tipą%s„phReplaceConstFunctionsInUnit“ - paprastas priskyrimo funkcijas keičia konstantomis%s„phReplaceTypeCastFunctionsInUnit“ - keičia paprastus tipo keitimo funkcijas į tipus%s„phFixForwardDefinitions“ - taiso išankstines apibrėžtis vykdant perrikiavimą%s„phAddUnitsToUsesSection“ - modulius įdeda į naudojamų sekciją%s"
 
 #: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
+#, object-pascal-format
 msgid "Pre H2Pas - a set of common tools to run before H2Pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for H2Pas%sphCommentComplexCFunctions - Comment functions too complex for H2Pas%s"
 msgstr "Žingsniai prieš „H2Pas“ - įprastų įrankių rinkinys vykdomas prieš vykdant „H2Pas“%s„phRemoveCPlusPlusExternCTool“ - šalina „C++“ kalbos „extern \"C\"“ eilutes%s„phRemoveEmptyCMacrosTool“ - šalina tuščias „C“ makrokomandas%s„phReplaceEdgedBracketPairWithStar“ - „[]“ keičia į „*“%s„phReplace0PointerWithNULL“ - makrokomandų rodyklių vertes „0“, tokias kaip „(char *)0“, keičia į „NULL%s„phConvertFunctionTypesToPointers“ - funkcijų tipus keičia į rodykles%s„phConvertEnumsToTypeDef“ - anoniminius išvardyjimus keičia į ūtypedef“ išvardijimus%s„phCommentComplexCMacros“ - makrokomandas, kurios pernelyg sudėtingos „H2Pas“, išjungia komentaru%s„phCommentComplexCFunctions“ - funkcijos, kurios pernelyg sudėtingos „H2Pas“, išjungia komentaru%s"
 
@@ -438,6 +461,7 @@ msgid "Read error"
 msgstr "Klaida skaitant"
 
 #: h2passtrconsts.h2preducecompilerdirectivesinpascalfileshortensexpres
+#, object-pascal-format
 msgid "Reduce compiler directives in pascal file%sShortens expressions in $IF directives%sand removes unneeded $IFDEF and $DEFINE directives."
 msgstr "Paskalio faile mažinti kompiliatoriaus direktyvas%sTrumpina išraiškas „$IF“ direktyvose ir%sšalina nereikalingas „$IFDEF“ ir „$DEFINE“ direktyvas."
 
@@ -482,6 +506,7 @@ msgid "Replace file?"
 msgstr "Pakeisti failą?"
 
 #: h2passtrconsts.h2preplaceimplicittypesforexampleprocedureprocnameaar
+#, object-pascal-format
 msgid "Replace implicit types%sFor example:%s    procedure ProcName(a: array[0..2] of char)%s  is replaced with%s    procedure ProcName(a: Tarray_0to2_of_char)%s  and a new type is added%s    Tarray_0to2_of_char = array[0..2] of char"
 msgstr "Pakeisti numanomus tipus%sPavyzdžiui:%s    procedure ProcName(a: array[0..2] of char)%s  bus pakeistas į%s    procedure ProcName(a: Tarray_0to2_of_char)%s  taip pat bus įdėtas naujas tipas%s    Tarray_0to2_of_char = array[0..2] of char"
 
@@ -562,6 +587,7 @@ msgid "TAddToUsesSection.Execute file is not pascal: "
 msgstr "„TAddToUsesSection.Execute“: failas nėra paskalio: "
 
 #: h2passtrconsts.h2ptaddtousessectionexecuteinvalidunitname
+#, object-pascal-format
 msgid "TAddToUsesSection.Execute invalid unitname \"%s\""
 msgstr "„TAddToUsesSection.Execute“: klaidingas modulio pavadinimas „%s“"
 
@@ -570,10 +596,12 @@ msgid "Text conversion tools editor"
 msgstr "Teksto konvertavimo įrankių rengyklė"
 
 #: h2passtrconsts.h2pth2pasdialogh2pasoptionscheckgroupitemclickunknown
+#, object-pascal-format
 msgid "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option %s"
 msgstr "„TH2PasDialog.h2pasOptionsCheckGroupItemClick“: nežinoma parinktis „%s“"
 
 #: h2passtrconsts.h2pthefilealreadyexists
+#, object-pascal-format
 msgid "The file \"%s\"%salready exists."
 msgstr "Failas „%s“%sjau egzistuoja."
 
@@ -582,6 +610,7 @@ msgid "Tools:"
 msgstr "Įrankiai:"
 
 #: h2passtrconsts.h2ptposth2pastoolsexecuteaddtousessectioninvalidunitn
+#, object-pascal-format
 msgid "TPostH2PasTools.Execute.AddToUsesSection invalid unitname \"%s\""
 msgstr "„TPostH2PasTools.Execute.AddToUsesSection“: klaidingas modulio pavadinimas „%s“"
 
@@ -594,10 +623,12 @@ msgid "-T  Prepend  typedef  types with T, and remove __"
 msgstr "-t  „typedef“  tipų pradžioje įterpti „T“ ir pašalnti „__“"
 
 #: h2passtrconsts.h2punabletocopyfileto
+#, object-pascal-format
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Nepavyko kopijuoti failo „%s“%sį „%s“"
 
 #: h2passtrconsts.h2punabletomergefileinto
+#, object-pascal-format
 msgid "Unable to merge file \"%s\" into \"%s\""
 msgstr "Nepavyko sulieti failo „%s“ į „%s“"
 
@@ -610,6 +641,7 @@ msgid "Warning"
 msgstr "Įspėjimas"
 
 #: h2passtrconsts.h2pwarningthefilewillbemergedintomultiplefiles
+#, object-pascal-format
 msgid "%sWarning: the file \"%s\"%swill be merged into multiple files:%s"
 msgstr "%sĮspėjimas: failas „%s“%sbus sulietas su degeliu failų:%s"
 
