@@ -419,6 +419,8 @@ type
       procedure InsertColRow(IsColumn: Boolean; Index: Integer);
       procedure DisposeCell(var P: PCellProps); virtual;
       procedure DisposeColRow(var p: PColRowProps); virtual;
+      function  IsColumnIndexValid(AIndex: Integer): boolean; inline;
+      function  IsRowIndexValid(AIndex: Integer): boolean; inline;
     public
       constructor Create;
       destructor Destroy; override;
@@ -1090,9 +1092,11 @@ type
     procedure InvalidateFromCol(ACol: Integer);
     procedure InvalidateGrid;
     procedure InvalidateFocused;
+    function  IsColumnIndexValid(AIndex: Integer): boolean; inline;
+    function  IsRowIndexValid(AIndex: Integer): boolean; inline;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
-    function IsEmptyRow(ARow: Integer): Boolean;
+    function  IsEmptyRow(ARow: Integer): Boolean;
     function  IsMouseOverCellButton(X,Y: Integer): boolean;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
@@ -2143,7 +2147,7 @@ end;
 
 function TCustomGrid.GetRowHeights(Arow: Integer): Integer;
 begin
-  if (aRow<RowCount) and (aRow>=0) then
+  if IsRowIndexValid(aRow) then
     Result:=FRows[aRow]
   else
     Result:=-1;
@@ -2550,13 +2554,23 @@ begin
   Result:=FRows.Count;
 end;
 
+function TCustomGrid.IsColumnIndexValid(AIndex: Integer): boolean;
+begin
+  Result := (AIndex>=0) and (AIndex<ColCount);
+end;
+
+function TCustomGrid.IsRowIndexValid(AIndex: Integer): boolean;
+begin
+  Result := (AIndex>=0) and (AIndex<RowCount);
+end;
+
 function TCustomGrid.GetColWidths(Acol: Integer): Integer;
 var
   C: TGridColumn;
 begin
   if not Columns.Enabled or (aCol<FixedCols) then
   begin
-    if (aCol<ColCount) and (aCol>=0) then
+    if IsColumnIndexValid(aCol) then
       Result:=FCols[aCol]
     else
       Result:=-1;
@@ -3539,10 +3553,8 @@ begin
           [aCol,aRow,FGCache.FixedHeight,CHeight, FGCache.FixedWidth, CWidth]);
   {$Endif}
 
-  while (fTopLeft.x>=0) and
-        (fTopLeft.x<ColCount)and
-        (fTopLeft.y>=0) and
-        (fTopLeft.y<RowCount) do
+  while IsColumnIndexValid(fTopLeft.x) and
+        IsRowIndexValid(fTopLeft.y) do
   begin
     RNew:=CellRect(aCol,aRow);
     if UseRightToLeftAlignment then begin
@@ -3600,9 +3612,8 @@ begin
 
     if ((XInc=0)and(YInc=0)) or // the cell is already visible
        ((FTopLeft.X=aCol)and(FTopLeft.Y=aRow)) or // the cell is visible by definition
-       ((FTopLeft.X+XInc<0)or(FTopLeft.Y+Yinc<0)) or // topleft can't be lower 0
-       ((FTopLeft.X+XInc>=ColCount)) or // leftmost column can't be equal/higher than colcount
-       ((FTopLeft.Y+Yinc>=RowCount)) // topmost column can't be equal/higher than rowcount
+       not IsColumnIndexValid(FTopLeft.X+XInc) or
+       not IsRowIndexValid(FTopLeft.Y+YInc)
     then
       Break;
     Inc(FTopLeft.x, XInc);
@@ -3886,7 +3897,7 @@ end;
 procedure TCustomGrid.ResetHotCell;
 begin
   with FGCache do begin
-    if HotCellPainted and (HotCell.x < ColCount) and (HotCell.y < RowCount) then
+    if HotCellPainted and IsColumnIndexValid(HotCell.x) and IsRowIndexValid(HotCell.y) then
       InvalidateCell(HotCell.X, HotCell.Y);
     HotCell := Point(-1,-1);
     HotCellPainted := False;
@@ -5130,7 +5141,7 @@ begin
   begin
     if not GetSmoothScroll(SB_Horz) then
     begin
-      if (FGCache.MaxTopLeft.x>=0) and (FGCache.MaxTopLeft.x<=ColCount-1) then
+      if IsColumnIndexValid(FGCache.MaxTopLeft.x) then
         HsbRange := FGCache.AccumWidth[FGCache.MaxTopLeft.x]+ClientWidth-FGCache.FixedWidth
     end else
     begin
@@ -5142,7 +5153,7 @@ begin
           Dec(HsbRange, ColWidths[ColCount-1]);
       end;
     end;
-    if (FTopLeft.x>=0) and (FTopLeft.x<=ColCount-1) then
+    if IsColumnIndexValid(FTopLeft.x) then
       HsbPos := FGCache.AccumWidth[FTopLeft.x]+FGCache.TLColOff-FGCache.FixedWidth;
   end;
 
@@ -5152,7 +5163,7 @@ begin
   begin
     if not GetSmoothScroll(SB_Vert) then
     begin
-      if (FGCache.MaxTopLeft.y>=0) and (FGCache.MaxTopLeft.y<=RowCount-1)  then
+      if IsRowIndexValid(FGCache.MaxTopLeft.y)  then
         VsbRange := FGCache.AccumHeight[FGCache.MaxTopLeft.y]+ClientHeight-FGCache.FixedHeight
     end else
     begin
@@ -5164,7 +5175,7 @@ begin
           Dec(VsbRange, RowHeights[RowCount-1]);
       end;
     end;
-    if (FTopLeft.y>=0) and (FTopLeft.y<=RowCount-1) then
+    if IsRowIndexValid(FTopLeft.y) then
       VsbPos := FGCache.AccumHeight[FTopLeft.y]+FGCache.TLRowOff-FGCache.FixedHeight;
   end;
 
@@ -5289,8 +5300,8 @@ end;
 
 procedure TCustomGrid.CheckIndex(IsColumn: Boolean; Index: Integer);
 begin
-  if (IsColumn and ((Index<0) or (Index>ColCount-1))) or
-     (not IsColumn and ((Index<0) or (Index>RowCount-1))) then
+  if (IsColumn and not IsColumnIndexValid(Index)) or
+     (not IsColumn and not IsRowIndexValid(Index)) then
     raise EGridException.Create(rsGridIndexOutOfRange);
 end;
 
@@ -6064,12 +6075,12 @@ begin
       // begin to count Cols from 0 but ...
       if Fisical and (Offset>FixedWidth-1) then begin
         Index := FTopLeft.X;  // In scrolled view, then begin from FTopLeft col
-        if (Index>=0) and (Index<ColCount) then begin
+        if IsColumnIndexValid(Index) then begin
           Offset:=Offset-FixedWidth+AccumWidth[Index];
           if GetSmoothScroll(SB_Horz) then
             Offset:=Offset+TLColOff;
         end;
-        if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
+        if not IsColumnIndexValid(Index) or (Offset>GridWidth-1) then begin
           if AllowOutboundEvents then
             Index := ColCount-1
           else
@@ -6080,7 +6091,7 @@ begin
 
       while Offset > AccumWidth[Index]+GetColWidths(Index)-1 do begin
         Inc(Index);
-        if Index>=ColCount then begin
+        if not IsColumnIndexValid(Index) then begin
           if AllowOutBoundEvents then
             Index := ColCount-1
           else
@@ -6098,9 +6109,9 @@ begin
       //DebugLn('TCustomGrid.OffsetToColRow ',DbgSName(Self),' Fisical=',dbgs(Fisical),' Offset=',dbgs(Offset),' FixedHeight=',dbgs(FixedHeight),' FTopLeft=',dbgs(FTopLeft),' RowCount=',dbgs(RowCount),' TLRowOff=',dbgs(TLRowOff));
       if Fisical and (Offset>FixedHeight-1) then begin
         Index:=FTopLeft.Y;
-        if (Index>=0) and (Index<RowCount) then
+        if IsRowIndexValid(Index) then
           Offset:=Offset-FixedHeight+AccumHeight[Index]+TLRowOff;
-        if (Index<0) or (Index>=RowCount) or (Offset>GridHeight-1) then begin
+        if not IsRowIndexValid(Index) or (Offset>GridHeight-1) then begin
           if AllowOutboundEvents then
             Index := RowCount-1
           else
@@ -6134,12 +6145,12 @@ begin
   Result:=false;
   with FGCache do begin
     if IsCol then begin
-      if (index<0) or (index>ColCount-1) then
+      if not IsColumnIndexValid(Index) then
         exit;
       StartPos:=AccumWidth[index];
       Dim:=GetColWidths(index);
     end else begin
-      if (index<0) or (index>RowCount-1) then
+      if not IsRowIndexValid(Index) then
         exit;
       StartPos:=AccumHeight[index];
       Dim:= GetRowHeights(index);
@@ -8045,7 +8056,7 @@ end;
 // shouldn't raise an error whereas setting the Row or Col property it should.
 procedure TCustomGrid.CheckLimitsWithError(const aCol, aRow: Integer);
 begin
-  if (aCol < 0) or (aRow < 0) or (aCol >= ColCount) or (aRow >= RowCount) then
+  if not IsColumnIndexValid(aCol) or not IsRowIndexValid(aRow) then
     raise EGridException.Create(rsGridIndexOutOfRange);
 end;
 
@@ -8309,7 +8320,7 @@ function TCustomGrid.EditingAllowed(ACol: Integer = -1): Boolean;
 var
   C: TGridColumn;
 begin
-  Result:=(goEditing in options) and (ACol>=0) and (ACol<ColCount) and (RowCount>FixedRows);
+  Result:=(goEditing in options) and IsColumnIndexValid(ACol) and (RowCount>FixedRows);
   if Result and Columns.Enabled then begin
     C:=ColumnFromGridColumn(ACol);
     Result:=(C<>nil) and (not C.ReadOnly);
@@ -9484,7 +9495,7 @@ begin
         for i:=1 to k do begin
           tmpPath := Path+'column'+IntToStr(i);
           j:=cfg.getValue(tmpPath+'/index',-1);
-          if (j>=0)and(j<=ColCount-1) then begin
+          if IsColumnIndexValid(j) then begin
             ColWidths[j]:=cfg.getValue(tmpPath+'/width',-1);
             doLoadColumn(self, nil, j, Cfg, Version, tmpPath);
           end;
@@ -9495,7 +9506,7 @@ begin
       k:=cfg.getValue(Path+'rowcount',0);
       for i:=1 to k do begin
         j:=cfg.getValue(Path+'row'+IntToStr(i)+'/index',-1);
-        if (j>=0)and(j<=RowCount-1) then begin
+        if IsRowIndexValid(j) then begin
           RowHeights[j]:=cfg.getValue(Path+'row'+IntToStr(i)+'/height',-1);
         end;
       end;
@@ -9925,7 +9936,7 @@ function TVirtualGrid.GetCells(Col, Row: Integer): PCellProps;
 begin
   // todo: Check range
   Result:=nil;
-  if (Col<0) or (Row<0) or (Col>=ColCount) or (Row>=RowCount) then
+  if not IsColumnIndexValid(Col) or not IsRowIndexValid(Row) then
     raise EGridException.CreateFmt(rsIndexOutOfRange, [Col, Row]);
   Result:=FCellArr[Col,Row];
 end;
@@ -10031,6 +10042,16 @@ begin
     Dispose(P);
     P:=nil;
   end;
+end;
+
+function TVirtualGrid.IsColumnIndexValid(AIndex: Integer): boolean;
+begin
+  Result := (AIndex>=0) and (AIndex<ColCount);
+end;
+
+function TVirtualGrid.IsRowIndexValid(AIndex: Integer): boolean;
+begin
+  Result := (AIndex>=0) and (AIndex<RowCount);
 end;
 
 function TVirtualGrid.GetDefaultCell: PcellProps;
@@ -11164,7 +11185,7 @@ var
   aLayout: TButtonLayout;
   imgList: TCustomImageList;
 begin
-  if (aCol<0) or (aCol>ColCount-1) then
+  if not IsColumnIndexValid(aCol) then
     Exit;
 
   GetTitleImageInfo(aCol, i, aLayout);
@@ -11537,7 +11558,8 @@ begin
             bCellData := not bTagEnd;
             if bTagEnd then // table end cell tag </td>
             begin
-              if (bCol < ColCount) and (bRow < RowCount) then Cells[bCol, bRow] := ReplaceEntities(bCellStr);
+              if IsColumnIndexValid(bCol) and IsRowIndexValid(bRow) then
+                Cells[bCol, bRow] := ReplaceEntities(bCellStr);
               bSelRect.Right := bCol;
               Inc(bCol);
               bCellStr := '';
@@ -11593,7 +11615,7 @@ begin
       while k>0 do begin
         i:=cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/column', -1);
         j:=cfg.GetValue('grid/content/cells/cell'+IntTostr(k)+'/row',-1);
-        if (j>=0)and(j<=rowcount-1)and(i>=0)and(i<=Colcount-1) then
+        if IsRowIndexValid(j) and IsColumnIndexValid(i) then
           Cells[i,j]:=UTF8Encode(cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text',''));
         Dec(k);
       end;
