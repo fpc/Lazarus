@@ -75,7 +75,6 @@ const
   DEFCOLWIDTH         = 64;
   DEFBUTTONWIDTH      = 25;
   DEFIMAGEPADDING     = 2;
-  DEFAUTOADJPADDING   = 8;
 
 type
   EGridException = class(Exception);
@@ -11242,7 +11241,7 @@ begin
   if W=0 then
     W := DefaultColWidth
   else
-    W := W + DEFAUTOADJPADDING;
+    W := W + 2*varCellpadding + 1;
 
   ColWidths[aCol] := W;
 end;
