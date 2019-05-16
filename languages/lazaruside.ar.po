@@ -9804,7 +9804,7 @@ msgid "File found"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s has changed. Save?"
 msgid "File \"%s\" has changed. Save?"
 msgstr "الجذاذة %s%s%s تغيّرت هل تريد حفظها؟"
@@ -11241,7 +11241,7 @@ msgid "%s is already part of the Project."
 msgstr "%s أدمج مسبقا في المشروع"
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s ليس مقبولا كإسم مشروع. %s إختر إسما آخر رجاء"
@@ -14032,7 +14032,7 @@ msgid "Skip this Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lismitnotice
-#, fuzzy,badformat
+#, fuzzy, badformat
 #| msgid ""
 #| "<description>\n"
 #| "\n"
@@ -14485,7 +14485,7 @@ msgid "New page"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-#, fuzzy,badformat
+#, fuzzy, badformat
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - مشروع جديد"
@@ -14801,7 +14801,7 @@ msgid "State"
 msgstr ""
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sهذا ال"
@@ -18325,7 +18325,7 @@ msgid "Invalid variable name"
 msgstr ""
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is not a valid identifier."
 msgid "\"%s\" is not a valid identifier."
 msgstr "%s%s%sليس مقبولا كإسم "
@@ -19910,7 +19910,7 @@ msgid "Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisunithaschangedsave
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unit %s%s%s has changed. Save?"
 msgid "Unit \"%s\" has changed. Save?"
 msgstr "الوحدة %s%s%s تغيّرت هل تريد حفظها؟"

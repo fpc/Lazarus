@@ -486,7 +486,7 @@ msgid "Clear picture"
 msgstr "Bersihkan gambar"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
@@ -546,7 +546,7 @@ msgid "&Delete"
 msgstr "Hapus komponen"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Hapus item %s%s%s?"
@@ -581,7 +581,7 @@ msgid "Error loading image"
 msgstr "Kesalahan pengambilan gambar"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Kesalahan pengambilan gambar %s%s%s:%s%s"

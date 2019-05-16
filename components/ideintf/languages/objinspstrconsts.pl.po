@@ -116,7 +116,7 @@ msgid "Delete the Item"
 msgstr "Usuń element"
 
 #: objinspstrconsts.clbdeletequest
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete the Item %d \"%s\"?"
 msgstr "Usunąć element \"%s\"?"
 

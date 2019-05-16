@@ -199,7 +199,7 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "Die Datei: \"%s\" existiert bereits im aktuellen Repository. Überschreiben?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Cannot open private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -211,7 +211,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Cannot save private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -232,7 +232,7 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "Kann Package: \"%s\" nicht löschen!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following directory: \"%s\" is not empty.\n"
 #| "It's recommended to save the repository to an empty directory. Continue?\n"
@@ -244,7 +244,7 @@ msgstr ""
 "Es wird empfohlen, das Repository in ein leeres Verzeichnis zu speichern. Fortfahren?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -256,7 +256,7 @@ msgstr ""
 "Jedes Repository und Lazarus-Package müssen eindeutig sein!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following Lazarus package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"

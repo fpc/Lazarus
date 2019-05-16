@@ -4463,7 +4463,7 @@ msgid "Invalid Unit Name"
 msgstr "El nom de la unitat no és vàlid"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is not a valid unit name."
 msgid "\"%s\" is not a valid unit name."
 msgstr "%s%s%s no és un nom d'unitat vàlid"
@@ -4477,7 +4477,7 @@ msgid "New File"
 msgstr "Nou Arxiu"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "No s'ha trobat cap paquet per la dependència %s%s%s.%sSi us plau, escolliu un paquet existent."
@@ -4510,43 +4510,43 @@ msgid "Show all"
 msgstr "Mostra-ho tot"
 
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "El tipus avantpassat %s%s%s té el mateix nom que%s la unitat %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
 msgid "The ancestor type \"%s\" is not a valid Pascal identifier."
 msgstr "El tipus avantpassat %s%s%s no és un identificador pascal vàlid."
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
 msgid "The class name \"%s\" and ancestor type \"%s\" are the same."
 msgstr "El nom de classe %s%s%s i tipus avantpassat %s%s%s son el mateix."
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
 msgid "The class name \"%s\" exists already in%sPackage %s%sFile: \"%s\""
 msgstr "El nom de classe %s%s%s ja existeix en%s el paquet %s%sFitxer: %s%s%s"
 
 #: lazarusidestrconsts.lisa2ptheclassnamehasthesamenameastheunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The class name \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "El nom de classe %s%s%s té el mateix nom que%s la unitat %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class name %s%s%s is not a valid Pascal identifier."
 msgid "The class name \"%s\" is not a valid Pascal identifier."
 msgstr "El nom de classe %s%s%s no és un identificador pascal vàlid."
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgstr "El fitxer %s%s%s és part del projecte actual.%sÉs una mala idea compartir fitxers entre projectes i paquets."
@@ -4557,7 +4557,7 @@ msgid "The filename \"%s\" is ambiguous because the package has no default direc
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "La versió màxima %s%s%s no és vàlida.%sSi us plau, utilitzeu el format major.menor.llançament.muntatje%sPer exemple: 1.0.20.10"
@@ -4569,31 +4569,31 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "La versió màxima és menor que la versió mínima"
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "La versió mínima %s%s%s no és vàlida.%sSi us plau, utilitzeu el format major.menor.llançament.muntatje%sPer exemple: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package already has a dependency on the package %s%s%s."
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "El paquet ja té una dependència pel paquet %s%s%s."
 
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "El nom de pàgina %s%s%s és massa llarg (max 100 car.)"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgid "The unitname \"%s\" already exists in the package:%s%s"
 msgstr "El nom d'unitat %s%s%s ja existeix en el paquet:%s%s"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthispackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unitname %s%s%s already exists in this package."
 msgid "The unitname \"%s\" already exists in this package."
 msgstr "El nom d'unitat %s%s%s ja existeix en aquest paquet."
@@ -4604,7 +4604,7 @@ msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "El nom d'unitat %s%s%s és el mateix que el d'un component registrat.%sUtilitzar-lo pot causar missatges d'error estranys."
@@ -4686,7 +4686,7 @@ msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
 msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "Un %s no pot manegar TControls. %sNomés hi podeu posar components no visuals."
@@ -4885,7 +4885,7 @@ msgid "Invalid Package"
 msgstr "El paquet no és vàlid"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackageid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Invalid package ID: %s%s%s"
 msgid "Invalid package ID: \"%s\""
 msgstr "L'ID del paquet no és vàlida: %s%s%s"
@@ -4895,7 +4895,7 @@ msgid "Package is read only"
 msgstr "El paquet només és de lectura"
 
 #: lazarusidestrconsts.lisaf2ppackagenotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Package %s%s%s not found."
 msgid "Package \"%s\" not found."
 msgstr "No s'ha trobat el paquet %s%s%s."
@@ -4913,7 +4913,7 @@ msgid "The package %s is read only."
 msgstr "El paquet %s és de només lectura."
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Ja existeix un fitxer %s%s%s. %sVoleu que el substitueixi?"
@@ -5066,7 +5066,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Va ocorrer un error durant l'ultima execució mentre s'hi carregava %s!%s%sCarregar aquest projecte de nou?"
@@ -5521,7 +5521,7 @@ msgid "Cannot copy top level component."
 msgstr "No es pot copiar el component de nivell superior."
 
 #: lazarusidestrconsts.liscannotcreatefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot create file %s%s%s"
 msgid "Cannot create file \"%s\""
 msgstr "No es pot crear el fitxer %s%s%s"
@@ -5546,7 +5546,7 @@ msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "No es pot trobar l'iniciador del Lazarus:%s%s"
@@ -6309,7 +6309,7 @@ msgid "Classes and properties exist. Values were not checked."
 msgstr ""
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "La classe %s%s%s no està registrada com a component de classe. %sNo es pot enganxar"
@@ -6502,7 +6502,7 @@ msgid "Call on:"
 msgstr "Marqueu:"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s%sClick OK if you are sure to do that."
 msgid "%s%sClick OK if you definitely want to do that."
 msgstr "%s%sClica D'Acord si estàs segur de fer-ho."
@@ -6672,7 +6672,7 @@ msgid "Add code template"
 msgstr "Afegeix la plantilla del codi"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid " A token %s%s%s already exists! "
 msgid " A token \"%s\" already exists! "
 msgstr "Ja existeix un testimoni %s%s%s !"
@@ -6709,7 +6709,7 @@ msgid "Action: %s"
 msgstr "Acció: %s"
 
 #: lazarusidestrconsts.liscodetoolsdefsautocreatednodesreadonly
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
 msgid "Auto created nodes cannot be edited,%snor can they have non auto created child nodes."
 msgstr "Els nodes generats automàticament ni es poden editar, %sni poden tenir nodes fills"
@@ -6778,12 +6778,12 @@ msgid "Delete node"
 msgstr "Elimina el node"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr "El %s directori principal, %s on Borland a instal·lat totes les fonts %s. Per exemple: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr "El directori principal %s, on Borland ha instal·lat totes les fonts %s i que son utilitzades per aquest projecte.%s Per exemple: C:/Programme/Borland/Delphi%s"
 
@@ -7002,7 +7002,7 @@ msgid "The Free Pascal SVN source directory."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "La trajectòria al compilador Free Pascal.%s Per exemple %s/usr/bin/%s -n%s o %s/usr/local/bin/fpc @/etcfpc.cfg%s."
@@ -7262,13 +7262,13 @@ msgid "Component name \"%s\" is a Pascal keyword."
 msgstr ""
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is keyword"
 msgid "Component name \"%s\" is keyword"
 msgstr "El nom de component %s%s%s és paraula clau"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "El nom de component %s%s%s no és un identificador vàlid"
@@ -7356,7 +7356,7 @@ msgid "Confirm delete"
 msgstr ""
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgid "Do you want to rebuild Lazarus with profile: %s?"
 msgstr "Vols reconstruïr Lazarus?"
@@ -8452,7 +8452,7 @@ msgid "Set the breakpoint anyway"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "No s'hi ha especificat cap depurador.%sEstablir punts de parada no tindrà cap efecte fins que configures un depurador al dialeg d'opcións del depurador en el menú."
@@ -8643,7 +8643,7 @@ msgid "Unable to load file"
 msgstr "No es pot carregar el fitxer"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to load file %s%s%s."
 msgid "Unable to load file \"%s\"."
 msgstr "No es pot carregar el fitxer %s%s%s."
@@ -8763,7 +8763,7 @@ msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete old file %s%s%s?"
 msgid "Delete old file \"%s\"?"
 msgstr "Voleu eliminar el fitxer antic %s%s%s?"
@@ -8791,7 +8791,7 @@ msgid "Delete value %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Deleting of file %s%s%s failed."
 msgid "Deleting of file \"%s\" failed."
 msgstr "Ha fallat l'eliminació del fitxer %s%s%s."
@@ -9990,7 +9990,7 @@ msgid "File: "
 msgstr ""
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -10062,7 +10062,7 @@ msgid "File is symlink"
 msgstr ""
 
 #: lazarusidestrconsts.lisfileisvirtual
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s is virtual."
 msgid "File \"%s\" is virtual."
 msgstr "El fitxer %s%s%s és virtual."
@@ -10084,7 +10084,7 @@ msgid "File not found"
 msgstr "No s'ha trobat el fitxer"
 
 #: lazarusidestrconsts.lisfilenotfound2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s not found.%s"
 msgctxt "lazarusidestrconsts.lisfilenotfound2"
 msgid "File \"%s\" not found."
@@ -10105,7 +10105,7 @@ msgid "File not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgid "File \"%s\" not found.%sDo you want to create it?"
 msgstr "No s'ha trobat el fitxer %s%s%s.%sEl voleu crear?%s"
@@ -11479,7 +11479,7 @@ msgid "%s is already part of the Project."
 msgstr "%s ja forma part del Projecte."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s no és un nom de projecte vàlid. %s Si us plau, escolliu-ne un altre (p.e. project1.lpi)"
@@ -12621,7 +12621,7 @@ msgid "Append to section"
 msgstr "Afegeix a la secció"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "La cadena del recurs %s%s%s ja existeix. Si us plau, escolliu-ne un altre nom. %s Escolliu - Ignora - per afegir-la de tota manera"
@@ -14899,7 +14899,7 @@ msgid "New page"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-#, fuzzy,badformat
+#, fuzzy, badformat
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - (nou projecte)"
@@ -15142,7 +15142,7 @@ msgid "Choose a base class for the favorite property \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Class %s%s%s not found."
 msgid "Class \"%s\" not found."
 msgstr "No s'ha trobat la Classe %s%s%S"
@@ -15218,7 +15218,7 @@ msgid "State"
 msgstr "Estat"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sAquest paquet està intal·lat, però no s'ha trobat el fitxer lpk"
@@ -15805,7 +15805,7 @@ msgid "Package %s"
 msgstr "Paquet %s"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Package %s%s%s has changed.%sSave package?"
 msgid "Package \"%s\" has changed.%sSave package?"
 msgstr "El paquet %s%s%s ha canviat.%sEl voleu desar?"
@@ -15866,7 +15866,7 @@ msgid "Remove Dependency?"
 msgstr "Voleu eliminar la dependència?"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgid "Remove dependency \"%s\"%sfrom package \"%s\"?"
 msgstr "Voleu eliminar la dependència %s%s%s%s del paquet %s%s%s?"
@@ -15889,7 +15889,7 @@ msgid "Remove file?"
 msgstr "Voleu eliminar el fitxer?"
 
 #: lazarusidestrconsts.lispckeditremovefilefrompackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Remove file %s%s%s%sfrom package %s%s%s?"
 msgid "Remove file \"%s\"%sfrom package \"%s\"?"
 msgstr "Voleu eliminar el fitxer %s%s%s%s del paquet %s%s%s?"
@@ -15917,13 +15917,13 @@ msgid "Store file name as preferred for this dependency"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "La versió màxima %s%s%s no és una versió vàlida de paquet.%s(un bon exemple 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "La versió mínima %s%s%s no és una versió vàlida de paquet.%s(un bon exemple 1.2.3.4)"
@@ -16078,7 +16078,7 @@ msgid "Runtime"
 msgstr ""
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
 msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
 msgstr "El paquet %s%s%s té el senyalador d'auto-intal·lar.%sAixò vol dir que s'instal·larà a l'IDE. Els paquets d'intal·lació%shan de ser paquets de temps de disseny."
@@ -16267,7 +16267,7 @@ msgid "Revert package?"
 msgstr "Voleu revertir el paquet?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "El fitxer %s%s%s%sja no és a la trajectòria d'unitats del paquet.%s%sVoleu afegir %s%s%s a la trajectòria de les unitats? "
@@ -16335,13 +16335,13 @@ msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Nam
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sAdding new Dependency for package %s: package %s%s"
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "%sS'està afegint nova dependència pel paquet %s: paquet %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sAdding new Dependency for project %s: package %s%s"
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sS'està afegint nova dependència pel projecte %s: paquet %s%s"
@@ -16385,7 +16385,7 @@ msgid "Delete Old Package File?"
 msgstr "Voleu eliminar el fitxer de paquet antic?"
 
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete old package file %s%s%s?"
 msgid "Delete old package file \"%s\"?"
 msgstr "Voleu eliminar el fitxer de paquet antic %s%s%s?"
@@ -16438,7 +16438,7 @@ msgid "Filename is used by project"
 msgstr "El nom del fitxer està essent utilitzat pel projecte"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s not found."
 msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
 msgid "File \"%s\" not found."
@@ -16483,7 +16483,7 @@ msgid "Invalid Package Name"
 msgstr "El nom del paquet no és vàlid"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%sSave old package %s?"
 msgstr "Carrega el paquet %s reemplaçarà el paquet %s%sdel fitxer %s.%sEl paquet antic està modificat.%s%sVoleu desar el paquet antic %s?"
@@ -16545,7 +16545,7 @@ msgid "Rename File lowercase?"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Replace existing file %s%s%s?"
 msgid "Replace existing file \"%s\"?"
 msgstr "Voleu substituir el fitxer existent %s%s%s?"
@@ -16577,7 +16577,7 @@ msgid "Save Package %s (*.lpk)"
 msgstr "Desa el paquet %s (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgid "Should the file be renamed lowercase to%s\"%s\"?"
 msgstr "Voleu canviar a minúscules el nom del fitxer a%s%s%s%s?"
@@ -16596,32 +16596,32 @@ msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "El fitxer de compilador pel paquet %s no és un executable vàlid:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
 msgstr "El fitxer %s%s%s%sja és al paquet %s."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s is not a Lazarus package."
 msgid "The file \"%s\" is not a Lazarus package."
 msgstr "El fitxer %s%s%s no és un paquet Lazarus."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
 msgid "The filename \"%s\" does not correspond to the package name \"%s\" in the file.%sChange package name to \"%s\"?"
 msgstr "El nom de fitxer %s%s%s no correspon al nom del paquet %s%s%s en el fitxer. %sVoleu canviar nom del paquet a %s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
 msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
 msgstr "El nom del fitxer %s%s%s forma part del projecte actual.%sProjectes i paquets no han de compartir fitxers."
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "El nom de fitxer %s%s%s està essent utilitzat pel%s paquet %s%s%s%s en el fitxer %s%s%s."
@@ -16640,7 +16640,7 @@ msgid "The following packages failed to load:"
 msgstr "Ha fallat la carrega dels següents paquets:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sLes següents unitats s'afegiran a la secció USES de%s%s:%s%s%s"
@@ -16651,13 +16651,13 @@ msgid "The package \"%s\" failed to compile.%sRemove it from the installation li
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
 msgid "The package file name \"%s\" in%s\"%s\" is not a valid Lazarus package name."
 msgstr "El nom de fitxer de paquet %s%s%s en %s%s%s no és un nom de paquet Lazarus vàlid."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgid "The package %s is a runtime only package.%sRuntime only packages cannot be installed in the IDE."
 msgstr "El paquet %s és només un paquet de temps d'execució.%sAquests tipus de paquets no poden ser instal·lats a l'IDE."
@@ -16668,49 +16668,49 @@ msgid "The package \"%s\" is compiled automatically and its output directory is 
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgid "The package \"%s\" is marked for installation but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "No s'ha pogut trobar el paquet marcat per instal·lar %s%s%s.%sVoleu eliminar la dependència de la llista de paquets de la instal·lació?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
 msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
 msgstr "El paquet %s el requereix %s, el qual està marcat per instal·lar.%sMireu la gràfica del paquet."
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgid "The package name \"%s\" is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "El nom de paquet %s%s%s no és un nom de paquet vàlid%sSi us plau, escolliu-ne un altre (p.ex. paquet1.lpk)"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "El nom del paquet %s%s%s del%sfitxer %s%s%s no és vàlid."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "S'ha marcat el paquet %s%s%s.%sActualment el Lazarus només en permet en paquets enllaçats estàticament. La des-instal·lació real necessita el remuntatge i reinici del Lazarus.%s%sVoleu remuntar el Lazarus ara?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "S'ha marcat per instal·lar el paquet  %s%s%s.%sActualment el Lazarus només en permet en paquets enllaçats estàticament. La instal·lació real necessita el remuntatge i reinici del Lazarus.%s%sVoleu remuntar el Lazarus ara?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
 msgstr "El projecte requereix el paquet %s%s%s.%sPerò no s'ha trobat. Mireu Projecte -> Inspector del Projecte."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
 msgstr "Hi ha dues unitats amb el mateix nom:%s%s1. %s%s%s de %s%s2. %s%s%s de %s%s%s"
@@ -16720,25 +16720,25 @@ msgid "There is a circular dependency in the packages. See package graph."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
 msgid "There is a FPC unit with the same name as a package:%s\"%s\""
 msgstr "Hi ha una unitat FPC amb el mateix nom que un paquet:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
 msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "Hi ha una unitat FPC amb el mateix nom que:%s%s%s%s%s de %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
 msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "Ja hi ha un altre paquet amb el nom %s%s%s.%sPaquet amb conficte: %s%s%s%sFitxer: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgid "There is already a package \"%s\" loaded%sfrom file \"%s\".%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Ja hi ha un paquet %s%s%s carregat%s des del fitxer %s%s%s.%sMireu Components -> Gràfica dels paquets.%sNo es pot reemplaçar."
@@ -16748,7 +16748,7 @@ msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "Hi ha un paquet no desat en els paquets requerits. Mireu la gràfica dels paquets."
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgid "There is a unit with the same name as a package:%s1. \"%s\" from %s%s2. \"%s\""
 msgstr "Hi ha una unitat amb el mateix nom que un paquet:%s%s1. %s%s%s de %s%s2. %s%s%s%s"
@@ -16762,25 +16762,25 @@ msgid "Unable to create directory"
 msgstr "No es pot crear el directori"
 
 #: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create output directory %s%s%s%sfor package %s."
 msgid "Unable to create output directory \"%s\"%sfor package %s."
 msgstr "No es pot crear el directori de sortida %s%s%s%spel paquet %s."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "No es pot crear el directori sortida font %s%s%s%s pel paquet %s."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "No es pot crear el directori destinació del Lazarus:%s%s%s%s.%sAquest directori el necessita el nou IDE Lazarus amb els vostres paquets personalitzats."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to delete file %s%s%s."
 msgid "Unable to delete file \"%s\"."
 msgstr "No es pot eliminar el fitxer %s%s%s."
@@ -16790,7 +16790,7 @@ msgid "Unable to delete file"
 msgstr "No es pot eliminar el fitxer"
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to delete old state file %s%s%s%sfor package %s."
 msgid "Unable to delete old state file \"%s\"%sfor package %s."
 msgstr "No es pot eliminar el fitxer antic %s%s%s%spel paquet %s."
@@ -16805,19 +16805,19 @@ msgid "Unable to open the package \"%s\".%sThis package was marked for installat
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
 msgstr "No es pot llegir fitxer d'estat %s%s%s%sdel paquet %s.%sError: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "No es pot escriure el paquet %s%s%s%sal fitxer %s%s%s.%sError: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
 msgstr "No es pot escriure el fitxer d'estat %s%s%s%sdel paquet %s.%sError: %s"
@@ -16840,7 +16840,7 @@ msgid "Use unit"
 msgstr "Utilitza Unitat"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgid "Warning: The file \"%s\"%sbelongs to the current project."
 msgstr "Avís: El fitxer %s%s%s%spertany al projecte actual."
@@ -16876,13 +16876,13 @@ msgid "Cannot register components without unit"
 msgstr "No es poden registrar els components sense unitat"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component Class %s%s%s already defined"
 msgid "Component Class \"%s\" already defined"
 msgstr "La classe del component %s%s%s ja està definida"
 
 #: lazarusidestrconsts.lispkgsysfilename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%sFile Name: %s%s%s"
 msgid "%s%sFile Name: \"%s\""
 msgstr "%s%sNom del fitxer: %s%s%s"
@@ -16938,7 +16938,7 @@ msgid "This package is installed but the lpk file was not found. All its compone
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%sUnit Name: %s%s%s"
 msgid "%s%sUnit Name: \"%s\""
 msgstr "%s%sNom de la unitat: %s%s%s"
@@ -17252,13 +17252,13 @@ msgid "Package Type:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "No s'ha trobat la dependència %s%s%s.%sSi us plau, escolliu un paquet que existeixi"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
@@ -17270,32 +17270,32 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "La versió màxima és menor que la versió mínima"
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "La versió mínima %s%s%s no és vàlida.%sSi us plau, utilitzeu el format major.menor.llançament.muntatje%sPer exemple: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project has already a dependency for the package %s%s%s."
 msgid "The project has already a dependency for the package \"%s\"."
 msgstr "El projecte ja té una dependència pel paquet %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "El nom d'unitat %s%s%s ja existeix en el projecte%sen el fitxer: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "El nom d'unitat %s%s%s ja existeix en la selecció%s en el fitxer: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s is not a valid Pascal identifier."
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "El nom d'unitat %s%s%s no és un identificador pascal vàlid."
@@ -18008,7 +18008,7 @@ msgid "File not executable"
 msgstr "El fitxer no és executable"
 
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The host application %s%s%s is not executable."
 msgid "The host application \"%s\" is not executable."
 msgstr "L'aplicació amfitriona %s%s%s no és executable"
@@ -18158,7 +18158,7 @@ msgid "Save file as"
 msgstr ""
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Voleu desar el fitxer %s%s%s%sabans de tancar la forma %s%s%s?"
@@ -18687,7 +18687,7 @@ msgid "&Source Breakpoint ..."
 msgstr ""
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Source directory %s%s%s does not exist."
 msgid "Source directory \"%s\" does not exist."
 msgstr "El directori font %s%s%s no existeix."
@@ -18701,7 +18701,7 @@ msgid "Source modified"
 msgstr "S'ha modificat el codi font"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Source of page %s%s%s has changed. Save?"
 msgid "Source of page \"%s\" has changed. Save?"
 msgstr "El codi font de la pàgina %s%s%s ha canviat. Voleu desar-lo?"
@@ -18856,7 +18856,7 @@ msgid "Invalid variable name"
 msgstr "El nom de la variable no és vàlid"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is not a valid identifier."
 msgid "\"%s\" is not a valid identifier."
 msgstr "%s%s%s no és un identificador vàlid"
@@ -18989,7 +18989,7 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "La classe %s%s%s és un TControl i no pot ser enganxat dins un no-control%sNo s'ha pogut enganxar."
@@ -19015,7 +19015,7 @@ msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
 msgstr "L'editor de component de classe %s%s%s%sinvocat amb el verb #%s %s%s%s%s ha generat l'error:%s%s%s%s"
@@ -19053,7 +19053,7 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr ""
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr "El depurador %s%s%s%sno existeix o no es executable. %s%s%sMira Entorn -> Opcions del Depurador"
@@ -19068,7 +19068,7 @@ msgid "The default mode must be stored in project, not in session."
 msgstr ""
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The destination directory%s%s%s%s does not exist."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "No existeix el directori de destinació%s%s%s%s."
@@ -19104,7 +19104,7 @@ msgid "The directory %s was not found."
 msgstr ""
 
 #: lazarusidestrconsts.listhefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s"
 msgid "The file \"%s\""
 msgstr "El fitxer %s%s%s"
@@ -19139,7 +19139,7 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr ""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "El fitxer %s%s%s%ssembla ser un programa. voleu tancar el projecte actual i crear un nou projecte Lazarus per aquest programa?%s\"No\" carregarà el fitxer com un codi font normal."
@@ -19155,13 +19155,13 @@ msgid "The file \"%s\"%swas found in one of the source directories of the packag
 msgstr ""
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "No s'ha trobat el fitxer %s%s%s%s.%sEl voleu localitzar manualment ?%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "No s'ha trobat el fitxer %s%s%s%s.Ignora, carregarà el projecte.%sAvorta n'aturarà la càrrega."
@@ -19331,7 +19331,7 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
 msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
 msgstr "No s'ha trobat el programa %sMake%s.%sEs necessita aquesta eina per muntar el Lazarus.%s"
@@ -19355,7 +19355,7 @@ msgid "The project has no main source file."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgid "The project info file \"%s\"%sis equal to the project main source file!"
 msgstr "El fitxer d'informació del projecte %s%s%s%sés igual al fitxer principal del codi font del projecte!"
@@ -19366,7 +19366,7 @@ msgid "The project information file \"%s\"%shas changed on disk."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "S'ha de desar el projecte abans de muntar de nou%sSi fiqueu el directori de les proves en les opcions de l'entorn,%spodeu crear projectes nous i muntar-los al mateix temps.%sVoleu desar el projecte?"
@@ -19433,7 +19433,7 @@ msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already a form with the name %s%s%s"
 msgid "There is already a form with the name \"%s\""
 msgstr "Ja hi ha una forma amb el nom %s%s%s"
@@ -19459,13 +19459,13 @@ msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make 
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "Ja hi ha una unitat amb el nom %s%s%s. Els identificadors pascal han de ser únics."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "En el projecte hi ha una unitat amb el nom %s%s%s.%sSi us plau, escolliu un nom diferent."
@@ -19576,7 +19576,7 @@ msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr ""
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
 msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "La unitat ja te el nom %s%s%s. Els identificadors Pascal ha de ser únics."
@@ -19609,7 +19609,7 @@ msgid "This is a test project for a design time package, testing it outside the 
 msgstr ""
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Sembla un arxiu pascal.%sS'hi recomana utilitzar minúscules per evitar problemes diversos amb alguns sistemes d'arxius i diferents compiladors.%sCanviar-li el nom a minúscules?"
@@ -19990,7 +19990,7 @@ msgid "Not found"
 msgstr "No s'ha trobat"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
 msgstr "Voleu substituir aquesta ocurrència de %s%s%s%s amb %s%s%s?"
@@ -20014,7 +20014,7 @@ msgid "Search string '%s' not found!"
 msgstr "No s'ha trobat la cadena '%s'"
 
 #: lazarusidestrconsts.lisuethecurre
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
 msgid "The current editor font does not support UTF-8 but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "La font de l'editor actual no soport UTF-8, però pareix que el teu sistema està utilitzant-la.%sAçò implica que els caràcters no ASCII probablement no s'hi voran corrèctament.%sPodries sel·leccionar un altra font a les opcions de l'editor."
@@ -20077,13 +20077,13 @@ msgid "Unable copy components to clipboard"
 msgstr "No es pot copiar els components al porta-retalls"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "No es pot afegir el comentari de capçalera del recurs al fitxer del recurs %s%s%s%s.%sProbable error de sintaxi."
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "No es pot afegir el recurs T%s:FORMDATA al fitxer de recurs %s%s%s%s.%sProbable error de sintaxi."
@@ -20099,13 +20099,13 @@ msgid "Unable to add the dependency %s because this would create a circular depe
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "No es pot afegir %s al projecte, ja hi ha una unitat amb el mateix nom al projecte."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "No es pot fer copia de seguretat del fitxer %s%s%s a %s%s%s!"
@@ -20130,7 +20130,7 @@ msgid "Unable to clean up destination directory"
 msgstr "No es pot netejar el directori destinació"
 
 #: lazarusidestrconsts.lisunabletocleanuppleasecheckpermissions
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to clean up %s%s%s.%sPlease check permissions."
 msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "No es pot netejar %s%s%s.%sSi us plau, comproveu els permisos."
@@ -20141,13 +20141,13 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "No es pot convertir el component de text a format binari:%s%s"
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to convert file %s%s%s%sError: %s"
 msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "No es pot convetir el fitxer %s%s%s%sError: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "No es poden convertir dades de forma del fitxer %s%s%s%s%sa afluent binari. (%s)"
@@ -20162,13 +20162,13 @@ msgid "Unable to copy file"
 msgstr "No es pot copiar el fitxer"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "No es pot copiar el fitxer %s%s%s%sa %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create directory %s%s%s."
 msgid "Unable to create directory \"%s\"."
 msgstr "No es pot crear el directori %s%s%s"
@@ -20178,7 +20178,7 @@ msgid "Unable to create file"
 msgstr "No es pot crear el fitxer"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create file %s%s%s"
 msgid "Unable to create file \"%s\""
 msgstr "No es pot crear el fitxer %s%s%s"
@@ -20224,13 +20224,13 @@ msgid "Unable to find a ResourceString section in this or any of the used units.
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to find a valid classname in %s%s%s"
 msgid "Unable to find a valid classname in \"%s\""
 msgstr "No es pot trobar un nom de classe vàlid a %s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to find file %s%s%s."
 msgid "Unable to find file \"%s\"."
 msgstr "No es pot trobar el fitxer %s%s%s."
@@ -20306,13 +20306,13 @@ msgid "Unable to read file"
 msgstr "No es pot llegir el fitxer"
 
 #: lazarusidestrconsts.lisunabletoreadfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read file %s%s%s!"
 msgid "Unable to read file \"%s\"."
 msgstr "No es pot llegir el fitxer %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read file %s%s%s%sError: %s"
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "No es pot llegir el fitxer %s%s%s%sError: %s"
@@ -20332,7 +20332,7 @@ msgid "Unable to read the project info file%s\"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "No es pot eliminar el fitxer de resguard antic %s%s%s!"
@@ -20357,13 +20357,13 @@ msgid "Unable to rename file"
 msgstr "No es pot canviar el nom del fitxer"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "No es pot canviar el nom del fitxer %s%s%s a %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to rename file %s%s%s%sto %s%s%s."
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
 msgstr "No es pot canviar el nom del fitxer %s%s%s%sa %s%s%s."
@@ -20434,7 +20434,7 @@ msgid "Unable to write file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritefileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to write file %s%s%s%sError: %s"
 msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "No es pot escriure el fitxer %s%s%s%sError: %s"
@@ -21987,7 +21987,7 @@ msgid "Go to Line Number"
 msgstr "Vés a la línia número"
 
 #: lazarusidestrconsts.srkmecgotomarker
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Go to Marker %d"
 msgid "Go to bookmark %d"
 msgstr "Vés al marcador %d"
@@ -22529,7 +22529,7 @@ msgid "Set a free Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Set Marker %d"
 msgid "Set bookmark %d"
 msgstr "Posiciona el marcador %d"

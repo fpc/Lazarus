@@ -3172,7 +3172,7 @@ msgid "Overwrite block"
 msgstr "Ylikirjoita lohko"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Desktop with the name \"%s\" was found.\n"
 #| "Should the old desktop be overwritten?\n"
@@ -3490,7 +3490,7 @@ msgid "Rubberband Selection"
 msgstr "Kuminauhojen valinta"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The running Lazarus instance cannot accept any files.\n"
 #| "Do you want to open them in a new IDE instance?\n"
@@ -9860,7 +9860,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII- tai UTF-8-koodatut tiedostot"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "File %s is converted to text format."
 msgid "File %s was converted to text format."
 msgstr "Tiedosto %s on muunnettu tekstiksi."
@@ -11047,7 +11047,7 @@ msgid "Install it, I like the fat"
 msgstr "Asenna, pidän siitä turvonneena"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following packages are not installed, but available in the main repository: %s.\n"
 #| "Do you wish to install missing packages?\n"
@@ -13145,7 +13145,7 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "You have to change the shortcut from %s\n"
 #| "to avoid a conflict\n"
@@ -16005,7 +16005,7 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Joitain vaadittuja paketteja ei löytynyt. Katso tarkemmin pakettikuvaajasta."
 
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The package %s is already open in the IDE.\n"
 #| "You cannot save a package with the same name.\n"

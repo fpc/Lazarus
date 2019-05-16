@@ -434,7 +434,7 @@ msgid "Unsupported protocol in URL:%s"
 msgstr "Nem támogatott protokoll az URL-ben: %s"
 
 #: ipconst.sicmpecho
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Echo reply (Hop number: %d)\n"
 #| "             Status = %d\n"

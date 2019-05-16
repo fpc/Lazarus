@@ -199,7 +199,7 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "A következő fájl már létezik a tárolóban: \"%s\". Felülírás?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Cannot open private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -211,7 +211,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Cannot save private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -232,7 +232,7 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "A csomag nem törölhető: \"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following directory: \"%s\" is not empty.\n"
 #| "It's recommended to save the repository to an empty directory. Continue?\n"
@@ -244,7 +244,7 @@ msgstr ""
 "Jobb lenne a tárolót egy üres könyvtárba menteni. Folytatás?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -256,7 +256,7 @@ msgstr ""
 "Minden tárolónak és Lazarus csomagnak csak egy példányban szabad létezni!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following Lazarus package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -832,7 +832,7 @@ msgid "%s packages deleted!"
 msgstr "%s csomag törölve!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "%sAre you sure you wish to uninstall the checked packages?\n"
 #| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"

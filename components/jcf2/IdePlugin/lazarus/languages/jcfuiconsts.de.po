@@ -423,7 +423,7 @@ msgid "Show confirmation dialog before format"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Date file written: %s"
 msgstr "Dateidatum:"
 
@@ -456,7 +456,7 @@ msgid "Settings file is:"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Version that wrote this file: %s"
 msgstr "Version, die die Datei geschrieben hat:"
 

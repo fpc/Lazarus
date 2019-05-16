@@ -63,7 +63,7 @@ msgid "Position/offset %d is larger than maximum supported %d."
 msgstr ""
 
 #: opkman_zip.serrunsupportedcompressionformat
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unsupported compression format %d"
 msgid "Unsupported compression format %d."
 msgstr "Tukematon pakkausformaatti %d"

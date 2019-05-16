@@ -285,7 +285,7 @@ msgid "FindExplicitTypes FAILED Rereading type definition %s"
 msgstr "„FindExplicitTypes“ įrankiui nepavyko iš naujo skaityti apibrėžties „%s“"
 
 #: h2passtrconsts.h2pfixessectiontypeofaliasdefinitionsinpascalunitchec
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fixes section type of alias definitions in pascal unit%sChecks all alias definitions of the form%sconst LeftSide = RightSide;%slooks up RightSide in the unit and if RightSide is a type or var, changes the section accordingly"
 msgstr "Paskalio modulyje taiso pseudonimų apibrėžčių sekcijos tipą%sTikrina visas pseudonimų apibrėžtis, kurios turi formą%sconst Kairė_pusė = Dešinė_pusė;%Jei modulyje „Dešinė_pusė“ tipas yra „var“, tai atitinkamai modifikuoja sekciją"
 

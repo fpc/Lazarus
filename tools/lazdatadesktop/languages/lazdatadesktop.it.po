@@ -80,7 +80,7 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Dare un nome descrittivo alla connessione"
 
 #: lazdatadeskstr.sconnectionnameexists
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "There is already a connection named \"%s\"\n"
 #| "Would you like to override the connection data ?\n"
@@ -100,7 +100,7 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Volete creare una nuova connessione per questo database?"
 
 #: lazdatadeskstr.sddmodified
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Data dictionary \"%s\" has changed.\n"
 #| "What do you want to do with the changes?\n"
@@ -475,7 +475,7 @@ msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Connect to a database"
 msgid "Connect to a database of type %s"
 msgstr "Connetti ad una base di dati"

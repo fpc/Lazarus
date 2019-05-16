@@ -480,7 +480,7 @@ msgid "Clear picture"
 msgstr "Plaatje wissen"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Componentnaam \"%s\" is geen geldige indentifier"
@@ -535,7 +535,7 @@ msgid "&Delete"
 msgstr "&Verwijderen"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Verwijder onderdelen \"%s\"?"
@@ -570,7 +570,7 @@ msgid "Error loading image"
 msgstr "Fout bij het laden van het plaatje"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Fout bij het laden van plaatje \"%s\":%s%s"

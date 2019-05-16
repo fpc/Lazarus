@@ -53,7 +53,7 @@ msgid "update repository"
 msgstr "更新存储库"
 
 #: fppkg_mainfrm.serractionfailed
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Failed to %s: \n"
 #| "\n"

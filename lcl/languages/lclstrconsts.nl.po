@@ -13,19 +13,19 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Browser \"%s\" niet uitvoerbaar"
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Browser \"%s\" niet gevonden"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Fout tijdens uitvoeren van \"%s\":%s%s"
@@ -40,7 +40,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Geen HTML browser gevonden.%sDefinieer deze alstublieft via  Hulpmiddelen -> Opties -> Help -> Help Opties"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "De help database \"%s\" heeft bestand \"%s\" niet kunnen vinden."
@@ -600,7 +600,7 @@ msgid "Help Selector Error"
 msgstr "Help Selectie fout"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Er is geen viewer voor help type \"%s\""
@@ -1394,7 +1394,7 @@ msgid "%s bytes"
 msgstr "%s bytes"
 
 #: lclstrconsts.sshellctrlsinvalidpath
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"
@@ -1407,7 +1407,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid relative pathname:\n"
 #| "\"%s\"\n"
@@ -1425,7 +1425,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"
@@ -1452,7 +1452,7 @@ msgid "Name"
 msgstr "Naam"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The selected item does not exist on disk:\n"
 #| "\"%s\"\n"

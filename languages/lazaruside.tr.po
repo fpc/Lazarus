@@ -30,7 +30,7 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Etkin/Devre dışı listesindeki bazı gruplar mevcut değil.%0:sOluşturulsun mu?%0:s%0:s%1:s"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Address Breakpoint %s"
 msgstr "Address Breakpoint %s"
 
@@ -150,7 +150,7 @@ msgid "Paste"
 msgstr "Yapıştır"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselcontinue
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Continue %0:s (Bound to: %1:s)"
 msgstr "Devam et %0:s (% 1: s bağlantılı)"
 
@@ -1438,12 +1438,12 @@ msgid "Desktop name"
 msgstr "Masaüstü adı"
 
 #: lazarusidestrconsts.dlgdesktopsexported
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%d desktop(s) successfully exported to \"%s\""
 msgstr "% D masaüstü (ler) \" %s \\ \"e başarıyla ihraç edildi"
 
 #: lazarusidestrconsts.dlgdesktopsimported
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr "% D masaüstü (ler) \" %s \\ \"den başarıyla içe aktarıldı."
 
@@ -1546,7 +1546,7 @@ msgid "User defined extension"
 msgstr "Kullanıcı tanımlı uzantı"
 
 #: lazarusidestrconsts.dlgeddelayinsec
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "(%s sec delay)"
 msgstr "(% S sn gecikme)"
 
@@ -1776,7 +1776,7 @@ msgid "File extensions"
 msgstr "Dosya uzantıları"
 
 #: lazarusidestrconsts.dlgfiles
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s files"
 msgstr "% S dosyası"
 
@@ -2116,7 +2116,7 @@ msgid "Keep order of procedures"
 msgstr "Usullerin düzenini sürdürün"
 
 #: lazarusidestrconsts.dlgfpcexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Compiler executable (e.g. %s)"
 msgstr "Derleyici yürütülebilir (ör.% S)"
 
@@ -3389,7 +3389,7 @@ msgid "Icon:"
 msgstr "Simge:"
 
 #: lazarusidestrconsts.dlgpoicondesc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "(size: %d:%d, bpp: %d)"
 msgstr "(Boyut:% d:% d, bpp:% d)"
 
@@ -4396,7 +4396,7 @@ msgid "Invalid Unit Name"
 msgstr "Geçersiz Ünite Adı"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "\"%s\" is not a valid unit name."
 msgstr "\"% S \\ \"geçerli bir birim adı değil."
 
@@ -4409,7 +4409,7 @@ msgid "New File"
 msgstr "Yeni dosya"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Bağımlılık \" %s \\ \"için paket bulunamadı.% SLütfen mevcut bir paketi seçin."
 
@@ -4471,18 +4471,18 @@ msgid "The class name \"%s\" is not a valid Pascal identifier."
 msgstr "Sınıf adı \" %s \\ \"geçerli bir Pascal tanımlayıcı değil."
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgstr "\"% S \\ \"dosyası geçerli projenin bir parçası.% SProje arasında dosya paylaşmak kötü bir fikir"
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgid "The filename \"%s\" is ambiguous because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "\" \"\" %s \\ \"dosya adı belirsiz, çünkü paketin varsayılan dizini yok.% SPlease spec"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Maksimum Sürüm \" %s \\ \"geçersizdir.% SLütfen formunu kullanınız: major.minor.release.build %sSınav içi"
@@ -4493,7 +4493,7 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maksimum Sürüm, Minimim Sürümünden daha düşüktür."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimum Sürüm \" %s \\ \"geçersiz.% SÜzelik major.minor.release.build %sDeğişimi kullanı"
@@ -4509,7 +4509,7 @@ msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "Sayfa adı \" %s \\ \"çok uzun (en fazla 100 karakter)."
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unitname \"%s\" already exists in the package:%s%s"
 msgstr "\"% S \\ \"birim adı zaten pakette mevcut: %s %s"
 
@@ -4519,12 +4519,12 @@ msgid "The unitname \"%s\" already exists in this package."
 msgstr "\" \\ \" %s \" birim adı bu pakette zaten mevcut. "
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Birim adı \" %s \\ \"% kum dosya adı \" %s \\ \"farklı."
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "\" \"\" %s \\ \"birim adı kayıtlı bir bileşen ile aynıdır.% SBunu kullanmak garip hata m'ye neden olabili"
 
@@ -4573,7 +4573,7 @@ msgid "About"
 msgstr "Hakkında"
 
 #: lazarusidestrconsts.lisabout2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "About %s"
 msgstr "Hakkında"
 
@@ -4590,7 +4590,7 @@ msgid "About Lazarus"
 msgstr "Lazarus Hakkında"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "Lisans: GPL / LGPL. Lisans detayları için Lazarus ve Free Pascal kaynaklarına bakın.% SLazarus"
 
@@ -4603,7 +4603,7 @@ msgid "Official:"
 msgstr "Resmi:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
 msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr " %s TControl'leri tutamıyor %sSadece görsel olmayan bileşenleri koyabilirsiniz."
@@ -4754,7 +4754,7 @@ msgid "Add to include search path?"
 msgstr "Ekle arama yoluna dahil mi?"
 
 #: lazarusidestrconsts.lisaddtoproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Add %s to project?"
 msgstr "% S projeye ekle?"
 
@@ -4820,12 +4820,12 @@ msgid "The package %s is read only."
 msgstr " %s paketi salt okunur."
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "\" \\ \" %s \" dosyası zaten var.% S Yeniden yerleştirilsin mi? "
 
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "A filter with the name \"%s\" already exists."
 msgstr "\"% S \\ \"adı olan bir filtre zaten var."
 
@@ -4970,7 +4970,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr "Üst tarafı ile kardeşinin üst tarafına bağlayın.Bir mesafe ayarlamak için BorderSpacing kullanın"
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "% S yüklenirken son başlatılışta bir hata oluştu!% SBu projeyi tekrar yükle?"
 
@@ -5141,7 +5141,7 @@ msgid "Creates a Backup directory under project directory"
 msgstr "Proje dizini altında bir yedek dizin oluşturur"
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr "Paket adı ya da sürüm değiştirildiğinde bağımlılıklar kesilir.Bu bağımlılıklar"
 
@@ -5383,7 +5383,7 @@ msgid "Busy"
 msgstr "Meşgul"
 
 #: lazarusidestrconsts.lisbyte
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s byte"
 msgstr "% S baytı"
 
@@ -5431,12 +5431,12 @@ msgid "Cannot delete last mode."
 msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "cannot execute \"%s\""
 msgstr "\"% S \\ \"\" \\ \\ n \"\" "
 
 #: lazarusidestrconsts.liscannotfind
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Cannot find %s"
 msgstr "% S bulunamıyor"
 
@@ -5488,17 +5488,17 @@ msgid "Compare files (not for creating patches)"
 msgstr "Dosyaları karşılaştırın (yamalar oluşturmak için değil)"
 
 #: lazarusidestrconsts.liscbpfiles
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s (%s files)"
 msgstr "% S ( %s dosyaları)"
 
 #: lazarusidestrconsts.liscbpreallydeletesourcefiles
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Really delete %s source files%s%s"
 msgstr "% S kaynak dosyalarını gerçekten sildim %s %s"
 
 #: lazarusidestrconsts.lisccdchangeclassof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Change Class of %s"
 msgstr "% S sınıfını değiştir"
 
@@ -5516,7 +5516,7 @@ msgid "Please check the Test directory under %sTools -> Options -> Files -> Dire
 msgstr "Lütfen %sTools -> Seçenekler -> Dosyalar -> Yapı testi için Dizin altındaki Test dizini kontrol edi"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
 msgstr "\"% S \\ \"derleyici, yürütülebilir bir dosya değil %sDetails: %s"
 
@@ -5529,7 +5529,7 @@ msgid "Copy output to clipboard"
 msgstr "Çıktıyı panoya kopyala"
 
 #: lazarusidestrconsts.lisccodatesdiffer
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "FPC'nin .ppu dosyalarının tarihleri ââbir saatten fazla farklılık göstermektedir.% SBu, ik"
 
@@ -5603,7 +5603,7 @@ msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong un
 msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "Yolunuzda birkaç Free Pascal Derleyicisi var.% S %s %s Eski bir comp'yi silmeyi unuttunuz"
 
@@ -5682,7 +5682,7 @@ msgid "Follow cursor"
 msgstr "İmleci takip et"
 
 #: lazarusidestrconsts.liscein
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr "% S, %s"
@@ -5850,7 +5850,7 @@ msgid "Wrong indentation"
 msgstr "Yanlış girinti"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "% S \" %s silinirken bir istisna oluştu: %s \\ \" %s %s"
 
@@ -5859,17 +5859,17 @@ msgid "Cancel loading this resource"
 msgstr "Bu kaynağı yüklemeyi iptal et"
 
 #: lazarusidestrconsts.liscfeclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sClass \"%s\" not found."
 msgstr "% S %sClass \" %s \\ \"bulunamadı."
 
 #: lazarusidestrconsts.liscfecomponent
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent: %s:%s"
 msgstr "% S %s Bileşeni: %s: %s"
 
 #: lazarusidestrconsts.liscfecomponentclass
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent Class: %s"
 msgstr "% S %sComponent Sınıfı: %s"
 
@@ -5903,7 +5903,7 @@ msgid "Error destroying component"
 msgstr "Bileşeni tahrip ederken hata oluştu"
 
 #: lazarusidestrconsts.liscfeerrordestroyingcomponentoftypeofunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error destroying component of type %s of unit %s:%s%s"
 msgstr "% S: %s %s biriminin %s türü bileşenini yok ederken hata oluştu"
 
@@ -5917,12 +5917,12 @@ msgid "Error destroying mediator %s of unit %s:%s%s"
 msgstr "Birim %s için aracı %s yok edildi: %s %s"
 
 #: lazarusidestrconsts.liscfeerrorreading
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error reading %s"
 msgstr "% S okunurken hata oluştu"
 
 #: lazarusidestrconsts.liscfeinfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "In file %s"
 msgstr "% S dosyasında"
 
@@ -5931,7 +5931,7 @@ msgid "Invalid component owner"
 msgstr "Geçersiz bileşen sahibi"
 
 #: lazarusidestrconsts.liscferoot
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sRoot=%s:%s"
 msgstr "% SRoot = %s: %s"
 
@@ -5940,12 +5940,12 @@ msgid "Stop all loading"
 msgstr "Tüm yüklemeyi durdur"
 
 #: lazarusidestrconsts.liscfestream
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sStream=%s"
 msgstr "% SStream = %s"
 
 #: lazarusidestrconsts.liscfestreamposition
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sStream position: %s"
 msgstr "% S %sStream konumu: %s"
 
@@ -5959,7 +5959,7 @@ msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
 msgstr "TCustomFormEditor.CreateNonFormForm Bilinmeyen tür %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditordeletecomponentwhereisthetcustomn
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
 msgstr "TCustomFormEditor.DeleteComponent TCustomNonFormDesignerForm nerde?% S"
 
@@ -5969,7 +5969,7 @@ msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
 msgstr "TCustomFormEditor.RegisterDesignerMeditor zaten kayıtlı: %s"
 
 #: lazarusidestrconsts.liscfethecomponenteditorofclasshascreatedtheerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The component editor of class \"%s\"has created the error:%s\"%s\""
 msgstr "\"% S \\ \"sınıfının bileşen editörü şu hatayı oluşturdu: %s \" %s \\ \""
 
@@ -5979,7 +5979,7 @@ msgid "The component of type %s failed to set its owner to %s:%s"
 msgstr " %s türü bileşeni, sahibi %s: %s\" olarak ayarlanamadı"
 
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to clear the form editing selection%s%s"
 msgstr "% S %s form seçimi düzenleme temizlenemiyor"
 
@@ -5997,7 +5997,7 @@ msgid "Change Class"
 msgstr "Sınıfı Değiştir"
 
 #: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
 msgstr "% S, %s \"% d \\ \"den \"% d \\ \"ye %s içindeki koordinatını değiştirildi."
 
@@ -6073,7 +6073,7 @@ msgid "Check the next token in source and add a semicolon if needed."
 msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "% S Hedefi kontrol edin (OS, CPU, LCL pencere öğesi türünü) Belki de bunun için paketi yeniden derlemeniz gereki"
@@ -6222,7 +6222,7 @@ msgid "Class %s not found at %s(%s,%s)"
 msgstr "Sınıf %s %s ( %s, %s) bulunamadı"
 
 #: lazarusidestrconsts.lisclassofmethodnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Class \"%s\" of method \"%s\" not found."
 msgstr "\"% S \\ \"yöntemi \" %s \\ \"sınıfı bulunamadı."
 
@@ -6605,7 +6605,7 @@ msgid "Auto created nodes cannot be edited,%snor can they have non auto created 
 msgstr "Otomatik oluşturulmuş düğümler düzenlenemez, %snor otomatik oluşturulmamış alt düğümlere sahip olabilirler."
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s, auto generated"
 msgstr "% S, otomatik oluşturuldu"
 
@@ -6630,7 +6630,7 @@ msgid "Convert node"
 msgstr "Düğümü dönüştür"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesfordirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Create Defines for %s Directory"
 msgstr "% S Dizini için Tanımlar Oluştur"
 
@@ -6643,7 +6643,7 @@ msgid "Create Defines for Free Pascal SVN Sources"
 msgstr "Ücretsiz Pascal SVN Kaynakları için Tanımlar Yarat"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Create Defines for %s Project"
 msgstr "% S Projesi için Tanımlar Oluştur"
 
@@ -6664,12 +6664,12 @@ msgid "Delete node"
 msgstr "Düğümü sil"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr " %s ana dizini,% Borland tüm %s kaynaklarını yükledi.% SÖrneğin: C: / Program / B"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr " %s ana dizini,% Borland tüm %s kaynaklarını yükledi, %s bu %s pr tarafından kullanılıyo"
 
@@ -6678,7 +6678,7 @@ msgid "Description:"
 msgstr "Açıklama:"
 
 #: lazarusidestrconsts.liscodetoolsdefsdirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s directory"
 msgstr "% S dizini"
 
@@ -6800,12 +6800,12 @@ msgid "Invalid previous node"
 msgstr "Geçersiz önceki düğüm"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectorydesc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
 msgstr " %s ana dizini,% Borland, tüm %s kaynaklarını yükledi.% SÖrneğin: / home / kullanıcı / kyl"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectoryforproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
 msgstr " %s ana dizini,% Borland tüm %s kaynaklarını yükledi, %s bu %s pr tarafından kullanılıyo"
 
@@ -6856,7 +6856,7 @@ msgid "Project directory"
 msgstr "Proje dizini"
 
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s project directory"
 msgstr "% S proje dizini"
 
@@ -6885,7 +6885,7 @@ msgid "The Free Pascal SVN source directory."
 msgstr "Serbest Pascal SVN kaynak dizini."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "Serbest Pascal derleyici yolu %s Örneğin %s / usr / bin / %s - n %s veya %s / usr / local / bin / fpc "
 
@@ -6924,7 +6924,7 @@ msgid "Value as Text"
 msgstr "Metin Olarak Değer"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s:%svalue \"%s\" is invalid."
 msgstr "% S: %svalue \" %s \\ \"geçersiz."
 
@@ -7111,7 +7111,7 @@ msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "Daha fazla ayrıntı için -vd ile derleyin.Yinelenenleri kontrol edin."
 
 #: lazarusidestrconsts.liscompiling
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s (compiling ...)"
 msgstr "% S (derleme ...)"
 
@@ -7194,7 +7194,7 @@ msgid "Config file of additions:"
 msgstr "Eklemelerin yapılandırma dosyası:"
 
 #: lazarusidestrconsts.lisconfigurebuild
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Configure Build %s"
 msgstr "% S Yapılandırmasını Yapılandır"
 
@@ -7335,7 +7335,7 @@ msgid "Bracket not found"
 msgstr "Parantez bulunamadı"
 
 #: lazarusidestrconsts.lisconvconvertedfrom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid " { *Converted from %s* }"
 msgstr "{*% S *}\" dan çevirildi "
 
@@ -7348,7 +7348,7 @@ msgid "Coordinate offsets"
 msgstr "Koordinat uzaklıklar"
 
 #: lazarusidestrconsts.lisconvdeletedfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Deleted file %s"
 msgstr "% S dosyası silindi"
 
@@ -7381,7 +7381,7 @@ msgid "Categories:"
 msgstr "Kategori:"
 
 #: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Changed encoding from %s to UTF-8"
 msgstr "% S'den UTF-8'e kodlama değiştirildi"
 
@@ -7437,7 +7437,7 @@ msgid "Failed to convert unit \"%s\""
 msgstr "Birimi dönüştürme başarısız \" %s \\ \""
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "\"% S \\ \"biriminin sabit karakter kasa \" %s \\ \"."
 
@@ -7450,7 +7450,7 @@ msgid "Delphi Function"
 msgstr "Delphi Fonksiyonu"
 
 #: lazarusidestrconsts.lisconvdelphimissingincludefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s(%s,%s) missing include file"
 msgstr "% S ( %s, %s) eksik dosya içeriyor"
 
@@ -7488,7 +7488,7 @@ msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "\" \\ \" %s \" birimini \\ \" %s \" bölümünde kullanıyor bölümünde değiştirildi. "
 
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
 msgstr "\"% S \\ \"adı olan bir paket zaten var %sİlk önce bu paketi kapatın."
 
@@ -7497,7 +7497,7 @@ msgid "Unitname exists in LCL"
 msgstr "Unitname LCL'de var"
 
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Units to replace in %s"
 msgstr "% S yerini alan birimler"
 
@@ -7567,7 +7567,7 @@ msgid "Use conditional compilation to support Delphi"
 msgstr "Delphi'yi desteklemek için koşullu derleme kullanın"
 
 #: lazarusidestrconsts.lisconvfixedunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fixed unit name from %s to %s."
 msgstr "% S ile %s arasındaki sabit birim adı."
 
@@ -7597,12 +7597,12 @@ msgid "Parent Container"
 msgstr "Ebeveyn Konteyner"
 
 #: lazarusidestrconsts.lisconvproblemsfindingallunits
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Problems when trying to find all units from project file %s"
 msgstr "% S proje dosyasındaki tüm birimleri bulmaya çalışırken karşılaşılan sorunlar"
 
 #: lazarusidestrconsts.lisconvproblemsfixingincludefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Problems when fixing include files in file %s"
 msgstr "% S dosyasındaki dosyaları saptarken karşılaşılan sorunlar"
 
@@ -7616,7 +7616,7 @@ msgid "Repairing include files : "
 msgstr "Dahil edilen dosyaları tamir et:"
 
 #: lazarusidestrconsts.lisconvreplacedcall
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Replaced call %s with %s"
 msgstr "% S çağrısı %s ile değiştirildi"
 
@@ -8069,7 +8069,7 @@ msgid "Tools"
 msgstr "Araçlar"
 
 #: lazarusidestrconsts.lisctdefvariable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Variable: %s"
 msgstr "Değişkenler"
 
@@ -8317,7 +8317,7 @@ msgid "Set the breakpoint anyway"
 msgstr "Kesme noktasını yine de ayarla"
 
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Belirtilen herhangi bir hata ayıklayıcısı yok.% SYanlıır noktaları ayarlamanız, bir hata ayıklayıcıyı ayarlayıncaya kadar geçerli değildir"
 
@@ -8345,7 +8345,7 @@ msgid "Debugger"
 msgstr "Debugger"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "Hata ayıklayıcı hatası %sOoops, hata ayıklayıcı hata durumuna girdi.% SŞimdi çalışmalarınızı kaydedin!% SHit Stop, v"
 
@@ -8366,7 +8366,7 @@ msgid "Debugger invalid"
 msgstr "Hata ayıklayıcı geçersiz"
 
 #: lazarusidestrconsts.lisdebugging
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s (debugging ...)"
 msgstr "% S (hata ayıklama ...)"
 
@@ -8573,7 +8573,7 @@ msgid "Delete all breakpoints?"
 msgstr "Tüm kesmeleri silinsin mi?"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete all breakpoints in file \"%s\"?"
 msgstr "\"% S \\ \"dosyasındaki tüm kesme noktalarını silinsin mi?"
 
@@ -8598,17 +8598,17 @@ msgid "Delete Breakpoint"
 msgstr "Kesme Noktasını Sil"
 
 #: lazarusidestrconsts.lisdeletebreakpointatline
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Kesme noktasını %s de sil\" \" %s \"% d satır? "
 
 #: lazarusidestrconsts.lisdeletebreakpointforaddress
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete breakpoint for address %s?"
 msgstr "% S adresi için kesme noktası silinsin mi?"
 
 #: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete watchpoint for \"%s\"?"
 msgstr "\"% S \\ \"için izleme noktası silinsin mi?"
 
@@ -8649,12 +8649,12 @@ msgid "Delete value \"%s\"?"
 msgstr "Değeri silinsin mi \" %s \\ \"?"
 
 #: lazarusidestrconsts.lisdeletevalue2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete value %s"
 msgstr "% S değerini sil"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Deleting of file \"%s\" failed."
 msgstr "\"% S \\ \"dosyasının silinmesi başarısız oldu."
 
@@ -8918,7 +8918,7 @@ msgid "Save ..."
 msgstr "Kaydet ..."
 
 #: lazarusidestrconsts.lisdoesnotexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s does not exist: %s"
 msgstr "% S yok: %s"
 
@@ -8927,7 +8927,7 @@ msgid "Do not change"
 msgstr "Değiştirme"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sDo not check if another IDE instance is already running"
 msgstr "% SDiğer bir IDE örneğinin zaten çalışıp çalışmadığını kontrol etmeyin"
 
@@ -9089,7 +9089,7 @@ msgid "Duplicate Unit"
 msgstr "Birim Çoğalt"
 
 #: lazarusidestrconsts.lisduplicateunitin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Duplicate unit \"%s\" in \"%s\""
 msgstr "\"% S \\ \"\" \\ \" %s \" birimini çoğal"
 
@@ -9379,7 +9379,7 @@ msgid "Enclose in $IFDEF"
 msgstr "$ IFDEF'de bulun"
 
 #: lazarusidestrconsts.lisencodingnumberoffilesfailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Number of files failed to convert: %d"
 msgstr "Dönüştürülemeyen dosya sayısı:% d"
 
@@ -9411,7 +9411,7 @@ msgid "Invalid debugger filename"
 msgstr "Geçersiz hata ayıklayıcı dosya adı"
 
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "\"% S \\ \"hata ayıklayıcı dosyası yürütülebilir değil."
 
@@ -9421,17 +9421,17 @@ msgid "Test directory \"%s\" not found."
 msgstr "Sınama dizini \" %s \\ \"bulunamadı."
 
 #: lazarusidestrconsts.liserrinvalidoption
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid option at position %d: \"%s\""
 msgstr "% d konumundaki geçersiz seçenek: \" %s \\ \""
 
 #: lazarusidestrconsts.liserrnooptionallowed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Option at position %d does not allow an argument: %s"
 msgstr "% D konumundaki seçenek, bir bağımsız değişkene izin vermiyor: %s"
 
 #: lazarusidestrconsts.liserroptionneeded
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Option at position %d needs an argument : %s"
 msgstr "% d konumundaki seçenek bir argümana ihtiyaç duyuyor: %s"
 
@@ -9448,7 +9448,7 @@ msgid "Error deleting file"
 msgstr "Dosya silinirken hata oluştu"
 
 #: lazarusidestrconsts.liserrorin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error in %s"
 msgstr "% S hatası"
 
@@ -9502,12 +9502,12 @@ msgid "Error loading file"
 msgstr "Dosya yüklenirken hata oluştu"
 
 #: lazarusidestrconsts.liserrorloadingfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error loading file \"%s\":"
 msgstr "\"% S \\ \"dosyasını yüklerken hata oluştu:\" "
 
 #: lazarusidestrconsts.liserrorloadingfrom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error loading %s from%s%s%s%s"
 msgstr "% S %s %s %s adresinden %s yüklenirken hata oluştu"
 
@@ -9516,7 +9516,7 @@ msgid "Error moving component"
 msgstr "Bileşeni hareket ettirirken hata oluştu"
 
 #: lazarusidestrconsts.liserrormovingcomponent2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error moving component %s:%s"
 msgstr "% S bileşenini taşıma hatası: %s"
 
@@ -9537,7 +9537,7 @@ msgid "Error parsing lfm component stream."
 msgstr "Lfm bileşen akışının ayrıştırılması sırasında hata oluştu."
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "% S %s %s %s dosyasından paket listesi okunurken hata oluştu"
 
@@ -9569,12 +9569,12 @@ msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error saving %s to%s%s%s%s"
 msgstr "% S, %s %s %s %s'ye kaydedilirken hata oluştu"
 
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error setting the name of a component %s to %s"
 msgstr "% S bileşeninin adını %s olarak ayarlama hatası"
 
@@ -9584,7 +9584,7 @@ msgid "Error writing file \"%s\""
 msgstr "Dosya \" %s \\ \"yazarken hata oluştu"
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "% S %s %s %s dosyasına paket listesi yazarken hata oluştu"
 
@@ -9647,7 +9647,7 @@ msgid "Debugger Exception Notification"
 msgstr "Hata ayıklayıcı Özel Durum Bildirimi"
 
 #: lazarusidestrconsts.lisexcludedatruntime
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s excluded at run time"
 msgstr "% S çalışma zamanında hariç tutuldu"
 
@@ -9750,7 +9750,7 @@ msgid "Expression:"
 msgstr "İfade:"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
 msgstr "\"% S \\ \"paketinin dosya arama yolunu %s \" %s \\ \"ile genişletilsin mi?"
 
@@ -9804,12 +9804,12 @@ msgid "There is a maximum of %s tools."
 msgstr "En fazla %s araç var."
 
 #: lazarusidestrconsts.lisfailedtoaddnnotuniqueresources
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Failed to add %d not unique resource(s)"
 msgstr "% D benzersiz kaynak (lar) eklenemedi"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "\"% S \\ \"için Uygulama Paketi oluşturulamadı."
 
@@ -10001,7 +10001,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII veya UTF-8 kodlamalı dosyalar"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "File %s is converted to text format."
 msgid "File %s was converted to text format."
 msgstr "Dosya %s metin formatına dönüştürülür."
@@ -10030,7 +10030,7 @@ msgid "Filter all messages of certain type"
 msgstr "Belli türdeki tüm iletileri filtreleyin"
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Filter all messages of type %s"
 msgstr "% S türündeki tüm iletileri filtreleyin"
 
@@ -10083,7 +10083,7 @@ msgid "Find ..."
 msgstr "Bul ..."
 
 #: lazarusidestrconsts.lisfinddeclarationof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Find Declaration of %s"
 msgstr "% S Bildirisini Bul"
 
@@ -10222,7 +10222,7 @@ msgid "FPDoc Editor"
 msgstr "FPDoc Editör"
 
 #: lazarusidestrconsts.lisfpdocerrorwriting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error writing \"%s\"%s%s"
 msgstr "\"% S \\ \" %s %s yazılırken hata oluştu"
 
@@ -10508,7 +10508,7 @@ msgid "No more breakpoints are assigned to group \"%s\", delete it?"
 msgstr "\" \"\" %s \\ \"grubuna daha fazla kesme noktası atanmadı, silinsin mi?"
 
 #: lazarusidestrconsts.lisgroupemptydeletemore
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "% SDaha fazla boş grup var, hepsini silinsin mi?"
 
@@ -10582,7 +10582,7 @@ msgid "Hide all hints and warnings by inserting IDE directives {%H-}"
 msgstr "IDE yönergeleri {% H-}\" ekleyerek tüm ipuçlarını ve uyarılarını gizle "
 
 #: lazarusidestrconsts.lishidemessageatbyinsertingidedirectiveh
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Hide message at %s by inserting IDE directive {%H-}"
 msgstr "% S adresindeki mesajı IDE yönergesi {% H-}\" ekleyerek gizle "
 
@@ -10658,7 +10658,7 @@ msgid "Step Over"
 msgstr "Adım atmak"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "İpucu: \" Yer İmlerinizi Oluştur \\ \"işlevi bir dize sabiti beklemektedir.% SÜzgileri seçi"
 
@@ -10732,13 +10732,13 @@ msgid "The IDE will be recompiled and restarted during installation/uninstallati
 msgstr "IDE paketleri kurulurken / kaldırılırken yeniden derlenecek ve yeniden başlatılacak."
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Lazarus'a hoş geldiniz.% 0: s Bulunan IDE yapılandırması daha önce başka bir kurulum tarafından kullanılmış"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Creating Makefile for package %s"
 msgstr "% S paketi için Makefile oluşturuluyor"
 
@@ -10860,7 +10860,7 @@ msgid "If only the session info changed, ask about saving it."
 msgstr "Yalnızca oturum bilgileri değiştiyse, kaydetme hakkında bilgi isteyin."
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "İki farklı Lazarus versiyonunu kullanmak istiyorsanız, ikinci Lazarus'u comm ile başlatmalısınız"
 
@@ -10985,7 +10985,7 @@ msgid "Information"
 msgstr "Bilgi"
 
 #: lazarusidestrconsts.lisinformationaboutunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Information about %s"
 msgstr "% S hakkında bilgi"
 
@@ -11018,7 +11018,7 @@ msgid "Initialize Local Variable"
 msgstr "Yerel Değişken Başlat"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "Proje / paketin temiz bir kopyasını oluşturmak için, aşağıdaki dizindeki tüm dosyala"
 
@@ -11139,7 +11139,7 @@ msgid "&Inspect"
 msgstr "& Inceleyin"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s : Class %s inherits from %s"
 msgid "%s: class %s inherits from %s"
 msgstr "% S: %s sınıfı %s kaynağından devralındı."
@@ -11157,7 +11157,7 @@ msgid "Methods"
 msgstr "Yöntemler"
 
 #: lazarusidestrconsts.lisinspectpointerto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Pointer to %s"
 msgstr "% S işaretçisi"
 
@@ -11245,12 +11245,12 @@ msgid "Invalid Executable"
 msgstr "Geçersiz Yürütülebilir"
 
 #: lazarusidestrconsts.lisinvalidexecutablemessagetext
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" is not executable."
 msgstr "\"% S \\ \"dosyası yürütülebilir değil."
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Geçersiz ifade.% SHint: \" Resourcestring \\ \"işlevi si'de bir dizge sabiti bekle"
 
@@ -11268,7 +11268,7 @@ msgid "Invalid line, column in message%s%s"
 msgstr "Geçersiz satır, ileti %s %s sütundaki sütun"
 
 #: lazarusidestrconsts.lisinvalidmacrosin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid macros in \"%s\""
 msgstr "\"% S \\ \"\" daki geçersiz makrolar "
 
@@ -11334,22 +11334,22 @@ msgid "Invalid selection"
 msgstr "Geçersiz seçim"
 
 #: lazarusidestrconsts.lisinvalidversionin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "invalid version in %s"
 msgstr "% S sürümü geçersiz"
 
 #: lazarusidestrconsts.lisisalreadypartoftheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s is already part of the Project."
 msgstr "% S zaten Projenin bir parçası."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "\"% S \\ \"geçersiz bir proje adıdır %sLütfen başka birini seçin (ör. Project1.lpi)"
 
 #: lazarusidestrconsts.lisisathiscirculardependencyisnotallowed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "% S bir %s.% SBu döngüsel bağımlılığa izin verilmedi."
 
@@ -11384,12 +11384,12 @@ msgid "When an error in the sources is found at identifier completion, jump to i
 msgstr "Kaynaktaki bir hata tanımlayıcı tamamlandıktan sonra bulunursa atla."
 
 #: lazarusidestrconsts.lisjumptoprocedure
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Jump to procedure %s"
 msgstr "% S yordamına atla"
 
 #: lazarusidestrconsts.liskb
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s KB"
 msgstr "% S KB"
 
@@ -12284,7 +12284,7 @@ msgid "Copy from inherited"
 msgstr "Devralınan kopyalar"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
 msgstr "% S geçerli bir FPDoc yolu yok.% S %s için fpdoc dosyası oluşturmaktan vazgeç"
 
@@ -12297,7 +12297,7 @@ msgid "No valid FPDoc path"
 msgstr "Geçerli FPDoc yolu yok"
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr " %s birimi herhangi bir paket veya proje değil.% SLütfen birimi bir pakete veya projeye ekleyin"
 
@@ -12400,7 +12400,7 @@ msgid "list of all case values"
 msgstr "Tüm vaka değerlerinin listesi"
 
 #: lazarusidestrconsts.lisloadingfailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Loading %s failed."
 msgstr "% S yüklenemedi."
 
@@ -12551,7 +12551,7 @@ msgid "Append to section"
 msgstr "Bölümüne ekle"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "\" \" %s \" mevcut kaynak zaten mevcut.% SLütfen başka bir ad seçin.% SUygunsuz eklemek için Yoksay kulla"
 
@@ -12632,7 +12632,7 @@ msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Maksimum paralel işlemler, 0 varsayılan ( %s) anlamına gelir"
 
 #: lazarusidestrconsts.lismaxs
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Max %d"
 msgstr "Maks.% D"
 
@@ -12642,7 +12642,7 @@ msgid "%s Maybe you have to recompile the package."
 msgstr " %s Belki de paketi yeniden derlemelisiniz."
 
 #: lazarusidestrconsts.lismb
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s MB"
 msgstr "% S MB"
 
@@ -13646,7 +13646,7 @@ msgid "New Component"
 msgstr "Yeni Bileşen"
 
 #: lazarusidestrconsts.lismenunewcustom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "New %s"
 msgstr "Haber"
 
@@ -14285,19 +14285,19 @@ msgid "Exclude all packages matching name \"%s\""
 msgstr "Ad \" %s \\ \"ile eşleşen tüm paketleri hariç tutun"
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "expected \":=\" after macro name, but found \"%s\""
 msgid "expected \":=\" after macro name but found \"%s\""
 msgstr "Beklenen \": = \\ \"makro adından sonra, ancak \" %s \\ \"\" bulund"
 
 #: lazarusidestrconsts.lismmexpectedmacronamebutfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "expected macro name, but found \"%s\""
 msgid "expected macro name but found \"%s\""
 msgstr "Beklenen makro adı, ancak \" %s \\ \"\" bulund"
 
 #: lazarusidestrconsts.lismmfromto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "From %s to %s"
 msgstr "% S den %s\" y"
 
@@ -14398,7 +14398,7 @@ msgid "Value \"%s\""
 msgstr "Değer \" %s \\ \""
 
 #: lazarusidestrconsts.lismmwas
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "(was \"%s\")"
 msgstr "(\"% S \\ \")"
 
@@ -14455,7 +14455,7 @@ msgid "Move files?"
 msgstr "Dosyaları taşı mı?"
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr "% S dosya (lar) ı, %s klasöründen %s %s %sof %s dizinine mi taşı?"
 
@@ -14591,7 +14591,7 @@ msgid "New console application"
 msgstr "Yeni konsol uygulaması"
 
 #: lazarusidestrconsts.lisnewdlgcreateaneweditorfilechooseatype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Create a new editor file.%sChoose a type."
 msgstr "Yeni bir düzenleyici dosyası oluşturun.% SBir tür seçin\""
 
@@ -14600,12 +14600,12 @@ msgid "Create a new empty text file."
 msgstr "Yeni bir boş metin dosyası oluştur."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Create a new project.%sChoose a type."
 msgstr "Yeni bir proje oluşturun.% SBir tür seçin\""
 
 #: lazarusidestrconsts.lisnewdlgcreateanewstandardpackageapackageisacollectionofun
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Create a new standard package.%sA package is a collection of units and components."
 msgstr "Yeni bir standart paket oluşturun.% SA paketi birimler ve bileşenlerden oluşan bir koleksiyon."
 
@@ -14638,7 +14638,7 @@ msgid "New encoding:"
 msgstr "Yeni kodlama:"
 
 #: lazarusidestrconsts.lisnewmacroname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Macro %d"
 msgstr "Makro% d"
 
@@ -14727,7 +14727,7 @@ msgid "noname"
 msgstr "isimsiz"
 
 #: lazarusidestrconsts.lisnone
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%snone"
 msgstr "% Snone"
 
@@ -14818,7 +14818,7 @@ msgid "no template selected"
 msgstr "Şablon seçilmedi"
 
 #: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
 msgstr "% S satırında %s satırında %s sütununda bulunamadı.% S İleti güncelliğini yitirebilir."
@@ -14882,7 +14882,7 @@ msgid "? (Off)"
 msgstr "Kapalı"
 
 #: lazarusidestrconsts.lisofpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid " of package %s"
 msgstr "% S paketinin"
 
@@ -14921,7 +14921,7 @@ msgid "Description:  "
 msgstr "Açıklama: "
 
 #: lazarusidestrconsts.lisoipdescriptiondescription
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sDescription:  %s"
 msgstr "% SDescription: %s"
 
@@ -14939,7 +14939,7 @@ msgid "installed static"
 msgstr "Kurulu statik"
 
 #: lazarusidestrconsts.lisoiplicenselicense
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sLicense:  %s"
 msgstr "% SLicense: %s"
 
@@ -14973,7 +14973,7 @@ msgid "State"
 msgstr "Belirtmek, bildirmek"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "% SBu paket kuruldu, ancak lpk dosyası bulunamadı"
@@ -15075,7 +15075,7 @@ msgid "Open destination directory in file manager"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenlfm
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Open %s"
 msgstr "% S aç"
 
@@ -15121,12 +15121,12 @@ msgid "Open the file as normal source"
 msgstr "Dosyayı normal kaynak olarak aç"
 
 #: lazarusidestrconsts.lisopenthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Open the package %s?"
 msgstr "% S paketini açsın mı?"
 
 #: lazarusidestrconsts.lisopentheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Open the project %s?"
 msgstr "% S projesini açsın mı?"
 
@@ -15169,7 +15169,7 @@ msgid ", OS: %s"
 msgstr ", OS: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
 msgid "other sources path of package \"%s\" contains directory \"%s\" which is already in the unit search path."
 msgstr "\"% S \\ \"paketinin diğer kaynakları% \" %s \\ \"dizini içeriyor; bu da zaten birimin içind"
@@ -15192,22 +15192,22 @@ msgid "Override function result string types with the first parameter expression
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
 msgstr "% Soverride varsayılan derleyicidir. Örneğin ppc386 ppcx64 ppcppc vb. Varsayılan ortamda depolanı"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the project or IDE build mode."
 msgstr "% Soverride proje veya IDE derleme  modu."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
 msgstr "% Sverride projenin cpu örn .: i386 x86_64 powerpc powerpc_64 vb. Öntanımlı: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
 msgstr "%\" proje işletim sistemini soverride.örneğin win32 linux default: %s "
 
@@ -15489,7 +15489,7 @@ msgid "Create Makefile"
 msgstr "Makefile Yarat"
 
 #: lazarusidestrconsts.lispckeditdefault
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s, default: %s"
 msgstr "% S, varsayılan: %s"
 
@@ -15558,7 +15558,7 @@ msgid "package %s not saved"
 msgstr "Paket %s kaydedilmedi"
 
 #: lazarusidestrconsts.lispckeditpage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s, Page: %s"
 msgstr "% S, Sayfa: %s"
 
@@ -15651,12 +15651,12 @@ msgid "Store file name as preferred for this dependency"
 msgstr "Bu bağımlılık için dosya adını tercih ettiğiniz gibi sakla"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "\"% S \\ \"maksimum sürümü geçerli bir paket sürümü değil %s (iyi örnek 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "\"% S \\ \"minimum sürümü geçerli bir paket sürümü değil %s (iyi örnek 1.2.3.4)"
 
@@ -15798,7 +15798,7 @@ msgid "Runtime"
 msgstr "Süre"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
 msgstr "Paket \" %s \\ \"otomatik kurulum bayrağı var.% SBu, IDE'ye yükleneceği anlamına geliyor.% SInst"
 
@@ -15872,7 +15872,7 @@ msgid "Invalid unitname"
 msgstr "Geçersiz ünite adı"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Missing files of package %s"
 msgstr "% S paketinin eksik dosyaları"
 
@@ -15918,7 +15918,7 @@ msgid "Sort files alphabetically"
 msgstr "Dosyaları alfabetik olarak sırala"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
 msgstr "\" %s \\ \"dosyası şu anda paketin kapsama yolunda değil.% SAdd \" %s \\ \"ekleme p'ye \" %s \\ \"eklend"
 
@@ -15967,7 +15967,7 @@ msgid "Delete dependencies"
 msgstr "Bağımlılıkları sil"
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "% S paketindeki tüm değişiklikleri unutmak ve dosyadan yeniden yüklemek istiyor musunuz?"
 
@@ -15984,7 +15984,7 @@ msgid "Revert package?"
 msgstr "Paketi geri mi döndürdün?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "\"% S \\ \" %s dosyası şu anda paketin birim yolunda değil.% S \" %s \\ \"birim yoluna eklensin mi?"
 
@@ -16051,12 +16051,12 @@ msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Nam
 msgstr "Paket birimi arama yolu. Parametre paket kimliğidir, örneğin \" İsim \\ \"veya \" Adı 1.0 \\ \""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "% SPaket %s için yeni bağımlılık ekleme: paket %s"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "% SProje %s için yeni Bağımlılık ekleme: paket %s"
 
@@ -16086,7 +16086,7 @@ msgid "Circular dependencies found"
 msgstr "Dairesel bağımlılıklar bulundu"
 
 #: lazarusidestrconsts.lispkgmangcompilepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Compile package %s"
 msgstr "% S paketini derle"
 
@@ -16195,7 +16195,7 @@ msgid "Invalid Package Name"
 msgstr "Geçersiz Paket Adı"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%sSave old package %s?"
 msgstr " %s dosyası yükleniyor, %s %s dosyası %s dosyasından olacak.% S eski paket değiştirildi.% S esk"
 
@@ -16283,7 +16283,7 @@ msgid "Save Package %s (*.lpk)"
 msgstr "Paket Kaydet %s (* .lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Should the file be renamed lowercase to%s\"%s\"?"
 msgstr "Dosya küçük harfe yeniden adlandırılsın mı?% S \" %s \\ \"?"
 
@@ -16296,12 +16296,12 @@ msgid "static packages config file"
 msgstr "Statik paketler yapılandırma dosyası"
 
 #: lazarusidestrconsts.lispkgmangthecompilerfileforpackageisnotavalidexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "% S paketinin derleyici dosyası geçerli bir yürütülebilir değil: %s %s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
 msgstr "\"% S \\ \" %s dosyası zaten %s paketinde bulunuyor."
@@ -16312,17 +16312,17 @@ msgid "The file \"%s\" is not a Lazarus package."
 msgstr "\" %s \\ \"dosyası bir Lazarus paketi değil."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The filename \"%s\" does not correspond to the package name \"%s\" in the file.%sChange package name to \"%s\"?"
 msgstr "\"% S \\ \"dosya adı, dosyadaki \" %s \\ \"paket adıyla uyuşmuyor.% SChange paketi "
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
 msgstr "Dosya adı \" %s \\ \"geçerli projenin bir parçası.% SProjects ve Paketler dosya paylaşmamalıdı"
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "Dosya adı \" %s \\ \"% \" %s \\ \" %sin dosya \" %s \\ \"tarafından kullanılıyor."
 
@@ -16340,12 +16340,12 @@ msgid "The following packages failed to load:"
 msgstr "Aşağıdaki paketler yüklenemedi:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "% SBunların %s %s kullanım bölümüne eklenecek: %s %s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
 msgstr "Paket \" %s \\ \"derleyemedi.% SDiğerini yükleme listesinden kaldırın?"
 
@@ -16355,24 +16355,24 @@ msgid "The package file name \"%s\" in%s\"%s\" is not a valid Lazarus package na
 msgstr " %s \" %s \\ \"içindeki paket dosyası adı \" %s \\ \"geçerli bir Lazarus paket adı değil."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package %s is a runtime only package.%sRuntime only packages cannot be installed in the IDE."
 msgstr " %s paketi yalnızca bir çalışma zamanı paketi.% SRuntime yalnızca paketler IDE'ye kurulamıyor."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\" which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr "\"% S \\ \"paketi otomatik olarak derlenir ve çıktı dizini \" %s \\ \"dir"
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgid "The package \"%s\" is marked for installation but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "\" \\ \" %s \" paketi kurulum için işaretlenmiş ancak bulunamadı.% SBağımlılık "
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
 msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
 msgstr " %s paketi kurulum için işaretlenmiş %s tarafından gerekli.% SPaket grafiğini göster."
@@ -16383,27 +16383,27 @@ msgid "The package name \"%s\" is not a valid package name%sPlease choose anothe
 msgstr "Paket adı \" %s \\ \"geçerli bir paket adı değil %sPlease lütfen başka bir ad seçin (örn. Package1.l"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "\"% S \\ \"dosyasının% \" %s \\ \"paketi adı \" %s \\ \"geçersiz."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "Paket \" %s \\ \"işaretlendi.% SCurrently Lazarus yalnızca statik bağlantılı paketleri destekliyor"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "Kurulum için \" %s \\ \"paketi gösterildi.% SCurrently Lazarus yalnızca statik bağlantılı payı destekliyo"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
 msgstr "Proje paketi \" %s \\ \"gerektiriyor.% S Ama bulunamadı.Proje -> Proje Müfettişine bakınız"
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
 msgstr "Aynı ada sahip iki birim var: %s1. \"% S \\ \" %s %s2. \"% S \\ \"den %s"
 
@@ -16422,12 +16422,12 @@ msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "\" \" %s \" %s \\ \"den %s ile aynı isimli bir FPC birimi var"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "\" \"\" %s \\ \"adı olan başka bir paket zaten var.% SConflict paketi: \" %s \\ \" %sFile: \" %s \\ \""
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already a package \"%s\" loaded%sfrom file \"%s\".%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "\" \" %s \" %s \\ \"dosyası yüklenmiş bir paket zaten \" %s \\ \"var.% SPaket -> Paket Grafiği'ni gör.% SRepl"
 
@@ -16436,7 +16436,7 @@ msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "Gerekli paketlerde kaydedilmemiş bir paket var, bkz. Paket grafiği."
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is a unit with the same name as a package:%s1. \"%s\" from %s%s2. \"%s\""
 msgstr "Bir paket olarak aynı adı taşıyan bir birim var: %s1. \"% S \\ \" %s %s2. \"% S \\ \""
 
@@ -16459,7 +16459,7 @@ msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Paket kaynağı dizini \" %s \\ \" %s için %s oluşturulamadı."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Lazarus için hedef dizin oluşturulamadı: %s \" %s \\ \".% SBu dizin yeni cha için gerekl"
 
@@ -16482,22 +16482,22 @@ msgid "Unable to load package"
 msgstr "Paket yüklenemiyor"
 
 #: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
 msgstr "Paket \" %s \\ \"açılamıyor.% SBu paket kurulum için işaretlendi."
 
 #: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
 msgstr " %s durum dosyasını okunamıyor \" %s \\ \" %sof paketi %s.% SError: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr " %s dosyası \" %s \\ \" %s dosyası \\ %s \\ %sError: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
 msgstr " %s \" %s \\ \" %sfüzk dosyası %s.% SError: %s"
 
@@ -16519,7 +16519,7 @@ msgid "Use unit"
 msgstr "Birimi kullan"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Warning: The file \"%s\"%sbelongs to the current project."
 msgstr "Uyarı: Dosya \" %s \\ \"% mevcut projeye ait."
 
@@ -16557,7 +16557,7 @@ msgid "Component Class \"%s\" already defined"
 msgstr "Bileşen Sınıfı \" %s \\ \"zaten tanımlandı"
 
 #: lazarusidestrconsts.lispkgsysfilename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sFile Name: \"%s\""
 msgstr "% S %sFile Adı: \" %s \\ \""
 
@@ -16571,7 +16571,7 @@ msgid "Invalid Unitname: %s"
 msgstr "Geçersiz Birim Adı: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%slpk file: \"%s\""
 msgstr "% S %slpk dosyası: \" %s \\ \""
 
@@ -16594,12 +16594,12 @@ msgid "RegisterUnit was called but no package is registering."
 msgstr "RegisterUnit çağrıldı, ancak hiçbir paket kayıt yapmıyor."
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sThe lpk file was not found."
 msgstr "% S %sLpk dosyası bulunamadı."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "Paket \" %s \\ \"kuruldu, ancak geçerli bir paket dosyası (.lpk) bulunamadı.% SA kırık kukla paket"
@@ -16615,12 +16615,12 @@ msgid "This package is installed but the lpk file was not found. All its compone
 msgstr "\" \"Bu paket kuruldu, ancak lpk dosyası bulunamadı, tüm bileşenleri devre dışı bırakıldı"
 
 #: lazarusidestrconsts.lispkgsysunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sUnit Name: \"%s\""
 msgstr "% S %sUygul Adı: \" %s \\ \""
 
 #: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
 msgstr "Birim \" %s \\ \"lpk dosyasında bulunamadı.% S Muhtemelen bu lpk dosyası bunu oluşturmak için kullanılmadı"
 
@@ -16637,7 +16637,7 @@ msgid "The following dependencies are not needed because of the automatic transi
 msgstr "Aşağıdaki bağımlılıklara, paketin otomatik geçişi nedeniyle ihtiyaç yoktur"
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
 msgstr "\" \"Proje, aşağıdaki paketlerin çıktı dizinini geçersiz kılar.% SSee Proje / Proje Opt"
 
@@ -16792,7 +16792,7 @@ msgid "Position"
 msgstr "Konum"
 
 #: lazarusidestrconsts.lispositionoutsideofsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s (position outside of source)"
 msgstr "% S (kaynak dışındaki konum)"
 
@@ -16802,7 +16802,7 @@ msgid "ppu in wrong directory=%s."
 msgstr "Ppu yanlış dizindeki = %s."
 
 #: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr "% S.ppu bulunamadı. Fpc.cfg dosyanızı kontrol edin."
 
@@ -16839,7 +16839,7 @@ msgid "Private Method"
 msgstr "Özel Yöntem"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Muhtemelen devam etmeden önce bazı paketler yüklemeniz gerekir.% SWarning: %s Projede fo"
@@ -16934,7 +16934,7 @@ msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "Bağımlılık \" %s \\ \"bulunamadı %sPlease mevcut bir paketi seçin."
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Maksimum Sürüm \" %s \\ \"geçersizdir.% SLütfen formunu kullanınız: major.minor.release.build %sSınav içi"
@@ -16945,7 +16945,7 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maksimum Sürüm, Minimim Sürümünden daha düşüktür."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimum Sürüm \" %s \\ \"geçersiz.% SÜzelik major.minor.release.build %sDeğişimi kullanı"
@@ -16956,7 +16956,7 @@ msgid "The project has already a dependency for the package \"%s\"."
 msgstr "Proje zaten \" %s \\ \"paketi için bağımlılık yapıyor."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "\"% S \\ \"birim adı %swith dosyası \" %s \\ \"projesinde zaten mevcut."
 
@@ -16996,7 +16996,7 @@ msgid "Project changed on disk"
 msgstr "Proje disk üzerinde değişti"
 
 #: lazarusidestrconsts.lisprojectcount
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%d projects"
 msgstr "% D proje"
 
@@ -17071,7 +17071,7 @@ msgid "Project source directories"
 msgstr "Proje kaynak dizinleri"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionataddress
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%0:s%0:s At address %1:x"
 msgstr "% 0: s% 0: s adresinde% 1: x"
 
@@ -17086,17 +17086,17 @@ msgid "Project %s raised exception class '%s' with message:%s%s"
 msgstr "Proje %s, ' %s' istisnasını kaldırdı: %s %s"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%0:s%0:s In file '%1:s' at address %2:x"
 msgstr "% 0: s% 0: s% 2 adresindeki '% 1: s' dosyasında: x"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileline
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%0:s%0:s In file '%1:s' at line %2:d"
 msgstr "% 0: s% 0: s% 2 satırındaki '% 1: s' dosyasında: d"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfilelinesrc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "% 0: s% 0: s% 2 satırındaki '% 1: s' dosyasında: d:% 0: s% 3: s"
 
@@ -17125,7 +17125,7 @@ msgid "Confirm removing file"
 msgstr "Dosyayı kaldırmayı onayla"
 
 #: lazarusidestrconsts.lisprojinspdeletedependencyfor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete dependency for %s?"
 msgstr "% S için bağımlılığı silinsin mi?"
 
@@ -17145,17 +17145,17 @@ msgid "Remove file %s from project?"
 msgstr " %s dosyasından projeden kaldırılsın mı?"
 
 #: lazarusidestrconsts.lisprojinspremoveitemsf
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Remove %s items from project?"
 msgstr "% S öğeyi projeden kaldır\""
 
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "% S proje dosyasının %s durum dosyasını okunamıyor %sError: %s"
 
 #: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write state file for project %s%sError: %s"
 msgstr "% S %sError: %s projesi için durum dosyası yazamadı"
 
@@ -17245,7 +17245,7 @@ msgid "Edit virtual unit"
 msgstr "Sanal birimi düzenle"
 
 #: lazarusidestrconsts.lispvuthereisalreadyanunitwiththisnamefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lispvuthereisalreadyanunitwiththisnamefile"
 msgid "There is already an unit with this name.%sFile: %s"
 msgstr "Bu ada sahip bir birim zaten var.% SFile: %s"
@@ -17261,7 +17261,7 @@ msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "IDE, kullanım yan tümcesi genişletirken birim adı kullanılır"
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Birim adı ve dosya adı uyuşmuyor.% SÖrneği: unit1.pas ve Birim1"
@@ -17422,7 +17422,7 @@ msgid "Remove include path?"
 msgstr "Ekle yolu kaldırılsın mı?"
 
 #: lazarusidestrconsts.lisremovelocalvariable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Remove local variable %s"
 msgstr "% S yerel değişkeni kaldır"
 
@@ -17482,7 +17482,7 @@ msgid "Show list of renamed Identifiers"
 msgstr "Yeniden adlandırılmış Tanımlayıcıların listesini göster"
 
 #: lazarusidestrconsts.lisrenameto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Rename to %s"
 msgstr "% S için yeniden adlandır"
 
@@ -17518,7 +17518,7 @@ msgid "Replaced property \"%s\" with \"%s\"."
 msgstr "\" %s \\ \"\" %s \\ \"ile değiştirildi."
 
 #: lazarusidestrconsts.lisreplacedtypeswiths
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Replaced type \"%s\" with \"%s\"."
 msgstr "\"% S \\ \"\" %s \\ \"ile değiştirildi."
 
@@ -17667,7 +17667,7 @@ msgid "Run"
 msgstr "Çalıştır"
 
 #: lazarusidestrconsts.lisrunning
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s (running ...)"
 msgstr "% S (çalışıyor ...)"
 
@@ -17897,7 +17897,7 @@ msgid "Scanning"
 msgstr "Tarama"
 
 #: lazarusidestrconsts.lisscanning2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s. Scanning ..."
 msgstr "% S. Tarama ..."
 
@@ -17933,7 +17933,7 @@ msgid "See messages."
 msgstr "Bakın mesajlar."
 
 #: lazarusidestrconsts.lisseeprojectprojectinspector
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sSee Project -> Project Inspector"
 msgstr "% SSee Projesi -> Proje Müfettişi"
 
@@ -18372,7 +18372,7 @@ msgid "Source of page \"%s\" has changed. Save?"
 msgstr "Sayfa kaynağı \" %s \\ \"değişti Save?"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsaveex
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Sources of pages have changed. Save page \"%s\"? (%d more)"
 msgstr "Sayfaların kaynakları değişti. Sayfayı kaydet \" %s \\ \"? (% D daha fazla)"
 
@@ -18476,7 +18476,7 @@ msgid "Successfully exported to \"%s\"."
 msgstr "\" \\ \" %s \" e başarıyla ihraç edildi. "
 
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully exported %d BuildModes to \"%s\"."
 msgstr "% D BuildMod \" %s \\ \"ya başarıyla ihraç edildi."
 
@@ -18486,17 +18486,17 @@ msgid "Successfully exported compiler options to \"%s\"."
 msgstr "Derleyici seçeneklerini \" %s \\ \"olarak başarıyla ihraç etti."
 
 #: lazarusidestrconsts.lissuccessfullyimported
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully imported from \"%s\"."
 msgstr "\"% S \\ \"adresinden başarıyla alındı."
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully imported %d BuildModes from \"%s\"."
 msgstr "\"% S \\ \"adresinden% d BuildMod'u başarıyla içe aktardı."
 
 #: lazarusidestrconsts.lissuccessfullyimportedcompileroptions
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully imported compiler options from \"%s\"."
 msgstr "\"% S \\ \"dizininden derleyici seçenekleri başarıyla alındı."
 
@@ -18521,7 +18521,7 @@ msgid "Invalid variable name"
 msgstr "Geçersiz değişken adı"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "\"%s\" is not a valid identifier."
 msgstr "\"% S \\ \"geçerli bir tanımlayıcı değil."
 
@@ -18550,7 +18550,7 @@ msgid "Tab"
 msgstr "Sekme"
 
 #: lazarusidestrconsts.listaborderconfirmsort
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Sort tab orders of all child controls of \"%s\" by their positions?"
 msgstr "\"% S \\ \"konumundaki tüm alt denetimlerin sekme sıralarını konumlarına göre mi?"
 
@@ -18559,7 +18559,7 @@ msgid "Move the selected control down in tab order"
 msgstr "Seçilen denetimi sekme sırasına getir"
 
 #: lazarusidestrconsts.listaborderof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Tab Order of %s"
 msgstr "% S Sekmesi Sırası"
 
@@ -18580,7 +18580,7 @@ msgid "Move the selected control up in tab order"
 msgstr "Seçili denetimi sekme sırasına taşıyın"
 
 #: lazarusidestrconsts.listabsfor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Tabs for %s"
 msgstr "% S için sekmeler"
 
@@ -18631,7 +18631,7 @@ msgid "Editable Cell"
 msgstr "Düzenlenebilir Hücre"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
 msgstr "Düzenlenebilir bir Hücre ekler.Hücreler sekme tuşunu kullanarak gezilebilir.% 0: s\" param \\ \"makrosu alı"
@@ -18654,7 +18654,7 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr "Uygulama Paket \" %s \\ \"için oluşturuldu"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "\" %s \\ \"sınıfı bir TControl'tir ve olmayan bir denetleyiciye yapıştırılamaz.% S yapıştırılamaz."
 
@@ -18664,33 +18664,33 @@ msgid "The Codetools found an error:%s%s"
 msgstr "Codetools bir hata buldu: %s %s"
 
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "\"% S \\ \"derleyici dosyası doğru görünmüyor: %s %s"
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The component %s can not be deleted, because it is not owned by %s."
 msgid "The component %s can not be deleted because it is not owned by %s."
 msgstr "% S bileşeni silinemiyor, çünkü %s tarafından sahip değil."
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr "\"% S \\ \"sınıfının bileşen editörü şu hatayı oluşturdu: %s \" %s \\ \""
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
 msgstr " %s \" %s \\ \" %s fi \\ %s \" %s \\ \" %s \" %s \\ \" %s "
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
 msgstr "% S bileşeni %s'dan devralındı.% SDeğiştirilmiş bir bileşen silmek için atayı aç ve d"
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtorenameaninheritedcomp
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The component %s is inherited from %s.%sTo rename an inherited component open the ancestor and rename it there."
 msgstr " %s bileşeni %s'dan miras alınmıştır.% STürekli bir bileşeni yeniden adlandırmak atayı açar ve yeniden başlatır"
 
@@ -18703,12 +18703,12 @@ msgid "The configuration will be downgraded/converted."
 msgstr "Yapılandırma indirgenir / dönüştürülür."
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s contains a nonexistent directory:%s%s"
 msgstr "% S, varolmayan bir dizin içeriyor: %s %s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
 msgstr " %s bir yıldız * karakteri içeriyor.% SLazarus bunu normal karakter olarak kullanıyor v"
 
@@ -18717,7 +18717,7 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr "Şu anki FPC'nin yapılandırma dosyası yok, muhtemelen bazı birimleri özlüyor olacak"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr "\"% S \\ \" %s hata ayıklayıcı mevcut değil veya çalıştırılabilir değil.% S Araçlar -> Seçenekler -> Hata ayıklayıcıyı seçm"
 
@@ -18736,7 +18736,7 @@ msgid "The destination directory%s\"%s\" does not exist."
 msgstr " %s hedef dizini \" %s \\ \"mevcut değil."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "\"% S \\ \"hedef dizini yok %sLütfen proje hedef dosya adını kontrol edin Men"
 
@@ -18746,7 +18746,7 @@ msgid "The directory \"%s\" contains no project include files any more. Remove t
 msgstr "\" \"\" %s \\ \"dizini herhangi bir proje içerme dosyası içermiyor"
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
 msgstr "\"% S \\ \"dizini artık hiçbir proje birimi içermiyor. Bu dizini projeni"
 
@@ -18766,7 +18766,7 @@ msgid "The directory %s was not found."
 msgstr " %s dizini bulunamadı."
 
 #: lazarusidestrconsts.listhefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\""
 msgstr "Dosyalar\""
 
@@ -18780,12 +18780,12 @@ msgid "The file index is needed for functions like find declaration. While scann
 msgstr "\" \"Dosya dizini, bildirim bulma gibi işlevler için gerek duyulur. Tarama sırasında kaynaklarÄ"
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "\" %s \\ \"dosyası bir sembolik bağ.% SOpen \" %s \\ \"yerine?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
 msgstr "\" %s \\ \"dosyası bir Lazarus projesi değil.% SBu \" %s \\ \"için yeni bir proje oluşturun?"
 
@@ -18800,7 +18800,7 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr "Dosya maskesi \" %s \\ \"geçerli bir düzenli ifade değil."
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "\"% S \\ \"dosyası bir program gibi görünüyor.% S Geçerli projeyi kapatın ve yeni bir Lazarus projesi oluşturun"
 
@@ -18810,17 +18810,17 @@ msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr " %s dosyası mevcut bir Lazarus Projesinin program dosyası gibi görünüyor\""
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
 msgstr " %s paketinin kaynak dizinlerinden birinde% \" %s \\ \"dosyası bulundu v"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "\"% S \\ \"dosyası bulunamadı.% SBunu kendiniz bulmak istiyor musunuz?"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "\"% S \\ \"dosyası bulunamadı %sGünlük proje yüklenmeye devam edecek, %sAbort yükü durduraca"
 
@@ -18835,7 +18835,7 @@ msgid "The FPC source directory \"%s\" does not look correct:%s%s"
 msgstr "FPC kaynak dizini \" %s \\ \"doğru görünmüyor: %s %s"
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Free Pascal derleyici yürütülebilir dosyasının adı genellikle \" %s \\ \"dir. Ayrıca hedef s"
 
@@ -18848,28 +18848,28 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Tanımlayıcı bir birimdir, lütfen birimi yeniden adlandırmak için Dosya - Farklı Kaydet işlevini kullanın."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
 msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "Anahtar %s %s zaten %s atanıyor.% S Eski atamayı kaldır ve anahtarı yeni f'ye at"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
 msgstr "Uygulama Paket %s %s yürütülmek için yalvardı yok ya da çalıştırılabilir değil.% SDeğe"
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
 msgstr "Başlatılan uygulama \" %s \\ \" %s yok ya da çalıştırılabilir değil.% S Çalıştır -> Parametreleri çalıştı"
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
 msgstr "Lazarus dizini IDE kaynaklarını ve LCL'nin paket dosyalarını ve birçok standı içeriyo"
 
 #: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "\"% S \\ \"Lazarus dizini doğru görünmüyor: %s %s"
 
@@ -18909,7 +18909,7 @@ msgid "The \"Other sources\" contains a directory which is already in the \"Othe
 msgstr "\" Diğer kaynaklar \\ \"zaten \" Diğer birimler dosyaları \\ \" %s %s"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The output directory \"%s\" is missing."
 msgstr "\"% S \\ \"çıktı dizini eksik."
 
@@ -18946,12 +18946,12 @@ msgid "The owner has this name"
 msgstr "Sahibinin adı var"
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
 msgstr " %s paketi \" %s \\ \"yolunu IDE'nin include yoluna ekliyor.% SBu muhtemelen bir yanlış yapılandırm"
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
 msgstr " %s paketi, \" %s \\ \"yolunu IDE birim yoluna ekliyor.% SBu muhtemelen yanlış yapılandırmadı"
 
@@ -18960,19 +18960,19 @@ msgid "The package already contains a unit with this name."
 msgstr "Paket zaten bu ada sahip bir birim içeriyor."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
 msgid "The package %s cannot be installed because it requires the package \"%s\" which is a runtime only package."
 msgstr " %s paketi yüklenemiyor, çünkü \" %s \\ \"paketi gerektiriyor, bu da bir runtime o"
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgid "The package %s can not be uninstalled because it is needed by the IDE itself."
 msgstr "\" \" %s paketi kaldırılamaz, çünkü IDE kendisi tarafından gerekli."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgid "The package %s does not have any \"Register\" procedure which typically means it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr " %s paketi herhangi bir \" Kayıt \\ \"prosedürüne sahip değil, genelde provi deği"
@@ -18993,7 +18993,7 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "\" \\ \"make \" yolu doğru değil: \\ \" %s \" "
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
 msgstr "\" \\ \"make \" programı bulunamadı.% SBu araç Lazarus'u oluşturmak için gereklidir. "
 
@@ -19007,7 +19007,7 @@ msgid "The project does not write debug info in Dwarf format. The \"%s\" support
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "\" \"Proje, LCLBase tarafından gerekli olan LCL birim arayüzlerini kullanmıyor"
 
@@ -19026,7 +19026,7 @@ msgid "The project information file \"%s\"%shas changed on disk."
 msgstr "Proje bilgi dosyası \" %s \\ \" %shas disk üzerinde değişti."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Proje, %s oluşturulmadan önce kaydedilmelidir. Test Dizini seçeneğini IDE seçeneklerinde, %syo"
 
@@ -19035,12 +19035,12 @@ msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "Proje hedef OS = %s ve CPU = %s kullanıyor.% S Bu hedef için system.ppu FP'de bulunamadı"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
 msgstr "\" \"Proje hata ayıklama simgelerini harici bir dosyaya yazıyor. \"% S \\ \"sadece sembolleri destekliyo"
 
@@ -19050,7 +19050,7 @@ msgid "The project writes the debug symbols into the executable rather than to a
 msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sThere are additional notes for this message on%s"
 msgstr "% SBu ileti için %s üzerinde ek notlar var"
 
@@ -19064,7 +19064,7 @@ msgid "There are other files in the directory with the same name,%swhich only di
 msgstr "Dizinde aynı ada sahip başka dosyalar var, %svhich yalnızca farklı durumda: %s %s %sDele"
 
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
 msgstr " %s adlı dosyada aynı isim ve benzeri bir uzantıya sahip bir dosya var: %s %sGüçlü Dosya: %s"
 
@@ -19087,12 +19087,12 @@ msgid "There is already a file%s%s%sin %s"
 msgstr "zaten %s %s %sin %s adlı bir dosya var"
 
 #: lazarusidestrconsts.listhereisalreadyafileinoldnewcontinue
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr " %s dosyasında \" %s \\ \"dosyası zaten var: %s %sNew: %s %s %sDevam edilsin mi?"
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already a form with the name \"%s\""
 msgstr "\"% S \\ \"adı olan bir form zaten var"
 
@@ -19112,12 +19112,12 @@ msgid "There is already a package %s in the list"
 msgstr "Listede bir %s paket zaten var"
 
 #: lazarusidestrconsts.listhereisalreadyaunitinoldnewyouhavetomakesur
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make sure that the unit search path contains only one of them.%s%sContinue?"
 msgstr " %s %sinde bir birim \" %s \\ \"zaten var: %s %sNew: %s %s Birimin searc olduğundan emin olmanız gerekiyo"
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "\"% S \\ \"adı olan bir birim zaten var Pascal tanımlayıcıları benzersiz olmalıdır."
 
@@ -19172,7 +19172,7 @@ msgid "These units were not found:"
 msgstr "Bu birimler bulunamadı:"
 
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Tarama ve kod tamamlama için Free Pascal paketlerinin kaynakları gereklidir. Örnek içi"
 
@@ -19206,7 +19206,7 @@ msgid "The unit belongs to package %s."
 msgstr "Birim %s paketine ait."
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr "% S birimi %s birim yolunda iki kez var:"
 
@@ -19215,12 +19215,12 @@ msgid "The unit has this name"
 msgstr "Birimin adı var"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "\"% S \\ \"birim dosyası küçük harf değil %sFree Pascal derleyici, tüm vaka için arama yapmıyo"
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
 msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
 msgstr "\" \" %s birimi FPC kaynaklarının bir parçası, ancak ilgili fpdoc xml dosyası bulunamadı.% SEit"
@@ -19236,12 +19236,12 @@ msgid "The unit itself has already the name \"%s\". Pascal identifiers must be u
 msgstr "Ünitenin kendisi zaten \" %s \\ \"ismine sahip ve Pascal tanımlayıcıları benzersiz olmalı."
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
 msgstr "\"% S \\ \"biriminde arama yolu %s paketinin \" %s \\ \"kaynak dizinini içeriyor"
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "\"% S \\ \"çalışma dizini yok %sLütfen çalışma dizinini Menü> Çalıştır"
 
@@ -19263,7 +19263,7 @@ msgid "This is a test project for a design time package, testing it outside the 
 msgstr "Bu, IDE dışında test ederek bir tasarım zamanı paketi için bir test projesi."
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Bu, bir Pascal dosyası gibi görünüyor.% S Çeşitli p'lerden kaçınmak için küçük harfli dosyaların kullanılması önerilir"
@@ -19277,12 +19277,12 @@ msgid "This project has only the default build mode."
 msgstr "Bu proje sadece varsayılan yapı moduna sahip."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr "Bu kurulum tarafından Lazarus'u oluşturmak için bu seçenekler seti desteklenmiyor. \"% S \\ \"dizini "
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Bu ifade açılamıyor.% SPlease yeni bir prosedür / yöntem ayıklamak için bazı kod seçin."
 
@@ -19295,7 +19295,7 @@ msgid "This will create a circular dependency."
 msgstr "Bu dairesel bağımlılık yaratacaktır."
 
 #: lazarusidestrconsts.listhiswillputalotoftextontheclipboardproceed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
 msgstr "Bu, panoya bir sürü metin ( %s) koyar.% SProceed?"
 
@@ -19403,7 +19403,7 @@ msgid "Raise toolbars"
 msgstr "Araç çubuklarını kaldırma"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "tool \"%s\" has no executable"
 msgstr "\"% S \\ \"aracı çalıştırılabilir değil"
 
@@ -19667,7 +19667,7 @@ msgid "Search string '%s' not found!"
 msgstr "Arama dizesi ' %s' bulunamadı!"
 
 #: lazarusidestrconsts.lisuethecurre
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgid "The current editor font does not support UTF-8 but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "Şu anki editör yazı tipi UTF-8'i desteklemiyor, ancak sisteminiz kullanıyor gibi görünüyor"
@@ -19677,7 +19677,7 @@ msgid "Clear include cache"
 msgstr "Clear cache include"
 
 #: lazarusidestrconsts.lisuidbytes
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s bytes"
 msgstr "% S bayt"
 
@@ -19728,40 +19728,40 @@ msgid "Unable copy components to clipboard"
 msgstr "Kopyala bileşenlerini panoya kopyalanabilir"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "Kaynak dosyası %s \" %s \\ \"kaynak başlığına yorum eklenemedi.% S Muhtemelen bir sözdizimi hatası."
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "Kaynak T %s: FORMDATA %s kaynağına eklenemiyor \" %s \\ \".% S Muhtemelen bir sözdizimi hatası."
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
 msgid "Unable to add the dependency %s because the package %s has already a dependency %s"
 msgstr "% S bağımlılığı eklenemiyor çünkü %s paketi zaten bir bağımlılık %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
 msgid "Unable to add the dependency %s because this would create a circular dependency. Dependency %s"
 msgstr "Bağımlılık %s eklenemedi, çünkü bu bir dairesel bağımlılık yaratacak Bağımlılık %s"
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "Projede aynı adı taşıyan bir birim zaten olduğundan %s projeye eklenemedi."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "\"% S \\ \"dosyasını \" %s \\ \"dosyasına yedekleyemiyorum!"
 
 #: lazarusidestrconsts.lisunabletochangeclassofto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "% S %s %s sınıfını %s olarak değiştirilemiyor"
 
@@ -19771,7 +19771,7 @@ msgid "Unable to change project scaled in source.%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to change project title in source.%s%s"
 msgstr "Kaynakta proje başlığı değiştirilemiyor.% S %s"
 
@@ -19823,12 +19823,12 @@ msgid "Unable to create file"
 msgstr "Dosya oluşturulamadı"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to create file \"%s\""
 msgstr "\"% S \\ \"dosyası oluşturulamadı."
 
 #: lazarusidestrconsts.lisunabletocreatefile3
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to create file%s\"%s\""
 msgstr "% S dosyası \" %s \\ \"dosyası oluşturulamadı."
 
@@ -19870,17 +19870,17 @@ msgid "Unable to find a ResourceString section in this or any of the used units.
 msgstr "Bu ya da kullanılan birimlerden herhangi birinde bir ResourceString bölümü bulunamadı."
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to find a valid classname in \"%s\""
 msgstr "\"% S \\ \"'da geçerli bir sınıf adı bulunamadı"
 
 #: lazarusidestrconsts.lisunabletofindfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to find file \"%s\"."
 msgstr "\"% S \\ \"dosyası bulunamadı."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "Dosya \" %s \\ \"bulunamadı.% SEğer projenize aitse, arama yolunu %sProject -> Com"
 
@@ -19899,7 +19899,7 @@ msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s\"%s\""
 msgstr ".lfm dosyası %s \" %s \\ \"için Pascal birimi (.pas, .pp) bulunamadı\" "
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
 msgstr "\" %s \\ \"bileşen sınıfı bulunamadı.% S RegisterClass üzerinden kayıtlı değil ve lfm yoktu"
 
@@ -19912,7 +19912,7 @@ msgid "Unable to get source for designer."
 msgstr "Tasarımcı için kaynak bulunamadı."
 
 #: lazarusidestrconsts.lisunabletoloadfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "unable to load file %s: %s"
 msgstr "% S dosyası yüklenemedi: %s"
 
@@ -19922,13 +19922,13 @@ msgid "Unable to load package \"%s\""
 msgstr "Paket \" %s \\ \"yüklenemedi"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to load the component class \"%s\", because it depends on itself."
 msgid "Unable to load the component class \"%s\" because it depends on itself."
 msgstr "Yapı sınıfı \" %s \\ \"yüklenemiyor çünkü kendisine bağımlı."
 
 #: lazarusidestrconsts.lisunabletoopen
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to open \"%s\""
 msgstr "\"% S \\ \"açılamıyor \" "
 
@@ -19937,12 +19937,12 @@ msgid "Unable to open ancestor component"
 msgstr "Atalar bileşeni açılamadı"
 
 #: lazarusidestrconsts.lisunabletoopendesignertheclassdoesnotdescendfromades
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
 msgstr "Tasarımcı açılamadı.% STaşıma sınıfı %s, TForm veya TDa gibi tasarlanabilir bir sınıfdan inmiyo"
 
 #: lazarusidestrconsts.lisunabletoread
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to read %s"
 msgstr "% S okunamadı"
 
@@ -20060,7 +20060,7 @@ msgid "Unable to update CreateForm statement in project source"
 msgstr "Proje kaynağında CreateForm deyimi güncelleştirilemiyor"
 
 #: lazarusidestrconsts.lisunabletowrite2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write \"%s\""
 msgstr "\"% S \\ \"yazamıyor"
 
@@ -20094,7 +20094,7 @@ msgid "Unable to write to file \"%s\"."
 msgstr "\" \\ \" %s \" dosyasına yazılamıyor. "
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "% S %sError: %s için xml dize yazamadı"
 
@@ -20108,7 +20108,7 @@ msgid "Undo"
 msgstr "Geri alma"
 
 #: lazarusidestrconsts.lisuninstall
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Uninstall %s"
 msgstr "% S kaldırıldı"
 
@@ -20135,7 +20135,7 @@ msgid "Unit identifier exists"
 msgstr "Birim tanımlayıcı var"
 
 #: lazarusidestrconsts.lisunitinpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s unit %s in package %s"
 msgstr "% S birimi %s, %s paketinde"
 
@@ -20162,7 +20162,7 @@ msgid "unit %s not found at new position \"%s\""
 msgstr "Birim %s yeni konumda \" %s \\ \"bulunamadı \" "
 
 #: lazarusidestrconsts.lisunitnotfoundinproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "A unit not found in project %s"
 msgstr "% S projesinde bulunmayan bir birim"
 
@@ -20179,12 +20179,12 @@ msgid "Unit paths"
 msgstr "Birim yolları"
 
 #: lazarusidestrconsts.lisunitrequirespackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "unit %s requires package %s"
 msgstr "% S birimi %s paketini gerektiriyor"
 
 #: lazarusidestrconsts.lisunitsnotfoundinproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Units not found in project %s"
 msgstr "% S projesinde bulunmayan birimler"
 
@@ -20193,7 +20193,7 @@ msgid "Unsigned"
 msgstr "İmzasız"
 
 #: lazarusidestrconsts.lisunusedunitsof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unused units of %s"
 msgstr "% S kullanılmayan birimleri"
 
@@ -20272,7 +20272,7 @@ msgid "Use comments in custom options"
 msgstr "Özel seçeneklerdeki yorumları kullanın"
 
 #: lazarusidestrconsts.lisusedby
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid " used by %s"
 msgstr "% S tarafından kullanılıyor"
 
@@ -20311,7 +20311,7 @@ msgid "Use package in package"
 msgstr "Paket paketi kullanın"
 
 #: lazarusidestrconsts.lisusepackageinproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Use package %s in project"
 msgstr "% S paketinde proje kullan"
 
@@ -20446,7 +20446,7 @@ msgid ", Warnings: %s"
 msgstr ", Uyarılar: %s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
 msgstr "% S Uyarı: Bu ana ünitedir, yeni ana ünite %s.pas olacaktır."
 
@@ -20636,7 +20636,7 @@ msgid "Writing the project info file failed."
 msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "wrong version in %s: %s"
 msgstr "% S içindeki yanlış sürüm: %s"
 
@@ -20645,7 +20645,7 @@ msgid "XML Error"
 msgstr "XML Hatası"
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "XML parser error in file %s%sError: %s"
 msgstr "% S dosyasındaki XML ayrıştırıcı hatası %sError: %s"
 
@@ -20706,7 +20706,7 @@ msgid "lpk file valid (%s)"
 msgstr "Lpk dosyası geçerli ( %s)"
 
 #: lazarusidestrconsts.lrspldunabletodeletefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to delete file \"%s\""
 msgstr "\"% S \\ \"dosyasını silemiyor"
 
@@ -21509,7 +21509,7 @@ msgid "Extract Procedure"
 msgstr "Çıkarma Prosedürü"
 
 #: lazarusidestrconsts.srkmecexttool
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "External tool %d"
 msgstr "Dış araç% d"
 
@@ -21579,12 +21579,12 @@ msgid "Fold at Cursor"
 msgstr "İmleçte Katla"
 
 #: lazarusidestrconsts.srkmecfoldlevel
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fold to Level %d"
 msgstr "Düzeye% d katlayın"
 
 #: lazarusidestrconsts.srkmecgotoeditor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Go to editor %d"
 msgstr "Editöre git% d"
 
@@ -21597,7 +21597,7 @@ msgid "Go to Line Number"
 msgstr "Satır Numarasına Git"
 
 #: lazarusidestrconsts.srkmecgotomarker
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Go to Marker %d"
 msgid "Go to bookmark %d"
 msgstr "İşaretleyiciye git% d"
@@ -22119,7 +22119,7 @@ msgid "Set a free Bookmark"
 msgstr "Ücretsiz bir Yer İşareti ayarla"
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Set Marker %d"
 msgid "Set bookmark %d"
 msgstr "İşaretçi% d'yi ayarla"
@@ -22356,7 +22356,7 @@ msgid "View local variables"
 msgstr "Yerel değişkenleri görüntüle"
 
 #: lazarusidestrconsts.srkmectogglemarker
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Toggle Marker %d"
 msgid "Toggle bookmark %d"
 msgstr "İşaretçi% d'yi değiştir"

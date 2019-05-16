@@ -601,7 +601,7 @@ msgid "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option %s"
 msgstr "TH2PasDialog.h2pasOptionsCheckGroupItemClick:未知选项%s"
 
 #: h2passtrconsts.h2pthefilealreadyexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\"%salready exists."
 msgstr "文件\"%s\"已存在."
 

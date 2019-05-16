@@ -80,7 +80,7 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Įveskite pavadinimą, kuris apibūdintų ryšį"
 
 #: lazdatadeskstr.sconnectionnameexists
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "There is already a connection named \"%s\"\n"
 #| "Would you like to override the connection data ?\n"
@@ -100,7 +100,7 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Ar sukurti šiai duomenų bazei skirtą ryšį?"
 
 #: lazdatadeskstr.sddmodified
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Data dictionary \"%s\" has changed.\n"
 #| "What do you want to do with the changes?\n"

@@ -108,7 +108,7 @@ msgid "class node without parent node"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "klasse \"%s\" niet gevonden"
@@ -543,13 +543,13 @@ msgid "interface section not found"
 msgstr "interface sectie niet gevonden"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "ongeldige klasse naam=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "ongeldige klasse naam \"%s\""
@@ -587,13 +587,13 @@ msgid "invalid type"
 msgstr "ongeldig type"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "ongeldige variabele naam \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "ongeldige variabele type \"%s\""
@@ -844,7 +844,7 @@ msgid "source is not unit"
 msgstr "broncode is geen unit"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "broncode niet gevonden: unit %s"
@@ -854,7 +854,7 @@ msgid "SrcPath Initialization"
 msgstr ""
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "%s verwacht, maar %s gevonden"

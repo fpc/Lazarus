@@ -623,7 +623,7 @@ msgid "Invalid property value"
 msgstr "Neplatná hodnota vlastnosti"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" není platné jméno jednotky."

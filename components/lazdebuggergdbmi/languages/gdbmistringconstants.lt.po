@@ -190,7 +190,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "„GNU derintuvė naudojant SSH“ leis vykdyti nuotolinį derinimą „SSH“ kanalu. Daugiau detalių rasite faile „docs/RemoteDebugging.txt“. Kelyje turi būti nurodytas „SSH“ klientas. Kaip pagrindinio kompiuterio pavadinimą ir galimą naudotojo vardą naudokite „SSH_Startup_Options“. Nuotoliniame kompiuteryje „GDB“ failo pavadinimui naudokite „Remote_GDB_Exe“."
 
 #: gdbmistringconstants.lisresponsecontinue
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
 msgstr "Atsakas: %sTęsti?"
@@ -200,7 +200,7 @@ msgid "Timeout has occurred:"
 msgstr ""
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Netikėtas rezultatas:%sDerintuvė nutrauks savo darbą"

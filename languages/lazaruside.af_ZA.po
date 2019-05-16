@@ -18419,7 +18419,7 @@ msgid "Move the selected control down in tab order"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Keep orde van"

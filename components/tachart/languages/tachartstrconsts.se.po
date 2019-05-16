@@ -535,7 +535,7 @@ msgid "Edit axis transformations"
 msgstr "Redigera axelomvandlingar"
 
 #: tachartstrconsts.tasfailedsubcomponentrename
-#, c-format, object-pascal-format
+#, object-pascal-format
 msgid "Failed to rename components: %s"
 msgstr "Namnbyte av komponent misslyckades: %s"
 

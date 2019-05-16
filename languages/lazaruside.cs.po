@@ -3204,7 +3204,7 @@ msgid "Overwrite block"
 msgstr "Přepsání bloku"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Desktop with the name \"%s\" was found.\n"
 #| "Should the old desktop be overwritten?\n"
@@ -3523,7 +3523,7 @@ msgid "Rubberband Selection"
 msgstr "Výběr vodících linek"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The running Lazarus instance cannot accept any files.\n"
 #| "Do you want to open them in a new IDE instance?\n"
@@ -8887,7 +8887,7 @@ msgid "Do not write updated project info file after build. If not specified, bui
 msgstr "Nezapisovat aktualizované projektové informace po sestavení. Pokud není určeno, číslo sestavení bude zvětšeno pokud je nastaveno."
 
 #: lazarusidestrconsts.lisdonwloadonlinepackages
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following package(s) are not available locally: %s.\n"
 #| "In order to install it, you must download them first. Download now?\n"
@@ -9927,7 +9927,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Soubory v ASCII nebo v kódování UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "File %s is converted to text format."
 msgid "File %s was converted to text format."
 msgstr "Soubor %s je převeden do textového formátu."
@@ -11136,7 +11136,7 @@ msgid "Install it, I like the fat"
 msgstr "Nainstalovat jej, mám to rád tučné"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following packages are not installed, but available in the main repository: %s.\n"
 #| "Do you wish to install missing packages?\n"
@@ -13194,7 +13194,7 @@ msgid "\"%s\" in %s"
 msgstr "\"%s\" v %s"
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "\"%s\" is already in use in %s as a shortcut.\n"
 #| "Try a different shortcut.\n"
@@ -13271,7 +13271,7 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "TSCList.GetScanListCompName: neplatný index %d pro FScanList"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "You have to change the shortcut from %s\n"
 #| "to avoid a conflict\n"
@@ -16183,7 +16183,7 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Jeden nebo více vyžadovaných balíčků nebylo nalezeno. Viz graf balíčků pro více detailů."
 
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The package %s is already open in the IDE.\n"
 #| "You cannot save a package with the same name.\n"

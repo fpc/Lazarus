@@ -11,19 +11,19 @@ msgstr ""
 "X-Poedit-Country: INDONESIA\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Browser %s%s%s bukan eksekutabel."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Browser %s%s%s tidak ditemukan."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Kesalahan saat mengeksekusi %s%s%s:%s%s"
@@ -38,7 +38,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Database bantuan %s%s%s tidak bisa menemukan file %s%s%s."
@@ -550,19 +550,19 @@ msgid "Help context %s not found."
 msgstr "Konteks Bantuan %s tidak ditemukan."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Konteks Bantuan %s tidak ditemukan dalam Database %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Database Bantuan %s%s%s tidak ditemukan peninjau untuk halaman bantuan dari tipe %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Database Bantuan %s%s%s tidak ditemukan"
@@ -578,19 +578,19 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Kata kunci Bantuan %s%s%s tidak ditemukan."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Kata kunci Bantuan %s%s%s tidak ditemukan dalam Database %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Node Bantuan %s%s%s tidak mempunyai Database Bantuan"
@@ -622,7 +622,7 @@ msgid "Help Selector Error"
 msgstr "Selektor Bantuan Salah"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Tidak ada peninjau untuk tipe bantuan %s%s%s"

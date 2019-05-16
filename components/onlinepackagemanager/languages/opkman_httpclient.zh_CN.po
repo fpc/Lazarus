@@ -31,7 +31,7 @@ msgid "Invalid protocol version in response: \"%s\""
 msgstr "无效协议版本在响应:\"%s\""
 
 #: opkman_httpclient.serrinvalidstatuscode
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid response status code: %s"
 msgstr "无效响应状态代码(response status code):%d"
 

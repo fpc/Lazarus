@@ -28,7 +28,7 @@ msgid "JSON document modified"
 msgstr "JSON dokumenttia muokattu"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The JSON data in \"%s\" was changed but not saved.\n"
 #| "What do want to do ?\n"

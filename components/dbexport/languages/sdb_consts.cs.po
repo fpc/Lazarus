@@ -77,7 +77,7 @@ msgid "Execute ..."
 msgstr "Spustit ..."
 
 #: sdb_consts.snrecordsexported
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Succesfully exported %d records."
 msgid "Successfully exported %d records."
 msgstr "Úspěšně exportováno %d položek."

@@ -434,7 +434,7 @@ msgid "Whitespace"
 msgstr ""
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "De toets \"%s\" is reeds toegewezen aan een ander editor commando. (%s)"

@@ -187,7 +187,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr ""
 
 #: gdbmistringconstants.lisresponsecontinue
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
 msgstr "Respuesta: %s¿Continuar?"
@@ -197,7 +197,7 @@ msgid "Timeout has occurred:"
 msgstr ""
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Resultado inexperado:%sEl depurador finalizará ahora"

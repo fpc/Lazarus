@@ -38,7 +38,7 @@ msgid "Fields"
 msgstr "Pola"
 
 #: sdb_consts.sdb_filename
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Filename:"
 msgstr "Nazwa pliku: %s"
 

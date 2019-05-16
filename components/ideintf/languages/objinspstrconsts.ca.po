@@ -486,7 +486,7 @@ msgid "Clear picture"
 msgstr ""
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "El nom del component %s%s%s no es un identificador vàlid"
@@ -546,7 +546,7 @@ msgid "&Delete"
 msgstr "Eliminar components"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Voleu eliminar l'element %s%s%s?"
@@ -581,7 +581,7 @@ msgid "Error loading image"
 msgstr "S'ha produït un error mentre es carregava l'imatge"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "S'ha produït un error mentre es carregava l'imatge %s%s%s:%s%s"

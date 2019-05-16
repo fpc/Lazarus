@@ -435,7 +435,7 @@ msgid "Unsupported protocol in URL:%s"
 msgstr "URL nurodytas nepalaikomas protokolas:%s"
 
 #: ipconst.sicmpecho
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Echo reply (Hop number: %d)\n"
 #| "             Status = %d\n"

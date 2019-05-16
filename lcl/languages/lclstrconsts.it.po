@@ -540,7 +540,7 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Aiuto su %s non trovato nell'archivio \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "L'archivio Help \"%s\" non trova un visualizzatore per le pagine di aiuto di tipo %s"

@@ -139,7 +139,7 @@ msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:
 msgstr "当执行命令: %0:s\"%2:s\"%0:sgdb报告:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "按\"Ignore\"继续调试.这可能不安全.按\"Abort\"结束调试.%0:异常: %1:s带有信息\"%2:s\"%0:s上下文: %4:s.状态: %5:s %0:s%0:s%3:s"
 

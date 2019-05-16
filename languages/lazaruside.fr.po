@@ -10212,7 +10212,7 @@ msgid "The fpcmkcfg configuration tool it too old [%s]."
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkginstallationpath
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
 msgid "The prefix of the Free Pascal Compiler installation is required. For example it has the units \"%s\" and/or \"%s\""
 msgstr "Le préfixe de l'installation du compilateur Free Pascal est requis pour créer de nouveaux fichiers de configuration pour Fppkg. Par exemple, il a les unités \"%s\" et/ou \" %s\""
@@ -10245,7 +10245,7 @@ msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
 msgstr "Un problème s'est produit lors de la tentative de création d'une nouvelle configuration Fppkg : %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
 msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
 msgstr "Impossible de créer une nouvelle configuration Fppkg. Vous devrez corriger la configuration manuellement ou réinstaller Free Pascal."
@@ -10883,7 +10883,7 @@ msgid "Incorrect configuration directory found"
 msgstr "Le répertoire de configuration trouvé est incorrect"
 
 #: lazarusidestrconsts.lisincorrectfppkgconfiguration
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "the Fppkg configuration is corrupt."
 msgid "there is a problem with the Fppkg configuration. (%s)"
 msgstr "la configuration de Fppkg est corrompue."

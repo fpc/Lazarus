@@ -1593,7 +1593,7 @@ msgid "User defined extension"
 msgstr "הרחבה מוגדרת ע\"י המשתמש"
 
 #: lazarusidestrconsts.dlgeddelayinsec
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "(%s sec delay)"
 msgstr "(השהייה של s% שניות)"
 
@@ -3596,7 +3596,7 @@ msgid "Project Options"
 msgstr "אפשרויות פרויקט"
 
 #: lazarusidestrconsts.dlgprojectoptionsfor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Options for Project: %s"
 msgstr "אפשרויות לפרוייקט: s%"
 
@@ -3809,7 +3809,7 @@ msgid "Allow caret to move past end of line"
 msgstr "סמן אחרי סוף השורה"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Search directory \"%s\" not found."
 msgstr "התקייה המבוקשת  \"s%\" לא נמצאה."
 
@@ -4239,7 +4239,7 @@ msgid "IME handled by System"
 msgstr ""
 
 #: lazarusidestrconsts.dlguserschemeerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Failed to load user-scheme file %s"
 msgstr "נכשל בטעינת קובץ סכמת משתמש s%"
 
@@ -4578,7 +4578,7 @@ msgid "Invalid Unit Name"
 msgstr "שם יחידה שגוי"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is not a valid unit name."
 msgid "\"%s\" is not a valid unit name."
 msgstr "%s%s%s אינו שם תקין ליחידה."
@@ -4592,7 +4592,7 @@ msgid "New File"
 msgstr "קובץ חדש"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "לא נמצאה חבילה עבור התלות s%.s%s%s%. בחר חבילה קיימת."
@@ -4625,55 +4625,55 @@ msgid "Show all"
 msgstr "הצג הכל"
 
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "לסוג הקדום s%s%s% יש אותו שם כמו ליחידה s%s%s%."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
 msgid "The ancestor type \"%s\" is not a valid Pascal identifier."
 msgstr "הסוג הקדום s%s%s% אינו מזהה חוקי של פסקל"
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
 msgid "The class name \"%s\" and ancestor type \"%s\" are the same."
 msgstr "הסוג הקדום s%s%s% ושם המחלקה s%s%s% זהים"
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
 msgid "The class name \"%s\" exists already in%sPackage %s%sFile: \"%s\""
 msgstr "שם המחלקה s%s%s% כבר קיים בחבילה s%s% בקובץ: s%s%s%"
 
 #: lazarusidestrconsts.lisa2ptheclassnamehasthesamenameastheunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The class name \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "שם המחלקה s%s%s% זהה ליחידה s%s%s%."
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class name %s%s%s is not a valid Pascal identifier."
 msgid "The class name \"%s\" is not a valid Pascal identifier."
 msgstr "שם המחלקה s%s%s% אינו מזהה חוקי של פסקל."
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgstr "הקובץ s%s%s% הוא חלק מהפרוייקט הנוכחי. זה רעיון גרוע לשתף קבצים בין פרוייקטים וחבילות."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgid "The filename \"%s\" is ambiguous because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "שם הקובץ s%s%s% הוא רב משמעי, בגלל שלחבילה אין עדיין תיקיית ברירת מחדל. ציין שם קובץ עם הנתיב המלא."
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
@@ -4685,44 +4685,44 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "הגרסה המקסימאלית נמוכה מהגרסה המינימאלית."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "הגרסה המינימלית s%s%s% שגויה. השתמש בצורה build.major.release לדוגמה: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package already has a dependency on the package %s%s%s."
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "לחבילה יש כבר תלות בחבילה s%s%s%."
 
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "שם העמוד s%s%s% ארוך מדי (עד 100 תוים)."
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgid "The unitname \"%s\" already exists in the package:%s%s"
 msgstr "שם היחידה s%s%s%  כבר קיים בחבילה: s%s%"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthispackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unitname %s%s%s already exists in this package."
 msgid "The unitname \"%s\" already exists in this package."
 msgstr "שם הקובץ s%s%s% כבר קיים בחבילה."
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "שם היחידה s%s%s%  ושם הקובץ s%s%s% שונים."
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "שם היחידה s%s%s%  הוא שם של רכיב רשום. השמוש בו עלול לגרום להודעות שגיאה מוזרות."
@@ -4791,7 +4791,7 @@ msgid "About Lazarus"
 msgstr "אודות לזרוס"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "רשיון: GPL/GPL%s לזארוס הוא IDE ליצירת יישומים (גרפיים או למסוף) בשפת free pascal. free pascal היא מהדר פסקל ופסקל מונחה עצמים ברשיון GPL/LGPL  שרץ על חלונות, ליבוקס,  מאק - גרסה 10, FreeBSD ועוד. לזארוס הוא החלק החסר בפאזל שמאפשר לך לפתח תוכנות לכל מערכות ההפעלה האלו בסביבה דמויית דלפי. ה IDE הוא כלי RAD הכולל מעצב טפסים. ככל שלזארוס גדלה אנו זקוקים ליותר מפתחים.ראה במקורות של לזארוס ו Free Pascal את פרטי הרשיון."
@@ -4805,7 +4805,7 @@ msgid "Official:"
 msgstr "רשמי:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
 msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "ה s% אינו יכול להכיל TControls. אתה יכול לשים עליו רק רכיבים בלתי נראים."
@@ -5004,7 +5004,7 @@ msgid "Invalid Package"
 msgstr "חבילה שגויה"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackageid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Invalid package ID: %s%s%s"
 msgid "Invalid package ID: \"%s\""
 msgstr "זהוי חבילה שגוי: s%s%s%"
@@ -5014,7 +5014,7 @@ msgid "Package is read only"
 msgstr "החבילה היא לקריאה בלבד"
 
 #: lazarusidestrconsts.lisaf2ppackagenotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Package %s%s%s not found."
 msgid "Package \"%s\" not found."
 msgstr "החבילה %s%s%s לא נמצאה."
@@ -5027,12 +5027,12 @@ msgid "Show all"
 msgstr "הצג הכל"
 
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package %s is read only."
 msgstr "החבילה s% היא לקריאה בלבד."
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "הקובץ %s%s%s כבר קיים.%sהאם להחליפו?"
@@ -5081,7 +5081,7 @@ msgid "All parameters of this function are already set at this call. Nothing to 
 msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgid "All your modifications to \"%s\"%swill be lost and the file reopened."
 msgstr "כל השינויים שלך של %s%s%s%sיאבדו והקובץ יפתח מחדש."
@@ -5123,7 +5123,7 @@ msgid "Ambiguous file found"
 msgstr "קובץ רב משמעי נמצא"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "נמצא קובץ רב משמעי: s%s%s% יכול להיות שהוא נלקח בטעות במקום s%s%s%s%s%. האם למחוק אותו?"
@@ -5151,7 +5151,7 @@ msgid "Anchor Editor - no control selected"
 msgstr "עגן עורך - לא נבחרו פקדים"
 
 #: lazarusidestrconsts.lisanchorenabledhint
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Enabled = Include %s in Anchors"
 msgstr "אפשר = כלול s% בעוגנים"
 
@@ -5189,7 +5189,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "ארעה שגיאה באיתחול האחרון בזמן טעינת s!%s%s%. האם לטעון את הפרוייקט שוב?"
@@ -5625,7 +5625,7 @@ msgid "%s byte"
 msgstr ""
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "קריאת s% ליצירת makefile מ s% נכשלה."
 
@@ -5661,7 +5661,7 @@ msgid "Cannot copy top level component."
 msgstr "לא יכול להעתיק רכיב של הרמה העליונה."
 
 #: lazarusidestrconsts.liscannotcreatefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot create file %s%s%s"
 msgid "Cannot create file \"%s\""
 msgstr "לא יכול לצור את הקובץ s%s%s%"
@@ -5686,7 +5686,7 @@ msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "לא יכול למצוא את מאתחל לזארוס: s%s%"
@@ -5752,13 +5752,13 @@ msgid "Ambiguous compiler"
 msgstr "המהדר רב משמעי"
 
 #: lazarusidestrconsts.lisccochecktestdir
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
 msgstr "אנא בדוק את ספריית הבדיקות תחת %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
 msgstr "המהדר s% אינו קובץ ריצה. s% פרטים: s%"
 
@@ -5771,7 +5771,7 @@ msgid "Copy output to clipboard"
 msgstr "העתק פלט ללוח הגזירים"
 
 #: lazarusidestrconsts.lisccodatesdiffer
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "הזמנים של קבצי ppu. של FPC שונים ביותר משעה. יכול להיות שזה אומר שהם שייכים לשתי התקנות שונות. קובץ 1:s%s% קובץ 2 s%"
@@ -5836,7 +5836,7 @@ msgid "ppu exists twice: %s, %s"
 msgstr "קובץ ה ppu קיים פעמיים: %s, %s"
 
 #: lazarusidestrconsts.lisccoppuolderthancompiler
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "יש קובץ ppu. ישן יותר מהמהדר עצמו:s%s%"
 
@@ -5846,7 +5846,7 @@ msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong un
 msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "יש כמה מהדרי fpc בנתיב שלך.s%s%s% אולי שכחת למחוק מהדר ישן?"
@@ -5868,7 +5868,7 @@ msgid "Unable to create Test File"
 msgstr "לא ניתן ליצור קובץ בדיקה"
 
 #: lazarusidestrconsts.lisccounabletocreatetestpascalfile
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to create Test pascal file \"%s\"."
 msgid "Unable to create Test Pascal file \"%s\"."
 msgstr "לא ניתן ליצור את קובץ הבדיקה לפסקל \"%s\"."
@@ -6119,17 +6119,17 @@ msgid "Cancel loading this resource"
 msgstr "בטל טעינת משאב זה"
 
 #: lazarusidestrconsts.liscfeclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sClass \"%s\" not found."
 msgstr "המחלקה  \"%s\" לא נמצאה."
 
 #: lazarusidestrconsts.liscfecomponent
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent: %s:%s"
 msgstr "רכיב: %s:%s"
 
 #: lazarusidestrconsts.liscfecomponentclass
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent Class: %s"
 msgstr "מחלקת רכיבים: %s"
 
@@ -6182,7 +6182,7 @@ msgid "Error reading %s"
 msgstr "שגיאה בקריאת %s"
 
 #: lazarusidestrconsts.liscfeinfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sIn file %s%s"
 msgid "In file %s"
 msgstr "בקובץ %s%s"
@@ -6192,7 +6192,7 @@ msgid "Invalid component owner"
 msgstr "הבעלים של הרכיב אינו חוקי"
 
 #: lazarusidestrconsts.liscferoot
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sRoot=%s:%s"
 msgstr "רוט= %s:%s"
 
@@ -6201,12 +6201,12 @@ msgid "Stop all loading"
 msgstr "עצור את כל הטעינות"
 
 #: lazarusidestrconsts.liscfestream
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sStream=%s"
 msgstr "זרם= %s"
 
 #: lazarusidestrconsts.liscfestreamposition
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sStream position: %s"
 msgstr "מיקום הזרם: %s"
 
@@ -6215,7 +6215,7 @@ msgid "TCustomFormEditor.CreateNonFormForm already exists"
 msgstr "כבר קיים TCustomFormEditor.CreateNonFormForm"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformunknowntype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
 msgstr "סוג לא ידוע TCustomFormEditor.CreateNonFormForm"
 
@@ -6225,7 +6225,7 @@ msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerFor
 msgstr "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
 msgstr "כבר רשום: TCustomFormEditor.RegisterDesignerMediator"
 
@@ -6240,7 +6240,7 @@ msgid "The component of type %s failed to set its owner to %s:%s"
 msgstr "הרכיב מסוג %s  נכשל בקביעת הבעלים להיות %s:%s"
 
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to clear the form editing selection%s%s"
 msgstr "לא יכול לנקות את בחירת עורך הטפסים"
 
@@ -6337,7 +6337,7 @@ msgid "Check the next token in source and add a semicolon if needed."
 msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "בדוק את היעד (OS, CPU, LCL widget type). יתכן שתצטרך להדר את החבילה מחדש עבור יעד זה או לקבוע יעד אחר לפרוייקט."
 
@@ -6473,7 +6473,7 @@ msgid "Classes and properties exist. Values were not checked."
 msgstr "המחלקה והתכונות קיימות. הערכים לא בדוקים."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "המחלקה s%s%s% אינה מחלקה רשומה. לא מצליח להדביק."
@@ -6488,7 +6488,7 @@ msgid "Class %s not found at %s(%s,%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassofmethodnotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Class %s%s%s of method %s%s%s not found."
 msgid "Class \"%s\" of method \"%s\" not found."
 msgstr "המחלקה s%s%s% של מתודה s%s%s% לא נמצאה."
@@ -6667,7 +6667,7 @@ msgid "Call on:"
 msgstr "קרא ל:"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%sClick OK if you are sure to do that."
 msgid "%s%sClick OK if you definitely want to do that."
 msgstr "לחץ על OK אם אתה בטוח שברצונך לעשות זאת."
@@ -6839,7 +6839,7 @@ msgid "Add code template"
 msgstr "הוסף תבנית קוד"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid " A token %s%s%s already exists! "
 msgid " A token \"%s\" already exists! "
 msgstr "סמל s%s%s% כבר קיים!"
@@ -6878,13 +6878,13 @@ msgid "Action: %s"
 msgstr "פעולה: %s"
 
 #: lazarusidestrconsts.liscodetoolsdefsautocreatednodesreadonly
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
 msgid "Auto created nodes cannot be edited,%snor can they have non auto created child nodes."
 msgstr "אי אםשר לערוך צמתים שנוצרו אוטומטית, ולא יכול להיות שיש להן צמתים בנות, שלא נוצרו אוטומטית."
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s, auto generated"
 msgstr "נוצר אוטומטית"
 
@@ -6913,7 +6913,7 @@ msgid "Convert node"
 msgstr "המר צומת"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesfordirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Create Defines for %s Directory"
 msgstr "צור מגדירים לתקיית s%"
 
@@ -6926,7 +6926,7 @@ msgid "Create Defines for Free Pascal SVN Sources"
 msgstr "צור מגדירים למקורות SVN של מהדר fpc"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Create Defines for %s Project"
 msgstr "צור מגדירים לפרוייקט s%"
 
@@ -6947,12 +6947,12 @@ msgid "Delete node"
 msgstr "מחק צומת"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד. למשל: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד, אשר בשמוש בפרוייקט זה. למשל: C:/Programme/Borland/Delphi%s"
 
@@ -7083,12 +7083,12 @@ msgid "Invalid previous node"
 msgstr "צומת קודמת פגומה"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectorydesc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
 msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד. למשל: home/user/kylix%s/"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectoryforproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
 msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד, אשר בשמוש בפרוייקט זה. למשל: home/user/kylix%s/"
 
@@ -7141,7 +7141,7 @@ msgid "Project directory"
 msgstr "תיקיית הפרוייקט"
 
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s project directory"
 msgstr "תיקיית הפרוייקט s%"
 
@@ -7172,7 +7172,7 @@ msgid "The Free Pascal SVN source directory."
 msgstr "תיקיית קוד המקור של FPC SVN."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "הנתיב למהדר fpc. למשל/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s/."
@@ -7189,7 +7189,7 @@ msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "תיקיית הפרוייקט s%, שמכילה את קבצי dpr .dpk."
 
@@ -7366,7 +7366,7 @@ msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "מהדר  \"%s\"  לא תומך ביעד %s-%s"
 
 #: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error: invalid compiler: %s"
 msgstr "שגיאה: מהדר s% לא חוקי"
 
@@ -7429,19 +7429,19 @@ msgid "Extend right only"
 msgstr "הרחב ימינה בלבד"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Component name \"%s\" is a pascal keyword."
 msgid "Component name \"%s\" is a Pascal keyword."
 msgstr "שם הרכיב  \"%s\" הוא מילת מפתח של פסקל"
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is keyword"
 msgid "Component name \"%s\" is keyword"
 msgstr "שם הרכיב s%s%s% הוא מלת מפתח"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
@@ -7531,7 +7531,7 @@ msgid "Confirm delete"
 msgstr "וודא מחיקה"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgid "Do you want to rebuild Lazarus with profile: %s?"
 msgstr "האם ברצונך לבנות מחדש את לזרוס?"
@@ -7732,7 +7732,7 @@ msgid "Failed converting unit"
 msgstr "לא הצליח להמיר יחידה "
 
 #: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Failed to convert unit%s%s%s"
 msgid "Failed to convert unit \"%s\""
 msgstr "לא הצליח להמיר יחידה %s%s%s"
@@ -8201,7 +8201,7 @@ msgid "Copying files failed."
 msgstr ""
 
 #: lazarusidestrconsts.liscopyidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Copy %s%s%s to clipboard"
 msgid "Copy \"%s\" to clipboard"
 msgstr "העתק את s%s%s% ללוח הזמני"
@@ -8251,37 +8251,37 @@ msgid "Skip calling compiler"
 msgstr "דלג על קריאה למהדר"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Could not add %s{$I %s%s} to main source!"
 msgid "Could not add \"{$I %s}\" to main source!"
 msgstr "לא יכול להוסיף את  %s{$I %s%s} לקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Could not add %s{$R %s%s} to main source!"
 msgid "Could not add \"{$R %s}\" to main source!"
 msgstr "לא יכול להוסיף את  %s{$R %s%s} לקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Could not add %s%s%s to main source!"
 msgid "Could not add \"%s\" to main source!"
 msgstr "לא יכול להוסיף את %s%s%s לקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Could not remove %s%s%s from main source!"
 msgid "Could not remove \"%s\" from main source!"
 msgstr "לא יכול להסיר את %s%s%s מקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Could not remove %s{$I %s%s} from main source!"
 msgid "Could not remove \"{$I %s}\" from main source!"
 msgstr "לא יכול להסיר את  %s{$I %s%s} מקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Could not remove %s{$R %s%s} from main source!"
 msgid "Could not remove \"{$R %s}\" from main source!"
 msgstr "לא יכול להסיר את  %s{$R %s%s} מקובץ הקוד הראשי!"
@@ -8365,7 +8365,7 @@ msgid "Create/update .po file when saving a lfm file"
 msgstr "צור/עדכן קובץ po. כאשר אתה שומר את קובץ lfm"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Creating file index of FPC sources %s ..."
 msgstr "יוצר אינדקס לקובץ קוד של FPC "
 
@@ -8656,7 +8656,7 @@ msgid "Set the breakpoint anyway"
 msgstr "הגדר את נקודת העצירה בכל זאת"
 
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "לא צוין מנפה שגיאות. אין השפעה להגדרת נקודות עצירה עד שתגדיר מנפה שגיאות בדיאלוג מנפי השגיאות שבתפריט."
@@ -8686,7 +8686,7 @@ msgid "Debugger"
 msgstr "מנפה שגיאות"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "שגיאת מנפה שגיאות s% אופס, המנפה נכנס למצב של שגיאה. שמור את עבודתך כעת! הקש על עצור, וקווה לטוב, אנחנו שולפיים את התקע."
 
@@ -8707,7 +8707,7 @@ msgid "Debugger invalid"
 msgstr "מנפה שגיאות לא תקין"
 
 #: lazarusidestrconsts.lisdebugging
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s (debugging ...)"
 msgstr "(ניפוי שגיאות)"
 
@@ -8851,7 +8851,7 @@ msgid "Unable to load file"
 msgstr "לא ניתן לטעון קובץ"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to load file %s%s%s."
 msgid "Unable to load file \"%s\"."
 msgstr "לא ניתן לטעון את הקובץ %s%s%s."
@@ -8917,7 +8917,7 @@ msgid "Delete all breakpoints?"
 msgstr "מחק את כל נקודות העצירה?"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete all breakpoints in file %s%s%s?"
 msgid "Delete all breakpoints in file \"%s\"?"
 msgstr "מחק את כל נקודות העצירה בקובץ s%s%s%?"
@@ -8943,7 +8943,7 @@ msgid "Delete Breakpoint"
 msgstr "מחק נקודת עצירה"
 
 #: lazarusidestrconsts.lisdeletebreakpointatline
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "מחק נקודת עצירה ב s%s% בשורה d%?"
 
@@ -8962,7 +8962,7 @@ msgid "Delete file failed"
 msgstr "מחיקת קובץ נכשלה"
 
 #: lazarusidestrconsts.lisdeletemacro
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Delete macro %s%s%s?"
 msgid "Delete macro \"%s\"?"
 msgstr "מחק מאקרו %s"
@@ -8973,7 +8973,7 @@ msgid "Delete mode \"%s\""
 msgstr "מחק אופן  \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete old file %s%s%s?"
 msgid "Delete old file \"%s\"?"
 msgstr "האם למחוק קובץ ישן s%s%s%?"
@@ -8991,7 +8991,7 @@ msgid "Delete this addition"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete value %s%s%s"
 msgid "Delete value \"%s\"?"
 msgstr "מחק ערך s%s%s%"
@@ -9002,7 +9002,7 @@ msgid "Delete value %s"
 msgstr "מחק ערך %s"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Deleting of file %s%s%s failed."
 msgid "Deleting of file \"%s\" failed."
 msgstr "מחיקת הקובץ s%s%s% נכשלה."
@@ -9103,7 +9103,7 @@ msgid "Directory: "
 msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Directory %s%s%s not found."
 msgid "Directory \"%s\" not found."
 msgstr "תיקייה s%s%s% לא נמצאה."
@@ -9208,7 +9208,7 @@ msgid "Click on one of the above items to see the diff"
 msgstr "לחץ על אחד הפריטים שלמעלה כדי לצפות ב diff"
 
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error reading file: %s"
 msgstr "שגיאה בקריאת קובץ: s%"
 
@@ -9280,7 +9280,7 @@ msgid "Save ..."
 msgstr "שמור ..."
 
 #: lazarusidestrconsts.lisdoesnotexists
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s does not exists: %s"
 msgid "%s does not exist: %s"
 msgstr "%s לא קיים: %s"
@@ -9415,7 +9415,7 @@ msgid "Duplicate File Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Duplicate found of value %s%s%s."
 msgid "Duplicate found of value \"%s\"."
 msgstr "נמצאה כפילות בערך s%s%s%."
@@ -9430,7 +9430,7 @@ msgid "Duplicate Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgid "Duplicate name: A component named \"%s\" already exists in the inherited component %s"
 msgstr "כפילות בשם: רכיב בשם s%s%s% כבר קיים ברכיב המורש s%"
@@ -9745,7 +9745,7 @@ msgid "Number of files failed to convert: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
@@ -9773,12 +9773,12 @@ msgid "Invalid debugger filename"
 msgstr "שם קובץ לא חוקי של מנפה השגיאות"
 
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "הקובץ s% של מנפה השגיאות אינו קובץ ריצה."
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Test directory \"%s\" not found."
 msgstr "תיקיית הבדיקה s% לא נמצאה."
 
@@ -9810,7 +9810,7 @@ msgid "Error deleting file"
 msgstr "שגיאה במחיקת קובץ"
 
 #: lazarusidestrconsts.liserrorin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error in %s"
 msgstr "שגיאה ב s%"
 
@@ -9866,13 +9866,13 @@ msgid "Error loading file"
 msgstr "שגיאה בטעינת קובץ"
 
 #: lazarusidestrconsts.liserrorloadingfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error loading file \"%s\":%s%s"
 msgid "Error loading file \"%s\":"
 msgstr "שגיאה בטעינת קובץ \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error loading %s from%s%s%s%s"
 msgstr "שגיאה בטעינת s% מ s%s%s%s%"
 
@@ -9881,7 +9881,7 @@ msgid "Error moving component"
 msgstr "שגיאה בהזזת רכיב"
 
 #: lazarusidestrconsts.liserrormovingcomponent2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error moving component %s:%s"
 msgstr "שגיאה בהזזת רכיב s%: %s"
 
@@ -9902,7 +9902,7 @@ msgid "Error parsing lfm component stream."
 msgstr "שגיאה בפרוש רכיב lfm של הזרימה"
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "שגיאה בקריאת רשימת חבילות מהקובץ s%s%s%s%"
 
@@ -9911,7 +9911,7 @@ msgid "Error reading XML"
 msgstr "שגיאה בקריאת קובץ XML"
 
 #: lazarusidestrconsts.liserrorreadingxmlfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error reading xml file %s%s%s%s%s"
 msgid "Error reading xml file \"%s\"%s%s"
 msgstr "שגיאה בקריאת קובץ xml %s%s%s%s%s"
@@ -9935,12 +9935,12 @@ msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error saving %s to%s%s%s%s"
 msgstr "שגיאה בשמירת s% ל s%s%s%s%"
 
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error setting the name of a component %s to %s"
 msgstr "שגיאה בהגדרת שם ברכיב s% ל s%"
 
@@ -9950,7 +9950,7 @@ msgid "Error writing file \"%s\""
 msgstr "שגיאה בקריאת קובץ  \"%s\""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "שגיאה בכתיבת רשימת חבילות לקובץ s%s%%s%"
 
@@ -10002,7 +10002,7 @@ msgid "Build all selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "דוגמה: מזהים TMyEnum.Enum \"שם יחידה.מ/nזהה\"  \"#שם חבילה.שם יחידה.מזהה\""
 
@@ -10222,7 +10222,7 @@ msgid "File: "
 msgstr ""
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -10269,7 +10269,7 @@ msgid "File found"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s has changed. Save?"
 msgid "File \"%s\" has changed. Save?"
 msgstr "הקובץ s%s%s%s% השתנה. לשמור?"
@@ -10295,7 +10295,7 @@ msgid "File is symlink"
 msgstr "הקובץ הוא קישור סימבולי"
 
 #: lazarusidestrconsts.lisfileisvirtual
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s is virtual."
 msgid "File \"%s\" is virtual."
 msgstr "הקובץ s%s%s%s% הוא וירטואלי"
@@ -10317,7 +10317,7 @@ msgid "File not found"
 msgstr "הקובץ לא נמצא"
 
 #: lazarusidestrconsts.lisfilenotfound2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s not found.%s"
 msgctxt "lazarusidestrconsts.lisfilenotfound2"
 msgid "File \"%s\" not found."
@@ -10338,7 +10338,7 @@ msgid "File not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgid "File \"%s\" not found.%sDo you want to create it?"
 msgstr "הקובץ s%s%s% לא נמצא. האם אתה רוצה ליצור אותו?"
@@ -10400,7 +10400,7 @@ msgid "Filter"
 msgstr "מסנן"
 
 #: lazarusidestrconsts.lisfilter3
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Filter: %s"
 msgstr "מסנן: s%"
 
@@ -10623,7 +10623,7 @@ msgid "FPDoc package name. Default is project file name."
 msgstr ""
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "יש שגיאת תחביר באלמנט של  fpdoc"
 
@@ -11058,7 +11058,7 @@ msgid "Step Over"
 msgstr "צעד מעבר ל"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "טיפ: הפונקציה \"Make Resourcestring\" מקבלת מחרוזת קבועה. בחר ביטוי ונסה שוב."
 
@@ -11225,7 +11225,7 @@ msgid "Export file exists"
 msgstr "הקובץ המיוצא קיים"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgstr "הקובץ המיוצא s%s%s%קיים. לפתוח את הקובץ ולהחליף רק את אפשרויות המהדר? ( יתר ההגדרות יישמרו.)"
@@ -11423,7 +11423,7 @@ msgid "Initialize Local Variable"
 msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "כדי ליצור העתק נקי של הפרוייקט/חבילה, כל הקבצים בתיקייה הבאה יימחקו וכל התוכן יאבד. האם למחוק את כל הקבצים ב s%s%s%?"
@@ -11657,7 +11657,7 @@ msgid "The file \"%s\" is not executable."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "ביטוי לא חוקי: הפונקציה \"Make Resourcestring\" מצפה למחרוזת קבועה בקובץ יחיד. בחר את הביטוי ונסה שוב."
 
@@ -11670,7 +11670,7 @@ msgid "Invalid filter"
 msgstr "מסנן לא חוקי"
 
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid line, column in message%s%s"
 msgstr "שורה לא חוקית, עמודה בהודעה s%s%"
 
@@ -11746,12 +11746,12 @@ msgid "invalid version in %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisisalreadypartoftheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s is already part of the Project."
 msgstr "זה כבר חלק מהפרוייקט. s%"
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "זה שם פרוייקט לא חוקי %s%s%s. בחר שם אחר (למשל project1.lpi)"
@@ -12622,7 +12622,7 @@ msgid "Error writing file"
 msgstr "שגיאה בכתיבת קובץ"
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "בונה לזארוס אינו אינטראקטיבי, יוצא עכשיו."
 
@@ -12713,7 +12713,7 @@ msgid "Target OS:"
 msgstr "מערכת ההפעלה המיועדת"
 
 #: lazarusidestrconsts.lislazbuildunabletowritefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write file \"%s\":%s"
 msgstr "לא יכול לכתוב את הקובץ s%:%s"
 
@@ -12763,7 +12763,7 @@ msgid "No valid FPDoc path"
 msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "היחידה s% אינה בבעלות חבילה או פרוייקט כלשהם. הוסף את היחידה לחבילה או לפרוייקט. לא יכול ליצור את קובץ ה fpdoc."
 
@@ -12877,7 +12877,7 @@ msgid "list of all case values"
 msgstr "רשימה של כל ערכי case"
 
 #: lazarusidestrconsts.lisloadingfailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Loading %s failed."
 msgstr "טעינת s% נכשלה"
 
@@ -13038,7 +13038,7 @@ msgid "Append to section"
 msgstr "הוסף אחרי הקטע"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "מחרוזת המשאבים s%s%s% כבר קיימת. בחר שם אחר.השתמש ב\"התעלם\" כדי להוסיף אותו בכל זאת."
@@ -13118,12 +13118,12 @@ msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lismaxs
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Max %d"
 msgstr "מקסימום d%"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s Maybe you have to recompile the package."
 msgstr "יתכן שתצטרך להדר מחדש את החבילה."
 
@@ -13198,7 +13198,7 @@ msgid "Build Lazarus with Current Profile"
 msgstr "בנה את לזרוס"
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Build Lazarus with profile: %s"
 msgid "Build Lazarus with Profile: %s"
 msgstr "בנה את לזארוס עם הפרופיל: %s"
@@ -15438,7 +15438,7 @@ msgid "noname"
 msgstr "ללא שם"
 
 #: lazarusidestrconsts.lisnone
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%snone"
 msgstr "ללא"
 
@@ -15461,7 +15461,7 @@ msgid "No Pascal file"
 msgstr "אין קובץ פסקל"
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "No program file %s%s%s found."
 msgid "No program file \"%s\" found."
 msgstr "אף קובץ תכנית %s%s%s לא נמצא"
@@ -15618,7 +15618,7 @@ msgid "Choose a base class for the favorite property \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Class %s%s%s not found."
 msgid "Class \"%s\" not found."
 msgstr "המחלקה %s%s%s לא נמצאה"
@@ -15640,12 +15640,12 @@ msgid "Description:  "
 msgstr "תאור:"
 
 #: lazarusidestrconsts.lisoipdescriptiondescription
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sDescription:  %s"
 msgstr "תאור: s%"
 
 #: lazarusidestrconsts.lisoipfilename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Filename:  %s"
 msgstr "שם קובץ: s%"
 
@@ -15694,7 +15694,7 @@ msgid "State"
 msgstr "מצב"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "חבילה זאת מותקנת, אבל קובץ ה lpk לא נמצא"
@@ -15919,28 +15919,28 @@ msgid "Override function result string types with the first parameter expression
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
 msgstr "דרוס את מהדר ברירת המחדל לדוגמא ppc386 ppcx64 ppcppc וכו'. מהדר ברירת המחדל מאוחסן בקובץ environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%soverride the project build mode."
 msgid "%soverride the project or IDE build mode."
 msgstr "החלף את אופן הבנייה של הפרוייקט"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
 msgstr "דרוס את מעבד ברירת המחדל של הפרוייקט לדוגמא ppc386 ppcx64 ppcppc וכו'. ברירת המחדל: s%"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
 msgstr "דרוס את מערכת ההפעלה שהיא ברירת המחדל לדוגמא win32 linux. ברירת המחדל: s%"
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
 msgstr "דרוס את מערכת העצמים של הםרוייקט  לדוגמא gtk gtk2 qt win32 carbon. ברירת המחדל: s%"
 
@@ -15961,7 +15961,7 @@ msgid "Package"
 msgstr "חבילה"
 
 #: lazarusidestrconsts.lispackage2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "package %s"
 msgstr "חבילה s%"
 
@@ -16184,7 +16184,7 @@ msgid "(available online)"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "קרא לפרוצדורת הרישום של היחידה שנבחרה"
 
@@ -16223,7 +16223,7 @@ msgid "Create Makefile"
 msgstr "צור makefile"
 
 #: lazarusidestrconsts.lispckeditdefault
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s, default: %s"
 msgstr "ברירת מחדל"
 
@@ -16266,7 +16266,7 @@ msgid "Minimum Version:"
 msgstr "גירסה מינימלית"
 
 #: lazarusidestrconsts.lispckeditmodified
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Modified: %s"
 msgstr "השתנה: s%"
 
@@ -16284,7 +16284,7 @@ msgid "Package %s"
 msgstr "חבילה %s"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Package %s%s%s has changed.%sSave package?"
 msgid "Package \"%s\" has changed.%sSave package?"
 msgstr "חבילה s%s%s% השתנתה. האם לשמור את החבילה?"
@@ -16295,7 +16295,7 @@ msgid "package %s not saved"
 msgstr "החבילה %s לא נשמרה"
 
 #: lazarusidestrconsts.lispckeditpage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s, Page: %s"
 msgstr "עמוד: s%"
 
@@ -16345,7 +16345,7 @@ msgid "Remove Dependency?"
 msgstr "הסר תלות?"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgid "Remove dependency \"%s\"%sfrom package \"%s\"?"
 msgstr "הסר תלות s%s%s% מחבילה s%s%s%?"
@@ -16368,7 +16368,7 @@ msgid "Remove file?"
 msgstr "להסיר את הקובץ?"
 
 #: lazarusidestrconsts.lispckeditremovefilefrompackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Remove file %s%s%s%sfrom package %s%s%s?"
 msgid "Remove file \"%s\"%sfrom package \"%s\"?"
 msgstr "הסר קובץ s%s%s% מחבילה s%s%s%?"
@@ -16396,13 +16396,13 @@ msgid "Store file name as preferred for this dependency"
 msgstr "אחסן את שם הקובץ כמועדף בתלות זאת"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "הגירסה המקסימלית s%s%s% היא לא גירסה חוקית של החבילה. (דוגמה נכונה 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "הגירסה המינימלית s%s%s% היא לא גירסה חוקית של החבילה. (דוגמה נכונה 1.2.3.4)"
@@ -16430,7 +16430,7 @@ msgid "Install on next start"
 msgstr "התקן בהתחלה הבאה"
 
 #: lazarusidestrconsts.lispckexplstate
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sState: "
 msgstr "מצב"
 
@@ -16557,7 +16557,7 @@ msgid "Runtime"
 msgstr ""
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
 msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
 msgstr "לחבילה s%s%s% יש דגל של התקנה אוטומטית.כלומר היא תותקן ע\"י ה  IDE. חבילות ההתקנה חייבות להיות חבילות זמן עיצוב."
@@ -16688,7 +16688,7 @@ msgid "Sort files alphabetically"
 msgstr "סדר קבצים בסדר אלפבתי"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
 msgstr "הקובץ \"%s\" אינו נמצא כרגע בנתיב \"כלול\" של החבילה. האם להוסיף  \"%s\" לנתיב \"כלול\""
 
@@ -16737,7 +16737,7 @@ msgid "Delete dependencies"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "אתה באמת רוצה לשכוח את כל השינויים לחבילה s% ולטעון אותה מחדש מהקובץ?"
 
@@ -16754,7 +16754,7 @@ msgid "Revert package?"
 msgstr "לשחזר חבילה?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "הקובץ  %s%s%s%s אינו בנתיב החבילה כרגע. להוסיף אותו לנתיב החבילה?"
@@ -16822,13 +16822,13 @@ msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Nam
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sAdding new Dependency for package %s: package %s%s"
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "הוספת תלות חדשה לחבילה s%:חבילה s%s%"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%sAdding new Dependency for project %s: package %s%s"
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "הוספת תלות חדשה לפרוייקט s%:חבילה s%s%"
@@ -16846,7 +16846,7 @@ msgid "Automatically installed packages"
 msgstr "חבילות שהותקנו אוטומטית"
 
 #: lazarusidestrconsts.lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
 msgstr "שתי החבילות קשורות. כלומר כל חבילה משתמשת בשניה, או ששתיהן משתמשות בחבילה שלישית."
 
@@ -16872,7 +16872,7 @@ msgid "Delete Old Package File?"
 msgstr "למחוק את הקובץ הישן של החבילה?"
 
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete old package file %s%s%s?"
 msgid "Delete old package file \"%s\"?"
 msgstr "מחק את קובץ החבילה הישן?"
@@ -16925,7 +16925,7 @@ msgid "Filename is used by project"
 msgstr "שם הקובץ נמצא בשימוש על ידי הפרויקט"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s not found."
 msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
 msgid "File \"%s\" not found."
@@ -16936,12 +16936,12 @@ msgid "File not saved"
 msgstr "הקובץ לא נשמר"
 
 #: lazarusidestrconsts.lispkgmanginstallingthepackagewillautomaticallyinstallthepac
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Installing the package %s will automatically install the package:"
 msgstr "התקנת החבילה s% תתקין אוטומטית את החבילה:"
 
 #: lazarusidestrconsts.lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Installing the package %s will automatically install the packages:"
 msgstr "התקנת החבילה s% תתקין אוטומטית את החבילות:"
 
@@ -16970,7 +16970,7 @@ msgid "Invalid Package Name"
 msgstr "שם החבילה לא חוקי"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%sSave old package %s?"
 msgstr "טעינת חבילה s% תחליף את החבילה s%s%s מקובץ %. החבילה הישנה שונתה. האם לשמור אותה?"
@@ -17032,7 +17032,7 @@ msgid "Rename File lowercase?"
 msgstr "לשנות שם קובץ לאותיות קטנות?"
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Replace existing file %s%s%s?"
 msgid "Replace existing file \"%s\"?"
 msgstr "להחליף קובץ קיים %s%s%s?"
@@ -17059,12 +17059,12 @@ msgid "Save package?"
 msgstr "לשמור חבילה?"
 
 #: lazarusidestrconsts.lispkgmangsavepackagelpk
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Save Package %s (*.lpk)"
 msgstr "שמור חבילה  (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgid "Should the file be renamed lowercase to%s\"%s\"?"
 msgstr "האם צריך לשנות את שם הקובץ לאותיות קטנות ל %s%s%s%s ?"
@@ -17078,37 +17078,37 @@ msgid "static packages config file"
 msgstr "קובץ הגדרות לחבילות סטטיות"
 
 #: lazarusidestrconsts.lispkgmangthecompilerfileforpackageisnotavalidexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "קובץ המהדר לחבילה s% אינו קובץ ריצה חוקי: s%s%"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
 msgstr "הקובץ s%s%s% כבר נמצא בחבילה s%."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s is not a Lazarus package."
 msgid "The file \"%s\" is not a Lazarus package."
 msgstr "הקובץ %s%s%s אינו חבילה של לזארוס"
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
 msgid "The filename \"%s\" does not correspond to the package name \"%s\" in the file.%sChange package name to \"%s\"?"
 msgstr "שם הקובץ %s%s%s אינו מתאים לשם החבילה %s%s%s בקובץ. לשנות את שם החבילה ל %s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
 msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
 msgstr "שם הקובץ %s%s%s הוא חלק מהםרוייקט. פרוייקט וחבילה לא יכולים לחלוק בקבצים."
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "שם הקובץ %s%s%s בשימוש ע\"י חבילה %s%s%s בקובץ %s%s%s."
@@ -17127,25 +17127,25 @@ msgid "The following packages failed to load:"
 msgstr "החבילות הבאות לא הצליחו להטען:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "היחידות הבאות יתוספו לסעיף \"משתמש ב\" של %s%s:%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
 msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
 msgstr "הידור החבילה %s%s%s לא הצליח.להסיר אותה מרשימת ההתקנות?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
 msgid "The package file name \"%s\" in%s\"%s\" is not a valid Lazarus package name."
 msgstr "שם החבילה %s%s%s ב %s%s%s%s אינו שם חוקי של חבילת לזארוס."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgid "The package %s is a runtime only package.%sRuntime only packages cannot be installed in the IDE."
 msgstr "החבילה %s היא חבילת זמן ריצה בלבד. אי אפשר להתקין חבילה כזאת ב IDE."
@@ -17156,49 +17156,49 @@ msgid "The package \"%s\" is compiled automatically and its output directory is 
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgid "The package \"%s\" is marked for installation but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "החבילה %s%s%s מסומנת להתקנה, אבל אי אפשר למצוא אותה.להסיר את התלות מרשימת ההתקנות של החבילות?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
 msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
 msgstr "החבילה s% דרושה ע\"י s%, אשר מסומנת להתקנה. ראה גרף החבילה."
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgid "The package name \"%s\" is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "שם החבילה %s%s%s ב %s%s%s%s אינו שם חוקי, בחר שם אחר (למשל package1.lpk)."
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "שם החבילה %s%s%s של הקובץ %s%s%s%s אינו  חוקי."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "החבילה %s%s%s סומנה. כרגע לזארוס תומך רק בחבילות מקושרות סטטית. הסרת ההתקנה הממשית דורשת בניה מחדש ואיתחול של לזארוס. האם אתה רוצה לבנות את לזארוס מחדש כעת?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "החבילה %s%s%s סומנה להתקנה. כרגע לזארוס תומך רק בחבילות מקושרות סטטית. הסרת ההתקנה הממשית דורשת בניה מחדש ואיתחול של לזארוס. האם אתה רוצה לבנות את לזארוס מחדש כעת?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
 msgstr "הפרוייקט דורש את החבילה s%s%s%, אבל אי אפשר למצוא אותה. ראה Project -> Project Inspector."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
 msgstr "יש שתי יחידות עם אותן השם: %s%s1. אחת מ %s%s2. ואחת מ %s%s%s."
@@ -17208,25 +17208,25 @@ msgid "There is a circular dependency in the packages. See package graph."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
 msgid "There is a FPC unit with the same name as a package:%s\"%s\""
 msgstr "יש יחידה של FPC עם אותו שם כמו של החבילה:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
 msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "יש יחידה של FPC עם אותו שם כמו:%s%s%s%s%s%s מ %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
 msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "יש כבר חבילה אחרת עם השם %s%s%s. מתנגש עם חבילה: %s%s%s%s קובץ %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgid "There is already a package \"%s\" loaded%sfrom file \"%s\".%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "ש כבר חבילה s%s%s% אשר נטענה מקובץ %s%s%s. ראה  Components -> Package Graph. החלפה אפשרית."
@@ -17236,7 +17236,7 @@ msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "יש חבילה לא שמורה בין החבילות הדרושות. ראה גרף החבילות."
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgid "There is a unit with the same name as a package:%s1. \"%s\" from %s%s2. \"%s\""
 msgstr "יש יחידה עם אותן השם כמו חבילה: %s%s1. אחת מ %s%s2. ואחת מ %s%s%s."
@@ -17250,25 +17250,25 @@ msgid "Unable to create directory"
 msgstr "לא ניתן ליצור את הספרייה"
 
 #: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create output directory %s%s%s%sfor package %s."
 msgid "Unable to create output directory \"%s\"%sfor package %s."
 msgstr "לא ניתן ליצור את ספריית הפלט %s%s%s%sעבור החבילה %s."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "לא ניתן ליצור את ספריית הקוד %s%s%s%sעבור החבילה %s."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "לא ניתן ליצור את ספריית היעד עבור לזרוס:%s%s%s%s.%sספרייה זו נחוצה עבור השינויים שנעשו ללזרוס עם החבילות שהותקנו."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to delete file %s%s%s."
 msgid "Unable to delete file \"%s\"."
 msgstr "לא ניתן למחוק את הקובץ %s%s%s."
@@ -17278,7 +17278,7 @@ msgid "Unable to delete file"
 msgstr "לא ניתן למחוק את הקובץ"
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to delete old state file %s%s%s%sfor package %s."
 msgid "Unable to delete old state file \"%s\"%sfor package %s."
 msgstr "לא ניתן למחוק את קובץ המצב הישן %s%s%s%sעבור החבילה %s."
@@ -17288,25 +17288,25 @@ msgid "Unable to load package"
 msgstr "לא מצליח לטעון את החבילה."
 
 #: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
 msgstr "לא ניתן לפתוח את החבילה %s%s%s.%sהחבילה סומנה להתקנה."
 
 #: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
 msgstr "לא ניתן לקרוא את מצב הקובץ %s%s%s%sשל החבילה %s.%sשגיאה: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "לא מצליח לכתוב את החבילה %s%s%s% לקובץ %s%s%s. שגיאה: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
 msgstr "לא מצליח לכתוב קובץ מצב %s%s%s% של חבילה %s. שגיאה: %s"
@@ -17316,7 +17316,7 @@ msgid "Uninstall package?"
 msgstr "להסיר את החבילה?"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Uninstall package %s?"
 msgstr "להסיר את החבילה s%?"
 
@@ -17329,7 +17329,7 @@ msgid "Use unit"
 msgstr "משתמש ביחידה"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgid "Warning: The file \"%s\"%sbelongs to the current project."
 msgstr "אזהרה: הקובץ %s%s%s%s שייך לפרויקט הנוכחי."
@@ -17365,13 +17365,13 @@ msgid "Cannot register components without unit"
 msgstr "לא יכול לרשום את הרכיבים ללא יחידה"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component Class %s%s%s already defined"
 msgid "Component Class \"%s\" already defined"
 msgstr "מחלקת רכיבים %s%s%s כבר מוגדרת"
 
 #: lazarusidestrconsts.lispkgsysfilename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s%sFile Name: %s%s%s"
 msgid "%s%sFile Name: \"%s\""
 msgstr "שם קובץ: %s%s%s"
@@ -17381,7 +17381,7 @@ msgid "Invalid component class"
 msgstr "מחלקת רכיבים לא חוקית"
 
 #: lazarusidestrconsts.lispkgsysinvalidunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid Unitname: %s"
 msgstr "שם יחידה לא חוקי: s%"
 
@@ -17414,7 +17414,7 @@ msgid "%s%sThe lpk file was not found."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "החבילה %s%s%s מותקנת, אבל לא נמצא קובץ חוקי לחבילה (lpk.). חבילה שבורה מדומה נוצרה. "
@@ -17430,7 +17430,7 @@ msgid "This package is installed but the lpk file was not found. All its compone
 msgstr "חבילה זאת מותקנת, אבל קובץ lpk לא נמצא. כל רכיביה נוטרלו. תקן זאת."
 
 #: lazarusidestrconsts.lispkgsysunitname
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s%sUnit Name: %s%s%s"
 msgid "%s%sUnit Name: \"%s\""
 msgstr "שם יחידה: %s%s%s"
@@ -17464,7 +17464,7 @@ msgid "Transitivity"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read package file %s%s%s.%sError: %s"
 msgid "Unable to read package file \"%s\".%sError: %s"
 msgstr "לא ניתן לקרוא את קובץ החבילה %s%s%s.%sשגיאה: %s"
@@ -17656,7 +17656,7 @@ msgid "Private Method"
 msgstr "מתודה פרטית"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "כנראה שאתה צריך להתקין כמה חבילות לפני שתמשיך. אזהרה:s% הפרוייקט תלוי בכמה חבילות, המכילות יחידות עם פרוצדורות רישום. פרוצדורת רישום משמשת בדרך כלל להתקנת רכיבים ב IDE. אבל היחידות הבאות שייכות שייכות לחבילות שעדיין לא מותקנות ב IDE. אם תנסה לפתוח טופס ב IDE, אשר משתמש ברכיבים כאלו, תקבל שגיאה על רכבים חסרים וטעינת הטופס תיתן כנראה תוצאות לא נעימות. אין לזה השפעה על פתיחת הפרוייקט או איזה שהוא קובץ קוד שלו.זה רק אומר ש: זה רעיון גרוע לפתוח טופס לצורך עיצוב, לפני התקנת חבילות חסרות."
@@ -17752,13 +17752,13 @@ msgid "Package Type:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "התלות %s%s%s לא נמצאה. בחר חבילה קיימת."
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
@@ -17770,32 +17770,32 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "הגרסה המקסימאלית נמוכה מהגרסה המינימאלית."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "הגרסה המינימלית s%s%s% שגויה. השתמש בצורה build.major.release לדוגמה: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project has already a dependency for the package %s%s%s."
 msgid "The project has already a dependency for the package \"%s\"."
 msgstr "לפרוייקט כבר יש תלות בחבילה %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "שם היחידה  %s%s%s כבר קיים בפרוייקט עם קובץ:  %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "שם היחידה  %s%s%s כבר קיים בבחירה עם קובץ:  %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit name %s%s%s is not a valid Pascal identifier."
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "שם היחידה  %s%s%s אינו מזהה חוקי של פסקל."
@@ -17906,12 +17906,12 @@ msgid "%0:s%0:s At address %1:x"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Project %s raised exception class '%s'."
 msgstr "הפרוייקט העלה חריגה במחלקה s%"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Project %s raised exception class '%s' with message:%s%s"
 msgstr "הפרוייקט העלה חריגה במחלקה s% עם הודעה: s%s%"
 
@@ -17955,12 +17955,12 @@ msgid "Confirm removing file"
 msgstr "אשר הסרת קובץ"
 
 #: lazarusidestrconsts.lisprojinspdeletedependencyfor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete dependency for %s?"
 msgstr "למחוק תלות ב s%?"
 
 #: lazarusidestrconsts.lisprojinspprojectinspector
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Project Inspector - %s"
 msgstr "מפקח הפרוייקט s%"
 
@@ -17970,7 +17970,7 @@ msgid "Removed required packages"
 msgstr "חבילות דרושות שהוסרו"
 
 #: lazarusidestrconsts.lisprojinspremovefilefromproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Remove file %s from project?"
 msgstr "להסיר קובץ S% מהפרוייקט"
 
@@ -17985,7 +17985,7 @@ msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "לא ניתן לקרוא את קובץ המצב %s של הפרויקט %s%sשגיאה: %s"
 
 #: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write state file for project %s%sError: %s"
 msgstr "לא יכול לכתוב את קובץ המצב של הפרוייקט s%s% שגיאה: s%"
 
@@ -18099,7 +18099,7 @@ msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "שם היחידה בשימוש כאשר ה IDE פורש את סעיף ה \"משתמש ב\" ."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "שם היחידה ושם הקובץ לא מתאימים. לדוגמה: unit1.pas ו  Unit1 "
@@ -18274,7 +18274,7 @@ msgid "Remove include path?"
 msgstr "להסיר נתיב \"כלול\" ?"
 
 #: lazarusidestrconsts.lisremovelocalvariable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Remove local variable %s"
 msgstr "הסר משתנה מקומי s%"
 
@@ -18536,7 +18536,7 @@ msgid "File not executable"
 msgstr "הקובץ אינו קובץ ריצה"
 
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The host application %s%s%s is not executable."
 msgid "The host application \"%s\" is not executable."
 msgstr "היישום המארח %s%s%s אינו קובץ ריצה"
@@ -18569,7 +18569,7 @@ msgid "Abstract Methods - not yet overridden"
 msgstr "מתודה מופשטת - עדיין לא נדרסה"
 
 #: lazarusidestrconsts.lissamabstractmethodsof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Abstract methods of %s"
 msgstr "מתודה מופשטת של s%"
 
@@ -18582,7 +18582,7 @@ msgid "IDE is busy"
 msgstr "סביבת הפיתוח עסוקה"
 
 #: lazarusidestrconsts.lissamisanabstractclassithasabstractmethods
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s is an abstract class, it has %s abstract methods."
 msgstr "זוהי מחלקה מופשטת, יש לה מתודה מופשטת."
 
@@ -18603,7 +18603,7 @@ msgid "Select none"
 msgstr "בחר בכלום"
 
 #: lazarusidestrconsts.lissamthereareabstractmethodstooverrideselectthemethodsf
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
 msgstr "יש מתודות מופשטות לשכתוב. בחר את המתודות שעבורן צריך ליצור שארית:"
 
@@ -18690,7 +18690,7 @@ msgid "Save file as"
 msgstr "שמור קובץ כ"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "לשמור את הקובץ %s%s%s%s לפני סגירת הטופס %s%s%s?"
@@ -18704,7 +18704,7 @@ msgid "Save messages"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Save project %s (*%s)"
 msgstr "שמור את פרוייקט %s "
 
@@ -18801,7 +18801,7 @@ msgid "See messages."
 msgstr "ראה הודעות."
 
 #: lazarusidestrconsts.lisseeprojectprojectinspector
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sSee Project -> Project Inspector"
 msgstr "ראה Project -> Project Inspector"
 
@@ -19230,7 +19230,7 @@ msgid "&Source Breakpoint ..."
 msgstr "נקודת עצירה בקוד"
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Source directory %s%s%s does not exist."
 msgid "Source directory \"%s\" does not exist."
 msgstr "תיקיית המקור %s%s%s לא קיימת"
@@ -19244,7 +19244,7 @@ msgid "Source modified"
 msgstr "המקור השתנה"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Source of page %s%s%s has changed. Save?"
 msgid "Source of page \"%s\" has changed. Save?"
 msgstr "המקור של דף השתנה %s%s%s. לשמור?"
@@ -19400,7 +19400,7 @@ msgid "Invalid variable name"
 msgstr "שם משתנה לא חוקי"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is not a valid identifier."
 msgid "\"%s\" is not a valid identifier."
 msgstr " לא מזהה חוקי %s%s%s"
@@ -19439,7 +19439,7 @@ msgid "Move the selected control down in tab order"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "סדר לשוניות של "
@@ -19512,7 +19512,7 @@ msgid "Editable Cell"
 msgstr "תא בר עריכה"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
 msgstr "מכניס תא בר עריכה, עם ערך ברירת מחדל, (Sync=n (,S=n, לסינכרון עם התא הקודם מ n=1 ועד לתא הקודם הגבוה ביותר. ברירת המחדל היא לסנכרן עם התא הקודם עם אותה ברירת מחדל  "
@@ -19535,13 +19535,13 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr "חבילת היישומים נוצרה עבור \"%s\""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "המחלקה  %s%s%s היא TControl ואי אפשר להדביק אותה על מחלקה שאינה פקד. לא יכול להדביק."
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Codetools found an error:%s%s%s"
 msgid "The Codetools found an error:%s%s"
 msgstr "נמצאה שגיאה: %s%s%s ע\"י CodeTools"
@@ -19552,30 +19552,30 @@ msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The component %s can not be deleted, because it is not owned by %s."
 msgid "The component %s can not be deleted because it is not owned by %s."
 msgstr "לא ניתן למחוק את הרכיב, כי הוא שייך ל s%."
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr "עורך הרכיבים של מחלקה %s%s%s  גרם לשגיאה: %s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
 msgstr "עורך הרכיבים של מחלקה %s%s%s  שהופעל ע\"י פעולה #%s %s%s%s%s גרם לשגיאה: %s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
 msgstr "הרכיב s% הוא ירושה מ s%. כדי למחוק רכיב מורש  פתח את האב ומחק אותו שם."
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtorenameaninheritedcomp
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The component %s is inherited from %s.%sTo rename an inherited component open the ancestor and rename it there."
 msgstr "הרכיב s% הוא ירושה מ s%. כדי לשנות שם רכיב מורש  פתח את האב ומחק אותו שם."
 
@@ -19590,13 +19590,13 @@ msgid "The configuration will be downgraded/converted."
 msgstr ""
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The %s contains a not existing directory:%s%s"
 msgid "The %s contains a nonexistent directory:%s%s"
 msgstr "ה %s מכיל תיקייה בלתי קיימת %s%s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
 msgstr "ה %s מכילה את התו כוכבית. לאזרוס משתמש בו כתו רגיל ולא פורש אותו כמסכת קבצים."
 
@@ -19605,7 +19605,7 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr ""
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr "מנפה השגיאות אינו קיים או שאינו קובץ ריצה. ראה Environment -> Debugger Options"
@@ -19620,13 +19620,13 @@ msgid "The default mode must be stored in project, not in session."
 msgstr ""
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The destination directory%s%s%s%s does not exist."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "תיקיית היעד %s%s%s%s אינה קיימת. "
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "תיקיית היעד %s%s%s%s אינה קיימת. בדוק את שם קובץ המטרה של הפרוייקט Menu > Project > Project Options."
@@ -19642,13 +19642,13 @@ msgid "The directory \"%s\" contains no project units any more. Remove this dire
 msgstr "התיקייה \"%s\"  לא מכילה יותר שום יחידות של הפרוייקט. להסיר את התיקייה  מנתיב החיפוש של יחידות הפרוייקט ?"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "התיקייה %s%s%s%s אינה דרושה עוד בנתיב היחידה. להסיר אותה?"
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The directory %s%s%s is not writable."
 msgid "The directory \"%s\" is not writable."
 msgstr "התיקייה %s%s%s%s אינה מורשה לכתיבה."
@@ -19659,13 +19659,13 @@ msgid "The directory %s was not found."
 msgstr "התיקייה %s לא נמצאה. "
 
 #: lazarusidestrconsts.listhefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s"
 msgid "The file \"%s\""
 msgstr " הקובץ %s%s%s"
 
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file %s does not look like a lpi file."
 msgstr "הקובץ s% לא נראה כמו קובץ lpi."
 
@@ -19674,13 +19674,13 @@ msgid "The file index is needed for functions like find declaration. While scann
 msgstr "אינדקס הקובץ דרוש לפונקציות כמו \"מצא הצהרה\". בזמן הסריקה אתה יכול לערוך את הקוד ולהדרו, אבל פונקציות כאלו יתנו שגיאות \"יחידה לא נמצאה\". זה יכול לקחת דקה."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "הקובץ %s%s%s הוא קישור סימבולי. לפתוח את %s%s%s במקומו?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The file %s%s%s is not a Lazarus project.%sCreate a new project for this %s?"
 msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
 msgstr "הקובץ %s%s%s אינו פרוייקט של לזארוס. האם ליצור פרוייקט חדש בשבילו?"
@@ -19696,37 +19696,37 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr ""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "הקובץ %s%s%s נראה כתוכנית. לסגור את הפרוייקט הנוכחי וליצור פרוייקט לזארוס חדש? No יגרום לטעינת הקובץ כקובץ קוד רגיל."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The file %s seems to be the program file of an existing lazarus Project."
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "הקובץ %s נראה כקובץ תוכנית של פרוייקט לזארוס קיים."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
 msgstr "הקובץ %s%s%s%s נמצא באחת מתיקיות הקוד של החבילה ונראה כמו יחידה מהודרת. יחידות מהודרות חייבות להיות בתיקיית הפלט של החבילה, אחרת חבילות אחרות ייתקלו בבעיות בשימוש בחבילה זאת. האם למחוק את הקובץ הבעייתי?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "הקובץ %s%s%s%s לא נמצא. האם אתה רוצה למצוא אותו בעצמך?"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "הקובץ %s%s%s%s לא נמצא. \"התעלם\" יגרום להמשך טעינת הפרוייקט, \"צא\" יעצור את הטעינה."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgid "The following methods used by %s are not in the source%s%s%s%s%sRemove the dangling references?"
 msgstr "המתודות הבאות שבשימוש s% אינם במקורות %s%s%s%s%s%s האם להסיר את המקורות הרעועים?"
@@ -19750,19 +19750,19 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "המזהה הוא יחידה. השתמש ב File - Save כאמצעי לשינוי שם היחידה."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "המקש %s% כבר מוקצה ל s%. להסיר את ההקצאה הישנה למקש עבור הפונקציה החדשה?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
 msgstr "חבורת היישומים s%s% הדרושה להרצה לא קיימת או שאינה ברת ריצה. האם אתה רוצה ליצור אחת? ראה Project -> Project Options -> Application for settings."
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
 msgstr "היישום המשגר %s%s%s%s לא קיים או שאינו בר ריצה. ראה Run -> Run parameters -> Local"
@@ -19794,13 +19794,13 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr ""
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
 msgstr "קובץ \"כלול\" החדש עדיין לא בנתיב החיפוש. האם להוסיף את התיקייה %s ?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "היחידה החדשה עדיין אינה בנתיב חיפוש היחידות. להוסיף תיקייה?"
@@ -19810,33 +19810,33 @@ msgid "The old configuration will be upgraded."
 msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
 msgstr "ה \"Other sources\" מכיל תיקייה שכבר נמצאת ב \"Other unit files\"."
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The output directory %s%s%s is missing."
 msgid "The output directory \"%s\" is missing."
 msgstr "תיקיית הפלט %s%s%s חסרה."
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheincludesearchpath
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The output directory of %s is listed in the include search path of %s."
 msgstr "תיקיית הפלט של s% היא ברשימת נתיבי החיפוש של קבצי ה\"כלול\"."
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheinheritedincludes
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The output directory of %s is listed in the inherited include search path of %s."
 msgstr "תיקיית הפלט של s% היא ברשימת נתיבי החיפוש המורשים של קבצי ה\"כלול\"."
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheinheritedunitsear
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The output directory of %s is listed in the inherited unit search path of %s."
 msgstr "תיקיית הפלט של s% היא ברשימת נתיבי החיפוש של היחידות המורשות."
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheunitsearchpathof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The output directory of %s is listed in the unit search path of %s."
 msgstr "תיקיית הפלט של s% היא ברשימת נתיבי החיפוש של היחידות."
 
@@ -19853,12 +19853,12 @@ msgid "The owner has this name"
 msgstr "לבעלים יש את השם הזה"
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
 msgstr "החבילה %s מוסיפה את הנתיב \"%s\" לנתיב \"כלול\" של ה  IDE. זוהי כנראה הגדרה שגוייה של החבילה."
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
 msgstr "החבילה %s מוסיפה את הנתיב \"%s\" לנתיב היחידה של ה  IDE. זוהי כנראה הגדרה שגוייה של החבילה."
 
@@ -19872,13 +19872,13 @@ msgid "The package %s cannot be installed because it requires the package \"%s\"
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgid "The package %s can not be uninstalled because it is needed by the IDE itself."
 msgstr "אי אפשר להסיר את התקנת החבילה, כי היא דרושה ל IDE עצמו."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgid "The package %s does not have any \"Register\" procedure which typically means it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "לחבילה %s אין אף פרוצדורת רישום, שבדרך כלל אומר שהיא לא מספקת שום תוסף ל IDE. התקנתה רק תגדיל את גודל ה IDE ויכולה אפילו לגרום לחוסר יציבות.טיפ: אם אתה רוצה להשתמש בחבילה בפרוייקט שלך, השתמש בתפריט \"Add to project\"."
@@ -19899,7 +19899,7 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
 msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
 msgstr "התוכנית make לא נמצאה. כלי זה דרוש לבניית לזארוס."
@@ -19914,7 +19914,7 @@ msgid "The project does not write debug info in Dwarf format. The \"%s\" support
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "הפרוייקט לא משתמש ביחידות ממשקים של LCL, אבל נראה שהיא זקוקה להן. תקבל שגיאות מקשר מוזרות אם תשתמש בטפסי LCL ללא ממשקים."
@@ -19924,19 +19924,19 @@ msgid "The project has no main source file."
 msgstr "לפרוייקט אין קובץ קוד ראשי"
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgid "The project info file \"%s\"%sis equal to the project main source file!"
 msgstr "קובץ מידע הפרוייקט %s%s%s%s זהה לקובץ הקוד הראשי של הפרוייקט!"
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project information file %s%s%s%shas changed on disk."
 msgid "The project information file \"%s\"%shas changed on disk."
 msgstr "קובץ מידע הפרוייקט %s%s%s%s השתנה על הדיסק."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "הפרוייקט חייב להשמר לפני הבנייה. אם תקבע את תיקיית הביקורת באפשרויות הסביבה, תוכל ליצור פרוייקטים חדשים ולבנות אותם מיד. לשמור את הפרוייקט?"
@@ -19946,7 +19946,7 @@ msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "הפרוייקט משתמש כמטרה במערכת ההפעלה = s% ובמעבד = s%. הקובץ system.ppu עבור מטרה זאת לא נמצא בתיקיית הקבצים הבינאריים של FPC.ודא ש fpc מותקו כראוי עבור מטרה זאת ושהקובץ fpc.cfg מכיל את התיקיות הנכונות."
@@ -19971,12 +19971,12 @@ msgid "There are no conflicting keys."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "יש קבצים נוספים בתיקייה בעלי אותו שם, אשר נבדלים רק בראשיות: האם למחוק אותם?"
 
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
 msgstr "יש קובץ בעל אותו שם וסיומת דומה בדיסק קובץ: %s%s קובץ רב משמעי:  %s%s%s , האם למחוק את הבעייתי?"
@@ -20005,7 +20005,7 @@ msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already a form with the name %s%s%s"
 msgid "There is already a form with the name \"%s\""
 msgstr "יש כבר טופס עם השם %s%s%s. "
@@ -20031,13 +20031,13 @@ msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make 
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "יש כבר יחידה עם השם %s%s%s. מזהה פסקל חייב להיות ייחודי."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "יש כבר יחידה עם השם %s%s%s בפרוייקט. בחר שם אחר."
@@ -20052,7 +20052,7 @@ msgid "There must be at least one build mode."
 msgstr "חייב להיות לפחות אופן בנייה אחד."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
 msgid "The resource class \"%s\" descends from \"%s\". Probably this is a typo for TForm."
 msgstr "מחלקת המשאבים %s%s%s עברה בירושה מ s%s%s%. כנראה זאת שגיאת דפוס של TForm."
@@ -20120,12 +20120,12 @@ msgid "The unit \"%s\" already exists."
 msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit belongs to package %s."
 msgstr "היחידה שייכת לחבילה s%"
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr "היחידה s% קיימת פעמיים בנתיב היחידות של: s%"
 
@@ -20134,7 +20134,7 @@ msgid "The unit has this name"
 msgstr "ליחידה יש את השם הבא"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "שם קובץ היחידה %s%s%s אינו באותיות קטנות. המהדר של FreePascal לא מחפש את כל אפשרויות הראשיות. מומלץ להשתמש באותיות קטנות בשם הקובץ.לשנות את השם לאותיות קטנות."
@@ -20145,24 +20145,24 @@ msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml fi
 msgstr ""
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "קובץ אחר משתמש ביחידה s%. לעדכן את המקורות אוטומטית?"
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
 msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "ליחידה עצמה יש כבר את השם %s%s%s. מזהה פסקל חייב להיות ייחודי."
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
 msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
 msgstr "נתיב חיפוש היחידות של %s%s%s מכיל את תיקיית הקוד %s%s%s של חבילה s%"
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "תיקיית העבודה %s%s%s לא קיימת. בדוק את תיקיית העבודה ב Menu > Run > Run parameters."
@@ -20185,7 +20185,7 @@ msgid "This is a test project for a design time package, testing it outside the 
 msgstr ""
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "זה נראה כמו קובץ פסקל. מומלץ להשתמש בשם באותיות קטנות, כדי למנוע בעיות שונות במערכות הפעלה מסוימות ובמהדרים אחרים. לשנות את השם לאותיות קטנות?"
@@ -20199,13 +20199,13 @@ msgid "This project has only the default build mode."
 msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr "סט זה של אפשרויות הבניה של לזארוס לא נתמך ע\"י התקנה זאת. לא ניתן לכתוב לתיקייה %s%s%s. ראה באתר לזארוס על דרכים אחרות להתקין את לזארוס."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "אי אפשר לחלץ משפט זה. בחר קוד אחר לחילוץ פרוצדורה/מתודה חדשה."
 
@@ -20299,7 +20299,7 @@ msgid "Function: extract file path"
 msgstr "פונקציה: חלץ את נתיב הקובץ"
 
 #: lazarusidestrconsts.listmunknownmacro
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "(unknown macro: %s)"
 msgstr "(מאקרו לא מוכר: s%)"
 
@@ -20568,7 +20568,7 @@ msgid "Not found"
 msgstr "לא נמצא"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
 msgstr "להחליף מופע זה של %s%s%s%s ב %s%s%s?"
@@ -20592,7 +20592,7 @@ msgid "Search string '%s' not found!"
 msgstr "חיפוש המחרוזת '%s' לא נמצא!"
 
 #: lazarusidestrconsts.lisuethecurre
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
 msgid "The current editor font does not support UTF-8 but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "הגופן הנוכחי של העורך לא תומך ב UTF-8, אבל נראה שהמערכת שלך משתמשת בו. זה אומר שתווי ASCII כנראה יוצגו לא נכון. אתה יכול לבחור גופן אחר באפשרויות העורך."
@@ -20655,13 +20655,13 @@ msgid "Unable copy components to clipboard"
 msgstr "לא ניתן להעתיק רכיב ללוח הזמני"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "לא ניתן להוסיף הערות בראש קובץ המשאבים %s%s%s%s.%s כנראה שגיאת תחביר"
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "לא ניתן להוסיף את המשאב T%s:FORMDATA לקובץ המשאבים %s%s%s%s.%s כנראה בגלל שגיאת תחביר"
@@ -20677,19 +20677,19 @@ msgid "Unable to add the dependency %s because this would create a circular depe
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "לא ניתן להוסיף את %s לפרויקט בגלל שיש כבר יחידה עם שם זהה בפרויקט."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "פעולת הגיבוי של הקובץ %s%s%s לקובץ %s%s%s לא הצליחה!"
 
 #: lazarusidestrconsts.lisunabletochangeclassofto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "לא יכול לשנות את המחלקה s% ל s%"
 
@@ -20708,7 +20708,7 @@ msgid "Unable to clean up destination directory"
 msgstr "לא ניתן לנקות את ספריית היעד"
 
 #: lazarusidestrconsts.lisunabletocleanuppleasecheckpermissions
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to clean up %s%s%s.%sPlease check permissions."
 msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "לא ניתן לנקות את %s%s%s.%s יש לבדוק הרשאות."
@@ -20719,13 +20719,13 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "לא ניתן להמיר את הטקסט ברכיבים למבנה בינארי:%s%s"
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to convert file %s%s%s%sError: %s"
 msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "לא ניתן להמיר את הקובץ %s%s%s%sשגיאה: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "לא ניתן להמיר מידע טקסטואלי של הקובץ %s%s%s%s%s לזרם בינרי. (%s)"
@@ -20740,13 +20740,13 @@ msgid "Unable to copy file"
 msgstr "לא ניתן להעתיק את הקובץ"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "לא ניתן להעתיק את הקובץ %s%s%s%sל%s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create directory %s%s%s."
 msgid "Unable to create directory \"%s\"."
 msgstr "לא ניתן ליצור את התיקייה %s%s%s."
@@ -20756,19 +20756,19 @@ msgid "Unable to create file"
 msgstr "לא ניתן ליצור את הקובץ"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create file %s%s%s"
 msgid "Unable to create file \"%s\""
 msgstr "לא ניתן ליצור את הקובץ %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatefile3
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create file%s%s%s%s"
 msgid "Unable to create file%s\"%s\""
 msgstr "לא יכול ליצור את הקובץ %s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to create link %s%s%s with target %s%s%s"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "לא ניתן ליצור את הקישור %s%s%s עם %s%s%s"
@@ -20790,7 +20790,7 @@ msgid "Unable to delete"
 msgstr "לא יכול למחוק"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to delete ambiguous file %s%s%s"
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "לא ניתן למחוק את הקובץ הרב משמעי %s%s%s"
@@ -20805,19 +20805,19 @@ msgid "Unable to find a ResourceString section in this or any of the used units.
 msgstr "לא יכול למצוא את סעיף המשאבים ביחידה זאת או כל יחידה אחרת שבשימוש."
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to find a valid classname in %s%s%s"
 msgid "Unable to find a valid classname in \"%s\""
 msgstr "לא ניתן למצוא שם תקני למחלקה ב%s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to find file %s%s%s."
 msgid "Unable to find file \"%s\"."
 msgstr "לא ניתן למצוא את הקובץ %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "לא ניתן למצוא את הקובץ s%s%s.%s אם הקובץ שייך לפרויקט, יש לבדוק את נתיב החיפוש ב%s פרויקט->מהדר->אפשרויות...->נתיבי חיפוש->קבצי יחידות אחרים. אם קובץ זה שייך לחבילה, יש לבדוק את אפשרויות המהדר בחבילה. אם הקובץ שייך ללזרוס, יש לנקות את הקבצים המהודרים. במידה והקובץ שייך ל FPC, אז יש לבדוק את ההגדרות ב fpc.cfg. במידה ואתה לא בטוח, בדוק את פרוייקט->אפשרויות מהדר ...->בדיקה"
@@ -20832,7 +20832,7 @@ msgid "Unable to find method."
 msgstr "לא יכול למצוא מתודה."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
 msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s\"%s\""
 msgstr "לא יכול למצוא יחידת פסקל (pas,.pp.) עבור קובץ lfm%s%s%s%s"
@@ -20856,13 +20856,13 @@ msgid "unable to load file %s: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoloadpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to load package %s%s%s"
 msgid "Unable to load package \"%s\""
 msgstr "לא יכול לטעון חבילה %s%s%s"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgid "Unable to load the component class \"%s\" because it depends on itself."
 msgstr "לא ניתן לטעון את המחלקה %s%s%s ברכיב, בגלל שהיא תלויה בעצמה."
@@ -20891,13 +20891,13 @@ msgid "Unable to read file"
 msgstr "לא ניתן לקרוא את הקובץ"
 
 #: lazarusidestrconsts.lisunabletoreadfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read file %s%s%s!"
 msgid "Unable to read file \"%s\"."
 msgstr "לא ניתן לקרוא את הקובץ %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read file %s%s%s%sError: %s"
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "לא ניתן לקרוא את הקובץ %s%s%s%sשגיאה: %s"
@@ -20911,14 +20911,14 @@ msgid "unable to read process ExitStatus"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read the project info file%s%s%s%s."
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
 msgid "Unable to read the project info file%s\"%s\"."
 msgstr "לא יכול לקרוא את קובץ מידע הפרוייקט %s%s%s%s."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "לא ניתן להסיר את קובץ הגיבויים  %s%s%s הישן!"
@@ -20934,7 +20934,7 @@ msgid "Unable to remove project title from source.%s%s"
 msgstr "לא יכול להסיר את כותרת הפרוייקט בקוד. %s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "לא ניתן לשנות את השם של קובץ רב משמעי %s%s%s%sל %s%s%s"
@@ -20944,13 +20944,13 @@ msgid "Unable to rename file"
 msgstr "לא ניתן לשנות את שם הקובץ"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "לא ניתן לשנות את שם הקובץ %s%s%s ל %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to rename file %s%s%s%sto %s%s%s."
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
 msgstr "לא ניתן לשנות את שם הקובץ %s%s%s%sל %s%s%s."
@@ -21007,7 +21007,7 @@ msgid "Unable to update CreateForm statement in project source"
 msgstr "לא ניתן לעדכן את CreateForm בקוד המקור של הפרויקט."
 
 #: lazarusidestrconsts.lisunabletowrite2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to write %s%s%s"
 msgid "Unable to write \"%s\""
 msgstr "לא יכול לכתוב %s%s%s"
@@ -21022,19 +21022,19 @@ msgid "Unable to write file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritefileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to write file %s%s%s%sError: %s"
 msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "לא יכול לכתוב קובץ %s%s%s%s שגיאה: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgid "Unable to write the project info file%s\"%s\".%sError: %s"
 msgstr "לא יכול לכתוב את קובץ מידע הפרוייקט %s%s%s%s. שגיאה: s%"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
 msgstr "לא יכול לכתוב את קובץ ה  session . שגיאה: %s"
 
@@ -21077,7 +21077,7 @@ msgid "Unit"
 msgstr "יחידה"
 
 #: lazarusidestrconsts.lisunithaschangedsave
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unit %s%s%s has changed. Save?"
 msgid "Unit \"%s\" has changed. Save?"
 msgstr "יחידה %s%s%s השתנתה. לשמור?"
@@ -21087,7 +21087,7 @@ msgid "Unit identifier exists"
 msgstr "מזהה היחידה קיים"
 
 #: lazarusidestrconsts.lisunitinpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s unit %s in package %s%s"
 msgid "%s unit %s in package %s"
 msgstr "יחידה s% בחבילה %s%s"
@@ -21247,7 +21247,7 @@ msgid "Use identifier"
 msgstr "השתמש במזהה"
 
 #: lazarusidestrconsts.lisuseidentifierinat
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Use identifier %s in %s at %s"
 msgstr "השתמש במזהה s% ב %s ב %s"
 
@@ -21397,7 +21397,7 @@ msgid "Warning: "
 msgstr ""
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "אזהרה: נמצא קובץ רב משמעי: %s%s%s. קוד המקור של הקובץ הוא: %s%s%s"
@@ -21408,7 +21408,7 @@ msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
 msgstr "אזהרה: זאת היחידה הראשית, היחידה הראשית החדשה תהייה  s.pas%"
 
@@ -22492,7 +22492,7 @@ msgid "Extract Procedure"
 msgstr "חלץ את הפרוצדורה"
 
 #: lazarusidestrconsts.srkmecexttool
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "External tool %d"
 msgstr "כלי חיצוני d%"
 
@@ -22584,12 +22584,12 @@ msgid "Fold at Cursor"
 msgstr "קפל במיקום הסמן"
 
 #: lazarusidestrconsts.srkmecfoldlevel
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fold to Level %d"
 msgstr "קפל לרמה d%"
 
 #: lazarusidestrconsts.srkmecgotoeditor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Go to editor %d"
 msgstr "לך לעורך d%"
 
@@ -22606,7 +22606,7 @@ msgid "Go to Line Number"
 msgstr "לך לשורה מספר"
 
 #: lazarusidestrconsts.srkmecgotomarker
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Go to Marker %d"
 msgid "Go to bookmark %d"
 msgstr "לך לסמן d%"
@@ -23158,7 +23158,7 @@ msgid "Set a free Bookmark"
 msgstr "קבע סימניה חופשית"
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Set Marker %d"
 msgid "Set bookmark %d"
 msgstr "קבע סמן d%"
@@ -23403,7 +23403,7 @@ msgid "View local variables"
 msgstr "הצג משתנים מקומיים"
 
 #: lazarusidestrconsts.srkmectogglemarker
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Toggle Marker %d"
 msgid "Toggle bookmark %d"
 msgstr "החלף סמן d%"

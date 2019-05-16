@@ -3202,7 +3202,7 @@ msgid "Overwrite block"
 msgstr "Kijelölés felülírása"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Desktop with the name \"%s\" was found.\n"
 #| "Should the old desktop be overwritten?\n"
@@ -3521,7 +3521,7 @@ msgid "Rubberband Selection"
 msgstr "Nyújtható kijelölés"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The running Lazarus instance cannot accept any files.\n"
 #| "Do you want to open them in a new IDE instance?\n"
@@ -8885,7 +8885,7 @@ msgid "Do not write updated project info file after build. If not specified, bui
 msgstr "Ne legyen frissítve a projekt információs fájlja építés után. Így az építési szám csak megfelelő beállítás esetén növekszik."
 
 #: lazarusidestrconsts.lisdonwloadonlinepackages
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following package(s) are not available locally: %s.\n"
 #| "In order to install it, you must download them first. Download now?\n"
@@ -11158,7 +11158,7 @@ msgid "Install it, I like the fat"
 msgstr "Telepítés, nekem tetszik a duciság"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following packages are not installed, but available in the main repository: %s.\n"
 #| "Do you wish to install missing packages?\n"
@@ -13217,7 +13217,7 @@ msgid "\"%s\" in %s"
 msgstr "\"%s\" itt: %s: "
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "\"%s\" is already in use in %s as a shortcut.\n"
 #| "Try a different shortcut.\n"
@@ -13294,7 +13294,7 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "TSCList.GetScanListCompName: a %d érvénytelen index a FScanList számára"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "You have to change the shortcut from %s\n"
 #| "to avoid a conflict\n"
@@ -16208,7 +16208,7 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Egy vagy több szükséges csomag nem található. Lásd a Csomag-fát a részletekért!"
 
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The package %s is already open in the IDE.\n"
 #| "You cannot save a package with the same name.\n"

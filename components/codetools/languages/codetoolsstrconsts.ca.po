@@ -108,7 +108,7 @@ msgid "class node without parent node"
 msgstr "node classe sense node pare"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "no s'ha trobat la classe %s%s%s"
@@ -543,13 +543,13 @@ msgid "interface section not found"
 msgstr "no s'ha trobat la secció Interface"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "el nom de la classe no és vàlid=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "el nom de la classe no és vàlid: %s%s%s"
@@ -587,13 +587,13 @@ msgid "invalid type"
 msgstr "el tipus no és vàlid"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "el nom de la variable %s%s%s no és vàlid"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "el tipus de la variable %s%s%s no és vàlid"
@@ -844,7 +844,7 @@ msgid "source is not unit"
 msgstr "la font no és una unitat"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "no s'ha trobat la font: unitat %s"
@@ -854,7 +854,7 @@ msgid "SrcPath Initialization"
 msgstr "Inicialització de SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "s'esperava %s, però s'ha trobat %s"

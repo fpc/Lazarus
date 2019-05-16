@@ -31,12 +31,12 @@ msgid "record end not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "adds %s to IncPath"
 msgstr "מוסיף את  s% ל IncPath"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "adds %s to SrcPath"
 msgstr "מוסיף s% ל SrcPath"
 
@@ -49,12 +49,12 @@ msgid "an LCL project"
 msgstr "פרוייקט של LCL"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Anonymous %s definitions are not allowed"
 msgstr "הגדרות אנונימיות s% אסורות"
 
 #: codetoolsstrconsts.ctsawithoutb
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s without %s"
 msgstr "ללא"
 
@@ -73,17 +73,17 @@ msgid "binary operator"
 msgstr "אופרטור בינארי"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "bracket close expected, but %s found"
 msgstr "צפויה סגירת סוגריים, אבל s% נמצא"
 
 #: codetoolsstrconsts.ctsbracketnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "bracket %s not found"
 msgstr "סוגר s% לא נמצא"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "bracket open expected, but %s found"
 msgstr "צפויה פתיחת סוגריים, אבל s% נמצא"
 
@@ -108,7 +108,7 @@ msgid "class node without parent node"
 msgstr "צומת של מחלקה ללא הורה"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "המחלקה %s%s%s לא נמצאה"
@@ -119,12 +119,12 @@ msgid "class not found \"%s\""
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "\"class of\" definition not resolved: %s"
 msgstr "ההגדרות של \"class of\" לא פוענחו: s%"
 
 #: codetoolsstrconsts.ctsclasssnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Class %s not found"
 msgstr "המחלקה s% לא נמצאה"
 
@@ -214,7 +214,7 @@ msgid "default java class ancestor JLObject not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "default parameter expected, but %s found"
 msgstr "צפוי פרמטר ברירת המחדל, אבל נמצא s%"
 
@@ -239,7 +239,7 @@ msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "הגדרת LCLwidgetset, למשל LCLgtk"
 
 #: codetoolsstrconsts.ctsdefinemacroname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Define Macro %s"
 msgstr "הגדר מאקרו s%"
 
@@ -269,7 +269,7 @@ msgid "Doc Editor Directory"
 msgstr "תיקיית עורך המסמכים"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "duplicate identifier: %s"
 msgstr "מזהה כפול: s%"
 
@@ -290,7 +290,7 @@ msgid "end of file"
 msgstr ""
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "expected end., but %s found"
 msgstr "צפוי .end אבל s% נמצא"
 
@@ -376,7 +376,7 @@ msgid "Forward"
 msgstr "קדימה"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Forward class definition not resolved: %s"
 msgstr "ההגדרות של המחלקה הבאה לא פוענחו: s%"
 
@@ -397,7 +397,7 @@ msgid "Free Pascal Source Directory"
 msgstr "תיקיית הקוד של fpc"
 
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Free Pascal Sources, %s"
 msgstr "מקורות של fpc   "
 
@@ -429,7 +429,7 @@ msgid "IDE Directory"
 msgstr "תיקיית ה IDE "
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "identifier expected, but %s found"
 msgstr "מצפה למזהה, אבל נמצא s%"
 
@@ -438,7 +438,7 @@ msgid "unexpected end of file (identifier expected)"
 msgstr "סוף קובץ לא צפוי (צפוי מזהה)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "identifier expected, but keyword %s found"
 msgstr "מצפה למזהה, אבלמלת מפתח  s% נמצאה"
 
@@ -447,12 +447,12 @@ msgid "identifier"
 msgstr "מזהה"
 
 #: codetoolsstrconsts.ctsidentifieralreadydefined
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Identifier %s already defined"
 msgstr "מזהה s% כבר הוגדר"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "identifier not found: %s"
 msgstr "מזהה לא נמצא: יחידה s%"
 
@@ -485,12 +485,12 @@ msgid "If TargetOS<>win32 then"
 msgstr "אם TargetOS<>win32  אז"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "illegal circle using unit: %s"
 msgstr "מעגל לא חוקי בשימוש ביחדה: s%"
 
 #: codetoolsstrconsts.ctsillegalqualifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "illegal qualifier %s found"
 msgstr "מסייג לא חוקי s% נמצא"
 
@@ -503,7 +503,7 @@ msgid "Include circle detected"
 msgstr "התגלה מעגל \"כלול\""
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "include directories: %s"
 msgstr "תיקיות \"כלול\": s%"
 
@@ -518,7 +518,7 @@ msgid "incompatibles types: expected \"%s\" but got \"%s\""
 msgstr "סוגים לא תואמים: צפוי \"%s\" אבל התקבל \"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "index parameter expected, but %s found"
 msgstr "צפוי פרמטר אינדקס, אבל נמצא s%"
 
@@ -543,19 +543,19 @@ msgid "interface section not found"
 msgstr "קטע הממשק לא נמצא"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "שם מחלקה לא חוקי = %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "שם מחלקה לא חוקי %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "ערך דגל לא חוקי \"%s\" עבור הוראה s%"
 
@@ -587,13 +587,13 @@ msgid "invalid type"
 msgstr "סוג לא חוקי"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "שם משתנה לא חוקי %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "סוג משתנה לא חוקי %s%s%s"
@@ -603,7 +603,7 @@ msgid "keyword"
 msgstr "מלת מפתח"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "keyword (e.g. %s) expected, but %s found"
 msgstr "צפויה מלת מפתח (למשל s%) אבל נמצא s%"
 
@@ -654,12 +654,12 @@ msgid "missing type identifier"
 msgstr "מזהה סוג חסר"
 
 #: codetoolsstrconsts.ctsnameddirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s Directory"
 msgstr "תיקייה s%"
 
 #: codetoolsstrconsts.ctsnamedproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s Project"
 msgstr "פרוייקט s%"
 
@@ -669,7 +669,7 @@ msgid " (needed by mode \"%s\")"
 msgstr ""
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Nested %s definitions are not allowed"
 msgstr "הגדרות מקוננות s% אסורות"
 
@@ -686,7 +686,7 @@ msgid "nodefault specifier defined twice"
 msgstr "מציין שאינו ברירת המחדל הוגדר פעמיים"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "no pascal code found (first token is %s)"
 msgstr "לא נמצא קוד של פסקל (הסימן הראשון הוא s%)"
 
@@ -704,7 +704,7 @@ msgid "Not enough actual generic parameters"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "old method not found: %s"
 msgstr "מתודה ישנה לא נמצאה: s%"
 
@@ -740,7 +740,7 @@ msgid "operator expected, but %s found"
 msgstr "מחכה לאופרטור, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s Compiler Defines"
 msgstr "הגדרת המהדר s%"
 
@@ -781,7 +781,7 @@ msgid "processor specific"
 msgstr "יחודי למעבד"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "property type expected, but %s found"
 msgstr "צפוי סוג התכונה, אבל נמצא s%"
 
@@ -790,12 +790,12 @@ msgid "property Current not found"
 msgstr "התכונה נוכחי לא נמצאה"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "property specifier already defined: %s"
 msgstr "מציין התכונה כבר מוגדר: s%"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "qualifier expected but %s found"
 msgstr "צפוי מסייג אבל s% נמצא"
 
@@ -817,7 +817,7 @@ msgid "Scanned files: %s"
 msgstr "קבצים סרוקים: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "צפוי נקודה פסיק אחרי מציין תכונה s%, אבל נמצא s%"
 
@@ -826,12 +826,12 @@ msgid "semicolon not found"
 msgstr "נקודה פסיק לא נמצא"
 
 #: codetoolsstrconsts.ctssetsincpathto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "sets IncPath to %s"
 msgstr "קובע את  s% כ  IncPath "
 
 #: codetoolsstrconsts.ctssetssrcpathto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "sets SrcPath to %s"
 msgstr "קובע את   IncPath ל  s% "
 
@@ -844,7 +844,7 @@ msgid "source is not unit"
 msgstr "הקוד אינו יחידה"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "הקוד לא נמצא: יחידה s%"
@@ -854,7 +854,7 @@ msgid "SrcPath Initialization"
 msgstr "איתחול של SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "מצפה ל s%  אבל נמצא s%"
@@ -948,7 +948,7 @@ msgid "unexpected subrange operator '..' found"
 msgstr "אופרטור בלתי צפוי של תת תחום  '..' נמצא"
 
 #: codetoolsstrconsts.ctsunitnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "unit not found: %s"
 msgstr "יחידה לא נמצאה s%"
 
@@ -957,7 +957,7 @@ msgid "UnitPath Initialization"
 msgstr "איתחול של UnitPath"
 
 #: codetoolsstrconsts.ctsunknownfunction
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unknown function %s"
 msgstr "פונקציה לא ידועה s%"
 
@@ -966,7 +966,7 @@ msgid "(unknown mainfilename)"
 msgstr "(שם קובץ ראשי לא ידוע)"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "(unknown subdescriptor %s)"
 msgstr "(תת-מאפיין לא מוכר s%)"
 

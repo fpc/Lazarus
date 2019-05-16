@@ -109,7 +109,7 @@ msgid "class node without parent node"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "trieda %s%s%s nenájdená"
@@ -542,13 +542,13 @@ msgid "interface section not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "neplatné meno triedy=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "neplatné meno triedy %s%s%s"
@@ -586,13 +586,13 @@ msgid "invalid type"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "neplatné meno premennej %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "neplatný typ premennej %s%s%s"

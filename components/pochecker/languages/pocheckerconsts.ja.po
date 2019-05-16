@@ -168,7 +168,7 @@ msgid "[Line %d] %s"
 msgstr "[行 %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
 msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "原文のままで翻訳されていない項目 \"%s\" が1ヶ所以上存在します："
@@ -178,7 +178,7 @@ msgid "Duplicate Originals"
 msgstr ""
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "An unrecoverable error occurred\n"
 #| "%s\n"
@@ -193,7 +193,7 @@ msgstr ""
 "プログラムを終了してください\n"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Error creating an instance of TPoFamily:\n"
 #| "%s\n"
@@ -339,19 +339,19 @@ msgid "Original"
 msgstr "原文"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s: %4.1f%% fuzzy strings."
 msgid "%s: %5.1f%% fuzzy strings."
 msgstr "未確定文字列：%2.0f%%"
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s: %4.1f%% translated strings."
 msgid "%s: %5.1f%% translated strings."
 msgstr "翻訳された文字列：%2.0f%%"
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s: %4.1f%% untranslated strings."
 msgid "%s: %5.1f%% untranslated strings."
 msgstr "未翻訳文字列：%2.0f%%"
@@ -386,7 +386,7 @@ msgid "Save &As ..."
 msgstr ""
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Error saving file:\n"
 #| "%s\n"
@@ -441,7 +441,7 @@ msgid "The following %s orphaned .po file(s) found:"
 msgstr ""
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Total errors / warnings found: %d"
 msgid "Total errors: %d"
 msgstr "エラー／警告の総数：%d"
@@ -467,7 +467,7 @@ msgid "Total untranslated strings: %s"
 msgstr ""
 
 #: pocheckerconsts.stotalwarnings
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Total warnings found: %d"
 msgid "Total warnings: %d"
 msgstr "警告の総数：%d"

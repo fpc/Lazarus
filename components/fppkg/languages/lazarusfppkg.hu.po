@@ -52,7 +52,7 @@ msgid "update repository"
 msgstr "tároló frissítése"
 
 #: fppkg_mainfrm.serractionfailed
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Failed to %s: \n"
 #| "\n"

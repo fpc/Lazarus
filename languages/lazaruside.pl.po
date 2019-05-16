@@ -36,17 +36,17 @@ msgid "Address Breakpoint %s"
 msgstr "Pułapka na adresie %s"
 
 #: lazarusidestrconsts.dbgeventbreakataddress
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "at $%s"
 msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
 
 #: lazarusidestrconsts.dbgeventbreakataddressoriginsourceoriginline
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "at $%s: from origin %s line %d"
 msgstr "Usunąć pułapkę  w %s\"%s\" linia %d?"
 
 #: lazarusidestrconsts.dbgeventbreakataddresssourceline
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "at $%s: %s line %d"
 msgstr "Usunąć pułapkę  w %s\"%s\" linia %d?"
 
@@ -61,7 +61,7 @@ msgid "Unknown Breakpoint %s"
 msgstr "Nieznana pułapka %s"
 
 #: lazarusidestrconsts.dbgeventbreakwatchpoint
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Watchpoint %s"
 msgstr "%s nie istnieje: %s"
 
@@ -76,7 +76,7 @@ msgid "Unknown Watchpoint triggered %s. Old value \"%s\", New Value \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dbgeventwatchscopeended
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Watchpoint for \"%s\" out of scope %s"
 msgstr "%s Indeks %d przekracza zakres 0 .. %d"
 
@@ -613,7 +613,7 @@ msgid "Level 10"
 msgstr "Przejdź do znacznika 10"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel1color
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Level  1"
 msgstr "Zwiń do poziomu %d"
 
@@ -623,7 +623,7 @@ msgid "Level  2"
 msgstr "Lewy 2"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel3color
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Level  3"
 msgstr "Zwiń do poziomu %d"
 
@@ -633,17 +633,17 @@ msgid "Level  4"
 msgstr "&4 piksele"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel5color
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Level  5"
 msgstr "Zwiń do poziomu %d"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel6color
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Level  6"
 msgstr "Zwiń do poziomu %d"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel7color
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Level  7"
 msgstr "Zwiń do poziomu %d"
 
@@ -1353,7 +1353,7 @@ msgid "Dwarf2"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Dwarf with sets"
 msgstr "ustawia IncPath na %s"
 
@@ -1443,7 +1443,7 @@ msgid "Default Value"
 msgstr "Wartość domyślna"
 
 #: lazarusidestrconsts.dlgdeletemode
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Delete mode"
 msgstr "Usuń tryb \"%s\""
 
@@ -1810,7 +1810,7 @@ msgid "File extensions"
 msgstr "Rozszerzenia plików"
 
 #: lazarusidestrconsts.dlgfiles
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s files"
 msgstr "Usunąć %s pliki z pakietu \"%s\"?"
 
@@ -2074,7 +2074,7 @@ msgid "Comment //"
 msgstr "Komentarz //"
 
 #: lazarusidestrconsts.dlgfoldpastry
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Try"
 msgstr "Porada: Funkcja Make Resourcestring wymaga stałej łańcuchowej.%sWybierz wyrażenie i spróbuj ponownie."
 
@@ -3335,7 +3335,7 @@ msgid "Overwrite block"
 msgstr "Nadpisz blok"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Desktop with the name \"%s\" was found.\n"
 #| "Should the old desktop be overwritten?\n"
@@ -3359,7 +3359,7 @@ msgid "Highlight control statements as keywords"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Extended Pascal Keyword Options"
 msgstr "Jako nazwy komponentu \"%s\" próbujesz użyć słowa kluczowego języka Pascal"
 
@@ -3381,7 +3381,7 @@ msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "Prześlij opcje do linkera za pomocą \"-k\" (oddzielone spacją)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Highlight \"String\" keyword(s)"
 msgstr "Nie znaleziono wyrażenia '%s'!"
 
@@ -3522,7 +3522,7 @@ msgid "Title:"
 msgstr "Nazwa:"
 
 #: lazarusidestrconsts.dlgpouiaccess
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "UI Access (uiAccess)"
 msgstr "brak uprawnień do wykonania dla %s"
 
@@ -3920,7 +3920,7 @@ msgid "Show single button in TaskBar"
 msgstr "Pojedynczy przycisk na pasku zadań"
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Skip forward class declarations"
 msgstr "Brak klasy zadeklarowanej jako Forward: %s"
 
@@ -4754,7 +4754,7 @@ msgid "Added missing object \"%s\" to pascal source."
 msgstr ""
 
 #: lazarusidestrconsts.lisaddedpropertysfors
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Added property \"%s\" for %s."
 msgstr "Dodano pakiet %s jako zależność"
 
@@ -4865,7 +4865,7 @@ msgid "Add unit (not recommended)"
 msgstr "Dodaj moduł (nie zalecane)"
 
 #: lazarusidestrconsts.lisaddvaluetomacro
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Add value to macro %s"
 msgstr "Makro %s"
 
@@ -4915,7 +4915,7 @@ msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Plik \"%s\" już istnieje.%sCzy chcesz go zastąpić?"
 
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "A filter with the name \"%s\" already exists."
 msgstr "Nazwa zakładki \"%s\" już istnieje. Nie dodano."
 
@@ -5023,7 +5023,7 @@ msgid "Anchor Editor - no control selected"
 msgstr "Edytor zakotwiczeń - nie zaznaczono kontrolki"
 
 #: lazarusidestrconsts.lisanchorenabledhint
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Enabled = Include %s in Anchors"
 msgstr "nie ma pliku include \"%s\""
 
@@ -5474,7 +5474,7 @@ msgid "Busy"
 msgstr ""
 
 #: lazarusidestrconsts.lisbyte
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s byte"
 msgstr "%s nie istnieje: %s"
 
@@ -5558,7 +5558,7 @@ msgid "Cannot save form \"%s\"."
 msgstr "Nie można zapisać formularza \"%s\"."
 
 #: lazarusidestrconsts.liscannotsubstitutemacros
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Cannot substitute macro \"%s\"."
 msgstr "Makro IDE %s:=%s"
 
@@ -5608,7 +5608,7 @@ msgid "Please check the Test directory under %sTools -> Options -> Files -> Dire
 msgstr ""
 
 #: lazarusidestrconsts.lisccocompilernotanexe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
 msgstr "Plik wykonywalny kompilatora (%s)"
 
@@ -5712,7 +5712,7 @@ msgid "All tests succeeded."
 msgstr "Wszystkie testy pozytywne"
 
 #: lazarusidestrconsts.lisccounabletocreatetestfile
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Unable to create Test File"
 msgstr "Nie można utworzyć pliku \"%s\""
 
@@ -5775,7 +5775,7 @@ msgid "Follow cursor"
 msgstr "Podążaj za kursorem"
 
 #: lazarusidestrconsts.liscein
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr "%s bez %s"
@@ -5960,12 +5960,12 @@ msgid "%s%sClass \"%s\" not found."
 msgstr "%s%sNie znaleziono klasy \"%s\"."
 
 #: lazarusidestrconsts.liscfecomponent
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent: %s:%s"
 msgstr "%s nie istnieje: %s"
 
 #: lazarusidestrconsts.liscfecomponentclass
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent Class: %s"
 msgstr "błędna nazwa klasy=\"%s\""
 
@@ -6028,7 +6028,7 @@ msgid "Invalid component owner"
 msgstr "Nieprawidłowy właściciel komponentu"
 
 #: lazarusidestrconsts.liscferoot
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sRoot=%s:%s"
 msgstr "%s nie istnieje: %s"
 
@@ -6037,12 +6037,12 @@ msgid "Stop all loading"
 msgstr "Przerwij wczytywanie wszystkiego"
 
 #: lazarusidestrconsts.liscfestream
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%sStream=%s"
 msgstr "%s nie istnieje: %s"
 
 #: lazarusidestrconsts.liscfestreamposition
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sStream position: %s"
 msgstr "Przesuń \"%s\" w górę"
 
@@ -6061,7 +6061,7 @@ msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerFor
 msgstr ""
 
 #: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
 msgstr "Identyfikator %s jest już zdefiniowany"
 
@@ -6145,7 +6145,7 @@ msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and
 msgstr ""
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
 msgid ". Check if package %s is in the dependencies"
 msgstr "Wyczyść zależności pakietu"
@@ -6315,12 +6315,12 @@ msgid "Class not found"
 msgstr "Klasa nie została znaleziona."
 
 #: lazarusidestrconsts.lisclassnotfoundat
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Class %s not found at %s(%s,%s)"
 msgstr "Nie znaleziono obiektu klasy \"%s\""
 
 #: lazarusidestrconsts.lisclassofmethodnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Class \"%s\" of method \"%s\" not found."
 msgstr "Nie znaleziono klasy \"%s\""
 
@@ -6382,7 +6382,7 @@ msgid "Clean up and build project"
 msgstr "Wyczyść i buduj projekt"
 
 #: lazarusidestrconsts.liscleanuppackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Clean up package \"%s\"."
 msgstr "Wyczyść zależności pakietu"
 
@@ -7029,7 +7029,7 @@ msgid "Value as Text"
 msgstr "Wartość jako tekst"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s:%svalue \"%s\" is invalid."
 msgstr "niedozwolony znak \"%s\" w %s"
 
@@ -7172,7 +7172,7 @@ msgid "Compiler"
 msgstr "Kompilator"
 
 #: lazarusidestrconsts.liscompilercfgismissing
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%s is missing."
 msgstr "brak katalogu \"%s\""
 
@@ -7304,7 +7304,7 @@ msgid "Config file of additions:"
 msgstr "konfiguruj \"buduj plik\""
 
 #: lazarusidestrconsts.lisconfigurebuild
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Configure Build %s"
 msgstr "Konfiguracja \"Buduj Lazarusa\""
 
@@ -7530,7 +7530,7 @@ msgid "*** Converting unit files belonging to project/package ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphierror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error=\"%s\""
 msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
 
@@ -7561,7 +7561,7 @@ msgid "Delphi Function"
 msgstr "Funkcja Delphi"
 
 #: lazarusidestrconsts.lisconvdelphimissingincludefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s(%s,%s) missing include file"
 msgstr "nie ma pliku include \"%s\""
 
@@ -7579,7 +7579,7 @@ msgid "Package %s is required but not installed in Lazarus! Install it later."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Omitted unit %s from project"
 msgstr "Nie znaleziono modułu w projekcie %s"
 
@@ -7679,7 +7679,7 @@ msgid "Use conditional compilation to support Delphi"
 msgstr "Użyj kompilacji warunkowej aby zachować zgodność z Delphi"
 
 #: lazarusidestrconsts.lisconvfixedunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fixed unit name from %s to %s."
 msgstr "\"%s\" nie jest prawidłową nazwą modułu."
 
@@ -7728,7 +7728,7 @@ msgid "Repairing include files : "
 msgstr "Naprawa dołączanych plików:"
 
 #: lazarusidestrconsts.lisconvreplacedcall
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Replaced call %s with %s"
 msgstr "Wywołaj procedurę %sRegister%s bieżącego modułu"
 
@@ -7986,7 +7986,7 @@ msgid "Copy error"
 msgstr "Błąd kopiowania"
 
 #: lazarusidestrconsts.liscopyfilename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Copy Filename %s"
 msgstr "Kopiuj nazwę pliku"
 
@@ -8086,7 +8086,7 @@ msgid "Open Unit %s"
 msgstr "Otwórz moduł %s"
 
 #: lazarusidestrconsts.liscpu
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid ", CPU: %s"
 msgstr "Docelowy procesor"
 
@@ -8126,7 +8126,7 @@ msgid "Create it"
 msgstr "Tworzenie"
 
 #: lazarusidestrconsts.liscreatelocalvariable
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Create local variable \"%s\""
 msgstr "błędna nazwa zmiennej \"%s\""
 
@@ -8706,7 +8706,7 @@ msgid "Delete?"
 msgstr "Skasować?"
 
 #: lazarusidestrconsts.lisdeleteaddition
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete addition \"%s\"?"
 msgstr "Usuń ten dodatek"
 
@@ -8755,7 +8755,7 @@ msgid "Delete breakpoint for address %s?"
 msgstr "Czy chcesz usunąć punkt kontrolny na adresie %s?"
 
 #: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Delete watchpoint for \"%s\"?"
 msgstr "Na pewno usunąć pulpit \"%s\"?"
 
@@ -8901,7 +8901,7 @@ msgid "Directory: "
 msgstr "Katalog:"
 
 #: lazarusidestrconsts.lisdirectorynotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Directory \"%s\" not found."
 msgstr "nie znaleziono katalogu \"%s\""
 
@@ -9205,7 +9205,7 @@ msgid "Toggle showing nonvisual components"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicate
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Duplicate"
 msgstr "zdublowany identyfikator: %s"
 
@@ -9220,12 +9220,12 @@ msgid "Duplicate File Name"
 msgstr "Zdublowane menu"
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Duplicate found of value \"%s\"."
 msgstr "zdublowany identyfikator: %s"
 
 #: lazarusidestrconsts.lisduplicatemodename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Mode \"%s\" is already present in the list."
 msgstr "Pakiet %s jest już na liście"
 
@@ -9258,7 +9258,7 @@ msgid "Duplicate Unit"
 msgstr "Zdublowane menu"
 
 #: lazarusidestrconsts.lisduplicateunitin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Duplicate unit \"%s\" in \"%s\""
 msgstr "zdublowany identyfikator: %s"
 
@@ -9438,7 +9438,7 @@ msgid "No class"
 msgstr "Klasa"
 
 #: lazarusidestrconsts.lisemdnoclassat
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "No class at %s(%s,%s)"
 msgstr "Nie znaleziono klasy \"%s\""
 
@@ -9635,12 +9635,12 @@ msgid "Error deleting file"
 msgstr "Błąd podczas usuwania pliku"
 
 #: lazarusidestrconsts.liserrorin
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Error in %s"
 msgstr "Błąd odczytu %s"
 
 #: lazarusidestrconsts.liserrorinthecompilerfilename
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Error in the compiler file name:"
 msgstr "Błąd: nieprawidłowy kompilator: %s"
 
@@ -9693,12 +9693,12 @@ msgid "Error loading file"
 msgstr "Błąd ładowania obrazu"
 
 #: lazarusidestrconsts.liserrorloadingfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error loading file \"%s\":"
 msgstr "Błąd ładowania obrazu \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error loading %s from%s%s%s%s"
 msgstr "Błąd ładowania obrazu \"%s\":%s%s"
 
@@ -9708,7 +9708,7 @@ msgid "Error moving component"
 msgstr "Błąd tworzenia komponentu"
 
 #: lazarusidestrconsts.liserrormovingcomponent2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error moving component %s:%s"
 msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
 
@@ -9723,7 +9723,7 @@ msgid "Error opening component"
 msgstr "Błąd tworzenia komponentu"
 
 #: lazarusidestrconsts.liserroropeningform
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Error opening form"
 msgstr "Błąd przy zapisie formularza do strumienia  \"%s\": %s"
 
@@ -9737,7 +9737,7 @@ msgid "Error reading package list from file%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorreadingxml
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Error reading XML"
 msgstr "Błąd odczytu %s"
 
@@ -9766,17 +9766,17 @@ msgid "Error saving form"
 msgstr "Błąd podczas zapisu bitmapy."
 
 #: lazarusidestrconsts.liserrorsavingto
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
 
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error setting the name of a component %s to %s"
 msgstr "Nazwa komponentu \"%s\" nie jest prawidłowym identyfikatorem"
 
 #: lazarusidestrconsts.liserrorwritingfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error writing file \"%s\""
 msgstr "Błąd podczas zapisu do pliku"
 
@@ -9855,7 +9855,7 @@ msgid "%s excluded at run time"
 msgstr "%s wykluczony podczas wykonywania"
 
 #: lazarusidestrconsts.lisexecutableisadirectory
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "executable \"%s\" is a directory"
 msgstr "Wybierz plik wykonywalny kompilatora (%s)"
 
@@ -10016,7 +10016,7 @@ msgid "Failed to add %d not unique resource(s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "Utwórz Zestaw Aplikacji"
 
@@ -10134,7 +10134,7 @@ msgid "File \"%s\" is virtual."
 msgstr "Plik \"%s\" jest plikiem wirtualnym."
 
 #: lazarusidestrconsts.lisfilelinkerror
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "File link error"
 msgstr "Błąd podczas odczytu pliku: %s"
 
@@ -10194,7 +10194,7 @@ msgid "File Settings"
 msgstr "Ustawienia pliku"
 
 #: lazarusidestrconsts.lisfileshasincorrectsyntax
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "File %s has incorrect syntax."
 msgstr "Plik \"%s\" został zmieniony. Zapisać?"
 
@@ -10238,7 +10238,7 @@ msgid "Filter all messages of certain type"
 msgstr "Filtruj komunikaty określonego typu"
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Filter all messages of type %s"
 msgstr "Filtruj komunikaty określonego typu"
 
@@ -10276,7 +10276,7 @@ msgid "Filter Notes and below"
 msgstr "Wstaw poniżej"
 
 #: lazarusidestrconsts.lisfiltersets
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Filter Sets"
 msgstr "ustawia IncPath na %s"
 
@@ -10398,7 +10398,7 @@ msgid "For Windows"
 msgstr "Dla Windows"
 
 #: lazarusidestrconsts.lisfoundversionexpected
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Found version %s, expected %s"
 msgstr "zamiast końca programu \"end.\" znaleziono %s"
 
@@ -10446,12 +10446,12 @@ msgid "FPDoc Editor"
 msgstr "Edytor FPDoc"
 
 #: lazarusidestrconsts.lisfpdocerrorwriting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error writing \"%s\"%s%s"
 msgstr "Błąd przy zapisie formularza do strumienia  \"%s\": %s"
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "FPDoc syntax error"
 msgstr "Błąd składniowy w wyrażeniu \"%s\""
 
@@ -10726,7 +10726,7 @@ msgid "Group"
 msgstr "Grupa"
 
 #: lazarusidestrconsts.lisgroupassignexisting
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Assign to existing \"%s\" group?"
 msgstr "Chcesz nadpisać istniejący plik \"%s\"?"
 
@@ -10753,7 +10753,7 @@ msgid "Group name:"
 msgstr "Nazwa grupy:"
 
 #: lazarusidestrconsts.lisgroupnameinvalid
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "BreakpointGroup name must be a valid Pascal identifier name."
 msgstr "Nazwa \"%s\" nie jest prawid?owym identyfikatorem pascala."
 
@@ -10839,7 +10839,7 @@ msgid "Hide window"
 msgstr "Ukryj okno"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Hide with package option (-vm%s)"
 msgstr "Opcje pakietu %s"
 
@@ -10986,7 +10986,7 @@ msgid "Information about the IDE"
 msgstr "Informacje o IDE"
 
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr "Nazwa pakietu \"%s\" jest nieprawidłowa.%sProszę wybrać istniejący pakiet."
 
@@ -11119,7 +11119,7 @@ msgid "Ignore this exception type"
 msgstr "Ignoruj"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Ignore, use %s as ancestor"
 msgstr "Nazwa \"%s\" nie jest prawidłowym identyfikatorem pascala."
 
@@ -11172,7 +11172,7 @@ msgid "Impossible"
 msgstr "Odinstalowanie jest niemożliwe"
 
 #: lazarusidestrconsts.lisinasourcedirectoryofthepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "In a source directory of the package \"%s\"."
 msgstr "Nie można utworzyć katalogu ze źródłami \"%s\"%sdla pakietu %s."
 
@@ -11202,12 +11202,12 @@ msgid "Include subdirectories"
 msgstr "Uwzględniaj podkatalogi"
 
 #: lazarusidestrconsts.lisincompatibleppu
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid ", incompatible ppu=%s"
 msgstr "Niekompatybilny identyfikator"
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Incorrect configuration directory found"
 msgstr "Nie znaleziono katalogu \"%s\""
 
@@ -11276,7 +11276,7 @@ msgid "Insert"
 msgstr "Insert"
 
 #: lazarusidestrconsts.lisinsertassignment
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Insert Assignment %s := ..."
 msgstr "Dodaj operator przypisania :="
 
@@ -11389,7 +11389,7 @@ msgid "&Inspect"
 msgstr "Zbadaj"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s: class %s inherits from %s"
 msgstr "Usuń z listy \"%s\""
 
@@ -11408,7 +11408,7 @@ msgid "Methods"
 msgstr "Usuń puste metody"
 
 #: lazarusidestrconsts.lisinspectpointerto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Pointer to %s"
 msgstr "Wskaźnik"
 
@@ -11433,7 +11433,7 @@ msgid "Show visibility column"
 msgstr "Widoczność"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%s: unavailable (error: %s)"
 msgstr "Błąd przy zapisie formularza do strumienia  \"%s\": %s"
 
@@ -11488,7 +11488,7 @@ msgid "Interactive"
 msgstr ""
 
 #: lazarusidestrconsts.lisinternalerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "internal error: %s"
 msgstr "Błąd przy zapisie formularza do strumienia  \"%s\": %s"
 
@@ -11502,7 +11502,7 @@ msgid "Invalid Executable"
 msgstr "Nieprawidłowy plik wykonywalny"
 
 #: lazarusidestrconsts.lisinvalidexecutablemessagetext
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The file \"%s\" is not executable."
 msgstr "Plik odpluskwiacza \"%s\" nie jest wykonywalny."
 
@@ -11525,7 +11525,7 @@ msgid "Invalid line, column in message%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrosin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Invalid macros in \"%s\""
 msgstr "niedozwolony znak \"%s\" w %s"
 
@@ -11540,7 +11540,7 @@ msgid "Invalid macro \"%s\". The macro name must be a Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Invalid macro name \"%s\". The name is a keyword."
 msgstr "Jako nazwy komponentu \"%s\" próbujesz użyć słowa kluczowego"
 
@@ -11574,7 +11574,7 @@ msgid "Invalid Pascal Identifier"
 msgstr "Nieprawidłowy identyfikator pascala"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
 msgstr "Nazwa \"%s\" nie jest prawidłowym identyfikatorem pascala."
 
@@ -11598,7 +11598,7 @@ msgid "Invalid selection"
 msgstr "Zaznaczenie"
 
 #: lazarusidestrconsts.lisinvalidversionin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "invalid version in %s"
 msgstr "Nieodpowiednia wersja"
 
@@ -11653,7 +11653,7 @@ msgid "Jump to procedure %s"
 msgstr "Przejdź do procedury %s"
 
 #: lazarusidestrconsts.liskb
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s KB"
 msgstr "%s nie istnieje: %s"
 
@@ -12280,7 +12280,7 @@ msgid "directory to be used as a basedirectory"
 msgstr "Plik jest w użyciu"
 
 #: lazarusidestrconsts.lislazaruseditorv
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Lazarus IDE v%s"
 msgstr "Konfiguruj IDE Lazarusa"
 
@@ -12302,7 +12302,7 @@ msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [options] <project-filename>"
 
 #: lazarusidestrconsts.lislazarussvnrev
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "r%s"
 msgstr "%s nie istnieje: %s"
 
@@ -12608,7 +12608,7 @@ msgid "list of all case values"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Loading %s failed."
 msgstr "Nie można usunąć pliku \"%s\""
 
@@ -12838,7 +12838,7 @@ msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Maksymalna liczba równoległych procesów. 0 oznacza domyślnie (%s)"
 
 #: lazarusidestrconsts.lismaxs
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Max %d"
 msgstr "%d - %d"
 
@@ -12848,7 +12848,7 @@ msgid "%s Maybe you have to recompile the package."
 msgstr ""
 
 #: lazarusidestrconsts.lismb
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s MB"
 msgstr "%s nie istnieje: %s"
 
@@ -13073,7 +13073,7 @@ msgid "&Add from template ..."
 msgstr "Dod&aj z szablonu..."
 
 #: lazarusidestrconsts.lismenueditoraddiconfroms
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Add icon from %s"
 msgstr "Dodaj pola z FieldDefs"
 
@@ -13178,22 +13178,22 @@ msgid "Change imagelist &icon"
 msgstr "Zmień"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutcaptionforcomponent
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Change %s for %s"
 msgstr "Zmień klasę %s"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutconflicts
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Change shortcut conflict \"%s\""
 msgstr "Zmień klasę %s"
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutfors
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Change the shortCut for %s"
 msgstr "Zmień klasę %s"
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutkey2fors
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Change the shortCutKey2 for %s"
 msgstr "Zmień klasę %s"
 
@@ -13250,7 +13250,7 @@ msgid "Delete selected menu template"
 msgstr "Usuń wybrany szablon menu "
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Delete this item and its subitems?"
 msgstr "Usunąć element \"%s\"?"
 
@@ -13263,7 +13263,7 @@ msgid "Edit &Caption"
 msgstr "Edy&cja etykiety"
 
 #: lazarusidestrconsts.lismenueditoreditingcaptionofs
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Editing Caption of %s"
 msgstr "Edycja"
 
@@ -13273,12 +13273,12 @@ msgid "To resolve conflict edit %s.%s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoreditingsfors
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Editing %s for %s"
 msgstr "Edycja"
 
 #: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Editing %s.%s - no menuitem selected"
 msgstr "Wywołaj procedurę %sRegister%s bieżącego modułu"
 
@@ -13287,12 +13287,12 @@ msgid "Enter a menu &Description:"
 msgstr "Opis menu:"
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutfors
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Enter a new ShortCut for %s"
 msgstr "Wpisz nową nazwę makra \"%s\""
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutkey2fors
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Enter a new ShortCutKey2 for %s"
 msgstr "Wpisz nową nazwę makra \"%s\""
 
@@ -13314,12 +13314,12 @@ msgid "&Grab key"
 msgstr "Przechwyć klawisz"
 
 #: lazarusidestrconsts.lismenueditorgroupindexd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "GroupIndex: %d"
 msgstr "%d linii, %d znaków"
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Values in use: %s"
 msgstr "Użyj CheckBox dla wartości logicznych"
 
@@ -13341,17 +13341,17 @@ msgid "is not assigned"
 msgstr "nie jest przypisany"
 
 #: lazarusidestrconsts.lismenueditoritemswithicons
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Items with icon: %s"
 msgstr "Elementy"
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "List shortcuts and &accelerators for %s ..."
 msgstr "Pakiet %s jest już na liście"
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsfors
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "List shortcuts for %s ..."
 msgstr "Usuń z listy \"%s\""
 
@@ -13439,12 +13439,12 @@ msgid "No user-saved templates"
 msgstr "Użytkownika"
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Pick an icon from %s"
 msgstr "Usuń z listy \"%s\""
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Popup assignments: %s"
 msgstr "%s nie istnieje: %s"
 
@@ -13453,7 +13453,7 @@ msgid "RadioItem"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Remaining conflicts: %s"
 msgstr "Pakiet jest w konflikcie"
 
@@ -13463,7 +13463,7 @@ msgid "&Remove all separators"
 msgstr "Usuń wszystkie nieprawidłowe właściwości"
 
 #: lazarusidestrconsts.lismenueditorresolvedconflictss
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Resolved conflicts: %s"
 msgstr "Brak klasy zadeklarowanej jako Forward: %s"
 
@@ -13499,7 +13499,7 @@ msgid "Save menu shown as a new template"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsconflictswiths
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s conflicts with %s"
 msgstr "Pakiet jest w konflikcie"
 
@@ -13508,7 +13508,7 @@ msgid "Se&parators"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Shortcut items: %s"
 msgstr "Skrót już istnieje"
 
@@ -13531,7 +13531,7 @@ msgid "Shortcuts and Accelerator keys"
 msgstr "Nie ma konfliktu klawiszy."
 
 #: lazarusidestrconsts.lismenueditorshortcutsd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Shortcuts (%d)"
 msgstr "%d linii, %d znaków"
 
@@ -13546,12 +13546,12 @@ msgid "Shortcut,Source Property"
 msgstr "Skrót już istnieje"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Shortcuts used in %s"
 msgstr "Plik jest w użyciu"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedinsd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Shortcuts used in %s (%d)"
 msgstr "Usunąć element \"%s\"?"
 
@@ -13560,7 +13560,7 @@ msgid "ShowMenuEditor: TMenu parameter is nil"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsins
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "\"%s\" in %s"
 msgstr "%s bez %s"
 
@@ -13581,7 +13581,7 @@ msgid "Some widgetsets do not allow separators in the main menubar"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s: Shortcuts"
 msgstr "%s nie istnieje: %s"
 
@@ -13591,12 +13591,12 @@ msgid "%s: Shortcuts and accelerator keys"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s.%s.%s - OnClick: %s"
 msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
 
 #: lazarusidestrconsts.lismenueditorssubmenu
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s submenu"
 msgstr "Utwórz podmenu"
 
@@ -13885,7 +13885,7 @@ msgid "New Component"
 msgstr "Nowy komponent"
 
 #: lazarusidestrconsts.lismenunewcustom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "New %s"
 msgstr "&Nowy"
 
@@ -14528,7 +14528,7 @@ msgid "Does not add custom options:"
 msgstr "opcje niestandardowe"
 
 #: lazarusidestrconsts.lismmdoesnothaveidemacro
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Does not have IDE Macro %s:=%s"
 msgstr "Makro IDE %s:=%s"
 
@@ -14543,17 +14543,17 @@ msgid "Exclude all packages matching name \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "expected \":=\" after macro name but found \"%s\""
 msgstr "zamiast \";\" po specyfikacji właściwości \"%s\" znalaziono %s"
 
 #: lazarusidestrconsts.lismmexpectedmacronamebutfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "expected macro name but found \"%s\""
 msgstr "zamiast końca programu \"end.\" znaleziono %s"
 
 #: lazarusidestrconsts.lismmfromto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "From %s to %s"
 msgstr "Istnieje moduł o nazwie takiej samej jak pakiet:%s1. \"%s\" w %s%s2. \"%s\""
 
@@ -14572,7 +14572,7 @@ msgid "invalid character \"%s\" at %s"
 msgstr "niedozwolony znak \"%s\" w %s"
 
 #: lazarusidestrconsts.lismminvalidcharacterinmacrovalue
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "invalid character in macro value \"%s\""
 msgstr "niedozwolony znak \"%s\" w %s"
 
@@ -14595,7 +14595,7 @@ msgid "New Target"
 msgstr "Nowa platforma docelowa"
 
 #: lazarusidestrconsts.lismmoverrideoutdirfu
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Override OutDir (-FU): %s"
 msgstr "Nadpisz katalog wyjściowy (-FU)"
 
@@ -14618,7 +14618,7 @@ msgid "Set an IDE macro, e.g.: LCLWidgetType:=win32"
 msgstr ""
 
 #: lazarusidestrconsts.lismmsets
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Set \"%s\""
 msgstr "Ustaw domyślną wartość: %s"
 
@@ -14658,7 +14658,7 @@ msgid "Value \"%s\""
 msgstr "Wartość \"%s\""
 
 #: lazarusidestrconsts.lismmwas
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "(was \"%s\")"
 msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
 
@@ -14667,7 +14667,7 @@ msgid "WidgetSet change is available only for LCL projects"
 msgstr ""
 
 #: lazarusidestrconsts.lismode
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid ", Mode: %s"
 msgstr "Tryb budowania: %s"
 
@@ -15022,7 +15022,7 @@ msgid "No Pascal file"
 msgstr "Plik Pascala"
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "No program file \"%s\" found."
 msgstr "nie ma pliku include \"%s\""
 
@@ -15052,7 +15052,7 @@ msgid "Free Pascal compiler not found at the given prefix."
 msgstr ""
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Not a valid Pascal identifier"
 msgstr "Nazwa \"%s\" nie jest prawidłowym identyfikatorem pascala."
 
@@ -15163,7 +15163,7 @@ msgid "? (Off)"
 msgstr "Automatyczne wypełnienie: wyłączone"
 
 #: lazarusidestrconsts.lisofpackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid " of package %s"
 msgstr ", pakiet %s"
 
@@ -15182,7 +15182,7 @@ msgid "Choose a base class for the favorite property \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Class \"%s\" not found."
 msgstr "Nie znaleziono klasy \"%s\""
 
@@ -15452,7 +15452,7 @@ msgid "or"
 msgstr ""
 
 #: lazarusidestrconsts.lisos
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid ", OS: %s"
 msgstr "Docelowy system operacyjny"
 
@@ -15596,7 +15596,7 @@ msgid ", parsed "
 msgstr ""
 
 #: lazarusidestrconsts.lisparser
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "parser \"%s\": %s"
 msgstr "%s nie istnieje: %s"
 
@@ -15779,7 +15779,7 @@ msgid "Create Makefile"
 msgstr "Utwórz Makefile"
 
 #: lazarusidestrconsts.lispckeditdefault
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s, default: %s"
 msgstr "Ustaw domyślną wartość: %s"
 
@@ -16355,12 +16355,12 @@ msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Nam
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "Pakiet ma już określoną zależność od pakietu \"%s\"."
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "Projekt ma już zależność od pakietu \"%s\"."
 
@@ -16633,12 +16633,12 @@ msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "Plik \"%s\" jest używany przez%spakiet \"%s\"%sw pliku \"%s\"."
 
 #: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file \"%s\" of package %s was not found."
 msgstr "Nie znaleziono pakietu \"%s\"."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "The following package failed to load:"
 msgstr "Nie można załadować pakietu \"%s\""
 
@@ -16896,7 +16896,7 @@ msgid "RegisterUnit was called but no package is registering."
 msgstr "Wywołano RegisterUnit, ale żaden pakiet nie jest rejestrowany."
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sThe lpk file was not found."
 msgstr "%sTen pakiet jest zainstalowany, ale nie znaleziono jego pliku lpk"
 
@@ -16948,7 +16948,7 @@ msgid "Transitivity"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to read package file \"%s\".%sError: %s"
 msgstr "Nie można odczytać pliku \"%s\"%sBłąd: %s"
 
@@ -17094,12 +17094,12 @@ msgid "Position"
 msgstr "Pozycja"
 
 #: lazarusidestrconsts.lispositionoutsideofsource
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s (position outside of source)"
 msgstr "Pozycja poza źródłem"
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "ppu in wrong directory=%s."
 msgstr "Katalog wyjściowy projektu (tzn. katalog plików *.ppu)"
 
@@ -17122,7 +17122,7 @@ msgid "Primary config path"
 msgstr "Pierwszoplanowa ścieżka konfiguracji"
 
 #: lazarusidestrconsts.lisprior
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "prior %s"
 msgstr "&Poprzedni"
 
@@ -17299,7 +17299,7 @@ msgid "Project changed on disk"
 msgstr "Projekt zmieniony"
 
 #: lazarusidestrconsts.lisprojectcount
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%d projects"
 msgstr "Projekty"
 
@@ -17453,17 +17453,17 @@ msgid "Remove file %s from project?"
 msgstr "Chcesz usunąć plik %s z projektu?"
 
 #: lazarusidestrconsts.lisprojinspremoveitemsf
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Remove %s items from project?"
 msgstr "Chcesz usunąć plik %s z projektu?"
 
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "Nie można odczytać pliku statusu \"%s\"%spakietu %s.%sBłąd: %s"
 
 #: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write state file for project %s%sError: %s"
 msgstr "Nie można zapisać pliku statusu \"%s\"%spakietu %s.%sBłąd: %s"
 
@@ -17500,7 +17500,7 @@ msgid "Properties (replace or remove)"
 msgstr "Usuń z listy ulubionych właściwości"
 
 #: lazarusidestrconsts.lisproperty
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s property"
 msgstr "zamiast \";\" po specyfikacji właściwości \"%s\" znalaziono %s"
 
@@ -17524,7 +17524,7 @@ msgid "Published Method"
 msgstr "nazwa metody"
 
 #: lazarusidestrconsts.lispublishedto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Published to %s"
 msgstr "Puplikowane właścowości bez wartości domyślnej"
 
@@ -17560,13 +17560,13 @@ msgid "Edit virtual unit"
 msgstr "Wirtualny moduł"
 
 #: lazarusidestrconsts.lispvuthereisalreadyanunitwiththisnamefile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lispvuthereisalreadyanunitwiththisnamefile"
 msgid "There is already an unit with this name.%sFile: %s"
 msgstr "%s%sNazwa pliku: \"%s\""
 
 #: lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgctxt "lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid Pascal identifier."
 msgstr "Nazwa \"%s\" nie jest prawid?owym identyfikatorem pascala."
@@ -17642,7 +17642,7 @@ msgid "Read Error"
 msgstr "Błąd odczytu"
 
 #: lazarusidestrconsts.lisreallydelete
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Really delete?"
 msgstr "Na pewno usunąć pulpit \"%s\"?"
 
@@ -17715,7 +17715,7 @@ msgid "Remove Compiler Option Hide Message"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovedependenciesfrompackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Remove %s dependencies from package \"%s\"?"
 msgstr "Usunąć %s pliki z pakietu \"%s\"?"
 
@@ -17746,12 +17746,12 @@ msgid "Remove include path?"
 msgstr "Usunąć ścieżkę dołączania?"
 
 #: lazarusidestrconsts.lisremovelocalvariable
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Remove local variable %s"
 msgstr "błędna nazwa zmiennej \"%s\""
 
 #: lazarusidestrconsts.lisremovelocalvariable3
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Remove local variable \"%s\""
 msgstr "błędna nazwa zmiennej \"%s\""
 
@@ -17783,7 +17783,7 @@ msgid "Remove unit path?"
 msgstr "Usunąć ścieżkę modułów?"
 
 #: lazarusidestrconsts.lisremoveuses
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Remove uses \"%s\""
 msgstr "Chcesz usunąć plik %s z projektu?"
 
@@ -17809,7 +17809,7 @@ msgid "Show list of renamed Identifiers"
 msgstr "Pokaż listę zmienionych identyfikatorów"
 
 #: lazarusidestrconsts.lisrenameto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Rename to %s"
 msgstr "Nie udało się zmienić nazwy pliku \"%s\"%sna \"%s\"."
 
@@ -17840,12 +17840,12 @@ msgid "Replace"
 msgstr "Zamień"
 
 #: lazarusidestrconsts.lisreplacedpropertyswiths
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Replaced property \"%s\" with \"%s\"."
 msgstr "zamiast typu właściwości znaleziono %s"
 
 #: lazarusidestrconsts.lisreplacedtypeswiths
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Replaced type \"%s\" with \"%s\"."
 msgstr "nie znaleziono typu bazowego \"%s\""
 
@@ -18164,12 +18164,12 @@ msgid "Save messages"
 msgstr "Zapisz komunikaty"
 
 #: lazarusidestrconsts.lissaveproject
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Save project %s (*%s)"
 msgstr "Chcesz zapisać zmiany w projekcie %s?"
 
 #: lazarusidestrconsts.lissavesessionchangestoproject
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Save session changes to project %s?"
 msgstr "Chcesz zapisać zmiany w projekcie %s?"
 
@@ -18238,7 +18238,7 @@ msgid "Search paths"
 msgstr "Ścieżki wyszukiwania"
 
 #: lazarusidestrconsts.lissearchunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Search Unit \"%s\""
 msgstr "Ścieżka poszukiwania modułów"
 
@@ -18259,7 +18259,7 @@ msgid "See messages."
 msgstr "Zobacz komunikaty."
 
 #: lazarusidestrconsts.lisseeprojectprojectinspector
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%sSee Project -> Project Inspector"
 msgstr "Inspektor projektu - %s"
 
@@ -18683,7 +18683,7 @@ msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please s
 msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Source and Destination are the same:%s%s"
 msgstr "Nie ma katalogu docelowego %s\"%s\"."
 
@@ -18692,7 +18692,7 @@ msgid "&Source Breakpoint ..."
 msgstr "Punkt kontrolny źródła ..."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Source directory \"%s\" does not exist."
 msgstr "część ścieżki w %s nie istnieje lub jest popsutym dowiązaniem symbolicznym"
 
@@ -18812,32 +18812,32 @@ msgid "Success"
 msgstr "Zakończony powodzeniem"
 
 #: lazarusidestrconsts.lissuccessfullyexported
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully exported to \"%s\"."
 msgstr "%d pulpit(y/ów) wyeksportowano z powodzeniem do \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Successfully exported %d BuildModes to \"%s\"."
 msgstr "%d pulpit(y/ów) wyeksportowano z powodzeniem do \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully exported compiler options to \"%s\"."
 msgstr "%d pulpit(y/ów) wyeksportowano z powodzeniem do \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyimported
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully imported from \"%s\"."
 msgstr "%d pulpit(y/ów) zaimportowano z powodzeniem z \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Successfully imported %d BuildModes from \"%s\"."
 msgstr "%d pulpit(y/ów) zaimportowano z powodzeniem z \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyimportedcompileroptions
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Successfully imported compiler options from \"%s\"."
 msgstr "%d pulpit(y/ów) zaimportowano z powodzeniem z \"%s\""
 
@@ -18922,7 +18922,7 @@ msgid "Move the selected control up in tab order"
 msgstr ""
 
 #: lazarusidestrconsts.listabsfor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Tabs for %s"
 msgstr "Tabulatory"
 
@@ -18991,7 +18991,7 @@ msgid "Test URL"
 msgstr "Test"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The Application Bundle was created for \"%s\""
 msgstr "Użyj Zestawu Aplikacji do uruchomienia i odpluskiwania"
 
@@ -19001,7 +19001,7 @@ msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%s
 msgstr ""
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The Codetools found an error:%s%s"
 msgstr "zamiast %s znaleziono %s"
 
@@ -19045,7 +19045,7 @@ msgid "The configuration will be downgraded/converted."
 msgstr "Test: Sprawdzanie konfiguracji kompilatora..."
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s contains a nonexistent directory:%s%s"
 msgstr "%s katalog projektu,%sktóry zawiera plik .dpr, dpk."
 
@@ -19113,7 +19113,7 @@ msgid "The file \"%s\""
 msgstr "Plik \"%s\""
 
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The file %s does not look like a lpi file."
 msgstr "Plik \"%s\"%snie wygląda na tekstowy.%sChcesz otworzyć go pomimo tego?"
 
@@ -19132,7 +19132,7 @@ msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this 
 msgstr ""
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The file mask \"%s\" is invalid."
 msgstr "niepoprawne pliki lpk  (%s)"
 
@@ -19220,7 +19220,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "Plik LFM (formularz Lazarusa) zawiera nieprawidłowe właściwości, np. może zawierać pewne właściwości lub klasy, których nie ma obecnie w LCL. Zwyczajowo naprawia się to przez usunięcie tych właściwości z LFM i ręczne poprawienie kodu w pascalu."
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The macro \"%s\" does not begin with \"%s\"."
 msgstr "Właściwość %s nie istnieje"
 
@@ -19250,7 +19250,7 @@ msgid "The \"Other sources\" contains a directory which is already in the \"Othe
 msgstr ""
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The output directory \"%s\" is missing."
 msgstr "brak katalogu \"%s\""
 
@@ -19412,7 +19412,7 @@ msgid "There is already a build mode with this name."
 msgstr "Nazwa aktywnego trybu budowania"
 
 #: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There is already a component class with the name %s."
 msgstr "Klasa komponentu \"%s\" już została zdefiniowana"
 
@@ -19421,7 +19421,7 @@ msgid "There is already a component with this name"
 msgstr "Komponent o tej nazwie już istnieje"
 
 #: lazarusidestrconsts.listhereisalreadyafilein
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is already a file%s%s%sin %s"
 msgstr "Plik \"%s\"%sjuż jest w pakiecie %s."
 
@@ -19441,7 +19441,7 @@ msgid "There is already a macro with the name \"%s\"."
 msgstr "Makro o nazwie \"%s\" już istnieje."
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There is already an IDE macro with the name \"%s\""
 msgstr "Makro o nazwie \"%s\" już istnieje."
 
@@ -19516,7 +19516,7 @@ msgid "The sources of the Free Pascal packages are required for browsing and cod
 msgstr ""
 
 #: lazarusidestrconsts.listhetargetdirectoryisafile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The target directory is a file:%s"
 msgstr "Wybierz katalog docelowy"
 
@@ -19536,22 +19536,22 @@ msgid "The Test Directory could not be found:%s\"%s\"%s(see IDE options)"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitalreadyexists
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit \"%s\" already exists."
 msgstr "Nazwa modułu \"%s\" już istnieje w projekcie%sw pliku: \"%s\"."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit belongs to package %s."
 msgstr "moduł %s wymaga pakietu %s"
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr "Nazwa modułu \"%s\" już istnieje w projekcie%sw pliku: \"%s\"."
 
 #: lazarusidestrconsts.listheunithasthisname
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "The unit has this name"
 msgstr "Moduł \"%s\" został zmieniony. Zapisać?"
 
@@ -19586,7 +19586,7 @@ msgid "The working directory \"%s\" does not exist.%sPlease check the working di
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "This component already contains a class with the name %s."
 msgstr "Klasa komponentu \"%s\" już została zdefiniowana"
 
@@ -19745,7 +19745,7 @@ msgid "Raise toolbars"
 msgstr "&Pasek narzędziowy"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "tool \"%s\" has no executable"
 msgstr "brak pliku wykonywalnego \"%s\""
 
@@ -19861,7 +19861,7 @@ msgid "Expand all nodes"
 msgstr "Rozwiń wszystkie węzły"
 
 #: lazarusidestrconsts.lisudfile
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "File: %s"
 msgstr "używa plik konfiguracyjny %s"
 
@@ -19870,22 +19870,22 @@ msgid "(Filter)"
 msgstr "(filtr)"
 
 #: lazarusidestrconsts.lisudimplementationuses
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Implementation Uses: %s"
 msgstr "Skocz do imlementation uses"
 
 #: lazarusidestrconsts.lisudimplementationuses2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "implementation uses: %s"
 msgstr "Skocz do imlementation uses"
 
 #: lazarusidestrconsts.lisudinterfaceuses
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Interface Uses: %s"
 msgstr "Skocz do interface uses"
 
 #: lazarusidestrconsts.lisudinterfaceuses2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "interface uses: %s"
 msgstr "Skocz do interface uses"
 
@@ -19898,7 +19898,7 @@ msgid "Scanning ..."
 msgstr "Skanowanie ..."
 
 #: lazarusidestrconsts.lisudscanningunits
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Scanning: %s units ..."
 msgstr "Moduły: %s"
 
@@ -19948,22 +19948,22 @@ msgid "Units: %s"
 msgstr "Moduły: %s"
 
 #: lazarusidestrconsts.lisudusedbyimplementations
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Used by Implementations: %s"
 msgstr "Plik jest w użyciu"
 
 #: lazarusidestrconsts.lisudusedbyimplementations2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "used by implementations: %s"
 msgstr "Plik jest w użyciu"
 
 #: lazarusidestrconsts.lisudusedbyinterfaces
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Used by Interfaces: %s"
 msgstr "Plik jest w użyciu"
 
 #: lazarusidestrconsts.lisudusedbyinterfaces2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "used by interfaces: %s"
 msgstr "Plik jest w użyciu"
 
@@ -20096,7 +20096,7 @@ msgid "Unable to add the dependency %s because this would create a circular depe
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "Nie można dodać %s do projektu, ponieważ zawiera on już moduł o tej nazwie."
@@ -20131,7 +20131,7 @@ msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "Nie można wyczyścić \"%s\".%sSprawdź uprawnienia."
 
 #: lazarusidestrconsts.lisunabletoconvertcomponenttextintobinaryformat
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to convert component text into binary format:%s%s"
 msgstr "Nie można przekształcić binarnego strumienia komponentu %s:T%s na tekst."
 
@@ -20146,7 +20146,7 @@ msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%
 msgstr "Nie można skonwertować pliku z danymi w formie tekstu  z pliku %s\"%s\"%sna strumień dwójkowy. (%s)"
 
 #: lazarusidestrconsts.lisunabletoconverttoencoding
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to convert to encoding \"%s\""
 msgstr "Nie można przekonwertować pliku \"%s\"%sBłąd: %s"
 
@@ -20174,12 +20174,12 @@ msgid "Unable to create file \"%s\""
 msgstr "Nie można utworzyć pliku \"%s\""
 
 #: lazarusidestrconsts.lisunabletocreatefile3
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to create file%s\"%s\""
 msgstr "Nie można utworzyć pliku \"%s\""
 
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Nie można utworzyć katalogu z kopią zapasową \"%s\"."
 
@@ -20215,7 +20215,7 @@ msgid "Unable to find a ResourceString section in this or any of the used units.
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to find a valid classname in \"%s\""
 msgstr "Nie znaleziono pliku \"%s\"."
 
@@ -20230,7 +20230,7 @@ msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search 
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to find %s in LFM Stream."
 msgstr "Nie można wysłać do strumienia %s:T%s."
 
@@ -20260,7 +20260,7 @@ msgid "Unable to get source for designer."
 msgstr "Nie udało się zmienić nazwy zmiennej w źródle."
 
 #: lazarusidestrconsts.lisunabletoloadfile2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "unable to load file %s: %s"
 msgstr "Nie można załadować pliku \"%s\"."
 
@@ -20373,7 +20373,7 @@ msgid "Unable to run"
 msgstr "Nie można uruchomić"
 
 #: lazarusidestrconsts.lisunabletorun2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to run \"%s\""
 msgstr "Nie można uruchomić"
 
@@ -20386,12 +20386,12 @@ msgid "Unable to show method."
 msgstr "Nie można wyświetlić metody"
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Unable to stream selected components"
 msgstr "Nie można wysłać do strumienia %s:T%s."
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents2
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Unable to stream selected components."
 msgstr "Nie można wysłać do strumienia %s:T%s."
 
@@ -20429,12 +20429,12 @@ msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "Nie można zapisać do pliku \"%s\"%sBłąd: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write the project info file%s\"%s\".%sError: %s"
 msgstr "Nie można zapisać pakietu \"%s\"%sdo pliku \"%s\".%sBłąd: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
 msgstr "Nie można zapisać pliku statusu \"%s\"%spakietu %s.%sBłąd: %s"
 
@@ -20444,7 +20444,7 @@ msgid "Unable to write to file \"%s\"."
 msgstr "Nie można zapisywać do pliku \"%s\""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Nie można zapisać do pliku \"%s\"%sBłąd: %s"
 
@@ -20458,7 +20458,7 @@ msgid "Undo"
 msgstr "Cofnij"
 
 #: lazarusidestrconsts.lisuninstall
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Uninstall %s"
 msgstr "Odinstalowanie pakietu %s"
 
@@ -20507,7 +20507,7 @@ msgid "unit %s not found"
 msgstr "nie znaleziono modułu %s"
 
 #: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "unit %s not found at new position \"%s\""
 msgstr "Nie znaleziono modułu w projekcie %s"
 
@@ -20626,7 +20626,7 @@ msgid "Use comments in custom options"
 msgstr "opcje niestandardowe"
 
 #: lazarusidestrconsts.lisusedby
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid " used by %s"
 msgstr "Główny katalog %s,%sgdzie Borland instalował %s wszystkie źródła,%sktóre są używane przez projekt %s.%sNa przykład: C:/Programme/Borland/Delphi%s"
 
@@ -20649,7 +20649,7 @@ msgid "Use identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifierinat
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Use identifier %s in %s at %s"
 msgstr "zdublowany identyfikator: %s"
 
@@ -20658,7 +20658,7 @@ msgid "Launching application"
 msgstr "Program ładujący"
 
 #: lazarusidestrconsts.lisusepackageinpackage
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Use package %s in package %s"
 msgstr "%s moduł %s w pakiecie %s"
 
@@ -20668,7 +20668,7 @@ msgid "Use package in package"
 msgstr "Wyczyść aby użyć nazwy pakietu"
 
 #: lazarusidestrconsts.lisusepackageinproject
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Use package %s in project"
 msgstr "Dodać pakiet %s do projektu?"
 
@@ -20708,7 +20708,7 @@ msgid "Add Unit to Uses Section"
 msgstr "Dodaj moduł do sekcji Uses"
 
 #: lazarusidestrconsts.lisuseunitinunit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Use unit %s in unit %s"
 msgstr "%s moduł %s w pakiecie %s"
 
@@ -21073,7 +21073,7 @@ msgid "Unable to delete file \"%s\""
 msgstr "Nie można usunąć pliku \"%s\"."
 
 #: lazarusidestrconsts.lrspldvalid
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "valid"
 msgstr "Nazwa komponentu \"%s\" nie jest prawidłowym identyfikatorem"
 
@@ -21293,7 +21293,7 @@ msgid "Found but not listed here: "
 msgstr "Znalezione, ale nie wypisane tutaj: "
 
 #: lazarusidestrconsts.rsi18nexcluded
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Excluded"
 msgstr "%s wykluczony podczas wykonywania"
 

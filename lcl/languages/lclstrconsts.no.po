@@ -10,19 +10,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Leser %s%s%s ikke kjørbar."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Leser %s%s%s ikke funnet."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Feil ved kjøring av %s%s%s:%s%s"
@@ -37,7 +37,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Hjelp-databasen %s%s%s var ikke istand til å finne fil %s%s%s."
@@ -549,19 +549,19 @@ msgid "Help context %s not found."
 msgstr "Hjelp-kontekst %s ikke funnet."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Hjelp-kontekst %s ikke funnet i database %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Hjelp-database %s%s%s fant ingen viser for en hjelpeside av type %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Hjelp-database %s%s%s ikke funnet"
@@ -577,19 +577,19 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Hjelp-nøkkelord %s%s%s ikke funnet."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Hjelp-nøkkelord %s%s%s ikke funnet i database %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Hjelpnode %s%s%s har ingen Hjelp-database"
@@ -621,7 +621,7 @@ msgid "Help Selector Error"
 msgstr "Hjelp-selektor-feil"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Det er ingen viser for hjelpetype %s%s%s"
@@ -695,7 +695,7 @@ msgid "Inactive Caption"
 msgstr ""
 
 #: lclstrconsts.rsindexoutofbounds
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s Index %d out of bounds 0-%d"
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "%s Indeks %d utenfor område 0-%d"

@@ -175,7 +175,7 @@ msgid "Duplicate Originals"
 msgstr "Zdvojené originály"
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "An unrecoverable error occurred\n"
 #| "%s\n"
@@ -190,7 +190,7 @@ msgstr ""
 "Prosím ukončete program\n"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Error creating an instance of TPoFamily:\n"
 #| "%s\n"
@@ -212,7 +212,7 @@ msgid "File %s"
 msgstr "Soubor %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following non-existent files were removed from the list:\n"
 #| "%s\n"
@@ -309,7 +309,7 @@ msgid "Found %d warnings."
 msgstr "Nalezeno %d varování."
 
 #: pocheckerconsts.sopenfail
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Unable to open file:\n"
 #| "\"%s\"\n"
@@ -321,7 +321,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: pocheckerconsts.sopenfailexternal
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Unable to open file\n"
 #| "\"%s\"\n"
@@ -399,7 +399,7 @@ msgid "Save &As ..."
 msgstr "Uložit &jako..."
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Error saving file:\n"
 #| "%s\n"
@@ -435,7 +435,7 @@ msgid "Show statistics graph"
 msgstr "Ukázat statistický graf"
 
 #: pocheckerconsts.sstathint
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Translated: %d (%.1f%%)\n"
 #| "Untranslated: %d (%.1f%%)\n"

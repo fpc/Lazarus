@@ -200,7 +200,7 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "下面文件:\"%s\"已经存在在该当前存储库.覆盖?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Cannot open private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -212,7 +212,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Cannot save private repository: \"%s\". Error message: \n"
 #| "\"%s\"\n"
@@ -233,7 +233,7 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "不能删除包:\"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following directory: \"%s\" is not empty.\n"
 #| "It's recommended to save the repository to an empty directory. Continue?\n"
@@ -245,7 +245,7 @@ msgstr ""
 "建议保存该存储库到一个空目录.继续?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"
@@ -257,7 +257,7 @@ msgstr ""
 "每个存储库和Lazarus软件包必需是独一无二的!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following Lazarus package: \"%s\" is already in the current repository.\n"
 #| "Each repository and Lazarus package must be unique!\n"

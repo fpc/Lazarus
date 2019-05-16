@@ -846,7 +846,7 @@ msgid "%s packages deleted!"
 msgstr "%s paketų pašalinta!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "%sAre you sure you wish to uninstall the checked packages?\n"
 #| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
@@ -1653,7 +1653,7 @@ msgid "Update package list"
 msgstr "Naujinti paketų sąrašą"
 
 #: opkman_const.rspackagesfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "(%s packages found)"
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
 msgstr "(rasta paketų: %s)"

@@ -3471,7 +3471,7 @@ msgid "Title:"
 msgstr "标题(Title):"
 
 #: lazarusidestrconsts.dlgpouiaccess
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "UI Access (uiAccess)"
 msgstr "读访问被拒绝对于%s"
 
@@ -4440,7 +4440,7 @@ msgid "Invalid Ancestor Type"
 msgstr "无效包类型"
 
 #: lazarusidestrconsts.lisa2pinvalidcirculardependency
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Invalid Circular Dependency"
 msgstr "%s有一个循环符号链接(circular)"
 
@@ -4474,7 +4474,7 @@ msgid "New File"
 msgstr "新建文件"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "依赖\"%s\"未找到.%s请选择一个存在的包."
 
@@ -4512,7 +4512,7 @@ msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The ancestor type \"%s\" is not a valid Pascal identifier."
 msgstr "该类名\"%s\"不是一个有效的pascal标识符."
 
@@ -4564,7 +4564,7 @@ msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor
 msgstr "该最小版本\"%s\"是无效的.%s请使用该格式 主要.次要.发布.构建%s例如:1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "该包%s已经在列表"
 
@@ -4668,7 +4668,7 @@ msgid "Official:"
 msgstr "官方:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
 msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%s不能包含TControls.%s你只能在上面放置非可见组件. "
@@ -4968,7 +4968,7 @@ msgid "Always ignore"
 msgstr "始终忽略"
 
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "A macro with this name already exists."
 msgstr "那里已经有一个宏命令带有名称\"%s\"."
 
@@ -5006,7 +5006,7 @@ msgid "Anchor Editor - no control selected"
 msgstr "查看锚/停靠(anchor)编辑器"
 
 #: lazarusidestrconsts.lisanchorenabledhint
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Enabled = Include %s in Anchors"
 msgstr "包含目录:%s"
 
@@ -5027,7 +5027,7 @@ msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a di
 msgstr ""
 
 #: lazarusidestrconsts.lisanchorsof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Anchors of %s"
 msgstr "锚/固定(Anchor)未找到:节点=\"%s\"锚/固定(Anchors)[%s]=\"%s\""
 
@@ -5221,7 +5221,7 @@ msgid "Creates a Backup directory under project directory"
 msgstr "创建一个备份目录 在工程目录下"
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr "改变包名和版本将破坏依赖关系,确定更改依赖关系么?%s选择 确定 更改所有列出的依赖关系.%s选择 忽略 中断依赖关系."
 
@@ -5472,7 +5472,7 @@ msgid "%s byte"
 msgstr "%s字节"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "调用 %s 建立Makefile失败(从 %s 中)."
 
@@ -5551,7 +5551,7 @@ msgid "Cannot save form \"%s\"."
 msgstr "不能保存窗体\"%s\"."
 
 #: lazarusidestrconsts.liscannotsubstitutemacros
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Cannot substitute macro \"%s\"."
 msgstr "宏命令%s"
 
@@ -5579,7 +5579,7 @@ msgid "%s (%s files)"
 msgstr "%s(%s文件)"
 
 #: lazarusidestrconsts.liscbpreallydeletesourcefiles
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Really delete %s source files%s%s"
 msgstr "你真的想删除\"%s\"?"
 
@@ -5594,7 +5594,7 @@ msgid "no class"
 msgstr "类(&C)"
 
 #: lazarusidestrconsts.lisccoambiguouscompiler
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Ambiguous compiler"
 msgstr "模糊合并:%s%s"
 
@@ -5692,7 +5692,7 @@ msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong un
 msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "那里有多个Free Pascal编译器在你的路径.%s%s%s你可能忘记删除一个旧的编译器?"
 
@@ -5968,7 +5968,7 @@ msgid "%s%sComponent: %s:%s"
 msgstr "%s%s组件:%s:%s"
 
 #: lazarusidestrconsts.liscfecomponentclass
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent Class: %s"
 msgstr "%s%s组件类:%s:%s"
 
@@ -6056,7 +6056,7 @@ msgid "TCustomFormEditor.CreateNonFormForm already exists"
 msgstr "类名已经存在"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformunknowntype
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
 msgstr "未知的请求类型\"%s\""
 
@@ -6066,7 +6066,7 @@ msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerFor
 msgstr ""
 
 #: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
 msgstr "%s:已经注册"
 
@@ -6673,7 +6673,7 @@ msgid "Add code template"
 msgstr "添加代码模板"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid " A token \"%s\" already exists! "
 msgstr "该单元\"%s\"已经存在."
 
@@ -6775,12 +6775,12 @@ msgid "Delete node"
 msgstr "删除节点"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr "主目录是 %s ,%s Borland 已经安装了的 %s 的所有源代码.%s例如: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr "主目录是 %s ,%s 是 Borland 已经安装了 %s 的源代码,%s将被工程 %s 所使用.%s例如: C:/Programme/Borland/Delphi%s"
 
@@ -6918,12 +6918,12 @@ msgid "Invalid previous node"
 msgstr "无效的节点测试(语法错误)"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectorydesc
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
 msgstr "主目录是 %s ,%s  Borland 已经安装了 %s 的所有源代码.%s例如: /home/user/kylix%s"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectoryforproject
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
 msgstr "主目录是 %s ,%s 是 Borland 已经安装了 %s 的源代码,%s将被工程 %s 所使用.%s例如: /home/user/kylix%s"
 
@@ -7020,7 +7020,7 @@ msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "工程目录是 %s ,%s 包含 .dpr, dpk 文件的目录."
 
@@ -7346,7 +7346,7 @@ msgid "Confirmation"
 msgstr "确认"
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarus将通过下面的:%sContinue?:%s重新构建.继续?"
 
@@ -7522,7 +7522,7 @@ msgid "Conversion Ready."
 msgstr "转换就绪."
 
 #: lazarusidestrconsts.lisconvdelphiconversiontook
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Conversion took: %s"
 msgstr "不能从%s到%s转换"
 
@@ -7596,12 +7596,12 @@ msgid "Package %s is required but not installed in Lazarus! Install it later."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Omitted unit %s from project"
 msgstr "从工程移除文件%s?"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Removed unit \"%s\" from uses section."
 msgstr "添加单元\"%s\"到使用部分(Uses section)"
 
@@ -7630,7 +7630,7 @@ msgid "Units to replace in %s"
 msgstr "单元替换在%s"
 
 #: lazarusidestrconsts.lisconvdelphiunitwithnameexistsinlcl
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "LCL already has a unit with name %s. Delete local file %s?"
 msgstr "LCL已经有一个单元带有名称%s.删除局部文件?"
 
@@ -7697,7 +7697,7 @@ msgid "Use conditional compilation to support Delphi"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvfixedunitname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fixed unit name from %s to %s."
 msgstr "\"%s\"不是有效的单元名"
 
@@ -7749,7 +7749,7 @@ msgid "Repairing include files : "
 msgstr "包含文件(-Fi):"
 
 #: lazarusidestrconsts.lisconvreplacedcall
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Replaced call %s with %s"
 msgstr "替换类型\"%s\"用\"%s\"."
 
@@ -7759,7 +7759,7 @@ msgid "Replacement function parameter number should be >= 1: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvshouldbefollowedbynumber
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "\"$\" should be followed by a number: %s"
 msgstr "包\"%s\"未找到.它应该在\"%s\"."
 
@@ -7794,7 +7794,7 @@ msgid "Unit Replacements"
 msgstr "单元替换"
 
 #: lazarusidestrconsts.lisconvunitreplhint
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Unit names in uses section of a source unit"
 msgstr "添加单元\"%s\"到使用部分(Uses section)"
 
@@ -8553,7 +8553,7 @@ msgid "Debugger specific options (depends on type of debugger)"
 msgstr "调试器指定的选项(取决于调试器的类型)"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Duplicate Exception name"
 msgstr "复制成员名\"%s\"."
 
@@ -8760,7 +8760,7 @@ msgid "Delete breakpoint for address %s?"
 msgstr "删除断点对于地址%s?"
 
 #: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Delete watchpoint for \"%s\"?"
 msgstr "添加数据/观察点"
 
@@ -9084,7 +9084,7 @@ msgid "Do not change"
 msgstr "不更改"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%sDo not check if another IDE instance is already running"
 msgstr "%s不要检查 假如另一个IDE实例已经在运行"
 
@@ -9202,7 +9202,7 @@ msgid "Toggle showing nonvisual components"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicate
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Duplicate"
 msgstr "复制成员名\"%s\"."
 
@@ -9212,22 +9212,22 @@ msgid "Duplicate entry"
 msgstr "移除选择入口"
 
 #: lazarusidestrconsts.lisduplicatefilename
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Duplicate File Name"
 msgstr "复制成员名\"%s\"."
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Duplicate found of value \"%s\"."
 msgstr "复制成员名\"%s\"."
 
 #: lazarusidestrconsts.lisduplicatemodename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Mode \"%s\" is already present in the list."
 msgstr "这里已经有一个包%s在列表"
 
 #: lazarusidestrconsts.lisduplicatename
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Duplicate Name"
 msgstr "复制成员名\"%s\"."
 
@@ -9250,12 +9250,12 @@ msgid "Duplicate sources. Delete one or make sure all search paths have correct 
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicateunit
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Duplicate Unit"
 msgstr "复制成员名\"%s\"."
 
 #: lazarusidestrconsts.lisduplicateunitin
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Duplicate unit \"%s\" in \"%s\""
 msgstr "复制成员名\"%s\"."
 
@@ -9427,7 +9427,7 @@ msgid "No class"
 msgstr "类(&C)"
 
 #: lazarusidestrconsts.lisemdnoclassat
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "No class at %s(%s,%s)"
 msgstr "类%s未找到在%s(%s,%s)"
 
@@ -9547,7 +9547,7 @@ msgid "Enclose in $IFDEF"
 msgstr "{$IfDef}"
 
 #: lazarusidestrconsts.lisencodingnumberoffilesfailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Number of files failed to convert: %d"
 msgstr "文件转换数量:%s"
 
@@ -9601,7 +9601,7 @@ msgid "Option at position %d does not allow an argument: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserroptionneeded
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Option at position %d needs an argument : %s"
 msgstr "无效的选项在位置 %d:\"%s\""
 
@@ -9710,7 +9710,7 @@ msgid "Error parsing lfm component stream."
 msgstr ""
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "错误读取工程从文件%s%s%s%s%s"
 
@@ -9742,7 +9742,7 @@ msgid "Error saving form"
 msgstr "保存窗体(form)错误"
 
 #: lazarusidestrconsts.liserrorsavingto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error saving %s to%s%s%s%s"
 msgstr "保存%到%s%s%s%s错误"
 
@@ -9822,7 +9822,7 @@ msgid "Debugger Exception Notification"
 msgstr "调试器异常通知"
 
 #: lazarusidestrconsts.lisexcludedatruntime
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%s excluded at run time"
 msgstr "执行时间:%s"
 
@@ -9974,7 +9974,7 @@ msgid "Maximum Tools reached"
 msgstr "已经达到最大工具(Maximum Tools reached)"
 
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is a maximum of %s tools."
 msgstr "已经达到最大工具(Maximum Tools reached)"
 
@@ -9984,7 +9984,7 @@ msgid "Failed to add %d not unique resource(s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "为\"%s创建\"应用程序包"
 
@@ -10179,7 +10179,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "文件为ASCII或UTF-8编码"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "File %s is converted to text format."
 msgid "File %s was converted to text format."
 msgstr "文件%s被转换到文本格式"
@@ -10264,7 +10264,7 @@ msgid "Find ..."
 msgstr "查找..."
 
 #: lazarusidestrconsts.lisfinddeclarationof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Find Declaration of %s"
 msgstr "查找声明(Declaration)(&F)"
 
@@ -10422,7 +10422,7 @@ msgid "FPDoc package name. Default is project file name."
 msgstr "FPDoc包名称.默认是工程文件名称."
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "XML语法错误在文件\"%s\": %s"
 
@@ -10702,7 +10702,7 @@ msgid "Group"
 msgstr "组"
 
 #: lazarusidestrconsts.lisgroupassignexisting
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Assign to existing \"%s\" group?"
 msgstr "添加存在的目标(target)到工程组"
 
@@ -10729,7 +10729,7 @@ msgid "Group name:"
 msgstr "组名:"
 
 #: lazarusidestrconsts.lisgroupnameinvalid
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "BreakpointGroup name must be a valid Pascal identifier name."
 msgstr "该类名\"%s\"不是一个有效的pascal标识符."
 
@@ -11086,7 +11086,7 @@ msgid "Ignore this exception type"
 msgstr "忽略这个异常类型"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Ignore, use %s as ancestor"
 msgstr "使用包%s在包%s"
 
@@ -11135,7 +11135,7 @@ msgid "Impossible"
 msgstr "不可能"
 
 #: lazarusidestrconsts.lisinasourcedirectoryofthepackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "In a source directory of the package \"%s\"."
 msgstr "源代码目录\"%s\"不存在"
 
@@ -11172,7 +11172,7 @@ msgid ", incompatible ppu=%s"
 msgstr ",不兼容ppu=%s"
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Incorrect configuration directory found"
 msgstr "不能创建配置文件目录\"%s\""
 
@@ -11241,7 +11241,7 @@ msgid "Insert"
 msgstr "插入"
 
 #: lazarusidestrconsts.lisinsertassignment
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Insert Assignment %s := ..."
 msgstr "增加分配(assignment)操作符 :="
 
@@ -11345,7 +11345,7 @@ msgid "&Inspect"
 msgstr "查看(&I)"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s : Class %s inherits from %s"
 msgid "%s: class %s inherits from %s"
 msgstr "类%s未找到在%s(%s,%s)"
@@ -11363,7 +11363,7 @@ msgid "Methods"
 msgstr "方法"
 
 #: lazarusidestrconsts.lisinspectpointerto
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Pointer to %s"
 msgstr "Win32错误加载'%s' 指针: %s"
 
@@ -11390,7 +11390,7 @@ msgid "%s: unavailable (error: %s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Instance"
 msgstr ""
 "错误创建一个实例关于TPoFamily:\n"
@@ -11414,7 +11414,7 @@ msgid "Install it, I like the fat"
 msgstr "安装它,我喜欢大的(fat)"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following packages are not installed, but available in the main repository: %s.\n"
 #| "Do you wish to install missing packages?\n"
@@ -11444,7 +11444,7 @@ msgid "Insufficient encoding"
 msgstr "内存不足"
 
 #: lazarusidestrconsts.lisinteractive
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Interactive"
 msgstr "%s%s%s%slazbuild是非交互的,现在放弃(aborting)."
 
@@ -11530,7 +11530,7 @@ msgid "Invalid Pascal Identifier"
 msgstr "无效的Pascal标识符"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
 msgstr "该名称\"%s\"不是一个有效的pascal标识符.无论如何使用它?"
 
@@ -11950,7 +11950,7 @@ msgid "Quick compile, no linking"
 msgstr "快速编译,不链接"
 
 #: lazarusidestrconsts.liskmremoveactivefilefromproject
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Remove Active File from Project"
 msgstr "从工程移除文件%s?"
 
@@ -12436,7 +12436,7 @@ msgid "Copy from inherited"
 msgstr "从继承复制"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
 msgstr "%s没有任何有效的FPDoc路径.%s不能为%s创建fpdoc为%s"
 
@@ -12450,7 +12450,7 @@ msgid "No valid FPDoc path"
 msgstr "没有有效FPDoc路径"
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "单元文件 %s 不属于任何包或工程.%s请添加单元文件到一个包或工程.%s不能建立 fpdoc 文件."
 
@@ -13102,7 +13102,7 @@ msgid "Caption should not be blank"
 msgstr "标题(Caption)不应该是空白的"
 
 #: lazarusidestrconsts.lismenueditorchangeconflictingaccelerators
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Change conflicting accelerator \"%s\""
 msgstr "%s%s不能更改类 %s为%s"
 
@@ -13156,7 +13156,7 @@ msgid "<conflict resolution complete>"
 msgstr "冲突"
 
 #: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Conflicts found initially: %d"
 msgstr "全部警告找到:%d"
 
@@ -13246,12 +13246,12 @@ msgid "&Grab key"
 msgstr "Key"
 
 #: lazarusidestrconsts.lismenueditorgroupindexd
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "GroupIndex: %d"
 msgstr "%d行, %d字符"
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Values in use: %s"
 msgstr "使用CheckBox用于布尔值"
 
@@ -13280,7 +13280,7 @@ msgid "Items with icon: %s"
 msgstr "项目带有图标:%s"
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "List shortcuts and &accelerators for %s ..."
 msgstr "这里已经有一个包%s在列表"
 
@@ -13377,7 +13377,7 @@ msgid "Pick an icon from %s"
 msgstr "选择一个图标从%s"
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Popup assignments: %s"
 msgstr "弹出式菜单"
 
@@ -13386,7 +13386,7 @@ msgid "RadioItem"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Remaining conflicts: %s"
 msgstr "包冲突"
 
@@ -13429,7 +13429,7 @@ msgid "Save menu shown as a new template"
 msgstr "保存菜单显示为新模板"
 
 #: lazarusidestrconsts.lismenueditorsconflictswiths
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%s conflicts with %s"
 msgstr "包冲突"
 
@@ -13518,7 +13518,7 @@ msgid "%s: Shortcuts and accelerator keys"
 msgstr "%s:快捷方式和快速键(Accelerator keys)"
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%s.%s.%s - OnClick: %s"
 msgstr "%s%s组件:%s:%s"
 
@@ -14467,13 +14467,13 @@ msgid "Exclude all packages matching name \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "expected \":=\" after macro name, but found \"%s\""
 msgid "expected \":=\" after macro name but found \"%s\""
 msgstr "在宏命令名后要求\":=\",但是找到\"%s\""
 
 #: lazarusidestrconsts.lismmexpectedmacronamebutfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "expected macro name, but found \"%s\""
 msgid "expected macro name but found \"%s\""
 msgstr "要求宏命令名,但是找到\"%s\""
@@ -14498,7 +14498,7 @@ msgid "invalid character \"%s\" at %s"
 msgstr "无效字符\"%s\"在%s"
 
 #: lazarusidestrconsts.lismminvalidcharacterinmacrovalue
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "invalid character in macro value \"%s\""
 msgstr "添加值到宏命令%s"
 
@@ -14642,12 +14642,12 @@ msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr ""
 
 #: lazarusidestrconsts.lismoveonepositiondown
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Move \"%s\" one position down"
 msgstr "下移光标一个页面"
 
 #: lazarusidestrconsts.lismoveonepositionup
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Move \"%s\" one position up"
 msgstr "移动光标向上一页"
 
@@ -15163,7 +15163,7 @@ msgid "State"
 msgstr "状态(State)"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%s这个包已经安装, 但是lpk文件未找到"
@@ -15387,7 +15387,7 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "%soverride the project or IDE build mode."
 msgstr "IDE标题显示选择的构建模式"
 
@@ -15597,7 +15597,7 @@ msgid "path of the instantfpc cache"
 msgstr "instantfpc缓存的路径"
 
 #: lazarusidestrconsts.lispathofthemakeutility
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Path of the make utility"
 msgstr "\"make\"的路径不正确:\"%s\""
 
@@ -15612,7 +15612,7 @@ msgid "Pause"
 msgstr "暂停"
 
 #: lazarusidestrconsts.lispckcleartousethepackagename
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Clear to use the package name"
 msgstr "使用包%s在包%s"
 
@@ -15642,7 +15642,7 @@ msgid "(available online)"
 msgstr "(可获得的 在线的)"
 
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "调用 %s注册所选单元%s 的过程"
 
@@ -15667,7 +15667,7 @@ msgid "Compile package"
 msgstr "编译包"
 
 #: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Compiler Options for Package %s"
 msgstr "文件\"%s\"不包含编译器选择."
 
@@ -15822,7 +15822,7 @@ msgid "Remove file?"
 msgstr "移除文件?"
 
 #: lazarusidestrconsts.lispckeditremovefilefrompackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Remove file \"%s\"%sfrom package \"%s\"?"
 msgstr "移除依赖\"%s\"%s从包\"%s\"?"
 
@@ -15848,12 +15848,12 @@ msgid "Store file name as preferred for this dependency"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "最小版本\"%s\"不是有效的包版本.%s(很好的示例 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "最小版本\"%s\"不是有效的包版本.%s(很好的示例 1.2.3.4)"
 
@@ -16173,7 +16173,7 @@ msgid "Delete dependencies"
 msgstr "删除依赖"
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "你真的要放弃 %s 的所有修改,重新载入文件 ?"
 
@@ -16257,7 +16257,7 @@ msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Nam
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "移除依赖\"%s\"%s从包\"%s\"?"
 
@@ -16280,7 +16280,7 @@ msgid "Automatically installed packages"
 msgstr "自动安装的包"
 
 #: lazarusidestrconsts.lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
 msgstr "%s两个包相互关联. 这意味着它们中某一个需要另一个,或者它们同时被第三个包需要. "
 
@@ -16579,7 +16579,7 @@ msgid "The package \"%s\" is marked for installation but cannot be found.%sRemov
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
 msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
 msgstr "包 %s 被已经安装的包 %s 需要.%s查看包图表."
@@ -16590,12 +16590,12 @@ msgid "The package name \"%s\" is not a valid package name%sPlease choose anothe
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "警告:单元名称无效%s,包=%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "该包\"%s\"已经被标记为安装.%s当前lazarus仅提供静态链接包.实际安装需要重新构建和lazarus重新启动.%s选择你想重新构建Lazarus?"
 
@@ -16619,12 +16619,12 @@ msgid "There is a circular dependency in the packages. See package graph."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There is a FPC unit with the same name as a package:%s\"%s\""
 msgstr "警告:单元名称无效%s,包=%s"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "不能添加%s到工程, 因为在工程中已经有一个单元带有相同名称."
 
@@ -16808,7 +16808,7 @@ msgid "%s%sThe lpk file was not found."
 msgstr "%s%s该lpk文件未找到."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "该包\"%s\" 已经安装, 但是未找到有效的包文件(.lpk) .%s一个残缺的虚拟的包被创建."
@@ -17031,7 +17031,7 @@ msgid "Primary config path"
 msgstr "第二个配置路径"
 
 #: lazarusidestrconsts.lisprior
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "prior %s"
 msgstr "前一个(&P)"
 
@@ -17364,7 +17364,7 @@ msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "不能读取状态(state)文件%s对于工程\"%s%s错误:%s"
 
 #: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to write state file for project %s%sError: %s"
 msgstr "不能写入状态(state)文件%s对于工程\"%s%s错误:%s"
 
@@ -17382,7 +17382,7 @@ msgid "Error"
 msgstr "错误"
 
 #: lazarusidestrconsts.lisprojoptsunabletochangetheautocreateformlist
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "无法更改程序中窗体创建顺序.%s请先修复错误."
 
@@ -17921,7 +17921,7 @@ msgid "Abstract Methods - not yet overridden"
 msgstr "抽象方法没有找到"
 
 #: lazarusidestrconsts.lissamabstractmethodsof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Abstract methods of %s"
 msgstr "抽象方法..."
 
@@ -18298,7 +18298,7 @@ msgid "Show"
 msgstr "显示"
 
 #: lazarusidestrconsts.lisshowabstractmethodsof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Show abstract methods of \"%s\""
 msgstr "显示抽象方法"
 
@@ -18496,7 +18496,7 @@ msgid "Matches"
 msgstr "匹配"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "Sorry, this type is not yet implemented"
 msgstr "还没有implemented(实现):%s%s"
 
@@ -18571,7 +18571,7 @@ msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please s
 msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Source and Destination are the same:%s%s"
 msgstr "该目标目录%s\"%s\"不存在."
 
@@ -18593,7 +18593,7 @@ msgid "Source modified"
 msgstr "源代码已经更改"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Source of page \"%s\" has changed. Save?"
 msgstr "文件\"%s\"已经更改.保存？"
 
@@ -18721,12 +18721,12 @@ msgid "Successfully imported from \"%s\"."
 msgstr "成功地导入从\"%s\"."
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Successfully imported %d BuildModes from \"%s\"."
 msgstr "%d桌面成功地导入从\"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyimportedcompileroptions
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Successfully imported compiler options from \"%s\"."
 msgstr "成功地导入从\"%s\"."
 
@@ -18793,7 +18793,7 @@ msgid "Move the selected control down in tab order"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Tab Order of %s"
 msgstr "tab"
 
@@ -18814,7 +18814,7 @@ msgid "Move the selected control up in tab order"
 msgstr ""
 
 #: lazarusidestrconsts.listabsfor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Tabs for %s"
 msgstr "Tabs"
 
@@ -18932,12 +18932,12 @@ msgid "The component name must be unique in all components on the form/datamodul
 msgstr ""
 
 #: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "The configuration will be downgraded/converted."
 msgstr " { *转换从%s* }"
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %s contains a nonexistent directory:%s%s"
 msgstr "这个组件已经包含一个类带有名称%s."
 
@@ -19049,7 +19049,7 @@ msgid "The file \"%s\"%swas found in one of the source directories of the packag
 msgstr ""
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "文件\"%s\"未找到.%s你想创建它?"
 
@@ -19111,7 +19111,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr ""
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The macro \"%s\" does not begin with \"%s\"."
 msgstr "没有IDE宏命令%s:=%s"
 
@@ -19196,7 +19196,7 @@ msgid "The package %s cannot be installed because it requires the package \"%s\"
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgid "The package %s can not be uninstalled because it is needed by the IDE itself."
 msgstr "包%s不能卸载,因为它被IDE自身所需要."
@@ -19291,7 +19291,7 @@ msgid "There are no conflicting keys."
 msgstr "跳过foreign keys"
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "此目录下另有一个文件有相同的名字,%s而且只有大小写不同:%s%s%s删除他们么?"
 
@@ -19319,12 +19319,12 @@ msgid "There is already a file%s%s%sin %s"
 msgstr "这里已经有一个文件%s%s%s在%s"
 
 #: lazarusidestrconsts.listhereisalreadyafileinoldnewcontinue
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr "那里已经有一个文件\"%s\"在%s%s旧: %s%s新: %s%s%s继续?"
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There is already a form with the name \"%s\""
 msgstr "那里已经有一个宏命令带有名称\"%s\"."
 
@@ -19354,7 +19354,7 @@ msgid "There is already a unit with the name \"%s\". Pascal identifiers must be 
 msgstr ""
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "\"%s\"是一个无效的工程名.%s请选择另一个 (例如project.lpi)"
 
@@ -19373,17 +19373,17 @@ msgid "The resource class \"%s\" descends from \"%s\". Probably this is a typo f
 msgstr ""
 
 #: lazarusidestrconsts.listherewasanerrorduringwritingtheselectedcomponent
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There was an error during writing the selected component %s:%s:%s%s"
 msgstr "写入所选组件时发生一个错误 %s:%s:%s%s"
 
 #: lazarusidestrconsts.listherewasanerrorwhileconvertingthebinarystreamofthe
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There was an error while converting the binary stream of the selected component %s:%s:%s%s"
 msgstr "转换所选的二进制组件时发生一个错误 %s:%s:%s%s"
 
 #: lazarusidestrconsts.listherewasanerrorwhilecopyingthecomponentstreamtocli
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "There was an error while copying the component stream to clipboard:%s%s"
 msgstr "复制组件流到剪切板发生一个错误:%s%s"
 
@@ -19424,7 +19424,7 @@ msgid "The target %s is not writable."
 msgstr "该目标%s是不可写的."
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The Test Directory could not be found:%s\"%s\"%s(see IDE options)"
 msgstr "测试目录不能找到:%s\"%s\"%s(查看IDE选项)"
 
@@ -19439,7 +19439,7 @@ msgid "The unit belongs to package %s."
 msgstr "该单元属于包%s."
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr "该目录\"%s\"不再被需要在单元路径.%s移除它?"
 
@@ -19513,7 +19513,7 @@ msgid "This set of options to build Lazarus is not supported by this installatio
 msgstr ""
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "语句无法分析.%s请选择一段代码用来分析 procedure/method."
 
@@ -19522,7 +19522,7 @@ msgid "This will allow changing all build modes at once. Not implemented yet."
 msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
-#, fuzzy,badformat
+#, fuzzy, badformat
 msgid "This will create a circular dependency."
 msgstr "%s有一个循环符号链接(circular)"
 
@@ -19843,17 +19843,17 @@ msgid "Units: %s"
 msgstr "单元:%s"
 
 #: lazarusidestrconsts.lisudusedbyimplementations
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Used by Implementations: %s"
 msgstr "使用接口: %s"
 
 #: lazarusidestrconsts.lisudusedbyimplementations2
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "used by implementations: %s"
 msgstr "使用接口: %s"
 
 #: lazarusidestrconsts.lisudusedbyinterfaces
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Used by Interfaces: %s"
 msgstr "使用接口: %s"
 
@@ -19887,7 +19887,7 @@ msgid "Not found"
 msgstr "未找到"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
 msgstr "替换现有文件\"%s\"?"
 
@@ -19992,7 +19992,7 @@ msgid "Unable to add the dependency %s because this would create a circular depe
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "不能添加%s到工程, 因为在工程中已经有一个单元带有相同名称."
@@ -20008,7 +20008,7 @@ msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%s不能更改类 %s为%s"
 
 #: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to change project scaled in source.%s%s"
 msgstr "不能更改工程标题(title)在源文件.%s%s"
 
@@ -20075,7 +20075,7 @@ msgid "Unable to create file%s\"%s\""
 msgstr "不能创建文件%s\"%s\""
 
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "不能创建链接%s\"%s\"带有目标(target)\"%s\""
 
@@ -20096,7 +20096,7 @@ msgid "Unable to delete"
 msgstr "不能删除"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "不能删除文件\"%s\"."
 
@@ -20162,7 +20162,7 @@ msgid "Unable to load package \"%s\""
 msgstr "不能加载包\"%s\""
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unable to load the component class \"%s\", because it depends on itself."
 msgid "Unable to load the component class \"%s\" because it depends on itself."
 msgstr "不能加载该组件类\"%s\",因为它依赖它自己."
@@ -20230,7 +20230,7 @@ msgid "Unable to remove project title from source.%s%s"
 msgstr "不能移除工程标题(title)从源代码.%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "不能重命名文件\"%s\"%s到\"%s\"."
 
@@ -20289,12 +20289,12 @@ msgid "Unable to stream selected components."
 msgstr "不能复制组件到剪贴版"
 
 #: lazarusidestrconsts.lisunabletostreamt
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unable to stream %s:T%s."
 msgstr "不能写入xml流(stream)到%s%s错误:%s"
 
 #: lazarusidestrconsts.lisunabletotransformbinarycomponentstreamoftintotext
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Unable to transform binary component stream of %s:T%s into text."
 msgstr "无法转换二进制组件流 %s:T%s 为文本文档"
 
@@ -20402,7 +20402,7 @@ msgid "unit %s not found"
 msgstr "单元:%s未找到"
 
 #: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "unit %s not found at new position \"%s\""
 msgstr "不同的单元%s被找到 在新位置\"%s\""
 
@@ -20438,7 +20438,7 @@ msgid "Unsigned"
 msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Unused units of %s"
 msgstr "未使用的单元..."
 
@@ -20468,7 +20468,7 @@ msgid "Update references?"
 msgstr "更新参考?"
 
 #: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Updating PO files failed for package %s"
 msgstr "错误:更新po文件失败对于包%s"
 
@@ -20516,7 +20516,7 @@ msgid "Use comments in custom options"
 msgstr "使用注释在自定义选项"
 
 #: lazarusidestrconsts.lisusedby
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid " used by %s"
 msgstr "使用接口: %s"
 
@@ -20538,7 +20538,7 @@ msgid "Use identifier"
 msgstr "使用标识符"
 
 #: lazarusidestrconsts.lisuseidentifierinat
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Use identifier %s in %s at %s"
 msgstr "标识符[%s]未找到在%s"
 
@@ -20580,7 +20580,7 @@ msgid "Remove from list \"%s\""
 msgstr "移除从列表\"%s\""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Toggle on list \"%s\""
 msgstr "移除从列表\"%s\""
 
@@ -20891,7 +20891,7 @@ msgid "XML Error"
 msgstr "XML错误"
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML语法错误在文件\"%s\": %s"
 
@@ -21853,7 +21853,7 @@ msgid "Fold at Cursor"
 msgstr "在光标处折叠"
 
 #: lazarusidestrconsts.srkmecfoldlevel
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Fold to Level %d"
 msgstr "折叠"
 

@@ -1387,7 +1387,7 @@ msgid "%s bytes"
 msgstr "%s bytes"
 
 #: lclstrconsts.sshellctrlsinvalidpath
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"
@@ -1400,7 +1400,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid relative pathname:\n"
 #| "\"%s\"\n"
@@ -1418,7 +1418,7 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"
@@ -1445,7 +1445,7 @@ msgid "Name"
 msgstr "Nombre"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The selected item does not exist on disk:\n"
 #| "\"%s\"\n"

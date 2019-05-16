@@ -10178,7 +10178,7 @@ msgid "The configuration file typically has the name \"fppkg.cfg\". When incorre
 msgstr "Fppkg - це менеджер пакунків Free Pascal. Якщо він сконфігурований неправильно, йому може не вдатись розв'язати залежності пакунків Free Pascal."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Failed to generate the configuration file \"%s\"."
 msgid "Failed to generate the configuration file \"%s\": %s"
 msgstr "Не вдалось створити файл конфігурації \"%s\"."

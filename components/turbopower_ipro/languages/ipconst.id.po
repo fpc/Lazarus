@@ -245,7 +245,7 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "Sambung: Lok: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Close:   Loc: %s Rem: %s"
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Tutup:   Lok: %s Rem: %s"

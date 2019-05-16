@@ -466,7 +466,7 @@ msgid "Clear picture"
 msgstr "画像をクリア"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "コンポーネント名 %s%s%s は、有効な識別子ではありません"
@@ -520,7 +520,7 @@ msgid "&Delete"
 msgstr "削除(&D)"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "アイテム %s%s%s を削除しますか。"
@@ -555,7 +555,7 @@ msgid "Error loading image"
 msgstr "イメージの読み込み中にエラー"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "イメージの読み込み中にエラー %s%s%s:%s%s"
@@ -626,7 +626,7 @@ msgid "Invalid property value"
 msgstr "無効なプロパティ値"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
 msgstr "%s%s%sは有効なメソッド名ではありません。"
@@ -1211,25 +1211,25 @@ msgid "Test Input"
 msgstr "入力テスト"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "識別子 %s%s%s は、methodではありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "method %s%s%s は、このイベント(%s)と互換性がありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "method %s%s%s は publishedではありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr "%s%s%s から 新しい親 %s%s%s に親コントロールを変更出来ません。%s%s"

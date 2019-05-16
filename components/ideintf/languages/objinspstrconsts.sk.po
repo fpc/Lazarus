@@ -489,7 +489,7 @@ msgid "Clear picture"
 msgstr "Vyčistiť obrázok"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
@@ -549,7 +549,7 @@ msgid "&Delete"
 msgstr "Zmazať komponenty"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Zmazať položku %s%s%s?"
@@ -584,7 +584,7 @@ msgid "Error loading image"
 msgstr "Chyba pri načítaní obrázka"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Chyba pri načítaní obrázka %s%s%s:%s%s"
@@ -1259,19 +1259,19 @@ msgid "Test Input"
 msgstr "Testvstupu"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Identifikátor %s%s%s nie je metóda.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metóda %s%s%s nie je kompatibilná s touto udalosťou (%s).%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metóda %s%s%s nie je published.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."

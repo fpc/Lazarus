@@ -167,7 +167,7 @@ msgid "[Line %d] %s"
 msgstr "[Eilutė %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
 msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "Vertė (neversta) „%s“ panaudota daugiau nei viename įraše:"
@@ -177,7 +177,7 @@ msgid "Duplicate Originals"
 msgstr ""
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "An unrecoverable error occurred\n"
 #| "%s\n"
@@ -192,7 +192,7 @@ msgstr ""
 "Baikite darbą programa\n"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Error creating an instance of TPoFamily:\n"
 #| "%s\n"
@@ -214,7 +214,7 @@ msgid "File %s"
 msgstr ""
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "The following non-existent files were removed from the list:\n"
 #| "%s\n"
@@ -311,7 +311,7 @@ msgid "Found %d warnings."
 msgstr "Rasta perspėjimų: %d."
 
 #: pocheckerconsts.sopenfail
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Unable to open file:\n"
 #| "\"%s\"\n"
@@ -323,7 +323,7 @@ msgstr ""
 "„%s“\n"
 
 #: pocheckerconsts.sopenfailexternal
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Unable to open file\n"
 #| "\"%s\"\n"
@@ -401,7 +401,7 @@ msgid "Save &As ..."
 msgstr ""
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Error saving file:\n"
 #| "%s\n"
@@ -437,7 +437,7 @@ msgid "Show statistics graph"
 msgstr "Rodyti statistikos grafiką"
 
 #: pocheckerconsts.sstathint
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Translated: %d (%.1f%%)\n"
 #| "Untranslated: %d (%.1f%%)\n"
@@ -465,7 +465,7 @@ msgid "The following %s orphaned .po file(s) found:"
 msgstr "Rasti šie %s „.po“ failai-našlaičiai:"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Total errors found: %d"
 msgid "Total errors: %d"
 msgstr "Viso rasta klaidų: %d"
@@ -491,7 +491,7 @@ msgid "Total untranslated strings: %s"
 msgstr "Viso neišversta: %s"
 
 #: pocheckerconsts.stotalwarnings
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Total warnings found: %d"
 msgid "Total warnings: %d"
 msgstr "Viso rasta perspėjimų: %d"

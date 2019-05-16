@@ -163,7 +163,7 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "Il debugger GNU attraverso SSH permette il debug da remoto tramite una connessione SSH. Vedere docs/RemoteDebugging.txt per dettagli. Il percorso deve includere il cliente SSH. Usare SSH_Startup_Options per il nome host e un nome utente opzionale. Usare Remote_GDB_Exe per il nome del file di GDB nel computer remoto."
 
 #: gdbmistringconstants.lisresponsecontinue
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
 msgstr "Risposta: %sContinuare ?"
@@ -173,7 +173,7 @@ msgid "Timeout has occurred:"
 msgstr ""
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Risultato inatteso:%sIl debugger termina"

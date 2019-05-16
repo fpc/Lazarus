@@ -1388,7 +1388,7 @@ msgid "%s bytes"
 msgstr "%s Bytes"
 
 #: lclstrconsts.sshellctrlsinvalidpath
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"
@@ -1410,7 +1410,7 @@ msgid ""
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidroot
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid ""
 #| "Invalid pathname:\n"
 #| "\"%s\"\n"

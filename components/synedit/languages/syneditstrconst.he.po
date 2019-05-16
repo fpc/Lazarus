@@ -795,7 +795,7 @@ msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.
 msgstr "מסמכי XML  (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Page: %d"
 msgstr "דף: d%"
 
@@ -805,7 +805,7 @@ msgid "%d - %d"
 msgstr "%d - %d"
 
 #: syneditstrconst.syns_scrollinfofmttop
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Top Line: %d"
 msgstr "שורה עליונה: d%"
 

@@ -109,7 +109,7 @@ msgid "class node without parent node"
 msgstr "node class tanpa node parent"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "kelas %s%s%s tidak ditemukan"
@@ -125,7 +125,7 @@ msgid "\"class of\" definition not resolved: %s"
 msgstr "definisi \"class of\" tidak terpecahkan: %s"
 
 #: codetoolsstrconsts.ctsclasssnotfound
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Class %s not found"
 msgstr "Kelas %s%s%s tidak ditemukan"
 
@@ -544,13 +544,13 @@ msgid "interface section not found"
 msgstr "bagian interface tidak ditemukan"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "nama kelas tidak benar=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "nama kelas tidak benar %s%s%s"
@@ -588,13 +588,13 @@ msgid "invalid type"
 msgstr "tipe tidak benar"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "nama variabel tidak benar %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy, badformat, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "tipe variabel tidak benar %s%s%s"
@@ -845,7 +845,7 @@ msgid "source is not unit"
 msgstr "sumber bukan unit"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "sumber tidak ditemukan: unit %s"
@@ -855,7 +855,7 @@ msgid "SrcPath Initialization"
 msgstr "Inisialisasi SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "%s diharapkan, tapi %s ditemukan"

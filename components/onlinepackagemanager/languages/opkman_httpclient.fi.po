@@ -10,7 +10,7 @@ msgid "Chunk too big"
 msgstr ""
 
 #: opkman_httpclient.serrinvalidprotocol
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Invalid protocol : \"%s\""
 msgid "Invalid protocol: \"%s\""
 msgstr "Väärä protokolla : \"%s\""
