@@ -1545,7 +1545,7 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
     Result := true;
     if Item.Translation <> '' then
     begin
-      Result := CompareFormatArgs(Item.Original,Item.Translation);
+      Result := (pos(sNoFormatFlag, Item.Flags) <> 0) or CompareFormatArgs(Item.Original,Item.Translation);
       if not Result then
       begin
         if pos(sFuzzyFlag, Item.Flags) = 0 then
