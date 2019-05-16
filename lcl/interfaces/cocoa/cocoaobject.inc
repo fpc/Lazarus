@@ -89,7 +89,7 @@ begin
   end;
 end;
 
-procedure TCocoaWidgetSet.AppRunMessages(onlyOne: Boolean);
+procedure TCocoaWidgetSet.AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
 var
   event: NSEvent;
   pool:NSAutoReleasePool;
@@ -97,9 +97,9 @@ begin
   repeat
     pool := NSAutoreleasePool.alloc.init;
     {$ifdef BOOLFIX}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, nil, NSDefaultRunLoopMode, Ord(true));
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, Ord(true));
     {$else}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDatee, NSDefaultRunLoopMode, true);
     {$endif}
     if event <> nil then
     begin
@@ -121,7 +121,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppProcessMessages;
 begin
-  AppRunMessages(false);
+  AppRunMessages(false, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppWaitMessage;
 begin
-  AppRunMessages(true);
+  AppRunMessages(true, NSDate.distantFuture);
 end;
 
 {------------------------------------------------------------------------------
