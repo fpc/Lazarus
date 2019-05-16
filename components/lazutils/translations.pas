@@ -144,7 +144,8 @@ type
     procedure UpdateStrings(InputLines:TStrings; SType: TStringsType);
     procedure SaveToStrings(OutLst: TStrings);
     procedure SaveToFile(const AFilename: string);
-    procedure UpdateItem(const Identifier, Original: string; const Flags: string = '');
+    procedure UpdateItem(const Identifier, Original: string; const Flags: string = '';
+      const ProcessingTranslation: boolean = false);
     procedure FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
       Translation, Comments, Context, Flags, PreviousID: string; LineNr: Integer = -1);
     procedure UpdateTranslation(BasePOFile: TPOFile);
@@ -1497,9 +1498,11 @@ begin
   end;
 end;
 
-procedure TPOFile.UpdateItem(const Identifier, Original: string; const Flags: string);
+procedure TPOFile.UpdateItem(const Identifier, Original: string; const Flags: string; const ProcessingTranslation: boolean);
 var
   Item: TPOFileItem;
+  ItemHasFuzzyFlag: boolean;
+  ItemOldFlags: string;
 begin
   // try to find PO entry by identifier
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
@@ -1513,8 +1516,16 @@ begin
         Item.ModifyFlag(sFuzzyFlag, true);
       end;
       Item.Original:=Original;
-      if Flags <> '' then
-        Item.ModifyFlag(Flags, true);
+    end;
+    if ProcessingTranslation then
+    begin
+      // synchronize translation flags with base .po file, but keep fuzzy flag state
+      ItemOldFlags := Item.Flags;
+      ItemHasFuzzyFlag := pos(sFuzzyFlag, Item.Flags) <> 0;
+      Item.Flags := lowercase(Flags);
+      Item.ModifyFlag(sFuzzyFlag, ItemHasFuzzyFlag);
+      if ItemOldFlags <> Item.Flags then
+        FModified := True;
     end;
   end
   else // in this case new item will be added
@@ -1653,7 +1664,7 @@ begin
   UntagAll;
   for i:=0 to BasePOFile.Items.Count-1 do begin
     Item := TPOFileItem(BasePOFile.Items[i]);
-    UpdateItem(Item.IdentifierLow, Item.Original, Item.Flags);
+    UpdateItem(Item.IdentifierLow, Item.Original, Item.Flags, true);
   end;
   RemoveTaggedItems(0); // get rid of any item not existing in BasePOFile
   InvalidateStatistics;
