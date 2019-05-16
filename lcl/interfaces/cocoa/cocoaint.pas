@@ -58,6 +58,8 @@ type
     procedure applicationDidBecomeActive(notification: NSNotification);
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
+    procedure applicationWillFinishLaunching(notification: NSNotification);
+    procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
   end;
 
   { TCocoaApplication }

@@ -592,6 +592,43 @@ begin
   Screen.UpdateScreen;
 end;
 
+procedure TAppDelegate.applicationWillFinishLaunching(notification: NSNotification);
+begin
+  NSAppleEventManager.sharedAppleEventManager.setEventHandler_andSelector_forEventClass_andEventID(
+    Self, ObjCSelector('handleQuitAppEvent:withReplyEvent:'), kCoreEventClass,
+    kAEQuitApplication);
+end;
+
+procedure TAppDelegate.handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor);
+{ Capture "Quit Application" Apple Events, either from system shutdown/logout
+  or sent by another application.  Don't use [applicationShouldTerminate:]
+  because that terminates the app immediately after [applicationWillTerminate:]
+  returns, so there's no chance to run finalization blocks }
+var
+  Cancel: Boolean;
+  Reason: NSAppleEventDescriptor;
+begin
+  Cancel := False;
+  // Check if it's a system-wide event
+  Reason := event.attributeDescriptorForKeyword(kEventParamReason);
+  if (Reason <> nil) and
+     ((Reason.typeCodeValue = kAEQuitAll) or
+      (reason.typeCodeValue = kAEReallyLogOut) or
+      (reason.typeCodeValue = kAERestart) or
+      (reason.typeCodeValue = kAEShutDown)) then
+  begin
+    Application.IntfQueryEndSession(Cancel);
+    if not Cancel then
+      Application.IntfEndSession;
+  end;
+  // Try to quit
+  if not Cancel then
+    Application.MainForm.Close;
+  // Let caller know if the shutdown was cancelled
+  if (not Application.Terminated) and (replyEvent.descriptorType <> typeNull) then
+    replyEvent.setParamDescriptor_forKeyword(NSAppleEventDescriptor.descriptorWithInt32(userCanceledErr), keyErrorNumber);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap
 
