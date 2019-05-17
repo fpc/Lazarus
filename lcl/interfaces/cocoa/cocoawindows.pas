@@ -221,6 +221,8 @@ type
   end;
 
 function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
+procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
+procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
 
 implementation
 
@@ -1255,39 +1257,59 @@ begin
   Point.y := contentView.bounds.size.height - Point.y;
 end;
 
+procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
+var
+  fr : NSRect;
+begin
+  fr := sc.frame;
+  r := Bounds(
+    Round(fr.origin.x),
+    Round(fr.origin.y - fr.size.height + mainScreenHeight),
+    Round(fr.size.width), Round(fr.size.height)
+  );
+end;
+
+procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
+begin
+  NSScreenGetRect(sc, NSScreen.mainScreen.frame.size.height, r);
+end;
+
+function GetScreenForPoint(x,y: Integer): NSScreen;
+var
+  scarr : NSArray;
+  sc    : NSScreen;
+  r     : TRect;
+  h     : double;
+  p     : TPoint;
+  i     : Integer;
+begin
+  p.x := x;
+  p.y := y;
+  scarr := NSScreen.screens;
+  h := NSScreen.mainScreen.frame.size.height;
+  sc := NSScreen(scarr.objectAtIndex(0));
+  for i:=0 to scarr.count-1 do begin
+    sc:=NSScreen(scarr.objectAtIndex(i));
+    NSScreenGetRect(sc, h, r);
+    if Types.PtInRect(r, p) then begin
+      Result := sc;
+      Exit;
+    end;
+  end;
+  Result := NSScreen.mainScreen;
+end;
+
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
   ns : NSRect;
   h  : integer;
-  i  : integer;
-  p  : NSPoint;
   sc : NSScreen;
   srect : NSRect;
-  fnd: Boolean;
 begin
-  fnd := Assigned(screen);
-  if fnd then
-    srect := screen.frame
-  else
-  begin
-    // the window doesn't have screen assigned.
-    // figuring out the placement based of the Left/Top of the rect
-    // and NSrects;
-    fnd := false;
-    srect := NSMakeRect(0,0,0,0); // making the compiler happy
-    p.x:=r.Left;
-    p.y:=r.Top;
-    for sc in NSScreen.screens do begin
-      srect := sc.frame;
-      fnd := NSPointInRect(p, srect);
-      if fnd then Break;
-    end;
-  end;
+  sc := GetScreenForPoint(r.Left, r.Top);
+  srect := sc.frame;
 
-  if fnd then
-    LCLToNSRect(r, srect.size.height, ns)
-  else
-    ns := RectToNSRect(r);
+  LCLToNSRect(r, srect.size.height, ns);
 
   // add topbar height
   h:=lclGetTopBarHeight;
