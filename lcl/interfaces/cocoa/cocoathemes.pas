@@ -30,6 +30,7 @@ type
   TCocoaThemeServices = class(TThemeServices)
   private
   protected
+    callback     : NSObject;
     BtnCell      : NSButtonCell;
     function SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails): Boolean;
     procedure SetButtonCellToDetails(btn: NSButtonCell; Details: TThemedElementDetails);
@@ -58,6 +59,7 @@ type
     BezelToolBar : NSBezelStyle;
     BezelButton  : NSBezelStyle;
     constructor Create;
+    destructor Destroy; override;
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
 (*
     procedure DrawEdge({%H-}DC: HDC; {%H-}Details: TThemedElementDetails; const {%H-}R: TRect; {%H-}Edge, {%H-}Flags: Cardinal; {%H-}AContentRect: PRect); override;
@@ -91,6 +93,11 @@ function IsAppearDark(Appear: NSAppearance): Boolean; inline;
 function NSAppearanceClass: pobjc_class;
 
 implementation
+
+type
+  TCocoaThemeCallback = objcclass(NSObject)
+    procedure notifySysColorsChanged(notification: NSNotification); message 'notifySysColorsChanged:';
+  end;
 
 type
   TCocoaContextAccess = class(TCocoaContext);
@@ -624,6 +631,18 @@ begin
   BtnCell := NSButtonCell.alloc.initTextCell(NSSTR(''));
   BezelToolBar := NSSmallSquareBezelStyle; // can be resized at any size
   BezelButton := NSSmallSquareBezelStyle;
+
+  callback := TCocoaThemeCallback.alloc.init;
+  NSNotificationCenter(NSNotificationCenter.defaultCenter).addObserver_selector_name_object(
+    callback, ObjCSelector('notifySysColorsChanged:'), NSSystemColorsDidChangeNotification, nil
+  );
+end;
+
+destructor TCocoaThemeServices.Destroy;
+begin
+  NSNotificationCenter(NSNotificationCenter.defaultCenter).removeObserver(callback);
+  callback.release;
+  inherited Destroy;
 end;
 
 (*function TCarbonThemeServices.DrawWindowElement(DC: TCarbonDeviceContext;
@@ -1027,6 +1046,14 @@ begin
   NSGraphicsContext.setCurrentContext( cur );
 end;
 
+{ TCocoaThemeCallback }
+
+procedure TCocoaThemeCallback.notifySysColorsChanged(notification: NSNotification);
+begin
+  ThemeServices.UpdateThemes;
+  Graphics.UpdateHandleObjects;
+  ThemeServices.IntfDoOnThemeChange;
+end;
 
 end.
 
