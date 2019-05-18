@@ -55,6 +55,10 @@ type
 
   TCmdLineDebugger = class(TDebuggerIntf)
   private
+    {$IFdef MSWindows}
+    FAggressiveWaitTime: Cardinal;
+    FLastWrite: QWord;
+    {$EndIf}
     FDbgProcess: TProcessUTF8;   // The process used to call the debugger
     FLineEnds: TStringDynArray;  // List of strings considered as lineends
     FOutputBuf: String;
@@ -89,6 +93,9 @@ type
   public
     property DebugProcess: TProcessUTF8 read FDbgProcess;
     property DebugProcessRunning: Boolean read GetDebugProcessRunning;
+    {$IFdef MSWindows}
+    property AggressiveWaitTime: Cardinal read FAggressiveWaitTime write FAggressiveWaitTime;
+    {$EndIf}
   end;
 
 
@@ -219,90 +226,106 @@ const
   IDLE_STEP_COUNT = 20;
 var
   PipeHandle: Integer;
-  TotalBytesAvailable, WaitRes: dword;
+  TotalBytesAvailable: dword;
   R: LongBool;
   n: integer;
-  Step: Integer;
-  t, t2, t3: DWord;
+  Step, FullTimeOut: Integer;
+  t, t2, t3: QWord;
   CurCallStamp: Int64;
 begin
   Result := 0;
   CurCallStamp := FReadLineCallStamp;
   Step:=IDLE_STEP_COUNT-1;
-  if ATimeOut > 0
-  then t := GetTickCount;
+  //if ATimeOut > 0
+  //then
+  t := GetTickCount64;
+  FullTimeOut := ATimeOut;
 
   while Result=0 do
   begin
-    if Length(AHandles) > 1 then
-      WaitRes :=  WaitForMultipleObjects(Length(AHandles), @AHandles[0], False, 30)
-    else
-      WaitRes :=  WaitForSingleObject(AHandles[0], 30);
-    if (WaitRes >= WAIT_OBJECT_0) and (WaitRes < WAIT_OBJECT_0 + Length(AHandles)) then begin
-      Result := 1 shl (WaitRes - WAIT_OBJECT_0);
-    end
-    else
-    if (WaitRes >= WAIT_ABANDONED_0) and (WaitRes < WAIT_ABANDONED_0 + Length(AHandles)) then begin
-      Result := 1 shl (WaitRes - WAIT_ABANDONED_0); // caller will pick up error
-    end
-    else
-    if WaitRes <> WAIT_TIMEOUT then begin
-      debugln(['WaitForMultipleObjects(failed) ', GetLastOSError]);
-      for n:= 0 to High(AHandles) do
-      begin
-        PipeHandle := AHandles[n];
-        R := Windows.PeekNamedPipe(PipeHandle, nil, 0, nil, @TotalBytesAvailable, nil);
-        if not R then begin
-          // PeekNamedPipe failed
-          DebugLn('PeekNamedPipe failed, GetLastError is ', IntToStr(GetLastError));
-          Exit;
-        end;
-        if R then begin
-          // PeekNamedPipe successfull
-          if (TotalBytesAvailable>0) then begin
-            Result := 1 shl n;
-            Break;
-          end;
+    for n:= 0 to High(AHandles) do
+    begin
+      PipeHandle := AHandles[n];
+      R := Windows.PeekNamedPipe(PipeHandle, nil, 0, nil, @TotalBytesAvailable, nil);
+      if not R then begin
+        // PeekNamedPipe failed
+        DebugLn('PeekNamedPipe failed, GetLastError is ', IntToStr(GetLastError));
+        Exit;
+      end;
+      if R then begin
+        // PeekNamedPipe successfull
+        if (TotalBytesAvailable>0) then begin
+          Result := 1 shl n;
+          Break;
         end;
       end;
-      // sleep a bit
-      if Result = 0 then
-        sleep(10);
     end;
 
     if CurCallStamp <> FReadLineCallStamp then
       exit;
 
-    if (ATimeOut > 0) then begin
-      t2 := GetTickCount;
+    t2 := GetTickCount64;
+    if (FullTimeOut > 0) then begin
       if t2 < t
       then t3 := t2 + (High(t) - t)
       else t3 := t2 - t;
-      if (t3 >= ATimeOut)
+      if (t3 >= FullTimeOut)
       then begin
         ATimeOut := 0;
         break;
       end
       else begin
-        ATimeOut := ATimeOut - t3;
-        t := t2;
+        ATimeOut := FullTimeOut - t3;
       end;
     end;
 
-    ProcessWhileWaitForHandles;
-    // process messages
-    inc(Step);
-    if Step=IDLE_STEP_COUNT then begin
-      Step:=0;
-      Application.Idle(false);
+    {$IFdef MSWindows}
+    if t2 < FLastWrite
+    then t3 := t2 + (High(FLastWrite) - FLastWrite)
+    else t3 := t2 - FLastWrite;
+    if (t3 > FAggressiveWaitTime) or (FAggressiveWaitTime = 0) then begin
+    {$EndIf}
+      ProcessWhileWaitForHandles;
+      // process messages
+      inc(Step);
+      if Step=IDLE_STEP_COUNT then begin
+        Step:=0;
+        Application.Idle(false);
+      end;
+      try
+        Application.ProcessMessages;
+      except
+        Application.HandleException(Application);
+      end;
+      if Application.Terminated or not DebugProcessRunning then Break;
+      // sleep a bit
+      Sleep(10);
+    {$IFdef MSWindows}
+    end
+    else
+    if t3 div 64 > Step then begin
+      ProcessWhileWaitForHandles;
+      inc(Step);
+      try
+        Application.ProcessMessages;
+      except
+        Application.HandleException(Application);
+      end;
     end;
+    {$EndIf}
+
+  end;
+  {$IFdef MSWindows}
+  if Step = IDLE_STEP_COUNT-1 then begin
+    ProcessWhileWaitForHandles;
+    Application.Idle(false);
     try
       Application.ProcessMessages;
     except
       Application.HandleException(Application);
     end;
-    if Application.Terminated or not DebugProcessRunning then Break;
   end;
+  {$EndIf}
 end;
 {$ELSE win32}
 begin
@@ -594,6 +617,9 @@ begin
     // for windows and *nix (1 or 2 character line ending)
     LE := LineEnding;
     FDbgProcess.Input.Write(LE[1], Length(LE));
+    {$IFdef MSWindows}
+    FLastWrite := GetTickCount64;
+    {$EndIf}
   end
   else begin
     DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
