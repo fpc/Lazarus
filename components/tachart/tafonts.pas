@@ -53,6 +53,18 @@ begin
   AList.Add('/usr/local/lib/X11/fonts/');
   AList.Add(GetUserDir + '.fonts/');
  {$ENDIF}
+ {$IFDEF LCLCarbon}
+  AList.Add('/Library/Fonts/');
+  AList.Add('/System/Library/Fonts/');
+  AList.Add('/Network/Library/Fonts/');
+  AList.Add('~/Library/Fonts/');
+ {$ENDIF}
+ {$IFDEF LCLCocoa}
+  AList.Add('/Library/Fonts/');
+  AList.Add('/System/Library/Fonts/');
+  AList.Add('/Network/Library/Fonts/');
+  AList.Add('~/Library/Fonts/');
+ {$ENDIF}
 end;
 
 function LoadFont(AFontName: String; AStyle: TFreeTypeStyles): TFreeTypeFont;
