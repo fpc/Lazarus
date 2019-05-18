@@ -55,10 +55,6 @@ type
 
   TCmdLineDebugger = class(TDebuggerIntf)
   private
-    {$IFdef MSWindows}
-    FAggressiveWaitTime: Cardinal;
-    FLastWrite: QWord;
-    {$EndIf}
     FDbgProcess: TProcessUTF8;   // The process used to call the debugger
     FLineEnds: TStringDynArray;  // List of strings considered as lineends
     FOutputBuf: String;
@@ -93,9 +89,6 @@ type
   public
     property DebugProcess: TProcessUTF8 read FDbgProcess;
     property DebugProcessRunning: Boolean read GetDebugProcessRunning;
-    {$IFdef MSWindows}
-    property AggressiveWaitTime: Cardinal read FAggressiveWaitTime write FAggressiveWaitTime;
-    {$EndIf}
   end;
 
 
@@ -229,17 +222,15 @@ var
   TotalBytesAvailable: dword;
   R: LongBool;
   n: integer;
-  Step, FullTimeOut: Integer;
-  t, t2, t3: QWord;
+  Step: Integer;
+  t, t2, t3: DWord;
   CurCallStamp: Int64;
 begin
   Result := 0;
   CurCallStamp := FReadLineCallStamp;
   Step:=IDLE_STEP_COUNT-1;
-  //if ATimeOut > 0
-  //then
-  t := GetTickCount64;
-  FullTimeOut := ATimeOut;
+  if ATimeOut > 0
+  then t := GetTickCount;
 
   while Result=0 do
   begin
@@ -264,68 +255,38 @@ begin
     if CurCallStamp <> FReadLineCallStamp then
       exit;
 
-    t2 := GetTickCount64;
-    if (FullTimeOut > 0) then begin
+    if (ATimeOut > 0) then begin
+      t2 := GetTickCount;
       if t2 < t
       then t3 := t2 + (High(t) - t)
       else t3 := t2 - t;
-      if (t3 >= FullTimeOut)
+      if (t3 >= ATimeOut)
       then begin
         ATimeOut := 0;
         break;
       end
       else begin
-        ATimeOut := FullTimeOut - t3;
+        ATimeOut := ATimeOut - t3;
+        t := t2;
       end;
     end;
 
-    {$IFdef MSWindows}
-    if t2 < FLastWrite
-    then t3 := t2 + (High(FLastWrite) - FLastWrite)
-    else t3 := t2 - FLastWrite;
-    if (t3 > FAggressiveWaitTime) or (FAggressiveWaitTime = 0) then begin
-    {$EndIf}
-      ProcessWhileWaitForHandles;
-      // process messages
-      inc(Step);
-      if Step=IDLE_STEP_COUNT then begin
-        Step:=0;
-        Application.Idle(false);
-      end;
-      try
-        Application.ProcessMessages;
-      except
-        Application.HandleException(Application);
-      end;
-      if Application.Terminated or not DebugProcessRunning then Break;
-      // sleep a bit
-      Sleep(10);
-    {$IFdef MSWindows}
-    end
-    else
-    if t3 div 64 > Step then begin
-      ProcessWhileWaitForHandles;
-      inc(Step);
-      try
-        Application.ProcessMessages;
-      except
-        Application.HandleException(Application);
-      end;
-    end;
-    {$EndIf}
-
-  end;
-  {$IFdef MSWindows}
-  if Step = IDLE_STEP_COUNT-1 then begin
     ProcessWhileWaitForHandles;
-    Application.Idle(false);
+    // process messages
+    inc(Step);
+    if Step=IDLE_STEP_COUNT then begin
+      Step:=0;
+      Application.Idle(false);
+    end;
     try
       Application.ProcessMessages;
     except
       Application.HandleException(Application);
     end;
+    if Application.Terminated or not DebugProcessRunning then Break;
+    // sleep a bit
+    Sleep(10);
   end;
-  {$EndIf}
 end;
 {$ELSE win32}
 begin
@@ -390,7 +351,6 @@ begin
       {$endif windows}
       FDbgProcess.ShowWindow := swoNone;
       FDbgProcess.Environment:=DebuggerEnvironment;
-      FDbgProcess.PipeBufferSize:=64*1024;
     except
       FreeAndNil(FDbgProcess);
     end;
@@ -468,12 +428,11 @@ end;
 function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String;
 
   function ReadData(const AStream: TStream; var ABuffer: String): Integer;
-  const READ_LEN = 32*1024;
   var
     S: String;
   begin
-    SetLength(S, READ_LEN);
-    Result := AStream.Read(S[1], READ_LEN);
+    SetLength(S, 8192);
+    Result := AStream.Read(S[1], 8192);
     if Result > 0
     then begin
       SetLength(S, Result);
@@ -617,9 +576,6 @@ begin
     // for windows and *nix (1 or 2 character line ending)
     LE := LineEnding;
     FDbgProcess.Input.Write(LE[1], Length(LE));
-    {$IFdef MSWindows}
-    FLastWrite := GetTickCount64;
-    {$EndIf}
   end
   else begin
     DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');

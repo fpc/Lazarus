@@ -187,10 +187,6 @@ type
     FWarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError;
     FWarnOnInternalError: TGDBMIDebuggerShowWarning;
     FWarnOnTimeOut: Boolean;
-    {$IFdef MSWindows}
-    FAggressiveWaitTime: Cardinal;
-    procedure SetAggressiveWaitTime(AValue: Cardinal);
-    {$EndIf}
     procedure SetGdbLocalsValueMemLimit(AValue: Integer);
     procedure SetMaxDisplayLengthForStaticArray(AValue: Integer);
     procedure SetMaxDisplayLengthForString(AValue: Integer);
@@ -237,9 +233,6 @@ type
     property FixStackFrameForFpcAssert: Boolean read FFixStackFrameForFpcAssert
              write FFixStackFrameForFpcAssert default True;
     property FixIncorrectStepOver: Boolean read FFixIncorrectStepOver write FFixIncorrectStepOver default False;
-    {$IFdef MSWindows}
-    property AggressiveWaitTime: Cardinal read FAggressiveWaitTime write SetAggressiveWaitTime default 100;
-    {$EndIf}
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -269,9 +262,6 @@ type
     property DisableStartupShell;
     property FixStackFrameForFpcAssert;
     property FixIncorrectStepOver;
-    {$IFdef MSWindows}
-    property AggressiveWaitTime;
-    {$EndIf}
   end;
 
   TGDBMIDebuggerBase = class;
@@ -7624,16 +7614,6 @@ begin
   FGdbLocalsValueMemLimit := AValue;
 end;
 
-{$IFdef MSWindows}
-procedure TGDBMIDebuggerPropertiesBase.SetAggressiveWaitTime(AValue: Cardinal);
-begin
-  if AValue > 500 then
-    AValue := 500;
-  if FAggressiveWaitTime = AValue then Exit;
-  FAggressiveWaitTime := AValue;
-end;
-{$EndIf}
-
 procedure TGDBMIDebuggerPropertiesBase.SetMaxLocalsLengthForStaticArray(AValue: Integer);
 begin
   if FMaxLocalsLengthForStaticArray = AValue then Exit;
@@ -7678,9 +7658,6 @@ begin
   FDisableStartupShell := False;
   FFixStackFrameForFpcAssert := True;
   FFixIncorrectStepOver := False;
-  {$IFdef MSWindows}
-  FAggressiveWaitTime := 100;
-  {$EndIf}
   inherited;
 end;
 
@@ -7712,9 +7689,6 @@ begin
   FDisableStartupShell := TGDBMIDebuggerPropertiesBase(Source).FDisableStartupShell;
   FFixStackFrameForFpcAssert := TGDBMIDebuggerPropertiesBase(Source).FFixStackFrameForFpcAssert;
   FFixIncorrectStepOver := TGDBMIDebuggerPropertiesBase(Source).FFixIncorrectStepOver;
-  {$IFdef MSWindows}
-  FAggressiveWaitTime := TGDBMIDebuggerPropertiesBase(Source).FAggressiveWaitTime;
-  {$EndIf}
 end;
 
 
@@ -9130,9 +9104,6 @@ begin
     env.Free;
 {$ifNdef MSWindows}
     DebuggerEnvironment.Values['LANG'] := 'C'; // try to prevent GDB from using localized messages
-{$ENDIF}
-{$ifdef MSWindows}
-    AggressiveWaitTime := TGDBMIDebuggerPropertiesBase(GetProperties).AggressiveWaitTime;
 {$ENDIF}
 
     if CreateDebugProcess(Options)
