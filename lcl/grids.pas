@@ -9925,7 +9925,7 @@ procedure TCustomGrid.AutoAdjustColumns;
 var
   i: Integer;
 begin
-  For i:=0 to ColCount do
+  For i:=0 to ColCount-1 do
     AutoAdjustColumn(i);
 end;
 
