@@ -219,7 +219,7 @@ const
   IDLE_STEP_COUNT = 20;
 var
   PipeHandle: Integer;
-  TotalBytesAvailable: dword;
+  TotalBytesAvailable, WaitRes: dword;
   R: LongBool;
   n: integer;
   Step: Integer;
@@ -234,22 +234,40 @@ begin
 
   while Result=0 do
   begin
-    for n:= 0 to High(AHandles) do
-    begin
-      PipeHandle := AHandles[n];
-      R := Windows.PeekNamedPipe(PipeHandle, nil, 0, nil, @TotalBytesAvailable, nil);
-      if not R then begin
-        // PeekNamedPipe failed
-        DebugLn('PeekNamedPipe failed, GetLastError is ', IntToStr(GetLastError));
-        Exit;
-      end;
-      if R then begin
-        // PeekNamedPipe successfull
-        if (TotalBytesAvailable>0) then begin
-          Result := 1 shl n;
-          Break;
+    if Length(AHandles) > 1 then
+      WaitRes :=  WaitForMultipleObjects(Length(AHandles), @AHandles[0], False, 30)
+    else
+      WaitRes :=  WaitForSingleObject(AHandles[0], 30);
+    if (WaitRes >= WAIT_OBJECT_0) and (WaitRes < WAIT_OBJECT_0 + Length(AHandles)) then begin
+      Result := 1 shl (WaitRes - WAIT_OBJECT_0);
+    end
+    else
+    if (WaitRes >= WAIT_ABANDONED_0) and (WaitRes < WAIT_ABANDONED_0 + Length(AHandles)) then begin
+      Result := 1 shl (WaitRes - WAIT_ABANDONED_0); // caller will pick up error
+    end
+    else
+    if WaitRes <> WAIT_TIMEOUT then begin
+      debugln(['WaitForMultipleObjects(failed) ', GetLastOSError]);
+      for n:= 0 to High(AHandles) do
+      begin
+        PipeHandle := AHandles[n];
+        R := Windows.PeekNamedPipe(PipeHandle, nil, 0, nil, @TotalBytesAvailable, nil);
+        if not R then begin
+          // PeekNamedPipe failed
+          DebugLn('PeekNamedPipe failed, GetLastError is ', IntToStr(GetLastError));
+          Exit;
+        end;
+        if R then begin
+          // PeekNamedPipe successfull
+          if (TotalBytesAvailable>0) then begin
+            Result := 1 shl n;
+            Break;
+          end;
         end;
       end;
+      // sleep a bit
+      if Result = 0 then
+        sleep(10);
     end;
 
     if CurCallStamp <> FReadLineCallStamp then
@@ -284,8 +302,6 @@ begin
       Application.HandleException(Application);
     end;
     if Application.Terminated or not DebugProcessRunning then Break;
-    // sleep a bit
-    Sleep(10);
   end;
 end;
 {$ELSE win32}
@@ -351,6 +367,7 @@ begin
       {$endif windows}
       FDbgProcess.ShowWindow := swoNone;
       FDbgProcess.Environment:=DebuggerEnvironment;
+      FDbgProcess.PipeBufferSize:=64*1024;
     except
       FreeAndNil(FDbgProcess);
     end;
@@ -428,11 +445,12 @@ end;
 function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String;
 
   function ReadData(const AStream: TStream; var ABuffer: String): Integer;
+  const READ_LEN = 32*1024;
   var
     S: String;
   begin
-    SetLength(S, 8192);
-    Result := AStream.Read(S[1], 8192);
+    SetLength(S, READ_LEN);
+    Result := AStream.Read(S[1], READ_LEN);
     if Result > 0
     then begin
       SetLength(S, Result);
