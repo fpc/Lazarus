@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 299
   ClientWidth = 538
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
     Height = 275
@@ -15,30 +15,32 @@ object Form1: TForm1
     Width = 538
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.CharSet = ANSI_CHARSET
         Title.LabelFont.Color = clRed
         Title.LabelFont.Height = -19
-        Title.LabelFont.Name = 'Times New Roman'
         Title.LabelFont.Orientation = 900
         Title.LabelFont.Pitch = fpVariable
         Title.LabelFont.Quality = fqDraft
         Title.LabelFont.Style = [fsItalic]
         Title.Visible = True
         Title.Caption = 'y axis'
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.CharSet = ANSI_CHARSET
         Title.LabelFont.Color = clBlue
         Title.LabelFont.Height = -19
-        Title.LabelFont.Name = 'Times New Roman'
         Title.LabelFont.Pitch = fpVariable
         Title.LabelFont.Quality = fqDraft
         Title.LabelFont.Style = [fsItalic]
         Title.Visible = True
         Title.Caption = 'x axis'
+        Title.LabelBrush.Style = bsClear
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -49,15 +51,15 @@ object Form1: TForm1
     )
     Align = alClient
     object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clOlive
       Marks.Format = '%0:.9g'
       Marks.Style = smsValue
-      BarBrush.Color = clOlive
     end
     object Chart1FuncSeries1: TFuncSeries
       ZPosition = 1
-      OnCalculate = Chart1FuncSeries1Calculate
       Pen.Color = clRed
       Pen.Width = 2
+      OnCalculate = Chart1FuncSeries1Calculate
     end
   end
   object ToolBar1: TToolBar
@@ -68,7 +70,6 @@ object Form1: TForm1
     ButtonHeight = 22
     ButtonWidth = 100
     Caption = 'ToolBar1'
-    Flat = False
     ShowCaptions = True
     TabOrder = 1
     object tbSaveAsBMP: TToolButton
