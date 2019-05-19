@@ -9259,7 +9259,8 @@ begin
           end;
         end;
       else
-        S := S + Line + LineEnding;
+        if pos('path for the index cache', LowerCase(Line)) < 1 then
+          S := S + Line + LineEnding;
       end;
     Line := ReadLine;
   end;
