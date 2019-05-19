@@ -101,7 +101,7 @@ begin
   FContinue := False;
 
   TstName := 'All';
-  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_raise_at', '-gt -gh -dTEST_EXCEPTION_AT');
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_raise_at', '-gt -dTEST_EXCEPTION_AT');
   FGotExceptCount := 0;
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -167,7 +167,7 @@ begin
   end;
 
   TstName := 'RunError';
-  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_runerr', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_RUNERR');
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_runerr', '-gt -dTEST_SKIP_EXCEPTION_1 -dTEST_RUNERR');
   FGotExceptCount := 0;
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -192,7 +192,7 @@ begin
   end;
 
   TstName := 'Assert';
-  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_assert', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_ASSERT');
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_assert', '-gt -dTEST_SKIP_EXCEPTION_1 -dTEST_ASSERT');
   FGotExceptCount := 0;
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -218,7 +218,7 @@ begin
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype',
-              '-dTEST_NO_EXCEPTION_TYPE -gt -gh');
+              '-dTEST_NO_EXCEPTION_TYPE -gt ');
   FGotExceptCount := 0; TstName := 'no_exp_type';
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -240,7 +240,7 @@ begin
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr',
-              '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt -gh');
+              '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt ');
   FGotExceptCount := 0; TstName := 'no_exp_type_ptr';
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -262,7 +262,7 @@ begin
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_str',
-              '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_STRING_VAR -gt -gh');
+              '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_STRING_VAR -gt ');
   FGotExceptCount := 0; TstName := 'no_exp_type_str';
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -284,7 +284,7 @@ begin
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str',
-               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt -gh');
+               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt ');
   FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str';
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -306,7 +306,7 @@ begin
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str_var',
-               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -dTEST_NO_EXCEPTION_VAR -gt -gh');
+               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -dTEST_NO_EXCEPTION_VAR -gt ');
   FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str_var';
   dbg := StartGDB(AppDir, TestExeName);
   try
@@ -329,7 +329,7 @@ begin
 
 
 
-  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'with_hplus', '-dTEST_WITH_HPLUS -gt -gh');
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'with_hplus', '-dTEST_WITH_HPLUS -gt ');
   FGotExceptCount := 0; TstName := 'with_hplus';
   dbg := StartGDB(AppDir, TestExeName);
   try

@@ -101,6 +101,7 @@ var
   {$ENDIF}
 begin
   IsConsole := true; // dont show unhandled exceptions
+  ExceptProc := NIL;
   {$IFnDEF TEST_NO_POINTER_VAR}
   p := nil;
   {$ENDIF}
