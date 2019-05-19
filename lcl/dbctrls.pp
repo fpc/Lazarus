@@ -733,6 +733,7 @@ Type
     function DoEdit: boolean; virtual;
     procedure DoOnCloseUp; virtual;
     procedure DoOnSelect; virtual;
+    procedure DoOnChange; virtual;
     procedure LMDeferredEdit(var Message: TLMessage); message LM_DEFERREDEDIT;
     property DetectedEvents: Word read FDetectedEvents;
   protected

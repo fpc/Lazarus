@@ -34,7 +34,6 @@ end;
 
 procedure TCustomDBComboBox.Change;
 begin
-  inherited Change;
   FDetectedEvents := FDetectedEvents or DBCBEVENT_CHANGE;
   PostMessage(Handle, LM_DEFERREDEDIT, 0, 0);
 end;
@@ -91,7 +90,7 @@ begin
       if result then begin
         FDatalink.Modified;
         if FDetectedEvents and DBCBEVENT_CHANGE <> 0 then
-          inherited Change;
+          DoOnChange;
         if FDetectedEvents and DBCBEVENT_SELECT <> 0 then begin
           if FDetectedEvents and DBCBEVENT_WHEEL <> 0 then
             FDatalink.UpdateRecord;
@@ -133,6 +132,11 @@ end;
 procedure TCustomDBComboBox.DoOnSelect;
 begin
   inherited Select;
+end;
+
+procedure TCustomDBComboBox.DoOnChange;
+begin
+  inherited Change;
 end;
 
 procedure TCustomDBComboBox.SetDataField(const AValue: string);
