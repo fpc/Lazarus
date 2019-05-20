@@ -99,6 +99,7 @@ type
     procedure SetY(const AValue: Double);
     procedure MultiplyY(const ACoeff: Double);
     function Point: TDoublePoint; inline;
+    procedure MakeUnique;
   end;
   PChartDataItem = ^TChartDataItem;
 
@@ -237,7 +238,7 @@ type
     procedure EndUpdate; override;
   public
     class procedure CheckFormat(const AFormat: String);
-    function BasicExtent: TDoubleRect;
+    function BasicExtent: TDoubleRect; virtual;
     function Extent: TDoubleRect; virtual;
     function ExtentCumulative: TDoubleRect; virtual;
     function ExtentList: TDoubleRect; virtual;
@@ -536,6 +537,15 @@ begin
     Result := Y
   else
     Result := YList[AIndex - 1];
+end;
+
+procedure TChartDataItem.MakeUnique;
+begin
+  // using SetLength() is a documented way of making the dynamic array unique:
+  // "the reference count after a call to SetLength will be 1"
+  UniqueString(Text);
+  SetLength(XList, Length(XList));
+  SetLength(YList, Length(YList));
 end;
 
 procedure TChartDataItem.MultiplyY(const ACoeff: Double);

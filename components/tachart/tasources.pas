@@ -75,6 +75,41 @@ type
     property OnCompare;
   end;
 
+  { TSortedChartSource }
+
+  TSortedChartSource = class(TCustomSortedChartSource)
+  strict private
+    FListener: TListener;
+    FListenerSelf: TListener;
+    FOrigin: TCustomChartSource;
+    procedure Changed(ASender: TObject);
+    procedure SetOrigin(AValue: TCustomChartSource);
+  protected
+    function DoCompare(AItem1, AItem2: Pointer): Integer; override;
+    function GetCount: Integer; override;
+    function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure ResetTransformation(ACount: Integer);
+    procedure SetXCount(AValue: Cardinal); override;
+    procedure SetYCount(AValue: Cardinal); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    function BasicExtent: TDoubleRect; override;
+    function Extent: TDoubleRect; override;
+    function ExtentCumulative: TDoubleRect; override;
+    function ExtentList: TDoubleRect; override;
+    function ExtentXYList: TDoubleRect; override;
+    function ValuesTotal: Double; override;
+    property Origin: TCustomChartSource read FOrigin write SetOrigin;
+    // Sorting
+    property SortBy;
+    property SortDir;
+    property Sorted;
+    property SortIndex;
+    property OnCompare;
+  end;
+
   { TMWCRandomGenerator }
 
   // Mutliply-with-carry random number generator.
@@ -276,11 +311,10 @@ procedure Register;
 begin
   RegisterComponents(
     CHART_COMPONENT_IDE_PAGE, [
-      TListChartSource, TRandomChartSource, TUserDefinedChartSource,
-      TCalculatedChartSource
+      TListChartSource, TSortedChartSource, TRandomChartSource,
+      TUserDefinedChartSource, TCalculatedChartSource
     ]);
 end;
-
 
 { TListChartSourceStrings }
 
@@ -480,7 +514,6 @@ begin
       FreeAndNil(FLoadingCache);
     end;
 end;
-
 
 { TListChartSource }
 
@@ -839,6 +872,196 @@ procedure TListChartSource.Loaded;
 begin
   inherited; // clears csLoading in ComponentState
   (FDataPoints as TListChartSourceStrings).LoadingFinished;
+end;
+
+{ TSortedChartSource }
+
+constructor TSortedChartSource.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
+  FYCount := MaxInt;
+  FListener := TListener.Create(@FOrigin, @Changed);
+  FListenerSelf := TListener.Create(nil, @Changed);
+  Broadcaster.Subscribe(FListenerSelf);
+end;
+
+destructor TSortedChartSource.Destroy;
+begin
+  ResetTransformation(0);
+  FreeAndNil(FListenerSelf);
+  FreeAndNil(FListener);
+  inherited;
+end;
+
+procedure TSortedChartSource.Changed(ASender: TObject);
+begin
+  if ASender = Self then begin
+    // We can get here only due to FListenerSelf's notification.
+    // If some of our own (not Origin's) sorting properties was changed and we
+    // are sorted, then our Sort() method has been called, so the transformation
+    // is valid; but if we are no longer sorted, only notification is sent (so
+    // we are here), so we must reinitialize the transformation to return to
+    // the transparent (i.e. unsorted) state.
+    if not IsSorted then
+      ResetTransformation(Count);
+    exit;
+  end;
+
+  if FOrigin <> nil then begin
+    FXCount := Origin.XCount;
+    FYCount := Origin.YCount;
+    ResetTransformation(Origin.Count);
+    if IsSorted and (not HasSameSorting(Origin)) then Sort else Notify;
+  end else begin
+    FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
+    FYCount := MaxInt;
+    ResetTransformation(0);
+    Notify;
+  end;
+end;
+
+function TSortedChartSource.DoCompare(AItem1, AItem2: Pointer): Integer;
+var
+  item1, item2: TChartDataItem;
+begin
+  // some data sources use same memory buffer for every item read,
+  // so local copies must be made before comparing two items
+  item1 := Origin.Item[PInteger(AItem1)^]^;
+
+  // avoid sharing same memory by item1's and item2's reference-
+  // counted variables
+  item1.MakeUnique;
+
+  item2 := Origin.Item[PInteger(AItem2)^]^;
+
+  Result := inherited DoCompare(@item1, @item2);
+end;
+
+function TSortedChartSource.GetCount: Integer;
+begin
+  if Origin <> nil then
+    Result := Origin.Count
+  else
+    Result := 0;
+end;
+
+function TSortedChartSource.GetItem(AIndex: Integer): PChartDataItem;
+begin
+  if Origin <> nil then
+    Result := PChartDataItem(Origin.Item[PInteger(FData.Items[AIndex])^])
+  else
+    Result := nil;
+end;
+
+procedure TSortedChartSource.ResetTransformation(ACount: Integer);
+var
+  i: Integer;
+  pint: PInteger;
+begin
+  if ACount > FData.Count then begin
+    for i := 0 to FData.Count - 1 do
+      PInteger(FData.List^[i])^ := i;
+
+    FData.Capacity := ACount;
+
+    pint := nil;
+    try // optimization: don't execute try..except..end in a loop
+      for i := FData.Count to ACount - 1 do begin
+        New(pint);
+        pint^ := i;
+        FData.Add(pint); // don't use ItemAdd() here
+        pint := nil;
+      end;
+    except
+      if pint <> nil then
+        Dispose(pint);
+      raise;
+    end;
+  end else
+  begin
+    for i := ACount to FData.Count - 1 do
+      Dispose(PInteger(FData.List^[i]));
+
+    FData.Count := ACount;
+    FData.Capacity := ACount; // release needless memory
+
+    for i := 0 to FData.Count - 1 do
+      PInteger(FData.List^[i])^ := i;
+  end;
+end;
+
+procedure TSortedChartSource.SetOrigin(AValue: TCustomChartSource);
+begin
+  if AValue = Self then
+    AValue := nil;
+  if FOrigin = AValue then exit;
+  if FOrigin <> nil then
+    FOrigin.Broadcaster.Unsubscribe(FListener);
+  FOrigin := AValue;
+  if FOrigin <> nil then
+    FOrigin.Broadcaster.Subscribe(FListener);
+  Changed(nil);
+end;
+
+procedure TSortedChartSource.SetXCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EXCountError.Create('Cannot set XCount');
+end;
+
+procedure TSortedChartSource.SetYCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EYCountError.Create('Cannot set YCount');
+end;
+
+function TSortedChartSource.BasicExtent: TDoubleRect;
+begin
+  if Origin = nil then
+    Result := EmptyExtent
+  else
+    Result := Origin.BasicExtent;
+end;
+
+function TSortedChartSource.Extent: TDoubleRect;
+begin
+  if Origin = nil then
+    Result := EmptyExtent
+  else
+    Result := Origin.Extent;
+end;
+
+function TSortedChartSource.ExtentCumulative: TDoubleRect;
+begin
+  if Origin = nil then
+    Result := EmptyExtent
+  else
+    Result := Origin.ExtentCumulative;
+end;
+
+function TSortedChartSource.ExtentList: TDoubleRect;
+begin
+  if Origin = nil then
+    Result := EmptyExtent
+  else
+    Result := Origin.ExtentList;
+end;
+
+function TSortedChartSource.ExtentXYList: TDoubleRect;
+begin
+  if Origin = nil then
+    Result := EmptyExtent
+  else
+    Result := Origin.ExtentXYList;
+end;
+
+function TSortedChartSource.ValuesTotal: Double;
+begin
+  if Origin = nil then
+    Result := 0
+  else
+    Result := Origin.ValuesTotal;
 end;
 
 { TMWCRandomGenerator }
@@ -1452,7 +1675,7 @@ end;
 procedure TCalculatedChartSource.SetOrigin(AValue: TCustomChartSource);
 begin
   if AValue = Self then
-      AValue := nil;
+    AValue := nil;
   if FOrigin = AValue then exit;
   if FOrigin <> nil then
     FOrigin.Broadcaster.Unsubscribe(FListener);
