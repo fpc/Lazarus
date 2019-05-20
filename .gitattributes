@@ -5391,6 +5391,9 @@ components/tachart/icons/tlistchartsource_200.png -text
 components/tachart/icons/trandomchartsource.png -text svneol=unset#images/png
 components/tachart/icons/trandomchartsource_150.png -text
 components/tachart/icons/trandomchartsource_200.png -text
+components/tachart/icons/tsortedchartsource.png -text svneol=unset#image/png
+components/tachart/icons/tsortedchartsource_150.png -text svneol=unset#image/png
+components/tachart/icons/tsortedchartsource_200.png -text svneol=unset#image/png
 components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tuserdefinedchartsource_150.png -text
 components/tachart/icons/tuserdefinedchartsource_200.png -text
