@@ -718,6 +718,7 @@ begin
     begin
       lDestView := GetNSObjectView(NSObject(AParams.WndParent));
       lDestView.addSubView(cnt);
+      cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then
          cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
