@@ -8,33 +8,24 @@ object Form1: TForm1
   ClientWidth = 637
   OnCreate = FormCreate
   LCLVersion = '2.1.0.0'
-  object Splitter1: TSplitter
-    Left = 632
-    Height = 438
-    Top = 0
-    Width = 5
-    Align = alRight
-    Beveled = True
-    ResizeAnchor = akRight
-  end
   object PageControl1: TPageControl
     Left = 0
     Height = 438
     Top = 0
-    Width = 632
+    Width = 637
     ActivePage = tsBasic
     Align = alClient
     TabIndex = 0
-    TabOrder = 1
+    TabOrder = 0
     object tsBasic: TTabSheet
       Caption = 'Basic'
       ClientHeight = 410
-      ClientWidth = 624
+      ClientWidth = 629
       object Memo1: TMemo
         Left = 0
         Height = 34
         Top = 0
-        Width = 624
+        Width = 629
         Align = alTop
         Lines.Strings = (
           'Modify sources at design-time.'
@@ -68,6 +59,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clWindow
         object Chart2LineSeries1: TLineSeries
           LinePen.Color = clRed
           Pointer.Brush.Color = clRed
@@ -82,7 +74,7 @@ object Form1: TForm1
         end
       end
       object Chart1: TChart
-        Left = 333
+        Left = 338
         Height = 376
         Top = 34
         Width = 291
@@ -107,6 +99,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alRight
+        Color = clWindow
         object Chart1BarSeries1: TBarSeries
           BarBrush.Color = clRed
           Source = RandomChartSource1
@@ -120,16 +113,24 @@ object Form1: TForm1
           Source = ListChartSource1
         end
       end
+      object Splitter1: TSplitter
+        Left = 333
+        Height = 376
+        Top = 34
+        Width = 5
+        Align = alRight
+        ResizeAnchor = akRight
+      end
     end
     object tsStatistics: TTabSheet
       Caption = 'Statistics'
       ClientHeight = 410
-      ClientWidth = 624
+      ClientWidth = 629
       object chCalc: TChart
         Left = 0
         Height = 369
         Top = 0
-        Width = 624
+        Width = 629
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -156,6 +157,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clWindow
         object chCalcLineSeries1: TLineSeries
           Title = 'Data'
           LineType = ltNone
@@ -181,11 +183,11 @@ object Form1: TForm1
         Left = 0
         Height = 41
         Top = 369
-        Width = 624
+        Width = 629
         Align = alBottom
         AutoSize = True
         ClientHeight = 41
-        ClientWidth = 624
+        ClientWidth = 629
         TabOrder = 1
         object cbCumulative: TCheckBox
           AnchorSideLeft.Control = Panel2
@@ -231,12 +233,12 @@ object Form1: TForm1
     object tsDerivative: TTabSheet
       Caption = 'Derivative'
       ClientHeight = 410
-      ClientWidth = 624
+      ClientWidth = 629
       object chDerivative: TChart
         Left = 0
         Height = 317
         Top = 0
-        Width = 624
+        Width = 629
         AxisList = <        
           item
             Grid.Color = clSilver
@@ -268,6 +270,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clWindow
         DoubleBuffered = True
         object chDerivativeLineOrig: TLineSeries
           Title = 'y'
@@ -280,12 +283,14 @@ object Form1: TForm1
         end
       end
       object rgDataShape: TRadioGroup
-        Left = 0
+        Left = 6
         Height = 54
         Top = 317
-        Width = 624
+        Width = 617
         Align = alBottom
         AutoFill = True
+        BorderSpacing.Left = 6
+        BorderSpacing.Right = 6
         Caption = 'Functions'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
@@ -296,7 +301,7 @@ object Form1: TForm1
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 7
         ClientHeight = 34
-        ClientWidth = 620
+        ClientWidth = 613
         Columns = 7
         ItemIndex = 0
         Items.Strings = (
@@ -316,12 +321,12 @@ object Form1: TForm1
         Left = 0
         Height = 39
         Top = 371
-        Width = 624
+        Width = 629
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 39
-        ClientWidth = 624
+        ClientWidth = 629
         TabOrder = 2
         object lblAccumulationRange: TLabel
           AnchorSideLeft.Control = Panel1
@@ -389,6 +394,97 @@ object Form1: TForm1
         end
       end
     end
+    object tsSorted: TTabSheet
+      Caption = 'Sorted'
+      ClientHeight = 410
+      ClientWidth = 629
+      object btnSort: TButton
+        AnchorSideLeft.Control = tsSorted
+        AnchorSideTop.Control = tsSorted
+        Left = 8
+        Height = 25
+        Top = 8
+        Width = 230
+        AutoSize = True
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 8
+        Caption = 'Sort/unsort data by number of visitors!'
+        OnClick = btnSortClick
+        TabOrder = 0
+      end
+      object BubbleChart: TChart
+        AnchorSideLeft.Control = tsSorted
+        AnchorSideTop.Control = btnSort
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = tsSorted
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = tsSorted
+        AnchorSideBottom.Side = asrBottom
+        Left = 8
+        Height = 361
+        Top = 41
+        Width = 613
+        AxisList = <        
+          item
+            Visible = False
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Alignment = calBottom
+            Marks.Format = '%4:.9g'
+            Marks.LabelBrush.Style = bsClear
+            Marks.Source = SortedChartSource
+            Marks.Style = smsXValue
+            Minors = <>
+            Title.LabelBrush.Style = bsClear
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Margins.Left = 20
+        Margins.Right = 40
+        Title.Brush.Color = clBtnFace
+        Title.Brush.Style = bsClear
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'Locations of World Exposition X, and numbers of visitors (given by bubble size)'
+        )
+        Title.Visible = True
+        OnAfterPaint = BubbleChartAfterPaint
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 8
+        Color = clWindow
+        object BubbleSeries: TBubbleSeries
+          AxisIndexX = 1
+          AxisIndexY = 0
+          BubbleRadiusUnits = bruY
+          MarkPositions = lmpPositive
+          Marks.Attachment = maCenter
+          Marks.Distance = 0
+          Marks.LabelFont.Orientation = 900
+          Marks.Format = '%2:s'
+          Marks.LabelBrush.Color = clWhite
+          Marks.Style = smsLabel
+          OverrideColor = [bocBrush]
+          Source = SortedChartSource
+        end
+      end
+      object lblSortInfo: TLabel
+        AnchorSideLeft.Control = btnSort
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = btnSort
+        AnchorSideTop.Side = asrCenter
+        Left = 246
+        Height = 15
+        Top = 13
+        Width = 55
+        BorderSpacing.Left = 8
+        Caption = 'lblSortInfo'
+        ParentColor = False
+      end
+    end
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 8
@@ -397,8 +493,8 @@ object Form1: TForm1
     XMin = -5
     YMax = 10
     YMin = 0
-    left = 240
-    top = 204
+    left = 88
+    top = 112
   end
   object ListChartSource1: TListChartSource
     DataPoints.Strings = (
@@ -408,22 +504,22 @@ object Form1: TForm1
       '0|1|?|'
       '3|2|?|'
     )
-    left = 240
-    top = 260
+    left = 88
+    top = 168
   end
   object ccsSum: TCalculatedChartSource
     AccumulationMethod = camSum
     AccumulationRange = 0
     Origin = RandomChartSource2
-    left = 504
-    top = 112
+    left = 240
+    top = 168
   end
   object ccsAvg: TCalculatedChartSource
     AccumulationMethod = camAverage
     AccumulationRange = 5
     Origin = RandomChartSource2
-    left = 504
-    top = 168
+    left = 240
+    top = 224
   end
   object RandomChartSource2: TRandomChartSource
     PointsNumber = 25
@@ -432,17 +528,31 @@ object Form1: TForm1
     XMin = -10
     YMax = 8
     YMin = 1
-    left = 504
-    top = 268
+    left = 240
+    top = 112
   end
   object lcsDerivative: TListChartSource
-    left = 156
-    top = 84
+    left = 376
+    top = 112
   end
   object ccsDerivative: TCalculatedChartSource
     AccumulationMethod = camDerivative
     Origin = lcsDerivative
-    left = 156
-    top = 140
+    left = 376
+    top = 168
+  end
+  object UserDefinedChartSource: TUserDefinedChartSource
+    OnGetChartDataItem = UserDefinedChartSourceGetChartDataItem
+    YCount = 2
+    left = 528
+    top = 112
+  end
+  object SortedChartSource: TSortedChartSource
+    Origin = UserDefinedChartSource
+    SortBy = sbY
+    SortDir = sdDescending
+    SortIndex = 1
+    left = 528
+    top = 168
   end
 end

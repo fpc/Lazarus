@@ -5,14 +5,22 @@ unit Main;
 interface
 
 uses
-  ComCtrls, ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources,
-  Classes;
+  Classes, StdCtrls, ComCtrls, ExtCtrls, Spin, Forms,
+  TAGraph, TASeries, TACustomSource, TASources,  TAMultiSeries, TAChartUtils;
 
 type
+  TDataForSorting = record
+    Year: Integer;
+    CityName: String;
+    Visitors: Integer;
+    Color: TChartColor;
+  end;
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    btnSort: TButton;
+    BubbleSeries: TBubbleSeries;
     cbAccDirDerivative: TComboBox;
     ccsDerivative: TCalculatedChartSource;
     cbCumulative: TCheckBox;
@@ -21,6 +29,7 @@ type
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
+    BubbleChart: TChart;
     chDerivativeLineOrig: TLineSeries;
     chDerivativeLineDeriv: TLineSeries;
     Chart1LineSeries4: TLineSeries;
@@ -35,6 +44,7 @@ type
     chCalcLineSeriesSum: TLineSeries;
     cbAccDirStatistics: TComboBox;
     cbSmooth: TCheckBox;
+    lblSortInfo: TLabel;
     seAccumulationRange: TSpinEdit;
     lblAccumulationRange: TLabel;
     ListChartSource1: TListChartSource;
@@ -46,18 +56,29 @@ type
     rgDataShape: TRadioGroup;
     RandomChartSource1: TRandomChartSource;
     RandomChartSource2: TRandomChartSource;
+    SortedChartSource: TSortedChartSource;
     Splitter1: TSplitter;
+    tsSorted: TTabSheet;
     tsDerivative: TTabSheet;
     tsStatistics: TTabSheet;
     tsBasic: TTabSheet;
+    UserDefinedChartSource: TUserDefinedChartSource;
+    procedure btnSortClick(Sender: TObject);
+    procedure BubbleChartAfterPaint(ASender: TChart);
     procedure cbAccDirDerivativeChange(Sender: TObject);
     procedure cbAccDirStatisticsChange(Sender: TObject);
     procedure cbCumulativeChange(Sender: TObject);
     procedure cbSmoothChange(Sender: TObject);
-    procedure CreateData;
+    procedure CreateDataForDerivative;
+    procedure CreateDataForSorting;
     procedure seAccumulationRangeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure rgDataShapeClick(Sender: TObject);
+    procedure UserDefinedChartSourceGetChartDataItem(
+      ASource: TUserDefinedChartSource; AIndex: Integer;
+      var AItem: TChartDataItem);
+  private
+    FDataForSorting: array of TDataForSorting;
   end;
 
 var
@@ -76,6 +97,19 @@ procedure TForm1.cbAccDirDerivativeChange(Sender: TObject);
 begin
   ccsDerivative.AccumulationDirection :=
     TChartAccumulationDirection(cbAccDirDerivative.ItemIndex);
+end;
+
+procedure TForm1.btnSortClick(Sender: TObject);
+begin
+  SortedChartSource.Sorted := not SortedChartSource.Sorted;
+end;
+
+procedure TForm1.BubbleChartAfterPaint(ASender: TChart);
+begin
+  if SortedChartSource.IsSorted then
+    lblSortInfo.Caption := 'Sorted by radius (descending)'
+  else
+    lblSortInfo.Caption := 'Not sorted';
 end;
 
 procedure TForm1.cbAccDirStatisticsChange(Sender: TObject);
@@ -98,7 +132,7 @@ begin
     ccsDerivative.AccumulationMethod := camDerivative;
 end;
 
-procedure TForm1.CreateData;
+procedure TForm1.CreateDataForDerivative;
 const
   N = 100;
   MIN_X = -10;
@@ -128,15 +162,58 @@ begin
     end;
 end;
 
+procedure TForm1.CreateDataForSorting;
+
+  procedure AddCity(AYear: Integer; const ACityName: string;
+    ANumberOfVisitors: Integer; AColor: TChartColor);
+  begin
+    SetLength(FDataForSorting, Length(FDataForSorting) + 1);
+    with FDataForSorting[High(FDataForSorting)] do begin
+      Year := AYear;
+      CityName := ACityName;
+      Visitors := ANumberOfVisitors;
+      Color := AColor;
+    end;
+  end;
+
+begin
+  SetLength(FDataForSorting, 0);
+  AddCity(1967, 'City A', 155000, $00FFFF);  // yellow
+  AddCity(1968, 'City B', 30000, $FF0000);   // blue
+  AddCity(1969, 'City C', 450000, $FF00FF);  // fuchsia
+  AddCity(1970, 'City D', 50000, $FFFF00);   // aqua
+  AddCity(1971, 'City E', 80000, $00FF00);   // lime
+  AddCity(1972, 'City F', 615000, $0000FF);  // red
+  UserDefinedChartSource.PointsNumber := Length(FDataForSorting);
+
+  { These settings are made in the Object Inspector for the SortedChartSource:
+    - Origin = UserDefinedChartSource
+    - SortBy = sbY
+    - SortIndex = 1            // --> sort by radius
+    - SortDir = sdDescending   // --> draw large bubbles first
+  }
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Randomize;
-  CreateData;
+  CreateDataForDerivative;
+  CreateDataForSorting;
 end;
 
 procedure TForm1.rgDataShapeClick(Sender: TObject);
 begin
-  CreateData;
+  CreateDataForDerivative;
+end;
+
+procedure TForm1.UserDefinedChartSourceGetChartDataItem(
+  ASource: TUserDefinedChartSource; AIndex: Integer; var AItem: TChartDataItem);
+begin
+  AItem.X := FDataForSorting[AIndex].Year;
+  AItem.Y := 0;
+  AItem.YList[0] := Sqrt(FDataForSorting[AIndex].Visitors/100000 / PI);
+  AItem.Text := FDataForSorting[AIndex].CityName;
+  AItem.Color := FDataForSorting[AIndex].Color;
 end;
 
 procedure TForm1.seAccumulationRangeChange(Sender: TObject);
