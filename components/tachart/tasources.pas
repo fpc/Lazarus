@@ -210,7 +210,9 @@ type
     property PointsNumber: Integer
       read FPointsNumber write SetPointsNumber default 0;
     property Sorted: Boolean read FSorted write FSorted default false;
+    property XCount;
     property XErrorBarData;
+    property YCount;
     property YErrorBarData;
   end;
 
