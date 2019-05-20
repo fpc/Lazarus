@@ -1613,11 +1613,13 @@ end;
 
 function CompareFloat(const x1, x2: Double): Integer;
 begin
-  if IsNaN(x1) and IsNaN(x2) then
-    Result := 0
-  else if IsNaN(x1) then
-    Result := +1
-  else if IsNaN(x2) then
+  if IsNaN(x1) then begin
+    if IsNaN(x2) then
+      Result := 0
+    else
+      Result := +1;
+  end else
+  if IsNaN(x2) then
     Result := -1
   else
     Result := CompareValue(x1, x2);
