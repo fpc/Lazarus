@@ -212,6 +212,7 @@ type
       out AUpperDelta, ALowerDelta: Double): Boolean;
     function GetHasErrorBars(Which: Integer): Boolean;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
+    function HasSameSorting(ASource: TCustomChartSource): Boolean; virtual;
     procedure InvalidateCaches;
     procedure SetSortBy(AValue: TChartSortBy); virtual;
     procedure SetSortDir(AValue: TChartSortDir); virtual;
@@ -283,14 +284,16 @@ type
     procedure SetOnCompare(AValue: TChartSortCompare);
     procedure SetSorted(AValue: Boolean);
   protected
-    FCompareProc: TChartSortCompare;
     FData: TFPList;
     FSorted: Boolean;
-    function DefaultCompare(AItem1, AItem2: Pointer): Integer; virtual;
     function DoCompare(AItem1, AItem2: Pointer): Integer; virtual;
-    procedure ExecSort(ACompare: TChartSortCompare); virtual;
+    procedure DoSort; virtual;
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    function ItemAdd(AItem: PChartDataItem): Integer;
+    procedure ItemInsert(AIndex: Integer; AItem: PChartDataItem);
+    function ItemFind(AItem: PChartDataItem; L: Integer = 0; R: Integer = High(Integer)): Integer;
+    function ItemModified(AIndex: Integer): Integer;
     procedure SetSortBy(AValue: TChartSortBy); override;
     procedure SetSortDir(AValue: TChartSortDir); override;
     procedure SetSortIndex(AValue: Cardinal); override;
@@ -1298,6 +1301,20 @@ begin
     end;
 end;
 
+function TCustomChartSource.HasSameSorting(ASource: TCustomChartSource): Boolean;
+begin
+  case SortBy of
+    sbX, sbY:
+      Result := ASource.IsSorted and (ASource.SortBy = SortBy) and
+                (ASource.SortDir = SortDir) and (ASource.SortIndex = SortIndex);
+    sbColor, sbText:
+      Result := ASource.IsSorted and (ASource.SortBy = SortBy) and
+                (ASource.SortDir = SortDir);
+    sbCustom:
+      Result := false;
+  end;
+end;
+
 function TCustomChartSource.HasXErrorBars: Boolean;
 begin
   Result := GetHasErrorBars(0);
@@ -1596,71 +1613,129 @@ begin
     Result := CompareValue(x1, x2);
 end;
 
-function TCustomSortedChartSource.DefaultCompare(AItem1, AItem2: Pointer): Integer;
+function TCustomSortedChartSource.DoCompare(AItem1, AItem2: Pointer): Integer;
 var
   item1: PChartDataItem absolute AItem1;
   item2: PChartDataItem absolute AItem2;
+  d1, d2: Double;
 begin
- case FSortBy of
-   sbX: Result := CompareFloat(item1^.GetX(FSortIndex), item2^.GetX(FSortIndex));
-   sbY: Result := CompareFloat(item1^.GetY(FSortIndex), item2^.GetY(FSortIndex));
-   sbColor: Result := CompareValue(item1^.Color, item2^.Color);
-   sbText: Result := CompareText(item1^.Text, item2^.Text);
-   sbCustom: Result := FOnCompare(AItem1, AItem2);
- end;
- if FSortDir = sdDescending then Result := -Result;
+  case FSortBy of
+    sbX:
+      if FSortIndex = 0 then
+        Result := CompareFloat(item1^.X, item2^.X)
+      else
+      if FSortIndex < FXCount then begin
+        if FSortIndex <= Cardinal(Length(item1^.XList)) then
+          d1 := item1^.XList[FSortIndex - 1]
+        else
+          d1 := SafeNan;
+        if FSortIndex <= Cardinal(Length(item2^.XList)) then
+          d2 := item2^.XList[FSortIndex - 1]
+        else
+          d2 := SafeNan;
+        Result := CompareFloat(d1, d2);
+      end else
+        Result := 0;
+    sbY:
+      if FSortIndex = 0 then
+        Result := CompareFloat(item1^.Y, item2^.Y)
+      else
+      if FSortIndex < FYCount then begin
+        if FSortIndex <= Cardinal(Length(item1^.YList)) then
+          d1 := item1^.YList[FSortIndex - 1]
+        else
+          d1 := SafeNan;
+        if FSortIndex <= Cardinal(Length(item2^.YList)) then
+          d2 := item2^.YList[FSortIndex - 1]
+        else
+          d2 := SafeNan;
+        Result := CompareFloat(d1, d2);
+      end else
+        Result := 0;
+    sbColor:
+      Result := CompareValue(item1^.Color, item2^.Color);
+    sbText:
+      Result := CompareText(item1^.Text, item2^.Text);
+    sbCustom:
+      if Assigned(FOnCompare) then
+        Result := FOnCompare(AItem1, AItem2)
+      else
+        Result := 0;
+  end;
+  if FSortDir = sdDescending then Result := -Result;
 end;
 
-function TCustomSortedChartSource.DoCompare(AItem1, AItem2: Pointer): Integer;
-begin
-  Result := FCompareProc(AItem1, AItem2);
-end;
+{ Built-in sorting algorithm of the ChartSource - a QuickSort algorithm, copied
+  from the Classes unit and modified. Modifications are:
+  - uses a DoCompare() virtual method for comparisons,
+  - does NOT exchange equal items - this would have some side effect here: let's
+    consider sorting by X, in the ascending order, for the following data points:
+      X=3, Text='ccc'
+      X=2, Text='bbb 1'
+      X=2, Text='bbb 2'
+      X=2, Text='bbb 3'
+      X=1, Text='aaa'
 
-{ Built-in sorting algorithm of the ChartSource, a standard QuickSort.
-  Copied from the classes unit because the compare function must be a method. }
-procedure TCustomSortedChartSource.ExecSort(ACompare: TChartSortCompare);
+    after sorting, data would be (note the reversed 'bbb' order):
+      X=1, Text='aaa'
+      X=2, Text='bbb 3'
+      X=2, Text='bbb 2'
+      X=2, Text='bbb 1'
+      X=3, Text='ccc'
+
+    after sorting AGAIN, data would be (note the original 'bbb' order):
+      X=1, Text='aaa'
+      X=2, Text='bbb 1'
+      X=2, Text='bbb 2'
+      X=2, Text='bbb 3'
+      X=3, Text='ccc'
+}
+procedure TCustomSortedChartSource.DoSort;
 
   procedure QuickSort(L, R: Longint);
   var
     I, J: Longint;
     P, Q: Pointer;
   begin
-   repeat
-     I := L;
-     J := R;
-     P := FData.List^[(L + R) div 2];
-     repeat
-       while ACompare(P, FData.List^[I]) > 0 do
-         I := I + 1;
-       while ACompare(P, FData.List^[J]) < 0 do
-         J := J - 1;
-       If I <= J then
-       begin
-         Q := FData.List^[I];
-         FData.List^[I] := FData.List^[J];
-         FData.List^[J] := Q;
-         I := I + 1;
-         J := J - 1;
-       end;
-     until I > J;
-     if J - L < R - I then
-     begin
-       if L < J then
-         QuickSort(L, J);
-       L := I;
-     end
-     else
-     begin
-       if I < R then
-         QuickSort(I, R);
-       R := J;
-     end;
-   until L >= R;
+    repeat
+      I := L;
+      J := R;
+      P := FData.List^[(L + R) div 2];
+      repeat
+        while DoCompare(P, FData.List^[I]) > 0 do
+          I := I + 1;
+        while DoCompare(P, FData.List^[J]) < 0 do
+          J := J - 1;
+        if I <= J then
+        begin
+          // do NOT exchange equal items
+          if DoCompare(FData.List^[I], FData.List^[J]) <> 0 then begin
+            Q := FData.List^[I];
+            FData.List^[I] := FData.List^[J];
+            FData.List^[J] := Q;
+          end;
+          I := I + 1;
+          J := J - 1;
+        end;
+      until I > J;
+      if J - L < R - I then
+      begin
+        if L < J then
+          QuickSort(L, J);
+        L := I;
+      end
+      else
+      begin
+        if I < R then
+          QuickSort(I, R);
+        R := J;
+      end;
+    until L >= R;
   end;
 
 begin
   if FData.Count < 2 then exit;
-  QuickSort(0, FData.Count-1);
+  QuickSort(0, FData.Count - 1);
 end;
 
 function TCustomSortedChartSource.GetCount: Integer;
@@ -1671,6 +1746,78 @@ end;
 function TCustomSortedChartSource.GetItem(AIndex: Integer): PChartDataItem;
 begin
   Result := PChartDataItem(FData.Items[AIndex]);
+end;
+
+function TCustomSortedChartSource.ItemAdd(AItem: PChartDataItem): Integer;
+begin
+  if IsSorted then begin
+    Result := ItemFind(AItem);
+    FData.Insert(Result, AItem);
+  end else
+    Result := FData.Add(AItem);
+end;
+
+procedure TCustomSortedChartSource.ItemInsert(AIndex: Integer; AItem: PChartDataItem);
+begin
+  if IsSorted then
+    if AIndex <> ItemFind(AItem) then
+      raise ESortError.CreateFmt('%0:s.ItemInsert cannot insert data at the requested '+
+        'position, because source is sorted', [ClassName]);
+  FData.Insert(AIndex, AItem);
+end;
+
+function TCustomSortedChartSource.ItemFind(AItem: PChartDataItem; L: Integer = 0; R: Integer = High(Integer)): Integer;
+var
+  I: Integer;
+begin
+  if not IsSorted then
+    raise ESortError.CreateFmt('%0:s.ItemFind can be called only for sorted source', [ClassName]);
+
+  if R >= FData.Count then
+    R := FData.Count - 1;
+
+  // special optimization for adding sorted data at the end
+  if R >= 0 then
+    if DoCompare(FData.List^[R], AItem) <= 0 then
+      exit(R + 1);
+
+  // use binary search
+  if L < 0 then
+    L := 0;
+  while L <= R do
+  begin
+    I := L + (R - L) div 2;
+    if DoCompare(FData.List^[I], AItem) <= 0 then
+      L := I + 1
+    else
+      R := I - 1;
+  end;
+  Result := L;
+end;
+
+function TCustomSortedChartSource.ItemModified(AIndex: Integer): Integer;
+begin
+  Result := AIndex;
+  if IsSorted then begin
+    if FData.Count < 2 then exit;
+    if (AIndex < 0) or (AIndex >= FData.Count) then exit;
+
+    if AIndex > 0 then
+      if DoCompare(FData.List^[AIndex - 1], FData.List^[AIndex]) > 0 then begin
+        Result := ItemFind(FData.List^[AIndex], 0, AIndex - 1);
+        // no Dec(Result) here, as it is below
+        FData.Move(AIndex, Result);
+        exit; // optimization: the item cannot be unsorted from both sides
+              // simultaneously, so we can exit now
+      end;
+
+    if AIndex < FData.Count - 1 then
+      if DoCompare(FData.List^[AIndex], FData.List^[AIndex + 1]) > 0 then begin
+        Result := ItemFind(FData.List^[AIndex], AIndex + 1, FData.Count - 1);
+        Dec(Result);
+        FData.Move(AIndex, Result);
+      end;
+  end;
 end;
 
 function TCustomSortedChartSource.IsSorted: Boolean;
@@ -1737,11 +1884,7 @@ begin
     FSorted := SaveSorted;
   end;
 
-  if FSortBy = sbCustom then
-    FCompareProc := FOnCompare
-  else
-    FCompareProc := @DefaultCompare;
-  ExecSort(@DoCompare);
+  DoSort;
   Notify;
 end;
 

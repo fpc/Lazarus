@@ -27,8 +27,6 @@ type
     FDataPoints: TStrings;
     FXCountMin: Cardinal;
     FYCountMin: Cardinal;
-    procedure AddAt(
-      APos: Integer; const AX, AY: Double; const ALabel: String; AColor: TChartColor);
     procedure ClearCaches;
     function NewItem: PChartDataItem;
     procedure SetDataPoints(const AValue: TStrings);
@@ -57,12 +55,12 @@ type
     procedure Clear;
     procedure CopyFrom(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer);
-    procedure SetColor(AIndex: Integer; AColor: TChartColor);
-    procedure SetText(AIndex: Integer; const AValue: String);
-    procedure SetXList(AIndex: Integer; const AXList: array of Double);
+    function SetColor(AIndex: Integer; AColor: TChartColor): Integer;
+    function SetText(AIndex: Integer; const AValue: String): Integer;
+    function SetXList(AIndex: Integer; const AXList: array of Double): Integer;
     function SetXValue(AIndex: Integer; const AValue: Double): Integer;
-    procedure SetYList(AIndex: Integer; const AYList: array of Double);
-    procedure SetYValue(AIndex: Integer; const AValue: Double);
+    function SetYList(AIndex: Integer; const AYList: array of Double): Integer;
+    function SetYValue(AIndex: Integer; const AValue: Double): Integer;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
     property XCount;
@@ -373,7 +371,7 @@ begin
   item := FSource.NewItem;
   try
     Parse(S, item);
-    FSource.FData.Insert(Index, item);
+    FSource.ItemInsert(Index, item);
   except
     Dispose(item);
     raise;
@@ -489,30 +487,20 @@ end;
 function TListChartSource.Add(
   const AX, AY: Double; const ALabel: String = '';
   const AColor: TChartColor = clTAColor): Integer;
-begin
-  Result := FData.Count;
-  if IsSortedByXAsc then
-    // Keep data points ordered by X coordinate.
-    // Note that this leads to O(N^2) time except
-    // for the case of adding already ordered points.
-    // So, is the user wants to add many (>10000) points to a graph,
-    // he should pre-sort them to avoid performance penalty.
-    while (Result > 0) and (Item[Result - 1]^.X > AX) do
-      Dec(Result);
-  AddAt(Result, AX, AY, ALabel, AColor);
-end;
-
-procedure TListChartSource.AddAt(
-  APos: Integer; const AX, AY: Double; const ALabel: String; AColor: TChartColor);
 var
   pcd: PChartDataItem;
 begin
   pcd := NewItem;
-  pcd^.X := AX;
-  pcd^.Y := AY;
-  pcd^.Color := AColor;
-  pcd^.Text := ALabel;
-  FData.Insert(APos, pcd);
+  try
+    pcd^.X := AX;
+    pcd^.Y := AY;
+    pcd^.Color := AColor;
+    pcd^.Text := ALabel;
+    Result := ItemAdd(pcd);
+  except
+    Dispose(pcd);
+    raise;
+  end;
   UpdateCachesAfterAdd(AX, AY);
 end;
 
@@ -530,9 +518,9 @@ begin
   try
     Result := Add(AX[0], AY[0], ALabel, AColor);
     if Length(AX) > 1 then
-      SetXList(Result, AX[1..High(AX)]);
+      Result := SetXList(Result, AX[1..High(AX)]);
     if Length(AY) > 1 then
-      SetYList(Result, AY[1..High(AY)]);
+      Result := SetYList(Result, AY[1..High(AY)]);
   finally
     Dec(FUpdateCount);
   end;
@@ -552,7 +540,7 @@ begin
   try
     Result := Add(AX, AY[0], ALabel, AColor);
     if Length(AY) > 1 then
-      SetYList(Result, AY[1..High(AY)]);
+      Result := SetYList(Result, AY[1..High(AY)]);
   finally
     Dec(FUpdateCount);
   end;
@@ -591,6 +579,7 @@ end;
 procedure TListChartSource.CopyFrom(ASource: TCustomChartSource);
 var
   i: Integer;
+  pcd: PChartDataItem;
 begin
   if ASource.XCount < FXCountMin then
     raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
@@ -602,23 +591,23 @@ begin
     Clear;
     XCount := ASource.XCount;
     YCount := ASource.YCount;
-    for i := 0 to ASource.Count - 1 do
-      with ASource[i]^ do begin
-        AddAt(FData.Count, X, Y, Text, Color);
-        SetXList(FData.Count - 1, XList);
-        SetYList(FData.Count - 1, YList);
-      end;
+    FData.Capacity := ASource.Count;
 
-    if IsSorted then begin
-      if ASource.IsSorted and
-        (SortBy = TCustomChartSourceAccess(ASource).SortBy) and
-        (SortDir = TCustomChartSourceAccess(ASource).SortDir) and
-        (SortIndex = TCustomChartSourceAccess(ASource).SortIndex) and
-        (SortBy <> sbCustom)
-      then
-        exit;
-      Sort;
+    pcd := nil;
+    try // optimization: don't execute try..except..end in a loop
+      for i := 0 to ASource.Count - 1 do begin
+        pcd := NewItem;
+        pcd^ := ASource[i]^;
+        FData.Add(pcd); // don't use ItemAdd() here
+        pcd := nil;
+      end;
+    except
+      if pcd <> nil then
+        Dispose(pcd);
+      raise;
     end;
+
+    if IsSorted and (not HasSameSorting(ASource)) then Sort;
   finally
     EndUpdate;
   end;
@@ -680,12 +669,13 @@ begin
   if YCount > 1 then SetLength(Result^.YList, YCount - 1);
 end;
 
-procedure TListChartSource.SetColor(AIndex: Integer; AColor: TChartColor);
+function TListChartSource.SetColor(AIndex: Integer; AColor: TChartColor): Integer;
 begin
   with Item[AIndex]^ do begin
-    if Color = AColor then exit;
+    if Color = AColor then exit(AIndex);
     Color := AColor;
   end;
+  Result := ItemModified(AIndex);
   Notify;
 end;
 
@@ -701,12 +691,13 @@ begin
   end;
 end;
 
-procedure TListChartSource.SetText(AIndex: Integer; const AValue: String);
+function TListChartSource.SetText(AIndex: Integer; const AValue: String): Integer;
 begin
   with Item[AIndex]^ do begin
-    if Text = AValue then exit;
+    if Text = AValue then exit(AIndex);
     Text := AValue;
   end;
+  Result := ItemModified(AIndex);
   Notify;
 end;
 
@@ -725,8 +716,8 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.SetXList(
-  AIndex: Integer; const AXList: array of Double);
+function TListChartSource.SetXList(
+  AIndex: Integer; const AXList: array of Double): Integer;
 var
   i: Integer;
 begin
@@ -734,6 +725,7 @@ begin
     for i := 0 to Min(High(AXList), High(XList)) do
       XList[i] := AXList[i];
   FXListExtentIsValid := false;
+  Result := ItemModified(AIndex);
   Notify;
 end;
 
@@ -757,26 +749,13 @@ var
   end;
 
 begin
-  if IsSortedByXAsc then
-    if IsNan(AValue) then
-      raise EChartError.CreateFmt('X = NaN in sorted source %s', [NameOrClassName(Self)]);
-  Result := AIndex;
   with Item[AIndex]^ do begin
-    if IsEquivalent(X, AValue) then exit; // IsEquivalent() can compare also NaNs
+    if IsEquivalent(X, AValue) then exit(AIndex); // IsEquivalent() can compare also NaNs
     oldX := X;
     X := AValue;
   end;
   UpdateExtent;
-  if IsSortedByXAsc then begin
-    if AValue > oldX then
-      while (Result < Count - 1) and (Item[Result + 1]^.X < AValue) do
-        Inc(Result)
-    else
-      while (Result > 0) and (Item[Result - 1]^.X > AValue) do
-        Dec(Result);
-    if Result <> AIndex then
-      FData.Move(AIndex, Result);
-  end;
+  Result := ItemModified(AIndex);
   Notify;
 end;
 
@@ -795,8 +774,8 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.SetYList(
-  AIndex: Integer; const AYList: array of Double);
+function TListChartSource.SetYList(
+  AIndex: Integer; const AYList: array of Double): Integer;
 var
   i: Integer;
 begin
@@ -805,10 +784,11 @@ begin
       YList[i] := AYList[i];
   FCumulativeExtentIsValid := false;
   FYListExtentIsValid := false;
+  Result := ItemModified(AIndex);
   Notify;
 end;
 
-procedure TListChartSource.SetYValue(AIndex: Integer; const AValue: Double);
+function TListChartSource.SetYValue(AIndex: Integer; const AValue: Double): Integer;
 var
   oldY: Double;
 
@@ -829,13 +809,14 @@ var
 
 begin
   with Item[AIndex]^ do begin
-    if IsEquivalent(Y, AValue) then exit; // IsEquivalent() can compare also NaNs
+    if IsEquivalent(Y, AValue) then exit(AIndex); // IsEquivalent() can compare also NaNs
     oldY := Y;
     Y := AValue;
   end;
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AValue) - NumberOr(oldY);
   UpdateExtent;
+  Result := ItemModified(AIndex);
   Notify;
 end;
 
