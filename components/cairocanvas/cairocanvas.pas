@@ -26,7 +26,7 @@ type
   { TCairoPrinterCanvas }
 
   TCairoPrinterCanvas = class(TFilePrinterCanvas)
-  strict private
+  private
     cr: Pcairo_t;
   private
     FLazClipRect: TRect;
@@ -82,6 +82,8 @@ type
     procedure CreateRegion; override;
     procedure RealizeAntialiasing; override;
     procedure DestroyHandle;
+
+    procedure SetPenMode;virtual;
   public
     SurfaceXDPI, SurfaceYDPI: Integer;
     constructor Create(APrinter : TPrinter); override;
@@ -154,6 +156,7 @@ type
 
   TCairoPngCanvas = class(TCairoFileCanvas)
   protected
+    procedure SetPenMode;override;
     function CreateCairoHandle: HDC; override;
     procedure DestroyCairoHandle; override;
   public
@@ -226,16 +229,8 @@ end;
 
 { TCairoPrinterCanvas }
 
-procedure TCairoPrinterCanvas.SetPenProperties;
-  procedure SetDash(d: array of double);
-  begin
-    cairo_set_dash(cr, @d, High(d)+1, 0);
-  end;
-var
-  cap: cairo_line_cap_t;
-   w: double;
+procedure TCairoPrinterCanvas.SetPenMode;
 begin
-  SetSourceColor(Pen.Color);
   case Pen.Mode of
     pmBlack: begin
       SetSourceColor(clBlack);
@@ -246,23 +241,24 @@ begin
       cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
     end;
     pmCopy: cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
- {   pmXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
-    pmNotXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
-    pmNop,
-    pmNot,
-    pmCopy,
-    pmNotCopy,
-    pmMergePenNot,
-    pmMaskPenNot,
-    pmMergeNotPen,
-    pmMaskNotPen,
-    pmMerge,
-    pmNotMerge,
-    pmMask,
-    pmNotMask,}
   else
     cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
   end;
+end;
+
+procedure TCairoPrinterCanvas.SetPenProperties;
+  procedure SetDash(d: array of double);
+  begin
+    cairo_set_dash(cr, @d, High(d)+1, 0);
+  end;
+var
+  cap: cairo_line_cap_t;
+   w: double;
+begin
+  SetSourceColor(Pen.Color);
+
+  SetPenMode;
+
   w := Pen.Width;
   if w = 0 then
     w := 0.5;
@@ -1624,6 +1620,16 @@ end;
 
 { TCairoPngCanvas }
 
+procedure TCairoPngCanvas.SetPenMode;
+begin
+  inherited SetPenMode;
+  { bitwise color operators make sense only for raster graphics }
+  case Pen.Mode of
+    pmXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
+    pmNotXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
+  end;
+end;
+
 function TCairoPngCanvas.CreateCairoHandle: HDC;
 var
   acr: Pcairo_t;
@@ -1642,7 +1648,10 @@ end;
 
 procedure TCairoPngCanvas.DestroyCairoHandle;
 begin
-  cairo_surface_write_to_png(sf, PChar(FOutputFileName));
+  if Assigned(fStream) then
+    cairo_surface_write_to_png_stream(sf, @WriteToStream, fStream)
+  else
+    cairo_surface_write_to_png(sf, PChar(FOutputFileName));
   inherited DestroyCairoHandle;
 end;
 
