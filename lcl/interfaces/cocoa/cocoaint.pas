@@ -521,14 +521,21 @@ begin
   begin
     if (Result.type_ = NSApplicationDefined)
       and (Result.subtype = LCLEventSubTypeMessage)
-      and (Result.data1 = LM_NULL)
-      and (Result.data2 = WidgetSet.AppHandle)
     then
     begin
-      CheckSynchronize;
-      NSApp.updateWindows;
-      if Assigned(Application) then
-        TCrackerApplication(Application).ProcessAsyncCallQueue;
+
+      if (Result.data1 = LM_NULL) and (Result.data2 = WidgetSet.AppHandle) then
+      begin
+        CheckSynchronize;
+        NSApp.updateWindows;
+        if Assigned(Application) then
+          TCrackerApplication(Application).ProcessAsyncCallQueue;
+      end
+      else
+      begin
+        sendEvent(Result);
+      end;
+
       Result := nil
     end
     else if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
