@@ -1604,7 +1604,7 @@ begin
     CurrentItem:=TPOFileItem.Create(lowercase(Identifier), Original, Translation);
     CurrentItem.Comments := Comments;
     CurrentItem.Context := Context;
-    CurrentItem.Flags := lowercase(Flags);
+    CurrentItem.ModifyFlag(lowercase(Flags), true);
     CurrentItem.PreviousID := PreviousID;
     CurrentItem.LineNr := LineNr;
     FItems.Add(CurrentItem);
@@ -1734,18 +1734,21 @@ var
   var
     i: Integer;
   begin
-    i := F.IndexOf(AFlag);
-    if (i<0) and Check then
+    if AFlag <> '' then
     begin
-      F.Add(AFlag);
-      Result := true;
-    end
-    else
-    begin
-      if (i>=0) and (not Check) then
+      i := F.IndexOf(AFlag);
+      if (i<0) and Check then
       begin
-        F.Delete(i);
+        F.Add(AFlag);
         Result := true;
+      end
+      else
+      begin
+        if (i>=0) and (not Check) then
+        begin
+          F.Delete(i);
+          Result := true;
+        end;
       end;
     end;
   end;
