@@ -87,6 +87,7 @@ type
     // of the menu. While LCL allows to modify the menu contents when the submenu
     // is about to be activated.
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
+    procedure menuDidClose(AMenu: NSMenu); message 'menuDidClose:';
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -383,6 +384,28 @@ begin
   if not Assigned(menuItemCallback) then Exit;
   //todo: call "measureItem"
   menuItemCallback.ItemSelected;
+end;
+
+procedure TCocoaMenuItem.menuDidClose(AMenu: NSMenu);
+var
+  par : NSMenu;
+  idx : NSInteger;
+  mn  : NSMenuItem;
+begin
+  // the only purpose of this code is to "invalidate" the submenu of the item.
+  // an invalidated menu will call menuNeedsUpdate.
+  // There's no other way in Cocoa to do the "invalidate"
+  par := amenu.supermenu;
+  if Assigned(par) then
+  begin
+    idx := par.indexOfItemWithSubmenu(AMenu);
+    if idx<>NSNotFound then
+    begin
+      mn := par.itemAtIndex(idx);
+      mn.setSubmenu(nil);
+      mn.setSubmenu(AMenu);
+    end;
+  end;
 end;
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
