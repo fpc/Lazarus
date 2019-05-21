@@ -47,6 +47,9 @@ type
     function Add(
       const AX, AY: Double; const ALabel: String = '';
       const AColor: TChartColor = clTAColor): Integer;
+    function AddXListY(
+      const AX: array of Double; const AY: Double; const ALabel: String = '';
+      const AColor: TChartColor = clTAColor): Integer;
     function AddXListYList(const AX, AY: array of Double; const ALabel: String = '';
       const AColor: TChartColor = clTAColor): Integer;
     function AddXYList(
@@ -540,6 +543,26 @@ begin
   UpdateCachesAfterAdd(AX, AY);
 end;
 
+function TListChartSource.AddXListY(
+  const AX: array of Double; const AY: Double;
+  const ALabel: String = ''; const AColor: TChartColor = clTAColor): Integer;
+begin
+  if Length(AX) = 0 then
+    raise EXListEmptyError.Create('AddXListY: XList is empty');
+
+  { Optimization: prevent useless notifications.
+    Don't call BeginUpdate() to avoid invalidating the caches. }
+  Inc(FUpdateCount);
+  try
+    Result := Add(AX[0], AY, ALabel, AColor);
+    if Length(AX) > 1 then
+      Result := SetXList(Result, AX[1..High(AX)]);
+  finally
+    Dec(FUpdateCount);
+  end;
+  Notify;
+end;
+
 function TListChartSource.AddXListYList(const AX, AY: array of Double;
   const ALabel: String = ''; const AColor: TChartColor = clTAColor): Integer;
 begin
@@ -568,7 +591,7 @@ function TListChartSource.AddXYList(
   const ALabel: String = ''; const AColor: TChartColor = clTAColor): Integer;
 begin
   if Length(AY) = 0 then
-    raise EYListEmptyError.Create('AddXYList: Y List is empty');
+    raise EYListEmptyError.Create('AddXYList: YList is empty');
 
   { Optimization: prevent useless notifications.
     Don't call BeginUpdate() to avoid invalidating the caches. }
