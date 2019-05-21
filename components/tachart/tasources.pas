@@ -94,13 +94,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
+  public
     function BasicExtent: TDoubleRect; override;
     function Extent: TDoubleRect; override;
     function ExtentCumulative: TDoubleRect; override;
     function ExtentList: TDoubleRect; override;
     function ExtentXYList: TDoubleRect; override;
     function ValuesTotal: Double; override;
+  published
     property Origin: TCustomChartSource read FOrigin write SetOrigin;
     // Sorting
     property SortBy;
