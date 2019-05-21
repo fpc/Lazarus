@@ -36,6 +36,7 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
+    property Visible;
   end;
 
 procedure Register;

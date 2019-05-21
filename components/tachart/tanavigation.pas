@@ -128,6 +128,8 @@ type
     property Shift: TShiftState read FShift write FShift default [ssLeft];
   published
     property Align;
+    property BorderSpacing;
+    property Visible;
   end;
 
 procedure Register;
