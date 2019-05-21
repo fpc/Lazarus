@@ -293,7 +293,7 @@ begin
   Canvas.Font.Orientation := FGetFontOrientationFunc(AFont);
   Canvas.Font.BGRAColor := BGRAColorOrMono(AFont.FPColor);
   if AFont is TFont then
-    Canvas.Font.Style := (AFont as TFont).Style;
+    Canvas.Font.Style := TFont(AFont).Style;
   Canvas.Font.Opacity := Opacity;
 end;
 
@@ -304,8 +304,8 @@ begin
     Width := APen.Width;
     // TODO: Update for FPC 2.8
     if APen is TPen then begin
-      JoinStyle := (APen as TPen).JoinStyle;
-      EndCap := (APen as TPen).EndCap;
+      JoinStyle := TPen(APen).JoinStyle;
+      EndCap := TPen(APen).EndCap;
     end;
     BGRAColor := BGRAColorOrMono(APen.FPColor);
     Opacity := Self.Opacity;

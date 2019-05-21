@@ -30,7 +30,9 @@ object MainForm: TMainForm
       Width = 208
       BorderSpacing.Left = 8
       ItemHeight = 15
+      ItemIndex = 0
       Items.Strings = (
+        'original order'
         'Population (descending)'
         'Population (ascending)'
         'Name'
@@ -38,6 +40,7 @@ object MainForm: TMainForm
       OnChange = cbSortByChange
       Style = csDropDownList
       TabOrder = 0
+      Text = 'original order'
     end
     object Label1: TLabel
       AnchorSideLeft.Control = SettingsPanel

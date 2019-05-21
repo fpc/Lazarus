@@ -617,7 +617,7 @@ procedure TCustomChartSeries.ReadState(Reader: TReader);
 begin
   inherited ReadState(Reader);
   if Reader.Parent is TChart then
-    (Reader.Parent as TChart).AddSeries(Self);
+    TChart(Reader.Parent).AddSeries(Self);
 end;
 
 procedure TCustomChartSeries.SetActive(AValue: Boolean);
@@ -1081,7 +1081,7 @@ function TChartSeries.ListSource: TListChartSource;
 begin
   if not (Source is TListChartSource) then
     raise EEditableSourceRequired.Create(rsSourceNotEditable);
-  Result := Source as TListChartSource;
+  Result := TListChartSource(Source);
 end;
 
 procedure TChartSeries.SetColor(AIndex: Integer; AColor: TColor);

@@ -538,7 +538,7 @@ procedure TDiaCenterConnector.Changed(ASender: TDiaObject);
 begin
   inherited;
   if Element is TDiaCenterElement then
-    FActualPos := (Element as TDiaCenterElement).ActualPos;
+    FActualPos := TDiaCenterElement(Element).ActualPos;
 end;
 
 { TDiaBoxConnector }

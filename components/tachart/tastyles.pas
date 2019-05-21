@@ -132,7 +132,7 @@ end;
 procedure TChartStyle.Assign(Source: TPersistent);
 begin
   if Source is TChartStyle then
-    with Source as TChartStyle do begin
+    with TChartStyle(Source) do begin
       Self.Brush := Brush;
       Self.Font := Font;
       Self.Pen := Pen;

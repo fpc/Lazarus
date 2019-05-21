@@ -101,7 +101,7 @@ uses
 function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
 begin
   if AFont is TFont then
-    Result := (AFont as TFont).Orientation
+    Result := TFont(AFont).Orientation
   else
     Result := AFont.Orientation; //0;
 end;

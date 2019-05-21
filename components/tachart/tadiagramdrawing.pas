@@ -81,7 +81,7 @@ begin
   id.SetBrushColor($FFFFFF);
   for d in ASelf.Decorators do
     if d is IDiaDrawerDecorator then
-      (d as IDiaDrawerDecorator).Apply(id);
+      IDiaDrawerDecorator(d).Apply(id);
   with ASelf do
     id.Polygon([
       ToImage(FTopLeft), ToImage(FTopRight),
@@ -103,7 +103,7 @@ begin
   ADrawer.SetBrushColor($FFFFFF);
   for d in AEndPoint.Decorators do
     if d is IDiaDrawerDecorator then
-      (d as IDiaDrawerDecorator).Apply(ADrawer);
+      IDiaDrawerDecorator(d).Apply(ADrawer);
   da := ArcTan2(AEndPoint.Width.Value, AEndPoint.Length.Value);
 
   diag := -Round(Sqrt(Sqr(AEndPoint.Length.Value) + Sqr(AEndPoint.Width.Value)));
@@ -126,7 +126,7 @@ begin
   id.PrepareSimplePen($000000);
   for d in ASelf.Decorators do
     if d is IDiaDrawerDecorator then
-      (d as IDiaDrawerDecorator).Apply(id);
+      IDiaDrawerDecorator(d).Apply(id);
   startPos := ToImage(ASelf.Start.Connector.ActualPos);
   endPos := ToImage(ASelf.Finish.Connector.ActualPos);
   case ASelf.Routing of

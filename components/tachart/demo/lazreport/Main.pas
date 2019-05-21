@@ -54,7 +54,7 @@ var
 begin
   if Memo.Count = 0 then exit;
   if (Memo[0] = 'Chart1') and (View is TfrPictureView) then begin
-    pv := View as TfrPictureView;
+    pv := TfrPictureView(View);
     factor := Max(Printer.XDpi, Printer.YDpi) / Screen.PixelsPerInch;
     bmp := TBitmap.Create;
     try

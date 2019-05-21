@@ -967,7 +967,7 @@ procedure TChartTool.ReadState(Reader: TReader);
 begin
   inherited ReadState(Reader);
   if Reader.Parent is TChartToolset then
-    Toolset := Reader.Parent as TChartToolset;
+    Toolset := TChartToolset(Reader.Parent);
 end;
 
 procedure TChartTool.RestoreCursor;
@@ -2039,7 +2039,7 @@ procedure TDataPointHintTool.MouseMove(APoint: TPoint);
   begin
     if UseDefaultHintText and (PointIndex > -1) then begin
       if Series is TChartSeries then
-        Result := (Series as TChartSeries).FormattedMark(PointIndex)
+        Result := TChartSeries(Series).FormattedMark(PointIndex)
       else
         Result := Format(
           '%s: %d', [(Series as TCustomChartSeries).Title, PointIndex]);

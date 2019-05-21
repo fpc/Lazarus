@@ -436,7 +436,7 @@ end;
 procedure TChartAxisIntervalParams.Changed;
 begin
   if not (FOwner is TCustomChartSource) then exit;
-  with FOwner as TCustomChartSource do begin
+  with TCustomChartSource(FOwner) do begin
     BeginUpdate;
     EndUpdate;
   end;

@@ -50,11 +50,11 @@ begin
     // skip all the toolbuttons
   else
   if (AControl is TCustomGroupbox) then
-    BoldGroup(AControl as TCustomGroupbox)
+    BoldGroup(TCustomGroupBox(AControl))
   else
     for i:=0 to AControl.ComponentCount-1 do
       if AControl.Components[i] is TControl then
-        BoldHeaders(AControl.Components[i] as TControl)
+        BoldHeaders(TControl(AControl.Components[i]))
 end;
 
 

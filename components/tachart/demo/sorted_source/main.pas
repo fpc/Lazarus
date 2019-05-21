@@ -189,14 +189,18 @@ procedure TMainForm.cbSortByChange(Sender: TObject);
 begin
   case cbSortBy.ItemIndex of
     0: begin
-         ListChartSource.SortBy := sbY;
-         ListChartSource.SortDir := sdDescending;
+         ListChartSource.SortBy := sbX;
+         ListChartSource.SortDir := sdAscending;
        end;
     1: begin
          ListChartSource.SortBy := sbY;
-         ListChartSource.SortDir := sdAscending;
+         ListChartSource.SortDir := sdDescending;
        end;
     2: begin
+         ListChartSource.SortBy := sbY;
+         ListChartSource.SortDir := sdAscending;
+       end;
+    3: begin
          ListChartSource.SortBy := sbText;
          ListChartSource.SortDir := sdAscending;
        end;

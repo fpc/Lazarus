@@ -538,9 +538,9 @@ begin
   { in case of radiobutton mode, it is necessary to uncheck the other
     series; there can be only one active series in this mode }
   if
-    (ASender is TCustomChartSeries) and (ASender as TCustomChartSeries).Active
+    (ASender is TCustomChartSeries) and TCustomChartSeries(ASender).Active
   then
-    EnsureSingleChecked(FindSeriesIndex(ASender as TCustomChartSeries))
+    EnsureSingleChecked(FindSeriesIndex(TCustomChartSeries(ASender)))
   else
     EnsureSingleChecked;
 end;
