@@ -84,6 +84,7 @@ type
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
     function isValidAppleMenu(): LCLObjCBoolean; message 'isValidAppleMenu';
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
+    procedure menuWillOpen(AMenu: NSMenu); message 'menuWillOpen:';
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -379,6 +380,16 @@ procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
   if not Assigned(menuItemCallback) then Exit;
   //todo: call "measureItem"
+end;
+
+procedure TCocoaMenuItem.menuWillOpen(AMenu: NSMenu);
+var
+  Msg:TLMessage;
+begin
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  Msg.msg := LM_ACTIVATE;
+  // debugln('send LM_Activate');
+  LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
 end;
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
