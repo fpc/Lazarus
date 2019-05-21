@@ -1649,7 +1649,7 @@ begin
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
-    rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
+    rocmb.list:=TCocoaReadOnlyComboBoxList.Create(rocmb);
     rocmb.setTarget(rocmb);
     rocmb.setAction(objcselector('comboboxAction:'));
     rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
@@ -1663,7 +1663,7 @@ begin
     cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(cmb) then Exit;
     //cmb.setCell(TCocoaComboBoxCell.alloc.initTextCell(NSString.string_));
-    cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
+    cmb.list:=TCocoaEditComboBoxList.Create(cmb);
     cmb.setUsesDataSource(true);
     cmb.setDataSource(cmb);
     cmb.setDelegate(cmb);
