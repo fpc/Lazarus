@@ -504,8 +504,14 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
+  // always look application defined mask (these are defined by LCL)
+  // for sync and PostMessage processing.
+  // Cocoa MainMenu would not ask for AppDefined events.
+  // Thus it's possible NOT to get any messages while main menu is selected
+  mask := mask or NSApplicationDefinedMask;
   {$ifdef BOOLFIX}
-  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(mask,
+  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(
+    mask,
     expiration, mode, Ord(deqFlag));
   {$else}
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
