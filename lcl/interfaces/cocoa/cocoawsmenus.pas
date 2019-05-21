@@ -83,8 +83,10 @@ type
     procedure lclClearCallback; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
     function isValidAppleMenu(): LCLObjCBoolean; message 'isValidAppleMenu';
+    // menuWillOpen cannot be used. Because it SHOULD NOT change the contents
+    // of the menu. While LCL allows to modify the menu contents when the submenu
+    // is about to be activated.
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
-    procedure menuWillOpen(AMenu: NSMenu); message 'menuWillOpen:';
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -380,16 +382,7 @@ procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
   if not Assigned(menuItemCallback) then Exit;
   //todo: call "measureItem"
-end;
-
-procedure TCocoaMenuItem.menuWillOpen(AMenu: NSMenu);
-var
-  Msg:TLMessage;
-begin
-  FillChar(Msg{%H-}, SizeOf(Msg), 0);
-  Msg.msg := LM_ACTIVATE;
-  // debugln('send LM_Activate');
-  LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
+  menuItemCallback.ItemSelected;
 end;
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
