@@ -315,7 +315,10 @@ begin
   timer:=NSTimer.timerWithTimeInterval_target_selector_userInfo_repeats(
     Interval/1000, user, objcselector(user.timerEvent), user, True);
 
+  // adding timer to all "common" loop mode.
   NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSDefaultRunLoopMode);
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSModalPanelRunLoopMode);
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSEventTrackingRunLoopMode);
 
   {user is retained (twice, because it's target), by the timer and }
   {released (twice) on timer invalidation}
