@@ -1240,32 +1240,30 @@ msgid "Version"
 msgstr "Versão"
 
 #: opkman_const.rsopensslfrm_bp_cancelbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
 msgid "No"
 msgstr "Não"
 
 #: opkman_const.rsopensslfrm_bp_okbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
 msgid "Yes"
 msgstr "Sim"
 
 #: opkman_const.rsopensslfrm_caption
 msgid "Download OpenSSL libraries"
-msgstr ""
+msgstr "Descarregar bibliotecas OpenSSL"
 
 #: opkman_const.rsopensslfrm_chpermanent_caption
 msgid "Do not ask this question again"
-msgstr ""
+msgstr "Não perguntar novamente"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
-msgstr ""
+msgstr "Para funcionar corretamente, o OPM necessita das bibliotecas OpenSSL: \"libeay32.dll\" e \"ssleay32.dll\""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
-msgstr ""
+msgstr "Descarregar estes arquivos de \"https://packages.lazarus-ide.org/\"?"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
@@ -1539,15 +1537,15 @@ msgstr "Desligado"
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
-msgstr ""
+msgstr "Descarregar automaticamente arquivos de \"https://packages.lazarus-ide.org/\""
 
 #: opkman_const.rsoptions_rbopenssl_item1
 msgid "Show confirmation dialog before download"
-msgstr ""
+msgstr "Exibir diálogo de confirmação antes de descarregar"
 
 #: opkman_const.rsoptions_rbopenssl_item2
 msgid "Never download files"
-msgstr ""
+msgstr "Nunca descarregar arquivos"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"

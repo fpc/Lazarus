@@ -2437,10 +2437,8 @@ msgid "Guide lines Left,Top"
 msgstr "Linhas guia esquerda, superior"
 
 #: lazarusidestrconsts.dlglevel1opt
-#, fuzzy
-#| msgid "1 (quick, debugger friendly)"
 msgid "1 (quick, debugger friendly with small limitations)"
-msgstr "1 (rápido e amigável ao depurador)"
+msgstr "1 (rápido, amigável ao depurador com pequenas limitações)"
 
 #: lazarusidestrconsts.dlglevel2opt
 msgid "2 (-O1 + quick optimizations)"
@@ -2455,10 +2453,8 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + otimizações agressivas, cuidado)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#, fuzzy
-#| msgid "0 (no optimization)"
 msgid "0 (no optimization, for debugging)"
-msgstr "0 (nenhuma otimização)"
+msgstr "0 (nenhuma otimização, para depuração)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
@@ -3167,18 +3163,17 @@ msgstr "Outros arquivos de unidade (-Fu):"
 
 #: lazarusidestrconsts.dlgoverviewgutterback1color
 msgid "Background 1"
-msgstr ""
+msgstr "Plano de fundo 1"
 
 #: lazarusidestrconsts.dlgoverviewgutterback2color
 msgid "Background 2"
-msgstr ""
+msgstr "Plano de fundo 2"
 
 #: lazarusidestrconsts.dlgoverviewguttercolor
 msgid "Overview Gutter"
-msgstr ""
+msgstr "Medianiz de visão geral"
 
 #: lazarusidestrconsts.dlgoverviewgutterpagecolor
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
 msgid "Page"
 msgstr "Página"
@@ -3465,14 +3460,13 @@ msgid "Report"
 msgstr "Relatório"
 
 #: lazarusidestrconsts.dlgreset
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "Redefinir"
 
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
-msgstr ""
+msgstr "Redefinir tudo"
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3901,7 +3895,7 @@ msgstr "&Texto a localizar"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
-msgstr ""
+msgstr "O elemento usa (e edita) os esquemas:"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
@@ -3984,7 +3978,7 @@ msgstr "Usar arquivo padrão de configuração do compilador (fpc.cfg)"
 
 #: lazarusidestrconsts.dlgusehighlight
 msgid "Use Highlight"
-msgstr ""
+msgstr "Usar realce"
 
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
@@ -4004,16 +3998,12 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Falhou ao carregar esquema do usuário do arquivo %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-#, fuzzy
-#| msgid "Use (and edit) global scheme settings"
 msgid "- Scheme globals -"
-msgstr "Usar (e editar) o esquema global de configurações"
+msgstr "- Esquemas globais -"
 
 #: lazarusidestrconsts.dlguseschemelocal
-#, fuzzy
-#| msgid "Use local scheme settings"
 msgid "selected language"
-msgstr "Usar esquema  configuração local"
+msgstr "idioma selecionado"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
