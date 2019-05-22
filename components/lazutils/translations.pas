@@ -1605,6 +1605,8 @@ begin
     CurrentItem:=TPOFileItem.Create(lowercase(Identifier), Original, Translation);
     CurrentItem.Comments := Comments;
     CurrentItem.Context := Context;
+    //When setting item flags, omit '"' characters in order to avoid regeneration instability.
+    //These characters are not meant to be present in flags anyway according to examples in gettext documentation.
     TmpFlags := StringReplace(Flags, '"', '', [rfReplaceAll]);
     CurrentItem.ModifyFlag(lowercase(TmpFlags), true);
     CurrentItem.PreviousID := PreviousID;
