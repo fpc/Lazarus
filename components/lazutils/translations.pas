@@ -1594,6 +1594,7 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
 
 var
   FoundItem: TPOFileItem;
+  TmpFlags: string;
 begin
   FoundItem := TPOFileItem(FOriginalToItem.Data[Original]);
 
@@ -1604,7 +1605,8 @@ begin
     CurrentItem:=TPOFileItem.Create(lowercase(Identifier), Original, Translation);
     CurrentItem.Comments := Comments;
     CurrentItem.Context := Context;
-    CurrentItem.ModifyFlag(lowercase(Flags), true);
+    TmpFlags := StringReplace(Flags, '"', '', [rfReplaceAll]);
+    CurrentItem.ModifyFlag(lowercase(TmpFlags), true);
     CurrentItem.PreviousID := PreviousID;
     CurrentItem.LineNr := LineNr;
     FItems.Add(CurrentItem);
