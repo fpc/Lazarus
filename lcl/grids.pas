@@ -761,6 +761,7 @@ type
     FOnValidateEntry: TValidateEntryEvent;
     FGridLineColor, FFixedGridLineColor: TColor;
     FFixedColor, FFixedHotColor, FFocusColor, FSelectedColor: TColor;
+    FDisabledFontColor: TColor;
     FFocusRectVisible: boolean;
     FCols,FRows: TIntegerList;
     FsaveOptions: TSaveOptions;
@@ -1188,6 +1189,7 @@ type
     property DefaultRowHeight: Integer read GetDefRowHeight write SetDefRowHeight stored DefaultRowHeightIsStored;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
+    property DisabledFontColor: TColor read FDisabledFontColor write FDisabledFontColor default clNone;
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorBorderStyle: TBorderStyle read GetEditorBorderStyle write SetEditorBorderStyle;
@@ -1408,6 +1410,7 @@ type
     property Col;
     property ColWidths;
     property ColRow;
+    property DisabledFontColor;
     property Editor;
     property EditorBorderStyle;
     property EditorMode;
@@ -3852,6 +3855,8 @@ begin
       Canvas.Brush.Color := GetNotSelectedColor;
       SetCanvasFont(GetColumnFont(aCol, ((gdFixed in aState) and (aRow < FFixedRows))));
     end;
+    if not Enabled and (FDisabledFontColor<>clNone) then
+      Canvas.Font.Color := FDisabledFontColor;
     CurrentTextStyle := DefaultTextStyle;
     CurrentTextStyle.Alignment := BidiFlipAlignment(GetColumnAlignment(aCol, gdFixed in AState), UseRightToLeftAlignment);
     CurrentTextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
@@ -9649,6 +9654,7 @@ begin
   FFixedColor:=clBtnFace;
   FFixedHotColor:=cl3DLight;
   FSelectedColor:= clHighlight;
+  FDisabledFontColor:=clGrayText;
   FRange:=Rect(-1,-1,-1,-1);
   FDragDx:=3;
   SetBounds(0,0,200,100);
