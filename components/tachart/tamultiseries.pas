@@ -516,7 +516,7 @@ var
   ext: TDoubleRect;
   nx, ny: Cardinal;
 begin
-  if IsEmpty then exit;
+  if IsEmpty or (not Active) then exit;
   if not RequestValidChartScaling then exit;
 
   ADrawer.Pen := BubblePen;
@@ -876,7 +876,7 @@ var
   center: Double;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
-  if Count = 0 then exit;
+  if IsEmpty then exit;
   if not RequestValidChartScaling then exit;
 
   FindExtentInterval(ParentChart.CurrentExtent, Source.IsSortedByXAsc);
@@ -984,8 +984,8 @@ var
   i: Integer;
   nx, ny: Cardinal;
 begin
-  if IsEmpty then
-    exit;
+  if IsEmpty or (not Active) then exit;
+
   if FWidthStyle = bwsPercentMin then
     UpdateMinXRange;
 
@@ -1432,8 +1432,9 @@ var
   p: TPen;
   nx, ny: Cardinal;
 begin
+  if IsEmpty or (not Active) then exit;
   my := MaxIntValue([YIndexOpen, YIndexHigh, YIndexLow, YIndexClose]);
-  if IsEmpty or (my >= Source.YCount) then exit;
+  if my >= Source.YCount then exit;
 
   ext2 := ParentChart.CurrentExtent;
   ExpandRange(ext2.a.X, ext2.b.X, 1.0);
@@ -1807,6 +1808,7 @@ var
   p1, p2: TDoublePoint;
   lPen: TPen;
 begin
+  if IsEmpty or (not Active) then exit;
   with Extent do begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);

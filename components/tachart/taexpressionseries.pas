@@ -537,6 +537,7 @@ end;
 
 procedure TExpressionSeries.Draw(ADrawer: IChartDrawer);
 begin
+  if (not Active) then exit;
   SetupParser;
   inherited;
 end;
@@ -672,6 +673,7 @@ end;
 
 procedure TExpressionColorMapSeries.Draw(ADrawer: IChartDrawer);
 begin
+  if (not Active) then exit;
   SetupParser;
   inherited;
 end;

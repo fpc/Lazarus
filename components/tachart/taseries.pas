@@ -469,8 +469,7 @@ var
   ext: TDoubleRect;
   i: Integer;
 begin
-  if IsEmpty then exit;
-
+  if IsEmpty or (not Active) then exit;
   with Extent do begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);
@@ -855,6 +854,7 @@ var
   end;
 
 begin
+  if IsEmpty or (not Active) then exit;
   with Extent do begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);
@@ -946,6 +946,7 @@ procedure TConstantLine.Draw(ADrawer: IChartDrawer);
 var
   p: Integer;
 begin
+  if IsEmpty or (not Active) then exit;
   if Pen.Style = psClear then exit;
 
   ADrawer.SetBrushParams(bsClear, clTAColor);
@@ -1227,7 +1228,7 @@ var
   ofs, y: Double;
   zero: Double;
 begin
-  if IsEmpty then exit;
+  if IsEmpty or (not Active) then exit;
 
   if BarWidthStyle = bwPercentMin then
     UpdateMinXRange;
@@ -2132,7 +2133,7 @@ var
 var
   j, k: Integer;
 begin
-  if IsEmpty then exit;
+  if IsEmpty or (not Active) then exit;
 
   ext := ParentChart.CurrentExtent;
   ext2 := ext;
@@ -2280,6 +2281,7 @@ procedure TUserDrawnSeries.Draw(ADrawer: IChartDrawer);
 var
   ic: IChartTCanvasDrawer;
 begin
+  if IsEmpty or (not Active) then exit;
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then
     FOnDraw(ic.Canvas, FChart.ClipRect);
 end;

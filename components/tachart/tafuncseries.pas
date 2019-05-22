@@ -1,4 +1,4 @@
-{
+﻿{
 
  Function series for TAChart.
 
@@ -729,7 +729,7 @@ procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 var
   R: TRect;
 begin
-  if not Active then exit;
+  if (not Active) then exit;
 
   if csDesigning in ComponentState then begin
     with ParentChart do begin
@@ -819,7 +819,7 @@ var
   t, ts, ms: Double;
   p, pp: TPoint;
 begin
-  if not Active then exit;
+  if (not Active) then exit;
 
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
@@ -1121,7 +1121,7 @@ var
 var
   i: Integer;
 begin
-  if IsEmpty then exit;
+  if IsEmpty or (not Active) then exit;
 
   SetLength(p, Degree + 1);
 
@@ -2425,7 +2425,7 @@ begin
   if FPaletteMin < FPaletteMax then begin
     cmin := FPaletteMin;
     cmax := FPaletteMax;
-  end else
+   end else
   if FPaletteMax < FPaletteMin then begin
     cmin := FPaletteMax;
     cmax := FPaletteMin;
@@ -2512,7 +2512,7 @@ var
   scaled_stepX: Integer;
   scaled_stepY: Integer;
 begin
-  if not (csDesigning in ComponentState) and IsEmpty then exit;
+  if (not (csDesigning in ComponentState) and IsEmpty) or (not Active) then exit;
 
   ext := ParentChart.CurrentExtent;
   bounds := EmptyExtent;

@@ -890,7 +890,7 @@ procedure TChartSeries.GetBounds(var ABounds: TDoubleRect);
 var
   i: Integer;
 begin
-  if not Active or (Count = 0) then exit;
+  if IsEmpty or (not Active) then exit;
   with Extent do
     for i := Low(coords) to High(coords) do
       if not IsInfinite(coords[i]) then
@@ -1952,7 +1952,7 @@ var
   ysum: Double;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
-  if Count = 0 then exit;
+  if IsEmpty then exit;
 
   {FLoBound and FUpBound fields may be outdated here (if axis' range has been
    changed after the last series' painting). FLoBound and FUpBound will be fully

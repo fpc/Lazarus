@@ -627,7 +627,7 @@ var
   prevLabelPoly: TPointArray = nil;
   ps: TPieSlice;
 begin
-  if IsEmpty then exit;
+  if IsEmpty or (not Active) then exit;
 
   Marks.SetAdditionalAngle(0);
   Measure(ADrawer);
@@ -1263,8 +1263,7 @@ var
 var
   j: Integer;
 begin
-  if IsEmpty then exit;
-
+  if IsEmpty or (not Active) then exit;
   originPt := ParentChart.GraphToImage(DoublePoint(OriginX, OriginY));
   fill := FFilled and (FBrush.Style <> bsClear);
   SetLength(pts, Count + 1);  // +1 for origin
