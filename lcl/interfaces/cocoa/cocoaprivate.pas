@@ -372,7 +372,31 @@ var
 
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 
+function NSViewIsLCLEnabled(v: NSView): Boolean;
+function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+
 implementation
+
+function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+begin
+  if obj.isKindOfClass(NSView) then
+    Result := NSViewIsLCLEnabled(NSView(obj))
+  else
+    Result := obj.lclIsEnabled;
+end;
+
+function NSViewIsLCLEnabled(v: NSView): Boolean;
+begin
+  Result := true;
+  while Assigned(v) do
+  begin
+    if not v.lclIsEnabled then begin
+      Result := false;
+      break;
+    end;
+    v:=v.superview;
+  end;
+end;
 
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 begin
@@ -855,7 +879,7 @@ end;
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
 begin
   {$ifdef BOOLFIX}
-  SetEnabled_( Ord(AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled))) );
+  SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
   {$else}
   SetEnabled( AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
   {$endif}

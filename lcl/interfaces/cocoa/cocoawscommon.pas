@@ -819,7 +819,7 @@ var
                                // srchPt - is the one to use for each chidlren (clPt<>srchPt for TScrollBox)
   menuHandled : Boolean;
 begin
-  if Assigned(Owner) and not Owner.lclIsEnabled then
+  if Assigned(Owner) and not NSObjectIsLCLEnabled(Owner) then
   begin
     Result := True; // Cocoa should not handle the message.
     Exit;           // LCL should not get the notification either, as the control is disabled.
@@ -936,7 +936,7 @@ var
   MouseTargetLookup: Boolean;
   srchPt: TPoint;
 begin
-  if Assigned(Owner) and not Owner.lclIsEnabled then
+  if Assigned(Owner) and not NSObjectIsLCLEnabled(Owner) then
   begin
     Result := True; // Cocoa should not handle the message.
     Exit;           // LCL should get the notification either.
@@ -1039,7 +1039,9 @@ var
 begin
   Result := False; // allow cocoa to handle message
 
-  if Assigned(Target) and (not (csDesigning in Target.ComponentState) and not Owner.lclIsEnabled) then
+  if Assigned(Target)
+    and not (csDesigning in Target.ComponentState)
+    and not NSObjectIsLCLEnabled(Owner) then
     Exit;
 
   MousePos := Event.locationInWindow;
