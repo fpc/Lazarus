@@ -517,7 +517,7 @@ begin
         TREIS_HOT: lColor := ColorToNSColor(ColorToRGB(clHotLight));
         TREIS_SELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
         TREIS_DISABLED: lColor := ColorToNSColor(ColorToRGB(clWindow));
-        TREIS_SELECTEDNOTFOCUS: lColor := ColorToNSColor(ColorToRGB(clBtnFace));
+        TREIS_SELECTEDNOTFOCUS: lColor := NSColor.secondarySelectedControlColor;
         TREIS_HOTSELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
       else
         lColor := NSColor.blackColor;
