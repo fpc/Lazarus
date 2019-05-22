@@ -232,6 +232,7 @@ type
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
+    isDown: Boolean;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure textDidChange(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
@@ -1312,11 +1313,13 @@ end;
 procedure TCocoaComboBox.comboBoxWillPopUp(notification: NSNotification);
 begin
   callback.ComboBoxWillPopUp;
+  isDown:=true;
 end;
 
 procedure TCocoaComboBox.comboBoxWillDismiss(notification: NSNotification);
 begin
   callback.ComboBoxWillDismiss;
+  isDown:=false;
 end;
 
 procedure TCocoaComboBox.comboBoxSelectionDidChange(notification: NSNotification);
@@ -1344,11 +1347,7 @@ end;
 procedure TCocoaComboBox.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-  begin
     inherited mouseDown(event);
-
-    callback.MouseUpDownEvent(event, true);
-  end;
 end;
 
 procedure TCocoaComboBox.mouseUp(event: NSEvent);
@@ -1401,6 +1400,20 @@ end;
 
 procedure TCocoaComboBox.mouseMoved(event: NSEvent);
 begin
+  // NSMouseMove event is being sent even after the selection is made.
+  // In Cocoa world, the event is sent to the comboBox NSTextView edit section.
+  // (even is the cursor is NOT over the NSTextView itself, but rather the popup window)
+  //
+  // The CocoaWS forwards the event to LCL. And LCL recognizes the event as a mouse action
+  // beyond combobox boundries (it's NSMouseMove and not NSMouseDrag).
+  // causing the issues with Object Inspector (where the mouse move with a left button down)
+  // is recognized as a switch to a different row.
+  //
+  // WinAPI doesn't send MouseMove events when popup is dropped.
+  // Enforcing the same approach for Cocoa. If combobox is showing popup
+  // all mousemoves are suppressed
+  if isDown then Exit;
+
   if not Assigned(callback) or not callback.MouseMove(event) then
     inherited mouseMoved(event);
 end;
