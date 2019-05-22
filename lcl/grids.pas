@@ -1093,6 +1093,8 @@ type
     procedure InvalidateFocused;
     function  IsColumnIndexValid(AIndex: Integer): boolean; inline;
     function  IsRowIndexValid(AIndex: Integer): boolean; inline;
+    function  IsColumnIndexVariable(AIndex: Integer): boolean; inline;
+    function  IsRowIndexVariable(AIndex: Integer): boolean; inline;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
     function  IsEmptyRow(ARow: Integer): Boolean;
@@ -2561,6 +2563,16 @@ end;
 function TCustomGrid.IsRowIndexValid(AIndex: Integer): boolean;
 begin
   Result := (AIndex>=0) and (AIndex<RowCount);
+end;
+
+function TCustomGrid.IsColumnIndexVariable(AIndex: Integer): boolean;
+begin
+  Result := (AIndex>=FFixedCols) and (AIndex<ColCount);
+end;
+
+function TCustomGrid.IsRowIndexVariable(AIndex: Integer): boolean;
+begin
+  Result := (AIndex>=FFixedRows) and (AIndex<RowCount);
 end;
 
 function TCustomGrid.GetColWidths(Acol: Integer): Integer;
@@ -6160,13 +6172,13 @@ begin
       Exit;
     end;
     if IsCol then begin
-      if index>=FFixedCols then begin
+      if IsColumnIndexVariable(Index) then begin
         StartPos:=StartPos-AccumWidth[FTopLeft.X] + FixedWidth;
         if GetSmoothScroll(SB_Horz) then
           StartPos := StartPos - TLColOff;
       end;
     end else begin
-      if index>=FFixedRows then begin
+      if IsRowIndexVariable(Index) then begin
         StartPos:=StartPos-AccumHeight[FTopLeft.Y] + FixedHeight;
         if GetSmoothScroll(SB_Vert) then
           StartPos := StartPos - TLRowOff;
@@ -7784,8 +7796,8 @@ begin
   SelOk:=SelectCell(NCol,NRow);
   Result:=False;
   while not SelOk do begin
-    if  (NRow+RInc>RowCount-1)or(NRow+RInc<FFixedRows) or
-        (NCol+CInc>ColCount-1)or(NCol+CInc<FFixedCols) then Exit;
+    if not IsRowIndexVariable(NRow+RInc) or
+       not IsColumnIndexVariable(NCol+CInc) then Exit;
     Inc(NCol, CInc);
     Inc(NRow, RInc);
     SelOk:=SelectCell(NCol, NRow);
@@ -9522,8 +9534,8 @@ begin
       end;
       i:=Cfg.GetValue('grid/position/col',-1);
       j:=Cfg.GetValue('grid/position/row',-1);
-      if (i>=FFixedCols)and(i<=ColCount-1) and
-         (j>=FFixedRows)and(j<=RowCount-1) then begin
+      if IsColumnIndexVariable(i) and
+         IsRowIndexVariable(j) then begin
         MoveExtend(false, i,j, True);
       end;
       if goRangeSelect in Options then begin
