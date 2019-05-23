@@ -1175,7 +1175,7 @@ var
     if Styles <> nil then
       Styles.Apply(ADrawer, stackIndex);
     sz := Size(AR);
-    if (sz.cx <= 2) or (sz.cy <= 2) then begin
+    if (sz.cx <= 2*BarPen.Width) or (sz.cy <= 2*BarPen.Width) then begin
       // Bars are too small to distinguish the border from the interior.
       ADrawer.SetPenParams(psSolid, ADrawer.BrushColor);
     end;
@@ -1218,8 +1218,8 @@ var
       TAGeometry.NormalizeRect(imageBar);
 
       // Draw a line instead of an empty rectangle.
-   //   if Bottom = Top then Dec(Top);
-   //   if Left = Right then Inc(Right);
+      if (Bottom = Top) and IsRotated then Dec(Top);
+      if (Left = Right) and not IsRotated then Inc(Right);
     end;
     DrawBar(imageBar);
   end;
