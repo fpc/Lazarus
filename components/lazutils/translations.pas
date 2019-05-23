@@ -1636,8 +1636,6 @@ begin
       if (CurrentItem.Translation='') and (FoundItem.Translation<>'') and (pos(sFuzzyFlag, FoundItem.Flags) = 0) then
       begin
         CurrentItem.Translation := FoundItem.Translation;
-        if CurrentItem.Flags='' then
-          CurrentItem.Flags := FoundItem.Flags;
         CurrentItem.ModifyFlag(sFuzzyFlag, true);
         FModified := True;
       end;
