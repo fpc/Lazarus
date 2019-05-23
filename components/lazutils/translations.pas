@@ -1761,20 +1761,14 @@ var
   i: Integer;
 begin
   Result := false;
-  MF := nil;
   F := TStringList.Create;
+  MF := TStringList.Create;
   try
     F.CommaText := Flags;
 
-    if Pos(',', AFlags) = 0 then
-      ProcessFlag(AFlags)
-    else
-    begin
-      MF := TStringList.Create;
-      MF.CommaText := AFlags;
-      for i := 0 to MF.Count - 1 do
-        ProcessFlag(MF[i]);
-    end;
+    MF.CommaText := AFlags;
+    for i := 0 to MF.Count - 1 do
+      ProcessFlag(MF[i]);
 
     if not Result then
       exit;
