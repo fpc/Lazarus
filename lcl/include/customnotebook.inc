@@ -61,43 +61,23 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  TNBPages Get
- ------------------------------------------------------------------------------}
 function TNBPages.Get(Index: Integer): String;
 begin
-  //DebugLn('TNBPages.Get Index=',Index);
-  if (Index<0) or (Index>=FPageList.Count) then
-    RaiseGDBException('TNBPages.Get Index out of bounds');
   Result := TCustomPage(FPageList[Index]).Caption;
 end;
 
-{------------------------------------------------------------------------------
-  TNBPages GetCount
- ------------------------------------------------------------------------------}
 function TNBPages.GetCount: Integer;
 begin
   Result := FPageList.Count;
 end;
 
-{------------------------------------------------------------------------------
-  TNBPages GetObject
- ------------------------------------------------------------------------------}
 function TNBPages.GetObject(Index: Integer): TObject;
 begin
-  if (Index<0) or (Index>=FPageList.Count) then
-    RaiseGDBException('TNBPages.GetObject Index out of bounds');
   Result := TObject(FPageList[Index]);
 end;
 
-{------------------------------------------------------------------------------
-  TNBPages Put
- ------------------------------------------------------------------------------}
 procedure TNBPages.Put(Index: Integer; const S: String);
 begin
-  if (Index<0) or (Index>=FPageList.Count) then
-    RaiseGDBException('TNBPages.Put Index out of bounds');
-  //debugln(['TNBPages.Put ',DbgSName(FNotebook),' ',Index,' S="',S,'"']);
   TCustomPage(FPageList[Index]).Caption := S;
 end;
 
