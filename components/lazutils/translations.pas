@@ -778,7 +778,7 @@ procedure TPOFile.ReadPOText(const Txt: string);
 
 Example
 #: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "                      Do not show splash screen"
+msgid "Do not show splash screen"
 msgstr ""
 
 }
@@ -1519,13 +1519,27 @@ begin
     end;
     if ProcessingTranslation then
     begin
-      // synchronize translation flags with base .po file, but keep fuzzy flag state
+      // synchronize translation flags with base (.pot) file, but keep fuzzy flag state
       ItemOldFlags := Item.Flags;
       ItemHasFuzzyFlag := pos(sFuzzyFlag, Item.Flags) <> 0;
       Item.Flags := lowercase(Flags);
       Item.ModifyFlag(sFuzzyFlag, ItemHasFuzzyFlag);
       if ItemOldFlags <> Item.Flags then
         FModified := True;
+    end
+    else
+    begin
+      // flags in base (.pot) file are kept as is, but item's translation must be empty there
+      if Item.Translation <> '' then
+      begin
+        Item.Translation := '';
+        FModified := True;
+      end;
+      if Item.PreviousID <> '' then
+      begin
+        Item.PreviousID := '';
+        FModified := True;
+      end;
     end;
   end
   else // in this case new item will be added
