@@ -4783,7 +4783,7 @@ begin
       Exclude(FStates,tvoFocusedPainting);
     if (tvoAutoItemHeight in fOptions) then
       UpdateDefaultItemHeight;
-    UpdateScrollbars;
+    //UpdateScrollbars;
     with Canvas do
     begin
       if IsCustomDrawn(dtControl, cdPrePaint) then
@@ -5422,6 +5422,7 @@ end;
 
 procedure TCustomTreeView.Expand(Node: TTreeNode);
 begin
+  UpdateScrollbars;
   if Assigned(FOnExpanded) then FOnExpanded(Self, Node);
 end;
 
@@ -5438,6 +5439,7 @@ end;
 
 procedure TCustomTreeView.Collapse(Node: TTreeNode);
 begin
+  UpdateScrollbars;
   if Assigned(FOnCollapsed) then FOnCollapsed(Self, Node);
 end;
 
@@ -5771,6 +5773,8 @@ begin
   end else
     Selected := ANewNode;
   ANewNode.MakeVisible;
+
+  UpdateScrollbars;
 end;
 
 procedure TCustomTreeView.MouseLeave;
@@ -6011,6 +6015,7 @@ procedure TCustomTreeView.Resize;
 begin
   FStates:=FStates+[tvsScrollbarChanged,tvsBottomItemNeedsUpdate];
   inherited Resize;
+  UpdateScrollbars;
 end;
 
 function TCustomTreeView.GetSelectedChildAccessibleObject: TLazAccessibleObject;
