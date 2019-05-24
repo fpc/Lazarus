@@ -1189,7 +1189,7 @@ type
     property DefaultRowHeight: Integer read GetDefRowHeight write SetDefRowHeight stored DefaultRowHeightIsStored;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
-    property DisabledFontColor: TColor read FDisabledFontColor write FDisabledFontColor default clNone;
+    property DisabledFontColor: TColor read FDisabledFontColor write FDisabledFontColor default clGrayText;
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorBorderStyle: TBorderStyle read GetEditorBorderStyle write SetEditorBorderStyle;
