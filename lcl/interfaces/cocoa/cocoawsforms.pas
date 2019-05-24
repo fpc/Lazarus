@@ -51,6 +51,7 @@ type
     procedure Close; virtual;
     procedure Resize; virtual;
     procedure Move; virtual;
+    procedure WindowStateChanged; virtual;
 
     function GetEnabled: Boolean; virtual;
     procedure SetEnabled(AValue: Boolean); virtual;
@@ -426,6 +427,15 @@ end;
 procedure TLCLWindowCallback.Move;
 begin
   boundsDidChange(Owner);
+end;
+
+procedure TLCLWindowCallback.WindowStateChanged;
+var
+  Bounds: TRect;
+begin
+  Bounds := HandleFrame.lclFrame;
+  LCLSendSizeMsg(Target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
+    Owner.lclWindowState, True);
 end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;

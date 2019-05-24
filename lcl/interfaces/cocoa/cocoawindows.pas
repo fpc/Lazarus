@@ -67,6 +67,7 @@ type
     procedure Close;
     procedure Resize;
     procedure Move;
+    procedure WindowStateChanged;
 
     function GetEnabled: Boolean;
     procedure SetEnabled(AValue: Boolean);
@@ -136,6 +137,8 @@ type
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
+    procedure windowDidMiniaturize(notification: NSNotification); message 'windowDidMiniaturize:';
+    procedure windowDidDeminiaturize(notification: NSNotification); message 'windowDidDeminiaturize:';
     // fullscreen notifications are only reported for 10.7 fullscreen
     procedure windowWillEnterFullScreen(notification: NSNotification); message 'windowWillEnterFullScreen:';
     procedure windowDidEnterFullScreen(notification: NSNotification); message 'windowDidEnterFullScreen:';
@@ -209,6 +212,7 @@ type
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
+    function lclWindowState: Integer; override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
@@ -442,6 +446,14 @@ begin
       wfrm := NSRectToRect(frame);
     OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
+end;
+
+function TCocoaWindowContent.lclWindowState: Integer;
+begin
+  if isembedded then
+    Result := inherited lclWindowState
+  else
+    Result := window.lclWindowState;
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
@@ -778,6 +790,18 @@ procedure TCocoaWindow.windowDidMove(notification: NSNotification);
 begin
   if Assigned(callback) then
     callback.Move;
+end;
+
+procedure TCocoaWindow.windowDidMiniaturize(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.WindowStateChanged;
+end;
+
+procedure TCocoaWindow.windowDidDeminiaturize(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.WindowStateChanged;
 end;
 
 procedure TCocoaWindow.windowWillEnterFullScreen(notification: NSNotification);
