@@ -87,7 +87,7 @@ type
     // of the menu. While LCL allows to modify the menu contents when the submenu
     // is about to be activated.
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
-    procedure menuDidClose(AMenu: NSMenu); message 'menuDidClose:';
+    //procedure menuDidClose(AMenu: NSMenu); message 'menuDidClose:';
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -386,6 +386,10 @@ begin
   menuItemCallback.ItemSelected;
 end;
 
+{  menuDidClose should not change the structure of the menu.
+   The restructuring is causing issues on Apple's special menus (i.e. HELP menu)
+   See bug #35625
+
 procedure TCocoaMenuItem.menuDidClose(AMenu: NSMenu);
 var
   par : NSMenu;
@@ -407,6 +411,7 @@ begin
     end;
   end;
 end;
+}
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
 begin
