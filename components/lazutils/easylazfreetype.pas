@@ -488,6 +488,19 @@ begin
     raise EFreeType.Create('FreeType cannot be initialized');
 end;
 
+function GlyphTableOnCompare(Item1, Item2: Pointer): Integer;
+var
+   G1: TFreeTypeGlyph absolute Item1;
+   G2: TFreeTypeGlyph absolute Item2;
+begin
+  if G1.Index > G2.Index then
+    Result := 1
+  else if G1.Index < G2.Index then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 { TFreeTypeRenderableFont }
 
 procedure TFreeTypeRenderableFont.DefaultWordBreakHandler(var ABefore,
@@ -1436,6 +1449,7 @@ begin
   FPointSize := 10;
   FDPI := 96;
   FGlyphTable := TAvlTree.Create;
+  FGlyphTable.OnCompare := @GlyphTableOnCompare;
   FHinted := true;
   FWidthFactor := 1;
   FClearType := false;
