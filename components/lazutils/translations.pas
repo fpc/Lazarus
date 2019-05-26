@@ -163,7 +163,6 @@ type
     property Items: TFPList read FItems;
     // used by pochecker /pohelper
   public
-    procedure CleanUp; // removes previous ID from non-fuzzy entries
     property PoName: String read FPoName;
     property PoRename: String write FPoName;
     property Statistics: TTranslationStatistics read GetStatistics;
@@ -752,8 +751,6 @@ begin
 
   ReadPOText(AStream);
 
-  if AllowChangeFuzzyFlag then
-    CleanUp; // Removes previous ID from non-fuzzy entries (not needed for POChecker)
   InvalidateStatistics;
 end;
 
@@ -1517,6 +1514,7 @@ begin
       end;
       Item.Original:=Original;
     end;
+
     if ProcessingTranslation then
     begin
       // synchronize translation flags with base (.pot) file, but keep fuzzy flag state
@@ -1528,19 +1526,20 @@ begin
         FModified := True;
     end
     else
-    begin
       // flags in base (.pot) file are kept as is, but item's translation must be empty there
       if Item.Translation <> '' then
       begin
         Item.Translation := '';
         FModified := True;
       end;
+
+    //cleanup unneeded PreviousIDs in all files (base and translations)
+    if (Item.Translation = '') or (pos(sFuzzyFlag, Item.Flags) = 0) then
       if Item.PreviousID <> '' then
       begin
         Item.PreviousID := '';
         FModified := True;
       end;
-    end;
   end
   else // in this case new item will be added
     FModified := true;
@@ -1694,24 +1693,6 @@ begin
   for i:=0 to Items.Count-1 do begin
     Item := TPOFileItem(Items[i]);
     Item.Tag:=0;
-  end;
-end;
-
-procedure TPOFile.CleanUp;
-var
-  i: Integer;
-  aPoItem: TPOFileItem;
-  isFuzzy: boolean;
-begin
-  for i := 0 to FItems.Count -1 do begin
-    aPoItem := TPOFileItem(FItems.Items[i]);
-    isFuzzy := pos(sFuzzyFlag,aPoItem.Flags) <> 0;
-    if not isFuzzy then
-      // remove PreviousID from non-fuzzy Items
-      if aPoItem.PreviousID <> '' then begin
-        aPoItem.PreviousID := '';
-        FModified := true;
-      end;
   end;
 end;
 
