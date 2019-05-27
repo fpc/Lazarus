@@ -3332,6 +3332,7 @@ type
     fMouseDownPos: TPoint;
     FMultiSelectStyle: TMultiSelectStyle;
     FHotTrackColor: TColor;
+    FDisabledFontColor: TColor;
     FOnAddition: TTVExpandedEvent;
     FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
     FOnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent;
@@ -3562,6 +3563,7 @@ type
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
     property HotTrackColor: TColor read FHotTrackColor write FHotTrackColor default clNone;
+    property DisabledFontColor: TColor read FDisabledFontColor write FDisabledFontColor default clGrayText;
     property Indent: Integer read GetIndent write SetIndent stored IndentIsStored;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
@@ -3701,6 +3703,7 @@ type
     property Color;
     property Constraints;
     property DefaultItemHeight;
+    property DisabledFontColor;
     property DragKind;
     property DragCursor;
     property DragMode;

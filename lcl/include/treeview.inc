@@ -3271,6 +3271,7 @@ begin
   FTreeLinePenPattern[1] := 1;
   FExpandSignColor := clWindowFrame;
   FHotTrackColor := clNone;
+  FDisabledFontColor := clGrayText;
   // Accessibility
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
@@ -5239,9 +5240,17 @@ var
 
     NodeRect.Offset(ScaleX(2, 96), 0);
     if (tvoThemedDraw in Options) then
-      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
+    begin
+      if not Enabled then
+        Details.State := 4; // TmSchema.TREIS_DISABLED = 4
+      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
+    end
     else
+    begin
+      if not Enabled and (FDisabledFontColor<>clNone) then
+        Canvas.Font.Color := FDisabledFontColor;
       DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+    end;
 
     if NeedUnderline then
     begin
