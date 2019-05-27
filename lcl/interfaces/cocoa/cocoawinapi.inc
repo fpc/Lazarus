@@ -1979,7 +1979,7 @@ begin
         NSWindowDepthSixtyfourBitRGB:
           Result := 64;
         NSWindowDepthOnehundredtwentyeightBitRGB:
-          Result := 1028;
+          Result := 128;
       else
         Result := 32;
       end;
