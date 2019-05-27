@@ -1971,7 +1971,19 @@ begin
     HORZRES:
       Result := Round(NSScreen.mainScreen.frame.size.width);
     BITSPIXEL:
-      Result := CGDisplayBitsPerPixel(CGMainDisplayID);
+      // this is based on the main screen only. Should verify what actual DC is passed.
+      // for VIEWS the typical BPP would be 32.
+      case NSScreen.mainScreen.depth of
+        NSWindowDepthTwentyfourBitRGB: //24-bit would be reported as 32
+          Result := 32;
+        NSWindowDepthSixtyfourBitRGB:
+          Result := 64;
+        NSWindowDepthOnehundredtwentyeightBitRGB:
+          Result := 1028;
+      else
+        Result := 32;
+      end;
+
     PLANES:
       Result := 1;
     SIZEPALETTE:
