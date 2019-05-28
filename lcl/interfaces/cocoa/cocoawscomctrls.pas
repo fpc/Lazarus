@@ -196,9 +196,9 @@ type
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
-    (*class procedure SetSort(const ALV: TCustomListView; const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
+    class procedure SetSort(const ALV: TCustomListView; const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
       const {%H-}ASortDirection: TSortDirection); override;
-    class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
+    (*class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
     class procedure SetViewStyle(const ALV: TCustomListView; const AValue: TViewStyle); override;*)
   end;
 
@@ -1467,6 +1467,25 @@ begin
   {$else}
   lCocoaLV.documentView.setNeedsDisplay_(true);
   {$endif}
+end;
+
+class procedure TCocoaWSCustomListView.SetSort(const ALV: TCustomListView;
+  const AType: TSortType; const AColumn: Integer;
+  const ASortDirection: TSortDirection);
+var
+  lTableLV: TCocoaTableListView;
+  lNSColumn: NSTableColumn;
+begin
+  if not CheckColumnParams(lTableLV, lNSColumn, ALV, AColumn) then Exit;
+  lTableLV.reloadData();
+  { //todo:
+    lNSColumn.setSortDescriptorPrototype(
+    NSSortDescriptor.sortDescriptorWithKey_ascending_selector(
+      NSSTR('none'),
+      ASortDirection=sdAscending,
+      objcselector('none:')
+    )
+  );}
 end;
 
 { TCocoaWSProgressBar }
