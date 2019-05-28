@@ -323,7 +323,7 @@ begin
   FMaster.Free;
   FMaster := nil;
   FMasterName := '';
-  if (AValue <> '') then FMaster := TPOFile.Create(AValue, True, False);
+  if (AValue <> '') then FMaster := TPOFile.Create(AValue, True);
   FMasterName := AValue;
 end;
 
@@ -354,7 +354,7 @@ begin
   FChild.Free;
   FChild := nil;
   FChildName := '';
-  if (AValue <> '') then FChild := TPOFile.Create(AValue, True, False);
+  if (AValue <> '') then FChild := TPOFile.Create(AValue, True);
   FChildName := AValue;
 end;
 
@@ -362,13 +362,13 @@ constructor TPoFamily.Create(const AMasterName, AChildName: String);
 begin
   if (AMasterName <> '') then
   begin
-    FMaster := TPOFile.Create(AMasterName, True, False);
+    FMaster := TPOFile.Create(AMasterName, True);
     FMasterName := AMasterName;
     //debugln('TPoFamily.Create: created ',FMasterName);
   end;
   if (AChildName <> '') then
   begin
-    FChild := TPOFile.Create(AChildName, True, False);
+    FChild := TPOFile.Create(AChildName, True);
     FChildName := AChildName;
     //debugln('TPoFamily.Create: created ',FChildName);
   end;
@@ -412,7 +412,6 @@ procedure TPoFamily.CheckFormatArgs(out ErrorCount, NonFuzzyErrorCount: Integer
 var
   i: Integer;
   CPoItem: TPOFileItem;
-  IsFuzzy: Boolean;
   IsBadFormat: Boolean;
 begin
   //debugln('TPoFamily.CheckFormatArgs');
@@ -421,15 +420,10 @@ begin
   NonFuzzyErrorCount := NoError;
   for i := 0 to FChild.Count - 1 do
   begin
-    //debugln('  i = ',DbgS(i));
-    //MPoItem := FMaster.PoItems[i];
     CPoItem := FChild.PoItems[i];
-    //CPoItem := FChild.FindPoItem(MPoItem.IdentifierLow);
     if Assigned(CPoItem) then
     begin
-      IsFuzzy := (Pos(sFuzzyFlag, CPoItem.Flags) > 0);
       IsBadFormat := (Pos(sBadFormatFlag, CPoItem.Flags) > 0);
-      //if (IgnoreFuzzyStrings and IsFuzzy) then debugln('Skipping fuzzy translation: ',CPoItem.Translation);
       if (Length(CPoItem.Translation) > 0) and IsBadFormat then
       begin
         if (ErrorCount = 0) then
@@ -441,13 +435,14 @@ begin
           ErrorLog.Add('');
         end;
         Inc(ErrorCount);
-        if not IsFuzzy then
+        if CPoItem.InitialFuzzyState = false then
           Inc(NonFuzzyErrorCount);
         ErrorLog.Add(Format(sIncompatibleFormatArgs,[CPoItem.LineNr]));
         ErrorLog.Add(Format(sFormatArgsID,[sCommentIdentifier, CPoItem.IdentifierLow]));
         ErrorLog.Add(Format(sFormatArgsValues,[sMsgID,CPoItem.Original,sOriginal]));
         ErrorLog.Add(Format(sFormatArgsValues,[sMsgStr,CPoItem.Translation,sTranslation]));
-        if IsFuzzy then ErrorLog.Add(sNoteTranslationIsFuzzy);
+        if CPoItem.InitialFuzzyState = true then
+          ErrorLog.Add(sNoteTranslationIsFuzzy);
         ErrorLog.Add('');
       end;
     end;

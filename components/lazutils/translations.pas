@@ -86,6 +86,8 @@ type
   { TPOFileItem }
 
   TPOFileItem = class
+  private
+    FInitialFuzzyState: boolean;
   public
     Tag: Integer;
     LineNr: Integer; // required by pochecker
@@ -101,13 +103,13 @@ type
     // Can accept the comma separated list of flags
     // Returns true if the Flags property has been modified
     function ModifyFlag(const AFlags: string; Check: boolean): boolean;
+    property InitialFuzzyState: boolean read FInitialFuzzyState;
   end;
 
   { TPOFile }
 
   TPOFile = class
   private
-    FAllowChangeFuzzyFlag: boolean;
     FStatisticsUpdated: boolean;
     FStatistics: TTranslationStatistics;
     function GetStatistics: TTranslationStatistics;
@@ -131,8 +133,8 @@ type
     procedure ReadPOText(AStream: TStream);
   public
     constructor Create(Full:Boolean=True);  //when loading from internal resource Full needs to be False
-    constructor Create(const AFilename: String; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
-    constructor Create(AStream: TStream; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
+    constructor Create(const AFilename: String; Full: boolean=false);
+    constructor Create(AStream: TStream; Full: boolean=false);
     destructor Destroy; override;
     procedure ReadPOText(const Txt: string);
     function Translate(const Identifier, OriginalValue: String): String;
@@ -718,21 +720,19 @@ constructor TPOFile.Create(Full:Boolean=True);
 begin
   inherited Create;
   FAllEntries:=Full;
-  // changing 'fuzzy' flag is allowed by default
-  FAllowChangeFuzzyFlag:=true;
   FItems:=TFPList.Create;
   FIdentifierLowToItem:=TStringToPointerTree.Create(true);
   FOriginalToItem:=TStringHashList.Create(true);
 end;
 
-constructor TPOFile.Create(const AFilename: String; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
+constructor TPOFile.Create(const AFilename: String; Full: boolean=false);
 var
   f: TStream;
 begin
   FPoName := AFilename;
   f := TFileStreamUTF8.Create(AFilename, fmOpenRead or fmShareDenyNone);
   try
-    Create(f, Full, AllowChangeFuzzyFlag);
+    Create(f, Full);
     if FHeader=nil then
       CreateHeader;
   finally
@@ -740,14 +740,11 @@ begin
   end;
 end;
 
-constructor TPOFile.Create(AStream: TStream; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
+constructor TPOFile.Create(AStream: TStream; Full: boolean=false);
 begin
   Create;
 
   FAllEntries := Full;
-  //AllowChangeFuzzyFlag allows not to change fuzzy flag for items with bad format arguments,
-  //so there can be arguments with only badformat flag set. This is needed for POChecker.
-  FAllowChangeFuzzyFlag := AllowChangeFuzzyFlag;
 
   ReadPOText(AStream);
 
@@ -1534,7 +1531,7 @@ begin
       end;
 
     //cleanup unneeded PreviousIDs in all files (base and translations)
-    if (Item.Translation = '') or (pos(sFuzzyFlag, Item.Flags) = 0) then
+    if (Item.Translation = '') or (Item.InitialFuzzyState = false) then
       if Item.PreviousID <> '' then
       begin
         Item.PreviousID := '';
@@ -1563,11 +1560,8 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
       begin
         if pos(sFuzzyFlag, Item.Flags) = 0 then
         begin
-          if FAllowChangeFuzzyFlag = true then
-          begin
-            Item.ModifyFlag(sFuzzyFlag, true);
-            FModified := true;
-          end;
+          Item.ModifyFlag(sFuzzyFlag, true);
+          FModified := true;
         end;
       end;
       HasBadFormatFlag := pos(sBadFormatFlag, Item.Flags) <> 0;
@@ -1622,6 +1616,7 @@ begin
     //These characters are not meant to be present in flags anyway according to examples in gettext documentation.
     TmpFlags := StringReplace(Flags, '"', '', [rfReplaceAll]);
     CurrentItem.ModifyFlag(lowercase(TmpFlags), true);
+    CurrentItem.FInitialFuzzyState := pos(sFuzzyFlag, CurrentItem.Flags) <> 0;
     CurrentItem.PreviousID := PreviousID;
     CurrentItem.LineNr := LineNr;
     FItems.Add(CurrentItem);
@@ -1717,6 +1712,7 @@ end;
 constructor TPOFileItem.Create(const TheIdentifierLow, TheOriginal,
   TheTranslated: string);
 begin
+  FInitialFuzzyState:=false;
   Duplicate:=false;
   IdentifierLow:=TheIdentifierLow;
   Original:=TheOriginal;
