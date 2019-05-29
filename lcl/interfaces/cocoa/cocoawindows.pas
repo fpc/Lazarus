@@ -1111,8 +1111,8 @@ begin
 
     if not isCallbackForSameObject(respInitCb, cbnew) then
     begin
-      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
       if Assigned(cbnew) then cbnew.BecomeFirstResponder;
+      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
     end;
   end;
 end;
