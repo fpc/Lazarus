@@ -157,6 +157,9 @@ function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
 function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt;
 function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUInteger): TShiftState;
 
+function NSObjectDebugStr(obj: NSObject): string;
+function CallbackDebugStr(cb: ICommonCallback): string;
+
 implementation
 
 uses
@@ -1732,6 +1735,31 @@ begin
   cb := NSObject(AFormHandle).lclGetCallback;
   if not Assigned(cb) then Exit;
   Result := cb.GetTarget;
+end;
+
+function NSObjectDebugStr(obj: NSObject): string;
+begin
+  Result := IntToStr(PtrUInt(obj));
+  if Assigned(obj) then
+    Result := Result +' '+obj.lclClassName+' lcl: '+CallbackDebugStr(obj.lclGetCallback);
+end;
+
+function CallbackDebugStr(cb: ICommonCallback): string;
+var
+  trg : TObject;
+begin
+  Result := IntToStr(PtrUInt(cb));
+  if Assigned(cb) then
+  begin
+    trg := cb.GetTarget;
+    Result := Result + ' trg: '+IntToStr(PtrUInt(trg));
+    if Assigned(trg) then
+    begin
+      Result := Result + ' '+trg.ClassName;
+      if trg is TWinControl then
+        Result := Result +' '+TWinControl(trg).Name;
+    end;
+  end;
 end;
 
 end.
