@@ -1032,10 +1032,11 @@ begin
     for i:=0 to Items.Count-1 do
     begin
       Item := TPOFileItem(FItems[i]);
-      if Item.Translation = '' then
+      // statistics are calculated with respect to actual translation file contents
+      if (Item.Translation = '') or (Item.VirtualTranslation = true) then
         Inc(FStatistics.Untranslated)
       else
-        if Pos(sFuzzyFlag, Item.Flags)<>0 then
+        if Item.InitialFuzzyState = true then
           Inc(FStatistics.Fuzzy)
         else
           Inc(FStatistics.Translated);
