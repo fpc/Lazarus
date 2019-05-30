@@ -424,7 +424,10 @@ begin
     if Assigned(CPoItem) then
     begin
       IsBadFormat := (Pos(sBadFormatFlag, CPoItem.Flags) > 0);
-      if (Length(CPoItem.Translation) > 0) and IsBadFormat then
+      //Check only non-virtual translations.
+      //Virtual translations can have formatting errors if copied from an item with no-object-pascal-format flag set.
+      //These translations will not be used anyway (they are fuzzy) and are physically missing in translation file.
+      if (CPoItem.VirtualTranslation = false) and (Length(CPoItem.Translation) > 0) and IsBadFormat then
       begin
         if (ErrorCount = 0) then
         begin

@@ -88,6 +88,7 @@ type
   TPOFileItem = class
   private
     FInitialFuzzyState: boolean;
+    FVirtualTranslation: boolean;
   public
     Tag: Integer;
     LineNr: Integer; // required by pochecker
@@ -104,6 +105,7 @@ type
     // Returns true if the Flags property has been modified
     function ModifyFlag(const AFlags: string; Check: boolean): boolean;
     property InitialFuzzyState: boolean read FInitialFuzzyState;
+    property VirtualTranslation: boolean read FVirtualTranslation;
   end;
 
   { TPOFile }
@@ -1645,6 +1647,11 @@ begin
       begin
         CurrentItem.Translation := FoundItem.Translation;
         CurrentItem.ModifyFlag(sFuzzyFlag, true);
+        //Mark an item with added translation with "virtual translation" flag.
+        //Useful e. g. to POChecker in order to allow to ignore such items when checking formatting,
+        //since they can contain formatting errors if copied from an item with no-object-pascal-format flag set.
+        //These translations will not be used anyway (they are fuzzy) and are physically missing in translation file.
+        CurrentItem.FVirtualTranslation := true;
         FModified := True;
       end;
     end;
@@ -1713,6 +1720,7 @@ constructor TPOFileItem.Create(const TheIdentifierLow, TheOriginal,
   TheTranslated: string);
 begin
   FInitialFuzzyState:=false;
+  FVirtualTranslation:=false;
   Duplicate:=false;
   IdentifierLow:=TheIdentifierLow;
   Original:=TheOriginal;
