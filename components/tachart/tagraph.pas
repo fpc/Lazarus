@@ -232,6 +232,7 @@ type
     FExtentBroadcaster: TBroadcaster;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
+    FOffsetInt: TPoint;      // Coordinates transformation
     FOnAfterPaint: TChartEvent;
     FOnExtentChanged: TChartEvent;
     FOnExtentChanging: TChartEvent;
@@ -604,6 +605,7 @@ begin
   end;
   FOffset.X := rX.CalcOffset(FScale.X);
   FOffset.Y := rY.CalcOffset(FScale.Y);
+  FOffsetInt := Point(0, 0);
   FScalingValid := True;
   rX.UpdateMinMax(@XImageToGraph);
   rY.UpdateMinMax(@YImageToGraph);
@@ -788,8 +790,8 @@ procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
 
   procedure OffsetDrawArea(ADX, ADY: Integer); inline;
   begin
-    FOffset.X += ADX;
-    FOffset.Y += ADY;
+    FOffsetInt.X += ADX;
+    FOffsetInt.Y += ADY;
     OffsetRect(FClipRect, ADX, ADY);
   end;
 
@@ -1892,7 +1894,7 @@ begin
   if not FScalingValid then
     raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'XGraphToImage']);
   {$ENDIF}
-  Result := ImgRoundChecked(FScale.X * AX + FOffset.X);
+  Result := ImgRoundChecked(FScale.X * AX + FOffset.X) + FOffsetInt.X;
 end;
 
 function TChart.XImageToGraph(AX: Integer): Double;
@@ -1901,7 +1903,7 @@ begin
   if not FScalingValid then
     raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'XImageToGraph']);
   {$ENDIF}
-  Result := (AX - FOffset.X) / FScale.X;
+  Result := ((AX - FOffsetInt.X) - FOffset.X) / FScale.X;
 end;
 
 function TChart.YGraphToImage(AY: Double): Integer;
@@ -1910,7 +1912,7 @@ begin
   if not FScalingValid then
     raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'YGraphToImage']);
   {$ENDIF}
-  Result := ImgRoundChecked(FScale.Y * AY + FOffset.Y);
+  Result := ImgRoundChecked(FScale.Y * AY + FOffset.Y) + FOffsetInt.Y;
 end;
 
 function TChart.YImageToGraph(AY: Integer): Double;
@@ -1919,7 +1921,7 @@ begin
   if not FScalingValid then
     raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'YImageToGraph']);
   {$ENDIF}
-  Result := (AY - FOffset.Y) / FScale.Y;
+  Result := ((AY - FOffsetInt.Y) - FOffset.Y) / FScale.Y;
 end;
 
 procedure TChart.RequestMultiPassScaling;
