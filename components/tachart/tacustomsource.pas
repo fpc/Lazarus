@@ -1679,7 +1679,7 @@ end;
 
 { Built-in sorting algorithm of the ChartSource - a QuickSort algorithm, copied
   from the Classes unit and modified. Modifications are:
-  - uses a DoCompare() virtual method for comparisons,
+  - uses an object's method for comparisons,
   - does NOT exchange equal items - this would have some side effect here: let's
     consider sorting by X, in the ascending order, for the following data points:
       X=3, Text='ccc'
@@ -1702,52 +1702,55 @@ end;
       X=2, Text='bbb 3'
       X=3, Text='ccc'
 }
-procedure TCustomSortedChartSource.DoSort;
-
-  procedure QuickSort(L, R: Longint);
-  var
-    I, J: Longint;
-    P, Q: Pointer;
-  begin
+procedure QuickSort(const List: PPointerList; const Compare: TChartSortCompare;
+  L, R: Longint); stdcall; // optimization: thanks to "stdcall", procedure
+                           // parameters don't need to be copied on the stack
+                           // in the "begin" code - they are already pushed on
+                           // the stack
+var
+  I, J: Longint;
+  P, Q: Pointer;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := List^[(L + R) div 2];
     repeat
-      I := L;
-      J := R;
-      P := FData.List^[(L + R) div 2];
-      repeat
-        while DoCompare(P, FData.List^[I]) > 0 do
-          I := I + 1;
-        while DoCompare(P, FData.List^[J]) < 0 do
-          J := J - 1;
-        if I <= J then
-        begin
-          // do NOT exchange equal items
-          if DoCompare(FData.List^[I], FData.List^[J]) <> 0 then begin
-            Q := FData.List^[I];
-            FData.List^[I] := FData.List^[J];
-            FData.List^[J] := Q;
-          end;
-          I := I + 1;
-          J := J - 1;
+      while Compare(P, List^[I]) > 0 do
+        I := I + 1;
+      while Compare(P, List^[J]) < 0 do
+        J := J - 1;
+      if I <= J then
+      begin
+        // do NOT exchange equal items
+        if Compare(List^[I], List^[J]) <> 0 then begin
+          Q := List^[I];
+          List^[I] := List^[J];
+          List^[J] := Q;
         end;
-      until I > J;
-      if J - L < R - I then
-      begin
-        if L < J then
-          QuickSort(L, J);
-        L := I;
-      end
-      else
-      begin
-        if I < R then
-          QuickSort(I, R);
-        R := J;
+        I := I + 1;
+        J := J - 1;
       end;
-    until L >= R;
-  end;
+    until I > J;
+    if J - L < R - I then
+    begin
+      if L < J then
+        QuickSort(List, Compare, L, J);
+      L := I;
+    end
+    else
+    begin
+      if I < R then
+        QuickSort(List, Compare, I, R);
+      R := J;
+    end;
+  until L >= R;
+end;
 
+procedure TCustomSortedChartSource.DoSort;
 begin
   if FData.Count < 2 then exit;
-  QuickSort(0, FData.Count - 1);
+  QuickSort(FData.List, @DoCompare, 0, FData.Count - 1);
 end;
 
 function TCustomSortedChartSource.GetCount: Integer;
