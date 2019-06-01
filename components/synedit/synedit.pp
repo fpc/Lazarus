@@ -7562,7 +7562,7 @@ end;
 procedure TCustomSynEdit.MarkTextAsSaved;
 begin
   TSynEditStringList(fLines).MarkSaved;
-  if FLeftGutter.Visible and FLeftGutter.ChangesPart(0).Visible then
+  if FLeftGutter.Visible and (FLeftGutter.ChangesPart(0) <> nil) and FLeftGutter.ChangesPart(0).Visible then
     InvalidateGutter; // Todo: Make the ChangeGutterPart an observer
 end;
 
