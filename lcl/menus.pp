@@ -212,8 +212,8 @@ type
     procedure SetShortCut(const AValue : TShortCut);
     procedure SetShortCutKey2(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
-    procedure UpdateImage;
-    procedure UpdateImages;
+    procedure UpdateImage(forced: Boolean = false);
+    procedure UpdateImages(forced: Boolean = false);
     procedure UpdateWSIcon;
     procedure ImageListChange(Sender: TObject);
   protected
