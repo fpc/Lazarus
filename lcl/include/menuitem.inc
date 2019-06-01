@@ -1458,7 +1458,7 @@ begin
   end;
 end;
 
-procedure TMenuItem.UpdateImage;
+procedure TMenuItem.UpdateImage(forced: Boolean);
 var
   ImgList: TCustomImageList;
 begin
@@ -1475,7 +1475,7 @@ begin
     end
     else
     begin
-      if (ImgList = nil) or (ImageIndex = -1) then
+      if (forced) or (ImgList = nil) or (ImageIndex = -1) then
       begin
         FreeAndNil(FBitmap);
         FBitmapIsValid := True;
@@ -1485,15 +1485,15 @@ begin
   end;
 end;
 
-procedure TMenuItem.UpdateImages;
+procedure TMenuItem.UpdateImages(forced: Boolean);
 var
   i: integer;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    UpdateImage;
+    UpdateImage(forced);
     for i := 0 to Count - 1 do
-      Items[i].UpdateImages;
+      Items[i].UpdateImages(forced);
   end;
 end;
 
