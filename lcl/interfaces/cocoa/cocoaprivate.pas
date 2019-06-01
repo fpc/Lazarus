@@ -881,7 +881,7 @@ begin
   {$ifdef BOOLFIX}
   SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
   {$else}
-  SetEnabled( AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
+  SetEnabled( AEnabled and NSViewIsLCLEnabled(self.superview) );
   {$endif}
   inherited lclSetEnabled(AEnabled);
 end;

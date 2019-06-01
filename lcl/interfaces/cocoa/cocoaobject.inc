@@ -99,7 +99,7 @@ begin
     {$ifdef BOOLFIX}
     event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, Ord(true));
     {$else}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDatee, NSDefaultRunLoopMode, true);
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, true);
     {$endif}
     if event <> nil then
     begin
