@@ -304,10 +304,12 @@ type
     function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
     procedure Put(Index: Integer; const S: String); override;
+    procedure SetTextStr(const Value: string); override;
     procedure SetUpdateState(AUpdating: Boolean); override;
   public
     constructor Create(ASource: TListChartSource);
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
@@ -323,6 +325,29 @@ begin
 end;
 
 { TListChartSourceStrings }
+
+procedure TListChartSourceStrings.Assign(Source: TPersistent);
+var
+  SaveSorted: Boolean;
+begin
+  BeginUpdate;
+  try
+    // new data may come unsorted - to avoid exception in TCustomSortedChartSource.
+    // ItemInsert() in this case, we disable FSorted temporarily - then we'll sort
+    // the whole dataset if needed
+    SaveSorted := FSource.FSorted;
+    try
+      FSource.FSorted := false;
+      inherited Assign(Source);
+    finally
+      FSource.FSorted := SaveSorted;
+    end;
+
+    if FSource.IsSorted then FSource.Sort;
+  finally
+    EndUpdate;
+  end;
+end;
 
 procedure TListChartSourceStrings.Clear;
 begin
@@ -498,6 +523,29 @@ begin
     Parse(S, FSource[Index]);
   finally
     FSource.EndUpdate;
+  end;
+end;
+
+procedure TListChartSourceStrings.SetTextStr(const Value: string);
+var
+  SaveSorted: Boolean;
+begin
+  BeginUpdate;
+  try
+    // new data may come unsorted - to avoid exception in TCustomSortedChartSource.
+    // ItemInsert() in this case, we disable FSorted temporarily - then we'll sort
+    // the whole dataset if needed
+    SaveSorted := FSource.FSorted;
+    try
+      FSource.FSorted := false;
+      inherited SetTextStr(Value);
+    finally
+      FSource.FSorted := SaveSorted;
+    end;
+
+    if FSource.IsSorted then FSource.Sort;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -741,13 +789,7 @@ end;
 procedure TListChartSource.SetDataPoints(const AValue: TStrings);
 begin
   if FDataPoints = AValue then exit;
-  BeginUpdate;
-  try
-    FDataPoints.Assign(AValue);
-    if IsSorted then Sort;
-  finally
-    EndUpdate;
-  end;
+  FDataPoints.Assign(AValue);
 end;
 
 function TListChartSource.SetText(AIndex: Integer; const AValue: String): Integer;
