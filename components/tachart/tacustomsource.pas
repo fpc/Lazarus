@@ -1785,20 +1785,21 @@ function TCustomSortedChartSource.ItemFind(AItem: PChartDataItem; L: Integer = 0
 var
   I: Integer;
 begin
-  if not IsSorted then
-    raise ESortError.CreateFmt('%0:s.ItemFind can be called only for sorted source', [ClassName]);
-
+  if L < 0 then
+    L := 0;
   if R >= FData.Count then
     R := FData.Count - 1;
 
   // special optimization for adding sorted data at the end
-  if R >= 0 then
-    if DoCompare(FData.List^[R], AItem) <= 0 then
-      exit(R + 1);
+  if L > R then
+    exit(L);
+  if DoCompare(FData.List^[R], AItem) <= 0 then
+    exit(R + 1);
+
+  if not IsSorted then
+    raise ESortError.CreateFmt('%0:s.ItemFind failed, because source is not sorted', [ClassName]);
 
   // use binary search
-  if L < 0 then
-    L := 0;
   while L <= R do
   begin
     I := L + (R - L) div 2;
