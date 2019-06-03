@@ -173,10 +173,6 @@ void QTextLayout_preeditAreaText(QTextLayoutH handle, PWideString retval)
 	copyQStringToPWideString(t_retval, retval);
 }
 
-void QTextLayout_clearAdditionalFormats(QTextLayoutH handle)
-{
-	((QTextLayout *)handle)->clearAdditionalFormats();
-}
 
 void QTextLayout_setCacheEnabled(QTextLayoutH handle, bool enable)
 {
@@ -303,6 +299,50 @@ void QTextLayout_glyphRuns(QTextLayoutH handle, PPtrIntArray retval, int from, i
 void QTextLayout_setFlags(QTextLayoutH handle, int flags)
 {
 	((QTextLayout *)handle)->setFlags(flags);
+}
+
+void QTextLayout_clearFormats(QTextLayoutH handle)
+{
+	((QTextLayout *)handle)->clearFormats();
+}
+
+void QTextLayout_formats(QTextLayoutH handle, PPtrIntArray retval)
+{
+  QVector<QTextLayout::FormatRange> t_retval;
+  QVector<TQTextLayoutFormatRange> t_trans;
+	t_retval = ((QTextLayout *)handle)->formats();
+  int len = t_retval.size();
+  t_trans.resize(len);
+  setPtrIntArrayLength(retval, len);
+  if (len>0) {
+    PTRINT *array = (PTRINT *)getPtrIntArrayAddr(retval);
+    for (int i = 0; i < len; i++) {
+      t_trans[i].start = t_retval.at(i).start;
+      t_trans[i].length = t_retval.at(i).length;
+      t_trans[i].format = (const QTextCharFormatH) &t_retval.at(i).format;
+      array[i] = (PTRINT) (&t_trans.at(i));
+    }
+ }
+}
+
+void QTextLayout_setFormats(QTextLayoutH handle, PPtrIntArray fmts)
+{
+  QVector<QTextLayout::FormatRange> t_formats;
+  QVector<TQTextLayoutFormatRange*> t_trans;
+
+  int len = getPtrIntArrayLength(fmts);
+  t_formats.resize(len);
+  t_trans.resize(len);
+  if (len>0) {
+    PTRINT *array = (PTRINT *)getPtrIntArrayAddr(fmts);
+    for (int i = 0; i < len; i++) {
+      t_trans[i] = reinterpret_cast <TQTextLayoutFormatRange*>(array[i]);
+      t_formats[i].start = t_trans[i]->start;
+      t_formats[i].length = t_trans[i]->length;
+      t_formats[i].format = *(const QTextCharFormat*) t_trans[i]->format;
+    }
+  }
+  ((QTextLayout *)handle)->setFormats(t_formats);
 }
 
 QTextLineH QTextLine_Create()
@@ -446,4 +486,5 @@ void QTextLine_glyphRuns(QTextLineH handle, PPtrIntArray retval, int from, int l
 	t_retval = ((QTextLine *)handle)->glyphRuns(from, length);
 	copyQListTemplateToPtrIntArrayWithNew(t_retval, retval);
 }
+
 

@@ -71,6 +71,11 @@ void QTextFormat_merge(QTextFormatH handle, const QTextFormatH other)
 	((QTextFormat *)handle)->merge(*(const QTextFormat*)other);
 }
 
+bool QTextFormat_isEmpty(QTextFormatH handle)
+{
+	return (bool) ((QTextFormat *)handle)->isEmpty();
+}
+
 bool QTextFormat_isValid(QTextFormatH handle)
 {
 	return (bool) ((QTextFormat *)handle)->isValid();
@@ -552,20 +557,6 @@ void QTextCharFormat_anchorHref(QTextCharFormatH handle, PWideString retval)
 {
 	QString t_retval;
 	t_retval = ((QTextCharFormat *)handle)->anchorHref();
-	copyQStringToPWideString(t_retval, retval);
-}
-
-void QTextCharFormat_setAnchorName(QTextCharFormatH handle, PWideString name)
-{
-	QString t_name;
-	copyPWideStringToQString(name, t_name);
-	((QTextCharFormat *)handle)->setAnchorName(t_name);
-}
-
-void QTextCharFormat_anchorName(QTextCharFormatH handle, PWideString retval)
-{
-	QString t_retval;
-	t_retval = ((QTextCharFormat *)handle)->anchorName();
 	copyQStringToPWideString(t_retval, retval);
 }
 

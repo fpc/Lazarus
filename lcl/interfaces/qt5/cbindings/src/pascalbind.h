@@ -93,6 +93,14 @@ typedef struct {
 } TQColor;
 typedef TQColor *PQColor;
 
+typedef struct {
+  int start;
+  int length;
+  QTextCharFormatH format;
+} TQTextLayoutFormatRange;
+typedef TQTextLayoutFormatRange *PQTextLayoutFormatRange;
+
+
 #if defined DARWIN
 typedef struct CGImage *CGImageRef;
 #endif

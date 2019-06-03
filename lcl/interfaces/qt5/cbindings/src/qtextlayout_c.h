@@ -45,7 +45,6 @@ C_EXPORT const QTextOptionH QTextLayout_textOption(QTextLayoutH handle);
 C_EXPORT void QTextLayout_setPreeditArea(QTextLayoutH handle, int position, PWideString text);
 C_EXPORT int QTextLayout_preeditAreaPosition(QTextLayoutH handle);
 C_EXPORT void QTextLayout_preeditAreaText(QTextLayoutH handle, PWideString retval);
-C_EXPORT void QTextLayout_clearAdditionalFormats(QTextLayoutH handle);
 C_EXPORT void QTextLayout_setCacheEnabled(QTextLayoutH handle, bool enable);
 C_EXPORT bool QTextLayout_cacheEnabled(QTextLayoutH handle);
 C_EXPORT void QTextLayout_setCursorMoveStyle(QTextLayoutH handle, Qt::CursorMoveStyle style);
@@ -71,6 +70,11 @@ C_EXPORT qreal QTextLayout_minimumWidth(QTextLayoutH handle);
 C_EXPORT qreal QTextLayout_maximumWidth(QTextLayoutH handle);
 C_EXPORT void QTextLayout_glyphRuns(QTextLayoutH handle, PPtrIntArray retval, int from, int length);
 C_EXPORT void QTextLayout_setFlags(QTextLayoutH handle, int flags);
+
+C_EXPORT void QTextLayout_clearFormats(QTextLayoutH handle);
+C_EXPORT void QTextLayout_formats(QTextLayoutH handle, PPtrIntArray retval);
+C_EXPORT void QTextLayout_setFormats(QTextLayoutH handle, PPtrIntArray fmts);
+
 C_EXPORT QTextLineH QTextLine_Create();
 C_EXPORT void QTextLine_Destroy(QTextLineH handle);
 C_EXPORT bool QTextLine_isValid(QTextLineH handle);
