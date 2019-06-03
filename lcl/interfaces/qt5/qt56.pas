@@ -8157,6 +8157,7 @@ function QTextFormat_Create(_type: Integer): QTextFormatH; cdecl; external Qt5Pa
 function QTextFormat_Create(rhs: QTextFormatH): QTextFormatH; cdecl; external Qt5PasLib name 'QTextFormat_Create3';
 procedure QTextFormat_swap(handle: QTextFormatH; other: QTextFormatH); cdecl; external Qt5PasLib name 'QTextFormat_swap';
 procedure QTextFormat_merge(handle: QTextFormatH; other: QTextFormatH); cdecl; external Qt5PasLib name 'QTextFormat_merge';
+function QTextFormat_isEmpty(handle: QTextFormatH): Boolean; cdecl; external Qt5PasLib name 'QTextFormat_isEmpty';
 function QTextFormat_isValid(handle: QTextFormatH): Boolean; cdecl; external Qt5PasLib name 'QTextFormat_isValid';
 function QTextFormat_type(handle: QTextFormatH): Integer; cdecl; external Qt5PasLib name 'QTextFormat_type';
 function QTextFormat_objectIndex(handle: QTextFormatH): Integer; cdecl; external Qt5PasLib name 'QTextFormat_objectIndex';
@@ -8252,8 +8253,6 @@ procedure QTextCharFormat_setAnchor(handle: QTextCharFormatH; anchor: Boolean); 
 function QTextCharFormat_isAnchor(handle: QTextCharFormatH): Boolean; cdecl; external Qt5PasLib name 'QTextCharFormat_isAnchor';
 procedure QTextCharFormat_setAnchorHref(handle: QTextCharFormatH; value: PWideString); cdecl; external Qt5PasLib name 'QTextCharFormat_setAnchorHref';
 procedure QTextCharFormat_anchorHref(handle: QTextCharFormatH; retval: PWideString); cdecl; external Qt5PasLib name 'QTextCharFormat_anchorHref';
-procedure QTextCharFormat_setAnchorName(handle: QTextCharFormatH; name: PWideString); cdecl; external Qt5PasLib name 'QTextCharFormat_setAnchorName';
-procedure QTextCharFormat_anchorName(handle: QTextCharFormatH; retval: PWideString); cdecl; external Qt5PasLib name 'QTextCharFormat_anchorName';
 procedure QTextCharFormat_setAnchorNames(handle: QTextCharFormatH; names: QStringListH); cdecl; external Qt5PasLib name 'QTextCharFormat_setAnchorNames';
 procedure QTextCharFormat_anchorNames(handle: QTextCharFormatH; retval: QStringListH); cdecl; external Qt5PasLib name 'QTextCharFormat_anchorNames';
 procedure QTextCharFormat_setTableCellRowSpan(handle: QTextCharFormatH; tableCellRowSpan: Integer); cdecl; external Qt5PasLib name 'QTextCharFormat_setTableCellRowSpan';
@@ -8725,6 +8724,13 @@ type
   QTextLineCursorPosition = ( // QTextLine::CursorPosition (1)
     QTextLineCursorBetweenCharacters, QTextLineCursorOnCharacter );
 
+  PQTextLayoutFormat = ^TQTextLayoutFormat;
+  TQTextLayoutFormat = packed record
+    start: longint;
+    length: longint;
+    format: QTextCharFormatH;
+  end;
+
 function QTextInlineObject_Create(): QTextInlineObjectH; cdecl; external Qt5PasLib name 'QTextInlineObject_Create';
 procedure QTextInlineObject_Destroy(handle: QTextInlineObjectH); cdecl; external Qt5PasLib name 'QTextInlineObject_Destroy'; 
 function QTextInlineObject_isValid(handle: QTextInlineObjectH): Boolean; cdecl; external Qt5PasLib name 'QTextInlineObject_isValid';
@@ -8756,7 +8762,6 @@ function QTextLayout_textOption(handle: QTextLayoutH): QTextOptionH; cdecl; exte
 procedure QTextLayout_setPreeditArea(handle: QTextLayoutH; position: Integer; text: PWideString); cdecl; external Qt5PasLib name 'QTextLayout_setPreeditArea';
 function QTextLayout_preeditAreaPosition(handle: QTextLayoutH): Integer; cdecl; external Qt5PasLib name 'QTextLayout_preeditAreaPosition';
 procedure QTextLayout_preeditAreaText(handle: QTextLayoutH; retval: PWideString); cdecl; external Qt5PasLib name 'QTextLayout_preeditAreaText';
-procedure QTextLayout_clearAdditionalFormats(handle: QTextLayoutH); cdecl; external Qt5PasLib name 'QTextLayout_clearAdditionalFormats';
 procedure QTextLayout_setCacheEnabled(handle: QTextLayoutH; enable: Boolean); cdecl; external Qt5PasLib name 'QTextLayout_setCacheEnabled';
 function QTextLayout_cacheEnabled(handle: QTextLayoutH): Boolean; cdecl; external Qt5PasLib name 'QTextLayout_cacheEnabled';
 procedure QTextLayout_setCursorMoveStyle(handle: QTextLayoutH; style: QtCursorMoveStyle); cdecl; external Qt5PasLib name 'QTextLayout_setCursorMoveStyle';
@@ -8782,6 +8787,10 @@ function QTextLayout_minimumWidth(handle: QTextLayoutH): qreal; cdecl; external 
 function QTextLayout_maximumWidth(handle: QTextLayoutH): qreal; cdecl; external Qt5PasLib name 'QTextLayout_maximumWidth';
 procedure QTextLayout_glyphRuns(handle: QTextLayoutH; retval: PPtrIntArray; from: Integer = -1; length: Integer = -1); cdecl; external Qt5PasLib name 'QTextLayout_glyphRuns';
 procedure QTextLayout_setFlags(handle: QTextLayoutH; flags: Integer); cdecl; external Qt5PasLib name 'QTextLayout_setFlags';
+
+procedure QTextLayout_clearFormats(handle: QTextLayoutH); cdecl; external Qt5PasLib name 'QTextLayout_clearFormats';
+procedure QTextLayout_formats(handle: QTextLayoutH; retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QTextLayout_formats';
+procedure QTextLayout_setFormats(handle: QTextLayoutH; formats: PPtrIntArray); cdecl; external Qt5PasLib name 'QTextLayout_setFormats';
 
 function QTextLine_Create(): QTextLineH; cdecl; external Qt5PasLib name 'QTextLine_Create';
 procedure QTextLine_Destroy(handle: QTextLineH); cdecl; external Qt5PasLib name 'QTextLine_Destroy'; 
