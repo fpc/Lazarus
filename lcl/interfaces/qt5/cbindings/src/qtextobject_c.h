@@ -61,6 +61,7 @@ C_EXPORT int QTextBlock_lineCount(QTextBlockH handle);
 C_EXPORT void QTextBlock_next(QTextBlockH handle, QTextBlockH retval);
 C_EXPORT void QTextBlock_previous(QTextBlockH handle, QTextBlockH retval);
 C_EXPORT int QTextBlock_fragmentIndex(QTextBlockH handle);
+C_EXPORT void QTextBlock_textFormats(QTextBlockH handle, PPtrIntArray retval);
 C_EXPORT QTextFragmentH QTextFragment_Create();
 C_EXPORT void QTextFragment_Destroy(QTextFragmentH handle);
 C_EXPORT QTextFragmentH QTextFragment_Create2(const QTextFragmentH o);

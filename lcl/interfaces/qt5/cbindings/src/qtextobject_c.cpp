@@ -245,6 +245,25 @@ int QTextBlock_fragmentIndex(QTextBlockH handle)
 	return (int) ((QTextBlock *)handle)->fragmentIndex();
 }
 
+void QTextBlock_textFormats(QTextBlockH handle, PPtrIntArray retval)
+{
+  QVector<QTextLayout::FormatRange> t_retval;
+  QVector<TQTextLayoutFormatRange> t_trans;
+	t_retval = ((QTextBlock *)handle)->textFormats();
+  int len = t_retval.size();
+  t_trans.resize(len);
+  setPtrIntArrayLength(retval, len);
+  if (len>0) {
+    PTRINT *array = (PTRINT *)getPtrIntArrayAddr(retval);
+    for (int i = 0; i < len; i++) {
+      t_trans[i].start = t_retval.at(i).start;
+      t_trans[i].length = t_retval.at(i).length;
+      t_trans[i].format = (const QTextCharFormatH) &t_retval.at(i).format;
+      array[i] = (PTRINT) (&t_trans.at(i));
+    }
+ }
+}
+
 QTextFragmentH QTextFragment_Create()
 {
 	return (QTextFragmentH) new QTextFragment();
