@@ -8871,6 +8871,7 @@ function QTextBlock_lineCount(handle: QTextBlockH): Integer; cdecl; external Qt5
 procedure QTextBlock_next(handle: QTextBlockH; retval: QTextBlockH); cdecl; external Qt5PasLib name 'QTextBlock_next';
 procedure QTextBlock_previous(handle: QTextBlockH; retval: QTextBlockH); cdecl; external Qt5PasLib name 'QTextBlock_previous';
 function QTextBlock_fragmentIndex(handle: QTextBlockH): Integer; cdecl; external Qt5PasLib name 'QTextBlock_fragmentIndex';
+procedure QTextBlock_textFormats(handle: QTextBlockH; retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QTextBlock_textFormats';
 
 function QTextFragment_Create(): QTextFragmentH; cdecl; external Qt5PasLib name 'QTextFragment_Create';
 procedure QTextFragment_Destroy(handle: QTextFragmentH); cdecl; external Qt5PasLib name 'QTextFragment_Destroy'; 
