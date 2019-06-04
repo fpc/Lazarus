@@ -7251,6 +7251,7 @@ begin
     end;
     //writeln('TMainIDE.DoRunProjectWithoutDebug ExeFile=',ExeFile);
     Process.Executable := ExeFile;
+    Process.Parameters.Assign(Params);
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
     if ARunMode<>nil then
