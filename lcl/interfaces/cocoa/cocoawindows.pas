@@ -222,6 +222,8 @@ type
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
     function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
+    procedure setNeedsDisplay_(aflag: boolean); override;
+    procedure setNeedsDisplayInRect(arect: NSRect); override;
   end;
 
 function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
@@ -1088,6 +1090,18 @@ begin
   if (Length(lFiles) > 0) and (wincallback <> nil)  then
     wincallback.DropFiles(lFiles);
   Result := True;
+end;
+
+procedure TCocoaWindowContent.setNeedsDisplay_(aflag: boolean);
+begin
+  inherited setNeedsDisplay;
+  if Assigned(overlay) then overlay.setNeedsDisplay_(aflag);
+end;
+
+procedure TCocoaWindowContent.setNeedsDisplayInRect(arect: NSRect);
+begin
+  inherited setNeedsDisplayInRect(arect);
+  if Assigned(overlay) then overlay.setNeedsDisplayInRect(arect);
 end;
 
 function TCocoaWindow.makeFirstResponder(r: NSResponder): LCLObjCBoolean;
