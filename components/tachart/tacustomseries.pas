@@ -844,7 +844,7 @@ begin
 
   FListener := TListener.Create(@FSource,  @SourceChanged);
   GetXYCountNeeded(nx, ny);
-  FBuiltinSource := TListChartSource.Create(Self, nx, ny);
+  FBuiltinSource := TBuiltinListChartSource.Create(Self, nx, ny);
   FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
   FBuiltinSource.Broadcaster.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);

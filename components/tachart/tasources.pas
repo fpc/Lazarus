@@ -25,8 +25,6 @@ type
   TListChartSource = class(TCustomSortedChartSource)
   private
     FDataPoints: TStrings;
-    FXCountMin: Cardinal;
-    FYCountMin: Cardinal;
     procedure ClearCaches;
     function NewItem: PChartDataItem;
     procedure SetDataPoints(const AValue: TStrings);
@@ -40,8 +38,7 @@ type
       EXListEmptyError = class(EChartError);
       EYListEmptyError = class(EChartError);
   public
-    constructor Create(AOwner: TComponent); override; overload;
-    constructor Create(AOwner: TComponent; AXCountMin, AYCountMin: Cardinal); overload;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
     function Add(
@@ -56,7 +53,7 @@ type
       const AX: Double; const AY: array of Double; const ALabel: String = '';
       const AColor: TChartColor = clTAColor): Integer;
     procedure Clear;
-    procedure CopyFrom(ASource: TCustomChartSource);
+    procedure CopyFrom(ASource: TCustomChartSource); virtual;
     procedure Delete(AIndex: Integer);
     function SetColor(AIndex: Integer; AColor: TChartColor): Integer;
     function SetText(AIndex: Integer; const AValue: String): Integer;
@@ -76,6 +73,21 @@ type
     property Sorted;
     property SortIndex;
     property OnCompare;
+  end;
+
+  { TBuiltinListChartSource }
+
+  TBuiltinListChartSource = class(TListChartSource)
+  private
+    FXCountMin: Cardinal;
+    FYCountMin: Cardinal;
+  protected
+    procedure SetXCount(AValue: Cardinal); override;
+    procedure SetYCount(AValue: Cardinal); override;
+  public
+    constructor Create(AOwner: TComponent; AXCountMin, AYCountMin: Cardinal); reintroduce; //overload;
+  public
+    procedure CopyFrom(ASource: TCustomChartSource); override;
   end;
 
   { TSortedChartSource }
@@ -688,11 +700,7 @@ var
   i: Integer;
   pcd: PChartDataItem;
 begin
-  if ASource.XCount < FXCountMin then
-    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
-  if ASource.YCount < FYCountMin then
-    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'y']);
-
+  if ASource = Self then exit;
   BeginUpdate;
   try
     Clear;
@@ -727,17 +735,6 @@ begin
   ClearCaches;
 end;
 
-constructor TListChartSource.Create(AOwner: TComponent; AXCountMin, AYCountMin: Cardinal);
-begin
-  Create(AOwner);
-  FXCountMin := AXCountMin;
-  FYCountMin := AYCountMin;
-  if FXCount < FXCountMin then
-    FXCount := FXCountMin;
-  if FYCount < FYCountMin then
-    FYCount := FYCountMin;
-end;
-
 procedure TListChartSource.Delete(AIndex: Integer);
 begin
   // Optimization
@@ -764,7 +761,8 @@ end;
 
 destructor TListChartSource.Destroy;
 begin
-  Clear;
+  if Assigned(FData) then
+    Clear;
   FreeAndNil(FDataPoints);
   inherited;
 end;
@@ -806,8 +804,6 @@ procedure TListChartSource.SetXCount(AValue: Cardinal);
 var
   i, nx: Integer;
 begin
-  if AValue < FXCountMin then
-    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
   if AValue = FXCount then exit;
   FXCount := AValue;
   nx := Max(FXCount - 1, 0);
@@ -864,8 +860,6 @@ procedure TListChartSource.SetYCount(AValue: Cardinal);
 var
   i, ny: Integer;
 begin
-  if AValue < FYCountMin then
-    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'y']);
   if AValue = FYCount then exit;
   FYCount := AValue;
   ny := Max(FYCount - 1, 0);
@@ -940,6 +934,43 @@ procedure TListChartSource.Loaded;
 begin
   inherited; // clears csLoading in ComponentState
   (FDataPoints as TListChartSourceStrings).LoadingFinished;
+end;
+
+
+{ TBuiltinListChartSource }
+
+constructor TBuiltinListChartSource.Create(AOwner: TComponent; AXCountMin, AYCountMin: Cardinal);
+begin
+  inherited Create(AOwner);
+  FXCountMin := AXCountMin;
+  FYCountMin := AYCountMin;
+  if FXCount < FXCountMin then
+    FXCount := FXCountMin;
+  if FYCount < FYCountMin then
+    FYCount := FYCountMin;
+end;
+
+procedure TBuiltinListChartSource.CopyFrom(ASource: TCustomChartSource);
+begin
+  if ASource.XCount < FXCountMin then
+    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
+  if ASource.YCount < FYCountMin then
+    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'y']);
+  inherited;
+end;
+
+procedure TBuiltinListChartSource.SetXCount(AValue: Cardinal);
+begin
+  if AValue < FXCountMin then
+    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
+  inherited;
+end;
+
+procedure TBuiltinListChartSource.SetYCount(AValue: Cardinal);
+begin
+  if AValue < FYCountMin then
+    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'y']);
+  inherited;
 end;
 
 { TSortedChartSource }
