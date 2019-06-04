@@ -1954,6 +1954,14 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+  WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+begin
+  Result:=PaintDC<>0;
+  if Result then
+    OriginDiff:=TCocoaContext(PaintDC).WindowOfs;
+end;
+
 function TCocoaWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
   ctx: TCocoaContext;
