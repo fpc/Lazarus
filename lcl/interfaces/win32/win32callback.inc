@@ -740,13 +740,13 @@ begin
   with LMScroll do
   begin
     Msg := LMsg;
-    ScrollCode := LOWORD(WParam);
+    ScrollCode := LOWORD(LongInt(WParam));
     SmallPos := 0;
     ScrollBar := HWND(LParam);
     Pos := 0;
   end;
 
-  if not (LOWORD(WParam) in [SB_THUMBTRACK, SB_THUMBPOSITION])
+  if not (LOWORD(LongInt(WParam)) in [SB_THUMBTRACK, SB_THUMBPOSITION])
   then begin
     WindowInfo^.TrackValid := False;
     Exit;
@@ -774,23 +774,23 @@ begin
   // MWE.
 
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
-  if LOWORD(WParam) = SB_THUMBTRACK
+  if LOWORD(LongInt(WParam)) = SB_THUMBTRACK
   then begin
     ScrollInfo.fMask := SIF_TRACKPOS;
     // older windows versions may not support trackpos, so fill it with some default
     if WindowInfo^.TrackValid
-    then ScrollInfo.nTrackPos := Integer(WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
-    else ScrollInfo.nTrackPos := HIWORD(WParam);
+    then ScrollInfo.nTrackPos := Integer(WindowInfo^.TrackPos and $FFFF0000) or HIWORD(LongInt(WParam))
+    else ScrollInfo.nTrackPos := HIWORD(LongInt(WParam));
   end
   else begin
     ScrollInfo.fMask := SIF_POS;
-    ScrollInfo.nPos := HIWORD(WParam);
+    ScrollInfo.nPos := HIWORD(LongInt(WParam));
   end;
 
   if LParam <> 0
   then begin
     // The message is send by a scrollbar
-    GetScrollInfo(HWND(LParam), SB_CTL, ScrollInfo);
+    GetScrollInfo(HWND(LongInt(LParam)), SB_CTL, ScrollInfo);
   end
   else begin
     // The message is send by a window's standard scrollbar
@@ -799,7 +799,7 @@ begin
     else GetScrollInfo(Window, SB_VERT, ScrollInfo);
   end;
 
-  if LOWORD(WParam) = SB_THUMBTRACK
+  if LOWORD(LongInt(WParam)) = SB_THUMBTRACK
   then begin
     LMScroll.Pos := ScrollInfo.nTrackPos;
     WindowInfo^.TrackPos := ScrollInfo.nTrackPos;
@@ -807,8 +807,8 @@ begin
   end
   else begin
     if WindowInfo^.TrackValid
-    then LMScroll.Pos := LongInt(WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
-    else LMScroll.Pos := (ScrollInfo.nPos and $FFFF0000) or HIWORD(WParam);
+    then LMScroll.Pos := LongInt(WindowInfo^.TrackPos and $FFFF0000) or HIWORD(LongInt(WParam))
+    else LMScroll.Pos := (ScrollInfo.nPos and $FFFF0000) or HIWORD(LongInt(WParam));
   end;
 
   if LMScroll.Pos < High(LMScroll.SmallPos)
