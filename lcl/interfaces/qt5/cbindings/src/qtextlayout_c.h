@@ -72,8 +72,10 @@ C_EXPORT void QTextLayout_glyphRuns(QTextLayoutH handle, PPtrIntArray retval, in
 C_EXPORT void QTextLayout_setFlags(QTextLayoutH handle, int flags);
 
 C_EXPORT void QTextLayout_clearFormats(QTextLayoutH handle);
-C_EXPORT void QTextLayout_formats(QTextLayoutH handle, PPtrIntArray retval);
-C_EXPORT void QTextLayout_setFormats(QTextLayoutH handle, PPtrIntArray fmts);
+/* utility function, there's no direct Qt mapping */
+C_EXPORT int QTextLayout_formatsCount(QTextLayoutH handle);
+/* utility function, there's no direct Qt mapping */
+C_EXPORT int QTextLayout_formatsRanges(QTextLayoutH handle, PTextRange ranges, int maxCount);
 
 C_EXPORT QTextLineH QTextLine_Create();
 C_EXPORT void QTextLine_Destroy(QTextLineH handle);

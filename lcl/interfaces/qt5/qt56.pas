@@ -8747,6 +8747,15 @@ function QTextInlineObject_textPosition(handle: QTextInlineObjectH): Integer; cd
 function QTextInlineObject_formatIndex(handle: QTextInlineObjectH): Integer; cdecl; external Qt5PasLib name 'QTextInlineObject_formatIndex';
 procedure QTextInlineObject_format(handle: QTextInlineObjectH; retval: QTextFormatH); cdecl; external Qt5PasLib name 'QTextInlineObject_format';
 
+type
+  TTextRange = packed record
+    start : longint;
+    length : longint;
+  end;
+  PTextRange = ^TTextRange;
+  TTextRangeArray = array[word] of TTextRange;
+  PTextRangeArray = ^TTextRangeArray;
+
 function QTextLayout_Create(): QTextLayoutH; cdecl; external Qt5PasLib name 'QTextLayout_Create';
 procedure QTextLayout_Destroy(handle: QTextLayoutH); cdecl; external Qt5PasLib name 'QTextLayout_Destroy'; 
 function QTextLayout_Create(text: PWideString): QTextLayoutH; cdecl; external Qt5PasLib name 'QTextLayout_Create2';
@@ -8789,8 +8798,8 @@ procedure QTextLayout_glyphRuns(handle: QTextLayoutH; retval: PPtrIntArray; from
 procedure QTextLayout_setFlags(handle: QTextLayoutH; flags: Integer); cdecl; external Qt5PasLib name 'QTextLayout_setFlags';
 
 procedure QTextLayout_clearFormats(handle: QTextLayoutH); cdecl; external Qt5PasLib name 'QTextLayout_clearFormats';
-procedure QTextLayout_formats(handle: QTextLayoutH; retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QTextLayout_formats';
-procedure QTextLayout_setFormats(handle: QTextLayoutH; formats: PPtrIntArray); cdecl; external Qt5PasLib name 'QTextLayout_setFormats';
+function QTextLayout_formatsCount(handle: QTextLayoutH): longint; cdecl; external Qt5PasLib name 'QTextLayout_formatsCount';
+function QTextLayout_formatsRanges(handle: QTextLayoutH; ranges: PTextRangeArray; longint: integer): longint; cdecl; external Qt5PasLib name 'QTextLayout_formatsRanges';
 
 function QTextLine_Create(): QTextLineH; cdecl; external Qt5PasLib name 'QTextLine_Create';
 procedure QTextLine_Destroy(handle: QTextLineH); cdecl; external Qt5PasLib name 'QTextLine_Destroy'; 
@@ -8871,7 +8880,9 @@ function QTextBlock_lineCount(handle: QTextBlockH): Integer; cdecl; external Qt5
 procedure QTextBlock_next(handle: QTextBlockH; retval: QTextBlockH); cdecl; external Qt5PasLib name 'QTextBlock_next';
 procedure QTextBlock_previous(handle: QTextBlockH; retval: QTextBlockH); cdecl; external Qt5PasLib name 'QTextBlock_previous';
 function QTextBlock_fragmentIndex(handle: QTextBlockH): Integer; cdecl; external Qt5PasLib name 'QTextBlock_fragmentIndex';
-procedure QTextBlock_textFormats(handle: QTextBlockH; retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QTextBlock_textFormats';
+
+function QTextBlock_textFormatsCount(handle: QTextBlockH): longint; cdecl; external Qt5PasLib name 'QTextBlock_textFormatsCount';
+function QTextBlock_textFormatsRanges(handle: QTextBlockH; ranges: PTextRangeArray; longint: integer): longint; cdecl; external Qt5PasLib name 'QTextBlock_textFormatsRanges';
 
 function QTextFragment_Create(): QTextFragmentH; cdecl; external Qt5PasLib name 'QTextFragment_Create';
 procedure QTextFragment_Destroy(handle: QTextFragmentH); cdecl; external Qt5PasLib name 'QTextFragment_Destroy'; 

@@ -245,24 +245,30 @@ int QTextBlock_fragmentIndex(QTextBlockH handle)
 	return (int) ((QTextBlock *)handle)->fragmentIndex();
 }
 
-void QTextBlock_textFormats(QTextBlockH handle, PPtrIntArray retval)
+int QTextBlock_textFormatsCount(QTextBlockH handle)
+{
+  return ((QTextBlock *)handle)->textFormats().size();
+}
+
+int QTextBlock_textFormatsRanges(QTextBlockH handle, PTextRange ranges, int maxCount)
 {
   QVector<QTextLayout::FormatRange> t_retval;
-  QVector<TQTextLayoutFormatRange> t_trans;
-	t_retval = ((QTextBlock *)handle)->textFormats();
-  int len = t_retval.size();
-  t_trans.resize(len);
-  setPtrIntArrayLength(retval, len);
-  if (len>0) {
-    PTRINT *array = (PTRINT *)getPtrIntArrayAddr(retval);
-    for (int i = 0; i < len; i++) {
-      t_trans[i].start = t_retval.at(i).start;
-      t_trans[i].length = t_retval.at(i).length;
-      t_trans[i].format = (const QTextCharFormatH) &t_retval.at(i).format;
-      array[i] = (PTRINT) (&t_trans.at(i));
-    }
- }
+  int res = 0;
+  int cnt = maxCount;
+  int sz;
+
+  t_retval = ((QTextBlock *)handle)->textFormats();
+  sz = t_retval.size();
+  if (sz > cnt) cnt = sz;
+
+  for (int i=0; i<sz; i++)
+  {
+    ranges[i].start = t_retval.at(i).start;
+    ranges[i].length = t_retval.at(i).length;
+  }
+  return res;
 }
+
 
 QTextFragmentH QTextFragment_Create()
 {

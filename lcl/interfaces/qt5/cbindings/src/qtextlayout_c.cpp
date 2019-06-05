@@ -306,43 +306,28 @@ void QTextLayout_clearFormats(QTextLayoutH handle)
 	((QTextLayout *)handle)->clearFormats();
 }
 
-void QTextLayout_formats(QTextLayoutH handle, PPtrIntArray retval)
+int QTextLayout_formatsCount(QTextLayoutH handle)
 {
-  QVector<QTextLayout::FormatRange> t_retval;
-  QVector<TQTextLayoutFormatRange> t_trans;
-	t_retval = ((QTextLayout *)handle)->formats();
-  int len = t_retval.size();
-  t_trans.resize(len);
-  setPtrIntArrayLength(retval, len);
-  if (len>0) {
-    PTRINT *array = (PTRINT *)getPtrIntArrayAddr(retval);
-    for (int i = 0; i < len; i++) {
-      t_trans[i].start = t_retval.at(i).start;
-      t_trans[i].length = t_retval.at(i).length;
-      t_trans[i].format = (const QTextCharFormatH) &t_retval.at(i).format;
-      array[i] = (PTRINT) (&t_trans.at(i));
-    }
- }
+  return ((QTextLayout *)handle)->formats().size();
 }
 
-void QTextLayout_setFormats(QTextLayoutH handle, PPtrIntArray fmts)
+int QTextLayout_textFormatsRanges(QTextLayoutH handle, PTextRange ranges, int maxCount)
 {
-  QVector<QTextLayout::FormatRange> t_formats;
-  QVector<TQTextLayoutFormatRange*> t_trans;
+  QVector<QTextLayout::FormatRange> t_retval;
+  int res = 0;
+  int cnt = maxCount;
+  int sz;
 
-  int len = getPtrIntArrayLength(fmts);
-  t_formats.resize(len);
-  t_trans.resize(len);
-  if (len>0) {
-    PTRINT *array = (PTRINT *)getPtrIntArrayAddr(fmts);
-    for (int i = 0; i < len; i++) {
-      t_trans[i] = reinterpret_cast <TQTextLayoutFormatRange*>(array[i]);
-      t_formats[i].start = t_trans[i]->start;
-      t_formats[i].length = t_trans[i]->length;
-      t_formats[i].format = *(const QTextCharFormat*) t_trans[i]->format;
-    }
+  t_retval = ((QTextLayout *)handle)->formats();
+  sz = t_retval.size();
+  if (sz > cnt) cnt = sz;
+
+  for (int i=0; i<sz; i++)
+  {
+    ranges[i].start = t_retval.at(i).start;
+    ranges[i].length = t_retval.at(i).length;
   }
-  ((QTextLayout *)handle)->setFormats(t_formats);
+  return res;
 }
 
 QTextLineH QTextLine_Create()
