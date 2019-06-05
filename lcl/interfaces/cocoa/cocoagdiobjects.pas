@@ -348,12 +348,17 @@ type
     FTextContainer: NSTextContainer;
     FText: String;
     FFont: TCocoaFont;
+    // surrogate pairs (for UTF16)
+    FSurr: array of NSRange;
+    FSurrCount: Integer;
     procedure SetBackgoundColor(AValue: TColor);
     procedure SetForegoundColor(AValue: TColor);
     procedure SetFont(AFont: TCocoaFont);
     procedure UpdateFont;
     procedure UpdateColor;
     function GetTextRange: NSRange;
+
+    procedure EvalSurrogate(s: NSString);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1245,6 +1250,40 @@ begin
   Result.length := FTextStorage.length;
 end;
 
+procedure TCocoaTextLayout.EvalSurrogate(s: NSString);
+var
+  res  : NSRange;
+  i    : integer;
+  ln   : integer;
+  scnt : integer;
+  ch   : integer;
+begin
+  FSurrCount := 0;
+  i := 0;
+  ln := s.length;
+  // must analyze the string to presence of surrogate pairs.
+  // this is required for the use
+  ch := 0;
+  while i < ln do
+  begin
+    res := s.rangeOfComposedCharacterSequenceAtIndex(i); //s.rangeOfComposedCharacterSequencesForRange(src);
+    inc(i, res.length);
+    if res.length>1 then
+    begin
+      if length(FSurr) = FSurrCount then
+      begin
+        if FSurrCount = 0 then SetLength(FSurr, 4)
+        else SetLength(FSurr, FSurrCount * 2)
+      end;
+      FSurr[FSurrCount] := res;
+      inc(fSurrCount);
+    end;
+    inc(ch);
+  end;
+  if ((FSurrCount = 0) and (length(FSurr)<>0)) or (length(FSurr) div 2>FSurrCount) then
+    SetLength(FSurr, FSurrCount);
+end;
+
 procedure TCocoaTextLayout.SetForegoundColor(AValue: TColor);
 begin
   if FForegroundColor <> AValue then
@@ -1324,6 +1363,7 @@ begin
     FText := NewText;
     S := NSStringUTF8(NewText);
     try
+      FSurrCount:=-1; // invalidating surragete pair search
       FTextStorage.beginEditing;
       if S <> nil then
         FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
@@ -1368,7 +1408,8 @@ var
   Context: NSGraphicsContext;
   Locations: array of NSPoint;
   Indexes: array of NSUInteger;
-  I, Count: NSUInteger;
+  I,j, Count, ii: NSUInteger;
+  si: Integer;
   transform : NSAffineTransform;
 begin
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
@@ -1399,19 +1440,52 @@ begin
   Pt.y := Y;
   if Assigned(DX) then
   begin
+    // DX - is provided for UTF8 characters. UTF8 doesn't have surrogate pairs
+    // UTF16 does. UTF16 is the base for NSTextLayout and NSString.
+    // Thus for any character in DX, there might be mulitple "characeters"
+    // in NSTextLayout. See #35675.
+    if FSurrCount<0 then EvalSurrogate(FTextStorage.string_);
+
     Count := Range.length;
     SetLength(Locations, Count);
     SetLength(Indexes, Count);
     Locations[0] := FLayout.locationForGlyphAtIndex(0);
     Indexes[0] := 0;
-    for I := 1 to Count - 1 do
+    for I := 1 to Count - 1 do Indexes[I] := I;
+
+    // no surrogate pairs
+    I := 1;
+    j := 0;
+    if FSurrCount > 0 then
+    begin
+      si := 0;
+      for si:=0 to FSurrCount - 1 do
+      begin
+        for ii := i to FSurr[si].location do
+        begin
+          Locations[I] := Locations[I - 1];
+          Locations[I].x := Locations[I].x + DX[J];
+          inc(i);
+          inc(j);
+        end;
+        for ii := 2 to FSurr[si].length do
+        begin
+          Locations[I] := Locations[I - 1];
+          inc(I);
+        end;
+      end;
+    end;
+
+    // remaining DX offsets
+    for I := I to Count - 1 do
     begin
       Locations[I] := Locations[I - 1];
-      Locations[I].x := Locations[I].x + DX[I - 1];
-      Indexes[I] := I;
+      Locations[I].x := Locations[I].x + DX[J];
+      inc(j);
     end;
     FLayout.setLocations_startingGlyphIndexes_count_forGlyphRange(@Locations[0], @Indexes[0], Count, Range);
   end;
+
   if FillBackground then
     FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
