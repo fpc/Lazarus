@@ -704,18 +704,15 @@ begin
   end;
 
   WriteLN('Callstack:');
-  ACallStack := GController.CurrentProcess.MainThread.CreateCallStackEntryList;
-  try
-    for i := 0 to ACallStack.Count-1 do
-    begin
-      write(' ', FormatAddress(ACallStack.Items[i].AnAddress),' ');
-      if ACallStack.Items[i].SourceFile<>'' then
-        writeln(ACallStack.Items[i].SourceFile,':',ACallStack.Items[i].Line)
-      else
-        writeln('unknown');
-    end;
-  finally
-    ACallStack.Free;
+  GController.CurrentThread.PrepareCallStackEntryList;
+  ACallStack := GController.CurrentThread.CallStackEntryList;
+  for i := 0 to ACallStack.Count-1 do
+  begin
+    write(' ', FormatAddress(ACallStack.Items[i].AnAddress),' ');
+    if ACallStack.Items[i].SourceFile<>'' then
+      writeln(ACallStack.Items[i].SourceFile,':',ACallStack.Items[i].Line)
+    else
+      writeln('unknown');
   end;
 end;
 
