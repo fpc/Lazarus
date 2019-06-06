@@ -1504,6 +1504,14 @@ begin
   // try to find PO entry by identifier
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item<>nil then begin
+    //cleanup unneeded PreviousIDs in all files (base and translations)
+    if (Item.Translation = '') or (Item.InitialFuzzyState = false) then
+      if Item.PreviousID <> '' then
+      begin
+        Item.PreviousID := '';
+        FModified := True;
+      end;
+
     // found, update item value
     if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
       FModified := True;
@@ -1530,14 +1538,6 @@ begin
       if Item.Translation <> '' then
       begin
         Item.Translation := '';
-        FModified := True;
-      end;
-
-    //cleanup unneeded PreviousIDs in all files (base and translations)
-    if (Item.Translation = '') or (Item.InitialFuzzyState = false) then
-      if Item.PreviousID <> '' then
-      begin
-        Item.PreviousID := '';
         FModified := True;
       end;
   end
