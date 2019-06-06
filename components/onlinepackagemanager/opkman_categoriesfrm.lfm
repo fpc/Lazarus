@@ -1,12 +1,12 @@
 object CategoriesFrm: TCategoriesFrm
   Left = 520
-  Height = 383
+  Height = 411
   Top = 265
-  Width = 345
+  Width = 341
   BorderIcons = [biSystemMenu]
   Caption = 'CategoriesFrm'
-  ClientHeight = 383
-  ClientWidth = 345
+  ClientHeight = 411
+  ClientWidth = 341
   KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
@@ -19,17 +19,17 @@ object CategoriesFrm: TCategoriesFrm
     Left = 0
     Height = 47
     Top = 0
-    Width = 345
+    Width = 341
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 47
-    ClientWidth = 345
+    ClientWidth = 341
     TabOrder = 0
     object lbMessage: TLabel
       Left = 11
       Height = 15
       Top = 11
-      Width = 323
+      Width = 319
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbMessage'
       ParentColor = False
@@ -37,11 +37,11 @@ object CategoriesFrm: TCategoriesFrm
       OnResize = lbMessageResize
     end
   end
-  object ButtonPanel1: TButtonPanel
+  object BP: TButtonPanel
     Left = 6
     Height = 34
-    Top = 343
-    Width = 333
+    Top = 371
+    Width = 329
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = bOkClick

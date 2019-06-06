@@ -111,12 +111,32 @@ const
     'Other',
     'Games and Game Engines');
 
+  MaxLazVersions = 7;
+  LazVersions: array [0..MaxLazVersions - 1] of String = (
+    '1.8.0', '1.8.2', '1.8.4', '1.8.5',
+    '2.0.0', '2.0.2',
+    'Trunk');
+  LazDefVersions = '2.0.0, 2.0.2';
+  LazTrunk = '2.1.0';
+
+  MaxFPCVersions = 4;
+  FPCVersions: array [0..MaxFPCVersions - 1] of String = (
+    '3.0.0', '3.0.2', '3.0.4',
+    'Trunk');
+  FPCDefVersion = '3.0.0, 3.0.2, 3.0.4';
+  FPCTrunk = '3.3.1';
+
+  DefWidgetSets = 'gtk2, win32/win64';
+
 var
   LocalRepositoryConfigFile: String;
   LocalRepositoryUpdatesFile: String;
   PackageAction: TPackageAction;
   InstallPackageList: TObjectList;
   CriticalSection: TRTLCriticalSection;
+  CurLazVersion: String;
+  CurFPCVersion: String;
+  CurWidgetSet: String;
 
 function MessageDlgEx(const AMsg: String; ADlgType: TMsgDlgType;  AButtons:
   TMsgDlgButtons; AParent: TForm): TModalResult;

@@ -51,14 +51,14 @@ type
     bSubmit: TButton;
     cbJSONForUpdates: TCheckBox;
     edCategories: TEdit;
+    edFPCCompatibility: TEdit;
+    edSupportedWidgetset: TEdit;
+    edLazCompatibility: TEdit;
     edPackageDir: TDirectoryEdit;
     edDownloadURL: TEdit;
     edDisplayName: TEdit;
     edSVNURL: TEdit;
-    edFPCCompatibility: TEdit;
     edHomePageURL: TEdit;
-    edLazCompatibility: TEdit;
-    edSupportedWidgetset: TEdit;
     lbCategory: TLabel;
     lbDownloadURL: TLabel;
     lbDisplayName: TLabel;
@@ -77,6 +77,9 @@ type
     pnB: TPanel;
     pnButtons: TPanel;
     pnCategories: TPanel;
+    pnFPCCompatibility: TPanel;
+    pnSupportedWidgetset: TPanel;
+    pnLazCompatibility: TPanel;
     pnPackageData: TPanel;
     pnBrowse: TPanel;
     pnCategory: TPanel;
@@ -85,6 +88,9 @@ type
     pnData: TPanel;
     SDD: TSelectDirectoryDialog;
     spCategories: TSpeedButton;
+    spFPCCompatibility: TSpeedButton;
+    spSupportedWidgetset: TSpeedButton;
+    spLazCompatibility: TSpeedButton;
     spMain: TSplitter;
     procedure bCancelClick(Sender: TObject);
     procedure bCreateClick(Sender: TObject);
@@ -484,9 +490,9 @@ begin
           Data^.FFullPath := TPackageData(PackageList.Objects[I]).FFullPath;
           if not LoadPackageData(Data^.FFullPath, Data) then
             MessageDlgEx(rsCreateRepositoryPackageFrm_Error0, mtError, [mbOk], Self);
-          Data^.FLazCompatibility := '1.8, 2.0, Trunk';
-          Data^.FFPCCompatibility := '3.0.0, 3.0.2, 3.0.4';
-          Data^.FSupportedWidgetSet := 'win32/64, gtk2';
+          Data^.FLazCompatibility := LazDefVersions;
+          Data^.FFPCCompatibility := FPCDefVersion;
+          Data^.FSupportedWidgetSet := DefWidgetSets;
           Data^.FDataType := 1;
         end;
         FVSTPackages.FullExpand;
@@ -524,11 +530,21 @@ procedure TCreateRepositoryPackagesFrm.spCategoriesClick(Sender: TObject);
 begin
   CategoriesFrm := TCategoriesFrm.Create(Self);
   try
-    CategoriesFrm.SetupControls;
-    CategoriesFrm.CategoriesCSV := edCategories.Text;
-    CategoriesFrm.PopulateTree;
+    CategoriesFrm.SetupControls(TButton(Sender).Tag);
+    case TButton(Sender).Tag of
+      1: CategoriesFrm.CategoriesCSV := edCategories.Text;
+      2: CategoriesFrm.LazCompatibility := edLazCompatibility.Text;
+      3: CategoriesFrm.FPCCompatibility := edFPCCompatibility.Text;
+      4: CategoriesFrm.SupportedWidgetSets := edSupportedWidgetset.Text;
+    end;
+    CategoriesFrm.PopulateTree(TButton(Sender).Tag);
     if CategoriesFrm.ShowModal = mrOK then
-      edCategories.Text := CategoriesFrm.CategoriesCSV;
+      case TButton(Sender).Tag of
+        1: edCategories.Text := CategoriesFrm.CategoriesCSV;
+        2: edLazCompatibility.Text := CategoriesFrm.LazCompatibility;
+        3: edFPCCompatibility.Text := CategoriesFrm.FPCCompatibility;
+        4: edSupportedWidgetset.Text := CategoriesFrm.SupportedWidgetSets;
+      end;
   finally
     CategoriesFrm.Free;
   end;

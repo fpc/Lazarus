@@ -32,9 +32,9 @@ uses
   Classes, SysUtils, fpjson, Graphics, laz.VirtualTrees,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, Clipbrd,
-  LCLIntf, LCLVersion, LCLProc,
+  InterfaceBase, LCLIntf, LCLVersion, LCLProc, LCLPlatformDef,
   // LazUtils
-  LazFileUtils, LazIDEIntf,
+  LazFileUtils, LazIDEIntf, LazVersion,
   // IdeIntf
   IDECommands, PackageIntf,
   // OpkMan
@@ -211,6 +211,9 @@ begin
   spClear.ImageIndex := IMG_CLEAR;
   FHintTimeOut := Application.HintHidePause;
   Updates := nil;
+  CurLazVersion := IntToStr(laz_major) + '.' + IntToStr(laz_minor) + '.' + IntToStr(laz_release);
+  CurFPCVersion := {$I %FPCVERSION%};
+  CurWidgetSet := LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
   Application.HintHidePause := 1000000;
   Application.AddOnDeactivateHandler(@DoDeactivate, False);
 end;
@@ -907,53 +910,74 @@ begin
     Exit;
 
   CanGo := True;
-  PackageListFrm := TPackageListFrm.Create(MainFrm);
-  try
-    PackageListFrm.lbMessage.Caption := rsMainFrm_PackageAlreadyInstalled;
-    PackageListFrm.PopulateList(0);
-    if PackageListFrm.Count > 0 then
-      CanGo := PackageListFrm.ShowModal = mrYes
-    else
-      CanGo := True;
-  finally
-    PackageListFrm.Free;
+  if Options.IncompatiblePackages then
+  begin
+    PackageListFrm := TPackageListFrm.Create(MainFrm);
+    try
+      PackageListFrm.lbMessage.Caption := rsMainFrm_PackageIncompatible;
+      PackageListFrm.PopulateList(3);
+      if PackageListFrm.Count > 0 then
+        CanGo := PackageListFrm.ShowModal = mrYes
+      else
+        CanGo := True;
+    finally
+      PackageListFrm.Free;
+    end;
   end;
 
   if CanGo then
   begin
-    PackageAction := paInstall;
-    VisualTree.UpdatePackageStates;
-    if SerializablePackages.DownloadCount > 0 then
+    if Options.AlreadyInstalledPackages then
     begin
-      DoExtract := True;
-      CanGo := Download(Options.LocalRepositoryArchiveExpanded, DoExtract) = mrOK;
-      VisualTree.UpdatePackageStates;
+      PackageListFrm := TPackageListFrm.Create(MainFrm);
+      try
+        PackageListFrm.lbMessage.Caption := rsMainFrm_PackageAlreadyInstalled;
+        PackageListFrm.PopulateList(0);
+        if PackageListFrm.Count > 0 then
+          CanGo := PackageListFrm.ShowModal = mrYes
+        else
+          CanGo := True;
+      finally
+        PackageListFrm.Free;
+      end;
     end;
 
     if CanGo then
     begin
-      if SerializablePackages.ExtractCount > 0 then
+      PackageAction := paInstall;
+      VisualTree.UpdatePackageStates;
+      if SerializablePackages.DownloadCount > 0 then
       begin
-        DoOpen := False;
-        CanGo := Extract(Options.LocalRepositoryArchiveExpanded, Options.LocalRepositoryPackagesExpanded, DoOpen) = mrOk;
+        DoExtract := True;
+        CanGo := Download(Options.LocalRepositoryArchiveExpanded, DoExtract) = mrOK;
         VisualTree.UpdatePackageStates;
       end;
 
       if CanGo then
       begin
-        if Options.DeleteZipAfterInstall then
-          SerializablePackages.DeleteDownloadedZipFiles;
-        if SerializablePackages.InstallCount > 0 then
+        if SerializablePackages.ExtractCount > 0 then
         begin
-          InstallStatus := isFailed;
-          NeedToRebuild := False;
-          if Install(InstallStatus, NeedToRebuild) = mrOk then
+          DoOpen := False;
+          CanGo := Extract(Options.LocalRepositoryArchiveExpanded, Options.LocalRepositoryPackagesExpanded, DoOpen) = mrOk;
+          VisualTree.UpdatePackageStates;
+        end;
+
+        if CanGo then
+        begin
+          if Options.DeleteZipAfterInstall then
+            SerializablePackages.DeleteDownloadedZipFiles;
+          if SerializablePackages.InstallCount > 0 then
           begin
-            SerializablePackages.MarkRuntimePackages;
-            VisualTree.UpdatePackageStates;
-            if (InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed) then
-              if NeedToRebuild then
-                Rebuild;
+            InstallStatus := isFailed;
+            NeedToRebuild := False;
+            if Install(InstallStatus, NeedToRebuild) = mrOk then
+            begin
+              SerializablePackages.MarkRuntimePackages;
+              VisualTree.UpdatePackageStates;
+              if (InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed) then
+                if NeedToRebuild then
+                  Rebuild;
+            end;
           end;
         end;
       end;

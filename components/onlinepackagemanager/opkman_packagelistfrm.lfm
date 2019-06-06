@@ -79,6 +79,23 @@ object PackageListFrm: TPackageListFrm
       ModalResult = 7
       TabOrder = 1
     end
+    object lbHint: TLabel
+      Left = 12
+      Height = 15
+      Top = 11
+      Width = 33
+      Caption = 'lbHint'
+      Enabled = False
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      ParentColor = False
+      ParentFont = False
+      Visible = False
+    end
   end
   object pnUpDown: TPanel
     Left = 370

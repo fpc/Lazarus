@@ -116,14 +116,6 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
       ClientWidth = 549
       TabOrder = 1
       Visible = False
-      object edSupportedWidgetset: TEdit
-        Left = 170
-        Height = 23
-        Top = 80
-        Width = 350
-        Anchors = [akTop, akLeft, akRight]
-        TabOrder = 2
-      end
       object lbLazCompatibility: TLabel
         Left = 9
         Height = 15
@@ -139,22 +131,6 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Width = 103
         Caption = 'lbFPCCompatibility'
         ParentColor = False
-      end
-      object edLazCompatibility: TEdit
-        Left = 170
-        Height = 23
-        Top = 8
-        Width = 350
-        Anchors = [akTop, akLeft, akRight]
-        TabOrder = 0
-      end
-      object edFPCCompatibility: TEdit
-        Left = 170
-        Height = 23
-        Top = 45
-        Width = 350
-        Anchors = [akTop, akLeft, akRight]
-        TabOrder = 1
       end
       object lbSupportedWidgetSet: TLabel
         Left = 9
@@ -199,6 +175,117 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
+      end
+      object pnLazCompatibility: TPanel
+        Left = 170
+        Height = 23
+        Top = 9
+        Width = 351
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 23
+        ClientWidth = 351
+        ParentColor = False
+        TabOrder = 0
+        object spLazCompatibility: TSpeedButton
+          Tag = 2
+          Left = 328
+          Height = 23
+          Top = 0
+          Width = 23
+          Align = alRight
+          Caption = '...'
+          OnClick = spCategoriesClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object edLazCompatibility: TEdit
+          Left = 0
+          Height = 23
+          Top = 0
+          Width = 328
+          Align = alClient
+          AutoSize = False
+          ParentShowHint = False
+          ReadOnly = True
+          ShowHint = True
+          TabOrder = 0
+        end
+      end
+      object pnFPCCompatibility: TPanel
+        Left = 170
+        Height = 23
+        Top = 45
+        Width = 351
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 23
+        ClientWidth = 351
+        ParentColor = False
+        TabOrder = 1
+        object spFPCCompatibility: TSpeedButton
+          Tag = 3
+          Left = 328
+          Height = 23
+          Top = 0
+          Width = 23
+          Align = alRight
+          Caption = '...'
+          OnClick = spCategoriesClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object edFPCCompatibility: TEdit
+          Left = 0
+          Height = 23
+          Top = 0
+          Width = 328
+          Align = alClient
+          AutoSize = False
+          ParentShowHint = False
+          ReadOnly = True
+          ShowHint = True
+          TabOrder = 0
+        end
+      end
+      object pnSupportedWidgetset: TPanel
+        Left = 170
+        Height = 23
+        Top = 79
+        Width = 351
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 23
+        ClientWidth = 351
+        ParentColor = False
+        TabOrder = 2
+        object spSupportedWidgetset: TSpeedButton
+          Tag = 4
+          Left = 328
+          Height = 23
+          Top = 0
+          Width = 23
+          Align = alRight
+          Caption = '...'
+          OnClick = spCategoriesClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object edSupportedWidgetset: TEdit
+          Left = 0
+          Height = 23
+          Top = 0
+          Width = 328
+          Align = alClient
+          AutoSize = False
+          ParentShowHint = False
+          ReadOnly = True
+          ShowHint = True
+          TabOrder = 0
+        end
       end
     end
     object pnCategory: TPanel
@@ -313,6 +400,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         ParentColor = False
         TabOrder = 0
         object spCategories: TSpeedButton
+          Tag = 1
           Left = 328
           Height = 23
           Top = 0

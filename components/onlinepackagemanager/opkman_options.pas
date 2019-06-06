@@ -59,6 +59,8 @@ type
     FActiveRepositoryIndex: Integer;
     FForceDownloadAndExtract: Boolean;
     FDeleteZipAfterInstall: Boolean;
+    FIncompatiblePackages: Boolean;
+    FAlreadyInstalledPackages: Boolean;
     FCheckForUpdates: Integer;
     FLastUpdate: TDateTime;
     FConTimeOut: Integer;
@@ -105,6 +107,8 @@ type
     property ActiveRepositoryIndex: Integer read FActiveRepositoryIndex write FActiveRepositoryIndex;
     property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
     property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
+    property IncompatiblePackages: Boolean read FIncompatiblePackages write FIncompatiblePackages;
+    property AlreadyInstalledPackages: Boolean read FAlreadyInstalledPackages write FAlreadyInstalledPackages;
     property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
     property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
     property ConTimeOut: Integer read FConTimeOut write FConTimeOut;
@@ -194,6 +198,8 @@ begin
   FActiveRepositoryIndex := FXML.GetValue('General/ActiveRepositoryIndex/Value', 0);
   FForceDownloadAndExtract := FXML.GetValue('General/ForceDownloadAndExtract/Value', True);
   FDeleteZipAfterInstall := FXML.GetValue('General/DeleteZipAfterInstall/Value', True);
+  FIncompatiblePackages := FXML.GetValue('General/IncompatiblePackages/Value', True);
+  FAlreadyInstalledPackages := FXML.GetValue('General/AlreadyInstalledPackages/Value', False);
   FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
   FLastPackageDirSrc := FXML.GetValue('General/LastPackageDirSrc/Value', '');
   FLastPackageDirDst := FXML.GetValue('General/LastPackageDirDst/Value', '');
@@ -231,6 +237,8 @@ begin
   FXML.SetDeleteValue('General/ActiveRepositoryIndex/Value', FActiveRepositoryIndex, 0);
   FXML.SetDeleteValue('General/ForceDownloadAndExtract/Value', FForceDownloadAndExtract, True);
   FXML.SetDeleteValue('General/DeleteZipAfterInstall/Value', FDeleteZipAfterInstall, True);
+  FXML.SetDeleteValue('General/IncompatiblePackages/Value', FIncompatiblePackages, True);
+  FXML.SetDeleteValue('General/AlreadyInstalledPackages/Value', FAlreadyInstalledPackages, False);
   FXML.SetDeleteValue('General/LastDownloadDir/Value', FLastDownloadDir, '');
   FXML.SetDeleteValue('General/LastPackageDirSrc/Value', FLastPackageDirSrc, '');
   FXML.SetDeleteValue('General/LastPackageDirDst/Value', FLastPackageDirDst, '');
@@ -275,6 +283,8 @@ begin
   FActiveRepositoryIndex := 0;
   FForceDownloadAndExtract := True;
   FDeleteZipAfterInstall := True;
+  FIncompatiblePackages := True;
+  FAlreadyInstalledPackages := False;
   FCheckForUpdates := 5;
   FLastUpdate := 0.0;
   FConTimeOut := 10;

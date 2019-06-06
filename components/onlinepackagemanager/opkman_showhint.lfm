@@ -4,6 +4,7 @@ object ShowHintFrm: TShowHintFrm
   Top = 233
   Width = 563
   BorderIcons = [biSystemMenu]
+  BorderStyle = bsNone
   Caption = 'ShowHintFrm'
   ClientHeight = 325
   ClientWidth = 563
@@ -14,6 +15,7 @@ object ShowHintFrm: TShowHintFrm
   OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   PopupMode = pmExplicit
+  LCLVersion = '2.1.0.0'
   object pnMain: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner

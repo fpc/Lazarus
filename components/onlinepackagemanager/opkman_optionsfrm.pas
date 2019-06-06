@@ -58,6 +58,8 @@ type
     bOpen: TButton;
     bpOptions: TButtonPanel;
     bColors: TButton;
+    cbIncompatiblePackages: TCheckBox;
+    cbAlreadyInstalledPackages: TCheckBox;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
@@ -421,6 +423,8 @@ begin
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
   Options.ConTimeOut := spConTimeOut.Value;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
+  Options.IncompatiblePackages := cbIncompatiblePackages.Checked;
+  Options.AlreadyInstalledPackages := cbAlreadyInstalledPackages.Checked;
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
   Options.DaysToShowNewPackages := spDaysToShowNewPackages.Value;
   Options.ShowRegularIcons := cbRegularIcons.Checked;
@@ -486,6 +490,8 @@ begin
   cbRemoteRepository.ItemIndex := Options.ActiveRepositoryIndex;
   cbForceDownloadExtract.Checked := Options.ForceDownloadAndExtract;
   cbDeleteZipAfterInstall.Checked := Options.DeleteZipAfterInstall;
+  cbIncompatiblePackages.Checked := Options.IncompatiblePackages;
+  cbAlreadyInstalledPackages.Checked := Options.AlreadyInstalledPackages;
   cbForceDownloadExtract.Caption := rsOptions_cbForceDownloadExtract_Caption;
   cbForceDownloadExtract.Hint := rsOptions_cbForceDownloadExtract_Hint;
   lbConTimeOut.Caption := rsOptions_lbConTimeOut_Caption;
@@ -493,6 +499,10 @@ begin
   spConTimeOut.Value := Options.ConTimeOut;
   cbDeleteZipAfterInstall.Caption := rsOptions_cbDelete_Caption;
   cbDeleteZipAfterInstall.Hint := rsOptions_cbDelete_Hint;
+  cbIncompatiblePackages.Caption := rsOption_cbIncompatiblePackage_Caption;
+  cbIncompatiblePackages.Hint := rsOption_cbIncompatiblePackage_Hint;
+  cbAlreadyInstalledPackages.Caption := rsOption_cbcbAlreadyInstalledPackages_Caption;
+  cbAlreadyInstalledPackages.Hint := rsOption_cbcbAlreadyInstalledPackages_Hint;
   lbUpdates.Caption := rsOptions_lbCheckForUpdates_Caption;
   cbCheckForUpdates.Clear;
   cbCheckForUpdates.Items.Add(rsOptions_cbCheckForUpdates_Item0);
