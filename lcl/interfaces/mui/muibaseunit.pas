@@ -1712,6 +1712,8 @@ end;
 {END Draw event
 ########################################################################}
 
+const
+  MUI_EHF_GUIMODE = 1 shl 1;
 
 function Dispatcher(cl: PIClass; Obj: PObject_; Msg: intuition.PMsg): longword;
 var
@@ -1761,7 +1763,7 @@ begin
           p := p.Parent;
         until P = nil;
 
-        MUIB.EHNode^.ehn_Flags := 0;
+        MUIB.EHNode^.ehn_Flags := MUI_EHF_GUIMODE;
         MUIB.EHNode^.ehn_Object := obj;
         MUIB.EHNode^.ehn_Class := cl;
         MUIB.EHNode^.ehn_Events := IDCMP_MOUSEBUTTONS or IDCMP_MOUSEMOVE or IDCMP_RAWKEY;
