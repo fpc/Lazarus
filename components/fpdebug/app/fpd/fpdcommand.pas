@@ -44,7 +44,7 @@ uses
   FpPascalParser,
   FPDbgController,
   FpPascalBuilder,
-  FpErrorMessages;
+  FpErrorMessages, LazStringUtils;
 
 procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 
@@ -202,7 +202,7 @@ var
   Address: TDbgPtr;
   e: Integer;
   Line: Cardinal;
-  bp: TDbgBreakpoint;
+  bp: TFpInternalBreakpoint;
 
   AContext: TFpDbgInfoContext;
   AValue: TFpDbgValue;
@@ -225,7 +225,7 @@ begin
   then begin
     // current addr
     P := '';
-    Address := GController.CurrentProcess.GetInstructionPointerRegisterValue;
+    Address := GController.CurrentThread.GetInstructionPointerRegisterValue;
   end
   else begin
     P := GetPart([], [':'], S);
@@ -239,7 +239,7 @@ begin
       Val(P, Address, e);
       if e <> 0
       then begin
-        AContext := GController.CurrentProcess.SymbolTableInfo.FindContext(GController.CurrentProcess.GetInstructionPointerRegisterValue);
+        AContext := GController.CurrentProcess.SymbolTableInfo.FindContext(GController.CurrentThread.GetInstructionPointerRegisterValue);
         if AContext = nil then begin
           Writeln('Invalid context');
           exit;
@@ -408,7 +408,7 @@ begin
   Count := 1;
   Size := 4;
 
-  Address := GController.CurrentProcess.GetInstructionPointerRegisterValue;
+  Address := GController.CurrentThread.GetInstructionPointerRegisterValue;
 
   if P[idx] <> ''
   then begin
@@ -561,7 +561,7 @@ begin
   S := AParams;
   P := GetPart([], [' ', #9], S);
 
-  AContext := GController.CurrentProcess.DbgInfo.FindContext(GController.CurrentProcess.GetInstructionPointerRegisterValue);
+  AContext := GController.CurrentProcess.DbgInfo.FindContext(GController.CurrentThread.GetInstructionPointerRegisterValue);
   if AContext = nil then begin
     Writeln('Invalid context');
     exit;
