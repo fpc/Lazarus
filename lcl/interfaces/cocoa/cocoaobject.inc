@@ -46,24 +46,10 @@ begin
 end;
 
 procedure TCocoaWidgetSet.SendCheckSynchronizeMessage;
-var
-  Event: NSEvent;
 begin
-  Event := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
-    NSApplicationDefined,
-    NSZeroPoint,
-    0,
-    GetCurrentEventTime,
-    0,
-    nil,
-    LCLEventSubTypeMessage,
-    LM_NULL,
-    AppHandle);
-  {$ifdef BOOLFIX}
-  NSApp.postEvent_atStart_(Event, Ord(False));
-  {$else}
-  NSApp.postEvent_atStart(Event, False);
-  {$endif}
+  TCocoaApplication.sharedApplication
+    .performSelectorOnMainThread_withObject_waitUntilDone(
+       ObjCSelector('lclSyncCheck:'), nil, false);
 end;
 
 {------------------------------------------------------------------------------

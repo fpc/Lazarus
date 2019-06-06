@@ -76,6 +76,7 @@ type
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
 
     function runModalForWindow(theWindow: NSWindow): NSInteger; override;
+    procedure lclSyncCheck(arg: id); message 'lclSyncCheck:';
   end;
 
   { TModalSession }
@@ -531,7 +532,8 @@ begin
         and (Result.subtype = LCLEventSubTypeMessage)
       then
       begin
-
+        // todo: remove. It's no longer needed.
+        //       performSelectorOnMainThread_withObject_waitUntilDone, is used instead
         if (Result.data1 = LM_NULL) and (Result.data2 = WidgetSet.AppHandle) then
         begin
           CheckSynchronize;
@@ -573,6 +575,14 @@ begin
   ApplicationWillShowModal;
 
   Result:=inherited runModalForWindow(theWindow);
+end;
+
+procedure TCocoaApplication.lclSyncCheck(arg: id);
+begin
+  CheckSynchronize;
+  NSApp.updateWindows;
+  if Assigned(Application) then
+    TCrackerApplication(Application).ProcessAsyncCallQueue;
 end;
 
 
