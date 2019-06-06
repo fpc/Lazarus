@@ -232,7 +232,7 @@ begin
           begin
             Node := FVST.AddChild(nil);
             Data := FVST.GetNodeData(Node);
-            Data^.FName := LazarusPkg.Name + '(' + LazarusPkg.InstalledFileVersion + ')';
+            Data^.FName := LazarusPkg.Name + '(' + LazarusPkg.VersionAsString + ')';
             Data^.FImageIndex := IMG_PKG_FILE;
             Data^.FSupLazVers := LazarusPkg.LazCompatibility;
             Data^.FIsLazComp := LazComp;

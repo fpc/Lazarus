@@ -737,58 +737,79 @@ begin
   if not IsSomethingChecked(False) then
     Exit;
   CanGo := True;
-  NeedToRebuild := False;
-  VisualTree.UpdatePackageStates;
-  PackageListFrm := TPackageListFrm.Create(MainFrm);
-  try
-    PackageListFrm.lbMessage.Caption := rsMainFrm_PackageUpdate0;
-    PackageListFrm.PopulateList(2);
-    if PackageListFrm.Count > 0 then
-      CanGo := PackageListFrm.ShowModal = mrYes
-    else
-      CanGo := True;
-  finally
-    PackageListFrm.Free;
-  end;
 
+  if Options.IncompatiblePackages then
+  begin
+    PackageListFrm := TPackageListFrm.Create(MainFrm);
+    try
+      PackageListFrm.lbMessage.Caption := rsMainFrm_PackageIncompatible;
+      PackageListFrm.PopulateList(3);
+      if PackageListFrm.Count > 0 then
+        CanGo := PackageListFrm.ShowModal = mrYes
+      else
+        CanGo := True;
+    finally
+      PackageListFrm.Free;
+    end;
+  end;
   if CanGo then
   begin
-    if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
-      Exit;
-
-    PackageAction := paUpdate;
+    NeedToRebuild := False;
     VisualTree.UpdatePackageStates;
-    if SerializablePackages.DownloadCount > 0 then
+    if Options.AlreadyInstalledPackages then
     begin
-      DoExtract := True;
-      CanGo := UpdateP(Options.LocalRepositoryUpdateExpanded, DoExtract) = mrOK;
-      VisualTree.UpdatePackageStates;
+      PackageListFrm := TPackageListFrm.Create(MainFrm);
+      try
+        PackageListFrm.lbMessage.Caption := rsMainFrm_PackageUpdate0;
+        PackageListFrm.PopulateList(2);
+        if PackageListFrm.Count > 0 then
+          CanGo := PackageListFrm.ShowModal = mrYes
+        else
+          CanGo := True;
+      finally
+        PackageListFrm.Free;
+      end;
     end;
 
     if CanGo then
     begin
-      if SerializablePackages.ExtractCount > 0 then
+      if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
+        Exit;
+
+      PackageAction := paUpdate;
+      VisualTree.UpdatePackageStates;
+      if SerializablePackages.DownloadCount > 0 then
       begin
-        DoOpen := False;
-        CanGo := Extract(Options.LocalRepositoryUpdateExpanded, Options.LocalRepositoryPackagesExpanded, DoOpen, True) = mrOk;
+        DoExtract := True;
+        CanGo := UpdateP(Options.LocalRepositoryUpdateExpanded, DoExtract) = mrOK;
         VisualTree.UpdatePackageStates;
       end;
 
       if CanGo then
       begin
-        if Options.DeleteZipAfterInstall then
-          SerializablePackages.DeleteDownloadedZipFiles;
-        if SerializablePackages.InstallCount > 0 then
+        if SerializablePackages.ExtractCount > 0 then
         begin
-          InstallStatus := isFailed;
-          if Install(InstallStatus, NeedToRebuild) = mrOk then
+          DoOpen := False;
+          CanGo := Extract(Options.LocalRepositoryUpdateExpanded, Options.LocalRepositoryPackagesExpanded, DoOpen, True) = mrOk;
+          VisualTree.UpdatePackageStates;
+        end;
+
+        if CanGo then
+        begin
+          if Options.DeleteZipAfterInstall then
+            SerializablePackages.DeleteDownloadedZipFiles;
+          if SerializablePackages.InstallCount > 0 then
           begin
-            if (InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed) then
+            InstallStatus := isFailed;
+            if Install(InstallStatus, NeedToRebuild) = mrOk then
             begin
-              SerializablePackages.MarkRuntimePackages;
-              VisualTree.UpdatePackageStates;
-              if NeedToRebuild then
-                Rebuild;
+              if (InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed) then
+              begin
+                SerializablePackages.MarkRuntimePackages;
+                VisualTree.UpdatePackageStates;
+                if NeedToRebuild then
+                  Rebuild;
+              end;
             end;
           end;
         end;
