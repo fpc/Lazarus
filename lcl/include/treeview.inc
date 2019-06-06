@@ -4705,6 +4705,7 @@ begin
     NDelta := (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
     ScrolledTop := ScrolledTop - NDelta;
     Result := true;
+    UpdateScrollbars;
   end;
   UpdateTooltip(MousePos.X, MousePos.Y);
 end;
