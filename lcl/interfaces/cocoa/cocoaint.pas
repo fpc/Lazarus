@@ -565,7 +565,7 @@ begin
         end
        end;
     end;
-  until done;
+  until true;
 end;
 
 function TCocoaApplication.runModalForWindow(theWindow: NSWindow): NSInteger;
