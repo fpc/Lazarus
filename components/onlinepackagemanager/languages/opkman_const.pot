@@ -41,12 +41,25 @@ msgctxt "opkman_const.rscategoriesfrm_byes_caption"
 msgid "OK"
 msgstr ""
 
-#: opkman_const.rscategoriesfrm_caption
+#: opkman_const.rscategoriesfrm_caption1
+msgctxt "opkman_const.rscategoriesfrm_caption1"
 msgid "List with categories"
 msgstr ""
 
+#: opkman_const.rscategoriesfrm_caption2
+msgid "List with Lazarus versions"
+msgstr ""
+
+#: opkman_const.rscategoriesfrm_caption3
+msgid "List with FPC versions"
+msgstr ""
+
+#: opkman_const.rscategoriesfrm_caption4
+msgid "List with supported widgetsets"
+msgstr ""
+
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-msgid "Please select (check) one or more categories"
+msgid "Please select (check) one or more items"
 msgstr ""
 
 #: opkman_const.rscolors_caption
@@ -669,6 +682,10 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_packagealreadyinstalled
 msgid "The following packages are already installed. Continue anyway?"
+msgstr ""
+
+#: opkman_const.rsmainfrm_packageincompatible
+msgid "The following packages are not compatible with your system and the install will most likely fail. Continue anyway?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
@@ -1544,6 +1561,22 @@ msgstr ""
 msgid "Proxy"
 msgstr ""
 
+#: opkman_const.rsoption_cbcbalreadyinstalledpackages_caption
+msgid "Warn me about already installed packages"
+msgstr ""
+
+#: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
+msgid "If a package is already installed, OPM will show a warning message"
+msgstr ""
+
+#: opkman_const.rsoption_cbincompatiblepackage_caption
+msgid "Warn me about incompatible packages"
+msgstr ""
+
+#: opkman_const.rsoption_cbincompatiblepackage_hint
+msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
+msgstr ""
+
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
 msgid "No"
@@ -1569,6 +1602,42 @@ msgstr ""
 
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_caption3
+msgid "Incompatible package list"
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_curfpcver
+msgid "Current FPC version: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_curlazver
+msgid "Current Lazarus version: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_curws
+msgid "Current widgetset: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_incompatible
+msgid "Incompatible"
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_lbhint_caption
+msgid "Hint: for more details move the mouse over the problematic column."
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_supfpcvers
+msgid "Supported FPC versions: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_suplazvers
+msgid "Supported Lazarus versions: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_supwss
+msgid "Supported widgetsets: "
 msgstr ""
 
 #: opkman_const.rspackagesfound
