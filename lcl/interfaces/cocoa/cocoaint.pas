@@ -504,70 +504,33 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
   ): NSEvent;
 var
   cb : ICommonCallback;
-
-  done : Boolean;   // LCL is sending "AppType" messages. If nextEventMatchMask
-  waitApp: Boolean; // doesn't expect any AppType messages, we should repeat the waiting
-                    // We should NOT return nil, as well, as it might break tracking loop
 begin
-  // always look application defined mask (these are defined by LCL)
-  // for sync and PostMessage processing.
-  // Cocoa MainMenu would not ask for AppDefined events.
-  // Thus it's possible NOT to get any messages while main menu is selected
-  waitApp := (mask and NSApplicationDefinedMask) > 0;
-  if not waitApp then
-    mask := mask or NSApplicationDefinedMask;
-  repeat
-    done := true;
-    {$ifdef BOOLFIX}
-    Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(
-      mask,
-      expiration, mode, Ord(deqFlag));
-    {$else}
-    Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
-      expiration, mode, deqFlag);
-    {$endif}
-    if Assigned(Result) then
-    begin
-      if (Result.type_ = NSApplicationDefined)
-        and (Result.subtype = LCLEventSubTypeMessage)
-      then
-      begin
-        // todo: remove. It's no longer needed.
-        //       performSelectorOnMainThread_withObject_waitUntilDone, is used instead
-        if (Result.data1 = LM_NULL) and (Result.data2 = WidgetSet.AppHandle) then
-        begin
-          CheckSynchronize;
-          NSApp.updateWindows;
-          if Assigned(Application) then
-            TCrackerApplication(Application).ProcessAsyncCallQueue;
-        end
-        else
-        begin
-          sendEvent(Result);
-        end;
+  {$ifdef BOOLFIX}
+  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(
+    mask,
+    expiration, mode, Ord(deqFlag));
+  {$else}
+  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
+    expiration, mode, deqFlag);
+  {$endif}
+  if not Assigned(Result) then Exit;
 
-        Result := nil;
-        if not WaitApp then
-          done := false;
-      end
-      else if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
-        and Assigned(TrackedControl)
-      then
-      begin
-        if Result.type_ = NSLeftMouseUp then
-        begin
-          //todo: send callback!
-          TrackedControl := nil;
-        end
-        else
-        if isMouseMoveEvent(Result.type_) then
-        begin
-          cb := TrackedControl.lclGetCallback;
-          if Assigned(cb) then cb.MouseMove(Result);
-        end
-       end;
+  if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
+    and Assigned(TrackedControl)
+  then
+  begin
+    if Result.type_ = NSLeftMouseUp then
+    begin
+      //todo: send callback!
+      TrackedControl := nil;
+    end
+    else
+    if isMouseMoveEvent(Result.type_) then
+    begin
+      cb := TrackedControl.lclGetCallback;
+      if Assigned(cb) then cb.MouseMove(Result);
     end;
-  until true;
+  end;
 end;
 
 function TCocoaApplication.runModalForWindow(theWindow: NSWindow): NSInteger;
