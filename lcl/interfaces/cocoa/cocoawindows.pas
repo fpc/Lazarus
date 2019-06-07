@@ -112,7 +112,6 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-    procedure sendEvent(event: NSEvent); override;
   end;
 
   { TCocoaWindow }
@@ -688,42 +687,6 @@ begin
     inherited mouseMoved(event);
 end;
 
-procedure TCocoaPanel.sendEvent(event: NSEvent);
-var
-  Message: NSMutableDictionary;
-  Handle: HWND;
-  Msg: Cardinal;
-  WP: WParam;
-  LP: LParam;
-  ResultCode: NSNumber;
-  Obj: NSObject;
-begin
-  if event.type_ = NSApplicationDefined then
-  begin
-    // event which we get through PostMessage or SendMessage
-    if event.subtype = LCLEventSubTypeMessage then
-    begin
-      // extract message data
-      Message := NSMutableDictionary(event.data1);
-      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
-      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
-      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
-      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
-      Obj := NSObject(Handle);
-      // deliver message and set result if response requested
-      // todo: check that Obj is still a valid NSView/NSWindow
-      ResultCode := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      if event.data2 <> 0 then
-        Message.setObject_forKey(ResultCode, NSMessageResult)
-      else
-        Message.release;
-      //ResultCode.release;                   // will be auto-released
-     end;
-  end
-  else
-    inherited sendEvent(event);
-end;
-
 { TCocoaWindow }
 
 function TCocoaWindow.windowShouldClose(sender: id): LongBool;
@@ -956,42 +919,11 @@ end;
 
 procedure TCocoaWindow.sendEvent(event: NSEvent);
 var
-  Message: NSMutableDictionary;
-  Handle: HWND;
-  Msg: Cardinal;
-  WP: WParam;
-  LP: LParam;
-  ResultCode: NSNumber;
-  Obj: NSObject;
-
   Epos: NSPoint;
   cr : NSRect;
   fr : NSRect;
   prc: Boolean;
 begin
-  if event.type_ = NSApplicationDefined then
-  begin
-    // event which we get through PostMessage or SendMessage
-    if event.subtype = LCLEventSubTypeMessage then
-    begin
-      // extract message data
-      Message := NSMutableDictionary(event.data1);
-      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
-      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
-      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
-      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
-      // deliver message and set result if response requested
-      Obj := NSObject(Handle);
-      // todo: check that Obj is still a valid NSView/NSWindow
-      ResultCode := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      if event.data2 <> 0 then
-        Message.setObject_forKey(ResultCode, NSMessageResult)
-      else
-        Message.release;
-      //ResultCode.release;               // will be auto-released
-    end;
-  end
-  else
   if event.type_ = NSLeftMouseUp then
   // This code is introduced here for an odd cocoa feature.
   // mouseUp is not fired, if pressed on Window's title.

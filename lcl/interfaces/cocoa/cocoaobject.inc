@@ -330,60 +330,6 @@ begin
   NSTimer(obj).invalidate;
 end;
 
-function TCocoaWidgetSet.NewUserEventInfo(Handle: HWND; Msg: Cardinal;
-  wParam: WParam; lParam: LParam): NSMutableDictionary;
-var
-  LocalPool: NSAutoReleasePool;
-  Keys, Objs: NSMutableArray;
-begin
-  // create a dinctionary
-  LocalPool := NSAutoReleasePool.alloc.init;
-  Keys := NSMutableArray.arrayWithObjects(
-    NSMessageWnd,
-    NSMessageMsg,
-    NSMessageWParam,
-    NSMessageLParam,
-    NSMessageResult,
-    nil);
-  Objs := NSMutableArray.arrayWithObjects(
-    NSNumber.numberWithUnsignedInteger(Handle),
-    NSNumber.numberWithUnsignedLong(Msg),
-    NSNumber.numberWithInteger(wParam),
-    NSNumber.numberWithInteger(lParam),
-    NSNumber.numberWithInteger(0),
-    nil);
-  Result := NSMutableDictionary.dictionaryWithObjects_forKeys(Objs, Keys);
-  Result.retain;
-  // release everything
-  LocalPool.release;
-end;
-
-function TCocoaWidgetSet.PrepareUserEvent(Handle: HWND; Info: NSDictionary; NeedsResult: Boolean): NSEvent;
-var
-  Obj: NSObject;
-  Win: NSWindow;
-begin
-  Obj := NSObject(Handle);
-  if Obj.isKindOfClass(NSWindow) then
-    Win := NSWindow(Obj)
-  else if Obj.isKindOfClass(NSView) then
-    Win := NSWindow(NSView(Handle).window)
-  else if GetNSObjectView(Obj) <> nil then
-    Win := NSWindow(GetNSObjectView(Obj).window)
-  else
-    Exit(nil);
-  Result := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
-    NSApplicationDefined,
-    NSZeroPoint,
-    0,
-    GetCurrentEventTime,
-    Win.windowNumber,
-    nil,
-    LCLEventSubTypeMessage,
-    NSInteger(Info),
-    NSInteger(NeedsResult));
-end;
-
 procedure TCocoaWidgetSet.InitStockItems;
 var
   LogBrush: TLogBrush;

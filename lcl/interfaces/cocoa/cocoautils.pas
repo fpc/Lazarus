@@ -11,8 +11,6 @@ uses
   SysUtils, Types, LCLType, LCLClasses, LCLProc,
   Graphics, Math, GraphType;
 
-const
-  LCLEventSubTypeMessage = MaxShort - 1;
 var
   // post message/send message string. Created by TCocoaWidgetSet
   NSMessageWnd, NSMessageMsg, NSMessageWParam, NSMessageLParam, NSMessageResult: NSString;
