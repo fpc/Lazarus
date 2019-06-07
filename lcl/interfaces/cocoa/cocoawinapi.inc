@@ -1857,24 +1857,54 @@ begin
     ctx.Polyline(PPointArray(Points)^, NumPts);
 end;
 
+type
+  TLCLEventMessage = objcclass(NSObject)
+    handle: HWND;
+    msg: Cardinal;
+    wp: WParam;
+    lp: LParam;
+    procedure lclRunEvent(sender: id); message 'lclRunEvent:';
+  end;
+
+procedure TLCLEventMessage.lclRunEvent(sender: id);
+begin
+  NSObject(handle).lclDeliverMessage(msg, wp, lp);
+  self.release;
+end;
+
+function AllocLCLEventMessage(ahandle: HWND; amsg: Cardinal; awp: WParam; alp: LParam): TLCLEventMessage;
+begin
+  Result := TLCLEventMessage.alloc.init;
+  Result.handle := ahandle;
+  Result.msg := amsg;
+  Result.wp := awp;
+  Result.lp := alp;
+end;
+
+
 function TCocoaWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): Boolean;
 var
   Info: NSDictionary;
   Event: NSEvent;
+  m: TLCLEventMessage;
 begin
   Result := Handle <> 0;
   if Result then
   begin
-    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
+    //Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
     // if we will want a postmessage using notification center
     // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
-    Event := PrepareUserEvent(Handle, Info, False);
-    {$ifdef BOOLFIX}
-    NSApp.postEvent_atStart_(Event, Ord(False));
-    {$else}
-    NSApp.postEvent_atStart(Event, False);
-    {$endif}
+    //Event := PrepareUserEvent(Handle, Info, False);
+    //{$ifdef BOOLFIX}
+    //NSApp.postEvent_atStart_(Event, Ord(False));
+    //{$else}
+    //NSApp.postEvent_atStart(Event, False);
+    //{$endif}
+    m:=AllocLCLEventMessage(Handle, Msg, wParam, lParam);
+    m.performSelectorOnMainThread_withObject_waitUntilDone(
+      ObjCSelector('lclRunEvent:'), nil, false
+    );
   end;
 end;
 
