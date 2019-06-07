@@ -37,10 +37,8 @@ unit FPDLoop;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgDisasX86, DbgIntfBaseTypes,
-  FpDbgDwarf,
-  FpdMemoryTools,
-  CustApp;
+  Classes, SysUtils, FileUtil, LazFileUtils, LazUTF8, FpDbgInfo, FpDbgClasses,
+  FpDbgDisasX86, DbgIntfBaseTypes, FpDbgDwarf, FpdMemoryTools, CustApp;
 
 type
 
@@ -55,7 +53,7 @@ type
     procedure ShowCode;
     procedure GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure GControllerCreateProcessEvent(var continue: boolean);
-    procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+    procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpInternalBreakpoint);
     procedure GControllerProcessExitEvent(ExitCode: DWord);
     procedure GControllerDebugInfoLoaded(Sender: TObject);
     procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
@@ -132,7 +130,7 @@ var
   i: integer;
 begin
   WriteLN('===');
-  a := GController.CurrentProcess.GetInstructionPointerRegisterValue;
+  a := GController.CurrentThread.GetInstructionPointerRegisterValue;
   for i := 0 to 5 do
   begin
     Write('  [', FormatAddress(a), ']');
@@ -162,7 +160,7 @@ var
   AName: String;
 begin
   WriteLN('===');
-  a := GController.CurrentProcess.GetInstructionPointerRegisterValue;
+  a := GController.CurrentThread.GetInstructionPointerRegisterValue;
   sym := GController.CurrentProcess.FindSymbol(a);
   if sym = nil
   then begin
@@ -224,10 +222,10 @@ begin
   continue:=false;
 end;
 
-procedure TFPDLoop.GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+procedure TFPDLoop.GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpInternalBreakpoint);
 begin
   if assigned(Breakpoint) then
-    writeln(Format(sBreakpointReached, [FormatAddress(Breakpoint.Location)]))
+    writeln(Format(sBreakpointReached, ['' {FormatAddress(Breakpoint.Location)}]))
   else
     writeln(sProcessPaused);
   if not continue then

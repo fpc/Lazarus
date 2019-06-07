@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes,
 {$ifdef windows}
-  Windows,
+  Windows, fgl,
 {$endif}
   LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil, CustApp,
   FpPascalParser,
@@ -59,6 +59,10 @@ uses
 
 type
   TFPDCommandHandler = procedure(AParams: String; out CallProcessLoop: boolean);
+  TBreakPointIdMap = class(specialize TFPGMap<Integer, TFpInternalBreakpoint>)
+  public
+    function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
+  end;
 
   TFPDCommand = class
   private
@@ -93,12 +97,19 @@ var
   MCommands: TFPDCommandList;
   MShowCommands: TFPDCommandList;
   MSetCommands: TFPDCommandList;
+  BreakPointIdMap: TBreakPointIdMap;
+  CurBreakId: Integer;
 
 resourcestring
-  sAddBreakpoint = 'Breakpoint added at address %s.';
+  sAddBreakpoint = 'Breakpoint %d added at address %s.';
   sAddBreakpointFailed = 'Adding breakpoint at %s failed.';
   sRemoveBreakpoint = 'Breakpoint removed from address %s.';
-  sRemoveBreakpointFailed = 'Removing breakpoint at %s failed.';
+  sRemoveBreakpointFailed = 'Removing breakpoint %s failed.';
+
+function TBreakPointIdMap.DoBreakPointCompare(Key1, Key2: Pointer): Integer;
+begin
+  Result := PPointer(Key1)^ - PPointer(Key1)^;
+end;
 
 procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 begin
@@ -200,7 +211,7 @@ var
   S, P: String;
   Remove: Boolean;
   Address: TDbgPtr;
-  e: Integer;
+  e, Id: Integer;
   Line: Cardinal;
   bp: TFpInternalBreakpoint;
 
@@ -220,6 +231,19 @@ begin
   Remove := P = '-d';
   if not Remove
   then S := P;
+
+  If Remove then begin
+    Val(S, Id, e);
+    if (e = 0) and BreakPointIdMap.TryGetData(Id, bp) then begin
+      GController.CurrentProcess.RemoveBreak(bp);
+      BreakPointIdMap.Remove(Id);
+      bp.Destroy;
+      WriteLn(format(sRemoveBreakpoint,[S]))
+    end
+    else
+      WriteLn(Format(sRemoveBreakpointFailed, [S]));
+    exit;
+  end;
   
   if S = ''
   then begin
@@ -252,17 +276,22 @@ begin
         Address:=AValue.Address.Address;
       end;
     end;
-    if Remove
-    then begin
-      if GController.CurrentProcess.RemoveBreak(Address)
-      then WriteLn(format(sRemoveBreakpoint,[FormatAddress(Address)]))
-      else WriteLn(Format(sRemoveBreakpointFailed, [FormatAddress(Address)]));
-    end
-    else begin
-      if GController.CurrentProcess.AddBreak(Address) <> nil
-      then WriteLn(format(sAddBreakpoint, [FormatAddress(Address)]))
-      else WriteLn(Format(sAddBreakpointFailed, [FormatAddress(Address)]));
-    end;
+    //if Remove
+    //then begin
+    //  if GController.CurrentProcess.RemoveBreak(Address)
+    //  then WriteLn(format(sRemoveBreakpoint,[FormatAddress(Address)]))
+    //  else WriteLn(Format(sRemoveBreakpointFailed, [FormatAddress(Address)]));
+    //end
+    //else begin
+      bp := GController.CurrentProcess.AddBreak(Address);
+      if bp <> nil then begin
+        inc(CurBreakId);
+        BreakPointIdMap.Add(CurBreakId, bp);
+        WriteLn(format(sAddBreakpoint, [CurBreakId, FormatAddress(Address)]));
+      end
+      else
+        WriteLn(Format(sAddBreakpointFailed, [FormatAddress(Address)]));
+    //end;
   end
   else begin
     S := GetPart([':'], [], S);
@@ -272,13 +301,13 @@ begin
       WriteLN('Illegal line: ', S);
       Exit;
     end;
-    if Remove
-    then begin
-      if TDbgInstance(GController.CurrentProcess).RemoveBreak(P, Line)
-      then WriteLn('breakpoint removed')
-      else WriteLn('remove breakpoint failed');
-      Exit;
-    end;
+    //if Remove
+    //then begin
+    //  if TDbgInstance(GController.CurrentProcess).RemoveBreak(P, Line)
+    //  then WriteLn('breakpoint removed')
+    //  else WriteLn('remove breakpoint failed');
+    //  Exit;
+    //end;
 
     bp := TDbgInstance(GController.CurrentProcess).AddBreak(P, Line);
     if bp = nil
@@ -287,7 +316,9 @@ begin
       Exit;
     end;
     
-    WriteLn(format(sAddBreakpoint, [FormatAddress(bp.Location)]))
+    inc(CurBreakId);
+    BreakPointIdMap.Add(CurBreakId, bp);
+    WriteLn(format(sAddBreakpoint, [CurBreakId, ''])); // FormatAddress(bp.Location)]))
   end;
 end;
 
@@ -876,7 +907,8 @@ begin
   MCommands.AddCommand(['show', 's'], @HandleShow, 'show <info>: Enter show help for more info');
   MCommands.AddCommand(['set'], @HandleSet,  'set param: Enter set help for more info');
   MCommands.AddCommand(['run', 'r'], @HandleRun,  'run [params]: Starts the loaded debuggee');
-  MCommands.AddCommand(['break', 'b'], @HandleBreak,  'break [-d] <adress>|<filename:line>: Set a breakpoint at <adress> or <filename:line>. -d removes');
+  MCommands.AddCommand(['break', 'b'], @HandleBreak,  'break <adress>|<filename:line>: Set a breakpoint at <adress> or <filename:line>.' +LineEnding+
+    'break -d <id>: Remove break');
   MCommands.AddCommand(['continue', 'cont', 'c'], @HandleContinue,  'continue: Continues execution');
   MCommands.AddCommand(['kill', 'k'], @HandleKill,  'kill: Stops execution of the debuggee');
   MCommands.AddCommand(['step-inst', 'si'], @HandleStepInst,  'step-inst: Steps-into one instruction');
@@ -904,6 +936,10 @@ begin
   MSetCommands.AddCommand(['mode', 'm'], @HandleSetMode, 'set mode 32|64: Set the mode for retrieving process info');
   MSetCommands.AddCommand(['break_on_library_load', 'boll'], @HandleSetBOLL, 'set break_on_library_load on|off: Pause running when a library is loaded (default off)');
   MSetCommands.AddCommand(['imageinfo', 'ii'], @HandleSetImageInfo, 'set imageinfo none|name|detail: When a library is loaded, show nothing, only its name or all details (default none)');
+
+  BreakPointIdMap := TBreakPointIdMap.Create;
+  BreakPointIdMap.OnDataPtrCompare := @BreakPointIdMap.DoBreakPointCompare;
+  CurBreakId := 0;
 end;
 
 procedure Finalize;
@@ -911,6 +947,7 @@ begin
   FreeAndNil(MCommands);
   FreeAndNil(MSetCommands);
   FreeAndNil(MShowCommands);
+  FreeAndNil(BreakPointIdMap);
 end;
 
 initialization
