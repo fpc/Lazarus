@@ -1863,45 +1863,37 @@ type
     msg: Cardinal;
     wp: WParam;
     lp: LParam;
+    res: LResult;
+    releaseAfterRun: Boolean;
     procedure lclRunEvent(sender: id); message 'lclRunEvent:';
   end;
 
 procedure TLCLEventMessage.lclRunEvent(sender: id);
 begin
-  NSObject(handle).lclDeliverMessage(msg, wp, lp);
-  self.release;
+  res := NSObject(handle).lclDeliverMessage(msg, wp, lp);
+  if releaseAfterRun then self.release;
 end;
 
-function AllocLCLEventMessage(ahandle: HWND; amsg: Cardinal; awp: WParam; alp: LParam): TLCLEventMessage;
+function AllocLCLEventMessage(ahandle: HWND; amsg: Cardinal; awp: WParam; alp: LParam; forSend: Boolean): TLCLEventMessage;
 begin
   Result := TLCLEventMessage.alloc.init;
   Result.handle := ahandle;
   Result.msg := amsg;
   Result.wp := awp;
   Result.lp := alp;
+  Result.releaseAfterRun := not forSend;
 end;
 
 
 function TCocoaWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): Boolean;
 var
-  Info: NSDictionary;
-  Event: NSEvent;
   m: TLCLEventMessage;
 begin
   Result := Handle <> 0;
   if Result then
   begin
-    //Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
-    // if we will want a postmessage using notification center
-    // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
-    //Event := PrepareUserEvent(Handle, Info, False);
-    //{$ifdef BOOLFIX}
-    //NSApp.postEvent_atStart_(Event, Ord(False));
-    //{$else}
-    //NSApp.postEvent_atStart(Event, False);
-    //{$endif}
-    m:=AllocLCLEventMessage(Handle, Msg, wParam, lParam);
+    m:=AllocLCLEventMessage(Handle, Msg, wParam, lParam, false);
     m.performSelectorOnMainThread_withObject_waitUntilDone(
       ObjCSelector('lclRunEvent:'), nil, false
     );
@@ -2219,16 +2211,16 @@ end;
 function TCocoaWidgetSet.SendMessage(Handle: HWND; Msg: Cardinal;
   WParam: WParam; LParam: LParam): LResult;
 var
-  Info: NSDictionary;
-  Event: NSEvent;
+  m: TLCLEventMessage;
 begin
   if Handle <> 0 then
   begin
-    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
-    Event := PrepareUserEvent(Handle, Info, True);
-    NSApp.sendEvent(Event);
-    Result := NSNumber(Info.objectForKey(NSMessageResult)).integerValue;
-    Info.Release;
+    m:=AllocLCLEventMessage(Handle, Msg, wParam, lParam, true);
+    m.performSelectorOnMainThread_withObject_waitUntilDone(
+      ObjCSelector('lclRunEvent:'), nil, true
+    );
+    Result := m.res;
+    m.release;
   end else
     Result := 0;
 end;
