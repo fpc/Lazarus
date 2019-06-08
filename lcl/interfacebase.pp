@@ -71,7 +71,8 @@ type
     lcRadialGradientBrush,      // Indicates that the function CreateBrushWithRadialGradient is supported, i.e. we can create a brush with a radial gradient pattern
     lcTransparentWindow,        // ability to pass mouse messages through a window (on win32 LM_NCHITTEST with HTTRANSPARENT result)
     lcTextHint,                 // native TextHint support
-    lcNativeTaskDialog          // task dialog under mswindows for widgetsets different than win32/wince. Used in LCLTaskDialog. eg Qt/Qt5 must set this option to false otherwise taskdialog segfaults.
+    lcNativeTaskDialog,         // task dialog under mswindows for widgetsets different than win32/wince. Used in LCLTaskDialog. eg Qt/Qt5 must set this option to false otherwise taskdialog segfaults.
+    lcCanDrawHidden             // the system rendering engine might request a hidden control to be drawn (macOS 10.9 and later)
   );
 
   { TDialogButton }

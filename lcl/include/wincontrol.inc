@@ -4924,8 +4924,9 @@ begin
       if not (TempControl is TWinControl) then begin
         //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
         with TempControl do
-          if IsVisible
-          and RectVisible(DC, TempControl.BoundsRect) then
+          if ((WidgetSet.GetLCLCapability(lcCanDrawHidden) = LCL_CAPABILITY_YES) and isControlVisible)
+            or (IsVisible and RectVisible(DC, TempControl.BoundsRect))
+          then
           begin
             if csPaintCopy in Self.ControlState then
               Include(FControlState, csPaintCopy);

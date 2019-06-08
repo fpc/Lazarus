@@ -280,9 +280,10 @@ begin
     {$ifdef COCOA_USE_NATIVE_MODAL}
     lcModalWindow,
     {$endif}
-    lcAntialiasingEnabledByDefault:
+    lcAntialiasingEnabledByDefault,
+    lcTransparentWindow,
+    lcCanDrawHidden:
       Result := LCL_CAPABILITY_YES;
-    lcTransparentWindow: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;
