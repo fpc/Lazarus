@@ -1504,6 +1504,24 @@ begin
   // try to find PO entry by identifier
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item<>nil then begin
+    if ProcessingTranslation then
+    begin
+      // synchronize translation flags with base (.pot) file, but keep fuzzy flag state
+      ItemOldFlags := Item.Flags;
+      ItemHasFuzzyFlag := pos(sFuzzyFlag, Item.Flags) <> 0;
+      Item.Flags := lowercase(Flags);
+      Item.ModifyFlag(sFuzzyFlag, ItemHasFuzzyFlag);
+      if ItemOldFlags <> Item.Flags then
+        FModified := True;
+    end
+    else
+      // flags in base (.pot) file are kept as is, but item's translation must be empty there
+      if Item.Translation <> '' then
+      begin
+        Item.Translation := '';
+        FModified := True;
+      end;
+
     // cleanup unneeded PreviousIDs in all files (base and translations)
     if (Item.Translation = '') or (Item.VirtualTranslation = true) or (Item.InitialFuzzyState = false) then
       if Item.PreviousID <> '' then
@@ -1523,24 +1541,6 @@ begin
       end;
       Item.Original:=Original;
     end;
-
-    if ProcessingTranslation then
-    begin
-      // synchronize translation flags with base (.pot) file, but keep fuzzy flag state
-      ItemOldFlags := Item.Flags;
-      ItemHasFuzzyFlag := pos(sFuzzyFlag, Item.Flags) <> 0;
-      Item.Flags := lowercase(Flags);
-      Item.ModifyFlag(sFuzzyFlag, ItemHasFuzzyFlag);
-      if ItemOldFlags <> Item.Flags then
-        FModified := True;
-    end
-    else
-      // flags in base (.pot) file are kept as is, but item's translation must be empty there
-      if Item.Translation <> '' then
-      begin
-        Item.Translation := '';
-        FModified := True;
-      end;
   end
   else // in this case new item will be added
     FModified := true;
