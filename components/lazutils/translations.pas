@@ -1504,8 +1504,8 @@ begin
   // try to find PO entry by identifier
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item<>nil then begin
-    //cleanup unneeded PreviousIDs in all files (base and translations)
-    if (Item.Translation = '') or (Item.InitialFuzzyState = false) then
+    // cleanup unneeded PreviousIDs in all files (base and translations)
+    if (Item.Translation = '') or (Item.VirtualTranslation = true) or (Item.InitialFuzzyState = false) then
       if Item.PreviousID <> '' then
       begin
         Item.PreviousID := '';
@@ -1516,7 +1516,8 @@ begin
     if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
       FModified := True;
       if Item.Translation <> '' then begin
-        if (Item.PreviousID = '') or (pos(sFuzzyFlag, Item.Flags) = 0) then
+        // note: at this stage all unneeded PreviousIDs had already been cleaned up
+        if Item.PreviousID = '' then
           Item.PreviousID:=Item.Original;
         Item.ModifyFlag(sFuzzyFlag, true);
       end;
