@@ -607,15 +607,41 @@ begin
   end;
 end;
 
+// According to the documentation of NSScreen.screen It's recommended
+// not to cache NSScreen objects stored in the array. As those might change.
+// However, according to the same documentation, the objects can change
+// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
+// services, it was identified that NSScreen object CAN change without any notification.
+// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
+// is used.
+function IndexToHMonitor(i: NSUInteger): HMonitor;
+begin
+  if i = NSIntegerMax then Result := 0
+  else Result := i + 1;
+end;
+
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+begin
+  if h = 0 then Result := NSIntegerMax
+  else Result := NSUInteger(h)-1;
+end;
+
 function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 var
-  i: integer;
+  i: NSUInteger;
+  cnt: NSUInteger;
 begin
   Result := True;
+  cnt := NSScreen.screens.count;
+  if cnt = 0 then
+  begin
+    Result := false;
+    Exit;
+  end;
   for i := 0 to NSScreen.screens.count - 1 do
   begin
-    Result := Result and lpfnEnum(HMONITOR(NSScreen.screens.objectAtIndex(i)), 0, nil, dwData);
+    Result := Result and lpfnEnum(IndexToHMonitor(i), 0, nil, dwData);
     if not Result then break;
   end;
 end;
@@ -995,13 +1021,21 @@ end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
-  ScreenID: NSScreen absolute hMonitor;
+  ScreenID: NSScreen;
+  idx : NSUInteger;
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
+  idx := HMonitorToIndex(hMonitor);
+  Result := (idx < NSScreen.screens.count);
+  if not Result then Exit;
+
+  ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
   lpmi^.rcMonitor := NSRectToRect(ScreenID.frame);
   NSToLCLRect(ScreenID.visibleFrame, ScreenID.frame.size.height, lpmi^.rcWork);
-  if ScreenID = NSScreen.mainScreen then
+  // according to the documentation the primary (0,0 coord screen)
+  // is always and index 0
+  if idx = 0 then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
