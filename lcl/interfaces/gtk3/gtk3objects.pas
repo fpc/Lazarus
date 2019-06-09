@@ -465,6 +465,9 @@ constructor TGtk3Font.Create(ALogFont: TLogFont; const ALongFontName: String);
 var
   AContext: PPangoContext;
   ADescription: PPangoFontDescription;
+  AttrList: PPangoAttrList;
+  AttrListTemporary: Boolean;
+  Attr: PPangoAttribute;
 begin
   FLogFont := ALogFont;
   FFontName := ALogFont.lfFaceName;
@@ -494,6 +497,30 @@ begin
 
   FLayout := pango_layout_new(AContext);
   FLayout^.set_font_description(FHandle);
+
+  if (ALogFont.lfUnderline<>0) or (ALogFont.lfStrikeOut<>0) then
+  begin
+    AttrListTemporary := false;
+    AttrList := pango_layout_get_attributes(FLayout);
+    if (AttrList = nil) then
+    begin
+      AttrList := pango_attr_list_new();
+      AttrListTemporary := True;
+    end;
+    if ALogFont.lfUnderline <> 0 then
+      Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+    else
+      Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+    pango_attr_list_change(AttrList, Attr);
+
+    Attr := pango_attr_strikethrough_new(ALogFont.lfStrikeOut<>0);
+    pango_attr_list_change(AttrList, Attr);
+
+    pango_layout_set_attributes(FLayout, AttrList);
+
+    if AttrListTemporary then
+      pango_attr_list_unref(AttrList);
+  end;
 
   g_object_unref(AContext);
 end;
