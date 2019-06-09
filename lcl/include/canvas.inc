@@ -1241,6 +1241,10 @@ var
   
 begin
   //debugln(['TCanvas.TextRect ',DbgSName(Self),' Text="',Text,'" ',dbgs(ARect),' X=',X,',Y=',Y]);
+
+  if Font.Name = '' then      // Empty name is allowed in Delphi.
+    Font.Name := 'default';
+
   Changing;
   
   Options := 0;
