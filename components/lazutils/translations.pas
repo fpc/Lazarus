@@ -725,6 +725,7 @@ begin
   FItems:=TFPList.Create;
   FIdentifierLowToItem:=TStringToPointerTree.Create(true);
   FOriginalToItem:=TStringHashList.Create(true);
+  InvalidateStatistics;
 end;
 
 constructor TPOFile.Create(const AFilename: String; Full: boolean=false);
@@ -744,13 +745,8 @@ end;
 
 constructor TPOFile.Create(AStream: TStream; Full: boolean=false);
 begin
-  Create;
-
-  FAllEntries := Full;
-
+  Create(Full);
   ReadPOText(AStream);
-
-  InvalidateStatistics;
 end;
 
 destructor TPOFile.Destroy;
