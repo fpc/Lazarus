@@ -59,10 +59,10 @@ type
     FLogFont: TLogFont;
     FFontName: String;
     FHandle: PPangoFontDescription;
-    procedure SetFontName(AValue: String);
+    procedure SetFontName(const AValue: String);
   public
     constructor Create(ACairo: Pcairo_t; AWidget: PGtkWidget = nil);
-    constructor Create(ALogFont: TLogFont; ALongFontName: String);
+    constructor Create(ALogFont: TLogFont; const ALongFontName: String);
     destructor Destroy; override;
     property FontName: String read FFontName write SetFontName;
     property Handle: PPangoFontDescription read FHandle;
@@ -230,8 +230,8 @@ type
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer; const AFill: Boolean);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
-    procedure drawText(x: Integer; y: Integer; s: String); overload;
-    procedure drawText(x,y,w,h,flags: Integer; s: String); overload;
+    procedure drawText(x: Integer; y: Integer; const s: String); overload;
+    procedure drawText(x,y,w,h,flags: Integer; const s: String); overload;
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
     procedure drawSurface(targetRect: PRect; Surface: Pcairo_surface_t; sourceRect: PRect;
@@ -282,7 +282,7 @@ type
   end;
 
 function CheckBitmap(const ABitmap: HBITMAP; const AMethodName: String;
-  AParamName: String = ''): Boolean;
+  const AParamName: String = ''): Boolean;
 procedure Gtk3WordWrap(DC: HDC; AText: PChar;
   MaxWidthInPixel: integer; out Lines: PPChar; out LineCount: integer);
 
@@ -324,7 +324,7 @@ end;
   Returns: If the bitmap is valid
  ------------------------------------------------------------------------------}
 function CheckBitmap(const ABitmap: HBITMAP; const AMethodName: String;
-  AParamName: String): Boolean;
+  const AParamName: String): Boolean;
 begin
   Result := TObject(ABitmap) is TGtk3Image;
   if Result then Exit;
@@ -419,7 +419,7 @@ end;
 
 { TGtk3Font }
 
-procedure TGtk3Font.SetFontName(AValue: String);
+procedure TGtk3Font.SetFontName(const AValue: String);
 begin
   if FFontName=AValue then Exit;
   FFontName:=AValue;
@@ -461,7 +461,7 @@ begin
   // writeln('TGtk3Font.Create1 ',FFontName);
 end;
 
-constructor TGtk3Font.Create(ALogFont: TLogFont; ALongFontName: String);
+constructor TGtk3Font.Create(ALogFont: TLogFont; const ALongFontName: String);
 var
   AContext: PPangoContext;
   ADescription: PPangoFontDescription;
@@ -1280,7 +1280,7 @@ begin
   RoundRect(x, y, w, h, rx, ry);
 end;
 
-procedure TGtk3DeviceContext.drawText(x: Integer; y: Integer; s: String);
+procedure TGtk3DeviceContext.drawText(x: Integer; y: Integer; const s: String);
 var
   e: cairo_font_extents_t;
   R: Double;
@@ -1312,7 +1312,7 @@ begin
   end;
 end;
 
-procedure TGtk3DeviceContext.drawText(x, y, w, h, flags: Integer; s: String
+procedure TGtk3DeviceContext.drawText(x, y, w, h, flags: Integer; const s: String
   );
 var
   e: cairo_font_extents_t;
