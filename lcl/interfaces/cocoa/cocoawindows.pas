@@ -221,7 +221,7 @@ type
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
     function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
-    procedure setNeedsDisplay_(aflag: boolean); override;
+    procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
     procedure setNeedsDisplayInRect(arect: NSRect); override;
   end;
 
@@ -1024,7 +1024,7 @@ begin
   Result := True;
 end;
 
-procedure TCocoaWindowContent.setNeedsDisplay_(aflag: boolean);
+procedure TCocoaWindowContent.setNeedsDisplay_(aflag: LCLObjCBoolean);
 begin
   inherited setNeedsDisplay;
   if Assigned(overlay) then overlay.setNeedsDisplay_(aflag);
