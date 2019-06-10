@@ -322,10 +322,13 @@ begin
 end;
 
 function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings;
+{$IFNDEF UTF8_RTL}
 var
   i: Integer;
+{$ENDIF}
 begin
   Result := AFormatSettings;
+  {$IFNDEF UTF8_RTL}
   Result.CurrencyString := SysToUTF8(AFormatSettings.CurrencyString);
   for i:=1 to 12 do begin
     Result.LongMonthNames[i] := SysToUTF8(AFormatSettings.LongMonthNames[i]);
@@ -335,6 +338,7 @@ begin
     Result.LongDayNames[i] := SysToUTF8(AFormatSettings.LongDayNames[i]);
     Result.ShortDayNames[i] := SysToUTF8(AFormatSettings.ShortDayNames[i]);
   end;
+  {$ENDIF}
 end;
 
 function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings;
