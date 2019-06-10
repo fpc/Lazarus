@@ -22,6 +22,7 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLProc, LResources, LCLType, LCLStrConsts,
+  InterfaceBase, LCLPlatformDef,
   FileUtil, LazFileUtils, Controls, Dialogs, GraphType, Graphics, ExtCtrls,
   StdCtrls, Forms, Calendar, Buttons, Masks, CalcForm;
 
@@ -194,6 +195,9 @@ type
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
     FCalendar: TCalendar;
+    okButton: TButton;
+    cancelButton: TButton;
+    panel: TPanel;
     procedure OnDialogClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OnDialogCloseQuery(Sender : TObject; var CanClose : boolean);
     procedure OnDialogShow(Sender: TObject);
@@ -731,7 +735,44 @@ begin
 end;
 
 procedure TCalendarDialog.OnDialogShow(Sender: TObject);
+var
+  frm: TForm;
+  NBtnSize, NSpace, NCalSize: integer;
+const
+  cSpace = 16; // space between 2 buttons
 begin
+  // Calendar form size for Cocoa cannot be fixed on WS level
+  // see issue 35336
+  if WidgetSet.LCLPlatform = lpCocoa then begin
+    frm := TForm(Sender);
+
+    okButton.Constraints.MinWidth := 0;
+    okButton.Constraints.MaxWidth := 0;
+    cancelButton.Constraints.MinWidth := 0;
+    cancelButton.Constraints.MaxWidth := 0;
+    okButton.AutoSize := true;
+    cancelButton.AutoSize := true;
+    FCalendar.AutoSize := true;
+
+    NBtnSize := Max(okButton.Width, cancelButton.Width);
+    NCalSize := FCalendar.Width;
+    NSpace := NBtnSize * 2 + cSpace;
+    NSpace := Max(NCalSize, NSpace);
+
+    frm.AutoSize := false;
+    okButton.AutoSize := false;
+    cancelButton.AutoSize := false;
+
+    frm.ClientWidth := NSpace;
+    panel.Anchors := [];
+    FCalendar.Align := alNone;
+    FCalendar.Left := (NSpace-NCalSize) div 2;
+    okButton.Width := NBtnSize;
+    cancelButton.Width := NBtnSize;
+    cancelButton.Left := 0;
+    okButton.Left := frm.ClientWidth - okButton.Width;
+  end;
+
   DoShow;
 end;
 
@@ -770,9 +811,6 @@ function TCalendarDialog.Execute:boolean;
 const
   dw=8;
   bbs=2;
-var
-  okButton,cancelButton: TButton;
-  panel: TPanel;
 begin
   DlgForm:=TForm.CreateNew(Application, 0);
   try
