@@ -722,6 +722,7 @@ constructor TPOFile.Create(Full:Boolean=True);
 begin
   inherited Create;
   FAllEntries:=Full;
+  FModified:=false;
   FItems:=TFPList.Create;
   FIdentifierLowToItem:=TStringToPointerTree.Create(true);
   FOriginalToItem:=TStringHashList.Create(true);
@@ -1472,6 +1473,7 @@ begin
     Item := TPOFileItem(FItems[i]);
     if Item.Tag = aTag then
     begin
+      FModified := true;
       Remove(i);
       Item.Free;
     end;
