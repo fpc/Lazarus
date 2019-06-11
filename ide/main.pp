@@ -7241,6 +7241,7 @@ begin
       Params.Delete(0);
     end;
     Process.Executable := ExeFile;
+    Process.Parameters.Assign(Params);
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
     if RunAppBundle

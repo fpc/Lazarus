@@ -568,6 +568,8 @@ begin
     IMR_QUERYCHARPOSITION: begin
         cp := PIMECHARPOSITION(Msg.lParam);
         p1 := FImeBlockSelection.StartLineBytePos;
+        if not FInCompose then
+          p1 := CaretObj.LineBytePos;
 
         CWidth := ViewedTextBuffer.GetPhysicalCharWidths(FImeBlockSelection.StartLinePos - 1);
         x := p1.x - 1;
