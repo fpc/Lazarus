@@ -67,7 +67,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
+  {$ifndef COCOALOOPOVERRIDE}
   NSApp.finishLaunching;
+  {$endif}
   if Assigned(ALoop) then
   begin
     TCocoaApplication(NSApp).aloop:=ALoop;

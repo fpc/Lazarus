@@ -70,8 +70,10 @@ type
     modals : NSMutableDictionary;
 
     procedure dealloc; override;
+    {$ifdef COCOALOOPOVERRIDE}
     function isRunning: LCLObjCBoolean; override;
     procedure run; override;
+    {$endif}
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
 
@@ -397,6 +399,7 @@ begin
   inherited dealloc;
 end;
 
+{$ifdef COCOALOOPOVERRIDE}
 function TCocoaApplication.isRunning: LCLObjCBoolean;
 begin
   Result:=isrun;
@@ -407,6 +410,7 @@ begin
   isrun:=true;
   aloop();
 end;
+{$endif}
 
 procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
 var
@@ -503,6 +507,16 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
+  {$ifndef COCOALOOPOVERRIDE}
+  if not isrun then begin
+    isrun := True;
+    Result := nil;
+    aloop();
+    terminate(nil);
+    exit;
+  end;
+  {$endif}
+
   {$ifdef BOOLFIX}
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(
     mask,

@@ -14,3 +14,10 @@
 {$define BOOLFIX}
 
 
+// Originally LCL-Cocoa would override "run" method and have direct control
+// over the event loop. However that presumed to cause issues in macOS 10.15
+// The code was changed not to override "run" loop, but instead override
+// the first request to process an event, and run LCL loop from there.
+// Such approach is some what an ugly solution, yet it's reliable, in a sense
+// that Cocoa performs ALL of this methods.
+{.$define COCOALOOPOVERRIDE}
