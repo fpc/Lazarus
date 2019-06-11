@@ -52,28 +52,25 @@ msgid "OK"
 msgstr "OK"
 
 #: opkman_const.rscategoriesfrm_caption1
-#, fuzzy
 msgctxt "opkman_const.rscategoriesfrm_caption1"
 msgid "List with categories"
 msgstr "Lista com categorias"
 
 #: opkman_const.rscategoriesfrm_caption2
 msgid "List with Lazarus versions"
-msgstr ""
+msgstr "Lista com as versões Lazarus"
 
 #: opkman_const.rscategoriesfrm_caption3
 msgid "List with FPC versions"
-msgstr ""
+msgstr "Lista com as versões FPC"
 
 #: opkman_const.rscategoriesfrm_caption4
 msgid "List with supported widgetsets"
-msgstr ""
+msgstr "Lista com as \"widgesets\" suportadas"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-#, fuzzy
-#| msgid "Please select (check) one or more categories"
 msgid "Please select (check) one or more items"
-msgstr "Favor selecionar (marcar) uma ou mais categorias"
+msgstr "Favor selecionar (marcar) um ou mais itens"
 
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
@@ -710,7 +707,7 @@ msgstr "Os seguintes pacotes já estão instalados. Continuar assim mesmo?"
 
 #: opkman_const.rsmainfrm_packageincompatible
 msgid "The following packages are not compatible with your system and the install will most likely fail. Continue anyway?"
-msgstr ""
+msgstr "Os seguintes pacotes não são compatíveis com o seu sistema e certamente sua instalação irá falhar. Continuar assim mesmo?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
 msgid "A package with the same name already exists!"
@@ -1593,19 +1590,19 @@ msgstr "Proxy"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_caption
 msgid "Warn me about already installed packages"
-msgstr ""
+msgstr "Me avisar sobre pacotes já instalados"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
 msgid "If a package is already installed, OPM will show a warning message"
-msgstr ""
+msgstr "Se um pacote já estiver instalado, o OPM irá exibir uma mensagem de aviso"
 
 #: opkman_const.rsoption_cbincompatiblepackage_caption
 msgid "Warn me about incompatible packages"
-msgstr ""
+msgstr "Me avisar sobre pacotes incompatíveis"
 
 #: opkman_const.rsoption_cbincompatiblepackage_hint
 msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
-msgstr ""
+msgstr "Se um pacote for incompatível com a \"widgetset\" atual ou a versão do Lazarus/FPC, o OPM irá exibir uma mensagem de aviso"
 
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
@@ -1636,39 +1633,39 @@ msgstr "Lista de pacotes atualizados"
 
 #: opkman_const.rspackagelistfrm_caption3
 msgid "Incompatible package list"
-msgstr ""
+msgstr "Lista de pacotes incompatíveis"
 
 #: opkman_const.rspackagelistfrm_curfpcver
 msgid "Current FPC version: "
-msgstr ""
+msgstr "Versão atual do FPC:"
 
 #: opkman_const.rspackagelistfrm_curlazver
 msgid "Current Lazarus version: "
-msgstr ""
+msgstr "Versão atual do Lazarus:"
 
 #: opkman_const.rspackagelistfrm_curws
 msgid "Current widgetset: "
-msgstr ""
+msgstr "\"Widgetset\" atual:"
 
 #: opkman_const.rspackagelistfrm_incompatible
 msgid "Incompatible"
-msgstr ""
+msgstr "Incompatível"
 
 #: opkman_const.rspackagelistfrm_lbhint_caption
 msgid "Hint: for more details move the mouse over the problematic column."
-msgstr ""
+msgstr "Dica: para mais detalhes mova o \"mouse\" sobre a coluna problemática."
 
 #: opkman_const.rspackagelistfrm_supfpcvers
 msgid "Supported FPC versions: "
-msgstr ""
+msgstr "Versões FPC suportadas: "
 
 #: opkman_const.rspackagelistfrm_suplazvers
 msgid "Supported Lazarus versions: "
-msgstr ""
+msgstr "Versões Lazarus suportadas: "
 
 #: opkman_const.rspackagelistfrm_supwss
 msgid "Supported widgetsets: "
-msgstr ""
+msgstr "\"Widgetsets\" suportadas: "
 
 #: opkman_const.rspackagesfound
 #, object-pascal-format
