@@ -586,6 +586,22 @@ begin
     if AImage.Description.Format = ricfNone then Exit; // empty image
 
     img := GetRawImagePtr;
+
+    // Make sure, we do not free AImage.Data or Mask
+    if img^.Data = AImage.Data then begin
+      img^.Data := nil;
+      img^.DataSize := 0;
+    end;
+    if img^.Mask = AImage.Mask then begin
+      img^.Mask := nil;
+      img^.MaskSize := 0;
+    end;
+    if img^.Palette = AImage.Palette then begin
+      img^.Palette := nil;
+      img^.PaletteSize := 0;
+    end;
+    img^.FreeData;
+
     img^.Description := AImage.Description;
     if ADataOwner
     then begin
