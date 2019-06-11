@@ -6,8 +6,13 @@
 DelUserConf=Lösche alle Benutzer-Konfigurationsdateien von vorherigen Installationen
 CleanUp=Aufräumen
 
-InstallQt=QT-Interface-DLL global installieren
+InstallQtLocal=QT4-Interface-DLL installieren
+InstallQt=QT4-Interface-DLL global installieren
+InstallQt5Local=QT5-Interface-DLL installieren
+InstallQt5Global=QT5-Interface-DLL global installieren
 InstallChm=CHM-Hilfedateien installieren
+InstallOpenSSL=Openssl dll installieren (Benötigt für den Online-Packet-Manager)
+InstallOpenSSLGlobal=Openssl dll global installieren
 AssociateGroup=Dateierweiterungen registrieren
 
 FolderHasSpaces=Gewählter Ordner enthält Leerzeichen, bitte wählen Sie einen Ordner ohne Leerzeichen.

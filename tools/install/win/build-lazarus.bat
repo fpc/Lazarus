@@ -26,16 +26,16 @@ rem %MAKEEXE% lazbuild OPT="-Xs -XX" PP=%COMPILER% >> %LOGFILE%
 %FPCBINDIR%\strip.exe tools\svn2revisioninc.exe
 %FPCBINDIR%\strip.exe components\chmhelp\lhelp\lhelp.exe
 
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\chmhelp\lhelp\lib\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\codetools\units\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\macroscript\lib\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\PascalScript\Source\lib\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\ideintf\units\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\chmhelp\packages\help\lib\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\externhelp\lib\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\jcf2\IdePlugin\lazarus\lib\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\leakview\lib\*
-%FPCBINDIR%\rm -rf %BUILDDIR%\components\synedit\design\units\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\chmhelp\lhelp\lib\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\codetools\units\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\macroscript\lib\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\PascalScript\Source\lib\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\ideintf\units\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\chmhelp\packages\help\lib\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\externhelp\lib\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\jcf2\IdePlugin\lazarus\lib\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\leakview\lib\*
+rem %FPCBINDIR%\rm -rf %BUILDDIR%\components\synedit\design\units\*
 
 %OLDCURDRIVE%
 cd %OLDCURDIR%

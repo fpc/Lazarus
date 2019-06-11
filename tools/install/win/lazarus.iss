@@ -15,11 +15,16 @@ EnableISX=true
 #endif
 #define FPCVersion GetEnv('FPCVersion')
 #define FPCTargetOS GetEnv('FPCTargetOS')
+#define FPCTargetCPU GetEnv('FPCTARGETCPU')
 #define FPCFullTarget GetEnv('FPCFullTarget')
 #define AppName "Lazarus"
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
 #define QtInfDir GetEnv('QTINFDIR')
+#define HasQT5 GetEnv('HASQT5')
+#define Qt5InfDir GetEnv('QT5INFDIR')
+#define HasOpenSSL GetEnv('HASOPENSSL')
+#define OpenSSLDir GetEnv('OPENSSLDIR')
 #define IDEWidgetSet GetEnv('IDE_WidgetSet')
 #define OutputFileName GetEnv('OutputFileName')
 #define CHMHELPFILES GetEnv('CHMHELPFILES')
@@ -34,7 +39,9 @@ AppPublisher=Lazarus Team
 AppPublisherURL=http://www.lazarus.freepascal.org/
 AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
+#if FPCTargetCPU=="x86_64"
 ArchitecturesInstallIn64BitMode=x64
+#endif
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
 AppendDefaultDirName=no
@@ -65,20 +72,43 @@ UninstallDisplayIcon={app}\lazarus.exe
 DisableWelcomePage=no
 DisableDirPage=no
 
+
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 Name: delusersettings; Description: {cm:DelUserConf}; GroupDescription: {cm:CleanUp};  Flags: unchecked 
 ;unchecked checkedonce
 
 [Components]
-#if FPCTargetOS=="win32"
-#if IDEWidgetSet!="qt"
-Name: installqtintfdll; Description: {cm:InstallQt}; Types: custom full compact
-#endif
-#endif
 #ifdef CHMHELPFILES
 #if CHMHELPFILES!=""
 Name: installhelp; Description: {cm:InstallChm}; Types: custom full
+#endif
+#endif
+
+#if FPCTargetOS=="win32"
+;// #if IDEWidgetSet!="qt"
+Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full; Flags: checkablealone
+;// #else
+;//Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full compact; Flags: checkablealone fixed
+;// #endif
+Name: install4qtintfdll/global; Description: {cm:InstallQt}; Types: full; Flags: dontinheritcheck
+#endif
+
+#ifdef HasQT5
+#if HasQT5!=""
+#if IDEWidgetSet!="qt"
+Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom full; Flags: checkablealone
+#else
+Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom full compact; Flags: checkablealone fixed
+#endif
+Name: install5qtintfdll/global; Description: {cm:InstallQt5Global}; Types: full; Flags: dontinheritcheck
+#endif
+#endif
+
+#ifdef HasOpenSSL
+#if HasOpenSSL!=""
+Name: installopenssl; Description: {cm:InstallOpenSSL}; Types: custom full compact; Flags: checkablealone
+Name: installopenssl/global; Description: {cm:InstallOpenSSLGlobal}; Types: full; Flags: dontinheritcheck
 #endif
 #endif
 Name: association; Description: {cm:AssociateGroup}; Types: custom full
@@ -111,21 +141,41 @@ Name: {code:GetPCPForDelete}userschemes\*.xml; Type: files; Tasks: delusersettin
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
 Source: environmentoptions.xml; DestDir: {app}; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
+
 #if FPCTargetOS=="win32"
-#if IDEWidgetSet=="qt"
-Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
-#else
-Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: installqtintfdll; Tasks: 
-#endif
-Source: {#QtInfDir}\*.dll; DestDir: {app} 
+;//#if IDEWidgetSet=="qt"
+;//Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
+;//#else
+Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: install4qtintfdll/global
+;//#endif
+Source: {#QtInfDir}\*.dll; DestDir: {app}; Components: install4qtintfdll
 #if FPCVersion=="2.2.0"
 Source: {#BuildDir}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\cpp.exe; DestDir: {app}\ide; MinVersion: 1,0
+#endif
+#endif
+
+#ifdef HasQT5
+#if HasQT5!=""
+#if IDEWidgetSet=="qt"
+Source: {#Qt5InfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
+#else
+Source: {#Qt5InfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: install5qtintfdll/global
+#endif
+Source: {#Qt5InfDir}\*.dll; DestDir: {app}; Components: install5qtintfdll
 #endif
 #endif
 
 #ifdef CHMHELPFILES
 #if CHMHELPFILES!=""
 Source: {#CHMHELPFILES}\*.*; DestDir: {app}\docs\chm; Components: installhelp; Flags: recursesubdirs
+Source: {#CHMHELPFILES}\*.*; DestDir: {app}\docs\chm; Components: installhelp; Flags: recursesubdirs
+#endif
+#endif
+
+#ifdef HasOpenSSL
+#if HasOpenSSL!=""
+Source: {#OpenSSLDir}\*.*; DestDir: {app}; Components: installopenssl; Flags: recursesubdirs
+Source: {#OpenSSLDir}\*.*; DestDir: {sys}; Components: installopenssl/global; Flags: sharedfile replacesameversion
 #endif
 #endif
 
