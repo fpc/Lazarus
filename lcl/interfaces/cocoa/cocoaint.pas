@@ -508,7 +508,7 @@ var
   cb : ICommonCallback;
 begin
   {$ifndef COCOALOOPOVERRIDE}
-  if not isrun then begin
+  if not isrun and Assigned(aloop) then begin
     isrun := True;
     Result := nil;
     aloop();
