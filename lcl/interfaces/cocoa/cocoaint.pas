@@ -66,12 +66,10 @@ type
 
   TCocoaApplication = objcclass(NSApplication)
     aloop : TApplicationMainLoop;
-    isrun : Boolean;
     modals : NSMutableDictionary;
 
     procedure dealloc; override;
     {$ifdef COCOALOOPOVERRIDE}
-    function isRunning: LCLObjCBoolean; override;
     procedure run; override;
     {$endif}
     procedure sendEvent(theEvent: NSEvent); override;
@@ -400,14 +398,9 @@ begin
 end;
 
 {$ifdef COCOALOOPOVERRIDE}
-function TCocoaApplication.isRunning: LCLObjCBoolean;
-begin
-  Result:=isrun;
-end;
-
 procedure TCocoaApplication.run;
 begin
-  isrun:=true;
+  setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
   aloop();
 end;
 {$endif}
