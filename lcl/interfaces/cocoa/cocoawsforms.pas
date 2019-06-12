@@ -31,6 +31,7 @@ uses
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
   CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaWSMenus,
+  CocoaGDIObjects,
   CocoaWindows, CocoaScrollers, cocoa_extra;
 
 type
@@ -128,6 +129,7 @@ type
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
+    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
       const APopupParent: TCustomForm); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -603,10 +605,35 @@ class procedure TCocoaWSCustomForm.UpdateWindowIcons(AWindow: NSWindow;
     end;
   end;
 
+var
+  btn : NSButton;
+  url : NSURL;
+  b   : NSBundle;
+
+const
+  // mimic Windows border styles
+  isIconVisible : array [TFormBorderStyle] of Boolean = (
+    false, // bsNone
+    true,  // bsSingle
+    true,  // bsSizeable
+    false, // bsDialog
+    false, // bsToolWindow
+    false  // bsSizeToolWin
+  );
+
 begin
   SetWindowButtonState(NSWindowMiniaturizeButton, biMinimize in ABorderIcons, (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
+
+  btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
+  url := nil;
+  if isIconVisible[ABorderStyle] then
+  begin
+    b := NSBundle.mainBundle;
+    if Assigned(b) then url := b.bundleURL;
+  end;
+  AWindow.setRepresentedURL(url);
 end;
 
 class procedure TCocoaWSCustomForm.UpdateWindowMask(AWindow: NSWindow;
@@ -974,6 +1001,30 @@ begin
   begin
     win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
     WindowSetFormStyle(win, AFormStyle);
+  end;
+end;
+
+class procedure TCocoaWSCustomForm.SetIcon(const AForm: TCustomForm;
+  const Small, Big: HICON);
+var
+  win : NSWindow;
+  trg : NSImage;
+  btn : NSButton;
+begin
+  if not AForm.HandleAllocated then Exit;
+
+  win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+  if Assigned(win) then
+  begin
+    if Small <> 0 then
+      trg := TCocoaBitmap(Small).image
+    else if Big <> 0 then
+      trg := TCocoaBitmap(Big).image
+    else
+      trg := nil;
+
+    btn := win.standardWindowButton(NSWindowDocumentIconButton);
+    if Assigned(btn) then btn.setImage(trg);
   end;
 end;
 

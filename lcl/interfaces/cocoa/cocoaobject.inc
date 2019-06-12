@@ -273,7 +273,6 @@ begin
     lcCanDrawOutsideOnPaint,
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
-    lcFormIcon,
     {$ifndef COCOA_USE_NATIVE_MODAL}
     lcModalWindow,
     {$endif}
@@ -282,6 +281,7 @@ begin
     {$ifdef COCOA_USE_NATIVE_MODAL}
     lcModalWindow,
     {$endif}
+    lcFormIcon,
     lcAntialiasingEnabledByDefault,
     lcTransparentWindow,
     lcCanDrawHidden:
