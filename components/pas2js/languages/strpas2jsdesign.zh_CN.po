@@ -53,7 +53,9 @@ msgid "Web server processes"
 msgstr "Web服务器进程(server processes)"
 
 #: strpas2jsdesign.swebserverscount
-msgid "Number of webserver processes:"
+#, fuzzy,badformat
+#| msgid "Number of webserver processes:"
+msgid "Number of webserver processes: %s"
 msgstr "Web服务器进程(server processes)的数量"
 
 #: strpas2jsdesign.swebserversextra

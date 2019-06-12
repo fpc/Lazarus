@@ -20,7 +20,7 @@ Resourcestring
   SWebserversBaseDir = 'Root directory';
   SWebserversProject = 'Project';
   SWebserversExtra   = 'Additional info';
-  SWebserversCount   = 'Number of webserver processes:';
+  SWebserversCount   = 'Number of webserver processes: %s';
   SWebserversCaption = 'Web server processes';
 
   // Dynamic texts webservers form

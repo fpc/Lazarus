@@ -338,6 +338,14 @@ begin
         p2jcoHTTPServerFilename: p^.ParsedValue:=GetStandardHTTPServer;
         p2jcoNodeJSFilename: p^.ParsedValue:=GetStandardNodeJS;
       end;
+      if (p^.ParsedValue<>'')
+      and not FilenameIsAbsolute(p^.ParsedValue) then
+      begin
+        if ExtractFilePath(p^.ParsedValue)='' then
+          p^.ParsedValue:=FindDefaultExecutablePath(p^.ParsedValue)
+        else
+          p^.ParsedValue:=''; // not found
+      end;
     end;
   end;
   Result:=p^.ParsedValue;

@@ -38,11 +38,11 @@ type
     FOptions: TBrowserApplicationOptions;
     FProjectPort: integer;
     FProjectURL: String;
-    function CreateHTMLFile(AProject: TLazProject; AFileName: String
-      ): TLazProjectFile;
-    function CreateProjectSource: String;
-    function GetNextPort: Word;
   protected
+    function CreateHTMLFile(AProject: TLazProject; AFileName: String
+      ): TLazProjectFile; virtual;
+    function CreateProjectSource: String; virtual;
+    function GetNextPort: Word; virtual;
     function ShowOptionsDialog: TModalResult; virtual;
   public
     constructor Create; override;
@@ -92,7 +92,7 @@ uses
   frmpas2jsnodejsprojectoptions,
   frmpas2jsbrowserprojectoptions,
   pjsprojectoptions,
-  pjscontroller, strpas2jsdesign, MenuIntf;
+  pjscontroller, strpas2jsdesign, IDECommands, ToolbarIntf, MenuIntf;
 
 procedure ShowServerDialog(Sender: TObject);
 begin
@@ -100,7 +100,14 @@ begin
   TPasJSWebserverProcessesForm.Instance.BringToFront;
 end;
 
+Const
+  sPas2JSWebserversName = 'Pas2JSWebservers';
+
 procedure Register;
+
+Var
+  ViewCategory : TIDECommandCategory;
+  IDECommand : TIDECommand;
 
 begin
   PJSOptions:=TPas2jsOptions.Create;
@@ -112,7 +119,15 @@ begin
   // add IDE options frame
   PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
                                               PJSOptionsFrameID)^.Index;
-  RegisterIdeMenuCommand(itmViewDebugWindows,'Pas2JSWebservers',SPasJSWebserversCaption,nil,@ShowServerDialog);
+  ViewCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
+  if ViewCategory <> nil then
+    begin
+    IDECommand := RegisterIDECommand(ViewCategory,SPas2JSWebserversName,SPasJSWebserversCaption,
+                                     CleanIDEShortCut,CleanIDEShortCut,Nil,@ShowServerDialog);
+    if IDECommand <> nil then
+      RegisterIDEButtonCommand(IDECommand);
+    end;
+  RegisterIdeMenuCommand(itmViewDebugWindows,SPas2JSWebserversName,SPasJSWebserversCaption,nil,@ShowServerDialog);
   // Add project options frame
   RegisterIDEOptionsEditor(GroupProject,TPas2JSProjectOptionsFrame, Pas2JSOptionsIndex);
 end;
@@ -382,7 +397,8 @@ Const
      '<!doctype html>'+LineEnding
     +'<html lang="en">'+LineEnding
     +'<head>'+LineEnding
-    +'  <meta charset="utf-8">'+LineEnding
+    +'  <meta http-equiv="Content-type" content="text/html; charset=utf-8">'+LineEnding
+    +'  <meta name="viewport" content="width=device-width, initial-scale=1">'+LineEnding
     +'  <title>Project1</title>'+LineEnding
     +'  <script src="%s"></script>'+LineEnding
     +'</head>'+LineEnding
@@ -521,15 +537,16 @@ begin
     end;
   With AProject.CustomData do
     begin
-    DebugLn([PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
-    DebugLn([PJSProjectPort,': ',Values[PJSProjectPort]]);
-    DebugLn([PJSProjectURL,': ',Values[PJSProjectURL]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectPort,': ',Values[PJSProjectPort]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectURL,': ',Values[PJSProjectURL]]);
     end;
   // create html source
   if baoCreateHtml in Options then
     begin
+    debugln(['AAA2 TProjectPas2JSWebApp.InitProject ']);
     HTMLFile:=CreateHTMLFile(aProject,'project1.js');
-    HTMLFIle.CustomData[PJSIsProjectHTMLFile]:='1';
+    HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
     if baoMaintainHTML in Options then
       AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
     if baoUseBrowserConsole in Options then
