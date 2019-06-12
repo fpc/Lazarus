@@ -2604,7 +2604,8 @@ begin
       end;
     end else if c='(' then begin
       Result:=ReadTilBracketClose(true);
-    end;
+    end else
+      Result:=false;
   end else
     Result:=false;
 end;
