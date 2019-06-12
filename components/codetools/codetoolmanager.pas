@@ -1585,16 +1585,11 @@ function TCodeToolManager.GetPascalCompilerForDirectory(const Directory: string
   ): TPascalCompiler;
 var
   Evaluator: TExpressionEvaluator;
-  PascalCompiler: string;
-  pc: TPascalCompiler;
 begin
   Result:=pcFPC;
   Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
   if Evaluator=nil then exit;
-  PascalCompiler:=Evaluator.Variables[PascalCompilerDefine];
-  for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
-    if (PascalCompiler=PascalCompilerNames[pc]) then
-      Result:=pc;
+  Result:=TLinkScanner.GetPascalCompiler(Evaluator);
 end;
 
 function TCodeToolManager.GetCompilerModeForDirectory(const Directory: string
