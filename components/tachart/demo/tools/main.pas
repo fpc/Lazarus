@@ -78,7 +78,7 @@ var
 begin
   for t in ChartToolset1.Tools do
     if t is TBasicZoomStepTool then
-      TBasicZoomTool(t).FixedPoint := cbFixedPoint.Checked;
+      TBasicZoomStepTool(t).FixedPoint := cbFixedPoint.Checked;
 end;
 
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
