@@ -94,7 +94,7 @@ type
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function EatArrowKeys(const AKey: Word): Boolean; virtual;
     function getText: String; virtual;
-    procedure setText(AValue: String); virtual;
+    procedure setText(const AValue: String); virtual;
     function GetContext: HDC; virtual;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; virtual;
     procedure DestroyWidget; virtual;
@@ -209,7 +209,7 @@ type
   protected
     function EatArrowKeys(const AKey: Word): Boolean; override;
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     procedure InitializeWidget; override;
@@ -331,7 +331,7 @@ type
     procedure SetStaticBorderStyle(AValue: TStaticBorderStyle);
   protected
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     property Alignment: TAlignment read GetAlignment write SetAlignment;
@@ -351,7 +351,7 @@ type
   private
     FPageLabel: PGtkLabel;
   protected
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
     function getText: String; override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DestroyWidget; override;
@@ -373,7 +373,7 @@ type
     procedure SetPageIndex(AIndex: Integer);
     procedure SetShowTabs(const AShowTabs: Boolean);
     procedure SetTabPosition(const ATabPosition: TTabPosition);
-    procedure SetTabLabelText(AChild: TCustomPage; AText: String);
+    procedure SetTabLabelText(AChild: TCustomPage; const AText: String);
     function  GetTabLabelText(AChild: TCustomPage): String;
   end;
 
@@ -431,7 +431,7 @@ type
   TGtk3MenuItem = class(TGtk3Bin)
   private
     function GetCaption: string;
-    procedure SetCaption(AValue: string);
+    procedure SetCaption(const AValue: string);
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
@@ -487,7 +487,7 @@ type
     procedure SetWordWrap(AValue: Boolean);
   protected
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const AKey: Word): Boolean; override;
   public
@@ -605,7 +605,7 @@ type
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DoBeforeLCLPaint; override;
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
   public
     property BevelInner: TBevelCut read FBevelInner write FBevelInner;
     property BevelOuter: TBevelCut read FBevelOuter write FBevelOuter;
@@ -618,7 +618,7 @@ type
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
   public
   end;
 
@@ -635,9 +635,9 @@ type
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const AKey: Word): Boolean; override;
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
   public
-    procedure DumpPrivateStructValues(ADbgEvent: String);
+    procedure DumpPrivateStructValues(const ADbgEvent: String);
   public
     function CanFocus: Boolean; override;
     procedure SetFocus; override;
@@ -664,7 +664,7 @@ type
     procedure SetSpacing(AValue: Integer);
   protected
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     function IsWidgetOk: Boolean; override;
@@ -746,12 +746,12 @@ type
     function GetTitle: String;
     procedure SetIcon(AValue: PGdkPixBuf);
     procedure SetSkipTaskBarHint(AValue: Boolean);
-    procedure SetTitle(AValue: String);
+    procedure SetTitle(const AValue: String);
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const AKey: Word): Boolean; override;
     function getText: String; override;
-    procedure setText(AValue: String); override;
+    procedure setText(const AValue: String); override;
   public
     // function getClientBounds: TRect; override;
     function getClientRect: TRect; override;
@@ -779,7 +779,7 @@ type
       FText: String;
     protected
       function getText: String; override;
-      procedure setText(AValue: String); override;
+      procedure setText(const AValue: String); override;
       function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   end;
 
@@ -2475,7 +2475,7 @@ begin
   Result := '';
 end;
 
-procedure TGtk3Widget.setText(AValue: String);
+procedure TGtk3Widget.setText(const AValue: String);
 begin
   // DebugLn('WARNING: ',dbgsName(LCLObject),' self=',dbgsName(Self),' does not implement setText !');
 end;
@@ -3067,7 +3067,7 @@ begin
   Result := FText;
 end;
 
-procedure TGtk3Panel.setText(AValue: String);
+procedure TGtk3Panel.setText(const AValue: String);
 begin
   if FText = AValue then
     exit;
@@ -3101,7 +3101,7 @@ begin
   end;
 end;
 
-procedure TGtk3GroupBox.setText(AValue: String);
+procedure TGtk3GroupBox.setText(const AValue: String);
 begin
   if IsWidgetOK then
   begin
@@ -3311,7 +3311,7 @@ begin
     Result := '';
 end;
 
-procedure TGtk3Entry.setText(AValue: String);
+procedure TGtk3Entry.setText(const AValue: String);
 begin
   if IsValidHandle and IsWidgetOK then
     PGtkEntry(Widget)^.set_text(PgChar(AValue));
@@ -3731,7 +3731,7 @@ begin
     Result := PGtkLabel(getContainerWidget)^.get_text;
 end;
 
-procedure TGtk3StaticText.setText(AValue: String);
+procedure TGtk3StaticText.setText(const AValue: String);
 begin
   if IsWidgetOk then
     PGtkLabel(getContainerWidget)^.set_text(PgChar(AValue));
@@ -3961,7 +3961,7 @@ end;
 
 { TGtk3Page }
 
-procedure TGtk3Page.setText(AValue: String);
+procedure TGtk3Page.setText(const AValue: String);
 begin
   if Assigned(FPageLabel) then
     FPageLabel^.set_text(PChar(AValue));
@@ -4271,7 +4271,7 @@ begin
     PGtkNoteBook(GetContainerWidget)^.set_tab_pos(GtkPositionTypeMap[ATabPosition]);
 end;
 
-procedure TGtk3NoteBook.SetTabLabelText(AChild: TCustomPage; AText: String);
+procedure TGtk3NoteBook.SetTabLabelText(AChild: TCustomPage; const AText: String);
 begin
   if IsWidgetOK then
     TGtk3Widget(AChild.Handle).setText(AText);
@@ -4362,7 +4362,7 @@ begin
     Result := PGtkMenuItem(FWidget)^.get_label;
 end;
 
-procedure TGtk3MenuItem.SetCaption(AValue: string);
+procedure TGtk3MenuItem.SetCaption(const AValue: string);
 begin
   if IsWidgetOK then
     PGtkMenuItem(FWidget)^.set_label(PgChar(AValue));
@@ -4782,7 +4782,7 @@ begin
   // DebugLn('TGtk3Memo.getText Result=',Result);
 end;
 
-procedure TGtk3Memo.setText(AValue: String);
+procedure TGtk3Memo.setText(const AValue: String);
 var
   ABuffer: PGtkTextBuffer;
   AIter: PGtkTextIter;
@@ -6011,13 +6011,13 @@ begin
     Result := StrPas(PGtkComboBox(GetContainerWidget)^.get_title);
 end;
 
-procedure TGtk3ComboBox.setText(AValue: String);
+procedure TGtk3ComboBox.setText(const AValue: String);
 begin
   if Gtk3IsComboBox(FWidget) then
     PGtkComboBox(GetContainerWidget)^.set_title(PgChar(AValue));
 end;
 
-procedure TGtk3ComboBox.DumpPrivateStructValues(ADbgEvent: String);
+procedure TGtk3ComboBox.DumpPrivateStructValues(const ADbgEvent: String);
 var
   AComboWidget: PGtkComboBox;
   APrivate: PGtkComboBoxPrivate;
@@ -6253,7 +6253,7 @@ begin
     Result := '';
 end;
 
-procedure TGtk3Button.setText(AValue: String);
+procedure TGtk3Button.setText(const AValue: String);
 begin
   if IsWidgetOk then
     PGtkButton(FWidget)^.set_label(PgChar(AValue));
@@ -6557,7 +6557,7 @@ begin
     PGtkWindow(Widget)^.set_skip_taskbar_hint(AValue);
 end;
 
-procedure TGtk3Window.SetTitle(AValue: String);
+procedure TGtk3Window.SetTitle(const AValue: String);
 begin
   PGtkWindow(FWidget)^.set_title(PGChar(AValue));
 end;
@@ -6692,7 +6692,7 @@ begin
   Result := Title;
 end;
 
-procedure TGtk3Window.setText(AValue: String);
+procedure TGtk3Window.setText(const AValue: String);
 begin
   Title := AValue;
 end;
@@ -6853,7 +6853,7 @@ begin
   Result := FText;
 end;
 
-procedure TGtk3HintWindow.setText(AValue: String);
+procedure TGtk3HintWindow.setText(const AValue: String);
 begin
   FText := AValue;
 end;

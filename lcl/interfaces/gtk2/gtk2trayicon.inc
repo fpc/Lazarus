@@ -45,7 +45,7 @@ type
     destructor Destroy; override;
     procedure Show;
     function GetPosition: TPoint;
-    procedure Update(NewPixBuf: PGdkPixbuf; NewHint: String);
+    procedure Update(NewPixBuf: PGdkPixbuf; const NewHint: String);
   end;
 
 const
@@ -479,7 +479,7 @@ begin
   end;
 end;
 
-procedure TGtk2TrayIconHandle.Update(NewPixBuf: PGdkPixbuf; NewHint: String);
+procedure TGtk2TrayIconHandle.Update(NewPixBuf: PGdkPixbuf; const NewHint: String);
 begin
 {$ifdef UseStatusIcon}
   if FStatusIcon <> nil then

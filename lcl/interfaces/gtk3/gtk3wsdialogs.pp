@@ -230,7 +230,7 @@ var
     end;
   end;
 
-  procedure AddEntries(const Desc: string; MultiMask: string);
+  procedure AddEntries(const Desc: string; const MultiMask: string);
   var i: integer;
     CurDesc: string;
   begin
