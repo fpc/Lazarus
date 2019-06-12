@@ -2579,8 +2579,10 @@ begin
       Result:=KeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                                   CurPos.EndPos-CurPos.StartPos)
     else if c='[' then begin
-      if [cmsPrefixedAttributes,cmsIgnoreAttributes]*Scanner.CompilerModeSwitches<>[] then
-        ReadAttribute
+      if [cmsPrefixedAttributes,cmsIgnoreAttributes]*Scanner.CompilerModeSwitches<>[] then begin
+        ReadAttribute;
+        Result:=true;
+      end
       else begin
         Result:=ReadTilBracketClose(true);
       end;
