@@ -100,6 +100,7 @@ begin
 
   CompOpts.AllowLabel:=false;
   CompOpts.UseAnsiStrings:=false;
+  CompOpts.CPPInline:=false;
 
   CompOpts.IOChecks:=false;
   CompOpts.StackChecks:=false;
