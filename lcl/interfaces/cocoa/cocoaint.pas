@@ -66,6 +66,7 @@ type
 
   TCocoaApplication = objcclass(NSApplication)
     aloop : TApplicationMainLoop;
+    isrun : Boolean;
     modals : NSMutableDictionary;
 
     procedure dealloc; override;
