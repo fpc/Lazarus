@@ -6,8 +6,13 @@
 DelUserConf=Удалить все уже имеющиеся каталоги настройки
 CleanUp=Очистка:
 
-InstallQt=Установить библиотеку интерфейса Qt глобально
+InstallQtLocal=Установить библиотеку интерфейса Qt4
+InstallQt=Установить библиотеку интерфейса Qt4 глобально
+InstallQt5Local=Установить библиотеку интерфейса Qt5
+InstallQt5Global=Установить библиотеку интерфейса Qt5 глобально
 InstallChm=Установить файлы справки CHM
+InstallOpenSSL=Установить библиотеки OpenSSL (требуются сетевому диспетчеру пакетов)
+InstallOpenSSLGlobal=Установить библиотеки OpenSSL глобально
 AssociateGroup=Зарегистрировать типы файлов
 
 CheckSecondClick=Установить вторично
