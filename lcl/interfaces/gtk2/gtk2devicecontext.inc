@@ -1151,7 +1151,7 @@ var
     for i := Low(ADashes) to High(ADashes) do
       ADashes[i] := ADashes[i] * Multiplier;
 
-    laz_gdk_gc_set_dashes(GC, 0, @ADashes[0], Length(ADashes));
+    laz_gdk_gc_set_dashes(GC, 4096, @ADashes[0], Length(ADashes))
   end;
 
 begin
