@@ -179,6 +179,9 @@ procedure ArrangeTabOrder(const AWinControl: TWinControl);
 function HWNDToForm(AFormHandle: HWND): TCustomForm;
 procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 
+var
+  CocoaIconsStyle: Boolean = false;
+
 implementation
 
 uses
@@ -626,14 +629,17 @@ begin
   SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
 
-  btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
-  url := nil;
-  if isIconVisible[ABorderStyle] then
+  if not CocoaInt.CocoaIconUse then
   begin
-    b := NSBundle.mainBundle;
-    if Assigned(b) then url := b.bundleURL;
+    btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
+    url := nil;
+    if isIconVisible[ABorderStyle] then
+    begin
+      b := NSBundle.mainBundle;
+      if Assigned(b) then url := b.bundleURL;
+    end;
+    AWindow.setRepresentedURL(url);
   end;
-  AWindow.setRepresentedURL(url);
 end;
 
 class procedure TCocoaWSCustomForm.UpdateWindowMask(AWindow: NSWindow;
@@ -1011,6 +1017,7 @@ var
   trg : NSImage;
   btn : NSButton;
 begin
+  if CocoaInt.CocoaIconUse then Exit;
   if not AForm.HandleAllocated then Exit;
 
   win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;

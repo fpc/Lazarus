@@ -210,6 +210,10 @@ var
   CocoaBasePPI : Integer = 96; // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   MainPool : NSAutoreleasePool = nil;
 
+  // if set to true, then WS would not assign icons via TCocoaWSForm SetIcon
+  // The icon would have to be changed manually. By default LCL behaviour is used
+  CocoaIconUse: Boolean = false;
+
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
