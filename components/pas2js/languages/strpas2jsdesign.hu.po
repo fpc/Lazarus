@@ -52,10 +52,9 @@ msgid "Web server processes"
 msgstr "Webkiszolgáló folyamatai"
 
 #: strpas2jsdesign.swebserverscount
-#, fuzzy,badformat
-#| msgid "Number of webserver processes:"
+#, object-pascal-format
 msgid "Number of webserver processes: %s"
-msgstr "Webkiszolgáló folyamatainak száma:"
+msgstr "Webkiszolgáló folyamatainak száma: %s"
 
 #: strpas2jsdesign.swebserversextra
 msgid "Additional info"
