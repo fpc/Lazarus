@@ -2588,7 +2588,8 @@ begin
       end;
     end else if c='(' then begin
       Result:=ReadTilBracketClose(true);
-    end;
+    end else
+      Result:=true;
   end else
     Result:=false;
 end;
