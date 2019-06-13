@@ -4474,7 +4474,9 @@ end;
 procedure TCustomGrid.DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
 var
   dv,dh: Boolean;
+  OldCosmeticUsed, OldCosmetic: Boolean;
 begin
+  OldCosmeticUsed := false;
 
   with Canvas do begin
 
@@ -4530,6 +4532,9 @@ begin
     end else begin
       Dv := goVertLine in Options;
       Dh := goHorzLine in Options;
+      OldCosmeticUsed := true;
+      OldCosmetic := Pen.Cosmetic;
+      Pen.Cosmetic := false;
       Pen.Style := fGridLineStyle;
       Pen.Color := fGridLineColor;
       Pen.Width := fGridLineWidth;
@@ -4552,6 +4557,8 @@ begin
       end;
     end;
 
+    if OldCosmeticUsed then
+      Pen.Cosmetic := OldCosmetic;
   end; // with canvas,rect
 end;
 
