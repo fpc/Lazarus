@@ -2607,7 +2607,7 @@ begin
     end else if c='(' then begin
       Result:=ReadTilBracketClose(true);
     end else
-      Result:=false;
+      Result:=true;
   end else
     Result:=false;
 end;
