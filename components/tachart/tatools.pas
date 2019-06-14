@@ -998,7 +998,7 @@ end;
 
 procedure TChartTool.SetCursor;
 begin
-  if ActiveCursor = crDefault then exit;
+  if (ActiveCursor = crDefault) or (ActiveCursor = FChart.Cursor) then exit;
   FOldCursor := FChart.Cursor;
   FChart.Cursor := ActiveCursor;
 end;
