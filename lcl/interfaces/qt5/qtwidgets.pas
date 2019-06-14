@@ -462,7 +462,7 @@ type
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
-
+    procedure Destroyed; cdecl; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
   public
     function CanAdjustClientRectOnResize: Boolean; override;
@@ -17656,6 +17656,12 @@ begin
   else
     retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
   end;
+end;
+
+procedure TQtCustomControl.Destroyed; cdecl;
+begin
+  viewportDelete;
+  inherited Destroyed;
 end;
 
 procedure TQtCustomControl.DestroyNotify(AWidget: TQtWidget);
