@@ -471,13 +471,6 @@ begin
   if Assigned(callback) then
   begin
     callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );
-
-    // This must be called, prior to notification about focus (firstResponder) change
-    // Focus changing goes as following:
-    //   First page becomes visible
-    //   Then focus is switching to the control of the page
-    // In Cocoa world, first "willSelect" runs, then "firstResponder" changes, then "didSelect" is fired
-    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
   end;
 end;
 
@@ -486,10 +479,19 @@ procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
 begin
   //it's called together with "willSelect"
 
-  //if Assigned(callback) then
-  //begin
-    //callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
-  //end;
+  if Assigned(callback) then
+  begin
+    // Expected LCL Focus changing goes as following:
+    //   First page becomes visible
+    //   Then focus is switching to the control of the page
+    // In Cocoa world, first "willSelect" runs,
+    //  then "firstResponder" changes to Window
+    //  then the views are reorded and the new View becomes a part
+    //  of views chain (and attaches to the window
+    //  the view is made "firstResponder"
+    //  and finally "didSelect" is fired
+    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+  end;
 
   // The recent clean up, drove the workaround below unnecessary
   // (at least the problem is not observed)
