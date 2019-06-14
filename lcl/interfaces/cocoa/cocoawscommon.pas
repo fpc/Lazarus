@@ -1398,7 +1398,11 @@ begin
     CallbackObject := Callback.GetCallbackObject;
     Callback := nil;
     obj.lclClearCallback;
-    CallbackObject.Free;
+    // Do not free the callback object here. It might be processing an event
+    // and is performing a self destruction. Thus there might be a code performing
+    // even after DestroyHandle() was called. The destruction needs to be delayed
+    // until after the event processing is done
+    CocoaWidgetSet.AddToCollect(CallbackObject);
   end;
   obj.release;
 end;

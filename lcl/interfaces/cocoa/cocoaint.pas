@@ -129,6 +129,11 @@ type
 
     // Clipboard
 
+    // collecting objects that needs to be released AFTER an event
+    // has been processed
+    ToCollect: TList;
+    procedure ReleaseAllToCollect;
+
     procedure SyncClipboard();
 
     function PromptUser(const DialogCaption, DialogMessage: String;
@@ -203,6 +208,9 @@ type
     {$I cocoawinapih.inc}
     // the extra LCL interface methods
     {$I cocoalclintfh.inc}
+    procedure AddToCollect(obj: TObject);
+    procedure RetainToCollect;
+    procedure ReleaseToCollect;
   end;
   
 var
@@ -457,35 +465,40 @@ var
   wnd: TCocoaWindow;
   allowcocoa : Boolean;
 begin
-  if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
-     (theEvent.type_ = NSFlagsChanged) then begin
-    cb := self.keyWindow.firstResponder.lclGetCallback;
-    if Assigned(cb) then
-    begin
-      try
-        if self.keyWindow.isKindOfClass_(TCocoaWindow) then begin
-          wnd := TCocoaWindow(self.keyWindow);
-          wnd._keyEvCallback := cb;
-          wnd._calledKeyEvAfter := False;
-        end
-        else
-          wnd := nil;
-        cb.KeyEvBefore(theEvent, allowcocoa);
-        if allowcocoa then
-          inherited sendEvent(theEvent);
-        if (not Assigned(wnd)) or (not wnd._calledKeyEvAfter) then
-          cb.KeyEvAfter;
-      finally
-        if Assigned(wnd) then
-          wnd._keyEvCallback := nil;
+  CocoaWidgetSet.RetainToCollect;
+  try
+    if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
+       (theEvent.type_ = NSFlagsChanged) then begin
+      cb := self.keyWindow.firstResponder.lclGetCallback;
+      if Assigned(cb) then
+      begin
+        try
+          if self.keyWindow.isKindOfClass_(TCocoaWindow) then begin
+            wnd := TCocoaWindow(self.keyWindow);
+            wnd._keyEvCallback := cb;
+            wnd._calledKeyEvAfter := False;
+          end
+          else
+            wnd := nil;
+          cb.KeyEvBefore(theEvent, allowcocoa);
+          if allowcocoa then
+            inherited sendEvent(theEvent);
+          if (not Assigned(wnd)) or (not wnd._calledKeyEvAfter) then
+            cb.KeyEvAfter;
+        finally
+          if Assigned(wnd) then
+            wnd._keyEvCallback := nil;
+        end;
+        Exit;
       end;
-      Exit;
     end;
+
+    inherited sendEvent(theEvent);
+
+    if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
+  finally
+    CocoaWidgetSet.ReleaseToCollect;
   end;
-
-  inherited sendEvent(theEvent);
-
-  if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
 end;
 
 function isMouseMoveEvent(tp: NSEventType): Boolean; inline;
