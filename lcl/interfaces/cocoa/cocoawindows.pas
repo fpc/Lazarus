@@ -467,8 +467,6 @@ begin
   isembedded := window.contentView <> self;
   if isembedded then
   begin
-    if Assigned(ownwin) then
-      ownwin.close;
     ownwin := nil;
   end
   else
@@ -487,10 +485,7 @@ begin
   if not isembedded and (newWindow <> window) then
   begin
     if Assigned(window) then
-    begin
       setStringValue(window.title);
-      window.close;
-    end;
     ownwin := nil;
     isembedded := false;
   end;
