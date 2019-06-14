@@ -159,6 +159,7 @@ function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUIn
 
 function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
+procedure DebugDumpParents(fromView: NSView);
 
 implementation
 
@@ -1763,6 +1764,14 @@ begin
       if trg is TWinControl then
         Result := Result +' '+TWinControl(trg).Name;
     end;
+  end;
+end;
+
+procedure DebugDumpParents(fromView: NSView);
+begin
+  while Assigned(fromView) do begin
+    writeln(fromView.lclClassName);
+    fromView := fromView.superView;
   end;
 end;
 
