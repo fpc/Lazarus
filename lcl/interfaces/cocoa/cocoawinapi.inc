@@ -2415,8 +2415,10 @@ begin
         begin
           lView.window.makeKeyWindow;
           lView.window.makeFirstResponder(lView.lclContentView);
-        end;
-      end;
+        end else
+          Result := 0; // the view is on window, cannot set focus. Fail
+      end else
+        Result := 0;
     end;
   end
   else
