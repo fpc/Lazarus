@@ -464,16 +464,21 @@ var
   wnd: TCocoaWindow;
   allowcocoa : Boolean;
   idx: integer;
+  win : NSWindow;
+  cbnew : ICommonCallback;
 begin
   idx := CocoaWidgetSet.RetainToCollect;
+  win := self.keyWindow;
+  if Assigned(win)
+    then cb := win.firstResponder.lclGetCallback
+    else cb := nil;
   try
     if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
        (theEvent.type_ = NSFlagsChanged) then begin
-      cb := self.keyWindow.firstResponder.lclGetCallback;
       if Assigned(cb) then
       begin
         try
-          if self.keyWindow.isKindOfClass_(TCocoaWindow) then begin
+          if win.isKindOfClass_(TCocoaWindow) then begin
             wnd := TCocoaWindow(self.keyWindow);
             wnd._keyEvCallback := cb;
             wnd._calledKeyEvAfter := False;
@@ -497,6 +502,25 @@ begin
 
     if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
   finally
+
+    // Focus change notification used to be in makeFirstResponder method
+    // However, it caused many issues with infinite loops.
+    // Sometimes Cocoa like to switch focus to window (temporary) (i.e. when switching tabs)
+    // That's causing a conflict with LCL. LCL tries to switch focus back
+    // to the original control. And Cocoa keep switching it back to the Window.
+    // (Note, that for Cocoa, window should ALWAYS be focusable)
+    // Thus, Focus switching notification was moved to post event handling.
+    //
+    // can't have this code in TCocoaWindow, because some key events are not forwarded
+    // to the window
+    cbnew := win.firstResponder.lclGetCallback;
+    if not isCallbackForSameObject(cb, cbnew) then
+    begin
+      if Assigned(cb) then cb.ResignFirstResponder;
+      cbnew := win.firstResponder.lclGetCallback;
+      if Assigned(cbnew) then cbnew.BecomeFirstResponder;
+    end;
+
     CocoaWidgetSet.ReleaseToCollect(idx);
   end;
 end;

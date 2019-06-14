@@ -126,9 +126,6 @@ type
     orderOutAfterFS : Boolean;
     fsview: TCocoaWindowContent;
 
-    responderSwitch: Integer;
-    respInitCb : ICommonCallback;
-
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
@@ -172,8 +169,6 @@ type
     procedure sendEvent(event: NSEvent); override;
     // key
     procedure keyDown(event: NSEvent); override;
-    // windows
-    function makeFirstResponder(r: NSResponder): LCLObjCBoolean; override;
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
 
@@ -1029,33 +1024,6 @@ procedure TCocoaWindowContent.setNeedsDisplayInRect(arect: NSRect);
 begin
   inherited setNeedsDisplayInRect(arect);
   if Assigned(overlay) then overlay.setNeedsDisplayInRect(arect);
-end;
-
-function TCocoaWindow.makeFirstResponder(r: NSResponder): LCLObjCBoolean;
-var
-  cbnew: ICommonCallback;
-begin
-  if (responderSwitch = 0) then
-    respInitCb := firstResponder.lclGetCallback;
-
-  // makeFirstResponder calls can be recursive!
-  // the resulting NSResponder can be the same object  (i.e. fieldEditor)
-  // yet, the callback should be the different anyway
-
-  inc(responderSwitch);
-  Result:=inherited makeFirstResponder(r);
-  dec(responderSwitch);
-
-  if (responderSwitch = 0) then
-  begin
-    cbnew := firstResponder.lclGetCallback;
-
-    if not isCallbackForSameObject(respInitCb, cbnew) then
-    begin
-      if Assigned(cbnew) then cbnew.BecomeFirstResponder;
-      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
-    end;
-  end;
 end;
 
 procedure TCocoaWindow.lclItemSelected(sender: id);
