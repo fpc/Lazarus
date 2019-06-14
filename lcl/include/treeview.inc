@@ -5951,6 +5951,7 @@ begin
   ScrollArea := ClientRect;
   InflateRect(ScrollArea, -BorderWidth, -BorderWidth);
   ScrollWindowEx(Handle, DeltaX, DeltaY, @ScrollArea, @ScrollArea, 0, nil, ScrollFlags);
+  UpdateScrollbars;
 end;
 
 procedure TCustomTreeView.WMVScroll(var Msg: TLMScroll);
