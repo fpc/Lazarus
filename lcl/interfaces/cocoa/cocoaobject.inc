@@ -163,7 +163,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCocoaWidgetSet.Destroy;
 begin
-  ReleaseAllToCollect;
+  ReleaseToCollect(0);
   inherited Destroy;
 
   FreeStockItems;
