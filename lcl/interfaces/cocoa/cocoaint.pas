@@ -51,10 +51,26 @@ type
     class function newWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'newWithFunc:';
   end;
 
+  { TAppDelegate }
+
+  TWinLevelOrder = record
+    win : NSWindow;
+    lvl : NSInteger;
+    ord : NSinteger;
+    vis : Boolean;
+  end;
+  PWinLevelOrder = ^TWinLevelOrder;
+  TWinLevelOrderArray = array [Word] of TWinLevelOrder;
+  PWinLevelOrderArray = ^TWinLevelOrderArray;
+
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
+  public
+    orderArray : PWinLevelOrderArray;
+    orderArrayCount : Integer;
     procedure application_openFiles(sender: NSApplication; filenames: NSArray);
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
+    procedure applicationWillBecomeActive(notification: NSNotification);
     procedure applicationDidBecomeActive(notification: NSNotification);
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
