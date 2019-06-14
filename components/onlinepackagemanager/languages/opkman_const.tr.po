@@ -1,0 +1,1977 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
+msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
+msgid "Cancel"
+msgstr "İptal"
+
+#: opkman_const.rsaddrepositorypackagefrm_bcancel_hint
+msgid "Close the dialog"
+msgstr "İletişim kutusunu kapat"
+
+#: opkman_const.rsaddrepositorypackagefrm_bok_caption
+msgctxt "opkman_const.rsaddrepositorypackagefrm_bok_caption"
+msgid "OK"
+msgstr "TAMAM"
+
+#: opkman_const.rsaddrepositorypackagefrm_bok_hint
+msgid "Close the dialog and create the package"
+msgstr "İletişim kutusunu kapat ve paketi oluştur"
+
+#: opkman_const.rsaddrepositorypackagefrm_caption
+msgid "Add repository package"
+msgstr "Paket deposu ekle"
+
+#: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
+msgid "Add existing repository package from file"
+msgstr "Mevcut depo paketini dosyadan ekle"
+
+#: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
+msgid "Create a new repository package"
+msgstr "Yeni bir depo paketi oluşturun"
+
+#: opkman_const.rscategoriesfrm_bcancel_caption
+msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
+msgid "Cancel"
+msgstr "İptal"
+
+#: opkman_const.rscategoriesfrm_byes_caption
+msgctxt "opkman_const.rscategoriesfrm_byes_caption"
+msgid "OK"
+msgstr "TAMAM"
+
+#: opkman_const.rscategoriesfrm_caption1
+#, fuzzy
+msgctxt "opkman_const.rscategoriesfrm_caption1"
+msgid "List with categories"
+msgstr "Kategorilere göre listele"
+
+#: opkman_const.rscategoriesfrm_caption2
+msgid "List with Lazarus versions"
+msgstr ""
+
+#: opkman_const.rscategoriesfrm_caption3
+msgid "List with FPC versions"
+msgstr ""
+
+#: opkman_const.rscategoriesfrm_caption4
+msgid "List with supported widgetsets"
+msgstr ""
+
+#: opkman_const.rscategoriesfrm_lbmessage_caption
+#, fuzzy
+#| msgid "Please select (check) one or more categories"
+msgid "Please select (check) one or more items"
+msgstr "Lütfen bir veya daha fazla kategori seçin (kontrol edin)"
+
+#: opkman_const.rscolors_caption
+msgctxt "opkman_const.rscolors_caption"
+msgid "Colors"
+msgstr "Renkler"
+
+#: opkman_const.rscolors_cd_title
+msgid "Select color"
+msgstr "Renk seçin"
+
+#: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
+msgid "Cancel"
+msgstr "İptal"
+
+#: opkman_const.rscreatejsonforupdatesfrm_bcreate_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bcreate_caption"
+msgid "Create"
+msgstr "Oluştur"
+
+#: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
+msgid "Help"
+msgstr "Yardım"
+
+#: opkman_const.rscreatejsonforupdatesfrm_btest_caption
+msgid "Test"
+msgstr "Test"
+
+#: opkman_const.rscreatejsonforupdatesfrm_caption
+msgid "Create update JSON for package:"
+msgstr "Paket için JSON güncellemesini oluşturun:"
+
+#: opkman_const.rscreatejsonforupdatesfrm_column0_text
+msgid "PackageFileName"
+msgstr "Paketdosyaadı"
+
+#: opkman_const.rscreatejsonforupdatesfrm_column1_text
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_column1_text"
+msgid "Version"
+msgstr "Versiyon"
+
+#: opkman_const.rscreatejsonforupdatesfrm_column2_text
+msgid "Force notify"
+msgstr "Bildirmeye zorla"
+
+#: opkman_const.rscreatejsonforupdatesfrm_column3_text
+msgid "Internal version"
+msgstr "Dahili versiyon"
+
+#: opkman_const.rscreatejsonforupdatesfrm_error1
+msgid "Cannot create JSON for updates! Error message:"
+msgstr "Güncellemeler için JSON oluşturulamıyor! Hata mesajı:"
+
+#: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
+msgid "Link to the package zip file"
+msgstr "Paket zip dosyası bağlantısu"
+
+#: opkman_const.rscreatejsonforupdatesfrm_message0
+msgid "Please check a repository package!"
+msgstr "Lütfen depo paketini kontrol edin!"
+
+#: opkman_const.rscreatejsonforupdatesfrm_message1
+msgid "Please check only one repository package!"
+msgstr "Lütfen yalnızca bir depo paketini kontrol edin!"
+
+#: opkman_const.rscreatejsonforupdatesfrm_message2
+msgid "Please enter a valid URL!"
+msgstr "Lütfen geçerli bir adres girin!"
+
+#: opkman_const.rscreatejsonforupdatesfrm_message3
+msgid "Please check at least one package file!"
+msgstr "Lütfen en az bir paket dosyasını kontrol edin!"
+
+#: opkman_const.rscreatejsonforupdatesfrm_message4
+msgid "JSON for updates successfully created."
+msgstr "Güncellemeler için JSON başarıyla oluşturuldu."
+
+#: opkman_const.rscreaterepositoryfrm_badd_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_badd_caption"
+msgid "Add"
+msgstr "Ekle"
+
+#: opkman_const.rscreaterepositoryfrm_badd_hint
+msgid "Add package to the current repository"
+msgstr "Geçerli depoya paket ekle"
+
+#: opkman_const.rscreaterepositoryfrm_bcancel_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_caption"
+msgid "Cancel"
+msgstr "İptal"
+
+#: opkman_const.rscreaterepositoryfrm_bcancel_hint
+msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_hint"
+msgid "Close this dialog"
+msgstr "İletişim penceresini kapat"
+
+#: opkman_const.rscreaterepositoryfrm_bcreate_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_caption"
+msgid "Create"
+msgstr "Oluştur"
+
+#: opkman_const.rscreaterepositoryfrm_bcreate_hint
+msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_hint"
+msgid "Create private repository"
+msgstr "Özel depo oluştur"
+
+#: opkman_const.rscreaterepositoryfrm_bdelete_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bdelete_caption"
+msgid "Delete"
+msgstr "Sil"
+
+#: opkman_const.rscreaterepositoryfrm_bdelete_hint
+msgid "Delete package from the current repository"
+msgstr "Paketi mevcut depodan sil"
+
+#: opkman_const.rscreaterepositoryfrm_bopen_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bopen_caption"
+msgid "Open"
+msgstr "Aç"
+
+#: opkman_const.rscreaterepositoryfrm_bopen_hint
+msgid "Open private respository"
+msgstr "Özel depoyu aç"
+
+#: opkman_const.rscreaterepositoryfrm_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_caption"
+msgid "Create/Edit private repository"
+msgstr "Özel depo oluştur/ düzenle"
+
+#: opkman_const.rscreaterepositoryfrm_conf1
+#, object-pascal-format
+msgid "Are you sure you wish to delete package: \"%s\"?"
+msgstr "\"%s\" paketini silmek istediğinize emin misiniz?"
+
+#: opkman_const.rscreaterepositoryfrm_conf2
+#, object-pascal-format
+msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
+msgstr "Şu dosya: \"%s\" geçerli depoda zaten var. Üzerine yazılsın mı?"
+
+#: opkman_const.rscreaterepositoryfrm_error1
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Cannot open private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
+msgid ""
+"Cannot open private repository: \"%s\". Error message: \n"
+"\"%s\""
+msgstr ""
+"Özel depo açılamıyor: \"%s\". Hata mesajı:\n"
+"\"%s\"\n"
+
+#: opkman_const.rscreaterepositoryfrm_error3
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Cannot save private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
+msgid ""
+"Cannot save private repository: \"%s\". Error message: \n"
+"\"%s\""
+msgstr ""
+"\"%s\" adlı özel depo kaydedilemiyor. Hata mesajı:\n"
+"\"%s\"\n"
+
+#: opkman_const.rscreaterepositoryfrm_error4
+msgid "Cannot add package to repository!"
+msgstr "Paket depoya eklenemiyor!"
+
+#: opkman_const.rscreaterepositoryfrm_error5
+#, object-pascal-format
+msgid "Cannot delete package: \"%s\"!"
+msgstr "\"%s\"Paketi silinemedi!"
+
+#: opkman_const.rscreaterepositoryfrm_info1
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "The following directory: \"%s\" is not empty.\n"
+#| "It's recommended to save the repository to an empty directory. Continue?\n"
+msgid ""
+"The following directory: \"%s\" is not empty.\n"
+"It's recommended to save the repository to an empty directory. Continue?"
+msgstr ""
+"Aşağıdaki dizin: \"%s\" boş değil.\n"
+"Depoyu boş bir dizine kaydetmeniz önerilir. Devam edilsin mi?\n"
+
+#: opkman_const.rscreaterepositoryfrm_info3
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "The following package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
+msgid ""
+"The following package: \"%s\" is already in the current repository.\n"
+"Each repository and Lazarus package must be unique!"
+msgstr ""
+"Aşağıdaki paket: \"%s\" zaten geçerli depoda.\n"
+"Her depo ve Lazarus paketi benzersiz olmalı!\n"
+
+#: opkman_const.rscreaterepositoryfrm_info5
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "The following Lazarus package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
+msgid ""
+"The following Lazarus package: \"%s\" is already in the current repository.\n"
+"Each repository and Lazarus package must be unique!"
+msgstr ""
+"Aşağıdaki Lazarus paketi: \"%s\" şu an için geçerli depoda.\n"
+"Her depo ve Lazarus paketi benzersiz olmalı!\n"
+
+#: opkman_const.rscreaterepositoryfrm_info7
+msgid "Package successfully added to repository."
+msgstr "Paket başarıyla depoya eklendi."
+
+#: opkman_const.rscreaterepositoryfrm_mirepdetails_caption
+msgid "Edit repository details"
+msgstr "Depo açıklamasını düzenle"
+
+#: opkman_const.rscreaterepositoryfrm_repositoryaddress
+msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
+msgid "Address"
+msgstr "Adres"
+
+#: opkman_const.rscreaterepositoryfrm_repositorydescription
+msgctxt "opkman_const.rscreaterepositoryfrm_repositorydescription"
+msgid "Description"
+msgstr "Açıklama"
+
+#: opkman_const.rscreaterepositoryfrm_vstdetails_column0
+msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column0"
+msgid "Description"
+msgstr "Açıklama"
+
+#: opkman_const.rscreaterepositoryfrm_vstdetails_column1
+msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column1"
+msgid "Data"
+msgstr "Veri"
+
+#: opkman_const.rscreaterepositoryfrm_vstpackages_column0
+msgid "Repository/Packages"
+msgstr "Depolar/Paketler"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_author
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_author"
+msgid "Author"
+msgstr "Yazar"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_category
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_category"
+msgid "Category"
+msgstr "Kategori"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_dependecies
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Bağımlılıklar"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_description
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_description"
+msgid "Description"
+msgstr "Açıklama"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_downloadurl
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_downloadurl"
+msgid "Update link (JSON)"
+msgstr "Güncelleme Linki (JSON)"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "FPC uyumluluğu"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_homepageurl
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_homepageurl"
+msgid "Home page"
+msgstr "Anasayfa"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "Lazarus uyumluluğu"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_license
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_license"
+msgid "License"
+msgstr "Lisans"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Paket tipi"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype0
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype0"
+msgid "Designtime and runtime"
+msgstr "Tasarım zamanı ve Çalışma zamanı"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype1
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype1"
+msgid "Designtime"
+msgstr "Tasarım zamanı"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype2
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype2"
+msgid "Runtime"
+msgstr "Çalışma zamanı"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype3
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype3"
+msgid "Runtime only, cannot be installed in IDE"
+msgstr "Çalışma zamanı İDE ye yüklenmez"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate"
+msgid "Available since"
+msgstr "Beri kullanılabilir"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash"
+msgid "Repository filehash"
+msgstr "Depo dosya karması"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename"
+msgid "Repository filename"
+msgstr "Depo dosya adı"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize"
+msgid "Repository filesize"
+msgstr "Depo dosya boyutu"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Desteklenen Widgetler"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_version
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_version"
+msgid "Version"
+msgstr "Versiyon"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
+msgid "Cancel"
+msgstr "İptal"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcancel_hint
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_hint"
+msgid "Close this dialog"
+msgstr "Bu pencereyi kapat"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
+msgid "Create"
+msgstr "Oluştur"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_caption1
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption1"
+msgid "Add"
+msgstr "Ekle"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_hint
+msgid "Create files locally"
+msgstr "Yerel olarak dosya oluşturun"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_hint1
+msgid "Add package to repository"
+msgstr "Depoya paket ekle"
+
+#: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
+msgid "Help"
+msgstr "Yardım"
+
+#: opkman_const.rscreaterepositorypackagefrm_bhelp_hint
+msgid "Open help"
+msgstr "Yardımı aç"
+
+#: opkman_const.rscreaterepositorypackagefrm_boptions_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_boptions_caption"
+msgid "Options"
+msgstr "Seçenekler"
+
+#: opkman_const.rscreaterepositorypackagefrm_boptions_hint
+msgid "Open options dialog"
+msgstr "Seçenekler penceresini aç"
+
+#: opkman_const.rscreaterepositorypackagefrm_bsubmit_caption
+msgid "Submit"
+msgstr "Gönder"
+
+#: opkman_const.rscreaterepositorypackagefrm_bsubmit_hint
+msgid "Submit files to remote server"
+msgstr "Dosyaları uzak sunucuya gönder"
+
+#: opkman_const.rscreaterepositorypackagefrm_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"
+msgid "Create repository package"
+msgstr "Depo paketi oluştur"
+
+#: opkman_const.rscreaterepositorypackagefrm_error0
+msgid "Error reading package"
+msgstr "Paket okunurken hata oluştu"
+
+#: opkman_const.rscreaterepositorypackagefrm_error1
+msgid "Cannot create zip file:"
+msgstr "Zip dosyası oluşturulamadı:"
+
+#: opkman_const.rscreaterepositorypackagefrm_error2
+msgid "Cannot create JSON file:"
+msgstr "JSON oluşturulamadı:"
+
+#: opkman_const.rscreaterepositorypackagefrm_error3
+#, object-pascal-format
+msgid "Cannot send file: \"%s\""
+msgstr "\"%s\" dosya gönderilemedi"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbcategory_caption
+msgid "Category:"
+msgstr "Kategori:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbdisplayname_caption
+msgid "Display name:"
+msgstr "Ekran adı:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbdownloadurl_caption
+msgid "Update link (JSON):"
+msgstr "Güncelleme Linki (JSON):"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbfpccompatibility_caption
+msgid "FPC compatibility:"
+msgstr "FPC uyumluluğu:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbhomepageurl_caption
+msgid "Home page:"
+msgstr "Anasayfa:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lblazcompatibility_caption
+msgid "Lazarus compatibility:"
+msgstr "Lazarus uyumluluğu:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbpackagedir_caption
+msgid "Package directory:"
+msgstr "Paket klasörü:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbsupportedwidgetset_caption
+msgid "Supported widgetsets:"
+msgstr "Desteklenen widget'lar:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption"
+msgid "SVN:"
+msgstr "SVN:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message0
+msgid "Please select a category for package:"
+msgstr "Lütfen paket için bir kategori seçiniz:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message1
+msgid "Please enter supported Lazarus versions for package:"
+msgstr "Lütfen paket için desteklenen Lazarus sürümlerini girin:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message10
+msgid "Cancelling upload. Please wait..."
+msgstr "Yükleme iptal edildi.Lütfen bekleyin..."
+
+#: opkman_const.rscreaterepositorypackagefrm_message2
+msgid "Please enter supported FPC versions for package:"
+msgstr "Lütfen paket için desteklenen FPC sürümlerini girin:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message3
+msgid "Please enter supported widgetsets for package:"
+msgstr "Lütfen paket için desteklenen widget'ları girin:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message4
+msgid "Compressing package. Please wait..."
+msgstr "Paket sıkıştırılıyor. Lütfen bekleyin..."
+
+#: opkman_const.rscreaterepositorypackagefrm_message5
+msgid "Creating JSON. Please wait..."
+msgstr "JSON oluşturuluyor. Lütfen bekleyin..."
+
+#: opkman_const.rscreaterepositorypackagefrm_message6
+msgctxt "opkman_const.rscreaterepositorypackagefrm_message6"
+msgid "Creating JSON for updates. Please wait..."
+msgstr "Güncellemeler için JSON oluşturuluyor. Lütfen bekleyin..."
+
+#: opkman_const.rscreaterepositorypackagefrm_message7
+msgctxt "opkman_const.rscreaterepositorypackagefrm_message7"
+msgid "Repository package successfully created."
+msgstr "Depo paketi başarıyla oluşturuldu."
+
+#: opkman_const.rscreaterepositorypackagefrm_message8
+#, object-pascal-format
+msgid "Sending files (\"%s\"). Please wait..."
+msgstr "Dosya gönderiliyor (\"%s\"). Lütfen bekleyin..."
+
+#: opkman_const.rscreaterepositorypackagefrm_message9
+#, fuzzy
+#| msgid ""
+#| "Files successfully sent. Thank you for submitting packages!\n"
+#| "Your request will be processed in 24 hours.\n"
+msgid ""
+"Files successfully sent. Thank you for submitting packages!\n"
+"Your request will be processed in 24 hours."
+msgstr ""
+"Dosyalar başarıyla gönderildi. Paketleri gönderdiğiniz için teşekkür ederiz!\n"
+"İsteğiniz 24 saat içinde işleme alınacak.\n"
+
+#: opkman_const.rscreaterepositorypackagefrm_nopackage
+msgid "No packages found!"
+msgstr "Paket bulunamadı!"
+
+#: opkman_const.rscreaterepositorypackagefrm_pncaption_caption0
+msgid "Available packages"
+msgstr "Mevcut Paketler"
+
+#: opkman_const.rscreaterepositorypackagefrm_pncaption_caption1
+msgctxt "opkman_const.rscreaterepositorypackagefrm_pncaption_caption1"
+msgid "Description"
+msgstr "Açıklama"
+
+#: opkman_const.rscreaterepositorypackagefrm_pncaption_caption2
+msgctxt "opkman_const.rscreaterepositorypackagefrm_pncaption_caption2"
+msgid "Data"
+msgstr "Veri"
+
+#: opkman_const.rscreaterepositorypackagefrm_pnmessage_caption
+msgid "Please wait..."
+msgstr "Lütfen bekleyin.."
+
+#: opkman_const.rscreaterepositorypackagefrm_sddtitledst
+msgid "Save repository package to..."
+msgstr "Depo paketini şuraya kaydet..."
+
+#: opkman_const.rscreaterepositorypackagefrm_sddtitlesrc
+msgid "Select package directory"
+msgstr "Paket klasörünü seçin"
+
+#: opkman_const.rslazaruspackagemanager
+msgid "Online Package Manager"
+msgstr "Çevrimiçi Paket Yöneticisi"
+
+#: opkman_const.rsmainfrm_breturn_caption
+msgid "Return"
+msgstr ""
+
+#: opkman_const.rsmainfrm_cball_caption
+msgid "All/None"
+msgstr "Tümü/Hiçbiri"
+
+#: opkman_const.rsmainfrm_cball_hint
+msgid "Check/Uncheck packages"
+msgstr "Paketleri işaretle / işareti kaldır"
+
+#: opkman_const.rsmainfrm_cbfilterby_hint
+msgid "Filter package list by:"
+msgstr "Paket listesini filtrele:"
+
+#: opkman_const.rsmainfrm_edfilter_hint
+msgid "Type filter text"
+msgstr "Filtre metni girin"
+
+#: opkman_const.rsmainfrm_lbfilter_caption
+msgid "Filter by:"
+msgstr "Filtrele:"
+
+#: opkman_const.rsmainfrm_miascendent
+msgid "Ascendent"
+msgstr "Artan"
+
+#: opkman_const.rsmainfrm_mibydate
+msgid "By date"
+msgstr "Tarihe göre"
+
+#: opkman_const.rsmainfrm_mibyname
+msgid "By name"
+msgstr "Ada göre"
+
+#: opkman_const.rsmainfrm_micopytoclpbrd
+msgid "Copy to clipboard"
+msgstr "Panoya kopyala"
+
+#: opkman_const.rsmainfrm_micreatejsonforupdates
+msgid "Create JSON for updates"
+msgstr "Güncellemeler için JSON oluşturun"
+
+#: opkman_const.rsmainfrm_micreaterepository
+msgctxt "opkman_const.rsmainfrm_micreaterepository"
+msgid "Create private repository"
+msgstr "Özel depo oluştur"
+
+#: opkman_const.rsmainfrm_micreaterepositorypackage
+msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
+msgid "Create repository package"
+msgstr "Depo paketi oluştur"
+
+#: opkman_const.rsmainfrm_midescendent
+msgid "Descendent"
+msgstr "Azalan"
+
+#: opkman_const.rsmainfrm_mifromexternalsource
+#, fuzzy
+#| msgid "From external source"
+msgid "From third party repository"
+msgstr "Harici kaynaktan"
+
+#: opkman_const.rsmainfrm_mifromrepository
+#, fuzzy
+#| msgid "From repository"
+msgid "From official repository"
+msgstr "Depodan"
+
+#: opkman_const.rsmainfrm_mijsonhide
+msgid "Hide JSON"
+msgstr "JSON gizle"
+
+#: opkman_const.rsmainfrm_mijsonshow
+msgid "Show JSON"
+msgstr "JSON göster"
+
+#: opkman_const.rsmainfrm_mijsonsort
+msgid "Sort"
+msgstr "Sırala"
+
+#: opkman_const.rsmainfrm_miload
+msgid "Load packages"
+msgstr "Paketleri yükle"
+
+#: opkman_const.rsmainfrm_miloadinstalled
+msgctxt "opkman_const.rsmainfrm_miloadinstalled"
+msgid "Installed"
+msgstr "Yüklenmiş"
+
+#: opkman_const.rsmainfrm_miresetrating
+msgid "Reset rating"
+msgstr "Değerlendirmeyi sıfırla"
+
+#: opkman_const.rsmainfrm_misave
+msgid "Save packages"
+msgstr "Paketleri Kaydet"
+
+#: opkman_const.rsmainfrm_misavechecked
+msgid "Checked"
+msgstr "Onaylı"
+
+#: opkman_const.rsmainfrm_misavetofile
+msgid "Save to file"
+msgstr "Dosyayı kaydet"
+
+#: opkman_const.rsmainfrm_packagealreadydownloaded
+msgid "The following repository packages already exist in the target folder. Continue?"
+msgstr "Aşağıdaki klasör paketleri hedef klasörde zaten var. Devam edilsin mi?"
+
+#: opkman_const.rsmainfrm_packagealreadyinstalled
+msgid "The following packages are already installed. Continue anyway?"
+msgstr "Aşağıdaki paketler zaten kurulu. Her halükarda devam et?"
+
+#: opkman_const.rsmainfrm_packageincompatible
+msgid "The following packages are not compatible with your system and the install will most likely fail. Continue anyway?"
+msgstr ""
+
+#: opkman_const.rsmainfrm_packagenamealreadyexists
+msgid "A package with the same name already exists!"
+msgstr "Aynı isimde bir paket zaten var!"
+
+#: opkman_const.rsmainfrm_packageupdate0
+msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
+msgstr "Aşağıdaki depo paketleri harici olarak mevcut değildir. Paketler atlanacak. Devam edilsin mi?"
+
+#: opkman_const.rsmainfrm_packageupdate1
+msgid "None of the checked repository packages are available externally."
+msgstr "Kontrol edilen depo paketlerinin hiçbiri harici olarak mevcut değildir."
+
+#: opkman_const.rsmainfrm_packageupdatewarning
+#, fuzzy
+#| msgid ""
+#| "Installing packages from external link is not without a risk!\n"
+#| "Only install if you trust the package maintainer. Continue?\n"
+msgid ""
+"Installing packages from external link is not without a risk!\n"
+"Only install if you trust the package maintainer. Continue?"
+msgstr ""
+"Paketleri harici linkten kurmak risksizdir!\n"
+"Yalnızca paket bakımcısına güveniyorsanız kurun. Devam edilsin mi?\n"
+
+#: opkman_const.rsmainfrm_resmessagechecksloaded
+#, object-pascal-format
+msgid "%s packages successfully loaded from file!"
+msgstr "%s paketleri dosyadan başarıyla yüklendi!"
+
+#: opkman_const.rsmainfrm_resmessagecheckssaved
+#, object-pascal-format
+msgid "%s packages successfully saved to file!"
+msgstr "%s paketleri başarıyla dosyaya kaydedildi!"
+
+#: opkman_const.rsmainfrm_rsdestdirerror
+#, object-pascal-format
+msgid "Cannot create directory \"%s\". Operation aborted."
+msgstr "\"%s\" dizini oluşturulamıyor. İşlem iptal edildi."
+
+#: opkman_const.rsmainfrm_rsmessagechangingrepository
+msgid "Changing repository. Please wait..."
+msgstr "Depo değiştiriliyor. Lütfen bekleyin..."
+
+#: opkman_const.rsmainfrm_rsmessagedownload
+msgid "Downloading package list. Please wait..."
+msgstr "Paket listesi indiriliyor. Lütfen bekleyin..."
+
+#: opkman_const.rsmainfrm_rsmessageerror0
+msgid "Cannot download package list. Error message:"
+msgstr "Paket listesi indirilemiyor. Hata mesajı:"
+
+#: opkman_const.rsmainfrm_rsmessageerror1
+msgid "Invalid JSON file."
+msgstr "Geçersiz JSON dosyası."
+
+#: opkman_const.rsmainfrm_rsmessageerror2
+msgid "Remote server unreachable."
+msgstr "Uzak sunucuya erişilemiyor."
+
+#: opkman_const.rsmainfrm_rsmessagenopackage
+msgid "No packages to show."
+msgstr "Gösterilecek paket yok."
+
+#: opkman_const.rsmainfrm_rsmessagenorepository0
+#, fuzzy
+#| msgid ""
+#| "Remote package repository not configured.\n"
+#| "Do you wish to configure it now?\n"
+msgid ""
+"Remote package repository not configured.\n"
+"Do you wish to configure it now?"
+msgstr ""
+"Uzak paket deposu yapılandırılmadı.\n"
+"Şimdi yapılandırmak ister misiniz?\n"
+
+#: opkman_const.rsmainfrm_rsmessagenothingchacked
+msgid "Please check at least one package!"
+msgstr "Lütfen en az bir paket kontrol edin!"
+
+#: opkman_const.rsmainfrm_rsmessagenothinginstalled
+msgid "No packages are installed. Please install at least one package first."
+msgstr "Hiçbir paket kurulmamış. Lütfen önce en az bir paket kurun."
+
+#: opkman_const.rsmainfrm_rsmessageparsingjson
+msgid "Parsing JSON. Please wait..."
+msgstr "JSON ayrıştırılıyor. Lütfen bekleyin..."
+
+#: opkman_const.rsmainfrm_rsnopackagetodownload
+msgid "Please check one or more packages!"
+msgstr "Lütfen bir veya daha fazla paketi kontrol edin!"
+
+#: opkman_const.rsmainfrm_rspackagedependency0
+#, object-pascal-format
+msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
+msgstr "\"%s\" paketi \"%s\" paketine bağlıdır. Bağımlılık kaldırılsın mı?"
+
+#: opkman_const.rsmainfrm_rspackagedependency1
+msgid "Not resolving dependencies might lead to install failure! Continue?"
+msgstr "Bağımlılıkların çözülmemesi kurulumun başarısız olmasına neden olabilir! Devam edilsin mi?"
+
+#: opkman_const.rsmainfrm_rspackageinformation
+#, object-pascal-format
+msgid "Quick package information for \"%s\""
+msgstr "\"%s\" için hızlı paket bilgileri"
+
+#: opkman_const.rsmainfrm_rspackagerating
+#, object-pascal-format
+msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
+msgstr "\"%s\" paketine oyunuz: %s. oy verdiğiniz için teşekkürler!"
+
+#: opkman_const.rsmainfrm_rsrepositorycleanup0
+msgid "This will delete all non-installed packages from local repository. Continue?"
+msgstr "Bu, kurulu olmayan tüm paketleri yerel depodan siler. Devam edilsin mi?"
+
+#: opkman_const.rsmainfrm_rsrepositorycleanup1
+#, object-pascal-format
+msgid "%s packages deleted!"
+msgstr "%s Paketler silindi!"
+
+#: opkman_const.rsmainfrm_rsuninstall
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "%sAre you sure you wish to uninstall the checked packages?\n"
+#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+msgid ""
+"%sAre you sure you wish to uninstall the checked packages?\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE."
+msgstr ""
+"%s Kontrol edilen paketleri kaldırmak istediğinizden emin misiniz?\n"
+"Lütfen dikkat: değişikliklerin geçerli olması için IDE'yi yeniden inşa etmeniz gerekir.\n"
+
+#: opkman_const.rsmainfrm_rsuninstall_error
+#, object-pascal-format
+msgid "Cannot uninstall package \"%s\"!"
+msgstr "\"%s\" Paketi kaldırılamıyor!"
+
+#: opkman_const.rsmainfrm_rsuninstall_nothing
+msgid "None of the checked packages are installed. Nothing to uninstall."
+msgstr "Kontrol edilen paketlerin hiçbiri kurulu değil. Kaldırılacak bir şey yok."
+
+#: opkman_const.rsmainfrm_spclear_hint
+msgid "Clear filter text"
+msgstr "Filtre metnini temizle"
+
+#: opkman_const.rsmainfrm_spcollapse_hint
+msgid "Collapse package tree"
+msgstr "Paket ağacını daralt"
+
+#: opkman_const.rsmainfrm_spexpand_hint
+msgid "Expand package tree"
+msgstr "Paket ağacını genişlet"
+
+#: opkman_const.rsmainfrm_tbcleanup_caption
+msgid "Cleanup"
+msgstr "Temizle"
+
+#: opkman_const.rsmainfrm_tbcleanup_hint
+msgid "Cleanup local repository"
+msgstr "Yerel depoyu temizle"
+
+#: opkman_const.rsmainfrm_tbdownload_caption
+msgid "Download"
+msgstr "İndir"
+
+#: opkman_const.rsmainfrm_tbdownload_hint
+msgid "Download packages"
+msgstr "Paketleri indir"
+
+#: opkman_const.rsmainfrm_tbhelp_caption
+msgctxt "opkman_const.rsmainfrm_tbhelp_caption"
+msgid "Help"
+msgstr "Yardım"
+
+#: opkman_const.rsmainfrm_tbhelp_hint
+msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
+msgstr "Yardım (http://wiki.freepascal.org/Online_Package_Manager)"
+
+#: opkman_const.rsmainfrm_tbinstall_caption
+msgid "Install"
+msgstr "Yükle"
+
+#: opkman_const.rsmainfrm_tbinstall_hint
+msgid "Install packages"
+msgstr "Paketleri yükle"
+
+#: opkman_const.rsmainfrm_tbopenrepo_caption
+msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
+msgid "Local repo"
+msgstr "Yerel Depo"
+
+#: opkman_const.rsmainfrm_tbopenrepo_hint
+msgid "Open local repository"
+msgstr "Yerel depoyu aç"
+
+#: opkman_const.rsmainfrm_tboptions_caption
+msgctxt "opkman_const.rsmainfrm_tboptions_caption"
+msgid "Options"
+msgstr "Seçenekler"
+
+#: opkman_const.rsmainfrm_tboptions_hint
+msgid "Show options dialog"
+msgstr "Ayarlar iletişim kutusunu göster"
+
+#: opkman_const.rsmainfrm_tbrefresh_caption
+msgid "Refresh"
+msgstr "Yenile"
+
+#: opkman_const.rsmainfrm_tbrefresh_hint
+msgid "Refresh package list"
+msgstr "Paket listesini yenile"
+
+#: opkman_const.rsmainfrm_tbrepository_caption
+msgctxt "opkman_const.rsmainfrm_tbrepository_caption"
+msgid "Create"
+msgstr "Oluştur"
+
+#: opkman_const.rsmainfrm_tbrepository_hint
+msgid "Create package or repository"
+msgstr "Paket veya depo oluştur"
+
+#: opkman_const.rsmainfrm_tbuninstall_caption
+msgid "Uninstall"
+msgstr "Kaldır"
+
+#: opkman_const.rsmainfrm_tbuninstall_hint
+msgid "Uninstall packages"
+msgstr "Paketleri kaldır"
+
+#: opkman_const.rsmainfrm_tbupdate_caption
+msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
+msgid "Update"
+msgstr "Güncelle"
+
+#: opkman_const.rsmainfrm_tbupdate_hint
+msgid "Update packages from external URL"
+msgstr "Harici URL’den paketleri güncelle"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_data
+msgid "Status/Data"
+msgstr "Durum/Veri"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_installed
+msgctxt "opkman_const.rsmainfrm_vstheadercolumn_installed"
+msgid "Installed"
+msgstr "Kurulmuş"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package (.lpk)"
+msgstr "Lazarus Paketi (.lpk)"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_packagename
+msgid "Packages"
+msgstr "Paketler"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_rating
+msgid "Rating"
+msgstr "Değerlendirme"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_repository
+msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
+msgid "Repository"
+msgstr "Depo"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_update
+msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
+msgid "External"
+msgstr "Harici"
+
+#: opkman_const.rsmainfrm_vsttext_author
+msgctxt "opkman_const.rsmainfrm_vsttext_author"
+msgid "Author"
+msgstr "Yazar"
+
+#: opkman_const.rsmainfrm_vsttext_category
+msgctxt "opkman_const.rsmainfrm_vsttext_category"
+msgid "Category"
+msgstr "Kategori"
+
+#: opkman_const.rsmainfrm_vsttext_comdesc
+msgid "Community description for metapackage"
+msgstr "Meta paket için topluluk açıklaması"
+
+#: opkman_const.rsmainfrm_vsttext_communitydescription
+msgid "Community description"
+msgstr "Topluluk tanımı"
+
+#: opkman_const.rsmainfrm_vsttext_dependecies
+msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Bağımlılıklar"
+
+#: opkman_const.rsmainfrm_vsttext_desc
+msgid "Description for package"
+msgstr "Paket açıklaması"
+
+#: opkman_const.rsmainfrm_vsttext_description
+msgctxt "opkman_const.rsmainfrm_vsttext_description"
+msgid "Description"
+msgstr "Açıklama"
+
+#: opkman_const.rsmainfrm_vsttext_downloadurl
+msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
+msgid "External link (JSON)"
+msgstr "Dış bağlantı (JSON)"
+
+#: opkman_const.rsmainfrm_vsttext_fpccompatibility
+msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "FPC uyumluluğu"
+
+#: opkman_const.rsmainfrm_vsttext_homepageurl
+msgctxt "opkman_const.rsmainfrm_vsttext_homepageurl"
+msgid "Home page"
+msgstr "Anasayfa"
+
+#: opkman_const.rsmainfrm_vsttext_install0
+msgctxt "opkman_const.rsmainfrm_vsttext_install0"
+msgid "No"
+msgstr "Hayır"
+
+#: opkman_const.rsmainfrm_vsttext_install1
+msgctxt "opkman_const.rsmainfrm_vsttext_install1"
+msgid "Yes"
+msgstr "Evet"
+
+#: opkman_const.rsmainfrm_vsttext_install2
+msgid "Partially"
+msgstr "Kısmen"
+
+#: opkman_const.rsmainfrm_vsttext_lazcompatibility
+msgctxt "opkman_const.rsmainfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "Lazarus uyumluluğu"
+
+#: opkman_const.rsmainfrm_vsttext_lic
+msgid "License info for package"
+msgstr "Paket lisans bilgisi"
+
+#: opkman_const.rsmainfrm_vsttext_license
+msgctxt "opkman_const.rsmainfrm_vsttext_license"
+msgid "License"
+msgstr "Lisans"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory
+msgid "Package category"
+msgstr "Paket Kategorileri"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory0
+msgid "Charts and Graphs"
+msgstr "Grafikler ve grafikler"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory1
+msgid "Cryptography"
+msgstr "Kriptografi"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory10
+msgid "Indicators and Gauges"
+msgstr "Göstergeler ve Göstergeler"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory11
+msgid "Labels"
+msgstr "Etiketler"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory12
+msgid "LazIDEPlugins"
+msgstr "Lazarus-IDE-Pluginleri"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory13
+msgid "List and Combo Boxes"
+msgstr "Liste ve Açılır liste"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory14
+msgid "ListViews and TreeViews"
+msgstr "Liste Görünümleri ve Ağaç Görünümleri"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory15
+msgid "Menus"
+msgstr "Menü"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory16
+msgid "Multimedia"
+msgstr "Multimedya"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory17
+msgid "Networking"
+msgstr "Ağ"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory18
+msgid "Panels"
+msgstr "Panel"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory19
+msgid "Reporting"
+msgstr "Raporlama"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory2
+msgid "DataControls"
+msgstr "Veri kontrolleri"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory20
+msgid "Science"
+msgstr "Bilim"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory21
+msgid "Security"
+msgstr "Güvenlik"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory22
+msgid "Shapes"
+msgstr "Şekiller"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory23
+msgid "Sizers and Scrollers"
+msgstr "Boyutlandırıcılar ve Kaydırıcılar"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory24
+msgid "System"
+msgstr "Sistem"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory25
+msgid "Tabbed Components"
+msgstr "Sekmeli Bileşenler"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory26
+msgid "Other"
+msgstr "Diğer"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory27
+msgid "Games and Game Engines"
+msgstr "Oyun ve Oyun motoru"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory3
+msgid "Date and Time"
+msgstr "Tarih ve Saat"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory4
+msgid "Dialogs"
+msgstr "İletişim"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory5
+msgid "Edit and Memos"
+msgstr "Düzenleme ve Notlar"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory6
+msgid "Files and Drives"
+msgstr "Dosya ve sürücü"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory7
+msgid "GUIContainers"
+msgstr "GUI-Container"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory8
+msgid "Graphics"
+msgstr "Grafik"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory9
+msgid "Grids"
+msgstr "Izgara"
+
+#: opkman_const.rsmainfrm_vsttext_packageinfo
+msgid "Package info"
+msgstr "Paket bilgisi"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate0
+msgctxt "opkman_const.rsmainfrm_vsttext_packagestate0"
+msgid "Repository"
+msgstr "Depo"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate1
+msgid "Downloaded"
+msgstr "İnidirilmiş"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate2
+msgid "Extracted"
+msgstr "Çıkartılmış"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate3
+msgctxt "opkman_const.rsmainfrm_vsttext_packagestate3"
+msgid "Installed"
+msgstr "Kurulmuş"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate4
+msgid "Up to date"
+msgstr "Güncel"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate6
+msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
+msgid "New version available"
+msgstr "Yeni sürüm mevcut"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate7
+msgid "Ahead of OPM"
+msgstr "OPM öncesinde"
+
+#: opkman_const.rsmainfrm_vsttext_packagestatus
+msgid "Package status"
+msgstr "Paket durumu"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Paket tipi"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype0
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype0"
+msgid "Designtime and runtime"
+msgstr "Tasarım zamanı ve çalışma zamanı"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype1
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype1"
+msgid "Designtime"
+msgstr "Tasarım zamanı"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype2
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype2"
+msgid "Runtime"
+msgstr "Çalışma zamanı"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype3
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype3"
+msgid "Runtime only, cannot be installed in IDE"
+msgstr "Yalnızca çalışma zamanı, IDE'ye yüklenemez"
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfiledate
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfiledate"
+msgid "Available since"
+msgstr "Beri kullanılabilir"
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfilehash
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilehash"
+msgid "Repository filehash"
+msgstr "Depo dosyası karması"
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfilename
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilename"
+msgid "Repository filename"
+msgstr "Depo dosya adı"
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfilesize
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilesize"
+msgid "Repository filesize"
+msgstr "Depo dosya boyutu"
+
+#: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
+msgctxt "opkman_const.rsmainfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Widget destekliyor"
+
+#: opkman_const.rsmainfrm_vsttext_svnurl
+msgctxt "opkman_const.rsmainfrm_vsttext_svnurl"
+msgid "SVN"
+msgstr "SVN"
+
+#: opkman_const.rsmainfrm_vsttext_version
+msgctxt "opkman_const.rsmainfrm_vsttext_version"
+msgid "Version"
+msgstr "Versiyon"
+
+#: opkman_const.rsopensslfrm_bp_cancelbutton_caption
+#, fuzzy
+msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
+msgid "No"
+msgstr "Hayır"
+
+#: opkman_const.rsopensslfrm_bp_okbutton_caption
+#, fuzzy
+msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
+msgid "Yes"
+msgstr "Evet"
+
+#: opkman_const.rsopensslfrm_caption
+msgid "Download OpenSSL libraries"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_chpermanent_caption
+msgid "Do not ask this question again"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_lbmessage1_caption
+msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
+msgstr ""
+
+#: opkman_const.rsopensslfrm_lbmessage2_caption
+msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
+msgstr ""
+
+#: opkman_const.rsopminterfacerebuildconf
+msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
+msgstr "Değişikliklerin yürürlüğe girmesi için IDE'yi yeniden oluşturmanız gerekir. Şimdi yeniden oluştur?"
+
+#: opkman_const.rsopmintfpackagelistfrm_caption
+msgid "Install online packages"
+msgstr "Online paketleri yükle"
+
+#: opkman_const.rsopmintfpackagelistfrm_pninfo
+msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
+msgstr "Yüklemeden önce Lazarus / FPC uyumluluğu, widget desteği, lisans ve sürüm bilgisini kontrol edin"
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
+msgid "Data"
+msgstr "Veri"
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package"
+msgstr "Lazarus Paketi"
+
+#: opkman_const.rsoptions_badd_caption
+msgctxt "opkman_const.rsoptions_badd_caption"
+msgid "Add"
+msgstr "Ekle"
+
+#: opkman_const.rsoptions_bcolors_caption
+msgctxt "opkman_const.rsoptions_bcolors_caption"
+msgid "Colors"
+msgstr "Renkler"
+
+#: opkman_const.rsoptions_bdelete_caption
+msgctxt "opkman_const.rsoptions_bdelete_caption"
+msgid "Delete"
+msgstr "Sil"
+
+#: opkman_const.rsoptions_bedit_caption
+msgctxt "opkman_const.rsoptions_bedit_caption"
+msgid "Edit"
+msgstr "Düzenle"
+
+#: opkman_const.rsoptions_bpoptions_bhelp
+msgid "Restore defaults"
+msgstr "Varsayılanları geri yükle"
+
+#: opkman_const.rsoptions_cbcheckforupdates_item0
+msgid "Every few minutes"
+msgstr "Beş dakikada bir"
+
+#: opkman_const.rsoptions_cbcheckforupdates_item1
+msgid "Every hour"
+msgstr "Her saat"
+
+#: opkman_const.rsoptions_cbcheckforupdates_item2
+msgid "Once per day"
+msgstr "Günde bir defa"
+
+#: opkman_const.rsoptions_cbcheckforupdates_item3
+msgid "Weekly"
+msgstr "Haftalık"
+
+#: opkman_const.rsoptions_cbcheckforupdates_item4
+msgid "Montly"
+msgstr "Aylık"
+
+#: opkman_const.rsoptions_cbcheckforupdates_item5
+msgctxt "opkman_const.rsoptions_cbcheckforupdates_item5"
+msgid "Never"
+msgstr "Asla"
+
+#: opkman_const.rsoptions_cbdelete_caption
+msgid "Delete downloaded zip files after installation/update"
+msgstr "Yükleme / güncelleme işleminden sonra indirilen zip dosyalarını sil"
+
+#: opkman_const.rsoptions_cbdelete_hint
+msgid "If this option is checked the downloaded zip file is always deleted after installation"
+msgstr "Bu seçenek işaretliyse, indirilen zip dosyası kurulumdan sonra daima silinir"
+
+#: opkman_const.rsoptions_cbforcedownloadextract_caption
+msgid "Always force download and extract"
+msgstr "İndirme ve çıkartma için her zaman zorla"
+
+#: opkman_const.rsoptions_cbforcedownloadextract_hint
+msgid "If this option is checked the packages are always re-downloaded/extracted before install"
+msgstr "Bu seçenek işaretliyse, paketler kurulumdan önce her zaman yeniden indirilir /zipten çıkartılır"
+
+#: opkman_const.rsoptions_cbproxy_caption
+msgid "Use proxy"
+msgstr "Proxy kullan"
+
+#: opkman_const.rsoptions_cbregular_caption
+msgid "Show regular icon for newly added packages after install"
+msgstr "Yüklemeden sonra yeni eklenen paketler için normal simge göster"
+
+#: opkman_const.rsoptions_cbselectprofile_hint
+msgid "Choose a profile that best fits you"
+msgstr "Size en uygun profili seçin"
+
+#: opkman_const.rsoptions_cbselectprofile_item0
+msgctxt "opkman_const.rsoptions_cbselectprofile_item0"
+msgid "Regular user"
+msgstr "Düzenli kullanıcı"
+
+#: opkman_const.rsoptions_cbselectprofile_item1
+msgctxt "opkman_const.rsoptions_cbselectprofile_item1"
+msgid "Package maintainer"
+msgstr "Paket yöneticisi"
+
+#: opkman_const.rsoptions_cbusedefaulttheme_caption
+msgid "Use default theme manager"
+msgstr "Varsayılan tema yöneticisini kullan"
+
+#: opkman_const.rsoptions_edlocalrepositoryarchive_hint
+msgid "The folder where the zip files are downloaded from the remote repository"
+msgstr "Zip dosyalarının uzak depodan indirildiği klasör"
+
+#: opkman_const.rsoptions_edlocalrepositorypackages_hint
+msgid "The folder where the repository packages are extracted/installed"
+msgstr "Depo paketlerinin çıkarıldığı / yüklendiği klasör"
+
+#: opkman_const.rsoptions_edlocalrepositoryupdate_hint
+msgid "The folder where the zip files are downloaded from the package maintainer webpage"
+msgstr "Zip dosyalarının paket koruyucu web sayfasından indirildiği klasör"
+
+#: opkman_const.rsoptions_frmcaption
+msgctxt "opkman_const.rsoptions_frmcaption"
+msgid "Options"
+msgstr "Seçenekler"
+
+#: opkman_const.rsoptions_gbproxysettings_caption
+msgid "Proxy settings"
+msgstr "Proxy ayarları"
+
+#: opkman_const.rsoptions_inputbox_caption
+msgid "Add new exclusion"
+msgstr "Yeni hariç tutma ekle"
+
+#: opkman_const.rsoptions_inputbox_conf0
+#, object-pascal-format, fuzzy, badformat
+msgid "Delete selected extension (\"%s\")?"
+msgstr "Seçili uzantıyı sil (\"% s\")?"
+
+#: opkman_const.rsoptions_inputbox_conf1
+#, object-pascal-format
+msgid "Delete selected folder (\"%s\")?"
+msgstr "Seçili klasör silin (\"%s\")?"
+
+#: opkman_const.rsoptions_inputbox_info0
+msgid "Please select a file extension!"
+msgstr "Lütfen bir dosya uzantısı seçin!"
+
+#: opkman_const.rsoptions_inputbox_info1
+msgid "Please select a folder!"
+msgstr "Lütfen bir klasör seçin!"
+
+#: opkman_const.rsoptions_inputbox_text0
+msgid "Type the extension name:"
+msgstr "Uzantı adını yazın:"
+
+#: opkman_const.rsoptions_inputbox_text1
+msgid "Type the folder name:"
+msgstr "Klasör adını yazın:"
+
+#: opkman_const.rsoptions_invaliddirectory_info
+msgid "Please enter a valid directory!"
+msgstr "Lütfen geçerli bir dizin giriniz!"
+
+#: opkman_const.rsoptions_lastupdate_never
+msgctxt "opkman_const.rsoptions_lastupdate_never"
+msgid "never"
+msgstr "Asla"
+
+#: opkman_const.rsoptions_lbcheckforupdates_caption
+msgid "Check for package updates"
+msgstr "Paket güncellemelerini kontrol et"
+
+#: opkman_const.rsoptions_lbcontimeout_caption
+msgid "Connection timeout (seconds):"
+msgstr "Bağlantı zaman aşımı (saniye):"
+
+#: opkman_const.rsoptions_lbcontimeout_hint
+msgid "The number of seconds after which package manager drops connection"
+msgstr "Paket yöneticisinin bağlantıyı kestiği saniye sayısı"
+
+#: opkman_const.rsoptions_lbdaystoshownewpackages_caption
+msgid "Show different icon for newly added packages for (days):"
+msgstr "Yeni eklenen paketler için (gün) farklı simge göster:"
+
+#: opkman_const.rsoptions_lbexcludefiles_hint
+msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
+msgid "These files will be excluded from repository packages (see: \"Create repository package\")"
+msgstr "Bu dosyalar depo paketlerinden çıkarılacak (bkz. \"Depo paketi oluştur\")"
+
+#: opkman_const.rsoptions_lbexcludefolders_hint
+msgctxt "opkman_const.rsoptions_lbexcludefolders_hint"
+msgid "These folders will be excluded from repository packages (see: \"Create repository package\")"
+msgstr "Bu klasörler depo  paketlerinden çıkarılacak (bkz. \"Depo paketi oluştur\")"
+
+#: opkman_const.rsoptions_lbfilterdirs_caption
+msgid "Excluded folders (packages)"
+msgstr "Dışlanan klasörler (paketler)"
+
+#: opkman_const.rsoptions_lbfilterfiles_caption
+msgid "Excluded files (packages)"
+msgstr "Dışlanan dosyalar (paketler)"
+
+#: opkman_const.rsoptions_lblastupdate_caption
+msgid "Last update: "
+msgstr "Son güncelleme: "
+
+#: opkman_const.rsoptions_lblocalrepositoryarchive_caption
+msgid "Archive directory"
+msgstr "Arşiv klasörü"
+
+#: opkman_const.rsoptions_lblocalrepositorypackages_caption
+msgid "Local repository"
+msgstr "Yerel depo klasörü"
+
+#: opkman_const.rsoptions_lblocalrepositoryupdate_caption
+msgid "Update directory"
+msgstr "Güncelleme Klasörü"
+
+#: opkman_const.rsoptions_lbpassword_caption
+msgid "Password"
+msgstr "Şifre"
+
+#: opkman_const.rsoptions_lbport_caption
+msgid "Port"
+msgstr "Port"
+
+#: opkman_const.rsoptions_lbremoterepository_caption
+msgid "Remote repository"
+msgstr "Uzak depo"
+
+#: opkman_const.rsoptions_lbselectprofile_caption
+msgid "Select profile"
+msgstr "Profil Seç"
+
+#: opkman_const.rsoptions_lbserver_caption
+msgid "Server"
+msgstr "Server"
+
+#: opkman_const.rsoptions_lbusername_caption
+msgid "Username"
+msgstr "Kullanıcı adı"
+
+#: opkman_const.rsoptions_proxyport_info
+msgid "Please enter the proxy server port!"
+msgstr "Lütfen proxy sunucu portunu giriniz!"
+
+#: opkman_const.rsoptions_proxyserver_info
+msgid "Please enter the proxy server address!"
+msgstr "Lütfen proxy sunucusu adresini giriniz!"
+
+#: opkman_const.rsoptions_rbhintformoptions_caption
+msgid "Quick info for repository packages"
+msgstr "Depo paketleri için hızlı bilgi"
+
+#: opkman_const.rsoptions_rbhintformoptions_item0
+msgid "Behaves like a regular hint window"
+msgstr "Düzenli bir ipucu penceresi gibi davranır"
+
+#: opkman_const.rsoptions_rbhintformoptions_item1
+msgid "It's triggered by SHIFT, moves with the mouse"
+msgstr "SHIFT tuşu tarafından tetiklenir, fare ile hareket eder"
+
+#: opkman_const.rsoptions_rbhintformoptions_item2
+msgid "Off"
+msgstr "Kapalı"
+
+#: opkman_const.rsoptions_rbopenssl_item0
+msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
+msgstr ""
+
+#: opkman_const.rsoptions_rbopenssl_item1
+msgid "Show confirmation dialog before download"
+msgstr ""
+
+#: opkman_const.rsoptions_rbopenssl_item2
+msgid "Never download files"
+msgstr ""
+
+#: opkman_const.rsoptions_remoterepository_information
+msgid "Please enter the remote repository address!"
+msgstr "Lütfen uzak depo adresini girin!"
+
+#: opkman_const.rsoptions_restoredefaults_conf
+msgid "This will restore the default settings. Continue?"
+msgstr "Bu, varsayılan ayarları geri yükleyecektir. Devam edilsin mi?"
+
+#: opkman_const.rsoptions_tsfolders_caption
+msgid "Folders"
+msgstr "Klasör"
+
+#: opkman_const.rsoptions_tsgeneral_caption
+msgid "General"
+msgstr "Genel"
+
+#: opkman_const.rsoptions_tsprofiles_caption
+msgid "Profiles"
+msgstr "Profil"
+
+#: opkman_const.rsoptions_tsproxy_caption
+msgid "Proxy"
+msgstr "Proxy"
+
+#: opkman_const.rsoption_cbcbalreadyinstalledpackages_caption
+msgid "Warn me about already installed packages"
+msgstr ""
+
+#: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
+msgid "If a package is already installed, OPM will show a warning message"
+msgstr ""
+
+#: opkman_const.rsoption_cbincompatiblepackage_caption
+msgid "Warn me about incompatible packages"
+msgstr ""
+
+#: opkman_const.rsoption_cbincompatiblepackage_hint
+msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_bno_caption
+msgctxt "opkman_const.rspackagelistfrm_bno_caption"
+msgid "No"
+msgstr "Hayır"
+
+#: opkman_const.rspackagelistfrm_bok_caption
+msgctxt "opkman_const.rspackagelistfrm_bok_caption"
+msgid "OK"
+msgstr "TAMAM"
+
+#: opkman_const.rspackagelistfrm_byes_caption
+msgctxt "opkman_const.rspackagelistfrm_byes_caption"
+msgid "Yes"
+msgstr "Evet"
+
+#: opkman_const.rspackagelistfrm_caption0
+msgid "Installed package list"
+msgstr "Yüklenen paket listesi"
+
+#: opkman_const.rspackagelistfrm_caption1
+msgid "Downloaded package list"
+msgstr "İndirilen paket listesi"
+
+#: opkman_const.rspackagelistfrm_caption2
+msgid "Update package list"
+msgstr "Paket listesini güncelle"
+
+#: opkman_const.rspackagelistfrm_caption3
+msgid "Incompatible package list"
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_curfpcver
+msgid "Current FPC version: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_curlazver
+msgid "Current Lazarus version: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_curws
+msgid "Current widgetset: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_incompatible
+msgid "Incompatible"
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_lbhint_caption
+msgid "Hint: for more details move the mouse over the problematic column."
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_supfpcvers
+msgid "Supported FPC versions: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_suplazvers
+msgid "Supported Lazarus versions: "
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_supwss
+msgid "Supported widgetsets: "
+msgstr ""
+
+#: opkman_const.rspackagesfound
+#, object-pascal-format
+msgid "(%s repository packages found, containing %s lpk files, total size %s)"
+msgstr "(%s lpk dosyası içeren %s depo paketi bulundu, toplam boyut %s)"
+
+#: opkman_const.rsprogressfrm_caption0
+msgid "Downloading packages"
+msgstr "Paketler indiriliyor"
+
+#: opkman_const.rsprogressfrm_caption1
+msgid "Extracting packages"
+msgstr "Paketler çıkartılıyor"
+
+#: opkman_const.rsprogressfrm_caption2
+msgid "Installing packages"
+msgstr "Paketler yükleniyor"
+
+#: opkman_const.rsprogressfrm_caption3
+msgid "Updating packages"
+msgstr "Paketleri güncelleniyor"
+
+#: opkman_const.rsprogressfrm_caption4
+msgid ". Please wait..."
+msgstr ". Lütfen Bekleyin..."
+
+#: opkman_const.rsprogressfrm_caption5
+msgid "Unknown"
+msgstr "Tanımsız"
+
+#: opkman_const.rsprogressfrm_cbextractopen_caption0
+msgid "Extract after download"
+msgstr "İndirdikten sonra çıkart"
+
+#: opkman_const.rsprogressfrm_cbextractopen_caption1
+msgid "Open containing folder"
+msgstr "Dosyayı içeren klasörü açınız"
+
+#: opkman_const.rsprogressfrm_conf0
+msgid "Continue with next one?"
+msgstr "Bir sonraki paket.. devam edilsin mi?"
+
+#: opkman_const.rsprogressfrm_error0
+msgid "Cannot download package:"
+msgstr "Paket indirilemiyor:"
+
+#: opkman_const.rsprogressfrm_error1
+msgid "Error message:"
+msgstr "Hata Mesajı :"
+
+#: opkman_const.rsprogressfrm_error2
+msgid "Cannot extract package:"
+msgstr "Paket çıkartılamadı:"
+
+#: opkman_const.rsprogressfrm_error3
+msgid "Cannot install package:"
+msgstr "Paket yüklenemiyor:"
+
+#: opkman_const.rsprogressfrm_error4
+#, object-pascal-format
+msgctxt "opkman_const.rsprogressfrm_error4"
+msgid "Dependency \"%s\" not found!"
+msgstr "Bağımlılık \"%s\" bulunamadı!"
+
+#: opkman_const.rsprogressfrm_error5
+msgctxt "opkman_const.rsprogressfrm_error5"
+msgid "Cannot contact download site"
+msgstr "İndirme sitesine ulaşılamıyor"
+
+#: opkman_const.rsprogressfrm_error6
+msgid "No valid download link found."
+msgstr "Geçerli bir indirme bağlantısı bulunamadı."
+
+#: opkman_const.rsprogressfrm_error7
+msgid "Cannot open package file."
+msgstr "Paket dosyası açılamadı."
+
+#: opkman_const.rsprogressfrm_error8
+msgid "Cannot compile package."
+msgstr "Paket derlenemiyor."
+
+#: opkman_const.rsprogressfrm_error9
+msgid "Cannot install package."
+msgstr "Paket kurulamadı."
+
+#: opkman_const.rsprogressfrm_info0
+msgctxt "opkman_const.rsprogressfrm_info0"
+msgid "Installing package:"
+msgstr "Kurulan Paket:"
+
+#: opkman_const.rsprogressfrm_info1
+msgctxt "opkman_const.rsprogressfrm_info1"
+msgid "Success."
+msgstr "Başarılı."
+
+#: opkman_const.rsprogressfrm_info2
+#, object-pascal-format
+msgid "Contacting download site for \"%s\" (%s)"
+msgstr "\"%s\" için indirme sitesine başvuruluyor (%s)"
+
+#: opkman_const.rsprogressfrm_info3
+msgid "Preparing to download. Please wait..."
+msgstr "İndirmeye hazırlanıyor. Lütfen bekleyin..."
+
+#: opkman_const.rsprogressfrm_info4
+msgid "Canceling. Please wait..."
+msgstr "İptal ediliyor Lütfen bekleyin..."
+
+#: opkman_const.rsprogressfrm_info5
+msgid "Opening package:"
+msgstr "Açılan Paket:"
+
+#: opkman_const.rsprogressfrm_info6
+msgctxt "opkman_const.rsprogressfrm_info6"
+msgid "Compiling package:"
+msgstr "Derlenen paket:"
+
+#: opkman_const.rsprogressfrm_lbelapsed_caption
+msgid "Elapsed:"
+msgstr "Geçen:"
+
+#: opkman_const.rsprogressfrm_lbpackage_caption
+msgid "Package:"
+msgstr "Paket :"
+
+#: opkman_const.rsprogressfrm_lbreceivedtotal_caption0
+msgid "Received (total):"
+msgstr "Alınan (toplam):"
+
+#: opkman_const.rsprogressfrm_lbreceivedtotal_caption1
+msgid "Unzipped (total):"
+msgstr "Çıkartılan (toplam):"
+
+#: opkman_const.rsprogressfrm_lbreceived_caption0
+msgid "Received:"
+msgstr "Alınan:"
+
+#: opkman_const.rsprogressfrm_lbreceived_caption1
+msgid "Unzipped:"
+msgstr "Çıkartılıyor :"
+
+#: opkman_const.rsprogressfrm_lbremaining_caption
+msgid "Remaining:"
+msgstr "Kalan:"
+
+#: opkman_const.rsprogressfrm_lbspeedcalc_caption
+msgid "Estimating. Please wait..."
+msgstr "Tahmin ediliyor. Lütfen bekle..."
+
+#: opkman_const.rsprogressfrm_lbspeed_caption
+msgid "Speed:"
+msgstr "Hız:"
+
+#: opkman_const.rsrepositories_badd_caption
+msgctxt "opkman_const.rsrepositories_badd_caption"
+msgid "Add"
+msgstr "Ekle"
+
+#: opkman_const.rsrepositories_bcancel_caption
+msgctxt "opkman_const.rsrepositories_bcancel_caption"
+msgid "Cancel"
+msgstr "İptal"
+
+#: opkman_const.rsrepositories_bdelete_caption
+msgctxt "opkman_const.rsrepositories_bdelete_caption"
+msgid "Delete"
+msgstr "Sil"
+
+#: opkman_const.rsrepositories_bedit_caption
+msgctxt "opkman_const.rsrepositories_bedit_caption"
+msgid "Edit"
+msgstr "Düzenle"
+
+#: opkman_const.rsrepositories_bok_caption
+msgctxt "opkman_const.rsrepositories_bok_caption"
+msgid "OK"
+msgstr "TAMAM"
+
+#: opkman_const.rsrepositories_caption
+msgid "Repositories"
+msgstr "Depolar"
+
+#: opkman_const.rsrepositories_confirmation0
+#, object-pascal-format
+msgid "Delete selected repository \"%s\"?"
+msgstr "Seçili depoyu sil \"%s\"?"
+
+#: opkman_const.rsrepositories_info1
+#, object-pascal-format, fuzzy, badformat
+msgid "The following repository: \"%s\" is already in the list."
+msgstr "Aşağıdaki depo: \"% s\" zaten listede var."
+
+#: opkman_const.rsrepositories_inputbox_caption0
+msgid "Add repository"
+msgstr "Depo ekle"
+
+#: opkman_const.rsrepositories_inputbox_caption1
+msgid "Edit repository"
+msgstr "Depoyu düzenle"
+
+#: opkman_const.rsrepositories_inputbox_text
+msgid "Type the repository address:"
+msgstr "Depo adresini yazın:"
+
+#: opkman_const.rsrepositories_vst_headercolumn
+msgid "Repository Address"
+msgstr "Depo adresi"
+
+#: opkman_const.rsrepositorydetailsfrm_bcancel_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_bcancel_caption"
+msgid "Cancel"
+msgstr "İptal"
+
+#: opkman_const.rsrepositorydetailsfrm_bcancel_hint
+msgctxt "opkman_const.rsrepositorydetailsfrm_bcancel_hint"
+msgid "Close the dialog without saving"
+msgstr "Kaydetmeden iletişim kutusunu kapat"
+
+#: opkman_const.rsrepositorydetailsfrm_bok_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_bok_caption"
+msgid "OK"
+msgstr "TAMAM"
+
+#: opkman_const.rsrepositorydetailsfrm_bok_hint
+msgctxt "opkman_const.rsrepositorydetailsfrm_bok_hint"
+msgid "Save and close the dialog"
+msgstr "Kaydet ve iletişim kutusunu kapat"
+
+#: opkman_const.rsrepositorydetailsfrm_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_caption"
+msgid "Repository details"
+msgstr "Depo detayları"
+
+#: opkman_const.rsrepositorydetailsfrm_edaddress_hint
+msgctxt "opkman_const.rsrepositorydetailsfrm_edaddress_hint"
+msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
+msgstr "Depo adresini girin (örn.: \"http://localhost/packages/\")"
+
+#: opkman_const.rsrepositorydetailsfrm_edname_hint
+msgctxt "opkman_const.rsrepositorydetailsfrm_edname_hint"
+msgid "Enter the repository name"
+msgstr "Depo adını girin"
+
+#: opkman_const.rsrepositorydetailsfrm_info1
+msgctxt "opkman_const.rsrepositorydetailsfrm_info1"
+msgid "Please enter the repository name."
+msgstr "Lütfen depo adını girin."
+
+#: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
+msgid "Address"
+msgstr "Adres"
+
+#: opkman_const.rsrepositorydetailsfrm_lbdescription_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_lbdescription_caption"
+msgid "Description"
+msgstr "Açıklama"
+
+#: opkman_const.rsrepositorydetailsfrm_lbname_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_lbname_caption"
+msgid "Name"
+msgstr "Adı"
+
+#: opkman_const.rsrepositorydetailsfrm_mdescription_hint
+msgctxt "opkman_const.rsrepositorydetailsfrm_mdescription_hint"
+msgid "Enter the repository description"
+msgstr "Depo açıklamasını girin"
+

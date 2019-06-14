@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2019-06-15 00:28+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: opkman_httpclient.serrchunklineendmissing
+msgid "Chunk line end missing"
+msgstr "Yığın satır sonu eksik"
+
+#: opkman_httpclient.serrchunktoobig
+msgid "Chunk too big"
+msgstr "Yığın çok büyük"
+
+#: opkman_httpclient.serrinvalidprotocol
+#, object-pascal-format
+msgid "Invalid protocol: \"%s\""
+msgstr "Geçersiz protokol \"%s\""
+
+#: opkman_httpclient.serrinvalidprotocolversion
+#, object-pascal-format, fuzzy, badformat
+msgid "Invalid protocol version in response: \"%s\""
+msgstr "Yanıtta geçersiz protokol sürümü: \"% s\""
+
+#: opkman_httpclient.serrinvalidstatuscode
+#, object-pascal-format
+msgid "Invalid response status code: %s"
+msgstr "Geçersiz yanıt durumu kodu: %s"
+
+#: opkman_httpclient.serrmaxredirectsreached
+#, object-pascal-format
+msgid "Maximum allowed redirects reached: %d"
+msgstr "İzin verilen maksimum yönlendirmeye ulaşıldı: %d"
+
+#: opkman_httpclient.serrreadingsocket
+msgid "Error reading data from socket"
+msgstr "Soketten veri okunurken hata oluştu"
+
+#: opkman_httpclient.serrunexpectedresponse
+#, object-pascal-format
+msgid "Unexpected response status code: %d"
+msgstr "Beklenmeyen yanıt durumu kodu: %d"
+
