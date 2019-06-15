@@ -823,13 +823,36 @@ class procedure TCocoaWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabC
 var
   lTabControl: TCocoaTabControl = nil;
   lOldTabStyle, lTabStyle: NSTabViewType;
+var
+  pr : TRect;
+  ar : TRect;
+  fr : NSRect;
+  dx, dy : double;
+  cb: ICommonCallback;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
   lTabStyle := LCLTabPosToNSTabStyle(AShowTabs, ATabControl.BorderWidth, ATabControl.TabPosition);
+  pr := lTabControl.lclGetFrameToLayoutDelta;
   lTabControl.setTabViewType(lTabStyle);
+  ar := lTabControl.lclGetFrameToLayoutDelta;
+  // switching ShowTabs actually changes layout to frame
+  // this needs to be compenstated
+  if (ar.Top<>pr.Top) or (pr.Left<>ar.Top) then
+  begin
+    fr := lTabControl.frame;
+    dx := pr.Left - ar.left;
+    dy := pr.Top - ar.Top;
+    fr.origin.x := fr.origin.x + dx;
+    fr.origin.y := fr.origin.y + dy;
+    fr.size.width := fr.size.width - dx - (ar.Right - pr.Right);
+    fr.size.height := fr.size.height - dy - (ar.Bottom - pr.Bottom);
+    lTabControl.setFrame(fr);
+    cb := lTabControl.lclGetCallback;
+    if Assigned(cb) then cb.frameDidChange(lTabControl);
+  end;
 end;
 
 { TCocoaWSCustomListView }

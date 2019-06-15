@@ -440,22 +440,43 @@ end;
 function TCocoaTabControl.lclClientFrame: TRect;
 var
   r : TRect;
+  f : NSRect;
 begin
-  if isFlipped then
-    Result:=NSRectToRect( contentRect )
+  case tabViewType of
+    NSNoTabsNoBorder:
+    begin
+      f := frame;
+      f.origin.x := 0;
+      f.origin.y := 0;
+      Result := NSRectToRect( f );
+    end;
   else
-    NSToLCLRect( contentRect, frame.size.height, Result );
+    if isFlipped then
+      Result:=NSRectToRect( contentRect )
+    else
+      NSToLCLRect( contentRect, frame.size.height, Result );
+  end;
 
-  r:=lclGetFrameToLayoutDelta;
-  Types.OffsetRect(Result, -r.Left, -r.Top);
+  //if tabs are hidden, frame layout should not be taken into account
+  //r:=lclGetFrameToLayoutDelta;
+  //Types.OffsetRect(Result, -r.Left, -r.Top);
 end;
 
 function TCocoaTabControl.lclGetFrameToLayoutDelta: TRect;
 begin
-  Result.Bottom := -10;
-  Result.Top := 6;
-  Result.Left := 7;
-  Result.Right := -7;
+  case tabViewType of
+    NSNoTabsNoBorder: begin
+      Result.Left := 0;
+      Result.Top := 0;
+      Result.Bottom := 0;
+      Result.Right := 0;
+    end;
+  else
+    Result.Bottom := -10;
+    Result.Top := 6;
+    Result.Left := 7;
+    Result.Right := -7;
+  end;
 end;
 
 function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
