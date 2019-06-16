@@ -620,10 +620,10 @@ begin
   AddMenuItem(MainIDEBar.itmJumpToInitialization);
 end;
 
-//{$IFDEF LCLCarbon}
-//var
-//  mnuApple: TIDEMenuSection = nil;
-//{$ENDIF}
+{$IFDEF LCLCocoa}
+var
+  mnuApple: TIDEMenuSection = nil;
+{$ENDIF}
 
 function FormMatchesCmd(aForm: TCustomForm; aCmd: TIDEMenuCommand): Boolean;
 begin
@@ -997,12 +997,12 @@ begin
   MainIDEBar.mnuMainMenu.Images := IDEImages.Images_16;
   with MainIDEBar do begin
     mnuMain:=RegisterIDEMenuRoot('IDEMainMenu',nil);
-    {$ifdef LCLCarbon}
+    {$ifdef LCLCocoa}
     // Under Apple there is a special policy: every application should create
     // a special Apple menu and put Quit, About there.
     // See issue: http://bugs.freepascal.org/view.php?id=12294
     // See http://lists.apple.com/archives/carbon-development/2002/Apr/msg01183.html, for details
-    //CreateMainMenuItem(mnuApple,'AppleApplication','');
+    CreateMainMenuItem(mnuApple,'AppleApplication',#$EF#$A3#$BF);
     {$endif}
     CreateMainMenuItem(mnuFile,'File',lisMenuFile);
     CreateMainMenuItem(mnuEdit,'Edit',lisMenuEdit);
@@ -1489,22 +1489,15 @@ begin
     CreateMenuItem(ParentMI,itmHelpReportingBug,'itmHelpReportingBug',
                    lisMenuReportingBug, 'menu_reportingbug');
 
+    CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
     // old behavior restored, until Tiger issue is fixed.
     // http://bugs.freepascal.org/view.php?id=14411
-    (*
-   {$ifdef LCLCarbon}
-    // under Carbon: add About item to the Apple menu
-    CreateMenuItem(mnuApple, itmHelpAboutLazarus,'itmHelpAboutLazarus',
-                   lisAboutLazarus, 'menu_information');
-    
-    CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
-    {$else}*)
-    // otherwise: add About item to the Help menu
-    CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
+
+
+    // under Cocoa: add About item to the Apple menu
     ParentMI:=itmInfoHelps;
-    CreateMenuItem(ParentMI,itmHelpAboutLazarus,'itmHelpAboutLazarus',
-                 lisAboutLazarus, 'menu_information');
-    //{$endif}
+    CreateMenuItem({$ifndef LCLCocoa}ParentMI{$else}mnuApple{$endif}, itmHelpAboutLazarus,'itmHelpAboutLazarus',
+                   lisAboutLazarus, 'menu_information');
 
     CreateMenuSeparatorSection(mnuHelp,itmHelpTools,'itmHelpTools');
     ParentMI:=itmHelpTools;
