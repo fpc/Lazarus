@@ -484,10 +484,13 @@ var
   cbnew : ICommonCallback;
 begin
   idx := CocoaWidgetSet.RetainToCollect;
-  win := self.keyWindow;
-  if Assigned(win)
-    then cb := win.firstResponder.lclGetCallback
-    else cb := nil;
+  win := theEvent.window;
+  if not Assigned(win) then win := self.keyWindow;
+
+  if Assigned(win) then
+    cb := win.firstResponder.lclGetCallback
+  else
+    cb := nil;
   try
     if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
        (theEvent.type_ = NSFlagsChanged) then begin

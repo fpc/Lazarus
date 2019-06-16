@@ -2390,6 +2390,12 @@ begin
   Result := True;
 end;
 
+function NeedsFocusNotifcation(event: NSEvent; win: NSWindow): Boolean;
+begin
+  Result := (Assigned(win))
+      and (not Assigned(event) or (event.window <> win));
+end;
+
 function TCocoaWidgetSet.SetFocus(Handle: HWND): HWND;
 var
   Obj: NSObject;
@@ -2418,7 +2424,7 @@ begin
           if lView.window.makeFirstResponder(lView.lclContentView) then
           begin
             // initial focus set (right before the event loop starts)
-            if not Assigned(NSApp.currentEvent) then
+            if NeedsFocusNotifcation(NSApp.currentEvent, lView.window) then
             begin
               cb := lView.lclGetCallback;
               if Assigned(cb) then cb.BecomeFirstResponder;
