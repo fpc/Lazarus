@@ -281,25 +281,36 @@ type
 
   TCustomSortedChartSource = class(TCustomChartSource)
   private
+    FUseSortedAutoDetection: Boolean;
     FOnCompare: TChartSortCompare;
     procedure SetOnCompare(AValue: TChartSortCompare);
     procedure SetSorted(AValue: Boolean);
+    procedure SetUseSortedAutoDetection(AValue: Boolean);
   protected
     FData: TFPList;
     FSorted: Boolean;
+    FSortedAutoDetected: Boolean;
     function DoCompare(AItem1, AItem2: Pointer): Integer; virtual;
     procedure DoSort; virtual;
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    function GetItemInternal(AIndex: Integer): PChartDataItem; inline;
     function ItemAdd(AItem: PChartDataItem): Integer;
     procedure ItemInsert(AIndex: Integer; AItem: PChartDataItem);
     function ItemFind(AItem: PChartDataItem; L: Integer = 0; R: Integer = High(Integer)): Integer;
     function ItemModified(AIndex: Integer): Integer;
+    procedure ItemDeleted({%H-}AIndex: Integer); // pass -1 if all items were deleted at once
+    procedure ResetSortedAutoDetection;
+    procedure SetSortedAutoDetected;
     procedure SetSortBy(AValue: TChartSortBy); override;
     procedure SetSortDir(AValue: TChartSortDir); override;
     procedure SetSortIndex(AValue: Cardinal); override;
-    property Sorted: Boolean read FSorted write SetSorted default false;
+    procedure SortNoNotify; inline;
+    property ItemInternal[AIndex: Integer]: PChartDataItem read GetItemInternal;
     property OnCompare: TChartSortCompare read FOnCompare write SetOnCompare;
+    property Sorted: Boolean read FSorted write SetSorted default false;
+    property UseSortedAutoDetection: Boolean
+      read FUseSortedAutoDetection write SetUseSortedAutoDetection default false;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1601,7 +1612,7 @@ end;
 
 constructor TCustomSortedChartSource.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited;
   FData := TFPList.Create;
 end;
 
@@ -1761,13 +1772,39 @@ end;
 function TCustomSortedChartSource.GetItem(AIndex: Integer): PChartDataItem;
 begin
   Result := PChartDataItem(FData.Items[AIndex]);
+
+  // Values can be set directly between BeginUpdate and EndUpdate.
+  // Getting a pointer to the item allows modifying item's data
+  // directly, so we can no longer be sure, that dataset is sorted -
+  // so, if FSortedAutoDetected is set, reset it.
+  if IsUpdating and FSortedAutoDetected then
+    ResetSortedAutoDetection;
+end;
+
+function TCustomSortedChartSource.GetItemInternal(AIndex: Integer): PChartDataItem;
+var
+  SaveSortedAutoDetected: Boolean;
+begin
+  // try..finally..end is not required here - it makes the execution slower,
+  // and the worst thing, that can theoretically happen here (in case of
+  // exception) is disabling the FSortedAutoDetected optimization
+  SaveSortedAutoDetected := FSortedAutoDetected;
+  Result := GetItem(AIndex);
+  FSortedAutoDetected := SaveSortedAutoDetected;
 end;
 
 function TCustomSortedChartSource.ItemAdd(AItem: PChartDataItem): Integer;
 begin
   if IsSorted then begin
-    Result := ItemFind(AItem);
-    FData.Insert(Result, AItem);
+    if FSorted then begin
+      Result := ItemFind(AItem);
+      FData.Insert(Result, AItem);
+    end else begin
+      Result := FData.Add(AItem);
+      if Result > 0 then
+        if DoCompare(FData.List^[Result - 1], AItem) > 0 then
+          ResetSortedAutoDetection; // must be called AFTER adding new data
+    end;
   end else
     Result := FData.Add(AItem);
 end;
@@ -1776,8 +1813,14 @@ procedure TCustomSortedChartSource.ItemInsert(AIndex: Integer; AItem: PChartData
 begin
   if IsSorted then
     if AIndex <> ItemFind(AItem) then
-      raise ESortError.CreateFmt('%0:s.ItemInsert cannot insert data at the requested '+
-        'position, because source is sorted', [ClassName]);
+      if FSorted then
+        raise ESortError.CreateFmt('%0:s.ItemInsert cannot insert data at the requested '+
+          'position, because source is sorted', [ClassName])
+      else begin
+        FData.Insert(AIndex, AItem);
+        ResetSortedAutoDetection; // must be called AFTER inserting new data
+        exit;
+      end;
   FData.Insert(AIndex, AItem);
 end;
 
@@ -1820,70 +1863,135 @@ begin
 
     if AIndex > 0 then
       if DoCompare(FData.List^[AIndex - 1], FData.List^[AIndex]) > 0 then begin
-        Result := ItemFind(FData.List^[AIndex], 0, AIndex - 1);
-        // no Dec(Result) here, as it is below
-        FData.Move(AIndex, Result);
+        if FSorted then begin
+          Result := ItemFind(FData.List^[AIndex], 0, AIndex - 1);
+          // no Dec(Result) here, as it is below
+          FData.Move(AIndex, Result);
+        end else
+          ResetSortedAutoDetection;
         exit; // optimization: the item cannot be unsorted from both sides
               // simultaneously, so we can exit now
       end;
 
     if AIndex < FData.Count - 1 then
       if DoCompare(FData.List^[AIndex], FData.List^[AIndex + 1]) > 0 then begin
-        Result := ItemFind(FData.List^[AIndex], AIndex + 1, FData.Count - 1);
-        Dec(Result);
-        FData.Move(AIndex, Result);
+        if FSorted then begin
+          Result := ItemFind(FData.List^[AIndex], AIndex + 1, FData.Count - 1);
+          Dec(Result);
+          FData.Move(AIndex, Result);
+        end else
+          ResetSortedAutoDetection;
       end;
   end;
 end;
 
+procedure TCustomSortedChartSource.ItemDeleted(AIndex: Integer);
+begin
+  // deleting decreases item count - so, if FSortedAutoDetected
+  // is not set, try to set it again, if possible
+  if not FSortedAutoDetected then
+    ResetSortedAutoDetection;
+end;
+
 function TCustomSortedChartSource.IsSorted: Boolean;
 begin
-  case FSortBy of
-    sbX:
-      Result := FSorted and ((FSortIndex = 0) or (FSortIndex < FXCount));
-    sbY:
-      Result := FSorted and ((FSortIndex = 0) or (FSortIndex < FYCount));
-    sbColor, sbText:
-      Result := FSorted;
-    sbCustom:
-      Result := FSorted and Assigned(FOnCompare);
-  end;
+  Result := false;
+  if FSorted or FSortedAutoDetected then
+    case FSortBy of
+      sbX:
+        Result := (FSortIndex = 0) or (FSortIndex < FXCount);
+      sbY:
+        Result := (FSortIndex = 0) or (FSortIndex < FYCount);
+      sbColor, sbText:
+        Result := true;
+      sbCustom:
+        Result := Assigned(FOnCompare);
+    end;
+end;
+
+procedure TCustomSortedChartSource.ResetSortedAutoDetection;
+begin
+  FSortedAutoDetected := FUseSortedAutoDetection and (FData.Count < 2) and
+                         (FSortBy <> sbCustom);
+end;
+
+procedure TCustomSortedChartSource.SetSortedAutoDetected;
+begin
+  FSortedAutoDetected := FUseSortedAutoDetection and (FSortBy <> sbCustom);
 end;
 
 procedure TCustomSortedChartSource.SetOnCompare(AValue: TChartSortCompare);
 begin
   if FOnCompare = AValue then exit;
   FOnCompare := AValue;
-  if IsSorted then Sort else Notify;
+
+  // reset FSortedAutoDetected state and perform resorting only
+  // if FOnCompare is currently used
+  if FSortBy = sbCustom then begin
+    ResetSortedAutoDetection;
+    if IsSorted then SortNoNotify;
+  end;
+
+  Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSortBy(AValue: TChartSortBy);
 begin
   if FSortBy = AValue then exit;
   FSortBy := AValue;
-  if IsSorted then Sort else Notify;
+  ResetSortedAutoDetection;
+  if IsSorted then SortNoNotify;
+  Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSortDir(AValue: TChartSortDir);
 begin
   if FSortDir = AValue then exit;
   FSortDir := AValue;
-  if IsSorted then Sort else Notify;
+  ResetSortedAutoDetection;
+  if IsSorted then SortNoNotify;
+  Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSorted(AValue: Boolean);
 begin
   if FSorted = AValue then exit;
   FSorted := AValue;
-  if IsSorted then Sort else Notify;
+
+  // FSortedAutoDetected set to True means, that data is (already) sorted
+  // by using current sorting settings - in this case omit the code below,
+  // to avoid losing FSortedAutoDetected state and useless resorting
+  if not FSortedAutoDetected then begin
+    ResetSortedAutoDetection;
+    if IsSorted then SortNoNotify;
+  end;
+
+  Notify;
 end;
 
 procedure TCustomSortedChartSource.SetSortIndex(AValue: Cardinal);
 begin
   if FSortIndex = AValue then exit;
   FSortIndex := AValue;
-  if IsSorted then Sort else Notify;
+
+  // reset FSortedAutoDetected state and perform resorting only
+  // if FSortIndex is currently used (in sbCustom mode it may be
+  // potentially used by the user's code)
+  if FSortBy in [sbX, sbY, sbCustom] then begin
+    ResetSortedAutoDetection;
+    if IsSorted then SortNoNotify;
+  end;
+
+  Notify;
 end;
+
+procedure TCustomSortedChartSource.SetUseSortedAutoDetection(AValue: Boolean);
+begin
+  if FUseSortedAutoDetection = AValue then exit;
+  FUseSortedAutoDetection := AValue;
+  ResetSortedAutoDetection;
+end;
+
 
 procedure TCustomSortedChartSource.Sort;
 var
@@ -1891,7 +1999,9 @@ var
 begin
   if csLoading in ComponentState then exit;
 
-  // Avoid useless sorting and notification
+  // Avoid useless sorting and notification, if data is already
+  // sorted or if current sorting settings are invalid
+  if FSortedAutoDetected then exit;
   SaveSorted := FSorted;
   try
     FSorted := true;
@@ -1901,8 +2011,20 @@ begin
   end;
 
   DoSort;
+  SetSortedAutoDetected;
+
   Notify;
 end;
 
-end.
+procedure TCustomSortedChartSource.SortNoNotify;
+begin
+  { Don't call BeginUpdate() to avoid invalidating the caches. }
+  Inc(FUpdateCount);
+  try
+    Sort;
+  finally
+    Dec(FUpdateCount);
+  end;
+end;
 
+end.

@@ -61,6 +61,7 @@ type
     function SetXValue(AIndex: Integer; const AValue: Double): Integer;
     function SetYList(AIndex: Integer; const AYList: array of Double): Integer;
     function SetYValue(AIndex: Integer; const AValue: Double): Integer;
+    property UseSortedAutoDetection;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
     property XCount;
@@ -116,6 +117,7 @@ type
     function ExtentList: TDoubleRect; override;
     function ExtentXYList: TDoubleRect; override;
     function ValuesTotal: Double; override;
+    property UseSortedAutodetection;
   published
     property Origin: TCustomChartSource read FOrigin write SetOrigin;
     // Sorting
@@ -666,13 +668,14 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.Clear; inline;
+procedure TListChartSource.Clear;
 var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
-    Dispose(Item[i]);
+    Dispose(ItemInternal[i]);
   FData.Clear;
+  ItemDeleted(-1);
   ClearCaches;
   Notify;
 end;
@@ -722,7 +725,15 @@ begin
       raise;
     end;
 
-    if IsSorted and (not HasSameSorting(ASource)) then Sort;
+    // We added data directly, without using ItemAdd() calls,
+    // so we can no longer be sure, that data is sorted.
+    ResetSortedAutoDetection;
+
+    if HasSameSorting(ASource) then
+      SetSortedAutoDetected
+    else
+    if IsSorted then
+      Sort;
   finally
     EndUpdate;
   end;
@@ -732,6 +743,7 @@ constructor TListChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataPoints := TListChartSourceStrings.Create(Self);
+  UseSortedAutoDetection := true;
   ClearCaches;
 end;
 
@@ -739,12 +751,13 @@ procedure TListChartSource.Delete(AIndex: Integer);
 begin
   // Optimization
   if IsUpdating then begin
-    Dispose(Item[AIndex]);
+    Dispose(ItemInternal[AIndex]);
     FData.Delete(AIndex);
+    ItemDeleted(AIndex);
     exit;
   end;
 
-  with Item[AIndex]^ do begin
+  with ItemInternal[AIndex]^ do begin
     FBasicExtentIsValid := FBasicExtentIsValid and
       (((FBasicExtent.a.X < X) and (X < FBasicExtent.b.X)) or (XCount = 0)) and
       (((FBasicExtent.a.Y < Y) and (Y < FBasicExtent.b.Y)) or (YCount = 0));
@@ -754,8 +767,9 @@ begin
   FCumulativeExtentIsValid := false;
   FXListExtentIsValid := false;
   FYListExtentIsValid := false;
-  Dispose(Item[AIndex]);
+  Dispose(ItemInternal[AIndex]);
   FData.Delete(AIndex);
+  ItemDeleted(AIndex);
   Notify;
 end;
 
@@ -776,7 +790,7 @@ end;
 
 function TListChartSource.SetColor(AIndex: Integer; AColor: TChartColor): Integer;
 begin
-  with Item[AIndex]^ do begin
+  with ItemInternal[AIndex]^ do begin
     if Color = AColor then exit(AIndex);
     Color := AColor;
   end;
@@ -792,7 +806,7 @@ end;
 
 function TListChartSource.SetText(AIndex: Integer; const AValue: String): Integer;
 begin
-  with Item[AIndex]^ do begin
+  with ItemInternal[AIndex]^ do begin
     if Text = AValue then exit(AIndex);
     Text := AValue;
   end;
@@ -808,7 +822,7 @@ begin
   FXCount := AValue;
   nx := Max(FXCount - 1, 0);
   for i := 0 to Count - 1 do
-    SetLength(Item[i]^.XList, nx);
+    SetLength(ItemInternal[i]^.XList, nx);
   InvalidateCaches;
   Notify;
 end;
@@ -818,7 +832,7 @@ function TListChartSource.SetXList(
 var
   i: Integer;
 begin
-  with Item[AIndex]^ do
+  with ItemInternal[AIndex]^ do
     for i := 0 to Min(High(AXList), High(XList)) do
       XList[i] := AXList[i];
   FXListExtentIsValid := false;
@@ -846,7 +860,7 @@ var
   end;
 
 begin
-  with Item[AIndex]^ do begin
+  with ItemInternal[AIndex]^ do begin
     if IsEquivalent(X, AValue) then exit(AIndex); // IsEquivalent() can compare also NaNs
     oldX := X;
     X := AValue;
@@ -864,7 +878,7 @@ begin
   FYCount := AValue;
   ny := Max(FYCount - 1, 0);
   for i := 0 to Count - 1 do
-    SetLength(Item[i]^.YList, ny);
+    SetLength(ItemInternal[i]^.YList, ny);
   InvalidateCaches;
   Notify;
 end;
@@ -874,7 +888,7 @@ function TListChartSource.SetYList(
 var
   i: Integer;
 begin
-  with Item[AIndex]^ do
+  with ItemInternal[AIndex]^ do
     for i := 0 to Min(High(AYList), High(YList)) do
       YList[i] := AYList[i];
   FCumulativeExtentIsValid := false;
@@ -903,7 +917,7 @@ var
   end;
 
 begin
-  with Item[AIndex]^ do begin
+  with ItemInternal[AIndex]^ do begin
     if IsEquivalent(Y, AValue) then exit(AIndex); // IsEquivalent() can compare also NaNs
     oldY := Y;
     Y := AValue;
@@ -1011,13 +1025,13 @@ begin
     FXCount := Origin.XCount;
     FYCount := Origin.YCount;
     ResetTransformation(Origin.Count);
-    if IsSorted and (not HasSameSorting(Origin)) then Sort else Notify;
+    if IsSorted and (not HasSameSorting(Origin)) then SortNoNotify;
   end else begin
     FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
     FYCount := MaxInt;
     ResetTransformation(0);
-    Notify;
   end;
+  Notify;
 end;
 
 function TSortedChartSource.DoCompare(AItem1, AItem2: Pointer): Integer;
@@ -1851,4 +1865,3 @@ begin
 end;
 
 end.
-
