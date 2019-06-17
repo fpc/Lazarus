@@ -546,7 +546,9 @@ begin
     CocoaWidgetSet.ReleaseToCollect(idx);
   end;
   {$ifdef COCOALOOPNATIVE}
+    if CocoaWidgetSet.FTerminating then stop(nil);
   except
+    if CocoaWidgetSet.FTerminating then stop(nil);
     if Assigned(Application) and Application.CaptureExceptions then
       Application.HandleException(Application)
     else
