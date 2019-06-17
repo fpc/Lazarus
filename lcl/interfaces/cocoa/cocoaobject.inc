@@ -215,6 +215,10 @@ begin
   if FTerminating then Exit;
   // TODO: Check if there is more cleanup to do here
   // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
+
+  {$ifdef COCOALOOPNATIVE}
+  NSApp.stop(nil);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

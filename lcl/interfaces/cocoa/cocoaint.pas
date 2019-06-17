@@ -561,12 +561,12 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
-  {$ifndef COCOALOOPOVERRIDE}
+  {$ifdef COCOALOOPHIJACK}
   if not isrun and Assigned(aloop) then begin
     isrun := True;
     Result := nil;
     aloop();
-    terminate(nil);
+    stop(nil); // this should stop the main loop
     exit;
   end;
   {$endif}

@@ -21,3 +21,10 @@
 // Such approach is some what an ugly solution, yet it's reliable, in a sense
 // that Cocoa performs ALL of this methods.
 {.$define COCOALOOPOVERRIDE}
+
+{$if not defined(COCOALOOPOVERRIDE) and not defined(COCOALOOPNATIVE)}
+// the first call to nextEventMatchingMask_untilDate_inMode_dequeue would
+// cause an LCL event processing loop to be called.
+// the call stays there until, LCL application is terminated
+{$define COCOALOOPHIJACK}
+{$endif}
