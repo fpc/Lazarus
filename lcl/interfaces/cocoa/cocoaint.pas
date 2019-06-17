@@ -483,6 +483,9 @@ var
   win : NSWindow;
   cbnew : ICommonCallback;
 begin
+  {$ifdef COCOALOOPNATIVE}
+  try
+  {$endif}
   idx := CocoaWidgetSet.RetainToCollect;
   win := theEvent.window;
   if not Assigned(win) then win := self.keyWindow;
@@ -542,6 +545,14 @@ begin
 
     CocoaWidgetSet.ReleaseToCollect(idx);
   end;
+  {$ifdef COCOALOOPNATIVE}
+  except
+    if Assigned(Application) and Application.CaptureExceptions then
+      Application.HandleException(Application)
+    else
+      raise;
+  end;
+  {$endif}
 end;
 
 function isMouseMoveEvent(tp: NSEventType): Boolean; inline;

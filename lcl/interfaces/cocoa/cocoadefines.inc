@@ -22,6 +22,11 @@
 // that Cocoa performs ALL of this methods.
 {.$define COCOALOOPOVERRIDE}
 
+// Not override "run" method. Catch any FPC exception
+// The biggest problem of the Native approach - LCL "runloop" method is not called
+// at all. Thus if LCL implementation is changed, CocoaWS needs to be updated
+{.$define COCOALOOPNATIVE}
+
 {$if not defined(COCOALOOPOVERRIDE) and not defined(COCOALOOPNATIVE)}
 // the first call to nextEventMatchingMask_untilDate_inMode_dequeue would
 // cause an LCL event processing loop to be called.
