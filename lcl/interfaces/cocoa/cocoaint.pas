@@ -501,7 +501,7 @@ begin
       begin
         try
           if win.isKindOfClass_(TCocoaWindow) then begin
-            wnd := TCocoaWindow(self.keyWindow);
+            wnd := TCocoaWindow(win);
             wnd._keyEvCallback := cb;
             wnd._calledKeyEvAfter := False;
           end
