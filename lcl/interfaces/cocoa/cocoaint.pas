@@ -621,10 +621,23 @@ end;
 
 procedure TCocoaApplication.lclSyncCheck(arg: id);
 begin
+  {$ifdef COCOALOOPNATIVE}
+  try
+    CheckSynchronize;
+    if Assigned(Application) then
+      TCrackerApplication(Application).ProcessAsyncCallQueue;
+  except
+    if Assigned(Application) and Application.CaptureExceptions then
+      Application.HandleException(Application)
+    else
+      raise;
+  end;
+  {$else}
   CheckSynchronize;
   NSApp.updateWindows;
   if Assigned(Application) then
     TCrackerApplication(Application).ProcessAsyncCallQueue;
+  {$endif}
 end;
 
 
