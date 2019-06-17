@@ -1135,7 +1135,6 @@ type
     FControlFlags: TControlFlags;
     FControlHandlers: array[TControlHandlerType] of TMethodList;
     FControlStyle: TControlStyle;
-    FDesktopFont: Boolean;
     FDockOrientation: TDockOrientation;
     FDragCursor: TCursor;
     FDragKind: TDragKind;
@@ -1185,7 +1184,6 @@ type
     FOnStartDrag: TStartDragEvent;
     FOnTripleClick: TNotifyEvent;
     FParent: TWinControl;
-    FParentBiDiMode: Boolean;
     FPopupMenu: TPopupMenu;
     FPreferredMinWidth: integer;// without theme space
     FPreferredMinHeight: integer;// without theme space
@@ -1201,6 +1199,8 @@ type
     FWidth: Integer;
     FWindowProc: TWndMethod;
     //boolean fields, keep together to save some bytes
+    FDesktopFont: Boolean;
+    FParentBiDiMode: Boolean;
     FIsControl: Boolean;
     FShowHint: Boolean;
     FParentColor: Boolean;
