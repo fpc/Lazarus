@@ -57,12 +57,18 @@ type
   { TFpDwarfDefaultSymbolClassMap }
 
   TFpDwarfDefaultSymbolClassMap = class(TFpDwarfSymbolClassMap)
+  private
+    class var ExistingClassMap: TFpDwarfSymbolClassMap;
+  protected
+    class function GetExistingClassMap: PFpDwarfSymbolClassMap; override;
   public
-    class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
-    class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress:
+    class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
+  public
+    //function CanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
+    function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
+    function CreateContext(AThreadId, AStackFrame: Integer; AnAddress:
       TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
-    class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
+    function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
 
@@ -932,12 +938,17 @@ var
 
 { TFpDwarfDefaultSymbolClassMap }
 
-class function TFpDwarfDefaultSymbolClassMap.HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean;
+class function TFpDwarfDefaultSymbolClassMap.GetExistingClassMap: PFpDwarfSymbolClassMap;
+begin
+  Result := @ExistingClassMap;
+end;
+
+class function TFpDwarfDefaultSymbolClassMap.ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean;
 begin
   Result := True;
 end;
 
-class function TFpDwarfDefaultSymbolClassMap.GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass;
+function TFpDwarfDefaultSymbolClassMap.GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass;
 begin
   case ATag of
     // TODO:
@@ -978,13 +989,13 @@ begin
   end;
 end;
 
-class function TFpDwarfDefaultSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
+function TFpDwarfDefaultSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
   AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext;
 begin
   Result := TFpDwarfInfoAddressContext.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
 end;
 
-class function TFpDwarfDefaultSymbolClassMap.CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
+function TFpDwarfDefaultSymbolClassMap.CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
   AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase;
 begin
   Result := TFpDwarfSymbolValueProc.Create(ACompilationUnit, AInfo, AAddress);

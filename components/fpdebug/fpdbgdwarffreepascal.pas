@@ -17,10 +17,15 @@ type
   { TFpDwarfFreePascalSymbolClassMap }
 
   TFpDwarfFreePascalSymbolClassMap = class(TFpDwarfDefaultSymbolClassMap)
+  strict private
+    class var ExistingClassMap: TFpDwarfSymbolClassMap;
+  protected
+    class function GetExistingClassMap: PFpDwarfSymbolClassMap; override;
   public
-    class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
-    class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
+    class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
+  public
+    function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
+    function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
       ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
@@ -29,9 +34,14 @@ type
   { TFpDwarfFreePascalSymbolClassMapDwarf2 }
 
   TFpDwarfFreePascalSymbolClassMapDwarf2 = class(TFpDwarfFreePascalSymbolClassMap)
+  strict private
+    class var ExistingClassMap: TFpDwarfSymbolClassMap;
+  protected
+    class function GetExistingClassMap: PFpDwarfSymbolClassMap; override;
   public
-    class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
-    class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
+    class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
+  public
+    function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     //class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
     //  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -41,9 +51,14 @@ type
   { TFpDwarfFreePascalSymbolClassMapDwarf3 }
 
   TFpDwarfFreePascalSymbolClassMapDwarf3 = class(TFpDwarfFreePascalSymbolClassMap)
+  strict private
+    class var ExistingClassMap: TFpDwarfSymbolClassMap;
+  protected
+    class function GetExistingClassMap: PFpDwarfSymbolClassMap; override;
   public
-    class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
-    class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
+    class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
+  public
+    function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     //class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
     //  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -149,7 +164,12 @@ implementation
 
 { TFpDwarfFreePascalSymbolClassMap }
 
-class function TFpDwarfFreePascalSymbolClassMap.HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean;
+class function TFpDwarfFreePascalSymbolClassMap.GetExistingClassMap: PFpDwarfSymbolClassMap;
+begin
+  Result := @ExistingClassMap;
+end;
+
+class function TFpDwarfFreePascalSymbolClassMap.ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean;
 var
   s: String;
 begin
@@ -157,7 +177,7 @@ begin
   Result := pos('free pascal', s) > 0;
 end;
 
-class function TFpDwarfFreePascalSymbolClassMap.GetDwarfSymbolClass(
+function TFpDwarfFreePascalSymbolClassMap.GetDwarfSymbolClass(
   ATag: Cardinal): TDbgDwarfSymbolBaseClass;
 begin
   case ATag of
@@ -168,7 +188,7 @@ begin
   end;
 end;
 
-class function TFpDwarfFreePascalSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
+function TFpDwarfFreePascalSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
   AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext;
 begin
   Result := TFpDwarfFreePascalAddressContext.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
@@ -176,14 +196,19 @@ end;
 
 { TFpDwarfFreePascalSymbolClassMapDwarf2 }
 
-class function TFpDwarfFreePascalSymbolClassMapDwarf2.HandleCompUnit(
+class function TFpDwarfFreePascalSymbolClassMapDwarf2.GetExistingClassMap: PFpDwarfSymbolClassMap;
+begin
+  Result := @ExistingClassMap;
+end;
+
+class function TFpDwarfFreePascalSymbolClassMapDwarf2.ClassCanHandleCompUnit(
   ACU: TDwarfCompilationUnit): Boolean;
 begin
-  Result := inherited HandleCompUnit(ACU);
+  Result := inherited ClassCanHandleCompUnit(ACU);
   Result := Result and (ACU.Version < 3);
 end;
 
-class function TFpDwarfFreePascalSymbolClassMapDwarf2.GetDwarfSymbolClass(
+function TFpDwarfFreePascalSymbolClassMapDwarf2.GetDwarfSymbolClass(
   ATag: Cardinal): TDbgDwarfSymbolBaseClass;
 begin
   case ATag of
@@ -209,14 +234,19 @@ end;
 
 { TFpDwarfFreePascalSymbolClassMapDwarf3 }
 
-class function TFpDwarfFreePascalSymbolClassMapDwarf3.HandleCompUnit(
+class function TFpDwarfFreePascalSymbolClassMapDwarf3.GetExistingClassMap: PFpDwarfSymbolClassMap;
+begin
+  Result := @ExistingClassMap;
+end;
+
+class function TFpDwarfFreePascalSymbolClassMapDwarf3.ClassCanHandleCompUnit(
   ACU: TDwarfCompilationUnit): Boolean;
 begin
-  Result := inherited HandleCompUnit(ACU);
+  Result := inherited ClassCanHandleCompUnit(ACU);
   Result := Result and (ACU.Version >= 3);
 end;
 
-class function TFpDwarfFreePascalSymbolClassMapDwarf3.GetDwarfSymbolClass(
+function TFpDwarfFreePascalSymbolClassMapDwarf3.GetDwarfSymbolClass(
   ATag: Cardinal): TDbgDwarfSymbolBaseClass;
 begin
   case ATag of
