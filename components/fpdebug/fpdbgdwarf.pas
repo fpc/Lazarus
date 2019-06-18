@@ -189,6 +189,7 @@ type
 
     property TypeCastTargetType: TFpDwarfSymbolType read FTypeCastTargetType;
     property TypeCastSourceValue: TFpDbgValue read FTypeCastSourceValue;
+    property Owner: TFpDwarfSymbolType read FOwner;
   public
     constructor Create(AOwner: TFpDwarfSymbolType);
     destructor Destroy; override;
@@ -656,7 +657,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   end;
 
   { TFpDwarfSymbolTypeSubRange }
-  TFpDwarfSubRangeBoundReadState = (rfNotRead, rfNotFound, rfConst, rfValue);
+  TFpDwarfSubRangeBoundReadState = (rfNotRead, rfNotFound, rfError, rfConst, rfValue);
 
   TFpDwarfSymbolTypeSubRange = class(TFpDwarfSymbolTypeModifier)
   // TODO not a modifier, maybe have a forwarder base class
@@ -691,6 +692,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetValueBounds(AValueObj: TFpDwarfValue; out ALowBound,
       AHighBound: Int64): Boolean; override;
     procedure ResetValueBounds; override;
+
+    property LowBoundState: TFpDwarfSubRangeBoundReadState read FLowBoundState;
+    property HighBoundState: TFpDwarfSubRangeBoundReadState read FHighBoundState;
+    property CountState: TFpDwarfSubRangeBoundReadState read FCountState;
+
   end;
 
   { TFpDwarfSymbolTypePointer }
@@ -2698,26 +2704,7 @@ begin
   if t.MemberCount < 1 then // IndexTypeCount;
     exit;
   t2 := t.Member[0]; // IndexType[0];
-  if not ((t2 is TFpDwarfSymbolType) and (TFpDwarfSymbolType(t2).GetValueBounds(self, LowBound, HighBound))) and
-     not t2.HasBounds then begin
-    if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
-       GetDwarfDataAddress(Addr, TFpDwarfSymbolType(FOwner))
-    then begin
-      if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
-        exit;
-      Addr.Address := Addr.Address - AddressSize;
-      if MemManager.ReadSignedInt(Addr, AddressSize, i) then begin
-        Result := Integer(i)+1;
-        exit;
-      end
-      else
-        FLastError := MemManager.LastError;
-    end;
-    exit;
-  end;
-  if t2.HasBounds then begin
-    LowBound  := t2.OrdLowBound;
-    HighBound := t2.OrdHighBound;
+  if TFpDwarfSymbolType(t2).GetValueBounds(self, LowBound, HighBound) then begin
     if HighBound < LowBound then
       exit(0); // empty array // TODO: error
     // TODO: XXXXX Dynamic max limit
@@ -3613,7 +3600,9 @@ begin
       FLowBoundValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
       NewInfo.ReleaseReference;
       if FLowBoundValue = nil then begin
-        FLowBoundState := rfNotFound; // not implemented => so for all purpose tread it as if there is no dwarf description of the low bound
+        // Not implemented in DwarfSymbolClassMap.GetDwarfSymbolClass
+        // or not a value type (bound can not be a type)
+        FLowBoundState := rfError;
         exit;
       end
       else
@@ -3627,7 +3616,7 @@ begin
     begin
       //FLowBoundConst := 0; // the default
       //FLowBoundState := rfConst;
-      FLowBoundState := rfNotFound;
+      FLowBoundState := rfError;
       exit; // incomplete type
     end;
   end
@@ -3641,7 +3630,7 @@ begin
       FHighBoundValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
       NewInfo.ReleaseReference;
       if FHighBoundValue = nil then begin
-        FHighBoundState := rfNotFound;  // not implemented => so for all purpose tread it as if there is no dwarf description of the low bound
+        FHighBoundState := rfError;
         exit;
       end
       else
@@ -3661,7 +3650,7 @@ begin
         FHighBoundConst := Int64(AnAddress.Address);
       end
       else
-        FHighBoundState := rfNotFound;
+        FHighBoundState := rfError;
     end;
   end
   else
@@ -3675,7 +3664,7 @@ begin
         FCountValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
         NewInfo.ReleaseReference;
         if FCountValue = nil then begin
-          FCountState := rfNotFound;
+          FCountState := rfError;
           exit;
         end
         else
@@ -3686,7 +3675,7 @@ begin
         FCountState := rfConst;
       end
       else
-        FCountState := rfNotFound;
+        FCountState := rfError;
     end
     else
       FCountState := rfNotFound;

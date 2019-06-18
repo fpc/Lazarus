@@ -527,58 +527,85 @@ end;
 function TFpDwarfValueFreePascalArray.GetMemberCount: Integer;
 var
   t, t2: TFpDbgSymbol;
-  Info, Info2: TDwarfInformationEntry;
+  Info: TDwarfInformationEntry;
   n: AnsiString;
   UpperBoundSym: TFpDwarfSymbol;
   val: TFpDbgValue;
   l, h: Int64;
+  Addr: TFpDbgMemLocation;
 begin
   Result := 0;
   t := TypeInfo;
-  if t.MemberCount < 1 then // IndexTypeCount;
+  if (t.Kind <> skArray) or (t.MemberCount < 1) then // IndexTypeCount;
     exit(inherited GetMemberCount);
 
   t2 := t.Member[0]; // IndexType[0];
+  if not (t2 is TFpDwarfSymbolTypeSubRange) then
+    exit(inherited GetMemberCount);
+
+
+  TFpDwarfSymbolTypeSubRange(t2).GetValueBounds(Self, l, h);
+  if (l <> 0) or
+     (TFpDwarfSymbolTypeSubRange(t2).LowBoundState <> rfConst) or
+     (TFpDwarfSymbolTypeSubRange(t2).HighBoundState <> rfNotFound) or
+     (TFpDwarfSymbolTypeSubRange(t2).CountState <> rfNotFound)
+  then
+    exit(inherited GetMemberCount);
+
+  // Check for open array param
   if (t is TFpDwarfSymbolTypeArray) and
-     (t2 is TFpDwarfSymbolTypeSubRange) and
      (DbgSymbol is TFpDwarfSymbolValueParameter) // open array exists only as param
   then begin
-    Info := TFpDwarfSymbolTypeSubRange(t2).InformationEntry;
-    if Info.HasAttrib(DW_AT_lower_bound) and
-       not Info.HasAttrib(DW_AT_upper_bound)
+    Info := TFpDwarfSymbolValueParameter(DbgSymbol).InformationEntry.Clone;
+    Info.GoNext;
+    if Info.HasValidScope and
+       Info.HasAttrib(DW_AT_location) and  // the high param must have a location / cannot be a constant
+       Info.ReadName(n)
     then begin
-      Info2 := TFpDwarfSymbolValueParameter(DbgSymbol).InformationEntry.Clone;
-      Info2.GoNext;
-      if Info2.HasValidScope and
-         Info2.HasAttrib(DW_AT_location) and  // the high param must have a location / cannot be a constant
-         Info2.ReadName(n)
-      then begin
-        if (n <> '') and (n[1] = '$') then // dwarf3 // TODO: make required in dwarf3
-          delete(n, 1, 1);
-        if (copy(n,1,4) = 'high') and (UpperCase(copy(n, 5, length(n))) = UpperCase(DbgSymbol.Name)) then begin
-          UpperBoundSym := TFpDwarfSymbol.CreateSubClass('', Info2);
-          if UpperBoundSym <> nil then begin
-            val := UpperBoundSym.Value;
-            TFpDwarfValue(val).Context := Context;
-            l := t2.OrdLowBound;
-            h := Val.AsInteger;
-            if h > l then begin
-              if h - l > 5000 then
-                h := l + 5000;
-            Result := h - l + 1;
-            end
-            else
-              Result := 0;
-            Info2.ReleaseReference;
-            UpperBoundSym.ReleaseReference;
-            exit;
-          end;
+      if (n <> '') and (n[1] = '$') then // dwarf3 // TODO: make required in dwarf3
+        delete(n, 1, 1);
+      if (copy(n,1,4) = 'high') and (UpperCase(copy(n, 5, length(n))) = UpperCase(DbgSymbol.Name)) then begin
+        UpperBoundSym := TFpDwarfSymbol.CreateSubClass('', Info);
+        if UpperBoundSym <> nil then begin
+          val := UpperBoundSym.Value;
+          TFpDwarfValue(val).Context := Context;
+          //l := t2.OrdLowBound;
+          h := Val.AsInteger;
+          if h > l then begin
+            if h - l > 5000 then
+              h := l + 5000;
+          Result := h - l + 1;
+          end
+          else
+            Result := 0;
+          Info.ReleaseReference;
+          UpperBoundSym.ReleaseReference;
+          exit;
         end;
       end;
-      Info2.ReleaseReference;
     end;
+    Info.ReleaseReference;
   end;
 
+  // dynamic array
+  if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
+    GetDwarfDataAddress(Addr, TFpDwarfSymbolType(Owner))
+  then begin
+    if not (IsReadableMem(Addr) and (LocToAddr(Addr) > 4)) then
+      exit(0); // dyn array, but bad data
+    Addr.Address := Addr.Address - AddressSize;
+    //debugln(['TFpDwarfValueArray.GetMemberCount  XXXXXXXXXXXXXXX dwarf 2 read len']);
+    if MemManager.ReadSignedInt(Addr, AddressSize, h) then begin
+      Result := Integer(h)+1;
+      exit;
+    end
+    else
+      FLastError := MemManager.LastError;
+    Result := 0;
+    exit;
+  end;
+
+  // Should not be here. There is no knowledeg how many members there are
   Result := inherited GetMemberCount;
 end;
 
