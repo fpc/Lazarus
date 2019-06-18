@@ -301,6 +301,7 @@ type
   public
     constructor CreateStandard(const ACursor: NSCursor);
     constructor CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
+    constructor CreateFromCustomCursor(const ACursor: NSCursor);
     destructor Destroy; override;
     function Install: TCocoaCursor;
     procedure SetCursor;
@@ -1182,6 +1183,12 @@ constructor TCocoaCursor.CreateFromBitmap(const ABitmap: TCocoaBitmap; const hot
 begin
   FBitmap := ABitmap;            // takes ownership, no ref count change required
   FCursor := NSCursor.alloc.initWithImage_hotSpot(ABitmap.Image, hotSpot);
+  FStandard := False;
+end;
+
+constructor TCocoaCursor.CreateFromCustomCursor(const ACursor: NSCursor);
+begin
+  FCursor := ACursor;
   FStandard := False;
 end;
 

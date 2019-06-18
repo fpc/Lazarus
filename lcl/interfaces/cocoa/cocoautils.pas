@@ -117,6 +117,9 @@ const
 
 function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 
+function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
+function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
+
 implementation
 
 procedure ApplicationWillShowModal;
@@ -936,6 +939,65 @@ begin
     Result := #0
   else
     Result := System.WideChar(m.characterAtIndex(0));
+end;
+
+function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
+var
+  imageBounds : NSRect;
+  pathBounds  : NSBezierPath;
+  transform   : NSAffineTransform;
+  rotatedBounds : NSRect;
+  rotatedImage   : NSImage;
+begin
+  if not Assigned(src) then
+  begin
+    Result := nil;
+    Exit;
+  end;
+
+  // src: https://stackoverflow.com/questions/31699235/rotate-nsimage-in-swift-cocoa-mac-osx
+
+  imageBounds.size := src.size;
+  pathBounds := NSBezierPath.bezierPathWithRect(imageBounds);
+  transform := NSAffineTransform.alloc.init;
+  transform.rotatebyDegrees(degrees);
+  pathBounds.transformUsingAffineTransform(transform);
+  rotatedBounds := NSMakeRect(NSZeroPoint.x, NSZeroPoint.y, src.size.width, src.size.height );
+  rotatedImage := NSImage(NSImage.alloc).initWithSize(rotatedBounds.size);
+
+  //Center the image within the rotated bounds
+  imageBounds.origin.x := NSMidX(rotatedBounds) - (NSWidth(imageBounds) / 2);
+  imageBounds.origin.y := NSMidY(rotatedBounds) - (NSHeight(imageBounds) / 2);
+  transform.release;
+
+  // Start a new transform
+  transform := NSAffineTransform.alloc.init;
+  // Move coordinate system to the center (since we want to rotate around the center)
+  transform.translateXBy_yBy(rotatedBounds.size.width / 2, rotatedBounds.size.width / 2);
+  transform.rotateByDegrees(degrees);
+  // Move the coordinate system bak to normal
+  transform.translateXBy_yBy(-rotatedBounds.size.width / 2, -rotatedBounds.size.height / 2);
+  // Draw the original image, rotated, into the new image
+  rotatedImage.lockFocus;
+  transform.concat();
+  src.drawInRect_fromRect_operation_fraction(imageBounds, NSZeroRect, NSCompositeCopy, 1.0);
+  rotatedImage.unlockFocus();
+  Result := rotatedImage;
+
+  transform.release;
+end;
+
+function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
+var
+  img : NSImage;
+begin
+  img := AllocImageRotatedByDegrees(src.image, degrees);
+  //todo: a better hotspot detection
+  Result := NSCursor.alloc.initWithImage_hotSpot(
+    img,
+    NSMakePoint(img.size.height / 2, img.size.width / 2)
+  );
+  img.release;
 end;
 
 end.
