@@ -246,7 +246,6 @@ type
   TFpDbgValueConstChar = class(TFpDbgValue) // skChar / Not for strings
   private
     FValue: String;
-    FSigned: Boolean;
   protected
     property Value: String read FValue write FValue;
     function GetKind: TDbgSymbolKind; override;
@@ -261,7 +260,6 @@ type
   TFpDbgValueConstWideChar = class(TFpDbgValue) // skChar / Not for strings
   private
     FValue: String;
-    FSigned: Boolean;
   protected
     property Value: String read FValue write FValue;
     function GetKind: TDbgSymbolKind; override;

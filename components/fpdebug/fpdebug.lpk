@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="fpdebug"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus Team"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -34,7 +35,7 @@ Extended by Martin Friebe"/>
 File(s) with other licenses (see also header in file(s): 
 
 * macho.pas 
-  This file contains Original Code and/or Modifications of Original Code  as defined in and that are subject to the Apple Public Source License Version 2.0 (the 'License'). You may not use this file except in compliance with the License. Please obtain a copy of the License at   http://www.opensource.apple.com/apsl/ and read it before using this  file.
+  This file contains Original Code and/or Modifications of Original Code  as defined in and that are subject to the Apple Public Source License Version 2.0 (the &apos;License&apos;). You may not use this file except in compliance with the License. Please obtain a copy of the License at   http://www.opensource.apple.com/apsl/ and read it before using this  file.
 
   (Any modifications/translations of this file are from duby)
 "/>
@@ -124,7 +125,7 @@ File(s) with other licenses (see also header in file(s):
       <Item21>
         <Filename Value="fpdbgdarwinclasses.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="fpdbgdarwinclasses"/>
+        <UnitName Value="FpDbgDarwinClasses"/>
       </Item21>
       <Item22>
         <Filename Value="fpdmemorytools.pas"/>
@@ -169,7 +170,6 @@ File(s) with other licenses (see also header in file(s):
         <UnitName Value="FpDbgLinuxExtra"/>
       </Item31>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="DebuggerIntf"/>

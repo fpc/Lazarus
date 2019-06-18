@@ -2706,9 +2706,7 @@ end;
 function TFpDwarfValueArray.GetMemberCount: Integer;
 var
   t, t2: TFpDbgSymbol;
-  Addr: TFpDbgMemLocation;
   LowBound, HighBound: int64;
-  i: Int64;
 begin
   Result := 0;
   t := TypeInfo;

@@ -55,7 +55,7 @@ implementation
 procedure AddSymbols(AParent: TFpDbgSymbol; AModule: THandle);
 var
   ModulePtr: Pointer;
-  Is64: Boolean;
+  //Is64: Boolean;
   Sections: TStringList;
   
   procedure AddDwarf;
@@ -196,7 +196,7 @@ begin
       Exit;
     end;
 
-    Is64 := NTHeaders^.OptionalHeader.Magic = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+    //Is64 := NTHeaders^.OptionalHeader.Magic = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 
     Sections := TStringList.Create;
     Sections.CaseSensitive := False;

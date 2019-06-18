@@ -759,7 +759,8 @@ begin
     end;
   if (FBreakpointServerIdr<>0) then begin
     Brk := AController.GetInternalBreakPointFromId(FBreakpointServerIdr);
-    result := AController.CurrentProcess.RemoveBreak(Brk);
+    result := true;
+    AController.CurrentProcess.RemoveBreak(Brk);
     Brk.Free; // actually removes it from target process
     AController.RemoveInternalBreakPoint(FBreakpointServerIdr);
   end

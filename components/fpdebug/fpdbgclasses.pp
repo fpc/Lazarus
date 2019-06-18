@@ -156,7 +156,7 @@ type
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
-    function CheckAndResetInstructionPointerAfterBreakpoint: boolean;
+    procedure CheckAndResetInstructionPointerAfterBreakpoint;
     procedure BeforeContinue; virtual;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
     function RemoveWatchpoint(AnId: integer): boolean; virtual;
@@ -377,7 +377,7 @@ type
     function  FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
-    function  RemoveBreak(const ABreakPoint: TFpInternalBreakpoint): Boolean;
+    procedure RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
     function  HasBreak(const ALocation: TDbgPtr): Boolean; // TODO: remove, once an address can have many breakpoints
     procedure RemoveThread(const AID: DWord);
     procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
@@ -1360,8 +1360,7 @@ begin
   end;
 end;
 
-function TDbgProcess.RemoveBreak(const ABreakPoint: TFpInternalBreakpoint
-  ): Boolean;
+procedure TDbgProcess.RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
 begin
   if ABreakPoint=FCurrentBreakpoint then
     FCurrentBreakpoint := nil;
@@ -1681,7 +1680,7 @@ begin
   inherited Create;
 end;
 
-function TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint: boolean;
+procedure TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint;
 begin
   // todo: check that the breakpoint is NOT in the temp removed list
   if not Process.HasInsertedBreakInstructionAtLocation(GetInstructionPointerRegisterValue - 1) then
