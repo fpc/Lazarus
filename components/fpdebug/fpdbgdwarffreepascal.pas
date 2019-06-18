@@ -53,11 +53,16 @@ type
   TFpDwarfFreePascalSymbolClassMapDwarf3 = class(TFpDwarfFreePascalSymbolClassMap)
   strict private
     class var ExistingClassMap: TFpDwarfSymbolClassMap;
+  private
+    FCompilerVersion: Cardinal;
   protected
+    function CanHandleCompUnit(ACU: TDwarfCompilationUnit; AHelperData: Pointer): Boolean; override;
     class function GetExistingClassMap: PFpDwarfSymbolClassMap; override;
   public
+    class function GetInstanceForCompUnit(ACU: TDwarfCompilationUnit): TFpDwarfSymbolClassMap; override;
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
   public
+    constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     //class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
     //  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
@@ -234,9 +239,62 @@ end;
 
 { TFpDwarfFreePascalSymbolClassMapDwarf3 }
 
+function TFpDwarfFreePascalSymbolClassMapDwarf3.CanHandleCompUnit(
+  ACU: TDwarfCompilationUnit; AHelperData: Pointer): Boolean;
+begin
+  Result := (FCompilerVersion = PtrUInt(AHelperData)) and
+            inherited CanHandleCompUnit(ACU, AHelperData);
+end;
+
 class function TFpDwarfFreePascalSymbolClassMapDwarf3.GetExistingClassMap: PFpDwarfSymbolClassMap;
 begin
   Result := @ExistingClassMap;
+end;
+
+class function TFpDwarfFreePascalSymbolClassMapDwarf3.GetInstanceForCompUnit(
+  ACU: TDwarfCompilationUnit): TFpDwarfSymbolClassMap;
+var
+  s: String;
+  i, j, v: Integer;
+begin
+  s := LowerCase(ACU.Producer)+' ';
+  v := 0;
+  i := pos('free pascal', s) + 11;
+  if i > 11 then begin
+    while (i < Length(s)) and (s[i] in [' ', #9]) do
+      inc(i);
+    delete(s, 1, i - 1);
+    i := pos('.', s);
+    if (i > 1) then begin
+      j := StrToIntDef(copy(s, 1, i - 1), 0);
+      if (j >= 0) then
+        v := j * $10000;
+      delete(s, 1, i);
+    end;
+    if (v > 0) then begin
+      i := pos('.', s);
+      if (i > 1) then begin
+        j := StrToIntDef(copy(s, 1, i - 1), 0);
+        if (j >= 0) and (j < 99) then
+          v := v + j * $100
+        else
+          v := 0;
+        delete(s, 1, i);
+      end;
+    end;
+    if (v > 0) then begin
+      i := pos(' ', s);
+      if (i > 1) then begin
+        j := StrToIntDef(copy(s, 1, i - 1), 0);
+        if (j >= 0) and (j < 99) then
+          v := v + j
+        else
+          v := 0;
+      end;
+    end;
+  end;
+
+  Result := DoGetInstanceForCompUnit(ACU, Pointer(PtrUInt(v)));
 end;
 
 class function TFpDwarfFreePascalSymbolClassMapDwarf3.ClassCanHandleCompUnit(
@@ -244,6 +302,13 @@ class function TFpDwarfFreePascalSymbolClassMapDwarf3.ClassCanHandleCompUnit(
 begin
   Result := inherited ClassCanHandleCompUnit(ACU);
   Result := Result and (ACU.Version >= 3);
+end;
+
+constructor TFpDwarfFreePascalSymbolClassMapDwarf3.Create(
+  ACU: TDwarfCompilationUnit; AHelperData: Pointer);
+begin
+  FCompilerVersion := PtrUInt(AHelperData);
+  inherited;
 end;
 
 function TFpDwarfFreePascalSymbolClassMapDwarf3.GetDwarfSymbolClass(
@@ -790,20 +855,25 @@ begin
   if not IsReadableLoc(Addr) then
     exit;
 
-  if t.Kind = skWideString then begin
-    if (t2 is TFpDwarfSymbolTypeSubRange) and (LowBound = 1) then begin
-      if (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData)) and
-         (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.AttribForm[AttrData.Idx] = DW_FORM_block1) and
-         (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize))
-      then begin
-        // fpc issue 0035359
-        // read data and check for DW_OP_shr ?
-        Addr2 := Addr;
-        Addr2.Address := Addr2.Address - AddressSize;
-        if MemManager.ReadSignedInt(Addr2, AddressSize, i) then begin
-          if (i shr 1) = HighBound then
-            HighBound := i;
-        end
+  assert((Owner <> nil) and (Owner.CompilationUnit <> nil) and (Owner.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpDwarfV3ValueFreePascalString.GetAsString: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (Owner.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
+  if (TFpDwarfFreePascalSymbolClassMapDwarf3(Owner.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
+     (TFpDwarfFreePascalSymbolClassMapDwarf3(Owner.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
+  then begin
+    if t.Kind = skWideString then begin
+      if (t2 is TFpDwarfSymbolTypeSubRange) and (LowBound = 1) then begin
+        if (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData)) and
+           (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.AttribForm[AttrData.Idx] = DW_FORM_block1) and
+           (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize))
+        then begin
+          // fpc issue 0035359
+          // read data and check for DW_OP_shr ?
+          Addr2 := Addr;
+          Addr2.Address := Addr2.Address - AddressSize;
+          if MemManager.ReadSignedInt(Addr2, AddressSize, i) then begin
+            if (i shr 1) = HighBound then
+              HighBound := i;
+          end
+        end;
       end;
     end;
   end;
