@@ -592,7 +592,13 @@ begin
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
     expiration, mode, deqFlag);
   {$endif}
-  if not Assigned(Result) then Exit;
+  if not Assigned(Result) then
+  begin
+    {$ifdef COCOALOOPNATIVE}
+    if Assigned(Application) then Application.Idle(true);
+    {$endif}
+    Exit;
+  end;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
