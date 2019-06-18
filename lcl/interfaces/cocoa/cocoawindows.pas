@@ -219,23 +219,10 @@ type
     procedure setNeedsDisplayInRect(arect: NSRect); override;
   end;
 
-function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
 procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
 
 implementation
-
-function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
-var
-  m : NSString;
-begin
-  m := ev.charactersIgnoringModifiers;
-  if m.length <> 1 then
-    Result := #0
-  else
-    Result := System.WideChar(m.characterAtIndex(0));
-end;
-
 
 { TCocoaDesignOverlay }
 

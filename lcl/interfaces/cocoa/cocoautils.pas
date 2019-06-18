@@ -115,6 +115,8 @@ const
   // Shift, Control, Alt and Command
   KeysModifiers = NSShiftKeyMask or NSControlKeyMask or NSAlternateKeyMask or NSCommandKeyMask;
 
+function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
+
 implementation
 
 procedure ApplicationWillShowModal;
@@ -923,6 +925,17 @@ begin
   dec(frame.Top, layout.Top);
   dec(frame.Right, layout.Right);
   dec(frame.Bottom, layout.Bottom);
+end;
+
+function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
+var
+  m : NSString;
+begin
+  m := ev.charactersIgnoringModifiers;
+  if m.length <> 1 then
+    Result := #0
+  else
+    Result := System.WideChar(m.characterAtIndex(0));
 end;
 
 end.

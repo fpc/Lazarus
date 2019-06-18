@@ -205,6 +205,7 @@ type
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
@@ -1368,6 +1369,7 @@ var
   nr:NSRect;
   r:TRect;
   layoutSize: NSSize;
+  lcl: TLCLCommonCallback;
 begin
   scr := TCocoaScrollView(NSView(TCocoaScrollView.alloc).lclInitWithCreateParams(AParams));
 
@@ -1421,7 +1423,9 @@ begin
   txt.setBackgroundColor(NSColor.textBackgroundColor);
   scr.setFocusRingType(NSFocusRingTypeExterior);
 
-  txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
+  lcl := TLCLCommonCallback.Create(txt, AWinControl);
+  lcl.ForceReturnKeyDown := true;
+  txt.callback := lcl;
   txt.setDelegate(txt);
 
   ns := NSStringUtf8(AParams.Caption);
@@ -1432,6 +1436,7 @@ begin
 
   TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
   TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
+  txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
   Result := TLCLIntfHandle(scr);
 end;
@@ -1596,6 +1601,17 @@ begin
   txt := GetTextView(ACustomMemo);
   if (not Assigned(txt)) then Exit;
   txt.callback.SetTabSuppress(not NewWantTabs);
+end;
+
+
+class procedure TCocoaWSCustomMemo.SetWantReturns(const ACustomMemo: TCustomMemo;
+  const NewWantReturns: boolean);
+var
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(ACustomMemo);
+  if (not Assigned(txt)) then Exit;
+  txt.wantReturns := NewWantReturns;
 end;
 
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);

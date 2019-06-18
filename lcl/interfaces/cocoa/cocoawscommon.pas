@@ -60,6 +60,7 @@ type
     BlockCocoaUpDown: Boolean;
     BlockCocoaKeyBeep: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
+    ForceReturnKeyDown: Boolean; // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
 
     class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
@@ -643,25 +644,14 @@ begin
   end;
 
   if (_SendChar) then begin
-    // assume "down" was succesfull and calling LM_KEYDOWN now
-    // otherwise, LM_KEYDOWN would be called in KeyEvAfter()
-    if _IsSysKey then
-      _KeyMsg.Msg := LM_SYSKEYDOWN
-    else
-      _KeyMsg.Msg := LM_KEYDOWN;
-
-    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
-    begin
-      KeyEvHandled;
-      Exit;
-    end;
-
-
     // send the UTF8 keypress
     if Target.IntfUTF8KeyPress(_UTF8Character, 1, _IsSysKey) then
     begin
       // the LCL has handled the key
-      KeyEvHandled;
+      if ForceReturnKeyDown and (_KeyMsg.CharCode = VK_RETURN) then
+        _SendChar := False
+      else
+        KeyEvHandled;
       Exit;
     end;
 
@@ -715,32 +705,26 @@ begin
   if _KeyHandled then Exit;
   KeyEvHandled;
 
-  if _SendChar then begin
-    // LM_CHAR has not been set yet, send it now!
-    if _CharMsg.CharCode = 0 then Exit;
-
-    //if _CharMsg.CharCode <> ord(_KeyChar) then
-      //LCLCharToMacEvent(Char(_CharMsg.CharCode));
-
-    //Send a LM_(SYS)CHAR
-    if _IsSysKey then
-      _CharMsg.Msg := LM_SYSCHAR
-    else
-      _CharMsg.Msg := LM_CHAR;
-
-    if DeliverMessage(_CharMsg) <> 0 then
-      Exit;
-
-  end else begin
-    // LM_KeyDOWN has not been sent yet, send it now!
-    if (_KeyMsg.CharCode = VK_UNKNOWN) then Exit;
-
+  // Send an LM_(SYS)KEYDOWN
+  if _KeyMsg.CharCode <> VK_UNKNOWN then
+  begin
     if _IsSysKey then
       _KeyMsg.Msg := LM_SYSKEYDOWN
     else
       _KeyMsg.Msg := LM_KEYDOWN;
 
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+      Exit;
+  end;
+
+  //Send an LM_(SYS)CHAR
+  if _SendChar then begin
+    if _IsSysKey then
+      _CharMsg.Msg := LM_SYSCHAR
+    else
+      _CharMsg.Msg := LM_CHAR;
+
+    if DeliverMessage(_CharMsg) <> 0 then
       Exit;
   end;
 
