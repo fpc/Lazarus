@@ -141,7 +141,6 @@ type
     procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
     _keyEvCallback: ICommonCallback;
-    _calledKeyEvAfter: Boolean;
     callback: IWindowCallback;
     keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
@@ -958,7 +957,6 @@ begin
   if Assigned(_keyEvCallback) then
   begin
     allowcocoa := True;
-    _calledKeyEvAfter := True;
     _keyEvCallback.KeyEvAfterDown(allowcocoa);
     if not allowcocoa then
       Exit;

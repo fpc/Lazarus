@@ -503,15 +503,13 @@ begin
           if win.isKindOfClass_(TCocoaWindow) then begin
             wnd := TCocoaWindow(win);
             wnd._keyEvCallback := cb;
-            wnd._calledKeyEvAfter := False;
           end
           else
             wnd := nil;
           cb.KeyEvBefore(theEvent, allowcocoa);
           if allowcocoa then
             inherited sendEvent(theEvent);
-          if (not Assigned(wnd)) or (not wnd._calledKeyEvAfter) then
-            cb.KeyEvAfter;
+          cb.KeyEvAfter;
         finally
           if Assigned(wnd) then
             wnd._keyEvCallback := nil;

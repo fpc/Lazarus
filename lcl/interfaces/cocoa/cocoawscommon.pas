@@ -45,11 +45,12 @@ type
     _SendChar  : Boolean;
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
+    _KeyHandled: Boolean;
     _UTF8Character : TUTF8Char;
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
-    procedure KeyEvBeforeDown(var AllowCocoaHandle: boolean);
-    procedure KeyEvBeforeUp(var AllowCocoaHandle: boolean);
+    procedure KeyEvBeforeDown;
+    procedure KeyEvBeforeUp;
     procedure KeyEvAfterUp;
     procedure KeyEvFlagsChanged(Event: NSEvent);
     procedure KeyEvPrepare(Event: NSEvent);
@@ -74,6 +75,7 @@ type
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
     procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
+    procedure KeyEvHandled;
     procedure SetTabSuppress(ASuppress: Boolean);
 
     procedure MouseClick; virtual;
@@ -613,7 +615,7 @@ begin
   _CharMsg.CharCode := ord(KeyChar);
 end;
 
-procedure TLCLCommonCallback.KeyEvBeforeDown(var AllowCocoaHandle: boolean);
+procedure TLCLCommonCallback.KeyEvBeforeDown;
 begin
   // create the CN_KEYDOWN message
   if _IsSysKey then
@@ -635,7 +637,7 @@ begin
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL handled the key
-      AllowCocoaHandle := false;
+      KeyEvHandled;
       Exit;
     end;
   end;
@@ -650,7 +652,7 @@ begin
 
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
-      AllowCocoaHandle := false;
+      KeyEvHandled;
       Exit;
     end;
 
@@ -659,6 +661,7 @@ begin
     if Target.IntfUTF8KeyPress(_UTF8Character, 1, _IsSysKey) then
     begin
       // the LCL has handled the key
+      KeyEvHandled;
       Exit;
     end;
 
@@ -675,14 +678,17 @@ begin
     if (DeliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
     begin
       // the LCL handled the key
-      AllowCocoaHandle := false;
+      KeyEvHandled;
       Exit;
     end;
+
+    //if _CharMsg.CharCode <> ord(_KeyChar) then
+      //LCLCharToMacEvent(Char(_CharMsg.CharCode));
   end;
 
 end;
 
-procedure TLCLCommonCallback.KeyEvBeforeUp(var AllowCocoaHandle: boolean);
+procedure TLCLCommonCallback.KeyEvBeforeUp;
 begin
   if _IsSysKey then
     _KeyMsg.Msg := CN_SYSKEYUP
@@ -696,7 +702,7 @@ begin
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
-      AllowCocoaHandle := false;
+      KeyEvHandled;
       Exit;
     end;
   end;
@@ -705,6 +711,10 @@ end;
 procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
 begin
   AllowCocoaHandle := False;
+
+  if _KeyHandled then Exit;
+  KeyEvHandled;
+
   if _SendChar then begin
     // LM_CHAR has not been set yet, send it now!
     if _CharMsg.CharCode = 0 then Exit;
@@ -742,6 +752,9 @@ end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;
 begin
+  if _KeyHandled then Exit;
+  KeyEvHandled;
+
   //Send a LM_(SYS)KEYUP
   if _IsSysKey then
     _KeyMsg.Msg := LM_SYSKEYUP
@@ -759,6 +772,7 @@ end;
 procedure TLCLCommonCallback.KeyEvBefore(Event: NSEvent;
   out AllowCocoaHandle: boolean);
 begin
+  _keyHandled := False;
   AllowCocoaHandle := true;
 
   if Event.type_ = NSFlagsChanged then
@@ -767,12 +781,16 @@ begin
     KeyEvPrepare(Event);
 
   if _IsKeyDown then begin
-    KeyEvBeforeDown(AllowCocoaHandle);
+    KeyEvBeforeDown;
     if SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
       AllowCocoaHandle := false;
   end else
-    KeyEvBeforeUp(AllowCocoaHandle);
+    KeyEvBeforeUp;
 
+  if _keyHandled then
+    AllowCocoaHandle := false;
+
+  // flagsChanged always needs to be passed on to Cocoa
   if Event.type_ = NSFlagsChanged then
     AllowCocoaHandle := true;
 end;
@@ -783,6 +801,11 @@ var
 begin
   if _IsKeyDown then KeyEvAfterDown(AllowCocoaHandle)
   else KeyEvAfterUp;
+end;
+
+procedure TLCLCommonCallback.KeyEvHandled;
+begin
+  _KeyHandled := True;
 end;
 
 procedure TLCLCommonCallback.SetTabSuppress(ASuppress: Boolean);
