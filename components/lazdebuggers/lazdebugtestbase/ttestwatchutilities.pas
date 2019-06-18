@@ -429,7 +429,7 @@ begin
   Result := Default(TWatchExpectationResult);
   if ATypeName = #1 then ATypeName := 'WideString';
   Result.ExpResultKind := rkWideString;
-  Result.ExpSymKind := skAnsiString; // TODO
+  Result.ExpSymKind := skWideString;
   Result.ExpTypeName := ATypeName;
   Result.ExpTextData := AExpVal;
 end;
@@ -439,7 +439,7 @@ begin
   Result := Default(TWatchExpectationResult);
   if ATypeName = #1 then ATypeName := 'UnicodeString';
   Result.ExpResultKind := rkWideString;
-  Result.ExpSymKind := skWideString; // TODO
+  Result.ExpSymKind := skWideString;
   Result.ExpTypeName := ATypeName;
   Result.ExpTextData := AExpVal;
 end;

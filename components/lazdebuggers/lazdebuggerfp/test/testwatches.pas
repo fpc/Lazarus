@@ -5,10 +5,9 @@ unit TestWatches;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, TestBase, TestDbgControl,
-  TestDbgTestSuites, TTestDebuggerClasses, TestOutputLogger,
-  TTestWatchUtilities, TestCommonSources, TestDbgConfig, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, Forms;
+  Classes, SysUtils, fpcunit, testregistry, TestBase, TestDbgControl,
+  TestDbgTestSuites, TestOutputLogger, TTestWatchUtilities, TestCommonSources,
+  TestDbgConfig, DbgIntfDebuggerBase, DbgIntfBaseTypes, Forms;
 
 type
 
@@ -678,10 +677,10 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'WideString5'+e,    weWideStr(AChr1+'XcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
       'TWStrTA'))                                                         .IgnKindPtr;
 
-    t.Add(AName, p+'WideString2'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex;
-    t.Add(AName, p+'WideString2'+e+'[2]',  weWideChar('a'))       .CharFromIndex;
-    t.Add(AName, p+'WideString5'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex;
-    t.Add(AName, p+'WideString5'+e+'[2]',  weWideChar('X'))       .CharFromIndex;
+    t.Add(AName, p+'WideString2'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex.IgnTypeName(stDwarf3Up);
+    t.Add(AName, p+'WideString2'+e+'[2]',  weWideChar('a'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
+    t.Add(AName, p+'WideString5'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex.IgnTypeName(stDwarf3Up);
+    t.Add(AName, p+'WideString5'+e+'[2]',  weWideChar('X'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
 
 //TODO wePWidechar
     t.Add(AName, p+'PWideChar'+e,      wePointer(weWideStr(''), 'PWideChar'));
@@ -788,7 +787,7 @@ end;
   t.Add(AName, p+'Enum2'+e, weEnum('EnVal21', 'TEnum2'));
   t.Add(AName, p+'Enum3'+e, weEnum('EnVal25', 'TEnum2'));
 
-  t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet'));
+  t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
 
   t.Add(AName, p+'IntfUnknown'+e, weMatch('.?', skInterface)).Skip(); // only run eval / do not crash
 
@@ -799,9 +798,9 @@ var
   dbg: TDebuggerIntf;
   t: TWatchExpectationList;
   Src: TCommonSource;
-  n, cl: Integer;
   BrkPrg, BrkFooBegin, BrkFoo, BrkFooVar, BrkFooVarBegin,
     BrkFooConstRef: TDBGBreakPoint;
+  cl: Integer;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestWatchValue) then exit;
