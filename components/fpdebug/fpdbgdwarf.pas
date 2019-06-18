@@ -470,12 +470,16 @@ type
   protected
     function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
                                 AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
+    function  LocationFromTag(ATag: Cardinal; const AnAttribData: TDwarfAttribData; AValueObj: TFpDwarfValue;
+                              var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
+                              AnInitLocParserData: PInitLocParserData = nil
+                             ): Boolean;
     function  LocationFromTag(ATag: Cardinal; AValueObj: TFpDwarfValue;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
                               AnInitLocParserData: PInitLocParserData = nil;
                               AnInformationEntry: TDwarfInformationEntry = nil;
                               ASucessOnMissingTag: Boolean = False
-                             ): Boolean;
+                             ): Boolean; // deprecated
     function  ConstantFromTag(ATag: Cardinal; out AConstData: TByteDynArray;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
                               AnInformationEntry: TDwarfInformationEntry = nil;
@@ -2929,9 +2933,10 @@ begin
   Result := True;
 end;
 
-function TFpDwarfSymbol.LocationFromTag(ATag: Cardinal; AValueObj: TFpDwarfValue;
-  var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
-  AnInformationEntry: TDwarfInformationEntry; ASucessOnMissingTag: Boolean): Boolean;
+function TFpDwarfSymbol.LocationFromTag(ATag: Cardinal;
+  const AnAttribData: TDwarfAttribData; AValueObj: TFpDwarfValue;
+  var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData
+  ): Boolean;
 var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
@@ -2939,27 +2944,16 @@ begin
   //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
-  if AnInformationEntry = nil then
-    AnInformationEntry := InformationEntry;
+  AnAddress := InvalidLoc;
 
   //TODO: avoid copying data
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
-  if not AnInformationEntry.ReadValue(ATag, Val) then begin
-    (* if ASucessOnMissingTag = true AND tag does not exist
-       then AnAddress will NOT be modified
-       this can be used for DW_AT_data_member_location, if it does not exist members are on input location
-       TODO: review - better use temp var in caller
-    *)
-    Result := ASucessOnMissingTag;
-    if not Result then
-      AnAddress := InvalidLoc;
-    if not Result then
-      DebugLn(['LocationFromTag: failed to read DW_AT_location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
+  if not InformationEntry.ReadValue(AnAttribData, Val) then begin
+    DebugLn(['LocationFromTag: failed to read DW_AT_location']);
     exit;
   end;
 
-  AnAddress := InvalidLoc;
   if Length(Val) = 0 then begin
     DebugLn('LocationFromTag: Warning DW_AT_location empty');
     //exit;
@@ -2990,23 +2984,52 @@ begin
   LocationParser.Free;
 end;
 
+function TFpDwarfSymbol.LocationFromTag(ATag: Cardinal; AValueObj: TFpDwarfValue;
+  var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
+  AnInformationEntry: TDwarfInformationEntry; ASucessOnMissingTag: Boolean): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
+
+  Result := False;
+  if AnInformationEntry = nil then
+    AnInformationEntry := InformationEntry;
+
+  //TODO: avoid copying data
+  // DW_AT_data_member_location in members [ block or const]
+  // DW_AT_location [block or reference] todo: const
+  if not AnInformationEntry.GetAttribData(ATag, AttrData) then begin
+    (* if ASucessOnMissingTag = true AND tag does not exist
+       then AnAddress will NOT be modified
+       this can be used for DW_AT_data_member_location, if it does not exist members are on input location
+       TODO: review - better use temp var in caller
+    *)
+    Result := ASucessOnMissingTag;
+    if not Result then
+      AnAddress := InvalidLoc;
+    if not Result then
+      DebugLn(['LocationFromTag: failed to read DW_AT_location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
+    exit;
+  end;
+
+  Result := LocationFromTag(ATag, AttrData, AValueObj, AnAddress, AnInitLocParserData);
+end;
+
 function TFpDwarfSymbol.ConstantFromTag(ATag: Cardinal; out
   AConstData: TByteDynArray; var AnAddress: TFpDbgMemLocation;
   AnInformationEntry: TDwarfInformationEntry; ASucessOnMissingTag: Boolean
   ): Boolean;
 var
-  i: Integer;
   v: QWord;
-  s: string;
-  dummy: pointer;
+  AttrData: TDwarfAttribData;
 begin
   AConstData := nil;
-  i := InformationEntry.AttribIdx(DW_AT_const_value, dummy);
-  if i >= 0 then
-    case InformationEntry.AttribForm[i] of
+  if InformationEntry.GetAttribData(DW_AT_const_value, AttrData) then
+    case InformationEntry.AttribForm[AttrData.Idx] of
       DW_FORM_string, DW_FORM_strp,
       DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4: begin
-        Result := InformationEntry.ReadValue(DW_AT_const_value, AConstData, True);
+        Result := InformationEntry.ReadValue(AttrData, AConstData, True);
         if Result then
           if Length(AConstData) > 0 then
             AnAddress := SelfLoc(@AConstData[0])
@@ -3014,7 +3037,7 @@ begin
             AnAddress := InvalidLoc; // TODO: ???
       end;
       DW_FORM_data1, DW_FORM_data2, DW_FORM_data4, DW_FORM_data8, DW_FORM_sdata, DW_FORM_udata: begin
-        Result := InformationEntry.ReadValue(DW_AT_const_value, v);
+        Result := InformationEntry.ReadValue(AttrData, v);
         if Result then
           AnAddress := ConstLoc(v);
       end;
@@ -3578,65 +3601,76 @@ var
 var
   AnAddress: TFpDbgMemLocation;
   InitLocParserData: TInitLocParserData;
+  AttrData: TDwarfAttribData;
 begin
   // TODO: assert(AValueObj <> nil, 'TFpDwarfSymbolTypeSubRange.ReadBounds: AValueObj <> nil');
   if FLowBoundState <> rfNotRead then exit;
 
-  // Todo: search attrib-IDX only once
-  // Todo: LocationFromTag()
-  if InformationEntry.ReadReference(DW_AT_lower_bound, FwdInfoPtr, FwdCompUint) then begin
-    NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-    FLowBoundValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
-    NewInfo.ReleaseReference;
-    if FLowBoundValue = nil then begin
-      FLowBoundState := rfNotFound;
-      exit;
+  if InformationEntry.GetAttribData(DW_AT_lower_bound, AttrData) then begin
+    // Todo: LocationFromTag()
+    if InformationEntry.ReadReference(AttrData, FwdInfoPtr, FwdCompUint) then begin
+      NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+      FLowBoundValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
+      NewInfo.ReleaseReference;
+      if FLowBoundValue = nil then begin
+        FLowBoundState := rfNotFound; // not implemented => so for all purpose tread it as if there is no dwarf description of the low bound
+        exit;
+      end
+      else
+        FLowBoundState := rfValue;
     end
     else
-      FLowBoundState := rfValue;
-  end
-  else
-  if InformationEntry.ReadValue(DW_AT_lower_bound, FLowBoundConst) then begin
-    FLowBoundState := rfConst;
-  end
-  else
-  begin
-    //FLowBoundConst := 0; // the default
-    //FLowBoundState := rfConst;
-    FLowBoundState := rfNotFound;
-    exit; // incomplete type
-  end;
-
-
-  if InformationEntry.ReadReference(DW_AT_upper_bound, FwdInfoPtr, FwdCompUint) then begin
-    NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-    FHighBoundValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
-    NewInfo.ReleaseReference;
-    if FHighBoundValue = nil then begin
-      FHighBoundState := rfNotFound;
-      exit;
-    end
-    else
-      FHighBoundState := rfValue;
-  end
-  else
-  if InformationEntry.ReadValue(DW_AT_upper_bound, FHighBoundConst) then begin
-    FHighBoundState := rfConst;
-  end
-  else
-  begin
-    if assigned(AValueObj) then
-      InitLocParserData.ObjectDataAddress := AValueObj.Address;
-    InitLocParserData.ObjectDataAddrPush := False;
-    if assigned(AValueObj) and LocationFromTag(DW_AT_upper_bound, AValueObj, AnAddress, @InitLocParserData, InformationEntry) then begin
-      FHighBoundState := rfConst;
-      FHighBoundConst := Int64(AnAddress.Address);
+    if InformationEntry.ReadValue(AttrData, FLowBoundConst) then begin
+      FLowBoundState := rfConst;
     end
     else
     begin
-      FHighBoundState := rfNotFound;
+      //FLowBoundConst := 0; // the default
+      //FLowBoundState := rfConst;
+      FLowBoundState := rfNotFound;
+      exit; // incomplete type
+    end;
+  end
+  else
+    FLowBoundState := rfNotFound; // no dwarf description of low bound
 
-      if InformationEntry.ReadReference(DW_AT_count, FwdInfoPtr, FwdCompUint) then begin
+
+  if InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData) then begin
+    if InformationEntry.ReadReference(AttrData, FwdInfoPtr, FwdCompUint) then begin
+      NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+      FHighBoundValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
+      NewInfo.ReleaseReference;
+      if FHighBoundValue = nil then begin
+        FHighBoundState := rfNotFound;  // not implemented => so for all purpose tread it as if there is no dwarf description of the low bound
+        exit;
+      end
+      else
+        FHighBoundState := rfValue;
+    end
+    else
+    if InformationEntry.ReadValue(AttrData, FHighBoundConst) then begin
+      FHighBoundState := rfConst;
+    end
+    else
+    begin
+      if assigned(AValueObj) then
+        InitLocParserData.ObjectDataAddress := AValueObj.Address;
+      InitLocParserData.ObjectDataAddrPush := False;
+      if assigned(AValueObj) and LocationFromTag(DW_AT_upper_bound, AttrData, AValueObj, AnAddress, @InitLocParserData) then begin
+        FHighBoundState := rfConst;
+        FHighBoundConst := Int64(AnAddress.Address);
+      end
+      else
+        FHighBoundState := rfNotFound;
+    end;
+  end
+  else
+  begin
+    FHighBoundState := rfNotFound; // NO DW_AT_upper_bound found
+
+    // ONLY if DW_AT_upper_bound does not exist: try DW_AT_count
+    if InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData) then begin
+      if InformationEntry.ReadReference(AttrData, FwdInfoPtr, FwdCompUint) then begin
         NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
         FCountValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
         NewInfo.ReleaseReference;
@@ -3648,12 +3682,14 @@ begin
           FCountState := rfValue;
       end
       else
-      if InformationEntry.ReadValue(DW_AT_count, FCountConst) then begin
+      if InformationEntry.ReadValue(AttrData, FCountConst) then begin
         FCountState := rfConst;
       end
       else
         FCountState := rfNotFound;
-    end;
+    end
+    else
+      FCountState := rfNotFound;
   end;
 end;
 
@@ -4832,13 +4868,15 @@ end;
 
 function TFpDwarfSymbolValueVariable.GetValueAddress(AValueObj: TFpDwarfValue; out
   AnAddress: TFpDbgMemLocation): Boolean;
+var
+  AttrData: TDwarfAttribData;
 begin
   AnAddress := AValueObj.DataAddressCache[0];
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
-  if InformationEntry.HasAttrib(DW_AT_location) then
-    Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress)
+  if InformationEntry.GetAttribData(DW_AT_location, AttrData) then
+    Result := LocationFromTag(DW_AT_location, AttrData, AValueObj, AnAddress)
   else
     Result := ConstantFromTag(DW_AT_const_value, FConstData, AnAddress);
   AValueObj.DataAddressCache[0] := AnAddress;
@@ -4846,6 +4884,7 @@ end;
 
 function TFpDwarfSymbolValueVariable.HasAddress: Boolean;
 begin
+  // TODO: THis is wrong. It might allow for the @ operator on a const...
   Result := InformationEntry.HasAttrib(DW_AT_location) or
             InformationEntry.HasAttrib(DW_AT_const_value);
 end;

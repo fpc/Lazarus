@@ -706,11 +706,10 @@ end;
 function TFpDwarfV3ValueFreePascalString.GetAsString: AnsiString;
 var
   t, t2: TFpDbgSymbol;
-  LowBound, HighBound: Int64;
+  LowBound, HighBound, i: Int64;
   Addr, Addr2: TFpDbgMemLocation;
   WResult: UnicodeString;
-  i: Int64;
-  dummy: pointer;
+  AttrData: TDwarfAttribData;
 begin
   if FValueDone then
     exit(FValue);
@@ -736,9 +735,8 @@ begin
 
   if t.Kind = skWideString then begin
     if (t2 is TFpDwarfSymbolTypeSubRange) and (LowBound = 1) then begin
-      i := TFpDwarfSymbolTypeSubRange(t2).InformationEntry.AttribIdx(DW_AT_upper_bound, dummy);
-      if (i >=0) and
-         (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.AttribForm[i] = DW_FORM_block1) and
+      if (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData)) and
+         (TFpDwarfSymbolTypeSubRange(t2).InformationEntry.AttribForm[AttrData.Idx] = DW_FORM_block1) and
          (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize))
       then begin
         // fpc issue 0035359

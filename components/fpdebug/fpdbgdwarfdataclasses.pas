@@ -268,6 +268,13 @@ type
   end;
 
   { TDwarfInformationEntry }
+  TDwarfInformationEntry = class;
+
+  TDwarfAttribData = record
+    Idx: Integer;
+    InfoPointer: pointer;
+    InformationEntry: TDwarfInformationEntry;
+  end;
 
   TDwarfInformationEntry = class(TRefCountedObject)
   private
@@ -292,13 +299,16 @@ type
     function GetAbbrevTag: Cardinal; inline;
     function GetScopeIndex: Integer;
     procedure SetScopeIndex(AValue: Integer);
+
+    function DoReadReference(InfoIdx: Integer; InfoData: pointer;
+      out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean;
   public
     constructor Create(ACompUnit: TDwarfCompilationUnit; AnInformationEntry: Pointer);
     constructor Create(ACompUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
     destructor Destroy; override;
     property CompUnit: TDwarfCompilationUnit read FCompUnit;
 
-    function AttribIdx(AnAttrib: Cardinal; out AInfoPointer: pointer): Integer; inline;
+    function GetAttribData(AnAttrib: Cardinal; out AnAttribData: TDwarfAttribData): Boolean;
     function HasAttrib(AnAttrib: Cardinal): Boolean; inline;
     property AttribForm[AnIdx: Integer]: Cardinal read GetAttribForm;
 
@@ -314,14 +324,23 @@ type
 
     property AbbrevTag: Cardinal read GetAbbrevTag;
 
-    function ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
-    function ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
-    function ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
-    function ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
-    function ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
-    function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
-    function ReadValue(AnAttrib: Cardinal; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean;
-    function ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean;
+    function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: Integer): Boolean; inline;
+    function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: Int64): Boolean; inline;
+    function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: Cardinal): Boolean; inline;
+    function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: QWord): Boolean; inline;
+    function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: PChar): Boolean; inline;
+    function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: String): Boolean; inline;
+    function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean; inline;
+    function ReadReference(const AnAttribData: TDwarfAttribData; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean; inline;
+
+    function ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean; inline;
+    function ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean; inline;
+    function ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean; inline;
+    function ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean; inline;
+    function ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean; inline;
+    function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean; inline;
+    function ReadValue(AnAttrib: Cardinal; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean; inline;
+    function ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean; inline;
 
     function  ReadName(out AName: String): Boolean; inline;
     function  ReadName(out AName: PChar): Boolean; inline;
@@ -552,7 +571,7 @@ type
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: String): Boolean;
-    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: PChar): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: PChar): Boolean; // Same as: out AValue: String
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean;
     // Read a value that contains an address. The address is evaluated using MapAddressToNewValue
     function ReadAddressValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
@@ -2340,23 +2359,6 @@ begin
   Result := SearchScope;
 end;
 
-function TDwarfInformationEntry.AttribIdx(AnAttrib: Cardinal; out
-  AInfoPointer: pointer): Integer;
-var
-  i: Integer;
-  AddrSize: Byte;
-begin
-  if not PrepareAbbrevData then exit(-1);
-  AInfoPointer := FInformationData;
-  AddrSize := FCompUnit.FAddressSize;
-  for i := 0 to FAbbrev^.count - 1 do begin
-    if FAbbrevData[i].Attribute = AnAttrib then
-      exit(i);
-    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize, FCompUnit.IsDwarf64, FCompUnit.Version);
-  end;
-  Result := -1;
-end;
-
 function TDwarfInformationEntry.HasAttrib(AnAttrib: Cardinal): Boolean;
 var
   i: Integer;
@@ -2509,6 +2511,41 @@ begin
   inherited Destroy;
 end;
 
+function TDwarfInformationEntry.GetAttribData(AnAttrib: Cardinal; out
+  AnAttribData: TDwarfAttribData): Boolean;
+var
+  i: Integer;
+  p: PDwarfAbbrevEntry;
+  AddrSize: Byte;
+  InfoPointer: Pointer;
+  IsDwarf64: Boolean;
+  Version: Word;
+begin
+  Result := False;
+  if not PrepareAbbrevData then
+    exit;
+
+  AddrSize    := FCompUnit.FAddressSize;
+  IsDwarf64   := FCompUnit.IsDwarf64;
+  Version     := FCompUnit.Version;
+  InfoPointer := FInformationData;
+  p := FAbbrevData;
+  for i := 0 to FAbbrev^.count - 1 do begin
+    if p^.Attribute = AnAttrib then begin
+      AnAttribData.Idx := i;
+      AnAttribData.InfoPointer := InfoPointer;
+      AnAttribData.InformationEntry := Self;
+      Result := True;
+      exit;
+    end;
+    SkipEntryDataForForm(InfoPointer, p^.Form, AddrSize, IsDwarf64, Version);
+    inc(p);
+  end;
+
+  if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin then
+    Result := FAbstractOrigin.GetAttribData(AnAttrib, AnAttribData);
+end;
+
 function TDwarfInformationEntry.FindNamedChild(AName: String): TDwarfInformationEntry;
 begin
   Result := nil;
@@ -2566,117 +2603,90 @@ begin
     Result := TDwarfInformationEntry.Create(FCompUnit, FInformationEntry);
 end;
 
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
-var
-  AData: pointer;
-  i: Integer;
+function TDwarfInformationEntry.ReadValue(const AnAttribData: TDwarfAttribData;
+  out AValue: Integer): Boolean;
 begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
-    else Result := False;
-  end
-  else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue
+  );
 end;
 
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
-var
-  AData: pointer;
-  i: Integer;
+function TDwarfInformationEntry.ReadValue(const AnAttribData: TDwarfAttribData;
+  out AValue: Int64): Boolean;
 begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
-    else Result := False;
-  end
-  else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue
+  );
 end;
 
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
-var
-  AData: pointer;
-  i: Integer;
+function TDwarfInformationEntry.ReadValue(const AnAttribData: TDwarfAttribData;
+  out AValue: Cardinal): Boolean;
 begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
-    else Result := False;
-  end
-  else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue
+  );
 end;
 
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
-var
-  AData: pointer;
-  i: Integer;
+function TDwarfInformationEntry.ReadValue(const AnAttribData: TDwarfAttribData;
+  out AValue: QWord): Boolean;
 begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
-    else Result := False;
-  end
-  else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue
+  );
 end;
 
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
-var
-  AData: pointer;
-  i: Integer;
+function TDwarfInformationEntry.ReadValue(const AnAttribData: TDwarfAttribData;
+  out AValue: PChar): Boolean;
 begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
-    else Result := False;
-  end
-  else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue
+  );
 end;
 
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
-var
-  AData: pointer;
-  i: Integer;
+function TDwarfInformationEntry.ReadValue(const AnAttribData: TDwarfAttribData;
+  out AValue: String): Boolean;
 begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
-    else Result := False;
-  end
-  else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue
+  );
 end;
 
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out
-  AValue: TByteDynArray; AnFormString: Boolean): Boolean;
-var
-  AData: pointer;
-  i: Integer;
+function TDwarfInformationEntry.ReadValue(const AnAttribData: TDwarfAttribData;
+  out AValue: TByteDynArray; AnFormString: Boolean): Boolean;
 begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue, AnFormString)
-    else Result := False;
-  end
-  else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue, AnFormString);
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue, AnFormString
+  );
 end;
 
-function TDwarfInformationEntry.ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out
+function TDwarfInformationEntry.ReadReference(
+  const AnAttribData: TDwarfAttribData; out AValue: Pointer; out
+  ACompUnit: TDwarfCompilationUnit): Boolean;
+begin
+  Result := AnAttribData.InformationEntry.DoReadReference(
+    AnAttribData.Idx, AnAttribData.InfoPointer,
+    AValue, ACompUnit
+  );
+end;
+
+function TDwarfInformationEntry.DoReadReference(
+  InfoIdx: Integer; InfoData: pointer; out AValue: Pointer; out
   ACompUnit: TDwarfCompilationUnit): Boolean;
 var
-  InfoData: pointer;
-  i: Integer;
   Form: Cardinal;
   Offs: QWord;
 begin
@@ -2687,13 +2697,10 @@ begin
          this field will always be an offset from start of the debug_info section
   }
   Result := False;
-  i := AttribIdx(AnAttrib, InfoData);
-  if i < 0 then begin
-    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadReference(AnAttrib, AValue, ACompUnit);
+  if InfoIdx < 0 then
     exit;
-  end;
-  Form := FAbbrevData[i].Form;
+
+  Form := FAbbrevData[InfoIdx].Form;
   if (Form = DW_FORM_ref1) or (Form = DW_FORM_ref2) or (Form = DW_FORM_ref4) or
      (Form = DW_FORM_ref8) or (Form = DW_FORM_ref_udata)
   then begin
@@ -2719,24 +2726,99 @@ begin
     else
       ACompUnit := FCompUnit.FOwner.FindCompilationUnitByOffs(Offs);
     Result := ACompUnit <> nil;
-    if not Result then DebugLn(FPDBG_DWARF_WARNINGS, ['Comp unit not found DW_FORM_ref_addr']);
+    DebugLn(FPDBG_DWARF_WARNINGS and (not Result), ['Comp unit not found DW_FORM_ref_addr']);
   end
   else begin
     DebugLn(FPDBG_DWARF_VERBOSE, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
   end;
 end;
 
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := ReadValue(AttrData, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := ReadValue(AttrData, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := ReadValue(AttrData, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := ReadValue(AttrData, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := ReadValue(AttrData, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := ReadValue(AttrData, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out
+  AValue: TByteDynArray; AnFormString: Boolean): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := ReadValue(AttrData, AValue, AnFormString);
+end;
+
+function TDwarfInformationEntry.ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out
+  ACompUnit: TDwarfCompilationUnit): Boolean;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := GetAttribData(AnAttrib, AttrData);
+  if Result then
+    Result := AttrData.InformationEntry.DoReadReference(
+      AttrData.Idx, AttrData.InfoPointer,
+      AValue, ACompUnit
+    );
+end;
+
 function TDwarfInformationEntry.ReadName(out AName: String): Boolean;
 var
-  i: Integer;
-  AData: pointer;
+  AttrData: TDwarfAttribData;
 begin
   PrepareAbbrev;
   if dafHasName in FAbbrev^.flags then begin
-    //Result := ReadValue(DW_AT_name, AName);
-    i := AttribIdx(DW_AT_name, AData);
-    assert(i >= 0, 'TDwarfInformationEntry.ReadName');
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AName);
+    Result := GetAttribData(DW_AT_name, AttrData);
+    assert(Result and (AttrData.InformationEntry = Self), 'TDwarfInformationEntry.ReadName');
+    Result := ReadValue(AttrData, AName);
   end
   else
   if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin then
@@ -2747,15 +2829,13 @@ end;
 
 function TDwarfInformationEntry.ReadName(out AName: PChar): Boolean;
 var
-  AData: pointer;
-  i: Integer;
+  AttrData: TDwarfAttribData;
 begin
   PrepareAbbrev;
   if dafHasName in FAbbrev^.flags then begin
-    //Result := ReadValue(DW_AT_name, AName);
-    i := AttribIdx(DW_AT_name, AData);
-    assert(i >= 0, 'TDwarfInformationEntry.ReadName');
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AName);
+    Result := GetAttribData(DW_AT_name, AttrData);
+    assert(Result and (AttrData.InformationEntry = Self), 'TDwarfInformationEntry.ReadName');
+    Result := ReadValue(AttrData, AName);
   end
   else
   if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin then
@@ -2766,15 +2846,13 @@ end;
 
 function TDwarfInformationEntry.ReadStartScope(out AStartScope: TDbgPtr): Boolean;
 var
-  AData: pointer;
-  i: Integer;
+  AttrData: TDwarfAttribData;
 begin
   PrepareAbbrev;
   if dafHasStartScope in FAbbrev^.flags then begin
-    //Result := ReadValue(DW_AT_start_scope, AStartScope)
-    i := AttribIdx(DW_AT_start_scope, AData);
-    assert(i >= 0, 'TDwarfInformationEntry.ReadStartScope');
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AStartScope);
+    Result := GetAttribData(DW_AT_start_scope, AttrData);
+    assert(Result and (AttrData.InformationEntry = Self), 'TDwarfInformationEntry.ReadName');
+    Result := ReadValue(AttrData, AStartScope);
   end
   else
   if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin then
