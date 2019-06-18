@@ -159,10 +159,10 @@ const
     array [PS_DASH..PS_DASHDOTDOT] of TCocoaStatDashes = (
     // cosmetic = false (geometry)
     (
-      (len: 2; dash: (3,1,0,0,0,0)), // PS_DASH        = 1;      { ------- }
-      (len: 2; dash: (1,1,0,0,0,0)), // PS_DOT         = 2;      { ....... }
-      (len: 4; dash: (3,1,1,1,0,0)), // PS_DASHDOT     = 3;      { _._._._ }
-      (len: 6; dash: (3,1,1,1,1,1))  // PS_DASHDOTDOT  = 4;      { _.._.._ }
+      (len: 2; dash: (2,2,0,0,0,0)), // PS_DASH        = 1;      { ------- }
+      (len: 2; dash: (0,2,0,0,0,0)), // PS_DOT         = 2;      { ....... }
+      (len: 4; dash: (2,2,0,2,0,0)), // PS_DASHDOT     = 3;      { _._._._ }
+      (len: 6; dash: (2,2,0,2,0,2))  // PS_DASHDOTDOT  = 4;      { _.._.._ }
     ),
     // cosmetic = true (windows like cosmetic)
     (
@@ -2847,7 +2847,7 @@ begin
         WidthMul[false]:=1.0;
         WidthMul[true]:=Width;
         StatDash := @CocoaPenDash[isCosm][FStyle];
-        CalcDashes( Slice(StatDash^.dash, StatDash^.len), ADashes, ADashLen, WidthMul[isCosm]);
+        CalcDashes( Slice(StatDash^.dash, StatDash^.len), ADashes, ADashLen, WidthMul[IsGeometric]);
         CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], ADashLen);
       end;
     PS_USERSTYLE:
