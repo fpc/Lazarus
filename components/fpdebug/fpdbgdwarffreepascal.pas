@@ -686,7 +686,7 @@ begin
   if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
     GetDwarfDataAddress(Addr, TFpDwarfSymbolType(Owner))
   then begin
-    if not (IsReadableMem(Addr) and (LocToAddr(Addr) > 4)) then
+    if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
       exit(0); // dyn array, but bad data
     Addr.Address := Addr.Address - AddressSize;
     //debugln(['TFpDwarfValueArray.GetMemberCount  XXXXXXXXXXXXXXX dwarf 2 read len']);
