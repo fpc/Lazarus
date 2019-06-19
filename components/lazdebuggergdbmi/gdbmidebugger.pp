@@ -59,7 +59,7 @@ uses
   Controls, Dialogs, Forms, process,
   // LazUtils
   FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, Maps,
-  UTF8Process,
+  UTF8Process, LazFileUtils,
   // IdeIntf
   BaseIDEIntf,
   {$IFDEF Darwin}
