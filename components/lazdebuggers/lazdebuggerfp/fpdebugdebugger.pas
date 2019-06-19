@@ -48,14 +48,6 @@ type
     property AsyncMethod: TFpDbgAsyncMethod read FAsyncMethod write FAsyncMethod;
   end;
 
-  { TFpDbgLogMessage }
-
-  TFpDbgLogMessage = class
-  public
-    SyncLogMessage: string;
-    SyncLogLevel: TFPDLogLevel;
-  end;
-
   { TFpDebugDebuggerProperties }
 
   TFpDebugDebuggerProperties = class(TDebuggerProperties)
@@ -116,7 +108,6 @@ type
     function GetDebugInfo: TDbgInfo;
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
-    procedure DoLog();
     procedure ClearWatchEvalList;
   protected
     function GetContextForEvaluate(const ThreadId, StackFrame: Integer): TFpDbgInfoContext;
@@ -140,7 +131,6 @@ type
                              const ACallback: TMethod): Boolean; override;
     function ChangeFileName: Boolean; override;
 
-    procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
     // On Linux, communication with the debuggee is only allowed from within
     // the thread that created the debuggee. So a method to execute functions
     // within the debug-thread is necessary.
@@ -307,10 +297,6 @@ implementation
 uses
   FpDbgUtil,
   FpDbgDisasX86;
-
-var
-  DbgLogCritSection: TRTLCriticalSection;
-  DbgLogMessageList: TFPObjectList;
 
 type
 
@@ -1549,44 +1535,6 @@ begin
     end;
 end;
 
-procedure TFpDebugDebugger.DoLog();
-var
-  AMessage: TFpDbgLogMessage;
-  AnObjList, t: TFPObjectList;
-  i: Integer;
-begin
-  // Do *NOT* access SELF. It may have been destroyed already
-  AnObjList := nil;
-  try
-    EnterCriticalsection(DbgLogCritSection);
-    try
-      if DbgLogMessageList.Count > 0 then begin
-        t := TFPObjectList.Create(false);
-        AnObjList := DbgLogMessageList;
-        DbgLogMessageList := t;
-      end;
-    finally
-      LeaveCriticalsection(DbgLogCritSection);
-    end;
-
-    if AnObjList = nil then
-      exit;
-
-    for i := 0 to AnObjList.Count-1 do
-      begin
-      AMessage := TFpDbgLogMessage(AnObjList[i]);
-      case AMessage.SyncLogLevel of
-        dllDebug: DebugLn(AMessage.SyncLogMessage);
-        dllInfo:  ShowMessage(AMessage.SyncLogMessage);
-        dllError: MessageDlg(AMessage.SyncLogMessage, mtError, [mbOK], 0);
-      end; {case}
-      AMessage.Free;
-      end;
-  finally
-    AnObjList.Free;
-  end;
-end;
-
 procedure TFpDebugDebugger.ClearWatchEvalList;
 begin
   if Assigned(FWatchEvalList) then
@@ -1965,25 +1913,6 @@ begin
   result := true;
 end;
 
-procedure TFpDebugDebugger.OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
-var
-  AMessage: TFpDbgLogMessage;
-begin
-  // This function could be running in a thread. Add the log-message to an
-  // array and queue the processing in the main thread. Not an ideal
-  // implementation. But good enough for now.
-  AMessage := TFpDbgLogMessage.Create;
-  AMessage.SyncLogLevel:=ALogLevel;
-  AMessage.SyncLogMessage:=AString;
-  EnterCriticalsection(DbgLogCritSection);
-  try
-    DbgLogMessageList.Add(AMessage);
-  finally
-    LeaveCriticalsection(DbgLogCritSection);
-  end;
-  TThread.Queue(nil, @DoLog);
-end;
-
 procedure TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
 begin
   assert(not assigned(FFpDebugThread.AsyncMethod));
@@ -2211,7 +2140,6 @@ begin
   FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter);
   FDbgController := TDbgController.Create;
-  FDbgController.OnLog:=@OnLog;
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
   FDbgController.OnHitBreakpointEvent:=@FDbgControllerHitBreakpointEvent;
   FDbgController.OnProcessExitEvent:=@FDbgControllerProcessExitEvent;
@@ -2224,7 +2152,6 @@ destructor TFpDebugDebugger.Destroy;
 begin
   if assigned(FFpDebugThread) then
     FreeDebugThread;
-  DoLog();
   ClearWatchEvalList;
   Application.RemoveAsyncCalls(Self);
   FreeAndNil(FDbgController);
@@ -2313,14 +2240,6 @@ begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
            dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput];
 end;
-
-initialization
-  InitCriticalSection(DbgLogCritSection);
-  DbgLogMessageList := TFPObjectList.Create(false);
-
-finalization
-  FreeAndNil(DbgLogMessageList);
-  DoneCriticalsection(DbgLogCritSection);
 
 end.
 

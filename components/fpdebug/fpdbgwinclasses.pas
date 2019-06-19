@@ -106,7 +106,7 @@ type
     procedure Interrupt;
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; AFlags: TStartInstanceFlags): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
@@ -140,6 +140,9 @@ procedure RegisterDbgClasses;
 
 implementation
 
+var
+  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+
 {$ifdef cpux86_64}
 const
   FLAG_TRACE_BIT = $100;
@@ -154,7 +157,7 @@ end;
 
 procedure TDbgWinProcess.LogLastError;
 begin
-  log('FpDbg-ERROR: %s', [GetLastErrorText], dllDebug);
+  DebugLn(DBG_WARNINGS, 'FpDbg-ERROR: %s', [GetLastErrorText]);
 end;
 
 procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr);
@@ -371,7 +374,7 @@ begin
     Context^.ContextFlags := CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
     if not GetThreadContext(FInfo.hThread, Context^)
     then begin
-      Log('Proces %u interrupt: Unable to get context', [ProcessID]);
+      DebugLn(DBG_WARNINGS, 'Proces %u interrupt: Unable to get context', [ProcessID]);
       Exit;
     end;
 
@@ -385,7 +388,7 @@ begin
 
     if not SetThreadContext(FInfo.hThread, Context^)
     then begin
-      Log('Proces %u interrupt: Unable to set context', [ProcessID]);
+      DebugLn(DBG_WARNINGS, 'Proces %u interrupt: Unable to set context', [ProcessID]);
       Exit;
     end;
   finally
@@ -424,7 +427,7 @@ function TDbgWinProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolea
   //      if not SetThreadContext(FInfo.hThread, Context^)
   //      then begin
   //        // Heeellppp!!
-  //        Log('Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
+  //        DebugLn(DBG_WARNINGS, 'Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
   //      end;
   //      // check if we are also singlestepping
   //      // if not, then exit, else proceed to next check
@@ -434,7 +437,7 @@ function TDbgWinProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolea
   //  end
   //  else begin
   //    // if we can not get the context, we probable weren't able to set it either
-  //    Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
+  //    DebugLn(DBG_WARNINGS, 'Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
   //  end;
   //
   //  // check if we are single stepping ourself
@@ -465,7 +468,7 @@ begin
 end;
 
 class function TDbgWinProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog;
+  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
   AFlags: TStartInstanceFlags): TDbgProcess;
 var
   AProcess: TProcessUTF8;
@@ -482,7 +485,7 @@ begin
     AProcess.CurrentDirectory:=AWorkingDirectory;
     AProcess.Execute;
 
-    result := TDbgWinProcess.Create(AFileName, AProcess.ProcessID, AProcess.ThreadID, AOnLog);
+    result := TDbgWinProcess.Create(AFileName, AProcess.ProcessID, AProcess.ThreadID);
     TDbgWinProcess(result).FProcProcess := AProcess;
   except
     on E: Exception do
@@ -490,11 +493,11 @@ begin
       {$ifdef cpui386}
       if (E is EProcess) and (GetLastError=50) then
       begin
-        AOnLog(Format('Failed to start process "%s". Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'+sLineBreak+'Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
+        DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'+sLineBreak+'Errormessage: "%s".',[AFileName, E.Message]);
       end
       else
       {$endif i386}
-        AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
+        DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]);
       AProcess.Free;
     end;
   end;
@@ -564,8 +567,8 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     // on how to interprete the exception-information.
     {
     if AEvent.Exception.dwFirstChance = 0
-    then DebugLn('Exception: ')
-    else DebugLn('First chance exception: ');
+    then DebugLn(DBG_VERBOSE, 'Exception: ')
+    else DebugLn(DBG_VERBOSE, 'First chance exception: ');
     }
     // in both 32 and 64 case is the exceptioncode the first, so no difference
     case AEvent.Exception.ExceptionRecord.ExceptionCode of
@@ -594,47 +597,47 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
 
       // add some status - don't know if we can get them here
       {
-      DBG_EXCEPTION_NOT_HANDLED          : DebugLn('DBG_EXCEPTION_NOT_HANDLED');
-      STATUS_GUARD_PAGE_VIOLATION        : DebugLn('STATUS_GUARD_PAGE_VIOLATION');
-      STATUS_NO_MEMORY                   : DebugLn('STATUS_NO_MEMORY');
-      STATUS_CONTROL_C_EXIT              : DebugLn('STATUS_CONTROL_C_EXIT');
-      STATUS_FLOAT_MULTIPLE_FAULTS       : DebugLn('STATUS_FLOAT_MULTIPLE_FAULTS');
-      STATUS_FLOAT_MULTIPLE_TRAPS        : DebugLn('STATUS_FLOAT_MULTIPLE_TRAPS');
-      STATUS_REG_NAT_CONSUMPTION         : DebugLn('STATUS_REG_NAT_CONSUMPTION');
-      STATUS_SXS_EARLY_DEACTIVATION      : DebugLn('STATUS_SXS_EARLY_DEACTIVATION');
-      STATUS_SXS_INVALID_DEACTIVATION    : DebugLn('STATUS_SXS_INVALID_DEACTIVATION');
+      DBG_EXCEPTION_NOT_HANDLED          : DebugLn(DBG_VERBOSE, 'DBG_EXCEPTION_NOT_HANDLED');
+      STATUS_GUARD_PAGE_VIOLATION        : DebugLn(DBG_VERBOSE, 'STATUS_GUARD_PAGE_VIOLATION');
+      STATUS_NO_MEMORY                   : DebugLn(DBG_VERBOSE, 'STATUS_NO_MEMORY');
+      STATUS_CONTROL_C_EXIT              : DebugLn(DBG_VERBOSE, 'STATUS_CONTROL_C_EXIT');
+      STATUS_FLOAT_MULTIPLE_FAULTS       : DebugLn(DBG_VERBOSE, 'STATUS_FLOAT_MULTIPLE_FAULTS');
+      STATUS_FLOAT_MULTIPLE_TRAPS        : DebugLn(DBG_VERBOSE, 'STATUS_FLOAT_MULTIPLE_TRAPS');
+      STATUS_REG_NAT_CONSUMPTION         : DebugLn(DBG_VERBOSE, 'STATUS_REG_NAT_CONSUMPTION');
+      STATUS_SXS_EARLY_DEACTIVATION      : DebugLn(DBG_VERBOSE, 'STATUS_SXS_EARLY_DEACTIVATION');
+      STATUS_SXS_INVALID_DEACTIVATION    : DebugLn(DBG_VERBOSE, 'STATUS_SXS_INVALID_DEACTIVATION');
       }
     else
       InterceptAtFirstChance := False;
       ExceptionClass := 'Unknown exception code $' + IntToHex(ExInfo32.ExceptionRecord.ExceptionCode, 8);
       {
-      DebugLn(' [');
+      DebugLn(DBG_VERBOSE, ' [');
       case ExInfo32.ExceptionRecord.ExceptionCode and $C0000000 of
-        STATUS_SEVERITY_SUCCESS       : DebugLn('SEVERITY_ERROR');
-        STATUS_SEVERITY_INFORMATIONAL : DebugLn('SEVERITY_ERROR');
-        STATUS_SEVERITY_WARNING       : DebugLn('SEVERITY_WARNING');
-        STATUS_SEVERITY_ERROR         : DebugLn('SEVERITY_ERROR');
+        STATUS_SEVERITY_SUCCESS       : DebugLn(DBG_VERBOSE, 'SEVERITY_ERROR');
+        STATUS_SEVERITY_INFORMATIONAL : DebugLn(DBG_VERBOSE, 'SEVERITY_ERROR');
+        STATUS_SEVERITY_WARNING       : DebugLn(DBG_VERBOSE, 'SEVERITY_WARNING');
+        STATUS_SEVERITY_ERROR         : DebugLn(DBG_VERBOSE, 'SEVERITY_ERROR');
       end;
       if ExInfo32.ExceptionRecord.ExceptionCode and $20000000 <> 0
-      then DebugLn (' Customer');
+      then DebugLn (DBG_VERBOSE, ' Customer');
       if ExInfo32.ExceptionRecord.ExceptionCode and $10000000 <> 0
-      then DebugLn (' Reserved');
+      then DebugLn (DBG_VERBOSE, ' Reserved');
       case (ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16 of
-        FACILITY_DEBUGGER            : DebugLn('FACILITY_DEBUGGER');
-        FACILITY_RPC_RUNTIME         : DebugLn('FACILITY_RPC_RUNTIME');
-        FACILITY_RPC_STUBS           : DebugLn('FACILITY_RPC_STUBS');
-        FACILITY_IO_ERROR_CODE       : DebugLn('FACILITY_IO_ERROR_CODE');
-        FACILITY_TERMINAL_SERVER     : DebugLn('FACILITY_TERMINAL_SERVER');
-        FACILITY_USB_ERROR_CODE      : DebugLn('FACILITY_USB_ERROR_CODE');
-        FACILITY_HID_ERROR_CODE      : DebugLn('FACILITY_HID_ERROR_CODE');
-        FACILITY_FIREWIRE_ERROR_CODE : DebugLn('FACILITY_FIREWIRE_ERROR_CODE');
-        FACILITY_CLUSTER_ERROR_CODE  : DebugLn('FACILITY_CLUSTER_ERROR_CODE');
-        FACILITY_ACPI_ERROR_CODE     : DebugLn('FACILITY_ACPI_ERROR_CODE');
-        FACILITY_SXS_ERROR_CODE      : DebugLn('FACILITY_SXS_ERROR_CODE');
+        FACILITY_DEBUGGER            : DebugLn(DBG_VERBOSE, 'FACILITY_DEBUGGER');
+        FACILITY_RPC_RUNTIME         : DebugLn(DBG_VERBOSE, 'FACILITY_RPC_RUNTIME');
+        FACILITY_RPC_STUBS           : DebugLn(DBG_VERBOSE, 'FACILITY_RPC_STUBS');
+        FACILITY_IO_ERROR_CODE       : DebugLn(DBG_VERBOSE, 'FACILITY_IO_ERROR_CODE');
+        FACILITY_TERMINAL_SERVER     : DebugLn(DBG_VERBOSE, 'FACILITY_TERMINAL_SERVER');
+        FACILITY_USB_ERROR_CODE      : DebugLn(DBG_VERBOSE, 'FACILITY_USB_ERROR_CODE');
+        FACILITY_HID_ERROR_CODE      : DebugLn(DBG_VERBOSE, 'FACILITY_HID_ERROR_CODE');
+        FACILITY_FIREWIRE_ERROR_CODE : DebugLn(DBG_VERBOSE, 'FACILITY_FIREWIRE_ERROR_CODE');
+        FACILITY_CLUSTER_ERROR_CODE  : DebugLn(DBG_VERBOSE, 'FACILITY_CLUSTER_ERROR_CODE');
+        FACILITY_ACPI_ERROR_CODE     : DebugLn(DBG_VERBOSE, 'FACILITY_ACPI_ERROR_CODE');
+        FACILITY_SXS_ERROR_CODE      : DebugLn(DBG_VERBOSE, 'FACILITY_SXS_ERROR_CODE');
       else
-        DebugLn(' Facility: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16, 3));
+        DebugLn(DBG_VERBOSE, ' Facility: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16, 3));
       end;
-      DebugLn(' Code: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0000FFFF), 4));
+      DebugLn(DBG_VERBOSE, ' Code: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0000FFFF), 4));
       }
     end;
     ExceptionClass:='External: '+ExceptionClass;
@@ -643,16 +646,16 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     if GMode = dm32
     then Info0 := PtrUInt(ExInfo32.ExceptionRecord.ExceptionAddress)
     else Info0 := PtrUInt(ExInfo64.ExceptionRecord.ExceptionAddress);
-    DebugLn(' at: ', FormatAddress(Info0));
-    DebugLn(' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
+    DebugLn(DBG_VERBOSE, ' at: ', FormatAddress(Info0));
+    DebugLn(DBG_VERBOSE, ' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
 
     if AEvent.Exception.ExceptionRecord.ExceptionFlags = 0
-    then DebugLn('Continuable')
-    else DebugLn('Not continuable');
-    DebugLn(']');
+    then DebugLn(DBG_VERBOSE, 'Continuable')
+    else DebugLn(DBG_VERBOSE, 'Not continuable');
+    DebugLn(DBG_VERBOSE, ']');
     if GMode = dm32
-    then DebugLn(' ParamCount:', IntToStr(ExInfo32.ExceptionRecord.NumberParameters))
-    else DebugLn(' ParamCount:', IntToStr(ExInfo64.ExceptionRecord.NumberParameters));
+    then DebugLn(DBG_VERBOSE, ' ParamCount:', IntToStr(ExInfo32.ExceptionRecord.NumberParameters))
+    else DebugLn(DBG_VERBOSE, ' ParamCount:', IntToStr(ExInfo64.ExceptionRecord.NumberParameters));
     }
     case AEvent.Exception.ExceptionRecord.ExceptionCode of
       EXCEPTION_ACCESS_VIOLATION: begin
@@ -675,20 +678,20 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
       end;
     end;
     {
-    DebugLn(' Info: ');
+    DebugLn(DBG_VERBOSE, ' Info: ');
     for n := 0 to EXCEPTION_MAXIMUM_PARAMETERS - 1 do
     begin
       if GMode = dm32
       then Info0 := ExInfo32.ExceptionRecord.ExceptionInformation[n]
       else Info0 := ExInfo64.ExceptionRecord.ExceptionInformation[n];
-      DebugLn(IntToHex(Info0, DBGPTRSIZE[GMode] * 2), ' ');
+      DebugLn(DBG_VERBOSE, IntToHex(Info0, DBGPTRSIZE[GMode] * 2), ' ');
       if n and (PARAMCOLS - 1) = (PARAMCOLS - 1)
       then begin
-        DebugLn;
-        DebugLn('       ');
+        DebugLn(DBG_VERBOSE, '');
+        DebugLn(DBG_VERBOSE, '       ');
       end;
     end;
-    DebugLn('');
+    DebugLn(DBG_VERBOSE, '');
     }
   end;
 
@@ -697,6 +700,8 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     f: Cardinal;
     n: integer;
   begin
+    if (DBG_VERBOSE = nil) or (not DBG_VERBOSE^.Enabled) then
+      exit;
     DebugLn('===');
     DebugLn(AEvent);
     DebugLn('---');
@@ -794,7 +799,7 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
       if not ReadString(TDbgPtr(AEvent.DebugString.lpDebugStringData), AEvent.DebugString.nDebugStringLength, S)
       then Exit;
     end;
-    log('[%d:%d]: %s', [AEvent.dwProcessId, AEvent.dwThreadId, S]);
+    DebugLn(DBG_VERBOSE, '[%d:%d]: %s', [AEvent.dwProcessId, AEvent.dwThreadId, S]);
   end;
 
 var
@@ -806,9 +811,7 @@ begin
     if AThread <> nil
     then begin
       // TODO: move to TDbgThread
-
-      if not TDbgWinThread(AThread).ReadThreadState
-      then log('LOOP: Unable to retrieve thread context');
+      DebugLn(DBG_WARNINGS and (not TDbgWinThread(AThread).ReadThreadState), 'LOOP: Unable to retrieve thread context');
     end;
 
     case MDebugEvent.dwDebugEventCode of
@@ -956,11 +959,11 @@ begin
   FPauseRequested:=true;
   result := DebugBreakProcess(hndl);
   if not Result then begin
-    DebugLn(['pause failed(1) ', GetLastError]);
+    DebugLn(DBG_WARNINGS, ['pause failed(1) ', GetLastError]);
     InitWin32;
     hThread := _CreateRemoteThread(hndl, nil, 0, DebugBreakAddr, nil, 0, NewThreadId);
     if hThread = 0 then begin
-      DebugLn(['pause failed(2) ', GetLastError]);
+      DebugLn(DBG_WARNINGS, ['pause failed(2) ', GetLastError]);
     end
     else begin
       Result := True;
@@ -1104,7 +1107,7 @@ begin
   else if SetBreakpoint(FCurrentContext^.Dr3, 3) then
     result := 3
   else
-    Process.Log('No hardware breakpoint available.');
+    DebugLn(DBG_WARNINGS ,'No hardware breakpoint available.');
 end;
 
 function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
@@ -1122,7 +1125,7 @@ function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
     else
     begin
       result := False;
-      Process.Log('HW watchpoint is not set.');
+      DebugLn(DBG_WARNINGS ,'HW watchpoint is not set.');
     end;
   end;
 
@@ -1160,7 +1163,7 @@ begin
     if SetThreadContext(Handle, FCurrentContext^) then
       FThreadContextChanged:=false
     else
-      Log('Thread %u: Unable to set context', [ID])
+      DebugLn(DBG_WARNINGS ,'Thread %u: Unable to set context', [ID])
   end;
   FThreadContextChanged := False;
   FCurrentContext := nil;
@@ -1181,7 +1184,7 @@ begin
   Context^.ContextFlags := CONTEXT_CONTROL;
   if not GetThreadContext(Handle, Context^)
   then begin
-    Log('Unable to get context');
+    DebugLn(DBG_WARNINGS ,'Unable to get context');
     Exit;
   end;
 
@@ -1199,7 +1202,7 @@ begin
 
   if not SetThreadContext(Handle, Context^)
   then begin
-    Log('Unable to set context');
+    DebugLn(DBG_WARNINGS ,'Unable to set context');
     Exit;
   end;
   // TODO: only changed FCurrentContext, and write back in BeforeContinue;
@@ -1210,7 +1213,7 @@ end;
 function TDbgWinThread.ReadThreadState: boolean;
 begin
   if Process.ProcessID <> MDebugEvent.dwProcessId then begin
-    DebugLn('ERROR: attempt to read threadstate, for wrong process. Thread: %u Thread-Process: %u Event-Process %u', [Id, Process.ProcessID, MDebugEvent.dwProcessId]);
+    DebugLn(DBG_WARNINGS, 'ERROR: attempt to read threadstate, for wrong process. Thread: %u Thread-Process: %u Event-Process %u', [Id, Process.ProcessID, MDebugEvent.dwProcessId]);
     exit(False);
   end;
 
@@ -1254,5 +1257,8 @@ begin
 {$endif}
 end;
 
+initialization
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 end.
 

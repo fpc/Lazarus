@@ -54,6 +54,9 @@ implementation
 uses
   FpDbgLoader;
 
+var
+  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+
 type
   PnlistArray = ^nlist; // ^array[0..infinite] of nlist;
   PnlistArray64 = ^nlist_64; // ^array[0..infinite] of nlist_64;
@@ -371,19 +374,19 @@ begin
     if GUIDToString(ALoader.UUID)<>GUIDToString(PLoader.UUID) then
       begin
       AddReaderError('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.');
-      Log('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.');
+      debugln(DBG_WARNINGS, 'The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.');
       FreeAndNil(ALoader);
       end
     else
       begin
-      log('Load debug-info from dSYM bundle ('+dSYMFilename+').');
+      debugln(DBG_VERBOSE, 'Load debug-info from dSYM bundle ('+dSYMFilename+').');
       LList.Add(ALoader);
       end;
     end;
 
   if not assigned(ALoader) then
     begin
-    log('Read debug-info from separate object files.');
+    debugln(DBG_VERBOSE, 'Read debug-info from separate object files.');
     TDbgMachoDataSource.LoadSubFiles(PLoader.SubFiles, LList);
     end;
 end;
@@ -818,5 +821,7 @@ end;
 initialization
   RegisterImageReaderClass( TDbgMachoDataSource );
 
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 end.
 

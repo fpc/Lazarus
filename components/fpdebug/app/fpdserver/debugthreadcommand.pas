@@ -26,7 +26,7 @@ uses
   strutils,
   debugthread,
   CustApp,
-  Maps,
+  Maps, LazLoggerBase,
   SysUtils;
 
 type
@@ -443,7 +443,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgContr
       AnEntry.Addr:=AnAddr;
       if not {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
         begin
-        Log(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]), dllDebug);
+        DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
         AnEntry.Statement := 'Failed to read memory';
         inc(AnAddr);
         end
@@ -520,7 +520,7 @@ begin
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then
     begin
-    log('Failed to dissasemble: No process', dllInfo);
+    debugln('Failed to dissasemble: No process');
     exit;
     end;
 
@@ -614,7 +614,7 @@ begin
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then
     begin
-    log('Failed to get call stack: No process', dllInfo);
+    debugln('Failed to get call stack: No process');
     exit;
     end;
 
@@ -671,7 +671,7 @@ begin
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then
     begin
-    log('Failed to evaluate expression: No process', dllInfo);
+    debugln('Failed to evaluate expression: No process');
     exit;
     end;
 
@@ -754,7 +754,7 @@ begin
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then
     begin
-    log('Failed to remove breakpoint: No process', dllInfo);
+    debugln('Failed to remove breakpoint: No process');
     exit;
     end;
   if (FBreakpointServerIdr<>0) then begin
@@ -765,7 +765,7 @@ begin
     AController.RemoveInternalBreakPoint(FBreakpointServerIdr);
   end
   else
-    log('Failed to remove breakpoint: No location given', dllInfo);
+    debugln('Failed to remove breakpoint: No location given');
 end;
 
 class function TFpDebugThreadRemoveBreakpointCommand.TextName: string;
@@ -890,7 +890,7 @@ begin
 
   if not assigned(AController.CurrentProcess) then
     begin
-    log('Failed to get location info: No process', dllInfo);
+    debugln('Failed to get location info: No process');
     exit;
     end
   else
@@ -944,7 +944,7 @@ begin
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then
     begin
-    log('Failed to add breakpoint: No process', dllInfo);
+    debugln('Failed to add breakpoint: No process');
     exit;
     end;
   if (Filename<>'') and (line>-1) then
@@ -955,7 +955,7 @@ begin
       FBreakServerId := AController.AddInternalBreakPointToId(FBreakPoint);
     end
   else
-    log('Failed to add breakpoint: No filename and line-number given', dllInfo);
+    debugln('Failed to add breakpoint: No filename and line-number given');
 end;
 
 class function TFpDebugThreadAddBreakpointCommand.TextName: string;

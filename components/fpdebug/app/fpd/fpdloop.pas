@@ -56,7 +56,6 @@ type
     procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpInternalBreakpoint);
     procedure GControllerProcessExitEvent(ExitCode: DWord);
     procedure GControllerDebugInfoLoaded(Sender: TObject);
-    procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
   protected
     Procedure DoRun; override;
   public
@@ -137,7 +136,7 @@ begin
 
     if not GController.CurrentProcess.ReadData(a,sizeof(CodeBin),CodeBin)
     then begin
-      //Log('Disassemble: Failed to read memory at %s.', [FormatAddress(a)]);
+      //debugln('Disassemble: Failed to read memory at %s.', [FormatAddress(a)]);
       Code := '??';
       CodeBytes := '??';
       Inc(a);
@@ -235,15 +234,6 @@ begin
   end;
 end;
 
-procedure TFPDLoop.OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
-begin
-  case ALogLevel of
-    dllDebug : writeln('Debug: '+AString);
-    dllInfo  : writeln(AString);
-    dllError : writeln('Error: '+AString);
-  end;
-end;
-
 procedure TFPDLoop.DoRun;
 var
   S: String;
@@ -269,7 +259,8 @@ begin
   inherited Initialize;
   FMemReader := TPDDbgMemReader.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
-  GController.OnLog:=@OnLog;
+  //TODO: Maybe DebugLogger.OnLog ....
+  //GController.OnLog:=@OnLog;
   GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
   GController.OnCreateProcessEvent:=@GControllerCreateProcessEvent;
   GController.OnExceptionEvent:=@GControllerExceptionEvent;

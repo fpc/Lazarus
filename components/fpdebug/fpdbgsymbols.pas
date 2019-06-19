@@ -42,7 +42,7 @@ uses
   Windows,
 {$endif}
   Classes, SysUtils, FpDbgInfo, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarf, FpDbgUtil,
-  FpDbgDwarfConst, LazLogger;
+  FpDbgDwarfConst, LazLoggerBase;
   
 
 {$ifdef windows}
@@ -50,6 +50,9 @@ procedure AddSymbols(AParent: TFpDbgSymbol; AModule: THandle);
 {$endif}
 
 implementation
+
+var
+  DBG_WARNINGS, FPDBG_DWARF_VERBOSE_LOAD: PLazLoggerLogGroup;
 
 {$ifdef windows}
 procedure AddSymbols(AParent: TFpDbgSymbol; AModule: THandle);
@@ -59,10 +62,23 @@ var
   Sections: TStringList;
   
   procedure AddDwarf;
-    procedure Dump(p: PChar; count: Integer);
+    procedure Dump(p: PChar; count: Integer; SH: PImageSectionHeader);
     var
       n: integer;
     begin
+      if (FPDBG_DWARF_VERBOSE_LOAD = nil) or (not FPDBG_DWARF_VERBOSE_LOAD^.Enabled) then
+        exit;
+      DebugLn('.debug_info');
+      DebugLn('  length: ', IntToStr(PCardinal(p)^));
+      Inc(p, 4);
+      DebugLn('  version: ', IntToStr(PWord(p)^));
+      Inc(p, 2);
+      DebugLn('  abbrev offset: ', IntToStr(PCardinal(p)^));
+      Inc(p, 4);
+      DebugLn('  address size: ', IntToStr(PByte(p)^));
+      Inc(p, 1);
+
+      DebugLn( HexValue(SH^.PointerToRawData, 8, []), ': ');
       for n := 1 to count do
       begin
         case p^ of
@@ -104,45 +120,32 @@ var
 
     SH := Pointer(Sections.Objects[idx4]);
     Data4 := ModulePtr + SH^.PointerToRawData;
-    p := Data4;
-    DebugLn('.debug_info');
-    DebugLn('  length: ', IntToStr(PCardinal(p)^));
-    Inc(p, 4);
-    DebugLn('  version: ', IntToStr(PWord(p)^));
-    Inc(p, 2);
-    DebugLn('  abbrev offset: ', IntToStr(PCardinal(p)^));
-    Inc(p, 4);
-    DebugLn('  address size: ', IntToStr(PByte(p)^));
-    Inc(p, 1);
-
-    DebugLn(HexValue(SH^.PointerToRawData, 8, []), ': ');
-    Dump(p, 80);
+    Dump(Data4, 80, SH);
 
     SH := Pointer(Sections.Objects[idx16]);
     Data16 := ModulePtr + SH^.PointerToRawData;
     p := Data16;
-    DebugLn('.debug_abbrev');
+    DebugLn(FPDBG_DWARF_VERBOSE_LOAD, '.debug_abbrev');
     while pb^ <> 0 do
     begin
-      DebugLn('  abbrev:  ', IntToStr(Cardinal(ULEB128toOrdinal(pb))));
       Value := Cardinal(ULEB128toOrdinal(pb));
-      DebugLn('  tag:     ', IntToStr(Value), '=', DwarfTagToString(Value));
-      DebugLn('  children:', IntToStr(pb^));
+      Name := Cardinal(ULEB128toOrdinal(pb));
+      DebugLn(FPDBG_DWARF_VERBOSE_LOAD, ['  abbrev:  ', IntToStr(Cardinal(ULEB128toOrdinal(pb))),
+        '  tag:     ', IntToStr(Value), '=', DwarfTagToString(Value),
+        '  children:', IntToStr(pb^)]);
       inc(pb);
       for n := 0 to 15 do
       begin
         Name := Cardinal(ULEB128toOrdinal(pb));
         Value := Cardinal(ULEB128toOrdinal(pb));
         if (name = 0) and (value = 0) then Break;
-        DebugLn('   [', IntToStr(n), '] name: ', IntToStr(Name), '=', DwarfAttributeToString(Name), ', value:', IntToStr(Value), '=', DwarfAttributeFormToString(Value));
+        DebugLn(FPDBG_DWARF_VERBOSE_LOAD, '   [', IntToStr(n), '] name: ', IntToStr(Name), '=', DwarfAttributeToString(Name), ', value:', IntToStr(Value), '=', DwarfAttributeFormToString(Value));
       end;
       if (name = 0) and (value = 0) then Continue;
       while pw^ <> 0 do Inc(pw);
       inc(pw);
     end;
 
-//    Write(HexValue(SH^.PointerToRawData, 8, []), ': ');
-//    Dump(p, 80);
   end;
   
   procedure AddStabs;
@@ -169,14 +172,14 @@ begin
     hMap := CreateFileMapping(AModule, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
     if hMap = 0
     then begin
-      Log('AddSymbols: Could not create module mapping');
+      DebugLn(DBG_WARNINGS or FPDBG_DWARF_VERBOSE_LOAD, 'AddSymbols: Could not create module mapping');
       Exit;
     end;
 
     ModulePtr := MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0);
     if ModulePtr = nil
     then begin
-      Log('AddSymbols: Could not map view');
+      DebugLn(DBG_WARNINGS or FPDBG_DWARF_VERBOSE_LOAD, 'AddSymbols: Could not map view');
       Exit;
     end;
 
@@ -184,7 +187,7 @@ begin
     if (DosHeader^.e_magic <> IMAGE_DOS_SIGNATURE)
     or (DosHeader^.e_lfanew = 0)
     then begin
-      Log('AddSymbols: Invalid DOS header');
+      DebugLn(DBG_WARNINGS or FPDBG_DWARF_VERBOSE_LOAD, 'AddSymbols: Invalid DOS header');
       Exit;
     end;
 
@@ -192,7 +195,7 @@ begin
 
     if NTHeaders^.Signature <> IMAGE_NT_SIGNATURE
     then begin
-      Log('AddSymbols: Invalid NT header: %s', [IntToHex(NTHeaders^.Signature, 8)]);
+      DebugLn(DBG_WARNINGS or FPDBG_DWARF_VERBOSE_LOAD, 'AddSymbols: Invalid NT header: %s', [IntToHex(NTHeaders^.Signature, 8)]);
       Exit;
     end;
 
@@ -244,5 +247,8 @@ begin
 end;
 {$endif}
 
+initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  FPDBG_DWARF_VERBOSE_LOAD  := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE_LOAD' {$IFDEF FPDBG_DWARF_VERBOSE_LOAD} , True {$ENDIF} );
 end.
 

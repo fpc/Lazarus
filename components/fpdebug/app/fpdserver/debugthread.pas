@@ -59,6 +59,9 @@ type
   TFpDebugEventDisassemblerEntryArray = array of TDisassemblerEntry;
   TFpDebugEventWatchEntryArray = array of TFpDebugEventWatchEntry;
 
+  TFPDLogLevel = (dllDebug, dllInfo, dllError);
+  TOnLog = procedure(const AString: string; const ALogLevel: TFPDLogLevel) of object;
+
   // This record is used to pass debugging-events. Not every field is applicable for each type of event.
   TFpDebugEvent = record
     SendByConnectionIdentifier: integer;
@@ -495,7 +498,8 @@ begin
   FController.OnProcessExitEvent:=@FControllerProcessExitEvent;
   FController.OnHitBreakpointEvent:=@FControllerHitBreakpointEvent;
   FController.OnDebugInfoLoaded:=@FControllerDebugInfoLoaded;
-  FController.OnLog:=@SendLogMessage;
+  //TODO: DebugLogger.OnLog ....
+  //FController.OnLog:=@SendLogMessage;
 
   try
     repeat

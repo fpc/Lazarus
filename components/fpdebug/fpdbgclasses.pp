@@ -47,9 +47,7 @@ uses
 type
   TFPDEvent = (deExitProcess, deFinishedStep, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
-  TFPDLogLevel = (dllDebug, dllInfo, dllError);
   TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo);
-  TOnLog = procedure(const AString: string; const ALogLevel: TFPDLogLevel) of object;
 
   { TDbgRegisterValue }
 
@@ -332,7 +330,6 @@ type
     FExceptionClass: string;
     FExceptionMessage: string;
     FExitCode: DWord;
-    FOnLog: TOnLog;
     FProcessID: Integer;
     FThreadID: Integer;
 
@@ -368,8 +365,8 @@ type
     // Should analyse why the debugger has stopped.
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; AFlags: TStartInstanceFlags): TDbgProcess; virtual;
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); virtual;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; virtual;
+    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer); virtual;
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
@@ -380,8 +377,6 @@ type
     procedure RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
     function  HasBreak(const ALocation: TDbgPtr): Boolean; // TODO: remove, once an address can have many breakpoints
     procedure RemoveThread(const AID: DWord);
-    procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
-    procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
     function FormatAddress(const AAddress): String;
     function  Pause: boolean; virtual;
 
@@ -427,7 +422,6 @@ type
     property ExceptionClass: string read FExceptionClass write FExceptionClass;
 
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
-    property OnLog: TOnLog read FOnLog;
     property MainThread: TDbgThread read FMainThread;
   end;
   TDbgProcessClass = class of TDbgProcess;
@@ -469,7 +463,7 @@ uses
 
 var
   GOSDbgClasses : TOSDbgClasses;
-  FPDBG_BREAKPOINTS, FPDBG_BREAKPOINT_ERRORS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, DBG_BREAKPOINTS: PLazLoggerLogGroup;
 
 function OSDbgClasses: TOSDbgClasses;
 begin
@@ -552,7 +546,7 @@ procedure TBreakLocationMap.Clear;
 var
   LocData: TBreakLocationEntry;
 begin
-  debugln(['TBreakLocationMap.Clear ']);
+  debugln(DBG_VERBOSE or DBG_BREAKPOINTS, ['TBreakLocationMap.Clear ']);
   for LocData in Self do begin
     if PInternalBreakLocationEntry(LocData.Data)^.IsBreakList then
       TFpInternalBreakpointArray(PInternalBreakLocationEntry(LocData.Data)^.InternalBreakPoint) := nil;
@@ -637,7 +631,7 @@ var
 begin
   LocData := GetDataPtr(ALocation);
   if LocData = nil then begin
-    DebugLn(['Missing breakpoint for loc ', FormatAddress(ALocation)]);
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
     exit;
   end;
 
@@ -647,7 +641,7 @@ begin
     while (i >= 0) and (TFpInternalBreakpointArray(LocData^.InternalBreakPoint)[i] <> AInternalBreak) do
       dec(i);
     if i < 0 then begin
-      DebugLn(['Wrong break for loc ', FormatAddress(ALocation)]);
+      DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Wrong break for loc ', FormatAddress(ALocation)]);
       exit;
     end;
     if i < Len - 1 then
@@ -661,7 +655,7 @@ begin
   end
   else
   if AInternalBreak <> TFpInternalBreakpoint(LocData^.InternalBreakPoint) then begin
-    DebugLn(['Wrong break for loc ', FormatAddress(ALocation)]);
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Wrong break for loc ', FormatAddress(ALocation)]);
 
     exit;
   end;
@@ -678,7 +672,7 @@ var
 begin
   LocData := GetDataPtr(ALocation);
   if LocData = nil then begin
-    DebugLn(['Missing breakpoint for loc ', FormatAddress(ALocation)]);
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
     Result := nil;
     exit;
   end;
@@ -699,7 +693,7 @@ var
 begin
   LocData := GetDataPtr(ALocation);
   if LocData = nil then begin
-    DebugLn(['Missing breakpoint for loc ', FormatAddress(ALocation)]);
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
     Result := TDbgProcess.Int3;
     exit;
   end;
@@ -1078,7 +1072,8 @@ begin
       end;
 end;
 
-constructor TDbgProcess.Create(const AFileName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog);
+constructor TDbgProcess.Create(const AFileName: string; const AProcessID,
+  AThreadID: Integer);
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -1086,7 +1081,6 @@ const
 //  MAP_ID_SIZE = itu4;
   {.$ENDIF}
 begin
-  FOnLog:=AOnLog;
   FProcessID := AProcessID;
   FThreadID := AThreadID;
 
@@ -1296,7 +1290,7 @@ begin
     end;
   end
   else
-    Log('Unknown thread ID %u for process %u', [AThreadIdentifier, ProcessID]);
+    DebugLn(DBG_WARNINGS, 'Unknown thread ID %u for process %u', [AThreadIdentifier, ProcessID]);
 end;
 
 function TDbgProcess.GetThreadArray: TFPDThreadArray;
@@ -1380,19 +1374,6 @@ begin
   FThreadMap.Delete(AID);
 end;
 
-procedure TDbgProcess.Log(const AString: string; const ALogLevel: TFPDLogLevel);
-begin
-  if assigned(FOnLog) then
-    FOnLog(AString, ALogLevel)
-  else
-    DebugLn(AString);
-end;
-
-procedure TDbgProcess.Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel);
-begin
-  Log(Format(AString, Options), ALogLevel);
-end;
-
 function TDbgProcess.FormatAddress(const AAddress): String;
 begin
   Result := HexValue(AAddress, DBGPTRSIZE[Mode], [hvfIncludeHexchar]);
@@ -1417,13 +1398,9 @@ resourcestring
   sNoDebugSupport = 'Debug support is not available for this platform .';
 
 class function TDbgProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-  AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog;
-  AFlags: TStartInstanceFlags): TDbgProcess;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess;
 begin
-  if assigned(AOnLog) then
-    AOnLog(sNoDebugSupport, dllError)
-  else
-    DebugLn(sNoDebugSupport);
+  DebugLn(DBG_VERBOSE, sNoDebugSupport);
   result := nil;
 end;
 
@@ -1469,7 +1446,7 @@ var
 begin
   Result := FProcess.ReadData(ALocation, 1, OrigValue);
   if not Result then begin
-    DebugLn(FPDBG_BREAKPOINT_ERRORS, 'Unable to read pre-breakpoint at '+FormatAddress(ALocation));
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, 'Unable to read pre-breakpoint at '+FormatAddress(ALocation));
     exit;
   end;
 
@@ -1484,9 +1461,9 @@ begin
   BeforeChangingInstructionCode(ALocation);
 
   Result := FProcess.WriteData(ALocation, 1, Int3);
-  DebugLn(FPDBG_BREAKPOINTS, ['Breakpoint Int3 set to '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', OrigValue]);
+  DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['Breakpoint Int3 set to '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', OrigValue]);
   if not Result then
-    DebugLn(FPDBG_BREAKPOINT_ERRORS, 'Unable to set breakpoint at '+FormatAddress(ALocation));
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, 'Unable to set breakpoint at '+FormatAddress(ALocation));
 
   if Result then
     AfterChangingInstructionCode(ALocation);
@@ -1501,9 +1478,9 @@ begin
   BeforeChangingInstructionCode(ALocation);
 
   Result := WriteData(ALocation, 1, OrigValue);
-  DebugLn(FPDBG_BREAKPOINTS, ['Breakpoint Int3 removed from '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', OrigValue]);
+  DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['Breakpoint Int3 removed from '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', OrigValue]);
   if (not Result) then
-    DebugLn(FPDBG_BREAKPOINT_ERRORS, 'Unable to reset breakpoint at %s', [FormatAddress(ALocation)]);
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, 'Unable to reset breakpoint at %s', [FormatAddress(ALocation)]);
 
   if Result then
     AfterChangingInstructionCode(ALocation);
@@ -1532,7 +1509,7 @@ end;
 //  if Result then
 //    Result := OVal = Int3
 //  else
-//    DebugLn('Unable to read pre-breakpoint at '+FormatAddress(ALocation));
+//    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS'Unable to read pre-breakpoint at '+FormatAddress(ALocation));
 //end;
 
 procedure TDbgProcess.TempRemoveBreakInstructionCode(const ALocation: TDBGPtr);
@@ -1540,7 +1517,7 @@ var
   OVal: Byte;
   l, i: Integer;
 begin
-  DebugLn(FPDBG_BREAKPOINTS, ['>>> TempRemoveBreakInstructionCode']);
+  DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['>>> TempRemoveBreakInstructionCode']);
   l := length(FTmpRemovedBreaks);
   for i := 0 to l-1 do
     if FTmpRemovedBreaks[i] = ALocation then
@@ -1553,7 +1530,7 @@ begin
   SetLength(FTmpRemovedBreaks, l+1);
   FTmpRemovedBreaks[l] := ALocation;
   RemoveBreakInstructionCode(ALocation, OVal); // Do not update FBreakMap
-  DebugLn(FPDBG_BREAKPOINTS, ['<<< TempRemoveBreakInstructionCode']);
+  DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['<<< TempRemoveBreakInstructionCode']);
 end;
 
 procedure TDbgProcess.RestoreTempBreakInstructionCodes;
@@ -1562,13 +1539,13 @@ var
   t: array of TDBGPtr;
   i: Integer;
 begin
-  DebugLnEnter(FPDBG_BREAKPOINTS, ['>>> RestoreTempBreakInstructionCodes']);
+  DebugLnEnter(DBG_VERBOSE or DBG_BREAKPOINTS, ['>>> RestoreTempBreakInstructionCodes']);
   t := FTmpRemovedBreaks;
   FTmpRemovedBreaks := nil;
   for i := 0 to length(t) - 1 do
     if FBreakMap.HasId(t[i]) then // may have been removed
       InsertBreakInstructionCode(t[i], OVal);
-  DebugLnExit(FPDBG_BREAKPOINTS, ['<<< RestoreTempBreakInstructionCodes']);
+  DebugLnExit(DBG_VERBOSE or DBG_BREAKPOINTS, ['<<< RestoreTempBreakInstructionCodes']);
 end;
 
 function TDbgProcess.HasInsertedBreakInstructionAtLocation(
@@ -1696,13 +1673,13 @@ end;
 
 function TDbgThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
 begin
-  FProcess.log('Hardware watchpoints are not available.');
+  DebugLn(DBG_VERBOSE, 'Hardware watchpoints are not available.');
   result := -1;
 end;
 
 function TDbgThread.RemoveWatchpoint(AnId: integer): boolean;
 begin
-  FProcess.log('Hardware watchpoints are not available: '+self.classname);
+  DebugLn(DBG_VERBOSE, 'Hardware watchpoints are not available: '+self.classname);
   result := false;
 end;
 
@@ -1863,8 +1840,9 @@ end;
 initialization
   GOSDbgClasses := nil;
 
-  FPDBG_BREAKPOINTS := DebugLogger.RegisterLogGroup('FPDBG_BREAKPOINTS' {$IFDEF FPDBG_BREAKPOINTS} , True {$ENDIF} );
-  FPDBG_BREAKPOINT_ERRORS := DebugLogger.RegisterLogGroup('FPDBG_BREAKPOINT_ERRORS' {$IFDEF FPDBG_BREAKPOINT_ERRORS} , True {$ENDIF} );
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  DBG_BREAKPOINTS := DebugLogger.RegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
 
 
 finalization

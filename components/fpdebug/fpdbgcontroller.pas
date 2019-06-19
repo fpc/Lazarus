@@ -8,7 +8,7 @@ uses
   Classes,
   SysUtils,
   Maps,
-  LazLogger,
+  LazLoggerBase,
   DbgIntfBaseTypes,
   FpDbgDisasX86,
   FpDbgClasses;
@@ -135,7 +135,6 @@ type
     FOnDebugInfoLoaded: TNotifyEvent;
     FOnExceptionEvent: TOnExceptionEvent;
     FOnHitBreakpointEvent: TOnHitBreakpointEvent;
-    FOnLog: TOnLog;
     FOnProcessExitEvent: TOnProcessExitEvent;
     FProcessMap: TMap;
     FPDEvent: TFPDEvent;
@@ -147,7 +146,6 @@ type
     procedure SetCurrentThreadId(AValue: Integer);
     procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(AValue: string);
-    procedure SetOnLog(AValue: TOnLog);
     procedure DoOnDebugInfoLoaded(Sender: TObject);
     procedure SetParams(AValue: TStringList);
   protected
@@ -155,8 +153,6 @@ type
     FCurrentProcess: TDbgProcess;
     FCurrentThread: TDbgThread;
     FCommand: TDbgControllerCmd;
-    procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
-    procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
     function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
   public
     constructor Create; virtual;
@@ -174,7 +170,6 @@ type
     procedure SendEvents(out continue: boolean);
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
-    property OnLog: TOnLog read FOnLog write SetOnLog;
     property CurrentProcess: TDbgProcess read FCurrentProcess;
     property CurrentThread: TDbgThread read FCurrentThread;
     property CurrentThreadId: Integer read GetCurrentThreadId write SetCurrentThreadId;
@@ -202,6 +197,9 @@ type
 
 implementation
 
+var
+  DBG_VERBOSE, DBG_WARNINGS, FPDBG_COMMANDS: PLazLoggerLogGroup;
+
 { TDbgControllerStepOutInstructionCmd }
 
 procedure TDbgControllerStepOutInstructionCmd.SetReturnAdressBreakpoint(AProcess: TDbgProcess);
@@ -219,7 +217,7 @@ begin
   end
   else
   begin
-    AProcess.Log('Failed to read return-address from stack');
+    debugln(DBG_WARNINGS, 'Failed to read return-address from stack');
   end;
 
   FIsSet:=true;
@@ -314,7 +312,7 @@ begin
   if not assigned(FHiddenBreakpoint) then // and not AProcess.HasBreak(FLocation)
     FHiddenBreakpoint := AProcess.AddBreak(FLocation)
   else
-    FProcess.Log('TDbgControllerRunToCmd.DoContinue: Breakpoint already used');
+    debugln(DBG_WARNINGS, 'TDbgControllerRunToCmd.DoContinue: Breakpoint already used');
 
   AProcess.Continue(AProcess, AThread, False);
 end;
@@ -643,17 +641,11 @@ begin
   if FCurrentThread.ID = AValue then Exit;
 
   if not FCurrentProcess.GetThread(AValue, ExistingThread) then begin
-    debugln(['SetCurrentThread() unknown thread id: ', AValue]);
+    debugln(DBG_WARNINGS, ['SetCurrentThread() unknown thread id: ', AValue]);
     // raise ...
     exit;
   end;
   FCurrentThread := ExistingThread;
-end;
-
-procedure TDbgController.SetOnLog(AValue: TOnLog);
-begin
-  if FOnLog=AValue then Exit;
-  FOnLog:=AValue;
 end;
 
 destructor TDbgController.Destroy;
@@ -684,9 +676,7 @@ procedure TDbgController.InitializeCommand(ACommand: TDbgControllerCmd);
 begin
   if assigned(FCommand) then
     raise exception.create('Prior command not finished yet.');
-  {$ifdef DBG_FPDEBUG_VERBOSE}
-  log('Initialized command '+ACommand.ClassName, dllDebug);
-  {$endif DBG_FPDEBUG_VERBOSE}
+  DebugLn(FPDBG_COMMANDS, 'Initialized command '+ACommand.ClassName);
   FCommand := ACommand;
 end;
 
@@ -697,30 +687,30 @@ begin
   result := False;
   if assigned(FMainProcess) then
     begin
-    Log('The debuggee is already running', dllInfo);
+    DebugLn(DBG_WARNINGS, 'The debuggee is already running');
     Exit;
     end;
 
   if FExecutableFilename = '' then
     begin
-    Log('No filename given to execute.', dllInfo);
+    DebugLn(DBG_WARNINGS, 'No filename given to execute.');
     Exit;
     end;
 
   if not FileExists(FExecutableFilename) then
     begin
-    Log('File %s does not exist.',[FExecutableFilename], dllInfo);
+    DebugLn(DBG_WARNINGS, 'File %s does not exist.',[FExecutableFilename]);
     Exit;
     end;
 
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty , @Log, Flags);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);
-    Log('Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
+    DebugLn(DBG_VERBOSE, 'Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
     result := true;
     end;
 end;
@@ -787,16 +777,12 @@ begin
         ctid := FCurrentThread.ID;
       if not assigned(FCommand) then
         begin
-        {$ifdef DBG_FPDEBUG_VERBOSE}
-        log('Continue process without command.', dllDebug);
-        {$endif DBG_FPDEBUG_VERBOSE}
+        DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
         FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
         end
       else
         begin
-        {$ifdef DBG_FPDEBUG_VERBOSE}
-        log('Continue process with command '+FCommand.ClassName, dllDebug);
-        {$endif DBG_FPDEBUG_VERBOSE}
+        DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
         FCommand.DoContinue(FCurrentProcess, FCurrentThread);
         end;
 
@@ -857,21 +843,14 @@ begin
        CurrentThread is then destroyed in the next call to continue....
     *)
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
-    {$ifdef DBG_FPDEBUG_VERBOSE}
-    log('Process stopped with event %s. IP=%s, SP=%s, BSP=%s.', [FPDEventNames[FPDEvent],
+    DebugLn(DBG_VERBOSE, 'Process stopped with event %s. IP=%s, SP=%s, BSP=%s.', [FPDEventNames[FPDEvent],
                                                                 FCurrentProcess.FormatAddress(FCurrentThread.GetInstructionPointerRegisterValue),
                                                                 FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),
-                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue)], dllDebug);
-    {$endif DBG_FPDEBUG_VERBOSE}
+                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue)]);
     if assigned(FCommand) then
       begin
       FCommand.ResolveEvent(FPDEvent, IsHandled, IsFinished);
-      {$ifdef DBG_FPDEBUG_VERBOSE}
-      if IsFinished then
-        log('Command %s is finished. (IsHandled=%s)', [FCommand.ClassName, BoolToStr(IsHandled)], dllDebug)
-      else
-        log('Command %s is not finished. (IsHandled=%s)', [FCommand.ClassName, BoolToStr(IsHandled)], dllDebug);
-      {$endif DBG_FPDEBUG_VERBOSE}
+      DebugLn(FPDBG_COMMANDS, 'Command %s: IsFinished=%s, IsHandled=%s', [FCommand.ClassName, dbgs(IsFinished), dbgs(IsHandled)])
       end
     else
     begin
@@ -912,7 +891,7 @@ begin
       (* Only events for the main process get here / See ProcessLoop *)
         FCurrentProcess.LoadInfo;
         if not FCurrentProcess.DbgInfo.HasInfo then
-          Log('No Dwarf-debug information available. The debugger will not function properly. [CurrentProcess='+dbgsname(FCurrentProcess)+',DbgInfo='+dbgsname(FCurrentProcess.DbgInfo)+']',dllInfo);
+          DebugLn(DBG_WARNINGS, 'No Dwarf-debug information available. The debugger will not function properly. [CurrentProcess='+dbgsname(FCurrentProcess)+',DbgInfo='+dbgsname(FCurrentProcess.DbgInfo)+']');
 
         DoOnDebugInfoLoaded(self);
 
@@ -973,20 +952,6 @@ begin
   end;
 end;
 
-procedure TDbgController.Log(const AString: string; const ALogLevel: TFPDLogLevel);
-begin
-  if assigned(FOnLog) then
-    FOnLog(AString, ALogLevel)
-  else
-    DebugLn(AString);
-end;
-
-procedure TDbgController.Log(const AString: string;
-  const Options: array of const; const ALogLevel: TFPDLogLevel);
-begin
-  Log(Format(AString, Options), ALogLevel);
-end;
-
 function TDbgController.GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
 begin
   Result := FProcessMap.GetData(AProcessIdentifier, AProcess) and (AProcess <> nil);
@@ -999,6 +964,11 @@ begin
   FProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
   FNextOnlyStopOnStartLine := true;
 end;
+
+initialization
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  FPDBG_COMMANDS := DebugLogger.FindOrRegisterLogGroup('FPDBG_COMMANDS' {$IFDEF FPDBG_COMMANDS} , True {$ENDIF} );
 
 end.
 

@@ -56,7 +56,7 @@ function FormatAddress(const AAddress): String;
 implementation
 
 uses
-  LazLogger,
+  LazLoggerBase,
   FpDbgClasses;
 
 function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;

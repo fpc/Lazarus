@@ -43,8 +43,7 @@ interface
 uses
   Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
   FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages,
-  LazLoggerBase, // LazLoggerDummy,
-  LazClasses, LazFileUtils, LazUTF8, contnrs, DbgIntfBaseTypes;
+  LazLoggerBase, LazClasses, LazFileUtils, LazUTF8, contnrs, DbgIntfBaseTypes;
 
 type
   TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);

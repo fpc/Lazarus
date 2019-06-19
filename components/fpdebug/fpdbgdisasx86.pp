@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils,
-  FpDbgUtil, FpDbgInfo, DbgIntfBaseTypes, FpdMemoryTools;
+  FpDbgUtil, FpDbgInfo, DbgIntfBaseTypes, FpdMemoryTools, LazLoggerBase;
 
 {                   
   The function Disassemble decodes the instruction at the given address.
@@ -58,6 +58,8 @@ uses
 procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
 
 implementation
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
 
 type
   TFlag = (flagRex, flagSib, flagModRM, rexB, rexX, rexR, rexW, preOpr, preAdr, preLock, preRep{N}, preRepNE);
@@ -239,7 +241,7 @@ var
     Inc(OperIdx);
     if OperIdx > High(Operand)
     then begin
-      Log('AddOperand: Only %d operands supported, got %d', [High(Operand), OperIdx]);
+      Debugln(DBG_WARNINGS, 'AddOperand: Only %d operands supported, got %d', [High(Operand), OperIdx]);
       Exit;
     end;
 
@@ -3016,7 +3018,7 @@ var
       Inc(CodeIdx);
       if CodeIdx > 16 // max instruction length
       then begin
-        Log('Disassemble: instruction longer than 16 bytes');
+        Debugln(DBG_WARNINGS, 'Disassemble: instruction longer than 16 bytes');
         Exit;
       end;
     until Opcode <> '';
@@ -3097,4 +3099,6 @@ begin
 end;
 
 
+initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 end.

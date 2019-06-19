@@ -277,9 +277,8 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog;
-  AFlags: TStartInstanceFlags): TDbgProcess; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -301,6 +300,7 @@ procedure RegisterDbgClasses;
 implementation
 
 var
+  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
   GConsoleTty: string;
   GSlavePTyFd: cint;
 
@@ -381,7 +381,7 @@ begin
   e := fpgeterrno;
   if e <> 0 then
     begin
-    log('Failed to read dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(e));
+    DebugLn(DBG_WARNINGS, 'Failed to read dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(e));
     result := false;
     end
   else
@@ -392,7 +392,7 @@ function TDbgLinuxThread.WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
 begin
   if fpPTrace(PTRACE_POKEUSR, ID, GetDebugRegOffset(ind), pointer(AVal)) = -1 then
     begin
-    log('Failed to write dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(fpgeterrno));
+    DebugLn(DBG_WARNINGS, 'Failed to write dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(fpgeterrno));
     result := false;
     end
   else
@@ -412,7 +412,7 @@ begin
   io.iov_len:= sizeof(FUserRegs);
   if fpPTrace(PTRACE_GETREGSET, ID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
     begin
-    log('Failed to read thread registers from threadid '+inttostr(ID)+'. Errcode: '+inttostr(fpgeterrno));
+    DebugLn(DBG_WARNINGS, 'Failed to read thread registers from threadid '+inttostr(ID)+'. Errcode: '+inttostr(fpgeterrno));
     result := false;
     end;
   FUserRegsChanged:=false;
@@ -430,7 +430,7 @@ begin
   if not result then
     begin
     // TODO: errChld -> remove thread
-    DebugLn('Failed to send SIGTSTOP to process %d. Errno: %d',[ID, errno]);
+    DebugLn(DBG_WARNINGS, 'Failed to send SIGTSTOP to process %d. Errno: %d',[ID, errno]);
     exit;
     end;
 
@@ -448,16 +448,16 @@ begin
   PID:=FpWaitPid(ID, WaitStatus, Opts);
 
   if (PID = 0) then begin
-    if not ANoHang then DebugLn(['Thread ', ID, ' did not get a signal in WaitPid']);
+    if not ANoHang then DebugLn(DBG_WARNINGS, ['Thread ', ID, ' did not get a signal in WaitPid']);
     exit;
   end;
   if (PID = -1) then begin
     // TODO: errChld -> remove thread
-    DebugLn(['Thread ', ID, ' did get an error in WaitPid ', errno]);
+    DebugLn(DBG_WARNINGS, ['Thread ', ID, ' did get an error in WaitPid ', errno]);
     exit;
   end;
   if (PID <> ID) then begin
-    DebugLn(['Thread ', ID, ' did get wrong PID in WaitPid ', PID]);
+    DebugLn(DBG_WARNINGS, ['Thread ', ID, ' did get wrong PID in WaitPid ', PID]);
     exit;
   end;
 
@@ -551,7 +551,7 @@ begin
   while (i<4) and not SetHWBreakpoint(i) do
     inc(i);
   if i=4 then
-    Process.Log('No hardware breakpoint available.')
+    DebugLn(DBG_WARNINGS, 'No hardware breakpoint available.')
   else
     result := i;
 end;
@@ -574,7 +574,7 @@ begin
   end
   else
   begin
-    Process.Log('HW watchpoint %d is not set.',[AnId]);
+    DebugLn(DBG_WARNINGS, 'HW watchpoint %d is not set.',[AnId]);
   end;
 end;
 
@@ -609,7 +609,7 @@ begin
 
     if fpPTrace(PTRACE_SETREGSET, ID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
       begin
-      log('Failed to set thread registers. Errcode: '+inttostr(fpgeterrno));
+      DebugLn(DBG_WARNINGS, 'Failed to set thread registers. Errcode: '+inttostr(fpgeterrno));
       end;
     FUserRegsChanged:=false;
     end;
@@ -715,10 +715,10 @@ begin
 end;
 
 constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer; AOnLog: TOnLog);
+  AThreadID: Integer);
 begin
   FMasterPtyFd:=-1;
-  inherited Create(AName, AProcessID, AThreadID, AOnLog);
+  inherited Create(AName, AProcessID, AThreadID);
 end;
 
 destructor TDbgLinuxProcess.Destroy;
@@ -727,8 +727,9 @@ begin
   inherited Destroy;
 end;
 
-class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AOnLog: TOnLog; AFlags: TStartInstanceFlags): TDbgProcess;
+class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams,
+  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
+  AFlags: TStartInstanceFlags): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;
@@ -740,13 +741,13 @@ begin
   AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
   if DirectoryExists(AnExecutabeFilename) then
   begin
-    DebugLn(format('Can not debug %s, because it''s a directory',[AnExecutabeFilename]));
+    DebugLn(DBG_WARNINGS, 'Can not debug %s, because it''s a directory',[AnExecutabeFilename]);
     Exit;
   end;
 
   if not FileExists(AFileName) then
   begin
-    DebugLn(format('Can not find  %s.',[AnExecutabeFilename]));
+    DebugLn(DBG_WARNINGS, 'Can not find  %s.',[AnExecutabeFilename]);
     Exit;
   end;
 
@@ -754,10 +755,10 @@ begin
   if siRediretOutput in AFlags then
     begin
     if AConsoleTty<>'' then
-      AOnLog('It is of no use to provide a console-tty when the console output is being redirected.', dllInfo);
+      DebugLn(DBG_VERBOSE, 'It is of no use to provide a console-tty when the console output is being redirected.');
     GConsoleTty:='';
     if openpty(@AMasterPtyFd, @GSlavePTyFd, nil, nil, nil) <> 0 then
-      AOnLog('Failed to open pseudo-tty. Errcode: '+inttostr(fpgeterrno), dllDebug);
+      DebugLn(DBG_WARNINGS, 'Failed to open pseudo-tty. Errcode: '+inttostr(fpgeterrno));
     end
   else
     begin
@@ -777,13 +778,13 @@ begin
     PID:=AProcess.ProcessID;
 
     sleep(100);
-    result := TDbgLinuxProcess.Create(AFileName, Pid, -1, AOnLog);
+    result := TDbgLinuxProcess.Create(AFileName, Pid, -1);
     TDbgLinuxProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgLinuxProcess(result).FProcProcess := AProcess;
   except
     on E: Exception do
     begin
-      AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
+      DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]));
       AProcess.Free;
 
     if GSlavePTyFd>-1 then
@@ -809,7 +810,7 @@ var
     e := fpgeterrno;
     if e <> 0 then
       begin
-      log('Failed to read data at address '+FormatAddress(Adr)+' from processid '+inttostr(FCurrentThreadId)+'. Errcode: '+inttostr(e));
+      DebugLn(DBG_WARNINGS, 'Failed to read data at address '+FormatAddress(Adr)+' from processid '+inttostr(FCurrentThreadId)+'. Errcode: '+inttostr(e));
       result := false;
       end
     else
@@ -876,7 +877,7 @@ begin
   WordSize:=DBGPTRSIZE[Mode];
 
   if ASize>WordSize then
-    log('Can not write more then '+IntToStr(WordSize)+' bytes.')
+    DebugLn(DBG_WARNINGS, 'Can not write more then '+IntToStr(WordSize)+' bytes.')
   else
     begin
     if ASize<WordSize then
@@ -886,7 +887,7 @@ begin
       e := fpgeterrno;
       if e <> 0 then
         begin
-        log('Failed to read data. Errcode: '+inttostr(e));
+        DebugLn(DBG_WARNINGS, 'Failed to read data. Errcode: '+inttostr(e));
         result := false;
         exit;
         end;
@@ -897,7 +898,7 @@ begin
     e := fpgeterrno;
     if e <> 0 then
       begin
-      log('Failed to write data. Errcode: '+inttostr(e));
+      DebugLn(DBG_WARNINGS, 'Failed to write data. Errcode: '+inttostr(e));
       result := false;
       end;
     end;
@@ -938,7 +939,7 @@ end;
 procedure TDbgLinuxProcess.SendConsoleInput(AString: string);
 begin
   if FpWrite(FMasterPtyFd, AString[1], length(AString)) <> Length(AString) then
-    Log('Failed to send input to console.', dllDebug);
+    DebugLn(DBG_WARNINGS, 'Failed to send input to console.');
 end;
 
 procedure TDbgLinuxProcess.TerminateProcess;
@@ -946,7 +947,7 @@ begin
   FIsTerminating:=true;
   if fpkill(ProcessID,SIGKILL)<>0 then
     begin
-    log('Failed to send SIGKILL to process %d. Errno: %d',[ProcessID, errno]);
+    DebugLn(DBG_WARNINGS, 'Failed to send SIGKILL to process %d. Errno: %d',[ProcessID, errno]);
     FIsTerminating:=false;
     end;
 end;
@@ -956,7 +957,7 @@ begin
   result := fpkill(ProcessID, SIGTRAP)=0;
   if not result then
     begin
-    log('Failed to send SIGTRAP to process %d. Errno: %d',[ProcessID, errno]);
+    DebugLn(DBG_WARNINGS, 'Failed to send SIGTRAP to process %d. Errno: %d',[ProcessID, errno]);
     end;
 end;
 
@@ -968,7 +969,7 @@ function TDbgLinuxProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; S
     e := fpgeterrno;
     Result := e = 0;
     if not Result then
-      DebugLn('Failed to continue process. Errcode: '+inttostr(e));
+      DebugLn(DBG_WARNINGS, 'Failed to continue process. Errcode: '+inttostr(e));
   end;
 
 var
@@ -1012,14 +1013,14 @@ begin
           if CheckNoError then begin
             PID := fpWaitPid(ThreadToContinue.ID, WaitStatus, __WALL);
             if PID <> ThreadToContinue.ID then begin
-              DebugLn(['Error single stepping other thread ', ThreadToContinue.ID, ' waitpid got ', PID, ', ',WaitStatus, ' err ', Errno]);
+              DebugLn(DBG_WARNINGS, ['Error single stepping other thread ', ThreadToContinue.ID, ' waitpid got ', PID, ', ',WaitStatus, ' err ', Errno]);
               break;
             end;
             if (wstopsig(WaitStatus) = SIGTRAP) then
               break; // if the command jumps back an itself....
           end
           else begin
-            DebugLn(['Error single stepping other thread ', ThreadToContinue.ID]);
+            DebugLn(DBG_WARNINGS, ['Error single stepping other thread ', ThreadToContinue.ID]);
             break;
           end;
         end;
@@ -1091,7 +1092,7 @@ begin
       Assert(TDbgLinuxThread(ThreadWithEvent).FIsPaused, 'TDbgLinuxThread(ThreadWithEvent).FIsPaused');
       PID := ThreadWithEvent.ID;
       FStatus := TDbgLinuxThread(ThreadWithEvent).FExceptionSignal;
-      DebugLn(['DEFERRED event for ',pid]);
+      DebugLn(DBG_VERBOSE, ['DEFERRED event for ',pid]);
       break;
     end;
 
@@ -1102,14 +1103,14 @@ begin
 
   result := PID<>-1;
   if not result then
-    Log('Failed to wait for debug event. Errcode: %d', [fpgeterrno], dllError)
+    DebugLn(DBG_WARNINGS, 'Failed to wait for debug event. Errcode: %d', [fpgeterrno])
   else
     begin
     ThreadIdentifier := PID;
     FCurrentThreadId := PID;
 
     if not FProcessStarted and (PID <> ProcessID) then
-      Log('ThreadID of main thread does not match the ProcessID', dllDebug);
+      DebugLn(DBG_WARNINGS, 'ThreadID of main thread does not match the ProcessID');
 
     ProcessIdentifier := ProcessID;
     end;
@@ -1131,11 +1132,11 @@ function TDbgLinuxProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     if (PID = 0) and (ANoHang) then
       exit;
 
-    DebugLn(['Got SIGNAL for thread: ', pid, ' Status: ',WaitStatus]);
+    DebugLn(DBG_VERBOSE, ['Got SIGNAL for thread: ', pid, ' Status: ',WaitStatus]);
     if not FThreadMap.GetData(PID, Result) then
         Result := nil;
-    if Result = nil then DebugLn('NO THREAD');
-    if Result.FIsPaused then DebugLn('PAUSED THREAD');
+    if Result = nil then DebugLn(DBG_VERBOSE, 'NO THREAD')
+    else if Result.FIsPaused then DebugLn(DBG_VERBOSE, 'PAUSED THREAD');
   end;
 
 //var
@@ -1163,7 +1164,7 @@ begin
     end
   else if WIFSTOPPED(FStatus) then
     begin
-    //log('Stopped ',FStatus, ' signal: ',wstopsig(FStatus));
+    //DebugLn(DBG_WARNINGS, 'Stopped ',FStatus, ' signal: ',wstopsig(FStatus));
     TDbgLinuxThread(AThread).ReadThreadState;
 
     if (FStatus >> 8) = (SIGTRAP or (PTRACE_EVENT_CLONE << 8)) then
@@ -1173,7 +1174,7 @@ begin
 
       // Usefull in case of debugging:
       //if fpPTrace(PTRACE_GETEVENTMSG, AThread.ID, nil, @NewThreadID) = -1 then
-      //  Log('Failed to retrieve ThreadId of new thread. Errcode: %d', [fpgeterrno], dllInfo);
+      //  DebugLn(DBG_WARNINGS, 'Failed to retrieve ThreadId of new thread. Errcode: %d', [fpgeterrno]);
       Exit;
       end;
 
@@ -1191,7 +1192,7 @@ begin
 // TODO: check it is not a real breakpoint
 // or end of single step
           if TDbgLinuxThread(AThread).FInternalPauseRequested then begin
-            DebugLn(['Received late SigTrag for thread ', AThread.ID]);
+            DebugLn(DBG_VERBOSE, ['Received late SigTrag for thread ', AThread.ID]);
             result := deInternalContinue; // left over signal
           end
           else
@@ -1284,4 +1285,7 @@ begin
 
 end;
 
+initialization
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 end.
