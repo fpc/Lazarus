@@ -585,11 +585,11 @@ end;
 class procedure TCocoaWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
 var
   tv: TCocoaTabPageView;
-  ndx: Integer;
+  ndx: NSInteger;
 begin
   tv := TCocoaTabPageView(AWinControl.Handle);
   ndx := tv.tabView.exttabIndexOfTabViewItem(tv.tabPage);
-  if ndx >= 0 then
+  if (ndx >= 0) and (ndx < tv.tabView.fulltabs.count) then
     tv.tabview.exttabRemoveTabViewItem(tv.tabPage);
   TCocoaWSWinControl.DestroyHandle(AWinControl);
 end;
