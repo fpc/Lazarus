@@ -97,6 +97,7 @@ type
     procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
     procedure DrawOverlay(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
+    procedure RemoveTarget; virtual;
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read FTarget;
@@ -443,7 +444,8 @@ end;
 { If a window does not display a shortcut menu it should pass
   this message to the DefWindowProc function. If a window is
   a child window, DefWindowProc sends the message to the parent. }
-procedure TLCLCommonCallback.SendContextMenu(event: NSEvent; out ContextMenuHandled: Boolean);
+procedure TLCLCommonCallback.SendContextMenu(Event: NSEvent; out
+  ContextMenuHandled: Boolean);
 var
   MsgContext: TLMContextMenu;
   MousePos : NSPoint;
@@ -1175,28 +1177,33 @@ end;
 
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
+  if not Assigned(Target) then Exit;
   LCLSendKillFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.DidBecomeKeyNotification;
 begin
+  if not Assigned(Target) then Exit;
   LCLSendActivateMsg(Target, WA_ACTIVE, false);
   LCLSendSetFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.DidResignKeyNotification;
 begin
+  if not Assigned(Target) then Exit;
   LCLSendActivateMsg(Target, WA_INACTIVE, false);
   LCLSendKillFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.SendOnChange;
 begin
+  if not Assigned(Target) then Exit;
   SendSimpleMessage(Target, LM_CHANGED);
 end;
 
 procedure TLCLCommonCallback.SendOnTextChanged;
 begin
+  if not Assigned(Target) then Exit;
   SendSimpleMessage(Target, CM_TEXTCHANGED);
 end;
 
@@ -1222,7 +1229,10 @@ end;
 
 function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;
 begin
-  Result := LCLMessageGlue.DeliverMessage(Target, Msg);
+  if Assigned(Target) then
+    Result := LCLMessageGlue.DeliverMessage(Target, Msg)
+  else
+    Result := 0;
 end;
 
 function TLCLCommonCallback.DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
@@ -1325,6 +1335,7 @@ begin
   Result := False;
   View := CocoaUtils.GetNSObjectView(Owner);
   if View = nil then Exit;
+  if not Assigned(Target) then Exit;
   if not (csDesigning in Target.ComponentState) then
   begin
     ACursor := Screen.Cursor;
@@ -1341,6 +1352,11 @@ begin
       View.addCursorRect_cursor(View.visibleRect, cr.Cursor);
     end;
   end;
+end;
+
+procedure TLCLCommonCallback.RemoveTarget;
+begin
+  FTarget := nil;
 end;
 
 function TLCLCommonCallback.GetIsOpaque: Boolean;
@@ -1404,6 +1420,7 @@ begin
   begin
     if Callback.HasCaret then DestroyCaret(nil);
     CallbackObject := Callback.GetCallbackObject;
+    Callback.RemoveTarget;
     Callback := nil;
     obj.lclClearCallback;
     // Do not free the callback object here. It might be processing an event

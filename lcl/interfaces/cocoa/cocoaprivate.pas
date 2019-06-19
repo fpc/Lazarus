@@ -113,6 +113,12 @@ type
     function GetIsOpaque: Boolean;
     procedure SetIsOpaque(AValue: Boolean);
     function GetShouldBeEnabled: Boolean;
+    // the method is called, when handle is being destroyed.
+    // the callback object to stay alive a little longer than LCL object (Target)
+    // thus it needs to know that LCL object has been destroyed.
+    // After this called has been removed, any Cocoa events should not be
+    // forwarded to LCL target
+    procedure RemoveTarget;
 
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
