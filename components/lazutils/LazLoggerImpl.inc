@@ -615,3 +615,61 @@ begin
   {$ENDIF}
 end;
 
+{$IFDEF USED_BY_LAZLOGGER_DUMMY}
+  operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
+  begin
+    Result := Default(TLazLoggerLogEnabled);
+  end;
+
+  operator := (g: Boolean): TLazLoggerLogEnabled;
+  begin
+    Result := Default(TLazLoggerLogEnabled);
+  end;
+
+  operator and(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+  begin
+    Result := Default(TLazLoggerLogEnabled);
+  end;
+
+  operator or(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+  begin
+    Result := Default(TLazLoggerLogEnabled);
+  end;
+{$ELSE}
+  operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
+  begin
+    Result.Enabled := (g = nil) or (g^.Enabled);
+    Result.Group := g;
+  end;
+
+  operator := (g: Boolean): TLazLoggerLogEnabled;
+  begin
+    Result.Enabled := g;
+    Result.Group := nil;
+  end;
+
+  operator and(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+  begin
+    Result.Enabled := g1.Enabled and g2.Enabled;
+    if (g1.Group = nil) and g1.Enabled then
+      Result.Group := g2.Group
+    else
+    if (g2.Group = nil) and g2.Enabled then
+      Result.Group := g1.Group
+    else
+      Result.Group := nil;
+  end;
+
+  operator or(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+  begin
+    Result.Enabled := g1.Enabled or g2.Enabled;
+    if (g1.Group = nil) then
+      Result.Group := g2.Group
+    else
+    if (g2.Group = nil) then
+      Result.Group := g1.Group
+    else
+      Result.Group := nil;
+  end;
+{$ENDIF}
+

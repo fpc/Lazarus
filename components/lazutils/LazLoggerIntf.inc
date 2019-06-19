@@ -114,3 +114,9 @@ function dbgMemRange(P: Pointer; Count: integer; Width: integer = 0): string; ov
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
 
 procedure DumpExceptionBackTrace;
+
+operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
+operator := (g: Boolean): TLazLoggerLogEnabled;
+operator and (g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+operator or  (g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+

@@ -43,11 +43,6 @@ type
 
   TLazLoggerLogEnabled = record end;
 
-operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
-operator := (g: Boolean): TLazLoggerLogEnabled;
-operator and (g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
-operator or  (g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
-
 type
 
   TLazLoggerWriteEvent = procedure (Sender: TObject; S: string; var Handled: Boolean) of object;
@@ -233,26 +228,6 @@ var // Using base TRefCountedObject, so if none of the functions is used in the 
 {$HINTS off}
 {$I LazLoggerImpl.inc}
 {$pop}
-
-operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
-begin
-  Result := Default(TLazLoggerLogEnabled);
-end;
-
-operator := (g: Boolean): TLazLoggerLogEnabled;
-begin
-  Result := Default(TLazLoggerLogEnabled);
-end;
-
-operator and(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
-begin
-  Result := Default(TLazLoggerLogEnabled);
-end;
-
-operator or(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
-begin
-  Result := Default(TLazLoggerLogEnabled);
-end;
 
 procedure CreateDebugLogger;
 begin
