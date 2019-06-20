@@ -62,9 +62,6 @@ uses
   UTF8Process, LazFileUtils,
   // IdeIntf
   BaseIDEIntf,
-  {$IFDEF Darwin}
-  LazFileUtils,
-  {$ENDIF}
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // LazDebuggerGdbmi
