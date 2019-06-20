@@ -96,7 +96,7 @@ type
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
-    // procedure mouseUp(event: NSEvent); override;   This is eaten by NSTableView - worked around with NSTableViewDelegateProtocol
+    procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
     procedure rightMouseUp(event: NSEvent); override;
     procedure otherMouseDown(event: NSEvent); override;
@@ -547,6 +547,12 @@ begin
     if Assigned(callback) then
       callback.MouseUpDownEvent(event, true);
   end;
+end;
+
+procedure TCocoaTableListView.mouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
 end;
 
 procedure TCocoaTableListView.rightMouseDown(event: NSEvent);
