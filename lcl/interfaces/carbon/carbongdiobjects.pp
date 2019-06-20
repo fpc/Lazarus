@@ -12,6 +12,9 @@
 unit CarbonGDIObjects;
 
 {$mode objfpc}{$H+}
+{$IF FPC_FULLVERSION>30300}
+{$modeswitch arraytodynarray}
+{$ENDIF}
 {.$define DumpRegion}
 interface
 
