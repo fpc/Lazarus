@@ -111,6 +111,16 @@ type
     callback: IStepperCallback;
     lastValue: Double;
     procedure stepperAction(sender: NSObject); message 'stepperAction:';
+
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
   end;
 
 implementation
@@ -138,6 +148,58 @@ begin
     lastValue := doubleValue;
 
   if Allowchange and Assigned(callback) then callback.UpdownClick(updownpress);
+end;
+
+procedure TCocoaStepper.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+    if Assigned(Callback) then
+      callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaStepper.mouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaStepper.rightMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaStepper.rightMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaStepper.otherMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaStepper.otherMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaStepper.mouseDragged(event: NSEvent);
+begin
+  if not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaStepper.mouseMoved(event: NSEvent);
+begin
+  if not callback.MouseMove(event) then
+    inherited mouseMoved(event);
 end;
 
 { TCocoaButton }
