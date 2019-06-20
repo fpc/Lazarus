@@ -26,16 +26,7 @@ const
   NSEraDatePickerElementFlag              = $0100;
 
 type
-  TLCLDatePickerCallback = class(TLCLCommonCallback, IDatePickerCallback)
-  public
-    procedure MouseBtnUp; virtual;
-  end;
-
-  TLCLDatePickerCallBackClass = class of TLCLDatePickerCallBack;
-
   TCocoaWSCustomCalendar = class(TWSCustomCalendar)
-  private
-    class procedure SetMouseTracking(winHandle: THandle; const AParams: TCreateParams);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
@@ -55,16 +46,9 @@ begin
   Result:= AnsiString(NSStringToString(value));
 end;
 
-procedure TLCLDatePickerCallback.MouseBtnUp;
-begin
-  if not Owner.lclIsEnabled() then Exit;
-  SendSimpleMessage(Target, LM_LBUTTONUP);
-end;
-
 function AllocDatePicker(const ATarget: TWinControl; const AParams: TCreateParams): TCocoaDatePicker;
 var
   ns : NSString;
-  tz : NSTimeZone;
   nsc: NSString;
   c  : NSCalendar;
   flags : NSDatePickerElementFlags;
@@ -77,9 +61,7 @@ begin
     flags:= NSYearMonthDayDatePickerElementFlag;
     Result.setDatePickerElements(flags);
 
-    ns:= AnsiStrToNSStr('GMT+00:00');
-    tz:= NSTimeZone.alloc.initWithName(ns);
-    Result.setTimeZone(tz);
+    Result.setTimeZone(NSTimeZone.localTimeZone);
 
     Result.setDateValue(DateTimeToNSDate(Now));
 
@@ -88,11 +70,10 @@ begin
     mode:= singleDateMode;
     Result.setDatePickerMode(mode);
 
-    nsc:= AnsiStrToNSStr('');   // NSCalendarIdentifierISO8601  NSCalendarIdentifierGregorian
-    c  := NSCalendar.alloc.initWithCalendarIdentifier(nsc);
+    c := NSCalendar.alloc.initWithCalendarIdentifier(NSString.string_);
     Result.setCalendar(c);
 
-    TCocoaDatePicker(Result).callback:= TLCLDatePickerCallBackClass.Create(Result, ATarget);
+    TCocoaDatePicker(Result).callback:= TLCLCommonCallback.Create(Result, ATarget);
 
     Result.setBezeled(True);
 
@@ -112,13 +93,6 @@ begin
   if Assigned(dp) then
   begin
     NSDatePickerCell(TLCLIntfHandle(dp)).setDatePickerStyle(NSDatePickerStyle_ClockCal);
-
-    // Must have Top/Left @ Zero...
-    Params:= AParams;
-    Params.X:= 0;
-    Params.Y:= 0;
-    // This should be called when OnMouseMove is assigned...
-    SetMouseTracking(TLCLIntfHandle(dp), Params);
   end;
 
   Result:= TLCLIntfHandle(dp);
@@ -142,24 +116,6 @@ begin
     Result:= cpDate
   else
     Result:= cpTitle;
-end;
-
-class procedure TCocoaWSCustomCalendar.SetMouseTracking(winHandle: THandle; const AParams: TCreateParams);
-var
-  ta : NSTrackingArea;
-  r  : NSRect;
-  opt : NSTrackingAreaOptions;
-begin
-  r.origin.x   := AParams.X;
-  r.origin.y   := AParams.Y;
-  r.size.height:= AParams.Height;
-  r.size.width := AParams.Width;
-
-  opt:= NSTrackingMouseEnteredAndExited + NSTrackingMouseMoved + NSTrackingActiveAlways;
-
-  ta:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(r, opt, id(winHandle), nil);
-
-  TCocoaDatePicker(winHandle).addTrackingArea(ta);
 end;
 
 end.
