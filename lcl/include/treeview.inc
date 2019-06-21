@@ -320,7 +320,11 @@ begin
   // we must trigger TCustomTreeView.OnDeletion event before
   // unbinding. See issue #17832.
   if Assigned(Owner) and Assigned(Owner.Owner) then
+  begin
     Owner.Owner.Delete(Self);
+    Include(Owner.Owner.FStates, tvsScrollbarChanged);;
+    Owner.Owner.UpdateScrollbars;
+  end;
 
   // Remove the accessibility object too
   if Assigned(Owner) and Assigned(Owner.Owner) then
@@ -2339,6 +2343,8 @@ begin
       lAccessibleObject.DataObject := Result;
     end;
   finally
+    Include(FOwner.FStates, tvsScrollbarChanged);
+    FOwner.UpdateScrollbars;
     // this construction creates nicer exception output
     if not ok then
       Result.Free;
