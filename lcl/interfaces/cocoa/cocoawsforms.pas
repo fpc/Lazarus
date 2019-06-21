@@ -678,8 +678,10 @@ var
   Form: TCustomForm absolute AWinControl;
   win: TCocoaWindow;
   cnt: TCocoaWindowContent;
+  doc: TCocoaWindowContentDocument;
   ns: NSString;
   R: NSRect;
+  LR: NSRect;
   lDestView: NSView;
   ds: TCocoaDesignOverlay;
   cb: TLCLWindowCallback;
@@ -689,10 +691,25 @@ begin
   //      the only thing that needs to be created is Content
 
   R := CreateParamsToNSRect(AParams);
+  LR := R;
+  LR.origin.x := 0;
+  LR.origin.y := 0;
+  doc := TCocoaWindowContentDocument.alloc.initWithFrame(LR);
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
+  cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
+
   cnt.callback := cb;
   cnt.wincallback := cb;
+  doc.callback := cb;
+  cnt.wincallback := cb;
+  cnt.isCustomRange := true;
+
+  cnt.setDocumentView(doc);
+  cnt.setDrawsBackground(false); // everything is covered anyway
+  doc.setHidden(false);
+
+  doc.setAutoresizesSubviews(true);
+  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
@@ -761,7 +778,7 @@ begin
     begin
       lDestView := GetNSObjectView(NSObject(AParams.WndParent));
       lDestView.addSubView(cnt);
-      cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
+      //cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then
          cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
@@ -786,7 +803,7 @@ begin
     );
 
     cnt.addSubview_positioned_relativeTo(ds, NSWindowAbove, nil);
-    cnt.overlay := ds;
+    doc.overlay := ds;
   end;
 
   Result := TLCLIntfHandle(cnt);

@@ -28,7 +28,7 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate, CocoaTextEdits,
+  cocoa_extra, CocoaPrivate, CocoaTextEdits, CocoaScrollers,
   // LCL
   //Forms,
   LCLType, LCLProc;
@@ -186,12 +186,28 @@ type
     procedure lclClearCallback; override;
   end;
 
-  { TCocoaWindowContent }
+  { TCocoaWindowContentDocument }
 
-  TCocoaWindowContent = objcclass(TCocoaCustomControl)
+  TCocoaWindowContentDocument = objcclass(TCocoaCustomControl)
   protected
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
+  public
+    overlay: NSView;
+    wincallback: IWindowCallback;
+    procedure didAddSubview(aview: NSView); override;
+    procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
+    procedure setNeedsDisplayInRect(arect: NSRect); override;
+    // NSDraggingDestinationCategory
+    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
+  end;
+
+  { TCocoaWindowContent }
+
+  TCocoaWindowContent = objcclass(TCocoaScrollView)
+  private
+    _stringValue: NSString;
   public
     wincallback: IWindowCallback;
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
@@ -199,7 +215,6 @@ type
     ownwin: NSWindow;
     fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
-    overlay: NSView;
     function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
     procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
@@ -211,12 +226,9 @@ type
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
     procedure dealloc; override;
     procedure setHidden(aisHidden: LCLObjCBoolean); override;
-    procedure didAddSubview(aview: NSView); override;
-    // NSDraggingDestinationCategory
-    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
-    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
-    procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
-    procedure setNeedsDisplayInRect(arect: NSRect); override;
+
+    procedure setStringValue(avalue: NSString); message 'setStringValue:';
+    function stringValue: NSString; message 'stringValue';
   end;
 
 procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
@@ -255,7 +267,7 @@ end;
 
 { TCocoaWindowContent }
 
-procedure TCocoaWindowContent.didAddSubview(aview: NSView);
+procedure TCocoaWindowContentDocument.didAddSubview(aview: NSView);
 const
   mustHaveSizing = (NSViewWidthSizable or NSViewHeightSizable);
 begin
@@ -272,17 +284,19 @@ begin
   inherited didAddSubview(aview);
 end;
 
-procedure TCocoaWindowContent.didBecomeKeyNotification(sender: NSNotification);
+procedure TCocoaWindowContentDocument.didBecomeKeyNotification(sender: NSNotification);
 begin
   if Assigned(callback) then
     callback.DidBecomeKeyNotification;
 end;
 
-procedure TCocoaWindowContent.didResignKeyNotification(sender: NSNotification);
+procedure TCocoaWindowContentDocument.didResignKeyNotification(sender: NSNotification);
 begin
   if Assigned(callback) then
     callback.DidResignKeyNotification;
 end;
+
+{ TCocoaWindowContent }
 
 procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: NSResponder);
 var
@@ -514,6 +528,19 @@ begin
         window.makeKeyAndOrderFront(nil);
     end;
   end;
+end;
+
+procedure TCocoaWindowContent.setStringValue(avalue: NSString);
+begin
+  if _stringValue = avalue then Exit;
+  if Assigned(_stringValue) then _stringValue.release;
+  _stringValue := AValue;
+  if Assigned(_stringValue) then _stringValue.retain;
+end;
+
+function TCocoaWindowContent.stringValue: NSString;
+begin
+  Result := _stringValue;
 end;
 
 { TCocoaPanel }
@@ -952,14 +979,14 @@ begin
   inherited keyDown(event);
 end;
 
-function TCocoaWindowContent.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
+function TCocoaWindowContentDocument.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
 begin
   Result := NSDragOperationNone;
   if (wincallback <> nil) and (wincallback.AcceptFilesDrag) then
     Result := sender.draggingSourceOperationMask();
 end;
 
-function TCocoaWindowContent.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
+function TCocoaWindowContentDocument.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
 var
   draggedURLs{, lClasses}: NSArray;
   lFiles: array of string;
@@ -999,13 +1026,13 @@ begin
   Result := True;
 end;
 
-procedure TCocoaWindowContent.setNeedsDisplay_(aflag: LCLObjCBoolean);
+procedure TCocoaWindowContentDocument.setNeedsDisplay_(aflag: LCLObjCBoolean);
 begin
   inherited setNeedsDisplay;
   if Assigned(overlay) then overlay.setNeedsDisplay_(aflag);
 end;
 
-procedure TCocoaWindowContent.setNeedsDisplayInRect(arect: NSRect);
+procedure TCocoaWindowContentDocument.setNeedsDisplayInRect(arect: NSRect);
 begin
   inherited setNeedsDisplayInRect(arect);
   if Assigned(overlay) then overlay.setNeedsDisplayInRect(arect);
