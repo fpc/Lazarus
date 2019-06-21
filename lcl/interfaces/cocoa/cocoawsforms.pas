@@ -247,6 +247,7 @@ var
   R: NSRect;
   Form: TCustomForm absolute AWinControl;
   cb: TLCLWindowCallback;
+  doc: TCocoaWindowContentDocument;
 const
   WinMask = NSBorderlessWindowMask or NSUtilityWindowMask;
 begin
@@ -289,11 +290,19 @@ begin
   R.origin.x := 0;
   R.origin.y := 0;
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
+  doc := TCocoaWindowContentDocument.alloc.initWithFrame(R);
+  doc.setHidden(false);
+  doc.setAutoresizesSubviews(true);
+  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
+  cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
+  doc.callback := cb;
   cb.window := win;
   cnt.callback := cb;
   cnt.wincallback := cb;
   cnt.preventKeyOnShow := true;
+  cnt.isCustomRange := true;
+  cnt.setDocumentView(doc);
+  cnt.setDrawsBackground(false); // everything is covered anyway
   TCocoaPanel(win).callback := cb;
 
   win.setContentView(cnt);

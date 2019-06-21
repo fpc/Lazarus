@@ -791,7 +791,7 @@ end;
 
 function TCocoaScrollView.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := false;
 end;
 
 function TCocoaScrollView.lclGetCallback: ICommonCallback;
