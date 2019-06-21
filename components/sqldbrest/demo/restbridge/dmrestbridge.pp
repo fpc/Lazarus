@@ -54,7 +54,7 @@ begin
   else
     Cfg:=D+'connection.ini';
   if FileExists(Cfg) then
-    Dispatcher.Connections[0].LoadFromFile('connection.ini');
+    Dispatcher.Connections[0].LoadFromIniFile('connection.ini');
   if CustomApplication.Hasoption('c','connection') then
     Cfg:=CustomApplication.GetoptionValue('i','ini')
   else
