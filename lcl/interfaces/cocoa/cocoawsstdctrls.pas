@@ -1466,6 +1466,7 @@ begin
   lRange := txt.selectedRange;
   lRange.location := NewStart;
   txt.setSelectedRange(lRange);
+  txt.scrollRangeToVisible(lRange);
 end;
 
 class procedure TCocoaWSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
