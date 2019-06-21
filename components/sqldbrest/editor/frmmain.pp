@@ -151,11 +151,7 @@ begin
     FileName:=Self.FFileName;
     Result:=Execute;
     if Result then
-      begin
-      fraEditor.SaveSchema(FileName);
-      Self.FFileName:=FileName;
-      SetCaption;
-      end;
+      SaveSchemaFile(FileName);
     end;
 end;
 
