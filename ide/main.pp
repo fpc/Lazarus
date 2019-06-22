@@ -2576,6 +2576,7 @@ procedure TMainIDE.SetupMainMenu;
 begin
   inherited SetupMainMenu;
   mnuMain.MenuItem:=MainIDEBar.mnuMainMenu.Items;
+  SetupAppleMenu;
   SetupFileMenu;
   SetupEditMenu;
   SetupSearchMenu;

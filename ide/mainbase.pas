@@ -110,6 +110,7 @@ type
     procedure CreateMainMenuItem(var Section: TIDEMenuSection;
                                  const MenuItemName, MenuItemCaption: String);
     procedure SetupMainMenu; virtual;
+    procedure SetupAppleMenu; virtual;
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
     procedure SetupSearchMenu; virtual;
@@ -623,6 +624,8 @@ end;
 {$IFDEF LCLCocoa}
 var
   mnuApple: TIDEMenuSection = nil;
+  itmAppleAbout: TIDEMenuSection;
+  itmApplePref: TIDEMenuSection;
 {$ENDIF}
 
 function FormMatchesCmd(aForm: TCustomForm; aCmd: TIDEMenuCommand): Boolean;
@@ -989,6 +992,14 @@ procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
   const MenuItemName, MenuItemCaption: String);
 begin
   Section:=RegisterIDESubMenu(mnuMain,MenuItemName,MenuItemCaption);
+end;
+
+procedure TMainIDEBase.SetupAppleMenu;
+begin
+  with MainIDEBar do begin
+    CreateMenuSeparatorSection(mnuApple,itmAppleAbout,'itmAppleAbout');
+    CreateMenuSeparatorSection(mnuApple,itmApplePref,'itmApplePref');
+  end;
 end;
 
 procedure TMainIDEBase.SetupMainMenu;
@@ -1418,8 +1429,13 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuTools,itmOptionsDialogs,'itmOptionsDialogs');
     ParentMI:=itmOptionsDialogs;
+    {$ifndef LCLCocoa}
     CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
                    lisMenuGeneralOptions,'menu_environment_options');
+    {$else}
+    CreateMenuItem(itmApplePref,itmEnvGeneralOptions,'itmEnvGeneralOptions',
+                   lisMacPreferences,'menu_environment_options');
+    {$endif}
     CreateMenuItem(ParentMI,itmToolRescanFPCSrcDir,'itmToolRescanFPCSrcDir',
                    lisMenuRescanFPCSourceDirectory);
     CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',lisMenuEditCodeTemplates,'');
@@ -1496,7 +1512,7 @@ begin
 
     // under Cocoa: add About item to the Apple menu
     ParentMI:=itmInfoHelps;
-    CreateMenuItem({$ifndef LCLCocoa}ParentMI{$else}mnuApple{$endif}, itmHelpAboutLazarus,'itmHelpAboutLazarus',
+    CreateMenuItem({$ifndef LCLCocoa}ParentMI{$else}itmAppleAbout{$endif}, itmHelpAboutLazarus,'itmHelpAboutLazarus',
                    lisAboutLazarus, 'menu_information');
 
     CreateMenuSeparatorSection(mnuHelp,itmHelpTools,'itmHelpTools');

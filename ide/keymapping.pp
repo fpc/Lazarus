@@ -2431,7 +2431,7 @@ begin
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
   // tools menu
-  ecEnvironmentOptions:  SetSingle(186,[ssCtrl]); // Cmd-semicolon
+  ecEnvironmentOptions:  SetSingle(VK_LCL_COMMA,[ssMeta]); // Cmd-semicolon
   ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
   ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
