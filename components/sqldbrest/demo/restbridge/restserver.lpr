@@ -44,7 +44,7 @@ Var
 
 begin
   Application.Title:='restserver';
-  S:=CheckOptions('hb:c:i:p:vqf::',['help','base:','connection:','ini:','quiet','verbose','port:','file::']);
+  S:=CheckOptions('hb:c:i:p:vqf::s',['help','base:','connection:','ini:','quiet','verbose','port:','file::','ssl']);
   if (S<>'') or HasOption('h','help') then
     begin
     Usage(S);
