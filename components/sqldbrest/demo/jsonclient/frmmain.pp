@@ -139,6 +139,7 @@ begin
     S.Position:=0;
     SERawData.Lines.LoadFromStream(S);
     S.Position:=0;
+    JSResource.Close;
     JSResource.LoadFromStream(S);
     JSResource.Open;
   finally
