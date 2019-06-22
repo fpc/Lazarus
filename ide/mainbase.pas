@@ -997,8 +997,10 @@ end;
 procedure TMainIDEBase.SetupAppleMenu;
 begin
   with MainIDEBar do begin
+    {$IFDEF LCLCocoa}
     CreateMenuSeparatorSection(mnuApple,itmAppleAbout,'itmAppleAbout');
     CreateMenuSeparatorSection(mnuApple,itmApplePref,'itmApplePref');
+    {$ENDIF}
   end;
 end;
 
