@@ -610,6 +610,8 @@ resourcestring
   lisMEProjects = 'Projects';
   lisMEAction = 'Action';
   lisMenuGeneralOptions = 'Options ...';
+  lisMacPreferences = 'Preferences...'; // used only for macOS, instead of lisMenuGeneralOptions
+                                        // there should not be space between Preferences and ellipsis
   lisWindowStaysOnTop = 'Window stays on top';
   lisFilenameStyle = 'Filename Style';
   lisShortNoPath = 'Short, no path';
