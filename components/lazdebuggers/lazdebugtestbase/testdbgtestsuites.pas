@@ -545,10 +545,11 @@ end;
 
 procedure TDBGTestCase.LogError(const s: string; CopyToTestLogger: Boolean);
 begin
-  if GetLogActive or (TestControlGetWriteLog = wlOnError) then
+  if GetLogActive or (TestControlGetWriteLog = wlOnError) then begin
     CreateLog;
-  FLogFile.WriteLnToFile(EscapeText(s));
-  //writeln(FLogFile, EscapeText(s));
+    FLogFile.WriteLnToFile(EscapeText(s));
+    //writeln(FLogFile, EscapeText(s));
+  end;
   if CopyToTestLogger then
     TestLogger.DebugLn(s);
 end;
