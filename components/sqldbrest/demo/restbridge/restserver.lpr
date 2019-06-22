@@ -56,7 +56,7 @@ begin
   {$IFNDEF VER3_0}
   UseSSL:=Hasoption('s','ssl');
   if UseSSL then
-    Header:=Header+'; Using SSL');
+    Header:=Header+'; Using SSL';
   {$Endif}
   if HasOption('f','file') then
      begin
