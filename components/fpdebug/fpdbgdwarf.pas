@@ -2916,15 +2916,13 @@ function TFpDwarfSymbol.InitLocationParser(const ALocationParser: TDwarfLocation
 begin
   if (AnInitLocParserData <> nil) and IsValidLoc(AnInitLocParserData^.ObjectDataAddress)
   then begin
-    if AnInitLocParserData^.ObjectDataAddrPush then begin
-      debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser Push=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
+    debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(AnInitLocParserData^.ObjectDataAddress), ' Push=',AnInitLocParserData^.ObjectDataAddrPush]);
+    ALocationParser.CurrentObjectAddress := AnInitLocParserData^.ObjectDataAddress;
+    if AnInitLocParserData^.ObjectDataAddrPush then
       ALocationParser.Push(AnInitLocParserData^.ObjectDataAddress, lseValue);
-    end
-    else begin
-      debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
-      ALocationParser.CurrentObjectAddress := AnInitLocParserData^.ObjectDataAddress;
-    end;
-  end;
+  end
+  else
+    ALocationParser.CurrentObjectAddress := InvalidLoc;
 
   Result := True;
 end;
