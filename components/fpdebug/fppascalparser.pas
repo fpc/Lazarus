@@ -2942,6 +2942,20 @@ begin
   tmp := Items[0].ResultValue;
   if (tmp = nil) then exit;
 
+  {$IFDEF FpDebugAutoDerefMember}
+  // Copy from TFpPascalExpressionPartOperatorDeRef.DoGetResultValue
+  if tmp.Kind = skPointer then begin
+    if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DataAddress)) and // TODO, what if Not readable addr
+       (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
+    then
+      tmp := tmp.Member[0];
+    if (tmp = nil) then begin
+      SetError(fpErrCannotDereferenceType, [Items[0].GetText]); // TODO: better error
+      exit;
+    end;
+  end;
+  {$ENDIF}
+
   if (tmp.Kind in [skClass, skRecord, skObject]) then begin
     Result := tmp.MemberByName[Items[1].GetText];
     if Result = nil then begin
