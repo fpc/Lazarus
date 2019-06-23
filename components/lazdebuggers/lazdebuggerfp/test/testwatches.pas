@@ -17,12 +17,13 @@ type
   published
     procedure TestWatchesScope;
     procedure TestWatchesValue;
+    procedure TestWatchesAddressOf;
   end;
 
 implementation
 
 var
-  ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue: Pointer;
+  ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchAddressOf: Pointer;
 
 procedure TTestWatches.TestWatchesScope;
 
@@ -579,7 +580,7 @@ end;
 procedure TTestWatches.TestWatchesValue;
 
   type
-    TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap);
+    TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer);
 
   procedure AddWatches(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char;
     ALoc: TTestLoc = tlAny; APostFix: String = '');
@@ -634,7 +635,6 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Char2'+e,      weChar(#0));
     t.Add(AName, p+'Char3'+e,      weChar(' '));
 
-//if not(ALoc in [tlConst, tlArrayWrap]) then begin
 if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'String1'+e,    weShortStr(AChr1, 'ShortStr1'));
     t.Add(AName, p+'String1e'+e,   weShortStr('',    'ShortStr1'));
@@ -650,12 +650,13 @@ if not(ALoc in [tlConst]) then begin
              .IgnKindPtr(stDwarf2).IgnData(stDwarf2).IgnKind(stDwarf3Up);
     t.Add(AName, p+'Ansi5'+e,      weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij'
       ) )    .IgnKindPtr(stDwarf2)                  .IgnKind(stDwarf3Up);
-
+end;
 
 //TODO wePchar
     t.Add(AName, p+'PChar'+e,      wePointer(weAnsiStr(''), 'PChar'));
     t.Add(AName, p+'PChar2'+e,     wePointer(weAnsiStr(AChr1+'abcd0123'), 'TPChr')).SkipIf(ALoc = tlConst);
 
+if not(ALoc in [tlConst]) then begin
     // char by index
     // TODO: no typename => calculated value ?
     t.Add(AName, p+'String10'+e+'[2]',   weChar('b', '')).CharFromIndex;
@@ -673,7 +674,8 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'WideString1'+e,    weWideStr(Succ(AChr1)))              .IgnKindPtr;
     t.Add(AName, p+'WideString2'+e,    weWideStr(AChr1+'abcX0123'))         .IgnKindPtr;
     t.Add(AName, p+'WideString3'+e,    weWideStr(''))                       .IgnKindPtr;
-    t.Add(AName, p+'WideString4'+e,    weWideStr(AChr1+'A'#0'X'#9'b'#10#13)).IgnKindPtr.IgnData; // cut off at #0
+    t.Add(AName, p+'WideString4'+e,    weWideStr(AChr1+'A'#0'X'#9'b'#10#13)).IgnKindPtr
+      .IgnData(stDwarf2).IgnData([], Compiler.Version < 030100); // cut off at #0
     t.Add(AName, p+'WideString5'+e,    weWideStr(AChr1+'XcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
       'TWStrTA'))                                                         .IgnKindPtr;
 
@@ -704,53 +706,42 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'ShortRec'+e,     weMatch(''''+AChr1+''', *''b'', *'''+AChr1+'''', skRecord));
 
 
+    if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'CharDynArray'+e,  weDynArray([]                                        ));
     t.add(AName, p+'CharDynArray2'+e, weDynArray(weChar(['N', AChr1, 'M'])                 )).SkipIf(ALoc = tlConst);
+    end;
     t.add(AName, p+'CharDynArray3'+e, weDynArray([],                        'TCharDynArray'));
     t.Add(AName, p+'CharDynArray4'+e, weDynArray(weChar(['J', AChr1, 'M']), 'TCharDynArray')).SkipIf(ALoc = tlConst);
 
+    if not(ALoc in [tlPointer]) then begin
     t.Add(AName, p+'WCharDynArray'+e, weDynArray([]                        ));
     t.Add(AName, p+'WCharDynArray2'+e,weDynArray(weChar(['W', AChr1, 'M']) )).SkipIf(ALoc = tlConst);
+    end;
     t.Add(AName, p+'WCharDynArray3'+e,weDynArray([]                        ));
     t.Add(AName, p+'WCharDynArray4'+e,weDynArray(weChar(['K', AChr1, 'M']) )).SkipIf(ALoc = tlConst);
 
+    if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'IntDynArray'+e,   weDynArray([]                                           ));
     t.add(AName, p+'IntDynArray2'+e,  weDynArray(weInteger([11, 30+AOffs, 60])                )).SkipIf(ALoc = tlConst);
+    end;
     t.add(AName, p+'IntDynArray3'+e,  weDynArray([],                            'TIntDynArray'));
     t.Add(AName, p+'IntDynArray4'+e,  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray')).SkipIf(ALoc = tlConst);
 
+    if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'AnsiDynArray'+e,  weDynArray([]                                                     ));
     t.add(AName, p+'AnsiDynArray2'+e, weDynArray(weAnsiStr(['N123', AChr1+'ab', 'M'#9])                 )).SkipIf(ALoc = tlConst);
+    end;
     t.add(AName, p+'AnsiDynArray3'+e, weDynArray([],                                     'TAnsiDynArray'));
     t.Add(AName, p+'AnsiDynArray4'+e, weDynArray(weAnsiStr(['J123', AChr1+'ab', 'M'#9]), 'TAnsiDynArray')).SkipIf(ALoc = tlConst);
 
+    if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'ShortStrDynArray'+e,  weDynArray([]                                                          ));
     t.add(AName, p+'ShortStrDynArray2'+e, weDynArray(weShortStr(['N123', AChr1+'ac', 'M'#9])                     ))
       .SkipIf(ALoc = tlConst);
+    end;
     t.add(AName, p+'ShortStrDynArray3'+e, weDynArray([],                                      'TShortStrDynArray'));
     t.Add(AName, p+'ShortStrDynArray4'+e, weDynArray(weShortStr(['J123', AChr1+'ac', 'M'#9]), 'TShortStrDynArray'))
       .SkipIf(ALoc = tlConst);
-
-
-    t.Add(AName, p+'CharStatArray'+e,  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
-      .SkipIf(ALoc = tlParam);
-    t.Add(AName, p+'CharStatArray2'+e, weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'c']), 'TCharStatArray'));
-
-    t.Add(AName, p+'WCharStatArray'+e, weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'd'])                   ))
-      .SkipIf(ALoc = tlParam);
-    t.Add(AName, p+'WCharStatArray2'+e,weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'd']), 'TwCharStatArray'));
-
-    t.Add(AName, p+'IntStatArray'+e,  weStatArray(weInteger([-1, 300+AOffs, 2, 0, 1])                 ))
-      .SkipIf(ALoc = tlParam);
-    t.Add(AName, p+'IntStatArray2'+e, weStatArray(weInteger([-2, 200+AOffs, 2, 0, 1]), 'TIntStatArray'));
-
-    t.Add(AName, p+'AnsiStatArray'+e,  weStatArray(weAnsiStr([AChr1, 'b123', AChr1+'ab', 'B', 'cdef'#9])                  ))
-      .SkipIf(ALoc = tlParam);
-    t.Add(AName, p+'AnsiStatArray2'+e, weStatArray(weAnsiStr([AChr1, 'c123', AChr1+'ad', 'D', 'cxx'#9] ), 'TAnsiStatArray'));
-
-    t.Add(AName, p+'ShortStrStatArray'+e,  weStatArray(weShortStr([AChr1, 'b123', AChr1+'ab', 'C', 'cdef'#9])                  ))
-      .SkipIf(ALoc = tlParam);
-    t.Add(AName, p+'ShortStrStatArray2'+e, weStatArray(weShortStr([AChr1, 'c123', AChr1+'ad', 'C', 'cxx'#9] ), 'TShortStrStatArray'));
 
 
     t.Add(AName, p+'DynDynArrayInt'+e, weDynArray([
@@ -761,7 +752,6 @@ if not(ALoc in [tlConst]) then begin
         weDynArray(weInteger([11,12,11,10]))
       ], 'TDynDynArrayInt'));
 
-if not(ALoc in [tlArrayWrap]) then begin
     t.Add(AName, p+'DynDynArrayInt'+e+'[0]', weDynArray(weInteger([11+AOffs,0,-22])) );
     t.Add(AName, p+'DynDynArrayInt'+e+'[1]', weDynArray(weInteger([110+AOffs])) );
     t.Add(AName, p+'DynDynArrayInt'+e+'[2]', weDynArray(weInteger([11+AOffs,0,-22])) );
@@ -773,14 +763,60 @@ if not(ALoc in [tlArrayWrap]) then begin
     t.Add(AName, p+'DynDynArrayInt2'+e+'[2]', weDynArray(weInteger([11+AOffs,0,-22])) );
     t.Add(AName, p+'DynDynArrayInt2'+e+'[3]', weDynArray(weInteger([])) );
     t.Add(AName, p+'DynDynArrayInt2'+e+'[4]', weDynArray(weInteger([11,12,11,10])) );
-end;
 
 
 /////    t.Add(AName, p+'pre__FiveDynArray'+e,  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
+t.Add(AName, p+'FiveDynArray'+e,            weMatch('.*',skArray));
+t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
+//    t.Add(AName, p+'FiveDynArray'+e,            we());
+//    t.Add(AName, p+'FiveDynArrayPack'+e,        we());
+//    t.Add(AName, p+'FivePackDynArray'+e,        we());
+//    t.Add(AName, p+'FivePackDynArrayPack'+e,    we());
+//    t.Add(AName, p+'RecFiveDynArray'+e,         we());
+//    t.Add(AName, p+'RecFiveDynPackArray'+e,     we());
+//    t.Add(AName, p+'RecFivePackDynArray'+e,     we());
+//    t.Add(AName, p+'RecFivePackDynPackArray'+e, we());
+//    t.Add(AName, p+'FiveDynArray2'+e,           we());
+//    t.Add(AName, p+'FiveDynArrayPack2'+e,       we());
+//    t.Add(AName, p+'FivePackDynArray2'+e,       we());
+//    t.Add(AName, p+'FivePackDynArrayPack2'+e,   we());
+end;
+
+
+
+    t.Add(AName, p+'CharStatArray'+e,  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.Add(AName, p+'CharStatArray2'+e, weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'c']), 'TCharStatArray'));
+
+    t.Add(AName, p+'WCharStatArray'+e, weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'd'])                   ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.Add(AName, p+'WCharStatArray2'+e,weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'd']), 'TwCharStatArray'));
+
+    t.Add(AName, p+'IntStatArray'+e,  weStatArray(weInteger([-1, 300+AOffs, 2, 0, 1])                 ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.Add(AName, p+'IntStatArray2'+e, weStatArray(weInteger([-2, 200+AOffs, 2, 0, 1]), 'TIntStatArray'));
+
+    t.Add(AName, p+'AnsiStatArray'+e,  weStatArray(weAnsiStr([AChr1, 'b123', AChr1+'ab', 'B', 'cdef'#9])                  ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.Add(AName, p+'AnsiStatArray2'+e, weStatArray(weAnsiStr([AChr1, 'c123', AChr1+'ad', 'D', 'cxx'#9] ), 'TAnsiStatArray'));
+
+    t.Add(AName, p+'ShortStrStatArray'+e,  weStatArray(weShortStr([AChr1, 'b123', AChr1+'ab', 'C', 'cdef'#9])                  ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.Add(AName, p+'ShortStrStatArray2'+e, weStatArray(weShortStr([AChr1, 'c123', AChr1+'ad', 'C', 'cxx'#9] ), 'TShortStrStatArray'));
+
+
+//    t.Add(AName, p+'FiveStatArray{e}             _O2_ TFiveStatArray            _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArray;
+//    t.Add(AName, p+'FiveStatArrayPack{e}         _O2_ TFiveStatArrayPack        _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArrayPack;
+//    t.Add(AName, p+'FivePackStatArray{e}         _O2_ TFivePackStatArray        _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FivePackStatArray;
+//    t.Add(AName, p+'FivePackStatArrayPack{e}     _O2_ TFivePackStatArrayPack    _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FivePackStatArrayPack;
+//    t.Add(AName, p+'RecFiveStatArray{e}          _O2_ TRecFiveStatArray         _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_RecFiveStatArray;
+//    t.Add(AName, p+'RecFiveStatPackArray{e}      _O2_ TRecFiveStatPackArray     _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_RecFiveStatPackArray;
+//    t.Add(AName, p+'RecFivePackStatArray{e}      _O2_ TRecFivePackStatArray     _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_RecFivePackStatArray;
+//    t.Add(AName, p+'RecFivePackStatPackArray{e}  _O2_ TRecFivePackStatPackArray _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_RecFivePackStatPackArray;
+
 
 //TODO: element by index
 
-end;
 
   t.Add(AName, p+'Enum'+e, weEnum('EnVal3', 'TEnum'));
   t.Add(AName, p+'Enum1'+e, weEnum('EnVal2', 'TEnumSub'));
@@ -800,7 +836,6 @@ var
   Src: TCommonSource;
   BrkPrg, BrkFooBegin, BrkFoo, BrkFooVar, BrkFooVarBegin,
     BrkFooConstRef: TDBGBreakPoint;
-  cl: Integer;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestWatchValue) then exit;
@@ -858,6 +893,7 @@ begin
     AddWatches(t, 'glob MyBaseClass1', 'TMyClass(MyClass2).mbc', 005, 'F');
     AddWatches(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
     AddWatches(t, 'glob var dyn array of [1]',   'gva', 006, 'L', tlArrayWrap, '[1]');
+    AddWatches(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
     t.EvaluateWatches;
     t.CheckResults;
 
@@ -876,7 +912,7 @@ begin
     // Registers are wrong in prologue.
 
 
-    cl := Debugger.LazDebugger.GetLocation.SrcLine;
+    //cl := Debugger.LazDebugger.GetLocation.SrcLine;
     dbg.Run;
     Debugger.WaitForFinishRun();
     //// below might have been caused by the break on FooVarBegin, if there was no code.
@@ -947,12 +983,349 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestWatchesAddressOf;
+
+  type
+    TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer);
+
+  procedure AddWatches(t: TWatchExpectationList; AName: String; APrefix: String; ALoc: TTestLoc = tlAny; APostFix: String = '');
+  var
+    p, e: String;
+  begin
+    p := APrefix;
+    e := APostFix;
+
+    t.AddWithoutExpect(AName, p+'Byte'+e);
+    t.AddWithoutExpect(AName, p+'Word'+e);
+    t.AddWithoutExpect(AName, p+'Longword'+e);
+    t.AddWithoutExpect(AName, p+'QWord'+e);
+    t.AddWithoutExpect(AName, p+'Shortint'+e);
+    t.AddWithoutExpect(AName, p+'Smallint'+e);
+    t.AddWithoutExpect(AName, p+'Longint'+e);
+    t.AddWithoutExpect(AName, p+'Int64'+e);
+    t.AddWithoutExpect(AName, p+'IntRange'+e);
+    t.AddWithoutExpect(AName, p+'CardinalRange'+e);
+
+    t.AddWithoutExpect(AName, p+'Byte_2'+e);
+    t.AddWithoutExpect(AName, p+'Word_2'+e);
+    t.AddWithoutExpect(AName, p+'Longword_2'+e);
+    t.AddWithoutExpect(AName, p+'QWord_2'+e);
+    t.AddWithoutExpect(AName, p+'Shortint_2'+e);
+    t.AddWithoutExpect(AName, p+'Smallint_2'+e);
+    t.AddWithoutExpect(AName, p+'Longint_2'+e);
+    t.AddWithoutExpect(AName, p+'Int64_2'+e);
+
+    t.AddWithoutExpect(AName, p+'Shortint_3'+e);
+    t.AddWithoutExpect(AName, p+'Smallint_3'+e);
+    t.AddWithoutExpect(AName, p+'Longint_3'+e);
+    t.AddWithoutExpect(AName, p+'Int64_3'+e);
+
+    t.AddWithoutExpect(AName, p+'Real'+e);
+    t.AddWithoutExpect(AName, p+'Single'+e);
+    t.AddWithoutExpect(AName, p+'Double'+e);
+    t.AddWithoutExpect(AName, p+'Extended'+e);
+    //t.AddWithoutExpect(p+'Comp'+e);
+    t.AddWithoutExpect(AName, p+'Currency'+e);
+
+    t.AddWithoutExpect(AName, p+'Real_2'+e);
+    t.AddWithoutExpect(AName, p+'Single_2'+e);
+    t.AddWithoutExpect(AName, p+'Double_2'+e);
+    t.AddWithoutExpect(AName, p+'Extended_2'+e); // Double ?
+    //t.AddWithoutExpect(p+'Comp_2'+e);
+    t.AddWithoutExpect(AName, p+'Currency_2'+e);
+
+    t.AddWithoutExpect(AName, p+'Char'+e);
+    t.AddWithoutExpect(AName, p+'Char2'+e);
+    t.AddWithoutExpect(AName, p+'Char3'+e);
+
+if not(ALoc in [tlConst]) then begin
+    t.AddWithoutExpect(AName, p+'String1'+e);
+    t.AddWithoutExpect(AName, p+'String1e'+e);
+    t.AddWithoutExpect(AName, p+'String10'+e);
+    t.AddWithoutExpect(AName, p+'String10e'+e);
+    t.AddWithoutExpect(AName, p+'String10x'+e);
+    t.AddWithoutExpect(AName, p+'String255'+e);
+
+    t.AddWithoutExpect(AName, p+'Ansi1'+e);
+    t.AddWithoutExpect(AName, p+'Ansi2'+e);
+    t.AddWithoutExpect(AName, p+'Ansi3'+e);
+    t.AddWithoutExpect(AName, p+'Ansi4'+e);
+    t.AddWithoutExpect(AName, p+'Ansi5'+e);
+end;
+
+//TODO wePchar
+    t.AddWithoutExpect(AName, p+'PChar'+e);
+    t.AddWithoutExpect(AName, p+'PChar2'+e);
+
+    // char by index
+    // TODO: no typename => calculated value ?
+////    t.AddWithoutExpect(AName, p+'String10'+e+'[2]').CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'Ansi2'+e+'[2]').CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'PChar2'+e+'[1]').CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'String10'+e+'[1]').CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'Ansi2'+e+'[1]').CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'PChar2'+e+'[0]').CharFromIndex;
+
+
+    t.AddWithoutExpect(AName, p+'WideChar'+e); // TODO: widechar
+    t.AddWithoutExpect(AName, p+'WideChar2'+e);
+    t.AddWithoutExpect(AName, p+'WideChar3'+e);
+
+    t.AddWithoutExpect(AName, p+'WideString1'+e);
+    t.AddWithoutExpect(AName, p+'WideString2'+e);
+    t.AddWithoutExpect(AName, p+'WideString3'+e);
+    t.AddWithoutExpect(AName, p+'WideString4'+e);
+    t.AddWithoutExpect(AName, p+'WideString5'+e);
+
+////    t.AddWithoutExpect(AName, p+'WideString2'+e+'[1]')     .CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'WideString2'+e+'[2]')     .CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'WideString5'+e+'[1]')     .CharFromIndex;
+////    t.AddWithoutExpect(AName, p+'WideString5'+e+'[2]')     .CharFromIndex;
+
+//TODO wePWidechar
+    t.AddWithoutExpect(AName, p+'PWideChar'+e);
+    t.AddWithoutExpect(AName, p+'PWideChar2'+e);
+
+    t.AddWithoutExpect(AName, p+'UnicodeString1'+e);
+    t.AddWithoutExpect(AName, p+'UnicodeString2'+e);
+    t.AddWithoutExpect(AName, p+'UnicodeString3'+e);
+    t.AddWithoutExpect(AName, p+'UnicodeString4'+e);
+    t.AddWithoutExpect(AName, p+'UnicodeString5'+e);
+
+//todo dwarf 3
+////    t.AddWithoutExpect(AName, p+'UnicodeString2'+e+'[1]')       .CharFromIndex(stDwarf2);
+////    t.AddWithoutExpect(AName, p+'UnicodeString2'+e+'[2]')       .CharFromIndex(stDwarf2);
+////    t.AddWithoutExpect(AName, p+'UnicodeString5'+e+'[1]')       .CharFromIndex(stDwarf2);
+////    t.AddWithoutExpect(AName, p+'UnicodeString5'+e+'[2]')       .CharFromIndex(stDwarf2);
+
+
+    // TODO
+    if not(ALoc in [tlConst]) then begin
+    t.AddWithoutExpect(AName, p+'ShortRec'+e);
+
+
+    t.AddWithoutExpect(AName, p+'CharDynArray3'+e);
+    t.AddWithoutExpect(AName, p+'CharDynArray4'+e);
+
+    t.AddWithoutExpect(AName, p+'WCharDynArray3'+e);
+    t.AddWithoutExpect(AName, p+'WCharDynArray4'+e);
+
+    t.AddWithoutExpect(AName, p+'IntDynArray3'+e);
+    t.AddWithoutExpect(AName, p+'IntDynArray4'+e);
+
+    t.AddWithoutExpect(AName, p+'AnsiDynArray3'+e);
+    t.AddWithoutExpect(AName, p+'AnsiDynArray4'+e);
+
+    t.AddWithoutExpect(AName, p+'ShortStrDynArray3'+e);
+    t.AddWithoutExpect(AName, p+'ShortStrDynArray4'+e);
+
+
+    t.AddWithoutExpect(AName, p+'DynDynArrayInt'+e);
+
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt'+e+'[0]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt'+e+'[1]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt'+e+'[2]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt'+e+'[3]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt'+e+'[4]');
+////
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt2'+e+'[0]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt2'+e+'[1]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt2'+e+'[2]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt2'+e+'[3]');
+////    t.AddWithoutExpect(AName, p+'DynDynArrayInt2'+e+'[4]');
+
+
+/////    t.AddWithoutExpect(AName, p+'pre__FiveDynArray'+e                  ))
+t.AddWithoutExpect(AName, p+'FiveDynArray'+e);
+////t.AddWithoutExpect(AName, p+'FiveDynArray'+e+'[0]');
+//    t.AddWithoutExpect(AName, p+'FiveDynArray'+e);
+//    t.AddWithoutExpect(AName, p+'FiveDynArrayPack'+e);
+//    t.AddWithoutExpect(AName, p+'FivePackDynArray'+e);
+//    t.AddWithoutExpect(AName, p+'FivePackDynArrayPack'+e);
+//    t.AddWithoutExpect(AName, p+'RecFiveDynArray'+e);
+//    t.AddWithoutExpect(AName, p+'RecFiveDynPackArray'+e);
+//    t.AddWithoutExpect(AName, p+'RecFivePackDynArray'+e);
+//    t.AddWithoutExpect(AName, p+'RecFivePackDynPackArray'+e);
+//    t.AddWithoutExpect(AName, p+'FiveDynArray2'+e);
+//    t.AddWithoutExpect(AName, p+'FiveDynArrayPack2'+e);
+//    t.AddWithoutExpect(AName, p+'FivePackDynArray2'+e);
+//    t.AddWithoutExpect(AName, p+'FivePackDynArrayPack2'+e);
+
+
+
+    t.AddWithoutExpect(AName, p+'CharStatArray2'+e);
+    t.AddWithoutExpect(AName, p+'WCharStatArray2'+e);
+    t.AddWithoutExpect(AName, p+'IntStatArray2'+e);
+    t.AddWithoutExpect(AName, p+'AnsiStatArray2'+e);
+    t.AddWithoutExpect(AName, p+'ShortStrStatArray2'+e);
+    end;
+
+
+//    t.AddWithoutExpect(AName, p+'FiveStatArray{e}             _O2_ TFiveStatArray            _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArray;
+//    t.AddWithoutExpect(AName, p+'FiveStatArrayPack{e}         _O2_ TFiveStatArrayPack        _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArrayPack;
+//    t.AddWithoutExpect(AName, p+'FivePackStatArray{e}         _O2_ TFivePackStatArray        _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_FivePackStatArray;
+//    t.AddWithoutExpect(AName, p+'FivePackStatArrayPack{e}     _O2_ TFivePackStatArrayPack    _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_FivePackStatArrayPack;
+//    t.AddWithoutExpect(AName, p+'RecFiveStatArray{e}          _O2_ TRecFiveStatArray         _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_RecFiveStatArray;
+//    t.AddWithoutExpect(AName, p+'RecFiveStatPackArray{e}      _O2_ TRecFiveStatPackArray     _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_RecFiveStatPackArray;
+//    t.AddWithoutExpect(AName, p+'RecFivePackStatArray{e}      _O2_ TRecFivePackStatArray     _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_RecFivePackStatArray;
+//    t.AddWithoutExpect(AName, p+'RecFivePackStatPackArray{e}  _O2_ TRecFivePackStatPackArray _EQ_ ((a:-9;b:44), (a:-8-AddWithoutExpect;b:33), (a:-7;b:22));          //@@ _pre3_RecFivePackStatPackArray;
+
+
+//TODO: element by index
+
+
+  t.AddWithoutExpect(AName, p+'Enum'+e);
+  t.AddWithoutExpect(AName, p+'Enum1'+e);
+  t.AddWithoutExpect(AName, p+'Enum2'+e);
+  t.AddWithoutExpect(AName, p+'Enum3'+e);
+
+  t.AddWithoutExpect(AName, p+'Set'+e).Skip([stDwarf]);
+
+  t.AddWithoutExpect(AName, p+'IntfUnknown'+e);
+
+  end;
+
+  procedure CmpWatches(t1, t2: TWatchExpectationList);
+  var
+    i, Thread: Integer;
+    v1, v2: String;
+  begin
+    AssertTrue('Same count', t1.Count = t2.Count);
+    t1.EvaluateWatches;
+    t2.EvaluateWatches;
+    Thread := Debugger.Threads.Threads.CurrentThreadId;
+    for i := 0 to t1.Count - 1 do begin
+      v1 := t1.Tests[i]^.TstWatch.Values[Thread, 0].Value;
+      v2 := t2.Tests[i]^.TstWatch.Values[Thread, 0].Value;
+
+      // check, if v2 has the derefed value at the end
+      if (length(v1) < Length(v2)) and (pos(') ', v2) = Length(v1)) then
+        v2 := copy(v2, 1, Length(v1));
+
+      TestEquals(t1.Tests[i]^.TstTestName + ': ' + t1.Tests[i]^.TstWatch.Expression + ' <> ' + t2.Tests[i]^.TstWatch.Expression,
+        v1, v2);
+    end;
+  end;
+
+  procedure AssertFailedWatches(t1: TWatchExpectationList);
+  var
+    i, Thread: Integer;
+    v1: TWatchValue;
+    s: string;
+  begin
+    t1.EvaluateWatches;
+    Thread := Debugger.Threads.Threads.CurrentThreadId;
+    for i := 0 to t1.Count - 1 do begin
+      v1 := t1.Tests[i]^.TstWatch.Values[Thread, 0];
+      WriteStr(s, v1.Validity);
+
+      TestTrue(t1.Tests[i]^.TstTestName + ': ' + t1.Tests[i]^.TstWatch.Expression + ' >> ' + v1.Value + ' / ' + s,
+        v1.Validity in [ddsError{, ddsInvalid}]);
+    end;
+  end;
+
+var
+  ExeName: String;
+  dbg: TDebuggerIntf;
+  t, tp: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg, BrkFoo, BrkFooVar, BrkFooConstRef: TDBGBreakPoint;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestWatchAddressOf) then exit;
+  t := nil;
+  tp := nil;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.Pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    tp := TWatchExpectationList.Create(Self);
+
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
+    BrkFoo         := Debugger.SetBreakPoint(Src, 'Foo');
+    BrkFooVar      := Debugger.SetBreakPoint(Src, 'FooVar');
+    BrkFooConstRef := Debugger.SetBreakPoint(Src, 'FooConstRef');
+    AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
+
+    dbg.Run;
+    Debugger.WaitForFinishRun();
+    AssertDebuggerState(dsPause);
+    BrkPrg.Enabled := False;
+    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
+    // At BreakPoint: Prg
+
+    t.Clear;
+    AddWatches(t,  'glob const',         '@gc', tlConst);
+    AssertFailedWatches(t);
+
+    t.Clear;
+    tp.Clear;
+    AddWatches(t,  'glob var',         '@gv');
+    AddWatches(tp, 'glob var pointer', 'gvp_'); // pointer
+    CmpWatches(t, tp);
+
+
+//    dbg.Run;
+//    Debugger.WaitForFinishRun();
+//    AssertDebuggerState(dsPause);
+//    BrkFoo.Enabled := False;
+//    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
+//    // At BreakPoint: Foo
+//    t.Clear;
+//    AddWatches(t, 'foo local', 'fooloc', 002, 'C');
+//    t.EvaluateWatches;
+//    //t.CheckResults;
+//
+//
+//    dbg.Run;
+//    Debugger.WaitForFinishRun();
+//    AssertDebuggerState(dsPause);
+//    BrkFooVar.Enabled := False;
+//    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
+//    // At BreakPoint: FooVar
+//    t.Clear;
+//    AddWatches(t, 'foo var args', 'argvar', 001, 'B', tlParam);
+//    AddWatches(t, 'foo var ArgMyBaseClass1', 'TMyClass(ArgVarMyClass2).mbc', 005, 'F');
+//    t.EvaluateWatches;
+//    //t.CheckResults;
+//
+//
+//    dbg.Run;
+//    Debugger.WaitForFinishRun();
+//    AssertDebuggerState(dsPause);
+//    BrkFooConstRef.Enabled := False;
+//    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
+//    // At BreakPoint: FooConstRef;
+//    t.Clear;
+//    AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
+//    t.EvaluateWatches;
+//    //t.CheckResults;
+//
+
+  finally
+    t.Free;
+    tp.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestWatches);
   ControlTestWatch         := TestControlRegisterTest('TTestWatch');
   ControlTestWatchScope    := TestControlRegisterTest('Scope', ControlTestWatch);
   ControlTestWatchValue    := TestControlRegisterTest('Value', ControlTestWatch);
+  ControlTestWatchAddressOf    := TestControlRegisterTest('AddressOf', ControlTestWatch);
 
 end.
 

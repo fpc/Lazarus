@@ -140,20 +140,20 @@ type
     function Skip(ASymTypes: TSymbolTypes = []): PWatchExpectation;
     function SkipIf(ACond: Boolean; ASymTypes: TSymbolTypes = []): PWatchExpectation;
 
-    function IgnAll(ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function IgnData(ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function IgnKind(ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function IgnKindPtr(ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function IgnTypeName(ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function MatchTypeName(ASymTypes: TSymbolTypes = []): PWatchExpectation;
+    function IgnAll(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function IgnData(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function IgnKind(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function IgnKindPtr(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function IgnTypeName(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function MatchTypeName(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
 
-    function CharFromIndex(ASymTypes: TSymbolTypes = []): PWatchExpectation;
+    function CharFromIndex(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
 
-    function ExpectNotFound(ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function ExpectError(ASymTypes: TSymbolTypes = []): PWatchExpectation;
+    function ExpectNotFound(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function ExpectError(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
 
-    function NotImplemented(ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function NotImplementedData(ASymTypes: TSymbolTypes = []): PWatchExpectation;
+    function NotImplemented(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function NotImplementedData(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
   end;
 
   //TWatchExpectationResultHelper = type helper for TWatchExpectationResult
@@ -181,6 +181,7 @@ type
     function GetCompiler: TTestDbgCompiler;
     function GetDebugger: TTestDbgDebugger;
     function GetLazDebugger: TDebuggerIntf;
+    function GetTests(Index: Integer): PWatchExpectation;
     function ParseCommaList(AVal: String; out AFoundCount: Integer;
       AMaxLen: Integer = -1): TStringArray;
   protected
@@ -220,6 +221,11 @@ type
     constructor Create(ATest: TDBGTestCase);
     destructor Destroy; override;
 
+    function AddWithoutExpect(ATestName: String;
+      AnExpr:  string;
+      AStackFrame: Integer = 0; AMinFpc: Integer = 0; AMinDbg: Integer = 0
+    ): PWatchExpectation;
+
     function Add(ATestName: String;
       AnExpr:  string; // AEvaluateFlags: TDBGEvaluateFlags; // AFmt: TWatchDisplayFormat;
       AnExpect: TWatchExpectationResult;
@@ -234,11 +240,13 @@ type
     ): PWatchExpectation;
 
     procedure Clear;
+    function Count: Integer;
     function EvaluateWatches: Boolean;
     procedure CheckResults;
 
     procedure AddTypeNameAlias(ATypeName, AnAliases: String);
     property AcceptSkSimple: TDbgSymbolKinds read FAcceptSkSimple write FAcceptSkSimple ; // skSimple for skInteger,skChar,...
+    property Tests[Index: Integer]: PWatchExpectation read GetTests;
   end;
 
 
@@ -716,69 +724,70 @@ begin
     Result := Self;
 end;
 
-function TWatchExpectationHelper.IgnAll(ASymTypes: TSymbolTypes
+function TWatchExpectationHelper.IgnAll(ASymTypes: TSymbolTypes; ACond: Boolean
   ): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehIgnAll, ASymTypes);
 end;
 
-function TWatchExpectationHelper.IgnData(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.IgnData(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehIgnData, ASymTypes);
 end;
 
-function TWatchExpectationHelper.IgnKind(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.IgnKind(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehIgnKind, ASymTypes);
 end;
 
-function TWatchExpectationHelper.IgnKindPtr(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.IgnKindPtr(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehIgnKindPtr, ASymTypes);
 end;
 
-function TWatchExpectationHelper.IgnTypeName(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.IgnTypeName(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehIgnTypeName, ASymTypes);
 end;
 
-function TWatchExpectationHelper.MatchTypeName(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.MatchTypeName(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehMatchTypeName, ASymTypes);
 end;
 
-function TWatchExpectationHelper.CharFromIndex(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.CharFromIndex(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehCharFromIndex, ASymTypes);
 end;
 
-function TWatchExpectationHelper.ExpectNotFound(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.ExpectNotFound(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehExpectNotFound, ASymTypes);
 end;
 
-function TWatchExpectationHelper.ExpectError(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.ExpectError(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehExpectError, ASymTypes);
 end;
 
-function TWatchExpectationHelper.NotImplemented(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.NotImplemented(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehNotImplemented, ASymTypes);
 end;
 
-function TWatchExpectationHelper.NotImplementedData(ASymTypes: TSymbolTypes
-  ): PWatchExpectation;
+function TWatchExpectationHelper.NotImplementedData(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
+  if not ACond then exit(Self);
   Result := Self^.AddFlag(ehNotImplementedData, ASymTypes);
 end;
 
@@ -823,6 +832,11 @@ end;
 function TWatchExpectationList.GetLazDebugger: TDebuggerIntf;
 begin
   Result := Debugger.LazDebugger;
+end;
+
+function TWatchExpectationList.GetTests(Index: Integer): PWatchExpectation;
+begin
+  Result := @FList[Index];
 end;
 
 function TWatchExpectationList.ParseCommaList(AVal: String; out AFoundCount: Integer; AMaxLen: Integer = -1): TStringArray;
@@ -874,9 +888,10 @@ function TWatchExpectationList.EvaluateWatch(AWatchExp: TWatchExpectation;
 var
   i: Integer;
 begin
-  FTest.LogText('###### ' + AWatchExp.TstTestName + ' // ' + AWatchExp.TstWatch.Expression +
-    ' (AT '+ LazDebugger.GetLocation.SrcFile + ':' + IntToStr(LazDebugger.GetLocation.SrcLine) +')' +
-    '###### '+LineEnding);
+  with LazDebugger.GetLocation do
+    FTest.LogText('###### ' + AWatchExp.TstTestName + ' // ' + AWatchExp.TstWatch.Expression +
+      ' (AT '+ SrcFile + ':' + IntToStr(SrcLine) +')' +
+      '###### '+LineEnding);
   AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Value;
 
   for i := 1 to 5 do begin
@@ -957,7 +972,8 @@ begin
 
   with AnWatchExp do begin
     try
-      FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' ('+TstWatch.Expression+' AT '+ LazDebugger.GetLocation.SrcFile + ':' + IntToStr(LazDebugger.GetLocation.SrcLine) +')';
+      with LazDebugger.GetLocation do
+        FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' ('+TstWatch.Expression+' AT '+ SrcFile + ':' + IntToStr(SrcLine) +')';
       if TstStackFrame > 0 then
         FTest.TestBaseName := FTest.TestBaseName + ' (Stack: ' + IntToStr(TstStackFrame) + ')';
       if not VerifyDebuggerState then
@@ -1464,6 +1480,29 @@ begin
   inherited Destroy;
 end;
 
+function TWatchExpectationList.AddWithoutExpect(ATestName: String;
+  AnExpr: string; AStackFrame: Integer; AMinFpc: Integer; AMinDbg: Integer
+  ): PWatchExpectation;
+var
+  i: Integer;
+  w: TTestWatch;
+begin
+  i := Length(FList);
+  SetLength(FList, i+1);
+
+  w := TTestWatch.Create(Debugger.Watches.Watches);
+  w.Expression := AnExpr;
+  w.Enabled := True;
+
+  FList[i].TstTestName := ATestName;
+  FList[i].TstWatch := w;
+  FList[i].TstStackFrame := AStackFrame;
+  FList[i].TstMinFpc   := AMinFpc;
+  FList[i].TstMinDbg   := AMinDbg;
+
+  Result := @FList[i];
+end;
+
 function TWatchExpectationList.Add(ATestName: String; AnExpr: string;
   AnExpect: TWatchExpectationResult; AStackFrame: Integer; AMinFpc: Integer;
   AMinDbg: Integer): PWatchExpectation;
@@ -1510,6 +1549,11 @@ begin
   for i := 0 to Length(FList)-1 do
     FList[i].TstWatch.Free;
   FList := nil;
+end;
+
+function TWatchExpectationList.Count: Integer;
+begin
+  Result := Length(FList);
 end;
 
 function TWatchExpectationList.EvaluateWatches: Boolean;

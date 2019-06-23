@@ -107,6 +107,9 @@ var
 (* LOCATION: global var  ARRAY OF <each type> *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gva, "_OP_=: array of", (=;//, "_O2_=: array of", _EQ_=, _BLOCK_=TestVar )
 
+(* LOCATION: global var  pointer <each type> *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
 
 procedure Foo(
 (* LOCATION: param *)
@@ -160,6 +163,9 @@ begin
   BreakDummy := ord(gcCharStatArray[1]);
   BreakDummy := ord(gcWCharStatArray[1]);
 
+(* use global const / value in "gv" will be overriden... *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, {e}={, "//@@=} :=", _pre3_=gc, _BLOCK_=TestAssignGC)
+
 (* INIT: global var *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, ADD=1, CHR1='B', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 
@@ -177,6 +183,8 @@ begin
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,"pre__=SetLength(gva", "_OP_=,2);//", "_O2_=,2);//", _BLOCK_=TestSetLen)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gva, ADD=5, CHR1='K', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, "{e}=[0]", _BLOCK_=TestAssign)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gva, ADD=6, CHR1='L', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, "{e}=[1]", _BLOCK_=TestAssign)
+(* INIT: global var  pointer <each type> *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvp_, _OP_={, _O2_={, _pre3_=@gv, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
 
 
   BreakDummy:= 1; // TEST_BREAKPOINT=Prg
