@@ -635,28 +635,31 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Char2'+e,      weChar(#0));
     t.Add(AName, p+'Char3'+e,      weChar(' '));
 
-if not(ALoc in [tlConst]) then begin
-    t.Add(AName, p+'String1'+e,    weShortStr(AChr1, 'ShortStr1'));
-    t.Add(AName, p+'String1e'+e,   weShortStr('',    'ShortStr1'));
-    t.Add(AName, p+'String10'+e,   weShortStr(AChr1+'bc1',               'ShortStr10'));
-    t.Add(AName, p+'String10e'+e,  weShortStr('',                        'ShortStr10'));
-    t.Add(AName, p+'String10x'+e,  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, 'ShortStr10'));
+// tlConst => strings are stored as shortstring
+    t.Add(AName, p+'String1'+e,    weShortStr(AChr1, 'ShortStr1'))                      .IgnTypeName([], ALoc = tlConst);
+    t.Add(AName, p+'String1e'+e,   weShortStr('',    'ShortStr1'))                      .IgnTypeName([], ALoc = tlConst);
+    t.Add(AName, p+'String10'+e,   weShortStr(AChr1+'bc1',               'ShortStr10')) .IgnTypeName([], ALoc = tlConst);
+    t.Add(AName, p+'String10e'+e,  weShortStr('',                        'ShortStr10')) .IgnTypeName([], ALoc = tlConst);
+    t.Add(AName, p+'String10x'+e,  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, 'ShortStr10')) .IgnTypeName([], ALoc = tlConst);
     t.Add(AName, p+'String255'+e,  weShortStr(AChr1+'bcd0123456789', 'ShortStr255'));
 
-    t.Add(AName, p+'Ansi1'+e,      weAnsiStr(Succ(AChr1)))     .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up);
-    t.Add(AName, p+'Ansi2'+e,      weAnsiStr(AChr1+'abcd0123')).IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up);
-    t.Add(AName, p+'Ansi3'+e,      weAnsiStr(''))              .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up);
-    t.Add(AName, p+'Ansi4'+e,      weAnsiStr(AChr1+'A'#0'B'#9'b'#10#13))  // cut off at #0 in dwarf2
-             .IgnKindPtr(stDwarf2).IgnData(stDwarf2).IgnKind(stDwarf3Up);
+    t.Add(AName, p+'Ansi1'+e,      weAnsiStr(Succ(AChr1)))     .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
+      .IgnTypeName([], ALoc = tlConst).IgnKind([], ALoc = tlConst);
+    t.Add(AName, p+'Ansi2'+e,      weAnsiStr(AChr1+'abcd0123')).IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
+      .IgnTypeName([], ALoc = tlConst).IgnKind([], ALoc = tlConst);
+    t.Add(AName, p+'Ansi3'+e,      weAnsiStr(''))              .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
+      .IgnTypeName([], ALoc = tlConst).IgnKind([], ALoc = tlConst);
+    t.Add(AName, p+'Ansi4'+e,      weAnsiStr(AChr1+'A'#0'B'#9'b'#10#13))  // cut off at #0 in dwarf2 / except tlConst, because it is a shortstring (kind of works by accident)
+             .IgnKindPtr(stDwarf2).IgnData(stDwarf2, ALoc <> tlConst).IgnKind(stDwarf3Up)
+      .IgnTypeName([], ALoc = tlConst).IgnKind([], ALoc = tlConst);
     t.Add(AName, p+'Ansi5'+e,      weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij'
-      ) )    .IgnKindPtr(stDwarf2)                  .IgnKind(stDwarf3Up);
-end;
+      ) )    .IgnKindPtr(stDwarf2)                  .IgnKind(stDwarf3Up)
+      .IgnTypeName([], ALoc = tlConst).IgnKind([], ALoc = tlConst);
 
 //TODO wePchar
     t.Add(AName, p+'PChar'+e,      wePointer(weAnsiStr(''), 'PChar'));
     t.Add(AName, p+'PChar2'+e,     wePointer(weAnsiStr(AChr1+'abcd0123'), 'TPChr')).SkipIf(ALoc = tlConst);
 
-if not(ALoc in [tlConst]) then begin
     // char by index
     // TODO: no typename => calculated value ?
     t.Add(AName, p+'String10'+e+'[2]',   weChar('b', '')).CharFromIndex;
@@ -671,6 +674,7 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'WideChar2'+e,      weChar(#0));
     t.Add(AName, p+'WideChar3'+e,      weChar(' '));
 
+if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'WideString1'+e,    weWideStr(Succ(AChr1)))              .IgnKindPtr;
     t.Add(AName, p+'WideString2'+e,    weWideStr(AChr1+'abcX0123'))         .IgnKindPtr;
     t.Add(AName, p+'WideString3'+e,    weWideStr(''))                       .IgnKindPtr;
@@ -683,11 +687,13 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'WideString2'+e+'[2]',  weWideChar('a'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
     t.Add(AName, p+'WideString5'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex.IgnTypeName(stDwarf3Up);
     t.Add(AName, p+'WideString5'+e+'[2]',  weWideChar('X'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
+end;
 
 //TODO wePWidechar
     t.Add(AName, p+'PWideChar'+e,      wePointer(weWideStr(''), 'PWideChar'));
     t.Add(AName, p+'PWideChar2'+e,     wePointer(weWideStr(AChr1+'abcX0123'), 'TPWChr')).SkipIf(ALoc = tlConst);
 
+if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'UnicodeString1'+e,    weUniStr(Succ(AChr1)))              .IgnKindPtr(stDwarf2);
     t.Add(AName, p+'UnicodeString2'+e,    weUniStr(AChr1+'aBcX0123'))         .IgnKindPtr(stDwarf2);
     t.Add(AName, p+'UnicodeString3'+e,    weUniStr(''))                       .IgnKindPtr(stDwarf2);
@@ -700,6 +706,7 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'UnicodeString2'+e+'[2]',    weWideChar('a'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
     t.Add(AName, p+'UnicodeString5'+e+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
     t.Add(AName, p+'UnicodeString5'+e+'[2]',    weWideChar('Y'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+end;
 
 
     // TODO
@@ -727,6 +734,8 @@ if not(ALoc in [tlConst]) then begin
     t.add(AName, p+'IntDynArray3'+e,  weDynArray([],                            'TIntDynArray'));
     t.Add(AName, p+'IntDynArray4'+e,  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray')).SkipIf(ALoc = tlConst);
 
+    t.add(AName, p+'IntDynArray5'+e,  weDynArray([],                            'TIntDynArray'));
+
     if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'AnsiDynArray'+e,  weDynArray([]                                                     ));
     t.add(AName, p+'AnsiDynArray2'+e, weDynArray(weAnsiStr(['N123', AChr1+'ab', 'M'#9])                 )).SkipIf(ALoc = tlConst);
@@ -743,7 +752,7 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'ShortStrDynArray4'+e, weDynArray(weShortStr(['J123', AChr1+'ac', 'M'#9]), 'TShortStrDynArray'))
       .SkipIf(ALoc = tlConst);
 
-
+if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'DynDynArrayInt'+e, weDynArray([
         weDynArray(weInteger([11+AOffs,0,-22])),
         weDynArray(weInteger([110+AOffs])),
@@ -780,6 +789,7 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
 //    t.Add(AName, p+'FiveDynArrayPack2'+e,       we());
 //    t.Add(AName, p+'FivePackDynArray2'+e,       we());
 //    t.Add(AName, p+'FivePackDynArrayPack2'+e,   we());
+
 end;
 
 
@@ -803,7 +813,6 @@ end;
     t.Add(AName, p+'ShortStrStatArray'+e,  weStatArray(weShortStr([AChr1, 'b123', AChr1+'ab', 'C', 'cdef'#9])                  ))
       .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
     t.Add(AName, p+'ShortStrStatArray2'+e, weStatArray(weShortStr([AChr1, 'c123', AChr1+'ad', 'C', 'cxx'#9] ), 'TShortStrStatArray'));
-
 
 //    t.Add(AName, p+'FiveStatArray{e}             _O2_ TFiveStatArray            _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArray;
 //    t.Add(AName, p+'FiveStatArrayPack{e}         _O2_ TFiveStatArrayPack        _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArrayPack;
@@ -874,13 +883,13 @@ begin
     t.Clear;
 
 //t.Add( 'gvaString10[1]',   weShortStr('Lbc1',               'ShortStr10'));
-//t.Add( 'gvString10',   weShortStr('Bbc1',               'ShortStr10'));
 //t.Add( 'gvaShortRec[1]',       weMatch('''L'', *''b'', *''L''', skRecord));
 //t.Add( 'gvAnsiDynArray2',   weShortStr('Lbc1',               'ShortStr10'));
 //t.Add( 'gvaDynDynArrayInt[0]',   weShortStr('Lbc1',               'ShortStr10'));
 //t.Add( 'argCharDynArray',   weShortStr('Lbc1',               'ShortStr10'));
 //t.Add( 'gvUnicodeString2',    weWideStr('BaBcX0123'))         ;
 //t.Add('gvUnicodeString2[1]',    weWideChar('B')) ;
+//t.Add( 'gcString10',   weShortStr('Bbc1',               'ShortStr10'));
 //t.EvaluateWatches;
 //t.CheckResults;
 //exit;
@@ -1038,7 +1047,6 @@ procedure TTestWatches.TestWatchesAddressOf;
     t.AddWithoutExpect(AName, p+'Char2'+e);
     t.AddWithoutExpect(AName, p+'Char3'+e);
 
-if not(ALoc in [tlConst]) then begin
     t.AddWithoutExpect(AName, p+'String1'+e);
     t.AddWithoutExpect(AName, p+'String1e'+e);
     t.AddWithoutExpect(AName, p+'String10'+e);
@@ -1051,7 +1059,6 @@ if not(ALoc in [tlConst]) then begin
     t.AddWithoutExpect(AName, p+'Ansi3'+e);
     t.AddWithoutExpect(AName, p+'Ansi4'+e);
     t.AddWithoutExpect(AName, p+'Ansi5'+e);
-end;
 
 //TODO wePchar
     t.AddWithoutExpect(AName, p+'PChar'+e);
