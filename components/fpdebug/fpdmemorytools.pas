@@ -260,6 +260,7 @@ type
     Address: TDbgPtr;
     MType: TFpDbgMemLocationType;
   end;
+  PFpDbgMemLocation = ^TFpDbgMemLocation;
 
   { TFpDbgMemManager }
 

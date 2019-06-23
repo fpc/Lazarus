@@ -2919,7 +2919,7 @@ begin
     debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(AnInitLocParserData^.ObjectDataAddress), ' Push=',AnInitLocParserData^.ObjectDataAddrPush]);
     ALocationParser.CurrentObjectAddress := AnInitLocParserData^.ObjectDataAddress;
     if AnInitLocParserData^.ObjectDataAddrPush then
-      ALocationParser.Push(AnInitLocParserData^.ObjectDataAddress, lseValue);
+      ALocationParser.Push(AnInitLocParserData^.ObjectDataAddress);
   end
   else
     ALocationParser.CurrentObjectAddress := InvalidLoc;
@@ -2961,19 +2961,11 @@ begin
   if IsError(LocationParser.LastError) then
     SetLastError(LocationParser.LastError);
 
-  if LocationParser.ResultKind in [lseValue] then begin
-    AnAddress := TargetLoc(LocationParser.ResultData);// TODO: wrong, if origin was selfmem
-    if ATag=DW_AT_location then
-      AnAddress.Address :=CompilationUnit.MapAddressToNewValue(AnAddress.Address);
-    Result := True;
-  end
-  else
-  if LocationParser.ResultKind in [lseRegister] then begin
-    AnAddress := ConstLoc(LocationParser.ResultData);
-    Result := True;
-  end
-  else
-    debugln(['TDbgDwarfIdentifier.LocationFromTag  FAILED']); // TODO
+  AnAddress := LocationParser.ResultData;
+  Result := IsValidLoc(AnAddress);
+  if IsTargetAddr(AnAddress) and  (ATag=DW_AT_location) then
+    AnAddress.Address :=CompilationUnit.MapAddressToNewValue(AnAddress.Address);
+  debugln(not Result, ['TDbgDwarfIdentifier.LocationFromTag  FAILED']); // TODO
 
   LocationParser.Free;
 end;
@@ -4761,6 +4753,7 @@ end;
 function TFpDwarfSymbolValueProc.GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
 var
   Val: TByteDynArray;
+  rd: TFpDbgMemLocation;
 begin
   Result := 0;
   if FFrameBaseParser = nil then begin
@@ -4781,8 +4774,9 @@ begin
     FFrameBaseParser.Evaluate;
   end;
 
-  if FFrameBaseParser.ResultKind in [lseValue] then
-    Result := FFrameBaseParser.ResultData;
+  rd := FFrameBaseParser.ResultData;
+  if IsValidLoc(rd) then
+    Result := rd.Address;
 
   if IsError(FFrameBaseParser.LastError) then begin
     SetLastError(FFrameBaseParser.LastError);

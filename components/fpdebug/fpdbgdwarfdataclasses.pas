@@ -670,36 +670,26 @@ type
 
   { TDwarfLocationStack }
 
-  TDwarfLocationStackEntryKind = (
-    lseRegister,      // value copied from register (data is in register)
-    lseValue,         // unsigned number, or address at which value can be found
-    lsePart,          // partial data in next stack entry
-    lseError
-  );
-
-  TDwarfLocationStackEntry = record
-    Value: TFpDbgMemLocation; // Address of data, unless lseRegister (in vhich case this holds the data (copy of register)
-    Kind:  TDwarfLocationStackEntryKind;
-  end;
-
   TDwarfLocationStack = object
+  private const
+    InvalidMem: TFpDbgMemLocation = (Address: 0; MType: mlfInvalid);
   private
-    FList: array of TDwarfLocationStackEntry;
+    FList: array of TFpDbgMemLocation; //TDwarfLocationStackEntry;
     FCount: Integer;
     procedure IncCapacity;
   public
     procedure Clear;
     function  Count: Integer;
-    function  Pop: TDwarfLocationStackEntry;
-    function  Peek: TDwarfLocationStackEntry;
-    function  PeekKind: TDwarfLocationStackEntryKind;
-    function  Peek(AIndex: Integer): TDwarfLocationStackEntry;
-    procedure Push(const AEntry: TDwarfLocationStackEntry);
-    procedure Push(AValue: TFpDbgMemLocation; AKind: TDwarfLocationStackEntryKind);
-    procedure Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind); // mlfTargetMem
-    procedure Modify(AIndex: Integer; const AEntry: TDwarfLocationStackEntry);
-    procedure Modify(AIndex: Integer; AValue: TFpDbgMemLocation; AKind: TDwarfLocationStackEntryKind);
-    procedure Modify(AIndex: Integer; AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind); // mlfTargetMem
+    function  Pop: TFpDbgMemLocation;
+    procedure Push(const AEntry: TFpDbgMemLocation);
+    procedure PushCopy(AFromIndex: Integer);
+    procedure PushConst(const AVal: TDBGPtr);
+    procedure PushTargetMem(const AVal: TDBGPtr);
+    function  Peek: PFpDbgMemLocation;
+    function  PeekKind: TFpDbgMemLocationType; // Can be called on empty stack
+    function  Peek(AIndex: Integer): PFpDbgMemLocation;
+    procedure Modify(AIndex: Integer; const AEntry: TFpDbgMemLocation);
+    procedure Copy(AFromIndex, AIndex: Integer);
   end;
 
   { TDwarfLocationExpression }
@@ -721,9 +711,8 @@ type
     constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit;
       AMemManager: TFpDbgMemManager; AContext: TFpDbgAddressContext);
     procedure Evaluate;
-    function  ResultKind: TDwarfLocationStackEntryKind;
-    function  ResultData: TDbgPtr;
-    procedure Push(AValue: TFpDbgMemLocation; AKind: TDwarfLocationStackEntryKind);
+    function  ResultData: TFpDbgMemLocation;
+    procedure Push(AValue: TFpDbgMemLocation);
     property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
     property LastError: TFpError read FLastError;
@@ -1757,44 +1746,14 @@ begin
   Result := FCount;
 end;
 
-function TDwarfLocationStack.Pop: TDwarfLocationStackEntry;
+function TDwarfLocationStack.Pop: TFpDbgMemLocation;
 begin
-  if FCount = 0 then begin
-    Result.Kind := lseError;
-    exit;
-  end;
+  Assert(0 < FCount);
   dec(FCount);
   Result := FList[FCount];
 end;
 
-function TDwarfLocationStack.Peek: TDwarfLocationStackEntry;
-begin
-  if FCount = 0 then begin
-    Result.Kind := lseError;
-    exit;
-  end;
-  Result := FList[FCount-1];
-end;
-
-function TDwarfLocationStack.PeekKind: TDwarfLocationStackEntryKind;
-begin
-  if FCount = 0 then begin
-    Result := lseError;
-    exit;
-  end;
-  Result := FList[FCount-1].Kind;
-end;
-
-function TDwarfLocationStack.Peek(AIndex: Integer): TDwarfLocationStackEntry;
-begin
-  if AIndex >= FCount then begin
-    Result.Kind := lseError;
-    exit;
-  end;
-  Result := FList[FCount-1-AIndex];
-end;
-
-procedure TDwarfLocationStack.Push(const AEntry: TDwarfLocationStackEntry);
+procedure TDwarfLocationStack.Push(const AEntry: TFpDbgMemLocation);
 begin
   if Length(FList) <= FCount then
     IncCapacity;
@@ -1802,47 +1761,69 @@ begin
   inc(FCount);
 end;
 
-procedure TDwarfLocationStack.Push(AValue: TFpDbgMemLocation;
-  AKind: TDwarfLocationStackEntryKind);
+procedure TDwarfLocationStack.PushCopy(AFromIndex: Integer);
 begin
+  Assert(AFromIndex < FCount);
   if Length(FList) <= FCount then
     IncCapacity;
-  FList[FCount].Value := AValue;
-  FList[FCount].Kind  := AKind;
+  FList[FCount] := FList[FCount-1-AFromIndex];
   inc(FCount);
 end;
 
-procedure TDwarfLocationStack.Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+procedure TDwarfLocationStack.PushConst(const AVal: TDBGPtr);
 begin
-  Push(TargetLoc(AValue), AKind);
+  if Length(FList) <= FCount then
+    IncCapacity;
+  with FList[FCount] do begin
+    Address := AVal;
+    MType := mlfConstant;
+  end;
+  inc(FCount);
 end;
 
-procedure TDwarfLocationStack.Modify(AIndex: Integer; const AEntry: TDwarfLocationStackEntry);
+procedure TDwarfLocationStack.PushTargetMem(const AVal: TDBGPtr);
+begin
+  if Length(FList) <= FCount then
+    IncCapacity;
+  with FList[FCount] do begin
+    Address := AVal;
+    MType := mlfTargetMem;
+  end;
+  inc(FCount);
+end;
+
+function TDwarfLocationStack.Peek: PFpDbgMemLocation;
+begin
+  Assert(0 < FCount);
+  Result := @FList[FCount-1];
+end;
+
+function TDwarfLocationStack.PeekKind: TFpDbgMemLocationType;
+begin
+  if FCount = 0 then
+    Result := mlfInvalid
+  else
+    Result := FList[FCount-1].MType;
+end;
+
+function TDwarfLocationStack.Peek(AIndex: Integer): PFpDbgMemLocation;
 begin
   Assert(AIndex < FCount);
-  if AIndex >= FCount then
-    exit;
+  Result := @FList[FCount-1-AIndex];
+end;
+
+procedure TDwarfLocationStack.Modify(AIndex: Integer;
+  const AEntry: TFpDbgMemLocation);
+begin
+  Assert(AIndex < FCount);
   FList[FCount-1-AIndex] := AEntry;
 end;
 
-procedure TDwarfLocationStack.Modify(AIndex: Integer; AValue: TFpDbgMemLocation;
-  AKind: TDwarfLocationStackEntryKind);
+procedure TDwarfLocationStack.Copy(AFromIndex, AIndex: Integer);
 begin
   Assert(AIndex < FCount);
-  if AIndex >= FCount then
-    exit;
-  FList[FCount-1-AIndex].Value := AValue;
-  FList[FCount-1-AIndex].Kind  := AKind;
-end;
-
-procedure TDwarfLocationStack.Modify(AIndex: Integer; AValue: TDbgPtr;
-  AKind: TDwarfLocationStackEntryKind);
-begin
-  Assert(AIndex < FCount);
-  if AIndex >= FCount then
-    exit;
-  FList[FCount-1-AIndex].Value := TargetLoc(AValue);
-  FList[FCount-1-AIndex].Kind  := AKind;
+  Assert(AFromIndex < FCount);
+  FList[FCount-1-AIndex] := FList[FCount-1-AFromIndex];
 end;
 
 { TDwarfLocationExpression }
@@ -1865,7 +1846,7 @@ var
 
   procedure SetError(AnInternalErrorCode: TFpErrorCode = fpErrNoError);
   begin
-    FStack.Push(InvalidLoc, lseError); // Mark as failed
+    FStack.Push(InvalidLoc); // Mark as failed
     if IsError(FMemManager.LastError)
     then FLastError := CreateError(fpErrLocationParserMemRead, FMemManager.LastError, [])
     else FLastError := CreateError(fpErrLocationParser, []);
@@ -1879,7 +1860,7 @@ var
 
   function AssertAddressOnStack: Boolean;
   begin
-    Result := FStack.PeekKind in [lseValue, lseRegister]; // todo: allow register?
+    Result := FStack.PeekKind in [mlfTargetMem, mlfSelfMem]; // allow const?
     if not Result then
       SetError(fpErrLocationParserNoAddressOnStack);
   end;
@@ -1898,6 +1879,10 @@ var
     Result := FMemManager.ReadAddress(AnAddress, ASize, AValue, FContext);
     if not Result then
       SetError;
+//  // Deref SelfMem should simple not happer. Except to get const/values
+    //else
+    //if AnAddress.MType = mlfSelfMem then
+    //  AValue.MType := mlfSelfMem;
   end;
 
   function ReadAddressFromMemoryEx(AnAddress: TFpDbgMemLocation; AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
@@ -1908,6 +1893,9 @@ var
     Result := IsValidLoc(AValue);
     if not Result then
       SetError;
+    //else
+    //if AnAddress.MType = mlfSelfMem then
+    //  AValue.MType := mlfSelfMem;
   end;
 
   function ReadUnsignedFromExpression(var CurInstr: Pointer; ASize: Integer): TDbgPtr;
@@ -1939,8 +1927,14 @@ var
   NewValue: TDbgPtr;
   i: TDbgPtr;
   x : integer;
-  Entry, Entry2: TDwarfLocationStackEntry;
+  Entry, Entry2: TFpDbgMemLocation;
+  EntryP: PFpDbgMemLocation;
 begin
+  (* Returns the address of the value.
+     - Except for DW_OP_regN and DW_OP_piece, which return the value itself. (Not sure about DW_OP_constN)
+     - Some tags override that, e.g.: DW_AT_upper_bound will allways interpret the result as a value.
+  *)
+
   AddrSize := FCU.FAddressSize;
   FMemManager.ClearLastError;
   FLastError := NoError;
@@ -1950,59 +1944,59 @@ begin
     inc(CurData);
     case CurInstr^ of
       DW_OP_nop: ;
-      DW_OP_addr:  FStack.Push(FCU.ReadTargetAddressFromDwarfSection(CurData, True), lseValue);
+      DW_OP_addr:  FStack.Push(FCU.ReadTargetAddressFromDwarfSection(CurData, True)); // always mlfTargetMem;
       DW_OP_deref: begin
           if not AssertAddressOnStack then exit;
-          if not ReadAddressFromMemory(FStack.Pop.Value, AddrSize, NewLoc) then exit;
-          FStack.Push(NewLoc, lseValue);
+          if not ReadAddressFromMemory(FStack.Pop, AddrSize, NewLoc) then exit;
+          FStack.Push(NewLoc);  // mlfTargetMem;
         end;
       DW_OP_xderef: begin
           if not AssertAddressOnStack  then exit;
-          Loc := FStack.Pop.Value;
+          Loc := FStack.Pop;
           if not AssertAddressOnStack then exit;
 // TODO check address is valid
-          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Value.Address, AddrSize, NewLoc) then exit;
-          FStack.Push(NewLoc, lseValue);
+          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Address, AddrSize, NewLoc) then exit;
+          FStack.Push(NewLoc);  // mlfTargetMem;
         end;
       DW_OP_deref_size: begin
           if not AssertAddressOnStack then exit;
-          if not ReadAddressFromMemory(FStack.Pop.Value, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
-          FStack.Push(NewLoc, lseValue);
+          if not ReadAddressFromMemory(FStack.Pop, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
+          FStack.Push(NewLoc);  // mlfTargetMem;
         end;
       DW_OP_xderef_size: begin
           if not AssertAddressOnStack  then exit;
-          Loc := FStack.Pop.Value;
+          Loc := FStack.Pop;
           if not AssertAddressOnStack then exit;
 // TODO check address is valid
-          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Value.Address, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
-          FStack.Push(NewLoc, lseValue);
+          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Address, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
+          FStack.Push(NewLoc);  // mlfTargetMem;
         end;
 
-      DW_OP_const1u: FStack.Push(ReadUnsignedFromExpression(CurData, 1), lseValue);
-      DW_OP_const2u: FStack.Push(ReadUnsignedFromExpression(CurData, 2), lseValue);
-      DW_OP_const4u: FStack.Push(ReadUnsignedFromExpression(CurData, 4), lseValue);
-      DW_OP_const8u: FStack.Push(ReadUnsignedFromExpression(CurData, 8), lseValue);
-      DW_OP_constu:  FStack.Push(ReadUnsignedFromExpression(CurData, 0), lseValue);
-      DW_OP_const1s: FStack.Push(ReadSignedFromExpression(CurData, 1), lseValue);
-      DW_OP_const2s: FStack.Push(ReadSignedFromExpression(CurData, 2), lseValue);
-      DW_OP_const4s: FStack.Push(ReadSignedFromExpression(CurData, 4), lseValue);
-      DW_OP_const8s: FStack.Push(ReadSignedFromExpression(CurData, 8), lseValue);
-      DW_OP_consts:  FStack.Push(ReadSignedFromExpression(CurData, 0), lseValue);
-      DW_OP_lit0..DW_OP_lit31: FStack.Push(CurInstr^-DW_OP_lit0, lseValue);
+      DW_OP_const1u: FStack.PushConst(ReadUnsignedFromExpression(CurData, 1));
+      DW_OP_const2u: FStack.PushConst(ReadUnsignedFromExpression(CurData, 2));
+      DW_OP_const4u: FStack.PushConst(ReadUnsignedFromExpression(CurData, 4));
+      DW_OP_const8u: FStack.PushConst(ReadUnsignedFromExpression(CurData, 8));
+      DW_OP_constu:  FStack.PushConst(ReadUnsignedFromExpression(CurData, 0));
+      DW_OP_const1s: FStack.PushConst(ReadSignedFromExpression(CurData, 1));
+      DW_OP_const2s: FStack.PushConst(ReadSignedFromExpression(CurData, 2));
+      DW_OP_const4s: FStack.PushConst(ReadSignedFromExpression(CurData, 4));
+      DW_OP_const8s: FStack.PushConst(ReadSignedFromExpression(CurData, 8));
+      DW_OP_consts:  FStack.PushConst(ReadSignedFromExpression(CurData, 0));
+      DW_OP_lit0..DW_OP_lit31: FStack.PushConst(CurInstr^-DW_OP_lit0);
 
       DW_OP_reg0..DW_OP_reg31: begin
           if not FMemManager.ReadRegister(CurInstr^-DW_OP_reg0, NewValue, FContext) then begin
             SetError;
             exit;
           end;
-          FStack.Push(NewValue, lseRegister);
+          FStack.PushConst(NewValue);
         end;
       DW_OP_regx: begin
           if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue, FContext) then begin
             SetError;
             exit;
           end;
-          FStack.Push(NewValue, lseRegister);
+          FStack.PushConst(NewValue);
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
@@ -2011,7 +2005,7 @@ begin
             exit;
           end;
           {$PUSH}{$R-}{$Q-}
-          FStack.Push(NewValue+SLEB128toOrdinal(CurData), lseValue);
+          FStack.PushTargetMem(NewValue+SLEB128toOrdinal(CurData));
           {$POP}
         end;
       DW_OP_bregx: begin
@@ -2020,7 +2014,7 @@ begin
             exit;
           end;
           {$PUSH}{$R-}{$Q-}
-          FStack.Push(NewValue+SLEB128toOrdinal(CurData), lseValue);
+          FStack.PushTargetMem(NewValue+SLEB128toOrdinal(CurData));
           {$POP}
         end;
 
@@ -2031,13 +2025,13 @@ begin
             exit;
           end;
           {$PUSH}{$R-}{$Q-}
-          FStack.Push(FFrameBase+SLEB128toOrdinal(CurData), lseValue);
+          FStack.PushTargetMem(FFrameBase+SLEB128toOrdinal(CurData));
           {$POP}
         end;
 
       DW_OP_dup: begin
           if not AssertMinCount(1) then exit;
-          FStack.Push(FStack.Peek);
+          FStack.PushCopy(0);
         end;
       DW_OP_drop: begin
           if not AssertMinCount(1) then exit;
@@ -2045,127 +2039,151 @@ begin
         end;
       DW_OP_over: begin
           if not AssertMinCount(2) then exit;
-          FStack.Push(FStack.Peek(1));
+          FStack.PushCopy(1);
         end;
       DW_OP_pick: begin
           i := ReadUnsignedFromExpression(CurData, 1);
           if not AssertMinCount(i) then exit;
-          FStack.Push(FStack.Peek(i));
+          FStack.PushCopy(i);
         end;
       DW_OP_swap: begin
           if not AssertMinCount(2) then exit;
-          Entry := FStack.Peek(0);
-          FStack.Modify(0, FStack.Peek(1));
+          Entry := FStack.Peek^;
+          FStack.Copy(1, 0);
           FStack.Modify(1, Entry);
         end;
       DW_OP_rot: begin
           if not AssertMinCount(3) then exit;
-          Entry := FStack.Peek(0);
-          FStack.Modify(0, FStack.Peek(1));
-          FStack.Modify(1, FStack.Peek(2));
+          Entry := FStack.Peek^;
+          FStack.Copy(1, 0);
+          FStack.Copy(2, 1);
           FStack.Modify(2, Entry);
         end;
 
       DW_OP_abs: begin
           if not AssertMinCount(1) then exit;
-          Entry := FStack.Peek(0);
-          FStack.Modify(0, abs(int64(Entry.Value.Address)), Entry.Kind); // treat as signed
+          EntryP := FStack.Peek;
+          EntryP^.Address := abs(int64(EntryP^.Address));
         end;
       DW_OP_neg: begin
           if not AssertMinCount(1) then exit;
-          Entry := FStack.Peek(0);
-          FStack.Modify(0, TDbgPtr(-(int64(Entry.Value.Address))), Entry.Kind); // treat as signed
+          EntryP := FStack.Peek;
+          EntryP^.Address := TDbgPtr(-int64(EntryP^.Address));
         end;
       DW_OP_plus: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
+          EntryP := FStack.Peek;
           {$PUSH}{$R-}{$Q-}
           //TODO: 32 bit overflow?
-          FStack.Modify(0, Entry.Value.Address+Entry2.Value.Address, lseValue); // adding signed values works via overflow
+          EntryP^.Address := Entry.Address+EntryP^.Address;
           {$POP}
+          (* TargetMem may be a constant after deref. So if SelfMem is involved, keep it. *)
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_plus_uconst: begin
           if not AssertMinCount(1) then exit;
-          Entry := FStack.Peek(0);
+          EntryP := FStack.Peek;
           {$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, Entry.Value.Address+ULEB128toOrdinal(CurData), lseValue);
+          EntryP^.Address := EntryP^.Address + ULEB128toOrdinal(CurData);
           {$POP}
         end;
       DW_OP_minus: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
+          EntryP := FStack.Peek;
           {$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, Entry2.Value.Address-Entry.Value.Address, lseValue); // adding signed values works via overflow
+          //TODO: 32 bit overflow?
+          EntryP^.Address := EntryP^.Address - Entry.Address;
           {$POP}
+          (* TargetMem may be a constant after deref. So if SelfMem is involved, keep it. *)
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_mul: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
+          EntryP := FStack.Peek;
           //{$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, TDbgPtr(int64(Entry2.Value.Address)*int64(Entry.Value.Address)), lseValue);
+          EntryP^.Address := TDbgPtr(int64(EntryP^.Address) * int64(Entry.Address));
           //{$POP}
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_div: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
+          EntryP := FStack.Peek;
           //{$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, TDbgPtr(int64(Entry2.Value.Address) div int64(Entry.Value.Address)), lseValue);
+          EntryP^.Address := TDbgPtr(int64(EntryP^.Address) div int64(Entry.Address));
           //{$POP}
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_mod: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
+          EntryP := FStack.Peek;
           //{$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, TDbgPtr(int64(Entry2.Value.Address) mod int64(Entry.Value.Address)), lseValue);
+          EntryP^.Address := TDbgPtr(int64(EntryP^.Address) mod int64(Entry.Address));
           //{$POP}
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
 
       DW_OP_and: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value.Address and Entry.Value.Address, lseValue);
+          EntryP := FStack.Peek;
+          EntryP^.Address := EntryP^.Address and Entry.Address;
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_not: begin
           if not AssertMinCount(1) then exit;
-          Entry := FStack.Peek(0);
-          FStack.Modify(0, not Entry2.Value.Address and Entry.Value.Address, Entry.Kind);
+          EntryP := FStack.Peek;
+          EntryP^.Address := not EntryP^.Address;
         end;
       DW_OP_or: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value.Address or Entry.Value.Address, lseValue);
+          EntryP := FStack.Peek;
+          EntryP^.Address := EntryP^.Address or Entry.Address;
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_xor: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value.Address xor Entry.Value.Address, lseValue);
+          EntryP := FStack.Peek;
+          EntryP^.Address := EntryP^.Address xor Entry.Address;
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_shl: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value.Address shl Entry.Value.Address, lseValue);
+          EntryP := FStack.Peek;
+          EntryP^.Address := EntryP^.Address shl Entry.Address;
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_shr: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value.Address shr Entry.Value.Address, lseValue);
+          EntryP := FStack.Peek;
+          EntryP^.Address := EntryP^.Address shr Entry.Address;
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
       DW_OP_shra: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          if Entry.Value.Address > 0 then
-            FStack.Modify(0, Entry2.Value.Address div (1 shl (Entry.Value.Address - 1)), lseValue);
+          EntryP := FStack.Peek;
+          EntryP^.Address := TDBGPtr( int64(EntryP^.Address) div int64(1 shl (Entry.Address - 1)) );
+          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+            EntryP^.MType := Entry.MType;
         end;
 
       DW_OP_skip: begin
@@ -2176,62 +2194,72 @@ begin
           if not AssertMinCount(1) then exit;
           Entry  := FStack.Pop;
           x := ReadSignedFromExpression(CurData, 2);
-          if Entry.Value.Address <> 0 then
+          if Entry.Address <> 0 then
             CurData := CurData + x;
         end;
 
       DW_OP_eq: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          if Entry.Value.Address = Entry2.Value.Address
-          then FStack.Modify(0, 1, lseValue)
-          else FStack.Modify(0, 0, lseValue);
+          EntryP := FStack.Peek;
+          if Entry.Address = EntryP^.Address
+          then EntryP^.Address := 1
+          else EntryP^.Address := 0;
+          EntryP^.MType := mlfConstant;
         end;
       DW_OP_ge: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          if int64(Entry.Value.Address) >= int64(Entry2.Value.Address)
-          then FStack.Modify(0, 1, lseValue)
-          else FStack.Modify(0, 0, lseValue);
+          EntryP := FStack.Peek;
+          if int64(Entry.Address) >= int64(EntryP^.Address)
+          then EntryP^.Address := 1
+          else EntryP^.Address := 0;
+          EntryP^.MType := mlfConstant;
         end;
       DW_OP_gt: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          if int64(Entry.Value.Address) > int64(Entry2.Value.Address)
-          then FStack.Modify(0, 1, lseValue)
-          else FStack.Modify(0, 0, lseValue);
+          EntryP := FStack.Peek;
+          if int64(Entry.Address) > int64(EntryP^.Address)
+          then EntryP^.Address := 1
+          else EntryP^.Address := 0;
+          EntryP^.MType := mlfConstant;
         end;
       DW_OP_le: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          if int64(Entry.Value.Address) <= int64(Entry2.Value.Address)
-          then FStack.Modify(0, 1, lseValue)
-          else FStack.Modify(0, 0, lseValue);
+          EntryP := FStack.Peek;
+          if int64(Entry.Address) <= int64(EntryP^.Address)
+          then EntryP^.Address := 1
+          else EntryP^.Address := 0;
+          EntryP^.MType := mlfConstant;
         end;
       DW_OP_lt: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          if int64(Entry.Value.Address) < int64(Entry2.Value.Address)
-          then FStack.Modify(0, 1, lseValue)
-          else FStack.Modify(0, 0, lseValue);
+          EntryP := FStack.Peek;
+          if int64(Entry.Address) < int64(EntryP^.Address)
+          then EntryP^.Address := 1
+          else EntryP^.Address := 0;
+          EntryP^.MType := mlfConstant;
         end;
       DW_OP_ne: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          Entry2 := FStack.Peek(0);
-          if Entry.Value.Address <> Entry2.Value.Address
-          then FStack.Modify(0, 1, lseValue)
-          else FStack.Modify(0, 0, lseValue);
+          EntryP := FStack.Peek;
+          if Entry.Address <> EntryP^.Address
+          then EntryP^.Address := 1
+          else EntryP^.Address := 0;
+          EntryP^.MType := mlfConstant;
         end;
 
       DW_OP_piece: begin
           if not AssertMinCount(1) then exit; // no piece avail
-          FStack.Push(0, lsePart);
+          x := ReadUnsignedFromExpression(CurData, 0);
+          Entry :=  FStack.Pop;
+// TODO: assemble data // Not implemented
+// If entry is an address (not a register) then it points to the value
+          SetError(fpErrLocationParser);
           exit;
         end;
 
@@ -2241,7 +2269,7 @@ begin
           SetError;
           exit;
         end;
-        Push(FCurrentObjectAddress, lseValue);
+        Push(FCurrentObjectAddress);
       end;
 (*
   // --- DWARF3 ---
@@ -2262,26 +2290,17 @@ begin
   end;
 end;
 
-function TDwarfLocationExpression.ResultKind: TDwarfLocationStackEntryKind;
+function TDwarfLocationExpression.ResultData: TFpDbgMemLocation;
 begin
   if FStack.Count > 0 then
-    Result := FStack.PeekKind
+    Result := FStack.Pop
   else
-    Result := lseError;
+    Result := InvalidLoc;
 end;
 
-function TDwarfLocationExpression.ResultData: TDbgPtr;
+procedure TDwarfLocationExpression.Push(AValue: TFpDbgMemLocation);
 begin
-  if FStack.Count > 0 then
-    Result := FStack.Peek.Value.Address
-  else
-    Result := 0;
-end;
-
-procedure TDwarfLocationExpression.Push(AValue: TFpDbgMemLocation;
-  AKind: TDwarfLocationStackEntryKind);
-begin
-  FStack.Push(AValue, AKind);
+  FStack.Push(AValue);
 end;
 
 { TDwarfInformationEntry }
