@@ -3183,11 +3183,11 @@ begin
   if WarnIDEPkg and not FCompileDesignTimePkg
       and (LazPackage.PackageType=lptDesignTime) then
   begin
-    MsgResult:=IDEQuestionDialog('Warning',
-        'Package "'+LazPackage.Name+'" is designtime only, so it should only be compiled into the IDE, and not with the project settings.'#13
-        +'Please use "Install" or "Tools / Build Lazarus" to build the IDE packages.',
-        mtWarning,[mrYes,'Compile with project settings',
-        mrYesToAll,'Compile and do not ask again',mrCancel]);
+    MsgResult:=IDEQuestionDialog(dlgMsgWinColorUrgentWarning,
+        Format(lisPackageIsDesigntimeOnlySoItShouldOnlyBeCompiledInt, [
+          LazPackage.Name, #13]),
+        mtWarning, [mrYes, lisCompileWithProjectSettings,
+        mrYesToAll, lisCompileAndDoNotAskAgain, mrCancel]);
     case MsgResult of
     mrYes: ;
     mrYesToAll:

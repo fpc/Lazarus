@@ -1970,6 +1970,12 @@ resourcestring
   dlgMsgWinColorUrgentHint      = 'Hint';
   dlgMsgWinColorUrgentNote      = 'Note';
   dlgMsgWinColorUrgentWarning   = 'Warning';
+  lisPackageIsDesigntimeOnlySoItShouldOnlyBeCompiledInt = 'Package "%s" is '
+    +'designtime only, so it should only be compiled into the IDE, and not '
+    +'with the project settings.%sPlease use "Install" or "Tools / Build '
+    +'Lazarus" to build the IDE packages.';
+  lisCompileWithProjectSettings = 'Compile with project settings';
+  lisCompileAndDoNotAskAgain = 'Compile and do not ask again';
   dlgMsgWinColorUrgentImportant = 'Important';
   dlgMsgWinColorUrgentError     = 'Error';
   dlgMsgWinColorUrgentFatal     = 'Fatal';
