@@ -455,21 +455,22 @@ procedure TMainForm.ShowOptions;
 
 begin
   With TOptionsForm.Create(Self) do
-    begin
-    ShowOnStartUp:=FShowOnStartUp;
-    ShowOnMessage:=FShowOnmessage;
-    NewMessageAtBottom:=FAtBottom;
-    NewMessageVisible:=FKeepVisible;
-    CleanLogOnNewProcess := FCleanLog;
-
-    If (ShowModal=mrOk) then
-      begin
-      FShowOnStartUp:=ShowOnStartUp;
-      FShowOnmessage:=ShowOnMessage;
-      FAtBottom:=NewMessageAtBottom;
-      FKeepVisible:=NewMessageVisible;
-      SaveSettings;
-      end;
+    try
+      ShowOnStartUp:=FShowOnStartUp;
+      ShowOnMessage:=FShowOnmessage;
+      NewMessageAtBottom:=FAtBottom;
+      NewMessageVisible:=FKeepVisible;
+      CleanLogOnNewProcess := FCleanLog;
+      If (ShowModal=mrOk) then
+        begin
+        FShowOnStartUp:=ShowOnStartUp;
+        FShowOnmessage:=ShowOnMessage;
+        FAtBottom:=NewMessageAtBottom;
+        FKeepVisible:=NewMessageVisible;
+        SaveSettings;
+        end;
+    finally
+       Free;
     end;
 end;
 
