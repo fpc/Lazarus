@@ -36,8 +36,8 @@ begin
     crIBeam       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.IBeamCursor));
     crSizeNS,
     crVSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpDownCursor));
-    crSizeNESW    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftRightCursor, -45) ));
-    crSizeNWSE    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftRightCursor,  45) ));
+    crSizeNESW    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftRightCursor,  45) ));
+    crSizeNWSE    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftRightCursor, -45) ));
     crSizeWE,
     crHSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftRightCursor));
     crSizeN       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpCursor));
