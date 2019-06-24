@@ -680,6 +680,10 @@ begin
   PrevMenu.retain;
 
   PrevLCLMenu := CurLCLMenu;
+
+  if (lNSMenu.isKindOfClass(TCocoaMenu)) then
+    TCocoaMenu(lNSMenu).attachAppleMenu();
+
   NSApp.setMainMenu(lNSMenu);
   CurLCLMenu := ALCLMenu;
 

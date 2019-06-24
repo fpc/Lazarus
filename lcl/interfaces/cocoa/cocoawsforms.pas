@@ -367,7 +367,6 @@ begin
       if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
       begin
         CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
-        TCocoaMenu(ACustForm.Menu.Handle).attachAppleMenu();
       end
       else
         debugln('Warning: Menu does not have a valid handle.');
