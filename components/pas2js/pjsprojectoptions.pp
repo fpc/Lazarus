@@ -75,14 +75,14 @@ Procedure SetDefaultWebRunParams(RunParams : TAbstractRunParamsOptionsMode);
 
 begin
   ResetRunParams(RunParams);
-  RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSBrowser) $(Pas2JSProjectURL)';
+  RunParams.LaunchingApplicationPathPlusParams:='"$(Pas2JSBrowser)" "$(Pas2JSProjectURL)"';
 end;
 
 Procedure SetDefaultNodeRunParams(RunParams : TAbstractRunParamsOptionsMode);
 
 begin
   ResetRunParams(RunParams);
-  RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
+  RunParams.LaunchingApplicationPathPlusParams:='"$(Pas2JSNodeJS)" "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
 end;
 
 Procedure SetPasJSCompileOptions(CompOpts: TLazCompilerOptions;
