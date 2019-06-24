@@ -365,13 +365,14 @@ type
     procedure FileOptionsChange(Sender: TObject);
   protected
     fFlags: TPEFlags;
+    FCompileDesignTimePkg: boolean;
     procedure SetLazPackage(const AValue: TLazPackage); override;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function CanCloseEditor: TModalResult; override;
-    procedure DoCompile(CompileClean, CompileRequired: boolean);
+    procedure DoCompile(CompileClean, CompileRequired, WarnIDEPkg: boolean);
     procedure DoFindInFiles;
     procedure DoFixFilesCase;
     procedure DoShowMissingFiles;
@@ -1801,12 +1802,12 @@ begin
   if MessageDlg(lisPckEditCompileEverything,
     lisPckEditReCompileThisAndAllRequiredPackages,
     mtConfirmation,[mbYes,mbNo],0)<>mrYes then exit;
-  DoCompile(true,true);
+  DoCompile(true,true,true);
 end;
 
 procedure TPackageEditorForm.CompileCleanClick(Sender: TObject);
 begin
-  DoCompile(true,false);
+  DoCompile(true,false,true);
 end;
 
 procedure TPackageEditorForm.CopyMoveToDirMenuItemClick(Sender: TObject);
@@ -1816,7 +1817,7 @@ end;
 
 procedure TPackageEditorForm.CompileBitBtnClick(Sender: TObject);
 begin
-  DoCompile(false,false);
+  DoCompile(false,false,true);
 end;
 
 procedure TPackageEditorForm.CreateMakefileClick(Sender: TObject);
@@ -3174,8 +3175,27 @@ begin
   UpdateStatusBar;
 end;
 
-procedure TPackageEditorForm.DoCompile(CompileClean, CompileRequired: boolean);
+procedure TPackageEditorForm.DoCompile(CompileClean, CompileRequired,
+  WarnIDEPkg: boolean);
+var
+  MsgResult: Integer;
 begin
+  if WarnIDEPkg and not FCompileDesignTimePkg
+      and (LazPackage.PackageType=lptDesignTime) then
+  begin
+    MsgResult:=IDEQuestionDialog('Warning',
+        'Package "'+LazPackage.Name+'" is designtime only, so it should only be compiled into the IDE, and not with the project settings.'#13
+        +'Please use "Install" or "Tools / Build Lazarus" to build the IDE packages.',
+        mtWarning,[mrYes,'Compile with project settings',
+        mrYesToAll,'Compile and do not ask again',mrCancel]);
+    case MsgResult of
+    mrYes: ;
+    mrYesToAll:
+      FCompileDesignTimePkg:=true; // store setting only while running the IDE
+                                   // when IDE restarts, ask again
+    else exit;
+    end;
+  end;
   CompileBitBtn.Enabled:=False;
   PackageEditors.CompilePackage(LazPackage,CompileClean,CompileRequired);
   UpdateTitle;
