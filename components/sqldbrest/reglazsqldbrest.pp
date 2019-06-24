@@ -503,7 +503,8 @@ begin
   try
     Frm.Schema:=S;
     cList:=GetSchemaConnections(S);
-    Frm.Connections:=cList;
+    if Assigned(cList) then
+      Frm.Connections:=cList;
     if Frm.ShowModal=mrOK then
       begin
       if Frm.SchemaModified then
@@ -520,6 +521,9 @@ end;
 
 procedure TSQLDBRestSchemaComponentEditor.ExecuteVerb(Index: Integer);
 
+Const
+  idxSave = 2;
+
 Var
   FN : UTF8String;
   S : TSQLDBRestSchema;
@@ -531,8 +535,8 @@ begin
     1,2 :
       begin
       FN:=Component.Name+'.json';
-      if GetFileName(FN, Format(SJSONFilesFilter, [allFilesMask]), Index=0) then
-        if Index=0 then
+      if GetFileName(FN, Format(SJSONFilesFilter, [allFilesMask]), Index=idxSave) then
+        if idxSave=2 then
           S.SaveToFile(FN)
         else
           begin
