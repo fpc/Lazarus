@@ -296,6 +296,7 @@ begin
   doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
   cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
   doc.callback := cb;
+  doc.wincallback := cb;
   cb.window := win;
   cnt.callback := cb;
   cnt.wincallback := cb;
@@ -708,7 +709,7 @@ begin
   cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
 
   cnt.callback := cb;
-  cnt.wincallback := cb;
+  doc.wincallback := cb;
   doc.callback := cb;
   cnt.wincallback := cb;
   cnt.isCustomRange := true;
@@ -974,7 +975,7 @@ var
 begin
   if AForm.HandleAllocated then
   begin
-    view := NSView(AForm.Handle);
+    view := NSView(AForm.Handle).lclContentView;
     if AValue then
       view.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1))
     else
