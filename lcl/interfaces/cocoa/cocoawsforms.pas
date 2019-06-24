@@ -351,28 +351,36 @@ end;
 procedure TLCLWindowCallback.Activate;
 var
   ACustForm: TCustomForm;
+  isDesign: Boolean;
 begin
   if not IsActivating then
   begin
     IsActivating:=True;
     ACustForm := Target as TCustomForm;
 
-    if (csDesigning in ACustForm.ComponentState)
-      or (Assigned(ACustForm.Menu) and (csDesigning in ACustForm.Menu.ComponentState))
-      then Exit;
+    isDesign :=
+      (csDesigning in ACustForm.ComponentState)
+      or (
+        Assigned(ACustForm.Menu)
+        and (csDesigning in ACustForm.Menu.ComponentState)
+      );
 
-    if (ACustForm.Menu <> nil) and
-       (ACustForm.Menu.HandleAllocated) then
+    // only adjust main menu, if the form is not being designed
+    if not isDesign then
     begin
-      if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
+      if (ACustForm.Menu <> nil) and
+         (ACustForm.Menu.HandleAllocated) then
       begin
-        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+        if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
+        begin
+          CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+        end
+        else
+          debugln('Warning: Menu does not have a valid handle.');
       end
       else
-        debugln('Warning: Menu does not have a valid handle.');
-    end
-    else
-      CocoaWidgetSet.SetMainMenu(0, nil);
+        CocoaWidgetSet.SetMainMenu(0, nil);
+    end;
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
     LCLSendSetFocusMsg(Target);
