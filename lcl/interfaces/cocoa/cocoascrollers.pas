@@ -53,6 +53,10 @@ type
     procedure setDocumentView(aView: NSView); override;
     procedure scrollContentViewBoundsChanged(notify: NSNotification); message 'scrollContentViewBoundsChanged:';
     procedure resetScrollRect; message 'resetScrollRect';
+
+    procedure lclUpdate; override;
+    procedure lclInvalidateRect(const r: TRect); override;
+    procedure lclInvalidate; override;
   end;
 
   { TCocoaManualScrollView }
@@ -706,6 +710,21 @@ end;
 procedure TCocoaScrollView.resetScrollRect;
 begin
   docrect:=documentVisibleRect;
+end;
+
+procedure TCocoaScrollView.lclUpdate;
+begin
+  documentView.lclUpdate;
+end;
+
+procedure TCocoaScrollView.lclInvalidateRect(const r: TRect);
+begin
+  documentView.lclInvalidateRect(r);
+end;
+
+procedure TCocoaScrollView.lclInvalidate;
+begin
+  documentView.lclInvalidate;
 end;
 
 function TCocoaScrollView.initWithFrame(ns: NSRect): id;
