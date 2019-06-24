@@ -952,8 +952,13 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetBorderStyle(
   const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  field : TCocoaTextField;
 begin
-  inherited SetBorderStyle(AWinControl, ABorderStyle);
+  field := GetTextField(AWinControl);
+  if not Assigned(field) then Exit;
+  field.setBordered_( ObjCBool(ABorderStyle <> bsNone) );
+  field.setBezeled_( ObjCBool(ABorderStyle <> bsNone) );
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
