@@ -193,6 +193,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     // WSEdit functions
     //class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
@@ -1481,6 +1482,17 @@ begin
   lRange := txt.selectedRange;
   lRange.length := NewLength;
   txt.setSelectedRange(lRange);
+end;
+
+class procedure TCocoaWSCustomMemo.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  sv: TCocoaScrollView;
+begin
+  sv := GetScrollView(AWinControl);
+  if not Assigned(sv) then Exit;
+
+  ScrollViewSetBorderStyle(sv, ABorderStyle);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
