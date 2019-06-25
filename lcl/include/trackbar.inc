@@ -70,6 +70,7 @@ begin
   TabStop := True;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
+  AutoSize := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -125,6 +126,7 @@ begin
     begin
       OldWidth:=Width;
       OldHeight:=Height;
+      Constraints.UpdateInterfaceConstraints;
       SetBounds(Left,Top,OldHeight,OldWidth);
       if HandleAllocated then
         TWSTrackBarClass(WidgetSetClass).SetOrientation(Self, FOrientation);
@@ -237,6 +239,10 @@ begin
   begin
     FTickStyle := Value;
     ApplyChanges;
+    Constraints.UpdateInterfaceConstraints;
+    DoAutoSize;
+    if HandleAllocated then
+      TWSTrackBarClass(WidgetSetClass).SetTickStyle(Self, FTickStyle);
   end;
 end;
 

@@ -264,6 +264,9 @@ type
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const {%H-}AOrientation: TTrackBarOrientation); override;
+    class procedure GetPreferredSize(const {%H-}AWinControl: TWinControl;
+                        var {%H-}PreferredWidth, PreferredHeight: integer;
+                        {%H-}WithThemeSpace: Boolean); override;
   end;
 
   { TGtk2WSCustomTreeView }
@@ -441,6 +444,29 @@ begin
     if B then
       ATrackBar.Show;
   end;
+end;
+
+class procedure TGtk2WSTrackBar.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  TrackBarWidget: PGtkWidget;
+  Requisition: TGtkRequisition;
+begin
+  if TCustomTrackBar(AWinControl).Orientation = trHorizontal then
+    TrackBarWidget := GetStyleWidget(lgsHScale)
+  else
+    TrackBarWidget := GetStyleWidget(lgsVScale);
+  // set size to default
+  gtk_scale_set_draw_value(PGtkScale(TrackBarWidget),
+                           TCustomTrackBar(AWinControl).TickStyle <> tsNone);
+  gtk_widget_set_size_request(TrackBarWidget, -1, -1);
+  // ask default size
+  gtk_widget_size_request(TrackBarWidget, @Requisition);
+  if TCustomTrackBar(AWinControl).Orientation = trHorizontal then
+    PreferredHeight := Requisition.height
+  else
+    PreferredWidth := Requisition.width;
 end;
 
 { TGtk2WSProgressBar }

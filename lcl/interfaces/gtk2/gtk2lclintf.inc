@@ -826,9 +826,15 @@ begin
       if TCustomTrackBar(SizeConstraints.Control).Orientation=trHorizontal then
       begin
         Widget:=GetStyleWidget(lgsHScale);
+        gtk_scale_set_draw_value(PGtkScale(Widget),
+                                 TCustomTrackBar(SizeConstraints.Control).TickStyle <> tsNone);
+        gtk_widget_size_request(Widget, @Widget^.Requisition);
         MinHeight:=Widget^.requisition.height;
       end else begin
         Widget:=GetStyleWidget(lgsVScale);
+        gtk_scale_set_draw_value(PGtkScale(Widget),
+                                 TCustomTrackBar(SizeConstraints.Control).TickStyle <> tsNone);
+        gtk_widget_size_request(Widget, @Widget^.Requisition);
         MinWidth:=Widget^.requisition.width;
       end;
       //DebugLn(['TGtk2WidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),' ',MinWidth,',',MinHeight]);

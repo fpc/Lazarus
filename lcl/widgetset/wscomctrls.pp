@@ -239,6 +239,7 @@ type
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); virtual;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
     class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); virtual;
+    class procedure SetTickStyle(const ATrackBar: TCustomTrackBar; const ATickStyle: TTickStyle); virtual;
   end;
   TWSTrackBarClass = class of TWSTrackBar;
 
@@ -832,6 +833,11 @@ end;
 
 class procedure TWSTrackBar.SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer);
 begin
+end;
+
+class procedure TWSTrackBar.SetTickStyle(const ATrackBar: TCustomTrackBar; const ATickStyle: TTickStyle);
+begin
+  RecreateWnd(ATrackBar);
 end;
 
 { WidgetSetRegistration }
