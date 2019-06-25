@@ -1378,6 +1378,7 @@ resourcestring
 
   // Desktop options
   dlgManageDesktops = 'Manage desktops';
+  dlgSaveCurrentDesktop = 'Save current desktop';
   dlgSaveCurrentDesktopAs = 'Save current desktop as';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
   dlgCannotUseDockedUndockedDesktop = 'You cannot use docked desktop in undocked environment and vice versa.';

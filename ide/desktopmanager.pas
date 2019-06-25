@@ -84,6 +84,8 @@ type
     DesktopName: string;
   end;
 
+  { TShowDesktopsToolButton }
+
   TShowDesktopsToolButton = class(TIDEToolButton)
   private class var
     DoChangeDesktopName: string;
@@ -91,6 +93,7 @@ type
     procedure ChangeDesktop(Sender: TObject);
     class procedure DoChangeDesktop({%H-}Data: PtrInt);
     procedure SaveAsDesktop(Sender: TObject);
+    procedure SaveDesktop(Sender: TObject);
     procedure ToggleAsDebugDesktop(Sender: TObject);
     procedure MenuOnPopup(Sender: TObject);
 
@@ -241,6 +244,7 @@ begin
 end;
 
 procedure TShowDesktopsToolButton.RefreshMenu;
+
   procedure _AddItem(const _Desktop: TCustomDesktopOpt; const _Parent: TMenuItem;
     const _OnClick: TNotifyEvent; const _AllowIncompatible: Boolean);
   var
@@ -266,17 +270,24 @@ var
   xPM: TPopupMenu;
   i: Integer;
   xDesktop: TCustomDesktopOpt;
-  xMISaveAs, xMISaveAsNew, xMIToggleDebug: TMenuItem;
+  xMISave, xMISaveAs, xMISaveAsNew, xMIToggleDebug: TMenuItem;
 begin
   xPM := DropdownMenu;
   xPM.Items.Clear;
 
+  xMISave := TMenuItem.Create(xPM);
+  xMISave.Caption := dlgSaveCurrentDesktop;
+  xMISave.ImageIndex := IDEImages.LoadImage('laz_save');
+  xMISave.OnClick := @SaveDesktop;
+
   xMISaveAs := TMenuItem.Create(xPM);
   xMISaveAs.Caption := dlgSaveCurrentDesktopAs;
-  xMISaveAs.ImageIndex := IDEImages.LoadImage('laz_save');
+  xMISaveAs.ImageIndex := IDEImages.LoadImage('menu_saveas');
+
   xMIToggleDebug := TMenuItem.Create(xPM);
   xMIToggleDebug.Caption := dlgToggleDebugDesktop;
   xMIToggleDebug.ImageIndex := IDEImages.LoadImage('debugger');
+
   // Saved desktops
   for i:=0 to EnvironmentOptions.Desktops.Count-1 do
   begin
@@ -288,6 +299,7 @@ begin
 
   if xPM.Items.Count > 0 then
     xPM.Items.AddSeparator;
+  xPM.Items.Add(xMISave);
   xPM.Items.Add(xMISaveAs);
   xPM.Items.Add(xMIToggleDebug);
 
@@ -319,6 +331,11 @@ begin
   end;
 
   SaveCurrentDesktop(xDesktopName, xShowOverwriteDlg);
+end;
+
+procedure TShowDesktopsToolButton.SaveDesktop(Sender: TObject);
+begin
+  SaveCurrentDesktop(EnvironmentOptions.ActiveDesktopName, False);
 end;
 
 procedure TShowDesktopsToolButton.ToggleAsDebugDesktop(Sender: TObject);
