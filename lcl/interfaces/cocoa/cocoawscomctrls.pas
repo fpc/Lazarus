@@ -1990,9 +1990,16 @@ class procedure TCocoaWSTrackBar.GetPreferredSize(
   WithThemeSpace: Boolean);
 const
   MinSliderWidth: Integer = 100;
+var
+  lSlider: TCocoaSlider;
 begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
   TCocoaWSWinControl.GetPreferredSize(AWinControl,PreferredWidth, PreferredHeight, WithThemeSpace);
-  PreferredWidth := Max(PreferredWidth, MinSliderWidth);
+  lSlider := TCocoaSlider(AWinControl.Handle);
+  if lSlider.isVertical<>0 then
+    PreferredHeight := Max(PreferredHeight, MinSliderWidth)
+  else
+    PreferredWidth := Max(PreferredWidth, MinSliderWidth);
 end;
 
 end.
