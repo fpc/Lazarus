@@ -646,7 +646,7 @@ begin
     begin
       Res := IL.ResolutionForControl[0, Sender];
       Res.Draw(Sender.Canvas,
-               ARect.Left+(Scale96ToFont(ComponentPaletteImageWidth)-Res.Width) div 2 + 2,
+               ARect.Left,
                ARect.Top+(ARect.Bottom-ARect.Top-Res.Height) div 2, II);
     end;
   end;
