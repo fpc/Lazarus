@@ -1444,6 +1444,7 @@ begin
   TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
+  txt.preventInput := csDesigning in TCustomMemo(AWinControl).ComponentState;
   Result := TLCLIntfHandle(scr);
 end;
 

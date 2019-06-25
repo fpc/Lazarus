@@ -109,8 +109,11 @@ type
     keyCaptured: Boolean;
     wantReturns: Boolean;
 
+    preventInput: Boolean;
+
     procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
+    function canBecomeKeyView: Boolean; override;
     function undoManager: NSUndoManager; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -995,7 +998,12 @@ end;
 
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := not preventInput;
+end;
+
+function TCocoaTextView.canBecomeKeyView: Boolean;
+begin
+  Result := not preventInput;
 end;
 
 function TCocoaTextView.undoManager: NSUndoManager;
