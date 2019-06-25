@@ -253,6 +253,7 @@ type
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const {%H-}NewPosition: integer); override;
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
     class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TCocoaWSCustomTreeView }
@@ -1982,6 +1983,16 @@ begin
   if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
   lSlider := TCocoaSlider(ATrackBar.Handle);
   lSlider.lclAddManTick(ATick);
+end;
+
+class procedure TCocoaWSTrackBar.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+const
+  MinSliderWidth: Integer = 100;
+begin
+  TCocoaWSWinControl.GetPreferredSize(AWinControl,PreferredWidth, PreferredHeight, WithThemeSpace);
+  PreferredWidth := Max(PreferredWidth, MinSliderWidth);
 end;
 
 end.
