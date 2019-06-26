@@ -3608,6 +3608,10 @@ msgstr "Benutzervorgaben"
 msgid "Run Parameters"
 msgstr "Start-Parameter"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "Aktuellen Desktop speichern unter"
@@ -7035,6 +7039,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Kompilieren"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -7087,6 +7095,10 @@ msgstr "Hinweis: Lade alte Einstellungsdatei der CodeTools: "
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Kompilieren"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12416,6 +12428,10 @@ msgstr "fehlende .lpk-Datei"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "lrs Include-Dateien"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15190,6 +15206,11 @@ msgstr ", Package %s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Package-Info"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

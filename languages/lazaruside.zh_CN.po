@@ -3657,6 +3657,10 @@ msgstr "用户覆盖"
 msgid "Run Parameters"
 msgstr "运行参数"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "保存当前桌面为"
@@ -7177,6 +7181,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "编译"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -7229,6 +7237,10 @@ msgstr "注意:加载旧的codetools选项文件:"
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "编译"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12645,6 +12657,10 @@ msgstr "lpk是缺少的"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Lazarus资源(.lrs)包含文件"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15435,6 +15451,11 @@ msgstr ",包%s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "包信息"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 #, fuzzy

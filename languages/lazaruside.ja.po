@@ -3635,6 +3635,10 @@ msgstr "ユーザーオーバーライド"
 msgid "Run Parameters"
 msgstr "実行時引数"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "現在のデスクトップを次の名で保存："
@@ -7070,6 +7074,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "コンパイル"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -7122,6 +7130,10 @@ msgstr "注意：古いコードツールオプションファイルを読み込
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "コンパイル"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12466,6 +12478,10 @@ msgstr "lpkがありません"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Lazarus リソース (.lrs) インクルードファイル"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15270,6 +15286,11 @@ msgstr ", パッケージ %s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "パッケージ情報"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

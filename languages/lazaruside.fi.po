@@ -3540,6 +3540,10 @@ msgstr "Käyttäjän määrittelemät"
 msgid "Run Parameters"
 msgstr "Suoritusparametrit"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "Tallenna nykyinen työpöytä nimellä"
@@ -6942,6 +6946,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Käännä"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -6994,6 +7002,10 @@ msgstr "Huom. luetaan vanha codetools-asetustiedosto: "
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Käännä"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12252,6 +12264,10 @@ msgstr "lpk puuttuu"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Lazarus resurssi (.lrs) include-tiedostot"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -14987,6 +15003,11 @@ msgstr ", paketti %s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Paketin tietoja"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

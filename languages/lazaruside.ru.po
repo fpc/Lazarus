@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-05-07 01:34+0300\n"
+"PO-Revision-Date: 2019-06-27 01:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3544,6 +3544,10 @@ msgstr "Пользовательские перекрытия"
 msgid "Run Parameters"
 msgstr "Параметры запуска"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr "Сохранить текущий рабочий стол"
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "Сохранить текущий рабочий стол как"
@@ -6953,6 +6957,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Компилировать"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr "Компилировать и больше не спрашивать"
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Компилировать в следующих режимах"
@@ -7005,6 +7013,10 @@ msgstr "ЗАМЕТКА: загружается старый файл парам�
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "компиляции"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr "Компилировать с параметрами проекта"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12327,6 +12339,10 @@ msgstr "LPK отсутствует"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Ресурсы Lazarus (.lrs)"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr "Параметры..."
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15093,6 +15109,11 @@ msgstr ", пакет %s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Сведения о пакете"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr "Пакет времени разработки \"%s\" должен устанавливаться только в IDE, его не следует собирать с параметрами проекта.%sДля сборки таких пакетов их следует установить либо пересобрать Lazarus через меню Сервис."
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

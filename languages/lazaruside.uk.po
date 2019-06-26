@@ -3558,6 +3558,10 @@ msgstr "Користувацькі перекриття"
 msgid "Run Parameters"
 msgstr "Параметри виконання"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "Зберегти поточну стільницю як"
@@ -6974,6 +6978,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Компілювати"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Компілювати в таких режимах"
@@ -7026,6 +7034,10 @@ msgstr "ЗАУВАЖЕННЯ: завантажується старий файл
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Компілювати"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12352,6 +12364,10 @@ msgstr "lpk відсутній"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Файли ресурсів Lazarus (.lrs) для включення"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15118,6 +15134,11 @@ msgstr ", пакунок %s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Інфо про пакунок"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

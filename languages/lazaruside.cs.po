@@ -3573,6 +3573,10 @@ msgstr "Uživatelské předefinování"
 msgid "Run Parameters"
 msgstr "Spustit s parametry"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "Uložit aktuální plochu jako"
@@ -6989,6 +6993,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Přeložit"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Sestavit následující režimy"
@@ -7041,6 +7049,10 @@ msgstr "Poznámka: načítání starého souboru voleb Nástrojů Kódu: "
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Přeložit"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12365,6 +12377,10 @@ msgstr "lpk chybí"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Zahrnuté soubory zdrojů (.lrs) Lazarusu"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15163,6 +15179,11 @@ msgstr ", balíček %s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Informace balíčku"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

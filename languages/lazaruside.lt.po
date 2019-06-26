@@ -3636,6 +3636,10 @@ msgstr "Naudotojo pakeitimai"
 msgid "Run Parameters"
 msgstr "Starto parametrai"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "Dabartinį darbalaukį įrašyti kitu pavadinimu"
@@ -7073,6 +7077,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Kompiliuojama"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -7125,6 +7133,10 @@ msgstr "Pastaba: įkeliami senasis CodeTools parinkčių failas: "
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Kompiliuojama"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12494,6 +12506,10 @@ msgstr "Trūksta „lpk“"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "„Lazarus“ ištekliaus įterpimi (.lrs) failai"
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15304,6 +15320,11 @@ msgstr ", paketas „%s“"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Informacija apie paketą"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

@@ -3541,6 +3541,10 @@ msgstr ""
 msgid "Run Parameters"
 msgstr ""
 
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr ""
@@ -6969,6 +6973,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Vertaleer"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -7021,6 +7029,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Vertaleer"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12302,6 +12314,10 @@ msgstr ""
 msgid "Lazarus resources (.lrs) include files"
 msgstr ""
 
+#: lazarusidestrconsts.lismacpreferences
+msgid "Preferences..."
+msgstr ""
+
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
 msgid "Macro %s"
@@ -15114,6 +15130,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
+msgstr ""
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+#, object-pascal-format
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
 msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
