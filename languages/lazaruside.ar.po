@@ -6769,6 +6769,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr ""
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -6816,6 +6820,10 @@ msgstr ""
 #: lazarusidestrconsts.liscompilestage
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
+msgstr ""
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
 msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
@@ -14403,6 +14411,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
+msgstr ""
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
 msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith

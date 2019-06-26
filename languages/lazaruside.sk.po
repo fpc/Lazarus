@@ -7101,6 +7101,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Preložiť"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -7151,6 +7155,10 @@ msgstr "Poznámka: načítanie starého súboru volieb CodeTools"
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Preložiť"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -15166,6 +15174,10 @@ msgstr ""
 #| msgid "Package Info"
 msgid "Package info"
 msgstr "Informácie o balíčku"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

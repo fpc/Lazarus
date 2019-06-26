@@ -6882,6 +6882,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Compila"
 
+#: lazarusidestrconsts.liscompileanddonotaskagain
+msgid "Compile and do not ask again"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr ""
@@ -6930,6 +6934,10 @@ msgstr "Nota: caricamento vecchio file opzioni codetools: "
 msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Compila"
+
+#: lazarusidestrconsts.liscompilewithprojectsettings
+msgid "Compile with project settings"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 #, fuzzy,badformat
@@ -14705,6 +14713,10 @@ msgstr ", pacchetto %s"
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Informazioni sul pacchetto"
+
+#: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
+msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
+msgstr ""
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."
