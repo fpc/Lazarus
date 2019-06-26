@@ -7150,6 +7150,44 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
       AddUndefine(AName);
   end;
 
+  procedure DefineOpt(const Opt, Value: string);
+  var
+    tpl: TDefineTemplate;
+    Name, Descr, OptValue: string;
+    NewAction: TDefineAction;
+  begin
+    Name:='Option $' + Opt;
+    Descr:=Format('{$%s %s}', [Opt, Value]);
+    if Value = 'ON' then
+      OptValue:='1'
+    else
+      OptValue:='0';
+    if Result <> nil then
+      tpl:=Result.FindChildByName(Name)
+    else
+      tpl:=nil;
+    if tpl = nil then begin
+      if RecursiveDefines then
+        NewAction:=da_DefineRecurse
+      else
+        NewAction:=da_Define;
+      CreateMainTemplate;
+      tpl:=TDefineTemplate.Create(Name, Descr, Opt, OptValue, NewAction);
+      Result.AddChild(tpl);
+    end
+    else begin
+      tpl.Value:=OptValue;
+      tpl.Description:=Descr;
+    end;
+  end;
+
+  procedure DefineOpt(const Opt: char; Enabled: boolean);
+  const
+    Values: array[boolean] of string = ('OFF', 'ON');
+  begin
+    DefineOpt(CompilerSwitchesNames[Opt], Values[Enabled]);
+  end;
+
   function FindControllerUnit(const AControllerName: string): string;
   type
     TControllerType = record
@@ -7728,7 +7766,7 @@ begin
     SplitCmdLineParams(CmdLine,Params);
     for i:=0 to Params.Count-1 do begin
       Param:=Params[i];
-      if Param='' then continue;
+      if Length(Param) < 2 then continue;
       p:=PChar(Param);
       if p^<>'-' then continue;
       // a parameter
@@ -7759,16 +7797,17 @@ begin
         begin
           // syntax
           inc(p,2);
-          repeat
+          while p^ <> #0 do begin
             case p^ of
             '2': CompilerMode:='ObjFPC';
             'd': CompilerMode:='Delphi';
             'o': CompilerMode:='TP';
             'p': CompilerMode:='GPC';
-            else break;
+            'a': DefineOpt('C', p[1] <> '-');  // Assertions
+            'h': DefineOpt('H', p[1] <> '-');  // ansistrings
             end;
             inc(p);
-          until false;
+          end;
         end;
 
       'M':
@@ -7802,7 +7841,40 @@ begin
                 MacOSMinSDKVersionMacro,IntToStr(Round(MacMinVer*100)));
           end;
         end;
-
+      'g':
+        begin
+          // Debug info
+          Inc(p, 2);
+          case p^ of
+            #0:
+              DefineOpt('D', True);
+            '-':
+              DefineOpt('D', False);
+            else
+              begin
+                while not (p^ in [#0, 'o']) do begin
+                  if p^ = 'w' then begin
+                    DefineOpt('D', True);
+                    break;
+                  end;
+                  Inc(p);
+                end;
+              end;
+          end;
+        end;
+      'C':
+        begin
+          // Code generator options
+          Inc(p, 2);
+          while p^ <> #0 do begin
+            case p^ of
+              'i': DefineOpt('I', p[1] <> '-');
+              'r': DefineOpt('R', p[1] <> '-');
+              'o': DefineOpt('Q', p[1] <> '-');
+            end;
+            Inc(p);
+          end;
+        end;
       end;
     end;
   finally

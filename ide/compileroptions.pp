@@ -2474,8 +2474,8 @@ function TBaseCompilerOptions.GetOptionsForCTDefines: string;
   end;
 
 begin
-  Result:=GetCustomOptions(coptParsed);
-  Add(GetSyntaxOptionsString(pcFPC));
+  Result:=MakeOptionsString([ccloNoMacroParams]);
+  Add(GetCustomOptions(coptParsed));
 end;
 
 procedure TBaseCompilerOptions.RenameMacro(const OldName, NewName: string;
