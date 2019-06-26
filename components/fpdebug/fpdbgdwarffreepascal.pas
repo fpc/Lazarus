@@ -597,14 +597,15 @@ begin
   FArrayOrStringType := iasArray;
   Result := FArrayOrStringType;
 
-  Info := InformationEntry.FirstChild;
-  if Info = nil then exit;
-
   t2 := TypeInfo;
   if (t2 = nil) or (t2.Kind <> skChar) then
     exit;
 
   // TODO: check lowbound = 1 (const)
+
+  Info := InformationEntry.FirstChild;
+  if Info = nil then
+    exit;
 
   while Info.HasValidScope do begin
     t := Info.AbbrevTag;
