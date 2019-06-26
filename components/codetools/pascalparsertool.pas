@@ -209,7 +209,8 @@ type
     // keyword lists
     procedure BuildDefaultKeyWordFunctions; override;
     function ParseType(StartPos: integer): boolean;
-    function ParseInnerClass(StartPos: integer): boolean;
+    function ParseInnerClass(StartPos: integer; ClassDesc: TCodeTreeNodeDesc): boolean;
+    function ParseInnerBasicRecord(StartPos: integer): boolean;
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
@@ -496,9 +497,9 @@ begin
   Result:=KeyWordFuncTypeDefault;
 end;
 
-function TPascalParserTool.ParseInnerClass(StartPos: integer
-  ): boolean;
-// KeyWordFunctions for parsing in a class/object/record/interface
+function TPascalParserTool.ParseInnerClass(StartPos: integer;
+  ClassDesc: TCodeTreeNodeDesc): boolean;
+// KeyWordFunctions for parsing in a class/object/advrecord/interface
 var
   p: PChar;
 begin
@@ -518,7 +519,7 @@ begin
   ';': exit(true);
   'C':
     case UpChars[p[1]] of
-    'A': if CompareSrcIdentifiers(p,'CASE') then exit(KeyWordFuncTypeRecordCase);
+    'A': if (ClassDesc=ctnRecordType) and CompareSrcIdentifiers(p,'CASE') then exit(KeyWordFuncTypeRecordCase);
     'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassClass);
     'O': if CompareSrcIdentifiers(p,'CONSTRUCTOR') then exit(KeyWordFuncClassMethod)
          else if CompareSrcIdentifiers(p,'CONST') then exit(KeyWordFuncClassConstSection);
@@ -545,7 +546,8 @@ begin
         case UpChars[p[3]] of
         'C': if CompareSrcIdentifiers(p,'PROCEDURE') then exit(KeyWordFuncClassMethod);
         'P': if CompareSrcIdentifiers(p,'PROPERTY') then exit(KeyWordFuncClassProperty);
-        'T': if CompareSrcIdentifiers(p,'PROTECTED') then exit(KeyWordFuncClassSection);
+        'T': if (ClassDesc<>ctnRecordType) and CompareSrcIdentifiers(p,'PROTECTED') then
+               exit(KeyWordFuncClassSection);
         end;
       end;
     'U':
@@ -573,6 +575,35 @@ begin
     then exit(KeyWordFuncClassSection);
   'V':
     if CompareSrcIdentifiers(p,'VAR') then exit(KeyWordFuncClassVarSection);
+  end;
+  Result:=KeyWordFuncClassIdentifier;
+end;
+
+function TPascalParserTool.ParseInnerBasicRecord(StartPos: integer): boolean;
+// KeyWordFunctions for parsing in a *non* advanced record
+var
+  p: PChar;
+begin
+  if StartPos>SrcLen then exit(false);
+  p:=@Src[StartPos];
+  case UpChars[p^] of
+  '[':
+    begin
+    ReadAttribute;
+    exit(true);
+    end;
+  '(':
+    begin
+      ReadTilBracketClose(true);
+      exit(true);
+    end;
+  ';': exit(true);
+  'C':
+    case UpChars[p[1]] of
+    'A': if CompareSrcIdentifiers(p,'CASE') then exit(KeyWordFuncTypeRecordCase);
+    end;
+  'E':
+    if CompareSrcIdentifiers(p,'END') then exit(false);
   end;
   Result:=KeyWordFuncClassIdentifier;
 end;
@@ -4446,7 +4477,7 @@ begin
     if CurPos.Flag<>cafSemicolon then begin
       // parse till "end" of interface/dispinterface/objcprotocol
       repeat
-        if not ParseInnerClass(CurPos.StartPos) then
+        if not ParseInnerClass(CurPos.StartPos,IntfDesc) then
         begin
           if CurPos.Flag<>cafEnd then
             SaveRaiseStringExpectedButAtomFound(20170421195747,'end');
@@ -4524,17 +4555,20 @@ var
   IsForward: Boolean;
   ClassDesc: TCodeTreeNodeDesc;
   ClassNode: TCodeTreeNode;
-  IsHelper: Boolean;
+  IsHelper, IsBasicRecord: Boolean;
   HelperForNode: TCodeTreeNode;
 begin
   //debugln(['TPascalParserTool.KeyWordFuncTypeClass START ',GetAtom,' ',CleanPosToStr(CurPos.StartPos),' ',CurNode.DescAsString]);
   // class or 'class of' start found
+  IsBasicRecord:=false;
   if UpAtomIs('CLASS') then
     ClassDesc:=ctnClass
   else if UpAtomIs('OBJECT') then
     ClassDesc:=ctnObject
-  else if UpAtomIs('RECORD') then
-    ClassDesc:=ctnRecordType
+  else if UpAtomIs('RECORD') then begin
+    ClassDesc:=ctnRecordType;
+    IsBasicRecord:=not (cmsAdvancedRecords in Scanner.CompilerModeSwitches);
+  end
   else if UpAtomIs('OBJCCLASS') then
     ClassDesc:=ctnObjCClass
   else if UpAtomIs('OBJCCATEGORY') then
@@ -4581,22 +4615,18 @@ begin
       SaveRaiseCharExpectedButAtomFound(20170421195756,';');
   end else begin
     if CurPos.Flag=cafWord then begin
-      if UpAtomIs('SEALED') then begin
-        while UpAtomIs('SEALED') do begin
-          CreateChildNode;
-          CurNode.Desc:=ctnClassSealed;
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-          ReadNextAtom;
-        end;
-      end else if UpAtomIs('ABSTRACT') then begin
-        while UpAtomIs('ABSTRACT') do begin
-          CreateChildNode;
-          CurNode.Desc:=ctnClassAbstract;
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-          ReadNextAtom;
-        end;
+      if (ClassDesc=ctnClass) and UpAtomIs('SEALED') then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnClassSealed;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+        ReadNextAtom;
+      end else if (ClassDesc=ctnClass) and UpAtomIs('ABSTRACT') then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnClassAbstract;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+        ReadNextAtom;
       end;
       if UpAtomIs('EXTERNAL') then begin
         if (ClassDesc in [ctnObjCClass,ctnObjCCategory])
@@ -4684,16 +4714,29 @@ begin
       CurNode.Desc:=ctnClassPublic;
     CurNode.StartPos:=LastAtoms.GetPriorAtom.EndPos;
     // parse till "end" of class/object
-    repeat
-      //DebugLn(['TPascalParserTool.KeyWordFuncTypeClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
-      if not ParseInnerClass(CurPos.StartPos) then
-      begin
-        if CurPos.Flag<>cafEnd then
-          SaveRaiseStringExpectedButAtomFound(20170421195803,'end');
-        break;
-      end;
-      ReadNextAtom;
-    until false;
+    if IsBasicRecord then begin
+      repeat
+        //DebugLn(['TPascalParserTool.KeyWordFuncTypeClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
+        if not ParseInnerBasicRecord(CurPos.StartPos) then
+        begin
+          if CurPos.Flag<>cafEnd then
+            SaveRaiseStringExpectedButAtomFound(20190626160145,'end');
+          break;
+        end;
+        ReadNextAtom;
+      until false;
+    end else begin
+      repeat
+        //DebugLn(['TPascalParserTool.KeyWordFuncTypeClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
+        if not ParseInnerClass(CurPos.StartPos,ClassDesc) then
+        begin
+          if CurPos.Flag<>cafEnd then
+            SaveRaiseStringExpectedButAtomFound(20170421195803,'end');
+          break;
+        end;
+        ReadNextAtom;
+      until false;
+    end;
     // end last sub section
     if CurNode.Desc in AllClassSubSections then begin
       CurNode.EndPos:=CurPos.StartPos;

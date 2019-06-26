@@ -44,6 +44,7 @@ type
   published
     procedure TestAtomRing;
     procedure TestRecord_ClassOperators;
+    procedure TestRecord_Nonkeywords;
     procedure TestDeprecated;
     procedure TestMissingGenericKeywordObjFPCFail;
     procedure TestParseGenericsDelphi;
@@ -326,6 +327,7 @@ procedure TTestPascalParser.TestRecord_ClassOperators;
 begin
   StartProgram;
   Add([
+    '{$modeswitch advancedrecords}',
     'type',
     '  TFlag = (flag1);',
     '{$Define FPC_HAS_MANAGEMENT_OPERATORS}',
@@ -376,6 +378,21 @@ begin
     '',
     'begin'
     ]);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestRecord_Nonkeywords;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  t = record',
+  '    public: word;',
+  '    private: word;',
+  '    protected: word;',
+  '    published: word;',
+  '  end;',
+  'begin']);
   ParseModule;
 end;
 
