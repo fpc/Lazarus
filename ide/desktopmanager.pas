@@ -192,7 +192,8 @@ begin
     Exit;
   end;
 
-  if EnvironmentOptions.DebugDesktopName = aDesktopName then
+  if (EnvironmentOptions.DebugDesktopName = aDesktopName) or
+      (EnvironmentOptions.ActiveDesktopName = aDesktopName) then
     EnvironmentOptions.DebugDesktopName := ''
   else
     EnvironmentOptions.DebugDesktopName := aDesktopName;
