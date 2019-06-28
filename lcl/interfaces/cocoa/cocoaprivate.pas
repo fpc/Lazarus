@@ -87,6 +87,7 @@ type
     procedure SetTabSuppress(ASuppress: Boolean);
 
     function scrollWheel(Event: NSEvent): Boolean;
+    function CanFocus: Boolean;
     // size, pos events
     procedure frameDidChange(sender: id);
     procedure boundsDidChange(sender: id);
@@ -381,6 +382,7 @@ function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 
 function NSViewIsLCLEnabled(v: NSView): Boolean;
 function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+function NSViewCanFocus(v: NSView): Boolean;
 
 implementation
 
@@ -403,6 +405,22 @@ begin
     end;
     v:=v.superview;
   end;
+end;
+
+function NSViewCanFocus(v: NSView): Boolean;
+var
+  cb: ICommonCallback;
+begin
+  if Assigned(v) then
+  begin
+    cb := v.lclGetCallback;
+    if Assigned(cb) then
+      Result := cb.CanFocus
+    else
+      Result := true;
+  end
+  else
+    Result := false;
 end;
 
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;

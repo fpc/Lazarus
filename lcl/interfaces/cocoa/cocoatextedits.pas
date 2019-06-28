@@ -109,8 +109,6 @@ type
     keyCaptured: Boolean;
     wantReturns: Boolean;
 
-    preventInput: Boolean;
-
     procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function undoManager: NSUndoManager; override;
@@ -554,7 +552,7 @@ end;
 
 function TCocoaSpinEditStepper.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
-  Result:=true;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaSpinEditStepper.mouseDown(event: NSEvent);
@@ -897,7 +895,7 @@ end;
 
 function TCocoaTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 function TCocoaTextField.lclGetCallback: ICommonCallback;
@@ -997,7 +995,7 @@ end;
 
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := not preventInput;
+  Result := NSViewCanFocus(Self);
 end;
 
 function TCocoaTextView.undoManager: NSUndoManager;
@@ -1154,7 +1152,7 @@ end;
 
 function TCocoaSecureTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaSecureTextField.resetCursorRects;
@@ -1293,7 +1291,7 @@ end;
 
 function TCocoaComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaComboBox.textDidChange(notification: NSNotification);
@@ -1484,7 +1482,7 @@ end;
 
 function TCocoaReadOnlyComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaReadOnlyComboBox.dealloc;
@@ -1978,7 +1976,7 @@ end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;
