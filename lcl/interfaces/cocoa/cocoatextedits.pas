@@ -113,7 +113,6 @@ type
 
     procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
-    function canBecomeKeyView: Boolean; override;
     function undoManager: NSUndoManager; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -997,11 +996,6 @@ begin
 end;
 
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
-begin
-  Result := not preventInput;
-end;
-
-function TCocoaTextView.canBecomeKeyView: Boolean;
 begin
   Result := not preventInput;
 end;
