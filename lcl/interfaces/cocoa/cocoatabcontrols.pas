@@ -544,10 +544,16 @@ end;
 
 procedure TCocoaTabControl.mouseDown(event: NSEvent);
 var
-  res : Boolean;
+  itm : NSTabViewItem;
 begin
-  res := callback.MouseUpDownEvent(event, false, true);
-  if not Assigned(callback) or not res then
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if Assigned(itm) then
+  begin
+    inherited mouseDown(event);
+    Exit;
+  end;
+
+  if not (Assigned(callback) and callback.MouseUpDownEvent(event, false, true)) then
   begin
     inherited mouseDown(event);
 
