@@ -79,6 +79,9 @@ type
     function NotImplemented(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function NotImplementedData(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
 
+    procedure MakeCopy;
+
+
     case ExpResultKind: TWatchExpectationResultKind of
       rkMatch: ();
       rkInteger: (
@@ -239,6 +242,10 @@ type
       AStackFrame: Integer = 0; AMinFpc: Integer = 0; AMinDbg: Integer = 0
     ): PWatchExpectation;
 
+    procedure AddIndexFromPrevious(IndexNames: array of string;
+      ValueIndex: array of integer; AnPreviousOffset: Integer = 0);
+
+
     procedure Clear;
     function Count: Integer;
     procedure EvaluateWatches;
@@ -278,6 +285,7 @@ function weDynArray(const AExpVal: Array of TWatchExpectationResult; AExpFullLen
 
 // common arrays: weTttArray(weChar([...]))
 function weChar(const AExpVal: array of char; ATypeName: String=#1): TWatchExpectationResultArray;
+function weWideChar(const AExpVal: array of char; ATypeName: String=#1): TWatchExpectationResultArray;
 function weInteger(const AExpVal: array of Int64; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResultArray;
 function weAnsiStr(const AExpVal: array of string; ATypeName: String=#1): TWatchExpectationResultArray;
 function weShortStr(const AExpVal: array of string; ATypeName: String=#1): TWatchExpectationResultArray;
@@ -543,6 +551,16 @@ begin
     Result[i] := weChar(AExpVal[i], ATypeName);
 end;
 
+function weWideChar(const AExpVal: array of char; ATypeName: String
+  ): TWatchExpectationResultArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(AExpVal));
+  for i := 0 to Length(AExpVal) - 1 do
+    Result[i] := weWideChar(AExpVal[i], ATypeName);
+end;
+
 function weInteger(const AExpVal: array of Int64; ATypeName: String;
   ASize: Integer): TWatchExpectationResultArray;
 var
@@ -693,6 +711,16 @@ function TWatchExpectationResult.NotImplementedData(ASymTypes: TSymbolTypes
   ): TWatchExpectationResult;
 begin
   Result := Self.AddFlag(ehNotImplementedData, ASymTypes);
+end;
+
+procedure TWatchExpectationResult.MakeCopy;
+var
+  i: Integer;
+begin
+  ExpSubResults := copy(ExpSubResults, low(ExpSubResults), high(ExpSubResults));
+  ExpSetData := copy(ExpSetData, low(ExpSetData), high(ExpSetData));
+  for i := low(ExpSubResults) to high(ExpSubResults) do
+    ExpSubResults[i].MakeCopy;
 end;
 
 { TWatchExpectationHelper }
@@ -1530,6 +1558,29 @@ function TWatchExpectationList.Add(AnExpr: string;
   AMinDbg: Integer): PWatchExpectation;
 begin
   Result := Add('', AnExpr, AnExpect, AStackFrame, AMinFpc, AMinDbg);
+end;
+
+procedure TWatchExpectationList.AddIndexFromPrevious(
+  IndexNames: array of string; ValueIndex: array of integer;
+  AnPreviousOffset: Integer);
+var
+  prev: TWatchExpectation;
+  i: Integer;
+  t: PWatchExpectation;
+  st: TSymbolType;
+begin
+  prev := FList[Count-1-AnPreviousOffset];
+  for i := 0 to high(IndexNames) do begin
+    t := Add(Prev.TstTestName + ' ['+IndexNames[i]+']',
+      prev.TstWatch.Expression+ '['+IndexNames[i]+']',
+      prev.TstExpected.ExpSubResults[ValueIndex[i]],
+      prev.TstStackFrame, prev.TstMinFpc, prev.TstMinDbg
+    );
+    t^.TstExpected.MakeCopy;
+    // copy flags from expectation for whole array
+    for st := low(TSymbolTypes) to high(TSymbolTypes) do
+      t^.AddFlag(prev.TstExpected.ExpErrorHandlingFlags[st], [st]);
+  end;
 end;
 
 procedure TWatchExpectationList.AddTypeNameAlias(ATypeName, AnAliases: String);

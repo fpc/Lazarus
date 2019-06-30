@@ -449,7 +449,6 @@ procedure TTestWatches.TestWatchesScope;
 
 var
   ExeName: String;
-  dbg: TDebuggerIntf;
   t: TWatchExpectationList;
   Src: TCommonSource;
 begin
@@ -461,7 +460,6 @@ begin
   TestCompile(Src, ExeName);
 
   AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
-  dbg := Debugger.LazDebugger;
 
   try
     t := TWatchExpectationList.Create(Self);
@@ -716,41 +714,54 @@ end;
     if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'CharDynArray'+e,  weDynArray([]                                        ));
     t.add(AName, p+'CharDynArray2'+e, weDynArray(weChar(['N', AChr1, 'M'])                 )).SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
     end;
     t.add(AName, p+'CharDynArray3'+e, weDynArray([],                        'TCharDynArray'));
     t.Add(AName, p+'CharDynArray4'+e, weDynArray(weChar(['J', AChr1, 'M']), 'TCharDynArray')).SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
     if not(ALoc in [tlPointer]) then begin
     t.Add(AName, p+'WCharDynArray'+e, weDynArray([]                        ));
-    t.Add(AName, p+'WCharDynArray2'+e,weDynArray(weChar(['W', AChr1, 'M']) )).SkipIf(ALoc = tlConst);
+    t.Add(AName, p+'WCharDynArray2'+e,weDynArray(weWideChar(['W', AChr1, 'M']) )).SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
     end;
     t.Add(AName, p+'WCharDynArray3'+e,weDynArray([]                        ));
-    t.Add(AName, p+'WCharDynArray4'+e,weDynArray(weChar(['K', AChr1, 'M']) )).SkipIf(ALoc = tlConst);
+    t.Add(AName, p+'WCharDynArray4'+e,weDynArray(weWideChar(['K', AChr1, 'M']) )).SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
     if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'IntDynArray'+e,   weDynArray([]                                           ));
     t.add(AName, p+'IntDynArray2'+e,  weDynArray(weInteger([11, 30+AOffs, 60])                )).SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
     end;
     t.add(AName, p+'IntDynArray3'+e,  weDynArray([],                            'TIntDynArray'));
     t.Add(AName, p+'IntDynArray4'+e,  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray')).SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
     t.add(AName, p+'IntDynArray5'+e,  weDynArray([],                            'TIntDynArray'));
 
     if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'AnsiDynArray'+e,  weDynArray([]                                                     ));
     t.add(AName, p+'AnsiDynArray2'+e, weDynArray(weAnsiStr(['N123', AChr1+'ab', 'M'#9])                 )).SkipIf(ALoc = tlConst);
+// TODO: currently gets skPointer instead of skAnsiString (dwarf 2)
+//    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
     end;
     t.add(AName, p+'AnsiDynArray3'+e, weDynArray([],                                     'TAnsiDynArray'));
     t.Add(AName, p+'AnsiDynArray4'+e, weDynArray(weAnsiStr(['J123', AChr1+'ab', 'M'#9]), 'TAnsiDynArray')).SkipIf(ALoc = tlConst);
+// TODO: currently gets skPointer instead of skAnsiString (dwarf 2)
+//    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
     if not(ALoc in [tlPointer]) then begin
     t.add(AName, p+'ShortStrDynArray'+e,  weDynArray([]                                                          ));
-    t.add(AName, p+'ShortStrDynArray2'+e, weDynArray(weShortStr(['N123', AChr1+'ac', 'M'#9])                     ))
+    t.add(AName, p+'ShortStrDynArray2'+e, weDynArray(weShortStr(['N123', AChr1+'ac', 'M'#9], 'ShortStr10')                     ))
       .SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
     end;
     t.add(AName, p+'ShortStrDynArray3'+e, weDynArray([],                                      'TShortStrDynArray'));
-    t.Add(AName, p+'ShortStrDynArray4'+e, weDynArray(weShortStr(['J123', AChr1+'ac', 'M'#9]), 'TShortStrDynArray'))
+    t.Add(AName, p+'ShortStrDynArray4'+e, weDynArray(weShortStr(['J123', AChr1+'ac', 'M'#9], 'ShortStr10'), 'TShortStrDynArray'))
       .SkipIf(ALoc = tlConst);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
+
 
 if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'DynDynArrayInt'+e, weDynArray([
@@ -825,6 +836,49 @@ end;
 
 
 //TODO: element by index
+
+
+    t.Add(AName, p+'ArrayEnum1'+e, weStatArray(weInteger([500+n,701,702,703])  ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
+     'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
+    t.Add(AName, p+'ArrayEnum3'+e, weStatArray(weInteger([200+n,701,702,703]), 'TArrayEnum'));
+    t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
+     'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
+
+    t.Add(AName, p+'ArrayEnumSub1'+e, weStatArray(weInteger([600+n,801])  ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.AddIndexFromPrevious(['EnVal1','EnVal2',
+     'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,  0,1,  0,1,  0,1]);
+    t.Add(AName, p+'ArrayEnumSub3'+e, weStatArray(weInteger([100+n,801]), 'TArrayEnumSub'));
+    t.AddIndexFromPrevious(['EnVal1','EnVal2',
+     'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,  0,1,  0,1,  0,1]);
+
+    t.Add(AName, p+'ArrayEnum2'+e, weStatArray(weInteger([300+n,701,702,703])  ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
+     'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
+    t.Add(AName, p+'ArrayEnum4'+e, weStatArray(weInteger([800+n,701,702,703]), 'TArrayEnumElem'));
+    t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
+     'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
+
+    t.Add(AName, p+'ArrayEnumSub2'+e, weStatArray(weInteger([400+n,801])  ))
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.AddIndexFromPrevious(['EnVal1','EnVal2',
+     'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,  0,1,  0,1,  0,1]);
+    t.Add(AName, p+'ArrayEnumSub4'+e, weStatArray(weInteger([700+n,801]), 'TArrayEnumSubElem'));
+    t.AddIndexFromPrevious(['EnVal1','EnVal2',
+     'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+     [0,1,  0,1,  0,1,  0,1]);
+
+
 
 
   t.Add(AName, p+'Enum'+e, weEnum('EnVal3', 'TEnum'));
@@ -1396,13 +1450,13 @@ procedure TTestWatches.TestWatchesTypeCast;
     e := APostFix;
     t2.Clear;
 
-    if not(ALoc in [tlConst]) then begin
       t2.AddWithoutExpect(AName, p+'Instance1_Int'+e);
       t2.AddWithoutExpect(AName, p+'Ansi5_Int'+e);
       t2.AddWithoutExpect(AName, p+'IntDynArray4_Int'+e);
       t2.EvaluateWatches;
-
       Thread := Debugger.Threads.Threads.CurrentThreadId;
+
+    if not(ALoc in [tlConst]) then begin
       val := t2.Tests[0]^.TstWatch.Values[Thread, 0].Value;
       t.Add(AName+' Int', 'PtrUInt('+p+'Instance1'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
       t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
@@ -1425,8 +1479,8 @@ if not(Compiler.SymbolType in stDwarf3Up) then begin
       t.Add(AName, 'TIntDynArray('+p+'IntDynArray4_Int'+e+')',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
       t.Add(AName, 'TIntDynArray('+val+')',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
 
-    end;
 end;
+    end;
 
     t.Add(AName+' Cardinal', 'Cardinal('+p+'Rec3S'+e+')',  weMatch('.', skSimple)).ExpectError();
     t.Add(AName+' QWord', 'QWord('+p+'Rec3S'+e+')',        weMatch('.', skSimple)).ExpectError();

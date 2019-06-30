@@ -98,6 +98,11 @@ type
   TEnum2 = (EnVal21= 3, EnVal22=4, EnVal23=7, EnVal24=10, EnVal25=30);
   TSet   = set of TEnum;
 
+  TArrayEnum = array [TEnum] of word;
+  TArrayEnumSub = array [TEnumSub] of word;
+  TArrayEnumElem = array [EnVal1..EnVal4] of word;
+  TArrayEnumSubElem = array [EnVal1..EnVal2] of word;
+
 type
   (* LOCATION: field in baseclass *)
   TMyBaseClass = class

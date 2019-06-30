@@ -261,7 +261,7 @@
   // **** Static ARRAY ****
 {$IFnDEF TestParam}
 {$IFnDEF TestArg}
-  {$IFnDEF TestPointer}
+{$IFnDEF TestPointer}
   {$IFnDEF TestAssign}
   pre__CharStatArray{e}     _O2_ array[1..5] of char       _EQ_      (CHR1, 'b',CHR1, 'B','c');                //@@ _pre3_CharStatArray;
   pre__WCharStatArray{e}    _O2_ array[1..5] of widechar   _EQ_      (CHR1, 'b',CHR1, 'B','d');                //@@ _pre3_WCharStatArray;
@@ -273,6 +273,11 @@
 //  pre__FiveStatArrayPack2{e}     _O2_ packed array [2..4] of        record a:longint; b: byte end _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArrayPack2;
 //  pre__FivePackStatArray2{e}     _O2_        array [2..4] of packed record a:longint; b: byte end _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FivePackStatArray2;
 //  pre__FivePackStatArrayPack2{e} _O2_ packed array [2..4] of packed record a:longint; b: byte end _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FivePackStatArrayPack2;
+
+  pre__ArrayEnum1{e}      _O2_  array [TEnum]          of word  _EQ_ (500+ADD,701,702,703); //@@ _pre3_ArrayEnum1;
+  pre__ArrayEnumSub1{e}   _O2_  array [TEnumSub]       of word  _EQ_ (600+ADD,801);         //@@ _pre3_ArrayEnumSub1;
+  pre__ArrayEnum2{e}      _O2_  array [EnVal1..EnVal4] of word  _EQ_ (300+ADD,701,702,703); //@@ _pre3_ArrayEnum2;
+  pre__ArrayEnumSub2{e}   _O2_  array [EnVal1..EnVal2] of word  _EQ_ (400+ADD,801);         //@@ _pre3_ArrayEnumSub2;
   {$ELSE}
   pre__CharStatArray{e}     := _pre2_CharStatArray;    pre__CharStatArray{e}[1]  := CHR1;    pre__CharStatArray{e}[3] := CHR1;          //@@ _pre3_CharStatArray;   // }}}
   pre__WCharStatArray{e}    := _pre2_WCharStatArray;   pre__WCharStatArray{e}[1] := CHR1;   pre__WCharStatArray{e}[3] := CHR1;          //@@ _pre3_WCharStatArray;  // }}}
@@ -284,8 +289,13 @@
 //  pre__FiveStatArrayPack2{e}     := _pre2_FiveStatArrayPack2;     pre__FiveStatArrayPack2{e}    [3].a := -8-ADD;          //@@ _pre3_FiveStatArrayPack2;
 //  pre__FivePackStatArray2{e}     := _pre2_FivePackStatArray2;     pre__FivePackStatArray2{e}    [3].a := -8-ADD;          //@@ _pre3_FivePackStatArray2;
 //  pre__FivePackStatArrayPack2{e} := _pre2_FivePackStatArrayPack2; pre__FivePackStatArrayPack2{e}[3].a := -8-ADD;          //@@ _pre3_FivePackStatArrayPack2;
+
+  pre__ArrayEnum1{e}    := _pre2_ArrayEnum1;    pre__ArrayEnum1{e}[EnVal1]    := 500+ADD;   //@@ _pre3_ArrayEnum1; // }}
+  pre__ArrayEnumSub1{e} := _pre2_ArrayEnumSub1; pre__ArrayEnumSub1{e}[EnVal1] := 600+ADD;   //@@ _pre3_ArrayEnumSub1; // }}
+  pre__ArrayEnum2{e}    := _pre2_ArrayEnum2;    pre__ArrayEnum2{e}[EnVal1]    := 300+ADD;   //@@ _pre3_ArrayEnum2; // }}
+  pre__ArrayEnumSub2{e} := _pre2_ArrayEnumSub2; pre__ArrayEnumSub2{e}[EnVal1] := 400+ADD;   //@@ _pre3_ArrayEnumSub2; // }}
   {$ENDIF}
-  {$ENDIF} // TestPointer
+{$ENDIF} // TestPointer
 {$ENDIF}
 {$ENDIF}
 
@@ -304,6 +314,11 @@
   pre__RecFiveStatPackArray{e}      _O2_ TRecFiveStatPackArray     _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_RecFiveStatPackArray;   // }}}
   pre__RecFivePackStatArray{e}      _O2_ TRecFivePackStatArray     _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_RecFivePackStatArray;   // }}}
   pre__RecFivePackStatPackArray{e}  _O2_ TRecFivePackStatPackArray _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_RecFivePackStatPackArray;  // }}}
+
+  pre__ArrayEnum3{e}      _O2_  TArrayEnum         _EQ_ (200+ADD,701,702,703); //@@ _pre3_ArrayEnum3;
+  pre__ArrayEnumSub3{e}   _O2_  TArrayEnumSub      _EQ_ (100+ADD,801);         //@@ _pre3_ArrayEnumSub3;
+  pre__ArrayEnum4{e}      _O2_  TArrayEnumElem     _EQ_ (800+ADD,701,702,703); //@@ _pre3_ArrayEnum4;
+  pre__ArrayEnumSub4{e}   _O2_  TArrayEnumSubElem  _EQ_ (700+ADD,801);         //@@ _pre3_ArrayEnumSub4;
   {$ELSE}
   pre__CharStatArray2{e}     := _pre2_CharStatArray2;    pre__CharStatArray2{e}[1]  := CHR1;    pre__CharStatArray2{e}[3] := CHR1;          //@@ _pre3_CharStatArray2;  // }}}
   pre__WCharStatArray2{e}    := _pre2_WCharStatArray2;   pre__WCharStatArray2{e}[1] := CHR1;   pre__WCharStatArray2{e}[3] := CHR1;          //@@ _pre3_WCharStatArray2;  // }}}
@@ -319,9 +334,15 @@
   pre__RecFiveStatPackArray{e}     := _pre2_RecFiveStatPackArray;     pre__RecFiveStatPackArray{e}    [3].a := -8-ADD;          //@@ _pre3_RecFiveStatPackArray;  // }}}
   pre__RecFivePackStatArray{e}     := _pre2_RecFivePackStatArray;     pre__RecFivePackStatArray{e}    [3].a := -8-ADD;          //@@ _pre3_RecFivePackStatArray;  // }}}
   pre__RecFivePackStatPackArray{e} := _pre2_RecFivePackStatPackArray; pre__RecFivePackStatPackArray{e}[3].a := -8-ADD;          //@@ _pre3_RecFivePackStatPackArray;  // }}}
+
+  pre__ArrayEnum3{e}    := _pre2_ArrayEnum3;    pre__ArrayEnum3{e}[EnVal1]    := 200+ADD;   //@@ _pre3_ArrayEnum3; // }}
+  pre__ArrayEnumSub3{e} := _pre2_ArrayEnumSub3; pre__ArrayEnumSub3{e}[EnVal1] := 100+ADD;   //@@ _pre3_ArrayEnumSub3; // }}
+  pre__ArrayEnum4{e}    := _pre2_ArrayEnum4;    pre__ArrayEnum4{e}[EnVal1]    := 800+ADD;   //@@ _pre3_ArrayEnum4; // }}
+  pre__ArrayEnumSub4{e} := _pre2_ArrayEnumSub4; pre__ArrayEnumSub4{e}[EnVal1] := 700+ADD;   //@@ _pre3_ArrayEnumSub4; // }}
   {$ENDIF}
 
   pre__Enum{e}  _OP_ TEnum(EnVal3);          //@@ _pre3_Enum;
+  pre__EnumA{e} _OP_ TEnum(EnVal1);          //@@ _pre3_EnumA;
   pre__Enum1{e} _OP_ TEnumSub(EnVal2);         //@@ _pre3_Enum1;   // subset;
   pre__Enum2{e} _OP_ TEnum2(EnVal21);          //@@ _pre3_Enum2;
   pre__Enum3{e} _OP_ TEnum2(EnVal25);          //@@ _pre3_Enum3;
@@ -348,6 +369,8 @@
   pre__Instance1{e}.FAnsi _OP_ CHR1+'T';  //@@
   pre__Instance1_Int{e} _OP_ PtrUInt(pre__Instance1{e});    //@@ //}}
   {$ENDIF}
+
+
 
 
 // array dyn/stat / nested of record/class/char/num ... bitpacked
