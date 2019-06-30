@@ -416,8 +416,12 @@ begin
 
     // draw roundrect
     Data.ShapeType := frstRoundRect;
-    if View.FillColor=clNone then
-      Data.FillColor := clNone
+    if View.FillColor=clNone then begin
+      if not View.ShowGradian and (View.ShadowWidth>0) then
+        Data.FillColor := clWhite
+      else
+        Data.FillColor := clNone
+    end
     else
       Data.FillColor := ColorToRGB(View.FillColor);
     if View.Frames=[] then
