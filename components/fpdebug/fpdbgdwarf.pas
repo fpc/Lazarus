@@ -2724,9 +2724,11 @@ begin
     if HighBound < LowBound then
       exit(0); // empty array // TODO: error
     // TODO: XXXXX Dynamic max limit
-    if HighBound - LowBound > 3000 then
+    {$PUSH}{$Q-}
+    if QWord(HighBound - LowBound) > 3000 then
       HighBound := LowBound + 3000;
     Result := Integer(HighBound - LowBound + 1);
+    {$POP}
   end;
 end;
 

@@ -667,8 +667,10 @@ begin
           //l := t2.OrdLowBound;
           h := Val.AsInteger;
           if h > l then begin
-            if h - l > 5000 then
+          {$PUSH}{$Q-}
+            if QWord(h - l) > 5000 then
               h := l + 5000;
+          {$POP}
           Result := h - l + 1;
           end
           else
@@ -882,8 +884,10 @@ begin
     exit; // empty string
 
   // TODO: XXXXX Dynamic max limit
-  if HighBound - LowBound > 5000 then
+  {$PUSH}{$Q-}
+  if QWord(HighBound - LowBound) > 5000 then
     HighBound := LowBound + 5000;
+  {$POP}
 
   if t.Kind = skWideString then begin
     SetLength(WResult, HighBound-LowBound+1);
