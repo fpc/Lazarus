@@ -14,16 +14,27 @@ type
   { TTestWatches }
 
   TTestWatches = class(TDBGTestCase)
+  private
+    procedure RunToPause(var ABrk: TDBGBreakPoint);
   published
     procedure TestWatchesScope;
     procedure TestWatchesValue;
     procedure TestWatchesAddressOf;
+    procedure TestWatchesTypeCast;
   end;
 
 implementation
 
 var
-  ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchAddressOf: Pointer;
+  ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue,
+  ControlTestWatchAddressOf, ControlTestWatchTypeCast: Pointer;
+
+procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint);
+begin
+  Debugger.RunToNextPause(dcRun);
+  AssertDebuggerState(dsPause);
+  ABrk.Enabled := False;
+end;
 
 procedure TTestWatches.TestWatchesScope;
 
@@ -475,32 +486,28 @@ begin
 
     (* ************ Nested Functions ************* *)
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
+    Debugger.RunToNextPause(dcRun);
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForFoo(t, 'Scope in FuncFooNestedTwice', 0);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
+    Debugger.RunToNextPause(dcRun);
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForFoo(t, 'Scope in FuncFooNestedTwice2', 0, True);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
+    Debugger.RunToNextPause(dcRun);
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForFoo(t, 'Scope in FuncFooNested', 1);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
+    Debugger.RunToNextPause(dcRun);
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForFoo(t, 'Scope in FuncFoo', 2);
@@ -509,48 +516,42 @@ begin
 
     (* ************ Class ************* *)
 
-    dbg.Run;
-    Debugger.WaitForFinishRun(); // MethodMainChildNestedTwice
+    Debugger.RunToNextPause(dcRun); // MethodMainChildNestedTwice
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in MethodMainChildNestedTwice', 0);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun(); // MethodMainChildNested
+    Debugger.RunToNextPause(dcRun); // MethodMainChildNested
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in MethodMainChildNested', 1);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun(); // MethodMainChild
+    Debugger.RunToNextPause(dcRun); // MethodMainChild
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in MethodMainChild', 2);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun(); // MethodMain
+    Debugger.RunToNextPause(dcRun); // MethodMain
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in MethodMain', 3);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun(); // MethodMainBase
+    Debugger.RunToNextPause(dcRun); // MethodMainBase
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in MethodMainBase', 4);
     t.EvaluateWatches;
     t.CheckResults;
 
-    dbg.Run;
-    Debugger.WaitForFinishRun(); // MethodMainBaseBase
+    Debugger.RunToNextPause(dcRun); // MethodMainBaseBase
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in MethodMainBaseBase', 5);
@@ -559,8 +560,7 @@ begin
 
     (* ************ Program level ************* *)
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
+    Debugger.RunToNextPause(dcRun);
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in Prg', 6);
@@ -840,7 +840,6 @@ end;
 
 var
   ExeName: String;
-  dbg: TDebuggerIntf;
   t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg, BrkFooBegin, BrkFoo, BrkFooVar, BrkFooVarBegin,
@@ -854,7 +853,6 @@ begin
   TestCompile(Src, ExeName);
 
   AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
-  dbg := Debugger.LazDebugger;
 
   try
     t := TWatchExpectationList.Create(Self);
@@ -874,12 +872,7 @@ begin
 
     (* ************ Nested Functions ************* *)
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
-    AssertDebuggerState(dsPause);
-    BrkPrg.Enabled := False;
-    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-    // At BreakPoint: Prg
+    RunToPause(BrkPrg);
     t.Clear;
 
 //t.Add( 'gvaString10[1]',   weShortStr('Lbc1',               'ShortStr10'));
@@ -907,12 +900,7 @@ begin
     t.CheckResults;
 
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
-    AssertDebuggerState(dsPause);
-    BrkFooBegin.Enabled := False;
-    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-    // At BreakPoint: FooBegin
+    RunToPause(BrkFooBegin);
     t.Clear;
     AddWatches(t, 'fooBegin local', 'fooloc', 002, 'C');
     AddWatches(t, 'fooBegin args', 'arg', 001, 'B', tlParam);
@@ -922,14 +910,9 @@ begin
 
 
     //cl := Debugger.LazDebugger.GetLocation.SrcLine;
-    dbg.Run;
-    Debugger.WaitForFinishRun();
+    RunToPause(BrkFoo);
     //// below might have been caused by the break on FooVarBegin, if there was no code.
     //if (cl > 1) and (cl = Debugger.LazDebugger.GetLocation.SrcLine) then begin dbg.Run; Debugger.WaitForFinishRun(); end; // TODO: bug, stopping twice the same breakpoint
-    AssertDebuggerState(dsPause);
-    BrkFoo.Enabled := False;
-    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-    // At BreakPoint: Foo
     t.Clear;
     AddWatches(t, 'foo local', 'fooloc', 002, 'C');
     AddWatches(t, 'foo args', 'arg', 001, 'B', tlParam);
@@ -941,12 +924,7 @@ begin
     t.CheckResults;
 
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
-    AssertDebuggerState(dsPause);
-    BrkFooVarBegin.Enabled := False;
-    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-    // At BreakPoint: FooVarBegin
+    RunToPause(BrkFooVarBegin);
     t.Clear;
     AddWatches(t, 'foo var args', 'argvar', 001, 'B', tlParam);
     t.EvaluateWatches;
@@ -954,13 +932,7 @@ begin
     // Registers are wrong in prologue.
 
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
-    //if (cl > 1) and (cl = Debugger.LazDebugger.GetLocation.SrcLine) then begin dbg.Run; Debugger.WaitForFinishRun(); end; // TODO: bug, stopping twice the same breakpoint
-    AssertDebuggerState(dsPause);
-    BrkFooVar.Enabled := False;
-    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-    // At BreakPoint: FooVar
+    RunToPause(BrkFooVar);
     t.Clear;
     AddWatches(t, 'foo var args', 'argvar', 001, 'B', tlParam);
     AddWatches(t, 'foo var ArgMyClass1',     'ArgVarMyClass1.mc',  002, 'C');
@@ -971,12 +943,7 @@ begin
     t.CheckResults;
 
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
-    AssertDebuggerState(dsPause);
-    BrkFooConstRef.Enabled := False;
-    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-    // At BreakPoint: FooConstRef;
+    RunToPause(BrkFooConstRef);
     t.Clear;
     AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
     t.EvaluateWatches;
@@ -1233,7 +1200,6 @@ t.AddWithoutExpect(AName, p+'FiveDynArray'+e);
 
 var
   ExeName: String;
-  dbg: TDebuggerIntf;
   t, tp: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg, BrkFoo, BrkFooVar, BrkFooConstRef: TDBGBreakPoint;
@@ -1247,7 +1213,6 @@ begin
   TestCompile(Src, ExeName);
 
   AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
-  dbg := Debugger.LazDebugger;
 
   try
     t := TWatchExpectationList.Create(Self);
@@ -1261,12 +1226,7 @@ begin
 
     (* ************ Nested Functions ************* *)
 
-    dbg.Run;
-    Debugger.WaitForFinishRun();
-    AssertDebuggerState(dsPause);
-    BrkPrg.Enabled := False;
-    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-    // At BreakPoint: Prg
+    RunToPause(BrkPrg);
 
     t.Clear;
     AddWatches(t,  'glob const',         '@gc', tlConst);
@@ -1278,43 +1238,36 @@ begin
     AddWatches(tp, 'glob var pointer', 'gvp_'); // pointer
     CmpWatches(t, tp);
 
+// TODO: field / field on nil object
 
-//    dbg.Run;
-//    Debugger.WaitForFinishRun();
-//    AssertDebuggerState(dsPause);
-//    BrkFoo.Enabled := False;
-//    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-//    // At BreakPoint: Foo
-//    t.Clear;
-//    AddWatches(t, 'foo local', 'fooloc', 002, 'C');
-//    t.EvaluateWatches;
-//    //t.CheckResults;
-//
-//
-//    dbg.Run;
-//    Debugger.WaitForFinishRun();
-//    AssertDebuggerState(dsPause);
-//    BrkFooVar.Enabled := False;
-//    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-//    // At BreakPoint: FooVar
-//    t.Clear;
-//    AddWatches(t, 'foo var args', 'argvar', 001, 'B', tlParam);
-//    AddWatches(t, 'foo var ArgMyBaseClass1', 'TMyClass(ArgVarMyClass2).mbc', 005, 'F');
-//    t.EvaluateWatches;
-//    //t.CheckResults;
-//
-//
-//    dbg.Run;
-//    Debugger.WaitForFinishRun();
-//    AssertDebuggerState(dsPause);
-//    BrkFooConstRef.Enabled := False;
-//    TestLogger.debugln(['line: ',Debugger.LazDebugger.GetLocation.SrcLine]);
-//    // At BreakPoint: FooConstRef;
-//    t.Clear;
-//    AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
-//    t.EvaluateWatches;
-//    //t.CheckResults;
-//
+
+    RunToPause(BrkFoo);
+    t.Clear;
+    tp.Clear;
+    AddWatches(t,  'foo local',         '@fooloc');
+    AddWatches(tp, 'foo local pointer', 'fooloc_pl_');
+    CmpWatches(t, tp);
+
+    t.Clear;
+    tp.Clear;
+    AddWatches(t,  'foo local',         '@arg');
+    AddWatches(tp, 'foo local pointer', 'fooloc_pa_');
+    CmpWatches(t, tp);
+
+
+    RunToPause(BrkFooVar);
+    t.Clear;
+    tp.Clear;
+    AddWatches(t,  'foo var args',         '@argvar', tlParam);
+    AddWatches(tp, 'foo var args pointer', 'fooloc_pv_');
+    CmpWatches(t, tp);
+
+
+    //RunToPause(BrkFooConstRef);
+    //t.Clear;
+    //AddWatches(t, 'foo const ref args', 'argconstref', tlParam);
+    //CmpWatches(t, tp);
+
 
   finally
     t.Free;
@@ -1326,13 +1279,252 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestWatchesTypeCast;
+
+  type
+    TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer);
+  var
+    t2: TWatchExpectationList;
+
+  procedure AddWatchesConv(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char;
+    ALoc: TTestLoc = tlAny; APostFix: String = '');
+
+    function SignedIntAnd(AVal: Int64; AMask: Qword): Int64;
+    begin
+      Result := AVal and AMask;
+      if (Result and (AMask xor (AMask >> 1))) <> 0 then
+        Result := Result or (not AMask);
+    end;
+  const
+    UIntConvert: array[0..3] of record TypeName: String; Mask: qword; end = (
+      ( TypeName: 'Byte';     Mask: $FF),
+      ( TypeName: 'Word';     Mask: $FFFF),
+      ( TypeName: 'LongWord'; Mask: $FFFFFFFF),
+      ( TypeName: 'QWord';    Mask: qword($FFFFFFFFFFFFFFFF))
+      //( TypeName: 'Pointer';  Mask: ),
+    );
+    SIntConvert: array[0..3] of record TypeName: String; Mask: QWord; end = (
+      ( TypeName: 'ShortInt';  Mask: $FF),
+      ( TypeName: 'SmallInt';  Mask: $FFFF),
+      ( TypeName: 'LongInt';   Mask: $FFFFFFFF),
+      ( TypeName: 'Int64';     Mask: qword($FFFFFFFFFFFFFFFF))
+    );
+
+  var
+    p, e, tn: String;
+    i, n: Integer;
+    tm: QWord  ;
+  begin
+    p := APrefix;
+    e := APostFix;
+    n := AOffs;
+
+    {$PUSH}{$Q-}{$R-}
+    for i := low(UIntConvert) to high(UIntConvert) do begin
+      tn := UIntConvert[i].TypeName;
+      tm := UIntConvert[i].Mask;
+      t.Add(AName+' '+tn, tn+'('+p+'Byte'+e+')',          weCardinal(qword((1+n)                    and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Word'+e+')',          weCardinal(qword((100+n)                  and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longword'+e+')',      weCardinal(qword((1000+n)                 and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'QWord'+e+')',         weCardinal(qword((10000+n)                and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Shortint'+e+')',      weCardinal(qword((50+n)                   and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Smallint'+e+')',      weCardinal(qword((500+n)                  and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longint'+e+')',       weCardinal(qword((5000+n)                 and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Int64'+e+')',         weCardinal(qword((50000+n)                and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'IntRange'+e+')',      weCardinal(qword((-50+n)                  and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'CardinalRange'+e+')', weCardinal(qword((50+n)                   and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Byte_2'+e+')',        weCardinal(qword((240+n)                  and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Word_2'+e+')',        weCardinal(qword((65501+n)                and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longword_2'+e+')',    weCardinal(qword((4123456789+n)           and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'QWord_2'+e+')',       weCardinal(qword((15446744073709551610+n) and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Shortint_2'+e+')',    weCardinal(qword((112+n)                  and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Smallint_2'+e+')',    weCardinal(qword((32012+n)                and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longint_2'+e+')',     weCardinal(qword((20123456+n)             and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Int64_2'+e+')',       weCardinal(qword((9123372036854775801+n)  and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Shortint_3'+e+')',    weCardinal(qword((-112+n)                 and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Smallint_3'+e+')',    weCardinal(qword((-32012+n)               and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longint_3'+e+')',     weCardinal(qword((-20123456+n)            and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Int64_3'+e+')',       weCardinal(qword((-9123372036854775801+n) and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Char'+e+')',          weCardinal(ord(AChr1), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Char2'+e+')',         weCardinal(ord(#0),    tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Char3'+e+')',         weCardinal(ord(' '),   tn, -1));
+    end;
+    for i := low(SIntConvert) to high(SIntConvert) do begin
+      tn := SIntConvert[i].TypeName;
+      tm := SIntConvert[i].Mask;
+      t.Add(AName+' '+tn, tn+'('+p+'Byte'+e+')',          weInteger(SignedIntAnd(1+n                   , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Word'+e+')',          weInteger(SignedIntAnd(100+n                 , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longword'+e+')',      weInteger(SignedIntAnd(1000+n                , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'QWord'+e+')',         weInteger(SignedIntAnd(10000+n               , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Shortint'+e+')',      weInteger(SignedIntAnd(50+n                  , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Smallint'+e+')',      weInteger(SignedIntAnd(500+n                 , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longint'+e+')',       weInteger(SignedIntAnd(5000+n                , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Int64'+e+')',         weInteger(SignedIntAnd(50000+n               , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'IntRange'+e+')',      weInteger(SignedIntAnd(-50+n                 , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'CardinalRange'+e+')', weInteger(SignedIntAnd(50+n                  , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Byte_2'+e+')',        weInteger(SignedIntAnd(240+n                 , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Word_2'+e+')',        weInteger(SignedIntAnd(65501+n               , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longword_2'+e+')',    weInteger(SignedIntAnd(4123456789+n          , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'QWord_2'+e+')',       weInteger(SignedIntAnd(15446744073709551610+n, tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Shortint_2'+e+')',    weInteger(SignedIntAnd(112+n                 , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Smallint_2'+e+')',    weInteger(SignedIntAnd(32012+n               , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longint_2'+e+')',     weInteger(SignedIntAnd(20123456+n            , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Int64_2'+e+')',       weInteger(SignedIntAnd(9123372036854775801+n , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Shortint_3'+e+')',    weInteger(SignedIntAnd(-112+n                , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Smallint_3'+e+')',    weInteger(SignedIntAnd(-32012+n              , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Longint_3'+e+')',     weInteger(SignedIntAnd(-20123456+n           , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Int64_3'+e+')',       weInteger(SignedIntAnd(-9123372036854775801+n, tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Char'+e+')',          weInteger(ord(AChr1), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Char2'+e+')',         weInteger(ord(#0),    tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'Char3'+e+')',         weInteger(ord(' '),   tn, -1));
+    end;
+    {$POP}
+
+    t.Add(AName+' Char', 'Char('+p+'Byte'+e+')',          weChar(Chr(1+n), 'Char'));
+
+    t.Add(AName+' Char', 'Char('+p+'FiveRec'+e+')',          weMatch('.', skSimple)).ExpectError();
+
+  end;
+
+  procedure AddWatchesCast(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char;
+    ALoc: TTestLoc = tlAny; APostFix: String = '');
+  var
+    p, e, val: String;
+    Thread: Integer;
+  begin
+    p := APrefix;
+    e := APostFix;
+    t2.Clear;
+
+    if not(ALoc in [tlConst]) then begin
+      t2.AddWithoutExpect(AName, p+'Instance1_Int'+e);
+      t2.AddWithoutExpect(AName, p+'Ansi5_Int'+e);
+      t2.AddWithoutExpect(AName, p+'IntDynArray4_Int'+e);
+      t2.EvaluateWatches;
+
+      Thread := Debugger.Threads.Threads.CurrentThreadId;
+      val := t2.Tests[0]^.TstWatch.Values[Thread, 0].Value;
+      t.Add(AName+' Int', 'PtrUInt('+p+'Instance1'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
+      t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1('+val+')',   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+
+      val := t2.Tests[1]^.TstWatch.Values[Thread, 0].Value;
+      t.Add(AName+' Ansi', 'PtrUInt('+p+'Ansi5'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
+if not(Compiler.SymbolType in stDwarf3Up) then begin
+      t.Add(AName+' AnsiString', 'AnsiString('+p+'Ansi5_Int'+e+')',
+        weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij')
+      ).IgnKindPtr(stDwarf2)    .IgnKind(stDwarf3Up);
+      t.Add(AName+' AnsiString', 'AnsiString('+val+')',
+        weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij')
+      ).IgnKindPtr(stDwarf2)    .IgnKind(stDwarf3Up);
+end;
+
+      val := t2.Tests[2]^.TstWatch.Values[Thread, 0].Value;
+      t.Add(AName+' DynArray', 'PtrUInt('+p+'IntDynArray4'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
+if not(Compiler.SymbolType in stDwarf3Up) then begin
+      t.Add(AName, 'TIntDynArray('+p+'IntDynArray4_Int'+e+')',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+      t.Add(AName, 'TIntDynArray('+val+')',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+
+    end;
+end;
+
+    t.Add(AName+' Cardinal', 'Cardinal('+p+'Rec3S'+e+')',  weMatch('.', skSimple)).ExpectError();
+    t.Add(AName+' QWord', 'QWord('+p+'Rec3S'+e+')',        weMatch('.', skSimple)).ExpectError();
+
+    t.Add(AName+' QWord', 'TRecord3QWord('+p+'Rec3S'+e+')',        weMatch('a *=.*18446744073709551594.*b *=.*44.*c *= .', skRecord));
+
+  end;
+
+var
+  ExeName: String;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg, BrkFoo, BrkFooVar, BrkFooConstRef: TDBGBreakPoint;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestWatchTypeCast) then exit;
+  t := nil;
+  t2 := nil;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.Pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    t2 := TWatchExpectationList.Create(Self);
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat, skString, skAnsiString, skCurrency, skVariant, skWideString];
+    t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
+    t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
+
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
+    BrkFoo         := Debugger.SetBreakPoint(Src, 'Foo');
+    BrkFooVar      := Debugger.SetBreakPoint(Src, 'FooVar');
+    BrkFooConstRef := Debugger.SetBreakPoint(Src, 'FooConstRef');
+    AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
+
+    RunToPause(BrkPrg);
+
+    t.Clear;
+    AddWatchesConv(t, 'glob const', 'gc', 000, 'A', tlConst);
+    AddWatchesConv(t, 'glob var',   'gv', 001, 'B');
+
+    AddWatchesCast(t, 'glob const', 'gc', 000, 'A', tlConst);
+    AddWatchesCast(t, 'glob var',   'gv', 001, 'B');
+    AddWatchesCast(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
+    AddWatchesCast(t, 'glob MyBaseClass1', 'MyClass1.mbc', 003, 'D');
+    AddWatchesCast(t, 'glob MyClass1',     'TMyClass(MyClass2).mc',  004, 'E');
+    AddWatchesCast(t, 'glob MyBaseClass1', 'TMyClass(MyClass2).mbc', 005, 'F');
+    AddWatchesCast(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
+    AddWatchesCast(t, 'glob var dyn array of [1]',   'gva', 006, 'L', tlArrayWrap, '[1]');
+    AddWatchesCast(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+    RunToPause(BrkFoo);
+    t.Clear;
+    AddWatchesCast(t, 'foo local', 'fooloc', 002, 'C');
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+    RunToPause(BrkFooVar);
+    t.Clear;
+    AddWatchesCast(t, 'foo var args', 'argvar', 001, 'B', tlParam);
+    AddWatchesCast(t, 'foo var ArgMyBaseClass1', 'TMyClass(ArgVarMyClass2).mbc', 005, 'F');
+    t.EvaluateWatches;
+    t.CheckResults;
+
+    RunToPause(BrkFooConstRef);
+    t.Clear;
+    AddWatchesCast(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+  finally
+    t.Free;
+    t2.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestWatches);
-  ControlTestWatch         := TestControlRegisterTest('TTestWatch');
-  ControlTestWatchScope    := TestControlRegisterTest('Scope', ControlTestWatch);
-  ControlTestWatchValue    := TestControlRegisterTest('Value', ControlTestWatch);
-  ControlTestWatchAddressOf    := TestControlRegisterTest('AddressOf', ControlTestWatch);
+  ControlTestWatch          := TestControlRegisterTest('TTestWatch');
+  ControlTestWatchScope     := TestControlRegisterTest('Scope', ControlTestWatch);
+  ControlTestWatchValue     := TestControlRegisterTest('Value', ControlTestWatch);
+  ControlTestWatchAddressOf := TestControlRegisterTest('AddressOf', ControlTestWatch);
+  ControlTestWatchTypeCast  := TestControlRegisterTest('TypeCast', ControlTestWatch);
 
 end.
 

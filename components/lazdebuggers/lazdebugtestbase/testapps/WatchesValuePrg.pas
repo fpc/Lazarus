@@ -11,8 +11,17 @@ program WatchesValuePrg;
 
 uses sysutils, Classes;
 
+type
+{$ifdef CPU64}
+  PtrUInt = type QWord;
+{$endif CPU64}
+
+{$ifdef CPU32}
+  PtrUInt = type DWord;
+{$endif CPU32}
+
 var
-  BreakDummy: Integer;
+  BreakDummy: PtrUInt;
 
 type
   TIntRange = -300..300;
@@ -56,6 +65,9 @@ type
   TRecordFive     =        record a:longint; b: byte end;
   TRecordFivePack = packed record a:longint; b: byte end;
 
+  TRecord3Int64     =        record a,b,c: Int64; end;
+  TRecord3QWord     =        record a,b,c: QWord; end;
+
   TFiveDynArray            =        array of          record a:longint; b: byte end;
   TFiveDynArrayPack        = packed array of          record a:longint; b: byte end;
   TFivePackDynArray        =        array of   packed record a:longint; b: byte end;
@@ -73,6 +85,13 @@ type
   TRecFiveStatPackArray     = packed array [2..4] of   TRecordFive;
   TRecFivePackStatArray     =        array [2..4] of   TRecordFivePack;
   TRecFivePackStatPackArray = packed array [2..4] of   TRecordFivePack;
+
+  TClass1 = class
+  public
+    FInt: integer;
+    FDynInt: TIntDynArray;
+    FAnsi: AnsiString;
+  end;
 
   TEnum  = (EnVal1, EnVal2, EnVal3, EnVal4);
   TEnumSub =  EnVal1..EnVal2;
@@ -121,10 +140,21 @@ procedure Foo(
 var
 (* LOCATION: local var *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+
+(* LOCATION: local var  pointer <each type>  FOR locals *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pl_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+(* LOCATION: local var  pointer <each type>  FOR args *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pa_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
 //TODO MyClass
 begin  // TEST_BREAKPOINT=FooBegin
   BreakDummy:= 1;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+
+(* INIT: local var  pointer <each type> *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pl_, _OP_={, _O2_={, _pre3_=@fooloc, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+
   BreakDummy:= 1; // TEST_BREAKPOINT=Foo
 end;
 
@@ -136,7 +166,13 @@ procedure FooVar(
   ArgVarMyClass2: TMyBaseClass;
   Dummy: Integer
 );
+var
+(* LOCATION: var params  pointer <each type>  FOR args *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pv_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
 begin // TEST_BREAKPOINT=FooVarBegin
+(* INIT: local var  pointer <each type> *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+
   BreakDummy:= 1;
   BreakDummy:= 1; // TEST_BREAKPOINT=FooVar
 end;

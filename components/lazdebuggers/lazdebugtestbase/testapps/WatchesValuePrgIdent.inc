@@ -60,6 +60,11 @@
   pre__Ansi4{e}         _OP_ TStrA       (CHR1+'A'#0'B'#9'b'#10#13);            //@@ _pre3_Ansi4;
   pre__Ansi5{e}         _OP_ AnsiString  (CHR1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij');          //@@ _pre3_Ansi5;
 
+  pre__Ansi5_Int{e} _O2_ PtrUInt _EQ_ (0);    //@@ _pre3_Ansi5_Int;
+  {$IFDEF TestAssign}
+  pre__Ansi5_Int{e} _OP_ PtrUInt(pre__Ansi5{e});    //@@ //}}
+  {$ENDIF}
+
   pre__PChar{e}         _OP_ PChar       ( nil );                               //@@ _pre3_PChar;
   pre__PChar2{e}        _OP_ TPChr       ( nil );                               //@@ _pre3_PChar2;
   {$IFDEF TestAssign}
@@ -124,6 +129,8 @@
 
   pre__IntDynArray5{e}   _OP_ TIntDynArray ( nil );                             //@@ _pre3_IntDynArray5;   // REAL CONST = nil
 
+  pre__IntDynArray4_Int{e} _O2_ PtrUInt _EQ_ (0);    //@@ _pre3_IntDynArray4_Int;
+
   {$IFnDEF TestPointer}
   pre__AnsiDynArray{e}    _O2_ array of AnsiString    _EQ_      (nil);          //@@ _pre3_AnsiDynArray;    // open array if used as function arg;
   pre__AnsiDynArray2{e}   _O2_ array of AnsiString    _EQ_      (nil);          //@@ _pre3_AnsiDynArray2;   // len = 3 // open array if used as function arg;
@@ -183,6 +190,8 @@
   SetLength(pre__IntDynArray4     {e}, 3);    pre__IntDynArray4{e}[0]      _OP_ 12;         //@@ // }
                                               pre__IntDynArray4{e}[1]      _OP_ 30+ADD;         //@@
                                               pre__IntDynArray4{e}[2]      _OP_ 60;         //@@
+
+  pre__IntDynArray4_Int{e} _OP_ PtrUInt(pre__IntDynArray4{e});    //@@ //}}
 
   SetLength(pre__AnsiDynArray2    {e}, 3);    pre__AnsiDynArray2{e}[0]     _OP_ 'N123';         //@@ // }
                                               pre__AnsiDynArray2{e}[1]     _OP_ CHR1+'ab';         //@@
@@ -321,9 +330,23 @@
 
 
   {$IFnDEF TestAssign}
-  pre__FiveRec{e}             _O2_ TRecordFive      _EQ_ (a:-22-ADD;b:44);          //@@ _pre3_FiveRec;
+  pre__FiveRec{e}       _O2_ TRecordFive      _EQ_ (a:-22-ADD;b:44);          //@@ _pre3_FiveRec;
+  pre__Rec3S{e}         _O2_ TRecord3Int64    _EQ_ (a:-22;b:44;c:1000+ADD);          //@@ _pre3_Rec3S;
+  pre__Rec3U{e}         _O2_ TRecord3QWord    _EQ_ (a:111;b:44;c:1000+ADD);          //@@ _pre3_Rec3U;
   {$ELSE}
-  pre__FiveRec{e}   := _pre2_FiveRec;       pre__FiveRec{e}.a := -22-ADD;          //@@ _pre3_FiveRec;  // }}
+  pre__FiveRec{e} := _pre2_FiveRec;   pre__FiveRec{e}.a := -22-ADD;          //@@ _pre3_FiveRec;  // }}}
+  pre__Rec3S{e}   := _pre2_Rec3S;     pre__Rec3S{e}.c := 1000+ADD;          //@@ _pre3_Rec3S;  // }}}
+  pre__Rec3U{e}   := _pre2_Rec3U;     pre__Rec3U{e}.c := 1000+ADD;          //@@ _pre3_Rec3U;  // }}}
+  {$ENDIF}
+
+
+  pre__Instance1{e} _O2_ TClass1 _EQ_ (nil);  //@@ _pre3_Instance1;
+  pre__Instance1_Int{e} _O2_ PtrUInt _EQ_ (0);    //@@ _pre3_Instance1_Int;
+  {$IFDEF TestAssign}
+  pre__Instance1{e} := TClass1.Create;    //@@
+  pre__Instance1{e}.FInt _OP_ 22+ADD;     //@@
+  pre__Instance1{e}.FAnsi _OP_ CHR1+'T';  //@@
+  pre__Instance1_Int{e} _OP_ PtrUInt(pre__Instance1{e});    //@@ //}}
   {$ENDIF}
 
 
