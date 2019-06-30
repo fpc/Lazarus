@@ -227,26 +227,27 @@ var
   function GetBaseType(out ADeclaration: String): Boolean;
   var
     s1, s2: String;
+    hb, lb: Int64;
   begin
     if sfSubRange in ADbgSymbol.Flags then begin
       case ADbgSymbol.Kind of
         // TODO: check bound are in size
         skInteger: begin
-            Result := ADbgSymbol.HasBounds;
-            if Result then ADeclaration := Format('%d..%d', [ADbgSymbol.OrdLowBound, ADbgSymbol.OrdHighBound]);
+            Result := ADbgSymbol.GetValueBounds(nil, lb, hb);
+            if Result then ADeclaration := Format('%d..%d', [lb, hb]);
           end;
         skCardinal: begin
-            Result := ADbgSymbol.HasBounds;
-            if Result then ADeclaration := Format('%u..%u', [QWord(ADbgSymbol.OrdLowBound), QWord(ADbgSymbol.OrdHighBound)]);
+            Result := ADbgSymbol.GetValueBounds(nil, lb, hb);
+            if Result then ADeclaration := Format('%u..%u', [QWord(lb), QWord(hb)]);
           end;
         skChar: begin
-            Result := ADbgSymbol.HasBounds;
-            if (ADbgSymbol.OrdLowBound >= 32) and (ADbgSymbol.OrdLowBound <= 126)
-            then s1 := '''' + chr(ADbgSymbol.OrdLowBound) + ''''
-            else s1 := '#'+IntToStr(ADbgSymbol.OrdLowBound);
-            if (ADbgSymbol.OrdHighBound >= 32) and (ADbgSymbol.OrdHighBound <= 126)
-            then s2 := '''' + chr(ADbgSymbol.OrdHighBound) + ''''
-            else s2 := '#'+IntToStr(ADbgSymbol.OrdHighBound);
+            Result := ADbgSymbol.GetValueBounds(nil, lb, hb);
+            if (lb >= 32) and (hb <= 126)
+            then s1 := '''' + chr(lb) + ''''
+            else s1 := '#'+IntToStr(lb);
+            if (hb >= 32) and (hb <= 126)
+            then s2 := '''' + chr(hb) + ''''
+            else s2 := '#'+IntToStr(hb);
             if Result then ADeclaration := Format('%s..%s', [s1, s2]);
           end;
         else
@@ -341,6 +342,7 @@ var
   var
     t: TFpDbgSymbol;
     s: String;
+    lb, hb: Int64;
   begin
     // TODO assigned value (a,b:=3,...)
     t := ADbgSymbol.TypeInfo;
@@ -349,12 +351,12 @@ var
 
     case t.Kind of
       skInteger: begin
-          Result := t.HasBounds;
-          ADeclaration := format('set of %d..%d', [t.OrdLowBound, t.OrdHighBound]);
+          Result := t.GetValueBounds(nil, lb, hb);
+          ADeclaration := format('set of %d..%d', [lb, hb]);
         end;
       skCardinal: begin
-          Result := t.HasBounds;
-          ADeclaration := format('set of %u..%u', [QWord(t.OrdLowBound), QWord(t.OrdHighBound)]);
+          Result := t.GetValueBounds(nil, lb, hb);
+          ADeclaration := format('set of %u..%u', [QWord(lb), QWord(hb)]);
         end;
       skEnum: begin
           if t.Name <> '' then begin
@@ -375,6 +377,7 @@ var
     t: TFpDbgSymbol;
     s: String;
     i: Integer;
+    lb, hb: Int64;
   begin
     // TODO assigned value (a,b:=3,...)
     t := ADbgSymbol.TypeInfo;
@@ -402,9 +405,10 @@ var
         if i > 0 then
           ADeclaration := ADeclaration + ', ';
         t := ADbgSymbol.Member[i];
+        t.GetValueBounds(nil, lb, hb);
         if t.Kind = skCardinal
-        then ADeclaration := ADeclaration + Format('%u..%u', [QWord(t.OrdLowBound), QWord(t.OrdHighBound)])
-        else ADeclaration := ADeclaration + Format('%d..%d', [t.OrdLowBound, t.OrdHighBound]);
+        then ADeclaration := ADeclaration + Format('%u..%u', [QWord(lb), QWord(hb)])
+        else ADeclaration := ADeclaration + Format('%d..%d', [lb, hb]);
       end;
       ADeclaration := ADeclaration + '] of ' + s;
     end;
@@ -916,7 +920,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     s: String;
     i: Integer;
     m: TFpDbgValue;
-    Cnt, FullCnt, d: Integer;
+    Cnt, FullCnt: Integer;
+    d: Int64;
   begin
     APrintedValue := '';
 
@@ -944,10 +949,9 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     else if (ANestLevel > 1) and (Cnt > 3)  then Cnt := 3
     else if (ANestLevel > 0) and (Cnt > 10) then Cnt := 10
     else if (Cnt > 300)                     then Cnt := 300;
-    d := 0;
-    // TODO: use valueobject for bounds
-    if (AValue.IndexTypeCount > 0) and AValue.IndexType[0].HasBounds then
-      d := AValue.IndexType[0].OrdLowBound;
+
+    if (AValue.IndexTypeCount = 0) or (not AValue.IndexType[0].GetValueLowBound(AValue, d)) then
+      d := 0;
     for i := d to d + Cnt - 1 do begin
       m := AValue.Member[i];
       if m <> nil then

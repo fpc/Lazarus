@@ -362,8 +362,6 @@ type
     function GetOrdinalValue: Int64; virtual;
 
     function GetHasBounds: Boolean; virtual;
-    function GetOrdHighBound: Int64; virtual;
-    function GetOrdLowBound: Int64; virtual;
 
     function GetMember({%H-}AIndex: Int64): TFpDbgSymbol; virtual;
     function GetMemberByName({%H-}AIndex: String): TFpDbgSymbol; virtual;
@@ -431,10 +429,13 @@ type
     property Flags: TDbgSymbolFlags read GetFlags;
     property Count: Integer read GetCount; deprecated 'use MemberCount instead';
     property Parent: TFpDbgSymbol read GetParent; deprecated;
-    // for Subranges
-    property HasBounds: Boolean read GetHasBounds;
-    property OrdLowBound: Int64 read GetOrdLowBound;  //deprecated 'xxxx'; // need typecast for QuadWord
-    property OrdHighBound: Int64 read GetOrdHighBound;  //deprecated 'xxxx'; // need typecast for QuadWord
+    // for Subranges  // Type-Symbols only?
+    // TODO: flag bounds as cardinal if needed
+    function GetValueBounds(AValueObj: TFpDbgValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
+    function GetValueLowBound(AValueObj: TFpDbgValue; out ALowBound: Int64): Boolean; virtual;
+    function GetValueHighBound(AValueObj: TFpDbgValue; out AHighBound: Int64): Boolean; virtual;
+    property HasBounds: Boolean read GetHasBounds; // Has declaration for BOTH bounds
+
     // VALUE
     property Value: TFpDbgValue read GetValueObject; //deprecated 'rename / create';
     property HasOrdinalValue: Boolean read GetHasOrdinalValue;
@@ -470,11 +471,13 @@ type
     function GetHasOrdinalValue: Boolean; override;
     function GetOrdinalValue: Int64; override;
     function GetHasBounds: Boolean; override;
-    function GetOrdLowBound: Int64; override;
-    function GetOrdHighBound: Int64; override;
     function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
+  public
+    function GetValueBounds(AValueObj: TFpDbgValue; out ALowBound, AHighBound: Int64): Boolean; override;
+    function GetValueLowBound(AValueObj: TFpDbgValue; out ALowBound: Int64): Boolean; override;
+    function GetValueHighBound(AValueObj: TFpDbgValue; out AHighBound: Int64): Boolean; override;
   end;
 
   { TFpDbgInfoContext }
@@ -982,6 +985,26 @@ begin
   inherited Destroy;
 end;
 
+function TFpDbgSymbol.GetValueBounds(AValueObj: TFpDbgValue; out ALowBound,
+  AHighBound: Int64): Boolean;
+begin
+  Result := GetValueLowBound(AValueObj, ALowBound); // TODO: ond GetValueHighBound() // but all callers must check result;
+  if not GetValueHighBound(AValueObj, AHighBound) then
+    Result := False;
+end;
+
+function TFpDbgSymbol.GetValueLowBound(AValueObj: TFpDbgValue; out
+  ALowBound: Int64): Boolean;
+begin
+  Result := False;
+end;
+
+function TFpDbgSymbol.GetValueHighBound(AValueObj: TFpDbgValue; out
+  AHighBound: Int64): Boolean;
+begin
+  Result := False;
+end;
+
 function TFpDbgSymbol.TypeCastValue(AValue: TFpDbgValue): TFpDbgValue;
 begin
   Result := nil;
@@ -1054,16 +1077,6 @@ end;
 function TFpDbgSymbol.GetHasBounds: Boolean;
 begin
   Result := False;
-end;
-
-function TFpDbgSymbol.GetOrdHighBound: Int64;
-begin
-  Result := 0;
-end;
-
-function TFpDbgSymbol.GetOrdLowBound: Int64;
-begin
-  Result := 0;
 end;
 
 function TFpDbgSymbol.GetHasOrdinalValue: Boolean;
@@ -1356,6 +1369,42 @@ begin
     Result := 0;  //  Result := inherited GetOrdinalValue;
 end;
 
+function TDbgSymbolForwarder.GetValueBounds(AValueObj: TFpDbgValue; out
+  ALowBound, AHighBound: Int64): Boolean;
+var
+  p: TFpDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.GetValueBounds(AValueObj, ALowBound, AHighBound)
+  else
+    Result := inherited GetValueBounds(AValueObj, ALowBound, AHighBound);
+end;
+
+function TDbgSymbolForwarder.GetValueLowBound(AValueObj: TFpDbgValue; out
+  ALowBound: Int64): Boolean;
+var
+  p: TFpDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.GetValueLowBound(AValueObj, ALowBound)
+  else
+    Result := inherited GetValueLowBound(AValueObj, ALowBound);
+end;
+
+function TDbgSymbolForwarder.GetValueHighBound(AValueObj: TFpDbgValue; out
+  AHighBound: Int64): Boolean;
+var
+  p: TFpDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.GetValueHighBound(AValueObj, AHighBound)
+  else
+    Result := inherited GetValueHighBound(AValueObj, AHighBound);
+end;
+
 function TDbgSymbolForwarder.GetHasBounds: Boolean;
 var
   p: TFpDbgSymbol;
@@ -1365,28 +1414,6 @@ begin
     Result := p.HasBounds
   else
     Result := False;  //  Result := inherited GetHasBounds;
-end;
-
-function TDbgSymbolForwarder.GetOrdLowBound: Int64;
-var
-  p: TFpDbgSymbol;
-begin
-  p := GetForwardToSymbol;
-  if p <> nil then
-    Result := p.OrdLowBound
-  else
-    Result := 0;  //  Result := inherited GetOrdLowBound;
-end;
-
-function TDbgSymbolForwarder.GetOrdHighBound: Int64;
-var
-  p: TFpDbgSymbol;
-begin
-  p := GetForwardToSymbol;
-  if p <> nil then
-    Result := p.OrdHighBound
-  else
-    Result := 0;  //  Result := inherited GetOrdHighBound;
 end;
 
 function TDbgSymbolForwarder.GetMember(AIndex: Int64): TFpDbgSymbol;
