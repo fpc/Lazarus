@@ -668,22 +668,27 @@ type
     property Image64Bit: Boolean read FImage64Bit;
   end;
 
+  TDwarfLocationExpression = class;
+
   { TDwarfLocationStack }
 
   TDwarfLocationStack = object
   private
     FList: array of TFpDbgMemLocation; //TDwarfLocationStackEntry;
     FCount: Integer;
+    FError: TFpErrorCode;
     procedure IncCapacity;
   public
     procedure Clear;
     function  Count: Integer; inline;
     function  Pop: TFpDbgMemLocation;
+    function  PopForDeref: TFpDbgMemLocation;
     procedure Push(const AEntry: TFpDbgMemLocation);
     procedure PushCopy(AFromIndex: Integer);
     procedure PushConst(const AVal: TDBGPtr);
     procedure PushTargetMem(const AVal: TDBGPtr);
     function  Peek: PFpDbgMemLocation;
+    function  PeekForDeref: PFpDbgMemLocation;
     function  PeekKind: TFpDbgMemLocationType; // Can be called on empty stack
     function  Peek(AIndex: Integer): PFpDbgMemLocation;
     procedure Modify(AIndex: Integer; const AEntry: TFpDbgMemLocation);
@@ -709,7 +714,7 @@ type
     constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit;
       AMemManager: TFpDbgMemManager; AContext: TFpDbgAddressContext);
     procedure Evaluate;
-    function  ResultData: TFpDbgMemLocation;
+    function ResultData: TFpDbgMemLocation;
     procedure Push(AValue: TFpDbgMemLocation);
     property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
@@ -1737,6 +1742,7 @@ end;
 procedure TDwarfLocationStack.Clear;
 begin
   FCount := 0;
+  FError := fpErrNoError;
 end;
 
 function TDwarfLocationStack.Count: Integer;
@@ -1745,6 +1751,15 @@ begin
 end;
 
 function TDwarfLocationStack.Pop: TFpDbgMemLocation;
+begin
+  Assert(0 < FCount);
+  dec(FCount);
+  Result := FList[FCount];
+  if Result.MType = mlfConstantDeref then
+    FError := fpErrLocationParser;
+end;
+
+function TDwarfLocationStack.PopForDeref: TFpDbgMemLocation;
 begin
   Assert(0 < FCount);
   dec(FCount);
@@ -1794,6 +1809,14 @@ function TDwarfLocationStack.Peek: PFpDbgMemLocation;
 begin
   Assert(0 < FCount);
   Result := @FList[FCount-1];
+  if Result^.MType = mlfConstantDeref then
+    FError := fpErrLocationParser;
+end;
+
+function TDwarfLocationStack.PeekForDeref: PFpDbgMemLocation;
+begin
+  Assert(0 < FCount);
+  Result := @FList[FCount-1];
 end;
 
 function TDwarfLocationStack.PeekKind: TFpDbgMemLocationType;
@@ -1808,6 +1831,8 @@ function TDwarfLocationStack.Peek(AIndex: Integer): PFpDbgMemLocation;
 begin
   Assert(AIndex < FCount);
   Result := @FList[FCount-1-AIndex];
+  if Result^.MType = mlfConstantDeref then
+    FError := fpErrLocationParser;
 end;
 
 procedure TDwarfLocationStack.Modify(AIndex: Integer;
@@ -1858,7 +1883,7 @@ var
 
   function AssertAddressOnStack: Boolean; inline;
   begin
-    Result := FStack.PeekKind in [mlfTargetMem, mlfSelfMem]; // allow const?
+    Result := (FStack.PeekKind in [mlfTargetMem, mlfSelfMem, mlfConstantDeref]);
     if not Result then
       SetError(fpErrLocationParserNoAddressOnStack);
   end;
@@ -1940,7 +1965,7 @@ begin
         end;
       DW_OP_deref: begin
           if not AssertAddressOnStack then exit;
-          EntryP := FStack.Peek;
+          EntryP := FStack.PeekForDeref;
           if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
           EntryP^ := NewLoc; // mlfTargetMem;
         end;
@@ -1955,7 +1980,7 @@ begin
         end;
       DW_OP_deref_size: begin
           if not AssertAddressOnStack then exit;
-          EntryP := FStack.Peek;
+          EntryP := FStack.PeekForDeref;
           if not ReadAddressFromMemory(EntryP^, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
           EntryP^ := NewLoc; // mlfTargetMem;
         end;
@@ -2189,9 +2214,10 @@ begin
         end;
       DW_OP_bra: begin
           if not AssertMinCount(1) then exit;
-          Entry  := FStack.Pop;
+          Entry  := FStack.PopForDeref;
           x := ReadSignedFromExpression(CurData, 2);
-          if Entry.Address <> 0 then
+          // mlfConstantDeref => The virtual address pointing to this constant is not nil
+          if (Entry.Address <> 0) or (Entry.MType = mlfConstantDeref) then
             CurData := CurData + x;
         end;
 
@@ -2284,13 +2310,29 @@ begin
           exit;
         end;
     end;
+
+    if FStack.FError <> fpErrNoError then begin
+      SetError(FStack.FError);
+      exit;
+    end;
+  end;
+
+  if (FLastError = nil) and (FStack.FError = fpErrNoError) then begin
+    if not AssertMinCount(1) then exit; // no value for result
+    //TODO: If a caller expects it, it could accept mlfConstantDeref as result (but it would still need to deref it)
+    FStack.Peek(); // check that the result value is valid
+    if FStack.FError <> fpErrNoError then
+      SetError(FStack.FError);
   end;
 end;
 
 function TDwarfLocationExpression.ResultData: TFpDbgMemLocation;
 begin
+  if (FLastError <> nil) or (FStack.FError <> fpErrNoError) or (FStack.Count = 0) then
+    exit(InvalidLoc);
+
   if FStack.Count > 0 then
-    Result := FStack.Pop
+    Result := FStack.Peek^
   else
     Result := InvalidLoc;
 end;

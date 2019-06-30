@@ -758,7 +758,7 @@ end;
 function TFpDwarfV3FreePascalSymbolTypeArray.GetTypedValueObject(
   ATypeCast: Boolean): TFpDwarfValue;
 begin
-  if GetInternalStringType in [iasShortString, iasAnsiString, iasUnicodeString] then
+  if GetInternalStringType in [{iasShortString,} iasAnsiString, iasUnicodeString] then
     Result := TFpDwarfV3ValueFreePascalString.Create(Self)
   else
     Result := inherited GetTypedValueObject(ATypeCast);
@@ -791,7 +791,9 @@ begin
   assert(TypeCastTargetType.Kind in [skString, skWideString], 'TFpDwarfValueArray.IsValidTypeCast: TypeCastTargetType.Kind = skArray');
 
   f := TypeCastSourceValue.FieldFlags;
-  if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+  if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) or
+     (svfOrdinal in f)
+  then
     exit;
 
   //if sfDynArray in TypeCastTargetType.Flags then begin
@@ -854,6 +856,8 @@ begin
     exit;
 
   Addr := DataAddr;
+  if (not IsValidLoc(Addr)) and (svfOrdinal in TypeCastSourceValue.FieldFlags) then
+    Addr := TargetLoc(TypeCastSourceValue.AsCardinal);
   if not IsReadableLoc(Addr) then
     exit;
 

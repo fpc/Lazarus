@@ -253,10 +253,18 @@ type
     mlfSelfMem,              // an address in this(the debuggers) process memory; the data is  in TARGET format (endian, ...)
     // the below will be mapped (and extended) according to endianess
     mlfTargetRegister,       // reads from the register
-    mlfConstant              // an (up to) SizeOf(TDbgPtr) (=8) Bytes Value (endian in format of debug process)
+    mlfConstant,             // an (up to) SizeOf(TDbgPtr) (=8) Bytes Value (endian in format of debug process)
+    mlfConstantDeref // A constant that can be used instead of an address (location parser),
+                     // If a value (e.g. literal numeric constant 0x1234) has no address,
+                     //   then this is treated as its virtual address.
+                     // If (and only if) the value is attempted to be derefed, then
+                     //   it will yield the constant as the result of the deref.
+                     // It can also be tested for nil. The virtual address is never nil.
+                     // Any other access must result in an error.
+                     // Used for PFoo(1234)^ or TObject(1234).Foo
   );
 
-  TFpDbgMemLocation = record
+  TFpDbgMemLocation = packed record
     Address: TDbgPtr;
     MType: TFpDbgMemLocationType;
   end;
@@ -350,12 +358,15 @@ function SelfLoc(AnAddress: Pointer): TFpDbgMemLocation; inline;
 function ConstLoc(AValue: QWord): TFpDbgMemLocation; inline;
 
 function IsTargetAddr(ALocation: TFpDbgMemLocation): Boolean; inline;
+function IsConstData(ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsInitializedLoc(ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
 function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
 function IsReadableMem(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
 function IsTargetNil(ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
 function IsTargetNotNil(ALocation: TFpDbgMemLocation): Boolean; inline; // valid targed <> nil
+
+operator = (a,b: TFpDbgMemLocation): Boolean; inline;
 
 function LocToAddr(ALocation: TFpDbgMemLocation): TDbgPtr; inline;      // does not check valid
 function LocToAddrOrNil(ALocation: TFpDbgMemLocation): TDbgPtr; inline; // save version
@@ -419,6 +430,11 @@ begin
   Result := ALocation.MType = mlfTargetMem;
 end;
 
+function IsConstData(ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := not(ALocation.MType in [mlfConstant, mlfConstantDeref]);
+end;
+
 function IsInitializedLoc(ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := ALocation.MType <> mlfUninitialized;
@@ -451,6 +467,11 @@ end;
 function IsTargetNotNil(ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := (ALocation.MType = mlfTargetMem) and (ALocation.Address <> 0);
+end;
+
+operator = (a, b: TFpDbgMemLocation): Boolean;
+begin
+  Result := (a.Address = b.Address) and (a.MType = b.MType);
 end;
 
 function LocToAddr(ALocation: TFpDbgMemLocation): TDbgPtr;
@@ -824,10 +845,10 @@ begin
       else
         TargetMemConvertor.FailedTargetRead(ConvData);
     end;
-    mlfConstant, mlfTargetRegister:
+    mlfConstant, mlfConstantDeref, mlfTargetRegister:
       begin
         case ALocation.MType of
-          mlfConstant: begin
+          mlfConstant, mlfConstantDeref: begin
               TmpVal := ALocation.Address;
               i := SizeOf(ALocation.Address);
             end;
@@ -927,10 +948,10 @@ begin
         move(Pointer(ALocation.Address)^, ADest^, ASize);
         Result := True;
       end;
-    mlfConstant, mlfTargetRegister:
+    mlfConstant, mlfConstantDeref, mlfTargetRegister:
       begin
         case ALocation.MType of
-          mlfConstant: begin
+          mlfConstant, mlfConstantDeref: begin
               TmpVal := ALocation.Address;
               i := SizeOf(ALocation.Address);
             end;

@@ -939,7 +939,7 @@ function dbgs(ASubRangeBoundReadState: TFpDwarfSubRangeBoundReadState): String; 
 implementation
 
 var
-  FPDBG_DWARF_VERBOSE, FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
+  DBG_WARNINGS, FPDBG_DWARF_VERBOSE, FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
 
 function dbgs(ASubRangeBoundReadState: TFpDwarfSubRangeBoundReadState): String;
 begin
@@ -2931,13 +2931,24 @@ end;
 
 function TFpDwarfSymbol.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
   AnInitLocParserData: PInitLocParserData): Boolean;
+var
+  ObjDataAddr: TFpDbgMemLocation;
 begin
-  if (AnInitLocParserData <> nil) and IsValidLoc(AnInitLocParserData^.ObjectDataAddress)
-  then begin
-    debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(AnInitLocParserData^.ObjectDataAddress), ' Push=',AnInitLocParserData^.ObjectDataAddrPush]);
-    ALocationParser.CurrentObjectAddress := AnInitLocParserData^.ObjectDataAddress;
-    if AnInitLocParserData^.ObjectDataAddrPush then
-      ALocationParser.Push(AnInitLocParserData^.ObjectDataAddress);
+  if (AnInitLocParserData <> nil) then begin
+    ObjDataAddr := AnInitLocParserData^.ObjectDataAddress;
+    if IsValidLoc(ObjDataAddr) then begin
+      if ObjDataAddr.MType = mlfConstant then begin
+        DebugLn(DBG_WARNINGS, 'Changing mlfConstant to mlfConstantDeref'); // TODO: Should be done by caller
+        ObjDataAddr.MType := mlfConstantDeref;
+      end;
+
+      debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(ObjDataAddr), ' Push=',AnInitLocParserData^.ObjectDataAddrPush]);
+      ALocationParser.CurrentObjectAddress := ObjDataAddr;
+      if AnInitLocParserData^.ObjectDataAddrPush then
+        ALocationParser.Push(ObjDataAddr);
+    end
+    else
+      ALocationParser.CurrentObjectAddress := InvalidLoc
   end
   else
     ALocationParser.CurrentObjectAddress := InvalidLoc;
@@ -3637,6 +3648,8 @@ begin
     begin
       if assigned(AValueObj) then begin
         InitLocParserData.ObjectDataAddress := AValueObj.Address;
+        if not IsValidLoc(InitLocParserData.ObjectDataAddress) then
+          InitLocParserData.ObjectDataAddress := AValueObj.OrdOrAddress;
         InitLocParserData.ObjectDataAddrPush := False;
         if LocationFromTag(AnAttrib, AttrData, AValueObj, AnAddress, @InitLocParserData) then begin
           ABoundState := rfConst;
@@ -4948,6 +4961,7 @@ end;
 initialization
   DwarfSymbolClassMapList.SetDefaultMap(TFpDwarfDefaultSymbolClassMap);
 
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   FPDBG_DWARF_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
   FPDBG_DWARF_ERRORS        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
   FPDBG_DWARF_WARNINGS      := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
