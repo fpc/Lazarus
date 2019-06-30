@@ -671,15 +671,13 @@ type
   { TDwarfLocationStack }
 
   TDwarfLocationStack = object
-  private const
-    InvalidMem: TFpDbgMemLocation = (Address: 0; MType: mlfInvalid);
   private
     FList: array of TFpDbgMemLocation; //TDwarfLocationStackEntry;
     FCount: Integer;
     procedure IncCapacity;
   public
     procedure Clear;
-    function  Count: Integer;
+    function  Count: Integer; inline;
     function  Pop: TFpDbgMemLocation;
     procedure Push(const AEntry: TFpDbgMemLocation);
     procedure PushCopy(AFromIndex: Integer);
@@ -1858,14 +1856,14 @@ var
              ' Extra: ', ErrorHandler.ErrorAsString(AnInternalErrorCode, []) ]);
   end;
 
-  function AssertAddressOnStack: Boolean;
+  function AssertAddressOnStack: Boolean; inline;
   begin
     Result := FStack.PeekKind in [mlfTargetMem, mlfSelfMem]; // allow const?
     if not Result then
       SetError(fpErrLocationParserNoAddressOnStack);
   end;
 
-  function AssertMinCount(ACnt: Integer): Boolean;
+  function AssertMinCount(ACnt: Integer): Boolean; inline;
   begin
     Result := FStack.Count >= ACnt;
     if not Result then
@@ -1937,32 +1935,38 @@ begin
     inc(CurData);
     case CurInstr^ of
       DW_OP_nop: ;
-      DW_OP_addr:  FStack.Push(FCU.ReadTargetAddressFromDwarfSection(CurData, True)); // always mlfTargetMem;
+      DW_OP_addr:  begin
+          FStack.Push(FCU.ReadTargetAddressFromDwarfSection(CurData, True)); // always mlfTargetMem;
+        end;
       DW_OP_deref: begin
           if not AssertAddressOnStack then exit;
-          if not ReadAddressFromMemory(FStack.Pop, AddrSize, NewLoc) then exit;
-          FStack.Push(NewLoc);  // mlfTargetMem;
+          EntryP := FStack.Peek;
+          if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
+          EntryP^ := NewLoc; // mlfTargetMem;
         end;
       DW_OP_xderef: begin
           if not AssertAddressOnStack  then exit;
           Loc := FStack.Pop;
           if not AssertAddressOnStack then exit;
+          EntryP := FStack.Peek;
 // TODO check address is valid
-          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Address, AddrSize, NewLoc) then exit;
-          FStack.Push(NewLoc);  // mlfTargetMem;
+          if not ReadAddressFromMemoryEx(Loc, EntryP^.Address, AddrSize, NewLoc) then exit;
+          EntryP^ := NewLoc; // mlfTargetMem;
         end;
       DW_OP_deref_size: begin
           if not AssertAddressOnStack then exit;
-          if not ReadAddressFromMemory(FStack.Pop, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
-          FStack.Push(NewLoc);  // mlfTargetMem;
+          EntryP := FStack.Peek;
+          if not ReadAddressFromMemory(EntryP^, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
+          EntryP^ := NewLoc; // mlfTargetMem;
         end;
       DW_OP_xderef_size: begin
           if not AssertAddressOnStack  then exit;
           Loc := FStack.Pop;
           if not AssertAddressOnStack then exit;
+          EntryP := FStack.Peek;
 // TODO check address is valid
-          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Address, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
-          FStack.Push(NewLoc);  // mlfTargetMem;
+          if not ReadAddressFromMemoryEx(Loc, EntryP^.Address, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
+          EntryP^ := NewLoc; // mlfTargetMem;
         end;
 
       DW_OP_const1u: FStack.PushConst(ReadUnsignedFromExpression(CurData, 1));
