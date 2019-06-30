@@ -22,6 +22,7 @@ type
 
 var
   BreakDummy: PtrUInt;
+  p: Pointer;
 
 type
   TIntRange = -300..300;
@@ -104,6 +105,10 @@ type
   TArrayEnumSubElem = array [EnVal1..EnVal2] of word;
 
 type
+  (* LOCATION: TYPE *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=Tx, "_OP_== type ", (=;//, "_O2_= = type", _EQ_=, _BLOCK_=TestVar )
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=Px, _OP_={, _O2_={, _pre3_=^Tx, "//@@=} = ", _BLOCK_=TestVar) //}
+
   (* LOCATION: field in baseclass *)
   TMyBaseClass = class
   public
@@ -203,6 +208,7 @@ begin
   // so every constant is accessed, and they can not be optimized away
   BreakDummy := ord(gcCharStatArray[1]);
   BreakDummy := ord(gcWCharStatArray[1]);
+  p := nil;
 
 (* use global const / value in "gv" will be overriden... *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, {e}={, "//@@=} :=", _pre3_=gc, _BLOCK_=TestAssignGC)

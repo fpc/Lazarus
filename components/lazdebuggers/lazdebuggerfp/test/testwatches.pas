@@ -803,6 +803,7 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
 
 end;
 
+    t.Add(AName, p+'FiveRec'+e,            weMatch('a *=.*b *= *44',skRecord));
 
 
     t.Add(AName, p+'CharStatArray'+e,  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
@@ -1444,43 +1445,94 @@ procedure TTestWatches.TestWatchesTypeCast;
     ALoc: TTestLoc = tlAny; APostFix: String = '');
   var
     p, e, val: String;
-    Thread: Integer;
+    Thread, n: Integer;
   begin
     p := APrefix;
+    n := AOffs;
     e := APostFix;
     t2.Clear;
 
       t2.AddWithoutExpect(AName, p+'Instance1_Int'+e);
+      t2.AddWithoutExpect(AName, 'PtrUInt(@'+p+'Instance1'+e+')');
+
       t2.AddWithoutExpect(AName, p+'Ansi5_Int'+e);
       t2.AddWithoutExpect(AName, p+'IntDynArray4_Int'+e);
+      t2.AddWithoutExpect(AName, 'PtrUInt(@'+p+'IntDynArray4'+e+')');
+
+      t2.AddWithoutExpect(AName, 'PtrUInt(@'+p+'Word'+e+')');
+      t2.AddWithoutExpect(AName, 'PtrUInt(@'+p+'FiveRec'+e+')');
+
       t2.EvaluateWatches;
       Thread := Debugger.Threads.Threads.CurrentThreadId;
 
     if not(ALoc in [tlConst]) then begin
       val := t2.Tests[0]^.TstWatch.Values[Thread, 0].Value;
       t.Add(AName+' Int', 'PtrUInt('+p+'Instance1'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
-      t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
-      t.Add(AName+' TClass1', 'TClass1('+val+')',   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',            weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1('+val+')',                            weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1(Pointer('+p+'Instance1_Int'+e+'))',   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1(Pointer('+val+'))',                   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
 
       val := t2.Tests[1]^.TstWatch.Values[Thread, 0].Value;
+      t.Add(AName+' PxInstance1', 'PxInstance1(@'+p+'Instance1'+e+')^',           weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' PxInstance1', 'PxInstance1('+val+')^',                        weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' PxInstance1', 'PxInstance1(Pointer(@'+p+'Instance1'+e+'))^',  weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' PxInstance1', 'PxInstance1(Pointer('+val+'))^',               weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+
+
+      val := t2.Tests[2]^.TstWatch.Values[Thread, 0].Value;
       t.Add(AName+' Ansi', 'PtrUInt('+p+'Ansi5'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
-if not(Compiler.SymbolType in stDwarf3Up) then begin
       t.Add(AName+' AnsiString', 'AnsiString('+p+'Ansi5_Int'+e+')',
         weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij')
       ).IgnKindPtr(stDwarf2)    .IgnKind(stDwarf3Up);
       t.Add(AName+' AnsiString', 'AnsiString('+val+')',
         weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij')
       ).IgnKindPtr(stDwarf2)    .IgnKind(stDwarf3Up);
-end;
 
-      val := t2.Tests[2]^.TstWatch.Values[Thread, 0].Value;
+      val := t2.Tests[3]^.TstWatch.Values[Thread, 0].Value;
       t.Add(AName+' DynArray', 'PtrUInt('+p+'IntDynArray4'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
-if not(Compiler.SymbolType in stDwarf3Up) then begin
-      t.Add(AName, 'TIntDynArray('+p+'IntDynArray4_Int'+e+')',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
-      t.Add(AName, 'TIntDynArray('+val+')',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+      t.Add(AName, 'TIntDynArray('+p+'IntDynArray4_Int'+e+')',           weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+      t.Add(AName, 'TIntDynArray('+val+')',                              weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+      t.Add(AName, 'TIntDynArray(Pointer('+p+'IntDynArray4_Int'+e+'))',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+      t.Add(AName, 'TIntDynArray(Pointer('+val+'))',                     weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+      t.Add(AName, 'TIntDynArray(PtrUint('+p+'IntDynArray4_Int'+e+'))',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+      t.Add(AName, 'TIntDynArray(PtrUint('+val+'))',                     weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
 
-end;
+      val := t2.Tests[4]^.TstWatch.Values[Thread, 0].Value;
+      t.Add(AName, 'PxIntDynArray4(@'+p+'IntDynArray4'+e+')^',           weDynArray(weInteger([12, 30+AOffs, 60]), 'TxIntDynArray4'));
+      t.Add(AName, 'PxIntDynArray4('+val+')^',                           weDynArray(weInteger([12, 30+AOffs, 60]), 'TxIntDynArray4'));
+      t.Add(AName, 'PxIntDynArray4(Pointer(@'+p+'IntDynArray4'+e+'))^',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TxIntDynArray4'));
+      t.Add(AName, 'PxIntDynArray4(Pointer('+val+'))^',                  weDynArray(weInteger([12, 30+AOffs, 60]), 'TxIntDynArray4'));
+      t.Add(AName, 'PxIntDynArray4(PtrUint(@'+p+'IntDynArray4'+e+'))^',  weDynArray(weInteger([12, 30+AOffs, 60]), 'TxIntDynArray4'));
+      t.Add(AName, 'PxIntDynArray4(PtrUint('+val+'))^',                  weDynArray(weInteger([12, 30+AOffs, 60]), 'TxIntDynArray4'));
+
+      t.Add(AName, 'TIntDynArray(PxIntDynArray4('+val+')^)',       weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray'));
+
+
+
+      val := t2.Tests[5]^.TstWatch.Values[Thread, 0].Value;
+      t.Add(AName, 'PxWord(@'+p+'Word'+e+')^',                weCardinal(100+n,         'TxWord',     2));
+      t.Add(AName, 'PxWord('+val+')^',                        weCardinal(100+n,         'TxWord',     2));
+      t.Add(AName, 'PxWord(Pointer(@'+p+'Word'+e+'))^',       weCardinal(100+n,         'TxWord',     2));
+      t.Add(AName, 'PxWord(Pointer('+val+'))^',               weCardinal(100+n,         'TxWord',     2));
+      t.Add(AName, 'PxWord(PtrUInt(@'+p+'Word'+e+'))^',       weCardinal(100+n,         'TxWord',     2));
+      t.Add(AName, 'PxWord(PtrUInt('+val+'))^',               weCardinal(100+n,         'TxWord',     2));
+      if p='gv' then
+        t.Add(AName, 'PxWord(gvp_'+'Word'+e+')^',             weCardinal(100+n,         'TxWord',     2));
+
+      val := t2.Tests[6]^.TstWatch.Values[Thread, 0].Value;
+      t.Add(AName, 'PxFiveRec(@'+p+'FiveRec'+e+')^',                  weMatch('a *=.*b *= *44',skRecord));
+      t.Add(AName, 'PxFiveRec('+val+')^',                             weMatch('a *=.*b *= *44',skRecord));
+      t.Add(AName, 'PxFiveRec(Pointer(@'+p+'FiveRec'+e+'))^',         weMatch('a *=.*b *= *44',skRecord));
+      t.Add(AName, 'PxFiveRec(Pointer('+val+'))^',                    weMatch('a *=.*b *= *44',skRecord));
+      t.Add(AName, 'PxFiveRec(PtrUInt(@'+p+'FiveRec'+e+'))^',         weMatch('a *=.*b *= *44',skRecord));
+      t.Add(AName, 'PxFiveRec(PtrUInt('+val+'))^',                    weMatch('a *=.*b *= *44',skRecord));
+      if p='gv' then
+        t.Add(AName, 'PxFiveRec(gvp_'+'FiveRec'+e+')^',               weMatch('a *=.*b *= *44',skRecord));
+
+
     end;
+
 
     t.Add(AName+' Cardinal', 'Cardinal('+p+'Rec3S'+e+')',  weMatch('.', skSimple)).ExpectError();
     t.Add(AName+' QWord', 'QWord('+p+'Rec3S'+e+')',        weMatch('.', skSimple)).ExpectError();
@@ -1530,10 +1582,10 @@ begin
     AddWatchesCast(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatchesCast(t, 'glob var',   'gv', 001, 'B');
     AddWatchesCast(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
-    AddWatchesCast(t, 'glob MyBaseClass1', 'MyClass1.mbc', 003, 'D');
-    AddWatchesCast(t, 'glob MyClass1',     'TMyClass(MyClass2).mc',  004, 'E');
-    AddWatchesCast(t, 'glob MyBaseClass1', 'TMyClass(MyClass2).mbc', 005, 'F');
-    AddWatchesCast(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
+    //AddWatchesCast(t, 'glob MyBaseClass1', 'MyClass1.mbc', 003, 'D');
+    //AddWatchesCast(t, 'glob MyClass1',     'TMyClass(MyClass2).mc',  004, 'E');
+    //AddWatchesCast(t, 'glob MyBaseClass1', 'TMyClass(MyClass2).mbc', 005, 'F');
+    //AddWatchesCast(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
     AddWatchesCast(t, 'glob var dyn array of [1]',   'gva', 006, 'L', tlArrayWrap, '[1]');
     AddWatchesCast(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
     t.EvaluateWatches;
