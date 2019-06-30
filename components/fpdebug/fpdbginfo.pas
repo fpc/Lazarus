@@ -106,9 +106,6 @@ type
 
   TFpDbgSymbol = class;
 
-  TFpDbgSymbolBase = class(TFpDbgCircularRefCountedObject)
-  end;
-
   TFpDbgValueFieldFlag = (
     // svfAddress, svfDataAddress this symbol does have an address, but it may still be nil
     svfAddress, svfSize, svfSizeOfPointer,
@@ -126,7 +123,7 @@ type
 
   { TFpDbgValue }
 
-  TFpDbgValue = class(TFpDbgSymbolBase)
+  TFpDbgValue = class(TFpDbgCircularRefCountedObject)
   protected
     function GetKind: TDbgSymbolKind; virtual;
     function GetFieldFlags: TFpDbgValueFieldFlags; virtual;
@@ -327,7 +324,7 @@ type
 
   { TFpDbgSymbol }
 
-  TFpDbgSymbol = class(TFpDbgSymbolBase)
+  TFpDbgSymbol = class(TFpDbgCircularRefCountedObject)
   private
     FEvaluatedFields: TFpDbgSymbolFields;
     FLastError: TFpError;
