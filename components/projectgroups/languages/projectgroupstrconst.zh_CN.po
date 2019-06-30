@@ -280,6 +280,10 @@ msgstr "保存工程组"
 msgid "Read error"
 msgstr "读取错误"
 
+#: projectgroupstrconst.lisredo
+msgid "Redo"
+msgstr ""
+
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
 msgid "Remove target"
@@ -476,6 +480,10 @@ msgstr "不能加载文件\"%s\""
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "不能写入工程组文件\"%s\"%s%s"
+
+#: projectgroupstrconst.lisundo
+msgid "Undo"
+msgstr ""
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

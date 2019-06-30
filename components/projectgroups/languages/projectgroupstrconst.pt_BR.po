@@ -272,6 +272,10 @@ msgstr "Salvar grupo de projeto"
 msgid "Read error"
 msgstr "Erro leitura"
 
+#: projectgroupstrconst.lisredo
+msgid "Redo"
+msgstr ""
+
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
 msgid "Remove target"
@@ -468,6 +472,10 @@ msgstr "Incapaz de carregar arquivo \"%s\""
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "Incapaz de gravar arquivo grupo de projeto \"%s\"%s%s"
+
+#: projectgroupstrconst.lisundo
+msgid "Undo"
+msgstr ""
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

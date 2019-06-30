@@ -257,6 +257,10 @@ msgstr ""
 msgid "Read error"
 msgstr ""
 
+#: projectgroupstrconst.lisredo
+msgid "Redo"
+msgstr ""
+
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
 msgid "Remove target"
@@ -452,6 +456,10 @@ msgstr ""
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
+msgstr ""
+
+#: projectgroupstrconst.lisundo
+msgid "Undo"
 msgstr ""
 
 #: projectgroupstrconst.liswriteerror

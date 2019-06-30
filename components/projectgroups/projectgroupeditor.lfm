@@ -56,35 +56,34 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Left = 326
       Height = 46
       Top = 2
-      Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object TBTargetUp: TToolButton
-      Left = 390
+      Left = 388
       Top = 2
       Action = ATargetEarlier
     end
     object TBTargetLater: TToolButton
-      Left = 434
+      Left = 432
       Top = 2
       Action = ATargetLater
     end
     object TBMore: TToolButton
-      Left = 517
+      Left = 515
       Top = 2
       Caption = 'More...'
       DropdownMenu = PopupMenuMore
       Style = tbsDropDown
     end
     object TBActivate: TToolButton
-      Left = 336
+      Left = 334
       Top = 2
       Action = ATargetActivate
       Visible = False
     end
     object TBReload: TToolButton
-      Left = 471
+      Left = 469
       Top = 2
       Action = AProjectGroupReload
     end
@@ -970,6 +969,12 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     object PMISaveAs: TMenuItem
       Action = AProjectGroupSaveAs
     end
+    object PMIUndo: TMenuItem
+      Action = AProjectGroupUndo
+    end
+    object PMIRedo: TMenuItem
+      Action = AProjectGroupRedo
+    end
   end
   object ActionListMain: TActionList
     Images = ImageListMain
@@ -1091,6 +1096,18 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Caption = 'Reload'
       ImageIndex = 25
       OnExecute = AProjectGroupReloadExecute
+    end
+    object AProjectGroupUndo: TAction
+      Category = 'ProjectGroupActions'
+      Caption = 'Undo'
+      OnExecute = AProjectGroupUndoExecute
+      OnUpdate = AProjectGroupUndoUpdate
+    end
+    object AProjectGroupRedo: TAction
+      Category = 'ProjectGroupActions'
+      Caption = 'Redo'
+      OnExecute = AProjectGroupRedoExecute
+      OnUpdate = AProjectGroupRedoUpdate
     end
   end
   object PopupMenuTree: TPopupMenu

@@ -279,6 +279,10 @@ msgstr "Projektcsoport mentése"
 msgid "Read error"
 msgstr "Olvasási hiba"
 
+#: projectgroupstrconst.lisredo
+msgid "Redo"
+msgstr ""
+
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
 msgid "Remove target"
@@ -475,6 +479,10 @@ msgstr "A(z) \"%s\" fájl betöltése nem lehetséges"
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "Nem lehet írni a projektcsoport fájlját: \"%s\"%s%s"
+
+#: projectgroupstrconst.lisundo
+msgid "Undo"
+msgstr ""
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

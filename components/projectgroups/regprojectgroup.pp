@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, ProjectGroupIntf, MenuIntf, IDECommands, ToolBarIntf,
-  ProjectGroupStrConst, ProjectGroup, ProjectGroupEditor;
+  ProjectGroupStrConst, ProjectGroup, ProjectGroupEditor, LCLType;
 
 procedure RegisterProjectGroupEditorMenuItems;
 procedure Register;
@@ -46,7 +46,7 @@ begin
   PGEditMenuSectionAddRemove:=MnuSection;
   RegisterMenuCmd(MnuCmdTargetAdd,MnuSection,'TargetAdd',lisTargetAdd);
   RegisterMenuCmd(MnuCmdTargetRemove,MnuSection,'TargetRemove',lisTargetRemove);
-  // ToDo: undo
+  // ToDo: redo
 
   MnuSection:=RegisterIDEMenuSection(MnuRoot,'Use');
   PGEditMenuSectionUse:=MnuSection;
@@ -61,14 +61,20 @@ begin
 
   MnuSection:=RegisterIDEMenuSection(MnuRoot,'Misc');
   PGEditMenuSectionMisc:=MnuSection;
-
   RegisterMenuCmd(MnuCmdTargetCopyFilename,MnuSection,'CopyFilename',lisTargetCopyFilename);
+  RegisterMenuCmd(MnuCmdProjGrpUndo, MnuSection, 'Undo', lisUndo);
+  RegisterMenuCmd(MnuCmdProjGrpRedo, MnuSection, 'Redo', lisRedo);
   // ToDo: View source (project)
 
   // ToDo: find in files
   // ToDo: find references in files
 
   // ToDo: D&D order compile targets
+end;
+
+procedure ViewProjectGroupsClicked(Sender: TObject);
+begin
+  ShowProjectGroupEditor(Sender,IDEProjectGroupManager.CurrentProjectGroup);
 end;
 
 procedure Register;
@@ -82,8 +88,11 @@ procedure Register;
     RegisterIDEButtonCommand(Cmd);
   end;
 
+var
+  IDECommandCategory: TIDECommandCategory;
 begin
   IDEProjectGroupManager:=TIDEProjectGroupManager.Create;
+  ProjectGroupManager:=IDEProjectGroupManager;
   IDEProjectGroupManager.Options.LoadSafe;
 
   PGCmdCategory:=RegisterIDECommandCategory(nil,ProjectGroupCmdCategoryName,lisProjectGroups);
@@ -105,8 +114,23 @@ begin
 
   IDEProjectGroupManager.UpdateRecentProjectGroupMenu;
 
-  ProjectGroupManager:=IDEProjectGroupManager;
   SetProjectGroupEditorCallBack;
+
+  RegisterIDEMenuCommand(itmViewMainWindows, 'mnuProjectGroups',
+    lisProjectGroups, nil, @ViewProjectGroupsClicked);
+
+  ViewProjGrpShortCutX := IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  IDECommandCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
+  if IDECommandCategory <> nil then
+  begin
+    ViewProjectGroupsCommand := RegisterIDECommand(IDECommandCategory, 'Project Groups',
+      lisProjectGroups, ViewProjGrpShortCutX, nil, @ViewProjectGroupsClicked);
+    if ViewProjectGroupsCommand <> nil then
+    begin
+      ViewProjectGroupsButtonCommand := RegisterIDEButtonCommand(ViewProjectGroupsCommand);
+      if ViewProjectGroupsButtonCommand=nil then ;
+    end;
+  end;
 end;
 
 finalization

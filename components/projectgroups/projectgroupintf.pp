@@ -72,7 +72,7 @@ Type
     FActive: Boolean;
     FFilename: string;
     FTargetType: TPGTargetType;
-    FRemoved: boolean;
+    FMissing: boolean;
   protected
     FParent: TPGCompileTarget;
     FProjectGroup: TProjectGroup;
@@ -86,7 +86,7 @@ Type
     function Perform(AAction: TPGTargetAction): TPGActionResult;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
     procedure SetFilename(const AValue: string); virtual;
-    procedure SetRemoved(const AValue: boolean); virtual;
+    procedure SetMissing(const AValue: boolean); virtual;
     procedure SetTargetType(AValue: TPGTargetType); virtual;
     procedure DoDeactivateChildren;
     procedure ActiveChanged(Sender: TPGCompileTarget); virtual; abstract;
@@ -105,13 +105,14 @@ Type
     procedure Modified; virtual; abstract;
     property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative.
-    property Removed: boolean read FRemoved write SetRemoved;
+    property Missing: boolean read FMissing write SetMissing;
     property TargetType: TPGTargetType read FTargetType write SetTargetType;
     property Active: Boolean Read FActive;
+    function GetIndex: Integer;
     // Currently allowed actions.
     property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
-    property ProjectGroup: TProjectGroup read FProjectGroup; // set if TargetType is ttProjectGroup
+    property ProjectGroup: TProjectGroup read FProjectGroup; // only set if TargetType=ttProjectGroup
     property BuildModes[Index: integer]: TPGBuildMode read GetBuildModes;
     property BuildModeCount: integer read GetBuildModeCount;
     property Files[Index: integer]: string read GetFiles;
@@ -140,8 +141,6 @@ Type
     function GetModified: Boolean; virtual;
     function GetTargetCount: Integer; virtual; abstract;
     function GetTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
-    function GetRemovedTargetCount: Integer; virtual; abstract;
-    function GetRemovedTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TProjectGroupHandler;
                                   Sender: TObject); overload;
     procedure AddHandler(HandlerType: TProjectGroupHandler;
@@ -154,7 +153,7 @@ Type
     destructor Destroy; override;
     function GetRootGroup: TProjectGroup;
     property FileName: String Read FFileName Write SetFileName; // absolute
-    property CompileTarget: TPGCompileTarget read FCompileTarget;
+    property CompileTarget: TPGCompileTarget read FCompileTarget; // this group as target
     property Parent: TProjectGroup read FParent;
     // actions
     function Perform(Index: Integer; AAction: TPGTargetAction): TPGActionResult;
@@ -163,20 +162,16 @@ Type
     function ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction): Boolean; virtual;
     function PerformFrom(AIndex: Integer; AAction: TPGTargetAction): TPGActionResult; virtual;
     // targets
-    function IndexOfTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
-    function IndexOfTarget(Const AFilename: String): Integer; virtual;
-    function IndexOfRemovedTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
-    function IndexOfRemovedTarget(Const AFilename: String): Integer; virtual;
+    function IndexOfTarget(Const Target: TPGCompileTarget): Integer; overload; virtual; abstract;
+    function IndexOfTarget(Const AFilename: String): Integer; overload; virtual;
     function AddTarget(Const AFileName: String): TPGCompileTarget; virtual; abstract;
-    procedure ReAddTarget(Target: TPGCompileTarget); virtual; abstract;
+    function InsertTarget(Const Target: TPGCompileTarget; Index: Integer): Integer; virtual; abstract;
     procedure ExchangeTargets(ASource, ATarget: Integer); virtual; abstract;
     procedure RemoveTarget(Index: Integer); virtual; abstract;
     procedure RemoveTarget(Const AFileName: String);
     procedure RemoveTarget(Target: TPGCompileTarget);
     property Targets[Index: Integer]: TPGCompileTarget Read GetTarget;
     property TargetCount: Integer Read GetTargetCount;
-    property RemovedTargets[Index: Integer]: TPGCompileTarget Read GetRemovedTarget;
-    property RemovedTargetCount: Integer Read GetRemovedTargetCount;
     property ActiveTarget: TPGCompileTarget Read GetActiveTarget Write SetActiveTarget;
   public
     // modified
@@ -191,8 +186,8 @@ Type
   end;
 
   TProjectGroupLoadOption  = (
-    pgloRemoveInvalid, // Mark non-existing targets from group as removed.
-    pgloSkipInvalid, // Ignore non-existing, add as-is.
+    pgloRemoveInvalid, // Remove non-existing targets from group automatically while loading
+    pgloSkipInvalid, // Mark non-existing as Missing.
     pgloErrorInvalid, // Stop with error on non-existing.
     pgloSkipDialog, // do not show Project Group editor.
     pgloLoadRecursively // load all sub nodes
@@ -207,6 +202,10 @@ Type
   public
     procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); virtual; abstract;
     procedure SaveProjectGroup; virtual; abstract;
+    function CanUndo: boolean; virtual; abstract;
+    function CanRedo: boolean; virtual; abstract;
+    procedure Undo; virtual; abstract;
+    procedure Redo; virtual; abstract;
     property CurrentProjectGroup: TProjectGroup Read GetCurrentProjectGroup; // Always top-level.
   end;
 
@@ -372,8 +371,8 @@ begin
   while Result and (Index<C)  do
   begin
     T:=GetTarget(Index);
-    if not T.Removed then
-      Result:=AAction in T.AllowedActions;;
+    if not T.Missing then
+      Result:=Result and (AAction in T.AllowedActions);
     Inc(Index);
   end;
 end;
@@ -386,24 +385,16 @@ begin
   Result:=arOK;
   I:=AIndex;
   while (Result=arOK) and (I<TargetCount) do
-    if Not GetTarget(i).Removed then
-    begin
-      Result:=Perform(I,AAction);
-      Inc(I);
-    end;
+  begin
+    Result:=Perform(I,AAction);
+    Inc(I);
+  end;
 end;
 
 function TProjectGroup.IndexOfTarget(const AFilename: String): Integer;
 begin
   Result:=TargetCount-1;
   while (Result>=0) and (CompareFilenames(AFileName,GetTarget(Result).Filename)<>0) do
-    Dec(Result);
-end;
-
-function TProjectGroup.IndexOfRemovedTarget(const AFilename: String): Integer;
-begin
-  Result:=RemovedTargetCount-1;
-  while (Result>=0) and (CompareFilenames(AFileName,GetRemovedTarget(Result).Filename)<>0) do
     Dec(Result);
 end;
 
@@ -444,6 +435,16 @@ begin
 end;
 
 { TPGCompileTarget }
+
+function TPGCompileTarget.GetIndex: Integer;
+var
+  Group: TProjectGroup;
+begin
+  if Parent=nil then exit(0);
+  Group:=Parent.ProjectGroup;
+  if Group=nil then exit(0);
+  Result:=Group.IndexOfTarget(Self);
+end;
 
 function TPGCompileTarget.GetAllowedActions: TPGTargetActions;
 begin
@@ -515,10 +516,10 @@ begin
     ProjectGroup.FileName:=Filename;
 end;
 
-procedure TPGCompileTarget.SetRemoved(const AValue: boolean);
+procedure TPGCompileTarget.SetMissing(const AValue: boolean);
 begin
-  if Removed=AValue then exit;
-  FRemoved:=AValue;
+  if Missing=AValue then exit;
+  FMissing:=AValue;
 end;
 
 procedure TPGCompileTarget.Activate;

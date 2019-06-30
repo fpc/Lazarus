@@ -280,6 +280,10 @@ msgstr "Įrašyti projekto grupę"
 msgid "Read error"
 msgstr "Klaida skaitant"
 
+#: projectgroupstrconst.lisredo
+msgid "Redo"
+msgstr ""
+
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
 msgid "Remove target"
@@ -476,6 +480,10 @@ msgstr "Nepavyko įkelti failo „%s“"
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
 msgstr "Nepavyko rašyti į projekto grupės failą „%s“%s%s"
+
+#: projectgroupstrconst.lisundo
+msgid "Undo"
+msgstr ""
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"
