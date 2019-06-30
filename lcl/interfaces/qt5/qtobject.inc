@@ -57,7 +57,7 @@ begin
   FLastMinimizeEvent := 0;
   FWindowManagerName := LowerCase(GetWindowManager);
   // metacity wm forks. marco = mint mate wm, gnome shell = gnome 3 wm
-  if (FWindowManagerName = 'marco') or (FWindowManagerName = 'gnome shell') or
+  if (FWindowManagerName = 'marco') or // issue #35782 (FWindowManagerName = 'gnome shell') or
     (UTF8Pos('mutter', FWindowManagerName) > 0) then
     FWindowManagerName := 'metacity';
   {$ENDIF}

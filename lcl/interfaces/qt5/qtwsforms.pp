@@ -423,6 +423,7 @@ var
   W: QWidgetH;
   {$ENDIF}
   Flags: Cardinal;
+  AModalWindowFlag: QtWindowFlags;
 
   function ShowNonModalOverModal: Boolean;
   var
@@ -528,7 +529,15 @@ begin
         if (TCustomForm(AWinControl).BorderStyle in [bsSizeable, bsSizeToolWin]) then
           Flags := Flags or QtWindowMaximizeButtonHint;
         {$endif}
-        QWidget_setWindowFlags(Widget.Widget, QtDialog or
+        AModalWindowFlag := QtDialog;
+        {$IFDEF HASX11}
+        //do not translate those strings. issue #35782.
+        //if this fails for ubuntus < 18.04 then we must parse /etc/os-release
+        //for exact ubuntu version.
+        if (LowerCase(GetWindowManager) = 'gnome shell') then
+          AModalWindowFlag := QtWindow;
+        {$ENDIF}
+        QWidget_setWindowFlags(Widget.Widget, AModalWindowFlag or
           {$ifdef darwin}Flags or {$endif}
           GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
             TCustomForm(AWinControl).BorderIcons));
