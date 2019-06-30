@@ -1879,10 +1879,6 @@ var
     Result := FMemManager.ReadAddress(AnAddress, ASize, AValue, FContext);
     if not Result then
       SetError;
-//  // Deref SelfMem should simple not happer. Except to get const/values
-    //else
-    //if AnAddress.MType = mlfSelfMem then
-    //  AValue.MType := mlfSelfMem;
   end;
 
   function ReadAddressFromMemoryEx(AnAddress: TFpDbgMemLocation; AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
@@ -1893,9 +1889,6 @@ var
     Result := IsValidLoc(AValue);
     if not Result then
       SetError;
-    //else
-    //if AnAddress.MType = mlfSelfMem then
-    //  AValue.MType := mlfSelfMem;
   end;
 
   function ReadUnsignedFromExpression(var CurInstr: Pointer; ASize: Integer): TDbgPtr;
@@ -1927,7 +1920,7 @@ var
   NewValue: TDbgPtr;
   i: TDbgPtr;
   x : integer;
-  Entry, Entry2: TFpDbgMemLocation;
+  Entry: TFpDbgMemLocation;
   EntryP: PFpDbgMemLocation;
 begin
   (* Returns the address of the value.
@@ -2810,7 +2803,7 @@ begin
     DebugLn(FPDBG_DWARF_WARNINGS and (not Result), ['Comp unit not found DW_FORM_ref_addr']);
   end
   else begin
-    DebugLn(FPDBG_DWARF_VERBOSE, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['FORM for ReadReference not expected ', DwarfAttributeFormToString(Form)]);
   end;
 end;
 

@@ -931,10 +931,17 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   end;
 {%endregion Symbol objects }
 
+function dbgs(ASubRangeBoundReadState: TFpDwarfSubRangeBoundReadState): String; overload;
+
 implementation
 
 var
   FPDBG_DWARF_VERBOSE, FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
+
+function dbgs(ASubRangeBoundReadState: TFpDwarfSubRangeBoundReadState): String;
+begin
+  WriteStr(Result, ASubRangeBoundReadState);
+end;
 
 { TFpDwarfDefaultSymbolClassMap }
 
@@ -3593,6 +3600,7 @@ begin
   if FLowBoundState <> rfNotRead then exit;
 
   if InformationEntry.GetAttribData(DW_AT_lower_bound, AttrData) then begin
+    // TODO: check the FORM, to determine what data to read.
     // Todo: LocationFromTag()
     if InformationEntry.ReadReference(AttrData, FwdInfoPtr, FwdCompUint) then begin
       NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
@@ -3643,13 +3651,13 @@ begin
     begin
       if assigned(AValueObj) then
         InitLocParserData.ObjectDataAddress := AValueObj.Address;
-      InitLocParserData.ObjectDataAddrPush := False;
+        InitLocParserData.ObjectDataAddrPush := False;
       if assigned(AValueObj) and LocationFromTag(DW_AT_upper_bound, AttrData, AValueObj, AnAddress, @InitLocParserData) then begin
-        FHighBoundState := rfConst;
-        FHighBoundConst := Int64(AnAddress.Address);
-      end
-      else
-        FHighBoundState := rfError;
+          FHighBoundState := rfConst;
+          FHighBoundConst := Int64(AnAddress.Address);
+        end
+        else
+          FHighBoundState := rfError;
     end;
   end
   else
