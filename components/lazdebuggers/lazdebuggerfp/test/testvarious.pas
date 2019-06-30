@@ -5,7 +5,7 @@ unit TestVarious;
 interface
 
 uses
-  Classes, SysUtils, FpPascalBuilder, LazLogger, TestOutputLogger, fpcunit,
+  Classes, SysUtils, FpPascalBuilder, LazLoggerBase, TestOutputLogger, fpcunit,
   testutils, testregistry;
 
 type

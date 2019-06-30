@@ -113,7 +113,6 @@ end;
 procedure TCreatedExecutableList.AddExe(AnExeName, ACommandLine: String);
 var
   i: Integer;
-  n: TCreatedExecutableList;
 begin
   i := IndexOfExe(AnExeName);
   if i < 0 then begin

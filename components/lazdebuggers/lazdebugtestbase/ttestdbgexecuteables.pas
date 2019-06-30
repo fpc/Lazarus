@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, fgl, TestDbgConfig, TestDbgCompilerProcess,
   TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazFileUtils,
-  FileUtil, LazLoggerBase, DbgIntfDebuggerBase, fpcunit;
+  LazLoggerBase, FileUtil, DbgIntfDebuggerBase, fpcunit;
 
 type
 
@@ -238,7 +238,6 @@ procedure TTestDbgCompiler.TestCompileUses(UsesDir: TUsesDir; out
   UsesLibDir: String; out ExeID: string);
 var
   Opts: String;
-  i: Integer;
   DirPostFix: String;
 begin
   DirPostFix := SymbolTypeNames[UsesDir.SymbolType] + '_' + NameToFileName(Name);

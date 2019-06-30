@@ -130,7 +130,7 @@ TestLogger.DebugLn(['OTHER: ',n]);
 var
   r: TStream;
   Other, s, s2: String;
-  i, Line, j: Integer;
+  i, Line: Integer;
   OwnBlockRecurseName: Boolean;
   i2: SizeInt;
 begin
@@ -204,8 +204,6 @@ begin
 end;
 
 destructor TCommonSource.Destroy;
-var
-  i: Integer;
 begin
   FBreakPoints.Free;
   FreeAndNil(FData);

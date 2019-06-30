@@ -277,7 +277,7 @@ end;
 function TDBGTestCase.TestMatches(Expected, Got: string; ACaseSense: Boolean
   ): Boolean;
 begin
-  TestMatches('', Expected, Got, ACaseSense, 0, 0);
+  Result := TestMatches('', Expected, Got, ACaseSense, 0, 0);
 end;
 
 function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;
@@ -289,13 +289,13 @@ end;
 function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;
   ACaseSense: Boolean; MinDbgVers: Integer; AIgnoreReason: String): Boolean;
 begin
-  TestMatches(Name, Expected, Got, ACaseSense, MinDbgVers);
+  Result := TestMatches(Name, Expected, Got, ACaseSense, MinDbgVers);
 end;
 
 function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;
   MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String): Boolean;
 begin
-  TestMatches(Name, Expected, Got, False, MinDbgVers, MinFpcVers, AIgnoreReason);
+  Result := TestMatches(Name, Expected, Got, False, MinDbgVers, MinFpcVers, AIgnoreReason);
 end;
 
 function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;

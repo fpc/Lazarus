@@ -69,7 +69,7 @@ procedure TTestFpDebugDebugger.DoBetweenWaitForFinish;
 begin
   CheckSynchronize(25);
   Application.ProcessMessages;
-  inherited DoBetweenWaitForFinish;
+  //inherited DoBetweenWaitForFinish;
 end;
 
 function TTestFpDebugDebugger.StartDebugger(AppDir, TestExeName: String

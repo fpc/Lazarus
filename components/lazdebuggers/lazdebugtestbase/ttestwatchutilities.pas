@@ -241,7 +241,7 @@ type
 
     procedure Clear;
     function Count: Integer;
-    function EvaluateWatches: Boolean;
+    procedure EvaluateWatches;
     procedure CheckResults;
 
     procedure AddTypeNameAlias(ATypeName, AnAliases: String);
@@ -973,7 +973,7 @@ begin
   with AnWatchExp do begin
     try
       with LazDebugger.GetLocation do
-        FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' ('+TstWatch.Expression+' AT '+ SrcFile + ':' + IntToStr(SrcLine) +')';
+        FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' WATCH: '+TstWatch.Expression+' AT '+ SrcFile + ':' + IntToStr(SrcLine) +')';
       if TstStackFrame > 0 then
         FTest.TestBaseName := FTest.TestBaseName + ' (Stack: ' + IntToStr(TstStackFrame) + ')';
       if not VerifyDebuggerState then
@@ -1159,7 +1159,6 @@ function TWatchExpectationList.CheckResultMatch(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
-  ehf: TWatchExpErrorHandlingFlags;
 begin
   with AContext.WatchExp do begin
     Result := True;
@@ -1342,7 +1341,7 @@ function TWatchExpectationList.CheckResultPointer(
 var
   Expect: TWatchExpectationResult;
   g, e, n: String;
-  i, i2: SizeInt;
+  i: SizeInt;
   SubContext: TWatchExpTestCurrentData;
 begin
   with AContext.WatchExp do begin
@@ -1421,8 +1420,7 @@ var
   SubContext: TWatchExpTestCurrentData;
   v, n: String;
   parsed: array of String;
-  i, e, b: Integer;
-  q: Boolean;
+  i, e: Integer;
 begin
   with AContext.WatchExp do begin
     Result := True;
@@ -1556,9 +1554,9 @@ begin
   Result := Length(FList);
 end;
 
-function TWatchExpectationList.EvaluateWatches: Boolean;
+procedure TWatchExpectationList.EvaluateWatches;
 var
-  i, t, c: Integer;
+  i, t: Integer;
 begin
   t := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
   for i := 0 to Length(FList)-1 do begin
