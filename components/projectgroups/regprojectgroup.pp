@@ -7,8 +7,14 @@ unit RegProjectGroup;
 interface
 
 uses
-  Classes, SysUtils, ProjectGroupIntf, MenuIntf, IDECommands, ToolBarIntf,
-  ProjectGroupStrConst, ProjectGroup, ProjectGroupEditor, LCLType;
+  Classes, SysUtils, LCLType,
+  MenuIntf, IDECommands, ToolBarIntf, IDEOptEditorIntf, IDEOptionsIntf,
+  LazIDEIntf, ProjectGroupIntf,
+  // project groups
+  ProjectGroupStrConst, ProjectGroup, ProjectGroupEditor, PrjGrpOptionsFrm;
+
+var
+  PGOptionsFrameID: integer = 1000;
 
 procedure RegisterProjectGroupEditorMenuItems;
 procedure Register;
@@ -131,6 +137,12 @@ begin
       if ViewProjectGroupsButtonCommand=nil then ;
     end;
   end;
+
+  // add IDE options frame
+  PGOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,
+                                  TProjGrpOptionsFrame,PGOptionsFrameID)^.Index;
+
+
 end;
 
 finalization

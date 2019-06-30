@@ -152,6 +152,7 @@ type
     // Project group callbacks
     procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
+    procedure OnIDEClose(Sender: TObject);
     procedure OnProjectGroupDestroy(Sender: TObject);
     procedure OnProjectGroupFileNameChanged(Sender: TObject);
     procedure OnTargetInserted(Sender: TObject; Target: TPGCompileTarget);
@@ -525,6 +526,8 @@ begin
   SetItem(MnuCmdTargetCopyFilename,@ATargetCopyFilenameExecute);
   SetItem(MnuCmdProjGrpUndo,@AProjectGroupUndoExecute);
   SetItem(MnuCmdProjGrpRedo,@AProjectGroupRedoExecute);
+
+  LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
 end;
 
 procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
@@ -911,7 +914,7 @@ end;
 procedure TProjectGroupEditorForm.AProjectGroupRedoExecute(Sender: TObject);
 begin
   // ToDo
-  writeln('TProjectGroupEditorForm.AProjectGroupRedoExecute Todo');
+  debugln(['TProjectGroupEditorForm.AProjectGroupRedoExecute Todo']);
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupRedoUpdate(Sender: TObject);
@@ -1134,6 +1137,25 @@ begin
     Node.StateIndex:=NSIActive
   else
     Node.StateIndex:=-1;
+end;
+
+procedure TProjectGroupEditorForm.OnIDEClose(Sender: TObject);
+var
+  Opts: TIDEProjectGroupOptions;
+begin
+  if IsVisible then
+  begin
+    Opts:=IDEProjectGroupManager.Options;
+    if Opts.OpenLastGroupOnStart then
+    begin
+      if (ProjectGroup<>nil) and FilenameIsAbsolute(ProjectGroup.FileName) then
+        Opts.LastGroupFile:=ProjectGroup.FileName
+      else
+        Opts.LastGroupFile:='';
+      if Opts.Modified then
+        Opts.SaveSafe;
+    end;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.OnProjectGroupDestroy(Sender: TObject);

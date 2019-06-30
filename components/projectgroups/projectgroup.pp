@@ -153,11 +153,15 @@ type
   TIDEProjectGroupOptions = class
   private
     FChangeStamp: integer;
+    FLastGroupFile: string;
     FLastSavedChangeStamp: integer;
+    FOpenLastGroupOnStart: Boolean;
     FRecentProjectGroups: TStringList;
     FShowTargetPaths: boolean;
     function GetModified: boolean;
+    procedure SetLastGroupFile(const AValue: string);
     procedure SetModified(AValue: boolean);
+    procedure SetOpenLastGroupOnStart(const AValue: Boolean);
     procedure SetShowTargetPaths(AValue: boolean);
   public
     constructor Create;
@@ -174,6 +178,8 @@ type
     property RecentProjectGroups: TStringList read FRecentProjectGroups;
     procedure AddToRecentProjectGroups(aFilename: string);
     // misc
+    property LastGroupFile: string read FLastGroupFile write SetLastGroupFile;
+    property OpenLastGroupOnStart: Boolean read FOpenLastGroupOnStart write SetOpenLastGroupOnStart;
     property ShowTargetPaths: boolean read FShowTargetPaths write SetShowTargetPaths;
   end;
 
@@ -196,12 +202,16 @@ type
 
   TIDEProjectGroupManager = Class(TProjectGroupManager)
   private
+    FIdleConnected: boolean;
     FUndoList: TObjectList; // list of TPGUndoItem
     FRedoList: TObjectList; // list of TPGUndoItem
     FOptions: TIDEProjectGroupOptions;
     procedure AddToRecentGroups(aFilename: string);
     function GetNewFileName: Boolean;
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure SetIdleConnected(const AValue: boolean);
   protected
+    FIDEStarted: boolean;
     FProjectGroup: TIDEProjectGroup;
   protected
     function GetCurrentProjectGroup: TProjectGroup; override;
@@ -228,6 +238,7 @@ type
     procedure SaveProjectGroup; override;
   public
     property Options: TIDEProjectGroupOptions read FOptions;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
   TEditProjectGroupHandler = procedure(Sender: TObject; AProjectGroup: TProjectGroup);
@@ -365,12 +376,27 @@ begin
   Result:=FLastSavedChangeStamp<>FChangeStamp
 end;
 
+procedure TIDEProjectGroupOptions.SetLastGroupFile(const AValue: string);
+begin
+  if FLastGroupFile=AValue then Exit;
+  FLastGroupFile:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TIDEProjectGroupOptions.SetModified(AValue: boolean);
 begin
   if AValue then
     IncreaseChangeStamp
   else
     FLastSavedChangeStamp:=FChangeStamp;
+end;
+
+procedure TIDEProjectGroupOptions.SetOpenLastGroupOnStart(const AValue: Boolean
+  );
+begin
+  if FOpenLastGroupOnStart=AValue then Exit;
+  FOpenLastGroupOnStart:=AValue;
+  IncreaseChangeStamp;
 end;
 
 procedure TIDEProjectGroupOptions.SetShowTargetPaths(AValue: boolean);
@@ -383,6 +409,7 @@ end;
 constructor TIDEProjectGroupOptions.Create;
 begin
   FRecentProjectGroups:=TStringList.Create;
+  FOpenLastGroupOnStart:=true;
 end;
 
 destructor TIDEProjectGroupOptions.Destroy;
@@ -420,7 +447,9 @@ begin
   Cfg:=GetIDEConfigStorage(aFilename,false);
   try
     Cfg.SetValue('RecentProjectGroups/',FRecentProjectGroups);
-    Cfg.SetDeleteValue('ShowTargetPaths/',ShowTargetPaths,false);
+    Cfg.SetDeleteValue('OpenLastGroupOnStart/Value',OpenLastGroupOnStart,true);
+    Cfg.SetDeleteValue('LastGroupFile/Value',LastGroupFile,'');
+    Cfg.SetDeleteValue('ShowTargetPaths/Value',ShowTargetPaths,false);
   finally
     Cfg.Free;
   end;
@@ -433,7 +462,9 @@ begin
   Cfg:=GetIDEConfigStorage(aFilename,true);
   try
     Cfg.GetValue('RecentProjectGroups/',FRecentProjectGroups);
-    ShowTargetPaths:=Cfg.GetValue('ShowTargetPaths/',false);
+    OpenLastGroupOnStart:=Cfg.GetValue('OpenLastGroupOnStart/Value',true);
+    LastGroupFile:=Cfg.GetValue('LastGroupFile/Value','');
+    ShowTargetPaths:=Cfg.GetValue('ShowTargetPaths/Value',false);
   finally
     Cfg.Free;
   end;
@@ -544,6 +575,7 @@ begin
   FOptions:=TIDEProjectGroupOptions.Create;
   FUndoList:=TObjectList.Create(true);
   FRedoList:=TObjectList.Create(true);
+  IdleConnected:=true;
 end;
 
 destructor TIDEProjectGroupManager.Destroy;
@@ -656,6 +688,37 @@ begin
     finally
       F.Free;
     end;
+end;
+
+procedure TIDEProjectGroupManager.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if FIDEStarted then
+  begin
+    IdleConnected:=false;
+    exit;
+  end;
+
+  if Screen.GetCurrentModalForm<>nil then
+    exit;
+  FIDEStarted:=true;
+  if (CurrentProjectGroup=nil)
+      and Options.OpenLastGroupOnStart
+      and (Options.LastGroupFile<>'')
+      and FileExistsCached(Options.LastGroupFile) then
+  begin
+    LoadProjectGroup(Options.LastGroupFile,[pgloLoadRecursively,pgloSkipInvalid]);
+  end;
+  IdleConnected:=false;
+end;
+
+procedure TIDEProjectGroupManager.SetIdleConnected(const AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 procedure TIDEProjectGroupManager.AddToRecentGroups(aFilename: string);

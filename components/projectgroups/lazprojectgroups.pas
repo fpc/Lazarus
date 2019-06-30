@@ -9,7 +9,7 @@ interface
 
 uses
   ProjectGroupIntf, ProjectGroup, ProjectGroupEditor, RegProjectGroup, 
-  ProjectGroupStrConst, LazarusPackageIntf;
+  ProjectGroupStrConst, PrjGrpOptionsFrm, LazarusPackageIntf;
 
 implementation
 

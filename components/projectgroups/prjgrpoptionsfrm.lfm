@@ -1,0 +1,31 @@
+object ProjGrpOptionsFrame: TProjGrpOptionsFrame
+  Left = 0
+  Height = 317
+  Top = 0
+  Width = 443
+  ClientHeight = 317
+  ClientWidth = 443
+  TabOrder = 0
+  DesignLeft = 230
+  DesignTop = 263
+  object OpenLastGroupOnStartCheckBox: TCheckBox
+    Left = 8
+    Height = 24
+    Top = 10
+    Width = 160
+    Caption = 'Open last group on start'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+  end
+  object ShowTargetPathsCheckBox: TCheckBox
+    Left = 8
+    Height = 24
+    Top = 40
+    Width = 126
+    Caption = 'Show target paths'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+end
