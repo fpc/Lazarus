@@ -7186,18 +7186,19 @@ begin
   debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',EnvironmentOptions.DebuggerConfig.DebuggerClass);
 
   try
-    Result := mrCancel;
+    Result:=mrCancel;
     Handled:=false;
     Result := DoCallRunDebug(Handled);
-    if Handled or (Result<>mrOk) then
+    if Handled then
       exit;
-
-    Result := mrCancel;
-    Result := DebugBoss.StartDebugging;
   finally
     if Result<>mrOk then
       ToolStatus:=itNone;
   end;
+  if Result<>mrOk then
+    exit;
+
+  Result := DebugBoss.StartDebugging;
 
   DebugLn('Hint: (lazarus) [TMainIDE.DoRunProject] END');
 end;
