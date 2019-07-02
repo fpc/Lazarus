@@ -139,6 +139,7 @@ type
     procedure RemoveTarget(Index: Integer); override;
     procedure ExchangeTargets(OldIndex, NewIndex: Integer); override;
     procedure ActiveTargetChanged(T: TPGCompileTarget);
+    function UpdateMissing: boolean; override;
     function LoadFromFile(Options: TProjectGroupLoadOptions): Boolean;
     function SaveToFile: Boolean;
     property OnFileNameChange: TNotifyEvent Read FOnFileNameChange Write FOnFileNameChange;
@@ -999,6 +1000,28 @@ begin
   Root:=TIDEProjectGroup(GetRootGroup);
   if Assigned(Root.OnTargetActiveChanged) then
     Root.OnTargetActiveChanged(Self,T);
+end;
+
+function TIDEProjectGroup.UpdateMissing: boolean;
+var
+  i: Integer;
+  Target: TPGCompileTarget;
+  Missing: Boolean;
+begin
+  Result:=false;
+  for i:=0 to TargetCount-1 do
+  begin
+    Target:=Targets[i];
+    Missing:=not FileExistsCached(Target.Filename);
+    if Target.Missing<>Missing then begin
+      Target.Missing:=Missing;
+      Result:=true;
+    end;
+    // todo sub groups
+  end;
+  if Result then
+    if ProjectGroupManager.Editor<>nil then
+      ProjectGroupManager.Editor.Invalidate;
 end;
 
 function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions

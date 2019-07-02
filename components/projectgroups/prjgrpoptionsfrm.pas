@@ -75,8 +75,11 @@ begin
   Opts.OpenLastGroupOnStart:=OpenLastGroupOnStartCheckBox.Checked;
   Opts.ShowTargetPaths:=ShowTargetPathsCheckBox.Checked;
 
-  if Opts.Modified then
+  if Opts.Modified then begin
     Opts.SaveSafe;
+    if IDEProjectGroupManager.Editor<>nil then
+      IDEProjectGroupManager.Editor.Invalidate;
+  end;
 end;
 
 procedure TProjGrpOptionsFrame.RestoreSettings(AOptions: TAbstractIDEOptions);

@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils,
-  LazFileCache, LazMethodList, LazLoggerBase;
+  LazFileCache, LazMethodList, LazLoggerBase, Forms;
 
 Type
   TPGTargetType = (
@@ -173,6 +173,7 @@ Type
     property Targets[Index: Integer]: TPGCompileTarget Read GetTarget;
     property TargetCount: Integer Read GetTargetCount;
     property ActiveTarget: TPGCompileTarget Read GetActiveTarget Write SetActiveTarget;
+    function UpdateMissing: boolean; virtual; abstract; // true if something changed
   public
     // modified
     procedure IncreaseChangeStamp;
@@ -198,6 +199,7 @@ Type
 
   TProjectGroupManager = Class(TPersistent)
   protected
+    FEditor: TForm;
     function GetCurrentProjectGroup: TProjectGroup; virtual; abstract;
   public
     procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); virtual; abstract;
@@ -207,6 +209,7 @@ Type
     procedure Undo; virtual; abstract;
     procedure Redo; virtual; abstract;
     property CurrentProjectGroup: TProjectGroup Read GetCurrentProjectGroup; // Always top-level.
+    property Editor: TForm read FEditor write FEditor;
   end;
 
 var

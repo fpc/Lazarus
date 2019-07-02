@@ -9,6 +9,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   LCLVersion = '2.1.0.0'
   object TBProjectGroup: TToolBar
     Left = 0
@@ -101,6 +102,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     RightClickSelect = True
     StateImages = ImageListMain
     TabOrder = 1
+    OnAdvancedCustomDrawItem = TVPGAdvancedCustomDrawItem
     OnDblClick = TVPGDblClick
     OnMouseDown = TVPGMouseDown
     OnSelectionChanged = TVPGSelectionChanged

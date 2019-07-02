@@ -140,7 +140,11 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure PopupMenuMorePopup(Sender: TObject);
+    procedure TVPGAdvancedCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
+      var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
     procedure TVPGDblClick(Sender: TObject);
     procedure TVPGMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -152,6 +156,7 @@ type
     // Project group callbacks
     procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
+    procedure OnApplicationActivate(Sender: TObject);
     procedure OnIDEClose(Sender: TObject);
     procedure OnProjectGroupDestroy(Sender: TObject);
     procedure OnProjectGroupFileNameChanged(Sender: TObject);
@@ -513,6 +518,7 @@ procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
 begin
   if ProjectGroupEditorForm=nil then
     ProjectGroupEditorForm:=Self;
+  ProjectGroupManager.Editor:=Self;
   PGEditMenuSectionMisc.MenuItem:=PopupMenuMore.Items;
   SetItem(MnuCmdTargetAdd,@AProjectGroupAddExistingExecute);
   SetItem(MnuCmdTargetRemove,@AProjectGroupDeleteExecute);
@@ -528,18 +534,25 @@ begin
   SetItem(MnuCmdProjGrpRedo,@AProjectGroupRedoExecute);
 
   LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
+  Application.AddOnActivateHandler(@OnApplicationActivate);
 end;
 
 procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
 begin
-  debugln(['TProjectGroupEditorForm.FormDestroy START ',ProjectGroup<>nil]);
+  //debugln(['TProjectGroupEditorForm.FormDestroy START ',ProjectGroup<>nil]);
   ProjectGroup:=nil;
   if ProjectGroupEditorForm=Self then
     ProjectGroupEditorForm:=nil;
+  ProjectGroupManager.Editor:=Self;
   if (PGEditMenuSectionMisc<>nil)
   and (PGEditMenuSectionMisc.MenuItem=PopupMenuMore.Items) then
     PGEditMenuSectionMisc.MenuItem:=nil;
-  debugln(['TProjectGroupEditorForm.FormDestroy END ',ProjectGroup<>nil]);
+  //debugln(['TProjectGroupEditorForm.FormDestroy END ',ProjectGroup<>nil]);
+end;
+
+procedure TProjectGroupEditorForm.FormShow(Sender: TObject);
+begin
+
 end;
 
 procedure TProjectGroupEditorForm.PopupMenuMorePopup(Sender: TObject);
@@ -558,6 +571,26 @@ begin
   PMICompile.Visible:=taCompile in AllowedActions;
   PMICompileClean.Visible:=taCompileClean in AllowedActions;
   PMIRunMenuItem.Visible:=taRun in AllowedActions;
+end;
+
+procedure TProjectGroupEditorForm.TVPGAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+var
+  ND: TNodeData;
+  r: TRect;
+  y: LongInt;
+begin
+  if Stage=cdPostPaint then begin
+    ND:=TNodeData(Node.Data);
+    if (ND.Target<>nil) and ND.Target.Missing then begin
+      // Missing target file: draw red line strike through text
+      r:=Node.DisplayRect(true);
+      TVPG.Canvas.Pen.Color:=clRed;
+      y:=(r.Top+r.Bottom) div 2;
+      TVPG.Canvas.Line(r.Left,y,r.Right,y);
+    end;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.TVPGDblClick(Sender: TObject);
@@ -800,6 +833,7 @@ begin
       // ToDo: revert
       IDEMessageDialog(lisNeedSave, lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou,
         mtError,[mbOK]);
+      PG.UpdateMissing;
       exit;
     end;
     ProjectGroup:=nil;
@@ -808,7 +842,8 @@ begin
     finally
       ProjectGroup:=PG;
     end;
-  end;
+  end else
+    PG.UpdateMissing;
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveAsUpdate(Sender: TObject);
@@ -1139,6 +1174,12 @@ begin
     Node.StateIndex:=-1;
 end;
 
+procedure TProjectGroupEditorForm.OnApplicationActivate(Sender: TObject);
+begin
+  if ProjectGroup<>nil then
+    ProjectGroup.UpdateMissing;
+end;
+
 procedure TProjectGroupEditorForm.OnIDEClose(Sender: TObject);
 var
   Opts: TIDEProjectGroupOptions;
@@ -1296,10 +1337,10 @@ begin
   if (NodeData.Target<>nil)
   and (not IDEProjectGroupManager.Options.ShowTargetPaths) then
   begin
-    if NodeData.Target.TargetType in [ttPascalFile] then
-      Result:=ExtractFileName(NodeData.Target.Filename)
+    if NodeData.Target.TargetType in [ttProject,ttPackage,ttProjectGroup] then
+      Result:=ExtractFileNameOnly(NodeData.Target.Filename)
     else
-      Result:=ExtractFileNameOnly(NodeData.Target.Filename);
+      Result:=ExtractFileName(NodeData.Target.Filename);
   end else begin
     Result:='';
     if NodeData.ParentTarget<>nil then
