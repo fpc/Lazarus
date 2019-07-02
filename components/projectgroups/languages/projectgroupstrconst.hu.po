@@ -65,6 +65,10 @@ msgstr "Projekt fordítása: %s"
 msgid "Discard changes"
 msgstr "Változások eldobása"
 
+#: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
+msgid "Enable to show target filenames with paths."
+msgstr ""
+
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format, fuzzy
 #| msgid ""
@@ -165,6 +169,14 @@ msgstr "Eltávolított célok"
 #: projectgroupstrconst.lisnodetargets
 msgid "Targets"
 msgstr "Célok"
+
+#: projectgroupstrconst.lisonidestartreopenlastopengroup
+msgid "On IDE start reopen last open group."
+msgstr ""
+
+#: projectgroupstrconst.lisopenlastgrouponstart
+msgid "Open last group on start"
+msgstr ""
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -306,6 +318,10 @@ msgstr "Projektcsoport mentése"
 msgid "Save Project Group As ..."
 msgstr "Projektcsoport mentése másként ..."
 
+#: projectgroupstrconst.lisshowtargetpaths
+msgid "Show target paths"
+msgstr ""
+
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
 msgstr "Minden érvénytelen cél eltávolítása"
@@ -359,7 +375,9 @@ msgid "Compile selected target"
 msgstr "A kiválasztott cél fordítása"
 
 #: projectgroupstrconst.listargetcopyfilename
-msgid "Copy file name"
+#, fuzzy
+#| msgid "Copy file name"
+msgid "Copy Filename"
 msgstr "Fájlnév másolása"
 
 #: projectgroupstrconst.listargetcount

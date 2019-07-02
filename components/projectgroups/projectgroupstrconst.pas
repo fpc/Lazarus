@@ -48,7 +48,7 @@ Resourcestring
   lisOpenRecentProjectGroup = 'Open Recent Project Group';
   lisSaveProjectGroup   = 'Save Project Group';
   lisSaveProjectGroupAs = 'Save Project Group As ...';
-  lisTargetCopyFilename = 'Copy file name';
+  lisTargetCopyFilename = 'Copy Filename';
 
   lisProjectGroup            = 'Project group %s';
   lisNodeTargets             = 'Targets';
@@ -124,6 +124,12 @@ Resourcestring
   lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou = 'Please save your changes before reloading the project group.';
   lisProjectGroupReload = 'Reload';
   lisMore = 'More';
+
+  lisOpenLastGroupOnStart = 'Open last group on start';
+  lisOnIDEStartReopenLastOpenGroup = 'On IDE start reopen last open group.';
+  lisShowTargetPaths = 'Show target paths';
+  lisEnableToShowTargetFilenamesWithPaths = 'Enable to show target filenames '
+    +'with paths.';
 
 
 implementation

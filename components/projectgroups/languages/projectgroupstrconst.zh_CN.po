@@ -66,6 +66,10 @@ msgstr "编译工程%s"
 msgid "Discard changes"
 msgstr "放弃(Discard)更改"
 
+#: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
+msgid "Enable to show target filenames with paths."
+msgstr ""
+
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format, fuzzy
 #| msgid ""
@@ -166,6 +170,14 @@ msgstr "移除目标(targets)"
 #: projectgroupstrconst.lisnodetargets
 msgid "Targets"
 msgstr "目标(Targets)"
+
+#: projectgroupstrconst.lisonidestartreopenlastopengroup
+msgid "On IDE start reopen last open group."
+msgstr ""
+
+#: projectgroupstrconst.lisopenlastgrouponstart
+msgid "Open last group on start"
+msgstr ""
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -307,6 +319,10 @@ msgstr "保存工程组"
 msgid "Save Project Group As ..."
 msgstr "保存工程组为..."
 
+#: projectgroupstrconst.lisshowtargetpaths
+msgid "Show target paths"
+msgstr ""
+
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
 msgstr "移除所有无效目标(targets)"
@@ -360,7 +376,9 @@ msgid "Compile selected target"
 msgstr "编译选择的目标(target)"
 
 #: projectgroupstrconst.listargetcopyfilename
-msgid "Copy file name"
+#, fuzzy
+#| msgid "Copy file name"
+msgid "Copy Filename"
 msgstr "复制文件名称"
 
 #: projectgroupstrconst.listargetcount

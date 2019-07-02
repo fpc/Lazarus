@@ -55,6 +55,10 @@ msgstr ""
 msgid "Discard changes"
 msgstr ""
 
+#: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
+msgid "Enable to show target filenames with paths."
+msgstr ""
+
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format
 msgid ""
@@ -147,6 +151,14 @@ msgstr ""
 
 #: projectgroupstrconst.lisnodetargets
 msgid "Targets"
+msgstr ""
+
+#: projectgroupstrconst.lisonidestartreopenlastopengroup
+msgid "On IDE start reopen last open group."
+msgstr ""
+
+#: projectgroupstrconst.lisopenlastgrouponstart
+msgid "Open last group on start"
 msgstr ""
 
 #: projectgroupstrconst.lisopenprojectgroup
@@ -284,6 +296,10 @@ msgstr ""
 msgid "Save Project Group As ..."
 msgstr ""
 
+#: projectgroupstrconst.lisshowtargetpaths
+msgid "Show target paths"
+msgstr ""
+
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
 msgstr ""
@@ -337,7 +353,7 @@ msgid "Compile selected target"
 msgstr ""
 
 #: projectgroupstrconst.listargetcopyfilename
-msgid "Copy file name"
+msgid "Copy Filename"
 msgstr ""
 
 #: projectgroupstrconst.listargetcount

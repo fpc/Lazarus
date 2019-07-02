@@ -66,6 +66,10 @@ msgstr "Компіляція проекту %s"
 msgid "Discard changes"
 msgstr "Відкинути зміни"
 
+#: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
+msgid "Enable to show target filenames with paths."
+msgstr ""
+
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format
 msgid ""
@@ -162,6 +166,14 @@ msgstr "Вилучені цілі"
 #: projectgroupstrconst.lisnodetargets
 msgid "Targets"
 msgstr "Цілі"
+
+#: projectgroupstrconst.lisonidestartreopenlastopengroup
+msgid "On IDE start reopen last open group."
+msgstr ""
+
+#: projectgroupstrconst.lisopenlastgrouponstart
+msgid "Open last group on start"
+msgstr ""
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -300,6 +312,10 @@ msgstr "Зберегти групу проектів"
 msgid "Save Project Group As ..."
 msgstr "Зберегти групу проектів як ..."
 
+#: projectgroupstrconst.lisshowtargetpaths
+msgid "Show target paths"
+msgstr ""
+
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
 msgstr "Видалити всі некоректні цілі"
@@ -353,7 +369,9 @@ msgid "Compile selected target"
 msgstr "Компілювати вибрану ціль"
 
 #: projectgroupstrconst.listargetcopyfilename
-msgid "Copy file name"
+#, fuzzy
+#| msgid "Copy file name"
+msgid "Copy Filename"
 msgstr "Копіювати назву файлу"
 
 #: projectgroupstrconst.listargetcount

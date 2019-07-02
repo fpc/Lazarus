@@ -65,6 +65,10 @@ msgstr "Компиляция проекта %s"
 msgid "Discard changes"
 msgstr "Отбросить изменения"
 
+#: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
+msgid "Enable to show target filenames with paths."
+msgstr "Включите для показа целевых имён файлов с путями."
+
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format
 msgid ""
@@ -162,6 +166,14 @@ msgstr "Удалённые цели"
 msgid "Targets"
 msgstr "Цели"
 
+#: projectgroupstrconst.lisonidestartreopenlastopengroup
+msgid "On IDE start reopen last open group."
+msgstr "При запуске IDE открывать последнюю группу."
+
+#: projectgroupstrconst.lisopenlastgrouponstart
+msgid "Open last group on start"
+msgstr "Открывать последнюю группу при запуске"
+
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
 msgstr "Открыть группу проектов ..."
@@ -172,7 +184,7 @@ msgstr "Открыть недавнюю группу проектов"
 
 #: projectgroupstrconst.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
@@ -278,7 +290,7 @@ msgstr "Ошибка чтения"
 
 #: projectgroupstrconst.lisredo
 msgid "Redo"
-msgstr ""
+msgstr "Вернуть"
 
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
@@ -298,6 +310,10 @@ msgstr "Сохранить группу проектов"
 #: projectgroupstrconst.lissaveprojectgroupas
 msgid "Save Project Group As ..."
 msgstr "Сохранить группу проектов как ..."
+
+#: projectgroupstrconst.lisshowtargetpaths
+msgid "Show target paths"
+msgstr "Показывать целевые пути"
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
@@ -352,7 +368,7 @@ msgid "Compile selected target"
 msgstr "Компилировать выбранную цель"
 
 #: projectgroupstrconst.listargetcopyfilename
-msgid "Copy file name"
+msgid "Copy Filename"
 msgstr "Копировать имя файла"
 
 #: projectgroupstrconst.listargetcount
@@ -479,7 +495,7 @@ msgstr "Невозможно записать файл группы проект
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
-msgstr ""
+msgstr "Отменить"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

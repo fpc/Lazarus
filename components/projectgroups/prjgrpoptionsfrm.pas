@@ -9,7 +9,7 @@ unit PrjGrpOptionsFrm;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, ProjectGroupStrConst,
   // LCL
   Forms, StdCtrls, Dialogs,
   // LazUtils
@@ -43,16 +43,16 @@ implementation
 
 function TProjGrpOptionsFrame.GetTitle: String;
 begin
-  Result:='Project Groups';
+  Result:=lisProjectGroups;
 end;
 
 procedure TProjGrpOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  OpenLastGroupOnStartCheckBox.Caption:='Open last group on start';
-  OpenLastGroupOnStartCheckBox.Hint:='On IDE start reopen last open group.';
+  OpenLastGroupOnStartCheckBox.Caption:=lisOpenLastGroupOnStart;
+  OpenLastGroupOnStartCheckBox.Hint:=lisOnIDEStartReopenLastOpenGroup;
 
-  ShowTargetPathsCheckBox.Caption:='Show target paths';
-  ShowTargetPathsCheckBox.Hint:='Enable to show target filenames with paths.';
+  ShowTargetPathsCheckBox.Caption:=lisShowTargetPaths;
+  ShowTargetPathsCheckBox.Hint:=lisEnableToShowTargetFilenamesWithPaths;
 end;
 
 procedure TProjGrpOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -66,6 +66,10 @@ msgstr "Kompiliuoti paketą „%s“"
 msgid "Discard changes"
 msgstr "Atsisakyti pakeitimų"
 
+#: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
+msgid "Enable to show target filenames with paths."
+msgstr ""
+
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format, fuzzy
 #| msgid ""
@@ -166,6 +170,14 @@ msgstr "Pašalinti tikslai"
 #: projectgroupstrconst.lisnodetargets
 msgid "Targets"
 msgstr "Tikslai"
+
+#: projectgroupstrconst.lisonidestartreopenlastopengroup
+msgid "On IDE start reopen last open group."
+msgstr ""
+
+#: projectgroupstrconst.lisopenlastgrouponstart
+msgid "Open last group on start"
+msgstr ""
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -307,6 +319,10 @@ msgstr "Įrašyti projekto grupę"
 msgid "Save Project Group As ..."
 msgstr "Įrašyti projekto grupę kitu pavadinimu…"
 
+#: projectgroupstrconst.lisshowtargetpaths
+msgid "Show target paths"
+msgstr ""
+
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
 msgstr "Šalinti visus klaidingus tikslus"
@@ -360,7 +376,9 @@ msgid "Compile selected target"
 msgstr "Kompiliuoti pažymėtą tikslą"
 
 #: projectgroupstrconst.listargetcopyfilename
-msgid "Copy file name"
+#, fuzzy
+#| msgid "Copy file name"
+msgid "Copy Filename"
 msgstr "Kopijuoti failo pavadinimą"
 
 #: projectgroupstrconst.listargetcount
