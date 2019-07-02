@@ -70,6 +70,7 @@ begin
   RegisterMenuCmd(MnuCmdTargetCopyFilename,MnuSection,'CopyFilename',lisTargetCopyFilename);
   RegisterMenuCmd(MnuCmdProjGrpUndo, MnuSection, 'Undo', lisUndo);
   RegisterMenuCmd(MnuCmdProjGrpRedo, MnuSection, 'Redo', lisRedo);
+  RegisterMenuCmd(MnuCmdProjGrpOptions, MnuSection, 'Options', lisOptions);
   // ToDo: View source (project)
 
   // ToDo: find in files

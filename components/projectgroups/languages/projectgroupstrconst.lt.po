@@ -175,6 +175,10 @@ msgstr "Atverti projekto grupę…"
 msgid "Open Recent Project Group"
 msgstr "Atverti paskiausiai naudotą projekto grupę"
 
+#: projectgroupstrconst.lisoptions
+msgid "Options"
+msgstr ""
+
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
 msgstr "Kitas projektas"

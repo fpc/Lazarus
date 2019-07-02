@@ -29,6 +29,7 @@ Resourcestring
   lisTargetRemove       = 'Remove target';
   lisUndo = 'Undo';
   lisRedo = 'Redo';
+  lisOptions = 'Options';
   lisTargetCompile      = 'Compile';
   lisProjectGroups = 'Project Groups';
   lisTargetCompileClean = 'Compile clean';

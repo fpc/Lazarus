@@ -13,7 +13,7 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs,
   // LazUtils
-  LazFileCache, LazFileUtils,
+  LazFileCache, LazFileUtils, LazLoggerBase,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, ProjectGroup;
 
@@ -61,10 +61,10 @@ var
 begin
   Opts:=IDEProjectGroupManager.Options;
 
-  OpenLastGroupOnStartCheckBox.Checked:=Opts.OpenLastGroupOnStart;
   FLastOpenLastGroupOnStart:=Opts.OpenLastGroupOnStart;
-  ShowTargetPathsCheckBox.Checked:=Opts.ShowTargetPaths;
+  OpenLastGroupOnStartCheckBox.Checked:=FLastOpenLastGroupOnStart;
   FLastShowTargetPaths:=Opts.ShowTargetPaths;
+  ShowTargetPathsCheckBox.Checked:=FLastShowTargetPaths;
 end;
 
 procedure TProjGrpOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -77,8 +77,8 @@ begin
 
   if Opts.Modified then begin
     Opts.SaveSafe;
-    if IDEProjectGroupManager.Editor<>nil then
-      IDEProjectGroupManager.Editor.Invalidate;
+    if IDEProjectGroupManager.OnEditorOptionsChanged<>nil then
+      IDEProjectGroupManager.OnEditorOptionsChanged(true,true);
   end;
 end;
 

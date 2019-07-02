@@ -977,6 +977,9 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     object PMIRedo: TMenuItem
       Action = AProjectGroupRedo
     end
+    object PMIOptions: TMenuItem
+      Action = AProjectGroupOptions
+    end
   end
   object ActionListMain: TActionList
     Images = ImageListMain
@@ -1110,6 +1113,11 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Caption = 'Redo'
       OnExecute = AProjectGroupRedoExecute
       OnUpdate = AProjectGroupRedoUpdate
+    end
+    object AProjectGroupOptions: TAction
+      Category = 'ProjectGroupActions'
+      Caption = 'Options'
+      OnExecute = AProjectGroupOptionsExecute
     end
   end
   object PopupMenuTree: TPopupMenu

@@ -175,6 +175,10 @@ msgstr "打开工程组..."
 msgid "Open Recent Project Group"
 msgstr "打开最近工程组"
 
+#: projectgroupstrconst.lisoptions
+msgid "Options"
+msgstr ""
+
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
 msgstr "其他工程"

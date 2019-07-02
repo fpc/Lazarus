@@ -175,6 +175,10 @@ msgstr "Projektgruppe öffnen ..."
 msgid "Open Recent Project Group"
 msgstr "Aktuelle Projektgruppe öffnen"
 
+#: projectgroupstrconst.lisoptions
+msgid "Options"
+msgstr ""
+
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
 msgstr "Anderes Projekt"

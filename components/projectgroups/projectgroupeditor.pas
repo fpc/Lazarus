@@ -22,7 +22,7 @@ uses
   LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf, IDEWindowIntf,
   IDEDialogs,
   // ProjectGroups
-  ProjectGroupStrConst, ProjectGroup;
+  ProjectGroupStrConst, ProjectGroup, PrjGrpOptionsFrm;
 
 type
   TNodeType = (
@@ -47,6 +47,7 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    AProjectGroupOptions: TAction;
     AProjectGroupRedo: TAction;
     AProjectGroupUndo: TAction;
     AProjectGroupReload: TAction;
@@ -69,6 +70,7 @@ type
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
     ImageListMain: TImageList;
+    PMIOptions: TMenuItem;
     PMIRedo: TMenuItem;
     PMIUndo: TMenuItem;
     PMICompileFromHere: TMenuItem;
@@ -104,6 +106,7 @@ type
     procedure AProjectGroupAddExistingExecute(Sender: TObject);
     procedure AProjectGroupDeleteExecute(Sender: TObject);
     procedure AProjectGroupDeleteUpdate(Sender: TObject);
+    procedure AProjectGroupOptionsExecute(Sender: TObject);
     procedure AProjectGroupRedoExecute(Sender: TObject);
     procedure AProjectGroupRedoUpdate(Sender: TObject);
     procedure AProjectGroupReloadExecute(Sender: TObject);
@@ -154,6 +157,8 @@ type
     FProjectGroupTVNode: TTreeNode;
     FActiveTarget: TPGCompileTarget;
     // Project group callbacks
+    procedure IDEProjectGroupManagerEditorOptionsChanged(Colors,
+      NodeTexts: boolean);
     procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
     procedure OnApplicationActivate(Sender: TObject);
@@ -206,6 +211,7 @@ type
   public
     property ProjectGroup: TProjectGroup Read FProjectGroup Write SetProjectGroup;
     property ActiveTarget: TPGCompileTarget Read GetActiveTarget;
+    procedure UpdateNodeTexts;
   end;
 
 var
@@ -518,7 +524,9 @@ procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
 begin
   if ProjectGroupEditorForm=nil then
     ProjectGroupEditorForm:=Self;
-  ProjectGroupManager.Editor:=Self;
+  IDEProjectGroupManager.Editor:=Self;
+  IDEProjectGroupManager.OnEditorOptionsChanged:=@IDEProjectGroupManagerEditorOptionsChanged;
+
   PGEditMenuSectionMisc.MenuItem:=PopupMenuMore.Items;
   SetItem(MnuCmdTargetAdd,@AProjectGroupAddExistingExecute);
   SetItem(MnuCmdTargetRemove,@AProjectGroupDeleteExecute);
@@ -532,6 +540,7 @@ begin
   SetItem(MnuCmdTargetCopyFilename,@ATargetCopyFilenameExecute);
   SetItem(MnuCmdProjGrpUndo,@AProjectGroupUndoExecute);
   SetItem(MnuCmdProjGrpRedo,@AProjectGroupRedoExecute);
+  SetItem(MnuCmdProjGrpOptions,@AProjectGroupOptionsExecute);
 
   LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
   Application.AddOnActivateHandler(@OnApplicationActivate);
@@ -946,6 +955,11 @@ begin
   UpdateIDEMenuCommandFromAction(Sender,MnuCmdTargetRemove);
 end;
 
+procedure TProjectGroupEditorForm.AProjectGroupOptionsExecute(Sender: TObject);
+begin
+  LazarusIDE.DoOpenIDEOptions(TProjGrpOptionsFrame);
+end;
+
 procedure TProjectGroupEditorForm.AProjectGroupRedoExecute(Sender: TObject);
 begin
   // ToDo
@@ -1174,6 +1188,13 @@ begin
     Node.StateIndex:=-1;
 end;
 
+procedure TProjectGroupEditorForm.IDEProjectGroupManagerEditorOptionsChanged(
+  Colors, NodeTexts: boolean);
+begin
+  if Colors then Invalidate;
+  if NodeTexts then UpdateNodeTexts;
+end;
+
 procedure TProjectGroupEditorForm.OnApplicationActivate(Sender: TObject);
 begin
   if ProjectGroup<>nil then
@@ -1331,29 +1352,9 @@ begin
 end;
 
 function TProjectGroupEditorForm.DisplayFileName(NodeData: TNodeData): string;
-var
-  BaseDir: String;
 begin
-  if (NodeData.Target<>nil)
-  and (not IDEProjectGroupManager.Options.ShowTargetPaths) then
-  begin
-    if NodeData.Target.TargetType in [ttProject,ttPackage,ttProjectGroup] then
-      Result:=ExtractFileNameOnly(NodeData.Target.Filename)
-    else
-      Result:=ExtractFileName(NodeData.Target.Filename);
-  end else begin
-    Result:='';
-    if NodeData.ParentTarget<>nil then
-      BaseDir:=ExtractFilePath(NodeData.ParentTarget.Filename)
-    else
-      BaseDir:='';
-    if NodeData.Target<>nil then
-      Result:=NodeData.Target.Filename;
-    if Result='' then
-      Result:='?'
-    else
-      Result:=CreateRelativePath(Result,BaseDir);
-  end;
+  if NodeData=nil then exit('');
+  Result:=DisplayFileName(NodeData.Target);
 end;
 
 procedure TProjectGroupEditorForm.ShowFileName;
@@ -1453,6 +1454,20 @@ begin
   inherited UpdateShowing;
   if IsVisible then
     Localize;
+end;
+
+procedure TProjectGroupEditorForm.UpdateNodeTexts;
+var
+  TVNode: TTreeNode;
+begin
+  TVPG.BeginUpdate;
+  try
+    for TVNode in TVPG.Items do begin
+      TVNode.Text:=DisplayFileName(TVNode);
+    end;
+  finally
+    TVPG.EndUpdate;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.FillProjectGroupNode(TVNode: TTreeNode;

@@ -199,11 +199,14 @@ type
     destructor Destroy; override;
   end;
 
+  TEditorOptionsChangedEvent = procedure(Colors, NodeTexts: boolean) of object;
+
   { TIDEProjectGroupManager }
 
   TIDEProjectGroupManager = Class(TProjectGroupManager)
   private
     FIdleConnected: boolean;
+    FOnEditorOptionsChanged: TEditorOptionsChangedEvent;
     FUndoList: TObjectList; // list of TPGUndoItem
     FRedoList: TObjectList; // list of TPGUndoItem
     FOptions: TIDEProjectGroupOptions;
@@ -240,6 +243,7 @@ type
   public
     property Options: TIDEProjectGroupOptions read FOptions;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
+    property OnEditorOptionsChanged: TEditorOptionsChangedEvent read FOnEditorOptionsChanged write FOnEditorOptionsChanged;
   end;
 
   TEditProjectGroupHandler = procedure(Sender: TObject; AProjectGroup: TProjectGroup);
@@ -295,6 +299,7 @@ var
   MnuCmdTargetCopyFilename: TIDEMenuCommand;
   MnuCmdProjGrpUndo: TIDEMenuCommand;
   MnuCmdProjGrpRedo: TIDEMenuCommand;
+  MnuCmdProjGrpOptions: TIDEMenuCommand;
 
 function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
 function CreateXML(aFilename: string; Quiet: boolean): TXMLConfig;
