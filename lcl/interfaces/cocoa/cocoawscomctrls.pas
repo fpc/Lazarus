@@ -1970,9 +1970,9 @@ class procedure TCocoaWSTrackBar.SetOrientation(const ATrackBar: TCustomTrackBar
   const AOrientation: TTrackBarOrientation);
 begin
   if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
-  if (AOrientation = trHorizontal) and (ATrackBar.Height > ATrackBar.Width) then
+  if (AOrientation = trHorizontal) and (ATrackBar.Height >= ATrackBar.Width) then
     ATrackBar.Width := ATrackBar.Height + 1
-  else if (AOrientation = trVertical) and (ATrackBar.Width > ATrackBar.Height) then
+  else if (AOrientation = trVertical) and (ATrackBar.Width >= ATrackBar.Height) then
     ATrackBar.Height := ATrackBar.Width + 1;
 end;
 
@@ -1988,18 +1988,29 @@ end;
 class procedure TCocoaWSTrackBar.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
-const
-  MinSliderWidth: Integer = 100;
 var
-  lSlider: TCocoaSlider;
+  lSlider : TCocoaSlider;
+  trk     : TCustomTrackBar;
+  frm     : NSRect;
 begin
   if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
-  TCocoaWSWinControl.GetPreferredSize(AWinControl,PreferredWidth, PreferredHeight, WithThemeSpace);
+  trk := TCustomTrackBar(AWinControl);
   lSlider := TCocoaSlider(AWinControl.Handle);
-  if lSlider.isVertical<>0 then
-    PreferredHeight := Max(PreferredHeight, MinSliderWidth)
-  else
-    PreferredWidth := Max(PreferredWidth, MinSliderWidth);
+  frm := lSlider.frame;
+  try
+    if trk.Orientation = trVertical then
+      lSlider.setFrame(NSMakeRect(0,0,5,10))
+    else
+      lSlider.setFrame(NSMakeRect(0,0,10,5));
+
+    TCocoaWSWinControl.GetPreferredSize(AWinControl,PreferredWidth, PreferredHeight, WithThemeSpace);
+    if trk.Orientation = trVertical then
+      PreferredHeight := 0
+    else
+      PreferredWidth := 0;
+  finally
+    lSlider.setFrame(frm);
+  end;
 end;
 
 end.
