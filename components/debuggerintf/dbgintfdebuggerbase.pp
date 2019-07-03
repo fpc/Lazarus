@@ -1884,6 +1884,7 @@ type
     procedure LockRelease; virtual;
     procedure UnlockRelease; virtual;
     function GetPseudoTerminal: TPseudoTerminal; virtual;
+    property InternalFilename: string read FFileName write FFileName; //experimental
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe

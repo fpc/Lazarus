@@ -968,6 +968,7 @@ type
 
     function CreateTypeRequestCache: TGDBPTypeRequestCache; virtual;
     property TypeRequestCache: TGDBPTypeRequestCache read FTypeRequestCache;
+    property InternalFilename;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -2011,7 +2012,7 @@ function TGDBMIDebuggerChangeFilenameBase.DoChangeFilename: Boolean;
 var
   R: TGDBMIExecResult;
   List: TGDBMINameValueList;
-  S: String;
+  S, FileName: String;
 begin
   Result := False;
   FContext.ThreadContext := ccNotRequired;
@@ -2028,18 +2029,26 @@ begin
   FTheDebugger.FSehRaiseBreaks.ClearAll(Self);
   if DebuggerState = dsError then Exit;
 
-  S := FTheDebugger.ConvertToGDBPath(FTheDebugger.FileName, cgptExeName);
+  FileName := FTheDebugger.FileName;
+  S := FTheDebugger.ConvertToGDBPath(FileName, cgptExeName);
   Result := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
   if not Result then exit;
   {$IFDEF darwin}
-  if  (R.State = dsError) and (FTheDebugger.FileName <> '')
+  if  (R.State = dsError) and (FileName <> '')
   then begin
-    S := FTheDebugger.FileName + '/Contents/MacOS/' + ExtractFileNameOnly(FTheDebugger.FileName);
+    S := FTheDebugger.InternalFilename + '/Contents/MacOS/' + ExtractFileNameOnly(Filename);
     S := FTheDebugger.ConvertToGDBPath(S, cgptExeName);
     Result := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
     if not Result then exit;
   end;
   {$ENDIF}
+  if (R.State = dsError)  and (FileName <> '') then
+  begin
+    FTheDebugger.InternalFilename := Filename + '.elf';
+    S := FTheDebugger.ConvertToGDBPath(FTheDebugger.FileName, cgptExeName);
+    Result := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
+    if not Result then exit;
+  end;
 
   if  (R.State = dsError) and (FTheDebugger.FileName <> '')
   then begin
