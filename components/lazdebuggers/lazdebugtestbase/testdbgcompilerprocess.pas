@@ -302,6 +302,7 @@ begin
 
     FpcBuild.CommandLine := ACommand;
     FpcBuild.CurrentDirectory := ACurDir;
+    FpcBuild.PipeBufferSize:=64*1024;
     FpcBuild.Execute;
 
     OutputLines := ReadOutput(FpcBuild);

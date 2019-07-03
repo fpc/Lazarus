@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, math, DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  FpPascalBuilder, LazLoggerBase, RegExpr, TestDbgTestSuites,
+  FpPascalBuilder, LazLoggerBase, Forms, RegExpr, TestDbgTestSuites,
   TTestDebuggerClasses, TTestDbgExecuteables, TestDbgConfig, TestOutputLogger;
 
 type
@@ -923,9 +923,10 @@ begin
   AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Value;
 
   for i := 1 to 5 do begin
-    WaitWhileEval;
+    Application.Idle(False);
     Result := AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Validity <> ddsRequested;
     if Result then break;
+    WaitWhileEval;
   end;
   FTest.LogText('<<<<< ' + dbgs(AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Validity) + ': ' +
     AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Value );
