@@ -46,7 +46,8 @@ type
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
     _KeyHandled: Boolean;
-    _UTF8Character : TUTF8Char;
+    _UTF8Character : array [0..7] of TUTF8Char;
+    _UTF8Charcount : Integer;
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
     procedure KeyEvBeforeDown;
@@ -539,6 +540,7 @@ var
   IsSysKey: Boolean;       // Is alt (option) key down?
   KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
   ignModChr: NSString;
+  i,c,j : integer;
 begin
   SendChar := False;
 
@@ -612,7 +614,29 @@ begin
   _SendChar := SendChar;
   _IsSysKey := IsSysKey;
   _IsKeyDown := (Event.type_ = NSKeyDown);
-  _UTF8Character := UTF8Character;
+
+  c:=0;
+  i:=1;
+  j:=0;
+  while (i<=length(UTF8Character)) and (j<length(_UTF8Character)) do
+  begin
+    c := Utf8CodePointLen(@UTF8Character[i], length(UTF8Character)-i+1, false);
+    if (j=0) and (c = length(UTF8Character)) then
+    begin
+      _UTF8Character[0] := UTF8Character;
+      j := 1;
+      break;
+    end
+    else if (c > 0) then
+    begin
+      _UTF8Character[j] := Copy(UTF8Character, i, c);
+      inc(i,c);
+      inc(j);
+    end else
+      break;
+  end;
+  if (j = 0) then _UTF8Character[0] := '';
+  _UTF8Charcount := j;
 
   FillChar(_CharMsg, SizeOf(_CharMsg), 0);
   _CharMsg.KeyData := _KeyMsg.KeyData;
@@ -620,6 +644,9 @@ begin
 end;
 
 procedure TLCLCommonCallback.KeyEvBeforeDown;
+var
+  i: integer;
+  lclHandled: Boolean;
 begin
   // create the CN_KEYDOWN message
   if _IsSysKey then
@@ -628,7 +655,7 @@ begin
     _KeyMsg.Msg := CN_KEYDOWN;
 
   // is the key combination help key (Cmd + ?)
-  if _SendChar and _IsSysKey and (_UTF8Character = '?') then
+  if _SendChar and _IsSysKey and (_UTF8Character[0] = '?') then
     Application.ShowHelpForObject(Target);
 
   // widget can filter some keys from being send to cocoa control
@@ -648,7 +675,16 @@ begin
 
   if (_SendChar) then begin
     // send the UTF8 keypress
-    if Target.IntfUTF8KeyPress(_UTF8Character, 1, _IsSysKey) then
+    i := 0;
+    lclHandled := false;
+    for i := 0 to _UTF8Charcount -1 do
+    begin
+      lclHandled := false;
+      if Target.IntfUTF8KeyPress(_UTF8Character[i], 1, _IsSysKey) then
+        lclHandled := true;
+    end;
+
+    if lclHandled then
     begin
       // the LCL has handled the key
       if ForceReturnKeyDown and (_KeyMsg.CharCode = VK_RETURN) then
