@@ -331,6 +331,7 @@ type
     function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: PChar): Boolean; inline;
     function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: String): Boolean; inline;
     function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean; inline;
+    function ReadAddressValue(const AnAttribData: TDwarfAttribData; out AValue: TDBGPtr): Boolean; inline;
     function ReadReference(const AnAttribData: TDwarfAttribData; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean; inline;
 
     function ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean; inline;
@@ -2790,6 +2791,16 @@ begin
     AnAttribData.InfoPointer,
     AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
     AValue, AnFormString
+  );
+end;
+
+function TDwarfInformationEntry.ReadAddressValue(
+  const AnAttribData: TDwarfAttribData; out AValue: TDBGPtr): Boolean;
+begin
+  Result := AnAttribData.InformationEntry.FCompUnit.ReadAddressValue(
+    AnAttribData.InfoPointer,
+    AnAttribData.InformationEntry.FAbbrevData[AnAttribData.Idx].Form,
+    AValue
   );
 end;
 

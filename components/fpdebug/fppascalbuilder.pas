@@ -5,8 +5,9 @@ unit FpPascalBuilder;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo, FpdMemoryTools,
-  FpErrorMessages, LazLoggerBase, LazUTF8;
+  Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo,
+  FpdMemoryTools, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarf,
+  LazLoggerBase, LazUTF8, LazClasses;
 
 type
   TTypeNameFlag = (
@@ -258,21 +259,53 @@ var
       Result := GetTypeName(ADeclaration, ADbgSymbol, []);
   end;
 
+  function GetParameterList(out ADeclaration: String): Boolean;
+  var
+    i: Integer;
+    m: TFpDbgSymbol;
+    name, lname: String;
+  begin
+    ADeclaration := '';
+    lname := '';
+    for i := 0 to ADbgSymbol.MemberCount - 1 do begin
+      m := ADbgSymbol.Member[i];
+      if (m <> nil) and (sfParameter in m.Flags) then begin
+        GetTypeName(name, m, [tnfOnlyDeclared]);
+        if (lname <> '') then begin
+          if (lname = name) then
+            ADeclaration := ADeclaration + ', '
+          else
+            ADeclaration := ADeclaration + ': ' + lname + '; ';
+        end
+        else
+        if ADeclaration <> '' then
+          ADeclaration := ADeclaration + '; ';
+        ADeclaration := ADeclaration + m.Name;
+        lname := name;
+      end;
+    end;
+    if (lname <> '') then
+      ADeclaration := ADeclaration + ': ' + lname;
+    Result := True;
+  end;
+
   function GetFunctionType(out ADeclaration: String): Boolean;
   var
-    s: String;
+    s, p: String;
   begin
-    // Todo param
     GetTypeAsDeclaration(s, ADbgSymbol.TypeInfo, AFlags);
-    ADeclaration := 'function ' + ADbgSymbol.Name + ' () : ' + s + '';
+    GetParameterList(p);
+    ADeclaration := 'function ' + '(' + p + '): ' + s + '';
     if sfVirtual in ADbgSymbol.Flags then ADeclaration := ADeclaration + '; virtual';
     Result := true;
   end;
 
   function GetProcedureType(out ADeclaration: String): Boolean;
+  var
+    p: String;
   begin
-    // Todo param
-    ADeclaration := 'procedure ' + ADbgSymbol.Name + ' ()';
+    GetParameterList(p);
+    ADeclaration := 'procedure ' + '(' + p + ')';
     if sfVirtual in ADbgSymbol.Flags then ADeclaration := ADeclaration + '; virtual';
     Result := true;
   end;
@@ -436,8 +469,8 @@ begin
     skPointer:   Result := GetPointerType(ATypeDeclaration);
     skInteger, skCardinal, skBoolean, skChar, skFloat:
                  Result := GetBaseType(ATypeDeclaration);
-    skFunction:  Result := GetFunctionType(ATypeDeclaration);
-    skProcedure: Result := GetProcedureType(ATypeDeclaration);
+    skFunction, skFunctionRef:  Result := GetFunctionType(ATypeDeclaration);
+    skProcedure, skProcedureRef: Result := GetProcedureType(ATypeDeclaration);
     skClass:     Result := GetClassType(ATypeDeclaration);
     skRecord:    Result := GetRecordType(ATypeDeclaration);
     skEnum:      Result := GetEnumType(ATypeDeclaration);
@@ -631,6 +664,56 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     else
     if svfDataAddress in AValue.FieldFlags then
       APrintedValue := APrintedValue + '($'+IntToHex(AValue.DataAddress.Address, AnAddressSize*2) + ')';
+    Result := True;
+  end;
+
+  procedure DoFunction;
+  var
+    s: String;
+    proc: TFpDwarfSymbol;
+    v: TDBGPtr;
+    t: TFpDbgSymbol;
+    par: TFpDwarfValue;
+  begin
+    proc := nil;
+    v := AValue.DataAddress.Address;
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(AValue.Kind, '');
+      if AValue.Kind in [skFunctionRef, skProcedureRef] then
+        ADBGTypeInfo^.Value.AsPointer := Pointer(v);  // TODO: no cut off
+    end;
+
+    // TODO: depending on verbosity: TypeName($0123456)
+    if AValue.Kind in [skFunctionRef, skProcedureRef] then begin
+      if v = 0 then
+        APrintedValue := 'nil'
+      else
+        APrintedValue := '$'+IntToHex(v, AnAddressSize*2);
+
+      t := AValue.TypeInfo;
+      proc := TFpDwarfSymbol(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindSymbol(v));
+      if proc <> nil then begin
+        //t := proc;
+        s := proc.Name;
+        par := nil;
+        if (proc is TFpDwarfSymbolValueProc) then
+          par := TFpDwarfSymbolValueProc(proc).GetSelfParameter;
+        if (par <> nil) and (par.TypeInfo <> nil) then
+          s := par.TypeInfo.Name + '.' + s;
+        APrintedValue := APrintedValue + ' = ' + s; // TODO: offset to startaddress
+      end;
+      APrintedValue := APrintedValue + ': ';
+    end
+    else
+      t := TFpDwarfValue(AValue).ValueSymbol;
+
+    if AFlags * PV_FORWARD_FLAGS <> [] then
+      GetTypeName(s, t)
+    else
+      GetTypeAsDeclaration(s, t);
+    APrintedValue := APrintedValue + s;
+
+    ReleaseRefAndNil(proc);
     Result := True;
   end;
 
@@ -1023,8 +1106,10 @@ begin
   Result := False;
   case AValue.Kind of
     skUnit: ;
-    skProcedure: ;
-    skFunction: ;
+    skProcedure,
+    skFunction,
+    skProcedureRef,
+    skFunctionRef:  DoFunction;
     skPointer:   DoPointer(False);
     skInteger:   DoInt;
     skCardinal:  DoCardinal;
