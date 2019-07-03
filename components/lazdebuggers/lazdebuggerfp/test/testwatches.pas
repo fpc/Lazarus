@@ -882,14 +882,23 @@ end;
 
 
 
-  t.Add(AName, p+'Enum'+e, weEnum('EnVal3', 'TEnum'));
-  t.Add(AName, p+'Enum1'+e, weEnum('EnVal2', 'TEnumSub'));
-  t.Add(AName, p+'Enum2'+e, weEnum('EnVal21', 'TEnum2'));
-  t.Add(AName, p+'Enum3'+e, weEnum('EnVal25', 'TEnum2'));
+    t.Add(AName, p+'Enum'+e, weEnum('EnVal3', 'TEnum'));
+    t.Add(AName, p+'Enum1'+e, weEnum('EnVal2', 'TEnumSub'));
+    t.Add(AName, p+'Enum2'+e, weEnum('EnVal21', 'TEnum2'));
+    t.Add(AName, p+'Enum3'+e, weEnum('EnVal25', 'TEnum2'));
 
-  t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
+    t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
 
-  t.Add(AName, p+'IntfUnknown'+e, weMatch('.?', skInterface)).Skip(); // only run eval / do not crash
+    t.Add(AName, p+'IntfUnknown'+e, weMatch('.?', skInterface)).Skip(); // only run eval / do not crash
+
+
+if not(ALoc in [tlConst]) then begin
+    t.Add(AName, p+'SomeFunc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeFunc1: *function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN', skFunctionRef) );
+    t.Add(AName, '@'+p+'SomeFunc1Ref'+e,     wePointer('^TFunc1') ).AddFlag(ehIgnPointerDerefData);
+    t.Add(AName, p+'SomeProc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeProc1: *procedure *\(\) *$', skProcedureRef) );
+    t.Add(AName, p+'SomeMeth1Ref'+e,         weMatch('TMeth1.*Proc *= *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*:.*Self.*=.*', skRecord) ); // TODO: correct type / NOT Boolean
+    t.Add(AName, p+'SomeMeth1Ref'+e+'.Proc', weMatch('\$[0-9A-F]+ = TMyBaseClass\.SomeMeth1: *function *\(.*AVal.*\): *BOOLEAN', skFunctionRef) );
+end;
 
   end;
 
@@ -942,6 +951,8 @@ begin
 //t.CheckResults;
 //exit;
 
+    t.Add('SomeFunc1',    weMatch('^function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN', skFunction) );
+    t.Add('@SomeFunc1',    weMatch('.', skPointer) ); // TODO: the text is based on the function return type
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
@@ -1582,10 +1593,10 @@ begin
     AddWatchesCast(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatchesCast(t, 'glob var',   'gv', 001, 'B');
     AddWatchesCast(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
-    //AddWatchesCast(t, 'glob MyBaseClass1', 'MyClass1.mbc', 003, 'D');
-    //AddWatchesCast(t, 'glob MyClass1',     'TMyClass(MyClass2).mc',  004, 'E');
-    //AddWatchesCast(t, 'glob MyBaseClass1', 'TMyClass(MyClass2).mbc', 005, 'F');
-    //AddWatchesCast(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
+    AddWatchesCast(t, 'glob MyBaseClass1', 'MyClass1.mbc', 003, 'D');
+    AddWatchesCast(t, 'glob MyClass1',     'TMyClass(MyClass2).mc',  004, 'E');
+    AddWatchesCast(t, 'glob MyBaseClass1', 'TMyClass(MyClass2).mbc', 005, 'F');
+    AddWatchesCast(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
     AddWatchesCast(t, 'glob var dyn array of [1]',   'gva', 006, 'L', tlArrayWrap, '[1]');
     AddWatchesCast(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
     t.EvaluateWatches;

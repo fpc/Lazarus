@@ -11,6 +11,11 @@ program WatchesValuePrg;
 
 uses sysutils, Classes;
 
+function SomeFunc1(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
+begin result := SomeValue = 0; end;
+procedure SomeProc1();
+begin SomeFunc1(2,2,2,2); end;
+
 type
 {$ifdef CPU64}
   PtrUInt = type QWord;
@@ -104,6 +109,10 @@ type
   TArrayEnumElem = array [EnVal1..EnVal4] of word;
   TArrayEnumSubElem = array [EnVal1..EnVal2] of word;
 
+  TFunc1 = function(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
+  TProc1 = procedure();
+  TMeth1 = function(AVal: Integer): Boolean of object;
+
 type
   (* LOCATION: TYPE *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=Tx, "_OP_== type ", (=;//, "_O2_= = type", _EQ_=, _BLOCK_=TestVar )
@@ -111,6 +120,8 @@ type
 
   (* LOCATION: field in baseclass *)
   TMyBaseClass = class
+  public
+    function SomeMeth1(SomeValue: Integer): Boolean;
   public
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=mbc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
   end;
@@ -138,6 +149,9 @@ var
 
 (* LOCATION: global var  pointer <each type> *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
+function TMyBaseClass.SomeMeth1(SomeValue: Integer): Boolean;
+begin result := SomeValue = 0; end;
 
 
 procedure Foo(
@@ -209,6 +223,8 @@ begin
   BreakDummy := ord(gcCharStatArray[1]);
   BreakDummy := ord(gcWCharStatArray[1]);
   p := nil;
+  SomeFunc1(1,1,1,1);
+  SomeProc1();
 
 (* use global const / value in "gv" will be overriden... *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, {e}={, "//@@=} :=", _pre3_=gc, _BLOCK_=TestAssignGC)
@@ -218,6 +234,7 @@ begin
 
 (* INIT: field in class / baseclass *)
   MyClass1 := TMyClass.Create;
+  MyClass1.SomeMeth1(1);
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyClass1.mbc, ADD=3, CHR1='D', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyClass1.mc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 

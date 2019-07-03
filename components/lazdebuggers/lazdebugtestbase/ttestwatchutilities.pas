@@ -24,6 +24,7 @@ type
      ehTestSkip,       // Do not run test
 
      ehIgnData,           // Ignore the data part
+     ehIgnPointerDerefData,  // Ignore if a pointer has deref data or not
      ehIgnKind,           // Ignore skSimple, ....
      ehIgnKindPtr,        // Ignore skSimple, ONLY if got kind=skPointer
      ehIgnTypeName,       // Ignore the typename
@@ -275,6 +276,7 @@ function weShortStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationRes
 function weWideStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 function weUniStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 
+function wePointer(ATypeName: String=''): TWatchExpectationResult;
 function wePointer(AExpVal: TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult;
 function wePointerAddr(AExpVal: Pointer; ATypeName: String=''): TWatchExpectationResult;
 
@@ -458,6 +460,14 @@ begin
   Result.ExpSymKind := skWideString;
   Result.ExpTypeName := ATypeName;
   Result.ExpTextData := AExpVal;
+end;
+
+function wePointer(ATypeName: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkPointer;
+  Result.ExpSymKind := skPointer;
+  Result.ExpTypeName := ATypeName;
 end;
 
 function wePointer(AExpVal: TWatchExpectationResult; ATypeName: String
@@ -1376,14 +1386,16 @@ begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
-DebugLn(['test pointer got: ', AContext.WatchVal.Value, ' // want: ',Expect.ExpSubResults[0].ExpTextData]);
 
     e := '(\$[0-9a-fA-F]*|nil)';
     if Expect.ExpTypeName <> '' then
-      e := Expect.ExpTypeName+'\('+e+'\)';
+      e := QuoteRegExprMetaChars(Expect.ExpTypeName)+'\('+e+'\)';
     e := '^'+e;
 
     Result := TestMatches('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+
+    if ehIgnPointerDerefData in Expect.ExpErrorHandlingFlags[Compiler.SymbolType] then
+      exit;
 
     g := AContext.WatchVal.Value;
     i := pos(' ', g);

@@ -371,8 +371,18 @@
   {$ENDIF}
 
 
+  pre__SomeFunc1Ref{e}    _O2_ TFunc1                 _EQ_      (nil); //@@ _pre3_SomeFunc1Ref;
+  pre__SomeProc1Ref{e}    _O2_ TProc1                 _EQ_      (nil); //@@ _pre3_SomeProc1Ref;
+  pre__SomeMeth1Ref{e}    _O2_ TMeth1                 _EQ_      (nil); //@@ _pre3_SomeMeth1Ref;
+  {$IFDEF TestAssign}
+  pre__SomeFunc1Ref{e}    := @SomeFunc1; //@@
+  pre__SomeProc1Ref{e}    := @SomeProc1; //@@
+  pre__SomeMeth1Ref{e}    := @MyClass2.SomeMeth1; //@@
+  //pre__SomeMeth1Ref{e}    := @TMyBaseClass(nil).SomeMeth1; //@@
+  {$ENDIF}
 
 
+// interface
 // array dyn/stat / nested of record/class/char/num ... bitpacked
 // record
 // object
