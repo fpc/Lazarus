@@ -3254,34 +3254,19 @@ begin
 
     Iter := TMapIterator.Create(CU.FAddressMap);
     try
-      if Iter.EOM
-      then begin
-        if MinMaxSet
-        then Exit //  minmaxset and no procs defined ???
-        else Continue;
-      end;
-
       if not Iter.Locate(AAddress)
       then begin
         if not Iter.BOM
         then Iter.Previous;
 
         if Iter.BOM
-        then begin
-          if MinMaxSet
-          then Exit //  minmaxset and no proc @ minpc ???
-          else Continue;
-        end;
+        then Continue;
       end;
 
       // iter is at the closest defined address before AAddress
       Info := Iter.DataPtr;
       if AAddress > Info^.EndPC
-      then begin
-        if MinMaxSet
-        then Exit //  minmaxset and no proc @ maxpc ???
-        else Continue;
-      end;
+      then Continue;
 
       // TDbgDwarfProcSymbol
       Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, Iter.DataPtr, AAddress);
