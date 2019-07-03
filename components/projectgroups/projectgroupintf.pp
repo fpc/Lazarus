@@ -135,7 +135,7 @@ Type
     FLastSavedChangeStamp: int64;
     procedure SetModified(AValue: Boolean);
   protected
-    FCompileTarget: TPGCompileTarget;
+    FSelfTarget: TPGCompileTarget;
     FParent: TProjectGroup;
     procedure SetFileName(AValue: String); virtual;
     function GetModified: Boolean; virtual;
@@ -153,7 +153,7 @@ Type
     destructor Destroy; override;
     function GetRootGroup: TProjectGroup;
     property FileName: String Read FFileName Write SetFileName; // absolute
-    property CompileTarget: TPGCompileTarget read FCompileTarget; // this group as target
+    property SelfTarget: TPGCompileTarget read FSelfTarget; // this group as target
     property Parent: TProjectGroup read FParent;
     // actions
     function Perform(Index: Integer; AAction: TPGTargetAction): TPGActionResult;
@@ -300,8 +300,8 @@ begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
   IncreaseChangeStamp;
-  if CompileTarget<>nil then
-    CompileTarget.Filename:=Filename;
+  if SelfTarget<>nil then
+    SelfTarget.Filename:=Filename;
 end;
 
 function TProjectGroup.GetModified: Boolean;

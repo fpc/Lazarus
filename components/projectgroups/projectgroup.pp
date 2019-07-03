@@ -199,14 +199,12 @@ type
     destructor Destroy; override;
   end;
 
-  TEditorOptionsChangedEvent = procedure(Colors, NodeTexts: boolean) of object;
-
   { TIDEProjectGroupManager }
 
   TIDEProjectGroupManager = Class(TProjectGroupManager)
   private
     FIdleConnected: boolean;
-    FOnEditorOptionsChanged: TEditorOptionsChangedEvent;
+    FOnEditorOptionsChanged: TNotifyEvent;
     FUndoList: TObjectList; // list of TPGUndoItem
     FRedoList: TObjectList; // list of TPGUndoItem
     FOptions: TIDEProjectGroupOptions;
@@ -243,7 +241,7 @@ type
   public
     property Options: TIDEProjectGroupOptions read FOptions;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
-    property OnEditorOptionsChanged: TEditorOptionsChangedEvent read FOnEditorOptionsChanged write FOnEditorOptionsChanged;
+    property OnEditorOptionsChanged: TNotifyEvent read FOnEditorOptionsChanged write FOnEditorOptionsChanged;
   end;
 
   TEditProjectGroupHandler = procedure(Sender: TObject; AProjectGroup: TProjectGroup);
@@ -895,11 +893,11 @@ constructor TIDEProjectGroup.Create(aCompileTarget: TIDECompileTarget);
 begin
   inherited Create;
   if aCompileTarget=nil then begin
-    FCompileTarget:=TRootProjectGroupTarget.Create(Self);
+    FSelfTarget:=TRootProjectGroupTarget.Create(Self);
   end else begin
-    FCompileTarget:=aCompileTarget;
-    if FCompileTarget.Parent<>nil then
-      FParent:=FCompileTarget.Parent.ProjectGroup;
+    FSelfTarget:=aCompileTarget;
+    if FSelfTarget.Parent<>nil then
+      FParent:=FSelfTarget.Parent.ProjectGroup;
   end;
   FTargets:=TFPObjectList.Create(True);
 end;
@@ -907,7 +905,7 @@ end;
 destructor TIDEProjectGroup.Destroy;
 begin
   FreeAndNil(FTargets);
-  FreeAndNil(FCompileTarget);
+  FreeAndNil(FSelfTarget);
   inherited Destroy;
 end;
 
@@ -939,7 +937,7 @@ begin
   if not FilenameIsAbsolute(AFileName) then
     RaiseGDBException('TIDEProjectGroup.AddTarget [20190629165305] '+AFileName);
   CheckInvalidCycle(AFileName);
-  Result:=TIDECompileTarget.Create(CompileTarget);
+  Result:=TIDECompileTarget.Create(SelfTarget);
   Result.FileName:=AFileName;
   FTargets.Add(Result);
   IncreaseChangeStamp;
@@ -959,7 +957,7 @@ begin
   if Index>TargetCount then
     RaiseGDBException('TIDEProjectGroup.InsertTarget [20190629165009]');
   FTargets.Insert(Index,Target);
-  TIDECompileTarget(Target).SetParent(CompileTarget);
+  TIDECompileTarget(Target).SetParent(SelfTarget);
   IncreaseChangeStamp;
   DoTargetInserted(Self,Target);
   Result:=FTargets.IndexOf(Target);

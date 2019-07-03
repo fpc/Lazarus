@@ -78,7 +78,7 @@ begin
   if Opts.Modified then begin
     Opts.SaveSafe;
     if IDEProjectGroupManager.OnEditorOptionsChanged<>nil then
-      IDEProjectGroupManager.OnEditorOptionsChanged(true,true);
+      IDEProjectGroupManager.OnEditorOptionsChanged(Self);
   end;
 end;
 

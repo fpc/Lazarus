@@ -156,9 +156,9 @@ type
     FProjectGroup: TProjectGroup;
     FProjectGroupTVNode: TTreeNode;
     FActiveTarget: TPGCompileTarget;
+    FLastShowTargetPaths: boolean;
     // Project group callbacks
-    procedure IDEProjectGroupManagerEditorOptionsChanged(Colors,
-      NodeTexts: boolean);
+    procedure IDEProjectGroupManagerEditorOptionsChanged(Sender: TObject);
     procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
     procedure OnApplicationActivate(Sender: TObject);
@@ -384,6 +384,9 @@ begin
   ConfigAction(ATargetCopyFilename,0,lisTargetCopyFilename,'',Nil);
   ConfigAction(ATargetCompileFromHere,0,lisTargetCompileFromHere,'',Nil);
   ConfigAction(AProjectGroupReload,0,lisProjectGroupReload,'',Nil);
+  ConfigAction(AProjectGroupUndo, 0, lisUndo, '', nil);
+  ConfigAction(AProjectGroupRedo, 0, lisRedo, '', nil);
+  ConfigAction(AProjectGroupOptions, 0, lisOptions, '', nil);
   TBMore.Caption:=lisMore;
 end;
 
@@ -951,7 +954,7 @@ Var
   T: TPGCompileTarget;
 begin
   T:=SelectedTarget;
-  (Sender as TAction).Enabled:=(T<>nil) and (T<>ProjectGroup.CompileTarget);
+  (Sender as TAction).Enabled:=(T<>nil) and (T<>ProjectGroup.SelfTarget);
   UpdateIDEMenuCommandFromAction(Sender,MnuCmdTargetRemove);
 end;
 
@@ -1189,10 +1192,14 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.IDEProjectGroupManagerEditorOptionsChanged(
-  Colors, NodeTexts: boolean);
+  Sender: TObject);
+var
+  Opts: TIDEProjectGroupOptions;
 begin
-  if Colors then Invalidate;
-  if NodeTexts then UpdateNodeTexts;
+  Invalidate;
+  Opts:=IDEProjectGroupManager.Options;
+  if FLastShowTargetPaths<>Opts.ShowTargetPaths then
+    UpdateNodeTexts;
 end;
 
 procedure TProjectGroupEditorForm.OnApplicationActivate(Sender: TObject);
@@ -1368,7 +1375,7 @@ begin
   if (N='') then
     Caption:=lisNewProjectGroup
   else
-    Caption:=Format(LisProjectGroup,[DisplayFileName(FProjectGroup.CompileTarget)]);
+    Caption:=Format(LisProjectGroup,[DisplayFileName(FProjectGroup.SelfTarget)]);
   if Assigned(FProjectGroupTVNode) then
     FProjectGroupTVNode.Text:=DisplayFileName(FProjectGroupTVNode);
 end;
@@ -1424,6 +1431,7 @@ procedure TProjectGroupEditorForm.ShowProjectGroup;
 Var
   N: TTreeNode;
 begin
+  FLastShowTargetPaths:=IDEProjectGroupManager.Options.ShowTargetPaths;
   TVPG.BeginUpdate;
   try
     FreeNodeData;
@@ -1431,12 +1439,12 @@ begin
     TVPG.Items.Clear;
     if FProjectGroup<>nil then begin
       FProjectGroupTVNode:=CreateTargetNode(Nil,
-        ntProjectGroup,ProjectGroup.CompileTarget);
+        ntProjectGroup,ProjectGroup.SelfTarget);
       FillProjectGroupNode(FProjectGroupTVNode,FProjectGroup);
       N:=FindTVNodeOfTarget(FActiveTarget);
       if (N=Nil) then
       begin
-        FActiveTarget:=ProjectGroup.CompileTarget;
+        FActiveTarget:=ProjectGroup.SelfTarget;
         TVPG.Selected:=FProjectGroupTVNode;
       end else
         TVPG.Selected:=N;
@@ -1460,6 +1468,7 @@ procedure TProjectGroupEditorForm.UpdateNodeTexts;
 var
   TVNode: TTreeNode;
 begin
+  FLastShowTargetPaths:=IDEProjectGroupManager.Options.ShowTargetPaths;
   TVPG.BeginUpdate;
   try
     for TVNode in TVPG.Items do begin
