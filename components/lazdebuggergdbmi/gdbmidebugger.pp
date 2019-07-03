@@ -1705,6 +1705,8 @@ begin
   lcCpu := LowerCase(CpuName);
   if (lcCpu='ia64') or (lcCpu='x86_64') or (lcCpu='aarch64') or (lcCpu='powerpc64')
   then Result := 8;
+  if (lcCpu='avr')
+  then Result := 2;
 end;
 
 {$IFDEF MSWindows}
@@ -2442,7 +2444,8 @@ begin
     'pei-arm-little',
     'pei-arm-big',
     'elf64-littleaarch64',
-    'elf64-bigaarch64'
+    'elf64-bigaarch64',
+    'elf32-avr'
   ], True, False) of
     0..3: TargetInfo^.TargetCPU := 'x86';
     4: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
@@ -2489,6 +2492,9 @@ begin
       TargetInfo^.TargetIsBE := True;
       TargetInfo^.TargetCPU := 'aarch64';
     end;
+    12: begin
+      TargetInfo^.TargetCPU := 'avr';
+    end;
   else
     // Unknown filetype, use GDB cpu
     DebugLn(DBG_WARNINGS, '[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
@@ -2503,7 +2509,7 @@ begin
   case StringCase(TargetInfo^.TargetCPU, [
     'x86', 'i386', 'i486', 'i586', 'i686',
     'ia64', 'x86_64', 'powerpc', 'powerpc64',
-    'sparc', 'arm', 'aarch64'
+    'sparc', 'arm', 'aarch64', 'avr'
   ], True, False) of
     0..4: begin // x86
       TargetInfo^.TargetRegisters[0] := '$eax';
@@ -2562,6 +2568,11 @@ begin
       TargetInfo^.TargetRegisters[0] := '$x0';
       TargetInfo^.TargetRegisters[1] := '$x1';
       TargetInfo^.TargetRegisters[2] := '$x2';
+    end;
+    12: begin // avr
+      TargetInfo^.TargetRegisters[0] := '$r0';
+      TargetInfo^.TargetRegisters[1] := '$r1';
+      TargetInfo^.TargetRegisters[2] := '$r2';
     end;
   else
     TargetInfo^.TargetRegisters[0] := '';
