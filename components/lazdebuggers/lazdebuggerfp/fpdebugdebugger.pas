@@ -1518,15 +1518,24 @@ var
   WatchValue: TWatchValue;
   AVal: String;
   AType: TDBGType;
+  t: QWord;
+  i: Integer;
 begin
   FWatchAsyncQueued := False;
-  if FWatchEvalList.Count = 0 then
-    exit;
-  WatchValue := TWatchValue(FWatchEvalList[0]);
-  FWatchEvalList.Delete(0);
-  WatchValue.RemoveFreeNotification(@DoWatchFreed);
+  t := GetTickCount64;
+  i := 0;
+  repeat
+    if FWatchEvalList.Count = 0 then
+      exit;
+    WatchValue := TWatchValue(FWatchEvalList[0]);
+    FWatchEvalList.Delete(0);
+    WatchValue.RemoveFreeNotification(@DoWatchFreed);
 
-  EvaluateExpression(WatchValue, WatchValue.Expression, AVal, AType);
+    EvaluateExpression(WatchValue, WatchValue.Expression, AVal, AType);
+    inc(i);
+  {$PUSH}{$Q-}
+  until (GetTickCount64 - t > 60) or (i > 30);
+  {$POP}
 
   if (not FWatchAsyncQueued) and (FWatchEvalList.Count > 0) then
     begin
