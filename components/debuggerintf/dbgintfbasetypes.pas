@@ -32,6 +32,8 @@ type
     skUnit,          // contains syms defined in this unit
     skProcedure,     // an actual procedure, with an address // NOT just the type of a procedure
     skFunction,
+    skProcedureRef,  // a variable containing (a reference to a) procedure (some debuggers may return skProcedure)
+    skFunctionRef,
     //--------------------------------------------------------------------------
     //----------------- Basic types, these cannot have references or children
     skSimple,        // Any of the below (in this group), the dbg does not know more detailed

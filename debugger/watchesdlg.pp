@@ -800,7 +800,7 @@ begin
               else
                 InspectMemo.Append(t.Fields[i].Name + ': ' + t.Fields[i].DBGType.Value.AsString);
             end;
-          skProcedure, skFunction: ;
+          skProcedure, skFunction, skProcedureRef, skFunctionRef: ;
           else
             InspectMemo.Append(t.Fields[i].Name + ': ' + t.Fields[i].DBGType.Value.AsString);
         end;

@@ -116,6 +116,8 @@ begin
     skInterface: ;
     skProcedure: ;
     skFunction: ;
+    skProcedureRef: ;
+    skFunctionRef: ;
     skArray: ;
     // skPointer: svfOrdinal, svfCardinal, svfDataAddress are all the same value
     skPointer:   ExpFlags(AVal, [svfOrdinal, svfCardinal, svfDataAddress, svfSizeOfPointer], [svfMembers, svfIdentifier]);

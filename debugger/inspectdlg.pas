@@ -647,10 +647,10 @@ begin
           FGridData.Cells[0,k]:=fld.ClassName;
           FGridData.Cells[4,k]:=FieldLocationNames[fld.Location];
         end;
-      skProcedure:
+      skProcedure,skProcedureRef:
         begin
         end;
-      skFunction:
+      skFunction,skFunctionRef:
         begin
         end;
        skPointer:
@@ -675,7 +675,7 @@ begin
   k:=0;
   for j := 0 to FDBGInfo.Fields.Count-1 do begin
     case FDBGInfo.Fields[j].DBGType.Kind of
-      skProcedure,skFunction: inc(k);
+      skProcedure,skFunction,skProcedureRef, skFunctionRef: inc(k);
     end;
   end;
   k:=k+1;
@@ -684,7 +684,7 @@ begin
   k:=0;
   for j := 0 to FDBGInfo.Fields.Count-1 do begin
     case FDBGInfo.Fields[j].DBGType.Kind of
-      skProcedure:
+      skProcedure, skProcedureRef:
         begin
           inc(k);
           FGridMethods.Cells[0,k]:=FDBGInfo.Fields[j].Name;
@@ -696,7 +696,7 @@ begin
           FGridMethods.Cells[2,k]:='';
           FGridMethods.Cells[3,k]:='???';
         end;
-      skFunction:
+      skFunction, skFunctionRef:
         begin
           inc(k);
           FGridMethods.Cells[0,k]:=FDBGInfo.Fields[j].Name;
@@ -874,8 +874,8 @@ begin
     skVariant: InspectVariant();
     skEnum: InspectEnum;
     skSet: InspectSet;
-    skProcedure: InspectSimple;
-    skFunction: InspectSimple;
+    skProcedure, skProcedureRef: InspectSimple;
+    skFunction, skFunctionRef: InspectSimple;
     skSimple,
     skInteger,
     skCardinal, skBoolean, skChar, skFloat: InspectSimple();
