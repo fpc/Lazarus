@@ -293,7 +293,7 @@ begin
   doc := TCocoaWindowContentDocument.alloc.initWithFrame(R);
   doc.setHidden(false);
   doc.setAutoresizesSubviews(true);
-  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
+  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin or NSViewHeightSizable or NSViewWidthSizable);
   cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
   doc.callback := cb;
   doc.wincallback := cb;
@@ -726,7 +726,7 @@ begin
   doc.setHidden(false);
 
   doc.setAutoresizesSubviews(true);
-  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
+  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin or NSViewHeightSizable or NSViewWidthSizable);
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
