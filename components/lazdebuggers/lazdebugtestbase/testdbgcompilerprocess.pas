@@ -139,7 +139,7 @@ begin
   Result := '';
   i := IndexOfExe(AnExeName);
   if i >= 0 then
-    Result := Items[i].FExeName;
+    Result := Items[i].FComandline;
 end;
 
 { TCompilerProcess }
