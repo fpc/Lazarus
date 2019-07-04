@@ -105,7 +105,7 @@ const
     'True',
     'Per-monitor',
     'True/PM',
-    'True/PM'
+    'True/PM_V2'
   );
 
   ManifestDpiAwarenessValues: array[TXPManifestDpiAware] of string = (
