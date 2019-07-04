@@ -47,16 +47,6 @@ const
 {$endif}
 
 type
-  // Due to backwards incompatible changes in FPC sources
-  // (switching from Boolean to Boolean8), LCL has to adopt
-  // either type, depending on FPC version
-  LCLObjCBoolean = {$ifdef HASBOOLEAN8}
-                   Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
-                   {$else}
-                   Boolean   // FPC 3.0.4 and earlier are using "boolean" type
-                   {$endif};
-
-type
 
   { ICommonCallback }
 

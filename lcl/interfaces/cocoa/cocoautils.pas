@@ -130,7 +130,7 @@ type
     procedure unmarkText;
     function selectedRange: NSRange;
     function markedRange: NSRange;
-    function hasMarkedText: Boolean;
+    function hasMarkedText: LCLObjCBoolean;
     function attributedSubstringForProposedRange_actualRange(aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
     function validAttributesForMarkedText: NSArray;
     function firstRectForCharacterRange_actualRange(aRange: NSRange; actualRange: NSRangePointer): NSRect;
@@ -691,7 +691,7 @@ begin
   Result.length := 0;
 end;
 
-function TCocoaInputClient.hasMarkedText: Boolean;
+function TCocoaInputClient.hasMarkedText: LCLObjCBoolean;
 begin
   Result := false;
 end;
