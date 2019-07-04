@@ -739,8 +739,9 @@ msgid "Include assertion code"
 msgstr "包含"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-#, fuzzy
-msgid "Associated debug desktop"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Associated debug desktop"
+msgid "Associated debug desktop for \"%s\""
 msgstr "切换为调试桌面"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1429,6 +1430,16 @@ msgstr "默认值"
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
 msgstr "删除模式"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "删除"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3559,6 +3570,16 @@ msgstr "正则表达式(&x)"
 msgid "Rename desktop"
 msgstr "重命名桌面"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "重命名"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "替换所有(&A)"
@@ -3665,6 +3686,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "保存当前桌面为"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "保存行"
@@ -3745,7 +3774,15 @@ msgstr ""
 msgid "&Selected text"
 msgstr "选择文本(&S)"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "设置激活"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "设置激活"
 
@@ -4028,8 +4065,15 @@ msgstr "查找文本(&T)"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "切换为调试桌面"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "切换为调试桌面"
 
@@ -14644,6 +14688,10 @@ msgstr "更多"
 msgid "Move"
 msgstr "移动"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "移动文件"
@@ -14693,6 +14741,10 @@ msgstr "上移选择工具条项目"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "移动到:"
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."

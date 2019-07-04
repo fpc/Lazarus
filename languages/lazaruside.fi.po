@@ -721,7 +721,8 @@ msgid "Include assertion code"
 msgstr "Ota mukaan assertion-koodi"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format
+msgid "Associated debug desktop for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1384,6 +1385,16 @@ msgstr "Oletusarvo"
 
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Poista"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
@@ -3439,6 +3450,16 @@ msgstr "&Säännölliset lausekkeet"
 msgid "Rename desktop"
 msgstr "Nimeä työpöytä"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Nimeä uudelleen"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Korvaa &kaikki"
@@ -3548,6 +3569,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "Tallenna nykyinen työpöytä nimellä"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Tallennettu rivi"
@@ -3622,7 +3651,15 @@ msgstr "Valitse kaikki lapsikontrollit emokontrollin kanssa."
 msgid "&Selected text"
 msgstr "&Valittu teksti"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Aseta aktiiviseksi"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Aseta aktiiviseksi"
 
@@ -3897,8 +3934,15 @@ msgstr "&Etsittävä"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Vaihda debug-työpöydäksi"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Vaihda debug-työpöydäksi"
 
@@ -14210,6 +14254,10 @@ msgstr "Lisää"
 msgid "Move"
 msgstr "Siirrä"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "Siirrä tiedostot"
@@ -14257,6 +14305,10 @@ msgstr "Siirrä valittu kohta ylös (Ctrl+Up)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Siirrä:"
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -17202,6 +17254,7 @@ msgid "Remove uses \"%s\""
 msgstr "Poista uses \"%s\""
 
 #: lazarusidestrconsts.lisrename
+msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 

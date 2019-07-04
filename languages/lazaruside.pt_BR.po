@@ -723,7 +723,9 @@ msgid "Include assertion code"
 msgstr "Incluir código de afirmação"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Associated debug desktop"
+msgid "Associated debug desktop for \"%s\""
 msgstr "Área de trabalho de depuração associada"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1384,6 +1386,16 @@ msgstr "Valor padrão"
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
 msgstr "Excluir modo"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Excluir"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3447,6 +3459,16 @@ msgstr "E&xpressões regulares"
 msgid "Rename desktop"
 msgstr "Renomear área de trabalho"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Renomear"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Substituir &Tudo"
@@ -3551,6 +3573,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "Salvar área de trabalho atual como"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Linha salva"
@@ -3625,7 +3655,15 @@ msgstr "Selecionar todos os controles filhos juntamente com seus pais."
 msgid "&Selected text"
 msgstr "Texto &selecionado"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Ativar"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Ativar"
 
@@ -3901,8 +3939,15 @@ msgstr "&Texto a localizar"
 msgid "The element uses (and edits) the schemes:"
 msgstr "O elemento usa (e edita) os esquemas:"
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Alternar como área de trabalho de depuração"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Alternar como área de trabalho de depuração"
 
@@ -14349,6 +14394,10 @@ msgstr "Mais"
 msgid "Move"
 msgstr "Mover"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "Mover arquivos"
@@ -14396,6 +14445,10 @@ msgstr "Move item selecionado acima (Ctrl+Seta acima)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Mover para:"
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."

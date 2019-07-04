@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-06-27 01:45+0300\n"
+"PO-Revision-Date: 2019-07-05 02:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -724,8 +724,9 @@ msgid "Include assertion code"
 msgstr "Включить код Assert"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
-msgstr "Связанный отладочный рабочий стол"
+#, object-pascal-format
+msgid "Associated debug desktop for \"%s\""
+msgstr "Связанный отладочный рабочий стол для \"%s\""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
@@ -1385,6 +1386,15 @@ msgstr "Значение по умолчанию"
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
 msgstr "Удалить режим"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Удалить"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
+msgstr "Удалить выбранный рабочий стол"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3448,6 +3458,15 @@ msgstr "&Регулярные выражения"
 msgid "Rename desktop"
 msgstr "Переименовать рабочий стол"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Переименовать"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr "Переименовать выбранный рабочий стол"
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Заменить &Все"
@@ -3552,6 +3571,14 @@ msgstr "Сохранить текущий рабочий стол"
 msgid "Save current desktop as"
 msgstr "Сохранить текущий рабочий стол как"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr "Сохранить активный как ..."
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr "Сохранить активный рабочий стол как"
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Сохранённая строка"
@@ -3626,7 +3653,13 @@ msgstr "Выделять все компоненты-потомки вместе
 msgid "&Selected text"
 msgstr "В вы&деленном"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Сделать активным"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Сделать активным"
 
@@ -3902,8 +3935,13 @@ msgstr "Н&айти текст"
 msgid "The element uses (and edits) the schemes:"
 msgstr "Этот элемент использует (и меняет) схемы:"
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Режим отладочного"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Переключить режим отладочного рабочего стола"
 
@@ -14312,6 +14350,10 @@ msgstr "Прочие"
 msgid "Move"
 msgstr "Переместить"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr "Переместить вниз"
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "Перемещение файлов"
@@ -14359,6 +14401,10 @@ msgstr "Переместить выделенный элемент вверх (C
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Переместить в: "
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr "Переместить вверх"
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."

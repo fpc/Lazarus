@@ -760,7 +760,9 @@ msgid "Include assertion code"
 msgstr "Dołącz asercje (-Sa)"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Associated debug desktop"
+msgid "Associated debug desktop for \"%s\""
 msgstr "Skojarzony pulpit odpluskwiania"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1446,6 +1448,16 @@ msgstr "Wartość domyślna"
 #, fuzzy, badformat
 msgid "Delete mode"
 msgstr "Usuń tryb \"%s\""
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Usuń"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3610,6 +3622,16 @@ msgstr "&Wyrażenia regularne"
 msgid "Rename desktop"
 msgstr "Zmień nazwę pulpitu"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Zmień"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Zastąp &wszystko"
@@ -3715,6 +3737,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "Zapisz obecny pulpit jako"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Zapisany wiersz"
@@ -3790,7 +3820,15 @@ msgstr "Zaznaczaj wszystkie potomne kontrolki wraz z główną"
 msgid "&Selected text"
 msgstr "&Zaznaczony tekst"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Ustaw jako aktywny"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Ustaw jako aktywny"
 
@@ -4070,8 +4108,15 @@ msgstr "&Tekst"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Przełącz jako pulpit odpluskwiania"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Przełącz jako pulpit odpluskwiania"
 
@@ -14721,6 +14766,10 @@ msgstr "Więcej"
 msgid "Move"
 msgstr "Przenieś do:"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 #, fuzzy
 msgid "Move Files"
@@ -14769,6 +14818,10 @@ msgstr "Przesuń zaznaczony element w górę (Ctrl+Up)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Przenieś do:"
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."

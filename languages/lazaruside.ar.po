@@ -729,7 +729,8 @@ msgid "Include assertion code"
 msgstr ""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format
+msgid "Associated debug desktop for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1391,6 +1392,16 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "إمح"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
@@ -3453,6 +3464,16 @@ msgstr ""
 msgid "Rename desktop"
 msgstr ""
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "أبدل الإسم"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr ""
@@ -3555,6 +3576,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr ""
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr ""
@@ -3629,7 +3658,13 @@ msgstr ""
 msgid "&Selected text"
 msgstr "النّصّ المعيّن"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr ""
 
@@ -3907,8 +3942,13 @@ msgstr "إبحث عن العبارة التالية"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr ""
 
@@ -14288,6 +14328,10 @@ msgstr ""
 msgid "Move"
 msgstr ""
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr ""
@@ -14334,6 +14378,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
+msgstr ""
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa

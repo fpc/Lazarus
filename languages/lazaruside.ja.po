@@ -725,7 +725,8 @@ msgid "Include assertion code"
 msgstr "アサーション（テスト）コードを含める"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format
+msgid "Associated debug desktop for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1416,6 +1417,16 @@ msgstr "デフォルト値"
 
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "削除"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
@@ -3531,6 +3542,16 @@ msgstr "正規表現(&x)"
 msgid "Rename desktop"
 msgstr "デスクトップを名称変更"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "名前の変更"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "すべて置換(&A)"
@@ -3643,6 +3664,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "現在のデスクトップを次の名で保存："
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "保存された行"
@@ -3719,7 +3748,15 @@ msgstr "親とともに全ての子コントロールを選択"
 msgid "&Selected text"
 msgstr "選択されたテキスト(&S)"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "アクティブにする"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "アクティブにする"
 
@@ -3997,8 +4034,15 @@ msgstr "検索テキスト(&T)"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "デバッグデスクトップを切り替え"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "デバッグデスクトップを切り替え"
 
@@ -14484,6 +14528,10 @@ msgstr "その他"
 msgid "Move"
 msgstr "移動"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "ファイルを移動"
@@ -14533,6 +14581,10 @@ msgstr "選択した項目を上に移動(Ctrl+Up)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "次へ移動:"
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."

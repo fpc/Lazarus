@@ -722,7 +722,9 @@ msgid "Include assertion code"
 msgstr "Onay kodunu dahil et"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Associated debug desktop"
+msgid "Associated debug desktop for \"%s\""
 msgstr "İlişkili hata ayıklama masaüstü"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1385,6 +1387,16 @@ msgstr "Varsayılan değer"
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
 msgstr "Modu sil"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Sil"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3434,6 +3446,16 @@ msgstr "Düzenli ifadeler"
 msgid "Rename desktop"
 msgstr "Masaüstünü yeniden adlandır"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Yeniden Adlandır"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "&Hepsini değiştir"
@@ -3543,6 +3565,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "Geçerli masaüstünü şu şekilde kaydet"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Kaydedilen satır"
@@ -3617,7 +3647,15 @@ msgstr "Tüm çocuk kontrollerini ebeveynleriyle birlikte seçin."
 msgid "&Selected text"
 msgstr "&Seçili metin"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Aktif et"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Aktif et"
 
@@ -3891,7 +3929,15 @@ msgstr "&Bulunacak metin"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Masaüstünde hata ayıklama ayarı olarak değiştir"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Masaüstünde hata ayıklama ayarı olarak değiştir"
 
@@ -14347,6 +14393,10 @@ msgstr "Daha fazla"
 msgid "Move"
 msgstr "Taşı"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "Dosyaları Taşı"
@@ -14394,6 +14444,10 @@ msgstr "Seçili öğeyi yukarı taşı (Ctrl + Yukarı)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Taşı : "
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -17327,6 +17381,7 @@ msgid "Remove uses \"%s\""
 msgstr "Uses den kaldır \"%s\""
 
 #: lazarusidestrconsts.lisrename
+msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Yeniden Adlandır"
 

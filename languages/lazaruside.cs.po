@@ -725,7 +725,9 @@ msgid "Include assertion code"
 msgstr "Zahrnout kontrolní kód"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Associated debug desktop"
+msgid "Associated debug desktop for \"%s\""
 msgstr "Přiřazená ladící plocha"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1394,6 +1396,16 @@ msgstr "Výchozí hodnota"
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
 msgstr "Smazat režim"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Odstranit"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3471,6 +3483,16 @@ msgstr "&Regulární výrazy"
 msgid "Rename desktop"
 msgstr "Přejmenovat plochu"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Přejmenování"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Nahradit &vše"
@@ -3581,6 +3603,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "Uložit aktuální plochu jako"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Uložený řádek"
@@ -3655,7 +3685,15 @@ msgstr "Vybrat všechny dětské prvky s jejich rodičem."
 msgid "&Selected text"
 msgstr "&Vybraný text"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Nastavit aktivní"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Nastavit aktivní"
 
@@ -3931,8 +3969,15 @@ msgstr "Hledaný &Text"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Přepnout jako ladící plochu"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Přepnout jako ladící plochu"
 
@@ -14382,6 +14427,10 @@ msgstr "Více"
 msgid "Move"
 msgstr "Přesunout"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "Přesunout Soubory"
@@ -14429,6 +14478,10 @@ msgstr "Přesunout vybranou položku nahoru (Ctrl+Nahoru)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Přesunout do: "
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."

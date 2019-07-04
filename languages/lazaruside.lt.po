@@ -729,7 +729,9 @@ msgid "Include assertion code"
 msgstr "Įterpti „Assertion“ kodą"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Associated debug desktop"
+msgid "Associated debug desktop for \"%s\""
 msgstr "Susietatasis derinimo darbalaukis"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1420,6 +1422,16 @@ msgstr "Numatyta vertė"
 
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
@@ -3532,6 +3544,16 @@ msgstr "&Reguliarusis reiškinys"
 msgid "Rename desktop"
 msgstr "Pervardinti darbalaukį"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Pervadinti"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "P&akeisti visus"
@@ -3644,6 +3666,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "Dabartinį darbalaukį įrašyti kitu pavadinimu"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Įrašyta eilutė"
@@ -3720,7 +3750,15 @@ msgstr "Pažymėti tevinę komponentę ir jos pokomponentes."
 msgid "&Selected text"
 msgstr "Paž&ymėtame tekste"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Nustatyti aktyvų"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Nustatyti aktyvų"
 
@@ -3998,8 +4036,15 @@ msgstr "Ieškomasis t&ekstas"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Perjungti į derinimo darbalaukį"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Perjungti į derinimo darbalaukį"
 
@@ -14521,6 +14566,10 @@ msgstr "Daugiau"
 msgid "Move"
 msgstr "Perkelti"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "Perkelti failus"
@@ -14568,6 +14617,10 @@ msgstr "Pažymėtus elementus perkelti aukštyn (Ctrl + Aukštyn)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Perkelti į: "
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."

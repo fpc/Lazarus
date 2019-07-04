@@ -723,7 +723,9 @@ msgid "Include assertion code"
 msgstr "Infókimenet-kód beépítése (assertion code)"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-msgid "Associated debug desktop"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Associated debug desktop"
+msgid "Associated debug desktop for \"%s\""
 msgstr "Társított hibakereső felület"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
@@ -1392,6 +1394,16 @@ msgstr "Alapértelmezett érték"
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
 msgstr "Mód törlése"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
+msgid "Delete"
+msgstr "Törlés"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3469,6 +3481,16 @@ msgstr "Reguláris kifejerések"
 msgid "Rename desktop"
 msgstr "Felület átnevezése"
 
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
+msgid "Rename"
+msgstr "Átnevezés"
+
+#: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
+msgid "Rename selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Összes cseréje"
@@ -3579,6 +3601,14 @@ msgstr ""
 msgid "Save current desktop as"
 msgstr "Jelenlegi felület mentése másként"
 
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
+msgid "Save active desktop as ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
+msgid "Save active desktop as"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
 msgstr "Elmentett sor"
@@ -3653,7 +3683,15 @@ msgstr "Az összes gyermek-vezérlő kijelölése a szülővel együtt."
 msgid "&Selected text"
 msgstr "Kijelölt szöveg"
 
-#: lazarusidestrconsts.dlgsetactivedesktop
+#: lazarusidestrconsts.dlgsetactivedesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
+msgid "Set active"
+msgstr "Aktiválás"
+
+#: lazarusidestrconsts.dlgsetactivedesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Aktiválás"
 
@@ -3929,8 +3967,15 @@ msgstr "Keresendő szöveg"
 msgid "The element uses (and edits) the schemes:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoggledebugdesktop
-msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
+msgid "Toggle as debug desktop"
+msgstr "Hibakereső felületként történő használat ki-/bekapcsolása"
+
+#: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Hibakereső felületként történő használat ki-/bekapcsolása"
 
@@ -14407,6 +14452,10 @@ msgstr "Továbbiak"
 msgid "Move"
 msgstr "Áthelyezés"
 
+#: lazarusidestrconsts.lismovedown
+msgid "Move Down"
+msgstr ""
+
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
 msgstr "Fájlok áthelyezése"
@@ -14454,6 +14503,10 @@ msgstr "A kijelölt elem mozgatása felfelé (Ctrl+Fel)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Mozgatás ide: "
+
+#: lazarusidestrconsts.lismoveup
+msgid "Move Up"
+msgstr ""
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
