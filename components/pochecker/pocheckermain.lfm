@@ -14,7 +14,7 @@ object PoCheckerForm: TPoCheckerForm
   OnDestroy = FormDestroy
   OnShow = FormShow
   ShowInTaskBar = stAlways
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   Visible = True
   object TestListBox: TCheckListBox
     AnchorSideLeft.Control = MasterPoListBox
@@ -111,7 +111,6 @@ object PoCheckerForm: TPoCheckerForm
     ItemHeight = 0
     MultiSelect = True
     OnDrawItem = MasterPoListBoxDrawItem
-    OnResize = MasterPoListBoxResize
     OnSelectionChange = MasterPoListBoxSelectionChange
     ScrollWidth = 630
     Sorted = True

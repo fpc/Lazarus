@@ -51,7 +51,6 @@ type
     MasterPoListBox: TListBox;
     StatusBar: TStatusBar;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure MasterPoListBoxResize(Sender: TObject);
     procedure ClearMasterFilesBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LangFilterChange(Sender: TObject);
@@ -166,16 +165,6 @@ begin
   //the form and no call to ItemIndex was made after changing the filter....
   //If someone figures out why, or has a better solution: please implement that
   LangFilter.ItemIndex;
-end;
-
-
-procedure TPoCheckerForm.MasterPoListBoxResize(Sender: TObject);
-var
-  ATop: Integer;
-begin
-  //Can't seem to get this to work with just Anchors
-  ATop := MasterPoListBox.Top + MasterPoListBox.Height;
-  LangFilter.Top := ATop + 5;
 end;
 
 procedure TPoCheckerForm.FormClose(Sender: TObject;
