@@ -149,6 +149,8 @@ resourcestring
   lisMoveFiles = 'Move Files';
   lisMoveFiles2 = 'Move files?';
   lrsPLDDeleteSelected = 'Delete selected';
+  lisMoveUp = 'Move Up';
+  lisMoveDown = 'Move Down';
 
   dlgMultipleInstances = 'Multiple Lazarus instances';
   dlgMultipleInstances_AlwaysStartNew = 'always start a new instance';
@@ -1380,12 +1382,20 @@ resourcestring
   dlgManageDesktops = 'Manage desktops';
   dlgSaveCurrentDesktop = 'Save current desktop';
   dlgSaveCurrentDesktopAs = 'Save current desktop as';
+  dlgSaveCurrentDesktopAsBtnCaption = 'Save active desktop as ...';
+  dlgSaveCurrentDesktopAsBtnHint = 'Save active desktop as';
+  dlgDeleteSelectedDesktopBtnCaption = 'Delete';
+  dlgDeleteSelectedDesktopBtnHint = 'Delete selected desktop';
+  dlgRenameSelectedDesktopBtnCaption = 'Rename';
+  dlgRenameSelectedDesktopBtnHint = 'Rename selected desktop';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
   dlgCannotUseDockedUndockedDesktop = 'You cannot use docked desktop in undocked environment and vice versa.';
   dlgRenameDesktop = 'Rename desktop';
   dlgNewDesktop = 'New desktop ...';
-  dlgSetActiveDesktop = 'Set active';
-  dlgToggleDebugDesktop = 'Toggle as debug desktop';
+  dlgSetActiveDesktopBtnCaption = 'Set active';
+  dlgSetActiveDesktopBtnHint = 'Set active';
+  dlgToggleDebugDesktopBtnCaption = 'Toggle as debug desktop';
+  dlgToggleDebugDesktopBtnHint = 'Toggle as debug desktop';
   dlgDesktopName = 'Desktop name';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
   dlgDebugDesktop = 'debug';
@@ -1399,7 +1409,7 @@ resourcestring
   dlgGrayedDesktopsUndocked = 'Grayed desktops are for undocked environment.';
   dlgAutoSaveActiveDesktop = 'Auto save active desktop';
   dlgAutoSaveActiveDesktopHint = 'Save active desktop on IDE close'+sLineBreak+'Save debug desktop on IDE close and debug end';
-  dlgAssociatedDebugDesktop = 'Associated debug desktop';
+  dlgAssociatedDebugDesktop = 'Associated debug desktop for "%s"';
   dlgAssociatedDebugDesktopHint = 'If you select the desktop, the associated debug desktop will be selected as well.';
 
   // Window options

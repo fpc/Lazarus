@@ -1,21 +1,28 @@
 object DesktopForm: TDesktopForm
   Left = 334
-  Height = 292
+  Height = 310
   Top = 319
-  Width = 377
+  Width = 450
   BorderIcons = [biSystemMenu]
   Caption = 'DesktopForm'
-  ClientHeight = 292
-  ClientWidth = 377
+  ClientHeight = 310
+  ClientWidth = 450
+  Constraints.MinHeight = 310
+  Constraints.MinWidth = 350
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
-    Top = 252
-    Width = 365
+    Top = 270
+    Width = 438
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BorderSpacing.Around = 0
     OKButton.Name = 'OKButton'
     OKButton.Caption = 'OK'
     OKButton.DefaultCaption = False
@@ -30,10 +37,10 @@ object DesktopForm: TDesktopForm
     TabOrder = 4
     ShowButtons = [pbClose, pbHelp]
     object ExportBitBtn: TBitBtn
-      Left = 93
+      Left = 179
       Height = 26
       Top = 8
-      Width = 91
+      Width = 0
       Align = alCustom
       AutoSize = True
       Caption = 'ExportBitBtn'
@@ -42,10 +49,10 @@ object DesktopForm: TDesktopForm
       TabOrder = 4
     end
     object ImportBitBtn: TBitBtn
-      Left = 190
+      Left = 271
       Height = 26
       Top = 8
-      Width = 94
+      Width = 0
       Align = alCustom
       AutoSize = True
       Caption = 'ImportBitBtn'
@@ -55,16 +62,19 @@ object DesktopForm: TDesktopForm
     end
   end
   object DesktopListBox: TListBox
-    AnchorSideLeft.Control = LblGrayedInfo
-    AnchorSideRight.Control = LblGrayedInfo
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = AssociatedDebugDesktopComboBox
-    Left = 11
-    Height = 163
-    Top = 8
-    Width = 320
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Panel1
+    AnchorSideBottom.Control = AssociatedDebugDesktopLabel
+    Left = 6
+    Height = 178
+    Top = 6
+    Width = 290
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 4
     ItemHeight = 18
     OnDblClick = SetActiveDesktopActionClick
     OnDrawItem = DesktopListBoxDrawItem
@@ -74,157 +84,186 @@ object DesktopForm: TDesktopForm
     TabOrder = 0
   end
   object AutoSaveActiveDesktopCheckBox: TCheckBox
-    AnchorSideLeft.Control = LblGrayedInfo
+    AnchorSideLeft.Control = DesktopListBox
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = LblGrayedInfo
-    Left = 11
-    Height = 19
-    Top = 204
-    Width = 151
+    Left = 6
+    Height = 17
+    Top = 230
+    Width = 140
     Anchors = [akLeft, akBottom]
-    BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'Auto save active desktop'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2
   end
-  object ToolBar1: TToolBar
-    Left = 340
-    Height = 241
-    Top = 8
-    Width = 30
-    Align = alNone
-    Anchors = [akTop, akRight, akBottom]
-    Caption = 'ToolBar1'
-    EdgeBorders = []
-    TabOrder = 3
-    object SaveTB: TToolButton
-      Left = 1
-      Top = 0
-      Action = SaveAction
-      OnClick = SaveActionClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object ToolButton1: TToolButton
-      Left = 1
-      Top = 22
-      Width = 23
-      Caption = 'ToolButton1'
-      Style = tbsDivider
-    end
-    object SetActiveDesktopTB: TToolButton
-      Left = 1
-      Top = 27
-      Action = SetActiveDesktopAction
-      OnClick = SetActiveDesktopActionClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object SetDebugDesktopTB: TToolButton
-      Left = 1
-      Top = 54
-      Action = SetDebugDesktopAction
-      OnClick = SetDebugDesktopActionClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object RenameTB: TToolButton
-      Left = 1
-      Top = 76
-      Action = RenameAction
-      OnClick = RenameActionClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object DeleteTB: TToolButton
-      Left = 1
-      Top = 98
-      Action = DeleteAction
-      OnClick = DeleteActionClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object MoveUpTB: TToolButton
-      Tag = -1
-      Left = 1
-      Top = 125
-      Action = MoveUpAction
-      OnClick = MoveUpDownActionClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object MoveDownTB: TToolButton
-      Tag = 1
-      Left = 1
-      Top = 147
-      Action = MoveDownAction
-      OnClick = MoveUpDownActionClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object ToolButton2: TToolButton
-      Left = 1
-      Top = 120
-      Width = 23
-      Caption = 'ToolButton2'
-      Style = tbsDivider
-    end
-    object ToolButton3: TToolButton
-      Left = 1
-      Top = 49
-      Width = 23
-      Caption = 'ToolButton3'
-      Style = tbsDivider
-    end
-  end
   object LblGrayedInfo: TLabel
+    AnchorSideLeft.Control = DesktopListBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Panel1
     AnchorSideRight.Side = asrBottom
-    Left = 11
-    Height = 15
-    Top = 229
-    Width = 320
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 13
+    Top = 253
+    Width = 438
     Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.Top = 3
+    BorderSpacing.Bottom = 4
     Caption = 'Grayed desktops are for undocked environment.'
     ParentColor = False
     WordWrap = True
   end
   object AssociatedDebugDesktopComboBox: TComboBox
-    AnchorSideLeft.Control = AssociatedDebugDesktopLabel
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = DesktopListBox
     AnchorSideRight.Control = DesktopListBox
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
-    Left = 184
+    Left = 6
     Height = 21
-    Top = 177
-    Width = 147
+    Top = 203
+    Width = 290
     Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.Left = 10
-    ItemHeight = 15
+    BorderSpacing.Bottom = 6
+    ItemHeight = 13
     OnChange = AssociatedDebugDesktopComboBoxChange
     Style = csDropDownList
     TabOrder = 1
   end
   object AssociatedDebugDesktopLabel: TLabel
-    AnchorSideLeft.Control = AutoSaveActiveDesktopCheckBox
-    AnchorSideTop.Control = AssociatedDebugDesktopComboBox
+    AnchorSideLeft.Control = DesktopListBox
     AnchorSideTop.Side = asrCenter
-    Left = 11
-    Height = 15
-    Top = 180
-    Width = 163
+    AnchorSideRight.Control = DesktopListBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AssociatedDebugDesktopComboBox
+    Left = 6
+    Height = 13
+    Top = 188
+    Width = 290
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 2
     Caption = 'AssociatedDebugDesktopLabel'
     ParentColor = False
     ParentShowHint = False
     ShowHint = True
+    WordWrap = True
+  end
+  object Panel1: TPanel
+    AnchorSideTop.Control = DesktopListBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = LblGrayedInfo
+    Left = 302
+    Height = 247
+    Top = 6
+    Width = 142
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    BevelOuter = bvNone
+    ChildSizing.VerticalSpacing = 2
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 247
+    ClientWidth = 142
+    TabOrder = 3
+    object SaveAsButton: TBitBtn
+      Left = 0
+      Height = 24
+      Top = 0
+      Width = 142
+      Action = SaveAsAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object SetActiveDesktopButton: TBitBtn
+      Left = 0
+      Height = 24
+      Top = 26
+      Width = 142
+      Action = SetActiveDesktopAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object SetDebugDesktopButton: TBitBtn
+      Left = 0
+      Height = 24
+      Top = 52
+      Width = 142
+      Action = SetDebugDesktopAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+    object RenameButton: TBitBtn
+      Left = 0
+      Height = 24
+      Top = 78
+      Width = 142
+      Action = RenameAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+    object DeleteButton: TBitBtn
+      Left = 0
+      Height = 24
+      Top = 104
+      Width = 142
+      Action = DeleteAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+    end
+    object MoveUpButton: TBitBtn
+      Tag = -1
+      Left = 0
+      Height = 24
+      Top = 130
+      Width = 142
+      Action = MoveUpAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+    end
+    object MoveDownButton: TBitBtn
+      Tag = 1
+      Left = 0
+      Height = 24
+      Top = 156
+      Width = 142
+      Action = MoveDownAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
+    end
   end
   object ExportMenu: TPopupMenu
-    Left = 48
-    Top = 24
+    left = 28
+    top = 24
     object ExportItem: TMenuItem
       Action = ExportAction
       OnClick = ExportActionClick
@@ -235,11 +274,11 @@ object DesktopForm: TDesktopForm
     end
   end
   object ActionList1: TActionList
-    Left = 128
-    Top = 32
-    object SaveAction: TAction
-      Caption = 'SaveAction'
-      OnExecute = SaveActionClick
+    left = 89
+    top = 24
+    object SaveAsAction: TAction
+      Caption = 'SaveAsAction'
+      OnExecute = SaveAsActionClick
       ShortCut = 16467
     end
     object SetActiveDesktopAction: TAction
