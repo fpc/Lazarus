@@ -532,7 +532,8 @@ type
   TGDBMIDebuggerChangeFilenameBase = class(TGDBMIDebuggerCommand)
   protected
     FErrorMsg: String;
-    function DoChangeFilename: Boolean;
+    procedure DoResetInternalBreaks; virtual;
+    function DoChangeFilename: Boolean; virtual;
     function DoSetPascal: Boolean;
     function DoSetCaseSensitivity: Boolean;
     function DoSetMaxValueMemLimit: Boolean;
@@ -2008,13 +2009,8 @@ end;
 
 { TGDBMIDebuggerChangeFilenameBase }
 
-function TGDBMIDebuggerChangeFilenameBase.DoChangeFilename: Boolean;
-var
-  R: TGDBMIExecResult;
-  List: TGDBMINameValueList;
-  S, FileName: String;
+procedure TGDBMIDebuggerChangeFilenameBase.DoResetInternalBreaks;
 begin
-  Result := False;
   FContext.ThreadContext := ccNotRequired;
   FContext.StackContext := ccNotRequired;
 
@@ -2028,6 +2024,17 @@ begin
   FTheDebugger.FRtlUnwindExBreak.Clear(Self);
   FTheDebugger.FSehRaiseBreaks.ClearAll(Self);
   if DebuggerState = dsError then Exit;
+end;
+
+function TGDBMIDebuggerChangeFilenameBase.DoChangeFilename: Boolean;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  S, FileName: String;
+begin
+  Result := False;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
 
   FileName := FTheDebugger.FileName;
   S := FTheDebugger.ConvertToGDBPath(FileName, cgptExeName);
@@ -3173,6 +3180,7 @@ end;
 function TGDBMIDebuggerCommandChangeFilename.DoExecute: Boolean;
 begin
   Result := True;
+  DoResetInternalBreaks;
   FSuccess := DoChangeFilename;
 end;
 
@@ -5293,6 +5301,7 @@ begin
       Exit;
     end;
 
+    DoResetInternalBreaks;
     if not DoChangeFilename then begin
       SetDebuggerErrorState(synfFailedToLoadApplicationExecutable, FErrorMsg);
       exit;

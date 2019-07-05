@@ -63,6 +63,7 @@ type
     FDebugger_Remote_Port: string;
     FDebugger_Remote_DownloadExe: boolean;
     FRemoteTimeout: integer;
+    FSkipSettingLocalExeName: Boolean;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -72,6 +73,7 @@ type
     property Debugger_Remote_DownloadExe: boolean read FDebugger_Remote_DownloadExe write FDebugger_Remote_DownloadExe;
     property RemoteTimeout: integer read FRemoteTimeout write FRemoteTimeout default -1;
     property Architecture: string read FArchitecture write FArchitecture;
+    property SkipSettingLocalExeName: Boolean read FSkipSettingLocalExeName write FSkipSettingLocalExeName default False;
   published
     property Debugger_Startup_Options;
     {$IFDEF UNIX}
@@ -122,6 +124,7 @@ type
     function GdbRunCommand: String; override;
     procedure DetectTargetPid(InAttach: Boolean = False); override;
     function  DoTargetDownload: boolean; override;
+    function DoChangeFilename: Boolean; override;
   end;
 
 { TGDBMIServerDebuggerCommandStartDebugging }
@@ -146,6 +149,13 @@ begin
     Result := ExecuteCommand('-target-download', [], [cfCheckError]);
     Result := Result and (DebuggerState <> dsError);
   end;
+end;
+
+function TGDBMIServerDebuggerCommandStartDebugging.DoChangeFilename: Boolean;
+begin
+  Result := True;
+  if not TGDBMIServerDebuggerProperties(DebuggerProperties).SkipSettingLocalExeName then
+    Result := inherited DoChangeFilename;
 end;
 
 { TGDBMIServerDebuggerCommandInitDebugger }
@@ -192,6 +202,7 @@ begin
   FDebugger_Remote_DownloadExe := False;
   FRemoteTimeout := -1;
   FArchitecture := '';
+  FSkipSettingLocalExeName := False;
   UseAsyncCommandMode := True;
 end;
 
@@ -204,6 +215,7 @@ begin
     FDebugger_Remote_DownloadExe := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_DownloadExe;
     FRemoteTimeout := TGDBMIServerDebuggerProperties(Source).FRemoteTimeout;
     FArchitecture := TGDBMIServerDebuggerProperties(Source).FArchitecture;
+    FSkipSettingLocalExeName := TGDBMIServerDebuggerProperties(Source).FSkipSettingLocalExeName;
     UseAsyncCommandMode := True;
   end;
 end;
