@@ -162,16 +162,16 @@ begin
     exit;
   end;
 
+  t := TGDBMIServerDebuggerProperties(DebuggerProperties).RemoteTimeout;
+  if t >= 0 then
+    ExecuteCommand(Format('set remotetimeout %d', [t]), R);
+
   // TODO: Maybe should be done in CommandStart, But Filename, and Environment will be done before Start
   FSuccess := ExecuteCommand(Format('target remote %s:%s',
                              [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname,
                               TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Remote_Port ]),
                              R);
   FSuccess := FSuccess and (r.State <> dsError);
-
-  t := TGDBMIServerDebuggerProperties(DebuggerProperties).RemoteTimeout;
-  if t >= 0 then
-    ExecuteCommand(Format('set remotetimeout %d', [t]), R);
 end;
 
 
