@@ -24,7 +24,7 @@ unit GLCocoaNSContext;
 interface
 
 uses
-  Classes, SysUtils, types, CocoaWSCommon, CocoaPrivate, CocoaUtils, LCLType,
+  Classes, SysUtils, types, CocoaWSCommon, CocoaPrivate, CocoaUtils, LCLType, Cocoa_Extra,
   LMessages, LCLMessageGlue,
   Controls, LazLoggerBase, WSLCLClasses, gl, MacOSAll, CocoaAll;
 
