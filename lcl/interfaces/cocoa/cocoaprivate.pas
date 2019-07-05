@@ -42,10 +42,6 @@ const
   SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
   STATUSBAR_DEFAULT_HEIGHT = 18;
 
-{$if (FPC_VERSION>3) or ((FPC_VERSION=3) and (FPC_RELEASE>=2))}
-{$define HASBOOLEAN8}
-{$endif}
-
 type
 
   { ICommonCallback }

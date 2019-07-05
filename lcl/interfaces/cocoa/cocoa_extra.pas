@@ -27,6 +27,10 @@ uses
   // Libs
   MacOSAll, CocoaAll;
 
+{$if (FPC_VERSION>3) or ((FPC_VERSION=3) and (FPC_RELEASE>=2))}
+{$define HASBOOLEAN8}
+{$endif}
+
 type
   // Due to backwards incompatible changes in FPC sources
   // (switching from Boolean to Boolean8), LCL has to adopt
