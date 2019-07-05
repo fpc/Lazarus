@@ -576,7 +576,6 @@ type
     function  CheckFunction(const AFunction: String): Boolean;
     procedure RetrieveRegcall;
     procedure CheckAvailableTypes;
-    procedure DetectForceableBreaks;
     procedure CommonInit;  // Before any run/exec
     procedure DetectTargetPid(InAttach: Boolean = False); virtual;
   end;
@@ -950,6 +949,7 @@ type
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
     procedure DoUnknownException(Sender: TObject; AnException: Exception);
 
+    function CanForceBreakPoints: Boolean;
     function  CheckForInternalError(ALine, ACurCommandText: String): Boolean;
     procedure DoNotifyAsync(Line: String);
     procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; ALocation: TDBGLocationRec;
@@ -2668,29 +2668,6 @@ begin
   //HadTimeout := HadTimeout and LastExecwasTimeOut;
 
   if HadTimeout then DoTimeoutFeedback;
-end;
-
-procedure TGDBMIDebuggerCommandStartBase.DetectForceableBreaks;
-var
-  R: TGDBMIExecResult;
-  List: TGDBMINameValueList;
-begin
-  if DebuggerProperties.DisableForcedBreakpoint then
-    exit;
-
-  if not (dfForceBreakDetected in FTheDebugger.FDebuggerFlags) then begin
-    // detect if we can insert a not yet known break
-    ExecuteCommand('-break-insert -f foo', R);
-    if R.State <> dsError
-    then begin
-      Include(FTheDebugger.FDebuggerFlags, dfForceBreak);
-      List := TGDBMINameValueList.Create(R, ['bkpt']);
-      ExecuteCommand('-break-delete ' + List.Values['number']);
-      List.Free;
-    end
-    else Exclude(FTheDebugger.FDebuggerFlags, dfForceBreak);
-    Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
-  end;
 end;
 
 procedure TGDBMIDebuggerCommandStartBase.CommonInit;
@@ -5391,8 +5368,6 @@ begin
 
     DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
 
-    DetectForceableBreaks;
-
     (* We need a breakpoint at entry-point or main, to continue initialization
        "main" could map to more than one location, so we try entry point first
     *)
@@ -5650,7 +5625,6 @@ begin
   RetrieveRegCall;
   CheckAvailableTypes;
   CommonInit;
-  DetectForceableBreaks;
 
   FileType := '';
   if ExecuteCommand('info file', R)
@@ -8123,6 +8097,17 @@ begin
   end;
 end;
 
+function TGDBMIDebuggerBase.CanForceBreakPoints: Boolean;
+begin
+  if TGDBMIDebuggerProperties(GetProperties).DisableForcedBreakpoint then begin
+    Include(FDebuggerFlags, dfForceBreakDetected);
+    Result := False;
+  end
+  else
+    Result := (not (dfForceBreakDetected in FDebuggerFlags)) or
+              (dfForceBreak in  FDebuggerFlags);
+end;
+
 function TGDBMIDebuggerBase.CheckForInternalError(ALine, ACurCommandText: String
   ): Boolean;
 
@@ -9536,14 +9521,14 @@ begin
         //s2 := StringReplace(s2, '"', '\"', [rfReplaceAll]);
         Result := ExecuteCommand('-break-insert %s "\"%s\":%d"',    [s1, s2, FLine], R);
 
-        if dfForceBreak in FTheDebugger.FDebuggerFlags then s1 := '-f';
+        if FTheDebugger.CanForceBreakPoints then s1 := '-f';
         if (not Result) or (R.State = dsError) then
           Result := ExecuteCommand('-break-insert %s %s:%d',    [s1, ExtractFileName(FSource), FLine], R);
       end;
     bpkAddress:
       begin
         if (FAddress = 0) then exit;
-        if dfForceBreak in FTheDebugger.FDebuggerFlags
+        if FTheDebugger.CanForceBreakPoints
         then Result := ExecuteCommand('-break-insert -f *%u', [FAddress], R)
         else Result := ExecuteCommand('-break-insert *%u',    [FAddress], R);
       end;
@@ -10910,9 +10895,11 @@ function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   ATimeOut: Integer = -1): Boolean;
 var
   Instr: TGDBMIDebuggerInstruction;
-  ASyncFailed: Boolean;
+  ASyncFailed, TestForceBreak: Boolean;
+  s: String;
 begin
   ASyncFailed := False;
+  TestForceBreak := False;
 
   if cfTryAsync in AFlags then begin
     if FTheDebugger.FAsyncModeEnabled then begin
@@ -11000,7 +10987,11 @@ begin
     Instr.ApplyMemLimit(DebuggerProperties.GdbValueMemLimit);
     if FTheDebugger.FGDBVersionMajor >= 7 then
       Instr.ApplyArrayLenLimit(DebuggerProperties.MaxDisplayLengthForStaticArray);
-  end;
+
+  end
+  else
+    TestForceBreak := (not (dfForceBreakDetected in FTheDebugger.DebuggerFlags)) and
+      (pos('-break-insert -f ', ACommand) = 1); // -f MUST be exactly ONE space after insert
 
     FTheDebugger.FInstructionQueue.RunInstruction(Instr);
 
@@ -11025,6 +11016,26 @@ begin
   finally
     DoUnLockQueueExecuteForInstr;
     Instr.ReleaseReference;
+  end;
+
+  if TestForceBreak then begin
+    if (AResult.State = dsError) then begin
+      if pos('unknown option', LowerCase(AResult.Values)) > 0 then
+        Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
+      s := '-break-insert ' + copy(ACommand, 17, MaxInt);
+
+      Result := ExecuteCommand(s, AResult, AFlags, ATimeOut);
+
+      if AResult.State <> dsError then
+        Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected)
+      else
+      if pos('unknown option', LowerCase(AResult.Values)) > 0 then // still unknow option, diff opt caused the err
+        Exclude(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
+    end
+    else begin
+      Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
+      Include(FTheDebugger.FDebuggerFlags, dfForceBreak);
+    end;
   end;
 
   if not Result
@@ -11924,7 +11935,7 @@ begin
   FBreaks[ALoc].BreakAddr := 0;
   FBreaks[ALoc].BreakFunction := '';
 
-  if UseForceFlag and (dfForceBreak in ACmd.FTheDebugger.FDebuggerFlags) then
+  if UseForceFlag and ACmd.FTheDebugger.CanForceBreakPoints then
   begin
     if (not ACmd.ExecuteCommand('-break-insert -f %s', [ABreakLoc], R)) or
        (R.State = dsError)
