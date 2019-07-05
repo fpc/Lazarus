@@ -101,6 +101,7 @@ type
     property InternalStartBreak;
     property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;
+    property DisableForcedBreakpoint;
     //property WarnOnSetBreakpointError;
     property CaseSensitivity;
     property GdbValueMemLimit;
@@ -108,6 +109,7 @@ type
     property AssemblerStyle;
     property DisableStartupShell;
     property FixStackFrameForFpcAssert;
+    property FixIncorrectStepOver;
   end;
 
 procedure Register;
