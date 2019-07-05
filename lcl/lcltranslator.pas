@@ -80,6 +80,7 @@ type
       PropInfo: PPropInfo; var Content: string); override;
   end;
 
+procedure TranslateLCLResourceStrings(Lang, Dir: string);
 procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true);
 function GetDefaultLang: String;
 
@@ -533,6 +534,21 @@ begin
   end;
 end;
 
+procedure TranslateLCLResourceStrings(Lang, Dir: string);
+var
+  LCLPath: string;
+begin
+  LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts');
+  if LCLPath<>'' then
+    Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
+  else
+  begin
+    LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts');
+    if LCLPath<>'' then
+      GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
+  end;
+end;
+
 procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true);
 { Arguments:
   Lang - language (e.g. 'ru', 'de'); empty argument is default language.
@@ -542,7 +558,7 @@ procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string 
     called from unit Initialization section. User code normally should not specify it.
 }
 var
-  LCLPath, lcfn: string;
+  lcfn: string;
   LocalTranslator: TUpdateTranslator;
   i: integer;
 
@@ -576,17 +592,7 @@ begin
   end;
 
   if lcfn<>'' then
-  begin
-    LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(lcfn), 'lclstrconsts');
-    if LCLPath<>'' then
-      Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
-    else
-    begin
-      LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(lcfn), 'lclstrconsts');
-      if LCLPath<>'' then
-        GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
-    end;
-  end;
+    TranslateLCLResourceStrings(Lang, lcfn);
 
   if LocalTranslator<>nil then
   begin
