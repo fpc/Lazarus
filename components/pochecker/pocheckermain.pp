@@ -26,9 +26,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
   StdCtrls, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
-  LCLType, LazUTF8, Translations,
+  LCLType, LazUTF8, LCLTranslator,
   {$IFnDEF POCHECKERSTANDALONE}
-  {IDEIntf,} MenuIntf,
+  MenuIntf,
   {$ENDIF}
   PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
   PoFamilyLists, PoCheckerMemoDlg;
@@ -85,11 +85,6 @@ type
     function LangFilterIndexToLangID(Index: Integer): TLangID;
     function LangIdToLangFilterIndex(LangID: TLangID): Integer;
     procedure PopulateLangFilter;
-    {$IFDEF POCHECKERSTANDALONE}
-    procedure GetTranslations;
-    function GetTranslationsSearchPath: String;
-    procedure FindTranslationFiles(const SearchPath, Lang: String; out PoCheckPo, LclPo: String);
-    {$ENDIF}
     procedure ApplyTranslations;
   published
     UnselectAllTestsBtn: TButton;
@@ -129,7 +124,8 @@ begin
   //debugln('TPoCheckerForm.FormCreate A:');
   {$IFDEF POCHECKERSTANDALONE}
   //Initializing translation
-  GetTranslations;
+  SetDefaultLang('', '..' + PathDelim + 'languages', 'pocheckerconsts');
+  TranslateLCLResourceStrings('', SetDirSeparators('../../../lcl/languages/'));
   {$ENDIF}
   ApplyTranslations;
   FillTestListBox;
@@ -771,99 +767,6 @@ begin
   end;
 end;
 
-{$IFDEF POCHECKERSTANDALONE}
-function TPoCheckerForm.GetTranslationsSearchPath: String;
-var
-  EnvVar, CfgLocal, CfgGlobal: String;
-  {$if defined(windows) and not defined(wince)}
-  AppPath: String;
-  {$ENDIF}
-begin
-  Result := FPoCheckerSettings.LangPath;
-  EnvVar := GetEnvironmentVariableUtf8('pochecker-langpath');
-  if (EnvVar <> '') then
-    Result := Result + PathSeparator + EnvVar;
-  Result := Result + PathSeparator + '.';
-  //Make some educated guesses
-  //default Lazarus setup, launching the app from project output dir
-  Result := Result + PathSeparator + '..' + PathDelim + 'languages';
-  Result := Result + PathSeparator + SetDirSeparators('../../../lcl/languages');
-  //or from where .lpi resides
-  Result := Result + PathSeparator + '.' + PathDelim + 'languages';
-  Result := Result + PathSeparator + SetDirSeparators('../../lcl/languages');
-  //Look in standard config dirs
-  CfgLocal := AppendPathDelim(GetLocalConfigPath);
-  CfgGlobal := AppendPathDelim(GetGlobalConfigPath);
-  Result := Result + PathSeparator + CfgLocal + PathSeparator + CfgLocal + 'languages';
-  Result := Result + PathSeparator + CfgGlobal + PathSeparator + CfgGlobal + 'languages';
-  {$if defined(windows) and not defined(wince)}
-  AppPath := ExtractFilePath(ParamStr(0));
-  Result := Result + PathSeparator + AppPath + PathSeparator + AppPath + 'languages';
-  {$endif}
-end;
-
-procedure TPoCheckerForm.FindTranslationFiles(const SearchPath, Lang: String; out PoCheckPo, LclPo: String);
-var
-  SL: TStringList;
-  i: Integer;
-  LclPoFnOnly, PoCheckPoFnOnly, Path: String;
-begin
-  PoCheckPo := '';
-  LclPo := '';
-  PoCheckPoFnOnly := Format('pocheckerconsts.%s.po',[Lang]);
-  LclPoFnOnly := Format('lclstrconsts.%s.po',[Lang]);
-  //debugln('PoCheckPoFnOnly = "',PoCheckPoFnOnly,'"');
-  //debugln('LclPoFnOnly"    = ',LclPoFnOnly,'"');
-  SL := TStringList.Create;
-  try
-    SL.StrictDelimiter := True;
-    SL.Delimiter := PathSeparator;
-    SL.DelimitedText := SearchPath;
-    for i := 0 to SL.Count - 1 do
-    begin
-      Path := SL.Strings[i];
-      if (Path <> '') then
-      begin
-        //debugln('Path = ',ExpandFileNameUtf8(Path));
-        if (Path <> '') then
-          Path := AppendPathDelim(Path);
-        if (LclPo = '') and FileExistsUtf8(Path + PoCheckPoFnOnly) then
-          PoCheckPo := Path + PoCheckPoFnOnly;
-        if (LclPo = '') and FileExistsUtf8(Path + LclPoFnOnly) then
-          LclPo := Path + LclPoFnOnly;
-      end;
-      if (LclPo <> '') and (LclPo <> '') then
-        Break;
-    end;
-  finally
-    SL.Free;
-  end;
-end;
-
-
-procedure TPoCheckerForm.GetTranslations;
-var
-  Lang, T, SearchPath, PoCheckerPo, LclPo: string;
-begin
-  Lang := GetEnvironmentVariableUTF8('LANG');
-  T := '';
-  if Lang = '' then
-    LazGetLanguageIDs(Lang, T);
-  if Lang <> '' then
-  begin
-    //debugln('TPoCheckerForm.GetTranslations: Lang = ',Lang);
-    if not ((Lang = 'af_ZA') or (Lang = 'pt_BR') or (Lang = 'zh_CN')) then
-      Lang := copy(Lang, 1, 2);
-    SearchPath := GetTranslationsSearchPath;
-    FindTranslationFiles(SearchPath, Lang, PoCheckerPo, LclPo);
-    //debugln('PoCheckerPo = "',PoCheckerPo,'"');
-    //debugln('LclPo = "',LclPo,'"');
-    Translations.TranslateUnitResourceStrings('PoCheckerConsts', PoCheckerPo);
-    Translations.TranslateUnitResourceStrings('LCLStrConsts', LclPo);
-  end;
-end;
-{$ENDIF}
-
 procedure TPoCheckerForm.ApplyTranslations;
 begin
   LocalizePoTestTypeNames;
@@ -880,21 +783,10 @@ begin
   UnselectAllTestsBtn.Caption := sUnselectAllTests;
 end;
 
-
-function SameItem(Item1, Item2: TPoFileItem): boolean;
-begin
-  Result := (Item1.IdentifierLow = Item2.IdentifierLow) and
-    (Item1.Original = Item2.Original) and (Item1.Context = Item2.Context) and
-    (Item1.Flags = Item2.Flags) and (Item1.PreviousID = Item2.PreviousID) and
-    (Item1.Translation = Item2.Translation);
-end;
-
-
 procedure IDEMenuClicked(Sender: TObject);
 begin
   ShowPoCheckerForm;
 end;
-
 
 procedure Register;
 begin
