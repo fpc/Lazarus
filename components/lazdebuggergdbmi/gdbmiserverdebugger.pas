@@ -58,6 +58,7 @@ type
 
   TGDBMIServerDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
   private
+    FArchitecture: string;
     FDebugger_Remote_Hostname: string;
     FDebugger_Remote_Port: string;
     FDebugger_Remote_DownloadExe: boolean;
@@ -70,6 +71,7 @@ type
     property Debugger_Remote_Port: String read FDebugger_Remote_Port write FDebugger_Remote_Port;
     property Debugger_Remote_DownloadExe: boolean read FDebugger_Remote_DownloadExe write FDebugger_Remote_DownloadExe;
     property RemoteTimeout: integer read FRemoteTimeout write FRemoteTimeout default -1;
+    property Architecture: string read FArchitecture write FArchitecture;
   published
     property Debugger_Startup_Options;
     {$IFDEF UNIX}
@@ -152,6 +154,7 @@ function TGDBMIServerDebuggerCommandInitDebugger.DoExecute: Boolean;
 var
   R: TGDBMIExecResult;
   t: Integer;
+  s: String;
 begin
   Result := inherited DoExecute;
   if (not FSuccess) then exit;
@@ -161,6 +164,10 @@ begin
     FSuccess := False;
     exit;
   end;
+
+  s := TGDBMIServerDebuggerProperties(DebuggerProperties).Architecture;
+  if s <> '' then
+    ExecuteCommand(Format('set architecture %s', [s]), R);
 
   t := TGDBMIServerDebuggerProperties(DebuggerProperties).RemoteTimeout;
   if t >= 0 then
@@ -184,6 +191,7 @@ begin
   FDebugger_Remote_Port:= '2345';
   FDebugger_Remote_DownloadExe := False;
   FRemoteTimeout := -1;
+  FArchitecture := '';
   UseAsyncCommandMode := True;
 end;
 
@@ -195,6 +203,7 @@ begin
     FDebugger_Remote_Port := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_Port;
     FDebugger_Remote_DownloadExe := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_DownloadExe;
     FRemoteTimeout := TGDBMIServerDebuggerProperties(Source).FRemoteTimeout;
+    FArchitecture := TGDBMIServerDebuggerProperties(Source).FArchitecture;
     UseAsyncCommandMode := True;
   end;
 end;
