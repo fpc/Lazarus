@@ -536,8 +536,12 @@ end;
 
 procedure TranslateLCLResourceStrings(Lang, Dir: string);
 var
-  LCLPath: string;
+  LCLPath, DefaultLangBackup: string;
 begin
+  // DefaultLang value is preserved when translating LCL, so it will depend only
+  // on presence of interface translation. Useful when interface translation present
+  // and LCL one missing, or the other way round.
+  DefaultLangBackup:=DefaultLang;
   LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts');
   if LCLPath<>'' then
     Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
@@ -547,6 +551,7 @@ begin
     if LCLPath<>'' then
       GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
   end;
+  DefaultLang:=DefaultLangBackup;
 end;
 
 procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true);
