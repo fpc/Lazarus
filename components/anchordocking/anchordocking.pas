@@ -237,24 +237,29 @@ type
 
   TAnchorDockSplitter = class(TCustomSplitter)
   private
+    FAsyncUpdateDockBounds: boolean;
     FCustomWidth: Boolean;
     FDockBounds: TRect;
     FDockParentClientSize: TSize;
     FDockRestoreBounds: TRect;
     FPercentPosition: Single;
+    procedure SetAsyncUpdateDockBounds(const AValue: boolean);
     procedure UpdatePercentPosition;
   protected
+    procedure OnAsyncUpdateDockBounds({%H-}Data: PtrInt);
     procedure SetResizeAnchor(const AValue: TAnchorKind); override;
+    procedure SetParent(NewParent: TWinControl); override;
     procedure PopupMenuPopup(Sender: TObject); virtual;
     procedure Paint; override;
   public
     procedure MoveSplitter(Offset: integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     property DockBounds: TRect read FDockBounds;
     property DockParentClientSize: TSize read FDockParentClientSize;
     procedure UpdateDockBounds;
-    procedure AsyncUpdateDockBounds ({%H-}Data: PtrInt);
+    property AsyncUpdateDockBounds: boolean read FAsyncUpdateDockBounds write SetAsyncUpdateDockBounds;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
     procedure SetBoundsPercentually;
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
@@ -2195,7 +2200,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
         Splitter.AnchorSide[akBottom].Control:=nil;
       end;
       Result:=Splitter;
-      Application.QueueAsyncCall(@Splitter.AsyncUpdateDockBounds,0);
+      Splitter.AsyncUpdateDockBounds:=true;
     end else if ANode.NodeType=adltnLayout then begin
       // restore layout
       Site:=GetNodeSite(ANode);
@@ -7178,20 +7183,28 @@ begin
   //debugln(['TAnchorDockSplitter.SetResizeAnchor ',DbgSName(Self),' ResizeAnchor=',dbgs(ResizeAnchor),' Align=',dbgs(Align),' Anchors=',dbgs(Anchors)]);
 end;
 
+procedure TAnchorDockSplitter.SetParent(NewParent: TWinControl);
+begin
+  if NewParent=nil then
+    AsyncUpdateDockBounds:=false;
+  inherited SetParent(NewParent);
+end;
+
 procedure TAnchorDockSplitter.PopupMenuPopup(Sender: TObject);
 begin
 
 end;
 
-procedure TAnchorDockSplitter.AsyncUpdateDockBounds (Data: PtrInt);
+procedure TAnchorDockSplitter.OnAsyncUpdateDockBounds (Data: PtrInt);
 begin
+  FAsyncUpdateDockBounds:=false;
   FPercentPosition:=-1;
   UpdateDockBounds;
 end;
 
-
 procedure TAnchorDockSplitter.UpdateDockBounds;
 begin
+  if csDestroying in ComponentState then exit;
   FDockBounds:=BoundsRect;
   if Parent<>nil then begin
     FDockParentClientSize.cx:=Parent.ClientWidth;
@@ -7218,6 +7231,16 @@ begin
     else
       FPercentPosition := -1;
   end;
+end;
+
+procedure TAnchorDockSplitter.SetAsyncUpdateDockBounds(const AValue: boolean);
+begin
+  if FAsyncUpdateDockBounds=AValue then Exit;
+  FAsyncUpdateDockBounds:=AValue;
+  if FAsyncUpdateDockBounds then
+    Application.QueueAsyncCall(@OnAsyncUpdateDockBounds,0)
+  else
+    Application.RemoveAsyncCalls(Self);
 end;
 
 procedure TAnchorDockSplitter.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -7427,6 +7450,12 @@ begin
   Constraints.MinHeight:=2;
   PopupMenu:=DockMaster.GetPopupMenu;
   FPercentPosition:=-1;
+end;
+
+destructor TAnchorDockSplitter.Destroy;
+begin
+  AsyncUpdateDockBounds:=false;
+  inherited Destroy;
 end;
 
 { TAnchorDockPageControl }
