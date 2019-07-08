@@ -3607,10 +3607,11 @@ begin
   if FWaitForClose and (ToolStatus = itNone) then
   begin
     FWaitForClose := False;
-    MainIDEBar.Close;
+    if MainIDEBar <> nil then
+      MainIDEBar.Close;
   end;
 
-  if not IDEIsClosing and MainIDEBar.HandleAllocated then
+  if (MainIDEBar <> nil) and not IDEIsClosing and MainIDEBar.HandleAllocated then
   begin
     if (ToolStatus = itDebugger) then
       EnvironmentOptions.EnableDebugDesktop
