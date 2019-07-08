@@ -49,7 +49,7 @@ uses
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf, SrcEditorIntf,
   // DebuggerIntf
-  DbgIntfDebuggerBase,
+  DbgIntfDebuggerBase, GDBMIDebugger,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,
@@ -291,6 +291,53 @@ type
 type
   TEnvironmentOptions = class;
 
+  { TDebuggerPropertiesConfig }
+
+  TDebuggerPropertiesConfig = class(TPersistent)
+  private
+    FActive: Boolean;
+    FConfigClass: String;
+    FConfigName: String;
+    FDebuggerClass: TDebuggerClass;
+    FDebuggerFilename: string;
+    FIsFromOldXml: Boolean;
+    FXmlIndex: Integer;
+    FDebuggerProperties: TDebuggerProperties;
+  public
+    destructor Destroy; override;
+    constructor CreateFromXmlConf(AXMLCfg: TRttiXMLConfig; APath: String; AIndex: Integer);
+    constructor CreateFromOldXmlConf(AXMLCfg: TRttiXMLConfig; APath: String;
+      ADebuggerClass: TDebuggerClass; AForceLoad: Boolean = False);
+    constructor CreateFromOldXmlConf(AXMLCfg: TRttiXMLConfig; APath: String;
+      ADebuggerClassName: String; AForceLoad: Boolean = False);
+    constructor CreateForDebuggerClass(ADebuggerClass: TDebuggerClass);
+    constructor CreateCopy(ASource: TDebuggerPropertiesConfig; ACopyPropValues: Boolean = True; ACopyXmlOrigin: Boolean = False);
+
+    procedure CopyFrom(ASource: TDebuggerPropertiesConfig; ACopyPropValues: Boolean = True);
+    procedure AssignTo(Dest: TPersistent); override;
+    function DisplayName: String;
+    function NeedsExePath: Boolean;
+    procedure ChangeDebuggerClass(ADebuggerClass: TDebuggerClass; ACopyPropValues: Boolean = True);
+    procedure MarkAsDeleted;
+    function IsLoaded: Boolean;
+    function IsDeleted: Boolean;
+    function DebugText: String;
+
+    procedure DeleteFromXml(AXMLCfg: TRttiXMLConfig; APath: String); // uses FXmlIndex from last load/save. No prior sibling must have benn removed or inserted
+    procedure DeleteFromOldXml(AXMLCfg: TRttiXMLConfig; APath: String);
+    procedure SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String; AIndex: Integer);
+    procedure SaveToOldXml(AXMLCfg: TRttiXMLConfig; APath: String);
+
+    property DebuggerClass: TDebuggerClass read FDebuggerClass;
+    property DebuggerProperties: TDebuggerProperties read FDebuggerProperties;
+    property IsFromOldXml: Boolean read FIsFromOldXml;
+  published
+    property ConfigName: String read FConfigName write FConfigName;
+    property ConfigClass: String read FConfigClass write FConfigClass;
+    property DebuggerFilename: string read FDebuggerFilename write FDebuggerFilename;
+    property Active: Boolean read FActive write FActive;
+  end;
+
   TLastOpenPackagesList = class(TStringList)
   public
     function Remove(const aString: string): Boolean;
@@ -468,10 +515,25 @@ type
     property Path: String read FPath;
   end;
 
+  { TDebuggerPropertiesConfigList }
+
+  TDebuggerPropertiesConfigList = class(TStringList)
+  private
+    function GetOpt(Index: Integer): TDebuggerPropertiesConfig;
+  public
+    procedure ClearAll;
+    function EntryByName(AConfName, AConfClass: String): TDebuggerPropertiesConfig;
+    property Opt[Index: Integer]: TDebuggerPropertiesConfig read GetOpt;
+  end;
+
   { TEnvironmentOptions - class for storing environment options }
 
   TEnvironmentOptions = class(TIDEEnvironmentOptions)
+  private const
+    XML_PATH_DEBUGGER_CONF     = 'EnvironmentOptions/Debugger/Configs/Config[%d]/';
+    XML_PATH_DEBUGGER_CONF_OLD = 'EnvironmentOptions/Debugger/Class%s/%s/';
   private
+    FCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
     fRegisteredSubConfig: TObjectList;
     FDebuggerAutoCloseAsm: boolean;
     // config file
@@ -582,7 +644,8 @@ type
     FDebuggerResetAfterRun: boolean;
     FDebuggerConfig: TDebuggerConfigStore;
     FDebuggerFileHistory: TStringList; // per debugger class
-    FDebuggerProperties: TStringList; // per debugger class
+    FDebuggerProperties: TDebuggerPropertiesConfigList; // named entries
+    FKnownDebuggerClassCount: Integer;
     FDebuggerShowStopMessage: Boolean;
     FDebuggerEventLogClearOnRun: Boolean;
     FDebuggerEventLogCheckLineLimit: Boolean;
@@ -652,6 +715,8 @@ type
     function GetActiveDesktop: TDesktopOpt;
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
+    function GetCurrentDebuggerClass: TDebuggerClass;
+    function GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
     function GetDebugDesktop: TDesktopOpt;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetDebuggerFilename: string;
@@ -669,12 +734,13 @@ type
     procedure SaveNonDesktop(Path: String);
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerMessagesFilename(AValue: string);
+    procedure SetCurrentDebuggerPropertiesOpt(AValue: TDebuggerPropertiesConfig
+      );
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
     procedure SetDebuggerSearchPath(const AValue: string);
     procedure SetFPDocPaths(const AValue: string);
     procedure SetMakeFilename(const AValue: string);
-    procedure SetDebuggerFilename(AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
     procedure SetFppkgConfigFile(AValue: string);
@@ -687,6 +753,7 @@ type
     procedure InitXMLCfg(CleanConfig: boolean);
     procedure FileUpdated;
     procedure SetTestBuildDirectory(const AValue: string);
+    procedure LoadDebuggerProperties;
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -716,7 +783,7 @@ type
     function GetParsedDebuggerFilename: string;
     function GetParsedDebuggerSearchPath: string;
     function GetParsedFppkgConfig: string; override;
-    function GetParsedValue(o: TEnvOptParseType): string;
+    function GetParsedValue(o: TEnvOptParseType; AUnparsedValue: String = ''): string;
 
     // macros
     procedure InitMacros(AMacroList: TTransferMacroList);
@@ -823,7 +890,7 @@ type
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory;
     property MakeFilename: string read GetMakeFilename write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory;
-    property DebuggerFilename: string read GetDebuggerFilename write SetDebuggerFilename;
+    property DebuggerFilename: string read GetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory;
     property DebuggerSearchPath: string read GetDebuggerSearchPath write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage write FDebuggerShowStopMessage;
@@ -856,8 +923,9 @@ type
 
     // Debugger
     procedure SaveDebuggerPropertiesList;
-    procedure SaveDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
-    procedure LoadDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
+    function  DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
+    property  CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read GetCurrentDebuggerPropertiesConfig write SetCurrentDebuggerPropertiesOpt;
+    property  CurrentDebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
     property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
 
     // Debugger event log
@@ -1112,6 +1180,288 @@ end;
 function dbgs(u: TMessageLineUrgency): string;
 begin
   WriteStr(Result, u);
+end;
+
+{ TDebuggerPropertiesConfigList }
+
+function TDebuggerPropertiesConfigList.GetOpt(Index: Integer
+  ): TDebuggerPropertiesConfig;
+begin
+  Result := TDebuggerPropertiesConfig(Objects[Index]);
+end;
+
+procedure TDebuggerPropertiesConfigList.ClearAll;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Objects[i].Free;
+  Clear;
+end;
+
+function TDebuggerPropertiesConfigList.EntryByName(AConfName, AConfClass: String
+  ): TDebuggerPropertiesConfig;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := Count - 1;
+  while (i >= 0) and (
+    Opt[i].IsDeleted or (not Opt[i].IsLoaded) or
+    (Opt[i].ConfigName <> AConfName) or
+    (Opt[i].ConfigClass <> AConfClass)
+  )
+  do
+    dec(i);
+  if i >= 0 then
+    Result := Opt[i];
+end;
+
+{ TDebuggerPropertiesConfig }
+
+destructor TDebuggerPropertiesConfig.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FDebuggerProperties);
+end;
+
+constructor TDebuggerPropertiesConfig.CreateFromXmlConf(
+  AXMLCfg: TRttiXMLConfig; APath: String; AIndex: Integer);
+begin
+  Create;
+  FIsFromOldXml := False;
+
+  APath := Format(APath, [AIndex]);
+  AXMLCfg.ReadObject(APath, Self);
+  FXmlIndex := AIndex;
+
+  FDebuggerClass := TBaseDebugManagerIntf.DebuggersByClassName[ConfigClass];
+  if FDebuggerClass <> nil then begin
+    FDebuggerProperties := FDebuggerClass.CreateProperties;
+    AXMLCfg.ReadObject(APath + 'Properties/', FDebuggerProperties);
+  end;
+end;
+
+constructor TDebuggerPropertiesConfig.CreateFromOldXmlConf(
+  AXMLCfg: TRttiXMLConfig; APath: String; ADebuggerClass: TDebuggerClass;
+  AForceLoad: Boolean);
+var
+  p: String;
+begin
+  Create;
+  FIsFromOldXml := True;
+
+  p := Format(APath, [ADebuggerClass.ClassName, 'Config']);
+  if AXMLCfg.HasPath(p, False) then
+    AForceLoad := True;
+  // Read first, so any (invalid) Class/Name will be cleared after reading
+  AXMLCfg.ReadObject(p, Self);  // read FDebuggerFilename;
+
+  FConfigClass := ADebuggerClass.ClassName;
+  FConfigName := '';
+  FXmlIndex := -1;
+
+  APath := Format(APath, [FConfigClass, 'Properties']);
+  if AForceLoad or AXMLCfg.HasPath(APath, False) then begin
+    FDebuggerClass := ADebuggerClass;
+    FDebuggerProperties := ADebuggerClass.CreateProperties;
+    AXMLCfg.ReadObject(APath, FDebuggerProperties);
+  end;
+end;
+
+constructor TDebuggerPropertiesConfig.CreateFromOldXmlConf(
+  AXMLCfg: TRttiXMLConfig; APath: String; ADebuggerClassName: String;
+  AForceLoad: Boolean);
+var
+  p: String;
+begin
+  Create;
+  FIsFromOldXml := True;
+
+  p := Format(APath, [ADebuggerClassName, 'Config']);
+  if AXMLCfg.HasPath(p, False) then
+    AForceLoad := True;
+  // Read first, so any (invalid) Class/Name will be cleared after reading
+  AXMLCfg.ReadObject(p, Self);  // read FDebuggerFilename;
+
+  FConfigClass := ADebuggerClassName;
+  FConfigName := '';
+  FXmlIndex := -1;
+
+  FDebuggerClass := TBaseDebugManagerIntf.DebuggersByClassName[ConfigClass];
+  APath := Format(APath, [FConfigClass, 'Properties']);
+  if (FDebuggerClass <> nil) and (AForceLoad or AXMLCfg.HasPath(APath, False)) then begin
+    FDebuggerProperties := FDebuggerClass.CreateProperties;
+    AXMLCfg.ReadObject(APath, FDebuggerProperties);
+  end;
+end;
+
+constructor TDebuggerPropertiesConfig.CreateForDebuggerClass(
+  ADebuggerClass: TDebuggerClass);
+begin
+  Create;
+  FIsFromOldXml := False;
+  FXmlIndex := -1;
+
+  FDebuggerClass := ADebuggerClass;
+  FConfigClass := ADebuggerClass.ClassName;
+  FConfigName := '';
+  FDebuggerProperties := ADebuggerClass.CreateProperties;
+end;
+
+constructor TDebuggerPropertiesConfig.CreateCopy(
+  ASource: TDebuggerPropertiesConfig; ACopyPropValues: Boolean;
+  ACopyXmlOrigin: Boolean);
+begin
+  Create;
+  CopyFrom(ASource, ACopyPropValues);
+  if ACopyXmlOrigin then begin
+    FIsFromOldXml := ASource.FIsFromOldXml;
+    FXmlIndex     := ASource.FXmlIndex;
+  end
+  else begin
+    FIsFromOldXml := False;
+    FXmlIndex     := -1;
+  end;
+end;
+
+procedure TDebuggerPropertiesConfig.CopyFrom(
+  ASource: TDebuggerPropertiesConfig; ACopyPropValues: Boolean);
+begin
+  FConfigClass      := ASource.FConfigClass;
+  FConfigName       := ASource.FConfigName;
+  FDebuggerClass    := ASource.FDebuggerClass;
+  FDebuggerFilename := ASource.FDebuggerFilename;
+
+  FreeAndNil(FDebuggerProperties);
+  if ASource.DebuggerClass <> nil then
+    FDebuggerProperties := ASource.DebuggerClass.CreateProperties;
+  if ACopyPropValues and (ASource.FDebuggerProperties <> nil) then
+    FDebuggerProperties.Assign(ASource.FDebuggerProperties);
+end;
+
+procedure TDebuggerPropertiesConfig.AssignTo(Dest: TPersistent);
+begin
+  TDebuggerPropertiesConfig(Dest).CopyFrom(Self);
+end;
+
+function TDebuggerPropertiesConfig.DisplayName: String;
+begin
+  if FDebuggerClass <> nil then
+    Result := FDebuggerClass.Caption
+  else
+    Result := FConfigClass;
+  if FConfigName <> '' then
+    Result := FConfigName + ' [' + Result + ']'
+  else
+    Result := '[' + Result + ']';
+end;
+
+function TDebuggerPropertiesConfig.NeedsExePath: Boolean;
+begin
+  Result := (FDebuggerClass <> nil) and FDebuggerClass.NeedsExePath;
+end;
+
+procedure TDebuggerPropertiesConfig.ChangeDebuggerClass(
+  ADebuggerClass: TDebuggerClass; ACopyPropValues: Boolean);
+var
+  p: TDebuggerProperties;
+begin
+  FDebuggerClass := ADebuggerClass;
+  FConfigClass := ADebuggerClass.ClassName;
+  p := FDebuggerProperties;
+  FDebuggerProperties := ADebuggerClass.CreateProperties;
+  if ACopyPropValues and (p <> nil) then
+    FDebuggerProperties.Assign(p);
+  p.Free;
+end;
+
+procedure TDebuggerPropertiesConfig.MarkAsDeleted;
+begin
+  FreeAndNil(FDebuggerProperties);
+end;
+
+function TDebuggerPropertiesConfig.IsLoaded: Boolean;
+begin
+  Result := (FDebuggerClass <> nil) and (FDebuggerProperties <> nil);
+end;
+
+function TDebuggerPropertiesConfig.IsDeleted: Boolean;
+begin
+  Result := (FDebuggerClass <> nil) and (FDebuggerProperties = nil);
+end;
+
+function TDebuggerPropertiesConfig.DebugText: String;
+begin
+  if Self = nil then
+    exit('NIL');
+  Result := Format('C-Name: %s, C-Class: %s, Class %s, Prop %s, Xml: %d %s, Path: %s',
+    [FConfigName, FConfigClass, DbgSName(FDebuggerClass), dbgs(FDebuggerProperties),
+     FXmlIndex, dbgs(FIsFromOldXml), FDebuggerFilename]);
+end;
+
+procedure TDebuggerPropertiesConfig.DeleteFromXml(AXMLCfg: TRttiXMLConfig;
+  APath: String);
+begin
+  if FXmlIndex < 0 then
+    exit;
+  APath := Format(APath, [FXmlIndex]);
+  FXmlIndex := -1;
+
+  AXMLCfg.DeletePath(APath);
+end;
+
+procedure TDebuggerPropertiesConfig.DeleteFromOldXml(AXMLCfg: TRttiXMLConfig;
+  APath: String);
+begin
+  AXMLCfg.DeletePath(Format(APath, [FConfigClass, 'Config']));
+  AXMLCfg.DeletePath(Format(APath, [FConfigClass, 'Properties']));
+  FXmlIndex := -1;
+  FIsFromOldXml := False;
+end;
+
+procedure TDebuggerPropertiesConfig.SaveToXml(AXMLCfg: TRttiXMLConfig;
+  APath: String; AIndex: Integer);
+var
+  PropDef: TDebuggerProperties;
+  OptDef: TDebuggerPropertiesConfig;
+begin
+  APath := Format(APath, [AIndex]);
+  FIsFromOldXml := False;
+  FXmlIndex := AIndex;
+
+  OptDef := TDebuggerPropertiesConfig.Create;
+  AXMLCfg.WriteObject(APath, Self, OptDef);
+  OptDef.Free;
+
+  if FDebuggerProperties <> nil then begin
+    PropDef := FDebuggerClass.CreateProperties;
+    AXMLCfg.WriteObject(APath + 'Properties/', FDebuggerProperties, PropDef);
+    PropDef.Free;
+  end;
+end;
+
+procedure TDebuggerPropertiesConfig.SaveToOldXml(AXMLCfg: TRttiXMLConfig;
+  APath: String);
+var
+  PropDef: TDebuggerProperties;
+  OptDef: TDebuggerPropertiesConfig;
+begin
+  FIsFromOldXml := True;
+  FXmlIndex := -1;
+
+  OptDef := TDebuggerPropertiesConfig.Create;
+  OptDef.ConfigName := ConfigName;   // Do not write Name
+  // ConfigClass will differ and be written. This ensures that even an unmodified config is written (to preserve its existence)
+  AXMLCfg.WriteObject(Format(APath, [FConfigClass, 'Config']), Self, OptDef);
+  OptDef.Free;
+
+  if FDebuggerProperties <> nil then begin
+    APath := Format(APath, [FConfigClass, 'Properties']);
+    PropDef := FDebuggerClass.CreateProperties;
+    AXMLCfg.WriteObject(APath, FDebuggerProperties, PropDef);
+    PropDef.Free;
+  end;
 end;
 
 { TIDESubOptions }
@@ -1750,9 +2100,8 @@ begin
   FFPCSourceDirHistory:=TStringList.Create;
   MakeFilename:=DefaultMakefilename;
   FMakeFileHistory:=TStringList.Create;
-  DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
-  FDebuggerProperties := TStringList.Create;
+  FDebuggerProperties := TDebuggerPropertiesConfigList.Create;
   FDebuggerEventLogColors:=DebuggerDefaultColors;
   FppkgConfigFile:='';
   FFppkgConfigFileHistory:=TStringList.Create;
@@ -1818,8 +2167,6 @@ begin
 end;
 
 destructor TEnvironmentOptions.Destroy;
-var
-  i: Integer;
 begin
   FreeAndNil(fRegisteredSubConfig);
   FreeAndNil(FDesktops);
@@ -1836,11 +2183,10 @@ begin
   FreeAndNil(FCompilerFileHistory);
   FreeAndNil(FFPCSourceDirHistory);
   FreeAndNil(FMakeFileHistory);
-  FreeAndNil(FDebuggerFileHistory);
-  for i := 0 to FDebuggerProperties.Count - 1 do
-    FDebuggerProperties.Objects[i].Free;
-  FreeAndNil(FManyBuildModesSelection);
+  FDebuggerProperties.ClearAll;
   FreeAndNil(FDebuggerProperties);
+  FreeAndNil(FDebuggerFileHistory);
+  FreeAndNil(FManyBuildModesSelection);
   FreeAndNil(FTestBuildDirHistory);
   FreeAndNil(FCompilerMessagesFileHistory);
   FreeAndNil(FDebuggerConfig);
@@ -2040,8 +2386,8 @@ begin
   LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
 
   // Debugger
+  // DO not call   LoadDebuggerProperties; => not all debuggers are registered when this is first called
   FDebuggerConfig.Load;
-  DebuggerFilename:=FXMLCfg.GetValue(Path+'DebuggerFilename/Value','');
   LoadRecentList(FXMLCfg,FDebuggerFileHistory,Path+'DebuggerFilename/History/',rltFile);
   DebuggerSearchPath:=FXMLCfg.GetValue(Path+'DebuggerSearchPath/Value','');
   // Debugger General Options
@@ -2432,7 +2778,6 @@ begin
   // debugger
   FDebuggerConfig.Save;
   SaveDebuggerPropertiesList;
-  FXMLCfg.SetDeleteValue(Path+'DebuggerFilename/Value',DebuggerFilename,'');
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
       FDebuggerShowStopMessage, True);
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value',
@@ -2813,6 +3158,9 @@ end;
 
 function TEnvironmentOptions.GetParsedDebuggerFilename: string;
 begin
+  if FParseValues[eopDebuggerFilename].UnparsedValue <> DebuggerFilename then
+    SetParseValue(eopDebuggerFilename,UTF8Trim(DebuggerFilename));
+
   Result:=GetParsedValue(eopDebuggerFilename);
 end;
 
@@ -2826,12 +3174,26 @@ begin
   Result:=GetParsedValue(eopFppkgConfigFile);
 end;
 
-function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
+function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType;
+  AUnparsedValue: String): string;
+type
+  PParseString = ^TParseString;
 var
   SpacePos: SizeInt;
   CurParams: String;
+  TempValue: TParseString;
+  VP: PParseString;
 begin
-  with FParseValues[o] do begin
+  if AUnparsedValue <> '' then begin
+    TempValue.UnparsedValue := AUnparsedValue;
+    TempValue.ParseStamp := CTInvalidChangeStamp;
+    TempValue.Parsing := False;
+    VP := @TempValue;
+  end
+  else
+    VP := @FParseValues[o];
+
+  with VP^ do begin
     if (ParseStamp<>CompilerParseStamp)
     or (CompilerParseStamp=CTInvalidChangeStamp) then begin
       if Parsing then begin
@@ -3001,50 +3363,155 @@ end;
 
 procedure TEnvironmentOptions.SaveDebuggerPropertiesList;
 var
-  DProp, DDef: TDebuggerProperties;
-  i: Integer;
+  i, ConfCount: Integer;
+  Entry: TDebuggerPropertiesConfig;
 begin
+  for i := FDebuggerProperties.Count - 1 downto 0 do begin
+    // Delete last entry first
+    Entry := FDebuggerProperties.Opt[i];
+    if not Entry.IsLoaded then
+      Continue;
+
+    if (not Entry.IsFromOldXml) then
+      Entry.DeleteFromXml(FXMLCfg, XML_PATH_DEBUGGER_CONF)
+    else
+    if (Entry.DebuggerProperties = nil) or // Entry without DebuggerProperty are a marker for entries to be deleted
+       (Entry.ConfigName <> '') // Moved to named list
+    then
+      Entry.DeleteFromOldXml(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD);
+
+    if Entry.IsDeleted then begin
+      Entry.Free;
+      FDebuggerProperties.Delete(i);
+    end;
+  end;
+
+  ConfCount := FXMLCfg.GetListItemCount('EnvironmentOptions/Debugger/Configs/', 'Config', False) + 1;
   for i := 0 to FDebuggerProperties.Count - 1 do begin
-    DProp := TDebuggerProperties(FDebuggerProperties.Objects[i]);
-    DDef := TDebuggerPropertiesClass(DProp.ClassType).Create;
-    FXMLCfg.WriteObject(
-      'EnvironmentOptions/Debugger/Class' + FDebuggerProperties[i] + '/Properties/',
-      DProp, DDef);
-    DDef.Free;
+    Entry := FDebuggerProperties.Opt[i];
+    if not Entry.IsLoaded then
+      Continue;
+
+    Entry.Active := Entry = FCurrentDebuggerPropertiesConfig;
+    if(Entry.ConfigName <> '') then begin
+      Entry.SaveToXml(FXMLCfg, XML_PATH_DEBUGGER_CONF, ConfCount);
+      inc(ConfCount);
+    end
+    else begin
+      Entry.SaveToOldXml(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD);
+      // For compatibility
+      if Entry.Active then
+        FXMLCfg.SetDeleteValue('EnvironmentOptions/DebuggerFilename/Value', Entry.DebuggerFilename,'');
+    end;
+  end;
+
+  // compatibility
+  if (FCurrentDebuggerPropertiesConfig <> nil) and (FCurrentDebuggerPropertiesConfig.ConfigName = '') then
+    FXMLCfg.SetValue('EnvironmentOptions/Debugger/Class', CurrentDebuggerPropertiesConfig.ConfigClass)
+  else
+    FXMLCfg.DeleteValue('EnvironmentOptions/Debugger/Class')
+end;
+
+procedure TEnvironmentOptions.LoadDebuggerProperties;
+var
+  ConfCount, i: Integer;
+  DbgClassType: TDebuggerClass;
+  Entry, UnloadedCurrent: TDebuggerPropertiesConfig;
+  ActiveClassName, CurFilename: String;
+  ActiveClassSeen: Boolean;
+begin
+  if (FDebuggerProperties.Count > 0) and
+     (TBaseDebugManagerIntf.DebuggerCount = FKnownDebuggerClassCount)
+  then
+    exit;
+  FKnownDebuggerClassCount := TBaseDebugManagerIntf.DebuggerCount;
+
+
+  FDebuggerProperties.ClearAll;
+  FCurrentDebuggerPropertiesConfig := nil;
+  UnloadedCurrent := nil;
+
+  // Load new style entries
+  ConfCount := FXMLCfg.GetListItemCount('EnvironmentOptions/Debugger/Configs/', 'Config', False);
+  for i := 1 to ConfCount do begin
+    Entry := TDebuggerPropertiesConfig.CreateFromXmlConf(FXMLCfg, XML_PATH_DEBUGGER_CONF, i);
+    FDebuggerProperties.AddObject(Entry.ConfigName, Entry);
+    if Entry.Active and Entry.IsLoaded and (FCurrentDebuggerPropertiesConfig = nil) then
+      FCurrentDebuggerPropertiesConfig := Entry;
+    if Entry.Active and (UnloadedCurrent = nil) then
+      UnloadedCurrent := Entry;
+  end;
+
+  if FCurrentDebuggerPropertiesConfig = nil then
+    FCurrentDebuggerPropertiesConfig := UnloadedCurrent;
+
+  // Read old style, per class
+  ActiveClassName := '';
+  ActiveClassSeen := False;
+  if FCurrentDebuggerPropertiesConfig = nil then
+    ActiveClassName := FXMLCfg.GetValue('EnvironmentOptions/Debugger/Class', '');
+  // There is only one filename for all classes
+  CurFilename:=FXMLCfg.GetValue('EnvironmentOptions/DebuggerFilename/Value','');
+
+  for i := 0 to TBaseDebugManagerIntf.DebuggerCount  -1 do begin
+    DbgClassType := TBaseDebugManagerIntf.Debuggers[i];
+    ActiveClassSeen := ActiveClassSeen or (LowerCase(DbgClassType.ClassName) = LowerCase(ActiveClassName));
+    Entry := TDebuggerPropertiesConfig.CreateFromOldXmlConf(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD,
+      DbgClassType, LowerCase(DbgClassType.ClassName) = LowerCase(ActiveClassName));
+    if not Entry.IsLoaded then begin
+      Entry.Free;
+      Continue;
+    end;
+    if (Entry.DebuggerFilename = '') and (Entry.NeedsExePath or (not Entry.IsLoaded)) then
+      Entry.DebuggerFilename := CurFilename;
+    FDebuggerProperties.AddObject(Entry.ConfigName, Entry);
+    if (Entry.ConfigClass = ActiveClassName) and (FCurrentDebuggerPropertiesConfig = nil) then
+      FCurrentDebuggerPropertiesConfig := Entry;
+  end;
+
+  // current active debugger was not found / may not an unknown class
+  // InitialSetupDlg depends on having a debugger loaded, with the ONLY exception: ActiveClassName = ''
+  if (not ActiveClassSeen) and (ActiveClassName <> '') then begin
+    Entry := TDebuggerPropertiesConfig.CreateFromOldXmlConf(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD, ActiveClassName, True);
+    if (Entry.DebuggerFilename = '') and (Entry.NeedsExePath or (not Entry.IsLoaded)) then
+      Entry.DebuggerFilename := CurFilename;
+    FDebuggerProperties.AddObject(Entry.ConfigName, Entry);
+    // FCurrentDebuggerPropertiesConfig may NOT be loaded !!!
+    FCurrentDebuggerPropertiesConfig := Entry;
   end;
 end;
 
-procedure TEnvironmentOptions.SaveDebuggerProperties(DebuggerClass: String;
-  Properties: TDebuggerProperties);
-var
-  i: Integer;
-  Prop: TDebuggerProperties;
+function TEnvironmentOptions.GetCurrentDebuggerClass: TDebuggerClass;
 begin
-  i := FDebuggerProperties.IndexOf(DebuggerClass);
-  if i < 0 then begin
-    Prop := TDebuggerPropertiesClass(Properties.ClassType).Create;
-    Prop.Assign(Properties);
-    FDebuggerProperties.AddObject(DebuggerClass, Prop);
-  end
-  else
-    TDebuggerProperties(FDebuggerProperties.Objects[i]).Assign(Properties);
+  LoadDebuggerProperties;
+
+  Result := nil;
+  if CurrentDebuggerPropertiesConfig <> nil then
+    Result := CurrentDebuggerPropertiesConfig.DebuggerClass;
 end;
 
-procedure TEnvironmentOptions.LoadDebuggerProperties(DebuggerClass: String;
-  Properties: TDebuggerProperties);
-var
-  i: Integer;
-  DDef: TDebuggerProperties;
+function TEnvironmentOptions.GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
 begin
-  i := FDebuggerProperties.IndexOf(DebuggerClass);
-  if i < 0 then begin
-    DDef := TDebuggerPropertiesClass(Properties.ClassType).Create;
-    FXMLCfg.ReadObject('EnvironmentOptions/Debugger/Class' + DebuggerClass + '/Properties/',
-      Properties, DDef);
-    DDef.Free;
-  end
-  else
-    Properties.Assign(TDebuggerProperties(FDebuggerProperties.Objects[i]));
+  LoadDebuggerProperties;
+  Result := FCurrentDebuggerPropertiesConfig;
+end;
+
+procedure TEnvironmentOptions.SetCurrentDebuggerPropertiesOpt(
+  AValue: TDebuggerPropertiesConfig);
+begin
+  LoadDebuggerProperties;
+
+  if FCurrentDebuggerPropertiesConfig = AValue then Exit;
+  if (FDebuggerProperties.IndexOfObject(AValue) < 0) then
+    FDebuggerProperties.AddObject(AValue.ConfigName, AValue);
+  FCurrentDebuggerPropertiesConfig := AValue;
+end;
+
+function TEnvironmentOptions.DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
+begin
+  LoadDebuggerProperties;
+
+  Result := FDebuggerProperties;
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
@@ -3239,7 +3706,10 @@ end;
 
 function TEnvironmentOptions.GetDebuggerFilename: string;
 begin
-  Result:=FParseValues[eopDebuggerFilename].UnparsedValue;
+  Result := '';
+  LoadDebuggerProperties;
+  if CurrentDebuggerPropertiesConfig <> nil then
+    Result:=CurrentDebuggerPropertiesConfig.DebuggerFilename;
 end;
 
 function TEnvironmentOptions.GetDebuggerSearchPath: string;
@@ -3334,11 +3804,6 @@ end;
 procedure TEnvironmentOptions.SetMakeFilename(const AValue: string);
 begin
   SetParseValue(eopMakeFilename,TrimFilename(AValue));
-end;
-
-procedure TEnvironmentOptions.SetDebuggerFilename(AValue: string);
-begin
-  SetParseValue(eopDebuggerFilename,UTF8Trim(AValue));
 end;
 
 procedure TEnvironmentOptions.SetFppkgConfigFile(AValue: string);

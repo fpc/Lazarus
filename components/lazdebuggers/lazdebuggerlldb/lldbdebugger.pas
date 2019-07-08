@@ -558,9 +558,11 @@ end;
 procedure TLldbDebuggerProperties.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  FLaunchNewTerminal := TLldbDebuggerProperties(Source).FLaunchNewTerminal;
-  FSkipGDBDetection := TLldbDebuggerProperties(Source).FSkipGDBDetection;
-  FIgnoreLaunchWarnings := TLldbDebuggerProperties(Source).FIgnoreLaunchWarnings;
+  if Source is TLldbDebuggerProperties then begin
+    FLaunchNewTerminal := TLldbDebuggerProperties(Source).FLaunchNewTerminal;
+    FSkipGDBDetection := TLldbDebuggerProperties(Source).FSkipGDBDetection;
+    FIgnoreLaunchWarnings := TLldbDebuggerProperties(Source).FIgnoreLaunchWarnings;
+  end;
 end;
 
 { TLldbDebuggerCommandRun }

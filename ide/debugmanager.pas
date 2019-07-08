@@ -2484,7 +2484,10 @@ begin
       Exit;
     end;
 
-    EnvironmentOptions.LoadDebuggerProperties(NewDebuggerClass.ClassName, FDebugger.GetProperties);
+    if (EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil) and
+       (EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerProperties <> nil)
+    then
+      FDebugger.GetProperties.Assign(EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerProperties);
 
     ClearDebugOutputLog;
     if EnvironmentOptions.DebuggerEventLogClearOnRun then
@@ -2595,7 +2598,7 @@ function TDebugManager.DoSetBreakkPointWarnIfNoDebugger: boolean;
 var
   DbgClass: TDebuggerClass;
 begin
-  DbgClass:=FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass);
+  DbgClass:=EnvironmentOptions.CurrentDebuggerClass;
   if (DbgClass=nil)
   or (DbgClass.NeedsExePath
     and (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
@@ -3118,7 +3121,7 @@ end;
 
 function TDebugManager.GetDebuggerClass: TDebuggerClass;
 begin
-  Result := FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass);
+  Result := EnvironmentOptions.CurrentDebuggerClass;
   if Result = nil then
     Result := TProcessDebugger;
 end;

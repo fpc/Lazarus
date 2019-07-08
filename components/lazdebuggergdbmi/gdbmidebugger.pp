@@ -7687,34 +7687,36 @@ end;
 procedure TGDBMIDebuggerPropertiesBase.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  FGDBOptions := TGDBMIDebuggerPropertiesBase(Source).FGDBOptions;
-  {$IFDEF UNIX}
-  FConsoleTty := TGDBMIDebuggerPropertiesBase(Source).FConsoleTty;
-  {$ENDIF}
-  FMaxDisplayLengthForString := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForString;
-  FMaxDisplayLengthForStaticArray := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForStaticArray;
-  FMaxLocalsLengthForStaticArray := TGDBMIDebuggerPropertiesBase(Source).FMaxLocalsLengthForStaticArray;
-  FTimeoutForEval := TGDBMIDebuggerPropertiesBase(Source).FTimeoutForEval;
-  FWarnOnTimeOut  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnTimeOut;
-  FWarnOnInternalError  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnInternalError;
-  FEncodeCurrentDirPath := TGDBMIDebuggerPropertiesBase(Source).FEncodeCurrentDirPath;
-  FEncodeExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodeExeFileName;
-  FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
-  FUseAsyncCommandMode := TGDBMIDebuggerPropertiesBase(Source).FUseAsyncCommandMode;
-  FDisableLoadSymbolsForLibraries := TGDBMIDebuggerPropertiesBase(Source).FDisableLoadSymbolsForLibraries;
-  FUseNoneMiRunCommands := TGDBMIDebuggerPropertiesBase(Source).FUseNoneMiRunCommands;
-  FDisableForcedBreakpoint := TGDBMIDebuggerPropertiesBase(Source).FDisableForcedBreakpoint;
-  FWarnOnSetBreakpointError := TGDBMIDebuggerPropertiesBase(Source).FWarnOnSetBreakpointError;
-  FCaseSensitivity := TGDBMIDebuggerPropertiesBase(Source).FCaseSensitivity;
-  FGdbValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbValueMemLimit;
-  FGdbLocalsValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbLocalsValueMemLimit;
-  FAssemblerStyle := TGDBMIDebuggerPropertiesBase(Source).FAssemblerStyle;
-  FDisableStartupShell := TGDBMIDebuggerPropertiesBase(Source).FDisableStartupShell;
-  FFixStackFrameForFpcAssert := TGDBMIDebuggerPropertiesBase(Source).FFixStackFrameForFpcAssert;
-  FFixIncorrectStepOver := TGDBMIDebuggerPropertiesBase(Source).FFixIncorrectStepOver;
-  {$IFdef MSWindows}
-  FAggressiveWaitTime := TGDBMIDebuggerPropertiesBase(Source).FAggressiveWaitTime;
-  {$EndIf}
+  if Source is TGDBMIDebuggerPropertiesBase then begin
+    FGDBOptions := TGDBMIDebuggerPropertiesBase(Source).FGDBOptions;
+    {$IFDEF UNIX}
+    FConsoleTty := TGDBMIDebuggerPropertiesBase(Source).FConsoleTty;
+    {$ENDIF}
+    FMaxDisplayLengthForString := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForString;
+    FMaxDisplayLengthForStaticArray := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForStaticArray;
+    FMaxLocalsLengthForStaticArray := TGDBMIDebuggerPropertiesBase(Source).FMaxLocalsLengthForStaticArray;
+    FTimeoutForEval := TGDBMIDebuggerPropertiesBase(Source).FTimeoutForEval;
+    FWarnOnTimeOut  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnTimeOut;
+    FWarnOnInternalError  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnInternalError;
+    FEncodeCurrentDirPath := TGDBMIDebuggerPropertiesBase(Source).FEncodeCurrentDirPath;
+    FEncodeExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodeExeFileName;
+    FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
+    FUseAsyncCommandMode := TGDBMIDebuggerPropertiesBase(Source).FUseAsyncCommandMode;
+    FDisableLoadSymbolsForLibraries := TGDBMIDebuggerPropertiesBase(Source).FDisableLoadSymbolsForLibraries;
+    FUseNoneMiRunCommands := TGDBMIDebuggerPropertiesBase(Source).FUseNoneMiRunCommands;
+    FDisableForcedBreakpoint := TGDBMIDebuggerPropertiesBase(Source).FDisableForcedBreakpoint;
+    FWarnOnSetBreakpointError := TGDBMIDebuggerPropertiesBase(Source).FWarnOnSetBreakpointError;
+    FCaseSensitivity := TGDBMIDebuggerPropertiesBase(Source).FCaseSensitivity;
+    FGdbValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbValueMemLimit;
+    FGdbLocalsValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbLocalsValueMemLimit;
+    FAssemblerStyle := TGDBMIDebuggerPropertiesBase(Source).FAssemblerStyle;
+    FDisableStartupShell := TGDBMIDebuggerPropertiesBase(Source).FDisableStartupShell;
+    FFixStackFrameForFpcAssert := TGDBMIDebuggerPropertiesBase(Source).FFixStackFrameForFpcAssert;
+    FFixIncorrectStepOver := TGDBMIDebuggerPropertiesBase(Source).FFixIncorrectStepOver;
+    {$IFdef MSWindows}
+    FAggressiveWaitTime := TGDBMIDebuggerPropertiesBase(Source).FAggressiveWaitTime;
+    {$EndIf}
+  end;
 end;
 
 

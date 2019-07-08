@@ -198,6 +198,7 @@ const
 
   GroupDebugger     = 400;
     DbgOptionsGeneral            = 100;
+    DbgOptionsClass              = 150;
     DbgOptionsEventLog           = 200;
     DbgOptionsLanguageExceptions = 300;
     DbgOptionsSignals            = 400;

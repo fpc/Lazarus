@@ -156,6 +156,7 @@ type
     procedure FppkgBrowseButtonClick(Sender: TObject);
     procedure FppkgWriteConfigButtonClick(Sender: TObject);
   private
+    FSkipDebugger: Boolean;
     FFlags: TSDFlags;
     FLastParsedLazDir: string;
     fLastParsedCompiler: string;
@@ -214,7 +215,7 @@ function ShowInitialSetupDialog: TModalResult;
 
 // Debugger
 // Checks a given file to see if it is a valid debugger (only gdb supported for now)
-function CheckDebuggerQuality(AFilename: string; out Note: string): TSDFilenameQuality;
+function CheckDebuggerQuality(AFilename: string; out Note: string; ASkip: Boolean = False): TSDFilenameQuality;
 // Search debugger candidates and add them to list, including quality level
 function SearchDebuggerCandidates(StopIfFits: boolean): TSDFileInfoList;
 
@@ -237,8 +238,17 @@ type
     LazarusDir: string;
   end;
 
-function CheckDebuggerQuality(AFilename: string; out Note: string): TSDFilenameQuality;
+function CheckDebuggerQuality(AFilename: string; out Note: string;
+  ASkip: Boolean): TSDFilenameQuality;
 begin
+  Note := '';
+  Result:=sddqCompatible;
+  if ASkip and // assume compatible
+     ( (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil) or
+       (EnvironmentOptions.DebuggerFilename = AFilename)   // unless the user edited the filename
+     )
+  then
+    exit;
   Result:=sddqInvalid;
   AFilename:=TrimFilename(AFilename);
   if not FileExistsCached(AFilename) then
@@ -275,8 +285,7 @@ function SearchDebuggerCandidates(StopIfFits: boolean): TSDFileInfoList;
     ForcePathDelims(AFilename);
     // check if already checked
     if Assigned(List) and List.CaptionExists(AFilename) then exit;
-    EnvironmentOptions.DebuggerFilename:=AFilename;
-    RealFilename:=EnvironmentOptions.GetParsedDebuggerFilename;
+    RealFilename:=EnvironmentOptions.GetParsedValue(eopDebuggerFilename, AFilename);
     debugln(['SearchDebuggerCandidates Value=',AFilename,' File=',RealFilename]);
     if RealFilename='' then exit;
     // check if exists
@@ -292,36 +301,52 @@ function SearchDebuggerCandidates(StopIfFits: boolean): TSDFileInfoList;
 const
   DebuggerFileName='gdb'; //For Windows, .exe will be appended
 var
-  OldDebuggerFilename: String;
-  s, AFilename: String;
+  s, AFilename, XmlClassName, CurDbgClassName: String;
   Files: TStringList;
   i: Integer;
 begin
   Result:=nil;
 
-  OldDebuggerFilename:=EnvironmentOptions.DebuggerFilename;
-  try
-    // check current setting
-    if CheckFile(EnvironmentOptions.DebuggerFilename,Result) then exit;
+  // check current setting
+  if CheckFile(EnvironmentOptions.DebuggerFilename,Result) then exit;
 
-    // check the primary options
+  if EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil then
+    CurDbgClassName := UpperCase(EnvironmentOptions.CurrentDebuggerPropertiesConfig.ConfigClass)
+  else
+    CurDbgClassName := UpperCase(DefaultDebuggerClass.ClassName);
+
+  // check the primary options
+  XmlClassName :=GetValueFromPrimaryConfig(EnvOptsConfFileName,
+                                  'EnvironmentOptions/Debugger/Class');
+  if UpperCase(XmlClassName) = CurDbgClassName then begin
     AFilename:=GetValueFromPrimaryConfig(EnvOptsConfFileName,
                                     'EnvironmentOptions/DebuggerFilename/Value');
     if CheckFile(AFilename,Result) then exit;
+  end;
 
-    // check the secondary options
+  // check the secondary options
+  XmlClassName :=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+                                  'EnvironmentOptions/Debugger/Class');
+  if UpperCase(XmlClassName) = CurDbgClassName then begin
     AFilename:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
                                     'EnvironmentOptions/DebuggerFilename/Value');
     if CheckFile(AFilename,Result) then exit;
+  end;
 
-    // Check locations proposed by debugger class
+  // Check locations proposed by debugger class
+  if EnvironmentOptions.CurrentDebuggerClass <> nil then
+    s := EnvironmentOptions.CurrentDebuggerClass.ExePaths
+  else
     s := DefaultDebuggerClass.ExePaths;
-    while s <> '' do begin
-      AFilename := GetPart([], [';'], s);
-      if CheckFile(AFilename, Result) then exit;
-      if s <> '' then delete(s, 1, 1);
-    end;
+  while s <> '' do begin
+    AFilename := GetPart([], [';'], s);
+    if CheckFile(AFilename, Result) then exit;
+    if s <> '' then delete(s, 1, 1);
+  end;
 
+  // Search for gdb
+  // only if TGDBMIDebugger
+  if CurDbgClassName = UpperCase(DefaultDebuggerClass.ClassName) then begin
 
     // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
@@ -339,13 +364,11 @@ begin
     // check PATH
     AFilename:=DebuggerFileName+GetExecutableExt;
     if CheckFile(AFilename,Result) then exit;
-
-    // There are no common directories apart from the PATH
-    // where gdb would be installed. Otherwise we could do something similar as
-    // in SearchMakeExeCandidates.
-  finally
-    EnvironmentOptions.DebuggerFilename:=OldDebuggerFilename;
   end;
+
+  // There are no common directories apart from the PATH
+  // where gdb would be installed. Otherwise we could do something similar as
+  // in SearchMakeExeCandidates.
 end;
 
 function ShowInitialSetupDialog: TModalResult;
@@ -720,11 +743,15 @@ begin
   s:=MakeExeComboBox.Text;
   if s<>'' then
     EnvironmentOptions.MakeFilename:=s;
-  s:=DebuggerComboBox.Text;
-  if s<>'' then begin
-    EnvironmentOptions.DebuggerFilename:=s;
-    if s <> FInitialDebuggerFileName then
-      EnvironmentOptions.DebuggerConfig.DebuggerClass := 'TGDBMIDebugger';
+  if not (FSkipDebugger and (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil))
+  then begin
+    s:=DebuggerComboBox.Text;
+    if s<>'' then begin
+      if EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil then
+        EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
+          TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
+      EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=s;
+    end;
   end;
 
   ModalResult:=mrOk;
@@ -1125,25 +1152,25 @@ var
   CurCaption: String;
   Note: string;
   Quality: TSDFilenameQuality;
-  s: String;
+  s, ParsedFName: String;
   ImageIndex: Integer;
 begin
   if csDestroying in ComponentState then exit;
   CurCaption:=DebuggerComboBox.Text;
-  EnvironmentOptions.DebuggerFilename:=CurCaption;
-  if fLastParsedDebugger=EnvironmentOptions.GetParsedDebuggerFilename then exit;
-  fLastParsedDebugger:=EnvironmentOptions.GetParsedDebuggerFilename;
+  ParsedFName := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, CurCaption);
+  if fLastParsedDebugger=ParsedFName then exit;
+  fLastParsedDebugger:=ParsedFName;
   //debugln(['TInitialSetupDialog.UpdateDebuggerNote ',fLastParsedDebugger]);
-  Quality:=CheckDebuggerQuality(fLastParsedDebugger,Note);
+  Quality:=CheckDebuggerQuality(fLastParsedDebugger,Note, FSkipDebugger);
 
   case Quality of
   sddqInvalid: s:=lisError;
   sddqCompatible: s:='';
   else s:=lisWarning;
   end;
-  if EnvironmentOptions.DebuggerFilename<>EnvironmentOptions.GetParsedDebuggerFilename
+  if CurCaption<>ParsedFName
   then
-    s:=lisFile2+EnvironmentOptions.GetParsedDebuggerFilename+LineEnding+
+    s:=lisFile2+ParsedFName+LineEnding+
       LineEnding+s;
   DebuggerMemo.Text:=s+Note;
 
@@ -1342,15 +1369,25 @@ begin
   fLastParsedMakeExe:='. .';
   UpdateMakeExeNote;
 
+  RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
+  FSkipDebugger := (EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil) and ( // Has a debugger
+    (EnvironmentOptions.CurrentDebuggerClass = nil) or                               // Unknown existing debugger class
+    (not EnvironmentOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)            // Does not need an exe
+  );
   // Debugger
   FInitialDebuggerFileName := EnvironmentOptions.DebuggerFilename;
   UpdateDebuggerCandidates;
-  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedDebuggerFilename))
+  if (not FSkipDebugger) and
+     ( IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedDebuggerFilename)) )
   then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtDebuggerFilename]);
-    if Candidate<>nil then
-      EnvironmentOptions.DebuggerFilename:=Candidate.Caption;
+    if Candidate<>nil then begin
+      if EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil then
+        EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
+          TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
+      EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=Candidate.Caption;
+    end;
   end;
   DebuggerComboBox.Text:=EnvironmentOptions.DebuggerFilename;
   fLastParsedDebugger:='. .';

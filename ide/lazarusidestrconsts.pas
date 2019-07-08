@@ -5365,6 +5365,7 @@ resourcestring
   lisAnchorEditorNoControlSelected = 'Anchor Editor - no control selected';
   lisAnchorsOfSelectedControls = 'Anchors of selected controls';
   lisAnchorsOf = 'Anchors of %s';
+  lisDebugOptionsFrmName = 'Name:';
   lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
   lisDebugOptionsFrmDebuggerGeneralOptions = 'Debugger general options';
   lisDebugOptionsFrmShowMessageOnStop = 'Show message on stop';
@@ -6591,6 +6592,7 @@ resourcestring
   UnitDepOptionsForPackage = 'Options for Package graph';
   UnitDepOptionsForUnit = 'Options for Unit graph';
   LvlGraphReduceBackedges = 'Reduce backedges';
+  lisDebugOptionsFrmBackend = 'Backend';
 
 implementation
 

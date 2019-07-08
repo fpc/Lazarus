@@ -9,80 +9,14 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
   Visible = False
   DesignLeft = 812
   DesignTop = 313
-  object gbDebuggerType: TGroupBox
+  object gbAdditionalSearchPath: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 84
-    Top = 0
-    Width = 519
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    Caption = 'Debugger type and path'
-    ClientHeight = 64
-    ClientWidth = 515
-    TabOrder = 0
-    object cmbDebuggerType: TComboBox
-      AnchorSideLeft.Control = gbDebuggerType
-      AnchorSideTop.Control = gbDebuggerType
-      AnchorSideRight.Control = gbDebuggerType
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 23
-      Top = 6
-      Width = 503
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
-      ItemHeight = 15
-      OnEditingDone = cmbDebuggerTypeEditingDone
-      OnSelect = cmbDebuggerTypeEditingDone
-      Style = csDropDownList
-      TabOrder = 0
-    end
-    object cmbDebuggerPath: TComboBox
-      AnchorSideLeft.Control = gbDebuggerType
-      AnchorSideTop.Control = cmbDebuggerType
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = cmdOpenDebuggerPath
-      Left = 6
-      Height = 23
-      Top = 35
-      Width = 480
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Bottom = 6
-      ItemHeight = 15
-      TabOrder = 1
-    end
-    object cmdOpenDebuggerPath: TButton
-      AnchorSideTop.Control = cmbDebuggerPath
-      AnchorSideRight.Control = gbDebuggerType
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = cmbDebuggerPath
-      AnchorSideBottom.Side = asrBottom
-      Left = 486
-      Height = 23
-      Top = 35
-      Width = 23
-      Anchors = [akTop, akRight, akBottom]
-      BorderSpacing.Right = 6
-      Caption = '…'
-      OnClick = cmdOpenDebuggerPathClick
-      TabOrder = 2
-    end
-  end
-  object gbAdditionalSearchPath: TGroupBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = gbDebuggerType
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 0
     Height = 55
-    Top = 90
+    Top = 6
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -90,7 +24,7 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Caption = 'Additional search path'
     ClientHeight = 35
     ClientWidth = 515
-    TabOrder = 1
+    TabOrder = 0
     object txtAdditionalPath: TEdit
       AnchorSideLeft.Control = gbAdditionalSearchPath
       AnchorSideTop.Control = gbAdditionalSearchPath
@@ -130,7 +64,7 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 151
+    Top = 67
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -145,23 +79,6 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    TabOrder = 2
-  end
-  object gbDebuggerSpecific: TGroupBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = gcbDebuggerGeneralOptions
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 0
-    Height = 251
-    Top = 176
-    Width = 519
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Top = 6
-    Caption = 'Debugger specific options (depends on type of debugger)'
-    TabOrder = 3
+    TabOrder = 1
   end
 end

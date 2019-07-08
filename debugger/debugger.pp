@@ -98,7 +98,6 @@ type
 
   TDebuggerConfigStore = class(TDebuggerConfigStoreBase)
   private
-    FDebuggerClass: String;
     FDlgCallStackConfig: TDebuggerCallStackDlgConfig;
     FTDebuggerWatchesDlgConfig: TDebuggerWatchesDlgConfig;
   public
@@ -107,7 +106,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
     property DlgCallStackConfig: TDebuggerCallStackDlgConfig read FDlgCallStackConfig write FDlgCallStackConfig;
   published
@@ -1966,17 +1964,8 @@ procedure TDebuggerConfigStore.Load;
 const
   OLD_GDB_DBG_NAME = 'GNU debugger (gdb)';
   OLD_SSH_DBG_NAME = 'GNU debugger through SSH (gdb)';
-var
-  s: String;
 begin
   inherited;
-  FDebuggerClass := ConfigStore.GetValue('Class', '');
-  if FDebuggerClass='' then begin
-    // try old format
-    s := ConfigStore.GetValue('Type', '');
-    if s = OLD_GDB_DBG_NAME then FDebuggerClass:='TGDBMIDEBUGGER';
-    if s = OLD_SSH_DBG_NAME then FDebuggerClass:='TSSHGDBMIDEBUGGER';
-  end;
   ConfigStore.AppendBasePath('WatchesDlg/');
   try
     FTDebuggerWatchesDlgConfig.ConfigStore := ConfigStore;
@@ -1996,7 +1985,6 @@ end;
 procedure TDebuggerConfigStore.Save;
 begin
   inherited;
-  ConfigStore.SetDeleteValue('Class', FDebuggerClass, '');
   ConfigStore.DeletePath('Type');
   ConfigStore.AppendBasePath('WatchesDlg/');
   try

@@ -221,7 +221,6 @@ type
                               DoDisableAutoSizing: boolean = false); virtual; abstract;
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
-    property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;
     property Destroying: boolean read FDestroying;
     property State: TDBGState read GetState;           // The current state of the debugger
 

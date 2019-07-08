@@ -1895,7 +1895,7 @@ type
     // debugger properties
     class function CreateProperties: TDebuggerProperties; virtual;         // Creates debuggerproperties
     class function GetProperties: TDebuggerProperties;                     // Get the current properties
-    class procedure SetProperties(const AProperties: TDebuggerProperties); // Set the current properties
+    //class procedure SetProperties(const AProperties: TDebuggerProperties); // Set the current properties
 
     (* TODO:
        This method is a workaround for http://bugs.freepascal.org/view.php?id=21834
@@ -1988,6 +1988,8 @@ type
   end;
   TDebuggerClass = class of TDebuggerIntf;
 
+  { TBaseDebugManagerIntf }
+
   TBaseDebugManagerIntf = class(TComponent)
   public type
     TStringFunction = function(const aValue: string): string;
@@ -1997,10 +1999,11 @@ type
     function ValueFormatterKey(const aSymbolKind: TDBGSymbolKind;
       const aTypeName: string): string;
   protected
-    function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
+    class function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;static;
+    class function GetDebuggerClassByName(const AIndex: String): TDebuggerClass; static;
     function FindDebuggerClass(const Astring: String): TDebuggerClass;
   public
-    function DebuggerCount: Integer;
+    class function DebuggerCount: Integer;
 
     procedure RegisterValueFormatter(const aSymbolKind: TDBGSymbolKind;
       const aTypeName: string; const aFunc: TStringFunction);
@@ -2008,6 +2011,8 @@ type
       const aTypeName, aValue: string): string;
     function FormatValue(const aDBGType: TDBGType;
       const aValue: string): string;
+    class property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;
+    class property DebuggersByClassName[const AIndex: String]: TDebuggerClass read GetDebuggerClassByName;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2062,7 +2067,8 @@ var
 
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
 begin
-  MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(Pointer(ADebuggerClass)));
+  if MDebuggerClasses.IndexOfObject(TObject(Pointer(ADebuggerClass))) < 0 then
+    MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(Pointer(ADebuggerClass)));
 end;
 
 function MinDbgPtr(a, b: TDBGPtr): TDBGPtr;
@@ -6229,17 +6235,17 @@ begin
   SetState(dsIdle);
 end;
 
-class procedure TDebuggerIntf.SetProperties(const AProperties: TDebuggerProperties);
-var
-  Props: TDebuggerProperties;
-begin
-  if AProperties = nil then Exit;
-  Props := GetProperties;
-  if Props = AProperties then Exit;
-
-  if Props = nil then Exit; // they weren't created ?
-  Props.Assign(AProperties);
-end;
+//class procedure TDebuggerIntf.SetProperties(const AProperties: TDebuggerProperties);
+//var
+//  Props: TDebuggerProperties;
+//begin
+//  if AProperties = nil then Exit;
+//  Props := GetProperties;
+//  if Props = AProperties then Exit;
+//
+//  if Props = nil then Exit; // they weren't created ?
+//  Props.Assign(AProperties);
+//end;
 
 class function TDebuggerIntf.RequiresLocalExecutable: Boolean;
 begin
@@ -6370,7 +6376,7 @@ begin
   FValueFormatterList.Duplicates := dupError;
 end;
 
-function TBaseDebugManagerIntf.DebuggerCount: Integer;
+class function TBaseDebugManagerIntf.DebuggerCount: Integer;
 begin
   Result := MDebuggerClasses.Count;
 end;
@@ -6414,9 +6420,23 @@ begin
     Result := FormatValue(aDBGType.Kind, aDBGType.TypeName, aValue);
 end;
 
-function TBaseDebugManagerIntf.GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
+class function TBaseDebugManagerIntf.GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
 begin
   Result := TDebuggerClass(MDebuggerClasses.Objects[AIndex]);
+end;
+
+class function TBaseDebugManagerIntf.GetDebuggerClassByName(const AIndex: String
+  ): TDebuggerClass;
+var
+  i: Integer;
+begin
+  i := MDebuggerClasses.Count - 1;
+  while i >= 0 do begin
+    if LowerCase(TDebuggerClass(MDebuggerClasses.Objects[i]).ClassName) = LowerCase(AIndex) then
+      exit(TDebuggerClass(MDebuggerClasses.Objects[i]));
+    dec(i);
+  end;
+  Result := nil;
 end;
 
 procedure TBaseDebugManagerIntf.RegisterValueFormatter(

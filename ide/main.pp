@@ -99,7 +99,7 @@ uses
   // LRT stuff
   Translations,
   // debugger
-  LazDebuggerGdbmi,
+  LazDebuggerGdbmi, GDBMIDebugger,
   RunParamsOpts, BaseDebugManager, DebugManager, debugger, DebuggerDlg,
   DebugAttachDialog, DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // packager
@@ -124,7 +124,7 @@ uses
   codetools_classcompletion_options,
   codetools_wordpolicy_options, codetools_linesplitting_options,
   codetools_space_options, codetools_identifiercompletion_options,
-  debugger_general_options, debugger_eventlog_options,
+  debugger_general_options, debugger_class_options, debugger_eventlog_options,
   debugger_language_exceptions_options, debugger_signals_options,
   codeexplorer_update_options, codeexplorer_categories_options,
   codeobserver_options, help_general_options, env_file_filters,
@@ -1428,13 +1428,20 @@ begin
   end;
 
   // check debugger
-  if (not ShowSetupDialog)
-  and ((EnvironmentOptions.DebuggerConfig.DebuggerClass='')
-      or (EnvironmentOptions.DebuggerConfig.DebuggerClass='TGDBMIDebugger'))
-  and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
-  then begin
-    debugln(['Warning: (lazarus) missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
-    ShowSetupDialog:=true;
+  if (not ShowSetupDialog) then begin
+    // PackageBoss is not yet loaded...
+    RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
+    // Todo: add LldbFpDebugger for Mac
+    // If the default debugger is of a class that is not yet Registered, then the dialog is not shown
+    if (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil) // no debugger at all / not even with unknown class
+    or ( (EnvironmentOptions.CurrentDebuggerClass <> nil)                       // Debugger with known class
+         and (EnvironmentOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)  // Which does need an exe
+         and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
+       )
+    then begin
+      debugln(['Warning: (lazarus) missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
+      ShowSetupDialog:=true;
+    end;
   end;
 
   // check 'make' utility
@@ -7428,7 +7435,7 @@ begin
     Result := mrAbort;
     Exit;
   end;
-  debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',EnvironmentOptions.DebuggerConfig.DebuggerClass);
+  debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',DbgSName(EnvironmentOptions.CurrentDebuggerClass));
 
   try
     Result:=mrCancel;

@@ -1,0 +1,244 @@
+object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
+  Left = 0
+  Height = 427
+  Top = 0
+  Width = 519
+  ClientHeight = 427
+  ClientWidth = 519
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 812
+  DesignTop = 313
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 519
+    ButtonHeight = 22
+    ButtonWidth = 60
+    DropDownWidth = 12
+    EdgeBorders = [ebBottom]
+    ShowCaptions = True
+    TabOrder = 0
+    object tbSelect: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'tbSelect'
+      DropdownMenu = tbDropMenu
+      OnClick = tbSelectClick
+      Style = tbsDropDown
+    end
+    object tbAddNew: TToolButton
+      Left = 78
+      Top = 0
+      Caption = 'tbAddNew'
+      OnClick = tbAddNewClick
+    end
+    object tbCopy: TToolButton
+      Left = 143
+      Top = 0
+      Caption = 'tbCopy'
+      OnClick = tbCopyClick
+    end
+    object ToolButton2: TToolButton
+      Left = 203
+      Height = 22
+      Top = 0
+      Caption = 'ToolButton2'
+      Style = tbsDivider
+    end
+    object tbDelete: TToolButton
+      Left = 208
+      Top = 0
+      Caption = 'tbDelete'
+      OnClick = tbDeleteClick
+    end
+    object ToolButton3: TToolButton
+      Left = 73
+      Height = 22
+      Top = 0
+      Caption = 'ToolButton3'
+      Style = tbsDivider
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 401
+    Top = 26
+    Width = 519
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 401
+    ClientWidth = 519
+    TabOrder = 1
+    object lblName: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = edName
+      AnchorSideTop.Side = asrCenter
+      Left = 10
+      Height = 15
+      Top = 10
+      Width = 45
+      BorderSpacing.Left = 10
+      Caption = 'lblName'
+      ParentColor = False
+    end
+    object edName: TEdit
+      AnchorSideLeft.Control = lblName
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 61
+      Height = 23
+      Top = 6
+      Width = 448
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 10
+      OnEditingDone = edNameExit
+      OnExit = edNameExit
+      TabOrder = 0
+    end
+    object gbDebuggerType: TGroupBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = edName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 84
+      Top = 35
+      Width = 519
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'Debugger type and path'
+      ClientHeight = 64
+      ClientWidth = 515
+      TabOrder = 1
+      object cmbDebuggerType: TComboBox
+        AnchorSideLeft.Control = gbDebuggerType
+        AnchorSideTop.Control = gbDebuggerType
+        AnchorSideRight.Control = gbDebuggerType
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 6
+        Width = 503
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 15
+        OnEditingDone = cmbDebuggerTypeEditingDone
+        OnSelect = cmbDebuggerTypeEditingDone
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object cmbDebuggerPath: TComboBox
+        AnchorSideLeft.Control = gbDebuggerType
+        AnchorSideTop.Control = cmbDebuggerType
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = cmdOpenDebuggerPath
+        Left = 6
+        Height = 23
+        Top = 35
+        Width = 480
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 6
+        ItemHeight = 15
+        OnEditingDone = cmbDebuggerPathEditingDone
+        OnEnter = cmbDebuggerPathEditingDone
+        TabOrder = 1
+      end
+      object cmdOpenDebuggerPath: TButton
+        AnchorSideTop.Control = cmbDebuggerPath
+        AnchorSideRight.Control = gbDebuggerType
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = cmbDebuggerPath
+        AnchorSideBottom.Side = asrBottom
+        Left = 486
+        Height = 23
+        Top = 35
+        Width = 23
+        Anchors = [akTop, akRight, akBottom]
+        BorderSpacing.Right = 6
+        Caption = '…'
+        OnClick = cmdOpenDebuggerPathClick
+        TabOrder = 2
+      end
+    end
+    object gbAdditionalSearchPath: TGroupBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = gbDebuggerType
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 55
+      Top = 125
+      Width = 519
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'Additional search path'
+      ClientHeight = 35
+      ClientWidth = 515
+      TabOrder = 2
+      Visible = False
+      object txtAdditionalPath: TEdit
+        AnchorSideLeft.Control = gbAdditionalSearchPath
+        AnchorSideTop.Control = gbAdditionalSearchPath
+        AnchorSideRight.Control = cmdOpenAdditionalPath
+        Left = 6
+        Height = 23
+        Top = 6
+        Width = 480
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 6
+        TabOrder = 0
+      end
+      object cmdOpenAdditionalPath: TButton
+        AnchorSideTop.Control = txtAdditionalPath
+        AnchorSideRight.Control = gbAdditionalSearchPath
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = txtAdditionalPath
+        AnchorSideBottom.Side = asrBottom
+        Left = 486
+        Height = 23
+        Top = 6
+        Width = 23
+        Anchors = [akTop, akRight, akBottom]
+        BorderSpacing.Right = 6
+        Caption = '…'
+        OnClick = cmdOpenAdditionalPathClick
+        TabOrder = 1
+      end
+    end
+    object gbDebuggerSpecific: TGroupBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = gbAdditionalSearchPath
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 215
+      Top = 186
+      Width = 519
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 6
+      Caption = 'Debugger specific options (depends on type of debugger)'
+      TabOrder = 3
+    end
+  end
+  object tbDropMenu: TPopupMenu
+    left = 294
+    top = 5
+  end
+end
