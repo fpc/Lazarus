@@ -613,17 +613,7 @@ begin
 end;
 
 { TIDEToolbarBase }
-{                           For future needs ...
-constructor TIDEToolbarBase.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
 
-destructor TIDEToolbarBase.Destroy;
-begin
-  inherited Destroy;
-end;
-}
 procedure TIDEToolbarBase.AddButton(ACommand: TIDEButtonCommand);
 var
   B: TIDEToolButton;

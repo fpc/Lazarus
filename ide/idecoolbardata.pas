@@ -167,17 +167,7 @@ const
   BasePath = 'IDECoolBarOptions/';
 
 { TIDEToolBarOptions }
-{
-constructor TIDEToolBarOptions.Create;
-begin
-  inherited Create;
-end;
 
-destructor TIDEToolBarOptions.Destroy;
-begin
-  inherited Destroy;
-end;
-}
 function TIDEToolBarOptions.Equals(Opts: TIDEToolBarOptions): boolean;
 begin
   Result := inherited Equals(Opts)
