@@ -43,6 +43,9 @@ const
   STATUSBAR_DEFAULT_HEIGHT = 18;
 
 type
+  // Some components might be using CocoaPrivate for use of LCLObjCBoolean
+  // Thus this declaration needs to be here.
+  LCLObjCBoolean = cocoa_extra.LCLObjCBoolean;
 
   { ICommonCallback }
 
