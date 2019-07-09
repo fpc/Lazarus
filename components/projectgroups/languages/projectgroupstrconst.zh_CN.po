@@ -52,6 +52,10 @@ msgstr "构建模式未找到"
 msgid "Build mode \"%s\" not found."
 msgstr "构建模式\"%s\"未找到"
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -97,6 +101,10 @@ msgstr "错误 读取工程组文件\"%s\"%s%s"
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
 msgstr "目标(Target)不存在.移除?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."

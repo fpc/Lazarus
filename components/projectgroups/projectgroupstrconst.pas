@@ -130,6 +130,10 @@ Resourcestring
   lisShowTargetPaths = 'Show target paths';
   lisEnableToShowTargetFilenamesWithPaths = 'Enable to show target filenames '
     +'with paths.';
+  lisCompileAndBuildCompileTarget = '"Compile" and "Build" compile target';
+  lisIDECommandsCompileAndBuildInvokeCompileBuildSelect = 'IDE commands "'
+    +'Compile" and "Build" invoke compile/build selected target in project '
+    +'group editor';
 
 
 implementation

@@ -41,6 +41,10 @@ msgstr ""
 msgid "Build mode \"%s\" not found."
 msgstr ""
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -78,6 +82,10 @@ msgstr ""
 
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
+msgstr ""
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
 msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget

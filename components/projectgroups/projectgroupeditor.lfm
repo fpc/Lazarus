@@ -1160,9 +1160,4 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     left = 48
     top = 96
   end
-  object SaveDialogPG: TSaveDialog
-    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 128
-    top = 120
-  end
 end

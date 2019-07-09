@@ -22,10 +22,13 @@ type
   { TProjGrpOptionsFrame }
 
   TProjGrpOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BuildCommandToCompileTargetCheckBox: TCheckBox;
     OpenLastGroupOnStartCheckBox: TCheckBox;
     ShowTargetPathsCheckBox: TCheckBox;
   private
-    FLastOpenLastGroupOnStart, FLastShowTargetPaths: Boolean;
+    FLastOpenLastGroupOnStart: Boolean;
+    FLastShowTargetPaths: Boolean;
+    FLastBuildCommandToCompileTarget: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -53,6 +56,10 @@ begin
 
   ShowTargetPathsCheckBox.Caption:=lisShowTargetPaths;
   ShowTargetPathsCheckBox.Hint:=lisEnableToShowTargetFilenamesWithPaths;
+
+  BuildCommandToCompileTargetCheckBox.Caption:=lisCompileAndBuildCompileTarget;
+  BuildCommandToCompileTargetCheckBox.Hint:=
+    lisIDECommandsCompileAndBuildInvokeCompileBuildSelect;
 end;
 
 procedure TProjGrpOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -65,6 +72,8 @@ begin
   OpenLastGroupOnStartCheckBox.Checked:=FLastOpenLastGroupOnStart;
   FLastShowTargetPaths:=Opts.ShowTargetPaths;
   ShowTargetPathsCheckBox.Checked:=FLastShowTargetPaths;
+  FLastBuildCommandToCompileTarget:=Opts.BuildCommandToCompileTarget;
+  BuildCommandToCompileTargetCheckBox.Checked:=FLastBuildCommandToCompileTarget;
 end;
 
 procedure TProjGrpOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -74,6 +83,7 @@ begin
   Opts:=IDEProjectGroupManager.Options;
   Opts.OpenLastGroupOnStart:=OpenLastGroupOnStartCheckBox.Checked;
   Opts.ShowTargetPaths:=ShowTargetPathsCheckBox.Checked;
+  Opts.BuildCommandToCompileTarget:=BuildCommandToCompileTargetCheckBox.Checked;
 
   if Opts.Modified then begin
     Opts.SaveSafe;

@@ -51,6 +51,10 @@ msgstr "Építési mód nem található."
 msgid "Build mode \"%s\" not found."
 msgstr "A(z) \"%s\" építési mód nem található."
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -96,6 +100,10 @@ msgstr "Hiba a projektcsoport fájljának olvasása közben: \"%s\"%s%s"
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
 msgstr "A cél nem létezik. Eltávolítás?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."

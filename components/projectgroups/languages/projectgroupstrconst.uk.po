@@ -52,6 +52,10 @@ msgstr "Режим збирання не знайдено"
 msgid "Build mode \"%s\" not found."
 msgstr "Режим збирання \"%s\" не знайдено."
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -93,6 +97,10 @@ msgstr "Помилка читання файлу групи проектів \"%
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
 msgstr "Ціль не існує. Вилучити?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."

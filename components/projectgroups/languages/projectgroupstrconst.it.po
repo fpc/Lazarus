@@ -41,6 +41,10 @@ msgstr "Modalità di costruzione non trovata"
 msgid "Build mode \"%s\" not found."
 msgstr "Modalità di costruzione \"%s\" non trovata."
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -86,6 +90,10 @@ msgstr "Errore durante la lettura del file gruppo di progetti \"%s\"%s%s"
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
 msgstr "La destinazione non esiste. Rimuoverla?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."

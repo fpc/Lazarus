@@ -20,7 +20,7 @@ uses
   LazFileUtils, LazLoggerBase, LazFileCache,
   // IdeIntf
   LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf, IDEWindowIntf,
-  IDEDialogs,
+  IDEDialogs, IDECommands,
   // ProjectGroups
   ProjectGroupStrConst, ProjectGroup, PrjGrpOptionsFrm;
 
@@ -87,7 +87,6 @@ type
     OpenDialogTarget: TOpenDialog;
     PopupMenuMore: TPopupMenu;
     PopupMenuTree: TPopupMenu;
-    SaveDialogPG: TSaveDialog;
     SBPG: TStatusBar;
     TBProjectGroup: TToolBar;
     TBSave: TToolButton;
@@ -153,15 +152,22 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure TVPGSelectionChanged(Sender: TObject);
   private
+    FBuildCommandRedirected: boolean;
     FProjectGroup: TProjectGroup;
     FProjectGroupTVNode: TTreeNode;
     FActiveTarget: TPGCompileTarget;
     FLastShowTargetPaths: boolean;
+    FOldBuildExecute, FOldBuildUpdate: TNotifyEvent;
+    FOldCompileExecute, FOldCompileUpdate: TNotifyEvent;
     // Project group callbacks
     procedure IDEProjectGroupManagerEditorOptionsChanged(Sender: TObject);
     procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
     procedure OnApplicationActivate(Sender: TObject);
+    procedure OnBuildExecute(Sender: TObject);
+    procedure OnBuildUpdate(Sender: TObject);
+    procedure OnCompileExecute(Sender: TObject);
+    procedure OnCompileUpdate(Sender: TObject);
     procedure OnIDEClose(Sender: TObject);
     procedure OnProjectGroupDestroy(Sender: TObject);
     procedure OnProjectGroupFileNameChanged(Sender: TObject);
@@ -171,6 +177,7 @@ type
     procedure OnTargetExchanged(Sender: TObject; Target1, Target2: TPGCompileTarget);
     function AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction= Nil): Boolean;
     procedure ClearEventCallBacks(AProjectGroup: TProjectGroup);
+    procedure SetBuildCommandRedirected(const AValue: boolean);
     procedure SetEventCallBacks(AProjectGroup: TProjectGroup);
     // Some helpers
     procedure SetProjectGroup(AValue: TProjectGroup);
@@ -212,6 +219,7 @@ type
     property ProjectGroup: TProjectGroup Read FProjectGroup Write SetProjectGroup;
     property ActiveTarget: TPGCompileTarget Read GetActiveTarget;
     procedure UpdateNodeTexts;
+    property BuildCommandRedirected: boolean read FBuildCommandRedirected write SetBuildCommandRedirected;
   end;
 
 var
@@ -322,6 +330,36 @@ begin
   PG.OnTargetDeleted:=Nil;
   PG.OnTargetActiveChanged:=Nil;
   PG.OnTargetsExchanged:=Nil;
+end;
+
+procedure TProjectGroupEditorForm.SetBuildCommandRedirected(
+  const AValue: boolean);
+var
+  CompileCmd, BuildCmd: TIDECommand;
+begin
+  if FBuildCommandRedirected=AValue then Exit;
+  FBuildCommandRedirected:=AValue;
+  BuildCmd:=IDECommandList.FindIDECommand(ecBuild);
+  CompileCmd:=IDECommandList.FindIDECommand(ecCompile);
+  if FBuildCommandRedirected then begin
+    // ecBuild
+    FOldBuildExecute:=BuildCmd.OnExecute;
+    FOldBuildUpdate:=BuildCmd.OnUpdate;
+    BuildCmd.OnExecute:=@OnBuildExecute;
+    BuildCmd.OnUpdate:=@OnBuildUpdate;
+    // ecCompile
+    FOldCompileExecute:=CompileCmd.OnExecute;
+    FOldCompileUpdate:=CompileCmd.OnUpdate;
+    CompileCmd.OnExecute:=@OnCompileExecute;
+    CompileCmd.OnUpdate:=@OnCompileUpdate;
+  end else begin
+    // build
+    BuildCmd.OnExecute:=FOldBuildExecute;
+    BuildCmd.OnUpdate:=FOldBuildUpdate;
+    // compile
+    CompileCmd.OnExecute:=FOldCompileExecute;
+    CompileCmd.OnUpdate:=FOldCompileUpdate;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.SetEventCallBacks(AProjectGroup: TProjectGroup);
@@ -547,11 +585,15 @@ begin
 
   LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
   Application.AddOnActivateHandler(@OnApplicationActivate);
+
+  if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then
+    BuildCommandRedirected:=true;
 end;
 
 procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
 begin
   //debugln(['TProjectGroupEditorForm.FormDestroy START ',ProjectGroup<>nil]);
+  BuildCommandRedirected:=false;
   ProjectGroup:=nil;
   if ProjectGroupEditorForm=Self then
     ProjectGroupEditorForm:=nil;
@@ -1198,6 +1240,8 @@ var
 begin
   Invalidate;
   Opts:=IDEProjectGroupManager.Options;
+  if Opts.BuildCommandToCompileTarget then
+    BuildCommandRedirected:=true;
   if FLastShowTargetPaths<>Opts.ShowTargetPaths then
     UpdateNodeTexts;
 end;
@@ -1206,6 +1250,50 @@ procedure TProjectGroupEditorForm.OnApplicationActivate(Sender: TObject);
 begin
   if ProjectGroup<>nil then
     ProjectGroup.UpdateMissing;
+end;
+
+procedure TProjectGroupEditorForm.OnBuildExecute(Sender: TObject);
+var
+  ND: TNodeData;
+begin
+  if BuildCommandRedirected then begin
+    ND:=SelectedNodeData;
+    if (ND<>nil) and (ND.Target<>nil) then begin
+      Perform(taCompileClean);
+      exit;
+    end;
+  end;
+  if Assigned(FOldBuildExecute) then
+    FOldBuildExecute(Sender);
+end;
+
+procedure TProjectGroupEditorForm.OnBuildUpdate(Sender: TObject);
+begin
+  if Assigned(FOldBuildUpdate) then
+    FOldBuildUpdate(Sender);
+end;
+
+procedure TProjectGroupEditorForm.OnCompileExecute(Sender: TObject);
+var
+  ND: TNodeData;
+begin
+  if BuildCommandRedirected then begin
+    ND:=SelectedNodeData;
+    if (ND<>nil) and (ND.Target<>nil) then begin
+      Perform(taCompile);
+      exit;
+    end;
+  end;
+  // execute IDE's compile action
+  if Assigned(FOldCompileExecute) then
+    FOldCompileExecute(Sender);
+end;
+
+procedure TProjectGroupEditorForm.OnCompileUpdate(Sender: TObject);
+begin
+  //debugln(['TProjectGroupEditorForm.OnCompileUpdate ',DbgSName(Sender)]);
+  if Assigned(FOldCompileUpdate) then
+    FOldCompileUpdate(Sender);
 end;
 
 procedure TProjectGroupEditorForm.OnIDEClose(Sender: TObject);

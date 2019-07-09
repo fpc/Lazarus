@@ -51,6 +51,10 @@ msgstr "Mode de construction introuvable"
 msgid "Build mode \"%s\" not found."
 msgstr "Le mode de construction \"%s\" est introuvable."
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -92,6 +96,10 @@ msgstr "Erreur de lecture du fichier de groupe de projets \"%s\"%s%s"
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
 msgstr "La cible n'existe pas. Faut-il la retirer ?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."

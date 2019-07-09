@@ -153,6 +153,7 @@ type
 
   TIDEProjectGroupOptions = class
   private
+    FBuildCommandToCompileTarget: Boolean;
     FChangeStamp: integer;
     FLastGroupFile: string;
     FLastSavedChangeStamp: integer;
@@ -160,6 +161,7 @@ type
     FRecentProjectGroups: TStringList;
     FShowTargetPaths: boolean;
     function GetModified: boolean;
+    procedure SetBuildCommandToCompileTarget(const AValue: Boolean);
     procedure SetLastGroupFile(const AValue: string);
     procedure SetModified(AValue: boolean);
     procedure SetOpenLastGroupOnStart(const AValue: Boolean);
@@ -182,6 +184,7 @@ type
     property LastGroupFile: string read FLastGroupFile write SetLastGroupFile;
     property OpenLastGroupOnStart: Boolean read FOpenLastGroupOnStart write SetOpenLastGroupOnStart;
     property ShowTargetPaths: boolean read FShowTargetPaths write SetShowTargetPaths;
+    property BuildCommandToCompileTarget: Boolean read FBuildCommandToCompileTarget write SetBuildCommandToCompileTarget;
   end;
 
   { TPGUndoItem }
@@ -380,6 +383,14 @@ begin
   Result:=FLastSavedChangeStamp<>FChangeStamp
 end;
 
+procedure TIDEProjectGroupOptions.SetBuildCommandToCompileTarget(
+  const AValue: Boolean);
+begin
+  if FBuildCommandToCompileTarget=AValue then Exit;
+  FBuildCommandToCompileTarget:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TIDEProjectGroupOptions.SetLastGroupFile(const AValue: string);
 begin
   if FLastGroupFile=AValue then Exit;
@@ -454,6 +465,7 @@ begin
     Cfg.SetDeleteValue('OpenLastGroupOnStart/Value',OpenLastGroupOnStart,true);
     Cfg.SetDeleteValue('LastGroupFile/Value',LastGroupFile,'');
     Cfg.SetDeleteValue('ShowTargetPaths/Value',ShowTargetPaths,false);
+    Cfg.SetDeleteValue('BuildCommandToCompileTarget/Value',BuildCommandToCompileTarget,false);
   finally
     Cfg.Free;
   end;
@@ -469,6 +481,7 @@ begin
     OpenLastGroupOnStart:=Cfg.GetValue('OpenLastGroupOnStart/Value',true);
     LastGroupFile:=Cfg.GetValue('LastGroupFile/Value','');
     ShowTargetPaths:=Cfg.GetValue('ShowTargetPaths/Value',false);
+    BuildCommandToCompileTarget:=Cfg.GetValue('BuildCommandToCompileTarget/Value',false);
   finally
     Cfg.Free;
   end;
@@ -673,25 +686,24 @@ end;
 
 function TIDEProjectGroupManager.GetNewFileName: Boolean;
 var
-  F: TSaveDialog;
+  Dlg: TSaveDialog;
 begin
   Result:=False;
-  F:=TSaveDialog.Create(Nil);
-  With F do
-    try
-      FileName:=FProjectGroup.FileName;
-      InitIDEFileDialog(F);
-      F.Options:=[ofOverwritePrompt,ofPathMustExist,ofEnableSizing];
-      F.Filter:=lisLazarusProjectGroupsLpg+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
-      F.DefaultExt:='.lpg';
-      Result:=F.Execute;
-      if Result then begin
-        FProjectGroup.FileName:=TrimAndExpandFilename(FileName);
-      end;
-      StoreIDEFileDialog(F);
-    finally
-      F.Free;
+  Dlg:=IDESaveDialogClass.Create(nil);
+  try
+    Dlg.FileName:=FProjectGroup.FileName;
+    InitIDEFileDialog(Dlg);
+    Dlg.Options:=[ofOverwritePrompt,ofPathMustExist,ofEnableSizing];
+    Dlg.Filter:=lisLazarusProjectGroupsLpg+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
+    Dlg.DefaultExt:='.lpg';
+    Result:=Dlg.Execute;
+    if Result then begin
+      FProjectGroup.FileName:=TrimAndExpandFilename(Dlg.FileName);
     end;
+  finally
+    StoreIDEFileDialog(Dlg);
+    Dlg.Free;
+  end;
 end;
 
 procedure TIDEProjectGroupManager.OnIdle(Sender: TObject; var Done: Boolean);

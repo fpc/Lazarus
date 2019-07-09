@@ -52,6 +52,10 @@ msgstr "Nerastas darymo rėžimas"
 msgid "Build mode \"%s\" not found."
 msgstr "Nerastas darymo rėžimas „%s“."
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -97,6 +101,10 @@ msgstr "Skaitant projekto grupės failą „%s“ įvyko klaida%s%s"
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
 msgstr "Tikslas neegzistuoja. Pašalinti?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."

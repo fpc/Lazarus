@@ -52,6 +52,10 @@ msgstr "Erstellmodus nicht gefunden"
 msgid "Build mode \"%s\" not found."
 msgstr "Erstellmodus \"%s\" nicht gefunden."
 
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr ""
+
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
@@ -97,6 +101,10 @@ msgstr "Fehler beim Lesen der Projektgruppen-Datei \"%s\"%s%s"
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
 msgstr "Das Ziel existiert nicht. Entfernen?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
