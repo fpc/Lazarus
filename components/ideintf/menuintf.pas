@@ -1695,9 +1695,10 @@ end;
 
 procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
 begin
+  //debugln(['TIDEMenuCommand.MenuItemClick START ',Caption,' ',dbgs(Pointer(Self)),' OnClick=',Assigned(OnClick),' OnClickProc=',Assigned(OnClickProc),' ',Assigned(Command),' Command.OnExecuteProc=',(Command<>nil) and (Command.OnExecuteProc<>nil),' OnClick.Data=',DbgSName(TObject(TMethod(OnClick).Data))]);
   inherited MenuItemClick(Sender);
   // do not execute if something is already executed
-  //debugln(['TIDEMenuCommand.MenuItemClick ',Assigned(OnClick),' ',Assigned(OnClickProc),' ',Assigned(Command),' ',(Command<>nil) and (Command.OnExecuteProc<>nil)]);
+  //debugln(['TIDEMenuCommand.MenuItemClick Exec ',Caption,' OnClick=',Assigned(OnClick),' OnClickProc=',Assigned(OnClickProc),' ',Assigned(Command),' Command.OnExecuteProc=',(Command<>nil) and (Command.OnExecuteProc<>nil)]);
   if (not Assigned(OnClick)) and (not Assigned(OnClickProc))
   and Assigned(Command) then
     Command.Execute(Sender);

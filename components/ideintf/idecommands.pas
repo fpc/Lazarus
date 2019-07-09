@@ -1806,7 +1806,7 @@ procedure TIDESpecialCommand.SetOnClickMethod(const aOnClick: TNotifyEvent);
 begin
   if CompareMethods(TMethod(FOnClickMethod), TMethod(aOnClick)) then Exit;
   FOnClickMethod := aOnClick;
-  if (FCommand<> nil) and SyncAvailable then
+  if (FCommand<>nil) and SyncAvailable then
     FCommand.OnExecute:=aOnClick;
 end;
 

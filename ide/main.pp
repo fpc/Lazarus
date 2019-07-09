@@ -3535,8 +3535,6 @@ begin
   ecOpenUnit:                 DoUseUnitDlg(udOpenUnit);
   ecSaveAll:                  DoSaveAll([sfCheckAmbiguousFiles]);
   ecQuit:                     mnuQuitClicked(Self);
-  ecCompile:
-    DoCompile;
   ecRun:
     begin
       GetCurrentUnit(ASrcEdit,AnUnitInfo);
