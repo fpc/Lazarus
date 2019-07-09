@@ -116,7 +116,7 @@ type
     dfSetBreakPending
   );
 
-  TTargetRegisterIdent = (r0, r1, r2);
+  TTargetRegisterIdent = (r0, r1, r2, rBreakErrNo);
   // Target info
   TGDBMITargetInfo = record
     TargetPID: Integer;
@@ -2590,9 +2590,10 @@ begin
       TargetInfo^.TargetRegisters[r2] := '$x2';
     end;
     12: begin // avr
-      TargetInfo^.TargetRegisters[r0] := '$r0';
-      TargetInfo^.TargetRegisters[r1] := '$r1';
-      TargetInfo^.TargetRegisters[r2] := '$r2';
+      TargetInfo^.TargetRegisters[r0] := '$r24+$r25*256'; // Not valid for FPC_BREAK_ERROR
+      TargetInfo^.TargetRegisters[rBreakErrNo] := '$r22+$r23*256+$r24*65536+$r25*16777216';
+      TargetInfo^.TargetRegisters[r1] := '0';
+      TargetInfo^.TargetRegisters[r2] := '0';
     end;
   else
     TargetInfo^.TargetRegisters[r0] := '';
@@ -5887,7 +5888,11 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     FTheDebugger.QueueExecuteLock;
     try
       if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-      then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[r0], [])
+      then begin
+        if TargetInfo^.TargetRegisters[rBreakErrNo] = ''
+        then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[r0], [])
+        else ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[rBreakErrNo], [])
+      end
       else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
       ErrorNo := ErrorNo and $FFFF;
 
