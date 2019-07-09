@@ -377,37 +377,48 @@ begin
     exit;
   end;
 
-  i := FDebuggerFileHistory.IndexOf(SelectedDebuggerClass.ExePathsMruGroup.ClassName);
-  if i >= 0 then begin
-    lru := TStringList(FDebuggerFileHistory.Objects[i]);
+  if SelectedDebuggerClass.NeedsExePath then begin
+    cmbDebuggerPath.Enabled := True;
+    cmdOpenDebuggerPath.Enabled := True;
+    i := FDebuggerFileHistory.IndexOf(SelectedDebuggerClass.ExePathsMruGroup.ClassName);
+    if i >= 0 then begin
+      lru := TStringList(FDebuggerFileHistory.Objects[i]);
+    end
+    else begin
+      lru := TStringList.Create;
+      lru.Assign(EnvironmentOptions.DebuggerFileHistory[SelectedDebuggerClass.ExePathsMruGroup.ClassName]);
+      FDebuggerFileHistory.AddObject(SelectedDebuggerClass.ExePathsMruGroup.ClassName, lru);
+    end;
+
+    with cmbDebuggerPath.Items do begin
+      BeginUpdate;
+      Assign(lru);
+      if  (Count = 0)
+      and (SelectedDebuggerClass <> nil)
+      then begin
+        S := SelectedDebuggerClass.ExePaths;
+        while S <> '' do
+        begin
+          S2 := GetPart([], [';'], S);
+          S3 := S2;
+          if GlobalMacroList.SubstituteStr(S2)
+          then Add(S2)
+          else Add(S3);
+          if S <> '' then System.Delete(S, 1, 1);
+        end;
+      end;
+      EndUpdate;
+    end;
+
+    SetComboBoxText(cmbDebuggerPath,FSelectedDbgPropertiesConfig.DebuggerFilename,cstFilename,20);
   end
   else begin
-    lru := TStringList.Create;
-    lru.Assign(EnvironmentOptions.DebuggerFileHistory[SelectedDebuggerClass.ExePathsMruGroup.ClassName]);
-    FDebuggerFileHistory.AddObject(SelectedDebuggerClass.ExePathsMruGroup.ClassName, lru);
+    cmbDebuggerPath.Items.Clear;
+    cmbDebuggerPath.Text := '';
+    cmbDebuggerPath.Enabled := False;
+    cmdOpenDebuggerPath.Enabled := False;
   end;
 
-  with cmbDebuggerPath.Items do begin
-    BeginUpdate;
-    Assign(lru);
-    if  (Count = 0)
-    and (SelectedDebuggerClass <> nil)
-    then begin
-      S := SelectedDebuggerClass.ExePaths;
-      while S <> '' do
-      begin
-        S2 := GetPart([], [';'], S);
-        S3 := S2;
-        if GlobalMacroList.SubstituteStr(S2)
-        then Add(S2)
-        else Add(S3);
-        if S <> '' then System.Delete(S, 1, 1);
-      end;
-    end;
-    EndUpdate;
-  end;
-
-  SetComboBoxText(cmbDebuggerPath,FSelectedDbgPropertiesConfig.DebuggerFilename,cstFilename,20);
   edName.Text := FSelectedDbgPropertiesConfig.ConfigName;
 
 //  txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
