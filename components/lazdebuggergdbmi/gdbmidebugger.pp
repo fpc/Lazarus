@@ -975,6 +975,7 @@ type
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
+    class function ExePathsMruGroup: TDebuggerClass; override;
 
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -8633,6 +8634,11 @@ begin
   {$ELSE}
   Result := 'gdb;/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
   {$ENDIF}
+end;
+
+class function TGDBMIDebuggerBase.ExePathsMruGroup: TDebuggerClass;
+begin
+  Result := TGDBMIDebugger;
 end;
 
 function TGDBMIDebuggerBase.FindBreakpoint(

@@ -356,7 +356,9 @@ begin
     end;
 
     // check history
-    Files:=EnvironmentOptions.DebuggerFileHistory;
+    Files:=EnvironmentOptions.DebuggerFileHistory[CurDbgClassName];
+    if (Files=nil) or (Files.Count=0) then
+      Files:=EnvironmentOptions.DebuggerFileHistory[''];
     if Files<>nil then
       for i:=0 to Files.Count-1 do
         if CheckFile(Files[i],Result) then exit;

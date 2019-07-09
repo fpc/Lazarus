@@ -371,6 +371,7 @@ type
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
+    class function ExePathsMruGroup: TDebuggerClass; override;
 
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -3050,6 +3051,11 @@ begin
   {$ELSE}
   Result := '/usr/bin/lldb';
   {$ENDIF}
+end;
+
+class function TLldbDebugger.ExePathsMruGroup: TDebuggerClass;
+begin
+  Result := TLldbDebugger;
 end;
 
 constructor TLldbDebugger.Create(const AExternalDebugger: String);

@@ -727,6 +727,7 @@ type
     function GetMakeFilename: string;
     function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
+    function GetNamedDebuggerFileHistory(AnIndex: String): TStringList;
     function GetSubConfig(Index: Integer): TIDESubOptions;
     function GetTestBuildDirectory: string;
     function GetFppkgConfigFile: string;
@@ -891,7 +892,7 @@ type
     property MakeFilename: string read GetMakeFilename write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory;
     property DebuggerFilename: string read GetDebuggerFilename;
-    property DebuggerFileHistory: TStringList read FDebuggerFileHistory;
+    property DebuggerFileHistory[AnIndex: String]: TStringList read GetNamedDebuggerFileHistory;
     property DebuggerSearchPath: string read GetDebuggerSearchPath write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage write FDebuggerShowStopMessage;
     property DebuggerResetAfterRun: boolean read FDebuggerResetAfterRun write FDebuggerResetAfterRun;
@@ -2101,6 +2102,7 @@ begin
   MakeFilename:=DefaultMakefilename;
   FMakeFileHistory:=TStringList.Create;
   FDebuggerFileHistory:=TStringList.Create;
+  FDebuggerFileHistory.OwnsObjects := True;
   FDebuggerProperties := TDebuggerPropertiesConfigList.Create;
   FDebuggerEventLogColors:=DebuggerDefaultColors;
   FppkgConfigFile:='';
@@ -2339,6 +2341,7 @@ procedure TEnvironmentOptions.LoadNonDesktop(Path: String);
 
 var
   EventType: TDBGEventType;
+  i: Integer;
 begin
   // files
   LazarusDirectory:=FXMLCfg.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory);
@@ -2388,7 +2391,10 @@ begin
   // Debugger
   // DO not call   LoadDebuggerProperties; => not all debuggers are registered when this is first called
   FDebuggerConfig.Load;
-  LoadRecentList(FXMLCfg,FDebuggerFileHistory,Path+'DebuggerFilename/History/',rltFile);
+  if FXMLCfg.HasPath(Path+'DebuggerFilename/History', False) then begin
+    i := FDebuggerFileHistory.AddObject('', TStringList.Create);
+    LoadRecentList(FXMLCfg,TStrings(FDebuggerFileHistory.Objects[i]),Path+'DebuggerFilename/History/',rltFile);
+  end;
   DebuggerSearchPath:=FXMLCfg.GetValue(Path+'DebuggerSearchPath/Value','');
   // Debugger General Options
   DebuggerShowStopMessage:=FXMLCfg.GetValue(Path+'DebuggerOptions/ShowStopMessage/Value', True);
@@ -2726,6 +2732,7 @@ procedure TEnvironmentOptions.SaveNonDesktop(Path: String);
 var
   BaseDir, CurLazDir: String;
   EventType: TDBGEventType;
+  i: Integer;
 begin
   // files
   CurLazDir:=ChompPathDelim(LazarusDirectory);
@@ -2784,7 +2791,12 @@ begin
       FDebuggerResetAfterRun, False);
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/DebuggerAutoCloseAsm/Value',
       FDebuggerAutoCloseAsm, False);
-  SaveRecentList(FXMLCfg,FDebuggerFileHistory,Path+'DebuggerFilename/History/');
+  for i := 0 to FDebuggerFileHistory.Count -1 do
+    if FDebuggerFileHistory[i] = '' then
+      SaveRecentList(FXMLCfg,TStrings(FDebuggerFileHistory.Objects[i]),Path+'DebuggerFilename/History/')
+    else
+      SaveRecentList(FXMLCfg,TStrings(FDebuggerFileHistory.Objects[i]),
+        Path+'DebuggerFilename/'+FDebuggerFileHistory[i]+'/History/');
   FXMLCfg.SetDeleteValue(Path+'DebuggerSearchPath/Value',DebuggerSearchPath,'');
   FXMLCfg.SetDeleteValue(Path+'Debugger/EventLogClearOnRun',FDebuggerEventLogClearOnRun, True);
   FXMLCfg.SetDeleteValue(Path+'Debugger/EventLogCheckLineLimit',FDebuggerEventLogCheckLineLimit, False);
@@ -3774,6 +3786,22 @@ end;
 function TEnvironmentOptions.GetMsgViewColors(c: TMsgWndColor): TColor;
 begin
   Result:=fMsgViewColors[c];
+end;
+
+function TEnvironmentOptions.GetNamedDebuggerFileHistory(AnIndex: String
+  ): TStringList;
+var
+  i: Integer;
+begin
+  i := FDebuggerFileHistory.IndexOf(AnIndex);
+  if i < 0 then begin
+    i := FDebuggerFileHistory.AddObject(AnIndex, TStringList.Create);
+    if FXMLCfg.HasPath('EnvironmentOptions/DebuggerFilename/'+AnIndex+'/History', False) then
+      LoadRecentList(FXMLCfg,TStrings(FDebuggerFileHistory.Objects[i]),'EnvironmentOptions/DebuggerFilename/'+AnIndex+'/History/',rltFile)
+    else
+      TStrings(FDebuggerFileHistory.Objects[i]).Assign(DebuggerFileHistory['']);  // init from old list
+  end;
+  Result := TStringList(FDebuggerFileHistory.Objects[i]);
 end;
 
 function TEnvironmentOptions.GetSubConfig(Index: Integer): TIDESubOptions;

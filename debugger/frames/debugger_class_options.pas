@@ -73,6 +73,7 @@ type
     procedure tbDeleteClick(Sender: TObject);
     procedure tbSelectClick(Sender: TObject);
   private
+    FDebuggerFileHistory: TStringList;
     FInOdNameExit: Boolean;
     PropertyGrid: TOIPropertyGrid;
     FPropertyEditorHook: TPropertyEditorHook;
@@ -125,14 +126,12 @@ begin
     ParsedFName := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, FLastCheckedDebuggerPath);
     if ParsedFName = '' then
       ParsedFName := FLastCheckedDebuggerPath;
-DebugLn(['############### ',ParsedFName]);
     if not CheckExecutable(FSelectedDbgPropertiesConfig.DebuggerFilename, ParsedFName,
           lisEnvOptDlgInvalidDebuggerFilename,
           lisEnvOptDlgInvalidDebuggerFilenameMsg)
     then
       exit;
   end;
-DebugLn(['<<<<<<<<<< ###### ',FSelectedDbgPropertiesConfig.DebuggerFilename ,' << ', cmbDebuggerPath.Text]);
 
   FSelectedDbgPropertiesConfig.DebuggerFilename := cmbDebuggerPath.Text;
 end;
@@ -312,12 +311,19 @@ end;
 procedure TDebuggerClassOptionsFrame.UpdateDebuggerClass;
 var
   c: TDebuggerClass;
+  i: Integer;
 begin
   if FSelectedDbgPropertiesConfig = nil then
     exit;
   c := GetDebuggerClassFromDropDown;
   if SelectedDebuggerClass = c then
     exit;
+
+  i := FDebuggerFileHistory.IndexOf(SelectedDebuggerClass.ExePathsMruGroup.ClassName);
+  Assert(i>0, 'Missing dbg lru');
+  if i > 0 then // should always be
+    TStringList(FDebuggerFileHistory.Objects[i]).Assign(cmbDebuggerPath.Items);
+
 
   FSelectedDbgPropertiesConfig.ChangeDebuggerClass(c, True);
   // TOOD: Ask user?
@@ -359,6 +365,8 @@ procedure TDebuggerClassOptionsFrame.FetchDebuggerSpecificOptions;
 var
   S, S2, S3: String;
   Prop: TDebuggerProperties;
+  lru: TStringList;
+  i: Integer;
 begin
   PropertyGrid.Selection.Clear;
 
@@ -369,10 +377,19 @@ begin
     exit;
   end;
 
+  i := FDebuggerFileHistory.IndexOf(SelectedDebuggerClass.ExePathsMruGroup.ClassName);
+  if i >= 0 then begin
+    lru := TStringList(FDebuggerFileHistory.Objects[i]);
+  end
+  else begin
+    lru := TStringList.Create;
+    lru.Assign(EnvironmentOptions.DebuggerFileHistory[SelectedDebuggerClass.ExePathsMruGroup.ClassName]);
+    FDebuggerFileHistory.AddObject(SelectedDebuggerClass.ExePathsMruGroup.ClassName, lru);
+  end;
 
   with cmbDebuggerPath.Items do begin
     BeginUpdate;
-    Assign(EnvironmentOptions.DebuggerFileHistory);
+    Assign(lru);
     if  (Count = 0)
     and (SelectedDebuggerClass <> nil)
     then begin
@@ -390,7 +407,6 @@ begin
     EndUpdate;
   end;
 
-debugln(['>>>### ',FSelectedDbgPropertiesConfig.DebuggerFilename,cstFilename]);
   SetComboBoxText(cmbDebuggerPath,FSelectedDbgPropertiesConfig.DebuggerFilename,cstFilename,20);
   edName.Text := FSelectedDbgPropertiesConfig.ConfigName;
 
@@ -515,6 +531,8 @@ begin
   FPropertyEditorHook:=TPropertyEditorHook.Create(Self);
   FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
 
+  FDebuggerFileHistory := TStringList.Create;
+  FDebuggerFileHistory.OwnsObjects := True;
   FCopiedDbgPropertiesConfigList := TDebuggerPropertiesConfigList.Create;
   FCopiedDbgPropertiesConfigList.CaseSensitive := False;
   // create the PropertyGrid
@@ -543,6 +561,7 @@ begin
   PropertyGrid.Selection.Clear;
   FreeAndNil(FPropertyEditorHook);
   FreeAndNil(FCopiedDbgPropertiesConfigList);
+  FreeAndNil(FDebuggerFileHistory);
   inherited Destroy;
 end;
 
@@ -555,7 +574,6 @@ begin
   UpdateDebuggerClass; // TODO: might edit the name
   FLastCheckedDebuggerPath := 'X'+cmbDebuggerPath.Text; // ensure a new check is done
   cmbDebuggerPathEditingDone(nil);
-debugln(['############### >',FSelectedDbgPropertiesConfig.DebuggerFilename, '< ## >', cmbDebuggerPath.Text, '< #']);
 
   Result := (FSelectedDbgPropertiesConfig.DebuggerFilename = cmbDebuggerPath.Text);
 end;
@@ -585,6 +603,7 @@ begin
   begin
     ObjectInspectorOptions.AssignTo(PropertyGrid);
 
+    FDebuggerFileHistory.Clear;
     FCopiedDbgPropertiesConfigList.ClearAll;
     for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
       FCopiedDbgPropertiesConfigList.AddObject(DebuggerPropertiesConfigList[i],
@@ -609,7 +628,9 @@ var
 begin
   with EnvironmentOptions do
   begin
-    DebuggerFileHistory.Assign(cmbDebuggerPath.Items);
+    for i := 0 to FDebuggerFileHistory.Count - 1 do
+      DebuggerFileHistory[FDebuggerFileHistory[i]].Assign(TStringList(FDebuggerFileHistory.Objects[i]));
+
 //    DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
 
     EnvConf := DebuggerPropertiesConfigList;

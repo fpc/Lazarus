@@ -200,6 +200,7 @@ type
   *)
 
   TDebuggerIntf = class;
+  TDebuggerClass = class of TDebuggerIntf;
   TDebuggerDataSupplier = class;
 
   { TDebuggerDataHandler }
@@ -1888,6 +1889,7 @@ type
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
+    class function ExePathsMruGroup: TDebuggerClass; virtual;        // The default locations of the exe
     class function HasExePath: boolean; virtual; deprecated; // use NeedsExePath instead
     class function NeedsExePath: boolean; virtual;        // If the debugger needs to have an exe path
     class function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; virtual;
@@ -1986,7 +1988,6 @@ type
     property OnFeedback: TDBGFeedbackEvent read FOnFeedback write FOnFeedback;
     property OnIdle: TNotifyEvent read FOnIdle write FOnIdle;                    // Called if all outstanding requests are processed (queue empty)
   end;
-  TDebuggerClass = class of TDebuggerIntf;
 
   { TBaseDebugManagerIntf }
 
@@ -6048,6 +6049,11 @@ end;
 class function TDebuggerIntf.ExePaths: String;
 begin
   Result := '';
+end;
+
+class function TDebuggerIntf.ExePathsMruGroup: TDebuggerClass;
+begin
+  Result := Self;
 end;
 
 class function TDebuggerIntf.HasExePath: boolean;
