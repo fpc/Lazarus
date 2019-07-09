@@ -116,13 +116,14 @@ type
     dfSetBreakPending
   );
 
+  TTargetRegisterIdent = (r0, r1, r2);
   // Target info
   TGDBMITargetInfo = record
     TargetPID: Integer;
     TargetFlags: TGDBMITargetFlags;
     TargetCPU: String;
     TargetOS: (osUnknown, osWindows); // osUnix or osLinux, osMac
-    TargetRegisters: array[0..2] of String;
+    TargetRegisters: array[TTargetRegisterIdent] of String;
     TargetPtrSize: Byte; // size in bytes
     TargetIsBE: Boolean;
   end;
@@ -2440,6 +2441,7 @@ end;
 procedure TGDBMIDebuggerCommandStartBase.SetTargetInfo(const AFileType: String);
 var
   FoundPtrSize, UseWin64ABI: Boolean;
+  r: TTargetRegisterIdent;
 begin
   UseWin64ABI := False;
   // assume some defaults
@@ -2522,33 +2524,35 @@ begin
   if not FoundPtrSize
   then TargetInfo^.TargetPtrSize := CpuNameToPtrSize(TargetInfo^.TargetCPU);
 
+  for r := low(TTargetRegisterIdent) to high(TTargetRegisterIdent) do
+    TargetInfo^.TargetRegisters[r] := '';
   case StringCase(TargetInfo^.TargetCPU, [
     'x86', 'i386', 'i486', 'i586', 'i686',
     'ia64', 'x86_64', 'powerpc', 'powerpc64',
     'sparc', 'arm', 'aarch64', 'avr'
   ], True, False) of
     0..4: begin // x86
-      TargetInfo^.TargetRegisters[0] := '$eax';
-      TargetInfo^.TargetRegisters[1] := '$edx';
-      TargetInfo^.TargetRegisters[2] := '$ecx';
+      TargetInfo^.TargetRegisters[r0] := '$eax';
+      TargetInfo^.TargetRegisters[r1] := '$edx';
+      TargetInfo^.TargetRegisters[r2] := '$ecx';
     end;
     5, 6: begin // ia64, x86_64
       if TargetInfo^.TargetPtrSize = 4
       then begin
-        TargetInfo^.TargetRegisters[0] := '$eax';
-        TargetInfo^.TargetRegisters[1] := '$edx';
-        TargetInfo^.TargetRegisters[2] := '$ecx';
+        TargetInfo^.TargetRegisters[r0] := '$eax';
+        TargetInfo^.TargetRegisters[r1] := '$edx';
+        TargetInfo^.TargetRegisters[r2] := '$ecx';
       end
       else if UseWin64ABI
       then begin
-        TargetInfo^.TargetRegisters[0] := '$rcx';
-        TargetInfo^.TargetRegisters[1] := '$rdx';
-        TargetInfo^.TargetRegisters[2] := '$r8';
+        TargetInfo^.TargetRegisters[r0] := '$rcx';
+        TargetInfo^.TargetRegisters[r1] := '$rdx';
+        TargetInfo^.TargetRegisters[r2] := '$r8';
       end else
       begin
-        TargetInfo^.TargetRegisters[0] := '$rdi';
-        TargetInfo^.TargetRegisters[1] := '$rsi';
-        TargetInfo^.TargetRegisters[2] := '$rdx';
+        TargetInfo^.TargetRegisters[r0] := '$rdi';
+        TargetInfo^.TargetRegisters[r1] := '$rsi';
+        TargetInfo^.TargetRegisters[r2] := '$rdx';
       end;
     end;
     7, 8: begin // powerpc,powerpc64
@@ -2556,44 +2560,44 @@ begin
       // alltough darwin can start with r2, it seems that all OS start with r3
 //        if UpperCase(FTargetInfo.TargetOS) = 'DARWIN'
 //        then begin
-//          FTargetInfo.TargetRegisters[0] := '$r2';
-//          FTargetInfo.TargetRegisters[1] := '$r3';
-//          FTargetInfo.TargetRegisters[2] := '$r4';
+//          FTargetInfo.TargetRegisters[r0] := '$r2';
+//          FTargetInfo.TargetRegisters[r1] := '$r3';
+//          FTargetInfo.TargetRegisters[r2] := '$r4';
 //        end
 //        else begin
-        TargetInfo^.TargetRegisters[0] := '$r3';
-        TargetInfo^.TargetRegisters[1] := '$r4';
-        TargetInfo^.TargetRegisters[2] := '$r5';
+        TargetInfo^.TargetRegisters[r0] := '$r3';
+        TargetInfo^.TargetRegisters[r1] := '$r4';
+        TargetInfo^.TargetRegisters[r2] := '$r5';
 //        end;
     end;
     9: begin // sparc
       TargetInfo^.TargetIsBE := True;
-      TargetInfo^.TargetRegisters[0] := '$g1';
-      TargetInfo^.TargetRegisters[1] := '$o0';
-      TargetInfo^.TargetRegisters[2] := '$o1';
+      TargetInfo^.TargetRegisters[r0] := '$g1';
+      TargetInfo^.TargetRegisters[r1] := '$o0';
+      TargetInfo^.TargetRegisters[r2] := '$o1';
     end;
     10: begin // arm
-      TargetInfo^.TargetRegisters[0] := '$r0';
-      TargetInfo^.TargetRegisters[1] := '$r1';
-      TargetInfo^.TargetRegisters[2] := '$r2';
+      TargetInfo^.TargetRegisters[r0] := '$r0';
+      TargetInfo^.TargetRegisters[r1] := '$r1';
+      TargetInfo^.TargetRegisters[r2] := '$r2';
     end;
     11: begin // aarch64
-      //TargetInfo^.TargetRegisters[0] := '$r0';
-      //TargetInfo^.TargetRegisters[1] := '$r1';
-      //TargetInfo^.TargetRegisters[2] := '$r2';
-      TargetInfo^.TargetRegisters[0] := '$x0';
-      TargetInfo^.TargetRegisters[1] := '$x1';
-      TargetInfo^.TargetRegisters[2] := '$x2';
+      //TargetInfo^.TargetRegisters[r0] := '$r0';
+      //TargetInfo^.TargetRegisters[r1] := '$r1';
+      //TargetInfo^.TargetRegisters[r2] := '$r2';
+      TargetInfo^.TargetRegisters[r0] := '$x0';
+      TargetInfo^.TargetRegisters[r1] := '$x1';
+      TargetInfo^.TargetRegisters[r2] := '$x2';
     end;
     12: begin // avr
-      TargetInfo^.TargetRegisters[0] := '$r0';
-      TargetInfo^.TargetRegisters[1] := '$r1';
-      TargetInfo^.TargetRegisters[2] := '$r2';
+      TargetInfo^.TargetRegisters[r0] := '$r0';
+      TargetInfo^.TargetRegisters[r1] := '$r1';
+      TargetInfo^.TargetRegisters[r2] := '$r2';
     end;
   else
-    TargetInfo^.TargetRegisters[0] := '';
-    TargetInfo^.TargetRegisters[1] := '';
-    TargetInfo^.TargetRegisters[2] := '';
+    TargetInfo^.TargetRegisters[r0] := '';
+    TargetInfo^.TargetRegisters[r1] := '';
+    TargetInfo^.TargetRegisters[r2] := '';
     DebugLn(DBG_WARNINGS, '[WARNING] [Debugger] Unknown target CPU: ', TargetInfo^.TargetCPU);
   end;
 end;
@@ -5728,8 +5732,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       // Get the frame and addr info from the call-params
       if tfRTLUsesRegCall in TargetInfo^.TargetFlags
       then begin
-        Result.Address := GetPtrValue(TargetInfo^.TargetRegisters[1], []);
-        FP := GetPtrValue(TargetInfo^.TargetRegisters[2], []);
+        Result.Address := GetPtrValue(TargetInfo^.TargetRegisters[r1], []);
+        FP := GetPtrValue(TargetInfo^.TargetRegisters[r2], []);
       end else begin
         Result.Address := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 3]);
         FP := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 4]);
@@ -5788,7 +5792,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     FTheDebugger.QueueExecuteLock;
     try
       if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-      then  Result.ObjAddr := TargetInfo^.TargetRegisters[0]
+      then  Result.ObjAddr := TargetInfo^.TargetRegisters[r0]
       else begin
         if dfImplicidTypes in FTheDebugger.DebuggerFlags
         then Result.ObjAddr := Format('^%s($fp+%d)^', [PointerTypeCast, TargetInfo^.TargetPtrSize * 2])
@@ -5883,7 +5887,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     FTheDebugger.QueueExecuteLock;
     try
       if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-      then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
+      then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[r0], [])
       else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
       ErrorNo := ErrorNo and $FFFF;
 
@@ -5923,7 +5927,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     FTheDebugger.QueueExecuteLock;
     try
       if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-      then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
+      then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[r0], [])
       else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
       ErrorNo := ErrorNo and $FFFF;
 
@@ -6622,7 +6626,7 @@ var
 
     // RtlUnwind, set a breakpoint at next except handler (instead of srPopExceptStack/srCatches)
     if FTheDebugger.FStoppedReason = srRtlUnwind then begin
-      Address := GetPtrValue(TargetInfo^.TargetRegisters[1], []);
+      Address := GetPtrValue(TargetInfo^.TargetRegisters[r1], []);
       if Address <> 0 then
         FTheDebugger.FSehRaiseBreaks.AddAddr(Self, Address);
       FCurrentExecCmd := ectContinue;
