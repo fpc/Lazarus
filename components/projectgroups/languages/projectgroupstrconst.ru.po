@@ -53,7 +53,7 @@ msgstr "Режим сборки \"%s\" не найден."
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
-msgstr ""
+msgstr "Компилировать цель командами \"Компилировать\" и \"Собрать\""
 
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
@@ -99,7 +99,7 @@ msgstr "Цель не существует. Удалить?"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr ""
+msgstr "Командами IDE \"Компилировать\" и \"Собрать\" вызывать компиляцию/сборку выбранной цели в редакторе групп проектов"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
