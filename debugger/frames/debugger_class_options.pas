@@ -320,8 +320,8 @@ begin
     exit;
 
   i := FDebuggerFileHistory.IndexOf(SelectedDebuggerClass.ExePathsMruGroup.ClassName);
-  Assert(i>0, 'Missing dbg lru');
-  if i > 0 then // should always be
+  Assert((i>=0) or (not SelectedDebuggerClass.NeedsExePath), 'Missing dbg lru');
+  if i >= 0 then // not found if not NeedExePath
     TStringList(FDebuggerFileHistory.Objects[i]).Assign(cmbDebuggerPath.Items);
 
 
