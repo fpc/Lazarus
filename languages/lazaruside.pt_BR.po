@@ -723,10 +723,9 @@ msgid "Include assertion code"
 msgstr "Incluir código de afirmação"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Associated debug desktop"
+#, object-pascal-format
 msgid "Associated debug desktop for \"%s\""
-msgstr "Área de trabalho de depuração associada"
+msgstr "Área de trabalho de depuração associada para \"%s\""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
@@ -1388,14 +1387,13 @@ msgid "Delete mode"
 msgstr "Excluir modo"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
 msgid "Delete"
 msgstr "Excluir"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
 msgid "Delete selected desktop"
-msgstr ""
+msgstr "Excluir área de trabalho selecionada"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -3460,14 +3458,13 @@ msgid "Rename desktop"
 msgstr "Renomear área de trabalho"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
 msgid "Rename"
 msgstr "Renomear"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
 msgid "Rename selected desktop"
-msgstr ""
+msgstr "Renomear área de trabalho selecionada"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3567,7 +3564,7 @@ msgstr "Parâmetros de execução"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
-msgstr ""
+msgstr "Salvar área de trabalho atual"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3575,11 +3572,11 @@ msgstr "Salvar área de trabalho atual como"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
 msgid "Save active desktop as ..."
-msgstr ""
+msgstr "Salvar área de trabalho ativa como ..."
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
 msgid "Save active desktop as"
-msgstr ""
+msgstr "Salvar área de trabalho ativa como"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3656,13 +3653,11 @@ msgid "&Selected text"
 msgstr "Texto &selecionado"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
 msgid "Set active"
 msgstr "Ativar"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Ativar"
@@ -3940,13 +3935,11 @@ msgid "The element uses (and edits) the schemes:"
 msgstr "O elemento usa (e edita) os esquemas:"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
 msgid "Toggle as debug desktop"
 msgstr "Alternar como área de trabalho de depuração"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Alternar como área de trabalho de depuração"
@@ -7036,7 +7029,7 @@ msgstr "Compilar"
 
 #: lazarusidestrconsts.liscompileanddonotaskagain
 msgid "Compile and do not ask again"
-msgstr ""
+msgstr "Compilar e não perguntar novamente"
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
@@ -7093,7 +7086,7 @@ msgstr "Compilar"
 
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
-msgstr ""
+msgstr "Compilar com as configurações do projeto"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -12433,7 +12426,7 @@ msgstr "Arquivos inclusão recursos Lazarus (.lrs)"
 
 #: lazarusidestrconsts.lismacpreferences
 msgid "Preferences..."
-msgstr ""
+msgstr "Preferências..."
 
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
@@ -14406,7 +14399,7 @@ msgstr "Mover"
 
 #: lazarusidestrconsts.lismovedown
 msgid "Move Down"
-msgstr ""
+msgstr "Mover abaixo"
 
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
@@ -14458,7 +14451,7 @@ msgstr "Mover para:"
 
 #: lazarusidestrconsts.lismoveup
 msgid "Move Up"
-msgstr ""
+msgstr "Mover acima"
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -15213,7 +15206,7 @@ msgstr "Informação do pacote"
 #: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
 #, object-pascal-format
 msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
-msgstr ""
+msgstr "O pacote \"%s\" é apenas de tempo de projeto, então deve ser apenas compilado na IDE, e não com as configurações do projeto.%sFavor usar \"Instalar\" ou \"Ferramentas / Construir Lazarus\" para construir os pacotes da IDE."
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."

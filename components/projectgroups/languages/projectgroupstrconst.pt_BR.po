@@ -53,7 +53,7 @@ msgstr "Modo construção \"%s\" não encontrado."
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
-msgstr ""
+msgstr "\"Compilar\" e \"Construir\" alvo da compilação"
 
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
@@ -71,7 +71,7 @@ msgstr "Descartar alterações"
 
 #: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
 msgid "Enable to show target filenames with paths."
-msgstr ""
+msgstr "Habilitar para mostrar nomes de arquivos alvos com caminhos."
 
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format
@@ -99,7 +99,7 @@ msgstr "Alvo não existe. Remover?"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr ""
+msgstr "Comandos IDE \"Compilar\" e \"Construir\" invoca compilar/construir do alvo selecionado no editor do grupo de projeto."
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
@@ -176,11 +176,11 @@ msgstr "Alvos"
 
 #: projectgroupstrconst.lisonidestartreopenlastopengroup
 msgid "On IDE start reopen last open group."
-msgstr ""
+msgstr "Ao iniciar a IDE reabrir o último grupo aberto."
 
 #: projectgroupstrconst.lisopenlastgrouponstart
 msgid "Open last group on start"
-msgstr ""
+msgstr "Abrir último grupo ao iniciar"
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -192,7 +192,7 @@ msgstr "Abrir Grupo Projeto Recente"
 
 #: projectgroupstrconst.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Opções"
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
@@ -298,7 +298,7 @@ msgstr "Erro leitura"
 
 #: projectgroupstrconst.lisredo
 msgid "Redo"
-msgstr ""
+msgstr "Refazer"
 
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
@@ -321,7 +321,7 @@ msgstr "Salvar Grupo Projeto como ..."
 
 #: projectgroupstrconst.lisshowtargetpaths
 msgid "Show target paths"
-msgstr ""
+msgstr "Exibir caminhos do alvo"
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
@@ -376,10 +376,8 @@ msgid "Compile selected target"
 msgstr "Compilar alvo selecionado"
 
 #: projectgroupstrconst.listargetcopyfilename
-#, fuzzy
-#| msgid "Copy file name"
 msgid "Copy Filename"
-msgstr "Copiar nome arquivo"
+msgstr "Copiar nome de arquivo"
 
 #: projectgroupstrconst.listargetcount
 #, object-pascal-format
@@ -505,7 +503,7 @@ msgstr "Incapaz de gravar arquivo grupo de projeto \"%s\"%s%s"
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
-msgstr ""
+msgstr "Desfazer"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"
