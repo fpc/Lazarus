@@ -6592,7 +6592,7 @@ resourcestring
   UnitDepOptionsForPackage = 'Options for Package graph';
   UnitDepOptionsForUnit = 'Options for Unit graph';
   LvlGraphReduceBackedges = 'Reduce backedges';
-  lisDebugOptionsFrmBackend = 'Backend';
+  lisDebugOptionsFrmBackend = 'Debugger backend';
 
 implementation
 
