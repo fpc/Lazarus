@@ -8374,6 +8374,10 @@ msgstr "Caminho de busca adicional"
 msgid "Automatically close the assembler window, after source not found"
 msgstr "Fechar a janela assembler automaticamente, após código não encontrado"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Ponto de parada"
@@ -8436,6 +8440,12 @@ msgstr "Limitar contagem de linha em"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "Módulo"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Nome:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Exceptions"

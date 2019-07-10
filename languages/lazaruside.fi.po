@@ -8327,6 +8327,10 @@ msgstr "Lisähakupolku"
 msgid "Automatically close the assembler window, after source not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Keskeytyskohta"
@@ -8388,6 +8392,12 @@ msgstr "Rajoita rivien määrä"
 #: lazarusidestrconsts.lisdebugoptionsfrmmodule
 msgid "Module"
 msgstr "Moduuli"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Nimi:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Exceptions"

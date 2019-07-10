@@ -8363,6 +8363,10 @@ msgstr "Додатковий пошуковий шлях"
 msgid "Automatically close the assembler window, after source not found"
 msgstr "Автоматично закривати вікно асемблера, якщо джерело не знайдено"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Точка зупину"
@@ -8425,6 +8429,12 @@ msgstr "Обмежити к-сть рядків до"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "Модуль"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Назва:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Exceptions"

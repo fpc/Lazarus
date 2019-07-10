@@ -8463,6 +8463,10 @@ msgstr "Papildomi paieškos keliai"
 msgid "Automatically close the assembler window, after source not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Stabdos taškas"
@@ -8525,6 +8529,12 @@ msgstr "Riboti eilučių kiekį iki"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "Modulis"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Pavadinimas:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 #, fuzzy

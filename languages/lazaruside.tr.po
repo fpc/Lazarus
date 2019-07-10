@@ -8337,6 +8337,10 @@ msgstr "Ek arama yolu"
 msgid "Automatically close the assembler window, after source not found"
 msgstr "Kaynak bulunamadıktan sonra assembler penceresini otomatik olarak kapatın"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Kırılma noktası"
@@ -8399,6 +8403,12 @@ msgstr "Satır sayısını sınırla"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "Modül"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Ad:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Exceptions"

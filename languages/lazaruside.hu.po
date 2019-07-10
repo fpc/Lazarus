@@ -8376,6 +8376,10 @@ msgstr "További keresési útvonal"
 msgid "Automatically close the assembler window, after source not found"
 msgstr "Az assembler ablak automatikus bezárása ha a forrás nem található"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Töréspont"
@@ -8438,6 +8442,12 @@ msgstr "Sorok száma korlátozva ennyire:"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "Modul"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Név:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Exceptions"

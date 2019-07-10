@@ -8513,6 +8513,10 @@ msgstr "Ruta adicional de búsqueda"
 msgid "Automatically close the assembler window, after source not found"
 msgstr "Cerrar automáticamente la ventana del ensamblador después de no encontrar la fuente"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Punto de interrupción"
@@ -8575,6 +8579,12 @@ msgstr "Limitar contador de líneas a"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "Módulo"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Nombre:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 #, fuzzy

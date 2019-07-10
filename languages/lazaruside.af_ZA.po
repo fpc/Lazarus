@@ -8354,6 +8354,10 @@ msgstr ""
 msgid "Automatically close the assembler window, after source not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr ""
@@ -8415,6 +8419,11 @@ msgstr ""
 #: lazarusidestrconsts.lisdebugoptionsfrmmodule
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions

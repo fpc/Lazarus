@@ -8378,6 +8378,10 @@ msgstr "Doplňující prohledávací cesty"
 msgid "Automatically close the assembler window, after source not found"
 msgstr "Automaticky zavři okno assembleru, až není zdrojový soubor nalezen"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmbackend
+msgid "Debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
 msgstr "Bod přerušení"
@@ -8440,6 +8444,12 @@ msgstr "Omezit počet řádek na"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "Modul"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmname
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
+msgid "Name:"
+msgstr "Jméno:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Exceptions"
