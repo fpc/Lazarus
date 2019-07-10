@@ -99,6 +99,7 @@ type
     property DisableStartupShell;
     property FixStackFrameForFpcAssert;
     property FixIncorrectStepOver;
+    property InternalExceptionBreakPoints;
   end;
 
 procedure Register;

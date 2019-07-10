@@ -158,7 +158,7 @@ type
 
   { TGDBMIDebuggerPropertiesBase }
 
-  TGDBMIDebuggerPropertiesBase = class(TDebuggerProperties)
+  TGDBMIDebuggerPropertiesBase = class(TCommonDebuggerProperties)
   private
     FAssemblerStyle: TGDBMIDebuggerAssemblerStyle;
     FCaseSensitivity: TGDBMIDebuggerCaseSensitivity;
@@ -235,6 +235,7 @@ type
     property FixStackFrameForFpcAssert: Boolean read FFixStackFrameForFpcAssert
              write FFixStackFrameForFpcAssert default True;
     property FixIncorrectStepOver: Boolean read FFixIncorrectStepOver write FFixIncorrectStepOver default False;
+    property InternalExceptionBreakPoints;
     {$IFdef MSWindows}
     property AggressiveWaitTime: Cardinal read FAggressiveWaitTime write SetAggressiveWaitTime default 100;
     {$EndIf}
@@ -267,6 +268,7 @@ type
     property DisableStartupShell;
     property FixStackFrameForFpcAssert;
     property FixIncorrectStepOver;
+    property InternalExceptionBreakPoints;
     {$IFdef MSWindows}
     property AggressiveWaitTime;
     {$EndIf}
@@ -5295,6 +5297,7 @@ var
   List: TGDBMINameValueList;
   CanContinue: Boolean;
   StateStopped: Boolean;
+  DbgProp: TGDBMIDebuggerPropertiesBase;
 begin
   Result := True;
   FSuccess := False;
@@ -5409,18 +5412,22 @@ begin
     Exclude(FTheDebugger.FDebuggerFlags, dfSetBreakPending);
     // they may still exist from prev run, addr will be checked
     // TODO: defered setting of below beakpoint / e.g. if debugging a library
+    DbgProp := TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties);
 {$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
     FTheDebugger.FExceptionBreak.SetByAddr(Self, True);
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self, True);
     FTheDebugger.FRunErrorBreak.SetByAddr(Self, True);
 {$Else}
-    FTheDebugger.FExceptionBreak.SetByAddr(Self);
-    FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
-    FTheDebugger.FRunErrorBreak.SetByAddr(Self);
+    if ieRaiseBreakPoint in DbgProp.InternalExceptionBreakPoints
+    then FTheDebugger.FExceptionBreak.SetByAddr(Self);
+    if ieBreakErrorBreakPoint in DbgProp.InternalExceptionBreakPoints
+    then FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
+    if ieRunErrorBreakPoint in DbgProp.InternalExceptionBreakPoints
+    then FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 {$ENDIF}
-    if (not (FTheDebugger.FExceptionBreak.IsBreakSet and
-            FTheDebugger.FBreakErrorBreak.IsBreakSet and
-            FTheDebugger.FRunErrorBreak.IsBreakSet)) and
+    if (not ((FTheDebugger.FExceptionBreak.IsBreakSet  or not (ieRaiseBreakPoint      in DbgProp.InternalExceptionBreakPoints)) and
+             (FTheDebugger.FBreakErrorBreak.IsBreakSet or not (ieBreakErrorBreakPoint in DbgProp.InternalExceptionBreakPoints)) and
+             (FTheDebugger.FRunErrorBreak.IsBreakSet   or not (ieRunErrorBreakPoint   in DbgProp.InternalExceptionBreakPoints)) )) and
        (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwExceptionsAndRunError])
     then
       Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
@@ -5658,9 +5665,12 @@ begin
   end;
   SetTargetInfo(FileType);
 
-  FTheDebugger.FExceptionBreak.SetByAddr(Self);
-  FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
-  FTheDebugger.FRunErrorBreak.SetByAddr(Self);
+  if ieRaiseBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints
+  then FTheDebugger.FExceptionBreak.SetByAddr(Self);
+  if ieBreakErrorBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints
+  then FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
+  if ieRunErrorBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints
+  then FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 
   if not(DebuggerState in [dsPause]) then
     SetDebuggerState(dsPause);
@@ -6891,7 +6901,9 @@ begin
     EnablePopCatches;
     EnableRtlUnwind;
   end;
-  if (FExecType in [ectRunTo, ectStepOver{, ectStepInto}, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) then
+  if (FExecType in [ectRunTo, ectStepOver{, ectStepInto}, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) and
+     (ieRaiseBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints)
+  then
     FTheDebugger.FReRaiseBreak.EnableOrSetByAddr(Self, True)
   else
     FTheDebugger.FReRaiseBreak.Disable(Self);

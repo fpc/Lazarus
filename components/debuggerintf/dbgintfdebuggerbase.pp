@@ -1767,6 +1767,25 @@ type
   end;
   TDebuggerPropertiesClass= class of TDebuggerProperties;
 
+  { TCommonDebuggerProperties
+    properties that all debuggers should/could implement
+  }
+
+  TInternalExceptionBreakPoint = (ieRaiseBreakPoint, ieRunErrorBreakPoint, ieBreakErrorBreakPoint);
+  TInternalExceptionBreakPoints = set of TInternalExceptionBreakPoint;
+
+  TCommonDebuggerProperties = class(TDebuggerProperties)
+  private
+    FInternalExceptionBreakPoints: TInternalExceptionBreakPoints;
+  protected const
+    INTERNALEXCEPTIONBREAKPOINTS_DEFAULT = [ieRaiseBreakPoint, ieRunErrorBreakPoint, ieBreakErrorBreakPoint];
+  protected
+    property InternalExceptionBreakPoints: TInternalExceptionBreakPoints
+      read FInternalExceptionBreakPoints write FInternalExceptionBreakPoints;
+  public
+    constructor Create; override;
+    procedure Assign({%H-}Source: TPersistent); override;
+  end;
 
   {$INTERFACES CORBA} // no ref counting needed
 
@@ -2183,6 +2202,21 @@ const
 begin
   Result := Format('[[ Value=%u, Guessed=%u, Offset=%d, Validity=%s ]]',
                    [AnAddr.Value, AnAddr.GuessedValue, AnAddr.Offset, ValidityName[AnAddr.Validity]]);
+end;
+
+{ TCommonDebuggerProperties }
+
+constructor TCommonDebuggerProperties.Create;
+begin
+  FInternalExceptionBreakPoints := INTERNALEXCEPTIONBREAKPOINTS_DEFAULT;
+end;
+
+procedure TCommonDebuggerProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TCommonDebuggerProperties then begin
+    FInternalExceptionBreakPoints := TCommonDebuggerProperties(Source).FInternalExceptionBreakPoints;
+  end;
 end;
 
 { TDBGDisassemblerRangeExtender }
