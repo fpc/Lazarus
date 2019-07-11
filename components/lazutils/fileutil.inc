@@ -739,6 +739,7 @@ constructor TFileSearcher.Create;
 begin
   inherited Create;
   FMaskSeparator := ';';
+  FPathSeparator := ';';
   FFollowSymLink := True;
   FFileAttribute := faAnyFile;
   FDirectoryAttribute := faDirectory;
@@ -835,7 +836,7 @@ begin
       p:=Pos(FPathSeparator,ASearchPath);
       if p<1 then
         p:=length(ASearchPath)+1;
-      Dir:=TrimFilename(LeftStr(ASearchPath,p-1));
+      Dir:=ResolveDots(LeftStr(ASearchPath,p-1));
       Delete(ASearchPath,1,p);
       if Dir='' then continue;
       Dir:=ChompPathDelim(Dir);
