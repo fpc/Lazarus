@@ -49,7 +49,7 @@ uses
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf, SrcEditorIntf,
   // DebuggerIntf
-  DbgIntfDebuggerBase, GDBMIDebugger,
+  DbgIntfDebuggerBase,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,

@@ -368,43 +368,44 @@ begin
   Result:=false;
   OriginalFilename:=FileName;
 
-  // Check for packages if the specified name is a valid identifier
-  debugln(['TLazBuildApplication.BuildFile ',OriginalFilename]);
-  if IsValidPkgName(OriginalFileName) then begin
-    if PackageAction=lpaAddPkgLinks then begin
-      Error(ErrorFileNotFound,'lpk file expected, but '+OriginalFilename+' found');
-      Exit;
-    end;
-    // Initialize package graph with base packages etc:
-    if not Init then exit;
-    // Could be a known but not installed package
-    // so try and get package filename from all other known packages
-    Package:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(OriginalFileName));
-    if Package=nil then begin
-      // Not found after everything we tried
-      if CompareFileExt(Filename,'.lpi')=0 then
-        Error(ErrorFileNotFound,'file not found: '+OriginalFilename)
-      else
-        Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
-    end
-    else begin
-      // We found a package link
-      case PackageAction of
-      lpaBuild:
-        begin
-          Result:=BuildPackage(Package.LPKFilename);
-          exit;
-        end;
-      lpaInstall:
-        exit(true); // this is handled in AddPackagesToInstallList
-      end;
-    end;
-  end;
-
   Filename:=CleanAndExpandFilename(Filename);
   if not FileExistsUTF8(Filename) then
   begin
-    // File is not an identifier and doesn't exist.
+    // File doesn't exist.
+
+    // Check for packages if the specified name is a valid identifier
+    //debugln(['TLazBuildApplication.BuildFile ',OriginalFilename]);
+    if IsValidPkgName(OriginalFileName) then begin
+      if PackageAction=lpaAddPkgLinks then begin
+        Error(ErrorFileNotFound,'lpk file expected, but '+OriginalFilename+' found');
+        Exit;
+      end;
+      // Initialize package graph with base packages etc:
+      if not Init then exit;
+      // Could be a known but not installed package
+      // so try and get package filename from all other known packages
+      Package:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(OriginalFileName));
+      if Package=nil then begin
+        // Not found after everything we tried
+        if CompareFileExt(Filename,'.lpi')=0 then
+          Error(ErrorFileNotFound,'file not found: '+OriginalFilename)
+        else
+          Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
+      end
+      else begin
+        // We found a package link
+        case PackageAction of
+        lpaBuild:
+          begin
+            Result:=BuildPackage(Package.LPKFilename);
+            exit;
+          end;
+        lpaInstall:
+          exit(true); // this is handled in AddPackagesToInstallList
+        end;
+      end;
+    end;
+
     Error(ErrorFileNotFound, 'file not found: '+OriginalFilename);
     Exit;
   end
