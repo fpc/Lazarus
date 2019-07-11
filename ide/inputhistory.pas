@@ -128,6 +128,7 @@ type
     fifRegExpr,
     fifMultiLine,
     fifSearchProject,    // search in all project files
+    fifSearchProjectGroup,// search in all files of project group
     fifSearchOpen,       // search in all open files in editor
     fifSearchActive,     // search in active open file in editor
     fifSearchDirectories,// search in directories
@@ -277,6 +278,7 @@ const
     'RegExpr',
     'MultiLine',
     'SearchProject',
+    'SearchProjectGroup',
     'SearchOpen',
     'SearchCurrent',
     'SearchDirectories',

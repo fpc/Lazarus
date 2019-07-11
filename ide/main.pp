@@ -630,7 +630,8 @@ type
       Scanner: TLinkScanner);
 
     // SearchResultsView event handlers
-    procedure SearchResultsViewSelectionChanged({%H-}sender: TObject);
+    procedure SearchResultsViewSelectionChanged({%H-}Sender: TObject);
+    procedure DoSearchAgain({%H-}Sender: TObject);
 
     // JumpHistoryView event handlers
     procedure JumpHistoryViewSelectionChanged({%H-}sender: TObject);
@@ -2203,7 +2204,7 @@ begin
   DebugBoss.ConnectSourceNotebookEvents;
 
   OnSearchResultsViewSelectionChanged := @SearchResultsViewSelectionChanged;
-  OnSearchAgainClicked := @FindInFilesDialog.InitFromLazSearch;
+  OnSearchAgainClicked := @DoSearchAgain;
 
   // connect search menu to sourcenotebook
   MainIDEBar.itmSearchFind.OnClick := @SourceEditorManager.FindClicked;
@@ -11030,9 +11031,15 @@ end;
 
 //-----------------------------------------------------------------------------
 
-procedure TMainIDE.SearchResultsViewSelectionChanged(sender: TObject);
+procedure TMainIDE.SearchResultsViewSelectionChanged(Sender: TObject);
 begin
   DoJumpToSearchResult(True);
+end;
+
+procedure TMainIDE.DoSearchAgain(Sender: TObject);
+begin
+  // this will create the FindInFiles dialog if not yet done
+  FindInFilesDialog.InitFromLazSearch(Sender);
 end;
 
 procedure TMainIDE.JumpHistoryViewSelectionChanged(sender : TObject);

@@ -28,6 +28,7 @@ uses
   SynEditTypes, SynEdit,
   // IdeIntf
   MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEDialogs,
+  ProjectGroupIntf,
   // IDE
   LazarusIDEStrConsts, InputHistory, InputhistoryWithSearchOpt, EditorOptions, Project,
   IDEProcs, SearchFrm, SearchResultView;
@@ -93,11 +94,12 @@ function FindInFilesDialog: TLazFindInFilesDialog;
 
 implementation
 
-const  // WhereRadioGroup's ItemIndex in a more informative form.
-  ItemIndProject     = 0;
-  ItemIndOpenFiles   = 1;
-  ItemIndDirectories = 2;
-  ItemIndActiveFile  = 3;
+var  // WhereRadioGroup's ItemIndex in a more informative form.
+  ItemIndProject: integer = 0;
+  ItemIndProjectGroup: integer = -1;
+  ItemIndOpenFiles: integer   = 1;
+  ItemIndDirectories: integer = 2;
+  ItemIndActiveFile: integer = 3;
 
 var
   FindInFilesDialogSingleton: TLazFindInFilesDialog = nil;
@@ -132,7 +134,19 @@ end;
 
 procedure TLazFindInFilesDialog.WhereRadioGroupClick(Sender: TObject);
 begin
-  DirectoriesOptionsGroupBox.Enabled := (WhereRadioGroup.ItemIndex = ItemIndDirectories)
+  if WhereRadioGroup.ItemIndex = ItemIndDirectories then
+  begin
+    DirectoriesOptionsGroupBox.Enabled := true;
+    DirectoriesBrowse.Enabled:=true;
+    DirectoriesComboBox.Enabled:=true;
+  end
+  else if WhereRadioGroup.ItemIndex = ItemIndProjectGroup then
+  begin
+    DirectoriesOptionsGroupBox.Enabled := true;
+    DirectoriesBrowse.Enabled:=false;
+    DirectoriesComboBox.Enabled:=false;
+  end else
+    DirectoriesOptionsGroupBox.Enabled := false;
 end;
 
 procedure TLazFindInFilesDialog.DirectoriesBrowseClick(Sender: TObject);
@@ -180,6 +194,14 @@ begin
 
   WhereRadioGroup.Caption:=lisFindFileWhere;
   WhereRadioGroup.Items[ItemIndProject]     := lisFindFilesearchAllFilesInProject;
+  if ProjectGroupManager<>nil then
+  begin
+    ItemIndProjectGroup:=1;
+    WhereRadioGroup.Items.Insert(ItemIndProjectGroup, lisFindFilesSearchInProjectGroup);
+    ItemIndOpenFiles:=2;
+    ItemIndDirectories:=3;
+    ItemIndActiveFile:=4;
+  end;
   WhereRadioGroup.Items[ItemIndOpenFiles]   := lisFindFilesearchAllOpenFiles;
   WhereRadioGroup.Items[ItemIndDirectories] := lisFindFilesearchInDirectories;
   WhereRadioGroup.Items[ItemIndActiveFile]  := lisFindFilesearchInActiveFile;
@@ -237,6 +259,8 @@ begin
 end;
 
 procedure TLazFindInFilesDialog.SetOptions(NewOptions: TLazFindInFileSearchOptions);
+var
+  NewItemIndex: Integer;
 begin
   OptionsCheckGroupBox.Checked[0] := fifMatchCase in NewOptions;
   OptionsCheckGroupBox.Checked[1] := fifWholeWord in NewOptions;
@@ -245,16 +269,23 @@ begin
   DirectoriesOptionsGroupBox.Enabled := fifSearchDirectories in NewOptions;
   IncludeSubDirsCheckBox.Checked := fifIncludeSubDirs in NewOptions;
   ReplaceCheckBox.Checked := [fifReplace,fifReplaceAll]*NewOptions<>[];
-  
-  if fifSearchProject     in NewOptions then WhereRadioGroup.ItemIndex := ItemIndProject;
-  if fifSearchOpen        in NewOptions then WhereRadioGroup.ItemIndex := ItemIndOpenFiles;
-  if fifSearchDirectories in NewOptions then WhereRadioGroup.ItemIndex := ItemIndDirectories;
-  if fifSearchActive      in NewOptions then WhereRadioGroup.ItemIndex := ItemIndActiveFile;
+
+  NewItemIndex:=ItemIndProject;
+  if fifSearchProject in NewOptions then
+    NewItemIndex := ItemIndProject;
+  if (fifSearchProjectGroup in NewOptions) and (ItemIndProjectGroup>=0) then
+    NewItemIndex := ItemIndProjectGroup;
+  if fifSearchOpen        in NewOptions then NewItemIndex := ItemIndOpenFiles;
+  if fifSearchDirectories in NewOptions then NewItemIndex := ItemIndDirectories;
+  if fifSearchActive      in NewOptions then NewItemIndex := ItemIndActiveFile;
+  WhereRadioGroup.ItemIndex:=NewItemIndex;
 
   UpdateReplaceCheck;
 end;
 
 function TLazFindInFilesDialog.GetOptions: TLazFindInFileSearchOptions;
+var
+  Where: Integer;
 begin
   Result := [];
   if OptionsCheckGroupBox.Checked[0] then Include(Result, fifMatchCase);
@@ -264,12 +295,12 @@ begin
   if IncludeSubDirsCheckBox.Checked then Include(Result, fifIncludeSubDirs);
   if ReplaceCheckBox.Checked then Include(Result, fifReplace);
 
-  case WhereRadioGroup.ItemIndex of
-    ItemIndProject    : Include(Result, fifSearchProject);
-    ItemIndOpenFiles  : Include(Result, fifSearchOpen);
-    ItemIndDirectories: Include(Result, fifSearchDirectories);
-    ItemIndActiveFile : Include(Result, fifSearchActive);
-  end;//case
+  Where:=WhereRadioGroup.ItemIndex;
+  if Where=ItemIndProject then Include(Result, fifSearchProject)
+  else if Where=ItemIndProjectGroup then Include(Result, fifSearchProjectGroup)
+  else if Where=ItemIndOpenFiles then Include(Result, fifSearchOpen)
+  else if Where=ItemIndDirectories then Include(Result, fifSearchDirectories)
+  else Include(Result, fifSearchActive);
 end;
 
 function TLazFindInFilesDialog.GetSynOptions: TSynSearchOptions;
@@ -475,6 +506,7 @@ end;
 function TLazFindInFilesDialog.Execute: boolean;
 var
   SearchForm: TSearchProgressForm;
+  Where: Integer;
 begin
   if ShowModal=mrOk then
   begin
@@ -493,16 +525,24 @@ begin
     try
       if FindText <> '' then
       begin
-        case WhereRadioGroup.ItemIndex of
-          ItemIndProject    :
-            if LazProject=nil then
-              SearchForm.DoSearchProject(Project1)
-            else
-              SearchForm.DoSearchProject(LazProject);
-          ItemIndOpenFiles  : SearchForm.DoSearchOpenFiles;
-          ItemIndDirectories: SearchForm.DoSearchDir;
-          ItemIndActiveFile : SearchForm.DoSearchActiveFile;
-        end;
+        Where:=WhereRadioGroup.ItemIndex;
+        if Where=ItemIndProject then
+        begin
+          if LazProject=nil then
+            SearchForm.DoSearchProject(Project1)
+          else
+            SearchForm.DoSearchProject(LazProject);
+        end else if Where=ItemIndProjectGroup then
+        begin
+          SearchForm.SearchOptions:=SearchForm.SearchOptions-[fifIncludeSubDirs];
+          SearchForm.DoSearchProjectGroup;
+        end
+        else if Where=ItemIndOpenFiles then
+          SearchForm.DoSearchOpenFiles
+        else if Where=ItemIndDirectories then
+          SearchForm.DoSearchDirs
+        else
+          SearchForm.DoSearchActiveFile;
       end;
     finally
       FreeAndNil(SearchForm);

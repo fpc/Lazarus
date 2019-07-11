@@ -97,7 +97,6 @@ type
     fOldCompilerMessagesFilename: string;
     fOldRealCompilerMessagesFilename: string;
     fOldFppkcConfigurationFilename: string;
-    fOldRealFppkcConfigurationFilename: string;
     FOldMaxRecentOpenFiles: integer;
     FOldMaxRecentProjectFiles: integer;
     FOldOpenLastProjectAtStart: boolean;

@@ -40,7 +40,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazTracer,
   // IDEIntf
-  IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
+  IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, ProjectGroupIntf,
   // ide
   LazarusIDEStrConsts, InputHistory, IDEProcs, SearchResultView, Project;
 
@@ -84,6 +84,7 @@ type
     fSearchOpen: boolean;
     fSearchActive: boolean;
     fSearchProject: boolean;
+    fSearchProjectGroup: boolean;
     fAborting: boolean;
     fLastUpdateProgress: DWORD;
     fWasActive: boolean;
@@ -102,8 +103,9 @@ type
   public
     procedure DoSearchOpenFiles;
     procedure DoSearchActiveFile;
-    procedure DoSearchDir;
+    procedure DoSearchDirs;
     procedure DoSearchProject(AProject: TProject);
+    procedure DoSearchProjectGroup;
   public
     property SearchDirectories: string read fDirectories write fDirectories;
     property SearchText: string read fSearchFor write fSearchFor;
@@ -694,6 +696,7 @@ begin
   fAbortString:= dlgSearchAbort;
   fPad:= '...';
   fSearchProject:= false;
+  fSearchProjectGroup:= false;
   fSearchOpen:= false;
   fSearchFiles:= false;
   fWasActive:= false;
@@ -745,6 +748,7 @@ begin
   SetFlag(sesoMultiLine,fifMultiLine in TheOptions);
   fRecursive:= (fifIncludeSubDirs in TheOptions);
   fSearchProject:= (fifSearchProject in TheOptions);
+  fSearchProjectGroup:= (fifSearchProjectGroup in TheOptions);
   fSearchOpen:= (fifSearchOpen in TheOptions);
   fSearchActive:= (fifSearchActive in TheOptions);
   fSearchFiles:= (fifSearchDirectories in TheOptions);
@@ -761,6 +765,7 @@ begin
   if sesoMultiLine in fFlags then include(Result,fifMultiLine);
   if fRecursive then include(Result,fifIncludeSubDirs);
   if fSearchProject then include(Result, fifSearchProject);
+  if fSearchProjectGroup then include(Result, fifSearchProjectGroup);
   if fSearchOpen then include(Result,fifSearchOpen);
   if fSearchActive then include(Result,fifSearchActive);
   if fSearchFiles then include(Result,fifSearchDirectories);
@@ -782,7 +787,7 @@ begin
       fResultsListUpdating:=true;
     end;
     try
-      if fSearchFiles then
+      if fSearchFiles or fSearchProjectGroup then
         DoFindInFiles(fDirectories);
       if fSearchProject or fSearchOpen or fSearchActive then
         DoFindInSearchList;
@@ -1052,7 +1057,7 @@ begin
   end;
 end;
 
-procedure TSearchProgressForm.DoSearchDir;
+procedure TSearchProgressForm.DoSearchDirs;
 begin
   SearchFileList:= Nil;
   DoSearchAndAddToSearchResults;
@@ -1077,6 +1082,17 @@ begin
     DoSearchAndAddToSearchResults;
   finally
     FreeAndNil(TheFileList);
+  end;
+end;
+
+procedure TSearchProgressForm.DoSearchProjectGroup;
+begin
+  if (ProjectGroupManager=nil) or (ProjectGroupManager.CurrentProjectGroup=nil) then
+    DoSearchProject(Project1)
+  else begin
+    SearchFileList:= Nil;
+    SearchDirectories:=ProjectGroupManager.GetSrcPaths;
+    DoSearchAndAddToSearchResults;
   end;
 end;
 
