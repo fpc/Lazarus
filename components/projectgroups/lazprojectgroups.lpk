@@ -17,40 +17,36 @@
     <License Value="Same as IDEIntf.
 GPL-2."/>
     <Version Minor="7"/>
-    <Files Count="8">
+    <Files Count="7">
       <Item1>
-        <Filename Value="projectgroupintf.pp"/>
-        <UnitName Value="ProjectGroupIntf"/>
-      </Item1>
-      <Item2>
         <Filename Value="projectgroup.pp"/>
         <UnitName Value="ProjectGroup"/>
-      </Item2>
-      <Item3>
+      </Item1>
+      <Item2>
         <Filename Value="projectgroupeditor.pas"/>
         <UnitName Value="ProjectGroupEditor"/>
-      </Item3>
-      <Item4>
+      </Item2>
+      <Item3>
         <Filename Value="regprojectgroup.pp"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegProjectGroup"/>
-      </Item4>
-      <Item5>
+      </Item3>
+      <Item4>
         <Filename Value="README.txt"/>
         <Type Value="Binary"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="projectgroupstrconst.pas"/>
         <UnitName Value="ProjectGroupStrConst"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="prjgrpoptionsfrm.pas"/>
         <UnitName Value="PrjGrpOptionsFrm"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="prjgrpinfofrm.pas"/>
         <UnitName Value="PrjGrpInfoFrm"/>
-      </Item8>
+      </Item7>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

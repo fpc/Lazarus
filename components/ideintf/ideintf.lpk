@@ -11,16 +11,13 @@
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <Other>
-        <Verbosity>
-          <ShowGenInfo Value="False"/>
-        </Verbosity>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LGPL2"/>
     <Version Major="1"/>
-    <Files Count="85">
+    <Files Count="86">
       <Item1>
         <Filename Value="actionseditor.pas"/>
         <UnitName Value="ActionsEditor"/>
@@ -362,6 +359,10 @@
         <Filename Value="lazmsgdialogs.pas"/>
         <UnitName Value="LazMsgDialogs"/>
       </Item85>
+      <Item86>
+        <Filename Value="projectgroupintf.pp"/>
+        <UnitName Value="ProjectGroupIntf"/>
+      </Item86>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

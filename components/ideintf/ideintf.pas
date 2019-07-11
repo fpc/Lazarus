@@ -23,7 +23,7 @@ uses
   StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
   UnitResources, ProjPackIntf, DBGridColumnsPropEditForm, ToolBarIntf, 
   ChangeParentDlg, PackageDependencyIntf, PackageLinkIntf, FppkgIntf, 
-  LazMsgDialogs, LazarusPackageIntf;
+  LazMsgDialogs, ProjectGroupIntf, LazarusPackageIntf;
 
 implementation
 
