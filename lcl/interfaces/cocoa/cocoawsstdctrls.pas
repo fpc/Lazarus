@@ -172,7 +172,6 @@ type
     function GetCount: Integer; override;
     function Get(Index: Integer): string; override;
   public
-    ForcedLineBreak: String;
     constructor Create(ATextView: TCocoaTextView);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
@@ -1133,7 +1132,6 @@ end;
 constructor TCocoaMemoStrings.Create(ATextView: TCocoaTextView);
 begin
   inherited Create;
-  ForcedLineBreak := LineBreak;
   FTextView := ATextView;
 end;
 
