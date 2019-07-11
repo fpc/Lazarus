@@ -105,7 +105,7 @@ type
     FUpdateLock: integer;
     FUpdatingSelection: boolean;
     procedure DoLoadedOpts(Sender: TObject);
-    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; AGraph: TLvlGraph
+    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; {%H-}AGraph: TLvlGraph
       );
     procedure OpenDependencyOwner(DependencyOwner: TObject);
     procedure SetupComponents;
