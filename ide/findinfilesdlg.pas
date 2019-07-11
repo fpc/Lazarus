@@ -70,6 +70,7 @@ type
     procedure SetReplaceText(const AValue: string);
     procedure SetSynOptions(NewOptions: TSynSearchOptions);
     procedure UpdateReplaceCheck;
+    procedure UpdateDirectoryOptions;
   public
     property Options: TLazFindInFileSearchOptions read GetOptions
                                                   write SetOptions;
@@ -134,19 +135,7 @@ end;
 
 procedure TLazFindInFilesDialog.WhereRadioGroupClick(Sender: TObject);
 begin
-  if WhereRadioGroup.ItemIndex = ItemIndDirectories then
-  begin
-    DirectoriesOptionsGroupBox.Enabled := true;
-    DirectoriesBrowse.Enabled:=true;
-    DirectoriesComboBox.Enabled:=true;
-  end
-  else if WhereRadioGroup.ItemIndex = ItemIndProjectGroup then
-  begin
-    DirectoriesOptionsGroupBox.Enabled := true;
-    DirectoriesBrowse.Enabled:=false;
-    DirectoriesComboBox.Enabled:=false;
-  end else
-    DirectoriesOptionsGroupBox.Enabled := false;
+  UpdateDirectoryOptions;
 end;
 
 procedure TLazFindInFilesDialog.DirectoriesBrowseClick(Sender: TObject);
@@ -219,7 +208,7 @@ begin
   ReplaceCheckBox.Enabled:=true;
 
   UpdateReplaceCheck;
-  DirectoriesOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=ItemIndDirectories;
+  UpdateDirectoryOptions;
 
   AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
   IDEDialogLayoutList.ApplyLayout(Self);
@@ -266,7 +255,6 @@ begin
   OptionsCheckGroupBox.Checked[1] := fifWholeWord in NewOptions;
   OptionsCheckGroupBox.Checked[2] := fifRegExpr in NewOptions;
   OptionsCheckGroupBox.Checked[3] := fifMultiLine in NewOptions;
-  DirectoriesOptionsGroupBox.Enabled := fifSearchDirectories in NewOptions;
   IncludeSubDirsCheckBox.Checked := fifIncludeSubDirs in NewOptions;
   ReplaceCheckBox.Checked := [fifReplace,fifReplaceAll]*NewOptions<>[];
 
@@ -281,6 +269,7 @@ begin
   WhereRadioGroup.ItemIndex:=NewItemIndex;
 
   UpdateReplaceCheck;
+  UpdateDirectoryOptions;
 end;
 
 function TLazFindInFilesDialog.GetOptions: TLazFindInFileSearchOptions;
@@ -336,6 +325,23 @@ begin
     ButtonPanel1.OKButton.Caption := lisBtnReplace
   else
     ButtonPanel1.OKButton.Caption := lisBtnFind;
+end;
+
+procedure TLazFindInFilesDialog.UpdateDirectoryOptions;
+begin
+  if WhereRadioGroup.ItemIndex = ItemIndDirectories then
+  begin
+    DirectoriesOptionsGroupBox.Enabled := true;
+    DirectoriesBrowse.Enabled:=true;
+    DirectoriesComboBox.Enabled:=true;
+  end
+  else if WhereRadioGroup.ItemIndex = ItemIndProjectGroup then
+  begin
+    DirectoriesOptionsGroupBox.Enabled := true;
+    DirectoriesBrowse.Enabled:=false;
+    DirectoriesComboBox.Enabled:=false;
+  end else
+    DirectoriesOptionsGroupBox.Enabled := false;
 end;
 
 function TLazFindInFilesDialog.GetBaseDirectory: string;
