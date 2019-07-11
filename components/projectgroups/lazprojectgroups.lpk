@@ -17,7 +17,7 @@
     <License Value="Same as IDEIntf.
 GPL-2."/>
     <Version Minor="7"/>
-    <Files Count="7">
+    <Files Count="8">
       <Item1>
         <Filename Value="projectgroupintf.pp"/>
         <UnitName Value="ProjectGroupIntf"/>
@@ -45,8 +45,12 @@ GPL-2."/>
       </Item6>
       <Item7>
         <Filename Value="prjgrpoptionsfrm.pas"/>
-        <UnitName Value="prjgrpoptionsfrm"/>
+        <UnitName Value="PrjGrpOptionsFrm"/>
       </Item7>
+      <Item8>
+        <Filename Value="prjgrpinfofrm.pas"/>
+        <UnitName Value="PrjGrpInfoFrm"/>
+      </Item8>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

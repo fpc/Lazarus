@@ -22,7 +22,7 @@ uses
   LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf, IDEWindowIntf,
   IDEDialogs, IDECommands,
   // ProjectGroups
-  ProjectGroupStrConst, ProjectGroup, PrjGrpOptionsFrm;
+  ProjectGroupStrConst, ProjectGroup, PrjGrpOptionsFrm, PrjGrpInfoFrm;
 
 type
   TNodeType = (
@@ -47,6 +47,7 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    ATargetInfo: TAction;
     AProjectGroupOptions: TAction;
     AProjectGroupRedo: TAction;
     AProjectGroupUndo: TAction;
@@ -70,6 +71,7 @@ type
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
     ImageListMain: TImageList;
+    PMIInfo: TMenuItem;
     PMIOptions: TMenuItem;
     PMIRedo: TMenuItem;
     PMIUndo: TMenuItem;
@@ -127,6 +129,8 @@ type
     procedure ATargetCopyFilenameUpdate(Sender: TObject);
     procedure ATargetEarlierExecute(Sender: TObject);
     procedure ATargetEarlierUpdate(Sender: TObject);
+    procedure ATargetInfoExecute(Sender: TObject);
+    procedure ATargetInfoUpdate(Sender: TObject);
     procedure ATargetInstallExecute(Sender: TObject);
     procedure ATargetInstallUpdate(Sender: TObject);
     procedure ATargetLaterExecute(Sender: TObject);
@@ -478,6 +482,16 @@ begin
   end;
   (Sender as TAction).Enabled:=I>0;
   UpdateIDEMenuCommandFromAction(Sender,MnuCmdTargetEarlier);
+end;
+
+procedure TProjectGroupEditorForm.ATargetInfoExecute(Sender: TObject);
+begin
+  ShowPrgGrpInfo(SelectedTarget as TIDECompileTarget);
+end;
+
+procedure TProjectGroupEditorForm.ATargetInfoUpdate(Sender: TObject);
+begin
+
 end;
 
 procedure TProjectGroupEditorForm.ATargetLaterExecute(Sender: TObject);

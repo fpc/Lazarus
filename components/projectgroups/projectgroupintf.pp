@@ -204,6 +204,7 @@ Type
   public
     procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); virtual; abstract;
     procedure SaveProjectGroup; virtual; abstract;
+    function GetSrcPaths: string; virtual; abstract;
     function CanUndo: boolean; virtual; abstract;
     function CanRedo: boolean; virtual; abstract;
     procedure Undo; virtual; abstract;

@@ -980,6 +980,9 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     object PMIOptions: TMenuItem
       Action = AProjectGroupOptions
     end
+    object PMIInfo: TMenuItem
+      Action = ATargetInfo
+    end
   end
   object ActionListMain: TActionList
     Images = ImageListMain
@@ -1118,6 +1121,12 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Category = 'ProjectGroupActions'
       Caption = 'Options'
       OnExecute = AProjectGroupOptionsExecute
+    end
+    object ATargetInfo: TAction
+      Category = 'TargetAction'
+      Caption = 'Info'
+      OnExecute = ATargetInfoExecute
+      OnUpdate = ATargetInfoUpdate
     end
   end
   object PopupMenuTree: TPopupMenu

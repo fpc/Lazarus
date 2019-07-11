@@ -35,7 +35,8 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LazUtils
-  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, Laz2_XMLCfg, LazTracer,
+  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, Laz2_XMLCfg,
+  LazTracer, LazUtilities, AvgLvlTree, LazStringUtils,
   // LCL
   Controls, Forms, Dialogs,
   // CodeTools
@@ -43,7 +44,7 @@ uses
   // IdeIntf
   PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf,
   BaseIDEIntf, IDECommands, IDEExternToolIntf, MacroIntf, IDEMsgIntf,
-  ToolBarIntf,
+  ToolBarIntf, MacroDefIntf, PackageDependencyIntf, PackageLinkIntf,
   // ProjectGroups
   ProjectGroupIntf, ProjectGroupStrConst;
 
@@ -213,8 +214,16 @@ type
     FOptions: TIDEProjectGroupOptions;
     procedure AddToRecentGroups(aFilename: string);
     function GetNewFileName: Boolean;
+    function GetPGSrcPaths(const s: string; const {%H-}Data: PtrInt;
+      var Abort: boolean): string;
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SetIdleConnected(const AValue: boolean);
+    procedure AddSrcPathOfFile(SrcPaths: TFilenameToStringTree; Filename: string);
+    procedure AddProjectSrcPaths(Target: TIDECompileTarget; SrcPaths, LPKFiles: TFilenameToStringTree);
+    procedure AddPackageSrcPaths(Target: TIDECompileTarget; SrcPaths, LPKFiles: TFilenameToStringTree);
+    procedure AddPackageNameSrcPaths(PkgName, PreferredFile, DefaultFile: string; SrcPaths, LPKFiles: TFilenameToStringTree);
+    procedure AddLPKSrcPaths(LPKFilename: string; SrcPaths, LPKFiles: TFilenameToStringTree);
+    procedure AddGroupSrcPaths(Group: TProjectGroup; SrcPaths, LPKFiles: TFilenameToStringTree);
   protected
     FIDEStarted: boolean;
     FProjectGroup: TIDEProjectGroup;
@@ -241,6 +250,7 @@ type
     procedure Redo; override;
     procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); override;
     procedure SaveProjectGroup; override;
+    function GetSrcPaths: string; override;
   public
     property Options: TIDEProjectGroupOptions read FOptions;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -593,6 +603,8 @@ begin
   FUndoList:=TObjectList.Create(true);
   FRedoList:=TObjectList.Create(true);
   IdleConnected:=true;
+
+  IDEMacros.Add(TTransferMacro.Create('PGSrcPaths','','Project groups source paths',@GetPGSrcPaths,[]));
 end;
 
 destructor TIDEProjectGroupManager.Destroy;
@@ -706,6 +718,15 @@ begin
   end;
 end;
 
+function TIDEProjectGroupManager.GetPGSrcPaths(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Abort:=false;
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TIDEProjectGroupManager.GetPGSrcPaths] ignoring macro PGSrcPaths parameter "',s,'"']);
+  Result:=GetSrcPaths;
+end;
+
 procedure TIDEProjectGroupManager.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   if FIDEStarted then
@@ -735,6 +756,168 @@ begin
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TIDEProjectGroupManager.AddSrcPathOfFile(
+  SrcPaths: TFilenameToStringTree; Filename: string);
+var
+  SrcPath: String;
+begin
+  //debugln(['TIDEProjectGroupManager.AddSrcPathOfFile ',Filename]);
+  SrcPath:=ChompPathDelim(ExtractFilePath(ResolveDots(Filename)));
+  SrcPaths[SrcPath]:='1';
+end;
+
+procedure TIDEProjectGroupManager.AddProjectSrcPaths(Target: TIDECompileTarget;
+  SrcPaths, LPKFiles: TFilenameToStringTree);
+var
+  aProject: TLazProject;
+  p, i: Integer;
+  Paths, Path: String;
+begin
+  aProject:=LazarusIDE.ActiveProject;
+  if (aProject<>nil)
+      and (CompareFilenames(aProject.ProjectInfoFile,Target.Filename)=0) then
+  begin
+    // active project, can be virtual
+    //debugln(['TIDEProjectGroupManager.AddProjectSrcPaths Active project']);
+    AddSrcPathOfFile(SrcPaths,aProject.ProjectInfoFile);
+    Paths:=aProject.LazCompilerOptions.GetSrcPath(false);
+    //debugln(['TIDEProjectGroupManager.AddProjectSrcPaths Active project Paths="',Paths,'"']);
+    p:=1;
+    repeat
+      Path:=GetNextDelimitedItem(Paths,';',p);
+      if p>length(Paths) then break;
+      SrcPaths[Path]:='1';
+    until false;
+  end else begin
+    // lpi on disk -> use files in Target
+    //debugln(['TIDEProjectGroupManager.AddProjectSrcPaths Inactive project']);
+    AddSrcPathOfFile(SrcPaths,Target.Filename);
+    for i:=0 to Target.FileCount-1 do
+      AddSrcPathOfFile(SrcPaths,Target.Files[i]);
+  end;
+  // add SrcPaths of required packages
+  for i:=0 to Target.RequiredPackageCount-1 do
+    AddPackageNameSrcPaths(Target.RequiredPackages[i].PackageName,'','',SrcPaths,LPKFiles);
+end;
+
+procedure TIDEProjectGroupManager.AddPackageSrcPaths(Target: TIDECompileTarget;
+  SrcPaths, LPKFiles: TFilenameToStringTree);
+begin
+  AddLPKSrcPaths(Target.Filename,SrcPaths,LPKFiles);
+end;
+
+procedure TIDEProjectGroupManager.AddPackageNameSrcPaths(PkgName,
+  PreferredFile, DefaultFile: string; SrcPaths, LPKFiles: TFilenameToStringTree
+  );
+var
+  LPKFilename: String;
+  Link: TPackageLink;
+begin
+  if not IsValidPkgName(PkgName) then exit;
+  if FilenameIsAbsolute(PreferredFile) and FileExistsCached(PreferredFile) then
+    LPKFilename:=PreferredFile
+  else if FilenameIsAbsolute(DefaultFile) and FileExistsCached(DefaultFile) then
+    LPKFilename:=DefaultFile
+  else begin
+    Link:=PkgLinks.FindLinkWithPkgName(PkgName);
+    if Link=nil then begin
+      debugln(['Warning: (lazarus) [TIDEProjectGroupManager.AddPackageNameSrcPaths] package "',PkgName,'" not found']);
+      exit;
+    end;
+    LPKFilename:=Link.GetEffectiveFilename;
+    if not FilenameIsAbsolute(LPKFilename) then
+      exit;
+  end;
+  AddLPKSrcPaths(LPKFilename,SrcPaths,LPKFiles);
+end;
+
+procedure TIDEProjectGroupManager.AddLPKSrcPaths(LPKFilename: string; SrcPaths,
+  LPKFiles: TFilenameToStringTree);
+var
+  xml: TXMLConfig;
+  Path, SubPath, CurFilename, PkgName, PreferredFilename,
+    DefaultFilename, Paths, BaseDir: String;
+  Cnt, i, p: Integer;
+  Pkg: TIDEPackage;
+begin
+  if LPKFiles.Contains(LPKFilename) then exit;
+  //debugln(['TIDEProjectGroupManager.AddLPKSrcPaths ',LPKFilename]);
+  for i:=0 to PackageEditingInterface.GetPackageCount-1 do
+  begin
+    Pkg:=PackageEditingInterface.GetPackages(i);
+    if CompareFilenames(Pkg.Filename,LPKFilename)=0 then
+    begin
+      // loaded package, can be virtual
+      //debugln(['TIDEProjectGroupManager.AddPackageSrcPaths LOADED Pkg.Filename=',Pkg.Filename]);
+      AddSrcPathOfFile(SrcPaths,Pkg.Filename);
+      Paths:=Pkg.LazCompilerOptions.GetSrcPath(false);
+      //debugln(['TIDEProjectGroupManager.AddPackageSrcPaths LOADED Paths=',Paths]);
+      p:=1;
+      repeat
+        Path:=GetNextDelimitedItem(Paths,';',p);
+        if p>length(Paths) then break;
+        SrcPaths[Path]:='1';
+      until false;
+      exit;
+    end;
+  end;
+  // not loaded lpk -> parse xml
+  // Note: do not open package, as this might clash with active packages
+  xml:=LoadXML(LPKFilename,true);
+  try
+    if xml=nil then exit;
+    AddSrcPathOfFile(SrcPaths,LPKFilename);
+    BaseDir:=ExtractFilePath(LPKFilename);
+    // list of files
+    Path:='Files/';
+    Cnt:=xml.GetValue(Path+'Count',0);
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'Item'+IntToStr(i)+'/';
+      CurFilename:=xml.GetValue(SubPath+'Filename/Value','');
+      if CurFilename='' then continue;
+      AddSrcPathOfFile(SrcPaths,CurFilename);
+    end;
+
+    // load list of RequiredPackages from lpk
+    Path:='Package/RequiredPkgs/';
+    Cnt:=xml.GetValue(Path+'Count',0);
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'Item'+IntToStr(i)+'/';
+      PkgName:=xml.GetValue(SubPath+'PackageName/Value','');
+      if not IsValidPkgName(PkgName) then continue;
+      PreferredFilename:=xml.GetValue(SubPath+'DefaultFilename/Prefer','');
+      if (PreferredFilename<>'') and not FilenameIsAbsolute(PreferredFilename) then
+        PreferredFilename:=ResolveDots(BaseDir+PreferredFilename);
+      DefaultFilename:=xml.GetValue(SubPath+'DefaultFilename/Value','');
+      if (DefaultFilename<>'') and not FilenameIsAbsolute(DefaultFilename) then
+        DefaultFilename:=ResolveDots(BaseDir+DefaultFilename);
+      AddPackageNameSrcPaths(PkgName,PreferredFilename,DefaultFilename,SrcPaths,LPKFiles);
+    end;
+  finally
+    xml.Free;
+  end;
+end;
+
+procedure TIDEProjectGroupManager.AddGroupSrcPaths(Group: TProjectGroup;
+  SrcPaths, LPKFiles: TFilenameToStringTree);
+var
+  i: Integer;
+  Target: TIDECompileTarget;
+begin
+  if Group=nil then exit;
+  //debugln(['TIDEProjectGroupManager.AddGroupSrcPaths ',Group.FileName,' Group.TargetCount=',Group.TargetCount]);
+  for i:=0 to Group.TargetCount-1 do
+  begin
+    Target:=TIDECompileTarget(Group.Targets[i]);
+    case Target.TargetType of
+      ttProject: AddProjectSrcPaths(Target,SrcPaths,LPKFiles);
+      ttPackage: AddPackageSrcPaths(Target,SrcPaths,LPKFiles);
+      ttProjectGroup: AddGroupSrcPaths(Target.ProjectGroup,SrcPaths,LPKFiles);
+      ttPascalFile: AddSrcPathOfFile(SrcPaths,Target.Filename);
+    end;
+  end;
 end;
 
 procedure TIDEProjectGroupManager.AddToRecentGroups(aFilename: string);
@@ -829,6 +1012,29 @@ begin
   if (FProjectGroup.FileName<>'') or GetNewFileName then begin
     FProjectGroup.SaveToFile;
     AddToRecentGroups(FProjectGroup.FileName);
+  end;
+end;
+
+function TIDEProjectGroupManager.GetSrcPaths: string;
+var
+  SrcPaths, LPKFiles: TFilenameToStringTree;
+  s: PStringToStringItem;
+begin
+  Result:='';
+  if not Assigned(FProjectGroup) then exit;
+  LPKFiles:=TFilenameToStringTree.Create(false);
+  SrcPaths:=TFilenameToStringTree.Create(false);
+  try
+    AddGroupSrcPaths(FProjectGroup,SrcPaths,LPKFiles);
+    for s in SrcPaths do begin
+      if s^.Name='' then continue;
+      if Result<>'' then
+        Result:=Result+';';
+      Result:=Result+s^.Name;
+    end;
+  finally
+    SrcPaths.Free;
+    LPKFiles.Free;
   end;
 end;
 

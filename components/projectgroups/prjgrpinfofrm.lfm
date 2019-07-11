@@ -1,0 +1,40 @@
+object PrjGrpInfoForm: TPrjGrpInfoForm
+  Left = 374
+  Height = 240
+  Top = 281
+  Width = 320
+  Caption = 'PrjGrpInfoForm'
+  ClientHeight = 240
+  ClientWidth = 320
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object Memo1: TMemo
+    Left = 6
+    Height = 186
+    Top = 6
+    Width = 308
+    Align = alClient
+    BorderSpacing.Around = 6
+    Lines.Strings = (
+      'Memo1'
+    )
+    ScrollBars = ssAutoVertical
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 198
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK]
+  end
+end
