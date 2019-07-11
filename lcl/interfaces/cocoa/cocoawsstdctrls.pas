@@ -172,6 +172,7 @@ type
     function GetCount: Integer; override;
     function Get(Index: Integer): string; override;
   public
+    ForcedLineBreak: String;
     constructor Create(ATextView: TCocoaTextView);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
@@ -1120,26 +1121,32 @@ end;
 
 { TCocoaMemoStrings }
 
+function LineBreaksToUnix(const src: string): string;
+begin
+  // todo: need more effecient replacement
+  Result := StringReplace( StringReplace(
+    StringReplace(src, #10#13, #10, [rfReplaceAll])
+    , #13#10, #10, [rfReplaceAll])
+    , #13, #10, [rfReplaceAll]);
+end;
+
 constructor TCocoaMemoStrings.Create(ATextView: TCocoaTextView);
 begin
   inherited Create;
+  ForcedLineBreak := LineBreak;
   FTextView := ATextView;
 end;
 
 function TCocoaMemoStrings.GetTextStr: string;
 begin
   Result := NSStringToString(FTextView.string_);
-  Result := StringReplace( StringReplace(
-    StringReplace(Result, #10#13, LineEnding, [rfReplaceAll])
-    , #13#10, LineEnding, [rfReplaceAll])
-    , #13, LineEnding, [rfReplaceAll]);
 end;
 
 procedure TCocoaMemoStrings.SetTextStr(const Value: string);
 var
   ns: NSString;
 begin
-  ns := NSStringUtf8(Value);
+  ns := NSStringUtf8(LineBreaksToUnix(Value));
   FTextView.setString(ns);
   ns.release;
 
@@ -1231,7 +1238,7 @@ var
   idx   : integer;
   ro    : Boolean;
 const
-  LFSTR = #13#10;
+  LFSTR = #10;
 begin
   ns:=FTextView.string_;
   idx:=0;
@@ -1651,7 +1658,7 @@ var
 begin
   txt := GetTextView(AWinControl);
   if not Assigned(txt) then Exit;
-  ns := NSStringUtf8(AText);
+  ns := NSStringUtf8(LineBreaksToUnix(AText));
   txt.setString(ns);
   ns.release;
 end;
