@@ -226,13 +226,13 @@ const
     [taOpen,taCompile,taCompileClean,taCompileFromHere,taRun] // ttExternalTool
   );
 
-function TargetTypeFromExtenstion(AExt: String): TPGTargetType;
+function TargetTypeFromExtension(AExt: String): TPGTargetType;
 function TargetSupportsAction(ATarget: TPGTargetType; AAction: TPGTargetAction): Boolean;
 function ActionAllowsMulti(AAction: TPGTargetAction): Boolean;
 
 implementation
 
-function TargetTypeFromExtenstion (AExt: String): TPGTargetType;
+function TargetTypeFromExtension (AExt: String): TPGTargetType;
 begin
   while (AExt<>'') and (AExt[1]='.') do
     Delete(AExt,1,1);
@@ -515,7 +515,7 @@ procedure TPGCompileTarget.SetFilename(const AValue: string);
 begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
-  TargetType:=TargetTypeFromExtenstion(ExtractFileExt(AValue));
+  TargetType:=TargetTypeFromExtension(ExtractFileExt(AValue));
   if ProjectGroup<>nil then
     ProjectGroup.FileName:=Filename;
 end;
