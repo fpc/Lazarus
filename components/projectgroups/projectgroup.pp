@@ -1317,7 +1317,8 @@ begin
           else
             exit;
           end;
-        Target.LoadGroupSettings(XMLConfig,APath);
+        if Target<>nil then
+          Target.LoadGroupSettings(XMLConfig,APath);
       end;
     finally
       Modified:=false;
