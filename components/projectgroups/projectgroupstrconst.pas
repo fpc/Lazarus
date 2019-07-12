@@ -65,8 +65,14 @@ Resourcestring
   lisProjectGroupSaveHint      = 'Save project group';
   lisProjectGroupSaveAsCaption = 'Save As ...';
   lisProjectGroupSaveAsHint    = 'Save project group with a new name';
-  lisProjectGroupAddExistingCaption = 'Add';
+  lisProjectGroupNewCaption = 'New';
+  lisProjectGroupNewHint    = 'New project group';
+  lisProjectGroupAddCaption = 'Add';
+  lisProjectGroupAddHint    = 'Add targets to project group';
+  lisProjectGroupAddExistingCaption = 'Add from file';
   lisProjectGroupAddExistingHint    = 'Add existing target to project group';
+  lisProjectGroupAddCurrentProjectCaption = 'Add current project';
+  lisProjectGroupAddCurrentProjectHint    = 'Add current project to project group';
   lisProjectGroupDeleteCaption = 'Remove';
   lisProjectGroupDeleteHint    = 'Remove target from project group';
   lisProjectGroupAddNewCaption = 'New';
@@ -116,6 +122,7 @@ Resourcestring
   lisPackageNotFound = 'Package not found';
   lisPackageNotFound2 = 'Package "%s" not found.';
   lisBuildMode2 = 'Build Mode "%s"';
+  lisLazarusSupportedInProjectGroups = 'Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)';
   lisLazarusProjectsLpi = 'Lazarus projects (*.lpi)';
   lisLazarusPackagesLpk = 'Lazarus packages (*.lpk)';
   lisLazarusProjectGroupsLpg = 'Lazarus project groups (*.lpg)';

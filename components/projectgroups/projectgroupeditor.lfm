@@ -1,7 +1,7 @@
 object ProjectGroupEditorForm: TProjectGroupEditorForm
-  Left = 383
+  Left = 190
   Height = 358
-  Top = 187
+  Top = 198
   Width = 646
   Caption = 'ProjectGroupEditorForm'
   ClientHeight = 358
@@ -28,70 +28,73 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Action = AProjectGroupSave
     end
     object TBAdd: TToolButton
-      Left = 106
+      Left = 102
       Top = 2
-      Action = AProjectGroupAddExisting
+      Caption = 'Add'
+      DropdownMenu = PopupMenuAdd
+      ImageIndex = 8
+      Style = tbsButtonDrop
     end
     object TBNewTarget: TToolButton
-      Left = 34
+      Left = 33
       Top = 2
       Action = AProjectGroupAddNew
       Visible = False
     end
     object TBDelete: TToolButton
-      Left = 136
+      Left = 142
       Top = 2
       Action = AProjectGroupDelete
     end
     object TBCompile: TToolButton
-      Left = 189
+      Left = 193
       Top = 2
       Action = ATargetCompile
     end
     object TBCompileClean: TToolButton
-      Left = 241
+      Left = 246
       Top = 2
       Action = ATargetCompileClean
     end
     object ToolButton1: TToolButton
-      Left = 326
+      Left = 332
       Height = 46
       Top = 2
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object TBTargetUp: TToolButton
-      Left = 388
+      Left = 391
       Top = 2
       Action = ATargetEarlier
     end
     object TBTargetLater: TToolButton
-      Left = 432
+      Left = 431
       Top = 2
       Action = ATargetLater
     end
     object TBMore: TToolButton
-      Left = 515
+      Left = 509
       Top = 2
       Caption = 'More...'
       DropdownMenu = PopupMenuMore
-      Style = tbsDropDown
+      Style = tbsButtonDrop
     end
     object TBActivate: TToolButton
-      Left = 334
+      Left = 340
       Top = 2
       Action = ATargetActivate
       Visible = False
     end
     object TBReload: TToolButton
-      Left = 469
+      Left = 465
       Top = 2
       Action = AProjectGroupReload
     end
   end
   object TVPG: TTreeView
     Left = 0
-    Height = 291
+    Height = 287
     Top = 48
     Width = 646
     Align = alClient
@@ -110,8 +113,8 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   end
   object SBPG: TStatusBar
     Left = 0
-    Height = 19
-    Top = 339
+    Height = 23
+    Top = 335
     Width = 646
     Panels = <    
       item
@@ -125,8 +128,8 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     SimplePanel = False
   end
   object ImageListMain: TImageList
-    left = 128
-    top = 184
+    Left = 128
+    Top = 184
     Bitmap = {
       4C691A0000001000000010000000FFFFFF009E6E4D2B9D6D4CD69D6D4BC59D6C
       4BFF9C6C4AFF9C6B49FF9B6A49FF9B6A48FF9A6947FF996846FF986745FF9364
@@ -966,8 +969,11 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   object PopupMenuMore: TPopupMenu
     Images = ImageListMain
     OnPopup = PopupMenuMorePopup
-    left = 208
-    top = 96
+    Left = 208
+    Top = 96
+    object PMINew: TMenuItem
+      Action = AProjectGroupNew
+    end
     object PMISaveAs: TMenuItem
       Action = AProjectGroupSaveAs
     end
@@ -986,8 +992,8 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   end
   object ActionListMain: TActionList
     Images = ImageListMain
-    left = 48
-    top = 152
+    Left = 48
+    Top = 152
     object AProjectGroupSave: TAction
       Category = 'ProjectGroupActions'
       Caption = 'Save'
@@ -1004,21 +1010,10 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     end
     object AProjectGroupAddExisting: TAction
       Category = 'ProjectGroupActions'
-      Caption = 'Add'
+      Caption = 'Add from file'
       ImageIndex = 8
       OnExecute = AProjectGroupAddExistingExecute
-    end
-    object AProjectGroupDelete: TAction
-      Category = 'ProjectGroupActions'
-      Caption = 'Remove'
-      ImageIndex = 9
-      OnExecute = AProjectGroupDeleteExecute
-      OnUpdate = AProjectGroupDeleteUpdate
-    end
-    object AProjectGroupAddNew: TAction
-      Category = 'ProjectGroupActions'
-      Caption = 'New Target'
-      ImageIndex = 6
+      OnUpdate = AProjectGroupAddExistingUpdate
     end
     object ATargetEarlier: TAction
       Category = 'TargetAction'
@@ -1099,11 +1094,37 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       OnExecute = ATargetCopyFilenameExecute
       OnUpdate = ATargetCopyFilenameUpdate
     end
+    object ATargetInfo: TAction
+      Category = 'TargetAction'
+      Caption = 'Info'
+      OnExecute = ATargetInfoExecute
+      OnUpdate = ATargetInfoUpdate
+    end
+    object AProjectGroupAddCurrent: TAction
+      Category = 'ProjectGroupActions'
+      Caption = 'Add current project'
+      ImageIndex = 8
+      OnExecute = AProjectGroupAddCurrentExecute
+      OnUpdate = AProjectGroupAddCurrentUpdate
+    end
+    object AProjectGroupDelete: TAction
+      Category = 'ProjectGroupActions'
+      Caption = 'Remove'
+      ImageIndex = 9
+      OnExecute = AProjectGroupDeleteExecute
+      OnUpdate = AProjectGroupDeleteUpdate
+    end
+    object AProjectGroupAddNew: TAction
+      Category = 'ProjectGroupActions'
+      Caption = 'New Target'
+      ImageIndex = 6
+    end
     object AProjectGroupReload: TAction
       Category = 'ProjectGroupActions'
       Caption = 'Reload'
       ImageIndex = 25
       OnExecute = AProjectGroupReloadExecute
+      OnUpdate = AProjectGroupAddExistingUpdate
     end
     object AProjectGroupUndo: TAction
       Category = 'ProjectGroupActions'
@@ -1122,17 +1143,16 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Caption = 'Options'
       OnExecute = AProjectGroupOptionsExecute
     end
-    object ATargetInfo: TAction
-      Category = 'TargetAction'
-      Caption = 'Info'
-      OnExecute = ATargetInfoExecute
-      OnUpdate = ATargetInfoUpdate
+    object AProjectGroupNew: TAction
+      Category = 'ProjectGroupActions'
+      Caption = 'New project group'
+      OnExecute = AProjectGroupNewExecute
     end
   end
   object PopupMenuTree: TPopupMenu
     Images = ImageListMain
-    left = 208
-    top = 152
+    Left = 208
+    Top = 152
     object PMICopyFilenameMenuItem: TMenuItem
       Action = ATargetCopyFilename
     end
@@ -1166,7 +1186,17 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   end
   object OpenDialogTarget: TOpenDialog
     Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 48
-    top = 96
+    Left = 48
+    Top = 96
+  end
+  object PopupMenuAdd: TPopupMenu
+    Left = 120
+    Top = 53
+    object PMIAddExisting: TMenuItem
+      Action = AProjectGroupAddExisting
+    end
+    object PMIAddCurrent: TMenuItem
+      Action = AProjectGroupAddCurrent
+    end
   end
 end

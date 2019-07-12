@@ -47,6 +47,8 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    AProjectGroupNew: TAction;
+    AProjectGroupAddCurrent: TAction;
     ATargetInfo: TAction;
     AProjectGroupOptions: TAction;
     AProjectGroupRedo: TAction;
@@ -71,6 +73,9 @@ type
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
     ImageListMain: TImageList;
+    PMINew: TMenuItem;
+    PMIAddExisting: TMenuItem;
+    PMIAddCurrent: TMenuItem;
     PMIInfo: TMenuItem;
     PMIOptions: TMenuItem;
     PMIRedo: TMenuItem;
@@ -87,6 +92,7 @@ type
     PMICompileClean: TMenuItem;
     PMICompile: TMenuItem;
     OpenDialogTarget: TOpenDialog;
+    PopupMenuAdd: TPopupMenu;
     PopupMenuMore: TPopupMenu;
     PopupMenuTree: TPopupMenu;
     SBPG: TStatusBar;
@@ -104,9 +110,13 @@ type
     TBActivate: TToolButton;
     TBReload: TToolButton;
     TVPG: TTreeView;
+    procedure AProjectGroupAddCurrentExecute(Sender: TObject);
+    procedure AProjectGroupAddCurrentUpdate(Sender: TObject);
     procedure AProjectGroupAddExistingExecute(Sender: TObject);
+    procedure AProjectGroupAddExistingUpdate(Sender: TObject);
     procedure AProjectGroupDeleteExecute(Sender: TObject);
     procedure AProjectGroupDeleteUpdate(Sender: TObject);
+    procedure AProjectGroupNewExecute(Sender: TObject);
     procedure AProjectGroupOptionsExecute(Sender: TObject);
     procedure AProjectGroupRedoExecute(Sender: TObject);
     procedure AProjectGroupRedoUpdate(Sender: TObject);
@@ -201,12 +211,14 @@ type
     function CreateSectionNode(AParent: TTreeNode; Const ACaption: String; ANodeType: TNodeType): TTreeNode;
     function CreateTargetNode(AParent: TTreeNode; ANodeType: TNodeType; aTarget: TPGCompileTarget): TTreeNode;
     function CreateSubNode(AParent: TTreeNode; ANodeType: TNodeType; aParentTarget: TPGCompileTarget; aValue: string): TTreeNode;
+    procedure ClearNodeData(TVNode: TTreeNode);
     procedure ClearChildNodes(TVNode: TTreeNode);
     procedure FillPackageNode(TVNode: TTreeNode; T: TPGCompileTarget);
     procedure FillProjectNode(TVNode: TTreeNode; T: TPGCompileTarget);
     procedure FillTargetNode(TVNode: TTreeNode; T: TPGCompileTarget);
     procedure FillProjectGroupNode(TVNode: TTreeNode; AProjectGroup: TProjectGroup);
     function GetNodeImageIndex(ANodeType: TNodeType; ANodeData: TPGCompileTarget ): Integer;
+    procedure AddTarget(const aFileName: string);
     function SelectedNodeData: TNodeData;
     function SelectedTarget: TPGCompileTarget;
     function GetTVNodeFilename(TVNode: TTreeNode): string;
@@ -269,7 +281,9 @@ var
   // Action image indexes
   iiProjectGroupSave         : Integer = -1;
   iiProjectGroupSaveAs       : Integer = -1;
+  iiProjectGroupNew          : Integer = -1;
   iiProjectGroupAddExisting  : Integer = -1;
+  iiProjectGroupAddCurrent   : Integer = -1;
   iiProjectGroupDelete       : Integer = -1;
   iiProjectGroupAddNew       : Integer = -1;
   iiTargetEarlier            : Integer = -1;
@@ -334,6 +348,15 @@ begin
   PG.OnTargetDeleted:=Nil;
   PG.OnTargetActiveChanged:=Nil;
   PG.OnTargetsExchanged:=Nil;
+end;
+
+procedure TProjectGroupEditorForm.ClearNodeData(TVNode: TTreeNode);
+begin
+  if TVNode.Data<>nil then
+  begin
+    TObject(TVNode.Data).Free;
+    TVNode.Data:=nil;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.SetBuildCommandRedirected(
@@ -411,7 +434,9 @@ procedure TProjectGroupEditorForm.Localize;
 begin
   ConfigAction(AProjectGroupSave,iiProjectGroupSave,lisProjectGroupSaveCaption,lisProjectGroupSaveHint,Nil);
   ConfigAction(AProjectGroupSaveAs,iiProjectGroupSaveAs,lisProjectGroupSaveAsCaption,lisProjectGroupSaveAsHint,Nil);
+  ConfigAction(AProjectGroupNew,iiProjectGroupNew,lisProjectGroupNewCaption,lisProjectGroupNewHint,Nil);
   ConfigAction(AProjectGroupAddExisting,iiProjectGroupAddExisting,lisProjectGroupAddExistingCaption,lisProjectGroupAddExistingHint,Nil);
+  ConfigAction(AProjectGroupAddCurrent,iiProjectGroupAddCurrent,lisProjectGroupAddCurrentProjectCaption,lisProjectGroupAddCurrentProjectHint,Nil);
   ConfigAction(AProjectGroupDelete,iiProjectGroupDelete,lisProjectGroupDeleteCaption,lisProjectGroupDeleteHint,Nil);
   ConfigAction(AProjectGroupAddNew,iiProjectGroupAddNew,lisProjectGroupAddNewCaption,lisProjectGroupAddNewHint,Nil);
   ConfigAction(ATargetEarlier,iiTargetEarlier,lisTargetEarlierCaption,lisTargetEarlierHint,Nil);
@@ -431,12 +456,15 @@ begin
   ConfigAction(AProjectGroupRedo, 0, lisRedo, '', nil);
   ConfigAction(AProjectGroupOptions, 0, lisOptions, '', nil);
   TBMore.Caption:=lisMore;
+  TBAdd.Caption := lisProjectGroupAddCaption;
+  TBAdd.Hint := lisProjectGroupAddHint;
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=(FProjectGroup<>nil)
     and (FProjectGroup.Modified or (FProjectGroup.FileName=''));
+  TBAdd.Enabled:=(FProjectGroup<>nil);
   UpdateIDEMenuCommandFromAction(Sender,MnuCmdSaveProjectGroup);
 end;
 
@@ -787,6 +815,8 @@ begin
   N:=FindTVNodeOfTarget(Target);
   TVPG.BeginUpdate;
   try
+    ClearChildNodes(N);
+    ClearNodeData(N);
     TVPG.Items.Delete(N);
     TVPG.Selected:=FProjectGroupTVNode;
   finally
@@ -842,33 +872,26 @@ end;
 
 procedure TProjectGroupEditorForm.AProjectGroupAddExistingExecute(Sender: TObject);
 var
-  aTarget: TIDECompileTarget;
-  aMode: TPGBuildMode;
-  TVNode: TTreeNode;
   i: Integer;
 begin
   if FProjectGroup=nil then exit;
-  aTarget:=TIDECompileTarget(SelectedTarget);
   InitIDEFileDialog(OpenDialogTarget);
-  OpenDialogTarget.Filter := lisLazarusProjectsLpi + '|*.lpi'
+  OpenDialogTarget.Filter :=
+           lisLazarusSupportedInProjectGroups + '|*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p'
+   + '|' + lisLazarusProjectsLpi + '|*.lpi'
    + '|' + lisLazarusPackagesLpk + '|*.lpk'
    + '|' + lisLazarusProjectGroupsLpg + '|*.lpg'
    + '|' + lisPascalFilePasPpP + '|*.pas;*.pp;*.p';
   If OpenDialogTarget.Execute then
     for i:=0 to OpenDialogTarget.Files.Count-1 do
-    begin
-      aTarget:=FProjectGroup.AddTarget(OpenDialogTarget.Files[i]) as TIDECompileTarget;
-      aTarget.LoadTarget(true);
-      if aTarget.BuildModeCount>1 then
-      begin
-        aMode:=aTarget.BuildModes[0];
-        aMode.Compile:=true;
-        // ToDo: implement changed notification
-        TVNode:=FindTVNodeOfBuildMode(aMode);
-        TVNode.StateIndex:=NSIChecked;
-      end;
-    end;
+      AddTarget(OpenDialogTarget.Files[i]);
   StoreIDEFileDialog(OpenDialogTarget);
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupAddExistingUpdate(
+  Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=FProjectGroup<>nil;
 end;
 
 procedure TProjectGroupEditorForm.ATargetActivateUpdate(Sender: TObject);
@@ -955,6 +978,40 @@ begin
     AAction.Enabled:=Result;
 end;
 
+procedure TProjectGroupEditorForm.AProjectGroupAddCurrentExecute(
+  Sender: TObject);
+begin
+  if LazarusIDE.ActiveProject.ProjectInfoFile<>'' then
+    AddTarget(LazarusIDE.ActiveProject.ProjectInfoFile);
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupAddCurrentUpdate(
+  Sender: TObject);
+begin
+  (Sender as TAction).Enabled := (FProjectGroup<>nil) and (LazarusIDE.ActiveProject<>nil)
+    and (LazarusIDE.ActiveProject.ProjectInfoFile<>'');
+end;
+
+procedure TProjectGroupEditorForm.AddTarget(const aFileName: string);
+var
+  aTarget: TIDECompileTarget;
+  aMode: TPGBuildMode;
+  TVNode: TTreeNode;
+begin
+  if FProjectGroup.IndexOfTarget(aFileName)>=0 then
+    Exit;
+  aTarget:=FProjectGroup.AddTarget(aFileName) as TIDECompileTarget;
+  aTarget.LoadTarget(true);
+  if aTarget.BuildModeCount>1 then
+  begin
+    aMode:=aTarget.BuildModes[0];
+    aMode.Compile:=true;
+    // ToDo: implement changed notification
+    TVNode:=FindTVNodeOfBuildMode(aMode);
+    TVNode.StateIndex:=NSIChecked;
+  end;
+end;
+
 procedure TProjectGroupEditorForm.Perform(ATargetAction: TPGTargetAction);
 Var
   ND: TNodeData;
@@ -1013,6 +1070,11 @@ begin
   T:=SelectedTarget;
   (Sender as TAction).Enabled:=(T<>nil) and (T<>ProjectGroup.SelfTarget);
   UpdateIDEMenuCommandFromAction(Sender,MnuCmdTargetRemove);
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupNewExecute(Sender: TObject);
+begin
+  IDEProjectGroupManager.DoNewClick(Sender);
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupOptionsExecute(Sender: TObject);
@@ -1413,11 +1475,7 @@ procedure TProjectGroupEditorForm.ClearChildNodes(TVNode: TTreeNode);
     for i:=0 to aTVNode.Count-1 do
     begin
       ChildNode:=aTVNode[i];
-      if ChildNode.Data<>nil then
-      begin
-        TObject(ChildNode.Data).Free;
-        ChildNode.Data:=nil;
-      end;
+      ClearNodeData(ChildNode);
       FreeChildrenNodeData(ChildNode);
     end;
   end;
