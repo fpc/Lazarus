@@ -1355,7 +1355,7 @@ procedure TProjectGroupEditorForm.OnBuildExecute(Sender: TObject);
 var
   ND: TNodeData;
 begin
-  if BuildCommandRedirected then begin
+  if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then begin
     ND:=SelectedNodeData;
     if (ND<>nil) and (ND.Target<>nil) then begin
       Perform(taCompileClean);
@@ -1368,6 +1368,7 @@ end;
 
 procedure TProjectGroupEditorForm.OnBuildUpdate(Sender: TObject);
 begin
+  if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then ;
   if Assigned(FOldBuildUpdate) then
     FOldBuildUpdate(Sender);
 end;
@@ -1376,7 +1377,7 @@ procedure TProjectGroupEditorForm.OnCompileExecute(Sender: TObject);
 var
   ND: TNodeData;
 begin
-  if BuildCommandRedirected then begin
+  if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then begin
     ND:=SelectedNodeData;
     if (ND<>nil) and (ND.Target<>nil) then begin
       Perform(taCompile);
@@ -1391,6 +1392,7 @@ end;
 procedure TProjectGroupEditorForm.OnCompileUpdate(Sender: TObject);
 begin
   //debugln(['TProjectGroupEditorForm.OnCompileUpdate ',DbgSName(Sender)]);
+  if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then ;
   if Assigned(FOldCompileUpdate) then
     FOldCompileUpdate(Sender);
 end;
