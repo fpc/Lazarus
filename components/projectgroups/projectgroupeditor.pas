@@ -343,6 +343,7 @@ var
 begin
   if FBuildCommandRedirected=AValue then Exit;
   FBuildCommandRedirected:=AValue;
+  if IDECommandList=nil then exit;
   BuildCmd:=IDECommandList.FindIDECommand(ecBuild);
   CompileCmd:=IDECommandList.FindIDECommand(ecCompile);
   if FBuildCommandRedirected then begin
