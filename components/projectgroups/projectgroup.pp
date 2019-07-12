@@ -1637,13 +1637,14 @@ end;
 procedure TIDECompileTarget.LoadProject;
 var
   AProject: TLazProject;
-  i, Cnt: Integer;
+  i, Cnt, ALPIFileVersion: Integer;
   ProjFile: TLazProjectFile;
   PkgList: TFPList;
   Pkg: TIDEPackage;
   PkgName, Path, SubPath, CurFilename, BaseDir, BuildMode: String;
   xml: TXMLConfig;
   LazBuildMode: TLazProjectBuildMode;
+  LegacyList: Boolean;
 begin
   if FFiles<>nil then exit; // already loaded
 
@@ -1690,11 +1691,15 @@ begin
       if xml<>nil then begin
         // load list of files from lpi
         BaseDir:=ExtractFilePath(Filename);
+        Path:='ProjectOptions/';
+        ALPIFileVersion := xml.GetValue(Path+'Version/Value',0);
+
         Path:='ProjectOptions/Units/';
-        Cnt:=xml.GetValue(Path+'Count',0);
-        for i:=0 to Cnt-1 do begin
-          SubPath:=Path+'Unit'+IntToStr(i)+'/';
-          if xml.GetValue(SubPath+'IsPartOfProject/Value','')<>'True' then
+        LegacyList:=(ALPIFileVersion<=11) or xml.IsLegacyList(Path);
+        Cnt:=xml.GetListItemCount(Path, 'Unit', LegacyList);
+        for i := 0 to Cnt - 1 do begin
+          SubPath:=Path+xml.GetListItemXPath('Unit', i, LegacyList)+'/';
+          if not xml.GetValue(SubPath+'IsPartOfProject/Value',False) then
             continue;
           CurFilename:=xml.GetValue(SubPath+'Filename/Value','');
           if CurFilename='' then continue;
@@ -1715,9 +1720,10 @@ begin
 
         // load build modes
         Path:='ProjectOptions/BuildModes/';
-        Cnt:=xml.GetValue(Path+'Count',0);
-        for i:=1 to Cnt do begin
-          SubPath:=Path+'Item'+IntToStr(i)+'/';
+        LegacyList:=(ALPIFileVersion<=11) or xml.IsLegacyList(Path);
+        Cnt:=xml.GetListItemCount(Path, 'Item', LegacyList);
+        for i:=0 to Cnt-1 do begin
+          SubPath:=Path+xml.GetListItemXPath('Item', i, LegacyList, True)+'/';
           BuildMode:=xml.GetValue(SubPath+'Name','');
           // load/store compile in lpg
           if BuildMode<>'' then
