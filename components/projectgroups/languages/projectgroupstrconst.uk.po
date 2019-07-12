@@ -127,6 +127,10 @@ msgstr "Групи проектів Lazarus (*.lpg)"
 msgid "Lazarus projects (*.lpi)"
 msgstr "Проекти Lazarus (*.lpi)"
 
+#: projectgroupstrconst.lislazarussupportedinprojectgroups
+msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
+msgstr ""
+
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
 msgstr "Програму lazbuild не знайдено"
@@ -140,6 +144,7 @@ msgid "Need save"
 msgstr "Потрібно зберегти"
 
 #: projectgroupstrconst.lisnewprojectgroup
+msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
 msgstr "Нова група проектів"
 
@@ -231,15 +236,37 @@ msgstr "Група проектів %s"
 msgid "Project Group: %s"
 msgstr "Група проектів: %s"
 
-#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+#: projectgroupstrconst.lisprojectgroupaddcaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
+msgstr "Додати"
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
+msgid "Add current project"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
+msgid "Add current project to project group"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+#, fuzzy
+#| msgid "Add"
+msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
+msgid "Add from file"
 msgstr "Додати"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
 msgstr "Додати наявну ціль в групу проектів"
 
+#: projectgroupstrconst.lisprojectgroupaddhint
+msgid "Add targets to project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
 msgid "New"
 msgstr "Нова"
 
@@ -267,6 +294,18 @@ msgid ""
 msgstr ""
 "Групу проектів \"%s\" було змінено.\n"
 "Що ви бажаєте зробити?"
+
+#: projectgroupstrconst.lisprojectgroupnewcaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
+msgid "New"
+msgstr "Нова"
+
+#: projectgroupstrconst.lisprojectgroupnewhint
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
+msgid "New project group"
+msgstr "Нова група проектів"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"

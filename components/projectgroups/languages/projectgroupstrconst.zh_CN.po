@@ -131,6 +131,10 @@ msgstr "Lazarus工程组(*.lpg)"
 msgid "Lazarus projects (*.lpi)"
 msgstr "Lazarus工程(*.lpi)"
 
+#: projectgroupstrconst.lislazarussupportedinprojectgroups
+msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
+msgstr ""
+
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
 msgstr "lazbuild未找到"
@@ -144,6 +148,7 @@ msgid "Need save"
 msgstr "需要保存"
 
 #: projectgroupstrconst.lisnewprojectgroup
+msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
 msgstr "新工程组"
 
@@ -235,15 +240,37 @@ msgstr "工程组%s"
 msgid "Project Group: %s"
 msgstr "工程组:%s"
 
-#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+#: projectgroupstrconst.lisprojectgroupaddcaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
+msgstr "添加"
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
+msgid "Add current project"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
+msgid "Add current project to project group"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+#, fuzzy
+#| msgid "Add"
+msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
+msgid "Add from file"
 msgstr "添加"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
 msgstr "添加存在的目标(target)到工程组"
 
+#: projectgroupstrconst.lisprojectgroupaddhint
+msgid "Add targets to project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
 msgid "New"
 msgstr "新建"
 
@@ -274,6 +301,18 @@ msgid ""
 msgstr ""
 "工程组\"%s\"被修改.\n"
 "你想做什么?\n"
+
+#: projectgroupstrconst.lisprojectgroupnewcaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
+msgid "New"
+msgstr "新建"
+
+#: projectgroupstrconst.lisprojectgroupnewhint
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
+msgid "New project group"
+msgstr "新工程组"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"

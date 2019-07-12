@@ -21,6 +21,8 @@ procedure Register;
 
 implementation
 
+{$R pg_images.res}
+
 const
   ProjectGroupEditorMenuRootName = 'ProjectGroupEditorMenu';
 

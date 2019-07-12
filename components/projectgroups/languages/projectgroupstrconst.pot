@@ -113,6 +113,10 @@ msgstr ""
 msgid "Lazarus projects (*.lpi)"
 msgstr ""
 
+#: projectgroupstrconst.lislazarussupportedinprojectgroups
+msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
+msgstr ""
+
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
 msgstr ""
@@ -126,6 +130,7 @@ msgid "Need save"
 msgstr ""
 
 #: projectgroupstrconst.lisnewprojectgroup
+msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
 msgstr ""
 
@@ -217,15 +222,34 @@ msgstr ""
 msgid "Project Group: %s"
 msgstr ""
 
-#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+#: projectgroupstrconst.lisprojectgroupaddcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
+msgid "Add current project"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
+msgid "Add current project to project group"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
+msgid "Add from file"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
 msgstr ""
 
+#: projectgroupstrconst.lisprojectgroupaddhint
+msgid "Add targets to project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
 msgid "New"
 msgstr ""
 
@@ -250,6 +274,16 @@ msgstr ""
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupnewcaption
+msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
+msgid "New"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupnewhint
+msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
+msgid "New project group"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupreload

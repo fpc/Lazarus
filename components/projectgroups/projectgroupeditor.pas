@@ -15,12 +15,12 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
-  ActnList, LCLProc, Clipbrd,
+  ActnList, LCLProc, Clipbrd, ImgList,
   // LazUtils
   LazFileUtils, LazLoggerBase, LazFileCache,
   // IdeIntf
   LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf, IDEWindowIntf,
-  IDEDialogs, IDECommands,
+  IDEDialogs, IDECommands, IDEImagesIntf,
   // ProjectGroups
   ProjectGroupStrConst, ProjectGroup, PrjGrpOptionsFrm, PrjGrpInfoFrm;
 
@@ -72,7 +72,6 @@ type
     AProjectGroupDelete: TAction;
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
-    ImageListMain: TImageList;
     PMINew: TMenuItem;
     PMIAddExisting: TMenuItem;
     PMIAddCurrent: TMenuItem;
@@ -166,6 +165,28 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure TVPGSelectionChanged(Sender: TObject);
   private
+    // Nodelist image indexes
+    NIProjectGroup             : integer;// = 0;
+    NITargetProject            : integer;// = 3;
+    NITargetPackage            : integer;// = 4;
+    NITargetProjectGroup       : integer;// = 5;
+    NIBuildModes               : integer;// = 12;
+    NIBuildMode                : integer;// = 12;
+    NIFiles                    : integer;// = 16;
+    NIFile                     : integer;// = 17;
+    NIDependencies             : integer;// = 1;
+    NIDependency               : integer;// = 1;
+
+    // Node state image index
+    NSIActive                  : Integer;// = 20; // State index for active.
+    NSIMissing                 : Integer; // State index for missing
+
+    // overlay index
+    NSIChecked                 : Integer;// = 22;
+    NSIUnchecked               : Integer;// = 23;
+
+    procedure LoadImages;
+  private
     FBuildCommandRedirected: boolean;
     FProjectGroup: TProjectGroup;
     FProjectGroupTVNode: TTreeNode;
@@ -254,48 +275,6 @@ function dbgs(NodeType: TNodeType): string; overload;
 implementation
 
 {$R *.lfm}
-
-var
-  // Nodelist image indexes
-  NIProjectGroup             : integer = 0;
-  NITargetProject            : integer = 3;
-  NITargetPackage            : integer = 4;
-  NITargetProjectGroup       : integer = 5;
-  NIMissingTargetProject     : integer = 3;
-  NIMissingTargetPackage     : integer = 4;
-  NIMissingTargetProjectGroup: integer = 5;
-  NIBuildModes               : integer = 12;
-  NIBuildMode                : integer = 12;
-  NIFiles                    : integer = 16;
-  NIFile                     : integer = 17;
-  NIDependencies             : integer = 1;
-  NIDependency               : integer = 1;
-
-  // Node state image index
-  NSIActive                  : Integer = 20; // State index for active.
-
-  // overlay index
-  NSIChecked                 : Integer = 22;
-  NSIUnchecked               : Integer = 23;
-
-  // Action image indexes
-  iiProjectGroupSave         : Integer = -1;
-  iiProjectGroupSaveAs       : Integer = -1;
-  iiProjectGroupNew          : Integer = -1;
-  iiProjectGroupAddExisting  : Integer = -1;
-  iiProjectGroupAddCurrent   : Integer = -1;
-  iiProjectGroupDelete       : Integer = -1;
-  iiProjectGroupAddNew       : Integer = -1;
-  iiTargetEarlier            : Integer = -1;
-  iiTargetLater              : Integer = -1;
-  iiTargetCompile            : Integer = -1;
-  iiTargetCompileClean       : Integer = -1;
-  iiTargetProperties         : Integer = -1;
-  iiTargetRun                : Integer = -1;
-  iiTargetInstall            : Integer = -1;
-  iiTargetUninstall          : Integer = -1;
-  iiTargetActivate           : Integer = -1;
-  iiTargetOpen               : Integer = -1;
 
 const
   // Status bar Panel indexes
@@ -421,43 +400,54 @@ end;
 
 procedure TProjectGroupEditorForm.Localize;
 
-  procedure ConfigAction(A: TAction; AImageIndex: Integer; Const ACaption,AHint: String; Mnu: TIDEMenuCommand);
+  procedure ConfigAction(A: TAction; AImageName: string; Const ACaption,AHint: String; Mnu: TIDEMenuCommand);
   begin
     A.Caption:=ACaption;
     A.Hint:=AHint;
-    if AImageIndex<>-1 then
-      A.ImageIndex:=AImageIndex;
+    if AImageName<>'' then
+      A.ImageIndex:=IDEImages.GetImageIndex(AImageName)
+    else
+      A.ImageIndex:=-1;
     If Assigned(mnu) then
       Mnu.OnClick:=A.OnExecute;
   end;
 
 begin
-  ConfigAction(AProjectGroupSave,iiProjectGroupSave,lisProjectGroupSaveCaption,lisProjectGroupSaveHint,Nil);
-  ConfigAction(AProjectGroupSaveAs,iiProjectGroupSaveAs,lisProjectGroupSaveAsCaption,lisProjectGroupSaveAsHint,Nil);
-  ConfigAction(AProjectGroupNew,iiProjectGroupNew,lisProjectGroupNewCaption,lisProjectGroupNewHint,Nil);
-  ConfigAction(AProjectGroupAddExisting,iiProjectGroupAddExisting,lisProjectGroupAddExistingCaption,lisProjectGroupAddExistingHint,Nil);
-  ConfigAction(AProjectGroupAddCurrent,iiProjectGroupAddCurrent,lisProjectGroupAddCurrentProjectCaption,lisProjectGroupAddCurrentProjectHint,Nil);
-  ConfigAction(AProjectGroupDelete,iiProjectGroupDelete,lisProjectGroupDeleteCaption,lisProjectGroupDeleteHint,Nil);
-  ConfigAction(AProjectGroupAddNew,iiProjectGroupAddNew,lisProjectGroupAddNewCaption,lisProjectGroupAddNewHint,Nil);
-  ConfigAction(ATargetEarlier,iiTargetEarlier,lisTargetEarlierCaption,lisTargetEarlierHint,Nil);
-  ConfigAction(ATargetLater,iiTargetLater,lisTargetLaterCaption,lisTargetLaterHint,Nil);
-  ConfigAction(ATargetCompile,iiTargetCompile,lisTargetCompileCaption,lisTargetCompileHint,Nil);
-  ConfigAction(ATargetCompileClean,iiTargetCompileClean,lisTargetCompileCleanCaption,lisTargetCompileCleanHint,Nil);
-  ConfigAction(ATargetProperties,iiTargetProperties,lisTargetPropertiesCaption,lisTargetPropertiesHint,Nil);
-  ConfigAction(ATargetRun,iiTargetRun,lisTargetRunCaption,lisTargetRunHint,Nil);
-  ConfigAction(ATargetInstall,iiTargetInstall,lisTargetInstallCaption,lisTargetInstallHint,Nil);
-  ConfigAction(ATargetUninstall,iiTargetUninstall,lisTargetUninstallCaption,lisTargetUninstallHint,Nil);
-  ConfigAction(ATargetActivate,iiTargetActivate,lisTargetActivateCaption,lisTargetActivateHint,Nil);
-  ConfigAction(ATargetOpen,iiTargetOpen,lisTargetOpenCaption,lisTargetOpenHint,Nil);
-  ConfigAction(ATargetCopyFilename,0,lisTargetCopyFilename,'',Nil);
-  ConfigAction(ATargetCompileFromHere,0,lisTargetCompileFromHere,'',Nil);
-  ConfigAction(AProjectGroupReload,0,lisProjectGroupReload,'',Nil);
-  ConfigAction(AProjectGroupUndo, 0, lisUndo, '', nil);
-  ConfigAction(AProjectGroupRedo, 0, lisRedo, '', nil);
-  ConfigAction(AProjectGroupOptions, 0, lisOptions, '', nil);
+  ConfigAction(AProjectGroupSave,'laz_save',lisProjectGroupSaveCaption,lisProjectGroupSaveHint,Nil);
+  ConfigAction(AProjectGroupSaveAs,'menu_saveas',lisProjectGroupSaveAsCaption,lisProjectGroupSaveAsHint,Nil);
+  ConfigAction(AProjectGroupNew,'laz_wand',lisProjectGroupNewCaption,lisProjectGroupNewHint,Nil);
+  ConfigAction(AProjectGroupAddExisting,'menu_project_open',lisProjectGroupAddExistingCaption,lisProjectGroupAddExistingHint,Nil);
+  ConfigAction(AProjectGroupAddCurrent,'menu_project_add',lisProjectGroupAddCurrentProjectCaption,lisProjectGroupAddCurrentProjectHint,Nil);
+  ConfigAction(AProjectGroupDelete,'laz_delete',lisProjectGroupDeleteCaption,lisProjectGroupDeleteHint,Nil);
+  ConfigAction(AProjectGroupAddNew,'menu_project_new',lisProjectGroupAddNewCaption,lisProjectGroupAddNewHint,Nil);
+  ConfigAction(ATargetEarlier,'arrow_up',lisTargetEarlierCaption,lisTargetEarlierHint,Nil);
+  ConfigAction(ATargetLater,'arrow_down',lisTargetLaterCaption,lisTargetLaterHint,Nil);
+  ConfigAction(ATargetCompile,'menu_build',lisTargetCompileCaption,lisTargetCompileHint,Nil);
+  ConfigAction(ATargetCompileClean,'menu_build_clean',lisTargetCompileCleanCaption,lisTargetCompileCleanHint,Nil);
+  ConfigAction(ATargetProperties,'menu_project_options',lisTargetPropertiesCaption,lisTargetPropertiesHint,Nil);
+  ConfigAction(ATargetRun,'menu_run',lisTargetRunCaption,lisTargetRunHint,Nil);
+  ConfigAction(ATargetInstall,'pkg_install',lisTargetInstallCaption,lisTargetInstallHint,Nil);
+  ConfigAction(ATargetUninstall,'pkg_package_uninstall',lisTargetUninstallCaption,lisTargetUninstallHint,Nil);
+  ConfigAction(ATargetInfo,'menu_information',lisTargetInfoCaption,'',Nil);
+  ConfigAction(ATargetActivate,'',lisTargetActivateCaption,lisTargetActivateHint,Nil);
+  ConfigAction(ATargetOpen,'',lisTargetOpenCaption,lisTargetOpenHint,Nil);
+  ConfigAction(ATargetCopyFilename,'',lisTargetCopyFilename,'',Nil);
+  ConfigAction(ATargetCompileFromHere,'',lisTargetCompileFromHere,'',Nil);
+  ConfigAction(AProjectGroupReload,'laz_refresh',lisProjectGroupReload,'',Nil);
+  ConfigAction(AProjectGroupUndo, 'menu_undo', lisUndo, '', nil);
+  ConfigAction(AProjectGroupRedo, 'menu_redo', lisRedo, '', nil);
+  ConfigAction(AProjectGroupOptions, 'menu_environment_options', lisOptions, '', nil);
   TBMore.Caption:=lisMore;
   TBAdd.Caption := lisProjectGroupAddCaption;
+  TBAdd.ImageIndex := IDEImages.GetImageIndex('laz_add');
   TBAdd.Hint := lisProjectGroupAddHint;
+  ActionListMain.Images := IDEImages.Images_16;
+  PopupMenuMore.Images := ActionListMain.Images;
+  PopupMenuAdd.Images := ActionListMain.Images;
+  PopupMenuTree.Images := ActionListMain.Images;
+  TBProjectGroup.Images := ActionListMain.Images;
+  TVPG.Images := ActionListMain.Images;
+  TVPG.StateImages := ActionListMain.Images;
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveUpdate(Sender: TObject);
@@ -631,6 +621,8 @@ begin
 
   if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then
     BuildCommandRedirected:=true;
+
+  LoadImages;
 end;
 
 procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
@@ -673,6 +665,19 @@ end;
 procedure TProjectGroupEditorForm.TVPGAdvancedCustomDrawItem(
   Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
   Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+
+  procedure PaintOverlayImage(const AImageIndex: Integer);
+  var
+    r: TRect;
+    y: LongInt;
+    ImagesRes: TScaledImageListResolution;
+  begin
+    ImagesRes :=Sender.Images.ResolutionForControl[Sender.ImagesWidth, Sender];
+    r:=Node.DisplayRect(true);
+    r.Left:=Node.DisplayIconLeft+1;
+    y:=(r.Top+r.Bottom-ImagesRes.Height) div 2;
+    ImagesRes.Draw(Sender.Canvas,r.Left,y,AImageIndex);
+  end;
 var
   ND: TNodeData;
   r: TRect;
@@ -681,7 +686,9 @@ begin
   if Stage=cdPostPaint then begin
     ND:=TNodeData(Node.Data);
     if (ND.Target<>nil) and ND.Target.Missing then begin
-      // Missing target file: draw red line strike through text
+      // Missing target file: draw red line strike through text an
+      PaintOverlayImage(NSIMissing);
+
       r:=Node.DisplayRect(true);
       TVPG.Canvas.Pen.Color:=clRed;
       y:=(r.Top+r.Bottom) div 2;
@@ -750,7 +757,7 @@ begin
   if mbLeft=Button then begin
     if (ND.NodeType=ntBuildMode) and ([ssShift,ssCtrl]*Shift=[]) then
     begin
-      if (TVNode.DisplayStateIconLeft<X) and (X<TVNode.DisplayIconLeft) then
+      if (TVNode.DisplayStateIconLeft<=X) and (X<TVNode.DisplayIconLeft) then
       begin
         if TVNode.StateIndex=NSIChecked then
           TVNode.StateIndex:=NSIUnchecked
@@ -1188,18 +1195,11 @@ function TProjectGroupEditorForm.GetNodeImageIndex(ANodeType: TNodeType;
 begin
   case ANodeType of
     ntProjectGroup: Result:=NIProjectGroup;
-    ntTarget :
+    ntTarget, ntMissingTarget :
         Case ANodeData.TargetType of
           ttProject: Result:=NITargetProject;
           ttPackage: Result:=NITargetPackage;
           ttProjectGroup: Result:=NITargetProjectGroup;
-          ttPascalFile: Result:=NIFile;
-        end;
-    ntMissingTarget:
-        Case ANodeData.TargetType of
-          ttProject: Result:=NIMissingTargetProject;
-          ttPackage: Result:=NIMissingTargetPackage;
-          ttProjectGroup: Result:=NIMissingTargetProjectGroup;
           ttPascalFile: Result:=NIFile;
         end;
     ntBuildModes: Result:=NIBuildModes;
@@ -1308,6 +1308,28 @@ begin
     Node.StateIndex:=NSIActive
   else
     Node.StateIndex:=-1;
+end;
+
+procedure TProjectGroupEditorForm.LoadImages;
+begin
+  NIProjectGroup := IDEImages.GetImageIndex('projectgroup');
+  NITargetProject := IDEImages.GetImageIndex('item_project');
+  NITargetPackage := IDEImages.GetImageIndex('item_package');
+  NITargetProjectGroup := NIProjectGroup;
+  NIBuildModes := IDEImages.GetImageIndex('menu_build_all');
+  NIBuildMode := IDEImages.GetImageIndex('menu_build');
+  NIFiles := IDEImages.GetImageIndex('pkg_files');
+  NIFile := IDEImages.GetImageIndex('item_unit');
+  NIDependencies := IDEImages.GetImageIndex('pkg_required');
+  NIDependency := IDEImages.GetImageIndex('pkg_required');
+
+  // Node state image index
+  NSIActive := IDEImages.GetImageIndex('pg_active');
+  NSIMissing := IDEImages.GetImageIndex('laz_cancel');
+
+  // overlay index
+  NSIChecked := IDEImages.GetImageIndex('laz_tick');
+  NSIUnchecked := IDEImages.GetImageIndex('laz_cancel');
 end;
 
 procedure TProjectGroupEditorForm.IDEProjectGroupManagerEditorOptionsChanged(

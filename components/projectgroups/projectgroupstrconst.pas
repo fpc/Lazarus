@@ -97,6 +97,7 @@ Resourcestring
   lisTargetActivateHint        = 'Activate selected target';
   lisTargetOpenCaption         = 'Open';
   lisTargetOpenHint            = 'Open selected target';
+  lisTargetInfoCaption         = 'Info';
   lisInvalidFile = 'Invalid File';
   lisInvalidXmlFileName = 'Invalid XML file name "%s".';
   lisReadError = 'Read error';
