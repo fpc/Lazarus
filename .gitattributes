@@ -4220,6 +4220,7 @@ components/projectgroups/languages/projectgroupstrconst.uk.po svneol=native#text
 components/projectgroups/languages/projectgroupstrconst.zh_CN.po svneol=native#text/plain
 components/projectgroups/lazprojectgroups.lpk svneol=native#text/plain
 components/projectgroups/lazprojectgroups.pas svneol=native#text/plain
+components/projectgroups/pg_images.res -text
 components/projectgroups/prjgrpinfofrm.lfm svneol=native#text/plain
 components/projectgroups/prjgrpinfofrm.pas svneol=native#text/plain
 components/projectgroups/prjgrpoptionsfrm.lfm svneol=native#text/plain

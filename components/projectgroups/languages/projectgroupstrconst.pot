@@ -415,6 +415,10 @@ msgstr ""
 msgid "Build target earlier"
 msgstr ""
 
+#: projectgroupstrconst.listargetinfocaption
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
 msgid "Install"

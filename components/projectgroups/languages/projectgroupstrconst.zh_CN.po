@@ -445,6 +445,10 @@ msgstr "早期的(Earlier)"
 msgid "Build target earlier"
 msgstr "构建目标(target)早期的(earlier)"
 
+#: projectgroupstrconst.listargetinfocaption
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
 msgid "Install"

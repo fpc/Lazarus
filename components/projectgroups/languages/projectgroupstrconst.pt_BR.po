@@ -435,6 +435,10 @@ msgstr "Mais cedo"
 msgid "Build target earlier"
 msgstr "Construir alvo mais cedo"
 
+#: projectgroupstrconst.listargetinfocaption
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
 msgid "Install"

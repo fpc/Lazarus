@@ -444,6 +444,10 @@ msgstr "Prima"
 msgid "Build target earlier"
 msgstr "Costruisci destinazione prima"
 
+#: projectgroupstrconst.listargetinfocaption
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
 msgid "Install"

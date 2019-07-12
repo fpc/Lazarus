@@ -444,6 +444,10 @@ msgstr "Korábban"
 msgid "Build target earlier"
 msgstr "Cél építése korábban"
 
+#: projectgroupstrconst.listargetinfocaption
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
 msgid "Install"
