@@ -95,6 +95,11 @@ msgstr "La destinazione non esiste. Rimuoverla?"
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
 msgstr ""
 
+#: projectgroupstrconst.lisinfo
+msgctxt "projectgroupstrconst.lisinfo"
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
 msgstr "Ciclo non valido. Un gruppo di progetti non può avere se stesso come destinazione."
@@ -373,6 +378,10 @@ msgstr ""
 msgid "Remove all invalid targets"
 msgstr "Rimuovi tutte le destinazioni non valide"
 
+#: projectgroupstrconst.lissourcedirectoriesofprojectgroup
+msgid "Source directories of project group:"
+msgstr ""
+
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
 msgstr "Attiva destinazione"
@@ -445,7 +454,8 @@ msgid "Build target earlier"
 msgstr "Costruisci destinazione prima"
 
 #: projectgroupstrconst.listargetinfocaption
-msgid "Info"
+msgctxt "projectgroupstrconst.listargetinfocaption"
+msgid "Info ..."
 msgstr ""
 
 #: projectgroupstrconst.listargetinstall

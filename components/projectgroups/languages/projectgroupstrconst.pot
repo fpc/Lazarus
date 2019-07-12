@@ -88,6 +88,11 @@ msgstr ""
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
 msgstr ""
 
+#: projectgroupstrconst.lisinfo
+msgctxt "projectgroupstrconst.lisinfo"
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
 msgstr ""
@@ -346,6 +351,10 @@ msgstr ""
 msgid "Remove all invalid targets"
 msgstr ""
 
+#: projectgroupstrconst.lissourcedirectoriesofprojectgroup
+msgid "Source directories of project group:"
+msgstr ""
+
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
 msgstr ""
@@ -416,7 +425,8 @@ msgid "Build target earlier"
 msgstr ""
 
 #: projectgroupstrconst.listargetinfocaption
-msgid "Info"
+msgctxt "projectgroupstrconst.listargetinfocaption"
+msgid "Info ..."
 msgstr ""
 
 #: projectgroupstrconst.listargetinstall

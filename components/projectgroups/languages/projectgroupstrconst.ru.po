@@ -101,6 +101,11 @@ msgstr "Цель не существует. Удалить?"
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
 msgstr "Командами IDE \"Компилировать\" и \"Собрать\" вызывать компиляцию/сборку выбранной цели в редакторе групп проектов"
 
+#: projectgroupstrconst.lisinfo
+msgctxt "projectgroupstrconst.lisinfo"
+msgid "Info"
+msgstr "Сведения"
+
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
 msgstr "Обнаружен порочный круг. Группа проектов не может содержать саму себя в качестве цели."
@@ -128,7 +133,7 @@ msgstr "Проекты Lazarus (*.lpi)"
 
 #: projectgroupstrconst.lislazarussupportedinprojectgroups
 msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
-msgstr ""
+msgstr "Файлы Lazarus (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
@@ -236,25 +241,22 @@ msgid "Project Group: %s"
 msgstr "Группа проектов: %s"
 
 #: projectgroupstrconst.lisprojectgroupaddcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
 msgstr "Добавить"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
 msgid "Add current project"
-msgstr ""
+msgstr "Добавить текущий проект"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
 msgid "Add current project to project group"
-msgstr ""
+msgstr "Добавить текущий проект в группу"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
-#, fuzzy
-#| msgid "Add"
 msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
 msgid "Add from file"
-msgstr "Добавить"
+msgstr "Добавить из файла"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
@@ -262,7 +264,7 @@ msgstr "Добавить существующую цель в группу пр�
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
-msgstr ""
+msgstr "Добавить цели в группу проектов"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
@@ -279,7 +281,7 @@ msgstr "Удалить"
 
 #: projectgroupstrconst.lisprojectgroupdeletehint
 msgid "Remove target from project group"
-msgstr "Удалить существующую цель из группы проектов"
+msgstr "Удалить цель из группы проектов"
 
 #: projectgroupstrconst.lisprojectgroupmodified
 msgid "Project group modified"
@@ -295,13 +297,11 @@ msgstr ""
 "Что вы хотите сделать?"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
 msgid "New"
 msgstr "Новая"
 
 #: projectgroupstrconst.lisprojectgroupnewhint
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Новая группа проектов"
@@ -365,6 +365,10 @@ msgstr "Показывать целевые пути"
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
 msgstr "Удалить все некорректные цели"
+
+#: projectgroupstrconst.lissourcedirectoriesofprojectgroup
+msgid "Source directories of project group:"
+msgstr "Каталоги исходного кода группы проектов:"
 
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
@@ -436,8 +440,9 @@ msgid "Build target earlier"
 msgstr "Собирать цель раньше"
 
 #: projectgroupstrconst.listargetinfocaption
-msgid "Info"
-msgstr ""
+msgctxt "projectgroupstrconst.listargetinfocaption"
+msgid "Info ..."
+msgstr "Сведения ..."
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"

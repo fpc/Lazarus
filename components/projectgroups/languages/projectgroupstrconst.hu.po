@@ -105,6 +105,11 @@ msgstr "A cél nem létezik. Eltávolítás?"
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
 msgstr ""
 
+#: projectgroupstrconst.lisinfo
+msgctxt "projectgroupstrconst.lisinfo"
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
 msgstr "Érvénytelen kör. A projektcsoport nem lehet a saját célja."
@@ -373,6 +378,10 @@ msgstr ""
 msgid "Remove all invalid targets"
 msgstr "Minden érvénytelen cél eltávolítása"
 
+#: projectgroupstrconst.lissourcedirectoriesofprojectgroup
+msgid "Source directories of project group:"
+msgstr ""
+
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
 msgstr "Cél aktiválása"
@@ -445,7 +454,8 @@ msgid "Build target earlier"
 msgstr "Cél építése korábban"
 
 #: projectgroupstrconst.listargetinfocaption
-msgid "Info"
+msgctxt "projectgroupstrconst.listargetinfocaption"
+msgid "Info ..."
 msgstr ""
 
 #: projectgroupstrconst.listargetinstall

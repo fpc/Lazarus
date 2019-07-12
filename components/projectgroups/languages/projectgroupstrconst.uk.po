@@ -102,6 +102,11 @@ msgstr "Ціль не існує. Вилучити?"
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
 msgstr ""
 
+#: projectgroupstrconst.lisinfo
+msgctxt "projectgroupstrconst.lisinfo"
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
 msgstr "Виявлено хибне коло. Група проектів не може мати саму себе ціллю."
@@ -367,6 +372,10 @@ msgstr ""
 msgid "Remove all invalid targets"
 msgstr "Видалити всі некоректні цілі"
 
+#: projectgroupstrconst.lissourcedirectoriesofprojectgroup
+msgid "Source directories of project group:"
+msgstr ""
+
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
 msgstr "Активувати ціль"
@@ -439,7 +448,8 @@ msgid "Build target earlier"
 msgstr "Зібрати ціль раніше"
 
 #: projectgroupstrconst.listargetinfocaption
-msgid "Info"
+msgctxt "projectgroupstrconst.listargetinfocaption"
+msgid "Info ..."
 msgstr ""
 
 #: projectgroupstrconst.listargetinstall

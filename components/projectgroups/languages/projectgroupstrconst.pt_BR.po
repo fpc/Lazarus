@@ -101,6 +101,11 @@ msgstr "Alvo não existe. Remover?"
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
 msgstr "Comandos IDE \"Compilar\" e \"Construir\" invoca compilar/construir do alvo selecionado no editor do grupo de projeto."
 
+#: projectgroupstrconst.lisinfo
+msgctxt "projectgroupstrconst.lisinfo"
+msgid "Info"
+msgstr ""
+
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
 msgstr "Ciclo inválido. Um grupo de projeto não pode ter a si mesmo como alvo."
@@ -366,6 +371,10 @@ msgstr "Exibir caminhos do alvo"
 msgid "Remove all invalid targets"
 msgstr "Remover todos os alvos inválidos"
 
+#: projectgroupstrconst.lissourcedirectoriesofprojectgroup
+msgid "Source directories of project group:"
+msgstr ""
+
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
 msgstr "Ativar alvo"
@@ -436,7 +445,8 @@ msgid "Build target earlier"
 msgstr "Construir alvo mais cedo"
 
 #: projectgroupstrconst.listargetinfocaption
-msgid "Info"
+msgctxt "projectgroupstrconst.listargetinfocaption"
+msgid "Info ..."
 msgstr ""
 
 #: projectgroupstrconst.listargetinstall

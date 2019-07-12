@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
-  ProjectGroup, LazStringUtils;
+  ProjectGroup, LazStringUtils, ProjectGroupStrConst;
 
 type
 
@@ -34,7 +34,8 @@ begin
   try
     if Target<>nil then
       ;// ToDo: show only SrcPath for this target
-    sl.Add('Source directories of project group:');
+    PrjGrpInfoForm.Caption:=lisInfo;
+    sl.Add(lisSourceDirectoriesOfProjectGroup);
     s:=IDEProjectGroupManager.GetSrcPaths;
     SplitString(s,';',sl,false);
     PrjGrpInfoForm.Memo1.Lines.Assign(sl);

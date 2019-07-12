@@ -97,7 +97,7 @@ Resourcestring
   lisTargetActivateHint        = 'Activate selected target';
   lisTargetOpenCaption         = 'Open';
   lisTargetOpenHint            = 'Open selected target';
-  lisTargetInfoCaption         = 'Info';
+  lisTargetInfoCaption         = 'Info ...';
   lisInvalidFile = 'Invalid File';
   lisInvalidXmlFileName = 'Invalid XML file name "%s".';
   lisReadError = 'Read error';
@@ -142,6 +142,9 @@ Resourcestring
   lisIDECommandsCompileAndBuildInvokeCompileBuildSelect = 'IDE commands "'
     +'Compile" and "Build" invoke compile/build selected target in project '
     +'group editor';
+
+  lisInfo = 'Info';
+  lisSourceDirectoriesOfProjectGroup = 'Source directories of project group:';
 
 
 implementation
