@@ -10383,6 +10383,10 @@ msgstr ""
 msgid "search in &directories"
 msgstr ""
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Dimana"

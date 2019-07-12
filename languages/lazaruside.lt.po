@@ -10200,6 +10200,10 @@ msgstr "ieškoti &aktyviame faile"
 msgid "search in &directories"
 msgstr "Aplan&kuose"
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Kur"

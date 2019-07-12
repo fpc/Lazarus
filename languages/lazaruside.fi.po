@@ -10042,6 +10042,10 @@ msgstr "etsi &aktiivisesta tiedostosta"
 msgid "search in &directories"
 msgstr "etsi &kansioista"
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Mistä"

@@ -10367,6 +10367,10 @@ msgstr "添加活动文件到包..."
 msgid "search in &directories"
 msgstr "搜索在目录(&d)"
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "哪里"

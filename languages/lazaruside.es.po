@@ -10264,6 +10264,10 @@ msgstr "buscar en archivo &activo"
 msgid "search in &directories"
 msgstr "buscar en &directorios"
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Donde"

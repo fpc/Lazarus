@@ -10197,6 +10197,10 @@ msgstr "アクティブなファイルを検索(&a)"
 msgid "search in &directories"
 msgstr "ディレクトリ内を検索(&d)"
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "どこに"

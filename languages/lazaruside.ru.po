@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-07-11 02:16+0300\n"
+"PO-Revision-Date: 2019-07-13 02:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10061,6 +10061,10 @@ msgstr "искать в теку&щем файле"
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "искать в &каталогах"
+
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr "искать в &группе проектов"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"

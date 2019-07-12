@@ -10233,6 +10233,10 @@ msgstr "ricercare nei file &attivi"
 msgid "search in &directories"
 msgstr "ricercare in &cartelle"
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Dove"

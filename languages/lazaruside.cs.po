@@ -10110,6 +10110,10 @@ msgstr "hledat v aktivním souboru"
 msgid "search in &directories"
 msgstr "hledat v &adresářích"
 
+#: lazarusidestrconsts.lisfindfilessearchinprojectgroup
+msgid "search in project &group"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Kde"
