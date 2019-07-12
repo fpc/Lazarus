@@ -4281,7 +4281,7 @@ resourcestring
   lisFindFileWhere = 'Where';
   lisFindFilesearchAllFilesInProject = 'search all files in &project';
   lisFindFilesearchAllOpenFiles = 'search all &open files';
-  lisFindFilesSearchInProjectGroup = 'Search in project &group';
+  lisFindFilesSearchInProjectGroup = 'search in project &group';
   lisFindFilesearchInActiveFile = 'search in &active file';
   lisFindFilesearchInDirectories = 'search in &directories';
   lisFindFileDirectories = 'D&irectories';
