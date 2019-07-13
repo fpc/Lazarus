@@ -1635,10 +1635,10 @@ begin
           @ExecuteIdeMenuClick);
       SrcEditMenuFindNextWordOccurrence := RegisterIDEMenuCommand(AParent,
           'Find next word occurrence', srkmecFindNextWordOccurrence, nil,
-          @ExecuteIdeMenuClick, nil, 'menu_search_find_next');
+          @ExecuteIdeMenuClick, nil, 'next_word');
       SrcEditMenuFindPrevWordOccurrence := RegisterIDEMenuCommand(AParent,
           'Find previous word occurrence', srkmecFindPrevWordOccurrence, nil,
-          @ExecuteIdeMenuClick, nil, 'menu_search_find_previous');
+          @ExecuteIdeMenuClick, nil, 'previous_word');
       SrcEditMenuFindInFiles := RegisterIDEMenuCommand(AParent,
           'Find in files', srkmecFindInFiles + ' ...', nil,
           @ExecuteIdeMenuClick, nil, 'menu_search_files');

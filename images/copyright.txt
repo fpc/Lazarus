@@ -26,7 +26,9 @@ actions directory:
 	laz_open_recent.png
 	laz_open_unit.png
 	laz_save.png
+	next_word.png
 	pastel_colors.png
+	previous_word.png
 	restore_default.png
 	restore_defaults.png
 
