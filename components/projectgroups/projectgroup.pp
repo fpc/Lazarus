@@ -104,6 +104,8 @@ type
     procedure SetTargetType(AValue: TPGTargetType); override;
   public
     constructor Create(aOwner: TProjectGroup);
+    Destructor Destroy; override;
+
   end;
 
   TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
@@ -1053,6 +1055,12 @@ begin
   TargetType:=ttProjectGroup;
   FProjectGroup:=aOwner;
   Filename:=ProjectGroup.FileName;
+end;
+
+destructor TRootProjectGroupTarget.Destroy;
+begin
+  FProjectGroup:=Nil;
+  inherited Destroy;
 end;
 
 { TIDEProjectGroup }
