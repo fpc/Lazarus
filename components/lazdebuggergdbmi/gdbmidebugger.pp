@@ -94,6 +94,7 @@ type
 
   TGDBMITargetFlag = (
     tfHasSymbols,     // Debug symbols are present
+    tfPidDetectionDone,
     tfRTLUsesRegCall, // the RTL is compiled with RegCall calling convention
     tfClassIsPointer,  // with dwarf class names are pointer. with stabs they are not
     tfExceptionIsPointer, // Can happen, if stabs and dwarf are mixed
@@ -135,7 +136,7 @@ type
     gdfeNone, gdfeDefault, gdfeEscSpace, gdfeQuote
   );
   TGDBMIDebuggerStartBreak = (
-    gdsbDefault, gdsbEntry, gdsbMainAddr, gdsbMain, gdsbAddZero
+    gdsbDefault, gdbsNone, gdsbEntry, gdsbMainAddr, gdsbMain, gdsbAddZero
   );
   TGDBMIUseNoneMiRunCmdsState = (
     gdnmNever, gdnmAlways, gdnmFallback
@@ -818,6 +819,7 @@ type
     FCommandProcessingLock: Integer;
 
     FMainAddrBreak: TGDBMIInternalBreakPoint;
+    FPasMainAddrBreak: TGDBMIInternalBreakPoint;
     FBreakAtMain: TDBGBreakPoint;
     FBreakErrorBreak: TGDBMIInternalBreakPoint;
     FRunErrorBreak: TGDBMIInternalBreakPoint;
@@ -2166,9 +2168,10 @@ procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: St
 
     // check internal error
     Debugger.CheckForInternalError(Line, TheInstruction.DebugText);
-
   end;
 
+var
+  s: String;
 begin
   if AData <> ''
   then case AData[1] of
@@ -2178,6 +2181,13 @@ begin
     //'*': DoExecAsync(AData);
     //'+': DoStatusAsync(AData);
     //'=': DoMsgAsync(AData);
+  end;
+
+  if not (tfPidDetectionDone in  TGDBMIDebugger(Debugger).FTargetInfo.TargetFlags) then begin
+    s := GetPart(['Switching to process '], [' local', ']'], AData, True);
+    TGDBMIDebugger(Debugger).FTargetInfo.TargetPID := StrToIntDef(s, 0);
+    if TGDBMIDebugger(Debugger).FTargetInfo.TargetPID <> 0 then
+      Include(TGDBMIDebugger(Debugger).FTargetInfo.TargetFlags, tfPidDetectionDone);
   end;
 
   inherited HandleGdbDataBeforeInstruction(AData, SkipData, TheInstruction);
@@ -2341,16 +2351,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   end;
 
   procedure DoMsgAsync(Line: String);
-  var
-    S: String;
   begin
-    S := GetPart('=', ',', Line, False, False);
-    if s = 'thread-group-started' then begin  // thread-group-started // needed in RunToMain
-      // Todo, store in seperate field
-      if FCmd is TGDBMIDebuggerCommandStartDebugging then
-        FLogWarnings := FLogWarnings + Line + LineEnding;
-    end;
-
      FCmd.FTheDebugger.DoNotifyAsync(Line);
   end;
 
@@ -2716,8 +2717,12 @@ var
   s: String;
   List: TGDBMINameValueList;
 begin
-  if TargetInfo^.TargetPID <> 0 then
+  if (TargetInfo^.TargetPID <> 0) or
+     (tfPidDetectionDone in  TargetInfo^.TargetFlags)
+  then
     exit;
+
+  Include(TargetInfo^.TargetFlags, tfPidDetectionDone);
     (* PID via "info program"
 
        Somme linux, gdb 7.1
@@ -2942,7 +2947,7 @@ var
   end;
 
 var
-  S: String;
+  S, s2: String;
   idx: Integer;
   {$IFDEF DBG_ASYNC_WAIT}
   GotPrompt: integer;
@@ -3025,6 +3030,13 @@ begin
           // normal target output
           DebugLn(DBG_VERBOSE, '[DBGTGT] ', S);
         end;
+      end;
+
+      if not (tfPidDetectionDone in  FTheDebugger.FTargetInfo.TargetFlags) then begin
+        s2 := GetPart(['Switching to process '], [' local', ']'], S, True);
+        FTheDebugger.FTargetInfo.TargetPID := StrToIntDef(s2, 0);
+        if FTheDebugger.FTargetInfo.TargetPID <> 0 then
+          Include(FTheDebugger.FTargetInfo.TargetFlags, tfPidDetectionDone);
       end;
       Break;
     end;
@@ -5060,7 +5072,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
             MaybeAddMainBrk(mtEntry,      0, false);
             MaybeAddMainBrk(mtMainAddr,   0);
           end;
-        else begin // gdsbDefault
+        gdsbDefault:      begin
             // SetByName: "main", this is the best aproach, unless any library also exports main.
             MaybeAddMainBrk(mtMain,      -1);
             MaybeAddMainBrk(mtEntry,     -1, true); // Previous versions used "+0" as 2nd in the list
@@ -5069,6 +5081,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
             // set only, if no other is set (e.g. 2nd attempt)
             MaybeAddMainBrk(mtEntry,     0, false);
           end;
+        else ;// gdbsNone
       end;
       Result := bcnt < FTheDebugger.FMainAddrBreak.BreakSetCount; // added new breaks
     end;
@@ -5077,14 +5090,6 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
   var
     s: String;
   begin
-    s := GetPart(['=thread-group-started,'], [LineEnding], ALogTxt, True, False);
-    if s <> '' then
-      s := GetPart(['pid="'], ['"'], s, True, False);
-    if s <> '' then begin
-      Result := StrToIntDef(s, 0);
-      if Result <> 0 then exit;
-    end;
-
     s := GetPart(['process '], [' local', ']'], ALogTxt, True);
     Result := StrToIntDef(s, 0);
   end;
@@ -5127,7 +5132,6 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     BrkErr: Boolean;
   begin
     EntryPointNum := StrToQWordDef(EntryPoint, 0);
-    TargetInfo^.TargetPID := 0;
     FDidKillNow := False;
 
     // TODO: async
@@ -5160,8 +5164,11 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
         exit;
       end;
       s := r.Values + FLogWarnings;
-      if TargetInfo^.TargetPID = 0 then
+      if TargetInfo^.TargetPID = 0 then begin
         TargetInfo^.TargetPID := ParseLogForPid(s);
+        if TargetInfo^.TargetPID <> 0 then
+          Include(TargetInfo^.TargetFlags, tfPidDetectionDone);
+      end;
 
       s2 := '';
       if R.State = dsRun
@@ -5286,6 +5293,9 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
     TargetInfo^.TargetPID := ParseLogForPid(rval);
     if TargetInfo^.TargetPID <> 0 then
+      Include(TargetInfo^.TargetFlags, tfPidDetectionDone);
+
+    if TargetInfo^.TargetPID <> 0 then
       exit;
 
     DetectTargetPid; // will set dsError
@@ -5361,6 +5371,8 @@ begin
 
     TargetInfo^.TargetCPU := '';
     TargetInfo^.TargetOS := osUnknown;
+    Exclude(TargetInfo^.TargetFlags, tfPidDetectionDone);
+    TargetInfo^.TargetPID := 0;
 
     // try to retrieve the filetype and program entry point
     FileType := '';
@@ -5389,22 +5401,24 @@ begin
     (* We need a breakpoint at entry-point or main, to continue initialization
        "main" could map to more than one location, so we try entry point first
     *)
-    RunToMain(EntryPoint);
+    if DebuggerProperties.InternalStartBreak <> gdbsNone then begin
+      RunToMain(EntryPoint);
+
+      if DebuggerState = dsStop
+      then begin
+        Result := False;
+        FSuccess := False;
+        Exit;
+      end;
+
+      if DebuggerState = dsError
+      then begin
+        Result := False;
+        FSuccess := False;
+        Exit;
+      end;
+    end;
     DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
-
-    if DebuggerState = dsStop
-    then begin
-      Result := False;
-      FSuccess := False;
-      Exit;
-    end;
-
-    if DebuggerState = dsError
-    then begin
-      Result := False;
-      FSuccess := False;
-      Exit;
-    end;
 
     DebugLn(DBG_VERBOSE, '[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
 
@@ -5436,12 +5450,25 @@ begin
     FTheDebugger.RunQueue;  // run all the breakpoints
     Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
 
-    if FTheDebugger.FBreakAtMain <> nil
-    then begin
-      CanContinue := False;
-      TGDBMIBreakPoint(FTheDebugger.FBreakAtMain).Hit(CanContinue);
+    if DebuggerProperties.InternalStartBreak = gdbsNone then begin
+      if FContinueCommand = nil then begin
+        // set breakpoint for first line (Step-In/Over instead of run)
+        FTheDebugger.FPasMainAddrBreak.SetByName(Self);
+      end;
+      ReleaseRefAndNil(FContinueCommand);
+      FContinueCommand := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectRun);
+      CanContinue := True;
+      StoppedAtEntryPoint := False;
     end
-    else CanContinue := True;
+
+    else begin
+      if FTheDebugger.FBreakAtMain <> nil
+      then begin
+        CanContinue := False;
+        TGDBMIBreakPoint(FTheDebugger.FBreakAtMain).Hit(CanContinue);
+      end
+      else CanContinue := True;
+    end;
 
     //if FTheDebugger.DebuggerFlags * [dfSetBreakFailed, dfSetBreakPending] <> [] then begin
     //  if FTheDebugger.OnFeedback
@@ -5616,9 +5643,13 @@ begin
     NewPID := StrToIntDef(FProcessID, 0);
   end;
 
-  TargetInfo^.TargetPID := NewPID;
+  if NewPID <> 0 then
+    TargetInfo^.TargetPID := NewPID;
 
-  DetectTargetPid(True);
+  if NewPID = 0 then
+    DetectTargetPid(True);
+
+  include(TargetInfo^.TargetFlags, tfPidDetectionDone);
   if TargetInfo^.TargetPID = 0 then begin
     ExecuteCommand('detach', [], R);
     SetDebuggerErrorState(Format(gdbmiCommandStartMainRunNoPIDError, [LineEnding]));
@@ -6277,6 +6308,13 @@ begin
         ProcessBreakPoint(BreakID, List, gbrBreak);
         SetDebuggerState(dsError);
         Exit;
+      end;
+
+      if FTheDebugger.FPasMainAddrBreak.MatchId(BreakID)
+      then begin
+        SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+        FTheDebugger.DoCurrent(FTheDebugger.FCurrentLocation);
+        exit;
       end;
 
       if FTheDebugger.FBreakErrorBreak.MatchId(BreakID)
@@ -7787,6 +7825,7 @@ end;
 constructor TGDBMIDebuggerBase.Create(const AExternalDebugger: String);
 begin
   FMainAddrBreak   := TGDBMIInternalBreakPoint.Create('main');
+  FPasMainAddrBreak:= TGDBMIInternalBreakPoint.Create('pascalmain');
   FBreakErrorBreak := TGDBMIInternalBreakPoint.Create('FPC_BREAK_ERROR');
   FRunErrorBreak   := TGDBMIInternalBreakPoint.Create('FPC_RUNERROR');
   FExceptionBreak  := TGDBMIInternalBreakPoint.Create('FPC_RAISEEXCEPTION');
@@ -7905,6 +7944,7 @@ begin
   FreeAndNil(FTypeRequestCache);
   FreeAndNil(FMaxLineForUnitCache);
   FreeAndNil(FMainAddrBreak);
+  FreeAndNil(FPasMainAddrBreak);
   FreeAndNil(FBreakErrorBreak);
   FreeAndNil(FRunErrorBreak);
   FreeAndNil(FExceptionBreak);
@@ -8204,10 +8244,25 @@ end;
 procedure TGDBMIDebuggerBase.AddThreadGroup(const S: String);
 var
   List: TGDBMINameValueList;
+  s1, s2: String;
+  p: LongInt;
 begin
   List := TGDBMINameValueList.Create(S);
   FThreadGroups.Values[List.Values['id']] := List.Values['pid'];
   List.Free;
+
+  if not (tfPidDetectionDone in  FTargetInfo.TargetFlags) then begin
+    s1 := S;
+    s2 := GetPart(['=thread-group-started,'], [LineEnding], s1, True, False);
+    if s2 <> '' then begin
+      s2 := GetPart(['pid="'], ['"'], s2, True, False);
+      Include(FTargetInfo.TargetFlags, tfPidDetectionDone); // only consider the first one
+      if s2 <> '' then begin
+        p := StrToIntDef(s2, 0);
+        FTargetInfo.TargetPID := p;
+      end;
+    end;
+  end;
 end;
 
 procedure TGDBMIDebuggerBase.RemoveThreadGroup(const S: String);
@@ -8311,11 +8366,11 @@ begin
           Threads.Changed;
         end;
       end;
-    2: DoDbgEvent(ecModule, etModuleLoad, Line);
+    2: DoDbgEvent(ecModule, etModuleLoad, Line); //shlibs
     3: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
     4: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
-    5: DoDbgEvent(ecModule, etDefault, Line);
-    6: AddThreadGroup(Line);
+    5: DoDbgEvent(ecModule, etDefault, Line); //shlibs
+    6: AddThreadGroup(Line); //thread-group-started
     7: RemoveThreadGroup(Line);
     8: DoDbgEvent(ecThread, etThreadStart, ParseThread(Line, EventText));
     9: DoDbgEvent(ecThread, etThreadExit, ParseThread(Line, EventText));
