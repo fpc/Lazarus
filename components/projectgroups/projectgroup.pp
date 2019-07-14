@@ -1131,7 +1131,8 @@ end;
 destructor TIDEProjectGroup.Destroy;
 begin
   FreeAndNil(FTargets);
-  FreeAndNil(FSelfTarget);
+  if Parent=nil then
+    FreeAndNil(FSelfTarget);
   inherited Destroy;
 end;
 
@@ -1263,6 +1264,7 @@ Var
   i,ACount: Integer;
   Target: TIDECompileTarget;
   aGroup: TProjectGroup;
+  Changed: Boolean;
 begin
   Result:=false;
   if not FilenameIsAbsolute(FileName) then exit;
@@ -1277,6 +1279,7 @@ begin
     aGroup:=aGroup.Parent;
   end;
 
+  Changed:=false;
   BaseDir:=AppendPathDelim(ExtractFilePath(FileName));
   try
     XMLConfig := LoadXML(Filename,pgloSkipDialog in Options);
@@ -1306,7 +1309,10 @@ begin
           Target.Missing:=True;
         end
         else if (pgloErrorInvalid in options) then
-          exit
+        begin
+          Changed:=true;
+          exit;
+        end
         else
           case IDEQuestionDialog(lisErrTargetDoesNotExist,
               Format(lisErrNoSuchFile,[TargetFileName]),mtWarning,
@@ -1326,10 +1332,12 @@ begin
             exit;
           end;
         if Target<>nil then
-          Target.LoadGroupSettings(XMLConfig,APath);
+          Target.LoadGroupSettings(XMLConfig,APath)
+        else
+          Changed:=true;
       end;
     finally
-      Modified:=false;
+      Modified:=Changed;
       XMLConfig.Free;
     end;
     Result:=true;
@@ -1432,14 +1440,14 @@ end;
 
 procedure TIDECompileTarget.UnLoadTarget;
 begin
-  if (FProjectGroup<>nil) and not (Self is TRootProjectGroupTarget) then
-    FreeAndNil(FProjectGroup);
   if FBuildModes<>nil then
     FreeAndNil(FBuildModes);
   if FFiles<>nil then
     FreeAndNil(FFiles);
   if FRequiredPackages<>nil then
     FreeAndNil(FRequiredPackages);
+  if (FProjectGroup<>nil) and (FProjectGroup.Parent<>nil) then
+    FreeAndNil(FProjectGroup);
 end;
 
 destructor TIDECompileTarget.Destroy;
