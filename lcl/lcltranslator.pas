@@ -93,10 +93,37 @@ type
 var
   DefaultLang: String = '';
 
-function FindLocaleFileName(LCExt: string; Lang: string; Dir: string; LocaleFileName: string): string;
+procedure FindLang(var Lang: string);
 var
   T, CurParam: string;
   i: integer;
+begin
+  if Lang = '' then
+    for i := 1 to ParamCount do
+    begin
+      CurParam := ParamStrUTF8(i);
+      if (CurParam = '-l') or (UTF8LowerCase(CurParam) = '--lang') then
+      begin
+        if i < ParamCount then
+          Lang := ParamStrUTF8(i + 1);
+      end
+      else
+        if UTF8StartsText('--lang=', CurParam) then
+        begin
+          Lang := CurParam;
+          UTF8Delete(Lang, 1, Length('--lang='));
+        end;
+    end;
+
+  //User can decide to override locale with LANG variable.
+  if Lang = '' then
+    Lang := GetEnvironmentVariableUTF8('LANG');
+
+  if Lang = '' then
+    LazGetLanguageIDs(Lang, T);
+end;
+
+function FindLocaleFileName(LCExt: string; Lang: string; Dir: string; LocaleFileName: string): string;
 
   function GetLocaleFileName(const LangID, LCExt: string; Dir: string; LocaleFileName: string): string;
   var
@@ -276,30 +303,7 @@ var
 
 begin
   Result := '';
-
-  if Lang = '' then
-    for i := 1 to ParamCount do
-    begin
-      CurParam := ParamStrUTF8(i);
-      if (CurParam = '-l') or (UTF8LowerCase(CurParam) = '--lang') then
-      begin
-        if i < ParamCount then
-          Lang := ParamStrUTF8(i + 1);
-      end
-      else
-        if UTF8StartsText('--lang=', CurParam) then
-        begin
-          Lang := CurParam;
-          UTF8Delete(Lang, 1, Length('--lang='));
-        end;
-    end;
-
-  //User can decide to override locale with LANG variable.
-  if Lang = '' then
-    Lang := GetEnvironmentVariableUTF8('LANG');
-
-  if Lang = '' then
-    LazGetLanguageIDs(Lang, T);
+  FindLang(Lang);
 
   Result := GetLocaleFileName(Lang, LCExt, Dir, LocaleFileName);
 end;
