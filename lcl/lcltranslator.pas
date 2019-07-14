@@ -123,141 +123,108 @@ begin
     LazGetLanguageIDs(Lang, T);
 end;
 
-function FindLocaleFileName(LCExt: string; Lang: string; Dir: string; LocaleFileName: string): string;
+function FindLocaleFileName(LCExt: string; LangID: string; Dir: string; LocaleFileName: string): string;
+var
+  LangShortID: string;
+  AppDir,LCFileName,FullLCFileName: String;
+  absoluteDir: Boolean;
 
-  function GetLocaleFileName(const LangID, LCExt: string; Dir: string; LocaleFileName: string): string;
-  var
-    LangShortID: string;
-    AppDir,LCFileName,FullLCFileName: String;
-    absoluteDir: Boolean;
+  function GetLCFileName: string;
+  begin
+    if LocaleFileName = '' then
+      Result := ExtractFileName(ParamStrUTF8(0))
+    else
+      Result := LocaleFileName;
+  end;
 
-    function GetLCFileName: string;
+begin
+  Result := '';
+  FindLang(LangID);
+
+  DefaultLang := LangID;
+
+  AppDir := ExtractFilePath(ParamStrUTF8(0));
+  LCFileName := ChangeFileExt(GetLCFileName, LCExt);
+
+  if LangID <> '' then
+  begin
+    FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangID) + LCExt;
+
+    if Dir<>'' then
     begin
-      if LocaleFileName = '' then
-        Result := ExtractFileName(ParamStrUTF8(0))
+      Dir := AppendPathDelim(Dir);
+      absoluteDir := FilenameIsAbsolute(Dir);
+      if absoluteDir then
+        Result := Dir + LangID + DirectorySeparator + LCFileName
       else
-        Result := LocaleFileName;
+        Result := AppDir + Dir + LangID + DirectorySeparator + LCFileName;
+      if FileExistsUTF8(Result) then
+        exit;
     end;
 
-  begin
-    DefaultLang := LangID;
+    //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
+    Result := AppDir + LangID + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
 
-    AppDir := ExtractFilePath(ParamStrUTF8(0));
-    LCFileName := ChangeFileExt(GetLCFileName, LCExt);
+    Result := AppDir + 'languages' + DirectorySeparator + LangID +
+      DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
 
-    if LangID <> '' then
+    Result := AppDir + 'locale' + DirectorySeparator + LangID +
+      DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
+    Result := AppDir + 'locale' + DirectorySeparator + LangID +
+      DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
+    {$IFDEF UNIX}
+    //In unix-like systems we can try to search for global locale
+    Result := '/usr/share/locale/' + LangID + '/LC_MESSAGES/' + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+    {$ENDIF}
+    //Let us search for short id files
+    LangShortID := copy(LangID, 1, 2);
+    Defaultlang := LangShortID;
+
+    if Dir<>'' then
     begin
-      FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangID) + LCExt;
-
-      if Dir<>'' then
-      begin
-        Dir := AppendPathDelim(Dir);
-        absoluteDir := FilenameIsAbsolute(Dir);
-        if absoluteDir then
-          Result := Dir + LangID + DirectorySeparator + LCFileName
-        else
-          Result := AppDir + Dir + LangID + DirectorySeparator + LCFileName;
-        if FileExistsUTF8(Result) then
-          exit;
-      end;
-
-      //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
-      Result := AppDir + LangID + DirectorySeparator + LCFileName;
+      if absoluteDir then
+        Result := Dir + LangShortID + DirectorySeparator + LCFileName
+      else
+        Result := AppDir + Dir + LangShortID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
+    end;
 
-      Result := AppDir + 'languages' + DirectorySeparator + LangID +
-        DirectorySeparator + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
+    //At first, check all was checked
+    Result := AppDir + LangShortID + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
 
-      Result := AppDir + 'locale' + DirectorySeparator + LangID +
-        DirectorySeparator + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
+    Result := AppDir + 'languages' + DirectorySeparator +
+      LangShortID + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
 
-      Result := AppDir + 'locale' + DirectorySeparator + LangID +
-        DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
+    Result := AppDir + 'locale' + DirectorySeparator
+      + LangShortID + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
 
-      {$IFDEF UNIX}
-      //In unix-like systems we can try to search for global locale
-      Result := '/usr/share/locale/' + LangID + '/LC_MESSAGES/' + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-      {$ENDIF}
-      //Let us search for short id files
-      LangShortID := copy(LangID, 1, 2);
-      Defaultlang := LangShortID;
+    Result := AppDir + 'locale' + DirectorySeparator + LangShortID +
+      DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
 
-      if Dir<>'' then
-      begin
-        if absoluteDir then
-          Result := Dir + LangShortID + DirectorySeparator + LCFileName
-        else
-          Result := AppDir + Dir + LangShortID + DirectorySeparator + LCFileName;
-        if FileExistsUTF8(Result) then
-          exit;
-      end;
-
-      //At first, check all was checked
-      Result := AppDir + LangShortID + DirectorySeparator + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-
-      Result := AppDir + 'languages' + DirectorySeparator +
-        LangShortID + DirectorySeparator + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-
-      Result := AppDir + 'locale' + DirectorySeparator
-        + LangShortID + DirectorySeparator + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-
-      Result := AppDir + 'locale' + DirectorySeparator + LangShortID +
-        DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator + LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-
-      //Full language in file name - this will be default for the project
-      //We need more careful handling, as it MAY result in incorrect filename
-      try
-        if Dir<>'' then
-        begin
-          if absoluteDir then
-            Result := Dir + FullLCFileName
-          else
-            Result := AppDir + Dir + FullLCFileName;
-          if FileExistsUTF8(Result) then
-            exit;
-        end;
-
-        Result := AppDir + FullLCFileName;
-        if FileExistsUTF8(Result) then
-          exit;
-
-        //Common location (like in Lazarus)
-        Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
-        if FileExistsUTF8(Result) then
-          exit;
-
-        Result := AppDir + 'languages' + DirectorySeparator + FullLCFileName;
-        if FileExistsUTF8(Result) then
-          exit;
-      except
-        Result := '';//Or do something else (useless)
-      end;
-      {$IFDEF UNIX}
-      Result := '/usr/share/locale/' + LangShortID + '/LC_MESSAGES/' +
-        LCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-      {$ENDIF}
-
-      FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangShortID) + LCExt;
-
+    //Full language in file name - this will be default for the project
+    //We need more careful handling, as it MAY result in incorrect filename
+    try
       if Dir<>'' then
       begin
         if absoluteDir then
@@ -272,6 +239,7 @@ function FindLocaleFileName(LCExt: string; Lang: string; Dir: string; LocaleFile
       if FileExistsUTF8(Result) then
         exit;
 
+      //Common location (like in Lazarus)
       Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
       if FileExistsUTF8(Result) then
         exit;
@@ -279,33 +247,59 @@ function FindLocaleFileName(LCExt: string; Lang: string; Dir: string; LocaleFile
       Result := AppDir + 'languages' + DirectorySeparator + FullLCFileName;
       if FileExistsUTF8(Result) then
         exit;
+    except
+      Result := '';//Or do something else (useless)
+    end;
+    {$IFDEF UNIX}
+    Result := '/usr/share/locale/' + LangShortID + '/LC_MESSAGES/' +
+      LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+    {$ENDIF}
+
+    FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangShortID) + LCExt;
+
+    if Dir<>'' then
+    begin
+      if absoluteDir then
+        Result := Dir + FullLCFileName
+      else
+        Result := AppDir + Dir + FullLCFileName;
+      if FileExistsUTF8(Result) then
+        exit;
     end;
 
-    //master files have .pot extension
-    if LCExt = '.po' then
-      LCFileName := ChangeFileExt(GetLCFileName, '.pot');
-
-    Result := AppDir + LCFileName;
+    Result := AppDir + FullLCFileName;
     if FileExistsUTF8(Result) then
       exit;
 
-    Result := AppDir + 'locale' + DirectorySeparator + LCFileName;
+    Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
     if FileExistsUTF8(Result) then
       exit;
 
-    Result := AppDir + 'languages' + DirectorySeparator + LCFileName;
+    Result := AppDir + 'languages' + DirectorySeparator + FullLCFileName;
     if FileExistsUTF8(Result) then
       exit;
-
-    Result := '';
-    DefaultLang := '';
   end;
 
-begin
-  Result := '';
-  FindLang(Lang);
+  //master files have .pot extension
+  if LCExt = '.po' then
+    LCFileName := ChangeFileExt(GetLCFileName, '.pot');
 
-  Result := GetLocaleFileName(Lang, LCExt, Dir, LocaleFileName);
+  Result := AppDir + LCFileName;
+  if FileExistsUTF8(Result) then
+    exit;
+
+  Result := AppDir + 'locale' + DirectorySeparator + LCFileName;
+  if FileExistsUTF8(Result) then
+    exit;
+
+  Result := AppDir + 'languages' + DirectorySeparator + LCFileName;
+  if FileExistsUTF8(Result) then
+    exit;
+
+  Result := '';
+  DefaultLang := '';
 end;
 
 function GetIdentifierPath(Sender: TObject;
