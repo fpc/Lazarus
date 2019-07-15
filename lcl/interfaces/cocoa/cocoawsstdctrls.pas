@@ -143,8 +143,8 @@ type
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const NewAlignment: TAlignment); override;
 
     {class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;}
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -999,6 +999,16 @@ begin
   TextFieldSetAllignment(field, NewAlignment);
 end;
 
+class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  field: TCocoaTextField;
+begin
+  field := GetTextField(ACustomEdit);
+  if not Assigned(field) then Exit;
+  field.maxLength := NewLength;
+end;
+
 class procedure TCocoaWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
 begin
   if (NewChar<>#0) xor TCocoaTextField(ACustomEdit.Handle).isKindOfClass_(NSSecureTextField) then
@@ -1113,9 +1123,18 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: String);
+var
+  txt : string;
+  mxl : Integer;
 begin
   if (AWinControl.HandleAllocated) then
-    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
+  begin
+    txt := AText;
+    mxl := TCustomEdit(AWinControl).MaxLength;
+    if (mxl > 0) and (UTF8Length(txt) > mxl) then
+      txt := UTF8Copy(txt, 1, mxl);
+    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), txt);
+  end;
 end;
 
 { TCocoaMemoStrings }

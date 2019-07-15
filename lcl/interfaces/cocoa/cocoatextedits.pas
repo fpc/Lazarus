@@ -59,6 +59,7 @@ type
 
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
+    maxLength: Integer;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -919,6 +920,8 @@ end;
 
 procedure TCocoaTextField.textDidChange(notification: NSNotification);
 begin
+  if (maxLength>0) and (stringValue.length > maxLength) then
+    setStringValue(stringValue.substringWithRange(NSMakeRange(0,maxLength)));
   if callback <> nil then
     callback.SendOnTextChanged;
 end;
