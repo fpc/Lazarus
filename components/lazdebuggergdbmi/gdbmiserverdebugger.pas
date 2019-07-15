@@ -122,7 +122,7 @@ type
 
   TGDBMIServerDebuggerCommandStartDebugging = class(TGDBMIDebuggerCommandStartDebugging)
   protected
-    function GdbRunCommand: String; override;
+    function GdbRunCommand: TGDBMIExecCommandType; override;
     procedure DetectTargetPid(InAttach: Boolean = False); override;
     function  DoTargetDownload: boolean; override;
     function DoChangeFilename: Boolean; override;
@@ -130,9 +130,9 @@ type
 
 { TGDBMIServerDebuggerCommandStartDebugging }
 
-function TGDBMIServerDebuggerCommandStartDebugging.GdbRunCommand: String;
+function TGDBMIServerDebuggerCommandStartDebugging.GdbRunCommand: TGDBMIExecCommandType;
 begin
-  Result := '-exec-continue';
+  Result := ectContinue;
 end;
 
 procedure TGDBMIServerDebuggerCommandStartDebugging.DetectTargetPid(InAttach: Boolean);

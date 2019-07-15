@@ -593,7 +593,7 @@ type
     FSuccess: Boolean;
   protected
     function  DoExecute: Boolean; override;
-    function  GdbRunCommand: String; virtual;
+    function  GdbRunCommand: TGDBMIExecCommandType; virtual;
     function  DoTargetDownload: boolean; virtual;
   public
     constructor Create(AOwner: TGDBMIDebuggerBase; AContinueCommand: TGDBMIDebuggerCommand);
@@ -5135,7 +5135,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     FDidKillNow := False;
 
     // TODO: async
-    Cmd := GdbRunCommand;// '-exec-run';
+    Cmd := GDBMIExecCommandMap[GdbRunCommand];// '-exec-run';
     rval := '';
     R.State := dsError;
     FTheDebugger.FMainAddrBreak.Clear(Self);
@@ -5456,7 +5456,7 @@ begin
         FTheDebugger.FPasMainAddrBreak.SetByName(Self);
       end;
       ReleaseRefAndNil(FContinueCommand);
-      FContinueCommand := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectRun);
+      FContinueCommand := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, GdbRunCommand);
       CanContinue := True;
       StoppedAtEntryPoint := False;
     end
@@ -5528,9 +5528,9 @@ begin
   FSuccess := True;
 end;
 
-function TGDBMIDebuggerCommandStartDebugging.GdbRunCommand: String;
+function TGDBMIDebuggerCommandStartDebugging.GdbRunCommand: TGDBMIExecCommandType;
 begin
-  Result := '-exec-run';
+  Result := ectRun;
 end;
 
 function TGDBMIDebuggerCommandStartDebugging.DoTargetDownload: boolean;
