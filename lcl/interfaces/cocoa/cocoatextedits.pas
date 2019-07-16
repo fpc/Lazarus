@@ -920,7 +920,7 @@ end;
 
 procedure TCocoaTextField.textDidChange(notification: NSNotification);
 begin
-  if (maxLength>0) and (stringValue.length > maxLength) then
+  if (maxLength>0) and Assigned(stringValue) and (stringValue.length > maxLength) then
     setStringValue(stringValue.substringWithRange(NSMakeRange(0,maxLength)));
   if callback <> nil then
     callback.SendOnTextChanged;
