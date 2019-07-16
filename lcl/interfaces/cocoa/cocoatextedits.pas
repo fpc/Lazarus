@@ -382,8 +382,7 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
-  TCocoaSpinEdit = objcclass(NSTextField, NSTextFieldDelegateProtocol)
-    callback: ICommonCallback;
+  TCocoaSpinEdit = objcclass(TCocoaTextField, NSTextFieldDelegateProtocol)
     Stepper: NSStepper;
     NumberFormatter: NSNumberFormatter;
     decimalPlaces: Integer;
