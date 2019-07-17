@@ -12,8 +12,9 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="TSqlite3Dataset class package
-"/>
+    <Description Value="TSqlite3Dataset class package.
+There are required binary file dependancies for IDE installation and project distribution, please see: https://wiki.lazarus.freepascal.org/SQLite for information and instructions.
+"/>	
     <License Value="Modified LGPL
 "/>
     <Version Minor="4"/>
