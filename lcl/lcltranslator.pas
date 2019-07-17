@@ -81,8 +81,8 @@ type
   end;
 
 procedure TranslateLCLResourceStrings(Lang, Dir: string);
-procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true);
-function GetDefaultLang: String;
+function SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true): string;
+function GetDefaultLang: String; deprecated 'Use SetDefaultLang function result instead'; // Lazarus 2.1.0
 
 implementation
 
@@ -123,7 +123,7 @@ begin
     LazGetLanguageIDs(Lang, T);
 end;
 
-function FindLocaleFileName(LCExt: string; LangID: string; Dir: string; LocaleFileName: string): string;
+function FindLocaleFileName(LCExt, LangID, Dir, LocaleFileName: string; out FoundLang: string): string;
 var
   LangShortID: string;
   AppDir,LCFileName,FullLCFileName: String;
@@ -141,7 +141,7 @@ begin
   Result := '';
   FindLang(LangID);
 
-  DefaultLang := LangID;
+  FoundLang := LangID;
 
   AppDir := ExtractFilePath(ParamStrUTF8(0));
   LCFileName := ChangeFileExt(GetLCFileName, LCExt);
@@ -190,7 +190,7 @@ begin
     {$ENDIF}
     //Let us search for short id files
     LangShortID := copy(LangID, 1, 2);
-    Defaultlang := LangShortID;
+    FoundLang := LangShortID;
 
     if Dir<>'' then
     begin
@@ -299,7 +299,7 @@ begin
     exit;
 
   Result := '';
-  DefaultLang := '';
+  FoundLang := '';
 end;
 
 function GetIdentifierPath(Sender: TObject;
@@ -534,25 +534,21 @@ end;
 
 procedure TranslateLCLResourceStrings(Lang, Dir: string);
 var
-  LCLPath, DefaultLangBackup: string;
+  LCLPath, FoundLang: string;
 begin
-  // DefaultLang value is preserved when translating LCL, so it will depend only
-  // on presence of interface translation. Useful when interface translation present
-  // and LCL one missing, or the other way round.
-  DefaultLangBackup:=DefaultLang;
-  LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts');
+  FoundLang:='';
+  LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts', FoundLang);
   if LCLPath<>'' then
     Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
   else
   begin
-    LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts');
+    LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts', FoundLang);
     if LCLPath<>'' then
       GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
   end;
-  DefaultLang:=DefaultLangBackup;
 end;
 
-procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true);
+function SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true): string;
 { Arguments:
   Lang - language (e.g. 'ru', 'de'); empty argument is default language.
   Dir - custom translation files subdirectory (e.g. 'mylng'); empty argument means searching only in predefined subdirectories.
@@ -566,10 +562,11 @@ var
   i: integer;
 
 begin
+  Result := '';
   LocalTranslator := nil;
   // search first po translation resources
   try
-    lcfn := FindLocaleFileName('.po', Lang, Dir, LocaleFileName);
+    lcfn := FindLocaleFileName('.po', Lang, Dir, LocaleFileName, Result);
     if lcfn <> '' then
     begin
       Translations.TranslateResourceStrings(lcfn);
@@ -583,7 +580,7 @@ begin
   begin
     // try now with MO translation resources
     try
-      lcfn := FindLocaleFileName('.mo', Lang, Dir, LocaleFileName);
+      lcfn := FindLocaleFileName('.mo', Lang, Dir, LocaleFileName, Result);
       if lcfn <> '' then
       begin
         GetText.TranslateResourceStrings(UTF8ToSys(lcfn));
@@ -593,6 +590,8 @@ begin
       lcfn := '';
     end;
   end;
+
+  DefaultLang := Result;
 
   if lcfn<>'' then
     TranslateLCLResourceStrings(Lang, lcfn);
