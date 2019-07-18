@@ -1424,25 +1424,10 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.OnProjectGroupFileNameChanged(Sender: TObject);
-var
-  TVNode: TTreeNode;
-  NodeData: TNodeData;
 begin
   if Sender<>ProjectGroup then exit; // ToDo: sub groups
   ShowFileName;
-  // update all nodes with file names
-  TVPG.BeginUpdate;
-  TVNode:=TVPG.Items.GetFirstNode;
-  while TVNode<>nil do begin
-    NodeData:=TNodeData(TVNode.Data);
-    if NodeData is TNodeData then begin
-      if NodeData.NodeType in [ntTarget] then begin
-        TVNode.Text:=DisplayFileName(NodeData);
-      end;
-    end;
-    TVNode:=TVNode.GetNext;
-  end;
-  TVPG.EndUpdate;
+  UpdateNodeTexts;
 end;
 
 function TProjectGroupEditorForm.CreateSectionNode(AParent: TTreeNode;
@@ -1652,12 +1637,18 @@ end;
 procedure TProjectGroupEditorForm.UpdateNodeTexts;
 var
   TVNode: TTreeNode;
+  NodeData: TNodeData;
 begin
   FLastShowTargetPaths:=IDEProjectGroupManager.Options.ShowTargetPaths;
   TVPG.BeginUpdate;
   try
     for TVNode in TVPG.Items do begin
-      TVNode.Text:=DisplayFileName(TVNode);
+      NodeData:=TNodeData(TVNode.Data);
+      if NodeData is TNodeData then begin
+        if (NodeData.NodeType in [ntTarget]) and (NodeData.Target<>nil) then begin
+          TVNode.Text:=DisplayFileName(TVNode);
+        end;
+      end;
     end;
   finally
     TVPG.EndUpdate;
