@@ -149,7 +149,7 @@ begin
     store language in a configuration file and apply that selection here. }
   SelectLanguage('en');
   { OR: Start the program with system's default language:
-  SelectLanguage(GetDefaultLang); }
+  SelectLanguage(''); }
 end;
 
 { Another example how to combine translated strings, in this case  for a
@@ -174,35 +174,38 @@ var
   lang: String;
 begin
   // Switch language - this is in LCLTranslator
-  SetDefaultLang(ALang);
+  ALang := SetDefaultLang(ALang);
 
-  // Switch default settings by calling the procedure provided in BasicLocalizedForm.pas.
-  UpdateFormatSettings(ALang);
+  if ALang <> '' then
+  begin
+    // Switch default settings by calling the procedure provided in BasicLocalizedForm.pas.
+    UpdateFormatSettings(ALang);
 
-  // Adjust BiDiMode to new language
-  UpdateBiDiMode(ALang);
+    // Adjust BiDiMode to new language
+    UpdateBiDiMode(ALang);
 
-  // Update items not automatically translated.
-  UpdateTranslation(ALang);
+    // Update items not automatically translated.
+    UpdateTranslation(ALang);
 
-  // Select the new language in the language combobox.
-  ALang := lowercase(ALang);
-  for i:=0 to CbLanguage.Items.Count-1 do begin
-    lang := CbLanguage.Items[i];
-    p := pos(' ', lang);
-    if p = 0 then p := pos('-', lang);
-    if p = 0 then
-      raise Exception.Create('Language items are not properly formatted.');
-    lang := lowercase(copy(lang, 1, p-1));
-    if lang = ALang then begin
-      CbLanguage.ItemIndex := i;
-      break;
+    // Select the new language in the language combobox.
+    ALang := lowercase(ALang);
+    for i:=0 to CbLanguage.Items.Count-1 do begin
+      lang := CbLanguage.Items[i];
+      p := pos(' ', lang);
+      if p = 0 then p := pos('-', lang);
+      if p = 0 then
+        raise Exception.Create('Language items are not properly formatted.');
+      lang := lowercase(copy(lang, 1, p-1));
+      if lang = ALang then begin
+        CbLanguage.ItemIndex := i;
+        break;
+      end;
     end;
-  end;
 
-  { Remember the new language. Forms may want to check in UpdateTranslation
-    whether the new language has a different BiDiMode. }
-  CurrentLang := ALang;
+    { Remember the new language. Forms may want to check in UpdateTranslation
+      whether the new language has a different BiDiMode. }
+    CurrentLang := ALang;
+  end;
 end;
 
 { This method is inherited from LocalizedForm and manually inserts translated
