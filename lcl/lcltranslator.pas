@@ -80,7 +80,7 @@ type
       PropInfo: PPropInfo; var Content: string); override;
   end;
 
-procedure TranslateLCLResourceStrings(Lang, Dir: string);
+function TranslateLCLResourceStrings(Lang, Dir: string): string;
 function SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true): string;
 function GetDefaultLang: String; deprecated 'Use SetDefaultLang function result instead'; // Lazarus 2.1.0
 
@@ -532,17 +532,17 @@ begin
   end;
 end;
 
-procedure TranslateLCLResourceStrings(Lang, Dir: string);
+function TranslateLCLResourceStrings(Lang, Dir: string): string;
 var
-  LCLPath, FoundLang: string;
+  LCLPath: string;
 begin
-  FoundLang:='';
-  LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts', FoundLang);
+  Result:='';
+  LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
   if LCLPath<>'' then
     Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
   else
   begin
-    LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts', FoundLang);
+    LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
     if LCLPath<>'' then
       GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
   end;
