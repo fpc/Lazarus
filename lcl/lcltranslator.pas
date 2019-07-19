@@ -142,15 +142,19 @@ begin
   AppDir := ExtractFilePath(ParamStrUTF8(0));
   LCFileName := ChangeFileExt(GetLCFileName, LCExt);
 
+  if Dir<>'' then
+  begin
+    Dir := AppendPathDelim(Dir);
+    if not FilenameIsAbsolute(Dir) then
+      Dir := AppDir + Dir;
+  end;
+
   if LangID <> '' then
   begin
     FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangID) + LCExt;
 
     if Dir<>'' then
     begin
-      Dir := AppendPathDelim(Dir);
-      if not FilenameIsAbsolute(Dir) then
-        Dir := AppDir + Dir;
       Result := Dir + LangID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
@@ -270,6 +274,13 @@ begin
   //master files have .pot extension
   if LCExt = '.po' then
     LCFileName := ChangeFileExt(GetLCFileName, '.pot');
+
+  if Dir<>'' then
+  begin
+    Result := Dir + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+  end;
 
   Result := AppDir + LCFileName;
   if FileExistsUTF8(Result) then
