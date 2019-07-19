@@ -123,8 +123,7 @@ end;
 function FindLocaleFileName(LCExt, LangID, Dir, LocaleFileName: string; out FoundLang: string): string;
 var
   LangShortID: string;
-  AppDir,LCFileName,FullLCFileName: String;
-  absoluteDir: Boolean;
+  AppDir, LCFileName, FullLCFileName: string;
 
   function GetLCFileName: string;
   begin
@@ -150,11 +149,9 @@ begin
     if Dir<>'' then
     begin
       Dir := AppendPathDelim(Dir);
-      absoluteDir := FilenameIsAbsolute(Dir);
-      if absoluteDir then
-        Result := Dir + LangID + DirectorySeparator + LCFileName
-      else
-        Result := AppDir + Dir + LangID + DirectorySeparator + LCFileName;
+      if not FilenameIsAbsolute(Dir) then
+        Dir := AppDir + Dir;
+      Result := Dir + LangID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
     end;
@@ -191,10 +188,7 @@ begin
 
     if Dir<>'' then
     begin
-      if absoluteDir then
-        Result := Dir + LangShortID + DirectorySeparator + LCFileName
-      else
-        Result := AppDir + Dir + LangShortID + DirectorySeparator + LCFileName;
+      Result := Dir + LangShortID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
     end;
@@ -224,10 +218,7 @@ begin
     try
       if Dir<>'' then
       begin
-        if absoluteDir then
-          Result := Dir + FullLCFileName
-        else
-          Result := AppDir + Dir + FullLCFileName;
+        Result := Dir + FullLCFileName;
         if FileExistsUTF8(Result) then
           exit;
       end;
@@ -258,10 +249,7 @@ begin
 
     if Dir<>'' then
     begin
-      if absoluteDir then
-        Result := Dir + FullLCFileName
-      else
-        Result := AppDir + Dir + FullLCFileName;
+      Result := Dir + FullLCFileName;
       if FileExistsUTF8(Result) then
         exit;
     end;
