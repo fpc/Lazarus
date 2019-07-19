@@ -18,17 +18,14 @@ unit LCLTranslator;
 }
 {
 This unit is needed for using translated form strings made by Lazarus IDE.
-It searches for translated .po/.mo files in some common places. If you need
-to have .po/.mo files anywhere else, don't use this unit but initialize
-LRSMoFile variable from LResources in your project by yourself.
+It searches for translated .po/.mo files in some common places and user specified ones.
 
 If you need standard translation, just use this unit in your project and enable
 i18n in project options. Note that you will have to call SetDefaultLang manually.
 If you want it to be called automatically, use DefaultTranslator unit instead.
 
 Another reason for including this unit may be using translated LCL messages.
-This unit localizes LCL too, if it finds lclstrconsts.xx.po/lclstrconsts.xx.mo
-in directory where your program translation files are placed.
+This unit localizes LCL too, if it finds lclstrconsts.xx.po/lclstrconsts.xx.mo.
 }
 {$mode objfpc}{$H+}
 
