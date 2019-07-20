@@ -3766,9 +3766,24 @@ begin
 end;
 
 function TPackageEditors.ShouldNotBeInstalled(APackage: TLazPackage): boolean;
+var
+  Dep: TPkgDependency;
+  CurPkg: TLazPackage;
 begin
-  Result:=APackage.Missing
-     or ((APackage.FindUnitWithRegister=nil) and (APackage.Provides.Count=0));
+  if APackage.Missing then
+    exit(true)
+  else if (APackage.FindUnitWithRegister<>nil) or (APackage.Provides.Count>0) then
+    exit(false);
+  Dep:=APackage.FirstRequiredDependency;
+  while Dep<>nil do begin
+    CurPkg:=Dep.RequiredPackage;
+    if (CurPkg<>nil) then begin
+      if (CurPkg.FindUnitWithRegister<>nil) or (CurPkg.Provides.Count>0) then
+        exit(false);
+    end;
+    Dep:=Dep.NextRequiresDependency;
+  end;
+  Result:=true;
 end;
 
 function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;
