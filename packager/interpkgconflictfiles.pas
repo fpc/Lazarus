@@ -901,7 +901,7 @@ var
 
         if (PPUFile<>nil) and (OtherPPUFile<>nil)
         and (CompareFilenames(PPUFile.FullFilename,OtherPPUFile.FullFilename)=0)
-        and (OtherFile=nil) then begin
+        and ((OtherFile=nil) or (SrcFile=nil)) then begin
           // the same ppu is in both packages
           // ... and only one package has a source
           // for example: two packages share output directories
