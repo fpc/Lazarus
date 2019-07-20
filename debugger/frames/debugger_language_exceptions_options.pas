@@ -31,7 +31,7 @@ uses
   // IdeIntf
   IDEImagesIntf, IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  LazarusIDEStrConsts, Debugger, BaseDebugManager;
+  LazarusIDEStrConsts, Debugger, BaseDebugManager, Project;
 
 type
 
@@ -200,10 +200,10 @@ end;
 
 class function TDebuggerLanguageExceptionsOptions.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TDebuggerOptions;
+  Result := TProjectIDEOptions;
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupDebugger, TDebuggerLanguageExceptionsOptions, DbgOptionsLanguageExceptions);
+  RegisterIDEOptionsEditor(GroupProject, TDebuggerLanguageExceptionsOptions, DbgOptionsLanguageExceptions);
 end.
 

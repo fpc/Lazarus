@@ -200,7 +200,6 @@ const
     DbgOptionsGeneral            = 100;
     DbgOptionsClass              = 150;
     DbgOptionsEventLog           = 200;
-    DbgOptionsLanguageExceptions = 300;
     DbgOptionsSignals            = 400;
 
   GroupHelp         = 500;
@@ -216,6 +215,7 @@ const
     ProjectOptionsResources   = 550;
     ProjectOptionsI18N        = 600;
     ProjectOptionsMisc        = 700;
+    DbgOptionsLanguageExceptions = 800;
 
   GroupPackage      = 200100;
     PackageOptionsUsage        = 100;
