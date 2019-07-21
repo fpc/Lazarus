@@ -218,31 +218,26 @@ begin
     if FileExistsUTF8(Result) then
       exit;
 
-    //Full language in file name - this will be default for the project
-    //We need more careful handling, as it MAY result in incorrect filename
-    try
-      if Dir<>'' then
-      begin
-        Result := Dir + FullLCFileName;
-        if FileExistsUTF8(Result) then
-          exit;
-      end;
-
-      Result := AppDir + FullLCFileName;
+    if Dir<>'' then
+    begin
+      Result := Dir + FullLCFileName;
       if FileExistsUTF8(Result) then
         exit;
-
-      //Common location (like in Lazarus)
-      Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-
-      Result := AppDir + 'languages' + DirectorySeparator + FullLCFileName;
-      if FileExistsUTF8(Result) then
-        exit;
-    except
-      Result := '';//Or do something else (useless)
     end;
+
+    Result := AppDir + FullLCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
+    //Common location (like in Lazarus)
+    Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
+    Result := AppDir + 'languages' + DirectorySeparator + FullLCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
     {$IFDEF UNIX}
     Result := '/usr/share/locale/' + LangShortID + '/LC_MESSAGES/' +
       LCFileName;
