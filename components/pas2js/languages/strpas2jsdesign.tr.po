@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: strpas2jsdesign.pjsdnodejsappdescription
+msgid "A pas2js program running in node.js"
+msgstr "Node.js içinde çalışan bir pas2js programı"
+
+#: strpas2jsdesign.pjsdnodejsapplication
+msgid "Node.js Application"
+msgstr "Node.js uygulaması"
+
+#: strpas2jsdesign.pjsdwebappdescription
+msgid "A pas2js program running in the browser"
+msgstr "Tarayıcıda çalışan bir pas2js programı"
+
+#: strpas2jsdesign.pjsdwebapplication
+msgid "Web Browser Application"
+msgstr "Web Tarayıcı Uygulaması"
+
+#: strpas2jsdesign.spasjswebserverscaption
+msgid "Pas2JS WebServers"
+msgstr "Pas2JS Web Sunucuları"
+
+#: strpas2jsdesign.sstatuserror
+msgid "Error starting"
+msgstr "Başlarken hata"
+
+#: strpas2jsdesign.sstatusrunning
+msgid "Running"
+msgstr "Çalışıyor"
+
+#: strpas2jsdesign.sstatusstopped
+msgid "Stopped"
+msgstr "Durduruldu"
+
+#: strpas2jsdesign.swebserversbasedir
+msgid "Root directory"
+msgstr "Kök dizini"
+
+#: strpas2jsdesign.swebserverscaption
+msgid "Web server processes"
+msgstr "Web sunucusu işlemleri"
+
+#: strpas2jsdesign.swebserverscount
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Number of webserver processes:"
+msgid "Number of webserver processes: %s"
+msgstr "Web sunucusu işlemlerinin sayısı:"
+
+#: strpas2jsdesign.swebserversextra
+msgid "Additional info"
+msgstr "İlave bilgi"
+
+#: strpas2jsdesign.swebserversport
+msgid "Port"
+msgstr "Port"
+
+#: strpas2jsdesign.swebserversproject
+msgid "Project"
+msgstr "Proje"
+
+#: strpas2jsdesign.swebserversstatus
+msgid "Status"
+msgstr "Durum"
+

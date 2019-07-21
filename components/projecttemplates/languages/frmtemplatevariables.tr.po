@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: frmtemplatevariables.screateindir
+msgid "Create in &directory:"
+msgstr "&Dizin oluşturun:"
+
+#: frmtemplatevariables.sdescription
+msgid "Description"
+msgstr "Açıklama"
+
+#: frmtemplatevariables.snameforproject
+msgid "&Name for new project:"
+msgstr "&Yeni projenin adı:"
+
+#: frmtemplatevariables.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Bu projenin ek değişkenleri yoktur."
+
+#: frmtemplatevariables.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Bu proje bazı ek değişkenler içerir. Lütfen bu değişkenler için değerler sağlayın."
+
+#: frmtemplatevariables.stitle
+msgid "New project from template"
+msgstr "Şablondan yeni proje"
+
+#: frmtemplatevariables.svalue
+msgid "Value"
+msgstr "Değer"
+
+#: frmtemplatevariables.svariable
+msgid "Variable"
+msgstr "Değişken"
+

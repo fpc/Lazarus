@@ -1,0 +1,987 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.3\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: tr_TR\n"
+
+#: codetoolsstrconsts.crsbracketnotfound
+msgid "bracket ) not found"
+msgstr "parantez ) bulunamadı"
+
+#: codetoolsstrconsts.crsbracketnotfound2
+msgid "bracket ] not found"
+msgstr "parantez ] bulunamadı"
+
+#: codetoolsstrconsts.crsclosingbracketnotfound
+msgid "closing bracket not found"
+msgstr "parantez kapatma bulunamadı"
+
+#: codetoolsstrconsts.crsfoundunexpectedat
+#, object-pascal-format
+msgid "%s, found unexpected %s at %s"
+msgstr "%s, %s konumunda beklenmeyen %s bulundu"
+
+#: codetoolsstrconsts.crsrecordendnotfound
+msgid "record end not found"
+msgstr "kayıt sonu bulunamadı"
+
+#: codetoolsstrconsts.ctsaddsdirtoincludepath
+#, object-pascal-format
+msgid "adds %s to IncPath"
+msgstr "incPath'e %s ekle"
+
+#: codetoolsstrconsts.ctsaddsdirtosourcepath
+#, object-pascal-format
+msgid "adds %s to SrcPath"
+msgstr "srcPath'e %s ekle"
+
+#: codetoolsstrconsts.ctsancestorisnotproperty
+msgid "ancestor of untyped property is not a property"
+msgstr "türlenmemiş özelliğin atası bir özellik değil"
+
+#: codetoolsstrconsts.ctsanlclproject
+msgid "an LCL project"
+msgstr "bir LCL projesi"
+
+#: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
+#, object-pascal-format
+msgid "Anonymous %s definitions are not allowed"
+msgstr "Anonim %s tanımlarına izin verilmiyor"
+
+#: codetoolsstrconsts.ctsawithoutb
+#, object-pascal-format
+msgid "%s without %s"
+msgstr "%s olmadan %s"
+
+#: codetoolsstrconsts.ctsbasetypeofnotfound
+#, object-pascal-format
+msgid "base type of \"%s\" not found"
+msgstr "\"%s\" temel türü bulunamadı"
+
+#: codetoolsstrconsts.ctsbeginatwithoutend
+#, object-pascal-format
+msgid "begin at %s without end"
+msgstr "end olmayan begin %s"
+
+#: codetoolsstrconsts.ctsbinaryoperator
+msgid "binary operator"
+msgstr "ikili operatör"
+
+#: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
+#, object-pascal-format
+msgid "bracket close expected, but %s found"
+msgstr "beklenen kapatma parantezi ama %s bulundu"
+
+#: codetoolsstrconsts.ctsbracketnotfound
+#, object-pascal-format
+msgid "bracket %s not found"
+msgstr "kapatma parantezi bulunamadı %s"
+
+#: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
+#, object-pascal-format
+msgid "bracket open expected, but %s found"
+msgstr "beklenen açma parantezi fakat %s bulundu"
+
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "cannot add a unit to the implementation, because only a unit has one"
+msgstr "implementation bir birim ekleyemez, çünkü sadece bir ünitede bir tane var"
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
+msgstr "karakter sabiti aralık dışında"
+
+#: codetoolsstrconsts.ctscircleindefinitions
+msgid "circle in definitions"
+msgstr "tanımlarda daire"
+
+#: codetoolsstrconsts.ctsclassidentifierexpected
+msgid "class identifier expected"
+msgstr "sınıf tanımlayıcısı bekleniyor"
+
+#: codetoolsstrconsts.ctsclassnodewithoutparentnode
+msgid "class node without parent node"
+msgstr "üst düğüm olmadan sınıf düğümü"
+
+#: codetoolsstrconsts.ctsclassnotfound
+#, object-pascal-format
+msgid "class \"%s\" not found"
+msgstr "\"%s\" sınıfı bulunamadı"
+
+#: codetoolsstrconsts.ctsclassnotfound2
+#, object-pascal-format
+msgid "class not found \"%s\""
+msgstr "\"%s\" sınıfı bulunamadı"
+
+#: codetoolsstrconsts.ctsclassofdefinitionnotresolved
+#, object-pascal-format
+msgid "\"class of\" definition not resolved: %s"
+msgstr "\"sınıfı\" tanımı çözülmedi: %s"
+
+#: codetoolsstrconsts.ctsclasssnotfound
+#, object-pascal-format
+msgid "Class %s not found"
+msgstr "Sınıf \"%s\" bulunamadı"
+
+#: codetoolsstrconsts.ctsclasswithoutname
+msgid "class without name"
+msgstr "isimsiz sınıf"
+
+#: codetoolsstrconsts.ctscommandlineparameters
+msgid "Command line parameters"
+msgstr "Komut satırı parametreleri"
+
+#: codetoolsstrconsts.ctscommentendnotfound
+msgid "Comment end not found"
+msgstr "Yorum sonu bulunamadı"
+
+#: codetoolsstrconsts.ctscompiledsrcpath
+msgid "Compiled SrcPath"
+msgstr "Derlenmiş SrcPath"
+
+#: codetoolsstrconsts.ctscompiler
+msgid "Compiler"
+msgstr "Derleyici"
+
+#: codetoolsstrconsts.ctscomponentsdirectory
+msgid "Components Directory"
+msgstr "Bileşenler klasörü"
+
+#: codetoolsstrconsts.ctsconstant
+msgid "constant"
+msgstr "sabit"
+
+#: codetoolsstrconsts.ctsconverterdirectory
+msgid "Converter Directory"
+msgstr "Dönüştürücü Dizini"
+
+#: codetoolsstrconsts.ctscursorposoutsideofcode
+msgid "cursor pos outside of code"
+msgstr "imleç posizyonu kod dışında"
+
+#: codetoolsstrconsts.ctscustomcomponentsdirectory
+msgid "Custom Components Directory"
+msgstr "Özel Bileşenler Dizini"
+
+#: codetoolsstrconsts.ctsdebuggerdirectory
+msgid "Debugger Directory"
+msgstr "Hata ayıklayıcı klasörü"
+
+#: codetoolsstrconsts.ctsdefaultancestornotfound
+#, object-pascal-format
+msgid "default ancestor %s not found"
+msgstr "varsayılan ata %s bulunamadı"
+
+#: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
+msgid "default class ancestor TObject not found"
+msgstr "varsayılan ata sınıfı TObject bulunamadı"
+
+#: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
+msgid "default dispinterface ancestor IDispatch not found"
+msgstr "varsayılan görüntü oluşturma atası IDispatch bulunamadı"
+
+#: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
+msgid "Default fpc source Operating System 2"
+msgstr "Varsayılan fpc kaynağı İşletim Sistemi 2"
+
+#: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
+msgid "Default fpc source Operating System"
+msgstr "Varsayılan fpc kaynağı İşletim Sistemi"
+
+#: codetoolsstrconsts.ctsdefaultfpcsymbol
+msgid "Default fpc symbol"
+msgstr "Varsayılan fpc sembolü"
+
+#: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
+msgid "Default fpc target Operating System"
+msgstr "Varsayılan fpc hedef İşletim Sistemi"
+
+#: codetoolsstrconsts.ctsdefaultfpctargetprocessor
+msgid "Default fpc target processor"
+msgstr "Varsayılan fpc hedef işlemci"
+
+#: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
+msgid "default interface ancestor IInterface not found"
+msgstr "varsayılan arayüz ata IInterface bulunamadı"
+
+#: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
+msgid "default java class ancestor JLObject not found"
+msgstr "varsayılan java sınıfı ata JLObject bulunamadı"
+
+#: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
+#, object-pascal-format
+msgid "default parameter expected, but %s found"
+msgstr "varsayılan parametre bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr "varsayılan özellik bulunamadı"
+
+#: codetoolsstrconsts.ctsdefaultspecifierredefined
+msgid "default specifier redefined"
+msgstr "varsayılan belirtici yeniden tanımlandı"
+
+#: codetoolsstrconsts.ctsdefine
+msgid "Define "
+msgstr "Tanımlama "
+
+#: codetoolsstrconsts.ctsdefinelcl
+msgid "Define LCL"
+msgstr "LCL tanımla"
+
+#: codetoolsstrconsts.ctsdefinelclwidgetset
+msgid "Define LCLwidgetset, e.g. LCLgtk"
+msgstr "LCLwidgetset, e.g. LCLgtk Tanımla"
+
+#: codetoolsstrconsts.ctsdefinemacroname
+#, object-pascal-format
+msgid "Define Macro %s"
+msgstr "Makro %s tanımla"
+
+#: codetoolsstrconsts.ctsdefineprocessortype
+msgid "Define processor type"
+msgstr "İşlemci tipi tanımla"
+
+#: codetoolsstrconsts.ctsdefsforlazarussources
+msgid "Definitions for the Lazarus Sources"
+msgstr "Lazarus Kaynakları İçin Tanımlar"
+
+#: codetoolsstrconsts.ctsdesignerdirectory
+msgid "Designer Directory"
+msgstr "Tasarımcı klasörü"
+
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+#, object-pascal-format
+msgid "dispid parameter expected, but %s found"
+msgstr "dispid parametresi bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr "dispid belirteci yeniden tanımlandı"
+
+#: codetoolsstrconsts.ctsdoceditordirectory
+msgid "Doc Editor Directory"
+msgstr "Belge Düzenleyici Dizini"
+
+#: codetoolsstrconsts.ctsduplicateidentifier
+#, object-pascal-format
+msgid "duplicate identifier: %s"
+msgstr "yinelenen tanımlayıcı: %s"
+
+#: codetoolsstrconsts.ctselse
+msgid "else"
+msgstr "else"
+
+#: codetoolsstrconsts.ctsendforclassnotfound
+msgid "\"end\" for class/object not found"
+msgstr "sınıf / nesne için \"end\" bulunamadı"
+
+#: codetoolsstrconsts.ctsendforrecordnotfound
+msgid "end for record not found"
+msgstr "kaydın sonu bulunamadı"
+
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr "dosyanın sonu"
+
+#: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
+#, object-pascal-format
+msgid "expected end., but %s found"
+msgstr "beklenen end. , ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsendofsourcenotfound
+msgid "End of source not found."
+msgstr "Kaynağın sonu bulunamadı."
+
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr "numaralandırma türü"
+
+#: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
+msgid "error during creation of new proc bodies"
+msgstr "yeni işlem organlarının oluşturulması sırasında hata"
+
+#: codetoolsstrconsts.ctserrorduringinsertingnewclassparts
+msgid "error during inserting new class parts"
+msgstr "yeni sınıf parçaların eklenmesi sırasında hata"
+
+#: codetoolsstrconsts.ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr "ana uses bölümüne yeni birimler eklerken hata"
+
+#: codetoolsstrconsts.ctserrorindirectiveexpression
+msgid "error in directive expression"
+msgstr "direktif ifadesinde hata"
+
+#: codetoolsstrconsts.ctserrorinparamlist
+msgid "error in paramlist"
+msgstr "paramlistte hata"
+
+#: codetoolsstrconsts.ctsexpected
+#, object-pascal-format
+msgid "\"%s\" expected"
+msgstr "\"%s\" bekleniyor"
+
+#: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+#, object-pascal-format
+msgid "expected a method type, but found %s"
+msgstr "bir yöntem türü bekleniyordu, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsexpectedbutfound
+#, object-pascal-format
+msgid "expected (, but found %s"
+msgstr "beklenen (, fakat bulunan %s"
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+#, object-pascal-format
+msgid "expected ), but found %s"
+msgstr "beklenen ), fakat bulunan %s"
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+#, object-pascal-format
+msgid "expected :=, but %s found"
+msgstr "beklenen :=, fakat bulunan %s"
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+#, object-pascal-format
+msgid "expected identifier, but found %s"
+msgstr "tanımlayıcı bekleniyordu, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+#, object-pascal-format
+msgid "expected ; of statement, but found %s"
+msgstr "beklenen ; deyimi, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
+msgid "exports clause only allowed in libraries"
+msgstr "dışa aktarma yan tümcesi yalnızca kitaplıklara izin veriyor"
+
+#: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
+msgid "expression type must be class or record type"
+msgstr "ifade türü sınıf veya kayıt türü olmalıdır"
+
+#: codetoolsstrconsts.ctsfileisreadonly
+msgid "file is read only"
+msgstr "dosya salt okunur"
+
+#: codetoolsstrconsts.ctsforward
+msgid "Forward"
+msgstr "İleri"
+
+#: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
+#, object-pascal-format
+msgid "Forward class definition not resolved: %s"
+msgstr "İleri sınıf tanımı çözülmedi: %s"
+
+#: codetoolsstrconsts.ctsfpdocsystemon
+msgid "enable FPDocSystem"
+msgstr "fPDocSystem aktif"
+
+#: codetoolsstrconsts.ctsfreepascalcompilerinitialmacros
+msgid "Free Pascal Compiler initial macros"
+msgstr "Ücretsiz Pascal Derleyici ilk makroları"
+
+#: codetoolsstrconsts.ctsfreepascalcomponentlibrary
+msgid "Free Pascal Component Library"
+msgstr "Ücretsiz Pascal Bileşen kütüphanesi"
+
+#: codetoolsstrconsts.ctsfreepascalsourcedir
+msgid "Free Pascal Source Directory"
+msgstr "Ücretsiz Pascal kaynak dizini"
+
+#: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
+#, object-pascal-format
+msgid "Free Pascal Sources, %s"
+msgstr "Ücretsiz Pascal kaynakları, %s"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr "getEnumerator işlevi(function) bu sınıfta bulunamadı"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr "getEnumerator işlevi(function) bu sınıfta bulunamadı"
+
+#: codetoolsstrconsts.ctsgenericidentifier
+msgid "generic identifier"
+msgstr "genel tanımlayıcı"
+
+#: codetoolsstrconsts.ctshaserror
+msgid "HasError"
+msgstr "Hata oluştu"
+
+#: codetoolsstrconsts.ctshelperisnotallowed
+#, object-pascal-format
+msgid "Helper after %s is not allowed"
+msgstr "%s sonrası yardımcı giremez"
+
+#: codetoolsstrconsts.ctsidedirectory
+msgid "IDE Directory"
+msgstr "IDE dizini"
+
+#: codetoolsstrconsts.ctsidentexpectedbutatomfound
+#, object-pascal-format
+msgid "identifier expected, but %s found"
+msgstr "tanımlayıcı bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsidentexpectedbuteoffound
+msgid "unexpected end of file (identifier expected)"
+msgstr "beklenmeyen dosya sonu (tanımlayıcı bekleniyor)"
+
+#: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
+#, object-pascal-format
+msgid "identifier expected, but keyword %s found"
+msgstr "tanımlayıcı bekleniyor, ancak %s anahtar kelimesi bulundu"
+
+#: codetoolsstrconsts.ctsidentifier
+msgid "identifier"
+msgstr "tanımlayıcı"
+
+#: codetoolsstrconsts.ctsidentifieralreadydefined
+#, object-pascal-format
+msgid "Identifier %s already defined"
+msgstr "Tanımlayıcı %s zaten tanımlandı"
+
+#: codetoolsstrconsts.ctsidentifiernotfound
+#, object-pascal-format
+msgid "identifier not found: %s"
+msgstr "tanımlayıcı bulunamadı : %s"
+
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr "IfDef Darwin"
+
+#: codetoolsstrconsts.ctsifdeflinux
+msgid "IfDef Linux"
+msgstr "IfDef Linux"
+
+#: codetoolsstrconsts.ctsifdefwindows
+msgid "IfDef Windows"
+msgstr "IfDef Windows"
+
+#: codetoolsstrconsts.ctsiflclwidgettypeequalsgtk2
+msgid "If LCLWidgetType=gtk2 then"
+msgstr "If LCLWidgetType=gtk2 then"
+
+#: codetoolsstrconsts.ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr "If TargetOS<>SrcOS"
+
+#: codetoolsstrconsts.ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr "If TargetOS<>SrcOS2"
+
+#: codetoolsstrconsts.ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr "If TargetOS<>win32 then"
+
+#: codetoolsstrconsts.ctsillegalcircleinusedunits
+#, object-pascal-format
+msgid "illegal circle using unit: %s"
+msgstr "birim kullanan geçersiz çevre: %s"
+
+#: codetoolsstrconsts.ctsillegalqualifier
+#, object-pascal-format
+msgid "illegal qualifier %s found"
+msgstr "%s geçersiz niteleyici bulundu"
+
+#: codetoolsstrconsts.ctsimplementationnodenotfound
+msgid "implementation node not found"
+msgstr "implementation bulunamadı"
+
+#: codetoolsstrconsts.ctsincludecircledetected
+msgid "Include circle detected"
+msgstr "Algılanan çevreyi dahil et"
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+#, object-pascal-format
+msgid "include directories: %s"
+msgstr "dizinleri dahil et: %s"
+
+#: codetoolsstrconsts.ctsincludefilenotfound
+#, object-pascal-format
+msgid "include file not found \"%s\""
+msgstr "dosya dahil edilemedi \"%s\""
+
+#: codetoolsstrconsts.ctsincompatibletypesgotexpected
+#, object-pascal-format
+msgid "incompatibles types: expected \"%s\" but got \"%s\""
+msgstr "uyumsuz türler: beklenen \"%s\", ancak \"%s\" aldı"
+
+#: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
+#, object-pascal-format
+msgid "index parameter expected, but %s found"
+msgstr "index parametresi bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsindexspecifierredefined
+msgid "index specifier redefined"
+msgstr "dizin belirteci yeniden tanımlandı"
+
+#: codetoolsstrconsts.ctsinheritedkeywordonlyallowedinmethods
+msgid "inherited keyword only allowed in methods"
+msgstr "devralınan anahtar kelimeye yalnızca yöntemlerde izin verilir"
+
+#: codetoolsstrconsts.ctsinstalldirectory
+msgid "Install Directory"
+msgstr "Dizini kur"
+
+#: codetoolsstrconsts.ctsinstallerdirectories
+msgid "Installer directories"
+msgstr "Yükleyici dizinleri"
+
+#: codetoolsstrconsts.ctsinterfacesectionnotfound
+msgid "interface section not found"
+msgstr "interface bölümü bulunamadı"
+
+#: codetoolsstrconsts.ctsinvalidclassname
+#, object-pascal-format
+msgid "invalid class name=\"%s\""
+msgstr "geçersiz sınıf adı = \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidclassname2
+#, object-pascal-format
+msgid "invalid class name \"%s\""
+msgstr "geçersiz sınıf adı \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidflagvaluefordirective
+#, object-pascal-format
+msgid "invalid flag value \"%s\" for directive %s"
+msgstr "%s yönergesi için geçersiz bayrak değeri \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidmode
+#, object-pascal-format
+msgid "invalid mode \"%s\""
+msgstr "geçersiz mod \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+#, object-pascal-format
+msgid "invalid mode switch \"%s\""
+msgstr "geçersiz mod anahtarı \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidoperator
+#, object-pascal-format
+msgid "invalid operator %s"
+msgstr "geçersiz operatör %s"
+
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr "ifadelerin eklenmesi için geçersiz konum"
+
+#: codetoolsstrconsts.ctsinvalidsubrange
+msgid "invalid subrange"
+msgstr "geçersiz alt düzenleme"
+
+#: codetoolsstrconsts.ctsinvalidtype
+msgid "invalid type"
+msgstr "geçersiz tip"
+
+#: codetoolsstrconsts.ctsinvalidvariablename
+#, object-pascal-format
+msgid "invalid variable name \"%s\""
+msgstr "geçersiz değişken adı \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidvariabletype
+#, object-pascal-format
+msgid "invalid variable type \"%s\""
+msgstr "geçersiz değişken tipi \"%s\""
+
+#: codetoolsstrconsts.ctskeyword
+msgid "keyword"
+msgstr "anahtar kelime"
+
+#: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
+#, object-pascal-format
+msgid "keyword (e.g. %s) expected, but %s found"
+msgstr "anahtar kelime (ör. %s) bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctskeywordin
+msgid "keyword \"in\""
+msgstr "\"in\" anahtar kelimesi"
+
+#: codetoolsstrconsts.ctslazarusmaindirectory
+msgid "lazarus main directory"
+msgstr "lazarus ana dizini"
+
+#: codetoolsstrconsts.ctslazarussources
+msgid "Lazarus Sources"
+msgstr "Lazarus kaynağı"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+#, object-pascal-format
+msgid "method \"%s\" has no declaration"
+msgstr "\"%s\" yönteminde bildirim yok"
+
+#: codetoolsstrconsts.ctsmethodname
+msgid "method name"
+msgstr "yöntem adı"
+
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+#, object-pascal-format
+msgid "Method signature %s not found in class"
+msgstr "%s yöntem imzası sınıfta bulunamadı"
+
+#: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
+msgid "method type definition not found"
+msgstr "yöntem türü tanımı bulunamadı"
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
+msgstr "eksik :="
+
+#: codetoolsstrconsts.ctsmissingenumlist
+msgid "missing enum list"
+msgstr "eksik numara listesi"
+
+#: codetoolsstrconsts.ctsmissingpointafterend
+msgid "missing . after end"
+msgstr "end sonunda nokta eksik"
+
+#: codetoolsstrconsts.ctsmissingtypeidentifier
+msgid "missing type identifier"
+msgstr "eksik tip tanımlayıcısı"
+
+#: codetoolsstrconsts.ctsnameddirectory
+#, object-pascal-format
+msgid "%s Directory"
+msgstr "%s dizini"
+
+#: codetoolsstrconsts.ctsnamedproject
+#, object-pascal-format
+msgid "%s Project"
+msgstr "%s proje"
+
+#: codetoolsstrconsts.ctsneededbymode
+#, object-pascal-format
+msgid " (needed by mode \"%s\")"
+msgstr " (\"%s\" kipinde gerekli)"
+
+#: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
+#, object-pascal-format
+msgid "Nested %s definitions are not allowed"
+msgstr "İç içe %s tanımlarına izin verilmiyor"
+
+#: codetoolsstrconsts.ctsnewprocbodynotfound
+msgid "new proc body not found"
+msgstr "new proc body bulunamadı"
+
+#: codetoolsstrconsts.ctsnocontextnodefoundatcursor
+msgid "no context node found at cursor"
+msgstr "imleçte hiçbir bağlam düğümü bulunamadı"
+
+#: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
+msgid "nodefault specifier defined twice"
+msgstr "nodefault belirteci iki kez tanımlandı"
+
+#: codetoolsstrconsts.ctsnopascalcodefound
+#, object-pascal-format
+msgid "no pascal code found (first token is %s)"
+msgstr "pascal kodu bulunamadı (ilk belirteç %s 'dir)"
+
+#: codetoolsstrconsts.ctsnoscanneravailable
+msgid "No scanner available"
+msgstr "Tarayıcı yok"
+
+#: codetoolsstrconsts.ctsnoscannerfound
+#, object-pascal-format
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr "\"%s\" için tarayıcı bulunamadı. Bu bir içerme dosyasıysa, lütfen önce ana kaynağı açın."
+
+#: codetoolsstrconsts.ctsnotenoughgenparams
+msgid "Not enough actual generic parameters"
+msgstr "Yeterli gerçek genel parametreler yok"
+
+#: codetoolsstrconsts.ctsoldmethodnotfound
+#, object-pascal-format
+msgid "old method not found: %s"
+msgstr "eski yöntem bulunamadı: %s"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+#, object-pascal-format
+msgid "operand expected but %s found"
+msgstr "işlenen beklenen ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+#, object-pascal-format
+msgid "operand expected, but %s found"
+msgstr "işlenen bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+#, object-pascal-format
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
+msgid "operator expected, but %s found"
+msgstr "işlenen bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
+msgid "unexpected end of file (operator expected)"
+msgstr "beklenmeyen dosya sonu (işleç bekleniyor)"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+#, object-pascal-format
+msgid "operator expected but %s found"
+msgstr "operatör bekleniyor ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+#, object-pascal-format
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
+msgid "operator expected, but %s found"
+msgstr "operatör bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsothercompilerdefines
+#, object-pascal-format
+msgid "%s Compiler Defines"
+msgstr "%s Derleyici Tanımlar"
+
+#: codetoolsstrconsts.ctspackagedirectories
+msgid "Package directories"
+msgstr "Paket dizinleri"
+
+#: codetoolsstrconsts.ctspackagerdirectory
+msgid "Packager Directory"
+msgstr "Paketleyici Dizini"
+
+#: codetoolsstrconsts.ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr "Paketleyici Kayıt Dizini"
+
+#: codetoolsstrconsts.ctspackagerunitsdirectory
+msgid "Packager Units Directory"
+msgstr "Paketleyici Birimleri Dizini"
+
+#: codetoolsstrconsts.ctspointhintprocstartat
+msgid ".  Hint: proc start at "
+msgstr ". İpucu: proc başlangıçta "
+
+#: codetoolsstrconsts.ctspointstartat
+msgid ". start at "
+msgstr ". başlamak "
+
+#: codetoolsstrconsts.ctspositionnotinsource
+msgid "Position not in source"
+msgstr "Konum kaynakta değil"
+
+#: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
+msgid "procedure or function or constructor or destructor"
+msgstr "procedure veya function veya constructor veya destructor"
+
+#: codetoolsstrconsts.ctsprocessorspecific
+msgid "processor specific"
+msgstr "işlemciye özgü"
+
+#: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
+#, object-pascal-format
+msgid "property type expected, but %s found"
+msgstr "özellik türü bekleniyordu, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr "özellik Güncel bulunamadı"
+
+#: codetoolsstrconsts.ctspropertyspecifieralreadydefined
+#, object-pascal-format
+msgid "property specifier already defined: %s"
+msgstr "özellik belirteci zaten tanımlanmış: %s"
+
+#: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
+#, object-pascal-format
+msgid "qualifier expected but %s found"
+msgstr "niteleyici bekleniyor ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsresetalldefines
+msgid "Reset all defines"
+msgstr "Tüm tanımlamaları sıfırla"
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
+msgstr "getEnumerator işlevinin sonuç türü bulunamadı"
+
+#: codetoolsstrconsts.ctsruntimelibrary
+msgid "Runtime library"
+msgstr "Çalışma zamanı kitaplığı"
+
+#: codetoolsstrconsts.ctsscannedfiles
+#, object-pascal-format
+msgid "Scanned files: %s"
+msgstr "Taranan dosyalar: %s"
+
+#: codetoolsstrconsts.ctssemicolonafterpropspecmissing
+#, object-pascal-format
+msgid "; expected after \"%s\" property specifier, but %s found"
+msgstr "; \"%s\" özellik belirticisinden sonra bekleniyor, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctssemicolonnotfound
+msgid "semicolon not found"
+msgstr "noktalı virgül bulunamadı"
+
+#: codetoolsstrconsts.ctssetsincpathto
+#, object-pascal-format
+msgid "sets IncPath to %s"
+msgstr "incPath'i %s olarak ayarlar"
+
+#: codetoolsstrconsts.ctssetssrcpathto
+#, object-pascal-format
+msgid "sets SrcPath to %s"
+msgstr "srcPath'i %s olarak ayarlar"
+
+#: codetoolsstrconsts.ctssourcefilenamesforstandardfpcunits
+msgid "Source filenames for the standard fpc units"
+msgstr "Standart fpc birimleri için kaynak dosya adları"
+
+#: codetoolsstrconsts.ctssourceisnotunit
+msgid "source is not unit"
+msgstr "kaynak birim değil"
+
+#: codetoolsstrconsts.ctssourcenotfoundunit
+#, object-pascal-format
+msgid "source not found: unit %s. Check your FPC source directory."
+msgstr "kaynak bulunamadı: birim %s. FPC kaynak dizininizi kontrol edin."
+
+#: codetoolsstrconsts.ctssrcpathinitialization
+msgid "SrcPath Initialization"
+msgstr "SrcPath Başlatma"
+
+#: codetoolsstrconsts.ctsstrexpectedbutatomfound
+#, object-pascal-format
+msgid "expected %s, but %s found"
+msgstr "beklenen %s, ancak %s bulundu"
+
+#: codetoolsstrconsts.ctsstringconstant
+msgid "string constant"
+msgstr "sabit string"
+
+#: codetoolsstrconsts.ctssyntaxerrorinexpr
+#, object-pascal-format
+msgid "Syntax Error in expression \"%s\""
+msgstr "\"%s\" ifadesinde sözdizimi hatası"
+
+#: codetoolsstrconsts.ctstermnotsimple
+msgid "Term has no simple type"
+msgstr "Terimin basit bir türü yok"
+
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+#, object-pascal-format
+msgid "then expected, but %s found"
+msgstr "beklenenden sonra %s bulundu"
+
+#: codetoolsstrconsts.ctstoolsdirectory
+msgid "Tools Directory"
+msgstr "Araçlar dizini"
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
+msgstr "tip (type)"
+
+#: codetoolsstrconsts.ctstypeidentifier
+msgid "type identifier"
+msgstr "tür tanımlayıcısı"
+
+#: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
+msgid "type is only allowed in generics, end of class not found"
+msgstr "türüne yalnızca jeneriklerde izin verilir, sınıfın sonu bulunamadı"
+
+#: codetoolsstrconsts.ctstypesectionofclassnotfound
+msgid "type section of class not found"
+msgstr "sınıfın tip bölümü bulunamadı"
+
+#: codetoolsstrconsts.ctsunabletoapplychanges
+msgid "unable to apply changes"
+msgstr "değişiklikler uygulanamıyor"
+
+#: codetoolsstrconsts.ctsunabletocompleteproperty
+msgid "unable to complete property"
+msgstr "özellik tamamlanamadı"
+
+#: codetoolsstrconsts.ctsundefine
+msgid "Undefine "
+msgstr "Tanımsız "
+
+#: codetoolsstrconsts.ctsunexpectedendofsource
+msgid "unexpected end of source"
+msgstr "kaynakda beklenmedik son"
+
+#: codetoolsstrconsts.ctsunexpectedkeyword
+#, object-pascal-format
+msgid "unexpected keyword \"%s\""
+msgstr "beklenmeyen anahtar kelime \"%s\""
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+#, object-pascal-format
+msgid "unexpected keyword %s"
+msgstr "beklenmeyen anahtar kelime %s"
+
+#: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
+#, object-pascal-format
+msgid "unexpected keyword \"%s\" in asm block found"
+msgstr "asm blok sözcüğünde beklenmeyen anahtar kelime \"%s\" bulundu"
+
+#: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
+#, object-pascal-format
+msgid "unexpected keyword \"%s\" in begin..end found"
+msgstr "begin..end içinde beklenmeyen anahtar kelime \"%s\" bulundu"
+
+#: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
+#, object-pascal-format
+msgid "unexpected keyword \"%s\" found while reading blocks backwards"
+msgstr "blokları geriye doğru okurken beklenmeyen anahtar kelime \"%s\" bulundu"
+
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+#, object-pascal-format
+msgid "unexpected section keyword %s found"
+msgstr "beklenmeyen bölüm anahtar kelimesi bulundu %s"
+
+#: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
+msgid "unexpected subrange operator '..' found"
+msgstr "beklenmeyen alt düzenleme operatörü '..' bulundu"
+
+#: codetoolsstrconsts.ctsunitnotfound
+#, object-pascal-format
+msgid "unit not found: %s"
+msgstr "unit bulunamadı: %s"
+
+#: codetoolsstrconsts.ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr "UnitPath Başlatma"
+
+#: codetoolsstrconsts.ctsunknownfunction
+#, object-pascal-format
+msgid "Unknown function %s"
+msgstr "Tanımsız işlev(function) %s"
+
+#: codetoolsstrconsts.ctsunknownmainfilename
+msgid "(unknown mainfilename)"
+msgstr "(Tanımsız anadosyadı)"
+
+#: codetoolsstrconsts.ctsunknownsubdescriptor
+#, object-pascal-format
+msgid "(unknown subdescriptor %s)"
+msgstr "(bilinmeyen alt tanımlayıcı %s)"
+
+#: codetoolsstrconsts.ctsunparsed
+msgid "Unparsed"
+msgstr "Çözümlenmemiş"
+
+#: codetoolsstrconsts.ctsusedunitisnotapascalunit
+msgid "used unit is not a pascal unit"
+msgstr "kullanılan birim pascal bir birim değildir"
+
+#: codetoolsstrconsts.ctsutilsdirectories
+msgid "Utils directories"
+msgstr "Dizinler kullanır"
+
+#: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
+msgid "var is only allowed in generics, end of class not found"
+msgstr "var yalnızca jeneriklerde izin verilir, sınıfın sonu bulunamadı"
+
+#: codetoolsstrconsts.ctswordnotfound
+#, object-pascal-format
+msgid "\"%s\" not found"
+msgstr "\"%s\" bulunamadı"
+

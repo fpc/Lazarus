@@ -1,0 +1,115 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "İptal"
+
+#: messagecomposer.rsok
+msgid "OK"
+msgstr "TAMAM"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Test"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Ekle"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Düğmeler (const dizisi)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Butonlar (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "\"Case\" sonucu"
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "Varsayılan"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Sil"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Dialog başlığı"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Dialog tipi"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Yardım içeriği"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Yardım dosyası adı"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Yardım anahtar sözcüğü"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "\"if\" sonucu"
+
+#: messagecomposer.skindofmessage
+msgid "Kind of message"
+msgstr "Mesajın türü"
+
+#: messagecomposer.smaskinput
+msgid "Mask input"
+msgstr "Maske gir"
+
+#: messagecomposer.smessagecomposercaption
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Mesaj Oluşturucu"
+
+#: messagecomposer.smessagecomposermenucaption
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Mesaj Oluşturucu ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Modal sonuç"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Gösterilecek mesaj"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not implemented yet"
+msgstr "Henüz uygulanmadı"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Kullanıcının giriş yapmasını isteyen metin"
+
+#: messagecomposer.ssourcewrapper
+msgid "Source wrapper"
+msgstr "Kaynak sarıcı"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Değer(var)"
+

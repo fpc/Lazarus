@@ -1,0 +1,564 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: projectgroupstrconst.lisabort
+msgid "Abort"
+msgstr "İptal et"
+
+#: projectgroupstrconst.lisabortloadingprojectgroup
+msgid "Abort loading project group"
+msgstr "Yükleme projesini iptal et"
+
+#: projectgroupstrconst.lisactivetarget
+#, object-pascal-format
+msgid "Target: %s"
+msgstr "Hedef: %s"
+
+#: projectgroupstrconst.lisallfiles
+msgid "All files"
+msgstr "Tüm dosyalar"
+
+#: projectgroupstrconst.lisbepatient
+msgid "Be patient!"
+msgstr "Sabırlı ol!"
+
+#: projectgroupstrconst.lisbuildmode
+#, object-pascal-format
+msgid ", build mode \"%s\""
+msgstr ", yapı Modu: %s"
+
+#: projectgroupstrconst.lisbuildmode2
+#, object-pascal-format
+msgid "Build Mode \"%s\""
+msgstr "Yapı Modu: %s"
+
+#: projectgroupstrconst.lisbuildmodenotfound
+msgid "Build mode not found"
+msgstr "Derleme modu bulunamadı"
+
+#: projectgroupstrconst.lisbuildmodenotfound2
+#, object-pascal-format
+msgid "Build mode \"%s\" not found."
+msgstr "\"%s\" Derleme modu bulunamadı."
+
+#: projectgroupstrconst.liscompileandbuildcompiletarget
+msgid "\"Compile\" and \"Build\" compile target"
+msgstr "\"Compile\" ve \"Build\" derleme hedefi"
+
+#: projectgroupstrconst.liscompilepackage
+#, object-pascal-format
+msgid "Compile Package %s"
+msgstr "%s paketini derle"
+
+#: projectgroupstrconst.liscompileproject
+#, object-pascal-format
+msgid "Compile Project %s"
+msgstr "%s Projeyi Derle"
+
+#: projectgroupstrconst.lisdiscard
+msgid "Discard changes"
+msgstr "Değişiklikleri gözardı et"
+
+#: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
+msgid "Enable to show target filenames with paths."
+msgstr "Hedef dosya adlarını yollarla göstermeyi etkinleştirin."
+
+#: projectgroupstrconst.liserrnosuchfile
+#, object-pascal-format
+msgid ""
+"Could not find target file\n"
+"\"%s\"\n"
+"What do you want to do?"
+msgstr ""
+"Hedef dosya bulunamadı\n"
+"\"%s\"\n"
+"Ne yapmak istiyorsun?"
+
+#: projectgroupstrconst.liserronlyprojectgroupallowed
+msgid "Only target type \"projectgroup\" is allowed for root project group."
+msgstr "Root proje grubu için sadece hedef tip \"projectgroup\" 'a izin verilir."
+
+#: projectgroupstrconst.liserrorreadingprojectgroupfile
+#, object-pascal-format
+msgid "Error reading project group file \"%s\"%s%s"
+msgstr "\"%s\"%s%s proje grubu dosyasını okuma hatası"
+
+#: projectgroupstrconst.liserrtargetdoesnotexist
+msgid "Target does not exist. Remove?"
+msgstr "Hedef mevcut değil. Kaldırılsın mı?"
+
+#: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
+msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
+msgstr "IDE komutları \"Compile\" ve \"Build\" komutları, derleme / inşa hedefini proje grubu editöründe çağırdı"
+
+#: projectgroupstrconst.lisinfo
+msgctxt "projectgroupstrconst.lisinfo"
+msgid "Info"
+msgstr "Bilgi"
+
+#: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
+msgid "Invalid cycle. A project group cannot have itself as target."
+msgstr "Geçersiz çevrim. Bir proje grubunun kendisi hedef olamaz."
+
+#: projectgroupstrconst.lisinvalidfile
+msgid "Invalid File"
+msgstr "Geçersiz dosya"
+
+#: projectgroupstrconst.lisinvalidxmlfilename
+#, object-pascal-format
+msgid "Invalid XML file name \"%s\"."
+msgstr "Geçersiz XML dosya adı \"%s\"."
+
+#: projectgroupstrconst.lislazaruspackageslpk
+msgid "Lazarus packages (*.lpk)"
+msgstr "Lazarus paketi (*.lpk)"
+
+#: projectgroupstrconst.lislazarusprojectgroupslpg
+msgid "Lazarus project groups (*.lpg)"
+msgstr "Lazarus proje gurubu (*.lpg)"
+
+#: projectgroupstrconst.lislazarusprojectslpi
+msgid "Lazarus projects (*.lpi)"
+msgstr "Lazarus projesi (*.lpi)"
+
+#: projectgroupstrconst.lislazarussupportedinprojectgroups
+msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
+msgstr "Lazarus dosyaları (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
+
+#: projectgroupstrconst.lislazbuildnotfound
+msgid "lazbuild not found"
+msgstr "lazbuild bulunamadı"
+
+#: projectgroupstrconst.lismore
+msgid "More"
+msgstr "Daha fazla"
+
+#: projectgroupstrconst.lisneedsave
+msgid "Need save"
+msgstr "Kaydetmeniz gerekir"
+
+#: projectgroupstrconst.lisnewprojectgroup
+msgctxt "projectgroupstrconst.lisnewprojectgroup"
+msgid "New project group"
+msgstr "Yeni proje grubu"
+
+#: projectgroupstrconst.lisnewprojectgroupmenuc
+msgid "New Project group ..."
+msgstr "Yeni proje grubu...."
+
+#: projectgroupstrconst.lisnodebuildmodes
+msgid "Build Modes"
+msgstr "Yapı modları"
+
+#: projectgroupstrconst.lisnodedependencies
+msgid "Dependencies"
+msgstr "Bağımlılıklar"
+
+#: projectgroupstrconst.lisnodefiles
+msgid "Files"
+msgstr "Dosyalar"
+
+#: projectgroupstrconst.lisnoderemoveddependencies
+msgid "Removed dependencies"
+msgstr "Bağımlılıkları kaldır"
+
+#: projectgroupstrconst.lisnoderemovedfiles
+msgid "Removed files"
+msgstr "Dosyaları kaldır"
+
+#: projectgroupstrconst.lisnoderemovedtargets
+msgid "Removed targets"
+msgstr "Hedefleri kaldır"
+
+#: projectgroupstrconst.lisnodetargets
+msgid "Targets"
+msgstr "Hedefler"
+
+#: projectgroupstrconst.lisonidestartreopenlastopengroup
+msgid "On IDE start reopen last open group."
+msgstr "IDE'de son açık grubu yeniden açmaya başlayın."
+
+#: projectgroupstrconst.lisopenlastgrouponstart
+msgid "Open last group on start"
+msgstr "Başlangıçta son grubu aç"
+
+#: projectgroupstrconst.lisopenprojectgroup
+msgid "Open Project Group ..."
+msgstr "Proje Grubu Aç ..."
+
+#: projectgroupstrconst.lisopenrecentprojectgroup
+msgid "Open Recent Project Group"
+msgstr "Son Proje Grubunu Aç"
+
+#: projectgroupstrconst.lisoptions
+msgid "Options"
+msgstr "Seçenekler"
+
+#: projectgroupstrconst.lisotherproject
+msgid "Other Project"
+msgstr "Diğer proje"
+
+#: projectgroupstrconst.lispackage
+msgid "Package"
+msgstr "Paket"
+
+#: projectgroupstrconst.lispackagenotfound
+msgid "Package not found"
+msgstr "Paket bulunamadı"
+
+#: projectgroupstrconst.lispackagenotfound2
+#, object-pascal-format
+msgid "Package \"%s\" not found."
+msgstr "Paket \"%s\" bulunamadı."
+
+#: projectgroupstrconst.lispascalfilepasppp
+msgid "Pascal files (*.pas;*.pp;*.p)"
+msgstr "Pascal dosyaları (*.pas;*.pp)|*.pas;*.pp"
+
+#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
+msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
+msgid "Please save your changes before reloading the project group."
+msgstr "Lütfen proje grubunu yeniden yüklemeden önce değişikliklerinizi kaydedin."
+
+#: projectgroupstrconst.lisprojectgroup
+#, object-pascal-format
+msgid "Project group %s"
+msgstr "Proje gurubu %s"
+
+#: projectgroupstrconst.lisprojectgroup2
+#, object-pascal-format
+msgid "Project Group: %s"
+msgstr "Proje gurubu: %s"
+
+#: projectgroupstrconst.lisprojectgroupaddcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
+msgid "Add"
+msgstr "Ekle"
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
+msgid "Add current project"
+msgstr "Mevcut proje ekle"
+
+#: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
+msgid "Add current project to project group"
+msgstr "Proje grubuna mevcut proje ekle"
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
+msgid "Add from file"
+msgstr "Dosyadan ekle"
+
+#: projectgroupstrconst.lisprojectgroupaddexistinghint
+msgid "Add existing target to project group"
+msgstr "Proje grubuna mevcut hedefi ekle"
+
+#: projectgroupstrconst.lisprojectgroupaddhint
+msgid "Add targets to project group"
+msgstr "Proje grubuna hedefler ekleyin"
+
+#: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
+msgid "New"
+msgstr "Yeni"
+
+#: projectgroupstrconst.lisprojectgroupaddnewhint
+msgid "Add new target to project group"
+msgstr "Proje grubuna yeni hedef ekleyin"
+
+#: projectgroupstrconst.lisprojectgroupdeletecaption
+msgid "Remove"
+msgstr "Kaldır"
+
+#: projectgroupstrconst.lisprojectgroupdeletehint
+msgid "Remove target from project group"
+msgstr "Hedefi proje grubundan kaldır"
+
+#: projectgroupstrconst.lisprojectgroupmodified
+msgid "Project group modified"
+msgstr "Proje grubu değiştirildi"
+
+#: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, object-pascal-format
+msgid ""
+"Project group \"%s\" is modified.\n"
+"What do you want to do?"
+msgstr ""
+"\"%s\" proje grubu değiştirildi.\n"
+"Ne yapmak istiyorsun?"
+
+#: projectgroupstrconst.lisprojectgroupnewcaption
+msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
+msgid "New"
+msgstr "Yeni"
+
+#: projectgroupstrconst.lisprojectgroupnewhint
+msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
+msgid "New project group"
+msgstr "Yeni proje grubu"
+
+#: projectgroupstrconst.lisprojectgroupreload
+msgid "Reload"
+msgstr "Tekrar yükle"
+
+#: projectgroupstrconst.lisprojectgroups
+msgid "Project Groups"
+msgstr "Proje gurubu"
+
+#: projectgroupstrconst.lisprojectgroupsaveascaption
+msgid "Save As ..."
+msgstr "Farklı kaydet ..."
+
+#: projectgroupstrconst.lisprojectgroupsaveashint
+msgid "Save project group with a new name"
+msgstr "Proje grubunu yeni bir adla kaydedin"
+
+#: projectgroupstrconst.lisprojectgroupsavecaption
+msgid "Save"
+msgstr "Kaydet"
+
+#: projectgroupstrconst.lisprojectgroupsavehint
+msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
+msgid "Save project group"
+msgstr "Proje grubunu kaydet"
+
+#: projectgroupstrconst.lisreaderror
+msgid "Read error"
+msgstr "Okuma hatası"
+
+#: projectgroupstrconst.lisredo
+msgid "Redo"
+msgstr "İleri"
+
+#: projectgroupstrconst.lisremovetarget
+msgctxt "projectgroupstrconst.lisremovetarget"
+msgid "Remove target"
+msgstr "Hedefi kaldır"
+
+#: projectgroupstrconst.lissavepg
+msgctxt "projectgroupstrconst.lissavepg"
+msgid "Save project group"
+msgstr "Proje grubunu kaydet"
+
+#: projectgroupstrconst.lissaveprojectgroup
+msgctxt "projectgroupstrconst.lissaveprojectgroup"
+msgid "Save Project Group"
+msgstr "Proje grubunu kaydet"
+
+#: projectgroupstrconst.lissaveprojectgroupas
+msgid "Save Project Group As ..."
+msgstr "Proje grubunu farklı kaydet..."
+
+#: projectgroupstrconst.lisshowtargetpaths
+msgid "Show target paths"
+msgstr "Hedef yolları göster"
+
+#: projectgroupstrconst.lisskipalltargets
+msgid "Remove all invalid targets"
+msgstr "Tüm geçersiz hedefleri kaldır"
+
+#: projectgroupstrconst.lissourcedirectoriesofprojectgroup
+msgid "Source directories of project group:"
+msgstr "Proje grubunun kaynak dizinleri:"
+
+#: projectgroupstrconst.listargetactivate
+msgid "Activate target"
+msgstr "Hedefi etkinleştir"
+
+#: projectgroupstrconst.listargetactivatecaption
+msgid "Activate"
+msgstr "Etkinleştir"
+
+#: projectgroupstrconst.listargetactivatehint
+msgid "Activate selected target"
+msgstr "Seçili hedefi Aktif et"
+
+#: projectgroupstrconst.listargetadd
+msgid "Add target"
+msgstr "Hedef ekle"
+
+#: projectgroupstrconst.listargetcompile
+msgctxt "projectgroupstrconst.listargetcompile"
+msgid "Compile"
+msgstr "Derle"
+
+#: projectgroupstrconst.listargetcompilecaption
+msgctxt "projectgroupstrconst.listargetcompilecaption"
+msgid "Compile"
+msgstr "Derle"
+
+#: projectgroupstrconst.listargetcompileclean
+msgctxt "projectgroupstrconst.listargetcompileclean"
+msgid "Compile clean"
+msgstr "Temizle derle"
+
+#: projectgroupstrconst.listargetcompilecleancaption
+msgctxt "projectgroupstrconst.listargetcompilecleancaption"
+msgid "Compile clean"
+msgstr "Temizle derle"
+
+#: projectgroupstrconst.listargetcompilecleanhint
+msgid "Compile selected target clean"
+msgstr "Seçilen hedefi temizle derle"
+
+#: projectgroupstrconst.listargetcompilefromhere
+msgid "Compile from here"
+msgstr "Buradan derle"
+
+#: projectgroupstrconst.listargetcompilehint
+msgid "Compile selected target"
+msgstr "Seçilen hedefi derle"
+
+#: projectgroupstrconst.listargetcopyfilename
+msgid "Copy Filename"
+msgstr "Dosya Adını Kopyala"
+
+#: projectgroupstrconst.listargetcount
+#, object-pascal-format
+msgid "%d targets"
+msgstr "%d hedefi"
+
+#: projectgroupstrconst.listargetearlier
+msgid "Compile target earlier"
+msgstr "Hedefi daha önce derleyin"
+
+#: projectgroupstrconst.listargetearliercaption
+msgid "Earlier"
+msgstr "Daha erken"
+
+#: projectgroupstrconst.listargetearlierhint
+msgid "Build target earlier"
+msgstr "Daha önce hedef oluştur"
+
+#: projectgroupstrconst.listargetinfocaption
+msgctxt "projectgroupstrconst.listargetinfocaption"
+msgid "Info ..."
+msgstr "Bilgi...."
+
+#: projectgroupstrconst.listargetinstall
+msgctxt "projectgroupstrconst.listargetinstall"
+msgid "Install"
+msgstr "Yükle"
+
+#: projectgroupstrconst.listargetinstallcaption
+msgctxt "projectgroupstrconst.listargetinstallcaption"
+msgid "Install"
+msgstr "Yükle"
+
+#: projectgroupstrconst.listargetinstallhint
+msgid "Install selected target"
+msgstr "Seçilen hedefi yükle"
+
+#: projectgroupstrconst.listargetlater
+msgid "Compile target later"
+msgstr "Hedefi daha sonra derleyin"
+
+#: projectgroupstrconst.listargetlatercaption
+msgid "Later"
+msgstr "Sonra"
+
+#: projectgroupstrconst.listargetlaterhint
+msgid "Build target later"
+msgstr "Daha sonra hedef oluştur"
+
+#: projectgroupstrconst.listargetopen
+msgid "Open Target"
+msgstr "Hedefi Aç"
+
+#: projectgroupstrconst.listargetopencaption
+msgid "Open"
+msgstr "Aç"
+
+#: projectgroupstrconst.listargetopenhint
+msgid "Open selected target"
+msgstr "Seçilen hedefi aç"
+
+#: projectgroupstrconst.listargetproperties
+msgid "Target properties"
+msgstr "Hedef özellikleri"
+
+#: projectgroupstrconst.listargetpropertiescaption
+msgid "Properties"
+msgstr "Özellikler"
+
+#: projectgroupstrconst.listargetpropertieshint
+msgid "Show property dialog for selected target"
+msgstr "Seçilen hedef için özellik iletişim kutusunu göster"
+
+#: projectgroupstrconst.listargetremove
+msgctxt "projectgroupstrconst.listargetremove"
+msgid "Remove target"
+msgstr "Hedefi kaldır"
+
+#: projectgroupstrconst.listargetrun
+msgid "Run Target"
+msgstr "Hedefi Çalıştır"
+
+#: projectgroupstrconst.listargetruncaption
+msgid "Run"
+msgstr "Çalıştır"
+
+#: projectgroupstrconst.listargetrunhint
+msgid "Run selected target"
+msgstr "Seçilen hedefi çalıştır"
+
+#: projectgroupstrconst.listargetuninstall
+msgctxt "projectgroupstrconst.listargetuninstall"
+msgid "Uninstall"
+msgstr "Kaldır"
+
+#: projectgroupstrconst.listargetuninstallcaption
+msgctxt "projectgroupstrconst.listargetuninstallcaption"
+msgid "Uninstall"
+msgstr "Kaldır"
+
+#: projectgroupstrconst.listargetuninstallhint
+msgid "Uninstall selected target"
+msgstr "Seçilen hedefi kaldır"
+
+#: projectgroupstrconst.listhelazbuildwasnotfound
+#, object-pascal-format
+msgid "The lazbuild%s was not found."
+msgstr "%s lazbuild bulunamadı."
+
+#: projectgroupstrconst.listhereisstillanotherbuildinprogress
+msgid "There is still another build in progress."
+msgstr "Devam eden başka bir yapı daha var."
+
+#: projectgroupstrconst.lisunabletocreatefile
+#, object-pascal-format
+msgid "Unable to create file \"%s\": %s"
+msgstr "\"%s\" dosyası oluşturulamıyor: %s"
+
+#: projectgroupstrconst.lisunabletoloadfile
+#, object-pascal-format
+msgid "Unable to load file \"%s\""
+msgstr "\"%s\" dosyası yüklenemiyor"
+
+#: projectgroupstrconst.lisunabletowriteprojectgroupfile
+#, object-pascal-format
+msgid "Unable to write project group file \"%s\"%s%s"
+msgstr "\"%s\" proje grubu dosyası yazılamıyor %s%s"
+
+#: projectgroupstrconst.lisundo
+msgid "Undo"
+msgstr "Geri"
+
+#: projectgroupstrconst.liswriteerror
+msgid "Write error"
+msgstr "Yazma hatası"
+
+#: projectgroupstrconst.lisxmlsyntaxerrorinfile
+#, object-pascal-format
+msgid "XML syntax error in file \"%s\": %s"
+msgstr "\"%s\" dosyasındaki XML sözdizimi hatası: %s"
+

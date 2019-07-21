@@ -1,0 +1,197 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: gdbmistringconstants.dlggroupdebugger
+msgid "Debugger"
+msgstr "Hata ayıklayıcı"
+
+#: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, object-pascal-format
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Hata ayıklayıcı, uygulamayı çalıştırmaya / adımlandırmaya çalışırken bir hatayla karşılaştı:%0:s%0:s%1:s%0:s%0:s Kesme noktalarını kaldırmak ve hata ayıklamaya devam etmek (duraklatıldı) ve \"Tamam\" tuşuna basın. sorunu düzeltin veya alternatif bir çalıştırma komutu seçin.%0:s Hata ayıklama oturumunu sonlandırmak için \"Durdur\" düğmesine basın."
+
+#: gdbmistringconstants.gdbmicommandstartmainbreakerror
+#, object-pascal-format
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "Hata ayıklayıcı, uygulamanın giriş noktasında bir kesme noktası belirleyemedi.%0:s Bu, hata ayıklama bilgilerinden kaynaklanıyor olabilir."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunerror
+#, object-pascal-format
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "Hata ayıklayıcı uygulamayı çalıştıramadı.%0:s Bu, hata ayıklama bilgilerinden kaynaklanıyor olabilir."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+#, object-pascal-format
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "Hata ayıklayıcı, uygulamanın PID'sini alamadı.%0:s Bu, hata ayıklama bilgilerinden kaynaklanıyor olabilir."
+
+#: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+#, object-pascal-format
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "Hata ayıklayıcı kendisini başlatamadı.%0:s Uygulama, hata ayıklayıcının herhangi bir kesme noktası ayarlayabilmesi için önce çalıştı (ve sonlandırıldı). %0:s Bu, hata ayıklama bilgilerinin eksik olmasından kaynaklanabilir."
+
+#: gdbmistringconstants.gdbmierroronruncommand
+#, object-pascal-format
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Hata ayıklayıcı, uygulamayı çalıştırmaya / adımlandırmaya çalışırken bir hatayla karşılaştı:%0:s%0:s%1:s%0:s%0:s Hata ayıklamaya devam etmek için (duraklatıldı) sorunu düzeltin ve sorunu giderin, veya alternatif bir çalıştır komutu seçin.%0:s Hata ayıklama oturumunu sonlandırmak için \"Durdur\" tuşuna basın."
+
+#: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, object-pascal-format
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgstr "%0:s%0:s Hataya ek olarak aşağıdaki uyarıyla karşılaşıldı:%0:s%0:s%1:s"
+
+#: gdbmistringconstants.gdbmierrorstategenericinfo
+#, object-pascal-format
+msgid "Error in: %1:s %0:s"
+msgstr "Hata:%1:s%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommanderror
+#, object-pascal-format
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr "%0:s GDB komutu:%0:s\"%1:s\"%0:s hata verdi:%0:s\"%2:s\"%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+#, object-pascal-format
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:s GDB komutu: %0:s \"%1:s\"%0:s hiçbir sonuç döndürmedi.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedread
+#, object-pascal-format
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr "%0:s GDB'den çıkış okunamadı.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+#, object-pascal-format
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr "%0:s GDB'ye bir komut gönderilemedi.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfogdbgone
+#, object-pascal-format
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr "%0:s GDB işlemi artık çalışmıyor.%0:s"
+
+#: gdbmistringconstants.gdbmieventlogdebugoutput
+#, object-pascal-format
+msgid "Debug Output: %s"
+msgstr "Hata Ayıklama Çıkışı: %s"
+
+#: gdbmistringconstants.gdbmieventloggdbinternalerror
+#, object-pascal-format
+msgid "GDB has encountered an internal error: %s"
+msgstr "GDB dahili bir hatayla karşılaştı: %s"
+
+#: gdbmistringconstants.gdbmieventlognosymbols
+#, object-pascal-format
+msgid "File '%s' has no debug symbols"
+msgstr "'%s' dosyasının hata ayıklama simgeleri yok"
+
+#: gdbmistringconstants.gdbmieventlogprocessexitcode
+#, object-pascal-format
+msgid "Process Exit: %s"
+msgstr "İşlem Çıkış: %s"
+
+#: gdbmistringconstants.gdbmieventlogprocessexitnormally
+msgid "Process Exit: normally"
+msgstr "İşlem Çıkış: normal"
+
+#: gdbmistringconstants.gdbmieventlogprocessstart
+#, object-pascal-format
+msgid "Process Start: %s"
+msgstr "İşlem Başlangıcı: %s"
+
+#: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
+msgid "Failed to create process for GDB"
+msgstr "GDB için işlem oluşturulamadı"
+
+#: gdbmistringconstants.gdbmifailedtoterminategdb
+#, object-pascal-format
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr "IDE, GDB sürecini sonlandıramadı. Bu işlem IDE'nin kontrolü dışında çalışmaya devam edebilir.%0:s İşlemin Sisteminizi etkilememesini sağlamak için işlemi kendiniz bulmalı ve sonlandırmalısınız."
+
+#: gdbmistringconstants.gdbmifailedtoterminategdbtitle
+msgid "GDB did not terminate"
+msgstr "GDB sonlandırılmadı"
+
+#: gdbmistringconstants.gdbmifatalerroroccurred
+#, object-pascal-format
+msgid "Unrecoverable error: \"%s\""
+msgstr "Kurtarılamaz hata: \"%s\""
+
+#: gdbmistringconstants.gdbmigdbinternalerror
+#, object-pascal-format
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr "GDB dahili bir hatayla karşılaştı:%0:s Hata ayıklamaya devam etmek için \"Tamam\" tuşuna basın. Bu güvenli olmayabilir.%0:s Hata ayıklama oturumunu sonlandırmak için \"Durdur\" düğmesine basın."
+
+#: gdbmistringconstants.gdbmigdbinternalerrorinfo
+#, object-pascal-format
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr "Komutu çalıştırırken: %0:s\"%2:s\"%0:s gdb bildirildi:%0:s\"%1:s\"%0:s"
+
+#: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, object-pascal-format
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "Hata ayıklamaya devam etmek için \"Yoksay\" tuşuna basın. Bu güvenli olmayabilir. Hata ayıklayıcısını durdurmak için \"İptal\" e basın.%0:s İstisna: %1:s \"%2:s\" mesajı ile %0:s Bağlam: %4:s. Durum: %5:s %0:s%0:s%3:s"
+
+#: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
+msgid "The debugger experienced an unknown condition"
+msgstr "Hata ayıklayıcı bilinmeyen bir durum yaşadı"
+
+#: gdbmistringconstants.gdbmitimeoutforcmd
+#, object-pascal-format
+msgid "Time-out for command: \"%s\""
+msgstr "Komut için zaman aşımı: \"%s\""
+
+#: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+#, object-pascal-format
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "Hata ayıklayıcı beklenmeyen bir %1:s%0:s%0:s'ye ulaştı. Hata ayıklamaya devam etmek için \"Tamam\" düğmesine basın (duraklatıldı) %0:s Hata ayıklama oturumunu sonlandırmak için \"Durdur\" düğmesine basın."
+
+#: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
+msgstr "SSH üzerinden GNU hata ayıklayıcısı, SSH bağlantısı üzerinden uzaktan hata ayıklamaya izin verir. Ayrıntılar için docs / RemoteDebugging.txt dosyasına bakın. Yol SSH istemcisini içermelidir. Ana bilgisayar adı ve isteğe bağlı kullanıcı adı için SSH_Startup_Options öğesini kullanın. Uzak bilgisayardaki GDB'nin dosya adı için Remote_GDB_Exe kullanın."
+
+#: gdbmistringconstants.lisresponsecontinue
+#, object-pascal-format
+msgid "Response: %sContinue?"
+msgstr "Yanıt: %s Devam edilsin mi?"
+
+#: gdbmistringconstants.lissshdebuggertimeout
+msgid "Timeout has occurred:"
+msgstr "Zaman aşımı gerçekleşti:"
+
+#: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, object-pascal-format
+msgid "Unexpected result:%sThe debugger will terminate."
+msgstr "Beklenmeyen sonuç:%s Hata ayıklayıcı sonlandırılacak."
+
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr "Yürütülebilir uygulama indirilemedi"
+
+#: gdbmistringconstants.synffailedtoinitializedebugger
+msgid "Failed to initialize debugger"
+msgstr "Hata ayıklayıcı başlatılamadı"
+
+#: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
+msgid "Failed to initialize the debugger (set pascal failed)"
+msgstr "Hata ayıklayıcı başlatılamadı (pascal ayarlandı)"
+
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr "Çalıştırılabilir Uygulama yüklenemedi"
+
+#: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
+#, object-pascal-format
+msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
+msgstr "Hata ayıklayıcı, başlatma sırasında tüm kesme noktalarını ayarlayamadı.%0:s Tüm kaynakların hata ayıklama bilgisi ile derlenip derlenmediğini kontrol etmek isteyebilirsiniz.%0:s Bunu yoksaymak ve devam etmek için Tamam düğmesine basın."
+

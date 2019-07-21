@@ -1,0 +1,756 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr "Bu uygulama hakkında"
+
+#: lazdemsg.sadd
+msgid "&Add"
+msgstr "&Ekle"
+
+#: lazdemsg.saddall
+msgid "Add All"
+msgstr "Tümünü ekle"
+
+#: lazdemsg.sadddescriptionfile
+msgid "Select a new description file"
+msgstr "Yeni bir açıklama dosyası seçin"
+
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr "Fpdoc için ek parametreler"
+
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
+msgid "&Build"
+msgstr "&Derle"
+
+#: lazdemsg.sbuilddocumentation
+msgid "Build documentation"
+msgstr "Derleme belgeleri"
+
+#: lazdemsg.sbuildok
+msgid "Documentation successfully built."
+msgstr "Belgeler başarıyla oluşturuldu."
+
+#: lazdemsg.sbuildoutput
+msgid "Build output"
+msgstr "Çıktı oluşturmak"
+
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
+msgid "&Close"
+msgstr "&Kapat"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr "Örnek kod dosyası"
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr "Bu uygulama (c) Michael Van Canneyt ve Lazarus ekibi tarafından yapılmıştır"
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr "GENEL KAMU LİSANSI hükümleri uyarınca yayınlanmıştır:"
+
+#: lazdemsg.scpu
+msgid "CPU"
+msgstr "CPU"
+
+#: lazdemsg.screatecontentfile
+msgid "Create cont&ent file"
+msgstr "İçe&rik dosyası oluştur"
+
+#: lazdemsg.sdataforelement
+#, object-pascal-format
+msgid "Documentation for element \"%s\":"
+msgstr "\"%s\" öğesi için belgeler:"
+
+#: lazdemsg.sdelete
+msgid "&Delete"
+msgstr "&Sil"
+
+#: lazdemsg.sdeletemodule
+#, object-pascal-format
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr "\"%s\" modülünü silmek istediğinize emin misiniz?"
+
+#: lazdemsg.sdeletepackage
+#, object-pascal-format
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr "\"%s\" paketini silmek istediğinize emin misiniz?"
+
+#: lazdemsg.sdeletetopic
+#, object-pascal-format
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr "\"%s\" konusunu silmek istediğinize emin misiniz?"
+
+#: lazdemsg.sdescription
+msgid "Description"
+msgstr "Açıklama"
+
+#: lazdemsg.sedit
+msgid "&Edit"
+msgstr "&Düzenle"
+
+#: lazdemsg.seditdescriptionfile
+msgid "Change description file"
+msgstr "Açıklama dosyasını değiştir"
+
+#: lazdemsg.serrfpdoc
+#, object-pascal-format
+msgid "Building failed with exit code %d. Please check log."
+msgstr "%d çıkış koduyla yapı başarısız oldu. Lütfen günlüğü kontrol et."
+
+#: lazdemsg.serrnomoduleforelement
+#, object-pascal-format
+msgid "No module found to insert element \"%s\""
+msgstr "\"%s\" öğesini eklemek için modül bulunamadı"
+
+#: lazdemsg.serrnonodeformodule
+#, object-pascal-format
+msgid "No node found for module \"%s\""
+msgstr "\"%s\" modülü için düğüm bulunamadı"
+
+#: lazdemsg.serrnonodeforpackage
+#, object-pascal-format
+msgid "No node found for package \"%s\""
+msgstr "\"%s\" paketi için düğüm bulunamadı"
+
+#: lazdemsg.serrnonodefortopic
+#, object-pascal-format
+msgid "No parent node found to insert topic \"%s\""
+msgstr "\"%s\" konusunu eklemek için ana düğüm bulunamadı"
+
+#: lazdemsg.serrnopackageformodule
+#, object-pascal-format
+msgid "No package found to insert module \"%s\""
+msgstr "\"%s\" modülünü yerleştirecek paket bulunamadı"
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr "Hatalar"
+
+#: lazdemsg.serrunknowndomelement
+#, object-pascal-format
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr "Seçilen öğe için üst öğe olarak bilinmeyen DOM öğesi: \"%s\""
+
+#: lazdemsg.sfilemodified
+#, object-pascal-format
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr "\"%s\" adlı belge değiştirildi, kaydetmek ister misiniz?"
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr "Dokümantasyon yapısı"
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr "şablon.xml"
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr " dosya "
+
+#: lazdemsg.sformat
+msgid "&Format"
+msgstr "&Biçim"
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr " modül "
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr " paket "
+
+#: lazdemsg.sfortopic
+msgid " in topic "
+msgstr " konu "
+
+#: lazdemsg.shideprotectedmethods
+msgid "&Hide protected methods"
+msgstr "&Korunan yöntemleri gizle"
+
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "Öğe bağlantısını düzenle"
+
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr "Geçerli dosyayı kapat"
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr "Belge Düzenleyiciyi kapat"
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr "Yeni dosya"
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr "Dosyayı Aç"
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr "Dosyayı kaydet"
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr "Dosyayı farklı kaydet"
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr "Kalın"
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr "Kod"
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr "Dosya"
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr "Eğik"
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr "Düşünce"
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr "Altı çizili"
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr "Değişken"
+
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Maddeli liste ekle"
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr "Yeni öğe"
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr "Bir bağlantı ekle"
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr "Yeni Modül"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Numaralı liste ekle"
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr "Yeni paket"
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr "Kısa açıklama &linki Ekle"
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr "Tablo ekle"
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr "Yeni konu"
+
+#: lazdemsg.shintmenunewfromfile
+msgid "New from file ..."
+msgstr "Dosyadan yeni...."
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr "Ekle"
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr "Sil"
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr "Düzenle"
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr "Seçenekler iletişim kutusunu göster"
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr "Bu program hakkında"
+
+#: lazdemsg.simportcontentfile
+msgid "Import content file"
+msgstr "İçerik dosyasını içe aktar"
+
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Madde imli liste ekle"
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr "Örnek kod ekle"
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr "Bir bağlantı ekle"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Numaralı liste ekle"
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr "Kısa açıklama linki Ekle"
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr "Tablo ekle"
+
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr "Öğe sayısı"
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
+msgstr "Lazarus Döküman Editorü"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr " bağlantı "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr "Bağlantı hedefi"
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr "Bağlantı metni"
+
+#: lazdemsg.sload
+msgid "&Load"
+msgstr "&Yükle"
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr "Kaynak dosyadan yeni belge oluştur"
+
+#: lazdemsg.smarkselection
+#, object-pascal-format
+msgid "Mark selection %s"
+msgstr "%s işaretini seç"
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr "Hepsini daralt"
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr "Sil"
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr "Hepsini genişlet"
+
+#: lazdemsg.smenuextra
+msgid "&Extra"
+msgstr "&Extra"
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "&Derle"
+
+#: lazdemsg.smenuextraoptions
+msgid "&Options"
+msgstr "&Seçenekler"
+
+#: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
+msgid "&File"
+msgstr "&Dosya"
+
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "&Kapat"
+
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "&Yeni"
+
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr "Do&syadan yeni"
+
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "&Aç"
+
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "&Çıkış"
+
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr "&Son Kullanılan Aç"
+
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "&Kaydet"
+
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "&Farklı kaydet"
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr "Biçim"
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr "&Kalın"
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr "&Kod"
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr "&Dosya"
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr "&Eğik"
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr "&Paragraf"
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr "&Düşünce"
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr "&Altı çizili"
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr "&Değişken"
+
+#: lazdemsg.smenuhelp
+msgid "&Help"
+msgstr "&Yardım"
+
+#: lazdemsg.smenuhelpabout
+msgid "&About ..."
+msgstr "&Hakkında..."
+
+#: lazdemsg.smenuinsert
+msgid "&Insert"
+msgstr "&Ekle"
+
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr "Maddeli liste"
+
+#: lazdemsg.smenuinsertelement
+msgid "&Element"
+msgstr "&Öğe"
+
+#: lazdemsg.smenuinsertlink
+msgid "&Link"
+msgstr "&Bağlantı"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr "Liste"
+
+#: lazdemsg.smenuinsertmodule
+msgid "&Module"
+msgstr "&Modül"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr "Numaralı liste"
+
+#: lazdemsg.smenuinsertpackage
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "&Paket"
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
+msgstr "Kısa açıklama &linki Ekle"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "&Hızlı link"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "K&ısa açıklama linki"
+
+#: lazdemsg.smenuinserttable
+msgid "&Table"
+msgstr "T&ablo"
+
+#: lazdemsg.smenuinserttopic
+msgid "T&opic"
+msgstr "K&onu"
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr "Yeniden Adlandır"
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr "Öğe için hiçbir düğüm seçilmedi"
+
+#: lazdemsg.snew
+msgid "New"
+msgstr "Yeni"
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr "Yeni döküman"
+
+#: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
+msgid "New element"
+msgstr "Yeni öğe"
+
+#: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
+msgid "New file"
+msgstr "Yeni dosya"
+
+#: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
+msgid "New module"
+msgstr "Yeni Modül"
+
+#: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
+msgid "New package"
+msgstr "Yeni paket"
+
+#: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
+msgid "New topic"
+msgstr "Yeni konu"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr "Düğüm adı"
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr "Öğe seçilmedi"
+
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr "Yedek uzantısı"
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "&Silmeyi Onayla"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr "Yedek &Oluştur"
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "Varsayılan uzantı"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "Masaüstü"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "fpdoc program"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "Genel"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "makeskel program"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr "Maks. son kullanılan"
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "Seçenekler"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr "Başlangıçta son dosyayı yeniden aç"
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "İpuçlarını göster"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr "&Kaydederken boş düğümleri atla"
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr "Büyütmeye başla"
+
+#: lazdemsg.sotheroptions
+msgid "Other options"
+msgstr "Diğer seçenekler"
+
+#: lazdemsg.soutput
+msgid "&Output"
+msgstr "&Çıktı"
+
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
+msgid "&Package"
+msgstr "&Paket"
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "Paketler"
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "Elementi yeniden adlandır"
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "Modülü yeniden adlandır"
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "Paketi yeniden adlandır"
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "Konuyu yeniden adlandır"
+
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
+msgid "&Save"
+msgstr "&Kaydet"
+
+#: lazdemsg.ssavebeforebuildquestion
+#, object-pascal-format
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr "\"%s\" öğesinde kaydedilmemiş değişiklikleriniz var. %s Dahili belgelerde görünebilmeleri için kaydedilmeleri gerekir. Onları kurtar?"
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "Ayrıca bakınız"
+
+#: lazdemsg.sselectoutputdirectory
+msgid "Select output directory"
+msgstr "Çıktı klasörü adını seçin"
+
+#: lazdemsg.sselectoutputfile
+msgid "Select output file name"
+msgstr "Çıktı dosyası adını seçin"
+
+#: lazdemsg.sselectsometext
+msgid "Select some text."
+msgstr "Bir metin seç."
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr "Kısa"
+
+#: lazdemsg.sshowprivatemethods
+msgid "Show p&rivate methods"
+msgstr "Özel &yöntemleri göster"
+
+#: lazdemsg.sskelerrorwithfile
+#, object-pascal-format
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr "makeskel bir hata bildirdi (%d). Yine de üretilen dosyayı yüklemeye çalışın mı?"
+
+#: lazdemsg.sskelerrorwithoutfile
+#, object-pascal-format
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr "makeskel bir hata bildirdi (%d) ve dosya üretmedi."
+
+#: lazdemsg.ssourcescapt
+msgid "Sources"
+msgstr "Kaynaklar"
+
+#: lazdemsg.sstartnodenotfound
+#, object-pascal-format
+msgid "Start element \"%s\" could not be found"
+msgstr "\"%s\" başlangıç elemanı bulunamadı"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr "Sütunlar"
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr "Başlık satırını kullan"
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr "Satırlar"
+
+#: lazdemsg.stargetos
+msgid "Target OS"
+msgstr "Hedef OS"
+
+#: lazdemsg.susingcommand
+msgid "Building docs using command: "
+msgstr "Komutu kullanarak doküman oluşturma: "
+
+#: lazdemsg.swarnifnodocumentationnodefound
+msgid "Warn if no documentation node found"
+msgstr "Dokümantasyon düğümü bulunmazsa uyar"
+

@@ -1,0 +1,205 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.3\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: tr_TR\n"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "%s içindeki bir dizin bileşeni mevcut değil veya sarkan bir bağlantı"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "%s içindeki bir dizin bileşeni mevcut değil veya sarkan bir bağlantı"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
+msgid "a directory component in %s is not a directory"
+msgstr "%s içindeki bir dizin bileşeni bir dizin değil"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
+msgid "a directory component in %s is not a directory"
+msgstr "%s içindeki bir dizin bileşeni bir dizin değil"
+
+#: lazutilsstrconsts.lrsboolean
+msgid "boolean"
+msgstr "boolean"
+
+#: lazutilsstrconsts.lrscannotexecute
+#, object-pascal-format
+msgid "can not execute %s"
+msgstr "%s yürütülemiyor"
+
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr "Gdb yakalanabilir hatası oluşturma:"
+
+#: lazutilsstrconsts.lrserrorincode
+msgid "ERROR in code: "
+msgstr "HATA kodu: "
+
+#: lazutilsstrconsts.lrsevalinvalidargcount
+msgid "Invalid number of function arguments"
+msgstr "Geçersiz sayıda işlev argümanı"
+
+#: lazutilsstrconsts.lrsevalunknownfunction
+#, object-pascal-format
+msgid "Unknown function: \"%s\""
+msgstr "Tanımsız işlev(function) %s"
+
+#: lazutilsstrconsts.lrsevalunknownvariable
+#, object-pascal-format
+msgid "Unknown variable: \"%s\""
+msgstr "Tanımsız değişken: \"%s\""
+
+#: lazutilsstrconsts.lrsfiledoesnotexist
+#, object-pascal-format
+msgid "file \"%s\" does not exist"
+msgstr "\"%s\" dosyası mevcut değil"
+
+#: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+#, object-pascal-format
+msgid "file \"%s\" is a directory and not an executable"
+msgstr "\"%s\" dosyası bir dizin değil yürütülebilir bir dosya"
+
+#: lazutilsstrconsts.lrshasacircularsymboliclink
+#, object-pascal-format
+msgid "%s has a circular symbolic link"
+msgstr "%s dairesel bir sembolik bağa sahip"
+
+#: lazutilsstrconsts.lrsinsufficientmemory
+msgid "insufficient memory"
+msgstr "yetersiz hafıza"
+
+#: lazutilsstrconsts.lrsinvalidcharset
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsinvalidcharset"
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr "\"%s\" maskesinde belirtilen karakter geçerli değil!"
+
+#: lazutilsstrconsts.lrsisnotasymboliclink
+#, object-pascal-format
+msgid "%s is not a symbolic link"
+msgstr "%s sembolik bir bağlantı değil"
+
+#: lazutilsstrconsts.lrsisnotexecutable
+#, object-pascal-format
+msgid "%s is not executable"
+msgstr "\"%s\" çalıştırılabilir değil"
+
+#: lazutilsstrconsts.lrslistindexexceedsbounds
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
+msgid "List index exceeds bounds (%d)"
+msgstr "Liste dizini sınırları aşıyor (%d)"
+
+#: lazutilsstrconsts.lrslistmustbeempty
+msgctxt "lazutilsstrconsts.lrslistmustbeempty"
+msgid "List must be empty"
+msgstr "Liste boş olmalı"
+
+#: lazutilsstrconsts.lrsmodified
+msgctxt "lazutilsstrconsts.lrsmodified"
+msgid "  modified "
+msgstr "  değiştirilmiş "
+
+#: lazutilsstrconsts.lrsnodeset
+msgid "node set"
+msgstr "düğüm ayarı"
+
+#: lazutilsstrconsts.lrsnumber
+msgid "number"
+msgstr "numara"
+
+#: lazutilsstrconsts.lrsparserbadaxisname
+msgid "Invalid axis name"
+msgstr "Geçersiz eksen adı"
+
+#: lazutilsstrconsts.lrsparserbadnodetype
+msgid "Invalid node type"
+msgstr "Geçersiz düğüm tipi"
+
+#: lazutilsstrconsts.lrsparserexpectedleftbracket
+msgid "Expected \"(\""
+msgstr "Beklenen \"(\""
+
+#: lazutilsstrconsts.lrsparserexpectedrightbracket
+msgid "Expected \")\""
+msgstr "Beklenen \")\""
+
+#: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
+msgid "Expected \"]\" after predicate"
+msgstr "Öngörüden sonra beklenen \"]\""
+
+#: lazutilsstrconsts.lrsparsergarbageafterexpression
+msgid "Unrecognized input after expression"
+msgstr "İfadeden sonra tanınmayan giriş"
+
+#: lazutilsstrconsts.lrsparserinvalidnodetest
+msgid "Invalid node test (syntax error)"
+msgstr "Geçersiz düğüm testi (sözdizimi hatası)"
+
+#: lazutilsstrconsts.lrsparserinvalidprimexpr
+msgid "Invalid primary expression"
+msgstr "Geçersiz birincil ifade"
+
+#: lazutilsstrconsts.lrsprogramfilenotfound
+#, object-pascal-format
+msgid "program file not found %s"
+msgstr "program dosyası %s bulunamadı"
+
+#: lazutilsstrconsts.lrsreadaccessdeniedfor
+#, object-pascal-format
+msgid "read access denied for %s"
+msgstr "%s için okuma erişimi reddedildi"
+
+#: lazutilsstrconsts.lrsscannerexpectedvarname
+msgid "Expected variable name after \"$\""
+msgstr "\"$\" den sonra beklenen değişken adı"
+
+#: lazutilsstrconsts.lrsscannerinvalidchar
+msgid "Invalid character"
+msgstr "Geçersiz karakter"
+
+#: lazutilsstrconsts.lrsscannermalformedqname
+msgid "Expected \"*\" or local part after colon"
+msgstr "Kolondan sonra beklenen \"*\" veya yerel kısım"
+
+#: lazutilsstrconsts.lrsscannerunclosedstring
+msgid "String literal was not closed"
+msgstr "String değişmez kapatılmadı"
+
+#: lazutilsstrconsts.lrssize
+msgctxt "lazutilsstrconsts.lrssize"
+msgid "  size "
+msgstr "  boyut "
+
+#: lazutilsstrconsts.lrsstring
+msgid "string"
+msgstr "string"
+
+#: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+#, object-pascal-format
+msgid "Unable to create config directory \"%s\""
+msgstr "\"%s\" yapılandırma dizini oluşturulamıyor"
+
+#: lazutilsstrconsts.lrsvarnoconversion
+#, object-pascal-format
+msgid "Conversion from %s to %s not possible"
+msgstr "%s den %s ye dönüşüm mümkün değil"
+

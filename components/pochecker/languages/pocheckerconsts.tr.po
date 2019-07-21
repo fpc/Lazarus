@@ -1,0 +1,530 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: pocheckerconsts.rspochecker
+msgid "Check PO Files ..."
+msgstr "PO Dosyalarını Kontrol Et ..."
+
+#: pocheckerconsts.rs_lang_af_za
+msgid "Afrikaans"
+msgstr "Afrika"
+
+#: pocheckerconsts.rs_lang_all
+msgid "All languages"
+msgstr "Tüm diller"
+
+#: pocheckerconsts.rs_lang_ar
+msgid "Arabic"
+msgstr "Arapça"
+
+#: pocheckerconsts.rs_lang_ca
+msgid "Catalan"
+msgstr "Katalan"
+
+#: pocheckerconsts.rs_lang_cs
+msgid "Czech"
+msgstr "Çek"
+
+#: pocheckerconsts.rs_lang_de
+msgid "German"
+msgstr "Almanca"
+
+#: pocheckerconsts.rs_lang_en
+msgid "English"
+msgstr "İngilizce"
+
+#: pocheckerconsts.rs_lang_es
+msgid "Spanish"
+msgstr "İspanyol"
+
+#: pocheckerconsts.rs_lang_fi
+msgid "Finnish"
+msgstr "Fince"
+
+#: pocheckerconsts.rs_lang_fr
+msgid "French"
+msgstr "Fransızca"
+
+#: pocheckerconsts.rs_lang_he
+msgid "Hebrew"
+msgstr "İbranice"
+
+#: pocheckerconsts.rs_lang_hu
+msgid "Hungarian"
+msgstr "Macarca"
+
+#: pocheckerconsts.rs_lang_id
+msgid "Indonesian"
+msgstr "Endonezya"
+
+#: pocheckerconsts.rs_lang_it
+msgid "Italian"
+msgstr "İtalyan"
+
+#: pocheckerconsts.rs_lang_ja
+msgid "Japanese"
+msgstr "Japonca"
+
+#: pocheckerconsts.rs_lang_lt
+msgid "Lithuanian"
+msgstr "Litvanya"
+
+#: pocheckerconsts.rs_lang_nl
+msgid "Dutch"
+msgstr "Flemenkçe"
+
+#: pocheckerconsts.rs_lang_pl
+msgid "Polish"
+msgstr "Polonya"
+
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr "Portekizce"
+
+#: pocheckerconsts.rs_lang_pt_br
+msgid "Brazilian Portuguese"
+msgstr "Brezilya Portekizcesi"
+
+#: pocheckerconsts.rs_lang_ru
+msgid "Russian"
+msgstr "Rusça"
+
+#: pocheckerconsts.rs_lang_sk
+msgid "Slovak"
+msgstr "Slovak"
+
+#: pocheckerconsts.rs_lang_tr
+msgid "Turkish"
+msgstr "Türkçe"
+
+#: pocheckerconsts.rs_lang_uk
+msgid "Ukrainian"
+msgstr "Ukrainian"
+
+#: pocheckerconsts.rs_lang_zh_cn
+msgid "Chinese, simplified"
+msgstr "Chinese, simplified"
+
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr "Tüm diller"
+
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+#, object-pascal-format
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
+msgstr "%s%s%s%s dosyası yazılamıyor Bu çeviri ailesini tekrar yenilemek ve devam etmek için \"Yeniden Dene\" tuşuna basabilirsiniz."
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Uyumsuz format argümanlarını kontrol et"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches of originals"
+msgstr "Orijinallerin uyumsuzluklarını kontrol et"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Eksik tanımlayıcıları kontrol et"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Öğe sayısını kontrol et"
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
+msgstr "Temizle"
+
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr "&Kopyala"
+
+#: pocheckerconsts.screatingiconxofy
+#, object-pascal-format
+msgid "Creating icon nr. %d of %d"
+msgstr "Simge oluşturma %d %d"
+
+#: pocheckerconsts.scurrenttest
+#, object-pascal-format
+msgid "Test: %s on %s"
+msgstr "Test: %s üzerinde %s"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+#, object-pascal-format
+msgid "[Line %d] %s"
+msgstr "[Satır %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+#, object-pascal-format
+msgid "Original value \"%s\" is used for more than 1 entry:"
+msgstr "Orijinal değer \"%s\", 1'den fazla giriş için kullanılır:"
+
+#: pocheckerconsts.sduplicateoriginalstab
+msgid "Duplicate Originals"
+msgstr "Yinelenen Orijinaller"
+
+#: pocheckerconsts.serroroncleanup
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "An unrecoverable error occurred\n"
+#| "%s\n"
+#| "Please close the program\n"
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program"
+msgstr ""
+"Kurtarılamaz bir hata oluştu\n"
+"%s\n"
+"Lütfen programı kapat\n"
+
+#: pocheckerconsts.serroroncreate
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Error creating an instance of TPoFamily:\n"
+#| "%s\n"
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s"
+msgstr ""
+"TPoFamily örneği oluştururken hata oluştu:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+#, object-pascal-format
+msgid "Errors / warnings reported by %s for:"
+msgstr "%s tarafından bildirilen hatalar / uyarılar:"
+
+#: pocheckerconsts.sfile
+#, object-pascal-format
+msgid "File %s"
+msgstr "Dosya: %s"
+
+#: pocheckerconsts.sfilesnotfoundandremoved
+#, object-pascal-format, fuzzy, badformat
+#| msgid ""
+#| "The following non-existent files were removed from the list:\n"
+#| "%s\n"
+msgid ""
+"The following non-existent files were removed from the list:\n"
+"%s"
+msgstr ""
+"Aşağıdaki varolmayan dosyalar listeden kaldırıldı:\n"
+"% s\n"
+
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr "Bulanık dizeler"
+
+#: pocheckerconsts.sfuzzystringstotal
+#, object-pascal-format
+msgid "Fuzzy strings (total: %s)"
+msgstr "Bulanık dizeler(toplam: %s)"
+
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr "Genel bilgi"
+
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr "Grafik özeti"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "GUI Po-file kontrol aracı"
+
+#: pocheckerconsts.sidentifiernotfoundin
+#, object-pascal-format
+msgid "Identifier [%s] not found in %s"
+msgstr "[%s] tanımlayıcısı %s içinde bulunamadı"
+
+#: pocheckerconsts.sincompatibleformatargs
+#, object-pascal-format
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr "[Satır: %d] Uyumsuz ve / veya geçersiz format () argümanları:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr "Dil:"
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr "Son arama yolu:"
+
+#: pocheckerconsts.slineinfilename
+#, object-pascal-format
+msgid "[Line %d] in %s:"
+msgstr "[Satır %d] %s içinde:"
+
+#: pocheckerconsts.slinenr
+#, object-pascal-format
+msgid "[Line: %d]"
+msgstr "[Satır: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+#, object-pascal-format
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Tanımlayıcı [%s] %s içinde bulundu, ancak %s içinde mevcut değil"
+
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
+msgstr "Kontrol edilecek dosya kalmadı."
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Seçilen test yok."
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr "Not: çeviri bulanık"
+
+#: pocheckerconsts.snrerrorsfound
+#, object-pascal-format
+msgid "Found %d errors."
+msgstr "%d hata bulundu."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Usta ve çocuk için öğelerin sayısındaki uyumsuzluk"
+
+#: pocheckerconsts.snrofitemsmismatchd
+#, object-pascal-format
+msgid "%s: %d items"
+msgstr "%s: %d öğe"
+
+#: pocheckerconsts.snrwarningsfound
+#, object-pascal-format
+msgid "Found %d warnings."
+msgstr "%d uyarı bulundu."
+
+#: pocheckerconsts.sopenfail
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Unable to open file:\n"
+#| "\"%s\"\n"
+msgid ""
+"Unable to open file:\n"
+"\"%s\""
+msgstr ""
+"Dosya açılamıyor:\n"
+"\"%s\"\n"
+
+#: pocheckerconsts.sopenfailexternal
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Unable to open file\n"
+#| "\"%s\"\n"
+#| "in external editor\n"
+#| "\"%s\"\n"
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\""
+msgstr ""
+"Dosya açılamıyor\n"
+"\"%s\"\n"
+"harici düzenleyicide\n"
+"\"%s\"\n"
+
+#: pocheckerconsts.sopenfileinexternaleditor
+msgid "Open file in external editor"
+msgstr "Dosyayı harici düzenleyicide aç"
+
+#: pocheckerconsts.sopenfileinideeditor
+msgid "Open file in IDE editor"
+msgstr "Dosyayı IDE editöründe aç"
+
+#: pocheckerconsts.sopenfileinsystempoeditor
+msgid "Open file in system PO editor"
+msgstr "Dosyayı sistem PO editöründe aç"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Orijinal"
+
+#: pocheckerconsts.spercfuzzy
+#, object-pascal-format
+msgid "%s: %5.1f%% fuzzy strings."
+msgstr "%s: %5.1f%% bulanık dizeler."
+
+#: pocheckerconsts.sperctranslated
+#, object-pascal-format
+msgid "%s: %5.1f%% translated strings."
+msgstr "%s: %5.1f%% çevrilmiş dizeler."
+
+#: pocheckerconsts.spercuntranslated
+#, object-pascal-format
+msgid "%s: %5.1f%% untranslated strings."
+msgstr "%s: %5.1f%% çevrilememiş dizeler."
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr "Çeviri ailesi işleniyor ..."
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+#, object-pascal-format
+msgid "Processing translation family %s of %s"
+msgstr "%s dan %s çeviri aile işleniyor"
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr "Tüm çeviri ailelerini yenile"
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr "Geçerli çeviri ailesini yenile"
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Sonuçlar"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "&Seçili Testleri Çalıştır"
+
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr "&Farklı kaydet ..."
+
+#: pocheckerconsts.ssaveerror
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Error saving file:\n"
+#| "%s\n"
+msgid ""
+"Error saving file:\n"
+"%s"
+msgstr ""
+"Dosya kaydedilirken hata oluştu:\n"
+"%s\n"
+
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr "Bir klasör tara"
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
+msgstr "Tarama devam ediyor, lütfen bekleyin ..."
+
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr "Tüm dosyaları seç"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select &All"
+msgstr "He&psini seç"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Test türlerini seçin"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr "İstatistik grafiğini göster"
+
+#: pocheckerconsts.sstathint
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Translated: %d (%.1f%%)\n"
+#| "Untranslated: %d (%.1f%%)\n"
+#| "Fuzzy: %d (%.1f%%)\n"
+#| "Errors in selected tests: %d\n"
+msgid ""
+"Translated: %d (%.1f%%)\n"
+"Untranslated: %d (%.1f%%)\n"
+"Fuzzy: %d (%.1f%%)\n"
+"Errors in selected tests: %d"
+msgstr ""
+"Çevrilen: %d (%.1f%%)\n"
+"Çevrilmemiş: %d (%.1f%%)\n"
+"Bulanık: %d (%.1f%%)\n"
+"Seçilen testlerdeki hatalar: %d\n"
+
+#: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+#, object-pascal-format
+msgid "The following %s missing master .po file(s) were removed from the list:"
+msgstr "Aşağıdaki %s eksik ana .po dosyası (ları) listeden kaldırıldı:"
+
+#: pocheckerconsts.sthefollowingorphanedpofilesfound
+#, object-pascal-format
+msgid "The following %s orphaned .po file(s) found:"
+msgstr "Aşağıdaki %s sahipsiz .po dosyası bulundu:"
+
+#: pocheckerconsts.stotalerrors
+#, object-pascal-format
+msgid "Total errors: %d"
+msgstr "Toplam hatalar: %d"
+
+#: pocheckerconsts.stotalerrorsnonfuzzy
+#, object-pascal-format
+msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
+msgstr "Toplam hatalar: %d (bulanık olmayan dizgelerde biçimlendirme hataları: %d)"
+
+#: pocheckerconsts.stotalfuzzystrings
+#, object-pascal-format
+msgid "Total fuzzy strings: %s"
+msgstr "Toplam Bulanık dizeler: %s"
+
+#: pocheckerconsts.stotaltranslatedstrings
+#, object-pascal-format
+msgid "Total translated strings: %s (%.1f%%)"
+msgstr "Toplam çevrilmiş dizeler: %s (%.1f%%)"
+
+#: pocheckerconsts.stotaluntranslatedstrings
+#, object-pascal-format
+msgid "Total untranslated strings: %s"
+msgstr "Çevrilmeyen toplam dize: %s"
+
+#: pocheckerconsts.stotalwarnings
+#, object-pascal-format
+msgid "Total warnings: %d"
+msgstr "Toplam uyarı: %d"
+
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr "Tercüme edilmiş dizeler"
+
+#: pocheckerconsts.stranslatedstringstotal
+#, object-pascal-format
+msgid "Translated strings (total: %s [%.1f%%])"
+msgstr "Çevrilmiş dizeler (toplam: %s [%.1f%%])"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Çeviri"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation Statistics"
+msgstr "Çeviri İstatistikleri"
+
+#: pocheckerconsts.stroublesomefiles
+msgid "Troublesome files"
+msgstr "Sıkıntılı dosyalar"
+
+#: pocheckerconsts.sunselectalltests
+msgid "&Unselect All"
+msgstr "&Tüm seçimleri kaldır"
+
+#: pocheckerconsts.sunselectlistbox
+msgid "Unselect all files"
+msgstr "Tüm seçimleri kaldır"
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
+msgstr "Çevrilmeyen dizeler"
+
+#: pocheckerconsts.suntranslatedstringstotal
+#, object-pascal-format
+msgid "Untranslated strings (total: %s)"
+msgstr "Çevrilmeyen dizeler (toplam: %s)"
+

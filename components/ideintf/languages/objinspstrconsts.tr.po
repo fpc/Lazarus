@@ -1,0 +1,1722 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: objinspstrconsts.cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(Tümü)"
+
+#: objinspstrconsts.cactionlisteditordatabasecategory
+msgid "Database"
+msgstr "Veritabanı"
+
+#: objinspstrconsts.cactionlisteditordeleteaction
+msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
+msgid "Delete"
+msgstr "Sil"
+
+#: objinspstrconsts.cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr "Eylemi Sil"
+
+#: objinspstrconsts.cactionlisteditordialogcategory
+msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
+msgid "Dialog"
+msgstr "Iletişim"
+
+#: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
+msgid "Edit"
+msgstr "Düzenle"
+
+#: objinspstrconsts.cactionlisteditorfilecategory
+msgid "File"
+msgstr "Dosya"
+
+#: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
+msgid "Help"
+msgstr "Yardım"
+
+#: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
+msgid "Move Down"
+msgstr "Aşağı taşı"
+
+#: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
+msgid "Move Up"
+msgstr "Yukarı Taşı"
+
+#: objinspstrconsts.cactionlisteditornewaction
+msgid "New Action"
+msgstr "Yeni eylem"
+
+#: objinspstrconsts.cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr "Yeni standart eylem"
+
+#: objinspstrconsts.cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr "Panel Açıklamaları"
+
+#: objinspstrconsts.cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr "Araç Çubuğu"
+
+#: objinspstrconsts.cactionlisteditorsearchcategory
+msgid "Search"
+msgstr "Ara"
+
+#: objinspstrconsts.cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Bilinmeyen)"
+
+#: objinspstrconsts.cgcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr "Eklendiğinde, Öğelerde Çoğaltmayı Denetle"
+
+#: objinspstrconsts.cgcheckduplicatemsg
+#, object-pascal-format
+msgid "The \"%s\" Item is already listed. Add it anyway?"
+msgstr "\"%s\" Öğesi zaten listede. Yine de eklensin mi?"
+
+#: objinspstrconsts.cgcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr "CheckGroup Düzenleyicisi"
+
+#: objinspstrconsts.cgcolumns
+msgid "Columns:"
+msgstr "Sütunlar:"
+
+#: objinspstrconsts.cgdisable
+msgid "Popup to disable/enable items"
+msgstr "Öğeleri devre dışı bırakmak / etkinleştirmek için açılır pencere"
+
+#: objinspstrconsts.clbadd
+msgid "Add new Item"
+msgstr "Yeni öğe ekle"
+
+#: objinspstrconsts.clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr "CheckListBox Düzenleyicisi"
+
+#: objinspstrconsts.clbdeletehint
+msgid "Delete the Item"
+msgstr "Öğeyi sil"
+
+#: objinspstrconsts.clbdeletequest
+#, object-pascal-format
+msgid "Delete the Item %d \"%s\"?"
+msgstr "Öğeyi sil %d \"%s\"?"
+
+#: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
+msgid "Down"
+msgstr "Aşağı"
+
+#: objinspstrconsts.clbmodify
+msgid "Modify the Item"
+msgstr "Öğeyi değiştir"
+
+#: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
+msgid "Up"
+msgstr "Yukarı"
+
+#: objinspstrconsts.dceaddfields
+msgid "Add Fields"
+msgstr "Alan ekle"
+
+#: objinspstrconsts.dcecolumneditor
+msgid "DBGrid Columns Editor"
+msgstr "DBGrid sütun düzenleyici"
+
+#: objinspstrconsts.dcedeleteall
+msgid "Delete All"
+msgstr "Hepsini sil"
+
+#: objinspstrconsts.dcefetchlabels
+msgid "Fetch Labels"
+msgstr "Etiketleri getir"
+
+#: objinspstrconsts.dceoktodelete
+msgid "This will delete all columns. Continue?"
+msgstr "Bu tüm sütunları siler. Devam edilsin mi?"
+
+#: objinspstrconsts.dcewillreplacecontinue
+msgid "This will replace all captions from dataset. Continue?"
+msgstr "Bu, veri kümesindeki tüm başlıkları değiştirir. Devam edilsin mi?"
+
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset."
+msgstr "Alan tanımları veri kümesinden alınamadı."
+
+#: objinspstrconsts.fescalculated
+msgid "&Calculated"
+msgstr "&Hesapla"
+
+#: objinspstrconsts.fescancelbtn
+msgctxt "objinspstrconsts.fescancelbtn"
+msgid "Cancel"
+msgstr "İptal"
+
+#: objinspstrconsts.fescheckdset
+msgid "Check dataset settings"
+msgstr "Veri kümesi ayarlarını kontrol et"
+
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr "&Veri"
+
+#: objinspstrconsts.fesdataset
+msgid "&Dataset:"
+msgstr "&Veri kümesi:"
+
+#: objinspstrconsts.fesfetitle
+msgid "Edit Fields ..."
+msgstr "Alanları Düzenle.."
+
+#: objinspstrconsts.fesfieldcantbec
+#, object-pascal-format
+msgid "Field %s cannot be created!"
+msgstr "%s Alan oluşturulamadı!"
+
+#: objinspstrconsts.fesfieldprops
+msgid "Field properties"
+msgstr "Alan özellikleri"
+
+#: objinspstrconsts.fesfieldtype
+msgid "Field Type"
+msgstr "Alan tipi"
+
+#: objinspstrconsts.fesfltitle
+msgid "FieldDefs"
+msgstr "FieldDefs"
+
+#: objinspstrconsts.fesformcaption
+msgctxt "objinspstrconsts.fesformcaption"
+msgid "New field"
+msgstr "Yeni alan"
+
+#: objinspstrconsts.feskeyfield
+msgid "&Key fields:"
+msgstr "&Anahtar alanlar:"
+
+#: objinspstrconsts.feslookup
+msgid "&Lookup"
+msgstr "&Arama tablosu"
+
+#: objinspstrconsts.feslookupdef
+msgid "Lookup definition"
+msgstr "Arama tanımı"
+
+#: objinspstrconsts.feslookupkeys
+msgid "L&ookup keys:"
+msgstr "A&rama anahtarları:"
+
+#: objinspstrconsts.fesname
+msgid "&Name:"
+msgstr "&Ad:"
+
+#: objinspstrconsts.fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr "Veri kümesi alanının listesini almak mümkün değil"
+
+#: objinspstrconsts.fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr "Alanın listesi mevcut değil, aynıları kontrol edilemiyor"
+
+#: objinspstrconsts.fesokbtn
+msgctxt "objinspstrconsts.fesokbtn"
+msgid "OK"
+msgstr "TAMAM"
+
+#: objinspstrconsts.fespersistentcompname
+msgid "Co&mponent Name:"
+msgstr "&Bileşen adı:"
+
+#: objinspstrconsts.fesresultfield
+msgid "&Result Fields:"
+msgstr "&Sonuç Alanları:"
+
+#: objinspstrconsts.fessize
+msgid "&Size:"
+msgstr "&Boyut:"
+
+#: objinspstrconsts.festype
+msgid "&Type:"
+msgstr "&Tür:"
+
+#: objinspstrconsts.fpflowpaneleditor
+msgid "FlowPanel Editor"
+msgstr ""
+
+#: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
+msgid "Add"
+msgstr "Ekle"
+
+#: objinspstrconsts.itcssearchandreplace
+msgid "Search and replace"
+msgstr "Bul ve değiştir"
+
+#: objinspstrconsts.liisaddvalue
+msgid "Add value"
+msgstr "Değer ekle"
+
+#: objinspstrconsts.liiselse
+msgid "Else"
+msgstr "Else"
+
+#: objinspstrconsts.liiselseif
+msgid "ElseIf"
+msgstr "ElseIf"
+
+#: objinspstrconsts.liisif
+msgid "If"
+msgstr "If"
+
+#: objinspstrconsts.liisifdef
+msgid "IfDef"
+msgstr "IfDef"
+
+#: objinspstrconsts.liisifndef
+msgid "IfNDef"
+msgstr "IfNDef"
+
+#: objinspstrconsts.liissetvalue
+msgid "Set value"
+msgstr "Değer ayarla"
+
+#: objinspstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
+msgid "Unable to find parser for tool \"%s\""
+msgstr "\"%s\" aracı için çözümleyici bulunamadı."
+
+#: objinspstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
+msgid "Unable to find parser with name \"%s\""
+msgstr "\"%s\" adında ayrıştırıcı bulunamadı"
+
+#: objinspstrconsts.nbcesaddpage
+msgctxt "objinspstrconsts.nbcesaddpage"
+msgid "Add Page"
+msgstr "Sayfa ekle"
+
+#: objinspstrconsts.nbcesdeletepage
+msgid "Delete Page"
+msgstr "Sayfayı sil"
+
+#: objinspstrconsts.nbcesinsertpage
+msgid "Insert Page"
+msgstr "Sayfa Ekle"
+
+#: objinspstrconsts.nbcesmovepageleft
+msgid "Move Page Left"
+msgstr "Sayfa Sola Taşı"
+
+#: objinspstrconsts.nbcesmovepageright
+msgid "Move Page Right"
+msgstr "Sayfayı sağa taşı"
+
+#: objinspstrconsts.nbcesshowpage
+msgid "Show Page"
+msgstr "Sayfayı göster"
+
+#: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
+msgid "Add"
+msgstr "Ekle"
+
+#: objinspstrconsts.oicoleditdelete
+msgctxt "objinspstrconsts.oicoleditdelete"
+msgid "Delete"
+msgstr "Sil"
+
+#: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
+msgid "Down"
+msgstr "Aşağı"
+
+#: objinspstrconsts.oicoleditediting
+msgid "Editing"
+msgstr "Düzenleniyor"
+
+#: objinspstrconsts.oicoleditup
+msgctxt "objinspstrconsts.oicoleditup"
+msgid "Up"
+msgstr "Yukarı"
+
+#: objinspstrconsts.ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr "0 satır, 0 karakter"
+
+#: objinspstrconsts.ois1linedchars
+#, object-pascal-format
+msgid "1 line, %d chars"
+msgstr "1 satır, %d karakter"
+
+#: objinspstrconsts.oisaction
+msgid "Action"
+msgstr "Aksiyon"
+
+#: objinspstrconsts.oisactionlistcomponenteditor
+msgid "Action&List Editor ..."
+msgstr "Aks&iyon listesi düzenleyici..."
+
+#: objinspstrconsts.oisactionlisteditor
+msgid "ActionList Editor"
+msgstr "Aksiyon listesi düzenleyici"
+
+#: objinspstrconsts.oisadd
+msgctxt "objinspstrconsts.oisadd"
+msgid "Add"
+msgstr "Ekle"
+
+#: objinspstrconsts.oisaddcollectionitem
+msgid "&Add Item"
+msgstr "&Yeni öğe ekle"
+
+#: objinspstrconsts.oisaddfields
+msgid "&Add fields"
+msgstr "&Alan ekle"
+
+#: objinspstrconsts.oisaddfieldsfromfielddefs
+msgid "Add fields from FieldDefs"
+msgstr "FieldDefs'ten alan ekle"
+
+#: objinspstrconsts.oisaddpage
+msgctxt "objinspstrconsts.oisaddpage"
+msgid "Add Page"
+msgstr "Sayfa ekle"
+
+#: objinspstrconsts.oisaddtofavorites
+msgid "Add to Favorites"
+msgstr "Favorilere ekle"
+
+#: objinspstrconsts.oisallfiles
+msgid "All files"
+msgstr "Tüm dosyalar"
+
+#: objinspstrconsts.oisarray
+msgid "Array"
+msgstr "Array"
+
+#: objinspstrconsts.oisboolean
+msgid "Boolean"
+msgstr "Boolean"
+
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr "&Bileşenler"
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr "&Özellikler"
+
+#: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
+msgid "Cancel"
+msgstr "İptal"
+
+#: objinspstrconsts.oiscategory
+msgid "Category"
+msgstr "Kategori"
+
+#: objinspstrconsts.oiscdelete
+msgid "Delete?"
+msgstr "Sil?"
+
+#: objinspstrconsts.oischangeclass
+msgid "Change Class ..."
+msgstr "Sınıf değiştir ..."
+
+#: objinspstrconsts.oischangeparent
+msgid "Change Parent"
+msgstr "Ebeveyn Değiştir"
+
+#: objinspstrconsts.oischar
+msgid "Char"
+msgstr "Karakter"
+
+#: objinspstrconsts.oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr "Boşluklar için karakterler"
+
+#: objinspstrconsts.oisclass
+msgid "Class"
+msgstr "Class"
+
+#: objinspstrconsts.oisclear
+msgid "C&lear"
+msgstr "T&emizle"
+
+#: objinspstrconsts.oisclearpicture
+msgid "Clear picture"
+msgstr "Resmi temizle"
+
+#: objinspstrconsts.oiscomponentnameisnotavalididentifier
+#, object-pascal-format
+msgid "Component name \"%s\" is not a valid identifier"
+msgstr "Bileşen adı \"%s\"geçerli bir tanımlayıcı değil"
+
+#: objinspstrconsts.oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr "Bileşen kısıtlamaları: "
+
+#: objinspstrconsts.oisconfirmdelete
+msgid "Confirm delete"
+msgstr "Silmeyi onayla"
+
+#: objinspstrconsts.oiscopycomponents
+msgctxt "objinspstrconsts.oiscopycomponents"
+msgid "&Copy"
+msgstr "&Kopyala"
+
+#: objinspstrconsts.oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "Yeni pascal birimi oluştur."
+
+#: objinspstrconsts.oiscreatedefaultevent
+msgid "Create default event"
+msgstr "Varsayılan olay oluştur"
+
+#: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
+msgid "Create new field and add it at current position"
+msgstr "Yeni alan oluştur ve mevcut pozisyona ekle"
+
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr "Şimdiki ebeveyn"
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr "Şimdiki ebeveynler"
+
+#: objinspstrconsts.oiscutcomponents
+msgctxt "objinspstrconsts.oiscutcomponents"
+msgid "Cu&t"
+msgstr "K&es"
+
+#: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
+msgid "Delete"
+msgstr "Sil"
+
+#: objinspstrconsts.oisdeletecomponents
+msgctxt "objinspstrconsts.oisdeletecomponents"
+msgid "&Delete"
+msgstr "&Sil"
+
+#: objinspstrconsts.oisdeleteitem
+#, object-pascal-format
+msgid "Delete item \"%s\"?"
+msgstr "Öğeyi sil \"%s\"?"
+
+#: objinspstrconsts.oisdeletepagequestion
+msgid "Do you want to delete the page?"
+msgstr "Sayfayı silmek istiyormusunuz?"
+
+#: objinspstrconsts.oisdeleteselectedfields
+msgid "Delete selected field(s)"
+msgstr "Seçili alnları sil"
+
+#: objinspstrconsts.oisdlinesdchars
+#, object-pascal-format
+msgid "%d lines, %d chars"
+msgstr "%d satırı, %d karakteri"
+
+#: objinspstrconsts.oisenumeration
+msgid "Enumeration"
+msgstr "Numaralandırma"
+
+#: objinspstrconsts.oiserror
+msgid "Error"
+msgstr "Hata"
+
+#: objinspstrconsts.oiserrordeletingaction
+msgid "Error deleting action"
+msgstr "İşlem silinirken hata oluştu"
+
+#: objinspstrconsts.oiserrorloadingimage
+msgid "Error loading image"
+msgstr "Resim yüklenirken hata oluştu"
+
+#: objinspstrconsts.oiserrorloadingimage2
+#, object-pascal-format
+msgid "Error loading image \"%s\":%s%s"
+msgstr "Resim yüklenirken hata oluştu \"%s\":%s%s"
+
+#: objinspstrconsts.oiserrorwhiledeletingaction
+#, object-pascal-format
+msgid "Error while deleting action:%s%s"
+msgstr "İşlem silinirken hata oluştu:%s%s"
+
+#: objinspstrconsts.oisevents
+msgid "Events"
+msgstr "Olaylar"
+
+#: objinspstrconsts.oisfavorites
+msgid "Favorites"
+msgstr "Favoriler"
+
+#: objinspstrconsts.oisfinddeclaration
+msgid "Jump to declaration"
+msgstr "Deklarasyona geç"
+
+#: objinspstrconsts.oisfloat
+msgid "Float"
+msgstr "Float"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr "&Yardım"
+
+#: objinspstrconsts.oisimagelistcomponenteditor
+msgid "I&mageList Editor ..."
+msgstr "&Resim listesi Düzenleyici..."
+
+#: objinspstrconsts.oisincompatibleidentifier
+msgid "Incompatible Identifier"
+msgstr "Uyumsuz Tanımlayıcı"
+
+#: objinspstrconsts.oisincompatiblemethod
+msgid "Incompatible Method"
+msgstr "Uyumsuz Yöntem"
+
+#: objinspstrconsts.oisinputmask
+msgid "Input Mask:"
+msgstr "Maske gir:"
+
+#: objinspstrconsts.oisinsertpagename
+msgid "Insert Page Name"
+msgstr "Sayfa ismi ekle"
+
+#: objinspstrconsts.oisint64
+msgid "Int64"
+msgstr "Int64"
+
+#: objinspstrconsts.oisinteger
+msgid "Integer"
+msgstr "Integer"
+
+#: objinspstrconsts.oisinterface
+msgid "Interface"
+msgstr "Arayüz"
+
+#: objinspstrconsts.oisinvalid
+msgid "(Invalid)"
+msgstr "(Geçersiz)"
+
+#: objinspstrconsts.oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "Geçersiz özellik değeri"
+
+#: objinspstrconsts.oisisnotavalidmethodname
+#, object-pascal-format
+msgid "\"%s\" is not a valid method name."
+msgstr "\"%s\" geçerli bir yöntem adı değil."
+
+#: objinspstrconsts.oisitemsselected
+#, object-pascal-format
+msgid "%u items selected"
+msgstr "%u öğe seçili"
+
+#: objinspstrconsts.oisjumptodeclarationof
+#, object-pascal-format
+msgid "Jump to declaration of %s"
+msgstr "Deklarasyona geç %s"
+
+#: objinspstrconsts.oisload
+msgid "&Load"
+msgstr "&Yükle"
+
+#: objinspstrconsts.oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Resim yükleme dialoğu"
+
+#: objinspstrconsts.oisloadpicture
+msgid "Load picture"
+msgstr "Resim yükle"
+
+#: objinspstrconsts.oismasks
+msgid "Masks ..."
+msgstr "Maske...."
+
+#: objinspstrconsts.oismethod
+msgid "Method"
+msgstr "Yöntem"
+
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr "(Karışık)"
+
+#: objinspstrconsts.oismovedown
+msgid "Move &Down"
+msgstr "&Aşağı taşı"
+
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr "Alanı aşağı taşı"
+
+#: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
+msgid "Move &Up"
+msgstr "Yukarı &Taşı"
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
+msgstr "Alanı yukarı taşı"
+
+#: objinspstrconsts.oisnew
+msgid "&New"
+msgstr "&Yeni"
+
+#: objinspstrconsts.oisnone
+msgid "(none)"
+msgstr "(Yok)"
+
+#: objinspstrconsts.oisobject
+msgid "Object"
+msgstr "Nesne"
+
+#: objinspstrconsts.oisobjectinspector
+msgid "Object Inspector"
+msgstr "Nesne denetçisi"
+
+#: objinspstrconsts.oisok
+msgid "&OK"
+msgstr "&TAMAM"
+
+#: objinspstrconsts.oisok2
+msgid "Ok"
+msgstr "Tamam"
+
+#: objinspstrconsts.oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr "Maske dosyası aç (*.dem)"
+
+#: objinspstrconsts.oisoptions
+msgid "Options"
+msgstr "Seçenekler"
+
+#: objinspstrconsts.oisorderbackone
+msgid "Back One"
+msgstr "Bir geri"
+
+#: objinspstrconsts.oisorderforwardone
+msgid "Forward One"
+msgstr "Bir İleri"
+
+#: objinspstrconsts.oisordermovetoback
+msgid "Move to Back"
+msgstr "Geri Taşı"
+
+#: objinspstrconsts.oisordermovetofront
+msgid "Move to Front"
+msgstr "Öne Taşı"
+
+#: objinspstrconsts.oispages
+msgid "Pages"
+msgstr "Sayfalar"
+
+#: objinspstrconsts.oispageseditordialog
+msgid "Pages Editor"
+msgstr "Sayfa editörü"
+
+#: objinspstrconsts.oispastecomponents
+msgctxt "objinspstrconsts.oispastecomponents"
+msgid "&Paste"
+msgstr "&Yapıştır"
+
+#: objinspstrconsts.oispeopenimagefile
+msgid "Open image file"
+msgstr "Resim dosyası aç"
+
+#: objinspstrconsts.oispepicture
+msgid "Picture"
+msgstr "Resim"
+
+#: objinspstrconsts.oispesaveimageas
+msgid "Save image as"
+msgstr "Resmi farklı kaydet"
+
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr "Bir tuşa basın...."
+
+#: objinspstrconsts.oispressakeyegctrlp
+msgid "You can press e.g. Ctrl+P ..."
+msgstr "Örneğin Ctrl+P tuşuna basabilirsiniz...."
+
+#: objinspstrconsts.oisproperties
+msgid "Properties"
+msgstr "Özellikler"
+
+#: objinspstrconsts.oispropertiesof
+#, object-pascal-format
+msgid "Properties of %s"
+msgstr "Özellikleri %s"
+
+#: objinspstrconsts.oisrecord
+msgid "Record"
+msgstr "Kayıt"
+
+#: objinspstrconsts.oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr "Favorilerden kaldır"
+
+#: objinspstrconsts.oisrename
+msgid "Rename"
+msgstr "Yeniden Adlandır"
+
+#: objinspstrconsts.oisrenamepage
+msgid "Rename Page"
+msgstr "Sayfayı yeniden adlandır"
+
+#: objinspstrconsts.oisrestricted
+msgid "Restricted"
+msgstr "Kısıtlı"
+
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr "Miras alınana geri dön"
+
+#: objinspstrconsts.oissamplemasks
+msgid "Sample Masks:"
+msgstr "Örnek Maske:"
+
+#: objinspstrconsts.oissave
+msgid "&Save"
+msgstr "&Kaydet"
+
+#: objinspstrconsts.oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "Değişmez Karakterleri Kaydet"
+
+#: objinspstrconsts.oissavepicture
+msgid "Save picture"
+msgstr "Resmi kaydet"
+
+#: objinspstrconsts.oisselectafile
+msgid "Select a file"
+msgstr "Dosyayı seçin"
+
+#: objinspstrconsts.oisselectall
+msgid "&Select all"
+msgstr "He&psini seç"
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
+msgstr "Tüm alanları seç"
+
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr "Seçilmiş kontrol"
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr "Seçilmiş kontroller"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr "&Seçilmiş Özellikler"
+
+#: objinspstrconsts.oisselectshortcut
+msgid "Select short cut"
+msgstr "Kısayol seç"
+
+#: objinspstrconsts.oisset
+msgid "Set"
+msgstr "Ayarla"
+
+#: objinspstrconsts.oissetmaxconstraints
+#, object-pascal-format
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr "Ayarla Max Yükseklik=%d, Max Genişlik=%d"
+
+#: objinspstrconsts.oissetmaxconstraintshint
+msgid "Use current size as Max Constraints"
+msgstr "Geçerli boyutu Maksimum Sınırlar olarak kullan"
+
+#: objinspstrconsts.oissetminconstraints
+#, object-pascal-format
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr "Ayarla Min Yükseklik=%d, Min Genişlik=%d"
+
+#: objinspstrconsts.oissetminconstraintshint
+msgid "Use current size as Min Constraints"
+msgstr "Geçerli boyutu Minimum Sınırlar olarak kullan"
+
+#: objinspstrconsts.oissettodefault
+#, object-pascal-format
+msgid "Set to default: %s"
+msgstr "Varsayılan olarak ayarla :%s"
+
+#: objinspstrconsts.oissettodefaulthint
+msgid "Set property value to Default"
+msgstr "Özellik değerini Varsayılan olarak ayarla"
+
+#: objinspstrconsts.oisshowalloutputlines
+msgid "Show all output lines"
+msgstr "Tüm çıktı satırlarını göster"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr "Sınıfları göster"
+
+#: objinspstrconsts.oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr "Bileşen ağacını göster"
+
+#: objinspstrconsts.oisshowhints
+msgid "Show Hints"
+msgstr "İpuçlarını Göster"
+
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr "Bilgi kutusunu göster"
+
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show Status Bar"
+msgstr "Durum Çubuğunu Göster"
+
+#: objinspstrconsts.oissort
+msgid "Sort"
+msgstr "Sırala"
+
+#: objinspstrconsts.oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr "Standart Eylem Sınıfları"
+
+#: objinspstrconsts.oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr "Mevcut Aksiyon Sınıfları:"
+
+#: objinspstrconsts.oisstring
+msgid "String"
+msgstr "String"
+
+#: objinspstrconsts.oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "String Düzenleme Dialoğu"
+
+#: objinspstrconsts.oistdactcolorselect1headline
+msgid "Select &Color ..."
+msgstr "Re&nk seç...."
+
+#: objinspstrconsts.oistdactcolorselecthint
+msgid "Color Select"
+msgstr "Renk seç"
+
+#: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
+msgid "Cancel"
+msgstr "İptal"
+
+#: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
+msgid "&Cancel"
+msgstr "İptal"
+
+#: objinspstrconsts.oistdactdatasetdeleteheadline
+msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
+msgid "&Delete"
+msgstr "&Sil"
+
+#: objinspstrconsts.oistdactdatasetdeletehint
+msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
+msgid "Delete"
+msgstr "Sil"
+
+#: objinspstrconsts.oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "&Düzenle"
+
+#: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
+msgid "Edit"
+msgstr "Düzenle"
+
+#: objinspstrconsts.oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "&İlk"
+
+#: objinspstrconsts.oistdactdatasetfirsthint
+msgid "First"
+msgstr "İlk"
+
+#: objinspstrconsts.oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "&Ekle"
+
+#: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
+msgid "Insert"
+msgstr "Ekle"
+
+#: objinspstrconsts.oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "&Son"
+
+#: objinspstrconsts.oistdactdatasetlasthint
+msgid "Last"
+msgstr "Son"
+
+#: objinspstrconsts.oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "&Sonraki"
+
+#: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
+msgid "Next"
+msgstr "Sonraki"
+
+#: objinspstrconsts.oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "&Gönder"
+
+#: objinspstrconsts.oistdactdatasetposthint
+msgid "Post"
+msgstr "Gönder"
+
+#: objinspstrconsts.oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "&Önceki"
+
+#: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
+msgid "Prior"
+msgstr "Önceki"
+
+#: objinspstrconsts.oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "&Yenile"
+
+#: objinspstrconsts.oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "Yenile"
+
+#: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
+msgid "&Copy"
+msgstr "&Kopyala"
+
+#: objinspstrconsts.oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr "Ctrl+C"
+
+#: objinspstrconsts.oistdacteditcopyshorthint
+msgid "Copy"
+msgstr "Kopyala"
+
+#: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
+msgid "Cu&t"
+msgstr "K&es"
+
+#: objinspstrconsts.oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr "Ctrl+X"
+
+#: objinspstrconsts.oistdacteditcutshorthint
+msgid "Cut"
+msgstr "Kes"
+
+#: objinspstrconsts.oistdacteditdeleteheadline
+msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
+msgid "&Delete"
+msgstr "&Sil"
+
+#: objinspstrconsts.oistdacteditdeleteshortcut
+msgid "Del"
+msgstr "Sil"
+
+#: objinspstrconsts.oistdacteditdeleteshorthint
+msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
+msgid "Delete"
+msgstr "Sil"
+
+#: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
+msgid "&Paste"
+msgstr "&Yapıştır"
+
+#: objinspstrconsts.oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr "Ctrl+V"
+
+#: objinspstrconsts.oistdacteditpasteshorthint
+msgid "Paste"
+msgstr "Yapıştır"
+
+#: objinspstrconsts.oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "He&psini seç"
+
+#: objinspstrconsts.oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr "Ctrl+A"
+
+#: objinspstrconsts.oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Hepsini seç"
+
+#: objinspstrconsts.oistdacteditundoheadline
+msgid "&Undo"
+msgstr "&Geri"
+
+#: objinspstrconsts.oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr "Ctrl+Z"
+
+#: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
+msgid "Undo"
+msgstr "Geri"
+
+#: objinspstrconsts.oistdactfileexitheadline
+msgid "E&xit"
+msgstr "&Çıkış"
+
+#: objinspstrconsts.oistdactfileexithint
+msgid "Exit"
+msgstr "Çıkış"
+
+#: objinspstrconsts.oistdactfileopenheadline
+msgid "&Open ..."
+msgstr "&Aç ..."
+
+#: objinspstrconsts.oistdactfileopenhint
+msgctxt "objinspstrconsts.oistdactfileopenhint"
+msgid "Open"
+msgstr "Aç"
+
+#: objinspstrconsts.oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr "Ctrl+O"
+
+#: objinspstrconsts.oistdactfileopenwithheadline
+msgid "Open with ..."
+msgstr "Birlikte aç..."
+
+#: objinspstrconsts.oistdactfileopenwithhint
+msgid "Open with"
+msgstr "Birlikte aç"
+
+#: objinspstrconsts.oistdactfilesaveasheadline
+msgid "Save &As ..."
+msgstr "&Farklı kaydet ..."
+
+#: objinspstrconsts.oistdactfilesaveashint
+msgid "Save As"
+msgstr "Farklı kaydet"
+
+#: objinspstrconsts.oistdactfonteditheadline
+msgid "Select &Font ..."
+msgstr "Yaz&ıtipi seç..."
+
+#: objinspstrconsts.oistdactfontedithint
+msgid "Font Select"
+msgstr "Yazıtipi seç"
+
+#: objinspstrconsts.oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "&İçerik"
+
+#: objinspstrconsts.oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "&Yardım İçeriği"
+
+#: objinspstrconsts.oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "&Yardımda Yardım"
+
+#: objinspstrconsts.oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "Yardımda Yardım"
+
+#: objinspstrconsts.oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "Başlık &ara"
+
+#: objinspstrconsts.oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "Başlık ara"
+
+#: objinspstrconsts.oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr "İlk&ini bul"
+
+#: objinspstrconsts.oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr "İlkini bul"
+
+#: objinspstrconsts.oistdactsearchfindheadline
+msgid "&Find ..."
+msgstr "&Bul ..."
+
+#: objinspstrconsts.oistdactsearchfindhint
+msgid "Find"
+msgstr "Bul"
+
+#: objinspstrconsts.oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr "&Sonrakini bul"
+
+#: objinspstrconsts.oistdactsearchfindnexthint
+msgid "Find next"
+msgstr "Sonrakini Bul"
+
+#: objinspstrconsts.oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr "F3"
+
+#: objinspstrconsts.oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr "Ctrl+F"
+
+#: objinspstrconsts.oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr "&Değiştir"
+
+#: objinspstrconsts.oistdactsearchreplacehint
+msgid "Replace"
+msgstr "Değiştir"
+
+#: objinspstrconsts.oistestdialog
+msgid "Test dialog ..."
+msgstr "Test dialoğu ..."
+
+#: objinspstrconsts.oistestinput
+msgid "Test Input"
+msgstr "Test girişi"
+
+#: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
+#, object-pascal-format
+msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "\"%s\" tanımlayıcısı bir yöntem değil. %s Geri almak için İptal düğmesine basın, %s zorlamak için Yoksay düğmesine basın."
+
+#: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
+#, object-pascal-format
+msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "\"%s\" yöntemi bu olayla uyumlu değil (%s). %s Geri almak için İptal düğmesine, %s Zorlamak için Yoksay düğmesine basın."
+
+#: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
+#, object-pascal-format
+msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "\"%s\" yöntemi yayınlanmadı. %s Geri almak için İptal düğmesine, %s zorlamak için Yoksay düğmesine basın."
+
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+#, object-pascal-format
+msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
+msgstr "\"%s\" denetiminin üst öğesi \"%s\" yeni üst öğe ile değiştirilemiyor. %s%s"
+
+#: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
+msgid "Undo"
+msgstr "Geri"
+
+#: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: objinspstrconsts.oisunselectall
+msgid "&Unselect all"
+msgstr "&Tüm seçimleri kaldır"
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
+msgstr "Tüm seçimleri kaldır"
+
+#: objinspstrconsts.oisvalue
+msgid "Value:"
+msgstr "Değer:"
+
+#: objinspstrconsts.oisvariant
+msgid "Variant"
+msgstr "Variant"
+
+#: objinspstrconsts.oisviewrestrictedproperties
+msgid "View restricted properties"
+msgstr "Sınırlı özellikleri görüntüle"
+
+#: objinspstrconsts.oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
+msgstr "Genel widget kümesi kısıtlamaları: "
+
+#: objinspstrconsts.oisword
+msgid "Word"
+msgstr "Word"
+
+#: objinspstrconsts.oiszorder
+msgid "Z-order"
+msgstr "Z-sırası"
+
+#: objinspstrconsts.pefilter
+msgid "Filter"
+msgstr "Filtre"
+
+#: objinspstrconsts.pefiltereditor
+msgid "Filter editor"
+msgstr "Filtre düzenleyici"
+
+#: objinspstrconsts.pefiltername
+msgid "Filter name"
+msgstr "Filtre adı"
+
+#: objinspstrconsts.pirsunit
+msgid "Pascal unit"
+msgstr "Pascal birimi"
+
+#: objinspstrconsts.rscdalignment
+msgid "Alignment"
+msgstr "Hizalama"
+
+#: objinspstrconsts.rscdautosize
+msgid "Auto Size"
+msgstr "Otomatik boyut"
+
+#: objinspstrconsts.rscdcaption
+msgid "Caption"
+msgstr "Başlık"
+
+#: objinspstrconsts.rscdcolumneditor
+msgid "Column Editor"
+msgstr "Sütun editörü"
+
+#: objinspstrconsts.rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr "Geçersiz numara değeri"
+
+#: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
+msgid "Left"
+msgstr "Sol"
+
+#: objinspstrconsts.rscdmovedown
+msgid "Move down"
+msgstr "Aşağı taşı"
+
+#: objinspstrconsts.rscdmoveup
+msgid "Move up"
+msgstr "Yukarı Taşı"
+
+#: objinspstrconsts.rscdok
+msgctxt "objinspstrconsts.rscdok"
+msgid "OK"
+msgstr "TAMAM"
+
+#: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
+msgid "Right"
+msgstr "Sağ"
+
+#: objinspstrconsts.rscdvisible
+msgid "Visible"
+msgstr "Görünürlük"
+
+#: objinspstrconsts.rscdwidth
+msgid "Width"
+msgstr "Genişlik"
+
+#: objinspstrconsts.sccshceditsections
+msgid "Sections Editor ..."
+msgstr "Bölüm Editörü ..."
+
+#: objinspstrconsts.sccsiledtadd
+msgid "&Add ..."
+msgstr "&Ekle ..."
+
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr "Daha fazla çözünürlük ekle ..."
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr "Yeni çözünürlük ..."
+
+#: objinspstrconsts.sccsiledtaddsliced
+msgid "Add sliced ..."
+msgstr "Dilim ekle ..."
+
+#: objinspstrconsts.sccsiledtaddslicediconerror
+msgid "Adding sliced icons is not supported."
+msgstr "Dilimlenmiş simgeler ekleme desteklenmez."
+
+#: objinspstrconsts.sccsiledtadjustment
+msgid "Adjustment"
+msgstr "Ayarlama"
+
+#: objinspstrconsts.sccsiledtapply
+msgctxt "objinspstrconsts.sccsiledtapply"
+msgid "&Apply"
+msgstr "&Uygula"
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
+msgstr "Varsayılan çözünürlük silinemiyor."
+
+#: objinspstrconsts.sccsiledtcannotslice
+msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
+msgstr "Kaynak görüntü boyutu, ImageList'in Genişlik ve Yüksekliğinin tam sayısı kadar olmalıdır."
+
+#: objinspstrconsts.sccsiledtcaption
+msgid "ImageList Editor"
+msgstr "ImageList Düzenleyici"
+
+#: objinspstrconsts.sccsiledtcenter
+msgid "Center"
+msgstr "Ortala"
+
+#: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
+msgid "&Clear"
+msgstr "&Temizle"
+
+#: objinspstrconsts.sccsiledtcrop
+msgid "Crop"
+msgstr "Kırp"
+
+#: objinspstrconsts.sccsiledtdelete
+msgctxt "objinspstrconsts.sccsiledtdelete"
+msgid "&Delete"
+msgstr "&Sil"
+
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr "Çözünürlüğü sil...."
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr "Silinecek çözünürlüğü seçin."
+
+#: objinspstrconsts.sccsiledtgrplcaption
+msgid "Images"
+msgstr "Resimler"
+
+#: objinspstrconsts.sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr "Seçilen Resim"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr "Yeni çözünürlüğün görüntü genişliği:"
+
+#: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
+msgid "Move D&own"
+msgstr "Aşağ&ıya taşı"
+
+#: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
+msgid "Move &Up"
+msgstr "Yukarı &Taşı"
+
+#: objinspstrconsts.sccsiledtnone
+msgid "None"
+msgstr "Yok"
+
+#: objinspstrconsts.sccsiledtopendialog
+msgid "Add Images"
+msgstr "Resim ekle"
+
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr "Yeni resim"
+
+#: objinspstrconsts.sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr "Transparent Renk:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr "&Değiştir ..."
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
+msgstr "Tüm çözünürlükleri değiştir ..."
+
+#: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
+msgid "&Save ..."
+msgstr "&Kaydet.."
+
+#: objinspstrconsts.sccsiledtsaveall
+msgid "Save All ..."
+msgstr "Hepsini kaydet.."
+
+#: objinspstrconsts.sccsiledtsavedialog
+msgid "Save Image"
+msgstr "Resmi kaydet"
+
+#: objinspstrconsts.sccsiledtstretch
+msgid "Stretch"
+msgstr "Uzat"
+
+#: objinspstrconsts.sccslvcoledt
+msgid "Edit Columns ..."
+msgstr "Sütünları düzenle..."
+
+#: objinspstrconsts.sccslvedt
+msgctxt "objinspstrconsts.sccslvedt"
+msgid "Edit Items ..."
+msgstr "Öğeleri düzenle..."
+
+#: objinspstrconsts.sccslvedtapply
+msgctxt "objinspstrconsts.sccslvedtapply"
+msgid "Apply"
+msgstr "Uygula"
+
+#: objinspstrconsts.sccslvedtcaption
+msgid "ListView Items Editor"
+msgstr "ListView Öğe düzenleyici"
+
+#: objinspstrconsts.sccslvedtdelete
+msgctxt "objinspstrconsts.sccslvedtdelete"
+msgid "Delete"
+msgstr "Sil"
+
+#: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
+msgid "Items"
+msgstr "Öğeler"
+
+#: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
+msgid "Item Properties"
+msgstr "Öğe Özellikleri"
+
+#: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
+msgid "Item"
+msgstr "Öğe"
+
+#: objinspstrconsts.sccslvedtlabelcaption
+msgid "Caption:"
+msgstr "Başlık:"
+
+#: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
+msgid "Image Index:"
+msgstr "Resim Dizini:"
+
+#: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
+msgid "State Index:"
+msgstr "Durum dizini:"
+
+#: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
+msgid "New Item"
+msgstr "Yeni öğe"
+
+#: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
+msgid "New SubItem"
+msgstr "Yeni alt öğe"
+
+#: objinspstrconsts.sccsmaskeditor
+msgid "Edit Mask Editor ..."
+msgstr "Maske düzenleyici...."
+
+#: objinspstrconsts.sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr "Panel düzenleyici..."
+
+#: objinspstrconsts.sccssgedt
+msgid "Edit StringGrid ..."
+msgstr "StringGrid Düzenle..."
+
+#: objinspstrconsts.sccssgedtapply
+msgctxt "objinspstrconsts.sccssgedtapply"
+msgid "Apply"
+msgstr "Uygula"
+
+#: objinspstrconsts.sccssgedtcaption
+msgid "StringGrid Editor"
+msgstr "StringGrid Düzenleyici"
+
+#: objinspstrconsts.sccssgedtclean
+msgid "Clean"
+msgstr "Temizle"
+
+#: objinspstrconsts.sccssgedtgrp
+msgid "String Grid"
+msgstr "String Grid"
+
+#: objinspstrconsts.sccssgedtload
+msgid "Load ..."
+msgstr "Yükle..."
+
+#: objinspstrconsts.sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Taşı Satır/Sütun"
+
+#: objinspstrconsts.sccssgedtopendialog
+msgctxt "objinspstrconsts.sccssgedtopendialog"
+msgid "Open"
+msgstr "Aç"
+
+#: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
+msgid "Save ..."
+msgstr "Kaydet ..."
+
+#: objinspstrconsts.sccssgedtsavedialog
+msgctxt "objinspstrconsts.sccssgedtsavedialog"
+msgid "Save"
+msgstr "Kaydet"
+
+#: objinspstrconsts.sccstredt
+msgctxt "objinspstrconsts.sccstredt"
+msgid "Edit Items ..."
+msgstr "Öğeyi düzenle...."
+
+#: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
+msgid "Apply"
+msgstr "Uygula"
+
+#: objinspstrconsts.sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr "TreeView Öğe düzenleyici"
+
+#: objinspstrconsts.sccstredtdelete
+msgctxt "objinspstrconsts.sccstredtdelete"
+msgid "Delete"
+msgstr "Sil"
+
+#: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
+msgid "Items"
+msgstr "Öğeler"
+
+#: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
+msgid "Item Properties"
+msgstr "Öğe Özellikleri"
+
+#: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
+msgid "Item"
+msgstr "Öğe"
+
+#: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
+msgid "Image Index:"
+msgstr "Resim Dizini:"
+
+#: objinspstrconsts.sccstredtlabelselindex
+msgid "Selected Index:"
+msgstr "Seçilen dizin:"
+
+#: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
+msgid "State Index:"
+msgstr "Durum dizini:"
+
+#: objinspstrconsts.sccstredtlabeltext
+msgid "Text:"
+msgstr "Metin:"
+
+#: objinspstrconsts.sccstredtload
+msgid "Load"
+msgstr "Yükle"
+
+#: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
+msgid "New Item"
+msgstr "Yeni öğe"
+
+#: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
+msgid "New SubItem"
+msgstr "Yeni alt öğe"
+
+#: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
+msgid "Open"
+msgstr "Aç"
+
+#: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
+msgid "Save"
+msgstr "Kaydet"
+
+#: objinspstrconsts.sccstredtsavedialog
+msgctxt "objinspstrconsts.sccstredtsavedialog"
+msgid "Save"
+msgstr "Kaydet"
+
+#: objinspstrconsts.srgrabkey
+msgid "Grab key"
+msgstr "Tutma tuşu"
+
+#: objinspstrconsts.s_addassingle
+msgid "Add as single"
+msgstr "Bir tane ekle"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr "Resim listesini silmek istediğinize emin misiniz?"
+
+#: objinspstrconsts.s_splitimage
+msgid "Split image"
+msgstr "Resmi böl"
+
+#: objinspstrconsts.s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr "Resmi bölmek istediğinizden eminmisiniz?"
+
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr "Yeni buton"
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr "Yeni CheckButton"
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr "Yeni Bölücü"
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr "Yeni Ayırıcı"
+
+#: objinspstrconsts.tccesaddtab
+msgid "Add tab"
+msgstr "Sekme ekle"
+
+#: objinspstrconsts.tccesdeletetab
+msgid "Delete tab"
+msgstr "Sekmeyi sil"
+
+#: objinspstrconsts.tccesinserttab
+msgid "Insert tab"
+msgstr "Sekme ekle"
+
+#: objinspstrconsts.tccesmovetableft
+msgid "Move tab left"
+msgstr "Sekmeyi sola taşı"
+
+#: objinspstrconsts.tccesmovetabright
+msgid "Move tab right"
+msgstr "Sekmeyi sağa taşı"
+

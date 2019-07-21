@@ -1,0 +1,141 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: printer4lazstrconst.p4lrsadvanced
+msgid "Advanced"
+msgstr "Gelişmiş"
+
+#: printer4lazstrconst.p4lrsallpages
+msgid "All"
+msgstr "Tümü"
+
+#: printer4lazstrconst.p4lrsbanners
+msgid "Banners"
+msgstr "Afişler"
+
+#: printer4lazstrconst.p4lrsbuttonlessarrow
+msgid "<< Less"
+msgstr "&Daha azı <<"
+
+#: printer4lazstrconst.p4lrsbuttonmorearrow
+msgid "More >>"
+msgstr "&Daha fazlası >>"
+
+#: printer4lazstrconst.p4lrscancel
+msgid "Cancel"
+msgstr "İptal"
+
+#: printer4lazstrconst.p4lrsend
+msgid "End"
+msgstr "Son"
+
+#: printer4lazstrconst.p4lrsgeneral
+msgid "General"
+msgstr "Genel"
+
+#: printer4lazstrconst.p4lrsjobstateaccepting
+msgid "(Accepting jobs)"
+msgstr "(Kabul edilen işler)"
+
+#: printer4lazstrconst.p4lrsjobstateprinting
+msgid "Printing"
+msgstr "Yazılıyor"
+
+#: printer4lazstrconst.p4lrsjobstateready
+msgid "Ready"
+msgstr "Hazır"
+
+#: printer4lazstrconst.p4lrsjobstaterejecting
+msgid "(Rejecting jobs)"
+msgstr "(Rededilen İşler)"
+
+#: printer4lazstrconst.p4lrsjobstatestopped
+msgid "Stopped"
+msgstr "Durduruldu"
+
+#: printer4lazstrconst.p4lrslandscape
+msgid "Landscape"
+msgstr "Yatay"
+
+#: printer4lazstrconst.p4lrsmargins
+msgid "Margins"
+msgstr "Kenar boşlukları"
+
+#: printer4lazstrconst.p4lrsnodefaultprinter
+msgid "No default printer found."
+msgstr "Varsayılan yazıcı bulunamadı."
+
+#: printer4lazstrconst.p4lrsok
+msgid "Ok"
+msgstr "Tamam"
+
+#: printer4lazstrconst.p4lrsorientation
+msgid "Orientation"
+msgstr "Oryantasyon"
+
+#: printer4lazstrconst.p4lrspageeven
+msgid "Even"
+msgstr "Üstelik"
+
+#: printer4lazstrconst.p4lrspageodd
+msgid "Odd"
+msgstr "Garip"
+
+#: printer4lazstrconst.p4lrspagespersheet
+msgid "Pages per sheet"
+msgstr "Yaprak başına sayfa"
+
+#: printer4lazstrconst.p4lrspapersize
+msgid "Paper size"
+msgstr "Kağıt boyutu"
+
+#: printer4lazstrconst.p4lrspapersource
+msgid "Paper source"
+msgstr "Kağıt kaynağı"
+
+#: printer4lazstrconst.p4lrspapertype
+msgid "Paper type"
+msgstr "Kağıt tipi"
+
+#: printer4lazstrconst.p4lrsportrait
+msgid "Portrait"
+msgstr "Portre"
+
+#: printer4lazstrconst.p4lrsprinterproperties
+msgid "Printer properties"
+msgstr "Yazıcı özellikleri"
+
+#: printer4lazstrconst.p4lrsresolution
+msgid "Resolution"
+msgstr "Çözüm"
+
+#: printer4lazstrconst.p4lrsreverselandscape
+msgid "Reverse landscape"
+msgstr "Ters yatay"
+
+#: printer4lazstrconst.p4lrsreverseportrait
+msgid "Reverse portrait"
+msgstr "Ters portre"
+
+#: printer4lazstrconst.p4lrsshortunitsinches
+msgid "(inches)"
+msgstr "(inches)"
+
+#: printer4lazstrconst.p4lrsshortunitsmm
+msgid "(mm)"
+msgstr "(mm)"
+
+#: printer4lazstrconst.p4lrsstart
+msgid "Start"
+msgstr "Başlat"
+

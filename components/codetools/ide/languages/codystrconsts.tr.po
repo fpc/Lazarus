@@ -1,0 +1,896 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: codystrconsts.crsaddassignmethod
+msgid "Add Assign Method"
+msgstr "Atama Yöntemi Ekle"
+
+#: codystrconsts.crsaddassignmethod2
+msgid "Add Assign Method ..."
+msgstr "Atama Yöntemi Ekle..."
+
+#: codystrconsts.crsaddawithblock
+msgid "Add a \"With\" Block"
+msgstr "\"Birlikte\" bloğu Ekle"
+
+#: codystrconsts.crsaddunittoimplementationusessection
+msgctxt "codystrconsts.crsaddunittoimplementationusessection"
+msgid "Add unit to implementation uses section"
+msgstr "Implementation uses bölümüne birim ekle"
+
+#: codystrconsts.crsaddwithblock
+msgid "Add \"With\" Block"
+msgstr "\"With\" Bloğu ekle"
+
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr "Zaten tanımlı"
+
+#: codystrconsts.crsalreadydefinedat
+#, object-pascal-format
+msgid "Already defined at %s"
+msgstr "%s 'de zaten tanımlanmış"
+
+#: codystrconsts.crsandmoreidentifiers
+#, object-pascal-format
+msgid "... and %s more identifiers"
+msgstr "... ve %s daha fazla tanımlayıcılar"
+
+#: codystrconsts.crsany
+msgid "Any"
+msgstr "Herhangi"
+
+#: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
+msgstr "Lazarus IDE için bir pencere. Kod Gezgini veya FPDoc Düzenleyicisi gibi yerleştirilebilir. Bu aynı zamanda Görünüm menüsünde bir menü öğesi ve bir kısa yol oluşturur."
+
+#: codystrconsts.crsbtncancel
+msgid "Cancel"
+msgstr "İptal"
+
+#: codystrconsts.crsbtnok
+msgid "&OK"
+msgstr "&TAMAM"
+
+#: codystrconsts.crsbyfpccfg
+msgid "by fpc.cfg"
+msgstr "fpc.cfg"
+
+#: codystrconsts.crscamaddassignmethodtoclass
+#, object-pascal-format
+msgid "Add Assign method to class %s"
+msgstr "%s sınıfına Assign yöntemi ekle"
+
+#: codystrconsts.crscamcallinherited
+msgid "Call inherited"
+msgstr "Miras alınan çağrı"
+
+#: codystrconsts.crscamcallinheritedonlyifwrongclass
+msgid "Call inherited only if wrong class"
+msgstr "Çağrı sadece yanlış sınıf varsa"
+
+#: codystrconsts.crscamcursorisnotinapascalclassdeclaration
+msgid "cursor is not in a pascal class declaration"
+msgstr "imleç pascal sınıf bildiriminde değil"
+
+#: codystrconsts.crscamexistsalready
+msgid "exists already"
+msgstr "zaten var"
+
+#: codystrconsts.crscaminherited
+msgid "Inherited:"
+msgstr "Miras:"
+
+#: codystrconsts.crscaminvalididentifier
+msgid "invalid identifier"
+msgstr "geçersiz Tanımlayıcı"
+
+#: codystrconsts.crscammethod
+msgid "Method:"
+msgstr "Yöntem:"
+
+#: codystrconsts.crscammethodname
+msgid "Method name:"
+msgstr "Yöntem adı:"
+
+#: codystrconsts.crscamnewmethod
+msgid "New method:"
+msgstr "Yeni yöntem:"
+
+#: codystrconsts.crscamoverride
+msgid "Override"
+msgstr "Geçersiz Kıl"
+
+#: codystrconsts.crscamparametername
+msgid "Parameter name:"
+msgstr "Parametre adı:"
+
+#: codystrconsts.crscamparametertype
+msgid "Parameter type:"
+msgstr "Parametre tipi:"
+
+#: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
+msgstr "Lütfen kaynak düzenleyicinin imlecini \"Assign yöntemi\" komutunu çağırmadan önce bir pascal sınıf bildirgesine yerleştirin."
+
+#: codystrconsts.crscamprivate
+msgid "private"
+msgstr "özel"
+
+#: codystrconsts.crscamproperty
+#, object-pascal-format
+msgid "%s property"
+msgstr "%s özellikler"
+
+#: codystrconsts.crscamprotected
+msgid "protected"
+msgstr "korumalı"
+
+#: codystrconsts.crscampublic
+msgid "public"
+msgstr "genel"
+
+#: codystrconsts.crscampublished
+msgid "published"
+msgstr "yayınlanan"
+
+#: codystrconsts.crscamselectmemberstoassign
+msgid "Select members to assign:"
+msgstr "Atanacak üyeleri seçin:"
+
+#: codystrconsts.crscamthereisnoinheritedmethod
+msgid "There is no inherited method."
+msgstr "Miras alınan hiçbir yöntem yoktur."
+
+#: codystrconsts.crscamvar
+#, object-pascal-format
+msgid "%s var"
+msgstr "%s var"
+
+#: codystrconsts.crscamvisibility
+msgid "?visibility?"
+msgstr "?görünürlük?"
+
+#: codystrconsts.crscamwrittenbyproperty
+#, object-pascal-format
+msgid "%s, written by property %s"
+msgstr "%s, %s özelliği ile yazılmış"
+
+#: codystrconsts.crscaretoutsideofcode
+msgid "Caret outside of code"
+msgstr "Kod dışında bir düzeltme işareti"
+
+#: codystrconsts.crscheetaheditor
+msgid "Cheetah Editor"
+msgstr "Cheetah Editor"
+
+#: codystrconsts.crsclose
+msgid "&Close"
+msgstr "&Kapat"
+
+#: codystrconsts.crscloseotherpackageandopennew
+msgid "Close other package and open new"
+msgstr "Diğer paketi kapatın ve yeni açın"
+
+#: codystrconsts.crscodebuffers
+msgid "CodeBuffers"
+msgstr "Kod Tamponları"
+
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr "Kod Düğüm Bilgisi"
+
+#: codystrconsts.crscodyfindoverloads
+msgid "Cody - Find Overloads"
+msgstr "Cody - Aşırı Yük Bul"
+
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Identifier Dictionary"
+msgstr "Tanımlayıcı Sözlüğü"
+
+#: codystrconsts.crscogeneral
+msgctxt "codystrconsts.crscogeneral"
+msgid "General"
+msgstr "Genel"
+
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr "Uygunluk"
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr "uyumlu"
+
+#: codystrconsts.crsconfigurenewidewindow
+msgid "Configure new IDE window"
+msgstr "Yeni IDE penceresini yapılandır"
+
+#: codystrconsts.crscontains
+msgid "Contains"
+msgstr "Içerir"
+
+#: codystrconsts.crscontinue
+msgid "Continue"
+msgstr "Devam et"
+
+#: codystrconsts.crscopydeclarationtoclipboard
+msgid "Copy declaration to Clipboard"
+msgstr "Deklarasyonu Pano'ya kopyala"
+
+#: codystrconsts.crscount
+msgid "Count"
+msgstr "Sayısı"
+
+#: codystrconsts.crscousespath
+msgctxt "codystrconsts.crscousespath"
+msgid "Uses path"
+msgstr "Uses yolu"
+
+#: codystrconsts.crscuallfiles
+#, object-pascal-format
+msgid "%s|All files (%s)|%s"
+msgstr "%s|Tüm dosyalar (%s)|%s"
+
+#: codystrconsts.crscupascalpaspppaspp
+msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
+msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
+
+#: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
+msgstr "Lütfen kaynak düzenleyicinin imlecini geçersiz kılınan bir yöntemin uygulamasına yerleştirin."
+
+#: codystrconsts.crscuselectfiletoinsertatcursor
+msgid "Select file to insert at cursor"
+msgstr "İmleç içine eklenecek dosyayı seçin"
+
+#: codystrconsts.crscutdeclarationtoclipboard
+msgid "Cut declaration to Clipboard"
+msgstr "Panoya deklarasyonu kes"
+
+#: codystrconsts.crscuthefileseemstobeabinaryproceed
+msgid "The file seems to be a binary. Proceed?"
+msgstr "Dosya bir ikili gibi görünüyor. İlerlensin mi?"
+
+#: codystrconsts.crscuunabletoloadfile
+#, object-pascal-format
+msgid "Unable to load file \"%s\"%s%s"
+msgstr "\"%s\" dosyası yüklenemiyor %s%s"
+
+#: codystrconsts.crscuwarning
+msgid "Warning"
+msgstr "Dikkat"
+
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr "Hata"
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr "Lütfen kaynak düzenleyicinin imlecini bir With değişkenine yerleştirin."
+
+#: codystrconsts.crsdeclarevariable
+msgid "Declare Variable"
+msgstr "Değişken bildir"
+
+#: codystrconsts.crsdeclarevariable2
+msgid "Declare Variable ..."
+msgstr "Değişken bildir ..."
+
+#: codystrconsts.crsdeclarevariable3
+#, object-pascal-format
+msgid "Declare variable \"%s\""
+msgstr "\"%s\" değişkenini bildir"
+
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr "Paketi sil?"
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr "Birimi Sil?"
+
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr "Uzaklık"
+
+#: codystrconsts.crsdvisakeyword
+#, object-pascal-format, fuzzy, badformat
+msgid "\"%s\" is a keyword."
+msgstr "\"% s\" bir anahtar kelimedir."
+
+#: codystrconsts.crserror
+#, object-pascal-format
+msgid "Error: %s"
+msgstr "Hata: %s"
+
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr "Hata: imleç proje biriminde değil"
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr "Hata: Prosedür çağrısı veya bildiriminde kaynak editörüne ihtiyacınız var"
+
+#: codystrconsts.crsexact
+msgid "exact"
+msgstr "kesin"
+
+#: codystrconsts.crsexplodeawithblock
+msgid "Explode a \"With\" Block"
+msgstr "Explode a \"With\" Block"
+
+#: codystrconsts.crsexpression
+msgid "Expression"
+msgstr "İfade"
+
+#: codystrconsts.crsextendunitpath
+msgid "Extend unit path"
+msgstr "Birim yolunu genişlet"
+
+#: codystrconsts.crsfile
+msgid "File"
+msgstr "Dosya"
+
+#: codystrconsts.crsfiledoesnotexistanymore
+#, object-pascal-format
+msgid "File \"%s\" does not exist anymore."
+msgstr "\"%s\" dosyası artık yok."
+
+#: codystrconsts.crsfilenotfound
+msgid "File not found"
+msgstr "Dosya bulunamadı"
+
+#: codystrconsts.crsfilereaderror
+msgid "File read error"
+msgstr "Dosyayı okunamıyor"
+
+#: codystrconsts.crsfilter
+msgid "(Filter)"
+msgstr "(Filtre)"
+
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr "Filtre"
+
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr "GDB geri izleme hattını bulun"
+
+#: codystrconsts.crsfindproceduremethodoverloads
+msgid "Find Procedure/Method Overloads"
+msgstr "Prosedür/Metod Aşırı Yüklerini Bul"
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr "GDB geri izleme kaynağını bulun"
+
+#: codystrconsts.crsflags
+msgid "Flags"
+msgstr "Bayraklar"
+
+#: codystrconsts.crsfpcunitwithoutppu
+msgid "FPC unit without ppu"
+msgstr "Ppu olmadan FPC birimi"
+
+#: codystrconsts.crsframeworks
+msgid "Frameworks"
+msgstr "Çerçeveler"
+
+#: codystrconsts.crsgbytes
+msgid "Gbytes"
+msgstr "Gbytes"
+
+#: codystrconsts.crshelp
+msgid "&Help"
+msgstr "&Yardım"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr "Soyut yöntem ve sınıf arayüzleri yöntemlerini gizle"
+
+#: codystrconsts.crshideunitsofotherprojects
+msgid "Hide units of other projects"
+msgstr "Diğer projelerin birimlerini gizle"
+
+#: codystrconsts.crsideintegration
+msgid "IDE Integration"
+msgstr "IDE Entegrasyonu"
+
+#: codystrconsts.crsidentifiernotfound
+msgid "Identifier not found"
+msgstr "Tanımlayıcı bulunamadı"
+
+#: codystrconsts.crsidentifiernotfoundinunit
+#, object-pascal-format
+msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
+msgstr "\"%s\" tanımlayıcısı \"%s\" biriminde bulunamadı. Belki tanımlayıcı bu platform için mevcut değildir veya tanımlayıcı silinmiştir yada yeniden adlandırılmıştır."
+
+#: codystrconsts.crsidewindowdockable
+msgid "IDE window, dockable"
+msgstr "IDE penceresi, yerleştirilebilir"
+
+#: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
+msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr "Implementation bölümüne tanımlayıcı eklenirse ve gerekli birimin eklenmesi gerekiyorsa, implementation uses bölümüne ekleyin"
+
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr "Eğer kontrol edilmezse liste aynı isimde ve uyumsuz parametre listelerinde de işlem görür."
+
+#: codystrconsts.crsimpossibledependency
+msgid "Impossible dependency"
+msgstr "İmkansız bağımlılık"
+
+#: codystrconsts.crsin
+#, object-pascal-format
+msgid "in \"%s\""
+msgstr "%s içinde"
+
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr "uyumsuz"
+
+#: codystrconsts.crsinimplementation
+msgid "In implementation"
+msgstr "Implementation da"
+
+#: codystrconsts.crsininterface
+msgid "In interface"
+msgstr "Interface de"
+
+#: codystrconsts.crsinsertcallinherited
+msgid "Insert Call Inherited"
+msgstr "Inherited Çağrı Ekle"
+
+#: codystrconsts.crsinsertfileatcursor
+msgid "Insert File Contents at Cursor ..."
+msgstr "İmleç'te Dosya İçeriği Ekle ..."
+
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr "İnt64 kimliği YYYYDDMMhhnnss ekle"
+
+#: codystrconsts.crsjump
+msgid "Jump"
+msgstr "Atla"
+
+#: codystrconsts.crsjumpto
+msgid "&Jump to"
+msgstr "&Atla"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr "Atla"
+
+#: codystrconsts.crskbytes
+msgid "kbytes"
+msgstr "kbytes"
+
+#: codystrconsts.crslinkedfiles
+msgid "Linked files"
+msgstr "Bağlantılı dosyalar"
+
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr "Bağlantı"
+
+#: codystrconsts.crsloaddictionaryafter
+#, object-pascal-format
+msgid "Load dictionary after %s"
+msgstr "%s den sonra sözlüğü yükle"
+
+#: codystrconsts.crslocalvariableof
+#, object-pascal-format
+msgid "Local variable of %s"
+msgstr "%s yerel değişkenleri"
+
+#: codystrconsts.crsmainsourcefile
+#, object-pascal-format
+msgid "Main source file: %s"
+msgstr "Ana kaynak dosyası : %s"
+
+#: codystrconsts.crsmbytes
+msgid "Mbytes"
+msgstr "Mbytes"
+
+#: codystrconsts.crsmemberof
+#, object-pascal-format
+msgid "%s member of %s %s"
+msgstr "%s %s %s üyesi"
+
+#: codystrconsts.crsmenuitemcaption
+msgid "Menu item caption:"
+msgstr "Menü öğesi başlığı:"
+
+#: codystrconsts.crsminutes
+#, object-pascal-format
+msgid "%s minutes"
+msgstr "%s dakika"
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr "eksik ..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr "Ad"
+
+#: codystrconsts.crsnoneselected
+msgid "none selected"
+msgstr "hiçbiri seçilmedi"
+
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr "proje birimlerinde aşırı yükleme bulunamadı"
+
+#: codystrconsts.crsnoproject
+msgid "No project"
+msgstr "Proje yok"
+
+#: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
+msgstr "Not: Formun adı geçerli bir pascal tanımlayıcısı olmalı ve tüm paketleri içeren tüm IDE'de benzersiz olmalıdır. Paketinizin kısaltması ile adı kullanın. \"IDE\", \"Laz\", \"Pkg\" önekleri zaten IDE tarafından kullanılıyor."
+
+#: codystrconsts.crsnounitselected
+msgid "No unit selected"
+msgstr "Seçili birim yok"
+
+#: codystrconsts.crsonclipboard
+msgid "On clipboard"
+msgstr "Panoda"
+
+#: codystrconsts.crsonlydescendantsof
+#, object-pascal-format
+msgid "Only descendants of %s"
+msgstr "Sadece %s torunları"
+
+#: codystrconsts.crsonlymethods
+msgid "Only methods"
+msgstr "Sadece Yöntemler"
+
+#: codystrconsts.crsonlynonmethods
+msgid "Only non methods"
+msgstr "Sadece yöntem olmayanlar"
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
+msgstr "Sadece uyumlu parametrelere sahip prosedürler"
+
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr "Seçenekler"
+
+#: codystrconsts.crsotherobjectfiles
+msgid "Other object files"
+msgstr "Diğer nesne dosyaları"
+
+#: codystrconsts.crsothersharedlibraries
+msgid "Other shared libraries"
+msgstr "Diğer paylaşılan kütüphaneler"
+
+#: codystrconsts.crsotherstaticlibraries
+msgid "Other static libraries"
+msgstr "Diğer statik kütüphaneler"
+
+#: codystrconsts.crspackage
+msgid "Package"
+msgstr "Paket"
+
+#: codystrconsts.crspackage2
+#, object-pascal-format
+msgid "Package: %s"
+msgstr "Paket: %s"
+
+#: codystrconsts.crspackagenotfound
+msgid "Package not found"
+msgstr "Paket bulunamadı"
+
+#: codystrconsts.crspackagenotfounditshouldbein
+#, object-pascal-format
+msgid "Package \"%s\" not found. It should be in \"%s\"."
+msgstr "\"%S\" paketi bulunamadı. \"%S\" içinde olmalı."
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+#, object-pascal-format
+msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
+msgstr "Paketler: %s, Birimler: %s, Tanımlayıcılar: %s%s Veritabanı: %s"
+
+#: codystrconsts.crspackagewithsamename
+msgid "Package with same name"
+msgstr "Aynı isimde paket var"
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
+msgstr "Ayrıştırma hatası"
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
+msgstr "Bir gdb arka izinin satırlarını yapıştırın:"
+
+#: codystrconsts.crspleaseopenaprojectfirst
+msgid "Please open a project first."
+msgstr "Lütfen önce bir proje açın."
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+#, object-pascal-format
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
+msgstr "Lütfen kaynak düzenleyicinin imlecini bir ifadedeki bir tanımlayıcıya yerleştirin. %s Örneğin: %s MyVar: = 3;"
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
+msgstr "Lütfen kaynak editörün imlecini bir bildirimin tanımlayıcısına yerleştirin."
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditor
+msgid "Please select some code in the Source Editor."
+msgstr "Lütfen Kaynak Düzenleyici'de bir kod seçin."
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
+msgstr "Lütfen Kaynak Düzenleyicisi'nde yeni bir \"With\" bloğu için bir kod seçin. İfadesi için bir aday bulunamadı."
+
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr "Lütfen bir yer belirtin"
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr "Lütfen bir tür belirtin"
+
+#: codystrconsts.crsppu
+#, object-pascal-format
+msgid "PPU: %s"
+msgstr "PPU: %s"
+
+#: codystrconsts.crsppufilesofproject
+#, object-pascal-format
+msgid "PPU files of project \"%s\""
+msgstr "\"%s\" projesinin PPU dosyaları"
+
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr "Özel"
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr "Projenin ana kaynak dosyası yok."
+
+#: codystrconsts.crsprojectoutput
+msgid "Project Output"
+msgstr "Proje çıktısı"
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr "Korumalı"
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr "Genel"
+
+#: codystrconsts.crspublished
+msgid "Published"
+msgstr "Yayınlanan"
+
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+#, object-pascal-format
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
+msgstr "Gerçekten paketi veritabanından silmek istiyormusunuz? %s Not: Bu kaynak veya herhangi bir konfigürasyonu değiştirmez. %s%s\"%s\""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+#, object-pascal-format
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr "Gerçekten birimi veritabanından silmek istiyormusunuz? %s Not: Bu kaynak veya herhangi bir konfigürasyonu değiştirmez. %s%s birim: \"%s\""
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
+msgstr "Yenile"
+
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr "İlişkiler:"
+
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr "Rapor"
+
+#: codystrconsts.crssavedictionaryevery
+#, object-pascal-format
+msgid "Save dictionary every %s"
+msgstr "Her %s sözlüğünü kaydet"
+
+#: codystrconsts.crssavedictionarynow
+msgid "Save dictionary now"
+msgstr "Sözlüğü şimdi kaydet"
+
+#: codystrconsts.crssavetofile
+#, object-pascal-format
+msgid "Save to file %s"
+msgstr "Dosyayı kaydet %s"
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
+msgstr "Taranıyor ..."
+
+#: codystrconsts.crsscanningsunits
+#, object-pascal-format
+msgid "Scanning: %s units ..."
+msgstr "Taranıyor: %s birimi ..."
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr "aranıyor...."
+
+#: codystrconsts.crsseconds
+#, object-pascal-format
+msgid "%s seconds"
+msgstr "%s saniye"
+
+#: codystrconsts.crsselectexpression
+msgid "Select expression"
+msgstr "İfade seç"
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools Node Info ..."
+msgstr "Kod Araçları Düğüm Bilgilerini Göster ..."
+
+#: codystrconsts.crsshowcodydict
+#, object-pascal-format
+msgid "Show Cody Dictionary for \"%s\""
+msgstr "\"%s\" için Cody Sözlüğünü göster"
+
+#: codystrconsts.crsshowonlyidentifierscontainingfiltertext
+msgid "Show only identifiers containing filter text"
+msgstr "Yalnızca filtre metni içeren tanımlayıcıları göster"
+
+#: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
+msgid "Show only identifiers starting with filter text"
+msgstr "Show only identifiers starting with filter text"
+
+#: codystrconsts.crsshowunitidentifierdictionary
+msgid "Show Unit / Identifier Dictionary ..."
+msgstr "Birim / Tanımlayıcı Sözlüğünü Göster ..."
+
+#: codystrconsts.crsshowusedppufiles
+msgid "Show Used .ppu Files ..."
+msgstr "Kullanılan .ppu Dosyalarını Göster ..."
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr ".o dosyasının boyutu"
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr ".Ppu dosyasının boyutu"
+
+#: codystrconsts.crssource
+#, object-pascal-format
+msgid "Source: %s"
+msgstr "Kaynak: %s"
+
+#: codystrconsts.crsstarts
+msgid "Starts"
+msgstr "Başlar"
+
+#: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
+msgid "The dictionary is loaded on demand or after this time"
+msgstr "Sözlük istek üzerine veya bu saatten sonra yüklenir"
+
+#: codystrconsts.crsthedictionaryissavedinintervals
+msgid "The dictionary is saved in intervals"
+msgstr "Sözlük aralıklarla kaydedilir"
+
+#: codystrconsts.crstheidentifierisalreadydefined
+#, object-pascal-format
+msgid "The identifier \"%s\" is already defined."
+msgstr "Tanımlayıcı %s zaten tanımlandı."
+
+#: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+#, object-pascal-format
+msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
+msgstr "Aynı ada sahip başka bir paket zaten var.%s Paketi aç: %s%s Yeni paket: %s%s Bir seferde yalnızca bir paket yüklenebilir."
+
+#: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+#, object-pascal-format
+msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
+msgstr "Hedef birim, geçerli birim ile aynı ada sahip.%s Free Pascal bunu desteklemiyor."
+
+#: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+#, object-pascal-format
+msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
+msgstr "\"%s\" %s birimi \"%s\" nin bir parçasıdır. %s Aynı ada sahip başka bir paket kullanamazsınız: %s \"%s\""
+
+#: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
+msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
+msgstr "Bu birim, Serbest Pascal kaynaklarında bulunur, ancak yüklü bir ppu dosyası yoktur. Belki bu birim bu hedef platform için uygun değildir."
+
+#: codystrconsts.crstotal
+msgid "Total"
+msgstr "Toplam"
+
+#: codystrconsts.crstype
+msgid "Type"
+msgstr "Tip"
+
+#: codystrconsts.crsunabletodelete
+#, object-pascal-format
+msgid "Unable to delete \"%s\""
+msgstr "\"%s\" silinemiyor"
+
+#: codystrconsts.crsunabletoreadfile
+#, object-pascal-format
+msgid "Unable to read file \"%s\"."
+msgstr "Dosya \"%s\" okunamadı."
+
+#: codystrconsts.crsunabletorenameto
+#, object-pascal-format
+msgid "unable to rename \"%s\" to \"%s\""
+msgstr "\"%s\" ifadesini \"%s\" olarak değiştiremedi"
+
+#: codystrconsts.crsunit
+msgid "Unit"
+msgstr "Birim"
+
+#: codystrconsts.crsunit2
+#, object-pascal-format
+msgid "Unit: %s"
+msgstr "Birim: %s"
+
+#: codystrconsts.crsunitidentifierdictionary
+msgid "Unit / Identifier Dictionary"
+msgstr "Birim / Tanımlayıcı Sözlüğü"
+
+#: codystrconsts.crsunitnameclash
+msgid "Unit name clash"
+msgstr "Birim adı çakışması"
+
+#: codystrconsts.crsunitobjectfiles
+msgid "Unit object files"
+msgstr "Diğer nesne dosyaları"
+
+#: codystrconsts.crsunits
+msgid "Units"
+msgstr "Birimler"
+
+#: codystrconsts.crsunitsharedlibraries
+msgid "Unit shared libraries"
+msgstr "Diğer paylaşılan kütüphaneler"
+
+#: codystrconsts.crsunitss
+#, object-pascal-format
+msgid "Units: %s"
+msgstr "Birimler: %s"
+
+#: codystrconsts.crsunitstaticlibraries
+msgid "Unit static libraries"
+msgstr "Birim statik kütüphaneleri"
+
+#: codystrconsts.crsusedby
+msgid "Used by"
+msgstr "Kullanılan"
+
+#: codystrconsts.crsuseidentifier
+msgid "&Use identifier"
+msgstr "&Tanımlayıcı kullan"
+
+#: codystrconsts.crsuses
+msgid "Uses"
+msgstr "Uses"
+
+#: codystrconsts.crsvirtualunit
+msgid "Virtual Unit"
+msgstr "Sanal Birim"
+
+#: codystrconsts.crswhere
+msgid "Where"
+msgstr "Nerede"
+

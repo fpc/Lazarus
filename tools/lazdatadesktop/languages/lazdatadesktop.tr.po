@@ -1,0 +1,951 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: lazdatadeskstr.eoaddterminator
+msgid "Add terminator"
+msgstr "Sonlandırıcı ekle"
+
+#: lazdatadeskstr.eoandtermsinbrackets
+msgid "Put brackets around AND Terms"
+msgstr "Etrafa parantez Ve Terimler koy"
+
+#: lazdatadeskstr.eolinefeedafterandterm
+msgid "Linefeed after AND terms"
+msgstr "Satır sonrası ve terimler"
+
+#: lazdatadeskstr.eolinefeedafterfield
+msgid "Linefeed after each field"
+msgstr "Her alandan sonra satır beslemesi"
+
+#: lazdatadeskstr.eoquotefieldnames
+msgid "Quote field names"
+msgstr "Alan adlarını alıntı"
+
+#: lazdatadeskstr.eoskipforeignkeys
+msgid "Skip foreign keys"
+msgstr "Yabancı anahtarları atla"
+
+#: lazdatadeskstr.eouseoldinwhereparams
+msgid "Use OLD prefix in where parameters"
+msgstr "Parametrelerin bulunduğu yerde eski önek kullanın"
+
+#: lazdatadeskstr.sabortscript
+msgid "Abort the script"
+msgstr "Scripti iptal et"
+
+#: lazdatadeskstr.sclose
+msgid "Close result"
+msgstr "Sonucu kapat"
+
+#: lazdatadeskstr.scolfields
+msgctxt "lazdatadeskstr.scolfields"
+msgid "Fields"
+msgstr "Alanlar"
+
+#: lazdatadeskstr.scolname
+msgctxt "lazdatadeskstr.scolname"
+msgid "Name"
+msgstr "Ad"
+
+#: lazdatadeskstr.scoloptions
+msgctxt "lazdatadeskstr.scoloptions"
+msgid "Options"
+msgstr "Seçenekler"
+
+#: lazdatadeskstr.scolsize
+msgid "Size"
+msgstr "Boyut"
+
+#: lazdatadeskstr.scoltype
+msgid "Type"
+msgstr "Tip"
+
+#: lazdatadeskstr.sconfirmclose
+msgid "Confirm close"
+msgstr "Kapatmayı Onayla"
+
+#: lazdatadeskstr.sconnectiondescription
+msgid "Enter a descriptive name for the connection"
+msgstr "Bağlantı için açıklayıcı bir ad girin"
+
+#: lazdatadeskstr.sconnectionnameexists
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
+msgid ""
+"There is already a connection named \"%s\"\n"
+"Would you like to override the connection data ?"
+msgstr "Zaten \" %s\" adlı bir bağlantı var. Bağlantı verilerini geçersiz kılmak ister misiniz?\n"
+
+#: lazdatadeskstr.screatecode
+msgid "Create code"
+msgstr "Kod oluştur"
+
+#: lazdatadeskstr.screateconnection
+msgid "Would you like to create a new connection for this database ?"
+msgstr "Bu veritabanı için yeni bir bağlantı oluşturmak ister misiniz?"
+
+#: lazdatadeskstr.sddmodified
+#, object-pascal-format, fuzzy, badformat
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
+msgid ""
+"Data dictionary \"%s\" has changed.\n"
+"What do you want to do with the changes?"
+msgstr ""
+"Veri sözlüğü \"% s\" değişti.\n"
+"Değişikliklerle ne yapmak istiyorsunuz?\n"
+
+#: lazdatadeskstr.sdeleteobject
+#, object-pascal-format
+msgid "Delete this %s"
+msgstr "Bunu sil %s"
+
+#: lazdatadeskstr.sdescription
+msgctxt "lazdatadeskstr.sdescription"
+msgid "Description"
+msgstr "Açıklama"
+
+#: lazdatadeskstr.sdomain
+msgid "Domain"
+msgstr "Alan"
+
+#: lazdatadeskstr.sdontclose
+msgid "Do not close editor"
+msgstr "Düzenleyiciyi kapatma"
+
+#: lazdatadeskstr.sdontsave
+msgid "Discard changes"
+msgstr "Değişiklikleri gözardı et"
+
+#: lazdatadeskstr.senginetype
+msgid "Engine"
+msgstr "Motor"
+
+#: lazdatadeskstr.serrcommitnotsupported
+msgid "COMMIT Not supported yet"
+msgstr "COMMIT Henüz desteklenmiyor"
+
+#: lazdatadeskstr.serrinscript
+msgid "Error in SQL script"
+msgstr "SQL komut dosyasında hata"
+
+#: lazdatadeskstr.serrinscriptchoice
+#, fuzzy
+#| msgid ""
+#| "An error occurred in the SQL script.\n"
+#| "How would you like to continue ?\n"
+msgid ""
+"An error occurred in the SQL script.\n"
+"How would you like to continue ?"
+msgstr ""
+"SQL komut dosyasında bir hata oluştu.\n"
+"Nasıl devam etmek istersin?\n"
+
+#: lazdatadeskstr.serrnoengine
+msgid "No database engine !"
+msgstr "Veritabanı motoru yok!"
+
+#: lazdatadeskstr.serrorexecutingsql
+msgid "Error executing SQL statement:"
+msgstr "SQL deyimini çalıştırırken hata oluştu:"
+
+#: lazdatadeskstr.serrselectfields
+msgid "No fields selected. Please select some fields"
+msgstr "Seçili alan yok. Lütfen bazı alanlar seçin"
+
+#: lazdatadeskstr.serrselecttable
+msgid "No table selected. Please select a table"
+msgstr "Seçili tablo yok. Lütfen bir tablo seçin"
+
+#: lazdatadeskstr.serrunknowndirective
+#, object-pascal-format
+msgid "Unknown directive: %s (args: %s)"
+msgstr "Bilinmeyen direktif: %s (args: %s)"
+
+#: lazdatadeskstr.serrunknowntype
+#, object-pascal-format
+msgid "Unknown object type: %d"
+msgstr "Bilinmeyen nesne türü: %d"
+
+#: lazdatadeskstr.sexecute
+msgid "Execute SQL"
+msgstr "SQL yürüt"
+
+#: lazdatadeskstr.sexecutingsqlstatement
+#, object-pascal-format
+msgid "%s : Executing SQL statement:"
+msgstr "%s : SQL deyimini yürütme:"
+
+#: lazdatadeskstr.sexecutingsqlstatementcount
+#, object-pascal-format
+msgid "%s : Executing script SQL statement nr. %d:"
+msgstr "%s : Betik SQL deyimini çalıştırma nr. %d:"
+
+#: lazdatadeskstr.sexecutiontime
+#, object-pascal-format
+msgid "Execution time: %s"
+msgstr "Uygulama zamanı: %s"
+
+#: lazdatadeskstr.sexport
+msgid "Export data"
+msgstr "Verileri dışa aktar"
+
+#: lazdatadeskstr.sfield
+msgid "Field"
+msgstr "Alan"
+
+#: lazdatadeskstr.sforeignkey
+msgid "Foreign key"
+msgstr "Yabancı anahtar"
+
+#: lazdatadeskstr.shintclose
+msgid "Close query result data panel"
+msgstr "Sorgu sonucu veri panelini kapat"
+
+#: lazdatadeskstr.shintcreatecode
+msgid "Create pascal code for this data"
+msgstr "Bu veri için pascal kod oluştur"
+
+#: lazdatadeskstr.shintexecute
+msgid "Execute SQL statement"
+msgstr "SQL deyimini yürütün"
+
+#: lazdatadeskstr.shintexport
+msgid "Export this data"
+msgstr "Bu verileri dışa aktar"
+
+#: lazdatadeskstr.shintload
+msgid "Load SQL statement from file"
+msgstr "SQL deyimini dosyadan yükle"
+
+#: lazdatadeskstr.shintnext
+msgid "Next SQL statement"
+msgstr "Sonraki SQL deyimi"
+
+#: lazdatadeskstr.shintprevious
+msgid "Previous SQL statement"
+msgstr "Önceki SQL deyimi"
+
+#: lazdatadeskstr.shintsave
+msgid "Save SQL statement to file"
+msgstr "SQL deyimini dosyaya kaydet"
+
+#: lazdatadeskstr.simportdictinto
+msgid "Import data dictionary"
+msgstr "Veri sözlüğünü içe aktar"
+
+#: lazdatadeskstr.sindex
+msgid "Index"
+msgstr "Dizin"
+
+#: lazdatadeskstr.sld_actionadddomain
+msgid "New domain"
+msgstr "Yeni Alan"
+
+#: lazdatadeskstr.sld_actionadddomainh
+msgid "Add a domain to the data dictionary"
+msgstr "Veri sözlüğüne bir etki alanı ekle"
+
+#: lazdatadeskstr.sld_actionaddforeignkey
+msgid "New Foreign Key"
+msgstr "Yeni Yabancı Anahtar"
+
+#: lazdatadeskstr.sld_actionaddforeignkeyh
+msgid "Add a foreign key to the table"
+msgstr "Tabloya bir yabancı anahtar ekleyin"
+
+#: lazdatadeskstr.sld_actionaddsequence
+msgid "New sequence"
+msgstr "Yeni dizi"
+
+#: lazdatadeskstr.sld_actionaddsequenceh
+msgid "Add a sequence"
+msgstr "Dizi ekle"
+
+#: lazdatadeskstr.sld_actionclose
+msgid "&Close"
+msgstr "&Kapat"
+
+#: lazdatadeskstr.sld_actioncloseall
+msgid "Close &All"
+msgstr "Hepsi&ni kapat"
+
+#: lazdatadeskstr.sld_actioncloseallh
+msgid "Close all Data Dictionaries"
+msgstr "Tüm Veri Sözlüklerini Kapat"
+
+#: lazdatadeskstr.sld_actioncloseh
+msgid "Close current Data Dictionary"
+msgstr "Geçerli Veri Sözlüğünü Kapat"
+
+#: lazdatadeskstr.sld_actioncopy
+msgid "&Copy"
+msgstr "&Kopyala"
+
+#: lazdatadeskstr.sld_actioncopyconnection
+msgid "&Copy connection"
+msgstr "&Bağlantıyı kopyala"
+
+#: lazdatadeskstr.sld_actioncopyh
+msgid "Copy"
+msgstr "Kopyala"
+
+#: lazdatadeskstr.sld_actioncreatecode
+msgid "Create &code"
+msgstr "Kod oluş&tur"
+
+#: lazdatadeskstr.sld_actioncreatecodeh
+msgid "Create code from definition or data"
+msgstr "Tanımdan veya verilerden kod oluşturun"
+
+#: lazdatadeskstr.sld_actioncut
+msgid "Cu&t"
+msgstr "K&es"
+
+#: lazdatadeskstr.sld_actioncuth
+msgid "Cut"
+msgstr "Kes"
+
+#: lazdatadeskstr.sld_actiondeleteconnection
+msgid "&Delete connection"
+msgstr "&Bağlantıyı sil"
+
+#: lazdatadeskstr.sld_actiondeleteobject
+msgid "Delete &Object"
+msgstr "&Nesneyi sil"
+
+#: lazdatadeskstr.sld_actiondeleteobjecth
+msgid "Delete the currently selected object"
+msgstr "Seçili nesneyi silin"
+
+#: lazdatadeskstr.sld_actiondeleterecentdatadict
+msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
+msgid "&Delete"
+msgstr "&Sil"
+
+#: lazdatadeskstr.sld_actionexit
+msgid "E&xit"
+msgstr "&Çıkış"
+
+#: lazdatadeskstr.sld_actionexith
+msgid "Quit this program"
+msgstr "Bu programdan çık"
+
+#: lazdatadeskstr.sld_actiongeneratesql
+msgid "&Generate SQL"
+msgstr "&SQL üret"
+
+#: lazdatadeskstr.sld_actiongeneratesqlh
+msgid "Generate SQL statements for the current table"
+msgstr "Geçerli tablo için SQL ifadeleri üret"
+
+#: lazdatadeskstr.sld_actionnew
+msgid "&New"
+msgstr "&Yeni"
+
+#: lazdatadeskstr.sld_actionnewconnection
+msgid "&New connection"
+msgstr "&Yeni bağlantı"
+
+#: lazdatadeskstr.sld_actionnewfield
+msgid "New &field"
+msgstr "Yeni a&lan"
+
+#: lazdatadeskstr.sld_actionnewfieldh
+msgid "Create a new field in the current table"
+msgstr "Geçerli tabloda yeni bir alan oluşturun"
+
+#: lazdatadeskstr.sld_actionnewh
+msgid "Create a new Data Dictionary"
+msgstr "Yeni bir Veri Sözlüğü oluşturun"
+
+#: lazdatadeskstr.sld_actionnewindex
+msgid "New index"
+msgstr "Yeni Dizin"
+
+#: lazdatadeskstr.sld_actionnewindexh
+msgid "Add new index to current table"
+msgstr "Geçerli tabloya yeni dizin ekle"
+
+#: lazdatadeskstr.sld_actionnewtable
+msgid "New &table"
+msgstr "Yeni T&ablo"
+
+#: lazdatadeskstr.sld_actionnewtableh
+msgid "Create a new table"
+msgstr "Yeni Tablo oluştur"
+
+#: lazdatadeskstr.sld_actionopen
+msgid "&Open ..."
+msgstr "&Aç ..."
+
+#: lazdatadeskstr.sld_actionopenconnection
+msgid "&Open connection"
+msgstr "&Bağlantıyı aç"
+
+#: lazdatadeskstr.sld_actionopenconnectionh
+msgid "Open selected recent connection"
+msgstr "Son seçilen bağlantıyı aç"
+
+#: lazdatadeskstr.sld_actionopenh
+msgid "Open a new Data Dictionary"
+msgstr "Yeni bir Veri Sözlüğü aç"
+
+#: lazdatadeskstr.sld_actionopenrecentdatadict
+msgid "Open"
+msgstr "Aç"
+
+#: lazdatadeskstr.sld_actionopenrecentdatadicth
+msgid "Open selected recent data dictionary"
+msgstr "Seçili son veri sözlüğünü aç"
+
+#: lazdatadeskstr.sld_actionpaste
+msgid "&Paste"
+msgstr "&Yapıştır"
+
+#: lazdatadeskstr.sld_actionpasteh
+msgid "Paste"
+msgstr "Yapıştır"
+
+#: lazdatadeskstr.sld_actionsave
+msgid "&Save"
+msgstr "&Kaydet"
+
+#: lazdatadeskstr.sld_actionsaveas
+msgid "Save &as"
+msgstr "&Farklı kaydet"
+
+#: lazdatadeskstr.sld_actionsaveash
+msgid "Save data dictionary as"
+msgstr "Veri sözlüğünü farklı kaydet"
+
+#: lazdatadeskstr.sld_actionsaveh
+msgid "Save Data Dictionary"
+msgstr "Veri Sözlüğünü Kaydet"
+
+#: lazdatadeskstr.sld_cancel
+msgid "&Cancel"
+msgstr "&İptal"
+
+#: lazdatadeskstr.sld_charset
+msgid "Charset"
+msgstr "Karakter kümesi"
+
+#: lazdatadeskstr.sld_connectionlv1
+msgctxt "lazdatadeskstr.sld_connectionlv1"
+msgid "Name"
+msgstr "Ad"
+
+#: lazdatadeskstr.sld_connectionlv2
+msgid "Driver"
+msgstr "Sürücü"
+
+#: lazdatadeskstr.sld_connectionlv3
+msgid "Last used"
+msgstr "Son kullanılan"
+
+#: lazdatadeskstr.sld_connectionlv4
+msgctxt "lazdatadeskstr.sld_connectionlv4"
+msgid "Description"
+msgstr "Açıklama"
+
+#: lazdatadeskstr.sld_connections
+msgctxt "lazdatadeskstr.sld_connections"
+msgid "Connections"
+msgstr "Bağlantılar"
+
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
+msgstr "Bağlantılar/Sözlükler"
+
+#: lazdatadeskstr.sld_connecttoadatabase
+#, object-pascal-format
+msgid "Connect to a database of type %s"
+msgstr "%s türündeki bir veritabanına bağlanın"
+
+#: lazdatadeskstr.sld_createfulltablecreationsql
+msgid "Create full table creation SQL"
+msgstr "Tam tablo oluşturma SQL oluşturun"
+
+#: lazdatadeskstr.sld_createtable
+msgid "Create table"
+msgstr "Tablo oluştur"
+
+#: lazdatadeskstr.sld_database
+msgctxt "lazdatadeskstr.sld_database"
+msgid "Database"
+msgstr "Veritabanı"
+
+#: lazdatadeskstr.sld_delete
+msgctxt "lazdatadeskstr.sld_delete"
+msgid "&Delete"
+msgstr "&Sil"
+
+#: lazdatadeskstr.sld_dictionaries
+msgid "Dictionaries"
+msgstr "Sözlükler"
+
+#: lazdatadeskstr.sld_firststart
+msgid "First start of database desktop"
+msgstr "Veritabanı masaüstünün ilk başlangıcı"
+
+#: lazdatadeskstr.sld_fromconnection
+msgid "From connection"
+msgstr "Bağlantıdan"
+
+#: lazdatadeskstr.sld_generatesql
+msgid "Generate SQL"
+msgstr "SQL üret"
+
+#: lazdatadeskstr.sld_generatesqlstatements
+msgid "Generate SQL statements"
+msgstr "SQL ifadeleri üret"
+
+#: lazdatadeskstr.sld_host
+msgid "Host"
+msgstr "Sunucu"
+
+#: lazdatadeskstr.sld_importupdatedatadictionary
+msgid "Import/Update data dictionary"
+msgstr "Veri sözlüğünü içe aktar/güncelle"
+
+#: lazdatadeskstr.sld_indent
+msgid "I&ndent"
+msgstr "Ç&entik"
+
+#: lazdatadeskstr.sld_insert
+msgid "&Insert"
+msgstr "&Ekle"
+
+#: lazdatadeskstr.sld_keyfields
+msgid "&Key fields"
+msgstr "&Anahtar alanlar"
+
+#: lazdatadeskstr.sld_lazarusdatabasedesktop
+msgid "Lazarus Database Desktop"
+msgstr "Lazarus Veritabanı Masaüstü"
+
+#: lazdatadeskstr.sld_legacyview
+msgid "Legacy List View"
+msgstr "Eski Liste Görünümü"
+
+#: lazdatadeskstr.sld_linelength
+msgid "Line Length"
+msgstr "Satır Uzunluğu"
+
+#: lazdatadeskstr.sld_menuconnections
+msgctxt "lazdatadeskstr.sld_menuconnections"
+msgid "Connections"
+msgstr "Bağlantılar"
+
+#: lazdatadeskstr.sld_menudictionary
+msgid "&Dictionary"
+msgstr "&Sözlük"
+
+#: lazdatadeskstr.sld_menudictionaryimport
+msgid "&Import"
+msgstr "&İçe aktar"
+
+#: lazdatadeskstr.sld_menuedit
+msgid "&Edit"
+msgstr "&Düzen"
+
+#: lazdatadeskstr.sld_menufile
+msgid "&File"
+msgstr "&Dosya"
+
+#: lazdatadeskstr.sld_ok
+msgid "&OK"
+msgstr "&TAMAM"
+
+#: lazdatadeskstr.sld_opendatadictionaryfilter
+msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+msgstr "Veri sözlüğü dosyaları (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+
+#: lazdatadeskstr.sld_opendatadictionarytitle
+msgid "Open data dictionary"
+msgstr "Veri sözlüğünü aç"
+
+#: lazdatadeskstr.sld_options
+msgctxt "lazdatadeskstr.sld_options"
+msgid "Options"
+msgstr "Seçenekler"
+
+#: lazdatadeskstr.sld_password
+msgid "Password"
+msgstr "Şifre"
+
+#: lazdatadeskstr.sld_recentlv1
+msgctxt "lazdatadeskstr.sld_recentlv1"
+msgid "Name"
+msgstr "Ad"
+
+#: lazdatadeskstr.sld_recentlv2
+msgid "Filename"
+msgstr "Dosya adı"
+
+#: lazdatadeskstr.sld_recentlv3
+msgid "Last used on"
+msgstr "Son kullanılan"
+
+#: lazdatadeskstr.sld_savefileasfilter
+msgctxt "lazdatadeskstr.sld_savefileasfilter"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+msgstr "Veri sözlüğü dosyaları (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+
+#: lazdatadeskstr.sld_savefileastitle
+msgid "Save file as"
+msgstr "Dosyayı farklı kaydet"
+
+#: lazdatadeskstr.sld_select
+msgid "&Select"
+msgstr "&Seç"
+
+#: lazdatadeskstr.sld_selectaconnectiontype
+msgid "Select a conection type"
+msgstr "Bir bağlantı tipi seçin"
+
+#: lazdatadeskstr.sld_selectall
+msgid "Select &all"
+msgstr "He&psini seç"
+
+#: lazdatadeskstr.sld_selectnone
+msgid "Select &none"
+msgstr "Hiçbir şey seçilmedi"
+
+#: lazdatadeskstr.sld_selectupdateinsertfields
+msgid "Select/Update/Insert fields"
+msgstr "Select/Update/Insert alanları"
+
+#: lazdatadeskstr.sld_separator
+msgid "-"
+msgstr "-"
+
+#: lazdatadeskstr.sld_startempty
+msgid "Thanks, I know what to do"
+msgstr "Teşekkürler ne yapacağımı biliyorum"
+
+#: lazdatadeskstr.sld_startnewconnection
+msgid "Create new connection"
+msgstr "Yeni bağlantı oluştur"
+
+#: lazdatadeskstr.sld_startnewdict
+msgid "Start new dictionary"
+msgstr "Yeni sözlük başlat"
+
+#: lazdatadeskstr.sld_succesconnecting
+msgid "Connection established successfully!"
+msgstr "Bağlantı başarıyla kuruldu!"
+
+#: lazdatadeskstr.sld_table
+msgid "Ta&ble"
+msgstr "Ta&blo"
+
+#: lazdatadeskstr.sld_tableandfields
+msgid "Tables and &Fields"
+msgstr "Tablolar ve A&lanlar"
+
+#: lazdatadeskstr.sld_testconnection
+msgid "Test connection"
+msgstr "Bağlantıyı Test et"
+
+#: lazdatadeskstr.sld_unknowntype
+msgid "Unknown type"
+msgstr "Bilinmeyen tip"
+
+#: lazdatadeskstr.sld_update
+msgid "&Update"
+msgstr "&Güncelle"
+
+#: lazdatadeskstr.sld_updateexistingtables
+msgid "Update existing tables"
+msgstr "Mevcut tabloları güncelle"
+
+#: lazdatadeskstr.sld_username
+msgid "Username"
+msgstr "Kullanıcı adı"
+
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr "Görünüm"
+
+#: lazdatadeskstr.sload
+msgid "Load SQL"
+msgstr "SQL Yükle"
+
+#: lazdatadeskstr.snamefor
+#, object-pascal-format
+msgid "Enter a name for the new %s"
+msgstr "%s için yeni bir ad girin"
+
+#: lazdatadeskstr.snew
+#, object-pascal-format
+msgid "New %s"
+msgstr "Yeni %s"
+
+#: lazdatadeskstr.snewconnection
+msgid "New connection"
+msgstr "Yeni bağlantı"
+
+#: lazdatadeskstr.snewdictionary
+msgid "New data dictionary"
+msgstr "Yeni bir Veri Sözlüğü"
+
+#: lazdatadeskstr.snewdomain
+msgid "Create new domain"
+msgstr "Yeni Alan oluştur"
+
+#: lazdatadeskstr.snewdomainname
+msgid "Enter a name for the new domain:"
+msgstr "Yeni etki alanı için bir ad girin:"
+
+#: lazdatadeskstr.snewfield
+#, object-pascal-format
+msgid "Create new field in table %s"
+msgstr "%s tablosunda yeni alan oluştur"
+
+#: lazdatadeskstr.snewfieldname
+msgid "Enter a name for the new field:"
+msgstr "Yeni alan için bir ad girin:"
+
+#: lazdatadeskstr.snewforeignkey
+#, object-pascal-format
+msgid "Create new foreign key in table %s"
+msgstr "%s tablosunda yeni yabancı anahtar oluştur"
+
+#: lazdatadeskstr.snewforeignkeyname
+msgid "Enter a name for the new foreign key:"
+msgstr "Yeni yabancı anahtar için bir ad girin:"
+
+#: lazdatadeskstr.snewindex
+#, object-pascal-format
+msgid "Create new index on table %s"
+msgstr "%s tablosunda yeni dizin oluştur"
+
+#: lazdatadeskstr.snewindexname
+msgid "Enter a name for the new index:"
+msgstr "Yeni dizin için bir ad girin:"
+
+#: lazdatadeskstr.snewobject
+#, object-pascal-format
+msgid "Create new %s"
+msgstr "%s yeni oluştur"
+
+#: lazdatadeskstr.snewsequence
+msgid "Create new sequence"
+msgstr "Yeni dizi oluştur"
+
+#: lazdatadeskstr.snewsequencename
+msgid "Enter a name for the new sequence:"
+msgstr "Yeni dizi için bir ad girin:"
+
+#: lazdatadeskstr.snewtable
+msgid "Create new table"
+msgstr "Yeni Tablo oluştur"
+
+#: lazdatadeskstr.snewtablename
+msgid "Enter a name for the new table:"
+msgstr "Yeni tablo için bir ad girin:"
+
+#: lazdatadeskstr.snext
+msgid "Next"
+msgstr "Sonraki"
+
+#: lazdatadeskstr.snodedatabase
+msgctxt "lazdatadeskstr.snodedatabase"
+msgid "Database"
+msgstr "Veritabanı"
+
+#: lazdatadeskstr.snodedatadictionary
+msgid "Data dictionary"
+msgstr "Veri Sözlüğü"
+
+#: lazdatadeskstr.snodedomains
+msgid "Domains"
+msgstr "Alanlar"
+
+#: lazdatadeskstr.snodefields
+msgctxt "lazdatadeskstr.snodefields"
+msgid "Fields"
+msgstr "Alanlar"
+
+#: lazdatadeskstr.snodeforeignkeys
+msgid "Foreign keys"
+msgstr "Yabancı anahtarları"
+
+#: lazdatadeskstr.snodeindexes
+msgid "Indexes"
+msgstr "Dizinler"
+
+#: lazdatadeskstr.snodeindexfields
+msgid "Index fields: "
+msgstr "Dizin alanı: "
+
+#: lazdatadeskstr.snodeindexoptions
+msgid "Index options: "
+msgstr "Dizin seçenekleri: "
+
+#: lazdatadeskstr.snodesequences
+msgid "Sequences"
+msgstr "Dizi"
+
+#: lazdatadeskstr.snodetabledata
+msgid "Table Data"
+msgstr "Tablo verisi"
+
+#: lazdatadeskstr.snodetables
+msgid "Tables"
+msgstr "Tablolar"
+
+#: lazdatadeskstr.sobject
+msgid "Object"
+msgstr "Nesne"
+
+#: lazdatadeskstr.sparameter
+msgid "Parameter"
+msgstr "Parametre"
+
+#: lazdatadeskstr.sprevious
+msgid "Previous"
+msgstr "Önceki"
+
+#: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary.\n"
+msgid ""
+"No connections or data dictionaries were found.\n"
+" Start by creating a new connection or data dictionary."
+msgstr ""
+"Bağlantı veya veri sözlüğü bulunamadı.\n"
+"  Yeni bir bağlantı veya veri sözlüğü oluşturarak başlayın.\n"
+
+#: lazdatadeskstr.squery
+msgid "Run query"
+msgstr "Sorguyu çalıştır"
+
+#: lazdatadeskstr.sreadyforsql
+msgid "Ready to execute SQL statements"
+msgstr "SQL deyimleri çalıştırmaya hazır"
+
+#: lazdatadeskstr.srecordsfetched
+#, object-pascal-format, fuzzy, badformat
+msgid "Records fetched: %d"
+msgstr "Alınan kayıtlar:% d"
+
+#: lazdatadeskstr.sretrystatement
+msgid "Retry the statement"
+msgstr "İfadeyi yeniden dene"
+
+#: lazdatadeskstr.srowsaffected
+#, object-pascal-format
+msgid "Query executed successfully: %d rows affected."
+msgstr "Sorgu başarıyla yürütüldü: %d satır etkilendi."
+
+#: lazdatadeskstr.ssave
+msgid "Save SQL"
+msgstr "SQL Kaydet"
+
+#: lazdatadeskstr.ssavedata
+msgid "Save changes"
+msgstr "Değişiklikleri Kaydet"
+
+#: lazdatadeskstr.sscriptaborted
+#, object-pascal-format
+msgid "Script was aborted after %d statements"
+msgstr "%d ifadesinden sonra komut dosyası iptal edildi"
+
+#: lazdatadeskstr.sscriptcompleted
+#, object-pascal-format
+msgid "Executed %d statements from script"
+msgstr "Komut dosyasından %d ifadesi çalıştırıldı"
+
+#: lazdatadeskstr.sscripterrorcount
+#, object-pascal-format
+msgid "%d script statements resulted in errors"
+msgstr "%d script ifadeleri hatalarla sonuçlandı"
+
+#: lazdatadeskstr.sselectdbfdir
+msgid "Select a directory with DBF files"
+msgstr "DBF dosyalarına sahip bir dizin seçin"
+
+#: lazdatadeskstr.sselectedobject
+msgid "Selected object"
+msgstr "Seçilen nesne"
+
+#: lazdatadeskstr.ssequence
+msgid "Sequence"
+msgstr "Dizi"
+
+#: lazdatadeskstr.ssqlerrorcode
+#, object-pascal-format
+msgid "SQL Error code: %d"
+msgstr "SQL Hata kodu: %d"
+
+#: lazdatadeskstr.ssqlexecutedok
+#, object-pascal-format
+msgid "%s : Statement executed succesfully."
+msgstr "%s : İfade başarıyla yürütüldü."
+
+#: lazdatadeskstr.ssqlfilters
+msgid "SQL files|*.sql|All files|*.*"
+msgstr "SQL dosyaları|*.sql|Tüm dosyalar|*.*"
+
+#: lazdatadeskstr.ssqlstatus
+#, object-pascal-format
+msgid "SQL State: %s"
+msgstr "SQL Durumu: %s"
+
+#: lazdatadeskstr.sstopnoerror
+msgid "Continue, ignore all errors"
+msgstr "Devam et, tüm hataları yoksay"
+
+#: lazdatadeskstr.sstoponnexterror
+msgid "Continue, stop on the next error"
+msgstr "Devam et, bir sonraki hatada dur"
+
+#: lazdatadeskstr.stable
+msgid "Table"
+msgstr "Tablo"
+
+#: lazdatadeskstr.sunknownconnection
+#, object-pascal-format
+msgid "Unknown connection: %s"
+msgstr "Bilinmeyen bağlantı: %s"
+
+#: lazdatadeskstr.sunknowndictionary
+#, object-pascal-format
+msgid "Unknown data dictionary: %s"
+msgstr "Bilinmeyen veri sözlüğü: %s"
+
+#: lazdatadeskstr.susecurrentdict
+msgid "Yes, use the active dictionary"
+msgstr "Evet, aktif sözlüğü kullan"
+
+#: lazdatadeskstr.susenewdict
+msgid "No, import in a new dictionary"
+msgstr "Hayır, yeni bir sözlükte içe aktar"
+
+#: lazdatadeskstr.svalue
+msgid "Value"
+msgstr "Değer"
+
+#: lazdatadeskstr.swhichcurrentdicttouse
+msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
+msgstr "Bir veri sözlüğü etkin. Bu veri sözlüğüne aktarmak ister misiniz?"
+
