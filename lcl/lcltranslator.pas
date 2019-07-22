@@ -529,14 +529,18 @@ var
   LCLPath: string;
 begin
   Result:='';
-  LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
-  if LCLPath<>'' then
-    Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
-  else
-  begin
-    LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
+  try
+    LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
     if LCLPath<>'' then
-      GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
+      Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
+    else
+    begin
+      LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
+      if LCLPath<>'' then
+        GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
+    end;
+  except
+    Result:='';
   end;
 end;
 
@@ -563,24 +567,20 @@ begin
     begin
       Translations.TranslateResourceStrings(lcfn);
       LocalTranslator := TPOTranslator.Create(lcfn);
-    end;
-  except
-    lcfn := '';
-  end;
-
-  if lcfn='' then
-  begin
-    // try now with MO translation resources
-    try
+    end
+    else
+    begin
+      // try now with MO translation resources
       lcfn := FindLocaleFileName('.mo', Lang, Dir, LocaleFileName, Result);
       if lcfn <> '' then
       begin
         GetText.TranslateResourceStrings(UTF8ToSys(lcfn));
         LocalTranslator := TDefaultTranslator.Create(lcfn);
       end;
-    except
-      lcfn := '';
     end;
+  except
+    Result := '';
+    lcfn := '';
   end;
 
   DefaultLang := Result;
