@@ -349,6 +349,8 @@ type
     procedure DoDropDown; virtual;
     procedure DoCloseUp; virtual;
     procedure DoAutoCheck; virtual;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
 
     procedure AddHandlerOnChange(const AOnChange: TNotifyEvent;
       AsFirst: Boolean = False); virtual;
@@ -531,6 +533,10 @@ implementation
 
 uses
   DateUtils, LCLCalWrapper;
+
+const
+  DefaultUpDownWidth = 15;
+  DefaultArrowButtonWidth = DefaultUpDownWidth + 2;
 
 function NumberOfDaysInMonth(const Month, Year: Word): Word;
 begin
@@ -3256,10 +3262,6 @@ begin
     FArrowButton.Invalidate;
 end;
 
-const
-  DefaultUpDownWidth = 15;
-  DefaultArrowButtonWidth = DefaultUpDownWidth + 2;
-
 procedure TCustomDateTimePicker.SetAutoButtonSize(AValue: Boolean);
 begin
   if FAutoButtonSize <> AValue then begin
@@ -3269,9 +3271,9 @@ begin
       AutoResizeButton
     else begin
       if Assigned(FUpDown) then
-        FUpDown.Width := DefaultUpDownWidth
+        FUpDown.Width := Scale96ToFont(DefaultUpDownWidth)
       else if Assigned(FArrowButton) then
-        FArrowButton.Width := DefaultArrowButtonWidth;
+        FArrowButton.Width := Scale96ToFont(DefaultArrowButtonWidth);
     end;
 
   end;
@@ -3330,7 +3332,6 @@ begin
     FArrowButton.Width := MulDiv(ClientHeight, 9, 10)
   else if Assigned(FUpDown) then
     FUpDown.Width := MulDiv(ClientHeight, 79, 100);
-
 end;
 
 procedure TCustomDateTimePicker.CheckAndApplyKey(const Key: Char);
@@ -3757,7 +3758,7 @@ procedure TCustomDateTimePicker.UpdateShowArrowButton;
                                             [csNoFocus, csNoDesignSelectable];
       FArrowButton.Flat := dtpoFlatButton in Options;
       TDTSpeedButton(FArrowButton).DTPicker := Self;
-      FArrowButton.SetBounds(0, 0, DefaultArrowButtonWidth, 1);
+      FArrowButton.SetBounds(0, 0, Scale96ToFont(DefaultArrowButtonWidth), 1);
 
       FArrowButton.Parent := Self;
       FAllowDroppingCalendar := True;
@@ -3779,7 +3780,7 @@ procedure TCustomDateTimePicker.UpdateShowArrowButton;
       TDTUpDown(FUpDown).DTPicker := Self;
       TDTUpDown(FUpDown).Flat := dtpoFlatButton in Options;
 
-      FUpDown.SetBounds(0, 0, DefaultUpDownWidth, 1);
+      FUpDown.SetBounds(0, 0, Scale96ToFont(DefaultUpDownWidth), 1);
 
       FUpDown.Parent := Self;
 
@@ -3831,6 +3832,22 @@ procedure TCustomDateTimePicker.DoAutoCheck;
 begin
   if ShowCheckBox and not Checked and (dtpoAutoCheck in Options) then
     Checked := True;
+end;
+
+procedure TCustomDateTimePicker.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double);
+begin
+  inherited;
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if (not FAutoButtonSize) then begin
+      if Assigned(FArrowButton) then
+        FArrowButton.Width := Scale96ToFont(DefaultArrowButtonWidth);
+      if Assigned(FUpDown) then
+        FUpDown.Width := Scale96ToFont(DefaultUpdownWidth);
+    end;
+  end;
 end;
 
 procedure TCustomDateTimePicker.DestroyArrowBtn;

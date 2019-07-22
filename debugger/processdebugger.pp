@@ -91,8 +91,14 @@ end;
 procedure TProcessDebugger.ProcessDestroyed(Sender: TObject);
 begin
   FProcess := nil;
-  if State <> dsIdle then
-    SetState(dsStop);
+
+  LockRelease;
+  try
+    if State <> dsIdle then
+      SetState(dsStop);
+  finally
+    UnlockRelease;
+  end;
 end;
 
 function TProcessDebugger.ProcessEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
