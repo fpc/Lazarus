@@ -124,8 +124,8 @@ begin
   //debugln('TPoCheckerForm.FormCreate A:');
   {$IFDEF POCHECKERSTANDALONE}
   //Initializing translation
-  SetDefaultLang('', '..' + PathDelim + 'languages', 'pocheckerconsts');
-  TranslateLCLResourceStrings('', SetDirSeparators('../../../lcl/languages/'));
+  if SetDefaultLang('', '..' + PathDelim + 'languages', 'pocheckerconsts') <> '' then
+    TranslateLCLResourceStrings('', SetDirSeparators('../../../lcl/languages/'));
   {$ENDIF}
   ApplyTranslations;
   FillTestListBox;
