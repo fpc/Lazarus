@@ -119,9 +119,9 @@ const
   LazDefVersions = '2.0.0, 2.0.2';
   LazTrunk = '2.1.0';
 
-  MaxFPCVersions = 4;
+  MaxFPCVersions = 5;
   FPCVersions: array [0..MaxFPCVersions - 1] of String = (
-    '3.0.0', '3.0.2', '3.0.4',
+    '3.0.0', '3.0.2', '3.0.4', '3.2.0',
     'Trunk');
   FPCDefVersion = '3.0.0, 3.0.2, 3.0.4';
   FPCTrunk = '3.3.1';
