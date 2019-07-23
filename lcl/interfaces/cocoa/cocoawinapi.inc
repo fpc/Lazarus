@@ -558,6 +558,73 @@ begin
   end;
 end;
 
+procedure DrawEdgeRect(dst: TCocoaContext; const r: TRect; flags: Cardinal;
+  LTColor, BRColor: TColor);
+begin
+  dst.Pen.SetColor(LTColor, true);
+  dst.Pen.Apply(dst);
+  if flags and BF_LEFT > 0 then
+  begin
+    dst.MoveTo(r.Left, r.Bottom);
+    dst.LineTo(r.Left, r.Top);
+  end;
+  if flags and BF_TOP > 0 then
+  begin
+    dst.MoveTo(r.Left, r.Top);
+    dst.LineTo(r.Right, r.Top);
+  end;
+
+  dst.Pen.SetColor(BRColor, true);
+  dst.Pen.Apply(dst);
+  if flags and BF_RIGHT > 0 then
+  begin
+    dst.MoveTo(r.Right, r.Top);
+    dst.LineTo(r.Right, r.Bottom);
+  end;
+  if flags and BF_BOTTOM > 0 then
+  begin
+    dst.MoveTo(r.Right, r.Bottom);
+    // there's a missing pixel. Seems like it's accumulating an offset
+    dst.LineTo(r.Left-1, r.Bottom);
+  end;
+end;
+
+function TCocoaWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
+  grfFlags: Cardinal): Boolean;
+var
+  ctx: TCocoaContext;
+  r: TRect;
+const
+  OutLT = cl3DLight;    // the next to hilight
+  OutBR = cl3DDkShadow; // the darkest (almost black)
+  InnLT = cl3DHiLight;  // the lightest (almost white)
+  InnBR = cl3DShadow;   // darker than light, lighter than dark shadow
+begin
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if not Result then Exit;
+
+  r := Rect;
+  if (edge and BDR_OUTER > 0) then
+  begin
+    if edge and BDR_RAISEDOUTER > 0 then
+      DrawEdgeRect(ctx, r, grfFlags, OutLT, OutBR)
+    else
+      DrawEdgeRect(ctx, r, grfFlags, InnBR, InnLT);
+    InflateRect(r, -1, -1);
+  end;
+
+  if (edge and BDR_INNER > 0) then
+  begin
+    if edge and BDR_RAISEDINNER > 0 then
+      DrawEdgeRect(ctx, r, grfFlags, InnLT, InnBR)
+    else
+      DrawEdgeRect(ctx, r, grfFlags, OutBR, OutLT);
+  end;
+
+  Result := true;
+end;
+
 function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   ctx: TCocoaContext;
