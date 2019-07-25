@@ -219,7 +219,6 @@ type
 
   TLCLButtonCallback = class(TLCLCommonCallback, IButtonCallback)
   public
-    LCLTitle: string;
     procedure ButtonClick; virtual;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
     procedure GetAllowMixedState(var allowed: Boolean); virtual;
@@ -722,60 +721,26 @@ begin
   cf.release;
 end;
 
-function GetButtonCallback(btn: NSButton): TLCLButtonCallback;
-var
-  cb : ICommonCallback;
-  obj : TObject;
-begin
-  Result := nil;
-  if not Assigned(btn) then Exit;
-  cb := btn.lclGetCallback;
-  if not Assigned(cb) then Exit;
-  obj := cb.GetCallbackObject;
-  if (not Assigned(obj)) or (not (obj is TLCLButtonCallback)) then Exit;
-  Result := TLCLButtonCallback(obj);
-end;
-
 class procedure TCocoaWSButton.SetText(const AWinControl: TWinControl; const AText: String);
 var
   btn : NSButton;
-  cbo : TLCLButtonCallback;
 begin
   btn := NSButton(AWinControl.Handle);
   btn.setTitle(ControlTitleToNSStr(AText));
-  cbo := GetButtonCallback(btn);
-  if Assigned(cbo) then
-    cbo.LCLTitle := AText;
 end;
 
 class function TCocoaWSButton.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
-var
-  btn: NSButton;
-  lStr: NSString;
-  cbo : TLCLButtonCallback;
 begin
-  Result := AWinControl.HandleAllocated;
-  if not Result then Exit;
-  btn := NSButton(AWinControl.Handle);
-  cbo := GetButtonCallback(btn);
-  if Assigned(cbo) then
-    AText := cbo.LCLTitle
-  else
-  begin
-    lStr := btn.title();
-    AText := NSStringToString(lStr);
-  end;
+  // The text is static, so let the LCL fallback to FCaption
+  Result := false;
 end;
 
 class function TCocoaWSButton.GetTextLen(const AWinControl: TWinControl;
   var ALength: Integer): Boolean;
-var
-  lText: String;
 begin
-  Result := GetText(AWinControl, lText);
-  if not Result then Exit;
-  ALength := Length(lText);
+  // The text is static, so let the LCL fallback to FCaption
+  Result := false;
 end;
 
 { TCocoaWSCustomCheckBox }
