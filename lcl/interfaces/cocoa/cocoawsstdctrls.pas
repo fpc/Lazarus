@@ -219,6 +219,7 @@ type
 
   TLCLButtonCallback = class(TLCLCommonCallback, IButtonCallback)
   public
+    LCLTitle: string;
     procedure ButtonClick; virtual;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
     procedure GetAllowMixedState(var allowed: Boolean); virtual;
@@ -721,10 +722,30 @@ begin
   cf.release;
 end;
 
+function GetButtonCallback(btn: NSButton): TLCLButtonCallback;
+var
+  cb : ICommonCallback;
+  obj : TObject;
+begin
+  Result := nil;
+  if not Assigned(btn) then Exit;
+  cb := btn.lclGetCallback;
+  if not Assigned(cb) then Exit;
+  obj := cb.GetCallbackObject;
+  if (not Assigned(obj)) or (not (obj is TLCLButtonCallback)) then Exit;
+  Result := TLCLButtonCallback(obj);
+end;
 
 class procedure TCocoaWSButton.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  btn : NSButton;
+  cbo : TLCLButtonCallback;
 begin
-  NSButton(AWinControl.Handle).setTitle(ControlTitleToNSStr(AText));
+  btn := NSButton(AWinControl.Handle);
+  btn.setTitle(ControlTitleToNSStr(AText));
+  cbo := GetButtonCallback(btn);
+  if Assigned(cbo) then
+    cbo.LCLTitle := AText;
 end;
 
 class function TCocoaWSButton.GetText(const AWinControl: TWinControl;
@@ -732,12 +753,19 @@ class function TCocoaWSButton.GetText(const AWinControl: TWinControl;
 var
   btn: NSButton;
   lStr: NSString;
+  cbo : TLCLButtonCallback;
 begin
   Result := AWinControl.HandleAllocated;
   if not Result then Exit;
   btn := NSButton(AWinControl.Handle);
-  lStr := btn.title();
-  AText := NSStringToString(lStr);
+  cbo := GetButtonCallback(btn);
+  if Assigned(cbo) then
+    AText := cbo.LCLTitle
+  else
+  begin
+    lStr := btn.title();
+    AText := NSStringToString(lStr);
+  end;
 end;
 
 class function TCocoaWSButton.GetTextLen(const AWinControl: TWinControl;
