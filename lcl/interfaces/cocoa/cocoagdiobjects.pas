@@ -1428,7 +1428,7 @@ begin
   else
     Context := ctx;
 
-  NSGraphicsContext.saveGraphicsState;
+  NSGraphicsContext.classSaveGraphicsState;
   NSGraphicsContext.setCurrentContext(Context);
   ctx.setShouldAntialias(FFont.Antialiased);
   if FFont.RotationDeg<>0 then
@@ -1496,7 +1496,7 @@ begin
   if FillBackground then
     FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
-  NSGraphicsContext.restoreGraphicsState;
+  NSGraphicsContext.classRestoreGraphicsState;
 end;
 
 { TCocoaContext }
@@ -1764,7 +1764,7 @@ begin
   if FSavedDCList = nil then
     FSavedDCList := TFPObjectList.Create(True);
 
-  NSGraphicsContext.saveGraphicsState;
+  NSGraphicsContext.classSaveGraphicsState;
 
   //ctx.saveGraphicsState;
   Result := FSavedDCList.Add(SaveDCData) + 1;
@@ -1786,12 +1786,12 @@ begin
 
   while FSavedDCList.Count > ASavedDC do
   begin
-    NSGraphicsContext.restoreGraphicsState;
+    NSGraphicsContext.classRestoreGraphicsState;
     RestoreDCData(TCocoaDCData(FSavedDCList.Count - 1));
     FSavedDCList.Delete(FSavedDCList.Count - 1);
   end;
 
-  NSGraphicsContext.restoreGraphicsState;
+  NSGraphicsContext.classRestoreGraphicsState;
   RestoreDCData(TCocoaDCData(FSavedDCList[ASavedDC - 1]));
   FSavedDCList.Delete(ASavedDC - 1);
   Result := True;
@@ -1825,14 +1825,22 @@ end;
 procedure TCocoaContext.InvertRectangle(X1, Y1, X2, Y2: Integer);
 begin
   // save dest context
+{$if FPC_FULLVERSION < 30300}
+  ctx.instanceSaveGraphicsState;
+{$else}
   ctx.saveGraphicsState;
+{$endif}
   try
     DefaultBrush.Apply(Self, False);
     CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
 
     CGContextFillRect(CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
   finally
+{$if FPC_FULLVERSION < 30300}
+    ctx.instanceRestoreGraphicsState;
+{$else}
     ctx.restoreGraphicsState;
+{$endif}
     AttachedBitmap_SetModified();
   end;
 end;
@@ -2226,7 +2234,7 @@ function TCocoaContext.DrawImageRep(dstRect: NSRect; const srcRect: NSRect;
 var
   Context: NSGraphicsContext;
 begin
-  NSGraphicsContext.saveGraphicsState;
+  NSGraphicsContext.classSaveGraphicsState;
   try
     // we flip the context on it initialization (see InitDraw) so to draw
     // a bitmap correctly we need to create a flipped context and to draw onto it
@@ -2240,7 +2248,7 @@ begin
       dstRect, srcRect, NSCompositeSourceOver, 1.0, True, nil
       );
   finally
-    NSGraphicsContext.restoreGraphicsState;
+    NSGraphicsContext.classRestoreGraphicsState;
   end;
   AttachedBitmap_SetModified();
 end;
@@ -2387,10 +2395,10 @@ end;
 
 procedure TCocoaContext.DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
 begin
-  NSGraphicsContext.saveGraphicsState();
+  NSGraphicsContext.classSaveGraphicsState();
   NSGraphicsContext.setCurrentContext(ctx);
   ABitmap.imagerep.drawAtPoint(NSMakePoint(X, Y));
-  NSGraphicsContext.restoreGraphicsState();
+  NSGraphicsContext.classRestoreGraphicsState();
   AttachedBitmap_SetModified();
 end;
 

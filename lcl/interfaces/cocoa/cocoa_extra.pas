@@ -74,10 +74,12 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
+{$if FPC_FULLVERSION < 30300}
   NSAppearance = objcclass external(NSObject)
     function name: NSString; message 'name';
     class function currentAppearance: NSAppearance; message 'currentAppearance';
   end;
+{$endif}
 
   NSApplicationFix = objccategory external (NSApplication)
     procedure activateIgnoringOtherApps_(flag: ObjCBool); message 'activateIgnoringOtherApps:';
@@ -143,6 +145,12 @@ type
   end;
 
   NSGraphicsContextFix = objccategory external(NSGraphicsContext)
+{$if FPC_FULLVERSION < 30300}
+    class procedure classSaveGraphicsState; message 'saveGraphicsState';
+    class procedure classRestoreGraphicsState; message 'restoreGraphicsState';
+    procedure instanceSaveGraphicsState; message 'saveGraphicsState';
+    procedure instanceRestoreGraphicsState; message 'restoreGraphicsState';
+{$endif}
     procedure setImageInterpolation(interpolation: NSImageInterpolation); message 'setImageInterpolation:';
     procedure setShouldAntialias(antialias: Boolean); message 'setShouldAntialias:';
     // 10.10

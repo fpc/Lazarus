@@ -226,8 +226,8 @@ type
     procedure setCheckAction(aSelector: SEL); message 'setCheckAction:';
     procedure setTextAction(aSelector: SEL); message 'setTextAction:';
     procedure resizeSubviewsWithOldSize(oldSize: NSSize); override;
-    procedure setIdentifier(identifier_: id); message 'setIdentifier:';
-    function identifier: id; message 'identifier';
+    procedure setIdentifier(identifier_: NSString); message 'setIdentifier:'; {$if FPC_FULLVERSION >= 30300}override;{$endif}
+    function identifier: NSString; message 'identifier'; {$if FPC_FULLVERSION >= 30300}override;{$endif}
     function textFrame: NSRect; message 'textFrame';
     procedure lclSetEnabled(AEnabled: Boolean); override;
   end;
@@ -1110,12 +1110,12 @@ begin
   textSubView.setFrameSize(size);
 end;
 
-procedure TCocoaTableListItem.setIdentifier(identifier_: id);
+procedure TCocoaTableListItem.setIdentifier(identifier_: NSString);
 begin
   idStr := identifier_;
 end;
 
-function TCocoaTableListItem.identifier: id;
+function TCocoaTableListItem.identifier: NSString;
 begin
   Result := idStr;
 end;
