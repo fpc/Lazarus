@@ -565,8 +565,8 @@ begin
   GetRawImage(Index, RawImg);
   RawImg.PerformEffect(AEffect, True);
 
+  FillChar(IconInfo, sizeof(TIconInfo), 0);
   IconInfo.fIcon := True;
-  IconInfo.hbmMask := 0;
   if not CreateCompatibleBitmaps(RawImg, IconInfo.hbmColor, IconInfo.hbmMask, True)
   then begin
     // bummer, the widgetset doesn't support our 32bit format, try device
@@ -580,6 +580,10 @@ begin
     ListImg.Free;
   end;
   Image.Handle := CreateIconIndirect(@IconInfo);
+  if IconInfo.hbmColor<>0 then
+    DeleteObject(IconInfo.hbmColor);
+  if IconInfo.hbmMask<>0  then
+    DeleteObject(IconInfo.hbmMask);
 
   RawImg.FreeData;
 end;
