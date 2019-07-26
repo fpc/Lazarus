@@ -3670,6 +3670,7 @@ begin // setting curpage and do all manipulation
     ResetSelection;
     SendBandsToDown;
     PageView.Invalidate;
+    UpdScrollbars;
   finally
     fInBuildPage:=False;
   end;
