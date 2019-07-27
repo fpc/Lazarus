@@ -654,6 +654,7 @@ begin
     else
       CurrentDebuggerPropertiesConfig := DebuggerPropertiesConfigList.EntryByName(
         FSelectedDbgPropertiesConfig.ConfigName, FSelectedDbgPropertiesConfig.ConfigClass);
+    SaveDebuggerPropertiesList; // Update XML
   end;
 end;
 

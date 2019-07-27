@@ -753,6 +753,7 @@ begin
         EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
           TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
       EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=s;
+      EnvironmentOptions.SaveDebuggerPropertiesList; // Update XML
     end;
   end;
 
@@ -1389,6 +1390,7 @@ begin
         EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
           TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
       EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=Candidate.Caption;
+      EnvironmentOptions.SaveDebuggerPropertiesList; // Update XML
     end;
   end;
   DebuggerComboBox.Text:=EnvironmentOptions.DebuggerFilename;
