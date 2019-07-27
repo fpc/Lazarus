@@ -160,8 +160,8 @@
       <!-- "class of" type Visibility: default -->
       <element name="TWinControlClass">
         <short>
-          <var>TWinControlClass</var> - class of 
-          
+          <var>TWinControlClass</var> - class of
+
           <var>TWinControl</var>
         </short>
         <descr/>
@@ -170,8 +170,8 @@
       <!-- "class of" type Visibility: default -->
       <element name="TControlClass">
         <short>
-          <var>TControlClass</var> - class of 
-          
+          <var>TControlClass</var> - class of
+
           <var>TControl</var>
         </short>
         <descr/>
@@ -1045,7 +1045,7 @@ More cursors
       <element name="TDragImageList">
         <short>A list of Images used in dragging.</short>
         <descr>
-          <p>A drag image is shown when a DragImageList is supplied at all, 
+          <p>A drag image is shown when a DragImageList is supplied at all,
             <b>and</b> when no accepting target is under the mouse, or the source control style includes csDisplayDragImage, or AlwaysShowDragImage is set in the DragObject.</p>
           <p>In drag-dock operations typically no drag image is shown, since the DockRect frame already gives all required visual feedback.</p>
           <pre>This is a vague idea of the usage of this class:
@@ -2880,7 +2880,7 @@ dmFindTarget: find child control under the mouse
         For example: A buttons widget returns 75x25 on GetPreferredSize.
         CalculatePreferredSize adds 2 times the InnerBorder to the width and
         height.
-        
+
     CellAlignHorizontal, CellAlignVertical: TControlCellAlign;
         Used for example when the Parents.ChildSizing.Layout defines a table
         layout.
@@ -3156,7 +3156,7 @@ dmFindTarget: find child control under the mouse
     right side of its parent client area.
     With AnchorSide[akLeft] you can define a different reference side. The
     kept distance is defined by the BorderSpacing.
-    
+
     Example1:
        +-----+  +-----+
        |  B  |  |  C  |
@@ -3173,14 +3173,14 @@ dmFindTarget: find child control under the mouse
 
       Do not setup in both directions, because this will create a circle, and
       circles are not allowed.
-      
+
     Example2:
             +-------+
       +---+ |       |
       | A | |   B   |
       +---+ |       |
             +-------+
-            
+
       Centering A relative to B:
         A.AnchorSide[akTop].Side:=asrCenter;
         A.AnchorSide[akTop].Control:=B;
@@ -3251,8 +3251,8 @@ dmFindTarget: find child control under the mouse
         <descr/>
         <errors/>
           Can raise an exception 'TAnchorSide.CheckSidePosition invalid Side'.
-        
-        
+
+
         <seealso/>
       </element>
       <element name="TAnchorSide.CheckSidePosition.Result">
@@ -4654,8 +4654,8 @@ potentially accessible, but to actually be usable the accessible object needs to
           </p>
           <p>
             <var>TWinControl</var> overrides this and asks the interface for theme dependent values.
-            See 
-            
+            See
+
             <link id="TWinControl.CalculatePreferredSize"/> for more information.
           </p>
           <p>WithThemeSpace: If true, adds space for stacking.
@@ -6647,15 +6647,27 @@ potentially accessible, but to actually be usable the accessible object needs to
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBounds">
         <short>Sets the bounds (left, top, width, height) of the control.</short>
-        <descr><p>SetBounds can be used to change the left, top, width, height all at once, reducing some overhead.
-          </p><p>Use DisableAutoSize/EnableAutoSize to reduce recomputing/moving/resizing further.
-          </p><p>SetBounds is called when the properties Left, Top, Width, Height, or BoundsRect is set.
-          </p><p>SetBounds updates the BaseBounds and BaseParentClientSize, which are used by anchoring to keep the distance.
-            For example loading a Form with TMemo and the lfm contains TMemo's Left and Width, then SetBounds is called two times for the memo.
-          </p><p>When the user maximizes a window, SetBounds is called for the form, but not for the Memo, keeping the BaseBounds of the Memo.
-            If the Memo is anchored to the right, the Width of the Memo is changed based on the BaseBounds and BaseParentClientSize.
-          </p><p>Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
-          </p><p>Delphi calls SetBounds more often. SetBounds calls ChangeBounds with KeepBase=false.
+        <descr>
+          <p>
+            SetBounds can be used to change the left, top, width, height all at once, reducing some overhead.
+          </p>
+          <p>
+            Use DisableAutoSize/EnableAutoSize to reduce recomputing/moving/resizing further.
+          </p>
+          <p>
+            SetBounds is called when the properties Left, Top, Width, Height, or BoundsRect is set.
+          </p>
+          <p>
+            SetBounds updates the BaseBounds and BaseParentClientSize, which are used by anchoring to keep the distance. For example loading a Form with TMemo and the lfm contains TMemo's Left and Width, then SetBounds is called two times for the memo.
+          </p>
+          <p>
+            When the user maximizes a window, SetBounds is called for the form, but not for the Memo, keeping the BaseBounds of the Memo. If the Memo is anchored to the right, the Width of the Memo is changed based on the BaseBounds and BaseParentClientSize.
+          </p>
+          <p>
+            Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
+          </p>
+          <p>
+            Delphi calls SetBounds more often. SetBounds calls ChangeBounds with KeepBase=false.
           </p>
         </descr>
       </element>
@@ -6671,6 +6683,7 @@ potentially accessible, but to actually be usable the accessible object needs to
       <element name="TControl.SetBounds.aHeight">
         <short>The height of the control.</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TControl.SetInitialBounds">
         <short>Sets the bounds of the control initially, when it is created.</short>
@@ -6723,8 +6736,8 @@ potentially accessible, but to actually be usable the accessible object needs to
             some space around. This space is theme dependent, so the parameter is passed to the widgetset</p>
           <p>
             <var>TWinControl</var> overrides this and asks the interface for theme dependent values. See
-            
-            
+
+
             <link id="TWinControl.CalculatePreferredSize"/> for more information.</p>
         </descr>
       <notes><note>link?</note>
@@ -8195,7 +8208,9 @@ The size of the underlying widget (e.g. unit LCLIntf function GetWindowSize and 
       <element name="TControl.OnStartDrag">
         <short>Event handler for the start of a dragging operation.</short>
         <descr>
-          <p>The handler can provide a special DragControl object, otherwise a default object is created.</p>
+          <p>
+            The handler can provide a special DragControl object, otherwise a default object is created.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TDragObject"/>
@@ -8206,43 +8221,49 @@ The size of the underlying widget (e.g. unit LCLIntf function GetWindowSize and 
       <element name="TControl.OnTripleClick">
         <short>Event handler for triple mouse clicks.</short>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TControl.Parent">
         <short>The control within which the control is shown.</short>
         <descr>
-          <p>When the Parent moves or hides, all its children move or hide together with it.
-</p>
-          <p>Every TControl must have a Parent, else it is never shown.
-</p>
-          <p>The Parent of a floating form is Nil.
-</p>
-          <p>Set the parent last to reduce updates. For example:
-Button1:=TButton.Create(Self);
-Button1.Name:='Button1';
-Button1.Caption:='Click me'; // parent is not set, so it does not update the whole form
-Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
-</p>
-          <p>Delphi/VCL: Parent must be set first under Delphi, because many properties work differently if they are set before or after Handle creation. The LCL applies the properties when the Handle is created.
-</p>
+          <p>When the Parent moves or hides, all its children move or hide together with it.</p>
+          <p>Every TControl must have a Parent, else it is never shown.</p>
+          <p>The Parent of a floating form is Nil.</p>
+          <p>Set the parent last to reduce updates. For example: </p>
+          <code>
+  Button1 := TButton.Create(Self);
+  Button1.Name := 'Button1';
+  Button1.Caption := 'Click me'; // parent is not set, so it does not update the whole form
+  Button1.Parent := Form1; // set parent as last, the LCL now applies all properties
+          </code>
+          <p>Delphi/VCL: Parent must be set first under Delphi, because many properties work differently if they are set before or after Handle creation. The LCL applies the properties when the Handle is created.</p>
         </descr>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TControl.ParentBiDiMode">
-        <short>Allows to use the BiDiMode settings of Parent. Default is true.</short>
+        <short>
+          Allows to use the BiDiMode settings in the Parent control. Default is true.
+        </short>
         <seealso>
           <link id="TControl.BiDiMode"/>
         </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentColor">
-        <short>If true, the Color of the control will be the same as the one from the Parent. Default is true.</short>
-        <descr>While this property is True, all changes to the Color of the parent will be 
-          also done to the Color of the control, synchronizing them and keeping them with the same value.
-          If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
-          The combination of ParentColor with clDefault can cause problems in resolving clDefault. To obtain the Color
-          property of a control while taking into account clDefault and ParentColor one would use TControl.GetColorResolvingParent.
-          This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use
-          TColor.GetRGBColorResolvingParent
+        <short>
+          Use the Color from the Parent control, when enabled.
+        </short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value is True.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+           </p>
+           <p>
+             Using ParentColor when the Color value is clDefault can cause problems in resolving clDefault. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+           </p>
         </descr>
         <seealso>
           <link id="TControl.Color"/>
@@ -8250,10 +8271,11 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
           <link id="TControl.GetRGBColorResolvingParent"/>
         </seealso>
       </element>
+
       <!-- property Visibility: protected -->
       <element name="TControl.ParentFont">
         <short>If true, the Font of the control will be the same as the one from the Parent. Default is true.</short>
-        <descr>While this property is True, all changes to the font of the parent will be 
+        <descr>While this property is True, all changes to the font of the parent will be
           also done to the font of the control, synchronizing them and keeping them with the same value.
           If the Font of the control is changed by the application, then ParentFont will be automatically set to False.
         </descr>
@@ -8264,7 +8286,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <!-- property Visibility: protected -->
       <element name="TControl.ParentShowHint">
         <short>If true, the value of ShowHint for the control will be the same as the one from the Parent. Default is true.</short>
-        <descr>While this property is True, all changes to the ShowHint property of the parent will be 
+        <descr>While this property is True, all changes to the ShowHint property of the parent will be
           also done to the ShowHint property of the control, synchronizing them and keeping them with the same value.
           If the ShowHint property of the control is changed by the application, then ParentShowHint will be automatically set to False.
         </descr>
@@ -8285,12 +8307,26 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ReadBounds">
-        <short/>
-        <descr/>
-        <seealso/>
-      <notes><note>?</note>
-        </notes>
+        <short>
+          Reflects the Bounds for the Control read during LCL component streaming
+        </short>
+        <descr>
+          <p>
+            <var>ReadBounds</var> is a read-only <var>TRect</var> property used when the values for the Top, Left, Height and Width properties are set during LCL component streaming. When ComponentState contains <var>csLoading</var>, changes to these properties cause the new values to be applied to ReadBounds prior to calling the SetBounds method. The internal ControlFlags are also updated to indicate that the property value has been loaded using LCL component  streaming.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ComponentState"/>
+          <link id="Left"/>
+          <link id="Top"/>
+          <link id="Width"/>
+          <link id="Height"/>
+          <link id="SetBounds"/>
+          <link id="BaseBounds"/>
+          <link id="TControlFlag"/>
+        </seealso>
       </element>
+
       <!-- property Visibility: protected -->
       <element name="TControl.SessionProperties">
         <short>The stored (saved) properties of the current session, expressed as a string</short>
@@ -9120,8 +9156,8 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
         <short>Override this method when the ClientRect of a control differs from the default value.
         </short>
         <descr/>It's called often, so don't put expensive code here, or cache the result.
-        
-        
+
+
         <errors/>
         <seealso>
           <link id="TWinControl.GetAdjustedLogicalClientRect"/>
@@ -9453,8 +9489,8 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
           <p>This value is independent of constraints and siblings, only the inner parts are relevant.</p>
           <p>
             <var>WithThemeSpace</var>: If true, adds space for stacking. For example:
-            
-            
+
+
             <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be some space around.
             This space is theme dependent, so it is passed as a parameter to the widgetset. </p>
         </descr>
@@ -11936,13 +11972,13 @@ End;
           </p>
           <p>
             <var>TGraphicControl</var> provides a
-            
-            
+
+
             <var>Canvas</var> property for access to the control's drawing surface
-            and a virtual 
-            
-            <var>Paint</var> method and an 
-            
+            and a virtual
+
+            <var>Paint</var> method and an
+
             <var>OnPaint</var> handler,
             called in response to paint requests received by the parent control.
           </p>
@@ -12544,7 +12580,7 @@ End;
     window.
 
     Example1: Docking "A" (source window) left to "B" (target window)
-    
+
        +---+    +----+
        | A | -&gt; | B  |
        +---+    |    |
@@ -12554,7 +12590,7 @@ End;
               A splitter will be inserted between "A" and "B".
               And all three are children of the newly created TLazDockForm of the
               newly created TDockTree.
-      
+
        +------------+
        |+---+|+----+|
        || A ||| B  ||
@@ -12567,16 +12603,16 @@ End;
       replaced by docked decorations.
       If "A" had a TDockTree, it is freed and its child dockzones are merged to
       the docktree of "B". Analog for docking "C" left to "A":
-      
+
        +------------------+
        |+---+|+---+|+----+|
        || C ||| A ||| B  ||
        ||   |||   |||    ||
        |+---+|+---+|+----+|
        +------------------+
-       
 
-      
+
+
     Example2: Docking A into B
                 +-----+
        +---+    |     |
@@ -12587,7 +12623,7 @@ End;
       Result: A new docktree will be created. "A" will be resized to the size
               of "B". Both will be put into a TLazDockPages control which is the
               child of the newly created TDockTree.
-              
+
        +-------+
        |[B][A] |
        |+-----+|
@@ -13956,9 +13992,9 @@ End;
           <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
           <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
           <p>
-            <var>TControl.AdjustSize</var> calls 
-            
-            
+            <var>TControl.AdjustSize</var> calls
+
+
             <var>DoAutoSize</var> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
           <p>This method initially does the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overridden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>

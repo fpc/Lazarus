@@ -807,7 +807,7 @@
       <!-- object Visibility: default -->
       <element name="TCustomPage">
         <short>
-          <var>TCustomPage</var>: The base type for 
+          <var>TCustomPage</var>: The base type for
           <var>Page</var>
         </short>
         <descr>
@@ -1351,8 +1351,8 @@
         </short>
         <descr>
           <p>
-            <var>TCustom Notebook</var>: The base type for 
-            <var>TTabControl</var> and 
+            <var>TCustom Notebook</var>: The base type for
+            <var>TTabControl</var> and
             <var>TPageControl</var>
           </p>
           <p>A tab control has a series of <var>Tabs</var> and it may or may not contain pages.</p>
@@ -1798,16 +1798,16 @@
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.ActivePageComponent">
         <short>
-          <var>ActivePageComponent</var> - the actual contents of the currently selected 
-          
+          <var>ActivePageComponent</var> - the actual contents of the currently selected
+
           <var>Page</var>
         </short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.ActivePage">
         <short>
-          <var>ActivePage</var> - the  name (string) of the 
-          
+          <var>ActivePage</var> - the  name (string) of the
+
           <var>Page</var> that is currently selected and is available for interaction</short>
       </element>
       <!-- constructor Visibility: public -->
@@ -1838,8 +1838,8 @@
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.TabIndexAtClientPos">
         <short>
-          <var>TabIndexAtClientPos</var> - the index value of the Tab at the specified position 
-          
+          <var>TabIndexAtClientPos</var> - the index value of the Tab at the specified position
+
           <var>ClientPos</var>
         </short>
         <descr/>
@@ -1895,8 +1895,8 @@
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.CustomPage">
         <short>
-          <var>CustomPage</var> - returns the page specified by 
-          
+          <var>CustomPage</var> - returns the page specified by
+
           <var>Index</var>
         </short>
         <descr/>
@@ -7113,12 +7113,12 @@
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Columns">
         <short>Collection of items, which have properties of ListView columns (size, alignment, image index, etc).</short>
-        
+
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ColumnClick">
         <short>Enable to react to clicks on ListView header columns. And to call OnColumnClick event.</short>
-        
+
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.DefaultItemHeight">
@@ -7160,7 +7160,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OwnerData">
-        
+
         <descr/>
         <seealso/>
       <short>Use owner-data mode for ListView. It means, that ListView don't contain items, you must supply them using OnData* events.</short>
@@ -7197,7 +7197,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowWorkAreas">
-        
+
         <descr/>
         <seealso/>
       <short>Property WorkAreas sets work areas in ListView. This property allows to highlight each work area with its own color and show with own caption.</short>
@@ -7321,7 +7321,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.DropTarget">
-        
+
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FlatScrollBars">
@@ -7329,7 +7329,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FullDrag">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -8249,7 +8249,7 @@
         <descr>
           <p>
             <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar but can also control a digital numeric display
-</p>
+          </p>
           <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
           <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
           <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively a number may be displayed in a text box and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
@@ -8329,6 +8329,30 @@
         <descr/>
         <seealso/>
       </element>
+
+      <element name="TCustomUpDown.FUseWS">
+        <short>Indicates if the control depends on access to its WidgetSet class</short>
+        <descr>
+          <p>
+            FUseWS is a private Boolean member used to indicate if the control depends on  access to its WidgetSet class instance. The value in FUseWS is set in the constructor for the class instance.
+          </p>
+          <p>
+            FUseWS is used in the constructor to ensure that buttons are created for Prev and Next values when they are not part of the widgetset class inplementation.
+          </p>
+          <p>
+            FUseWS is used in the InitializeWnd method to determine if the property values must be set in the widgetset class, incuding: MinPosition, MaxPosition, Position, Increment, Wrap, Orientation, and UseArrowKeys.
+          </p>
+          <p>
+            FUseWS is used in the UpdateOrientation method to determine whether the action is implemented in the widgetset class, or handled in TCustomUpDown.
+          </p>
+          <p>
+            FUseWS is used in the AdjustPos method to determine whether a change in the control value using its buttons is handled in the current class instance, or forwarded to the appropriate button click method in the widgetset class. Similarly, handling for mouse wheel events are determined using the FUseWS member.
+          </p>
+        </descr>
+        <version>Introduced in LCL version 2.1.0.</version>
+        <seealso/>
+      </element>
+
       <!-- variable Visibility: private -->
       <element name="TCustomUpDown.FOnClick">
         <short/>
@@ -8513,6 +8537,39 @@
         <descr/>
         <seealso/>
       </element>
+
+      <element name="TCustomUpDown.AdjustPos">
+        <short>
+          Applies changes to the control value using its increment and decrement buttons
+        </short>
+        <descr>
+          <p>
+            AdjustPos is a method used to apply changes to the value for the control when the increment or decrement buttons are clicked. AdjustPos uses the value in the FUseWS member to determine if the change in value is handled in the widgetset class, or handled in TCustomUpDown.
+          </p>
+        </descr>
+        <version>Introduced in LCL version 2.1.0.</version>
+        <seealso>
+          <link id="TCustomUpDown.AssociateKeyDown"/>
+          <link id="TCustomUpDown.AssociateMouseWheel"/>
+        </seealso>
+      </element>
+      <element name="TCustomUpDown.AdjustPos.incPos">
+        <short>
+          True when the position value is being incremented. False when being decremented.
+        </short>
+      </element>
+
+      <element name="TCustomUpDown.InitializeWnd">
+        <short></short>
+        <descr>
+          <p>
+            InitializeWnd is an overridden method used to initialize the widgetset class  for the control. InitializeWnd calls the inherited method. When the FUseWS member contains False, no additional actions are performed in the method. When it contains True, methods in its widgetset class are called to synchronize values in the Min, Max, Position, Increment, Wrap, Orientation, and UseArrowKeys properties.
+          </p>
+        </descr>
+        <version>Introduced in LCL version 2.1.0.</version>
+        <seealso/>
+      </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TCustomUpDown.AssociateKeyDown">
         <short>
@@ -13645,7 +13702,7 @@ the comparison is case sensitive.
       <element name="TTreeNode.OverlayIndex">
         <short>
           <var>OverlayIndex</var> - the index of the overlay</short>
-        <descr>This icon is drawn above the normal icon. 
+        <descr>This icon is drawn above the normal icon.
 If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Overlay) for Delphi compatibility.
 </descr>
         <seealso/>
@@ -14774,10 +14831,10 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         <short>A set of TreeViewOptions which are set be default.</short>
         <descr>
           <p>A series of defaults used to set the options of a TreeView object when first placed on a form. This set consists of the following items:</p>
-          <pre>tvoShowRoot, 
+          <pre>tvoShowRoot,
     tvoShowLines,
     tvoShowButtons,
-    tvoHideSelection, 
+    tvoHideSelection,
     tvoToolTips,
     tvoKeepCollapsedNodes,
     tvoAutoItemHeight
@@ -16567,7 +16624,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.AutoExpand">
-        
+
         <descr/>
         <seealso/>
       <short>Unfold a tree-item when user clicks it or an item activated by code.</short>
@@ -16580,14 +16637,14 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.HideSelection">
-        
+
         <descr/>
         <seealso/>
       <short>If a control looses focus, then don't paint selection for a selected tree-item.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.HotTrack">
-        
+
         <descr/>
         <seealso>
           <link id="#lcl.ComCtrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
@@ -16596,14 +16653,14 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Images">
-        
+
         <descr/>
         <seealso/>
       <short>TImageList object which holds icons for tree-items.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Indent">
-        
+
         <descr><p>Use 0 for auto-sized value. </p><p>Use <link id="TCustomTreeView.GetRealIndent">GetRealIndent</link> for real value.</p>
         </descr>
         <seealso/>
@@ -16743,21 +16800,21 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ReadOnly">
-        
+
         <descr/>
         <seealso/>
       <short>Don't allow to change item captions by mouse click with a delay.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.RightClickSelect">
-        
+
         <descr/>
         <seealso/>
       <short>Right-click also selects tree-item. Else it only calls PopupMenu.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.RowSelect">
-        
+
         <descr/>
         <seealso/>
       <short>When a tree-item is selected, paint selection background with full width.</short>
@@ -16778,34 +16835,34 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowButtons">
-        
+
         <descr/>
         <seealso/>
       <short>Show expand/collapse (fold/unfold) icons at left side for nodes with sub-nodes.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowLines">
-        
+
         <descr/>
         <seealso/>
       <short>Show vertical lines at left side. They paint the tree structure for nested nodes.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowRoot">
-        
+
         <descr/>
         <seealso/>
       <short>Show the root tree-item which is always present in code but may be hidden for user.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowSeparators">
-        
+
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.SortType">
-        
+
         <descr>Changing the Text or Data of a node will sort again.
 While adding nodes does not. Call TreeView1.AlphaSort to sort the whole tree.
 Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
@@ -16815,14 +16872,14 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.StateImages">
-        
+
         <descr/>
         <seealso/>
       <short>TImageList object which holds icons for tree-item states: normal item, selected item, etc.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ToolTips">
-        
+
         <descr/>
         <seealso/>
       <short>Show tooltip (hint) for a tree-item when the item is too long to fit by width and mouse is over it.</short>
@@ -17145,7 +17202,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.BackgroundColor">
-        
+
         <descr/>
         <seealso/>
       <short>Color of background area of control.</short>
@@ -17165,8 +17222,8 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.DefaultItemHeight">
-        
-        
+
+
         <seealso/>
       <short>Default height of tree-items. If tvoAutoItemHeight is set in Options, this value is detected from font and icons.</short>
       </element>
@@ -17179,7 +17236,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.ExpandSignType">
-        
+
         <descr/>
         <seealso/>
       <short>Sets shape of expand/collapse (fold/unfold) symbol: plus/minus, empty arrows, filled arrows etc.</short>
@@ -17207,14 +17264,14 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.Options">
-        
-        
+
+
         <seealso/>
       <short>Set of additional option flags for treeview.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.ScrollBars">
-        
+
         <descr/>
         <seealso/>
       <short>Kind of scrollbars: horizontal, vertical, or both. Auto* mean that scrollbars hide automatically.</short>
@@ -17227,14 +17284,14 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.SelectionColor">
-        
+
         <descr/>
         <seealso/>
       <short>Color used to paint background of item selection.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.SeparatorColor">
-        
+
         <descr/>
         <seealso/>
       <short>Color used to paint horizontal lines between items, separators.</short>
@@ -17253,14 +17310,14 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.TreeLineColor">
-        
+
         <descr/>
         <seealso/>
       <short>Color used to paint vertical lines at left side.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.ExpandSignColor">
-        
+
         <descr/>
         <seealso/>
       <short>Color used to paint expand/collapse (fold/unfold) symbol (i.e. plus/minus symbol).</short>
@@ -17296,7 +17353,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.AutoExpand">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17308,7 +17365,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.BackgroundColor">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17344,7 +17401,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.DefaultItemHeight">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17374,7 +17431,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ExpandSignType">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17386,23 +17443,23 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.HideSelection">
-        
+
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.HotTrack">
-        
+
         <descr/>
-        
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Images">
-        
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Indent">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17440,29 +17497,29 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TTreeView.ReadOnly">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.RightClickSelect">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.RowSelect">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ScrollBars">
-        
+
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.SelectionColor">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17470,7 +17527,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TTreeView.ShowButtons">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ShowHint" link="#LCL.Controls.TControl.ShowHint">
@@ -17482,25 +17539,25 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TTreeView.ShowLines">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ShowRoot">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.SortType">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.StateImages">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
@@ -17524,7 +17581,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TTreeView.ToolTips">
         <descr/>
         <seealso/>
-      
+
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Visible" link="#LCL.Controls.TControl.Visible">
@@ -17715,7 +17772,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Options">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17729,13 +17786,13 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TTreeView.Items" link="#LCL.ComCtrls.TCustomTreeView.Items"/>
       <!-- property Visibility: published -->
       <element name="TTreeView.TreeLineColor">
-        
+
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ExpandSignColor">
-        
+
         <descr/>
         <seealso/>
       </element>
@@ -17752,7 +17809,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       ... change a lot of nodes ...
       // restore old expanded state
       OldExpanded.Apply(ATreeView);
-      OldExpanded.Free; 
+      OldExpanded.Free;
 </pre>
         </descr>
         <errors/>
@@ -18234,7 +18291,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TListView.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TListView.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TListView.HideSelection">
-        
+
       </element>
       <element name="TListView.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TListView.ReadOnly"/>
@@ -18590,7 +18647,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
           <var>SelectOnlyThis</var> - method for selecting only the indicated node</short>
       </element>
       <element name="TCustomTreeView.TreeLinePenStyle">
-        
+
       <short>Style of TPen, used to paint vertical lines at left side.</short>
       </element>
       <element name="TTreeView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>

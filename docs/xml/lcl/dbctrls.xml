@@ -853,7 +853,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBEdit.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
+          <pre>The Visible property represents the ability to see a visual control.
           If Visible is True the control is shown, otherwise it is hidden.
           Calling Show sets, among others, Visible to True.
           Setting Visible to False is equivalent to calling Hide method.</pre>
@@ -1054,10 +1054,10 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
-component was completely read from a stream and all properties and 
-references to other objects have been resolved by the streaming 
+component was completely read from a stream and all properties and
+references to other objects have been resolved by the streaming
 system. Descendents of <var>TComponent</var> should override this method to
-do some additional processing of properties after all published 
+do some additional processing of properties after all published
 properties have been set from values obtained from the stream.
 </p>
           <p>Application programmers should never call <var>Loaded</var> directly, this
@@ -1073,7 +1073,7 @@ is done automatically by the streaming system.
           <p>
             <var>Notification</var> is called whenever a child component is destroyed,
 inserted or removed from the list of owned component. Components that
-were requested to send a notification when they are freed 
+were requested to send a notification when they are freed
 ((with <link id="TComponent.FreeNotification">FreeNotification</link>)
 will also call <var>Notification</var> when they are freed.
 </p>
@@ -1085,7 +1085,7 @@ is being destroyed.
           <p>Descendents of <var>TComponent</var> can use <link id="TComponent.FreeNotification">FreeNotification</link> to request
 notification of the destruction of another object. By overriding the
 <var>Notification</var> method, they can do special processing (typically,
-set a reference to this component to <var>Nil</var>) 
+set a reference to this component to <var>Nil</var>)
 when this component is destroyed. The <var>Notification</var> method is
 called quite often in the streaming process, so speed should be a
 consideration when overriding this method.
@@ -1170,7 +1170,7 @@ consideration when overriding this method.
       <element name="TDBText.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
-          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector,
 and the developer needs to set it explicitly to some new text.</p>
           <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
@@ -1237,7 +1237,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TDBText.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
+          <pre>The Visible property represents the ability to see a visual control.
           If Visible is True the control is shown, otherwise it is hidden.
           Calling Show sets, among others, Visible to True.
           Setting Visible to False is equivalent to calling Hide method.</pre>
@@ -1423,10 +1423,10 @@ introduced. These functions interface with the LCLInterface. </p>
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
-component was completely read from a stream and all properties and 
-references to other objects have been resolved by the streaming 
+component was completely read from a stream and all properties and
+references to other objects have been resolved by the streaming
 system. Descendents of <var>TComponent</var> should override this method to
-do some additional processing of properties after all published 
+do some additional processing of properties after all published
 properties have been set from values obtained from the stream.
 </p>
           <p>Application programmers should never call <var>Loaded</var> directly, this
@@ -1442,7 +1442,7 @@ is done automatically by the streaming system.
           <p>
             <var>Notification</var> is called whenever a child component is destroyed,
 inserted or removed from the list of owned component. Components that
-were requested to send a notification when they are freed 
+were requested to send a notification when they are freed
 ((with <link id="TComponent.FreeNotification">FreeNotification</link>)
 will also call <var>Notification</var> when they are freed.
 </p>
@@ -1454,7 +1454,7 @@ is being destroyed.
           <p>Descendents of <var>TComponent</var> can use <link id="TComponent.FreeNotification">FreeNotification</link> to request
 notification of the destruction of another object. By overriding the
 <var>Notification</var> method, they can do special processing (typically,
-set a reference to this component to <var>Nil</var>) 
+set a reference to this component to <var>Nil</var>)
 when this component is destroyed. The <var>Notification</var> method is
 called quite often in the streaming process, so speed should be a
 consideration when overriding this method.
@@ -1725,7 +1725,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBListBox.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
+          <pre>The Visible property represents the ability to see a visual control.
           If Visible is True the control is shown, otherwise it is hidden.
           Calling Show sets, among others, Visible to True.
           Setting Visible to False is equivalent to calling Hide method.</pre>
@@ -2048,7 +2048,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBRadioGroup.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
-          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector,
 and the developer needs to set it explicitly to some new text.</p>
           <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
@@ -2154,7 +2154,7 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TDBRadioGroup.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
+          <pre>The Visible property represents the ability to see a visual control.
           If Visible is True the control is shown, otherwise it is hidden.
           Calling Show sets, among others, Visible to True.
           Setting Visible to False is equivalent to calling Hide method.</pre>
@@ -2462,7 +2462,7 @@ Reads or Writes flag if control is re-sized.
       <element name="TDBCheckBox.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
-          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector,
 and the developer needs to set it explicitly to some new text.</p>
           <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
@@ -2472,6 +2472,37 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
         <seealso/>
       </element>
+
+      <element name="TDBCheckBox.BiDiMode" link="#LCL.Controls.TControl.BiDiMode">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="TControl.BiDiMode"/>
+        </seealso>
+      </element>
+
+      <element name="TDBCheckBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="TControl.BorderSpacing"/>
+        </seealso>
+      </element>
+
+      <element name="TDBCheckBox.Color" link="#LCL.Controls.TControl.Color">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDBCheckBox.Constraints" link="#LCL.Controls.TControl.Constraints">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="TControl.Constraints"/>
+        </seealso>
+      </element>
+
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.DataField">
         <short>The name (as a string) of the field with which the checkbox is to be associated</short>
@@ -2642,7 +2673,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
+          <pre>The Visible property represents the ability to see a visual control.
           If Visible is True the control is shown, otherwise it is hidden.
           Calling Show sets, among others, Visible to True.
           Setting Visible to False is equivalent to calling Hide method.</pre>
@@ -2650,6 +2681,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         </descr>
         <seealso/>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDBComboBox">
         <short>
@@ -2894,9 +2926,6 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <descr>
           <p>
             <var>Index </var>
-
-
-
 - the number of the currently selected item</p>
           <p>The first item has number 0, the second has number 1, the third number 2, etc. </p>
           <p>In case no item is selected, ItemIndex
@@ -2904,6 +2933,7 @@ has value -1.</p>
         </descr>
         <seealso/>
       </element>
+
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
@@ -2924,9 +2954,6 @@ has value -1.</p>
         <descr>
           <p>
             <var>AutoDropDown </var>
-
-
-
 - if True, the drop-down list appears as soon as the cursor moves over the text box</p>
           <p>If False, the drop-down box only appears when the downward triangular indicator at the end of the box is selected</p>
         </descr>
@@ -2953,6 +2980,7 @@ has value -1.</p>
         <descr/>
         <seealso/>
       </element>
+
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
@@ -2962,6 +2990,7 @@ has value -1.</p>
         </descr>
         <seealso/>
       </element>
+
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Font" link="#LCL.Controls.TControl.Font">
         <short>The <var>Font</var> to be used for text in this control</short>
@@ -3119,14 +3148,52 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBComboBox.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
-          If Visible is True the control is shown, otherwise it is hidden.
-          Calling Show sets, among others, Visible to True.
-          Setting Visible to False is equivalent to calling Hide method.</pre>
-          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+          <p>
+            The Visible property represents the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden. Calling Show sets, among others, Visible to True. Setting Visible to False is equivalent to calling Hide method.
+          </p>
+          <p>
+            The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.
+          </p>
         </descr>
         <seealso/>
       </element>
+
+      <element name="TDBComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TDBComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+
+      <element name="TDBComboBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads or Writes flag if bounds are changed</p>
+        </descr>
+      </element>
+      <element name="TDBComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+        <descr>
+          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
+        </descr>
+      </element>
+
+      <element name="TDBComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+
+      <element name="TDBComboBox.DataChange" link=""/>
+      <element name="TDBComboBox.DataChange.Sender">
+        <short></short>
+      </element>
+
+      <element name="TDBComboBox.KeyPress" link=""/>
+      <element name="TDBComboBox.KeyPress.Key">
+        <short></short>
+      </element>
+
+      <element name="TDBComboBox.UpdateData" link=""/>
+      <element name="TDBComboBox.UpdateData.Sender">
+        <short></short>
+      </element>
+
+      <element name="TDBComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+
+      <element name="TDBComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+
       <!-- object Visibility: default -->
       <element name="TDBMemo">
         <short>
@@ -3595,10 +3662,10 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
-component was completely read from a stream and all properties and 
-references to other objects have been resolved by the streaming 
+component was completely read from a stream and all properties and
+references to other objects have been resolved by the streaming
 system. Descendents of <var>TComponent</var> should override this method to
-do some additional processing of properties after all published 
+do some additional processing of properties after all published
 properties have been set from values obtained from the stream.
 </p>
           <p>Application programmers should never call <var>Loaded</var> directly, this
@@ -3614,7 +3681,7 @@ is done automatically by the streaming system.
           <p>
             <var>Notification</var> is called whenever a child component is destroyed,
 inserted or removed from the list of owned component. Components that
-were requested to send a notification when they are freed 
+were requested to send a notification when they are freed
 ((with <link id="TComponent.FreeNotification">FreeNotification</link>)
 will also call <var>Notification</var> when they are freed.
 </p>
@@ -3626,7 +3693,7 @@ is being destroyed.
           <p>Descendents of <var>TComponent</var> can use <link id="TComponent.FreeNotification">FreeNotification</link> to request
 notification of the destruction of another object. By overriding the
 <var>Notification</var> method, they can do special processing (typically,
-set a reference to this component to <var>Nil</var>) 
+set a reference to this component to <var>Nil</var>)
 when this component is destroyed. The <var>Notification</var> method is
 called quite often in the streaming process, so speed should be a
 consideration when overriding this method.
@@ -3697,7 +3764,7 @@ consideration when overriding this method.
       <element name="TDBGroupBox.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
-          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector,
 and the developer needs to set it explicitly to some new text.</p>
           <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
@@ -3914,7 +3981,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
+          <pre>The Visible property represents the ability to see a visual control.
           If Visible is True the control is shown, otherwise it is hidden.
           Calling Show sets, among others, Visible to True.
           Setting Visible to False is equivalent to calling Hide method.</pre>
@@ -4660,23 +4727,34 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <seealso/>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDBCustomNavigator">
         <short>
-          <var>TDBCustomNavigator</var> - the base class for <var>TDBNavigator</var>, a tool for navigating through the records of a dataset</short>
+          <var>TDBCustomNavigator</var> - the base class for <var>TDBNavigator</var>, a tool for navigating through the records of a dataset
+        </short>
+        <descr>
+          <p>
+            <var>TDBCustomNavigator</var> is the parent class for <var>TDBNavigator</var>, an advanced tool for navigating through datasets held locally in response to a query sent to the database. Most of the important properties are defined here.
+          </p>
+          <p>
+            It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cancel</b>l the changes, and to <var>Refresh</var> the display from the database. The set of buttons for display can be customized in <var>VisibleButtons</var>, which allows display of individual buttons to be suppressed.
+          </p>
+          <p>
+            If used in conjunction with a DataAware control such as <var>TDBGrid</var> or <var>TDBMemo</var> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.
+          </p>
+          <p>
+            Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure  <var>BtnClick</var> to which an argument can be sent with the index value of the button clicked, and the procedure chooses which action to call dependent on the button index.
+          </p>
+          <p>
+            The <var>DataSource</var> property must be set to link to the appropriate set of data.
+          </p>
+        </descr>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
-        <descr>
-          <p>
-            <var>TDBCustomNavigator</var> is the parent class for 
-<var>TDBNavigator</var>, an advanced tool for navigating through datasets held locally in response to a query sent to the database. Most of the important properties are defined here.</p>
-          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cancel</b>l the changes, and to <var>Refresh</var> the display from the database. The set of buttons for display can be customized in <var>VisibleButtons</var>, which allows display of individual buttons to be suppressed</p>
-          <p>If used in conjunction with a DataAware control such as <var>TDBGrid</var> or <var>TDBMemo</var> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
-          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure  <var>BtnClick</var> to which an argument can be sent with the index value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
-          <p>The <var>DataSource</var> property must be set to link to the appropriate set of data.</p>
-        </descr>
       </element>
+
       <!-- variable Visibility: private -->
       <element name="TDBCustomNavigator.FBeforeAction">
         <short/>
@@ -5075,6 +5153,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr/>
         <seealso/>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDBNavButton">
         <short>
@@ -5185,23 +5264,37 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDBNavigator">
         <short>
-          <var>TDBNavigator </var>- a data-aware Button-Bar to facilitate navigating between records of a dataset</short>
+          <var>TDBNavigator </var>- a data-aware Button-Bar to facilitate navigating between records of a dataset
+        </short>
+        <descr>
+          <p>
+            <var>TDBNavigator</var> is an advanced tool for navigating through datasets held locally in response to a query sent to the database.
+          </p>
+          <p>
+            It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cancel</b> the changes, and to <b>Refresh</b> the display from the database.
+          </p>
+          <p>
+            The programmer may determine, at design time, which buttons are to be displayed or suppressed by adjusting the <var>VisibleButtons</var> property in the Object Inspector.
+          </p>
+          <p>
+            If used in conjunction with a DataAware control such as <link id="#lcl.DBGrids.TDBGrid">TDBGrid</link> or <link id="TDBMemo">TDBMemo</link> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.
+          </p>
+          <p>
+            Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure <link id="TDBCustomNavigator.BtnClick">TDBCustomNavigator.BtnClick</link> to which an argument can be sent with the <var>Index</var> value of the button clicked, and the procedure chooses which action to call dependent on the button index.
+          </p>
+          <p>
+            The <var>DataSource</var> property must be set to link to the appropriate set of data.
+          </p>
+        </descr>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
-        <descr>
-          <p>
-            <var>TDBNavigator</var> is an advanced tool for navigating through datasets held locally in response to a query sent to the database.</p>
-          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cancel</b> the changes, and to <b>Refresh</b> the display from the database.</p>
-          <p>The programmer may determine, at design time, which buttons are to be displayed or suppressed by adjusting the <var>VisibleButtons</var> property in the Object Inspector.</p>
-          <p>If used in conjunction with a DataAware control such as <link id="#lcl.DBGrids.TDBGrid">TDBGrid</link> or <link id="TDBMemo">TDBMemo</link> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
-          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure <link id="TDBCustomNavigator.BtnClick">TDBCustomNavigator.BtnClick</link> to which an argument can be sent with the <var>Index</var> value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
-          <p>The <var>DataSource</var> property must be set to link to the appropriate set of data.</p>
-        </descr>
       </element>
+
       <!-- property Visibility: published -->
       <element name="TDBNavigator.Align" link="#LCL.Controls.TControl.Align">
         <short/>
@@ -5513,18 +5606,32 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <errors/>
         <seealso/>
       </element>
+
       <topic name="HowToUseDataAwareControls">
         <short>
           <var>HowToUseDataAwareControls</var>    - Hints for accessing databases</short>
         <descr>
           <p>
-            <var>HowToUseDataAwareControls</var> - Hints for accessing databases. A set of Data-Aware components is provided, to make it easier to access information held in databases.</p>
-          <p>Before using Data-Aware components, it is necessary to make a connection with a database, and this should be done either using a TSQLConnection or a TDbf component, depending on the type of database that is being used. In any case, the components for connection with the database need to be found in $Lazdir/components/sqldb/, $Lazdir/components/tdbf/ or whatever other source is appropriate. They need to be added using the <var>Components</var> Menu Item of the IDE, and compiled ready for adding. The IDE needs to be re-built to include the new components.</p>
-          <p>To make the connection with the database: first place a <var>DataBase Connection</var> on the Form (invisible at run-time, so put it anywhere convenient); set its properties to connect the user (with name and password) to the appropriate server, database and table (the connection component should deal with all the user-authentication issues, opening and closing the database etc). Then put on a <var>TDataSource</var> from the Data Access tab of the Component Palette, and perhaps items such as <var>TSQLTransaction</var> and <var>TSQLQuery</var>, depending on the particular database you are using. The various database components need to be linked to each other, for example by setting the <var>Transaction</var> property of a database connector to the appropriate transaction component, and linking the <var>DataBase</var> property of the Transaction component back to the database connector; link the DataSource's <var>DataSet</var> property to the appropriate SQLQuery or other set of data, and its <var>Transaction</var> property to the transaction component</p>
-          <p>Each Data-Aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, color and font etc. But there are also special properties to define the data to be displayed or modified. These include the <var>DataSource</var> property which must be set to link to the defined set of data, and often a <var>Field</var> component to determine which of the columns in the database is to be displayed. </p>
-          <p>Most of the components operate on a single Row or record of the database, but the <var>TDBGrid</var> is capable of displaying and operating on multiple rows and columns, in a <var>StringGrid</var> format, allowing the user to get an overview of what is in the database. The DBGrid will display the contents of the DataSet even at design time, provided the various components are enabled or rendered active; this allows the designer to ensure that all the connections to the database have been correctly made.</p>
-          <p>The <var>TDBNavigator</var> component is used in conjunction with the Data-Aware components. It consists of a series of buttons to allow browsing through the DataSet, displaying the first, previous, next or last record (or Row), inserting or deleting records, committing the changes back to the database or refreshing the DataSet from the database.</p>
-          <p>The way database programming works is typically as follows:</p>
+            <var>HowToUseDataAwareControls</var> - Hints for accessing databases. A set of Data-Aware components is provided, to make it easier to access information held in databases.
+          </p>
+          <p>
+            Before using Data-Aware components, it is necessary to make a connection with a database, and this should be done either using a TSQLConnection or a TDbf component, depending on the type of database that is being used. In any case, the components for connection with the database need to be found in $Lazdir/components/sqldb/, $Lazdir/components/tdbf/ or whatever other source is appropriate. They need to be added using the <var>Components</var> Menu Item of the IDE, and compiled ready for adding. The IDE needs to be re-built to include the new components.
+          </p>
+          <p>
+            To make the connection with the database: first place a <var>DataBase Connection</var> on the Form (invisible at run-time, so put it anywhere convenient); set its properties to connect the user (with name and password) to the appropriate server, database and table (the connection component should deal with all the user-authentication issues, opening and closing the database etc). Then put on a <var>TDataSource</var> from the Data Access tab of the Component Palette, and perhaps items such as <var>TSQLTransaction</var> and <var>TSQLQuery</var>, depending on the particular database you are using. The various database components need to be linked to each other, for example by setting the <var>Transaction</var> property of a database connector to the appropriate transaction component, and linking the <var>DataBase</var> property of the Transaction component back to the database connector; link the DataSource's <var>DataSet</var> property to the appropriate SQLQuery or other set of data, and its <var>Transaction</var> property to the transaction component.
+          </p>
+          <p>
+            Each Data-Aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, color and font etc. But there are also special properties to define the data to be displayed or modified. These include the <var>DataSource</var> property which must be set to link to the defined set of data, and often a <var>Field</var> component to determine which of the columns in the database is to be displayed.
+          </p>
+          <p>
+            Most of the components operate on a single Row or record of the database, but the <var>TDBGrid</var> is capable of displaying and operating on multiple rows and columns, in a <var>StringGrid</var> format, allowing the user to get an overview of what is in the database. The DBGrid will display the contents of the DataSet even at design time, provided the various components are enabled or rendered active; this allows the designer to ensure that all the connections to the database have been correctly made.
+          </p>
+          <p>
+            The <var>TDBNavigator</var> component is used in conjunction with the Data-Aware components. It consists of a series of buttons to allow browsing through the DataSet, displaying the first, previous, next or last record (or Row), inserting or deleting records, committing the changes back to the database or refreshing the DataSet from the database.
+          </p>
+          <p>
+            The way database programming works is typically as follows:
+          </p>
           <ul>
             <li>a database is opened for access by the user (Database Connection)</li>
             <li>a command is issued (e.g. by <var>TSQLQuery</var>) to select or extract some or all of the records which are then stored locally in the <var>DataSet</var>
@@ -5532,8 +5639,12 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
             <li>the contents of the <var>DataSet</var> are acted on by the Data-Aware components, displaying one Row or record at a time from selected Columns, or perhaps the whole DataSet in a <var>DBGrid</var>, editing records, inserting or deleting records, or using the data to perform statistical tests or calculations</li>
             <li>at intervals usually prescribed by the user (sometimes after every change, sometimes after a whole series of changes), the contents of the local DataSet are sent back to the database, causing an update of the database's contents. This process is referred to as 'Commit' or 'Post' or sometimes as 'Update'</li>
           </ul>
-          <p>The programmer can determine which events are associated with a Commit action by supplying suitable event handlers for <var>OnClick</var>, <var>OnChange</var>, <var>OnFinishedEdit</var> etc.</p>
-          <p>The following table shows the approximate correspondence between conventional and data-aware control classes</p>
+          <p>
+            The programmer can determine which events are associated with a Commit action by supplying suitable event handlers for <var>OnClick</var>, <var>OnChange</var>, <var>OnFinishedEdit</var> etc.
+          </p>
+          <p>
+            The following table shows the approximate correspondence between conventional and data-aware control classes:
+          </p>
           <table>
             <th>
               <td>Standard Control</td>
@@ -5596,9 +5707,12 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
               <td>A grid to display information in Rows and Columns</td>
             </tr>
           </table>
-          <p>Standard Controls can, of course, be used to display information from a database, but they lack the direct link with the DataSet and its Navigation aids, so the programmer must write explicit code to extract data from the DataSet and put it in the Standard Control</p>
+          <p>
+            Standard Controls can, of course, be used to display information from a database, but they lack the direct link with the DataSet and its Navigation aids, so the programmer must write explicit code to extract data from the DataSet and put it in the Standard Control
+          </p>
         </descr>
       </topic>
+
       <element name="TDBEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
@@ -5680,29 +5794,6 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <p>The default color is the same as the window in which the control is located.</p>
         </descr>
       </element>
-      <element name="TDBComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
-      <element name="TDBComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TDBComboBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads or Writes flag if bounds are changed</p>
-        </descr>
-      </element>
-      <element name="TDBComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
-        <descr>
-          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
-        </descr>
-      </element>
-      <element name="TDBComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TDBComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TDBComboBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
-      <element name="TDBComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TDBComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TDBComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TDBComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TDBComboBox.OnSelect" link="#LCL.StdCtrls.TCustomComboBox.OnSelect"/>
-      <element name="TDBComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TDBComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <element name="TDBGroupBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
@@ -5883,6 +5974,19 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short>
           <var>UpdateData</var> - method for applying any pending changes to the data</short>
       </element>
+
+      <element name="TDBLookupListBox.IsUnbound">
+        <short></short>
+        <descr>
+          IsUnbound is a Boolean function.
+        </descr>
+        <seealso></seealso>
+        <version></version>
+      </element>
+      <element name="TDBLookupListBox.IsUnbound.Result">
+        <short></short>
+      </element>
+
       <element name="TCustomDBListBox.Create">
         <short>
           <var>Create</var> - constructor for <var>TCustomDBListBox</var>: calls inherited <var>Create</var>, makes links and sets up event handlers for data change, change in <var>Editing</var> status and updating data</short>
@@ -5994,10 +6098,15 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBLookupListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TDBLookupListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex"/>
       <element name="TDBLookupListBox.Visible" link="#LCL.Controls.TControl.Visible"/>
+
       <element name="TDBEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+
       <element name="TDBText.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+
       <element name="TDBRadioGroup.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+
       <element name="TDBCheckBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+
       <element name="TCustomDBComboBox">
         <short>
           <var>TCustomDBComboBox</var> - a Data-aware Combo Box for displaying information from a Database</short>
@@ -6005,19 +6114,195 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <link id="HowToUseDataAwareControls"/>
         </seealso>
       </element>
+
+      <element name="TCustomDBComboBox.FDataLink"/>
+      <element name="TCustomDBComboBox.FDetectedEvents"/>
+
+      <element name="TCustomDBComboBox.GetDataField">
+        <short>
+          Gets the value for the DataField property
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomDBComboBox.GetDataField.Result">
+        <short>
+          Value for the DataField property
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomDBComboBox.GetDataSource">
+        <short>
+          Gets the value for the DataSource property
+        </short>
+        <descr>
+          GetDataSource is a TDataSource function used to get the value for the DataSource property.
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomDBComboBox.GetDataSource.Result">
+        <short>Value for the DataSource property</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomDBComboBox.GetField">
+        <short>
+          Gets the value for the Field property
+        </short>
+        <descr>
+          GetField is a TField function used to get the value for the Field property.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.GetField.Result">
+        <short>Value for the Field property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.GetReadOnly">
+        <short>Gets the value for the ReadOnly property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.GetReadOnly.Result">
+        <short>Value for the ReadOnly property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.SetDataField">
+        <short>Sets the value for the DataField property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.SetDataField.AValue">
+        <short>New value for the DataField property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.SetDataSource">
+        <short>Sets the value for the DataSource property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.SetDataSource.AValue">
+        <short>New value for the DataSource property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.SetReadOnly">
+        <short>Sets the value for the ReadOnly property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.SetReadOnly.AValue">
+        <short>New value for the ReadOnly property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.CMGetDataLink">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.CMGetDataLink.Message">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.DoEdit">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.DoEdit.Result">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.DoOnCloseUp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.DoOnSelect">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.DoOnChange">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.LMDeferredEdit">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomDBComboBox.LMDeferredEdit.Message">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.DetectedEvents">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.CloseUp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomDBComboBox.Select">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
       <element name="TCustomDBComboBox.DataChange">
         <short>
-          <var>DataChange</var> - updates any changes in text</short>
+          <var>DataChange</var> - updates any changes in text
+        </short>
       </element>
-      <element name="TCustomDBComboBox.ActiveChange">
+
+      <element name="TCustomDBComboBox.DoMouseWheel">
         <short>
-          <var>ActiveChange</var> - method to process a change in the <var>Active</var> state</short>
+        </short>
+        <descr/>
+        <seealso/>
       </element>
-      <element name="TCustomDBComboBox.EditingChange">
+      <element name="TCustomDBComboBox.DoMouseWheel.Shift">
         <short>
-          <var>EditingChange</var> - method to process a change in the <var>Editing</var> state</short>
+        </short>
       </element>
+      <element name="TCustomDBComboBox.DoMouseWheel.WheelDelta">
+        <short>
+        </short>
+      </element>
+      <element name="TCustomDBComboBox.DoMouseWheel.MousePos">
+        <short>
+        </short>
+      </element>
+
       <element name="TCustomDBComboBox.Notification" link="#rtl.Classes.TComponent.Notification"/>
+
       <element name="TCustomDBComboBox.Change">
         <short>
           <var>Change</var> -if there has been a change to the data the link must be notified, then inherited <var>Change</var> is called</short>
@@ -6025,34 +6310,118 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <link id="#LCL.StdCtrls.TCustomComboBox.Change">TCustomComboBox.Change</link>
         </seealso>
       </element>
+
+      <element name="TCustomDBComboBox.KeyDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomDBComboBox.KeyDown.Key">
+        <short/>
+      </element>
+      <element name="TCustomDBComboBox.KeyDown.Shift">
+        <short/>
+      </element>
+
       <element name="TCustomDBComboBox.UpdateData">
         <short>
-          <var>UpdateData</var> - implements any pending changes in the data</short>
+          <var>UpdateData</var> - implements any pending changes in the data
+        </short>
       </element>
-      <element name="TCustomDBComboBox.FocusRequest">
+
+      <element name="TCustomDBComboBox.UpdateRecord">
         <short>
-          <var>FocusRequest</var> - sets focus in response to a request to do so</short>
+        </short>
+        <descr/>
+        <seealso/>
       </element>
-      <element name="TCustomDBComboBox.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+
+      <element name="TCustomDBComboBox.WndProc">
+        <short>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomDBComboBox.WndProc.Message">
+        <short></short>
+      </element>
+
+      <element name="TCustomDBComboBox.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomDBComboBox.Create.TheOwner">
+        <short></short>
+      </element>
+
+      <element name="TCustomDBComboBox.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomDBComboBox.ExecuteAction">
+        <short></short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomDBComboBox.ExecuteAction.AAction">
+        <short></short>
+      </element>
+      <element name="TCustomDBComboBox.ExecuteAction.Result">
+        <short></short>
+      </element>
+
+      <element name="TCustomDBComboBox.UpdateAction">
+        <short></short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomDBComboBox.UpdateAction.AAction">
+        <short></short>
+      </element>
+      <element name="TCustomDBComboBox.UpdateAction.Result">
+        <short></short>
+      </element>
+
       <element name="TCustomDBComboBox.EditingDone" link="#LCL.Controls.TControl.EditingDone">
         <short>
           <var>EditingDone</var> - updates data through the link, then calls inherited <var>EditingDone</var>
         </short>
       </element>
+
       <element name="TCustomDBComboBox.Field">
-        <short>The <var>Field</var> to which this combobox is attached</short>
+        <short>
+        </short>
+        <descr/>
+        <seealso/>
       </element>
+
       <element name="TCustomDBComboBox.Text" link="#LCL.StdCtrls.TCustomComboBox.Text"/>
+
       <element name="TCustomDBComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
-      <element name="TCustomDBComboBox.DataField" link="#LCL.DbCtrls.TCustomDBComboBox.DataField">
-        <short>The name (as a string) of the Field whose data are to be linked to the ComboBox</short>
+
+      <element name="TCustomDBComboBox.DataField">
+        <short>
+          The name of the Field which provides the values displayed in the ComboBox
+        </short>
       </element>
+
       <element name="TCustomDBComboBox.DataSource">
-        <short>The identity of the <var>DataSource</var> to which the ComboBox is attached</short>
+        <short>
+          Identifies the <var>DataSource</var> to which the ComboBox is attached
+        </short>
+        <descr/>
+        <seealso/>
       </element>
-      <element name="TCustomDBComboBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly"/>
-      <element name="TDBComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TDBComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+
+      <element name="TCustomDBComboBox.ReadOnly">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TDBLookupComboBox">
         <short>
           <var>TDBLookupComboBox</var> - a dataware ComboBox for examining a lookup table from a database</short>

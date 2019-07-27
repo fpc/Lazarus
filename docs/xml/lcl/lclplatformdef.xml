@@ -57,6 +57,10 @@
 <short></short>
 </element>
 
+<element name="TLCLPlatform.lpQt5">
+<short></short>
+</element>
+
 <!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpfpGUI">
 <short></short>
@@ -74,6 +78,10 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpCustomDrawn">
+<short></short>
+</element>
+
+<element name="TLCLPlatform.lpMUI">
 <short></short>
 </element>
 
