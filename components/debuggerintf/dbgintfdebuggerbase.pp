@@ -1781,7 +1781,7 @@ type
     INTERNALEXCEPTIONBREAKPOINTS_DEFAULT = [ieRaiseBreakPoint, ieRunErrorBreakPoint, ieBreakErrorBreakPoint];
   protected
     property InternalExceptionBreakPoints: TInternalExceptionBreakPoints
-      read FInternalExceptionBreakPoints write FInternalExceptionBreakPoints;
+      read FInternalExceptionBreakPoints write FInternalExceptionBreakPoints default INTERNALEXCEPTIONBREAKPOINTS_DEFAULT;
   public
     constructor Create; override;
     procedure Assign({%H-}Source: TPersistent); override;
