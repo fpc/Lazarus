@@ -3419,7 +3419,7 @@ begin
 
   // compatibility
   if (FCurrentDebuggerPropertiesConfig <> nil) and (FCurrentDebuggerPropertiesConfig.ConfigName = '') then
-    FXMLCfg.SetValue('EnvironmentOptions/Debugger/Class', CurrentDebuggerPropertiesConfig.ConfigClass)
+    FXMLCfg.SetValue('EnvironmentOptions/Debugger/Class', FCurrentDebuggerPropertiesConfig.ConfigClass)
   else
     FXMLCfg.DeleteValue('EnvironmentOptions/Debugger/Class')
 end;
