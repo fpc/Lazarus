@@ -33,7 +33,7 @@ begin
   Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('ShowInputDialog'){$ENDIF};
   Form.CreateNew(nil, 0);
   with Form do
-  begin
+  try
     PopupMode := pmAuto;
     BorderStyle := bsDialog;
     Caption := InputCaption;
@@ -95,6 +95,7 @@ begin
       Value := Edit.Text;
       Result := True;
     end;
+  finally
     Form.Free;
   end;
 end;

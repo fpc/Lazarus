@@ -605,6 +605,7 @@ function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
     if ofShareAware in Options then Result := Result or OFN_SHAREAWARE;
     if ofShowHelp in Options then Result := Result or OFN_SHOWHELP;
     if ofDontAddToRecent in Options then Result := Result or OFN_DONTADDTORECENT;
+    if ofForceShowHidden in Options then Result := Result or OFN_FORCESHOWHIDDEN;
   end;
 
   procedure ReplacePipe(var AFilter:string);
@@ -820,7 +821,6 @@ FOS_FORCEFILESYSTEM
 FOS_ALLNONSTORAGEITEMS
 FOS_HIDEMRUPLACES
 FOS_HIDEPINNEDPLACES
-FOS_DONTADDTORECENT
 FOS_DEFAULTNOMINIMODE
 FOS_FORCEPREVIEWPANEON}
 
@@ -840,6 +840,7 @@ begin
   if ofShareAware in Options then Result := Result or FOS_SHAREAWARE;
   if ofDontAddToRecent in Options then Result := Result or FOS_DONTADDTORECENT;
   if SelectFolder then Result := Result or FOS_PICKFOLDERS;
+  if ofForceShowHidden in Options then Result := Result or FOS_FORCESHOWHIDDEN;
   { unavailable options:
     ofHideReadOnly
     ofEnableSizing
