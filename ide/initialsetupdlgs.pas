@@ -1382,6 +1382,9 @@ begin
   if (not FSkipDebugger) then begin
     if EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil then
       EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
+        EnvironmentOptions.DebuggerPropertiesConfigList.EntryByName('', TGDBMIDebugger.ClassName);
+    if EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil then
+      EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
         TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
     if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedDebuggerFilename))
     then begin
