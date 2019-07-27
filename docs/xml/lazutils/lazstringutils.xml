@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      LazStringUtils
+    ====================================================================
+    -->
+    <module name="LazStringUtils">
+      <short>
+        Contains routines used for string manipulation
+      </short>
+      <descr>
+        LazStringUtils.pas contains routines used for string manipulation. It is part of the LazUtils package.
+      </descr>
+      <version>
+        File added in LCL version 2.1.0.
+      </version>
+
+      <!-- unresolved externals -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazUTF8"/>
+      <element name="LazLoggerBase"/>
+      <element name="LazTracer"/>
+
+      <!-- visibility: default -->
+      <element name="TCommentType">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCommentType.comtDefault">
+        <short></short>
+      </element>
+      <element name="TCommentType.comtNone">
+        <short></short>
+      </element>
+      <element name="TCommentType.comtPascal">
+        <short></short>
+      </element>
+      <element name="TCommentType.comtDelphi">
+        <short></short>
+      </element>
+      <element name="TCommentType.comtTurboPascal">
+        <short></short>
+      </element>
+      <element name="TCommentType.comtCPP">
+        <short></short>
+      </element>
+      <element name="TCommentType.comtPerl">
+        <short></short>
+      </element>
+      <element name="TCommentType.comtHtml">
+        <short></short>
+      </element>
+
+      <element name="TCommentTypes">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="EndOfLine">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="IsNumber">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="IsNumber.s">
+        <short></short>
+      </element>
+      <element name="IsNumber.Result">
+        <short></short>
+      </element>
+
+      <element name="LineEndingCount">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="LineEndingCount.Txt">
+        <short></short>
+      </element>
+      <element name="LineEndingCount.LengthOfLastLine">
+        <short></short>
+      </element>
+      <element name="LineEndingCount.Result">
+        <short></short>
+      </element>
+
+      <element name="ChangeLineEndings">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="ChangeLineEndings.s">
+        <short></short>
+      </element>
+      <element name="ChangeLineEndings.NewLineEnding">
+        <short></short>
+      </element>
+      <element name="ChangeLineEndings.Result">
+        <short></short>
+      </element>
+
+      <element name="LineBreaksToSystemLineBreaks">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="LineBreaksToSystemLineBreaks.s">
+        <short></short>
+      </element>
+      <element name="LineBreaksToSystemLineBreaks.Result">
+        <short></short>
+      </element>
+
+      <element name="LineBreaksToDelimiter">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="LineBreaksToDelimiter.s">
+        <short></short>
+      </element>
+      <element name="LineBreaksToDelimiter.Delimiter">
+        <short></short>
+      </element>
+      <element name="LineBreaksToDelimiter.Result">
+        <short></short>
+      </element>
+
+      <element name="ConvertLineEndings">
+        <short></short>
+        <descr>Deprecated. Use LineBreaksToSystemLineBreaks instead.</descr>
+        <seealso></seealso>
+      </element>
+      <element name="ConvertLineEndings.s">
+        <short></short>
+      </element>
+      <element name="ConvertLineEndings.Result">
+        <short></short>
+      </element>
+
+      <element name="TabsToSpaces">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TabsToSpaces.s">
+        <short></short>
+      </element>
+      <element name="TabsToSpaces.TabWidth">
+        <short></short>
+      </element>
+      <element name="TabsToSpaces.UseUTF8">
+        <short></short>
+      </element>
+      <element name="TabsToSpaces.Result">
+        <short></short>
+      </element>
+
+      <element name="CommentText">
+        <short>
+          Converts a string into a comment using the specified comment style
+        </short>
+        <descr>
+          CommentText is a String function used to convert a string into a comment using the specified comment style.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="CommentText.s">
+        <short>Value conveerted into a comment</short>
+      </element>
+      <element name="CommentText.CommentType">
+        <short>Comment type applied to the string</short>
+      </element>
+      <element name="CommentText.Result">
+        <short>Comment with the specified style marker(s)</short>
+      </element>
+
+      <element name="SimpleSyntaxToRegExpr">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="SimpleSyntaxToRegExpr.Src">
+        <short></short>
+      </element>
+      <element name="SimpleSyntaxToRegExpr.Result">
+        <short></short>
+      </element>
+
+      <element name="BinaryStrToText">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="BinaryStrToText.s">
+        <short></short>
+      </element>
+      <element name="BinaryStrToText.Result">
+        <short></short>
+      </element>
+
+      <element name="SpecialCharsToSpaces">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="SpecialCharsToSpaces.s">
+        <short></short>
+      </element>
+      <element name="SpecialCharsToSpaces.FixUTF8">
+        <short></short>
+      </element>
+      <element name="SpecialCharsToSpaces.Result">
+        <short></short>
+      </element>
+
+      <element name="SpecialCharsToHex">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="SpecialCharsToHex.s">
+        <short></short>
+      </element>
+      <element name="SpecialCharsToHex.Result">
+        <short></short>
+      </element>
+
+      <element name="BreakString">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="BreakString.s">
+        <short></short>
+      </element>
+      <element name="BreakString.MaxLineLength">
+        <short></short>
+      </element>
+      <element name="BreakString.Indent">
+        <short></short>
+      </element>
+      <element name="BreakString.Result">
+        <short></short>
+      </element>
+
+      <element name="SplitString">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="SplitString.s">
+        <short></short>
+      </element>
+      <element name="SplitString.Delimiter">
+        <short></short>
+      </element>
+      <element name="SplitString.AddTo">
+        <short></short>
+      </element>
+      <element name="SplitString.ClearList">
+        <short></short>
+      </element>
+      <element name="SplitString.Result">
+        <short></short>
+      </element>
+
+      <element name="StringListToText">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StringListToText.List">
+        <short></short>
+      </element>
+      <element name="StringListToText.Delimiter">
+        <short></short>
+      </element>
+      <element name="StringListToText.IgnoreEmptyLines">
+        <short></short>
+      </element>
+      <element name="StringListToText.Result">
+        <short></short>
+      </element>
+
+      <element name="StringListPartToText">
+        <short>Converts the specified lines in TStrings to a string</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StringListPartToText.List">
+        <short>TStrings instance examined in the method</short>
+      </element>
+      <element name="StringListPartToText.FromIndex">
+        <short>First line includes in the text</short>
+      </element>
+      <element name="StringListPartToText.ToIndex">
+        <short>Last line included in the text</short>
+      </element>
+      <element name="StringListPartToText.Delimiter">
+        <short>Delimiter inserted between lines in the text</short>
+      </element>
+      <element name="StringListPartToText.IgnoreEmptyLines">
+        <short>Indicates if empty lines are excluded from the text</short>
+      </element>
+      <element name="StringListPartToText.Result">
+        <short>Text representing the specified lines in the TStrings instance</short>
+      </element>
+
+      <element name="StringListToString">
+        <short>Converts the contents in TStrings to a string</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StringListToString.List">
+        <short>TStrings instance examined in the method</short>
+      </element>
+      <element name="StringListToString.FromIndex">
+        <short>First line included in the string value</short>
+      </element>
+      <element name="StringListToString.ToIndex">
+        <short>Last line included in the string value</short>
+      </element>
+      <element name="StringListToString.IgnoreEmptyLines">
+        <short>Indicates if empty lines are excluded from the result</short>
+        <short></short>
+      </element>
+      <element name="StringListToString.Result">
+        <short>String representing the contents of the TStrings instance</short>
+      </element>
+
+      <element name="StringToStringList">
+        <short>Stores the specified string as lines in a TStrings instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StringToStringList.s">
+        <short>String with values stored in the method</short>
+      </element>
+      <element name="StringToStringList.List">
+        <short>TStrings instance where values are stored in the method</short>
+      </element>
+
+      <element name="GetNextDelimitedItem">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="GetNextDelimitedItem.List">
+        <short></short>
+      </element>
+      <element name="GetNextDelimitedItem.Delimiter">
+        <short></short>
+      </element>
+      <element name="GetNextDelimitedItem.Position">
+        <short></short>
+      </element>
+      <element name="GetNextDelimitedItem.Result">
+        <short></short>
+      </element>
+
+      <element name="HasDelimitedItem">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="HasDelimitedItem.List">
+        <short></short>
+      </element>
+      <element name="HasDelimitedItem.Delimiter">
+        <short></short>
+      </element>
+      <element name="HasDelimitedItem.FindItem">
+        <short></short>
+      </element>
+      <element name="HasDelimitedItem.Result">
+        <short></short>
+      </element>
+
+      <element name="FindNextDelimitedItem">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="FindNextDelimitedItem.List">
+        <short></short>
+      </element>
+      <element name="FindNextDelimitedItem.Delimiter">
+        <short></short>
+      </element>
+      <element name="FindNextDelimitedItem.Position">
+        <short></short>
+      </element>
+      <element name="FindNextDelimitedItem.FindItem">
+        <short></short>
+      </element>
+      <element name="FindNextDelimitedItem.Result">
+        <short></short>
+      </element>
+
+      <element name="MergeWithDelimiter">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="MergeWithDelimiter.a">
+        <short></short>
+      </element>
+      <element name="MergeWithDelimiter.b">
+        <short></short>
+      </element>
+      <element name="MergeWithDelimiter.Delimiter">
+        <short></short>
+      </element>
+      <element name="MergeWithDelimiter.Result">
+        <short></short>
+      </element>
+
+      <element name="StripLn">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StripLn.ALine">
+        <short></short>
+      </element>
+      <element name="StripLn.Result">
+        <short></short>
+      </element>
+
+      <element name="GetPart">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="GetPart.ASkipTo">
+        <short></short>
+      </element>
+      <element name="GetPart.AnEnd">
+        <short></short>
+      </element>
+      <element name="GetPart.ASource">
+        <short></short>
+      </element>
+      <element name="GetPart.AnIgnoreCase">
+        <short></short>
+      </element>
+      <element name="GetPart.AnUpdateSource">
+        <short></short>
+      </element>
+      <element name="GetPart.Result">
+        <short></short>
+      </element>
+
+      <element name="TextToSingleLine">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TextToSingleLine.AText">
+        <short></short>
+      </element>
+      <element name="TextToSingleLine.Result">
+        <short></short>
+      </element>
+
+      <element name="SwapCase">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="SwapCase.S">
+        <short></short>
+      </element>
+      <element name="SwapCase.Result">
+        <short></short>
+      </element>
+
+      <element name="StringCase">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StringCase.AString">
+        <short></short>
+      </element>
+      <element name="StringCase.ACase">
+        <short></short>
+      </element>
+      <element name="StringCase.AnIgnoreCase">
+        <short></short>
+      </element>
+      <element name="StringCase.APartial">
+        <short></short>
+       </element>
+      <element name="StringCase.Result">
+        <short></short>
+      </element>
+
+    </module>
+    <!-- LazStringUtils -->
+
+  </package>
+</fpdoc-descriptions>

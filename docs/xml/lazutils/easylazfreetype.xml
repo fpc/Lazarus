@@ -1,25 +1,20 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
-
 <!--
   ====================================================================
     EasyLazFreeType
   ====================================================================
 -->
-
 <module name="EasyLazFreeType">
 <short></short>
-<descr>
-</descr>
+      <descr></descr>
 
 <!-- enumeration type Visibility: default -->
 <element name="TGlyphRenderQuality">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
@@ -40,82 +35,64 @@
 <!-- array type Visibility: default -->
 <element name="ArrayOfSingle">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- record type Visibility: default -->
 <element name="TCharPosition">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TCharPosition.x">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TCharPosition.width">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TCharPosition.yTop">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TCharPosition.yBase">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TCharPosition.yBottom">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- array type Visibility: default -->
 <element name="ArrayOfCharPosition">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- enumeration type Visibility: default -->
 <element name="TFreeTypeAlignment">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
@@ -156,19 +133,15 @@
 <!-- set type Visibility: default -->
 <element name="TFreeTypeAlignments">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- enumeration type Visibility: default -->
 <element name="TFreeTypeInformation">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
@@ -244,10 +217,8 @@
 <!-- enumeration type Visibility: default -->
 <element name="TFreeTypeStyle">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
@@ -263,63 +234,53 @@
 <!-- set type Visibility: default -->
 <element name="TFreeTypeStyles">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- constant Visibility: default -->
 <element name="FreeTypeInformationStr">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TFreeTypeGlyph">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TFreeTypeFont">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
+
+      <element name="EFreeType">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
 <!-- class Visibility: default -->
 <element name="TCustomFontCollectionItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetBold">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -330,12 +291,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetInformation">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -351,12 +309,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetItalic">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -367,12 +322,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetStyleCount">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -383,12 +335,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetStyles">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -399,12 +348,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetFilename">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -415,12 +361,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetVersionNumber">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -431,12 +374,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFontCollectionItem.GetStyle">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -452,12 +392,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFontCollectionItem.HasStyle">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -473,12 +410,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFontCollectionItem.CreateFont">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -489,12 +423,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFontCollectionItem.QueryFace">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -505,57 +436,44 @@
 <!-- procedure Visibility: public -->
 <element name="TCustomFontCollectionItem.ReleaseFace">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.Styles">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.Italic">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.Bold">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.Filename">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.Information">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -566,19 +484,15 @@
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.VersionNumber">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.Style">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -589,32 +503,24 @@
 <!-- property Visibility: public -->
 <element name="TCustomFontCollectionItem.StyleCount">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- interface Visibility: default -->
 <element name="IFreeTypeFontEnumerator">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: default -->
 <element name="IFreeTypeFontEnumerator.MoveNext">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -625,12 +531,9 @@
 <!-- function Visibility: default -->
 <element name="IFreeTypeFontEnumerator.GetCurrent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -641,32 +544,24 @@
 <!-- property Visibility: default -->
 <element name="IFreeTypeFontEnumerator.Current">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TCustomFamilyCollectionItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TCustomFamilyCollectionItem.GetFontByIndex">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -682,12 +577,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFamilyCollectionItem.GetStyle">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -703,12 +595,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFamilyCollectionItem.GetStyles">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -719,12 +608,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFamilyCollectionItem.GetFamilyName">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -735,12 +621,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFamilyCollectionItem.GetFontCount">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -751,12 +634,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFamilyCollectionItem.GetStyleCount">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -767,12 +647,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFamilyCollectionItem.GetFont">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -803,12 +680,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFamilyCollectionItem.GetFontIndex">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -839,12 +713,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFamilyCollectionItem.HasStyle">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -860,19 +731,15 @@
 <!-- property Visibility: public -->
 <element name="TCustomFamilyCollectionItem.FamilyName">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFamilyCollectionItem.Font">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -883,19 +750,15 @@
 <!-- property Visibility: public -->
 <element name="TCustomFamilyCollectionItem.FontCount">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFamilyCollectionItem.Style">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -906,41 +769,31 @@
 <!-- property Visibility: public -->
 <element name="TCustomFamilyCollectionItem.StyleCount">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFamilyCollectionItem.Styles">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- interface Visibility: default -->
 <element name="IFreeTypeFamilyEnumerator">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: default -->
 <element name="IFreeTypeFamilyEnumerator.MoveNext">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -951,12 +804,9 @@
 <!-- function Visibility: default -->
 <element name="IFreeTypeFamilyEnumerator.GetCurrent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -967,32 +817,24 @@
 <!-- property Visibility: default -->
 <element name="IFreeTypeFamilyEnumerator.Current">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TCustomFreeTypeFontCollection">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TCustomFreeTypeFontCollection.GetFont">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1008,12 +850,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFreeTypeFontCollection.GetFamily">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1029,12 +868,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFreeTypeFontCollection.GetFamilyCount">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1045,12 +881,9 @@
 <!-- function Visibility: protected -->
 <element name="TCustomFreeTypeFontCollection.GetFontCount">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1061,45 +894,33 @@
 <!-- constructor Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.Create">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.Clear">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.BeginUpdate">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.AddFolder">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1110,12 +931,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.AddFile">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1131,23 +949,17 @@
 <!-- procedure Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.EndUpdate">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.FontFileEnumerator">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1158,12 +970,9 @@
 <!-- function Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.FamilyEnumerator">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1174,19 +983,15 @@
 <!-- property Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.FontFileCount">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.FontFile">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1197,19 +1002,15 @@
 <!-- property Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.FamilyCount">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomFreeTypeFontCollection.Family">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1220,23 +1021,17 @@
 <!-- class Visibility: default -->
 <element name="TFreeTypeRenderableFont">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRenderableFont.GetClearType">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1247,12 +1042,9 @@
 <!-- procedure Visibility: protected -->
 <element name="TFreeTypeRenderableFont.SetClearType">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1263,12 +1055,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRenderableFont.GetLineFullHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1279,12 +1068,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRenderableFont.GetAscent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1295,12 +1081,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRenderableFont.GetDescent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1311,12 +1094,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRenderableFont.GetLineSpacing">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1327,12 +1107,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeRenderableFont.TextWidth">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1348,12 +1125,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeRenderableFont.TextHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1369,12 +1143,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeRenderableFont.GetTextSize">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1395,12 +1166,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeRenderableFont.RenderText">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1431,68 +1199,52 @@
 <!-- property Visibility: public -->
 <element name="TFreeTypeRenderableFont.ClearType">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeRenderableFont.Ascent">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeRenderableFont.Descent">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeRenderableFont.LineSpacing">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeRenderableFont.LineFullHeight">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TFreeTypeDrawer">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="TFreeTypeDrawer.DrawText">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1533,84 +1285,65 @@
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FName">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FPointSize">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FHinted">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FStyleStr">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FWidthFactor">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FClearType">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FNamesArray">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeFont.FCollection">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.FindGlyphNode">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1626,12 +1359,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetCharIndex">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1647,12 +1377,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetDPI">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1663,12 +1390,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetFamily">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1679,12 +1403,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetFreeTypeStyles">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1695,12 +1416,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetGlyph">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1716,12 +1434,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetGlyphCount">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1732,12 +1447,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetInformation">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1753,12 +1465,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetPixelSize">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1769,12 +1478,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.GetVersionNumber">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1785,12 +1491,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetDPI">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1801,12 +1504,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetFreeTypeStyles">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1817,12 +1517,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetHinted">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1833,12 +1530,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetLineFullHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1849,12 +1543,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetStyleAsString">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1865,12 +1556,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.UpdateFace">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1881,12 +1569,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetName">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1897,34 +1582,25 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.DiscardFace">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.DiscardInstance">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetPixelSize">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1935,12 +1611,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetPointSize">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1951,12 +1624,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeFont.LoadGlyphInto">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1977,12 +1647,9 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.SetWidthFactor">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1993,164 +1660,125 @@
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.UpdateInstance">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.UpdateSizeInPoints">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.UpdateMetrics">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TFreeTypeFont.UpdateCharmap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FFace">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FFaceItem">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FFaceLoaded">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FInstance">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FInstanceCreated">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FGlyphTable">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FCharMap">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FCharmapOk">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FAscentValue">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FDescentValue">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FLineGapValue">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeFont.FLargeLineGapValue">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TFreeTypeFont.GetClearType">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2161,12 +1789,9 @@
 <!-- procedure Visibility: protected -->
 <element name="TFreeTypeFont.SetClearType">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2177,12 +1802,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeFont.GetLineFullHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2193,12 +1815,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeFont.GetAscent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2209,12 +1828,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeFont.GetDescent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2225,12 +1841,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeFont.GetLineSpacing">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2241,23 +1854,17 @@
 <!-- procedure Visibility: protected -->
 <element name="TFreeTypeFont.FetchNames">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TFreeTypeFont.GetCollection">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2268,52 +1875,39 @@
 <!-- variable Visibility: public -->
 <element name="TFreeTypeFont.Quality">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TFreeTypeFont.SmallLinePadding">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TFreeTypeFont.Create">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TFreeTypeFont.Destroy">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeFont.RenderText">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2344,12 +1938,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeFont.TextWidth">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2365,12 +1956,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeFont.TextHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2386,12 +1974,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeFont.CharsWidth">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2407,12 +1992,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeFont.CharsPosition">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2433,46 +2015,36 @@
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.Name">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.DPI">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.SizeInPoints">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.SizeInPixels">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.Glyph">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2483,19 +2055,15 @@
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.GlyphCount">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.CharIndex">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2506,37 +2074,29 @@
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.Hinted">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.WidthFactor">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.LineFullHeight">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.Information">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2547,84 +2107,65 @@
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.VersionNumber">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.Family">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.Collection">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.StyleAsString">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeFont.Style">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeGlyph.FLoaded">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeGlyph.FGlyphData">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeGlyph.FIndex">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TFreeTypeGlyph.GetAdvance">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2635,12 +2176,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeGlyph.GetBounds">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2651,12 +2189,9 @@
 <!-- function Visibility: private -->
 <element name="TFreeTypeGlyph.GetBoundsWithOffset">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2677,12 +2212,9 @@
 <!-- constructor Visibility: public -->
 <element name="TFreeTypeGlyph.Create">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2698,12 +2230,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeGlyph.RenderDirectly">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2749,57 +2278,44 @@
 <!-- destructor Visibility: public -->
 <element name="TFreeTypeGlyph.Destroy">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeGlyph.Loaded">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeGlyph.Data">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeGlyph.Index">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeGlyph.Bounds">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeGlyph.BoundsWithOffset">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2815,50 +2331,38 @@
 <!-- property Visibility: public -->
 <element name="TFreeTypeGlyph.Advance">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TFreeTypeRasterMap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeRasterMap.map">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TFreeTypeRasterMap.FRasterizer">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRasterMap.GetHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2869,12 +2373,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRasterMap.GetWidth">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2885,12 +2386,9 @@
 <!-- function Visibility: protected -->
 <element name="TFreeTypeRasterMap.GetScanLine">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -2906,12 +2404,9 @@
 <!-- procedure Visibility: protected -->
 <element name="TFreeTypeRasterMap.Init">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2927,12 +2422,9 @@
 <!-- constructor Visibility: public -->
 <element name="TFreeTypeRasterMap.Create">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -2953,34 +2445,25 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeRasterMap.Clear">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeRasterMap.Fill">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFreeTypeRasterMap.RenderGlyph">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3006,12 +2489,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeRasterMap.ScanMoveTo">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3027,39 +2507,30 @@
 <!-- destructor Visibility: public -->
 <element name="TFreeTypeRasterMap.Destroy">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeRasterMap.Width">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeRasterMap.Height">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFreeTypeRasterMap.ScanLine">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3070,59 +2541,45 @@
 <!-- class Visibility: default -->
 <element name="TFreeTypeMonochromeMap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeMonochromeMap.ScanPtrStart">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeMonochromeMap.ScanPtrCur">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeMonochromeMap.ScanBit">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeMonochromeMap.ScanX">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TFreeTypeMonochromeMap.GetPixelsInHorizlineNoBoundsChecking">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3148,12 +2605,9 @@
 <!-- procedure Visibility: protected -->
 <element name="TFreeTypeMonochromeMap.Init">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3169,12 +2623,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeMonochromeMap.RenderGlyph">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3200,12 +2651,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeMonochromeMap.ScanMoveTo">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3221,12 +2669,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeMonochromeMap.ScanNextPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3237,12 +2682,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeMonochromeMap.GetPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3263,12 +2705,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeMonochromeMap.SetPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3289,12 +2728,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeMonochromeMap.GetPixelsInRect">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3325,12 +2761,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeMonochromeMap.GetPixelsInHorizline">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3356,12 +2789,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeMonochromeMap.TogglePixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3377,41 +2807,31 @@
 <!-- class Visibility: default -->
 <element name="TFreeTypeGrayscaleMap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeGrayscaleMap.ScanPtrStart">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TFreeTypeGrayscaleMap.ScanX">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TFreeTypeGrayscaleMap.Init">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3427,21 +2847,16 @@
 <!-- variable Visibility: public -->
 <element name="TFreeTypeGrayscaleMap.RenderQuality">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFreeTypeGrayscaleMap.RenderGlyph">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3467,12 +2882,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeGrayscaleMap.ScanMoveTo">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3488,12 +2900,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeGrayscaleMap.ScanNextPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3504,12 +2913,9 @@
 <!-- function Visibility: public -->
 <element name="TFreeTypeGrayscaleMap.GetPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3530,12 +2936,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeGrayscaleMap.SetPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3556,12 +2959,9 @@
 <!-- procedure Visibility: public -->
 <element name="TFreeTypeGrayscaleMap.XorPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -3582,30 +2982,23 @@
 <!-- variable Visibility: default -->
 <element name="FontCollection">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- array type Visibility: default -->
 <element name="ArrayOfString">
 <short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+        <descr></descr>
+        <seealso></seealso>
 </element>
 
 <!-- function Visibility: default -->
 <element name="StylesToArray">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -3618,7 +3011,8 @@
 <short></short>
 </element>
 
-</module> <!-- EasyLazFreeType -->
+    </module>
+    <!-- EasyLazFreeType -->
 
 </package>
 </fpdoc-descriptions>
