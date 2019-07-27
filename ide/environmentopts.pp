@@ -534,6 +534,7 @@ type
     XML_PATH_DEBUGGER_CONF_OLD = 'EnvironmentOptions/Debugger/Class%s/%s/';
   private
     FCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
+    FHasActiveDebuggerEntry: Boolean;
     fRegisteredSubConfig: TObjectList;
     FDebuggerAutoCloseAsm: boolean;
     // config file
@@ -927,6 +928,7 @@ type
     function  DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
     property  CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read GetCurrentDebuggerPropertiesConfig write SetCurrentDebuggerPropertiesOpt;
     property  CurrentDebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
+    property  HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
     property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
 
     // Debugger event log
@@ -3437,6 +3439,7 @@ begin
   then
     exit;
   FKnownDebuggerClassCount := TBaseDebugManagerIntf.DebuggerCount;
+  HasActiveDebuggerEntry := False;
 
 
   FDebuggerProperties.ClearAll;
@@ -3448,6 +3451,8 @@ begin
   for i := 1 to ConfCount do begin
     Entry := TDebuggerPropertiesConfig.CreateFromXmlConf(FXMLCfg, XML_PATH_DEBUGGER_CONF, i);
     FDebuggerProperties.AddObject(Entry.ConfigName, Entry);
+    if Entry.Active then
+      HasActiveDebuggerEntry := True;
     if Entry.Active and Entry.IsLoaded and (FCurrentDebuggerPropertiesConfig = nil) then
       FCurrentDebuggerPropertiesConfig := Entry;
     if Entry.Active and (UnloadedCurrent = nil) then
@@ -3462,6 +3467,7 @@ begin
   ActiveClassSeen := False;
   if FCurrentDebuggerPropertiesConfig = nil then
     ActiveClassName := FXMLCfg.GetValue('EnvironmentOptions/Debugger/Class', '');
+  HasActiveDebuggerEntry := HasActiveDebuggerEntry or (ActiveClassName <> '');
   // There is only one filename for all classes
   CurFilename:=FXMLCfg.GetValue('EnvironmentOptions/DebuggerFilename/Value','');
 
@@ -3479,17 +3485,6 @@ begin
     FDebuggerProperties.AddObject(Entry.ConfigName, Entry);
     if (Entry.ConfigClass = ActiveClassName) and (FCurrentDebuggerPropertiesConfig = nil) then
       FCurrentDebuggerPropertiesConfig := Entry;
-  end;
-
-  // current active debugger was not found / may not an unknown class
-  // InitialSetupDlg depends on having a debugger loaded, with the ONLY exception: ActiveClassName = ''
-  if (not ActiveClassSeen) and (ActiveClassName <> '') then begin
-    Entry := TDebuggerPropertiesConfig.CreateFromOldXmlConf(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD, ActiveClassName, True);
-    if (Entry.DebuggerFilename = '') and (Entry.NeedsExePath or (not Entry.IsLoaded)) then
-      Entry.DebuggerFilename := CurFilename;
-    FDebuggerProperties.AddObject(Entry.ConfigName, Entry);
-    // FCurrentDebuggerPropertiesConfig may NOT be loaded !!!
-    FCurrentDebuggerPropertiesConfig := Entry;
   end;
 end;
 

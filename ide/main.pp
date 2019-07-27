@@ -1434,7 +1434,8 @@ begin
     RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
     // Todo: add LldbFpDebugger for Mac
     // If the default debugger is of a class that is not yet Registered, then the dialog is not shown
-    if (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil) // no debugger at all / not even with unknown class
+    if ( (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil) and  // no debugger at all
+         (not EnvironmentOptions.HasActiveDebuggerEntry) )               // not even with unknown class
     or ( (EnvironmentOptions.CurrentDebuggerClass <> nil)                       // Debugger with known class
          and (EnvironmentOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)  // Which does need an exe
          and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
