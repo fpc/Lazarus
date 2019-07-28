@@ -58,6 +58,8 @@ type
     procedure applicationDidBecomeActive(notification: NSNotification);
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
+    procedure applicationWillFinishLaunching(notification: NSNotification);
+    procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
   end;
 
   { TCocoaApplication }
@@ -68,12 +70,14 @@ type
     modals : NSMutableDictionary;
 
     procedure dealloc; override;
-    function isRunning: LCLObjCBoolean; override;
+    {$ifdef COCOALOOPOVERRIDE}
     procedure run; override;
+    {$endif}
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
 
     function runModalForWindow(theWindow: NSWindow): NSInteger; override;
+    procedure lclSyncCheck(arg: id); message 'lclSyncCheck:';
   end;
 
   { TModalSession }
@@ -130,6 +134,8 @@ type
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
       EscapeResult: Longint): Longint; override;
+    function MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
+      uType: Cardinal): Integer; override;
     function GetAppHandle: THandle; override;
     function CreateThemeServices: TThemeServices; override;
 
@@ -154,6 +160,7 @@ type
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
+    procedure AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
     procedure AppWaitMessage; override;
     procedure AppProcessMessages; override;
     procedure AppTerminate; override;
@@ -167,8 +174,6 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
-    function NewUserEventInfo(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): NSMutableDictionary;
-    function PrepareUserEvent(Handle: HWND; Info: NSDictionary; NeedsResult: Boolean): NSEvent;
 
     procedure InitStockItems;
     procedure FreeStockItems;
@@ -205,11 +210,6 @@ var
   CocoaBasePPI : Integer = 96; // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   MainPool : NSAutoreleasePool = nil;
 
-  ColorToolTip : TColorRef = $C9FCF9; // default = macosx10.4 yellow color. (See InitInternals below)
-                                      // it's likely the tooltip color will change in future.
-                                      // Thus the variable is left public, so a user of LCL
-                                      // would be able to initialize it properly on start
-
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
@@ -220,7 +220,7 @@ procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const Scr
 function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
     EscapeResult: Longint;
-    sheetOfWindow: NSWindow = nil): Longint;
+    sheetOfWindow: NSWindow = nil; modalSheet: Boolean = false): Longint;
 
 implementation
 
@@ -398,16 +398,13 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaApplication.isRunning: LCLObjCBoolean;
-begin
-  Result:=isrun;
-end;
-
+{$ifdef COCOALOOPOVERRIDE}
 procedure TCocoaApplication.run;
 begin
-  isrun:=true;
+  setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
   aloop();
 end;
+{$endif}
 
 procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
 var
@@ -451,12 +448,37 @@ begin
 end;
 
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
+var
+  cb : ICommonCallback;
+  wnd: TCocoaWindow;
+  allowcocoa : Boolean;
 begin
-  // https://stackoverflow.com/questions/4001565/missing-keyup-events-on-meaningful-key-combinations-e-g-select-till-beginning
-  if (theEvent.type_ = NSKeyUp) and
-     ((theEvent.modifierFlags and NSCommandKeyMask) = NSCommandKeyMask)
-  then
-    self.keyWindow.sendEvent(theEvent);
+  if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
+     (theEvent.type_ = NSFlagsChanged) then begin
+    cb := self.keyWindow.firstResponder.lclGetCallback;
+    if Assigned(cb) then
+    begin
+      try
+        if self.keyWindow.isKindOfClass_(TCocoaWindow) then begin
+          wnd := TCocoaWindow(self.keyWindow);
+          wnd._keyEvCallback := cb;
+          wnd._calledKeyEvAfter := False;
+        end
+        else
+          wnd := nil;
+        cb.KeyEvBefore(theEvent, allowcocoa);
+        if allowcocoa then
+          inherited sendEvent(theEvent);
+        if (not Assigned(wnd)) or (not wnd._calledKeyEvAfter) then
+          cb.KeyEvAfter;
+      finally
+        if Assigned(wnd) then
+          wnd._keyEvCallback := nil;
+      end;
+      Exit;
+    end;
+  end;
+
   inherited sendEvent(theEvent);
 
   if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
@@ -470,21 +492,36 @@ begin
     or (tp = NSOtherMouseDragged);
 end;
 
+type
+  TCrackerApplication = class(TApplication);
+
 function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
   mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean
   ): NSEvent;
 var
   cb : ICommonCallback;
 begin
+  {$ifndef COCOALOOPOVERRIDE}
+  if not isrun and Assigned(aloop) then begin
+    isrun := True;
+    Result := nil;
+    aloop();
+    terminate(nil);
+    exit;
+  end;
+  {$endif}
+
   {$ifdef BOOLFIX}
-  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(mask,
+  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(
+    mask,
     expiration, mode, Ord(deqFlag));
   {$else}
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
     expiration, mode, deqFlag);
   {$endif}
-  if Assigned(Result)
-    and ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
+  if not Assigned(Result) then Exit;
+
+  if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
   then
   begin
@@ -500,7 +537,6 @@ begin
       if Assigned(cb) then cb.MouseMove(Result);
     end;
   end;
-
 end;
 
 function TCocoaApplication.runModalForWindow(theWindow: NSWindow): NSInteger;
@@ -508,6 +544,24 @@ begin
   ApplicationWillShowModal;
 
   Result:=inherited runModalForWindow(theWindow);
+end;
+
+procedure TCocoaApplication.lclSyncCheck(arg: id);
+begin
+  CheckSynchronize;
+  NSApp.updateWindows;
+  if Assigned(Application) then
+    TCrackerApplication(Application).ProcessAsyncCallQueue;
+end;
+
+
+procedure InternalFinal;
+begin
+  if Assigned(MainPool) then
+  begin
+    MainPool.release;
+    MainPool := nil;
+  end;
 end;
 
 // the implementation of the utility methods
@@ -522,21 +576,7 @@ begin
   // MacOSX 10.6 reports a lot of warnings during initialization process
   // adding the autorelease pool for the whole Cocoa widgetset
   MainPool := NSAutoreleasePool.alloc.init;
-
-  // Apple doesn't provide any reasonable way of aquiring tooltip bk color
-  // todo: The tooltip color could be different depending on "light" or "dark"
-  //       mode selected in the system. Thus actual Theme Drawing should be used
-  //       and implemeneted.
-  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
-    ColorTooltip := $EDEDED;
-
 end;
-
-procedure InternalFinal;
-begin
-  if Assigned(MainPool) then MainPool.release;
-end;
-
 
 procedure TCocoaWidgetSet.DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
 var
@@ -654,7 +694,6 @@ end;
 
 initialization
 //  {$I Cocoaimages.lrs}
-
   InternalInit;
 
 finalization

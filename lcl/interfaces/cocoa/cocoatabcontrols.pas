@@ -59,6 +59,7 @@ type
     leftmost : Integer;         // index of the left-most tab shown
 
   public
+    ignoreChange: Boolean;
     callback: ITabControlCallback;
 
     fulltabs : NSMutableArray;  // the full list of NSTabViewItems
@@ -181,7 +182,7 @@ var
   i : integer;
 begin
   arr := aview.tabViewItems;
-  for i :=arr.count - 1 downto 0 do
+  for i := Integer(arr.count) - 1  downto 0 do
     aview.removeTabViewItem( arr.objectAtIndex(i) );
 end;
 
@@ -466,6 +467,7 @@ end;
 procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
 begin
+  if ignoreChange then Exit;
   if Assigned(callback) then
   begin
     callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );
@@ -597,8 +599,12 @@ begin
 end;
 
 procedure TCocoaTabControl.exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
+var
+  idx : NSInteger;
 begin
-  removeTabViewItem(lTabPage);
+  idx := indexOfTabViewItem(lTabPage);
+  if (idx>=0) and (idx<>NSNotFound) then
+    removeTabViewItem(lTabPage);
 
   fulltabs.removeObject(lTabPage);
 

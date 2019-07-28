@@ -30,7 +30,7 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate,
+  cocoa_extra, CocoaPrivate, CocoaThemes,
   // LCL
   LCLType;
 
@@ -49,6 +49,7 @@ type
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
+    procedure GetRowHeight(rowidx: Integer; var height: Integer);
   end;
 
   { TCocoaStringList }
@@ -74,6 +75,8 @@ type
     isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
     isCustomDraw : Boolean;
+    isDynamicRowHeight: Boolean;
+    CustomRowHeight: Integer;
 
     smallimages : NSMutableDictionary;
 
@@ -82,7 +85,7 @@ type
     procedure lclClearCallback; override;
 
     // Own methods, mostly convenience methods
-    function getIndexOfColumn(ACol: NSTableColumn): NSInteger; message 'getIndexOfColumn:';
+    function getIndexOfColumn(ACol: NSTableColumn): Integer; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
 
     function initWithFrame(frameRect: NSRect): id; override;
@@ -103,7 +106,6 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     // key
-    procedure keyUp(event: NSEvent); override;
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
     procedure lclSetImagesInCell(aimagesInCell: Boolean); message 'lclSetImagesInCell:';
@@ -138,9 +140,9 @@ type
     procedure tableView_mouseDownInHeaderOfTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:mouseDownInHeaderOfTableColumn:';}
     procedure tableView_didClickTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didClickTableColumn:';
     {procedure tableView_didDragTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didDragTableColumn:';
-    function tableView_toolTipForCell_rect_tableColumn_row_mouseLocation(tableView: NSTableView; cell: NSCell; rect: NSRectPointer; tableColumn: NSTableColumn; row: NSInteger; mouseLocation: NSPoint): NSString; message 'tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:';
+    function tableView_toolTipForCell_rect_tableColumn_row_mouseLocation(tableView: NSTableView; cell: NSCell; rect: NSRectPointer; tableColumn: NSTableColumn; row: NSInteger; mouseLocation: NSPoint): NSString; message 'tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:';}
     function tableView_heightOfRow(tableView: NSTableView; row: NSInteger): CGFloat; message 'tableView:heightOfRow:';
-    function tableView_typeSelectStringForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSString; message 'tableView:typeSelectStringForTableColumn:row:';
+    {function tableView_typeSelectStringForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSString; message 'tableView:typeSelectStringForTableColumn:row:';
     function tableView_nextTypeSelectMatchFromRow_toRow_forString(tableView: NSTableView; startRow: NSInteger; endRow: NSInteger; searchString: NSString): NSInteger; message 'tableView:nextTypeSelectMatchFromRow:toRow:forString:';
     function tableView_shouldTypeSelectForEvent_withCurrentSearchString(tableView: NSTableView; event: NSEvent; searchString: NSString): Boolean; message 'tableView:shouldTypeSelectForEvent:withCurrentSearchString:';
     function tableView_shouldShowCellExpansionForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldShowCellExpansionForTableColumn:row:';
@@ -197,6 +199,11 @@ type
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
 
+  TCellCocoaTableListView1013 = objcclass(TCellCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
+    // overriding the highlight color for dark theme
+    procedure highlightSelectionInClipRect(clipRect: NSRect); override;
+  end;
+
   // View based NSTableView
 
   TCocoaTableListItem = objcclass(NSView)
@@ -246,6 +253,9 @@ function AllocCocoaTableListView: TCocoaTableListView;
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
 function LCLGetTopRow(tbl: NSTableView): Integer;
+
+const
+  DefaultRowHeight = 16; // per "rowHeight" property docs
 
 implementation
 
@@ -305,6 +315,13 @@ begin
   else
     Result := TCellCocoaTableListView.alloc;
   {$ELSE}
+
+  // this is required for "dark theme" support on 10.13
+  if (NSAppkitVersionNumber >= NSAppKitVersionNumber10_13)
+    and (NSAppkitVersionNumber < NSAppKitVersionNumber10_14)
+  then
+    Result := TCellCocoaTableListView1013.alloc
+  else
     Result := TCellCocoaTableListView.alloc;
   {$ENDIF}
 end;
@@ -497,9 +514,15 @@ begin
   end;
 end;
 
-function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
+function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): Integer;
+var
+  idx : NSUInteger;
 begin
-  Result := tableColumns.indexOfObject(ACol);
+  idx := tableColumns.indexOfObject(ACol);
+  if idx = NSNotFound then
+    Result := -1
+  else
+    Result := Integer(idx);
 end;
 
 procedure TCocoaTableListView.reloadDataForRow_column(ARow, ACol: NSInteger);
@@ -571,21 +594,6 @@ begin
   inherited mouseMoved(event);
 end;
 
-procedure TCocoaTableListView.keyUp(event: NSEvent);
-var
-  allow : Boolean;
-begin
-  if not Assigned(callback) then
-    inherited KeyUp(event)
-  else
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(allow);
-    if allow then inherited KeyUp(event);
-    callback.KeyEvAfter;
-  end;
-end;
-
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
   ): NSInteger;
 begin
@@ -613,6 +621,22 @@ procedure TCocoaTableListView.tableView_didClickTableColumn(
 begin
   if Assigned(callback) then
     callback.ColumnClicked(getIndexOfColumn(tableColumn));
+end;
+
+function TCocoaTableListView.tableView_heightOfRow(tableView: NSTableView;
+  row: NSInteger): CGFloat;
+var
+  h : integer;
+begin
+  h := CustomRowHeight;
+  if h = 0 then h := DefaultRowHeight;
+
+  if isDynamicRowHeight and Assigned(callback) then
+  begin
+    callback.GetRowHeight(Integer(row), h);
+    if h<=0 then h:=1; // must be positive (non-zero)
+  end;
+  Result := h;
 end;
 
 type
@@ -853,6 +877,7 @@ var
   idx  : Integer;
   img  : NSImage;
   btn  : NSTableButtonCell;
+  colorTitle : NSMutableAttributedString;
 begin
   Result:=nil;
   if not isFirstColumnCheckboxes and not isImagesInCell then Exit;
@@ -879,6 +904,16 @@ begin
   //Result.setAllowsMixedState(True);
   btn.setButtonType(NSSwitchButton);
   btn.setTitle(nstxt);
+
+  // forced "controlTextColor" provides a better result on unfocused
+  // nstablelist view with checkboxes
+  colorTitle := NSMutableAttributedString.alloc.initWithAttributedString(btn.attributedTitle);
+  colorTitle.addAttribute_value_range(NSForegroundColorAttributeName
+   , NSColor.controlTextColor
+   , NSMakeRange(0, colorTitle.length));
+  btn.setAttributedTitle(colorTitle);
+  colorTitle.release;
+
   if chk then begin
     btn.setIntValue(1);
     btn.setCellAttribute_to(NSCellState, NSOnState);
@@ -1183,6 +1218,42 @@ begin
     insertRowsAtIndexes_withAnimation(rows, 0)
   else
     removeRowsAtIndexes_withAnimation(rows, 0);
+end;
+
+{ TCellCocoaTableListView1013 }
+
+procedure TCellCocoaTableListView1013.highlightSelectionInClipRect(clipRect: NSRect
+  );
+var
+  r   : NSInteger;
+  rows : NSRange;
+  cnt  : integer;
+  focused: Boolean;
+  hicolor: NSColor;
+begin
+  if not IsPaintDark then begin
+    inherited highlightSelectionInClipRect(clipRect);
+    Exit;
+  end;
+
+
+  focused := Assigned(window) and (window.firstResponder = Self);
+  if focused then
+    hicolor := NSColor.alternateSelectedControlColor
+  else
+    // the default color is NSColor.secondarySelectedControlColor;
+    hicolor := NSColor.darkGrayColor;
+
+  rows := rowsInRect(clipRect);
+  cnt := rows.length;
+  r := rows.location;
+  hicolor.setFill;
+  while cnt>0 do
+  begin
+    if isRowSelected(r) then NSRectFill(rectOfRow(r));
+    inc(r);
+    dec(cnt);
+  end;
 end;
 
 end.

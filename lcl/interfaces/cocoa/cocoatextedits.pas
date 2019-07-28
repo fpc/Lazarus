@@ -64,7 +64,6 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     // key
-    procedure keyUp(event: NSEvent); override;
     procedure textDidChange(notification: NSNotification); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -87,7 +86,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // key
-    procedure keyUp(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -105,18 +103,18 @@ type
   public
     callback: ICommonCallback;
     FEnabled: Boolean;
+    FUndoManager: NSUndoManager;
 
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
 
+    procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
+    function undoManager: NSUndoManager; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
 
     procedure changeColor(sender: id); override;
-    // key
-    procedure keyUp(event: NSEvent); override;
-    procedure flagsChanged(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -150,7 +148,12 @@ type
 
   TCocoaFieldEditor = objcclass(NSTextView)
   public
+    // This flag is used to hack an infinite loop
+    // when switching "editable" (readonly) mode of NSTextField
+    // see TCocoaWSCustomEdit.SetReadOnly
+    goingReadOnly: Boolean;
     function lclGetCallback: ICommonCallback; override;
+    function becomeFirstResponder: LCLObjCBoolean; override;
     // mouse
     procedure keyDown(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -172,16 +175,16 @@ type
 
   { TCocoaComboBoxList }
 
-  TCocoaComboBoxList = class(TStringList)
+  TCocoaComboBoxList = class(TStringList);
+
+  TCocoaEditComboBoxList = class(TCocoaComboBoxList)
   protected
     FOwner: TCocoaComboBox;
-    FReadOnlyOwner: TCocoaReadOnlyComboBox;
-    FPreChangeListCount: Integer;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
     procedure Changed; override;
-    procedure Changing; override;
   public
     // Pass only 1 owner and nil for the other ones
-    constructor Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
+    constructor Create(AOwner: TCocoaComboBox);
   end;
 
   IComboboxCallBack = interface(ICommonCallBack)
@@ -229,6 +232,7 @@ type
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
+    isDown: Boolean;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure textDidChange(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
@@ -246,7 +250,6 @@ type
     procedure comboBoxSelectionDidChange(notification: NSNotification); message 'comboBoxSelectionDidChange:';
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
     //
-    procedure keyUp(event: NSEvent); override;
     procedure setStringValue(avalue: NSString); override;
     function lclGetFrameToLayoutDelta: TRect; override;
     // mouse
@@ -274,6 +277,20 @@ type
     procedure mouseUp(event: NSEvent); override;
     procedure mouseEntered(theEvent: NSEvent); override;
     procedure mouseExited(theEvent: NSEvent); override;
+  end;
+
+  { TCocoaReadOnlyComboBoxList }
+
+  TCocoaReadOnlyComboBoxList = class(TCocoaComboBoxList)
+  protected
+    FOwner: TCocoaReadOnlyComboBox;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+    procedure Put(Index: Integer; const S: string); override;
+  public
+    // Pass only 1 owner and nil for the other ones
+    constructor Create(AOwner: TCocoaReadOnlyComboBox);
+    procedure Delete(Index: Integer); override;
+    procedure Clear; override;
   end;
 
   { TCocoaReadOnlyComboBox }
@@ -427,6 +444,86 @@ begin
   begin
     Result := TCocoaFieldEditor(lText);
   end;
+end;
+
+{ TCocoaReadOnlyComboBoxList }
+
+procedure TCocoaReadOnlyComboBoxList.InsertItem(Index: Integer;
+  const S: string; O: TObject);
+var
+  astr     : NSString;
+  mn       : NSMenuItem;
+  menuItem : TCocoaReadOnlyView;
+  track: NSTrackingArea;
+begin
+  inherited InsertItem(Index, S, O);
+
+  // Adding an item with its final name will cause it to be deleted,
+  // so we need to first add all items with unique names, and then
+  // rename all of them, see bug 30847
+  astr := nsstr('@@@add');
+  if Index >= FOwner.numberOfItems then
+  begin
+    FOwner.addItemWithTitle(astr);
+    Index := FOwner.numberOfItems-1;
+  end else
+    FOwner.insertItemWithTitle_atIndex(astr, Index);
+
+  mn := FOwner.itemAtIndex(Index);
+  if not Assigned(mn) then Exit;
+
+  astr := NSStringUtf8(S);
+  mn.setTitle(astr);
+  astr.release;
+
+  if FOwner.isOwnerDrawn then
+  begin
+    menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
+    menuItem.itemIndex := Index;
+    menuItem.combobox := FOwner;
+
+    track:=NSTrackingArea(NSTrackingArea.alloc).initWithRect_options_owner_userInfo(
+      menuItem.bounds
+      , NSTrackingMouseEnteredAndExited or NSTrackingActiveAlways
+      , menuItem, nil);
+    menuItem.addTrackingArea(track);
+    track.release;
+    mn.setView(menuItem);
+  end;
+end;
+
+procedure TCocoaReadOnlyComboBoxList.Put(Index: Integer; const S: string);
+var
+  astr: NSString;
+  mn  : NSMenuItem;
+begin
+  inherited Put(Index, S);
+  if ((index >= 0) and (Index <= FOwner.numberOfItems)) then
+  begin
+    mn := FOwner.itemAtIndex(Index);
+    astr := NSStringUtf8(S);
+    mn.setTitle(astr);
+    astr.release;
+  end;
+end;
+
+constructor TCocoaReadOnlyComboBoxList.Create(AOwner: TCocoaReadOnlyComboBox);
+begin
+  inherited Create;
+  FOwner := AOwner;
+end;
+
+procedure TCocoaReadOnlyComboBoxList.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+  if (Index>=0) and (Index < FOwner.numberOfItems) then
+    FOwner.removeItemAtIndex(Index);
+end;
+
+procedure TCocoaReadOnlyComboBoxList.Clear;
+begin
+  inherited Clear;
+  FOwner.removeAllItems;
 end;
 
 { TCococaFieldEditorExt }
@@ -634,6 +731,12 @@ begin
   else Result := nil;
 end;
 
+function TCocoaFieldEditor.becomeFirstResponder: LCLObjCBoolean;
+begin
+  if goingReadOnly then Result := false
+  else Result:=inherited becomeFirstResponder;
+end;
+
 procedure TCocoaFieldEditor.keyDown(event: NSEvent);
 begin
   if event.keyCode = kVK_Return then
@@ -787,20 +890,6 @@ begin
     inherited resetCursorRects;
 end;
 
-procedure TCocoaTextField.keyUp(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
-end;
-
 procedure TCocoaTextField.textDidChange(notification: NSNotification);
 begin
   if callback <> nil then
@@ -870,30 +959,28 @@ begin
   //inherited changeColor(sender);
 end;
 
-procedure TCocoaTextView.keyUp(event: NSEvent);
-var
-  res : Boolean;
+procedure TCocoaTextView.dealloc;
 begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
-end;
-
-procedure TCocoaTextView.flagsChanged(event: NSEvent);
-begin
-  if Assigned(callback) then callback.KeyEvent(event);
-  // don't skip inherited or else key input won't work
-  inherited flagsChanged(event);
+  if Assigned(FUndoManager) then
+    FUndoManager.release;
+  inherited dealloc;
 end;
 
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
+end;
+
+function TCocoaTextView.undoManager: NSUndoManager;
+begin
+  if allowsUndo then
+  begin
+    if not Assigned(FUndoManager) then
+      FUndoManager := NSUndoManager.alloc.init;
+    Result := FUndoManager;
+  end
+  else
+    Result := nil;
 end;
 
 function TCocoaTextView.lclGetCallback: ICommonCallback;
@@ -1030,20 +1117,6 @@ begin
   callback := nil;
 end;
 
-procedure TCocoaSecureTextField.keyUp(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
-end;
-
 procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
@@ -1097,73 +1170,25 @@ begin
     inherited mouseMoved(event);
 end;
 
-{ TCocoaComboBoxList }
+{ TCocoaEditComboBoxList }
 
-procedure TCocoaComboBoxList.Changed;
-var
-  i: Integer;
-  nsstr: NSString;
-  lItems: array of NSMenuItem;
-  menuItem: TCocoaReadOnlyView;
-  track: NSTrackingArea;
+procedure TCocoaEditComboBoxList.InsertItem(Index: Integer; const S: string;
+  O: TObject);
 begin
-  if FOwner <> nil then
-    fOwner.reloadData;
-  if FReadOnlyOwner <> nil then
-  begin
-    // store the current item
-    FReadOnlyOwner.lastSelectedItemIndex := FReadOnlyOwner.indexOfSelectedItem;
+  inherited InsertItem(Index, S, O);
+  FOwner.noteNumberOfItemsChanged;
+end;
 
-    FReadOnlyOwner.removeAllItems();
-    // Adding an item with its final name will cause it to be deleted,
-    // so we need to first add all items with unique names, and then
-    // rename all of them, see bug 30847
-    SetLength(lItems, Count);
-    for i := 0 to Count-1 do
-    begin
-      nsstr := NSStringUtf8(Format('unique_item_%d', [i]));
-      FReadOnlyOwner.addItemWithTitle(nsstr);
-      lItems[i] := FReadOnlyOwner.lastItem;
-      nsstr.release;
-    end;
-    for i := 0 to Count-1 do
-    begin
-      nsstr := NSStringUtf8(Strings[i]);
-      lItems[i].setTitle(nsstr);
-      if FReadOnlyOwner.isOwnerDrawn then
-      begin
-        menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FReadOnlyOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
-        menuItem.itemIndex := i;
-        menuItem.combobox := FReadOnlyOwner;
-
-        track:=NSTrackingArea(NSTrackingArea.alloc).initWithRect_options_owner_userInfo(
-          menuItem.bounds
-          , NSTrackingMouseEnteredAndExited or NSTrackingActiveAlways
-          , menuItem, nil);
-        menuItem.addTrackingArea(track);
-        track.release;
-        lItems[i].setView(menuItem);
-      end;
-
-      nsstr.release;
-    end;
-    SetLength(lItems, 0);
-
-    // reset the selected item
-    FReadOnlyOwner.selectItemAtIndex(FReadOnlyOwner.lastSelectedItemIndex);
-  end;
+procedure TCocoaEditComboBoxList.Changed;
+begin
   inherited Changed;
+  FOwner.reloadData;
 end;
 
-procedure TCocoaComboBoxList.Changing;
+constructor TCocoaEditComboBoxList.Create(AOwner: TCocoaComboBox);
 begin
-  FPreChangeListCount := Count;
-end;
-
-constructor TCocoaComboBoxList.Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
-begin
+  inherited Create;
   FOwner := AOwner;
-  FReadOnlyOwner := AReadOnlyOwner;
 end;
 
 { TCocoaComboBox }
@@ -1224,10 +1249,17 @@ end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
   row: NSInteger):id;
+var
+  ns : NSString;
 begin
-  if not Assigned(list) or (row<0) or (row>=list.Count)
-    then Result:=nil
-    else Result:=NSStringUtf8(list[row]);
+  if not Assigned(list) or (row<0) or (row>=list.Count) then
+    Result:=nil
+  else
+  begin
+    ns := NSStringUtf8(list[row]);
+    Result := ns;
+    ns.autorelease;
+  end;
 end;
 
 function TCocoaComboBox.comboBox_indexOfItemWithStringValue(
@@ -1281,11 +1313,13 @@ end;
 procedure TCocoaComboBox.comboBoxWillPopUp(notification: NSNotification);
 begin
   callback.ComboBoxWillPopUp;
+  isDown:=true;
 end;
 
 procedure TCocoaComboBox.comboBoxWillDismiss(notification: NSNotification);
 begin
   callback.ComboBoxWillDismiss;
+  isDown:=false;
 end;
 
 procedure TCocoaComboBox.comboBoxSelectionDidChange(notification: NSNotification);
@@ -1305,21 +1339,6 @@ begin
   callback.ComboBoxSelectionIsChanging;
 end;
 
-procedure TCocoaComboBox.keyUp(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyUp(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyUp(event);
-  inherited keyUp(event);
-end;
-
 function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
@@ -1328,11 +1347,7 @@ end;
 procedure TCocoaComboBox.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-  begin
     inherited mouseDown(event);
-
-    callback.MouseUpDownEvent(event, true);
-  end;
 end;
 
 procedure TCocoaComboBox.mouseUp(event: NSEvent);
@@ -1385,6 +1400,20 @@ end;
 
 procedure TCocoaComboBox.mouseMoved(event: NSEvent);
 begin
+  // NSMouseMove event is being sent even after the selection is made.
+  // In Cocoa world, the event is sent to the comboBox NSTextView edit section.
+  // (even is the cursor is NOT over the NSTextView itself, but rather the popup window)
+  //
+  // The CocoaWS forwards the event to LCL. And LCL recognizes the event as a mouse action
+  // beyond combobox boundries (it's NSMouseMove and not NSMouseDrag).
+  // causing the issues with Object Inspector (where the mouse move with a left button down)
+  // is recognized as a switch to a different row.
+  //
+  // WinAPI doesn't send MouseMove events when popup is dropped.
+  // Enforcing the same approach for Cocoa. If combobox is showing popup
+  // all mousemoves are suppressed
+  if isDown then Exit;
+
   if not Assigned(callback) or not callback.MouseMove(event) then
     inherited mouseMoved(event);
 end;

@@ -607,15 +607,41 @@ begin
   end;
 end;
 
+// According to the documentation of NSScreen.screen It's recommended
+// not to cache NSScreen objects stored in the array. As those might change.
+// However, according to the same documentation, the objects can change
+// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
+// services, it was identified that NSScreen object CAN change without any notification.
+// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
+// is used.
+function IndexToHMonitor(i: NSUInteger): HMonitor;
+begin
+  if i = NSIntegerMax then Result := 0
+  else Result := i + 1;
+end;
+
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+begin
+  if h = 0 then Result := NSIntegerMax
+  else Result := NSUInteger(h)-1;
+end;
+
 function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 var
-  i: integer;
+  i: NSUInteger;
+  cnt: NSUInteger;
 begin
   Result := True;
+  cnt := NSScreen.screens.count;
+  if cnt = 0 then
+  begin
+    Result := false;
+    Exit;
+  end;
   for i := 0 to NSScreen.screens.count - 1 do
   begin
-    Result := Result and lpfnEnum(HMONITOR(NSScreen.screens.objectAtIndex(i)), 0, nil, dwData);
+    Result := Result and lpfnEnum(IndexToHMonitor(i), 0, nil, dwData);
     if not Result then break;
   end;
 end;
@@ -995,13 +1021,21 @@ end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
-  ScreenID: NSScreen absolute hMonitor;
+  ScreenID: NSScreen;
+  idx : NSUInteger;
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
+  idx := HMonitorToIndex(hMonitor);
+  Result := (idx < NSScreen.screens.count);
+  if not Result then Exit;
+
+  ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
   lpmi^.rcMonitor := NSRectToRect(ScreenID.frame);
   NSToLCLRect(ScreenID.visibleFrame, ScreenID.frame.size.height, lpmi^.rcWork);
-  if ScreenID = NSScreen.mainScreen then
+  // according to the documentation the primary (0,0 coord screen)
+  // is always and index 0
+  if idx = 0 then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
@@ -1549,6 +1583,11 @@ begin
 end;
 
 function SysColorToNSColor(nIndex: Integer): NSColor;
+const
+  ToolTipBack     = $C9FCF9;
+  ToolTipBack1010 = $EDEDED;
+  ToolTipBack1014 = $f0f0f0;
+  ToolTipBack1014Dark = $343434;
 begin
   case NIndex of
     COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION,
@@ -1572,7 +1611,7 @@ begin
       Result := NSColor.selectedTextBackgroundColor;
     COLOR_MENUHILIGHT:
       Result := NSColor.selectedMenuItemColor;
-    COLOR_INFOTEXT, COLOR_WINDOWTEXT:
+    COLOR_WINDOWTEXT:
       Result := NSColor.controlTextColor;
     COLOR_APPWORKSPACE:
       Result := NSColor.windowBackgroundColor;
@@ -1585,7 +1624,7 @@ begin
     COLOR_SCROLLBAR:
       Result := NSColor.scrollBarColor;
     COLOR_BTNFACE:
-      Result := NSColor.controlColor;
+      Result := NSColor.controlBackgroundColor;
     COLOR_BTNSHADOW:
       Result := NSColor.controlShadowColor;
     COLOR_BTNHIGHLIGHT:
@@ -1598,8 +1637,27 @@ begin
       Result := NSColor.controlDarkShadowColor;
     COLOR_3DLIGHT:
       Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
+
+    // macOS doesn't provide any API to get the hint window colors.
+    // default = macosx10.4 yellow color. (See InitInternals below)
+    // it's likely the tooltip color will change in future.
+    // Thus the variable is left public, so a user of LCL
+    // would be able to initialize it properly on start
+    COLOR_INFOTEXT:
+      Result := NSColor.controlTextColor;
     COLOR_INFOBK:
-      Result := ColorToNSColor(ColorToolTip);
+    begin
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+      begin
+        if IsPaintDark then
+          Result := ColorToNSColor(ToolTipBack1014Dark)
+        else
+          Result := ColorToNSColor(ToolTipBack1014);
+      end else if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
+        Result := ColorToNSColor(ToolTipBack1010)
+      else
+        Result := ColorToNSColor(ToolTipBack);
+    end;
   else
     Result := nil;
   end;
@@ -1833,24 +1891,46 @@ begin
     ctx.Polyline(PPointArray(Points)^, NumPts);
 end;
 
+type
+  TLCLEventMessage = objcclass(NSObject)
+    handle: HWND;
+    msg: Cardinal;
+    wp: WParam;
+    lp: LParam;
+    res: LResult;
+    releaseAfterRun: Boolean;
+    procedure lclRunEvent(sender: id); message 'lclRunEvent:';
+  end;
+
+procedure TLCLEventMessage.lclRunEvent(sender: id);
+begin
+  res := NSObject(handle).lclDeliverMessage(msg, wp, lp);
+  if releaseAfterRun then self.release;
+end;
+
+function AllocLCLEventMessage(ahandle: HWND; amsg: Cardinal; awp: WParam; alp: LParam; forSend: Boolean): TLCLEventMessage;
+begin
+  Result := TLCLEventMessage.alloc.init;
+  Result.handle := ahandle;
+  Result.msg := amsg;
+  Result.wp := awp;
+  Result.lp := alp;
+  Result.releaseAfterRun := not forSend;
+end;
+
+
 function TCocoaWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): Boolean;
 var
-  Info: NSDictionary;
-  Event: NSEvent;
+  m: TLCLEventMessage;
 begin
   Result := Handle <> 0;
   if Result then
   begin
-    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
-    // if we will want a postmessage using notification center
-    // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
-    Event := PrepareUserEvent(Handle, Info, False);
-    {$ifdef BOOLFIX}
-    NSApp.postEvent_atStart_(Event, Ord(False));
-    {$else}
-    NSApp.postEvent_atStart(Event, False);
-    {$endif}
+    m:=AllocLCLEventMessage(Handle, Msg, wParam, lParam, false);
+    m.performSelectorOnMainThread_withObject_waitUntilDone(
+      ObjCSelector('lclRunEvent:'), nil, false
+    );
   end;
 end;
 
@@ -1930,6 +2010,14 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+  WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+begin
+  Result:=PaintDC<>0;
+  if Result then
+    OriginDiff:=TCocoaContext(PaintDC).WindowOfs;
+end;
+
 function TCocoaWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
   ctx: TCocoaContext;
@@ -1947,7 +2035,19 @@ begin
     HORZRES:
       Result := Round(NSScreen.mainScreen.frame.size.width);
     BITSPIXEL:
-      Result := CGDisplayBitsPerPixel(CGMainDisplayID);
+      // this is based on the main screen only. Should verify what actual DC is passed.
+      // for VIEWS the typical BPP would be 32.
+      case NSScreen.mainScreen.depth of
+        NSWindowDepthTwentyfourBitRGB: //24-bit would be reported as 32
+          Result := 32;
+        NSWindowDepthSixtyfourBitRGB:
+          Result := 64;
+        NSWindowDepthOnehundredtwentyeightBitRGB:
+          Result := 128;
+      else
+        Result := 32;
+      end;
+
     PLANES:
       Result := 1;
     SIZEPALETTE:
@@ -2145,16 +2245,16 @@ end;
 function TCocoaWidgetSet.SendMessage(Handle: HWND; Msg: Cardinal;
   WParam: WParam; LParam: LParam): LResult;
 var
-  Info: NSDictionary;
-  Event: NSEvent;
+  m: TLCLEventMessage;
 begin
   if Handle <> 0 then
   begin
-    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
-    Event := PrepareUserEvent(Handle, Info, True);
-    NSApp.sendEvent(Event);
-    Result := NSNumber(Info.objectForKey(NSMessageResult)).integerValue;
-    Info.Release;
+    m:=AllocLCLEventMessage(Handle, Msg, wParam, lParam, true);
+    m.performSelectorOnMainThread_withObject_waitUntilDone(
+      ObjCSelector('lclRunEvent:'), nil, true
+    );
+    Result := m.res;
+    m.release;
   end else
     Result := 0;
 end;
@@ -2223,7 +2323,7 @@ begin
   Result:=inherited SetCaretRespondToFocus(handle, ShowHideOnFocus);
 end;
 
-function TCocoaWidgetSet.RectVisible(dc: HDC; const ARect: TRect): Boolean;
+function TCocoaWidgetSet.RectVisible(dc: hdc; const ARect: TRect): Boolean;
 var
   ClipBox: CGRect;
   ctx : TCocoaContext;
@@ -2471,6 +2571,7 @@ begin
           Result := 64 else}
           Result := 16;
       end;
+    SM_CXDRAG,SM_CYDRAG: Result := 5;
     SM_CXHTHUMB, SM_CYVTHUMB:
       Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
     SM_SWSCROLLBARSPACING:

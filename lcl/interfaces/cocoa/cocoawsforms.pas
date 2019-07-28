@@ -51,12 +51,16 @@ type
     procedure Close; virtual;
     procedure Resize; virtual;
     procedure Move; virtual;
+    procedure WindowStateChanged; virtual;
 
     function GetEnabled: Boolean; virtual;
     procedure SetEnabled(AValue: Boolean); virtual;
 
     function AcceptFilesDrag: Boolean;
     procedure DropFiles(const FileNames: array of string);
+
+    function HasCancelControl: Boolean;
+    function HasDefaultControl: Boolean;
 
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
@@ -119,6 +123,7 @@ type
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); override;
 
+    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
@@ -178,16 +183,17 @@ uses
   CocoaInt;
 
 const
-  // The documentation says we should use NSNormalWindowLevel=4 for normal forms,
-  // but in practice this causes the issue http://bugs.freepascal.org/view.php?id=28473
-  // The only value that works is zero =(
-  FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
- { fsNormal          } 0,
- { fsMDIChild        } 0,
- { fsMDIForm         } 0,
- { fsStayOnTop       } 9, // NSStatusWindowLevel
- { fsSplash          } 9, // NSStatusWindowLevel
- { fsSystemStayOnTop } 10  // NSModalPanelWindowLevel
+  // The documentation is using constants like "NSNormalWindowLevel=4" for normal forms,
+  // however, these are macros of a function call to CGWindowLevelKey()
+  // where "Key" values of kCGNormalWindowLevelKey=4.
+
+  FormStyleToWindowLevelKey: array[TFormStyle] of NSInteger = (
+ { fsNormal          } kCGNormalWindowLevelKey,
+ { fsMDIChild        } kCGNormalWindowLevelKey,
+ { fsMDIForm         } kCGNormalWindowLevelKey,
+ { fsStayOnTop       } kCGFloatingWindowLevelKey,
+ { fsSplash          } kCGFloatingWindowLevelKey,
+ { fsSystemStayOnTop } kCGFloatingWindowLevelKey  // NSModalPanelWindowLevel
   );
   // Window levels make the form always stay on top, so if it is supposed to
   // stay on top of the app only, then a workaround is to hide it while the app
@@ -196,8 +202,8 @@ const
  { fsNormal          } False,
  { fsMDIChild        } False,
  { fsMDIForm         } False,
- { fsStayOnTop       } True,
- { fsSplash          } True,
+ { fsStayOnTop       } false,
+ { fsSplash          } false,
  { fsSystemStayOnTop } False
   );
 
@@ -215,24 +221,12 @@ procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 var
   lvl : NSInteger;
 begin
-  if not (AFormStyle in [fsNormal, fsMDIChild, fsMDIForm]) then
-  begin
-    lvl := FormStyleToWindowLevel[AFormStyle];
-    {$ifdef BOOLFIX}
-    win.setHidesOnDeactivate_(Ord(FormStyleToHideOnDeactivate[AFormStyle]));
-    {$else}
-    win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
-    {$endif}
-  end
-  else
-  begin
-    lvl := 0;
-    {$ifdef BOOLFIX}
-    win.setHidesOnDeactivate_(Ord(false));
-    {$else}
-    win.setHidesOnDeactivate(false);
-    {$endif}
-  end;
+  lvl := CGWindowLevelForKey(FormStyleToWindowLevelKey[AFormStyle]);
+  {$ifdef BOOLFIX}
+  win.setHidesOnDeactivate_(Ord(FormStyleToHideOnDeactivate[AFormStyle]));
+  {$else}
+  win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
+  {$endif}
   win.setLevel(lvl);
   if win.isKindOfClass(TCocoaWindow) then
     TCocoaWindow(win).keepWinLevel := lvl;
@@ -293,6 +287,7 @@ begin
   cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cb.window := win;
   cnt.callback := cb;
+  cnt.wincallback := cb;
   cnt.preventKeyOnShow := true;
   TCocoaPanel(win).callback := cb;
 
@@ -434,6 +429,15 @@ begin
   boundsDidChange(Owner);
 end;
 
+procedure TLCLWindowCallback.WindowStateChanged;
+var
+  Bounds: TRect;
+begin
+  Bounds := HandleFrame.lclFrame;
+  LCLSendSizeMsg(Target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
+    Owner.lclWindowState, True);
+end;
+
 function TLCLWindowCallback.GetEnabled: Boolean;
 begin
   Result := Owner.lclIsEnabled;
@@ -446,13 +450,51 @@ end;
 
 function TLCLWindowCallback.AcceptFilesDrag: Boolean;
 begin
-  Result := Assigned(Target) and Assigned(TCustomForm(Target).OnDropFiles);
+  Result := Assigned(Target)
+    and TCustomForm(Target).AllowDropFiles
+    and Assigned(TCustomForm(Target).OnDropFiles);
 end;
 
 procedure TLCLWindowCallback.DropFiles(const FileNames: array of string);
 begin
   if Assigned(Target) then
     TCustomForm(Target).IntfDropFiles(FileNames);
+end;
+
+function TLCLWindowCallback.HasCancelControl: Boolean;
+{ TODO: Should this be solved differently?  TForm/TApplication could expose a
+  property to avoid duplicating them here and in TApplication.DoEscapeKey }
+var
+  lControl: TControl;
+begin
+  if Assigned(Target) and
+     (anoEscapeForCancelControl in Application.Navigation) then
+  begin
+    lControl := TCustomForm(Target).CancelControl;
+    Result := Assigned(lControl) and lControl.Enabled and lControl.Visible;
+  end
+  else
+    Result := False;
+end;
+
+function TLCLWindowCallback.HasDefaultControl: Boolean;
+{ TODO: Should this be solved differently?  TForm/TApplication could expose a
+  property to avoid duplicating them here and in TApplication.DoReturnKey }
+var
+  lControl: TControl;
+begin
+  if Assigned(Target) and
+     (anoReturnForDefaultControl in Application.Navigation) then
+  begin
+    lControl := TCustomForm(Target).ActiveDefaultControl;
+    if lControl = nil then
+      lControl := TCustomForm(Target).DefaultControl;
+    Result := Assigned(lControl) and
+      ((lControl.Parent = nil) or lControl.Parent.CanFocus) and
+      lControl.Enabled and lControl.Visible;
+  end
+  else
+    Result := False;
 end;
 
 { TCocoaWSScrollingWinControl}
@@ -617,6 +659,7 @@ begin
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cnt.callback := cb;
+  cnt.wincallback := cb;
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
@@ -670,17 +713,14 @@ begin
       {$endif}
     end;
 
-    cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
+    cnt.wincallback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
     // Don't call addChildWindow_ordered here because this function can cause
     // events to arrive for this window, creating a second call to TCocoaWSCustomForm.CreateHandle
     // while the first didn't finish yet, instead delay the call
     cnt.popup_parent := AParams.WndParent;
-
-    // support for drag & drop
-    win.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1));
 
     if IsFormDesign(AWinControl) then begin
       ds:=(TCocoaDesignOverlay.alloc).initWithFrame(cnt.frame);
@@ -693,11 +733,11 @@ begin
   end
   else
   begin
-    cnt.callback := TLCLCommonCallback.Create(cnt, AWinControl);
     if AParams.WndParent <> 0 then
     begin
       lDestView := GetNSObjectView(NSObject(AParams.WndParent));
       lDestView.addSubView(cnt);
+      cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then
          cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
@@ -714,6 +754,9 @@ class procedure TCocoaWSCustomForm.DestroyHandle(const AWinControl: TWinControl
   );
 var
   win : NSWindow;
+  cb  : ICommonCallback;
+  obj : TObject;
+  wcb : TLCLWindowCallback;
 begin
   if not AWinControl.HandleAllocated then
     Exit;
@@ -728,6 +771,16 @@ begin
     if Assigned(win.parentWindow) then
       win.parentWindow.removeChildWindow(win);
     win.close;
+    win.setContentView(nil);
+    cb := win.lclGetCallback();
+    if Assigned(cb) then
+    begin
+      obj := cb.GetCallbackObject;
+      if (obj is TLCLWindowCallback) then
+        TLCLWindowCallback(obj).window := nil;
+    end;
+    win.lclClearCallback();
+    win.release;
   end;
 
   TCocoaWSWinControl.DestroyHandle(AWinControl);
@@ -844,6 +897,21 @@ class procedure TCocoaWSCustomForm.SetModalResult(const ACustomForm: TCustomForm
 begin
   if (CocoaWidgetSet.CurModalForm = NSView(ACustomForm.Handle).window) and (ANewValue <> 0) then
     CloseModal(ACustomForm);
+end;
+
+class procedure TCocoaWSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
+  AValue: Boolean);
+var
+  view : NSView;
+begin
+  if AForm.HandleAllocated then
+  begin
+    view := NSView(AForm.Handle);
+    if AValue then
+      view.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1))
+    else
+      view.unregisterDraggedTypes
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);

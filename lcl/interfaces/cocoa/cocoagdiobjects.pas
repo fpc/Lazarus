@@ -147,12 +147,31 @@ type
     property Color: NSColor read FColor write SetColor;
   end;
 
+type
+  TCocoaStatDashes = record
+    Len  : integer;
+    Dash : array [0..5] of CGFloat;
+  end;
+  PCocoaStatDashes = ^TCocoaStatDashes;
+
 const
-  // use the same pen shapes that are used for carbon
-  CocoaDashStyle: Array [0..1] of CGFloat = (3, 1);
-  CocoaDotStyle: Array [0..1] of CGFloat = (1, 1);
-  CocoaDashDotStyle: Array [0..3] of CGFloat = (3, 1, 1, 1);
-  CocoaDashDotDotStyle: Array [0..5] of CGFloat = (3, 1, 1, 1, 1, 1);
+  CocoaPenDash : array [Boolean] of
+    array [PS_DASH..PS_DASHDOTDOT] of TCocoaStatDashes = (
+    // cosmetic = false (geometry)
+    (
+      (len: 2; dash: (3,1,0,0,0,0)), // PS_DASH        = 1;      { ------- }
+      (len: 2; dash: (1,1,0,0,0,0)), // PS_DOT         = 2;      { ....... }
+      (len: 4; dash: (3,1,1,1,0,0)), // PS_DASHDOT     = 3;      { _._._._ }
+      (len: 6; dash: (3,1,1,1,1,1))  // PS_DASHDOTDOT  = 4;      { _.._.._ }
+    ),
+    // cosmetic = true (windows like cosmetic)
+    (
+      (len: 2; dash: (18,6,0,0,0,0)), // PS_DASH        = 1;      { ------- }
+      (len: 2; dash: (3,3,0,0,0,0)),  // PS_DOT         = 2;      { ....... }
+      (len: 4; dash: (9,6,3,6,0,0)),  // PS_DASHDOT     = 3;      { _._._._ }
+      (len: 6; dash: (9,3,3,3,3,3))   // PS_DASHDOTDOT  = 4;      { _.._.._ }
+    )
+  );
 
 type
   TCocoaDashes = array of CGFloat;
@@ -329,12 +348,17 @@ type
     FTextContainer: NSTextContainer;
     FText: String;
     FFont: TCocoaFont;
+    // surrogate pairs (for UTF16)
+    FSurr: array of NSRange;
+    FSurrCount: Integer;
     procedure SetBackgoundColor(AValue: TColor);
     procedure SetForegoundColor(AValue: TColor);
     procedure SetFont(AFont: TCocoaFont);
     procedure UpdateFont;
     procedure UpdateColor;
     function GetTextRange: NSRange;
+
+    procedure EvalSurrogate(s: NSString);
   public
     constructor Create;
     destructor Destroy; override;
@@ -377,6 +401,7 @@ type
     FSize: TSize;
     FViewPortOfs: TPoint;
     FWindowOfs: TPoint;
+    boxview : NSBox; // the view is used to draw Frame3d
     function GetFont: TCocoaFont;
     function GetTextColor: TColor;
     procedure SetBkColor(AValue: TColor);
@@ -1225,6 +1250,40 @@ begin
   Result.length := FTextStorage.length;
 end;
 
+procedure TCocoaTextLayout.EvalSurrogate(s: NSString);
+var
+  res  : NSRange;
+  i    : integer;
+  ln   : integer;
+  scnt : integer;
+  ch   : integer;
+begin
+  FSurrCount := 0;
+  i := 0;
+  ln := s.length;
+  // must analyze the string to presence of surrogate pairs.
+  // this is required for the use
+  ch := 0;
+  while i < ln do
+  begin
+    res := s.rangeOfComposedCharacterSequenceAtIndex(i); //s.rangeOfComposedCharacterSequencesForRange(src);
+    inc(i, res.length);
+    if res.length>1 then
+    begin
+      if length(FSurr) = FSurrCount then
+      begin
+        if FSurrCount = 0 then SetLength(FSurr, 4)
+        else SetLength(FSurr, FSurrCount * 2)
+      end;
+      FSurr[FSurrCount] := res;
+      inc(fSurrCount);
+    end;
+    inc(ch);
+  end;
+  if ((FSurrCount = 0) and (length(FSurr)<>0)) or (length(FSurr) div 2>FSurrCount) then
+    SetLength(FSurr, FSurrCount);
+end;
+
 procedure TCocoaTextLayout.SetForegoundColor(AValue: TColor);
 begin
   if FForegroundColor <> AValue then
@@ -1304,6 +1363,7 @@ begin
     FText := NewText;
     S := NSStringUTF8(NewText);
     try
+      FSurrCount:=-1; // invalidating surragete pair search
       FTextStorage.beginEditing;
       if S <> nil then
         FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
@@ -1348,7 +1408,8 @@ var
   Context: NSGraphicsContext;
   Locations: array of NSPoint;
   Indexes: array of NSUInteger;
-  I, Count: NSUInteger;
+  I,j, Count, ii: NSUInteger;
+  si: Integer;
   transform : NSAffineTransform;
 begin
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
@@ -1379,19 +1440,52 @@ begin
   Pt.y := Y;
   if Assigned(DX) then
   begin
+    // DX - is provided for UTF8 characters. UTF8 doesn't have surrogate pairs
+    // UTF16 does. UTF16 is the base for NSTextLayout and NSString.
+    // Thus for any character in DX, there might be mulitple "characeters"
+    // in NSTextLayout. See #35675.
+    if FSurrCount<0 then EvalSurrogate(FTextStorage.string_);
+
     Count := Range.length;
     SetLength(Locations, Count);
     SetLength(Indexes, Count);
     Locations[0] := FLayout.locationForGlyphAtIndex(0);
     Indexes[0] := 0;
-    for I := 1 to Count - 1 do
+    for I := 1 to Count - 1 do Indexes[I] := I;
+
+    // no surrogate pairs
+    I := 1;
+    j := 0;
+    if FSurrCount > 0 then
+    begin
+      si := 0;
+      for si:=0 to FSurrCount - 1 do
+      begin
+        for ii := i to FSurr[si].location do
+        begin
+          Locations[I] := Locations[I - 1];
+          Locations[I].x := Locations[I].x + DX[J];
+          inc(i);
+          inc(j);
+        end;
+        for ii := 2 to FSurr[si].length do
+        begin
+          Locations[I] := Locations[I - 1];
+          inc(I);
+        end;
+      end;
+    end;
+
+    // remaining DX offsets
+    for I := I to Count - 1 do
     begin
       Locations[I] := Locations[I - 1];
-      Locations[I].x := Locations[I].x + DX[I - 1];
-      Indexes[I] := I;
+      Locations[I].x := Locations[I].x + DX[J];
+      inc(j);
     end;
     FLayout.setLocations_startingGlyphIndexes_count_forGlyphRange(@Locations[0], @Indexes[0], Count, Range);
   end;
+
   if FillBackground then
     FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
@@ -1650,7 +1744,7 @@ begin
 
   if Assigned(ctx) then
     ctx.release;
-
+  if Assigned(boxview) then boxview.release;
   inherited Destroy;
 end;
 
@@ -1764,8 +1858,8 @@ begin
   if (absDeltaX<=1) and (absDeltaY<=1) then
   begin
     // special case for 1-pixel lines
-    tx := bx + 0.05 * deltaX;
-    ty := by + 0.05 * deltay;
+    tx := bx + 0.5 * deltaX;
+    ty := by + 0.5 * deltay;
   end
   else
   begin
@@ -2013,42 +2107,44 @@ end;
 
 procedure TCocoaContext.Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
 var
-  {$ifdef CocoaUseHITheme}
-  I, D: Integer;
-  DrawInfo: HIThemeGroupBoxDrawInfo;
-  {$else}
-  lCanvas: TCanvas;
-  lDrawer: TCDDrawer;
-  {$endif}
+  dx,dy: integer;
+  ns : NSRect;
+  r  : TRect;
+  yy : double;
 begin
-  {$ifdef CocoaUseHITheme}
-  if Style = bvRaised then
+  if Style = bvNone then Exit;
+
+  if (Style = bvRaised) or (Style = bvLowered) then
   begin
-    GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
-
-    // draw frame as group box
-    DrawInfo.version := 0;
-    DrawInfo.state := kThemeStateActive;
-    DrawInfo.kind := kHIThemeGroupBoxKindPrimary;
-
-    for I := 1 to FrameWidth do
+    if not Assigned(boxview) then
     begin
-      HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo, CGContext, kHIThemeOrientationNormal);
-      InflateRect(ARect, -D, -D);
+      boxview := NSBox.alloc.initWithFrame(NSMakeRect(0,0,0,0));
+      boxview.setTitle(NSString.string_);
+      boxview.setTitlePosition(NSNoTitle);
     end;
+
+    dx:=3; // layout<->frame adjustement for the box
+    dy:=3; // (should be aquired using 10.7 apis)
+    if Style=bvRaised then
+      boxview.setBoxType(NSBoxPrimary)
+    else
+      boxview.setBoxType(NSBoxSecondary);
+    r:=ARect;
+    InflateRect(r, dx, dy);
+    ns := RectToNSRect(r);
+    // used for size only, position is ignored
+    boxview.setFrame(ns);
+    yy := ns.size.height+ns.origin.y+1;
+    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, yy);
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
+
+    boxview.displayRectIgnoringOpacity_inContext(
+      NSMakeRect(0,0,ns.size.width, ns.size.height)
+      , ctx);
+
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
+    CGContextTranslateCTM(ctx.lclCGContext, -ns.origin.x,-yy);
   end;
-  {$else}
-  lCanvas := TCanvas.Create;
-  try
-    lDrawer := GetDrawer(dsMacOSX);
-    lCanvas.Handle := HDC(Self);
-    lDrawer.DrawFrame3D(lCanvas, Types.Point(ARect.Left, ARect.Top),
-      Types.Size(ARect), FrameWidth, Style);
-  finally
-    lCanvas.Handle := 0;
-    lCanvas.Free;
-  end;
-  {$endif}
   AttachedBitmap_SetModified();
 end;
 
@@ -2690,21 +2786,30 @@ end;
 
 { TCocoaPen }
 
+procedure CalcDashes(
+  const Src: array of CGFloat;
+  var Dst: array of CGFloat;
+  out Len: Integer;
+  mul: CGFloat;
+  ofs: CGFloat = 0.0 // pixels are "half" offset in Cocoa drawing
+  );
+var
+  i: Integer;
+begin
+  Len := Min(length(Src), length(Dst));
+  for i := 0 to Len - 1 do
+    Dst[i] := Src[i] * mul + ofs;
+end;
+
 procedure TCocoaPen.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
-
-  function GetDashes(Source: TCocoaDashes): TCocoaDashes;
-  var
-    i: Integer;
-  begin
-    Result := Source;
-    for i := Low(Result) to High(Result) do
-      Result[i] := Result[i] * FWidth;
-  end;
-
 var
   AR, AG, AB, AA: CGFloat;
   AROP2: Integer;
-  ADashes: TCocoaDashes;
+  ADashes: array [0..15] of CGFloat;
+  ADashLen: Integer;
+  StatDash: PCocoaStatDashes;
+  isCosm  : Boolean;
+  WidthMul : array [Boolean] of CGFloat;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
@@ -2736,28 +2841,20 @@ begin
   end;
 
   case FStyle of
-    PS_DASH:
+    PS_DASH..PS_DASHDOTDOT:
       begin
-        ADashes := GetDashes(CocoaDashStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
-      end;
-    PS_DOT:
-      begin
-        ADashes := GetDashes(CocoaDotStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
-      end;
-    PS_DASHDOT:
-      begin
-        ADashes := GetDashes(CocoaDashDotStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
-      end;
-    PS_DASHDOTDOT:
-      begin
-        ADashes := GetDashes(CocoaDashDotDotStyle);
-        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+        isCosm := not IsGeometric;
+        WidthMul[false]:=1.0;
+        WidthMul[true]:=Width;
+        StatDash := @CocoaPenDash[isCosm][FStyle];
+        CalcDashes( Slice(StatDash^.dash, StatDash^.len), ADashes, ADashLen, WidthMul[isCosm]);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], ADashLen);
       end;
     PS_USERSTYLE:
-      CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0], Length(Dashes));
+      if Length(Dashes) > 0 then
+        CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0], Length(Dashes))
+      else
+        CGContextSetLineDash(ADC.CGContext, 0, nil, 0)
   else
     CGContextSetLineDash(ADC.CGContext, 0, nil, 0);
   end;
@@ -2925,6 +3022,7 @@ const
   );
 var
   ACallBacks: CGPatternCallbacks;
+  CGDataProvider: CGDataProviderRef;
 begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
@@ -2933,7 +3031,9 @@ begin
     if (FBitmap <> nil) then FBitmap.Release;
     FBitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
     if FImage <> nil then CGImageRelease(FImage);
-    FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
+    CGDataProvider := CGDataProviderCreateWithData(nil, @HATCH_DATA[AHatch], 8, nil);
+    FImage := CGImageMaskCreate(8, 8, 1, 1, 1, CGDataProvider, nil, 0);
+    CGDataProviderRelease(CGDataProvider);
     FColored := False;
     if FCGPattern <> nil then CGPatternRelease(FCGPattern);
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),

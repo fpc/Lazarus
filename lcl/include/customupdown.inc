@@ -464,8 +464,11 @@ end;
 
 procedure TCustomUpDown.SetEnabled(Value: Boolean);
 begin
-  FMinBtn.Enabled := Value;
-  FMaxBtn.Enabled := Value;
+  if not FUseWS then
+  begin
+    FMinBtn.Enabled := Value;
+    FMaxBtn.Enabled := Value;
+  end;
   inherited SetEnabled(Value);
 end;
 

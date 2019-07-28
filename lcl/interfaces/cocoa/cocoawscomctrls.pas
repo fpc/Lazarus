@@ -19,7 +19,7 @@ uses
   WSComCtrls,
   // Cocoa WS
   CocoaPrivate, CocoaScrollers, CocoaTabControls, CocoaUtils,
-  CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls, CocoaGDIObjects;
+  CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls, CocoaGDIObjects, CocoaButtons;
 
 type
 
@@ -63,6 +63,7 @@ type
     class function  GetCocoaTabPageFromHandle(AHandle: HWND): TCocoaTabPage;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetProperties(const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
     //
@@ -128,6 +129,7 @@ type
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState);
+    procedure GetRowHeight(rowidx: Integer; var h: Integer);
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
@@ -194,9 +196,9 @@ type
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
-    (*class procedure SetSort(const ALV: TCustomListView; const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
+    class procedure SetSort(const ALV: TCustomListView; const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
       const {%H-}ASortDirection: TSortDirection); override;
-    class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
+    (*class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
     class procedure SetViewStyle(const ALV: TCustomListView; const AValue: TViewStyle); override;*)
   end;
 
@@ -214,6 +216,12 @@ type
 
   TCocoaWSCustomUpDown = class(TWSCustomUpDown)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetIncrement(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetMaxPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetMinPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
+    class procedure SetWrap(const AUpDown: TCustomUpDown; ADoWrap: Boolean); override;
   end;
 
   { TCarbonWSUpDown }
@@ -260,6 +268,102 @@ type
   end;
 
 implementation
+
+type
+
+  { TUpdownCommonCallback }
+
+  TUpdownCommonCallback = class(TLCLCommonCallback, IStepperCallback)
+    procedure BeforeChange(var Allowed: Boolean);
+    procedure Change(NewValue: Double; isUpPressed: Boolean; var Allowed: Boolean);
+    procedure UpdownClick(isUpPressed: Boolean);
+  end;
+
+type
+  TAccessUpDown = class(TCustomUpDown);
+
+{ TUpdownCommonCallback }
+
+procedure TUpdownCommonCallback.BeforeChange(var Allowed: Boolean);
+begin
+  if Assigned( TAccessUpDown(Target).OnChanging ) then
+    TAccessUpDown(Target).OnChanging(Target, Allowed);
+end;
+
+procedure TUpdownCommonCallback.Change(NewValue: Double; isUpPressed: Boolean;
+  var Allowed: Boolean);
+const
+  UpDownDir : array [Boolean] of TUpDownDirection = (updUp, updDown);
+begin
+  if Assigned( TAccessUpDown(Target).OnChangingEx ) then
+    TAccessUpDown(Target).OnChangingEx(Target, Allowed,
+      Round(NewValue), UpDownDir[isUpPressed]);
+end;
+
+procedure TUpdownCommonCallback.UpdownClick(isUpPressed: Boolean);
+const
+  UpDownBtn : array [Boolean] of TUDBtnType = (btPrev, btNext);
+begin
+  TAccessUpDown(Target).Position := NSStepper(Owner).intValue;
+  if Assigned( TAccessUpDown(Target).OnClick ) then
+    TAccessUpDown(Target).OnClick( Target, UpDownBtn[isUpPressed]);
+end;
+
+{ TCocoaWSCustomUpDown }
+
+class function TCocoaWSCustomUpDown.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lResult: TCocoaStepper;
+begin
+  lResult := TCocoaStepper.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(lResult) then
+  begin
+    lResult.callback := TUpdownCommonCallback.Create(lResult, AWinControl);
+    //small constrol size looks like carbon
+    //lResult.setControlSize(NSSmallControlSize);
+    lResult.setTarget(lResult);
+    lResult.setAction(objcselector('stepperAction:'));
+
+  end;
+  Result := TLCLIntfHandle(lResult);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetMinPosition(
+  const AUpDown: TCustomUpDown; AValue: Double);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).setMinValue(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetMaxPosition(
+  const AUpDown: TCustomUpDown; AValue: Double);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).setMaxValue(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetPosition(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).lastValue := AValue;
+  TCocoaStepper(AUpDown.Handle).setDoubleValue(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetIncrement(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).setIncrement(AValue);
+end;
+
+class procedure TCocoaWSCustomUpDown.SetWrap(const AUpDown: TCustomUpDown;
+  ADoWrap: Boolean);
+begin
+  if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
+  TCocoaStepper(AUpDown.Handle).setValueWraps(ADoWrap);
+end;
 
 { TStatusBarCallback }
 
@@ -478,6 +582,18 @@ begin
   end;
 end;
 
+class procedure TCocoaWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
+var
+  tv: TCocoaTabPageView;
+  ndx: Integer;
+begin
+  tv := TCocoaTabPageView(AWinControl.Handle);
+  ndx := tv.tabView.exttabIndexOfTabViewItem(tv.tabPage);
+  if ndx >= 0 then
+    tv.tabview.exttabRemoveTabViewItem(tv.tabPage);
+  TCocoaWSWinControl.DestroyHandle(AWinControl);
+end;
+
 class procedure TCocoaWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 var
   lTabPage: TCocoaTabPage;
@@ -486,8 +602,8 @@ begin
   WriteLn('[TCocoaWSCustomTabControl.UpdateProperties] ACustomPage='+IntToStr(PtrInt(ACustomPage)));
   {$ENDIF}
   if not Assigned(ACustomPage) or not ACustomPage.HandleAllocated then Exit;
-  lTabPage := TCocoaTabPage(ACustomPage.Handle);
-  SetProperties(ACustomPage, lTabPage);
+  lTabPage := GetCocoaTabPageFromHandle(ACustomPage.Handle);
+  if Assigned(lTabPage) then SetProperties(ACustomPage, lTabPage);
 end;
 
 class procedure TCocoaWSCustomPage.SetProperties(
@@ -571,7 +687,6 @@ begin
   Result := nil;
   if ATabControl = nil then Exit;
   if not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   Result := TCocoaTabControl(ATabControl.Handle);
 end;
 
@@ -581,23 +696,16 @@ var
   lTabControl: TCustomTabControl = nil;
   lTabStyle: NSTabViewType = NSTopTabsBezelBorder;
 begin
-  if (AWinControl is TPageControl) then
+  lTabControl := TCustomTabControl(AWinControl);
+  lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
+  lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
+  lControl.setTabViewType(lTabStyle);
+  lControl.lclEnabled := AWinControl.Enabled;
+  Result := TLCLIntfHandle(lControl);
+  if Result <> 0 then
   begin
-    lTabControl := TCustomTabControl(AWinControl);
-    lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
-    lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
-    lControl.setTabViewType(lTabStyle);
-    lControl.lclEnabled := AWinControl.Enabled;
-    Result := TLCLIntfHandle(lControl);
-    if Result <> 0 then
-    begin
-      lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
-      lControl.setDelegate(lControl);
-    end;
-  end
-  else
-  begin
-    Result := TCocoaWSCustomGroupBox.CreateHandle(AWinControl, AParams);
+    lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
+    lControl.setDelegate(lControl);
   end;
 end;
 
@@ -610,7 +718,6 @@ begin
   WriteLn('[TCocoaWSCustomTabControl.AddPage] AChild='+IntToStr(PtrInt(AChild)));
   {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
@@ -629,7 +736,6 @@ var
   lTabPage: TCocoaTabPage;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
@@ -645,7 +751,6 @@ var
   lTabPage: NSTabViewItem;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lTabPage := NSTabViewItem(lTabControl.fulltabs.objectAtIndex(AIndex));
@@ -661,7 +766,6 @@ var
 begin
   Result := -1;
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   pt.x := Round(AClientPos.x + lTabControl.contentRect.origin.x);
@@ -690,7 +794,6 @@ begin
   WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
   {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   if (AIndex<0) or (AIndex>=ATabControl.PageCount) then Exit;
   tb := TCocoaTabPageView(ATabControl.Page[AIndex].Handle);
   if not Assigned(tb) then Exit;
@@ -698,7 +801,9 @@ begin
   i := TCocoaTabControl(ATabControl.Handle).fulltabs.indexOfObject( tb.tabPage );
   if (i = NSNotFound) then Exit;
 
+  TCocoaTabControl(ATabControl.Handle).ignoreChange := True;
   TCocoaTabControl(ATabControl.Handle).extselectTabViewItemAtIndex(NSInteger(i));
+  TCocoaTabControl(ATabControl.Handle).ignoreChange := False;
 end;
 
 class procedure TCocoaWSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
@@ -707,7 +812,6 @@ var
   lOldTabStyle, lTabStyle: NSTabViewType;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
@@ -721,7 +825,6 @@ var
   lOldTabStyle, lTabStyle: NSTabViewType;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
@@ -1366,6 +1469,25 @@ begin
   {$endif}
 end;
 
+class procedure TCocoaWSCustomListView.SetSort(const ALV: TCustomListView;
+  const AType: TSortType; const AColumn: Integer;
+  const ASortDirection: TSortDirection);
+var
+  lTableLV: TCocoaTableListView;
+  lNSColumn: NSTableColumn;
+begin
+  if not CheckColumnParams(lTableLV, lNSColumn, ALV, AColumn) then Exit;
+  lTableLV.reloadData();
+  { //todo:
+    lNSColumn.setSortDescriptorPrototype(
+    NSSortDescriptor.sortDescriptorWithKey_ascending_selector(
+      NSSTR('none'),
+      ASortDirection=sdAscending,
+      objcselector('none:')
+    )
+  );}
+end;
+
 { TCocoaWSProgressBar }
 
 class function TCocoaWSProgressBar.CreateHandle(const AWinControl: TWinControl;
@@ -1689,6 +1811,11 @@ procedure TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
   const r: TRect; state: TOwnerDrawState);
 begin
   // todo: check for custom draw listviews event
+end;
+
+procedure TLCLListViewCallback.GetRowHeight(rowidx: Integer; var h: Integer);
+begin
+
 end;
 
 { TCocoaWSTrackBar }

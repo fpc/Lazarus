@@ -83,7 +83,11 @@ type
     procedure lclClearCallback; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
     function isValidAppleMenu(): LCLObjCBoolean; message 'isValidAppleMenu';
+    // menuWillOpen cannot be used. Because it SHOULD NOT change the contents
+    // of the menu. While LCL allows to modify the menu contents when the submenu
+    // is about to be activated.
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
+    //procedure menuDidClose(AMenu: NSMenu); message 'menuDidClose:';
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -378,8 +382,36 @@ end;
 procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
   if not Assigned(menuItemCallback) then Exit;
+  //todo: call "measureItem"
   menuItemCallback.ItemSelected;
 end;
+
+{  menuDidClose should not change the structure of the menu.
+   The restructuring is causing issues on Apple's special menus (i.e. HELP menu)
+   See bug #35625
+
+procedure TCocoaMenuItem.menuDidClose(AMenu: NSMenu);
+var
+  par : NSMenu;
+  idx : NSInteger;
+  mn  : NSMenuItem;
+begin
+  // the only purpose of this code is to "invalidate" the submenu of the item.
+  // an invalidated menu will call menuNeedsUpdate.
+  // There's no other way in Cocoa to do the "invalidate"
+  par := amenu.supermenu;
+  if Assigned(par) then
+  begin
+    idx := par.indexOfItemWithSubmenu(AMenu);
+    if idx<>NSNotFound then
+    begin
+      mn := par.itemAtIndex(idx);
+      mn.setSubmenu(nil);
+      mn.setSubmenu(AMenu);
+    end;
+  end;
+end;
+}
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
 begin
@@ -428,7 +460,6 @@ class procedure TCocoaWSMenuItem.Do_SetCheck(const ANSMenuItem: NSMenuItem; cons
 const
   menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
-  ANSMenuItem.setOnStateImage(NSMenuCheckmark);
   ANSMenuItem.setState( menustate[Checked] );
 end;
 
@@ -473,6 +504,10 @@ begin
       Parent := AllocCocoaMenu(AMenuItem.Parent.Caption);
       Parent.setDelegate(TCocoaMenuItem(ParObj));
       NSMenuItem(ParObj).setSubmenu(Parent);
+
+      // no longer respond to clicks. LCL might still need to get an event
+      // yet the menu should not close
+      NSMenuItem(ParObj).setAction(nil);
     end
     else
       Parent:=TCocoaMenu(NSMenuItem(ParObj).submenu);
@@ -550,6 +585,12 @@ begin
     {$else}
     item.setEnabled(AMenuItem.Enabled);
     {$endif}
+
+    if AMenuItem.RadioItem then
+      item.setOnStateImage( NSMenuRadio )
+    else
+      item.setOnStateImage(NSMenuCheckmark);
+
     Do_SetCheck(item, AMenuItem.Checked);
 
     if AMenuItem.HasIcon and ((AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap)) then
@@ -715,7 +756,11 @@ begin
   Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
   if not Result then Exit;
   //todo: disable relative radio items
-  NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuRadio );
+  if RadioItem then
+    NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuRadio )
+  else
+    NSMenuItem(AMenuItem.Handle).setOnStateImage(NSMenuCheckmark);
+
   NSMenuItem(AMenuItem.Handle).setState( menustate[RadioItem] );
 end;
 
@@ -760,6 +805,9 @@ class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
 var
   res : Boolean;
   mnu : NSMenuItem;
+  view : NSView;
+  w : NSWindow;
+  px, py: Integer;
 begin
   if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then
   begin
@@ -772,8 +820,21 @@ begin
     end;}
 
     // New method for 10.6+
+    px := x;
+    py := y;
+    view := nil;
+    w :=NSApp.keyWindow;
+    if Assigned(w) then
+    begin
+      view := w.contentView;
+      if Assigned(view) then
+      begin
+        view.lclScreenToLocal(px, py);
+        py := Round(view.frame.size.height - py);
+      end;
+    end;
     res := TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
-      nil, LCLCoordsToCocoa(nil, X, Y), nil);
+      nil, NSMakePoint(px, py), view);
 
     // for whatever reason a context menu will not fire the "action"
     // of the specified target. Thus we're doing it here manually. :(

@@ -99,6 +99,7 @@ type
        const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
        WithThemeSpace: Boolean); override;
 
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TCocoaWSCustomListBox }
@@ -153,6 +154,8 @@ type
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
     class procedure Paste(const ACustomEdit: TCustomEdit); override;
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
+
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
   
   { TCocoaMemoStrings }
@@ -240,6 +243,7 @@ type
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet); virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState); virtual;
+    procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -330,6 +334,12 @@ function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
 procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
+
+// Sets the control text and then calls controls callback (if any)
+// with TextChange (CM_TEXTCHANGED) event.
+// Cocoa control do not fire a notification, if text is changed programmatically
+// LCL expects a change notification in either way. (by software or by user)
+procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
 
 implementation
 
@@ -603,6 +613,12 @@ begin
   DrawStruct.DC := HDC(ctx);
   DrawStruct.ItemID :=  rowIdx;
   LCLSendDrawListItemMsg(Target, @DrawStruct);
+end;
+
+procedure TLCLListBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);
+begin
+  if TCustomListBox(Target).Style = lbOwnerDrawVariable then
+    TCustomListBox(Target).MeasureItem(rowidx, h);
 end;
 
 { TLCLCheckBoxCallback }
@@ -984,8 +1000,54 @@ end;
 
 
 class procedure TCocoaWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+var
+  lHandle: TCocoaTextField;
+  w : NSWindow;
+  t : NSText;
+  isFocused: Boolean;
+  r : Boolean;
+  b : Boolean;
+  rsp : NSResponder;
+  ed  : TCocoaFieldEditor;
 begin
-//  NSTextField(ACustomEdit.Handle).setEditable(not NewReadOnly);
+  lHandle := GetTextField(ACustomEdit);
+  if not Assigned(lHandle) then Exit;
+
+  ed := nil; //if lHandle is "focused" then ed would be <> nil
+  w := lHandle.window;
+  if not Assigned(w) then t := nil
+  else begin
+    rsp := w.firstResponder;
+    if (Assigned(rsp)) and (rsp.isKindOfClass(TCocoaFieldEditor)) then
+    begin
+      ed := TCocoaFieldEditor(rsp);
+      if (NSObject(ed.delegate) = lHandle) then
+      begin
+        ed.retain;
+        // the hack is needed to prevent infinite loop
+        // on switching editable (ReadOnly) status.
+        // without prevention of Editor focusing, AppKit goes into an infinite loop:
+        // AppKit`-[_NSKeyboardFocusClipView removeFromSuperview] + 55
+        // AppKit`-[NSWindow endEditingFor:] + 429
+        // AppKit`-[NSView removeFromSuperview] + 78
+        // AppKit`-[_NSKeyboardFocusClipView removeFromSuperview] + 55
+        // AppKit`-[NSWindow endEditingFor:] + 429
+        // AppKit`-[NSView removeFromSuperview] + 78
+        // AppKit`-[_NSKeyboardFocusClipView removeFromSuperview] + 55
+        ed.goingReadOnly := true;
+      end
+      else
+        ed := nil; // someone else is focused
+    end;
+  end;
+
+  lHandle.setEditable_(ObjCBool(not NewReadOnly));
+  lHandle.setSelectable_(1); // allow to select read-only text (LCL compatible)
+
+  if Assigned(ed) then begin
+    ed.goingReadOnly := false;
+    ed.release;
+  end;
 end;
 
 class procedure TCocoaWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
@@ -1040,6 +1102,13 @@ class procedure TCocoaWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
 begin
   if not Assigned(ACustomEdit) or not (ACustomEdit.HandleAllocated) then Exit;
   NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), nil, id(ACustomEdit.Handle));
+end;
+
+class procedure TCocoaWSCustomEdit.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+  if (AWinControl.HandleAllocated) then
+    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
 end;
 
 { TCocoaMemoStrings }
@@ -1308,6 +1377,7 @@ begin
   nr.size.width:=AParams.Width;
 
   txt := TCocoaTextView.alloc.initwithframe(nr);
+  txt.setAllowsUndo(true);
   // setting up a default system font (to be consistent with other widgetsets)
   txt.setFont( NSFont.systemFontOfSize( NSFont.systemFontSizeForControlSize(NSRegularControlSize) ));
   txt.setRichText(false);
@@ -1579,7 +1649,7 @@ begin
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
-    rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
+    rocmb.list:=TCocoaReadOnlyComboBoxList.Create(rocmb);
     rocmb.setTarget(rocmb);
     rocmb.setAction(objcselector('comboboxAction:'));
     rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
@@ -1593,7 +1663,7 @@ begin
     cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(cmb) then Exit;
     //cmb.setCell(TCocoaComboBoxCell.alloc.initTextCell(NSString.string_));
-    cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
+    cmb.list:=TCocoaEditComboBoxList.Create(cmb);
     cmb.setUsesDataSource(true);
     cmb.setDataSource(cmb);
     cmb.setDelegate(cmb);
@@ -1652,6 +1722,8 @@ end;
 
 class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:
   TCustomComboBox):integer;
+var
+  idx : NSInteger;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
   begin
@@ -1660,9 +1732,13 @@ begin
   end;
 
   if ACustomComboBox.ReadOnly then
-    Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
+    idx := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
   else
-    Result := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
+    idx := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
+  if idx = NSNotFound then
+    Result := -1
+  else
+    Result := Integer(idx);
 end;
 
 class procedure TCocoaWSCustomComboBox.SetItemIndex(const ACustomComboBox:
@@ -1741,6 +1817,13 @@ begin
   // do not override PreferredWidth and Height
   // see todo at TCocoaWSWinControl.GetPreferredSize
   // once it's resolved, TCocoaWSCustomComboBox.GetPreferredSize could be removed
+end;
+
+class procedure TCocoaWSCustomComboBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+  if (AWinControl.HandleAllocated) then
+    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
 end;
 
 { TCocoaWSToggleBox }
@@ -1874,6 +1957,9 @@ procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 begin
   if not Assigned(list) then Exit;
   list.isCustomDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+  list.isDynamicRowHeight := AStyle = lbOwnerDrawVariable;
+  //todo: if flag isCustomRowHeight changes in runtime
+  //      noteHeightOfRowsWithIndexesChanged, should be sent to listview
 end;
 
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
@@ -1896,6 +1982,15 @@ begin
   list.setDelegate(list);
   list.setAllowsMultipleSelection(lclListBox.MultiSelect);
   list.readOnly := true;
+  // LCL ItemHeight for TListBox can only be set during Recreation of Handle
+  if TCustomListBox(AWinControl).ItemHeight>0 then
+  begin
+    // Cocoa default is 16.
+    // Note that it might be different of Retina monitors
+    list.CustomRowHeight := TCustomListBox(AWinControl).ItemHeight;
+    list.setRowHeight(list.CustomRowHeight);
+  end;
+
   ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
 
   scroll := EmbedInScrollView(list);
@@ -1949,7 +2044,10 @@ begin
   if not Assigned(view) then Exit(-1);
 
   indexset:=view.selectedRowIndexes();
-  result:=indexset.firstIndex;
+  if indexset.count = 0 then
+    Result := -1
+  else
+    Result := indexset.firstIndex;
 end;
 
 class function TCocoaWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
@@ -2028,6 +2126,7 @@ begin
   if not Assigned(list) then Exit();
 
   list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
+  list.scrollRowToVisible(AIndex);
 end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
@@ -2055,6 +2154,16 @@ begin
   view := GetListBox(ACustomListBox);
   if not Assigned(view) then Exit();
   view.scrollRowToVisible(NewTopIndex);
+end;
+
+procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
+var
+  cb: ICommonCallBack;
+begin
+  SetNSControlValue(ctrl, text);
+  cb := ctrl.lclGetcallback;
+  if Assigned(cb) then // cb.SendOnChange;
+    cb.SendOnTextChanged;
 end;
 
 end.

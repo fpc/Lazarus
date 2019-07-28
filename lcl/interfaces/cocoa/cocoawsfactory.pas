@@ -186,7 +186,8 @@ end;
 
 function RegisterCustomUpDown: Boolean; alias : 'WSRegisterCustomUpDown';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomUpDown, TCocoaWSCustomUpDown);
+  Result := True;
 end;
 
 function RegisterCustomToolButton: Boolean; alias : 'WSRegisterCustomToolButton';

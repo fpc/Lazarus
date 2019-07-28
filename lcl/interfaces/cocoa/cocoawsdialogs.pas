@@ -137,6 +137,20 @@ type
 
 implementation
 
+// API irony.
+// In LCL the base dialog is TOpenDialog (savedialog inherits from it)
+// In Cocoa the base dialog is SaveDialog (opendialog inherites from it)
+procedure UpdateOptions(src: TOpenDialog; dst: NSSavePanel);
+begin
+  dst.setShowsHiddenFiles( ofForceShowHidden in src.Options );
+end;
+
+procedure UpdateOptions(src: TFileDialog; dst: NSSavePanel);
+begin
+  if (src is TOpenDialog) then
+    UpdateOptions(TOpenDialog(src), dst);
+end;
+
 { TCocoaWSFileDialog }
 
 {------------------------------------------------------------------------------
@@ -301,6 +315,7 @@ begin
     end;
     openDlg.setTitle(NSStringUtf8(FileDialog.Title));
     openDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
+    UpdateOptions(FileDialog, openDlg);
 
     if openDlg.runModal = NSOKButton then
     begin
@@ -321,6 +336,7 @@ begin
     saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
     saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
     saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
+    UpdateOptions(FileDialog, saveDlg);
     // accessory view
     CreateAccessoryView(nil, saveDlg);
 

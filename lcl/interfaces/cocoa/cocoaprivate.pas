@@ -65,7 +65,6 @@ type
     function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
-    function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
 
     // KeyEvXXX methods were introduced to allow a better control
     // over when Cocoa keys processing is being called.
@@ -81,9 +80,9 @@ type
     // If the flag returned "False", you should not call inherited.
     //
     // No matter what the flag value was you should call KeyEvAfter.
-    procedure KeyEvPrepare(Event: NSEvent; AForceAsKeyDown: Boolean = False);
-    procedure KeyEvBefore(out AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
+    procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
     procedure SetTabSuppress(ASuppress: Boolean);
 
     function scrollWheel(Event: NSEvent): Boolean;
@@ -220,9 +219,6 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
-    // key
-    procedure keyUp(event: NSEvent); override;
-    procedure flagsChanged(event: NSEvent); override;
     // nsview
     procedure setFrame(aframe: NSRect); override;
     // other
@@ -331,7 +327,6 @@ type
     procedure resetCursorRects; override;
     //
     procedure keyDown(event: NSEvent); override;
-    procedure keyUp(event: NSEvent); override;
     //
     procedure SnapToInteger(AExtraFactor: Integer = 0); message 'SnapToInteger:';
     procedure sliderAction(sender: id); message 'sliderAction:';
@@ -377,7 +372,31 @@ var
 
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 
+function NSViewIsLCLEnabled(v: NSView): Boolean;
+function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+
 implementation
+
+function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+begin
+  if obj.isKindOfClass(NSView) then
+    Result := NSViewIsLCLEnabled(NSView(obj))
+  else
+    Result := obj.lclIsEnabled;
+end;
+
+function NSViewIsLCLEnabled(v: NSView): Boolean;
+begin
+  Result := true;
+  while Assigned(v) do
+  begin
+    if not v.lclIsEnabled then begin
+      Result := false;
+      break;
+    end;
+    v:=v.superview;
+  end;
+end;
 
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 begin
@@ -385,8 +404,6 @@ begin
   if Result then
     Result := (cb1 = cb2) or (cb1.GetTarget = cb2.GetTarget);
 end;
-
-{$I mackeycodes.inc}
 
 procedure SetViewDefaults(AView: NSView);
 begin
@@ -599,7 +616,11 @@ end;
 procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
+    // calling inherited causes the drag event to be passed to the
+    // parent controls
+
+    //inherited mouseDragged(event);
+    ;
 end;
 
 procedure TCocoaCustomControl.mouseEntered(event: NSEvent);
@@ -622,18 +643,6 @@ procedure TCocoaCustomControl.scrollWheel(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.scrollWheel(event) then
     inherited scrollWheel(event);
-end;
-
-procedure TCocoaCustomControl.keyUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
-end;
-
-procedure TCocoaCustomControl.flagsChanged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited flagsChanged(event);
 end;
 
 procedure TCocoaCustomControl.setFrame(aframe: NSRect);
@@ -870,9 +879,9 @@ end;
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
 begin
   {$ifdef BOOLFIX}
-  SetEnabled_( Ord(AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled))) );
+  SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
   {$else}
-  SetEnabled( AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
+  SetEnabled( AEnabled and NSViewIsLCLEnabled(self.superview) );
   {$endif}
   inherited lclSetEnabled(AEnabled);
 end;
@@ -1379,27 +1388,13 @@ var
 begin
   KeyCode := Event.keyCode;
   case KeyCode of
-    MK_UP       : SnapToInteger(1);
-    MK_DOWN     : SnapToInteger(-1);
-    MK_LEFT     : SnapToInteger(-1);
-    MK_RIGHT    : SnapToInteger(1);
+    kVK_UpArrow    : SnapToInteger(1);
+    kVK_DownArrow  : SnapToInteger(-1);
+    kVK_LeftArrow  : SnapToInteger(-1);
+    kVK_RightArrow : SnapToInteger(1);
   else
     // If this isn't done callback.KeyEvent will cause arrow left/right to change control
     inherited keyDown(event);
-  end;
-end;
-
-procedure TCocoaSlider.keyUp(event: NSEvent);
-var
-  KeyCode: word;
-begin
-  KeyCode := Event.keyCode;
-  case KeyCode of
-    MK_UP, MK_DOWN, MK_LEFT, MK_RIGHT: inherited keyUp(event);
-  else
-    // If this isn't done callback.KeyEvent will cause arrow left/right to change control
-    if Assigned(callback) then callback.KeyEvent(event)
-    else inherited keyUp(event);
   end;
 end;
 

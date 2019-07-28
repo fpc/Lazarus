@@ -46,24 +46,10 @@ begin
 end;
 
 procedure TCocoaWidgetSet.SendCheckSynchronizeMessage;
-var
-  Event: NSEvent;
 begin
-  Event := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
-    NSApplicationDefined,
-    NSZeroPoint,
-    0,
-    GetCurrentEventTime,
-    0,
-    nil,
-    LCLEventSubTypeMessage,
-    LM_NULL,
-    AppHandle);
-  {$ifdef BOOLFIX}
-  NSApp.postEvent_atStart_(Event, Ord(False));
-  {$else}
-  NSApp.postEvent_atStart(Event, False);
-  {$endif}
+  TCocoaApplication.sharedApplication
+    .performSelectorOnMainThread_withObject_waitUntilDone(
+       ObjCSelector('lclSyncCheck:'), nil, false);
 end;
 
 {------------------------------------------------------------------------------
@@ -81,12 +67,39 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
+  {$ifdef COCOALOOPOVERRIDE}
   NSApp.finishLaunching;
+  {$endif}
   if Assigned(ALoop) then
   begin
     TCocoaApplication(NSApp).aloop:=ALoop;
     NSApp.run();
   end;
+end;
+
+procedure TCocoaWidgetSet.AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
+var
+  event: NSEvent;
+  pool:NSAutoReleasePool;
+begin
+  repeat
+    pool := NSAutoreleasePool.alloc.init;
+    {$ifdef BOOLFIX}
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, Ord(true));
+    {$else}
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, true);
+    {$endif}
+    if event <> nil then
+    begin
+      NSApp.sendEvent(event);
+      NSApp.updateWindows;
+    end;
+
+    SyncClipboard(); // NSPasteboard doesn't provide any notifications regarding the change
+                     // Thus we have to check the clipboard on every loop
+
+    pool.release;
+  until onlyOne or (event = nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -95,31 +108,8 @@ end;
   Handle all pending messages
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppProcessMessages;
-var
-  event: NSEvent;
-  pool:NSAutoReleasePool;
 begin
-  repeat
-    pool := NSAutoreleasePool.alloc.init;
-    {$ifdef BOOLFIX}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, nil, NSDefaultRunLoopMode, Ord(true));
-    {$else}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
-    {$endif}
-    if event <> nil then
-    begin
-      if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
-        CheckSynchronize
-      else
-        NSApp.sendEvent(event);
-      NSApp.updateWindows;
-    end;
-
-    SyncClipboard(); // NSPasteboard doesn't provide any notifications regarding the change
-                     // Thus we have to check the clipboard on every loop
-
-    pool.release;
-  until event = nil;
+  AppRunMessages(false, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -128,28 +118,8 @@ end;
   Passes execution control to Cocoa
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppWaitMessage;
-var
-  event : NSEvent;
-  pool:NSAutoReleasePool;
 begin
-  pool := NSAutoreleasePool.alloc.init;
-  {$ifdef BOOLFIX}
-  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, Ord(true));
-  {$else}
-  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
-  {$endif}
-  if event <> nil then
-  begin
-    if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
-      CheckSynchronize
-    else
-      NSApp.sendEvent(event);
-    NSApp.updateWindows;
-  end;
-
-  SyncClipboard(); // NSPasteboard doesn't provide any notifications regarding the change
-                   // Thus we have to check the clipboard on every loop
-  pool.release;
+  AppRunMessages(true, NSDate.distantFuture);
 end;
 
 {------------------------------------------------------------------------------
@@ -221,6 +191,13 @@ begin
   NSMessageResult.release;
 
   // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
+
+  // Must release the Main autorelease pool here.
+  // Some objects still in the pool my depend on releasing Widgetset objects
+  // (i.e. images). If autorelease pool is released After the widgetset object
+  // then it finalization of WS dependent objects would fail (suppressed AVs)
+  // and would cause leaks. (see #35400)
+  InternalFinal;
 
   CocoaWidgetSet := nil;
 end;
@@ -326,7 +303,10 @@ begin
   timer:=NSTimer.timerWithTimeInterval_target_selector_userInfo_repeats(
     Interval/1000, user, objcselector(user.timerEvent), user, True);
 
+  // adding timer to all "common" loop mode.
   NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSDefaultRunLoopMode);
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSModalPanelRunLoopMode);
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSEventTrackingRunLoopMode);
 
   {user is retained (twice, because it's target), by the timer and }
   {released (twice) on timer invalidation}
@@ -350,60 +330,6 @@ begin
   end;
   if not Result then Exit;
   NSTimer(obj).invalidate;
-end;
-
-function TCocoaWidgetSet.NewUserEventInfo(Handle: HWND; Msg: Cardinal;
-  wParam: WParam; lParam: LParam): NSMutableDictionary;
-var
-  LocalPool: NSAutoReleasePool;
-  Keys, Objs: NSMutableArray;
-begin
-  // create a dinctionary
-  LocalPool := NSAutoReleasePool.alloc.init;
-  Keys := NSMutableArray.arrayWithObjects(
-    NSMessageWnd,
-    NSMessageMsg,
-    NSMessageWParam,
-    NSMessageLParam,
-    NSMessageResult,
-    nil);
-  Objs := NSMutableArray.arrayWithObjects(
-    NSNumber.numberWithUnsignedInteger(Handle),
-    NSNumber.numberWithUnsignedLong(Msg),
-    NSNumber.numberWithInteger(wParam),
-    NSNumber.numberWithInteger(lParam),
-    NSNumber.numberWithInteger(0),
-    nil);
-  Result := NSMutableDictionary.dictionaryWithObjects_forKeys(Objs, Keys);
-  Result.retain;
-  // release everything
-  LocalPool.release;
-end;
-
-function TCocoaWidgetSet.PrepareUserEvent(Handle: HWND; Info: NSDictionary; NeedsResult: Boolean): NSEvent;
-var
-  Obj: NSObject;
-  Win: NSWindow;
-begin
-  Obj := NSObject(Handle);
-  if Obj.isKindOfClass(NSWindow) then
-    Win := NSWindow(Obj)
-  else if Obj.isKindOfClass(NSView) then
-    Win := NSWindow(NSView(Handle).window)
-  else if GetNSObjectView(Obj) <> nil then
-    Win := NSWindow(GetNSObjectView(Obj).window)
-  else
-    Exit(nil);
-  Result := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
-    NSApplicationDefined,
-    NSZeroPoint,
-    0,
-    GetCurrentEventTime,
-    Win.windowNumber,
-    nil,
-    LCLEventSubTypeMessage,
-    NSInteger(Info),
-    NSInteger(NeedsResult));
 end;
 
 procedure TCocoaWidgetSet.InitStockItems;
@@ -601,6 +527,43 @@ procedure TAppDelegate.applicationDidChangeScreenParameters(notification: NSNoti
 begin
   Screen.UpdateMonitors;
   Screen.UpdateScreen;
+end;
+
+procedure TAppDelegate.applicationWillFinishLaunching(notification: NSNotification);
+begin
+  NSAppleEventManager.sharedAppleEventManager.setEventHandler_andSelector_forEventClass_andEventID(
+    Self, ObjCSelector('handleQuitAppEvent:withReplyEvent:'), kCoreEventClass,
+    kAEQuitApplication);
+end;
+
+procedure TAppDelegate.handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor);
+{ Capture "Quit Application" Apple Events, either from system shutdown/logout
+  or sent by another application.  Don't use [applicationShouldTerminate:]
+  because that terminates the app immediately after [applicationWillTerminate:]
+  returns, so there's no chance to run finalization blocks }
+var
+  Cancel: Boolean;
+  Reason: NSAppleEventDescriptor;
+begin
+  Cancel := False;
+  // Check if it's a system-wide event
+  Reason := event.attributeDescriptorForKeyword(kEventParamReason);
+  if (Reason <> nil) and
+     ((Reason.typeCodeValue = kAEQuitAll) or
+      (reason.typeCodeValue = kAEReallyLogOut) or
+      (reason.typeCodeValue = kAERestart) or
+      (reason.typeCodeValue = kAEShutDown)) then
+  begin
+    Application.IntfQueryEndSession(Cancel);
+    if not Cancel then
+      Application.IntfEndSession;
+  end;
+  // Try to quit
+  if not Cancel then
+    Application.MainForm.Close;
+  // Let caller know if the shutdown was cancelled
+  if (not Application.Terminated) and (replyEvent.descriptorType <> typeNull) then
+    replyEvent.setParamDescriptor_forKeyword(NSAppleEventDescriptor.descriptorWithInt32(userCanceledErr), keyErrorNumber);
 end;
 
 {------------------------------------------------------------------------------

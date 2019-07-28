@@ -75,7 +75,7 @@ type
     procedure lclClearCallback; override;
     // keyboard
     procedure keyDown(event: NSEvent); override;
-    procedure keyUp(event: NSEvent); override;
+    function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -98,7 +98,47 @@ type
     procedure setState(astate: NSInteger); override;
   end;
 
+
+  IStepperCallback = interface(ICommonCallback)
+    procedure BeforeChange(var Allowed: Boolean);
+    procedure Change(NewValue: Double; isUpPressed: Boolean; var Allowed: Boolean);
+    procedure UpdownClick(isUpPressed: Boolean);
+  end;
+
+  { TCocoaStepper }
+
+  TCocoaStepper = objcclass(NSStepper)
+    callback: IStepperCallback;
+    lastValue: Double;
+    procedure stepperAction(sender: NSObject); message 'stepperAction:';
+  end;
+
 implementation
+
+{ TCocoaStepper }
+
+procedure TCocoaStepper.stepperAction(sender: NSObject);
+var
+  newval      : Double;
+  allowChange : Boolean;
+  updownpress : Boolean;
+begin
+  newval := doubleValue;
+  allowChange := true;
+  updownpress := newval > lastValue;
+
+  if Assigned(callback) then begin
+    callback.BeforeChange(allowChange);
+    callback.Change(newval, updownpress, allowChange);
+  end;
+
+  if not allowChange then
+    setDoubleValue(lastValue)
+  else
+    lastValue := doubleValue;
+
+  if Allowchange and Assigned(callback) then callback.UpdownClick(updownpress);
+end;
 
 { TCocoaButton }
 
@@ -264,10 +304,15 @@ begin
   inherited keyDown(event);
 end;
 
-procedure TCocoaButton.keyUp(event: NSEvent);
+function TCocoaButton.performKeyEquivalent(event: NSEvent): LCLObjCBoolean;
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
+  // "Return" is a keyEquivalent for a "default" button"
+  // LCL provides its own mechanism for handling default buttons
+  if (keyEquivalent.length = 1) and (keyEquivalentModifierMask = 0) and
+     (keyEquivalent.characterAtIndex(0) = NSCarriageReturnCharacter) then
+    Result := False
+  else
+    Result := inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaButton.mouseUp(event: NSEvent);

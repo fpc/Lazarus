@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Release="3"/>
-    <Files Count="486">
+    <Files Count="485">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2159,8 +2159,9 @@ end;"/>
         <UnitName Value="CocoaWSComCtrls"/>
       </Item434>
       <Item435>
-        <Filename Value="cocoa/mackeycodes.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="cocoa/cocoadatepicker.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaDatePicker"/>
       </Item435>
       <Item436>
         <Filename Value="qt/qtsystemtrayicon.pas"/>
@@ -2401,11 +2402,6 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSCheckLst"/>
       </Item485>
-      <Item486>
-        <Filename Value="cocoa/cocoadatepicker.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaDatePicker"/>
-      </Item486>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

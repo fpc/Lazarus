@@ -67,12 +67,16 @@ type
     procedure Close;
     procedure Resize;
     procedure Move;
+    procedure WindowStateChanged;
 
     function GetEnabled: Boolean;
     procedure SetEnabled(AValue: Boolean);
 
     function AcceptFilesDrag: Boolean;
     procedure DropFiles(const FileNames: array of string);
+
+    function HasCancelControl: Boolean;
+    function HasDefaultControl: Boolean;
 
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
@@ -108,7 +112,6 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-    procedure sendEvent(event: NSEvent); override;
   end;
 
   { TCocoaWindow }
@@ -133,11 +136,15 @@ type
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
+    procedure windowDidMiniaturize(notification: NSNotification); message 'windowDidMiniaturize:';
+    procedure windowDidDeminiaturize(notification: NSNotification); message 'windowDidDeminiaturize:';
     // fullscreen notifications are only reported for 10.7 fullscreen
     procedure windowWillEnterFullScreen(notification: NSNotification); message 'windowWillEnterFullScreen:';
     procedure windowDidEnterFullScreen(notification: NSNotification); message 'windowDidEnterFullScreen:';
     procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
+    _keyEvCallback: ICommonCallback;
+    _calledKeyEvAfter: Boolean;
     callback: IWindowCallback;
     keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
@@ -164,16 +171,7 @@ type
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
     // key
-    // in practice those key-handling methods should NOT be needed, because a window
-    // always have TCocoaWindowContent view. However, on some instances
-    // the focus is not switched to CocoaWindowContent, and the window itself
-    // remains the firstResponder. (ie CodeCompletion window, see bug #34301)
     procedure keyDown(event: NSEvent); override;
-    procedure keyUp(event: NSEvent); override;
-    procedure flagsChanged(event: NSEvent); override;
-    // NSDraggingDestinationCategory
-    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
-    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
     // windows
     function makeFirstResponder(r: NSResponder): LCLObjCBoolean; override;
     // menu support
@@ -201,6 +199,7 @@ type
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
   public
+    wincallback: IWindowCallback;
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     preventKeyOnShow: Boolean;
     ownwin: NSWindow;
@@ -212,117 +211,37 @@ type
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
+    function lclWindowState: Integer; override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
     procedure dealloc; override;
     procedure setHidden(aisHidden: LCLObjCBoolean); override;
     procedure didAddSubview(aview: NSView); override;
+    // NSDraggingDestinationCategory
+    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
+    procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
+    procedure setNeedsDisplayInRect(arect: NSRect); override;
   end;
 
-procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
+function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
+procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
+procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
 
 implementation
 
-
-function NeedsReturn(rsp: NSResponder): Boolean;
+function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 var
-  t, a, r, l: Boolean;
+  m : NSString;
 begin
-  if Assigned(rsp) then begin
-    t := false; a := false; r := false; l := false;
-    rsp.lclExpectedKeys(t, a, r, l);
-    Result := r;
-  end else
-    Result := false;
+  m := ev.charactersIgnoringModifiers;
+  if m.length <> 1 then
+    Result := #0
+  else
+    Result := System.WideChar(m.characterAtIndex(0));
 end;
 
-function AllowKeyEqForResponders(first: NSResponder; event: NSEvent): Boolean;
-begin
-  Result := not (
-    // "Return" is a keyEquivalent for a "default" button
-    // LCL provides its own mechanism for handling default buttons
-    (event.keyCode = kVK_Return) and ((event.modifierFlags and KeysModifiers)= 0) and NeedsReturn(first)
-  );
-end;
-
-// Cocoa emulation routine.
-//
-// For whatever reason, the default keyDown: event processing, is triggerring
-// some macOSX hot keys PRIOR to reaching keyDown: (Which is a little bit unpredictable)
-// So the below Key-event-Path is a light version of what is described, in Cocoa
-// documentation.
-// first - run controls and menus, for performKeyEquivalent
-// then pass keyDown through
-//
-// The order can be reverted and let Controls do the key processing first
-// and menu to handle the event after.
-
-procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
-var
-  r : NSResponder;
-  fr : NSResponder;
-  mn : NSMenu;
-  cb : ICommonCallback;
-  allowcocoa : Boolean;
-begin
-  fr := win.firstResponder;
-  r := fr;
-  allowcocoa := true;
-
-  if Assigned(fr) then
-  begin
-    cb := fr.lclGetCallback;
-    if Assigned(cb) then
-    begin
-      cb.KeyEvPrepare(event);
-      cb.KeyEvBefore(allowcocoa);
-    end;
-  end else
-    cb := nil;
-
-  // try..finally here is to handle "Exit"s
-  // rather than excepting any exceptions to happen
-  try
-    if not allowcocoa then Exit;
-
-    processed := false;
-
-    // let controls to performKeyEquivalent first
-    if AllowKeyEqForResponders(fr, event) then
-      while Assigned(r) and not processed do begin
-        if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
-          processed := r.performKeyEquivalent(event);
-        if not processed then r := r.nextResponder;
-      end;
-
-    if processed then Exit;
-
-    // let menus do the hot key, if controls don't like it.
-    if not processed then
-    begin
-      mn := NSApplication(NSApp).mainMenu;
-      if Assigned(mn) then
-        processed := mn.performKeyEquivalent(event);
-    end;
-    if processed then Exit;
-
-    r := fr;
-    while Assigned(r) and not processed do begin
-      if r.respondsToSelector(objcselector('keyDown:')) then
-      begin
-        r.keyDown(event);
-        processed := true;
-      end;
-      if not processed then r := r.nextResponder;
-    end;
-
-  finally
-    if Assigned(cb) then
-      cb.KeyEvAfter;
-  end;
-
-end;
 
 { TCocoaDesignOverlay }
 
@@ -384,7 +303,10 @@ begin
     callback.DidResignKeyNotification;
 end;
 
-procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: id);
+procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: NSResponder);
+var
+  undoManager: NSUndoManager;
+  ch : System.WideChar;
 begin
   // todo: system keys could be overriden. thus need to review the current
   //       keyboard configuration first. See "Key Bindings" at
@@ -395,16 +317,29 @@ begin
   begin
     if ((event.modifierFlags and NSCommandKeyMask) = 0) then Exit;
 
-    if Assigned(event.charactersIgnoringModifiers.UTF8String) then
-    begin
-      case event.charactersIgnoringModifiers.UTF8String^ of
-        // redo/undo are not implemented in either of TextControls?
-        //'Z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('redo:'), atarget, asender);
-        'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
-        'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
-        'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
-        'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
-        //'z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), atarget, asender);
+    ch := NSEventRawKeyChar(event);
+    case ch of
+      'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
+      'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
+      'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
+      'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
+      'z':
+      begin
+        undoManager := atarget.undoManager;
+        if Assigned(undoManager) and undoManager.canUndo then
+        begin
+          handled := true;
+          undoManager.undo;
+        end;
+      end;
+      'Z':
+      begin
+        undoManager := atarget.undoManager;
+        if Assigned(undoManager) and undoManager.canRedo then
+        begin
+          handled := true;
+          undoManager.redo;
+        end;
       end;
     end;
   end;
@@ -414,21 +349,41 @@ function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): LCLObjCBoolea
 var
   resp : NSResponder;
   wn   : NSWindow;
-  view : NSTextView;
+  ch   : System.WideChar;
 begin
   Result := false;
-  // only respond to key, if focused
 
+  // If the form has a default or cancel button, capture Return and Escape to
+  // prevent further processing.  Actually clicking the buttons is handled in
+  // the LCL in response to the keyUp
+  if Assigned(wincallback) and (event.modifierFlags_ = 0) then
+  begin
+    ch := NSEventRawKeyChar(event);
+    if (((ch = System.WideChar(NSCarriageReturnCharacter)) and wincallback.HasDefaultControl)
+      or ((ch = #27{Escape}) and wincallback.HasCancelControl)) then
+    begin
+      Result := true;
+      Exit;
+    end;
+  end;
+
+  // Support Cut/Copy/Paste if the firstResponder is an NSTextView.
+  // This could be done in TCocoaFieldEditor and TCocoaTextView's
+  // performKeyEquivalent, but that wouldn't work for non-LCL edits.
+  // Xcode Cocoa apps rely on the commands existing in the main menu
   wn := window;
-  if not Assigned(wn) then Exit;
-  resp := wn.firstResponder;
-  if (not Assigned(resp)) or (not resp.isKindOfClass_(NSTextView)) then Exit;
+  if Assigned(wn) then
+  begin
+    resp := wn.firstResponder;
+    if Assigned(resp) and resp.isKindOfClass_(NSTextView) and
+       resp.lclIsEnabled then
+    begin
+      NSResponderHotKeys(self, event, Result, resp);
+      if Result then Exit;
+    end;
+  end;
 
-  if (not resp.lclIsEnabled) then Exit;
-
-  NSResponderHotKeys(self, event, Result, resp);
-  if not Result then
-    Result:=inherited performKeyEquivalent(event);
+  Result := inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaWindowContent.resolvePopupParent();
@@ -492,6 +447,14 @@ begin
       wfrm := NSRectToRect(frame);
     OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
+end;
+
+function TCocoaWindowContent.lclWindowState: Integer;
+begin
+  if isembedded then
+    Result := inherited lclWindowState
+  else
+    Result := window.lclWindowState;
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
@@ -724,42 +687,6 @@ begin
     inherited mouseMoved(event);
 end;
 
-procedure TCocoaPanel.sendEvent(event: NSEvent);
-var
-  Message: NSMutableDictionary;
-  Handle: HWND;
-  Msg: Cardinal;
-  WP: WParam;
-  LP: LParam;
-  ResultCode: NSNumber;
-  Obj: NSObject;
-begin
-  if event.type_ = NSApplicationDefined then
-  begin
-    // event which we get through PostMessage or SendMessage
-    if event.subtype = LCLEventSubTypeMessage then
-    begin
-      // extract message data
-      Message := NSMutableDictionary(event.data1);
-      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
-      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
-      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
-      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
-      Obj := NSObject(Handle);
-      // deliver message and set result if response requested
-      // todo: check that Obj is still a valid NSView/NSWindow
-      ResultCode := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      if event.data2 <> 0 then
-        Message.setObject_forKey(ResultCode, NSMessageResult)
-      else
-        Message.release;
-      //ResultCode.release;                   // will be auto-released
-     end;
-  end
-  else
-    inherited sendEvent(event);
-end;
-
 { TCocoaWindow }
 
 function TCocoaWindow.windowShouldClose(sender: id): LongBool;
@@ -828,6 +755,18 @@ procedure TCocoaWindow.windowDidMove(notification: NSNotification);
 begin
   if Assigned(callback) then
     callback.Move;
+end;
+
+procedure TCocoaWindow.windowDidMiniaturize(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.WindowStateChanged;
+end;
+
+procedure TCocoaWindow.windowDidDeminiaturize(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.WindowStateChanged;
 end;
 
 procedure TCocoaWindow.windowWillEnterFullScreen(notification: NSNotification);
@@ -980,42 +919,11 @@ end;
 
 procedure TCocoaWindow.sendEvent(event: NSEvent);
 var
-  Message: NSMutableDictionary;
-  Handle: HWND;
-  Msg: Cardinal;
-  WP: WParam;
-  LP: LParam;
-  ResultCode: NSNumber;
-  Obj: NSObject;
-
   Epos: NSPoint;
   cr : NSRect;
   fr : NSRect;
   prc: Boolean;
 begin
-  if event.type_ = NSApplicationDefined then
-  begin
-    // event which we get through PostMessage or SendMessage
-    if event.subtype = LCLEventSubTypeMessage then
-    begin
-      // extract message data
-      Message := NSMutableDictionary(event.data1);
-      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
-      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
-      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
-      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
-      // deliver message and set result if response requested
-      Obj := NSObject(Handle);
-      // todo: check that Obj is still a valid NSView/NSWindow
-      ResultCode := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      if event.data2 <> 0 then
-        Message.setObject_forKey(ResultCode, NSMessageResult)
-      else
-        Message.release;
-      //ResultCode.release;               // will be auto-released
-    end;
-  end
-  else
   if event.type_ = NSLeftMouseUp then
   // This code is introduced here for an odd cocoa feature.
   // mouseUp is not fired, if pressed on Window's title.
@@ -1042,37 +950,41 @@ begin
       inherited sendEvent(event);
   end
   else
-  if event.type_ = NSKeyDown then
-    WindowPerformKeyDown(self, event, prc)
-  else
     inherited sendEvent(event);
 end;
 
 procedure TCocoaWindow.keyDown(event: NSEvent);
+var
+  mn : NSMenu;
+  allowcocoa : Boolean;
 begin
+  if performKeyEquivalent(event) then
+    Exit;
+
+  mn := NSApp.MainMenu;
+  if Assigned(mn) and mn.performKeyEquivalent(event) then
+    Exit;
+
+  if Assigned(_keyEvCallback) then
+  begin
+    allowcocoa := True;
+    _calledKeyEvAfter := True;
+    _keyEvCallback.KeyEvAfterDown(allowcocoa);
+    if not allowcocoa then
+      Exit;
+  end;
+
   inherited keyDown(event);
 end;
 
-procedure TCocoaWindow.keyUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
-end;
-
-procedure TCocoaWindow.flagsChanged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited flagsChanged(event);
-end;
-
-function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
+function TCocoaWindowContent.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
 begin
   Result := NSDragOperationNone;
-  if (callback <> nil) and (callback.AcceptFilesDrag) then
+  if (wincallback <> nil) and (wincallback.AcceptFilesDrag) then
     Result := sender.draggingSourceOperationMask();
 end;
 
-function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
+function TCocoaWindowContent.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
 var
   draggedURLs{, lClasses}: NSArray;
   lFiles: array of string;
@@ -1107,9 +1019,21 @@ begin
     end;
   end;}
 
-  if (Length(lFiles) > 0) and (callback <> nil)  then
-    callback.DropFiles(lFiles);
+  if (Length(lFiles) > 0) and (wincallback <> nil)  then
+    wincallback.DropFiles(lFiles);
   Result := True;
+end;
+
+procedure TCocoaWindowContent.setNeedsDisplay_(aflag: LCLObjCBoolean);
+begin
+  inherited setNeedsDisplay;
+  if Assigned(overlay) then overlay.setNeedsDisplay_(aflag);
+end;
+
+procedure TCocoaWindowContent.setNeedsDisplayInRect(arect: NSRect);
+begin
+  inherited setNeedsDisplayInRect(arect);
+  if Assigned(overlay) then overlay.setNeedsDisplayInRect(arect);
 end;
 
 function TCocoaWindow.makeFirstResponder(r: NSResponder): LCLObjCBoolean;
@@ -1133,8 +1057,8 @@ begin
 
     if not isCallbackForSameObject(respInitCb, cbnew) then
     begin
-      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
       if Assigned(cbnew) then cbnew.BecomeFirstResponder;
+      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
     end;
   end;
 end;
@@ -1303,39 +1227,59 @@ begin
   Point.y := contentView.bounds.size.height - Point.y;
 end;
 
+procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
+var
+  fr : NSRect;
+begin
+  fr := sc.frame;
+  r := Bounds(
+    Round(fr.origin.x),
+    Round(fr.origin.y - fr.size.height + mainScreenHeight),
+    Round(fr.size.width), Round(fr.size.height)
+  );
+end;
+
+procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
+begin
+  NSScreenGetRect(sc, NSScreen.mainScreen.frame.size.height, r);
+end;
+
+function GetScreenForPoint(x,y: Integer): NSScreen;
+var
+  scarr : NSArray;
+  sc    : NSScreen;
+  r     : TRect;
+  h     : double;
+  p     : TPoint;
+  i     : Integer;
+begin
+  p.x := x;
+  p.y := y;
+  scarr := NSScreen.screens;
+  h := NSScreen.mainScreen.frame.size.height;
+  sc := NSScreen(scarr.objectAtIndex(0));
+  for i:=0 to scarr.count-1 do begin
+    sc:=NSScreen(scarr.objectAtIndex(i));
+    NSScreenGetRect(sc, h, r);
+    if Types.PtInRect(r, p) then begin
+      Result := sc;
+      Exit;
+    end;
+  end;
+  Result := NSScreen.mainScreen;
+end;
+
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
   ns : NSRect;
   h  : integer;
-  i  : integer;
-  p  : NSPoint;
   sc : NSScreen;
   srect : NSRect;
-  fnd: Boolean;
 begin
-  fnd := Assigned(screen);
-  if fnd then
-    srect := screen.frame
-  else
-  begin
-    // the window doesn't have screen assigned.
-    // figuring out the placement based of the Left/Top of the rect
-    // and NSrects;
-    fnd := false;
-    srect := NSMakeRect(0,0,0,0); // making the compiler happy
-    p.x:=r.Left;
-    p.y:=r.Top;
-    for sc in NSScreen.screens do begin
-      srect := sc.frame;
-      fnd := NSPointInRect(p, srect);
-      if fnd then Break;
-    end;
-  end;
+  sc := GetScreenForPoint(r.Left, r.Top);
+  srect := sc.frame;
 
-  if fnd then
-    LCLToNSRect(r, srect.size.height, ns)
-  else
-    ns := RectToNSRect(r);
+  LCLToNSRect(r, srect.size.height, ns);
 
   // add topbar height
   h:=lclGetTopBarHeight;

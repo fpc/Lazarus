@@ -56,10 +56,18 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
+  NSAppearance = objcclass external(NSObject)
+    function name: NSString; message 'name';
+    class function currentAppearance: NSAppearance; message 'currentAppearance';
+  end;
+
   NSApplicationFix = objccategory external (NSApplication)
     procedure activateIgnoringOtherApps_(flag: ObjCBool); message 'activateIgnoringOtherApps:';
     function nextEventMatchingMask_untilDate_inMode_dequeue_(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: ObjCBool): NSEvent; message 'nextEventMatchingMask:untilDate:inMode:dequeue:';
     procedure postEvent_atStart_(event: NSEvent; flag: ObjCBool); message 'postEvent:atStart:';
+
+    function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
+    function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
   end;
 
   NSButtonFix = objccategory external(NSButton)
@@ -151,6 +159,8 @@ type
     procedure setHasShadow_(hasShadow_: ObjCBool); message 'setHasShadow:';
     procedure setIgnoresMouseEvents_(flag: ObjCBool); message 'setIgnoresMouseEvents:';
     {$endif}
+    // 10.14
+    function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
   end;
 
   NSTableColumnFix = objccategory external (NSTableColumn)
@@ -198,23 +208,19 @@ const
   NSAppKitVersionNumber10_10 = 1343;
   NSAppKitVersionNumber10_11 = 1404;
   NSAppKitVersionNumber10_12 = 1504;
+  NSAppKitVersionNumber10_13 = 1561;
+  NSAppKitVersionNumber10_14 = 1641.10;
 
 
-const
-  //kCGBaseWindowLevelKey = 0;
-  //kCGMinimumWindowLevelKey = 1;
-  //kCGDesktopWindowLevelKey = 2;
-  //kCGBackstopMenuLevelKey = 3;
-  NSNormalWindowLevel = 4;
-  NSFloatingWindowLevel = 5;
-  NSSubmenuWindowLevel = 6;
-  NSTornOffMenuWindowLevel = 6;
-  //kCGDockWindowLevelKey = 7; deprecated
-  NSMainMenuWindowLevel = 8;
-  NSStatusWindowLevel = 9;
-  NSModalPanelWindowLevel = 10;
-  NSPopUpMenuWindowLevel = 11;
-  NSScreenSaverWindowLevel = 12;
+function NSNormalWindowLevel: NSInteger; inline;
+function NSFloatingWindowLevel: NSInteger; inline;
+function NSSubmenuWindowLevel: NSInteger; inline;
+function NSTornOffMenuWindowLevel: NSInteger; inline;
+function NSMainMenuWindowLevel: NSInteger; inline;
+function NSStatusWindowLevel: NSInteger; inline;
+function NSModalPanelWindowLevel: NSInteger; inline;
+function NSPopUpMenuWindowLevel: NSInteger; inline;
+function NSScreenSaverWindowLevel: NSInteger; inline;
   //kCGScreenSaverWindowLevelKey = 13;
   //kCGMaximumWindowLevelKey = 14;
   //kCGOverlayWindowLevelKey = 15;
@@ -260,6 +266,51 @@ const
   NSTableViewAnimationSlideRight = $40; // Animates a row in by sliding from the right. Animates a row out by sliding towards the right.
 
 implementation
+
+function NSNormalWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGNormalWindowLevelKey);
+end;
+
+function NSFloatingWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGFloatingWindowLevelKey);
+end;
+
+function NSSubmenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGTornOffMenuWindowLevelKey);
+end;
+
+function NSTornOffMenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGTornOffMenuWindowLevelKey);
+end;
+
+function NSMainMenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGMainMenuWindowLevelKey);
+end;
+
+function NSStatusWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGStatusWindowLevelKey);
+end;
+
+function NSModalPanelWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGModalPanelWindowLevelKey);
+end;
+
+function NSPopUpMenuWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGPopUpMenuWindowLevelKey);
+end;
+
+function NSScreenSaverWindowLevel: NSInteger;
+begin
+  Result:=CGWindowLevelForKey(kCGScreenSaverWindowLevelKey);
+end;
 
 end.
 
