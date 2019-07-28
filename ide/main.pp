@@ -1411,7 +1411,7 @@ begin
   and (CheckFPCExeQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                        CodeToolBoss.CompilerDefinesCache.TestFilename)=sddqInvalid)
   then begin
-    debugln(['Warning: (lazarus) invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
+    debugln(['Warning: (lazarus) invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename,' ',Note]);
     ShowSetupDialog:=true;
   end;
 
@@ -1423,7 +1423,7 @@ begin
     if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
       CfgCache.GetFPCVer)=sddqInvalid
     then begin
-      debugln(['Warning: (lazarus) invalid fpc source directory: ',EnvironmentOptions.GetParsedFPCSourceDirectory]);
+      debugln(['Warning: (lazarus) invalid fpc source directory: ',EnvironmentOptions.GetParsedFPCSourceDirectory,' ',Note]);
       ShowSetupDialog:=true;
     end;
   end;
@@ -1434,6 +1434,7 @@ begin
     RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
     // Todo: add LldbFpDebugger for Mac
     // If the default debugger is of a class that is not yet Registered, then the dialog is not shown
+    Note:='';
     if ( (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil) and  // no debugger at all
          (not EnvironmentOptions.HasActiveDebuggerEntry) )               // not even with unknown class
     or ( (EnvironmentOptions.CurrentDebuggerClass <> nil)                       // Debugger with known class
@@ -1441,7 +1442,7 @@ begin
          and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
        )
     then begin
-      debugln(['Warning: (lazarus) missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
+      debugln(['Warning: (lazarus) missing GDB exe ',EnvironmentOptions.GetParsedLazarusDirectory,' ',Note]);
       ShowSetupDialog:=true;
     end;
   end;
@@ -7023,7 +7024,7 @@ begin
         UnitOutputDirectory:=TrimFilename(WorkingDir+PathDelim+UnitOutputDirectory);
       if FilenameIsAbsolute(UnitOutputDirectory) then begin
         if (not DirPathExistsCached(UnitOutputDirectory)) then begin
-          if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
+          if not PathIsInPath(UnitOutputDirectory,WorkingDir) then begin
             Result:=IDEQuestionDialog(lisCreateDirectory,
                 Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
                 mtConfirmation, [mrYes, lisCreateIt,
@@ -7037,7 +7038,8 @@ begin
           end;
         end;
         if Project1.IsVirtual
-        and (FileIsInPath(UnitOutputDirectory,EnvironmentOptions.GetParsedTestBuildDirectory))
+        and (PathIsInPath(UnitOutputDirectory,
+                          EnvironmentOptions.GetParsedTestBuildDirectory))
         then begin
           // clean up test units
           Result:=CleanUpTestUnitOutputDir(UnitOutputDirectory);
@@ -7059,7 +7061,7 @@ begin
             if Result<>mrIgnore then exit(mrCancel);
           end;
         end else begin
-          if not FileIsInPath(AppendPathDelim(TargetExeDirectory)+'dummy',WorkingDir)
+          if not PathIsInPath(TargetExeDirectory,WorkingDir)
           then begin
             Result:=IDEQuestionDialog(lisCreateDirectory,
                 Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
@@ -12011,12 +12013,12 @@ begin
     SaveDialog.FileName:=SaveAsFilename;
     // if this is a project file, start in project directory
     if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
-    and (not FileIsInPath(SaveDialog.InitialDir,Project1.Directory)) then
+    and (not PathIsInPath(SaveDialog.InitialDir,Project1.Directory)) then
       SaveDialog.InitialDir:=Project1.Directory;
     // if this is a package file, then start in package directory
     PkgDefaultDirectory:=PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
     if (PkgDefaultDirectory<>'')
-    and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
+    and (not PathIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
       SaveDialog.InitialDir:=PkgDefaultDirectory;
     // show save dialog
     if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then

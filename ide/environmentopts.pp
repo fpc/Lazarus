@@ -2740,8 +2740,7 @@ begin
   CurLazDir:=ChompPathDelim(LazarusDirectory);
   if not TTransferMacroList.StrHasMacros(CurLazDir) then begin
     BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
-    if (CompareFilenames(BaseDir,CurLazDir)=0)
-    or FileIsInPath(CurLazDir,BaseDir) then begin
+    if PathIsInPath(CurLazDir,BaseDir) then begin
       // the pcp directory is in the lazarus directory
       // or the lazarus directory is a sibling or a sub dir of a sibling of the pcp
       // examples:

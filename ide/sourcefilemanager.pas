@@ -4606,13 +4606,13 @@ begin
     // if this is a project file, start in project directory
     if (AnUnitInfo=nil)
     or (AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
-        and (not FileIsInPath(SaveDialog.InitialDir,Project1.Directory)))
+        and (not PathIsInPath(SaveDialog.InitialDir,Project1.Directory)))
     then begin
       SaveDialog.InitialDir:=Project1.Directory;
     end;
     // if this is a package file, then start in package directory
     APath:=PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
-    if (APath<>'') and (not FileIsInPath(SaveDialog.InitialDir,APath)) then
+    if (APath<>'') and (not PathIsInPath(SaveDialog.InitialDir,APath)) then
       SaveDialog.InitialDir:=APath;
 
     repeat
@@ -5387,7 +5387,7 @@ begin
         OldLRSFilePath:=ExtractFilePath(LRSCode.Filename);
         NewLRSFilePath:=OldLRSFilePath;
         if FilenameIsAbsolute(OldFilePath)
-        and FileIsInPath(OldLRSFilePath,OldFilePath) then begin
+        and PathIsInPath(OldLRSFilePath,OldFilePath) then begin
           // resource code was in the same or in a sub directory of source
           // -> try to keep this relationship
           NewLRSFilePath:=NewFilePath
