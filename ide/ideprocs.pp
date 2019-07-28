@@ -50,6 +50,7 @@ function CreateEmptyFile(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function ChompEndNumber(const s: string): string;
 function ShortDisplayFilename(const aFileName: string): string;
+function PathIsInPath(const Path, Directory: string): boolean;
 
 // find file
 function FindFilesCaseInsensitive(const Directory,
@@ -505,10 +506,7 @@ function GetNextUsedDirectoryInSearchPath(const SearchPath,
 begin
   while (NextStartPos<=length(SearchPath)) do begin
     Result:=GetNextDirectoryInSearchPath(SearchPath,NextStartPos);
-    if (Result<>'')
-    and ((CompareFilenames(Result,FilterDir)=0)
-      or FileIsInPath(Result,FilterDir))
-    then
+    if (Result<>'') and PathIsInPath(Result,FilterDir) then
       exit;
   end;
   Result:=''
@@ -721,6 +719,20 @@ begin
   end
   else
     Result := aFileName;
+end;
+
+function PathIsInPath(const Path, Directory: string): boolean;
+var
+  ExpPath: String;
+  ExpDir: String;
+  l: integer;
+begin
+  if Path='' then exit(false);
+  ExpPath:=AppendPathDelim(ResolveDots(Path));
+  ExpDir:=AppendPathDelim(ResolveDots(Directory));
+  l:=length(ExpDir);
+  Result:=(l>0) and (length(ExpPath)>=l) and (ExpPath[l]=PathDelim)
+          and (CompareFilenames(ExpDir,LeftStr(ExpPath,l))=0);
 end;
 
 function FindFirstFileWithExt(const Directory, Ext: string): string;
