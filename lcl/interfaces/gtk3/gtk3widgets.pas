@@ -1494,7 +1494,7 @@ begin
     if AIsKeyEvent then
       Result := Result or KF_ALTDOWN
     else
-      Result := Result or $20000000;
+      Result := Result or MK_ALT;
   end;
 end;
 
@@ -1581,7 +1581,7 @@ begin
     ShiftState := ShiftState + [ssShift];
   if AState and MK_CONTROL <> 0 then
     ShiftState := ShiftState + [ssCtrl];
-  if AState and $20000000 <> 0 then
+  if AState and MK_ALT <> 0 then
     ShiftState := ShiftState + [ssAlt];
   // MappedXY := TranslateGdkPointToClientArea(AEvent^.scroll.window, EventXY,
   //                                        {%H-}TGtk3Widget(AWinControl.Handle).GetContainerWidget);
