@@ -755,7 +755,7 @@ var
   l: integer;
 begin
   if Path='' then exit(false);
-  ExpPath:=ResolveDots(Path);
+  ExpPath:=AppendPathDelim(ResolveDots(Path));
   ExpDir:=AppendPathDelim(ResolveDots(Directory));
   l:=length(ExpDir);
   Result:=(l>0) and (length(ExpPath)>=l) and (ExpPath[l]=PathDelim)
