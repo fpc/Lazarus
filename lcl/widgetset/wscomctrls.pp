@@ -195,7 +195,16 @@ type
 
   TWSCustomUpDown = class(TWSCustomControl)
   published
+    class procedure SetIncrement(const AUpDown: TCustomUpDown; AValue: Double); virtual;
+    class procedure SetMaxPosition(const AUpDown: TCustomUpDown; AValue: Double); virtual;
+    class procedure SetMinPosition(const AUpDown: TCustomUpDown; AValue: Double); virtual;
+    class procedure SetOrientation(const AUpDown: TCustomUpDown; AOrientation: TUDOrientation); virtual;
+    class procedure SetPosition(const AUpDown: TCustomUpDown; AValue: Double); virtual;
+    // class procedure SetRepeatInterval(const AUpDown: TWSCustomUpDown; ms: Integer); virtual;
+    class procedure SetUseArrowKeys(const AUpDown: TCustomUpDown; AUseArrow: Boolean); virtual;
+    class procedure SetWrap(const AUpDown: TCustomUpDown; ADoWrap: Boolean); virtual;
   end;
+  TWSCustomUpDownClass = class of TWSCustomUpDown;
 
   { TWSUpDown }
 
@@ -262,6 +271,50 @@ implementation
 
 uses
   LResources;
+
+{ TWSCustomUpDown }
+
+class procedure TWSCustomUpDown.SetUseArrowKeys(const AUpDown: TCustomUpDown;
+  AUseArrow: Boolean);
+begin
+
+end;
+
+class procedure TWSCustomUpDown.SetMinPosition(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+
+end;
+
+class procedure TWSCustomUpDown.SetMaxPosition(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+
+end;
+
+class procedure TWSCustomUpDown.SetPosition(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+
+end;
+
+class procedure TWSCustomUpDown.SetIncrement(const AUpDown: TCustomUpDown;
+  AValue: Double);
+begin
+
+end;
+
+class procedure TWSCustomUpDown.SetOrientation(const AUpDown: TCustomUpDown;
+  AOrientation: TUDOrientation);
+begin
+
+end;
+
+class procedure TWSCustomUpDown.SetWrap(const AUpDown: TCustomUpDown;
+  ADoWrap: Boolean);
+begin
+
+end;
 
 { TWSTabSheet }
 
