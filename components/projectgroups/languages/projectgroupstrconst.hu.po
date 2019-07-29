@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -53,7 +53,7 @@ msgstr "A(z) \"%s\" építési mód nem található."
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
-msgstr ""
+msgstr "\"Fordítás\" és \"Építés\" a projektcsoportnak megfelelően"
 
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
@@ -71,7 +71,7 @@ msgstr "Változások eldobása"
 
 #: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
 msgid "Enable to show target filenames with paths."
-msgstr ""
+msgstr "Engedélyezi a célfájlok nevei útvonalakkal együtt jelenjenek meg."
 
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format, fuzzy
@@ -103,12 +103,12 @@ msgstr "A cél nem létezik. Eltávolítás?"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr ""
+msgstr "Az IDE \"Fordítás\" és \"Építés\" parancsai a projektcsoport beállításaiban kiválasztott fordítási/építési célt használják"
 
 #: projectgroupstrconst.lisinfo
 msgctxt "projectgroupstrconst.lisinfo"
 msgid "Info"
-msgstr ""
+msgstr "Infó"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
@@ -137,7 +137,7 @@ msgstr "Lazarus projektek (*.lpi)"
 
 #: projectgroupstrconst.lislazarussupportedinprojectgroups
 msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
-msgstr ""
+msgstr "Lazarus fájlok (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
@@ -190,11 +190,11 @@ msgstr "Célok"
 
 #: projectgroupstrconst.lisonidestartreopenlastopengroup
 msgid "On IDE start reopen last open group."
-msgstr ""
+msgstr "Az IDE indításakor újra megnyitásra kerül a legutóbb nyitott csoport."
 
 #: projectgroupstrconst.lisopenlastgrouponstart
 msgid "Open last group on start"
-msgstr ""
+msgstr "Legutóbbi csoport megnyitása indításkor"
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -206,7 +206,7 @@ msgstr "Legutóbbi projektcsoport megnyitása"
 
 #: projectgroupstrconst.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Beállítások"
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
@@ -245,25 +245,22 @@ msgid "Project Group: %s"
 msgstr "Projektcsoport: %s"
 
 #: projectgroupstrconst.lisprojectgroupaddcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
 msgstr "Hozzáadás"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
 msgid "Add current project"
-msgstr ""
+msgstr "Aktuális projekt hozzáadása"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
 msgid "Add current project to project group"
-msgstr ""
+msgstr "Aktuális projekt hozzáadása a projektcsoporthoz"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
-#, fuzzy
-#| msgid "Add"
 msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
 msgid "Add from file"
-msgstr "Hozzáadás"
+msgstr "Hozzáadás fájlból"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
@@ -271,7 +268,7 @@ msgstr "Létező cél hozzáadása a projektcsoporthoz"
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
-msgstr ""
+msgstr "Cél hozzáadása a projektcsoporthoz"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
@@ -307,13 +304,11 @@ msgstr ""
 "Mi történjen most?\n"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
 msgid "New"
 msgstr "Új"
 
 #: projectgroupstrconst.lisprojectgroupnewhint
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Új projektcsoport"
@@ -349,7 +344,7 @@ msgstr "Olvasási hiba"
 
 #: projectgroupstrconst.lisredo
 msgid "Redo"
-msgstr ""
+msgstr "Újra"
 
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
@@ -372,7 +367,7 @@ msgstr "Projektcsoport mentése másként ..."
 
 #: projectgroupstrconst.lisshowtargetpaths
 msgid "Show target paths"
-msgstr ""
+msgstr "Cél útvonalak megjelenítése"
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
@@ -380,7 +375,7 @@ msgstr "Minden érvénytelen cél eltávolítása"
 
 #: projectgroupstrconst.lissourcedirectoriesofprojectgroup
 msgid "Source directories of project group:"
-msgstr ""
+msgstr "A projektcsoport forráskönyvtárai:"
 
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
@@ -431,8 +426,6 @@ msgid "Compile selected target"
 msgstr "A kiválasztott cél fordítása"
 
 #: projectgroupstrconst.listargetcopyfilename
-#, fuzzy
-#| msgid "Copy file name"
 msgid "Copy Filename"
 msgstr "Fájlnév másolása"
 
@@ -456,7 +449,7 @@ msgstr "Cél építése korábban"
 #: projectgroupstrconst.listargetinfocaption
 msgctxt "projectgroupstrconst.listargetinfocaption"
 msgid "Info ..."
-msgstr ""
+msgstr "Infó ..."
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
@@ -565,7 +558,7 @@ msgstr "Nem lehet írni a projektcsoport fájlját: \"%s\"%s%s"
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
-msgstr ""
+msgstr "Visszavonás"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

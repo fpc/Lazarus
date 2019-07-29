@@ -327,7 +327,7 @@ msgstr "Extra 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagehorizwheel
 msgid "Horizontal-Wheel"
-msgstr ""
+msgstr "Vízszintes kerék"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
@@ -723,10 +723,9 @@ msgid "Include assertion code"
 msgstr "Infókimenet-kód beépítése (assertion code)"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Associated debug desktop"
+#, object-pascal-format
 msgid "Associated debug desktop for \"%s\""
-msgstr "Társított hibakereső felület"
+msgstr "Társított hibakereső felület ehhez: \"%s\""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
@@ -783,16 +782,12 @@ msgid "Auto save active desktop"
 msgstr "Az aktív felület automatikus mentése"
 
 #: lazarusidestrconsts.dlgautosaveactivedesktophint
-#, fuzzy
-#| msgid ""
-#| "Save active desktop on IDE close\n"
-#| "Save debug desktop on IDE close and debug end\n"
 msgid ""
 "Save active desktop on IDE close\n"
 "Save debug desktop on IDE close and debug end"
 msgstr ""
 "Az aktív felület mentése az IDE bezárásakor\n"
-"Hibakereső felület mentése az IDE bezárásakor és a hibakeresés végén\n"
+"Hibakereső felület mentése az IDE bezárásakor és a hibakeresés végén"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
@@ -1081,10 +1076,8 @@ msgid "Reverse fold-order in Popup"
 msgstr "Fordított blokk-sorrend a felugró menüben"
 
 #: lazarusidestrconsts.dlgcogdb
-#, fuzzy
-#| msgid "Generate debugging info for GDB (slower / increases exe-size)"
 msgid "Generate info for the debugger (slower / increases exe-size)"
-msgstr "Hibakeresési információk létrehozása a GDB számára (lassabb / nagyobb exe-méret)"
+msgstr "Hibakeresési információk létrehozása (lassabb / nagyobb exe-méret)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 msgid "Use Heaptrc unit (check for mem-leaks)"
@@ -1095,10 +1088,8 @@ msgid "Include files (-Fi):"
 msgstr "Include fájlok (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-#, fuzzy
-#| msgid "Info for GDB"
 msgid "Debugger info"
-msgstr "Infó a GDB számára"
+msgstr "Hibakereső infó"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1396,14 +1387,13 @@ msgid "Delete mode"
 msgstr "Mód törlése"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
 msgid "Delete"
 msgstr "Törlés"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
 msgid "Delete selected desktop"
-msgstr ""
+msgstr "A kijelölt felület törlése"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1742,10 +1732,8 @@ msgid "Extra line spacing"
 msgstr "Extra sorköz"
 
 #: lazarusidestrconsts.dlgextsymb
-#, fuzzy
-#| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
-msgstr "Külső GDB hibakereső szimbólum fájl használata"
+msgstr "Külső hibakereső szimbólum fájl használata"
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2102,7 +2090,7 @@ msgstr "FPC forráskód könyvtára"
 
 #: lazarusidestrconsts.dlgfppkgconfigurationfile
 msgid "Fppkg configuration file (e.g. fppkg.cfg)"
-msgstr ""
+msgstr "Fppkg beállítási fájl (pl. fppkg.cfg)"
 
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
@@ -2322,16 +2310,12 @@ msgid "Included mixed state $IFDEF node"
 msgstr "Kevert állapotú $IFDEF csomópont"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
-#, fuzzy
-#| msgid ""
-#| "A desktop with the same name already exists.\n"
-#| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
 "Please confirm the desktop name:"
 msgstr ""
 "Egy felület már létezik ugyanezzel a névvel.\n"
-"A név jóváhagyása szükséges:\n"
+"A név jóváhagyása szükséges:"
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
@@ -2463,10 +2447,8 @@ msgid "Guide lines Left,Top"
 msgstr "Segédvonalak balra, fent"
 
 #: lazarusidestrconsts.dlglevel1opt
-#, fuzzy
-#| msgid "1 (quick, debugger friendly)"
 msgid "1 (quick, debugger friendly with small limitations)"
-msgstr "1 (gyors, hibakereső-barát)"
+msgstr "1 (gyors, hibakereső-barát némi megkötéssel)"
 
 #: lazarusidestrconsts.dlglevel2opt
 msgid "2 (-O1 + quick optimizations)"
@@ -2481,10 +2463,8 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + aggresszív optimalizálás, óvatosan)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#, fuzzy
-#| msgid "0 (no optimization)"
 msgid "0 (no optimization, for debugging)"
-msgstr "0 (nincs optimalizálás)"
+msgstr "0 (nincs optimalizálás, hibakereséshez)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
@@ -2771,11 +2751,11 @@ msgstr "Kerék le"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelleft
 msgid "Wheel left"
-msgstr ""
+msgstr "Kerék balra"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelright
 msgid "Wheel right"
-msgstr ""
+msgstr "Kerék jobbra"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelup
 msgid "Wheel up"
@@ -3193,18 +3173,17 @@ msgstr "Egyéb unit fájlok (-Fu):"
 
 #: lazarusidestrconsts.dlgoverviewgutterback1color
 msgid "Background 1"
-msgstr ""
+msgstr "Háttér 1"
 
 #: lazarusidestrconsts.dlgoverviewgutterback2color
 msgid "Background 2"
-msgstr ""
+msgstr "Háttér 2"
 
 #: lazarusidestrconsts.dlgoverviewguttercolor
 msgid "Overview Gutter"
-msgstr ""
+msgstr "Áttekintő hasábköz"
 
 #: lazarusidestrconsts.dlgoverviewgutterpagecolor
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
 msgid "Page"
 msgstr "Lap"
@@ -3214,16 +3193,13 @@ msgid "Overwrite block"
 msgstr "Kijelölés felülírása"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Desktop with the name \"%s\" was found.\n"
-#| "Should the old desktop be overwritten?\n"
+#, object-pascal-format
 msgid ""
 "Desktop with the name \"%s\" was found.\n"
 "Should the old desktop be overwritten?"
 msgstr ""
 "Létezik \"%s\" nevű felület.\n"
-"Felülírható a régi felület?\n"
+"Felülírható a régi felület?"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3482,14 +3458,13 @@ msgid "Rename desktop"
 msgstr "Felület átnevezése"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
 msgid "Rename"
 msgstr "Átnevezés"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
 msgid "Rename selected desktop"
-msgstr ""
+msgstr "A kijelölt felület átnevezése"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3504,14 +3479,13 @@ msgid "Report"
 msgstr "Jelentés"
 
 #: lazarusidestrconsts.dlgreset
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "Alaphelyzet"
 
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
-msgstr ""
+msgstr "Az összes visszaállítása"
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3543,12 +3517,7 @@ msgid "Rubberband Selection"
 msgstr "Nyújtható kijelölés"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The running Lazarus instance cannot accept any files.\n"
-#| "Do you want to open them in a new IDE instance?\n"
-#| "\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "The running Lazarus instance cannot accept any files.\n"
 "Do you want to open them in a new IDE instance?\n"
@@ -3558,7 +3527,7 @@ msgstr ""
 "A futó Lazarus példány nem fogad el fájlokat.\n"
 "Megnyitás egy új IDE példányban?\n"
 "\n"
-"%s\n"
+"%s"
 
 #: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
 msgid "Lazarus instance is running but not responding."
@@ -3595,7 +3564,7 @@ msgstr "Futtatási paraméterek"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
-msgstr ""
+msgstr "Jelenlegi felület mentése"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3603,11 +3572,11 @@ msgstr "Jelenlegi felület mentése másként"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
 msgid "Save active desktop as ..."
-msgstr ""
+msgstr "Az aktív felület mentése másként ..."
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
 msgid "Save active desktop as"
-msgstr ""
+msgstr "Az aktív felület mentése másként"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3684,13 +3653,11 @@ msgid "&Selected text"
 msgstr "Kijelölt szöveg"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
 msgid "Set active"
 msgstr "Aktiválás"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Aktiválás"
@@ -3965,16 +3932,14 @@ msgstr "Keresendő szöveg"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
-msgstr ""
+msgstr "Az elem használja (és módosítja) a következő sémát:"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
 msgid "Toggle as debug desktop"
 msgstr "Hibakereső felületként történő használat ki-/bekapcsolása"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Hibakereső felületként történő használat ki-/bekapcsolása"
@@ -4055,7 +4020,7 @@ msgstr "Szabványos fordító beállításfájl használata (fpc.cfg)"
 
 #: lazarusidestrconsts.dlgusehighlight
 msgid "Use Highlight"
-msgstr ""
+msgstr "Kiemelés használata"
 
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
@@ -4075,16 +4040,12 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Nem sikerült betölteni a felhasználói sémafájlt: %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-#, fuzzy
-#| msgid "Use (and edit) global scheme settings"
 msgid "- Scheme globals -"
-msgstr "Globális sémabeállítások használata (és szerkesztése)"
+msgstr "- Globális séma -"
 
 #: lazarusidestrconsts.dlguseschemelocal
-#, fuzzy
-#| msgid "Use local scheme settings"
 msgid "selected language"
-msgstr "Helyi sémabeállítások használata"
+msgstr "Kiválasztott nyelv"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -7038,7 +6999,7 @@ msgstr "Fordítás"
 
 #: lazarusidestrconsts.liscompileanddonotaskagain
 msgid "Compile and do not ask again"
-msgstr ""
+msgstr "Fordítás és ne kérdezze újra"
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
@@ -7095,7 +7056,7 @@ msgstr "Fordítás"
 
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
-msgstr ""
+msgstr "Fordítás a projekt beállításaival"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -7980,7 +7941,7 @@ msgstr "Szűrő létrehozása"
 
 #: lazarusidestrconsts.liscreatefppkgconfig
 msgid "Restore Fppkg configuration"
-msgstr ""
+msgstr "Fppkg beállítások visszaállítása"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
@@ -8378,7 +8339,7 @@ msgstr "Az assembler ablak automatikus bezárása ha a forrás nem található"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbackend
 msgid "Debugger backend"
-msgstr ""
+msgstr "Hibakereső háttérprogram"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -8444,7 +8405,6 @@ msgid "Module"
 msgstr "Modul"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmname
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
 msgid "Name:"
 msgstr "Név:"
@@ -8538,7 +8498,7 @@ msgstr "Alapértelmezett szakasz a metódusok számára"
 
 #: lazarusidestrconsts.lisdelayforcompletionbox
 msgid "Delay for completion box"
-msgstr ""
+msgstr "Kiegészítés doboz késleltetése"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -8546,7 +8506,7 @@ msgstr "Hosszú sor tippek késleltetése a kiegészítés dobozban"
 
 #: lazarusidestrconsts.lisdelayforhints
 msgid "Delay for hints"
-msgstr ""
+msgstr "Tipp késleltetése"
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -8952,16 +8912,13 @@ msgid "Do not write updated project info file after build. If not specified, bui
 msgstr "Ne legyen frissítve a projekt információs fájlja építés után. Így az építési szám csak megfelelő beállítás esetén növekszik."
 
 #: lazarusidestrconsts.lisdonwloadonlinepackages
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following package(s) are not available locally: %s.\n"
-#| "In order to install it, you must download them first. Download now?\n"
+#, object-pascal-format
 msgid ""
 "The following package(s) are not available locally: %s.\n"
 "In order to install it, you must download them first. Download now?"
 msgstr ""
 "A következő csomagok nem érhetők el helyileg: %s\n"
-"A telepítéshez előbb le kell tölteni őket. Letölti most?\n"
+"A telepítéshez előbb le kell tölteni őket. Letölti most?"
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -10109,7 +10066,7 @@ msgstr "keresés könyvtárakban"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "search in project &group"
-msgstr ""
+msgstr "keresés a projektcsoportban"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
@@ -10238,105 +10195,105 @@ msgstr "Szintaktikai hiba a(z) \"%s\" FPDoc elemben:%s%s"
 #: lazarusidestrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr ""
+msgstr "A fppkg számára beállított fordító (%s) nem futtatható fájl."
 
 #: lazarusidestrconsts.lisfppkgcompilernotexists
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr ""
+msgstr "A fppkg számára beállított fordító (%s) nem létezik."
 
 #: lazarusidestrconsts.lisfppkgcompilernotfound
 #, object-pascal-format
 msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr ""
+msgstr "A fppkg számára beállított fordító (%s) nem található."
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
-msgstr ""
+msgstr "probléma van a Free Pascal fordító futtatható állományával."
 
 #: lazarusidestrconsts.lisfppkgconfgenproblems
 msgid "Warnings have to be resolved first"
-msgstr ""
+msgstr "Először a figyelmeztetéseket kell megoldani"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
-msgstr ""
+msgstr "A beállítási fájl neve általában \"fppkg.cfg\". Ha nem megfeleő akkor előfordulhat, hogy nem sikerül feloldani a Free Pascal csomagok függőségeit. Üresen kell hagyni az alapértelmezett használatához."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 #, object-pascal-format
 msgid "Failed to generate the configuration file \"%s\": %s"
-msgstr ""
+msgstr "Nem sikerült létrehozni a(z) \"%s\" beállítási fájlt: %s"
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
 msgid "Files to be written:"
-msgstr ""
+msgstr "Írandó fájlok:"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
 msgid "You could try to restore the configuration files automatically, or adapt the configuration file manually."
-msgstr ""
+msgstr "Megpróbálhatja automatikusan helyrehozni a beállítási fájlokat vagy kézzel javítani a beállítási fájlt."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
-msgstr ""
+msgstr "Az fpcmkcfg beállítóeszköz változatnak ellenőrzése sikertelen volt."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgmissing
 msgid "Could not find the fpcmkcfg configuration tool, which is needed to create the configuration files."
-msgstr ""
+msgstr "Nem található az fpcmkcfg beállítóeszköz, melyre szükség van a beállítási fájlok létrehozásához."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgneeded
 msgid "An up-to-date version is needed to create the configuration files."
-msgstr ""
+msgstr "Naprakész változatra van szükség a beállítási fájlok létrehozásához."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold
 msgctxt "lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold"
 msgid "It is probably too old to create the configuration files."
-msgstr ""
+msgstr "Valószínűleg túl régi a beállítási fájlok létrehozásához."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgtooold
 #, object-pascal-format
 msgid "The fpcmkcfg configuration tool it too old [%s]."
-msgstr ""
+msgstr "Az fpcmkcfg beállítóeszköz túl régi (%s)."
 
 #: lazarusidestrconsts.lisfppkginstallationpath
 #, object-pascal-format
 msgid "The prefix of the Free Pascal Compiler installation is required. For example it has the units \"%s\" and/or \"%s\""
-msgstr ""
+msgstr "Az FPC telepítési útvonalára szükség van az új Fppkg beállítási fájlok létrehozásához. Ott találhatók például a(z) \"%s\" és/vagy \"%s\" unit-ok"
 
 #: lazarusidestrconsts.lisfppkglibprefix
 #, object-pascal-format
 msgid "Fpc library prefix: %s"
-msgstr ""
+msgstr "Fpc függvénytár előtag: %s"
 
 #: lazarusidestrconsts.lisfppkgprefix
 #, object-pascal-format
 msgid "Fpc prefix: %s"
-msgstr ""
+msgstr "Fpc előtag: %s"
 
 #: lazarusidestrconsts.lisfppkgproblem
 msgid "Problem with Fppkg configuration"
-msgstr ""
+msgstr "Probléma van az Fppkg beállításaival"
 
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
-msgstr ""
+msgstr "Ellenőrizni kell, hogy a legutóbbi változat telepítve van-e és elérhető a PATH változóban megadott útvonalakon vagy a fordító könyvtárában."
 
 #: lazarusidestrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
-msgstr ""
+msgstr "Az fppkg szerint az RTL nincs telepítve."
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 #, object-pascal-format
 msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
-msgstr ""
+msgstr "Hiba az új Fppkg beállítások létrehozása közben: %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
 #, object-pascal-format
 msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
-msgstr ""
+msgstr "Nem sikerült létrehozni az Fppkg beállításait (%s). Kézzel kell javítani a beállításokat vagy újratelepíteni az Free Pascal-t."
 
 #: lazarusidestrconsts.lisfppkgwriteconfigfile
 msgid "Write new configuration files"
-msgstr ""
+msgstr "Új beállítási fájlok írása"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -10357,7 +10314,7 @@ msgstr "Free Pascal Compiler üzenetek"
 
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
-msgstr ""
+msgstr "a Free Pascal fordító útvonala"
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
@@ -10437,20 +10394,20 @@ msgstr "Általános"
 #: lazarusidestrconsts.lisgeneratefppkgcfg
 #, object-pascal-format
 msgid "Fppkg configuration: %s"
-msgstr ""
+msgstr "Fppkg beállítások: %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgcompcfg
 #, object-pascal-format
 msgid "Fppkg compiler configuration: %s"
-msgstr ""
+msgstr "Fppkg fordítói beállítások: %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgconfiguration
 msgid "Use this screen to generate new Fppkg configuration files with the fpcmkcfg tool."
-msgstr ""
+msgstr "Ez a képernyő használandó új Fppkg beállítási fájlok létrehozására az fpcmkcfg eszközzel."
 
 #: lazarusidestrconsts.lisgeneratefppkgconfigurationcaption
 msgid "Generate new Fppkg configuration files"
-msgstr ""
+msgstr "Új Fppkg beállítási fájlok létrehozása"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
@@ -10473,17 +10430,6 @@ msgid "Goto selected"
 msgstr "Ugrás a kijelöltre"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
-#| "\n"
-#| "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -10503,7 +10449,7 @@ msgstr ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -10979,7 +10925,7 @@ msgstr "Nem megfelelő beállítási könyvtár található"
 #: lazarusidestrconsts.lisincorrectfppkgconfiguration
 #, object-pascal-format
 msgid "there is a problem with the Fppkg configuration. (%s)"
-msgstr ""
+msgstr "probléma van az Fppkg beállításaival. (%s)"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -11229,16 +11175,13 @@ msgid "Install it, I like the fat"
 msgstr "Telepítés, nekem tetszik a duciság"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following packages are not installed, but available in the main repository: %s.\n"
-#| "Do you wish to install missing packages?\n"
+#, object-pascal-format
 msgid ""
 "The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?"
 msgstr ""
 "A következő csomagok nincsenek telepítve, de elérhetők a fő tárolóban: %s.\n"
-"Szeretné telepíteni a hiányzó csomagokat?\n"
+"Szeretné telepíteni a hiányzó csomagokat?"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -12307,17 +12250,6 @@ msgid "LFM is ok"
 msgstr "LFM rendben"
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -12337,7 +12269,7 @@ msgstr ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -12440,11 +12372,11 @@ msgstr "Paraméterként megadott kisbetűs karakterlánc."
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckbox
 msgid "Maximize compatibility of project files (LPI and LPS)"
-msgstr ""
+msgstr "Projektfájlok maximális kompatibilitása (LPI és LPS)"
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
 msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Ennek bejelölésekor a projekt régi (2.0 vagy korábbi) Lazarus változatokkal is megnyitható lesz."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
@@ -12461,7 +12393,7 @@ msgstr "Lazarus beemelhető erőforrás fájlok (.lrs)"
 
 #: lazarusidestrconsts.lismacpreferences
 msgid "Preferences..."
-msgstr ""
+msgstr "Beállítások..."
 
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
@@ -13292,16 +13224,13 @@ msgid "\"%s\" in %s"
 msgstr "\"%s\" itt: %s: "
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "\"%s\" is already in use in %s as a shortcut.\n"
-#| "Try a different shortcut.\n"
+#, object-pascal-format
 msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
 "Try a different shortcut."
 msgstr ""
 "A(z) \"%s\" már használatban van gyorsbillentyűként ebben: %s\n"
-"Másik gyorsbillentyűt kell választani.\n"
+"Másik gyorsbillentyűt kell választani."
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 #, object-pascal-format
@@ -13349,11 +13278,6 @@ msgid "Template saved"
 msgstr "Sablon mentve"
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
-#, fuzzy
-#| msgid ""
-#| "There are no user-saved menu templates.\n"
-#| "\n"
-#| "Only standard default templates are available.\n"
 msgid ""
 "There are no user-saved menu templates.\n"
 "\n"
@@ -13361,7 +13285,7 @@ msgid ""
 msgstr ""
 "Nincsenek felhasználó által mentett menüsablonok.\n"
 "\n"
-"Csak az alapértelmezett egyszerű sablonok érhetők el.\n"
+"Csak az alapértelmezett egyszerű sablonok érhetők el."
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 #, object-pascal-format
@@ -13369,16 +13293,13 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "TSCList.GetScanListCompName: a %d érvénytelen index a FScanList számára"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "You have to change the shortcut from %s\n"
-#| "to avoid a conflict\n"
+#, object-pascal-format
 msgid ""
 "You have to change the shortcut from %s\n"
 "to avoid a conflict"
 msgstr ""
 "Meg kell változtatni a gyorsbillentyűt: %s\n"
-"az ütközés elkerüléséhez\n"
+"az ütközés elkerüléséhez"
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
 msgid "You must enter text for the Caption"
@@ -14194,17 +14115,6 @@ msgid "Skip this Unit"
 msgstr "A unit kihagyása"
 
 #: lazarusidestrconsts.lismitnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (c) <year> <copyright holders>\n"
-#| "\n"
-#| "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n"
-#| "\n"
-#| "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n"
-#| "\n"
-#| "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -14224,7 +14134,7 @@ msgstr ""
 "\n"
 "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n"
 "\n"
-"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
 #: lazarusidestrconsts.lismmadditionsandoverrides
 msgid "Additions and Overrides"
@@ -14411,19 +14321,6 @@ msgid ", Mode: %s"
 msgstr ", Mód: %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:\n"
-#| "\n"
-#| "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -14446,7 +14343,7 @@ msgstr ""
 "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -14468,7 +14365,7 @@ msgstr "Áthelyezés"
 
 #: lazarusidestrconsts.lismovedown
 msgid "Move Down"
-msgstr ""
+msgstr "Mozgatás lefelé"
 
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
@@ -14520,7 +14417,7 @@ msgstr "Mozgatás ide: "
 
 #: lazarusidestrconsts.lismoveup
 msgid "Move Up"
-msgstr ""
+msgstr "Mozgatás felfelé"
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -14728,7 +14625,7 @@ msgstr "Nincsenek öröklött fordítóbeállítások."
 
 #: lazarusidestrconsts.lisnofppkgprefix
 msgid "empty Free Pascal compiler prefix."
-msgstr ""
+msgstr "üres a Free Pascal fordító útvonala."
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
@@ -14802,7 +14699,7 @@ msgstr "Nem telepítő csomag"
 
 #: lazarusidestrconsts.lisnotavalidfppkgprefix
 msgid "Free Pascal compiler not found at the given prefix."
-msgstr ""
+msgstr "a Free Pascal fordító nem található a megadott útvonalon."
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
@@ -15275,7 +15172,7 @@ msgstr "Csomag infó"
 #: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
 #, object-pascal-format
 msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
-msgstr ""
+msgstr "A(z) \"%s\" egy tervezési csomag, ezért csak az IDE-be kell belefordítani, és ezt nem szükséges a projekt beállításaival megtenni.%sHasználja a \"Telepítés\" vagy az \"Eszközök / Lazarus építése\" lehetőséget az IDE csomagjainak építéséhez."
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."
@@ -15430,7 +15327,7 @@ msgstr "Keresési útvonalak:"
 
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
-msgstr ""
+msgstr "nem egy könyvtár"
 
 #: lazarusidestrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -15829,7 +15726,7 @@ msgstr "Futásidejű"
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 #, object-pascal-format
 msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
-msgstr "A(z) \"%s\" csomagnak van auto install kapcsolója.%sEz azt jelenti, hogy telepítve lesz az IDE-be.%sA telepítendő csomagoknak tervezési idejű csomagoknak kell lenniük."
+msgstr "A(z) \"%s\" csomagnak van auto install kapcsolója.%sEz azt jelenti, hogy telepítve lesz az IDE-be.%sA telepítendő csomagoknak tervezési csomagoknak kell lenniük."
 
 #: lazarusidestrconsts.lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
@@ -16296,16 +16193,13 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Egy vagy több szükséges csomag nem található. Lásd a Csomag-fát a részletekért!"
 
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The package %s is already open in the IDE.\n"
-#| "You cannot save a package with the same name.\n"
+#, object-pascal-format
 msgid ""
 "The package %s is already open in the IDE.\n"
 "You cannot save a package with the same name."
 msgstr ""
 "A(z) %s csomag már meg van nyitva az IDE-ben.\n"
-"Nem lehet csomagot menteni ugyanezzel a névvel.\n"
+"Nem lehet csomagot menteni ugyanezzel a névvel."
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -16406,7 +16300,7 @@ msgstr "A(z) \"%s\" csomag telepítésre van jelölve, de nem található.%sElt�
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
 #, object-pascal-format
 msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
-msgstr "A(z) %s csomag függősége a(z) %s csomagnak, ami meg van jelölve telepítéshez.%sLásd a csomagstruktúrát."
+msgstr "A(z) %s csomag függősége a(z) %s csomagnak, ami meg van jelölve telepítéshez.%sLásd a Csomag-fát!"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
 #, object-pascal-format
@@ -16464,7 +16358,7 @@ msgstr "Már be van töltve egy \"%s\" nevű csomag%se fájlból: \"%s\".%sLásd
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages
 msgid "There is an unsaved package in the required packages. See package graph."
-msgstr "Van egy nem mentett csomag a szükséges csomagok között. Lásd a csomag diagramban."
+msgstr "Van egy nem mentett csomag a szükséges csomagok között. Lásd a Csomag-fát!"
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
 #, object-pascal-format
@@ -17607,19 +17501,6 @@ msgid "Result:"
 msgstr "Eredmény:"
 
 #: lazarusidestrconsts.lisreturnparameterindexedword
-#, fuzzy
-#| msgid ""
-#| "Return parameter-indexed word from the current line preceding cursor position.\n"
-#| "\n"
-#| "Words in a line are numbered 1,2,3,... from left to right, but the last word\n"
-#| "which is always a macro command to be expanded has number 0, thus $PrevWord(0)\n"
-#| "is always the current macro.\n"
-#| "\n"
-#| "Example line:\n"
-#| "i 0 count-1 forb|\n"
-#| "Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
-#| "\n"
-#| "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgid ""
 "Return parameter-indexed word from the current line preceding cursor position.\n"
 "\n"
@@ -17643,15 +17524,9 @@ msgstr ""
 "i 0 count-1 forb|\n"
 "A példában $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
 "\n"
-"Egy sablon végén a $PrevWord(-1) használata javasolt, mely üres karakterláncot ad vissza, de egy fontos műveletet is végrehajt: törli az összes $PrevWords értéket. Továbbá álljon még itt egy reguláris kifejezés, melyet a szavak keresésére használ ez a makró: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
+"Egy sablon végén a $PrevWord(-1) használata javasolt, mely üres karakterláncot ad vissza, de egy fontos műveletet is végrehajt: törli az összes $PrevWords értéket. Továbbá álljon még itt egy reguláris kifejezés, melyet a szavak keresésére használ ez a makró: [\\w\\-+*\\(\\)\\[\\].^@]+"
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid ""
-#| "Return the list of all values of case variable in front of variable.\n"
-#| "\n"
-#| "Optional Parameters (comma separated):\n"
-#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
@@ -17661,7 +17536,7 @@ msgstr ""
 "A \"case\" változó összes értékének listáját adja vissza a változó elé.\n"
 "\n"
 "Lehetséges paraméterek (vesszővel elválasztva):\n"
-"WithoutExtraIndent    // az értékek listája a behúzás növelése nélkül lesz elkészítve\n"
+"WithoutExtraIndent    // az értékek listája a behúzás növelése nélkül lesz elkészítve"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -18053,7 +17928,7 @@ msgstr "Válassza ki a fájlt"
 
 #: lazarusidestrconsts.lisselectfpcpath
 msgid "Select the path where FPC is installed"
-msgstr ""
+msgstr "Az FPC telepítési útvonalának kiválasztása"
 
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"
@@ -18205,7 +18080,7 @@ msgstr "Váltás a forráskódbeli helyzetére"
 
 #: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
 msgid "Show property filter"
-msgstr ""
+msgstr "Tulajdonságszűrő megjelenítése"
 
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
@@ -20733,116 +20608,114 @@ msgstr "lpl fájlok ellenőrzése"
 
 #: lazarusidestrconsts.lvlgraphaddhorizontalspacing
 msgid "Add horizontal spacing between columns"
-msgstr ""
+msgstr "Vízszintes távolság növelése az oszlopok között"
 
 #: lazarusidestrconsts.lvlgraphaddverticalspacingar
 msgid "Add vertical spacing around nodes"
-msgstr ""
+msgstr "Függőleges távolság növelése a csomópontok között"
 
 #: lazarusidestrconsts.lvlgraphextraspacing
 msgid "Extra spacing (x/y)"
-msgstr ""
+msgstr "Extra térköz (x/y)"
 
 #: lazarusidestrconsts.lvlgraphnamesabovenode
 msgid "Names above node"
-msgstr ""
+msgstr "Nevek a csomópontok felett"
 
 #: lazarusidestrconsts.lvlgraphoptabsolutelimi
 msgid "Absolute limit for height of levels"
-msgstr ""
+msgstr "Abszolút magasságkorlát a szintek számára"
 
 #: lazarusidestrconsts.lvlgraphoptcrossings
 msgid "Crossings"
-msgstr ""
+msgstr "Kereszteződések"
 
 #: lazarusidestrconsts.lvlgraphoptedgelen
 msgid "Edge len"
-msgstr ""
+msgstr "Élek hossza"
 
 #: lazarusidestrconsts.lvlgraphoptedges
 msgid "Edges"
-msgstr ""
+msgstr "Élek"
 
 #: lazarusidestrconsts.lvlgraphoptinfo
 msgid "Info"
-msgstr ""
+msgstr "Infó"
 
 #: lazarusidestrconsts.lvlgraphoptlevels
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
 msgid "Levels"
 msgstr "Szintek"
 
 #: lazarusidestrconsts.lvlgraphoptlimitheightoflvl
 msgid "Limit height of Levels"
-msgstr ""
+msgstr "Szintek magasságának korlátozása"
 
 #: lazarusidestrconsts.lvlgraphoptlimitrelativ
 #, object-pascal-format
 msgid "Limit relative to node-count for height of levels.%0sLimit = min(3, val*sqrt(NodeCount))"
-msgstr ""
+msgstr "A korlát a csomópontok szintenkénti számától függ.%0sKorlat = min(3, val*sqrt(CsomopontokSzama))"
 
 #: lazarusidestrconsts.lvlgraphoptsplitpoints
 msgid "Splitpoints"
-msgstr ""
+msgstr "Elágazások"
 
 #: lazarusidestrconsts.lvlgraphreducebackedges
 msgid "Reduce backedges"
-msgstr ""
+msgstr "Kevesebb visszamutató él"
 
 #: lazarusidestrconsts.lvlgraphshapecalculatelay
 msgid "Calculate layout from high-edge"
-msgstr ""
+msgstr "Elrendezés számítása a legfelső éltől"
 
 #: lazarusidestrconsts.lvlgraphshapecurved
 msgid "Curved"
-msgstr ""
+msgstr "Ívelt"
 
 #: lazarusidestrconsts.lvlgraphshapeedgesshape
 msgid "Edges shape"
-msgstr ""
+msgstr "Élek alakja"
 
 #: lazarusidestrconsts.lvlgraphshapeedgessplitmo
 msgid "Edges split mode"
-msgstr ""
+msgstr "Élek elágazásának módja"
 
 #: lazarusidestrconsts.lvlgraphshapeminimizeedge
 msgid "Minimize edges len"
-msgstr ""
+msgstr "Élek hosszának minimalizálása"
 
 #: lazarusidestrconsts.lvlgraphshapenodes
 msgid "Nodes"
-msgstr ""
+msgstr "Csomópontok"
 
 #: lazarusidestrconsts.lvlgraphshapestraight
 msgid "Straight"
-msgstr ""
+msgstr "Egyenes"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
-msgstr ""
+msgstr "Egyesítés a legfelsőnél"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeatsourc
 msgid "Merge at source"
-msgstr ""
+msgstr "Egyesítés a forrásnál"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeattarge
 msgid "Merge at target"
-msgstr ""
+msgstr "Egyesítés a célnál"
 
 #: lazarusidestrconsts.lvlgraphsplitnone
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
 msgid "None"
 msgstr "Semmi"
 
 #: lazarusidestrconsts.lvlgraphsplitseparate
 msgid "Separate"
-msgstr ""
+msgstr "Külön"
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
-msgstr ""
+msgstr "Síkba rajzolható gráf"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
@@ -21125,7 +20998,7 @@ msgstr "Változatszámozás"
 
 #: lazarusidestrconsts.showoptions
 msgid "Show options"
-msgstr ""
+msgstr "Beállítások megjelenítése"
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
@@ -22846,11 +22719,11 @@ msgstr "Csak olvasható"
 
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
-msgstr ""
+msgstr "Csomag-fa beállításai"
 
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
-msgstr ""
+msgstr "Unit-fa beállítása"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

@@ -38,16 +38,13 @@ msgid "JSON document modified"
 msgstr "JSON dokumentum módosítva"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The JSON data in \"%s\" was changed but not saved.\n"
-#| "What do want to do ?\n"
+#, object-pascal-format
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
 msgstr ""
 "A JSON adatok megváltoztak a(z) \"%s\" állományban, de nincsenek mentve.\n"
-"Mit szeretne tenni?\n"
+"Mit szeretne tenni?"
 
 #: msgjsonviewer.sduplicatemembername
 #, object-pascal-format

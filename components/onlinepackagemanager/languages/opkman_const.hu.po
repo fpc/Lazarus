@@ -52,28 +52,25 @@ msgid "OK"
 msgstr "Ok"
 
 #: opkman_const.rscategoriesfrm_caption1
-#, fuzzy
 msgctxt "opkman_const.rscategoriesfrm_caption1"
 msgid "List with categories"
-msgstr "Besorolás kategóriákba"
+msgstr "Kategóriák listája"
 
 #: opkman_const.rscategoriesfrm_caption2
 msgid "List with Lazarus versions"
-msgstr ""
+msgstr "Lazarus változatok listája"
 
 #: opkman_const.rscategoriesfrm_caption3
 msgid "List with FPC versions"
-msgstr ""
+msgstr "FPC változatok listája"
 
 #: opkman_const.rscategoriesfrm_caption4
 msgid "List with supported widgetsets"
-msgstr ""
+msgstr "Támogatott vezérlőkészletek listája"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-#, fuzzy
-#| msgid "Please select (check) one or more categories"
 msgid "Please select (check) one or more items"
-msgstr "Válasszon ki (jelöljön be) egy vagy több kategóriát"
+msgstr "Válasszon ki (jelöljön be) egy vagy több elemet"
 
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
@@ -519,9 +516,10 @@ msgstr "Lazarus kompatibilitás:"
 msgid "Package directory:"
 msgstr "Csomag könyvtára:"
 
+# Helyszűke miatt csak ennyi, egyébként "Támogatott vezérlőkészletek" lenne.
 #: opkman_const.rscreaterepositorypackagefrm_lbsupportedwidgetset_caption
 msgid "Supported widgetsets:"
-msgstr "Támogatott vezérlőkészletek:"
+msgstr "Vezérlőkészlet támogatás:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption"
@@ -730,7 +728,7 @@ msgstr "A következő csomagok már telepítve vannak. Folytatás mindenképp?"
 
 #: opkman_const.rsmainfrm_packageincompatible
 msgid "The following packages are not compatible with your system and the install will most likely fail. Continue anyway?"
-msgstr ""
+msgstr "A következő csomagok nem kompatibilisek a rendszerrel és a telepítés valószínűleg sikertelen lesz. Folytatás mindenképp?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
 msgid "A package with the same name already exists!"
@@ -1291,32 +1289,30 @@ msgid "Version"
 msgstr "Változat"
 
 #: opkman_const.rsopensslfrm_bp_cancelbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
 msgid "No"
 msgstr "Nem"
 
 #: opkman_const.rsopensslfrm_bp_okbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
 msgid "Yes"
 msgstr "Igen"
 
 #: opkman_const.rsopensslfrm_caption
 msgid "Download OpenSSL libraries"
-msgstr ""
+msgstr "OpenSSL függvénytárak letöltése"
 
 #: opkman_const.rsopensslfrm_chpermanent_caption
 msgid "Do not ask this question again"
-msgstr ""
+msgstr "Ne kérdezze újra"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
-msgstr ""
+msgstr "A Hálózati Csomagkezelő megfelelő működéséhez szükség van az OpenSSL függvénytárakra: \"libeay32.dll\" és \"ssleay32.dll\""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
-msgstr ""
+msgstr "Biztosan letölti a fájlokat a \"https://packages.lazarus-ide.org/\" címről?"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
@@ -1361,7 +1357,7 @@ msgstr "Szerkesztés"
 
 #: opkman_const.rsoptions_bpoptions_bhelp
 msgid "Restore defaults"
-msgstr "Alapértelmezések visszaállítása"
+msgstr "Alapértelmezések"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1590,15 +1586,15 @@ msgstr "Kikapcsolva"
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
-msgstr ""
+msgstr "Fájlok automatikus letöltése a \"https://packages.lazarus-ide.org/\" címről"
 
 #: opkman_const.rsoptions_rbopenssl_item1
 msgid "Show confirmation dialog before download"
-msgstr ""
+msgstr "Megerősítő párbeszédablak megjelenítése letöltés előtt"
 
 #: opkman_const.rsoptions_rbopenssl_item2
 msgid "Never download files"
-msgstr ""
+msgstr "Soha ne töltsön le fájlokat"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
@@ -1626,19 +1622,19 @@ msgstr "Proxy"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_caption
 msgid "Warn me about already installed packages"
-msgstr ""
+msgstr "Figyelmeztessen a már telepített csomagokra"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
 msgid "If a package is already installed, OPM will show a warning message"
-msgstr ""
+msgstr "Ha egy csomag már telepítve van, a Hálózati Csomagkezelő megjelenít egy figyelmeztetést"
 
 #: opkman_const.rsoption_cbincompatiblepackage_caption
 msgid "Warn me about incompatible packages"
-msgstr ""
+msgstr "Figyelmeztessen a nem kompatibilis csomagokra"
 
 #: opkman_const.rsoption_cbincompatiblepackage_hint
 msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
-msgstr ""
+msgstr "Ha egy csomag nem kompatibilis az aktuális vezérlőkészlettel vagy Lazarus/FPC változattal, a Hálózati Csomagkezelő megjelenít egy figyelmeztetést"
 
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
@@ -1669,39 +1665,39 @@ msgstr "Csomaglista frissítése"
 
 #: opkman_const.rspackagelistfrm_caption3
 msgid "Incompatible package list"
-msgstr ""
+msgstr "Nem kompatibilis csomagok listája"
 
 #: opkman_const.rspackagelistfrm_curfpcver
 msgid "Current FPC version: "
-msgstr ""
+msgstr "Aktuális FPC változat: "
 
 #: opkman_const.rspackagelistfrm_curlazver
 msgid "Current Lazarus version: "
-msgstr ""
+msgstr "Aktuális Lazarus változat: "
 
 #: opkman_const.rspackagelistfrm_curws
 msgid "Current widgetset: "
-msgstr ""
+msgstr "Aktuális vezérlőkészlet: "
 
 #: opkman_const.rspackagelistfrm_incompatible
 msgid "Incompatible"
-msgstr ""
+msgstr "Nem kompatibilis"
 
 #: opkman_const.rspackagelistfrm_lbhint_caption
 msgid "Hint: for more details move the mouse over the problematic column."
-msgstr ""
+msgstr "Tipp: további részletekért állítsa az egeret a problémás oszlop fölé."
 
 #: opkman_const.rspackagelistfrm_supfpcvers
 msgid "Supported FPC versions: "
-msgstr ""
+msgstr "Támogatott FPC változatok: "
 
 #: opkman_const.rspackagelistfrm_suplazvers
 msgid "Supported Lazarus versions: "
-msgstr ""
+msgstr "Támogatott Lazarus változatok: "
 
 #: opkman_const.rspackagelistfrm_supwss
 msgid "Supported widgetsets: "
-msgstr ""
+msgstr "Támogatott vezérlőkészletek: "
 
 #: opkman_const.rspackagesfound
 #, object-pascal-format

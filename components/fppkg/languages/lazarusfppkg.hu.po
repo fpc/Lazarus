@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: fppkg_mainfrm.sactarchivepackages
 msgid "create archive(s) for package(s)"
@@ -52,11 +52,7 @@ msgid "update repository"
 msgstr "tároló frissítése"
 
 #: fppkg_mainfrm.serractionfailed
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Failed to %s: \n"
-#| "\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "Failed to %s: \n"
 "\n"
@@ -64,7 +60,7 @@ msgid ""
 msgstr ""
 "Sikertelen művelet: %s: \n"
 "\n"
-"%s\n"
+"%s"
 
 #: fppkg_mainfrm.smsgactionsucceeded
 #, object-pascal-format

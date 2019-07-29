@@ -889,7 +889,7 @@ msgstr "Információs ablak megjelenítése"
 
 #: objinspstrconsts.oisshowpropertyfilter
 msgid "Show Property Filter"
-msgstr ""
+msgstr "Tulajdonságszűrő megjelenítése"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"

@@ -29,19 +29,19 @@ msgstr "Sor beszúrása"
 
 #: tachartstrconsts.desmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Mozgatás lefelé"
 
 #: tachartstrconsts.desmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Mozgatás felfelé"
 
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
-msgstr ""
+msgstr "Az értékének egy egész számnak kell lennie."
 
 #: tachartstrconsts.desnonumber
 msgid "Non-numeric value."
-msgstr ""
+msgstr "Nem számérték."
 
 #: tachartstrconsts.destext
 msgid "Text"
@@ -61,7 +61,7 @@ msgstr "Automatikus méretezés"
 
 #: tachartstrconsts.rsaxisclicktool
 msgid "Axis click"
-msgstr ""
+msgstr "Tengelyre kattintás"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
@@ -186,7 +186,7 @@ msgstr "Háromszög (le)"
 
 #: tachartstrconsts.rserrfitdimerror
 msgid "Non-matching count of x and y values."
-msgstr ""
+msgstr "Nem megfelelő számú x és y érték."
 
 #: tachartstrconsts.rserrfitmoreparamsthanvalues
 msgid "There are more fitting parameters than data values."
@@ -194,7 +194,7 @@ msgstr ""
 
 #: tachartstrconsts.rserrfitnobasefunctions
 msgid "Not enough user-provided base functions."
-msgstr ""
+msgstr "Nincs elég felhasználó által megadott alapeljárás."
 
 #: tachartstrconsts.rserrfitnofitparams
 msgid "No fit parameters specified."
@@ -287,7 +287,7 @@ msgstr "Függvény"
 
 #: tachartstrconsts.rsheaderfooterclicktool
 msgid "Header/footer click"
-msgstr ""
+msgstr "Fejlécre/láblécre kattintás"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
@@ -331,7 +331,7 @@ msgstr "Háromszög (balra)"
 
 #: tachartstrconsts.rslegendclicktool
 msgid "Legend click"
-msgstr ""
+msgstr "Jelmagyarázatra kattintás"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -344,17 +344,17 @@ msgstr "Vonal"
 #: tachartstrconsts.rslistsourcecolorerror
 #, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
-msgstr ""
+msgstr "A(z) %0:s.DataPoints karakterlánc \"%1:s\" nem egy egész szám."
 
 #: tachartstrconsts.rslistsourcenumericerror
 #, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
-msgstr ""
+msgstr "A(z) %0:s.DataPoints karakterlánc \"%1:s\" nem egy érvényes szám."
 
 #: tachartstrconsts.rslistsourcestringformaterror
 #, object-pascal-format
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
-msgstr ""
+msgstr "Az értékek száma a(z) %0:s.DataPoints karakterlánc \"%1:s\" tartalmában eltér az XCount és YCount által megkövetelttől."
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
@@ -464,21 +464,21 @@ msgstr "Háromszög (jobbra)"
 #: tachartstrconsts.rssourcecounterror
 #, object-pascal-format
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "A(z) %0:s számára a forrásban legalább %1:d %2:s értéknek kell lenni adatpontonként."
 
 #: tachartstrconsts.rssourcecounterror2
 #, object-pascal-format
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "Ennek a(z) %0:s példánynak legalább %1:d %2:s értéket kell tartalmaznia adatpontonként."
 
 #: tachartstrconsts.rssourcenoteditable
 msgid "Editable chart source required"
-msgstr ""
+msgstr "Szerkeszthető forrásra van szükség"
 
 #: tachartstrconsts.rssourcesorterror
 #, object-pascal-format
 msgid "Selected sorting parameters are not supported by %s."
-msgstr ""
+msgstr "A(z) %s nem támogatja a kiválasztott rendezési paramétert."
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
