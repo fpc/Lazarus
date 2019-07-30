@@ -179,6 +179,9 @@ procedure ArrangeTabOrder(const AWinControl: TWinControl);
 function HWNDToForm(AFormHandle: HWND): TCustomForm;
 procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 
+var
+  CocoaIconsStyle: Boolean = false;
+
 implementation
 
 uses
@@ -244,6 +247,7 @@ var
   R: NSRect;
   Form: TCustomForm absolute AWinControl;
   cb: TLCLWindowCallback;
+  doc: TCocoaWindowContentDocument;
 const
   WinMask = NSBorderlessWindowMask or NSUtilityWindowMask;
 begin
@@ -286,11 +290,20 @@ begin
   R.origin.x := 0;
   R.origin.y := 0;
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
+  doc := TCocoaWindowContentDocument.alloc.initWithFrame(R);
+  doc.setHidden(false);
+  doc.setAutoresizesSubviews(true);
+  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin or NSViewHeightSizable or NSViewWidthSizable);
+  cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
+  doc.callback := cb;
+  doc.wincallback := cb;
   cb.window := win;
   cnt.callback := cb;
   cnt.wincallback := cb;
   cnt.preventKeyOnShow := true;
+  cnt.isCustomRange := true;
+  cnt.setDocumentView(doc);
+  cnt.setDrawsBackground(false); // everything is covered anyway
   TCocoaPanel(win).callback := cb;
 
   win.setContentView(cnt);
@@ -338,29 +351,36 @@ end;
 procedure TLCLWindowCallback.Activate;
 var
   ACustForm: TCustomForm;
+  isDesign: Boolean;
 begin
   if not IsActivating then
   begin
     IsActivating:=True;
     ACustForm := Target as TCustomForm;
 
-    if (csDesigning in ACustForm.ComponentState)
-      or (Assigned(ACustForm.Menu) and (csDesigning in ACustForm.Menu.ComponentState))
-      then Exit;
+    isDesign :=
+      (csDesigning in ACustForm.ComponentState)
+      or (
+        Assigned(ACustForm.Menu)
+        and (csDesigning in ACustForm.Menu.ComponentState)
+      );
 
-    if (ACustForm.Menu <> nil) and
-       (ACustForm.Menu.HandleAllocated) then
+    // only adjust main menu, if the form is not being designed
+    if not isDesign then
     begin
-      if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
+      if (ACustForm.Menu <> nil) and
+         (ACustForm.Menu.HandleAllocated) then
       begin
-        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
-        TCocoaMenu(ACustForm.Menu.Handle).attachAppleMenu();
+        if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
+        begin
+          CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+        end
+        else
+          debugln('Warning: Menu does not have a valid handle.');
       end
       else
-        debugln('Warning: Menu does not have a valid handle.');
-    end
-    else
-      CocoaWidgetSet.SetMainMenu(0, nil);
+        CocoaWidgetSet.SetMainMenu(0, nil);
+    end;
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
     LCLSendSetFocusMsg(Target);
@@ -437,7 +457,7 @@ var
 begin
   Bounds := HandleFrame.lclFrame;
   LCLSendSizeMsg(Target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
-    Owner.lclWindowState, True);
+    HandleFrame.lclWindowState, True);
 end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;
@@ -626,14 +646,17 @@ begin
   SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
 
-  btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
-  url := nil;
-  if isIconVisible[ABorderStyle] then
+  if not CocoaInt.CocoaIconUse then
   begin
-    b := NSBundle.mainBundle;
-    if Assigned(b) then url := b.bundleURL;
+    btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
+    url := nil;
+    if isIconVisible[ABorderStyle] then
+    begin
+      b := NSBundle.mainBundle;
+      if Assigned(b) then url := b.bundleURL;
+    end;
+    AWindow.setRepresentedURL(url);
   end;
-  AWindow.setRepresentedURL(url);
 end;
 
 class procedure TCocoaWSCustomForm.UpdateWindowMask(AWindow: NSWindow;
@@ -672,8 +695,10 @@ var
   Form: TCustomForm absolute AWinControl;
   win: TCocoaWindow;
   cnt: TCocoaWindowContent;
+  doc: TCocoaWindowContentDocument;
   ns: NSString;
   R: NSRect;
+  LR: NSRect;
   lDestView: NSView;
   ds: TCocoaDesignOverlay;
   cb: TLCLWindowCallback;
@@ -683,10 +708,25 @@ begin
   //      the only thing that needs to be created is Content
 
   R := CreateParamsToNSRect(AParams);
+  LR := R;
+  LR.origin.x := 0;
+  LR.origin.y := 0;
+  doc := TCocoaWindowContentDocument.alloc.initWithFrame(LR);
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
+  cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
+
   cnt.callback := cb;
+  doc.wincallback := cb;
+  doc.callback := cb;
   cnt.wincallback := cb;
+  cnt.isCustomRange := true;
+
+  cnt.setDocumentView(doc);
+  cnt.setDrawsBackground(false); // everything is covered anyway
+  doc.setHidden(false);
+
+  doc.setAutoresizesSubviews(true);
+  doc.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin or NSViewHeightSizable or NSViewWidthSizable);
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
@@ -748,15 +788,6 @@ begin
     // events to arrive for this window, creating a second call to TCocoaWSCustomForm.CreateHandle
     // while the first didn't finish yet, instead delay the call
     cnt.popup_parent := AParams.WndParent;
-
-    if IsFormDesign(AWinControl) then begin
-      ds:=(TCocoaDesignOverlay.alloc).initWithFrame(cnt.frame);
-      ds.callback := cnt.callback;
-      ds.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
-      cnt.addSubview_positioned_relativeTo(ds, NSWindowAbove, nil);
-      cnt.overlay := ds;
-    end;
-
   end
   else
   begin
@@ -764,7 +795,7 @@ begin
     begin
       lDestView := GetNSObjectView(NSObject(AParams.WndParent));
       lDestView.addSubView(cnt);
-      cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
+      //cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then
          cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
@@ -772,6 +803,24 @@ begin
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);
     end;
+  end;
+
+  if IsFormDesign(AWinControl) then begin
+    ds:=(TCocoaDesignOverlay.alloc).initWithFrame(cnt.frame);
+    ds.callback := cnt.callback;
+    ds.setFrame( NSMakeRect(0,0, cnt.frame.size.width, cnt.frame.size.height));
+    ds.setAutoresizingMask(
+      //NSViewWidthSizable or NSViewHeightSizable
+      NSViewMinXMargin
+      or NSViewWidthSizable
+      or NSViewMaxXMargin
+      or NSViewMinYMargin
+      or NSViewHeightSizable
+      or NSViewMaxYMargin
+    );
+
+    cnt.addSubview_positioned_relativeTo(ds, NSWindowAbove, nil);
+    doc.overlay := ds;
   end;
 
   Result := TLCLIntfHandle(cnt);
@@ -933,7 +982,7 @@ var
 begin
   if AForm.HandleAllocated then
   begin
-    view := NSView(AForm.Handle);
+    view := NSView(AForm.Handle).lclContentView;
     if AValue then
       view.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1))
     else
@@ -1002,6 +1051,7 @@ var
   trg : NSImage;
   btn : NSButton;
 begin
+  if CocoaInt.CocoaIconUse then Exit;
   if not AForm.HandleAllocated then Exit;
 
   win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;

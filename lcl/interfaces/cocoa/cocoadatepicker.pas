@@ -11,15 +11,11 @@ uses
 
 
 type
-  IDatePickerCallback = interface(ICommonCallback)
-    Procedure MouseBtnUp;
-  end;
-
   { TCocoaDatePicker }
 
   TCocoaDatePicker = objcclass(NSDatePicker)
   public
-    callback: IDatePickerCallback;
+    callback: ICommonCallback;
     autoResize: boolean;
     retainAspectRatio: boolean;
 
@@ -54,16 +50,19 @@ begin
     oldDate:= NSDateToDateTime(Self.dateValue);
 
     if not callback.MouseUpDownEvent(event) then
+    begin
       // Without this, Cocoa will not update our NSDatePicker date...
       inherited mouseDown(event);
 
-    // After mouse event, has our date changed
-    newDate:= NSDateToDateTime(Self.dateValue);
-    if oldDate <> newDate then
-      callback.SendOnChange;
+      // After mouse event, has our date changed
+      newDate:= NSDateToDateTime(Self.dateValue);
+      if oldDate <> newDate then
+        callback.SendOnChange;
 
-    // This also calls OnClick....
-    callback.MouseBtnUp;
+      // This also calls OnClick....
+      if Assigned(Callback) then
+        callback.MouseUpDownEvent(event, true);
+      end;
   end;
 end;
 
@@ -149,8 +148,7 @@ end;
 procedure TCocoaDatePicker.mouseDragged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
-    //inherited mouseDragged(event)
-    ;
+    inherited mouseDragged(event);
 end;
 
 procedure TCocoaDatePicker.otherMouseDown(event: NSEvent);

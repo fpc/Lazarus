@@ -143,8 +143,8 @@ type
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const NewAlignment: TAlignment); override;
 
     {class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;}
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -193,6 +193,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     // WSEdit functions
     //class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
@@ -205,6 +206,7 @@ type
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
@@ -719,33 +721,26 @@ begin
   cf.release;
 end;
 
-
 class procedure TCocoaWSButton.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  btn : NSButton;
 begin
-  NSButton(AWinControl.Handle).setTitle(ControlTitleToNSStr(AText));
+  btn := NSButton(AWinControl.Handle);
+  btn.setTitle(ControlTitleToNSStr(AText));
 end;
 
 class function TCocoaWSButton.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
-var
-  btn: NSButton;
-  lStr: NSString;
 begin
-  Result := AWinControl.HandleAllocated;
-  if not Result then Exit;
-  btn := NSButton(AWinControl.Handle);
-  lStr := btn.title();
-  AText := NSStringToString(lStr);
+  // The text is static, so let the LCL fallback to FCaption
+  Result := false;
 end;
 
 class function TCocoaWSButton.GetTextLen(const AWinControl: TWinControl;
   var ALength: Integer): Boolean;
-var
-  lText: String;
 begin
-  Result := GetText(AWinControl, lText);
-  if not Result then Exit;
-  ALength := Length(lText);
+  // The text is static, so let the LCL fallback to FCaption
+  Result := false;
 end;
 
 { TCocoaWSCustomCheckBox }
@@ -950,8 +945,13 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetBorderStyle(
   const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  field : TCocoaTextField;
 begin
-  inherited SetBorderStyle(AWinControl, ABorderStyle);
+  field := GetTextField(AWinControl);
+  if not Assigned(field) then Exit;
+  field.setBordered_( ObjCBool(ABorderStyle <> bsNone) );
+  field.setBezeled_( ObjCBool(ABorderStyle <> bsNone) );
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -990,6 +990,16 @@ begin
   field := GetTextField(ACustomEdit);
   if not Assigned(field) then Exit;
   TextFieldSetAllignment(field, NewAlignment);
+end;
+
+class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  field: TCocoaTextField;
+begin
+  field := GetTextField(ACustomEdit);
+  if not Assigned(field) then Exit;
+  field.maxLength := NewLength;
 end;
 
 class procedure TCocoaWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
@@ -1106,12 +1116,30 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: String);
+var
+  txt : string;
+  mxl : Integer;
 begin
   if (AWinControl.HandleAllocated) then
-    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
+  begin
+    txt := AText;
+    mxl := TCustomEdit(AWinControl).MaxLength;
+    if (mxl > 0) and (UTF8Length(txt) > mxl) then
+      txt := UTF8Copy(txt, 1, mxl);
+    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), txt);
+  end;
 end;
 
 { TCocoaMemoStrings }
+
+function LineBreaksToUnix(const src: string): string;
+begin
+  // todo: need more effecient replacement
+  Result := StringReplace( StringReplace(
+    StringReplace(src, #10#13, #10, [rfReplaceAll])
+    , #13#10, #10, [rfReplaceAll])
+    , #13, #10, [rfReplaceAll]);
+end;
 
 constructor TCocoaMemoStrings.Create(ATextView: TCocoaTextView);
 begin
@@ -1122,17 +1150,13 @@ end;
 function TCocoaMemoStrings.GetTextStr: string;
 begin
   Result := NSStringToString(FTextView.string_);
-  Result := StringReplace( StringReplace(
-    StringReplace(Result, #10#13, LineEnding, [rfReplaceAll])
-    , #13#10, LineEnding, [rfReplaceAll])
-    , #13, LineEnding, [rfReplaceAll]);
 end;
 
 procedure TCocoaMemoStrings.SetTextStr(const Value: string);
 var
   ns: NSString;
 begin
-  ns := NSStringUtf8(Value);
+  ns := NSStringUtf8(LineBreaksToUnix(Value));
   FTextView.setString(ns);
   ns.release;
 
@@ -1224,7 +1248,7 @@ var
   idx   : integer;
   ro    : Boolean;
 const
-  LFSTR = #13#10;
+  LFSTR = #10;
 begin
   ns:=FTextView.string_;
   idx:=0;
@@ -1368,6 +1392,7 @@ var
   nr:NSRect;
   r:TRect;
   layoutSize: NSSize;
+  lcl: TLCLCommonCallback;
 begin
   scr := TCocoaScrollView(NSView(TCocoaScrollView.alloc).lclInitWithCreateParams(AParams));
 
@@ -1421,7 +1446,9 @@ begin
   txt.setBackgroundColor(NSColor.textBackgroundColor);
   scr.setFocusRingType(NSFocusRingTypeExterior);
 
-  txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
+  lcl := TLCLCommonCallback.Create(txt, AWinControl);
+  lcl.ForceReturnKeyDown := true;
+  txt.callback := lcl;
   txt.setDelegate(txt);
 
   ns := NSStringUtf8(AParams.Caption);
@@ -1432,6 +1459,7 @@ begin
 
   TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
   TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
+  txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
   Result := TLCLIntfHandle(scr);
 end;
@@ -1461,6 +1489,7 @@ begin
   lRange := txt.selectedRange;
   lRange.location := NewStart;
   txt.setSelectedRange(lRange);
+  txt.scrollRangeToVisible(lRange);
 end;
 
 class procedure TCocoaWSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
@@ -1475,6 +1504,17 @@ begin
   lRange := txt.selectedRange;
   lRange.length := NewLength;
   txt.setSelectedRange(lRange);
+end;
+
+class procedure TCocoaWSCustomMemo.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  sv: TCocoaScrollView;
+begin
+  sv := GetScrollView(AWinControl);
+  if not Assigned(sv) then Exit;
+
+  ScrollViewSetBorderStyle(sv, ABorderStyle);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
@@ -1598,6 +1638,17 @@ begin
   txt.callback.SetTabSuppress(not NewWantTabs);
 end;
 
+
+class procedure TCocoaWSCustomMemo.SetWantReturns(const ACustomMemo: TCustomMemo;
+  const NewWantReturns: boolean);
+var
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(ACustomMemo);
+  if (not Assigned(txt)) then Exit;
+  txt.wantReturns := NewWantReturns;
+end;
+
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 var
   txt: TCocoaTextView;
@@ -1617,7 +1668,7 @@ var
 begin
   txt := GetTextView(AWinControl);
   if not Assigned(txt) then Exit;
-  ns := NSStringUtf8(AText);
+  ns := NSStringUtf8(LineBreaksToUnix(AText));
   txt.setString(ns);
   ns.release;
 end;

@@ -652,13 +652,18 @@ var
   s: string;
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
-  s := ACaption;
-  DeleteAmpersands(s);
-  ns:=NSStringUtf8(s);
-  NSMenuItem(AMenuItem.Handle).setTitle(ns);
-  if NSMenuItem(AMenuItem.Handle).hasSubmenu then
-    NSMenuItem(AMenuItem.Handle).submenu.setTitle(ns);
-  ns.release;
+  if NSMenuItem(AMenuItem.Handle).isSeparatorItem <> (ACaption='-') then
+    AMenuItem.RecreateHandle
+  else
+  begin
+    s := ACaption;
+    DeleteAmpersands(s);
+    ns:=NSStringUtf8(s);
+    NSMenuItem(AMenuItem.Handle).setTitle(ns);
+    if NSMenuItem(AMenuItem.Handle).hasSubmenu then
+      NSMenuItem(AMenuItem.Handle).submenu.setTitle(ns);
+    ns.release;
+  end;
 end;
 
 {------------------------------------------------------------------------------

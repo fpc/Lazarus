@@ -9385,6 +9385,7 @@ lcl/interfaces/cocoa/cocoawsspin.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawsstdctrls.pas svneol=native#text/plain
 lcl/interfaces/cocoa/interfaces.pas svneol=native#text/plain
 lcl/interfaces/cocoa/issues.xml svneol=native#text/plain
+lcl/interfaces/cocoa/patrons.txt svneol=native#text/plain
 lcl/interfaces/customdrawn/Makefile svneol=native#text/plain
 lcl/interfaces/customdrawn/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/customdrawn/Makefile.fpc svneol=native#text/plain

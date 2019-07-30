@@ -153,6 +153,7 @@ begin
   InitStockItems;
 
   fClipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
+  ToCollect := TList.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -162,6 +163,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCocoaWidgetSet.Destroy;
 begin
+  ReleaseToCollect(0);
   inherited Destroy;
 
   FreeStockItems;
@@ -198,6 +200,7 @@ begin
   // then it finalization of WS dependent objects would fail (suppressed AVs)
   // and would cause leaks. (see #35400)
   InternalFinal;
+  ToCollect.Free;
 
   CocoaWidgetSet := nil;
 end;
@@ -212,6 +215,10 @@ begin
   if FTerminating then Exit;
   // TODO: Check if there is more cleanup to do here
   // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
+
+  {$ifdef COCOALOOPNATIVE}
+  NSApp.stop(nil);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -513,8 +520,53 @@ begin
   Application.IntfAppRestore;
 end;
 
-procedure TAppDelegate.applicationDidBecomeActive(notification: NSNotification);
+procedure TAppDelegate.applicationWillBecomeActive(notification: NSNotification
+  );
+var
+  app : NSApplication;
+  i: integer;
+  vis: Boolean;
+  info: PWinLevelOrder;
+  ord: NSArray;
 begin
+  app := NSApplication(NSApp);
+  ord := app.orderedWindows;
+  orderArrayCount := ord.count;
+  orderArray := GetMem(orderArrayCount * sizeof(TWinLevelOrder));
+  for i := 0 to orderArrayCount - 1 do
+  begin
+    info := @orderArray^[i];
+    info^.win := ord.objectAtIndex(i);
+    info^.lvl := info^.win.level;
+    info^.ord := info^.win.orderedIndex;
+    info^.vis := info^.win.isVisible;
+  end;
+end;
+
+procedure TAppDelegate.applicationDidBecomeActive(notification: NSNotification);
+var
+  i : integer;
+begin
+  // Cocoa changes level and order of windows to it's liking
+  // (it happens between Will- and DidBecomeActive)
+  // for example Model windows becoming level 8,
+  // even if LCL set them to level 0 before.
+  // As a result the OrderedIndex also goes messed up.
+  // It's being restored here
+  for i := orderArrayCount -1 downto 0 do
+  begin
+    if not orderArray^[i].vis then continue;
+    orderArray^[i].win.setLevel( orderArray^[i].lvl );
+    orderArray^[i].win.setOrderedIndex( orderArray^[i].ord );
+    orderArray^[i].win.orderFrontRegardless;
+  end;
+  orderArrayCount := 0;
+  if orderArray <> nil then
+  begin
+    Freemem(orderArray);
+    orderArray := nil;
+  end;
+
   Application.IntfAppActivate;
 end;
 

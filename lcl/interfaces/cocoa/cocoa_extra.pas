@@ -27,6 +27,20 @@ uses
   // Libs
   MacOSAll, CocoaAll;
 
+{$if (FPC_VERSION>3) or ((FPC_VERSION=3) and (FPC_RELEASE>=2))}
+{$define HASBOOLEAN8}
+{$endif}
+
+type
+  // Due to backwards incompatible changes in FPC sources
+  // (switching from Boolean to Boolean8), LCL has to adopt
+  // either type, depending on FPC version
+  LCLObjCBoolean = {$ifdef HASBOOLEAN8}
+                   Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
+                   {$else}
+                   Boolean   // FPC 3.0.4 and earlier are using "boolean" type
+                   {$endif};
+
 type
   NSImageScaling = NSUInteger;
 const // NSImageScaling values
@@ -42,6 +56,10 @@ type
 
   {$ifdef BOOLFIX}
   ObjCBool = ShortInt; // Matches BOOL declaration in ObjC "signed char"
+                       // Note that this is different than LCLObjCBoolean
+                       // even though it's trying to resolve the same problem
+                       // for FPC3.0.4. ObjCBool should be removed after the officail
+                       // fpc3.2+ release
 
   NSMenuItemFix = objccategory external (NSMenuItem)
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
@@ -56,10 +74,12 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
+{$if FPC_FULLVERSION < 30300}
   NSAppearance = objcclass external(NSObject)
     function name: NSString; message 'name';
     class function currentAppearance: NSAppearance; message 'currentAppearance';
   end;
+{$endif}
 
   NSApplicationFix = objccategory external (NSApplication)
     procedure activateIgnoringOtherApps_(flag: ObjCBool); message 'activateIgnoringOtherApps:';
@@ -125,6 +145,12 @@ type
   end;
 
   NSGraphicsContextFix = objccategory external(NSGraphicsContext)
+{$if FPC_FULLVERSION < 30300}
+    class procedure classSaveGraphicsState; message 'saveGraphicsState';
+    class procedure classRestoreGraphicsState; message 'restoreGraphicsState';
+    procedure instanceSaveGraphicsState; message 'saveGraphicsState';
+    procedure instanceRestoreGraphicsState; message 'restoreGraphicsState';
+{$endif}
     procedure setImageInterpolation(interpolation: NSImageInterpolation); message 'setImageInterpolation:';
     procedure setShouldAntialias(antialias: Boolean); message 'setShouldAntialias:';
     // 10.10

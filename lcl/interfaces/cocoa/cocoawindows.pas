@@ -28,7 +28,7 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate, CocoaTextEdits,
+  cocoa_extra, CocoaPrivate, CocoaTextEdits, CocoaScrollers,
   // LCL
   //Forms,
   LCLType, LCLProc;
@@ -126,9 +126,6 @@ type
     orderOutAfterFS : Boolean;
     fsview: TCocoaWindowContent;
 
-    responderSwitch: Integer;
-    respInitCb : ICommonCallback;
-
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
@@ -144,7 +141,6 @@ type
     procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
     _keyEvCallback: ICommonCallback;
-    _calledKeyEvAfter: Boolean;
     callback: IWindowCallback;
     keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
@@ -172,8 +168,6 @@ type
     procedure sendEvent(event: NSEvent); override;
     // key
     procedure keyDown(event: NSEvent); override;
-    // windows
-    function makeFirstResponder(r: NSResponder): LCLObjCBoolean; override;
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
 
@@ -192,12 +186,28 @@ type
     procedure lclClearCallback; override;
   end;
 
-  { TCocoaWindowContent }
+  { TCocoaWindowContentDocument }
 
-  TCocoaWindowContent = objcclass(TCocoaCustomControl)
+  TCocoaWindowContentDocument = objcclass(TCocoaCustomControl)
   protected
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
+  public
+    overlay: NSView;
+    wincallback: IWindowCallback;
+    procedure didAddSubview(aview: NSView); override;
+    procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
+    procedure setNeedsDisplayInRect(arect: NSRect); override;
+    // NSDraggingDestinationCategory
+    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
+  end;
+
+  { TCocoaWindowContent }
+
+  TCocoaWindowContent = objcclass(TCocoaScrollView)
+  private
+    _stringValue: NSString;
   public
     wincallback: IWindowCallback;
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
@@ -205,7 +215,6 @@ type
     ownwin: NSWindow;
     fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
-    overlay: NSView;
     function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
     procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
@@ -217,31 +226,15 @@ type
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
     procedure dealloc; override;
     procedure setHidden(aisHidden: LCLObjCBoolean); override;
-    procedure didAddSubview(aview: NSView); override;
-    // NSDraggingDestinationCategory
-    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
-    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
-    procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
-    procedure setNeedsDisplayInRect(arect: NSRect); override;
+
+    procedure setStringValue(avalue: NSString); message 'setStringValue:';
+    function stringValue: NSString; message 'stringValue';
   end;
 
-function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
 procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
 
 implementation
-
-function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
-var
-  m : NSString;
-begin
-  m := ev.charactersIgnoringModifiers;
-  if m.length <> 1 then
-    Result := #0
-  else
-    Result := System.WideChar(m.characterAtIndex(0));
-end;
-
 
 { TCocoaDesignOverlay }
 
@@ -274,7 +267,7 @@ end;
 
 { TCocoaWindowContent }
 
-procedure TCocoaWindowContent.didAddSubview(aview: NSView);
+procedure TCocoaWindowContentDocument.didAddSubview(aview: NSView);
 const
   mustHaveSizing = (NSViewWidthSizable or NSViewHeightSizable);
 begin
@@ -291,17 +284,19 @@ begin
   inherited didAddSubview(aview);
 end;
 
-procedure TCocoaWindowContent.didBecomeKeyNotification(sender: NSNotification);
+procedure TCocoaWindowContentDocument.didBecomeKeyNotification(sender: NSNotification);
 begin
   if Assigned(callback) then
     callback.DidBecomeKeyNotification;
 end;
 
-procedure TCocoaWindowContent.didResignKeyNotification(sender: NSNotification);
+procedure TCocoaWindowContentDocument.didResignKeyNotification(sender: NSNotification);
 begin
   if Assigned(callback) then
     callback.DidResignKeyNotification;
 end;
+
+{ TCocoaWindowContent }
 
 procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: NSResponder);
 var
@@ -467,8 +462,6 @@ begin
   isembedded := window.contentView <> self;
   if isembedded then
   begin
-    if Assigned(ownwin) then
-      ownwin.close;
     ownwin := nil;
   end
   else
@@ -487,10 +480,7 @@ begin
   if not isembedded and (newWindow <> window) then
   begin
     if Assigned(window) then
-    begin
       setStringValue(window.title);
-      window.close;
-    end;
     ownwin := nil;
     isembedded := false;
   end;
@@ -538,6 +528,19 @@ begin
         window.makeKeyAndOrderFront(nil);
     end;
   end;
+end;
+
+procedure TCocoaWindowContent.setStringValue(avalue: NSString);
+begin
+  if _stringValue = avalue then Exit;
+  if Assigned(_stringValue) then _stringValue.release;
+  _stringValue := AValue;
+  if Assigned(_stringValue) then _stringValue.retain;
+end;
+
+function TCocoaWindowContent.stringValue: NSString;
+begin
+  Result := _stringValue;
 end;
 
 { TCocoaPanel }
@@ -968,7 +971,6 @@ begin
   if Assigned(_keyEvCallback) then
   begin
     allowcocoa := True;
-    _calledKeyEvAfter := True;
     _keyEvCallback.KeyEvAfterDown(allowcocoa);
     if not allowcocoa then
       Exit;
@@ -977,14 +979,14 @@ begin
   inherited keyDown(event);
 end;
 
-function TCocoaWindowContent.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
+function TCocoaWindowContentDocument.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
 begin
   Result := NSDragOperationNone;
   if (wincallback <> nil) and (wincallback.AcceptFilesDrag) then
     Result := sender.draggingSourceOperationMask();
 end;
 
-function TCocoaWindowContent.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
+function TCocoaWindowContentDocument.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
 var
   draggedURLs{, lClasses}: NSArray;
   lFiles: array of string;
@@ -1024,43 +1026,16 @@ begin
   Result := True;
 end;
 
-procedure TCocoaWindowContent.setNeedsDisplay_(aflag: LCLObjCBoolean);
+procedure TCocoaWindowContentDocument.setNeedsDisplay_(aflag: LCLObjCBoolean);
 begin
   inherited setNeedsDisplay;
   if Assigned(overlay) then overlay.setNeedsDisplay_(aflag);
 end;
 
-procedure TCocoaWindowContent.setNeedsDisplayInRect(arect: NSRect);
+procedure TCocoaWindowContentDocument.setNeedsDisplayInRect(arect: NSRect);
 begin
   inherited setNeedsDisplayInRect(arect);
   if Assigned(overlay) then overlay.setNeedsDisplayInRect(arect);
-end;
-
-function TCocoaWindow.makeFirstResponder(r: NSResponder): LCLObjCBoolean;
-var
-  cbnew: ICommonCallback;
-begin
-  if (responderSwitch = 0) then
-    respInitCb := firstResponder.lclGetCallback;
-
-  // makeFirstResponder calls can be recursive!
-  // the resulting NSResponder can be the same object  (i.e. fieldEditor)
-  // yet, the callback should be the different anyway
-
-  inc(responderSwitch);
-  Result:=inherited makeFirstResponder(r);
-  dec(responderSwitch);
-
-  if (responderSwitch = 0) then
-  begin
-    cbnew := firstResponder.lclGetCallback;
-
-    if not isCallbackForSameObject(respInitCb, cbnew) then
-    begin
-      if Assigned(cbnew) then cbnew.BecomeFirstResponder;
-      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
-    end;
-  end;
 end;
 
 procedure TCocoaWindow.lclItemSelected(sender: id);

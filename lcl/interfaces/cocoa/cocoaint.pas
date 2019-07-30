@@ -51,10 +51,26 @@ type
     class function newWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'newWithFunc:';
   end;
 
+  { TAppDelegate }
+
+  TWinLevelOrder = record
+    win : NSWindow;
+    lvl : NSInteger;
+    ord : NSinteger;
+    vis : Boolean;
+  end;
+  PWinLevelOrder = ^TWinLevelOrder;
+  TWinLevelOrderArray = array [Word] of TWinLevelOrder;
+  PWinLevelOrderArray = ^TWinLevelOrderArray;
+
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
+  public
+    orderArray : PWinLevelOrderArray;
+    orderArrayCount : Integer;
     procedure application_openFiles(sender: NSApplication; filenames: NSArray);
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
+    procedure applicationWillBecomeActive(notification: NSNotification);
     procedure applicationDidBecomeActive(notification: NSNotification);
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
@@ -68,6 +84,8 @@ type
     aloop : TApplicationMainLoop;
     isrun : Boolean;
     modals : NSMutableDictionary;
+    inputclient : TCocoaInputClient;
+    inputctx    : NSTextInputContext;
 
     procedure dealloc; override;
     {$ifdef COCOALOOPOVERRIDE}
@@ -128,6 +146,12 @@ type
     fClipboard: TCocoaWSClipboard;
 
     // Clipboard
+
+    // collecting objects that needs to be released AFTER an event
+    // has been processed
+    ToCollect: TList;
+    function RetainToCollect: Integer;
+    procedure ReleaseToCollect(fromIdx: integer);
 
     procedure SyncClipboard();
 
@@ -203,12 +227,17 @@ type
     {$I cocoawinapih.inc}
     // the extra LCL interface methods
     {$I cocoalclintfh.inc}
+    procedure AddToCollect(obj: TObject);
   end;
   
 var
   CocoaWidgetSet: TCocoaWidgetSet;
   CocoaBasePPI : Integer = 96; // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   MainPool : NSAutoreleasePool = nil;
+
+  // if set to true, then WS would not assign icons via TCocoaWSForm SetIcon
+  // The icon would have to be changed manually. By default LCL behaviour is used
+  CocoaIconUse: Boolean = false;
 
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
@@ -395,6 +424,7 @@ end;
 procedure TCocoaApplication.dealloc;
 begin
   if Assigned(modals) then modals.release;
+  if Assigned(inputclient) then inputclient.release;
   inherited dealloc;
 end;
 
@@ -452,36 +482,92 @@ var
   cb : ICommonCallback;
   wnd: TCocoaWindow;
   allowcocoa : Boolean;
+  idx: integer;
+  win : NSWindow;
+  cbnew : ICommonCallback;
 begin
-  if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
-     (theEvent.type_ = NSFlagsChanged) then begin
-    cb := self.keyWindow.firstResponder.lclGetCallback;
-    if Assigned(cb) then
-    begin
-      try
-        if self.keyWindow.isKindOfClass_(TCocoaWindow) then begin
-          wnd := TCocoaWindow(self.keyWindow);
-          wnd._keyEvCallback := cb;
-          wnd._calledKeyEvAfter := False;
-        end
-        else
-          wnd := nil;
-        cb.KeyEvBefore(theEvent, allowcocoa);
-        if allowcocoa then
-          inherited sendEvent(theEvent);
-        if (not Assigned(wnd)) or (not wnd._calledKeyEvAfter) then
+  {$ifdef COCOALOOPNATIVE}
+  try
+  {$endif}
+  idx := CocoaWidgetSet.RetainToCollect;
+  win := theEvent.window;
+  if not Assigned(win) then win := self.keyWindow;
+
+  if Assigned(win) then
+    cb := win.firstResponder.lclGetCallback
+  else
+    cb := nil;
+  try
+    if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
+       (theEvent.type_ = NSFlagsChanged) then begin
+      if Assigned(cb) then
+      begin
+        try
+          if win.isKindOfClass_(TCocoaWindow) then begin
+            wnd := TCocoaWindow(win);
+            wnd._keyEvCallback := cb;
+          end
+          else
+            wnd := nil;
+
+          if (theEvent.type_ = NSKeyDown)
+            and not (win.firstResponder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol))) then
+          begin
+            if not Assigned(inputctx) then
+            begin
+              inputclient := TCocoaInputClient.alloc.init;
+              inputctx := NSTextInputContext.alloc.initWithClient(inputclient);
+            end;
+            inputctx.handleEvent(theEvent);
+          end;
+
+          cb.KeyEvBefore(theEvent, allowcocoa);
+          if allowcocoa then
+            inherited sendEvent(theEvent);
           cb.KeyEvAfter;
-      finally
-        if Assigned(wnd) then
-          wnd._keyEvCallback := nil;
+        finally
+          if Assigned(wnd) then
+            wnd._keyEvCallback := nil;
+        end;
+        Exit;
       end;
-      Exit;
     end;
+
+    inherited sendEvent(theEvent);
+
+    if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
+  finally
+
+    // Focus change notification used to be in makeFirstResponder method
+    // However, it caused many issues with infinite loops.
+    // Sometimes Cocoa like to switch focus to window (temporary) (i.e. when switching tabs)
+    // That's causing a conflict with LCL. LCL tries to switch focus back
+    // to the original control. And Cocoa keep switching it back to the Window.
+    // (Note, that for Cocoa, window should ALWAYS be focusable)
+    // Thus, Focus switching notification was moved to post event handling.
+    //
+    // can't have this code in TCocoaWindow, because some key events are not forwarded
+    // to the window
+    cbnew := win.firstResponder.lclGetCallback;
+    if not isCallbackForSameObject(cb, cbnew) then
+    begin
+      if Assigned(cb) then cb.ResignFirstResponder;
+      cbnew := win.firstResponder.lclGetCallback;
+      if Assigned(cbnew) then cbnew.BecomeFirstResponder;
+    end;
+
+    CocoaWidgetSet.ReleaseToCollect(idx);
   end;
-
-  inherited sendEvent(theEvent);
-
-  if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
+  {$ifdef COCOALOOPNATIVE}
+    if CocoaWidgetSet.FTerminating then stop(nil);
+  except
+    if CocoaWidgetSet.FTerminating then stop(nil);
+    if Assigned(Application) and Application.CaptureExceptions then
+      Application.HandleException(Application)
+    else
+      raise;
+  end;
+  {$endif}
 end;
 
 function isMouseMoveEvent(tp: NSEventType): Boolean; inline;
@@ -501,12 +587,12 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
-  {$ifndef COCOALOOPOVERRIDE}
+  {$ifdef COCOALOOPHIJACK}
   if not isrun and Assigned(aloop) then begin
     isrun := True;
     Result := nil;
     aloop();
-    terminate(nil);
+    stop(nil); // this should stop the main loop
     exit;
   end;
   {$endif}
@@ -519,7 +605,13 @@ begin
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
     expiration, mode, deqFlag);
   {$endif}
-  if not Assigned(Result) then Exit;
+  if not Assigned(Result) then
+  begin
+    {$ifdef COCOALOOPNATIVE}
+    if Assigned(Application) then Application.Idle(true);
+    {$endif}
+    Exit;
+  end;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
@@ -548,10 +640,23 @@ end;
 
 procedure TCocoaApplication.lclSyncCheck(arg: id);
 begin
+  {$ifdef COCOALOOPNATIVE}
+  try
+    CheckSynchronize;
+    if Assigned(Application) then
+      TCrackerApplication(Application).ProcessAsyncCallQueue;
+  except
+    if Assigned(Application) and Application.CaptureExceptions then
+      Application.HandleException(Application)
+    else
+      raise;
+  end;
+  {$else}
   CheckSynchronize;
   NSApp.updateWindows;
   if Assigned(Application) then
     TCrackerApplication(Application).ProcessAsyncCallQueue;
+  {$endif}
 end;
 
 
@@ -590,6 +695,10 @@ begin
   PrevMenu.retain;
 
   PrevLCLMenu := CurLCLMenu;
+
+  if (lNSMenu.isKindOfClass(TCocoaMenu)) then
+    TCocoaMenu(lNSMenu).attachAppleMenu();
+
   NSApp.setMainMenu(lNSMenu);
   CurLCLMenu := ALCLMenu;
 
@@ -690,6 +799,30 @@ end;
 function TCocoaWidgetSet.isModalSession: Boolean;
 begin
   Result := Assigned(Modals) and (Modals.Count > 0);
+end;
+
+procedure TCocoaWidgetSet.AddToCollect(obj: TObject);
+begin
+  // let's try to find an object. Do not add a duplicate
+  if (ToCollect.IndexOf(Obj)>=0) then Exit;
+  ToCollect.Add(obj);
+end;
+
+function TCocoaWidgetSet.RetainToCollect: Integer;
+begin
+  Result := ToCollect.Count;
+end;
+
+procedure TCocoaWidgetSet.ReleaseToCollect(fromIdx: integer);
+var
+  i  : integer;
+begin
+  for i := fromIdx to ToCollect.Count - 1 do
+  begin
+    TObject(ToCollect[i]).Free;
+    ToCollect[i]:=nil;
+  end;
+  ToCollect.Pack;
 end;
 
 initialization

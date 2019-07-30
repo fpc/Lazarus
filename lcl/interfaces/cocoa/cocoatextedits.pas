@@ -59,6 +59,7 @@ type
 
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
+    maxLength: Integer;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -106,6 +107,8 @@ type
     FUndoManager: NSUndoManager;
 
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
+    keyCaptured: Boolean;
+    wantReturns: Boolean;
 
     procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
@@ -115,6 +118,10 @@ type
     procedure resetCursorRects; override;
 
     procedure changeColor(sender: id); override;
+    // keyboard
+    procedure doCommandBySelector(aSelector: SEL); override;
+    procedure insertNewline(sender: id); override;
+    procedure keyDown(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -152,10 +159,14 @@ type
     // when switching "editable" (readonly) mode of NSTextField
     // see TCocoaWSCustomEdit.SetReadOnly
     goingReadOnly: Boolean;
+    keyCaptured: Boolean;
     function lclGetCallback: ICommonCallback; override;
     function becomeFirstResponder: LCLObjCBoolean; override;
-    // mouse
+    // keyboard
+    procedure doCommandBySelector(aSelector: SEL); override;
+    procedure insertNewline(sender: id); override;
     procedure keyDown(event: NSEvent); override;
+    // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -371,8 +382,7 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
-  TCocoaSpinEdit = objcclass(NSTextField, NSTextFieldDelegateProtocol)
-    callback: ICommonCallback;
+  TCocoaSpinEdit = objcclass(TCocoaTextField, NSTextFieldDelegateProtocol)
     Stepper: NSStepper;
     NumberFormatter: NSNumberFormatter;
     decimalPlaces: Integer;
@@ -542,7 +552,7 @@ end;
 
 function TCocoaSpinEditStepper.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
-  Result:=true;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaSpinEditStepper.mouseDown(event: NSEvent);
@@ -737,18 +747,35 @@ begin
   else Result:=inherited becomeFirstResponder;
 end;
 
+procedure TCocoaFieldEditor.doCommandBySelector(aSelector: SEL);
+begin
+  inherited doCommandBySelector(aSelector);
+  keyCaptured := False;
+end;
+
+procedure TCocoaFieldEditor.insertNewline(sender: id);
+begin
+  // 10.6 cocoa handles the editors Return key as "insertNewLine" command (that makes sense)
+  // which turns into textDidEndEditing done command (that also makes sense)
+  // however, it ends up in an endless loop of "end-editing" calls.
+  //
+  // todo: find the reason for the endless loop and resolve it properly
+end;
+
 procedure TCocoaFieldEditor.keyDown(event: NSEvent);
 begin
-  if event.keyCode = kVK_Return then
-    // 10.6 cocoa handles the editors Return key as "insertNewLine" command (that makes sense)
-    // which turns into textDidEndEditting done command (that also makes sense)
-    // however, it ends up in an endless loop of "end-editing" calls.
-    //
-    // By default, "Return" key would select the contents of the field
-    // so, inforcing it manually.
-    //
-    // todo: find the reason for the endless loop and resolve it properly
-    selectAll(self)
+  // Input methods may capture Enter and Escape to accept/dismiss their popup
+  // windows.  There isn't a way to detect the popup is open, so allow the
+  // keys through.  If they make it to the default handlers let the LCL process
+  // them further.  If they got swallowed prevent further processing.
+  if Assigned(lclGetCallback) and (event.modifierFlags_ = 0) and
+    ((NSEventRawKeyChar(event) = #13) or (NSEventRawKeyChar(event) = #27)) then
+  begin
+    keyCaptured := True;
+    inherited keyDown(event);
+    if keyCaptured then
+      lclGetCallback.KeyEvHandled;
+  end
   else
     inherited keyDown(event);
 end;
@@ -868,7 +895,7 @@ end;
 
 function TCocoaTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 function TCocoaTextField.lclGetCallback: ICommonCallback;
@@ -892,6 +919,8 @@ end;
 
 procedure TCocoaTextField.textDidChange(notification: NSNotification);
 begin
+  if (maxLength>0) and Assigned(stringValue) and (stringValue.length > maxLength) then
+    setStringValue(stringValue.substringWithRange(NSMakeRange(0,maxLength)));
   if callback <> nil then
     callback.SendOnTextChanged;
 end;
@@ -968,7 +997,7 @@ end;
 
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 function TCocoaTextView.undoManager: NSUndoManager;
@@ -997,6 +1026,33 @@ procedure TCocoaTextView.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+procedure TCocoaTextView.doCommandBySelector(aSelector: SEL);
+begin
+  inherited doCommandBySelector(aSelector);
+  keyCaptured := False;
+end;
+
+procedure TCocoaTextView.insertNewline(sender: id);
+begin
+  if wantReturns then
+    inherited insertNewline(sender);
+end;
+
+procedure TCocoaTextView.keyDown(event: NSEvent);
+begin
+  // See TCocoaFieldEditor.keyDown
+  if Assigned(lclGetCallback) and (event.modifierFlags_ = 0) and
+    ((NSEventRawKeyChar(event) = #13) or (NSEventRawKeyChar(event) = #27)) then
+  begin
+    keyCaptured := True;
+    inherited keyDown(event);
+    if keyCaptured then
+      lclGetCallback.KeyEvHandled;
+  end
+  else
+    inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.mouseDown(event: NSEvent);
@@ -1098,7 +1154,7 @@ end;
 
 function TCocoaSecureTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaSecureTextField.resetCursorRects;
@@ -1237,7 +1293,7 @@ end;
 
 function TCocoaComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaComboBox.textDidChange(notification: NSNotification);
@@ -1428,7 +1484,7 @@ end;
 
 function TCocoaReadOnlyComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 procedure TCocoaReadOnlyComboBox.dealloc;
@@ -1922,7 +1978,7 @@ end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := True;
+  Result := NSViewCanFocus(Self);
 end;
 
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;

@@ -42,21 +42,10 @@ const
   SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
   STATUSBAR_DEFAULT_HEIGHT = 18;
 
-{$if (FPC_VERSION>3) or ((FPC_VERSION=3) and (FPC_RELEASE>=2))}
-{$define HASBOOLEAN8}
-{$endif}
-
 type
-  // Due to backwards incompatible changes in FPC sources
-  // (switching from Boolean to Boolean8), LCL has to adopt
-  // either type, depending on FPC version
-  LCLObjCBoolean = {$ifdef HASBOOLEAN8}
-                   Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
-                   {$else}
-                   Boolean   // FPC 3.0.4 and earlier are using "boolean" type
-                   {$endif};
-
-type
+  // Some components might be using CocoaPrivate for use of LCLObjCBoolean
+  // Thus this declaration needs to be here.
+  LCLObjCBoolean = cocoa_extra.LCLObjCBoolean;
 
   { ICommonCallback }
 
@@ -83,9 +72,11 @@ type
     procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
+    procedure KeyEvHandled;
     procedure SetTabSuppress(ASuppress: Boolean);
 
     function scrollWheel(Event: NSEvent): Boolean;
+    function CanFocus: Boolean;
     // size, pos events
     procedure frameDidChange(sender: id);
     procedure boundsDidChange(sender: id);
@@ -112,6 +103,12 @@ type
     function GetIsOpaque: Boolean;
     procedure SetIsOpaque(AValue: Boolean);
     function GetShouldBeEnabled: Boolean;
+    // the method is called, when handle is being destroyed.
+    // the callback object to stay alive a little longer than LCL object (Target)
+    // thus it needs to know that LCL object has been destroyed.
+    // After this called has been removed, any Cocoa events should not be
+    // forwarded to LCL target
+    procedure RemoveTarget;
 
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
@@ -374,6 +371,7 @@ function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 
 function NSViewIsLCLEnabled(v: NSView): Boolean;
 function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+function NSViewCanFocus(v: NSView): Boolean;
 
 implementation
 
@@ -396,6 +394,22 @@ begin
     end;
     v:=v.superview;
   end;
+end;
+
+function NSViewCanFocus(v: NSView): Boolean;
+var
+  cb: ICommonCallback;
+begin
+  if Assigned(v) then
+  begin
+    cb := v.lclGetCallback;
+    if Assigned(cb) then
+      Result := cb.CanFocus
+    else
+      Result := true;
+  end
+  else
+    Result := false;
 end;
 
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;

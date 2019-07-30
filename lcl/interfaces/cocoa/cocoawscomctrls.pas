@@ -253,6 +253,7 @@ type
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const {%H-}NewPosition: integer); override;
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
     class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TCocoaWSCustomTreeView }
@@ -585,11 +586,11 @@ end;
 class procedure TCocoaWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
 var
   tv: TCocoaTabPageView;
-  ndx: Integer;
+  ndx: NSInteger;
 begin
   tv := TCocoaTabPageView(AWinControl.Handle);
   ndx := tv.tabView.exttabIndexOfTabViewItem(tv.tabPage);
-  if ndx >= 0 then
+  if (ndx >= 0) and (ndx < tv.tabView.fulltabs.count) then
     tv.tabview.exttabRemoveTabViewItem(tv.tabPage);
   TCocoaWSWinControl.DestroyHandle(AWinControl);
 end;
@@ -823,13 +824,36 @@ class procedure TCocoaWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabC
 var
   lTabControl: TCocoaTabControl = nil;
   lOldTabStyle, lTabStyle: NSTabViewType;
+var
+  pr : TRect;
+  ar : TRect;
+  fr : NSRect;
+  dx, dy : double;
+  cb: ICommonCallback;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
   lTabStyle := LCLTabPosToNSTabStyle(AShowTabs, ATabControl.BorderWidth, ATabControl.TabPosition);
+  pr := lTabControl.lclGetFrameToLayoutDelta;
   lTabControl.setTabViewType(lTabStyle);
+  ar := lTabControl.lclGetFrameToLayoutDelta;
+  // switching ShowTabs actually changes layout to frame
+  // this needs to be compenstated
+  if (ar.Top<>pr.Top) or (pr.Left<>ar.Top) then
+  begin
+    fr := lTabControl.frame;
+    dx := pr.Left - ar.left;
+    dy := pr.Top - ar.Top;
+    fr.origin.x := fr.origin.x + dx;
+    fr.origin.y := fr.origin.y + dy;
+    fr.size.width := fr.size.width - dx - (ar.Right - pr.Right);
+    fr.size.height := fr.size.height - dy - (ar.Bottom - pr.Bottom);
+    lTabControl.setFrame(fr);
+    cb := lTabControl.lclGetCallback;
+    if Assigned(cb) then cb.frameDidChange(lTabControl);
+  end;
 end;
 
 { TCocoaWSCustomListView }
@@ -1946,9 +1970,9 @@ class procedure TCocoaWSTrackBar.SetOrientation(const ATrackBar: TCustomTrackBar
   const AOrientation: TTrackBarOrientation);
 begin
   if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
-  if (AOrientation = trHorizontal) and (ATrackBar.Height > ATrackBar.Width) then
+  if (AOrientation = trHorizontal) and (ATrackBar.Height >= ATrackBar.Width) then
     ATrackBar.Width := ATrackBar.Height + 1
-  else if (AOrientation = trVertical) and (ATrackBar.Width > ATrackBar.Height) then
+  else if (AOrientation = trVertical) and (ATrackBar.Width >= ATrackBar.Height) then
     ATrackBar.Height := ATrackBar.Width + 1;
 end;
 
@@ -1959,6 +1983,34 @@ begin
   if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
   lSlider := TCocoaSlider(ATrackBar.Handle);
   lSlider.lclAddManTick(ATick);
+end;
+
+class procedure TCocoaWSTrackBar.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  lSlider : TCocoaSlider;
+  trk     : TCustomTrackBar;
+  frm     : NSRect;
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
+  trk := TCustomTrackBar(AWinControl);
+  lSlider := TCocoaSlider(AWinControl.Handle);
+  frm := lSlider.frame;
+  try
+    if trk.Orientation = trVertical then
+      lSlider.setFrame(NSMakeRect(0,0,5,10))
+    else
+      lSlider.setFrame(NSMakeRect(0,0,10,5));
+
+    TCocoaWSWinControl.GetPreferredSize(AWinControl,PreferredWidth, PreferredHeight, WithThemeSpace);
+    if trk.Orientation = trVertical then
+      PreferredHeight := 0
+    else
+      PreferredWidth := 0;
+  finally
+    lSlider.setFrame(frm);
+  end;
 end;
 
 end.

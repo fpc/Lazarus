@@ -45,11 +45,13 @@ type
     _SendChar  : Boolean;
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
-    _UTF8Character : TUTF8Char;
+    _KeyHandled: Boolean;
+    _UTF8Character : array [0..7] of TUTF8Char;
+    _UTF8Charcount : Integer;
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
-    procedure KeyEvBeforeDown(var AllowCocoaHandle: boolean);
-    procedure KeyEvBeforeUp(var AllowCocoaHandle: boolean);
+    procedure KeyEvBeforeDown;
+    procedure KeyEvBeforeUp;
     procedure KeyEvAfterUp;
     procedure KeyEvFlagsChanged(Event: NSEvent);
     procedure KeyEvPrepare(Event: NSEvent);
@@ -59,6 +61,7 @@ type
     BlockCocoaUpDown: Boolean;
     BlockCocoaKeyBeep: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
+    ForceReturnKeyDown: Boolean; // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
 
     class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
@@ -74,7 +77,9 @@ type
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
     procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
+    procedure KeyEvHandled;
     procedure SetTabSuppress(ASuppress: Boolean);
+    function CanFocus: Boolean; virtual;
 
     procedure MouseClick; virtual;
     function MouseMove(Event: NSEvent): Boolean; virtual;
@@ -94,6 +99,7 @@ type
     procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
     procedure DrawOverlay(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
+    procedure RemoveTarget; virtual;
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read FTarget;
@@ -159,6 +165,7 @@ function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUIn
 
 function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
+procedure DebugDumpParents(fromView: NSView);
 
 implementation
 
@@ -439,7 +446,8 @@ end;
 { If a window does not display a shortcut menu it should pass
   this message to the DefWindowProc function. If a window is
   a child window, DefWindowProc sends the message to the parent. }
-procedure TLCLCommonCallback.SendContextMenu(event: NSEvent; out ContextMenuHandled: Boolean);
+procedure TLCLCommonCallback.SendContextMenu(Event: NSEvent; out
+  ContextMenuHandled: Boolean);
 var
   MsgContext: TLMContextMenu;
   MousePos : NSPoint;
@@ -532,6 +540,7 @@ var
   IsSysKey: Boolean;       // Is alt (option) key down?
   KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
   ignModChr: NSString;
+  i,c,j : integer;
 begin
   SendChar := False;
 
@@ -605,14 +614,39 @@ begin
   _SendChar := SendChar;
   _IsSysKey := IsSysKey;
   _IsKeyDown := (Event.type_ = NSKeyDown);
-  _UTF8Character := UTF8Character;
+
+  c:=0;
+  i:=1;
+  j:=0;
+  while (i<=length(UTF8Character)) and (j<length(_UTF8Character)) do
+  begin
+    c := Utf8CodePointLen(@UTF8Character[i], length(UTF8Character)-i+1, false);
+    if (j=0) and (c = length(UTF8Character)) then
+    begin
+      _UTF8Character[0] := UTF8Character;
+      j := 1;
+      break;
+    end
+    else if (c > 0) then
+    begin
+      _UTF8Character[j] := Copy(UTF8Character, i, c);
+      inc(i,c);
+      inc(j);
+    end else
+      break;
+  end;
+  if (j = 0) then _UTF8Character[0] := '';
+  _UTF8Charcount := j;
 
   FillChar(_CharMsg, SizeOf(_CharMsg), 0);
   _CharMsg.KeyData := _KeyMsg.KeyData;
   _CharMsg.CharCode := ord(KeyChar);
 end;
 
-procedure TLCLCommonCallback.KeyEvBeforeDown(var AllowCocoaHandle: boolean);
+procedure TLCLCommonCallback.KeyEvBeforeDown;
+var
+  i: integer;
+  lclHandled: Boolean;
 begin
   // create the CN_KEYDOWN message
   if _IsSysKey then
@@ -621,7 +655,7 @@ begin
     _KeyMsg.Msg := CN_KEYDOWN;
 
   // is the key combination help key (Cmd + ?)
-  if _SendChar and _IsSysKey and (_UTF8Character = '?') then
+  if _SendChar and _IsSysKey and (_UTF8Character[0] = '?') then
     Application.ShowHelpForObject(Target);
 
   // widget can filter some keys from being send to cocoa control
@@ -634,30 +668,29 @@ begin
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL handled the key
-      AllowCocoaHandle := false;
+      KeyEvHandled;
       Exit;
     end;
   end;
 
   if (_SendChar) then begin
-    // assume "down" was succesfull and calling LM_KEYDOWN now
-    // otherwise, LM_KEYDOWN would be called in KeyEvAfter()
-    if _IsSysKey then
-      _KeyMsg.Msg := LM_SYSKEYDOWN
-    else
-      _KeyMsg.Msg := LM_KEYDOWN;
-
-    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+    // send the UTF8 keypress
+    i := 0;
+    lclHandled := false;
+    for i := 0 to _UTF8Charcount -1 do
     begin
-      AllowCocoaHandle := false;
-      Exit;
+      lclHandled := false;
+      if Target.IntfUTF8KeyPress(_UTF8Character[i], 1, _IsSysKey) then
+        lclHandled := true;
     end;
 
-
-    // send the UTF8 keypress
-    if Target.IntfUTF8KeyPress(_UTF8Character, 1, _IsSysKey) then
+    if lclHandled then
     begin
       // the LCL has handled the key
+      if ForceReturnKeyDown and (_KeyMsg.CharCode = VK_RETURN) then
+        _SendChar := False
+      else
+        KeyEvHandled;
       Exit;
     end;
 
@@ -674,14 +707,17 @@ begin
     if (DeliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
     begin
       // the LCL handled the key
-      AllowCocoaHandle := false;
+      KeyEvHandled;
       Exit;
     end;
+
+    //if _CharMsg.CharCode <> ord(_KeyChar) then
+      //LCLCharToMacEvent(Char(_CharMsg.CharCode));
   end;
 
 end;
 
-procedure TLCLCommonCallback.KeyEvBeforeUp(var AllowCocoaHandle: boolean);
+procedure TLCLCommonCallback.KeyEvBeforeUp;
 begin
   if _IsSysKey then
     _KeyMsg.Msg := CN_SYSKEYUP
@@ -695,7 +731,7 @@ begin
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
-      AllowCocoaHandle := false;
+      KeyEvHandled;
       Exit;
     end;
   end;
@@ -704,32 +740,30 @@ end;
 procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
 begin
   AllowCocoaHandle := False;
-  if _SendChar then begin
-    // LM_CHAR has not been set yet, send it now!
-    if _CharMsg.CharCode = 0 then Exit;
 
-    //if _CharMsg.CharCode <> ord(_KeyChar) then
-      //LCLCharToMacEvent(Char(_CharMsg.CharCode));
+  if _KeyHandled then Exit;
+  KeyEvHandled;
 
-    //Send a LM_(SYS)CHAR
-    if _IsSysKey then
-      _CharMsg.Msg := LM_SYSCHAR
-    else
-      _CharMsg.Msg := LM_CHAR;
-
-    if DeliverMessage(_CharMsg) <> 0 then
-      Exit;
-
-  end else begin
-    // LM_KeyDOWN has not been sent yet, send it now!
-    if (_KeyMsg.CharCode = VK_UNKNOWN) then Exit;
-
+  // Send an LM_(SYS)KEYDOWN
+  if _KeyMsg.CharCode <> VK_UNKNOWN then
+  begin
     if _IsSysKey then
       _KeyMsg.Msg := LM_SYSKEYDOWN
     else
       _KeyMsg.Msg := LM_KEYDOWN;
 
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+      Exit;
+  end;
+
+  //Send an LM_(SYS)CHAR
+  if _SendChar then begin
+    if _IsSysKey then
+      _CharMsg.Msg := LM_SYSCHAR
+    else
+      _CharMsg.Msg := LM_CHAR;
+
+    if DeliverMessage(_CharMsg) <> 0 then
       Exit;
   end;
 
@@ -741,6 +775,9 @@ end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;
 begin
+  if _KeyHandled then Exit;
+  KeyEvHandled;
+
   //Send a LM_(SYS)KEYUP
   if _IsSysKey then
     _KeyMsg.Msg := LM_SYSKEYUP
@@ -758,6 +795,7 @@ end;
 procedure TLCLCommonCallback.KeyEvBefore(Event: NSEvent;
   out AllowCocoaHandle: boolean);
 begin
+  _keyHandled := False;
   AllowCocoaHandle := true;
 
   if Event.type_ = NSFlagsChanged then
@@ -766,12 +804,16 @@ begin
     KeyEvPrepare(Event);
 
   if _IsKeyDown then begin
-    KeyEvBeforeDown(AllowCocoaHandle);
+    KeyEvBeforeDown;
     if SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
       AllowCocoaHandle := false;
   end else
-    KeyEvBeforeUp(AllowCocoaHandle);
+    KeyEvBeforeUp;
 
+  if _keyHandled then
+    AllowCocoaHandle := false;
+
+  // flagsChanged always needs to be passed on to Cocoa
   if Event.type_ = NSFlagsChanged then
     AllowCocoaHandle := true;
 end;
@@ -784,9 +826,19 @@ begin
   else KeyEvAfterUp;
 end;
 
+procedure TLCLCommonCallback.KeyEvHandled;
+begin
+  _KeyHandled := True;
+end;
+
 procedure TLCLCommonCallback.SetTabSuppress(ASuppress: Boolean);
 begin
   SuppressTabDown := ASuppress;
+end;
+
+function TLCLCommonCallback.CanFocus: Boolean;
+begin
+  Result := not Assigned(Target) or not (csDesigning in Target.ComponentState);
 end;
 
 procedure TLCLCommonCallback.MouseClick;
@@ -1167,28 +1219,33 @@ end;
 
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
+  if not Assigned(Target) then Exit;
   LCLSendKillFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.DidBecomeKeyNotification;
 begin
+  if not Assigned(Target) then Exit;
   LCLSendActivateMsg(Target, WA_ACTIVE, false);
   LCLSendSetFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.DidResignKeyNotification;
 begin
+  if not Assigned(Target) then Exit;
   LCLSendActivateMsg(Target, WA_INACTIVE, false);
   LCLSendKillFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.SendOnChange;
 begin
+  if not Assigned(Target) then Exit;
   SendSimpleMessage(Target, LM_CHANGED);
 end;
 
 procedure TLCLCommonCallback.SendOnTextChanged;
 begin
+  if not Assigned(Target) then Exit;
   SendSimpleMessage(Target, CM_TEXTCHANGED);
 end;
 
@@ -1214,7 +1271,10 @@ end;
 
 function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;
 begin
-  Result := LCLMessageGlue.DeliverMessage(Target, Msg);
+  if Assigned(Target) then
+    Result := LCLMessageGlue.DeliverMessage(Target, Msg)
+  else
+    Result := 0;
 end;
 
 function TLCLCommonCallback.DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
@@ -1317,6 +1377,7 @@ begin
   Result := False;
   View := CocoaUtils.GetNSObjectView(Owner);
   if View = nil then Exit;
+  if not Assigned(Target) then Exit;
   if not (csDesigning in Target.ComponentState) then
   begin
     ACursor := Screen.Cursor;
@@ -1333,6 +1394,11 @@ begin
       View.addCursorRect_cursor(View.visibleRect, cr.Cursor);
     end;
   end;
+end;
+
+procedure TLCLCommonCallback.RemoveTarget;
+begin
+  FTarget := nil;
 end;
 
 function TLCLCommonCallback.GetIsOpaque: Boolean;
@@ -1396,9 +1462,14 @@ begin
   begin
     if Callback.HasCaret then DestroyCaret(nil);
     CallbackObject := Callback.GetCallbackObject;
+    Callback.RemoveTarget;
     Callback := nil;
     obj.lclClearCallback;
-    CallbackObject.Free;
+    // Do not free the callback object here. It might be processing an event
+    // and is performing a self destruction. Thus there might be a code performing
+    // even after DestroyHandle() was called. The destruction needs to be delayed
+    // until after the event processing is done
+    CocoaWidgetSet.AddToCollect(CallbackObject);
   end;
   obj.release;
 end;
@@ -1759,6 +1830,14 @@ begin
       if trg is TWinControl then
         Result := Result +' '+TWinControl(trg).Name;
     end;
+  end;
+end;
+
+procedure DebugDumpParents(fromView: NSView);
+begin
+  while Assigned(fromView) do begin
+    writeln(fromView.lclClassName);
+    fromView := fromView.superView;
   end;
 end;
 

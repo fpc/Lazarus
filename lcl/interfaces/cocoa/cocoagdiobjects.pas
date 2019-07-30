@@ -159,10 +159,10 @@ const
     array [PS_DASH..PS_DASHDOTDOT] of TCocoaStatDashes = (
     // cosmetic = false (geometry)
     (
-      (len: 2; dash: (3,1,0,0,0,0)), // PS_DASH        = 1;      { ------- }
-      (len: 2; dash: (1,1,0,0,0,0)), // PS_DOT         = 2;      { ....... }
-      (len: 4; dash: (3,1,1,1,0,0)), // PS_DASHDOT     = 3;      { _._._._ }
-      (len: 6; dash: (3,1,1,1,1,1))  // PS_DASHDOTDOT  = 4;      { _.._.._ }
+      (len: 2; dash: (2,2,0,0,0,0)), // PS_DASH        = 1;      { ------- }
+      (len: 2; dash: (0,2,0,0,0,0)), // PS_DOT         = 2;      { ....... }
+      (len: 4; dash: (2,2,0,2,0,0)), // PS_DASHDOT     = 3;      { _._._._ }
+      (len: 6; dash: (2,2,0,2,0,2))  // PS_DASHDOTDOT  = 4;      { _.._.._ }
     ),
     // cosmetic = true (windows like cosmetic)
     (
@@ -301,6 +301,7 @@ type
   public
     constructor CreateStandard(const ACursor: NSCursor);
     constructor CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
+    constructor CreateFromCustomCursor(const ACursor: NSCursor);
     destructor Destroy; override;
     function Install: TCocoaCursor;
     procedure SetCursor;
@@ -1185,6 +1186,12 @@ begin
   FStandard := False;
 end;
 
+constructor TCocoaCursor.CreateFromCustomCursor(const ACursor: NSCursor);
+begin
+  FCursor := ACursor;
+  FStandard := False;
+end;
+
 destructor TCocoaCursor.Destroy;
 begin
   FreeAndNil(FBitmap);
@@ -1421,7 +1428,7 @@ begin
   else
     Context := ctx;
 
-  NSGraphicsContext.saveGraphicsState;
+  NSGraphicsContext.classSaveGraphicsState;
   NSGraphicsContext.setCurrentContext(Context);
   ctx.setShouldAntialias(FFont.Antialiased);
   if FFont.RotationDeg<>0 then
@@ -1489,7 +1496,7 @@ begin
   if FillBackground then
     FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
-  NSGraphicsContext.restoreGraphicsState;
+  NSGraphicsContext.classRestoreGraphicsState;
 end;
 
 { TCocoaContext }
@@ -1757,7 +1764,7 @@ begin
   if FSavedDCList = nil then
     FSavedDCList := TFPObjectList.Create(True);
 
-  NSGraphicsContext.saveGraphicsState;
+  NSGraphicsContext.classSaveGraphicsState;
 
   //ctx.saveGraphicsState;
   Result := FSavedDCList.Add(SaveDCData) + 1;
@@ -1779,12 +1786,12 @@ begin
 
   while FSavedDCList.Count > ASavedDC do
   begin
-    NSGraphicsContext.restoreGraphicsState;
+    NSGraphicsContext.classRestoreGraphicsState;
     RestoreDCData(TCocoaDCData(FSavedDCList.Count - 1));
     FSavedDCList.Delete(FSavedDCList.Count - 1);
   end;
 
-  NSGraphicsContext.restoreGraphicsState;
+  NSGraphicsContext.classRestoreGraphicsState;
   RestoreDCData(TCocoaDCData(FSavedDCList[ASavedDC - 1]));
   FSavedDCList.Delete(ASavedDC - 1);
   Result := True;
@@ -1818,14 +1825,22 @@ end;
 procedure TCocoaContext.InvertRectangle(X1, Y1, X2, Y2: Integer);
 begin
   // save dest context
+{$if FPC_FULLVERSION < 30300}
+  ctx.instanceSaveGraphicsState;
+{$else}
   ctx.saveGraphicsState;
+{$endif}
   try
     DefaultBrush.Apply(Self, False);
     CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
 
     CGContextFillRect(CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
   finally
+{$if FPC_FULLVERSION < 30300}
+    ctx.instanceRestoreGraphicsState;
+{$else}
     ctx.restoreGraphicsState;
+{$endif}
     AttachedBitmap_SetModified();
   end;
 end;
@@ -2219,7 +2234,7 @@ function TCocoaContext.DrawImageRep(dstRect: NSRect; const srcRect: NSRect;
 var
   Context: NSGraphicsContext;
 begin
-  NSGraphicsContext.saveGraphicsState;
+  NSGraphicsContext.classSaveGraphicsState;
   try
     // we flip the context on it initialization (see InitDraw) so to draw
     // a bitmap correctly we need to create a flipped context and to draw onto it
@@ -2233,7 +2248,7 @@ begin
       dstRect, srcRect, NSCompositeSourceOver, 1.0, True, nil
       );
   finally
-    NSGraphicsContext.restoreGraphicsState;
+    NSGraphicsContext.classRestoreGraphicsState;
   end;
   AttachedBitmap_SetModified();
 end;
@@ -2380,10 +2395,10 @@ end;
 
 procedure TCocoaContext.DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
 begin
-  NSGraphicsContext.saveGraphicsState();
+  NSGraphicsContext.classSaveGraphicsState();
   NSGraphicsContext.setCurrentContext(ctx);
   ABitmap.imagerep.drawAtPoint(NSMakePoint(X, Y));
-  NSGraphicsContext.restoreGraphicsState();
+  NSGraphicsContext.classRestoreGraphicsState();
   AttachedBitmap_SetModified();
 end;
 
@@ -2847,7 +2862,7 @@ begin
         WidthMul[false]:=1.0;
         WidthMul[true]:=Width;
         StatDash := @CocoaPenDash[isCosm][FStyle];
-        CalcDashes( Slice(StatDash^.dash, StatDash^.len), ADashes, ADashLen, WidthMul[isCosm]);
+        CalcDashes( Slice(StatDash^.dash, StatDash^.len), ADashes, ADashLen, WidthMul[IsGeometric]);
         CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], ADashLen);
       end;
     PS_USERSTYLE:

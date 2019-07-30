@@ -86,6 +86,7 @@ const
   // thus for earlier systems must be redeclared
   _NSPasteboardTypeString : NSString = nil;
   _NSPasteboardTypePNG : NSString = nil;
+  _NSPasteboardTypeTiff : NSString = nil;
 
 implementation
 
@@ -93,6 +94,7 @@ procedure InitConst;
 begin
   _NSPasteboardTypeString := NSSTR('public.utf8-plain-text');
   _NSPasteboardTypePNG := NSSTR('public.png');
+  _NSPasteboardTypeTiff := NSSTR('public.tiff');
 end;
 
 { TCocoaWSClipboard }
@@ -160,6 +162,17 @@ begin
   Result := TCocoaClipboardData(AFormat);
 end;
 
+function PasteboardToPngData(pb: NSPasteboard): NSData;
+var
+  rep  : NSBitmapImageRep;
+begin
+  rep := NSBitmapImageRep.imageRepWithPasteboard(pb);
+  if Assigned(rep) then
+    Result := rep.representationUsingType_properties(NSPNGFileType, nil)
+  else
+    Result := nil;
+end;
+
 function TCocoaWSClipboard.GetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 var
@@ -207,7 +220,10 @@ begin
   ccdtBitmap:
   begin
     lNSData := pasteboard.dataForType(lFormat.CocoaFormat);
-    if lNSData = nil then Exit;
+    if lNSData = nil then begin
+      lNSData := PasteboardToPngData(pasteboard);
+      if not Assigned(lNSData) then Exit;
+    end;
     lNSbytes := lNSData.bytes;
 
     Image := TFPMemoryImage.Create(10, 10);
@@ -239,6 +255,11 @@ var
   i: Integer;
   pb : NSPasteboard;
   tp : NSString;
+  hasBmp: Boolean;
+  hasImage: Boolean; // this a default macOS sharing format
+  imgArr: NSArray;
+const
+  ImgBmpFmt : string = 'image/bmp';
 begin
   pb := Pasteboards[ClipboardType].pasteboard;
   Result := Assigned(pb);
@@ -246,10 +267,27 @@ begin
 
   i := 0;
   SetLength(List, pb.types.count);
+  hasImage := false;
+  hasBmp := false;
+  imgArr := NSBitmapImageRep.imagePasteboardTypes;
+
   for tp in pb.types do
   begin
     List[i]:=RegisterCocoaType(tp);
     inc(i);
+    if not hasImage and Assigned(imgArr) then
+    begin
+      hasImage := (imgArr.indexOfObject(tp) <> NSNotFound);
+    end;
+    if (tp.UTF8String = ImgBmpFmt) then
+      hasBmp := true;
+  end;
+
+  if hasImage and not hasBmp then
+  begin
+    inc(i);
+    SetLength(List, i);
+    List[i-1] := RegisterFormat(ImgBmpFmt);
   end;
 
   Count := i;

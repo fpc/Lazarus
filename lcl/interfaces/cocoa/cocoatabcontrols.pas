@@ -440,22 +440,43 @@ end;
 function TCocoaTabControl.lclClientFrame: TRect;
 var
   r : TRect;
+  f : NSRect;
 begin
-  if isFlipped then
-    Result:=NSRectToRect( contentRect )
+  case tabViewType of
+    NSNoTabsNoBorder:
+    begin
+      f := frame;
+      f.origin.x := 0;
+      f.origin.y := 0;
+      Result := NSRectToRect( f );
+    end;
   else
-    NSToLCLRect( contentRect, frame.size.height, Result );
+    if isFlipped then
+      Result:=NSRectToRect( contentRect )
+    else
+      NSToLCLRect( contentRect, frame.size.height, Result );
+  end;
 
-  r:=lclGetFrameToLayoutDelta;
-  Types.OffsetRect(Result, -r.Left, -r.Top);
+  //if tabs are hidden, frame layout should not be taken into account
+  //r:=lclGetFrameToLayoutDelta;
+  //Types.OffsetRect(Result, -r.Left, -r.Top);
 end;
 
 function TCocoaTabControl.lclGetFrameToLayoutDelta: TRect;
 begin
-  Result.Bottom := -10;
-  Result.Top := 6;
-  Result.Left := 7;
-  Result.Right := -7;
+  case tabViewType of
+    NSNoTabsNoBorder: begin
+      Result.Left := 0;
+      Result.Top := 0;
+      Result.Bottom := 0;
+      Result.Right := 0;
+    end;
+  else
+    Result.Bottom := -10;
+    Result.Top := 6;
+    Result.Left := 7;
+    Result.Right := -7;
+  end;
 end;
 
 function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
@@ -471,13 +492,6 @@ begin
   if Assigned(callback) then
   begin
     callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );
-
-    // This must be called, prior to notification about focus (firstResponder) change
-    // Focus changing goes as following:
-    //   First page becomes visible
-    //   Then focus is switching to the control of the page
-    // In Cocoa world, first "willSelect" runs, then "firstResponder" changes, then "didSelect" is fired
-    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
   end;
 end;
 
@@ -486,10 +500,19 @@ procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
 begin
   //it's called together with "willSelect"
 
-  //if Assigned(callback) then
-  //begin
-    //callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
-  //end;
+  if Assigned(callback) then
+  begin
+    // Expected LCL Focus changing goes as following:
+    //   First page becomes visible
+    //   Then focus is switching to the control of the page
+    // In Cocoa world, first "willSelect" runs,
+    //  then "firstResponder" changes to Window
+    //  then the views are reorded and the new View becomes a part
+    //  of views chain (and attaches to the window
+    //  the view is made "firstResponder"
+    //  and finally "didSelect" is fired
+    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+  end;
 
   // The recent clean up, drove the workaround below unnecessary
   // (at least the problem is not observed)
@@ -521,10 +544,16 @@ end;
 
 procedure TCocoaTabControl.mouseDown(event: NSEvent);
 var
-  res : Boolean;
+  itm : NSTabViewItem;
 begin
-  res := callback.MouseUpDownEvent(event, false, true);
-  if not Assigned(callback) or not res then
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if Assigned(itm) then
+  begin
+    inherited mouseDown(event);
+    Exit;
+  end;
+
+  if not (Assigned(callback) and callback.MouseUpDownEvent(event, false, true)) then
   begin
     inherited mouseDown(event);
 
