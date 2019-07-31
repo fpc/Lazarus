@@ -157,6 +157,8 @@ type
   );
   {$scopedenums off}
 
+  TInternBrkSetMethod = (ibmAddrIndirect, ibmAddrDirect, ibmName);
+
   { TGDBMIDebuggerPropertiesBase }
 
   TGDBMIDebuggerPropertiesBase = class(TCommonDebuggerProperties)
@@ -176,6 +178,7 @@ type
     {$ENDIF}
     FGDBOptions: String;
     FGdbValueMemLimit: Integer;
+    FInternalExceptionBrkSetMethod: TInternBrkSetMethod;
     FInternalStartBreak: TGDBMIDebuggerStartBreak;
     FMaxDisplayLengthForStaticArray: Integer;
     FMaxDisplayLengthForString: Integer;
@@ -237,6 +240,8 @@ type
              write FFixStackFrameForFpcAssert default True;
     property FixIncorrectStepOver: Boolean read FFixIncorrectStepOver write FFixIncorrectStepOver default False;
     property InternalExceptionBreakPoints;
+    property InternalExceptionBrkSetMethod: TInternBrkSetMethod read FInternalExceptionBrkSetMethod
+             write FInternalExceptionBrkSetMethod default ibmAddrDirect;
     {$IFdef MSWindows}
     property AggressiveWaitTime: Cardinal read FAggressiveWaitTime write SetAggressiveWaitTime default 100;
     {$EndIf}
@@ -270,6 +275,7 @@ type
     property FixStackFrameForFpcAssert;
     property FixIncorrectStepOver;
     property InternalExceptionBreakPoints;
+    property InternalExceptionBrkSetMethod;
     {$IFdef MSWindows}
     property AggressiveWaitTime;
     {$EndIf}
@@ -669,7 +675,7 @@ type
   private type
     TClearOpt = (coClearIfSet, coKeepIfSet);
     TBlockOpt = (boNone, boBlock, boUnblock);
-    TInternalBreakLocation = (iblNamed, iblAddrOfNamed, iblCustomAddr,
+    TInternalBreakLocation = (iblNamed, iblAddrOfNamed, iblAsterix, iblCustomAddr,
                               iblAddOffset, iblFileLine);
     TInternalBreakData = record
       BreakGdbId: Integer;
@@ -685,6 +691,7 @@ type
     FEnabled: Boolean;
     FName: string;                 // The (function) name of the location "main" or "FPC_RAISE"
     FMainAddrFound: TDBGPtr;       // The address found for this named location
+    FSetByAddrMethod: TInternBrkSetMethod;
     FUseForceFlag: Boolean;
     function  BreakSet(ACmd: TGDBMIDebuggerCommand; ABreakLoc: String;
                        ALoc: TInternalBreakLocation;
@@ -729,6 +736,7 @@ type
     property  MainAddrFound: TDBGPtr read FMainAddrFound;
     property  UseForceFlag: Boolean read FUseForceFlag write FUseForceFlag;
     property  Enabled: Boolean read FEnabled;
+    property  SetByAddrMethod: TInternBrkSetMethod read FSetByAddrMethod write FSetByAddrMethod;
   end;
 
 
@@ -5427,6 +5435,12 @@ begin
     // they may still exist from prev run, addr will be checked
     // TODO: defered setting of below beakpoint / e.g. if debugging a library
     DbgProp := TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties);
+    FTheDebugger.FBreakErrorBreak.SetByAddrMethod := DbgProp.InternalExceptionBrkSetMethod;
+    FTheDebugger.FRunErrorBreak.SetByAddrMethod := DbgProp.InternalExceptionBrkSetMethod;
+    FTheDebugger.FExceptionBreak.SetByAddrMethod := DbgProp.InternalExceptionBrkSetMethod;
+    FTheDebugger.FPopExceptStack.SetByAddrMethod := DbgProp.InternalExceptionBrkSetMethod;
+    FTheDebugger.FRtlUnwindExBreak.SetByAddrMethod := DbgProp.InternalExceptionBrkSetMethod;
+
 {$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
     FTheDebugger.FExceptionBreak.SetByAddr(Self, True);
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self, True);
@@ -7741,6 +7755,7 @@ begin
   {$IFdef MSWindows}
   FAggressiveWaitTime := 100;
   {$EndIf}
+  FInternalExceptionBrkSetMethod := ibmAddrDirect;
   inherited;
 end;
 
@@ -7776,6 +7791,7 @@ begin
     {$IFdef MSWindows}
     FAggressiveWaitTime := TGDBMIDebuggerPropertiesBase(Source).FAggressiveWaitTime;
     {$EndIf}
+    FInternalExceptionBrkSetMethod := TGDBMIDebuggerPropertiesBase(Source).FInternalExceptionBrkSetMethod;;
   end;
 end;
 
@@ -12127,6 +12143,7 @@ var
   i: TInternalBreakLocation;
 begin
   FMainAddrFound := 0;
+  FSetByAddrMethod := ibmAddrDirect;
   for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do begin
     FBreaks[i].BreakGdbId := -1;
     FBreaks[i].BreakAddr := 0;
@@ -12162,11 +12179,22 @@ end;
 
 procedure TGDBMIInternalBreakPoint.SetByAddr(ACmd: TGDBMIDebuggerCommand; SetNamedOnFail: Boolean = False);
 begin
+  if FSetByAddrMethod = ibmName then begin
+    SetByName(ACmd);
+    exit;
+  end;
+  if FSetByAddrMethod = ibmAddrDirect then begin
+    BreakSet(ACmd, '*'+FName, iblAsterix, coKeepIfSet);
+    if IsBreakSet then
+      exit;
+  end;
+
   if FBreaks[iblAddrOfNamed].BreakGdbId <> -2 then
     InternalSetAddr(ACmd, iblAddrOfNamed, GetInfoAddr(ACmd));
 
   // SetNamedOnFail includes if blocked
   If SetNamedOnFail and (FBreaks[iblNamed].BreakGdbId < 0) and
+     (FBreaks[iblAsterix].BreakGdbId < 0) and
      (FBreaks[iblAddrOfNamed].BreakGdbId < 0) and
      ( (FMainAddrFound = 0) or (not HasBreakAtAddr(FMainAddrFound)) )
   then

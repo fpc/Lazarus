@@ -100,6 +100,7 @@ type
     property FixStackFrameForFpcAssert;
     property FixIncorrectStepOver;
     property InternalExceptionBreakPoints;
+    property InternalExceptionBrkSetMethod;
   end;
 
 procedure Register;
