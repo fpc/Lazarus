@@ -146,7 +146,9 @@ begin
   {$ENDIF}
 
   {$IFnDEF TEST_NO_EXCEPTION_TYPE}
+  try
   foo;
+  except end;
   {$ENDIF}
 
   Freemem(GetMem(1));

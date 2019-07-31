@@ -32,11 +32,35 @@ type
                                   const AExceptionText: String;
                                   out AContinue: Boolean);
   protected
+    FInternalExceptionBrkSetMethod: TInternBrkSetMethod;
+
+    function GetLogFileName: String; override;
     procedure DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
   published
     procedure TestException;
     procedure TestExceptionStepOut;
     procedure TestExceptionStepOver;
+  end;
+
+  { TTestExceptionAddrDirect }
+
+  TTestExceptionAddrDirect = class(TTestExceptionOne)
+  public
+    constructor Create; override;
+  end;
+
+  { TTestExceptionAddrInDirect }
+
+  TTestExceptionAddrInDirect = class(TTestExceptionOne)
+  public
+    constructor Create; override;
+  end;
+
+  { TTestExceptionForceName }
+
+  TTestExceptionForceName = class(TTestExceptionOne)
+  public
+    constructor Create; override;
   end;
 
 
@@ -64,6 +88,30 @@ implementation
 var
   ControlTestExceptionOne, ControlTestExceptionOneException, ControlTestExceptionOneExceptionStepOut, ControlTestExceptionOneExceptionStepOver: Pointer;
 
+{ TTestExceptionForceName }
+
+constructor TTestExceptionForceName.Create;
+begin
+  FInternalExceptionBrkSetMethod := ibmName;
+  inherited Create;
+end;
+
+{ TTestExceptionAddrInDirect }
+
+constructor TTestExceptionAddrInDirect.Create;
+begin
+  FInternalExceptionBrkSetMethod := ibmAddrIndirect;
+  inherited Create;
+end;
+
+{ TTestExceptionAddrDirect }
+
+constructor TTestExceptionAddrDirect.Create;
+begin
+  FInternalExceptionBrkSetMethod := ibmAddrDirect;
+  inherited Create;
+end;
+
 
     //dbg.OnBreakPointHit := @DebuggerBreakPointHit;
     //dbg.OnState         := @DebuggerChangeState;
@@ -82,6 +130,16 @@ begin
   FGotExceptType  := AExceptionType;
   FGotExceptionLocation := AExceptionLocation;
   AContinue := FContinue;
+end;
+
+function TTestExceptionOne.GetLogFileName: String;
+begin
+  Result := inherited GetLogFileName;
+  case FInternalExceptionBrkSetMethod of
+    ibmAddrIndirect:  Result := StringReplace(Result, '_', '_AddrIndirect_', []);
+    ibmAddrDirect:  Result := StringReplace(Result, '_', '_AddrDirect_', []);
+    ibmName:  Result := StringReplace(Result, '_', '_Name_', []);
+  end;
 end;
 
 procedure TTestExceptionOne.DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
@@ -104,6 +162,7 @@ begin
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_raise_at', '-gt -dTEST_EXCEPTION_AT');
   FGotExceptCount := 0;
   dbg := StartGDB(AppDir, TestExeName);
+  TGDBMIDebuggerPropertiesBase(dbg.GetProperties).InternalExceptionBrkSetMethod := FInternalExceptionBrkSetMethod;
   try
     dbg.OnException      := @DoDebuggerException;
 
@@ -114,7 +173,7 @@ begin
     TestEquals(TstName+' Got 1 exception',   1, FGotExceptCount);
     TestEquals(TstName+' Got class',         'Exception', FGotExceptClass);
     TestEquals(TstName+' Got msg',           'foo', FGotExceptMsg, 060000);
-    TestEquals(TstName+' Got location Line',  113, FGotExceptionLocation.SrcLine);
+    TestEquals(TstName+' Got location Line',  114, FGotExceptionLocation.SrcLine);
     TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
     TestMatches(TstName+' Got location Proc', '^\$?main$', FGotExceptionLocation.FuncName);
     TestTrue(TstName+' Got type', FGotExceptType = deInternal);
@@ -343,11 +402,12 @@ begin
     TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
     dbg.Run;
     TestEquals(TstName+' Got 2nd exception', 2, FGotExceptCount);
-    dbg.Run;
-    TestEquals(TstName+' Got no more exception', 2, FGotExceptCount);
     TestEquals(TstName+' Got class', 'MyESome', FGotExceptClass);
     //TestEquals(TstName+' Got msg',   'abc üü {[''''[{ \n\t''#13#9''#', FGotExceptMsg, 050300);
     TestEquals(TstName+' Got msg',   'abc üü {[''[{ \n\t'#13#9'#', FGotExceptMsg, 050300);
+
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 2, FGotExceptCount);
 
     dbg.Stop;
   finally
@@ -524,7 +584,10 @@ begin
 end;
 
 initialization
-  RegisterDbgTest(TTestExceptionOne);
+  RegisterDbgTest(TTestExceptionAddrDirect);
+  RegisterDbgTest(TTestExceptionAddrInDirect);
+  RegisterDbgTest(TTestExceptionForceName);
+
   ControlTestExceptionOne                  := TestControlRegisterTest('TTestExceptionOne');
   ControlTestExceptionOneException         := TestControlRegisterTest('Exception', ControlTestExceptionOne);
   ControlTestExceptionOneExceptionStepOut  := TestControlRegisterTest('ExceptionStepOut', ControlTestExceptionOne);
