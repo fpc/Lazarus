@@ -32,6 +32,7 @@ unit SynEditPointClasses;
 {$I synedit.inc}
 
 {off $DEFINE SynCaretDebug}
+{off $DEFINE SynCaretHideInSroll} // Old behaviour, before Lazarus 2.1 / Aug 2019
 
 interface
 
@@ -474,7 +475,9 @@ type
     FOldX, FOldY, FOldW, FOldH: Integer;
     FState: TPainterStates;
     FCanPaint: Boolean;
+    FInRect: TIsInRectState;
 
+    function dbgsIRState(s: TIsInRectState): String;
     procedure DoTimer(Sender: TObject);
     procedure DoPaint(ACanvas: TCanvas; X, Y, H, W: Integer);
     procedure Paint;
@@ -558,6 +561,7 @@ type
     procedure SetPaintTimer(AValue: TSynEditScreenCaretTimer);
     procedure UpdateDisplayType;
     procedure UpdateDisplay;
+    function  ClippedPixelHeihgh(var APxTop: Integer): Integer; inline;
     procedure ShowCaret;
     procedure HideCaret;
     property HandleAllocated: Boolean read GetHandleAllocated;
@@ -2858,6 +2862,12 @@ end;
 
 { TSynEditScreenCaretPainterInternal }
 
+function TSynEditScreenCaretPainterInternal.dbgsIRState(s: TIsInRectState
+  ): String;
+begin
+  WriteStr(Result, s);
+end;
+
 procedure TSynEditScreenCaretPainterInternal.DoTimer(Sender: TObject);
 begin
   assert(not((not Showing) and FIsDrawn), 'TSynEditScreenCaretPainterInternal.DoTimer: not((not Showing) and FIsDrawn)');
@@ -3009,25 +3019,32 @@ end;
 
 procedure TSynEditScreenCaretPainterInternal.BeginScroll(dx, dy: Integer; const rcScroll,
   rcClip: TRect);
-{$IFDEF SynCaretNoHideInSroll}
 var
-  rs: TIsInRectState;
-{$ENDIF}
+  NewTop, NewHeight: Integer;
 begin
   assert(not((FInPaint or FInScroll)), 'TSynEditScreenCaretPainterInternal.BeginScroll: not((FInPaint or FInScroll))');
   if (FState <> []) then
     ExecAfterPaint;
+  {$IFnDEF SynCaretHideInSroll}
+  if not FShowing then
+    exit;
+  {$ENDIF}
 
-  {$IFnDEF SynCaretNoHideInSroll}
+  {$IFDEF SynCaretHideInSroll}
   if not ((IsInRect(rcClip) = irOutside) and (IsInRect(rcScroll) = irOutside)) then begin
     HideCaret;
     inherited SetCaretPosEx(-1,-1);
   end;
   {$ELSE}
-  rs := IsInRect(rcScroll);
-  if not( ((IsInRect(rcClip) = irOutside) and (rs = irOutside)) or
-          ((IsInRect(rcClip, Left+dx, Top+dy, Width, Height) = irInside) and (rs = irInside))
-        )
+  FInRect     := IsInRect(rcScroll);
+  NewTop := Top + dy;
+  NewHeight := FOwner.ClippedPixelHeihgh(NewTop);
+  // Caret must either be all irInside or all irOutside (all the same / not mixed)
+  if (FInRect <> IsInRect(rcClip)) or
+     (FInRect <> IsInRect(rcClip, Left+dx, NewTop, Width, Height)) or
+     (FInRect = irPartInside) or
+     // or top/bottom most => might change height afterwards
+     (NewTop <> Top+dy) or (NewHeight <> Height)
   then begin
     HideCaret;
     inherited SetCaretPosEx(-1,-1);
@@ -3042,14 +3059,26 @@ end;
 procedure TSynEditScreenCaretPainterInternal.FinishScroll(dx, dy: Integer; const rcScroll,
   rcClip: TRect; Success: Boolean);
 begin
+  {$IFnDEF SynCaretHideInSroll}
+  if (not FShowing) then begin
+    if FInScroll then
+      inherited FinishScroll(dx, dy, rcScroll, rcClip, Success);
+    exit;
+  end;
+  {$ENDIF}
+
   assert(FInScroll, 'TSynEditScreenCaretPainterInternal.FinishScroll: FInScroll');
   assert((FState-[psAfterPaintAdded]) = [], 'TSynEditScreenCaretPainterInternal.FinishScroll: FState = []');
   inherited FinishScroll(dx, dy, rcScroll, rcClip, Success);
   FCanPaint := True;
-  {$IFDEF SynCaretNoHideInSroll}
-  if Success and ((IsInRect(rcClip) = irInside) or (IsInRect(rcScroll) = irInside)) then begin
-    inherited SetCaretPosEx(Left+dx, Top+dy);
-    FNeedPositionConfirmed := True;
+  {$IFnDEF SynCaretHideInSroll}
+  if (Top >= 0) and (FInRect <> irOutside) then begin
+    if Success then begin
+      inherited SetCaretPosEx(Left+dx, Top+dy);
+      FOwner.FDisplayPos.Offset(dx, dy);
+    end
+    else
+      FNeedPositionConfirmed := True;
   end;
   {$ENDIF}
 end;
@@ -3058,7 +3087,8 @@ procedure TSynEditScreenCaretPainterInternal.BeginPaint(rcClip: TRect);
 begin
   assert(not (FInPaint or FInScroll), 'TSynEditScreenCaretPainterInternal.BeginPaint: not (FInPaint or FInScroll)');
 
-  FCanPaint := IsInRect(rcClip)= irInside;
+  FInRect := IsInRect(rcClip);
+  FCanPaint := FInRect = irInside;
 
   if (psCleanOld in FState) and not FCanPaint then begin
     if IsInRect(rcClip, FOldX, FOldY, FOldW, FOldH) <> irInside then begin
@@ -3089,8 +3119,8 @@ begin
   if (psCleanOld in FState) and (not ForcePaintEvents) then
     DoPaint(CurrentCanvas, FOldX, FOldY, FOldH, FOldW);
 
-  // if changes where made, then FIsDrawn is alvays false
-  if FIsDrawn then
+  // if changes where made, then FIsDrawn is always false
+  if FIsDrawn and (FInRect <> irOutside) then
     DoPaint(CurrentCanvas, FLeft, FTop, FHeight, FWidth); // restore any part that is in the cliprect
 
   inherited FinishPaint(rcClip);
@@ -3514,6 +3544,17 @@ begin
     HideCaret;
 end;
 
+function TSynEditScreenCaret.ClippedPixelHeihgh(var APxTop: Integer): Integer;
+begin
+  Result := FPixelHeight;
+  if APxTop + Result >= FClipBottom then
+    Result := FClipBottom - APxTop - 1;
+  if APxTop < FClipTop then begin
+    Result := Result - (FClipTop - APxTop);
+    APxTop := FClipTop;
+  end;
+end;
+
 procedure TSynEditScreenCaret.ShowCaret;
 var
   x, y, w, h: Integer;
@@ -3523,18 +3564,12 @@ begin
   x := FDisplayPos.x + FOffsetX;
   y := FDisplayPos.y + FOffsetY;
   w := FPixelWidth;
-  h := FPixelHeight;
+  h := ClippedPixelHeihgh(y);
   if x + w >= FClipRight then
     w := FClipRight - x - 1;
   if x < FClipLeft then begin
     w := w - (FClipLeft - w);
     x := FClipLeft;
-  end;
-  if y + h >= FClipBottom then
-    h := FClipBottom - y - 1;
-  if y < FClipTop then begin
-    h := h - (FClipTop - y);
-    y := FClipTop;
   end;
   if (w <= 0) or (h < 0) or
      (x < FClipLeft) or (x >= FClipRight) or
