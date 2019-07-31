@@ -87,14 +87,10 @@ const
  ------------------------------------------------------------------------------}
 procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; DrawStruct: PDrawItemStruct);
 var
-  BitBtnLayout: TButtonLayout; // Layout of button and glyph
-  OldFontHandle: HFONT; // Handle of previous font in hdcNewBitmap
-  TextSize: Windows.SIZE; // For computing the length of button caption in pixels
   XDestBitmap, YDestBitmap: integer; // X,Y coordinate of destination rectangle for bitmap
   XDestText, YDestText: integer; // X,Y coordinates of destination rectangle for caption
   newWidth, newHeight: integer; // dimensions of new combined bitmap
   srcWidth, srcHeight: integer; // width of glyph to use, bitmap may have multiple glyphs
-  DrawRect: TRect;
   ButtonCaption: PWideChar;
   ButtonState: TButtonState;
   AIndex: Integer;
@@ -131,6 +127,11 @@ var
     DrawState(DrawStruct^._hDC, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
   end;
 
+var
+  BitBtnLayout: TButtonLayout; // Layout of button and glyph
+  TextSize: Windows.SIZE; // For computing the length of button caption in pixels
+  DrawRect: TRect;
+  ASpacing: integer;
 begin
   DrawRect := DrawStruct^.rcItem;
 
@@ -164,10 +165,14 @@ begin
     srcWidth := 0;
     srcHeight := 0;
   end;
+
+  ASpacing := BitBtn.Spacing;
+  if (srcWidth = 0) or (srcHeight = 0) then
+    ASpacing := 0;
+
   BitBtnLayout := BitBtn.Layout;
 
-  OldFontHandle := SelectObject(DrawStruct^._hDC, BitBtn.Font.Reference.Handle);
-  GetTextExtentPoint32W(DrawStruct^._hDC, ButtonCaption, Length(BitBtn.Caption), TextSize);
+  MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
@@ -175,24 +180,21 @@ begin
       YDestBitmap := (DrawRect.Bottom + DrawRect.Top - srcHeight) div 2;
       YDestText := (DrawRect.Bottom + DrawRect.Top - TextSize.cy) div 2;
 
-      newWidth := TextSize.cx + srcWidth;
+      if ASpacing = -1 then
+        ASpacing := (BitBtn.Width - srcWidth - TextSize.cx) div 3;
+
+      newWidth := TextSize.cx + srcWidth + ASpacing;
       
-      if BitBtn.Spacing <> -1 then
-        newWidth := newWidth + BitBtn.Spacing;
-        
-      if srcWidth <> 0 then
-        inc(newWidth, 2);
-        
       case BitBtnLayout of
         blGlyphLeft:
         begin
           XDestBitmap := (DrawRect.Right + DrawRect.Left - newWidth) div 2;
-          XDestText := XDestBitmap + srcWidth;
+          XDestText := XDestBitmap + srcWidth + ASpacing;
         end;
         blGlyphRight:
         begin
           XDestText := (DrawRect.Right + DrawRect.Left - newWidth) div 2;
-          XDestBitmap := XDestText + TextSize.cx;
+          XDestBitmap := XDestText + TextSize.cx + ASpacing;
         end;
       end;
     end;
@@ -225,8 +227,6 @@ begin
   end;
 
   DrawBitmap;
-
-  SelectObject(DrawStruct^._hDC, OldFontHandle);
 end;
 
 
