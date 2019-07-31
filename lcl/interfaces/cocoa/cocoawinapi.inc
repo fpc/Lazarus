@@ -1692,18 +1692,30 @@ begin
       Result := NSColor.scrollBarColor;
     COLOR_BTNFACE:
       Result := NSColor.controlBackgroundColor;
-    COLOR_BTNSHADOW:
-      Result := NSColor.controlShadowColor;
+    COLOR_BTNSHADOW:  // COLOR_3DSHADOW
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.5)
+      else
+        Result := NSColor.controlShadowColor;
     COLOR_BTNHIGHLIGHT:
-      Result := NSColor.controlLightHighlightColor;//controlHighlightColor has no contrast with COLOR_BTNFACE which affects TBevel. In Win32 this has value white
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.0)
+      else
+        Result := NSColor.controlLightHighlightColor;//controlHighlightColor has no contrast with COLOR_BTNFACE which affects TBevel. In Win32 this has value white
     COLOR_BTNTEXT:
       Result := NSColor.controlTextColor;
     COLOR_GRAYTEXT:
       Result := NSColor.disabledControlTextColor;
     COLOR_3DDKSHADOW:
-      Result := NSColor.controlDarkShadowColor;
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.75)
+      else
+        Result := NSColor.controlDarkShadowColor;
     COLOR_3DLIGHT:
-      Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.25)
+      else
+        Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
 
     // macOS doesn't provide any API to get the hint window colors.
     // default = macosx10.4 yellow color. (See InitInternals below)
