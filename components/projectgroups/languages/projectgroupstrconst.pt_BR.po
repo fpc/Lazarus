@@ -104,7 +104,7 @@ msgstr "Comandos IDE \"Compilar\" e \"Construir\" invoca compilar/construir do a
 #: projectgroupstrconst.lisinfo
 msgctxt "projectgroupstrconst.lisinfo"
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
@@ -133,7 +133,7 @@ msgstr "Projetos Lazarus (*.lpi)"
 
 #: projectgroupstrconst.lislazarussupportedinprojectgroups
 msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
-msgstr ""
+msgstr "Arquivos Lazarus (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
@@ -241,25 +241,22 @@ msgid "Project Group: %s"
 msgstr "Grupo Projeto: %s"
 
 #: projectgroupstrconst.lisprojectgroupaddcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
 msgstr "Adicionar"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
 msgid "Add current project"
-msgstr ""
+msgstr "Adicionar ao projeto atual"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
 msgid "Add current project to project group"
-msgstr ""
+msgstr "Adicionar projeto atual ao grupo de projeto"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
-#, fuzzy
-#| msgid "Add"
 msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
 msgid "Add from file"
-msgstr "Adicionar"
+msgstr "Adicionar do arquivo"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
@@ -267,7 +264,7 @@ msgstr "Adicionar alvos existentes ao grupo de projeto"
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
-msgstr ""
+msgstr "Adicionar alvos ao grupo de projeto"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
@@ -300,13 +297,11 @@ msgstr ""
 "O que deseja fazer?"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
 msgid "New"
 msgstr "Novo"
 
 #: projectgroupstrconst.lisprojectgroupnewhint
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Novo grupo de projeto"
@@ -373,7 +368,7 @@ msgstr "Remover todos os alvos inválidos"
 
 #: projectgroupstrconst.lissourcedirectoriesofprojectgroup
 msgid "Source directories of project group:"
-msgstr ""
+msgstr "Diretórios fonte do grupo de projeto:"
 
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
@@ -447,7 +442,7 @@ msgstr "Construir alvo mais cedo"
 #: projectgroupstrconst.listargetinfocaption
 msgctxt "projectgroupstrconst.listargetinfocaption"
 msgid "Info ..."
-msgstr ""
+msgstr "Info ..."
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"

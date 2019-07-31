@@ -8369,7 +8369,7 @@ msgstr "Fechar a janela assembler automaticamente, após código não encontrado
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbackend
 msgid "Debugger backend"
-msgstr ""
+msgstr "\"Backend\" do depurador"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -8435,7 +8435,6 @@ msgid "Module"
 msgstr "Módulo"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmname
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
 msgid "Name:"
 msgstr "Nome:"
@@ -10099,7 +10098,7 @@ msgstr "Localizar nos &diretórios"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "search in project &group"
-msgstr ""
+msgstr "localizar no &grupo de projeto"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
