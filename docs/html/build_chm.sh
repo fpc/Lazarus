@@ -4,5 +4,4 @@
 ../../lazbuild build_lcl_docs.lpi
 ./build_lcl_docs --outfmt chm --fpcdocs=../chm --footer locallclfooter.xml
 
-# Build with links to RTL+FCL
-#./build_lcl_docs --fpcdocs ../chm/ --footer locallclfooter.xml --outfmt chm
+# Preferably: use trunk fpdoc: --fpdoc /path/to/fpc/trunk/utils/fpdoc/fpdoc
