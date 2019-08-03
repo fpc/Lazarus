@@ -9,12 +9,15 @@
 #     qt                compile IDE and programs for qt.
 #     append-revision   append the svn revision to the .deb version
 #     chmhelp           add package chmhelp and add chm,kwd files in docs/chm
+#     pas2jszip <pas2js-linux-version.zip>
+#                       unzip pas2js release zip to "pas2js/version"
 
 set -e
 
 LCLWidgetset=
 LazVersionPostfix=
 UseCHMHelp=
+Pas2jsZip=
 LazRelease='0'
 
 while [ $# -gt 0 ]; do
@@ -51,6 +54,23 @@ while [ $# -gt 0 ]; do
   chmhelp)
     echo "using package chmhelp"
     UseCHMHelp=1
+    ;;
+
+  pas2jszip)
+    shift
+    echo "param=$1"
+    Pas2jsZip=$1
+    Pattern="*pas2js*.zip"
+    if [[ $Pas2jsZip == $Pattern ]]; then
+      echo "using pas2js zip file $Pas2jsZip"
+    else
+      echo "invalid pas2js zip file $Pas2jsZip"
+      exit -1
+    fi
+    if [ ! -f $Pas2jsZip ]; then
+      echo "missing pas2js zip file $Pas2jsZip"
+      exit -1
+    fi
     ;;
 
   *)
@@ -110,6 +130,7 @@ EtcSrcDir=$CurDir/linux
 LazSrcDir=../..
 LazDestDir=$LazBuildDir/usr/share/lazarus/${LazVersion}
 LazDestDirInstalled=/usr/share/lazarus/${LazVersion}
+Pas2jsVer=
 
 echo "ppcbin=$ppcbin"
 echo "LazVersion=$LazVersion"
@@ -141,6 +162,18 @@ if [ "$UseCHMHelp" = "1" ]; then
   cd $LazSrcDir/docs/chm
   cp -v *.kwd *.chm $LazDestDir/docs/chm/
   cd -
+fi
+if [ -n $Pas2jsZip ]; then
+  # unzip pas2jszip to pas2js/version
+  mkdir $LazDestDir/pas2js   # fails if already there -> good
+  unzip $Pas2jsZip -d $LazDestDir/pas2js
+  Pas2jsBin="$LazDestDir/pas2js/*pas2js*/bin/pas2js"
+  if [ ! -f $Pas2jsBin ]; then
+    echo "missing $Pas2jsZip/*pas2js*/bin/pas2js"
+    exit 1
+  fi
+  Pas2jsVer=$($Pas2jsBin -iV | tr -d '\n')
+  mv $LazDestDir/pas2js/*pas2js* $LazDestDir/pas2js/$Pas2jsVer
 fi
 chmod a-x $LazDestDir/debian/rules
 
@@ -226,6 +259,12 @@ cat $EtcSrcDir/environmentoptions.xml | \
   sed -e "s#__LAZARUSDIR__#$LazDestDirInstalled/#" \
       -e "s#__FPCSRCDIR__#/usr/share/fpcsrc/\$(FPCVER)/#" \
   > $LazBuildDir/etc/lazarus/environmentoptions.xml
+if [ -n $Pas2jsZip ]; then
+  cat $EtcSrcDir/pas2jsdsgnoptions.xml | \
+    sed -e "s#__PAS2JSVERSION__#$Pas2jsVer#" \
+    > $LazBuildDir/etc/lazarus/pas2jsdsgnoptions.xml
+  cat $LazBuildDir/etc/lazarus/pas2jsdsgnoptions.xml
+fi
 chmod 644 $LazBuildDir/etc/lazarus/*.xml
 
 # fixing permissions

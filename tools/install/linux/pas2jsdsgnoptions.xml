@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <compiler value="$(LazarusDir)/pas2js/__PAS2JSVERSION__/bin/pas2js"/>
+</CONFIG>
