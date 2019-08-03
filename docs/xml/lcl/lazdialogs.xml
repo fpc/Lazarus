@@ -1,436 +1,465 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lcl">
+    <!--
+      ====================================================================
+        lazdialogs
+      ====================================================================
+    -->
+    <module name="lazdialogs">
+      <short>
+        Contains classes, types, and routines needed for Lazarus dialogs on custom-drawn and non-desktop environments
+      </short>
+      <descr></descr>
 
-<!--
-  ====================================================================
-    lazdialogs
-  ====================================================================
--->
+      <element name="TLazFileDialogKind">
+        <short>
+          Enumerated type which represents the dialog kind in a Lazarus dialog form
+        </short>
+        <descr></descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.Initialize"/>
+          <link id="TLazOpenDialog.DoInitialize"/>
+          <link id="TLazSaveDialog.DoInitialize"/>
+          <link id="TLazSelectDirectoryDialog.DoInitialize"/>
+        </seealso>
+      </element>
+      <element name="TLazFileDialogKind.ldkOpenDesktop">
+        <short>Dialog is an open dialog for desktop environments</short>
+      </element>
+      <element name="TLazFileDialogKind.ldkSaveDesktop">
+        <short>Dialog is a save dialog for desktop environments</short>
+      </element>
+      <element name="TLazFileDialogKind.ldkOpenPDA">
+        <short>Dialog is an open dialog for PDA environments</short>
+      </element>
+      <element name="TLazFileDialogKind.ldkSavePDA">
+        <short>Dialog is a save dialog for PDA environments</short>
+      </element>
+      <element name="TLazFileDialogKind.ldkSelectDirectory">
+        <short>Dialog is a directory selection dialog</short>
+      </element>
 
-<module name="lazdialogs">
-<short></short>
-<descr>
-</descr>
+      <element name="TLazarusFileDialogForm">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- enumeration type Visibility: default -->
-<element name="TLazFileDialogKind">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.FKind">
+        <short>
+          Member used to store the TLazFileDialogKind enumeration value for the dialog form
+        </short>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TLazFileDialogKind.ldkOpenDesktop">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.SetFilter">
+        <short>
+          Sets the value for the file mask used in the Filter for the dialog form
+        </short>
+        <descr>
+          <p>
+            <var>SetFilter</var> is a procedure used to set the value in the <var>Filter</var> for the dialog form. SetFilter ensures that the new property value in <var>AFilter</var> is also applied to the filter for the combo box in the dialog form.
+          </p>
+          <p>
+            When AFilter is an empty string (<b>''</b>), the filter in FilterComboBox is set to the file mask that matches all files (<var>rsAllFiles</var>). Otherwise, the new property value in AFilter is used in the filter for FilterComboBox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.FilterComboBox"/>
+        </seealso>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TLazFileDialogKind.ldkSaveDesktop">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.SetFilter.AFilter">
+        <short>New value for the Filter member</short>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TLazFileDialogKind.ldkOpenPDA">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.ButtonPanel">
+        <short>
+          Button panel for the Lazarus dialog form
+        </short>
+        <descr>
+          <p>
+            <var>ButtonPanel</var> is a <var>TButtonPanel</var> member that contains the buttons appropriate for the kind of Lazarus dialog. ButtonPanel is configured by default to display and respond to Ok and Cancel buttons in the Initialize method. Specialized  dialog types can alter the default buttons and their actions.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.Initialize"/>
+          <link id="TLazFileDialogKind"/>
+        </seealso>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TLazFileDialogKind.ldkSavePDA">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.ShellTreeView">
+        <short>
+          Shell tree view control for the Lazarus dialog form
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TLazFileDialogKind.ldkSelectDirectory">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.ShellListView">
+        <short>
+          Shell list view control for the Lazarus dialog form
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TLazarusFileDialogForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.SaveEdit">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TLazarusFileDialogForm.FKind">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.FilterComboBox">
+        <short>
+          Combo box control used for the file mask filter in the Lazarus dialog form
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- procedure Visibility: private -->
-<element name="TLazarusFileDialogForm.SetFilter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.FileName">
+        <short>
+          File name for the selected file in the Lazarus dialog form
+        </short>
+        <descr>
+          <p>
+            FileName is a String member which contains the full path and file name for the item affected by the Lazarus dialog.
+          </p>
+          <p>
+            For Open dialogs, it contains the path for the Selected item in the ShellListView control. For Save dialogs, it contains the path for the Selected directory in the ShellTreeView combined with the value from the SaveEdit control. For other dialog types, it contains the path information for the Selected item in the ShellTreeView control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFileDialogKind"/>
+          <link id="TLazarusFileDialogForm.ShellTreeView"/>
+          <link id="TLazarusFileDialogForm.ShellListView"/>
+          <link id="TLazarusFileDialogForm.SaveEdit"/>
+        </seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.SetFilter.AFilter">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.Filter">
+        <short>
+          File mask filter for the Lazarus dialog form
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.ButtonPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.InitialDir">
+        <short>
+          Initial directory used in the Lazarus file dialog form
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.ShellTreeView">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.Title">
+        <short>
+          Title displayed for the Lazarus dialog form
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.ShellListView">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.CreateNew">
+        <short>
+          Alternate constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            CreateNew is an overridden constructor for the class instance. CreateNew calls the inherited method using values in AOwner and Num as arguments. CreateNew ensures that the Lazarus dialog form sets its position to the value poScreenCenter.
+          </p>
+          <p>
+            CreateNew allows the form instance to be created without using the associated .lfm file. The CreateNew constructor is used (instead of Create) when the TCustomForm descendant is not a TForm class instance or not a descendant of TForm.
+          </p>
+          <p>
+            See the Initialize method for information about creation and positioning of child controls on the Lazarus dialog form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Forms.TCustomForm.CreateNew"/>
+          <link id="TLazarusFileDialogForm.Initialize"/>
+        </seealso>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.SaveEdit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.CreateNew.AOwner">
+        <short>Owner of the Lazarus dialog form</short>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.FilterComboBox">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.CreateNew.Num">
+        <short>Not used in the current implementation</short>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.FileName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.Initialize">
+        <short>
+          Creates and positions child controls on the Lazarus dialog form
+        </short>
+        <descr>
+          <p>
+            Initialize is a procedure used to create and position child controls on the Lazarus dialog form appropriate for the dialog type specified in AKind.
+          </p>
+          <p>
+            The value in AKind is stored in an internal member in the class instance, and is used to determine the child controls configured and displayed on the Lazarus dialog form. It affects the following child controls:
+          </p>
+          <ul>
+            <li>ShellTreeView</li>
+            <li>ShellListView</li>
+            <li>SaveEdit</li>
+            <li>FilterComboBox</li>
+            <li>ButtonPanel</li>
+          </ul>
+          <p>
+            Initialize creates the ButtonPanel for the Lazarus dialog form, and positions it aligned to the bottom of the form instance. ButtonPanel is configured to display Ok and Cancel buttons, and uses the HandleOkClick and HandleCancelClick methods to respond to the OnClick events for the respective buttons.
+          </p>
+          <p>
+            Initialize uses the HandleCloseQuery method as the event handler for the OnCloseQuery event.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.ButtonPanel"/>
+          <link id="TLazarusFileDialogForm.ShellListView"/>
+          <link id="TLazarusFileDialogForm.ShellTreeView"/>
+          <link id="TLazarusFileDialogForm.SaveEdit"/>
+          <link id="TLazarusFileDialogForm.FilterComboBox"/>
+        </seealso>
+      </element>
+      <element name="TLazarusFileDialogForm.Initialize.AKind">
+        <short>Dialog kind for the Lazarus dialog form instance</short>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.Filter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.HandleOkClick">
+        <short>
+          Event handler signalled when the OK button is clicked
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleOkClick.ASender">
+        <short>
+        </short>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.InitialDir">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.HandleCancelClick">
+        <short>
+          Event handler signalled when the Cancel button is clicked
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleCancelClick.ASender">
+        <short>
+          Component generating the event notification
+        </short>
+      </element>
 
-<!-- variable Visibility: public -->
-<element name="TLazarusFileDialogForm.Title">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.HandleCloseQuery">
+        <short>
+          Event handler for an OnCloseQuery event notification
+        </short>
+        <descr>
+          <p>
+            <var>HandleCloseQuery</var> is a procedure used as the event handler for the <var>OnCloseQuery</var> event notification.  It is assigned in the Initialize method.
+          </p>
+          <p>
+            HandleCloseQuery ensures that the Lazarus dialog form can in fact be closed, and updates the value in FileName when needed. It sets the value in the CanClose parameter to False when the modal result for the dialog form is mrCancel. No additional actions are performed in the method if the dialog form cannot be closed.
+          </p>
+          <p>
+            Additional actions are performed in the method to update FileName and CanClose based on the TLazFileDialogKind value used in the dialog form. For Save dialogs (where Kind is ldkSaveDesktop or ldkSavePDA), the value in the SaveEdit control cannot contain be an empty string (<b>''</b>). No additional actions are performed in the method when SaveEdit is empty.  Otherwise, the values from the selected item in ShellTreeView, PathDelimite, and SaveEdit are combined and assigned to FileName. CanClose is also set to True.
+          </p>
+          <p>
+            For Open dialogs (where Kind is ldkOpenDesktop or ldkOpenPDA), the selected item in ShellListView cannot be unassigned (<b>Nil</b>). No additional actions are performed in the method when the selected item in ShellListView is unassigned. Otherwise, the value in FileName is set to the path and file name for the selected item in ShellListView. CanClose is also set to True.
+          </p>
+          <p>
+            For other dialog kinds, the selected item in ShellTreeView cannot be unassigned (<b>Nil</b>). No additional actions are perform when the selected item in ShellTreeView is unassigned. Otherwise, the path information for the selected item is stored in FileName. CanClose is also set to True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.OnCloseQuery"/>
+          <link id="TLazarusFileDialogForm.Initialize"/>
+          <link id="TLazarusFileDialogForm.FileName"/>
+          <link id="TLazarusFileDialogForm.ShellTreeView"/>
+          <link id="TLazarusFileDialogForm.ShellListView"/>
+        </seealso>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleCloseQuery.Sender">
+        <short>Component performing the event notification</short>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleCloseQuery.CanClose">
+        <short>Indicates if the Lazarus dialog form can be closed</short>
+      </element>
 
-<!-- constructor Visibility: public -->
-<element name="TLazarusFileDialogForm.CreateNew">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazarusFileDialogForm.HandleEditChange">
+        <short>
+          Event handler for changes to the value in the SaveEdit control
+        </short>
+        <descr>
+          <p>
+            HandleEditChange is a procedure used as the event handler for changes to the value in the SaveEdit control. It is assigned to the control in the Initialize method.
+          </p>
+          <p>
+            HandleEditChange ensures that the OK button in ButtonPanel is enabled or disabled based on the value in SaveEdit; it is enabled when the value for SaveEdit is not an empty string (<b>''</b>).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.SaveEdit"/>
+          <link id="TLazarusFileDialogForm.ButtonPanel"/>
+        </seealso>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleEditChange.ASender">
+        <short>Component generating the event notification</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.CreateNew.AOwner">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.HandleSelectItem">
+        <short>
+          Event handler for changes to the selected item in ShellListView
+        </short>
+        <descr>
+          <p>
+            HandleSelectItem is a procedure used as the event handler for a change to the selected item in ShellListView. It is assigned to the OnSelectItem property in ShellListView in the Initialize method.
+          </p>
+          <p>
+            HandleSelectItem ensures that the value in SaveEdit is updated with the Caption for the selected item in Save dialogs (Kind is ldkSaveDesktop or ldkSavePDA). For other dialog types, the OK button in ButtonPanel is enabled or disabled depending on the selection of an item in ShellListView; the OK button is Enabled when the Selected parameter contains True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.SaveEdit"/>
+          <link id="TLazarusFileDialogForm.ShellListView"/>
+          <link id="TLazarusFileDialogForm.ButtonPanel"/>
+        </seealso>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleSelectItem.Sender">
+        <short>
+          Component generating the event notification
+        </short>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleSelectItem.Item">
+        <short>
+          List item selected in the ShellListView control
+        </short>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleSelectItem.Selected">
+        <short>
+          Indicates that Item is selected when True
+        </short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.CreateNew.Num">
-<short></short>
-</element>
+      <element name="TLazarusFileDialogForm.HandleTreeViewSelectionChanged">
+        <short>
+          Event handler signalled when the selected item in ShellTreeView is changed
+        </short>
+        <descr>
+          <p>
+            HandleTreeViewSelectionChanged is a procedure used as the event handler for a change to the selected item in the ShellTreeView control. It is assigned to the OnSelectItem property for the ShellListView control in the Initialize method.
+          </p>
+          <p>
+            HandleTreeViewSelectionChanged is used in directory selection dialogs (Kind contains ldkSelectDirectory). HandleTreeViewSelectionChanged ensures that the OK button in ButtonPanel is enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm.ShellTreeView"/>
+          <link id="TLazarusFileDialogForm.ButtonPanel"/>
+          <link id="TLazFileDialogKind"/>
+        </seealso>
+      </element>
+      <element name="TLazarusFileDialogForm.HandleTreeViewSelectionChanged.ASender">
+        <short>Component generating the event notification</short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazarusFileDialogForm.Initialize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazOpenDialog">
+        <short>
+          Implements a Lazarus file open dialog
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.Initialize.AKind">
-<short></short>
-</element>
+      <element name="TLazOpenDialog.FForm">
+        <short>
+          Member used to store the form instance for the Lazarus dialog
+        </short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazarusFileDialogForm.HandleOkClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazOpenDialog.WSRegisterClass">
+        <short>
+          An empty implementation; dialogs do not require a WS implementation
+        </short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleOkClick.ASender">
-<short></short>
-</element>
+      <element name="TLazOpenDialog.DoExecute">
+        <short>
+          Executes the file open dialog
+        </short>
+        <descr>
+          <p>
+            <var>DoExecute</var> is an overridden <var>Boolean</var> function used to execute the Lazarus File Open dialog. The return value is <b>True</b> when the ShowModal method in the dialog form is a value other than <var>mrCancel</var>. DoExecute also updates the FileName member to reflect the value  returned on the dialog form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazarusFileDialogForm"/>
+          <link id="TLazarusFileDialogForm.FileName"/>
+          <link id="#LCL.Forms.TCustomForm.ShowModal"/>
+        </seealso>
+      </element>
+      <element name="TLazOpenDialog.DoExecute.Result">
+        <short>
+          True when the file open dialog was not cancelled during execution
+        </short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazarusFileDialogForm.HandleCancelClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazOpenDialog.DoInitialize">
+        <short>
+          Performs actions needed to initialize the Lazarus dialog
+        </short>
+        <descr></descr>
+      </element>
+        <seealso></seealso>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleCancelClick.ASender">
-<short></short>
-</element>
+      <element name="TLazOpenDialog.Create">
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TLazOpenDialog.Create.TheOwner">
+        <short>Owner of the Lazarus dialog</short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazarusFileDialogForm.HandleCloseQuery">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazSaveDialog">
+        <short>
+          Implements a Lazarus File Save dialog
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleCloseQuery.Sender">
-<short></short>
-</element>
+      <element name="TLazSaveDialog.DoInitialize">
+        <short>
+          Performs actions needed to initialize the Lazarus dialog
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleCloseQuery.CanClose">
-<short></short>
-</element>
+      <element name="TLazSelectDirectoryDialog">
+        <short>
+          Implements a Lazarus directory selection dialog
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazarusFileDialogForm.HandleEditChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLazSelectDirectoryDialog.DoInitialize">
+        <short>
+          Performs actions needed to initialize the Lazarus dialog
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleEditChange.ASender">
-<short></short>
-</element>
+    </module>
+    <!-- lazdialogs -->
 
-<!-- procedure Visibility: public -->
-<element name="TLazarusFileDialogForm.HandleSelectItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleSelectItem.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleSelectItem.Item">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleSelectItem.Selected">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazarusFileDialogForm.HandleTreeViewSelectionChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazarusFileDialogForm.HandleTreeViewSelectionChanged.ASender">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TLazOpenDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TLazOpenDialog.FForm">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class procedure Visibility: protected -->
-<element name="TLazOpenDialog.WSRegisterClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TLazOpenDialog.DoExecute">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazOpenDialog.DoExecute.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TLazOpenDialog.DoInitialize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TLazOpenDialog.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazOpenDialog.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TLazSaveDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TLazSaveDialog.DoInitialize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TLazSelectDirectoryDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TLazSelectDirectoryDialog.DoInitialize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- lazdialogs -->
-
-</package>
+  </package>
 </fpdoc-descriptions>

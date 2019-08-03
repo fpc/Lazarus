@@ -1,16 +1,849 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="LCL">
+    <!--
+    ======================================================================
+      WSControls
+    ======================================================================
+    -->
     <module name="WSControls">
-      <element name="TWSWinControl.GetPreferredSize">
-        <short>Returns the preferred size of a widget, independent of current Width, Height, child controls and scrollbars</short>
-        <descr>Values &lt;=0 mean there is no preferred size. If the control.ControlStyle has flag csAutoSize0x0 then 0 is allowed for this control. At the moment only TPanel has this flag.
-The values must be independent of the current Width/Height, because the LCL resizes them depending on these values (circle).
-The values must be independent of the child controls, because the LCL moves and resizes them depending on these values (circle).
-The values must be independent of scrollbars, because the LCL hides them depending on these values (circle).
-The values are only taken if no other constraint/anchor was applied.
-If the widgetset does not support some sizes, then it should set interface constraints.</descr>
+      <short></short>
+      <descr></descr>
+
+
+      <element name="DefBtnColors">
+        <short>Default colors used for button faces and button text</short>
+        <descr>
+          DefBtnColors is an array type which contains the default colors used for button faces and button text in the widgetset class.
+        </descr>
+        <seealso></seealso>
       </element>
+
+      <element name="TWSDragImageListResolution">
+        <short></short>
+        <descr>
+          TWSDragImageListResolution is a TWSCustomImageListResolution descendant.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSDragImageListResolution.BeginDrag">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSDragImageListResolution.BeginDrag.Result">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.ADragImageList">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.Window">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.HWND">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.AIndex">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.X">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.Y">
+        <short></short>
+      </element>
+
+      <element name="TWSDragImageListResolution.DragMove">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSDragImageListResolution.DragMove.Result">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.DragMove.ADragImageList">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.DragMove.X">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.DragMove.Y">
+        <short></short>
+      </element>
+
+      <element name="TWSDragImageListResolution.EndDrag">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSDragImageListResolution.EndDrag.ADragImageList">
+        <short></short>
+      </element>
+
+      <element name="TWSDragImageListResolution.HideDragImage">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSDragImageListResolution.HideDragImage.Result">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.HideDragImage.ADragImageList">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.HideDragImage.ALockedWindow">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.HideDragImage.DoUnLock">
+        <short></short>
+      </element>
+
+      <element name="TWSDragImageListResolution.ShowDragImage">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSDragImageListResolution.ShowDragImage.Result">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.ShowDragImage.ADragImageList">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.ShowDragImage.ALockedWindow">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.ShowDragImage.X">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.ShowDragImage.Y">
+        <short></short>
+      </element>
+      <element name="TWSDragImageListResolution.ShowDragImage.DoLock">
+        <short></short>
+      </element>
+
+      <element name="TWSDragImageListResolutionClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSLazAccessibleObject">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSLazAccessibleObject.CreateHandle">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSLazAccessibleObject.CreateHandle.Result">
+        <short></short>
+      </element>
+      <element name="TWSLazAccessibleObject.CreateHandle.AObject">
+        <short></short>
+      </element>
+
+      <element name="TWSLazAccessibleObject.DestroyHandle">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSLazAccessibleObject.DestroyHandle.AObject">
+        <short></short>
+      </element>
+
+      <element name="TWSLazAccessibleObject.SetAccessibleDescription">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSLazAccessibleObject.SetAccessibleDescription.AObject">
+        <short></short>
+      </element>
+      <element name="TWSLazAccessibleObject.SetAccessibleDescription.ADescription">
+        <short></short>
+      </element>
+
+      <element name="TWSLazAccessibleObject.SetAccessibleValue">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSLazAccessibleObject.SetAccessibleValue.AObject">
+        <short></short>
+      </element>
+      <element name="TWSLazAccessibleObject.SetAccessibleValue.AValue">
+        <short></short>
+      </element>
+
+      <element name="TWSLazAccessibleObject.SetAccessibleRole">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSLazAccessibleObject.SetAccessibleRole.">
+        <short></short>
+      </element>
+      <element name="TWSLazAccessibleObject.SetAccessibleRole.AObject">
+        <short></short>
+      </element>
+      <element name="TWSLazAccessibleObject.SetAccessibleRole.ARole">
+        <short></short>
+      </element>
+
+      <element name="TWSLazAccessibleObject.SetPosition">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSLazAccessibleObject.SetPosition.AObject">
+        <short></short>
+      </element>
+      <element name="TWSLazAccessibleObject.SetPosition.AValue">
+        <short></short>
+      </element>
+
+      <element name="TWSLazAccessibleObject.SetSize">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSLazAccessibleObject.SetSize.AObject">
+        <short></short>
+      </element>
+      <element name="TWSLazAccessibleObject.SetSize.ASize">
+        <short></short>
+      </element>
+
+      <element name="TWSLazAccessibleObjectClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSControl">
+        <short></short>
+        <descr>
+          TWSControl is a TWSLCLComponent descendant.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSControl.AddControl">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSControl.AddControl.AControl">
+        <short></short>
+      </element>
+
+      <element name="TWSControl.GetConstraints">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSControl.GetConstraints.Result">
+        <short></short>
+      </element>
+      <element name="TWSControl.GetConstraints.AControl">
+        <short></short>
+      </element>
+      <element name="TWSControl.GetConstraints.AConstraints">
+        <short></short>
+      </element>
+      <element name="TWSControl.GetConstraints.">
+        <short></short>
+      </element>
+
+      <element name="TWSControl.GetDefaultColor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSControl.GetDefaultColor.Result">
+        <short></short>
+      </element>
+      <element name="TWSControl.GetDefaultColor.AControl">
+        <short></short>
+      </element>
+      <element name="TWSControl.GetDefaultColor.ADefaultColorType">
+        <short></short>
+      </element>
+
+      <element name="TWSControl.ConstraintWidth">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSControl.ConstraintWidth.AControl">
+        <short></short>
+      </element>
+      <element name="TWSControl.ConstraintWidth.AConstraints">
+        <short></short>
+      </element>
+      <element name="TWSControl.ConstraintWidth.AWidth">
+        <short></short>
+      </element>
+
+      <element name="TWSControl.ConstraintHeight">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSControl.ConstraintHeight.AControl">
+        <short></short>
+      </element>
+      <element name="TWSControl.ConstraintHeight.AConstraints">
+        <short></short>
+      </element>
+      <element name="TWSControl.ConstraintHeight.AHeight">
+        <short></short>
+      </element>
+
+      <element name="TWSControl.GetCanvasScaleFactor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSControl.GetCanvasScaleFactor.Result">
+        <short></short>
+      </element>
+      <element name="TWSControl.GetCanvasScaleFactor.AControl">
+        <short></short>
+      </element>
+
+      <element name="TWSControlClass">
+        <short></short>
+        <descr>
+          TWSControlClass is a TWSControl class reference.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSZPosition">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSWinControl">
+        <short></short>
+        <descr>
+          TWSWinControl is a TWSControl descendant.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSWinControl.CanFocus">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.CanFocus.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.CanFocus.AWinControl">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.GetClientBounds">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.GetClientBounds.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetClientBounds.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetClientBounds.ARect">
+        <short></short>
+      </element>
+
+      class function  TWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
+
+      <element name="TWSWinControl.GetPreferredSize">
+        <short>
+          Returns the preferred size of a widget, independent of current Width, Height, child controls and scrollbars
+        </short>
+        <descr>
+          <p>
+            Values <b>&lt;=0</b> mean there is no preferred size. If the control.ControlStyle has the flag <var>csAutoSize0x0</var> then <b>0</b> is allowed for this control. At the moment only TPanel has this flag.
+          </p>
+          <p>
+            The values must be independent of the current Width or Height, because the LCL resizes them depending on these values (circle). The values must be independent of the child controls, because the LCL moves and resizes them depending on these values (circle). The values must be independent of scrollbars, because the LCL hides them depending on these values (circle). The values are only taken if no other constraint/anchor was applied.
+          </p>
+          <p>
+            If the widgetset does not support some sizes, then it should set interface constraints.
+          </p>
+          <notes>
+            <note>Does "circle" mean circular reference?</note>
+          </notes>
+        </descr>
+      </element>
+      <element name="TWSWinControl.GetPreferredSize.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetPreferredSize.PreferredWidth">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetPreferredSize.PreferredHeight">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetPreferredSize.WithThemeSpace">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.GetDefaultClientRect">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.GetDefaultClientRect.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDefaultClientRect.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDefaultClientRect.aLeft">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDefaultClientRect.aTop">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDefaultClientRect.aWidth">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDefaultClientRect.aHeight">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDefaultClientRect.aClientRect">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.GetDesignInteractive">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.GetDesignInteractive.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDesignInteractive.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDesignInteractive.AClientPos">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.GetDoubleBuffered">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.GetDoubleBuffered.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetDoubleBuffered.AWinControl">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.GetText">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.GetText.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetText.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetText.AText">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.GetTextLen">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.GetTextLen.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetTextLen.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.GetTextLen.ALength">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetBiDiMode">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetBiDiMode.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBiDiMode.UseRightToLeftAlign">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBiDiMode.UseRightToLeftReading">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBiDiMode.UseRightToLeftScrollBar">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetBorderStyle">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetBorderStyle.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBorderStyle.ABorderStyle">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetBounds">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetBounds.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBounds.ALeft">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBounds.ATop">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBounds.AWidth">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetBounds.AHeight">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetColor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetColor.AWinControl">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetChildZPosition">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetChildZPosition.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetChildZPosition.AChild">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetChildZPosition.AOldPos">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetChildZPosition.ANewPos">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetChildZPosition.AChildren">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetFont">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetFont.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetFont.AFont">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetPos">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetPos.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetPos.ALeft">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetPos.ATop">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetSize">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetSize.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetSize.AWidth">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetSize.AHeight">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetText">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetText.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetText.AText">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetCursor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetCursor.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetCursor.ACursor">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.SetShape">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.SetShape.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.SetShape.AShape">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.AdaptBounds">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.AdaptBounds.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.AdaptBounds.Left">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.AdaptBounds.Top">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.AdaptBounds.Width">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.AdaptBounds.Height">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.AdaptBounds.SuppressMove">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.ConstraintsChange">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.ConstraintsChange.AWinControl">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.CreateHandle">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.CreateHandle.Result">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.CreateHandle.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.CreateHandle.AParams">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.DestroyHandle">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.DestroyHandle.AWinControl">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.DefaultWndHandler">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.DefaultWndHandler.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.DefaultWndHandler.AMessage">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.Invalidate">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.Invalidate.AWinControl">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSWinControl.PaintTo">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.PaintTo.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.PaintTo.ADC">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.PaintTo.X">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.PaintTo.Y">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.Repaint">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.Repaint.AWinControl">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.ShowHide">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.ShowHide.AWinControl">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControl.ScrollBy">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWSWinControl.ScrollBy.AWinControl">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.ScrollBy.DeltaX">
+        <short></short>
+      </element>
+      <element name="TWSWinControl.ScrollBy.DeltaY">
+        <short></short>
+      </element>
+
+      <element name="TWSWinControlClass">
+        <short></short>
+        <descr>
+          TWSWinControlClass is a TWSWinControl class reference.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSGraphicControl">
+        <short></short>
+        <descr>
+          TWSGraphicControl is a TWSControl descendant.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSCustomControl">
+        <short></short>
+        <descr>
+          TWSCustomControl is a TWSWinControl descendant.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TWSImageList">
+        <short></short>
+        <descr>
+          TWSImageList is a TWSDragImageListResolution descendant.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="RegisterDragImageListResolution">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="RegisterLazAccessibleObject">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="RegisterControl">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="RegisterWinControl">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="RegisterGraphicControl">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="RegisterCustomControl">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
     </module>
+    <!-- WSControls -->
+
   </package>
 </fpdoc-descriptions>
