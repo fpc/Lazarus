@@ -2637,7 +2637,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnStartDock"link="#lcl.Controls.TControl.OnStartDock">
+      <element name="TValueListEditor.OnStartDock" link="#lcl.Controls.TControl.OnStartDock">
         <short></short>
       </element>
 
