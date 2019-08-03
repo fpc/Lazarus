@@ -6287,7 +6287,6 @@ docs/xml/lcl/dialogs/inputbox.pas svneol=native#text/pascal
 docs/xml/lcl/dialogs/inputquery.pas svneol=native#text/pascal
 docs/xml/lcl/dialogs/trymessagedlg.pas svneol=native#text/pascal
 docs/xml/lcl/dialogs/tryshowmessage.pas svneol=native#text/pascal
-docs/xml/lcl/dirsel.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynamicarray/tarrayexample.pas svneol=native#text/plain
 docs/xml/lcl/editbtn.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls.xml svneol=LF#text/xml eol=lf
