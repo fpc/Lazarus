@@ -1,46 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      LazUtilsStrConsts
+    ====================================================================
+    -->
+    <module name="LazUtilsStrConsts">
+      <short>Resource strings used in the LazUtils package</short>
+      <descr>
+        LazUtilsStrConsts contains resource strings used in the LazUtils package. The resource strings are translated using the corresponding .pot file found in the languages directory.
+      </descr>
 
-<!--
-  ====================================================================
-    LazUtilsStrConsts
-  ====================================================================
--->
+      <!-- resource string Visibility: default -->
+      <element name="lrsModified"/>
+      <element name="lrsInvalidCharSet"/>
+      <element name="lrsSize"/>
+      <element name="lrsFileDoesNotExist"/>
+      <element name="lrsFileIsADirectoryAndNotAnExecutable"/>
+      <element name="lrsReadAccessDeniedFor"/>
+      <element name="lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml"/>
+      <element name="lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml2"/>
+      <element name="lrsADirectoryComponentInIsNotADirectory"/>
+      <element name="lrsADirectoryComponentInIsNotADirectory2"/>
+      <element name="lrsInsufficientMemory"/>
+      <element name="lrsHasACircularSymbolicLink"/>
+      <element name="lrsIsNotASymbolicLink"/>
+      <element name="lrsIsNotExecutable"/>
+      <element name="lrsUnableToCreateConfigDirectoryS"/>
+      <element name="lrsProgramFileNotFound"/>
+      <element name="lrsCanNotExecute"/>
+      <element name="lrsListMustBeEmpty"/>
+      <element name="lrsListIndexExceedsBounds"/>
+      <element name="lrsERRORInCode"/>
+      <element name="lrsCreatingGdbCatchableError"/>
 
-<module name="LazUtilsStrConsts">
-<short></short>
-<descr>
-</descr>
+      <!-- XPath resource strings -->
+      <element name="lrsNodeSet"/>
+      <element name="lrsBoolean"/>
+      <element name="lrsNumber"/>
+      <element name="lrsString"/>
+      <element name="lrsVarNoConversion"/>
+      <element name="lrsScannerUnclosedString"/>
+      <element name="lrsScannerInvalidChar"/>
+      <element name="lrsScannerMalformedQName"/>
+      <element name="lrsScannerExpectedVarName"/>
+      <element name="lrsParserExpectedLeftBracket"/>
+      <element name="lrsParserExpectedRightBracket"/>
+      <element name="lrsParserBadAxisName"/>
+      <element name="lrsParserBadNodeType"/>
+      <element name="lrsParserExpectedRightSquareBracket"/>
+      <element name="lrsParserInvalidPrimExpr"/>
+      <element name="lrsParserGarbageAfterExpression"/>
+      <element name="lrsParserInvalidNodeTest"/>
+      <element name="lrsEvalUnknownFunction"/>
+      <element name="lrsEvalUnknownVariable"/>
+      <element name="lrsEvalInvalidArgCount"/>
 
-<!-- resource string Visibility: default -->
-<element name="rsModified">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- resource string Visibility: default -->
-<element name="sInvalidCharSet">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- resource string Visibility: default -->
-<element name="rsSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- LazUtilsStrConsts -->
-
-</package>
+    </module>
+    <!-- LazUtilsStrConsts -->
+  </package>
 </fpdoc-descriptions>

@@ -1,169 +1,83 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      LazUtilities
+    ====================================================================
+    -->
+    <module name="LazUtilities">
+      <short></short>
+      <descr></descr>
 
-<!--
-  ====================================================================
-    LazUtilities
-  ====================================================================
--->
+      <element name="FreeThenNil">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="FreeThenNil.obj">
+        <short></short>
+      </element>
 
-<module name="LazUtilities">
-<short></short>
-<descr>
-</descr>
+      <!-- function Visibility: default -->
+      <element name="ComparePointers">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="ComparePointers">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="ComparePointers.Result">
+        <short></short>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="ComparePointers.Result">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="ComparePointers.p1">
+        <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="ComparePointers.p1">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="ComparePointers.p2">
+        <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="ComparePointers.p2">
-<short></short>
-</element>
+      <element name="CompareBoolean">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="CompareBoolean.Result">
+        <short></short>
+      </element>
+      <element name="CompareBoolean.b1">
+        <short></short>
+      </element>
+      <element name="CompareBoolean.b2">
+        <short></short>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="MergeSort">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="MergeSortWithLen">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="MergeSortWithLen.List">
+        <short></short>
+      </element>
+      <element name="MergeSortWithLen.ListLength">
+        <short></short>
+      </element>
+      <element name="MergeSortWithLen.Compare">
+        <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="MergeSort.List">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="MergeSort.ListLength">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="MergeSort.Compare">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GetNextDelimitedItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetNextDelimitedItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GetNextDelimitedItem.List">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GetNextDelimitedItem.Delimiter">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GetNextDelimitedItem.Position">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="HasDelimitedItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="HasDelimitedItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="HasDelimitedItem.List">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="HasDelimitedItem.Delimiter">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="HasDelimitedItem.FindItem">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FindNextDelimitedItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FindNextDelimitedItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FindNextDelimitedItem.List">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FindNextDelimitedItem.Delimiter">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FindNextDelimitedItem.Position">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FindNextDelimitedItem.FindItem">
-<short></short>
-</element>
-
-</module> <!-- LazUtilities -->
-
-</package>
+      <element name="ConsoleVerbosity">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+    </module>
+    <!-- LazUtilities -->
+  </package>
 </fpdoc-descriptions>

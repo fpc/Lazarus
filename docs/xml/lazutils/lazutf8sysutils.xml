@@ -7,8 +7,13 @@
     ====================================================================
     -->
     <module name="lazutf8sysutils">
-      <short></short>
-      <descr></descr>
+      <short>Unit renamed to LazSysUtils</short>
+      <descr>
+        <p>
+          lazutf8sysutils.pas was renamed to lazsysutils.pas.
+          All routines will give a "deprecated" warning; the unit will be removed later.
+        </p>
+      </descr>
 
       <!-- function Visibility: default -->
       <element name="NowUTC">
@@ -17,7 +22,7 @@
 
       <!-- function result Visibility: default -->
       <element name="NowUTC.Result">
-        <short></short>
+        <short>Current Date/Time value in UTC</short>
       </element>
 
       <!-- function Visibility: default -->
@@ -27,7 +32,7 @@
 
       <!-- function result Visibility: default -->
       <element name="GetTickCount64.Result">
-        <short></short>
+        <short>Number of ticks (milliseconds)</short>
       </element>
 
     </module>

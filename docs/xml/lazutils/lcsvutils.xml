@@ -1,124 +1,95 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      lcsvutils
+    ====================================================================
+    -->
+    <module name="lcsvutils">
+      <short>
+        Contains routines used to read and process Comma-separated values from a file or a stream
+      </short>
+      <descr>
+        lcsvutils.pas contains routines used to read and process Comma-separated values from a file or a stream. It is used in the implementation of the LazUtils package and the TGrid component.
+      </descr>
 
-<!--
-  ====================================================================
-    lcsvutils
-  ====================================================================
--->
+      <!-- procedure type Visibility: default -->
+      <element name="TCSVRecordProc">
+        <short>Procedure used to read and process comma-separated values</short>
+        <descr>
+          TCSVProc is a nested procedure used when reading and processing comma-separated values. A TCSVProc reference is passed as an argument to the LoadFromCSVFile and LoadFromCSVStream routines. Applications must create a procedure that performs actions required when a line of CSV of data has been read from its data source and separated into individual field values.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCSVRecordProc.Fields">
+        <short>TStringList used to store comma-separated field values</short>
+      </element>
 
-<module name="lcsvutils">
-<short></short>
-<descr>
-</descr>
+      <element name="TCSVEncoding">
+        <short>Represents character encodings used for values in CSV data</short>
+        <descr>
+          TCSVEncoding is an enumerated type which represents character encodings that can be used for CSV data.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCSVEncoding.ceAuto">
+        <short>Auto-detects character encoding applied to the CSV data</short>
+      </element>
+      <element name="TCSVEncoding.ceUTF8">
+        <short>CSV data uses the UTF-8 encoding</short>
+      </element>
+      <element name="TCSVEncoding.ceUTF16">
+        <short>CSV data uses the UTF-16 encoding</short>
+      </element>
+      <element name="TCSVEncoding.ceUTF16be">
+        <short>CSV data uses the UTF-16 Big-Endian encoding</short>
+      </element>
 
-<!-- procedure type Visibility: default -->
-<element name="TCSVRecordProc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="LoadFromCSVStream">
+        <short>
+          Loads and processes comma-separated values from the specified stream
+        </short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="LoadFromCSVStream.AStream">
+        <short>TStream instance containing the CSV data</short>
+      </element>
+      <element name="LoadFromCSVStream.AProc">
+        <short>Routine used to load and process records in the CSV data</short>
+      </element>
+      <element name="LoadFromCSVStream.ADelimiter">
+        <short>Delimiter used to separate fields in the CSV data</short>
+      </element>
+      <element name="LoadFromCSVStream.CSVEncoding">
+        <short>Character encoding used for the CSV data</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCSVRecordProc.Fields">
-<short></short>
-</element>
+      <element name="LoadFromCSVFile">
+        <short>
+          Loads and process comma-separated valued from the specified file
+        </short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="LoadFromCSVFile.aFilename">
+        <short>File name which contains the CSV data</short>
+      </element>
+      <element name="LoadFromCSVFile.AProc">
+        <short>Routine used to load and process records in the CSV data</short>
+      </element>
+      <element name="LoadFromCSVFile.ADelimiter">
+        <short>Delimiter used to separate fields in the CSV data</short>
+      </element>
+      <element name="LoadFromCSVFile.CSVEncoding">
+        <short>Character encoding used for the CSV data</short>
+      </element>
 
-<!-- enumeration type Visibility: default -->
-<element name="TCSVEncoding">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+    </module>
+    <!-- lcsvutils -->
 
-<!-- enumeration value Visibility: default -->
-<element name="TCSVEncoding.ceAuto">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCSVEncoding.ceUTF8">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCSVEncoding.ceUTF16">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCSVEncoding.ceUTF16be">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="LoadFromCSVStream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVStream.AStream">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVStream.AProc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVStream.ADelimiter">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVStream.CSVEncoding">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="LoadFromCSVFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVFile.aFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVFile.AProc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVFile.ADelimiter">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LoadFromCSVFile.CSVEncoding">
-<short></short>
-</element>
-
-</module> <!-- lcsvutils -->
-
-</package>
+  </package>
 </fpdoc-descriptions>
