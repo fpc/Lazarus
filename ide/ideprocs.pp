@@ -722,6 +722,7 @@ begin
 end;
 
 function PathIsInPath(const Path, Directory: string): boolean;
+// Note: Under Windows this treats C: as C:\
 var
   ExpPath: String;
   ExpDir: String;
