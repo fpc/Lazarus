@@ -7052,27 +7052,28 @@ begin
       TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
       TargetExeDirectory:=ChompPathDelim(ExtractFilePath(TargetExeName)); // Note: chomp is needed by FileExistsCached under Windows
       if FilenameIsAbsolute(TargetExeDirectory) then begin
-        if FileExistsCached(TargetExeDirectory) then begin
-          if not DirPathExistsCached(TargetExeDirectory) then begin
+        // Note: FileExists('C:\') = false
+        if not DirPathExistsCached(TargetExeDirectory) then begin
+          if FileExistsCached(TargetExeDirectory) then begin
             Result:=IDEQuestionDialog(lisFileFound,
-                Format(lisTheTargetDirectoryIsAFile, [sLineBreak
-                +TargetExeDirectory]),
-                mtWarning, [mrCancel,mrIgnore]);
+                  Format(lisTheTargetDirectoryIsAFile, [sLineBreak
+                  +TargetExeDirectory]),
+                  mtWarning, [mrCancel,mrIgnore]);
             if Result<>mrIgnore then exit(mrCancel);
-          end;
-        end else begin
-          if not PathIsInPath(TargetExeDirectory,WorkingDir)
-          then begin
-            Result:=IDEQuestionDialog(lisCreateDirectory,
-                Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
-                mtConfirmation, [mrYes, lisCreateIt,
-                                 mrCancel]);
-            if Result<>mrYes then exit;
-          end;
-          Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
-          if Result<>mrOk then begin
-            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
-            exit;
+          end else begin
+            if not PathIsInPath(TargetExeDirectory,WorkingDir)
+            then begin
+              Result:=IDEQuestionDialog(lisCreateDirectory,
+                  Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
+                  mtConfirmation, [mrYes, lisCreateIt,
+                                   mrCancel]);
+              if Result<>mrYes then exit;
+            end;
+            Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
+            if Result<>mrOk then begin
+              debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
+              exit;
+            end;
           end;
         end;
       end;
