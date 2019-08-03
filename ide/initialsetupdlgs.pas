@@ -41,7 +41,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, pkgglobals, process, fpmkunit,
+  Classes, SysUtils, pkgglobals, fpmkunit,
   // LCL
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls,
   // CodeTools
