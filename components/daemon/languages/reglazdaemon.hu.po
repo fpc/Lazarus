@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: reglazdaemon.sdaemonappdescr
 msgid "Daemon (service) application is a non-gui application that runs in the background."
@@ -28,16 +28,12 @@ msgid "Daemon Module for inclusion in a daemon application"
 msgstr "Démon modul egy alkalmazásba történő beépítéshez"
 
 #: reglazdaemon.sdaemonmapperdescr
-#, fuzzy
-#| msgid ""
-#| "Daemon mapper for inclusion in a daemon application.\n"
-#| "Only one daemon mapper may exist in a daemon application.\n"
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
 "Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "Démon gyűjtő egy alkalmazásba történő beépítéshez.\n"
-"Csak egy démon gyűjtő lehet egy démon alkalmazásban.\n"
+"Csak egy démon gyűjtő lehet egy démon alkalmazásban."
 
 #: reglazdaemon.sdaemonmappername
 msgid "Daemon mapper"

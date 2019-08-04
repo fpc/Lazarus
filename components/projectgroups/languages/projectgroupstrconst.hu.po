@@ -74,11 +74,7 @@ msgid "Enable to show target filenames with paths."
 msgstr "Engedélyezi a célfájlok nevei útvonalakkal együtt jelenjenek meg."
 
 #: projectgroupstrconst.liserrnosuchfile
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Could not find target file\n"
-#| "\"%s\"\n"
-#| "What do you want to do?\n"
+#, object-pascal-format
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -86,7 +82,7 @@ msgid ""
 msgstr ""
 "A célfájl nem található:\n"
 "\"%s\"\n"
-"Mi történjen most?\n"
+"Mi történjen most?"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
@@ -292,16 +288,13 @@ msgid "Project group modified"
 msgstr "Projektcsoport módosítva"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Project group \"%s\" is modified.\n"
-#| "What do you want to do?\n"
+#, object-pascal-format
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
 msgstr ""
 "A(z) \"%s\" projektcsoport módosult.\n"
-"Mi történjen most?\n"
+"Mi történjen most?"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"

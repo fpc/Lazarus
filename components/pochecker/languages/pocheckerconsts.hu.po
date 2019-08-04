@@ -173,11 +173,7 @@ msgid "Duplicate Originals"
 msgstr "Ismétlődő eredeti szövegek"
 
 #: pocheckerconsts.serroroncleanup
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
+#, object-pascal-format
 msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
@@ -185,19 +181,16 @@ msgid ""
 msgstr ""
 "Helyrehozhatatlan hiba történt\n"
 "%s\n"
-"Zárja be a programot!\n"
+"Zárja be a programot!"
 
 #: pocheckerconsts.serroroncreate
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s"
 msgstr ""
 "Nem sikerült létrehozni egy TPoFamily példányt:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.serrorsbytest
 #, object-pascal-format
@@ -210,16 +203,13 @@ msgid "File %s"
 msgstr "Fájl: %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following non-existent files were removed from the list:\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s"
 msgstr ""
 "A következő nem létező fájlok el lettek távolítva a listából:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sfuzzystrings
 msgid "Fuzzy strings"
@@ -307,24 +297,16 @@ msgid "Found %d warnings."
 msgstr "%d figyelmeztetés."
 
 #: pocheckerconsts.sopenfail
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Unable to open file:\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Unable to open file:\n"
 "\"%s\""
 msgstr ""
 "A fájl nem nyitható meg:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfailexternal
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Unable to open file\n"
-#| "\"%s\"\n"
-#| "in external editor\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Unable to open file\n"
 "\"%s\"\n"
@@ -334,7 +316,7 @@ msgstr ""
 "A fájl nem nyitható meg a külső szerkesztőben:\n"
 "\"%s\"\n"
 "Külső szerkesztő:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
@@ -397,16 +379,13 @@ msgid "Save &As ..."
 msgstr "Mentés másként..."
 
 #: pocheckerconsts.ssaveerror
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Error saving file:\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "Error saving file:\n"
 "%s"
 msgstr ""
 "Hiba a fájl mentésekor:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
@@ -433,12 +412,7 @@ msgid "Show statistics graph"
 msgstr "Statisztika grafikus megjelenítése"
 
 #: pocheckerconsts.sstathint
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Translated: %d (%.1f%%)\n"
-#| "Untranslated: %d (%.1f%%)\n"
-#| "Fuzzy: %d (%.1f%%)\n"
-#| "Errors in selected tests: %d\n"
+#, object-pascal-format
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
@@ -448,7 +422,7 @@ msgstr ""
 "Lefordítva: %d (%.1f%%)\n"
 "Nincs lefordítva: %d (%.1f%%)\n"
 "Bizonytalan: %d (%.1f%%)\n"
-"Hibák száma a kiválasztott tesztekben: %d\n"
+"Hibák száma a kiválasztott tesztekben: %d"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 #, object-pascal-format

@@ -212,28 +212,22 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "A következő fájl már létezik a tárolóban: \"%s\". Felülírás?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Cannot open private repository: \"%s\". Error message: \n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\""
 msgstr ""
 "A személyes tároló nem nyitható meg: \"%s\". Hibaüzenet: \n"
-"\"%s\"\n"
+"\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Cannot save private repository: \"%s\". Error message: \n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\""
 msgstr ""
 "A személyes tároló nem menthető: \"%s\". Hibaüzenet: \n"
-"\"%s\"\n"
+"\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error4
 msgid "Cannot add package to repository!"
@@ -245,40 +239,31 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "A csomag nem törölhető: \"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following directory: \"%s\" is not empty.\n"
-#| "It's recommended to save the repository to an empty directory. Continue?\n"
+#, object-pascal-format
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
 "It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "A következő könyvtár nem üres: \"%s\"\n"
-"Jobb lenne a tárolót egy üres könyvtárba menteni. Folytatás?\n"
+"Jobb lenne a tárolót egy üres könyvtárba menteni. Folytatás?"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following package: \"%s\" is already in the current repository.\n"
-#| "Each repository and Lazarus package must be unique!\n"
+#, object-pascal-format
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
 msgstr ""
 "A következő csomag már megtalálható az aktuális tárolóban: \"%s\"\n"
-"Minden tárolónak és Lazarus csomagnak csak egy példányban szabad létezni!\n"
+"Minden tárolónak és Lazarus csomagnak csak egy példányban szabad létezni!"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following Lazarus package: \"%s\" is already in the current repository.\n"
-#| "Each repository and Lazarus package must be unique!\n"
+#, object-pascal-format
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
 msgstr ""
 "A következő Lazarus csomag már megtalálható az aktuális tárolóban: \"%s\"\n"
-"Minden tárolónak és Lazarus csomagnak csak egy példányban szabad létezni!\n"
+"Minden tárolónak és Lazarus csomagnak csak egy példányban szabad létezni!"
 
 #: opkman_const.rscreaterepositoryfrm_info7
 msgid "Package successfully added to repository."
@@ -570,16 +555,12 @@ msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Fájlok küldése (\"%s\"). Kis türelmet..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
-#, fuzzy
-#| msgid ""
-#| "Files successfully sent. Thank you for submitting packages!\n"
-#| "Your request will be processed in 24 hours.\n"
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
 "Your request will be processed in 24 hours."
 msgstr ""
 "A fájlok sikeresen el lettek küldve. Köszönet a csomagok beküldéséért!\n"
-"A kérés 24 órán belül fel lesz dolgozva.\n"
+"A kérés 24 órán belül fel lesz dolgozva."
 
 #: opkman_const.rscreaterepositorypackagefrm_nopackage
 msgid "No packages found!"
@@ -743,16 +724,12 @@ msgid "None of the checked repository packages are available externally."
 msgstr "A kijelölt tárolócsomagok egyike sem érhető el külső tárolóban."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
-#, fuzzy
-#| msgid ""
-#| "Installing packages from external link is not without a risk!\n"
-#| "Only install if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
 "Only install if you trust the package maintainer. Continue?"
 msgstr ""
 "A csomagok külső hivatkozásról történő telepítése nem kockázatmentes!\n"
-"Csak akkor telepítse ha megbízik a csomag karbantartójában. Folytatás?\n"
+"Csak akkor telepítse ha megbízik a csomag karbantartójában. Folytatás?"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 #, object-pascal-format
@@ -794,16 +771,12 @@ msgid "No packages to show."
 msgstr "Nincs megjelenítendő csomag."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
-#, fuzzy
-#| msgid ""
-#| "Remote package repository not configured.\n"
-#| "Do you wish to configure it now?\n"
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?"
 msgstr ""
 "A távoli csomagtároló nincs beállítva.\n"
-"Szeretné most beállítani?\n"
+"Szeretné most beállítani?"
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
@@ -850,16 +823,13 @@ msgid "%s packages deleted!"
 msgstr "%s csomag törölve!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "%sAre you sure you wish to uninstall the checked packages?\n"
-#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+#, object-pascal-format
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 "%sBiztosan eltávolíthatók a kijelölt csomagok?\n"
-"Fontos: a változtatások érvénybelépéséhez az IDE újraépítése szükséges.\n"
+"Fontos: a változtatások érvénybelépéséhez az IDE újraépítése szükséges."
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 #, object-pascal-format

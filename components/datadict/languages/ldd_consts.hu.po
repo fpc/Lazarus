@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ldd_consts.ldd_availablecodegenerators
 msgid "Available code generators"
@@ -130,28 +130,20 @@ msgid "Applying data dictionary to field %s"
 msgstr "Adatszótár alkalmazása e mezőre: %s"
 
 #: ldd_consts.serrnodatadesktopdoselect
-#, fuzzy
-#| msgid ""
-#| "Could not locate the database desktop application.\n"
-#| "Would you like to select it ?\n"
 msgid ""
 "Could not locate the database desktop application.\n"
 "Would you like to select it ?"
 msgstr ""
 "A Database Desktop alkalmazás nem található.\n"
-"Szeretné kiválasztani?\n"
+"Szeretné kiválasztani?"
 
 #: ldd_consts.serrnodatadictactive
-#, fuzzy
-#| msgid ""
-#| "No datadictionary active.\n"
-#| "Please set a data dictionary for the project\n"
 msgid ""
 "No datadictionary active.\n"
 "Please set a data dictionary for the project"
 msgstr ""
 "Nincs aktív adatszótár.\n"
-"Adjon meg egy adatszótárat a projekt számára!\n"
+"Adjon meg egy adatszótárat a projekt számára!"
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"
