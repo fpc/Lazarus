@@ -86,8 +86,8 @@ Arch=$(rpm --eval "%{_target_cpu}")
 echo "creating lazarus tgz ..."
 #if [ ! -f $SrcTGZ ]; then
   if [ "$UseCHMHelp" = "1" ]; then SrcTGZOpts="chmhelp"; fi
-  if [ -n $Pas2jsZip ]; then SrcTGZOpts="pas2jszip $Pas2jsZip"; fi
-  sh create_lazarus_export_tgz.sh $SrcTGZOpts $SrcTGZ
+  if [ ! "x$Pas2jsZip" = "x" ]; then SrcTGZOpts="$SrcTGZOpts pas2jszip $Pas2jsZip"; fi
+  /bin/bash create_lazarus_export_tgz.sh $SrcTGZOpts $SrcTGZ
 #fi
 
 # create spec file

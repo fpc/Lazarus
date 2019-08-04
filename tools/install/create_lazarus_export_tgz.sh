@@ -90,7 +90,7 @@ else
   fi
 fi
 
-if [ -n $Pas2jsZip ]; then
+if [ ! "x$Pas2jsZip" = "x" ]; then
   # unzip pas2jszip to pas2js/version
   mkdir $TmpLazDir/pas2js   # fails if already there -> good
   unzip $Pas2jsZip -d $TmpLazDir/pas2js
