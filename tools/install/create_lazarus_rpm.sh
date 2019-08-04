@@ -6,12 +6,15 @@
 #
 #   Options:
 #     chmhelp           add package chmhelp and add chm,kwd files in docs/chm
+#     pas2jszip <pas2js-linux-version.zip>
+#                       unzip pas2js release zip to "pas2js/version"
 #
 # Note: To create an rpm as normal user, see the script rpm/create_nonroot_rpmmacros.sh 
 
 set -e
 
 UseCHMHelp=
+Pas2jsZip=
 
 while [ $# -gt 0 ]; do
   echo "param=$1"
@@ -20,7 +23,24 @@ while [ $# -gt 0 ]; do
     echo "using package chmhelp"
     UseCHMHelp=1
     ;;
-
+  
+  pas2jszip)
+      shift
+      echo "param=$1"
+      Pas2jsZip=$1
+      Pattern="*pas2js*.zip"
+      if [[ $Pas2jsZip == $Pattern ]]; then
+	  echo "using pas2js zip file $Pas2jsZip"
+      else
+	  echo "invalid pas2js zip file $Pas2jsZip"
+	  exit -1
+      fi
+      if [ ! -f $Pas2jsZip ]; then
+	  echo "missing pas2js zip file $Pas2jsZip"
+	  exit -1
+      fi
+      ;;
+  
   *)
     echo "invalid parameter $1"
     echo "Usage: ./create_lazarus_rpm.sh [chmhelp]"
@@ -58,6 +78,7 @@ Src=lazarus-$LazVersion-$LazRelease.tar.gz
 SrcTGZ=$RPMSrcDir/SOURCES/$Src
 SrcTGZOpts=
 SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
+Pas2jsVer=
 
 Arch=$(rpm --eval "%{_target_cpu}")
 
@@ -65,6 +86,7 @@ Arch=$(rpm --eval "%{_target_cpu}")
 echo "creating lazarus tgz ..."
 #if [ ! -f $SrcTGZ ]; then
   if [ "$UseCHMHelp" = "1" ]; then SrcTGZOpts="chmhelp"; fi
+  if [ -n $Pas2jsZip ]; then SrcTGZOpts="pas2jszip $Pas2jsZip"; fi
   sh create_lazarus_export_tgz.sh $SrcTGZOpts $SrcTGZ
 #fi
 
@@ -87,4 +109,3 @@ rpm -ba $SpecFile || rpmbuild -ba $SpecFile
 echo "The new rpm can be found at $RPMSrcDir/RPMS/$Arch/lazarus-$LazVersion-$LazRelease.$Arch.rpm"
 
 # end.
-
