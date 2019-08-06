@@ -1,0 +1,39 @@
+object ProjectDebugOptionsFrame: TProjectDebugOptionsFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 617
+  DesignTop = 390
+  object lbProjectDebugger: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbProjectDebugger
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 10
+    Width = 99
+    BorderSpacing.Around = 6
+    Caption = 'lbProjectDebugger'
+    ParentColor = False
+  end
+  object cbProjectDebugger: TComboBox
+    AnchorSideLeft.Control = lbProjectDebugger
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 111
+    Height = 23
+    Top = 6
+    Width = 203
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 0
+  end
+end

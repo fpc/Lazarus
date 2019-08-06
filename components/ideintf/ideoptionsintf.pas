@@ -215,7 +215,8 @@ const
     ProjectOptionsResources   = 550;
     ProjectOptionsI18N        = 600;
     ProjectOptionsMisc        = 700;
-    DbgOptionsLanguageExceptions = 800;
+    ProjectOptionsDebug        = 700;
+    DbgOptionsLanguageExceptions = 900;
 
   GroupPackage      = 200100;
     PackageOptionsUsage        = 100;

@@ -708,6 +708,7 @@ type
     FAllEditorsInfoMap: TMap;
     FAutoCreateForms: boolean;
     FChangeStampSaved: integer;
+    FDebuggerBackend: String;
     FEnableI18NForLFM: boolean;
     FHistoryLists: THistoryLists;
     FLastCompileComplete: boolean;
@@ -799,6 +800,7 @@ type
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetActiveBuildMode(const AValue: TProjectBuildMode);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
+    procedure SetDebuggerBackend(AValue: String);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetEnableI18NForLFM(const AValue: boolean);
     procedure SetLastCompilerParams(AValue: string);
@@ -861,6 +863,7 @@ type
     procedure SetSessionModified(const AValue: boolean); override;
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); override;
     procedure SetUseManifest(AValue: boolean); override;
+    function GetCurrentDebuggerBackend: String; override;
   protected
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -1114,6 +1117,8 @@ type
     property OtherDefines: TStrings read FOtherDefines;
     property UpdateLock: integer read FUpdateLock;
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault; // for dialog only (used to store options once)
+
+    property DebuggerBackend: String read FDebuggerBackend write SetDebuggerBackend;
   end;
 
 
@@ -2953,6 +2958,9 @@ begin
   LoadOtherDefines(Path);
   // load session info
   LoadSessionInfo(Path,false);
+
+  FDebuggerBackend := FXMLConfig.GetValue(Path+'Debugger/Backend/Value', '');
+
   // call hooks to read their info (e.g. DebugBoss)
   if Assigned(OnLoadProjectInfo) then
     OnLoadProjectInfo(Self, FXMLConfig, false);
@@ -3274,6 +3282,8 @@ begin
     FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
   // save units
   SaveUnits(Path,FSaveSessionInLPI);
+
+  FXMLConfig.SetDeleteValue(Path+'Debugger/Backend/Value', DebuggerBackend, '');
 
   if FSaveSessionInLPI then begin
     // save defines used for custom options
@@ -3910,6 +3920,11 @@ end;
 procedure TProject.SetUseManifest(AValue: boolean);
 begin
   ProjResources.XPManifest.UseManifest:=AValue;
+end;
+
+function TProject.GetCurrentDebuggerBackend: String;
+begin
+  Result := FDebuggerBackend;
 end;
 
 function TProject.UnitCount:integer;
@@ -5277,6 +5292,13 @@ procedure TProject.SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
 begin
   if FAutoOpenDesignerFormsDisabled=AValue then exit;
   FAutoOpenDesignerFormsDisabled:=AValue;
+end;
+
+procedure TProject.SetDebuggerBackend(AValue: String);
+begin
+  if FDebuggerBackend = AValue then Exit;
+  FDebuggerBackend := AValue;
+  Modified := True;
 end;
 
 procedure TProject.SetEnableI18NForLFM(const AValue: boolean);

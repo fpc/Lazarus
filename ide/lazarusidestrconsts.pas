@@ -6594,6 +6594,10 @@ resourcestring
   UnitDepOptionsForUnit = 'Options for Unit graph';
   LvlGraphReduceBackedges = 'Reduce backedges';
   lisDebugOptionsFrmBackend = 'Debugger backend';
+  dlgPODebugger = 'Debugger';
+  lisDebugOptionsFrmDebuggerBackend = 'DebuggerBackend:';
+  lisDebugOptionsFrmUseIDEDebugger = '-- Use IDE default Debugger --';
+  lisDebugOptionsFrmUnknownDebuggerBacke = 'Unknown Debugger backend "%s"';
 
 implementation
 

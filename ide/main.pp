@@ -131,7 +131,7 @@ uses
   // project option frames
   project_application_options, project_forms_options, project_lazdoc_options,
   project_save_options, project_versioninfo_options, project_i18n_options,
-  project_misc_options, project_resources_options,
+  project_misc_options, project_resources_options, project_debug_options,
   // project compiler option frames
   compiler_path_options, compiler_config_target, compiler_parsing_options,
   compiler_codegen_options, compiler_debugging_options, compiler_verbosity_options,

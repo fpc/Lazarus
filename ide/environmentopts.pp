@@ -301,8 +301,11 @@ type
     FDebuggerClass: TDebuggerClass;
     FDebuggerFilename: string;
     FIsFromOldXml: Boolean;
+    FUID: String;
     FXmlIndex: Integer;
     FDebuggerProperties: TDebuggerProperties;
+
+    procedure InitUID;
   public
     destructor Destroy; override;
     constructor CreateFromXmlConf(AXMLCfg: TRttiXMLConfig; APath: String; AIndex: Integer);
@@ -336,6 +339,7 @@ type
     property ConfigClass: String read FConfigClass write FConfigClass;
     property DebuggerFilename: string read FDebuggerFilename write FDebuggerFilename;
     property Active: Boolean read FActive write FActive;
+    property UID: String read FUID write FUID;
   end;
 
   TLastOpenPackagesList = class(TStringList)
@@ -523,6 +527,7 @@ type
   public
     procedure ClearAll;
     function EntryByName(AConfName, AConfClass: String): TDebuggerPropertiesConfig;
+    function EntryByUid(AnUid: String): TDebuggerPropertiesConfig;
     property Opt[Index: Integer]: TDebuggerPropertiesConfig read GetOpt;
   end;
 
@@ -716,11 +721,9 @@ type
     function GetActiveDesktop: TDesktopOpt;
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
-    function GetCurrentDebuggerClass: TDebuggerClass;
     function GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
     function GetDebugDesktop: TDesktopOpt;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
-    function GetDebuggerFilename: string;
     function GetDebuggerSearchPath: string;
     function GetFPCSourceDirectory: string;
     function GetFPDocPaths: string;
@@ -782,7 +785,7 @@ type
     function GetParsedMakeFilename: string;
     function GetParsedCompilerMessagesFilename: string;
     function GetParsedFPDocPaths: string;
-    function GetParsedDebuggerFilename: string;
+    function GetParsedDebuggerFilename(TheProject: TLazProject = nil): string;
     function GetParsedDebuggerSearchPath: string;
     function GetParsedFppkgConfig: string; override;
     function GetParsedValue(o: TEnvOptParseType; AUnparsedValue: String = ''): string;
@@ -892,7 +895,7 @@ type
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory;
     property MakeFilename: string read GetMakeFilename write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory;
-    property DebuggerFilename: string read GetDebuggerFilename;
+    function DebuggerFilename(TheProject: TLazProject = nil): string;
     property DebuggerFileHistory[AnIndex: String]: TStringList read GetNamedDebuggerFileHistory;
     property DebuggerSearchPath: string read GetDebuggerSearchPath write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage write FDebuggerShowStopMessage;
@@ -925,9 +928,10 @@ type
 
     // Debugger
     procedure SaveDebuggerPropertiesList;
+    function  CurrentDebuggerClass(TheProject: TLazProject = nil): TDebuggerClass;
     function  DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
+    function  CurrentDebuggerPropertiesConfigEx(TheProject: TLazProject): TDebuggerPropertiesConfig;
     property  CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read GetCurrentDebuggerPropertiesConfig write SetCurrentDebuggerPropertiesOpt;
-    property  CurrentDebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
     property  HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
     property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
 
@@ -1220,7 +1224,33 @@ begin
     Result := Opt[i];
 end;
 
+function TDebuggerPropertiesConfigList.EntryByUid(AnUid: String
+  ): TDebuggerPropertiesConfig;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := Count - 1;
+  while (i >= 0) and (Opt[i].UID <> AnUid) do
+    dec(i);
+  if i >= 0 then
+    Result := Opt[i];
+end;
+
 { TDebuggerPropertiesConfig }
+
+procedure TDebuggerPropertiesConfig.InitUID;
+var
+  g: TGUID;
+begin
+  if FUID <> '' then
+    exit;
+
+  if CreateGUID(g) = 0 then
+    FUID := GUIDToString(g)
+  else
+    FUID := IntToHex(Random($100000000), 8)+'-'+IntToHex(Random($100000000), 8)+'-'+IntToHex(Random($100000000), 8);
+end;
 
 destructor TDebuggerPropertiesConfig.Destroy;
 begin
@@ -1243,6 +1273,8 @@ begin
     FDebuggerProperties := FDebuggerClass.CreateProperties;
     AXMLCfg.ReadObject(APath + 'Properties/', FDebuggerProperties);
   end;
+
+  InitUID;
 end;
 
 constructor TDebuggerPropertiesConfig.CreateFromOldXmlConf(
@@ -1270,6 +1302,8 @@ begin
     FDebuggerProperties := ADebuggerClass.CreateProperties;
     AXMLCfg.ReadObject(APath, FDebuggerProperties);
   end;
+
+  InitUID;
 end;
 
 constructor TDebuggerPropertiesConfig.CreateFromOldXmlConf(
@@ -1297,6 +1331,8 @@ begin
     FDebuggerProperties := FDebuggerClass.CreateProperties;
     AXMLCfg.ReadObject(APath, FDebuggerProperties);
   end;
+
+  InitUID;
 end;
 
 constructor TDebuggerPropertiesConfig.CreateForDebuggerClass(
@@ -1310,6 +1346,8 @@ begin
   FConfigClass := ADebuggerClass.ClassName;
   FConfigName := '';
   FDebuggerProperties := ADebuggerClass.CreateProperties;
+
+  InitUID;
 end;
 
 constructor TDebuggerPropertiesConfig.CreateCopy(
@@ -1321,6 +1359,7 @@ begin
   if ACopyXmlOrigin then begin
     FIsFromOldXml := ASource.FIsFromOldXml;
     FXmlIndex     := ASource.FXmlIndex;
+    FUID          := ASource.FUID;
   end
   else begin
     FIsFromOldXml := False;
@@ -1341,6 +1380,9 @@ begin
     FDebuggerProperties := ASource.DebuggerClass.CreateProperties;
   if ACopyPropValues and (ASource.FDebuggerProperties <> nil) then
     FDebuggerProperties.Assign(ASource.FDebuggerProperties);
+
+  FUID := '';
+  InitUID;
 end;
 
 procedure TDebuggerPropertiesConfig.AssignTo(Dest: TPersistent);
@@ -3169,10 +3211,11 @@ begin
   Result:=GetParsedValue(eopFPDocPaths);
 end;
 
-function TEnvironmentOptions.GetParsedDebuggerFilename: string;
+function TEnvironmentOptions.GetParsedDebuggerFilename(TheProject: TLazProject
+  ): string;
 begin
-  if FParseValues[eopDebuggerFilename].UnparsedValue <> DebuggerFilename then
-    SetParseValue(eopDebuggerFilename,UTF8Trim(DebuggerFilename));
+  if FParseValues[eopDebuggerFilename].UnparsedValue <> DebuggerFilename(TheProject) then
+    SetParseValue(eopDebuggerFilename,UTF8Trim(DebuggerFilename(TheProject)));
 
   Result:=GetParsedValue(eopDebuggerFilename);
 end;
@@ -3487,13 +3530,13 @@ begin
   end;
 end;
 
-function TEnvironmentOptions.GetCurrentDebuggerClass: TDebuggerClass;
+function TEnvironmentOptions.CurrentDebuggerClass(TheProject: TLazProject): TDebuggerClass;
 begin
   LoadDebuggerProperties;
 
   Result := nil;
-  if CurrentDebuggerPropertiesConfig <> nil then
-    Result := CurrentDebuggerPropertiesConfig.DebuggerClass;
+  if CurrentDebuggerPropertiesConfigEx(TheProject) <> nil then
+    Result := CurrentDebuggerPropertiesConfigEx(TheProject).DebuggerClass;
 end;
 
 function TEnvironmentOptions.GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
@@ -3518,6 +3561,17 @@ begin
   LoadDebuggerProperties;
 
   Result := FDebuggerProperties;
+end;
+
+function TEnvironmentOptions.CurrentDebuggerPropertiesConfigEx(
+  TheProject: TLazProject): TDebuggerPropertiesConfig;
+begin
+  Result := nil;
+  if (TheProject <> nil) and (TheProject.CurrentDebuggerBackend <> '') then
+    Result := FDebuggerProperties.EntryByUid(TheProject.CurrentDebuggerBackend);
+
+  if Result = nil then
+    Result := CurrentDebuggerPropertiesConfig;
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
@@ -3710,12 +3764,12 @@ begin
   Result := FDebuggerEventLogColors[AIndex];
 end;
 
-function TEnvironmentOptions.GetDebuggerFilename: string;
+function TEnvironmentOptions.DebuggerFilename(TheProject: TLazProject): string;
 begin
   Result := '';
   LoadDebuggerProperties;
-  if CurrentDebuggerPropertiesConfig <> nil then
-    Result:=CurrentDebuggerPropertiesConfig.DebuggerFilename;
+  if CurrentDebuggerPropertiesConfigEx(TheProject) <> nil then
+    Result:=CurrentDebuggerPropertiesConfigEx(TheProject).DebuggerFilename;
 end;
 
 function TEnvironmentOptions.GetDebuggerSearchPath: string;
