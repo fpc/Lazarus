@@ -9,6 +9,7 @@ Active (in alphabetical order):
  Esteban Vignolo
  Frederick Vollmer
  Johannes W. Dietrich
+ Jonas Maebe
  Marc Hanisch
  Marcus Fernstrom
  Siegfried Rohdewald
@@ -16,3 +17,4 @@ Active (in alphabetical order):
 
 Former:
  Andrea Mauri
+ Mike Margerum
