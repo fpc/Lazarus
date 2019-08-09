@@ -70,7 +70,6 @@ begin
   TabStop := True;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
-  AutoSize := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -91,6 +90,20 @@ procedure TCustomTrackBar.Loaded;
 begin
   inherited Loaded;
   ApplyChanges;
+end;
+
+procedure TCustomTrackBar.ShouldAutoAdjust(var AWidth, AHeight: Boolean);
+begin
+  if Orientation = trHorizontal then
+    begin
+      AWidth := True;
+      AHeight := not AutoSize;
+    end
+  else
+    begin
+      AWidth := not AutoSize;
+      AHeight := True;
+    end
 end;
 
 {------------------------------------------------------------------------------
