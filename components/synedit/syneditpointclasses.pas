@@ -1843,14 +1843,21 @@ procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBy
     end;
   end;
 
+var
+  empty, back: Boolean;
 begin
   if FIsSettingText then exit;
   if FPersistent or (FPersistentLock > 0) or
      ((FCaret <> nil) and (not FCaret.Locked))
   then begin
     if FActiveSelectionMode <> smColumn then begin // TODO: adjust ypos, height in smColumn mode
-      AdjustStartLineBytePos(AdjustPoint(StartLineBytePos, True));
-      EndLineBytePos := AdjustPoint(EndLineBytePos, False);
+      empty := (FStartBytePos = FEndBytePos) and (FStartLinePos = FEndLinePos);
+      back := IsBackwardSel;
+      AdjustStartLineBytePos(AdjustPoint(StartLineBytePos, not back));
+      if empty then
+        EndLineBytePos := StartLineBytePos
+      else
+        EndLineBytePos := AdjustPoint(EndLineBytePos, back);
     end;
     // Todo: Change Lines in smColumn
   end
