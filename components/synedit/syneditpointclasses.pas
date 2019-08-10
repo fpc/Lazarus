@@ -2191,7 +2191,7 @@ end;
 
 procedure TSynEditSelection.ConstrainStartLineBytePos(var Value: TPoint);
 begin
-  Value.y := MinMax(Value.y, 1, fLines.Count);
+  Value.y := MinMax(Value.y, 1, Max(fLines.Count, 1));
 
   if (FCaret = nil) or FCaret.AllowPastEOL then
     Value.x := Max(Value.x, 1)
