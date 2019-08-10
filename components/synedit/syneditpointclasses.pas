@@ -2280,7 +2280,7 @@ begin
   if FEnabled then begin
     FStickyAutoExtend := False;
 
-    Value.y := MinMax(Value.y, 1, fLines.Count);
+    Value.y := MinMax(Value.y, 1, Max(fLines.Count, 1));
 
     // ensure folded block at bottom line is in selection
     if (ActiveSelectionMode = smLine) and (FFoldedView <> nil) and
