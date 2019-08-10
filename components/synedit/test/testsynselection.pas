@@ -51,6 +51,7 @@ type
     procedure UnsetSelectionByKey;
 
     procedure ReplaceSelText;
+    procedure MoveOnSetTextBeween; // Just a small subset....
 
     procedure CopyPaste;
 
@@ -73,6 +74,24 @@ begin
              Format('No Sel Avail (X/Y=(%d, %d) - (%d, %d))', [SynEdit.BlockBegin.X, SynEdit.BlockBegin.Y,
                                                                SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y])
             );
+  if (y2 < y1) or ( (y2=y1) and (x2<x1) ) then begin
+    if (SynEdit.BlockBegin.X <> X2) or (SynEdit.BlockBegin.Y <> Y2) or
+       (SynEdit.BlockEnd.X <> X1) or (SynEdit.BlockEnd.Y <> Y1)
+    then
+      TestFail(Name, 'IsBlock',
+               Format('X/Y=(%d, %d) - (%d, %d)', [X1, Y1, X2, Y2]),
+               Format('X/Y=(%d, %d) - (%d, %d)', [SynEdit.BlockBegin.X, SynEdit.BlockBegin.Y,
+                                                  SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y])
+              );
+    if not SynEdit.IsBackwardSel then
+      TestFail(Name, 'IsBlock (not backwards)',
+               Format('X/Y=(%d, %d) - (%d, %d)', [X1, Y1, X2, Y2]),
+               Format('X/Y=(%d, %d) - (%d, %d)', [SynEdit.BlockBegin.X, SynEdit.BlockBegin.Y,
+                                                  SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y])
+              );
+    exit;
+  end;
+
   if (SynEdit.BlockBegin.X <> X1) or (SynEdit.BlockBegin.Y <> Y1) or
      (SynEdit.BlockEnd.X <> X2) or (SynEdit.BlockEnd.Y <> Y2)
   then
@@ -1518,6 +1537,97 @@ begin
   DoTests;
 
 
+end;
+
+procedure TTestSynSelection.MoveOnSetTextBeween;
+var
+  TheText: TStringArray;
+
+  function GetTheText: TStringArray;
+  begin
+    SetLength(Result, 4);
+    Result[0] := ' ABC def';
+    Result[1] := 'XYZ 123';
+    Result[2] := '';
+    Result[3] := '';
+  end;
+
+  procedure DoTest(AName: String;
+    SelBX, SelBY,  SelEX, SelEY,  TextX, TextY,  ExpBx, ExpBy, ExpEx, ExpEy: Integer;
+    aFlags: TSynEditTextFlags = []; aCaretMode: TSynCaretAdjustMode = scamIgnore);
+  var
+    s: Boolean;
+    p: TPoint;
+  begin
+    PopPushBaseName(AName);
+    SetLines(TheText);
+    if Length(TheText) = 0 then SynEdit.Lines.Clear;
+
+    SetCaretAndSel(SelBx, SelBy, SelEx,SelEy);
+    s := SynEdit.SelAvail;
+    p := Point(Textx,TextY);
+    SynEdit.SetTextBetweenPoints(p, p, 'X', aFlags, aCaretMode);
+
+    TestIsBlock('After Replace', ExpBx,ExpBy, ExpEx,ExpEy);
+
+    SynEdit.Undo;
+    if s
+    then TestIsBlock('After Undo', SelBx, SelBy, SelEx,SelEy)
+    else TestIsNoBlock('After Undo');
+
+    SynEdit.Redo;
+    TestIsBlock('After Redo', ExpBx,ExpBy, ExpEx,ExpEy);
+  end;
+var
+  p: TPoint;
+begin
+  PushBaseName('');
+  TheText := GetTheText;
+
+  DoTest('NO Flag - BlockBegin',   2,1, 4,1,   2,1,   -1,-1,-1,-1,  [], scamAdjust);
+  DoTest('NO Flag - BlockEnd',     2,1, 4,1,   4,1,   -1,-1,-1,-1,  [], scamAdjust);
+  DoTest('NO Flag - Empty',        2,1, 2,1,   2,1,   -1,-1,-1,-1,  [], scamAdjust);
+
+  DoTest('setSelect - BlockBegin', 2,1, 4,1,   2,1,   2,1, 3,1,   [setSelect], scamEnd);
+  DoTest('setSelect - BlockEnd',   2,1, 4,1,   4,1,   4,1, 5,1,   [setSelect], scamEnd);
+  DoTest('setSelect - Empty',      2,1, 2,1,   2,1,   2,1, 3,1,   [setSelect], scamEnd);
+
+  DoTest('setPersistentBlock - BlockBegin', 2,1, 4,1,   2,1,   3,1, 5,1,   [setPersistentBlock], scamAdjust);  // adjusted/moved block
+  DoTest('setPersistentBlock - BlockEnd',   2,1, 4,1,   4,1,   2,1, 5,1,   [setPersistentBlock], scamAdjust);  // extended block
+  DoTest('setPersistentBlock - Empty',      2,1, 2,1,   2,1,   -1,1,-1,1,   [setPersistentBlock], scamAdjust);  // adjusted/moved block
+
+  DoTest('setMoveBlock - BlockBegin', 2,1, 4,1,   2,1,   3,1, 5,1,   [setMoveBlock], scamAdjust);
+  DoTest('setMoveBlock - BlockEnd',   2,1, 4,1,   4,1,   2,1, 4,1,   [setMoveBlock], scamIgnore); // so caret will not destroy selection
+  DoTest('setMoveBlock - Empty',      2,1, 2,1,   2,1,   -1,1,-1,1,   [setMoveBlock], scamAdjust);
+
+  DoTest('setExtendBlock - BlockBegin', 2,1, 4,1,   2,1,   2,1, 5,1,   [setExtendBlock], scamAdjust);
+  DoTest('setExtendBlock - BlockEnd',   2,1, 4,1,   4,1,   2,1, 5,1,   [setExtendBlock], scamAdjust);
+//TODO: should this create a selection?
+  DoTest('setExtendBlock - Empty',      2,1, 2,1,   2,1,   -1,1, -1,1,   [setExtendBlock], scamAdjust);
+
+  // Backward
+  PopPushBaseName('Backward');
+
+  DoTest('NO Flag - BlockBegin',   4,1, 2,1,   2,1,   -1,-1,-1,-1,  [], scamAdjust);
+  DoTest('NO Flag - BlockEnd',     4,1, 2,1,   4,1,   -1,-1,-1,-1,  [], scamAdjust);
+
+  DoTest('setSelect - BlockBegin', 4,1, 2,1,   2,1,   2,1, 3,1,   [setSelect], scamEnd);
+  DoTest('setSelect - BlockEnd',   4,1, 2,1,   4,1,   4,1, 5,1,   [setSelect], scamEnd);
+
+  DoTest('setPersistentBlock - BlockBegin', 4,1, 2,1,   2,1,   5,1, 3,1,   [setPersistentBlock], scamAdjust);  // adjusted/moved block
+  DoTest('setPersistentBlock - BlockEnd',   4,1, 2,1,   4,1,   5,1, 2,1,   [setPersistentBlock], scamAdjust);  // extended block
+
+  DoTest('setMoveBlock - BlockBegin', 4,1, 2,1,   2,1,   5,1, 3,1,   [setMoveBlock], scamAdjust);
+  DoTest('setMoveBlock - BlockEnd',   4,1, 2,1,   4,1,   2,1, 4,1,   [setMoveBlock], scamIgnore); // so caret will not destroy selection
+
+  DoTest('setExtendBlock - BlockBegin', 4,1, 2,1,   2,1,   5,1, 2,1,   [setExtendBlock], scamBegin);
+  DoTest('setExtendBlock - BlockEnd',   4,1, 2,1,   4,1,   5,1, 2,1,   [setExtendBlock], scamAdjust);
+
+  TheText := nil;
+  PopPushBaseName('syn clear');
+  DoTest('setMoveBlock - Empty',      1,1, 1,1,   1,1,   -1,1,-1,1,   [setMoveBlock], scamAdjust);
+
+  PopBaseName;
 end;
 
 procedure TTestSynSelection.CopyPaste;
