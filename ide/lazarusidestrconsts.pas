@@ -6595,7 +6595,7 @@ resourcestring
   LvlGraphReduceBackedges = 'Reduce backedges';
   lisDebugOptionsFrmBackend = 'Debugger backend';
   dlgPODebugger = 'Debugger';
-  lisDebugOptionsFrmDebuggerBackend = 'DebuggerBackend:';
+  lisDebugOptionsFrmDebuggerBackend = 'Debugger Backend:';
   lisDebugOptionsFrmUseIDEDebugger = '-- Use IDE default Debugger --';
   lisDebugOptionsFrmUnknownDebuggerBacke = 'Unknown Debugger backend "%s"';
 
