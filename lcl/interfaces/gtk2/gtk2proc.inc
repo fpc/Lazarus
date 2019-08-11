@@ -479,7 +479,7 @@ begin
       FixedWidget:=GetFixedWidget(MainWidget);
       if FixedWidget=Widget then
         Result:=Result+'<Is FixedWidget>';
-      WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
+      WinWidgetInfo:=GetWidgetInfo(MainWidget);
       if WinWidgetInfo<>nil then begin
         if WinWidgetInfo^.CoreWidget = Widget then
           Result:=Result+'<Is CoreWidget>';
@@ -686,13 +686,8 @@ function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
 var
   Info: PWidgetInfo;
 begin
-  Info := GetWidgetInfo(GtkObject, True);
-  if Info = nil
-  then begin
-    Result := 0;
-    Exit;
-  end;
-  
+  Info := GetOrCreateWidgetInfo(GtkObject);
+  if Info = nil then Exit(0);
   Inc(Info^.ChangeLock, LockOffset);
   Result := Info^.ChangeLock;
 end;
@@ -717,8 +712,7 @@ begin
   end;
 end;
 
-procedure SetFormShowInTaskbar(AForm: TCustomForm;
-  const AValue: TShowInTaskbar);
+procedure SetFormShowInTaskbar(AForm: TCustomForm; const AValue: TShowInTaskbar);
 var
   Enable: boolean;
   Widget: PGtkWidget;
@@ -842,8 +836,7 @@ begin
 end;
 {$ENDIF}
 
-procedure SetLabelAlignment(LabelWidget: PGtkLabel;
-  const NewAlignment: TAlignment);
+procedure SetLabelAlignment(LabelWidget: PGtkLabel; const NewAlignment: TAlignment);
 const
   cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
@@ -3872,7 +3865,7 @@ begin
   if Widget = nil
   then raise EInterfaceException.Create('GetFixedWidget Widget=nil');
 
-  WidgetInfo := GetWidgetInfo(Widget, False);
+  WidgetInfo := GetWidgetInfo(Widget);
   if WidgetInfo <> nil
   then Result := WidgetInfo^.ClientWidget
   else Result := nil;
@@ -3895,7 +3888,7 @@ begin
   if ParentWidget = nil
   then raise EInterfaceException.Create('SetFixedWidget ParentWidget=nil');
   
-  WidgetInfo := GetWidgetInfo(ParentWidget, True);
+  WidgetInfo := GetOrCreateWidgetInfo(ParentWidget);
   WidgetInfo^.ClientWidget := FixedWidget;
   //TODO: remove old compatebility
   g_object_set_data(ParentWidget, 'Fixed', FixedWidget)
@@ -3914,7 +3907,7 @@ begin
   if AnObject = nil
   then raise EInterfaceException.Create('SetLCLObject AnObject=nil');
 
-  WidgetInfo := GetWidgetInfo(Widget, True);
+  WidgetInfo := GetOrCreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AnObject;
 end;
 
@@ -4134,12 +4127,11 @@ end;
  ------------------------------------------------------------------------------}
 function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 begin
-  if AWidget = nil then Result:= nil
-  else begin
-    New(Result);
-    FillChar(Result^, SizeOf(Result^), 0);
-    g_object_set_data(AWidget, 'widgetinfo', Result);
-  end;
+  if AWidget = nil then
+    Exit(nil);
+  New(Result);
+  FillChar(Result^, SizeOf(Result^), 0);
+  g_object_set_data(AWidget, 'widgetinfo', Result);
 end;
 
 function CreateWidgetInfo(const AWidget: Pointer; const AObject: TObject;
@@ -4149,36 +4141,34 @@ begin
   if Result = nil then Exit;
   
   Result^.LCLObject := AObject;
-  // in most cases the created widget is the core widget
-  // so default to it
+  // in most cases the created widget is the core widget so default to it
   Result^.CoreWidget := AWidget;
   Result^.Style := AParams.Style;
   Result^.ExStyle := AParams.ExStyle;
   Result^.WndProc := {%H-}PtrUInt(AParams.WindowClass.lpfnWndProc);
 end;
 
-function GetWidgetInfo(const AWidget: Pointer {; const Create: Boolean = False}): PWidgetInfo;
-begin
-  Result := GetWidgetInfo(AWidget, False);
-end;
-
-function GetWidgetInfo(const AWidget: Pointer;
-  const ACreate: Boolean): PWidgetInfo;
+function GetWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 var
   MainWidget: PGtkObject;
 begin
-  if AWidget <> nil then
-  begin
-    MainWidget := GetMainWidget(AWidget);
-    Result := g_object_get_data(PGObject(MainWidget), 'widgetinfo');
-    if (Result = nil) and ACreate then
-    begin
-      Result := CreateWidgetInfo(MainWidget);
-      // use the main widget as default
-      Result^.CoreWidget := PGtkWidget(MainWidget);
-    end;
-  end
-  else Result := nil;
+  if AWidget = nil then Exit(nil);
+  MainWidget := GetMainWidget(AWidget);
+  Result := g_object_get_data(PGObject(MainWidget), 'widgetinfo');
+end;
+
+function GetOrCreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
+var
+  MainWidget: PGtkObject;
+begin
+  if AWidget = nil then Exit(nil);
+  MainWidget := GetMainWidget(AWidget);
+  Result := g_object_get_data(PGObject(MainWidget), 'widgetinfo');
+  if Assigned(Result) then Exit;
+  Result := CreateWidgetInfo(MainWidget);
+  DebugLn('GetOrCreateWidgetInfo: MainWidget info was created causing a memory leak.');
+  // use the main widget as default
+  Result^.CoreWidget := PGtkWidget(MainWidget);
 end;
 
 procedure FreeWidgetInfo(AWidget: Pointer);
@@ -4801,8 +4791,7 @@ begin
     MouseCaptureIndex:=0;
 end;
 
-function GetDefaultMouseCaptureWidget(Widget: PGtkWidget
-  ): PGtkWidget;
+function GetDefaultMouseCaptureWidget(Widget: PGtkWidget): PGtkWidget;
 var
   WidgetInfo: PWinWidgetInfo;
   LCLObject: TObject;
@@ -4817,7 +4806,7 @@ begin
   if Widget=nil then exit;
   if GtkWidgetIsA(Widget,GTKAPIWidget_Type) then
   begin
-    WidgetInfo:=GetWidgetInfo(Widget,false);
+    WidgetInfo:=GetWidgetInfo(Widget);
     if WidgetInfo<>nil then
       Result:=WidgetInfo^.CoreWidget;
     exit;
@@ -4833,14 +4822,10 @@ begin
   begin
     if GTK_IS_NOTEBOOK({%H-}PGtkWidget(TWinControl(LCLObject).Handle)) then
       exit;
-
     Parent := TWinControl(LCLObject).Parent;
-    if Assigned(Parent) then
-    begin
-      if GTK_IS_NOTEBOOK({%H-}PGtkWidget(Parent.Handle)) then
-        exit;
-    end;
-    WidgetInfo:=GetWidgetInfo({%H-}PGtkWidget(TWinControl(LCLObject).Handle),false);
+    if Assigned(Parent) and GTK_IS_NOTEBOOK({%H-}PGtkWidget(Parent.Handle)) then
+      exit;
+    WidgetInfo:=GetWidgetInfo({%H-}PGtkWidget(TWinControl(LCLObject).Handle));
     if WidgetInfo <> nil then
     begin
       {$IFDEF VerboseMouseCapture}
@@ -4891,7 +4876,7 @@ begin
   {$IFDEF VerboseMouseCapture}
   DebugLn('ReleaseMouseCapture gtk_grab=[',GetWidgetDebugReport(OldMouseCaptureWidget),'] MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
   {$ENDIF}
-  Info := GetWidgetInfo(OldMouseCaptureWidget, false);
+  Info := GetWidgetInfo(OldMouseCaptureWidget);
   if (Info <> nil) and (Info^.CoreWidget <> nil) then
   begin
     if GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then
@@ -5081,7 +5066,7 @@ begin
   if (csfUpdateSignalMask in ASFlags) and (AReqSignalMask <> 0)
   then begin
     MainWidget := GetMainWidget(PGtkWidget(AnObject));
-    WinWidgetInfo := GetWidgetInfo(MainWidget,true);
+    WinWidgetInfo := GetOrCreateWidgetInfo(MainWidget);
     WinWidgetInfo^.EventMask := WinWidgetInfo^.EventMask or AReqSignalMask;
   end;
   
@@ -6929,7 +6914,7 @@ begin
     end
     else
     begin
-      WinWidgetInfo := GetWidgetInfo(Widget, False);
+      WinWidgetInfo := GetWidgetInfo(Widget);
       if (WinWidgetInfo = nil) or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
         WriteWarningParentWidgetNotFound;
     end;
@@ -9607,7 +9592,7 @@ begin
   end;
 
   // check if widget has a WinWidgetInfo record
-  WinWidgetInfo := GetWidgetInfo(AWidget, false);
+  WinWidgetInfo := GetWidgetInfo(AWidget);
   if WinWidgetInfo = nil then Exit;
 
   ImplWidget:= WinWidgetInfo^.CoreWidget;

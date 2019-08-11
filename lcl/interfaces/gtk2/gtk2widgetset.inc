@@ -178,7 +178,7 @@ var
   aTreeIter : TGtkTreeIter;
   value : pgValue;
 begin
-  aWidget := GetWidgetInfo({%H-}Pointer(WinControl.Handle), True)^.CoreWidget;
+  aWidget := GetOrCreateWidgetInfo({%H-}Pointer(WinControl.Handle))^.CoreWidget;
   aTreeModel := gtk_tree_view_get_model (GTK_TREE_VIEW(aWidget));
   if (gtk_tree_model_get_iter_from_string (aTreeModel, @aTreeIter, arg1)) then begin
     aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
@@ -352,7 +352,7 @@ begin
     else gObject := AGTKObject;
     if gObject = nil then Exit;
 
-    Info:=GetWidgetInfo(gObject, True);
+    Info:=GetOrCreateWidgetInfo(gObject);
 
     // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
     gFixed := PGTKObject(GetFixedWidget(gObject));
@@ -758,7 +758,7 @@ begin
     if gFixed = nil then gFixed := gObject;
 
     // gCore is the main widget (e.g. TListView has this)
-    gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.CoreWidget);
+    gCore:= PGtkObject(GetOrCreateWidgetInfo(gObject)^.CoreWidget);
   end;
 
   case AMsg of
@@ -893,7 +893,7 @@ begin
       SelectionMode:= GTK_SELECTION_SINGLE;
       
     Selection := gtk_tree_view_get_selection(GTK_TREE_VIEW(
-       GetWidgetInfo(Widget, True)^.CoreWidget));
+       GetOrCreateWidgetInfo(Widget)^.CoreWidget));
     gtk_tree_selection_set_mode(Selection, SelectionMode);
   end;
 end;
@@ -4682,7 +4682,7 @@ var
   Info: PWinWidgetInfo;
 begin
   if Widget = nil then Exit;
-  Info := GetWidgetInfo(Widget, False);
+  Info := GetWidgetInfo(Widget);
   if Info <> nil then
     g_signal_handlers_disconnect_matched(Widget, G_SIGNAL_MATCH_DATA, 0, 0, nil, nil, Info);
 end;
@@ -4738,7 +4738,7 @@ var
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  WidgetInfo := GetWidgetInfo(Widget,true); // Widget info already created in CreateAPIWidget
+  WidgetInfo := GetOrCreateWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
   WidgetInfo^.LCLObject := AWinControl;
   WidgetInfo^.Style := AParams.Style;
   WidgetInfo^.ExStyle := AParams.ExStyle;
@@ -4868,7 +4868,7 @@ var
   WinWidgetInfo: PWinWidgetInfo;
 begin
   Result := GTKAPIWidget_New;
-  WinWidgetInfo := GetWidgetInfo(Result, True);
+  WinWidgetInfo := GetOrCreateWidgetInfo(Result);
   WinWidgetInfo^.CoreWidget := PGTKAPIWidget(Result)^.Client;
   WinWidgetInfo^.LCLObject := AWinControl;
 
@@ -4936,7 +4936,7 @@ begin
   gtk_widget_show(TempWidget);
   if NotOnParentsClientArea then
   begin
-    WinWidgetInfo:=GetWidgetInfo(Result, true);
+    WinWidgetInfo:=GetOrCreateWidgetInfo(Result);
     Include(WinWidgetInfo^.Flags, wwiNotOnParentsClientArea);
   end;
   SetFixedWidget(Result, TempWidget);

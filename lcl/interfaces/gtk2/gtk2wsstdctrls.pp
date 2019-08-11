@@ -434,7 +434,7 @@ begin
   Result := -1;
   if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   if GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
   begin
     Path:=nil;
@@ -469,7 +469,7 @@ begin
   FillChar(ARect, SizeOf(ARect), 0);
   if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   if GtkWidgetIsA(Widget, gtk_tree_view_get_type) and (Index >= 0) then
   begin
     Path := gtk_tree_path_new_from_indices(Index, -1);
@@ -505,7 +505,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SelectItem') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
@@ -538,7 +538,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
     Exit;
   AWidget := {%H-}PGtkWidget(AWinControl.Handle);
-  AWidget := GetWidgetInfo(AWidget, True)^.CoreWidget;
+  AWidget := GetOrCreateWidgetInfo(AWidget)^.CoreWidget;
   Gtk2WidgetSet.SetWidgetColor(AWidget,
     AWinControl.Font.Color,
     AWinControl.Color,
@@ -556,7 +556,7 @@ begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
     Exit;
 
-  WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True);
+  WidgetInfo := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle));
   Widget := WidgetInfo^.CoreWidget;
   if not GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
     raise Exception.Create('');
@@ -613,7 +613,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetSelectionMode') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle),True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
   case AMultiSelect of
@@ -634,7 +634,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetStyle') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   AStyle := {%H-}PtrInt(g_object_get_data(PGObject(Widget), 'lclcustomlistboxstyle'));
   if (AStyle <> Ord(ACustomListBox.Style)) then
     RecreateWnd(ACustomListBox);
@@ -662,7 +662,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetTopIndex') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   TreeView := PGtkTreeView(Widget);
   ListStoreModel := gtk_tree_view_get_model(TreeView);
   
@@ -769,7 +769,7 @@ begin
   gtk_widget_show(TVWidget);
 
   SetMainWidget(p, TVWidget);
-  WidgetInfo := GetWidgetInfo(p, false);
+  WidgetInfo := GetWidgetInfo(p);
   WidgetInfo^.CoreWidget := TVWidget;
 
   Selection := gtk_tree_view_get_selection(PGtkTreeView(TVWidget));
@@ -816,13 +816,10 @@ begin
   case ACustomListBox.fCompStyle of
   csListBox, csCheckListBox:
     begin
-      aTreeView :=
-        GTK_TREE_VIEW(GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget);
-
+      aTreeView:=GTK_TREE_VIEW(GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget);
       aTreePath:=nil;
       aTreeColumn:=nil;
-      if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn,
-        nil, nil)
+      if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn, nil, nil)
       then begin
         Result := gtk_tree_path_get_indices(aTreePath)[0];
         gtk_tree_path_free(aTreePath);
@@ -832,8 +829,7 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomListBox.GetSelCount(
-  const ACustomListBox: TCustomListBox): integer;
+class function TGtk2WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 var
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
   Selection: PGtkTreeSelection;
@@ -843,7 +839,7 @@ begin
   Result := 0;
   if not WSCheckHandleAllocated(ACustomListBox, 'GetSelCount') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
   Rows := gtk_tree_selection_get_selected_rows(Selection, @ListStoreModel);
@@ -862,16 +858,14 @@ begin
   Result := False;      { assume: nothing found }
   if not WSCheckHandleAllocated(ACustomListBox, 'GetSelected') then
     Exit;
-  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
   if gtk_tree_view_get_model(PGtkTreeView(Widget)) = nil then
     Exit;
   if gtk_tree_model_iter_nth_child(ListStoreModel, @Item, nil, AIndex) then
-  begin
     Result := gtk_tree_selection_iter_is_selected(Selection, @Item);
-  end;
 end;
 
 class function TGtk2WSCustomListBox.GetStrings(
@@ -885,8 +879,7 @@ begin
   case ACustomListBox.fCompStyle of
     {csCListBox:
       begin
-        Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-
+        Widget:= GetOrCreateWidgetInfo(Pointer(Handle))^.CoreWidget;
         Result := TGtkCListStringList.Create(PGtkCList(Widget));
         if ACustomListBox is TCustomListBox then
           TGtkCListStringList(Result).Sorted :=
@@ -895,7 +888,7 @@ begin
     }
     csCheckListBox, csListBox:
       begin
-        Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+        Widget := GetOrCreateWidgetInfo({%H-}Pointer(ACustomListBox.Handle))^.CoreWidget;
         Result := TGtkListStoreStringList.Create(
                                 gtk_tree_view_get_model(PGtkTreeView(Widget)),
                                 Ord(ACustomListBox.fCompStyle = csCheckListBox),
@@ -1837,7 +1830,7 @@ var
   Combo: PGtkComboBox;
   AValue: TGValue;
 begin
-  WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomComboBox.Handle), False);
+  WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomComboBox.Handle));
   Combo := PGtkComboBox(WidgetInfo^.CoreWidget);
 
   FillChar(AValue{%H-}, SizeOf(AValue), 0);
@@ -1957,7 +1950,7 @@ var
   WidgetInfo: PWidgetInfo;
   Combo: PGtkComboBox;
 begin
-  WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomComboBox.Handle), False);
+  WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomComboBox.Handle));
   Combo := PGtkComboBox(WidgetInfo^.CoreWidget);
 
   case ADroppedDown of
@@ -2074,7 +2067,7 @@ var
   Handle: HWND;
 begin
   Handle := ACustomComboBox.Handle;
-  ComboWidget := GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget;
+  ComboWidget := GetOrCreateWidgetInfo({%H-}Pointer(Handle))^.CoreWidget;
   Result :=  TGtkListStoreStringList(g_object_get_data(PGObject(ComboWidget),
                                      GtkListItemLCLListTag));
 end;
@@ -2086,7 +2079,7 @@ var
   Handle: HWND;
 begin
   Handle := ACustomComboBox.Handle;
-  ComboWidget := GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget;
+  ComboWidget := GetOrCreateWidgetInfo({%H-}Pointer(Handle))^.CoreWidget;
   TGtkListStoreStringList(g_object_get_data(PGObject(ComboWidget),
                                      GtkListItemLCLListTag)).Sorted := IsSorted;
 end;
@@ -2264,7 +2257,7 @@ var
   ComboWidget: PGtkWidget;
 begin
   Handle := AWinControl.Handle;
-  ComboWidget := GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget;
+  ComboWidget := GetOrCreateWidgetInfo({%H-}Pointer(Handle))^.CoreWidget;
 
   if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
     FreeWidgetInfo(PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);

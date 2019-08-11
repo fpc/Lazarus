@@ -2133,7 +2133,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
     Exit;
   AWidget := {%H-}PGtkWidget(AWinControl.Handle);
-  AWidget := GetWidgetInfo(AWidget, True)^.CoreWidget;
+  AWidget := GetOrCreateWidgetInfo(AWidget)^.CoreWidget;
   Gtk2WidgetSet.SetWidgetColor(AWidget,
     AWinControl.Font.Color,
     AWinControl.Color,
@@ -2155,7 +2155,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     Exit;
   Widget := {%H-}PGtkWidget(AWinControl.Handle);
-  Widget := GetWidgetInfo(Widget, True)^.CoreWidget;
+  Widget := GetOrCreateWidgetInfo(Widget)^.CoreWidget;
   Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
   Gtk2WidgetSet.SetWidgetColor(Widget, AFont.Color, clNone,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,

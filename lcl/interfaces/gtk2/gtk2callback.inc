@@ -27,7 +27,7 @@ begin
   Result := DeliverMessage(Target, PaintMsg);
 
   if IsCustomControl then begin
-    WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(TCustomControl(Target).Handle), False);
+    WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(TCustomControl(Target).Handle));
     if WidgetInfo <> nil then
       WidgetInfo^.UpdateRect := Rect(0,0,0,0);
   end;
@@ -234,57 +234,56 @@ begin
   {$ENDIF}
 
   MainWidget:=GetMainWidget(Widget);
-  WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
+  WinWidgetInfo:=GetOrCreateWidgetInfo(MainWidget);
+  Assert(Assigned(WinWidgetInfo), 'gtkRealizeAfterCB: WinWidgetInfo not assigned.');
   LCLObject:=GetLCLObject(MainWidget);
-  if (LCLObject<>nil) and (WinWidgetInfo<>nil) then begin
-    ClientWidget:=GetFixedWidget(Widget);
-    if (LCLObject is TWinControl) then
-      TheWinControl:=TWinControl(LCLObject)
-    else
-      TheWinControl:=nil;
+  if LCLObject=nil then exit;
+  ClientWidget:=GetFixedWidget(Widget);
+  if (LCLObject is TWinControl) then
+    TheWinControl:=TWinControl(LCLObject)
+  else
+    TheWinControl:=nil;
 
-    // set extra signal masks after the widget window is created
-    // define extra events we're interrested in
-    //write('GTKRealizeAfterCB ');
-    //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
-    //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
-    if (TheWinControl<>nil) then begin
-      //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  // set extra signal masks after the widget window is created
+  // define extra events we're interrested in
+  //write('GTKRealizeAfterCB ');
+  //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
+  //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
+  if (TheWinControl<>nil) then begin
+    //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
-      NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
+    NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
+                  or WinWidgetInfo^.EventMask;
+    gtk_widget_add_events(Widget,NewEventMask);
+    gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
+
+    if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
+    and (GetControlWindow(ClientWidget)<>GetControlWindow(Widget)) then begin
+      //DebugLn(['gtkRealizeAfterCB ClientWindow<>Window']);
+      NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
                     or WinWidgetInfo^.EventMask;
-      gtk_widget_add_events(Widget,NewEventMask);
-      gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
-
-      if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
-      and (GetControlWindow(ClientWidget)<>GetControlWindow(Widget)) then begin
-        //DebugLn(['gtkRealizeAfterCB ClientWindow<>Window']);
-        NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
-                      or WinWidgetInfo^.EventMask;
-        gtk_widget_add_events(ClientWidget,WinWidgetInfo^.EventMask);
-        gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
-      end;
-      //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
-      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+      gtk_widget_add_events(ClientWidget,WinWidgetInfo^.EventMask);
+      gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
     end;
+    //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+  end;
 
-    if TheWinControl<>nil then
-    begin
-      TheWinControl.CNPreferredSizeChanged;
-      TGtkPrivateWidgetClass(TheWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WinWidgetInfo);
-      ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
+  if TheWinControl<>nil then
+  begin
+    TheWinControl.CNPreferredSizeChanged;
+    TGtkPrivateWidgetClass(TheWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WinWidgetInfo);
+    ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
 
-      if (TheWinControl is TCustomPage)
-        and not ((TheWinControl.Parent <> nil) and (TheWinControl.Parent is TTabControl))
-      then
-        UpdateNotebookPageTab(nil,TheWinControl);
+    if (TheWinControl is TCustomPage)
+      and not ((TheWinControl.Parent <> nil) and (TheWinControl.Parent is TTabControl))
+    then
+      UpdateNotebookPageTab(nil,TheWinControl);
 
-      if TheWinControl is TCustomForm then
-        SetFormShowInTaskbar(TCustomForm(TheWinControl),
-                             TCustomForm(TheWinControl).ShowInTaskbar);
-    end;
-
+    if TheWinControl is TCustomForm then
+      SetFormShowInTaskbar(TCustomForm(TheWinControl),
+                           TCustomForm(TheWinControl).ShowInTaskbar);
   end;
 end;
 
@@ -412,7 +411,7 @@ function postpone_changed_signal(Widget: PGtkWidget): GBoolean; cdecl;
 begin
   Result := gtk_false;
   g_object_set_data(PGObject(Widget), 'lcl-postpone-changed-signal', nil);
-  gtkchanged_editbox(Widget, GetWidgetInfo(Widget, False)^.LCLObject);
+  gtkchanged_editbox(Widget, GetWidgetInfo(Widget)^.LCLObject);
 end;
 
 procedure gtkchanged_editbox_delete_text(Widget: PGtkWidget; AStartPos,
@@ -692,7 +691,7 @@ begin
   end;
   {$ENDIF}
 
-  Info := GetWidgetInfo(Widget, false);
+  Info := GetWidgetInfo(Widget);
   try
     if (Info <> nil) then
       Include(Info^.Flags, wwiActivating);
@@ -738,7 +737,7 @@ begin
   {$ENDIF}
   ResetDefaultIMContext;
 
-  Info := GetWidgetInfo(Widget,false);
+  Info := GetWidgetInfo(Widget);
   try
     if (Info<>nil) then
       Include(Info^.Flags, wwiDeactivating);
@@ -1181,7 +1180,7 @@ begin
   Result := CallBackDefaultReturn;
   //DebugLn(['gtkdestroyCB ',GetWidgetDebugReport(Widget)]);
   
-  Info:=GetWidgetInfo(Widget,false);
+  Info:=GetWidgetInfo(Widget);
   if Info = nil then // this widget is already destroyed
     Exit;
 
@@ -1720,7 +1719,7 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPoi
     // When in browse mode and a listbox is focused and nothing is selected,
     // the first item is focused.
     // Clicking with the mouse on this item won't select it.
-    Info := GetWidgetInfo(Widget, false);
+    Info := GetWidgetInfo(Widget);
     if Info = nil then Exit;
     if Info^.CoreWidget = nil then Exit;
     if not GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then
@@ -3078,9 +3077,9 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   AValue:=PGtkRange(Widget)^.adjustment^.value;
-  WidgetInfo:=GetWidgetInfo(Widget, False);
+  WidgetInfo:=GetWidgetInfo(Widget);
   if not Assigned(WidgetInfo) then
-    WidgetInfo:=GetWidgetInfo(Widget^.parent, False);
+    WidgetInfo:=GetWidgetInfo(Widget^.parent);
   if Assigned(WidgetInfo) and (Widget^.state = 1) then
     Gtk2RangeScrollCB(PGtkRange(Widget), 0, AValue, WidgetInfo);
   Widget^.state := 0;

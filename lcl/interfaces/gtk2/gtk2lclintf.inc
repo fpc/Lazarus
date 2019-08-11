@@ -1287,7 +1287,7 @@ var
   Requisition: TGtkRequisition;
 begin
   Result:=True;
-  p := GetWidgetInfo({%H-}Pointer(Handle), False)^.CoreWidget;
+  p := GetWidgetInfo({%H-}Pointer(Handle))^.CoreWidget;
   
   Menu := PGtkWidget(g_object_get_data(G_OBJECT(p), 'Menu'));
   if Menu<>nil then begin

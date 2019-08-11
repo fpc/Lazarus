@@ -339,7 +339,7 @@ function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 function CreateWidgetInfo(const AWidget: Pointer; const AObject: TObject;
                           const AParams: TCreateParams): PWidgetInfo;
 function GetWidgetInfo(const AWidget: Pointer): PWidgetInfo;
-function GetWidgetInfo(const AWidget: Pointer; const ACreate: Boolean): PWidgetInfo;
+function GetOrCreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 procedure FreeWidgetInfo(AWidget: Pointer);
 
 procedure DestroyWidget(Widget: PGtkWidget);
@@ -358,8 +358,7 @@ procedure FixedMoveControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 
 // forms
-procedure SetFormShowInTaskbar(AForm: TCustomForm;
-                               const AValue: TShowInTaskbar);
+procedure SetFormShowInTaskbar(AForm: TCustomForm; const AValue: TShowInTaskbar);
 procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);
 procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
 procedure GrabKeyBoardToForm(AForm: TCustomForm);
@@ -369,8 +368,7 @@ procedure ReleaseMouseFromForm({%H-}AForm: TCustomForm);
 procedure GtkWindowShowModal(AForm: TCustomForm; GtkWindow: PGtkWindow);
 
 // label
-procedure SetLabelAlignment(LabelWidget: PGtkLabel;
-  const NewAlignment: TAlignment);
+procedure SetLabelAlignment(LabelWidget: PGtkLabel; const NewAlignment: TAlignment);
 
 // paint messages
 function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;

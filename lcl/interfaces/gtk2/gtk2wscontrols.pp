@@ -263,10 +263,8 @@ var
   CS: PChar;
   Handle: HWND;
 begin
-  Result := False;
   if not WSCheckHandleAllocated(AWinControl, 'GetText')
-  then Exit;
-
+  then Exit(False);
   Result := true;
   Handle := AWinControl.Handle;
   case AWinControl.fCompStyle of
@@ -274,15 +272,12 @@ begin
       begin
         AText := StrPas(gtk_entry_get_text(PGtkEntry({%H-}PGtkCombo(Handle)^.entry)));
       end;
-
     csEdit: AText:= StrPas(gtk_entry_get_text({%H-}PgtkEntry(Handle)));
     csSpinEdit: AText:= StrPas(gtk_entry_get_text(@{%H-}PGtkSpinButton(Handle)^.entry));
-
-
     csMemo:
       begin
         CS := gtk_editable_get_chars(PGtkEditable(
-          GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget), 0, -1);
+          GetOrCreateWidgetInfo({%H-}Pointer(Handle))^.CoreWidget), 0, -1);
         AText := StrPas(CS);
         g_free(CS);
       end;
@@ -306,7 +301,7 @@ begin
   case AWinControl.fCompStyle of
     csMemo:
       begin
-        TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget));
+        TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetOrCreateWidgetInfo({%H-}Pointer(Handle))^.CoreWidget));
         gtk_text_buffer_get_start_iter(TextBuf, @StartIter);
         gtk_text_buffer_get_end_iter(TextBuf, @EndIter);
         CS := gtk_text_buffer_get_text(TextBuf, @StartIter, @EndIter, False);
@@ -1022,7 +1017,7 @@ begin
 
     csMemo:
       begin
-        P:= GetWidgetInfo(P, True)^.CoreWidget;
+        P:= GetOrCreateWidgetInfo(P)^.CoreWidget;
         //debugln('TGtk2WSWinControl.SetText A ',dbgs(gtk_text_get_length(PGtkText(P))),' AText="',AText,'"');
         gtk_text_freeze(PGtkText(P));
         gtk_text_set_point(PGtkText(P), 0);

@@ -172,7 +172,7 @@ begin
 
   if Result = 0 then exit;
 
-  WidgetInfo := GetWidgetInfo(p, False);
+  WidgetInfo := GetWidgetInfo(p);
 
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
@@ -218,7 +218,7 @@ begin
   gtk_widget_show(TreeViewWidget);
 
   SetMainWidget(p, TreeViewWidget);
-  GetWidgetInfo(p, True)^.CoreWidget := TreeViewWidget;
+  GetOrCreateWidgetInfo(p)^.CoreWidget := TreeViewWidget;
 
   Selection := gtk_tree_view_get_selection(PGtkTreeView(TreeViewWidget));
 

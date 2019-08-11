@@ -124,7 +124,7 @@ var
 
 begin
   Widget:={%H-}PGtkWidget(Handle);
-  Info:=GetWidgetInfo(Widget,false);
+  Info:=GetWidgetInfo(Widget);
   if Info<>nil then
     Inc(Info^.PaintDepth);
   PS.hDC:=GetDC(Handle);
@@ -2848,7 +2848,7 @@ begin
   end;
 
   Widget := {%H-}PGtkWidget(Handle);
-  Info:=GetWidgetInfo(Widget,false);
+  Info:=GetWidgetInfo(Widget);
   if Info<>nil then
     dec(Info^.PaintDepth);
 
@@ -4874,7 +4874,7 @@ begin
         
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
-          Info:=GetWidgetInfo(PGtkWidget(Window),false);
+          Info:=GetWidgetInfo(PGtkWidget(Window));
           if (Info=nil) or (not (wwiDeactivating in Info^.Flags)) then
             Result := HWND({%H-}PtrUInt(GetMainWidget(Widget)));
           Break;
@@ -6453,7 +6453,7 @@ begin
     dec(gdkRect.y, Pt.Y);
     OffsetRect(Rect^, -Pt.X, -Pt.Y);
   end;
-  WidgetInfo := GetWidgetInfo(Widget, False); // True ??
+  WidgetInfo := GetWidgetInfo(Widget); // GetOrCreateWidgetInfo() ??
   if WidgetInfo <> nil then
     UnionRect(WidgetInfo^.UpdateRect, WidgetInfo^.UpdateRect, Rect^);
 
@@ -7713,7 +7713,7 @@ begin
   {$ENDIF}
 
   // And also, only Source that is valid
-  WidgetInfo := GetWidgetInfo(Widget, False);
+  WidgetInfo := GetWidgetInfo(Widget);
   if WidgetInfo <> nil then begin
     {$ifdef VerboseScrollWindowEx}
     DebugLn(['ScrollWindowEx C ', dbgs(WidgetInfo^.UpdateRect)]);
@@ -8527,7 +8527,7 @@ begin
       {$EndIf}
       if NewTopLevelObject is TCustomForm then
       begin
-        Info := GetWidgetInfo(NewTopLevelWidget, False);
+        Info := GetWidgetInfo(NewTopLevelWidget);
         if (Info <> nil) and not (wwiActivating in  Info^.Flags) then
           SetForegroundWindow(TCustomForm(NewTopLevelObject).Handle);
       end;
