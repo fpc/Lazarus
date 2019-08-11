@@ -3272,6 +3272,12 @@ msgstr "&Poista kuvake"
 msgid "Create Application Bundle"
 msgstr "Tee \"Application Bundle\""
 
+#: lazarusidestrconsts.dlgpodebugger
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgpodebugger"
+msgid "Debugger"
+msgstr "Virheenjäljitin"
+
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
 msgstr "Lataa &oletus"
@@ -8344,6 +8350,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
 msgstr "Virheenjäljitin"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
+msgid "Debugger Backend:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Virheenjäljittimen yleiset asetukset"
@@ -8443,9 +8453,18 @@ msgstr "Signaalit"
 msgid "Thread"
 msgstr "Säie"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
+#, object-pascal-format
+msgid "Unknown Debugger backend \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
 msgstr "Käytä tapahtumalokin värejä"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
+msgid "-- Use IDE default Debugger --"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"

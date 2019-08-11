@@ -3279,6 +3279,12 @@ msgstr "&Limpar ícone"
 msgid "Create Application Bundle"
 msgstr "Criar aplicação inclusa"
 
+#: lazarusidestrconsts.dlgpodebugger
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgpodebugger"
+msgid "Debugger"
+msgstr "Depurador"
+
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
 msgstr "Carregar &padrão"
@@ -8384,6 +8390,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
 msgstr "Depurador"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
+msgid "Debugger Backend:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Opções gerais do Depurador"
@@ -8483,9 +8493,18 @@ msgstr "Sinais"
 msgid "Thread"
 msgstr "Thread"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
+#, object-pascal-format
+msgid "Unknown Debugger backend \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
 msgstr "Usar cores no registro de eventos"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
+msgid "-- Use IDE default Debugger --"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"

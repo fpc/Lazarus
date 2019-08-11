@@ -3295,6 +3295,12 @@ msgstr "&Очистити значок"
 msgid "Create Application Bundle"
 msgstr "Створити пакет застосунків"
 
+#: lazarusidestrconsts.dlgpodebugger
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgpodebugger"
+msgid "Debugger"
+msgstr "Зневаджувач"
+
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
 msgstr "Завантажити &типові"
@@ -8380,6 +8386,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
 msgstr "Зневаджувач"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
+msgid "Debugger Backend:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Загальні параметри зневаджувача"
@@ -8480,9 +8490,18 @@ msgstr "Сигнали"
 msgid "Thread"
 msgstr "Нитка"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
+#, object-pascal-format
+msgid "Unknown Debugger backend \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
 msgstr "Використовувати кольори журналу подій"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
+msgid "-- Use IDE default Debugger --"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"

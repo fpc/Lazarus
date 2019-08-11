@@ -3474,6 +3474,12 @@ msgstr "נקה סמל"
 msgid "Create Application Bundle"
 msgstr "צור חבילת יישום"
 
+#: lazarusidestrconsts.dlgpodebugger
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgpodebugger"
+msgid "Debugger"
+msgstr "מנפה שגיאות"
+
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
 msgstr ""
@@ -8796,6 +8802,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
 msgstr "מנפה שגיאות"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
+msgid "Debugger Backend:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "הגדרות ניפוי שגיאות כלליות"
@@ -8900,8 +8910,17 @@ msgstr "אותות"
 msgid "Thread"
 msgstr "תהליך"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
+#, object-pascal-format
+msgid "Unknown Debugger backend \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
+msgid "-- Use IDE default Debugger --"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows

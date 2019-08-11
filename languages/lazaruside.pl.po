@@ -3440,6 +3440,12 @@ msgstr "Usuń ikonę"
 msgid "Create Application Bundle"
 msgstr "Utwórz Zestaw Aplikacji"
 
+#: lazarusidestrconsts.dlgpodebugger
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgpodebugger"
+msgid "Debugger"
+msgstr "Odpluskiwacz"
+
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
 msgstr "Przywróć domyślną"
@@ -8601,6 +8607,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
 msgstr "Odpluskiwacz"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
+msgid "Debugger Backend:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Główne opcje odpluskiwacza"
@@ -8706,10 +8716,19 @@ msgstr "Sygnały"
 msgid "Thread"
 msgstr "Wątek"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
+#, object-pascal-format
+msgid "Unknown Debugger backend \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 #, fuzzy
 msgid "Use event log colors"
 msgstr "Pokaż log zdarzeń odpluskwiacza"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
+msgid "-- Use IDE default Debugger --"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"

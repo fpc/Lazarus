@@ -3383,6 +3383,12 @@ msgstr "&Cancella l'icona"
 msgid "Create Application Bundle"
 msgstr "Crea un bundle di applicazioni"
 
+#: lazarusidestrconsts.dlgpodebugger
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgpodebugger"
+msgid "Debugger"
+msgstr "Debugger"
+
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
 msgstr "Carica i pre&definiti"
@@ -8504,6 +8510,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
 msgstr "Debugger"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
+msgid "Debugger Backend:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Opzioni generali del debugger"
@@ -8606,9 +8616,18 @@ msgstr "Segno"
 msgid "Thread"
 msgstr "Thread"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
+#, object-pascal-format
+msgid "Unknown Debugger backend \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
 msgstr "Usare i colori nel log degli eventi"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
+msgid "-- Use IDE default Debugger --"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"

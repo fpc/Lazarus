@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-07-13 02:12+0300\n"
+"PO-Revision-Date: 2019-08-12 01:58+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3279,6 +3279,11 @@ msgstr "О&чистить значок"
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
 msgstr "Создать Application Bundle"
+
+#: lazarusidestrconsts.dlgpodebugger
+msgctxt "lazarusidestrconsts.dlgpodebugger"
+msgid "Debugger"
+msgstr "Отладчик"
 
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
@@ -8352,6 +8357,10 @@ msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
 msgstr "Отладчик"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
+msgid "Debugger Backend:"
+msgstr "Механизм отладки:"
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Общие параметры отладчика"
@@ -8451,9 +8460,18 @@ msgstr "Сигналы"
 msgid "Thread"
 msgstr "Поток исполнения"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
+#, object-pascal-format
+msgid "Unknown Debugger backend \"%s\""
+msgstr "Механизм отладки \"%s\" неизвестен"
+
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
 msgstr "Включить цвета журнала событий"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
+msgid "-- Use IDE default Debugger --"
+msgstr "-- Использовать отладчик IDE по умолчанию --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
