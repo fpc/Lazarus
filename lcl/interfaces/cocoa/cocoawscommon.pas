@@ -269,6 +269,7 @@ begin
   {$else}
   AView.setHidden(false);
   {$endif}
+  AView.release;
   SetViewDefaults(Result);
   if AView.isKindOfClass(TCocoaCustomControl) then
     TCocoaCustomControl(AView).auxMouseByParent := true;
