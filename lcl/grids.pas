@@ -3412,7 +3412,8 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarPage: Which=',SbToStr(Which), ' Avalue=',dbgs(aPage));
+    DebugLn('Scrollbar
+    Page: Which=',SbToStr(Which), ' Avalue=',dbgs(aPage));
     {$endif}
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE;
@@ -4621,15 +4622,21 @@ var
   PaintRect: TRect;
   CSize: TSize;
   bmpAlign: TAlignment;
+  bmpLayout: TTextLayout;
   ChkIL: TCustomImageList;
   ChkII: TImageIndex;
   ChkILRes: TScaledImageListResolution;
 begin
 
   if Columns.Enabled then
-    bmpAlign := GetColumnAlignment(aCol, false)
-  else
+  begin
+    bmpAlign := GetColumnAlignment(aCol, false);
+    bmpLayout := GetColumnLayout(aCol, false);
+  end else
+  begin
     bmpAlign := taCenter;
+    bmpLayout := Canvas.TextStyle.Layout;
+  end;
 
   Details.State := -1;
   ChkIL := nil;
@@ -4653,11 +4660,16 @@ begin
   end;
 
   case bmpAlign of
-    taCenter: PaintRect.Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
+    taCenter: PaintRect.Left := (aRect.Left + aRect.Right - CSize.cx) div 2;
     taLeftJustify: PaintRect.Left := ARect.Left + varCellPadding;
     taRightJustify: PaintRect.Left := ARect.Right - CSize.Cx - varCellPadding - 1;
   end;
-  PaintRect.Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
+
+  case bmpLayout of
+    tlTop    : PaintRect.Top := aRect.Top + varCellPadding;
+    tlCenter : PaintRect.Top := (aRect.Top + aRect.Bottom - CSize.cy) div 2;
+    tlBottom : PaintRect.Top := aRect.Bottom - varCellPadding - CSize.cy - 1;
+  end;
   PaintRect := Bounds(PaintRect.Left, PaintRect.Top, CSize.cx, CSize.cy);
 
   if Details.State>=0 then
