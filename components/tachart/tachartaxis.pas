@@ -160,6 +160,7 @@ type
     function IsVertical: Boolean; inline;
     procedure Measure(
       const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
+    function MeasureLabelSize(ADrawer: IChartDrawer): Integer;
     function PositionToCoord(const ARect: TRect): Integer;
     procedure PrepareHelper(
       ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
@@ -873,6 +874,19 @@ begin
       else
         FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
     end;
+end;
+
+function TChartAxis.MeasureLabelSize(ADrawer: IChartDrawer): Integer;
+var
+  sz: Integer;
+  mv: TChartValueTextArray = nil;
+  i: Integer;
+begin
+  SetLength(mv, ValueCount);
+  for i := 0 to ValueCount - 1 do
+    mv[i] := Value[i];
+  sz := Marks.Measure(ADrawer, not IsVertical, TickLength, mv);
+  Result := round(sz);
 end;
 
 function TChartAxis.PositionIsStored: Boolean;
