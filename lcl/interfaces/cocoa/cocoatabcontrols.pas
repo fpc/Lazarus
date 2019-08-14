@@ -425,6 +425,7 @@ end;
 procedure TCocoaTabControl.lclSetEnabled(AEnabled: Boolean);
 begin
   lclEnabled := AEnabled;
+  inherited lclSetEnabled(AEnabled);
 end;
 
 function TCocoaTabControl.lclGetCallback: ICommonCallback;
