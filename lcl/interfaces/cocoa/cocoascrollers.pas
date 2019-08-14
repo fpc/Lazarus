@@ -141,6 +141,9 @@ type
 
   end;
 
+  TCocoaManualScrollHost = objcclass(TCocoaScrollView)
+  end;
+
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
 
 // These settings are set by a user in "System Preferences"

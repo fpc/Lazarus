@@ -1568,6 +1568,9 @@ begin
   Result := Assigned(obj);
   if not Result then Exit;
 
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+    obj := TCocoaManualScrollHost(obj).documentView;
+
   if obj.isKindOfClass(NSScrollView) then
   begin
     sc := NSScrollView(obj);
@@ -1601,6 +1604,9 @@ begin
   obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
+
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+    obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollBar) then
     Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), ScrollInfo)
@@ -1792,10 +1798,18 @@ var
   f   : NSSize;
   sz  : NSSize;
   flg : NSUInteger;
+  hosted: Boolean;
 begin
   obj := NSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
+
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+  begin
+    hosted := true;
+    obj := TCocoaManualScrollHost(obj).documentView;
+  end else
+    hosted := false;
 
   if obj.isKindOfClass(TCocoaScrollView) then
   begin
@@ -1848,6 +1862,9 @@ begin
     else
       Result := 0;
 
+    if hosted then
+      NSView(obj).lclInvalidate;
+
   end else if obj.isKindOfClass(TCocoaScrollBar) then
   begin
     Result := CocoaScrollBarSetScrollInfo(TCocoaScrollBar(obj), ScrollInfo);
@@ -1865,6 +1882,9 @@ begin
   obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
+
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+    obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollView)
   then begin

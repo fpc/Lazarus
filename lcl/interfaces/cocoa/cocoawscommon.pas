@@ -147,12 +147,15 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl;
+      const ABorderStyle: TBorderStyle); override;
   end;
 
 // Utility WS functions. todo: it makes sense to put them into CocoaScollers
 
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaScrollView;
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
+function EmbedInManualScrollHost(AView: TCocoaManualScrollView): TCocoaManualScrollHost;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
 
@@ -273,6 +276,38 @@ begin
   SetViewDefaults(Result);
   if AView.isKindOfClass(TCocoaCustomControl) then
     TCocoaCustomControl(AView).auxMouseByParent := true;
+end;
+
+function EmbedInManualScrollHost(AView: TCocoaManualScrollView
+  ): TCocoaManualScrollHost;
+var
+  r: TRect;
+  p: NSView;
+begin
+  if not Assigned(AView) then
+    Exit(nil);
+  r := AView.lclFrame;
+  p := AView.superview;
+  Result := TCocoaManualScrollHost.alloc.initWithFrame(NSNullRect);
+  if Assigned(p) then p.addSubView(Result);
+  Result.lclSetFrame(r);
+  {$ifdef BOOLFIX}
+  Result.setHidden_(Ord(AView.isHidden));
+  {$else}
+  Result.setHidden(AView.isHidden);
+  {$endif}
+  Result.setDocumentView(AView);
+  Result.setDrawsBackground(false); // everything is covered anyway
+  Result.contentView.setAutoresizesSubviews(true);
+  AView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
+
+  AView.release;
+  {$ifdef BOOLFIX}
+  AView.setHidden_(Ord(false));
+  {$else}
+  AView.setHidden(false);
+  {$endif}
+  SetViewDefaults(Result);
 end;
 
 { TLCLCommonCallback }
@@ -1783,7 +1818,9 @@ class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl
 var
   ctrl : TCocoaCustomControl;
   sl   : TCocoaManualScrollView;
+  hs   : TCocoaManualScrollHost;
   lcl  : TLCLCommonCallback;
+
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
@@ -1793,9 +1830,21 @@ begin
 
   sl := EmbedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
-  lcl.HandleFrame:=sl;
 
-  Result := TLCLIntfHandle(sl);
+  hs := EmbedInManualScrollHost(sl);
+  hs.callback := ctrl.callback;
+  lcl.HandleFrame:=hs;
+
+  ScrollViewSetBorderStyle(hs, TCustomControl(AWinControl).BorderStyle );
+
+  Result := TLCLIntfHandle(hs);
+end;
+
+class procedure TCocoaWSCustomControl.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not Assigned(AWinControl) or not (AWinControl.HandleAllocated) then Exit;
+  ScrollViewSetBorderStyle(  TCocoaManualScrollHost(AWinControl.Handle), ABorderStyle );
 end;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
