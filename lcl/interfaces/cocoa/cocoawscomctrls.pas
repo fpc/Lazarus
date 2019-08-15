@@ -191,8 +191,8 @@ type
     //carbon//class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     //carbon//class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetImageList(const ALV: TCustomListView; const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); override;
-    (*class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
-    class procedure SetOwnerData(const ALV: TCustomListView; const {%H-}AValue: Boolean); override;*)
+    class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
+    (*class procedure SetOwnerData(const ALV: TCustomListView; const {%H-}AValue: Boolean); override;*)
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
@@ -1430,6 +1430,16 @@ var
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   lTableLV.lclSetImagesInCell(Assigned(AValue));
+end;
+
+class procedure TCocoaWSCustomListView.SetItemsCount(
+  const ALV: TCustomListView; const Avalue: Integer);
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+begin
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  lTableLV.noteNumberOfRowsChanged();
 end;
 
 class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;

@@ -88,6 +88,7 @@ type
     // is about to be activated.
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
     //procedure menuDidClose(AMenu: NSMenu); message 'menuDidClose:';
+    function worksWhenModal: LCLObjCBoolean; message 'worksWhenModal';
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -384,6 +385,18 @@ begin
   if not Assigned(menuItemCallback) then Exit;
   //todo: call "measureItem"
   menuItemCallback.ItemSelected;
+end;
+
+function TCocoaMenuItem.worksWhenModal: LCLObjCBoolean;
+begin
+  // refer to NSMenuItem.target (Apple) documentation
+  // the method must be implemented in target and return TRUE
+  // otherwise it won't work for modal!
+  //
+  // The method COULD be used to protect the main menu from being clicked
+  // if a modal window doesn't have a menu.
+  // But LCL disables (is it?) the app menu manually on modal
+  Result := true;
 end;
 
 {  menuDidClose should not change the structure of the menu.
@@ -840,21 +853,6 @@ begin
     end;
     res := TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
       nil, NSMakePoint(px, py), view);
-
-    // for whatever reason a context menu will not fire the "action"
-    // of the specified target. Thus we're doing it here manually. :(
-    // It seems a typical behaviour for all versions of macOS
-    // todo: find out why. (calling runModalSession makes no difference)
-    if Assigned(CocoaWidgetSet.Modals) and (CocoaWidgetSet.Modals.Count>0) then
-    begin
-      mnu := TCocoaMenu(APopupMenu.Handle).highlightedItem;
-      if res and Assigned(mnu) then
-      begin
-        if mnu.respondsToSelector(ObjCSelector('lclItemSelected:')) then
-          TCocoaMenuItem(mnu).lclItemSelected(mnu);
-      end;
-    end;
-
     APopupMenu.Close; // notify LCL popup menu
   end;
 end;
