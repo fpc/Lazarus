@@ -1708,29 +1708,34 @@ begin
     exit
   end;
 
-  FMarkupIfDef.Highlighter := nil;
-
-  inherited SetHighlighter(Value);
-
-//TSynEditMarkupFoldColors(MarkupByClass[TSynEditMarkupFoldColors]).Highlighter := Highlighter; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  if Highlighter is TSynPasSyn then
-    FMarkupIfDef.Highlighter := TSynPasSyn(Highlighter)
-  else
+  IncPaintLock;
+  try
     FMarkupIfDef.Highlighter := nil;
 
-  if Highlighter is TSynCustomFoldHighlighter then
-    FTopInfoNestList.Highlighter := TSynCustomFoldHighlighter(Highlighter)
-  else
-    FTopInfoNestList.Highlighter := nil;
+    inherited SetHighlighter(Value);
 
-  if FUserWordsList = nil then
-    exit;
-  if Highlighter <> nil then
-    for i := 0 to FUserWordsList.Count - 1 do
-      HighlightUserWords[i].WordBreakChars := Highlighter.WordBreakChars + TSynWhiteChars
-  else
-    for i := 0 to FUserWordsList.Count - 1 do
-      HighlightUserWords[i].ResetWordBreaks;
+    //TSynEditMarkupFoldColors(MarkupByClass[TSynEditMarkupFoldColors]).Highlighter := Highlighter; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    if Highlighter is TSynPasSyn then
+      FMarkupIfDef.Highlighter := TSynPasSyn(Highlighter)
+    else
+      FMarkupIfDef.Highlighter := nil;
+
+    if Highlighter is TSynCustomFoldHighlighter then
+      FTopInfoNestList.Highlighter := TSynCustomFoldHighlighter(Highlighter)
+    else
+      FTopInfoNestList.Highlighter := nil;
+
+    if FUserWordsList = nil then
+      exit;
+    if Highlighter <> nil then
+      for i := 0 to FUserWordsList.Count - 1 do
+        HighlightUserWords[i].WordBreakChars := Highlighter.WordBreakChars + TSynWhiteChars
+    else
+      for i := 0 to FUserWordsList.Count - 1 do
+        HighlightUserWords[i].ResetWordBreaks;
+  finally
+    DecPaintLock;
+  end;
 end;
 
 constructor TIDESynEditor.Create(AOwner: TComponent);
