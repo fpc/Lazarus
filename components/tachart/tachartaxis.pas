@@ -886,7 +886,7 @@ begin
   for i := 0 to ValueCount - 1 do
     mv[i] := Value[i];
   sz := Marks.Measure(ADrawer, not IsVertical, TickLength, mv);
-  Result := round(sz);
+  Result := round(sz / ADrawer.Scale(1));
 end;
 
 function TChartAxis.PositionIsStored: Boolean;
