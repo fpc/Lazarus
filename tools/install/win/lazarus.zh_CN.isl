@@ -6,8 +6,13 @@
 DelUserConf=删除来自先前安装的所有用户配置文件
 CleanUp=清理:
 
-InstallQt=全局安装Qt接口DLL
+InstallQtLocal=安装Qt4接口DLL
+InstallQt=全局安装Qt4接口DLL
+InstallQt5Local=安装Qt5接口DLL
+InstallQt5Global=全局安装Qt5接口DLL
 InstallChm=安装CHM帮助文件
+InstallOpenSSL=安装openssl库(在线软件包管理器 使用)
+InstallOpenSSLGlobal=全局安装openssl库
 AssociateGroup=关联文件拓展名
 
 CheckSecondClick=创建一个新的第二的安装
@@ -70,6 +75,6 @@ OldSecondInBadFolder4=
 SecondTaskUpdate=更新用于第二的安装的配置，在文件夹中:%0:s%1:s%2:s
 SecondTaskCreate=创建用于第二的安装的配置，在文件夹中:%0:s%1:s%2:s
 
-DuringInstall=Lazarus中文翻译（QQ：192903718），我们常见问题解答的一些信息: http://wiki.lazarus.freepascal.org/Lazarus_Faq%0:s%0:s    Lazarus是什么?%0:sLazarus是Pascal的一个跨平台IDE.它的目标是一次编写,到处编译.%0:s%0:s    如何减少exe文件的大小?%0:s默认二级制文件是非常大的,因为它们包括调试信息.对于发布版本,你可以在工程设置中切换取消这个.%0:s%0:s    许可:%0:s- LCL被许可为链接除外的LGPL.这允许你来创建带有任何你所想的许可的应用程序,包括专有的.%0:s- IDE被许可为GPL.如果你发布一个修改的IDE,你必需遵循GPL.%0:s- 其它的软件包和组件有各种各样的许可.看每个软件包的readme文件.
+DuringInstall=Lazarus中文翻译（QQ群：192903718）	我们常见问题解答的一些信息: http://wiki.lazarus.freepascal.org/Lazarus_Faq%0:s%0:s    Lazarus是什么?%0:sLazarus是Pascal的一个跨平台IDE.它的目标是一次编写,到处编译.%0:s%0:s    如何减少exe文件的大小?%0:s默认二级制文件是非常大的,因为它们包括调试信息.对于发布版本,你可以在工程设置中切换取消这个.%0:s%0:s    许可:%0:s- LCL被许可为链接除外的LGPL.这允许你来创建带有任何你所想的许可的应用程序,包括专有的.%0:s- IDE被许可为GPL.如果你发布一个修改的IDE,你必需遵循GPL.%0:s- 其它的软件包和组件有各种各样的许可.看每个软件包的readme文件.
 
 UninstVerbose=即将从文件夹%0:s卸载%1:s.继续?
