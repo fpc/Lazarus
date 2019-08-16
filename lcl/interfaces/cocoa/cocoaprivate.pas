@@ -1060,7 +1060,10 @@ begin
   // 2. convert from window to local
   P := convertPoint_FromView(P, nil);
   X := Round(P.x);
-  Y := Round(frame.size.height-P.y);   // convert to Cocoa system
+  if isFlipped then
+    Y := Round(p.y)
+  else
+    Y := Round(frame.size.height-P.y);   // convert to Cocoa system
 end;
 
 function LCLViewExtension.lclParent:id;
