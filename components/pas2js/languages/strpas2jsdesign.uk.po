@@ -13,6 +13,14 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: strpas2jsdesign.pjsdbrowse
+msgid "Browse"
+msgstr ""
+
+#: strpas2jsdesign.pjsdbrowsertousewhenopeninghtmlpage
+msgid "Browser to use when opening HTML page"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
 msgstr "Програма pas2js, що запускається в node.js"
@@ -21,6 +29,44 @@ msgstr "Програма pas2js, що запускається в node.js"
 msgid "Node.js Application"
 msgstr "Застосунок Node.js"
 
+#: strpas2jsdesign.pjsdpathof
+#, object-pascal-format
+msgid "Path of %s"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpathofnodejsexecutable
+msgid "Path of Node.js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdportnumberstostartallocatingfrom
+#, object-pascal-format
+msgid "Port numbers to start allocating from %s"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectbrowserexecutable
+msgid "Select browser executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectnodejsexecutable
+msgid "Select Node.js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectpas2jsexecutable
+msgid "Select pas2js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectsimpleserverexecutable
+msgid "Select simpleserver executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
+msgid "Server instances will be started with a port starting from this number, increasing per new project"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
+msgid "Use this browser when opening the URL or HTML file of a web browser project"
+msgstr ""
+
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser"
 msgstr "Програма pas2js, що запускається в оглядачі"
@@ -28,6 +74,11 @@ msgstr "Програма pas2js, що запускається в оглядач
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
 msgstr "Додаток для веб-оглядача"
+
+#: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
+#, object-pascal-format
+msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
+msgstr ""
 
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"

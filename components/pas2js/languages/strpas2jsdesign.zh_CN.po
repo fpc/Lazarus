@@ -12,6 +12,14 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: strpas2jsdesign.pjsdbrowse
+msgid "Browse"
+msgstr ""
+
+#: strpas2jsdesign.pjsdbrowsertousewhenopeninghtmlpage
+msgid "Browser to use when opening HTML page"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
 msgstr "一个pas2js程序运行在node.js"
@@ -20,6 +28,44 @@ msgstr "一个pas2js程序运行在node.js"
 msgid "Node.js Application"
 msgstr "Node.js应用程序"
 
+#: strpas2jsdesign.pjsdpathof
+#, object-pascal-format
+msgid "Path of %s"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpathofnodejsexecutable
+msgid "Path of Node.js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdportnumberstostartallocatingfrom
+#, object-pascal-format
+msgid "Port numbers to start allocating from %s"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectbrowserexecutable
+msgid "Select browser executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectnodejsexecutable
+msgid "Select Node.js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectpas2jsexecutable
+msgid "Select pas2js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectsimpleserverexecutable
+msgid "Select simpleserver executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
+msgid "Server instances will be started with a port starting from this number, increasing per new project"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
+msgid "Use this browser when opening the URL or HTML file of a web browser project"
+msgstr ""
+
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser"
 msgstr "一个pas2js程序运行在浏览器"
@@ -27,6 +73,11 @@ msgstr "一个pas2js程序运行在浏览器"
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
 msgstr "网页浏览器(Web Browser)应用程序"
+
+#: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
+#, object-pascal-format
+msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
+msgstr ""
 
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"

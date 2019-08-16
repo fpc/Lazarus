@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: strpas2jsdesign.pjsdbrowse
+msgid "Browse"
+msgstr ""
+
+#: strpas2jsdesign.pjsdbrowsertousewhenopeninghtmlpage
+msgid "Browser to use when opening HTML page"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
 msgstr ""
@@ -9,12 +17,55 @@ msgstr ""
 msgid "Node.js Application"
 msgstr ""
 
+#: strpas2jsdesign.pjsdpathof
+#, object-pascal-format
+msgid "Path of %s"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpathofnodejsexecutable
+msgid "Path of Node.js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdportnumberstostartallocatingfrom
+#, object-pascal-format
+msgid "Port numbers to start allocating from %s"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectbrowserexecutable
+msgid "Select browser executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectnodejsexecutable
+msgid "Select Node.js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectpas2jsexecutable
+msgid "Select pas2js executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdselectsimpleserverexecutable
+msgid "Select simpleserver executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
+msgid "Server instances will be started with a port starting from this number, increasing per new project"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
+msgid "Use this browser when opening the URL or HTML file of a web browser project"
+msgstr ""
+
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser"
 msgstr ""
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
+msgstr ""
+
+#: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
+#, object-pascal-format
+msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
 msgstr ""
 
 #: strpas2jsdesign.spasjswebserverscaption

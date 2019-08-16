@@ -18,7 +18,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // Pas2Js
-  PJSDsgnOptions;
+  PJSDsgnOptions, strpas2jsdesign;
 
 Type
   { TPas2jsOptionsFrame }
@@ -28,7 +28,7 @@ Type
     NodeJSBrowseButton: TButton;
     BrowserComboBox: TComboBox;
     NodeJSComboBox: TComboBox;
-    BrowserLabel1: TLabel;
+    NodeJSLabel: TLabel;
     HTTPServerBrowseButton: TButton;
     HTTPServerComboBox: TComboBox;
     HTTPServerCmdLabel: TLabel;
@@ -54,8 +54,6 @@ Type
 
 implementation
 
-
-
 {$R *.lfm}
 
 { TPas2jsOptionsFrame }
@@ -69,7 +67,7 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:='Select pas2js executable';
+    OpenDialog.Title:=pjsdSelectPas2jsExecutable;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(Pas2jsPathComboBox,AFilename,cstFilename,30);
@@ -91,7 +89,7 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:='Select simpleserver executable';
+    OpenDialog.Title:=pjsdSelectSimpleserverExecutable;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(HTTPServerComboBox,AFilename,cstFilename,30);
@@ -112,7 +110,7 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:='Select browser executable';
+    OpenDialog.Title:=pjsdSelectNodeJSExecutable;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(NodeJSComboBox,AFilename,cstFilename,30);
@@ -134,7 +132,7 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:='Select browser executable';
+    OpenDialog.Title:=pjsdSelectBrowserExecutable;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(BrowserComboBox,AFilename,cstFilename,30);
@@ -175,18 +173,20 @@ begin
   ExeName:=GetStandardPas2jsExe;
   ServerName:=GetStandardHTTPServer;
   //BrowserName:=GetStandardBrowser;
-  Pas2jsPathLabel.Caption:='Path of '+ExeName;
-  Pas2jsPathLabel.Hint:='You can use IDE macros like $MakeExe(). Without a full path, '+ExeName+' is searched in PATH.';
-  Pas2jsPathBrowseButton.Caption:='...';
-  Pas2jsPathBrowseButton.Hint:='Browse';
-  HTTPServerCmdLabel.Caption:='Path of '+ServerName;
-  HTTPServerCmdLabel.Hint:='You can use IDE macros like $MakeExe(). Without a full path, '+ServerName+' is searched in PATH.';
-  HTTPServerBrowseButton.Caption:='...';
-  HTTPServerBrowseButton.Hint:='Browse';
-  ServerPortLabel.Caption:='Port numbers to start allocating from '+ServerName;
-  ServerPortLabel.Hint:='Server instances will be started with a port starting from this number, increasing per new project';
-  BrowserLabel.Caption:='Browser to use when opening HTML page';
-  BrowserLabel.Hint:='Use this browser when opening the URL or HTML file of a web browser project';
+  Pas2jsPathLabel.Caption:=Format(pjsdPathOf, [ExeName]);
+  Pas2jsPathLabel.Hint:=Format(
+    pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [ExeName]);
+  Pas2jsPathBrowseButton.Hint:=pjsdBrowse;
+  HTTPServerCmdLabel.Caption:=Format(pjsdPathOf, [ServerName]);
+  HTTPServerCmdLabel.Hint:=Format(
+    pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [ServerName]);
+  HTTPServerBrowseButton.Hint:=pjsdBrowse;
+  ServerPortLabel.Caption:=Format(pjsdPortNumbersToStartAllocatingFrom, [
+    ServerName]);
+  ServerPortLabel.Hint:=pjsdServerInstancesWillBeStartedWithAPortStartingFromT;
+  BrowserLabel.Caption:=pjsdBrowserToUseWhenOpeningHTMLPage;
+  BrowserLabel.Hint:=pjsdUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro;
+  NodeJSLabel.Caption:=pjsdPathOfNodeJsExecutable;
 end;
 
 procedure TPas2jsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

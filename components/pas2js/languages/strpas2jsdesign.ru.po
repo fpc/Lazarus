@@ -9,7 +9,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: strpas2jsdesign.pjsdbrowse
+msgid "Browse"
+msgstr "Обзор"
+
+#: strpas2jsdesign.pjsdbrowsertousewhenopeninghtmlpage
+msgid "Browser to use when opening HTML page"
+msgstr "Браузер для открытия страницы HTML"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
@@ -19,6 +27,44 @@ msgstr "Программа pas2js, запускаемая в node.js"
 msgid "Node.js Application"
 msgstr "Приложение Node.js"
 
+#: strpas2jsdesign.pjsdpathof
+#, object-pascal-format
+msgid "Path of %s"
+msgstr "Путь к %s"
+
+#: strpas2jsdesign.pjsdpathofnodejsexecutable
+msgid "Path of Node.js executable"
+msgstr "Путь к исполнимому файлу Node.js"
+
+#: strpas2jsdesign.pjsdportnumberstostartallocatingfrom
+#, object-pascal-format
+msgid "Port numbers to start allocating from %s"
+msgstr "Начало диапазона запрашиваемых у %s портов"
+
+#: strpas2jsdesign.pjsdselectbrowserexecutable
+msgid "Select browser executable"
+msgstr "Выберите исполнимый файл браузера"
+
+#: strpas2jsdesign.pjsdselectnodejsexecutable
+msgid "Select Node.js executable"
+msgstr "Выберите исполнимый файл Node.js"
+
+#: strpas2jsdesign.pjsdselectpas2jsexecutable
+msgid "Select pas2js executable"
+msgstr "Выберите исполнимый файл pas2js"
+
+#: strpas2jsdesign.pjsdselectsimpleserverexecutable
+msgid "Select simpleserver executable"
+msgstr "Выберите исполнимый файл simpleserver"
+
+#: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
+msgid "Server instances will be started with a port starting from this number, increasing per new project"
+msgstr "Экземпляры серверов будут запускаться на портах с номерами, начинающимися с указанного и увеличивающимися в каждом новом проекте"
+
+#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
+msgid "Use this browser when opening the URL or HTML file of a web browser project"
+msgstr "Браузер для открытия предназначенного для него проекта по указанному адресу либо из файла HTML"
+
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser"
 msgstr "Программа pas2js, запускаемая в браузере"
@@ -26,6 +72,11 @@ msgstr "Программа pas2js, запускаемая в браузере"
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
 msgstr "Приложение для веб-браузера"
+
+#: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
+#, object-pascal-format
+msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
+msgstr "Можно использовать макросы IDE, например, $MakeExe(). Если полный путь не указан, поиск %s производится при помощи переменной окружения PATH."
 
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"
