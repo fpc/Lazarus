@@ -27,7 +27,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
-  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue,
+  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue, Forms,
   // LazUtils
   LazUTF8, LazUTF8Classes, TextStrings,
   // Widgetset
@@ -1897,8 +1897,22 @@ class function TCocoaWSScrollBar.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
   scr : TCocoaScrollBar;
+  prm : TCreateParams;
+const
+  ScrollBase = 15; // the shorter size of the scroller. There's a NSScroller class method for that
 begin
-  scr:=NSView(TCocoaScrollBar.alloc).lclInitWithCreateParams(AParams);
+  prm := AParams;
+  // forcing the initial size to follow the designated kind of the scroll
+  if (TCustomScrollBar(AWinControl).Kind = sbVertical) then begin
+    prm.Width:=ScrollBase;
+    prm.Height:=ScrollBase*4;
+  end else
+  begin
+    prm.Width:=ScrollBase*4;
+    prm.Height:=ScrollBase;
+  end;
+
+  scr:=NSView(TCocoaScrollBar.alloc).lclInitWithCreateParams(prm);
   scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
 
   // OnChange (scrolling) event handling
@@ -1910,13 +1924,17 @@ begin
   scr.pageInt:=TCustomScrollBar(AWinControl).PageSize;
 
   Result:=TLCLIntfHandle(scr);
+
+  scr.lclSetFrame( Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
 end;
 
 // vertical/horizontal in Cocoa is set automatically according to
 // the geometry of the scrollbar, it cannot be forced to an unusual value
 class procedure TCocoaWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean);
 begin
-  // do nothing
+  // the scroll type can be changed when creating a scroll.
+  // since the size got changed, we have to create the handle
+  RecreateWnd(AScrollBar);
 end;
 
 class procedure TCocoaWSScrollBar.SetParams(const AScrollBar:TCustomScrollBar);
