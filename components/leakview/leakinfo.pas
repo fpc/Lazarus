@@ -7,7 +7,7 @@ unit leakinfo;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, fgl,
   // CodeTools
   CodeToolManager, CodeCache,
   // LazUtils
@@ -71,6 +71,8 @@ type
   end;
 
 
+  TStackTraceList = specialize TFPGObjectList<TStackTrace>;
+
   // abstract class
 
   { TLeakInfo }
@@ -79,8 +81,8 @@ type
     // returns True, if information has been successfully received, False otherwise
     // Fills LeakData record
     // if Traces is not nil, fill the list with TStackTrace object. User is responsible for freeing them
-    function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean; virtual; abstract;
-    function ResolveLeakInfo(AFileName: string; Traces: TList): Boolean; virtual; abstract;
+    function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TStackTraceList): Boolean; virtual; abstract;
+    function ResolveLeakInfo(AFileName: string; Traces: TStackTraceList): Boolean; virtual; abstract;
   end;
 
   // this file can be (should be?) hidden in the other unit, or to the implementation section
@@ -125,14 +127,14 @@ type
 
     procedure ParseTraceLine(s: string; var line: TStackLine);
     procedure ParseStackTrace(trace: TStackTrace);
-    procedure DoParseTrc(traces: TList);
+    procedure DoParseTrc(traces: TStackTraceList);
   public
     TraceInfo : THeapTraceInfo;
     constructor Create(const ATRCFile: string);
     constructor CreateFromTxt(const AText: string);
     destructor Destroy; override;
-    function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean; override;
-    function ResolveLeakInfo(AFileName: string; Traces: TList): Boolean; override;
+    function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TStackTraceList): Boolean; override;
+    function ResolveLeakInfo(AFileName: string; Traces: TStackTraceList): Boolean; override;
   end;
 
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
@@ -269,7 +271,9 @@ begin
   if pos('==', s) <> 1 then exit;
   i := 3;
   while (i<=Length(s)) and (s[i] in ['0'..'9']) do inc(i);
-  if (i+2 <= Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and (s[i+2] in [' ', #10, #13]) then
+  if (i+1 <= Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and
+    ( (i+1 = Length(s)) or (s[i+2] in [' ', #10, #13]) )
+  then
     Result := true;
 
   if Result then begin
@@ -349,7 +353,7 @@ function THeapTrcInfo.IsTraceLine(const Idx: Integer;
       //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
       Result:=true;
     end;
-    if REMatches(s,'^#[0-9] .* (at|from) ') then begin
+    if REMatches(s,'^#[0-9]+ .* (at|from) ') then begin
       // gdb
       //   #0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,ANINFO=...) at synedit.pp:3000
       Result:=true;
@@ -384,9 +388,11 @@ begin
   end else if pos('frame #', s) > 0 then begin
     Result := True;
   end else if TValgrindParser.ValgrindLineType(s) in [vltHeader] then begin
-    Result := (Idx > 0) and (Idx < Trc.Count-1) and
+    Result := (Idx > 0) and
               (TValgrindParser.ValgrindLineType(Trc[Idx-1]) = vltTrace) and
-              (TValgrindParser.ValgrindLineType(Trc[Idx+1]) = vltTrace);
+              ( (Idx >= Trc.Count-1) or
+                (TValgrindParser.ValgrindLineType(Trc[Idx+1]) in [vltTrace, vltEmpty, vltNone])
+              );
   end else if TValgrindParser.ValgrindLineType(s) in [vltTrace] then begin
     Result := True;
   end else begin
@@ -399,6 +405,8 @@ begin
     while (i <= l) and
           ((SubStr[i] in ['0'..'9']) or ((SubStr[i] in ['A'..'F'])) or ((SubStr[i] in ['a'..'f'])))
     do inc(i);
+    if (i > l) and CheckOnlyLineStart then
+      exit(True);
     if (i > l) or (SubStr[i] <> ' ') then exit;
     Result := (Pos('line', SubStr) > 0)
             or CheckOnlyLineStart;
@@ -453,7 +461,7 @@ begin
   GetNumFirstAndAfter(Trc[TrcIndex], FirstNum, AfterNum, AfterSub);
 end;
 
-procedure THeapTrcInfo.DoParseTrc(traces: TList);
+procedure THeapTrcInfo.DoParseTrc(traces: TStackTraceList);
 var
   st : TStackTrace;
 begin
@@ -617,13 +625,13 @@ procedure THeapTrcInfo.ParseTraceLine(s: string; var line: TStackLine);
     if p^='$' then
       inc(p)
     else if (p^='0') and (p[1]='x') then
-      inc(p,2)
-    else
-      exit;
+      inc(p,2);
+    //else
+    //  exit;
     StartP:=p;
     while p^ in ['0'..'9','a'..'z'] do inc(p);
     hex:=copy(s,StartP-PChar(s)+1,p-StartP);
-    Val(hex, line.Addr, err);
+    Val('$'+hex, line.Addr, err);
 
     line.LineNum := -1;
     line.FileName := '';
@@ -675,7 +683,9 @@ begin
   end else if LeftStr(s,4) = '0000' then begin
     // mantis mangled gdb
     ReadGDBLine;
-  end else if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') then begin
+  end else if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') or
+              REMatches(s,'^#[0-9]+ .* at ')
+  then begin
     // gdb
     //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
     Delete(s,1,1);
@@ -812,14 +822,15 @@ begin
     NewLine := TStackLine.Create; // No reference
     trace.Add(NewLine);
     if (TrcIndex < Trc.Count-1) and (not IsTraceLine(Trcindex+1, True)) and
-       (not IsHeaderLine(Trcindex+1))
+       (not IsHeaderLine(Trcindex+1)) and
+       (TValgrindParser.ValgrindLineType(Trc[Trcindex+1]) <> vltEmpty)
     then begin
       // join next line, as there may be a linewrap
       while (length(s) > 0) and (s[length(s)] in [#10,#13]) do delete(s, length(s), 1);
       s := s + Trc[Trcindex+1];
     end;
     ParseTraceLine(s, NewLine);
-    NewLine.RawLineData := Trc[Trcindex]; // raw stack line data
+    NewLine.RawLineData := s; // raw stack line data
     inc(Trcindex);
 
     if (NewLine.FileName <> '') then begin
@@ -831,7 +842,8 @@ begin
   end;
 end;
 
-function THeapTrcInfo.GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean;
+function THeapTrcInfo.GetLeakInfo(out LeakData: TLeakStatus;
+  var Traces: TStackTraceList): Boolean;
 var
   i: Integer;
 begin
@@ -865,7 +877,8 @@ begin
   end;
 end;
 
-function THeapTrcInfo.ResolveLeakInfo(AFileName: string; Traces: TList): Boolean;
+function THeapTrcInfo.ResolveLeakInfo(AFileName: string; Traces: TStackTraceList
+  ): Boolean;
 var
   DwarfInfo: TFpDwarfInfo;
   ImageLoaderList: TDbgImageLoaderList;

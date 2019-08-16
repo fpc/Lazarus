@@ -45,7 +45,7 @@ type
     procedure trvTraceInfoDblClick(Sender: TObject);
   private
     Finfo  : TLeakInfo;
-    fItems  : TList;
+    fItems  : TStackTraceList;
 
     procedure DoUpdateLeaks(FromClip: Boolean = False);
 
@@ -191,7 +191,7 @@ begin
   BtnResolve.Caption:=sbtnResolve;
   chkUseRaw.Caption:=schkRaw;
   chkStayOnTop.Caption:=schkTop;
-  fItems:=TList.Create;
+  fItems:=TStackTraceList.Create;
   try
     cfg:=CreateXMLConfig;
     try
