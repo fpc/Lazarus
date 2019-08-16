@@ -1108,6 +1108,9 @@ begin
       w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
       if Assigned(w) and Assigned(w.parentWindow) then
         w.parentWindow.removeChildWindow(w);
+      // if the same control needs to be shown again, it will be redrawn
+      // without this invalidation, Cocoa might should the previously cached contents
+      TCocoaWindowContent(AWinControl.Handle).documentView.setNeedsDisplay_(true);
     end;
     TCocoaWSWinControl.ShowHide(AWinControl);
   end;
