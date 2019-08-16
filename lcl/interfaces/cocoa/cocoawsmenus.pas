@@ -848,7 +848,10 @@ begin
       if Assigned(view) then
       begin
         view.lclScreenToLocal(px, py);
-        py := Round(view.frame.size.height - py);
+        // have to flip again, because popUpMenuPositioningItem expects point
+        // to be in View coordinates and it does respect Flipped flag
+        if not view.isFlipped then
+          py := Round(view.frame.size.height - py);
       end;
     end;
     res := TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
