@@ -365,9 +365,14 @@ begin
 end;
 
 function NSColorToRGB(const Color: NSColor): TColorRef; inline;
+var
+  alpha: CGFloat;
 begin
+  // TColorRef doesn't bear an alpha channel information.
+  // Thus RGB needs to be multiplied by it.
+  alpha := Color.alphaComponent;
   with Color do
-    Result := RGBToColorFloat(redComponent, greenComponent, blueComponent);
+    Result := RGBToColorFloat(redComponent*alpha, greenComponent*alpha, blueComponent*alpha);
 end;
 
 function NSColorToColorRef(const Color: NSColor): TColorRef;
