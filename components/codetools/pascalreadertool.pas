@@ -105,6 +105,9 @@ type
         Attr: TProcHeadAttributes): string;
     function ExtractIdentifierWithPoints(StartPos: integer;
         ExceptionOnError: boolean): string;
+    function ExtractNextTypeRef(Add: boolean; const Attr: TProcHeadAttributes): boolean;
+    function ExtractNextSpecializeParams(Add: boolean;
+        const Attr: TProcHeadAttributes): boolean;
     function ExtractIdentCharsFromStringConstant(
         StartPos, MinPos, MaxPos, MaxLen: integer): string;
     function ReadStringConstantValue(StartPos: integer): string;
@@ -690,9 +693,9 @@ begin
           if AtomIsChar('<') then
           begin
             //writeln('TPascalReaderTool.ExtractProcHead B ',GetAtom);
-            while not AtomIsChar('>') and (CurPos.EndPos < SrcLen) do
-              ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
-            //swriteln('TPascalReaderTool.ExtractProcHead C ',GetAtom);
+            if not ExtractNextSpecializeParams(not (phpWithoutGenericParams in Attr),Attr) then
+              exit;
+            //writeln('TPascalReaderTool.ExtractProcHead C ',GetAtom);
             ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
           end;
         end;
@@ -721,9 +724,8 @@ begin
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
           if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
           begin
-            repeat
-              ExtractNextAtom(false,Attr);
-            until AtomIsChar('>') or (CurPos.EndPos > SrcLen);
+            if not ExtractNextSpecializeParams(false,Attr) then
+              exit;
             ExtractNextAtom(false,Attr);
           end;
           // read '.'
@@ -736,9 +738,8 @@ begin
           ExtractNextAtom(not (phpWithoutName in Attr),Attr);
           if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
           begin
-            repeat
-              ExtractNextAtom(false,Attr);
-            until AtomIsChar('>') or (CurPos.EndPos > SrcLen);
+            if not ExtractNextSpecializeParams(false,Attr) then
+              exit;
             ExtractNextAtom(false,Attr);
           end;
           break;
@@ -758,14 +759,7 @@ begin
   end;
   // read result type
   if (CurPos.Flag=cafColon) then begin
-    ExtractNextAtom(phpWithResultType in Attr,Attr);
-    if not AtomIsIdentifier then exit;
-    ExtractNextAtom(phpWithResultType in Attr,Attr);
-    if CurPos.Flag=cafPoint then begin
-      ExtractNextAtom(phpWithResultType in Attr,Attr);
-      if not AtomIsIdentifier then exit;
-      ExtractNextAtom(phpWithResultType in Attr,Attr);
-    end;
+    ExtractNextTypeRef(phpWithResultType in Attr,Attr);
     ExtractProcHeadPos:=phepResultType;
   end;
   // read 'of object'
@@ -1259,14 +1253,7 @@ begin
   if (CurPos.Flag=cafColon) then begin
     // read function result type
     ReadNextAtom;
-    if AtomIsIdentifier then begin
-      ReadNextAtom;
-      while CurPos.Flag=cafPoint do begin
-        ReadNextAtom;
-        if not AtomIsIdentifier then break;
-        ReadNextAtom;
-      end;
-    end;
+    SkipTypeReference(false);
   end;
   // CurPos now stands on the first proc specifier or on a semicolon or on the syntax error
 end;
@@ -1604,6 +1591,59 @@ begin
     if not AtomIsIdentifierE(ExceptionOnError) then exit;
     Result+='.'+GetAtom;
   until false;
+end;
+
+function TPascalReaderTool.ExtractNextTypeRef(Add: boolean;
+  const Attr: TProcHeadAttributes): boolean;
+begin
+  Result:=false;
+  ExtractNextAtom(Add,Attr);
+  if not AtomIsIdentifier then exit;
+  ExtractNextAtom(Add,Attr);
+  repeat
+    if CurPos.Flag=cafPoint then begin
+      ExtractNextAtom(Add,Attr);
+      if not AtomIsIdentifier then exit;
+      ExtractNextAtom(Add,Attr);
+    end else if AtomIsChar('<') then begin
+      if not ExtractNextSpecializeParams(Add,Attr) then
+        exit;
+      ExtractNextAtom(Add,Attr);
+    end else
+      break;
+  until false;
+  Result:=true;
+end;
+
+function TPascalReaderTool.ExtractNextSpecializeParams(Add: boolean;
+  const Attr: TProcHeadAttributes): boolean;
+// at start: CurPos is at <
+// at end: CurPos is at >
+
+  function ExtractNextTil(c: char): boolean;
+  var
+    CurC: Char;
+  begin
+    Result:=false;
+    repeat
+      ExtractNextAtom(Add,Attr);
+      if CurPos.EndPos-CurPos.StartPos=1 then begin
+        CurC:=Src[CurPos.StartPos];
+        if CurC=c then
+          exit(true);
+        case CurC of
+        '<': if not ExtractNextTil('>') then exit;
+        '(': if not ExtractNextTil(')') then exit;
+        '[': if not ExtractNextTil(']') then exit;
+        ')',']': exit;
+        end;
+      end else if CurPos.StartPos>SrcLen then
+        exit(false);
+    until false;
+  end;
+
+begin
+  Result:=ExtractNextTil('>');
 end;
 
 function TPascalReaderTool.ExtractPropName(PropNode: TCodeTreeNode;

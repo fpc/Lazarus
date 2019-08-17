@@ -251,6 +251,8 @@ type
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
     procedure ReadAnsiStringParams;
     function ReadClosure(ExceptionOnError, CreateNodes: boolean): boolean;
+    function SkipTypeReference(ExceptionOnError: boolean): boolean;
+    function SkipSpecializeParams(ExceptionOnError: boolean): boolean;
     function WordIsPropertyEnd: boolean;
     function AllowAttributes: boolean; inline;
     function AllowClosures: boolean; inline;
@@ -6222,6 +6224,45 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end;
+end;
+
+function TPascalParserTool.SkipTypeReference(ExceptionOnError: boolean): boolean;
+begin
+  Result:=false;
+  if not AtomIsIdentifierE(ExceptionOnError) then exit;
+  ReadNextAtom;
+  repeat
+    if CurPos.Flag=cafPoint then begin
+      ReadNextAtom;
+      if not AtomIsIdentifierE(ExceptionOnError) then exit;
+      ReadNextAtom;
+    end else if AtomIsChar('<') then begin
+      if not SkipSpecializeParams(ExceptionOnError) then
+        exit;
+      ReadNextAtom;
+    end else
+      break;
+  until false;
+  Result:=true;
+end;
+
+function TPascalParserTool.SkipSpecializeParams(ExceptionOnError: boolean
+  ): boolean;
+// at start: CurPos is at <
+// at end: CurPos is at >
+begin
+  ReadNextAtom;
+  if AtomIsChar('>') then exit(true);
+  repeat
+    if not SkipTypeReference(ExceptionOnError) then exit(false);
+    if AtomIsChar('>') then exit(true);
+    if not AtomIsChar(',') then
+    begin
+      if ExceptionOnError then
+        RaiseCharExpectedButAtomFound(20190817202214,'>');
+      exit(false);
+    end;
+  until false;
 end;
 
 function TPascalParserTool.WordIsPropertyEnd: boolean;
