@@ -896,7 +896,7 @@ if not(ALoc in [tlConst]) then begin
     t.Add(AName, p+'SomeFunc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeFunc1: *function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN', skFunctionRef) );
     t.Add(AName, '@'+p+'SomeFunc1Ref'+e,     wePointer('^TFunc1') ).AddFlag(ehIgnPointerDerefData);
     t.Add(AName, p+'SomeProc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeProc1: *procedure *\(\) *$', skProcedureRef) );
-    t.Add(AName, p+'SomeMeth1Ref'+e,         weMatch('TMeth1.*Proc *= *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*:.*Self.*=.*', skRecord) ); // TODO: correct type / NOT Boolean
+    t.Add(AName, p+'SomeMeth1Ref'+e,         weMatch('TMeth1.*Proc *= *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*: *TMeth1;[\s\r\n]*Self.*=.*', skRecord) );
     t.Add(AName, p+'SomeMeth1Ref'+e+'.Proc', weMatch('\$[0-9A-F]+ = TMyBaseClass\.SomeMeth1: *function *\(.*AVal.*\): *BOOLEAN', skFunctionRef) );
 end;
 
