@@ -100,7 +100,9 @@ begin
   Result := ADbgSymbol <> nil;
   if not Result then
     exit;
-  if ADbgSymbol.SymbolType = stValue then begin
+  if (ADbgSymbol.SymbolType = stValue) and
+     not((ADbgSymbol.Kind = skProcedure) or (ADbgSymbol.Kind = skFunction))
+  then begin
     ADbgSymbol := ADbgSymbol.TypeInfo;
     Result := ADbgSymbol <> nil;
     if not Result then
