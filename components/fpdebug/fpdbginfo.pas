@@ -351,7 +351,6 @@ type
     // NOT cached fields
     function GetChild({%H-}AIndex: Integer): TFpSymbol; virtual;
     function GetColumn: Cardinal; virtual;
-    function GetCount: Integer; virtual;
     function GetFile: String; virtual;
     function GetFlags: TDbgSymbolFlags; virtual;
     function GetLine: Cardinal; virtual;
@@ -427,7 +426,6 @@ type
     property MemberByName[AIndex: String]: TFpSymbol read GetMemberByName; // Includes inheritance
     //
     property Flags: TDbgSymbolFlags read GetFlags;
-    property Count: Integer read GetCount; deprecated 'use MemberCount instead';
     property Parent: TFpSymbol read GetParent; deprecated;
     // for Subranges  // Type-Symbols only?
     // TODO: flag bounds as cardinal if needed
@@ -1160,11 +1158,6 @@ begin
 end;
 
 function TFpSymbol.GetColumn: Cardinal;
-begin
-  Result := 0;
-end;
-
-function TFpSymbol.GetCount: Integer;
 begin
   Result := 0;
 end;
