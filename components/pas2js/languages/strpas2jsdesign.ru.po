@@ -19,6 +19,10 @@ msgstr "Обзор"
 msgid "Browser to use when opening HTML page"
 msgstr "Браузер для открытия страницы HTML"
 
+#: strpas2jsdesign.pjsdmaintainhtmlfile
+msgid "Maintain HTML file"
+msgstr "Поддерживать файл HTML"
+
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
 msgstr "Программа pas2js, запускаемая в node.js"
@@ -41,6 +45,30 @@ msgstr "Путь к исполнимому файлу Node.js"
 msgid "Port numbers to start allocating from %s"
 msgstr "Начало диапазона запрашиваемых у %s портов"
 
+#: strpas2jsdesign.pjsdprojecthtmlfile
+msgid "Project HTML file:"
+msgstr "Файл HTML проекта:"
+
+#: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
+msgid "Project is a Web Browser (pas2js) project"
+msgstr "Проект предназначен для веб-браузера (pas2js)"
+
+#: strpas2jsdesign.pjsdprojectneedsahttpserver
+msgid "Project needs a HTTP server"
+msgstr "Проекту требуется сервер HTTP"
+
+#: strpas2jsdesign.pjsdresetcompilecommand
+msgid "Reset Compile command"
+msgstr "Сбросить команду компиляции"
+
+#: strpas2jsdesign.pjsdresetruncommand
+msgid "Reset Run command"
+msgstr "Сбросить команду запуска"
+
+#: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
+msgid "Run RTL when all page resources are fully loaded"
+msgstr "Запускать RTL после полной загрузки всех ресурсов страницы"
+
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
 msgstr "Выберите исполнимый файл браузера"
@@ -61,9 +89,21 @@ msgstr "Выберите исполнимый файл simpleserver"
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
 msgstr "Экземпляры серверов будут запускаться на портах с номерами, начинающимися с указанного и увеличивающимися в каждом новом проекте"
 
+#: strpas2jsdesign.pjsdstarthttpserveronport
+msgid "Start HTTP Server on port"
+msgstr "Запускать сервер HTTP на порту"
+
+#: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
+msgid "Use Browser Console unit to display writeln() output"
+msgstr "Отображать вывод writeln() посредством модуля консоли браузера"
+
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
 msgid "Use this browser when opening the URL or HTML file of a web browser project"
 msgstr "Браузер для открытия предназначенного для него проекта по указанному адресу либо из файла HTML"
+
+#: strpas2jsdesign.pjsdusethisurltostartapplication
+msgid "Use this URL to start application"
+msgstr "Использовать следующий адрес для запуска приложения"
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser"
@@ -72,6 +112,10 @@ msgstr "Программа pas2js, запускаемая в браузере"
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
 msgstr "Приложение для веб-браузера"
+
+#: strpas2jsdesign.pjsdwebprojectpas2js
+msgid "Web Project (pas2js)"
+msgstr "Веб-проект (pas2js)"
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format

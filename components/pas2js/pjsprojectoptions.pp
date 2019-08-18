@@ -39,7 +39,6 @@ type
     procedure RBStartServerAtChange(Sender: TObject);
     procedure RBUseURLChange(Sender: TObject);
   private
-    FDialog: TAbstractOptionsEditorDialog;
     procedure CheckAllControls(aEnabled: Boolean);
     procedure CheckHTMLOptions(aEnabled: Boolean);
     procedure CheckServerOptions(aEnabled: Boolean);
@@ -61,7 +60,7 @@ Procedure SetDefaultNodeJSCompileOptions(CompOpts: TLazCompilerOptions);
 
 implementation
 
-uses pjsdsgnoptions, pjscontroller;
+uses pjsdsgnoptions, pjscontroller, strpas2jsdesign;
 
 Procedure ResetRunParams(RunParams : TAbstractRunParamsOptionsMode);
 
@@ -138,13 +137,21 @@ end;
 
 function TPas2JSProjectOptionsFrame.GetTitle: string;
 begin
-  Result:='Web Project (pas2js)'
+  Result:=pjsdWebProjectPas2js;
 end;
 
 procedure TPas2JSProjectOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  // Do nothing
-  FDialog:=ADialog;
+  CBWebProject.Caption:=pjsdProjectIsAWebBrowserPas2jsProject;
+  LCBProjectHTMLFile.Caption:=pjsdProjectHTMLFile;
+  CBMaintainHTMLFile.Caption:=pjsdMaintainHTMLFile;
+  CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
+  CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
+  CBUseHTTPServer.Caption:=pjsdProjectNeedsAHTTPServer;
+  RBStartServerAt.Caption:=pjsdStartHTTPServerOnPort;
+  RBUseURL.Caption:=pjsdUseThisURLToStartApplication;
+  BResetRunCommand.Caption:=pjsdResetRunCommand;
+  BResetCompileCommand.Caption:=pjsdResetCompileCommand;
 end;
 
 procedure TPas2JSProjectOptionsFrame.CBWebProjectChange(Sender: TObject);

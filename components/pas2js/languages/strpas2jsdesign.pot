@@ -9,6 +9,10 @@ msgstr ""
 msgid "Browser to use when opening HTML page"
 msgstr ""
 
+#: strpas2jsdesign.pjsdmaintainhtmlfile
+msgid "Maintain HTML file"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
 msgstr ""
@@ -31,6 +35,30 @@ msgstr ""
 msgid "Port numbers to start allocating from %s"
 msgstr ""
 
+#: strpas2jsdesign.pjsdprojecthtmlfile
+msgid "Project HTML file:"
+msgstr ""
+
+#: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
+msgid "Project is a Web Browser (pas2js) project"
+msgstr ""
+
+#: strpas2jsdesign.pjsdprojectneedsahttpserver
+msgid "Project needs a HTTP server"
+msgstr ""
+
+#: strpas2jsdesign.pjsdresetcompilecommand
+msgid "Reset Compile command"
+msgstr ""
+
+#: strpas2jsdesign.pjsdresetruncommand
+msgid "Reset Run command"
+msgstr ""
+
+#: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
+msgid "Run RTL when all page resources are fully loaded"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
 msgstr ""
@@ -51,8 +79,20 @@ msgstr ""
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
 msgstr ""
 
+#: strpas2jsdesign.pjsdstarthttpserveronport
+msgid "Start HTTP Server on port"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
+msgid "Use Browser Console unit to display writeln() output"
+msgstr ""
+
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
 msgid "Use this browser when opening the URL or HTML file of a web browser project"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusethisurltostartapplication
+msgid "Use this URL to start application"
 msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
@@ -61,6 +101,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
+msgstr ""
+
+#: strpas2jsdesign.pjsdwebprojectpas2js
+msgid "Web Project (pas2js)"
 msgstr ""
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea

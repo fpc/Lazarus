@@ -28,7 +28,7 @@ Resourcestring
   SStatusStopped = 'Stopped';
   SStatusError   = 'Error starting';
 
-  // Options frame
+  // IDE options frame
   pjsdSelectPas2jsExecutable = 'Select pas2js executable';
   pjsdSelectSimpleserverExecutable = 'Select simpleserver executable';
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
@@ -46,6 +46,22 @@ Resourcestring
   pjsdUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro = 'Use this browser '
     +'when opening the URL or HTML file of a web browser project';
   pjsdPathOfNodeJsExecutable = 'Path of Node.js executable';
+
+  // Project options frame
+  pjsdWebProjectPas2js = 'Web Project (pas2js)';
+  pjsdProjectIsAWebBrowserPas2jsProject = 'Project is a Web Browser (pas2js) '
+    +'project';
+  pjsdProjectHTMLFile = 'Project HTML file:';
+  pjsdMaintainHTMLFile = 'Maintain HTML file';
+  pjsdUseBrowserConsoleUnitToDisplayWritelnOutput = 'Use Browser Console unit '
+    +'to display writeln() output';
+  pjsdRunRTLWhenAllPageResourcesAreFullyLoaded = 'Run RTL when all page '
+    +'resources are fully loaded';
+  pjsdProjectNeedsAHTTPServer = 'Project needs a HTTP server';
+  pjsdStartHTTPServerOnPort = 'Start HTTP Server on port';
+  pjsdUseThisURLToStartApplication = 'Use this URL to start application';
+  pjsdResetRunCommand = 'Reset Run command';
+  pjsdResetCompileCommand = 'Reset Compile command';
 
 
 implementation
