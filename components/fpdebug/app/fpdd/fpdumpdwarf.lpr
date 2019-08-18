@@ -41,11 +41,12 @@ uses
 
 var
   n, idx: Integer;
-  Dwarf: TDbgDwarf;
+  Dwarf: TFpDwarfInfo;
   AbbrevDecoder: TDwarfAbbrevDecoder;
   StatementDecoder: TDwarfStatementDecoder;
   FrameDecoder: TVerboseDwarfCallframeDecoder;
   Loader: TDbgImageLoader;
+  ImageLoaderList: TDbgImageLoaderList;
 
 begin
   if ParamCount < 1
@@ -57,8 +58,10 @@ begin
   DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE')^.Enabled := True;
   
   Loader := TDbgImageLoader.Create(ParamStr(1));
+  ImageLoaderList := TDbgImageLoaderList.Create(True);
+  Loader.AddToLoaderList(ImageLoaderList);
 
-  Dwarf := TDbgDwarf.Create(Loader);
+  Dwarf := TFpDwarfInfo.Create(ImageLoaderList);
   n := Dwarf.LoadCompilationUnits;
   for idx := 0 to n - 1 do
   begin
