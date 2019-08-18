@@ -453,45 +453,45 @@ type
   end;
   TDbgDwarfSymbolBaseClass = class of TDbgDwarfSymbolBase;
 
-  { TFpDwarfSymbolClassMap
+  { TFpSymbolDwarfClassMap
     Provides Symbol and VAlue evaluation classes depending on the compiler
   }
 
-  PFpDwarfSymbolClassMap = ^TFpDwarfSymbolClassMap;
+  PFpDwarfSymbolClassMap = ^TFpSymbolDwarfClassMap;
 
-  TFpDwarfSymbolClassMap = class
+  TFpSymbolDwarfClassMap = class
   private
-    NextExistingClassMap: TFpDwarfSymbolClassMap;
+    NextExistingClassMap: TFpSymbolDwarfClassMap;
   protected
     function CanHandleCompUnit(ACU: TDwarfCompilationUnit; AHelperData: Pointer): Boolean; virtual;
     class function GetExistingClassMap: PFpDwarfSymbolClassMap; virtual; abstract; // Each class must have its own storage
-    class function DoGetInstanceForCompUnit(ACU: TDwarfCompilationUnit; AHelperData: Pointer): TFpDwarfSymbolClassMap;
+    class function DoGetInstanceForCompUnit(ACU: TDwarfCompilationUnit; AHelperData: Pointer): TFpSymbolDwarfClassMap;
   public
-    class function GetInstanceForCompUnit(ACU: TDwarfCompilationUnit): TFpDwarfSymbolClassMap; virtual;
+    class function GetInstanceForCompUnit(ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap; virtual;
     class procedure FreeAllInstances;
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; virtual; abstract;
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); virtual;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
-    function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
+    function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDbgPtr; ASymbol: TFpSymbol;
                                  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; virtual; abstract;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
                                     AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; virtual; abstract;
   end;
-  TFpDwarfSymbolClassMapClass = class of TFpDwarfSymbolClassMap;
+  TFpSymbolDwarfClassMapClass = class of TFpSymbolDwarfClassMap;
 
-  { TFpDwarfSymbolClassMapList }
+  { TFpSymbolDwarfClassMapList }
 
-  TFpDwarfSymbolClassMapList = class
+  TFpSymbolDwarfClassMapList = class
   private
-    FDefaultMap: TFpDwarfSymbolClassMapClass;
-    FMapList: array of TFpDwarfSymbolClassMapClass;
+    FDefaultMap: TFpSymbolDwarfClassMapClass;
+    FMapList: array of TFpSymbolDwarfClassMapClass;
   public
     destructor Destroy; override;
-    function FindMapForCompUnit(ACU: TDwarfCompilationUnit): TFpDwarfSymbolClassMap;
+    function FindMapForCompUnit(ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap;
     procedure FreeAllInstances;
-    procedure AddMap(AMap: TFpDwarfSymbolClassMapClass);
-    procedure SetDefaultMap(AMap: TFpDwarfSymbolClassMapClass);
+    procedure AddMap(AMap: TFpSymbolDwarfClassMapClass);
+    procedure SetDefaultMap(AMap: TFpSymbolDwarfClassMapClass);
   end;
 {%endregion Base classes for handling Symbols in unit FPDbgDwarf}
 
@@ -516,7 +516,7 @@ type
   private
     FOwner: TFpDwarfInfo;
     FDebugFile: PDwarfDebugFile;
-    FDwarfSymbolClassMap: TFpDwarfSymbolClassMap;
+    FDwarfSymbolClassMap: TFpSymbolDwarfClassMap;
     FValid: Boolean; // set if the compilationunit has compile unit tag.
   
     // --- Header ---
@@ -625,7 +625,7 @@ type
     property Owner: TFpDwarfInfo read FOwner;
     property DebugFile: PDwarfDebugFile read FDebugFile;
 
-    property DwarfSymbolClassMap: TFpDwarfSymbolClassMap read FDwarfSymbolClassMap;
+    property DwarfSymbolClassMap: TFpSymbolDwarfClassMap read FDwarfSymbolClassMap;
     property FirstScope: TDwarfScopeInfo read FScope;
 
     // public for FpDbgDwarfVerbosePrinter
@@ -655,7 +655,7 @@ type
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
-    function FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol; override;
+    function FindSymbol(AAddress: TDbgPtr): TFpSymbol; override;
     //function FindSymbol(const AName: String): TDbgSymbol; override;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
@@ -734,9 +734,9 @@ function Dbgs(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String
 function Dbgs(AInfoEntry: TDwarfInformationEntry; ACompUnit: TDwarfCompilationUnit): String; overload;
 function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String; overload;
 
-function GetDwarfSymbolClassMapList: TFpDwarfSymbolClassMapList; inline;
+function GetDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList; inline;
 
-property DwarfSymbolClassMapList: TFpDwarfSymbolClassMapList read GetDwarfSymbolClassMapList;
+property DwarfSymbolClassMapList: TFpSymbolDwarfClassMapList read GetDwarfSymbolClassMapList;
 
 implementation
 
@@ -746,12 +746,12 @@ var
   FPDBG_DWARF_VERBOSE_LOAD: PLazLoggerLogGroup;
 
 var
-  TheDwarfSymbolClassMapList: TFpDwarfSymbolClassMapList;
+  TheDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList;
 
 const
   SCOPE_ALLOC_BLOCK_SIZE = 4096; // Increase scopelist in steps of
 
-function GetDwarfSymbolClassMapList: TFpDwarfSymbolClassMapList;
+function GetDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList;
 begin
   Result := TheDwarfSymbolClassMapList;
 end;
@@ -913,17 +913,17 @@ begin
 
 end;
 
-{ TFpDwarfSymbolClassMap }
+{ TFpSymbolDwarfClassMap }
 
-class function TFpDwarfSymbolClassMap.GetInstanceForCompUnit(
-  ACU: TDwarfCompilationUnit): TFpDwarfSymbolClassMap;
+class function TFpSymbolDwarfClassMap.GetInstanceForCompUnit(
+  ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap;
 begin
   Result := DoGetInstanceForCompUnit(ACU, nil);
 end;
 
-class procedure TFpDwarfSymbolClassMap.FreeAllInstances;
+class procedure TFpSymbolDwarfClassMap.FreeAllInstances;
 var
-  pm, next: TFpDwarfSymbolClassMap;
+  pm, next: TFpSymbolDwarfClassMap;
 begin
   pm := GetExistingClassMap^;
   while pm <> nil do begin
@@ -934,20 +934,20 @@ begin
   GetExistingClassMap^ := nil;
 end;
 
-constructor TFpDwarfSymbolClassMap.Create(ACU: TDwarfCompilationUnit;
+constructor TFpSymbolDwarfClassMap.Create(ACU: TDwarfCompilationUnit;
   AHelperData: Pointer);
 begin
   inherited Create;
 end;
 
-function TFpDwarfSymbolClassMap.CanHandleCompUnit(ACU: TDwarfCompilationUnit;
+function TFpSymbolDwarfClassMap.CanHandleCompUnit(ACU: TDwarfCompilationUnit;
   AHelperData: Pointer): Boolean;
 begin
   Result := True;
 end;
 
-class function TFpDwarfSymbolClassMap.DoGetInstanceForCompUnit(
-  ACU: TDwarfCompilationUnit; AHelperData: Pointer): TFpDwarfSymbolClassMap;
+class function TFpSymbolDwarfClassMap.DoGetInstanceForCompUnit(
+  ACU: TDwarfCompilationUnit; AHelperData: Pointer): TFpSymbolDwarfClassMap;
 var
   pm: PFpDwarfSymbolClassMap;
 begin
@@ -3207,7 +3207,7 @@ begin
   result := FindContext(1, 0, AAddress);
 end;
 
-function TFpDwarfInfo.FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol;
+function TFpDwarfInfo.FindSymbol(AAddress: TDbgPtr): TFpSymbol;
 begin
   Result := FindProcSymbol(AAddress);
 end;
@@ -3594,18 +3594,18 @@ begin
   else FFileName := Format('Unknown fileindex(%u)', [AIndex]);
 end;
 
-{ TFpDwarfSymbolClassMapList }
+{ TFpSymbolDwarfClassMapList }
 
-destructor TFpDwarfSymbolClassMapList.Destroy;
+destructor TFpSymbolDwarfClassMapList.Destroy;
 begin
   FreeAllInstances;
   inherited Destroy;
 end;
 
-function TFpDwarfSymbolClassMapList.FindMapForCompUnit(ACU: TDwarfCompilationUnit): TFpDwarfSymbolClassMap;
+function TFpSymbolDwarfClassMapList.FindMapForCompUnit(ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap;
 var
   i: Integer;
-  ResClass: TFpDwarfSymbolClassMapClass;
+  ResClass: TFpSymbolDwarfClassMapClass;
 begin
   ResClass := FDefaultMap;
   for i := 0 to length(FMapList) - 1 do
@@ -3616,7 +3616,7 @@ begin
   Result := ResClass.GetInstanceForCompUnit(ACU);
 end;
 
-procedure TFpDwarfSymbolClassMapList.FreeAllInstances;
+procedure TFpSymbolDwarfClassMapList.FreeAllInstances;
 var
   i: Integer;
 begin
@@ -3624,7 +3624,7 @@ begin
     FMapList[i].FreeAllInstances;
 end;
 
-procedure TFpDwarfSymbolClassMapList.AddMap(AMap: TFpDwarfSymbolClassMapClass);
+procedure TFpSymbolDwarfClassMapList.AddMap(AMap: TFpSymbolDwarfClassMapClass);
 var
   l: Integer;
 begin
@@ -3633,7 +3633,7 @@ begin
   FMapList[l] := AMap;
 end;
 
-procedure TFpDwarfSymbolClassMapList.SetDefaultMap(AMap: TFpDwarfSymbolClassMapClass);
+procedure TFpSymbolDwarfClassMapList.SetDefaultMap(AMap: TFpSymbolDwarfClassMapClass);
 begin
   FDefaultMap := AMap;
 end;
@@ -4618,7 +4618,7 @@ begin
 end;
 
 initialization
-  TheDwarfSymbolClassMapList := TFpDwarfSymbolClassMapList.Create;
+  TheDwarfSymbolClassMapList := TFpSymbolDwarfClassMapList.Create;
 
   FPDBG_DWARF_ERRORS        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
   FPDBG_DWARF_WARNINGS      := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );

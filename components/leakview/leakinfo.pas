@@ -908,7 +908,7 @@ var
   SrcLine: longint;
   {$ENDIF}
   BadAddresses: TStackLines;
-  sym: TFpDbgSymbol;
+  sym: TFpSymbol;
 begin
   Result := False;
   {$IFDEF LEAK_RESOLVE_USE_FPC}

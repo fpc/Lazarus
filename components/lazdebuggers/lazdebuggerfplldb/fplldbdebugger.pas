@@ -402,9 +402,9 @@ end;
 procedure TFPLldbLocals.ProcessLocals(ALocals: TLocals);
 var
   Ctx: TFpDbgInfoContext;
-  ProcVal: TFpDbgValue;
+  ProcVal: TFpValue;
   i: Integer;
-  m: TFpDbgValue;
+  m: TFpValue;
   n, v: String;
 begin
   if FLocalsEvalCancel then begin
@@ -966,7 +966,7 @@ var
   AnEntry: TDisassemblerEntry;
   SrcFileName, LineAddrStr: String;
   i,j, StatIndex, FirstIndex, SrcFileLine: Integer;
-  Sym: TFpDbgSymbol;
+  Sym: TFpSymbol;
   ALastAddr, LineAddr: TDBGPtr;
 begin
   StatIndex := 0;
@@ -1041,7 +1041,7 @@ end;
 procedure TFpLldbDebuggerCommandDisassemble.DoExecute;
 var
   DInstr: TLldbInstructionDisassem;
-  Sym: TFpDbgSymbol;
+  Sym: TFpSymbol;
   StartRange, EndRange: TDBGPtr;
 begin
 
@@ -1413,11 +1413,11 @@ function TFpLldbDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpressio
 var
   Ctx: TFpDbgInfoContext;
   PasExpr, PasExpr2: TFpPascalExpression;
-  ResValue: TFpDbgValue;
+  ResValue: TFpValue;
   s: String;
   DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
-  TiSym: TFpDbgSymbol;
+  TiSym: TFpSymbol;
 
   function IsWatchValueAlive: Boolean;
   begin

@@ -216,7 +216,7 @@ var
   bp: TFpInternalBreakpoint;
 
   AContext: TFpDbgInfoContext;
-  AValue: TFpDbgValue;
+  AValue: TFpValue;
 
 begin
   CallProcessLoop:=false;

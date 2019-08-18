@@ -306,9 +306,9 @@ end;
 function TFpDebugLocalsCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
   AContext: TFpDbgInfoContext;
-  ProcVal: TFpDbgValue;
+  ProcVal: TFpValue;
   i: Integer;
-  m: TFpDbgValue;
+  m: TFpValue;
   n, v: String;
   Reg: TDBGPtr;
   PrettyPrinter: TFpPascalPrettyPrinter;
@@ -393,7 +393,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgContr
 
   function {$ifndef disassemblernestedproc}TFpDebugThreadDisassembleCommand.{$endif}OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
   var
-    Sym: TFpDbgSymbol;
+    Sym: TFpSymbol;
   begin
     Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindSymbol(AStartAddr.GuessedValue);
     if assigned(Sym) and (Sym.Kind in [skProcedure, skFunction]) then
@@ -419,7 +419,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgContr
     ASrcFileName: string;
     ASrcFileLine: cardinal;
     i,j: Integer;
-    Sym: TFpDbgSymbol;
+    Sym: TFpSymbol;
     StatIndex: integer;
     FirstIndex: integer;
     AResultList: TDBGDisassemblerEntryRange;
@@ -883,7 +883,7 @@ end;
 
 function TFpDebugThreadGetLocationInfoCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
-  sym, symproc: TFpDbgSymbol;
+  sym, symproc: TFpSymbol;
 begin
   DoProcessLoop:=false;
   result := false;

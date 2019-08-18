@@ -154,7 +154,7 @@ end;
 procedure TFPDLoop.ShowCode;
 var
   a: TDbgPtr;
-  sym, symproc: TFpDbgSymbol;
+  sym, symproc: TFpSymbol;
   S: TStringList;
   AName: String;
 begin

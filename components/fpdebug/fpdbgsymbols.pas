@@ -46,7 +46,7 @@ uses
   
 
 {$ifdef windows}
-procedure AddSymbols(AParent: TFpDbgSymbol; AModule: THandle);
+procedure AddSymbols(AParent: TFpSymbol; AModule: THandle);
 {$endif}
 
 implementation
@@ -55,7 +55,7 @@ var
   DBG_WARNINGS, FPDBG_DWARF_VERBOSE_LOAD: PLazLoggerLogGroup;
 
 {$ifdef windows}
-procedure AddSymbols(AParent: TFpDbgSymbol; AModule: THandle);
+procedure AddSymbols(AParent: TFpSymbol; AModule: THandle);
 var
   ModulePtr: Pointer;
   //Is64: Boolean;

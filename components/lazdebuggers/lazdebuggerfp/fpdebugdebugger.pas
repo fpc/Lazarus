@@ -621,7 +621,7 @@ var
   ThreadCallStack: TDbgCallstackEntryList;
   v, params: String;
   i: Integer;
-  ProcVal, m: TFpDbgValue;
+  ProcVal, m: TFpValue;
   RegList: TDbgRegisterValueList;
   Reg: TDbgRegisterValue;
   AController: TDbgController;
@@ -729,9 +729,9 @@ procedure TFPLocals.RequestData(ALocals: TLocals);
 var
   AContext: TFpDbgInfoContext;
   AController: TDbgController;
-  ProcVal: TFpDbgValue;
+  ProcVal: TFpValue;
   i: Integer;
-  m: TFpDbgValue;
+  m: TFpValue;
   n, v: String;
   CurThreadId, CurStackFrame: Integer;
   AFrame: TDbgCallstackEntry;
@@ -981,7 +981,7 @@ var
   ASrcFileName: string;
   ASrcFileLine: integer;
   i,j: Integer;
-  Sym: TFpDbgSymbol;
+  Sym: TFpSymbol;
   StatIndex: integer;
   FirstIndex: integer;
   ALastAddr: TDBGPtr;
@@ -1333,7 +1333,7 @@ var
   Res: Boolean;
   StackFrame, ThreadId: Integer;
   StackList: TCallStackBase;
-  ResValue: TFpDbgValue;
+  ResValue: TFpValue;
   CastName, ResText2: String;
   ClassAddr, CNameAddr: TFpDbgMemLocation;
   NameLen: QWord;
@@ -1630,7 +1630,7 @@ end;
 function TFpDebugDebugger.SetSoftwareExceptionBreakpoint: boolean;
 var
   AContext: TFpDbgInfoContext;
-  AValue: TFpDbgValue;
+  AValue: TFpValue;
   AnAddr: TDBGPtr;
 begin
   result := false;
@@ -2174,7 +2174,7 @@ end;
 
 function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr): TDBGLocationRec;
 var
-  sym, symproc: TFpDbgSymbol;
+  sym, symproc: TFpSymbol;
 begin
   if Assigned(FDbgController.CurrentProcess) then
     begin

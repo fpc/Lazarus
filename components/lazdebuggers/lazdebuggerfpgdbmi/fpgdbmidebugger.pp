@@ -269,9 +269,9 @@ end;
 procedure TFPGDBMILocals.ProcessLocals(ALocals: TLocals);
 var
   Ctx: TFpDbgInfoContext;
-  ProcVal: TFpDbgValue;
+  ProcVal: TFpValue;
   i: Integer;
-  m: TFpDbgValue;
+  m: TFpValue;
   n, v: String;
 begin
   Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
@@ -958,7 +958,7 @@ begin
 end;
 
 type
-  TGDBMIDwarfTypeIdentifier = class(TFpDwarfSymbolType)
+  TGDBMIDwarfTypeIdentifier = class(TFpSymbolDwarfType)
   public
     property InformationEntry;
   end;
@@ -973,11 +973,11 @@ function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpressi
 var
   Ctx: TFpDbgInfoContext;
   PasExpr, PasExpr2: TFpPascalExpression;
-  ResValue: TFpDbgValue;
+  ResValue: TFpValue;
   s: String;
   DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
-  TiSym: TFpDbgSymbol;
+  TiSym: TFpSymbol;
 
   function IsWatchValueAlive: Boolean;
   begin
