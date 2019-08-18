@@ -131,9 +131,15 @@ procedure TChartExtentLink.AddChart(AChart: TChart);
 var
   i: TCollectionItem;
 begin
+  if AChart = nil then
+    exit;
+
   for i in LinkedCharts do
-    if TLinkedChart(i).Chart = AChart then exit;
+    if TLinkedChart(i).Chart = AChart then
+      exit;
+
   LinkedCharts.Add.Chart := AChart;
+  SyncWith(AChart);
 end;
 
 constructor TChartExtentLink.Create(AOwner: TComponent);
@@ -207,25 +213,32 @@ var
   c: TCollectionItem;
   ch: TChart;
 begin
-  if not FEnabled or (AChart = nil) then exit;
-  for c in LinkedCharts do begin
-    ch := TLinkedChart(c).Chart;
-    // Do not sync if the chart was never drawn yet.
-    if (ch = nil) or (ch.LogicalExtent = EmptyExtent) then continue;
-    // ZoomFull is lazy by default, so full extent may be not recalculated yet.
-    if not ch.IsZoomed and (ch <> AChart) then
-      ch.LogicalExtent := ch.GetFullExtent;
-    // An event loop will be broken since setting LogicalExtent to
-    // the same value does not initiale the extent broadcast.
-    case Mode of
-      elmXY:
-        ch.LogicalExtent := AChart.LogicalExtent;
-      elmOnlyX:
-        ch.LogicalExtent := CombineXY(AChart.LogicalExtent, ch.LogicalExtent);
-      elmOnlyY:
-        ch.LogicalExtent := CombineXY(ch.LogicalExtent, AChart.LogicalExtent);
+  if (AChart = nil) then
+    exit;
+
+  if FEnabled then
+    for c in LinkedCharts do begin
+      ch := TLinkedChart(c).Chart;
+      // Do not sync if the chart was never drawn yet.
+      if (ch = nil) or (ch.LogicalExtent = EmptyExtent) then continue;
+      // ZoomFull is lazy by default, so full extent may be not recalculated yet.
+      if not ch.IsZoomed and (ch <> AChart) then
+        ch.LogicalExtent := ch.GetFullExtent;
+      // An event loop will be broken since setting LogicalExtent to
+      // the same value does not initiale the extent broadcast.
+      case Mode of
+        elmXY:
+          ch.LogicalExtent := AChart.LogicalExtent;
+        elmOnlyX:
+          ch.LogicalExtent := CombineXY(AChart.LogicalExtent, ch.LogicalExtent);
+        elmOnlyY:
+          ch.LogicalExtent := CombineXY(ch.LogicalExtent, AChart.LogicalExtent);
+      end;
     end;
-  end;
+
+  // Re-align the chart sides if they are aligned and labels have become longer
+  // or shorter upon synchronization.
+  DoAlignSides;
 end;
 
 end.
