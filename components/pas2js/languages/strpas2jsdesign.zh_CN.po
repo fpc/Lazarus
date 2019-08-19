@@ -24,12 +24,35 @@ msgstr ""
 msgid "Create initial HTML page"
 msgstr ""
 
+#: strpas2jsdesign.pjsddirectorynotfound
+#, object-pascal-format
+msgid "directory \"%s\" not found"
+msgstr ""
+
+#: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
+msgid "filename does not start with \"pas2js\""
+msgstr ""
+
+#: strpas2jsdesign.pjsdfilenotexecutable
+#, object-pascal-format
+msgid "file \"%s\" not executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdfilenotfound
+#, object-pascal-format
+msgid "file \"%s\" not found"
+msgstr ""
+
 #: strpas2jsdesign.pjsdmaintainhtmlfile
 msgid "Maintain HTML file"
 msgstr ""
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
+msgstr ""
+
+#: strpas2jsdesign.pjsdmissingpathtopas2js
+msgid "missing path to pas2js"
 msgstr ""
 
 #: strpas2jsdesign.pjsdnodejsappdescription
@@ -46,6 +69,22 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpas2jscurrentprojecturl
+msgid "Pas2JS current project URL"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpas2jsexecutable
+msgid "Pas2JS executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
+msgid "Pas2JS selected browser executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
+msgid "Pas2JS selected NodeJS excutable"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpathof

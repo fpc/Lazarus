@@ -23,6 +23,25 @@ msgstr "Браузер для открытия страницы HTML"
 msgid "Create initial HTML page"
 msgstr "Создать первоначальную страницу HTML"
 
+#: strpas2jsdesign.pjsddirectorynotfound
+#, object-pascal-format
+msgid "directory \"%s\" not found"
+msgstr "каталог \"%s\" не найден"
+
+#: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
+msgid "filename does not start with \"pas2js\""
+msgstr "имя файла не начинается с \"pas2js\""
+
+#: strpas2jsdesign.pjsdfilenotexecutable
+#, object-pascal-format
+msgid "file \"%s\" not executable"
+msgstr "файл \"%s\" не является исполнимым"
+
+#: strpas2jsdesign.pjsdfilenotfound
+#, object-pascal-format
+msgid "file \"%s\" not found"
+msgstr "файл \"%s\" не найден"
+
 #: strpas2jsdesign.pjsdmaintainhtmlfile
 msgid "Maintain HTML file"
 msgstr "Поддерживать файл HTML"
@@ -30,6 +49,10 @@ msgstr "Поддерживать файл HTML"
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
 msgstr "Поддерживать страницу HTML"
+
+#: strpas2jsdesign.pjsdmissingpathtopas2js
+msgid "missing path to pas2js"
+msgstr "отсутствует путь к pas2js"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
@@ -46,6 +69,22 @@ msgstr "Параметры проекта NodeJS"
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
 msgstr "Параметры проекта Pas2JS для браузера"
+
+#: strpas2jsdesign.pjsdpas2jscurrentprojecturl
+msgid "Pas2JS current project URL"
+msgstr "Адрес текущего проекта Pas2JS"
+
+#: strpas2jsdesign.pjsdpas2jsexecutable
+msgid "Pas2JS executable"
+msgstr "Исполнимый файл Pas2JS"
+
+#: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
+msgid "Pas2JS selected browser executable"
+msgstr "Выбранный исполнимый файл браузера для Pas2JS"
+
+#: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
+msgid "Pas2JS selected NodeJS excutable"
+msgstr "Выбранный исполнимый файл NodeJS для Pas2JS"
 
 #: strpas2jsdesign.pjsdpathof
 #, object-pascal-format

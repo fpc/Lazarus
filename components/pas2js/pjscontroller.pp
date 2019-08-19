@@ -88,7 +88,7 @@ Const
 
 implementation
 
-uses FileUtil, LazFileUtils, PJSDsgnOptions;
+uses FileUtil, LazFileUtils, PJSDsgnOptions, strpas2jsdesign;
 
 Var
   ctrl : TPJSController;
@@ -331,10 +331,14 @@ end;
 
 procedure TPJSController.Hook;
 begin
-  IDEMacros.Add(TTransferMacro.Create('Pas2JS','','Pas2JS executable',@GetPas2JSPath,[]));
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSBrowser','','Pas2JS selected Browser executable',@GetPas2JSBrowser,[]));
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS','','Pas2JS selected NodeJS excutable',@GetPas2JSNodeJS,[]));
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSProjectURL','','Pas2JS current project URL',@GetPas2jsProjectURL,[]));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JS', '', pjsdPas2JSExecutable, @
+    GetPas2JSPath, []));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSBrowser', '',
+    pjsdPas2JSSelectedBrowserExecutable, @GetPas2JSBrowser, []));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS', '',
+    pjsdPas2JSSelectedNodeJSExcutable, @GetPas2JSNodeJS, []));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSProjectURL', '',
+    pjsdPas2JSCurrentProjectURL, @GetPas2jsProjectURL, []));
   LazarusIDE.AddHandlerOnRunWithoutDebugInit(@MaybeStartServer);
 end;
 

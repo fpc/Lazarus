@@ -73,6 +73,19 @@ Resourcestring
   pjsdNodeJSProjectOptions = 'NodeJS project options';
   pjsdUseNodeJSApplicationObject = 'Use NodeJS Application object';
 
+  // Macros names
+  pjsdPas2JSExecutable = 'Pas2JS executable';
+  pjsdPas2JSSelectedBrowserExecutable = 'Pas2JS selected browser executable';
+  pjsdPas2JSSelectedNodeJSExcutable = 'Pas2JS selected NodeJS excutable';
+  pjsdPas2JSCurrentProjectURL = 'Pas2JS current project URL';
+
+  // Error descriptions
+  pjsdMissingPathToPas2js = 'missing path to pas2js';
+  pjsdFileNotFound = 'file "%s" not found';
+  pjsdDirectoryNotFound = 'directory "%s" not found';
+  pjsdFileNotExecutable = 'file "%s" not executable';
+  pjsdFileNameDoesNotStartWithPas2js = 'filename does not start with "pas2js"';
+
 implementation
 
 end.

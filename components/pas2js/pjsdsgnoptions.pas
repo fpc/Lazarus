@@ -96,6 +96,9 @@ function GetPas2jsQuality(Filename: string; out Msg: string): boolean;
 
 implementation
 
+uses
+  strpas2jsdesign;
+
 function GetStandardPas2jsExe: string;
 begin
   Result:=PJSDefaultCompiler;
@@ -148,24 +151,24 @@ begin
   Msg:='';
   Filename:=TrimFilename(Filename);
   if (Filename='') then begin
-    Msg:='missing path to pas2js';
+    Msg:=pjsdMissingPathToPas2js;
     exit(false);
   end;
   if not FileExistsCached(Filename) then begin
-    Msg:='file "'+Filename+'" not found';
+    Msg:=Format(pjsdFileNotFound, [Filename]);
     exit(false);
   end;
   if not DirPathExistsCached(ExtractFilePath(Filename)) then begin
-    Msg:='directory "'+ExtractFilePath(Filename)+'" not found';
+    Msg:=Format(pjsdDirectoryNotFound, [ExtractFilePath(Filename)]);
     exit(false);
   end;
   if not FileIsExecutable(Filename) then begin
-    Msg:='file "'+Filename+'" not executable';
+    Msg:=Format(pjsdFileNotExecutable, [Filename]);
     exit(false);
   end;
   ShortFile:=ExtractFileNameOnly(Filename);
   if not CompareText(LeftStr(ShortFile,length('pas2js')),'pas2js')<>0 then begin
-    Msg:='file name does not start with "pas2js"';
+    Msg:=pjsdFileNameDoesNotStartWithPas2js;
     exit(false);
   end;
   // run it
