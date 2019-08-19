@@ -19,9 +19,17 @@ msgstr "Обзор"
 msgid "Browser to use when opening HTML page"
 msgstr "Браузер для открытия страницы HTML"
 
+#: strpas2jsdesign.pjsdcreateinitialhtmlpage
+msgid "Create initial HTML page"
+msgstr "Создать первоначальную страницу HTML"
+
 #: strpas2jsdesign.pjsdmaintainhtmlfile
 msgid "Maintain HTML file"
 msgstr "Поддерживать файл HTML"
+
+#: strpas2jsdesign.pjsdmaintainhtmlpage
+msgid "Maintain HTML page"
+msgstr "Поддерживать страницу HTML"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
@@ -30,6 +38,10 @@ msgstr "Программа pas2js, запускаемая в node.js"
 #: strpas2jsdesign.pjsdnodejsapplication
 msgid "Node.js Application"
 msgstr "Приложение Node.js"
+
+#: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
+msgid "Pas2JS Browser project options"
+msgstr "Параметры проекта Pas2JS для браузера"
 
 #: strpas2jsdesign.pjsdpathof
 #, object-pascal-format
@@ -92,6 +104,10 @@ msgstr "Экземпляры серверов будут запускаться 
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
 msgstr "Запускать сервер HTTP на порту"
+
+#: strpas2jsdesign.pjsdusebrowserapplicationobject
+msgid "Use Browser Application object"
+msgstr "Использовать объект приложения для браузера"
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use Browser Console unit to display writeln() output"

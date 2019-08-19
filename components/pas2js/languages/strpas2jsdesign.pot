@@ -9,8 +9,16 @@ msgstr ""
 msgid "Browser to use when opening HTML page"
 msgstr ""
 
+#: strpas2jsdesign.pjsdcreateinitialhtmlpage
+msgid "Create initial HTML page"
+msgstr ""
+
 #: strpas2jsdesign.pjsdmaintainhtmlfile
 msgid "Maintain HTML file"
+msgstr ""
+
+#: strpas2jsdesign.pjsdmaintainhtmlpage
+msgid "Maintain HTML page"
 msgstr ""
 
 #: strpas2jsdesign.pjsdnodejsappdescription
@@ -19,6 +27,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdnodejsapplication
 msgid "Node.js Application"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
+msgid "Pas2JS Browser project options"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpathof
@@ -81,6 +93,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusebrowserapplicationobject
+msgid "Use Browser Application object"
 msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput

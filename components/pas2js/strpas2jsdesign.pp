@@ -63,6 +63,11 @@ Resourcestring
   pjsdResetRunCommand = 'Reset Run command';
   pjsdResetCompileCommand = 'Reset Compile command';
 
+  // New browser project options form
+  pjsdPas2JSBrowserProjectOptions = 'Pas2JS Browser project options';
+  pjsdCreateInitialHTMLPage = 'Create initial HTML page';
+  pjsdMaintainHTMLPage = 'Maintain HTML page';
+  pjsdUseBrowserApplicationObject = 'Use Browser Application object';
 
 implementation
 

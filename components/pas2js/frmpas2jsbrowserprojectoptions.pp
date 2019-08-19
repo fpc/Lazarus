@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
-  Spin;
+  Spin, strpas2jsdesign;
 
 type
 
@@ -91,6 +91,15 @@ end;
 
 procedure TWebBrowserProjectOptionsForm.FormCreate(Sender: TObject);
 begin
+  Caption:=pjsdPas2JSBrowserProjectOptions;
+  CBCreateHTML.Caption:=pjsdCreateInitialHTMLPage;
+  CBMaintainPage.Caption:=pjsdMaintainHTMLPage;
+  CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
+  CBUseBrowserApp.Caption:=pjsdUseBrowserApplicationObject;
+  CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
+  CBUseHTTPServer.Caption:=pjsdProjectNeedsAHTTPServer;
+  RBStartServerAt.Caption:=pjsdStartHTTPServerOnPort;
+  RBUseURL.Caption:=pjsdUseThisURLToStartApplication;
   CBCreateHTMLChange(self);
   CBUseHTTPServerChange(Self);
 end;
