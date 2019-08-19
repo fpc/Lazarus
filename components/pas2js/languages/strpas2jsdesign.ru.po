@@ -42,10 +42,6 @@ msgstr "файл \"%s\" не является исполнимым"
 msgid "file \"%s\" not found"
 msgstr "файл \"%s\" не найден"
 
-#: strpas2jsdesign.pjsdmaintainhtmlfile
-msgid "Maintain HTML file"
-msgstr "Поддерживать файл HTML"
-
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
 msgstr "Поддерживать страницу HTML"
@@ -100,9 +96,9 @@ msgstr "Путь к исполнимому файлу Node.js"
 msgid "Port numbers to start allocating from %s"
 msgstr "Начало диапазона запрашиваемых у %s портов"
 
-#: strpas2jsdesign.pjsdprojecthtmlfile
-msgid "Project HTML file:"
-msgstr "Файл HTML проекта:"
+#: strpas2jsdesign.pjsdprojecthtmlpage
+msgid "Project HTML page:"
+msgstr "Страница HTML проекта:"
 
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"

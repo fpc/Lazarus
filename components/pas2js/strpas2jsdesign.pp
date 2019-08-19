@@ -51,8 +51,8 @@ Resourcestring
   pjsdWebProjectPas2js = 'Web Project (pas2js)';
   pjsdProjectIsAWebBrowserPas2jsProject = 'Project is a Web Browser (pas2js) '
     +'project';
-  pjsdProjectHTMLFile = 'Project HTML file:';
-  pjsdMaintainHTMLFile = 'Maintain HTML file';
+  pjsdProjectHTMLPage = 'Project HTML page:';
+  pjsdMaintainHTMLPage = 'Maintain HTML page';
   pjsdUseBrowserConsoleUnitToDisplayWritelnOutput = 'Use Browser Console unit '
     +'to display writeln() output';
   pjsdRunRTLWhenAllPageResourcesAreFullyLoaded = 'Run RTL when all page '
@@ -66,7 +66,6 @@ Resourcestring
   // New browser project options form
   pjsdPas2JSBrowserProjectOptions = 'Pas2JS Browser project options';
   pjsdCreateInitialHTMLPage = 'Create initial HTML page';
-  pjsdMaintainHTMLPage = 'Maintain HTML page';
   pjsdUseBrowserApplicationObject = 'Use Browser Application object';
 
   // New NodeJS project options form

@@ -44,10 +44,6 @@ msgstr ""
 msgid "file \"%s\" not found"
 msgstr ""
 
-#: strpas2jsdesign.pjsdmaintainhtmlfile
-msgid "Maintain HTML file"
-msgstr ""
-
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
 msgstr ""
@@ -102,8 +98,8 @@ msgstr ""
 msgid "Port numbers to start allocating from %s"
 msgstr ""
 
-#: strpas2jsdesign.pjsdprojecthtmlfile
-msgid "Project HTML file:"
+#: strpas2jsdesign.pjsdprojecthtmlpage
+msgid "Project HTML page:"
 msgstr ""
 
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject

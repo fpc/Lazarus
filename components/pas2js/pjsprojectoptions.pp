@@ -143,8 +143,8 @@ end;
 procedure TPas2JSProjectOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   CBWebProject.Caption:=pjsdProjectIsAWebBrowserPas2jsProject;
-  LCBProjectHTMLFile.Caption:=pjsdProjectHTMLFile;
-  CBMaintainHTMLFile.Caption:=pjsdMaintainHTMLFile;
+  LCBProjectHTMLFile.Caption:=pjsdProjectHTMLPage;
+  CBMaintainHTMLFile.Caption:=pjsdMaintainHTMLPage;
   CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
   CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
   CBUseHTTPServer.Caption:=pjsdProjectNeedsAHTTPServer;
