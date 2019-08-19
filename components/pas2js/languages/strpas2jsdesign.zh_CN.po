@@ -40,6 +40,10 @@ msgstr "一个pas2js程序运行在node.js"
 msgid "Node.js Application"
 msgstr "Node.js应用程序"
 
+#: strpas2jsdesign.pjsdnodejsprojectoptions
+msgid "NodeJS project options"
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
 msgstr ""
@@ -112,6 +116,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use Browser Console unit to display writeln() output"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusenodejsapplicationobject
+msgid "Use NodeJS Application object"
 msgstr ""
 
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro

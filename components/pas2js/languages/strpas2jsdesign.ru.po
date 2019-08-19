@@ -39,6 +39,10 @@ msgstr "Программа pas2js, запускаемая в node.js"
 msgid "Node.js Application"
 msgstr "Приложение Node.js"
 
+#: strpas2jsdesign.pjsdnodejsprojectoptions
+msgid "NodeJS project options"
+msgstr "Параметры проекта NodeJS"
+
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
 msgstr "Параметры проекта Pas2JS для браузера"
@@ -112,6 +116,10 @@ msgstr "Использовать объект приложения для бра
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use Browser Console unit to display writeln() output"
 msgstr "Отображать вывод writeln() посредством модуля консоли браузера"
+
+#: strpas2jsdesign.pjsdusenodejsapplicationobject
+msgid "Use NodeJS Application object"
+msgstr "Использовать объект приложения для NodeJS"
 
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
 msgid "Use this browser when opening the URL or HTML file of a web browser project"

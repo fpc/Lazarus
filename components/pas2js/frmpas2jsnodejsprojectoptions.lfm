@@ -6,20 +6,25 @@ object NodeJSProjectOptionsForm: TNodeJSProjectOptionsForm
   Caption = 'NodeJS project options'
   ClientHeight = 240
   ClientWidth = 320
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object CBUseNodeJSApplication: TCheckBox
-    Left = 16
-    Height = 22
-    Top = 8
-    Width = 188
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 19
+    Top = 6
+    Width = 178
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'Use NodeJSApplication object'
     TabOrder = 0
   end
   object BPNode: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 192
+    Height = 34
+    Top = 200
     Width = 308
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

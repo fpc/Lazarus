@@ -39,6 +39,10 @@ msgstr "Node.js içinde çalışan bir pas2js programı"
 msgid "Node.js Application"
 msgstr "Node.js uygulaması"
 
+#: strpas2jsdesign.pjsdnodejsprojectoptions
+msgid "NodeJS project options"
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
 msgstr ""
@@ -111,6 +115,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use Browser Console unit to display writeln() output"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusenodejsapplicationobject
+msgid "Use NodeJS Application object"
 msgstr ""
 
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro

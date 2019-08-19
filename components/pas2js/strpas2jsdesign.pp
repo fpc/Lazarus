@@ -69,6 +69,10 @@ Resourcestring
   pjsdMaintainHTMLPage = 'Maintain HTML page';
   pjsdUseBrowserApplicationObject = 'Use Browser Application object';
 
+  // New NodeJS project options form
+  pjsdNodeJSProjectOptions = 'NodeJS project options';
+  pjsdUseNodeJSApplicationObject = 'Use NodeJS Application object';
+
 implementation
 
 end.
