@@ -76,6 +76,7 @@ type
   {$ENDIF}
 
   {$IFDEF UseTProcessW}
+{$Optimization -ORDERFIELDS }
 const
   SNoCommandLine        = 'Cannot execute empty command-line';
   SErrCannotExecute     = 'Failed to execute %s : %d';
@@ -565,7 +566,10 @@ var
   o: TProcessClassTemplate;
 begin
   o:=TProcessClassTemplate.Create(nil);
-  PHANDLE(Pointer(Self)+(@o.FProcessHandle-Pointer(o)))^:=aProcessHandle;
+  if (@o.FProcessHandle-Pointer(o) <= TProcessUTF8.InstanceSize - SizeOf(HANDLE)) and
+     (PHANDLE(Pointer(Self)+(@o.FProcessHandle-Pointer(o)))^ = ProcessHandle)
+  then
+    PHANDLE(Pointer(Self)+(@o.FProcessHandle-Pointer(o)))^:=aProcessHandle;
   if aProcessHandle<>ProcessHandle then
     raise Exception.Create('TProcessUTF8.SetProcessHandle failed');
   o.Free;
@@ -576,7 +580,10 @@ var
   o: TProcessClassTemplate;
 begin
   o:=TProcessClassTemplate.Create(nil);
-  PHANDLE(Pointer(Self)+(@o.FThreadHandle-Pointer(o)))^:=aThreadHandle;
+  if (@o.FThreadHandle-Pointer(o) <= TProcessUTF8.InstanceSize - SizeOf(HANDLE)) and
+     (PHANDLE(Pointer(Self)+(@o.FThreadHandle-Pointer(o)))^ = ThreadHandle)
+  then
+    PHANDLE(Pointer(Self)+(@o.FThreadHandle-Pointer(o)))^:=aThreadHandle;
   if aThreadHandle<>ThreadHandle then
     raise Exception.Create('TProcessUTF8.SetThreadHandle failed');
   o.Free;
@@ -587,7 +594,10 @@ var
   o: TProcessClassTemplate;
 begin
   o:=TProcessClassTemplate.Create(nil);
-  PHANDLE(Pointer(Self)+(@o.FProcessID-Pointer(o)))^:=aProcessID;
+  if (@o.FProcessID-Pointer(o) <= TProcessUTF8.InstanceSize - SizeOf(HANDLE)) and
+     (PHANDLE(Pointer(Self)+(@o.FProcessID-Pointer(o)))^ = ProcessID)
+  then
+    PHANDLE(Pointer(Self)+(@o.FProcessID-Pointer(o)))^:=aProcessID;
   if aProcessID<>ProcessID then
     raise Exception.Create('TProcessUTF8.SetProcessID failed');
   o.Free;
