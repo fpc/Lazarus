@@ -1458,7 +1458,7 @@ end;
 
 function TFpValueDwarfTypeDefinition.GetKind: TDbgSymbolKind;
 begin
-  Result := skNone;
+  Result := skType;
 end;
 
 function TFpValueDwarfTypeDefinition.GetDbgSymbol: TFpSymbol;

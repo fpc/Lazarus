@@ -665,6 +665,15 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     Result := True;
   end;
 
+  procedure DoType;
+  begin
+    if GetTypeAsDeclaration(APrintedValue, AValue.DbgSymbol) then
+      APrintedValue := 'type ' + APrintedValue
+    else
+      DoUnknown;
+    Result := True;
+  end;
+
   procedure DoFunction;
   var
     s: String;
@@ -1133,6 +1142,7 @@ begin
     skClass:     DoStructure;
     skInterface: ;
     skArray:     DoArray;
+    skType:      DoType;
     skNone:      DoUnknown;
   end;
 

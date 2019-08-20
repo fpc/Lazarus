@@ -25,7 +25,7 @@ type
 
   TDbgSymbolKind = (
     skNone,          // undefined type
-    //skType         // Not a value, but a type description
+    skType,          // Not a value, but a type description
     //skUser,          // userdefined type, this sym refers to another sym defined elswhere
     //--------------------------------------------------------------------------
     skInstance,      // the main exe/dll, containing all other syms
