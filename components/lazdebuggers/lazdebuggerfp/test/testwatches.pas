@@ -951,10 +951,15 @@ begin
 //t.CheckResults;
 //exit;
 
-    t.Add('SomeFunc1',    weMatch('^function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN', skFunction) );
-    t.Add('@SomeFunc1',    weMatch('.', skPointer) ); // TODO: the text is based on the function return type
+    t.Add('SomeFunc1',    weMatch('^function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN *AT *\$[0-9A-F]+', skFunction) );
+    t.Add('SomeProc1',    weMatch('^procedure *\(\) *AT *\$[0-9A-F]+', skProcedure) );
+    t.Add('@SomeFunc1',   weMatch('^\^function.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skFunctionRef}) );
+    t.Add('@SomeProc1',   weMatch('^\^procedure.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skProcedureRef}) );
+
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');
+    AddWatches(t, 'glob var (@)^',   '(@gv', 001, 'B', tlAny, ')^');
+//    AddWatches(t, 'glob var @^',   '@gv', 001, 'B', tlAny, '^');
     AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
     AddWatches(t, 'glob MyBaseClass1', 'MyClass1.mbc', 003, 'D');
     AddWatches(t, 'glob MyClass1',     'TMyClass(MyClass2).mc',  004, 'E');
