@@ -100,9 +100,7 @@ begin
   Result := ADbgSymbol <> nil;
   if not Result then
     exit;
-  if (ADbgSymbol.SymbolType = stValue) and
-     not((ADbgSymbol.Kind = skProcedure) or (ADbgSymbol.Kind = skFunction))
-  then begin
+  if (ADbgSymbol.SymbolType = stValue) then begin
     ADbgSymbol := ADbgSymbol.TypeInfo;
     Result := ADbgSymbol <> nil;
     if not Result then
@@ -456,9 +454,7 @@ begin
   if not Result then
     exit;
   VarName := '';
-  if (ADbgSymbol.SymbolType = stValue) and
-     not((ADbgSymbol.Kind = skProcedure) or (ADbgSymbol.Kind = skFunction))
-  then begin
+  if (ADbgSymbol.SymbolType = stValue) then begin
     if tdfIncludeVarName in AFlags then
       VarName := ADbgSymbol.Name;
     ADbgSymbol := ADbgSymbol.TypeInfo;
@@ -673,27 +669,29 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   var
     s: String;
     proc: TFpSymbolDwarf;
-    v: TDBGPtr;
     t: TFpSymbol;
     par: TFpValueDwarf;
+    v: TFpDbgMemLocation;
+    va: TDBGPtr;
   begin
     proc := nil;
-    v := AValue.DataAddress.Address;
+    v := AValue.DataAddress;
+    va := v.Address;
     if (ppvCreateDbgType in AFlags) then begin
       ADBGTypeInfo^ := TDBGType.Create(AValue.Kind, '');
       if AValue.Kind in [skFunctionRef, skProcedureRef] then
-        ADBGTypeInfo^.Value.AsPointer := Pointer(v);  // TODO: no cut off
+        ADBGTypeInfo^.Value.AsPointer := Pointer(va);  // TODO: no cut off
     end;
 
     // TODO: depending on verbosity: TypeName($0123456)
     if AValue.Kind in [skFunctionRef, skProcedureRef] then begin
-      if v = 0 then
+      if va = 0 then
         APrintedValue := 'nil'
       else
-        APrintedValue := '$'+IntToHex(v, AnAddressSize*2);
+        APrintedValue := '$'+IntToHex(va, AnAddressSize*2);
 
       t := AValue.TypeInfo;
-      proc := TFpSymbolDwarf(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindSymbol(v));
+      proc := TFpSymbolDwarf(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindSymbol(va));
       if proc <> nil then begin
         //t := proc;
         s := proc.Name;
@@ -714,6 +712,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     else
       GetTypeAsDeclaration(s, t);
     APrintedValue := APrintedValue + s;
+
+    if (AValue.Kind in [skFunction, skProcedure]) and IsReadableLoc(v) then begin
+      APrintedValue := APrintedValue + ' AT ' + '$'+IntToHex(va, AnAddressSize*2);
+    end;
 
     ReleaseRefAndNil(proc);
     Result := True;

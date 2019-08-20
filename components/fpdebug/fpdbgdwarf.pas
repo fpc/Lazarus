@@ -919,6 +919,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
     function GetFlags: TDbgSymbolFlags; override;
+    procedure TypeInfoNeeded; override;
 
     function GetColumn: Cardinal; override;
     function GetFile: String; override;
@@ -932,6 +933,22 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     destructor Destroy; override;
     // TODO members = locals ?
     function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpValueDwarf;
+  end;
+
+  { TFpSymbolDwarfTypeProc }
+
+  TFpSymbolDwarfTypeProc = class(TFpSymbolDwarfType)
+  private
+    FDataSymbol: TFpSymbolDwarfDataProc;
+  protected
+    procedure ForwardToSymbolNeeded; override;
+    procedure CircleBackRefActiveChanged(ANewActive: Boolean); override;
+    procedure NameNeeded; override;
+    procedure KindNeeded; override;
+    procedure TypeInfoNeeded; override;
+  public
+    constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry;
+      ADataSymbol: TFpSymbolDwarfDataProc);
   end;
 
   { TFpSymbolDwarfDataVariable }
@@ -1676,7 +1693,7 @@ end;
 procedure TFpValueDwarf.CircleBackRefActiveChanged(NewActive: Boolean);
 begin
   inherited CircleBackRefActiveChanged(NewActive);
-  if NewActive then;
+  //if NewActive then;
   if CircleBackRefsActive then begin
     if FValueSymbol <> nil then
       FValueSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueSymbol, 'TDbgDwarfSymbolValue'){$ENDIF};
@@ -3246,7 +3263,7 @@ begin
   Result := GetValueAddress(AValueObj, AnAddress);
   Result := Result and IsReadableLoc(AnAddress);
   if Result then begin
-    Result := TFpSymbolDwarfType(TypeInfo).GetDataAddress(AValueObj, AnAddress, ATargetType, 1);
+    Result := TFpSymbolDwarf(TypeInfo).GetDataAddress(AValueObj, AnAddress, ATargetType, 1);
     if not Result then SetLastError(TypeInfo.LastError);
   end;
 end;
@@ -5036,10 +5053,7 @@ end;
 
 procedure TFpSymbolDwarfDataProc.KindNeeded;
 begin
-  if TypeInfo <> nil then
-    SetKind(skFunction)
-  else
-    SetKind(skProcedure);
+  SetKind(TypeInfo.Kind);
 end;
 
 procedure TFpSymbolDwarfDataProc.SizeNeeded;
@@ -5054,6 +5068,15 @@ begin
   Result := inherited GetFlags;
   if ReadVirtuality(flg) then
     Result := Result + flg;
+end;
+
+procedure TFpSymbolDwarfDataProc.TypeInfoNeeded;
+var
+  t: TFpSymbolDwarfTypeProc;
+begin
+  t := TFpSymbolDwarfTypeProc.Create('', InformationEntry, Self); // returns with 1 circulor ref
+  SetTypeInfo(t); // TODO: avoid adding a reference, already got one....
+  t.ReleaseReference;
 end;
 
 function TFpSymbolDwarfDataProc.GetSelfParameter(AnAddress: TDbgPtr): TFpValueDwarf;
@@ -5097,6 +5120,57 @@ begin
     end;
   end;
   InfoEntry.ReleaseReference;
+end;
+
+{ TFpSymbolDwarfTypeProc }
+
+procedure TFpSymbolDwarfTypeProc.ForwardToSymbolNeeded;
+begin
+  SetForwardToSymbol(FDataSymbol); // Does *NOT* add reference
+end;
+
+procedure TFpSymbolDwarfTypeProc.CircleBackRefActiveChanged(ANewActive: Boolean
+  );
+begin
+  inherited CircleBackRefActiveChanged(ANewActive);
+  if (FDataSymbol = nil) then
+    exit;
+
+  if ANewActive then
+    FDataSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, 'FDataSymbol'){$ENDIF}
+  else
+    FDataSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, 'FDataSymbol'){$ENDIF};
+end;
+
+procedure TFpSymbolDwarfTypeProc.NameNeeded;
+begin
+  case Kind of
+    skFunction:  SetName('function');
+    skProcedure: SetName('procedure');
+    else         SetName('');
+  end;
+end;
+
+procedure TFpSymbolDwarfTypeProc.KindNeeded;
+begin
+  if TypeInfo <> nil then
+    SetKind(skFunction)
+  else
+    SetKind(skProcedure);
+end;
+
+procedure TFpSymbolDwarfTypeProc.TypeInfoNeeded;
+begin
+  SetTypeInfo(FDataSymbol.NestedTypeInfo);
+end;
+
+constructor TFpSymbolDwarfTypeProc.Create(AName: String;
+  AnInformationEntry: TDwarfInformationEntry;
+  ADataSymbol: TFpSymbolDwarfDataProc);
+begin
+  inherited Create(AName, AnInformationEntry);
+  MakePlainRefToCirclular;          // Done for the Caller // So we can set FDataSymbol without back-ref
+  FDataSymbol := ADataSymbol;
 end;
 
 { TFpSymbolDwarfDataVariable }

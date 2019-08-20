@@ -602,6 +602,8 @@ procedure TFpDbgCircularRefCountedObject.ReleaseCirclularReference{$IFDEF WITH_R
 var
   i: Integer;
 begin
+  if self = nil then
+    exit;
   Assert(FCircleRefCount > 0, 'ReleaseCirclularReference > 0');
   if CircleBackRefsActive then begin
     dec(FCircleRefCount);
