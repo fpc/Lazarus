@@ -254,6 +254,12 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.ClipboardFormatNeedsNullByte(
+  const AFormat: TPredefinedClipboardFormat): Boolean;
+begin
+  Result := False
+end;
+
 function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
 begin
   Result := LCLType.Error;
