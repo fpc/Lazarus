@@ -29,6 +29,7 @@ type
      ehIgnKindPtr,        // Ignore skSimple, ONLY if got kind=skPointer
      ehIgnTypeName,       // Ignore the typename
      ehMatchTypeName,     // The typename is a regex
+     ehNoTypeInfo,
 
      ehCharFromIndex,     // Debugger is allowed Pchar: 'x' String 'y'
 
@@ -1046,7 +1047,9 @@ begin
       if not TestTrue('TstWatch.value is valid', WatchVal.Validity = ddsValid, Context, AnIgnoreRsn) then
         exit;
 
-      if TestTrue('Has TypeInfo', Context.WatchVal.TypeInfo <> nil, Context, AnIgnoreRsn) then
+      if (not (ehNoTypeInfo in ehf)) and
+         TestTrue('Has TypeInfo', Context.WatchVal.TypeInfo <> nil, Context, AnIgnoreRsn)
+      then
         Context.HasTypeInfo := True;
 
       VerifySymType(Context, AnIgnoreRsn);

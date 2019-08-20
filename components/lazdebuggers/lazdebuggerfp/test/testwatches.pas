@@ -956,6 +956,12 @@ begin
     t.Add('@SomeFunc1',   weMatch('^\^function.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skFunctionRef}) );
     t.Add('@SomeProc1',   weMatch('^\^procedure.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skProcedureRef}) );
 
+    t.Add( 'TClass1',       weMatch('type class\(TObject\).*FInt: (integer|longint).*end', skType)).AddFlag(ehNoTypeInfo);
+    t.Add( 'TFunc1',        weMatch('type function *\(SomeValue.*\) *: *Boolean', skType)).AddFlag(ehNoTypeInfo);
+    t.Add( 'TIntStatArray', weMatch('type array *\[1\.\.5\] *of (integer|longint)', skType)).AddFlag(ehNoTypeInfo);
+    t.Add( 'TIntDynArray',  weMatch('type array of (integer|longint)', skType)).AddFlag(ehNoTypeInfo);
+    t.Add( 'byte',          weMatch('type byte', skType)).AddFlag(ehNoTypeInfo);
+
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob var (@)^',   '(@gv', 001, 'B', tlAny, ')^');
