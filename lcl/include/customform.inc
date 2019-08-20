@@ -2284,7 +2284,7 @@ var
 begin
   if Parent=nil then
   begin
-    NewDpi := hi(Msg.wParam);
+    NewDpi := hi(Cardinal(Msg.wParam));
     if Application.Scaled and Scaled and (NewDpi<>PixelsPerInch) then
     begin
       { Problem (Windows): if the form is shown the first time on a secondary monitor
