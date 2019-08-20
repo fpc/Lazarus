@@ -94,7 +94,7 @@ var
 
 function FindLocaleFileName(LCExt: string; Lang: string; Dir: string): string;
 var
-  T: string;
+  T, CurParam: string;
   i: integer;
 
   function GetLocaleFileName(const LangID, LCExt: string; Dir: string): string;
@@ -264,12 +264,23 @@ begin
   Result := '';
 
   if Lang = '' then
-    for i := 1 to Paramcount - 1 do
-      if (ParamStrUTF8(i) = '--LANG') or (ParamStrUTF8(i) = '-l') or
-        (ParamStrUTF8(i) = '--lang') then
-        Lang := ParamStrUTF8(i + 1);
+    for i := 1 to ParamCount do
+    begin
+      CurParam := ParamStrUTF8(i);
+      if (CurParam = '-l') or (UTF8LowerCase(CurParam) = '--lang') then
+      begin
+        if i < ParamCount then
+          Lang := ParamStrUTF8(i + 1);
+      end
+      else
+        if UTF8StartsText('--lang=', CurParam) then
+        begin
+          Lang := CurParam;
+          UTF8Delete(Lang, 1, Length('--lang='));
+        end;
+    end;
 
-  //Win32 user may decide to override locale with LANG variable.
+  //User can decide to override locale with LANG variable.
   if Lang = '' then
     Lang := GetEnvironmentVariableUTF8('LANG');
 
