@@ -554,7 +554,7 @@ var
   MakeIDECfgFilename: string;
 begin
   MakeIDECfgFilename:=GetMakeIDEConfigFilename;
-  //DebugLn(['SpecialIdeConfig MAKE MakeIDECfgFilename=',MakeIDECfgFilename,' ',FileExistsUTF8(MakeIDECfgFilename)]);
+  DebugLn(['SpecialIdeConfig MAKE MakeIDECfgFilename=',MakeIDECfgFilename,' ',FileExistsUTF8(MakeIDECfgFilename)]);
   if (FileExistsUTF8(MakeIDECfgFilename)) then begin
     // If a file name contains spaces, a file name whould need to be quoted.
     // Using a single quote is not possible, it is used already in the
