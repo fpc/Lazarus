@@ -141,7 +141,11 @@ type
 
   end;
 
+  { TCocoaManualScrollHost }
+
   TCocoaManualScrollHost = objcclass(TCocoaScrollView)
+    function lclContentView: NSView; override;
+    function lclClientFrame: TRect; override;
   end;
 
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
@@ -282,6 +286,25 @@ begin
     newPos := Round(sc.minInt + sz * ps);
     sc.lclSetPos(NewPos);
   end;
+end;
+
+{ TCocoaManualScrollHost }
+
+function TCocoaManualScrollHost.lclContentView: NSView;
+begin
+  if Assigned(documentView) then
+    Result := documentView.lclContentView
+  else
+    Result := inherited lclContentView;
+end;
+
+function TCocoaManualScrollHost.lclClientFrame: TRect;
+begin
+  if Assigned(documentView) then
+  begin
+    Result:=documentView.lclClientFrame;
+  end
+  else Result:=inherited lclClientFrame;
 end;
 
 { TCocoaManualScrollView }
