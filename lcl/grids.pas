@@ -2582,7 +2582,7 @@ function TCustomGrid.GetColWidths(Acol: Integer): Integer;
 var
   C: TGridColumn;
 begin
-  if not Columns.Enabled or (aCol<FixedCols) then
+  if not Columns.Enabled or (aCol<FirstGridColumn) then
   begin
     if IsColumnIndexValid(aCol) then
       Result:=FCols[aCol]
