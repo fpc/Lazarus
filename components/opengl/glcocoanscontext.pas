@@ -61,8 +61,6 @@ type
   NSScreenFix = objccategory external (NSScreen)
      function backingScaleFactor: CGFloat ; message 'backingScaleFactor';
   end;
-  TDummyNoWarnObjCNotUsed = objc.BOOL;
-  TDummyNoWarnObjCBaseNotUsed = objcbase.NSInteger;
 
   { TCocoaOpenGLView }
 
