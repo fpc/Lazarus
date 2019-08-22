@@ -179,7 +179,6 @@ type
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType = nil): Boolean;
     function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
                                           ATargetType: TFpSymbolDwarfType = nil): Boolean;
-    function HasDwarfDataAddress: Boolean; // TODO: is this just HasAddress?
 
     procedure Reset; virtual; // keeps lastmember and structureninfo
     function GetFieldFlags: TFpValueFieldFlags; override;
@@ -1575,24 +1574,6 @@ begin
   Result := StructureValue <> nil;
   if Result then
     Result := StructureValue.GetDwarfDataAddress(AnAddress, ATargetType);
-end;
-
-function TFpValueDwarf.HasDwarfDataAddress: Boolean;
-begin
-  if FValueSymbol <> nil then begin
-    Assert(FValueSymbol is TFpSymbolDwarfData, 'TDbgDwarfSymbolValue.GetDwarfDataAddress FValueSymbol');
-    Assert(TypeInfo is TFpSymbolDwarfType, 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo');
-    Assert(not HasTypeCastInfo, 'TDbgDwarfSymbolValue.GetDwarfDataAddress not HasTypeCastInfo');
-    Result := FValueSymbol.HasAddress;
-  end
-  else
-  begin
-    // try typecast
-    Result := HasTypeCastInfo;
-    if not Result then
-      exit;
-    Result := FTypeCastSourceValue.FieldFlags * [svfAddress, svfOrdinal] <> [];
-  end;
 end;
 
 procedure TFpValueDwarf.Reset;
