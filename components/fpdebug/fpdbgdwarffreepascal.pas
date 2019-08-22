@@ -855,7 +855,7 @@ begin
   then
     exit;
 
-  Addr := DataAddr;
+  GetDwarfDataAddress(Addr, Owner);
   if (not IsValidLoc(Addr)) and (svfOrdinal in TypeCastSourceValue.FieldFlags) then
     Addr := TargetLoc(TypeCastSourceValue.AsCardinal);
   if not IsReadableLoc(Addr) then

@@ -174,7 +174,6 @@ type
     function GetAddress: TFpDbgMemLocation; override;
     function OrdOrAddress: TFpDbgMemLocation;
     // Address of the data (followed type deref, location, ...)
-    function DataAddr: TFpDbgMemLocation;
     function OrdOrDataAddr: TFpDbgMemLocation;
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType = nil): Boolean;
     function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
@@ -1550,38 +1549,12 @@ begin
   Result := FLastError;
 end;
 
-function TFpValueDwarf.DataAddr: TFpDbgMemLocation;
-begin
-  // GetDwarfDataAddress(???); What about FTypeCastSourceValue.AsCardinal ?
-  if FValueSymbol <> nil then begin
-    //FValueSymbol.GetValueAddress(Self, Result);
-    FValueSymbol.GetValueDataAddress(Self, Result, FOwner);
-    if IsError(FValueSymbol.LastError) then
-      FLastError := FValueSymbol.LastError;
-  end
-  else
-  if HasTypeCastInfo then begin
-    Result := FTypeCastSourceValue.Address;
-    if IsError(FTypeCastSourceValue.LastError) then
-      FLastError := FTypeCastSourceValue.LastError;
-
-    if IsReadableLoc(Result) then begin
-      if not FTypeCastTargetType.GetDataAddress(Self, Result, FOwner, 1) then
-        Result := InvalidLoc;
-      if IsError(FTypeCastTargetType.LastError) then
-        FLastError := FTypeCastTargetType.LastError;
-    end;
-  end
-  else
-    Result := InvalidLoc;
-end;
-
 function TFpValueDwarf.OrdOrDataAddr: TFpDbgMemLocation;
 begin
   if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then
     Result := ConstLoc(FTypeCastSourceValue.AsCardinal)
   else
-    Result := DataAddr;
+    GetDwarfDataAddress(Result, FOwner);
 end;
 
 function TFpValueDwarf.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
@@ -2322,6 +2295,7 @@ var
 
   t: TFpSymbol;
   hb, lb: Int64;
+  DAddr: TFpDbgMemLocation;
 begin
   if (length(FMem) > 0) or (FSize <= 0) then
     exit;
@@ -2330,7 +2304,8 @@ begin
   t := t.TypeInfo;
   if t = nil then exit;
 
-  if not MemManager.ReadSet(DataAddr, FSize, FMem) then begin
+  GetDwarfDataAddress(DAddr, FOwner);
+  if not MemManager.ReadSet(DAddr, FSize, FMem) then begin
     FLastError := MemManager.LastError;
     exit; // TODO: error
   end;
@@ -4725,6 +4700,11 @@ begin
   end
   else
     exit; // TODO error
+  if IsTargetNil(Result) then begin
+    // TODO: return the nil address, for better error message?
+    Result := InvalidLoc;
+    Exit;
+  end;
 
   Offs := 0;
   Factor := 1;
@@ -4772,7 +4752,7 @@ begin
     end;
   end;
 
-  assert(IsTargetAddr(Result), 'DwarfArray MemberAddress');
+  assert(IsReadableMem(Result), 'DwarfArray MemberAddress');
   Result.Address := Result.Address + Offs;
   {$POP}
 end;
