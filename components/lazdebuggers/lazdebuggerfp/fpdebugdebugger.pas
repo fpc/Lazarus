@@ -1417,11 +1417,10 @@ begin
       end;
 
 
-
       if defNoTypeInfo in EvalFlags then
-        Res := FPrettyPrinter.PrintValue(AResText, APasExpr.ResultValue, DispFormat, RepeatCnt)
+        Res := FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt)
       else
-        Res := FPrettyPrinter.PrintValue(AResText, ATypeInfo, APasExpr.ResultValue, DispFormat, RepeatCnt);
+        Res := FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, DispFormat, RepeatCnt);
 
       // PCHAR/String
       if APasExpr.HasPCharIndexAccess then begin
