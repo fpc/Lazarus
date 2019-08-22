@@ -175,6 +175,7 @@ type
     function OrdOrAddress: TFpDbgMemLocation;
     // Address of the data (followed type deref, location, ...)
     function OrdOrDataAddr: TFpDbgMemLocation;
+    function GetDataAddress: TFpDbgMemLocation; override;
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType = nil): Boolean;
     function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
                                           ATargetType: TFpSymbolDwarfType = nil): Boolean;
@@ -370,13 +371,11 @@ type
 
   TFpValueDwarfStruct = class(TFpValueDwarf)
   private
-    FDataAddress: TFpDbgMemLocation;
     FDataAddressDone: Boolean;
   protected
     procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
-    function GetDataAddress: TFpDbgMemLocation; override;
     function GetDataSize: Integer; override;
     function GetSize: Integer; override;
   end;
@@ -386,7 +385,6 @@ type
   TFpValueDwarfStructTypeCast = class(TFpValueDwarf)
   private
     FMembers: TFpDbgCircularRefCntObjList;
-    FDataAddress: TFpDbgMemLocation;
     FDataAddressDone: Boolean;
   protected
     procedure Reset; override;
@@ -395,7 +393,6 @@ type
     function GetAsCardinal: QWord; override;
     function GetSize: Integer; override;
     function GetDataSize: Integer; override;
-    function GetDataAddress: TFpDbgMemLocation; override;
     function IsValidTypeCast: Boolean; override;
   public
     destructor Destroy; override;
@@ -420,7 +417,6 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAsCardinal: QWord; override;
-    function GetDataAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpValue; override;
     function GetMemberEx(const AIndex: array of Int64): TFpValue; override;
     function GetMemberCount: Integer; override;
@@ -436,7 +432,6 @@ type
 
   TFpValueDwarfSubroutine = class(TFpValueDwarf)
   protected
-    function GetDataAddress: TFpDbgMemLocation; override;
     function IsValidTypeCast: Boolean; override;
   end;
 {%endregion Value objects }
@@ -999,36 +994,6 @@ end;
 
 { TFpValueDwarfSubroutine }
 
-function TFpValueDwarfSubroutine.GetDataAddress: TFpDbgMemLocation;
-var
-  fields: TFpValueFieldFlags;
-  t: TFpDbgMemLocation;
-begin
-  if (FValueSymbol <> nil) then begin
-    if not FValueSymbol.GetValueDataAddress(Self, Result) then
-      Result := InvalidLoc;
-  end
-  else
-  if (FTypeCastSourceValue <> nil) then begin
-    fields := FTypeCastSourceValue.FieldFlags;
-    if svfOrdinal in fields then
-      Result := TargetLoc(TDbgPtr(FTypeCastSourceValue.AsCardinal))
-    else
-    if svfAddress in fields then begin
-      Result := InvalidLoc;
-      t := FTypeCastSourceValue.Address;
-      assert(SizeOf(Result) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
-      if (MemManager <> nil) then begin
-        Result := MemManager.ReadAddress(t, AddressSize);
-        if not IsValidLoc(Result) then
-          FLastError := MemManager.LastError;
-      end;
-    end;
-  end
-  else
-    Result := InvalidLoc;
-end;
-
 function TFpValueDwarfSubroutine.IsValidTypeCast: Boolean;
 var
   f: TFpValueFieldFlags;
@@ -1558,6 +1523,12 @@ begin
     GetDwarfDataAddress(Result, FOwner);
 end;
 
+function TFpValueDwarf.GetDataAddress: TFpDbgMemLocation;
+begin
+  if not GetDwarfDataAddress(Result) then
+    Result := InvalidLoc;
+end;
+
 function TFpValueDwarf.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
   ATargetType: TFpSymbolDwarfType): Boolean;
 var
@@ -2080,7 +2051,7 @@ begin
     Result := InvalidLoc
   else
   if not GetDwarfDataAddress(Result, Owner) then
-    Result := InvalidLoc;
+    Result := InvalidLoc
 end;
 
 function TFpValueDwarfPointer.GetAsString: AnsiString;
@@ -2499,31 +2470,13 @@ begin
 end;
 
 function TFpValueDwarfStruct.GetAsCardinal: QWord;
-begin
-  Result := QWord(LocToAddrOrNil(DataAddress));
-end;
-
-function TFpValueDwarfStruct.GetDataAddress: TFpDbgMemLocation;
 var
-  t: TFpDbgMemLocation;
+  Addr: TFpDbgMemLocation;
 begin
-  if FValueSymbol <> nil then begin
-    if not FDataAddressDone then begin
-      FDataAddress := InvalidLoc;
-      FValueSymbol.GetValueAddress(Self, t);
-      assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
-      if (MemManager <> nil) then begin
-// TODO: wrong for records (const / DW_AT_FORM) // use GetDwarfDataAddress??
-          FDataAddress := MemManager.ReadAddress(t, AddressSize);
-        if not IsValidLoc(FDataAddress) then
-          FLastError := MemManager.LastError;
-      end;
-      FDataAddressDone := True;
-    end;
-    Result := FDataAddress;
-  end
+  if not GetDwarfDataAddress(Addr, Owner) then
+    Result := 0
   else
-    Result := inherited GetDataAddress;
+  Result := QWord(LocToAddrOrNil(Addr));
 end;
 
 function TFpValueDwarfStruct.GetDataSize: Integer;
@@ -2577,8 +2530,13 @@ begin
 end;
 
 function TFpValueDwarfStructTypeCast.GetAsCardinal: QWord;
+var
+  Addr: TFpDbgMemLocation;
 begin
-  Result := QWord(LocToAddrOrNil(DataAddress));
+  if not GetDwarfDataAddress(Addr, Owner) then
+    Result := 0
+  else
+    Result := QWord(LocToAddrOrNil(Addr));
 end;
 
 function TFpValueDwarfStructTypeCast.GetSize: Integer;
@@ -2599,36 +2557,6 @@ begin
       Result := FTypeCastTargetType.Size
   else
     Result := -1;
-end;
-
-function TFpValueDwarfStructTypeCast.GetDataAddress: TFpDbgMemLocation;
-var
-  fields: TFpValueFieldFlags;
-  t: TFpDbgMemLocation;
-begin
-  if HasTypeCastInfo then begin
-    if not FDataAddressDone then begin
-// TODO: wrong for records // use GetDwarfDataAddress
-      fields := FTypeCastSourceValue.FieldFlags;
-      if svfOrdinal in fields then
-        FDataAddress := TargetLoc(TDbgPtr(FTypeCastSourceValue.AsCardinal))
-      else
-      if svfAddress in fields then begin
-        FDataAddress := InvalidLoc;
-        t := FTypeCastSourceValue.Address;
-        assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
-        if (MemManager <> nil) then begin
-          FDataAddress := MemManager.ReadAddress(t, AddressSize);
-          if not IsValidLoc(FDataAddress) then
-            FLastError := MemManager.LastError;
-        end;
-      end;
-      FDataAddressDone := True;
-    end;
-    Result := FDataAddress;
-  end
-  else
-    Result := inherited GetDataAddress;
 end;
 
 function TFpValueDwarfStructTypeCast.IsValidTypeCast: Boolean;
@@ -2760,11 +2688,6 @@ begin
     FLastError := MemManager.LastError;
     Result := 0;
   end;
-end;
-
-function TFpValueDwarfArray.GetDataAddress: TFpDbgMemLocation;
-begin
-  Result := OrdOrDataAddr;
 end;
 
 function TFpValueDwarfArray.GetMember(AIndex: Int64): TFpValue;
