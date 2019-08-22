@@ -293,6 +293,7 @@ type
   private
     FLastAddrMember: TFpValue;
     FPointetToAddr: TFpDbgMemLocation;
+    function GetDerefAddress: TFpDbgMemLocation;
   protected
     function GetAsCardinal: QWord; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
@@ -2032,11 +2033,27 @@ end;
 
 { TFpValueDwarfPointer }
 
+function TFpValueDwarfPointer.GetDerefAddress: TFpDbgMemLocation;
+begin
+  if doneAddr in FEvaluated then begin
+    Result := FPointetToAddr;
+    exit;
+  end;
+  Include(FEvaluated, doneAddr);
+
+  if (FSize <= 0) then
+    Result := InvalidLoc
+  else
+  if not MemManager.ReadAddress(OrdOrDataAddr, Context.SizeOfAddress, Result) then
+    FLastError := MemManager.LastError;
+  FPointetToAddr := Result;
+end;
+
 function TFpValueDwarfPointer.GetAsCardinal: QWord;
 var
   a: TFpDbgMemLocation;
 begin
-  a := GetDataAddress;
+  a := GetDerefAddress;
   if IsTargetAddr(a) then
     Result := LocToAddr(a)
   else
@@ -2053,27 +2070,17 @@ begin
 
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
-  if (t <> nil) and (t.Kind = skChar) and IsReadableMem(DataAddress) then // pchar
+  if (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then // pchar
     Result := Result + [svfString]; // data address
 end;
 
 function TFpValueDwarfPointer.GetDataAddress: TFpDbgMemLocation;
 begin
-  if doneAddr in FEvaluated then begin
-    Result := FPointetToAddr;
-    exit;
-  end;
-  Include(FEvaluated, doneAddr);
-
   if (FSize <= 0) then
     Result := InvalidLoc
   else
-  begin
-    if not MemManager.ReadAddress(OrdOrDataAddr, FSize, Result) then
-      FLastError := MemManager.LastError;
-  end;
-
-  FPointetToAddr := Result;
+  if not GetDwarfDataAddress(Result, Owner) then
+    Result := InvalidLoc;
 end;
 
 function TFpValueDwarfPointer.GetAsString: AnsiString;
@@ -2086,10 +2093,10 @@ begin
   if t.Size = 2 then
     Result := GetAsWideString
   else
-  if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(DataAddress) then begin // pchar
+  if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
     SetLength(Result, 2000);
     i := 2000;
-    while (i > 0) and (not MemManager.ReadMemory(DataAddress, i, @Result[1])) do
+    while (i > 0) and (not MemManager.ReadMemory(GetDerefAddress, i, @Result[1])) do
       i := i div 2;
     SetLength(Result,i);
     i := pos(#0, Result);
@@ -2108,10 +2115,10 @@ begin
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
   // skWideChar ???
-  if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(DataAddress) then begin // pchar
+  if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
     SetLength(Result, 2000);
     i := 4000; // 2000 * 16 bit
-    while (i > 0) and (not MemManager.ReadMemory(DataAddress, i, @Result[1])) do
+    while (i > 0) and (not MemManager.ReadMemory(GetDerefAddress, i, @Result[1])) do
       i := i div 2;
     SetLength(Result, i div 2);
     i := pos(#0, Result);
@@ -2142,7 +2149,7 @@ begin
   {$PUSH}{$R-}{$Q-} // TODO: check overflow
   if ti <> nil then
     AIndex := AIndex * ti.Size;
-  addr := DataAddress;
+  addr := GetDerefAddress;
   if not IsTargetAddr(addr) then begin
     FLastError := CreateError(fpErrAnyError, ['Internal dereference error']);
     exit;
@@ -3982,6 +3989,8 @@ function TFpSymbolDwarfTypePointer.GetDataAddressNext(AValueObj: TFpValueDwarf;
 var
   t: TFpDbgMemLocation;
 begin
+  if not IsInternalPointer then exit(True);
+
   t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;

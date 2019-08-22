@@ -757,6 +757,8 @@ end;
 function TFpPasParserValueDerefPointer.GetAddress: TFpDbgMemLocation;
 begin
   Result := FValue.DataAddress;
+  Result := Context.MemManager.ReadAddress(Result, Context.SizeOfAddress);
+
   if FAddressOffset <> 0 then begin
     assert(IsTargetAddr(Result ), 'TFpPasParserValueDerefPointer.GetAddress: TargetLoc(Result)');
     if IsTargetAddr(Result) then
