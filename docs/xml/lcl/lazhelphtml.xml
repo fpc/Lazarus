@@ -1,697 +1,739 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
-  ====================================================================
-    LazHelpHTML
-  ====================================================================
--->
-
-<module name="LazHelpHTML">
-<short/>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Process">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FileUtil">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LazConfigStorage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="HelpIntfs">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LazHelpIntf">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THTMLHelpDatabase">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLHelpDatabase.FBaseURL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLHelpDatabase.FDefaultBaseURL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLHelpDatabase.FKeywordPrefix">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLHelpDatabase.FKeywordPrefixNode">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="THTMLHelpDatabase.IsBaseURLStored">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THTMLHelpDatabase.IsBaseURLStored.Result">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THTMLHelpDatabase.SetBaseURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.SetBaseURL.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THTMLHelpDatabase.SetDefaultBaseURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.SetDefaultBaseURL.AValue">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THTMLHelpDatabase.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.Create.TheOwner">
-<short/>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THTMLHelpDatabase.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THTMLHelpDatabase.ShowURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THTMLHelpDatabase.ShowURL.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowURL.URL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowURL.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowURL.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THTMLHelpDatabase.ShowHelp">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THTMLHelpDatabase.ShowHelp.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowHelp.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowHelp.BaseNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowHelp.NewNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowHelp.QueryItem">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.ShowHelp.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THTMLHelpDatabase.GetNodesForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THTMLHelpDatabase.GetNodesForKeyword.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.GetNodesForKeyword.HelpKeyword">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.GetNodesForKeyword.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.GetNodesForKeyword.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THTMLHelpDatabase.GetEffectiveBaseURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THTMLHelpDatabase.GetEffectiveBaseURL.Result">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THTMLHelpDatabase.Load">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.Load.Storage">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THTMLHelpDatabase.Save">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLHelpDatabase.Save.Storage">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THTMLHelpDatabase.DefaultBaseURL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THTMLHelpDatabase.BaseURL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THTMLHelpDatabase.AutoRegister">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THTMLHelpDatabase.KeywordPrefix">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure type Visibility: default -->
-<element name="TOnFindDefaultBrowser">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnFindDefaultBrowser.DefaultBrowser">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnFindDefaultBrowser.Params">
-<short/>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THTMLBrowserHelpViewer">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLBrowserHelpViewer.FBrowserParams">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLBrowserHelpViewer.FBrowserPath">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLBrowserHelpViewer.FDefaultBrowser">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLBrowserHelpViewer.FDefaultBrowserParams">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THTMLBrowserHelpViewer.FOnFindDefaultBrowser">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THTMLBrowserHelpViewer.SetBrowserParams">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.SetBrowserParams.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THTMLBrowserHelpViewer.SetBrowserPath">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.SetBrowserPath.AValue">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THTMLBrowserHelpViewer.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.Create.TheOwner">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THTMLBrowserHelpViewer.ShowNode">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THTMLBrowserHelpViewer.ShowNode.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.ShowNode.Node">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.ShowNode.ErrMsg">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THTMLBrowserHelpViewer.FindDefaultBrowser">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Browser">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Params">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THTMLBrowserHelpViewer.Assign">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.Assign.Source">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THTMLBrowserHelpViewer.Load">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.Load.Storage">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THTMLBrowserHelpViewer.Save">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THTMLBrowserHelpViewer.Save.Storage">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THTMLBrowserHelpViewer.GetLocalizedName">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THTMLBrowserHelpViewer.GetLocalizedName.Result">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THTMLBrowserHelpViewer.OnFindDefaultBrowser">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THTMLBrowserHelpViewer.BrowserPath">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THTMLBrowserHelpViewer.BrowserParams">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THTMLBrowserHelpViewer.AutoRegister">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- LazHelpHTML -->
-</package>
+  <package name="lcl">
+    <!--
+       ====================================================================
+        LazHelpHTML
+      ====================================================================
+    -->
+    <module name="LazHelpHTML">
+      <short>
+        Contains types and classes used to integrate and access help files in HTML format
+      </short>
+      <descr>
+        <p>
+          LazHelpHTML contains types and classes used to integrate and access help files in HTML format (.htm or .html file extensions).
+        </p>
+      </descr>
+
+      <!-- unresolved type references Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazFileUtils"/>
+      <element name="UTF8Process"/>
+      <element name="LazUTF8"/>
+      <element name="LazConfigStorage"/>
+      <element name="LCLProc"/>
+      <element name="LCLIntf"/>
+      <element name="LCLStrConsts"/>
+      <element name="HelpIntfs"/>
+      <element name="LazHelpIntf"/>
+
+      <element name="THTMLHelpDatabase">
+        <short>
+          Provides support for context-sensitive help using HTML help files
+        </short>
+        <descr>
+          <p>
+            <var>THTMLHelpDatabase</var> is a <var>THelpDatabase</var> descendant that provides support for using HTML files as context-sensitive help displayed when the F1 key is pressed in an application. THTMLHelpDatabase extends the ancestor class to include properties and methods needed to associate Help Keywords to specific HTML files, and to retrieve and display the help content.
+          </p>
+          <p>
+            The KeywordPrefix property determines the keywords that can be accessed in the help database. BaseURL determines the path searched when accessing HTML files for the help database.
+          </p>
+          <p>
+            An application can create a THTMLHelpDatabase instance, assign the KeywordPrefix and BaseURL for the help database, and use AutoRegistered to enable the help database. Controls on the Form should use the value htKeyword in their HelpType property, and their HelpKeyword property must be set to a value that includes the KeyWordPrefix and the HTML file name accessed for the control.
+          </p>
+          <p>
+            THTMLBrowserHelpViewer is a companion component that allows the correct HTML help file to be displayed for the keyword/url in a web browser when the F1 key is pressed.
+          </p>
+          <p>
+            There is an example program that demonstrates usage of the components in the examples/helphtml directory for the Lazarus installation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpDatabase"/>
+          <link id="THTMLBrowserHelpViewer"/>
+        </seealso>
+      </element>
+
+      <element name="THTMLHelpDatabase.FBaseURL">
+        <short>Stores the base URL for files using the keyword prefix</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.FDefaultBaseURL">
+        <short>URL used when BaseURL is empty</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.FKeywordPrefix">
+        <short>The prefix used for keyword help in the help database</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.FKeywordPrefixNode">
+        <short>Node in the help file for entries having the keyword prefix</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.IsBaseURLStored">
+        <short>
+          Indicates if the value in BaseURL is stored for the help database
+        </short>
+        <descr>
+          <p>
+            <var>IsBaseURLStored</var> is a <var>Boolean</var> function used to determine if the value in BaseURL is stored for the help database class instance. The return value is <b>True</b> when the values in BaseURL and DefaultBaseURL are not the same.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLHelpDatabase.BaseURL"/>
+          <link id="THTMLHelpDatabase.DefaultBaseURL"/>
+        </seealso>
+      </element>
+      <element name="THTMLHelpDatabase.IsBaseURLStored.Result">
+        <short>True when the property value is stored</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.SetBaseURL" link="THTMLHelpDatabase.BaseURL">
+        <short>Sets the value in the BaseURL property</short>
+        <seealso>
+          <link id="THTMLHelpDatabase.BaseURL"/>
+        </seealso>
+      </element>
+      <element name="THTMLHelpDatabase.SetBaseURL.AValue">
+        <short>New value for the BaseURL property</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.SetDefaultBaseURL" link="THTMLHelpDatabase.DefaultBaseURL">
+        <short>Sets the value for the DefaultBaseURL property</short>
+        <seealso>
+          <link id="THTMLHelpDatabase.DefaultBaseURL"/>
+        </seealso>
+      </element>
+      <element name="THTMLHelpDatabase.SetDefaultBaseURL.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.Create">
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance.  Create calls the inherited method using the value in <var>TheOwner</var> as the owner of the class instance. Create calls <var>AddSupportedMimeType</var> to ensure that the <b>'text/html'</b> MIME type is included the MIME types used for files in the HTML database.
+          </p>
+          <p>
+            Use Free to destroy instances of the HTML help database.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpDatabase.AddSupportedMimeType"/>
+        </seealso>
+      </element>
+      <element name="THTMLHelpDatabase.Create.TheOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.Destroy">
+        <short>
+          Destructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that the <var>THelpNode</var> used in <var>KeyWordPrefix</var> is freed. Destroy calls the inherited destructor to free the HTML help database instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLHelpDatabase.KeywordPrefix"/>
+          <link id="#LCL.LazHelpIntf.THelpNode"/>
+        </seealso>
+      </element>
+
+      <element name="THTMLHelpDatabase.ShowURL">
+        <short>
+          Displays a help viewer for the specified HTML help topic
+        </short>
+        <descr>
+          <p>
+            <var>ShowURL</var> is a <var>TShowHelpResult</var> function used to display the HTML help topic for the specified URL. ShowURL gets the help viewer registered for the 'text/html' MIME type, resolves the URL to an absolute path ( if needed), and displays the corresponding help node in the viewer.
+          </p>
+          <p>
+            URL contains the URL protocol, path and file information, and optional URL parameters. For example: 'file://myapp/myform.html'.
+          </p>
+          <p>
+            Title contains the value displayed in the title bar for the help viewer.
+          </p>
+          <p>
+            The return value indicates the status of the requested operation, and contains the value shrSuccess when  the HTML help viewer successfully displays the topic for the help context. One of the following enumeration values from TShowHelpResult may be returned under certain circumstances:
+          </p>
+          <dl>
+            <dt>
+              shrViewerNotFound
+            </dt>
+            <dd>
+              A help viewer was not found for the HTML help MIME type.
+            </dd>
+            <dt>
+              shrViewerError
+            </dt>
+            <dd>
+              An error occurred while displaying the help topic in the help viewer.
+            </dd>
+            <dt>
+              shrContextNotFound
+            </dt>
+            <dd>
+              The value in URL contains file path information not located on the local file system.
+            </dd>
+          </dl>
+          <p>
+            The ErrMsg parameter is a variable argument updated to contain specific information about return values other than shrSuccess.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLHelpDatabase.ShowURL.Result">
+        <short>
+          Status of the help display operation
+        </short>
+      </element>
+      <element name="THTMLHelpDatabase.ShowURL.URL">
+        <short>
+          Identifies the path, file, and topic information displayed in the method
+        </short>
+      </element>
+      <element name="THTMLHelpDatabase.ShowURL.Title">
+        <short>
+          Value displayed in the title bar of the help viewer
+        </short>
+      </element>
+      <element name="THTMLHelpDatabase.ShowURL.ErrMsg">
+        <short>
+          Message which describes the error condition in the return value
+        </short>
+      </element>
+
+      <element name="THTMLHelpDatabase.ShowHelp">
+        <short>
+          Displays a context-sensitive HTML help topics in the HTML database
+        </short>
+        <descr>
+          <p>
+            <var>ShowHelp</var> is a <var>TShowHelpResult</var> function used to display context-sensitive HTML help topics in the HTML database. The return value indicates the status for the topic display request. It contains the value shrContextNotFound if the requested help node does not represent a valid URL for the HTML help database.
+          </p>
+          <p>
+            ErrMsg is a variable parameter which is updated to contain details for an error condition in the request.
+          </p>
+          <p>
+            ShowHelp calls the ShowURL method using the URL and Title from the NewNode parameter.
+          </p>
+          <p>
+            Please note that the Query, BaseNode, and QueryItem parameters are not used in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLHelpDatabase.ShowURL"/>
+          <link id="TShowHelpResult"/>
+          <link id="THelpNode"/>
+        </seealso>
+      </element>
+      <element name="THTMLHelpDatabase.ShowHelp.Result">
+        <short>Status of the help display request</short>
+      </element>
+     <element name="THTMLHelpDatabase.ShowHelp.Query">
+        <short>Not used in the method implementation</short>
+      </element>
+      <element name="THTMLHelpDatabase.ShowHelp.BaseNode">
+        <short>Not used in the method implementation</short>
+      </element>
+      <element name="THTMLHelpDatabase.ShowHelp.NewNode">
+        <short>Help node with the URL and Title displayed in the method</short>
+      </element>
+      <element name="THTMLHelpDatabase.ShowHelp.QueryItem">
+        <short>Not used in the method implementation</short>
+      </element>
+      <element name="THTMLHelpDatabase.ShowHelp.ErrMsg">
+        <short>
+          Message which describes an error condition in the return value
+        </short>
+      </element>
+
+      <element name="THTMLHelpDatabase.GetNodesForKeyword">
+        <short>
+          Populates the list with help nodes using the KeywordPrefix for the HTML help database
+        </short>
+        <descr>
+          <p>
+            <var>GetNodesForKeyword</var> is an overridden <var>TShowHelpResult</var> function used to populate the ListOfNotes parameter with the help nodes using the specified help keyword.
+          </p>
+          <p>
+            HelpKeyword contains the help keyword to locate in nodes for the HTML help database.
+          </p>
+          <p>
+            ListOfNodes is a THelpNodeQueryList instance which is populated in the method.
+          </p>
+          <p>
+            ErrMsg describes any error condition for the return value in the method.
+          </p>
+          <p>
+            GetNodesForKeyword calls the inherited method using the values in HelpKeyword, ListOfNodes, and ErrMsg as arguments. The return value is set to the TShowHelpResult enumeration value returned from the inherited method. No additional actions are performed in the method when the return value is not shrSuccess.
+          </p>
+          <p>
+            GetNodesForKeyword ensures that a THelpNode is included in ListOfNodes for the default topic matching the KeywordPrefix used in the HTML help database. GetNodesForKeyword calls CreateNodeQueryListAndAdd to populate the help nodes starting with the node for the Keyword prefix.
+          </p>
+          <p>
+            Please note that the list of node is populated at run-time only; the list is not populated at design-time.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLHelpDatabase.GetNodesForKeyword.Result">
+        <short>Status of the help display request</short>
+      </element>
+      <element name="THTMLHelpDatabase.GetNodesForKeyword.HelpKeyword">
+        <short>Help keyword to locate in the HTML help database</short>
+      </element>
+      <element name="THTMLHelpDatabase.GetNodesForKeyword.ListOfNodes">
+        <short>
+          List used to store help nodes matching the keyword prefix and keyword value
+        </short>
+      </element>
+      <element name="THTMLHelpDatabase.GetNodesForKeyword.ErrMsg">
+        <short>
+          Describes an error condition encountered in the help display requested
+        </short>
+      </element>
+
+      <element name="THTMLHelpDatabase.GetEffectiveBaseURL">
+        <short>
+          Gets the effective Base URL used to access a topic in the HTML help database
+        </short>
+        <descr>
+          <p>
+            <var>GetEffectiveBaseURL</var> is a <var>String</var> function used to get the effective value for the BaseURL needed to access a topic in the HTML help database.
+          </p>
+          <p>
+            When BaseURL is not an empty string (''), it is used to construct the URL path for its file name. When multiple HTML help databases have been registered, the help manager calls its GetBaseURLForBasePathObject method to derive the URL for the base path. Otherwise, the value in DefaultBaseURL is used construct the URL for the help topic file name.
+          </p>
+          <p>
+            GetEffectiveBaseURL ensures that a trailing path delimiter is appended to the URL in the return value.
+          </p>
+          <p>
+            GetEffectiveBaseURL is used in the implementation of the ShowURL method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLHelpDatabase.ShowURL"/>
+          <link id="#LCL.LazHelpIntf.THelpDatabases"/>
+          <link id="#LCL.HelpIntfs.THelpManager"/>
+        </seealso>
+      </element>
+      <element name="THTMLHelpDatabase.GetEffectiveBaseURL.Result">
+        <short>Derived value for the URL needed to access the HTML help topic</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.Load">
+        <short>
+          Loads HTML help database settings from the specified configuration storage
+        </short>
+        <descr>
+          <p>
+            <var>Load</var> is an overridden procedure in THTMLHelpDatabase, and calls the inherited method. Load ensures that the value for the <var>BaseURL</var> setting in Storage is used  as the value for the BaseURL property. If the setting does not exist in Storage, the value from <var>DefaultBaseURL</var> is used in BaseURL.
+          </p>
+          <p>
+            Use Save to store the value from BaseURL to the configuration storage.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLHelpDatabase.BaseURL"/>
+          <link id="THTMLHelpDatabase.DefaultBaseURL"/>
+          <link id="THTMLHelpDatabase.Save"/>
+        </seealso>
+      </element>
+      <element name="THTMLHelpDatabase.Load.Storage">
+        <short>
+          Configuration storage with values loaded in the method
+        </short>
+      </element>
+
+      <element name="THTMLHelpDatabase.Save">
+        <short>Saves configuration settings to the specified storage</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLHelpDatabase.Save.Storage">
+        <short>Storage for the configuration settings</short>
+      </element>
+
+      <element name="THTMLHelpDatabase.DefaultBaseURL">
+        <short>
+          Default value for the BaseURL used in the HTML help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTMLHelpDatabase.BaseURL">
+        <short>
+          BaseURL for the HTML help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTMLHelpDatabase.AutoRegister">
+        <short>
+          Indicates if the HTML help database is automatically registered at run-time
+        </short>
+        <descr>
+          <p>
+            <var>AutoRegister</var> is a published <var>Boolean</var> property which indicates if the HTML help database is automatically registered at run-time. Changing the value in AutoRegister causes the RegisterSelf or UnregisterSelf methods to be called. RegisterSelf is called when the property is True; otherwise UnregisterSelf is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLHelpDatabase.RegisterSelf"/>
+          <link id="THTMLHelpDatabase.UnregisterSelf"/>
+          <link id="THelpDatabase.ID"/>
+          <link id="THelpDatabase.Name"/>
+        </seealso>
+      </element>
+
+      <element name="THTMLHelpDatabase.KeywordPrefix">
+        <short>
+          Common prefix which identifies the related keyword topics handled in the HTML help database
+        </short>
+        <descr>
+          <p>
+            <var>KeywordPrefix</var> is a <var>String</var> property which identifies the related keyword topics handled in this instance of the HTML help database. KeywordPrefix is used in the GetNodesForKeyword method to select help topics using a specific Keyword. It also allows the path to help files using the keyword prefix to be determined using the BaseURL for the help topic.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLHelpDatabase.GetNodesForKeyword"/>
+          <link id="THTMLHelpDatabase.BaseURL"/>
+          <link id="THTMLHelpDatabase.DefaultBaseURL"/>
+        </seealso>
+      </element>
+
+      <element name="TOnFindDefaultBrowser">
+        <short>
+          Specifies an event handler signalled to get the browser application name and parameters
+        </short>
+        <descr>
+          <p>
+            <var>TOnFindDefaultBrowser</var> is an object procedure which defines the event handler signalled to find a help browser for HTML help topics. Applications can implement an object procedure using this signature to assign values to the DefaultBrowser and Params arguments. TOnFindDefaultBrowser is the type used to implement the <var>OnFindDefaultBrowser</var> event handler in <var>THTMLBrowserHelpViewer</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
+        </seealso>
+      </element>
+
+      <element name="TOnFindDefaultBrowser.DefaultBrowser">
+        <short>
+          Path to the default browser application used for HTML help topics
+        </short>
+      </element>
+
+      <element name="TOnFindDefaultBrowser.Params">
+        <short>
+          Command line parameters for the browser application needed to open and display the HTML help topic
+        </short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer">
+        <short>
+          Implements a browser/viewer for HTML help topics
+        </short>
+        <descr>
+          <p>
+            <var>THTMLBrowserHelpViewer</var> is a <var>THelpViewer</var> descendant which extends the ancestor class to display HTML help topics in a web browser application. Properties and methods are provided to perform the following types of operations:
+          </p>
+          <ul>
+            <li>
+              Register the viewer for use documents using the ''  MIME type
+            </li>
+            <li>
+              Get the browser and command line parameters used to display HTML help topics
+            </li>
+            <li>
+              Display a node in the HTML help document
+            </li>
+            <li>
+              Load and save configuration settings for the HTML help viewer
+            </li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="#LCL.LazHelpIntf.THelpViewer"/>
+        </seealso>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.FBrowserParams" link="THTMLBrowserHelpViewer.BrowserParams"/>
+
+      <element name="THTMLBrowserHelpViewer.FBrowserPath" link="THTMLBrowserHelpViewer.BrowserPath"/>
+
+      <element name="THTMLBrowserHelpViewer.FDefaultBrowser" link="THTMLBrowserHelpViewer.DefaultBrowser"/>
+
+      <element name="THTMLBrowserHelpViewer.FDefaultBrowserParams" link="THTMLBrowserHelpViewer.DefaultBrowserParams"/>
+
+      <element name="THTMLBrowserHelpViewer.FOnFindDefaultBrowser" link="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
+
+      <element name="THTMLBrowserHelpViewer.SetBrowserParams" link="THTMLBrowserHelpViewer.BrowserParams">
+        <short>
+          Sets the value in the BrowserParams property
+        </short>
+      </element>
+      <element name="THTMLBrowserHelpViewer.SetBrowserParams.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.SetBrowserPath" link="THTMLBrowserHelpViewer.BrowserPath">
+        <short>
+          Sets the value in the BrowserPath property
+        </short>
+      </element>
+      <element name="THTMLBrowserHelpViewer.SetBrowserPath.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.Create">
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor using the value in <var>TheOwner</var> as the owner for the class instance.
+          </p>
+          <p>
+            Create ensures that the '<b>text/html</b>' MIME type is included in the MIME types supported in the HTML help viewer. Create also sets the default value for the BrowserParams property to '<b>%s</b>'. The value in the ParameterHelp property is set to the constant hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLBrowserHelpViewer.AddSupportedMimeType"/>
+          <link id="THTMLBrowserHelpViewer.BrowserParams"/>
+          <link id="#LCL.LazHelpIntf.THelpViewer.ParameterHelp"/>
+        </seealso>
+      </element>
+      <element name="THTMLBrowserHelpViewer.Create.TheOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.ShowNode">
+        <short>
+          Displays the help node for a HTML help topic
+        </short>
+        <descr>
+          <p>
+            <var>ShowNode</var> is an overridden <var>TShowHelpResult</var> function used to display the help node for a HTML help topic. The return value is one of the values from the <var>TShowHelpResult</var> enumeration.
+          </p>
+          <p>
+            Node contains the THelpNode displayed in the method.
+          </p>
+          <p>
+            ErrMsg is a variable parameter updated to describe an error condition occurring in the return value for the method, or an empty string when an error condition is not encountered.
+          </p>
+          <p>
+            When Node contains an invalid URL, the value in ErrMsg is set to 'THTMLBrowserHelpViewer.ShowNode Node.URLValid=false'. If Node has an empty URL, ErrMsg is set to the value 'THTMLBrowserHelpViewer.ShowNode Node.URL empty'. ErrMsg  may contain a constant value for other specific error conditions, such as:
+          </p>
+          <ul>
+            <li>
+              hhsHelpNoHTMLBrowserFoundPleaseDefineOne
+            </li>
+            <li>
+              hhsHelpNoHTMLBrowserFound
+            </li>
+            <li>
+              hhsHelpBrowserNotFound
+            </li>
+            <li>
+              hhsHelpBrowserNotExecutable
+            </li>
+            <li>
+              hhsHelpErrorWhileExecuting
+            </li>
+          </ul>
+          <p>
+            ShowNode uses the value in BrowserPath as the executable for the HTML help viewer. BrowserParams is used as the arguments passed to the executable. When BrowserPath is unassigned, the FindDefaultBrowser method is called to update the executable and parameters used in the help viewer. For the Windows platform, the executable may contain a quoted value; the quotes are removed before the FileExistsUf8 and FileIsExecutable methods are called to verify the executable file name.
+          </p>
+          <p>
+            ShowNode ensures that a '%s' macro marker in BrowserParams is updated with the URL for the help node in Node.
+          </p>
+          <p>
+            ShowNode creates a TProcessUTF8 instance that is used to execute the browser application with the required browser parameters. The process does not inherit standard handles for input, output or errors. The process is freed when execution has been completed.
+          </p>
+          <p>
+            The return value is set to shrSuccess when the HTML help topic has been successfully displayed in the help browser. An exception that occurs during execution of the browser process is handled in the method. ErrMsg is updated to reflect the exception message, and the return value is set shrViewerError.
+          </p>
+          <p>
+            ShowNode is used in the implementation of the ShowURL method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLBrowserHelpViewer.BrowserPath"/>
+          <link id="THTMLBrowserHelpViewer.BrowserParams"/>
+          <link id="THTMLBrowserHelpViewer.ShowURL"/>
+          <link id="TShowHelpResult"/>
+          <link id="THelpViewer"/>
+          <link id="THelpNode"/>
+        </seealso>
+      </element>
+      <element name="THTMLBrowserHelpViewer.ShowNode.Result">
+        <short>Status code for the requested operation</short>
+      </element>
+      <element name="THTMLBrowserHelpViewer.ShowNode.Node">
+        <short>Help node displayed in the method</short>
+      </element>
+      <element name="THTMLBrowserHelpViewer.ShowNode.ErrMsg">
+        <short>Message describing an error condition in the return value</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.FindDefaultBrowser">
+        <short>
+          Locates the default browser application used for HTML help topics
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Browser">
+        <short>Browser application used for the HTML help viewer</short>
+      </element>
+      <element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Params">
+        <short>Parameters needed for the browser application</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.Assign">
+        <short>
+          Stores property values from the specified help browser to the current class instance
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLBrowserHelpViewer.Assign.Source">
+        <short>
+          Help browser with properties stored in the current class instance
+        </short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.Load">
+        <short>
+          Loads configuration settings for the help viewer from the specified storage
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLBrowserHelpViewer.Load.Storage">
+        <short>Storage for the configuration settings</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.Save">
+        <short>
+          Save configuration settings for the help viewer to the specified storage
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLBrowserHelpViewer.Save.Storage">
+        <short>Storage for the configuration settings</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.GetLocalizedName">
+        <short>
+          Gets the localized name for the HTML help browser/viewer application
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTMLBrowserHelpViewer.GetLocalizedName.Result">
+        <short>Value for the localized name of the application</short>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.OnFindDefaultBrowser">
+        <short>
+          Event handler signalled to find the default browser for the help viewer
+        </short>
+        <descr>
+          <p>
+            <var>OnFindDefaultBrowser</var> is a <var>TOnFindDefaultBrowser</var> property that represents the event handler  to find the default browser for the help viewer.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOnFindDefaultBrowser"/>
+        </seealso>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.BrowserPath">
+        <short>
+          Path to the browser application used to view a HTML help topic
+        </short>
+        <descr>
+          <p>
+            <var>BrowserPath</var> is a <var>String</var> property that contains the path on the local file system for the browser application executable used to view HTML help topics. For example:
+          </p>
+          <code>
+  AViewer.BrowserPath := '/usr/bin/mozilla';  // or
+  AViewer.BrowserPath := ''"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe "'';
+          </code>
+          <p>
+            When BrowserPath contains an empty string (<b>''</b>), the FindDefaultBrowser method is used to get the value for the property. The method uses the OnFindDefaultBrowser event handler when assigned, or the value in the DefaultBrowser property.
+          </p>
+          <p>
+            BrowserPath is updated/used during execution of the ShowNode method.
+          </p>
+          <p>
+            Use BrowserParams to access the arguments passed on the command line to the browser application in BrowserPath.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
+          <link id="THTMLBrowserHelpViewer.DefaultBrowser"/>
+          <link id="THTMLBrowserHelpViewer.BrowserParams"/>
+          <link id="THTMLBrowserHelpViewer.ShowNode"/>
+        </seealso>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.BrowserParams">
+        <short>
+          Parameters passed to the browser application to display a HTML help topic
+        </short>
+        <descr>
+          <p>
+            <var>BrowserParams</var> is a <var>String</var> property used to specify arguments passed on the command line to the browser application. The arguments identify the URL and any optional command line switches needed for the executable in BrowserPath. BrowserParams uses the '<b>%s</b>' notation to represent a macro that is substituted with the URL for the Help topic when it is displayed. The value in BrowserParams can be overridden, but should always include '%s' to allow insertion of the URL for the help topic.
+          </p>
+          <p>
+            BrowserParams is updated/used when the HTML help topic is displayed in the ShowNode method. When BrowserParams contains an empty string (<b>''</b>), the value in DefaultBrowserParams is used.
+          </p>
+          <p>
+            Use BrowserPath to access the browser application used to view HTML help topics. Use the OnFindDefaultBrowser event handler to perform conditional browser path and parameter assignment based on user-defined criteria.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTMLBrowserHelpViewer.BrowserPath"/>
+          <link id="THTMLBrowserHelpViewer.DefaultBrowserParams"/>
+          <link id="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
+          <link id="THTMLBrowserHelpViewer.ShowNode"/>
+        </seealso>
+      </element>
+
+      <element name="THTMLBrowserHelpViewer.AutoRegister">
+        <short>
+          Indicates if the help viewer is automatically registered in the Lazarus Help system
+        </short>
+        <descr>
+          <p>
+            <var>AutoRegister</var> is a published <var>Boolean</var> property in THTMLBrowserHelpViewer. AutoRegister determines whether the RegisterSelf or UnregisterSelf method for the help viewer is called at run-time. RegisterSelf is called when AutoRegister contains True; otherwise UnregisterSelf is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.LazHelpIntf.THelpViewer"/>
+          <link id="#LCL.LazHelpIntf.THelpViewer.AutoRegister"/>
+          <link id="#LCL.LazHelpIntf.THelpViewer.RegisterSelf"/>
+          <link id="#LCL.LazHelpIntf.THelpViewer.UnregisterSelf"/>
+        </seealso>
+      </element>
+
+      <element name="Register">
+        <short>
+          Registers database and viewer components for HTML help on the System tab in Lazarus
+        </short>
+      </element>
+    </module>
+    <!-- LazHelpHTML -->
+
+  </package>
 </fpdoc-descriptions>

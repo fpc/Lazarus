@@ -1,4502 +1,2934 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
-  ====================================================================
-    LazHelpIntf
-  ====================================================================
--->
-
-<module name="LazHelpIntf">
-<short/>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FileUtil">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Dialogs">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LazConfigStorage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="HelpIntfs">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryItem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpQueryItem.AsString">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpQueryItem.AsString.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpQueryItem.IsEqual">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpQueryItem.IsEqual.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryItem.IsEqual.QueryItem">
-<short/>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPascalHelpContextType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcFilename">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcSourceName">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcProperty">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcProcedure">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcParameterList">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcVariable">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcType">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPascalHelpContextType.pihcConst">
-<short/>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TPascalHelpContext">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TPascalHelpContext.Descriptor">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TPascalHelpContext.Context">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="TPascalHelpContextPtr">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPascalHelpContextList">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPascalHelpContextList.FCount">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPascalHelpContextList.fItems">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPascalHelpContextList.GetItems">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPascalHelpContextList.GetItems.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPascalHelpContextList.GetItems.Index">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPascalHelpContextList.Add">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPascalHelpContextList.Add.Context">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPascalHelpContextList.Insert">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPascalHelpContextList.Insert.Index">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPascalHelpContextList.Insert.Context">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPascalHelpContextList.Clear">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPascalHelpContextList.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPascalHelpContextList.IsEqual">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPascalHelpContextList.IsEqual.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPascalHelpContextList.IsEqual.QueryItem">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPascalHelpContextList.CompareList">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPascalHelpContextList.CompareList.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPascalHelpContextList.CompareList.AList">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPascalHelpContextList.AsString">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPascalHelpContextList.AsString.Result">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPascalHelpContextList.Count">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPascalHelpContextList.Items">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPascalHelpContextList.Items.Index">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPascalHelpContextList.List">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="THelpNodeType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="THelpNodeType.hntURLIDContext">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="THelpNodeType.hntURL">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="THelpNodeType.hntURLID">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="THelpNodeType.hntID">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="THelpNodeType.hntContext">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="THelpNodeType.hntURLContext">
-<short/>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpNode">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNode.FContext">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNode.FURL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNode.FHelpType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNode.fID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNode.FOwner">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNode.FTitle">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNode.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Create.TheOwner">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Create.Node">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNode.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Create.TheOwner">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Create.TheTitle">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Create.TheURL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Create.TheID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Create.TheContext">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNode.CreateURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURL.TheOwner">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURL.TheTitle">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURL.TheURL">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNode.CreateID">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateID.TheOwner">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateID.TheTitle">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateID.TheID">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNode.CreateURLID">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLID.TheOwner">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLID.TheTitle">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLID.TheURL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLID.TheID">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNode.CreateContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateContext.TheOwner">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateContext.TheTitle">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateContext.TheContext">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNode.CreateURLContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLContext.TheOwner">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLContext.TheTitle">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLContext.TheURL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.CreateURLContext.TheContext">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpNode.Owner">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNode.URLValid">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNode.URLValid.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNode.IDValid">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNode.IDValid.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNode.ContextValid">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNode.ContextValid.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNode.AsString">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNode.AsString.Result">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpNode.Assign">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNode.Assign.Source">
-<short/>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpNode.Title">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpNode.HelpType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpNode.URL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpNode.ID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpNode.Context">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpNodeQuery">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNodeQuery.FNode">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNodeQuery.FQueryItem">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNodeQuery.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNodeQuery.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQuery.Create.TheNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQuery.Create.TheQueryItem">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQuery.IsEqual">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQuery.IsEqual.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQuery.IsEqual.TheNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQuery.IsEqual.TheQueryItem">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQuery.IsEqual">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQuery.IsEqual.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQuery.IsEqual.NodeQuery">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQuery.AsString">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQuery.AsString.Result">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpNodeQuery.Node">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpNodeQuery.QueryItem">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpNodeQueryList">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpNodeQueryList.fItems">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="THelpNodeQueryList.GetItems">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQueryList.GetItems.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.GetItems.Index">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpNodeQueryList.SetItems">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.SetItems.Index">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.SetItems.AValue">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpNodeQueryList.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THelpNodeQueryList.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQueryList.Count">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQueryList.Count.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQueryList.Add">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQueryList.Add.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.Add.NodeQuery">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQueryList.Add">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQueryList.Add.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.Add.Node">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.Add.QueryItem">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpNodeQueryList.Delete">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.Delete.Index">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQueryList.IndexOf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQueryList.IndexOf.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.IndexOf.NodeQuery">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpNodeQueryList.IndexOf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpNodeQueryList.IndexOf.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.IndexOf.Node">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.IndexOf.QueryItem">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpNodeQueryList.Clear">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpNodeQueryList.Items">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpNodeQueryList.Items.Index">
-<short/>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDBItem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDBItem.FNode">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpDBItem.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBItem.Create.TheNode">
-<short/>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THelpDBItem.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpDBItem.Node">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDBISourceFile">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDBISourceFile.FBasePathObject">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDBISourceFile.FFilename">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpDBISourceFile.SetFilename">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceFile.SetFilename.AValue">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpDBISourceFile.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceFile.Create.TheNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceFile.Create.TheFilename">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDBISourceFile.FileMatches">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDBISourceFile.FileMatches.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceFile.FileMatches.AFilename">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDBISourceFile.GetFullFilename">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDBISourceFile.GetFullFilename.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDBISourceFile.GetBasePath">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDBISourceFile.GetBasePath.Result">
-<short/>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpDBISourceFile.BasePathObject">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpDBISourceFile.Filename">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDBISourceDirectory">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDBISourceDirectory.FFileMask">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDBISourceDirectory.FWithSubDirectories">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpDBISourceDirectory.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceDirectory.Create.TheNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceDirectory.Create.TheFilename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceDirectory.Create.TheFileMask">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceDirectory.Create.Recursive">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDBISourceDirectory.FileMatches">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDBISourceDirectory.FileMatches.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBISourceDirectory.FileMatches.AFilename">
-<short/>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpDBISourceDirectory.FileMask">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THelpDBISourceDirectory.WithSubDirectories">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDBIClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDBIClass.FTheClass">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDBIClass.TheClass">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDBIMessage">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDBIMessage.MessageMatches">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDBIMessage.MessageMatches.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBIMessage.MessageMatches.TheMessage">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDBIMessage.MessageMatches.MessageParts">
-<short/>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryNode">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQueryNode.FNode">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQueryNode.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryNode.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryNode.Create.TheNode">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQueryNode.Node">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDatabase">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FAutoRegister">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FBasePathObject">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FDatabases">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FRefCount">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FSearchItems">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FSupportedMimeTypes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabase.FTOCNode">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpDatabase.SetAutoRegister">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.SetAutoRegister.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpDatabase.SetID">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.SetID.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpDatabase.SetDatabases">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.SetDatabases.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="THelpDatabase.SetSupportedMimeTypes">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.SetSupportedMimeTypes.List">
-<short/>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="THelpDatabase.AddSupportedMimeType">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.AddSupportedMimeType.AMimeType">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpDatabase.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.Create.TheOwner">
-<short/>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THelpDatabase.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.Reference">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.RegisterSelf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.Release">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.UnregisterSelf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.Registered">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.Registered.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.CanShowTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.CanShowTableOfContents.Result">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.ShowTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.ShowError">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowError.ShowResult">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowError.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.ShowHelp">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.ShowHelp.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelp.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelp.BaseNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelp.NewNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelp.QueryItem">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelp.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.ShowHelpFile">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.ShowHelpFile.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelpFile.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelpFile.BaseNode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelpFile.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelpFile.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.ShowHelpFile.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.SupportsMimeType">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.SupportsMimeType.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.SupportsMimeType.AMimeType">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.GetNodesForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.GetNodesForKeyword.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForKeyword.HelpKeyword">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForKeyword.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForKeyword.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.GetNodesForContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.GetNodesForContext.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForContext.HelpContext">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForContext.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForContext.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.GetNodesForPascalContexts">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.GetNodesForPascalContexts.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForPascalContexts.ListOfPascalHelpContextList">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForPascalContexts.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForPascalContexts.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.GetNodesForClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.GetNodesForClass.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForClass.AClass">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForClass.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForClass.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.GetNodesForMessage">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.GetNodesForMessage.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForMessage.AMessage">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForMessage.MessageParts">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForMessage.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetNodesForMessage.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.FindViewer">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.FindViewer.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.FindViewer.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.FindViewer.ErrMsg">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.FindViewer.Viewer">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.RegisterItem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.RegisterItem.NewItem">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.RegisterItemWithNode">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.RegisterItemWithNode.Node">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.RegisterFileItemWithNode">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.RegisterFileItemWithNode.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.RegisterFileItemWithNode.Node">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.UnregisterItem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.UnregisterItem.AnItem">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.RegisteredItemCount">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.RegisteredItemCount.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.GetRegisteredItem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.GetRegisteredItem.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.GetRegisteredItem.Index">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.Load">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.Load.Storage">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabase.Save">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabase.Save.Storage">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabase.GetLocalizedName">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabase.GetLocalizedName.Result">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDatabase.Databases">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDatabase.ID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDatabase.SupportedMimeTypes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDatabase.BasePathObject">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDatabase.TOCNode">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDatabase.AutoRegister">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- "class of" type Visibility: default -->
-<element name="THelpDatabaseClass">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDatabases">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabases.FItems">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpDatabases.FHelpDBClasses">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="THelpDatabases.GetItems">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetItems.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetItems.Index">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpDatabases.DoRegisterDatabase">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.DoRegisterDatabase.ADatabase">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpDatabases.DoUnregisterDatabase">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.DoUnregisterDatabase.ADatabase">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpDatabases.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THelpDatabases.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.Count">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.Count.Result">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpDatabases.Items">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.Items.Index">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.FindDatabase">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.FindDatabase.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.FindDatabase.ID">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetDatabase">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetDatabase.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetDatabase.ID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetDatabase.HelpDB">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetDatabase.HelpResult">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetDatabase.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.IndexOf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.IndexOf.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.IndexOf.ID">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.CreateUniqueDatabaseID">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.CreateUniqueDatabaseID.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.CreateUniqueDatabaseID.WishID">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.CreateHelpDatabase">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.CreateHelpDatabase.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.CreateHelpDatabase.WishID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.CreateHelpDatabase.HelpDataBaseClass">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.CreateHelpDatabase.AutoRegister">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowTableOfContents.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowTableOfContents.ErrMsg">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabases.ShowError">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowError.ShowResult">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowError.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetBaseURLForBasePathObject">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetBaseURLForBasePathObject.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetBaseURLForBasePathObject.BasePathObject">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetBaseDirectoryForBasePathObject">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetBaseDirectoryForBasePathObject.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetBaseDirectoryForBasePathObject.BasePathObject">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.FindViewer">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.FindViewer.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.FindViewer.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.FindViewer.ErrMsg">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.FindViewer.Viewer">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.SubstituteMacros">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.SubstituteMacros.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.SubstituteMacros.s">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForNodes">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForNodes.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForNodes.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForNodes.Nodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForNodes.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForQuery">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForQuery.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForQuery.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForQuery.AutoFreeQuery">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForQuery.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForContext.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForContext.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForContext.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForKeyword.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForKeyword.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForKeyword.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForPascalContexts">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForPascalContexts.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForPascalContexts.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForPascalContexts.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForSourcePosition">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForSourcePosition.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForSourcePosition.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForSourcePosition.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForMessageLine">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForMessageLine.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForMessageLine.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForMessageLine.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpForClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpForClass.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForClass.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpForClass.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpFile">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpFile.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpFile.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpFile.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpFile.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpFile.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelp">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelp.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelp.URL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelp.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelp.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelp.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetNodesForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetNodesForKeyword.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForKeyword.HelpKeyword">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForKeyword.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForKeyword.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetNodesForContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetNodesForContext.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForContext.HelpContext">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForContext.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForContext.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetNodesForPascalContexts">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetNodesForPascalContexts.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForPascalContexts.ListOfPascalHelpContextList">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForPascalContexts.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForPascalContexts.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetNodesForClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetNodesForClass.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForClass.AClass">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForClass.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForClass.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetNodesForMessage">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetNodesForMessage.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForMessage.AMessage">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForMessage.MessageParts">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForMessage.ListOfNodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetNodesForMessage.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.ShowHelpSelector">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.ShowHelpSelector.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpSelector.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpSelector.Nodes">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpSelector.ErrMsg">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.ShowHelpSelector.Selection">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabases.RegisterHelpDatabaseClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.RegisterHelpDatabaseClass.NewHelpDB">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabases.UnregisterHelpDatabaseClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.UnregisterHelpDatabaseClass.AHelpDB">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.HelpDatabaseClassCount">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.HelpDatabaseClassCount.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpDatabases.GetHelpDatabaseClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpDatabases.GetHelpDatabaseClass.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.GetHelpDatabaseClass.Index">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabases.Load">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.Load.Storage">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpDatabases.Save">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpDatabases.Save.Storage">
-<short/>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpViewer">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpViewer.FAutoRegister">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpViewer.FParameterHelp">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpViewer.FStorageName">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpViewer.FSupportedMimeTypes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="THelpViewer.SetAutoRegister">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.SetAutoRegister.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="THelpViewer.SetSupportedMimeTypes">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.SetSupportedMimeTypes.List">
-<short/>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="THelpViewer.AddSupportedMimeType">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.AddSupportedMimeType.AMimeType">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpViewer.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.Create.TheOwner">
-<short/>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THelpViewer.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpViewer.SupportsTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewer.SupportsTableOfContents.Result">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewer.ShowTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.ShowTableOfContents.Node">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpViewer.SupportsMimeType">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewer.SupportsMimeType.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.SupportsMimeType.AMimeType">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpViewer.ShowNode">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewer.ShowNode.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.ShowNode.Node">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.ShowNode.ErrMsg">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewer.Hide">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewer.Assign">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.Assign.Source">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewer.Load">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.Load.Storage">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewer.Save">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewer.Save.Storage">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpViewer.GetLocalizedName">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewer.GetLocalizedName.Result">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewer.RegisterSelf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewer.UnregisterSelf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpViewer.SupportedMimeTypes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpViewer.ParameterHelp">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpViewer.StorageName">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpViewer.AutoRegister">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- "class of" type Visibility: default -->
-<element name="THelpViewerClass">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpViewers">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpViewers.FItems">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpViewers.FDestroying">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="THelpViewers.GetItems">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewers.GetItems.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.GetItems.Index">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpViewers.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THelpViewers.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewers.Clear">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpViewers.Count">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewers.Count.Result">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpViewers.GetViewersSupportingMimeType">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewers.GetViewersSupportingMimeType.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.GetViewersSupportingMimeType.MimeType">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewers.RegisterViewer">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.RegisterViewer.AHelpViewer">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewers.UnregisterViewer">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.UnregisterViewer.AHelpViewer">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewers.Load">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.Load.Storage">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpViewers.Save">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.Save.Storage">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpViewers.IndexOf">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpViewers.IndexOf.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.IndexOf.AHelpViewer">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpViewers.Items">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpViewers.Items.Index">
-<short/>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpBasePathObject">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpBasePathObject.FBasePath">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="THelpBasePathObject.SetBasePath">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpBasePathObject.SetBasePath.AValue">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpBasePathObject.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpBasePathObject.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpBasePathObject.Create.TheBasePath">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpBasePathObject.BasePath">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpBaseURLObject">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpBaseURLObject.FBaseURL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="THelpBaseURLObject.SetBaseURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpBaseURLObject.SetBaseURL.AValue">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpBaseURLObject.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpBaseURLObject.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpBaseURLObject.Create.TheBaseURL">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpBaseURLObject.BaseURL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="HelpDatabases">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="HelpViewers">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="CreateLCLHelpSystem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="FreeLCLHelpSystem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="FreeUnusedLCLHelpSystem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FilenameToURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FilenameToURL.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FilenameToURL.Filename">
-<short/>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="SplitURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SplitURL.URL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SplitURL.URLType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SplitURL.URLPath">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SplitURL.URLParams">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CombineURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CombineURL.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CombineURL.URLType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CombineURL.URLPath">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CombineURL.URLParams">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="URLFilenameIsAbsolute">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="URLFilenameIsAbsolute.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="URLFilenameIsAbsolute.Filename">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FindURLPathStart">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FindURLPathStart.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FindURLPathStart.URL">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FindURLPathEnd">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FindURLPathEnd.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FindURLPathEnd.URL">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ChompURLParams">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ChompURLParams.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ChompURLParams.URL">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ExtractURLPath">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ExtractURLPath.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ExtractURLPath.URL">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ExtractURLDirectory">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ExtractURLDirectory.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ExtractURLDirectory.URL">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TrimUrl">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TrimUrl.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TrimUrl.URL">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="IsFileURL">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="IsFileURL.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="IsFileURL.URL">
-<short/>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="CreateListAndAdd">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateListAndAdd.AnObject">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateListAndAdd.List">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateListAndAdd.OnlyIfNotExists">
-<short/>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="CreateNodeQueryListAndAdd">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateNodeQueryListAndAdd.ANode">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateNodeQueryListAndAdd.QueryItem">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateNodeQueryListAndAdd.List">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateNodeQueryListAndAdd.OnlyIfNotExists">
-<short/>
-</element>
-</module> <!-- LazHelpIntf -->
-</package>
+  <package name="lcl">
+    <!--
+      ====================================================================
+          LazHelpIntf
+      ====================================================================
+    -->
+    <module name="LazHelpIntf">
+      <short>
+        Defines base classes used in the LCL help system
+      </short>
+      <descr>
+        <p>
+          LazHelpIntf.pas contains types, classes, and routines used in the LCL help system. It defines various base classes that provide the interface for the help system. Many of the methods in these classes are defined as abstract virtual methods, and must be implemented in more specialized descendent classes.
+        </p>
+        <p>
+          Author: Mattias Gaertner
+        </p>
+        <notes>
+          <note>
+            ToDo:
+            <ul>
+              <li>Fix TCHMHelpViewer descendant.</li>
+              <li>Make THelpDatabase and THelpViewer components usable in the designer.</li>
+              <li>Add localization support.</li>
+              <li>Add Help Editing functions.</li>
+            </ul>
+          </note>
+        </notes>
+      </descr>
+
+      <!-- unresolved type references Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="FileUtil"/>
+      <element name="LazFileUtils"/>
+      <element name="LazUtilities"/>
+      <element name="LazUTF8"/>
+      <element name="LazConfigStorage"/>
+      <element name="Masks"/>
+      <element name="LCLProc"/>
+      <element name="LCLStrConsts"/>
+      <element name="Dialogs"/>
+      <element name="HelpIntfs"/>
+
+      <element name="THelpQueryItem">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpQueryItem.AsString">
+        <short>
+          Specifies the interface used get a help query as a String value
+        </short>
+        <descr>
+          <p>
+            <var>AsString</var> is an abstract virtual <var>String</var> function which specifies the interface used get a help query item as a String value. AsString must be implemented in a descendent class to perform the actions needed to convert the query item to a String value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPascalHelpContextList"/>
+        </seealso>
+      </element>
+      <element name="THelpQueryItem.AsString.Result">
+        <short>String representation for the help query item</short>
+      </element>
+
+      <element name="THelpQueryItem.IsEqual">
+        <short>
+          Performs actions needed to compare the help query items
+        </short>
+        <descr>
+          <p>
+            <var>IsEqual</var> is a <var>Boolean</var> function used to compare help query items. IsEqual compares the current class instance to the item specified in QueryItem by calling the AsString method for each item. The return value is True when the string representation for the help query items are the same.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpQueryItem.AsString"/>
+        </seealso>
+      </element>
+      <element name="THelpQueryItem.IsEqual.Result">
+        <short>True when the help query items are the same</short>
+      </element>
+      <element name="THelpQueryItem.IsEqual.QueryItem">
+        <short>Help query item compared to the current class instance</short>
+      </element>
+
+      <element name="TPascalHelpContextType">
+        <short>Enumerated type with values representing Pascal help contexts</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPascalHelpContextType.pihcFilename">
+        <short>Context is a file name</short>
+      </element>
+      <element name="TPascalHelpContextType.pihcSourceName">
+        <short>Context is a file name for a unit or library</short>
+      </element>
+      <element name="TPascalHelpContextType.pihcProperty">
+        <short>Context is a property</short>
+      </element>
+      <element name="TPascalHelpContextType.pihcProcedure">
+        <short>Context is a procedure or function</short>
+      </element>
+      <element name="TPascalHelpContextType.pihcParameterList">
+        <short>Context is a list of parameters</short>
+      </element>
+      <element name="TPascalHelpContextType.pihcVariable">
+        <short>Context is a variable</short>
+      </element>
+      <element name="TPascalHelpContextType.pihcType">
+        <short>Context is a type</short>
+      </element>
+      <element name="TPascalHelpContextType.pihcConst">
+        <short>Context is a constant</short>
+      </element>
+
+      <element name="TPascalHelpContext">
+        <short>
+          Record type used to represent a Pascal help context and its descriptor
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TPascalHelpContext.Descriptor">
+        <short>TPascalHelpContextType for the record</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TPascalHelpContext.Context">
+        <short>String representing the Pascal context</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TPascalHelpTPascalHelpContextList">
+        <short>Pointer used to reference a TPascalHelpContextType instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TPascalHelpContextList">
+        <short>
+          Implements a list for Pascal help contexts
+        </short>
+        <descr>
+          <p>
+            <var>TPascalHelpContextList</var> is a <var>THelpQueryItem</var> descendant used to access and maintain a list of Pascal help contexts.  TPascalHelpContextList provides methods used to add, insert, and compare Pascal help contexts in the list. Properties are provided to determine the number of items in the list, and to access individual TPascalHelpContext instances in the list.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPascalHelpContext"/>
+          <link id="THelpQueryItem"/>
+        </seealso>
+      </element>
+
+      <element name="TPascalHelpContextList.FCount" link="TPascalHelpContextList.Count">
+        <short></short>
+      </element>
+
+      <element name="TPascalHelpContextList.FItems" link="TPascalHelpContextList.Items">
+        <short></short>
+      </element>
+
+      <element name="TPascalHelpContextList.GetItems" link="TPascalHelpContextList.Items">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPascalHelpContextList.GetItems.Result">
+        <short></short>
+      </element>
+      <element name="TPascalHelpContextList.GetItems.Index">
+        <short></short>
+      </element>
+
+      <element name="TPascalHelpContextList.Add">
+        <short>Adds a Pascal help context to the end of list in Items</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPascalHelpContextList.Add.Context">
+        <short>Pascal help context added in the method</short>
+      </element>
+
+      <element name="TPascalHelpContextList.Insert">
+        <short>Inserts a Pascal help context at the specified position in Items</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPascalHelpContextList.Insert.Index">
+        <short>Ordinal position in Items where the context is stored</short>
+      </element>
+      <element name="TPascalHelpContextList.Insert.Context">
+        <short>Pascal context inserted into the Items for the list</short>
+      </element>
+
+      <element name="TPascalHelpContextList.Clear">
+        <short>
+          Clears the Items in the list of Pascal help contexts
+        </short>
+        <descr>
+          <p>
+            <var>Clear</var> is a procedure used to clear the list of <var>TPascalHelpContext</var> instances in the <var>Items</var> for the list. Clear iterates over the positions in Items, and sets the Context string for each item to an empty string (<b>''</b>). This allows the record instance to be finalized. Clear calls ReAllocMem to sets the length of the Items property to <b>0</b> (<b>zero</b>).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPascalHelpContextList.Items"/>
+          <link id="TPascalHelpContextList.List"/>
+          <link id="TPascalHelpContext.Context"/>
+        </seealso>
+      </element>
+
+      <element name="TPascalHelpContextList.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls the Clear method to remove Pascal help contexts stored in the Items for the List. Destroy calls the inherited constructor to finalize the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPascalHelpContextList.Clear"/>
+        </seealso>
+      </element>
+
+      <element name="TPascalHelpContextList.IsEqual">
+        <short>
+          Indicates if the list is equivalent to the specified list of help contexts
+        </short>
+        <descr>
+          <p>
+            <var>IsEqual</var> is a <var>Boolean</var> function which indicates if the current list is equivalent to the list of help contexts specified in QueryItem. The return value is <b>True</b> when QueryItem is a TPascalHelpContextList instance which contains the same context items as the current instance.
+          </p>
+          <p>
+            IsEqual calls the CompareList method to examine and compare the context items in QueryItem.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPascalHelpContextList.CompareList"/>
+          <link id="THelpQueryItem"/>
+        </seealso>
+      </element>
+      <element name="TPascalHelpContextList.IsEqual.Result">
+        <short>True the lists are equivalent</short>
+      </element>
+      <element name="TPascalHelpContextList.IsEqual.QueryItem">
+        <short>List of help contexts compared in the method</short>
+      </element>
+
+      <element name="TPascalHelpContextList.CompareList">
+        <short>Compares the specified list of help contexts to the current instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPascalHelpContextList.CompareList.Result">
+        <short>Returns 0 when lists are the same</short>
+      </element>
+      <element name="TPascalHelpContextList.CompareList.AList">
+        <short>List of help contexts compared to the current instance</short>
+      </element>
+
+      <element name="TPascalHelpContextList.AsString">
+        <short>Gets the string representation for help contexts in Items</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPascalHelpContextList.AsString.Result">
+        <short></short>
+      </element>
+
+      <element name="TPascalHelpContextList.Count">
+        <short>Indicates the number of help contexts stored in Items</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TPascalHelpContextList.Items">
+        <short>
+          Provides indexed access to help contexts in the List by ordinal position
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPascalHelpContextList.Items.Index">
+        <short>Ordinal position for the help context</short>
+      </element>
+
+      <element name="TPascalHelpContextList.List">
+        <short>Pointer to the initial help context stored in the list</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeType">
+        <short>
+          Enumerated type that identifies the method(s) available to locate a help topic
+        </short>
+        <descr>
+          <p>
+            <var>THelpNodeType</var> is an enumerated type which identifies the method(s) available to locate a topic in a help database. A help topic can be accessed buy ID (unique identifier), Help Context, or its URL (depending the content type for the help database). Each value inTHelpNodeType indicates the combination of access methods available for the help node.
+          </p>
+          <p>
+            THelpNodeType is the type used for the THelpNode.HelpType property. The value in HelpType is set based on the constructor used to create the help node class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpNode"/>
+          <link id="THelpContext"/>
+          <link id="THelpNode.HelpType"/>
+        </seealso>
+      </element>
+      <element name="THelpNodeType.hntURLIDContext">
+        <short>URL, ID, and Context are valid for the help node</short>
+      </element>
+      <element name="THelpNodeType.hntURL">
+        <short>Only the URL is valid for the help node</short>
+      </element>
+      <element name="THelpNodeType.hntURLID">
+        <short>URL and ID are valid for the help node</short>
+      </element>
+      <element name="THelpNodeType.hntID">
+        <short>Only ID is valid for the help node</short>
+      </element>
+      <element name="THelpNodeType.hntContext">
+        <short>Only Context is valid for the help node</short>
+      </element>
+      <element name="THelpNodeType.hntURLContext">
+        <short>URL and Context are valid for the help node</short>
+      </element>
+
+      <element name="THelpNode">
+        <short>
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+
+      <element name="THelpNode.FContext" link="THelpNode.Context"/>
+      <element name="THelpNode.FURL" link="THelpNode.URL"/>
+      <element name="THelpNode.FHelpType" link="THelpNode.HelpType"/>
+      <element name="THelpNode.FID" link="THelpNode.ID"/>
+      <element name="THelpNode.FOwner" link="THelpNode.Owner"/>
+      <element name="THelpNode.FTitle" link="THelpNode.Title"/>
+
+      <element name="THelpNode.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.Create.TheOwner">
+        <short>Help database that owns the help node</short>
+      </element>
+      <element name="THelpNode.Create.Node">
+        <short>
+          Help node with property values stored in the new help node; basically, it is a copy Constructor
+        </short>
+      </element>
+      <element name="THelpNode.Create.TheTitle">
+        <short>Title for the help node</short>
+      </element>
+      <element name="THelpNode.Create.TheURL">
+        <short>URL for the help node</short>
+      </element>
+      <element name="THelpNode.Create.TheID">
+        <short>Unique identifier for the help node</short>
+      </element>
+      <element name="THelpNode.Create.TheContext">
+        <short>Context for the help node</short>
+      </element>
+
+      <element name="THelpNode.CreateURL">
+        <short>Alternate constructor using the URL for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.CreateURL.TheOwner">
+        <short>Help database that owns the help node</short>
+      </element>
+      <element name="THelpNode.CreateURL.TheTitle">
+        <short>Title for the help node</short>
+      </element>
+      <element name="THelpNode.CreateURL.TheURL">
+        <short>URL for the help node</short>
+      </element>
+
+      <element name="THelpNode.CreateID">
+        <short>Alternate constructor using the ID for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.CreateID.TheOwner">
+        <short>Help database that owns the help node</short>
+      </element>
+      <element name="THelpNode.CreateID.TheTitle">
+        <short>Title for the help node</short>
+      </element>
+      <element name="THelpNode.CreateID.TheID">
+        <short>Unique ID for the help node</short>
+      </element>
+
+      <element name="THelpNode.CreateURLID">
+        <short>Alternate constructor using the URL and ID for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.CreateURLID.TheOwner">
+        <short>Help database that owns the help node</short>
+      </element>
+      <element name="THelpNode.CreateURLID.TheTitle">
+        <short>Title for the help node</short>
+      </element>
+      <element name="THelpNode.CreateURLID.TheURL">
+        <short>URL for the help node</short>
+      </element>
+      <element name="THelpNode.CreateURLID.TheID">
+        <short>Unique ID for the help node</short>
+      </element>
+
+      <element name="THelpNode.CreateContext">
+        <short>Alternate constructor using the Context for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.CreateContext.TheOwner">
+        <short>Help database that owns the help node</short>
+      </element>
+      <element name="THelpNode.CreateContext.TheTitle">
+        <short>Title for the help node</short>
+      </element>
+      <element name="THelpNode.CreateContext.TheContext">
+        <short>Context for the help node</short>
+      </element>
+
+      <element name="THelpNode.CreateURLContext">
+        <short>Alternate constructor using the URL and Context for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.CreateURLContext.TheOwner">
+        <short>Help database that owns the help node</short>
+      </element>
+      <element name="THelpNode.CreateURLContext.TheTitle">
+        <short>Title for the help node</short>
+      </element>
+      <element name="THelpNode.CreateURLContext.TheURL">
+        <short>URL for the help node</short>
+      </element>
+      <element name="THelpNode.CreateURLContext.TheContext">
+        <short>Context for the help node</short>
+      </element>
+
+      <element name="THelpNode.Owner">
+        <short>Help database that owns the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNode.URLValid">
+        <short>
+          Indicates if the URL for the help node is valid
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.URLValid.Result">
+        <short>True if the URL was provided to the constructor for the help node</short>
+      </element>
+
+      <element name="THelpNode.IDValid">
+        <short>
+          Indicates if the unique identifier is valid for the help node
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.IDValid.Result">
+        <short>True if the ID was provided to the constructor for the help node</short>
+      </element>
+
+      <element name="THelpNode.ContextValid">
+        <short>
+          Indicates if the help context is valid for the help node
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.ContextValid.Result">
+        <short>
+          True if the help context was provided to the constructor for the help node
+        </short>
+      </element>
+
+      <element name="THelpNode.AsString">
+        <short>Gets the string representation for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.AsString.Result">
+        <short>Contains the value in the Title property</short>
+      </element>
+
+      <element name="THelpNode.Assign">
+        <short>Assigns values from Source to the current class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNode.Assign.Source">
+        <short>Help node with values stored in the current class instance</short>
+      </element>
+
+      <element name="THelpNode.Title">
+        <short>Title for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNode.HelpType">
+        <short>Type for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+     <element name="THelpNode.URL">
+        <short>URL used to access content for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNode.ID">
+        <short>
+          Unique identifier for the help node in a help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNode.Context">
+        <short>Help context for the help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQuery">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQuery.FNode" link="THelpNodeQuery.Node"/>
+      <element name="THelpNodeQuery.FQueryItem" link="THelpNodeQuery.QueryItem"/>
+
+      <element name="THelpNodeQuery.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQuery.Create.TheNode">
+        <short></short>
+      </element>
+      <element name="THelpNodeQuery.Create.TheQueryItem">
+        <short></short>
+      </element>
+
+      <element name="THelpNodeQuery.IsEqual">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQuery.IsEqual.Result">
+        <short></short>
+      </element>
+      <element name="THelpNodeQuery.IsEqual.TheNode">
+        <short></short>
+      </element>
+      <element name="THelpNodeQuery.IsEqual.TheQueryItem">
+        <short></short>
+      </element>
+      <element name="THelpNodeQuery.IsEqual.NodeQuery">
+        <short></short>
+      </element>
+
+      <element name="THelpNodeQuery.AsString">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQuery.AsString.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpNodeQuery.Node">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQuery.QueryItem">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQueryList">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQueryList.FItems" link="THelpNodeQueryList.Items"/>
+
+      <element name="THelpNodeQueryList.GetItems" link="THelpNodeQueryList.Items">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQueryList.GetItems.Result">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.GetItems.Index">
+        <short></short>
+      </element>
+
+      <element name="THelpNodeQueryList.SetItems"  link="THelpNodeQueryList.Items">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQueryList.SetItems.Index">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.SetItems.AValue">
+        <short></short>
+      </element>
+
+      <element name="THelpNodeQueryList.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQueryList.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQueryList.Count">
+        <short>Indicates the number of entries stored in the Items property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQueryList.Count.Result">
+        <short>Number of entries stored in the Items property</short>
+      </element>
+
+      <element name="THelpNodeQueryList.Add">
+        <short>
+          Adds the specified help node, node query, and query item  to the Items in the list
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQueryList.Add.Result">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.Add.NodeQuery">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.Add.Node">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.Add.QueryItem">
+        <short></short>
+      </element>
+
+      <element name="THelpNodeQueryList.Delete">
+        <short>
+          Deletes the help node  query at the specified ordinal position in the list
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQueryList.Delete.Index">
+        <short>Ordinal position removed in the method</short>
+      </element>
+
+      <element name="THelpNodeQueryList.IndexOf">
+        <short>
+          Gets the ordinal position in the llist where the specified node and query items are stored
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQueryList.IndexOf.Result">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.IndexOf.NodeQuery">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.IndexOf.Node">
+        <short></short>
+      </element>
+      <element name="THelpNodeQueryList.IndexOf.QueryItem">
+        <short></short>
+      </element>
+
+      <element name="THelpNodeQueryList.Clear">
+        <short>
+          Removes all items stored in the list
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpNodeQueryList.Items">
+        <short>
+          Provides indexed access to help nodes and query selectors by their ordinal position
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpNodeQueryList.Items.Index">
+        <short>Ordinal position for the requested item</short>
+      </element>
+
+      <element name="THelpDBItem">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBItem.FNode" link="THelpDBItem.Node">
+        <short></short>
+      </element>
+
+      <element name="THelpDBItem.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBItem.Create.TheNode">
+        <short>Help node for the new item</short>
+      </element>
+
+      <element name="THelpDBItem.Destroy">
+        <short>Destructor for the clas instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBItem.Node">
+        <short>Help node for the item</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBISourceFile">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBISourceFile.FBasePathObject" link="THelpDBISourceFile.BasePathObject">
+        <short></short>
+      </element>
+
+      <element name="THelpDBISourceFile.FFilename" link="THelpDBISourceFile.Filename">
+        <short></short>
+      </element>
+
+      <element name="THelpDBISourceFile.SetFilename" link="THelpDBISourceFile.Filename">
+        <short>Sets the value for the Filename property</short>
+      </element>
+      <element name="THelpDBISourceFile.SetFilename.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THelpDBISourceFile.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBISourceFile.Create.TheNode">
+        <short>Help node for the new item</short>
+      </element>
+      <element name="THelpDBISourceFile.Create.TheFilename">
+        <short>File name for the new item</short>
+      </element>
+
+      <element name="THelpDBISourceFile.FileMatches">
+        <short>
+          Indicates if the specified file name matches the value in the Filename property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBISourceFile.FileMatches.Result">
+        <short>True when the file name matches the Filename property</short>
+      </element>
+      <element name="THelpDBISourceFile.FileMatches.AFilename">
+        <short>File name compared to the current class instance</short>
+      </element>
+
+      <element name="THelpDBISourceFile.GetFullFilename">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBISourceFile.GetFullFilename.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpDBISourceFile.GetBasePath">
+        <short>Gets the value for the BasePath needed to access the file</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBISourceFile.GetBasePath.Result">
+        <short>Value for the BasePath for the file</short>
+      </element>
+
+      <element name="THelpDBISourceFile.BasePathObject">
+        <short>Represents the BasePath used to access the source file</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBISourceFile.Filename">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBISourceDirectory">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBISourceDirectory.FFileMask" link="THelpDBISourceDirectory.FileMask">
+        <short></short>
+      </element>
+
+      <element name="THelpDBISourceDirectory.FWithSubDirectories" link="THelpDBISourceDirectory.WithSubDirectories">
+        <short></short>
+      </element>
+
+      <element name="THelpDBISourceDirectory.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBISourceDirectory.Create.TheNode">
+        <short>Help node for the new item</short>
+      </element>
+      <element name="THelpDBISourceDirectory.Create.TheFilename">
+        <short>File name for the new item</short>
+      </element>
+      <element name="THelpDBISourceDirectory.Create.TheFileMask">
+        <short>File mask used to select files displayed in the directory</short>
+      </element>
+      <element name="THelpDBISourceDirectory.Create.Recursive">
+        <short>Indiates if subdirectories are visited when accessing the directory</short>
+      </element>
+
+      <element name="THelpDBISourceDirectory.FileMatches">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBISourceDirectory.FileMatches.Result">
+        <short></short>
+      </element>
+      <element name="THelpDBISourceDirectory.FileMatches.AFilename">
+        <short></short>
+      </element>
+
+      <element name="THelpDBISourceDirectory.FileMask">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBISourceDirectory.WithSubDirectories">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBIClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBIClass.FTheClass">
+        <short></short>
+      </element>
+
+      <element name="THelpDBIClass.TheClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBIMessage">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDBIMessage.MessageMatches">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDBIMessage.MessageMatches.Result">
+        <short></short>
+      </element>
+      <element name="THelpDBIMessage.MessageMatches.TheMessage">
+        <short></short>
+      </element>
+      <element name="THelpDBIMessage.MessageMatches.MessageParts">
+        <short></short>
+      </element>
+
+      <element name="THelpQueryNode">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpQueryNode.FNode">
+        <short></short>
+      </element>
+
+      <element name="THelpQueryNode.Create">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpQueryNode.Create.TheHelpDatabaseID">
+        <short></short>
+      </element>
+      <element name="THelpQueryNode.Create.TheNode">
+        <short></short>
+      </element>
+
+      <element name="THelpQueryNode.Node">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase">
+        <short>
+          Provides support for integrating a collection of related help topics with a table of contents
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.FAutoRegister" link="THelpDatabase.AutoRegister"/>
+      <element name="THelpDatabase.FBasePathObject" link="THelpDatabase.BasePathObject"/>
+      <element name="THelpDatabase.FID" link="THelpDatabase.ID"/>
+      <element name="THelpDatabase.FDatabases" link="THelpDatabase.Databases"/>
+
+      <element name="THelpDatabase.FRefCount">
+        <short></short>
+        <seealso>
+          <link id="THelpDatabase.Reference"/>
+        </seealso>
+      </element>
+
+      <element name="THelpDatabase.FSearchItems">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.FSupportedMimeTypes" link="THelpDatabase.SupportedMimeTypes"/>
+      <element name="THelpDatabase.FTOCNode" link="THelpDatabase.TOCNode"/>
+
+      <element name="THelpDatabase.SetAutoRegister">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.SetAutoRegister.AValue">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.SetID">
+        <short>Sets the value in the ID property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.SetID.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THelpDatabase.SetDatabases">
+        <short>Sets the value in the Databases property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.SetDatabases.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THelpDatabase.SetSupportedMimeTypes">
+        <short>Sets the value in the SupportedMimeTypes property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.SetSupportedMimeTypes.List">
+        <short>List of MIME types stored in the property</short>
+      </element>
+
+      <element name="THelpDatabase.AddSupportedMimeType">
+        <short>Adds a MIME type entry to the list in SupportedMimeTypes</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.AddSupportedMimeType.AMimeType">
+        <short>MIME type added in the method</short>
+      </element>
+
+      <element name="THelpDatabase.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.Create.TheOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="THelpDatabase.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.Reference">
+        <short>Increments the number of references for the class instance</short>
+        <descr></descr>
+        <seealso>
+          <link id="THelpDatabase.Release"/>
+        </seealso>
+      </element>
+
+      <element name="THelpDatabase.RegisterSelf">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.Release">
+        <short>Decrements the internal reference count for the help database`</short>
+        <descr></descr>
+        <seealso>
+          <link id="THelpDatabase.Reference"/>
+        </seealso>
+      </element>
+
+      <element name="THelpDatabase.UnregisterSelf">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.Registered">
+        <short>
+          Indicates if the list of help databases has been initialized for the database instance
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.Registered.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.CanShowTableOfContents">
+        <short>
+          Determines if a Table of Contents node is available for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.CanShowTableOfContents.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.ShowTableOfContents">
+        <short>
+          Displays the Table of Contents in the TOCNode for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.ShowError">
+        <short>
+          Displays an error message using the help manager, or raises an exception
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.ShowError.ShowResult">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowError.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.ShowHelp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.ShowHelp.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelp.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelp.BaseNode">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelp.NewNode">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.ShowHelp.QueryItem">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelp.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.ShowHelpFile">
+        <short>Displays a help topic with the specified  file name</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.ShowHelpFile.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelpFile.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelpFile.BaseNode">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelpFile.Title">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelpFile.Filename">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.ShowHelpFile.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.SupportsMimeType">
+        <short>
+          Determines is the specified MIME type is supported in the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.SupportsMimeType.Result">
+        <short>True when the MIME type is in the list of supported MIME types</short>
+      </element>
+      <element name="THelpDatabase.SupportsMimeType.AMimeType">
+        <short>MIME type to locate in the list of supported MIME types</short>
+      </element>
+
+      <element name="THelpDatabase.GetNodesForKeyword">
+        <short>
+          Creates or updates a list of help nodes using the specified help HelpKeyword
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.GetNodesForKeyword.Result">
+        <short>Status for help request</short>
+      </element>
+      <element name="THelpDatabase.GetNodesForKeyword.HelpKeyword">
+        <short>Help keyword to locate in nodes in the help database</short>
+      </element>
+      <element name="THelpDatabase.GetNodesForKeyword.ListOfNodes">
+        <short>List of nodes updated in the method</short>
+      </element>
+      <element name="THelpDatabase.GetNodesForKeyword.ErrMsg">
+        <short>Message describing an error condition in the return value</short>
+      </element>
+
+      <element name="THelpDatabase.GetNodesForContext">
+        <short>
+          Creates or updates the list of help nodes for the specified help context
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.GetNodesForContext.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForContext.HelpContext">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForContext.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForContext.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.GetNodesForPascalContexts">
+        <short>
+          Creates or updates a list of nodes for the specified Pascal help GetNodesForPascalContexts
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.GetNodesForPascalContexts.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForPascalContexts.ListOfPascalHelpContextList">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForPascalContexts.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForPascalContexts.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.GetNodesForClass">
+        <short>
+          Creates or updates a list of help nodes for the specified class
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.GetNodesForClass.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForClass.AClass">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForClass.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForClass.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.GetNodesForMessage">
+        <short>
+          Creates or updates a list of help nodes matching the specified message
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.GetNodesForMessage.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForMessage.AMessage">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForMessage.MessageParts">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForMessage.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetNodesForMessage.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.FindViewer">
+        <short>
+          Gets the help viewer which supports the specified MIME type
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.FindViewer.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.FindViewer.MimeType">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.FindViewer.ErrMsg">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.FindViewer.Viewer">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.RegisterItem">
+        <short>
+          Adds the specified item to the search items for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.RegisterItem.NewItem">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.RegisterItemWithNode">
+        <short>
+          Adds a search item to the help database for the specified help node
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.RegisterItemWithNode.Node">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.RegisterFileItemWithNode">
+        <short>
+          Adds a search item to the help database for the source file with the specified file name
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.RegisterFileItemWithNode.Filename">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.RegisterFileItemWithNode.Node">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.UnregisterItem">
+        <short>
+          Removes the specified item from the search items for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.UnregisterItem.AnItem">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.RegisteredItemCount">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.RegisteredItemCount.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.GetRegisteredItem">
+        <short>
+          Gets the number of registered search items for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.GetRegisteredItem.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabase.GetRegisteredItem.Index">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.Load">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+        <notes>
+          <note>
+            Used to load configuration settings for the help database.
+            It is an empty implementation in THelpDatabase.
+            Must be implemented in a descendant class.
+          </note>
+        </notes>
+      </element>
+      <element name="THelpDatabase.Load.Storage">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.Save">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+        <notes>
+          <note>
+            Used to save configuration settings for the help database.
+            It is an empty implementation in THelpDatabase.
+            Must be implemented in a descendant class.
+          </note>
+        </notes>
+      </element>
+      <element name="THelpDatabase.Save.Storage">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.GetLocalizedName">
+        <short>
+          Gets the localized name (ID) for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabase.GetLocalizedName.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabase.Databases">
+        <short>
+          Help databases registered for use with the LCL help manager
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.ID">
+        <short>
+          Unique identifier for the hep database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.SupportedMimeTypes">
+        <short>
+          Contains the list of MIME types supported in the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.BasePathObject">
+        <short>
+          Represents the base path for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.TOCNode">
+        <short>
+          Help node with the Table of Contents for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.AutoRegister">
+        <short>
+          Indicates if the help database is automatically registered at run-time
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabase.OnFindViewer">
+        <short>
+          Event handler signalled to locate the viewer for the help database
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabaseClass">
+        <short>
+          Class reference for the THelpDatabase type
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabases">
+        <short>
+          Implements support for accessing and maintaining registered help database classes in the help system
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabases.FItems">
+        <short>List with registered help database instances</short>
+      </element>
+
+      <element name="THelpDatabases.FHelpDBClasses">
+        <short>List with class references for each registered help database</short>
+      </element>
+
+      <element name="THelpDatabases.GetItems" link="THelpDatabases.Items">
+        <short>Gets a value in the Items property by its ordinal position</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetItems.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetItems.Index">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.DoRegisterDatabase">
+        <short>
+          Performs actions needed to register the specified help database
+        </short>
+        <descr>
+          <p>
+            <var>DoRegisterDatabase</var> is a procedure used to perform actions needed to register the help database specified in ADatabase. The Reference method in ADatabase is called to increment the reference count for the help database.
+          </p>
+          <p>
+            DoRegisterDatabase ensures that the Items property contains a valid TFPList class instance, and adds the THelpDatabase instance in ADatabase to the Items property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpDatabases.Items"/>
+          <link id="THelpDatabase"/>
+          <link id="THelpDatabase.Reference"/>
+        </seealso>
+      </element>
+      <element name="THelpDatabases.DoRegisterDatabase.ADatabase">
+        <short>Help database registered in the method</short>
+      </element>
+
+      <element name="THelpDatabases.DoUnregisterDatabase">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.DoUnregisterDatabase.ADatabase">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabases.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpDatabases.Count">
+        <short>
+          \Gets the number of registered help database instances in the Items property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.Count.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.Items">
+        <short>Provides indexed access to registered help database instances</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.Items.Index">
+        <short>Ordinal position for the help database instance</short>
+      </element>
+
+      <element name="THelpDatabases.FindDatabase">
+        <short>Gets the help database with the specified unique identifier</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.FindDatabase.Result">
+        <short>The registered help database instance, or Nil when ID is not found</short>
+      </element>
+      <element name="THelpDatabases.FindDatabase.ID">
+        <short>Unique identifier to locate in Items</short>
+      </element>
+
+      <element name="THelpDatabases.GetDatabase">
+        <short>Gets the help database instance with the specified ID</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetDatabase.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetDatabase.ID">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetDatabase.HelpDB">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetDatabase.HelpResult">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetDatabase.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.IndexOf">
+        <short>
+          Gets the ordinal position in Items for the help database with the specified ID
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.IndexOf.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.IndexOf.ID">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.CreateUniqueDatabaseID">
+        <short>
+          Creates a unique identifier for a help database using a suggested identifier prefix
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.CreateUniqueDatabaseID.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.CreateUniqueDatabaseID.WishID">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.CreateHelpDatabase">
+        <short>
+          Creates and optionally registers a unique help database instance using the specified class reference
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.CreateHelpDatabase.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.CreateHelpDatabase.WishID">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.CreateHelpDatabase.HelpDataBaseClass">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.CreateHelpDatabase.AutoRegister">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowTableOfContents">
+        <short>
+          Displays the Table of Contents
+        </short>
+        <descr>
+          <p>
+            <var>ShowTableOfContents</var> is not implemented in THelpDatabases. The return value is always <var>shrHelpNotFound</var>, and ErrMsg is set to the value  '<b>THelpDatabases.ShowTableOfContents not implemented</b>'.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowTableOfContents.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowTableOfContents.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowError">
+        <short>
+          Displays an error dialog for status result codes other than shrSuccess and shrCancel
+        </short>
+        <descr>
+          <p>
+            ShowError calls the MessageDlg routine to display an error dialog for status result codes other than shrSuccess and shrCancel. ShowError uses the value in ShowResult to determine the caption displayed on the message dialog, including:
+          </p>
+          <table>
+            <th>
+              <td>Status code</td>
+              <td>Caption for the Dialog</td>
+            </th>
+            <tr>
+              <td>shrNone</td>
+              <td>rsHelpError</td>
+            </tr>
+            <tr>
+              <td>shrDatabaseNotFound</td>
+              <td>rsHelpDatabaseNotFound</td>
+            </tr>
+            <tr>
+              <td>shrContextNotFound</td>
+              <td>rsHelpContextNotFound</td>
+            </tr>
+            <tr>
+              <td>shrViewerNotFound</td>
+              <td>rsHelpViewerNotFound</td>
+            </tr>
+            <tr>
+              <td>shrHelpNotFound</td>
+              <td>rsHelpNotFound</td>
+            </tr>
+            <tr>
+              <td>shrViewerError</td>
+              <td>rsHelpViewerError</td>
+            </tr>
+            <tr>
+              <td>shrSelectorError</td>
+              <td>rsHelpSelectorError</td>
+            </tr>
+            <tr>
+              <td>
+                Default for status codes other than shrSuccess and shrCancel
+              </td>
+              <td>
+                rsUnknownErrorPleaseReportThisBug
+              </td>
+            </tr>
+          </table>
+          <p>
+            A message dialog is not displayed when ShowResult contains the value shrSuccess or shrCancel.
+          </p>
+          <p>
+            ShowError is used in the implementation of the THelpDatabase.ShowError method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpDatabase.ShowError"/>
+          <link id="TShowHelpResult"/>
+        </seealso>
+      </element>
+      <element name="THelpDatabases.ShowError.ShowResult">
+        <short>Status result code examined in the method</short>
+      </element>
+      <element name="THelpDatabases.ShowError.ErrMsg">
+        <short>Message displayed for the error condition</short>
+      </element>
+
+      <element name="THelpDatabases.GetBaseURLForBasePathObject">
+        <short>Gets a URL representing the base path object for the help databases</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetBaseURLForBasePathObject.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetBaseURLForBasePathObject.BasePathObject">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.GetBaseDirectoryForBasePathObject">
+        <short>Gets the directory for the base path object in the help databases</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetBaseDirectoryForBasePathObject.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetBaseDirectoryForBasePathObject.BasePathObject">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.FindViewer">
+        <short>Finds the registered help viewer for the specified MIME type</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.FindViewer.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.FindViewer.MimeType">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.FindViewer.ErrMsg">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.FindViewer.Viewer">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.SubstituteMacros">
+        <short>Used to substitute macros</short>
+        <descr>Always returns True in THelpDatabases.</descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.SubstituteMacros.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.SubstituteMacros.s">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForNodes">
+        <short>Displays help for nodes matching the specified query list</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForNodes.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForNodes.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForNodes.Nodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForNodes.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForQuery">
+        <short>Displays help for the specified THelpQuery</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForQuery.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForQuery.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForQuery.AutoFreeQuery">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForQuery.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForContext">
+        <short>Displays help nodes matching the specified help query context</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForContext.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForContext.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForContext.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForKeyword">
+        <short>Displays help nodes matching the specified keyword help query</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForKeyword.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForKeyword.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForKeyword.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForPascalContexts">
+        <short>Displays help nodes matching the specified Pascal help query</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForPascalContexts.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForPascalContexts.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForPascalContexts.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForSourcePosition">
+        <short>Displays help for the Pascal source contexts in the help query</short>
+        <descr>
+          Always returns shrHelpNotFound with the error message 'THelpDatabases.ShowHelpForPascalSource not implemented'.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForSourcePosition.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForSourcePosition.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForSourcePosition.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForMessageLine">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForMessageLine.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForMessageLine.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForMessageLine.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpForClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpForClass.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForClass.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpForClass.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpFile">
+        <short>Displays the requested help file in the help viewer</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpFile.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpFile.Filename">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpFile.Title">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpFile.MimeType">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpFile.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelp">
+        <short>Displays the help topic for the requested URL in the help viewer</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelp.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelp.URL">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelp.Title">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelp.MimeType">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelp.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.GetNodesForKeyword">
+        <short>Populates a list with help nodes using the specified help keyword</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetNodesForKeyword.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForKeyword.HelpKeyword">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForKeyword.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForKeyword.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.GetNodesForContext">
+        <short>Populates a list with help node for the specified help context</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetNodesForContext.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForContext.HelpContext">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForContext.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForContext.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.GetNodesForPascalContexts">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetNodesForPascalContexts.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForPascalContexts.ListOfPascalHelpContextList">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForPascalContexts.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForPascalContexts.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.GetNodesForClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetNodesForClass.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForClass.AClass">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForClass.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForClass.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.GetNodesForMessage">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetNodesForMessage.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForMessage.AMessage">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForMessage.MessageParts">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForMessage.ListOfNodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetNodesForMessage.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.ShowHelpSelector">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.ShowHelpSelector.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpSelector.Query">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpSelector.Nodes">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpSelector.ErrMsg">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.ShowHelpSelector.Selection">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.RegisterHelpDatabaseClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.RegisterHelpDatabaseClass.NewHelpDB">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.UnregisterHelpDatabaseClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.UnregisterHelpDatabaseClass.AHelpDB">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.HelpDatabaseClassCount">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.HelpDatabaseClassCount.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.GetHelpDatabaseClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.GetHelpDatabaseClass.Result">
+        <short></short>
+      </element>
+      <element name="THelpDatabases.GetHelpDatabaseClass.Index">
+        <short></short>
+      </element>
+
+      <element name="THelpDatabases.Load">
+        <short>
+          Loads configuration settings for each registered help database in the container
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.Load.Storage">
+        <short>Configuration storage with values loaded in the method</short>
+      </element>
+
+      <element name="THelpDatabases.Save">
+        <short>
+          Saves configuration settings for each register help database in the container
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpDatabases.Save.Storage">
+        <short>Configuration storage updated in the method</short>
+      </element>
+
+      <element name="THelpViewer">
+        <short>
+          Base class for help viewers used in the LCL help system
+        </short>
+        <descr>
+          <p>
+            <var>THelpViewer</var> is a <var>TComponent</var> descendant that provides the interface used for help viewers in the LCL help system. THelpViewer provides properties and methods used to access and display help topics using their corresponding help nodes, including a Table of Contents. Most methods are declared as virtual and should be overridden in descendent class that handle specific MIME types.
+          </p>
+          <p>
+            Methods are provided to register and unregister the help viewer for a specific MIME type. The AutoRegister property controls whether the viewer is automatically registered at run-time.
+          </p>
+          <p>
+            Use classes like TCHMHelpViewer, THTMLHelpViewer, THTMLBrowserHelpViewer, and THelpConnector for help databases that use the specific MIME types for the respective classes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.LazHelpHTML.THTMLBrowserHelpViewer"/>
+          <link id="#LCL.LazHelpCHM.TCHMHelpViewer"/>
+        </seealso>
+      </element>
+
+      <element name="THelpViewer.FAutoRegister" link="THelpViewer.AutoRegister">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.FParameterHelp" link="THelpViewer.ParameterHelp">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.FStorageName" link="THelpViewer.StorageName">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.FSupportedMimeTypes" link="THelpViewer.SupportedMimeTypes">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.SetAutoRegister" link="THelpViewer.AutoRegister">
+        <short>Sets the value in the AutoRegister property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.SetAutoRegister.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THelpViewer.SetSupportedMimeTypes" link="THelpViewer.SupportedMimeTypes">
+        <short>Sets the value in the SupportedMimeTypes property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.SetSupportedMimeTypes.List">
+        <short>List with value used in the property</short>
+      </element>
+
+      <element name="THelpViewer.AddSupportedMimeType">
+        <short>Adds the specified MIME type to the SupportedMimeTypes property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.AddSupportedMimeType.AMimeType">
+        <short>MIME type added in the method</short>
+      </element>
+
+      <element name="THelpViewer.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.Create.TheOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="THelpViewer.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewer.SupportsTableOfContents">
+        <short>
+          Indicates if the help viewer can display a table of contents for the specified help node
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.SupportsTableOfContents.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.ShowTableOfContents">
+        <short>
+          Displays the table of contents for the specified help node
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.ShowTableOfContents.Node">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.SupportsMimeType">
+        <short>
+          Indicates if the specified MIME type exists in the SupportedMimeTypes property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.SupportsMimeType.Result">
+        <short></short>
+      </element>
+      <element name="THelpViewer.SupportsMimeType.AMimeType">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.ShowNode">
+        <short>Displays the help topic for the specified help node</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.ShowNode.Result">
+        <short></short>
+      </element>
+      <element name="THelpViewer.ShowNode.Node">
+        <short></short>
+      </element>
+      <element name="THelpViewer.ShowNode.ErrMsg">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.Hide">
+        <short>Hides the help viewer</short>
+        <descr>
+          Must be implemented in a descendent class.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewer.Assign">
+        <short>
+          Assigns property values from the specified source to the current class instance
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.Assign.Source">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.Load">
+        <short>
+          Loads configuration settings for the help viewer from the specified storage
+        </short>
+        <descr>
+          Must be implemented in a descendent class.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.Load.Storage">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.Save">
+        <short>
+          Saves configuration settings to the specified storage
+        </short>
+        <descr>
+          Must be implemented in a descendent class.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.Save.Storage">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.GetLocalizedName">
+        <short>
+          Gets the localized name for the help viewer
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewer.GetLocalizedName.Result">
+        <short></short>
+      </element>
+
+      <element name="THelpViewer.RegisterSelf">
+        <short>
+          Registers the help viewer for use in the LCL help system
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewer.UnregisterSelf">
+        <short>
+          Unregisters the help viewer in the LCL help system
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewer.SupportedMimeTypes">
+        <short>
+          Contains MIME types supported in the help viewer
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewer.ParameterHelp">
+        <short>
+          Contains a help message describing how parameters are used in the help viewer
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewer.StorageName">
+        <short>
+          Indicates the storage used for configuration settings in the help viewer
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewer.AutoRegister">
+        <short>
+          Indicates if the help viewer is automatically registered at run-time
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewerClass">
+        <short>
+          Class reference used to create instances of the help viewer
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewers">
+        <short>
+          Used to access and maintain registered help viewers for the LCL help system
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewers.FItems" link="THelpViewers.Items">
+        <short></short>
+      </element>
+
+      <element name="THelpViewers.FDestroying">
+        <short>Indicates if the class is being freed</short>
+      </element>
+
+      <element name="THelpViewers.GetItems" link="THelpViewers.Items">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.GetItems.Result">
+        <short>Help viewer at the specified ordinal position</short>
+      </element>
+      <element name="THelpViewers.GetItems.Index">
+        <short>Ordinal position in the list for a help viewer</short>
+      </element>
+
+      <element name="THelpViewers.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewers.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewers.Clear">
+        <short>Frees all help viewers in the Items property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpViewers.Count">
+        <short>
+          Indicates the number of registered help viewers in the Items property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.Count.Result">
+        <short>Number of help viewers in the list</short>
+      </element>
+
+      <element name="THelpViewers.GetViewersSupportingMimeType">
+        <short>
+          Populates a list with help viewers that support the specified MIME type
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.GetViewersSupportingMimeType.Result">
+        <short></short>
+      </element>
+      <element name="THelpViewers.GetViewersSupportingMimeType.MimeType">
+        <short></short>
+      </element>
+
+      <element name="THelpViewers.RegisterViewer">
+        <short>Adds a help viewer to the list of registered viewers in Items</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.RegisterViewer.AHelpViewer">
+        <short>Help viewer added in the method</short>
+      </element>
+
+      <element name="THelpViewers.UnregisterViewer">
+        <short>
+          Unregisters the specified help viewer and removes it from the Items property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.UnregisterViewer.AHelpViewer">
+        <short></short>
+      </element>
+
+      <element name="THelpViewers.Load">
+        <short>
+          Loads configuration settings from the specified storage for each registered help viewer
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.Load.Storage">
+        <short></short>
+      </element>
+
+      <element name="THelpViewers.Save">
+        <short>
+          Saves configuration settings to the specified storage for each registered help viewer
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.Save.Storage">
+        <short></short>
+      </element>
+
+      <element name="THelpViewers.IndexOf">
+        <short>
+          Gets the ordinal position for the specified help viewer in the Items property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.IndexOf.Result">
+        <short></short>
+      </element>
+      <element name="THelpViewers.IndexOf.AHelpViewer">
+        <short></short>
+      </element>
+
+      <element name="THelpViewers.Items">
+        <short>
+          List with the registered help viewers for the LCL help system
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpViewers.Items.Index">
+        <short></short>
+      </element>
+
+      <element name="THelpBasePathObject">
+        <short>
+            Stores the base file path for help databases
+          </short>
+        <descr>
+          <p>
+            <var>THelpBasePathObject</var> is a <var>TPersistent</var> descendant used to represent the base file path for topics in help databases. It is used in the implementation of the THelpDatabases.GetBaseDirectoryForBasePathObject method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpDatabases.GetBaseDirectoryForBasePathObject"/>
+          <link id="THelpDatabases.GetBaseURLForBasePathObject"/>
+        </seealso>
+      </element>
+
+      <element name="THelpBasePathObject.FBasePath" link="THelpBasePathObject.BasePath">
+        <short></short>
+      </element>
+
+      <element name="THelpBasePathObject.SetBasePath" link="THelpBasePathObject.BasePath">
+        <short>Sets the value for the BasePath property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpBasePathObject.SetBasePath.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THelpBasePathObject.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpBasePathObject.Create.TheBasePath">
+        <short>Initial value for the BasePath property</short>
+      </element>
+
+      <element name="THelpBasePathObject.BasePath">
+        <short>Represents the base file path for topics in a help database</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpBaseURLObject">
+        <short>
+          Stores the base URL for topics in help databases
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THelpBaseURLObject.FBaseURL" link="THelpBaseURLObject.BaseURL">
+        <short></short>
+      </element>
+
+      <element name="THelpBaseURLObject.SetBaseURL" link="THelpBaseURLObject.BaseURL">
+        <short>Sets the value in the BaseURL property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpBaseURLObject.SetBaseURL.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="THelpBaseURLObject.Create">
+        <short>Constructor for the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THelpBaseURLObject.Create.TheBaseURL">
+        <short>Initial value for the BaseURL property</short>
+      </element>
+
+      <element name="THelpBaseURLObject.BaseURL">
+        <short>Represents the base URL for topics in a help database</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="HelpDatabases">
+        <short>
+          Contains the list of registered help databases used in the Lazarus IDE
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="HelpViewers">
+        <short>
+          Contains the list of registered help viewers used in the Lazarus IDE
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CreateLCLHelpSystem">
+        <short>
+          Ensures the HelpDatabases and HelpViewers variables are initialized for use in the LCL help system
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="FreeLCLHelpSystem">
+        <short>
+          Frees the HelpDatabases and HelpViewers used in the LCL help system
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="FreeUnusedLCLHelpSystem">
+        <short>
+          Frees unreferenced Help databases and viewers in the LCL help system
+        </short>
+        <descr>
+          <p>
+            <var>FreeUnusedLCLHelpSystem</var> is a procedure used to free unreferenced Help databases and viewers in the LCL help system. No actions performed in the method when HelpViewers and HelpDatabases are assigned and contain valid class references.
+          </p>
+          <p>
+            FreeUnusedLCLHelpSystem calls FreeLCLHelpSystem to free and release the HelpViewers, HelpDatabases, and HelpManager instances.
+          </p>
+          <p>
+            FreeUnusedLCLHelpSystem is called when a THelpDatabase instance calls its UnregisterSelf method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="HelpViewers"/>
+          <link id="HelpDatabases"/>
+          <link id="HelpManager"/>
+          <link id="FreeLCLHelpSystem"/>
+          <link id="THelpDatabase.UnregisterSelf"/>
+        </seealso>
+      </element>
+
+      <element name="FilenameToURL">
+        <short>
+          Gets the URL with file path information for the specified file name
+        </short>
+        <descr>
+          <p>
+            <var>FilenameToURL</var> is a <var>String</var> function used to get the URL value for the specified file name. FilenameToURL calls FilenameToURLPath to get the file path information needed for the URL. The value '<b>file://</b>' is prepended to the return value to indicate that the file URL scheme is used in the URL.
+          </p>
+        </descr>
+        <seealso>
+          <link id="FilenameToURLPath"/>
+        </seealso>
+      </element>
+      <element name="FilenameToURL.Result">
+        <short>URL for the specified file name</short>
+      </element>
+      <element name="FilenameToURL.Filename">
+        <short>File name converted to a URL in the function</short>
+      </element>
+
+      <element name="SplitURL">
+        <short>
+          Separates a URL into its scheme, path, and parameter component values
+        </short>
+        <descr>
+          <p>
+            <var>SplitURL</var> is a procedure used to separate the value specified in URL into the URLScheme, URLPath, and URLParams output parameters. The default value for these output parameters is an empty string (<b>''</b>), and indicates that the component value is not present in URL.
+          </p>
+          <p>
+            <var>URLScheme</var> will contain the URL scheme found in URL, and normally contains values like '<b>file</b>', '<b>http</b>', or '<b>https</b>'. It does <b>not</b> contain the '<b>://</b>' characters which mark the end of the URL scheme.
+          </p>
+          <p>
+            URLPath contains file path information found in URL. It does not include any portion of URL occurring after the initial '?' or '#' character used in parameter values. Those values are stored in the URLParams argument.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="SplitURL.URL">
+        <short>URL examined in the function</short>
+      </element>
+      <element name="SplitURL.URLScheme">
+        <short>URL scheme used in the URL</short>
+      </element>
+      <element name="SplitURL.URLPath">
+        <short>File path information from the URL</short>
+      </element>
+      <element name="SplitURL.URLParams">
+        <short>Parameters found in the URL</short>
+      </element>
+
+      <element name="CombineURL">
+        <short>
+          Builds a URL using the specified scheme, path, and parameter values
+        </short>
+        <descr>
+          <p>
+            <var>CombineURL</var> is a <var>String</var> function used to build a URL using the specified parameter values.
+          </p>
+          <p>
+            URLScheme contains the name of scheme used in the URL, like 'file', 'http', or 'https'. It should not include the characters '://'; these are appended to URLScheme just prior to URLPath in the function.
+          </p>
+          <p>
+            When assigned, values in URLParams are included at the end of the return value.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="CombineURL.Result">
+        <short>URL for the specified values</short>
+      </element>
+      <element name="CombineURL.URLScheme">
+        <short>URL scheme to use in the URL</short>
+      </element>
+      <element name="CombineURL.URLPath">
+        <short>Path to the file used in the URL</short>
+      </element>
+      <element name="CombineURL.URLParams">
+        <short>Parameter values for the URL</short>
+      </element>
+
+      <element name="URLFilenameIsAbsolute">
+        <short>
+          Indicates if the specified URL contains an absolute file path
+        </short>
+        <descr>
+          <p>
+            <var>URLFilenameIsAbsolute</var> is a <var>Boolean</var> function used to determine if the URL specified in URLPath represents an absolute file. URLFilenameIsAbsolute calls URLPathToFilename to get the file name used in the URL. The return value is determined by calling FilenameIsAbsolute for the file name. The return value is True when the path to the file does <b>not</b> require resolution of "<b>.</b>" or "<b>..</b>" relative path markers.
+          </p>
+        </descr>
+        <seealso>
+          <link id="URLPathToFilename"/>
+          <link id="FilenameIsAbsolute"/>
+        </seealso>
+      </element>
+      <element name="URLFilenameIsAbsolute.Result">
+        <short>True when the URL does not have relative file path information</short>
+      </element>
+      <element name="URLFilenameIsAbsolute.URLPath">
+        <short>URL examined in the function</short>
+      </element>
+
+      <element name="FindURLPathStart">
+        <short>
+          Gets the position in the URL where the file path is located
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="FindURLPathStart.Result">
+        <short>Position where the file path begins, or -1 if not found</short>
+      </element>
+      <element name="FindURLPathStart.URL">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="FindURLPathEnd">
+        <short>
+          Gets the position in the URL for the final character in the file path
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="FindURLPathEnd.Result">
+        <short></short>
+      </element>
+      <element name="FindURLPathEnd.URL">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="ChompURLParams">
+        <short>Removes URL parameters from the specified URL</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="ChompURLParams.Result">
+        <short>URL with any parameters removed</short>
+      </element>
+      <element name="ChompURLParams.URL">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="ExtractURLPath">
+        <short>
+          Gets the path information from the specified URL
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="ExtractURLPath.Result">
+        <short>File path information from the URL</short>
+      </element>
+      <element name="ExtractURLPath.URL">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="ExtractURLDirectory">
+        <short>
+          Gets directories in the file path for the specified URL
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="ExtractURLDirectory.Result">
+        <short>File path information up to and including the final path delimiter</short>
+      </element>
+      <element name="ExtractURLDirectory.URL">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="TrimUrl">
+        <short>Removes leading or trailing spaces in the file path for the specified URL</short>
+        <descr></descr>
+        <seealso></seealso>
+     </element>
+      <element name="TrimUrl.Result">
+        <short></short>
+      </element>
+      <element name="TrimUrl.URL">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="TrimURLPath">
+        <short>
+          Removes leading and trailing whitespace in the file path for the specified URL
+        </short>
+        <descr>
+          <p>
+            <var>TrimURLPath</var> is a <var>String</var> function used to remove leading and trailing whitespace that occurs in the file path specified in URLPath. TrimURLPath converts the file path to a file name on the local file system, removes whitespace, and reconverts the file name to a valid URL file path.
+          </p>
+          <p>
+            TrimURLPath calls URLPathToFilename to get the file name portion of the URL, and calls TrimFilename to remove leading and trailing whitespace. TrimURLPath calls FilenameToURLPath to get the return value for the function.
+          </p>
+        </descr>
+        <seealso>
+          <link id="URLPathToFilename"/>
+          <link id="TrimFilename"/>
+          <link id="FilenameToURLPath"/>
+        </seealso>
+      </element>
+      <element name="TrimURLPath.Result">
+        <short>File path for the URL after removing whitespace</short>
+      </element>
+      <element name="TrimURLPath.URLPath">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="IsFileURL">
+        <short>
+          Determines if the specified URL uses the 'file:' URL scheme
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="IsFileURL.Result">
+        <short>True when 'file:' is included in the URL</short>
+      </element>
+      <element name="IsFileURL.URL">
+        <short>URL examined in the routine</short>
+      </element>
+
+      <element name="AppendURLPathDelim">
+        <short>
+          Includes a trailing path delimiter in the file path for the specified URL
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="AppendURLPathDelim.Result">
+        <short>URL path information including the trailing path delimiter</short>
+      </element>
+      <element name="AppendURLPathDelim.URLPath">
+        <short>URL path information examined in the routine</short>
+      </element>
+
+      <element name="CreateListAndAdd">
+        <short>
+          Ensures that a TList has been created before adding the specified object instance
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="CreateListAndAdd.AnObject">
+        <short>Object instance added in the routine</short>
+      </element>
+      <element name="CreateListAndAdd.List">
+        <short>List instance created or updated in the routine</short>
+      </element>
+      <element name="CreateListAndAdd.OnlyIfNotExists">
+        <short>
+          Indicates if the object is added only when it does not already exist in the list
+        </short>
+      </element>
+
+      <element name="CreateNodeQueryListAndAdd">
+        <short>
+          Ensures the THelpNodeQueryList instance has been created prior to adding the specified help query item
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="CreateNodeQueryListAndAdd.ANode">
+        <short>Help node to locate in the list of query items</short>
+      </element>
+      <element name="CreateNodeQueryListAndAdd.QueryItem">
+        <short>Query item for the help node</short>
+      </element>
+      <element name="CreateNodeQueryListAndAdd.List">
+        <short>List examined in the routine</short>
+      </element>
+      <element name="CreateNodeQueryListAndAdd.OnlyIfNotExists">
+        <short>
+          Indicates if the help node and query item are added only when they do not already exist in the list
+        </short>
+      </element>
+
+    </module>
+    <!-- LazHelpIntf -->
+  </package>
 </fpdoc-descriptions>
