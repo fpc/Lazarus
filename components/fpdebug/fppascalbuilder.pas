@@ -114,7 +114,7 @@ begin
      ((not Result) and (not (tnfOnlyDeclared in AFlags)))
   then begin
     ATypeName := '^';
-    while ADbgSymbol.Kind = skPointer do begin
+    while (ADbgSymbol.Kind = skPointer) and (ADbgSymbol.TypeInfo <> nil) do begin
       ADbgSymbol := ADbgSymbol.TypeInfo;
       s := ADbgSymbol.Name;
       if s <> '' then begin
