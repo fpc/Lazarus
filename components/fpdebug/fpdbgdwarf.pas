@@ -514,7 +514,6 @@ type
   TFpSymbolDwarfData = class(TFpSymbolDwarf) // var, const, member, ...
   protected
     FValueObject: TFpValueDwarf;
-    FMembers: TFpDbgCircularRefCntObjList;
 
     function GetValueAddress({%H-}AValueObj: TFpValueDwarf;{%H-} out AnAddress: TFpDbgMemLocation): Boolean; virtual;
     function GetValueDataAddress(AValueObj: TFpValueDwarf; out AnAddress: TFpDbgMemLocation;
@@ -3193,14 +3192,6 @@ begin
   // while holding result, until refcount added, do not call any function
   Result := ti.Member[AIndex];
   assert((Result = nil) or (Result is TFpSymbolDwarfData), 'TFpSymbolDwarfData.GetMember is Value');
-
-  if (k in [skClass, skObject, skRecord {, skArray}]) and
-     (Result <> nil) and (Result is TFpSymbolDwarfData)
-  then begin
-    if FMembers = nil then
-      FMembers := TFpDbgCircularRefCntObjList.Create;
-    FMembers.Add(Result); //TODO: last member only?
-  end;
 end;
 
 function TFpSymbolDwarfData.GetMemberByName(AIndex: String): TFpSymbol;
@@ -3219,14 +3210,6 @@ begin
   // while holding result, until refcount added, do not call any function
   Result := ti.MemberByName[AIndex];
   assert((Result = nil) or (Result is TFpSymbolDwarfData), 'TFpSymbolDwarfData.GetMember is Value');
-
-  if (k in [skClass, skObject, skRecord {, skArray}]) and
-     (Result <> nil) and (Result is TFpSymbolDwarfData)
-  then begin
-    if FMembers = nil then
-      FMembers := TFpDbgCircularRefCntObjList.Create;
-    FMembers.Add(Result);
-  end;
 end;
 
 function TFpSymbolDwarfData.GetMemberCount: Integer;
@@ -3257,7 +3240,6 @@ destructor TFpSymbolDwarfData.Destroy;
 begin
   Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is ddestructor');
 
-  FreeAndNil(FMembers);
   if FValueObject <> nil then begin
     FValueObject.SetValueSymbol(nil);
     FValueObject.ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueObject, ClassName+'.FValueObject'){$ENDIF};
@@ -3809,7 +3791,7 @@ begin
   end
   else
   if FHighBoundState = rfNotFound then begin
-    ReadBound(TFpValueDwarf(AValueObj), DW_AT_count, FCountConst, FCountValue, FCountState);
+          ReadBound(TFpValueDwarf(AValueObj), DW_AT_count, FCountConst, FCountValue, FCountState);
     Result := (FCountState in [rfConst, rfValue]) and
       GetValueLowBound(AValueObj, AHighBound);
     if Result then begin
@@ -3818,7 +3800,7 @@ begin
       else
         AHighBound := AHighBound + FCountValue.Value.AsInteger;
     end
-  end;
+        end;
 end;
 
 procedure TFpSymbolDwarfTypeSubRange.Init;
