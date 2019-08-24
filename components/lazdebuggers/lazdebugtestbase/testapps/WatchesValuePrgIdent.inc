@@ -42,6 +42,9 @@
   //pre__Comp_2{e}      _OP_ Comp        (-150.125             + ADD);          //@@ //_pre3_Comp_2;
   pre__Currency_2{e}    _OP_ Currency    (-125.123             + ADD);          //@@ _pre3_Currency_2;
 
+  pre__Ptr1{e}          _OP_ Pointer     (0                         );          //@@ _pre3_Ptr1;
+  pre__Ptr2{e}          _OP_ Pointer     (1000                 + ADD);          //@@ _pre3_Ptr2;
+
   // **** Char and String types ****
 
   pre__Char{e}          _OP_ char        (CHR1                    );            //@@ _pre3_Char;

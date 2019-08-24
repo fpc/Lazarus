@@ -1448,7 +1448,10 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    e := '\$0*'+IntToHex(PtrUInt(Expect.ExpPointerValue), 8);
+    if Expect.ExpPointerValue = nil then
+      e := 'nil'
+    else
+      e := '\$0*'+IntToHex(PtrUInt(Expect.ExpPointerValue), 8);
     if Expect.ExpTypeName <> '' then
       e := Expect.ExpTypeName+'\('+e+'\)';
     e := '^'+e;

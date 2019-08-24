@@ -629,6 +629,9 @@ procedure TTestWatches.TestWatchesValue;
     //t.Add(p+'Comp_2'+e,     weFloat(-150.125+n,             'Comp'       ));
     t.Add(AName, p+'Currency_2'+e, weFloat(-125.123+n,              'Currency'   ))^.AddFlag([ehNotImplementedData]);
 
+    t.Add(AName, p+'Ptr1'+e, wePointerAddr(nil,                 'Pointer'));
+    t.Add(AName, p+'Ptr2'+e, wePointerAddr(Pointer(1000+n),     'Pointer'));
+
     t.Add(AName, p+'Char'+e,       weChar(AChr1));
     t.Add(AName, p+'Char2'+e,      weChar(#0));
     t.Add(AName, p+'Char3'+e,      weChar(' '));
@@ -950,7 +953,10 @@ begin
     t.Add('@SomeFunc1',   weMatch('^\^function.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skFunctionRef}) );
     t.Add('@SomeProc1',   weMatch('^\^procedure.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skProcedureRef}) );
 
+    // TODO: TClass1 must not contain "<unknown>"
+    // '    _vptr$TOBJECT: Pointer'
     t.Add( 'TClass1',       weMatch('type class\(TObject\).*FInt: (integer|longint).*end', skType)).AddFlag(ehNoTypeInfo);
+    t.Add( 'TClass1',       weMatch('type class\(TObject\).*_vptr\$TOBJECT: *Pointer.*end', skType)).AddFlag(ehNoTypeInfo);
     t.Add( 'TFunc1',        weMatch('type function *\(SomeValue.*\) *: *Boolean', skType)).AddFlag(ehNoTypeInfo);
     t.Add( 'TIntStatArray', weMatch('type array *\[1\.\.5\] *of (integer|longint)', skType)).AddFlag(ehNoTypeInfo);
     t.Add( 'TIntDynArray',  weMatch('type array of (integer|longint)', skType)).AddFlag(ehNoTypeInfo);
