@@ -672,19 +672,19 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   // TODO not a modifier, maybe have a forwarder base class
   private
     FLowBoundConst: Int64;
-    FLowBoundValue: TFpSymbolDwarfData;
+    FLowBoundValue: TFpValue;
     FLowBoundState: TFpDwarfSubRangeBoundReadState;
     FHighBoundConst: Int64;
-    FHighBoundValue: TFpSymbolDwarfData;
+    FHighBoundValue: TFpValue;
     FHighBoundState: TFpDwarfSubRangeBoundReadState;
     FCountConst: Int64;
-    FCountValue: TFpSymbolDwarfData;
+    FCountValue: TFpValue;
     FCountState: TFpDwarfSubRangeBoundReadState;
     FLowEnumIdx, FHighEnumIdx: Integer;
     FEnumIdxValid: Boolean;
     procedure InitEnumIdx;
     procedure ReadBound(AValueObj: TFpValueDwarf; AnAttrib: Cardinal;
-      var ABoundConst: Int64; var ABoundValue: TFpSymbolDwarfData; var ABoundState: TFpDwarfSubRangeBoundReadState);
+      var ABoundConst: Int64; var ABoundValue: TFpValue; var ABoundState: TFpDwarfSubRangeBoundReadState);
   protected
     function DoGetNestedTypeInfo: TFpSymbolDwarfType;override;
     function GetHasBounds: Boolean; override;
@@ -698,6 +698,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure Init; override;
   public
     procedure ResetValueBounds; override;
+    destructor Destroy; override;
 
     function GetValueBounds(AValueObj: TFpValue; out ALowBound, AHighBound: Int64): Boolean; override;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
@@ -3589,8 +3590,7 @@ begin
 end;
 
 procedure TFpSymbolDwarfTypeSubRange.ReadBound(AValueObj: TFpValueDwarf;
-  AnAttrib: Cardinal; var ABoundConst: Int64;
-  var ABoundValue: TFpSymbolDwarfData;
+  AnAttrib: Cardinal; var ABoundConst: Int64; var ABoundValue: TFpValue;
   var ABoundState: TFpDwarfSubRangeBoundReadState);
 var
   FwdInfoPtr: Pointer;
@@ -3599,6 +3599,7 @@ var
   AnAddress: TFpDbgMemLocation;
   InitLocParserData: TInitLocParserData;
   AttrData: TDwarfAttribData;
+  BoundSymbol: TFpSymbolDwarfData;
 begin
   // TODO: assert(AValueObj <> nil, 'TFpSymbolDwarfTypeSubRange.ReadBound: AValueObj <> nil');
   if ABoundState <> rfNotRead then exit;
@@ -3607,9 +3608,14 @@ begin
     // TODO: check the FORM, to determine what data to read.
     if InformationEntry.ReadReference(AttrData, FwdInfoPtr, FwdCompUint) then begin
       NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-      ABoundValue := TFpSymbolDwarfData.CreateValueSubClass('', NewInfo);
+      BoundSymbol := TFpSymbolDwarfData.CreateValueSubClass('', NewInfo);
       NewInfo.ReleaseReference;
-      if (ABoundValue = nil) or (ABoundValue.Value =nil) or not (svfInteger in ABoundValue.Value.FieldFlags) then begin
+      ABoundValue := nil;
+      if BoundSymbol <> nil then begin
+        ABoundValue := BoundSymbol.Value;
+        ABoundValue.AddReference;
+      end;
+      if (ABoundValue = nil) or not (svfInteger in ABoundValue.FieldFlags) then begin
         // Not implemented in DwarfSymbolClassMap.GetDwarfSymbolClass    // or not a value type (bound can not be a type)
         ABoundState := rfError;
         exit;
@@ -3753,6 +3759,14 @@ begin
   FCountState := rfNotRead;
 end;
 
+destructor TFpSymbolDwarfTypeSubRange.Destroy;
+begin
+  FLowBoundValue.ReleaseReference;
+  FHighBoundValue.ReleaseReference;
+  FCountValue.ReleaseReference;
+  inherited Destroy;
+end;
+
 function TFpSymbolDwarfTypeSubRange.GetValueBounds(AValueObj: TFpValue; out
   ALowBound, AHighBound: Int64): Boolean;
 begin
@@ -3767,12 +3781,11 @@ begin
   assert((AValueObj = nil) or (AValueObj is TFpValueDwarf), 'TFpSymbolDwarfTypeSubRange.GetValueLowBound: AValueObj is TFpValueDwarf(');
   if FLowBoundState = rfNotRead then
     ReadBound(TFpValueDwarf(AValueObj), DW_AT_lower_bound, FLowBoundConst, FLowBoundValue, FLowBoundState);
-  Result := FLowBoundState in [rfConst, rfValue];
-  if Result then begin
-    if FLowBoundState = rfConst then
-      ALowBound := FLowBoundConst
-    else
-      ALowBound := FLowBoundValue.Value.AsInteger;
+  Result := True;
+  case FLowBoundState of
+    rfConst: ALowBound := FLowBoundConst;
+    rfValue: ALowBound := FLowBoundValue.AsInteger;
+    else     Result := False;
   end;
 end;
 
@@ -3782,25 +3795,25 @@ begin
   assert((AValueObj = nil) or (AValueObj is TFpValueDwarf), 'TFpSymbolDwarfTypeSubRange.GetValueHighBound: AValueObj is TFpValueDwarf(');
   if FHighBoundState = rfNotRead then
     ReadBound(TFpValueDwarf(AValueObj), DW_AT_upper_bound, FHighBoundConst, FHighBoundValue, FHighBoundState);
-  Result := FHighBoundState in [rfConst, rfValue];
-  if Result then begin
-    if FHighBoundState = rfConst then
-      AHighBound := FHighBoundConst
-    else
-      AHighBound := FHighBoundValue.Value.AsInteger;
-  end
-  else
-  if FHighBoundState = rfNotFound then begin
+
+  Result := True;
+  case FHighBoundState of
+    rfConst: AHighBound := FHighBoundConst;
+    rfValue: AHighBound := FHighBoundValue.AsInteger;
+    rfNotFound: begin
+        Result := GetValueLowBound(AValueObj, AHighBound);
+        if not Result then
+          exit;
+        if FCountState = rfNotRead then
           ReadBound(TFpValueDwarf(AValueObj), DW_AT_count, FCountConst, FCountValue, FCountState);
-    Result := (FCountState in [rfConst, rfValue]) and
-      GetValueLowBound(AValueObj, AHighBound);
-    if Result then begin
-      if FCountState = rfConst then
-        AHighBound := AHighBound + FCountConst
-      else
-        AHighBound := AHighBound + FCountValue.Value.AsInteger;
-    end
+        case FCountState of
+          rfConst: AHighBound := AHighBound + FCountConst;
+          rfValue: AHighBound := AHighBound + FCountValue.AsInteger;
+          else     Result := False;
         end;
+      end;
+    else     Result := False;
+  end;
 end;
 
 procedure TFpSymbolDwarfTypeSubRange.Init;
