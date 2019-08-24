@@ -185,6 +185,7 @@ var
     c, i: Integer;
     m: TFpSymbol;
     s: String;
+    r: Boolean;
   begin
     Result := True;
     AText := '';
@@ -194,11 +195,13 @@ var
       m := ADbgSymbol.Member[i];
       AddVisibility(m.MemberVisibility, i= 0);
       if tdfStopAfterPointer in AFlags then
-        Result := GetTypeName(s, m)
+        r := GetTypeName(s, m)
       else
-        Result := GetTypeAsDeclaration(s, m, [tdfIncludeVarName, tdfStopAfterPointer] + AFlags, AnIndent + 4);
-      if Result then
-        AText := AText + GetIndent + s + ';' + LineEnding;
+        r := GetTypeAsDeclaration(s, m, [tdfIncludeVarName, tdfStopAfterPointer] + AFlags, AnIndent + 4);
+      if r then
+        AText := AText + GetIndent + s + ';' + LineEnding
+      else
+        AText := AText + m.Name + ': <unknown>;' + LineEnding;
       inc(i);
     end;
   end;
