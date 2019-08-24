@@ -2630,14 +2630,6 @@ begin
     exit;
 
   Result := FTypeCastTargetType.MemberCount;
-
-  ti := FTypeCastTargetType;
-  //TODO: cache result
-  if ti.Kind in [skClass, skObject] then
-    while ti.TypeInfo <> nil do begin
-      ti := ti.TypeInfo;
-      Result := Result + ti.MemberCount;
-    end;
 end;
 
 { TFpValueDwarfConstAddress }
@@ -3218,15 +3210,8 @@ var
   ti: TFpSymbol;
 begin
   ti := TypeInfo;
-  if ti <> nil then begin
-    Result := ti.MemberCount;
-    //TODO: cache result
-    if ti.Kind in [skClass, skObject] then
-      while ti.TypeInfo <> nil do begin
-        ti := ti.TypeInfo;
-        Result := Result + ti.MemberCount;
-      end;
-  end
+  if ti <> nil then
+    Result := ti.MemberCount
   else
     Result := inherited GetMemberCount;
 end;
@@ -4308,9 +4293,15 @@ begin
 end;
 
 function TFpSymbolDwarfTypeStructure.GetMemberCount: Integer;
+var
+  ti: TFpSymbol;
 begin
   CreateMembers;
   Result := FMembers.Count;
+
+  ti := TypeInfo;
+  if ti <> nil then
+    Result := Result + ti.MemberCount;
 end;
 
 function TFpSymbolDwarfTypeStructure.GetDataAddressNext(AValueObj: TFpValueDwarf;
@@ -4346,15 +4337,19 @@ end;
 function TFpSymbolDwarfTypeStructure.GetMember(AIndex: Int64): TFpSymbol;
 var
   ti: TFpSymbol;
+  i: Int64;
 begin
   CreateMembers;
-  if AIndex >= FMembers.Count then begin
-    ti := TypeInfo;
-    if ti <> nil then
-      Result := ti.Member[AIndex - FMembers.Count];
-  end
+
+  i := AIndex;
+  ti := TypeInfo;
+  if ti <> nil then
+    i := i - ti.MemberCount;
+
+  if i < 0 then
+    Result := ti.Member[AIndex]
   else
-    Result := TFpSymbol(FMembers[AIndex]);
+    Result := TFpSymbol(FMembers[i]);
 end;
 
 destructor TFpSymbolDwarfTypeStructure.Destroy;
