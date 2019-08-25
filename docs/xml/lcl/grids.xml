@@ -5588,13 +5588,10 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- object Visibility: default -->
       <element name="TStringGrid">
-        <short>
-          <var>TStringGrid</var> - a specialized grid for displaying strings (text material) in a matrix of columns and
-rows</short>
+        <short><var>TStringGrid</var> - a specialized grid for displaying strings (text material) in a matrix of columns androws</short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="HowToUseGrids"/>
+        <seealso><link id="HowToUseGrids"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -11944,18 +11941,15 @@ initializes some local variables</short>
         </short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#LCL.Grids.TCustomDrawGrid.Destroy">TCustomDrawGrid.Destroy</link>
+        <seealso><link id="#LCL.Grids.TCustomDrawGrid.Destroy">TCustomDrawGrid.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomStringGrid.AutoSizeColumn">
         <short>
           <var>AutoSizeColumn</var> - automatically adjust width of column to accommodate widest text</short>
-        <descr>
-          <p>This procedure sets the column width to the size of the widest text it finds in all rows for the column <var>aCol.</var>
-          </p>
-          <p>Tip: see the <var>goDblClickAutoSize</var> option to allow columns to be automatically resized when doubleClicking the column border.</p>
+        <descr><p>This procedure sets the column width to the size of the widest text it finds in all rows for the column <var>aCol.</var>
+          </p><p>Tip: see the <var>goDblClickAutoSize</var> option to allow columns to be automatically resized when doubleClicking the column border.</p>
         </descr>
         <errors/>
         <seealso/>
@@ -11975,16 +11969,8 @@ initializes some local variables</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomStringGrid.Clean">
-        <short>
-          <var>Clean </var>all cells in the grid subject to the given 
-          <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region.</short>
-        <descr>
-          <p>Cleans all cells in the grid subject to the given <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region. See <link id="TGridZoneSet"/> for more information.</p>
-          <p>Some examples:</p>
-          <ul>
-            <li>Clean all cells: grid.Clean([]); (the same as grid.clean)</li>
-            <li>Clean all non fixed cells: grid.Clean([gzNormal]);</li>
-            <li>Clean all cells but don't touch grid column headers: Grid.Clean([gzNormal, gzFixedRows]); </li>
+        <short><var>Clean </var>all cells in the grid subject to the given           <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region.</short>
+        <descr><p>Cleans all cells in the grid subject to the given <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region. See <link id="TGridZoneSet"/> for more information.</p><p/><p>The cleaning operation does not change the number of rows and columns.</p><p>Some examples:</p><ul><li>Clean all cells: grid.Clean([]); (the same as grid.clean)</li><li>Clean all non fixed cells: grid.Clean([gzNormal]);</li><li>Clean all cells but don't touch grid column headers: Grid.Clean([gzNormal, gzFixedRows]); </li>
           </ul>
         </descr>
         <errors/>
