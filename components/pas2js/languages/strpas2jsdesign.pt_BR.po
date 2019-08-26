@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,42 +13,42 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
-msgstr ""
+msgstr "Navegar"
 
 #: strpas2jsdesign.pjsdbrowsertousewhenopeninghtmlpage
 msgid "Browser to use when opening HTML page"
-msgstr ""
+msgstr "Navegador a ser utilizado na abertura de página HTML"
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
-msgstr ""
+msgstr "Criar página HTML inicial"
 
 #: strpas2jsdesign.pjsddirectorynotfound
 #, object-pascal-format
 msgid "directory \"%s\" not found"
-msgstr ""
+msgstr "diretório \"%s\" não encontrado"
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
-msgstr ""
+msgstr "nome de arquivo não se inicia com \"pas2js\""
 
 #: strpas2jsdesign.pjsdfilenotexecutable
 #, object-pascal-format
 msgid "file \"%s\" not executable"
-msgstr ""
+msgstr "arquivo \"%s\" não é executável"
 
 #: strpas2jsdesign.pjsdfilenotfound
 #, object-pascal-format
 msgid "file \"%s\" not found"
-msgstr ""
+msgstr "arquivo \"%s\" não encontrado"
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
-msgstr ""
+msgstr "Manter página HTML"
 
 #: strpas2jsdesign.pjsdmissingpathtopas2js
 msgid "missing path to pas2js"
-msgstr ""
+msgstr "caminho ausente para pas2js"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgctxt "strpas2jsdesign.pjsdnodejsappdescription"
@@ -62,109 +62,109 @@ msgstr "Aplicação Node.js"
 
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
-msgstr ""
+msgstr "Opções de projeto NodeJS"
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
-msgstr ""
+msgstr "Navegador de opções de projeto Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jscurrentprojecturl
 msgid "Pas2JS current project URL"
-msgstr ""
+msgstr "URL atual de projeto Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jsexecutable
 msgid "Pas2JS executable"
-msgstr ""
+msgstr "Executável Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
-msgstr ""
+msgstr "Executável selecionado do navegador Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
 msgid "Pas2JS selected NodeJS excutable"
-msgstr ""
+msgstr "Executável NodeJS selecionado Pas2JS"
 
 #: strpas2jsdesign.pjsdpathof
 #, object-pascal-format
 msgid "Path of %s"
-msgstr ""
+msgstr "Caminho para %s"
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable"
-msgstr ""
+msgstr "Caminho do executável Node.js"
 
 #: strpas2jsdesign.pjsdportnumberstostartallocatingfrom
 #, object-pascal-format
 msgid "Port numbers to start allocating from %s"
-msgstr ""
+msgstr "Números de porta para iniciar alocação de %s"
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
-msgstr ""
+msgstr "Página HTML do projeto:"
 
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
-msgstr ""
+msgstr "Projeto é uma Navegador Web (pas2js)"
 
 #: strpas2jsdesign.pjsdprojectneedsahttpserver
 msgid "Project needs a HTTP server"
-msgstr ""
+msgstr "Projeto precisa de um servidor HTTP"
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
-msgstr ""
+msgstr "Comando redefinir compilação"
 
 #: strpas2jsdesign.pjsdresetruncommand
 msgid "Reset Run command"
-msgstr ""
+msgstr "Comando redefinir execução"
 
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
-msgstr ""
+msgstr "Rodar RTL quando todas as páginas de recursos forem totalmente carregadas"
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
-msgstr ""
+msgstr "Selecionar executável do navegador"
 
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
-msgstr ""
+msgstr "Selecionar executável Node.js"
 
 #: strpas2jsdesign.pjsdselectpas2jsexecutable
 msgid "Select pas2js executable"
-msgstr ""
+msgstr "Selecionar executável pas2js"
 
 #: strpas2jsdesign.pjsdselectsimpleserverexecutable
 msgid "Select simpleserver executable"
-msgstr ""
+msgstr "Selecionar executável \"simpleserver\""
 
 #: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
-msgstr ""
+msgstr "Instâncias servidoras serão iniciadas com uma porta começando por este número, aumentando à cada novo projeto"
 
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
-msgstr ""
+msgstr "Iniciar servidor HTTP na porta"
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
-msgstr ""
+msgstr "Usar objeto \"Browser Application\""
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use Browser Console unit to display writeln() output"
-msgstr ""
+msgstr "Usar a unidade \"Browser Console\" para exibir saídas \"writeln()\""
 
 #: strpas2jsdesign.pjsdusenodejsapplicationobject
 msgid "Use NodeJS Application object"
-msgstr ""
+msgstr "Usar objeto \"NodeJS Application\""
 
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
 msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr ""
+msgstr "Usar este navegador ao abrir a URL ou arquivo HTML de um projeto de navegador web"
 
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
-msgstr ""
+msgstr "Usar esta URL para iniciar a aplicação"
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgctxt "strpas2jsdesign.pjsdwebappdescription"
@@ -178,12 +178,12 @@ msgstr "Aplicação navegador web"
 
 #: strpas2jsdesign.pjsdwebprojectpas2js
 msgid "Web Project (pas2js)"
-msgstr ""
+msgstr "Projeto Web (pas2js)"
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
-msgstr ""
+msgstr "Você pode usar macros IDE como \"$MakeExe()\". Sem um caminho completo, %s é pesquisado em \"PATH\""
 
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"

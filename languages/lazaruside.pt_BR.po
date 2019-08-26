@@ -3280,7 +3280,6 @@ msgid "Create Application Bundle"
 msgstr "Criar aplicação inclusa"
 
 #: lazarusidestrconsts.dlgpodebugger
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgpodebugger"
 msgid "Debugger"
 msgstr "Depurador"
@@ -8392,7 +8391,7 @@ msgstr "Depurador"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
 msgid "Debugger Backend:"
-msgstr ""
+msgstr "\"Backend\" do depurador:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -8496,7 +8495,7 @@ msgstr "Thread"
 #: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
 #, object-pascal-format
 msgid "Unknown Debugger backend \"%s\""
-msgstr ""
+msgstr "\"Backend\" do depurador desconhecido \"%s\""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
@@ -8504,7 +8503,7 @@ msgstr "Usar cores no registro de eventos"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
 msgid "-- Use IDE default Debugger --"
-msgstr ""
+msgstr "-- Usar o Depurador padrão da IDE --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
