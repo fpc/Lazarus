@@ -258,6 +258,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TLCLCheckBoxCallback }
@@ -741,6 +742,15 @@ class function TCocoaWSButton.GetTextLen(const AWinControl: TWinControl;
 begin
   // The text is static, so let the LCL fallback to FCaption
   Result := false;
+end;
+
+class procedure TCocoaWSButton.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  if not (AWinControl.HandleAllocated) then Exit;
+  TCocoaWSWinControl.SetFont(AWinControl, AFont);
+  TCocoaButton(AWinControl.Handle).adjustFontToControlSize := (AFont.Name = 'default')
+    and (AFont.Size = 0);
 end;
 
 { TCocoaWSCustomCheckBox }
