@@ -472,7 +472,7 @@ begin
   Result := nil;
   if CocoaWidgetSet.CaptureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSet.CaptureControl);
-  lCaptureView := GetNSObjectView(obj);
+  lCaptureView := obj.lclContentView;
   if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
   begin
     Result := lCaptureView.lclGetCallback;
@@ -1088,7 +1088,7 @@ begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
       FIsEventRouting:=true;
        //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
-      obj := GetNSObjectView(NSObject(targetControl.Handle));
+      obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
