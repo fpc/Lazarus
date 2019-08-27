@@ -1744,7 +1744,7 @@ var
 begin
   if (not AWinControl.HandleAllocated) or (not AChild.HandleAllocated) then Exit;
 
-  pr:=NSView(AWinControl.Handle);
+  pr := NSView(AWinControl.Handle).lclContentView;
 
   //todo: sorting might be a better option than removing / adding a view
   //      (whenever a focused (firstrepsonder view) is moved to front, focus is lost.
