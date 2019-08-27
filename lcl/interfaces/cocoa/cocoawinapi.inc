@@ -600,6 +600,10 @@ function TCocoaWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
 var
   ctx: TCocoaContext;
   r: TRect;
+  keepPen   : TCocoaPen;
+  edgePen   : TCocoaPen;
+  keepBrush : TCocoaBrush;
+  edgeBrush : TCocoaBrush;
 const
   OutLT = cl3DLight;    // the next to hilight
   OutBR = cl3DDkShadow; // the darkest (almost black)
@@ -610,22 +614,38 @@ begin
   Result := Assigned(ctx);
   if not Result then Exit;
 
-  r := Rect;
-  if (edge and BDR_OUTER > 0) then
-  begin
-    if edge and BDR_RAISEDOUTER > 0 then
-      DrawEdgeRect(ctx, r, grfFlags, OutLT, OutBR)
-    else
-      DrawEdgeRect(ctx, r, grfFlags, InnBR, InnLT);
-    InflateRect(r, -1, -1);
-  end;
+  keepPen := ctx.Pen;
+  keepBrush := ctx.Brush;
+  try
+    edgePen := TCocoaPen.Create($FFFFFF, psSolid, false, 1, pmCopy, pecRound, pjsRound);
+    edgeBrush := TCocoaBrush.Create(NSColor.whiteColor, false);
+    edgeBrush.Solid := false;
+    ctx.Pen := edgePen;
+    ctx.Brush := edgeBrush;
 
-  if (edge and BDR_INNER > 0) then
-  begin
-    if edge and BDR_RAISEDINNER > 0 then
-      DrawEdgeRect(ctx, r, grfFlags, InnLT, InnBR)
-    else
-      DrawEdgeRect(ctx, r, grfFlags, OutBR, OutLT);
+    r := Rect;
+    if (edge and BDR_OUTER > 0) then
+    begin
+      if edge and BDR_RAISEDOUTER > 0 then
+        DrawEdgeRect(ctx, r, grfFlags, OutLT, OutBR)
+      else
+        DrawEdgeRect(ctx, r, grfFlags, InnBR, InnLT);
+      InflateRect(r, -1, -1);
+    end;
+
+    if (edge and BDR_INNER > 0) then
+    begin
+      if edge and BDR_RAISEDINNER > 0 then
+        DrawEdgeRect(ctx, r, grfFlags, InnLT, InnBR)
+      else
+        DrawEdgeRect(ctx, r, grfFlags, OutBR, OutLT);
+    end;
+
+  finally
+    ctx.Pen := keepPen;
+    ctx.Brush := keepBrush;
+    edgeBrush.Free;
+    edgePen.Free;
   end;
 
   Result := true;
