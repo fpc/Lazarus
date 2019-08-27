@@ -1411,7 +1411,7 @@ var
   cr:TCocoaCursor;
 begin
   Result := False;
-  View := CocoaUtils.GetNSObjectView(Owner);
+  View := HandleFrame.lclContentView;
   if View = nil then Exit;
   if not Assigned(Target) then Exit;
   if not (csDesigning in Target.ComponentState) then
@@ -1607,10 +1607,7 @@ var
 begin
   if not AWinControl.HandleAllocated then Exit;
 
-  //todo: GetNSObjectView must be replaced with oop approach
-  //      note that client rect might be smaller than the bounds of TWinControl itself
-  //      thus extra size should be adapted
-  lView := CocoaUtils.GetNSObjectView(NSObject(AWinControl.Handle));
+  lView := NSObject(AWinControl.Handle).lclContentView;
   if lView = nil then Exit;
 
   //todo: using fittingSize is wrong - it's based on constraints of the control solely.

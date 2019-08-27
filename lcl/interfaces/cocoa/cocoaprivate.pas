@@ -910,7 +910,7 @@ var
 begin
   p := nil;
   if (AParams.WndParent <> 0) then
-    p := CocoaUtils.GetNSObjectView(NSObject(AParams.WndParent));
+    p := NSView(AParams.WndParent).lclContentView;
 
   if Assigned(p) then
     LCLToNSRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
