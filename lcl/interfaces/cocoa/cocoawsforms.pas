@@ -568,11 +568,11 @@ begin
     if lList.Count>0 then
       begin
       prevControl := TWinControl(lList.Items[lList.Count-1]);
-      lPrevView := GetNSObjectView(NSObject(prevControl.Handle));
+      lPrevView := NSObject(prevControl.Handle).lclContentView;
       for i := 0 to lList.Count-1 do
       begin
         curControl := TWinControl(lList.Items[i]);
-        lCurView := GetNSObjectView(NSObject(curControl.Handle));
+        lCurView := NSObject(curControl.Handle).lclContentView;
 
         if (lCurView <> nil) and (lPrevView <> nil) then
           lPrevView.setNextKeyView(lCurView);
@@ -793,7 +793,7 @@ begin
   begin
     if AParams.WndParent <> 0 then
     begin
-      lDestView := GetNSObjectView(NSObject(AParams.WndParent));
+      lDestView := NSObject(AParams.WndParent).lclContentView;
       lDestView.addSubView(cnt);
       //cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then

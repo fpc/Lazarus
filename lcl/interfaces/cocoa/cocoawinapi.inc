@@ -2540,7 +2540,7 @@ begin
     end
     else
     begin
-      lView := GetNSObjectView(Obj);
+      lView := obj.lclContentView;
       if lView <> nil then
       begin
         if lView.window <> nil then
