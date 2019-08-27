@@ -2194,8 +2194,13 @@ begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
 
-  list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
-  list.scrollRowToVisible(AIndex);
+  if (AIndex < 0) then
+    list.deselectAll(nil)
+  else
+  begin
+    list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
+    list.scrollRowToVisible(AIndex);
+  end;
 end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
