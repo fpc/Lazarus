@@ -31,7 +31,7 @@ unit GDBMIServerDebugger;
 interface
 
 uses
-  Classes, sysutils,
+  Classes, sysutils, UTF8Process, Process, LazFileUtils, MacroIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
@@ -47,12 +47,24 @@ type
     function CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; override;
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     procedure InterruptTarget; override;
+    procedure StopInitProc;
   public
+    InitProc: TProcessUTF8;
+    destructor Destroy; override;
     function NeedReset: Boolean; override;
     class function CreateProperties: TDebuggerProperties; override;  // Creates debuggerproperties
     class function Caption: String; override;
     class function RequiresLocalExecutable: Boolean; override;
+    procedure Done; override;         // Kills external debugger
   end;
+
+  TInitExecMode = (
+    ieRun,            // run and forget
+    ieRunCloseOnStop  // run, and keep the process until the debugger is stopped
+                      // when the debugger is stopped, terminate the process, if it's still running
+    // todo: to be implemented!
+    //ieRunWaitToExit   // run and wait until the process finishes, before letting the debugger run "target remote"
+  );
 
   { TGDBMIServerDebuggerProperties }
 
@@ -64,6 +76,9 @@ type
     FDebugger_Remote_DownloadExe: boolean;
     FRemoteTimeout: integer;
     FSkipSettingLocalExeName: Boolean;
+
+    FInitExec_RemoteTarget: string;
+    FInitExec_Mode: TInitExecMode;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -74,6 +89,8 @@ type
     property RemoteTimeout: integer read FRemoteTimeout write FRemoteTimeout default -1;
     property Architecture: string read FArchitecture write FArchitecture;
     property SkipSettingLocalExeName: Boolean read FSkipSettingLocalExeName write FSkipSettingLocalExeName default False;
+    property InitExec_RemoteTarget: string read FInitExec_RemoteTarget write FInitExec_RemoteTarget;
+    property InitExec_Mode: TInitExecMode read FInitExec_Mode write FInitExec_Mode default ieRun;
   published
     property Debugger_Startup_Options;
     {$IFDEF UNIX}
@@ -109,6 +126,8 @@ implementation
 
 resourcestring
   GDBMiSNoAsyncMode = 'GDB does not support async mode';
+  GDBMiSFailedInitProc = 'Failed to execute the initialization process';
+  GDBMiSFailedInitProcWaitOnExit = 'Failed on wait on exit. Status: %d Code: %d';
 
 type
 
@@ -167,6 +186,11 @@ var
   R: TGDBMIExecResult;
   t: Integer;
   s: String;
+  ip     : TProcessUTF8;
+  ipsucc : Boolean;
+  ipkeep : Boolean;
+  iperr  : string;
+  srv    : TGDBMIServerDebugger;
 begin
   Result := inherited DoExecute;
   if (not FSuccess) then exit;
@@ -175,6 +199,56 @@ begin
     SetDebuggerErrorState(GDBMiSNoAsyncMode);
     FSuccess := False;
     exit;
+  end;
+
+  s := Trim(TGDBMIServerDebuggerProperties(DebuggerProperties).InitExec_RemoteTarget);
+  IDEMacros.SubstituteMacros(s);
+
+  if s <> '' then begin
+    iperr := '';
+    ip := TProcessUTF8.Create(nil);
+
+    SplitCmdLineParams(s, ip.Parameters);
+    ip.Executable := ip.Parameters[0];
+    ip.Parameters.Delete(0);
+
+    ip.Options := [poNewConsole,poNewProcessGroup];
+    try
+      ip.Execute;
+      {if TGDBMIServerDebuggerProperties(DebuggerProperties).InitExec_Mode = ieRunWaitToExit then
+      begin
+        ip.WaitOnExit;
+        iperr := Format(GDBMiSFailedInitProcWaitOnExit, [ip.ExitStatus, ip.ExitCode]);
+        ipkeep := false;
+      end else}
+        ipkeep := TGDBMIServerDebuggerProperties(DebuggerProperties).InitExec_Mode = ieRunCloseOnStop;
+      ipsucc := true;
+    except
+      on e: exception do begin
+        iperr := e.Message;
+        ipkeep := false;
+        ipsucc := false;
+      end;
+    end;
+
+    if not ipsucc then begin
+      ip.Free;
+      SetDebuggerErrorState(GDBMiSFailedInitProc, iperr);
+      FSuccess := False;
+      exit;
+    end;
+
+    if ipkeep then begin
+      srv := TGDBMIServerDebugger(FTheDebugger);
+      if Assigned(srv.InitProc) then begin
+        srv.InitProc.Terminate(0);
+        srv.InitProc.Free;
+        srv.InitProc := nil;
+      end;
+      srv.InitProc := ip
+    end else
+      ip.Free;
+
   end;
 
   s := TGDBMIServerDebuggerProperties(DebuggerProperties).Architecture;
@@ -219,6 +293,8 @@ begin
     FArchitecture := TGDBMIServerDebuggerProperties(Source).FArchitecture;
     FSkipSettingLocalExeName := TGDBMIServerDebuggerProperties(Source).FSkipSettingLocalExeName;
     UseAsyncCommandMode := True;
+    FInitExec_RemoteTarget := TGDBMIServerDebuggerProperties(Source).FInitExec_RemoteTarget;
+    FInitExec_Mode := TGDBMIServerDebuggerProperties(Source).FInitExec_Mode;
   end;
 end;
 
@@ -250,6 +326,20 @@ begin
   inherited InterruptTarget;
 end;
 
+procedure TGDBMIServerDebugger.StopInitProc;
+begin
+  if not Assigned(InitProc) then Exit;
+  if InitProc.Active then InitProc.Terminate(0);
+  InitProc.Free;
+  InitProc:=nil;
+end;
+
+destructor TGDBMIServerDebugger.Destroy;
+begin
+  StopInitProc;
+  inherited Destroy;
+end;
+
 function TGDBMIServerDebugger.NeedReset: Boolean;
 begin
   Result := True;
@@ -265,6 +355,11 @@ begin
   Result := False;
 end;
 
+procedure TGDBMIServerDebugger.Done;
+begin
+  inherited Done;
+  StopInitProc;
+end;
 
 procedure Register;
 begin
