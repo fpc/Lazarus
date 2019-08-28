@@ -1161,7 +1161,10 @@ begin
   if event.deltaX <> 0 then
   begin
     Msg.Msg := LM_MOUSEHWHEEL;
-    Msg.WheelDelta := round(event.deltaX * 120);
+    // see "deltaX" documentation.
+    // on macOS: -1 = right, +1 = left
+    // on LCL:   -1 = left,  +1 = right
+    Msg.WheelDelta := round(-event.deltaX * 120);
   end
   else
     // Filter out empty events - See bug 28491
