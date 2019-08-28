@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: gdbmistringconstants.dlggroupdebugger
 msgid "Debugger"
@@ -166,6 +166,19 @@ msgstr "Во время исполнения команды: %0:s\"%2:s\"%0:sGDB
 msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "Нажмите \"Пропустить\", чтобы продолжить отладку. Это может быть небезопасно. Нажмите \"Прервать\", чтобы окончить отладку.%0:sИсключение: %1:s с сообщением \"%2:s\"%0:sКонтекст: %4:s. Состояние: %5:s %0:s%0:s%3:s"
+
+#: gdbmistringconstants.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr "Не удалось выполнить процесс инициализации"
+
+#: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr "Не удалось дождаться завершения работы процесса. Состояние: %d Код: %d"
+
+#: gdbmistringconstants.gdbmisnoasyncmode
+msgid "GDB does not support async mode"
+msgstr "GDB не поддерживает асинхронный режим"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgctxt "gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition"

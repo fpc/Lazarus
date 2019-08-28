@@ -144,6 +144,19 @@ msgstr "Nell'eseguire il comando: %0:s\"%2:s\"%0:sgdb ha restituito:%0:s\"%1:s\"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "Premere \"Ignore\" per proseguire il debug. Questo potrebbe NON essere sicuro. Premere \"Abort\" per fermare il debugger.%0:sErrore: %1:s con messaggio \"%2:s\"%0:sContesto: %4:s. Stato: %5:s %0:s%0:s%3:s"
 
+#: gdbmistringconstants.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisnoasyncmode
+msgid "GDB does not support async mode"
+msgstr ""
+
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"
 msgstr "Il debugger si è trovato in una condizione sconosciuta"

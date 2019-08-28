@@ -142,6 +142,19 @@ msgstr "A következő parancs végrehajtása közben: %0:s\"%2:s\"%0:sa GDB üze
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "A \"Kihagyás\"-ra nyomva folytatható a hibakeresés, Ez NEM biztonságos. A \"Megszakítás\"-ra nyomva befejeződik a hibakeresés.%0:sKivétel: %1:s a következő üzenettel: \"%2:s\"%0:sHely: %4:s. Állapot: %5:s %0:s%0:s%3:s"
 
+#: gdbmistringconstants.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisnoasyncmode
+msgid "GDB does not support async mode"
+msgstr ""
+
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"
 msgstr "A hibakereső ismeretlen helyzetet észlelt"

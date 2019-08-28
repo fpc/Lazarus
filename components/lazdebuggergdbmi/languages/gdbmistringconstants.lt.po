@@ -168,6 +168,19 @@ msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesaf
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "Paspaudus „Ignoruoti“ derinimas bus tęsiamas. Tai gali būti NESAUGU. Paspaudus „Nutraukti“ derinimas bus baigtas.%0:sIšimtinė situacija: %1:s, kurios pranešimas „%2:s“%0:sKontekstas %4:s. Būsena: %5:s %0:s%0:s%3:s"
 
+#: gdbmistringconstants.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisnoasyncmode
+msgid "GDB does not support async mode"
+msgstr ""
+
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgctxt "gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition"
 msgid "The debugger experienced an unknown condition"

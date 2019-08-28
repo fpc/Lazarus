@@ -67,7 +67,6 @@ resourcestring
     + 'To ensure the process is not affecting your System, you should locate '
     + 'and terminate it yourself.';
 
-
   lisNewTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
       'The GNU debugger '
     +'through SSH allows to remote debug via a SSH connection. See docs/'
@@ -88,6 +87,10 @@ resourcestring
     + 'all breakpoints during initialization.%0:s'
     + 'You may wish to check if all sources were compiled with debug-info.%0:s'
     + 'Press OK to ignore this and continue.';
+
+  GDBMiSNoAsyncMode = 'GDB does not support async mode';
+  GDBMiSFailedInitProc = 'Failed to execute the initialization process';
+  GDBMiSFailedInitProcWaitOnExit = 'Failed on wait on exit. Status: %d Code: %d';
 
 implementation
 

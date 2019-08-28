@@ -143,6 +143,19 @@ msgstr "当执行命令: %0:s\"%2:s\"%0:sgdb报告:%0:s\"%1:s\"%0:s"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
 msgstr "按\"Ignore\"继续调试.这可能不安全.按\"Abort\"结束调试.%0:异常: %1:s带有信息\"%2:s\"%0:s上下文: %4:s.状态: %5:s %0:s%0:s%3:s"
 
+#: gdbmistringconstants.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr ""
+
+#: gdbmistringconstants.gdbmisnoasyncmode
+msgid "GDB does not support async mode"
+msgstr ""
+
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"
 msgstr "调试器发现一个未知条件"

@@ -35,7 +35,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
-  GDBMIDebugger, GDBMIMiscClasses;
+  GDBMIDebugger, GDBMIMiscClasses, GdbmiStringConstants;
   
 type
 
@@ -123,11 +123,6 @@ type
 procedure Register;
 
 implementation
-
-resourcestring
-  GDBMiSNoAsyncMode = 'GDB does not support async mode';
-  GDBMiSFailedInitProc = 'Failed to execute the initialization process';
-  GDBMiSFailedInitProcWaitOnExit = 'Failed on wait on exit. Status: %d Code: %d';
 
 type
 
