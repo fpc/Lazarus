@@ -240,11 +240,7 @@ begin
 
     if ipkeep then begin
       srv := TGDBMIServerDebugger(FTheDebugger);
-      if Assigned(srv.InitProc) then begin
-        srv.InitProc.Terminate(0);
-        srv.InitProc.Free;
-        srv.InitProc := nil;
-      end;
+      srv.StopInitProc;
       srv.InitProc := ip
     end else
       ip.Free;
