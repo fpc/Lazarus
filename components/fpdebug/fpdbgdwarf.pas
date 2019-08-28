@@ -162,7 +162,6 @@ type
     procedure SetStructureValue(AValue: TFpValueDwarf);
   protected
     FLastError: TFpError;
-    function MemManager: TFpDbgMemManager; inline;
     procedure DoReferenceAdded; override;
     procedure DoReferenceReleased; override;
     procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
@@ -198,6 +197,7 @@ type
   public
     constructor Create(AOwner: TFpSymbolDwarfType);
     destructor Destroy; override;
+    function MemManager: TFpDbgMemManager; inline;
     procedure SetValueSymbol(AValueSymbol: TFpSymbolDwarfData);
     function  SetTypeCastInfo(AStructure: TFpSymbolDwarfType;
                               ASource: TFpValue): Boolean; // Used for Typecast
@@ -602,8 +602,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
     procedure SizeNeeded; override;
-    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; virtual; // returns refcount=1 for caller, no cached copy kept
   public
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; virtual; // returns refcount=1 for caller, no cached copy kept
     class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfType;
     function TypeCastValue(AValue: TFpValue): TFpValue; override;
 
@@ -628,9 +628,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure KindNeeded; override;
     procedure TypeInfoNeeded; override;
-    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     function GetHasBounds: Boolean; override;
   public
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     function GetValueBounds(AValueObj: TFpValue; out ALowBound,
       AHighBound: Int64): Boolean; override;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
@@ -643,6 +643,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure TypeInfoNeeded; override;
     procedure ForwardToSymbolNeeded; override;
+  public
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
   end;
 
@@ -658,11 +659,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TFpSymbolDwarfTypeDeclaration }
 
   TFpSymbolDwarfTypeDeclaration = class(TFpSymbolDwarfTypeModifier)
-  protected
-    // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
-    // typedef > pointer > srtuct
-    // while a pointer to class/object: pointer > typedef > ....
-    function DoGetNestedTypeInfo: TFpSymbolDwarfType; override;
   end;
 
   { TFpSymbolDwarfTypeSubRange }
@@ -712,21 +708,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TFpSymbolDwarfTypePointer }
 
   TFpSymbolDwarfTypePointer = class(TFpSymbolDwarfType)
-  private
-    FIsInternalPointer: Boolean;
-    function GetIsInternalPointer: Boolean; inline;
-    function IsInternalDynArrayPointer: Boolean; inline;
   protected
-    procedure TypeInfoNeeded; override;
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
-    procedure ForwardToSymbolNeeded; override;
-    function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType; ATargetCacheIndex: Integer): Boolean; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
-    function DataSize: Integer; override;
   public
-    property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
+    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
   end;
 
   { TFpSymbolDwarfTypeSubroutine }
@@ -742,7 +728,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
 
-    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     // TODO: deal with DW_TAG_pointer_type
     function GetDataAddressNext(AValueObj: TFpValueDwarf;
       var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType;
@@ -750,6 +735,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
   public
     destructor Destroy; override;
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
   end;
 
   { TFpSymbolDwarfDataEnumMember }
@@ -774,7 +760,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FMembers: TFpDbgCircularRefCntObjList;
     procedure CreateMembers;
   protected
-    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     procedure KindNeeded; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
     function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
@@ -783,6 +768,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetHasBounds: Boolean; override;
   public
     destructor Destroy; override;
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     function GetValueBounds(AValueObj: TFpValue; out ALowBound,
       AHighBound: Int64): Boolean; override;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
@@ -795,9 +781,10 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TFpSymbolDwarfTypeSet = class(TFpSymbolDwarfType)
   protected
     procedure KindNeeded; override;
-    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     function GetNestedSymbolCount: Integer; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
+  public
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
   end;
 
   (*
@@ -850,7 +837,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     function DoGetNestedTypeInfo: TFpSymbolDwarfType; override;
     procedure KindNeeded; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
 
     // GetNestedSymbol, if AIndex > Count then parent
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
@@ -861,6 +847,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
                             ATargetType: TFpSymbolDwarfType; ATargetCacheIndex: Integer): Boolean; override;
   public
     destructor Destroy; override;
+    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
   end;
 
   { TFpSymbolDwarfTypeArray }
@@ -876,7 +863,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure ReadOrdering;
   protected
     procedure KindNeeded; override;
-    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
 
     function GetFlags: TDbgSymbolFlags; override;
     // GetNestedSymbol: returns the TYPE/range of each index. NOT the data
@@ -886,6 +872,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberAddress(AValObject: TFpValueDwarf; const AIndex: Array of Int64): TFpDbgMemLocation;
   public
     destructor Destroy; override;
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     procedure ResetValueBounds; override;
   end;
 
@@ -3518,37 +3505,6 @@ begin
   // Todo: other error
 end;
 
-{ TFpSymbolDwarfTypeDeclaration }
-
-function TFpSymbolDwarfTypeDeclaration.DoGetNestedTypeInfo: TFpSymbolDwarfType;
-var
-  ti: TFpSymbolDwarfType;
-  ti2: TFpSymbol;
-begin
-  Result := inherited DoGetNestedTypeInfo;
-
-  // Is internal class pointer?
-  // Do not trigged any cached property of the pointer
-  if (Result = nil) then
-    exit;
-
-  ti := Result;
-  if (ti is TFpSymbolDwarfTypeModifier) then begin
-    ti := TFpSymbolDwarfType(ti.TypeInfo);
-    if (Result = nil) then
-      exit;
-  end;
-  if not (ti is TFpSymbolDwarfTypePointer) then
-    exit;
-
-  ti2 := ti.NestedTypeInfo;
-  // only if it is NOT a declaration
-  if (ti2 <> nil) and (ti2 is TFpSymbolDwarfTypeStructure) then begin
-    TFpSymbolDwarfTypePointer(ti).IsInternalPointer := True;
-    // TODO: Flag the structure as class (save teme in KindNeeded)
-  end;
-end;
-
 { TFpSymbolDwarfTypeSubRange }
 
 procedure TFpSymbolDwarfTypeSubRange.InitEnumIdx;
@@ -3811,47 +3767,9 @@ end;
 
 { TFpSymbolDwarfTypePointer }
 
-function TFpSymbolDwarfTypePointer.IsInternalDynArrayPointer: Boolean;
-var
-  ti: TFpSymbol;
-begin
-  Result := False;
-  ti := NestedTypeInfo;  // Same as TypeInfo, but does not try to be forwarded
-  Result := (ti <> nil) and (ti is TFpSymbolDwarfTypeArray);
-  if Result then
-    Result := (sfDynArray in ti.Flags);
-end;
-
-procedure TFpSymbolDwarfTypePointer.TypeInfoNeeded;
-var
-  p: TFpSymbolDwarfType;
-begin
-  p := NestedTypeInfo;
-  if IsInternalPointer and (p <> nil) then begin
-    SetTypeInfo(p.TypeInfo);
-    exit;
-  end;
-  SetTypeInfo(p);
-end;
-
-function TFpSymbolDwarfTypePointer.GetIsInternalPointer: Boolean;
-begin
-  Result := FIsInternalPointer or IsInternalDynArrayPointer;
-end;
-
 procedure TFpSymbolDwarfTypePointer.KindNeeded;
-var
-  k: TDbgSymbolKind;
 begin
-  if IsInternalPointer then begin
-      k := NestedTypeInfo.Kind;
-      if k = skObject then
-        SetKind(skClass)
-      else
-        SetKind(k);
-  end
-  else
-    SetKind(skPointer);
+  SetKind(skPointer);
 end;
 
 procedure TFpSymbolDwarfTypePointer.SizeNeeded;
@@ -3859,57 +3777,9 @@ begin
   SetSize(CompilationUnit.AddressSize);
 end;
 
-procedure TFpSymbolDwarfTypePointer.ForwardToSymbolNeeded;
-begin
-  if IsInternalPointer then
-    SetForwardToSymbol(NestedTypeInfo) // Same as TypeInfo, but does not try to be forwarded
-  else
-    SetForwardToSymbol(nil); // inherited ForwardToSymbolNeeded;
-end;
-
-function TFpSymbolDwarfTypePointer.GetDataAddressNext(AValueObj: TFpValueDwarf;
-  var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType;
-  ATargetCacheIndex: Integer): Boolean;
-var
-  t: TFpDbgMemLocation;
-begin
-  if not IsInternalPointer then exit(True);
-
-  t := AValueObj.DataAddressCache[ATargetCacheIndex];
-  if IsInitializedLoc(t) then begin
-    AnAddress := t;
-  end
-  else begin
-    Result := AValueObj.MemManager <> nil;
-    if not Result then
-      exit;
-    AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, CompilationUnit.AddressSize);
-    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
-  end;
-  Result := IsValidLoc(AnAddress);
-
-  if Result then
-    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex)
-  else
-  if IsError(AValueObj.MemManager.LastError) then
-    SetLastError(AValueObj.MemManager.LastError);
-  // Todo: other error
-end;
-
 function TFpSymbolDwarfTypePointer.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;
 begin
-  if IsInternalPointer then
-    Result := NestedTypeInfo.GetTypedValueObject(ATypeCast)
-  else
-    Result := TFpValueDwarfPointer.Create(Self, CompilationUnit.AddressSize);
-end;
-
-function TFpSymbolDwarfTypePointer.DataSize: Integer;
-begin
-  if Kind = skClass then
-    Result := NestedTypeInfo.Size
-  else
-    Result := inherited DataSize;
+  Result := TFpValueDwarfPointer.Create(Self, CompilationUnit.AddressSize);
 end;
 
 { TFpSymbolDwarfTypeSubroutine }
@@ -4426,18 +4296,7 @@ begin
   if (InformationEntry.AbbrevTag = DW_TAG_class_type) then
     SetKind(skClass)
   else
-  begin
-    if TypeInfo <> nil then // inheritance
-      SetKind(skObject) // skClass
-    else
-    if NestedSymbolByName['_vptr$TOBJECT'] <> nil then
-      SetKind(skObject) // skClass
-    else
-    if NestedSymbolByName['_vptr$'+Name] <> nil then
-      SetKind(skObject)
-    else
-      SetKind(skRecord);
-  end;
+    SetKind(skRecord);
 end;
 
 function TFpSymbolDwarfTypeStructure.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;

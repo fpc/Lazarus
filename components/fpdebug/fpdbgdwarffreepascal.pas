@@ -11,8 +11,7 @@ uses
 
 type
 
-  (* ***** SymbolClassMap *****
-  *)
+  {%Region * ***** SymbolClassMap ***** *}
 
   { TFpDwarfFreePascalSymbolClassMap }
 
@@ -70,8 +69,9 @@ type
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
 
-  (* ***** Context *****
-  *)
+  {%EndRegion }
+
+  {%Region * ***** Context ***** *}
 
   { TFpDwarfFreePascalAddressContext }
 
@@ -86,8 +86,47 @@ type
     destructor Destroy; override;
   end;
 
-  (* ***** Value & Types *****
-  *)
+  {%EndRegion }
+
+  {%Region * ***** Value & Types ***** *}
+
+  (* *** Class vs ^Record vs ^Object *** *)
+
+  { TFpSymbolDwarfFreePascalTypeDeclaration }
+
+  TFpSymbolDwarfFreePascalTypeDeclaration = class(TFpSymbolDwarfTypeDeclaration)
+  protected
+   // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
+   // typedef > pointer > srtuct
+   // while a pointer to class/object: pointer > typedef > ....
+    function DoGetNestedTypeInfo: TFpSymbolDwarfType; override;
+  end;
+
+  { TFpSymbolDwarfFreePascalTypePointer }
+
+  TFpSymbolDwarfFreePascalTypePointer = class(TFpSymbolDwarfTypePointer)
+  private
+    FIsInternalPointer: Boolean;
+    function GetIsInternalPointer: Boolean; inline;
+    function IsInternalDynArrayPointer: Boolean; inline;
+  protected
+    procedure TypeInfoNeeded; override;
+    procedure KindNeeded; override;
+    procedure ForwardToSymbolNeeded; override;
+    function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
+                            ATargetType: TFpSymbolDwarfType; ATargetCacheIndex: Integer): Boolean; override;
+    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
+    function DataSize: Integer; override;
+  public
+    property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
+  end;
+
+  { TFpSymbolDwarfFreePascalTypeStructure }
+
+  TFpSymbolDwarfFreePascalTypeStructure = class(TFpSymbolDwarfTypeStructure)
+  protected
+    procedure KindNeeded; override;
+  end;
 
   (* *** Record vs ShortString *** *)
 
@@ -165,7 +204,30 @@ type
     function GetAsWideString: WideString; override;
   end;
 
+  {%EndRegion }
+
 implementation
+
+{ TFpSymbolDwarfFreePascalTypeStructure }
+
+procedure TFpSymbolDwarfFreePascalTypeStructure.KindNeeded;
+begin
+  if (InformationEntry.AbbrevTag = DW_TAG_class_type) then
+    SetKind(skClass)
+  else
+  begin
+    if TypeInfo <> nil then // inheritance
+      SetKind(skObject) // skClass
+    else
+    if NestedSymbolByName['_vptr$TOBJECT'] <> nil then
+      SetKind(skObject) // skClass
+    else
+    if NestedSymbolByName['_vptr$'+Name] <> nil then
+      SetKind(skObject)
+    else
+      SetKind(skRecord);
+  end;
+end;
 
 { TFpDwarfFreePascalSymbolClassMap }
 
@@ -186,10 +248,11 @@ function TFpDwarfFreePascalSymbolClassMap.GetDwarfSymbolClass(
   ATag: Cardinal): TDbgDwarfSymbolBaseClass;
 begin
   case ATag of
-    DW_TAG_array_type:
-      Result := TFpSymbolDwarfFreePascalSymbolTypeArray;
-    else
-      Result := inherited GetDwarfSymbolClass(ATag);
+    DW_TAG_typedef:          Result := TFpSymbolDwarfFreePascalTypeDeclaration;
+    DW_TAG_pointer_type:     Result := TFpSymbolDwarfFreePascalTypePointer;
+    DW_TAG_class_type:       Result := TFpSymbolDwarfFreePascalTypeStructure;
+    DW_TAG_array_type:       Result := TFpSymbolDwarfFreePascalSymbolTypeArray;
+    else                     Result := inherited GetDwarfSymbolClass(ATag);
   end;
 end;
 
@@ -527,6 +590,125 @@ begin
     Result := 0
   else
     Result := inherited GetNestedSymbolCount;
+end;
+
+{ TFpSymbolDwarfFreePascalTypeDeclaration }
+
+function TFpSymbolDwarfFreePascalTypeDeclaration.DoGetNestedTypeInfo: TFpSymbolDwarfType;
+var
+  ti: TFpSymbolDwarfType;
+  ti2: TFpSymbol;
+begin
+  Result := inherited DoGetNestedTypeInfo;
+
+  // Is internal class pointer?
+  // Do not trigged any cached property of the pointer
+  if (Result = nil) or
+     not (Result is TFpSymbolDwarfFreePascalTypePointer)
+  then
+    exit;
+
+  ti := TFpSymbolDwarfFreePascalTypePointer(Result).NestedTypeInfo;
+  // only if it is NOT a declaration
+  if (ti <> nil) and (ti is TFpSymbolDwarfTypeStructure) then
+    TFpSymbolDwarfFreePascalTypePointer(Result).IsInternalPointer := True;
+end;
+
+{ TFpSymbolDwarfFreePascalTypePointer }
+
+function TFpSymbolDwarfFreePascalTypePointer.GetIsInternalPointer: Boolean;
+begin
+  Result := FIsInternalPointer or IsInternalDynArrayPointer;
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.IsInternalDynArrayPointer: Boolean;
+var
+  ti: TFpSymbol;
+begin
+  Result := False;
+  ti := NestedTypeInfo;  // Same as TypeInfo, but does not try to be forwarded
+  Result := (ti <> nil) and (ti is TFpSymbolDwarfTypeArray);
+  if Result then
+    Result := (sfDynArray in ti.Flags);
+end;
+
+procedure TFpSymbolDwarfFreePascalTypePointer.TypeInfoNeeded;
+var
+  p: TFpSymbol;
+begin
+  p := NestedTypeInfo;
+  if IsInternalPointer and (p <> nil) then
+    p := p.TypeInfo;
+  SetTypeInfo(p);
+end;
+
+procedure TFpSymbolDwarfFreePascalTypePointer.KindNeeded;
+var
+  k: TDbgSymbolKind;
+begin
+  if IsInternalPointer then begin
+      k := NestedTypeInfo.Kind;
+      if k = skObject then   // TODO
+        SetKind(skClass)
+      else
+        SetKind(k);
+  end
+  else
+    inherited;
+end;
+
+procedure TFpSymbolDwarfFreePascalTypePointer.ForwardToSymbolNeeded;
+begin
+  if IsInternalPointer then
+    SetForwardToSymbol(NestedTypeInfo) // Same as TypeInfo, but does not try to be forwarded
+  else
+    SetForwardToSymbol(nil); // inherited ForwardToSymbolNeeded;
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.GetDataAddressNext(
+  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
+  ATargetType: TFpSymbolDwarfType; ATargetCacheIndex: Integer): Boolean;
+var
+  t: TFpDbgMemLocation;
+begin
+  if not IsInternalPointer then exit(True);
+
+  t := AValueObj.DataAddressCache[ATargetCacheIndex];
+  if IsInitializedLoc(t) then begin
+    AnAddress := t;
+  end
+  else begin
+    Result := AValueObj.MemManager <> nil;
+    if not Result then
+      exit;
+    AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, CompilationUnit.AddressSize);
+    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
+  end;
+  Result := IsValidLoc(AnAddress);
+
+  if Result then
+    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex)
+  else
+  if IsError(AValueObj.MemManager.LastError) then
+    SetLastError(AValueObj.MemManager.LastError);
+  // Todo: other error
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.GetTypedValueObject(
+  ATypeCast: Boolean): TFpValueDwarf;
+begin
+  if IsInternalPointer then
+    Result := NestedTypeInfo.GetTypedValueObject(ATypeCast)
+  else
+    Result := inherited GetTypedValueObject(ATypeCast);
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.DataSize: Integer;
+begin
+  if Kind = skClass then
+    Result := NestedTypeInfo.Size
+  else
+    Result := inherited DataSize;
 end;
 
 { TFpValueDwarfV2FreePascalShortString }
