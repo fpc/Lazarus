@@ -598,6 +598,8 @@ end;
 procedure TLCLListBoxCallback.tableSelectionChange(ARow: Integer; Added,
   Removed: NSIndexSet);
 begin
+  // do not notify about selection changes while clearing
+  if Assigned(strings) and (strings.isClearing) then Exit;
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 

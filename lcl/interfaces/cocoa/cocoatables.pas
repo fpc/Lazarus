@@ -59,7 +59,11 @@ type
     procedure Changed; override;
   public
     Owner: NSTableView;
+    // some notificaitons (i.e. selection change)
+    // should not be passed to LCL while clearing
+    isClearing: Boolean;
     constructor Create(AOwner: NSTableView);
+    procedure Clear; override;
   end;
 
   { TCocoaTableListView }
@@ -839,6 +843,16 @@ constructor TCocoaStringList.Create(AOwner: NSTableView);
 begin
   Owner:=AOwner;
   inherited Create;
+end;
+
+procedure TCocoaStringList.Clear;
+begin
+  isClearing := true;
+  try
+    inherited Clear;
+  finally
+    isClearing := false;
+  end;
 end;
 
 { TCellCocoaTableListView }
