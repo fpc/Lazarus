@@ -13,6 +13,15 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
+#: gdbmiserverdebugger.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr ""
+
+#: gdbmiserverdebugger.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr ""
+
 #: gdbmiserverdebugger.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
 msgstr "GDB не підтримує асинхронного режиму"

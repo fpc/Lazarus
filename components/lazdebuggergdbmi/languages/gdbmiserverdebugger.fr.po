@@ -12,6 +12,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: fr\n"
 
+#: gdbmiserverdebugger.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr ""
+
+#: gdbmiserverdebugger.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr ""
+
 #: gdbmiserverdebugger.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
 msgstr "GDB ne supporte pas le mode asynchrone"

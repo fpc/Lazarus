@@ -12,6 +12,15 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: gdbmiserverdebugger.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr ""
+
+#: gdbmiserverdebugger.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr ""
+
 #: gdbmiserverdebugger.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
 msgstr "GDB不支持异步模式"
