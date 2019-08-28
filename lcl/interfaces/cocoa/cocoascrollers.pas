@@ -67,6 +67,7 @@ type
     fhscroll : NSScroller;
     fvscroll : NSScroller;
   public
+    isHosted: Boolean;
     callback: ICommonCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -144,6 +145,7 @@ type
   { TCocoaManualScrollHost }
 
   TCocoaManualScrollHost = objcclass(TCocoaScrollView)
+    procedure setDocumentView(aview: NSView); override;
     function lclContentView: NSView; override;
     function lclClientFrame: TRect; override;
   end;
@@ -289,6 +291,13 @@ begin
 end;
 
 { TCocoaManualScrollHost }
+
+procedure TCocoaManualScrollHost.setDocumentView(aview: NSView);
+begin
+  inherited setDocumentView(aview);
+  if Assigned(aview) and (aview.isKindOfClass(TCocoaManualScrollView)) then
+    TCocoaManualScrollView(aview).isHosted := true;
+end;
 
 function TCocoaManualScrollHost.lclContentView: NSView;
 begin
@@ -682,8 +691,12 @@ end;
 
 procedure TCocoaManualScrollView.scrollWheel(event: NSEvent);
 begin
-  if isMouseEventInScrollBar(self, event) or  not Assigned(callback) or not callback.scrollWheel(event) then
-    inherited scrollWheel(event);
+  // when hosted, the processing of scrollWheel is duplciated
+  if not isHosted then
+  begin
+    if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.scrollWheel(event) then
+      inherited scrollWheel(event);
+  end;
 end;
 
 
