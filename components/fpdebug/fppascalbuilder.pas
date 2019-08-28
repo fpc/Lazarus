@@ -189,10 +189,10 @@ var
   begin
     Result := True;
     AText := '';
-    c := ADbgSymbol.MemberCount;
+    c := ADbgSymbol.NestedSymbolCount;
     i := 0;
     while (i < c) and Result do begin
-      m := ADbgSymbol.Member[i];
+      m := ADbgSymbol.NestedSymbol[i];
       AddVisibility(m.MemberVisibility, i= 0);
       if tdfStopAfterPointer in AFlags then
         r := GetTypeName(s, m)
@@ -270,8 +270,8 @@ var
   begin
     ADeclaration := '';
     lname := '';
-    for i := 0 to ADbgSymbol.MemberCount - 1 do begin
-      m := ADbgSymbol.Member[i];
+    for i := 0 to ADbgSymbol.NestedSymbolCount - 1 do begin
+      m := ADbgSymbol.NestedSymbol[i];
       if (m <> nil) and (sfParameter in m.Flags) then begin
         GetTypeName(name, m, [tnfOnlyDeclared]);
         if (lname <> '') then begin
@@ -357,8 +357,8 @@ var
     Result := True;
     ADeclaration := '(';
     j := 0;
-    for i := 0 to ADbgSymbol.MemberCount - 1 do begin
-      m := ADbgSymbol.Member[i];
+    for i := 0 to ADbgSymbol.NestedSymbolCount - 1 do begin
+      m := ADbgSymbol.NestedSymbol[i];
       if i > 0 then ADeclaration := ADeclaration + ', ';
       ADeclaration := ADeclaration + m.Name;
       if m.HasOrdinalValue then begin
@@ -437,10 +437,10 @@ var
     end
     else begin
       ADeclaration := 'array [';
-      for i := 0 to ADbgSymbol.MemberCount - 1 do begin
+      for i := 0 to ADbgSymbol.NestedSymbolCount - 1 do begin
         if i > 0 then
           ADeclaration := ADeclaration + ', ';
-        t := ADbgSymbol.Member[i];
+        t := ADbgSymbol.NestedSymbol[i];
         t.GetValueBounds(nil, lb, hb);
         if t.Kind = skCardinal
         then ADeclaration := ADeclaration + Format('%u..%u', [QWord(lb), QWord(hb)])

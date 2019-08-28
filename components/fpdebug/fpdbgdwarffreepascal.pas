@@ -100,8 +100,8 @@ type
   protected
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
     procedure KindNeeded; override;
-    function GetMemberCount: Integer; override;
-    //function GetMemberByName(AIndex: String): TFpSymbol; override;
+    function GetNestedSymbolCount: Integer; override;
+    //function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
   end;
 
   { TFpValueDwarfV2FreePascalShortString }
@@ -480,15 +480,15 @@ begin
 
   Result := False;
   FIsShortString := issStructure;
-  if (inherited MemberCount <> 2) then
+  if (inherited NestedSymbolCount <> 2) then
     exit;
 
-  LenSym := inherited MemberByName['length'];
+  LenSym := inherited NestedSymbolByName['length'];
   if (LenSym = nil) or (LenSym.Kind <> skCardinal) // or (LenSym.Size <> 1) // not implemented yet
   then
     exit;
 
-  StSym := inherited MemberByName['st'];
+  StSym := inherited NestedSymbolByName['st'];
   if (StSym = nil) then
     exit;
   StSymType := StSym.TypeInfo;
@@ -521,12 +521,12 @@ begin
     SetKind(skString);
 end;
 
-function TFpSymbolDwarfV2FreePascalTypeStructure.GetMemberCount: Integer;
+function TFpSymbolDwarfV2FreePascalTypeStructure.GetNestedSymbolCount: Integer;
 begin
   if IsShortString then
     Result := 0
   else
-    Result := inherited GetMemberCount;
+    Result := inherited GetNestedSymbolCount;
 end;
 
 { TFpValueDwarfV2FreePascalShortString }
@@ -544,7 +544,7 @@ var
 begin
   if HasTypeCastInfo then begin
     Result := nil;
-    tmp := TypeCastTargetType.MemberByName[AIndex];
+    tmp := TypeCastTargetType.NestedSymbolByName[AIndex];
     if (tmp <> nil) then begin
       assert((tmp is TFpSymbolDwarfData), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
       Result := tmp.Value;
@@ -631,10 +631,10 @@ var
 begin
   Result := 0;
   t := TypeInfo;
-  if (t.Kind <> skArray) or (t.MemberCount < 1) then // IndexTypeCount;
+  if (t.Kind <> skArray) or (t.NestedSymbolCount < 1) then // IndexTypeCount;
     exit(inherited GetMemberCount);
 
-  t2 := t.Member[0]; // IndexType[0];
+  t2 := t.NestedSymbol[0]; // IndexType[0];
   if not (t2 is TFpSymbolDwarfTypeSubRange) then
     exit(inherited GetMemberCount);
 
@@ -847,10 +847,10 @@ begin
 
   // get length
   t := TypeInfo;
-  if t.MemberCount < 1 then // subrange type
+  if t.NestedSymbolCount < 1 then // subrange type
     exit;
 
-  t2 := t.Member[0]; // subrange type
+  t2 := t.NestedSymbol[0]; // subrange type
   if not( (t2 is TFpSymbolDwarfType) and TFpSymbolDwarfType(t2).GetValueBounds(self, LowBound, HighBound) )
   then
     exit;

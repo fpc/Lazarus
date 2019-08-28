@@ -362,9 +362,9 @@ type
 
     function GetHasBounds: Boolean; virtual;
 
-    function GetMember({%H-}AIndex: Int64): TFpSymbol; virtual;
-    function GetMemberByName({%H-}AIndex: String): TFpSymbol; virtual;
-    function GetMemberCount: Integer; virtual;
+    function GetNestedSymbol({%H-}AIndex: Int64): TFpSymbol; virtual;
+    function GetNestedSymbolByName({%H-}AIndex: String): TFpSymbol; virtual;
+    function GetNestedSymbolCount: Integer; virtual;
   protected
     property EvaluatedFields: TFpSymbolFields read FEvaluatedFields write FEvaluatedFields;
     // Cached fields
@@ -407,7 +407,7 @@ type
     // Methods for structures (record / class / enum)
     //         array: each member represents an index (enum or subrange) and has low/high bounds
     property MemberVisibility: TDbgSymbolMemberVisibility read GetMemberVisibility;
-    property MemberCount: Integer read GetMemberCount;
+    property NestedSymbolCount: Integer read GetNestedSymbolCount;
     (* Member:
        * skClass, skStructure:
            stType: it excludes BaseClass (TODO: decide?)
@@ -422,8 +422,8 @@ type
              They maybe released or changed when Member is called again.
              To keep a returned Value a reference can be added (AddReference)
     *)
-    property Member[AIndex: Int64]: TFpSymbol read GetMember;
-    property MemberByName[AIndex: String]: TFpSymbol read GetMemberByName; // Includes inheritance
+    property NestedSymbol[AIndex: Int64]: TFpSymbol read GetNestedSymbol;
+    property NestedSymbolByName[AIndex: String]: TFpSymbol read GetNestedSymbolByName; // Includes inheritance
     //
     property Flags: TDbgSymbolFlags read GetFlags;
     property Parent: TFpSymbol read GetParent; deprecated;
@@ -469,9 +469,9 @@ type
     function GetHasOrdinalValue: Boolean; override;
     function GetOrdinalValue: Int64; override;
     function GetHasBounds: Boolean; override;
-    function GetMember(AIndex: Int64): TFpSymbol; override;
-    function GetMemberByName(AIndex: String): TFpSymbol; override;
-    function GetMemberCount: Integer; override;
+    function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
+    function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
+    function GetNestedSymbolCount: Integer; override;
   public
     function GetValueBounds(AValueObj: TFpValue; out ALowBound, AHighBound: Int64): Boolean; override;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
@@ -1089,17 +1089,17 @@ begin
   Result := 0;
 end;
 
-function TFpSymbol.GetMember(AIndex: Int64): TFpSymbol;
+function TFpSymbol.GetNestedSymbol(AIndex: Int64): TFpSymbol;
 begin
   Result := nil;
 end;
 
-function TFpSymbol.GetMemberByName(AIndex: String): TFpSymbol;
+function TFpSymbol.GetNestedSymbolByName(AIndex: String): TFpSymbol;
 begin
   Result := nil;
 end;
 
-function TFpSymbol.GetMemberCount: Integer;
+function TFpSymbol.GetNestedSymbolCount: Integer;
 begin
   Result := 0;
 end;
@@ -1411,35 +1411,35 @@ begin
     Result := False;  //  Result := inherited GetHasBounds;
 end;
 
-function TDbgSymbolForwarder.GetMember(AIndex: Int64): TFpSymbol;
+function TDbgSymbolForwarder.GetNestedSymbol(AIndex: Int64): TFpSymbol;
 var
   p: TFpSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
-    Result := p.Member[AIndex]
+    Result := p.NestedSymbol[AIndex]
   else
     Result := nil;  //  Result := inherited GetMember(AIndex);
 end;
 
-function TDbgSymbolForwarder.GetMemberByName(AIndex: String): TFpSymbol;
+function TDbgSymbolForwarder.GetNestedSymbolByName(AIndex: String): TFpSymbol;
 var
   p: TFpSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
-    Result := p.MemberByName[AIndex]
+    Result := p.NestedSymbolByName[AIndex]
   else
     Result := nil;  //  Result := inherited GetMemberByName(AIndex);
 end;
 
-function TDbgSymbolForwarder.GetMemberCount: Integer;
+function TDbgSymbolForwarder.GetNestedSymbolCount: Integer;
 var
   p: TFpSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
-    Result := p.MemberCount
+    Result := p.NestedSymbolCount
   else
     Result := 0;  //  Result := inherited GetMemberCount;
 end;

@@ -444,8 +444,8 @@ type
     FArray: TFpSymbol;
   protected
     //procedure ForwardToSymbolNeeded; override;
-    function GetMemberCount: Integer; override;
-    function GetMember(AIndex: Int64): TFpSymbol; override;
+    function GetNestedSymbolCount: Integer; override;
+    function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
   public
     constructor Create(const AnArray: TFpSymbol);
     destructor Destroy; override;
@@ -943,14 +943,14 @@ end;
 
 { TPasParserSymbolArrayDeIndex }
 
-function TPasParserSymbolArrayDeIndex.GetMemberCount: Integer;
+function TPasParserSymbolArrayDeIndex.GetNestedSymbolCount: Integer;
 begin
-  Result := (inherited GetMemberCount) - 1;
+  Result := (inherited GetNestedSymbolCount) - 1;
 end;
 
-function TPasParserSymbolArrayDeIndex.GetMember(AIndex: Int64): TFpSymbol;
+function TPasParserSymbolArrayDeIndex.GetNestedSymbol(AIndex: Int64): TFpSymbol;
 begin
-  Result := inherited GetMember(AIndex + 1);
+  Result := inherited GetNestedSymbol(AIndex + 1);
 end;
 
 constructor TPasParserSymbolArrayDeIndex.Create(const AnArray: TFpSymbol);
