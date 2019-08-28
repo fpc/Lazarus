@@ -73,6 +73,19 @@ type
 
   TRecord3Int64     =        record a,b,c: Int64; end;
   TRecord3QWord     =        record a,b,c: QWord; end;
+  //PRecord3Int64     = ^TRecord3Int64;
+
+  TObject3Int64     =        object a,b,c: Int64; end;
+  TObject3Int64Ex   =        object(TObject3Int64) d: QWord; end;
+  //PObject3Int64     = ^TObject3Int64;
+  //PObject3Int64Ex   = ^TObject3Int64Ex;
+
+  TObjectCreate3Int64     =        object a,b,c: Int64; public constructor Create; destructor Destroy; procedure Foo; virtual; end;
+  TObjectCreate3Int64Ex   =        object(TObjectCreate3Int64) d: QWord; end;
+  //PObjectCreate3Int64     = ^TObjectCreate3Int64;
+  //PObjectCreate3Int64Ex   = ^TObjectCreate3Int64Ex;
+
+  //PIUnknown = ^IUnknown;
 
   TFiveDynArray            =        array of          record a:longint; b: byte end;
   TFiveDynArrayPack        = packed array of          record a:longint; b: byte end;
@@ -99,6 +112,8 @@ type
     FAnsi: AnsiString;
   end;
 
+  PClass1 = ^TClass1;
+
   TEnum  = (EnVal1, EnVal2, EnVal3, EnVal4);
   TEnumSub =  EnVal1..EnVal2;
   TEnum2 = (EnVal21= 3, EnVal22=4, EnVal23=7, EnVal24=10, EnVal25=30);
@@ -115,8 +130,10 @@ type
 
 type
   (* LOCATION: TYPE *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=Tx, "_OP_== type ", (=;//, "_O2_= = type", _EQ_=, _BLOCK_=TestVar )
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=Px, _OP_={, _O2_={, _pre3_=^Tx, "//@@=} = ", _BLOCK_=TestVar) //}
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=Tx, "_OP_== type ", (=;//, "_O2_= = type", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestType )
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=PTx, _OP_={, _O2_={, _pre3_=^Tx, "//@@=} = ", _BLOCK_=TestVar, _BLOCK2_=TestType ) //}
+
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=Px, "_OP_==^", "_O2_==^", "(=;//", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) //}
 
   (* LOCATION: field in baseclass *)
   TMyBaseClass = class
@@ -149,6 +166,22 @@ var
 
 (* LOCATION: global var  pointer <each type> *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
+(* LOCATION: global var  TYPE alias // NO PRE-ASSIGNED VALUE *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvpt_, "_OP_={", "_O2_={", "//@@=} :", _pre3_=Px, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) // }
+
+(* LOCATION: global var  NAMED pointer <each type> // NO PRE-ASSIGNED VALUE *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvtt_, "_OP_={", "_O2_={", "//@@=} :", _pre3_=Tx, _BLOCK_=TestVar, _BLOCK2_=TestType )  // }
+
+(* LOCATION: global var  NAMED pointer <each TYPE ALIAS> // NO PRE-ASSIGNED VALUE *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvptt_, "_OP_={", "_O2_={", "//@@=} :", _pre3_=PTx, _BLOCK_=TestVar, _BLOCK2_=TestType )  // }
+
+constructor TObjectCreate3Int64.Create;
+begin end;
+destructor TObjectCreate3Int64.Destroy;
+begin end;
+procedure TObjectCreate3Int64.Foo;
+begin end;
 
 function TMyBaseClass.SomeMeth1(SomeValue: Integer): Boolean;
 begin result := SomeValue = 0; end;
@@ -231,6 +264,15 @@ begin
 
 (* INIT: global var *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, ADD=1, CHR1='B', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+
+(* INIT: global var  TYPE alias // NO PRE-ASSIGNED VALUE *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvpt_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) // }
+
+(* INIT: global var  NAMED pointer <each type> // NO PRE-ASSIGNED VALUE *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvtt_, ADD=7, CHR1='N', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign, _BLOCK2_=TestType)
+
+(* INIT: global var  NAMED pointer <each TYPE ALIAS> // NO PRE-ASSIGNED VALUE *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvptt_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gvtt_, _BLOCK_=TestVar, _BLOCK2_=TestType )  // }
 
 (* INIT: field in class / baseclass *)
   MyClass1 := TMyClass.Create;

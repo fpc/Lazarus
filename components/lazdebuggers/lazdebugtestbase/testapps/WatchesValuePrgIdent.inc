@@ -33,14 +33,30 @@
   pre__Double{e}        _OP_ Double      (1000.125             + ADD);          //@@ _pre3_Double;
   pre__Extended{e}      _OP_ Extended    (10000.175            + ADD);          //@@ _pre3_Extended;
   //pre__Comp{e}        _OP_ Comp        (50.125               + ADD);          //@@ //_pre3_Comp;
+  {$IFDEF TestAssign}
+  {$IFDEF TestType}
+//  pre__Currency{e}      _OP_ TxCurrency    (125.123              + ADD);          //@@ _pre3_Currency;
+  {$ELSE}
   pre__Currency{e}      _OP_ Currency    (125.123              + ADD);          //@@ _pre3_Currency;
+  {$ENDIF}
+  {$ELSE}
+  pre__Currency{e}    _OP_ Currency    (-125.123             + ADD);          //@@ _pre3_Currency;
+  {$ENDIF}
 
   pre__Real_2{e}        _OP_ Real        (-50.25               + ADD);          //@@ _pre3_Real_2;
   pre__Single_2{e}      _OP_ Single      (-100.125             + ADD);          //@@ _pre3_Single_2;
   pre__Double_2{e}      _OP_ Double      (-1000.125            + ADD);          //@@ _pre3_Double_2;
   pre__Extended_2{e}    _OP_ Extended    (-10000.175           + ADD);          //@@ _pre3_Extended_2;
   //pre__Comp_2{e}      _OP_ Comp        (-150.125             + ADD);          //@@ //_pre3_Comp_2;
+  {$IFDEF TestAssign}
+  {$IFDEF TestType}
+//  pre__Currency_2{e}    _OP_ TxCurrency_2    (-125.123             + ADD);          //@@ _pre3_Currency_2;
+  {$ELSE}
   pre__Currency_2{e}    _OP_ Currency    (-125.123             + ADD);          //@@ _pre3_Currency_2;
+  {$ENDIF}
+  {$ELSE}
+  pre__Currency_2{e}    _OP_ Currency    (-125.123             + ADD);          //@@ _pre3_Currency_2;
+  {$ENDIF}
 
   pre__Ptr1{e}          _OP_ Pointer     (0                         );          //@@ _pre3_Ptr1;
   pre__Ptr2{e}          _OP_ Pointer     (1000                 + ADD);          //@@ _pre3_Ptr2;
@@ -103,7 +119,11 @@
   {$IFnDEF TestAssign}
   pre__ShortRec{e}       _O2_ TShortRec               _EQ_      (length: 5; st:  (CHR1, 'b',CHR1, 'b','c'));       //@@ _pre3_ShortRec;
   {$ELSE}
+  {$IFDEF TestType} // incomplete values
+  pre__ShortRec{e}       := pre__ShortRec;   pre__ShortRec{e}.st[1] := CHR1; pre__ShortRec{e}.st[3] := CHR1;      //@@ _pre3_ShortRec; // }}
+  {$ELSE}
   pre__ShortRec{e}       := _pre2_ShortRec;   pre__ShortRec{e}.st[1] := CHR1; pre__ShortRec{e}.st[3] := CHR1;      //@@ _pre3_ShortRec; // }}
+  {$ENDIF}
   {$ENDIF}
 
   // **** ARRAY ****
@@ -354,20 +374,55 @@
 
 
   {$IFnDEF TestAssign}
-  pre__FiveRec{e}       _O2_ TRecordFive      _EQ_ (a:-22-ADD;b:44);          //@@ _pre3_FiveRec;
-  pre__Rec3S{e}         _O2_ TRecord3Int64    _EQ_ (a:-22;b:44;c:1000+ADD);          //@@ _pre3_Rec3S;
-  pre__Rec3U{e}         _O2_ TRecord3QWord    _EQ_ (a:111;b:44;c:1000+ADD);          //@@ _pre3_Rec3U;
-  {$ELSE}
-  pre__FiveRec{e} := _pre2_FiveRec;   pre__FiveRec{e}.a := -22-ADD;          //@@ _pre3_FiveRec;  // }}}
-  pre__Rec3S{e}   := _pre2_Rec3S;     pre__Rec3S{e}.c := 1000+ADD;          //@@ _pre3_Rec3S;  // }}}
-  pre__Rec3U{e}   := _pre2_Rec3U;     pre__Rec3U{e}.c := 1000+ADD;          //@@ _pre3_Rec3U;  // }}}
+    pre__FiveRec{e}       _O2_ TRecordFive      _EQ_ (a:-22-ADD;b:44);          //@@ _pre3_FiveRec;
+    pre__Rec3S{e}         _O2_ TRecord3Int64    _EQ_ (a:-22;b:44;c:1000+ADD);          //@@ _pre3_Rec3S;
+    pre__Rec3U{e}         _O2_ TRecord3QWord    _EQ_ (a:111;b:44;c:1000+ADD);          //@@ _pre3_Rec3U;
+
+    pre__Obj3{e}          _O2_ TObject3Int64          _EQ_ (a:-22;b:44;c:4000+ADD);          //@@ _pre3_Obj3;
+    pre__Obj3Ex{e}        _O2_ TObject3Int64Ex        _EQ_ (a:-22;b:44;c:4100+ADD; d: 555);  //@@ _pre3_Obj3Ex;
+
+    {$IFnDEF TestConst}
+    {$IFnDEF TestAssignGC}
+    {$IFnDEF TestType} // will work in fpc 3.2.0 upwards
+    pre__Obj3C{e}         _O2_ TObjectCreate3Int64   ;  //@@ _pre3_Obj3C; // }}}
+    pre__Obj3ExC{e}       _O2_ TObjectCreate3Int64Ex ;  //@@ _pre3_Obj3ExC; // }}}
+    {$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
+  {$ELSE} // TestAssign
+    {$IFDEF TestType} // incomplete values
+    pre__FiveRec{e} := pre__FiveRec;   pre__FiveRec{e}.a := -22-ADD;          //@@ _pre3_FiveRec;  // }}}
+    pre__Rec3S{e}   := pre__Rec3S;     pre__Rec3S{e}.c := 1000+ADD;          //@@ _pre3_Rec3S;  // }}}
+    pre__Rec3U{e}   := pre__Rec3U;     pre__Rec3U{e}.c := 1000+ADD;          //@@ _pre3_Rec3U;  // }}}
+
+    pre__Obj3{e}    := pre__Obj3;      pre__Obj3{e}.c    := 4000+ADD;  //@@ _pre3_Obj3;  // }}}
+    pre__Obj3Ex{e}  := pre__Obj3Ex;    pre__Obj3Ex{e}.c  := 4100+ADD;  //@@ _pre3_Obj3Ex;  // }}}
+    {$ELSE}
+    pre__FiveRec{e} := _pre2_FiveRec;   pre__FiveRec{e}.a := -22-ADD;          //@@ _pre3_FiveRec;  // }}}
+    pre__Rec3S{e}   := _pre2_Rec3S;     pre__Rec3S{e}.c := 1000+ADD;          //@@ _pre3_Rec3S;  // }}}
+    pre__Rec3U{e}   := _pre2_Rec3U;     pre__Rec3U{e}.c := 1000+ADD;          //@@ _pre3_Rec3U;  // }}}
+
+    pre__Obj3{e}    := _pre2_Obj3;      pre__Obj3{e}.c    := 4000+ADD;  //@@ _pre3_Obj3;  // }}}
+    pre__Obj3Ex{e}  := _pre2_Obj3Ex;    pre__Obj3Ex{e}.c  := 4100+ADD;  //@@ _pre3_Obj3Ex;  // }}}
+    {$ENDIF}
+
+    {$IFnDEF TestConst}
+    {$IFnDEF TestType} // will work in fpc 3.2.0 upwards
+    pre__Obj3C{e}.Create;   pre__Obj3C{e}.a   := 22; pre__Obj3C{e}.b   := 44; pre__Obj3C{e}.c   := 4200+ADD;  //@@ _pre3_Obj3C;  // }}}}}
+    pre__Obj3ExC{e}.Create; pre__Obj3ExC{e}.a := 22; pre__Obj3ExC{e}.b := 44; pre__Obj3ExC{e}.c := 4300+ADD; pre__Obj3ExC{e}.d := 655; //@@ _pre3_Obj3ExC;  // }}}}}
+    {$ENDIF}
+    {$ENDIF}
   {$ENDIF}
 
 
   pre__Instance1{e} _O2_ TClass1 _EQ_ (nil);  //@@ _pre3_Instance1;
   pre__Instance1_Int{e} _O2_ PtrUInt _EQ_ (0);    //@@ _pre3_Instance1_Int;
   {$IFDEF TestAssign}
+  {$IFDEF TestType}
+  pre__Instance1{e} := TxInstance1.Create;    //@@
+  {$ELSE}
   pre__Instance1{e} := TClass1.Create;    //@@
+  {$ENDIF}
   pre__Instance1{e}.FInt _OP_ 22+ADD;     //@@
   pre__Instance1{e}.FAnsi _OP_ CHR1+'T';  //@@
   pre__Instance1_Int{e} _OP_ PtrUInt(pre__Instance1{e});    //@@ //}}
@@ -385,12 +440,10 @@
   {$ENDIF}
 
 
-// interface
+// interface / object vs class / record
 // array dyn/stat / nested of record/class/char/num ... bitpacked
-// record
-// object
-// class
 // class of
+// class/record helper
 // type
 
 // pointer / deref for all above

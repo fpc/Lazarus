@@ -15,7 +15,7 @@ type
   TWatchExpectationResultKind = (
     rkMatch, rkInteger, rkCardinal, rkFloat, rkEnum, rkSet,
     rkChar, rkAnsiString, rkShortString, rkWideString, rkPointer, rkPointerAddr,
-    rkClass, rkObject, rkRecord, rkField,
+    rkClass, rkObject, rkRecord, rkInterface, rkField,
     rkStatArray, rkDynArray
   );
 
@@ -28,10 +28,13 @@ type
      ehIgnKind,           // Ignore skSimple, ....
      ehIgnKindPtr,        // Ignore skSimple, ONLY if got kind=skPointer
      ehIgnTypeName,       // Ignore the typename
+     ehIgnTypeNameInData, // Ignore any appearance of typename in data
      ehMatchTypeName,     // The typename is a regex
      ehNoTypeInfo,
 
      ehCharFromIndex,     // Debugger is allowed Pchar: 'x' String 'y'
+     ehNoFieldOrder,  // structure: fields can be in any order
+     ehMissingFields, // structure: fields may have gaps
 
      ehExpectNotFound,
      ehExpectError,       // watch is invalid (less specific, than not found / maybe invalid expression ?)
@@ -60,8 +63,12 @@ type
 
     ExpSetData: array of string; // rkSet
 
+    ExpFieldName: string; // member in structure
+
     function AddFlag(AFlag: TWatchExpErrorHandlingFlag; ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function AddFlag(AFlags: TWatchExpErrorHandlingFlags; ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
+
+    function N(AFieldName: String): TWatchExpectationResult; // FieldName
 
     function Skip(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function SkipIf(ACond: Boolean; ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
@@ -139,8 +146,10 @@ type
   { TWatchExpectationHelper }
 
   TWatchExpectationHelper = type helper for PWatchExpectation
-    function AddFlag(AFlag: TWatchExpErrorHandlingFlag; ASymTypes: TSymbolTypes = []): PWatchExpectation;
-    function AddFlag(AFlags: TWatchExpErrorHandlingFlags; ASymTypes: TSymbolTypes = []): PWatchExpectation;
+    function AddFlag(AFlag: TWatchExpErrorHandlingFlag; ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function AddFlag(AFlags: TWatchExpErrorHandlingFlags; ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function AddFlag(AFlag: TWatchExpErrorHandlingFlag; ACond: Boolean): PWatchExpectation;
+    function AddFlag(AFlags: TWatchExpErrorHandlingFlags; ACond: Boolean): PWatchExpectation;
 
     function Skip(ASymTypes: TSymbolTypes = []): PWatchExpectation;
     function SkipIf(ACond: Boolean; ASymTypes: TSymbolTypes = []): PWatchExpectation;
@@ -160,9 +169,6 @@ type
     function NotImplemented(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
     function NotImplementedData(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
   end;
-
-  //TWatchExpectationResultHelper = type helper for TWatchExpectationResult
-  //end;
 
   TWatchExpectationResultArrayHelper = type helper for TWatchExpectationResultArray
   end;
@@ -188,7 +194,7 @@ type
     function GetLazDebugger: TDebuggerIntf;
     function GetTests(Index: Integer): PWatchExpectation;
     function ParseCommaList(AVal: String; out AFoundCount: Integer;
-      AMaxLen: Integer = -1): TStringArray;
+      AMaxLen: Integer = -1; AComma: char = ','): TStringArray;
   protected
     function EvaluateWatch(AWatchExp: TWatchExpectation; AThreadId: Integer): Boolean; virtual;
     procedure WaitWhileEval; virtual;
@@ -218,6 +224,10 @@ type
     function CheckResultPointer(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultPointerAddr(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultArray(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultRecord(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultClass(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultObject(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultInstance(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
 
     property Compiler: TTestDbgCompiler read GetCompiler;
     property Debugger: TTestDbgDebugger read GetDebugger;
@@ -295,8 +305,11 @@ function weShortStr(const AExpVal: array of string; ATypeName: String=#1): TWatc
 
 
 
-function weClass(AExpClass: String; AExpFields: array of TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
-function weField(AExpName: String; AExpVal: TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
+function weRecord(AExpFields: array of TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
+function weClass(AExpFields: array of TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
+function weObject(AExpFields: array of TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
+function weInterface(AExpFields: array of TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
+
 
 operator := (a:string): TWatchExpectationResult;
 operator := (a:integer): TWatchExpectationResult;
@@ -319,6 +332,51 @@ end;
 operator := (a: pointer): TWatchExpectationResult;
 begin
   Result := wePointerAddr(a);
+end;
+
+type
+
+  { TStringArrayHelper }
+
+  TStringArrayHelper = type helper for TStringArray
+    function IndexOfFieldName(AName: String; ALength: Integer = Maxint; Sep: char = '='): Integer;
+    function ValueOfFieldName(AnIndex: Integer; Sep: char = '='): String;
+    procedure delete(AStart, ACnt: Integer);
+  end;
+
+{ TStringArrayHelper }
+
+function TStringArrayHelper.IndexOfFieldName(AName: String; ALength: Integer;
+  Sep: char): Integer;
+var
+  i: Integer;
+  p: SizeInt;
+begin
+  ALength := Min(ALength, Length(Self));
+  Result := 0;
+  while Result < ALength do begin
+    p := pos(Sep, Self[Result]);
+    if (p >= 0) and (LowerCase(trim(Copy(Self[Result], 1, p-1))) = LowerCase(AName)) then
+      exit;
+    inc(Result);
+  end;
+  if Result >= ALength then
+    Result := -1;
+end;
+
+function TStringArrayHelper.ValueOfFieldName(AnIndex: Integer; Sep: char
+  ): String;
+begin
+  Result := trim(copy(Self[AnIndex], pos(Sep, Self[AnIndex])+1, MaxInt));
+end;
+
+procedure TStringArrayHelper.delete(AStart, ACnt: Integer);
+var
+  i: Integer;
+begin
+  if ACnt <= 0 then exit;
+  for i := AStart to Length(Self)-1 - ACnt do
+    Self[i] := Self[i+ACnt];
 end;
 
 function weMatch(AExpVal: String; ASymKind: TDBGSymbolKind; ATypeName: String
@@ -602,19 +660,64 @@ begin
     Result[i] := weShortStr(AExpVal[i], ATypeName);
 end;
 
-function weClass(AExpClass: String;
-  AExpFields: array of TWatchExpectationResult; ATypeName: String
-  ): TWatchExpectationResult;
+function weRecord(AExpFields: array of TWatchExpectationResult;
+  ATypeName: String): TWatchExpectationResult;
+var
+  i: Integer;
 begin
   Result := Default(TWatchExpectationResult);
-
+  Result.ExpResultKind := rkRecord;
+  Result.ExpSymKind := skRecord;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpFullArrayLen := Length(AExpFields);
+  SetLength(Result.ExpSubResults, Length(AExpFields));
+  for i := 0 to high(AExpFields) do
+    Result.ExpSubResults[i] := AExpFields[i];
 end;
 
-function weField(AExpName: String; AExpVal: TWatchExpectationResult;
-  ATypeName: String): TWatchExpectationResult;
+function weClass(AExpFields: array of TWatchExpectationResult; ATypeName: String
+  ): TWatchExpectationResult;
+var
+  i: Integer;
 begin
   Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkClass;
+  Result.ExpSymKind := skClass;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpFullArrayLen := Length(AExpFields);
+  SetLength(Result.ExpSubResults, Length(AExpFields));
+  for i := 0 to high(AExpFields) do
+    Result.ExpSubResults[i] := AExpFields[i];
+end;
 
+function weObject(AExpFields: array of TWatchExpectationResult;
+  ATypeName: String): TWatchExpectationResult;
+var
+  i: Integer;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkObject;
+  Result.ExpSymKind := skObject;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpFullArrayLen := Length(AExpFields);
+  SetLength(Result.ExpSubResults, Length(AExpFields));
+  for i := 0 to high(AExpFields) do
+    Result.ExpSubResults[i] := AExpFields[i];
+end;
+
+function weInterface(AExpFields: array of TWatchExpectationResult;
+  ATypeName: String): TWatchExpectationResult;
+var
+  i: Integer;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkInterface;
+  Result.ExpSymKind := skInterface;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpFullArrayLen := Length(AExpFields);
+  SetLength(Result.ExpSubResults, Length(AExpFields));
+  for i := 0 to high(AExpFields) do
+    Result.ExpSubResults[i] := AExpFields[i];
 end;
 
 { TWatchExpectationResult }
@@ -640,6 +743,12 @@ begin
   for i := low(ASymTypes) to high(ASymTypes) do
     if i in ASymTypes then
       ExpErrorHandlingFlags[i] := ExpErrorHandlingFlags[i] + AFlags;
+  Result := Self;
+end;
+
+function TWatchExpectationResult.N(AFieldName: String): TWatchExpectationResult;
+begin
+  Self.ExpFieldName := AFieldName;
   Result := Self;
 end;
 
@@ -737,15 +846,39 @@ end;
 { TWatchExpectationHelper }
 
 function TWatchExpectationHelper.AddFlag(AFlag: TWatchExpErrorHandlingFlag;
-  ASymTypes: TSymbolTypes): PWatchExpectation;
+  ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
-  Result := Self^.AddFlag(AFlag, ASymTypes);
+  if ACond then
+    Result := Self^.AddFlag(AFlag, ASymTypes)
+  else
+    Result := Self;
 end;
 
 function TWatchExpectationHelper.AddFlag(AFlags: TWatchExpErrorHandlingFlags;
-  ASymTypes: TSymbolTypes): PWatchExpectation;
+  ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
-  Result := Self^.AddFlag(AFlags, ASymTypes);
+  if ACond then
+    Result := Self^.AddFlag(AFlags, ASymTypes)
+  else
+    Result := Self;
+end;
+
+function TWatchExpectationHelper.AddFlag(AFlag: TWatchExpErrorHandlingFlag;
+  ACond: Boolean): PWatchExpectation;
+begin
+  if ACond then
+    Result := Self^.AddFlag(AFlag, [])
+  else
+    Result := Self;
+end;
+
+function TWatchExpectationHelper.AddFlag(AFlags: TWatchExpErrorHandlingFlags;
+  ACond: Boolean): PWatchExpectation;
+begin
+  if ACond then
+    Result := Self^.AddFlag(AFlags, [])
+  else
+    Result := Self;
 end;
 
 function TWatchExpectationHelper.Skip(ASymTypes: TSymbolTypes
@@ -878,7 +1011,8 @@ begin
   Result := @FList[Index];
 end;
 
-function TWatchExpectationList.ParseCommaList(AVal: String; out AFoundCount: Integer; AMaxLen: Integer = -1): TStringArray;
+function TWatchExpectationList.ParseCommaList(AVal: String; out
+  AFoundCount: Integer; AMaxLen: Integer; AComma: char): TStringArray;
 var
   i, BracketLvl: Integer;
   InQuote: Boolean;
@@ -894,7 +1028,7 @@ begin
   InQuote := false;
   while length(AVal) > 0 do begin
     while (i <= length(AVal)) and (
-        (AVal[i] <> ',') or (BracketLvl > 0) or InQuote
+        (AVal[i] <> AComma) or (BracketLvl > 0) or InQuote
       )
     do begin
       case AVal[i] of
@@ -1083,10 +1217,10 @@ begin
     rkShortString: Result := CheckResultShortStr(AContext, AnIgnoreRsn);
     rkPointer:     Result := CheckResultPointer(AContext, AnIgnoreRsn);
     rkPointerAddr: Result := CheckResultPointerAddr(AContext, AnIgnoreRsn);
-    rkClass: ;
-    rkObject: ;
-    rkRecord: ;
-    rkField: ;
+    rkClass:       Result := CheckResultClass(AContext, AnIgnoreRsn);
+    rkObject:      Result := CheckResultObject(AContext, AnIgnoreRsn);
+    rkRecord:      Result := CheckResultRecord(AContext, AnIgnoreRsn);
+    rkInterface:   Result := CheckResultInstance(AContext, AnIgnoreRsn);
     rkStatArray:   Result := CheckResultArray(AContext, AnIgnoreRsn);
     rkDynArray:    Result := CheckResultArray(AContext, AnIgnoreRsn);
   end;
@@ -1129,6 +1263,11 @@ begin
     if (t = skSimple) and (Expect.ExpSymKind in AcceptSkSimple) then begin
       n := ' (skSimple for '+s2+')';
       s2 := 'skSimple';
+    end;
+
+    if (t in [skRecord, skClass]) and (Expect.ExpSymKind = skObject) then begin
+      n := ' (skObject for '+s1+')';
+      s1 := 'skObject';
     end;
 
     Result := TestEquals('SymbolType'+n, s2, s1, AContext, AnIgnoreRsn);
@@ -1281,6 +1420,7 @@ begin
     delete(v, length(v), 1);
 
     parsed := ParseCommaList(v, e, Length(Expect.ExpSetData));
+    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
 
     Result := TestEquals('Length', Length(Expect.ExpSetData), e, AContext, AnIgnoreRsn);
 
@@ -1325,24 +1465,29 @@ function TWatchExpectationList.CheckResultAnsiStr(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
-  v, e: String;
+  v, e, tn: String;
+  ehf: TWatchExpErrorHandlingFlags;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
 
     v := AContext.WatchVal.Value;
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
     // in dwarf 2 ansistring are pchar
     // widestring are always pwidechar
     if (Compiler.SymbolType in stDwarf2) or (AContext.Expectation.ExpResultKind = rkWideString) then begin
-      if (Expect.ExpTypeName <> '') then begin
+      tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
+      if ehIgnTypeNameInData in ehf then
+        tn := '.*';
+      if (tn <> '') then begin
         if (Expect.ExpTextData = '') and
-           FTest.Matches('^'+Expect.ExpTypeName+'\(nil\)', v)
+           FTest.Matches('^'+tn+'\(nil\)', v)
         then
           v := ''''''
         else
-        if FTest.Matches('^'+Expect.ExpTypeName+'\(\$[0-9a-fA-F]+\) ', v) then
+        if FTest.Matches('^'+tn+'\(\$[0-9a-fA-F]+\) ', v) then
           delete(v, 1, pos(') ', v)+1)
         else
         if FTest.Matches('^\$[0-9a-fA-F]+ ', v) then
@@ -1382,22 +1527,27 @@ function TWatchExpectationList.CheckResultPointer(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
-  g, e, n: String;
+  g, e, n, tn: String;
   i: SizeInt;
   SubContext: TWatchExpTestCurrentData;
+  ehf: TWatchExpErrorHandlingFlags;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
+    if ehIgnTypeNameInData in ehf then
+      tn := '.*';
 
     e := '(\$[0-9a-fA-F]*|nil)';
-    if Expect.ExpTypeName <> '' then
-      e := QuoteRegExprMetaChars(Expect.ExpTypeName)+'\('+e+'\)';
+    if tn <> '' then
+      e := tn+'\('+e+'\)';
     e := '^'+e;
 
     Result := TestMatches('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
 
-    if ehIgnPointerDerefData in Expect.ExpErrorHandlingFlags[Compiler.SymbolType] then
+    if ehIgnPointerDerefData in ehf then
       exit;
 
     g := AContext.WatchVal.Value;
@@ -1442,18 +1592,23 @@ function TWatchExpectationList.CheckResultPointerAddr(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
-  e: String;
+  e, tn: String;
+  ehf: TWatchExpErrorHandlingFlags;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
+    if ehIgnTypeNameInData in ehf then
+      tn := '.*';
 
     if Expect.ExpPointerValue = nil then
       e := 'nil'
     else
       e := '\$0*'+IntToHex(PtrUInt(Expect.ExpPointerValue), 8);
-    if Expect.ExpTypeName <> '' then
-      e := Expect.ExpTypeName+'\('+e+'\)';
+    if tn <> '' then
+      e := tn+'\('+e+'\)';
     e := '^'+e;
 
     Result := TestMatches('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
@@ -1489,6 +1644,7 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     delete(v, length(v), 1);
 
     parsed := ParseCommaList(v, e, Expect.ExpFullArrayLen);
+    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
 
     if Expect.ExpFullArrayLen >= 0 then
       Result := TestEquals('Length', Expect.ExpFullArrayLen, e, AContext, AnIgnoreRsn);
@@ -1509,6 +1665,162 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     AContext.WatchVal.Value := v;
   end;
 
+end;
+
+function TWatchExpectationList.CheckResultRecord(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  Expect, sr: TWatchExpectationResult;
+  SubContext: TWatchExpTestCurrentData;
+  v, n, tn: String;
+  parsed: TStringArray;
+  i, e, j: Integer;
+  ehf: TWatchExpErrorHandlingFlags;
+begin
+  with AContext.WatchExp do begin
+    Result := True;
+    Expect := AContext.Expectation;
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+
+    v := Trim(AContext.WatchVal.Value);
+debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
+    //if (LowerCase(v) = 'nil') then
+
+    //if not TestMatches('Is record', '^record .* end$', v, False, AContext, AnIgnoreRsn) then
+    //  exit;
+    //delete(v, 1, 7);
+    //delete(v, length(v)-2, 3);
+
+    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
+    if ehIgnTypeNameInData in ehf then
+      tn := '[a-z0-9_]*';
+    if not TestMatches('Is record', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
+      exit;
+
+    delete(v, 1, pos('(', v));
+    delete(v, length(v), 1);
+
+    parsed := ParseCommaList(v, e, -1, ';');
+    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
+    e := min(e, Length(parsed));
+
+
+    n := FTest.TestBaseName;
+    SubContext := AContext;
+    for i := 0 to length(Expect.ExpSubResults) - 1 do begin
+      sr := Expect.ExpSubResults[i];
+      if not TestTrue('field name '+IntToStr(i), sr.ExpFieldName<>'', AContext, AnIgnoreRsn) then
+        Continue;
+
+      j := parsed.IndexOfFieldName(sr.ExpFieldName, e);
+      if not TestTrue('field exists '+IntToStr(i), j >= 0, AContext, AnIgnoreRsn) then
+        Continue;
+      if not(ehNoFieldOrder in ehf) then begin
+        if ehMissingFields in ehf then begin
+          dec(e, j);
+          parsed.delete(0, j);
+          j := 0;
+        end;
+
+        if not TestTrue('field in order '+IntToStr(i), j = 0, AContext, AnIgnoreRsn) then
+          Continue;
+      end;
+
+      SubContext.WatchVal.Value := parsed.ValueOfFieldName(j);
+      FTest.TestBaseName := n + ' Idx='+IntToStr(i);
+
+      dec(e);
+      parsed.delete(j, 1);
+
+      //SubContext.WatchExp.TstExpected := sr;
+      SubContext.Expectation := sr;
+      Result := CheckData(SubContext, AnIgnoreRsn);
+    end;
+
+    FTest.TestBaseName := n;
+    AContext.WatchVal.Value := v;
+  end;
+end;
+
+function TWatchExpectationList.CheckResultClass(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  Expect, sr: TWatchExpectationResult;
+  SubContext: TWatchExpTestCurrentData;
+  v, n, tn: String;
+  parsed: TStringArray;
+  i, e, j: Integer;
+  ehf: TWatchExpErrorHandlingFlags;
+begin
+  with AContext.WatchExp do begin
+    Result := True;
+    Expect := AContext.Expectation;
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+
+    v := Trim(AContext.WatchVal.Value);
+    //if (LowerCase(v) = 'nil') then
+
+    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
+    if ehIgnTypeNameInData in ehf then
+      tn := '[a-z0-9_]*';
+    if not TestMatches('Is class ', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
+      exit;
+
+    delete(v, 1, pos('(', v));
+    delete(v, length(v), 1);
+
+    parsed := ParseCommaList(v, e, -1, ';');
+    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
+    e := min(e, Length(parsed));
+
+
+    n := FTest.TestBaseName;
+    SubContext := AContext;
+    for i := 0 to length(Expect.ExpSubResults) - 1 do begin
+      sr := Expect.ExpSubResults[i];
+      if not TestTrue('field name '+IntToStr(i), sr.ExpFieldName<>'', AContext, AnIgnoreRsn) then
+        Continue;
+
+      j := parsed.IndexOfFieldName(sr.ExpFieldName, e);
+      if not TestTrue('field exists '+IntToStr(i), j >= 0, AContext, AnIgnoreRsn) then
+        Continue;
+      if not(ehNoFieldOrder in ehf) then begin
+        if ehMissingFields in ehf then begin
+          dec(e, j);
+          parsed.delete(0, j);
+          j := 0;
+        end;
+
+        if not TestTrue('field in order '+IntToStr(i)+' '+IntToStr(j), j = 0, AContext, AnIgnoreRsn) then
+          Continue;
+      end;
+
+      SubContext.WatchVal.Value := parsed.ValueOfFieldName(j);
+      FTest.TestBaseName := n + ' Idx='+IntToStr(i);
+
+      dec(e);
+      parsed.delete(j, 1);
+
+      //SubContext.WatchExp.TstExpected := sr;
+      SubContext.Expectation := sr;
+      Result := CheckData(SubContext, AnIgnoreRsn);
+    end;
+
+    FTest.TestBaseName := n;
+    AContext.WatchVal.Value := v;
+  end;
+end;
+
+function TWatchExpectationList.CheckResultObject(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+begin
+  CheckResultRecord(AContext, AnIgnoreRsn);
+end;
+
+function TWatchExpectationList.CheckResultInstance(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+begin
+  CheckResultClass(AContext, AnIgnoreRsn);
 end;
 
 constructor TWatchExpectationList.Create(ATest: TDBGTestCase);
