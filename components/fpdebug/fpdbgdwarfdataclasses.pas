@@ -436,7 +436,7 @@ type
 {%region Base classes for handling Symbols in unit FPDbgDwarf}
   { TDbgDwarfSymbolBase }
 
-  TDbgDwarfSymbolBase = class(TDbgSymbolForwarder)
+  TDbgDwarfSymbolBase = class(TFpSymbolForwarder)
   private
     FCU: TDwarfCompilationUnit;
     FInformationEntry: TDwarfInformationEntry;

@@ -446,9 +446,9 @@ type
     property LastError: TFpError read GetLastError; experimental;
   end;
 
-  { TDbgSymbolForwarder }
+  { TFpSymbolForwarder }
 
-  TDbgSymbolForwarder = class(TFpSymbol)
+  TFpSymbolForwarder = class(TFpSymbol)
   private
     FForwardToSymbol: TFpSymbol;
   protected
@@ -1219,22 +1219,22 @@ begin
   SetMemberVisibility(svPrivate);
 end;
 
-{ TDbgSymbolForwarder }
+{ TFpSymbolForwarder }
 
-procedure TDbgSymbolForwarder.SetForwardToSymbol(AValue: TFpSymbol);
+procedure TFpSymbolForwarder.SetForwardToSymbol(AValue: TFpSymbol);
 begin
   FForwardToSymbol := AValue;
   EvaluatedFields :=  EvaluatedFields + [sfiForwardToSymbol];
 end;
 
-procedure TDbgSymbolForwarder.ForwardToSymbolNeeded;
+procedure TFpSymbolForwarder.ForwardToSymbolNeeded;
 begin
   SetForwardToSymbol(nil);
 end;
 
-function TDbgSymbolForwarder.GetForwardToSymbol: TFpSymbol;
+function TFpSymbolForwarder.GetForwardToSymbol: TFpSymbol;
 begin
-  if TMethod(@ForwardToSymbolNeeded).Code = Pointer(@TDbgSymbolForwarder.ForwardToSymbolNeeded) then
+  if TMethod(@ForwardToSymbolNeeded).Code = Pointer(@TFpSymbolForwarder.ForwardToSymbolNeeded) then
     exit(nil);
 
   if not(sfiForwardToSymbol in EvaluatedFields) then
@@ -1242,7 +1242,7 @@ begin
   Result := FForwardToSymbol;
 end;
 
-function TDbgSymbolForwarder.GetLastError: TFpError;
+function TFpSymbolForwarder.GetLastError: TFpError;
 var
   p: TFpSymbol;
 begin
@@ -1254,7 +1254,7 @@ begin
     Result := p.LastError;
 end;
 
-procedure TDbgSymbolForwarder.KindNeeded;
+procedure TFpSymbolForwarder.KindNeeded;
 var
   p: TFpSymbol;
 begin
@@ -1265,7 +1265,7 @@ begin
     SetKind(skNone);  //  inherited KindNeeded;
 end;
 
-procedure TDbgSymbolForwarder.NameNeeded;
+procedure TFpSymbolForwarder.NameNeeded;
 var
   p: TFpSymbol;
 begin
@@ -1276,7 +1276,7 @@ begin
     SetName('');  //  inherited NameNeeded;
 end;
 
-procedure TDbgSymbolForwarder.SymbolTypeNeeded;
+procedure TFpSymbolForwarder.SymbolTypeNeeded;
 var
   p: TFpSymbol;
 begin
@@ -1287,7 +1287,7 @@ begin
     SetSymbolType(stNone);  //  inherited SymbolTypeNeeded;
 end;
 
-procedure TDbgSymbolForwarder.SizeNeeded;
+procedure TFpSymbolForwarder.SizeNeeded;
 var
   p: TFpSymbol;
 begin
@@ -1298,7 +1298,7 @@ begin
     SetSize(0);  //  inherited SizeNeeded;
 end;
 
-procedure TDbgSymbolForwarder.TypeInfoNeeded;
+procedure TFpSymbolForwarder.TypeInfoNeeded;
 var
   p: TFpSymbol;
 begin
@@ -1309,7 +1309,7 @@ begin
     SetTypeInfo(nil);  //  inherited TypeInfoNeeded;
 end;
 
-procedure TDbgSymbolForwarder.MemberVisibilityNeeded;
+procedure TFpSymbolForwarder.MemberVisibilityNeeded;
 var
   p: TFpSymbol;
 begin
@@ -1320,7 +1320,7 @@ begin
     SetMemberVisibility(svPrivate);  //  inherited MemberVisibilityNeeded;
 end;
 
-function TDbgSymbolForwarder.GetFlags: TDbgSymbolFlags;
+function TFpSymbolForwarder.GetFlags: TDbgSymbolFlags;
 var
   p: TFpSymbol;
 begin
@@ -1331,7 +1331,7 @@ begin
     Result := [];  //  Result := inherited GetFlags;
 end;
 
-function TDbgSymbolForwarder.GetValueObject: TFpValue;
+function TFpSymbolForwarder.GetValueObject: TFpValue;
 var
   p: TFpSymbol;
 begin
@@ -1342,7 +1342,7 @@ begin
     Result := nil;  //  Result := inherited Value;
 end;
 
-function TDbgSymbolForwarder.GetHasOrdinalValue: Boolean;
+function TFpSymbolForwarder.GetHasOrdinalValue: Boolean;
 var
   p: TFpSymbol;
 begin
@@ -1353,7 +1353,7 @@ begin
     Result := False;  //  Result := inherited GetHasOrdinalValue;
 end;
 
-function TDbgSymbolForwarder.GetOrdinalValue: Int64;
+function TFpSymbolForwarder.GetOrdinalValue: Int64;
 var
   p: TFpSymbol;
 begin
@@ -1364,7 +1364,7 @@ begin
     Result := 0;  //  Result := inherited GetOrdinalValue;
 end;
 
-function TDbgSymbolForwarder.GetValueBounds(AValueObj: TFpValue; out
+function TFpSymbolForwarder.GetValueBounds(AValueObj: TFpValue; out
   ALowBound, AHighBound: Int64): Boolean;
 var
   p: TFpSymbol;
@@ -1376,7 +1376,7 @@ begin
     Result := inherited GetValueBounds(AValueObj, ALowBound, AHighBound);
 end;
 
-function TDbgSymbolForwarder.GetValueLowBound(AValueObj: TFpValue; out
+function TFpSymbolForwarder.GetValueLowBound(AValueObj: TFpValue; out
   ALowBound: Int64): Boolean;
 var
   p: TFpSymbol;
@@ -1388,7 +1388,7 @@ begin
     Result := inherited GetValueLowBound(AValueObj, ALowBound);
 end;
 
-function TDbgSymbolForwarder.GetValueHighBound(AValueObj: TFpValue; out
+function TFpSymbolForwarder.GetValueHighBound(AValueObj: TFpValue; out
   AHighBound: Int64): Boolean;
 var
   p: TFpSymbol;
@@ -1400,7 +1400,7 @@ begin
     Result := inherited GetValueHighBound(AValueObj, AHighBound);
 end;
 
-function TDbgSymbolForwarder.GetHasBounds: Boolean;
+function TFpSymbolForwarder.GetHasBounds: Boolean;
 var
   p: TFpSymbol;
 begin
@@ -1411,7 +1411,7 @@ begin
     Result := False;  //  Result := inherited GetHasBounds;
 end;
 
-function TDbgSymbolForwarder.GetNestedSymbol(AIndex: Int64): TFpSymbol;
+function TFpSymbolForwarder.GetNestedSymbol(AIndex: Int64): TFpSymbol;
 var
   p: TFpSymbol;
 begin
@@ -1422,7 +1422,7 @@ begin
     Result := nil;  //  Result := inherited GetMember(AIndex);
 end;
 
-function TDbgSymbolForwarder.GetNestedSymbolByName(AIndex: String): TFpSymbol;
+function TFpSymbolForwarder.GetNestedSymbolByName(AIndex: String): TFpSymbol;
 var
   p: TFpSymbol;
 begin
@@ -1433,7 +1433,7 @@ begin
     Result := nil;  //  Result := inherited GetMemberByName(AIndex);
 end;
 
-function TDbgSymbolForwarder.GetNestedSymbolCount: Integer;
+function TFpSymbolForwarder.GetNestedSymbolCount: Integer;
 var
   p: TFpSymbol;
 begin

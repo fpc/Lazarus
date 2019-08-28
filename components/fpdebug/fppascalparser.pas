@@ -439,7 +439,7 @@ type
 
   { TPasParserSymbolArrayDeIndex }
 
-  TPasParserSymbolArrayDeIndex = class(TDbgSymbolForwarder) // 1 index level off
+  TPasParserSymbolArrayDeIndex = class(TFpSymbolForwarder) // 1 index level off
   private
     FArray: TFpSymbol;
   protected
