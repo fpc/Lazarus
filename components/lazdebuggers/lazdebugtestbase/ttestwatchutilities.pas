@@ -13,7 +13,7 @@ uses
 
 type
   TWatchExpectationResultKind = (
-    rkMatch, rkInteger, rkCardinal, rkFloat, rkEnum, rkSet,
+    rkMatch, rkInteger, rkCardinal, rkFloat, rkBool, rkEnum, rkSet,
     rkChar, rkAnsiString, rkShortString, rkWideString, rkPointer, rkPointerAddr,
     rkClass, rkObject, rkRecord, rkInterface, rkField,
     rkStatArray, rkDynArray
@@ -103,6 +103,9 @@ type
       );
       rkFloat: (
         ExpFloatValue: Extended;
+      );
+      rkBool: (
+        ExpBoolValue: Boolean;
       );
       rkPointerAddr: (
         ExpPointerValue: Pointer;
@@ -215,6 +218,7 @@ type
 
     function CheckResultMatch(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultNum(AContext: TWatchExpTestCurrentData; IsCardinal: Boolean; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultBool(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultFloat(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultEnum(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultSet(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
@@ -277,6 +281,7 @@ function weSingle(AExpVal: Extended; ATypeName: String=#1): TWatchExpectationRes
 function weDouble(AExpVal: Extended; ATypeName: String=#1): TWatchExpectationResult;
 function weFloat(AExpVal: Extended; ATypeName: String=''): TWatchExpectationResult;
 
+function weBool(AExpVal: Boolean; ATypeName: String=#1): TWatchExpectationResult;
 function weEnum(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 function weSet(const AExpVal: Array of string; ATypeName: String=#1): TWatchExpectationResult;
 
@@ -433,6 +438,16 @@ begin
   Result.ExpSymKind := skFloat;
   Result.ExpTypeName := ATypeName;
   Result.ExpFloatValue := AExpVal;
+end;
+
+function weBool(AExpVal: Boolean; ATypeName: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  if ATypeName = #1 then ATypeName := 'Boolean';
+  Result.ExpResultKind := rkBool;
+  Result.ExpSymKind := skBoolean;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpBoolValue := AExpVal;
 end;
 
 function weEnum(AExpVal: string; ATypeName: String): TWatchExpectationResult;
@@ -1208,6 +1223,7 @@ begin
     rkMatch:       Result := CheckResultMatch(AContext, AnIgnoreRsn);
     rkInteger:     Result := CheckResultNum(AContext, False, AnIgnoreRsn);
     rkCardinal:    Result := CheckResultNum(AContext, True, AnIgnoreRsn);
+    rkBool:        Result := CheckResultBool(AContext, AnIgnoreRsn);
     rkFloat:       Result := CheckResultFloat(AContext, AnIgnoreRsn);
     rkEnum:        Result := CheckResultEnum(AContext, AnIgnoreRsn);
     rkSet:         Result := CheckResultSet(AContext, AnIgnoreRsn);
@@ -1265,10 +1281,14 @@ begin
       s2 := 'skSimple';
     end;
 
-    if (t in [skRecord, skClass]) and (Expect.ExpSymKind = skObject) then begin
-      n := ' (skObject for '+s1+')';
-      s1 := 'skObject';
-    end;
+    //if (t in [skRecord, skClass]) and (Expect.ExpSymKind = skObject) then begin
+    //  n := ' (skObject for '+s1+')';
+    //  s1 := 'skObject';
+    //end;
+    //if (t in [skClass]) and (Expect.ExpSymKind = skInterface) then begin
+    //  n := ' (skInterface for '+s1+')';
+    //  s1 := 'skInterface';
+    //end;
 
     Result := TestEquals('SymbolType'+n, s2, s1, AContext, AnIgnoreRsn);
     //if ((s2='skClass') and (s = 'skRecord')) or ((s='skClass') and (s2 = 'skRecord')) then begin
@@ -1369,6 +1389,22 @@ begin
 
     //if not TestEquals('DataSize', Expect.ExpIntSize, AContext.WatchVal.TypeInfo.Len, AContext, AnIgnoreRsn) then
     //  Result := False;
+  end;
+end;
+
+function TWatchExpectationList.CheckResultBool(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  Expect: TWatchExpectationResult;
+  s: String;
+begin
+  with AContext.WatchExp do begin
+    Result := True;
+    Expect := AContext.Expectation;
+
+    WriteStr(s, Expect.ExpBoolValue);
+    Result := TestEquals('Data', s, AContext.WatchVal.Value, False, AContext, AnIgnoreRsn);
+
   end;
 end;
 

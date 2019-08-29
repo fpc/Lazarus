@@ -21,13 +21,15 @@ type
     procedure TestWatchesValue;
     procedure TestWatchesAddressOf;
     procedure TestWatchesTypeCast;
+    procedure TestWatchesExpression;
   end;
 
 implementation
 
 var
   ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue,
-  ControlTestWatchAddressOf, ControlTestWatchTypeCast: Pointer;
+  ControlTestWatchAddressOf, ControlTestWatchTypeCast,
+  ControlTestExpression: Pointer;
 
 procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint);
 begin
@@ -615,6 +617,9 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Longint_3'+e,  weInteger(-20123456+n,            'Longint',  4));
     t.Add(AName, p+'Int64_3'+e,    weInteger(-9123372036854775801+n, 'Int64',    8));
 
+    t.Add(AName, p+'Bool1'+e,      weBool(False   ));
+    t.Add(AName, p+'Bool2'+e,      weBool(True    ));
+
     t.Add(AName, p+'Real'+e,       weFloat(50.25+n,                 'Real'       ));
     t.Add(AName, p+'Single'+e,     weSingle(100.125+n,              'Single'     ));
     t.Add(AName, p+'Double'+e,     weDouble(1000.125+n,             'Double'     ));
@@ -915,7 +920,9 @@ for i := StartIdx to t.Count-1 do
 
     t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
 
-    t.Add(AName, p+'IntfUnknown'+e, weMatch('.?', skInterface)).Skip(); // only run eval / do not crash
+    t.Add(AName, p+'IntfUnknown1'+e, weMatch('.?', skInterface)) //.Skip(); // only run eval / do not crash
+      .SkipIf(ALoc = tlPointerAny);
+    t.Add(AName, p+'IntfUnknown'+e, weMatch('nil', skInterface)); //.Skip(); // only run eval / do not crash
 
 
 StartIdx := t.Count; // tlConst => Only eval the watch. No tests
@@ -948,7 +955,9 @@ begin
 
   try
     t := TWatchExpectationList.Create(Self);
-    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat, skString, skAnsiString, skCurrency, skVariant, skWideString];
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+      skString, skAnsiString, skCurrency, skVariant, skWideString,
+      skInterface];
     t.AddTypeNameAlias('integer', 'integer|longint');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
@@ -1623,7 +1632,9 @@ begin
   try
     t := TWatchExpectationList.Create(Self);
     t2 := TWatchExpectationList.Create(Self);
-    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat, skString, skAnsiString, skCurrency, skVariant, skWideString];
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+      skString, skAnsiString, skCurrency, skVariant, skWideString,
+      skInterface];
     t.AddTypeNameAlias('integer', 'integer|longint');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
@@ -1686,6 +1697,125 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestWatchesExpression;
+
+  type
+    TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer, tlPointerAny);
+
+  procedure AddWatches(t: TWatchExpectationList; AName: String;
+    APrefix: String;  AOffs: Integer;  AChr1: Char;  APostFix: String;  ALoc: TTestLoc;
+    APrefix2: String; AOffs2: Integer; AChr12: Char; APostFix2: String; ALoc2: TTestLoc
+  );
+  var
+    p, e, p2, e2: String;
+    n, StartIdx, i, n2: Integer;
+  begin
+    p := APrefix;
+    e := APostFix;
+    n := AOffs;
+    p2 := APrefix2;
+    e2 := APostFix2;
+    n2 := AOffs2;
+
+    t.Add(AName, p+'Byte'+e +'='+ IntToStr(1+n),    weBool(True) );
+    t.Add(AName, p+'Byte'+e +'='+ p2+'Byte'+e2,     weBool(n=n2) );
+    t.Add(AName, p+'Byte'+e +'='+ p2+'Byte_2'+e2,   weBool(n+1=n2+240) );
+
+
+    t.Add(AName, p+'IntfUnknown'+e  +'='+ 'nil',              weBool(True) );
+    t.Add(AName, p+'IntfUnknown1'+e +'='+ 'nil',              weBool(False) )
+      .skipIf((ALoc in [tlConst]));
+    t.Add(AName, 'nil' +'='+ p+'IntfUnknown'+e ,              weBool(True) );
+    t.Add(AName, 'nil' +'='+ p+'IntfUnknown1'+e,              weBool(False) )
+      .skipIf((ALoc in [tlConst]));
+
+    t.Add(AName, p+'IntfUnknown'+e  +'='+ p2+'IntfUnknown'+e2,   weBool(True) );
+    t.Add(AName, p+'IntfUnknown1'+e +'='+ p2+'IntfUnknown1'+e2,  weBool(True) )
+      .skipIf((ALoc in [tlConst]) or (ALoc2 in [tlConst]));
+
+    t.Add(AName, p+'IntfUnknown'+e  +'='+ p2+'IntfUnknown2'+e2,   weBool(False) )
+      .skipIf((ALoc2 in [tlConst]));
+    t.Add(AName, p+'IntfUnknown1'+e +'='+ p2+'IntfUnknown2'+e2,  weBool(False) )
+      .skipIf((ALoc in [tlConst]) or (ALoc2 in [tlConst]));
+    t.Add(AName, p+'IntfUnknown2'+e +'='+ p2+'IntfUnknown2b'+e2, weBool(True) )
+      .skipIf((ALoc in [tlConst]) or (ALoc2 in [tlConst]));
+
+
+    t.Add(AName, p+'Instance0'+e +'='+ 'nil',               weBool(True) );
+    t.Add(AName, p+'Instance1'+e +'='+ 'nil',               weBool(False) )
+      .skipIf((ALoc in [tlConst]));
+
+    t.Add(AName, p+'Instance0'+e +'='+ p2+'Instance0'+e2,   weBool(True) )
+      .skipIf((ALoc2 in [tlConst]));
+    t.Add(AName, p+'Instance1'+e +'='+ p2+'Instance1'+e2,   weBool(True) )
+      .skipIf((ALoc in [tlConst]) or (ALoc2 in [tlConst]));
+
+    t.Add(AName, p+'Instance0'+e +'='+ p2+'Instance2'+e2,   weBool(False) )
+      .skipIf((ALoc2 in [tlConst]));
+    t.Add(AName, p+'Instance1'+e +'='+ p2+'Instance2'+e2,   weBool(False) )
+      .skipIf((ALoc in [tlConst]) or (ALoc2 in [tlConst]));
+    t.Add(AName, p+'Instance2'+e +'='+ p2+'Instance2b'+e2,  weBool(True) )
+      .skipIf((ALoc in [tlConst]) or (ALoc2 in [tlConst]));
+
+
+
+    for i := 0 to t.Count-1 do
+      t.Tests[i].IgnTypeName();
+  end;
+
+var
+  ExeName: String;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg, BrkFoo, BrkFooVar, BrkFooConstRef: TDBGBreakPoint;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestExpression) then exit;
+  t := nil;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.Pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+      skString, skAnsiString, skCurrency, skVariant, skWideString,
+      skInterface];
+    t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
+    t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
+
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
+    //BrkFoo         := Debugger.SetBreakPoint(Src, 'Foo');
+    //BrkFooVar      := Debugger.SetBreakPoint(Src, 'FooVar');
+    //BrkFooConstRef := Debugger.SetBreakPoint(Src, 'FooConstRef');
+    AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
+
+    RunToPause(BrkPrg);
+
+    t.Clear;
+    AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gv', 001, 'B', '', tlAny);
+    AddWatches(t, 'glob',   'gc', 000, 'A', '', tlConst,   'gv', 001, 'B', '', tlAny);
+    AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gc', 000, 'A', '', tlConst);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+
+
+  finally
+    t.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestWatches);
@@ -1694,6 +1824,7 @@ initialization
   ControlTestWatchValue     := TestControlRegisterTest('Value', ControlTestWatch);
   ControlTestWatchAddressOf := TestControlRegisterTest('AddressOf', ControlTestWatch);
   ControlTestWatchTypeCast  := TestControlRegisterTest('TypeCast', ControlTestWatch);
+  ControlTestExpression     := TestControlRegisterTest('Expression', ControlTestWatch);
 
 end.
 

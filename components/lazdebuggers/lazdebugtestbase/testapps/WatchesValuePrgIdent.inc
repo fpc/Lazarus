@@ -28,6 +28,9 @@
   pre__Longint_3{e}     _OP_ Longint     (-20123456            + ADD);          //@@ _pre3_Longint_3;
   pre__Int64_3{e}       _OP_ Int64       (-9123372036854775801 + ADD);          //@@ _pre3_Int64_3;
 
+  pre__Bool1{e}         _OP_ Boolean     (False);          //@@ _pre3_Bool1;
+  pre__Bool2{e}         _OP_ Boolean     (True);           //@@ _pre3_Bool2;
+
   pre__Real{e}          _OP_ Real        (50.25                + ADD);          //@@ _pre3_Real;
   pre__Single{e}        _OP_ Single      (100.125              + ADD);          //@@ _pre3_Single;
   pre__Double{e}        _OP_ Double      (1000.125             + ADD);          //@@ _pre3_Double;
@@ -415,6 +418,7 @@
   {$ENDIF}
 
 
+  pre__Instance0{e} _O2_ TClass1 _EQ_ (nil);  //@@ _pre3_Instance0;
   pre__Instance1{e} _O2_ TClass1 _EQ_ (nil);  //@@ _pre3_Instance1;
   pre__Instance1_Int{e} _O2_ PtrUInt _EQ_ (0);    //@@ _pre3_Instance1_Int;
   {$IFDEF TestAssign}
@@ -428,6 +432,17 @@
   pre__Instance1_Int{e} _OP_ PtrUInt(pre__Instance1{e});    //@@ //}}
   {$ENDIF}
 
+  {$IFnDEF TestType}
+  {$IFnDEF TestArg}{$IFnDEF TestParam}
+  pre__Instance2{e} _O2_ TClass1 _EQ_ (nil);  //@@ _pre3_Instance2;
+  pre__Instance2b{e} _O2_ TClass1 _EQ_ (nil);  //@@ _pre3_Instance2b;
+  {$IFDEF TestAssign}
+  pre__Instance2{e} := TClass1.Create;    //@@
+  pre__Instance2b{e} := pre__Instance2{e};    //@@  // }}
+  {$ENDIF}
+  {$ENDIF}{$ENDIF}
+  {$ENDIF}
+
 
   pre__SomeFunc1Ref{e}    _O2_ TFunc1                 _EQ_      (nil); //@@ _pre3_SomeFunc1Ref;
   pre__SomeProc1Ref{e}    _O2_ TProc1                 _EQ_      (nil); //@@ _pre3_SomeProc1Ref;
@@ -439,7 +454,7 @@
   //pre__SomeMeth1Ref{e}    := @TMyBaseClass(nil).SomeMeth1; //@@
   {$ENDIF}
 
-
+// short bool ....
 // interface / object vs class / record
 // array dyn/stat / nested of record/class/char/num ... bitpacked
 // class of
@@ -451,6 +466,20 @@
 // self in instance / class
 
   pre__IntfUnknown{e} _OP_ IUnknown ( nil );          //@@ _pre3_IntfUnknown;
+  {$IFnDEF TestType}
+  pre__IntfUnknown1{e} _OP_ IUnknown ( nil );          //@@ _pre3_IntfUnknown1;
+  {$IFDEF TestAssign}
+  pre__IntfUnknown1{e}    := InterfacedObject as IUnknown; //@@
+  {$ENDIF}
+  {$IFnDEF TestArg}{$IFnDEF TestParam}  // reduce count of param...
+  pre__IntfUnknown2{e} _OP_ IUnknown ( nil );          //@@ _pre3_IntfUnknown2;
+  pre__IntfUnknown2b{e} _OP_ IUnknown ( nil );          //@@ _pre3_IntfUnknown2b;
+  {$IFDEF TestAssign}
+  pre__IntfUnknown2{e}    := InterfacedObject2 as IUnknown; //@@
+  pre__IntfUnknown2b{e}   := InterfacedObject2 as IUnknown; //@@
+  {$ENDIF}
+  {$ENDIF}{$ENDIF}
+  {$ENDIF}
 
 {$UNDEF _BLOCK_}
 {$UNDEF _BLOCK2_}

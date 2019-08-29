@@ -28,6 +28,7 @@ type
 var
   BreakDummy: PtrUInt;
   p: Pointer;
+  InterfacedObject, InterfacedObject2: TInterfacedObject;
 
 type
   TIntRange = -300..300;
@@ -210,7 +211,7 @@ begin  // TEST_BREAKPOINT=FooBegin
 
 (* INIT: local var  pointer <each type> *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pl_, _OP_={, _O2_={, _pre3_=@fooloc, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestArg, _BLOCK2_=TestPointer) //}
 
   BreakDummy:= 1; // TEST_BREAKPOINT=Foo
 end;
@@ -228,7 +229,7 @@ var
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pv_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
 begin // TEST_BREAKPOINT=FooVarBegin
 (* INIT: local var  pointer <each type> *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestPointer, _BLOCK2_=TestArg) //}
 
   BreakDummy:= 1;
   BreakDummy:= 1; // TEST_BREAKPOINT=FooVar
@@ -253,6 +254,8 @@ end;
 begin
   // access constant that are not passed as function arg
   // so every constant is accessed, and they can not be optimized away
+  InterfacedObject:= TInterfacedObject.create;
+  InterfacedObject2:= TInterfacedObject.create;
   BreakDummy := ord(gcCharStatArray[1]);
   BreakDummy := ord(gcWCharStatArray[1]);
   p := nil;
