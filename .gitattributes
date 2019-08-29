@@ -2601,6 +2601,7 @@ components/lazdebuggergdbmi/test/gdb[!!-~]responses/ptype_whatis_for_enum_set.tx
 components/lazdebuggergdbmi/test/gdb[!!-~]responses/ptype_whatis_for_object.txt svneol=native#text/plain
 components/lazdebuggergdbmi/test/gdblist.txt.sample svneol=native#text/plain
 components/lazdebuggergdbmi/test/gdbmitestutils/gdbmitestutils.lpk svneol=native#text/plain
+components/lazdebuggergdbmi/test/gdbmitestutils/gdbmitestutils.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/gdbmitestutils/testbase.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/gdbmitestutils/testwatchutils.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/rungdbmiform.lfm svneol=native#text/plain
