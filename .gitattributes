@@ -4866,7 +4866,6 @@ components/synedit/docs/xml/synedithighlighter.xml svneol=native#text/xml
 components/synedit/docs/xml/synedittextbase.xml svneol=native#text/xml
 components/synedit/docs/xml/synedittextbuffer.xml svneol=native#text/xml
 components/synedit/fpmake.pp svneol=native#text/plain
-components/synedit/languages/README.txt svneol=native#text/plain
 components/synedit/languages/syndesignstringconstants.cs.po svneol=native#text/plain
 components/synedit/languages/syndesignstringconstants.de.po svneol=native#text/plain
 components/synedit/languages/syndesignstringconstants.es.po svneol=native#text/plain
