@@ -2811,6 +2811,14 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
       else SetError('= not supported');
     end;
   end;
+  function AddressPtrEqualToValue(AIntVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  begin
+    Result := nil;
+    if AOtherVal.Kind in [skClass,skInterface,skAddress,skPointer] then
+      Result := TFpValueConstBool.Create((AIntVal.AsCardinal = AOtherVal.AsCardinal) xor ARevert)
+    else
+      SetError('= not supported');
+  end;
 
   function IntGreaterThanValue(AIntVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
   begin
@@ -2892,6 +2900,12 @@ begin
       skInteger:  Result := IntEqualToValue(tmp1, tmp2, (s = '<>'));
       skCardinal: Result := CardinalEqualToValue(tmp1, tmp2, (s = '<>'));
       skFloat:    Result := FloatEqualToValue(tmp1, tmp2, (s = '<>'));
+      skClass,skInterface,skPointer:
+                  Result := AddressPtrEqualToValue(tmp1, tmp2, (s = '<>'));
+      skAddress: begin
+                  if tmp2.Kind in [skClass,skInterface,skPointer,skAddress] then
+                    Result := AddressPtrEqualToValue(tmp1, tmp2, (s = '<>'));
+        end;
     end;
   end
   else
