@@ -755,16 +755,9 @@ begin
   Result := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
 end;
 
-/////TL 11-06-2003: Moved from below
-resourcestring
-  LangName = 'UNIX Shell Script';
-
 class function TSynUNIXShellScriptSyn.GetLanguageName: string;
-/////TL 11-06-2003: FPC complained about local declaration... moved to the global scope
-/////TL resourcestring
-/////TL  LangName = 'UNIX Shell Script';
 begin
-  Result := LangName;
+  Result := SYNS_LangSh;
 end;
 
 initialization
