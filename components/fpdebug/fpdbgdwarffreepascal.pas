@@ -164,7 +164,7 @@ type
   { TFpSymbolDwarfFreePascalSymbolTypeArray }
 
   TFpSymbolDwarfFreePascalSymbolTypeArray = class(TFpSymbolDwarfTypeArray)
-  protected
+  public
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
   end;
 
@@ -186,8 +186,9 @@ type
     FArrayOrStringType: TArrayOrStringType;
     function GetInternalStringType: TArrayOrStringType;
   protected
-    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
     procedure KindNeeded; override;
+  public
+    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
   end;
 
   { TFpValueDwarfV3FreePascalString }
@@ -207,27 +208,6 @@ type
   {%EndRegion }
 
 implementation
-
-{ TFpSymbolDwarfFreePascalTypeStructure }
-
-procedure TFpSymbolDwarfFreePascalTypeStructure.KindNeeded;
-begin
-  if (InformationEntry.AbbrevTag = DW_TAG_class_type) then
-    SetKind(skClass)
-  else
-  begin
-    if TypeInfo <> nil then // inheritance
-      SetKind(skObject) // skClass
-    else
-    if NestedSymbolByName['_vptr$TOBJECT'] <> nil then
-      SetKind(skObject) // skClass
-    else
-    if NestedSymbolByName['_vptr$'+Name] <> nil then
-      SetKind(skObject)
-    else
-      SetKind(skRecord);
-  end;
-end;
 
 { TFpDwarfFreePascalSymbolClassMap }
 
@@ -597,7 +577,6 @@ end;
 function TFpSymbolDwarfFreePascalTypeDeclaration.DoGetNestedTypeInfo: TFpSymbolDwarfType;
 var
   ti: TFpSymbolDwarfType;
-  ti2: TFpSymbol;
 begin
   Result := inherited DoGetNestedTypeInfo;
 
@@ -648,8 +627,8 @@ var
 begin
   if IsInternalPointer then begin
       k := NestedTypeInfo.Kind;
-      if k = skObject then   // TODO
-        SetKind(skClass)
+      if k in [skObject, skRecord] then   // TODO
+        SetKind(skInterface)
       else
         SetKind(k);
   end
@@ -709,6 +688,37 @@ begin
     Result := NestedTypeInfo.Size
   else
     Result := inherited DataSize;
+end;
+
+{ TFpSymbolDwarfFreePascalTypeStructure }
+
+procedure TFpSymbolDwarfFreePascalTypeStructure.KindNeeded;
+var
+  t: TDbgSymbolKind;
+begin
+  if (InformationEntry.AbbrevTag = DW_TAG_interface_type) then begin
+    SetKind(skInterface);
+  end
+  else
+  if TypeInfo <> nil then begin // inheritance
+    t := TypeInfo.Kind;
+    if t = skRecord then
+      t := skObject; // could be skInterface
+    SetKind(t); // skClass, skInterface or skObject
+  end
+  else
+  begin
+    if NestedSymbolByName['_vptr$TOBJECT'] <> nil then
+      SetKind(skClass)
+    else
+    if NestedSymbolByName['_vptr$'+Name] <> nil then // vptr is only present for skObject with virtual methods/Constructor
+      SetKind(skObject)
+    else
+    if (InformationEntry.AbbrevTag = DW_TAG_class_type) then
+      SetKind(skObject)   // could be skInterface  // fix in TFpSymbolDwarfFreePascalTypePointer.KindNeeded
+    else
+      SetKind(skRecord);  // could be skObject(?) or skInterface   // fix in TFpSymbolDwarfFreePascalTypePointer.KindNeeded
+  end;
 end;
 
 { TFpValueDwarfV2FreePascalShortString }

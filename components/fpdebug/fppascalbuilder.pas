@@ -912,7 +912,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     ti: TFpSymbol;
     Cache: TFpDbgMemCacheBase;
   begin
-    if (AValue.Kind = skClass) and (AValue.AsCardinal = 0) then begin
+    if (AValue.Kind in [skClass, skInterface]) and (AValue.AsCardinal = 0) then begin
       APrintedValue := 'nil';
       if (ppvCreateDbgType in AFlags) then begin
         ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
@@ -931,8 +931,9 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         s := ResTypeName;
         case AValue.Kind of
           skRecord: ADBGTypeInfo^ := TDBGType.Create(skRecord, s);
-          skObject: ADBGTypeInfo^ := TDBGType.Create(skClass, s);
+          skObject: ADBGTypeInfo^ := TDBGType.Create(skObject, s);
           skClass:  ADBGTypeInfo^ := TDBGType.Create(skClass, s);
+          skInterface:  ADBGTypeInfo^ := TDBGType.Create(skInterface, s);
         end;
       end;
 
@@ -1143,7 +1144,7 @@ begin
     skRecord:    DoStructure;
     skObject:    DoStructure;
     skClass:     DoStructure;
-    skInterface: ;
+    skInterface: DoStructure;
     skArray:     DoArray;
     skType:      DoType;
     skNone:      DoUnknown;

@@ -1042,6 +1042,7 @@ begin
     DW_TAG_enumerator:       Result := TFpSymbolDwarfDataEnumMember;
     DW_TAG_set_type:         Result := TFpSymbolDwarfTypeSet;
     DW_TAG_structure_type,
+    DW_TAG_interface_type,
     DW_TAG_class_type:       Result := TFpSymbolDwarfTypeStructure;
     DW_TAG_array_type:       Result := TFpSymbolDwarfTypeArray;
     DW_TAG_subroutine_type:  Result := TFpSymbolDwarfTypeSubroutine;
@@ -3043,6 +3044,7 @@ function TFpSymbolDwarf.GetDataAddress(AValueObj: TFpValueDwarf;
 var
   ti: TFpSymbolDwarfType;
   InitLocParserData: TInitLocParserData;
+  tmp: TFpDbgMemLocation;
 begin
   InitLocParserData.ObjectDataAddress := AnAddress;
   InitLocParserData.ObjectDataAddrPush := False;
@@ -4295,6 +4297,9 @@ procedure TFpSymbolDwarfTypeStructure.KindNeeded;
 begin
   if (InformationEntry.AbbrevTag = DW_TAG_class_type) then
     SetKind(skClass)
+  else
+  if (InformationEntry.AbbrevTag = DW_TAG_interface_type) then
+    SetKind(skInterface)
   else
     SetKind(skRecord);
 end;
