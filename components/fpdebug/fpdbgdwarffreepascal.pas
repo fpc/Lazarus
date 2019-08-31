@@ -114,7 +114,7 @@ type
     procedure KindNeeded; override;
     procedure ForwardToSymbolNeeded; override;
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType; ATargetCacheIndex: Integer): Boolean; override;
+                            ATargetType: TFpSymbolDwarfType): Boolean; override;
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
     function DataSize: Integer; override;
   public
@@ -646,27 +646,18 @@ end;
 
 function TFpSymbolDwarfFreePascalTypePointer.GetDataAddressNext(
   AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-  ATargetType: TFpSymbolDwarfType; ATargetCacheIndex: Integer): Boolean;
-var
-  t: TFpDbgMemLocation;
+  ATargetType: TFpSymbolDwarfType): Boolean;
 begin
   if not IsInternalPointer then exit(True);
 
-  t := AValueObj.DataAddressCache[ATargetCacheIndex];
-  if IsInitializedLoc(t) then begin
-    AnAddress := t;
-  end
-  else begin
-    Result := AValueObj.MemManager <> nil;
-    if not Result then
-      exit;
-    AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, CompilationUnit.AddressSize);
-    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
-  end;
+  Result := AValueObj.MemManager <> nil;
+  if not Result then
+    exit;
+  AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, CompilationUnit.AddressSize);
   Result := IsValidLoc(AnAddress);
 
   if Result then
-    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex)
+    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType)
   else
   if IsError(AValueObj.MemManager.LastError) then
     SetLastError(AValueObj.MemManager.LastError);
