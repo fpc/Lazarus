@@ -480,6 +480,8 @@ type
   protected
     function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
                                 AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
+    function ComputeDataMemberAddress(const AnInformationEntry: TDwarfInformationEntry;
+                              AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation): Boolean; inline;
     function  LocationFromAttrData(const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
                               AnInitLocParserData: PInitLocParserData = nil;
@@ -2611,8 +2613,6 @@ begin
 end;
 
 function TFpValueDwarfStructTypeCast.GetMemberCount: Integer;
-var
-  ti: TFpSymbol;
 begin
   Result := 0;
   if not HasTypeCastInfo then
@@ -2932,6 +2932,46 @@ begin
   Result := True;
 end;
 
+function TFpSymbolDwarf.ComputeDataMemberAddress(
+  const AnInformationEntry: TDwarfInformationEntry; AValueObj: TFpValueDwarf;
+  var AnAddress: TFpDbgMemLocation): Boolean;
+var
+  AttrData: TDwarfAttribData;
+  Form: Cardinal;
+  ConstOffs: Int64;
+  InitLocParserData: TInitLocParserData;
+begin
+  Result := True;
+  if AnInformationEntry.GetAttribData(DW_AT_data_member_location, AttrData) then begin
+    Form := AnInformationEntry.AttribForm[AttrData.Idx];
+    Result := False;
+
+    if Form in [DW_FORM_data1, DW_FORM_data2, DW_FORM_sdata, DW_FORM_udata] then begin
+      if AnInformationEntry.ReadValue(AttrData, ConstOffs) then begin
+        {$PUSH}{$R-}{$Q-} // TODO: check overflow
+        AnAddress.Address := AnAddress.Address + ConstOffs;
+        {$POP}
+         Result := True;
+      end
+      else
+        SetLastError(CreateError(fpErrAnyError));
+    end
+
+    // TODO: loclistptr: DW_FORM_data4, DW_FORM_data8,
+    else
+
+    if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4] then begin
+      InitLocParserData.ObjectDataAddress := AnAddress;
+      InitLocParserData.ObjectDataAddrPush := True;
+      Result := LocationFromAttrData(AttrData, AValueObj, AnAddress, @InitLocParserData);
+    end
+
+    else begin
+      SetLastError(CreateError(fpErrAnyError));
+    end;
+  end;
+end;
+
 function TFpSymbolDwarf.LocationFromAttrData(
   const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
   var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
@@ -3045,7 +3085,6 @@ function TFpSymbolDwarf.GetDataAddress(AValueObj: TFpValueDwarf;
 var
   ti: TFpSymbolDwarfType;
   InitLocParserData: TInitLocParserData;
-  tmp: TFpDbgMemLocation;
 begin
   InitLocParserData.ObjectDataAddress := AnAddress;
   InitLocParserData.ObjectDataAddrPush := False;
@@ -3163,7 +3202,6 @@ end;
 function TFpSymbolDwarfData.GetNestedSymbol(AIndex: Int64): TFpSymbol;
 var
   ti: TFpSymbol;
-  k: TDbgSymbolKind;
 begin
   ti := TypeInfo;
   if ti = nil then begin
@@ -3171,7 +3209,6 @@ begin
     exit;
   end;
 
-  k := ti.Kind;
   // while holding result, until refcount added, do not call any function
   Result := ti.NestedSymbol[AIndex];
   assert((Result = nil) or (Result is TFpSymbolDwarfData), 'TFpSymbolDwarfData.GetMember is Value');
@@ -3180,15 +3217,12 @@ end;
 function TFpSymbolDwarfData.GetNestedSymbolByName(AIndex: String): TFpSymbol;
 var
   ti: TFpSymbol;
-  k: TDbgSymbolKind;
 begin
   ti := TypeInfo;
   if ti = nil then begin
     Result := inherited GetNestedSymbolByName(AIndex);
     exit;
   end;
-
-  k := ti.Kind;
 
   // while holding result, until refcount added, do not call any function
   Result := ti.NestedSymbolByName[AIndex];
@@ -4092,9 +4126,6 @@ end;
 
 function TFpSymbolDwarfDataMember.GetValueAddress(AValueObj: TFpValueDwarf; out
   AnAddress: TFpDbgMemLocation): Boolean;
-var
-  BaseAddr: TFpDbgMemLocation;
-  InitLocParserData: TInitLocParserData;
 begin
   AnAddress := AValueObj.DataAddressCache[0];
   Result := IsValidLoc(AnAddress);
@@ -4113,7 +4144,7 @@ begin
     exit;
   end;
   Assert((ParentTypeInfo is TFpSymbolDwarf) and (ParentTypeInfo.SymbolType = stType), '');
-  if not AValueObj.GetStructureDwarfDataAddress(BaseAddr, TFpSymbolDwarfType(ParentTypeInfo)) then begin
+  if not AValueObj.GetStructureDwarfDataAddress(AnAddress, TFpSymbolDwarfType(ParentTypeInfo)) then begin
     debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
     Result := False;
     if not IsError(LastError) then
@@ -4122,9 +4153,9 @@ begin
   end;
   //TODO: AValueObj.StructureValue.LastError
 
-  InitLocParserData.ObjectDataAddress := BaseAddr;
-  InitLocParserData.ObjectDataAddrPush := True;
-  Result := LocationFromTag(DW_AT_data_member_location, AValueObj, AnAddress, @InitLocParserData);
+  Result := ComputeDataMemberAddress(InformationEntry, AValueObj, AnAddress);
+  if not Result then
+    exit;
 
   AValueObj.DataAddressCache[0] := AnAddress;
 end;
@@ -4182,8 +4213,10 @@ function TFpSymbolDwarfTypeStructure.GetDataAddressNext(AValueObj: TFpValueDwarf
   ATargetCacheIndex: Integer): Boolean;
 var
   t: TFpDbgMemLocation;
-  InitLocParserData: TInitLocParserData;
 begin
+  Result := IsReadableMem(AnAddress);
+  if not Result then
+    exit;
   t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;
@@ -4191,17 +4224,16 @@ begin
   end
   else begin
     InitInheritanceInfo;
-    //TODO: may be a constant // offset
-    InitLocParserData.ObjectDataAddress := AnAddress;
-    InitLocParserData.ObjectDataAddrPush := True;
-    Result := LocationFromTag(DW_AT_data_member_location, AValueObj, t, @InitLocParserData, FInheritanceInfo);
+
+    Result := FInheritanceInfo = nil;
+    if Result then
+      exit;
+
+    Result := ComputeDataMemberAddress(FInheritanceInfo, AValueObj, AnAddress);
     if not Result then
       exit;
-    AnAddress := t;
-    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
 
-    if IsError(AValueObj.MemManager.LastError) then
-      SetLastError(AValueObj.MemManager.LastError);
+    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
   end;
 
   Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex);
