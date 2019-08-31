@@ -480,9 +480,10 @@ type
   protected
     function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
                                 AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
-    function  LocationFromTag(ATag: Cardinal; const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
+    function  LocationFromAttrData(const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
-                              AnInitLocParserData: PInitLocParserData = nil
+                              AnInitLocParserData: PInitLocParserData = nil;
+                              AnAdjustAddress: Boolean = False
                              ): Boolean;
     function  LocationFromTag(ATag: Cardinal; AValueObj: TFpValueDwarf;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
@@ -2931,15 +2932,15 @@ begin
   Result := True;
 end;
 
-function TFpSymbolDwarf.LocationFromTag(ATag: Cardinal;
+function TFpSymbolDwarf.LocationFromAttrData(
   const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
-  var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData
-  ): Boolean;
+  var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
+  AnAdjustAddress: Boolean): Boolean;
 var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
 begin
-  //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
+  //debugln(['TDbgDwarfIdentifier.LocationFromAttrData', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
   AnAddress := InvalidLoc;
@@ -2948,12 +2949,12 @@ begin
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
   if not InformationEntry.ReadValue(AnAttribData, Val) then begin
-    DebugLn(['LocationFromTag: failed to read DW_AT_location']);
+    DebugLn(['LocationFromAttrData: failed to read DW_AT_location']);
     exit;
   end;
 
   if Length(Val) = 0 then begin
-    DebugLn('LocationFromTag: Warning DW_AT_location empty');
+    DebugLn('LocationFromAttrData: Warning DW_AT_location empty');
     //exit;
   end;
 
@@ -2967,9 +2968,9 @@ begin
 
   AnAddress := LocationParser.ResultData;
   Result := IsValidLoc(AnAddress);
-  if IsTargetAddr(AnAddress) and  (ATag=DW_AT_location) then
+  if IsTargetAddr(AnAddress) and  AnAdjustAddress then
     AnAddress.Address :=CompilationUnit.MapAddressToNewValue(AnAddress.Address);
-  debugln(not Result, ['TDbgDwarfIdentifier.LocationFromTag  FAILED']); // TODO
+  debugln(not Result, ['TDbgDwarfIdentifier.LocationFromAttrDataFAILED']); // TODO
 
   LocationParser.Free;
 end;
@@ -2999,11 +3000,11 @@ begin
     if not Result then
       AnAddress := InvalidLoc;
     if not Result then
-      DebugLn(['LocationFromTag: failed to read DW_AT_location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
+      DebugLn(['LocationFromTag: failed to read DW_AT_..._location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
     exit;
   end;
 
-  Result := LocationFromTag(ATag, AttrData, AValueObj, AnAddress, AnInitLocParserData);
+  Result := LocationFromAttrData(AttrData, AValueObj, AnAddress, AnInitLocParserData, ATag = DW_AT_location);
 end;
 
 function TFpSymbolDwarf.ConstantFromTag(ATag: Cardinal; out
@@ -3577,14 +3578,14 @@ begin
         if not IsValidLoc(InitLocParserData.ObjectDataAddress) then
           InitLocParserData.ObjectDataAddress := AValueObj.OrdOrAddress;
         InitLocParserData.ObjectDataAddrPush := False;
-        if LocationFromTag(AnAttrib, AttrData, AValueObj, AnAddress, @InitLocParserData) then begin
+        if LocationFromAttrData(AttrData, AValueObj, AnAddress, @InitLocParserData) then begin
           ABoundState := rfConst;
           ABoundConst := Int64(AnAddress.Address);
         end
         else
           ABoundState := rfError;
       end
-      else // TODO: check AttrData=>FORM is correct for LocationFromTag
+      else // TODO: check AttrData=>FORM is correct for LocationFromAttrData
         ABoundState := rfNotRead; // There is a bound, but it can not be read yet
     end;
   end
@@ -4932,7 +4933,7 @@ begin
   if IsInitializedLoc(AnAddress) then
     exit;
   if InformationEntry.GetAttribData(DW_AT_location, AttrData) then
-    Result := LocationFromTag(DW_AT_location, AttrData, AValueObj, AnAddress)
+    Result := LocationFromAttrData(AttrData, AValueObj, AnAddress, nil, True)
   else
     Result := ConstantFromTag(DW_AT_const_value, FConstData, AnAddress);
   AValueObj.DataAddressCache[0] := AnAddress;
