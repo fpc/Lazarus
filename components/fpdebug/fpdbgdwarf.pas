@@ -478,6 +478,8 @@ type
                                 AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
     function ComputeDataMemberAddress(const AnInformationEntry: TDwarfInformationEntry;
                               AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation): Boolean; inline;
+    function ConstRefOrExprFromAttrData(const AnAttribData: TDwarfAttribData;
+                              AValueObj: TFpValueDwarf; out AValue: TDBGPtr): Boolean;
     function  LocationFromAttrData(const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
                               AnInitLocParserData: PInitLocParserData = nil;
@@ -486,7 +488,6 @@ type
     function  LocationFromTag(ATag: Cardinal; AValueObj: TFpValueDwarf;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
                               AnInitLocParserData: PInitLocParserData = nil;
-                              AnInformationEntry: TDwarfInformationEntry = nil;
                               ASucessOnMissingTag: Boolean = False
                              ): Boolean; // deprecated
     function  ConstantFromTag(ATag: Cardinal; out AConstData: TByteDynArray;
@@ -2973,6 +2974,69 @@ begin
   end;
 end;
 
+function TFpSymbolDwarf.ConstRefOrExprFromAttrData(
+  const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf; out
+  AValue: TDBGPtr): Boolean;
+var
+  Form: Cardinal;
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
+  NewInfo: TDwarfInformationEntry;
+  RefSymbol: TFpSymbolDwarfData;
+  InitLocParserData: TInitLocParserData;
+  t: TFpDbgMemLocation;
+begin
+  Form := InformationEntry.AttribForm[AnAttribData.Idx];
+  Result := False;
+
+  if Form in [DW_FORM_data1, DW_FORM_data2, DW_FORM_data4, DW_FORM_data8,
+              DW_FORM_sdata, DW_FORM_udata]
+  then begin
+    Result := InformationEntry.ReadValue(AnAttribData, AValue);
+    if not Result then
+      SetLastError(CreateError(fpErrAnyError));
+  end
+
+  else
+  if Form in [DW_FORM_ref1, DW_FORM_ref2, DW_FORM_ref4, DW_FORM_ref8,
+              DW_FORM_ref_addr, DW_FORM_ref_udata]
+  then begin
+    Result := InformationEntry.ReadReference(AnAttribData, FwdInfoPtr, FwdCompUint);
+    if Result then begin
+      NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+      RefSymbol := TFpSymbolDwarfData.CreateValueSubClass('', NewInfo);
+      NewInfo.ReleaseReference;
+      Result := RefSymbol <> nil;
+      if Result then begin
+        AValue := RefSymbol.Value.AsInteger;
+        Result := not IsError(RefSymbol.LastError);
+        // TODO: copy the error
+        RefSymbol.ReleaseReference;
+      end;
+    end;
+    if not Result then
+      SetLastError(CreateError(fpErrAnyError));
+  end
+
+  else
+  if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4]
+  then begin
+    InitLocParserData.ObjectDataAddress := AValueObj.Address;
+    if not IsValidLoc(InitLocParserData.ObjectDataAddress) then
+      InitLocParserData.ObjectDataAddress := AValueObj.OrdOrAddress;
+    InitLocParserData.ObjectDataAddrPush := False;
+    Result := LocationFromAttrData(AnAttribData, AValueObj, t, @InitLocParserData);
+    if Result then
+      AValue := t.Address
+    else
+      SetLastError(CreateError(fpErrLocationParser));
+  end
+
+  else begin
+    SetLastError(CreateError(fpErrAnyError));
+  end;
+end;
+
 function TFpSymbolDwarf.LocationFromAttrData(
   const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
   var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
@@ -3016,22 +3080,20 @@ begin
   LocationParser.Free;
 end;
 
-function TFpSymbolDwarf.LocationFromTag(ATag: Cardinal; AValueObj: TFpValueDwarf;
-  var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
-  AnInformationEntry: TDwarfInformationEntry; ASucessOnMissingTag: Boolean): Boolean;
+function TFpSymbolDwarf.LocationFromTag(ATag: Cardinal;
+  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
+  AnInitLocParserData: PInitLocParserData; ASucessOnMissingTag: Boolean
+  ): Boolean;
 var
   AttrData: TDwarfAttribData;
 begin
   //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
-  if AnInformationEntry = nil then
-    AnInformationEntry := InformationEntry;
-
   //TODO: avoid copying data
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
-  if not AnInformationEntry.GetAttribData(ATag, AttrData) then begin
+  if not InformationEntry.GetAttribData(ATag, AttrData) then begin
     (* if ASucessOnMissingTag = true AND tag does not exist
        then AnAddress will NOT be modified
        this can be used for DW_AT_data_member_location, if it does not exist members are on input location
@@ -3085,10 +3147,35 @@ function TFpSymbolDwarf.GetDataAddress(AValueObj: TFpValueDwarf;
 var
   ti: TFpSymbolDwarfType;
   InitLocParserData: TInitLocParserData;
+  AttrData: TDwarfAttribData;
+  t: TDBGPtr;
 begin
+  Result := False;
+  if InformationEntry.GetAttribData(DW_AT_allocated, AttrData) then begin
+    if not ConstRefOrExprFromAttrData(AttrData, AValueObj, t) then begin
+      SetLastError(CreateError(fpErrAnyError));
+      exit;
+    end;
+    if t = 0 then begin
+      AnAddress := NilLoc;
+      exit(True);
+    end;
+  end;
+
+  if InformationEntry.GetAttribData(DW_AT_associated, AttrData) then begin
+    if not ConstRefOrExprFromAttrData(AttrData, AValueObj, t) then begin
+      SetLastError(CreateError(fpErrAnyError));
+      exit;
+    end;
+    if t = 0 then begin
+      AnAddress := NilLoc;
+      exit(True);
+    end;
+  end;
+
   InitLocParserData.ObjectDataAddress := AnAddress;
   InitLocParserData.ObjectDataAddrPush := False;
-  Result := LocationFromTag(DW_AT_data_location, AValueObj, AnAddress, @InitLocParserData, nil, True);
+  Result := LocationFromTag(DW_AT_data_location, AValueObj, AnAddress, @InitLocParserData, True);
   if not Result then
     exit;
 
