@@ -52,6 +52,9 @@ type
 
   { TCustomShellTreeView }
 
+  TAddItemEvent = procedure(Sender: TObject; const ABasePath: String;
+                            const AFileInfo: TSearchRec; var CanAdd: Boolean) of object;
+
   TCustomShellTreeView = class(TCustomTreeView)
   private
     FObjectTypes: TObjectTypes;
@@ -59,6 +62,7 @@ type
     FShellListView: TCustomShellListView;
     FFileSortType: TFileSortType;
     FInitialRoot: String;
+    FOnAddItem: TAddItemEvent;
     { Setters and getters }
     function GetPath: string;
     procedure SetFileSortType(const AValue: TFileSortType);
@@ -74,6 +78,7 @@ type
     function  PopulateTreeNodeWithFiles(
       ANode: TTreeNode; ANodePath: string): Boolean;
     procedure DoSelectionChanged; override;
+    procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function CanExpand(Node: TTreeNode): Boolean; override;
   public
     { Basic methods }
@@ -96,7 +101,7 @@ type
     property FileSortType: TFileSortType read FFileSortType write SetFileSortType;
     property Root: string read FRoot write SetRoot;
     property Path: string read GetPath write SetPath;
-
+    property OnAddItem: TAddItemEvent read FOnAddItem write FOnAddItem;
     { Protected properties which users may want to access, see bug 15374 }
     property Items;
   end;
@@ -145,6 +150,7 @@ type
     property Tag;
     property ToolTips;
     property Visible;
+    property OnAddItem;
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
     property OnChange;
@@ -199,6 +205,7 @@ type
     FObjectTypes: TObjectTypes;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
+    FOnAddItem: TAddItemEvent;
     FOnFileAdded: TCSLVFileAddedEvent;
     { Setters and getters }
     procedure SetMask(const AValue: string);
@@ -208,6 +215,7 @@ type
     { Methods specific to Lazarus }
     procedure PopulateWithRoot();
     procedure Resize; override;
+    procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     property OnFileAdded: TCSLVFileAddedEvent read FOnFileAdded write FOnFileAdded;
   public
     { Basic methods }
@@ -220,6 +228,7 @@ type
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
+    property OnAddItem: TAddItemEvent read FOnAddItem write FOnAddItem;
     { Protected properties which users may want to access, see bug 15374 }
     property Items;
   end;
@@ -312,6 +321,7 @@ type
     property OnSelectItem;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property OnAddItem;
     property OnFileAdded;
     { TCustomShellListView properties }
     property ObjectTypes;
@@ -801,6 +811,7 @@ var
   i: Integer;
   Files: TStringList;
   NewNode: TTreeNode;
+  CanAdd: Boolean;
 
    function HasSubDir(Const ADir: String): Boolean;
    var
@@ -846,15 +857,20 @@ begin
 
     for i := 0 to Files.Count - 1 do
     begin
-      NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil);
-      TShellTreeNode(NewNode).FFileInfo := TFileItem(Files.Objects[i]).FileInfo;
-      TShellTreeNode(NewNode).SetBasePath(TFileItem(Files.Objects[i]).FBasePath);
+      CanAdd := True;
+      with TFileItem(Files.Objects[i]) do DoAddItem(FBasePath, FileInfo, CanAdd);
+      if CanAdd then
+      begin
+        NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil);
+        TShellTreeNode(NewNode).FFileInfo := TFileItem(Files.Objects[i]).FileInfo;
+        TShellTreeNode(NewNode).SetBasePath(TFileItem(Files.Objects[i]).FBasePath);
 
-      if (fObjectTypes * [otNonFolders] = []) then
-        NewNode.HasChildren := (TShellTreeNode(NewNode).IsDirectory and
-                               HasSubDir(AppendpathDelim(ANodePath)+Files[i]))
-      else
-        NewNode.HasChildren := TShellTreeNode(NewNode).IsDirectory;
+        if (fObjectTypes * [otNonFolders] = []) then
+          NewNode.HasChildren := (TShellTreeNode(NewNode).IsDirectory and
+                                 HasSubDir(AppendpathDelim(ANodePath)+Files[i]))
+        else
+          NewNode.HasChildren := TShellTreeNode(NewNode).IsDirectory;
+      end;
     end;
   finally
     Files.Free;
@@ -940,6 +956,13 @@ begin
         FShellListView.Root := '';
     end;
   end;
+end;
+
+procedure TCustomShellTreeView.DoAddItem(const ABasePath: String;
+  const AFileInfo: TSearchRec; var CanAdd: Boolean);
+begin
+  if Assigned(FOnAddItem) then
+    FOnAddItem(Self, ABasePath, AFileInfo, CanAdd);
 end;
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
@@ -1383,6 +1406,7 @@ var
   NewItem: TListItem;
   CurFileName, CurFilePath: string;
   CurFileSize: Int64;
+  CanAdd: Boolean;
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
@@ -1397,24 +1421,29 @@ begin
 
     for i := 0 to Files.Count - 1 do
     begin
-      NewItem := Items.Add;
-      CurFileName := Files.Strings[i];
-      CurFilePath := IncludeTrailingPathDelimiter(FRoot) + CurFileName;
-      // First column - Name
-      NewItem.Caption := CurFileName;
-      // Second column - Size
-      // The raw size in bytes is stored in the data part of the item
-      CurFileSize := FileSize(CurFilePath); // in Bytes
-      NewItem.Data := Pointer(PtrInt(CurFileSize));
-      if CurFileSize < 1024 then
-        NewItem.SubItems.Add(Format(sShellCtrlsBytes, [IntToStr(CurFileSize)]))
-      else if CurFileSize < 1024 * 1024 then
-        NewItem.SubItems.Add(Format(sShellCtrlsKB, [IntToStr(CurFileSize div 1024)]))
-      else
-        NewItem.SubItems.Add(Format(sShellCtrlsMB, [IntToStr(CurFileSize div (1024 * 1024))]));
-      // Third column - Type
-      NewItem.SubItems.Add(ExtractFileExt(CurFileName));
-      if Assigned(FOnFileAdded) then FOnFileAdded(Self,NewItem);
+      CanAdd := True;
+      with TFileItem(Files.Objects[i]) do DoAddItem(FBasePath, FileInfo, CanAdd);
+      if CanAdd then
+      begin
+        NewItem := Items.Add;
+        CurFileName := Files.Strings[i];
+        CurFilePath := IncludeTrailingPathDelimiter(FRoot) + CurFileName;
+        // First column - Name
+        NewItem.Caption := CurFileName;
+        // Second column - Size
+        // The raw size in bytes is stored in the data part of the item
+        CurFileSize := FileSize(CurFilePath); // in Bytes
+        NewItem.Data := Pointer(PtrInt(CurFileSize));
+        if CurFileSize < 1024 then
+          NewItem.SubItems.Add(Format(sShellCtrlsBytes, [IntToStr(CurFileSize)]))
+        else if CurFileSize < 1024 * 1024 then
+          NewItem.SubItems.Add(Format(sShellCtrlsKB, [IntToStr(CurFileSize div 1024)]))
+        else
+          NewItem.SubItems.Add(Format(sShellCtrlsMB, [IntToStr(CurFileSize div (1024 * 1024))]));
+        // Third column - Type
+        NewItem.SubItems.Add(ExtractFileExt(CurFileName));
+        if Assigned(FOnFileAdded) then FOnFileAdded(Self,NewItem);
+      end;
     end;
     Sort;
   finally
@@ -1455,6 +1484,13 @@ begin
      Column[0].Width, ' C1.Width=', Column[1].Width,
      ' C2.Width=', Column[2].Width]);
   {$endif}
+end;
+
+procedure TCustomShellListView.DoAddItem(const ABasePath: String;
+  const AFileInfo: TSearchRec; var CanAdd: Boolean);
+begin
+  if Assigned(FOnAddItem) then
+    FOnAddItem(Self, ABasePath, AFileInfo, CanAdd);
 end;
 
 function TCustomShellListView.GetPathFromItem(ANode: TListItem): string;
