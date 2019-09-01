@@ -500,10 +500,8 @@ procedure TCustomEdit.WMChar(var Message: TLMChar);
 begin
   // all normal characters are handled by the Edit
   //debugln('TCustomEdit.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
-  if (KeyDataToShiftState(Message.KeyData) * [ssCtrl, ssAlt] = [])
-      and (Message.CharCode in [ord('A')..ord('Z'),ord('a')..ord('z'),ord('0')..ord('9')]) then
-    // eat normal keys, so they don't trigger accelerators
-    Message.Result := 1
+  if KeyDataToShiftState(Message.KeyData) * [ssCtrl, ssAlt] = [] then
+    Message.Result := 1  // eat normal keys, so they don't trigger accelerators
   else
     inherited WMChar(Message);
 end;
