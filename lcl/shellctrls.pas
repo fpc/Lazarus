@@ -1432,7 +1432,7 @@ begin
         NewItem.Caption := CurFileName;
         // Second column - Size
         // The raw size in bytes is stored in the data part of the item
-        CurFileSize := FileSize(CurFilePath); // in Bytes
+        CurFileSize := TFileItem(Files.Objects[i]).FFileInfo.Size; // in Bytes. (We already know this, so no need for FileSize(CurFilePath))
         NewItem.Data := Pointer(PtrInt(CurFileSize));
         if CurFileSize < 1024 then
           NewItem.SubItems.Add(Format(sShellCtrlsBytes, [IntToStr(CurFileSize)]))
