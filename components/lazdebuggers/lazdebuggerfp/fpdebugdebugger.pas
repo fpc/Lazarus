@@ -649,6 +649,7 @@ begin
     e := TCallStackEntry(It.DataPtr^);
     if e.Validity = ddsRequested then
     begin
+      ProcVal := nil;
       if ThreadCallStack[e.Index].ProcSymbol <> nil then
         ProcVal := ThreadCallStack[e.Index].ProcSymbol.Value;
 
