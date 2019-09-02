@@ -21,7 +21,7 @@ uses
   DbgIntfDebuggerBase,
   FpdMemoryTools,
   FpPascalParser,
-  FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal;
+  FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgDwarf;
 
 type
 
@@ -663,9 +663,12 @@ begin
         else
           Reg := RegList.FindRegisterByDwarfIndex(16);
         if Reg <> nil then begin
+          // TODO: TDbgCallstackEntry.GetParamsAsString
           AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, e.Index, Reg.NumValue);
           if AContext <> nil then begin
             AContext.MemManager.DefaultContext := AContext;
+            if ProcVal is TFpValueDwarfBase then
+              TFpValueDwarfBase(ProcVal).Context := AContext;
             FPrettyPrinter.MemManager := AContext.MemManager;
             FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
 
@@ -677,6 +680,8 @@ begin
                 params := params + v;
               end;
             end;
+            if ProcVal is TFpValueDwarfBase then
+              TFpValueDwarfBase(ProcVal).Context := nil;
             AContext.ReleaseReference;
           end;
         end;
