@@ -364,6 +364,9 @@ begin
   if AMin > AMax then AMin := AMax;
   if APosition < AMin then APosition := AMin;
   if APosition > AMax then APosition := AMax;
+  if AMax - AMin > $3FFF then
+    // avoid massive slow-down when drawing too many tick marks
+    SetTickStyle(tsNone);
 end;
 
 class function TCustomTrackBar.GetControlClassDefaultSize: TSize;
