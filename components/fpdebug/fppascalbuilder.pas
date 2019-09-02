@@ -11,10 +11,7 @@ uses
 
 type
   TTypeNameFlag = (
-    tnfOnlyDeclared,    // do not return a substitute with ^ symbol
-    tnfIncludeOneRef    // If it is a pointer, and the pointed-to name is known, return ^TXxx
-                        //   without tnfOnlyDeclared, may return ^^^TXxx if needed
-
+    tnfOnlyDeclared    // do not return a substitute with ^ symbol
   );
   TTypeNameFlags = set of TTypeNameFlag;
 
@@ -95,6 +92,7 @@ function GetTypeName(out ATypeName: String; ADbgSymbol: TFpSymbol;
   AFlags: TTypeNameFlags): Boolean;
 var
   s: String;
+  sym: TFpSymbol;
 begin
   ATypeName := '';
   Result := ADbgSymbol <> nil;
@@ -110,26 +108,50 @@ begin
   ATypeName := ADbgSymbol.Name;
   Result := ATypeName <> '';
 
-  if (tnfIncludeOneRef in AFlags) or
-     ((not Result) and (not (tnfOnlyDeclared in AFlags)))
-  then begin
-    ATypeName := '^';
-    while (ADbgSymbol.Kind = skPointer) and (ADbgSymbol.TypeInfo <> nil) do begin
-      ADbgSymbol := ADbgSymbol.TypeInfo;
-      s := ADbgSymbol.Name;
-      if s <> '' then begin
-        ATypeName := ATypeName + s;
-        Result := True;
-        exit;
-      end;
+  if Result then
+    exit;
 
-      if (tnfOnlyDeclared in AFlags) then // only one level
-        exit;
-      ATypeName := ATypeName + '^';
+  ATypeName := '';
+  sym := ADbgSymbol;
+  while (sym.Kind = skPointer) and (sym.TypeInfo <> nil) do begin
+    ATypeName := ATypeName + '^';
+    sym := sym.TypeInfo;
+    s := sym.Name;
+    if s <> '' then begin
+      ATypeName := ATypeName + s;
+      Result := True;
+      exit;
     end;
+  end;
 
-    ATypeName := '';
-    Result := False;
+  Result := True;
+  case ADbgSymbol.Kind of
+    skInstance:     ATypeName := '{class}';
+    skProcedure:    ATypeName := '{procedure}';
+    skFunction:     ATypeName := '{function}';
+    skProcedureRef: ATypeName := '{procedure}';
+    skFunctionRef:  ATypeName := '{function}';
+    skPointer:      ATypeName := '{pointer}';
+    skInteger:      ATypeName := '{signed int}';
+    skCardinal:     ATypeName := '{unsigned int}';
+    skBoolean:      ATypeName := '{boolean}';
+    skChar:         ATypeName := '{char}';
+    skFloat:        ATypeName := '{float}';
+    skString:       ATypeName := '{string}';
+    skAnsiString:   ATypeName := '{string}';
+    skCurrency:     ATypeName := '{currency}';
+    skVariant:      ATypeName := '{variant}';
+    skWideString:   ATypeName := '{widestring}';
+    skEnum:         ATypeName := '{enum}';
+    skSet:          ATypeName := '{set}';
+    skRecord:       ATypeName := '{record}';
+    skObject:       ATypeName := '{object}';
+    skClass:        ATypeName := '{class}';
+    skInterface:    ATypeName := '{interface}';
+    else begin
+        ATypeName := '';
+        Result := False;
+      end;
   end;
 
 end;
