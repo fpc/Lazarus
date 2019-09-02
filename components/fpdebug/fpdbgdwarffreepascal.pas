@@ -113,8 +113,9 @@ type
     procedure TypeInfoNeeded; override;
     procedure KindNeeded; override;
     procedure ForwardToSymbolNeeded; override;
+    function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; override;
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType): Boolean; override;
+      out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
     function DataSize: Integer; override;
   public
@@ -644,11 +645,24 @@ begin
     SetForwardToSymbol(nil); // inherited ForwardToSymbolNeeded;
 end;
 
-function TFpSymbolDwarfFreePascalTypePointer.GetDataAddressNext(
-  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-  ATargetType: TFpSymbolDwarfType): Boolean;
+function TFpSymbolDwarfFreePascalTypePointer.GetNextTypeInfoForDataAddress(
+  ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType;
 begin
-  if not IsInternalPointer then exit(True);
+  if IsInternalPointer then
+    Result := NestedTypeInfo
+  else
+    Result := inherited;
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.GetDataAddressNext(
+  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation; out
+  ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean;
+begin
+  if (not IsInternalPointer) and (ATargetType = nil) then exit(True);
+
+  Result := inherited GetDataAddressNext(AValueObj, AnAddress, ADoneWork, ATargetType);
+  if (not Result) or ADoneWork then
+    exit;
 
   Result := AValueObj.MemManager <> nil;
   if not Result then
@@ -656,10 +670,9 @@ begin
   AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, CompilationUnit.AddressSize);
   Result := IsValidLoc(AnAddress);
 
-  if Result then
-    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType)
-  else
-  if IsError(AValueObj.MemManager.LastError) then
+  if (not Result) and
+     IsError(AValueObj.MemManager.LastError)
+  then
     SetLastError(AValueObj.MemManager.LastError);
   // Todo: other error
 end;

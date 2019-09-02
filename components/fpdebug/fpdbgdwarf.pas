@@ -497,9 +497,10 @@ type
                              ): Boolean;
     // GetDataAddress: data of a class, or string
     function GetDataAddress(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType): Boolean;
+                            ATargetType: TFpSymbolDwarfType = nil): Boolean;
+    function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; virtual;
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType): Boolean; virtual;
+      out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; virtual;
     function HasAddress: Boolean; virtual;
 
     procedure Init; override;
@@ -641,6 +642,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure TypeInfoNeeded; override;
     procedure ForwardToSymbolNeeded; override;
+    function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; override;
   public
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
   end;
@@ -651,7 +653,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     function GetFlags: TDbgSymbolFlags; override;
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType): Boolean; override;
+      out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
   end;
 
   { TFpSymbolDwarfTypeDeclaration }
@@ -664,6 +666,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TFpSymbolDwarfTypeSubRange = class(TFpSymbolDwarfTypeModifier)
   // TODO not a modifier, maybe have a forwarder base class
+  // GetNextTypeInfoForDataAddress => wrong behaviour, but basetypes should not change addr anyway.
   private
     FLowBoundConst: Int64;
     FLowBoundValue: TFpValue;
@@ -727,8 +730,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetNestedSymbolCount: Integer; override;
 
     // TODO: deal with DW_TAG_pointer_type
-    function GetDataAddressNext(AValueObj: TFpValueDwarf;
-      var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean; override;
+    function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
+      out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
     procedure KindNeeded; override;
   public
     destructor Destroy; override;
@@ -841,7 +844,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetNestedSymbolCount: Integer; override;
 
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType): Boolean; override;
+      out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
   public
     destructor Destroy; override;
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
@@ -1482,13 +1485,12 @@ begin
   if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then
     Result := ConstLoc(FTypeCastSourceValue.AsCardinal)
   else
-    GetDwarfDataAddress(Result, FOwner);
+    GetDwarfDataAddress(Result);
 end;
 
 function TFpValueDwarf.GetDataAddress: TFpDbgMemLocation;
 begin
-  if not GetDwarfDataAddress(Result) then
-    Result := InvalidLoc;
+  GetDwarfDataAddress(Result);
 end;
 
 function TFpValueDwarf.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
@@ -1513,7 +1515,7 @@ begin
     Result := ti <> nil;
     if not Result then
       exit;
-    Assert((ti is TFpSymbolDwarf) and (ti.SymbolType = stType), 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo = stType');
+    Assert((ti is TFpSymbolDwarfType) and (ti.SymbolType = stType), 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo = stType');
 
     AnAddress := Address;
     Result := IsReadableLoc(AnAddress);
@@ -1529,11 +1531,11 @@ begin
   begin
     // TODO: cache own address
     // try typecast
+    AnAddress := InvalidLoc;
     Result := HasTypeCastInfo;
     if not Result then
       exit;
     fields := FTypeCastSourceValue.FieldFlags;
-    AnAddress := InvalidLoc;
     if svfOrdinal in fields then
       AnAddress := ConstLoc(FTypeCastSourceValue.AsCardinal)
     else
@@ -1541,16 +1543,16 @@ begin
       AnAddress := FTypeCastSourceValue.Address;
 
     Result := IsReadableLoc(AnAddress);
-    if not Result then
-      exit;
-
-    Result := FTypeCastTargetType.GetDataAddress(Self, AnAddress, ATargetType);
-    if IsError(FTypeCastTargetType.LastError) then
-      FLastError := FTypeCastTargetType.LastError;
+    if Result then begin
+      Result := FTypeCastTargetType.GetDataAddress(Self, AnAddress, ATargetType);
+      if IsError(FTypeCastTargetType.LastError) then
+        FLastError := FTypeCastTargetType.LastError;
+    end;
   end;
 
-  if Result then
-    FCachedDataAddress := AnAddress;
+  if not Result then
+    AnAddress := InvalidLoc;
+  FCachedDataAddress := AnAddress;
 end;
 
 function TFpValueDwarf.GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
@@ -2024,8 +2026,7 @@ begin
   if (FSize <= 0) then
     Result := InvalidLoc
   else
-  if not GetDwarfDataAddress(Result, Owner) then
-    Result := InvalidLoc
+    Result := inherited;
 end;
 
 function TFpValueDwarfPointer.GetAsString: AnsiString;
@@ -2256,7 +2257,7 @@ begin
   t := t.TypeInfo;
   if t = nil then exit;
 
-  GetDwarfDataAddress(DAddr, FOwner);
+  GetDwarfDataAddress(DAddr);
   if not MemManager.ReadSet(DAddr, FSize, FMem) then begin
     FLastError := MemManager.LastError;
     exit; // TODO: error
@@ -3146,10 +3147,11 @@ function TFpSymbolDwarf.GetDataAddress(AValueObj: TFpValueDwarf;
   var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
 var
   ti: TFpSymbolDwarfType;
-  InitLocParserData: TInitLocParserData;
   AttrData: TDwarfAttribData;
   t: TDBGPtr;
+  dummy: Boolean;
 begin
+Assert(self is TFpSymbolDwarfType);
   Result := False;
   if InformationEntry.GetAttribData(DW_AT_allocated, AttrData) then begin
     if not ConstRefOrExprFromAttrData(AttrData, AValueObj, t) then begin
@@ -3173,32 +3175,42 @@ begin
     end;
   end;
 
-  InitLocParserData.ObjectDataAddress := AnAddress;
-  InitLocParserData.ObjectDataAddrPush := False;
-  Result := LocationFromTag(DW_AT_data_location, AValueObj, AnAddress, @InitLocParserData, True);
+  Result := GetDataAddressNext(AValueObj, AnAddress, dummy, ATargetType);
   if not Result then
     exit;
 
-  if ATargetType = Self then begin
-    Result := True;
-    exit;
-  end;
-
-  Result := GetDataAddressNext(AValueObj, AnAddress, ATargetType);
-  if not Result then
+  ti := GetNextTypeInfoForDataAddress(ATargetType);
+  if ti = nil then
     exit;
 
-  ti := NestedTypeInfo;
-  if ti <> nil then
-    Result := ti.GetDataAddress(AValueObj, AnAddress, ATargetType)
+  Result := ti.GetDataAddress(AValueObj, AnAddress, ATargetType);
+end;
+
+function TFpSymbolDwarf.GetNextTypeInfoForDataAddress(
+  ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType;
+begin
+  if (ATargetType = nil) or (ATargetType = self) then
+    Result := nil
   else
-    Result := ATargetType = nil; // end of type chain
+    Result := NestedTypeInfo;
 end;
 
 function TFpSymbolDwarf.GetDataAddressNext(AValueObj: TFpValueDwarf;
-  var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
+  var AnAddress: TFpDbgMemLocation; out ADoneWork: Boolean;
+  ATargetType: TFpSymbolDwarfType): Boolean;
+var
+  AttrData: TDwarfAttribData;
+  InitLocParserData: TInitLocParserData;
 begin
   Result := True;
+  ADoneWork := False;
+
+  if InformationEntry.GetAttribData(DW_AT_data_location, AttrData) then begin
+    ADoneWork := True;
+    InitLocParserData.ObjectDataAddress := AnAddress;
+    InitLocParserData.ObjectDataAddrPush := False;
+    Result := LocationFromAttrData(AttrData, AValueObj, AnAddress, @InitLocParserData);
+  end;
 end;
 
 function TFpSymbolDwarf.HasAddress: Boolean;
@@ -3564,6 +3576,15 @@ begin
   SetForwardToSymbol(NestedTypeInfo)
 end;
 
+function TFpSymbolDwarfTypeModifier.GetNextTypeInfoForDataAddress(
+  ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType;
+begin
+  if (ATargetType = self) then
+    Result := nil
+  else
+    Result := NestedTypeInfo;
+end;
+
 function TFpSymbolDwarfTypeModifier.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;
 var
   ti: TFpSymbolDwarfType;
@@ -3583,18 +3604,22 @@ begin
 end;
 
 function TFpSymbolDwarfTypeRef.GetDataAddressNext(AValueObj: TFpValueDwarf;
-  var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
+  var AnAddress: TFpDbgMemLocation; out ADoneWork: Boolean;
+  ATargetType: TFpSymbolDwarfType): Boolean;
 begin
+  Result := inherited GetDataAddressNext(AValueObj, AnAddress, ADoneWork, ATargetType);
+  if (not Result) or ADoneWork then
+    exit;
+
   Result := AValueObj.MemManager <> nil;
   if not Result then
     exit;
   AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, CompilationUnit.AddressSize);
   Result := IsValidLoc(AnAddress);
 
-  if Result then
-    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType)
-  else
-  if IsError(AValueObj.MemManager.LastError) then
+  if (not Result) and
+     IsError(AValueObj.MemManager.LastError)
+  then
     SetLastError(AValueObj.MemManager.LastError);
   // Todo: other error
 end;
@@ -3947,9 +3972,13 @@ begin
 end;
 
 function TFpSymbolDwarfTypeSubroutine.GetDataAddressNext(
-  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-  ATargetType: TFpSymbolDwarfType): Boolean;
+  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation; out
+  ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean;
 begin
+  Result := inherited GetDataAddressNext(AValueObj, AnAddress, ADoneWork, ATargetType);
+  if (not Result) or ADoneWork then
+    exit;
+
   Result := AValueObj.MemManager <> nil;
   if not Result then
     exit;
@@ -4250,9 +4279,25 @@ begin
 end;
 
 function TFpSymbolDwarfTypeStructure.GetDataAddressNext(
-  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-  ATargetType: TFpSymbolDwarfType): Boolean;
+  AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation; out
+  ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean;
 begin
+  Result := inherited GetDataAddressNext(AValueObj, AnAddress, ADoneWork, ATargetType);
+
+  (* We have the DataAddress for this class => stop here, unless ATargetType
+     indicates that we want a parent-class DataAddress
+     Adding the InheritanceInfo's DW_AT_data_member_location would normally
+     have to be done by the parent class. But then we would need to make it
+     available there.
+     // TODO: Could not determine from the Dwarf Spec, if the parent class
+        should skip its DW_AT_data_location, if it was reached via
+        DW_AT_data_member_location
+        The spec says "handled the same as for members" => might indicate it should
+  *)
+
+  if (ATargetType = nil) or (ATargetType = self) then
+    exit;
+
   Result := IsReadableMem(AnAddress);
   if not Result then
     exit;
@@ -4265,8 +4310,6 @@ begin
   Result := ComputeDataMemberAddress(FInheritanceInfo, AValueObj, AnAddress);
   if not Result then
     exit;
-
-  Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType);
 end;
 
 function TFpSymbolDwarfTypeStructure.GetNestedSymbol(AIndex: Int64): TFpSymbol;
