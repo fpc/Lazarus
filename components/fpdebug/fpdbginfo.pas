@@ -373,7 +373,7 @@ type
     procedure SetSymbolType(AValue: TDbgSymbolType); inline;
     procedure SetAddress(AValue: TFpDbgMemLocation); inline;
     procedure SetSize(AValue: Integer); inline;
-    procedure SetTypeInfo(AValue: TFpSymbol); inline;
+    procedure SetTypeInfo(ASymbol: TFpSymbol); inline;
     procedure SetMemberVisibility(AValue: TDbgSymbolMemberVisibility); inline;
 
     procedure KindNeeded; virtual;
@@ -1128,14 +1128,14 @@ begin
   Include(FEvaluatedFields, sfiSize);
 end;
 
-procedure TFpSymbol.SetTypeInfo(AValue: TFpSymbol);
+procedure TFpSymbol.SetTypeInfo(ASymbol: TFpSymbol);
 begin
   if FTypeInfo <> nil then begin
     //Assert((FTypeInfo.Reference = self) or (FTypeInfo.Reference = nil), 'FTypeInfo.Reference = self|nil');
     {$IFDEF WITH_REFCOUNT_DEBUG}FTypeInfo.ReleaseReference(@FTypeInfo, 'SetTypeInfo'); FTypeInfo := nil;{$ENDIF}
     ReleaseRefAndNil(FTypeInfo);
   end;
-  FTypeInfo := AValue;
+  FTypeInfo := ASymbol;
   Include(FEvaluatedFields, sfiTypeInfo);
   if FTypeInfo <> nil then begin
     FTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'SetTypeInfo'){$ENDIF};
