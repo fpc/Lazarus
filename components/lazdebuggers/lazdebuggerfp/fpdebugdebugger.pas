@@ -1772,8 +1772,15 @@ begin
     // Debugger returned after a step/next/step-out etc..
     ALocationAddr := GetLocation;
 
+  // if &continue then SetState(dsInternalPause) else
   SetState(dsPause);
   DoCurrent(ALocationAddr);
+
+  if &continue then begin
+    // wait for any watches for Snapshots
+    while FWatchAsyncQueued do
+      ProcessASyncWatches(0);
+  end;
 end;
 
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
@@ -2006,7 +2013,7 @@ begin
       end
     else
     if (State in [dsPause, dsInternalPause]) and
-      not(OldState in [dsPause, dsInternalPause]) and
+      not(OldState in [dsPause, dsInternalPause{, dsInit}]) and
       Assigned(OnIdle)
     then begin
       FIsIdle := True;
