@@ -1741,7 +1741,9 @@ begin
     Address := GetInstructionPointerRegisterValue;
     Frame := GetStackBasePointerRegisterValue;
     AnEntry := TDbgCallstackEntry.create(Self, 0, Frame, Address);
-    // Top level entry needs no registerlist / same as GetRegisterValueList
+    // Top level could be without entry in registerlist / same as GetRegisterValueList / but some code tries to find it here ....
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nIP].SetValue(Address, IntToStr(Address),Size, IP);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(Frame, IntToStr(Frame),Size, BP);
     FCallStackEntryList.Add(AnEntry);
   end;
 
