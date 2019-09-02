@@ -755,6 +755,7 @@ begin
         AContext := FThread.Process.DbgInfo.FindContext(FThread.ID, Index, InstrPointerValue);
         if AContext <> nil then begin
           AContext.MemManager.DefaultContext := AContext;
+          TFpValueDwarf(ProcVal).Context := AContext;
           APrettyPrinter:=TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FThread.Process.Mode]);
           try
             for i := 0 to ProcVal.MemberCount - 1 do begin
@@ -768,6 +769,8 @@ begin
           finally
             APrettyPrinter.Free;
           end;
+          TFpValueDwarf(ProcVal).Context := nil;
+          AContext.ReleaseReference;
         end;
       end;
     end;
