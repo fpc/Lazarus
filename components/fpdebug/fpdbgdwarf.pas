@@ -3182,10 +3182,8 @@ begin
 Assert(self is TFpSymbolDwarfType);
   Result := False;
   if InformationEntry.GetAttribData(DW_AT_allocated, AttrData) then begin
-    if not ConstRefOrExprFromAttrData(AttrData, AValueObj, t) then begin
-      SetLastError(CreateError(fpErrAnyError));
+    if not ConstRefOrExprFromAttrData(AttrData, AValueObj, t) then
       exit;
-    end;
     if t = 0 then begin
       AnAddress := NilLoc;
       exit(True);
@@ -3193,10 +3191,8 @@ Assert(self is TFpSymbolDwarfType);
   end;
 
   if InformationEntry.GetAttribData(DW_AT_associated, AttrData) then begin
-    if not ConstRefOrExprFromAttrData(AttrData, AValueObj, t) then begin
-      SetLastError(CreateError(fpErrAnyError));
+    if not ConstRefOrExprFromAttrData(AttrData, AValueObj, t) then
       exit;
-    end;
     if t = 0 then begin
       AnAddress := NilLoc;
       exit(True);
