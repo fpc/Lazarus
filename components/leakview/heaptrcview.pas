@@ -304,8 +304,6 @@ procedure THeapTrcViewForm.ClearItems;
 var
   i : integer;
 begin
-  for i := 0 to fItems.Count - 1 do
-    TObject(fItems[i]).Free;
   fItems.Clear;
 end;
 
