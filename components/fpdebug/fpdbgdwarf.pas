@@ -120,6 +120,8 @@ type
   TFpSymbolDwarfDataClass = class of TFpSymbolDwarfData;
   TFpSymbolDwarfTypeClass = class of TFpSymbolDwarfType;
 
+  PFpSymbolDwarfData = ^TFpSymbolDwarfData;
+
 {%region Value objects }
 
   { TFpValueDwarfBase }
@@ -442,7 +444,11 @@ type
   end;
   PInitLocParserData = ^TInitLocParserData;
 
-  { TDbgDwarfIdentifier }
+  (* TFpDwarfAtEntryDataReadState
+     Since Dwarf-3 several DW_AT_* can be const, expression or reference.
+  *)
+  TFpDwarfAtEntryDataReadState = (rfNotRead, rfNotFound, rfError, rfConst, rfValue, rfExpression);
+  PFpDwarfAtEntryDataReadState = ^TFpDwarfAtEntryDataReadState;
 
   { TFpSymbolDwarf }
 
@@ -479,7 +485,9 @@ type
     function ComputeDataMemberAddress(const AnInformationEntry: TDwarfInformationEntry;
                               AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation): Boolean; inline;
     function ConstRefOrExprFromAttrData(const AnAttribData: TDwarfAttribData;
-                              AValueObj: TFpValueDwarf; out AValue: TDBGPtr): Boolean;
+                              AValueObj: TFpValueDwarf; out AValue: TDBGPtr;
+                              AReadState: PFpDwarfAtEntryDataReadState = nil;
+                              ADataSymbol: PFpSymbolDwarfData = nil): Boolean;
     function  LocationFromAttrData(const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
                               AnInitLocParserData: PInitLocParserData = nil;
@@ -662,7 +670,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   end;
 
   { TFpSymbolDwarfTypeSubRange }
-  TFpDwarfSubRangeBoundReadState = (rfNotRead, rfNotFound, rfError, rfConst, rfValue);
 
   TFpSymbolDwarfTypeSubRange = class(TFpSymbolDwarfTypeModifier)
   // TODO not a modifier, maybe have a forwarder base class
@@ -670,18 +677,16 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   private
     FLowBoundConst: Int64;
     FLowBoundValue: TFpValue;
-    FLowBoundState: TFpDwarfSubRangeBoundReadState;
+    FLowBoundState: TFpDwarfAtEntryDataReadState;
     FHighBoundConst: Int64;
     FHighBoundValue: TFpValue;
-    FHighBoundState: TFpDwarfSubRangeBoundReadState;
+    FHighBoundState: TFpDwarfAtEntryDataReadState;
     FCountConst: Int64;
     FCountValue: TFpValue;
-    FCountState: TFpDwarfSubRangeBoundReadState;
+    FCountState: TFpDwarfAtEntryDataReadState;
     FLowEnumIdx, FHighEnumIdx: Integer;
     FEnumIdxValid: Boolean;
     procedure InitEnumIdx;
-    procedure ReadBound(AValueObj: TFpValueDwarf; AnAttrib: Cardinal;
-      var ABoundConst: Int64; var ABoundValue: TFpValue; var ABoundState: TFpDwarfSubRangeBoundReadState);
   protected
     function DoGetNestedTypeInfo: TFpSymbolDwarfType;override;
     function GetHasBounds: Boolean; override;
@@ -700,9 +705,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetValueBounds(AValueObj: TFpValue; out ALowBound, AHighBound: Int64): Boolean; override;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
     function GetValueHighBound(AValueObj: TFpValue; out AHighBound: Int64): Boolean; override;
-    property LowBoundState: TFpDwarfSubRangeBoundReadState read FLowBoundState; deprecated;
-    property HighBoundState: TFpDwarfSubRangeBoundReadState read FHighBoundState;  deprecated;
-    property CountState: TFpDwarfSubRangeBoundReadState read FCountState;  deprecated;
+    property LowBoundState: TFpDwarfAtEntryDataReadState read FLowBoundState; deprecated;
+    property HighBoundState: TFpDwarfAtEntryDataReadState read FHighBoundState;  deprecated;
+    property CountState: TFpDwarfAtEntryDataReadState read FCountState;  deprecated;
 
   end;
 
@@ -966,14 +971,14 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   end;
 {%endregion Symbol objects }
 
-function dbgs(ASubRangeBoundReadState: TFpDwarfSubRangeBoundReadState): String; overload;
+function dbgs(ASubRangeBoundReadState: TFpDwarfAtEntryDataReadState): String; overload;
 
 implementation
 
 var
   DBG_WARNINGS, FPDBG_DWARF_VERBOSE, FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
 
-function dbgs(ASubRangeBoundReadState: TFpDwarfSubRangeBoundReadState): String;
+function dbgs(ASubRangeBoundReadState: TFpDwarfAtEntryDataReadState): String;
 begin
   WriteStr(Result, ASubRangeBoundReadState);
 end;
@@ -2977,7 +2982,8 @@ end;
 
 function TFpSymbolDwarf.ConstRefOrExprFromAttrData(
   const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf; out
-  AValue: TDBGPtr): Boolean;
+  AValue: TDBGPtr; AReadState: PFpDwarfAtEntryDataReadState;
+  ADataSymbol: PFpSymbolDwarfData): Boolean;
 var
   Form: Cardinal;
   FwdInfoPtr: Pointer;
@@ -2993,6 +2999,9 @@ begin
   if Form in [DW_FORM_data1, DW_FORM_data2, DW_FORM_data4, DW_FORM_data8,
               DW_FORM_sdata, DW_FORM_udata]
   then begin
+    if AReadState <> nil then
+      AReadState^ := rfConst;
+
     Result := InformationEntry.ReadValue(AnAttribData, AValue);
     if not Result then
       SetLastError(CreateError(fpErrAnyError));
@@ -3002,6 +3011,9 @@ begin
   if Form in [DW_FORM_ref1, DW_FORM_ref2, DW_FORM_ref4, DW_FORM_ref8,
               DW_FORM_ref_addr, DW_FORM_ref_udata]
   then begin
+    if AReadState <> nil then
+      AReadState^ := rfValue;
+
     Result := InformationEntry.ReadReference(AnAttribData, FwdInfoPtr, FwdCompUint);
     if Result then begin
       NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
@@ -3012,7 +3024,10 @@ begin
         AValue := RefSymbol.Value.AsInteger;
         Result := not IsError(RefSymbol.LastError);
         // TODO: copy the error
-        RefSymbol.ReleaseReference;
+        if ADataSymbol <> nil then
+          ADataSymbol^ := RefSymbol
+        else
+          RefSymbol.ReleaseReference;
       end;
     end;
     if not Result then
@@ -3022,6 +3037,16 @@ begin
   else
   if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4]
   then begin
+    // TODO: until there always will be an AValueObj
+    if AValueObj = nil then begin
+      if AReadState <> nil then
+        AReadState^ := rfNotRead;
+        exit(true); // claim success
+    end;
+
+    if AReadState <> nil then
+      AReadState^ := rfExpression;
+
     InitLocParserData.ObjectDataAddress := AValueObj.Address;
     if not IsValidLoc(InitLocParserData.ObjectDataAddress) then
       InitLocParserData.ObjectDataAddress := AValueObj.OrdOrAddress;
@@ -3036,6 +3061,9 @@ begin
   else begin
     SetLastError(CreateError(fpErrAnyError));
   end;
+
+  if (not Result) and (AReadState <> nil) then
+    AReadState^ := rfError;
 end;
 
 function TFpSymbolDwarf.LocationFromAttrData(
@@ -3649,66 +3677,6 @@ begin
   FLowEnumIdx := i + 1;
 end;
 
-procedure TFpSymbolDwarfTypeSubRange.ReadBound(AValueObj: TFpValueDwarf;
-  AnAttrib: Cardinal; var ABoundConst: Int64; var ABoundValue: TFpValue;
-  var ABoundState: TFpDwarfSubRangeBoundReadState);
-var
-  FwdInfoPtr: Pointer;
-  FwdCompUint: TDwarfCompilationUnit;
-  NewInfo: TDwarfInformationEntry;
-  AnAddress: TFpDbgMemLocation;
-  InitLocParserData: TInitLocParserData;
-  AttrData: TDwarfAttribData;
-  BoundSymbol: TFpSymbolDwarfData;
-begin
-  // TODO: assert(AValueObj <> nil, 'TFpSymbolDwarfTypeSubRange.ReadBound: AValueObj <> nil');
-  if ABoundState <> rfNotRead then exit;
-
-  if InformationEntry.GetAttribData(AnAttrib, AttrData) then begin
-    // TODO: check the FORM, to determine what data to read.
-    if InformationEntry.ReadReference(AttrData, FwdInfoPtr, FwdCompUint) then begin
-      NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-      BoundSymbol := TFpSymbolDwarfData.CreateValueSubClass('', NewInfo);
-      NewInfo.ReleaseReference;
-      ABoundValue := nil;
-      if BoundSymbol <> nil then begin
-        ABoundValue := BoundSymbol.Value;
-        ABoundValue.AddReference;
-      end;
-      if (ABoundValue = nil) or not (svfInteger in ABoundValue.FieldFlags) then begin
-        // Not implemented in DwarfSymbolClassMap.GetDwarfSymbolClass    // or not a value type (bound can not be a type)
-        ABoundState := rfError;
-        exit;
-      end
-      else
-        ABoundState := rfValue;
-    end
-    else
-    if InformationEntry.ReadValue(AttrData, ABoundConst) then begin
-      ABoundState := rfConst;
-    end
-    else
-    begin
-      if assigned(AValueObj) then begin
-        InitLocParserData.ObjectDataAddress := AValueObj.Address;
-        if not IsValidLoc(InitLocParserData.ObjectDataAddress) then
-          InitLocParserData.ObjectDataAddress := AValueObj.OrdOrAddress;
-        InitLocParserData.ObjectDataAddrPush := False;
-        if LocationFromAttrData(AttrData, AValueObj, AnAddress, @InitLocParserData) then begin
-          ABoundState := rfConst;
-          ABoundConst := Int64(AnAddress.Address);
-        end
-        else
-          ABoundState := rfError;
-      end
-      else // TODO: check AttrData=>FORM is correct for LocationFromAttrData
-        ABoundState := rfNotRead; // There is a bound, but it can not be read yet
-    end;
-  end
-  else
-    ABoundState := rfNotFound;
-end;
-
 function TFpSymbolDwarfTypeSubRange.DoGetNestedTypeInfo: TFpSymbolDwarfType;
 begin
   Result := inherited DoGetNestedTypeInfo;
@@ -3837,42 +3805,57 @@ end;
 
 function TFpSymbolDwarfTypeSubRange.GetValueLowBound(AValueObj: TFpValue;
   out ALowBound: Int64): Boolean;
+var
+  AttrData: TDwarfAttribData;
+  t: TDBGPtr;
 begin
   assert((AValueObj = nil) or (AValueObj is TFpValueDwarf), 'TFpSymbolDwarfTypeSubRange.GetValueLowBound: AValueObj is TFpValueDwarf(');
-  if FLowBoundState = rfNotRead then
-    ReadBound(TFpValueDwarf(AValueObj), DW_AT_lower_bound, FLowBoundConst, FLowBoundValue, FLowBoundState);
-  Result := True;
-  case FLowBoundState of
-    rfConst: ALowBound := FLowBoundConst;
-    rfValue: ALowBound := FLowBoundValue.AsInteger;
-    else     Result := False;
+  if FLowBoundState = rfNotRead then begin
+    if InformationEntry.GetAttribData(DW_AT_lower_bound, AttrData) then
+      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FLowBoundState, @FLowBoundValue)
+    else
+      FLowBoundState := rfNotFound;
+    FLowBoundConst := int64(t);
   end;
+
+  Result := FLowBoundState in [rfConst, rfValue, rfExpression];
+  ALowBound := FLowBoundConst;
 end;
 
 function TFpSymbolDwarfTypeSubRange.GetValueHighBound(AValueObj: TFpValue;
   out AHighBound: Int64): Boolean;
+var
+  AttrData: TDwarfAttribData;
+  t: TDBGPtr;
 begin
   assert((AValueObj = nil) or (AValueObj is TFpValueDwarf), 'TFpSymbolDwarfTypeSubRange.GetValueHighBound: AValueObj is TFpValueDwarf(');
-  if FHighBoundState = rfNotRead then
-    ReadBound(TFpValueDwarf(AValueObj), DW_AT_upper_bound, FHighBoundConst, FHighBoundValue, FHighBoundState);
+  if FHighBoundState = rfNotRead then begin
+    if InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData) then
+      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FHighBoundState, @FHighBoundValue)
+    else
+      FHighBoundState := rfNotFound;
+    FHighBoundConst := int64(t);
+  end;
 
-  Result := True;
-  case FHighBoundState of
-    rfConst: AHighBound := FHighBoundConst;
-    rfValue: AHighBound := FHighBoundValue.AsInteger;
-    rfNotFound: begin
-        Result := GetValueLowBound(AValueObj, AHighBound);
-        if not Result then
-          exit;
-        if FCountState = rfNotRead then
-          ReadBound(TFpValueDwarf(AValueObj), DW_AT_count, FCountConst, FCountValue, FCountState);
-        case FCountState of
-          rfConst: AHighBound := AHighBound + FCountConst;
-          rfValue: AHighBound := AHighBound + FCountValue.AsInteger;
-          else     Result := False;
-        end;
+  Result := FHighBoundState in [rfConst, rfValue, rfExpression];
+  AHighBound := FHighBoundConst;
+
+  if FHighBoundState = rfNotFound then begin
+    Result := GetValueLowBound(AValueObj, AHighBound);
+    if Result then begin
+      if FCountState = rfNotRead then begin
+        if InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData) then
+          ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FCountState, @FCountValue)
+        else
+          FCountState := rfNotFound;
+        FCountConst := int64(t);
       end;
-    else     Result := False;
+
+      Result := FCountState in [rfConst, rfValue, rfExpression];
+      {$PUSH}{$R-}{$Q-}
+      AHighBound := AHighBound + FCountConst;
+      {$POP}
+    end;
   end;
 end;
 
