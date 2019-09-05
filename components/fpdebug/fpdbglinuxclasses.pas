@@ -1275,7 +1275,7 @@ begin
              break;
 
           ThreadSignaled := WaitForThread(WaitStatus, False);
-          if not ThreadSignaled.FIsPaused then
+          if (ThreadSignaled <> nil) and (not ThreadSignaled.FIsPaused) then
             ThreadSignaled.CheckStatusReceived(WaitStatus);
         end;
 
