@@ -330,6 +330,7 @@ type
     FExceptionClass: string;
     FExceptionMessage: string;
     FExitCode: DWord;
+    FGotExitProcess: Boolean;
     FProcessID: Integer;
     FThreadID: Integer;
 
@@ -423,6 +424,7 @@ type
 
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property MainThread: TDbgThread read FMainThread;
+    property GotExitProcess: Boolean read FGotExitProcess write FGotExitProcess;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -1482,8 +1484,7 @@ begin
 
   Result := WriteData(ALocation, 1, OrigValue);
   DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['Breakpoint Int3 removed from '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', OrigValue]);
-  if (not Result) then
-    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, 'Unable to reset breakpoint at %s', [FormatAddress(ALocation)]);
+  DebugLn((not Result) and (not GotExitProcess) and (DBG_WARNINGS or DBG_BREAKPOINTS), 'Unable to reset breakpoint at %s', [FormatAddress(ALocation)]);
 
   if Result then
     AfterChangingInstructionCode(ALocation);

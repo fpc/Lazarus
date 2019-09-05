@@ -157,7 +157,8 @@ end;
 
 procedure TDbgWinProcess.LogLastError;
 begin
-  DebugLn(DBG_WARNINGS, 'FpDbg-ERROR: %s', [GetLastErrorText]);
+  if not GotExitProcess then
+    DebugLn(DBG_WARNINGS, 'FpDbg-ERROR: %s', [GetLastErrorText]);
 end;
 
 procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr);

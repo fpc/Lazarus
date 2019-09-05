@@ -924,6 +924,7 @@ begin
       begin
       (* Only events for the main process get here / See ProcessLoop *)
         if FCurrentProcess = FMainProcess then FMainProcess := nil;
+        FCurrentProcess.GotExitProcess := True;
 
         if assigned(OnProcessExitEvent) then
           OnProcessExitEvent(FCurrentProcess.ExitCode);
