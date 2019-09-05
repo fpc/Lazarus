@@ -1808,45 +1808,51 @@ begin
   result := False;
   if assigned(FDbgController) then
     FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
+
+  if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto,
+      dcStepOverInstr, dcStepIntoInstr]) and
+     not assigned(FDbgController.MainProcess)
+  then
+  begin
+    FDbgController.ExecutableFilename:=FileName;
+    AConsoleTty:=TFpDebugDebuggerProperties(GetProperties).ConsoleTty;
+    FDbgController.ConsoleTty:=AConsoleTty;
+    FDbgController.RedirectConsoleOutput:=AConsoleTty='';
+    FDbgController.Params.Clear;
+    if Arguments<>'' then
+      CommandToList(Arguments, FDbgController.Params);
+    FDbgController.WorkingDirectory:=WorkingDir;
+    FDbgController.Environment:=Environment;
+    {$ifdef windows}
+    FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
+    {$endif windows}
+    FFpDebugThread := TFpDebugThread.Create(Self);
+    RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
+    RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);
+    result := FFpDebugThread.StartSuccesfull;
+    if not result then
+      begin
+      // TDebuggerIntf.SetFileName has set the state to dsStop, to make sure
+      // that dcRun could be requested. Reset the filename so that the state
+      // is set to dsIdle again and is set to dsStop on the next try
+      // to run.
+      FileName := '';
+      FreeDebugThread;
+      Exit;
+      end;
+    SetState(dsInit);
+    // TODO: any step commond should run to "main" or "pascalmain"
+    // Currently disabled in TFpDebugDebugger.GetSupportedCommands
+    StartDebugLoop;
+    exit;
+  end;
+
   case ACommand of
     dcRun:
       begin
-      if not assigned(FDbgController.MainProcess) then
-        begin
-        FDbgController.ExecutableFilename:=FileName;
-        AConsoleTty:=TFpDebugDebuggerProperties(GetProperties).ConsoleTty;
-        FDbgController.ConsoleTty:=AConsoleTty;
-        FDbgController.RedirectConsoleOutput:=AConsoleTty='';
-        FDbgController.Params.Clear;
-        if Arguments<>'' then
-          CommandToList(Arguments, FDbgController.Params);
-        FDbgController.WorkingDirectory:=WorkingDir;
-        FDbgController.Environment:=Environment;
-        {$ifdef windows}
-        FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
-        {$endif windows}
-        FFpDebugThread := TFpDebugThread.Create(Self);
-        RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
-        RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);
-        result := FFpDebugThread.StartSuccesfull;
-        if not result then
-          begin
-          // TDebuggerIntf.SetFileName has set the state to dsStop, to make sure
-          // that dcRun could be requested. Reset the filename so that the state
-          // is set to dsIdle again and is set to dsStop on the next try
-          // to run.
-          FileName := '';
-          FreeDebugThread;
-          Exit;
-          end;
-        SetState(dsInit);
-        end
-      else
-        begin
         Result := True;
         SetState(dsRun);
-        end;
-      StartDebugLoop;
+        StartDebugLoop;
       end;
     dcStop:
       begin
@@ -2260,6 +2266,8 @@ function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
            dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput];
+  if State = dsStop then
+    Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
 
 end.
