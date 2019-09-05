@@ -298,6 +298,9 @@ uses
   FpDbgUtil,
   FpDbgDisasX86;
 
+var
+  DBG_BREAKPOINTS: PLazLoggerLogGroup;
+
 type
 
   { TFpDbgMemReader }
@@ -837,6 +840,7 @@ begin
   if Debugger.State in [dsPause, dsInternalPause] then
   begin
     if FDelayedRemoveBreakpointList.Count>0 then
+      debuglnEnter(DBG_BREAKPOINTS, ['TFPBreakpoints.DoStateChange  REMOVE DELAYED']);
       for i := FDelayedRemoveBreakpointList.Count-1 downto 0 do
       begin
         ABrkPoint := FpDbgClasses.TFpInternalBreakpoint(FDelayedRemoveBreakpointList[i]);
@@ -845,6 +849,7 @@ begin
         ABrkPoint := nil;
         FDelayedRemoveBreakpointList.Delete(i);
       end;
+      debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoints.DoStateChange  REMOVE DELAYED ' ]);
   end;
 end;
 
@@ -881,12 +886,14 @@ end;
 procedure TFPBreakpoint.SetBreak;
 begin
   assert(FInternalBreakpoint=nil);
+  debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.SetBreak  ADD ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
   case Kind of
     bpkAddress:   FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Address);
     bpkSource:    FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Source, cardinal(Line));
   else
     Raise Exception.Create('Breakpoints of this kind are not suported.');
   end;
+  debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.SetBreak ' ]);
   FIsSet:=true;
   if not assigned(FInternalBreakpoint) then
     FValid:=vsInvalid
@@ -900,9 +907,11 @@ begin
   // freed. And so are the corresponding InternalBreakpoint's.
   if assigned(Debugger) and assigned(FInternalBreakpoint) then
     begin
+    debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.ResetBreak  REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
     TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
     TFpDebugDebugger(Debugger).FreeBreakpoint(FInternalBreakpoint);
     FInternalBreakpoint := nil;
+    debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.ResetBreak ' ]);
     end;
   FIsSet:=false;
 end;
@@ -937,7 +946,9 @@ begin
     end
   else if Debugger.State = dsStop then
     begin
+    debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.DoStateChange  REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
     TFpDebugDebugger(Debugger).FreeBreakpoint(FInternalBreakpoint);
+    debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.DoStateChange ' ]);
     FInternalBreakpoint := nil;
     FIsSet:=false;
     end;
@@ -1293,7 +1304,9 @@ begin
   LockRelease;
   try
     SetState(dsStop);
+    debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.FDbgControllerProcessExitEvent fpc_Raiseexception' ]);
     FreeAndNil(FRaiseExceptionBreakpoint);
+    debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.FDbgControllerProcessExitEvent ' ]);
     FreeDebugThread;
   finally
     UnlockRelease;
@@ -1649,7 +1662,9 @@ begin
       begin
         AnAddr:=AValue.Address.Address;
         AValue.ReleaseReference;
+        debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.SetSoftwareExceptionBreakpoint FPC_RAISEEXCEPTION' ]);
         FRaiseExceptionBreakpoint := AddBreak(AnAddr);
+        debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.SetSoftwareExceptionBreakpoint ' ]);
         if assigned(FRaiseExceptionBreakpoint) then
           result := True;
       end;
@@ -2269,6 +2284,9 @@ begin
   if State = dsStop then
     Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
+
+initialization
+  DBG_BREAKPOINTS := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
 
 end.
 

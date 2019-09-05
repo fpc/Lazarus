@@ -1543,6 +1543,8 @@ var
   t: array of TDBGPtr;
   i: Integer;
 begin
+  if Length(FTmpRemovedBreaks) = 0 then
+    exit;
   DebugLnEnter(DBG_VERBOSE or DBG_BREAKPOINTS, ['>>> RestoreTempBreakInstructionCodes']);
   t := FTmpRemovedBreaks;
   FTmpRemovedBreaks := nil;
@@ -1848,7 +1850,7 @@ initialization
 
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
-  DBG_BREAKPOINTS := DebugLogger.RegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
+  DBG_BREAKPOINTS := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
 
 
 finalization
