@@ -705,7 +705,7 @@ end;
 function TBreakLocationMap.HasInsertedBreakInstructionAtLocation(
   const ALocation: TDBGPtr): Boolean;
 begin
-  Result := GetOrigValueAtLocation(ALocation) <> TDbgProcess.Int3;
+  Result := GetDataPtr(ALocation) <> nil;
 end;
 
 function TBreakLocationMap.GetEnumerator: TBreakLocationMapEnumerator;
