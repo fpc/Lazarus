@@ -780,7 +780,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
-msgstr ""
+msgstr "Automaticky odstrániť prázdne metódy"
 
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
@@ -5084,7 +5084,7 @@ msgstr "Alternatívny kláves (ale postupnosť dvoch)"
 
 #: lazarusidestrconsts.lisalways
 msgid "Always"
-msgstr ""
+msgstr "Vždy"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -7399,7 +7399,7 @@ msgstr ""
 #: lazarusidestrconsts.liscompletionlonglinehinttypenone
 msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
 msgid "Never"
-msgstr ""
+msgstr "Nikdy"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
@@ -8789,7 +8789,7 @@ msgstr "Pokračovať neobslúžené"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
-msgstr "Zobraziť Správy pri zadstavení"
+msgstr "Zobraziť Správy pri zastavení"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmsignals
 msgid "Signals"
@@ -15177,7 +15177,7 @@ msgstr "Meno novej procedúry"
 #: lazarusidestrconsts.lisnever
 msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
-msgstr ""
+msgstr "Nikdy"
 
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
