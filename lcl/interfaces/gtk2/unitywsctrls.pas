@@ -267,6 +267,11 @@ begin
   if Loaded then
     Exit(Initialized);
   Loaded:= True;
+  if GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP') <> 'Unity' then
+  begin
+    Initialized := False;
+    Exit;
+  end;
   if Initialized then
     Exit(True);
   Module := LoadLibrary(libappindicator_3);        // thats the one we want here.
