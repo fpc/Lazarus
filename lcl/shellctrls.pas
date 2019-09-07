@@ -26,7 +26,7 @@ uses
   // LCL
   Forms, Graphics, ComCtrls, LCLProc, LCLStrConsts,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8;
+  FileUtil, LazFileUtils, LazUTF8, Masks;
 
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -630,11 +630,6 @@ begin
 
 end;
 
-function STVCompareFiles(f1, f2: Pointer): integer;
-begin
-  Result:=CompareFilenames(AnsiString(f1),AnsiString(f2));
-end;
-
 { Helper routine.
   Finds all files/directories directly inside a directory.
   Does not recurse inside subdirectories.
@@ -642,21 +637,19 @@ end;
   AResult will contain TFileItem objects upon return, make sure to free them in the calling routine
 
   AMask may contain multiple file masks separated by ;
-  Don't add a final ; after the last mask.
 }
 class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
   AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType);
 var
   DirInfo: TSearchRec;
   FindResult: Integer;
-  IsDirectory, IsValidDirectory, IsHidden, AddFile: Boolean;
+  IsDirectory, IsValidDirectory, IsHidden, AddFile, UseMaskList: Boolean;
   SearchStr: string;
   MaskStr: string;
+  MaskList: TMaskList;
   Files: TList;
   FileItem: TFileItem;
   i: Integer;
-  MaskStrings: TStringList;
-  FileTree: TAvlTree;
   ShortFilename: AnsiString;
   j: Integer;
   {$if defined(windows) and not defined(wince)}
@@ -674,32 +667,32 @@ begin
   if Trim(AMask) = '' then MaskStr := AllFilesMask
   else MaskStr := AMask;
 
-  // The string list implements support for multiple masks separated
-  // by semi-colon ";"
-  MaskStrings := TStringList.Create;
-  FileTree:=TAvlTree.Create(@STVCompareFiles);
-  try
+  UseMaskList := (Pos(';', MaskStr) > 0);
+  if UseMaskList then
+  begin
     {$ifdef NotLiteralFilenames}
-    MaskStrings.CaseSensitive := False;
+    MaskList := TMaskList.Create(MaskStr, ';', False);
     {$else}
-    MaskStrings.CaseSensitive := True;
+    MaskList := TMaskList.Create(MaskStr, ';', True);
     {$endif}
-
-    MaskStrings.Delimiter := ';';
-    MaskStrings.DelimitedText := MaskStr;
-
+  end;
+  try
     if AFileSortType=fstNone then Files:=nil
     else Files:=TList.Create;
 
     j:=0;
-    for i := 0 to MaskStrings.Count - 1 do
+    if UseMaskList then
+      SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AllFilesMask
+    else
+      SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStr; //single mask, let FindFirst/FindNext handle matching
+
+    FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
+    while (FindResult = 0) do
     begin
-      if MaskStrings.IndexOf(MaskStrings[i]) < i then Continue; // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
-      SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStrings.Strings[i];
-
-      FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
-
-      while FindResult = 0 do
+      ShortFilename := DirInfo.Name;
+      IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
+      //no need to call MaskListMatches (which loops through all masks) if ShortFileName is '.' or '..' since we never process this
+      if ((not UseMaskList) or MaskList.Matches(DirInfo.Name)) and IsValidDirectory  then
       begin
         inc(j);
         if j=100 then
@@ -707,13 +700,7 @@ begin
           Application.ProcessMessages;
           j:=0;
         end;
-
-        ShortFilename := DirInfo.Name;
-
         IsDirectory := (DirInfo.Attr and FaDirectory = FaDirectory);
-
-        IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
-
         IsHidden := (DirInfo.Attr and faHidden{%H-} = faHidden{%H-});
 
         // First check if we show hidden files
@@ -730,24 +717,18 @@ begin
         if AddFile then
         begin
           if not Assigned(Files) then begin
-            if FileTree.Find(Pointer(ShortFilename))=nil then
-            begin
-              // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
-              FileTree.Add(Pointer(ShortFilename));
-              AResult.AddObject(ShortFilename, TFileItem.Create(DirInfo, ABaseDir));
-            end;
+            AResult.AddObject(ShortFilename, TFileItem.Create(DirInfo, ABaseDir));
           end else
             Files.Add ( TFileItem.Create(DirInfo, ABaseDir));
         end;
+      end;// Filename matches the mask
+      FindResult := FindNextUTF8(DirInfo);
+    end; //FindResult = 0
 
-        FindResult := FindNextUTF8(DirInfo);
-      end;
-
-      FindCloseUTF8(DirInfo);
-    end;
+    FindCloseUTF8(DirInfo);
   finally
-    FileTree.Free;
-    MaskStrings.Free;
+    if UseMaskList then
+      MaskList.Free;
   end;
 
   if Assigned(Files) then begin
@@ -760,11 +741,6 @@ begin
     for i:=0 to Files.Count-1 do
     begin
       FileItem:=TFileItem(Files[i]);
-      if (i < Files.Count - 1) and (TFileItem(Files[i]).FileInfo.Name = TFileItem(Files[i + 1]).FileInfo.Name) then
-      begin
-        FileItem.Free;
-        Continue; // cause Files is sorted // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
-      end;
       AResult.AddObject(FileItem.FileInfo.Name, FileItem);
     end;
     //don't free the TFileItems here, they will freed by the calling routine
