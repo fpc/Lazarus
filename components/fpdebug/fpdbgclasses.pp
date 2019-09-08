@@ -1250,17 +1250,6 @@ begin
 
   if result = deBreakpoint then
   begin
-    if assigned(FCurrentBreakpoint) then
-    begin
-      // When a breakpoint has been hit, the debugger always continues with
-      // a single-step to jump over the breakpoint.
-      if not AThread.NextIsSingleStep then
-        // In this case the debugger has to continue. The debugger did only
-        // stop to be able to reset the breakpoint again. It was not a 'normal'
-        // singlestep.
-        result := deInternalContinue;
-    end;
-
     // Determine the address where the execution has stopped
     CurrentAddr:=AThread.GetInstructionPointerRegisterValue;
     FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;

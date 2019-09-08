@@ -843,10 +843,12 @@ begin
        CurrentThread is then destroyed in the next call to continue....
     *)
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
-    DebugLn(DBG_VERBOSE, 'Process stopped with event %s. IP=%s, SP=%s, BSP=%s.', [FPDEventNames[FPDEvent],
-                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetInstructionPointerRegisterValue),
-                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),
-                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue)]);
+    DebugLn(DBG_VERBOSE, 'Process stopped with event %s. IP=%s, SP=%s, BSP=%s. HasBreak: %s',
+                         [FPDEventNames[FPDEvent],
+                         FCurrentProcess.FormatAddress(FCurrentThread.GetInstructionPointerRegisterValue),
+                         FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),
+                         FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue),
+                         dbgs(CurrentProcess.CurrentBreakpoint<>nil)]);
     if assigned(FCommand) then
       begin
       FCommand.ResolveEvent(FPDEvent, IsHandled, IsFinished);
@@ -863,6 +865,7 @@ begin
     begin
      case FPDEvent of
        deInternalContinue: AExit := False;
+       deBreakpoint: AExit := FCurrentProcess.CurrentBreakpoint <> nil; // no breakpoint? continue
 {        deLoadLibrary :
           begin
             if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
