@@ -2,6 +2,7 @@ unit FpDbgLinuxClasses;
 
 {$mode objfpc}{$H+}
 {$packrecords c}
+{$modeswitch advancedrecords}
 {off $define DebuglnLinuxDebugEvents}
 
 interface
@@ -10,7 +11,7 @@ uses
   Classes,
   SysUtils,
   BaseUnix,
-  termio,
+  termio, fgl,
   process,
   FpDbgClasses,
   FpDbgLoader,
@@ -222,17 +223,29 @@ const
 
 type
 
+  { TFpDbgLinuxSignal }
+
+  TFpDbgLinuxSignal = record
+    PID: THandle;
+    WaitStatus: cint;
+    class operator = (a, b: TFpDbgLinuxSignal): boolean;
+  end;
+
+  { TFpDbgLinuxSignalQueue }
+
+  TFpDbgLinuxSignalQueue = class(specialize TFPGList<TFpDbgLinuxSignal>)
+  public
+    procedure AddSignal(APID: THandle; AWaitStatus: cint); overload;
+    function GetNextSignal(out APID: THandle; out AWaitStatus: cint): Boolean;
+  end;
+
   { TDbgLinuxThread }
 
   TDbgLinuxThread = class(TDbgThread)
   private
     FUserRegs: TUserRegs;
     FUserRegsChanged: boolean;
-    // FExceptionSignal
-    // For the current thread this is wstopsig(FStatus)
-    // For other threads this is the full status (stored to execute event later.)
     FExceptionSignal: cint;
-    FHasExceptionSignal: Boolean;
     FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
     FIsSteppingBreakPoint: boolean;
     FHasThreadState: boolean;
@@ -243,7 +256,7 @@ type
     function ReadThreadState: boolean;
 
     function RequestInternalPause: Boolean;
-    procedure CheckStatusReceived(AWaitedStatus: cint);
+    function CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
     procedure ResetPauseStates;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
@@ -262,6 +275,7 @@ type
 
   TDbgLinuxProcess = class(TDbgProcess)
   private
+    FPostponedSignals: TFpDbgLinuxSignalQueue;
     FStatus: cint;
     FProcessStarted: boolean;
     FProcProcess: TProcessUTF8;
@@ -313,6 +327,40 @@ end;
 Function WIFSTOPPED(Status: Integer): Boolean;
 begin
   WIFSTOPPED:=((Status and $FF)=$7F);
+end;
+
+{ TFpDbgLinuxSignal }
+
+class operator TFpDbgLinuxSignal.=(a, b: TFpDbgLinuxSignal): boolean;
+begin
+  result := a.Pid = b.Pid;
+  assert(false);
+end;
+
+{ TFpDbgLinuxSignalQueue }
+
+procedure TFpDbgLinuxSignalQueue.AddSignal(APID: THandle; AWaitStatus: cint);
+var
+  tmp: TFpDbgLinuxSignal;
+begin
+  tmp.PID := APid;
+  tmp.WaitStatus := AWaitStatus;
+  Add(tmp);
+end;
+
+function TFpDbgLinuxSignalQueue.GetNextSignal(out APID: THandle; out
+  AWaitStatus: cint): Boolean;
+var
+  tmp: TFpDbgLinuxSignal;
+begin
+  Result := Count > 0;
+  if not Result then
+    exit;
+  tmp := Items[0];
+  APID := tmp.PID;
+  AWaitStatus := tmp.WaitStatus;
+  delete(0);
+  DebugLn(DBG_VERBOSE, ['DEFERRED event for ',Apid]);
 end;
 
 { TDbgLinuxThread }
@@ -440,39 +488,47 @@ begin
   FInternalPauseRequested := True;
 end;
 
-procedure TDbgLinuxThread.CheckStatusReceived(AWaitedStatus: cint);
+function TDbgLinuxThread.CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
 begin
   Assert(not FIsPaused, 'Got WaitStatus while already paused');
-  Assert(not FHasExceptionSignal, 'Got WaitStatus while already having defered status');
+  assert(FExceptionSignal = 0, 'TDbgLinuxThread.CheckSignalForPostponing: FExceptionSignal = 0');
+  Result := FIsPaused;
+  DebugLn(DBG_VERBOSE and (Result), ['Warning: Thread already paused', ID]);
+  if Result then
+    exit;
+
   FIsPaused := True;
   FIsInInternalPause := False;
-  FExceptionSignal := 0;
-  FHasExceptionSignal := True;
 
   if FInternalPauseRequested and (wstopsig(AWaitedStatus) = SIGSTOP) then begin
     FInternalPauseRequested := False;
     FIsInInternalPause := True;
-    FHasExceptionSignal := False;
+    // no postpone
   end
 
   else
   if wstopsig(AWaitedStatus) = SIGTRAP then begin
     ReadThreadState;
     CheckAndResetInstructionPointerAfterBreakpoint;
-    FHasExceptionSignal := False; // TODO: main loop should search all threads for breakpoints
+    // TODO: main loop should search all threads for breakpoints
+// TODO: add to FPostponedSignals => and alert user about the breakpoint hit
+// But, that needs to handle that breakpoints could be removed in the meantime....
+// Remember CheckAndResetInstructionPointerAfterBreakpoint was done
+    //Result := True;
   end
 
   else
   if wifexited(AWaitedStatus) and (ID <> Process.ProcessID) then begin
-    Process.RemoveThread(ID);
-    FHasExceptionSignal := False;
+    Process.RemoveThread(ID); // Done, no postpone
+  end
+
+  else
+  begin
+    // Handle later
+    Result := True;
   end;
 
   //TODO: Handle all signals/exceptions/...
-
-  // Keep FExceptionSignal = zero, unless it really is pending
-  if FHasExceptionSignal then
-    FExceptionSignal := AWaitedStatus;
 end;
 
 procedure TDbgLinuxThread.ResetPauseStates;
@@ -694,12 +750,14 @@ constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,
   AThreadID: Integer);
 begin
   FMasterPtyFd:=-1;
+  FPostponedSignals := TFpDbgLinuxSignalQueue.Create;
   inherited Create(AName, AProcessID, AThreadID);
 end;
 
 destructor TDbgLinuxProcess.Destroy;
 begin
   FProcProcess.Free;
+  FPostponedSignals.Free;
   inherited Destroy;
 end;
 
@@ -971,17 +1029,12 @@ begin
   end;
 
   // check for pending events in other threads
-  assert(not TDbgLinuxThread(AThread).FHasExceptionSignal, 'current thread must not have deferred sig');
-  for TDbgThread(ThreadToContinue) in FThreadMap do
-    if (ThreadToContinue.FHasExceptionSignal) then begin
-      Assert(not ThreadToContinue.FIsInInternalPause, 'internal pause should not have deferred sig');
-      AThread.NextIsSingleStep:=False; // UNDO
-      {$IFDEF DebuglnLinuxDebugEvents}
-      debugln(['Exit for DEFERRED event TID', ThreadToContinue.Id]);
-      {$ENDIF}
-      exit; // WaitForDebugEvent will report the event // AThread will now be treaded as paused.
-    end;
-
+  if FPostponedSignals.Count > 0 then begin
+    {$IFDEF DebuglnLinuxDebugEvents}
+    debugln(['Exit for DEFERRED event TID']);
+    {$ENDIF}
+    exit;
+  end;
 
   AThread.NextIsSingleStep:=SingleStep;
 
@@ -1080,19 +1133,9 @@ begin
   ThreadIdentifier:=-1;
   ProcessIdentifier:=-1;
 
-  PID := 0;
-  for TDbgThread(ThreadWithEvent) in FThreadMap do
-    if (TDbgLinuxThread(ThreadWithEvent).FHasExceptionSignal) then begin
-      Assert(TDbgLinuxThread(ThreadWithEvent).FIsPaused, 'TDbgLinuxThread(ThreadWithEvent).FIsPaused');
-      PID := ThreadWithEvent.ID;
-      FStatus := TDbgLinuxThread(ThreadWithEvent).FExceptionSignal;
-      DebugLn(DBG_VERBOSE, ['DEFERRED event for ',pid]);
-      break;
-    end;
-
-
-  if PID = 0 then
+  If not FPostponedSignals.GetNextSignal(PID, FStatus) then
     PID:=FpWaitPid(-1, FStatus, __WALL);
+
   RestoreTempBreakInstructionCodes;
 
   result := PID<>-1;
@@ -1115,31 +1158,31 @@ end;
 
 function TDbgLinuxProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
 
-  function WaitForThread(out WaitStatus: cint; ANoHang: Boolean): TDbgLinuxThread;
+  function ExistsPendingSignal(out PID: THandle; out WaitStatus: cint;
+    out AThread: TDbgLinuxThread; ANoHang: Boolean): Boolean;
   var
     Opts: cint;
-    PID: THandle;
   begin
-    Result := nil;
+    AThread := nil;
     Opts := __WALL;
     if ANoHang then
       Opts := Opts or WNOHANG;
 
     PID:=FpWaitPid(-1, WaitStatus, Opts);
-    if (PID = 0) and (ANoHang) then
+    Result := (PID <> 0) and (PID <> -1);
+    if not Result then
       exit;
 
-    DebugLn(DBG_VERBOSE, ['Got SIGNAL for thread: ', pid, ' Status: ',WaitStatus]);
-    if not FThreadMap.GetData(PID, Result) then
-        Result := nil;
-    if Result = nil then DebugLn(DBG_VERBOSE, 'NO THREAD')
-    else if Result.FIsPaused then DebugLn(DBG_VERBOSE, 'PAUSED THREAD');
+    if not FThreadMap.GetData(PID, AThread) then
+        AThread := nil;
+    DebugLn(DBG_VERBOSE, ['Got SIGNAL for thread: ', pid, ' Status: ',WaitStatus, ' Found thread:', AThread <> nil]);
   end;
 
 //var
 //  NewThreadID: culong;
 var
   ThreadToPause, ThreadSignaled: TDbgLinuxThread;
+  Pid: THandle;
   WaitStatus: cint;
 begin
   TDbgLinuxThread(AThread).FExceptionSignal:=0;
@@ -1262,12 +1305,11 @@ begin
       if (ThreadToPause <> AThread) and (not ThreadToPause.FIsPaused) then begin
 
         // Check if any thread is already interrupted
-        ThreadSignaled := WaitForThread(WaitStatus, True);
-
-        while ThreadSignaled <> nil do begin
-          if not ThreadSignaled.FIsPaused then
-            ThreadSignaled.CheckStatusReceived(WaitStatus);
-          ThreadSignaled := WaitForThread(WaitStatus, True);
+        while ExistsPendingSignal(Pid, WaitStatus, ThreadSignaled, True) do begin
+          if (ThreadSignaled = nil) or
+             (ThreadSignaled.CheckSignalForPostponing(WaitStatus))
+          then
+            FPostponedSignals.AddSignal(PID, WaitStatus);
         end;
 
         while not ThreadToPause.FIsPaused do begin
@@ -1275,9 +1317,12 @@ begin
           if not ThreadToPause.RequestInternalPause then
              break;
 
-          ThreadSignaled := WaitForThread(WaitStatus, False);
-          if (ThreadSignaled <> nil) and (not ThreadSignaled.FIsPaused) then
-            ThreadSignaled.CheckStatusReceived(WaitStatus);
+          if ExistsPendingSignal(Pid, WaitStatus, ThreadSignaled, False) then begin
+            if (ThreadSignaled = nil) or
+               (ThreadSignaled.CheckSignalForPostponing(WaitStatus))
+            then
+              FPostponedSignals.AddSignal(PID, WaitStatus);
+          end;
 
           DebugLn(DBG_VERBOSE and (not ThreadToPause.FIsPaused), ['Re-Request Internal pause for ', ThreadToPause.ID]);
         end;
@@ -1291,7 +1336,7 @@ begin
 
   {$IFDEF DebuglnLinuxDebugEvents}
   for TDbgThread(ThreadToPause) in FThreadMap do
-  debugln([ThreadToPause.id, ' =athrd:', ThreadToPause = AThread, ' psd:', ThreadToPause.FIsPaused,ThreadToPause.FIsInInternalPause,' has:',ThreadToPause.FHasExceptionSignal, ' exs:', ThreadToPause.FExceptionSignal]);
+  debugln([ThreadToPause.id, ' =athrd:', ThreadToPause = AThread, ' psd:', ThreadToPause.FIsPaused,ThreadToPause.FIsInInternalPause, ' exs:', ThreadToPause.FExceptionSignal]);
   debugln('<<<<<<<<<<<<<<<<<<<<<<<<');
   {$ENDIF}
 
