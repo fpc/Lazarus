@@ -4166,7 +4166,8 @@ begin
   Result := g_object_get_data(PGObject(MainWidget), 'widgetinfo');
   if Assigned(Result) then Exit;
   Result := CreateWidgetInfo(MainWidget);
-  DebugLn('GetOrCreateWidgetInfo: MainWidget info was created causing a memory leak.');
+  {$WARNING GetOrCreateWidgetInfo: MainWidget info was created causing a memory leak.}
+  //DebugLn('GetOrCreateWidgetInfo: MainWidget info was created causing a memory leak.');
   // use the main widget as default
   Result^.CoreWidget := PGtkWidget(MainWidget);
 end;
