@@ -865,7 +865,8 @@ begin
     begin
      case FPDEvent of
        deInternalContinue: AExit := False;
-       deBreakpoint: AExit := FCurrentProcess.CurrentBreakpoint <> nil; // no breakpoint? continue
+       deBreakpoint: AExit := (FCurrentProcess.CurrentBreakpoint <> nil) or // no breakpoint? continue
+                              (FCurrentProcess.GetAndClearPauseRequested);
 {        deLoadLibrary :
           begin
             if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)

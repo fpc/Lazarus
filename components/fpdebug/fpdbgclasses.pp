@@ -339,6 +339,8 @@ type
     FProcessID: Integer;
     FThreadID: Integer;
 
+    function GetPauseRequested: boolean;
+    procedure SetPauseRequested(AValue: boolean);
     procedure ThreadDestroyed(const AThread: TDbgThread);
   protected
     FCurrentBreakpoint: TFpInternalBreakpoint;  // set if we are executing the code at the break
@@ -353,6 +355,7 @@ type
     FLibMap: TMap;    // map LibAddr -> LibObject
     FBreakMap: TBreakLocationMap;  // map BreakAddr -> BreakObject
     FTmpRemovedBreaks: array of TDBGPtr;
+    FPauseRequested: longint;
 
     FMainThread: TDbgThread;
     function GetHandle: THandle; virtual;
@@ -423,6 +426,8 @@ type
     property ExitCode: DWord read FExitCode;
     property CurrentBreakpoint: TFpInternalBreakpoint read FCurrentBreakpoint;
     property CurrentWatchpoint: integer read FCurrentWatchpoint;
+    property PauseRequested: boolean read GetPauseRequested write SetPauseRequested;
+    function GetAndClearPauseRequested: Boolean;
 
     // Properties valid when last event was an deException
     property ExceptionMessage: string read FExceptionMessage write FExceptionMessage;
@@ -1419,6 +1424,21 @@ procedure TDbgProcess.ThreadDestroyed(const AThread: TDbgThread);
 begin
   if AThread = FMainThread
   then FMainThread := nil;
+end;
+
+function TDbgProcess.GetPauseRequested: boolean;
+begin
+  Result := Boolean(InterLockedExchangeAdd(FPauseRequested, 0));
+end;
+
+function TDbgProcess.GetAndClearPauseRequested: Boolean;
+begin
+  Result := Boolean(InterLockedExchange(FPauseRequested, ord(False)));
+end;
+
+procedure TDbgProcess.SetPauseRequested(AValue: boolean);
+begin
+  InterLockedExchange(FPauseRequested, ord(AValue));
 end;
 
 procedure TDbgProcess.LoadInfo;

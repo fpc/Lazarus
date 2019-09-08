@@ -990,6 +990,7 @@ end;
 function TDbgLinuxProcess.Pause: boolean;
 begin
   result := fpkill(ProcessID, SIGTRAP)=0;
+  PauseRequested:=true;
   if not result then
     begin
     DebugLn(DBG_WARNINGS, 'Failed to send SIGTRAP to process %d. Errno: %d',[ProcessID, errno]);

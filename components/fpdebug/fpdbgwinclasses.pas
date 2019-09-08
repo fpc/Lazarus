@@ -161,7 +161,6 @@ type
   TDbgWinProcess = class(TDbgProcess)
   private
     FInfo: TCreateProcessDebugInfo;
-    FPauseRequested: boolean;
     FProcProcess: TProcessUTF8;
     FJustStarted: boolean;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
@@ -1145,7 +1144,7 @@ var
 begin
   //hndl := OpenProcess(PROCESS_CREATE_THREAD or PROCESS_QUERY_INFORMATION or PROCESS_VM_OPERATION or PROCESS_VM_WRITE or PROCESS_VM_READ, False, TargetPID);
   hndl := OpenProcess(PROCESS_ALL_ACCESS, false, ProcessID);
-  FPauseRequested:=true;
+  PauseRequested:=true;
   result := DebugBreakProcess(hndl);
   if not Result then begin
     DebugLn(DBG_WARNINGS, ['pause failed(1) ', GetLastError]);

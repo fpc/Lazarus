@@ -924,6 +924,7 @@ end;
 function TDbgDarwinProcess.Pause: boolean;
 begin
   result := FpKill(ProcessID, SIGTRAP)=0;
+  PauseRequested:=true;
 end;
 
 function TDbgDarwinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
