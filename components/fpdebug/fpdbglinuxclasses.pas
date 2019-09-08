@@ -2,6 +2,7 @@ unit FpDbgLinuxClasses;
 
 {$mode objfpc}{$H+}
 {$packrecords c}
+{off $define DebuglnLinuxDebugEvents}
 
 interface
 
@@ -427,6 +428,9 @@ begin
     exit;
 
   result := fpkill(ID, SIGSTOP)=0;
+  {$IFDEF DebuglnLinuxDebugEvents}
+  debugln('TDbgLinuxThread.RequestInternalPause fpkill(%d, SIGSTOP) => %s', [ID, dbgs(Result)]);
+  {$ENDIF}
   if not result then
     begin
     // TODO: errChld -> remove thread
@@ -978,6 +982,10 @@ var
   PID: THandle;
   IP: TDBGPtr;
 begin
+  {$IFDEF DebuglnLinuxDebugEvents}
+  debuglnEnter(['>>>>> TDbgLinuxProcess.Continue TID:', AThread.ID, ' SingleStep:', SingleStep ]); try
+  {$ENDIF}
+
   // Terminating process and all threads
   if FIsTerminating then begin
     fpseterrno(0);
@@ -1006,6 +1014,9 @@ begin
 
         while (ThreadToContinue.GetInstructionPointerRegisterValue = IP) do begin
           fpseterrno(0);
+          {$IFDEF DebuglnLinuxDebugEvents}
+          Debugln(['Single-stepping other TID: ', ThreadToContinue.ID]);
+          {$ENDIF}
           fpPTrace(PTRACE_SINGLESTEP, ThreadToContinue.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(ThreadToContinue).FExceptionSignal)));
           TDbgLinuxThread(ThreadToContinue).ResetPauseStates; // So BeforeContinue will not run again
 
@@ -1034,6 +1045,9 @@ begin
     TDbgLinuxThread(AThread).FIsSteppingBreakPoint := True;
     fpseterrno(0);
     AThread.BeforeContinue;
+    {$IFDEF DebuglnLinuxDebugEvents}
+    Debugln(['Single-stepping current']);
+    {$ENDIF}
     fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)));
     TDbgLinuxThread(AThread).ResetPauseStates;
     Result := CheckNoError;
@@ -1048,6 +1062,9 @@ begin
     if (ThreadToContinue.FHasExceptionSignal) then begin
       Assert(not ThreadToContinue.FIsInInternalPause, 'internal pause should not have deferred sig');
       AThread.NextIsSingleStep:=False; // UNDO
+      {$IFDEF DebuglnLinuxDebugEvents}
+      debugln(['Exit for DEFERRED event TID', ThreadToContinue.Id]);
+      {$ENDIF}
       exit; // WaitForDebugEvent will report the event // AThread will now be treaded as paused.
     end;
 
@@ -1057,6 +1074,9 @@ begin
   for TDbgThread(ThreadToContinue) in FThreadMap do begin
     if (ThreadToContinue <> AThread) and (ThreadToContinue.FIsPaused) then begin
       fpseterrno(0);
+      {$IFDEF DebuglnLinuxDebugEvents}
+      Debugln(['RUN other TID: ', ThreadToContinue.ID]);
+      {$ENDIF}
       fpPTrace(PTRACE_CONT, ThreadToContinue.ID, pointer(1), pointer(wstopsig(ThreadToContinue.FExceptionSignal)));
       CheckNoError; // only log
       ThreadToContinue.ResetPauseStates;
@@ -1066,6 +1086,9 @@ begin
   if not FIsTerminating then begin
     fpseterrno(0);
     //AThread.BeforeContinue;
+    {$IFDEF DebuglnLinuxDebugEvents}
+    Debugln(['RUN ']);
+    {$ENDIF}
     if SingleStep then
       fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)))
     else
@@ -1076,6 +1099,9 @@ begin
 
   if not FThreadMap.HasId(AThread.ID) then
     AThread.Free;
+  {$IFDEF DebuglnLinuxDebugEvents}
+  finally debuglnExit(['<<<<< TDbgLinuxProcess.Continue ' ]); end;
+  {$ENDIF}
 end;
 
 function TDbgLinuxProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
@@ -1113,6 +1139,9 @@ begin
       DebugLn(DBG_WARNINGS, 'ThreadID of main thread does not match the ProcessID');
 
     ProcessIdentifier := ProcessID;
+    {$IFDEF DebuglnLinuxDebugEvents}
+    debugln(['##### GOT EVENT FOR ',pid, ' st ', FStatus]);
+    {$ENDIF}
     end;
 end;
 
@@ -1257,12 +1286,16 @@ begin
   TDbgLinuxThread(AThread).FIsSteppingBreakPoint := False;
 
   if Result in [deException, deBreakpoint, deFinishedStep] then begin // deFinishedStep will not be set here
+    {$IFDEF DebuglnLinuxDebugEvents}
+    debuglnenter('STOP ALL THREADS');
+    {$ENDIF}
     // Signal all other threads to pause
     for TDbgThread(ThreadToPause) in FThreadMap do begin
       if (ThreadToPause <> AThread) and (not ThreadToPause.FIsPaused) then begin
 
         // Check if any thread is already interrupted
         ThreadSignaled := WaitForThread(WaitStatus, True);
+
         while ThreadSignaled <> nil do begin
           if not ThreadSignaled.FIsPaused then
             ThreadSignaled.CheckStatusReceived(WaitStatus);
@@ -1277,11 +1310,22 @@ begin
           ThreadSignaled := WaitForThread(WaitStatus, False);
           if (ThreadSignaled <> nil) and (not ThreadSignaled.FIsPaused) then
             ThreadSignaled.CheckStatusReceived(WaitStatus);
+
+          DebugLn(DBG_VERBOSE and (not ThreadToPause.FIsPaused), ['Re-Request Internal pause for ', ThreadToPause.ID]);
         end;
 
       end;
     end;
+    {$IFDEF DebuglnLinuxDebugEvents}
+    debuglnexit('<<');
+    {$ENDIF}
   end;
+
+  {$IFDEF DebuglnLinuxDebugEvents}
+  for TDbgThread(ThreadToPause) in FThreadMap do
+  debugln([ThreadToPause.id, ' =athrd:', ThreadToPause = AThread, ' psd:', ThreadToPause.FIsPaused,ThreadToPause.FIsInInternalPause,' has:',ThreadToPause.FHasExceptionSignal, ' exs:', ThreadToPause.FExceptionSignal]);
+  debugln('<<<<<<<<<<<<<<<<<<<<<<<<');
+  {$ENDIF}
 
 end;
 
