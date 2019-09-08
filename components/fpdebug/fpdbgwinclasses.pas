@@ -34,6 +34,7 @@
 unit FpDbgWinClasses;
 
 {$mode objfpc}{$H+}
+{$DEFINE DebuglnWinDebugEvents}
 
 interface
 
@@ -147,6 +148,60 @@ var
 const
   FLAG_TRACE_BIT = $100;
 {$endif}
+
+function dbgs(AnDbgEvent: DEBUG_EVENT): String; overload;
+begin
+  case AnDbgEvent.dwDebugEventCode of
+    CREATE_PROCESS_DEBUG_EVENT: result := '>> CREATE_PROCESS_DEBUG_EVENT'
+      + ' htproc:' + IntToStr(AnDbgEvent.CreateProcessInfo.hProcess);
+    CREATE_THREAD_DEBUG_EVENT:  result := '>> CREATE_THREAD_DEBUG_EVENT'
+      + ' hthread:' + IntToStr(AnDbgEvent.CreateThread.hThread)
+      + ' start:' + dbghex(PtrUInt(AnDbgEvent.CreateThread.lpStartAddress));
+    EXCEPTION_DEBUG_EVENT: begin
+                                result := 'EXCEPTION_DEBUG_EVENT'
+        + ' Code:' + dbghex(AnDbgEvent.Exception.ExceptionRecord.ExceptionCode)
+        + ' Flags:' + dbghex(AnDbgEvent.Exception.ExceptionRecord.ExceptionFlags)
+        + ' NumParam:' + IntToStr(AnDbgEvent.Exception.ExceptionRecord.NumberParameters);
+      case AnDbgEvent.Exception.ExceptionRecord.ExceptionCode of
+         EXCEPTION_ACCESS_VIOLATION:         Result := Result + ' EXCEPTION_ACCESS_VIOLATION';
+         EXCEPTION_BREAKPOINT:               Result := Result + ' EXCEPTION_BREAKPOINT';
+         EXCEPTION_DATATYPE_MISALIGNMENT:    Result := Result + ' EXCEPTION_DATATYPE_MISALIGNMENT';
+         EXCEPTION_SINGLE_STEP:              Result := Result + ' EXCEPTION_SINGLE_STEP';
+         EXCEPTION_ARRAY_BOUNDS_EXCEEDED:    Result := Result + ' EXCEPTION_ARRAY_BOUNDS_EXCEEDED';
+         EXCEPTION_FLT_DENORMAL_OPERAND:     Result := Result + ' EXCEPTION_FLT_DENORMAL_OPERAND';
+         EXCEPTION_FLT_DIVIDE_BY_ZERO:       Result := Result + ' EXCEPTION_FLT_DIVIDE_BY_ZERO';
+         EXCEPTION_FLT_INEXACT_RESULT:       Result := Result + ' EXCEPTION_FLT_INEXACT_RESULT';
+         EXCEPTION_FLT_INVALID_OPERATION:    Result := Result + ' EXCEPTION_FLT_INVALID_OPERATION';
+         EXCEPTION_FLT_OVERFLOW:             Result := Result + ' EXCEPTION_FLT_OVERFLOW';
+         EXCEPTION_FLT_STACK_CHECK:          Result := Result + ' EXCEPTION_FLT_STACK_CHECK';
+         EXCEPTION_FLT_UNDERFLOW:            Result := Result + ' EXCEPTION_FLT_UNDERFLOW';
+         EXCEPTION_INT_DIVIDE_BY_ZERO:       Result := Result + ' EXCEPTION_INT_DIVIDE_BY_ZERO';
+         EXCEPTION_INT_OVERFLOW:             Result := Result + ' EXCEPTION_INT_OVERFLOW';
+         EXCEPTION_INVALID_HANDLE:           Result := Result + ' EXCEPTION_INVALID_HANDLE';
+         EXCEPTION_PRIV_INSTRUCTION:         Result := Result + ' EXCEPTION_PRIV_INSTRUCTION';
+         EXCEPTION_NONCONTINUABLE_EXCEPTION: Result := Result + ' EXCEPTION_NONCONTINUABLE_EXCEPTION';
+         EXCEPTION_NONCONTINUABLE:           Result := Result + ' EXCEPTION_NONCONTINUABLE';
+         EXCEPTION_STACK_OVERFLOW:           Result := Result + ' EXCEPTION_STACK_OVERFLOW';
+         EXCEPTION_INVALID_DISPOSITION:      Result := Result + ' EXCEPTION_INVALID_DISPOSITION';
+         EXCEPTION_IN_PAGE_ERROR:            Result := Result + ' EXCEPTION_IN_PAGE_ERROR';
+         EXCEPTION_ILLEGAL_INSTRUCTION:      Result := Result + ' EXCEPTION_ILLEGAL_INSTRUCTION';
+         EXCEPTION_POSSIBLE_DEADLOCK:        Result := Result + ' EXCEPTION_POSSIBLE_DEADLOCK';
+      end;
+    end;
+    EXIT_PROCESS_DEBUG_EVENT:   result := '<< EXIT_PROCESS_DEBUG_EVENT'
+      + ' exitcode:' + IntToStr(AnDbgEvent.ExitProcess.dwExitCode);
+    EXIT_THREAD_DEBUG_EVENT:    result := '<< EXIT_THREAD_DEBUG_EVENT'
+      + ' exitcode:' + IntToStr(AnDbgEvent.ExitThread.dwExitCode);
+    LOAD_DLL_DEBUG_EVENT:       result := '> LOAD_DLL_DEBUG_EVENT';
+    OUTPUT_DEBUG_STRING_EVENT:  result := 'OUTPUT_DEBUG_STRING_EVENT';
+    UNLOAD_DLL_DEBUG_EVENT:     result := '< UNLOAD_DLL_DEBUG_EVENT';
+    RIP_EVENT:                  result := 'RIP_EVENT'
+      + ' type:' + IntToStr(AnDbgEvent.RipInfo.dwType)
+      + ' err:' + IntToStr(AnDbgEvent.RipInfo.dwError);
+    else                        result := 'Code='+inttostr(AnDbgEvent.dwDebugEventCode);
+  end;
+  Result := format('EVENT for Process %d Thread %d: %s', [AnDbgEvent.dwProcessId, AnDbgEvent.dwThreadId, Result]);
+end;
 
 procedure RegisterDbgClasses;
 begin
@@ -535,10 +590,21 @@ begin
 end;
 
 function TDbgWinProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
+{$IFDEF DebuglnWinDebugEvents}
+var
+  t: TDbgWinThread;
+{$ENDIF}
 begin
   result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
+  {$IFDEF DebuglnWinDebugEvents}
+  DebugLn([dbgs(MDebugEvent), ' ', Result]);
+  for TDbgThread(t) in FThreadMap do begin
+  if t.ReadThreadState then
+    DebugLn('   Thr.Id:%d  DR6:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.FCurrentContext^.Dr6, t.FCurrentContext^.Dr6 and 15, t.FCurrentContext^.Dr6 and (1<< 13), t.FCurrentContext^.Dr6 and (1<< 14), t.FCurrentContext^.Dr6 and (1<< 15), t.FCurrentContext^.Dr6 and (1<< 16)]);
+  end;
+  {$ENDIF}
   RestoreTempBreakInstructionCodes;
 
   // Should be done in AnalyseDebugEvent, but that is not called for forked processes
