@@ -139,7 +139,10 @@ type
     FProcess: TDbgProcess;
     FID: Integer;
     FHandle: THandle;
-    FIsAtBreakInstruction: Boolean;
+
+    FPausedAtRemovedBreakPointState: (rbUnknown, rbNone, rbFound{, rbFoundAndDec});
+    FPausedAtRemovedBreakPointAddress: TDBGPtr;
+
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
     FCallStackEntryList: TDbgCallstackEntryList;
@@ -152,8 +155,11 @@ type
     procedure LoadRegisterValues; virtual;
     property Process: TDbgProcess read FProcess;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
+    procedure DoBeforeBreakLocationMapChange; // A new location added / or a location removed => memory will change
+    procedure ValidateRemovedBreakPointInfo;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
+    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; // include removed breakpoints that (may have) already triggered
     procedure CheckAndResetInstructionPointerAfterBreakpoint;
     procedure BeforeContinue; virtual;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
@@ -175,7 +181,6 @@ type
     property NextIsSingleStep: boolean read FNextIsSingleStep write FNextIsSingleStep;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property CallStackEntryList: TDbgCallstackEntryList read FCallStackEntryList;
-    property IsAtBreakInstruction: boolean read FIsAtBreakInstruction; // Is stopped at Int3 code. Needs to exec orig instruction instead
   end;
   TDbgThreadClass = class of TDbgThread;
 
@@ -241,7 +246,7 @@ type
     procedure RemoveLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
     function GetInternalBreaksAtLocation(const ALocation: TDBGPtr): TFpInternalBreakpointArray;
     function GetOrigValueAtLocation(const ALocation: TDBGPtr): Byte; // returns Int3, if there is no break at this location
-    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; // returns Int3, if there is no break at this location
+    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean;
     function GetEnumerator: TBreakLocationMapEnumerator;
   end;
 
@@ -376,6 +381,7 @@ type
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
+    procedure DoBeforeBreakLocationMapChange;
     function  HasBreak(const ALocation: TDbgPtr): Boolean; // TODO: remove, once an address can have many breakpoints
     procedure RemoveThread(const AID: DWord);
     function FormatAddress(const AAddress): String;
@@ -617,6 +623,7 @@ begin
     exit;
   end;
 
+  FProcess.DoBeforeBreakLocationMapChange; // Only if a new breakpoint is set => memory changed
   new(LocData);
   LocData^.ErrorSetting := not FProcess.InsertBreakInstructionCode(ALocation, LocData^.OrigValue);
   LocData^.IsBreakList := False;
@@ -662,6 +669,7 @@ begin
     exit;
   end;
 
+  FProcess.DoBeforeBreakLocationMapChange; // Only if a breakpoint is removed => memory changed
   if not LocData^.ErrorSetting then
     FProcess.RemoveBreakInstructionCode(ALocation, LocData^.OrigValue);
   Delete(ALocation);
@@ -1237,6 +1245,7 @@ function TDbgProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 var
   CurrentAddr: TDBGPtr;
 begin
+  AThread.ValidateRemovedBreakPointInfo;
   result := AnalyseDebugEvent(AThread);
 
   if result = deBreakpoint then
@@ -1363,6 +1372,14 @@ procedure TDbgProcess.RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
 begin
   if ABreakPoint=FCurrentBreakpoint then
     FCurrentBreakpoint := nil;
+end;
+
+procedure TDbgProcess.DoBeforeBreakLocationMapChange;
+var
+  t: TDbgThread;
+begin
+  for t in FThreadMap do
+    t.DoBeforeBreakLocationMapChange;
 end;
 
 function TDbgProcess.HasBreak(const ALocation: TDbgPtr): Boolean;
@@ -1654,6 +1671,41 @@ begin
   // Do nothing
 end;
 
+procedure TDbgThread.DoBeforeBreakLocationMapChange;
+var
+  t: TDBGPtr;
+begin
+debugln(FPausedAtRemovedBreakPointState <> rbUnknown, ['@@@@@@@ MAP tid ', ID, ' ', ord(FPausedAtRemovedBreakPointState), ' ',dbghex(FPausedAtRemovedBreakPointAddress)]);
+  if (FPausedAtRemovedBreakPointState <> rbUnknown) and
+     (FPausedAtRemovedBreakPointAddress = GetInstructionPointerRegisterValue) then
+    exit;
+
+  t := GetInstructionPointerRegisterValue;
+  if Process.HasInsertedBreakInstructionAtLocation(t - 1) then begin
+  (* There is a chance, that the code jumped to this Addr, instead of executing the breakpoint.
+     But if the next signal for this thread is a breakpoint at this address, then
+     it must be handled (even if the breakpoint has been removed since)
+  *)
+    FPausedAtRemovedBreakPointAddress := t;
+    FPausedAtRemovedBreakPointState := rbFound;
+debugln(['####### STORE ',dbghex( t), ' for id ', ID]);
+    // Most likely the debugger should see the previous address (unless we got here
+    // by jump.
+    // Call something like ResetInstructionPointerAfterBreakpointForPendingSignal; virtual;
+    ////ResetInstructionPointerAfterBreakpoint;
+  end
+  else
+    FPausedAtRemovedBreakPointState := rbNone;
+end;
+
+procedure TDbgThread.ValidateRemovedBreakPointInfo;
+begin
+  if (FPausedAtRemovedBreakPointState <> rbUnknown) and
+     (FPausedAtRemovedBreakPointAddress <> GetInstructionPointerRegisterValue)
+  then
+    FPausedAtRemovedBreakPointState := rbUnknown;
+end;
+
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle);
 begin
   FID := AID;
@@ -1663,18 +1715,32 @@ begin
   inherited Create;
 end;
 
+function TDbgThread.HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean;
+var
+  t: TDBGPtr;
+begin
+  t := GetInstructionPointerRegisterValue;
+  Result := ( (FPausedAtRemovedBreakPointState = rbFound) and
+              (FPausedAtRemovedBreakPointAddress = t) ) or
+            Process.HasInsertedBreakInstructionAtLocation(t - 1);
+debugln(['####### CHECK ',result, ' for id ', ID, ' stored ', FPausedAtRemovedBreakPointState=rbFound, ' ',FPausedAtRemovedBreakPointAddress=t, ' ',dbghex(t), ' ', dbghex(FPausedAtRemovedBreakPointAddress)]);
+end;
+
 procedure TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint;
 begin
   // todo: check that the breakpoint is NOT in the temp removed list
-  if not Process.HasInsertedBreakInstructionAtLocation(GetInstructionPointerRegisterValue - 1) then
-    exit;
-  FIsAtBreakInstruction := True;
-  ResetInstructionPointerAfterBreakpoint;
+  if HasInsertedBreakInstructionAtLocation(GetInstructionPointerRegisterValue - 1)
+  then begin
+    FPausedAtRemovedBreakPointState := rbFound;
+    ResetInstructionPointerAfterBreakpoint;
+  end;
 end;
 
 procedure TDbgThread.BeforeContinue;
 begin
-  // Do nothing
+  // On Windows this is only called, if this was the signalled thread
+  FPausedAtRemovedBreakPointState := rbUnknown;
+  FPausedAtRemovedBreakPointAddress := 0;
 end;
 
 function TDbgThread.AddWatchpoint(AnAddr: TDBGPtr): integer;

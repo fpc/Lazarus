@@ -1376,8 +1376,11 @@ end;
 
 procedure TDbgWinThread.BeforeContinue;
 begin
-  if Process.ProcessID <> MDebugEvent.dwProcessId then
+  if ID <> MDebugEvent.dwThreadId then
     exit;
+
+
+  inherited;
 
   if (FCurrentContext <> nil) and
      (FCurrentContext^.Dr6 <> $ffff0ff0) then
@@ -1427,6 +1430,7 @@ begin
   {$else}
   Dec(Context^.Rip);
   dec(FCurrentContext^.Rip);
+debugln(['TDbgWinThread.ResetInstructionPointerAfterBreakpoint ',ID, ' before ', dbghex(FCurrentContext^.Rip), ' / ',Context^.Rip]);
   {$endif}
 
   if not SetThreadContext(Handle, Context^)

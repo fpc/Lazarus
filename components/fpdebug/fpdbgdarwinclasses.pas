@@ -525,6 +525,7 @@ var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
+  inherited;
   if Process.CurrentWatchpoint>-1 then
     begin
     if Process.Mode=dm32 then
@@ -868,7 +869,7 @@ begin
 {$endif linux}
 {$ifdef darwin}
   AThread.NextIsSingleStep:=SingleStep;
-  AThread.BeforeContinue;
+  AThread.BeforeContinue;  // TODO: All threads
   if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then begin
     TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue);
     fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal));

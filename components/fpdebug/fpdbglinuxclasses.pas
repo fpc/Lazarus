@@ -631,6 +631,7 @@ begin
   if not FIsPaused then
     exit;
 
+  inherited;
   if Process.CurrentWatchpoint>-1 then
     WriteDebugReg(6, 0);
 
