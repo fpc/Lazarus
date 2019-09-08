@@ -839,7 +839,7 @@ begin
   inherited DoStateChange(AOldState);
   if Debugger.State in [dsPause, dsInternalPause] then
   begin
-    if FDelayedRemoveBreakpointList.Count>0 then
+    if FDelayedRemoveBreakpointList.Count>0 then begin
       debuglnEnter(DBG_BREAKPOINTS, ['TFPBreakpoints.DoStateChange  REMOVE DELAYED']);
       for i := FDelayedRemoveBreakpointList.Count-1 downto 0 do
       begin
@@ -850,6 +850,7 @@ begin
         FDelayedRemoveBreakpointList.Delete(i);
       end;
       debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoints.DoStateChange  REMOVE DELAYED ' ]);
+    end;
   end;
 end;
 
