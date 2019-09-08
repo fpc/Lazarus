@@ -243,7 +243,6 @@ type
     function ReadThreadState: boolean;
 
     function RequestInternalPause: Boolean;
-    procedure CheckSignalWaiting(ANoHang: Boolean);
     procedure CheckStatusReceived(AWaitedStatus: cint);
     procedure ResetPauseStates;
   public
@@ -439,33 +438,6 @@ begin
     end;
 
   FInternalPauseRequested := True;
-end;
-
-procedure TDbgLinuxThread.CheckSignalWaiting(ANoHang: Boolean);
-var
-  Opts, WaitStatus: cint;
-  PID: THandle;
-begin
-  Opts := __WALL;
-  if ANoHang then
-    Opts := Opts or WNOHANG;
-  PID:=FpWaitPid(ID, WaitStatus, Opts);
-
-  if (PID = 0) then begin
-    if not ANoHang then DebugLn(DBG_WARNINGS, ['Thread ', ID, ' did not get a signal in WaitPid']);
-    exit;
-  end;
-  if (PID = -1) then begin
-    // TODO: errChld -> remove thread
-    DebugLn(DBG_WARNINGS, ['Thread ', ID, ' did get an error in WaitPid ', errno]);
-    exit;
-  end;
-  if (PID <> ID) then begin
-    DebugLn(DBG_WARNINGS, ['Thread ', ID, ' did get wrong PID in WaitPid ', PID]);
-    exit;
-  end;
-
-  CheckStatusReceived(WaitStatus);
 end;
 
 procedure TDbgLinuxThread.CheckStatusReceived(AWaitedStatus: cint);
