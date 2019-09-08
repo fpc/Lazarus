@@ -1089,11 +1089,16 @@ var
   ARegisterList: TDbgRegisterValueList;
   i: Integer;
   ARegisterValue: TRegisterValue;
+  thr: TDbgThread;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause, dsStop]) then
     exit;
 
-  ARegisterList := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.RegisterValueList;
+  if not TFpDebugDebugger(Debugger).FDbgController.MainProcess.GetThread(ARegisters.ThreadId, thr) then begin
+    ARegisters.DataValidity:=ddsError;
+    exit;
+  end;
+  ARegisterList :=  thr.RegisterValueList;
   for i := 0 to ARegisterList.Count-1 do
     begin
     ARegisterValue := ARegisters.EntriesByName[ARegisterList[i].Name];
