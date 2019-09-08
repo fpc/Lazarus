@@ -414,10 +414,13 @@ begin
       exit;
   end;
   Result := WaitForFinishRun(ATimeOut, AWaitForInternal);
-  with LazDebugger.GetLocation do begin
-    DebugLnExit('<<< RunToNextPause Ending at %s %d @ %x %s', [SrcFile, SrcLine, Address, dbgs(LazDebugger.State)]);
-    TestLogger.DebugLn('at %s %d @ %x %s', [SrcFile, SrcLine, Address, dbgs(LazDebugger.State)]);
-  end;
+  if LazDebugger.State = dsPause then
+    with LazDebugger.GetLocation do begin
+      DebugLnExit('<<< RunToNextPause Ending at %s %d @ %x %s', [SrcFile, SrcLine, Address, dbgs(LazDebugger.State)]);
+      TestLogger.DebugLn('at %s %d @ %x %s', [SrcFile, SrcLine, Address, dbgs(LazDebugger.State)]);
+    end
+  else
+    DebugLnExit(['<<< RunToNextPause - ERROR: not paused']);
 end;
 
 function TTestDbgDebugger.WaitForFinishRun(ATimeOut: Integer;

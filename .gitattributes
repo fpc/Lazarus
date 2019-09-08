@@ -2630,6 +2630,7 @@ components/lazdebuggers/lazdebuggerfp/test/LazDebFpTest.lpi svneol=native#text/p
 components/lazdebuggers/lazdebuggerfp/test/LazDebFpTest.lpr svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/test/fpclist.txt.sample svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/test/testapps/BreakPointPrg.pas svneol=native#text/pascal
+components/lazdebuggers/lazdebuggerfp/test/testapps/BreakPointThreadPrg.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/testbase.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/testbreakpoint.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/testvarious.pas svneol=native#text/pascal
