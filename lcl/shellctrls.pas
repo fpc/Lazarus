@@ -674,11 +674,11 @@ begin
   try
   {$endif}
 
-    if Trim(AMask) = '' then
-      MaskStr := AllFilesMask
-    else
-      MaskStr := AMask;
-
+    MaskStr := Trim(AMask);
+    while (Length(MaskStr) > 0) and (MaskStr[Length(MaskStr)] = ';') do
+      System.Delete(MaskStr, Length(MaskStr), 1);
+    if Trim(MaskStr) = '' then
+      MaskStr := AllFilesMask;
     //Use a TMaksList if more than 1 mask is specified or if MaskCaseSensitivity differs from the platform default behaviour
     UseMaskList := (Pos(';', MaskStr) > 0) or
                    {$ifdef NotLiteralFilenames}
