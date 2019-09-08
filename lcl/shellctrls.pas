@@ -45,6 +45,8 @@ type
 
   TFileSortType = (fstNone, fstAlphabet, fstFoldersFirst);
 
+  TMaskCaseSensitivity = (mcsPlatformDefault, mcsCaseInsensitive, mcsCaseSensitive);
+
   { Forward declaration of the classes }
 
   TCustomShellTreeView = class;
@@ -89,7 +91,8 @@ type
     class function  GetBasePath: string;
     function  GetRootPath: string;
     class procedure GetFilesInDir(const ABaseDir: string;
-      AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
+      AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone;
+      ACaseSensitivity: TMaskCaseSensitivity = mcsPlatformDefault);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
     procedure PopulateWithBaseFiles;
@@ -202,6 +205,7 @@ type
   TCustomShellListView = class(TCustomListView)
   private
     FMask: string;
+    FMaskCaseSensitivity: TMaskCaseSensitivity;
     FObjectTypes: TObjectTypes;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
@@ -209,6 +213,7 @@ type
     FOnFileAdded: TCSLVFileAddedEvent;
     { Setters and getters }
     procedure SetMask(const AValue: string);
+    procedure SetMaskCaseSensitivity(AValue: TMaskCaseSensitivity);
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
     procedure SetRoot(const Value: string);
   protected
@@ -225,6 +230,7 @@ type
     function GetPathFromItem(ANode: TListItem): string;
     { Properties }
     property Mask: string read FMask write SetMask; // Can be used to conect to other controls
+    property MaskCaseSensitivity: TMaskCaseSensitivity read FMaskCaseSensitivity write SetMaskCaseSensitivity default mcsPlatformDefault;
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
@@ -349,6 +355,7 @@ type
   EInvalidPath = class(EShellCtrl);
 
 function DbgS(OT: TObjectTypes): String; overload;
+function DbgS(CS: TMaskCaseSensitivity): String; overload;
 
 procedure Register;
 
@@ -361,6 +368,7 @@ uses Windows;
 const
   //no need to localize, it's a message for the programmer
   sShellTreeViewIncorrectNodeType = 'TShellTreeView: the newly created node is not a TShellTreeNode!';
+  MaskCaseSensitivityStrings: array[TMaskCaseSensitivity] of String = ('mcsPlatformDefault', 'mcsCaseInsensitive', 'mcsCaseSensitive');
 
 function DbgS(OT: TObjectTypes): String; overload;
 begin
@@ -370,6 +378,11 @@ begin
   if (otHidden in OT) then Result := Result + 'otHidden';
   if Result[Length(Result)] = ',' then System.Delete(Result, Length(Result), 1);
   Result := Result + ']';
+end;
+
+function DbgS(CS: TMaskCaseSensitivity): String;
+begin
+  Result := MaskCaseSensitivityStrings[CS];
 end;
 
 { TFileItem : internal helper class used for temporarily storing info in an internal TStrings component}
@@ -639,7 +652,7 @@ end;
   AMask may contain multiple file masks separated by ;
 }
 class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
-  AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType);
+  AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType; ACaseSensitivity: TMaskCaseSensitivity);
 var
   DirInfo: TSearchRec;
   FindResult: Integer;
@@ -667,15 +680,23 @@ begin
   if Trim(AMask) = '' then MaskStr := AllFilesMask
   else MaskStr := AMask;
 
-  UseMaskList := (Pos(';', MaskStr) > 0);
+  //Use a TMaksList if more than 1 mask is specified or if MaskCaseSensitivity differs from the platform default behaviour
+  UseMaskList := (Pos(';', MaskStr) > 0) or
+                 {$ifdef NotLiteralFilenames}
+                 (ACaseSensitivity = mcsCaseSensitive)
+                 {$else}
+                 (ACaseSensitivity = mcsCaseInsensitive)
+                 {$endif}
+                 ;
   if UseMaskList then
   begin
     {$ifdef NotLiteralFilenames}
-    MaskList := TMaskList.Create(MaskStr, ';', False);
+    MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity = mcsCaseSensitive));  //False by default
     {$else}
-    MaskList := TMaskList.Create(MaskStr, ';', True);
+    MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity <> mcsCaseInsensitive)); //True by default
     {$endif}
   end;
+
   try
     if AFileSortType=fstNone then Files:=nil
     else Files:=TList.Create;
@@ -1335,6 +1356,34 @@ begin
   end;
 end;
 
+procedure TCustomShellListView.SetMaskCaseSensitivity(
+  AValue: TMaskCaseSensitivity);
+var
+  OldMask: String;
+  NeedRefresh: Boolean;
+begin
+  if FMaskCaseSensitivity = AValue then Exit;
+  {$ifdef NotLiteralFilenames}
+  if (FMaskCaseSensitivity in [mcsPlatformDefault, mcsCaseInsensitive]) then
+    NeedRefresh := (AValue = mcsCaseSensitive)
+  else
+    NeedRefresh := True;
+  {$else}
+  if (FMaskCaseSensitivity in [mcsPlatformDefault, mcsCaseSensitive]) then
+    NeedRefresh := (AValue = mcsCaseInsensitive)
+  else
+    NeedRefresh :=True;
+  {$endif}
+  FMaskCaseSensitivity := AValue;
+  if NeedRefresh then
+  begin
+    //Trick SetMask to believe a refresh is needed.
+    OldMask := FMask;
+    FMask := #0 + FMask;
+    SetMask(OldMask);
+  end;
+end;
+
 procedure TCustomShellListView.SetRoot(const Value: string);
 begin
   if FRoot <> Value then
@@ -1358,6 +1407,7 @@ begin
   // Initial property values
   ViewStyle := vsReport;
   ObjectTypes := [otNonFolders];
+  FMaskCaseSensitivity := mcsPlatformDefault;
 
   Self.Columns.Add;
   Self.Columns.Add;
@@ -1393,7 +1443,7 @@ begin
   Files := TStringList.Create;
   try
     Files.OwnsObjects := True;
-    TCustomShellTreeView.GetFilesInDir(FRoot, FMask, FObjectTypes, Files);
+    TCustomShellTreeView.GetFilesInDir(FRoot, FMask, FObjectTypes, Files, fstNone, FMaskCaseSensitivity);
 
     for i := 0 to Files.Count - 1 do
     begin
