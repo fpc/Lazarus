@@ -655,16 +655,12 @@ class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
   AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType; ACaseSensitivity: TMaskCaseSensitivity);
 var
   DirInfo: TSearchRec;
-  FindResult: Integer;
+  FindResult, i: Integer;
   IsDirectory, IsValidDirectory, IsHidden, AddFile, UseMaskList: Boolean;
-  SearchStr: string;
-  MaskStr: string;
+  SearchStr, MaskStr, ShortFilename: string;
   MaskList: TMaskList;
   Files: TList;
   FileItem: TFileItem;
-  i: Integer;
-  ShortFilename: AnsiString;
-  j: Integer;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
   {$endif}
@@ -677,96 +673,103 @@ begin
   try
   {$endif}
 
-  if Trim(AMask) = '' then MaskStr := AllFilesMask
-  else MaskStr := AMask;
-
-  //Use a TMaksList if more than 1 mask is specified or if MaskCaseSensitivity differs from the platform default behaviour
-  UseMaskList := (Pos(';', MaskStr) > 0) or
-                 {$ifdef NotLiteralFilenames}
-                 (ACaseSensitivity = mcsCaseSensitive)
-                 {$else}
-                 (ACaseSensitivity = mcsCaseInsensitive)
-                 {$endif}
-                 ;
-  if UseMaskList then
-  begin
-    {$ifdef NotLiteralFilenames}
-    MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity = mcsCaseSensitive));  //False by default
-    {$else}
-    MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity <> mcsCaseInsensitive)); //True by default
-    {$endif}
-  end;
-
-  try
-    if AFileSortType=fstNone then Files:=nil
-    else Files:=TList.Create;
-
-    j:=0;
-    if UseMaskList then
-      SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AllFilesMask
+    if Trim(AMask) = '' then
+      MaskStr := AllFilesMask
     else
-      SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStr; //single mask, let FindFirst/FindNext handle matching
+      MaskStr := AMask;
 
-    FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
-    while (FindResult = 0) do
-    begin
-      ShortFilename := DirInfo.Name;
-      IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
-      //no need to call MaskListMatches (which loops through all masks) if ShortFileName is '.' or '..' since we never process this
-      if ((not UseMaskList) or MaskList.Matches(DirInfo.Name)) and IsValidDirectory  then
-      begin
-        inc(j);
-        if j=100 then
-        begin
-          Application.ProcessMessages;
-          j:=0;
-        end;
-        IsDirectory := (DirInfo.Attr and FaDirectory = FaDirectory);
-        IsHidden := (DirInfo.Attr and faHidden{%H-} = faHidden{%H-});
-
-        // First check if we show hidden files
-        if IsHidden then AddFile := (otHidden in AObjectTypes)
-        else AddFile := True;
-
-        // If it is a directory, check if it is a valid one
-        if IsDirectory then
-          AddFile := AddFile and ((otFolders in AObjectTypes) and IsValidDirectory)
-        else
-          AddFile := AddFile and (otNonFolders in AObjectTypes);
-
-        // AddFile identifies if the file is valid or not
-        if AddFile then
-        begin
-          if not Assigned(Files) then begin
-            AResult.AddObject(ShortFilename, TFileItem.Create(DirInfo, ABaseDir));
-          end else
-            Files.Add ( TFileItem.Create(DirInfo, ABaseDir));
-        end;
-      end;// Filename matches the mask
-      FindResult := FindNextUTF8(DirInfo);
-    end; //FindResult = 0
-
-    FindCloseUTF8(DirInfo);
-  finally
+    //Use a TMaksList if more than 1 mask is specified or if MaskCaseSensitivity differs from the platform default behaviour
+    UseMaskList := (Pos(';', MaskStr) > 0) or
+                   {$ifdef NotLiteralFilenames}
+                   (ACaseSensitivity = mcsCaseSensitive)
+                   {$else}
+                   (ACaseSensitivity = mcsCaseInsensitive)
+                   {$endif}
+                   ;
     if UseMaskList then
-      MaskList.Free;
-  end;
-
-  if Assigned(Files) then begin
-
-    case AFileSortType of
-      fstAlphabet:     Files.Sort(@FilesSortAlphabet);
-      fstFoldersFirst: Files.Sort(@FilesSortFoldersFirst);
-    end;
-
-    for i:=0 to Files.Count-1 do
     begin
-      FileItem:=TFileItem(Files[i]);
-      AResult.AddObject(FileItem.FileInfo.Name, FileItem);
+      {$ifdef NotLiteralFilenames}
+      MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity = mcsCaseSensitive));  //False by default
+      {$else}
+      MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity <> mcsCaseInsensitive)); //True by default
+      {$endif}
     end;
-    //don't free the TFileItems here, they will freed by the calling routine
-    Files.Free;
-  end;
+
+    try
+      if AFileSortType = fstNone then
+        Files:=nil
+      else
+        Files := TList.Create;
+
+      i := 0;
+      if UseMaskList then
+        SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AllFilesMask
+      else
+        SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStr; //single mask, let FindFirst/FindNext handle matching
+
+      FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
+      while (FindResult = 0) do
+      begin
+        ShortFilename := DirInfo.Name;
+        IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
+        //no need to call MaskListMatches (which loops through all masks) if ShortFileName is '.' or '..' since we never process this
+        if ((not UseMaskList) or MaskList.Matches(DirInfo.Name)) and IsValidDirectory  then
+        begin
+          inc(i);
+          if i = 100 then
+          begin
+            Application.ProcessMessages;
+            i := 0;
+          end;
+          IsDirectory := (DirInfo.Attr and FaDirectory = FaDirectory);
+          IsHidden := (DirInfo.Attr and faHidden{%H-} = faHidden{%H-});
+
+          // First check if we show hidden files
+          if IsHidden then
+            AddFile := (otHidden in AObjectTypes)
+          else
+            AddFile := True;
+
+          // If it is a directory, check if it is a valid one
+          if IsDirectory then
+            AddFile := AddFile and ((otFolders in AObjectTypes) and IsValidDirectory)
+          else
+            AddFile := AddFile and (otNonFolders in AObjectTypes);
+
+          // AddFile identifies if the file is valid or not
+          if AddFile then
+          begin
+            if not Assigned(Files) then
+            begin
+              AResult.AddObject(ShortFilename, TFileItem.Create(DirInfo, ABaseDir));
+            end else
+              Files.Add(TFileItem.Create(DirInfo, ABaseDir));
+          end;
+        end;// Filename matches the mask
+        FindResult := FindNextUTF8(DirInfo);
+      end; //FindResult = 0
+
+      FindCloseUTF8(DirInfo);
+    finally
+      if UseMaskList then
+        MaskList.Free;
+    end;
+
+    if Assigned(Files) then
+    begin
+      case AFileSortType of
+        fstAlphabet:     Files.Sort(@FilesSortAlphabet);
+        fstFoldersFirst: Files.Sort(@FilesSortFoldersFirst);
+      end;
+
+      for i:=0 to Files.Count-1 do
+      begin
+        FileItem:=TFileItem(Files[i]);
+        AResult.AddObject(FileItem.FileInfo.Name, FileItem);
+      end;
+      //don't free the TFileItems here, they will freed by the calling routine
+      Files.Free;
+    end;
 
   {$if defined(windows) and not defined(wince)}
   finally
