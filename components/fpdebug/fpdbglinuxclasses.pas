@@ -1045,7 +1045,6 @@ begin
           end;
         end;
 
-        RestoreTempBreakInstructionCodes;
       end;
     end;
 
@@ -1062,6 +1061,8 @@ begin
     Result := CheckNoError;
     exit;
   end;
+
+  RestoreTempBreakInstructionCodes;
 
   ThreadsBeforeContinue;
 
