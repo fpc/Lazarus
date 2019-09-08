@@ -271,6 +271,7 @@ type
 //    property HoverTime;
     property LargeImages;
     property Mask;
+    property MaskCaseSensitivity;
     property MultiSelect;
 //    property OwnerData;
 //    property OwnerDraw;
