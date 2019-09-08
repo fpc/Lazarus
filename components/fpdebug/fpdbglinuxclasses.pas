@@ -1302,19 +1302,20 @@ begin
     {$ENDIF}
     // Signal all other threads to pause
     for TDbgThread(ThreadToPause) in FThreadMap do begin
-      if (ThreadToPause <> AThread) and (not ThreadToPause.FIsPaused) then begin
+      if (ThreadToPause <> AThread) then begin
+        while  (not ThreadToPause.FIsPaused) do begin
 
-        // Check if any thread is already interrupted
-        while ExistsPendingSignal(Pid, WaitStatus, ThreadSignaled, True) do begin
-          if (ThreadSignaled = nil) or
-             (ThreadSignaled.CheckSignalForPostponing(WaitStatus))
-          then
-            FPostponedSignals.AddSignal(PID, WaitStatus);
-        end;
+          // Check if any thread is already interrupted
+          while ExistsPendingSignal(Pid, WaitStatus, ThreadSignaled, True) do begin
+            if (ThreadSignaled = nil) or
+               (ThreadSignaled.CheckSignalForPostponing(WaitStatus))
+            then
+              FPostponedSignals.AddSignal(PID, WaitStatus);
+          end;
 
-        while not ThreadToPause.FIsPaused do begin
+          DebugLn(DBG_VERBOSE and (ThreadToPause.FInternalPauseRequested), ['Re-Request Internal pause for ', ThreadToPause.ID]);
           ThreadToPause.FInternalPauseRequested:=false;
-          if not ThreadToPause.RequestInternalPause then
+          if not ThreadToPause.RequestInternalPause then // will fail, if already paused
              break;
 
           if ExistsPendingSignal(Pid, WaitStatus, ThreadSignaled, False) then begin
@@ -1324,9 +1325,7 @@ begin
               FPostponedSignals.AddSignal(PID, WaitStatus);
           end;
 
-          DebugLn(DBG_VERBOSE and (not ThreadToPause.FIsPaused), ['Re-Request Internal pause for ', ThreadToPause.ID]);
         end;
-
       end;
     end;
     {$IFDEF DebuglnLinuxDebugEvents}
