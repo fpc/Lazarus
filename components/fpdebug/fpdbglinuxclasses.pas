@@ -998,9 +998,18 @@ begin
     exit;
   end;
 
-  // If the thread is at a breakpoint, then it must be singlestepped now, so the breakpoint can be restored
-  // since the other threads may still have events to be handled they can not be continued yet
-  // TODO: Handle all events in a single AnalyseDebugEvent / or at least hava a FCurrentBreakpoint per thread
+  // check for pending events in other threads
+  assert(not TDbgLinuxThread(AThread).FHasExceptionSignal, 'current thread must not have deferred sig');
+  for TDbgThread(ThreadToContinue) in FThreadMap do
+    if (ThreadToContinue.FHasExceptionSignal) then begin
+      Assert(not ThreadToContinue.FIsInInternalPause, 'internal pause should not have deferred sig');
+      AThread.NextIsSingleStep:=False; // UNDO
+      {$IFDEF DebuglnLinuxDebugEvents}
+      debugln(['Exit for DEFERRED event TID', ThreadToContinue.Id]);
+      {$ENDIF}
+      exit; // WaitForDebugEvent will report the event // AThread will now be treaded as paused.
+    end;
+
 
   AThread.NextIsSingleStep:=SingleStep;
 
@@ -1053,20 +1062,6 @@ begin
     Result := CheckNoError;
     exit;
   end;
-
-
-  // check for pending events in other threads
-  // TODO: those should happen before doing the singlestep at int3. But then breakpoints would act again....
-  assert(not TDbgLinuxThread(AThread).FHasExceptionSignal, 'current thread must not have deferred sig');
-  for TDbgThread(ThreadToContinue) in FThreadMap do
-    if (ThreadToContinue.FHasExceptionSignal) then begin
-      Assert(not ThreadToContinue.FIsInInternalPause, 'internal pause should not have deferred sig');
-      AThread.NextIsSingleStep:=False; // UNDO
-      {$IFDEF DebuglnLinuxDebugEvents}
-      debugln(['Exit for DEFERRED event TID', ThreadToContinue.Id]);
-      {$ENDIF}
-      exit; // WaitForDebugEvent will report the event // AThread will now be treaded as paused.
-    end;
 
   ThreadsBeforeContinue;
 
