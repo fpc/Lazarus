@@ -279,6 +279,35 @@ begin
   Result := format('EVENT for Process %d Thread %d: %s', [AnDbgEvent.dwProcessId, AnDbgEvent.dwThreadId, Result]);
 end;
 
+
+var
+  DebugBreakAddr: Pointer = nil;
+  _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
+  _GetFinalPathNameByHandle: function(hFile: HANDLE; lpFilename:LPWSTR; cchFilePath, dwFlags: DWORD):DWORD; stdcall = nil;
+  _QueryFullProcessImageName: function (hProcess:HANDLE; dwFlags: DWord; lpExeName:LPWSTR; var lpdwSize:DWORD):BOOL; stdcall = nil;
+
+function DebugBreakProcess(Process:HANDLE): WINBOOL; external 'kernel32' name 'DebugBreakProcess';
+
+procedure LoadKernelEntryPoints;
+var
+  hMod: THandle;
+begin
+  hMod := GetModuleHandle(kernel32);
+  DebugLn(DBG_WARNINGS and (hMod = 0), ['ERROR: Failed to get kernel32 handle']);
+  if hMod = 0 then
+    exit; //????
+
+  DebugBreakAddr := GetProcAddress(hMod, 'DebugBreak');
+  Pointer(_CreateRemoteThread) := GetProcAddress(hMod, 'CreateRemoteThread');
+  Pointer(_QueryFullProcessImageName) := GetProcAddress(hMod, 'QueryFullProcessImageNameW'); // requires Vista
+  Pointer(_GetFinalPathNameByHandle) := GetProcAddress(hMod, 'GetFinalPathNameByHandleW');
+
+  DebugLn(DBG_WARNINGS and (DebugBreakAddr = nil), ['WARNING: Failed to get DebugBreakAddr']);
+  DebugLn(DBG_WARNINGS and (_CreateRemoteThread = nil), ['WARNING: Failed to get CreateRemoteThread']);
+  DebugLn(DBG_WARNINGS and (_QueryFullProcessImageName = nil), ['WARNING: Failed to get QueryFullProcessImageName']);
+  DebugLn(DBG_WARNINGS and (_GetFinalPathNameByHandle = nil), ['WARNING: Failed to get GetFinalPathNameByHandle']);
+end;
+
 procedure RegisterDbgClasses;
 begin
   OSDbgClasses.DbgThreadClass:=TDbgWinThread;
@@ -298,21 +327,22 @@ begin
   FlushInstructionCache(Handle, Pointer(PtrUInt(ALocation)), 1);
 end;
 
-function QueryFullProcessImageName(hProcess:HANDLE; dwFlags: DWord; lpExeName:LPWSTR; var lpdwSize:DWORD):BOOL; stdcall; external 'kernel32' name 'QueryFullProcessImageNameW';
-
 function TDbgWinProcess.GetFullProcessImageName(AProcessHandle: THandle): string;
 var
   u: UnicodeString;
   len: DWORD;
 begin
+  Result := '';
+  if _QueryFullProcessImageName = nil then
+    exit;
   len := MAX_PATH;
   SetLength(u, len);
-  if QueryFullProcessImageName(AProcessHandle, 0, @u[1], len)
+  if _QueryFullProcessImageName(AProcessHandle, 0, @u[1], len)
   then begin
     SetLength(u, len);
     Result:=UTF8Encode(u);
-  end else begin
-    Result := '';
+  end
+  else begin
     LogLastError;
   end;
 end;
@@ -322,19 +352,10 @@ var
   u: UnicodeString;
   s: string;
   len: Integer;
-  hMod: THandle;
-  _GetFinalPathNameByHandle: function(hFile: HANDLE; lpFilename:LPWSTR; cchFilePath, dwFlags: DWORD):DWORD; stdcall;
 begin
   result := '';
 
-  // normally you would load a lib, but since kernel32 is
-  // always loaded we can use this (and we don't have to free it
-  hMod := GetModuleHandle(kernel32);
-  if hMod = 0 then Exit; //????
-
   // GetFinalPathNameByHandle is only available on Windows Vista / Server 2008
-  _GetFinalPathNameByHandle := nil;
-  pointer(_GetFinalPathNameByHandle) := GetProcAddress(hMod, 'GetFinalPathNameByHandleW');
   if assigned(_GetFinalPathNameByHandle) then begin
     SetLength(u, MAX_PATH);
 
@@ -1115,27 +1136,6 @@ begin
   then SetFileName(s);
 end;
 
-function DebugBreakProcess(Process:HANDLE): WINBOOL; external 'kernel32' name 'DebugBreakProcess';
-var
-  DebugBreakAddr: Pointer = nil;
-  _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
-
-procedure InitWin32;
-var
-  hMod: THandle;
-begin
-  // Check if we already are initialized
-  if DebugBreakAddr <> nil then Exit;
-
-  // normally you would load a lib, but since kernel32 is
-  // always loaded we can use this (and we don't have to free it
-  hMod := GetModuleHandle(kernel32);
-  if hMod = 0 then Exit; //????
-
-  DebugBreakAddr := GetProcAddress(hMod, 'DebugBreak');
-  Pointer(_CreateRemoteThread) := GetProcAddress(hMod, 'CreateRemoteThread');
-end;
-
 function TDbgWinProcess.Pause: boolean;
 var
   hndl: Handle;
@@ -1148,14 +1148,15 @@ begin
   result := DebugBreakProcess(hndl);
   if not Result then begin
     DebugLn(DBG_WARNINGS, ['pause failed(1) ', GetLastError]);
-    InitWin32;
-    hThread := _CreateRemoteThread(hndl, nil, 0, DebugBreakAddr, nil, 0, NewThreadId);
-    if hThread = 0 then begin
-      DebugLn(DBG_WARNINGS, ['pause failed(2) ', GetLastError]);
-    end
-    else begin
-      Result := True;
-      CloseHandle(hThread);
+    if (_CreateRemoteThread <> nil) and (DebugBreakAddr <> nil) then begin
+      hThread := _CreateRemoteThread(hndl, nil, 0, DebugBreakAddr, nil, 0, NewThreadId);
+      if hThread = 0 then begin
+        DebugLn(DBG_WARNINGS, ['pause failed(2) ', GetLastError]);
+      end
+      else begin
+        Result := True;
+        CloseHandle(hThread);
+      end;
     end;
   end;
   CloseHandle(hndl);
@@ -1490,6 +1491,8 @@ begin
 end;
 
 initialization
+  LoadKernelEntryPoints;
+
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 end.
