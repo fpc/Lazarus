@@ -180,7 +180,6 @@ type
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; override;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; override;
 
-    procedure Interrupt;
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
@@ -507,48 +506,6 @@ begin
   AData := PWChar(@Buf[0]);
 end;
 
-procedure TDbgWinProcess.Interrupt;
-var
-  _UC: record
-    C: TContext;
-    D: array[1..16] of Byte;
-  end;
-  Context: PContext;
-begin
-  // Interrupting is implemented by suspending the thread and set DB0 to the
-  // (to be) executed EIP. When the thread is resumed, it will generate a break
-  // Single stepping doesn't work in all cases.
-
-  // A context needs to be aligned to 16 bytes. Unfortunately, the compiler has
-  // no directive for this, so align it somewhere in our "reserved" memory
-  Context := AlignPtr(@_UC, $10);
-  SuspendThread(FInfo.hThread);
-  try
-    Context^.ContextFlags := CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
-    if not GetThreadContext(FInfo.hThread, Context^)
-    then begin
-      DebugLn(DBG_WARNINGS, 'Proces %u interrupt: Unable to get context', [ProcessID]);
-      Exit;
-    end;
-
-    Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
-    {$ifdef cpui386}
-    Context^.Dr0 := Context^.Eip;
-    {$else}
-    Context^.Dr0 := Context^.Rip;
-    {$endif}
-    Context^.Dr7 := (Context^.Dr7 and $FFF0FFFF) or $1;
-
-    if not SetThreadContext(FInfo.hThread, Context^)
-    then begin
-      DebugLn(DBG_WARNINGS, 'Proces %u interrupt: Unable to set context', [ProcessID]);
-      Exit;
-    end;
-  finally
-    ResumeTHread(FInfo.hThread);
-  end;
-end;
-
 { ------------------------------------------------------------------
   HandleDebugEvent
 
@@ -556,52 +513,6 @@ end;
           The callee should continue the process
   ------------------------------------------------------------------ }
 function TDbgWinProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
-
-  //function DoSingleStep: Boolean;
-  //var
-  //  _UC: record
-  //    C: TContext;
-  //    D: array[1..16] of Byte;
-  //  end;
-  //  Context: PContext;
-  //begin
-  //  Result := False;
-  //  // check if we are interupting
-  //  Context := AlignPtr(@_UC, $10);
-  //  Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
-  //  if GetThreadContext(FInfo.hThread, Context^)
-  //  then begin
-  //    if Context^.Dr6 and 1 <> 0
-  //    then begin
-  //      // interrupt !
-  //      // disable break.
-  //      Context^.Dr7 := Context^.Dr7 and not $1;
-  //      Context^.Dr0 := 0;
-  //      if not SetThreadContext(FInfo.hThread, Context^)
-  //      then begin
-  //        // Heeellppp!!
-  //        DebugLn(DBG_WARNINGS, 'Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
-  //      end;
-  //      // check if we are also singlestepping
-  //      // if not, then exit, else proceed to next check
-  //      if Context^.Dr6 and $40 = 0
-  //      then Exit;
-  //    end;
-  //  end
-  //  else begin
-  //    // if we can not get the context, we probable weren't able to set it either
-  //    DebugLn(DBG_WARNINGS, 'Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
-  //  end;
-  //
-  //  // check if we are single stepping ourself
-  //  if FCurrentBreakpoint = nil then Exit;
-  //
-  //  FCurrentBreakpoint.SetBreak;
-  //  FCurrentBreakpoint := nil;
-  //  Result := FReEnableBreakStep;
-  //  FReEnableBreakStep := False;
-  //end;
-
 begin
   Result := False;
   case ADebugEvent.dwDebugEventCode of
