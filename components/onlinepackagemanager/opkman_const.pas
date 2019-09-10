@@ -188,7 +188,7 @@ resourcestring
   rsMainFrm_miLoad = 'Load packages';
   rsMainFrm_PackagenameAlreadyExists = 'A package with the same name already exists!';
   rsMainFrm_PackageAlreadyInstalled = 'The following packages are already installed. Continue anyway?';
-  rsMainFrm_PackageIncompatible = 'The following packages are not compatible with your system and the install will most likely fail. Continue anyway?';
+  rsMainFrm_PackageIncompatible = 'The following packages are not tested and the install might fail. Continue anyway?';
   rsMainFrm_PackageAlreadyDownloaded = 'The following repository packages already exist in the target folder. Continue?';
   rsMainFrm_PackageUpdateWarning = 'Installing packages from external link is not without a risk!' + sLineBreak + 'Only install if you trust the package maintainer. Continue?';
   rsMainFrm_PackageUpdate0 = 'The following repository packages are not available externally. The packages will be skipped. Continue?';
@@ -273,7 +273,7 @@ resourcestring
   rsOptions_cbSelectProfile_Hint = 'Choose a profile that best fits you';
   rsOptions_cbDelete_Caption = 'Delete downloaded zip files after installation/update';
   rsOptions_cbDelete_Hint = 'If this option is checked the downloaded zip file is always deleted after installation';
-  rsOption_cbIncompatiblePackage_Caption = 'Warn me about incompatible packages';
+  rsOption_cbIncompatiblePackage_Caption = 'Warn me about incompatible/untested packages';
   rsOption_cbIncompatiblePackage_Hint = 'If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message';
   rsOption_cbcbAlreadyInstalledPackages_Caption = 'Warn me about already installed packages';
   rsOption_cbcbAlreadyInstalledPackages_Hint = 'If a package is already installed, OPM will show a warning message';
@@ -341,7 +341,7 @@ resourcestring
   rsPackageListFrm_CurFPCVer = 'Current FPC version: ';
   rsPackageListFrm_SupWSs = 'Supported widgetsets: ';
   rsPackageListFrm_CurWS = 'Current widgetset: ';
-  rsPackageListFrm_Incompatible = 'Incompatible';
+  rsPackageListFrm_Incompatible = 'Not tested';
   rsPackageListFrm_bYes_Caption = 'Yes';
   rsPackageListFrm_bNo_Caption = 'No';
   rsPackageListFrm_bOk_Caption = 'OK';
