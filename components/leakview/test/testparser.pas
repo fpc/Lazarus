@@ -34,6 +34,8 @@ type
     procedure CheckGdb2(TrcList: TStackTraceList; ReplHash: String = '#');
     function  TextLldb1: String;
     function  TextValgrind: String;
+    function  TextRaw1: String;
+    function  TextRaw2: String;
   published
     procedure TestLeakText1;
     procedure TestLeakText1NoHeader;
@@ -45,6 +47,8 @@ type
     procedure TestGdb2Mantis;
     procedure TestLldb;
     procedure TestValgrind;
+    procedure TestRaw1;
+    procedure TestRaw2;
   end;
 
 implementation
@@ -574,6 +578,44 @@ begin
   ;
 end;
 
+function TTestLeakParser.TextRaw1: String;
+begin
+  Result :=
+'Stack trace:' + FLineEnd +
+'  $004821FA' + FLineEnd +
+'  $00569F5C' + FLineEnd +
+'  $0042E529' + FLineEnd +
+'  $0041FC0F' + FLineEnd +
+'  $0041DC78' + FLineEnd +
+'  $004252FA' + FLineEnd +
+'  $0042C54E' + FLineEnd +
+'  $00402AD2' + FLineEnd +
+'  $00415C91' + FLineEnd
+  ;
+end;
+
+function TTestLeakParser.TextRaw2: String;
+begin
+  Result :=
+'Stacktrace:' + FLineEnd +
+'' + FLineEnd +
+'Exception class: EAccessViolation' + FLineEnd +
+'Message: Access violation' + FLineEnd +
+'  $00420E57' + FLineEnd +
+'  $0042B3E5' + FLineEnd +
+'  $0050FAF5' + FLineEnd +
+'  $0052D010' + FLineEnd +
+'  $0052D6E6' + FLineEnd +
+'  $0052CF1D' + FLineEnd +
+'  $0040DEE8' + FLineEnd +
+'  $00504D71' + FLineEnd +
+'  $0058C06F' + FLineEnd +
+'  $004EC4FA' + FLineEnd +
+'  $004ECB6B' + FLineEnd +
+'  $005C29FD' + FLineEnd
+  ;
+end;
+
 procedure TTestLeakParser.TestLeakText1;
 var
   Trc: TLeakInfo;
@@ -863,6 +905,53 @@ el('fppascalbuilder.pas',  684, $152D29B, '==2119==    by 0x152D29B: FPPASCALBUI
 el('fppascalbuilder.pas',  900, $152C67F, '==2119==    by 0x152C67F: FPPASCALBUILDER$_$TFPPASCALPRETTYPRINTER_$__$$_INTERNALPRINTVALUE$crc05F9855F (fppascalbuilder.pas:900)')
 ,el('',0,0,'==2119==')
     ], TrcList[2]);
+
+  TrcList.Free;
+end;
+
+procedure TTestLeakParser.TestRaw1;
+var
+  Trc: TLeakInfo;
+  TrcData: TLeakStatus;
+  TrcList: TStackTraceList;
+begin
+  FLineEnd := LineEnding;
+  Trc := AllocHeapTraceInfoFromText(TextRaw1);
+  TrcList := TStackTraceList.Create();
+  Trc.GetLeakInfo(TrcData, TrcList);
+
+  AssertEquals('Has 1 traces', 1, TrcList.Count);
+  AssertTrue('has hex', pos('$', TrcList[0].Lines[2].RawLineData) > 0);
+  AssertTrue('has addr', TrcList[0].Lines[2].Addr <> 0);
+
+  TrcList.Free;
+
+
+  Trc := AllocHeapTraceInfoFromText(StringReplace(TextRaw1,' ', '', [rfReplaceAll]));
+  TrcList := TStackTraceList.Create();
+  Trc.GetLeakInfo(TrcData, TrcList);
+
+  AssertEquals('no-space Has 1 traces', 1, TrcList.Count);
+  AssertTrue('no-space has hex', pos('$', TrcList[0].Lines[2].RawLineData) > 0);
+  AssertTrue('has addr', TrcList[0].Lines[2].Addr <> 0);
+
+  TrcList.Free;
+end;
+
+procedure TTestLeakParser.TestRaw2;
+var
+  Trc: TLeakInfo;
+  TrcData: TLeakStatus;
+  TrcList: TStackTraceList;
+begin
+  FLineEnd := LineEnding;
+  Trc := AllocHeapTraceInfoFromText(TextRaw2);
+  TrcList := TStackTraceList.Create();
+  Trc.GetLeakInfo(TrcData, TrcList);
+
+  AssertEquals('Has 1 traces', 1, TrcList.Count);
+  AssertTrue('has hex', pos('$', TrcList[0].Lines[2].RawLineData) > 0);
+  AssertTrue('has addr', TrcList[0].Lines[2].Addr <> 0);
 
   TrcList.Free;
 end;
