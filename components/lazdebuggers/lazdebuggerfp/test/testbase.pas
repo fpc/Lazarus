@@ -35,8 +35,8 @@ begin
 
   DbgInfo.Name := 'FpDebug';
   DbgInfo.CpuBitTypes := [cpu32,cpu64];
-  {$IFDEF WIN64} // Windows can not cross debug
-  DbgInfo.CpuBitTypes := [cpu64];
+  {$IFDEF WIN64}
+  DbgInfo.CpuBitTypes := [cpu32,cpu64];
   {$ENDIF}
   {$IFDEF WIN32} // Windows can not cross debug
   DbgInfo.CpuBitTypes := [cpu32];
