@@ -22,6 +22,9 @@ type
       Line, LastLine: Integer;
       Val, LastVal: int64;
       Loop, LastLoop: int64;
+      IsCurrent: Boolean;
+      LastBrkLine, LastBrkLoop: Integer;
+      PrevLastBrkLine, PrevLastBrkLoop: Integer;
     end;
   end;
 
@@ -63,6 +66,9 @@ type
     procedure TestBreakThreadsMoveBreak1;
     procedure TestBreakThreadsMoveBreak2;
 
+    // check that each brk point hit was reported (one per thread)
+    procedure TestBreakThreadsHitBreak;
+
     (* TODO: All breakpoint-hits must be reported. Hits happening together with an event
        in another thread must still be reported.
     *)
@@ -71,7 +77,8 @@ type
 implementation
 
 var
-  ControlTest, ControlTestBreak, ControlTestThreadNoSkip, ControlTestThreadMove1, ControlTestThreadMove2: Pointer;
+  ControlTest, ControlTestBreak, ControlTestThreadNoSkip,
+  ControlTestThreadMove1, ControlTestThreadMove2, ControlTestThreadHit: Pointer;
 
 procedure TTestBreakPoint.TestLocation(ATestName, ABrkName: String;
   ABreakHitCount: Integer);
@@ -308,6 +315,7 @@ begin
     end;
 
     FThrPrgInfo.Threads[j].ID := t.ThreadId;
+    FThrPrgInfo.Threads[j].LastBrkLine := -1;
     debugln(['++ ADDED tid ',t.ThreadId]);
     inc(j);
     if j >= 11 then
@@ -350,12 +358,26 @@ begin
     if bx <> nil then
       FThrPrgInfo.Threads[i].Loop   := StrToInt64Def(bx.Value,-1) and $7FFFFFFF;
 
-    debugln('Thread %d (%x):   Line: %d (%d) (was %d)   Val: %d (was %d)  LOOP: %d (was %d)', [
-      FThrPrgInfo.Threads[i].ID, FThrPrgInfo.Threads[i].Address,
+    FThrPrgInfo.Threads[i].IsCurrent := False;
+    if FThrPrgInfo.Threads[i].ID = dbg.Threads.CurrentThreads.CurrentThreadId then begin
+      FThrPrgInfo.Threads[i].IsCurrent := True;
+
+      FThrPrgInfo.Threads[i].PrevLastBrkLine := FThrPrgInfo.Threads[i].LastBrkLine;
+      FThrPrgInfo.Threads[i].PrevLastBrkLoop := FThrPrgInfo.Threads[i].LastBrkLoop;
+
+      FThrPrgInfo.Threads[i].LastBrkLine := FThrPrgInfo.Threads[i].Line;
+      FThrPrgInfo.Threads[i].LastBrkLoop := FThrPrgInfo.Threads[i].Loop;
+    end;
+
+    debugln('Thread %d %s (%x):   Line: %d (%d) (was %d)   Val: %d (was %d)  LOOP: %d (was %d)  Brk: %d %d (%d %d)', [
+      FThrPrgInfo.Threads[i].ID, dbgs(FThrPrgInfo.Threads[i].IsCurrent), FThrPrgInfo.Threads[i].Address,
       FThrPrgInfo.Threads[i].Line-FThrPrgInfo.ThrLoopLine0, FThrPrgInfo.Threads[i].Line,
        FThrPrgInfo.Threads[i].LastLine-FThrPrgInfo.ThrLoopLine0,
       FThrPrgInfo.Threads[i].Val, FThrPrgInfo.Threads[i].LastVal,
-      FThrPrgInfo.Threads[i].Loop, FThrPrgInfo.Threads[i].LastLoop]);
+      FThrPrgInfo.Threads[i].Loop, FThrPrgInfo.Threads[i].LastLoop,
+      FThrPrgInfo.Threads[i].LastBrkLine, FThrPrgInfo.Threads[i].LastBrkLoop,
+      FThrPrgInfo.Threads[i].PrevLastBrkLine, FThrPrgInfo.Threads[i].PrevLastBrkLoop
+      ]);
   end;
 end;
 
@@ -676,6 +698,112 @@ begin
   end;
 end;
 
+procedure TTestBreakPoint.TestBreakThreadsHitBreak;
+  function CheckLastBrk(AnIdx, BrkLine, NextBrkLine: Integer): Boolean;
+  begin
+    Result := True; // defaults to ok, if Line is not in this range.
+    if FThrPrgInfo.Threads[AnIdx].LastBrkLine = -1 then exit;
+    if FThrPrgInfo.Threads[AnIdx].PrevLastBrkLine = -1 then exit;
+
+    if FThrPrgInfo.Threads[AnIdx].Line = BrkLine then begin
+      if FThrPrgInfo.Threads[AnIdx].IsCurrent then
+        Result := FThrPrgInfo.Threads[AnIdx].LastBrkLine = BrkLine;
+      // otherwise...
+    end;
+
+    if FThrPrgInfo.Threads[AnIdx].Line = NextBrkLine then begin
+      if (FThrPrgInfo.Threads[AnIdx].LastBrkLine = NextBrkLine) then
+        Result := (FThrPrgInfo.Threads[AnIdx].LastBrkLoop = FThrPrgInfo.Threads[AnIdx].Loop) and
+                  (FThrPrgInfo.Threads[AnIdx].PrevLastBrkLine = BrkLine)
+                  // PrevLastBrkLoop can be equal or 1 less
+      else
+        Result := (FThrPrgInfo.Threads[AnIdx].LastBrkLine = BrkLine)
+      ;
+    end;
+
+    if BrkLine < NextBrkLine then begin
+      if (FThrPrgInfo.Threads[AnIdx].Line > BrkLine) and
+         (FThrPrgInfo.Threads[AnIdx].Line < NextBrkLine)
+      then begin
+        Result := (FThrPrgInfo.Threads[AnIdx].LastBrkLine = BrkLine) and
+                  (FThrPrgInfo.Threads[AnIdx].LastBrkLoop = FThrPrgInfo.Threads[AnIdx].Loop);
+      end;
+    end
+    else begin  // going over loop-end
+      if (FThrPrgInfo.Threads[AnIdx].Line > BrkLine) or
+         (FThrPrgInfo.Threads[AnIdx].Line < NextBrkLine)
+      then begin
+        Result := (FThrPrgInfo.Threads[AnIdx].LastBrkLine = BrkLine) and
+                  ( (FThrPrgInfo.Threads[AnIdx].LastBrkLoop = FThrPrgInfo.Threads[AnIdx].Loop) or
+                    (FThrPrgInfo.Threads[AnIdx].LastBrkLoop = FThrPrgInfo.Threads[AnIdx].Loop - 1)
+                  );
+      end;
+    end;
+  end;
+var
+  ExeName: String;
+  i, j: Integer;
+  MainBrk, Brk1, Brk2, Brk3, Brk4, Brk5: TDBGBreakPoint;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestThreadMove2) then exit;
+  Src := GetCommonSourceFor(AppDir + 'BreakPointThreadPrg.pas');
+  TestCompile(Src, ExeName);
+
+  TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+
+  try
+    MainBrk := Debugger.SetBreakPoint(Src, 'BrkMain1');
+    AssertDebuggerNotInErrorState;
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause);
+
+    ThrPrgInitializeThreads('');
+    ThrPrgUpdateThreads('Init');
+    ThrPrgCheckNoSkip('Init');
+
+    Brk1 := Debugger.SetBreakPoint(Src, 'BrkThread1');
+    Brk2 := Debugger.SetBreakPoint(Src, 'BrkThread3');
+    Brk3 := Debugger.SetBreakPoint(Src, 'BrkThread5');
+    Brk4 := Debugger.SetBreakPoint(Src, 'BrkThread7');
+    Brk5 := Debugger.SetBreakPoint(Src, 'BrkThread9');
+
+    for j := 0 to 150 do begin
+      AssertDebuggerNotInErrorState;
+      Debugger.RunToNextPause(dcRun);
+      AssertDebuggerState(dsPause);
+
+      ThrPrgUpdateThreads('loop, changing brk '+IntToStr(j));
+      ThrPrgCheckNoSkip('loop, changing brk '+IntToStr(j));
+
+      for i := 0 to 9 do begin
+        TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk1.Line) );
+        TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk2.Line) );
+        TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk3.Line) );
+        TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk4.Line) );
+        TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk5.Line) );
+
+        // The thread must be between any 2 of thebreakpoint, and it must have hit
+        // the breakpoint at the start of the range.
+        TestTrue('Has hit last brk between 1 - 2  / thr= '+IntToStr(i), CheckLastBrk(i, Brk1.Line, Brk2.Line));
+        TestTrue('Has hit last brk between 2 - 3  / thr= '+IntToStr(i), CheckLastBrk(i, Brk2.Line, Brk3.Line));
+        TestTrue('Has hit last brk between 3 - 4  / thr= '+IntToStr(i), CheckLastBrk(i, Brk3.Line, Brk4.Line));
+        TestTrue('Has hit last brk between 4 - 5  / thr= '+IntToStr(i), CheckLastBrk(i, Brk4.Line, Brk5.Line));
+        TestTrue('Has hit last brk between 5 - 1  / thr= '+IntToStr(i), CheckLastBrk(i, Brk5.Line, Brk1.Line));
+      end;
+    end;
+
+
+    dbg.Stop;
+  finally
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
 
@@ -685,5 +813,6 @@ initialization
   ControlTestThreadNoSkip  := TestControlRegisterTest('TTestBreakThreadNoSkip', ControlTest);
   ControlTestThreadMove1   := TestControlRegisterTest('TTestBreakThreadMove1', ControlTest);
   ControlTestThreadMove2   := TestControlRegisterTest('TTestBreakThreadMove2', ControlTest);
+  ControlTestThreadHit     := TestControlRegisterTest('TTestBreakThreadHit', ControlTest);
 end.
 
