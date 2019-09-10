@@ -706,7 +706,9 @@ msgid "The following packages are already installed. Continue anyway?"
 msgstr "Os seguintes pacotes já estão instalados. Continuar assim mesmo?"
 
 #: opkman_const.rsmainfrm_packageincompatible
-msgid "The following packages are not compatible with your system and the install will most likely fail. Continue anyway?"
+#, fuzzy
+#| msgid "The following packages are not compatible with your system and the install will most likely fail. Continue anyway?"
+msgid "The following packages are not tested and the install might fail. Continue anyway?"
 msgstr "Os seguintes pacotes não são compatíveis com o seu sistema e certamente sua instalação irá falhar. Continuar assim mesmo?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
@@ -1597,7 +1599,9 @@ msgid "If a package is already installed, OPM will show a warning message"
 msgstr "Se um pacote já estiver instalado, o OPM irá exibir uma mensagem de aviso"
 
 #: opkman_const.rsoption_cbincompatiblepackage_caption
-msgid "Warn me about incompatible packages"
+#, fuzzy
+#| msgid "Warn me about incompatible packages"
+msgid "Warn me about incompatible/untested packages"
 msgstr "Me avisar sobre pacotes incompatíveis"
 
 #: opkman_const.rsoption_cbincompatiblepackage_hint
@@ -1648,7 +1652,9 @@ msgid "Current widgetset: "
 msgstr "\"Widgetset\" atual:"
 
 #: opkman_const.rspackagelistfrm_incompatible
-msgid "Incompatible"
+#, fuzzy
+#| msgid "Incompatible"
+msgid "Not tested"
 msgstr "Incompatível"
 
 #: opkman_const.rspackagelistfrm_lbhint_caption
