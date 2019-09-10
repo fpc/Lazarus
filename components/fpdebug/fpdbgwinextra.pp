@@ -130,6 +130,7 @@ type
    PWOW64_CONTEXT = ^WOW64_CONTEXT;
 
   TFpContext = record
+{$ifdef windows}
     case integer of
     {$ifdef cpux86_64}
     1: ( WOW: WOW64_CONTEXT;  // 32 bit / wow64
@@ -139,6 +140,7 @@ type
     2: ( def: TCONTEXT;
          Alignment2: array[1..16] of Byte;
        );
+{$endif}
   end;
   PFpContext = ^TFpContext;
 
