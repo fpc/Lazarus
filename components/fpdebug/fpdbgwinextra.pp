@@ -71,6 +71,77 @@ var
 //function OpenThread(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwThreadId: DWORD): THandle; stdcall;
 //function Wow64GetThreadContext(hThread: THandle; var lpContext: TContext): BOOL; stdcall;
 
+const
+  WOW64_MAXIMUM_SUPPORTED_EXTENSION = 512;
+  WOW64_CONTEXT_i386 = $10000;
+  WOW64_CONTEXT_i486 = $10000;
+  WOW64_CONTEXT_CONTROL = WOW64_CONTEXT_i386 or 1;
+  WOW64_CONTEXT_INTEGER = WOW64_CONTEXT_i386 or 2;              // AX, BX, CX, DX, SI, DI
+  WOW64_CONTEXT_SEGMENTS = WOW64_CONTEXT_i386 or 4;             // DS, ES, FS, GS
+  WOW64_CONTEXT_FLOATING_POINT = WOW64_CONTEXT_i386 or 8;       // 387 state
+  WOW64_CONTEXT_DEBUG_REGISTERS = WOW64_CONTEXT_i386 or $10;    // DB 0-3,6,7
+  WOW64_CONTEXT_EXTENDED_REGISTERS = WOW64_CONTEXT_i386 or $20; // cpu specific extensions
+  WOW64_CONTEXT_FULL = (WOW64_CONTEXT_CONTROL or WOW64_CONTEXT_INTEGER) or WOW64_CONTEXT_SEGMENTS;
+  WOW64_CONTEXT_ALL = WOW64_CONTEXT_FULL or WOW64_CONTEXT_FLOATING_POINT or WOW64_CONTEXT_DEBUG_REGISTERS or WOW64_CONTEXT_EXTENDED_REGISTERS;
+
+  STATUS_WX86_SINGLE_STEP = $4000001E;
+  STATUS_WX86_BREAKPOINT  = $4000001F;
+
+type
+   WOW64_FLOATING_SAVE_AREA = record
+        ControlWord : DWORD;
+        StatusWord : DWORD;
+        TagWord : DWORD;
+        ErrorOffset : DWORD;
+        ErrorSelector : DWORD;
+        DataOffset : DWORD;
+        DataSelector : DWORD;
+        RegisterArea : array[0..79] of BYTE;
+        Cr0NpxState : DWORD;
+     end;
+
+   WOW64_CONTEXT = record
+        ContextFlags : DWORD;
+        Dr0 : DWORD;
+        Dr1 : DWORD;
+        Dr2 : DWORD;
+        Dr3 : DWORD;
+        Dr6 : DWORD;
+        Dr7 : DWORD;
+        FloatSave : WOW64_FLOATING_SAVE_AREA;
+        SegGs : DWORD;
+        SegFs : DWORD;
+        SegEs : DWORD;
+        SegDs : DWORD;
+        Edi : DWORD;
+        Esi : DWORD;
+        Ebx : DWORD;
+        Edx : DWORD;
+        Ecx : DWORD;
+        Eax : DWORD;
+        Ebp : DWORD;
+        Eip : DWORD;
+        SegCs : DWORD;
+        EFlags : DWORD;
+        Esp : DWORD;
+        SegSs : DWORD;
+        ExtendedRegisters: array [1..WOW64_MAXIMUM_SUPPORTED_EXTENSION] of byte;
+     end;
+   PWOW64_CONTEXT = ^WOW64_CONTEXT;
+
+  TFpContext = record
+    case integer of
+    {$ifdef cpux86_64}
+    1: ( WOW: WOW64_CONTEXT;  // 32 bit / wow64
+         Alignment1: array[1..16] of Byte;
+       );
+    {$endif}
+    2: ( def: TCONTEXT;
+         Alignment2: array[1..16] of Byte;
+       );
+  end;
+  PFpContext = ^TFpContext;
+
 
 implementation
 
