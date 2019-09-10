@@ -407,9 +407,12 @@ begin
     do inc(i);
     if (i > l) and CheckOnlyLineStart then
       exit(True);
-    if (i > l) or (SubStr[i] <> ' ') then exit;
+    if (i <= l) and (SubStr[i] <> ' ') then exit;
+    while (i <= l) and (SubStr[i] = ' ') do inc(i);
+
     Result := (Pos('line', SubStr) > 0)
-            or CheckOnlyLineStart;
+            or CheckOnlyLineStart
+            or (i > l);
   end;
 end;
 
@@ -496,7 +499,7 @@ begin
 
   while TrcIndex < Trc.Count do begin
     if PosInTrc(CallTracePrefix) or
-       ( (TrcIndex < Trc.Count-1) and IsHeaderLine(TrcIndex) and IsTraceLine(TrcIndex+1) ) or
+       ( (TrcIndex < Trc.Count-1) and IsHeaderLine(TrcIndex, True) and IsTraceLine(TrcIndex+1) ) or
        IsTraceLine(TrcIndex)
     then begin
       st := TStackTrace.Create;
