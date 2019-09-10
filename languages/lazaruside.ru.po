@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-08-12 01:58+0300\n"
+"PO-Revision-Date: 2019-09-11 01:54+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -22205,6 +22205,10 @@ msgstr "Просмотр кода ассемблера"
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "Переключить точку останова"
+
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr "Включить/выключить точку останова"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"

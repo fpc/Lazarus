@@ -22466,6 +22466,10 @@ msgstr "アセンブラを表示"
 msgid "toggle breakpoint"
 msgstr "ブレークポイント状態の切り替え"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "ブレークポイントを表示"

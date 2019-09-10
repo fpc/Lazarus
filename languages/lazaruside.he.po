@@ -23463,6 +23463,10 @@ msgstr "הצג אסמבלר"
 msgid "toggle breakpoint"
 msgstr "החלף נקודת עצירה"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "הצג נקודות עצירה"

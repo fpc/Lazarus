@@ -22285,6 +22285,10 @@ msgstr "Zobrazit assembler"
 msgid "toggle breakpoint"
 msgstr "prohodit bod přerušení"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Zobrazit body zastavení"

@@ -22103,6 +22103,10 @@ msgstr "Montajcıyı görüntüle"
 msgid "toggle breakpoint"
 msgstr "kesme noktası değiştir"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Kesme noktalarını görüntüle"

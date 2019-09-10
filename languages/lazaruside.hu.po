@@ -22207,6 +22207,10 @@ msgstr "Assembler megjelenítése"
 msgid "toggle breakpoint"
 msgstr "töréspont ki-/bekapcsolása"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Töréspontok megjelenítése"

@@ -22357,6 +22357,10 @@ msgstr "Assembler anzeigen"
 msgid "toggle breakpoint"
 msgstr "Haltepunkt umschalten"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Haltepunkte anzeigen"

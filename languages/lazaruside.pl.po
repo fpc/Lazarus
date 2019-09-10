@@ -22829,6 +22829,10 @@ msgstr "Pokaż assembler"
 msgid "toggle breakpoint"
 msgstr "przełącz punkt kontroli"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Pokaż punkty kontroli"

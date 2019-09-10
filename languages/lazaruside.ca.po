@@ -22827,6 +22827,10 @@ msgstr ""
 msgid "toggle breakpoint"
 msgstr ""
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Mostra els punts de ruptura"

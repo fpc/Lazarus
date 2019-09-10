@@ -22500,6 +22500,10 @@ msgstr "Rodyti asemblerį"
 msgid "toggle breakpoint"
 msgstr "įjungti ar išjungti stabdos tašką"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Rodyti stabdos taškus"

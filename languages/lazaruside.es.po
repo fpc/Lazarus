@@ -22641,6 +22641,10 @@ msgstr "Ver ensamblador"
 msgid "toggle breakpoint"
 msgstr "intercambiar punto de interrupción"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Ver puntos de interrupción"

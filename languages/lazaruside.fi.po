@@ -22090,6 +22090,10 @@ msgstr "Näytä assembler"
 msgid "toggle breakpoint"
 msgstr "Keskeytyskohta päälle/pois"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Näytä keskeytyskohdat"

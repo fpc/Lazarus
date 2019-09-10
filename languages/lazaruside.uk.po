@@ -22240,6 +22240,10 @@ msgstr "Переглянути асемблер"
 msgid "toggle breakpoint"
 msgstr "перемкнути точку зупинки"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Переглядання точок зупинки"

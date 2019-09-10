@@ -22709,6 +22709,10 @@ msgstr "查看汇编"
 msgid "toggle breakpoint"
 msgstr "切换断点"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "查看断点"

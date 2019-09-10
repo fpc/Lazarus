@@ -22579,6 +22579,10 @@ msgstr "Vedi assembler"
 msgid "toggle breakpoint"
 msgstr "Inverti breakpoint"
 
+#: lazarusidestrconsts.srkmectogglebreakpointenabled
+msgid "enable/disable breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
 msgstr "Mostra i breakpoint"
