@@ -432,6 +432,18 @@ begin
   Result := TEditorOptions;
 end;
 
+function GetIDECommandImageIndex(AKeyRelation: TKeyCommandRelation): Integer;
+var
+  IDECommand: TIDECommand;
+begin
+  IDECommand:=IDECommandList.FindIDECommand(AKeyRelation.Command);
+  if IDECommand.UserCount=0 then
+    Exit(imgKeyItem);
+  Result:=IDECommand.Users[0].ImageIndex;
+  if Result=-1 then
+    Result:=imgKeyItem;
+end;
+
 procedure TEditorKeymappingOptionsFrame.FillKeyMappingTreeView;
 var
   i, j: Integer;
@@ -472,7 +484,7 @@ begin
         end
         else
           NewKeyNode := Items.AddChildObject(NewCategoryNode,ItemCaption, CurKeyRelation);
-        NewKeyNode.ImageIndex := imgKeyItem;
+        NewKeyNode.ImageIndex := GetIDECommandImageIndex(CurKeyRelation);
         NewKeyNode.SelectedIndex := NewKeyNode.ImageIndex;
         inc(ChildNodeIndex);
       end;
