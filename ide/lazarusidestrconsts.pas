@@ -3387,6 +3387,7 @@ resourcestring
   srkmecStopProgram               = 'stop program';
   srkmecResetDebugger             = 'reset debugger';
   srkmecToggleBreakPoint          = 'toggle breakpoint';
+  srkmecToggleBreakPointEnabled   = 'enable/disable breakpoint';
   srkmecRemoveBreakPoint          = 'remove breakpoint';
   srkmecAttach                    = 'Attach to program';
   srkmecDetach                    = 'Detach from program';

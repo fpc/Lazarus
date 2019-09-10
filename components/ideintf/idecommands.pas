@@ -216,8 +216,6 @@ const
   ecPrevEditor              = ecFirstLazarus + 331;
   ecMoveEditorLeft          = ecFirstLazarus + 332;
   ecMoveEditorRight         = ecFirstLazarus + 333;
-  ecToggleBreakPoint        = ecFirstLazarus + 334;
-  ecRemoveBreakPoint        = ecFirstLazarus + 335;
   ecMoveEditorLeftmost      = ecFirstLazarus + 336;
   ecMoveEditorRightmost     = ecFirstLazarus + 337;
 
@@ -297,6 +295,11 @@ const
   ecDetach                  = ecFirstLazarus + 453;
 
   // 460++ : used for ecViewHistory (debugger) / ecViewMacroList
+
+  ecToggleBreakPoint        = ecFirstLazarus + 470;
+  ecRemoveBreakPoint        = ecFirstLazarus + 471;
+  ecToggleBreakPointEnabled = ecFirstLazarus + 472;
+
 
   // project menu
   ecNewProject              = ecFirstLazarus + 500;
@@ -1926,7 +1929,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..321] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..322] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2087,6 +2090,8 @@ const
     (Value: ecMoveEditorLeft;                         Name: 'ecMoveEditorLeft'),
     (Value: ecMoveEditorRight;                        Name: 'ecMoveEditorRight'),
     (Value: ecToggleBreakPoint;                       Name: 'ecToggleBreakPoint'),
+    (Value: ecToggleBreakPointEnabled;                Name: 'ecToggleBreakPointEnabled'),
+
     (Value: ecRemoveBreakPoint;                       Name: 'ecRemoveBreakPoint'),
     (Value: ecMoveEditorLeftmost;                     Name: 'ecMoveEditorLeftmost'),
     (Value: ecMoveEditorRightmost;                    Name: 'ecMoveEditorRightmost'),

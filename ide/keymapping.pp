@@ -479,6 +479,7 @@ begin
     ecMoveEditorLeftmost      : Result:= srkmecMoveEditorLeftmost;
     ecMoveEditorRightmost     : Result:= srkmecMoveEditorRightmost;
     ecToggleBreakPoint        : Result:= srkmecToggleBreakPoint;
+    ecToggleBreakPointEnabled : Result:= srkmecToggleBreakPointEnabled;
     ecRemoveBreakPoint        : Result:= srkmecRemoveBreakPoint;
 
     ecNextSharedEditor:        Result := srkmecNextSharedEditor;
@@ -1205,6 +1206,7 @@ begin
   ecNextEditorInHistory: SetSingle(VK_OEM_3,[ssShift,XCtrl]);//~
   ecResetDebugger:       SetSingle(VK_UNKNOWN,[]);
   ecToggleBreakPoint:    SetSingle(VK_F5,[]);
+  ecToggleBreakPointEnabled:    SetSingle(VK_F5,[ssShift, XCtrl]);
   ecMoveEditorLeft:      SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorRight:     SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorLeftmost:  SetSingle(VK_UNKNOWN,[]);
@@ -1650,6 +1652,7 @@ begin
   ecNextEditorInHistory: SetSingle(VK_OEM_3,[ssShift,ssCtrl]);//~
   ecResetDebugger:       SetSingle(VK_UNKNOWN,[]);
   ecToggleBreakPoint:    SetSingle(VK_UNKNOWN,[]);
+  ecToggleBreakPointEnabled:    SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorLeft:      SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorRight:     SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorLeftmost:  SetSingle(VK_UNKNOWN,[]);
@@ -2277,6 +2280,7 @@ begin
   ecPrevEditor:          SetSingle(VK_LEFT,[ssMeta,ssAlt]);
   ecResetDebugger:       SetSingle(VK_UNKNOWN,[]);
   ecToggleBreakPoint:    SetSingle(VK_P,[ssCtrl]);
+  ecToggleBreakPointEnabled:    SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorLeft:      SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorRight:     SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorLeftmost:  SetSingle(VK_UNKNOWN,[]);
@@ -2987,6 +2991,7 @@ begin
   AddDefault(C, 'Go to previous editor in history', srkmecPrevEditorInHistory, ecPrevEditorInHistory);
   AddDefault(C, 'Go to next editor in history', srkmecNextEditorInHistory, ecNextEditorInHistory);
   AddDefault(C, 'Add break point', srkmecToggleBreakPoint, ecToggleBreakPoint);
+  AddDefault(C, 'Enable/Disable break point', srkmecToggleBreakPointEnabled, ecToggleBreakPointEnabled);
   AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint);
   AddDefault(C, 'Move editor left', srkmecMoveEditorLeft, ecMoveEditorLeft);
   AddDefault(C, 'Move editor right', srkmecMoveEditorRight, ecMoveEditorRight);

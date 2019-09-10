@@ -665,6 +665,7 @@ type
   public
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
+    procedure ToggleBreakpointEnabledClicked(Sender: TObject);
   private
     FManager: TSourceEditorManager;
     FUpdateLock, FFocusLock: Integer;
@@ -8123,6 +8124,28 @@ begin
     DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true)
   else
     DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
+end;
+
+procedure TSourceNotebook.ToggleBreakpointEnabledClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  Line: LongInt;
+  BreakPtMark: TSourceMark;
+  BreakPoint: TIDEBreakPoint;
+begin
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  // create or delete breakpoint
+  // find breakpoint mark at line
+  Line:=ASrcEdit.EditorComponent.CaretY;
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(ASrcEdit, Line);
+  if BreakPtMark = nil then
+    DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true)
+  else
+  begin
+    BreakPoint := DebugBoss.BreakPoints.Find(ASrcEdit.FileName, Line);
+    BreakPoint.Enabled := not BreakPoint.Enabled;
+  end;
 end;
 
 procedure TSourceNotebook.CompleteCodeMenuItemClick(Sender: TObject);

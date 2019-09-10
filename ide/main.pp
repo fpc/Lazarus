@@ -3615,6 +3615,9 @@ begin
   ecToggleBreakPoint:
     if Assigned(SourceEditorManager.ActiveSourceWindow) then
       SourceEditorManager.ActiveSourceWindow.ToggleBreakpointClicked(Self);
+  ecToggleBreakPointEnabled:
+    if Assigned(SourceEditorManager.ActiveSourceWindow) then
+      SourceEditorManager.ActiveSourceWindow.ToggleBreakpointEnabledClicked(Self);
   ecRemoveBreakPoint:
     if Assigned(SourceEditorManager.ActiveSourceWindow) then
       SourceEditorManager.ActiveSourceWindow.DeleteBreakpointClicked(Self);
