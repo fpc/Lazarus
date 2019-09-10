@@ -248,6 +248,7 @@ type
     FExceptionSignal: cint;
     FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
     FIsSteppingBreakPoint: boolean;
+    FDidResetInstructionPointer: Boolean;
     FHasThreadState: boolean;
     function GetDebugRegOffset(ind: byte): pointer;
     function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
@@ -510,11 +511,8 @@ begin
   if wstopsig(AWaitedStatus) = SIGTRAP then begin
     ReadThreadState;
     CheckAndResetInstructionPointerAfterBreakpoint;
+    Result := True;
     // TODO: main loop should search all threads for breakpoints
-// TODO: add to FPostponedSignals => and alert user about the breakpoint hit
-// But, that needs to handle that breakpoints could be removed in the meantime....
-// Remember CheckAndResetInstructionPointerAfterBreakpoint was done
-    //Result := True;
   end
 
   else
@@ -537,12 +535,16 @@ begin
   FIsPaused := False;
   FExceptionSignal := 0;
   FHasThreadState := False;
+  FDidResetInstructionPointer := False;
 end;
 
 function TDbgLinuxThread.ResetInstructionPointerAfterBreakpoint: boolean;
 begin
   ReadThreadState;
   result := true;
+  if FDidResetInstructionPointer then
+    exit;
+  FDidResetInstructionPointer := True;
 
   if Process.Mode=dm32 then
     Dec(FUserRegs.regs32[eip])
