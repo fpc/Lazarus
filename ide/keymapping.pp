@@ -2901,7 +2901,9 @@ begin
   AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods, ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits, ecRemoveUnusedUnits);
   AddDefault(C, 'Add unit to uses section', lisUseUnit, ecUseUnit);
+  {$IFDEF EnableFindOverloads}
   AddDefault(C, 'Find overloads', srkmecFindOverloads, ecFindOverloads);
+  {$ENDIF}
   AddDefault(C, 'Make resource string', srkmecMakeResourceString, ecMakeResourceString);
 
   // Macro editing
