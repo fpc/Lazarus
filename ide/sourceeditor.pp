@@ -8139,8 +8139,13 @@ begin
   // find breakpoint mark at line
   Line:=ASrcEdit.EditorComponent.CaretY;
   BreakPtMark := SourceEditorMarks.FindBreakPointMark(ASrcEdit, Line);
-  if BreakPtMark = nil then
-    DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true)
+  if BreakPtMark = nil then begin
+    DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true, BreakPoint, True);
+    if BreakPoint <> nil then begin
+      BreakPoint.Enabled := False;
+      BreakPoint.EndUpdate;
+    end;
+  end
   else
   begin
     BreakPoint := DebugBoss.BreakPoints.Find(ASrcEdit.FileName, Line);
