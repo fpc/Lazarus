@@ -4041,7 +4041,9 @@ begin
   IDECommandList.FindIDECommand(ecMakeResourceString).Enabled := Editable and StringFound;
   IDECommandList.FindIDECommand(ecFindIdentifierRefs).Enabled := IdentFound;
   IDECommandList.FindIDECommand(ecFindUsedUnitRefs).Enabled := IdentFound;
+  {$IFDEF EnableFindOverloads}
   IDECommandList.FindIDECommand(ecFindOverloads).Enabled := IdentFound;
+  {$ENDIF}
   IDECommandList.FindIDECommand(ecShowAbstractMethods).Enabled := Editable;
   IDECommandList.FindIDECommand(ecRemoveEmptyMethods).Enabled := Editable;
 
