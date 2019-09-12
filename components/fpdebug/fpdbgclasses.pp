@@ -279,6 +279,8 @@ type
   end;
   TFpInternalBreakpointClass = class of TFpInternalBreakpoint;
 
+  TFpInternalBreakpointList = specialize TFPGObjectList<TFpInternalBreakpoint>;
+
 
   { TDbgInstance }
 
@@ -343,6 +345,7 @@ type
     procedure SetPauseRequested(AValue: boolean);
     procedure ThreadDestroyed(const AThread: TDbgThread);
   protected
+    FBreakpointList: TFpInternalBreakpointList;
     FCurrentBreakpoint: TFpInternalBreakpoint;  // set if we are executing the code at the break
                                          // if the singlestep is done, set the break again
     FCurrentWatchpoint: integer;
@@ -1102,6 +1105,7 @@ begin
   FProcessID := AProcessID;
   FThreadID := AThreadID;
 
+  FBreakpointList := TFpInternalBreakpointList.Create(False);
   FThreadMap := TThreadMap.Create(itu4, SizeOf(TDbgThread));
   FLibMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
   FBreakMap := TBreakLocationMap.Create(Self);
@@ -1136,9 +1140,14 @@ destructor TDbgProcess.Destroy;
     end;
   end;
 
+var
+  i: Integer;
 begin
   FProcessID:=0;
 
+  for i := 0 to FBreakpointList.Count - 1 do
+    FBreakpointList[i].FProcess := nil;
+  FreeAndNil(FBreakpointList);
   //Assert(FBreakMap.Count=0, 'No breakpoints left');
   //FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
@@ -1867,6 +1876,7 @@ constructor TFpInternalBreakpoint.Create(const AProcess: TDbgProcess;
   const ALocation: TDBGPtrArray);
 begin
   FProcess := AProcess;
+  FProcess.FBreakpointList.Add(Self);
   FLocation := ALocation;
   inherited Create;
   SetBreak;
@@ -1874,6 +1884,8 @@ end;
 
 destructor TFpInternalBreakpoint.Destroy;
 begin
+  if FProcess <> nil then
+    FProcess.FBreakpointList.Remove(Self);
   ResetBreak;
   inherited;
 end;
@@ -1882,6 +1894,7 @@ function TFpInternalBreakpoint.Hit(const AThreadID: Integer;
   ABreakpointAddress: TDBGPtr): Boolean;
 begin
   Result := False;
+  assert(FProcess<>nil, 'TFpInternalBreakpoint.Hit: FProcess<>nil');
   if //FProcess.FBreakMap.HasId(ABreakpointAddress) and
      (FProcess.FBreakMap.GetOrigValueAtLocation(ABreakpointAddress) = TDbgProcess.Int3)
   then
@@ -1908,6 +1921,8 @@ procedure TFpInternalBreakpoint.ResetBreak;
 var
   i: Integer;
 begin
+  if FProcess = nil then
+    exit;
   for i := 0 to High(FLocation) do
     FProcess.FBreakMap.RemoveLocotion(FLocation[i], Self);
 end;
@@ -1916,6 +1931,8 @@ procedure TFpInternalBreakpoint.SetBreak;
 var
   i: Integer;
 begin
+  if FProcess = nil then
+    exit;
   for i := 0 to High(FLocation) do
     FProcess.FBreakMap.AddLocotion(FLocation[i], Self, True);
 end;
