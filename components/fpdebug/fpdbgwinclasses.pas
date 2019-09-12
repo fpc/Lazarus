@@ -621,11 +621,15 @@ debugln(['TDbgWinProcess.Continue ',SingleStep]);
     if HasInsertedBreakInstructionAtLocation(EventThread.GetInstructionPointerRegisterValue) then begin
 debugln(['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
       TDbgWinThread(EventThread).SetSingleStepOverBreakPoint;
+
       for t in FThreadMap do
         TDbgWinThread(t).SuspendForStepOverBreakPoint;
     end
     else begin
       // EventThread does not need to skip a breakpoint;
+      if (EventThread = AThread) and (SingleStep) then
+        TDbgWinThread(EventThread).SetSingleStep;
+
       b := False;
       for t in FThreadMap do
         if TDbgWinThread(t).FIsSkippingBreakPoint then begin
@@ -642,7 +646,8 @@ debugln(['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventT
       end;
     end;
 
-    AThread := nil; // Already handled, might be suspended
+    if (AThread = EventThread) or (TDbgWinThread(AThread).FIsSuspended) then
+      AThread := nil; // Already handled, or suspended
   end;
 
   if assigned(AThread) then
