@@ -767,6 +767,11 @@ var
 
 begin
   AExit:=false;
+  if FCurrentProcess = nil then begin
+    DebugLn(DBG_WARNINGS, 'Error: Processloop has no process');
+    exit;
+  end;
+
   repeat
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then
       FMainProcess:=FCurrentProcess
@@ -849,6 +854,9 @@ begin
                          FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),
                          FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue),
                          dbgs(CurrentProcess.CurrentBreakpoint<>nil)]);
+    if FPDEvent=deExitProcess then
+      FreeAndNil(FCommand)
+    else
     if assigned(FCommand) then
       begin
       FCommand.ResolveEvent(FPDEvent, IsHandled, IsFinished);
