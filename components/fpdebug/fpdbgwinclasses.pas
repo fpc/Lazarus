@@ -244,8 +244,10 @@ begin
       case AnDbgEvent.Exception.ExceptionRecord.ExceptionCode of
          EXCEPTION_ACCESS_VIOLATION:         Result := Result + ' EXCEPTION_ACCESS_VIOLATION';
          EXCEPTION_BREAKPOINT:               Result := Result + ' EXCEPTION_BREAKPOINT';
+         STATUS_WX86_BREAKPOINT:             Result := Result + ' STATUS_WX86_BREAKPOINT';
          EXCEPTION_DATATYPE_MISALIGNMENT:    Result := Result + ' EXCEPTION_DATATYPE_MISALIGNMENT';
          EXCEPTION_SINGLE_STEP:              Result := Result + ' EXCEPTION_SINGLE_STEP';
+         STATUS_WX86_SINGLE_STEP:            Result := Result + ' STATUS_WX86_SINGLE_STEP';
          EXCEPTION_ARRAY_BOUNDS_EXCEEDED:    Result := Result + ' EXCEPTION_ARRAY_BOUNDS_EXCEEDED';
          EXCEPTION_FLT_DENORMAL_OPERAND:     Result := Result + ' EXCEPTION_FLT_DENORMAL_OPERAND';
          EXCEPTION_FLT_DIVIDE_BY_ZERO:       Result := Result + ' EXCEPTION_FLT_DIVIDE_BY_ZERO';
