@@ -169,7 +169,7 @@ function TPackageInstaller.CompilePackage(const AIDEPackage: TIDEPackage;
 begin
   Result := -1;
   DoOnPackageInstallProgress(imCompilePackage, ALazarusPkg);
-  Result := PackageEditingInterface.DoCompilePackage(AIDEPackage, [pcfCleanCompile, pcfCompileDependenciesClean, pcfDoNotSaveEditorFiles], False);
+  Result := PackageEditingInterface.DoCompilePackage(AIDEPackage, [pcfCleanCompile, pcfDoNotSaveEditorFiles], False);
 end;
 
 function TPackageInstaller.InstallPackage: Boolean;
