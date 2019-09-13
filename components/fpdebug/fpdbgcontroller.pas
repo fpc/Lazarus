@@ -854,18 +854,15 @@ begin
                          FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),
                          FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue),
                          dbgs(CurrentProcess.CurrentBreakpoint<>nil)]);
+    IsHandled:=false;
+    IsFinished:=false;
     if FPDEvent=deExitProcess then
       FreeAndNil(FCommand)
     else
     if assigned(FCommand) then
-      begin
+    begin
       FCommand.ResolveEvent(FPDEvent, IsHandled, IsFinished);
       DebugLn(FPDBG_COMMANDS, 'Command %s: IsFinished=%s, IsHandled=%s', [FCommand.ClassName, dbgs(IsFinished), dbgs(IsHandled)])
-      end
-    else
-    begin
-      IsHandled:=false;
-      IsFinished:=false;
     end;
 
     AExit:=true;
