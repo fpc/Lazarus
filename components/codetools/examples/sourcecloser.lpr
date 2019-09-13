@@ -535,7 +535,10 @@ begin
     if Node.Desc=ctnImplementation then begin
       // delete implementation section excluding the 'implementation' keyword
       StartPos:=Node.StartPos+length('implementation');
-      EndPos:=Node.NextBrother.StartPos;
+      if Node.NextBrother.Desc=ctnEndPoint then
+        EndPos:=Node.EndPos
+      else
+        EndPos:=Node.NextBrother.StartPos;
       DeleteNode(Tool, Node, StartPos, EndPos, Changer, true);
     end else if Node.Desc in [ctnInitialization,ctnFinalization] then begin
       // delete the content of the finalization and initialization section
