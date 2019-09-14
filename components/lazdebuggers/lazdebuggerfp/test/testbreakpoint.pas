@@ -69,16 +69,23 @@ type
     // check that each brk point hit was reported (one per thread)
     procedure TestBreakThreadsHitBreak;
 
-    (* TODO: All breakpoint-hits must be reported. Hits happening together with an event
-       in another thread must still be reported.
+    (* Only ONE thread running the breakpoints. Plenty of events from other
+       threads (including thread-exit).
+       Hit each breakpoint in order, WITHOUT ever re-hitting the last brk.
+       *HOPE* is that some events will happen while the main thread single steps
+         over a temp-removed break, and the single step has NOT yet moved.
+         So the single step will still need the brk to be tmp-removed when it
+         continues.
     *)
+    procedure TestBreakThreadsIgnoreOther;
   end;
 
 implementation
 
 var
   ControlTest, ControlTestBreak, ControlTestThreadNoSkip,
-  ControlTestThreadMove1, ControlTestThreadMove2, ControlTestThreadHit: Pointer;
+  ControlTestThreadMove1, ControlTestThreadMove2, ControlTestThreadHit,
+  ControlTestThreadIgnoreOther: Pointer;
 
 procedure TTestBreakPoint.TestLocation(ATestName, ABrkName: String;
   ABreakHitCount: Integer);
@@ -746,7 +753,7 @@ var
   MainBrk, Brk1, Brk2, Brk3, Brk4, Brk5: TDBGBreakPoint;
 begin
   if SkipTest then exit;
-  if not TestControlCanTest(ControlTestThreadMove2) then exit;
+  if not TestControlCanTest(ControlTestThreadHit) then exit;
   Src := GetCommonSourceFor(AppDir + 'BreakPointThreadPrg.pas');
   TestCompile(Src, ExeName);
 
@@ -804,15 +811,68 @@ begin
   end;
 end;
 
+procedure TTestBreakPoint.TestBreakThreadsIgnoreOther;
+var
+  ExeName: String;
+  i, j, ThreadIdMain: Integer;
+  Brk: array [0..9] of TDBGBreakPoint;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestThreadIgnoreOther) then exit;
+  Src := GetCommonSourceFor(AppDir + 'BreakPointThread2Prg.pas');
+  TestCompile(Src, ExeName);
+
+  TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+
+  try
+    Debugger.SetBreakPoint(Src, 'BrkMainBegin');
+    for i := 0 to 9 do
+      Brk[i] := Debugger.SetBreakPoint(Src, 'BrkMain'+IntToStr(i));
+    AssertDebuggerNotInErrorState;
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause, 'main init');
+
+    ThreadIdMain := dbg.Threads.CurrentThreads.CurrentThreadId;
+
+
+    for j := 1 to 70 do begin
+      for i := 0 to 9 do begin
+
+        Debugger.RunToNextPause(dcRun);
+        AssertDebuggerState(dsPause, 'in loop');
+        TestEquals('ThreadId', ThreadIdMain, dbg.Threads.CurrentThreads.CurrentThreadId);
+        TestLocation('loop '+IntToStr(j)+', '+IntToStr(i), 'BrkMain'+IntToStr(i), j);
+
+        if i > 0 then
+          TestEquals('prev brk hitcnt '+IntToStr(j)+', '+IntToStr(i),
+                     j, Debugger.BreakPointByName('BrkMain'+IntToStr(i)).HitCount)
+          else
+          TestEquals('prev brk hitcnt '+IntToStr(j)+', '+IntToStr(i),
+                     j-1, Debugger.BreakPointByName('BrkMain9').HitCount);
+      end;
+    end;
+
+
+    dbg.Stop;
+  finally
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
 
   RegisterDbgTest(TTestBreakPoint);
-  ControlTest              := TestControlRegisterTest('TTestBreak');
-  ControlTestBreak         := TestControlRegisterTest('TTestBreakPoint', ControlTest);
-  ControlTestThreadNoSkip  := TestControlRegisterTest('TTestBreakThreadNoSkip', ControlTest);
-  ControlTestThreadMove1   := TestControlRegisterTest('TTestBreakThreadMove1', ControlTest);
-  ControlTestThreadMove2   := TestControlRegisterTest('TTestBreakThreadMove2', ControlTest);
-  ControlTestThreadHit     := TestControlRegisterTest('TTestBreakThreadHit', ControlTest);
+  ControlTest                  := TestControlRegisterTest('TTestBreak');
+  ControlTestBreak             := TestControlRegisterTest('TTestBreakPoint', ControlTest);
+  ControlTestThreadNoSkip      := TestControlRegisterTest('TTestBreakThreadNoSkip', ControlTest);
+  ControlTestThreadMove1       := TestControlRegisterTest('TTestBreakThreadMove1', ControlTest);
+  ControlTestThreadMove2       := TestControlRegisterTest('TTestBreakThreadMove2', ControlTest);
+  ControlTestThreadHit         := TestControlRegisterTest('TTestBreakThreadHit', ControlTest);
+  ControlTestThreadIgnoreOther := TestControlRegisterTest('TTestBreakThreadIgnoreOther', ControlTest);
 end.
 
