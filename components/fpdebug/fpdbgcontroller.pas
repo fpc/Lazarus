@@ -30,6 +30,7 @@ type
     FThread: TDbgThread;
     FProcess: TDbgProcess;
     procedure Init; virtual;
+    function IsAtCallInstruction: Integer;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); virtual; abstract;
   public
     constructor Create(AController: TDbgController); virtual;
@@ -219,6 +220,15 @@ begin
   //
 end;
 
+function TDbgControllerCmd.IsAtCallInstruction: Integer;
+var
+  CodeBin: array[0..20] of byte;
+begin
+  Result := 0;
+  if FProcess.ReadData(FThread.GetInstructionPointerRegisterValue, sizeof(CodeBin), CodeBin) then
+    Result := IsCallInstruction(@CodeBin, FProcess.Mode=dm64);
+end;
+
 constructor TDbgControllerCmd.Create(AController: TDbgController);
 begin
   FController := AController;
@@ -303,37 +313,16 @@ end;
 { TDbgControllerStepOverInstructionCmd }
 
 procedure TDbgControllerStepOverInstructionCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
-
 var
-  CodeBin: array[0..20] of byte;
-  p: pointer;
-  ADump,
-  AStatement: string;
-  CallInstr: boolean;
-  ALocation: TDbgPtr;
-
+  l: Integer;
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverInstructionCmd.DoContinue: FProcess=AProcess');
-  if FHiddenBreakpoint <> nil then
-    FProcess.Continue(FProcess, FThread, false)
-  else
-  begin
-    CallInstr:=false;
-    if AProcess.ReadData(AThread.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
-    begin
-      p := @CodeBin;
-      Disassemble(p, AProcess.Mode=dm64, ADump, AStatement);
-      if copy(AStatement,1,4)='call' then
-        CallInstr:=true;
-    end;
-
-    if CallInstr then
-    begin
-      ALocation := AThread.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
-      FHiddenBreakpoint := AProcess.AddInternalBreak(ALocation);
-    end;
-    FProcess.Continue(FProcess, FThread, not CallInstr);
+  if FHiddenBreakpoint = nil then begin
+    l := IsAtCallInstruction;
+    if l > 0 then
+      FHiddenBreakpoint := AProcess.AddInternalBreak(FThread.GetInstructionPointerRegisterValue + l);
   end;
+  FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
 
 procedure TDbgControllerStepOverInstructionCmd.DoResolveEvent(
@@ -367,33 +356,19 @@ begin
 end;
 
 procedure TDbgControllerStepIntoLineCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
-
 var
-  CodeBin: array[0..20] of byte;
-  p: pointer;
-  ADump,
-  AStatement: string;
-  ALocation: TDBGPtr;
-
+  l: Integer;
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepIntoLineCmd.DoContinue: FProcess=AProcess');
   if not FInto then
   begin
-    if AProcess.ReadData(AThread.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
-    begin
-      p := @CodeBin;
-      Disassemble(p, AProcess.Mode=dm64, ADump, AStatement);
-      if (copy(AStatement,1,4)='call') then
-        begin
-        FInto := true;
-        FInstCount := 0;
-
-        ALocation := AThread.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
-        FHiddenBreakpoint := AProcess.AddInternalBreak(ALocation);
-
-        FProcess.Continue(FProcess, FThread, true);
-        exit;
-        end;
+    l := IsAtCallInstruction;
+    if l > 0 then begin
+      FInto := true;
+      FInstCount := 0;
+      FHiddenBreakpoint := AProcess.AddInternalBreak(FThread.GetInstructionPointerRegisterValue + l);
+      FProcess.Continue(FProcess, FThread, true);
+      exit;
     end;
   end;
 
