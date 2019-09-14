@@ -312,8 +312,8 @@ begin
       ALocation := AThread.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
       if not AProcess.HasBreak(ALocation) then
         FHiddenBreakpoint := AProcess.AddInternalBreak(ALocation);
+      FIsSet:=true;
     end;
-    FIsSet:=true;
     FProcess.Continue(FProcess, FThread, not CallInstr);
   end;
 end;
