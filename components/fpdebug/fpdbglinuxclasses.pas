@@ -1040,7 +1040,8 @@ begin
     exit;
   end;
 
-  AThread.NextIsSingleStep:=SingleStep;
+  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
+    AThread.NextIsSingleStep:=SingleStep;
 
   // check other threads if they need a singlestep
   for TDbgThread(ThreadToContinue) in FThreadMap do
@@ -1077,6 +1078,7 @@ begin
       end;
     end;
 
+  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
   if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then begin
     TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue);
     TDbgLinuxThread(AThread).FIsSteppingBreakPoint := True;
@@ -1108,6 +1110,7 @@ begin
     end;
   end;
 
+  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
   if not FIsTerminating then begin
     fpseterrno(0);
     //AThread.BeforeContinue;
