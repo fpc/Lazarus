@@ -600,9 +600,21 @@ end;
 
 function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
   SingleStep: boolean): boolean;
+
+  function HasThreadInSkippingBreak: Boolean;
+  var
+    t: TDbgThread;
+  begin
+    Result := False;
+    for t in FThreadMap do
+      if TDbgWinThread(t).FIsSkippingBreakPoint then begin
+        Result := True;
+        break;
+      end;
+  end;
+
 var
   EventThread, t: TDbgThread;
-  b: Boolean;
 begin
 debugln(['TDbgWinProcess.Continue ',SingleStep]);
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
@@ -632,24 +644,35 @@ debugln(['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSi
       if (EventThread = AThread) and (SingleStep) then
         TDbgWinThread(EventThread).SetSingleStep;
 
-      b := False;
-      for t in FThreadMap do
-        if TDbgWinThread(t).FIsSkippingBreakPoint then begin
-          b := True;
-          break;
-        end;
-
-      if b then begin
+      if HasThreadInSkippingBreak then begin
 debugln(['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
         // But other threads are still skipping
         for t in FThreadMap do
-          if not (SingleStep and (t = AThread)) then   // allow athread to single-step
+          if not (SingleStep and (t = AThread) and   // allow athread to single-step
+                  not TDbgWinThread(t).FIsSkippingBreakPoint  // already single stepping AND needs  TempRemoveBreakInstructionCode
+                 )
+          then
             TDbgWinThread(t).SuspendForStepOverBreakPoint;
       end;
     end;
 
-    if (AThread = EventThread) or (TDbgWinThread(AThread).FIsSuspended) then
+    if (AThread = EventThread) or (assigned(AThread) and TDbgWinThread(AThread).FIsSuspended) then
       AThread := nil; // Already handled, or suspended
+  end
+
+  else begin // EventThread is gone
+    if HasThreadInSkippingBreak then begin
+debugln(['## skip brkpoint (others only) ']);
+      for t in FThreadMap do
+        if not (SingleStep and (t = AThread) and   // allow athread to single-step
+                not TDbgWinThread(t).FIsSkippingBreakPoint  // already single stepping AND needs  TempRemoveBreakInstructionCode
+               )
+        then
+          TDbgWinThread(t).SuspendForStepOverBreakPoint;
+    end;
+
+    if assigned(AThread) and (TDbgWinThread(AThread).FIsSuspended) then
+      AThread := nil; // no need for singlestep yet
   end;
 
   if assigned(AThread) then
