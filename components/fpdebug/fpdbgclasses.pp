@@ -265,6 +265,7 @@ type
   private
     FProcess: TDbgProcess;
     FLocation: TDBGPtrArray;
+    FInternal: Boolean;
   protected
     property Process: TDbgProcess read FProcess;
     property Location: TDBGPtrArray read FLocation;
@@ -272,7 +273,7 @@ type
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtrArray); virtual;
     destructor Destroy; override;
     function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; override;
-    //function HasLocation(const ALocation: TDBGPtr): Boolean;
+    function HasLocation(const ALocation: TDBGPtr): Boolean;
 
     procedure SetBreak; override;
     procedure ResetBreak; override;
@@ -380,6 +381,8 @@ type
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; virtual;
     constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer); virtual;
     destructor Destroy; override;
+    function  AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
+    function  AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
     function  FindSymbol(const AName: String): TFpSymbol;
@@ -1160,6 +1163,18 @@ begin
   inherited;
 end;
 
+function TDbgProcess.AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint;
+begin
+  Result := AddBreak(ALocation);
+  Result.FInternal := True;
+end;
+
+function TDbgProcess.AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint;
+begin
+  Result := AddBreak(ALocation);
+  Result.FInternal := True;
+end;
+
 function TDbgProcess.FindSymbol(const AName: String): TFpSymbol;
 begin
   Result := FDbgInfo.FindSymbol(AName);
@@ -1466,12 +1481,19 @@ end;
 function TDbgProcess.DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
 var
   BList: TFpInternalBreakpointArray;
+  i: Integer;
 begin
   Result := False;
 
   BList := FBreakMap.GetInternalBreaksAtLocation(BreakpointAddress);
   if BList = nil then exit;
-  FCurrentBreakpoint := BList[0];
+  i := 0;
+  FCurrentBreakpoint := nil;
+  while (i < Length(BList)) and (FCurrentBreakpoint = nil) do
+    if BList[0].FInternal then
+      inc(i)
+    else
+      FCurrentBreakpoint := BList[i];
   if FCurrentBreakpoint = nil then Exit;
 
   Result := True;
@@ -1693,7 +1715,6 @@ procedure TDbgThread.DoBeforeBreakLocationMapChange;
 var
   t: TDBGPtr;
 begin
-debugln(FPausedAtRemovedBreakPointState <> rbUnknown, ['@@@@@@@ MAP tid ', ID, ' ', ord(FPausedAtRemovedBreakPointState), ' ',dbghex(FPausedAtRemovedBreakPointAddress)]);
   if (FPausedAtRemovedBreakPointState <> rbUnknown) and
      (FPausedAtRemovedBreakPointAddress = GetInstructionPointerRegisterValue) then
     exit;
@@ -1706,7 +1727,6 @@ debugln(FPausedAtRemovedBreakPointState <> rbUnknown, ['@@@@@@@ MAP tid ', ID, '
   *)
     FPausedAtRemovedBreakPointAddress := t;
     FPausedAtRemovedBreakPointState := rbFound;
-debugln(['####### STORE ',dbghex( t), ' for id ', ID]);
     // Most likely the debugger should see the previous address (unless we got here
     // by jump.
     // Call something like ResetInstructionPointerAfterBreakpointForPendingSignal; virtual;
@@ -1904,18 +1924,17 @@ begin
   Result := true;
 end;
 
-//function TFpInternalBreakpoint.HasLocation(const ALocation: TDBGPtr): Boolean;
-//var
-//  i: Integer;
-//begin
-//  Result := True;
-//  for i := 0 to High(FLocation) do begin
-//    //if FOrgValue[i] = Int3 then Continue;
-//    if FLocation[i] = ALocation then //exit;
-//      if FProcess.FBreakMap.HasLocation(ALocation, Self) then exit;
-//  end;
-//  Result := False;
-//end;
+function TFpInternalBreakpoint.HasLocation(const ALocation: TDBGPtr): Boolean;
+var
+  i: Integer;
+begin
+  Result := True;
+  for i := 0 to High(FLocation) do begin
+    if FLocation[i] = ALocation then
+      exit;
+  end;
+  Result := False;
+end;
 
 procedure TFpInternalBreakpoint.ResetBreak;
 var
