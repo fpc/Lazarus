@@ -260,7 +260,7 @@ procedure TDbgControllerContinueCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Handled, Finished: boolean);
 begin
   Handled := false;
-  Finished := (AnEvent<>deInternalContinue);
+  Finished := (AnEvent<>deInternalContinue); // TODO: always False? will be aborted, if another event terminates the ProcessLoop
 end;
 
 { TDbgControllerStepIntoInstructionCmd }
@@ -276,8 +276,10 @@ procedure TDbgControllerStepIntoInstructionCmd.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled,
   Finished: boolean);
 begin
-  Handled := false;
   Finished := (AnEvent<>deInternalContinue);
+  Handled := Finished;
+  if Finished then
+    AnEvent := deFinishedStep;
 end;
 
 { TDbgControllerStepOverInstructionCmd }
@@ -322,8 +324,8 @@ procedure TDbgControllerStepOverInstructionCmd.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled,
   Finished: boolean);
 begin
-  Handled := false;
   Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
+  Handled := Finished;
   if Finished then
   begin
     AnEvent := deFinishedStep;
@@ -430,7 +432,6 @@ begin
   AStackPointerValue:=FController.CurrentThread.GetStackPointerRegisterValue;
   AStackBasePointerValue:=FController.CurrentThread.GetStackBasePointerRegisterValue;
 
-  Handled := false;
   Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
   if (AnEvent=deBreakpoint) and not assigned(FController.FCurrentProcess.CurrentBreakpoint) then
   begin
@@ -479,6 +480,9 @@ begin
       end;
     end;
   end;
+  Handled := Finished;
+  if Finished then
+    AnEvent := deFinishedStep;
   FLastStackPointerValue:=AStackPointerValue;
   FLastStackBaseValue:=AStackBasePointerValue;
 end;
@@ -519,6 +523,7 @@ begin
       Finished:=false;
     end;
   end;
+  Handled := Finished;
   if Finished then
     AnEvent := deFinishedStep;
 end;
@@ -597,7 +602,6 @@ end;
 procedure TDbgControllerStepOutCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Handled, Finished: boolean);
 begin
-  Handled := false;
   Finished := false;
 
   if FStepOut then
@@ -618,6 +622,7 @@ begin
       FHiddenBreakpoint.Free;
     end;
   end;
+  Handled := Finished;
 end;
 
 { TDbgControllerRunToCmd }
@@ -642,13 +647,14 @@ end;
 procedure TDbgControllerRunToCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Handled, Finished: boolean);
 begin
-  Handled := false;
   Finished := (AnEvent<>deInternalContinue);
+  Handled := Finished;
   if Finished and assigned(FHiddenBreakpoint) then
-    begin
+  begin
     FProcess.RemoveBreak(FHiddenBreakpoint);
     FHiddenBreakpoint.Free;
-    end;
+    AnEvent := deFinishedStep;
+  end;
 end;
 
 
