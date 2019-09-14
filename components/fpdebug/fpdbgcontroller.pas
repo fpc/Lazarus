@@ -56,12 +56,19 @@ type
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
 
+  { TDbgControllerHiddenBreakStepCmd }
+
+  TDbgControllerHiddenBreakStepCmd = class(TDbgControllerCmd)
+  protected
+    FHiddenBreakpoint: TFpInternalBreakpoint;
+    procedure RemoveHiddenBreak;
+  public
+    destructor Destroy; override;
+  end;
+
   { TDbgControllerStepOverInstructionCmd }
 
-  TDbgControllerStepOverInstructionCmd = class(TDbgControllerCmd)
-  private
-    FHiddenBreakpoint: TFpInternalBreakpoint;
-    FIsSet: boolean;
+  TDbgControllerStepOverInstructionCmd = class(TDbgControllerHiddenBreakStepCmd)
   protected
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
   public
@@ -70,7 +77,7 @@ type
 
   { TDbgControllerStepIntoLineCmd }
 
-  TDbgControllerStepIntoLineCmd = class(TDbgControllerCmd)
+  TDbgControllerStepIntoLineCmd = class(TDbgControllerHiddenBreakStepCmd)
   private
     FStoredStackFrame: TDBGPtr;
     FInto: boolean;
@@ -80,14 +87,12 @@ type
     FLastStackPointerValue: TDBGPtr;
     FLastStackBaseValue: TDBGPtr;
     FAssumedProcStartStackPointer: TDBGPtr;
-    FHiddenBreakpoint: TFpInternalBreakpoint;
     FInstCount: integer;
   protected
     procedure Init; override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
   public
     constructor Create(AController: TDbgController); override;
-    destructor Destroy; override;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
 
@@ -105,9 +110,8 @@ type
 
   { TDbgControllerStepOutCmd }
 
-  TDbgControllerStepOutCmd = class(TDbgControllerCmd)
+  TDbgControllerStepOutCmd = class(TDbgControllerHiddenBreakStepCmd)
   private
-    FHiddenBreakpoint: TFpInternalBreakpoint;
     FIsSet: boolean;
     FStepCount: Integer;
     FStepOut: Boolean;
@@ -120,11 +124,11 @@ type
 
   { TDbgControllerRunToCmd }
 
-  TDbgControllerRunToCmd = class(TDbgControllerCmd)
+  TDbgControllerRunToCmd = class(TDbgControllerHiddenBreakStepCmd)
   private
-    FHiddenBreakpoint: TFpInternalBreakpoint;
     FLocation: TDBGPtrArray;
   protected
+    procedure Init; override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
   public
     constructor Create(AController: TDbgController; ALocation: TDBGPtrArray);
@@ -282,6 +286,20 @@ begin
     AnEvent := deFinishedStep;
 end;
 
+{ TDbgControllerHiddenBreakStepCmd }
+
+procedure TDbgControllerHiddenBreakStepCmd.RemoveHiddenBreak;
+begin
+  if assigned(FHiddenBreakpoint) then
+    FreeAndNil(FHiddenBreakpoint);
+end;
+
+destructor TDbgControllerHiddenBreakStepCmd.Destroy;
+begin
+  RemoveHiddenBreak;
+  inherited Destroy;
+end;
+
 { TDbgControllerStepOverInstructionCmd }
 
 procedure TDbgControllerStepOverInstructionCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
@@ -296,7 +314,7 @@ var
 
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverInstructionCmd.DoContinue: FProcess=AProcess');
-  if FIsSet then
+  if FHiddenBreakpoint <> nil then
     FProcess.Continue(FProcess, FThread, false)
   else
   begin
@@ -312,9 +330,7 @@ begin
     if CallInstr then
     begin
       ALocation := AThread.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
-      if not AProcess.HasBreak(ALocation) then
-        FHiddenBreakpoint := AProcess.AddInternalBreak(ALocation);
-      FIsSet:=true;
+      FHiddenBreakpoint := AProcess.AddInternalBreak(ALocation);
     end;
     FProcess.Continue(FProcess, FThread, not CallInstr);
   end;
@@ -329,11 +345,7 @@ begin
   if Finished then
   begin
     AnEvent := deFinishedStep;
-    if assigned(FHiddenBreakpoint) then
-    begin
-      FController.FCurrentProcess.RemoveBreak(FHiddenBreakpoint);
-      FHiddenBreakpoint.Free;
-    end;
+    RemoveHiddenBreak;
   end;
 end;
 
@@ -352,16 +364,6 @@ end;
 constructor TDbgControllerStepIntoLineCmd.Create(AController: TDbgController);
 begin
   inherited Create(AController);
-end;
-
-destructor TDbgControllerStepIntoLineCmd.Destroy;
-begin
-  if assigned(FHiddenBreakpoint) then
-    begin
-    FController.CurrentProcess.RemoveBreak(FHiddenBreakpoint);
-    FreeAndNil(FHiddenBreakpoint);
-    end;
-  inherited Destroy;
 end;
 
 procedure TDbgControllerStepIntoLineCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
@@ -387,8 +389,7 @@ begin
         FInstCount := 0;
 
         ALocation := AThread.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
-        if not AProcess.HasBreak(ALocation) then
-          FHiddenBreakpoint := AProcess.AddInternalBreak(ALocation);
+        FHiddenBreakpoint := AProcess.AddInternalBreak(ALocation);
 
         FProcess.Continue(FProcess, FThread, true);
         exit;
@@ -447,8 +448,7 @@ begin
         begin
           FInto:=false;
           FInstCount:=0;
-          FController.CurrentProcess.RemoveBreak(FHiddenBreakpoint);
-          FreeAndNil(FHiddenBreakpoint);
+          RemoveHiddenBreak;
         end
         else
         begin
@@ -518,8 +518,7 @@ begin
        (FController.NextOnlyStopOnStartLine or (FStoredStackFrame < FController.CurrentThread.GetStackBasePointerRegisterValue))) then
     begin
       AnEvent:=deInternalContinue;
-      FHiddenBreakpoint:=nil;
-      FIsSet:=false;
+      RemoveHiddenBreak;
       Finished:=false;
     end;
   end;
@@ -539,8 +538,7 @@ begin
 
   if AProcess.ReadAddress(StepOutStackPos, ReturnAddress) then
   begin
-    if not AProcess.HasBreak(ReturnAddress) then
-      FHiddenBreakpoint := AProcess.AddInternalBreak(ReturnAddress)
+    FHiddenBreakpoint := AProcess.AddInternalBreak(ReturnAddress)
   end
   else
   begin
@@ -609,7 +607,7 @@ begin
     // finished.
     Finished := true
   else if FIsSet then
-    Finished := not (AnEvent in [deInternalContinue, deLoadLibrary])
+    Finished := (not (AnEvent in [deInternalContinue, deLoadLibrary])) or (FHiddenBreakpoint = nil)
   else if (AnEvent in [deBreakpoint]) and not FProcess.HasBreak(FThread.GetInstructionPointerRegisterValue) then
     // Single-stepping, so continue silently.
     AnEvent := deInternalContinue;
@@ -617,10 +615,7 @@ begin
   if Finished then
   begin
     AnEvent := deFinishedStep;
-    if Assigned(FHiddenBreakpoint) then begin
-      FProcess.RemoveBreak(FHiddenBreakpoint);
-      FHiddenBreakpoint.Free;
-    end;
+    RemoveHiddenBreak;
   end;
   Handled := Finished;
 end;
@@ -629,19 +624,20 @@ end;
 
 constructor TDbgControllerRunToCmd.Create(AController: TDbgController; ALocation: TDBGPtrArray);
 begin
-  inherited create(AController);
   FLocation:=ALocation;
+  inherited create(AController);
 end;
 
 procedure TDbgControllerRunToCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerRunToCmd.DoContinue: FProcess=AProcess');
-  if not assigned(FHiddenBreakpoint) then // and not AProcess.HasBreak(FLocation)
-    FHiddenBreakpoint := AProcess.AddInternalBreak(FLocation)
-  else
-    debugln(DBG_WARNINGS, 'TDbgControllerRunToCmd.DoContinue: Breakpoint already used');
-
   FProcess.Continue(FProcess, FThread, False);
+end;
+
+procedure TDbgControllerRunToCmd.Init;
+begin
+  inherited Init;
+  FHiddenBreakpoint := FProcess.AddInternalBreak(FLocation);
 end;
 
 procedure TDbgControllerRunToCmd.DoResolveEvent(var AnEvent: TFPDEvent;
@@ -649,10 +645,8 @@ procedure TDbgControllerRunToCmd.DoResolveEvent(var AnEvent: TFPDEvent;
 begin
   Finished := (AnEvent<>deInternalContinue);
   Handled := Finished;
-  if Finished and assigned(FHiddenBreakpoint) then
-  begin
-    FProcess.RemoveBreak(FHiddenBreakpoint);
-    FHiddenBreakpoint.Free;
+  if Finished then begin
+    RemoveHiddenBreak;
     AnEvent := deFinishedStep;
   end;
 end;
