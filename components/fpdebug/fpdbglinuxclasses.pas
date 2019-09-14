@@ -501,7 +501,8 @@ begin
   FIsPaused := True;
   FIsInInternalPause := False;
 
-  if FInternalPauseRequested and (wstopsig(AWaitedStatus) = SIGSTOP) then begin
+  if {FInternalPauseRequested and} (wstopsig(AWaitedStatus) = SIGSTOP) then begin
+    DebugLn(DBG_VERBOSE and not FInternalPauseRequested, 'Received SigStop, but had not (yet) requested it. TId=', [Id]);
     FInternalPauseRequested := False;
     FIsInInternalPause := True;
     // no postpone
