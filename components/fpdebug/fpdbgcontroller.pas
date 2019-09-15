@@ -62,6 +62,9 @@ type
   TDbgControllerHiddenBreakStepCmd = class(TDbgControllerCmd)
   protected
     FHiddenBreakpoint: TFpInternalBreakpoint;
+    FHiddenBreakAddr, FHiddenBreakStackPtrAddr: TDBGPtr;
+    function IsAtHiddenBreak: Boolean;
+    procedure SetHiddenBreak(AnAddr: TDBGPtr);
     procedure RemoveHiddenBreak;
   public
     destructor Destroy; override;
@@ -165,7 +168,7 @@ type
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
     FCurrentThread: TDbgThread;
-    FCommand: TDbgControllerCmd;
+    FCommand, FCommandToBeFreed: TDbgControllerCmd;
     function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
   public
     constructor Create; virtual;
@@ -298,6 +301,21 @@ end;
 
 { TDbgControllerHiddenBreakStepCmd }
 
+function TDbgControllerHiddenBreakStepCmd.IsAtHiddenBreak: Boolean;
+begin
+  Result := (FThread.GetInstructionPointerRegisterValue = FHiddenBreakAddr) and
+            (FThread.GetStackPointerRegisterValue >= FHiddenBreakStackPtrAddr);
+            // if SP > FStackPtrRegVal >> then the brk was hit stepped out (should not happen)
+end;
+
+procedure TDbgControllerHiddenBreakStepCmd.SetHiddenBreak(AnAddr: TDBGPtr);
+begin
+  // The callee may not setup a stackfram (StackBasePtr unchanged). So we use SP to detect recursive hits
+  FHiddenBreakStackPtrAddr := FThread.GetStackPointerRegisterValue;
+  FHiddenBreakAddr := AnAddr;
+  FHiddenBreakpoint := FProcess.AddInternalBreak(AnAddr);
+end;
+
 procedure TDbgControllerHiddenBreakStepCmd.RemoveHiddenBreak;
 begin
   if assigned(FHiddenBreakpoint) then
@@ -320,7 +338,7 @@ begin
   if FHiddenBreakpoint = nil then begin
     l := IsAtCallInstruction;
     if l > 0 then
-      FHiddenBreakpoint := AProcess.AddInternalBreak(FThread.GetInstructionPointerRegisterValue + l);
+      SetHiddenBreak(FThread.GetInstructionPointerRegisterValue + l);
   end;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
@@ -329,7 +347,10 @@ procedure TDbgControllerStepOverInstructionCmd.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled,
   Finished: boolean);
 begin
-  Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
+  if FHiddenBreakpoint <> nil then
+    Finished := IsAtHiddenBreak
+  else
+    Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
   Handled := Finished;
   if Finished then
   begin
@@ -485,15 +506,13 @@ begin
   EventCopy := AnEvent;
   inherited DoResolveEvent(EventCopy, AnEventThread, Handled, Finished);
   // todo: check FHiddenBreakpoint.HasLocation();
-  if (AnEvent=deBreakpoint) and not assigned(FController.CurrentProcess.CurrentBreakpoint)
-  then
+  if Finished then
   begin
     if (FController.FCurrentThread.CompareStepInfo<>dcsiNewLine) or
       (not FController.FCurrentThread.IsAtStartOfLine and
        (FController.NextOnlyStopOnStartLine or (FStoredStackFrame < FController.CurrentThread.GetStackBasePointerRegisterValue))) then
     begin
       AnEvent:=deInternalContinue;
-      RemoveHiddenBreak;
       Finished:=false;
     end;
   end;
@@ -677,6 +696,17 @@ var
   it: TMapIterator;
   p: TDbgProcess;
 begin
+  if FCommand <> nil then begin
+    FCommand.FProcess := nil;
+    FCommand.FThread := nil;
+    FCommand.Free;
+  end;
+  if FCommandToBeFreed <> nil then begin
+    FCommandToBeFreed.FProcess := nil;
+    FCommandToBeFreed.FThread := nil;
+    FCommandToBeFreed.Free;
+  end;
+
   if Assigned(FMainProcess) then begin
     FProcessMap.Delete(FMainProcess.ProcessID);
     FMainProcess.Free;
@@ -795,6 +825,8 @@ begin
     DebugLn(DBG_WARNINGS, 'Error: Processloop has no process');
     exit;
   end;
+
+  FCommandToBeFreed.Free;
 
   repeat
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then
@@ -983,6 +1015,11 @@ begin
       end;
     else
       raise exception.create('Unknown debug controler state');
+  end;
+
+  if not &continue then begin
+    FCommandToBeFreed := FCommand;
+    FCommand := nil;
   end;
 end;
 
