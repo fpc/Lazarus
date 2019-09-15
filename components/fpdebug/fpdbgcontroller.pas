@@ -29,11 +29,13 @@ type
     FController: TDbgController;
     FThread: TDbgThread;
     FProcess: TDbgProcess;
+    FIsInitialized: Boolean;
     procedure Init; virtual;
     function IsAtCallInstruction: Integer;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); virtual; abstract;
   public
     constructor Create(AController: TDbgController); virtual;
+    procedure DoBeforeLoopStart;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
     procedure ResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); virtual;
   end;
@@ -237,7 +239,13 @@ begin
   FController := AController;
   FProcess := FController.CurrentProcess;
   FThread := FController.CurrentThread;
-  Init;
+end;
+
+procedure TDbgControllerCmd.DoBeforeLoopStart;
+begin
+  if not FIsInitialized then
+    Init;
+  FIsInitialized := True;
 end;
 
 procedure TDbgControllerCmd.ResolveEvent(var AnEvent: TFPDEvent;
@@ -827,6 +835,8 @@ begin
   end;
 
   FCommandToBeFreed.Free;
+  if FCommand <> nil then
+    FCommand.DoBeforeLoopStart;
 
   repeat
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then
