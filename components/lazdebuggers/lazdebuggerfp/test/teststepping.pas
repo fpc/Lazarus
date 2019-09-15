@@ -27,12 +27,13 @@ type
        - TODO: ignored exception: caught caught outside the step (step to except/finally)
     *)
     procedure TestStepOver;
+    procedure TestStepOverInstr;
   end;
 
 implementation
 
 var
-  ControlTest, ControlTestStepOver: Pointer;
+  ControlTest, ControlTestStepOver, ControlTestStepOverInstr: Pointer;
 
 procedure TTestStepping.TestLocation(ATestName, ABrkName: String;
   ABreakHitCount: Integer);
@@ -72,11 +73,11 @@ begin
     MainBrk := Debugger.SetBreakPoint(Src, 'BrkStart');
     Debugger.SetBreakPoint(Src, 'BrkThreadCreateInStep');
     Debugger.SetBreakPoint(Src, 'BrkInterfereByThread');
+    Debugger.SetBreakPoint(Src, 'BrkNested');
 
     BrkDis    := Debugger.SetBreakPoint(Src, 'BrkDisabled');
     BrkHitCnt := Debugger.SetBreakPoint(Src, 'BrkHitCnt');
     BrkDis.Enabled := False;
-BrkHitCnt.Enabled := False;
     BrkHitCnt.BreakHitCount := 999;
     AssertDebuggerNotInErrorState;
 
@@ -85,41 +86,72 @@ BrkHitCnt.Enabled := False;
     TestLocation('Init', 'BrkStart');
     ThreadIdMain := dbg.Threads.CurrentThreads.CurrentThreadId;
 
+    // Step over a line
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStep', 'AfterStep', -1);
 
+    // Step over a longer line
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepLongLine', 'AfterStepLongLine', -1);
 
+    // Step over a subroutine call
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepProc', 'AfterStepProc', -1);
 
+    // Step over a several subroutine calls
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepProcLong', 'AfterStepProcLong', -1);
 
+    // Step over a subroutine call, with sleep
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepSleepProc', 'AfterStepSleepProc', -1);
 
+    // Step over a call to sleep
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepSleep', 'AfterStepSleep', -1);
 
+    // Step over a subroutine call, with a disabled breakpoint
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepBrkDis', 'AfterStepBrkDis', -1);
 
+    // Step over a subroutine call, with a breakpoint that continues
     Debugger.RunToNextPause(dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepBrkHitCnt', 'AfterStepBrkHitCnt', -1);
 
     TestEquals('No Hit for disabled break', 0, BrkDis.HitCount);
-    //TestEquals('No Hit for skipped break',  1, BrkHitCnt.HitCount);
+    TestEquals('No Hit for skipped break',  1, BrkHitCnt.HitCount);
 
+    BrkDis.Enabled := True;
+    // Step over a subroutine call, BUT STOP at the breakpoint within it
+    Debugger.RunToNextPause(dcStepOver);
+    AssertDebuggerState(dsPause);
+    TestLocation('At BrkDisabled', 'BrkDisabled', -1);
+    // And do another step
+    Debugger.RunToNextPause(dcStepOver);
+    AssertDebuggerState(dsPause);
+
+    TestEquals('No Hit for disabled break', 1, BrkDis.HitCount);
+    TestEquals('No Hit for skipped break',  1, BrkHitCnt.HitCount);
+
+
+    // Step over a RECURSIVE subroutine call
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause);
+    TestLocation('At BrkNested', 'BrkNested', -1);
+
+    Debugger.RunToNextPause(dcStepOver);
+    AssertDebuggerState(dsPause);
+    Debugger.RunToNextPause(dcStepOver);
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterNested', 'AfterNested', -1);
 
 
     (* The debugger will encounter a thread create event, during the stepping
@@ -157,11 +189,112 @@ BrkHitCnt.Enabled := False;
   end;
 end;
 
+procedure TTestStepping.TestStepOverInstr;
+  procedure StepInstrToNextLine(AName: String; MaxSteps: integer = 50);
+  var
+    lc: TDBGLocationRec;
+  begin
+    lc := Debugger.LazDebugger.GetLocation;
+    repeat
+      Debugger.RunToNextPause(dcStepOverInstr);
+      AssertDebuggerState(dsPause, 'step instr '+AName);
+      dec(MaxSteps);
+    until (lc.SrcLine <> Debugger.LazDebugger.GetLocation.SrcLine) or (MaxSteps <= 0);
+  end;
+
+var
+  ExeName: String;
+  MainBrk, BrkDis, BrkHitCnt: TDBGBreakPoint;
+  ThreadIdMain: Integer;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestStepOverInstr) then exit;
+  Src := GetCommonSourceFor(AppDir + 'StepOverPrg.pas');
+  TestCompile(Src, ExeName);
+
+  TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+
+  try
+    MainBrk := Debugger.SetBreakPoint(Src, 'BrkStart');
+    Debugger.SetBreakPoint(Src, 'BrkThreadCreateInStep');
+    Debugger.SetBreakPoint(Src, 'BrkInterfereByThread');
+    Debugger.SetBreakPoint(Src, 'BrkNested');
+
+    BrkDis    := Debugger.SetBreakPoint(Src, 'BrkDisabled');
+    BrkHitCnt := Debugger.SetBreakPoint(Src, 'BrkHitCnt');
+    BrkDis.Enabled := False;
+    BrkHitCnt.BreakHitCount := 999;
+    AssertDebuggerNotInErrorState;
+
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause);
+    TestLocation('Init', 'BrkStart');
+    ThreadIdMain := dbg.Threads.CurrentThreads.CurrentThreadId;
+
+    StepInstrToNextLine('Go to AfterStep');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStep', 'AfterStep', -1);
+
+    StepInstrToNextLine('Go to AfterStepLongLine');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStepLongLine', 'AfterStepLongLine', -1);
+
+    StepInstrToNextLine('Go to AfterStepProc');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStepProc', 'AfterStepProc', -1);
+
+    StepInstrToNextLine('Go to AfterStepProcLong');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStepProcLong', 'AfterStepProcLong', -1);
+
+    StepInstrToNextLine('Go to AfterStepSleepProc');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStepSleepProc', 'AfterStepSleepProc', -1);
+
+    StepInstrToNextLine('Go to AfterStepSleep');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStepSleep', 'AfterStepSleep', -1);
+
+    StepInstrToNextLine('Go to AfterStepBrkDis');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStepBrkDis', 'AfterStepBrkDis', -1);
+
+    StepInstrToNextLine('Go to AfterStepBrkHitCnt');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterStepBrkHitCnt', 'AfterStepBrkHitCnt', -1);
+
+    TestEquals('No Hit for disabled break', 0, BrkDis.HitCount);
+    TestEquals('No Hit for skipped break',  1, BrkHitCnt.HitCount);
+
+
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause);
+    TestLocation('At BrkNested', 'BrkNested', -1);
+
+    StepInstrToNextLine('Go to AfterNested 1');
+    AssertDebuggerState(dsPause);
+    StepInstrToNextLine('Go to AfterNested 2');
+    AssertDebuggerState(dsPause);
+    TestLocation('At AfterNested', 'AfterNested', -1);
+
+
+
+    dbg.Stop;
+  finally
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
 
   RegisterDbgTest(TTestStepping);
   ControlTest              := TestControlRegisterTest('TTestStepping');
   ControlTestStepOver      := TestControlRegisterTest('TTestStepOver', ControlTest);
+  ControlTestStepOverInstr := TestControlRegisterTest('TTestStepOverInstr', ControlTest);
 end.
 

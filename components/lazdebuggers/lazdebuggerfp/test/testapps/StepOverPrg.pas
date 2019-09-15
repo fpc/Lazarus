@@ -29,6 +29,16 @@ begin
   x := 1;
 end;
 
+Procedure MyNested(ALvl: Integer = 0);
+begin
+  if ALvl > 3 then exit;
+  if ALvl = 0 then
+    x := 1;  // TEST_BREAKPOINT=BrkNested
+  x := 3; MyNested(ALvl + 1); x := 4; if ALvl = 0 then // only reach "AfterNested" in most outer recurse
+    x := 2; // TEST_BREAKPOINT=AfterNested
+  x := 1;
+end;
+
 Procedure MySleep;
 begin
   Sleep(50);
@@ -79,8 +89,10 @@ begin
   sleep(50);      // TEST_BREAKPOINT=AfterStepSleepProc
   MyBrkDis;       // TEST_BREAKPOINT=AfterStepSleep
   MyBrkHitCnt;    // TEST_BREAKPOINT=AfterStepBrkDis
-  x := 1;         // TEST_BREAKPOINT=AfterStepBrkHitCnt
+  MyBrkDis;       // TEST_BREAKPOINT=AfterStepBrkHitCnt
+  x := 1;         // TEST_BREAKPOINT=AfterStepBrkDisAgain
   x := 1;
+  MyNested; // TEST_BREAKPOINT=CallNested
 
 
   T1 := 0;
