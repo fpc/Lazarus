@@ -66,6 +66,11 @@ type
     //ieRunWaitToExit   // run and wait until the process finishes, before letting the debugger run "target remote"
   );
 
+  TDebugger_Target_Mode = (
+    dtTargetRemote,
+    dtTargetExtendedRemote
+  );
+
   { TGDBMIServerDebuggerProperties }
 
   TGDBMIServerDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -79,6 +84,7 @@ type
 
     FInitExec_RemoteTarget: string;
     FInitExec_Mode: TInitExecMode;
+    FDebugger_Target_Mode : TDebugger_Target_Mode;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -86,6 +92,7 @@ type
     property Debugger_Remote_Hostname: String read FDebugger_Remote_Hostname write FDebugger_Remote_Hostname;
     property Debugger_Remote_Port: String read FDebugger_Remote_Port write FDebugger_Remote_Port;
     property Debugger_Remote_DownloadExe: boolean read FDebugger_Remote_DownloadExe write FDebugger_Remote_DownloadExe;
+    property Debugger_Target_Mode: TDebugger_Target_Mode read FDebugger_Target_Mode write FDebugger_Target_Mode default dtTargetRemote;
     property RemoteTimeout: integer read FRemoteTimeout write FRemoteTimeout default -1;
     property Architecture: string read FArchitecture write FArchitecture;
     property SkipSettingLocalExeName: Boolean read FSkipSettingLocalExeName write FSkipSettingLocalExeName default False;
@@ -251,10 +258,17 @@ begin
     ExecuteCommand(Format('set remotetimeout %d', [t]), R);
 
   // TODO: Maybe should be done in CommandStart, But Filename, and Environment will be done before Start
-  FSuccess := ExecuteCommand(Format('target remote %s:%s',
-                             [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname,
-                              TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Remote_Port ]),
-                             R);
+  if TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Target_Mode = dtTargetExtendedRemote then
+    FSuccess := ExecuteCommand(Format('target extended-remote %s',
+                               [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname
+                                ]),
+                               R)
+  else
+    FSuccess := ExecuteCommand(Format('target remote %s:%s',
+                               [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname,
+                                TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Remote_Port ]),
+                               R);
+
   FSuccess := FSuccess and (r.State <> dsError);
 end;
 
@@ -267,6 +281,7 @@ begin
   FDebugger_Remote_Hostname:= '';
   FDebugger_Remote_Port:= '2345';
   FDebugger_Remote_DownloadExe := False;
+  FDebugger_Target_Mode := dtTargetRemote;
   FRemoteTimeout := -1;
   FArchitecture := '';
   FSkipSettingLocalExeName := False;
@@ -280,6 +295,7 @@ begin
     FDebugger_Remote_Hostname := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_Hostname;
     FDebugger_Remote_Port := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_Port;
     FDebugger_Remote_DownloadExe := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_DownloadExe;
+    FDebugger_Target_Mode := TGDBMIServerDebuggerProperties(Source).FDebugger_Target_Mode;
     FRemoteTimeout := TGDBMIServerDebuggerProperties(Source).FRemoteTimeout;
     FArchitecture := TGDBMIServerDebuggerProperties(Source).FArchitecture;
     FSkipSettingLocalExeName := TGDBMIServerDebuggerProperties(Source).FSkipSettingLocalExeName;
