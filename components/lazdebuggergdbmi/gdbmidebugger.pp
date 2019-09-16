@@ -11363,6 +11363,7 @@ begin
   t := DefaultTimeOut;
   f := [];
   for i := 0 to ACommands.Count - 1 do begin
+    s := ACommands[i];
     if (s = '') or (s = '#') then
       continue;
 
