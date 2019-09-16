@@ -47,6 +47,9 @@ type
     function CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; override;
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     procedure InterruptTarget; override;
+    procedure ProcessLineWhileRunning(const ALine: String; AnInLogWarning: boolean;
+      var AHandled, AForceStop: Boolean; var AStoppedParams: String;
+      var AResult: TGDBMIExecResult); override;
     procedure StopInitProc;
   public
     InitProc: TProcessUTF8;
@@ -331,6 +334,29 @@ begin
   end;
 
   inherited InterruptTarget;
+end;
+
+procedure TGDBMIServerDebugger.ProcessLineWhileRunning(const ALine: String;
+  AnInLogWarning: boolean; var AHandled, AForceStop: Boolean;
+  var AStoppedParams: String; var AResult: TGDBMIExecResult);
+const
+  LogDisconnect = 'remote connection closed';
+var
+  i: Integer;
+begin
+  inherited ProcessLineWhileRunning(ALine, AnInLogWarning, AHandled, AForceStop,
+    AStoppedParams, AResult);
+
+  // If remote connection terminated then this debugging session is over
+  i := 1;
+  if (ALine[1] = '&') and  (ALine[2] = '"') then
+    i := 3;
+  if (not AnInLogWarning) and (LowerCase(Copy(ALine, i, Length(LogDisconnect))) = LogDisconnect) then begin
+    AHandled := True;
+    AForceStop := True;
+    AStoppedParams := '';
+    SetState(dsStop);
+  end;
 end;
 
 procedure TGDBMIServerDebugger.StopInitProc;

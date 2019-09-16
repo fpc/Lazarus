@@ -942,6 +942,9 @@ type
     function  GetCommands: TDBGCommands; override;
     function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
+    procedure ProcessLineWhileRunning(const ALine: String; AnInLogWarning: boolean;
+      var AHandled, AForceStop: Boolean; var AStoppedParams: String; var AResult: TGDBMIExecResult); virtual;
+
     function  ParseInitialization: Boolean; virtual;
     function  CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; virtual;
     function  CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; virtual;
@@ -2925,22 +2928,19 @@ var
       Delete(Warning, 1, 2);
     if Copy(Warning, Length(Warning) - 2, 3) = '\n"' then
       Delete(Warning, Length(Warning) - 2, 3);
-    if LowerCase(Copy(Warning, 1, Length(LogWarning))) = LogWarning then
+    if InLogWarning then
     begin
-      InLogWarning := True;
-      Delete(Warning, 1, Length(LogWarning));
       Warning := MakePrintable(UnEscapeBackslashed(Trim(Warning), [uefOctal, uefTab, uefNewLine]));
       DoDbgEvent(ecOutput, etOutputDebugString, Format(gdbmiEventLogDebugOutput, [Warning]));
     end;
     if InLogWarning then
       FLogWarnings := FLogWarnings + Warning + LineEnding;
-    if Line = '&"\n"' then
-      InLogWarning := False;
 
     if FTheDebugger.CheckForInternalError(Line, '') then begin
       AResult.State := dsStop;
       ForceStop := True;
     end;
+
 (*
 << TCmdLineDebugger.ReadLn "&"Warning:\n""
   << TCmdLineDebugger.ReadLn "&"Cannot insert breakpoint 11.\n""
@@ -2954,12 +2954,35 @@ var
 *)
   end;
 
+  procedure CheckMultiLineLogWarning(const Line: String; var AInLogWarning: Boolean);
+  const
+    LogWarning = 'warning:';
+  var
+    i: Integer;
+  begin
+    if (Line = '') or (Line[1] <> '&') then
+      InLogWarning := False;
+    if Length(Line) < Length(LogWarning) then
+      exit;
+
+    i := 1;
+    if (Line[1] = '&') and  (Line[2] = '"') then
+      i := 3;
+    if LowerCase(Copy(Line, i, Length(LogWarning))) = LogWarning then
+      AInLogWarning := True;
+      //Delete(Line, 1, Length(LogWarning));
+
+    if Line = '&"\n"' then
+      InLogWarning := False;
+  end;
+
 var
   S, s2: String;
   idx: Integer;
   {$IFDEF DBG_ASYNC_WAIT}
   GotPrompt: integer;
   {$ENDIF}
+  LineHandled: Boolean;
 begin
   {$IFDEF DBG_ASYNC_WAIT}
   GotPrompt := 0;
@@ -3013,30 +3036,34 @@ begin
 
     while S <> '' do
     begin
-      if S[1] <> '&' then
-        InLogWarning := False;
-      case S[1] of
-        '^': DoResultRecord(S);
-        '~': DoConsoleStream(S);
-        '@': DoTargetStream(S);
-        '&': DoLogStream(S);
-        '*': if DoExecAsync(S) then Continue;
-        '+': DoStatusAsync(S);
-        '=': DoMsgAsync(S);
-      else
-        // since target output isn't prefixed (yet?)
-        // one of our known commands could be part of it.
-        idx := Pos('*stopped', S);
-        if idx  > 0
-        then begin
-          DebugLn(DBG_VERBOSE, '[DBGTGT] ', Copy(S, 1, idx - 1));
-          Delete(S, 1, idx - 1);
-          FGotStopped := True;
-          Continue;
-        end
-        else begin
-          // normal target output
-          DebugLn(DBG_VERBOSE, '[DBGTGT] ', S);
+      CheckMultiLineLogWarning(S, InLogWarning);
+
+      LineHandled := False;
+      FTheDebugger.ProcessLineWhileRunning(S, InLogWarning, LineHandled, ForceStop, AStoppedParams, AResult);
+      if not LineHandled then begin
+        case S[1] of
+          '^': DoResultRecord(S);
+          '~': DoConsoleStream(S);
+          '@': DoTargetStream(S);
+          '&': DoLogStream(S);
+          '*': if DoExecAsync(S) then Continue;
+          '+': DoStatusAsync(S);
+          '=': DoMsgAsync(S);
+        else
+          // since target output isn't prefixed (yet?)
+          // one of our known commands could be part of it.
+          idx := Pos('*stopped', S);
+          if idx  > 0
+          then begin
+            DebugLn(DBG_VERBOSE, '[DBGTGT] ', Copy(S, 1, idx - 1));
+            Delete(S, 1, idx - 1);
+            FGotStopped := True;
+            Continue;
+          end
+          else begin
+            // normal target output
+            DebugLn(DBG_VERBOSE, '[DBGTGT] ', S);
+          end;
         end;
       end;
 
@@ -9344,6 +9371,13 @@ begin
     Exit;
   end;
 {$ENDIF}
+end;
+
+procedure TGDBMIDebuggerBase.ProcessLineWhileRunning(const ALine: String;
+  AnInLogWarning: boolean; var AHandled, AForceStop: Boolean;
+  var AStoppedParams: String; var AResult: TGDBMIExecResult);
+begin
+  //
 end;
 
 function TGDBMIDebuggerBase.ParseInitialization: Boolean;
