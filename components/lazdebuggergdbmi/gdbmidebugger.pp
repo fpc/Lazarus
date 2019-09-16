@@ -61,7 +61,7 @@ uses
   FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, Maps,
   UTF8Process, LazFileUtils,
   // IdeIntf
-  BaseIDEIntf, PropEdits,
+  BaseIDEIntf, PropEdits, MacroIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // LazDebuggerGdbmi
@@ -11383,8 +11383,9 @@ begin
 
     else
     if s[1] <> '#' then begin
+      IDEMacros.SubstituteMacros(s);
       Result := ExecuteCommand(s,[], f, t);
-      if not Result then
+      if (not Result) then
         break;
     end;
   end;
