@@ -510,8 +510,8 @@ begin
 
   else
   if wstopsig(AWaitedStatus) = SIGTRAP then begin
-    ReadThreadState;
-    CheckAndResetInstructionPointerAfterBreakpoint;
+    if ReadThreadState then
+      CheckAndResetInstructionPointerAfterBreakpoint;
     Result := True;
     // TODO: main loop should search all threads for breakpoints
   end
@@ -541,7 +541,8 @@ end;
 
 function TDbgLinuxThread.ResetInstructionPointerAfterBreakpoint: boolean;
 begin
-  ReadThreadState;
+  if not ReadThreadState then
+    exit(False);
   result := true;
   if FDidResetInstructionPointer then
     exit;
@@ -653,7 +654,8 @@ end;
 
 procedure TDbgLinuxThread.LoadRegisterValues;
 begin
-  ReadThreadState;
+  if not ReadThreadState then
+    exit;
   if Process.Mode=dm32 then
   begin
     FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(FUserRegs.regs32[eax], IntToStr(FUserRegs.regs32[eax]),4,0);
@@ -706,7 +708,9 @@ end;
 
 function TDbgLinuxThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
-  ReadThreadState;
+  Result := 0;
+  if not ReadThreadState then
+    exit;
   if Process.Mode=dm32 then
     result := FUserRegs.regs32[eip]
   else
@@ -715,7 +719,9 @@ end;
 
 function TDbgLinuxThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
-  ReadThreadState;
+  Result := 0;
+  if not ReadThreadState then
+    exit;
   if Process.Mode=dm32 then
     result := FUserRegs.regs32[ebp]
   else
@@ -724,7 +730,9 @@ end;
 
 function TDbgLinuxThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
-  ReadThreadState;
+  Result := 0;
+  if not ReadThreadState then
+    exit;
   if Process.Mode=dm32 then
     result := FUserRegs.regs32[UESP]
   else

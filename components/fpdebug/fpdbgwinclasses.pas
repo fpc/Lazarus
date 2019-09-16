@@ -1183,7 +1183,8 @@ end;
 procedure TDbgWinThread.LoadRegisterValues;
 begin
   if FCurrentContext = nil then
-    ReadThreadState;
+    if not ReadThreadState then
+      exit;
   {$ifdef cpui386}
   with FCurrentContext^.def do
   begin
@@ -1364,7 +1365,8 @@ end;
 procedure TDbgWinThread.SetSingleStep;
 begin
   if FCurrentContext = nil then
-    ReadThreadState;
+    if not ReadThreadState then
+      exit;
   {$ifdef cpux86_64}
   if (TDbgWinProcess(Process).FBitness = b32) then
     FCurrentContext^.WOW.EFlags := FCurrentContext^.WOW.EFlags or FLAG_TRACE_BIT // TODO WOW_FLAG....
@@ -1404,9 +1406,10 @@ function TDbgWinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
   end;
 
 begin
-  if FCurrentContext = nil then
-    ReadThreadState;
   result := -1;
+  if FCurrentContext = nil then
+    if not ReadThreadState then
+      exit;
   {$ifdef cpux86_64}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
     with FCurrentContext^.WOW do
@@ -1475,8 +1478,10 @@ function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
   end;
 
 begin
+  Result := False;
   if FCurrentContext = nil then
-    ReadThreadState;
+    if not ReadThreadState then
+      exit;
   {$ifdef cpux86_64}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
     with FCurrentContext^.WOW do
@@ -1551,7 +1556,8 @@ begin
     exit;
 
   if FCurrentContext = nil then
-    ReadThreadState;
+    if not ReadThreadState then
+      exit;
 
   {$ifdef cpui386}
   Dec(Context^.def.Eip);
@@ -1587,8 +1593,10 @@ end;
 
 function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
+  Result := 0;
   if FCurrentContext = nil then
-    ReadThreadState;
+    if not ReadThreadState then
+      exit;
 {$ifdef cpui386}
   Result := FCurrentContext^.def.Eip;
 {$else}
@@ -1601,8 +1609,10 @@ end;
 
 function TDbgWinThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
+  Result := 0;
   if FCurrentContext = nil then
-    ReadThreadState;
+    if not ReadThreadState then
+      exit;
 {$ifdef cpui386}
   Result := FCurrentContext^.def.Ebp;
 {$else}
@@ -1615,8 +1625,10 @@ end;
 
 function TDbgWinThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
+  Result := 0;
   if FCurrentContext = nil then
-    ReadThreadState;
+    if not ReadThreadState then
+      exit;
 {$ifdef cpui386}
   Result := FCurrentContext^.def.Esp;
 {$else}

@@ -1720,7 +1720,7 @@ begin
     exit;
 
   t := GetInstructionPointerRegisterValue;
-  if Process.HasInsertedBreakInstructionAtLocation(t - 1) then begin
+  if (t <> 0) and Process.HasInsertedBreakInstructionAtLocation(t - 1) then begin
   (* There is a chance, that the code jumped to this Addr, instead of executing the breakpoint.
      But if the next signal for this thread is a breakpoint at this address, then
      it must be handled (even if the breakpoint has been removed since)
@@ -1760,14 +1760,17 @@ begin
   t := GetInstructionPointerRegisterValue;
   Result := ( (FPausedAtRemovedBreakPointState = rbFound) and
               (FPausedAtRemovedBreakPointAddress = t) ) or
-            Process.HasInsertedBreakInstructionAtLocation(t - 1);
+            ( (t <> 0) and Process.HasInsertedBreakInstructionAtLocation(t - 1) );
 debugln(['####### CHECK ',result, ' for id ', ID, ' stored ', FPausedAtRemovedBreakPointState=rbFound, ' ',FPausedAtRemovedBreakPointAddress=t, ' ',dbghex(t), ' ', dbghex(FPausedAtRemovedBreakPointAddress)]);
 end;
 
 procedure TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint;
+var
+  t: TDBGPtr;
 begin
   // todo: check that the breakpoint is NOT in the temp removed list
-  if HasInsertedBreakInstructionAtLocation(GetInstructionPointerRegisterValue - 1)
+  t := GetInstructionPointerRegisterValue;
+  if (t <> 0) and HasInsertedBreakInstructionAtLocation(t - 1)
   then begin
     FPausedAtRemovedBreakPointState := rbFound;
     ResetInstructionPointerAfterBreakpoint;
