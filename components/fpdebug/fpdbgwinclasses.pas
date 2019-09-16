@@ -290,6 +290,7 @@ var
   _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
   _GetFinalPathNameByHandle: function(hFile: HANDLE; lpFilename:LPWSTR; cchFilePath, dwFlags: DWORD):DWORD; stdcall = nil;
   _QueryFullProcessImageName: function (hProcess:HANDLE; dwFlags: DWord; lpExeName:LPWSTR; var lpdwSize:DWORD):BOOL; stdcall = nil;
+  _DebugActiveProcessStop : function (ProcessId:DWORD):BOOL; stdcall = nil;
   _IsWow64Process: function (hProcess:HANDLE; WoW64Process: PBOOL):BOOL; stdcall = nil;
   _Wow64GetThreadContext: function (hThread: THandle; var   lpContext: WOW64_CONTEXT): BOOL; stdcall = nil;
   _Wow64SetThreadContext: function (hThread: THandle; const lpContext: WOW64_CONTEXT): BOOL; stdcall = nil;
@@ -308,6 +309,7 @@ begin
   DebugBreakAddr := GetProcAddress(hMod, 'DebugBreak');
   Pointer(_CreateRemoteThread) := GetProcAddress(hMod, 'CreateRemoteThread');
   Pointer(_QueryFullProcessImageName) := GetProcAddress(hMod, 'QueryFullProcessImageNameW'); // requires Vista
+  Pointer(_DebugActiveProcessStop) := GetProcAddress(hMod, 'DebugActiveProcessStop');
   Pointer(_GetFinalPathNameByHandle) := GetProcAddress(hMod, 'GetFinalPathNameByHandleW');
   {$ifdef cpux86_64}
   Pointer(_IsWow64Process) := GetProcAddress(hMod, 'IsWow64Process');
@@ -701,8 +703,39 @@ end;
 function TDbgWinProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 var
   t: TDbgWinThread;
+  Done: Boolean;
 begin
-  result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
+  repeat
+    Done := True;
+    result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
+
+    (* Some events are not processed yet anyway.
+       They never reach AnalyseDebugEvent, so deal with them here
+    *)
+    if Result and (MDebugEvent.dwProcessId <> Self.ProcessID) then begin
+      case MDebugEvent.dwDebugEventCode of
+        CREATE_PROCESS_DEBUG_EVENT: begin
+            //child process: ignore
+            // we currently do not use the file handle => close it
+            if MDebugEvent.CreateProcessInfo.hFile <> 0 then
+              if not CloseHandle(MDebugEvent.CreateProcessInfo.hFile) then
+                debugln([DBG_WARNINGS, 'Failed to close new process file handle: ',GetLastErrorText]);
+            if _DebugActiveProcessStop <> nil then
+              if not _DebugActiveProcessStop(MDebugEvent.dwProcessId) then
+                debugln([DBG_WARNINGS, 'Failed to detach: ',GetLastErrorText]);
+
+            Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+            Done := False;
+          end;
+        EXIT_PROCESS_DEBUG_EVENT: begin
+            // Should never be here, since it detached
+            Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+            Done := False;
+          end;
+      end;
+    end;
+  until Done;
+
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
   {$IFDEF DebuglnWinDebugEvents}
