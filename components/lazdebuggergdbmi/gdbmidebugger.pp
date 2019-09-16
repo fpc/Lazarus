@@ -61,7 +61,7 @@ uses
   FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, Maps,
   UTF8Process, LazFileUtils,
   // IdeIntf
-  BaseIDEIntf,
+  BaseIDEIntf, PropEdits,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // LazDebuggerGdbmi
@@ -82,6 +82,7 @@ type
     cfTryAsync,   // try with " &"
     cfNoThreadContext,
     cfNoStackContext,
+    cfNoTimeoutWarning,
     //used for old commands, TGDBMIDebuggerSimpleCommand.Create
     cfscIgnoreState, // ignore the result state of the command
     cfscIgnoreError  // ignore errors
@@ -159,10 +160,42 @@ type
 
   TInternBrkSetMethod = (ibmAddrIndirect, ibmAddrDirect, ibmName);
 
+  { TXmlConfStringList }
+
+  TXmlConfStringList = class(TStringList)
+  private
+    function TextStored: boolean;
+  published
+    property Text stored TextStored;
+  end;
+
+  { TXmlConfStringsPropertyEditor }
+
+  TXmlConfStringsPropertyEditor = class(TStringsPropertyEditor)
+  public
+    function GetValue: ansistring; override;
+  end;
+
+
+  { TGDBMIDebuggerGdbEventPropertiesBase }
+
+  TGDBMIDebuggerGdbEventPropertiesBase = class(TDebuggerProperties)
+  private
+    FAfterInit: TXmlConfStringList;
+    procedure SetAfterInit(AValue: TXmlConfStringList);
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+  public
+    property AfterInit: TXmlConfStringList read FAfterInit write SetAfterInit;
+  end;
+
   { TGDBMIDebuggerPropertiesBase }
 
   TGDBMIDebuggerPropertiesBase = class(TCommonDebuggerProperties)
   private
+    FEventProperties: TGDBMIDebuggerGdbEventPropertiesBase;
     FAssemblerStyle: TGDBMIDebuggerAssemblerStyle;
     FCaseSensitivity: TGDBMIDebuggerCaseSensitivity;
     FDisableForcedBreakpoint: Boolean;
@@ -199,8 +232,12 @@ type
     procedure SetMaxLocalsLengthForStaticArray(AValue: Integer);
     procedure SetTimeoutForEval(const AValue: Integer);
     procedure SetWarnOnTimeOut(const AValue: Boolean);
+  protected
+    procedure CreateEventProperties; virtual;
+    property InternalEventProperties: TGDBMIDebuggerGdbEventPropertiesBase read FEventProperties write FEventProperties;
   public
     constructor Create; override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   public
     property Debugger_Startup_Options: String read FGDBOptions write FGDBOptions;
@@ -247,7 +284,17 @@ type
     {$EndIf}
   end;
 
+  TGDBMIDebuggerGdbEventProperties = class(TGDBMIDebuggerGdbEventPropertiesBase)
+  published
+    property AfterInit;
+  end;
+
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
+  private
+    function GetEventProperties: TGDBMIDebuggerGdbEventProperties;
+    procedure SetEventProperties(AValue: TGDBMIDebuggerGdbEventProperties);
+  protected
+    procedure CreateEventProperties; override;
   published
     property Debugger_Startup_Options;
     {$IFDEF UNIX}
@@ -279,6 +326,7 @@ type
     {$IFdef MSWindows}
     property AggressiveWaitTime;
     {$EndIf}
+    property EventProperties: TGDBMIDebuggerGdbEventProperties read GetEventProperties write SetEventProperties;
   end;
 
   TGDBMIDebuggerBase = class;
@@ -436,6 +484,7 @@ type
                              AFlags: TGDBMICommandFlags = [];
                              ATimeOut: Integer = -1
                             ): Boolean; overload;
+    function ExecuteUserCommands(const ACommands: TStrings): Boolean;
     procedure DoTimeoutFeedback;
     function  ProcessGDBResultStruct(S: String; Opts: TGDBMIProcessResultOpts = []): String; // Must have at least one flag for structs
     function  ProcessGDBResultText(S: String; Opts: TGDBMIProcessResultOpts = []): String;
@@ -1726,6 +1775,78 @@ begin
   then Result := 8;
   if (lcCpu='avr')
   then Result := 2;
+end;
+
+{ TXmlConfStringsPropertyEditor }
+
+function TXmlConfStringsPropertyEditor.GetValue: ansistring;
+var
+  s: TStrings;
+  i: Integer;
+begin
+  Result := '';
+  s := TStrings(GetObjectValue);
+  for i := 0 to s.Count - 1 do begin
+    if i > 0 then Result := Result + ' / ';
+    Result := Result + s[i];
+  end;
+end;
+
+{ TXmlConfStringList }
+
+function TXmlConfStringList.TextStored: boolean;
+begin
+  Result := Text <> '';
+end;
+
+{ TGDBMIDebuggerGdbEventPropertiesBase }
+
+procedure TGDBMIDebuggerGdbEventPropertiesBase.SetAfterInit(
+  AValue: TXmlConfStringList);
+begin
+  FAfterInit.Assign(AValue);
+end;
+
+procedure TGDBMIDebuggerGdbEventPropertiesBase.Assign(Source: TPersistent);
+var
+  aSource: TGDBMIDebuggerGdbEventPropertiesBase;
+begin
+  inherited Assign(Source);
+  if Source is TGDBMIDebuggerGdbEventPropertiesBase then
+  begin
+    aSource := TGDBMIDebuggerGdbEventPropertiesBase(Source);
+    FAfterInit.Assign(aSource.FAfterInit);
+  end;
+end;
+
+constructor TGDBMIDebuggerGdbEventPropertiesBase.Create;
+begin
+  FAfterInit := TXmlConfStringList.Create;
+  inherited Create;
+end;
+
+destructor TGDBMIDebuggerGdbEventPropertiesBase.Destroy;
+begin
+  FAfterInit.Free;
+  inherited Destroy;
+end;
+
+{ TGDBMIDebuggerProperties }
+
+function TGDBMIDebuggerProperties.GetEventProperties: TGDBMIDebuggerGdbEventProperties;
+begin
+  Result := TGDBMIDebuggerGdbEventProperties(InternalEventProperties);
+end;
+
+procedure TGDBMIDebuggerProperties.SetEventProperties(
+  AValue: TGDBMIDebuggerGdbEventProperties);
+begin
+  InternalEventProperties.Assign(AValue);
+end;
+
+procedure TGDBMIDebuggerProperties.CreateEventProperties;
+begin
+  InternalEventProperties := TGDBMIDebuggerGdbEventProperties.Create;
 end;
 
 {$IFDEF MSWindows}
@@ -3385,6 +3506,7 @@ begin
       ExecuteCommand('set target-async off', R, []);
   end;
 
+  ExecuteUserCommands(TGDBMIDebuggerProperties(DebuggerProperties).EventProperties.AfterInit);
 end;
 
 procedure TGDBMIDebuggerCommandStack.DoCallstackFreed(Sender: TObject);
@@ -7749,8 +7871,14 @@ begin
   FWarnOnTimeOut := AValue;
 end;
 
+procedure TGDBMIDebuggerPropertiesBase.CreateEventProperties;
+begin
+  FEventProperties := TGDBMIDebuggerGdbEventProperties.Create;
+end;
+
 constructor TGDBMIDebuggerPropertiesBase.Create;
 begin
+  CreateEventProperties;
   {$IFDEF UNIX}
   FConsoleTty := '';
   {$ENDIF}
@@ -7786,6 +7914,12 @@ begin
   inherited;
 end;
 
+destructor TGDBMIDebuggerPropertiesBase.Destroy;
+begin
+  FEventProperties.Free;
+  inherited Destroy;
+end;
+
 procedure TGDBMIDebuggerPropertiesBase.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
@@ -7818,7 +7952,8 @@ begin
     {$IFdef MSWindows}
     FAggressiveWaitTime := TGDBMIDebuggerPropertiesBase(Source).FAggressiveWaitTime;
     {$EndIf}
-    FInternalExceptionBrkSetMethod := TGDBMIDebuggerPropertiesBase(Source).FInternalExceptionBrkSetMethod;;
+    FInternalExceptionBrkSetMethod := TGDBMIDebuggerPropertiesBase(Source).FInternalExceptionBrkSetMethod;
+    FEventProperties.Assign(TGDBMIDebuggerPropertiesBase(Source).FEventProperties);
   end;
 end;
 
@@ -11154,7 +11289,8 @@ begin
       // TODO: use feedback dialog
       Result := True;
       DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
-      DoTimeoutFeedback;
+      if not (cfNoTimeoutWarning in AFlags) then
+        DoTimeoutFeedback;
     end;
   finally
     DoUnLockQueueExecuteForInstr;
@@ -11211,6 +11347,47 @@ function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   AFlags: TGDBMICommandFlags = []; ATimeOut: Integer = -1): Boolean;
 begin
   Result := ExecuteCommand(Format(ACommand, AValues), AResult, AFlags, ATimeOut);
+end;
+
+function TGDBMIDebuggerCommand.ExecuteUserCommands(const ACommands: TStrings
+  ): Boolean;
+const
+  OptTimeout = 'timeout=';
+  OptTimeoutWarn = 'timeoutwarn=';
+var
+  s: String;
+  t, i: Integer;
+  f: TGDBMICommandFlags;
+begin
+  Result := True;
+  t := DefaultTimeOut;
+  f := [];
+  for i := 0 to ACommands.Count - 1 do begin
+    if (s = '') or (s = '#') then
+      continue;
+
+    if copy(s,1,2) = '#!' then begin
+      delete(s, 1, 2);
+      s := LowerCase(Trim(s));
+      if copy(s, 1, length(OptTimeout)) = OptTimeout then begin
+        t := StrToIntDef(copy(s, 1+length(OptTimeout), MaxInt), DefaultTimeOut);
+      end;
+
+      if copy(s, 1, length(OptTimeoutWarn)) = OptTimeoutWarn then begin
+        if copy(s, 1+length(OptTimeout), MaxInt) = 'true' then
+          f := []
+        else
+          f := [cfNoTimeoutWarning];
+      end;
+    end
+
+    else
+    if s[1] <> '#' then begin
+      Result := ExecuteCommand(s,[], f, t);
+      if not Result then
+        break;
+    end;
+  end;
 end;
 
 procedure TGDBMIDebuggerCommand.DoTimeoutFeedback;
@@ -13851,5 +14028,7 @@ initialization
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_DISASSEMBLER := DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER' {$IFDEF DBG_DISASSEMBLER} , True {$ENDIF} );
   DBG_THREAD_AND_FRAME := DebugLogger.FindOrRegisterLogGroup('DBG_THREAD_AND_FRAME' {$IFDEF DBG_THREAD_AND_FRAME} , True {$ENDIF} );
+
+  RegisterPropertyEditor(TypeInfo(TXmlConfStringList), nil, '', TXmlConfStringsPropertyEditor);
 
 end.

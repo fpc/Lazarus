@@ -74,6 +74,21 @@ type
     dtTargetExtendedRemote
   );
 
+  { TGDBMIServerGdbEventProperties }
+
+  TGDBMIServerGdbEventProperties = class(TGDBMIDebuggerGdbEventPropertiesBase)
+  private
+    FAfterConnect: TXmlConfStringList;
+    procedure SetAfterConnect(AValue: TXmlConfStringList);
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property AfterConnect: TXmlConfStringList read FAfterConnect write SetAfterConnect;
+    property AfterInit;
+  end;
+
   { TGDBMIServerDebuggerProperties }
 
   TGDBMIServerDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -88,6 +103,10 @@ type
     FInitExec_RemoteTarget: string;
     FInitExec_Mode: TInitExecMode;
     FDebugger_Target_Mode : TDebugger_Target_Mode;
+    function GetEventProperties: TGDBMIServerGdbEventProperties;
+    procedure SetEventProperties(AValue: TGDBMIServerGdbEventProperties);
+  protected
+    procedure CreateEventProperties; override;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -128,6 +147,7 @@ type
     property FixIncorrectStepOver;
     property InternalExceptionBreakPoints;
     property InternalExceptionBrkSetMethod;
+    property EventProperties: TGDBMIServerGdbEventProperties read GetEventProperties write SetEventProperties;
   end;
 
 procedure Register;
@@ -152,6 +172,38 @@ type
     function  DoTargetDownload: boolean; override;
     function DoChangeFilename: Boolean; override;
   end;
+
+{ TGDBMIServerGdbEventProperties }
+
+procedure TGDBMIServerGdbEventProperties.SetAfterConnect(
+  AValue: TXmlConfStringList);
+begin
+  FAfterConnect.Assign(AValue);
+end;
+
+procedure TGDBMIServerGdbEventProperties.Assign(Source: TPersistent);
+var
+  aSource: TGDBMIServerGdbEventProperties;
+begin
+  inherited Assign(Source);
+  if Source is TGDBMIServerGdbEventProperties then
+  begin
+    aSource := TGDBMIServerGdbEventProperties(Source);
+    FAfterConnect.Assign(aSource.FAfterConnect);
+  end;
+end;
+
+constructor TGDBMIServerGdbEventProperties.Create;
+begin
+  FAfterConnect := TXmlConfStringList.Create;
+  inherited Create;
+end;
+
+destructor TGDBMIServerGdbEventProperties.Destroy;
+begin
+  FAfterConnect.Free;
+  inherited Destroy;
+end;
 
 { TGDBMIServerDebuggerCommandStartDebugging }
 
@@ -273,10 +325,30 @@ begin
                                R);
 
   FSuccess := FSuccess and (r.State <> dsError);
+
+  if (FSuccess = true) then
+    ExecuteUserCommands(TGDBMIServerDebuggerProperties(DebuggerProperties).EventProperties.AfterConnect);
+
 end;
 
 
 { TGDBMIServerDebuggerProperties }
+
+function TGDBMIServerDebuggerProperties.GetEventProperties: TGDBMIServerGdbEventProperties;
+begin
+  Result := TGDBMIServerGdbEventProperties(InternalEventProperties);
+end;
+
+procedure TGDBMIServerDebuggerProperties.SetEventProperties(
+  AValue: TGDBMIServerGdbEventProperties);
+begin
+  InternalEventProperties.Assign(AValue);
+end;
+
+procedure TGDBMIServerDebuggerProperties.CreateEventProperties;
+begin
+  InternalEventProperties := TGDBMIServerGdbEventProperties.Create;
+end;
 
 constructor TGDBMIServerDebuggerProperties.Create;
 begin
