@@ -139,6 +139,7 @@ type
     procedure DebugLoopFinished;
     procedure QuickPause;
     procedure DoRelease; override;
+    procedure DoOnIdle;
     procedure DoState(const OldState: TDBGState); override;
     function GetIsIdle: Boolean; override;
     {$ifdef linux}
@@ -1565,7 +1566,9 @@ begin
     begin
     Application.QueueAsyncCall(@ProcessASyncWatches, 0);
     FWatchAsyncQueued := True;
-    end;
+    end
+  else
+    DoOnIdle;
 end;
 
 procedure TFpDebugDebugger.ClearWatchEvalList;
@@ -2029,6 +2032,20 @@ begin
   inherited DoRelease;
 end;
 
+procedure TFpDebugDebugger.DoOnIdle;
+begin
+  if not Assigned(OnIdle) then
+    exit;
+  FIsIdle := True;
+  try
+    OnIdle(Self);
+  except
+    on E: Exception do
+      DebugLn(['exception during idle ', E.ClassName, ': ', E.Message]);
+  end;
+  FIsIdle := False;
+end;
+
 procedure TFpDebugDebugger.DoState(const OldState: TDBGState);
 begin
   LockRelease;
@@ -2042,17 +2059,9 @@ begin
     else
     if (State in [dsPause, dsInternalPause]) and
       not(OldState in [dsPause, dsInternalPause{, dsInit}]) and
-      Assigned(OnIdle)
-    then begin
-      FIsIdle := True;
-      try
-        OnIdle(Self);
-      except
-        on E: Exception do
-          DebugLn(['exception during idle ', E.ClassName, ': ', E.Message]);
-      end;
-      FIsIdle := False;
-    end;
+      (not Assigned(FWatchEvalList) or (FWatchEvalList.Count = 0))
+    then
+      DoOnIdle;
   finally
     UnlockRelease;
   end;
