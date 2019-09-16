@@ -913,6 +913,7 @@ var
   StrValue, DefStrValue: String;
   //Int64Value, DefInt64Value: Int64;
   BoolValue, DefBoolValue: boolean;
+  obj: TObject;
 
 begin
   // do not stream properties without getter and setter
@@ -931,7 +932,9 @@ begin
         Value := GetOrdProp(Instance, PropInfo);
         if (DefInstance <> nil) then
           DefValue := GetOrdProp(DefInstance, PropInfo);
-        if (DefInstance <> nil)  and (Value = DefValue) then
+        if ((DefInstance <> nil)  and (Value = DefValue)) or
+           (not IsStoredProp(Instance, PropInfo))
+        then
           DeleteValue(Path)
         else begin
           case PropType^.Kind of
@@ -968,7 +971,9 @@ begin
         FloatValue := GetFloatProp(Instance, PropInfo);
         if (DefInstance <> nil) then
          DefFloatValue := GetFloatProp(DefInstance, PropInfo);
-        if (DefInstance <> nil)  and (DefFloatValue = FloatValue) then
+        if ((DefInstance <> nil)  and (DefFloatValue = FloatValue)) or
+           (not IsStoredProp(Instance, PropInfo))
+        then
           DeleteValue(Path)
         else
           SetValue(Path, FloatToStr(FloatValue));
@@ -978,7 +983,9 @@ begin
         StrValue := GetStrProp(Instance, PropInfo);
         if (DefInstance <> nil) then
            DefStrValue := GetStrProp(DefInstance, PropInfo);
-        if (DefInstance <> nil)  and (DefStrValue = StrValue) then
+        if ((DefInstance <> nil)  and (DefStrValue = StrValue)) or
+           (not IsStoredProp(Instance, PropInfo))
+        then
           DeleteValue(Path)
         else
           SetValue(Path, StrValue);
@@ -988,7 +995,9 @@ begin
         WStrValue := GetWideStrProp(Instance, PropInfo);
         if (DefInstance <> nil) then
            WDefStrValue := GetWideStrProp(DefInstance, PropInfo);
-        if (DefInstance <> nil)  and (WDefStrValue = WStrValue) then
+        if ((DefInstance <> nil)  and (WDefStrValue = WStrValue)) or
+           (not IsStoredProp(Instance, PropInfo))
+        then
           DeleteValue(Path)
         else
           SetValue(Path, WStrValue);
@@ -998,7 +1007,9 @@ begin
         Int64Value := GetInt64Prop(Instance, PropInfo);
         if (DefInstance <> nil) then
           DefInt64Value := GetInt64Prop(DefInstance, PropInfo)
-        if (DefInstance <> nil) and (Int64Value = DefInt64Value) then
+        if ((DefInstance <> nil) and (Int64Value = DefInt64Value)) or
+           (not IsStoredProp(Instance, PropInfo))
+        then
           DeleteValue(Path, Path)
         else
           SetValue(StrValue);
@@ -1008,10 +1019,20 @@ begin
         BoolValue := GetOrdProp(Instance, PropInfo)<>0;
         if (DefInstance <> nil) then
           DefBoolValue := GetOrdProp(DefInstance, PropInfo)<>0;
-        if (DefInstance <> nil) and (BoolValue = DefBoolValue) then
+        if ((DefInstance <> nil) and (BoolValue = DefBoolValue)) or
+           (not IsStoredProp(Instance, PropInfo))
+        then
           DeleteValue(Path)
         else
           SetValue(Path, BoolValue);
+      end;
+    tkClass:
+      begin
+        obj := GetObjectProp(Instance, PropInfo);
+        if (obj is TPersistent) and IsStoredProp(Instance, PropInfo) then
+          WriteObject(Path+'/', TPersistent(obj))
+        else
+          DeleteValue(Path);
       end;
   end;
 end;
@@ -1032,6 +1053,7 @@ var
   StrValue, DefStrValue: String;
   //Int64Value, DefInt64Value: Int64;
   BoolValue, DefBoolValue: boolean;
+  obj: TObject;
 
 begin
   // do not stream properties without getter and setter
@@ -1137,6 +1159,12 @@ begin
         DefBoolValue := GetOrdProp(DefInstance, PropInfo) <> 0;
         BoolValue := GetValue(Path, DefBoolValue);
         SetOrdProp(Instance, PropInfo, ord(BoolValue));
+      end;
+    tkClass:
+      begin
+        obj := GetObjectProp(Instance, PropInfo);
+        if (obj is TPersistent) and HasPath(Path, False) then
+          ReadObject(Path+'/', TPersistent(obj));
       end;
   end;
 end;
