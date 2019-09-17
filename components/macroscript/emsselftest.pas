@@ -208,7 +208,7 @@ const
   Proctest_getstr2:   function: String = @test_getstr2;
   Proctest_varstr1:   procedure (var AValue: String)  = @test_varstr1;
 
-{$IFDEF PasMacroNoNativeCalls}
+{$IFnDEF PasMacroNativeCalls}
 const
   Id_test_ord_mb    = 901;
   Id_test_ord_mt    = 902;
@@ -250,11 +250,11 @@ begin
       end;
     Id_test_int1: begin // test_int1(AValue: Integer);
         if Stack.Count < 1 then raise TEMScriptBadParamException.Create('Invalid param count for "test_int1"');
-        test_int1(Stack.GetUInt(-1));
+        test_int1(Stack.GetInt(-1));
       end;
     Id_test_int2: begin // test_int2(AValue: Integer);
         if Stack.Count < 1 then raise TEMScriptBadParamException.Create('Invalid param count for "test_int2"');
-        test_int2(Stack.GetUInt(-1));
+        test_int2(Stack.GetInt(-1));
       end;
     Id_test_getint1: begin
         if Stack.Count < 1 then raise TEMScriptBadParamException.Create('Invalid param count for "test_getint1"');
@@ -355,7 +355,7 @@ end;
 procedure ExecRegisterSelfTests(AExec: TEMSTPSExec);
 begin
   // for tests
-  {$IFnDEF PasMacroNoNativeCalls}
+  {$IFDEF PasMacroNativeCalls}
   AExec.RegisterDelphiFunction(Functest_ord_mb,    'test_ord_mb',   cdRegister);
   AExec.RegisterDelphiFunction(Functest_ord_mt,    'test_ord_mt',   cdRegister);
   AExec.RegisterDelphiFunction(Proctest_int1,      'test_int1',     cdRegister);
@@ -772,6 +772,30 @@ begin
     TestSyn('Replace All',   'Test abc abcde 123',
             'begin Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplaceAll]); end.',
             'Test XYZ XYZde 123'
+            );
+
+    TestSyn('Replace word',   'Test abc abcde 123',
+            'begin Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplace, ssoWholeWord]); end.',
+            'Test XYZ abcde 123'
+            );
+
+    TestSyn('Replace All / res',   'Test abc abcde 123',
+            'begin if 2 <> Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplaceAll]) then ecChar(''M''); end.',
+            'Test XYZ XYZde 123'
+            );
+
+    TestSyn('Replace word / res',   'Test abc abcde 123',
+            'begin if 1 <> Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplace]) then ecChar(''M''); end.',
+            'Test XYZ abcde 123'
+            );
+
+    TestSyn('Lines[1]',   'Test'+LineEnding+'abc'+LineEnding+'abcde'+LineEnding+'123',
+            'begin if ''abc'' = Caller.Lines[1] then begin Caller.SelectAll; ecChar(''M''); end; end.',
+            'M'
+            );
+    TestSyn('Lines[3]',   'Test'+LineEnding+'abc'+LineEnding+'abcde'+LineEnding+'123',
+            'begin if ''123'' = Caller.Lines[3] then begin Caller.SelectAll; ecChar(''M''); end; end.',
+            'M'
             );
 
       Result := True;

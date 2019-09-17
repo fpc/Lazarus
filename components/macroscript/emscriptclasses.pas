@@ -16,6 +16,75 @@ uses
   Clipbrd, Dialogs, Controls, uPSCompiler, uPSRuntime, uPSUtils, uPSDebugger, uPSR_std,
   uPSC_std;
 
+{$IFnDEF PasMacroNativeCalls}
+const
+  FunctionId_POINT =             0;
+
+  FunctionId_MessageDlg =        50;
+  FunctionId_MessageDlgPos =     51;
+  FunctionId_MessageDlgPosHelp = 52;
+  FunctionId_ShowMessage =       53;
+  FunctionId_ShowMessagePos =    54;
+  FunctionId_InputBox =          55;
+  FunctionId_InputQuery =        56;
+
+  PropReadId_CaretXY =          100;
+  PropWriteId_CaretXY =         101;
+  PropReadId_CaretX =           102;
+  PropWriteId_CaretX =          103;
+  PropReadId_CaretY =           104;
+  PropWriteId_CaretY =          105;
+  PropReadId_LogicalCaretXY =   106;
+  PropWriteId_LogicalCaretXY =  107;
+  PropReadId_LogicalCaretX =    108;
+  PropWriteId_LogicalCaretX =   109;
+  FunctionId_MoveCaretIgnoreEOL        = 110;
+  FunctionId_MoveLogicalCaretIgnoreEOL = 111;
+
+  PropReadId_BlockBegin =             120;
+  PropWriteId_BlockBegin =            121;
+  PropReadId_BlockEnd =               122;
+  PropWriteId_BlockEnd =              123;
+  PropReadId_SelAvail =               124;
+  PropWriteId_SelAvail =              125;
+  PropReadId_SelText =                126;
+  PropWriteId_SelText =               127;
+  PropReadId_SelectionMode =          128;
+  PropWriteId_SelectionMode =         129;
+  FunctionId_ClearSelection =         130;
+  FunctionId_SelectAll =              131;
+  FunctionId_SelectToBrace =          132;
+  FunctionId_SelectWord =             133;
+  FunctionId_SelectLine =             134;
+  FunctionId_SelectParagraph =        135;
+  FunctionId_SearchReplace =          140;
+  FunctionId_SearchReplaceEx =        141;
+
+  PropReadId_Lines =                  150;
+  PropWriteId_Lines =                 151;
+  PropReadId_LineAtCaret =            152;
+  PropWriteId_LineAtCaret =           153;
+  FunctionId_InsertTextAtCaret =      154;
+  PropReadId_TextBetweenPoints =      155;
+  PropWriteId_TextBetweenPoints =     156;
+  //PropReadId_TextBetweenPointsEx =    15x;
+  //PropWriteId_TextBetweenPointsEx =   15x;
+  FunctionId_SetTextBetweenPoints =   157;
+
+  FunctionId_CopyToClipboard =        160;
+  FunctionId_CutToClipboard =         161;
+  FunctionId_PasteFromClipboard =     162;
+  PropReadId_CanPaste =               163;
+  PropWriteId_CanPaste =              164;
+
+  FunctionId_LogicalToPhysicalPos =   170;
+  FunctionId_LogicalToPhysicalCol =   171;
+  FunctionId_PhysicalToLogicalPos =   172;
+  FunctionId_PhysicalToLogicalCol =   173;
+  FunctionId_PhysicalLineLength =     174;
+
+{$ENDIF}
+
 type
   TEMScriptBadParamException = Exception;
 
@@ -43,7 +112,7 @@ type
     constructor Create;
   end;
 
-{$IFDEF PasMacroNoNativeCalls}
+{$IFnDEF PasMacroNativeCalls}
   PPoint = ^TPoint;
 
 function GetSetFromStack(Stack: TPSStack; Idx: Integer): Cardinal;
@@ -277,7 +346,7 @@ begin
   AComp.AddDelphiFunction(DeclInputQuery);
 end;
 
-{$IFDEF PasMacroNoNativeCalls}
+{$IFnDEF PasMacroNativeCalls}
 function GetSetFromStack(Stack: TPSStack; Idx: Integer): Cardinal;
 var
   val: PPSVariant;
@@ -346,59 +415,73 @@ end;
 
 function ExecBasicHandler({%H-}Caller: TPSExec; p: TPSExternalProcRec;
   {%H-}Global, Stack: TPSStack): Boolean;
+  procedure CheckMinParamCount(AMinCnt: Integer; const AName: String);
+  begin
+    if Stack.Count < AMinCnt then raise TEMScriptBadParamException.Create('Invalid param count for "'+AName+'"');
+  end;
+  function GetSynEditFromStack(AIndex: Integer; out ASyn: TSynEdit): boolean;
+  var
+    o: TObject;
+  begin
+    o := Stack.GetClass(AIndex);
+    Result := (o <> nil) and (o is TSynEdit);
+    ASyn := TSynEdit(o);
+  end;
 var
   res: PPSVariant;
-  data: Pointer;
+  data: PPoint;
   temp: TPSVariantIFC;
   s: String;
   typerec: TPSTypeRec;
+  Obj: TSynEdit;
 begin
   Result := True;
   case Longint(p.Ext1) of
-    0: begin // POINT()
-        if Stack.Count < 3 then raise TEMScriptBadParamException.Create('Invalid param count for "Point"');;
+    FunctionId_POINT: begin // POINT()
+        CheckMinParamCount(3, 'Point');
         data := GetVarPointFromStack(Stack, -1);
         TPoint(data^) := Point(Stack.GetInt(-2), Stack.GetInt(-3));
       end;
-    50: begin // MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
-        if Stack.Count < 5 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlg"');;
+
+    FunctionId_MessageDlg: begin // MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
+        CheckMinParamCount(5, 'MessageDlg');
         Stack.SetInt(-1,
           MessageDlg(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
             TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5))
         );
       end;
-    51: begin // MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer
-        if Stack.Count < 7 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlgPos"');;
+    FunctionId_MessageDlgPos: begin // MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer
+        CheckMinParamCount(7, 'MessageDlgPos');
         Stack.SetInt(-1,
           MessageDlgPos(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
             TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7) )
         );
       end;
-    52: begin // MessageDlgPosHelp(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; HelpFileName: string): Integer
-        if Stack.Count < 8 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlgPosHelp"');;
+    FunctionId_MessageDlgPosHelp: begin // MessageDlgPosHelp(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; HelpFileName: string): Integer
+        CheckMinParamCount(8, 'MessageDlgPosHelp');
         Stack.SetInt(-1,
           MessageDlgPosHelp(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
             TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7), Stack.GetAnsiString(-8))
         );
       end;
-    53: begin // ShowMessage(Msg: string)
-        if Stack.Count < 1 then raise TEMScriptBadParamException.Create('Invalid param count for "ShowMessage"');;
+    FunctionId_ShowMessage: begin // ShowMessage(Msg: string)
+        CheckMinParamCount(1, 'ShowMessage');
         ShowMessage(Stack.GetAnsiString(-1));
       end;
-    54: begin // ShowMessagePos(Msg: string; X, Y :Integer)
-        if Stack.Count < 3 then raise TEMScriptBadParamException.Create('Invalid param count for "ShowMessagePos"');;
+    FunctionId_ShowMessagePos: begin // ShowMessagePos(Msg: string; X, Y :Integer)
+        CheckMinParamCount(3, 'ShowMessagePos');
         ShowMessagePos(Stack.GetAnsiString(-1), Stack.GetInt(-2), Stack.GetInt(-3));
       end;
-    55: begin // InputBox(ACaption, APrompt, ADefault: string): string
-        if Stack.Count < 4 then raise TEMScriptBadParamException.Create('Invalid param count for "InputBox"');;
+    FunctionId_InputBox: begin // InputBox(ACaption, APrompt, ADefault: string): string
+        CheckMinParamCount(4, 'InputBox');
         Stack.SetAnsiString(-1,
           InputBox(Stack.GetAnsiString(-2), Stack.GetAnsiString(-3), Stack.GetAnsiString(-4))
         );
       end;
-    56: begin // InputQuery(ACaption, APrompt: string; var Value: string): Boolean
-        if Stack.Count < 4 then raise TEMScriptBadParamException.Create('Invalid param count for "InputQuery"');
+    FunctionId_InputQuery: begin // InputQuery(ACaption, APrompt: string; var Value: string): Boolean
+        CheckMinParamCount(4, 'InputQuery');
         temp := NewTPSVariantIFC(Stack[Stack.Count-4], True);
         if (temp.aType.BaseType <> btString) then raise TEMScriptBadParamException.Create('Invalid param type for "InputQuery"');
         if (temp.Dta = nil) then raise TEMScriptBadParamException.Create('Invalid param data for "InputQuery"');
@@ -408,6 +491,360 @@ begin
         );
         tbtstring(temp.Dta^) := s;
       end;
+
+
+    PropReadId_CaretXY: begin
+        CheckMinParamCount(2, 'TSynEdit.CaretXY (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        GetVarPointFromStack(Stack, -1)^ := Obj.CaretXY;
+      end;
+    PropWriteId_CaretXY: begin
+        CheckMinParamCount(2, 'TSynEdit.CaretXY (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.CaretXY := GetVarPointFromStack(Stack, -2)^;
+      end;
+    PropReadId_CaretX: begin
+        CheckMinParamCount(2, 'TSynEdit.CaretX (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1, Obj.CaretX);
+      end;
+    PropWriteId_CaretX: begin
+        CheckMinParamCount(2, 'TSynEdit.CaretX (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.CaretX := Stack.GetInt(-2);
+      end;
+    PropReadId_CaretY: begin
+        CheckMinParamCount(2, 'TSynEdit.CaretY (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1, Obj.CaretY);
+      end;
+    PropWriteId_CaretY: begin
+        CheckMinParamCount(2, 'TSynEdit.CaretY (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.CaretY := Stack.GetInt(-2);
+      end;
+    PropReadId_LogicalCaretXY: begin
+        CheckMinParamCount(2, 'TSynEdit.LogicalCaretXY (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        GetVarPointFromStack(Stack, -1)^ := Obj.LogicalCaretXY;
+      end;
+    PropWriteId_LogicalCaretXY: begin
+        CheckMinParamCount(2, 'TSynEdit.LogicalCaretXY (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.LogicalCaretXY := GetVarPointFromStack(Stack, -2)^;
+      end;
+    PropReadId_LogicalCaretX: begin
+        CheckMinParamCount(2, 'TSynEdit.LogicalCaretX (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1, Obj.LogicalCaretXY.X);
+      end;
+    PropWriteId_LogicalCaretX: begin
+        CheckMinParamCount(2, 'TSynEdit.LogicalCaretX (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.LogicalCaretXY := Point(Stack.GetInt(-2), Obj.CaretY);
+      end;
+    FunctionId_MoveCaretIgnoreEOL: begin  // procedure MoveCaretIgnoreEOL(NewCaret: TPoint);
+        CheckMinParamCount(3, 'TSynEdit.MoveCaretIgnoreEOL');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.MoveCaretIgnoreEOL(GetVarPointFromStack(Stack, -2)^);
+      end;
+    FunctionId_MoveLogicalCaretIgnoreEOL: begin  // procedure MoveLogicalCaretIgnoreEOL(NewLogCaret: TPoint);
+        CheckMinParamCount(3, 'TSynEdit.MoveLogicalCaretIgnoreEOL');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.MoveLogicalCaretIgnoreEOL(GetVarPointFromStack(Stack, -2)^);
+      end;
+
+
+    PropReadId_BlockBegin: begin  //
+        CheckMinParamCount(2, 'TSynEdit.BlockBegin (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        GetVarPointFromStack(Stack, -1)^ := Obj.BlockBegin;
+      end;
+    PropWriteId_BlockBegin: begin  //
+        CheckMinParamCount(2, 'TSynEdit.BlockBegin (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.BlockBegin := GetVarPointFromStack(Stack, -2)^;
+      end;
+    PropReadId_BlockEnd: begin  //
+        CheckMinParamCount(2, 'TSynEdit.BlockEnd (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        GetVarPointFromStack(Stack, -1)^ := Obj.BlockEnd;
+      end;
+    PropWriteId_BlockEnd: begin  //
+        CheckMinParamCount(2, 'TSynEdit.BlockEnd (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.BlockEnd := GetVarPointFromStack(Stack, -2)^;
+      end;
+    PropReadId_SelAvail: begin  //
+        CheckMinParamCount(2, 'TSynEdit.SelAvail (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetBool(-1, Obj.SelAvail);
+      end;
+    PropWriteId_SelAvail: begin  //
+        assert(false, 'read only');
+      end;
+    PropReadId_SelText: begin  //
+        CheckMinParamCount(2, 'TSynEdit.SelText (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Obj.SelText := Stack.GetAnsiString(-2);
+      end;
+    PropWriteId_SelText: begin  //
+        CheckMinParamCount(2, 'TSynEdit.SelText (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Stack.SetAnsiString(-1, Obj.SelText);
+      end;
+    PropReadId_SelectionMode: begin  //
+        CheckMinParamCount(2, 'TSynEdit.SelectionMode (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Obj.SelectionMode := TSynSelectionMode(Stack.GetUInt(-2));
+      end;
+    PropWriteId_SelectionMode: begin  //
+        CheckMinParamCount(2, 'TSynEdit.SelectionMode (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Stack.SetUInt(-1, cardinal(Obj.SelectionMode));
+      end;
+    FunctionId_ClearSelection: begin  //
+        CheckMinParamCount(1, 'TSynEdit.ClearSelection');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.ClearSelection;
+      end;
+    FunctionId_SelectAll: begin  //
+        CheckMinParamCount(1, 'TSynEdit.SelectAll');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.SelectAll;
+      end;
+    FunctionId_SelectToBrace: begin  //
+        CheckMinParamCount(1, 'TSynEdit.SelectToBrace');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.SelectToBrace;
+      end;
+    FunctionId_SelectWord: begin  //
+        CheckMinParamCount(1, 'TSynEdit.SelectWord');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.SelectWord;
+      end;
+    FunctionId_SelectLine: begin  //
+        CheckMinParamCount(2, 'TSynEdit.SelectLine');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.SelectLine(Stack.GetBool(-2));
+      end;
+    FunctionId_SelectParagraph: begin  //
+        CheckMinParamCount(1, 'TSynEdit.SelectParagraph');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.SelectParagraph;
+      end;
+
+    FunctionId_SearchReplace: begin // function SearchReplace(ASearch, AReplace: string; AOptions: TSynSearchOptions): integer;
+        CheckMinParamCount(5, 'TSynEdit.SearchReplace');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1,
+          Obj.SearchReplace(Stack.GetAnsiString(-3), Stack.GetAnsiString(-4), TSynSearchOptions(GetSetFromStack(Stack, -5)))
+        );
+      end;
+    FunctionId_SearchReplaceEx: begin  // function SearchReplaceEx(ASearch, AReplace: string; AOptions: TSynSearchOptions; AStart: TPoint): integer;
+        CheckMinParamCount(6, 'TSynEdit.SearchReplaceEx');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1,
+          Obj.SearchReplaceEx(Stack.GetAnsiString(-3), Stack.GetAnsiString(-4),
+            TSynSearchOptions(GetSetFromStack(Stack, -5)), GetVarPointFromStack(Stack, -6)^)
+        );
+      end;
+
+
+    PropReadId_Lines: begin  //
+        CheckMinParamCount(3, 'TSynEdit.Lines (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetAnsiString(-1, Obj.Lines[Stack.GetInt(-3)]);
+      end;
+    PropWriteId_Lines: begin  //
+        assert(false, 'read only');
+      end;
+    PropReadId_LineAtCaret: begin  //
+        CheckMinParamCount(1, 'TSynEdit.LineAtCaret (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetAnsiString(-1, Obj.LineText);
+      end;
+    PropWriteId_LineAtCaret: begin  //
+        assert(false, 'read only');
+      end;
+
+    FunctionId_InsertTextAtCaret: begin  //
+        CheckMinParamCount(3, 'TSynEdit.InsertTextAtCaret');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.InsertTextAtCaret(Stack.GetAnsiString(-2), TSynCaretAdjustMode(Stack.GetUInt(-3)));
+      end;
+    PropReadId_TextBetweenPoints: begin  //
+        CheckMinParamCount(4, 'TSynEdit.TextBetweenPoints" (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetAnsiString(-1,
+          Obj.TextBetweenPoints[GetVarPointFromStack(Stack, -3)^, GetVarPointFromStack(Stack, -4)^]
+        );
+      end;
+    PropWriteId_TextBetweenPoints: begin  //
+        CheckMinParamCount(4, 'TSynEdit.TextBetweenPoints" (w)');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.TextBetweenPoints[GetVarPointFromStack(Stack, -2)^, GetVarPointFromStack(Stack, -3)^] := Stack.GetAnsiString(-4);
+      end;
+    FunctionId_SetTextBetweenPoints: begin  // procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
+                                             //'AValue: String; aFlags: TSynEditTextFlags; ' + // = []
+                                             //'aCaretMode: TSynCaretAdjustMode; ' + //  = scamIgnore
+                                             //'aMarksMode: TSynMarksAdjustMode; ' + //  = smaMoveUp
+                                             //'aSelectionMode: TSynSelectionMode);'); //  = smNormal
+        CheckMinParamCount(8, 'TSynEdit.SetTextBetweenPoints');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.SetTextBetweenPoints(GetVarPointFromStack(Stack, -2)^, GetVarPointFromStack(Stack, -3)^,
+          Stack.GetAnsiString(-4), TSynEditTextFlags(Stack.GetUInt(-5)),
+          TSynCaretAdjustMode(Stack.GetUInt(-6)), TSynMarksAdjustMode(Stack.GetUInt(-7)),
+          TSynSelectionMode(Stack.GetUInt(-8))
+        );
+      end;
+
+
+    FunctionId_CopyToClipboard: begin  //
+        CheckMinParamCount(1, 'TSynEdit.CopyToClipboard');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.CopyToClipboard;
+      end;
+    FunctionId_CutToClipboard: begin  //
+        CheckMinParamCount(1, 'TSynEdit.CutToClipboard');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.CutToClipboard;
+      end;
+    FunctionId_PasteFromClipboard: begin  //
+        CheckMinParamCount(1, 'TSynEdit.PasteFromClipboard');
+        Result := GetSynEditFromStack(-1, Obj);
+        if not Result then
+          exit;
+        Obj.PasteFromClipboard;
+      end;
+    PropReadId_CanPaste: begin  //
+        CheckMinParamCount(2, 'TSynEdit.CanPaste (r)');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetBool(-1, Obj.CanPaste);
+      end;
+    PropWriteId_CanPaste: begin  //
+        assert(false, 'read only');
+      end;
+
+
+    FunctionId_LogicalToPhysicalPos: begin  // function LogicalToPhysicalPos(p: TPoint): TPoint;
+        CheckMinParamCount(3, 'TSynEdit.LogicalToPhysicalPos');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        GetVarPointFromStack(Stack, -1)^ := Obj.LogicalToPhysicalPos(GetVarPointFromStack(Stack, -3)^);
+      end;
+    FunctionId_LogicalToPhysicalCol: begin  // function LogicalToPhysicalCol(Line: String; Index, LogicalPos : integer): integer;
+        CheckMinParamCount(5, 'TSynEdit.LogicalToPhysicalCol');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1,
+          Obj.LogicalToPhysicalCol(Stack.GetAnsiString(-3), Stack.GetInt(-4), Stack.GetInt(-5))
+        );
+      end;
+    FunctionId_PhysicalToLogicalPos: begin  // function PhysicalToLogicalPos(p: TPoint): TPoint;
+        CheckMinParamCount(3, 'TSynEdit.PhysicalToLogicalPos');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        GetVarPointFromStack(Stack, -1)^ := Obj.PhysicalToLogicalPos(GetVarPointFromStack(Stack, -3)^);
+      end;
+    FunctionId_PhysicalToLogicalCol: begin  // function PhysicalToLogicalCol(Line: string; Index, PhysicalPos: integer): integer;
+        CheckMinParamCount(5, 'TSynEdit.PhysicalToLogicalCol');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1,
+          Obj.PhysicalToLogicalCol(Stack.GetAnsiString(-3), Stack.GetInt(-4), Stack.GetInt(-5))
+        );
+      end;
+    FunctionId_PhysicalLineLength: begin  // function PhysicalLineLength(Line: String; Index: integer): integer;
+        CheckMinParamCount(4, 'TSynEdit.PhysicalLineLength');
+        Result := GetSynEditFromStack(-2, Obj);
+        if not Result then
+          exit;
+        Stack.SetInt(-1,
+          Obj.PhysicalLineLength(Stack.GetAnsiString(-3), Stack.GetInt(-4))
+        );
+      end;
+
     else
       Result := False;
   end;
@@ -416,7 +853,7 @@ end;
 
 procedure ExecRegisterBasics(AExec: TEMSTPSExec);
 begin
-  {$IFnDEF PasMacroNoNativeCalls}
+  {$IFDEF PasMacroNativeCalls}
   AExec.RegisterDelphiFunction(FuncPoint, 'POINT', cdRegister);
 
   AExec.RegisterDelphiFunction(FuncMessageDlg, 'MessageDlg', cdRegister);
@@ -427,15 +864,15 @@ begin
   AExec.RegisterDelphiFunction(FuncInputBox, 'InputBox', cdRegister);
   AExec.RegisterDelphiFunction(FuncInputQuery, 'InputQuery', cdRegister);
   {$ELSE}
-  AExec.RegisterFunctionName('POINT',             @ExecBasicHandler, Pointer(0), nil);
+  AExec.RegisterFunctionName('POINT',             @ExecBasicHandler, Pointer(FunctionId_POINT), nil);
 
-  AExec.RegisterFunctionName('MessageDlg',        @ExecBasicHandler, Pointer(50), nil);
-  AExec.RegisterFunctionName('MessageDlgPos',     @ExecBasicHandler, Pointer(51), nil);
-  AExec.RegisterFunctionName('MessageDlgPosHelp', @ExecBasicHandler, Pointer(52), nil);
-  AExec.RegisterFunctionName('ShowMessage',       @ExecBasicHandler, Pointer(53), nil);
-  AExec.RegisterFunctionName('ShowMessagePos',    @ExecBasicHandler, Pointer(54), nil);
-  AExec.RegisterFunctionName('InputBox',          @ExecBasicHandler, Pointer(55), nil);
-  AExec.RegisterFunctionName('InputQuery',        @ExecBasicHandler, Pointer(56), nil);
+  AExec.RegisterFunctionName('MessageDlg',        @ExecBasicHandler, Pointer(FunctionId_MessageDlg), nil);
+  AExec.RegisterFunctionName('MessageDlgPos',     @ExecBasicHandler, Pointer(FunctionId_MessageDlgPos), nil);
+  AExec.RegisterFunctionName('MessageDlgPosHelp', @ExecBasicHandler, Pointer(FunctionId_MessageDlgPosHelp), nil);
+  AExec.RegisterFunctionName('ShowMessage',       @ExecBasicHandler, Pointer(FunctionId_ShowMessage), nil);
+  AExec.RegisterFunctionName('ShowMessagePos',    @ExecBasicHandler, Pointer(FunctionId_ShowMessagePos), nil);
+  AExec.RegisterFunctionName('InputBox',          @ExecBasicHandler, Pointer(FunctionId_InputBox), nil);
+  AExec.RegisterFunctionName('InputQuery',        @ExecBasicHandler, Pointer(FunctionId_InputQuery), nil);
   {$ENDIF}
 end;
 
@@ -694,6 +1131,54 @@ procedure ExecRegisterTSynEdit(AExec: TEMSTPSExec);
 begin
   with AExec.FCLassImp.Add(TSynEdit) do
   begin
+    {$IFnDEF PasMacroNativeCalls}
+    RegisterPropertyNameHelper('CARETXY', @ExecBasicHandler, Pointer(PropReadId_CaretXY), nil, Pointer(PropWriteId_CaretXY), nil);
+    RegisterPropertyNameHelper('CARETX', @ExecBasicHandler, Pointer(PropReadId_CaretX), nil, Pointer(PropWriteId_CaretY), nil);
+    RegisterPropertyNameHelper('CARETY', @ExecBasicHandler, Pointer(PropReadId_CaretY), nil, Pointer(PropWriteId_CaretY), nil);
+    RegisterPropertyNameHelper('LOGICALCARETXY', @ExecBasicHandler, Pointer(PropWriteId_LogicalCaretXY), nil, Pointer(PropWriteId_LogicalCaretXY), nil);
+    RegisterPropertyNameHelper('LOGICALCARETX', @ExecBasicHandler, Pointer(PropWriteId_LogicalCaretX), nil, Pointer(PropWriteId_LogicalCaretX), nil);
+    RegisterMethodName('MOVECARETIGNOREEOL', @ExecBasicHandler, Pointer(FunctionId_MoveCaretIgnoreEOL), nil);
+    RegisterMethodName('MOVELOGICALCARETIGNOREEOL', @ExecBasicHandler, Pointer(FunctionId_MoveLogicalCaretIgnoreEOL), nil);
+
+    // Selection
+    RegisterPropertyNameHelper('BLOCKBEGIN', @ExecBasicHandler, Pointer(PropReadId_BlockBegin), nil, Pointer(PropWriteId_BlockBegin), nil);
+    RegisterPropertyNameHelper('BLOCKEND', @ExecBasicHandler, Pointer(PropReadId_BlockEnd), nil, Pointer(PropWriteId_BlockEnd), nil);
+    RegisterPropertyNameHelper('SELAVAIL', @ExecBasicHandler, Pointer(PropReadId_SelAvail), nil, Pointer(PropWriteId_SelAvail), nil);
+    RegisterPropertyNameHelper('SELTEXT', @ExecBasicHandler, Pointer(PropReadId_SelText), nil, Pointer(PropWriteId_SelText), nil);
+    RegisterPropertyNameHelper('SELECTIONMODE', @ExecBasicHandler, Pointer(PropReadId_SelectionMode), nil, Pointer(PropWriteId_SelectionMode), nil);
+    RegisterMethodName('CLEARSELECTION', @ExecBasicHandler, Pointer(FunctionId_ClearSelection), nil);
+    RegisterMethodName('SELECTALL', @ExecBasicHandler, Pointer(FunctionId_SelectAll), nil);
+    RegisterMethodName('SELECTTOBRACE', @ExecBasicHandler, Pointer(FunctionId_SelectToBrace), nil);
+    RegisterMethodName('SELECTWORD', @ExecBasicHandler, Pointer(FunctionId_SelectWord), nil);
+    RegisterMethodName('SELECTLINE', @ExecBasicHandler, Pointer(FunctionId_SelectLine), nil);
+    RegisterMethodName('SELECTPARAGRAPH', @ExecBasicHandler, Pointer(FunctionId_SelectParagraph), nil);
+
+//    // Search
+    RegisterMethodName('SEARCHREPLACE', @ExecBasicHandler, Pointer(FunctionId_SearchReplace), nil);
+    RegisterMethodName('SEARCHREPLACEEX', @ExecBasicHandler, Pointer(FunctionId_SearchReplaceEx), nil);
+
+    RegisterPropertyNameHelper('LINES', @ExecBasicHandler, Pointer(PropReadId_Lines), nil, Pointer(PropWriteId_Lines), nil);
+    RegisterPropertyNameHelper('LINEATCARET', @ExecBasicHandler, Pointer(PropReadId_LineAtCaret), nil, Pointer(PropWriteId_LineAtCaret), nil);
+    RegisterMethodName('INSERTTEXTATCARET', @ExecBasicHandler, Pointer(FunctionId_InsertTextAtCaret), nil);
+
+    RegisterPropertyNameHelper('TEXTBETWEENPOINTS', @ExecBasicHandler, Pointer(PropReadId_TextBetweenPoints), nil, Pointer(PropWriteId_TextBetweenPoints), nil);
+    //RegisterPropertyNameHelper('TEXTBETWEENPOINTSEX', @ExecBasicHandler, Pointer(PropReadId_TextBetweenPointsEx), nil, Pointer(PropWriteId_TextBetweenPointsEx), nil);
+    RegisterMethodName('SETTEXTBETWEENPOINTS', @ExecBasicHandler, Pointer(FunctionId_SetTextBetweenPoints), nil);
+
+    // Clipboard
+    RegisterMethodName('COPYTOCLIPBOARD', @ExecBasicHandler, Pointer(FunctionId_CopyToClipboard), nil);
+    RegisterMethodName('CUTTOCLIPBOARD', @ExecBasicHandler, Pointer(FunctionId_CutToClipboard), nil);
+    RegisterMethodName('PASTEFROMCLIPBOARD', @ExecBasicHandler, Pointer(FunctionId_PasteFromClipboard), nil);
+    RegisterPropertyNameHelper('CANPASTE', @ExecBasicHandler, Pointer(PropReadId_CanPaste), nil, Pointer(PropWriteId_CanPaste), nil);
+
+    // Logical / Physical
+    RegisterMethodName('LOGICALTOPHYSICALPOS', @ExecBasicHandler, Pointer(FunctionId_LogicalToPhysicalPos), nil);
+    RegisterMethodName('LOGICALTOPHYSICALCOL', @ExecBasicHandler, Pointer(FunctionId_LogicalToPhysicalCol), nil);
+    RegisterMethodName('PHYSICALTOLOGICALPOS', @ExecBasicHandler, Pointer(FunctionId_PhysicalToLogicalPos), nil);
+    RegisterMethodName('PHYSICALTOLOGICALCOL', @ExecBasicHandler, Pointer(FunctionId_PhysicalToLogicalCol), nil);
+    RegisterMethodName('PHYSICALLINELENGTH', @ExecBasicHandler, Pointer(FunctionId_PhysicalLineLength), nil);
+
+    {$ELSE}
     // Caret
     RegisterPropertyHelper(@TSynEdit_CaretXY_R, @TSynEdit_CaretXY_W, 'CARETXY');
     RegisterPropertyHelper(@TSynEdit_CaretX_R,  @TSynEdit_CaretX_W,  'CARETX');
@@ -740,6 +1225,7 @@ begin
     RegisterMethod(@TEmsSynWrapper.EMS_PhysicalToLogicalPos, 'PHYSICALTOLOGICALPOS');
     RegisterMethod(@TEmsSynWrapper.EMS_PhysicalToLogicalCol, 'PHYSICALTOLOGICALCOL');
     RegisterMethod(@TEmsSynWrapper.EMS_PhysicalLineLength, 'PHYSICALLINELENGTH');
+    {$ENDIF}
   end;
 end;
 
