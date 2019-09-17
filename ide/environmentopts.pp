@@ -295,6 +295,7 @@ type
 
   TDebuggerPropertiesConfig = class(TPersistent)
   private
+    FFLags: set of (dpcLoaded, dpcDeleted);
     FActive: Boolean;
     FConfigClass: String;
     FConfigName: String;
@@ -1263,6 +1264,7 @@ constructor TDebuggerPropertiesConfig.CreateFromXmlConf(
 begin
   Create;
   FIsFromOldXml := False;
+  FFLags := [];
 
   APath := Format(APath, [AIndex]);
   AXMLCfg.ReadObject(APath, Self);
@@ -1272,6 +1274,7 @@ begin
   if FDebuggerClass <> nil then begin
     FDebuggerProperties := FDebuggerClass.CreateProperties;
     AXMLCfg.ReadObject(APath + 'Properties/', FDebuggerProperties);
+    FFLags := [dpcLoaded];
   end;
 
   InitUID;
@@ -1285,6 +1288,7 @@ var
 begin
   Create;
   FIsFromOldXml := True;
+  FFLags := [];
 
   p := Format(APath, [ADebuggerClass.ClassName, 'Config']);
   if AXMLCfg.HasPath(p, False) then
@@ -1301,6 +1305,7 @@ begin
     FDebuggerClass := ADebuggerClass;
     FDebuggerProperties := ADebuggerClass.CreateProperties;
     AXMLCfg.ReadObject(APath, FDebuggerProperties);
+    FFLags := [dpcLoaded];
   end;
 
   InitUID;
@@ -1314,6 +1319,7 @@ var
 begin
   Create;
   FIsFromOldXml := True;
+  FFLags := [];
 
   p := Format(APath, [ADebuggerClassName, 'Config']);
   if AXMLCfg.HasPath(p, False) then
@@ -1330,6 +1336,7 @@ begin
   if (FDebuggerClass <> nil) and (AForceLoad or AXMLCfg.HasPath(APath, False)) then begin
     FDebuggerProperties := FDebuggerClass.CreateProperties;
     AXMLCfg.ReadObject(APath, FDebuggerProperties);
+    FFLags := [dpcLoaded];
   end;
 
   InitUID;
@@ -1346,6 +1353,7 @@ begin
   FConfigClass := ADebuggerClass.ClassName;
   FConfigName := '';
   FDebuggerProperties := ADebuggerClass.CreateProperties;
+  FFLags := [dpcLoaded]; // i.e. treat as loaded, save when saving all
 
   InitUID;
 end;
@@ -1374,12 +1382,15 @@ begin
   FConfigName       := ASource.FConfigName;
   FDebuggerClass    := ASource.FDebuggerClass;
   FDebuggerFilename := ASource.FDebuggerFilename;
+  FFLags            := ASource.FFLags;
 
-  FreeAndNil(FDebuggerProperties);
-  if ASource.DebuggerClass <> nil then
-    FDebuggerProperties := ASource.DebuggerClass.CreateProperties;
-  if ACopyPropValues and (ASource.FDebuggerProperties <> nil) then
-    FDebuggerProperties.Assign(ASource.FDebuggerProperties);
+  if not IsDeleted then begin
+    FreeAndNil(FDebuggerProperties);
+    if ASource.DebuggerClass <> nil then
+      FDebuggerProperties := ASource.DebuggerClass.CreateProperties;
+    if ACopyPropValues and (ASource.FDebuggerProperties <> nil) then
+      FDebuggerProperties.Assign(ASource.FDebuggerProperties);
+  end;
 
   FUID := '';
   InitUID;
@@ -1412,6 +1423,7 @@ procedure TDebuggerPropertiesConfig.ChangeDebuggerClass(
 var
   p: TDebuggerProperties;
 begin
+  assert(IsLoaded and not IsDeleted, 'TDebuggerPropertiesConfig.ChangeDebuggerClass: IsLoaded');
   FDebuggerClass := ADebuggerClass;
   FConfigClass := ADebuggerClass.ClassName;
   p := FDebuggerProperties;
@@ -1424,16 +1436,17 @@ end;
 procedure TDebuggerPropertiesConfig.MarkAsDeleted;
 begin
   FreeAndNil(FDebuggerProperties);
+  FFLags := FFLags + [dpcDeleted];
 end;
 
 function TDebuggerPropertiesConfig.IsLoaded: Boolean;
 begin
-  Result := (FDebuggerClass <> nil) and (FDebuggerProperties <> nil);
+  Result := dpcLoaded in FFLags; // (FDebuggerClass <> nil) and (FDebuggerProperties <> nil);
 end;
 
 function TDebuggerPropertiesConfig.IsDeleted: Boolean;
 begin
-  Result := (FDebuggerClass <> nil) and (FDebuggerProperties = nil);
+  Result := dpcDeleted in FFLags; // (FDebuggerClass <> nil) and (FDebuggerProperties = nil);
 end;
 
 function TDebuggerPropertiesConfig.DebugText: String;
@@ -3429,9 +3442,9 @@ begin
       Continue;
 
     if (not Entry.IsFromOldXml) then
-      Entry.DeleteFromXml(FXMLCfg, XML_PATH_DEBUGGER_CONF)
+      Entry.DeleteFromXml(FXMLCfg, XML_PATH_DEBUGGER_CONF) // will be rewritten
     else
-    if (Entry.DebuggerProperties = nil) or // Entry without DebuggerProperty are a marker for entries to be deleted
+    if Entry.IsDeleted or
        (Entry.ConfigName <> '') // Moved to named list
     then
       Entry.DeleteFromOldXml(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD);
@@ -3551,7 +3564,7 @@ begin
   LoadDebuggerProperties;
 
   if FCurrentDebuggerPropertiesConfig = AValue then Exit;
-  if (FDebuggerProperties.IndexOfObject(AValue) < 0) then
+  if (AValue <> nil) and (FDebuggerProperties.IndexOfObject(AValue) < 0) then
     FDebuggerProperties.AddObject(AValue.ConfigName, AValue);
   FCurrentDebuggerPropertiesConfig := AValue;
 end;

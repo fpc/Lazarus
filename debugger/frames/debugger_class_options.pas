@@ -255,6 +255,7 @@ begin
 
   i := FCopiedDbgPropertiesConfigList.IndexOfObject(FSelectedDbgPropertiesConfig);
   FSelectedDbgPropertiesConfig.MarkAsDeleted;
+  FSelectedDbgPropertiesConfig := nil;
   FCopiedDbgPropertiesConfigList[i] := ''; // remove from named part of list
 
   FillNameDropDown;
@@ -374,6 +375,7 @@ begin
     cmbDebuggerPath.Items.Clear;
     cmbDebuggerPath.Text := '';
     edName.Text := '';
+    PropertyGrid.BuildPropertyList;
     exit;
   end;
 
@@ -525,7 +527,7 @@ begin
   else
     tbSelect.Caption := '---';
   tbSelect.Enabled := FCopiedDbgPropertiesConfigList.Count > 0;
-  Panel1.Enabled := FCopiedDbgPropertiesConfigList.Count > 0;
+  Panel1.Enabled := FSelectedDbgPropertiesConfig <> nil;
   tbCopy.Enabled := FSelectedDbgPropertiesConfig <> nil;
   tbDelete.Enabled := FSelectedDbgPropertiesConfig <> nil;
 end;
