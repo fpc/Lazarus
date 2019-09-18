@@ -33,7 +33,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TADrawUtils, TADrawerOpenGL in '../../tadraweropengl.pas', TADrawerCanvas;
+  TADrawUtils, TADrawerOpenGL, TADrawerCanvas;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
@@ -46,7 +46,7 @@ begin
   // copy the fonts to the exe folder and uncomment the next line
   // Requires TAFonts in "uses"
 
-  //  InitFonts(ExtractFilePath(ParamStr(0)));
+  //InitFonts(ExtractFilePath(ParamStr(0)));
 end;
 
 procedure TForm1.OpenGLControl1Paint(Sender: TObject);
