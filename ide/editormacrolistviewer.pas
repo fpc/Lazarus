@@ -877,7 +877,8 @@ begin
   FHasError := True; // Assume the worst
 
   i := 1;
-  while (i <= Length(FText)) and (FText[i] in ['a'..'z','A'..'Z','0'..'9','_']) do inc (i);
+  while (i <= Length(FText)) and (FText[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
+    inc(i);
   if i = 1 then exit(AddError('Expected Command, but found "'+UTF8Copy(FText,1,1)+'"'));
 
   s := Copy(FText, 1, i-1);
@@ -887,7 +888,8 @@ begin
   FEventName := s;
 
   FPos := Length(FOrigText) - Length(FText) - FPosCompensate;
-  while (i <= Length(FText)) and (FText[i] in [' ', #9]) do inc (i);
+  while (i <= Length(FText)) and (FText[i] in [' ', #9]) do
+    inc(i);
   if (i > Length(FText)) then exit(AddError('Expected "(" or ";" bot got end of file'));
 
   SetLength(FParams, 0);
@@ -1558,7 +1560,8 @@ procedure TEditorMacroList.ClearAndFreeMacros;
 var
   i: Integer;
 begin
-  for i := 0 to Count - 1 do Macros[i].Free;
+  for i := 0 to Count - 1 do
+    Macros[i].Free;
   FList.Clear;
 end;
 
@@ -1588,7 +1591,8 @@ begin
   Result := AName;
   if IndexOfName(AName) < 0 then exit;
   i := 1;
-  while IndexOfName(AName+'_'+IntToStr(i)) >= 0 do inc(i);
+  while IndexOfName(AName+'_'+IntToStr(i)) >= 0 do
+    inc(i);
   Result := AName+'_'+IntToStr(i);
 end;
 
