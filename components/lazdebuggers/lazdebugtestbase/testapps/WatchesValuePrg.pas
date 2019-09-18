@@ -16,6 +16,9 @@ begin result := SomeValue = 0; end;
 procedure SomeProc1();
 begin SomeFunc1(2,2,2,2); end;
 
+const
+  MaxListSize = high(longword) div 16;
+
 type
 {$ifdef CPU64}
   PtrUInt = type QWord;
@@ -25,12 +28,17 @@ type
   PtrUInt = type DWord;
 {$endif CPU32}
 
+  PPointerList = ^TPointerList;
+  TPointerList = array[0..MaxListSize - 1] of Pointer;
+
 var
   BreakDummy: PtrUInt;
   p: Pointer;
   InterfacedObject, InterfacedObject2: TInterfacedObject;
 
 type
+  TClass1 = class;
+
   TIntRange = -300..300;
   TCardinalRange = 1..300;
 
@@ -106,6 +114,8 @@ type
   TRecFivePackStatArray     =        array [2..4] of   TRecordFivePack;
   TRecFivePackStatPackArray = packed array [2..4] of   TRecordFivePack;
 
+  TRecordClass1     =        record Foo: TClass1; end;
+
   TClass1 = class
   public
     FInt: integer;
@@ -131,22 +141,28 @@ type
 
 type
   (* LOCATION: TYPE *)
+  // type TxByte: type Byte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=Tx, "_OP_== type ", (=;//, "_O2_= = type", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestType )
+  // type PTxByte: ^TxByte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=PTx, _OP_={, _O2_={, _pre3_=^Tx, "//@@=} = ", _BLOCK_=TestVar, _BLOCK2_=TestType ) //}
 
+  // type PxByte: ^Byte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=Px, "_OP_==^", "_O2_==^", "(=;//", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) //}
+
 
   (* LOCATION: field in baseclass *)
   TMyBaseClass = class
   public
     function SomeMeth1(SomeValue: Integer): Boolean;
   public
+    // mbcByte: Byte;
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=mbc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
   end;
 
   (* LOCATION: field in class *)
   TMyClass = class(TMyBaseClass)
   public
+    // mcByte: Byte;
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=mc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
   end;
 
@@ -154,28 +170,50 @@ var
   MyClass1: TMyClass;
   MyClass2: TMyBaseClass; (* LOCATION: field, requires typecast of containing class *)
 
+
 const
 (* LOCATION: global const *)
+  // gcByte = Byte( 1 + add );
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gc, ADD=0, CHR1='A', _OP_==, _O2_=:, _EQ_==,"(nil)=nil", _BLOCK_=TestConst)
 
 var
 (* LOCATION: global var *)
+  // gvByte: Byte = (1 + add);
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+  // gv2_Byte: Byte = (1 + add);
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv2_, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
 
 (* LOCATION: global var  ARRAY OF <each type> *)
+  // gvaByte: array of Byte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gva, "_OP_=: array of", (=;//, "_O2_=: array of", _EQ_=, _BLOCK_=TestVar )
 
 (* LOCATION: global var  pointer <each type> *)
+  // gvp_Byte: ^Byte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
 
 (* LOCATION: global var  TYPE alias // NO PRE-ASSIGNED VALUE *)
+  // gvp_Byte: PxByte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvpt_, "_OP_={", "_O2_={", "//@@=} :", _pre3_=Px, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) // }
 
 (* LOCATION: global var  NAMED pointer <each type> // NO PRE-ASSIGNED VALUE *)
+  // gvtt_Byte: TxByte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvtt_, "_OP_={", "_O2_={", "//@@=} :", _pre3_=Tx, _BLOCK_=TestVar, _BLOCK2_=TestType )  // }
 
 (* LOCATION: global var  NAMED pointer <each TYPE ALIAS> // NO PRE-ASSIGNED VALUE *)
+  // gvptt_Byte: PTxByte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvptt_, "_OP_={", "_O2_={", "//@@=} :", _pre3_=PTx, _BLOCK_=TestVar, _BLOCK2_=TestType )  // }
+
+
+(* LOCATION: global var  untyped pointer // NO PRE-ASSIGNED VALUE *)
+  // gv_ptr_Byte: pointer;
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptr_, "_OP_=:pointer;//", "_O2_=:pointer;//" )
+  // gv_aptr_Byte: array [0..2] of pointer;
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_aptr_, "_OP_=:array [0..2] of pointer;//", "_O2_=:array [0..2] of pointer;//" )
+
+(* LOCATION: global var  untyped PPointerList // NO PRE-ASSIGNED VALUE *)
+  // gv_ptrlist_Byte: pointer;
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptrlist_, "_OP_=:PPointerList;//", "_O2_=:PPointerList;//" )
+
 
 constructor TObjectCreate3Int64.Create;
 begin end;
@@ -266,16 +304,31 @@ begin
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, {e}={, "//@@=} :=", _pre3_=gc, _BLOCK_=TestAssignGC)
 
 (* INIT: global var *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, ADD=1, CHR1='B', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv,   ADD=1, CHR1='B', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv2_, ADD=3, CHR1='D', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 
 (* INIT: global var  TYPE alias // NO PRE-ASSIGNED VALUE *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvpt_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) // }
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvtt_, ADD=7, CHR1='N', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign, _BLOCK2_=TestType)
 
 (* INIT: global var  NAMED pointer <each type> // NO PRE-ASSIGNED VALUE *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvtt_, ADD=7, CHR1='N', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign, _BLOCK2_=TestType)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvpt_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) // }
 
 (* INIT: global var  NAMED pointer <each TYPE ALIAS> // NO PRE-ASSIGNED VALUE *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvptt_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gvtt_, _BLOCK_=TestVar, _BLOCK2_=TestType )  // }
+
+
+(* INIT: global var  untyped NAMED pointer // NO PRE-ASSIGNED VALUE *)
+  // gv_ptr_Byte := @gvByte;            // ADD=1, CHR1='B'
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptr_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv ) // }
+  // gv_aptr_Byte[0] := @gvByte;        // ADD=1, CHR1='B'
+  // gv_aptr_Byte[1] := @gv2_Byte;     // ADD=3, CHR1='D'
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_aptr_, "{e}=[0]", "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv ) // }
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_aptr_, "{e}=[1]", "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv2_ ) // }
+
+(* INIT: global var  untyped PPointerList // NO PRE-ASSIGNED VALUE *)
+  // gv_ptrlist_Byte := @gv_aptr_Byte;
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptrlist_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv_aptr_ ) // }
+
 
 (* INIT: field in class / baseclass *)
   MyClass1 := TMyClass.Create;

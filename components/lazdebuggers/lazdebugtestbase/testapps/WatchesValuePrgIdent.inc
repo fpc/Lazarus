@@ -383,7 +383,6 @@
 
     pre__Obj3{e}          _O2_ TObject3Int64          _EQ_ (a:-22;b:44;c:4000+ADD);          //@@ _pre3_Obj3;
     pre__Obj3Ex{e}        _O2_ TObject3Int64Ex        _EQ_ (a:-22;b:44;c:4100+ADD; d: 555);  //@@ _pre3_Obj3Ex;
-
     {$IFnDEF TestConst}
     {$IFnDEF TestAssignGC}
     {$IFnDEF TestType} // will work in fpc 3.2.0 upwards
@@ -441,6 +440,14 @@
   pre__Instance2b{e} := pre__Instance2{e};    //@@  // }}
   {$ENDIF}
   {$ENDIF}{$ENDIF}
+  {$ENDIF}
+
+  {$IFnDEF TestType}
+  {$IFnDEF TestAssign}
+  pre__Class1Rec{e}     _O2_ TRecordClass1    _EQ_ (Foo: nil);    //@@ _pre3_Class1Rec;
+  {$ELSE}
+  pre__Class1Rec{e}.Foo  := pre__Instance1{e};  //@@ _pre3_Class1Rec;  // }}}
+  {$ENDIF}
   {$ENDIF}
 
 

@@ -1518,6 +1518,7 @@ procedure TTestWatches.TestWatchesTypeCast;
   var
     p, e, val: String;
     Thread, n, StartIdx, i: Integer;
+    we: PWatchExpectation;
   begin
     p := APrefix;
     n := AOffs;
@@ -1606,6 +1607,46 @@ for i := StartIdx to t.Count-1 do
   t.Tests[i].SkipIf(ALoc = tlConst);
 
 
+if p='gv' then begin
+
+      we:= t.Add(AName, '^TRecordClass1(gv_aptr_Class1Rec[0])^.Foo',          weClass([weInteger(22+n).N('FInt'), weAnsiStr(AChr1+'T').N('FAnsi')], 'TClass1') )
+        .AddFlag(ehMissingFields);
+      we^.EvalCallTestFlags := [defFullTypeInfo];
+      we:= t.Add(AName, '^TRecordClass1(gv_aptr_Class1Rec[1])^.Foo',          weClass([weInteger(22+n+2).N('FInt'), weAnsiStr('D'+'T').N('FAnsi')], 'TClass1') )
+        .AddFlag(ehMissingFields);
+      we^.EvalCallTestFlags := [defFullTypeInfo];
+
+
+
+
+      we:=      t.Add(AName, '^TRecordFive(gv_ptr_FiveRec)^.a',                             weInteger(-22-n));
+      we^.EvalCallTestFlags := [defFullTypeInfo];
+
+      t.Add(AName, '^TRecordFive(gv_aptr_FiveRec[0])^.a',                             weInteger(-22-n));
+      t.Add(AName, '^TRecordFive(gv_aptr_FiveRec[1])^.a',                             weInteger(-22-(n+2)));
+
+      t.Add(AName, 'PTxFiveRec(gv_aptr_FiveRec[0])^.a',                             weInteger(-22-n));
+      t.Add(AName, 'PTxFiveRec(gv_aptr_FiveRec[1])^.a',                             weInteger(-22-(n+2)));
+
+      we:=      t.Add(AName, '^TRecordFive(gv_ptrlist_FiveRec^[0])^.a',                             weInteger(-22-n));
+      we^.TstWatch.EvaluateFlags := [defFullTypeInfo];
+      we^.EvalCallTestFlags := [defFullTypeInfo];
+      we:=      t.Add(AName, '^TRecordFive(gv_ptrlist_FiveRec^[1])^.a',                             weInteger(-22-(n+2)));
+      we^.TstWatch.EvaluateFlags := [defFullTypeInfo];
+      we^.EvalCallTestFlags := [defFullTypeInfo];
+
+      we:=      t.Add(AName, 'PTxFiveRec(gv_ptrlist_FiveRec^[0])^.a',                             weInteger(-22-n));
+      we^.TstWatch.EvaluateFlags := [defFullTypeInfo];
+      we^.EvalCallTestFlags := [defFullTypeInfo];
+      we:=      t.Add(AName, 'PTxFiveRec(gv_ptrlist_FiveRec^[1])^.a',                             weInteger(-22-(n+2)));
+      we^.TstWatch.EvaluateFlags := [defFullTypeInfo];
+      we^.EvalCallTestFlags := [defFullTypeInfo];
+
+      t.Add(AName, 'PTxFiveRec('+val+')^.a',                             weInteger(-22-n));
+      t.Add(AName, '^TRecordFive('+val+')^.a',                             weInteger(-22-n));
+end;
+
+
     t.Add(AName+' Cardinal', 'Cardinal('+p+'Rec3S'+e+')',  weMatch('.', skSimple)).ExpectError();
     t.Add(AName+' QWord', 'QWord('+p+'Rec3S'+e+')',        weMatch('.', skSimple)).ExpectError();
 
@@ -1648,6 +1689,11 @@ begin
     (* ************ Nested Functions ************* *)
 
     RunToPause(BrkPrg);
+//t.Clear;
+//t.Add('', '^TRecordClass1(gv_aptr_Class1Rec[0])^.Foo',          weClass([weInteger(22+1).N('FInt'), weAnsiStr('T').N('FAnsi')], 'TClass1') ).AddFlag(ehMissingFields)
+//^.EvalCallTestFlags := [defFullTypeInfo];
+//t.EvaluateWatches;
+//t.CheckResults;
 
     t.Clear;
     AddWatchesConv(t, 'glob const', 'gc', 000, 'A', tlConst);

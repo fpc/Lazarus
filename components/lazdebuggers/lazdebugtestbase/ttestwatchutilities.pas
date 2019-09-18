@@ -130,6 +130,12 @@ type
     TstTestName: String;
     TstWatch: TTestWatch;
 
+    EvalCallTestFlags: TDBGEvaluateFlags;
+    EvalCallResReceived: Boolean;
+    EvalCallResSuccess: Boolean;
+    EvalCallResText: String;
+    EvalCallResDBGType: TDBGType;
+
     //TstDspFormat: TWatchDisplayFormat;
     //TstRepeatCount: Integer;
     //TstEvaluateFlags: TDBGEvaluateFlags;
@@ -192,6 +198,10 @@ type
     FTest: TDBGTestCase;
     FList: array of TWatchExpectation;
     FTypeNameAliases: TStringList;
+
+    FCurEvalCallWatchExp: PWatchExpectation;
+    procedure EvalCallback(Sender: TObject; ASuccess: Boolean;
+      ResultText: String; ResultDBGType: TDBGType);
     function GetCompiler: TTestDbgCompiler;
     function GetDebugger: TTestDbgDebugger;
     function GetLazDebugger: TDebuggerIntf;
@@ -199,7 +209,7 @@ type
     function ParseCommaList(AVal: String; out AFoundCount: Integer;
       AMaxLen: Integer = -1; AComma: char = ','): TStringArray;
   protected
-    function EvaluateWatch(AWatchExp: TWatchExpectation; AThreadId: Integer): Boolean; virtual;
+    function EvaluateWatch(AWatchExp: PWatchExpectation; AThreadId: Integer): Boolean; virtual;
     procedure WaitWhileEval; virtual;
 
     function TestMatches(Name: string; Expected, Got: string; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
@@ -228,6 +238,7 @@ type
     function CheckResultPointer(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultPointerAddr(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultArray(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckStructureFields(const AnIgnoreRsn: String; var AContext: TWatchExpTestCurrentData): Boolean; virtual;
     function CheckResultRecord(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultClass(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultObject(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
@@ -1071,25 +1082,57 @@ begin
   end;
 end;
 
-function TWatchExpectationList.EvaluateWatch(AWatchExp: TWatchExpectation;
+procedure TWatchExpectationList.EvalCallback(Sender: TObject;
+  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+begin
+  if FCurEvalCallWatchExp = nil then begin
+    DebugLn('???????? Late result');
+    exit;
+  end;
+  FCurEvalCallWatchExp^.EvalCallResSuccess := ASuccess;
+  FCurEvalCallWatchExp^.EvalCallResText    := ResultText;
+  FCurEvalCallWatchExp^.EvalCallResDBGType := ResultDBGType;
+  FCurEvalCallWatchExp^.EvalCallResReceived := True;
+end;
+
+function TWatchExpectationList.EvaluateWatch(AWatchExp: PWatchExpectation;
   AThreadId: Integer): Boolean;
 var
   i: Integer;
 begin
   with LazDebugger.GetLocation do
-    FTest.LogText('###### ' + AWatchExp.TstTestName + ' // ' + AWatchExp.TstWatch.Expression +
+    FTest.LogText('###### ' + AWatchExp^.TstTestName + ' // ' + AWatchExp^.TstWatch.Expression +
       ' (AT '+ SrcFile + ':' + IntToStr(SrcLine) +')' +
       '###### '+LineEnding);
-  AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Value;
+  AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Value;
 
   for i := 1 to 5 do begin
     Application.Idle(False);
-    Result := AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Validity <> ddsRequested;
+    Result := AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Validity <> ddsRequested;
     if Result then break;
     WaitWhileEval;
   end;
-  FTest.LogText('<<<<< ' + dbgs(AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Validity) + ': ' +
-    AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Value );
+  FTest.LogText('<<<<< ' + dbgs(AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Validity) + ': ' +
+    AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Value );
+
+
+  if AWatchExp^.EvalCallTestFlags <> [] then begin
+    // TODO: set thread/stack
+    FCurEvalCallWatchExp := AWatchExp;
+    AWatchExp^.EvalCallResReceived := False;
+
+    LazDebugger.Evaluate(AWatchExp^.TstWatch.Expression, @EvalCallback, AWatchExp^.EvalCallTestFlags);
+
+    for i := 1 to 5 do begin
+      Application.Idle(False);
+      if AWatchExp^.EvalCallResReceived then break;
+      WaitWhileEval;
+    end;
+
+    FTest.LogText('<<<<< CB:'+ dbgs(AWatchExp^.EvalCallResReceived)+ ' Res'+ dbgs(AWatchExp^.EvalCallResSuccess)+
+      ' Tp:'+dbgs(AWatchExp^.EvalCallResDBGType <> nil)+ ' '+ AWatchExp^.EvalCallResText  );
+  end;
+  FCurEvalCallWatchExp := nil;
 end;
 
 procedure TWatchExpectationList.WaitWhileEval;
@@ -1201,6 +1244,12 @@ begin
       then
         Context.HasTypeInfo := True;
 
+      if EvalCallTestFlags <> [] then begin
+        TestTrue('Got eval res', EvalCallResReceived, Context, AnIgnoreRsn);
+        TestTrue('Got eval success', EvalCallResSuccess, Context, AnIgnoreRsn);
+        TestTrue('Got eval type', EvalCallResDBGType <> nil, Context, AnIgnoreRsn);
+      end;
+
       VerifySymType(Context, AnIgnoreRsn);
       VerifyTypeName(Context, AnIgnoreRsn);
 
@@ -1308,7 +1357,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    if (Expect.ExpTypeName = '') or (not AContext.HasTypeInfo) then
+    if (Expect.ExpTypeName = '') or (Expect.ExpTypeName = #1) or (not AContext.HasTypeInfo) then
       exit;
 
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
@@ -1703,14 +1752,86 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
 
 end;
 
+function TWatchExpectationList.CheckStructureFields(const AnIgnoreRsn: String;
+  var AContext: TWatchExpTestCurrentData): Boolean;
+var
+  Expect: TWatchExpectationResult;
+  ehf: TWatchExpErrorHandlingFlags;
+  i, j, e, a: Integer;
+  parsed: TStringArray;
+  SubContext: TWatchExpTestCurrentData;
+  sr: TWatchExpectationResult;
+  n, v: String;
+begin
+  Result := True;
+  with AContext.WatchExp do begin
+    Expect := AContext.Expectation;
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+
+    v := Trim(AContext.WatchVal.Value);
+    delete(v, 1, pos('(', v));
+    delete(v, length(v), 1);
+
+    parsed := ParseCommaList(v, e, -1, ';');
+    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
+    e := min(e, Length(parsed));
+
+
+    n := FTest.TestBaseName;
+    SubContext := AContext;
+    for i := 0 to length(Expect.ExpSubResults) - 1 do begin
+      sr := Expect.ExpSubResults[i];
+      if not TestTrue('field name ' + IntToStr(i), sr.ExpFieldName<>'', AContext, AnIgnoreRsn) then
+        Continue;
+
+      if AContext.WatchVal.TypeInfo <> nil then begin
+        a := AContext.WatchVal.TypeInfo.Fields.Count -1;
+        while (a >= 0) and (LowerCase(AContext.WatchVal.TypeInfo.Fields[a].Name) <> LowerCase(sr.ExpFieldName)) do
+          dec(a);
+        TestTrue('typeinfo has field '+sr.ExpFieldName, a >= 0, AContext, AnIgnoreRsn);
+      end;
+
+      if EvalCallResDBGType <> nil then begin
+        a := EvalCallResDBGType.Fields.Count -1;
+        while (a >= 0) and (LowerCase(EvalCallResDBGType.Fields[a].Name) <> LowerCase(sr.ExpFieldName)) do
+          dec(a);
+        TestTrue('EvalCallResDBGType has field '+sr.ExpFieldName, a >= 0, AContext, AnIgnoreRsn);
+      end;
+
+      j := parsed.IndexOfFieldName(sr.ExpFieldName, e);
+      if not TestTrue('field exists ' + IntToStr(i), j >= 0, AContext, AnIgnoreRsn) then
+        Continue;
+      if not(ehNoFieldOrder in ehf) then begin
+        if ehMissingFields in ehf then begin
+          dec(e, j);
+          parsed.delete(0, j);
+          j := 0;
+        end;
+
+        if not TestTrue('field in order ' + IntToStr(i) + ' ' + IntToStr(j), j = 0, AContext, AnIgnoreRsn) then
+          Continue;
+      end;
+
+      SubContext.WatchVal.Value := parsed.ValueOfFieldName(j);
+      FTest.TestBaseName := n + ' Idx=' + IntToStr(i);
+
+      dec(e);
+      parsed.delete(j, 1);
+
+      //SubContext.WatchExp.TstExpected := sr;
+      SubContext.Expectation := sr;
+      Result := CheckData(SubContext, AnIgnoreRsn);
+    end;
+    FTest.TestBaseName := n;
+    AContext.WatchVal.Value := v;
+  end;
+end;
+
 function TWatchExpectationList.CheckResultRecord(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
-  Expect, sr: TWatchExpectationResult;
-  SubContext: TWatchExpTestCurrentData;
-  v, n, tn: String;
-  parsed: TStringArray;
-  i, e, j: Integer;
+  Expect: TWatchExpectationResult;
+  v, tn: String;
   ehf: TWatchExpErrorHandlingFlags;
 begin
   with AContext.WatchExp do begin
@@ -1733,60 +1854,16 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     if not TestMatches('Is record', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
       exit;
 
-    delete(v, 1, pos('(', v));
-    delete(v, length(v), 1);
-
-    parsed := ParseCommaList(v, e, -1, ';');
-    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
-    e := min(e, Length(parsed));
-
-
-    n := FTest.TestBaseName;
-    SubContext := AContext;
-    for i := 0 to length(Expect.ExpSubResults) - 1 do begin
-      sr := Expect.ExpSubResults[i];
-      if not TestTrue('field name '+IntToStr(i), sr.ExpFieldName<>'', AContext, AnIgnoreRsn) then
-        Continue;
-
-      j := parsed.IndexOfFieldName(sr.ExpFieldName, e);
-      if not TestTrue('field exists '+IntToStr(i), j >= 0, AContext, AnIgnoreRsn) then
-        Continue;
-      if not(ehNoFieldOrder in ehf) then begin
-        if ehMissingFields in ehf then begin
-          dec(e, j);
-          parsed.delete(0, j);
-          j := 0;
-        end;
-
-        if not TestTrue('field in order '+IntToStr(i), j = 0, AContext, AnIgnoreRsn) then
-          Continue;
-      end;
-
-      SubContext.WatchVal.Value := parsed.ValueOfFieldName(j);
-      FTest.TestBaseName := n + ' Idx='+IntToStr(i);
-
-      dec(e);
-      parsed.delete(j, 1);
-
-      //SubContext.WatchExp.TstExpected := sr;
-      SubContext.Expectation := sr;
-      Result := CheckData(SubContext, AnIgnoreRsn);
-    end;
-
-    FTest.TestBaseName := n;
-    AContext.WatchVal.Value := v;
+    Result := CheckStructureFields(AnIgnoreRsn, AContext);
   end;
 end;
 
 function TWatchExpectationList.CheckResultClass(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
-  Expect, sr: TWatchExpectationResult;
-  SubContext: TWatchExpTestCurrentData;
-  v, n, tn: String;
-  parsed: TStringArray;
-  i, e, j: Integer;
+  v, tn: String;
   ehf: TWatchExpErrorHandlingFlags;
+  Expect: TWatchExpectationResult;
 begin
   with AContext.WatchExp do begin
     Result := True;
@@ -1802,61 +1879,20 @@ begin
     if not TestMatches('Is class ', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
       exit;
 
-    delete(v, 1, pos('(', v));
-    delete(v, length(v), 1);
-
-    parsed := ParseCommaList(v, e, -1, ';');
-    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
-    e := min(e, Length(parsed));
-
-
-    n := FTest.TestBaseName;
-    SubContext := AContext;
-    for i := 0 to length(Expect.ExpSubResults) - 1 do begin
-      sr := Expect.ExpSubResults[i];
-      if not TestTrue('field name '+IntToStr(i), sr.ExpFieldName<>'', AContext, AnIgnoreRsn) then
-        Continue;
-
-      j := parsed.IndexOfFieldName(sr.ExpFieldName, e);
-      if not TestTrue('field exists '+IntToStr(i), j >= 0, AContext, AnIgnoreRsn) then
-        Continue;
-      if not(ehNoFieldOrder in ehf) then begin
-        if ehMissingFields in ehf then begin
-          dec(e, j);
-          parsed.delete(0, j);
-          j := 0;
-        end;
-
-        if not TestTrue('field in order '+IntToStr(i)+' '+IntToStr(j), j = 0, AContext, AnIgnoreRsn) then
-          Continue;
-      end;
-
-      SubContext.WatchVal.Value := parsed.ValueOfFieldName(j);
-      FTest.TestBaseName := n + ' Idx='+IntToStr(i);
-
-      dec(e);
-      parsed.delete(j, 1);
-
-      //SubContext.WatchExp.TstExpected := sr;
-      SubContext.Expectation := sr;
-      Result := CheckData(SubContext, AnIgnoreRsn);
-    end;
-
-    FTest.TestBaseName := n;
-    AContext.WatchVal.Value := v;
+    Result := CheckStructureFields(AnIgnoreRsn, AContext);
   end;
 end;
 
 function TWatchExpectationList.CheckResultObject(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 begin
-  CheckResultRecord(AContext, AnIgnoreRsn);
+  Result := CheckResultRecord(AContext, AnIgnoreRsn);
 end;
 
 function TWatchExpectationList.CheckResultInstance(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 begin
-  CheckResultClass(AContext, AnIgnoreRsn);
+  Result := CheckResultClass(AContext, AnIgnoreRsn);
 end;
 
 constructor TWatchExpectationList.Create(ATest: TDBGTestCase);
@@ -1962,8 +1998,10 @@ procedure TWatchExpectationList.Clear;
 var
   i: Integer;
 begin
-  for i := 0 to Length(FList)-1 do
+  for i := 0 to Length(FList)-1 do begin
     FList[i].TstWatch.Free;
+    FList[i].EvalCallResDBGType.Free;
+  end;
   FList := nil;
 end;
 
@@ -1978,7 +2016,7 @@ var
 begin
   t := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
   for i := 0 to Length(FList)-1 do begin
-    EvaluateWatch(FList[i], t);
+    EvaluateWatch(@FList[i], t);
     if (i mod 16) = 0 then TestLogger.DbgOut('.');
   end;
   TestLogger.DebugLn('');
