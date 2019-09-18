@@ -414,6 +414,7 @@ begin
   if (Length(AName) = length(selfname)) and (CompareUtf8BothCase(PNameUpper, PNameLower, @selfname[1])) then begin
     ADbgValue := GetSelfParameter;
     if ADbgValue <> nil then begin
+      ApplyContext(ADbgValue);
       AddRefToVal(ADbgValue);
       Result := True;
       exit;

@@ -731,7 +731,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         s := proc.Name;
         par := nil;
         if (proc is TFpSymbolDwarfDataProc) then
-          par := TFpSymbolDwarfDataProc(proc).GetSelfParameter;
+          par := TFpSymbolDwarfDataProc(proc).GetSelfParameter; // TODO: needs Context set ?
         if (par <> nil) and (par.TypeInfo <> nil) then
           s := par.TypeInfo.Name + '.' + s;
         APrintedValue := APrintedValue + ' = ' + s; // TODO: offset to startaddress

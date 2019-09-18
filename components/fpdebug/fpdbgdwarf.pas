@@ -1356,12 +1356,14 @@ begin
           then begin
             if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
               Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
+              ApplyContext(Result);
               exit;
             end;
           end;
 
           InfoEntry.ScopeIndex := StartScopeIdx;
           Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
+          ApplyContext(Result);
           exit;
         end;
       end;
@@ -1369,15 +1371,19 @@ begin
 
       tg := InfoEntry.AbbrevTag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
-        if FindSymbolInStructure(AName,PNameUpper, PNameLower, InfoEntry, Result) then
+        if FindSymbolInStructure(AName,PNameUpper, PNameLower, InfoEntry, Result) then begin
+          ApplyContext(Result);
           exit; // TODO: check error
+        end;
         //InfoEntry.ScopeIndex := StartScopeIdx;
       end
 
       else
       if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then begin // searching in subroutine
-        if FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry, Result) then
+        if FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry, Result) then begin
+          ApplyContext(Result);
           exit;        // TODO: check error
+        end;
         //InfoEntry.ScopeIndex := StartScopeIdx;
       end
           // TODO: nested subroutine
@@ -1386,6 +1392,7 @@ begin
       if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
         if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
           Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
+          ApplyContext(Result);
           exit;
         end;
       end;
@@ -1696,6 +1703,9 @@ begin
     m := FDataSymbol.NestedSymbolByName[AIndex];
     if m <> nil then
       Result := m.Value;
+    assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
+    if Result <> nil then
+      TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
@@ -1709,6 +1719,9 @@ begin
     m := FDataSymbol.NestedSymbol[AIndex];
     if m <> nil then
       Result := m.Value;
+    assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
+    if Result <> nil then
+      TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
@@ -2199,8 +2212,11 @@ end;
 function TFpValueDwarfEnum.GetMember(AIndex: Int64): TFpValue;
 begin
   InitMemberIndex;
-  if (FMemberIndex >= 0) and (AIndex = 0) then
-    Result := FOwner.NestedSymbol[FMemberIndex].Value
+  if (FMemberIndex >= 0) and (AIndex = 0) then begin
+    Result := FOwner.NestedSymbol[FMemberIndex].Value;
+    assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
+    TFpValueDwarfBase(Result).Context := Context;
+  end
   else
     Result := nil;
 end;
@@ -2360,6 +2376,8 @@ begin
 
   if t.Kind = skEnum then begin
     Result := t.NestedSymbol[FMemberMap[AIndex]].Value;
+    assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
+    TFpValueDwarfBase(Result).Context := Context;
   end
   else begin
     if (FNumValue = nil) or (FNumValue.RefCount > 1) then begin // refcount 1 by FTypedNumValue
@@ -2375,7 +2393,9 @@ begin
 
     if (FTypedNumValue = nil) or (FTypedNumValue.RefCount > 1) then begin
       FTypedNumValue.ReleaseReference;
-      FTypedNumValue := t.TypeCastValue(FNumValue)
+      FTypedNumValue := t.TypeCastValue(FNumValue);
+      assert((FTypedNumValue is TFpValueDwarf), 'is TFpValueDwarf');
+      TFpValueDwarf(FTypedNumValue).FContext := FContext;
     end
     else
       TFpValueDwarf(FTypedNumValue).SetTypeCastInfo(TFpSymbolDwarfType(t), FNumValue); // update
@@ -2595,6 +2615,8 @@ begin
     FMembers.Add(tmp);
 
     Result := tmp.Value;
+    assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
+    TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
@@ -2616,6 +2638,8 @@ begin
     FMembers.Add(tmp);
 
     Result := tmp.Value;
+    assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
+    TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
@@ -2992,6 +3016,7 @@ var
   RefSymbol: TFpSymbolDwarfData;
   InitLocParserData: TInitLocParserData;
   t: TFpDbgMemLocation;
+  ValObj: TFpValue;
 begin
   Form := InformationEntry.AttribForm[AnAttribData.Idx];
   Result := False;
@@ -3021,7 +3046,10 @@ begin
       NewInfo.ReleaseReference;
       Result := RefSymbol <> nil;
       if Result then begin
-        AValue := RefSymbol.Value.AsInteger;
+        ValObj := RefSymbol.Value;
+        assert(ValObj is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
+        TFpValueDwarfBase(ValObj).Context := AValueObj.Context;
+        AValue := ValObj.AsInteger;
         Result := not IsError(RefSymbol.LastError);
         // TODO: copy the error
         if ADataSymbol <> nil then

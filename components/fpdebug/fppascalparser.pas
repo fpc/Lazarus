@@ -29,8 +29,8 @@ unit FpPascalParser;
 interface
 
 uses
-  Classes, sysutils, math, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, FpErrorMessages,
-  LazLoggerBase, LazClasses;
+  Classes, sysutils, math, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools,
+  FpErrorMessages, FpDbgDwarf, LazLoggerBase, LazClasses;
 
 type
 
@@ -657,6 +657,8 @@ begin
   Tmp := TFpValueConstAddress.Create(addr);
   if ti <> nil then begin
     Result := ti.TypeCastValue(Tmp);
+    if (Result <> nil) and (Result is TFpValueDwarfBase) then
+      TFpValueDwarfBase(Result).Context := Context;
     Tmp.ReleaseReference;
   end
   else
@@ -726,6 +728,8 @@ end;
 function TFpPasParserValueMakeReftype.GetTypeCastedValue(ADataVal: TFpValue): TFpValue;
 begin
   Result := DbgSymbol.TypeCastValue(ADataVal);
+  if (Result <> nil) and (Result is TFpValueDwarfBase) then
+    TFpValueDwarfBase(Result).Context := Context;
 end;
 
 
@@ -918,6 +922,8 @@ begin
   Tmp := TFpValueConstAddress.Create(addr);
   if ti <> nil then begin
     Result := ti.TypeCastValue(Tmp);
+    if (Result <> nil) and (Result is TFpValueDwarfBase) then
+      TFpValueDwarfBase(Result).Context := Context;
     Tmp.ReleaseReference;
   end
   else
