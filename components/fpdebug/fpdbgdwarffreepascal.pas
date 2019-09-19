@@ -133,7 +133,7 @@ type
 
   { TFpSymbolDwarfV2FreePascalTypeStructure }
 
-  TFpSymbolDwarfV2FreePascalTypeStructure = class(TFpSymbolDwarfTypeStructure)
+  TFpSymbolDwarfV2FreePascalTypeStructure = class(TFpSymbolDwarfFreePascalTypeStructure)
   private
     FIsShortString: (issUnknown, issShortString, issStructure);
     function IsShortString: Boolean;
@@ -231,6 +231,7 @@ begin
   case ATag of
     DW_TAG_typedef:          Result := TFpSymbolDwarfFreePascalTypeDeclaration;
     DW_TAG_pointer_type:     Result := TFpSymbolDwarfFreePascalTypePointer;
+    DW_TAG_structure_type,
     DW_TAG_class_type:       Result := TFpSymbolDwarfFreePascalTypeStructure;
     DW_TAG_array_type:       Result := TFpSymbolDwarfFreePascalSymbolTypeArray;
     else                     Result := inherited GetDwarfSymbolClass(ATag);
@@ -701,6 +702,14 @@ procedure TFpSymbolDwarfFreePascalTypeStructure.KindNeeded;
 var
   t: TDbgSymbolKind;
 begin
+  (* DW_TAG_structure_type
+     - Is either objec or record.
+     - Except: fpc < 3.0 => can be class or interface too
+     DW_TAG_class_type
+     - Is either class, interface, or object (object only with virtual methods)
+
+     tested up to fpc 3.2 beta
+  *)
   if (InformationEntry.AbbrevTag = DW_TAG_interface_type) then begin
     SetKind(skInterface);
   end
