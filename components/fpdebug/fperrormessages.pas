@@ -16,6 +16,7 @@ resourcestring
   MsgfpErrSymbolNotFound                  = 'Identifier not found: "%1:s"';
   MsgfpErrNoMemberWithName                = 'Member not found: %1:s';
   MsgfpErrorNotAStructure                 = 'Cannot get member "%1:s" from none structure type: %2:s';
+  MsgfpErrorBadFloatSize                  = 'Unsupported float value: Unknown precission';
 
   MsgfpErrPasParserInvalidExpression      = 'Invalid Expression';
   MsgfpErrPasParserUnexpectedToken        = 'Unexpected token ''%1:s'' at pos %2:d';
@@ -42,6 +43,7 @@ const
   fpErrSymbolNotFound                  = TFpErrorCode(2);
   fpErrNoMemberWithName                = TFpErrorCode(3);
   fpErrorNotAStructure                 = TFpErrorCode(4);
+  fpErrorBadFloatSize                  = TFpErrorCode(5);
 
   fpErrPasParserInvalidExpression      = TFpErrorCode(24);
   fpErrPasParserUnexpectedToken        = TFpErrorCode(25);
@@ -175,7 +177,8 @@ begin
     fpErrAnyError:         Result := MsgfpErrAnyError;
     fpErrSymbolNotFound:   Result := MsgfpErrSymbolNotFound;
     fpErrNoMemberWithName: Result := MsgfpErrNoMemberWithName;
-    fpErrorNotAStructure: Result := MsgfpErrorNotAStructure;
+    fpErrorNotAStructure:  Result := MsgfpErrorNotAStructure;
+    fpErrorBadFloatSize:   Result := MsgfpErrorBadFloatSize;
 
     fpErrPasParserInvalidExpression:      Result := MsgfpErrPasParserInvalidExpression;
     fpErrPasParserUnexpectedToken:        Result := MsgfpErrPasParserUnexpectedToken;

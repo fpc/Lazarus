@@ -1941,8 +1941,10 @@ begin
   end;
   Include(FEvaluated, doneUInt);
 
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then
-    Result := inherited GetAsCardinal
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then begin
+    Result := 0;
+    FLastError := CreateError(fpErrorBadFloatSize);
+  end
   else
   if not MemManager.ReadFloat(OrdOrDataAddr, FSize, Result) then begin
     Result := 0; // TODO: error
