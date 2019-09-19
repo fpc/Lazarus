@@ -1034,6 +1034,8 @@ end;
 
 function TWatchExpectationList.GetTests(Index: Integer): PWatchExpectation;
 begin
+  if Index < 0 then
+    Index := Index + Count;
   Result := @FList[Index];
 end;
 

@@ -624,6 +624,10 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Single'+e,     weSingle(100.125+n,              'Single'     ));
     t.Add(AName, p+'Double'+e,     weDouble(1000.125+n,             'Double'     ));
     t.Add(AName, p+'Extended'+e,   weFloat(10000.175+n,             ''   )); // Double ?
+    {$IFDEF cpu64}
+    if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
+      t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
+    {$ENDIF}
     //t.Add(p+'Comp'+e,       weInteger(150.125+n,              'Comp'       ));
     t.Add(AName, p+'Currency'+e,   weFloat(125.123+n,               'Currency'   ))^.AddFlag([ehNotImplementedData])
       .SkipIf(ALoc = tlPointerAny);
@@ -632,6 +636,10 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Single_2'+e,   weSingle(-100.125+n,             'Single'     ));
     t.Add(AName, p+'Double_2'+e,   weDouble(-1000.125+n,            'Double'     ));
     t.Add(AName, p+'Extended_2'+e, weFloat(-10000.175+n,            ''   )); // Double ?
+    {$IFDEF cpu64}
+    if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
+      t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
+    {$ENDIF}
     //t.Add(p+'Comp_2'+e,     weFloat(-150.125+n,             'Comp'       ));
     t.Add(AName, p+'Currency_2'+e, weFloat(-125.123+n,              'Currency'   ))^.AddFlag([ehNotImplementedData])
       .SkipIf(ALoc = tlPointerAny);
