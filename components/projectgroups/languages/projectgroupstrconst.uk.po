@@ -3,9 +3,9 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2019-02-19 16:40+0200\n"
+"PO-Revision-Date: 2019-09-20 20:59+0200\n"
 "Project-Id-Version: \n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr "Перервати"
 
 #: projectgroupstrconst.lisabortloadingprojectgroup
 msgid "Abort loading project group"
-msgstr "Перервати завантаження групи проектів"
+msgstr "Перервати завантаження групи проєктів"
 
 #: projectgroupstrconst.lisactivetarget
 #, object-pascal-format
@@ -54,7 +54,7 @@ msgstr "Режим збирання \"%s\" не знайдено."
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
-msgstr ""
+msgstr "\"Компілювати\" і \"Зібрати\" компілюють ціль"
 
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
@@ -64,7 +64,7 @@ msgstr "Компіляція пакунка %s"
 #: projectgroupstrconst.liscompileproject
 #, object-pascal-format
 msgid "Compile Project %s"
-msgstr "Компіляція проекту %s"
+msgstr "Компіляція проєкту %s"
 
 #: projectgroupstrconst.lisdiscard
 msgid "Discard changes"
@@ -72,7 +72,7 @@ msgstr "Відкинути зміни"
 
 #: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
 msgid "Enable to show target filenames with paths."
-msgstr ""
+msgstr "Показувати назви цільових файлів зі шляхами."
 
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format
@@ -87,12 +87,12 @@ msgstr ""
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
-msgstr "Для кореневої групи проектів дозволено лише тип цілі \"projectgroup\"."
+msgstr "Для кореневої групи проєктів дозволено лише тип цілі \"projectgroup\"."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
 #, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
-msgstr "Помилка читання файлу групи проектів \"%s\"%s%s"
+msgstr "Помилка читання файлу групи проєктів \"%s\"%s%s"
 
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
@@ -100,16 +100,16 @@ msgstr "Ціль не існує. Вилучити?"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr ""
+msgstr "Команди ІСР \"Компілювати\" і \"Зібрати\" спричиняють компіляцію/збирання цілі, вибраної в редакторі групи проєктів"
 
 #: projectgroupstrconst.lisinfo
 msgctxt "projectgroupstrconst.lisinfo"
 msgid "Info"
-msgstr ""
+msgstr "Інформація"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
-msgstr "Виявлено хибне коло. Група проектів не може мати саму себе ціллю."
+msgstr "Виявлено хибне коло. Група проєктів не може мати саму себе ціллю."
 
 #: projectgroupstrconst.lisinvalidfile
 msgid "Invalid File"
@@ -126,15 +126,15 @@ msgstr "Пакунки Lazarus (*.lpk)"
 
 #: projectgroupstrconst.lislazarusprojectgroupslpg
 msgid "Lazarus project groups (*.lpg)"
-msgstr "Групи проектів Lazarus (*.lpg)"
+msgstr "Групи проєктів Lazarus (*.lpg)"
 
 #: projectgroupstrconst.lislazarusprojectslpi
 msgid "Lazarus projects (*.lpi)"
-msgstr "Проекти Lazarus (*.lpi)"
+msgstr "Проєкти Lazarus (*.lpi)"
 
 #: projectgroupstrconst.lislazarussupportedinprojectgroups
 msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
-msgstr ""
+msgstr "Файли Lazarus (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
@@ -151,11 +151,11 @@ msgstr "Потрібно зберегти"
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
-msgstr "Нова група проектів"
+msgstr "Нова група проєктів"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
 msgid "New Project group ..."
-msgstr "Нова група проектів ..."
+msgstr "Нова група проєктів ..."
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
@@ -187,27 +187,27 @@ msgstr "Цілі"
 
 #: projectgroupstrconst.lisonidestartreopenlastopengroup
 msgid "On IDE start reopen last open group."
-msgstr ""
+msgstr "Під час запуску ІСР відкривати останню відкриту групу."
 
 #: projectgroupstrconst.lisopenlastgrouponstart
 msgid "Open last group on start"
-msgstr ""
+msgstr "Відкривати під час запуску останню групу"
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
-msgstr "Відкрити групу проектів ..."
+msgstr "Відкрити групу проєктів ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
 msgid "Open Recent Project Group"
-msgstr "Відкрити нещодавню групу проектів"
+msgstr "Відкрити нещодавню групу проєктів"
 
 #: projectgroupstrconst.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Параметри"
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
-msgstr "Інший проект"
+msgstr "Інший проєкт"
 
 #: projectgroupstrconst.lispackage
 msgid "Package"
@@ -229,46 +229,43 @@ msgstr "Файли Паскалю (*.pas;*.pp;*.p)"
 #: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
 msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
 msgid "Please save your changes before reloading the project group."
-msgstr "Збережіть ваші зміни перед перезавантаженням групи проектів."
+msgstr "Збережіть ваші зміни перед перезавантаженням групи проєктів."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format
 msgid "Project group %s"
-msgstr "Група проектів %s"
+msgstr "Група проєктів %s"
 
 #: projectgroupstrconst.lisprojectgroup2
 #, object-pascal-format
 msgid "Project Group: %s"
-msgstr "Група проектів: %s"
+msgstr "Група проєктів: %s"
 
 #: projectgroupstrconst.lisprojectgroupaddcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
 msgstr "Додати"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
 msgid "Add current project"
-msgstr ""
+msgstr "Додати поточний проєкт"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
 msgid "Add current project to project group"
-msgstr ""
+msgstr "Додати поточний проєкт до групи проєктів"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
-#, fuzzy
-#| msgid "Add"
 msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
 msgid "Add from file"
-msgstr "Додати"
+msgstr "Додати з файлу"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
-msgstr "Додати наявну ціль в групу проектів"
+msgstr "Додати наявну ціль в групу проєктів"
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
-msgstr ""
+msgstr "Додати цілі до групи проєктів"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
@@ -277,7 +274,7 @@ msgstr "Нова"
 
 #: projectgroupstrconst.lisprojectgroupaddnewhint
 msgid "Add new target to project group"
-msgstr "Додати нову ціль в групу проектів"
+msgstr "Додати нову ціль в групу проєктів"
 
 #: projectgroupstrconst.lisprojectgroupdeletecaption
 msgid "Remove"
@@ -285,11 +282,11 @@ msgstr "Вилучити"
 
 #: projectgroupstrconst.lisprojectgroupdeletehint
 msgid "Remove target from project group"
-msgstr "Вилучити наявну ціль з групи проектів"
+msgstr "Вилучити наявну ціль з групи проєктів"
 
 #: projectgroupstrconst.lisprojectgroupmodified
 msgid "Project group modified"
-msgstr "Групу проектів змінено"
+msgstr "Групу проєктів змінено"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
 #, object-pascal-format
@@ -297,20 +294,18 @@ msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
 msgstr ""
-"Групу проектів \"%s\" було змінено.\n"
+"Групу проєктів \"%s\" було змінено.\n"
 "Що ви бажаєте зробити?"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
 msgid "New"
 msgstr "Нова"
 
 #: projectgroupstrconst.lisprojectgroupnewhint
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
-msgstr "Нова група проектів"
+msgstr "Нова група проєктів"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
@@ -318,7 +313,7 @@ msgstr "Перезавантажити"
 
 #: projectgroupstrconst.lisprojectgroups
 msgid "Project Groups"
-msgstr "Групи проектів"
+msgstr "Групи проєктів"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
@@ -326,7 +321,7 @@ msgstr "Зберегти як ..."
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
 msgid "Save project group with a new name"
-msgstr "Зберегти групу проектів під новою назвою"
+msgstr "Зберегти групу проєктів під новою назвою"
 
 #: projectgroupstrconst.lisprojectgroupsavecaption
 msgid "Save"
@@ -335,7 +330,7 @@ msgstr "Зберегти"
 #: projectgroupstrconst.lisprojectgroupsavehint
 msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
 msgid "Save project group"
-msgstr "Зберегти групу проектів"
+msgstr "Зберегти групу проєктів"
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
@@ -343,7 +338,7 @@ msgstr "Помилка читання"
 
 #: projectgroupstrconst.lisredo
 msgid "Redo"
-msgstr ""
+msgstr "Повернути"
 
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
@@ -353,20 +348,20 @@ msgstr "Вилучити ціль"
 #: projectgroupstrconst.lissavepg
 msgctxt "projectgroupstrconst.lissavepg"
 msgid "Save project group"
-msgstr "Зберегти групу проектів"
+msgstr "Зберегти групу проєктів"
 
 #: projectgroupstrconst.lissaveprojectgroup
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
 msgid "Save Project Group"
-msgstr "Зберегти групу проектів"
+msgstr "Зберегти групу проєктів"
 
 #: projectgroupstrconst.lissaveprojectgroupas
 msgid "Save Project Group As ..."
-msgstr "Зберегти групу проектів як ..."
+msgstr "Зберегти групу проєктів як ..."
 
 #: projectgroupstrconst.lisshowtargetpaths
 msgid "Show target paths"
-msgstr ""
+msgstr "Показати цільові шляхи"
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
@@ -374,7 +369,7 @@ msgstr "Видалити всі некоректні цілі"
 
 #: projectgroupstrconst.lissourcedirectoriesofprojectgroup
 msgid "Source directories of project group:"
-msgstr ""
+msgstr "Каталоги сирців групи проєктів:"
 
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
@@ -425,8 +420,6 @@ msgid "Compile selected target"
 msgstr "Компілювати вибрану ціль"
 
 #: projectgroupstrconst.listargetcopyfilename
-#, fuzzy
-#| msgid "Copy file name"
 msgid "Copy Filename"
 msgstr "Копіювати назву файлу"
 
@@ -450,7 +443,7 @@ msgstr "Зібрати ціль раніше"
 #: projectgroupstrconst.listargetinfocaption
 msgctxt "projectgroupstrconst.listargetinfocaption"
 msgid "Info ..."
-msgstr ""
+msgstr "Інформація ..."
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
@@ -555,11 +548,11 @@ msgstr "Неможливо завантажити файл \"%s\""
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
-msgstr "Неможливо записати файл групи проектів \"%s\"%s%s"
+msgstr "Неможливо записати файл групи проєктів \"%s\"%s%s"
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
-msgstr ""
+msgstr "Скасувати"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

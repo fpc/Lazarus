@@ -1,17 +1,17 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-08 18:11+0300\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2019-09-20 21:05+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: svnclasses.rsaction
 msgid "Action"
@@ -147,23 +147,23 @@ msgstr "Шлях"
 
 #: svnclasses.rsprojectfilename
 msgid "Project filename"
-msgstr "Ім'я файлу проекту"
+msgstr "Ім'я файлу проєкту"
 
 #: svnclasses.rsprojectisactive
 msgid "Project is active"
-msgstr "Проект активний"
+msgstr "Проєкт активний"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr "Проект неактивний. Спочатку активуйте його в параметрах SVN."
+msgstr "Проєкт неактивний. Спочатку активуйте його в параметрах SVN."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
-msgstr "Назва проекту"
+msgstr "Назва проєкту"
 
 #: svnclasses.rsprojectoptions
 msgid "Project options"
-msgstr "Параметри проекту"
+msgstr "Параметри проєкту"
 
 #: svnclasses.rspropertystatus
 msgid "Property status"
@@ -223,7 +223,7 @@ msgstr "Показати журнал"
 
 #: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
 msgid "Source file does not belong to the project. Please add first."
-msgstr "Сирцевий файл не включено в проект. Спершу додайте його."
+msgstr "Сирцевий файл не включено в проєкт. Спершу додайте його."
 
 #: svnclasses.rssvnsettings
 msgid "SVN settings"

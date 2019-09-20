@@ -3,9 +3,9 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2019-02-19 16:37+0200\n"
+"PO-Revision-Date: 2019-09-20 20:08+0200\n"
 "Project-Id-Version: \n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
@@ -53,28 +53,25 @@ msgid "OK"
 msgstr "Гаразд"
 
 #: opkman_const.rscategoriesfrm_caption1
-#, fuzzy
 msgctxt "opkman_const.rscategoriesfrm_caption1"
 msgid "List with categories"
-msgstr "Список категорій"
+msgstr "Список з категоріями"
 
 #: opkman_const.rscategoriesfrm_caption2
 msgid "List with Lazarus versions"
-msgstr ""
+msgstr "Список з версіями Lazarus"
 
 #: opkman_const.rscategoriesfrm_caption3
 msgid "List with FPC versions"
-msgstr ""
+msgstr "Список з версіями FPC"
 
 #: opkman_const.rscategoriesfrm_caption4
 msgid "List with supported widgetsets"
-msgstr ""
+msgstr "Список з підтримуваними бібліотеками віджетів"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-#, fuzzy
-#| msgid "Please select (check) one or more categories"
 msgid "Please select (check) one or more items"
-msgstr "Виберіть (позначте) одну або декілька категорій"
+msgstr "Виберіть (позначте) один або декілька елементів"
 
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
@@ -712,7 +709,7 @@ msgstr "Такі пакунки вже встановлено. Все одно �
 
 #: opkman_const.rsmainfrm_packageincompatible
 msgid "The following packages are not tested and the install might fail. Continue anyway?"
-msgstr ""
+msgstr "Ці пакунки не випробувані, тому встановлення може не вдатись. Продовжити?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
 msgid "A package with the same name already exists!"
@@ -1262,32 +1259,30 @@ msgid "Version"
 msgstr "Версія"
 
 #: opkman_const.rsopensslfrm_bp_cancelbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
 msgid "No"
 msgstr "Ні"
 
 #: opkman_const.rsopensslfrm_bp_okbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
 msgid "Yes"
 msgstr "Так"
 
 #: opkman_const.rsopensslfrm_caption
 msgid "Download OpenSSL libraries"
-msgstr ""
+msgstr "Звантажити бібліотеки OpenSSL"
 
 #: opkman_const.rsopensslfrm_chpermanent_caption
 msgid "Do not ask this question again"
-msgstr ""
+msgstr "Більше не питати про це"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
-msgstr ""
+msgstr "Для правильної роботи OPM потребує бібліотек OpenSSL: \"libeay32.dll\" і \"ssleay32.dll\""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
-msgstr ""
+msgstr "Звантажити ці файли з \"https://packages.lazarus-ide.org/\"?"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
@@ -1561,15 +1556,15 @@ msgstr "Вимкнути"
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
-msgstr ""
+msgstr "Автоматично звантажити файли з \"https://packages.lazarus-ide.org/\""
 
 #: opkman_const.rsoptions_rbopenssl_item1
 msgid "Show confirmation dialog before download"
-msgstr ""
+msgstr "Показати перед звантаженням діалог для підтвердження"
 
 #: opkman_const.rsoptions_rbopenssl_item2
 msgid "Never download files"
-msgstr ""
+msgstr "Не звантажувати файлів"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
@@ -1597,19 +1592,19 @@ msgstr "Проксі-сервер"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_caption
 msgid "Warn me about already installed packages"
-msgstr ""
+msgstr "Попереджувати про вже встановлені пакунки"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
 msgid "If a package is already installed, OPM will show a warning message"
-msgstr ""
+msgstr "Якщо пакунок вже встановлено, OPM покаже попередження"
 
 #: opkman_const.rsoption_cbincompatiblepackage_caption
 msgid "Warn me about incompatible/untested packages"
-msgstr ""
+msgstr "Попереджувати про несумісні/невипробувані пакунки"
 
 #: opkman_const.rsoption_cbincompatiblepackage_hint
 msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
-msgstr ""
+msgstr "Якщо пакунок не сумісний з поточною бібліотекою віджетів або версією Lazarus/FPC version, OPM покаже попередження"
 
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
@@ -1640,39 +1635,39 @@ msgstr "Список оновлюваних пакунків"
 
 #: opkman_const.rspackagelistfrm_caption3
 msgid "Incompatible package list"
-msgstr ""
+msgstr "Список несумісних пакунків"
 
 #: opkman_const.rspackagelistfrm_curfpcver
 msgid "Current FPC version: "
-msgstr ""
+msgstr "Поточна версія FPC: "
 
 #: opkman_const.rspackagelistfrm_curlazver
 msgid "Current Lazarus version: "
-msgstr ""
+msgstr "Поточна версія Lazarus: "
 
 #: opkman_const.rspackagelistfrm_curws
 msgid "Current widgetset: "
-msgstr ""
+msgstr "Поточна бібліотека віджетів:"
 
 #: opkman_const.rspackagelistfrm_incompatible
 msgid "Not tested"
-msgstr ""
+msgstr "Не випробуваний"
 
 #: opkman_const.rspackagelistfrm_lbhint_caption
 msgid "Hint: for more details move the mouse over the problematic column."
-msgstr ""
+msgstr "Підказка: щоб дізнатись подробиці, на ведіть вказівник на проблемний стовпець."
 
 #: opkman_const.rspackagelistfrm_supfpcvers
 msgid "Supported FPC versions: "
-msgstr ""
+msgstr "Підтримувана версія FPC: "
 
 #: opkman_const.rspackagelistfrm_suplazvers
 msgid "Supported Lazarus versions: "
-msgstr ""
+msgstr "Підтримувана версія Lazarus: "
 
 #: opkman_const.rspackagelistfrm_supwss
 msgid "Supported widgetsets: "
-msgstr ""
+msgstr "Підтримувані бібліотеки віджетів:"
 
 #: opkman_const.rspackagesfound
 #, object-pascal-format

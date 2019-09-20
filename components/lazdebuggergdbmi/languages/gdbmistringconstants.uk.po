@@ -1,7 +1,7 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-06-19 21:39+0200\n"
+"PO-Revision-Date: 2019-09-19 00:26+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 "Project-Id-Version: \n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 
 #: gdbmistringconstants.dlggroupdebugger
@@ -170,16 +170,16 @@ msgstr "Натисніть кнопку \"Пропустити\" щоб прод
 
 #: gdbmistringconstants.gdbmisfailedinitproc
 msgid "Failed to execute the initialization process"
-msgstr ""
+msgstr "Не вдалось виконати процес ініціалізації"
 
 #: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
 #, object-pascal-format
 msgid "Failed on wait on exit. Status: %d Code: %d"
-msgstr ""
+msgstr "Невдача очікування на виході. Стан: %d Код: %d"
 
 #: gdbmistringconstants.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
-msgstr ""
+msgstr "GDB не підтримує асинхронного режиму"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgctxt "gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition"

@@ -1,17 +1,17 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017, 2019.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-08 18:10+0300\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2019-09-20 21:01+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -317,7 +317,7 @@ msgstr "Помилка: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr "Помилка: курсор знаходиться не в модулі проекту"
+msgstr "Помилка: курсор знаходиться не в модулі проєкту"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
@@ -402,7 +402,7 @@ msgstr "Призовати абстрактні методи і методи і�
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr "Приховати модулі з інших проектів"
+msgstr "Приховати модулі з інших проєктів"
 
 #: codystrconsts.crsideintegration
 msgid "IDE Integration"
@@ -534,11 +534,11 @@ msgstr "нічого не вибрано"
 
 #: codystrconsts.crsnooverloadsfoundinprojectunits
 msgid "no overloads found in project units"
-msgstr "у модулях проекту перевантажень не знайдено"
+msgstr "у модулях проєкту перевантажень не знайдено"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
-msgstr "Немає проекту"
+msgstr "Немає проєкту"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
@@ -622,7 +622,7 @@ msgstr "Вставити рядки стеку викликів GDB:"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
-msgstr "Спочатку відкрийте проект."
+msgstr "Спочатку відкрийте проєкт."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 #, object-pascal-format
@@ -657,7 +657,7 @@ msgstr "PPU: %s"
 #: codystrconsts.crsppufilesofproject
 #, object-pascal-format
 msgid "PPU files of project \"%s\""
-msgstr "Файли PPU проекту \"%s\""
+msgstr "Файли PPU проєкту \"%s\""
 
 #: codystrconsts.crsprivate
 msgid "Private"
@@ -665,11 +665,11 @@ msgstr "Приватний"
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
-msgstr "Проект не має основного файлу з кодом."
+msgstr "Проєкт не має основного файлу з кодом."
 
 #: codystrconsts.crsprojectoutput
 msgid "Project Output"
-msgstr "Вивід проекту"
+msgstr "Вивід проєкту"
 
 #: codystrconsts.crsprotected
 msgid "Protected"

@@ -4,9 +4,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-04-10 22:50+0200\n"
+"PO-Revision-Date: 2019-09-20 20:58+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -726,10 +726,9 @@ msgid "Include assertion code"
 msgstr "Включити assert-код"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Associated debug desktop"
+#, object-pascal-format
 msgid "Associated debug desktop for \"%s\""
-msgstr "Пов'язана стільниця зневадження"
+msgstr "Пов'язана стільниця зневадження для \"%s\""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
@@ -1013,7 +1012,7 @@ msgstr "Кнопки закриття в записнику"
 
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
-msgstr "Кольорова схема"
+msgstr "Колірна схема"
 
 #: lazarusidestrconsts.dlgcmacro
 msgid "C style macros (global)"
@@ -1080,10 +1079,8 @@ msgid "Reverse fold-order in Popup"
 msgstr "Зворотний порядок згортання в спливному меню"
 
 #: lazarusidestrconsts.dlgcogdb
-#, fuzzy
-#| msgid "Generate debugging info for GDB (slower / increases exe-size)"
 msgid "Generate info for the debugger (slower / increases exe-size)"
-msgstr "Створити інформацію для GDB (повільніше / збільшує розмір exe)"
+msgstr "Створити інформацію для зневаджувача (повільніше / збільшує розмір exe)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 msgid "Use Heaptrc unit (check for mem-leaks)"
@@ -1094,10 +1091,8 @@ msgid "Include files (-Fi):"
 msgstr "Включені файли (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-#, fuzzy
-#| msgid "Info for GDB"
 msgid "Debugger info"
-msgstr "Інформація для GDB"
+msgstr "Інформація для зневаджувача"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1395,14 +1390,13 @@ msgid "Delete mode"
 msgstr "Видалити режим"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
 msgid "Delete"
-msgstr "Вилучити"
+msgstr "Видалити"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
 msgid "Delete selected desktop"
-msgstr ""
+msgstr "Видалити вибрану стільницю"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1678,7 +1672,7 @@ msgstr "Запитати"
 
 #: lazarusidestrconsts.dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
-msgstr "Зауваження: Файлами проекту є всі файли у теці проекту"
+msgstr "Зауваження: Файлами проєкту є всі файли у теці проєкту"
 
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
@@ -1721,7 +1715,7 @@ msgstr "Інші Файли"
 
 #: lazarusidestrconsts.dlgenvproject
 msgid "Tabs for project"
-msgstr "Вкладки для проекту"
+msgstr "Вкладки для проєкту"
 
 #: lazarusidestrconsts.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
@@ -1741,10 +1735,8 @@ msgid "Extra line spacing"
 msgstr "Міжрядковий інтервал"
 
 #: lazarusidestrconsts.dlgextsymb
-#, fuzzy
-#| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
-msgstr "Використати зовнішній файл зневаджувальних символів gdb"
+msgstr "Використати зовнішній файл зневаджувальних символів"
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -1781,7 +1773,7 @@ msgstr "Пакунок Delphi"
 #: lazarusidestrconsts.dlgfilterdelphiproject
 msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
 msgid "Delphi project"
-msgstr "Проект Delphi"
+msgstr "Проєкт Delphi"
 
 #: lazarusidestrconsts.dlgfilterdelphiunit
 msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
@@ -1852,12 +1844,12 @@ msgstr "Пакунок Lazarus"
 #: lazarusidestrconsts.dlgfilterlazarusproject
 msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
 msgid "Lazarus project"
-msgstr "Проект Lazarus"
+msgstr "Проєкт Lazarus"
 
 #: lazarusidestrconsts.dlgfilterlazarusprojectsource
 msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
 msgid "Lazarus project source"
-msgstr "Сирець проекту Lazarus"
+msgstr "Сирець проєкту Lazarus"
 
 #: lazarusidestrconsts.dlgfilterlazarussession
 msgid "Lazarus session"
@@ -2064,7 +2056,7 @@ msgstr "Примусове масштабування ТНД в режимі р�
 
 #: lazarusidestrconsts.dlgforcedpiscalingindesigntimehint
 msgid "When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account."
-msgstr "Якщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля даних"
+msgstr "Якщо позначено, параметри масштабування проєкту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля даних"
 
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
@@ -2101,7 +2093,7 @@ msgstr "Тека сирців FPC"
 
 #: lazarusidestrconsts.dlgfppkgconfigurationfile
 msgid "Fppkg configuration file (e.g. fppkg.cfg)"
-msgstr ""
+msgstr "Файл конфігурації fppkg (наприклад, fppkg.cfg)"
 
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
@@ -2451,17 +2443,15 @@ msgstr "Останній (напр. в кінці коду)"
 
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
-msgstr "Тека Lazarus (за замовчуванням для всіх проектів)"
+msgstr "Тека Lazarus (за замовчуванням для всіх проєктів)"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Напрямні: ліва, верхня"
 
 #: lazarusidestrconsts.dlglevel1opt
-#, fuzzy
-#| msgid "1 (quick, debugger friendly)"
 msgid "1 (quick, debugger friendly with small limitations)"
-msgstr "1 (швидко та дружньо до зневаджувача)"
+msgstr "1 (швидко, дружньо до зневаджувача, мало обмежень)"
 
 #: lazarusidestrconsts.dlglevel2opt
 msgid "2 (-O1 + quick optimizations)"
@@ -2476,10 +2466,8 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (Рівень 3 + агресивні оптимізації, обережно)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#, fuzzy
-#| msgid "0 (no optimization)"
 msgid "0 (no optimization, for debugging)"
-msgstr " 0 (без оптимізації)"
+msgstr " 0 (без оптимізації, для зневадження)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
@@ -2499,16 +2487,16 @@ msgstr "Головне меню"
 
 #: lazarusidestrconsts.dlgmainviewforms
 msgid "View Project Forms"
-msgstr "Показати форми проекту"
+msgstr "Показати форми проєкту"
 
 #: lazarusidestrconsts.dlgmainviewframes
 msgid "View Project Frames"
-msgstr "Показати фрейми проекту"
+msgstr "Показати фрейми проєкту"
 
 #: lazarusidestrconsts.dlgmainviewunits
 msgctxt "lazarusidestrconsts.dlgmainviewunits"
 msgid "View Project Units"
-msgstr "Показувати Модулі Проекту"
+msgstr "Показувати Модулі Проєкту"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
@@ -2685,7 +2673,7 @@ msgstr "Значення 0 означає необмежено."
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr "Максимум останніх файлів проектів"
+msgstr "Максимум останніх файлів проєктів"
 
 #: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
 msgid "Middle-click-modifier to close all other tabs"
@@ -3188,18 +3176,17 @@ msgstr "Інші файли модулів (-Fu):"
 
 #: lazarusidestrconsts.dlgoverviewgutterback1color
 msgid "Background 1"
-msgstr ""
+msgstr "Тло 1"
 
 #: lazarusidestrconsts.dlgoverviewgutterback2color
 msgid "Background 2"
-msgstr ""
+msgstr "Тло 2"
 
 #: lazarusidestrconsts.dlgoverviewguttercolor
 msgid "Overview Gutter"
-msgstr ""
+msgstr "Смужка огляду"
 
 #: lazarusidestrconsts.dlgoverviewgutterpagecolor
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
 msgid "Page"
 msgstr "Сторінка"
@@ -3296,7 +3283,6 @@ msgid "Create Application Bundle"
 msgstr "Створити пакет застосунків"
 
 #: lazarusidestrconsts.dlgpodebugger
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgpodebugger"
 msgid "Debugger"
 msgstr "Зневаджувач"
@@ -3419,20 +3405,20 @@ msgstr "Пріоритети"
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
-msgstr "Проект"
+msgstr "Проєкт"
 
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
-msgstr "Параметри проекту"
+msgstr "Параметри проєкту"
 
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
-msgstr "Параметри для Проекту: %s"
+msgstr "Параметри для Проєкту: %s"
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"
-msgstr "Файли проекту"
+msgstr "Файли проєкту"
 
 #: lazarusidestrconsts.dlgpromptonreplace
 msgid "&Prompt on replace"
@@ -3448,7 +3434,7 @@ msgstr "Назва властивості"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project and packages at start"
-msgstr "При старті відкрити останній проект і пакунки"
+msgstr "При старті відкрити останній проєкт і пакунки"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
@@ -3480,14 +3466,13 @@ msgid "Rename desktop"
 msgstr "Перейменувати стільницю"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
 msgid "Rename"
 msgstr "Перейменувати"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
 msgid "Rename selected desktop"
-msgstr ""
+msgstr "Перейменувати вибрану стільницю"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3502,14 +3487,13 @@ msgid "Report"
 msgstr "Звіт"
 
 #: lazarusidestrconsts.dlgreset
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "Скинути"
 
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
-msgstr ""
+msgstr "Скинути все"
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3588,7 +3572,7 @@ msgstr "Параметри виконання"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
-msgstr ""
+msgstr "Зберегти поточну стільницю"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3596,11 +3580,11 @@ msgstr "Зберегти поточну стільницю як"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
 msgid "Save active desktop as ..."
-msgstr ""
+msgstr "Зберегти активну стільницю як ..."
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
 msgid "Save active desktop as"
-msgstr ""
+msgstr "Зберегти активну стільницю як"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3616,11 +3600,11 @@ msgstr "Файли доступні у списку історії \"Відкр�
 
 #: lazarusidestrconsts.dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
-msgstr "Зберігати відомості тільки про файли проекту"
+msgstr "Зберігати відомості тільки про файли проєкту"
 
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
-msgstr "Лише файли, що належать до цього проекту."
+msgstr "Лише файли, що належать до цього проєкту."
 
 #: lazarusidestrconsts.dlgsavein
 msgid "Save in"
@@ -3677,13 +3661,11 @@ msgid "&Selected text"
 msgstr "&Вибраний текст"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
 msgid "Set active"
 msgstr "Зробити активним"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Зробити активним"
@@ -3945,7 +3927,7 @@ msgstr "Параметри для цілі"
 
 #: lazarusidestrconsts.dlgtestprjdir
 msgid "Directory for building test projects"
-msgstr "Тека для збирання пробних проектів"
+msgstr "Тека для збирання пробних проєктів"
 
 #: lazarusidestrconsts.dlgtextstyle
 msgid "Text-Style"
@@ -3958,16 +3940,14 @@ msgstr "&Текст для пошуку"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
-msgstr ""
+msgstr "Елемент використовує (і змінює) схеми:"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
 msgid "Toggle as debug desktop"
 msgstr "Перемкнути як стільницю зневадження"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Перемкнути як стільницю зневадження"
@@ -4048,7 +4028,7 @@ msgstr "Використати стандартний файл налаштув�
 
 #: lazarusidestrconsts.dlgusehighlight
 msgid "Use Highlight"
-msgstr ""
+msgstr "Підсвічувати"
 
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
@@ -4068,16 +4048,12 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Не вдалося завантажити файл користувацької схеми %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-#, fuzzy
-#| msgid "Use (and edit) global scheme settings"
 msgid "- Scheme globals -"
-msgstr "Використовувати (і змінювати) параметри глобальної схеми"
+msgstr "- Глобальні параметри схеми -"
 
 #: lazarusidestrconsts.dlguseschemelocal
-#, fuzzy
-#| msgid "Use local scheme settings"
 msgid "selected language"
-msgstr "Використовувати параметри локальної схеми"
+msgstr "вибрана мова"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -4405,7 +4381,7 @@ msgstr "Не знайдено пакунка для залежності \"%s\".
 
 #: lazarusidestrconsts.lisa2ppackageorproject
 msgid "Package/Project"
-msgstr "Пакунок/проект"
+msgstr "Пакунок/проєкт"
 
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
@@ -4461,7 +4437,7 @@ msgstr "Назва класу \"%s\" не є припустимим іденти
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
 #, object-pascal-format
 msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
-msgstr "Файл \"%s\" є частиною поточного проекту.%sНе краща ідея ділити файли між проектами і пакунками."
+msgstr "Файл \"%s\" є частиною поточного проєкту.%sНе краща ідея ділити файли між проєктами і пакунками."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
 #, object-pascal-format
@@ -4546,7 +4522,7 @@ msgstr "Перервано"
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
-msgstr "Перервати завантаження проекту"
+msgstr "Перервати завантаження проєкту"
 
 #: lazarusidestrconsts.lisabortwholeloading
 msgid "Abort whole loading"
@@ -4572,7 +4548,7 @@ msgstr "Про ІСР"
 
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
-msgstr "Про проект Lazarus"
+msgstr "Про проєкт Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 #, object-pascal-format
@@ -4718,7 +4694,7 @@ msgstr "додати пакунки до списку встановлених �
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
-msgstr "Додати пакунок до проекту"
+msgstr "Додати пакунок до проєкту"
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
@@ -4740,7 +4716,7 @@ msgstr "Додати до шляхів пошуку файлів для вклю
 #: lazarusidestrconsts.lisaddtoproject
 #, object-pascal-format
 msgid "Add %s to project?"
-msgstr "Додати %s до проекту?"
+msgstr "Додати %s до проєкту?"
 
 #: lazarusidestrconsts.lisaddtostartupcomponents
 msgid "Add to startup components?"
@@ -4956,7 +4932,7 @@ msgstr "Якорити верхній край до верхнього краю 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 #, object-pascal-format
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
-msgstr "При останньому запуску виникла помилка при завантаженні %s!%sЗавантажити цей проект знову?"
+msgstr "При останньому запуску виникла помилка при завантаженні %s!%sЗавантажити цей проєкт знову?"
 
 #: lazarusidestrconsts.lisappearance
 msgid "Appearance"
@@ -4989,7 +4965,7 @@ msgstr "Скоригувати розширення назв і регістр �
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
-msgstr "Модуль проекту не може бути використаний іншими пакунками/проектами"
+msgstr "Модуль проєкту не може бути використаний іншими пакунками/проєктами"
 
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
@@ -5001,7 +4977,7 @@ msgstr "Запитати перед заміною кожного фрагмен
 
 #: lazarusidestrconsts.lisaskbeforesavingprojectssession
 msgid "Ask before saving project's session"
-msgstr "Запитати перед збереженням сеансу проекту"
+msgstr "Запитати перед збереженням сеансу проєкту"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form."
@@ -5110,7 +5086,7 @@ msgstr "Доступний для встановлення"
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
-msgstr "Доступні режими збирання проекту:"
+msgstr "Доступні режими збирання проєкту:"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -5122,7 +5098,7 @@ msgstr "Резервування не вдалося"
 
 #: lazarusidestrconsts.lisbackuphint
 msgid "Creates a Backup directory under project directory"
-msgstr "Створює резервний каталог в каталозі проекту"
+msgstr "Створює резервний каталог в каталозі проєкту"
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 #, object-pascal-format
@@ -5159,11 +5135,11 @@ msgstr "Команда збирання"
 
 #: lazarusidestrconsts.lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
-msgstr "Замість виконання після збирання проекту використати команду Зібрати файл"
+msgstr "Замість виконання після збирання проєкту використати команду Зібрати файл"
 
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
-msgstr "Замість виконання проекту використати команду Виконати файл"
+msgstr "Замість виконання проєкту використати команду Виконати файл"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -5296,7 +5272,7 @@ msgstr "Зібрати"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
-msgstr "зібрати всі файли проекту/пакунка/ІСР"
+msgstr "зібрати всі файли проєкту/пакунка/ІСР"
 
 #: lazarusidestrconsts.lisbuildcaption
 msgctxt "lazarusidestrconsts.lisbuildcaption"
@@ -5346,7 +5322,7 @@ msgstr "Режими збирання"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
-msgstr "Зібрати новий проект"
+msgstr "Зібрати новий проєкт"
 
 #: lazarusidestrconsts.lisbuildnumber
 msgid "Build number"
@@ -5394,7 +5370,7 @@ msgstr "Скасувати зміну назви"
 
 #: lazarusidestrconsts.liscannotcompileproject
 msgid "Cannot compile project"
-msgstr "Неможливо скомпілювати проект"
+msgstr "Неможливо скомпілювати проєкт"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Cannot copy top level component."
@@ -5492,7 +5468,7 @@ msgstr "Неоднозначний компілятор"
 #: lazarusidestrconsts.lisccochecktestdir
 #, object-pascal-format
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
-msgstr "Перевірте випробувальну теку в %sІнструменти -> Параметри -> Файли -> Тека для  збирання пробних проектів"
+msgstr "Перевірте випробувальну теку в %sІнструменти -> Параметри -> Файли -> Тека для  збирання пробних проєктів"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 #, object-pascal-format
@@ -6053,7 +6029,7 @@ msgstr "Перевірити наступний елемент у джерелі
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 #, object-pascal-format
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
-msgstr "%s Перевірити ціль (ОС, ЦП, тип віджету LCL). Можливо вам треба перекомпілювати пакунок для цієї цілі або встановити іншу ціль для проекту."
+msgstr "%s Перевірити ціль (ОС, ЦП, тип віджету LCL). Можливо вам треба перекомпілювати пакунок для цієї цілі або встановити іншу ціль для проєкту."
 
 #: lazarusidestrconsts.lischeckuncheckall
 msgid "Check/uncheck all"
@@ -6110,7 +6086,7 @@ msgstr "Виберіть пакунок Delphi (*.dpk)"
 
 #: lazarusidestrconsts.lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
-msgstr "Виберіть проект Delphi (*.dpr)"
+msgstr "Виберіть проєкт Delphi (*.dpr)"
 
 #: lazarusidestrconsts.lischoosedelphiunit
 msgid "Choose Delphi unit (*.pas)"
@@ -6150,7 +6126,7 @@ msgstr "Виберіть один із цих пунктів для створе
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewproject
 msgid "Choose one of these items to create a new Project"
-msgstr "Виберіть один із цих пунктів для створення нового проекту"
+msgstr "Виберіть один із цих пунктів для створення нового проєкту"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstoinheritfromanexistingone
 msgid "Choose one of these items to inherit from an existing one"
@@ -6258,7 +6234,7 @@ msgstr "Очистити і зібрати"
 
 #: lazarusidestrconsts.liscleanupandbuildproject
 msgid "Clean up and build project"
-msgstr "Очистити і зібрати проект"
+msgstr "Очистити і зібрати проєкт"
 
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
@@ -6621,11 +6597,11 @@ msgstr "Створити визначення для текстів програ
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 #, object-pascal-format
 msgid "Create Defines for %s Project"
-msgstr "Створити означення для Проекту %s"
+msgstr "Створити означення для Проєкту %s"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
-msgstr "Створити макроси FPC і шляхи до тек проекту FPC"
+msgstr "Створити макроси FPC і шляхи до тек проєкту FPC"
 
 #: lazarusidestrconsts.liscodetoolsdefsdefine
 msgid "Define"
@@ -6647,7 +6623,7 @@ msgstr "Головна тека %s, %sде Borland встановив всі к�
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
 #, object-pascal-format
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "Головна тека %s,%sде Borland встановив всі сирці %s,%sвикористані проектом %s.%sНаприклад: C:/Programme/Borland/Delphi%s"
+msgstr "Головна тека %s,%sде Borland встановив всі сирці %s,%sвикористані проєктом %s.%sНаприклад: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdescription
 msgid "Description:"
@@ -6701,7 +6677,7 @@ msgstr "Вставити шаблон з теки Delphi 5"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi5projecttempl
 msgid "Insert Delphi 5 Project Template"
-msgstr "Вставити шаблон проекту Delphi 5"
+msgstr "Вставити шаблон проєкту Delphi 5"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi6compilertemp
 msgid "Insert Delphi 6 Compiler Template"
@@ -6713,7 +6689,7 @@ msgstr "Вставити шаблон з теки Delphi 6"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi6projecttempl
 msgid "Insert Delphi 6 Project Template"
-msgstr "Вставити шаблон проекту Delphi 6"
+msgstr "Вставити шаблон проєкту Delphi 6"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi7compilertemp
 msgid "Insert Delphi 7 Compiler Template"
@@ -6725,7 +6701,7 @@ msgstr "Вставити шаблон з теки Delphi 7"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi7projecttempl
 msgid "Insert Delphi 7 Project Template"
-msgstr "Вставити шаблон проекту Delphi 7"
+msgstr "Вставити шаблон проєкту Delphi 7"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalcompilert
 msgid "Insert Free Pascal Compiler Template"
@@ -6733,7 +6709,7 @@ msgstr "Вставити шаблон компілятора Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalprojectte
 msgid "Insert Free Pascal Project Template"
-msgstr "Вставити шаблон проекту Free Pascal"
+msgstr "Вставити шаблон проєкту Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
 msgid "Insert Free Pascal SVN Source Template"
@@ -6749,7 +6725,7 @@ msgstr "Вставити шаблон з теки Kylix 3"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3projecttempl
 msgid "Insert Kylix 3 Project Template"
-msgstr "Вставити шаблон проекту Kylix 3"
+msgstr "Вставити шаблон проєкту Kylix 3"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
@@ -6783,7 +6759,7 @@ msgstr "Головна тека %s,%sде Borland встановив всі %s �
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectoryforproject
 #, object-pascal-format
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
-msgstr "Головна тека %s,%sде Borland встановив %s коди,%sякі використовують цей %s проект.%sНаприклад: /home/user/kylix%s"
+msgstr "Головна тека %s,%sде Borland встановив %s коди,%sякі використовують цей %s проєкт.%sНаприклад: /home/user/kylix%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsmovenodedown
 msgid "Move node down"
@@ -6829,12 +6805,12 @@ msgstr "Попередній вузол не може містити дочір�
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory
 msgctxt "lazarusidestrconsts.liscodetoolsdefsprojectdirectory"
 msgid "Project directory"
-msgstr "Тека проекту"
+msgstr "Тека проєкту"
 
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory2
 #, object-pascal-format
 msgid "%s project directory"
-msgstr "Тека проекту %s"
+msgstr "Тека проєкту %s"
 
 #: lazarusidestrconsts.liscodetoolsdefsreaderror
 msgid "Read error"
@@ -6854,7 +6830,7 @@ msgstr "Тека сирців Free Pascal SVN. Не обов'язково. Це 
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
-msgstr "Тека проекту Free Pascal."
+msgstr "Тека проєкту Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -6867,7 +6843,7 @@ msgstr "Шлях до компілятора Free Pascal.%s Наприклад, 
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr "Шлях до компілятора проекту Free Pascal. Потрібно лише, якщо Ви встановлюєте нижче програму FPC SVN. Використовується для автостворювання макросів."
+msgstr "Шлях до компілятора проєкту Free Pascal. Потрібно лише, якщо Ви встановлюєте нижче програму FPC SVN. Використовується для автостворювання макросів."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
 #, object-pascal-format
@@ -6877,7 +6853,7 @@ msgstr "Шлях до компілятора Free Pascal для цього дж�
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 #, object-pascal-format
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
-msgstr "Тека %s проекту,%sщо містить файли .dpr, dpk."
+msgstr "Тека %s проєкту,%sщо містить файли .dpr, dpk."
 
 #: lazarusidestrconsts.liscodetoolsdefsundefine
 msgid "Undefine"
@@ -7031,7 +7007,7 @@ msgstr "Компілювати"
 
 #: lazarusidestrconsts.liscompileanddonotaskagain
 msgid "Compile and do not ask again"
-msgstr ""
+msgstr "Компілювати і не питати більше"
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
@@ -7039,7 +7015,7 @@ msgstr "Компілювати в таких режимах"
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
-msgstr "Компіляція проекту"
+msgstr "Компіляція проєкту"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -7088,7 +7064,7 @@ msgstr "Компілювати"
 
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
-msgstr ""
+msgstr "Компілювати з параметрами проєкту"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -7387,7 +7363,7 @@ msgstr "Конвертувати пакунок Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphiproject
 msgid "Convert Delphi project"
-msgstr "Конвертувати проект Delphi"
+msgstr "Конвертувати проєкт Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphiunit
 msgid "Convert Delphi unit"
@@ -7399,7 +7375,7 @@ msgstr "*** Перетворити файли модулів, знайдені �
 
 #: lazarusidestrconsts.lisconvdelphiconvertingprojpackunits
 msgid "*** Converting unit files belonging to project/package ***"
-msgstr "*** Перетворення файлів модулів, що належать проекту/пакунка ***"
+msgstr "*** Перетворення файлів модулів, що належать проєкту/пакунка ***"
 
 #: lazarusidestrconsts.lisconvdelphierror
 #, object-pascal-format
@@ -7453,7 +7429,7 @@ msgstr "Пакунок %s необхідний, але не встановлен
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 #, object-pascal-format
 msgid "Omitted unit %s from project"
-msgstr "Знехтуваний модуль %s з проекту"
+msgstr "Знехтуваний модуль %s з проєкту"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
 #, object-pascal-format
@@ -7491,7 +7467,7 @@ msgstr "LCL вже містить модуль з назвою %s. Видали�
 
 #: lazarusidestrconsts.lisconvdprojfilenotsupportedyet
 msgid ".dproj file is not supported yet. The file is used by Delphi 2007 and newer. Please select a .dpr file for projects or .dpk file for packages."
-msgstr "Файл .dproj ще не підтримується. Він використовується Delphi 2007 і новішими. Виберіть файл .dpr для проектів або .dpk для пакунків."
+msgstr "Файл .dproj ще не підтримується. Він використовується Delphi 2007 і новішими. Виберіть файл .dpr для проєктів або .dpk для пакунків."
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -7507,7 +7483,7 @@ msgstr "Конвертувати кодування"
 
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
-msgstr "Змінити кодування проектів/пакунків"
+msgstr "Змінити кодування проєктів/пакунків"
 
 #: lazarusidestrconsts.lisconvertotherhint
 msgid "Other options affecting the conversion"
@@ -7515,7 +7491,7 @@ msgstr "Інші параметри, що впливають на перетво
 
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
-msgstr "Конвертувати проект або пакунок"
+msgstr "Конвертувати проєкт або пакунок"
 
 #: lazarusidestrconsts.lisconverttarget
 msgid "Target"
@@ -7582,7 +7558,7 @@ msgstr "Батьківський контейнер"
 #: lazarusidestrconsts.lisconvproblemsfindingallunits
 #, object-pascal-format
 msgid "Problems when trying to find all units from project file %s"
-msgstr "Проблеми при спробі знайти всі модулі з файлу проекту %s"
+msgstr "Проблеми при спробі знайти всі модулі з файлу проєкту %s"
 
 #: lazarusidestrconsts.lisconvproblemsfixingincludefile
 #, object-pascal-format
@@ -7957,7 +7933,7 @@ msgstr ", ЦП: %s"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
-msgstr "Спочатку створіть проект!"
+msgstr "Спочатку створіть проєкт!"
 
 #: lazarusidestrconsts.liscreatedebugandreleasemodes
 msgid "Create Debug and Release modes"
@@ -8006,7 +7982,7 @@ msgstr "Створити новий компонент пакунка"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
-msgstr "Створити проект"
+msgstr "Створити проєкт"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
@@ -8371,7 +8347,7 @@ msgstr "Автоматично закривати вікно асемблера,
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbackend
 msgid "Debugger backend"
-msgstr ""
+msgstr "Бек-енд зневаджувача"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -8388,7 +8364,7 @@ msgstr "Зневаджувач"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
 msgid "Debugger Backend:"
-msgstr ""
+msgstr "Бек-енд зневаджувача:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -8441,7 +8417,6 @@ msgid "Module"
 msgstr "Модуль"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmname
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
 msgid "Name:"
 msgstr "Назва:"
@@ -8493,7 +8468,7 @@ msgstr "Нитка"
 #: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
 #, object-pascal-format
 msgid "Unknown Debugger backend \"%s\""
-msgstr ""
+msgstr "Невідомий бек-енд зневаджувача \"%s\""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
@@ -8501,7 +8476,7 @@ msgstr "Використовувати кольори журналу подій"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
 msgid "-- Use IDE default Debugger --"
-msgstr ""
+msgstr "-- Використати типовий зневаджувач ІСР --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
@@ -8672,7 +8647,7 @@ msgstr "Сирці, сумісні з Delphi. Рекомендовано."
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects but are not compiled into the project. The compiler will not find units of this package when compiling the project."
-msgstr "Пакунки часу розробки додають компоненти і елементи меню в ІСР. Вони можуть використовуватися проектами, але не компілюватися з ними. Компілятор не знайде модулів такого пакунка під час компілювання проекту."
+msgstr "Пакунки часу розробки додають компоненти і елементи меню в ІСР. Вони можуть використовуватися проєктами, але не компілюватися з ними. Компілятор не знайде модулів такого пакунка під час компілювання проєкту."
 
 #: lazarusidestrconsts.lisdesktops
 msgid "Desktops ..."
@@ -8837,7 +8812,7 @@ msgstr "Відхилити всі зміни"
 
 #: lazarusidestrconsts.lisdiscardchangesandopenproject
 msgid "Discard changes and open project"
-msgstr "Відхилити зміни і відкрити проект"
+msgstr "Відхилити зміни і відкрити проєкт"
 
 #: lazarusidestrconsts.lisdiscardchangesandquit
 msgid "Discard changes and quit"
@@ -8845,7 +8820,7 @@ msgstr "Відхилити зміни і вийти"
 
 #: lazarusidestrconsts.lisdiscardchangescreatenewproject
 msgid "Discard changes, create new project"
-msgstr "Відхилити зміни, створити новий проект"
+msgstr "Відхилити зміни, створити новий проєкт"
 
 #: lazarusidestrconsts.lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -8935,7 +8910,7 @@ msgstr "%sНе перевіряти, чи запущено інший примі
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
-msgstr "Не закривати проект"
+msgstr "Не закривати проєкт"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
@@ -8947,7 +8922,7 @@ msgstr "Не показувати заставки"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
 msgid "Do not show this dialog for this project"
-msgstr "Не показувати цей діалог для цього проекту"
+msgstr "Не показувати цей діалог для цього проєкту"
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
@@ -8955,7 +8930,7 @@ msgstr "Не показувати це повідомлення знов"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
-msgstr "Не записувати оновлений файл інформації про проект після збирання. Якщо параметр не вказано, номер збірки буде нарощуватися (якщо цю функцію увімкнено)."
+msgstr "Не записувати оновлений файл інформації про проєкт після збирання. Якщо параметр не вказано, номер збірки буде нарощуватися (якщо цю функцію увімкнено)."
 
 #: lazarusidestrconsts.lisdonwloadonlinepackages
 #, object-pascal-format
@@ -8985,11 +8960,11 @@ msgstr "Звантажити"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
-msgstr "Ви все ще хочете створити новий проект?"
+msgstr "Ви все ще хочете створити новий проєкт?"
 
 #: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
 msgid "Do you still want to open another project?"
-msgstr "Ви все ще хочете відкрити інший проект?"
+msgstr "Ви все ще хочете відкрити інший проєкт?"
 
 #: lazarusidestrconsts.lisdoyoustillwanttoquit
 msgid "Do you still want to quit?"
@@ -9146,11 +9121,11 @@ msgstr "Всі пакунки"
 
 #: lazarusidestrconsts.lisedtdefcurrentproject
 msgid "Current Project"
-msgstr "Поточний проект"
+msgstr "Поточний проєкт"
 
 #: lazarusidestrconsts.lisedtdefsallprojects
 msgid "All projects"
-msgstr "Всі проекти"
+msgstr "Всі проєкти"
 
 #: lazarusidestrconsts.lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
@@ -9751,7 +9726,7 @@ msgstr "Доповнити список шляхів пошуку файлів �
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
 #, object-pascal-format
 msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "Доповнити список шляхів пошуку файлів для включення проекту такими%s\"%s\"?"
+msgstr "Доповнити список шляхів пошуку файлів для включення проєкту такими%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludepath
 msgid "Extend include path?"
@@ -9769,7 +9744,7 @@ msgstr "Доповнити список шляхів пошуку модулів
 #: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
 #, object-pascal-format
 msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr "Доповнити список шляхів пошуку модулів проекту такими%s\"%s\"?"
+msgstr "Доповнити список шляхів пошуку модулів проєкту такими%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
@@ -9895,7 +9870,7 @@ msgstr "Файл \"%s\" змінено. Зберегти?"
 
 #: lazarusidestrconsts.lisfilehasnoproject
 msgid "File has no project"
-msgstr "Файл не має проекту"
+msgstr "Файл не має проєкту"
 
 #: lazarusidestrconsts.lisfileisdirectory
 msgid "File is directory"
@@ -10096,7 +10071,7 @@ msgstr "&Багаторядковий шаблон"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
-msgstr "шукати в усіх файлах &проекту"
+msgstr "шукати в усіх файлах &проєкту"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
 msgid "search all &open files"
@@ -10112,7 +10087,7 @@ msgstr "шукати в &теках"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "search in project &group"
-msgstr ""
+msgstr "шукати в &групі проєктів"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
@@ -10231,7 +10206,7 @@ msgstr "Назва пакунка FPDoc:"
 
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
-msgstr "Назва пакунка FPDoc. Типовим є назва файлу проекту."
+msgstr "Назва пакунка FPDoc. Типовим є назва файлу проєкту."
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 #, object-pascal-format
@@ -10262,26 +10237,21 @@ msgid "Warnings have to be resolved first"
 msgstr "Спочатку слід опрацювати попередження"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
-#, fuzzy
-#| msgid "Fppkg is the Free Pascal package manager. When it is not configured properly, it may be impossible to resolve dependencies on Free Pascal packages."
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
-msgstr "Fppkg - це менеджер пакунків Free Pascal. Якщо він сконфігурований неправильно, йому може не вдатись розв'язати залежності пакунків Free Pascal."
+msgstr "Конфігураційний файл типово має назву \"fppkg.cfg\". Якщо він сконфігурований неправильно, може не вдатись розв'язати залежності пакунків Free Pascal. Залишіть порожнім, щоб скористатись типовим."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Failed to generate the configuration file \"%s\"."
+#, object-pascal-format
 msgid "Failed to generate the configuration file \"%s\": %s"
-msgstr "Не вдалось створити файл конфігурації \"%s\"."
+msgstr "Не вдалось створити файл конфігурації \"%s\": %s"
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
 msgid "Files to be written:"
 msgstr "Файли, що будуть записані:"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
-#, fuzzy
-#| msgid "You could try to restore the configuration files automatically, or adapt fppkg.cfg manually."
 msgid "You could try to restore the configuration files automatically, or adapt the configuration file manually."
-msgstr "Ви можете спробувати відновити файли конфігурації автоматично або налаштувати fppkg.cfg вручну."
+msgstr "Ви можете спробувати відновити файли конфігурації автоматично або налаштувати файл конфігурації вручну."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
@@ -10394,7 +10364,7 @@ msgstr "Ідентифікатор: %s"
 
 #: lazarusidestrconsts.lisfriinallopenpackagesandprojects
 msgid "in all open packages and projects"
-msgstr "у всіх відкритих пакунках і проектах"
+msgstr "у всіх відкритих пакунках і проєктах"
 
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
@@ -10402,11 +10372,11 @@ msgstr "в поточному модулі"
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
-msgstr "в головному проекті"
+msgstr "в головному проєкті"
 
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
-msgstr "у проекті/пакунку, що містить цей модуль"
+msgstr "у проєкті/пакунку, що містить цей модуль"
 
 #: lazarusidestrconsts.lisfriinvalididentifier
 msgid "Invalid Identifier"
@@ -10620,7 +10590,7 @@ msgstr "Приховати за допомогою параметра пакун
 #: lazarusidestrconsts.lishidewithprojectoptionvm
 #, object-pascal-format
 msgid "Hide with project option (-vm%s)"
-msgstr "Приховати за допомогою параметра проекту (-vm%s)"
+msgstr "Приховати за допомогою параметра проєкту (-vm%s)"
 
 #: lazarusidestrconsts.lishint
 msgctxt "lazarusidestrconsts.lishint"
@@ -10796,11 +10766,11 @@ msgstr "Показувати у заголовку ІСР вибраний ре�
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"
-msgstr "Показувати у заголовку ІСР теку проекту"
+msgstr "Показувати у заголовку ІСР теку проєкту"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
-msgstr "Заголовок ІСР починається з назви проекту"
+msgstr "Заголовок ІСР починається з назви проєкту"
 
 #: lazarusidestrconsts.lisiecoallbuildmodes
 msgid "All build modes"
@@ -10894,7 +10864,7 @@ msgstr "Знехтувати, використати %s як предка"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
-msgstr "Наслідувати відступ поточного модуля, проекту або пакунка"
+msgstr "Наслідувати відступ поточного модуля, проєкту або пакунка"
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
@@ -10942,7 +10912,7 @@ msgstr "В джерельній теці пакунка \"%s\"."
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
-msgstr "В теці сирцевих кодів проекту. Перевірте на дублікати."
+msgstr "В теці сирцевих кодів проєкту. Перевірте на дублікати."
 
 #: lazarusidestrconsts.lisincludeallsubdirectories
 msgid "Include all subdirectories"
@@ -11017,7 +10987,7 @@ msgstr "Успадковані параметри"
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
-msgstr "Успадкований компонент проекту"
+msgstr "Успадкований компонент проєкту"
 
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
@@ -11026,7 +10996,7 @@ msgstr "Ініціалізувати локальну змінну"
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, object-pascal-format
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
-msgstr "Для того, щоб створити чисту копію проекту/пакунка, всі файли в даній теці будуть видалені і весь її вміст буде втрачено.%sВидалити всі файли в \"%s\"?"
+msgstr "Для того, щоб створити чисту копію проєкту/пакунка, всі файли в даній теці будуть видалені і весь її вміст буде втрачено.%sВидалити всі файли в \"%s\"?"
 
 #: lazarusidestrconsts.lisinsert
 msgctxt "lazarusidestrconsts.lisinsert"
@@ -11347,7 +11317,7 @@ msgstr "Неправильна назва проц."
 
 #: lazarusidestrconsts.lisinvalidprojectfilename
 msgid "Invalid project filename"
-msgstr "Неправильна назва файлу проекту"
+msgstr "Неправильна назва файлу проєкту"
 
 #: lazarusidestrconsts.lisinvalidpublishingdirectory
 msgid "Invalid publishing Directory"
@@ -11365,12 +11335,12 @@ msgstr "неправильна версія у %s"
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
-msgstr "%s вже є частиною проекту."
+msgstr "%s вже є частиною проєкту."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
 #, object-pascal-format
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
-msgstr "\"%s\" не є коректною назвою проекту.%s Виберіть іншу (напр., project1.lpi)"
+msgstr "\"%s\" не є коректною назвою проєкту.%s Виберіть іншу (напр., project1.lpi)"
 
 #: lazarusidestrconsts.lisisathiscirculardependencyisnotallowed
 #, object-pascal-format
@@ -11427,7 +11397,7 @@ msgstr "Залишити конвертовані файли відкритим�
 
 #: lazarusidestrconsts.liskeepfileopenhint
 msgid "All project files will be open in editor after conversion"
-msgstr "Всі файли проекту буде відкрито в редакторі після перетворення"
+msgstr "Всі файли проєкту буде відкрито в редакторі після перетворення"
 
 #: lazarusidestrconsts.liskeepininstalllist
 msgid "Keep in install list"
@@ -11500,7 +11470,7 @@ msgstr "Зібрати в багатьох режимах"
 
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
-msgstr "Зібрати проект/програму"
+msgstr "Зібрати проєкт/програму"
 
 #: lazarusidestrconsts.liskmchoosekeymappingscheme
 msgid "Choose Keymapping scheme"
@@ -11517,7 +11487,7 @@ msgstr "Очистити і зібрати"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
-msgstr "Закрити проект"
+msgstr "Закрити проєкт"
 
 #: lazarusidestrconsts.liskmcodetoolsdefineseditor
 msgid "CodeTools defines editor"
@@ -11525,7 +11495,7 @@ msgstr "CodeTools визначає редактор"
 
 #: lazarusidestrconsts.liskmcompileprojectprogram
 msgid "Compile project/program"
-msgstr "Компілювати проект/програму"
+msgstr "Компілювати проєкт/програму"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
 msgid "Config \"Build File\""
@@ -11545,7 +11515,7 @@ msgstr "Перетворення пакунка Delphi на пакунок Lazar
 
 #: lazarusidestrconsts.liskmconvertdelphiprojecttolazarusproject
 msgid "Convert Delphi Project to Lazarus Project"
-msgstr "Перетворення проекту Delphi в проект Lazarus"
+msgstr "Перетворення проєкту Delphi в проєкт Lazarus"
 
 #: lazarusidestrconsts.liskmconvertdelphiunittolazarusunit
 msgid "Convert Delphi Unit to Lazarus Unit"
@@ -11593,7 +11563,7 @@ msgstr "Обчислити/Змінити"
 
 #: lazarusidestrconsts.liskmexampleprojects
 msgid "Example Projects"
-msgstr "Приклади проектів"
+msgstr "Приклади проєктів"
 
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
@@ -11717,11 +11687,11 @@ msgstr "Новий пакунок"
 
 #: lazarusidestrconsts.liskmnewproject
 msgid "New project"
-msgstr "Новий проект"
+msgstr "Новий проєкт"
 
 #: lazarusidestrconsts.liskmnewprojectfromfile
 msgid "New project from file"
-msgstr "Новий проект з файлу"
+msgstr "Новий проєкт з файлу"
 
 #: lazarusidestrconsts.liskmnewunit
 msgctxt "lazarusidestrconsts.liskmnewunit"
@@ -11746,7 +11716,7 @@ msgstr "Зупинити програму"
 
 #: lazarusidestrconsts.liskmpublishproject
 msgid "Publish project"
-msgstr "Опублікувати проект"
+msgstr "Опублікувати проєкт"
 
 #: lazarusidestrconsts.liskmquickcompilenolinking
 msgid "Quick compile, no linking"
@@ -11754,7 +11724,7 @@ msgstr "Швидке компілювання, без компонування"
 
 #: lazarusidestrconsts.liskmremoveactivefilefromproject
 msgid "Remove Active File from Project"
-msgstr "Видалити активний файл з проекту"
+msgstr "Видалити активний файл з проєкту"
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -11770,11 +11740,11 @@ msgstr "ЗберегтиЯк"
 
 #: lazarusidestrconsts.liskmsaveproject
 msgid "Save project"
-msgstr "Зберегти проект"
+msgstr "Зберегти проєкт"
 
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
-msgstr "Зберегти проект як"
+msgstr "Зберегти проєкт як"
 
 #: lazarusidestrconsts.liskmselectlineend
 msgctxt "lazarusidestrconsts.liskmselectlineend"
@@ -11989,11 +11959,11 @@ msgstr "Переглянути історію переходів"
 
 #: lazarusidestrconsts.liskmviewprojectoptions
 msgid "View project options"
-msgstr "Переглядання опцій проекту"
+msgstr "Переглядання опцій проєкту"
 
 #: lazarusidestrconsts.liskmviewprojectsource
 msgid "View Project Source"
-msgstr "Переглядання тексту проекту"
+msgstr "Переглядання тексту проєкту"
 
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
@@ -12047,7 +12017,7 @@ msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainai
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
-msgstr "lazarus [параметри] <назва файлу проекту>"
+msgstr "lazarus [параметри] <назва файлу проєкту>"
 
 #: lazarusidestrconsts.lislazarussvnrev
 #, object-pascal-format
@@ -12247,7 +12217,7 @@ msgstr "Немає дійсного шляху FPDoc"
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 #, object-pascal-format
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "Модуль %s не належить жодному пакунку чи проекту.%sДодайте модуль до пакунка або проекту.%sНеможливо створити fpdoc файл."
+msgstr "Модуль %s не належить жодному пакунку чи проєкту.%sДодайте модуль до пакунка або проєкту.%sНеможливо створити fpdoc файл."
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -12423,11 +12393,11 @@ msgstr "Рядок у нижньому регістрі, поданий як п�
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckbox
 msgid "Maximize compatibility of project files (LPI and LPS)"
-msgstr "Максимізувати сумісність файлів проекту (LPI і LPS)"
+msgstr "Максимізувати сумісність файлів проєкту (LPI і LPS)"
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
 msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
-msgstr "Перевірте це, якщо потрібно відкривати проект у застарілих (2.0 і нижче) версіях Lazarus."
+msgstr "Перевірте це, якщо потрібно відкривати проєкт у застарілих (2.0 і нижче) версіях Lazarus."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
@@ -12444,7 +12414,7 @@ msgstr "Файли ресурсів Lazarus (.lrs) для включення"
 
 #: lazarusidestrconsts.lismacpreferences
 msgid "Preferences..."
-msgstr ""
+msgstr "Параметри..."
 
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
@@ -12473,7 +12443,7 @@ msgstr "Головний модуль має вираз Application.Title"
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
-msgstr "Головний модуль має секцію Uses, що містить всі модулі проекту"
+msgstr "Головний модуль має секцію Uses, що містить всі модулі проєкту"
 
 #: lazarusidestrconsts.lismainunitispascalsource
 msgid "Main unit is Pascal source"
@@ -12629,7 +12599,7 @@ msgstr "Додати точку переходу до історії"
 
 #: lazarusidestrconsts.lismenuaddtoproject
 msgid "Add Editor File to Project"
-msgstr "Додати файл редактора до проекту"
+msgstr "Додати файл редактора до проєкту"
 
 #: lazarusidestrconsts.lismenuaddwatch
 msgid "Add &Watch ..."
@@ -12678,7 +12648,7 @@ msgstr "&Закрити файл редактора"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
-msgstr "Закрити проект"
+msgstr "Закрити проєкт"
 
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
 msgid "CodeTools Defines Editor ..."
@@ -12735,7 +12705,7 @@ msgstr "Перетворення пакунка Delphi на пакунок Lazar
 
 #: lazarusidestrconsts.lismenuconvertdelphiproject
 msgid "Convert Delphi Project to Lazarus Project ..."
-msgstr "Перетворення проекту Delphi в проект Lazarus ..."
+msgstr "Перетворення проєкту Delphi в проєкт Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdelphiunit
 msgid "Convert Delphi Unit to Lazarus Unit ..."
@@ -12747,7 +12717,7 @@ msgstr "Перетворити двійковий DFM в текстовий LFM 
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert Encoding of Projects/Packages ..."
-msgstr "Конвертувати кодування проектів/пакунків ..."
+msgstr "Конвертувати кодування проєктів/пакунків ..."
 
 #: lazarusidestrconsts.lismenudebugwindows
 msgid "Debug Windows"
@@ -13370,7 +13340,7 @@ msgstr "Об&числити/Змінити..."
 
 #: lazarusidestrconsts.lismenuexampleprojects
 msgid "Example Projects ..."
-msgstr "Приклади проектів ..."
+msgstr "Приклади проєктів ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."
@@ -13620,11 +13590,11 @@ msgstr "Новий пакунок ..."
 
 #: lazarusidestrconsts.lismenunewproject
 msgid "New Project ..."
-msgstr "Новий проект ..."
+msgstr "Новий проєкт ..."
 
 #: lazarusidestrconsts.lismenunewprojectfromfile
 msgid "New Project from File ..."
-msgstr "Новий проект з файлу ..."
+msgstr "Новий проєкт з файлу ..."
 
 #: lazarusidestrconsts.lismenunewunit
 msgctxt "lazarusidestrconsts.lismenunewunit"
@@ -13666,7 +13636,7 @@ msgstr "Відкрити пакунок поточного модуля"
 
 #: lazarusidestrconsts.lismenuopenproject
 msgid "Open Project ..."
-msgstr "Відкрити проект ..."
+msgstr "Відкрити проєкт ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 msgid "Open &Recent"
@@ -13679,7 +13649,7 @@ msgstr "Відкрити недавній пакунок"
 #: lazarusidestrconsts.lismenuopenrecentproject
 msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
-msgstr "Відкрити недавній проект"
+msgstr "Відкрити недавній проєкт"
 
 #: lazarusidestrconsts.lismenuopenunit
 msgid "Open Unit ..."
@@ -13713,15 +13683,15 @@ msgstr "Список процедур ..."
 
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
-msgstr "&Проект"
+msgstr "&Проєкт"
 
 #: lazarusidestrconsts.lismenuprojectinspector
 msgid "Project Inspector"
-msgstr "Інспектор проекту"
+msgstr "Інспектор проєкту"
 
 #: lazarusidestrconsts.lismenuprojectoptions
 msgid "Project Options ..."
-msgstr "Параметри проекту ..."
+msgstr "Параметри проєкту ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
@@ -13730,7 +13700,7 @@ msgstr "Вико&нати"
 
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
-msgstr "Опублікувати проект ..."
+msgstr "Опублікувати проєкт ..."
 
 #: lazarusidestrconsts.lismenuquickcompile
 msgid "Quick Compile"
@@ -13746,7 +13716,7 @@ msgstr "Швидка перевірка синтаксису OK"
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
-msgstr "Прибрати з проекту ..."
+msgstr "Прибрати з проєкту ..."
 
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
@@ -13805,11 +13775,11 @@ msgstr "Зберегти &як ..."
 
 #: lazarusidestrconsts.lismenusaveproject
 msgid "Save Project"
-msgstr "Зберегти проект"
+msgstr "Зберегти проєкт"
 
 #: lazarusidestrconsts.lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr "Зберегти проект як ..."
+msgstr "Зберегти проєкт як ..."
 
 #: lazarusidestrconsts.lismenusearch
 msgid "&Search"
@@ -14022,7 +13992,7 @@ msgstr "Інспектор об'єктів"
 
 #: lazarusidestrconsts.lismenuviewprojectsource
 msgid "&View Project Source"
-msgstr "&Показати код проекту"
+msgstr "&Показати код проєкту"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
@@ -14093,7 +14063,7 @@ msgstr "Інші таби"
 
 #: lazarusidestrconsts.lismeprojects
 msgid "Projects"
-msgstr "Проекти"
+msgstr "Проєкти"
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
@@ -14151,7 +14121,7 @@ msgstr "1) Використовувати модулі лише для Delphi."
 
 #: lazarusidestrconsts.lismissingunitsinfo2
 msgid "2) Search for units. Found paths are added to project settings."
-msgstr "2) Шукати модулі. Знайдені шляхи додати до параметрів проекту."
+msgstr "2) Шукати модулі. Знайдені шляхи додати до параметрів проєкту."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
 msgid "3) Abort now, install packages or fix paths and try again."
@@ -14205,7 +14175,7 @@ msgstr "Застосувати до всіх пакунків."
 
 #: lazarusidestrconsts.lismmapplytoallpackagesandprojects
 msgid "Apply to all packages and projects."
-msgstr "Застосувати до всіх пакунків і проектів."
+msgstr "Застосувати до всіх пакунків і проєктів."
 
 #: lazarusidestrconsts.lismmapplytoallpackagesmatching
 #, object-pascal-format
@@ -14214,7 +14184,7 @@ msgstr "Застосувати до всіх пакунків з назвами 
 
 #: lazarusidestrconsts.lismmapplytoproject
 msgid "Apply to project."
-msgstr "Застосувати до проекту."
+msgstr "Застосувати до проєкту."
 
 #: lazarusidestrconsts.lismmcreateanewgroupofoptions
 msgid "Create a new group of options"
@@ -14330,11 +14300,11 @@ msgstr "Збережено в ІСР (environmentoptions.xml)"
 
 #: lazarusidestrconsts.lismmstoredinprojectlpi
 msgid "Stored in project (.lpi)"
-msgstr "Збережено у проекті (.lpi)"
+msgstr "Збережено у проєкті (.lpi)"
 
 #: lazarusidestrconsts.lismmstoredinsessionofprojectlps
 msgid "Stored in session of project (.lps)"
-msgstr "Збережено у сеансі проекту (.lps)"
+msgstr "Збережено у сеансі проєкту (.lps)"
 
 #: lazarusidestrconsts.lismmtargets
 msgid "Targets: "
@@ -14417,7 +14387,7 @@ msgstr "Перемістити"
 
 #: lazarusidestrconsts.lismovedown
 msgid "Move Down"
-msgstr ""
+msgstr "Перемістити вниз"
 
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
@@ -14469,7 +14439,7 @@ msgstr "Перемістити до:"
 
 #: lazarusidestrconsts.lismoveup
 msgid "Move Up"
-msgstr ""
+msgstr "Перемістити вгору"
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -14579,7 +14549,7 @@ msgstr "Створити новий порожній текстовий файл
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
 #, object-pascal-format
 msgid "Create a new project.%sChoose a type."
-msgstr "Створити новий проект.%sВиберіть тип."
+msgstr "Створити новий проєкт.%sВиберіть тип."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewstandardpackageapackageisacollectionofun
 #, object-pascal-format
@@ -14600,7 +14570,7 @@ msgstr "Створити новий модуль з формою LCL."
 
 #: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
 msgid "Inherit from a project form or component"
-msgstr "Успадкувати з форми або компонента проекту"
+msgstr "Успадкувати з форми або компонента проєкту"
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -14637,7 +14607,7 @@ msgstr "Нова сторінка"
 
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
-msgstr "(новий проект)"
+msgstr "(новий проєкт)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
@@ -14831,7 +14801,7 @@ msgstr "Створити"
 
 #: lazarusidestrconsts.lisnpcreateanewproject
 msgid "Create a new project"
-msgstr "Створити новий проект"
+msgstr "Створити новий проєкт"
 
 #: lazarusidestrconsts.lisnumberoffilestoconvert
 #, object-pascal-format
@@ -14865,7 +14835,7 @@ msgstr " пакунка %s"
 
 #: lazarusidestrconsts.lisoftheprojectinspector
 msgid " of the Project Inspector"
-msgstr " в інспекторі проекту"
+msgstr " в інспекторі проєкту"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -15070,19 +15040,19 @@ msgstr "Відкрити файл пакунка"
 
 #: lazarusidestrconsts.lisopenproject
 msgid "Open Project?"
-msgstr "Відкрити проект?"
+msgstr "Відкрити проєкт?"
 
 #: lazarusidestrconsts.lisopenproject2
 msgid "Open project"
-msgstr "Відкрити проект"
+msgstr "Відкрити проєкт"
 
 #: lazarusidestrconsts.lisopenprojectagain
 msgid "Open project again"
-msgstr "Відкрити проект знову"
+msgstr "Відкрити проєкт знову"
 
 #: lazarusidestrconsts.lisopenprojectfile
 msgid "Open Project File"
-msgstr "Відкрити файл проекту"
+msgstr "Відкрити файл проєкту"
 
 #: lazarusidestrconsts.lisopensymlink
 msgid "Open symlink"
@@ -15104,7 +15074,7 @@ msgstr "Відкрити пакунок %s"
 #: lazarusidestrconsts.lisopentheproject
 #, object-pascal-format
 msgid "Open the project %s?"
-msgstr "Відкрити проект %s"
+msgstr "Відкрити проєкт %s"
 
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
@@ -15156,7 +15126,7 @@ msgstr "кінцева тека %s містить джерело модуля Pa
 
 #: lazarusidestrconsts.lisoutputfilenameofproject
 msgid "Output filename of project"
-msgstr "Назва вихідного файлу проекту"
+msgstr "Назва вихідного файлу проєкту"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -15174,22 +15144,22 @@ msgstr "%sперевизначити типовий компілятор. нап
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 #, object-pascal-format
 msgid "%soverride the project or IDE build mode."
-msgstr "%sперекрити режим збирання проекту чи ІСР."
+msgstr "%sперекрити режим збирання проєкту чи ІСР."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 #, object-pascal-format
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sперевизначити цп проекту. напр. i386 x86_64 powerpc powerpc_64 etc. типовий: %s"
+msgstr "%sперевизначити цп проєкту. напр. i386 x86_64 powerpc powerpc_64 etc. типовий: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 #, object-pascal-format
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sперевизначити операційну систему проекту. напр. win32 linux. типова: %s"
+msgstr "%sперевизначити операційну систему проєкту. напр. win32 linux. типова: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 #, object-pascal-format
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sперевизначити набір віджетів проекту. напр. gtk gtk2 qt win32 carbon. типовий: %s"
+msgstr "%sперевизначити набір віджетів проєкту. напр. gtk gtk2 qt win32 carbon. типовий: %s"
 
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
@@ -15224,7 +15194,7 @@ msgstr "Інфо про пакунок"
 #: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
 #, object-pascal-format
 msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
-msgstr ""
+msgstr "\"%s\" є пакунком часу розробки, тому має бути скомпільований в ІСР , а не в параметрах проєкту.%sСкористайтесь командою \"Встановити\" або \"Інструменти / Зібрати Lazarus\", щоб зібрати пакунки ІСР."
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."
@@ -15417,7 +15387,7 @@ msgstr "Додати інші елементи"
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
-msgstr "Додати до проекту"
+msgstr "Додати до проєкту"
 
 #: lazarusidestrconsts.lispckeditapplychanges
 msgid "Apply changes"
@@ -15677,11 +15647,11 @@ msgstr "Деінсталювати пакунок %s"
 
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
-msgstr "Додати параметри до підпорядкованих пакунків і проектів"
+msgstr "Додати параметри до підпорядкованих пакунків і проєктів"
 
 #: lazarusidestrconsts.lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
-msgstr "Додати шляхи до залежних пакунків/проектів"
+msgstr "Додати шляхи до залежних пакунків/проєктів"
 
 #: lazarusidestrconsts.lispckoptsauthor
 msgid "Author"
@@ -15778,7 +15748,7 @@ msgstr "Час виконання"
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 #, object-pascal-format
 msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
-msgstr "Пакунок \"%s\" має мітку Автовстановлення.%sЦе означає, що він автоматично вмонтується в ІСР. Встановлювані пакунки%sмають бути пакунками для розробки."
+msgstr "Пакунок \"%s\" має мітку Автовстановлення.%sЦе означає, що він автоматично вмонтується в ІСР. Встановлювані пакунки%sмають бути пакунками часу розробки."
 
 #: lazarusidestrconsts.lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
@@ -16036,7 +16006,7 @@ msgstr "%sДодавання нової залежності для пакунк
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
 #, object-pascal-format
 msgid "%sAdding new Dependency for project %s: package %s"
-msgstr "%sДодавання нової залежності до проекту %s: пакунок %s"
+msgstr "%sДодавання нової залежності до проєкту %s: пакунок %s"
 
 #: lazarusidestrconsts.lispkgmangaddunittousesclause
 msgid "Add unit to uses clause of package main file. Disable this only for units that should not be compiled in all cases."
@@ -16114,7 +16084,7 @@ msgstr "Файл вже є у пакунку"
 
 #: lazarusidestrconsts.lispkgmangfileisinproject
 msgid "File is in Project"
-msgstr "Файл у проекті"
+msgstr "Файл у проєкті"
 
 #: lazarusidestrconsts.lispkgmangfilenamediffersfrompackagename
 msgid "Filename differs from Packagename"
@@ -16126,7 +16096,7 @@ msgstr "Назву файлу використано іншим пакунком
 
 #: lazarusidestrconsts.lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
-msgstr "Назву файлу використано проектом"
+msgstr "Назву файлу використано проєктом"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
 #, object-pascal-format
@@ -16221,7 +16191,7 @@ msgstr "Збережіть файл перед додаванням в паку�
 #: lazarusidestrconsts.lispkgmangproject
 #, object-pascal-format
 msgid "Project: %s"
-msgstr "Проект: %s"
+msgstr "Проєкт: %s"
 
 #: lazarusidestrconsts.lispkgmangrebuildlazarus
 msgid "Rebuild Lazarus?"
@@ -16299,7 +16269,7 @@ msgstr "Назва файлу \"%s\" не відповідає назві пак
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
 #, object-pascal-format
 msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
-msgstr "Назва файлу \"%s\" є частиною поточного проекту.%sПроекти і пакунки не мають ділити файли."
+msgstr "Назва файлу \"%s\" є частиною поточного проєкту.%sПроєкти і пакунки не мають ділити файли."
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
 #, object-pascal-format
@@ -16377,7 +16347,7 @@ msgstr "Пакунок \"%s\" позначено для встановлення
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 #, object-pascal-format
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
-msgstr "Проект вимагає пакунка \"%s\".%sАле його не знайдено. Див. Проект -> Інспектор проекту."
+msgstr "Проєкт вимагає пакунка \"%s\".%sАле його не знайдено. Див. Проєкт -> Інспектор проєкту."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
 #, object-pascal-format
@@ -16498,7 +16468,7 @@ msgstr "Викор. модуль"
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 #, object-pascal-format
 msgid "Warning: The file \"%s\"%sbelongs to the current project."
-msgstr "Увага: файл \"%s\"%sналежить поточному проекту."
+msgstr "Увага: файл \"%s\"%sналежить поточному проєкту."
 
 #: lazarusidestrconsts.lispkgmgrkeep
 msgctxt "lazarusidestrconsts.lispkgmgrkeep"
@@ -16609,7 +16579,7 @@ msgstr "Перелічені залежності не потрібні чере
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
 #, object-pascal-format
 msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
-msgstr "Проект перекриває вихідні теки перелічених пакунків.%sДив. Проект -> Параметри проекту (розділ параметрів компілятора) -> Додатки і перекриття%s%s"
+msgstr "Проєкт перекриває вихідні теки перелічених пакунків.%sДив. Проєкт -> Параметри проєкту (розділ параметрів компілятора) -> Додатки і перекриття%s%s"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -16745,7 +16715,7 @@ msgstr "Зберегти у файлі .lpi"
 
 #: lazarusidestrconsts.lisposaveinlpsfileinprojectdirectory
 msgid "Save in .lps file in project directory"
-msgstr "Зберегти у файлі .lpi в теці проекту"
+msgstr "Зберегти у файлі .lpi в теці проєкту"
 
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
@@ -16753,7 +16723,7 @@ msgstr "Зберегти інформацію про сесію в"
 
 #: lazarusidestrconsts.lisposavesessioninformationinhint
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
-msgstr ".lpi - головний файл інформації проекту, .lps - окремий файл лише для даних сеансу."
+msgstr ".lpi - головний файл інформації проєкту, .lps - окремий файл лише для даних сеансу."
 
 #: lazarusidestrconsts.lisposition
 msgid "Position"
@@ -16807,7 +16777,7 @@ msgstr "Приватний метод"
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 #, object-pascal-format
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
-msgstr "Можливо, потрібно встановити деякі пакунки перед тим, як продовжувати.%sПопередження:%sПроект використовує такі пакунки часу розробки, які можуть знадобитись для відкриття форми у дизайнері. Якщо Ви продовжите, ви можете отримати помилки через відсутність компонентів і завантаження форми, найпевніше, призведе до неприємних результатів.%sРекомендується скасувати та спочатку встановити ці пакунки."
+msgstr "Можливо, потрібно встановити деякі пакунки перед тим, як продовжувати.%sПопередження:%sПроєкт використовує такі пакунки часу розробки, які можуть знадобитись для відкриття форми у дизайнері. Якщо Ви продовжите, ви можете отримати помилки через відсутність компонентів і завантаження форми, найпевніше, призведе до неприємних результатів.%sРекомендується скасувати та спочатку встановити ці пакунки."
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -16918,12 +16888,12 @@ msgstr "Найнижча версія \"%s\" є некоректною.%sВик�
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 #, object-pascal-format
 msgid "The project has already a dependency for the package \"%s\"."
-msgstr "Проект вже залежить від пакунка \"%s\"."
+msgstr "Проєкт вже залежить від пакунка \"%s\"."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
-msgstr "Назва модуля \"%s\" вже існує у проекті%sу файлі: \"%s\"."
+msgstr "Назва модуля \"%s\" вже існує у проєкті%sу файлі: \"%s\"."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
 #, object-pascal-format
@@ -16942,53 +16912,53 @@ msgstr "Назва модуля вже існує"
 #: lazarusidestrconsts.lisproject
 #, object-pascal-format
 msgid "Project %s"
-msgstr "Проект %s"
+msgstr "Проєкт %s"
 
 #: lazarusidestrconsts.lisproject2
 msgid "Project: "
-msgstr "Проект:"
+msgstr "Проєкт:"
 
 #: lazarusidestrconsts.lisproject3
 msgid "project"
-msgstr "проект"
+msgstr "проєкт"
 
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
-msgstr "Проект змінено"
+msgstr "Проєкт змінено"
 
 #: lazarusidestrconsts.lisprojectchangedondisk
 msgid "Project changed on disk"
-msgstr "Проект змінився на диску"
+msgstr "Проєкт змінився на диску"
 
 #: lazarusidestrconsts.lisprojectcount
 #, object-pascal-format
 msgid "%d projects"
-msgstr "%d проектів"
+msgstr "%d проєктів"
 
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
-msgstr "Тека проекту"
+msgstr "Тека проєкту"
 
 #: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
 msgid "Title in taskbar shows also directory path of the project"
-msgstr "Назва на панелі завдань показує також шлях до теки проекту"
+msgstr "Назва на панелі завдань показує також шлях до теки проєкту"
 
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
-msgstr "Назва файлу проекту"
+msgstr "Назва файлу проєкту"
 
 #: lazarusidestrconsts.lisprojectincpath
 msgid "Project Include Path"
-msgstr "Шляхи, що включені до проекту"
+msgstr "Шляхи, що включені до проєкту"
 
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
-msgstr "Виявлено info-файл проекту"
+msgstr "Виявлено info-файл проєкту"
 
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
-msgstr "Проект є виконуваним"
+msgstr "Проєкт є виконуваним"
 
 #: lazarusidestrconsts.lisprojectisrunnablehint
 msgid "Generates a binary executable which can be run."
@@ -16997,43 +16967,43 @@ msgstr "Створюється двійковий виконуваний фай�
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
-msgstr "Проект"
+msgstr "Проєкт"
 
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
-msgstr "Властивості макросів проекту"
+msgstr "Властивості макросів проєкту"
 
 #: lazarusidestrconsts.lisprojectnamespaces
 msgid "Project Namespaces"
-msgstr "Простори назв проекту"
+msgstr "Простори назв проєкту"
 
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
-msgstr "Параметр проекту"
+msgstr "Параметр проєкту"
 
 #: lazarusidestrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Вихідна тека проекту (напр. тека ppu)"
+msgstr "Вихідна тека проєкту (напр. тека ppu)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
-msgstr "Вихідна тека проекту"
+msgstr "Вихідна тека проєкту"
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
-msgstr "Тека з основним файлом проекту повинна бути"
+msgstr "Тека з основним файлом проєкту повинна бути"
 
 #: lazarusidestrconsts.lisprojectsession
 msgid "Project Session"
-msgstr "Сеанс проекту"
+msgstr "Сеанс проєкту"
 
 #: lazarusidestrconsts.lisprojectsessionchanged
 msgid "Project session changed"
-msgstr "Сеанс проекту змінився"
+msgstr "Сеанс проєкту змінився"
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
 msgid "Project source directories"
-msgstr "Теки сирців проекту"
+msgstr "Теки сирців проєкту"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionataddress
 #, object-pascal-format
@@ -17043,12 +17013,12 @@ msgstr "%0:s%0:s За адресою %1:x"
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 #, object-pascal-format
 msgid "Project %s raised exception class '%s'."
-msgstr "Проект %s зазнав винятку класу '%s'."
+msgstr "Проєкт %s зазнав винятку класу '%s'."
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 #, object-pascal-format
 msgid "Project %s raised exception class '%s' with message:%s%s"
-msgstr "Проект %s зазнав винятку класу '%s' з повідомленням:%s%s"
+msgstr "Проєкт %s зазнав винятку класу '%s' з повідомленням:%s%s"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
 #, object-pascal-format
@@ -17067,19 +17037,19 @@ msgstr "%0:s%0:s У файлі '%1:s' рядок %2:d:%0:s%3:s"
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
-msgstr "Шлях до сирців проекту"
+msgstr "Шлях до сирців проєкту"
 
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
-msgstr "модуль проекту"
+msgstr "модуль проєкту"
 
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
-msgstr "Шлях до модулів проекту"
+msgstr "Шлях до модулів проєкту"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
-msgstr "Майстер Проектів"
+msgstr "Майстер Проєктів"
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -17097,7 +17067,7 @@ msgstr "Видалити залежність для %s?"
 #: lazarusidestrconsts.lisprojinspprojectinspector
 #, object-pascal-format
 msgid "Project Inspector - %s"
-msgstr "Інспектор проекту - %s"
+msgstr "Інспектор проєкту - %s"
 
 #: lazarusidestrconsts.lisprojinspremovedrequiredpackages
 msgctxt "lazarusidestrconsts.lisprojinspremovedrequiredpackages"
@@ -17107,22 +17077,22 @@ msgstr "Видалені необхідні пакунки"
 #: lazarusidestrconsts.lisprojinspremovefilefromproject
 #, object-pascal-format
 msgid "Remove file %s from project?"
-msgstr "Видалити файл %s з проекту?"
+msgstr "Видалити файл %s з проєкту?"
 
 #: lazarusidestrconsts.lisprojinspremoveitemsf
 #, object-pascal-format
 msgid "Remove %s items from project?"
-msgstr "Вилучити %s елементів з проекту?"
+msgstr "Вилучити %s елементів з проєкту?"
 
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 #, object-pascal-format
 msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "Неможливо прочитати файл стану %s проекту %s%sПомилка: %s"
+msgstr "Неможливо прочитати файл стану %s проєкту %s%sПомилка: %s"
 
 #: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
 #, object-pascal-format
 msgid "Unable to write state file for project %s%sError: %s"
-msgstr "Неможливо записати файл стану у проект %s%sПомилка: %s"
+msgstr "Неможливо записати файл стану у проєкт %s%sПомилка: %s"
 
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -17144,7 +17114,7 @@ msgstr "Неможливо змінити список автостворюва�
 
 #: lazarusidestrconsts.lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
-msgstr "Мітка теки програмних файлів проекту"
+msgstr "Мітка теки програмних файлів проєкту"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
@@ -17182,15 +17152,15 @@ msgstr "Опубліковано в %s"
 
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
-msgstr "Файли, що належать до проекта / пакунка, буде включено автоматично."
+msgstr "Файли, що належать до проєкта / пакунка, буде включено автоматично."
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
-msgstr "Тека публікації проекту"
+msgstr "Тека публікації проєкту"
 
 #: lazarusidestrconsts.lispublishproject
 msgid "Publish Project"
-msgstr "Опублікувати проект"
+msgstr "Опублікувати проєкт"
 
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
@@ -17233,24 +17203,24 @@ msgstr "Назва модуля і Назва файлу не збігаютьс
 
 #: lazarusidestrconsts.lispwconvertproject
 msgid "Convert &Delphi Project"
-msgstr "Конвертувати проект &Delphi"
+msgstr "Конвертувати проєкт &Delphi"
 
 #: lazarusidestrconsts.lispwnewproject
 msgid "&New Project"
-msgstr "&Новий проект"
+msgstr "&Новий проєкт"
 
 #: lazarusidestrconsts.lispwopenproject
 msgid "&Open Project"
-msgstr "Від&крити проект"
+msgstr "Від&крити проєкт"
 
 #: lazarusidestrconsts.lispwopenrecentproject
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open &Recent Project"
-msgstr "Відкрити не&давній проект"
+msgstr "Відкрити не&давній проєкт"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
-msgstr "Переглянути &приклади проектів"
+msgstr "Переглянути &приклади проєктів"
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
@@ -17375,7 +17345,7 @@ msgstr "Видалити з списку встановлення"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
-msgstr "Видалити з проекту"
+msgstr "Видалити з проєкту"
 
 #: lazarusidestrconsts.lisremovefromsearchpath
 msgid "Remove from search path"
@@ -17456,7 +17426,7 @@ msgstr "Превести в нижній регістр"
 
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
-msgstr "Перевідкрити проект"
+msgstr "Перевідкрити проєкт"
 
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
@@ -17541,7 +17511,7 @@ msgstr "Помилка збереження ресурсу"
 
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
 msgid "Resource type of project"
-msgstr "Тип ресурсів проекту"
+msgstr "Тип ресурсів проєкту"
 
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
@@ -17666,11 +17636,11 @@ msgstr "Для часу виконання, не можна встановити
 
 #: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
 msgid "\"Run time only\" packages are only for projects. They cannot be installed in the IDE, not even indirectly."
-msgstr "Пакунки лише часу виконання призначені виключно для проектів. Їх не можна встановити в ІСР, навіть опосередковано."
+msgstr "Пакунки лише часу виконання призначені виключно для проєктів. Їх не можна встановити в ІСР, навіть опосередковано."
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
 msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE unless some design time package requires them."
-msgstr "Пакунки часу виконання можуть використовуватися проектами. Їх не можна встановити в ІСР, якщо вони не потрібні певним пакункам часу розробки."
+msgstr "Пакунки часу виконання можуть використовуватися проєктами. Їх не можна встановити в ІСР, якщо вони не потрібні певним пакункам часу розробки."
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
@@ -17777,7 +17747,7 @@ msgstr "Зберегти зміни?"
 #: lazarusidestrconsts.lissavechangestoproject
 #, object-pascal-format
 msgid "Save changes to project %s?"
-msgstr "Зберегти зміни в проект %s?"
+msgstr "Зберегти зміни в проєкт %s?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
@@ -17789,7 +17759,7 @@ msgstr "Збережено з параметрами ІСР"
 
 #: lazarusidestrconsts.lissavedwithprojectsession
 msgid "Saved with project session"
-msgstr "Збережено з сеансом проекту"
+msgstr "Збережено з сеансом проєкту"
 
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
@@ -17811,12 +17781,12 @@ msgstr "Зберегти повідомлення"
 #: lazarusidestrconsts.lissaveproject
 #, object-pascal-format
 msgid "Save project %s (*%s)"
-msgstr "Зберегти проект %s (*%s)"
+msgstr "Зберегти проєкт %s (*%s)"
 
 #: lazarusidestrconsts.lissavesessionchangestoproject
 #, object-pascal-format
 msgid "Save session changes to project %s?"
-msgstr "Зберегти зміни сеансу до проекту %s?"
+msgstr "Зберегти зміни сеансу до проєкту %s?"
 
 #: lazarusidestrconsts.lissavesessionfoldstate
 msgctxt "lazarusidestrconsts.lissavesessionfoldstate"
@@ -17906,7 +17876,7 @@ msgstr "Дивись повідомлення."
 #: lazarusidestrconsts.lisseeprojectprojectinspector
 #, object-pascal-format
 msgid "%sSee Project -> Project Inspector"
-msgstr "%sДив.. Проект -> Інспектор проекту"
+msgstr "%sДив.. Проєкт -> Інспектор проєкту"
 
 #: lazarusidestrconsts.lisselectahelpitem
 msgid "Select a help item:"
@@ -18220,7 +18190,7 @@ msgstr "Пропустити файл і продовжити завантаже
 
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
-msgstr "Пропустити завантаження останнього проекту"
+msgstr "Пропустити завантаження останнього проєкту"
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
@@ -18373,7 +18343,7 @@ msgstr "Запустити ІСР"
 
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
-msgstr "Розпочати з нового проекту"
+msgstr "Розпочати з нового проєкту"
 
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
@@ -18386,7 +18356,7 @@ msgstr "Закінчити"
 
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
-msgstr "Закінчити зневаджування і перезібрати проект?"
+msgstr "Закінчити зневаджування і перезібрати проєкт?"
 
 #: lazarusidestrconsts.lisstopdebugging
 msgid "Stop Debugging?"
@@ -18578,7 +18548,7 @@ msgstr "Назва цільового файлу (-o):"
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
-msgstr "Назва цільового файлу проекту"
+msgstr "Назва цільового файлу проєкту"
 
 #: lazarusidestrconsts.listargetfilenameplusparams
 msgid "Target filename + params"
@@ -18693,7 +18663,7 @@ msgstr "Виконуваний файл зневаджувача здебіль�
 
 #: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
 msgid "The default mode must be stored in project, not in session."
-msgstr "Типовий режим має зберігатись у проекті, а не у сеансі."
+msgstr "Типовий режим має зберігатись у проєкті, а не у сеансі."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 #, object-pascal-format
@@ -18703,17 +18673,17 @@ msgstr "Теки призначення%s\"%s\" не існує."
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 #, object-pascal-format
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Теки призначення \"%s\" не існує.%sПеревірте назву виконуваного файлу в Меню > Проект > Параметри проекту."
+msgstr "Теки призначення \"%s\" не існує.%sПеревірте назву виконуваного файлу в Меню > Проєкт > Параметри проєкту."
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
-msgstr "Каталог \"%s\" більше не містить файлів включення проекту. Видалити його зі списку шляхів пошуку файлів включення проекту?"
+msgstr "Каталог \"%s\" більше не містить файлів включення проєкту. Видалити його зі списку шляхів пошуку файлів включення проєкту?"
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
-msgstr "Каталог \"%s\" більше не містить модулі проекту. Видалити його зі списку шляхів пошуку модулів проекту?"
+msgstr "Каталог \"%s\" більше не містить модулі проєкту. Видалити його зі списку шляхів пошуку модулів проєкту?"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 #, object-pascal-format
@@ -18752,7 +18722,7 @@ msgstr "Файл \"%s\" є символьним посиланням.%sВідк�
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
 msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
-msgstr "Файл \"%s\" не є проектом Lazarus.%sСтворити новий прокт для цього \"%s\"?"
+msgstr "Файл \"%s\" не є проєктом Lazarus.%sСтворити новий прокт для цього \"%s\"?"
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
 #, object-pascal-format
@@ -18767,12 +18737,12 @@ msgstr "Файлова маска \"%s\" не є правильним регул
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 #, object-pascal-format
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr "Файл \"%s\"схожий на програму. %sЗакрити поточний проект і створити новий проект Lazarus для цієї програми?%s\"Ні\" відкриє файл як звичайний код."
+msgstr "Файл \"%s\"схожий на програму. %sЗакрити поточний проєкт і створити новий проєкт Lazarus для цієї програми?%s\"Ні\" відкриє файл як звичайний код."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
 #, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
-msgstr "Схоже, що файл %s є програмним в існуючому проекті Lazarus."
+msgstr "Схоже, що файл %s є програмним в існуючому проєкті Lazarus."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
 #, object-pascal-format
@@ -18787,7 +18757,7 @@ msgstr "Файлу \"%s\" не знайдено.%sБажаєте пошукат�
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 #, object-pascal-format
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
-msgstr "Файл \"%s\" не знайдено.%sЗнехтувати продовжить завантаження проекту,%sПерервати зупинить завантаження."
+msgstr "Файл \"%s\" не знайдено.%sЗнехтувати продовжить завантаження проєкту,%sПерервати зупинить завантаження."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 #, object-pascal-format
@@ -18820,7 +18790,7 @@ msgstr "Клавішу %s вже призначено для %s%s.%s%sВидал
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
 #, object-pascal-format
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
-msgstr "Необхідний для виконання пакет програм %s%sне існує або не є виконуваним файлом.%sВи хочете створити такий?%s%Для налаштування дивіться Проект -> Параметри проекту -> Застосунок."
+msgstr "Необхідний для виконання пакет програм %s%sне існує або не є виконуваним файлом.%sВи хочете створити такий?%s%Для налаштування дивіться Проєкт -> Параметри проєкту -> Застосунок."
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 #, object-pascal-format
@@ -18934,7 +18904,7 @@ msgstr "Пакунок %s не можна деінсталювати, бо ві�
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
 #, object-pascal-format
 msgid "The package %s does not have any \"Register\" procedure which typically means it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
-msgstr "Пакунок %s не має жодних процедур \"Реєстрації\", яка зазвичай означає, що він не надає аддон ІСР. Його встановлення швидше всього лише збільшить розмір ІСР і може навіть зробити його нестійким.%sПідказка: якщо ви хочете використати пакунок у проекті, використайте пункт меню \"Додати у проект\"."
+msgstr "Пакунок %s не має жодних процедур \"Реєстрації\", яка зазвичай означає, що він не надає аддон ІСР. Його встановлення швидше всього лише збільшить розмір ІСР і може навіть зробити його нестійким.%sПідказка: якщо ви хочете використати пакунок у проєкті, використайте пункт меню \"Додати у проєкт\"."
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
 #, object-pascal-format
@@ -18958,55 +18928,55 @@ msgstr "Програму \"make\" не знайдено.%sЦей засіб по
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
-msgstr "Опції компілятора проекту і директиви в основному коді відрізняються. Для нового модуля будуть використані такі режим і тип рядка проекту:"
+msgstr "Опції компілятора проєкту і директиви в основному коді відрізняються. Для нового модуля будуть використані такі режим і тип рядка проєкту:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf
 #, object-pascal-format
 msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
-msgstr "Проект не записує зневаджувальної інформації у форматі Dwarf. \"%s\" підтримує тільки Dwarf."
+msgstr "Проєкт не записує зневаджувальної інформації у форматі Dwarf. \"%s\" підтримує тільки Dwarf."
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 #, object-pascal-format
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
-msgstr "Проект не використовує інтерфейси модулів LCL, які вимагає LCLBase.%sВи отримаєте дивні помилки компонувальника, якщо ви використаєте LCL без інтерфейсів."
+msgstr "Проєкт не використовує інтерфейси модулів LCL, які вимагає LCLBase.%sВи отримаєте дивні помилки компонувальника, якщо ви використаєте LCL без інтерфейсів."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
-msgstr "Проект не має основного файлу з сирцевим кодом."
+msgstr "Проєкт не має основного файлу з сирцевим кодом."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 #, object-pascal-format
 msgid "The project info file \"%s\"%sis equal to the project main source file!"
-msgstr "Файл відомостей проекту \"%s\"%sзбігається з головним сирцевим файлом!"
+msgstr "Файл відомостей проєкту \"%s\"%sзбігається з головним сирцевим файлом!"
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
 #, object-pascal-format
 msgid "The project information file \"%s\"%shas changed on disk."
-msgstr "Інформаційний файл проекту \"%s\"%sзмінився на диску."
+msgstr "Інформаційний файл проєкту \"%s\"%sзмінився на диску."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 #, object-pascal-format
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
-msgstr "Проект треба зберегти перед компіляцією%sЯкщо ви встановите тестову теку в параметрах ІСР,%sВи можете створювати проекти і збирати їх одразу.%sЗберегти проект?"
+msgstr "Проєкт треба зберегти перед компіляцією%sЯкщо ви встановите тестову теку в параметрах ІСР,%sВи можете створювати проєкти і збирати їх одразу.%sЗберегти проєкт?"
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
 msgid "The project uses FPC resources which require at least FPC 2.4"
-msgstr "У проекті використовуються ресурси FPC, для яких потрібен принаймні FPC 2.4"
+msgstr "У проєкті використовуються ресурси FPC, для яких потрібен принаймні FPC 2.4"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 #, object-pascal-format
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
-msgstr "Проект використовує цільову ОС=%s та ЦП=%s.%ssystem.ppu для цієї цілі не було знайдено у теках бінарників. %sПереконайтесь, що fpc для цієї цілі встановлено правильно і в fpc.cfg вказано правильні теки."
+msgstr "Проєкт використовує цільову ОС=%s та ЦП=%s.%ssystem.ppu для цієї цілі не було знайдено у теках бінарників. %sПереконайтесь, що fpc для цієї цілі встановлено правильно і в fpc.cfg вказано правильні теки."
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 #, object-pascal-format
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
-msgstr "Проект записує зневаджувальні дані у зовнішній файл. \"%s\" підтримує лише зневаджувальні дані, розміщені безпосередньо у виконуваному файлі."
+msgstr "Проєкт записує зневаджувальні дані у зовнішній файл. \"%s\" підтримує лише зневаджувальні дані, розміщені безпосередньо у виконуваному файлі."
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
 #, object-pascal-format
 msgid "The project writes the debug symbols into the executable rather than to an external file. The \"%s\" supports only symbols in an external file."
-msgstr "Проект записує зневаджувальні символи у виконуваний файл, а не в зовнішній файл. \"%s\" підтримує тільки зневаджувальні символи, розміщені у зовнішньому файлі."
+msgstr "Проєкт записує зневаджувальні символи у виконуваний файл, а не в зовнішній файл. \"%s\" підтримує тільки зневаджувальні символи, розміщені у зовнішньому файлі."
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 #, object-pascal-format
@@ -19083,7 +19053,7 @@ msgstr "Вже існує модуль з назвою \"%s\". Ідентифі�
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
-msgstr "У проекті є модуль з назвою \"%s\".%sВиберіть іншу назву"
+msgstr "У проєкті є модуль з назвою \"%s\".%sВиберіть іншу назву"
 
 #: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
@@ -19124,7 +19094,7 @@ msgstr "Ці файли будуть видалені"
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
-msgstr "Ці налаштування зберігаються з проектом."
+msgstr "Ці налаштування зберігаються з проєктом."
 
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
@@ -19218,7 +19188,7 @@ msgstr "це довідкове повідомлення"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
 msgid "This is a test project for a design time package, testing it outside the IDE."
-msgstr "Тестовий проект для перевірки пакунка часу розробки поза ІСР."
+msgstr "Тестовий проєкт для перевірки пакунка часу розробки поза ІСР."
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 #, object-pascal-format
@@ -19227,11 +19197,11 @@ msgstr "Це виглядає як файл Pascal.%sРекомендуєтьс�
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
-msgstr "Проект не має основного файлу з поч. кодом"
+msgstr "Проєкт не має основного файлу з поч. кодом"
 
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
-msgstr "Цей проект має лише типовий режим збирання."
+msgstr "Цей проєкт має лише типовий режим збирання."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format
@@ -19459,7 +19429,7 @@ msgstr "Всі модулі"
 
 #: lazarusidestrconsts.lisudbydefaultonlytheprojectunitsandthesourceeditorunit
 msgid "By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well."
-msgstr "Типово пошук виконується лише у модулях проекту, а також у модулях, відкритих у редакторі коду. Додайте тут список тек, відокремлюючи крапками з комою, щоб шукати ще й у них."
+msgstr "Типово пошук виконується лише у модулях проєкту, а також у модулях, відкритих у редакторі коду. Додайте тут список тек, відокремлюючи крапками з комою, щоб шукати ще й у них."
 
 #: lazarusidestrconsts.lisudcollapseallnodes
 msgid "Collapse all nodes"
@@ -19500,7 +19470,7 @@ msgstr "Uses з Interface: %s"
 
 #: lazarusidestrconsts.lisudprojectsandpackages
 msgid "Projects and packages"
-msgstr "Проекти і пакунки"
+msgstr "Проєкти і пакунки"
 
 #: lazarusidestrconsts.lisudscanning
 msgid "Scanning ..."
@@ -19541,7 +19511,7 @@ msgstr "Показувати вузли для тек"
 
 #: lazarusidestrconsts.lisudshownodesforprojectandpackages
 msgid "Show nodes for project and packages"
-msgstr "Показувати вузли для проектів і пакунків"
+msgstr "Показувати вузли для проєктів і пакунків"
 
 #: lazarusidestrconsts.lisudunits
 msgid "Units"
@@ -19639,7 +19609,7 @@ msgstr "Доданий:"
 
 #: lazarusidestrconsts.lisuidinproject
 msgid "In project:"
-msgstr "У проекті:"
+msgstr "У проєкті:"
 
 #: lazarusidestrconsts.lisuidlines
 msgctxt "lazarusidestrconsts.lisuidlines"
@@ -19702,7 +19672,7 @@ msgstr "Не вдається додати залежність %s, бо це с
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 #, object-pascal-format
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
-msgstr "Неможливо додати %s до проекту, тому що в проекті вже є модуль з такою самою назвою."
+msgstr "Неможливо додати %s до проєкту, тому що в проєкті вже є модуль з такою самою назвою."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
 #, object-pascal-format
@@ -19717,12 +19687,12 @@ msgstr "%s%sНеможливо змінити клас %s на  %s"
 #: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
 #, object-pascal-format
 msgid "Unable to change project scaled in source.%s%s"
-msgstr "Неможливо змінити властивість Scaled проекту в сирцевому коді.%s%s"
+msgstr "Неможливо змінити властивість Scaled проєкту в сирцевому коді.%s%s"
 
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 #, object-pascal-format
 msgid "Unable to change project title in source.%s%s"
-msgstr "Неможливо змінити заголовок проекту у джерелі.%s%s"
+msgstr "Неможливо змінити заголовок проєкту у джерелі.%s%s"
 
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
@@ -19829,7 +19799,7 @@ msgstr "Неможливо знайти файл \"%s\"."
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
 #, object-pascal-format
 msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
-msgstr "Неможливо знайти файл \"%s\".%sЯкщо він належить до вашого проекту, перевірте шлях пошуку в%sПроект -> Параметри компілятора -> Шляхи пошуку -> Інші файли модулів. Якщо файл належить пакунку, перевірте відповідні опції компілятора пакунків. Якщо цей файл відноситься до Lazarus, переконайтесь що компілюєте начисто. Якщо файл належить FPC тоді перевірте fpc.cfg. Якщо не впевнені, перевірте Проект -> Параметри компілятора -> Текст"
+msgstr "Неможливо знайти файл \"%s\".%sЯкщо він належить до вашого проєкту, перевірте шлях пошуку в%sПроєкт -> Параметри компілятора -> Шляхи пошуку -> Інші файли модулів. Якщо файл належить пакунку, перевірте відповідні опції компілятора пакунків. Якщо цей файл відноситься до Lazarus, переконайтесь що компілюєте начисто. Якщо файл належить FPC тоді перевірте fpc.cfg. Якщо не впевнені, перевірте Проєкт -> Параметри компілятора -> Текст"
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
 #, object-pascal-format
@@ -19918,7 +19888,7 @@ msgstr "неможливо прочитати код завершення про
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
 msgid "Unable to read the project info file%s\"%s\"."
-msgstr "Неможливо прочитати файл інформації проекту%s\"%s\"."
+msgstr "Неможливо прочитати файл інформації проєкту%s\"%s\"."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
@@ -19928,12 +19898,12 @@ msgstr "Неможливо стерти старий резервний файл
 #: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
 #, object-pascal-format
 msgid "Unable to remove project scaled from source.%s%s"
-msgstr "Неможливо змінити властивість Scaled проекту з сирцевого коду.%s%s"
+msgstr "Неможливо змінити властивість Scaled проєкту з сирцевого коду.%s%s"
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 #, object-pascal-format
 msgid "Unable to remove project title from source.%s%s"
-msgstr "Неможливо видалити заголовок проекту з джерела.%s%s"
+msgstr "Неможливо видалити заголовок проєкту з джерела.%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 #, object-pascal-format
@@ -20003,7 +19973,7 @@ msgstr "Неможливо перетворити потік двійкових 
 
 #: lazarusidestrconsts.lisunabletoupdatecreateformstatementinprojectsource
 msgid "Unable to update CreateForm statement in project source"
-msgstr "Неможливо оновити вираз CreateForm в коді проекту"
+msgstr "Неможливо оновити вираз CreateForm в коді проєкту"
 
 #: lazarusidestrconsts.lisunabletowrite2
 #, object-pascal-format
@@ -20027,12 +19997,12 @@ msgstr "Неможливо записати файл \"%s\"%sError: %s"
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
 #, object-pascal-format
 msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "Неможливо записати файл інформації проекту%s\"%s\".%sПомилка: %s"
+msgstr "Неможливо записати файл інформації проєкту%s\"%s\".%sПомилка: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 #, object-pascal-format
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Неможливо записати файл сеансу проекту%s\"%s\".%sПомилка: %s"
+msgstr "Неможливо записати файл сеансу проєкту%s\"%s\".%sПомилка: %s"
 
 #: lazarusidestrconsts.lisunabletowritetofile2
 #, object-pascal-format
@@ -20087,7 +20057,7 @@ msgstr "%s модуль %s у пакунку %s"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr "Модуль з такою назвою вже є в проекті"
+msgstr "Модуль з такою назвою вже є в проєкті"
 
 #: lazarusidestrconsts.lisunitnamebeginswith
 msgid "Unit name begins with ..."
@@ -20110,7 +20080,7 @@ msgstr "модуль %s не знайдено у новому розташува
 #: lazarusidestrconsts.lisunitnotfoundinproject
 #, object-pascal-format
 msgid "A unit not found in project %s"
-msgstr "Модуль не знайдено в проекті %s"
+msgstr "Модуль не знайдено в проєкті %s"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -20132,7 +20102,7 @@ msgstr "модуль %s потребує пакунка %s"
 #: lazarusidestrconsts.lisunitsnotfoundinproject
 #, object-pascal-format
 msgid "Units not found in project %s"
-msgstr "Модулі не знайдено в проекті %s"
+msgstr "Модулі не знайдено в проєкті %s"
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"
@@ -20257,11 +20227,11 @@ msgstr "Використати пакунок у пакунку"
 #: lazarusidestrconsts.lisusepackageinproject
 #, object-pascal-format
 msgid "Use package %s in project"
-msgstr "Використати пакунок %s у проекті"
+msgstr "Використати пакунок %s у проєкті"
 
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
-msgstr "Використати пакунок у проекті"
+msgstr "Використати пакунок у проєкті"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
 #, object-pascal-format
@@ -20467,7 +20437,7 @@ msgstr "Коли модуль перейменований оновити зал
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
-msgstr "Якщо ввімкнено, поточні налаштування зберігаються в шаблон, який використовується при створенні нових проектів"
+msgstr "Якщо ввімкнено, поточні налаштування зберігаються в шаблон, який використовується при створенні нових проєктів"
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"
@@ -20573,7 +20543,7 @@ msgstr "Не вдалося записати пакунок до файлу."
 
 #: lazarusidestrconsts.liswriteprojectinfofailed
 msgid "Writing the project info file failed."
-msgstr "Не вдалося записати проект до файлу."
+msgstr "Не вдалося записати проєкт до файлу."
 
 #: lazarusidestrconsts.liswrongversionin
 #, object-pascal-format
@@ -20599,7 +20569,7 @@ msgstr "Ви можете вимкнути це для окремих форм �
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
-msgstr "Ви можете вимкнути  це для окремих форм в спливаючому меню в інспекторі проектів"
+msgstr "Ви можете вимкнути  це для окремих форм в спливаючому меню в інспекторі проєктів"
 
 #: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
 msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
@@ -20825,7 +20795,7 @@ msgstr "Автоматично збільшувати номер збірки"
 
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumberhint
 msgid "Increased every time the project is compiled."
-msgstr "Збільшується при кожному компілюванні проекту."
+msgstr "Збільшується при кожному компілюванні проєкту."
 
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
@@ -21103,7 +21073,7 @@ msgstr "Команди меню Пакунок"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
 msgid "Project menu commands"
-msgstr "Команди меню Проект"
+msgstr "Команди меню Проєкт"
 
 #: lazarusidestrconsts.srkmcatrunmenu
 msgid "Run menu commands"
@@ -21244,7 +21214,7 @@ msgstr "Скасувати зсув блока вправо"
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"
-msgstr "зібрати програму/проект"
+msgstr "зібрати програму/проєкт"
 
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
@@ -21344,7 +21314,7 @@ msgstr "Режим вибору стовпців"
 
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
-msgstr "компілювати програму/проект"
+msgstr "компілювати програму/проєкт"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"
@@ -22242,7 +22212,7 @@ msgstr "перемкнути точку зупинки"
 
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
-msgstr ""
+msgstr "увімкнути/вимкнути точку зупинки"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"

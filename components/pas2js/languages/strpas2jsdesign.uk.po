@@ -1,12 +1,12 @@
-# Olexandr Pylypchuk <lxlalexlxl@ukr.net>, 2018.
+# Olexandr Pylypchuk <lxlalexlxl@ukr.net>, 2018, 2019.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-01 15:29+0200\n"
+"PO-Revision-Date: 2019-09-20 21:05+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
@@ -15,42 +15,42 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
-msgstr ""
+msgstr "Огляд"
 
 #: strpas2jsdesign.pjsdbrowsertousewhenopeninghtmlpage
 msgid "Browser to use when opening HTML page"
-msgstr ""
+msgstr "Оглядач для відкривання файлів HTML"
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
-msgstr ""
+msgstr "Створити початкову HTML-сторінку"
 
 #: strpas2jsdesign.pjsddirectorynotfound
 #, object-pascal-format
 msgid "directory \"%s\" not found"
-msgstr ""
+msgstr "теку \"%s\" не знайдено"
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
-msgstr ""
+msgstr "назва файлу не починається з \"pas2js\""
 
 #: strpas2jsdesign.pjsdfilenotexecutable
 #, object-pascal-format
 msgid "file \"%s\" not executable"
-msgstr ""
+msgstr "файл \"%s\" не є виконуваним"
 
 #: strpas2jsdesign.pjsdfilenotfound
 #, object-pascal-format
 msgid "file \"%s\" not found"
-msgstr ""
+msgstr "файл \"%s\" не знайдено"
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
-msgstr ""
+msgstr "Підтримувати HTML-сторінку"
 
 #: strpas2jsdesign.pjsdmissingpathtopas2js
 msgid "missing path to pas2js"
-msgstr ""
+msgstr "відсутній шлях до pas2js"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
@@ -62,109 +62,109 @@ msgstr "Застосунок Node.js"
 
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
-msgstr ""
+msgstr "Параметри проєкту NodeJS"
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
-msgstr ""
+msgstr "Параметри проєкту Оглядач Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jscurrentprojecturl
 msgid "Pas2JS current project URL"
-msgstr ""
+msgstr "URL поточного проєкту Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jsexecutable
 msgid "Pas2JS executable"
-msgstr ""
+msgstr "Виконуваний файл Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
-msgstr ""
+msgstr "Виконуваний файл вибраного оглядача Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
 msgid "Pas2JS selected NodeJS excutable"
-msgstr ""
+msgstr "Виконуваний файл вибраного NodeJS Pas2JS"
 
 #: strpas2jsdesign.pjsdpathof
 #, object-pascal-format
 msgid "Path of %s"
-msgstr ""
+msgstr "Шлях до %s"
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable"
-msgstr ""
+msgstr "Шлях до виконуваного файлу Node.js"
 
 #: strpas2jsdesign.pjsdportnumberstostartallocatingfrom
 #, object-pascal-format
 msgid "Port numbers to start allocating from %s"
-msgstr ""
+msgstr "Номери портів для початку розміщення з %s"
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
-msgstr ""
+msgstr "HTML-сторінка проєкту:"
 
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
-msgstr ""
+msgstr "Це проєкт веб-оглядача (pas2js)"
 
 #: strpas2jsdesign.pjsdprojectneedsahttpserver
 msgid "Project needs a HTTP server"
-msgstr ""
+msgstr "Проєкту потрібен HTTP-сервер"
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
-msgstr ""
+msgstr "Скинути команду компіляції"
 
 #: strpas2jsdesign.pjsdresetruncommand
 msgid "Reset Run command"
-msgstr ""
+msgstr "Скинути команду запуску"
 
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
-msgstr ""
+msgstr "Після повного завантаження всіх ресурсів сторінки запустити RTL"
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
-msgstr ""
+msgstr "Вибрати виконуваний файл оглядача"
 
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
-msgstr ""
+msgstr "Вибрати виконуваний файл Node.js"
 
 #: strpas2jsdesign.pjsdselectpas2jsexecutable
 msgid "Select pas2js executable"
-msgstr ""
+msgstr "Вибрати виконуваний файл pas2js"
 
 #: strpas2jsdesign.pjsdselectsimpleserverexecutable
 msgid "Select simpleserver executable"
-msgstr ""
+msgstr "Вибрати виконуваний файл simpleserver"
 
 #: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
-msgstr ""
+msgstr "Примірники сервера будуть запускатись, починаючи з зазначеного порту, зі збільшенням для кожного проєкту"
 
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
-msgstr ""
+msgstr "Запустити HTTP-сервер на порті"
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
-msgstr ""
+msgstr "Використати об'єкт програми-оглядача"
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use Browser Console unit to display writeln() output"
-msgstr ""
+msgstr "Для виведення команди writeln() використати модуль консолі оглядача"
 
 #: strpas2jsdesign.pjsdusenodejsapplicationobject
 msgid "Use NodeJS Application object"
-msgstr ""
+msgstr "Використати об'єкт застосунку NodeJS"
 
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
 msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr ""
+msgstr "Для відкривання URL або HTML-файлів проєкту веб-оглядача використовувати цей оглядач"
 
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
-msgstr ""
+msgstr "Для запуску застосунку використати цей URL"
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser"
@@ -176,12 +176,12 @@ msgstr "Додаток для веб-оглядача"
 
 #: strpas2jsdesign.pjsdwebprojectpas2js
 msgid "Web Project (pas2js)"
-msgstr ""
+msgstr "Веб-проєкт (pas2js)"
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
-msgstr ""
+msgstr "Можна використовувати макроси ІСР на зразок $MakeExe(). Без повного шляху %s буде шукатись у PATH."
 
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"
@@ -222,7 +222,7 @@ msgstr "Порт"
 
 #: strpas2jsdesign.swebserversproject
 msgid "Project"
-msgstr "Проект"
+msgstr "Проєкт"
 
 #: strpas2jsdesign.swebserversstatus
 msgid "Status"
