@@ -175,33 +175,6 @@ msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwend
 msgid "Duplicate Originals"
 msgstr ""
 
-#: pocheckerconsts.serroroncleanup
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
-msgid ""
-"An unrecoverable error occurred\n"
-"%s\n"
-"Please close the program"
-msgstr ""
-"Ein nicht behebbarer Fehler ist aufgetreten\n"
-"%s\n"
-"Bitte schließen Sie das Programm\n"
-
-#: pocheckerconsts.serroroncreate
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
-msgid ""
-"Error creating an instance of TPoFamily:\n"
-"%s"
-msgstr ""
-"Fehler bei Erzeugung einer Instanz von TPoFamily:\n"
-"%s\n"
-
 #: pocheckerconsts.serrorsbytest
 #, object-pascal-format
 msgid "Errors / warnings reported by %s for:"
@@ -277,10 +250,6 @@ msgstr "[Zeile: %d]"
 #, object-pascal-format
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Bezeichner [%s] gefunden in %s, aber er existiert nicht in %s"
-
-#: pocheckerconsts.snofileslefttocheck
-msgid "There are no files left to check."
-msgstr "Es müssen keine Dateien mehr geprüft werden."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -426,6 +395,10 @@ msgstr "Alle Dateien auswählen"
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr "&Alle auswählen"
+
+#: pocheckerconsts.sselectedtranslationsarenotavailable
+msgid "Selected translations are not available."
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"

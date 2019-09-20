@@ -174,33 +174,6 @@ msgstr "Původní hodnota \"%s\" je použita pro více než 1 položku:"
 msgid "Duplicate Originals"
 msgstr "Zdvojené originály"
 
-#: pocheckerconsts.serroroncleanup
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
-msgid ""
-"An unrecoverable error occurred\n"
-"%s\n"
-"Please close the program"
-msgstr ""
-"Nastala fatální chyba\n"
-"%s\n"
-"Prosím ukončete program\n"
-
-#: pocheckerconsts.serroroncreate
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
-msgid ""
-"Error creating an instance of TPoFamily:\n"
-"%s"
-msgstr ""
-"Chyba vytváření instance z TPoFamily:\n"
-"%s\n"
-
 #: pocheckerconsts.serrorsbytest
 #, object-pascal-format
 msgid "Errors / warnings reported by %s for:"
@@ -276,10 +249,6 @@ msgstr "[Řádek: %d]"
 #, object-pascal-format
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Identifikátor [%s] nalezen v %s, ale neexistuje v %s"
-
-#: pocheckerconsts.snofileslefttocheck
-msgid "There are no files left to check."
-msgstr "Žádný další soubory pro kontrolu."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -425,6 +394,10 @@ msgstr "Vybrat všechny soubory"
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr "Vybrat &vše"
+
+#: pocheckerconsts.sselectedtranslationsarenotavailable
+msgid "Selected translations are not available."
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"

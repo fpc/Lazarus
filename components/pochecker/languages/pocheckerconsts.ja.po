@@ -177,33 +177,6 @@ msgstr "原文のままで翻訳されていない項目 \"%s\" が1ヶ所以上
 msgid "Duplicate Originals"
 msgstr ""
 
-#: pocheckerconsts.serroroncleanup
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
-msgid ""
-"An unrecoverable error occurred\n"
-"%s\n"
-"Please close the program"
-msgstr ""
-"修復不可能なエラーが発生しました\n"
-"%s\n"
-"プログラムを終了してください\n"
-
-#: pocheckerconsts.serroroncreate
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
-msgid ""
-"Error creating an instance of TPoFamily:\n"
-"%s"
-msgstr ""
-"TPoFamily インスタンス生成中のエラー：\n"
-"%s\n"
-
 #: pocheckerconsts.serrorsbytest
 #, object-pascal-format
 msgid "Errors / warnings reported by %s for:"
@@ -274,10 +247,6 @@ msgstr "[行：%d]"
 #, object-pascal-format
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "識別子 [%s] が %s 内で見つかりましたが、%s 内には存在しません"
-
-#: pocheckerconsts.snofileslefttocheck
-msgid "There are no files left to check."
-msgstr ""
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -411,6 +380,10 @@ msgstr ""
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
+msgstr ""
+
+#: pocheckerconsts.sselectedtranslationsarenotavailable
+msgid "Selected translations are not available."
 msgstr ""
 
 #: pocheckerconsts.sselecttesttypes

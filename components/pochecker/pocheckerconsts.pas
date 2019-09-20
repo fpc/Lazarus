@@ -20,9 +20,8 @@ resourcestring
   sSelectAllListBox = 'Select all files';
   sAllLanguages = 'All Languages';
   sFilesNotFoundAndRemoved = 'The following non-existent files were removed from the list:' + LineEnding + '%s';
-  sNoFilesLeftToCheck = 'There are no files left to check.';
-  sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
-  sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
+  sSelectedTranslationsAreNotAvailable = 'Selected translations are not '
+    +'available.';
 
   sLastSearchPath = 'Last search path:';
   sLanguage = 'Language:';

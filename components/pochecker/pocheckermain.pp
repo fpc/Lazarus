@@ -228,7 +228,9 @@ begin
   AMasterList := GetSelectedMasterFiles;
   try
     if TryCreatePoFamilyList(AMasterList, SL, ALangID) then
-      RunSelectedTests(SL, StatL, DupL);
+      RunSelectedTests(SL, StatL, DupL)
+    else
+      ShowError(sSelectedTranslationsAreNotAvailable);
   finally
     SL.Free;
     StatL.Free;
@@ -329,7 +331,7 @@ end;
 
 procedure TPoCheckerForm.ShowError(const Msg: string);
 begin
-  MessageDlg('Po-checker', Msg, mtError, [mbOK], 0);
+  MessageDlg('POChecker', Msg, mtError, [mbOK], 0);
 end;
 
 procedure TPoCheckerForm.ScanDirectory(ADir: String);
@@ -399,79 +401,24 @@ end;
 function TPoCheckerForm.TryCreatepoFamilyList(var MasterList, SL: TStringList;
   const LangID: TLangID): Boolean;
 var
-  Fn, Msg, FamilyMsg: String;
-  i, Cnt: Integer;
+  FamilyMsg: String;
 begin
   Result := False;
-  Msg := '';
-  Cnt := MasterList.Count;
-  for i := Cnt - 1 downto 0 do
-  begin
-    Fn := MasterList.Strings[i];
-    if not FileExistsUtf8(Fn) then
-    begin
-      MasterList.Delete(i);
-      Msg := Format('"%s"',[Fn]) + LineEnding + Msg;
-    end;
-  end;
-  if Msg <> '' then
-    //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
-    Msg := Format(sFilesNotFoundAndRemoved,[Msg]);
-  Cnt := MasterList.Count;
-  if Cnt = 0 then
-    Msg := Msg + LineEnding + LineEnding + LineEnding + sNoFilesLeftToCheck;
-  if Msg <> '' then
-  begin
-    SL.AddText(Msg);
-    SL.Add('');
-  end;
-  if Cnt = 0 then
-  begin
-    //MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
-    Exit;
-  end;
   try
-    if Assigned(PoFamilyList) then PoFamilyList.Free;
+    if Assigned(PoFamilyList) then
+      PoFamilyList.Free;
     PoFamilyList := TPoFamilyList.Create(MasterList, LangID, FamilyMsg);
     if FamilyMsg <> '' then
     begin
-      //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[FamilyMsg]), mtInformation, [mbOk], 0);
-      if Msg = '' then
-        FamilyMsg := Format(sFilesNotFoundAndRemoved,[FamilyMsg]);
-      if PoFamilyList.Count = 0 then
-        FamilyMsg := FamilyMsg + LineEnding + LineEnding + LineEnding + sNoFilesLeftToCheck;
-      if FamilyMsg <> '' then
-      begin
-        SL.AddText(FamilyMsg);
-        SL.Add('');
-      end;
-      if PoFamilyList.Count = 0 then
-      begin
-        //MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
-        FreeAndNil(PoFamilyList);
-        Exit;
-      end;
+      FamilyMsg := Format(sFilesNotFoundAndRemoved,[FamilyMsg]);
+      SL.AddText(FamilyMsg);
+      SL.Add('');
     end;
     PoFamilyList.OnTestStart := @OnTestStart;
     PoFamilyList.OnTestEnd := @OnTestEnd;
-    Result := True;
+    Result := PoFamilyList.Count <> 0;
   except
-    on E: Exception do
-    begin
-      Result := False;
-      ShowError(Format(sErrorOnCreate, [E.Message]));
-      if Assigned(PoFamilyList) then
-      begin
-        try
-          FreeAndNil(PoFamilyList);
-        except
-          on E: Exception do
-          begin
-            ShowError(Format(sErrorOnCleanUp, [E.Message]));
-          end;
-        end;
-      end;
-    end;
+    Result := False;
   end;
 end;
 

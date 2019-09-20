@@ -162,21 +162,6 @@ msgstr ""
 msgid "Duplicate Originals"
 msgstr ""
 
-#: pocheckerconsts.serroroncleanup
-#, object-pascal-format
-msgid ""
-"An unrecoverable error occurred\n"
-"%s\n"
-"Please close the program"
-msgstr ""
-
-#: pocheckerconsts.serroroncreate
-#, object-pascal-format
-msgid ""
-"Error creating an instance of TPoFamily:\n"
-"%s"
-msgstr ""
-
 #: pocheckerconsts.serrorsbytest
 #, object-pascal-format
 msgid "Errors / warnings reported by %s for:"
@@ -246,10 +231,6 @@ msgstr ""
 #: pocheckerconsts.smissingmasteridentifier
 #, object-pascal-format
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
-msgstr ""
-
-#: pocheckerconsts.snofileslefttocheck
-msgid "There are no files left to check."
 msgstr ""
 
 #: pocheckerconsts.snotestselected
@@ -376,6 +357,10 @@ msgstr ""
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
+msgstr ""
+
+#: pocheckerconsts.sselectedtranslationsarenotavailable
+msgid "Selected translations are not available."
 msgstr ""
 
 #: pocheckerconsts.sselecttesttypes

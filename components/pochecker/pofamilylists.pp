@@ -66,11 +66,12 @@ end;
 constructor TPoFamilyList.Create(AMasterList: TStrings; ALangID: TLangID; out Msg: String);
 var
   i: Integer;
-  MasterName, ChildName: String;
+  MasterName, ChildName, MasterMsg, ChildMsg: String;
   APoFamily: TPoFamily;
 begin
   FList := TFPObjectList.Create(True);
-  Msg := '';
+  MasterMsg := '';
+  ChildMsg := '';
   FPoFamilyStats := TPoFamilyStats.Create;
   FLangID := ALangID;
   for i :=  0 to AMasterList.Count - 1 do
@@ -89,11 +90,14 @@ begin
         Add(APoFamily);
       end
       else
-        Msg := Msg + Format('"%s"',[ChildName]) + LineEnding;
+        ChildMsg := ChildMsg + Format('"%s"',[ChildName]) + LineEnding;
     end
     else
-      Msg := Msg + Format('"%s"',[MasterName]) + LineEnding;
+      MasterMsg := MasterMsg + Format('"%s"',[MasterName]) + LineEnding;
   end;
+  if (MasterMsg <> '') and (ChildMsg <> '') then
+    MasterMsg := MasterMsg + LineEnding;
+  Msg := MasterMsg + ChildMsg;
 end;
 
 destructor TPoFamilyList.Destroy;

@@ -172,33 +172,6 @@ msgstr "Orijinal değer \"%s\", 1'den fazla giriş için kullanılır:"
 msgid "Duplicate Originals"
 msgstr "Yinelenen Orijinaller"
 
-#: pocheckerconsts.serroroncleanup
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
-msgid ""
-"An unrecoverable error occurred\n"
-"%s\n"
-"Please close the program"
-msgstr ""
-"Kurtarılamaz bir hata oluştu\n"
-"%s\n"
-"Lütfen programı kapat\n"
-
-#: pocheckerconsts.serroroncreate
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
-msgid ""
-"Error creating an instance of TPoFamily:\n"
-"%s"
-msgstr ""
-"TPoFamily örneği oluştururken hata oluştu:\n"
-"%s\n"
-
 #: pocheckerconsts.serrorsbytest
 #, object-pascal-format
 msgid "Errors / warnings reported by %s for:"
@@ -274,10 +247,6 @@ msgstr "[Satır: %d]"
 #, object-pascal-format
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Tanımlayıcı [%s] %s içinde bulundu, ancak %s içinde mevcut değil"
-
-#: pocheckerconsts.snofileslefttocheck
-msgid "There are no files left to check."
-msgstr "Kontrol edilecek dosya kalmadı."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -423,6 +392,10 @@ msgstr "Tüm dosyaları seç"
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr "He&psini seç"
+
+#: pocheckerconsts.sselectedtranslationsarenotavailable
+msgid "Selected translations are not available."
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
