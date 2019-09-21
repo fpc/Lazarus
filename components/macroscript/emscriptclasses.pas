@@ -622,28 +622,28 @@ begin
         Result := GetSynEditFromStack(-2, Obj);
         if not Result then
           exit;
-        Obj.SelText := Stack.GetAnsiString(-2);
+        Stack.SetAnsiString(-1, Obj.SelText);
       end;
     PropWriteId_SelText: begin  //
         CheckMinParamCount(2, 'TSynEdit.SelText (w)');
         Result := GetSynEditFromStack(-1, Obj);
         if not Result then
           exit;
-        Stack.SetAnsiString(-1, Obj.SelText);
+        Obj.SelText := Stack.GetAnsiString(-2);
       end;
     PropReadId_SelectionMode: begin  //
         CheckMinParamCount(2, 'TSynEdit.SelectionMode (r)');
         Result := GetSynEditFromStack(-2, Obj);
         if not Result then
           exit;
-        Obj.SelectionMode := TSynSelectionMode(Stack.GetUInt(-2));
+        Stack.SetUInt(-1, cardinal(Obj.SelectionMode));
       end;
     PropWriteId_SelectionMode: begin  //
         CheckMinParamCount(2, 'TSynEdit.SelectionMode (w)');
         Result := GetSynEditFromStack(-1, Obj);
         if not Result then
           exit;
-        Stack.SetUInt(-1, cardinal(Obj.SelectionMode));
+        Obj.SelectionMode := TSynSelectionMode(Stack.GetUInt(-2));
       end;
     FunctionId_ClearSelection: begin  //
         CheckMinParamCount(1, 'TSynEdit.ClearSelection');
