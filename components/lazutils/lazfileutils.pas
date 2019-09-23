@@ -1283,6 +1283,7 @@ function StrToCmdLineParam(const Param: string): string;
 const
   NoQuot = ' ';
   AnyQuot = '*';
+  SysQuot = {$IFDEF Windows}'"'{$ELSE}''''{$ENDIF};
 var
   Quot: Char;
   p: PChar;
@@ -1302,7 +1303,7 @@ begin
           if i<length(Result) then
             Delete(Result,i+1,length(Result));
           case Quot of
-          AnyQuot: Result:=''''+Result+'''';
+          AnyQuot: Result:=SysQuot+Result+SysQuot;
           '''': Result+='''';
           '"':  Result+='"';
           end;

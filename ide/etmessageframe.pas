@@ -3315,7 +3315,7 @@ begin
       s+='Parameters:'+LineEnding;
       s+=Proc.Parameters.Text+LineEnding;
       s+='Command Line:'+LineEnding;
-      s+=Tool.Process.Executable+' '+Tool.CmdLineParams+LineEnding+LineEnding;
+      s+=StrToCmdLineParam(Tool.Process.Executable)+' '+MergeCmdLineParams(Tool.Process.Parameters)+LineEnding+LineEnding;
       s+='Parsers: ';
       if Tool.ParserCount=0 then
         s+='none'
