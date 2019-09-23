@@ -1875,7 +1875,7 @@ begin
   and FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
   begin
     UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
-    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcDataModule] then
+    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcCustomForm,pfcbcDataModule] then
     begin
       LFMFilename:=ActiveUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(ActiveUnitInfo.Filename,true);
       if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk],false)=mrOk then
@@ -6073,12 +6073,7 @@ begin
         end;
         {$ENDIF}
 
-        if NewComponent is TFrame then
-          AnUnitInfo.ResourceBaseClass:=pfcbcFrame
-        else if NewComponent is TDataModule then
-          AnUnitInfo.ResourceBaseClass:=pfcbcDataModule
-        else if NewComponent is TForm then
-          AnUnitInfo.ResourceBaseClass:=pfcbcForm;
+        AnUnitInfo.ResourceBaseClass:=GetComponentBaseClass(NewComponent.ClassType);
 
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
@@ -6339,8 +6334,11 @@ begin
       for i:=0 to ListOfPFindContext.Count-1 do begin
         Context:=PFindContext(ListOfPFindContext[i]);
         Ancestor:=UpperCase(Context^.Tool.ExtractClassName(Context^.Node,false));
-        if (Ancestor='TFORM') or (Ancestor='TCUSTOMFORM') then begin
+        if (Ancestor='TFORM') then begin
           AnUnitInfo.ResourceBaseClass:=pfcbcForm;
+          exit(true);
+        end else if (Ancestor='TCUSTOMFORM') then begin
+          AnUnitInfo.ResourceBaseClass:=pfcbcCustomForm;
           exit(true);
         end else if Ancestor='TDATAMODULE' then begin
           AnUnitInfo.ResourceBaseClass:=pfcbcDataModule;

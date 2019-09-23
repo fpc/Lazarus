@@ -110,7 +110,8 @@ type
     pfcbcNone,      // unknown
     pfcbcForm,      // is TForm
     pfcbcFrame,     // is TFrame
-    pfcbcDataModule // is TDataModule
+    pfcbcDataModule,// is TDataModule
+    pfcbcCustomForm // is TCustomForm (not TForm)
     );
     
 const
@@ -118,7 +119,8 @@ const
     'None',
     'Form',
     'Frame',
-    'DataModule'
+    'DataModule',
+    'CustomForm'
     );
     
 function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
@@ -1098,7 +1100,9 @@ begin
   else if aClass.InheritsFrom(TFrame) then
     Result:=pfcbcFrame
   else if aClass.InheritsFrom(TDataModule) then
-    Result:=pfcbcDataModule;
+    Result:=pfcbcDataModule
+  else if aClass.InheritsFrom(TCustomForm) then
+    Result:=pfcbcCustomForm;
 end;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
