@@ -157,9 +157,12 @@ uses
 
 
 function GetLastErrorText: String;
+var
+  i: DWORD;
 begin
 {$ifdef windows}
-  Result := GetLastErrorText(GetLastError);
+  i := GetLastError;
+  Result := IntToStr(i) + ': ' + GetLastErrorText(i);
 {$endif}
 end;
 
