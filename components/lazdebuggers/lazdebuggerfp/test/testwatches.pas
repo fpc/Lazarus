@@ -1010,16 +1010,49 @@ begin
     t.Add( 'TIntDynArray',  weMatch('type array of (integer|longint)', skType)).AddFlag(ehNoTypeInfo);
     t.Add( 'byte',          weMatch('type byte', skType)).AddFlag(ehNoTypeInfo);
 
+    t.Add('MyStringItemList',                 weStatArray([], -1) ).IgnTypeName();
+    t.Add('MyStringList.FLIST^',                 weStatArray([], -1) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(MyStringList).FLIST^',    weStatArray([], -1) ).IgnTypeName();
+    t.Add('MyClass1.FMyStringList.FLIST^',                 weStatArray([], -1) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(MyClass1.FMyStringList).FLIST^',    weStatArray([], -1) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(TMyClass(MyClass1).FMyStringList).FLIST^',    weStatArray([], -1) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(TMyClass(MyClass2).FMyStringList).FLIST^',    weStatArray([], -1) ).IgnTypeName();
+
+    t.Add('MyStringList.FLIST^[0]',                 weMatch('FString', skRecord) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(MyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
+    t.Add('MyClass1.FMyStringList.FLIST^[0]',                 weMatch('FString', skRecord) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(MyClass1.FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(TMyClass(MyClass1).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
+    t.Add('TMYSTRINGLIST(TMyClass(MyClass2).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
+
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob var (@)^',   '(@gv', 001, 'B', tlAny, ')^');
 //    AddWatches(t, 'glob var @^',   '@gv', 001, 'B', tlAny, '^');
+
     AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
     AddWatches(t, 'glob MyBaseClass1', 'MyClass1.mbc', 003, 'D');
-    AddWatches(t, 'glob MyClass1',     'TMyClass(MyClass2).mc',  004, 'E');
-    AddWatches(t, 'glob MyBaseClass1', 'TMyClass(MyClass2).mbc', 005, 'F');
+    AddWatches(t, 'glob cast MyClass2',     'TMyClass(MyClass2).mc',  004, 'E');
+    AddWatches(t, 'glob cast MyBaseClass2', 'TMyClass(MyClass2).mbc', 005, 'F');
+    AddWatches(t, 'glob MyPClass1',          'MyPClass1^.mc',  002, 'C');
+    AddWatches(t, 'glob cast MyPClass2',     'TMyClass(MyPClass2^).mc',  004, 'E');
+
     AddWatches(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
     AddWatches(t, 'glob var dyn array of [1]',   'gva', 006, 'L', tlArrayWrap, '[1]');
+    AddWatches(t, 'glob var array [0..2] of [0]',   'gv_sa_', 007, 'O', tlArrayWrap, '[0]' );
+    AddWatches(t, 'glob var array [0..2] of [1]',   'gv_sa_', 008, 'P', tlArrayWrap, '[1]');
+    AddWatches(t, 'glob var array [-1..2] of [-1]',   'gv_nsa_', 009, 'Q', tlArrayWrap, '[-1]' );
+    AddWatches(t, 'glob var array [-1..2] of [0]',    'gv_nsa_', 010, 'R', tlArrayWrap, '[0]');
+    AddWatches(t, 'glob var array [-1..2] of [1]',    'gv_nsa_', 011, 'S', tlArrayWrap, '[1]');
+
+    AddWatches(t, 'glob var ptr dyn array of [0]',   'gvp_a_', 005, 'K', tlArrayWrap, '^[0]' );
+    AddWatches(t, 'glob var ptr dyn array of [1]',   'gvp_a_', 006, 'L', tlArrayWrap, '^[1]');
+    AddWatches(t, 'glob var ptr array [0..2] of [0]',   'gvp_sa_', 007, 'O', tlArrayWrap, '^[0]' );
+    AddWatches(t, 'glob var ptr array [0..2] of [1]',   'gvp_sa_', 008, 'P', tlArrayWrap, '^[1]');
+    AddWatches(t, 'glob var ptr array [-1..2] of [-1]',   'gvp_nsa_', 009, 'Q', tlArrayWrap, '^[-1]' );
+    AddWatches(t, 'glob var ptr array [-1..2] of [0]',    'gvp_nsa_', 010, 'R', tlArrayWrap, '^[0]');
+    AddWatches(t, 'glob var ptr array [-1..2] of [1]',    'gvp_nsa_', 011, 'S', tlArrayWrap, '^[1]');
+
     AddWatches(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
     AddWatches(t, 'glob var named pointer',      'gvpt_', 001, 'B', tlPointer, '^'); // pointer
 
