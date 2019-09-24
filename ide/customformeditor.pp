@@ -389,6 +389,8 @@ begin
         exit(pfcbcFrame)
       else if CompareText(AClassName,'TForm')=0 then
         exit(pfcbcForm)
+      else if CompareText(AClassName,'TCustomForm')=0 then
+        exit(pfcbcCustomForm)
       else if CompareText(AClassName,'TDataModule')=0 then
         exit(pfcbcDataModule);
     end;

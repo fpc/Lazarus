@@ -250,7 +250,7 @@ var
         for i := 0 to Project.UnitCount - 1 do
           if (Project.Units[i].IsPartOfProject) and
             (Project.Units[i].ComponentName <> '') and
-            (Project.Units[i].ResourceBaseClass in [pfcbcForm, pfcbcDataModule]) and
+            (Project.Units[i].ResourceBaseClass in [pfcbcForm, pfcbcCustomForm,pfcbcDataModule]) and
             (IndexOfAutoCreateForm(Project.Units[i].ComponentName) < 0) then
             sl.Add(Project.Units[i].ComponentName);
         sl.Sort;
