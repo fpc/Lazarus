@@ -1700,8 +1700,6 @@ begin
     if m <> nil then
       Result := m.Value;
     assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
-    if Result <> nil then
-      TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
@@ -1716,8 +1714,6 @@ begin
     if m <> nil then
       Result := m.Value;
     assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
-    if Result <> nil then
-      TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
@@ -2614,7 +2610,6 @@ begin
 
     Result := tmp.Value;
     assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
-    TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
@@ -2637,7 +2632,6 @@ begin
 
     Result := tmp.Value;
     assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
-    TFpValueDwarfBase(Result).Context := Context;
   end;
   SetLastMember(TFpValueDwarf(Result));
 end;
