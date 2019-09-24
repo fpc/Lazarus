@@ -1,6 +1,7 @@
 unit FPDbgController;
 
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 
 interface
 

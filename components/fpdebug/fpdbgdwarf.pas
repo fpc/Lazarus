@@ -35,6 +35,7 @@
 unit FpDbgDwarf;
 
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 {off $INLINE OFF}
 
 (* Notes:
@@ -675,13 +676,13 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   // GetNextTypeInfoForDataAddress => wrong behaviour, but basetypes should not change addr anyway.
   private
     FLowBoundConst: Int64;
-    FLowBoundValue: TFpValue;
+    FLowBoundSymbol: TFpSymbolDwarfData;
     FLowBoundState: TFpDwarfAtEntryDataReadState;
     FHighBoundConst: Int64;
-    FHighBoundValue: TFpValue;
+    FHighBoundSymbol: TFpSymbolDwarfData;
     FHighBoundState: TFpDwarfAtEntryDataReadState;
     FCountConst: Int64;
-    FCountValue: TFpValue;
+    FCountSymbol: TFpSymbolDwarfData;
     FCountState: TFpDwarfAtEntryDataReadState;
     FLowEnumIdx, FHighEnumIdx: Integer;
     FEnumIdxValid: Boolean;
@@ -3695,13 +3696,13 @@ begin
     exit;
 
   if FLowBoundState = rfValue then
-    Result := FLowBoundValue.TypeInfo as TFpSymbolDwarfType
+    Result := FLowBoundSymbol.TypeInfo as TFpSymbolDwarfType
   else
   if FHighBoundState = rfValue then
-    Result := FHighBoundValue.TypeInfo as TFpSymbolDwarfType
+    Result := FHighBoundSymbol.TypeInfo as TFpSymbolDwarfType
   else
   if FCountState = rfValue then
-    Result := FCountValue.TypeInfo as TFpSymbolDwarfType;
+    Result := FCountSymbol.TypeInfo as TFpSymbolDwarfType;
 end;
 
 procedure TFpSymbolDwarfTypeSubRange.NameNeeded;
@@ -3782,9 +3783,9 @@ end;
 
 destructor TFpSymbolDwarfTypeSubRange.Destroy;
 begin
-  FLowBoundValue.ReleaseReference;
-  FHighBoundValue.ReleaseReference;
-  FCountValue.ReleaseReference;
+  FLowBoundSymbol.ReleaseReference;
+  FHighBoundSymbol.ReleaseReference;
+  FCountSymbol.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -3805,7 +3806,7 @@ begin
   assert((AValueObj = nil) or (AValueObj is TFpValueDwarf), 'TFpSymbolDwarfTypeSubRange.GetValueLowBound: AValueObj is TFpValueDwarf(');
   if FLowBoundState = rfNotRead then begin
     if InformationEntry.GetAttribData(DW_AT_lower_bound, AttrData) then
-      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FLowBoundState, @FLowBoundValue)
+      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FLowBoundState, @FLowBoundSymbol)
     else
       FLowBoundState := rfNotFound;
     FLowBoundConst := int64(t);
@@ -3824,7 +3825,7 @@ begin
   assert((AValueObj = nil) or (AValueObj is TFpValueDwarf), 'TFpSymbolDwarfTypeSubRange.GetValueHighBound: AValueObj is TFpValueDwarf(');
   if FHighBoundState = rfNotRead then begin
     if InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData) then
-      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FHighBoundState, @FHighBoundValue)
+      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FHighBoundState, @FHighBoundSymbol)
     else
       FHighBoundState := rfNotFound;
     FHighBoundConst := int64(t);
@@ -3838,7 +3839,7 @@ begin
     if Result then begin
       if FCountState = rfNotRead then begin
         if InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData) then
-          ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FCountState, @FCountValue)
+          ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FCountState, @FCountSymbol)
         else
           FCountState := rfNotFound;
         FCountConst := int64(t);

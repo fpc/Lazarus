@@ -33,6 +33,7 @@
 }
 unit FpDbgClasses;
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 
 interface
 

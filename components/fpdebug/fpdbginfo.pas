@@ -27,6 +27,7 @@ unit FpDbgInfo;
 
 *)
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 
 interface
 

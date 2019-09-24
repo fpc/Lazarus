@@ -25,6 +25,7 @@
 unit FpPascalParser;
 
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 
 interface
 

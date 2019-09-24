@@ -1,6 +1,7 @@
 unit FpPascalBuilder;
 
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 
 interface
 

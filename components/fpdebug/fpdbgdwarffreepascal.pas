@@ -1,6 +1,7 @@
 unit FpDbgDwarfFreePascal;
 
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 
 interface
 
