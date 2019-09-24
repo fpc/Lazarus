@@ -1,6 +1,7 @@
 unit FpDebugDebugger;
 
 {$mode objfpc}{$H+}
+{$TYPEDADDRESS on}
 
 interface
 
