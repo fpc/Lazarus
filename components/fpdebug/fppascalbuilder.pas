@@ -928,7 +928,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   var
     s, s2, MbName, MbVal: String;
     i: Integer;
-    m: TFpValue;
+    MemberValue: TFpValue;
     fl: TFpPrettyPrintValueFlags;
     f: TDBGField;
     ti: TFpSymbol;
@@ -999,14 +999,14 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       if not Result then
         APrintedValue := '';
       for i := 0 to AValue.MemberCount-1 do begin
-        m := AValue.Member[i];
-        if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
+        MemberValue := AValue.Member[i];
+        if (MemberValue = nil) or (MemberValue.Kind in [skProcedure, skFunction]) then
           continue;
         s := '';
         // ppoStackParam: Do not expand nested structures // may need ppoSingleLine?
-        InternalPrintValue(MbVal, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions+[ppoStackParam]);
-        if m.DbgSymbol <> nil then begin
-          MbName := m.DbgSymbol.Name;
+        InternalPrintValue(MbVal, MemberValue, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions+[ppoStackParam]);
+        if MemberValue.DbgSymbol <> nil then begin
+          MbName := MemberValue.DbgSymbol.Name;
           s := MbName + ' = ' + MbVal;
         end
         else begin
@@ -1021,8 +1021,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         end;
         if (ppvCreateDbgType in AFlags) then begin
           s := '';
-          if m.ContextTypeInfo <> nil then s := m.ContextTypeInfo.Name;
-          f := TDBGField.Create(MbName, TDBGType.Create(skSimple, ResTypeName(m)),
+          if MemberValue.ContextTypeInfo <> nil then s := MemberValue.ContextTypeInfo.Name;
+          f := TDBGField.Create(MbName, TDBGType.Create(skSimple, ResTypeName(MemberValue)),
                                 flPublic, [], s);
           f.DBGType.Value.AsString := MbVal;
           ADBGTypeInfo^.Fields.Add(f);
@@ -1041,7 +1041,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   var
     s: String;
     i: Integer;
-    m: TFpValue;
+    MemberValue: TFpValue;
     Cnt, FullCnt: Integer;
     d: Int64;
   begin
@@ -1075,9 +1075,9 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     if (AValue.IndexTypeCount = 0) or (not AValue.IndexType[0].GetValueLowBound(AValue, d)) then
       d := 0;
     for i := d to d + Cnt - 1 do begin
-      m := AValue.Member[i];
-      if m <> nil then
-        InternalPrintValue(s, m, AnAddressSize, AFlags * PV_FORWARD_FLAGS, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions)
+      MemberValue := AValue.Member[i];
+      if MemberValue <> nil then
+        InternalPrintValue(s, MemberValue, AnAddressSize, AFlags * PV_FORWARD_FLAGS, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions)
       else
         s := '{error}';
       if APrintedValue = ''
