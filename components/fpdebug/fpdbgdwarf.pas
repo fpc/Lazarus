@@ -2106,7 +2106,7 @@ begin
 
   ti := TypeInfo.TypeInfo;
   {$PUSH}{$R-}{$Q-} // TODO: check overflow
-  if ti <> nil then
+  if (ti <> nil) and (AIndex <> 0) then
     AIndex := AIndex * ti.Size;
   addr := GetDerefAddress;
   if not IsTargetAddr(addr) then begin
