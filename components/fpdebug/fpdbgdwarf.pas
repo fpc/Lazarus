@@ -635,7 +635,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure KindNeeded; override;
     procedure TypeInfoNeeded; override;
-    function GetHasBounds: Boolean; override;
   public
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
     function GetValueBounds(AValueObj: TFpValue; out ALowBound,
@@ -689,7 +688,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure InitEnumIdx;
   protected
     function DoGetNestedTypeInfo: TFpSymbolDwarfType;override;
-    function GetHasBounds: Boolean; override;
 
     procedure NameNeeded; override;
     procedure KindNeeded; override;
@@ -769,8 +767,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
     function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
-
-    function GetHasBounds: Boolean; override;
   public
     destructor Destroy; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; override;
@@ -3575,11 +3571,6 @@ begin
   end;
 end;
 
-function TFpSymbolDwarfTypeBasic.GetHasBounds: Boolean;
-begin
-  Result := (kind = skInteger) or (kind = skCardinal);
-end;
-
 function TFpSymbolDwarfTypeBasic.GetValueBounds(AValueObj: TFpValue; out
   ALowBound, AHighBound: Int64): Boolean;
 begin
@@ -3719,24 +3710,6 @@ begin
     Result := FCountValue.TypeInfo as TFpSymbolDwarfType;
 end;
 
-function TFpSymbolDwarfTypeSubRange.GetHasBounds: Boolean;
-var
-  dummy: Int64;
-begin
-  if FLowBoundState = rfNotRead then
-    GetValueLowBound(nil, dummy);
-  Result := (FLowBoundState in [rfConst, rfValue, rfNotRead]);
-  if not Result then
-    exit;
-
-  if (FHighBoundState = rfNotRead) and (FCountState = rfNotRead) then
-    GetValueHighBound(nil, dummy);
-  if FHighBoundState = rfNotRead then
-    FCountState := rfNotFound; // dummy marker. HighBound depends on ValueObj
-  Result := (FHighBoundState in [rfConst, rfValue, rfNotRead]) or
-            (FCountState in [rfConst, rfValue, rfNotRead]);
-end;
-
 procedure TFpSymbolDwarfTypeSubRange.NameNeeded;
 var
   AName: String;
@@ -3752,14 +3725,9 @@ var
   t: TFpSymbol;
 begin
 // TODO: limit to ordinal types
-  if not HasBounds then begin // does ReadBounds;
-    SetKind(skNone); // incomplete type
-  end;
-
   t := NestedTypeInfo;
   if t = nil then begin
     SetKind(skInteger);
-    SetSize(CompilationUnit.AddressSize);
   end
   else
     SetKind(t.Kind);
@@ -3767,15 +3735,20 @@ end;
 
 procedure TFpSymbolDwarfTypeSubRange.SizeNeeded;
 var
+  ByteSize: Integer;
   t: TFpSymbol;
 begin
-  t := NestedTypeInfo;
-  if t = nil then begin
-    SetKind(skInteger);
-    SetSize(CompilationUnit.AddressSize);
-  end
-  else
-    SetSize(t.Size);
+  if InformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
+    SetSize(ByteSize)
+  else begin
+    t := NestedTypeInfo;
+    if t = nil then begin
+      SetKind(skInteger);
+      SetSize(CompilationUnit.AddressSize);
+    end
+    else
+      SetSize(t.Size);
+  end;
 end;
 
 function TFpSymbolDwarfTypeSubRange.GetNestedSymbol(AIndex: Int64): TFpSymbol;
@@ -4128,11 +4101,6 @@ function TFpSymbolDwarfTypeEnum.GetNestedSymbolCount: Integer;
 begin
   CreateMembers;
   Result := FMembers.Count;
-end;
-
-function TFpSymbolDwarfTypeEnum.GetHasBounds: Boolean;
-begin
-  Result := True;
 end;
 
 destructor TFpSymbolDwarfTypeEnum.Destroy;

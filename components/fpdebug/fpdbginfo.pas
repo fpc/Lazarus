@@ -360,8 +360,6 @@ type
     function GetHasOrdinalValue: Boolean; virtual;
     function GetOrdinalValue: Int64; virtual;
 
-    function GetHasBounds: Boolean; virtual;
-
     function GetNestedSymbol({%H-}AIndex: Int64): TFpSymbol; virtual;
     function GetNestedSymbolByName({%H-}AIndex: String): TFpSymbol; virtual;
     function GetNestedSymbolCount: Integer; virtual;
@@ -432,7 +430,6 @@ type
     function GetValueBounds(AValueObj: TFpValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; virtual;
     function GetValueHighBound(AValueObj: TFpValue; out AHighBound: Int64): Boolean; virtual;
-    property HasBounds: Boolean read GetHasBounds; // Has declaration for BOTH bounds
 
     // VALUE
     property Value: TFpValue read GetValueObject; //deprecated 'rename / create';
@@ -468,7 +465,6 @@ type
     function GetValueObject: TFpValue; override;
     function GetHasOrdinalValue: Boolean; override;
     function GetOrdinalValue: Int64; override;
-    function GetHasBounds: Boolean; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
     function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
@@ -1074,11 +1070,6 @@ begin
   FLastError := AnError;
 end;
 
-function TFpSymbol.GetHasBounds: Boolean;
-begin
-  Result := False;
-end;
-
 function TFpSymbol.GetHasOrdinalValue: Boolean;
 begin
   Result := False;
@@ -1398,17 +1389,6 @@ begin
     Result := p.GetValueHighBound(AValueObj, AHighBound)
   else
     Result := inherited GetValueHighBound(AValueObj, AHighBound);
-end;
-
-function TFpSymbolForwarder.GetHasBounds: Boolean;
-var
-  p: TFpSymbol;
-begin
-  p := GetForwardToSymbol;
-  if p <> nil then
-    Result := p.HasBounds
-  else
-    Result := False;  //  Result := inherited GetHasBounds;
 end;
 
 function TFpSymbolForwarder.GetNestedSymbol(AIndex: Int64): TFpSymbol;
