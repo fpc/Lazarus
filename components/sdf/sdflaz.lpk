@@ -33,7 +33,7 @@
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LCLBase"/>
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
