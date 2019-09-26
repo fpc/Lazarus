@@ -205,7 +205,6 @@ type
                               ASource: TFpValue): Boolean; // Used for Typecast
     // StructureValue: Any Value returned via GetMember points to its structure
     property StructureValue: TFpValueDwarf read FStructureValue write SetStructureValue;
-    property ValueSymbol: TFpSymbolDwarfData read FDataSymbol; // Same as DbgSymbol
   end;
 
   TFpValueDwarfUnknown = class(TFpValueDwarf)

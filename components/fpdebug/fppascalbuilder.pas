@@ -740,7 +740,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       APrintedValue := APrintedValue + ': ';
     end
     else
-      t := TFpValueDwarf(AValue).ValueSymbol;
+      t := AValue.DbgSymbol;
 
     if AFlags * PV_FORWARD_FLAGS <> [] then
       GetTypeName(s, t)
