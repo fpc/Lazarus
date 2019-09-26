@@ -272,12 +272,13 @@ begin
     // removing duplicates
     for i := 0 to fItems.Count - 1 do begin
       trace := TStackTrace(fItems[i]);
+      if trace = nil then
+        continue;
       s := GetHashString(trace);
       hashed := TStackTrace(hash.Items[s]);
       if Assigned(hashed) then begin
         inc(hashed.LeakCount);
-        trace.Free; // remove from list
-        fItems[i] := nil;
+        fItems[i] := nil; // this call destroy on the old trace object
       end else
         hash.Add(s, trace)
     end;
