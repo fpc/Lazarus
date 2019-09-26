@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="EditorMacroScript"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="M Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -15,11 +16,12 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="IDE-Extension: Adds PascalScript to editor-macros. 
+    <Description Value="IDE-Extension - Extends the Editor&apos;s macro recorder and player:
+- Macros can be written in PascalScript.
+- Macros can also access some additional properties and methods of the Editor (TSynEdit object).
 
 This package requires: PascalScript from REM Objects (http://www.remobjects.com/ps.aspx)
-
-Extends the Editors macro recorder and player. Macros can be written in pascal script. They also have access to additional properties and methods."/>
+"/>
     <License Value="GPL"/>
     <Files Count="6">
       <Item1>
@@ -52,7 +54,6 @@ Extends the Editors macro recorder and player. Macros can be written in pascal s
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
         <PackageName Value="synedit"/>
