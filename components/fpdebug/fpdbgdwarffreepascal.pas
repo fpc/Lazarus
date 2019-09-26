@@ -117,7 +117,7 @@ type
     function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; override;
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
       out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
+    function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
     function DataSize: Integer; override;
   public
     property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
@@ -139,7 +139,7 @@ type
     FIsShortString: (issUnknown, issShortString, issStructure);
     function IsShortString: Boolean;
   protected
-    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
+    function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
     procedure KindNeeded; override;
     function GetNestedSymbolCount: Integer; override;
     //function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
@@ -167,7 +167,7 @@ type
 
   TFpSymbolDwarfFreePascalSymbolTypeArray = class(TFpSymbolDwarfTypeArray)
   public
-    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
+    function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
   end;
 
   { TFpValueDwarfFreePascalArray }
@@ -190,7 +190,7 @@ type
   protected
     procedure KindNeeded; override;
   public
-    function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
+    function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
   end;
 
   { TFpValueDwarfV3FreePascalString }
@@ -552,12 +552,14 @@ begin
 end;
 
 function TFpSymbolDwarfV2FreePascalTypeStructure.GetTypedValueObject(
-  ATypeCast: Boolean): TFpValueDwarf;
+  ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType): TFpValueDwarf;
 begin
+  if AnOuterType = nil then
+    AnOuterType := Self;
   if not IsShortString then
-    Result := inherited GetTypedValueObject(ATypeCast)
+    Result := inherited GetTypedValueObject(ATypeCast, AnOuterType)
   else
-    Result := TFpValueDwarfV2FreePascalShortString.Create(Self);
+    Result := TFpValueDwarfV2FreePascalShortString.Create(AnOuterType);
 end;
 
 procedure TFpSymbolDwarfV2FreePascalTypeStructure.KindNeeded;
@@ -681,12 +683,14 @@ begin
 end;
 
 function TFpSymbolDwarfFreePascalTypePointer.GetTypedValueObject(
-  ATypeCast: Boolean): TFpValueDwarf;
+  ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType): TFpValueDwarf;
 begin
+  if AnOuterType = nil then
+    AnOuterType := Self;
   if IsInternalPointer then
-    Result := NestedTypeInfo.GetTypedValueObject(ATypeCast)
+    Result := NestedTypeInfo.GetTypedValueObject(ATypeCast, AnOuterType)
   else
-    Result := inherited GetTypedValueObject(ATypeCast);
+    Result := inherited GetTypedValueObject(ATypeCast, AnOuterType);
 end;
 
 function TFpSymbolDwarfFreePascalTypePointer.DataSize: Integer;
@@ -760,7 +764,7 @@ var
 begin
   if HasTypeCastInfo then begin
     Result := nil;
-    tmp := TypeCastTargetType.NestedSymbolByName[AIndex];
+    tmp := TypeInfo.NestedSymbolByName[AIndex];
     if (tmp <> nil) then begin
       assert((tmp is TFpSymbolDwarfData), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
       Result := tmp.Value;
@@ -832,9 +836,11 @@ end;
 { TFpSymbolDwarfFreePascalSymbolTypeArray }
 
 function TFpSymbolDwarfFreePascalSymbolTypeArray.GetTypedValueObject(
-  ATypeCast: Boolean): TFpValueDwarf;
+  ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType): TFpValueDwarf;
 begin
-  Result := TFpValueDwarfFreePascalArray.Create(Self);
+  if AnOuterType = nil then
+    AnOuterType := Self;
+  Result := TFpValueDwarfFreePascalArray.Create(AnOuterType, Self);
 end;
 
 { TFpValueDwarfFreePascalArray }
@@ -905,9 +911,7 @@ begin
   end;
 
   // dynamic array
-  if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
-    GetDwarfDataAddress(Addr, TFpSymbolDwarfType(Owner))
-  then begin
+  if (sfDynArray in t.Flags) and (AsCardinal <> 0) and GetDwarfDataAddress(Addr) then begin
     if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
       exit(0); // dyn array, but bad data
     Addr.Address := Addr.Address - AddressSize;
@@ -979,12 +983,14 @@ begin
 end;
 
 function TFpSymbolDwarfV3FreePascalSymbolTypeArray.GetTypedValueObject(
-  ATypeCast: Boolean): TFpValueDwarf;
+  ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType): TFpValueDwarf;
 begin
+  if AnOuterType = nil then
+    AnOuterType := Self;
   if GetInternalStringType in [{iasShortString,} iasAnsiString, iasUnicodeString] then
-    Result := TFpValueDwarfV3FreePascalString.Create(Self)
+    Result := TFpValueDwarfV3FreePascalString.Create(AnOuterType)
   else
-    Result := inherited GetTypedValueObject(ATypeCast);
+    Result := inherited GetTypedValueObject(ATypeCast, AnOuterType);
 end;
 
 procedure TFpSymbolDwarfV3FreePascalSymbolTypeArray.KindNeeded;
@@ -1011,7 +1017,7 @@ begin
   If not Result then
     exit;
 
-  assert(TypeCastTargetType.Kind in [skString, skWideString], 'TFpValueDwarfArray.IsValidTypeCast: TypeCastTargetType.Kind = skArray');
+  assert(TypeInfo.Kind in [skString, skWideString], 'TFpValueDwarfArray.IsValidTypeCast: TypeInfo.Kind = skArray');
 
   f := TypeCastSourceValue.FieldFlags;
   if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) or
@@ -1019,12 +1025,12 @@ begin
   then
     exit;
 
-  //if sfDynArray in TypeCastTargetType.Flags then begin
+  //if sfDynArray in TypeInfo.Flags then begin
   //  // dyn array
   //  if (svfOrdinal in f)then
   //    exit;
   //  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-  //     (TypeCastSourceValue.Size = FOwner.CompilationUnit.AddressSize)
+  //     (TypeCastSourceValue.Size = TypeInfo.CompilationUnit.AddressSize)
   //  then
   //    exit;
   //  if (f * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) then
@@ -1033,7 +1039,7 @@ begin
   //else begin
   //  // stat array
   //  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-  //     (TypeCastSourceValue.Size = TypeCastTargetType.Size)
+  //     (TypeCastSourceValue.Size = TypeInfo.Size)
   //  then
   //    exit;
   //end;
@@ -1078,15 +1084,15 @@ begin
   then
     exit;
 
-  GetDwarfDataAddress(Addr, Owner);
+  GetDwarfDataAddress(Addr);
   if (not IsValidLoc(Addr)) and (svfOrdinal in TypeCastSourceValue.FieldFlags) then
     Addr := TargetLoc(TypeCastSourceValue.AsCardinal);
   if not IsReadableLoc(Addr) then
     exit;
 
-  assert((Owner <> nil) and (Owner.CompilationUnit <> nil) and (Owner.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpValueDwarfV3FreePascalString.GetAsString: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (Owner.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
-  if (TFpDwarfFreePascalSymbolClassMapDwarf3(Owner.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
-     (TFpDwarfFreePascalSymbolClassMapDwarf3(Owner.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
+  assert((TypeInfo <> nil) and (TypeInfo.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpValueDwarfV3FreePascalString.GetAsString: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
+  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
+     (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
   then begin
     if t.Kind = skWideString then begin
       if (t2 is TFpSymbolDwarfTypeSubRange) and (LowBound = 1) then begin
