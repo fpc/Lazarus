@@ -99,7 +99,7 @@ type
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
   TFpSymbolField = (
-    sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize,
+    sfiName, sfiKind, sfiSymType, sfiAddress, //sfiSize,
     sfiTypeInfo, sfiMemberVisibility,
     sfiForwardToSymbol
   );
@@ -125,7 +125,14 @@ type
   { TFpValue }
 
   TFpValue = class(TFpDbgCircularRefCountedObject)
+  private
+    FEvalFlags: set of (efSizeDone, efSizeUnavail);
+    FLastError: TFpError;
+    FSize: QWord;
   protected
+    procedure Reset; virtual; // keeps lastmember and structureninfo
+    procedure SetLastError(ALastError: TFpError);
+
     function GetKind: TDbgSymbolKind; virtual;
     function GetFieldFlags: TFpValueFieldFlags; virtual;
 
@@ -137,9 +144,9 @@ type
     function GetAsFloat: Extended; virtual;
 
     function GetAddress: TFpDbgMemLocation;  virtual;
-    function GetSize: Integer;  virtual;  // returns -1, if not available
+    function DoGetSize(out ASize: QWord): Boolean; virtual;
     function GetDataAddress: TFpDbgMemLocation;  virtual;
-    function GetDataSize: Integer;  virtual;
+    function GetDataSize: QWord;  virtual;
 
     function GetHasBounds: Boolean; virtual;
     function GetOrdHighBound: Int64; virtual;
@@ -162,6 +169,8 @@ type
     constructor Create;
     property RefCount;
 
+    function GetSize(out ASize: QWord): Boolean; inline;
+
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
     property FieldFlags: TFpValueFieldFlags read GetFieldFlags;
@@ -181,9 +190,8 @@ type
          For pointers, this is the address of the pointed-to data
     *)
     property Address: TFpDbgMemLocation read GetAddress;
-    property Size: Integer read GetSize;
     property DataAddress: TFpDbgMemLocation read GetDataAddress; //
-    property DataSize: Integer read GetDataSize;
+    property DataSize: QWord read GetDataSize;
 
     property HasBounds: Boolean  read GetHasBounds;
     property OrdLowBound: Int64  read GetOrdLowBound;   // need typecast for QuadWord
@@ -335,14 +343,12 @@ type
     FKind: TDbgSymbolKind;
     FSymbolType: TDbgSymbolType;
     FAddress: TFpDbgMemLocation;
-    FSize: Integer;
     FTypeInfo: TFpSymbol;
     FMemberVisibility: TDbgSymbolMemberVisibility; // Todo: not cached
 
     function GetSymbolType: TDbgSymbolType; inline;
     function GetKind: TDbgSymbolKind; inline;
     function GetName: String; inline;
-    function GetSize: Integer; inline;
     function GetAddress: TFpDbgMemLocation; inline;
     function GetTypeInfo: TFpSymbol; inline;
     function GetMemberVisibility: TDbgSymbolMemberVisibility; inline;
@@ -371,7 +377,6 @@ type
     procedure SetKind(AValue: TDbgSymbolKind); inline;
     procedure SetSymbolType(AValue: TDbgSymbolType); inline;
     procedure SetAddress(AValue: TFpDbgMemLocation); inline;
-    procedure SetSize(AValue: Integer); inline;
     procedure SetTypeInfo(ASymbol: TFpSymbol); inline;
     procedure SetMemberVisibility(AValue: TDbgSymbolMemberVisibility); inline;
 
@@ -379,7 +384,7 @@ type
     procedure NameNeeded; virtual;
     procedure SymbolTypeNeeded; virtual;
     procedure AddressNeeded; virtual;
-    procedure SizeNeeded; virtual;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; virtual;
     procedure TypeInfoNeeded; virtual;
     procedure MemberVisibilityNeeded; virtual;
     //procedure Needed; virtual;
@@ -392,9 +397,9 @@ type
     property SymbolType: TDbgSymbolType read GetSymbolType;
     property Kind:       TDbgSymbolKind read GetKind;
     // Memory; Size is also part of type (byte vs word vs ...)
-    // HasAddress // (register does not have)
     property Address:    TFpDbgMemLocation read GetAddress;    // used by Proc/func
-    property Size:       Integer read GetSize; // In Bytes
+    // ReadSize: Return False means no value available, and an error may or may not have occurred
+    function ReadSize(const AValueObj: TFpValue; out ASize: QWord{TDbgPtr}): Boolean; inline;
     // TypeInfo used by
     // stValue (Variable): Type
     // stType: Pointer: type pointed to / Array: Element Type / Func: Result / Class: itheritance
@@ -458,7 +463,7 @@ type
     procedure KindNeeded; override;
     procedure NameNeeded; override;
     procedure SymbolTypeNeeded; override;
-    procedure SizeNeeded; override;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; override;
     procedure TypeInfoNeeded; override;
     procedure MemberVisibilityNeeded; override;
 
@@ -726,7 +731,7 @@ end;
 
 function TFpValue.GetLastError: TFpError;
 begin
-  Result := NoError;
+  Result := FLastError;
 end;
 
 function TFpValue.GetHasBounds: Boolean;
@@ -742,6 +747,18 @@ end;
 function TFpValue.GetOrdLowBound: Int64;
 begin
   Result := 0;
+end;
+
+procedure TFpValue.Reset;
+begin
+  FEvalFlags := [];
+  FLastError := NoError;
+end;
+
+procedure TFpValue.SetLastError(ALastError: TFpError);
+begin
+  assert(IsError(ALastError), 'TFpValue.SetLastError: IsError(ALastError)');
+  FLastError := ALastError;
 end;
 
 function TFpValue.GetKind: TDbgSymbolKind;
@@ -769,19 +786,48 @@ begin
   Result := InvalidLoc;
 end;
 
+function TFpValue.DoGetSize(out ASize: QWord): Boolean;
+var
+  ti: TFpSymbol;
+begin
+  Result := False;
+  ti := TypeInfo;
+  if ti = nil then
+    exit;
+
+  Result := ti.ReadSize(Self, ASize);
+  if (not Result) and IsError(ti.LastError) then
+    SetLastError(ti.LastError);
+end;
+
 function TFpValue.GetDataAddress: TFpDbgMemLocation;
 begin
   Result := Address;
 end;
 
-function TFpValue.GetDataSize: Integer;
+function TFpValue.GetDataSize: QWord;
 begin
-  Result := Size;
+  GetSize(Result);
 end;
 
-function TFpValue.GetSize: Integer;
+function TFpValue.GetSize(out ASize: QWord): Boolean;
 begin
-  Result := -1;
+  Result := False;
+  if (efSizeUnavail in FEvalFlags) then // If there was an error, then LastError should still be set
+    exit;
+
+  Result := efSizeDone in FEvalFlags;
+  if Result then begin
+    ASize := FSize;
+    exit;
+  end;
+
+  Result := DoGetSize(ASize);
+  FSize := ASize;
+  if Result then
+    Include(FEvalFlags, efSizeDone)
+  else
+    Include(FEvalFlags, efSizeUnavail);
 end;
 
 function TFpValue.GetAsBool: Boolean;
@@ -982,6 +1028,12 @@ begin
   inherited Destroy;
 end;
 
+function TFpSymbol.ReadSize(const AValueObj: TFpValue; out ASize: QWord
+  ): Boolean;
+begin
+  Result := DoReadSize(AValueObj, ASize);
+end;
+
 function TFpSymbol.GetValueBounds(AValueObj: TFpValue; out ALowBound,
   AHighBound: Int64): Boolean;
 begin
@@ -1047,13 +1099,6 @@ begin
   Result := FName;
 end;
 
-function TFpSymbol.GetSize: Integer;
-begin
-  if not(sfiSize in FEvaluatedFields) then
-    SizeNeeded;
-  Result := FSize;
-end;
-
 function TFpSymbol.GetSymbolType: TDbgSymbolType;
 begin
   if not(sfiSymType in FEvaluatedFields) then
@@ -1112,12 +1157,6 @@ procedure TFpSymbol.SetSymbolType(AValue: TDbgSymbolType);
 begin
   FSymbolType := AValue;
   Include(FEvaluatedFields, sfiSymType);
-end;
-
-procedure TFpSymbol.SetSize(AValue: Integer);
-begin
-  FSize := AValue;
-  Include(FEvaluatedFields, sfiSize);
 end;
 
 procedure TFpSymbol.SetTypeInfo(ASymbol: TFpSymbol);
@@ -1196,9 +1235,11 @@ begin
   SetAddress(InvalidLoc);
 end;
 
-procedure TFpSymbol.SizeNeeded;
+function TFpSymbol.DoReadSize(const AValueObj: TFpValue; out ASize: QWord
+  ): Boolean;
 begin
-  SetSize(0);
+  ASize := 0;
+  Result := False;
 end;
 
 procedure TFpSymbol.TypeInfoNeeded;
@@ -1279,15 +1320,16 @@ begin
     SetSymbolType(stNone);  //  inherited SymbolTypeNeeded;
 end;
 
-procedure TFpSymbolForwarder.SizeNeeded;
+function TFpSymbolForwarder.DoReadSize(const AValueObj: TFpValue; out
+  ASize: QWord): Boolean;
 var
   p: TFpSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
-    SetSize(p.Size)
+    Result := p.DoReadSize(AValueObj, ASize)
   else
-    SetSize(0);  //  inherited SizeNeeded;
+    Result := inherited DoReadSize(AValueObj, ASize);
 end;
 
 procedure TFpSymbolForwarder.TypeInfoNeeded;

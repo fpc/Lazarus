@@ -759,12 +759,13 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   procedure DoInt;
   var
     n: Integer;
+    ValSize: QWord;
   begin
     case ADisplayFormat of
       wdfUnsigned: APrintedValue := IntToStr(QWord(AValue.AsInteger));
       wdfHex: begin
-          if svfSize in AValue.FieldFlags then
-            n := AValue.Size * 2
+          if (svfSize in AValue.FieldFlags) and AValue.GetSize(ValSize) then
+            n := ValSize* 2
           else begin
             n := 16;
             if QWord(AValue.AsInteger) <= high(Cardinal) then n := 8;
@@ -788,12 +789,13 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   procedure DoCardinal;
   var
     n: Integer;
+    ValSize: QWord;
   begin
     case ADisplayFormat of
       wdfDecimal: APrintedValue := IntToStr(Int64(AValue.AsCardinal));
       wdfHex: begin
-          if svfSize in AValue.FieldFlags then
-            n := AValue.Size * 2
+          if (svfSize in AValue.FieldFlags) and AValue.GetSize(ValSize) then
+            n := ValSize* 2
           else begin
             n := 16;
             if AValue.AsCardinal <= high(Cardinal) then n := 8;
@@ -1095,6 +1097,7 @@ var
   MemSize: Integer;
   MemDest: array of Byte;
   i: Integer;
+  ValSize: QWord;
 begin
   if ADBGTypeInfo <> nil then ADBGTypeInfo^ := nil;
   if ANestLevel > 0 then begin
@@ -1111,7 +1114,9 @@ begin
       else
       if svfAddress in AValue.FieldFlags then begin
         MemAddr := AValue.Address;
-        MemSize := AValue.Size;
+        if not AValue.GetSize(ValSize) then
+          ValSize := 256;
+        MemSize := ValSize;
       end;
       if MemSize < ARepeatCount then MemSize := ARepeatCount;
       if MemSize <= 0 then MemSize := 256;

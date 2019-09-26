@@ -690,9 +690,18 @@ begin
 end;
 
 function TFpSymbolDwarfFreePascalTypePointer.DataSize: Integer;
+var
+  Size: QWord;
 begin
-  if Kind = skClass then
-    Result := NestedTypeInfo.Size
+  if Kind = skClass then begin
+    // TODO: get a value object // though fpc does not yet write variable sizes
+    if not NestedTypeInfo.ReadSize(nil, Size) then begin
+      Result := 0;
+      SetLastError(CreateError(fpErrAnyError, ['unknown size']));
+      exit;
+    end;
+    Result := Size
+  end
   else
     Result := inherited DataSize;
 end;
@@ -779,7 +788,7 @@ end;
 
 function TFpValueDwarfV2FreePascalShortString.GetAsString: AnsiString;
 var
-  len: QWord;
+  len, Size: QWord;
   LenSym, StSym: TFpValueDwarf;
 begin
   if FValueDone then
@@ -789,8 +798,12 @@ begin
   assert(LenSym is TFpValueDwarf, 'LenSym is TFpValueDwarf');
   len := LenSym.AsCardinal;
 
-  if (TypeInfo.Size < 0) or (len > TypeInfo.Size) then begin
-    FLastError := CreateError(fpErrAnyError);
+  if not GetSize(Size) then begin;
+    SetLastError(CreateError(fpErrAnyError));
+    exit('');
+  end;
+  if (Size < 0) or (len > Size) then begin
+    SetLastError(CreateError(fpErrAnyError));
     exit('');
   end;
 
@@ -803,7 +816,7 @@ begin
   if len > 0 then
     if not MemManager.ReadMemory(StSym.DataAddress, len, @Result[1]) then begin
       Result := ''; // TODO: error
-      FLastError := MemManager.LastError;
+      SetLastError(MemManager.LastError);
       exit;
     end;
 
@@ -904,7 +917,7 @@ begin
       exit;
     end
     else
-      FLastError := MemManager.LastError;
+      SetLastError(MemManager.LastError);
     Result := 0;
     exit;
   end;
@@ -920,6 +933,7 @@ var
   Info: TDwarfInformationEntry;
   t: Cardinal;
   t2: TFpSymbol;
+  CharSize: QWord;
 begin
   Result := FArrayOrStringType;
   if Result <> iasUnknown then
@@ -949,7 +963,9 @@ begin
       // This is a string
       // TODO: check the location parser, if it is a reference
       //FIsShortString := iasShortString;
-      if (t2.Size = 2) then
+      if not t2.ReadSize(nil, CharSize) then
+        CharSize := 0; // TODO: error
+      if (CharSize = 2) then
         FArrayOrStringType := iasUnicodeString
       else
         FArrayOrStringType := iasAnsiString;
@@ -1105,7 +1121,7 @@ begin
 
     if not MemManager.ReadMemory(Addr, (HighBound-LowBound+1)*2, @WResult[1]) then begin
       WResult := '';
-      FLastError := MemManager.LastError;
+      SetLastError(MemManager.LastError);
     end;
     Result := WResult;
   end else begin
@@ -1113,7 +1129,7 @@ begin
 
     if not MemManager.ReadMemory(Addr, HighBound-LowBound+1, @Result[1]) then begin
       Result := '';
-      FLastError := MemManager.LastError;
+      SetLastError(MemManager.LastError);
     end;
   end;
 

@@ -523,7 +523,7 @@ type
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAddress: TFpDbgMemLocation; override;
-    function GetSize: Integer; override;
+    function DoGetSize(out ASize: QWord): Boolean; override;
     function GetAsCardinal: QWord; override; // reads men
     function GetTypeInfo: TFpSymbol; override; // TODO: Cardinal? Why? // TODO: does not handle AOffset
   public
@@ -640,6 +640,7 @@ var
   ti: TFpSymbol;
   addr: TFpDbgMemLocation;
   Tmp: TFpValueConstAddress;
+  Size: QWord;
 begin
   Result := nil;
 
@@ -650,8 +651,15 @@ begin
     exit;
   end;
   {$PUSH}{$R-}{$Q-} // TODO: check overflow
-  if ti <> nil then
-    AIndex := AIndex * ti.Size;
+  if (ti <> nil) and (AIndex <> 0) then begin
+    // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+    // TODO: Size of member[0] ?
+    if not ti.ReadSize(nil, Size) then begin
+      SetLastError(CreateError(fpErrAnyError, ['Can index element of unknown size']));
+      exit;
+    end;
+    AIndex := AIndex * Size;
+  end;
   addr.Address := addr.Address + AIndex;
   {$POP}
 
@@ -773,16 +781,16 @@ begin
   end;
 end;
 
-function TFpPasParserValueDerefPointer.GetSize: Integer;
+function TFpPasParserValueDerefPointer.DoGetSize(out ASize: QWord): Boolean;
 var
   t: TFpSymbol;
 begin
   t := FValue.TypeInfo;
   if t <> nil then t := t.TypeInfo;
   if t <> nil then
-    Result := t.Size
+    t.ReadSize(nil, ASize) // TODO: create a value object for the deref
   else
-    Result := inherited GetSize;
+    Result := inherited DoGetSize(ASize);
 end;
 
 function TFpPasParserValueDerefPointer.GetAsCardinal: QWord;
@@ -901,6 +909,7 @@ var
   ti: TFpSymbol;
   addr: TFpDbgMemLocation;
   Tmp: TFpValueConstAddress;
+  Size: QWord;
 begin
   if (AIndex = 0) or (FValue = nil) then begin
     Result := FValue;
@@ -915,8 +924,15 @@ begin
     exit;
   end;
   {$PUSH}{$R-}{$Q-} // TODO: check overflow
-  if ti <> nil then
-    AIndex := AIndex * ti.Size;
+  if (ti <> nil) and (AIndex <> 0) then begin
+    // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+    // TODO: Size of member[0] ?
+    if not ti.ReadSize(nil, Size) then begin
+      SetLastError(CreateError(fpErrAnyError, ['Can index element of unknown size']));
+      exit;
+    end;
+    AIndex := AIndex * Size;
+  end;
   addr.Address := addr.Address + AIndex;
   {$POP}
 

@@ -162,16 +162,17 @@ type
     FLastMember: TFpValueDwarf;
     procedure SetStructureValue(AValue: TFpValueDwarf);
   protected
-    FLastError: TFpError;
+    function GetSizeFor(AnOtherValue: TFpValue; out ASize: QWord): Boolean; inline;
+
     procedure DoReferenceAdded; override;
     procedure DoReferenceReleased; override;
     procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
     procedure SetLastMember(ALastMember: TFpValueDwarf);
-    function GetLastError: TFpError; override;
     function AddressSize: Byte; inline;
 
     // Address of the symbol (not followed any type deref, or location)
     function GetAddress: TFpDbgMemLocation; override;
+    function DoGetSize(out ASize: QWord): Boolean; override;
     function OrdOrAddress: TFpDbgMemLocation;
     // Address of the data (followed type deref, location, ...)
     function OrdOrDataAddr: TFpDbgMemLocation;
@@ -180,7 +181,7 @@ type
     function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
                                           ATargetType: TFpSymbolDwarfType = nil): Boolean;
 
-    procedure Reset; virtual; // keeps lastmember and structureninfo
+    procedure Reset; override; // keeps lastmember and structureninfo
     function GetFieldFlags: TFpValueFieldFlags; override;
     function HasTypeCastInfo: Boolean;
     function IsValidTypeCast: Boolean; virtual;
@@ -204,7 +205,7 @@ type
                               ASource: TFpValue): Boolean; // Used for Typecast
     // StructureValue: Any Value returned via GetMember points to its structure
     property StructureValue: TFpValueDwarf read FStructureValue write SetStructureValue;
-    property ValueSymbol: TFpSymbolDwarfData read FDataSymbol;
+    property ValueSymbol: TFpSymbolDwarfData read FDataSymbol; // Same as DbgSymbol
   end;
 
   TFpValueDwarfUnknown = class(TFpValueDwarf)
@@ -213,14 +214,9 @@ type
   { TFpValueDwarfSized }
 
   TFpValueDwarfSized = class(TFpValueDwarf)
-  private
-    FSize: Integer;
   protected
     function CanUseTypeCastAddress: Boolean;
     function GetFieldFlags: TFpValueFieldFlags; override;
-    function GetSize: Integer; override;
-  public
-    constructor Create(AOwner: TFpSymbolDwarfType; ASize: Integer);
   end;
 
   { TFpValueDwarfNumeric }
@@ -233,7 +229,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override; // svfOrdinal
     function IsValidTypeCast: Boolean; override;
   public
-    constructor Create(AOwner: TFpSymbolDwarfType; ASize: Integer);
+    constructor Create(AOwner: TFpSymbolDwarfType);
   end;
 
   { TFpValueDwarfInteger }
@@ -374,8 +370,7 @@ type
     procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
-    function GetDataSize: Integer; override;
-    function GetSize: Integer; override;
+    function GetDataSize: QWord; override;
   end;
 
   { TFpValueDwarfStructTypeCast }
@@ -389,8 +384,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAsCardinal: QWord; override;
-    function GetSize: Integer; override;
-    function GetDataSize: Integer; override;
+    function GetDataSize: QWord; override;
     function IsValidTypeCast: Boolean; override;
   public
     destructor Destroy; override;
@@ -479,6 +473,7 @@ type
     // ParentTypeInfo: funtion for local var / class for member
     property ParentTypeInfo: TFpSymbolDwarf read FParentTypeInfo write SetParentTypeInfo;
 
+    function DoForwardReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; inline;
     function DataSize: Integer; virtual;
   protected
     function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
@@ -609,7 +604,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
-    procedure SizeNeeded; override;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; override;
   public
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpValueDwarf; virtual; // returns refcount=1 for caller, no cached copy kept
     class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfType;
@@ -650,6 +645,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure TypeInfoNeeded; override;
     procedure ForwardToSymbolNeeded; override;
+    function DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; override;
     function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; override;
   public
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
@@ -692,7 +688,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
     procedure NameNeeded; override;
     procedure KindNeeded; override;
-    procedure SizeNeeded; override;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
     function GetFlags: TDbgSymbolFlags; override;
@@ -715,7 +711,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TFpSymbolDwarfTypePointer = class(TFpSymbolDwarfType)
   protected
     procedure KindNeeded; override;
-    procedure SizeNeeded; override;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; override;
   public
     function GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf; override;
   end;
@@ -861,7 +857,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FStrideInBits: Int64;
     FDwarfArrayReadFlags: set of (didtStrideRead, didtOrdering);
     procedure CreateMembers;
-    procedure ReadStride;
+    procedure ReadStride(AValObject: TFpValueDwarf);
     procedure ReadOrdering;
   protected
     procedure KindNeeded; override;
@@ -900,7 +896,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
     function  GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
     procedure KindNeeded; override;
-    procedure SizeNeeded; override;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; override;
     function GetFlags: TDbgSymbolFlags; override;
     procedure TypeInfoNeeded; override;
 
@@ -985,21 +981,30 @@ end;
 function TFpValueDwarfSubroutine.IsValidTypeCast: Boolean;
 var
   f: TFpValueFieldFlags;
+  SrcSize: QWord;
 begin
   Result := HasTypeCastInfo;
   If not Result then
     exit;
 
+  // Can typecast, IF source has an Address, but NO Size
   f := FTypeCastSourceValue.FieldFlags;
   if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
     exit;
 
+  // Can typecast, IF source has ordinal
   if (svfOrdinal in f)then
     exit;
-  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-     (FTypeCastSourceValue.Size = FOwner.CompilationUnit.AddressSize)
-  then
-    exit;
+
+  // Can typecast, IF source has address an size=pointer
+  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) then begin
+    Result := GetSizeFor(FTypeCastSourceValue, SrcSize);
+    if not Result then
+      exit;
+    if SrcSize = FOwner.CompilationUnit.AddressSize then
+      exit;
+  end;
+  // Can typecast, IF source has address an size=pointer
   if (f * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) then
     exit;
 
@@ -1484,9 +1489,12 @@ begin
     FStructureValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
 end;
 
-function TFpValueDwarf.GetLastError: TFpError;
+function TFpValueDwarf.GetSizeFor(AnOtherValue: TFpValue; out ASize: QWord
+  ): Boolean;
 begin
-  Result := FLastError;
+  Result := AnOtherValue.GetSize(ASize);
+  if (not Result) and IsError(AnOtherValue.LastError) then
+    SetLastError(AnOtherValue.LastError);
 end;
 
 function TFpValueDwarf.OrdOrDataAddr: TFpDbgMemLocation;
@@ -1532,7 +1540,7 @@ begin
     if Result then begin
       Result := TFpSymbolDwarf(ti).GetDataAddress(Self, AnAddress, ATargetType);
       if not Result then
-        FLastError := ti.LastError;
+        SetLastError(ti.LastError);
     end;
   end
 
@@ -1555,7 +1563,7 @@ begin
     if Result then begin
       Result := FTypeCastTargetType.GetDataAddress(Self, AnAddress, ATargetType);
       if IsError(FTypeCastTargetType.LastError) then
-        FLastError := FTypeCastTargetType.LastError;
+        SetLastError(FTypeCastTargetType.LastError);
     end;
   end;
 
@@ -1577,7 +1585,6 @@ procedure TFpValueDwarf.Reset;
 begin
   FCachedAddress := UnInitializedLoc;
   FCachedDataAddress := UnInitializedLoc;
-  FLastError := NoError;
 end;
 
 function TFpValueDwarf.GetFieldFlags: TFpValueFieldFlags;
@@ -1673,6 +1680,17 @@ begin
 
   assert(IsInitializedLoc(Result), 'TFpValueDwarf.GetAddress: IsInitializedLoc(Result)');
   FCachedAddress := Result;
+end;
+
+function TFpValueDwarf.DoGetSize(out ASize: QWord): Boolean;
+begin
+  if FTypeCastTargetType <> nil then begin
+    Result := FTypeCastTargetType.ReadSize(Self, ASize);
+    if (not Result) and IsError(FTypeCastTargetType.LastError) then
+      SetLastError(FTypeCastTargetType.LastError);
+  end
+  else
+    Result := inherited DoGetSize(ASize);
 end;
 
 function TFpValueDwarf.OrdOrAddress: TFpDbgMemLocation;
@@ -1794,15 +1812,24 @@ end;
 { TFpValueDwarfSized }
 
 function TFpValueDwarfSized.CanUseTypeCastAddress: Boolean;
+var
+  TypeSize, SrcSize: QWord;
 begin
   Result := True;
+  // Can Use TypeCast-Address, if source has an Address, but NO Size
   if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
     exit
   else
-  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-     (FTypeCastSourceValue.Size = FSize) and (FSize > 0)
-  then
-    exit;
+  // Can Use TypeCast-Address, if source has an Address, and SAME Size as this (this = cast-target-type)
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) then begin
+    Result := GetSize(TypeSize) and GetSizeFor(FTypeCastSourceValue, SrcSize);
+    if not Result then
+      exit;
+    if (TypeSize = SrcSize) and (SrcSize > 0) then
+      exit;
+  end;
+  // Can Use TypeCast-Address, if source has an Address, but SAME Size as this (this = cast-target-type)
+  // and yet not target type = pointer ???
   if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
      not ( (FTypeCastTargetType.Kind = skPointer) //or
            //(FSize = AddressSize xxxxxxx)
@@ -1816,17 +1843,6 @@ function TFpValueDwarfSized.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfSize];
-end;
-
-function TFpValueDwarfSized.GetSize: Integer;
-begin
-  Result := FSize;
-end;
-
-constructor TFpValueDwarfSized.Create(AOwner: TFpSymbolDwarfType; ASize: Integer);
-begin
-  inherited Create(AOwner);
-  FSize := ASize;
 end;
 
 { TFpValueDwarfNumeric }
@@ -1853,9 +1869,9 @@ begin
   Result := False;
 end;
 
-constructor TFpValueDwarfNumeric.Create(AOwner: TFpSymbolDwarfType; ASize: Integer);
+constructor TFpValueDwarfNumeric.Create(AOwner: TFpSymbolDwarfType);
 begin
-  inherited Create(AOwner, ASize);
+  inherited Create(AOwner);
   FEvaluated := [];
 end;
 
@@ -1873,6 +1889,8 @@ begin
 end;
 
 function TFpValueDwarfInteger.GetAsInteger: Int64;
+var
+  Size: QWord;
 begin
   if doneInt in FEvaluated then begin
     Result := FIntValue;
@@ -1880,12 +1898,12 @@ begin
   end;
   Include(FEvaluated, doneInt);
 
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+  if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsInteger
   else
-  if not MemManager.ReadSignedInt(OrdOrDataAddr, FSize, Result) then begin
+  if not MemManager.ReadSignedInt(OrdOrDataAddr, Size, Result) then begin
     Result := 0; // TODO: error
-    FLastError := MemManager.LastError;
+    SetLastError(MemManager.LastError);
   end;
 
   FIntValue := Result;
@@ -1894,6 +1912,8 @@ end;
 { TDbgDwarfCardinalSymbolValue }
 
 function TFpValueDwarfCardinal.GetAsCardinal: QWord;
+var
+  Size: QWord;
 begin
   if doneUInt in FEvaluated then begin
     Result := FValue;
@@ -1901,12 +1921,12 @@ begin
   end;
   Include(FEvaluated, doneUInt);
 
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+  if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, FSize, Result) then begin
+  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, Size, Result) then begin
     Result := 0; // TODO: error
-    FLastError := MemManager.LastError;
+    SetLastError(MemManager.LastError);
   end;
 
   FValue := Result;
@@ -1927,6 +1947,8 @@ begin
 end;
 
 function TFpValueDwarfFloat.GetAsFloat: Extended;
+var
+  Size: QWord;
 begin
   if doneFloat in FEvaluated then begin
     Result := FValue;
@@ -1934,14 +1956,17 @@ begin
   end;
   Include(FEvaluated, doneUInt);
 
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then begin
+  if not GetSize(Size) then
+    Result := 0
+  else
+  if (Size <= 0) or (Size > SizeOf(Result)) then begin
     Result := 0;
-    FLastError := CreateError(fpErrorBadFloatSize);
+    SetLastError(CreateError(fpErrorBadFloatSize));
   end
   else
-  if not MemManager.ReadFloat(OrdOrDataAddr, FSize, Result) then begin
+  if not MemManager.ReadFloat(OrdOrDataAddr, Size, Result) then begin
     Result := 0; // TODO: error
-    FLastError := MemManager.LastError;
+    SetLastError(MemManager.LastError);
   end;
 
   FValue := Result;
@@ -1963,29 +1988,41 @@ end;
 { TFpValueDwarfChar }
 
 function TFpValueDwarfChar.GetFieldFlags: TFpValueFieldFlags;
+var
+  Size: QWord;
 begin
+  if not GetSize(Size) then
+    Size := 0;
   Result := inherited GetFieldFlags;
-  case FSize of
+  case Size of
     1: Result := Result + [svfString];
     2: Result := Result + [svfWideString];
   end;
 end;
 
 function TFpValueDwarfChar.GetAsString: AnsiString;
+var
+  Size: QWord;
 begin
+  if not GetSize(Size) then
+    Size := 0;
   // Can typecast, because of FSize = 1, GetAsCardinal only read one byte
-  if FSize = 2 then
+  if Size = 2 then
     Result := GetAsWideString  // temporary workaround for WideChar
   else
-  if FSize <> 1 then
+  if Size <> 1 then
     Result := inherited GetAsString
   else
     Result := SysToUTF8(char(byte(GetAsCardinal)));
 end;
 
 function TFpValueDwarfChar.GetAsWideString: WideString;
+var
+  Size: QWord;
 begin
-  if FSize > 2 then
+  if not GetSize(Size) then
+    Size := 0;
+  if Size > 2 then
     Result := inherited GetAsWideString
   else
     Result := WideChar(Word(GetAsCardinal));
@@ -1994,6 +2031,8 @@ end;
 { TFpValueDwarfPointer }
 
 function TFpValueDwarfPointer.GetDerefAddress: TFpDbgMemLocation;
+var
+  Size: QWord;
 begin
   if doneAddr in FEvaluated then begin
     Result := FPointetToAddr;
@@ -2001,11 +2040,13 @@ begin
   end;
   Include(FEvaluated, doneAddr);
 
-  if (FSize <= 0) then
+  if not GetSize(Size) then
+    Size := 0;
+  if (Size <= 0) then
     Result := InvalidLoc
   else
   if not MemManager.ReadAddress(OrdOrDataAddr, Context.SizeOfAddress, Result) then
-    FLastError := MemManager.LastError;
+    SetLastError(MemManager.LastError);
   FPointetToAddr := Result;
 end;
 
@@ -2035,8 +2076,12 @@ begin
 end;
 
 function TFpValueDwarfPointer.GetDataAddress: TFpDbgMemLocation;
+var
+  Size: QWord;
 begin
-  if (FSize <= 0) then
+  if not GetSize(Size) then
+    Size := 0;
+  if (Size <= 0) then
     Result := InvalidLoc
   else
     Result := inherited;
@@ -2046,10 +2091,21 @@ function TFpValueDwarfPointer.GetAsString: AnsiString;
 var
   t: TFpSymbol;
   i: Integer;
+  Size: QWord;
 begin
+  Result := '';
   t := TypeInfo;
-  if (t <> nil) then t := t.TypeInfo;
-  if t.Size = 2 then
+  if t = nil then
+    exit;
+  t := t.TypeInfo;
+  if t = nil then
+    exit;
+
+  // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+  if not t.ReadSize(nil, Size) then
+    exit;
+
+  if Size = 2 then
     Result := GetAsWideString
   else
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
@@ -2093,12 +2149,13 @@ var
   ti: TFpSymbol;
   addr: TFpDbgMemLocation;
   Tmp: TFpValueDwarfConstAddress;
+  Size: QWord;
 begin
   //TODO: ?? if no TypeInfo.TypeInfo;, then return TFpValueDwarfConstAddress.Create(addr); (for mem dump)
   Result := nil;
   ReleaseRefAndNil(FLastAddrMember);
   if (TypeInfo = nil) then begin // TODO dedicanted error code
-    FLastError := CreateError(fpErrAnyError, ['Can not dereference an untyped pointer']);
+    SetLastError(CreateError(fpErrAnyError, ['Can not dereference an untyped pointer']));
     exit;
   end;
 
@@ -2106,11 +2163,18 @@ begin
 
   ti := TypeInfo.TypeInfo;
   {$PUSH}{$R-}{$Q-} // TODO: check overflow
-  if (ti <> nil) and (AIndex <> 0) then
-    AIndex := AIndex * ti.Size;
+  if (ti <> nil) and (AIndex <> 0) then begin
+    // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+    // TODO: Size of member[0] ?
+    if not ti.ReadSize(nil, Size) then begin
+      SetLastError(CreateError(fpErrAnyError, ['Can index element of unknown size']));
+      exit;
+    end;
+    AIndex := AIndex * Size;
+  end;
   addr := GetDerefAddress;
   if not IsTargetAddr(addr) then begin
-    FLastError := CreateError(fpErrAnyError, ['Internal dereference error']);
+    SetLastError(CreateError(fpErrAnyError, ['Internal dereference error']));
     exit;
   end;
   addr.Address := addr.Address + AIndex;
@@ -2168,6 +2232,8 @@ begin
 end;
 
 function TFpValueDwarfEnum.GetAsCardinal: QWord;
+var
+  Size: QWord;
 begin
   if doneUInt in FEvaluated then begin
     Result := FValue;
@@ -2175,11 +2241,11 @@ begin
   end;
   Include(FEvaluated, doneUInt);
 
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+  if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadEnum(OrdOrDataAddr, FSize, Result) then begin
-    FLastError := MemManager.LastError;
+  if not MemManager.ReadEnum(OrdOrDataAddr, Size, Result) then begin
+    SetLastError(MemManager.LastError);
     Result := 0; // TODO: error
   end;
 
@@ -2265,8 +2331,11 @@ var
   t: TFpSymbol;
   hb, lb: Int64;
   DAddr: TFpDbgMemLocation;
+  Size: QWord;
 begin
-  if (length(FMem) > 0) or (FSize <= 0) then
+  if not GetSize(Size) then
+    Size := 0;
+  if (length(FMem) > 0) or (Size <= 0) then
     exit;
   t := TypeInfo;
   if t = nil then exit;
@@ -2274,13 +2343,13 @@ begin
   if t = nil then exit;
 
   GetDwarfDataAddress(DAddr);
-  if not MemManager.ReadSet(DAddr, FSize, FMem) then begin
-    FLastError := MemManager.LastError;
+  if not MemManager.ReadSet(DAddr, Size, FMem) then begin
+    SetLastError(MemManager.LastError);
     exit; // TODO: error
   end;
 
   Cnt := 0;
-  for i := 0 to FSize - 1 do
+  for i := 0 to Size - 1 do
     Cnt := Cnt + (BitCount[FMem[i] and 15])  + (BitCount[(FMem[i] div 16) and 15]);
   FMemberCount := Cnt;
 
@@ -2343,10 +2412,14 @@ begin
 end;
 
 function TFpValueDwarfSet.GetFieldFlags: TFpValueFieldFlags;
+var
+  Size: QWord;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfMembers];
-  if FSize <= 8 then
+  if not GetSize(Size) then
+    exit;
+  if Size <= 8 then
     Result := Result + [svfOrdinal];
 end;
 
@@ -2402,15 +2475,20 @@ begin
 end;
 
 function TFpValueDwarfSet.GetAsCardinal: QWord;
+var
+  Size: QWord;
 begin
   Result := 0;
-  if (FSize <= SizeOf(Result)) and (length(FMem) > 0) then
-    move(FMem[0], Result, FSize);
+  if not GetSize(Size) then
+    exit;
+  if (Size <= SizeOf(Result)) and (length(FMem) > 0) then
+    move(FMem[0], Result, Size);
 end;
 
 function TFpValueDwarfSet.IsValidTypeCast: Boolean;
 var
   f: TFpValueFieldFlags;
+  TypeSize, SrcSize: QWord;
 begin
   Result := HasTypeCastInfo;
   If not Result then
@@ -2422,14 +2500,19 @@ begin
   then
     exit; // pointer deref
 
+  // Is valid if source has Address, but NO Size
   f := FTypeCastSourceValue.FieldFlags;
   if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
     exit;
 
-  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-     (FTypeCastSourceValue.Size = FTypeCastTargetType.Size)
-  then
-    exit;
+  // Is valid if source has Address, but and same Size
+  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) then begin
+    Result := GetSize(TypeSize) and GetSizeFor(FTypeCastSourceValue, SrcSize);
+    if not Result then
+      exit;
+    if (TypeSize = SrcSize) then
+      exit;
+  end;
 
   Result := False;
 end;
@@ -2474,24 +2557,18 @@ begin
   Result := QWord(LocToAddrOrNil(Addr));
 end;
 
-function TFpValueDwarfStruct.GetDataSize: Integer;
+function TFpValueDwarfStruct.GetDataSize: QWord;
 begin
   Assert((FDataSymbol = nil) or (FDataSymbol.TypeInfo is TFpSymbolDwarf));
-  if (FDataSymbol <> nil) and (FDataSymbol.TypeInfo <> nil) then
+  if (FDataSymbol <> nil) and (FDataSymbol.TypeInfo <> nil) then begin
     if FDataSymbol.TypeInfo.Kind = skClass then
       Result := TFpSymbolDwarf(FDataSymbol.TypeInfo).DataSize
     else
-      Result := FDataSymbol.TypeInfo.Size
+      if not GetSize(Result) then
+        Result := 0;
+  end
   else
-    Result := -1;
-end;
-
-function TFpValueDwarfStruct.GetSize: Integer;
-begin
-  if (Kind <> skClass) and (FDataSymbol <> nil) and (FDataSymbol.TypeInfo <> nil) then
-    Result := FDataSymbol.TypeInfo.Size
-  else
-    Result := -1;
+    Result := 0;
 end;
 
 { TFpValueDwarfStructTypeCast }
@@ -2534,52 +2611,61 @@ begin
     Result := QWord(LocToAddrOrNil(Addr));
 end;
 
-function TFpValueDwarfStructTypeCast.GetSize: Integer;
-begin
-  if (Kind <> skClass) and (FTypeCastTargetType <> nil) then
-    Result := FTypeCastTargetType.Size
-  else
-    Result := -1;
-end;
-
-function TFpValueDwarfStructTypeCast.GetDataSize: Integer;
+function TFpValueDwarfStructTypeCast.GetDataSize: QWord;
 begin
   Assert((FTypeCastTargetType = nil) or (FTypeCastTargetType is TFpSymbolDwarf));
-  if FTypeCastTargetType <> nil then
+  if FTypeCastTargetType <> nil then begin
     if FTypeCastTargetType.Kind = skClass then
       Result := TFpSymbolDwarf(FTypeCastTargetType).DataSize
     else
-      Result := FTypeCastTargetType.Size
+      if not GetSize(Result) then
+        Result := 0
+    end
   else
-    Result := -1;
+    Result := 0;
 end;
 
 function TFpValueDwarfStructTypeCast.IsValidTypeCast: Boolean;
 var
   f: TFpValueFieldFlags;
+  SrcSize, TypeSize: QWord;
 begin
   Result := HasTypeCastInfo;
   if not Result then
     exit;
 
-  if FTypeCastTargetType.Kind = skClass then begin
+  if FTypeCastTargetType.Kind in [skClass, skInstance] then begin
     f := FTypeCastSourceValue.FieldFlags;
+    // skClass: Valid if Source has Ordinal
     Result := (svfOrdinal in f); // ordinal is prefered in GetDataAddress
     if Result then
       exit;
-    Result := (svfAddress in f) and
-              ( ( not(svfSize in f) ) or // either svfSizeOfPointer or a void type, e.g. pointer(1)^
-                ( (svfSize in f) and (FTypeCastSourceValue.Size = AddressSize) )
-              );
+    // skClass: Valid if Source has Address, and (No Size) OR (same Size)
+    if not (svfAddress in f) then
+      exit;
+    Result := not(svfSize in f);  // either svfSizeOfPointer or a void type, e.g. pointer(1)^
+    if Result then
+      exit;
+    if not GetSizeFor(FTypeCastSourceValue, SrcSize) then
+      exit;
+    Result := SrcSize = AddressSize;
   end
   else begin
     f := FTypeCastSourceValue.FieldFlags;
+    // skRecord: ONLY  Valid if Source has Address
     if (f * [{svfOrdinal, }svfAddress] = [svfAddress]) then begin
-      if (f * [svfSize, svfSizeOfPointer]) = [svfSize] then
-        Result := Result and (FTypeCastTargetType.Size = FTypeCastSourceValue.Size)
+      // skRecord: AND either ... if Source has same Size
+      if (f * [svfSize, svfSizeOfPointer]) = [svfSize] then begin
+        Result := GetSize(TypeSize) and GetSizeFor(FTypeCastSourceValue, SrcSize);
+        Result := Result and (TypeSize = SrcSize)
+      end
       else
-      if (f * [svfSize, svfSizeOfPointer]) = [svfSizeOfPointer] then
-        Result := Result and (FTypeCastTargetType.Size = AddressSize)
+      // skRecord: AND either ... if Source has same Size (pointer size)
+      if (f * [svfSize, svfSizeOfPointer]) = [svfSizeOfPointer] then begin
+        Result := GetSize(TypeSize);
+        Result := Result and (TypeSize = AddressSize);
+      end
+      // skRecord: AND either ... if Source has NO Size
       else
         Result := (f * [svfSize, svfSizeOfPointer]) = []; // source is a void type, e.g. pointer(1)^
     end
@@ -2672,7 +2758,7 @@ function TFpValueDwarfArray.GetAsCardinal: QWord;
 begin
   // TODO cache
   if not MemManager.ReadUnsignedInt(OrdOrAddress, AddressSize, Result) then begin
-    FLastError := MemManager.LastError;
+    SetLastError(MemManager.LastError);
     Result := 0;
   end;
 end;
@@ -2770,6 +2856,7 @@ end;
 function TFpValueDwarfArray.IsValidTypeCast: Boolean;
 var
   f: TFpValueFieldFlags;
+  SrcSize, TypeSize: QWord;
 begin
   Result := HasTypeCastInfo;
   If not Result then
@@ -2786,19 +2873,25 @@ begin
     // dyn array
     if (svfOrdinal in f)then
       exit;
-    if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-       (FTypeCastSourceValue.Size = FOwner.CompilationUnit.AddressSize)
-    then
-      exit;
+    if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) then begin
+      Result := GetSizeFor(FTypeCastSourceValue, SrcSize);
+      if not Result then
+        exit;
+      if (SrcSize = FOwner.CompilationUnit.AddressSize) then
+        exit;
+    end;
     if (f * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) then
       exit;
   end
   else begin
     // stat array
-    if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-       (FTypeCastSourceValue.Size = FTypeCastTargetType.Size)
-    then
-      exit;
+    if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) then begin
+      Result := GetSize(TypeSize) and GetSizeFor(FTypeCastSourceValue, SrcSize);
+      if not Result then
+        exit;
+      if (SrcSize = TypeSize) then
+        exit;
+    end;
   end;
   Result := False;
 end;
@@ -2919,6 +3012,12 @@ begin
   SetTypeInfo(NestedTypeInfo);
 end;
 
+function TFpSymbolDwarf.DoForwardReadSize(const AValueObj: TFpValue; out ASize: QWord
+  ): Boolean;
+begin
+  Result := inherited DoReadSize(AValueObj, ASize);
+end;
+
 function TFpSymbolDwarf.DataSize: Integer;
 var
   t: TFpSymbolDwarfType;
@@ -3029,6 +3128,9 @@ begin
   if Form in [DW_FORM_ref1, DW_FORM_ref2, DW_FORM_ref4, DW_FORM_ref8,
               DW_FORM_ref_addr, DW_FORM_ref_udata]
   then begin
+    if AValueObj = nil then
+      exit(False); // keep state rfNotRead;
+
     if AReadState <> nil then
       AReadState^ := rfValue;
 
@@ -3062,7 +3164,7 @@ begin
     if AValueObj = nil then begin
       if AReadState <> nil then
         AReadState^ := rfNotRead;
-        exit(true); // claim success
+        exit(False);
     end;
 
     if AReadState <> nil then
@@ -3469,14 +3571,22 @@ begin
     inherited MemberVisibilityNeeded;
 end;
 
-procedure TFpSymbolDwarfType.SizeNeeded;
+function TFpSymbolDwarfType.DoReadSize(const AValueObj: TFpValue; out
+  ASize: QWord): Boolean;
 var
-  ByteSize: Integer;
+  AttrData: TDwarfAttribData;
 begin
-  if InformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
-    SetSize(ByteSize)
-  else
-    inherited SizeNeeded;
+  ASize := 0;
+  Result := InformationEntry.GetAttribData(DW_AT_byte_size, AttrData);
+  if not Result then
+    exit;  // Does not have a size / No error
+
+  Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, ASize);
+  //if Result then
+  //  exit;
+
+  // If AValueObj <> nil then
+  //AValueObj.LastError := LastError;
 end;
 
 function TFpSymbolDwarfType.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;
@@ -3520,16 +3630,13 @@ end;
 
 procedure TFpSymbolDwarfTypeBasic.KindNeeded;
 var
-  Encoding, ByteSize: Integer;
+  Encoding: Integer;
 begin
   if not InformationEntry.ReadValue(DW_AT_encoding, Encoding) then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['TFpSymbolDwarfTypeBasic.KindNeeded: Failed reading encoding for ', DwarfTagToString(InformationEntry.AbbrevTag)]);
     inherited KindNeeded;
     exit;
   end;
-
-  if InformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
-    SetSize(ByteSize);
 
   case Encoding of
     DW_ATE_address :      SetKind(skPointer);
@@ -3557,12 +3664,12 @@ end;
 function TFpSymbolDwarfTypeBasic.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;
 begin
   case Kind of
-    skPointer:  Result := TFpValueDwarfPointer.Create(Self, Size);
-    skInteger:  Result := TFpValueDwarfInteger.Create(Self, Size);
-    skCardinal: Result := TFpValueDwarfCardinal.Create(Self, Size);
-    skBoolean:  Result := TFpValueDwarfBoolean.Create(Self, Size);
-    skChar:     Result := TFpValueDwarfChar.Create(Self, Size);
-    skFloat:    Result := TFpValueDwarfFloat.Create(Self, Size);
+    skPointer:  Result := TFpValueDwarfPointer.Create(Self);
+    skInteger:  Result := TFpValueDwarfInteger.Create(Self);
+    skCardinal: Result := TFpValueDwarfCardinal.Create(Self);
+    skBoolean:  Result := TFpValueDwarfBoolean.Create(Self);
+    skChar:     Result := TFpValueDwarfChar.Create(Self);
+    skFloat:    Result := TFpValueDwarfFloat.Create(Self);
   end;
 end;
 
@@ -3576,8 +3683,12 @@ end;
 
 function TFpSymbolDwarfTypeBasic.GetValueLowBound(AValueObj: TFpValue; out
   ALowBound: Int64): Boolean;
+var
+  Size: QWord;
 begin
-  Result := True;
+  Result := AValueObj.GetSize(Size);
+  if not Result then
+    exit;
   case Kind of
     skInteger:  ALowBound := -(int64( high(int64) shr (64 - Min(Size, 8) * 8)))-1;
     skCardinal: ALowBound := 0;
@@ -3588,8 +3699,12 @@ end;
 
 function TFpSymbolDwarfTypeBasic.GetValueHighBound(AValueObj: TFpValue; out
   AHighBound: Int64): Boolean;
+var
+  Size: QWord;
 begin
-  Result := True;
+  Result := AValueObj.GetSize(Size);
+  if not Result then
+    exit;
   case Kind of
     skInteger:  AHighBound := int64( high(int64) shr (64 - Min(Size, 8) * 8));
     skCardinal: AHighBound := int64( high(qword) shr (64 - Min(Size, 8) * 8));
@@ -3614,6 +3729,12 @@ end;
 procedure TFpSymbolDwarfTypeModifier.ForwardToSymbolNeeded;
 begin
   SetForwardToSymbol(NestedTypeInfo)
+end;
+
+function TFpSymbolDwarfTypeModifier.DoReadSize(const AValueObj: TFpValue; out
+  ASize: QWord): Boolean;
+begin
+  Result := inherited DoForwardReadSize(AValueObj, ASize);
 end;
 
 function TFpSymbolDwarfTypeModifier.GetNextTypeInfoForDataAddress(
@@ -3728,22 +3849,22 @@ begin
     SetKind(t.Kind);
 end;
 
-procedure TFpSymbolDwarfTypeSubRange.SizeNeeded;
+function TFpSymbolDwarfTypeSubRange.DoReadSize(const AValueObj: TFpValue; out
+  ASize: QWord): Boolean;
 var
-  ByteSize: Integer;
-  t: TFpSymbol;
+  t: TFpSymbolDwarfType;
 begin
-  if InformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
-    SetSize(ByteSize)
-  else begin
-    t := NestedTypeInfo;
-    if t = nil then begin
-      SetKind(skInteger);
-      SetSize(CompilationUnit.AddressSize);
-    end
-    else
-      SetSize(t.Size);
+  Result := inherited DoReadSize(AValueObj, ASize);
+  if Result or IsError(LastError) then
+    exit;
+
+  t := NestedTypeInfo;
+  if t = nil then begin
+    Result := False;
+    exit;
   end;
+
+  Result := t.ReadSize(AValueObj, ASize);
 end;
 
 function TFpSymbolDwarfTypeSubRange.GetNestedSymbol(AIndex: Int64): TFpSymbol;
@@ -3868,14 +3989,16 @@ begin
   SetKind(skPointer);
 end;
 
-procedure TFpSymbolDwarfTypePointer.SizeNeeded;
+function TFpSymbolDwarfTypePointer.DoReadSize(const AValueObj: TFpValue; out
+  ASize: QWord): Boolean;
 begin
-  SetSize(CompilationUnit.AddressSize);
+  ASize := CompilationUnit.AddressSize;
+  Result := True;
 end;
 
 function TFpSymbolDwarfTypePointer.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;
 begin
-  Result := TFpValueDwarfPointer.Create(Self, CompilationUnit.AddressSize);
+  Result := TFpValueDwarfPointer.Create(Self);
 end;
 
 { TFpSymbolDwarfTypeSubroutine }
@@ -4058,7 +4181,7 @@ end;
 
 function TFpSymbolDwarfTypeEnum.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;
 begin
-  Result := TFpValueDwarfEnum.Create(Self, Size);
+  Result := TFpValueDwarfEnum.Create(Self);
 end;
 
 procedure TFpSymbolDwarfTypeEnum.KindNeeded;
@@ -4152,7 +4275,7 @@ end;
 
 function TFpSymbolDwarfTypeSet.GetTypedValueObject(ATypeCast: Boolean): TFpValueDwarf;
 begin
-  Result := TFpValueDwarfSet.Create(Self, Size);
+  Result := TFpValueDwarfSet.Create(Self);
 end;
 
 function TFpSymbolDwarfTypeSet.GetNestedSymbolCount: Integer;
@@ -4421,9 +4544,10 @@ begin
   Info.ReleaseReference;
 end;
 
-procedure TFpSymbolDwarfTypeArray.ReadStride;
+procedure TFpSymbolDwarfTypeArray.ReadStride(AValObject: TFpValueDwarf);
 var
   t: TFpSymbolDwarfType;
+  Size: QWord;
 begin
   if didtStrideRead in FDwarfArrayReadFlags then
     exit;
@@ -4440,10 +4564,12 @@ begin
   end;
 
   t := NestedTypeInfo;
+  if not t.ReadSize(nil, Size) then // TODO: need value object for that member.
+    exit;
   if t = nil then
     FStrideInBits := 0 //  TODO error
   else
-    FStrideInBits := t.Size * 8;
+    FStrideInBits := Size * 8;
 end;
 
 procedure TFpSymbolDwarfTypeArray.ReadOrdering;
@@ -4528,7 +4654,7 @@ var
 begin
   assert((AValObject is TFpValueDwarfArray), 'TFpSymbolDwarfTypeArray.GetMemberAddress AValObject');
   ReadOrdering;
-  ReadStride; // TODO Stride per member (member = dimension/index)
+  ReadStride(AValObject); // TODO Stride per member (member = dimension/index)
   Result := InvalidLoc;
   if (FStrideInBits <= 0) or (FStrideInBits mod 8 <> 0) then
     exit;
@@ -4876,9 +5002,11 @@ begin
   SetKind(TypeInfo.Kind);
 end;
 
-procedure TFpSymbolDwarfDataProc.SizeNeeded;
+function TFpSymbolDwarfDataProc.DoReadSize(const AValueObj: TFpValue; out
+  ASize: QWord): Boolean;
 begin
-  SetSize(FAddressInfo^.EndPC - FAddressInfo^.StartPC);
+  ASize := FAddressInfo^.EndPC - FAddressInfo^.StartPC;
+  Result := True;
 end;
 
 function TFpSymbolDwarfDataProc.GetFlags: TDbgSymbolFlags;
