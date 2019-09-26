@@ -264,8 +264,11 @@ end;
 
 procedure TCustomPairSplitter.SetPosition(const AValue: integer);
 begin
-  if FPosition = AValue then
+  if (FPosition = AValue) and
+    (TWSCustomPairSplitterClass(WidgetSetClass).GetPosition(Self) = FPosition)
+  then
     Exit;
+
   FPosition := AValue;
   if FPosition < 0 then
     FPosition := 0;
