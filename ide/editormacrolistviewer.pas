@@ -792,8 +792,14 @@ var
 begin
   f := TStringList.Create;
   f.Text := copy(FOrigText,1 ,FPos);
-  Result.y := f.Count;
-  Result.x := length(f[f.Count-1])+1;
+  if f.Count = 0 then begin
+    Result.y := 1;
+    Result.x := 1;
+  end
+  else begin
+    Result.y := f.Count;
+    Result.x := length(f[f.Count-1])+1;
+  end;
   f.Free;
 end;
 
@@ -848,11 +854,13 @@ end;
 function TIdeMacroEventReader.ParseNextEvent: Boolean;
   procedure SkipNum(var i: integer);
   begin
-    while (i <= Length(FText)) and (FText[i] in ['0'..'9']) do inc (i);
+    while (i <= Length(FText)) and (FText[i] in ['0'..'9']) do
+      inc(i);
   end;
   procedure SkipSpace(var i: integer);
   begin
-    while (i <= Length(FText)) and (FText[i] in [' '..#9, #13, #10]) do inc (i);
+    while (i <= Length(FText)) and (FText[i] in [' ', #9, #13, #10]) do 
+      inc(i);
   end;
 var
   c,i,j,k: Integer;

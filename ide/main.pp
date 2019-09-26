@@ -6923,7 +6923,6 @@ begin
                                 aCompileHint);
         if ConsoleVerbosity>=0 then
           debugln(['Hint: (lazarus) [TMainIDE.DoBuildProject] compiler time in s: ',(Now-StartTime)*86400]);
-        DoCallBuildingFinishedHandler(lihtProjectBuildingFinished, Self, Result=mrOk);
         if Result<>mrOk then begin
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;
@@ -6971,6 +6970,8 @@ begin
       end
       else
         ToolStatus:=itNone;
+      // Call handlers set by plugins
+      DoCallBuildingFinishedHandler(lihtProjectBuildingFinished, Self, Result=mrOk);
     end;
   finally
     // check sources
@@ -7663,7 +7664,6 @@ begin
     // make lazarus ide
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, IDEBuildFlags);
-    DoCallBuildingFinishedHandler(lihtLazarusBuildingFinished, Self, Result=mrOk);
     if Result<>mrOk then exit;
 
     if fBuilder.ProfileChanged then begin
@@ -7672,8 +7672,9 @@ begin
     end;
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
-    DoCheckFilesOnDisk;
     ToolStatus:=OldToolStatus;
+    DoCallBuildingFinishedHandler(lihtLazarusBuildingFinished, Self, Result=mrOk);
+    DoCheckFilesOnDisk;
   end;
 end;
 
