@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lclstrconsts\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-02 16:22+0100\n"
-"PO-Revision-Date: 2016-02-01 11:02+0100\n"
+"PO-Revision-Date: 2019-09-20 07:45+0200\n"
 "Last-Translator: Slavo Gbúr <slavusec@azet.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "Language: sk\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -32,7 +32,7 @@ msgstr "Nie je možné nájsť prehliadač HTML."
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, fuzzy,badformat
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr "HTML prehliadač nebol nájdený.% Prosím zadajte jeden v Nástroje -> Možnosti -> Pomoc -> Možnosti pomoci"
+msgstr "HTML prehliadač nebol nájdený.%Prosím zadajte jeden v Nástroje -> Možnosti -> Pomoc -> Možnosti pomoci"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database \"%s\" was unable to find file \"%s\"."
@@ -462,7 +462,7 @@ msgstr "--display h:s:d       Pripojiť k zadanému X serveru, kde \"h\" je meno
 
 #: lclstrconsts.rsgtkoptionmodule
 msgid "--gtk-module module   Load the specified module at startup."
-msgstr "--gtk-module module   .Načítať zadaný modul pri štarte"
+msgstr "--gtk-module module   Načítať zadaný modul pri štarte."
 
 #: lclstrconsts.rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
@@ -485,7 +485,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Volať XSynchronize (displej, True) po stabilizácií pripojenia k X Serveru. Toto robíá ladenie chyb X protokolu jednodušie, protože cacheování X žiadostí bude vypnutéo a chyby X budú doručené okamžite po žiadosti, ktorá vyvolala chybu."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "Pomoc"
@@ -524,7 +523,7 @@ msgstr "Databáza pomoci \"%s\" nenájdená"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 msgid "Help for directive \"%s\" not found."
-msgstr "Nápoveda pre direktivu \"%s\" nenájdená"
+msgstr "Pomoc pre direktívu \"%s\" sa nenašla."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
@@ -780,8 +779,9 @@ msgid "Menu Text"
 msgstr "Text ponuky"
 
 #: lclstrconsts.rsmodified
+#, fuzzy
 msgid "  modified "
-msgstr ".. zmenené"
+msgstr " zmenené"
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
@@ -903,6 +903,7 @@ msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
 msgstr "-reverse, nastavuje smer rozloženia aplikácie na Qt::RightToLeft."
 
 #: lclstrconsts.rsqtoptionsession
+#, fuzzy
 msgid "-session session, restores the application from an earlier session."
 msgstr "-session session - obnovuje aplikáciu z skoršieho posedenia"
 
@@ -1029,7 +1030,7 @@ msgstr "Strieborná"
 
 #: lclstrconsts.rssize
 msgid "  size "
-msgstr "..veľkosť "
+msgstr "  veľkosť "
 
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
@@ -1088,7 +1089,7 @@ msgstr "Neznámy obrázkový formát"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
-msgstr "Nepodporovaný formát bitmapy"
+msgstr "Nepodporovaný formát bitmapy."
 
 #: lclstrconsts.rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
@@ -1188,7 +1189,7 @@ msgstr "Neplatný index ImageList"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr "Súčasný text neodpovedá špecifikovanej maske"
+msgstr "Súčasný text neodpovedá špecifikovanej maske."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1330,33 +1331,36 @@ msgid "%s bytes"
 msgstr "%s bytov"
 
 #: lclstrconsts.sshellctrlsinvalidpath
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
-"Neplatné pomenovanie cesty:\n"
+"Neplatný názov cesty:\n"
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
+#, object-pascal-format
 msgid ""
 "Invalid relative pathname:\n"
 "\"%s\"\n"
 "in relation to rootpath:\n"
 "\"%s\"\n"
 msgstr ""
-"Neplatné relatívne pomenovanie cesty:\n"
+"Neplatný relatívny názov cesty:\n"
 "\"%s\"\n"
-"v relácií s koreňovou cestou:\n"
+"vzhľadom na koreňovú cestu:\n"
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
-"Neplatné pomenovanie cesty:\n"
+"Neplatný názov cesty:\n"
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlskb
@@ -1372,6 +1376,7 @@ msgid "Name"
 msgstr "Názov"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
+#, object-pascal-format
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\"\n"
