@@ -46,8 +46,7 @@ type
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
-    function FindSymbol(AAddress: TDbgPtr): TFpSymbol; override;
-    function FindSymbol(const AName: String): TFpSymbol; override;
+    function FindProcSymbol(const AName: String): TFpSymbol; override; overload;
     property Image64Bit: boolean read FImage64Bit;
   end;
 
@@ -135,12 +134,7 @@ begin
   Result:=FContext;
 end;
 
-function TFpSymbolInfo.FindSymbol(AAddress: TDbgPtr): TFpSymbol;
-begin
-  Result:=inherited FindSymbol(AAddress);
-end;
-
-function TFpSymbolInfo.FindSymbol(const AName: String): TFpSymbol;
+function TFpSymbolInfo.FindProcSymbol(const AName: String): TFpSymbol;
 begin
   result := nil;
   //Result:=FContext.FindSymbol(AName);

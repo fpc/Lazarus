@@ -160,7 +160,7 @@ var
 begin
   WriteLN('===');
   a := GController.CurrentThread.GetInstructionPointerRegisterValue;
-  sym := GController.CurrentProcess.FindSymbol(a);
+  sym := GController.CurrentProcess.FindProcSymbol(a);
   if sym = nil
   then begin
     WriteLn('  [', FormatAddress(a), '] ???');

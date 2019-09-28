@@ -726,7 +726,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         APrintedValue := '$'+IntToHex(va, AnAddressSize*2);
 
       t := AValue.TypeInfo;
-      proc := TFpSymbolDwarf(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindSymbol(va));
+      proc := TFpSymbolDwarf(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindProcSymbol(va));
       if proc <> nil then begin
         //t := proc;
         s := proc.Name;

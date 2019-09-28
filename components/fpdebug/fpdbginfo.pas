@@ -511,8 +511,8 @@ type
     *)
     function FindContext(AThreadId, AStackFrame: Integer; {%H-}AAddress: TDbgPtr = 0): TFpDbgInfoContext; virtual;
     function FindContext({%H-}AAddress: TDbgPtr): TFpDbgInfoContext; virtual; deprecated 'use FindContextFindContext(thread,stack,address)';
-    function FindSymbol(const {%H-}AName: String): TFpSymbol; virtual; deprecated;
-    function FindSymbol({%H-}AAddress: TDbgPtr): TFpSymbol; virtual; deprecated;
+    function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
+    function FindProcSymbol(const {%H-}AName: String): TFpSymbol; virtual; overload;
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
@@ -1486,12 +1486,12 @@ begin
   Result := nil;
 end;
 
-function TDbgInfo.FindSymbol(const AName: String): TFpSymbol;
+function TDbgInfo.FindProcSymbol(AAddress: TDbgPtr): TFpSymbol;
 begin
   Result := nil;
 end;
 
-function TDbgInfo.FindSymbol(AAddress: TDbgPtr): TFpSymbol;
+function TDbgInfo.FindProcSymbol(const AName: String): TFpSymbol;
 begin
   Result := nil;
 end;

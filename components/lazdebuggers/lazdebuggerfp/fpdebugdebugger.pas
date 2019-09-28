@@ -1034,7 +1034,7 @@ begin
       p := @CodeBin;
       FpDbgDisasX86.Disassemble(p, TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.Mode=dm64, ADump, AStatement);
 
-      Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindSymbol(AnAddr);
+      Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnAddr);
 
       // If this is the last statement for this source-code-line, fill the
       // SrcStatementCount from the prior statements.
@@ -2237,7 +2237,7 @@ begin
     else
       result.Address := AnAddress;
 
-    sym := FDbgController.CurrentProcess.FindSymbol(result.Address);
+    sym := FDbgController.CurrentProcess.FindProcSymbol(result.Address);
     if sym = nil then
       Exit;
 

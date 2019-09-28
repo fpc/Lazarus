@@ -994,7 +994,7 @@ begin
     LineAddr := StrToInt64(LineAddrStr);
     if i = 0 then
       Range.RangeStartAddr :=  LineAddr;
-    Sym :=  FOwner.FpDebugger.FDwarfInfo.FindSymbol(LineAddr);
+    Sym :=  FOwner.FpDebugger.FDwarfInfo.FindProcSymbol(LineAddr);
 
     // If this is the last statement for this source-code-line, fill the
     // SrcStatementCount from the prior statements.
@@ -1045,7 +1045,7 @@ var
   StartRange, EndRange: TDBGPtr;
 begin
 
-  Sym := FOwner.FpDebugger.FDwarfInfo.FindSymbol(FBeforeAddr);
+  Sym := FOwner.FpDebugger.FDwarfInfo.FindProcSymbol(FBeforeAddr);
   if Sym <> nil then
     StartRange := Sym.Address.Address
   else

@@ -649,14 +649,14 @@ type
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
     function FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
-    function FindProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase;
   public
     constructor Create(ALoaderList: TDbgImageLoaderList); override;
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
-    function FindSymbol(AAddress: TDbgPtr): TFpSymbol; override;
-    //function FindSymbol(const AName: String): TDbgSymbol; override;
+    function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
+    function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
+    //function FindSymbol(const AName: String): TDbgSymbol; override; overload;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
@@ -3193,7 +3193,7 @@ var
   Proc: TDbgDwarfSymbolBase;
 begin
   Result := nil;
-  Proc := FindProcSymbol(AAddress);
+  Proc := FindDwarfProcSymbol(AAddress);
   if Proc = nil then
     exit;
 
@@ -3205,11 +3205,6 @@ end;
 function TFpDwarfInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
   result := FindContext(1, 0, AAddress);
-end;
-
-function TFpDwarfInfo.FindSymbol(AAddress: TDbgPtr): TFpSymbol;
-begin
-  Result := FindProcSymbol(AAddress);
 end;
 
 function TFpDwarfInfo.GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
@@ -3244,7 +3239,13 @@ begin
     Result := nil;
 end;
 
-function TFpDwarfInfo.FindProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase;
+function TFpDwarfInfo.FindDwarfProcSymbol(AAddress: TDbgPtr
+  ): TDbgDwarfSymbolBase;
+begin
+  Result := TDbgDwarfSymbolBase(FindProcSymbol(AAddress));
+end;
+
+function TFpDwarfInfo.FindProcSymbol(AAddress: TDbgPtr): TFpSymbol;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;

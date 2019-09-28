@@ -97,7 +97,7 @@ type
     FRegisterValueList: TDbgRegisterValueList;
     FIndex: integer;
     function GetFunctionName: string;
-    function GetSymbol: TFpSymbol;
+    function GetProcSymbol: TFpSymbol;
     function GetLine: integer;
     function GetSourceFile: string;
   public
@@ -110,7 +110,7 @@ type
     property FunctionName: string read GetFunctionName;
     property Line: integer read GetLine;
     property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
-    property ProcSymbol: TFpSymbol read GetSymbol;
+    property ProcSymbol: TFpSymbol read GetProcSymbol;
     property Index: integer read FIndex;
   end;
 
@@ -305,7 +305,7 @@ type
 
     function AddBreak(const AFileName: String; ALine: Cardinal): TFpInternalBreakpoint; overload;
     function AddrOffset: Int64; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
-    function FindSymbol(AAdress: TDbgPtr): TFpSymbol;
+    function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
     procedure LoadInfo; virtual;
 
     property Process: TDbgProcess read FProcess;
@@ -386,8 +386,8 @@ type
     function  AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
-    function  FindSymbol(const AName: String): TFpSymbol;
-    function  FindSymbol(AAdress: TDbgPtr): TFpSymbol;
+    function  FindProcSymbol(const AName: String): TFpSymbol;
+    function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
@@ -735,13 +735,13 @@ end;
 
 { TDbgCallstackEntry }
 
-function TDbgCallstackEntry.GetSymbol: TFpSymbol;
+function TDbgCallstackEntry.GetProcSymbol: TFpSymbol;
 begin
   if not FIsSymbolResolved then begin
     if FIndex > 0 then
-      FSymbol := FThread.Process.FindSymbol(FAnAddress - 1) // -1 => inside the call instruction
+      FSymbol := FThread.Process.FindProcSymbol(FAnAddress - 1) // -1 => inside the call instruction
     else
-      FSymbol := FThread.Process.FindSymbol(FAnAddress);
+      FSymbol := FThread.Process.FindProcSymbol(FAnAddress);
     FIsSymbolResolved := FSymbol <> nil
   end;
   result := FSymbol;
@@ -751,7 +751,7 @@ function TDbgCallstackEntry.GetFunctionName: string;
 var
   Symbol: TFpSymbol;
 begin
-  Symbol := GetSymbol;
+  Symbol := GetProcSymbol;
   if assigned(Symbol) then
     result := Symbol.Name
   else
@@ -805,7 +805,7 @@ function TDbgCallstackEntry.GetLine: integer;
 var
   Symbol: TFpSymbol;
 begin
-  Symbol := GetSymbol;
+  Symbol := GetProcSymbol;
   if assigned(Symbol) then
     result := Symbol.Line
   else
@@ -816,7 +816,7 @@ function TDbgCallstackEntry.GetSourceFile: string;
 var
   Symbol: TFpSymbol;
 begin
-  Symbol := GetSymbol;
+  Symbol := GetProcSymbol;
   if assigned(Symbol) then
     result := Symbol.FileName
   else
@@ -1030,11 +1030,11 @@ begin
   inherited;
 end;
 
-function TDbgInstance.FindSymbol(AAdress: TDbgPtr): TFpSymbol;
+function TDbgInstance.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
 begin
-  Result := FDbgInfo.FindSymbol(AAdress + AddrOffset);
+  Result := FDbgInfo.FindProcSymbol(AAdress + AddrOffset);
   if not assigned(Result) then
-    result := FSymbolTableInfo.FindSymbol(AAdress + AddrOffset);
+    result := FSymbolTableInfo.FindProcSymbol(AAdress + AddrOffset);
 end;
 
 procedure TDbgInstance.LoadInfo;
@@ -1176,12 +1176,12 @@ begin
   Result.FInternal := True;
 end;
 
-function TDbgProcess.FindSymbol(const AName: String): TFpSymbol;
+function TDbgProcess.FindProcSymbol(const AName: String): TFpSymbol;
 begin
-  Result := FDbgInfo.FindSymbol(AName);
+  Result := FDbgInfo.FindProcSymbol(AName);
 end;
 
-function TDbgProcess.FindSymbol(AAdress: TDbgPtr): TFpSymbol;
+function TDbgProcess.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
 var
   n: Integer;
   Inst: TDbgInstance;
@@ -1189,7 +1189,7 @@ begin
   for n := 0 to FSymInstances.Count - 1 do
   begin
     Inst := TDbgInstance(FSymInstances[n]);
-    Result := Inst.FindSymbol(AAdress);
+    Result := Inst.FindProcSymbol(AAdress);
     if Result <> nil then Exit;
   end;
   Result := nil;
@@ -1648,7 +1648,7 @@ var
   Sym: TFpSymbol;
 begin
   AnAddr := GetInstructionPointerRegisterValue;
-  sym := FProcess.FindSymbol(AnAddr);
+  sym := FProcess.FindProcSymbol(AnAddr);
   if assigned(sym) then
   begin
     if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) and
@@ -1672,7 +1672,7 @@ var
   a: TDBGPtrArray;
 begin
   AnAddr := GetInstructionPointerRegisterValue;
-  sym := FProcess.FindSymbol(AnAddr);
+  sym := FProcess.FindProcSymbol(AnAddr);
   if (sym is TDbgDwarfSymbolBase) then
   begin
     CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
@@ -1695,7 +1695,7 @@ var
 begin
   FStoreStepStackFrame := GetStackBasePointerRegisterValue;
   AnAddr := GetInstructionPointerRegisterValue;
-  sym := FProcess.FindSymbol(AnAddr);
+  sym := FProcess.FindProcSymbol(AnAddr);
   if assigned(sym) then
   begin
     FStoreStepSrcFilename:=sym.FileName;

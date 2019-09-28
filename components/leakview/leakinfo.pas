@@ -942,9 +942,9 @@ begin
             end
             {$ELSE}
             if j > 0 then
-              sym := DwarfInfo.FindSymbol(CurLine.Addr - 1 + ImageLoaderList.ImageBase)
+              sym := DwarfInfo.FindProcSymbol(CurLine.Addr - 1 + ImageLoaderList.ImageBase)
             else
-              sym := DwarfInfo.FindSymbol(CurLine.Addr + ImageLoaderList.ImageBase);
+              sym := DwarfInfo.FindProcSymbol(CurLine.Addr + ImageLoaderList.ImageBase);
             if (sym <> nil) and (sym.Line > 0) then begin
               CurLine.FileName := sym.FileName;
               CurLine.LineNum := sym.Line;

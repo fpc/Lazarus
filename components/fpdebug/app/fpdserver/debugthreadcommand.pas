@@ -395,7 +395,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgContr
   var
     Sym: TFpSymbol;
   begin
-    Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindSymbol(AStartAddr.GuessedValue);
+    Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindProcSymbol(AStartAddr.GuessedValue);
     if assigned(Sym) and (Sym.Kind in [skProcedure, skFunction]) then
       begin
       AStartAddr.Value:=Sym.Address.Address;
@@ -452,7 +452,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgContr
         p := @CodeBin;
         FpDbgDisasX86.Disassemble(p, {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.Mode=dm64, ADump, AStatement);
 
-        Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindSymbol(AnAddr);
+        Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindProcSymbol(AnAddr);
 
         // If this is the last statement for this source-code-line, fill the
         // SrcStatementCount from the prior statements.
@@ -905,7 +905,7 @@ begin
     else
       FLocationRec.Address := FAddressValue;
 
-    sym := AController.CurrentProcess.FindSymbol(FLocationRec.Address);
+    sym := AController.CurrentProcess.FindProcSymbol(FLocationRec.Address);
     if sym = nil then
       Exit;
 
