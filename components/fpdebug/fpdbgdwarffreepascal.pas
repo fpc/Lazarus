@@ -452,7 +452,7 @@ begin
   ParentFpSym := TFpSymbolDwarf.CreateSubClass(AName, InfoEntry);
   ParentFpVal := ParentFpSym.Value;
   ApplyContext(ParentFpVal);
-  //TFpSymbolDwarf(ADbgValue.DbgSymbol).ParentTypeInfo := TFpSymbolDwarfDataProc(FSymbol);
+  //TFpSymbolDwarf(ADbgValue.DbgSymbol).LocalProcInfo := TFpSymbolDwarfDataProc(FSymbol);
   if not (svfOrdinal in ParentFpVal.FieldFlags) then begin
     DebugLn('no ordinal for parentfp');
     ParentFpSym.ReleaseReference;
@@ -759,20 +759,12 @@ end;
 
 function TFpValueDwarfV2FreePascalShortString.GetInternMemberByName(
   AIndex: String): TFpValue;
-var
-  tmp: TFpSymbol;
 begin
   if HasTypeCastInfo then begin
-    Result := nil;
-    tmp := TypeInfo.NestedSymbolByName[AIndex];
-    if (tmp <> nil) then begin
-      assert((tmp is TFpSymbolDwarfData), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
-      Result := tmp.Value;
-
-      TFpValueDwarf(Result).StructureValue := Self;
-      if (TFpValueDwarf(Result).Context = nil) then
-        TFpValueDwarf(Result).Context := Context;
-    end;
+    Result := TypeInfo.GetNestedValueByName(AIndex);
+    TFpValueDwarf(Result).StructureValue := Self;
+    if (TFpValueDwarf(Result).Context = nil) then
+      TFpValueDwarf(Result).Context := Context;
   end
   else
     Result := MemberByName[AIndex];

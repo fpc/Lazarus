@@ -162,7 +162,7 @@ type
 
     function GetDbgSymbol: TFpSymbol; virtual;
     function GetTypeInfo: TFpSymbol; virtual;
-    function GetContextTypeInfo: TFpSymbol; virtual;
+    function GetParentTypeInfo: TFpSymbol; virtual;
 
     function GetLastError: TFpError; virtual;
   public
@@ -225,7 +225,7 @@ type
                   Maybe a stType, then there is no Value *)
     property DbgSymbol: TFpSymbol read GetDbgSymbol;
     property TypeInfo: TFpSymbol read GetTypeInfo;
-    property ContextTypeInfo: TFpSymbol read GetContextTypeInfo; // For members, the class in which this member is declared
+    property ParentTypeInfo: TFpSymbol read GetParentTypeInfo; // For members, the class in which this member is declared
 
     property LastError: TFpError read GetLastError;
   end;
@@ -724,7 +724,7 @@ begin
   Result := 0;
 end;
 
-function TFpValue.GetContextTypeInfo: TFpSymbol;
+function TFpValue.GetParentTypeInfo: TFpSymbol;
 begin
   Result := nil;
 end;

@@ -1024,7 +1024,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         end;
         if (ppvCreateDbgType in AFlags) then begin
           s := '';
-          if MemberValue.ContextTypeInfo <> nil then s := MemberValue.ContextTypeInfo.Name;
+          if MemberValue.ParentTypeInfo <> nil then s := MemberValue.ParentTypeInfo.Name;
           f := TDBGField.Create(MbName, TDBGType.Create(skSimple, ResTypeName(MemberValue)),
                                 flPublic, [], s);
           f.DBGType.Value.AsString := MbVal;
