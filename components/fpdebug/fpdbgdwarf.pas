@@ -1374,14 +1374,12 @@ begin
           then begin
             if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
               Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
-              ApplyContext(Result);
               exit;
             end;
           end;
 
           InfoEntry.ScopeIndex := StartScopeIdx;
           Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
-          ApplyContext(Result);
           exit;
         end;
       end;
@@ -1390,7 +1388,6 @@ begin
       tg := InfoEntry.AbbrevTag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
         if FindSymbolInStructure(AName,PNameUpper, PNameLower, InfoEntry, Result) then begin
-          ApplyContext(Result);
           exit; // TODO: check error
         end;
         //InfoEntry.ScopeIndex := StartScopeIdx;
@@ -1399,7 +1396,6 @@ begin
       else
       if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then begin // searching in subroutine
         if FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry, Result) then begin
-          ApplyContext(Result);
           exit;        // TODO: check error
         end;
         //InfoEntry.ScopeIndex := StartScopeIdx;
@@ -1410,7 +1406,6 @@ begin
       if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
         if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
           Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
-          ApplyContext(Result);
           exit;
         end;
       end;
