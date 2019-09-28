@@ -75,11 +75,13 @@ type
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
+    PkgInfoMemoLicense: TMemo;
     SaveAndExitButton: TBitBtn;
     InstallPkgGroupBox: TGroupBox;
     SaveAndRebuildButton: TBitBtn;
     InstalledFilterEdit: TTreeFilterEdit;
     Splitter1: TSplitter;
+    Splitter2: TSplitter;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
     function FilterEditGetImageIndex({%H-}Str: String; {%H-}Data: TObject;
@@ -248,6 +250,7 @@ begin
 
   FNewInstalledPackages:=TObjectList.Create(true);
   PkgInfoMemo.Clear;
+  PkgInfoMemoLicense.Clear;
   LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
   LPKInfoCache.StartLPKReaderWithAllAvailable;
 
@@ -783,6 +786,7 @@ begin
     then
       exit; // no change
     PkgInfoMemo.Clear;
+    PkgInfoMemoLicense.Clear;
     if (Info=nil) then begin
       FSelectedPkgID:='';
       exit;
@@ -816,8 +820,9 @@ begin
     if Description<>'' then
       PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract + ': ' + Description);
     if License<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsLicense + ': ' + License);
+      PkgInfoMemoLicense.Lines.Add(lisPckOptsLicense + ': ' + License);
 
+    PkgInfoMemo.Lines.Add('');
     PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [Info.LPKFilename]));
 
     InfoStr:=lisCurrentState;
@@ -840,6 +845,7 @@ begin
     AddState(LazPackageTypeIdents[Info.PkgType]);
     PkgInfoMemo.Lines.Add(InfoStr);
     PkgInfoMemo.SelStart := 1;
+    PkgInfoMemoLicense.SelStart := 1;
   finally
     LPKInfoCache.LeaveCritSection;
   end;
