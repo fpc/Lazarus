@@ -373,7 +373,6 @@ type
 
   TFpValueDwarfStructTypeCast = class(TFpValueDwarf)
   private
-    FMembers: TFpDbgCircularRefCntObjList;
     FDataAddressDone: Boolean;
   protected
     procedure Reset; override;
@@ -2659,7 +2658,6 @@ end;
 
 destructor TFpValueDwarfStructTypeCast.Destroy;
 begin
-  FreeAndNil(FMembers);
   inherited Destroy;
 end;
 
@@ -2674,10 +2672,6 @@ begin
   tmp := FTypeSymbol.NestedSymbolByName[AIndex];
   if (tmp <> nil) then begin
     assert((tmp is TFpSymbolDwarfData), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
-    if FMembers = nil then
-      FMembers := TFpDbgCircularRefCntObjList.Create;
-    FMembers.Add(tmp);
-
     Result := tmp.Value;
     assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
   end;
@@ -2696,10 +2690,6 @@ begin
   tmp := FTypeSymbol.NestedSymbol[AIndex];
   if (tmp <> nil) then begin
     assert((tmp is TFpSymbolDwarfData), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
-    if FMembers = nil then
-      FMembers := TFpDbgCircularRefCntObjList.Create;
-    FMembers.Add(tmp);
-
     Result := tmp.Value;
     assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
   end;
