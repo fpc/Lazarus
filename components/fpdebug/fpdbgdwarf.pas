@@ -461,7 +461,6 @@ type
        "self" will only set its reference to parenttype, if self has other references.  *)
     procedure DoReferenceAdded; override;
     procedure DoReferenceReleased; override;
-    procedure CircleBackRefActiveChanged(ANewActive: Boolean); override;
     procedure SetLocalProcInfo(AValue: TFpSymbolDwarf); virtual;
 
     function  DoGetNestedTypeInfo: TFpSymbolDwarfType; virtual;
@@ -471,7 +470,7 @@ type
     procedure TypeInfoNeeded; override;
     property NestedTypeInfo: TFpSymbolDwarfType read GetNestedTypeInfo;
 
-    // LocalProcInfo: funtion for local var / class for member
+    // LocalProcInfo: funtion for local var / param
     property LocalProcInfo: TFpSymbolDwarf read FLocalProcInfo write SetLocalProcInfo;
 
     function DoForwardReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; inline;
@@ -811,34 +810,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
   end;
 
-  (*
-    If not specified
-         .NestedTypeInfo --> copy of TypeInfo
-         .LocalProcInfo --> nil
-
-    LocalProcInfo:     has a weak RefCount (only AddRef, if self has other refs)
-
-
-    AnObject = TFpSymbolDwarfDataVariable
-     |-- .TypeInfo       --> TBar = TFpSymbolDwarfTypeStructure  [*1]
-     |-- .LocalProcInfo --> may point to subroutine, if param or local var // TODO
-
-    TBar = TFpSymbolDwarfTypeStructure
-     |-- .TypeInfo       --> TBarBase = TFpSymbolDwarfTypeStructure
-
-    TBarBase = TFpSymbolDwarfTypeStructure
-     |-- .TypeInfo       --> TOBject = TFpSymbolDwarfTypeStructure
-
-    TObject = TFpSymbolDwarfTypeStructure
-     |-- .TypeInfo       --> nil
-
-
-    FField = TFpSymbolDwarfDataMember (declared in TBarBase)
-     |-- .TypeInfo       --> Integer = TFpSymbolDwarfTypeBasic [*1]
-     |-- .LocalProcInfo --> TBarBase
-
-    [*1] May have TFpSymbolDwarfTypeDeclaration or others
-  *)
 
   { TFpSymbolDwarfDataMember }
 
@@ -2846,12 +2817,11 @@ procedure TFpSymbolDwarf.SetLocalProcInfo(AValue: TFpSymbolDwarf);
 begin
   if FLocalProcInfo = AValue then exit;
 
-  if (FLocalProcInfo <> nil) and CircleBackRefsActive then
-    FLocalProcInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
+  FLocalProcInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
 
   FLocalProcInfo := AValue;
 
-  if (FLocalProcInfo <> nil) and CircleBackRefsActive then
+  if (FLocalProcInfo <> nil) then
     FLocalProcInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
 end;
 
@@ -2865,16 +2835,6 @@ procedure TFpSymbolDwarf.DoReferenceReleased;
 begin
   inherited DoReferenceReleased;
   DoPlainReferenceReleased;
-end;
-
-procedure TFpSymbolDwarf.CircleBackRefActiveChanged(ANewActive: Boolean);
-begin
-  if (FLocalProcInfo = nil) then
-    exit;
-  if ANewActive then
-    FLocalProcInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF}
-  else
-    FLocalProcInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
 end;
 
 function TFpSymbolDwarf.DoGetNestedTypeInfo: TFpSymbolDwarfType;
@@ -3370,7 +3330,7 @@ begin
   inherited Destroy;
   ReleaseRefAndNil(FNestedTypeInfo);
   Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is destructor');
-  // FLocalProcInfo := nil
+  FLocalProcInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
 end;
 
 function TFpSymbolDwarf.StartScope: TDbgPtr;
@@ -3465,7 +3425,6 @@ begin
     FValueObject.ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueObject, ClassName+'.FValueObject'){$ENDIF};
     FValueObject := nil;
   end;
-  LocalProcInfo := nil;
   inherited Destroy;
 end;
 
@@ -5115,7 +5074,7 @@ begin
         Result := TFpValueDwarf(TFpSymbolDwarfData.CreateValueSubClass('self', InfoEntry).Value);
         Result.AddReference;
         Result.FDataSymbol.ReleaseReference;
-        //Result.DbgSymbol.LocalProcInfo := Self;
+        Result.FDataSymbol.LocalProcInfo := Self;
         debugln(FPDBG_DWARF_SEARCH, ['TFpSymbolDwarfDataProc.GetSelfParameter ', InfoEntry.ScopeDebugText, DbgSName(Result)]);
       end;
     end;
@@ -5235,7 +5194,6 @@ begin
   Ident.GoNamedChildEx(AIndex);
   if Ident <> nil then
     Result := TFpSymbolDwarf.CreateSubClass('', Ident);
-  // No need to set LocalProcInfo
   ReleaseRefAndNil(Ident);
   FLastChildByName := Result;
 end;
