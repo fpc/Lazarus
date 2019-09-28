@@ -757,7 +757,8 @@ end;
 
 procedure TFpValue.SetLastError(ALastError: TFpError);
 begin
-  assert(IsError(ALastError), 'TFpValue.SetLastError: IsError(ALastError)');
+  if not IsError(ALastError) then
+    exit;
   FLastError := ALastError;
 end;
 
