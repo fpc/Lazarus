@@ -703,13 +703,14 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   procedure DoFunction;
   var
     s: String;
-    proc: TFpSymbolDwarf;
-    t: TFpSymbol;
+    proc, procref: TFpSymbolDwarf;
+    t, sym: TFpSymbol;
     par: TFpValueDwarf;
     v: TFpDbgMemLocation;
     va: TDBGPtr;
   begin
     proc := nil;
+    procref := nil;
     v := AValue.DataAddress;
     va := v.Address;
     if (ppvCreateDbgType in AFlags) then begin
@@ -726,16 +727,22 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         APrintedValue := '$'+IntToHex(va, AnAddressSize*2);
 
       t := AValue.TypeInfo;
-      proc := TFpSymbolDwarf(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindProcSymbol(va));
+      sym := AValue.DbgSymbol;
+      if (sym is TFpSymbolDwarfDataProc) then begin
+        proc := TFpSymbolDwarf(sym);
+      end
+      else begin
+        proc := TFpSymbolDwarf(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindProcSymbol(va));
+        procref := proc;
+      end;
       if proc <> nil then begin
-        //t := proc;
         s := proc.Name;
-        par := nil;
-        if (proc is TFpSymbolDwarfDataProc) then
+        if (proc is TFpSymbolDwarfDataProc) then begin
           par := TFpSymbolDwarfDataProc(proc).GetSelfParameter; // Has no Context set, but we only need TypeInfo.Name
-        if (par <> nil) and (par.TypeInfo <> nil) then
-          s := par.TypeInfo.Name + '.' + s;
-        par.ReleaseReference;
+          if (par <> nil) and (par.TypeInfo <> nil) then
+            s := par.TypeInfo.Name + '.' + s;
+          par.ReleaseReference;
+        end;
         APrintedValue := APrintedValue + ' = ' + s; // TODO: offset to startaddress
       end;
       APrintedValue := APrintedValue + ': ';
@@ -753,7 +760,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       APrintedValue := APrintedValue + ' AT ' + '$'+IntToHex(va, AnAddressSize*2);
     end;
 
-    ReleaseRefAndNil(proc);
+    ReleaseRefAndNil(procref);
     Result := True;
   end;
 
