@@ -839,6 +839,7 @@ begin
       AddState(lisPckExplBase);
     AddState(LazPackageTypeIdents[Info.PkgType]);
     PkgInfoMemo.Lines.Add(InfoStr);
+    PkgInfoMemo.SelStart := 1;
   finally
     LPKInfoCache.LeaveCritSection;
   end;
