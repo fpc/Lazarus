@@ -381,11 +381,6 @@ type
     function GetAsCardinal: QWord; override;
     function GetDataSize: QWord; override;
     function IsValidTypeCast: Boolean; override;
-  public
-    destructor Destroy; override;
-    function GetMemberByName(AIndex: String): TFpValue; override;
-    function GetMember(AIndex: Int64): TFpValue; override;
-    function GetMemberCount: Integer; override;
   end;
 
   { TFpValueDwarfConstAddress }
@@ -1702,10 +1697,7 @@ end;
 
 function TFpValueDwarf.GetMemberCount: Integer;
 begin
-  if FDataSymbol <> nil then
-    Result := FDataSymbol.NestedSymbolCount
-  else
-    Result := inherited GetMemberCount;
+  Result := FTypeSymbol.NestedSymbolCount;
 end;
 
 function TFpValueDwarf.GetMemberByName(AIndex: String): TFpValue;
@@ -1713,12 +1705,10 @@ var
   m: TFpSymbol;
 begin
   Result := nil;
-  if FDataSymbol <> nil then begin
-    m := FDataSymbol.NestedSymbolByName[AIndex];
-    if m <> nil then
-      Result := m.Value;
-    assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
-  end;
+  m := FTypeSymbol.NestedSymbolByName[AIndex];
+  if m <> nil then
+    Result := m.Value;
+  assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
   SetLastMember(TFpValueDwarf(Result));
 end;
 
@@ -1727,12 +1717,10 @@ var
   m: TFpSymbol;
 begin
   Result := nil;
-  if FDataSymbol <> nil then begin
-    m := FDataSymbol.NestedSymbol[AIndex];
-    if m <> nil then
-      Result := m.Value;
-    assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
-  end;
+  m := FTypeSymbol.NestedSymbol[AIndex];
+  if m <> nil then
+    Result := m.Value;
+  assert((Result = nil) or (Result is TFpValueDwarfBase), 'Result is TFpValueDwarfBase');
   SetLastMember(TFpValueDwarf(Result));
 end;
 
@@ -2654,55 +2642,6 @@ begin
     else
       Result := False;
   end;
-end;
-
-destructor TFpValueDwarfStructTypeCast.Destroy;
-begin
-  inherited Destroy;
-end;
-
-function TFpValueDwarfStructTypeCast.GetMemberByName(AIndex: String): TFpValue;
-var
-  tmp: TFpSymbol;
-begin
-  Result := nil;
-  if not HasTypeCastInfo then
-    exit;
-
-  tmp := FTypeSymbol.NestedSymbolByName[AIndex];
-  if (tmp <> nil) then begin
-    assert((tmp is TFpSymbolDwarfData), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
-    Result := tmp.Value;
-    assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
-  end;
-  SetLastMember(TFpValueDwarf(Result));
-end;
-
-function TFpValueDwarfStructTypeCast.GetMember(AIndex: Int64): TFpValue;
-var
-  tmp: TFpSymbol;
-begin
-  Result := nil;
-  if not HasTypeCastInfo then
-    exit;
-
-  // TODO: Why store them all in list? They are hold by the type
-  tmp := FTypeSymbol.NestedSymbol[AIndex];
-  if (tmp <> nil) then begin
-    assert((tmp is TFpSymbolDwarfData), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
-    Result := tmp.Value;
-    assert(Result is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
-  end;
-  SetLastMember(TFpValueDwarf(Result));
-end;
-
-function TFpValueDwarfStructTypeCast.GetMemberCount: Integer;
-begin
-  Result := 0;
-  if not HasTypeCastInfo then
-    exit;
-
-  Result := FTypeSymbol.NestedSymbolCount;
 end;
 
 { TFpValueDwarfConstAddress }
