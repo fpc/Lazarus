@@ -72,6 +72,7 @@ type
     LPKParsingTimer: TTimer;
     NoteLabel: TLabel;
     Panel1: TPanel;
+    Panel2: TPanel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
@@ -270,7 +271,8 @@ procedure TInstallPkgSetDialog.InstallPkgSetDialogShow(Sender: TObject);
 begin
   InstalledFilterEdit.Filter:='';    // (filter) - text is shown after this.
   AvailableFilterEdit.Filter:='';
-  SetControlsWidthOnMax([UninstallButton, ImportButton, ExportButton, AddToInstallButton]);
+  SetControlsWidthOnMax([UninstallButton, AddToInstallButton]);
+  SetControlsWidthOnMax([ImportButton, ExportButton]);
 end;
 
 procedure TInstallPkgSetDialog.SaveAndRebuildButtonClick(Sender: TObject);
