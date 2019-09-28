@@ -81,7 +81,6 @@ type
     FAddress: TDBGPtr;
     FThreadId, FStackFrame: Integer;
     FDwarf: TFpDwarfInfo;
-    FlastResult: TFpValue;
   protected
     function GetSymbolAtAddress: TFpSymbol; override;
     function GetProcedureAtAddress: TFpValue; override;
@@ -99,7 +98,6 @@ type
 
     procedure ApplyContext(AVal: TFpValue); inline;
     function SymbolToValue(ASym: TFpSymbol): TFpValue; inline;
-    procedure AddRefToVal(AVal: TFpValue); inline;
     function GetSelfParameter: TFpValue; virtual;
 
     function FindExportedSymbolInUnits(const AName: String; PNameUpper, PNameLower: PChar;
@@ -1159,18 +1157,12 @@ begin
   if ASym.SymbolType = stValue then begin
     Result := ASym.Value;
     if Result <> nil then
-      Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
+      Result.AddReference;
   end
   else begin
     Result := TFpValueDwarfTypeDefinition.Create(ASym);
-    {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(@FlastResult, 'FindSymbol'){$ENDIF};
   end;
   ASym.ReleaseReference;
-end;
-
-procedure TFpDwarfInfoAddressContext.AddRefToVal(AVal: TFpValue);
-begin
-  AVal.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
 end;
 
 function TFpDwarfInfoAddressContext.GetSelfParameter: TFpValue;
@@ -1267,7 +1259,7 @@ begin
           ADbgValue := SelfParam.MemberByName[AName];
           assert(ADbgValue <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
           if ADbgValue <> nil then
-            ADbgValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
+            ADbgValue.AddReference;
         end
 else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
         ;
@@ -1326,7 +1318,6 @@ end;
 
 destructor TFpDwarfInfoAddressContext.Destroy;
 begin
-  FlastResult.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
   FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
   inherited Destroy;
 end;
@@ -1436,9 +1427,6 @@ begin
     then DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier NOT found  Name=', AName])
     else DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier(',AName,') found Scope=', TFpSymbolDwarf(Result.DbgSymbol).InformationEntry.ScopeDebugText, '  ResultSymbol=', DbgSName(Result.DbgSymbol), ' ', Result.DbgSymbol.Name, ' in ', TFpSymbolDwarf(Result.DbgSymbol).CompilationUnit.FileName]);
     ReleaseRefAndNil(InfoEntry);
-
-    FlastResult.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
-    FlastResult := Result;
 
     assert((Result = nil) or (Result is TFpValueDwarfBase), 'TDbgDwarfInfoAddressContext.FindSymbol: (Result = nil) or (Result is TFpValueDwarfBase)');
     ApplyContext(Result);

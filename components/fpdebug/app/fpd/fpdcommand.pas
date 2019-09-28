@@ -274,6 +274,7 @@ begin
           Exit;
         end;
         Address:=AValue.Address.Address;
+        AValue.ReleaseReference;
       end;
     end;
     //if Remove

@@ -375,6 +375,7 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
   AssertTrue('got sym',  sym <> nil);
+  sym.ReleaseReference;
 
 
       ImgLoader.GlobalVar.VarInt16 := 22;
@@ -424,6 +425,7 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
   AssertTrue('got sym',  sym <> nil);
+  sym.ReleaseReference;
 
     for i := 0 to 3 do begin
       case i of
@@ -487,6 +489,7 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarDynIntArray');
   AssertTrue('got sym',  sym <> nil);
+  sym.ReleaseReference;
 
   StartTest('VarDynIntArray', skArray, [ttHasType]);
   StartTest('VarStatIntArray1', skArray, [ttHasType]);
@@ -591,6 +594,7 @@ begin
 
     sym := FCurrentContext.FindSymbol('Int1');
     AssertTrue('got sym',  sym <> nil);
+    sym.ReleaseReference;
 
     // Not existing
     StartInvalTest('NotExisting1399', 'xxx');
@@ -1238,6 +1242,7 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
   AssertTrue('got sym',  sym <> nil);
+  sym.ReleaseReference;
 
 
     ImgLoader.GlobalVar.VarEnum0 := e0a;

@@ -1485,9 +1485,11 @@ begin
       exit;
     end;
   end
-
+{$IFDEF WITH_REFCOUNT_DEBUG}
   else
-    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+    Result.DbgRenameReference(nil, 'DoGetResultValue')
+{$ENDIF}
+  ;
 end;
 
 function GetFirstToken(AText: PChar): String;
