@@ -73,11 +73,14 @@ type
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
 
+  TFpValueDwarf = class;
+
   { TFpDwarfInfoAddressContext }
 
   TFpDwarfInfoAddressContext = class(TFpDbgInfoContext)
   private
     FSymbol: TFpSymbol;
+    FSelfParameter: TFpValueDwarf;
     FAddress: TDBGPtr;
     FThreadId, FStackFrame: Integer;
     FDwarf: TFpDwarfInfo;
@@ -98,7 +101,7 @@ type
 
     procedure ApplyContext(AVal: TFpValue); inline;
     function SymbolToValue(ASym: TFpSymbol): TFpValue; inline;
-    function GetSelfParameter: TFpValue; virtual;
+    function GetSelfParameter: TFpValueDwarf;
 
     function FindExportedSymbolInUnits(const AName: String; PNameUpper, PNameLower: PChar;
       SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue): Boolean; inline;
@@ -908,7 +911,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
     FFrameBaseParser: TDwarfLocationExpression;
-    FSelfParameter: TFpValueDwarf;
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
     procedure CreateMembers;
@@ -1165,11 +1167,15 @@ begin
   ASym.ReleaseReference;
 end;
 
-function TFpDwarfInfoAddressContext.GetSelfParameter: TFpValue;
+function TFpDwarfInfoAddressContext.GetSelfParameter: TFpValueDwarf;
 begin
+  Result := FSelfParameter;
+  if Result <> nil then
+    exit;
   Result := TFpSymbolDwarfDataProc(FSymbol).GetSelfParameter(FAddress);
-  if (Result <> nil) and (TFpValueDwarfBase(Result).FContext = nil) then
-    TFpValueDwarfBase(Result).FContext := Self;
+  if (Result <> nil) then
+    Result.FContext := Self;
+  FSelfParameter := Result;
 end;
 
 function TFpDwarfInfoAddressContext.FindExportedSymbolInUnits(const AName: String; PNameUpper,
@@ -1318,6 +1324,7 @@ end;
 
 destructor TFpDwarfInfoAddressContext.Destroy;
 begin
+  FSelfParameter.ReleaseReference;
   FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
   inherited Destroy;
 end;
@@ -4833,10 +4840,6 @@ begin
   FreeAndNil(FProcMembers);
   FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember'){$ENDIF};
   FreeAndNil(FStateMachine);
-  if FSelfParameter <> nil then begin
-    //TDbgDwarfIdentifier(FSelfParameter.DbgSymbol).LocalProcInfo := nil;
-    FSelfParameter.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSelfParameter, 'FSelfParameter'){$ENDIF};
-  end;
   inherited Destroy;
 end;
 
@@ -5093,9 +5096,7 @@ var
 begin
   // special: search "self"
   // Todo nested procs
-  Result := FSelfParameter;
-  if Result <> nil then exit;
-
+  Result := nil;
   InfoEntry := InformationEntry.Clone;
   //StartScopeIdx := InfoEntry.ScopeIndex;
   InfoEntry.GoParent;
@@ -5112,10 +5113,9 @@ begin
          InfoEntry.IsArtificial
       then begin
         Result := TFpValueDwarf(TFpSymbolDwarfData.CreateValueSubClass('self', InfoEntry).Value);
-        FSelfParameter := Result;
-        FSelfParameter.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSelfParameter, 'FSelfParameter'){$ENDIF};
-        FSelfParameter.DbgSymbol.ReleaseReference;
-        //FSelfParameter.DbgSymbol.LocalProcInfo := Self;
+        Result.AddReference;
+        Result.FDataSymbol.ReleaseReference;
+        //Result.DbgSymbol.LocalProcInfo := Self;
         debugln(FPDBG_DWARF_SEARCH, ['TFpSymbolDwarfDataProc.GetSelfParameter ', InfoEntry.ScopeDebugText, DbgSName(Result)]);
       end;
     end;
