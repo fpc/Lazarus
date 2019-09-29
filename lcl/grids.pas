@@ -11761,11 +11761,19 @@ end;
 procedure TCustomStringGrid.InsertRowWithValues(Index: Integer;
   Values: array of String);
 var
-  i, OldRC: Integer;
+  i, OldRC, Diff: Integer;
 begin
   OldRC := RowCount;
-  if Length(Values) > ColCount then
-    ColCount := Length(Values);
+  Diff := Length(Values) - ColCount;
+  if Diff > 0 then
+  begin
+    if Columns.Enabled then
+    begin
+      for i := 1 to Diff do with Columns.Add do Title.Caption := '';
+    end
+    else
+      ColCount := Length(Values);
+  end;
   InsertColRow(false, Index);
   //if RowCount was 0, then setting ColCount restores RowCount (from FGridPropBackup)
   //which is unwanted here, so reset it (Issue #0026943)
