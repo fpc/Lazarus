@@ -922,10 +922,15 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       if svfOrdinal in m.FieldFlags then // set of byte
         s := IntToStr(m.AsCardinal)
       else
-        Continue; // Todo: missing member
+      begin
+        m.ReleaseReference;
+        continue;
+      end;
+
       if APrintedValue = ''
       then APrintedValue := s
       else APrintedValue := APrintedValue + ', ' + s;
+      m.ReleaseReference;
     end;
     APrintedValue := '[' + APrintedValue + ']';
 
@@ -1011,8 +1016,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         APrintedValue := '';
       for i := 0 to AValue.MemberCount-1 do begin
         MemberValue := AValue.Member[i];
-        if (MemberValue = nil) or (MemberValue.Kind in [skProcedure, skFunction]) then
+        if (MemberValue = nil) or (MemberValue.Kind in [skProcedure, skFunction]) then begin
+          MemberValue.ReleaseReference;
           continue;
+        end;
         s := '';
         // ppoStackParam: Do not expand nested structures // may need ppoSingleLine?
         InternalPrintValue(MbVal, MemberValue, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions+[ppoStackParam]);
@@ -1038,6 +1045,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
           f.DBGType.Value.AsString := MbVal;
           ADBGTypeInfo^.Fields.Add(f);
         end;
+        MemberValue.ReleaseReference;
       end;
       if not Result then
         APrintedValue := ResTypeName + ' (' + APrintedValue + ')';
@@ -1091,6 +1099,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         InternalPrintValue(s, MemberValue, AnAddressSize, AFlags * PV_FORWARD_FLAGS, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions)
       else
         s := '{error}';
+      MemberValue.ReleaseReference;
       if APrintedValue = ''
       then APrintedValue := s
       else APrintedValue := APrintedValue + ', ' + s;

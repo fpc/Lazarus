@@ -346,6 +346,7 @@ begin
         PrettyPrinter.PrintValue(v, m);
         FWatchEntryArray[i].TextValue := v;
         FWatchEntryArray[i].Expression := n;
+        m.ReleaseReference;
         end;
       end;
   finally

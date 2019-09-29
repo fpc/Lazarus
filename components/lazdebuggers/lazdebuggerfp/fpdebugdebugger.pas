@@ -685,6 +685,7 @@ begin
                 if params <> '' then params := params + ', ';
                 params := params + v;
               end;
+              m.ReleaseReference;
             end;
             if ProcVal is TFpValueDwarfBase then
               TFpValueDwarfBase(ProcVal).Context := nil;
@@ -812,6 +813,7 @@ begin
       else
         n := '';
       FPrettyPrinter.PrintValue(v, m);
+      m.ReleaseReference;
       ALocals.Add(n, v);
     end;
   end;

@@ -441,6 +441,7 @@ begin
         else
           n := '';
         FpDebugger.FPrettyPrinter.PrintValue(v, m);
+        m.ReleaseReference;
         ALocals.Add(n, v);
       end;
     end;

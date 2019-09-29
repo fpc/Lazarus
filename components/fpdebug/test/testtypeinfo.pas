@@ -1179,6 +1179,8 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
     ExpFlags(Result, [svfOrdinal, svfIdentifier], [svfCardinal, svfString, svfMembers, svfAddress, svfSize]);
     ExpResult(Result, svfIdentifier, AnIdent);
     ExpResult(Result, svfOrdinal, AnOrd);
+    Result.ReleaseReference;
+    Result := nil;
   end;
 
   procedure ExpSetVal(AMemberCount: Integer; AnAddr: TDbgPtr = 0; ASize: Integer = -1);
@@ -1210,6 +1212,7 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
       AssertTrue(FCurrentTestName + 'has member at pos '+IntToStr(i), m <> nil);
       AssertTrue(FCurrentTestName + 'member at pos fieldflag '+IntToStr(i), svfIdentifier in m.FieldFlags);
       AssertEquals(FCurrentTestName + 'member at pos value ident '+IntToStr(i), UpperCase(AnIdentList[i]), m.AsString);
+      m.ReleaseReference;
     end;
   end;
 
@@ -1223,6 +1226,7 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
       AssertTrue(FCurrentTestName + 'has member at pos (ord)'+IntToStr(i), m <> nil);
       AssertTrue(FCurrentTestName + 'member at pos fieldflag (ord)'+IntToStr(i), svfOrdinal in m.FieldFlags);
       AssertEqualsQW(FCurrentTestName + 'member at pos value ord'+IntToStr(i), AnIdentList[i], m.AsCardinal);
+      m.ReleaseReference;
     end;
   end;
 
@@ -1405,8 +1409,9 @@ begin
     TmpResVal := FExpression.ResultValue.Member[0];
     AssertEqualsQW(FCurrentTestName + 'TmpResVal', 5, TmpResVal.AsCardinal);
     TmpResVal.AddReference;
-    FExpression.ResultValue.Member[1];
+    FExpression.ResultValue.Member[1].ReleaseReference;
     AssertEqualsQW(FCurrentTestName + 'TmpResVal', 5, TmpResVal.AsCardinal);
+    TmpResVal.ReleaseReference;
     TmpResVal.ReleaseReference;
 
     ImgLoader.GlobalVar.VarSetB2 := [5..80];

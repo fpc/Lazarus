@@ -476,7 +476,6 @@ type
   private
     FValue: TFpValue;
     FTypeSymbol: TFpSymbol;
-    FLastMember: TFpValue;
   protected
     function DebugText(AIndent: String): String; override;
   protected
@@ -538,7 +537,6 @@ type
   private
     FValue: TFpValue;
     FTypeInfo: TFpSymbol;
-    FLastMember: TFpValue;
     function GetPointedToValue: TFpValue;
   protected
     function DebugText(AIndent: String): String; override;
@@ -672,7 +670,6 @@ begin
   end
   else
     Result := Tmp;
-  FLastMember := Result;
 end;
 
 constructor TFpPasParserValueCastToPointer.Create(AValue: TFpValue;
@@ -688,7 +685,6 @@ end;
 
 destructor TFpPasParserValueCastToPointer.Destroy;
 begin
-  FLastMember.ReleaseReference;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
   FTypeSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeSymbol, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
   inherited Destroy;
@@ -945,7 +941,6 @@ begin
   end
   else
     Result := Tmp;
-  FLastMember := Result;
 end;
 
 constructor TFpPasParserValueAddressOf.Create(AValue: TFpValue;
@@ -959,7 +954,6 @@ end;
 destructor TFpPasParserValueAddressOf.Destroy;
 begin
   inherited Destroy;
-  FLastMember.ReleaseReference;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserAddressOfSymbolValue'){$ENDIF};
   FTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'TPasParserAddressOfSymbolValue'){$ENDIF};
 end;
@@ -1084,7 +1078,6 @@ begin
             TmpVal.ReleaseReference;
             exit;
           end;
-          if TmpVal2 <> nil then TmpVal2.AddReference;
         end; // Kind = skArray
       skPointer: begin
           if (svfInteger in TmpIndex.FieldFlags) then
@@ -1113,7 +1106,6 @@ begin
           TmpVal2 := TmpVal.Member[Offs];
           if IsError(TmpVal.LastError) then
             SetError('Error dereferencing'); // TODO: set correct error
-          if TmpVal2 <> nil then TmpVal2.AddReference;
         end;
       skString, skAnsiString: begin
           //TODO: move to FpDwarfValue.member ??
@@ -1171,12 +1163,11 @@ begin
         end;
     end;
 
+    TmpVal.ReleaseReference;
     if TmpVal2 = nil then begin
       SetError('Internal Error, attempting to read array element');
-      TmpVal.ReleaseReference;
       exit;
     end;
-    TmpVal.ReleaseReference;
     TmpVal := TmpVal2;
   end;
 
@@ -2442,7 +2433,7 @@ begin
     then begin
       Result := tmp.Member[0];
       if Result <> nil then
-        Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+        {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 
     end;
   end
@@ -2562,6 +2553,7 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
       exit;
     end;
     Result := TFpPasParserValueAddressOf.Create(TmpVal, Expression.Context);
+    TmpVal.ReleaseReference;
   end;
   function AddValueToInt(AIntVal, AOtherVal: TFpValue): TFpValue;
   begin
@@ -2976,6 +2968,9 @@ end;
 function TFpPascalExpressionPartOperatorMemberOf.DoGetResultValue: TFpValue;
 var
   tmp: TFpValue;
+  {$IFDEF FpDebugAutoDerefMember}
+  tmp2: TFpValue;
+  {$ENDIF}
 begin
   Result := nil;
   if Count <> 2 then exit;
@@ -2985,11 +2980,14 @@ begin
 
   {$IFDEF FpDebugAutoDerefMember}
   // Copy from TFpPascalExpressionPartOperatorDeRef.DoGetResultValue
+  tmp2 := nil;
   if tmp.Kind = skPointer then begin
     if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DataAddress)) and // TODO, what if Not readable addr
        (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
-    then
+    then begin
       tmp := tmp.Member[0];
+      tmp2 := tmp;
+    end;
     if (tmp = nil) then begin
       SetError(fpErrCannotDereferenceType, [Items[0].GetText]); // TODO: better error
       exit;
@@ -3003,10 +3001,13 @@ begin
       SetError(fpErrNoMemberWithName, [Items[1].GetText]);
       exit;
     end;
-    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+    {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
     Assert((Result.DbgSymbol=nil)or(Result.DbgSymbol.SymbolType=stValue), 'member is value');
     exit;
   end;
+  {$IFDEF FpDebugAutoDerefMember}
+  tmp2.ReleaseReference;
+  {$ENDIF}
 
   // Todo unit
 

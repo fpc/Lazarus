@@ -787,6 +787,7 @@ begin
                 if result <> '' then result := result + ', ';
                 result := result + v;
               end;
+              m.ReleaseReference;
             end;
           finally
             APrettyPrinter.Free;

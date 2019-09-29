@@ -1164,13 +1164,12 @@ procedure TFpSymbol.SetTypeInfo(ASymbol: TFpSymbol);
 begin
   if FTypeInfo <> nil then begin
     //Assert((FTypeInfo.Reference = self) or (FTypeInfo.Reference = nil), 'FTypeInfo.Reference = self|nil');
-    {$IFDEF WITH_REFCOUNT_DEBUG}FTypeInfo.ReleaseReference(@FTypeInfo, 'SetTypeInfo'); FTypeInfo := nil;{$ENDIF}
-    ReleaseRefAndNil(FTypeInfo);
+    FTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, ClassName+'.SetTypeInfo');{$ENDIF}
   end;
   FTypeInfo := ASymbol;
   Include(FEvaluatedFields, sfiTypeInfo);
   if FTypeInfo <> nil then begin
-    FTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'SetTypeInfo'){$ENDIF};
+    FTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, ClassName+'.SetTypeInfo'){$ENDIF};
   end;
 end;
 

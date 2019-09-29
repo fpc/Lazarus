@@ -787,6 +787,7 @@ begin
   LenSym := TFpValueDwarf(GetInternMemberByName('length'));
   assert(LenSym is TFpValueDwarf, 'LenSym is TFpValueDwarf');
   len := LenSym.AsCardinal;
+  LenSym.ReleaseReference;
 
   if not GetSize(Size) then begin;
     SetLastError(CreateError(fpErrAnyError));
@@ -801,14 +802,15 @@ begin
   assert(StSym is TFpValueDwarf, 'StSym is TFpValueDwarf');
 
 
-
   SetLength(Result, len);
   if len > 0 then
     if not MemManager.ReadMemory(StSym.DataAddress, len, @Result[1]) then begin
       Result := ''; // TODO: error
       SetLastError(MemManager.LastError);
+      StSym.ReleaseReference;
       exit;
     end;
+  StSym.ReleaseReference;
 
   FValue := Result;
   FValueDone := True;
