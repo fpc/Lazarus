@@ -99,7 +99,19 @@ function TCustomTaskDialog.ButtonIDToModalResult(const AButtonID: Integer
   ): TModalResult;
 begin
   if AButtonID<100 then
-    Result := AButtonID
+    begin
+      case AButtonID of
+        IDOK: Result := mrOK;
+        IDCANCEL: Result := mrCancel;
+        IDABORT: Result := mrAbort;
+        IDRETRY: Result := mrRetry;
+        IDIGNORE: Result := mrIgnore;
+        IDYES: Result := mrYes;
+        IDNO: Result := mrNo;
+        IDCLOSE: Result := mrClose;
+        else Result := AButtonID
+      end;
+    end
   else if (AButtonID-100<Buttons.Count) then
     Result := Buttons[AButtonID-100].ModalResult
   else

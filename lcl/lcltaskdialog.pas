@@ -446,7 +446,7 @@ end;
 
 const
   TD_BTNMOD: array[TCommonButton] of Integer = (
-    mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
+    mrOk, mrYes, mrNo, mrCancel, mrRetry, mrClose);
 
 function TD_BTNS(button: TCommonButton): pointer;
 begin
