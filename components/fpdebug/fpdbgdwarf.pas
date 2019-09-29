@@ -169,10 +169,6 @@ type
     procedure SetStructureValue(AValue: TFpValueDwarf);
   protected
     function GetSizeFor(AnOtherValue: TFpValue; out ASize: QWord): Boolean; inline;
-
-    procedure DoReferenceAdded; override;
-    procedure DoReferenceReleased; override;
-    procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
     function AddressSize: Byte; inline;
 
     // Address of the symbol (not followed any type deref, or location)
@@ -453,10 +449,6 @@ type
     function GetNestedTypeInfo: TFpSymbolDwarfType;
     function GetTypeInfo: TFpSymbolDwarfType; inline;
   protected
-    (* There will be a circular reference between parenttype and self
-       "self" will only set its reference to parenttype, if self has other references.  *)
-    procedure DoReferenceAdded; override;
-    procedure DoReferenceReleased; override;
     procedure SetLocalProcInfo(AValue: TFpSymbolDwarf); virtual;
 
     function  DoGetNestedTypeInfo: TFpSymbolDwarfType; virtual;
@@ -1454,10 +1446,9 @@ begin
   if FStructureValue = AValue then
     exit;
 
-  if CircleBackRefsActive and (FStructureValue <> nil) then
-    FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
+  FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
   FStructureValue := AValue;
-  if CircleBackRefsActive and (FStructureValue <> nil) then
+  if FStructureValue <> nil then
     FStructureValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
 end;
 
@@ -1582,35 +1573,6 @@ begin
   Result := False;
 end;
 
-procedure TFpValueDwarf.DoReferenceAdded;
-begin
-  inherited DoReferenceAdded;
-  DoPlainReferenceAdded;
-end;
-
-procedure TFpValueDwarf.DoReferenceReleased;
-begin
-  inherited DoReferenceReleased;
-  DoPlainReferenceReleased;
-end;
-
-procedure TFpValueDwarf.CircleBackRefActiveChanged(NewActive: Boolean);
-begin
-  inherited CircleBackRefActiveChanged(NewActive);
-  //if NewActive then;
-  if CircleBackRefsActive then begin
-    if FDataSymbol <> nil then
-      FDataSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, ClassName+'.FDataSymbol'){$ENDIF};
-    if FStructureValue <> nil then
-      FStructureValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};  end
-  else begin
-    if FDataSymbol <> nil then
-      FDataSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, ClassName+'.FDataSymbol'){$ENDIF};
-    if FStructureValue <> nil then
-      FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
-  end;
-end;
-
 function TFpValueDwarf.GetKind: TDbgSymbolKind;
 begin
   Result := FTypeSymbol.Kind;
@@ -1699,9 +1661,8 @@ end;
 destructor TFpValueDwarf.Destroy;
 begin
   FTypeCastSourceValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeCastSourceValue, ClassName+'.FTypeCastSourceValue'){$ENDIF};
-  // do not call reset()
-  if CircleBackRefsActive and (FStructureValue <> nil) then
-    FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
+  FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
+  FDataSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, ClassName+'.FDataSymbol'){$ENDIF};
   inherited Destroy;
 end;
 
@@ -1710,10 +1671,9 @@ begin
   if FDataSymbol = AValueSymbol then
     exit;
 
-  if CircleBackRefsActive and (FDataSymbol <> nil) then
-    FDataSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, ClassName+'.FDataSymbol'){$ENDIF};
+  FDataSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, ClassName+'.FDataSymbol'){$ENDIF};
   FDataSymbol := AValueSymbol;
-  if CircleBackRefsActive and (FDataSymbol <> nil) then
+  if FDataSymbol <> nil then
     FDataSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, ClassName+'.FDataSymbol'){$ENDIF};
 end;
 
@@ -2802,18 +2762,6 @@ begin
     FLocalProcInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
 end;
 
-procedure TFpSymbolDwarf.DoReferenceAdded;
-begin
-  inherited DoReferenceAdded;
-  DoPlainReferenceAdded;
-end;
-
-procedure TFpSymbolDwarf.DoReferenceReleased;
-begin
-  inherited DoReferenceReleased;
-  DoPlainReferenceReleased;
-end;
-
 function TFpSymbolDwarf.DoGetNestedTypeInfo: TFpSymbolDwarfType;
 var
   FwdInfoPtr: Pointer;
@@ -3307,7 +3255,6 @@ destructor TFpSymbolDwarf.Destroy;
 begin
   inherited Destroy;
   FNestedTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FNestedTypeInfo, ClassName+'.FNestedTypeInfo'){$ENDIF};
-  Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is destructor');
   FLocalProcInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
 end;
 

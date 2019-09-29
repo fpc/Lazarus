@@ -36,31 +36,6 @@ uses
   LazLoggerBase, LazClasses;
 
 type
-  { TFpDbgCircularRefCountedObject }
-
-  TFpDbgCircularRefCountedObject = class(TRefCountedObject)
-  private
-    FCircleRefCount: Integer;
-  protected
-    (* InOrder to activate, and use an interited class must override
-       DoReferenceAdded; and DoReferenceReleased;
-       And Point then to
-       DoPlainReferenceAdded; and DoPlainReferenceReleased;
-    *)
-    procedure DoPlainReferenceAdded; inline;
-    procedure DoPlainReferenceReleased; inline;
-
-    // Receive the *strong* reference (always set)
-    // The circle back ref will only be set, if this is also referenced by others
-    procedure AddCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
-    procedure ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
-
-    procedure MakePlainRefToCirclular;
-    procedure MakeCirclularRefToPlain;
-
-    function  CircleBackRefsActive: Boolean; inline;
-    procedure CircleBackRefActiveChanged({%H-}NewActive: Boolean); virtual;
-  end;
 
   TDbgSymbolType = (
     stNone,
@@ -117,7 +92,7 @@ type
 
   { TFpValue }
 
-  TFpValue = class(TFpDbgCircularRefCountedObject)
+  TFpValue = class(TRefCountedObject)
   private
     FEvalFlags: set of (efSizeDone, efSizeUnavail);
     FLastError: TFpError;
@@ -326,7 +301,7 @@ type
 
   { TFpSymbol }
 
-  TFpSymbol = class(TFpDbgCircularRefCountedObject)
+  TFpSymbol = class(TRefCountedObject)
   private
     FEvaluatedFields: TFpSymbolFields;
     FLastError: TFpError;
@@ -566,79 +541,6 @@ begin
   inherited Create;
   FValue := AValue;
 end;
-
-{ TFpDbgCircularRefCountedObject }
-
-procedure TFpDbgCircularRefCountedObject.DoPlainReferenceAdded;
-begin
-  if (RefCount = FCircleRefCount + 1) then
-    CircleBackRefActiveChanged(True);
-end;
-
-procedure TFpDbgCircularRefCountedObject.DoPlainReferenceReleased;
-begin
-  if (RefCount = FCircleRefCount) then
-    CircleBackRefActiveChanged(False);
-end;
-
-procedure TFpDbgCircularRefCountedObject.AddCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
-begin
-  if CircleBackRefsActive then begin
-    AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
-    inc(FCircleRefCount);
-  end
-  else begin
-    inc(FCircleRefCount);
-    AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
-  end;
-end;
-
-procedure TFpDbgCircularRefCountedObject.ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
-var
-  i: Integer;
-begin
-  if self = nil then
-    exit;
-  Assert(FCircleRefCount > 0, 'ReleaseCirclularReference > 0');
-  if CircleBackRefsActive then begin
-    dec(FCircleRefCount);
-    ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
-  end
-  else begin
-    i := RefCount;
-    ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
-    if i > 1 then // if i was 1, then self is destroyed
-      dec(FCircleRefCount);
-  end;
-end;
-
-procedure TFpDbgCircularRefCountedObject.MakePlainRefToCirclular;
-begin
-  Assert(FCircleRefCount < RefCount, 'MakePlainRefToCirclular < max');
-  inc(FCircleRefCount);
-  if (RefCount = FCircleRefCount) then
-    CircleBackRefActiveChanged(False);
-end;
-
-procedure TFpDbgCircularRefCountedObject.MakeCirclularRefToPlain;
-begin
-  Assert(FCircleRefCount > 0, 'MakeCirclularRefToPlain > 0');
-  dec(FCircleRefCount);
-  if (RefCount = FCircleRefCount + 1) then
-    CircleBackRefActiveChanged(True);
-end;
-
-function TFpDbgCircularRefCountedObject.CircleBackRefsActive: Boolean;
-begin
-  Result := (RefCount > FCircleRefCount);
-end;
-
-procedure TFpDbgCircularRefCountedObject.CircleBackRefActiveChanged(NewActive: Boolean);
-begin
-  //
-end;
-
-{ TFpDbgCircularRefCntObjList }
 
 { TDbgSymbolValue }
 
