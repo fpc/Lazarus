@@ -452,11 +452,13 @@ begin
   if not (svfOrdinal in ParentFpVal.FieldFlags) then begin
     DebugLn('no ordinal for parentfp');
     ParentFpSym.ReleaseReference;
+    ParentFpVal.ReleaseReference;
     FOuterNotFound := True;
     exit;
   end;
 
   par_fp := ParentFpVal.AsCardinal;
+  ParentFpVal.ReleaseReference;
   ParentFpSym.ReleaseReference;
     DebugLn(['par_fp=',par_fp]);
   if par_fp = 0 then begin
@@ -880,6 +882,7 @@ begin
           TFpValueDwarf(val).Context := Context;
           //l := t2.OrdLowBound;
           h := Val.AsInteger;
+          val.ReleaseReference;
           if h > l then begin
           {$PUSH}{$Q-}
             if QWord(h - l) > 5000 then

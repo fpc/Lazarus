@@ -62,13 +62,6 @@ type
     procedure CircleBackRefActiveChanged({%H-}NewActive: Boolean); virtual;
   end;
 
-  { TFpDbgCircularRefCntObjList }
-
-  TFpDbgCircularRefCntObjList = class(TRefCntObjList)
-  protected
-    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
-  end;
-
   TDbgSymbolType = (
     stNone,
     stValue,  // The symbol has a value (var, field, function, procedure (value is address of func/proc, so it can be called)
@@ -646,16 +639,6 @@ begin
 end;
 
 { TFpDbgCircularRefCntObjList }
-
-procedure TFpDbgCircularRefCntObjList.Notify(Ptr: Pointer; Action: TListNotification);
-begin
-  // Do NOT call inherited
-  case Action of
-    lnAdded:   TFpDbgCircularRefCountedObject(Ptr).AddCirclularReference;
-    lnExtracted,
-    lnDeleted: TFpDbgCircularRefCountedObject(Ptr).ReleaseCirclularReference;
-  end;
-end;
 
 { TDbgSymbolValue }
 

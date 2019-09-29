@@ -204,7 +204,7 @@ type
     destructor Destroy; override;
     property TypeInfo: TFpSymbolDwarfType read FTypeSymbol;
     function MemManager: TFpDbgMemManager; inline;
-    procedure SetValueSymbol(AValueSymbol: TFpSymbolDwarfData);
+    procedure SetDataSymbol(AValueSymbol: TFpSymbolDwarfData);
     function  SetTypeCastInfo(ASource: TFpValue): Boolean; // Used for Typecast
     // StructureValue: Any Value returned via GetMember points to its structure
     property StructureValue: TFpValueDwarf read FStructureValue write SetStructureValue;
@@ -522,8 +522,6 @@ type
 
   TFpSymbolDwarfData = class(TFpSymbolDwarf) // var, const, member, ...
   protected
-    FValueObject: TFpValueDwarf;
-
     function GetValueAddress({%H-}AValueObj: TFpValueDwarf;{%H-} out AnAddress: TFpDbgMemLocation): Boolean; virtual;
     procedure KindNeeded; override;
     procedure MemberVisibilityNeeded; override;
@@ -534,7 +532,6 @@ type
 
     procedure Init; override;
   public
-    destructor Destroy; override;
     class function CreateValueSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfData;
   end;
 
@@ -1124,8 +1121,6 @@ begin
 
   if ASym.SymbolType = stValue then begin
     Result := ASym.Value;
-    if Result <> nil then
-      Result.AddReference;
   end
   else begin
     Result := TFpValueDwarfTypeDefinition.Create(ASym);
@@ -1712,7 +1707,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TFpValueDwarf.SetValueSymbol(AValueSymbol: TFpSymbolDwarfData);
+procedure TFpValueDwarf.SetDataSymbol(AValueSymbol: TFpSymbolDwarfData);
 begin
   if FDataSymbol = AValueSymbol then
     exit;
@@ -3015,6 +3010,7 @@ begin
         assert(ValObj is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
         TFpValueDwarfBase(ValObj).Context := AValueObj.Context;
         AValue := ValObj.AsInteger;
+        ValObj.ReleaseReference;
         Result := not IsError(RefSymbol.LastError);
         // TODO: copy the error
         if ADataSymbol <> nil then
@@ -3244,7 +3240,6 @@ begin
   if sym <> nil then begin
     assert(sym is TFpSymbolDwarfData, 'TFpSymbolDwarf.GetNestedValue: sym is TFpSymbolDwarfData');
     Result := TFpValueDwarf(sym.Value);
-    Result.AddReference;
     Result.FParentTypeSymbol := OuterSym;
   end
   else
@@ -3260,7 +3255,6 @@ begin
   if sym <> nil then begin
     assert(sym is TFpSymbolDwarfData, 'TFpSymbolDwarf.GetNestedValueByName: sym is TFpSymbolDwarfData');
     Result := TFpValueDwarf(sym.Value);
-    Result.AddReference;
     Result.FParentTypeSymbol := OuterSym;
   end
   else
@@ -3402,18 +3396,6 @@ begin
   SetSymbolType(stValue);
 end;
 
-destructor TFpSymbolDwarfData.Destroy;
-begin
-  Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is ddestructor');
-
-  if FValueObject <> nil then begin
-    FValueObject.SetValueSymbol(nil);
-    FValueObject.ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueObject, ClassName+'.FValueObject'){$ENDIF};
-    FValueObject := nil;
-  end;
-  inherited Destroy;
-end;
-
 class function TFpSymbolDwarfData.CreateValueSubClass(AName: String;
   AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfData;
 var
@@ -3466,20 +3448,13 @@ function TFpSymbolDwarfDataWithLocation.GetValueObject: TFpValue;
 var
   ti: TFpSymbol;
 begin
-  Result := FValueObject;
-  if Result <> nil then exit;
-
+  Result := nil;
   ti := TypeInfo;
   if (ti = nil) or not (ti.SymbolType = stType) then exit;
 
-  FValueObject := TFpSymbolDwarfType(ti).GetTypedValueObject(False);
-  if FValueObject <> nil then begin
-    {$IFDEF WITH_REFCOUNT_DEBUG}FValueObject.DbgRenameReference(@FValueObject, ClassName+'.FValueObject');{$ENDIF}
-    FValueObject.MakePlainRefToCirclular;
-    FValueObject.SetValueSymbol(self);
-  end;
-
-  Result := FValueObject;
+  Result := TFpSymbolDwarfType(ti).GetTypedValueObject(False);
+  if Result <> nil then
+    TFpValueDwarf(Result).SetDataSymbol(self);
 end;
 
 { TFpSymbolDwarfType }
@@ -4136,15 +4111,8 @@ end;
 
 function TFpSymbolDwarfDataEnumMember.GetValueObject: TFpValue;
 begin
-  Result := FValueObject;
-  if Result <> nil then exit;
-
-  FValueObject := TFpValueDwarfEnumMember.Create(Self);
-  {$IFDEF WITH_REFCOUNT_DEBUG}FValueObject.DbgRenameReference(@FValueObject, ClassName+'.FValueObject');{$ENDIF}
-  FValueObject.MakePlainRefToCirclular;
-  FValueObject.SetValueSymbol(self);
-
-  Result := FValueObject;
+  Result := TFpValueDwarfEnumMember.Create(Self);
+  TFpValueDwarf(Result).SetDataSymbol(self);
 end;
 
 { TFpSymbolDwarfTypeEnum }
@@ -4305,14 +4273,14 @@ begin
 
   if (AValueObj = nil) or (AValueObj.StructureValue = nil) or (AValueObj.FParentTypeSymbol = nil)
   then begin
-    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(LastError)]);
     Result := False;
     if not IsError(LastError) then
       SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
     exit;
   end;
   if not AValueObj.GetStructureDwarfDataAddress(AnAddress, AValueObj.FParentTypeSymbol) then begin
-    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(LastError)]);
     Result := False;
     if not IsError(LastError) then
       SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
@@ -4801,16 +4769,9 @@ end;
 
 function TFpSymbolDwarfDataProc.GetValueObject: TFpValue;
 begin
-  Result := FValueObject;
-  if Result <> nil then exit;
-
   assert(TypeInfo is TFpSymbolDwarfType, 'TFpSymbolDwarfDataProc.GetValueObject: TypeInfo is TFpSymbolDwarfType');
-  FValueObject := TFpValueDwarfSubroutine.Create(TFpSymbolDwarfType(TypeInfo)); // TODO: GetTypedValueObject;
-  {$IFDEF WITH_REFCOUNT_DEBUG}FValueObject.DbgRenameReference(@FValueObject, ClassName+'.FValueObject');{$ENDIF}
-  FValueObject.MakePlainRefToCirclular;
-  FValueObject.SetValueSymbol(self);
-
-  Result := FValueObject;
+  Result := TFpValueDwarfSubroutine.Create(TFpSymbolDwarfType(TypeInfo)); // TODO: GetTypedValueObject;
+  TFpValueDwarf(Result).SetDataSymbol(self);
 end;
 
 function TFpSymbolDwarfDataProc.GetValueAddress(AValueObj: TFpValueDwarf; out
@@ -5048,7 +5009,6 @@ begin
          InfoEntry.IsArtificial
       then begin
         Result := TFpValueDwarf(TFpSymbolDwarfData.CreateValueSubClass('self', InfoEntry).Value);
-        Result.AddReference;
         Result.FDataSymbol.ReleaseReference;
         Result.FDataSymbol.LocalProcInfo := Self;
         debugln(FPDBG_DWARF_SEARCH, ['TFpSymbolDwarfDataProc.GetSelfParameter ', InfoEntry.ScopeDebugText, DbgSName(Result)]);

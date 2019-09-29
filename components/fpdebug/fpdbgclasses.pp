@@ -796,6 +796,7 @@ begin
           AContext.ReleaseReference;
         end;
       end;
+      ProcVal.ReleaseReference;
     end;
     if result <> '' then
       result := '(' + result + ')';

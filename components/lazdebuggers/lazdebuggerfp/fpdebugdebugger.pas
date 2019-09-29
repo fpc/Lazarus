@@ -692,6 +692,7 @@ begin
             AContext.ReleaseReference;
           end;
         end;
+        ProcVal.ReleaseReference;
       end;
       if params <> '' then
         params := '(' + params + ')';
