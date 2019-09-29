@@ -214,8 +214,10 @@ type
     ): boolean of object;
 
   TSaveEditorFileStep = (
-    sefsBeforeWrite,
-    sefsAfterWrite
+    sefsSaveAs, // called after user selected a new filename and IDE did some sanity checks
+    sefsBeforeWrite, // called before writing to disk, aFile.Filename=TargetFilename
+    sefsAfterWrite, // called after writing to disk, aFile.Filename=TargetFilename
+    sefsSavedAs // called after writing and cleaning up, TargetFilename is old filename
     );
   TSaveEditorFileEvent = function(Sender: TObject; aFile: TLazProjectFile;
     SaveStep: TSaveEditorFileStep; TargetFilename: string): TModalResult of object;
@@ -230,6 +232,7 @@ type
     lihtSavingAll, // called before IDE saves everything
     lihtSavedAll,  // called after IDE saved everything
     lihtSaveEditorFile, // called when IDE saves an editor file to disk
+    lihtSaveAsEditorFile, // called after user selected a new filename for an editor file
     lihtIDERestoreWindows, // called when IDE is restoring the windows (before opening the first project)
     lihtIDEClose, // called when IDE is shutting down (after closequery, so no more interactivity)
     lihtProjectOpened,// called after IDE opened a project

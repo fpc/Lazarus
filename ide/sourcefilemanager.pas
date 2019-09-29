@@ -4705,7 +4705,7 @@ begin
 
   // check overwrite existing file
   if ((not FilenameIsAbsolute(AFilename)) or (CompareFilenames(NewFilename,AFilename)<>0))
-  and FileExistsUTF8(NewFilename) then
+      and FileExistsUTF8(NewFilename) then
   begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewFilename, LineEnding]);
@@ -4714,6 +4714,17 @@ begin
                                  mrCancel,
                                  mrAbort, lisAbort], not CanAbort);
     if Result=mrCancel then exit;
+  end;
+
+  // check overwrite directory
+  if DirectoryExistsUTF8(NewFilename) then
+  begin
+    Result:=IDEQuestionDialogAb(lisFileIsDirectory,
+        lisUnableToCreateNewFileBecauseThereIsAlreadyADirecto,
+        mtError,
+        [mrCancel,
+         mrAbort, lisAbort], not CanAbort);
+    exit;
   end;
 
   if AnUnitInfo<>nil then begin
@@ -5283,9 +5294,14 @@ var
   OldFileExisted: Boolean;
   ConvTool: TConvDelphiCodeTool;
 begin
-  // Project is marked as changed already here. ToDo: Mark changed only if really renamed.
+  // Project is marked as changed already here.
   Project1.BeginUpdate(true);
   try
+    // notify IDE addons
+    Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,AnUnitInfo,
+                                                       sefsSaveAs,NewFilename);
+    if Result<>mrOk then exit;
+
     OldFilename:=AnUnitInfo.Filename;
     OldFilePath:=ExtractFilePath(OldFilename);
     OldLFMFilename:='';
@@ -5297,7 +5313,7 @@ begin
     end;
     if NewUnitName='' then
       NewUnitName:=AnUnitInfo.Unit_Name;
-    debugln(['RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
+    debugln(['Hint: (lazarus) RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
 
     // check new resource file
     NewLFMFilename:='';
@@ -5430,7 +5446,7 @@ begin
       Project1.Modified:=true
     else
       Project1.SessionModified:=true;
-     AnUnitInfo.ClearModifieds;
+    AnUnitInfo.ClearModifieds;
     for i := 0 to AnUnitInfo.EditorInfoCount -1 do
       if AnUnitInfo.EditorInfo[i].EditorComponent <> nil then
         TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent).CodeBuffer := NewSource;
@@ -5613,6 +5629,10 @@ begin
       end;
     end;
 
+    // notify IDE addons
+    Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,AnUnitInfo,
+                                                       sefsSavedAs,OldFilename);
+    if Result<>mrOk then exit;
   finally
     Project1.EndUpdate;
   end;
