@@ -217,7 +217,7 @@ type
     sefsSaveAs, // called after user selected a new filename and IDE did some sanity checks
     sefsBeforeWrite, // called before writing to disk, aFile.Filename=TargetFilename
     sefsAfterWrite, // called after writing to disk, aFile.Filename=TargetFilename
-    sefsSavedAs // called after writing and cleaning up, TargetFilename is old filename
+    sefsSavedAs // see sefsSaveAs, called after writing and cleaning up, TargetFilename is old filename
     );
   TSaveEditorFileEvent = function(Sender: TObject; aFile: TLazProjectFile;
     SaveStep: TSaveEditorFileStep; TargetFilename: string): TModalResult of object;
