@@ -4,8 +4,10 @@ unit EMSSelfTest;
 
 interface
 
+{$IFDEF PasMacroNativeCalls}
 {$IFDEF darwin}
   {$DEFINE NeedTPointFix }
+{$ENDIF}
 {$ENDIF}
 
 uses

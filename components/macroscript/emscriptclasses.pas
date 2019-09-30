@@ -7,8 +7,10 @@ unit EMScriptClasses;
 {$WARN 4055 off : Conversion between ordinals and pointers is not portable} // PtrInt is ok
 interface
 
+{$IFDEF PasMacroNativeCalls}
 {$IFDEF darwin}
   {$DEFINE NeedTPointFix }
+{$ENDIF}
 {$ENDIF}
 
 uses
