@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2019-09-19 21:42+0200\n"
+"PO-Revision-Date: 2019-09-30 11:47+0200\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 2.2.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "Language: sk\n"
 
@@ -1051,11 +1051,9 @@ msgid "Create Makefile"
 msgstr "Vytvoriť Makefile"
 
 #: lazarusidestrconsts.dlgcodebugging
-#, fuzzy
-#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
 msgid "Debugging"
-msgstr "Ladenie:"
+msgstr "Ladenie"
 
 #: lazarusidestrconsts.dlgcodebugpath
 msgid "Debugger path addition (none):"
@@ -1237,8 +1235,6 @@ msgid "Config and Target"
 msgstr ""
 
 #: lazarusidestrconsts.dlgconfigfiles
-#, fuzzy
-#| msgid "Config Files:"
 msgid "Config files"
 msgstr "Konfiguračné súbory"
 
@@ -1276,8 +1272,6 @@ msgid "Set compiler options as default"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcoshowerr
-#, fuzzy
-#| msgid "Show Errors"
 msgid "Show errors"
 msgstr "Zobraziť chyby"
 
@@ -1289,9 +1283,8 @@ msgstr "Zobraziť voľby"
 
 #: lazarusidestrconsts.dlgcosmartlinkable
 #, fuzzy
-#| msgid "Smart Linkable"
 msgid "Smart linkable"
-msgstr "Smart linkvteľné"
+msgstr "Smart linkovateľné"
 
 #: lazarusidestrconsts.dlgcosources
 #, fuzzy
@@ -1304,8 +1297,6 @@ msgid "Stack"
 msgstr "Zásobník"
 
 #: lazarusidestrconsts.dlgcostrip
-#, fuzzy
-#| msgid "Strip Symbols From Executable"
 msgid "Strip symbols from executable"
 msgstr "Odstrániť symboly zo spustiteľného súboru"
 
@@ -1339,10 +1330,8 @@ msgid "Trash variables"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcounitstyle
-#, fuzzy
-#| msgid "Unit Style"
 msgid "Unit style"
-msgstr "Štýl jednotky:"
+msgstr "Štýl jednotky"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1353,8 +1342,6 @@ msgid "Verbosity"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcppinline
-#, fuzzy
-#| msgid "C++ Styled INLINE"
 msgid "C++ styled INLINE"
 msgstr "INLINE v štýle C++"
 
@@ -1422,7 +1409,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
-msgstr "Zmazať šablónu"
+msgstr "Zmazať šablónu "
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -3184,16 +3171,12 @@ msgid "Source notebook tabs position"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
-#, fuzzy
-#| msgid "Do not split line after:"
 msgid "Do not split line after"
-msgstr "Nerozdeľovať riadok za:"
+msgstr "Nerozdeľovať riadok za"
 
 #: lazarusidestrconsts.dlgnotsplitlinefront
-#, fuzzy
-#| msgid "Do not split line In front of:"
 msgid "Do not split line in front of"
-msgstr "Nerozdeľovať riadok pred:"
+msgstr "Nerozdeľovať riadok pred"
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -3689,8 +3672,6 @@ msgid "Select all child controls together with their parent."
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
-#, fuzzy
-#| msgid "&Selected Text"
 msgid "&Selected text"
 msgstr "&Vybratý text"
 
@@ -3950,10 +3931,8 @@ msgid "Target OS"
 msgstr "Cieľový OS"
 
 #: lazarusidestrconsts.dlgtargetplatform
-#, fuzzy
-#| msgid "Target Platform"
 msgid "Target platform"
-msgstr "Cieľová platforma:"
+msgstr "Cieľová platforma"
 
 #: lazarusidestrconsts.dlgtargetproc
 msgid "Target processor"
@@ -4418,10 +4397,9 @@ msgid "Invalid Unit Name"
 msgstr "Neplatné meno jednotky"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-#, fuzzy,badformat
-#| msgid "%s%s%s is not a valid unit name."
+#, object-pascal-format
 msgid "\"%s\" is not a valid unit name."
-msgstr "%s%s%s nie je platné meno jednotky."
+msgstr "\"%s\" nie je platné meno jednotky."
 
 #: lazarusidestrconsts.lisa2pnewclassname
 msgid "New class name:"
@@ -4443,7 +4421,7 @@ msgstr "Balíček/Projekt"
 
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
-msgstr "Meno balíčka veľmi dlhé"
+msgstr "Meno strany je veľmi dlhé"
 
 #: lazarusidestrconsts.lisa2ppalettepage
 #, fuzzy
@@ -5577,7 +5555,7 @@ msgstr "Chyba"
 
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
-msgstr "CHYBA:"
+msgstr "CHYBA: "
 
 #: lazarusidestrconsts.lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
@@ -5589,7 +5567,7 @@ msgstr "symboly nového riadka"
 
 #: lazarusidestrconsts.lisccohintmsg
 msgid "HINT: "
-msgstr "RADA:"
+msgstr "RADA: "
 
 #: lazarusidestrconsts.lisccoinvalidcompiler
 msgid "Invalid compiler"
@@ -5672,7 +5650,7 @@ msgstr "Upozorňovanie"
 
 #: lazarusidestrconsts.lisccowarningmsg
 msgid "WARNING: "
-msgstr "UPOZORNENIE:"
+msgstr "UPOZORNENIE: "
 
 #: lazarusidestrconsts.lisccowrongpathdelimiter
 msgid "wrong path delimiter"
@@ -9400,7 +9378,7 @@ msgstr "Voľba na pozícii %d vyžaduje argument: %s"
 
 #: lazarusidestrconsts.liserror
 msgid "Error: "
-msgstr "Chyba:"
+msgstr "Chyba: "
 
 #: lazarusidestrconsts.liserrorcreatingfile
 msgid "Error creating file"
@@ -9790,7 +9768,7 @@ msgstr "Súbor"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr "Súbor:"
+msgstr "Súbor: "
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, fuzzy,badformat
@@ -9919,10 +9897,8 @@ msgid "File not text"
 msgstr "Súbor nie je textový"
 
 #: lazarusidestrconsts.lisfilesettings
-#, fuzzy
-#| msgid "File Settings ..."
 msgid "File Settings"
-msgstr "Nastavenia súboru ..."
+msgstr "Nastavenia súboru"
 
 #: lazarusidestrconsts.lisfileshasincorrectsyntax
 msgid "File %s has incorrect syntax."
@@ -10146,7 +10122,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
-msgstr "Verzia FPC:"
+msgstr "Verzia FPC: "
 
 #: lazarusidestrconsts.lisfpcversioneg222
 msgid "FPC Version (e.g. 2.2.2)"
@@ -10984,7 +10960,7 @@ msgstr "Inštalácia zlyhala"
 
 #: lazarusidestrconsts.lisinstalled
 msgid "installed"
-msgstr ""
+msgstr "nainštalovaný"
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -11003,7 +10979,7 @@ msgstr "Nainštalovať výber"
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall Packages"
-msgstr ""
+msgstr "Nainštalovať/Odinštalovať balíčky"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compile package create a simple Makefile."
@@ -11152,7 +11128,7 @@ msgstr "Zobraziť Históriu skokov ..."
 
 #: lazarusidestrconsts.lisjumptoerror
 msgid "Jump to error"
-msgstr ""
+msgstr "Skoč na chybu"
 
 #: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
 msgid "When an error in the sources is found at identifier completion, jump to it."
@@ -11160,7 +11136,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
-msgstr ""
+msgstr "Skoč na procedúru %s"
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -11784,10 +11760,8 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Prepnúť zobrazenie tlačítiek IDE"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-#, fuzzy
-#| msgid "Toggle view Local Variables"
 msgid "View Local Variables"
-msgstr "prepnúť zobrazenie Lokálne premenné"
+msgstr "Zobraziť lokálne premenné"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -12557,11 +12531,11 @@ msgstr "Konfigurovať voliteľné komponenty ..."
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
 msgid "Configure External Tools ..."
-msgstr "Konfigurovať externé nástroje..."
+msgstr "Konfigurovať externé nástroje ..."
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
-msgstr "Konfigurovať Vybudovanie Lazarus"
+msgstr "Konfigurovať \"Vybudovanie Lazarus\" ..."
 
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
@@ -12622,10 +12596,8 @@ msgid "Edit context sensitive Help"
 msgstr "Upraviť kontextovo závislú pomoc"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-#, fuzzy
-#| msgid "Install/Uninstall packages ..."
 msgid "Install/Uninstall Packages ..."
-msgstr "Konfigurovať inštalované balíčky ..."
+msgstr "Inštalovať/Odinštalovať balíčky ..."
 
 #: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
 msgid "Accelerator(&&) key \"%s\" needs changing"
@@ -13282,10 +13254,8 @@ msgid "Incremental Find"
 msgstr "Narastajúce hľadanie"
 
 #: lazarusidestrconsts.lismenuindentselection
-#, fuzzy
-#| msgid "Indent selection"
 msgid "Indent Selection"
-msgstr "Zväčšiť odsadenie"
+msgstr "Zväčšiť odsadenie výberu"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
 #, fuzzy
@@ -13294,10 +13264,8 @@ msgid "ChangeLog Entry"
 msgstr "Položka ChangeLog"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-#, fuzzy
-#| msgid "Insert from Character Map"
 msgid "Insert from Character Map ..."
-msgstr "Vložiť z mapy znakov"
+msgstr "Vložiť z mapy znakov ..."
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
 #, fuzzy
@@ -13400,26 +13368,18 @@ msgid "Jump to Interface uses"
 msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
-#, fuzzy
-#| msgid "Jump to next bookmark"
 msgid "Jump to Next Bookmark"
 msgstr "Skoč na ďalšiu záložku"
 
 #: lazarusidestrconsts.lismenujumptonexterror
-#, fuzzy
-#| msgid "Jump to next error"
 msgid "Jump to Next Error"
 msgstr "Skoč na ďalšiu chybu"
 
 #: lazarusidestrconsts.lismenujumptoprevbookmark
-#, fuzzy
-#| msgid "Jump to previous bookmark"
 msgid "Jump to Previous Bookmark"
 msgstr "Skoč na predchádzajúcu záložku"
 
 #: lazarusidestrconsts.lismenujumptopreverror
-#, fuzzy
-#| msgid "Jump to previous error"
 msgid "Jump to Previous Error"
 msgstr "Skoč na predchádzajúcu chybu"
 
@@ -13531,16 +13491,16 @@ msgstr "Otvoriť projekt ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 msgid "Open &Recent"
-msgstr "Otvoriť &posledné ..."
+msgstr "Otvoriť &posledné"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
 msgid "Open Recent Package"
-msgstr "Otvoriť nedávny balíček ..."
+msgstr "Otvoriť nedávny balíček"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
 msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
-msgstr "Otvoriť nedávny projekt ..."
+msgstr "Otvoriť nedávny projekt"
 
 #: lazarusidestrconsts.lismenuopenunit
 msgid "Open Unit ..."
@@ -13552,7 +13512,7 @@ msgstr "&Balíček"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph"
-msgstr "Graf balíčkov ..."
+msgstr "Graf balíčkov"
 
 #: lazarusidestrconsts.lismenupackagelinks
 #, fuzzy
@@ -13618,7 +13578,7 @@ msgstr "Premenovať identifikátor ..."
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
-msgstr "Hlásenie chyby ..."
+msgstr "Hlásenie chyby"
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
 msgid "Resave forms with enabled i18n"
@@ -13647,7 +13607,7 @@ msgstr "Spustiť súbor"
 
 #: lazarusidestrconsts.lismenurunparameters
 msgid "Run &Parameters ..."
-msgstr "Parametre spustenia"
+msgstr "&Parametre spustenia ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
@@ -13685,39 +13645,27 @@ msgid "Select"
 msgstr "Vybrať"
 
 #: lazarusidestrconsts.lismenuselectall
-#, fuzzy
-#| msgid "Select all"
 msgctxt "lazarusidestrconsts.lismenuselectall"
 msgid "Select All"
 msgstr "Vybrať všetko"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
-#, fuzzy
-#| msgid "Select code block"
 msgid "Select Code Block"
 msgstr "Vybrať blok kódu"
 
 #: lazarusidestrconsts.lismenuselectline
-#, fuzzy
-#| msgid "Select line"
 msgid "Select Line"
 msgstr "Vybrať riadok"
 
 #: lazarusidestrconsts.lismenuselectparagraph
-#, fuzzy
-#| msgid "Select paragraph"
 msgid "Select Paragraph"
 msgstr "Vybrať odsek"
 
 #: lazarusidestrconsts.lismenuselecttobrace
-#, fuzzy
-#| msgid "Select to brace"
 msgid "Select to Brace"
 msgstr "Vybrať po zátvorku"
 
 #: lazarusidestrconsts.lismenuselectword
-#, fuzzy
-#| msgid "Select word"
 msgid "Select Word"
 msgstr "Vybrať slovo"
 
@@ -13799,7 +13747,7 @@ msgstr "Tabulátory výberu na medzery"
 #: lazarusidestrconsts.lismenutemplateabout
 msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
-msgstr "O ..."
+msgstr "O"
 
 #: lazarusidestrconsts.lismenutogglecomment
 msgid "Toggle Comment in Selection"
@@ -13816,8 +13764,6 @@ msgid "Uncomment Selection"
 msgstr "Odkomentovať výber"
 
 #: lazarusidestrconsts.lismenuunindentselection
-#, fuzzy
-#| msgid "Unindent selection"
 msgid "Unindent Selection"
 msgstr "Zmenšiť odsadenie výberu"
 
@@ -13897,11 +13843,9 @@ msgid "History"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#, fuzzy
-#| msgid "Jump History ..."
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
-msgstr "Zobraziť Históriu skokov ..."
+msgstr "História skokov"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
 msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
@@ -13966,10 +13910,8 @@ msgid "Unit Dependencies"
 msgstr "Zobraziť závislosti jednotky"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#, fuzzy
-#| msgid "Unit Information"
 msgid "Unit Information ..."
-msgstr "Zobraziť info o jednotke"
+msgstr "Zobraziť informácie o jednotke ..."
 
 #: lazarusidestrconsts.lismenuviewunits
 msgid "Units ..."
@@ -14325,10 +14267,8 @@ msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-#, fuzzy
-#| msgid "Move Page ..."
 msgid "Move Page"
-msgstr "Presunúť stranu ..."
+msgstr "Presunúť stranu"
 
 #: lazarusidestrconsts.lismoveselecteddown
 msgid "Move selected item down (Ctrl+Down)"
@@ -14459,10 +14399,8 @@ msgid "Create a new unit with a datamodule."
 msgstr "Vytvoriť novú jednotku s dátovým modulom."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-#, fuzzy
-#| msgid "Create a new unit with a frame"
 msgid "Create a new unit with a frame."
-msgstr "Vytvoriť novú jednotku s rámcom"
+msgstr "Vytvoriť novú jednotku s rámcom."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
@@ -14748,7 +14686,7 @@ msgstr "automaticky inštalovaný staticky"
 
 #: lazarusidestrconsts.lisoipdescription
 msgid "Description:  "
-msgstr "Popis:"
+msgstr "Popis:  "
 
 #: lazarusidestrconsts.lisoipdescriptiondescription
 msgid "%sDescription:  %s"
@@ -15326,7 +15264,7 @@ msgstr "Neplatná minimálna verzia"
 
 #: lazarusidestrconsts.lispckeditmaximumversion
 msgid "Maximum Version:"
-msgstr "Maximálna verzia"
+msgstr "Maximálna verzia:"
 
 #: lazarusidestrconsts.lispckeditminimumversion
 msgid "Minimum Version:"
@@ -15501,7 +15439,7 @@ msgstr "Odinštalovať pri ďalšom štarte"
 #: lazarusidestrconsts.lispckexpluninstallpackage
 msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
 msgid "Uninstall package %s"
-msgstr ""
+msgstr "Odinštalovať balíček %s"
 
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -16101,7 +16039,7 @@ msgstr "konfiguračný súbor statických balíčkov"
 
 #: lazarusidestrconsts.lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
-msgstr "Súbor prekladača pre balíček %s nie je platný spustiteľný súbor:%S%S"
+msgstr "Súbor prekladača pre balíček %s nie je platný spustiteľný súbor:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, fuzzy,badformat
@@ -16153,10 +16091,9 @@ msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sNasledujúce jednotky budú pridané do sekcie uses %s%s:%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-#, fuzzy,badformat
-#| msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
+#, object-pascal-format
 msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
-msgstr "Balíček %s%s%s pri inštalácii zlyhal.%sOdstrániť ho z inštalačného zoznamu?"
+msgstr "Preklad balíčka \"%s\" zlyhal.%sOdstrániť ho z inštalačného zoznamu?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 #, fuzzy,badformat
@@ -17997,7 +17934,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowunusedunits
 msgid "Show unused units ..."
-msgstr ""
+msgstr "Zobraziť nepoužité jednotky ..."
 
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
@@ -20068,7 +20005,7 @@ msgstr "Hodnota%s"
 
 #: lazarusidestrconsts.lisvalue3
 msgid "Value: "
-msgstr "Hodnota:"
+msgstr "Hodnota: "
 
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
@@ -21558,7 +21495,7 @@ msgstr "parametre spustenia"
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"
-msgstr "spustiť bez debugera"
+msgstr "spustiť bez ladenia"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
@@ -21955,7 +21892,7 @@ msgstr "Zobraziť lokálne premenné"
 
 #: lazarusidestrconsts.srkmectogglemarker
 msgid "Toggle bookmark %d"
-msgstr ""
+msgstr "Prepnúť záložku %d"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
@@ -22008,7 +21945,7 @@ msgstr "neznámy príkaz editora"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused Units ..."
-msgstr ""
+msgstr "Nepoužité jednotky ..."
 
 #: lazarusidestrconsts.srkmecup
 msgid "Move cursor up"
@@ -22306,7 +22243,7 @@ msgstr "Otočiť priradenie"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line Ending"
-msgstr ""
+msgstr "Ukončenie riadku"
 
 #: lazarusidestrconsts.uemlockpage
 msgid "&Lock Page"
@@ -22390,19 +22327,19 @@ msgstr "Zdrojový kód"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
-msgstr ""
+msgstr "Prepnúť záložku"
 
 #: lazarusidestrconsts.uemtogglebookmarknset
 msgid "Toggle Bookmark &%s: %s"
-msgstr ""
+msgstr "Prepnúť záložku &%s: %s"
 
 #: lazarusidestrconsts.uemtogglebookmarknunset
 msgid "Toggle Bookmark &%s"
-msgstr ""
+msgstr "Prepnúť záložku &%s"
 
 #: lazarusidestrconsts.uemtogglebookmarks
 msgid "Toggle Bookmark ..."
-msgstr ""
+msgstr "Prepnúť záložku ..."
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "Toggle &Breakpoint"
