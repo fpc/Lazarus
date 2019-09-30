@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-09-20 08:39+0200\n"
+"PO-Revision-Date: 2019-09-30 11:56+0200\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1478,11 +1478,11 @@ msgstr ""
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Uložiť..."
+msgstr "Uložiť ..."
 
 #: objinspstrconsts.sccsiledtsaveall
 msgid "Save All ..."
-msgstr "Uložiť všetko..."
+msgstr "Uložiť všetko ..."
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
@@ -1587,7 +1587,7 @@ msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
-msgstr "Načítať..."
+msgstr "Načítať ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
@@ -1601,7 +1601,7 @@ msgstr "Otvoriť"
 #: objinspstrconsts.sccssgedtsave
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
-msgstr "Uložiť..."
+msgstr "Uložiť ..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"

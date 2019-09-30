@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lclstrconsts\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-02 16:22+0100\n"
-"PO-Revision-Date: 2019-09-20 07:45+0200\n"
+"PO-Revision-Date: 2019-09-30 11:52+0200\n"
 "Last-Translator: Slavo Gbúr <slavusec@azet.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "Language: sk\n"
@@ -820,9 +820,8 @@ msgid "Menu Text"
 msgstr "Text ponuky"
 
 #: lclstrconsts.rsmodified
-#, fuzzy
 msgid "  modified "
-msgstr " zmenené"
+msgstr "  zmenené "
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
@@ -1240,7 +1239,7 @@ msgstr "Neplatný index ImageList"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr "Súčasný text neodpovedá špecifikovanej maske."
+msgstr "Súčasný text nezodpovedá špecifikovanej maske."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
