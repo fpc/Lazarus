@@ -354,6 +354,7 @@ begin
   end;
 
   AContext.ReleaseReference;
+  ProcVal.ReleaseReference;
   DoProcessLoop:=false;
   result := true;
 end;

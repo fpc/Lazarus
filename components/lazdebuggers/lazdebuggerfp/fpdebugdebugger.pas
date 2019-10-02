@@ -819,6 +819,7 @@ begin
     end;
   end;
   ALocals.SetDataValidity(ddsValid);
+  ProcVal.ReleaseReference;
   AContext.ReleaseReference;
 end;
 

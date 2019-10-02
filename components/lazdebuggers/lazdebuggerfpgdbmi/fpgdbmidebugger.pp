@@ -302,6 +302,7 @@ begin
       ALocals.Add(n, v);
     end;
   end;
+  ProcVal.ReleaseReference;
   ALocals.SetDataValidity(ddsValid);
 end;
 

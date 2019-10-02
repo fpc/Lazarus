@@ -448,6 +448,7 @@ begin
     ALocals.SetDataValidity(ddsValid);
   finally
     Ctx.ReleaseReference;
+    ProcVal.ReleaseReference;
   end;
 end;
 
