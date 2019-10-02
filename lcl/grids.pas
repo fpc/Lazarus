@@ -804,6 +804,7 @@ type
     FColumnClickSorts: boolean;
     FHeaderHotZones: TGridZoneSet;
     FHeaderPushZones: TGridZoneSet;
+    FCursorChangeLock: Integer;
     FSavedCursor: TCursor;
     FSizing: TSizingRec;
     FRowAutoInserted: Boolean;
@@ -1143,6 +1144,7 @@ type
     procedure SetCanvasFont(aFont: TFont);
     procedure SetColor(Value: TColor); override;
     procedure SetColRow(const ACol,ARow: Integer; withEvents: boolean = false);
+    procedure SetCursor(AValue: TCursor); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); virtual;
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
@@ -2843,12 +2845,16 @@ end;
 
 procedure TCustomGrid.ChangeCursor(ACursor: Integer = MAXINT);
 begin
+  if FCursorChangeLock > 0 then exit;
+
+  inc(FCursorChangeLock);
   if ACursor=MAXINT then
     Cursor := FSavedCursor
   else begin
     FSavedCursor := Cursor;
     Cursor := TCursor(ACursor);
   end;
+  dec(FCursorChangeLock);
 end;
 
 procedure TCustomGrid.SetRowHeights(Arow: Integer; Avalue: Integer);
@@ -4092,6 +4098,12 @@ begin
     FRow := ARow;
     UpdateSelectionRange;
   end;
+end;
+
+procedure TCustomGrid.SetCursor(AValue: TCursor);
+begin
+  inherited;
+  ChangeCursor(AValue);
 end;
 
 procedure TCustomGrid.DrawBorder;
