@@ -1421,23 +1421,24 @@ procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
 
   procedure SetPropVal(AVal: variant);
   var
-    tmpStr, str: string;
-    tmpCompName: TComponentName;
+    tmpStr, tmpFieldN, str: string;
+    tmpCompN: TComponentName;
     tmpObj: TObject;
     tmpInt: integer;
     aPropType: PTypeInfo;
   begin
-    tmpCompName := FUndoList[FUndoCurr].compName;
-    if FUndoList[FUndoCurr].fieldName = 'Name' then
+    tmpCompN := FUndoList[FUndoCurr].compName;
+    tmpFieldN := FUndoList[FUndoCurr].fieldName;
+    if tmpFieldN = 'Name' then
     begin
       if IsActUndo then
-        tmpCompName := FUndoList[FUndoCurr].newVal
+        tmpCompN := FUndoList[FUndoCurr].newVal
       else
-        tmpCompName := FUndoList[FUndoCurr].oldVal;
+        tmpCompN := FUndoList[FUndoCurr].oldVal;
     end;
 
-    if FForm.Name <> tmpCompName then
-      tmpObj := TObject(FForm.FindComponent(tmpCompName))
+    if FForm.Name <> tmpCompN then
+      tmpObj := TObject(FForm.FindComponent(tmpCompN))
     else
       tmpObj := TObject(FForm);
 
@@ -1445,57 +1446,55 @@ procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
       ShowMessage('error: invalid var type');
     tmpStr := VarToStr(AVal);
 
-    with FUndoList[FUndoCurr] do begin
-      if propInfo<>nil then
-      begin
-        aPropType:=propInfo^.propType;
-        case aPropType^.Kind of
-          tkInteger, tkInt64:
-          begin
-            if (aPropType^.Name = 'TColor') or
-               (aPropType^.Name = 'TGraphicsColor') then
-              SetOrdProp(tmpObj, fieldName, StringToColor(tmpStr))
-            else if aPropType^.Name = 'TCursor' then
-              SetOrdProp(tmpObj, fieldName, StringToCursor(tmpStr))
-            else
-              SetOrdProp(tmpObj, fieldName, StrToInt(tmpStr));
-          end;
-          tkChar, tkWChar, tkUChar:
-          begin
-            if Length(tmpStr) = 1 then
-              SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Ord(tmpStr[1]))
-            else if (tmpStr[1] = '#') then
-            begin
-              str := Copy(tmpStr, 2, Length(tmpStr) - 1);
-              if TryStrToInt(str, tmpInt) and (tmpInt >= 0) and (tmpInt <= High(Byte)) then
-                SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpInt);
-            end;
-          end;
-          tkEnumeration:
-            SetEnumProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
-          tkFloat:
-            SetFloatProp(tmpObj, fieldName, StrToFloat(tmpStr));
-          tkBool:
-            SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Integer(StrToBoolOI(tmpStr)));
-          tkString, tkLString, tkAString, tkUString, tkWString:
-            SetStrProp(tmpObj, fieldName, tmpStr);
-          tkSet:
-            SetSetProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
-          tkVariant:
-            SetVariantProp(tmpObj, fieldName, AVal);
-          else
-            ShowMessage(Format('error: unknown TTypeKind(%d)', [Integer(aPropType^.Kind)]));
-        end;
-      end else begin
-        // field is not published
-        if tmpObj is TComponent then
+    if FUndoList[FUndoCurr].propInfo<>nil then
+    begin
+      aPropType:=FUndoList[FUndoCurr].propInfo^.propType;
+      case aPropType^.Kind of
+        tkInteger, tkInt64:
         begin
-          // special case: TComponent.Left,Top
-          if CompareText(fieldName,'Left')=0 then
-            SetDesignInfoLeft(TComponent(tmpObj),StrToInt(tmpStr))
-          else if CompareText(fieldName,'Top')=0 then
-            SetDesignInfoTop(TComponent(tmpObj),StrToInt(tmpStr));
+          if (aPropType^.Name = 'TColor') or
+             (aPropType^.Name = 'TGraphicsColor') then
+            SetOrdProp(tmpObj, tmpFieldN, StringToColor(tmpStr))
+          else if aPropType^.Name = 'TCursor' then
+            SetOrdProp(tmpObj, tmpFieldN, StringToCursor(tmpStr))
+          else
+            SetOrdProp(tmpObj, tmpFieldN, StrToInt(tmpStr));
         end;
+        tkChar, tkWChar, tkUChar:
+        begin
+          if Length(tmpStr) = 1 then
+            SetOrdProp(tmpObj, tmpFieldN, Ord(tmpStr[1]))
+          else if (tmpStr[1] = '#') then
+          begin
+            str := Copy(tmpStr, 2, Length(tmpStr) - 1);
+            if TryStrToInt(str, tmpInt) and (tmpInt >= 0) and (tmpInt <= High(Byte)) then
+              SetOrdProp(tmpObj, tmpFieldN, tmpInt);
+          end;
+        end;
+        tkEnumeration:
+          SetEnumProp(tmpObj, tmpFieldN, tmpStr);
+        tkFloat:
+          SetFloatProp(tmpObj, tmpFieldN, StrToFloat(tmpStr));
+        tkBool:
+          SetOrdProp(tmpObj, tmpFieldN, Integer(StrToBoolOI(tmpStr)));
+        tkString, tkLString, tkAString, tkUString, tkWString:
+          SetStrProp(tmpObj, tmpFieldN, tmpStr);
+        tkSet:
+          SetSetProp(tmpObj, tmpFieldN, tmpStr);
+        tkVariant:
+          SetVariantProp(tmpObj, tmpFieldN, AVal);
+        else
+          ShowMessage(Format('error: unknown TTypeKind(%d)', [Integer(aPropType^.Kind)]));
+      end;
+    end else begin
+      // field is not published
+      if tmpObj is TComponent then
+      begin
+        // special case: TComponent.Left,Top
+        if CompareText(tmpFieldN,'Left')=0 then
+          SetDesignInfoLeft(TComponent(tmpObj),StrToInt(tmpStr))
+        else if CompareText(tmpFieldN,'Top')=0 then
+          SetDesignInfoTop(TComponent(tmpObj),StrToInt(tmpStr));
       end;
     end;
     PropertyEditorHook.Modified(tmpObj);
