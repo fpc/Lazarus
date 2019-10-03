@@ -627,8 +627,6 @@ var
   v, params: String;
   i: Integer;
   ProcVal, m: TFpValue;
-  RegList: TDbgRegisterValueList;
-  Reg: TDbgRegisterValue;
   AController: TDbgController;
   CurThreadId: Integer;
   AContext: TFpDbgInfoContext;
@@ -660,17 +658,9 @@ begin
 
       params := '';
       if (ProcVal <> nil) then begin
-        if e.Index = 0 then
-          RegList := AController.CurrentThread.RegisterValueList
-        else
-          RegList := ThreadCallStack[e.Index].RegisterValueList;
-        if AController.CurrentProcess.Mode=dm32 then
-          Reg := RegList.FindRegisterByDwarfIndex(8)
-        else
-          Reg := RegList.FindRegisterByDwarfIndex(16);
-        if Reg <> nil then begin
+        AContext := AController.CurrentProcess.FindContext(CurThreadId, e.Index);
+        if AContext <> nil then begin
           // TODO: TDbgCallstackEntry.GetParamsAsString
-          AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, e.Index, Reg.NumValue);
           if AContext <> nil then begin
             AContext.MemManager.DefaultContext := AContext;
             if ProcVal is TFpValueDwarfBase then
@@ -747,9 +737,6 @@ var
   m: TFpValue;
   n, v: String;
   CurThreadId, CurStackFrame: Integer;
-  AFrame: TDbgCallstackEntry;
-  RegList: TDbgRegisterValueList;
-  Reg: TDbgRegisterValue;
   CurStackList: TCallStackBase;
 begin
   AController := FpDebugger.FDbgController;
@@ -767,27 +754,11 @@ begin
   else
     CurStackFrame := 0;
 
-  if CurStackFrame > 0 then
-    begin
-    TFpDebugDebugger(Debugger).PrepareCallStackEntryList(CurStackFrame);
-    AFrame := AController.CurrentThread.CallStackEntryList[CurStackFrame];
-    if AFrame = nil then
-      begin
-      ALocals.SetDataValidity(ddsInvalid);
-      exit;
-      end;
-    RegList := AFrame.RegisterValueList;
-    end
-  else
-    RegList := AController.CurrentThread.RegisterValueList;
-  if AController.CurrentProcess.Mode=dm32 then
-    Reg := RegList.FindRegisterByDwarfIndex(8)
-  else
-    Reg := RegList.FindRegisterByDwarfIndex(16);
-  if Reg <> nil then
-    AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, CurStackFrame, Reg.NumValue)
-  else
-    AContext := nil;
+  AContext := AController.CurrentProcess.FindContext(CurThreadId, CurStackFrame);
+  if AContext = nil then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
 
   if (AContext = nil) or (AContext.SymbolAtAddress = nil) then begin
     ALocals.SetDataValidity(ddsInvalid);
@@ -899,7 +870,7 @@ begin
     bpkSource:    FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Source, cardinal(Line));
   else
     Raise Exception.Create('Breakpoints of this kind are not suported.');
-  end;
+      end;
   debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.SetBreak ' ]);
   FIsSet:=true;
   if not assigned(FInternalBreakpoint) then
@@ -1383,8 +1354,11 @@ begin
   else begin
     ThreadId := Threads.CurrentThreads.CurrentThreadId;
     StackList := CallStack.CurrentCallStackList.EntriesForThreads[ThreadId];
-    if StackList <> nil then
-      StackFrame := CallStack.CurrentCallStackList.EntriesForThreads[ThreadId].CurrentIndex
+    if StackList <> nil then begin
+      StackFrame := CallStack.CurrentCallStackList.EntriesForThreads[ThreadId].CurrentIndex;
+      if StackFrame < 0 then
+        StackFrame := 0;
+    end
     else
       StackFrame := 0;
     DispFormat := wdfDefault;
@@ -1587,40 +1561,10 @@ end;
 
 function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
   StackFrame: Integer): TFpDbgInfoContext;
-var
-  AController: TDbgController;
-  ADbgInfo: TDbgInfo;
-  Reg: TDbgRegisterValue;
-  RegList: TDbgRegisterValueList;
-  AFrame: TDbgCallstackEntry;
 begin
-  Result := nil;
-  AController := FDbgController;
-  ADbgInfo := AController.CurrentProcess.DbgInfo;
-
-  if StackFrame > 0 then begin
-    PrepareCallStackEntryList(StackFrame+1);
-    if FDbgController.CurrentThread.CallStackEntryList.Count <= StackFrame then
-      exit;
-    AFrame := FDbgController.CurrentThread.CallStackEntryList[StackFrame];
-    if AFrame = nil then
-      exit;
-    RegList := AFrame.RegisterValueList;
-  end
-  else
-    RegList := AController.CurrentThread.RegisterValueList;
-
-  if AController.CurrentProcess.Mode = dm32 then
-    Reg := RegList.FindRegisterByDwarfIndex(8)
-  else
-    Reg := RegList.FindRegisterByDwarfIndex(16);
-  if Reg <> nil then begin
-    Result := ADbgInfo.FindContext(ThreadId, StackFrame, Reg.NumValue);
-    if Result <> nil then
-      Result.MemManager.DefaultContext := Result;
-  end
-  else
-    Result := nil;
+  Result := FDbgController.CurrentProcess.FindContext(ThreadId, StackFrame);
+  if Result <> nil then
+    Result.MemManager.DefaultContext := Result;
 end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;

@@ -478,7 +478,7 @@ type
        TODO: for now address may be needed, as stack decoding is not done yet
     *)
     function FindContext(AThreadId, AStackFrame: Integer; {%H-}AAddress: TDbgPtr = 0): TFpDbgInfoContext; virtual;
-    function FindContext({%H-}AAddress: TDbgPtr): TFpDbgInfoContext; virtual; deprecated 'use FindContextFindContext(thread,stack,address)';
+    function FindContext({%H-}AAddress: TDbgPtr): TFpDbgInfoContext; virtual; deprecated 'use FindContext(thread,stack,address)';
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
     function FindProcSymbol(const {%H-}AName: String): TFpSymbol; virtual; overload;
     property HasInfo: Boolean read FHasInfo;

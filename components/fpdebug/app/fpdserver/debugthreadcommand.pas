@@ -310,7 +310,6 @@ var
   i: Integer;
   m: TFpValue;
   n, v: String;
-  Reg: TDBGPtr;
   PrettyPrinter: TFpPascalPrettyPrinter;
 begin
   result := false;
@@ -318,8 +317,7 @@ begin
      (AController.CurrentProcess.DbgInfo = nil) then
     exit;
 
-  Reg := AController.CurrentThread.GetInstructionPointerRegisterValue;
-  AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentThread.ID, 0, Reg);
+  AContext := AController.CurrentProcess.FindContext(AController.CurrentThread.ID, 0);
 
   if (AContext = nil) or (AContext.SymbolAtAddress = nil) then
     exit;
@@ -663,7 +661,6 @@ function TFpDebugThreadEvaluateCommand.Execute(AController: TFpServerDbgControll
 var
   AContext: TFpDbgInfoContext;
   APasExpr: TFpPascalExpression;
-  ADbgInfo: TDbgInfo;
   Res: Boolean;
   APrettyPrinter: TFpPascalPrettyPrinter;
   ATypeInfo: TDBGType;
@@ -677,8 +674,7 @@ begin
     exit;
     end;
 
-  ADbgInfo := AController.CurrentProcess.DbgInfo;
-  AContext := ADbgInfo.FindContext(AController.CurrentThread.ID, 0, AController.CurrentThread.GetInstructionPointerRegisterValue);
+  AContext := AController.CurrentProcess.FindContext(AController.CurrentThread.ID, 0);
   if AContext = nil then
     begin
     FValidity:=ddsInvalid;

@@ -391,6 +391,8 @@ type
     function  AddBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
     function  FindProcSymbol(const AName: String): TFpSymbol;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
+    function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
+    function  FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; deprecated 'use FindContext(thread,stack)';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
@@ -776,7 +778,7 @@ begin
   if assigned(ProcSymbol) then begin
     ProcVal := ProcSymbol.Value;
     if (ProcVal <> nil) then begin
-      InstrPointerValue := FThread.GetInstructionPointerRegisterValue;
+      InstrPointerValue := AnAddress;
       if InstrPointerValue <> 0 then begin
         AContext := FThread.Process.DbgInfo.FindContext(FThread.ID, Index, InstrPointerValue);
         if AContext <> nil then begin
@@ -1185,6 +1187,7 @@ end;
 function TDbgProcess.FindProcSymbol(const AName: String): TFpSymbol;
 begin
   Result := FDbgInfo.FindProcSymbol(AName);
+  // SymbolTableInfo.FindProcSymbol()
 end;
 
 function TDbgProcess.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
@@ -1199,6 +1202,38 @@ begin
     if Result <> nil then Exit;
   end;
   Result := nil;
+  // SymbolTableInfo.FindProcSymbol()
+end;
+
+function TDbgProcess.FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
+var
+  Thread: TDbgThread;
+  Frame: TDbgCallstackEntry;
+  Addr: TDBGPtr;
+begin
+  Result := nil;
+  if not GetThread(AThreadId, Thread) then
+    exit;
+  if AStackFrame = 0 then
+    Addr := Thread.GetInstructionPointerRegisterValue
+  else
+  begin
+    Thread.PrepareCallStackEntryList(AStackFrame + 1);
+    Frame := Thread.CallStackEntryList[AStackFrame];
+    if Frame = nil then
+      exit;
+    Addr := Frame.AnAddress;
+  end;
+  if Addr = 0 then
+    exit;
+  Result := FDbgInfo.FindContext(AThreadId, AStackFrame, Addr);
+  // SymbolTableInfo.FindContext()
+end;
+
+function TDbgProcess.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
+begin
+  Result := FDbgInfo.FindContext(AAddress);
+  // SymbolTableInfo.FindContext()
 end;
 
 function TDbgProcess.GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
