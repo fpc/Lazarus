@@ -982,9 +982,11 @@ procedure TDebugManager.mnuAddBpAddress(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
 begin
-  NewBreakpoint := BreakPoints.Add(0);
+  NewBreakpoint := BreakPoints.Add(0, True);
   if ShowBreakPointProperties(NewBreakpoint) <> mrOk then
-    ReleaseRefAndNil(NewBreakpoint);
+    ReleaseRefAndNil(NewBreakpoint)
+  else
+    NewBreakpoint.EndUpdate;
 end;
 
 procedure TDebugManager.mnuAddBpSource(Sender: TObject);
@@ -994,20 +996,24 @@ var
 begin
   SrcEdit := SourceEditorManager.GetActiveSE;
   if SrcEdit <> nil then
-    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine)
+    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine, True)
   else
-    NewBreakpoint := BreakPoints.Add('', 0);
+    NewBreakpoint := BreakPoints.Add('', 0, True);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
-    ReleaseRefAndNil(NewBreakpoint);
+    ReleaseRefAndNil(NewBreakpoint)
+  else
+    NewBreakpoint.EndUpdate;
 end;
 
 procedure TDebugManager.mnuAddBpData(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
 begin
-  NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite);
-  if ShowBreakPointProperties(NewBreakpoint) = mrOk then
-    ViewDebugDialog(ddtBreakpoints, False)
+  NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite, True);
+  if ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+    NewBreakpoint.EndUpdate;
+    ViewDebugDialog(ddtBreakpoints, False);
+  end
   else
     ReleaseRefAndNil(NewBreakpoint);
 end;
@@ -1030,9 +1036,11 @@ begin
     if (WatchVar <> '') and SE.EditorComponent.Focused then
     begin
       // TODO: find existing?
-      NewBreakpoint := BreakPoints.Add(WatchVar, wpsGlobal, wpkWrite);
-      if ShowBreakPointProperties(NewBreakpoint) = mrOk then
-        ViewDebugDialog(ddtBreakpoints, False)
+      NewBreakpoint := BreakPoints.Add(WatchVar, wpsGlobal, wpkWrite, True);
+      if ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+        NewBreakpoint.EndUpdate;
+        ViewDebugDialog(ddtBreakpoints, False);
+      end
       else
         NewBreakpoint.ReleaseReference;
       exit;

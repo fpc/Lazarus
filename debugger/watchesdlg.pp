@@ -555,9 +555,11 @@ var
 begin
   Watch := GetSelected;
   if Watch = nil then Exit;
-  NewBreakpoint := BreakPoints.Add(Watch.Expression, wpsGlobal, wpkWrite);
+  NewBreakpoint := BreakPoints.Add(Watch.Expression, wpsGlobal, wpkWrite, True);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
-    ReleaseRefAndNil(NewBreakpoint);
+    ReleaseRefAndNil(NewBreakpoint)
+  else
+    NewBreakpoint.EndUpdate;
 end;
 
 procedure TWatchesDlg.actCopyNameExecute(Sender: TObject);

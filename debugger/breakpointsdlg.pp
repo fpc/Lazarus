@@ -507,11 +507,13 @@ var
 begin
   SrcEdit := SourceEditorManager.GetActiveSE;
   if SrcEdit <> nil then
-    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine)
+    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine, True)
   else
-    NewBreakpoint := BreakPoints.Add('', 0);
-  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
-    UpdateAll
+    NewBreakpoint := BreakPoints.Add('', 0, True);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+    NewBreakpoint.EndUpdate;
+    UpdateAll;
+  end
   else
     ReleaseRefAndNil(NewBreakpoint);
 end;
@@ -520,9 +522,11 @@ procedure TBreakPointsDlg.actAddWatchPointExecute(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
 begin
-  NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite);
-  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
-    UpdateAll
+  NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite, True);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+    NewBreakpoint.EndUpdate;
+    UpdateAll;
+  end
   else
     ReleaseRefAndNil(NewBreakpoint);
 end;
@@ -531,9 +535,11 @@ procedure TBreakPointsDlg.actAddAddressBPExecute(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
 begin
-  NewBreakpoint := BreakPoints.Add(0);
-  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
-    UpdateAll
+  NewBreakpoint := BreakPoints.Add(0, True);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+    NewBreakpoint.EndUpdate;
+    UpdateAll;
+  end
   else
     ReleaseRefAndNil(NewBreakpoint);
 end;
