@@ -191,8 +191,6 @@ function CP936ToUTF8(const s: string): string;      // Chinese
 function CP949ToUTF8(const s: string): string;      // Korea
 function CP950ToUTF8(const s: string): string;      // Chinese Complex
 
-function DBCSToUTF8(const s: string; CodeP: integer): string;
-
 {$ifdef FPC_HAS_CPSTRING}
 function UTF8ToCP932(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Japanese
 function UTF8ToCP936(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
@@ -5345,10 +5343,7 @@ var
   p: PChar;
   c: Char;
 begin
-  if s='' then begin
-    Result:='';
-    exit;
-  end;
+  if s='' then exit('');
   len:=length(s);
   SetLength(Result,len*4);// UTF-8 is at most 4 bytes
   Src:=PChar(s);
@@ -7008,10 +7003,7 @@ var
   c: Char;
   Unicode: LongWord;
 begin
-  if s='' then begin
-    Result:='';
-    exit;
-  end;
+  if s='' then exit('');
   len:=length(s);
   SetLength(Result,len);
   Src:=PChar(s);
@@ -7050,10 +7042,7 @@ var
   Unicode: LongWord;
   CharLen: integer;
 begin
-  if s='' then begin
-    Result:='';
-    exit;
-  end;
+  if s='' then exit('');
   len:=length(s);
   SetLength(Result,len*2);
   Src:=PChar(s);
@@ -7090,10 +7079,7 @@ var
   Unicode: LongWord;
   CharLen: integer;
 begin
-  if s='' then begin
-    Result:='';
-    exit;
-  end;
+  if s='' then exit('');
   len:=length(s);
   SetLength(Result,len*2);
   Src:=PChar(s);
@@ -7218,10 +7204,7 @@ var
   i: LongInt;
 begin
   l:=length(s);
-  if l=0 then begin
-    Result:='';
-    exit;
-  end;
+  if l=0 then exit('');
   p:=PChar(s);
 
   // try UTF-8 BOM (Byte Order Mark)

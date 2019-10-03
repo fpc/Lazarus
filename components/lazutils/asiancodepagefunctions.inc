@@ -12,18 +12,14 @@
   The clipboard is able to work with the windows and gtk behaviour/features.
 }
 
-function DBCSToUTF8(const s: string; CodeP: integer): string;
+function DBCSToUTF8(const s: string; const ArrayUni, ArrayCP: array of word): string;
 var
   len, l: Integer;
   Src, Dest: PChar;
   c: char;
   code: word;
 begin
-  if s = '' then
-  begin
-    Result := s;
-    exit;
-  end;
+  if s = '' then exit('');
   len := length(s);
   SetLength(Result, len * 4);// Asia UTF-8 is at most 4 bytes
   Src  := PChar(s);
@@ -45,19 +41,7 @@ begin
       code := code + Byte(c);
       Inc(Src);
 
-      case CodeP of
-        936:
-          code := Uni936C[SearchTable(CP936CC, code)];
-        950:
-          code := Uni950C[SearchTable(CP950CC, code)];
-        949:
-          code := Uni949C[SearchTable(CP949CC, code)];
-        932:
-          code := Uni932C[SearchTable(CP932CC, code)];
-        else
-          code := 0;
-      end;
-
+      code := ArrayUni[SearchTable(ArrayCP, code)];
       if code>0 then
       begin
         l:=UnicodeToUTF8Inline(code,Dest);
@@ -70,22 +54,22 @@ end;
 
 function CP936ToUTF8(const s: string): string;
 begin
-  Result := DBCSToUTF8(s, 936);
+  Result := DBCSToUTF8(s, Uni936C, CP936CC);
 end;
 
 function CP950ToUTF8(const s: string): string;
 begin
-  Result := DBCSToUTF8(s, 950);
+  Result := DBCSToUTF8(s, Uni950C, CP950CC);
 end;
 
 function CP949ToUTF8(const s: string): string;
 begin
-  Result := DBCSToUTF8(s, 949);
+  Result := DBCSToUTF8(s, Uni949C, CP949CC);
 end;
 
 function CP932ToUTF8(const s: string): string;
 begin
-  Result := DBCSToUTF8(s, 932);
+  Result := DBCSToUTF8(s, Uni932C, CP932CC);
 end;
 
 {$IfNDef UseSystemCPConv}
@@ -192,11 +176,7 @@ var
   c: char;
   Unicode: longword;
 begin
-  if s = '' then
-  begin
-    Result := '';
-    exit;
-  end;
+  if s = '' then exit('');
   len := length(s);
   SetLength(Result, len); // DBCS needs at most space as UTF-8
   Src  := PChar(s);
