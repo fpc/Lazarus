@@ -103,6 +103,7 @@ type
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
     procedure TestFindDeclaration_AnonymProc_ExprDot;
+    procedure TestFindDeclaration_ArrayMultiDimDot;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -997,6 +998,24 @@ begin
   'begin',
   'end.',
   '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ArrayMultiDimDot;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TmyClass = class',
+  '    Field: integer;',
+  '  end;',
+  '  TArray1 = array of TmyClass;',
+  '  TArray2 = array of TArray1;',
+  'var',
+  '  tmp: TArray2;',
+  'begin',
+  '  tmp[0,0].Field{declaration:tmyclass.field};',
+  'end.']);
   FindDeclarations(Code);
 end;
 
