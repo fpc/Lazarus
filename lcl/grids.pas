@@ -707,6 +707,8 @@ type
       OldMaxTopLeft: TPoint;      // previous MaxTopleft (before col sizing)
     end;
 
+    TCursorState = (csDefault, csColWidthChanging, csRowHeightChanging, csDragging);
+
 type
 
   { TCustomGrid }
@@ -805,6 +807,7 @@ type
     FHeaderHotZones: TGridZoneSet;
     FHeaderPushZones: TGridZoneSet;
     FCursorChangeLock: Integer;
+    FCursorState: TCursorState;
     FSavedCursor: TCursor;
     FSizing: TSizingRec;
     FRowAutoInserted: Boolean;
@@ -892,6 +895,7 @@ type
     procedure ReadRowHeights(Reader: TReader);
     procedure ResetHotCell;
     procedure ResetPushedCell(ResetColRow: boolean=True);
+    procedure RestoreCursor;
     procedure SaveColumns(cfg: TXMLConfig; Version: integer);
     function  ScrollToCell(const aCol,aRow: Integer; const ForceFullyVisible: Boolean = True): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
@@ -919,7 +923,7 @@ type
     procedure SetSelection(const AValue: TGridRect);
     procedure SetTopRow(const AValue: Integer);
     function  StartColSizing(const X, Y: Integer): boolean;
-    procedure ChangeCursor(ACursor: Integer = MAXINT);
+    procedure ChangeCursor(ACursor: TCursor);
     function  TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
     procedure TryScrollTo(aCol,aRow: Integer; ClearColOff, ClearRowOff: Boolean);
     procedure UpdateCachedSizes;
@@ -1320,6 +1324,7 @@ type
     procedure SaveToStream(AStream: TStream); virtual;
     procedure SetFocus; override;
 
+    property CursorState: TCursorState read FCursorState;
     property SelectedRange[AIndex: Integer]: TGridRect read GetSelectedRange;
     property SelectedRangeCount: Integer read GetSelectedRangeCount;
     property SortOrder: TSortOrder read FSortOrder write FSortOrder;
@@ -2764,7 +2769,7 @@ begin
     OrgIndex := FGCache.ClickCell.X;
     if OrgIndex<0 then begin
       // invalid starting cell
-      if not AllowOutBoundEvents and (Cursor=crHSplit) then
+      if not AllowOutBoundEvents and (FCursorState=csColWidthChanging) then
         // resizing still allowed if mouse is within "resizeable region"
         OrgIndex := Index
       else
@@ -2843,18 +2848,21 @@ begin
 
 end;
 
-procedure TCustomGrid.ChangeCursor(ACursor: Integer = MAXINT);
+procedure TCustomGrid.ChangeCursor(ACursor: TCursor);
 begin
-  if FCursorChangeLock > 0 then exit;
-
-  inc(FCursorChangeLock);
-  if ACursor=MAXINT then
-    Cursor := FSavedCursor
-  else begin
+  if FCursorChangeLock = 0 then
+  begin
     FSavedCursor := Cursor;
-    Cursor := TCursor(ACursor);
+    inc(FCursorChangeLock);
+    Cursor := ACursor;
+    dec(FCursorChangeLock);
   end;
-  dec(FCursorChangeLock);
+end;
+
+procedure TCustomGrid.RestoreCursor;
+begin
+  Cursor := FSavedCursor;
+  FCursorState := csDefault;
 end;
 
 procedure TCustomGrid.SetRowHeights(Arow: Integer; Avalue: Integer);
@@ -5959,10 +5967,11 @@ begin
         Offset := FFixedCols;
       if Index>=Offset then begin
         // start resizing
-        if Cursor<>crHSplit then begin
+        if FCursorState<>csColWidthChanging then begin
           PrevLine := false;
           PrevOffset := -1;
           ChangeCursor(crHSplit);
+          FCursorState := csColWidthChanging;
         end;
         exit(true);
       end;
@@ -5970,8 +5979,8 @@ begin
 
   end;
 
-  if (cursor=crHSplit) then
-    ChangeCursor;
+  if (FCursorState=csColWidthChanging) then
+    RestoreCursor;
 end;
 
 function TCustomGrid.doRowSizing(X, Y: Integer): Boolean;
@@ -6026,8 +6035,9 @@ begin
     // selected boundary
     if (Index>=FFixedRows)and(Abs(Offset-Y)<=varColRowBorderTolerance) then begin
       // start resizing
-      if Cursor<>crVSplit then begin
+      if FCursorState<>csRowHeightChanging then begin
         ChangeCursor(crVSplit);
+        FCursorState := csRowHeightChanging;
         PrevLine := False;
         PrevOffset := -1;
       end;
@@ -6036,8 +6046,8 @@ begin
 
   end;
 
-  if (cursor=crVSplit) then
-    ChangeCursor;
+  if (FCursorState=csRowHeightChanging) then
+    RestoreCursor;
 end;
 
 procedure TCustomGrid.doColMoving(X, Y: Integer);
@@ -6049,12 +6059,13 @@ begin
 
   with FGCache do begin
 
-    if (Abs(ClickMouse.X-X)>FDragDX) and (Cursor<>crMultiDrag) then begin
+    if (Abs(ClickMouse.X-X)>FDragDX) and (FCursorState<>csDragging) then begin
       ChangeCursor(crMultiDrag);
+      FCursorState := csDragging;
       ResetLastMove;
     end;
 
-    if (Cursor=crMultiDrag) and
+    if (FCursorState=csDragging) and
        (CurCell.X>=FFixedCols) and
        ((CurCell.X<=ClickCell.X) or (CurCell.X>ClickCell.X)) and
        (CurCell.X<>FMoveLast.X) then begin
@@ -6084,12 +6095,13 @@ begin
 
   with FGCache do begin
 
-    if (Cursor<>crMultiDrag) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
+    if (FCursorState<>csDragging) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
       ChangeCursor(crMultiDrag);
+      FCursorState := csDragging;
       ResetLastMove;
     end;
 
-    if (Cursor=crMultiDrag)and
+    if (FCursorState=csDragging)and
        (CurCell.Y>=FFixedRows) and
        ((CurCell.Y<=ClickCell.Y) or (CurCell.Y>ClickCell.Y))and
        (CurCell.Y<>FMoveLast.Y) then begin
@@ -6635,7 +6647,7 @@ begin
     gzFixedCells:
       begin
         if (goColSizing in Options) and (goFixedColSizing in Options) and
-           (Cursor=crHSplit) then
+           (FCursorState=csColWidthChanging) then
           fGridState:= gsColSizing
         else begin
           FGridState := gsHeaderClicking;
@@ -6647,11 +6659,9 @@ begin
 
     gzFixedCols:
       begin
-        if (goColSizing in Options) and (Cursor=crHSplit) then begin
-
+        if (goColSizing in Options) and (FCursorState=csColWidthChanging) then begin
           fGridState:= gsColSizing;
           FGCache.OldMaxTopLeft := FGCache.MaxTopLeft;
-
         end
         else begin
           // ColMoving or Clicking
@@ -6667,10 +6677,8 @@ begin
       end;
 
     gzFixedRows:
-      if (goRowSizing in Options)and(Cursor=crVSplit) then
-
+      if (goRowSizing in Options) and (FCursorState=csRowHeightChanging) then
         fGridState:= gsRowSizing
-
       else begin
         // RowMoving or Clicking
         fGridState:=gsRowMoving;
@@ -6690,7 +6698,7 @@ begin
           Exit;
         end else
         if FExtendedColSizing and
-          (Cursor=crHSplit) and
+          (FCursorState=csColWidthChanging) and
           (goColSizing in Options) then begin
           // extended column sizing
           fGridState:= gsColSizing;
@@ -6879,7 +6887,7 @@ begin
     gsColMoving:
       begin
         //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
-        ChangeCursor;
+        RestoreCursor;
 
         if FMoveLast.X>=0 then
           DoOPMoveColRow(True, FGCache.ClickCell.X, FMoveLast.X)
@@ -6891,7 +6899,7 @@ begin
     gsRowMoving:
       begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
-        ChangeCursor;
+        RestoreCursor;
 
         if FMoveLast.Y>=0 then
           DoOPMoveColRow(False, FGCache.ClickCell.Y, FMoveLast.Y)
@@ -6947,7 +6955,7 @@ begin
     Invalidate;
     {$endif}
     if not (fGridState in [gsColMoving,gsRowMoving]) then
-      ChangeCursor;
+      RestoreCursor;
   end;
 
   FGCache.ClickCell := point(-1, -1);
@@ -6963,12 +6971,12 @@ begin
   {$IfDef dbgGrid}DebugLn('DoubleClick INIT');{$Endif}
   SelectActive:=False;
   fGridState:=gsNormal;
-  if (goColSizing in Options) and (Cursor=crHSplit) then begin
+  if (goColSizing in Options) and (FCursorState=csColWidthChanging) then begin
     if (goDblClickAutoSize in Options) then begin
       OldWidth := ColWidths[FSizing.Index];
       AutoAdjustColumn( FSizing.Index );
       if OldWidth<>ColWidths[FSizing.Index] then begin
-        ChangeCursor;
+        RestoreCursor;
         HeaderSized(True, FSizing.Index);
       end;
     end {else
@@ -6976,7 +6984,7 @@ begin
   end else
   if  (goDblClickAutoSize in Options) and
       (goRowSizing in Options) and
-      (Cursor=crVSplit) then begin
+      (FCursorState=csRowHeightChanging) then begin
       {
         DebugLn('Got DoubleClick on Row Resizing: AutoAdjust?');
       }
@@ -7948,8 +7956,8 @@ end;
 
 procedure TCustomGrid.BeginAutoDrag;
 begin
-  if ((goColSizing in Options) and (Cursor=crHSplit)) or
-     ((goRowSizing in Options) and (Cursor=crVSplit))
+  if ((goColSizing in Options) and (FCursorState=csColWidthChanging)) or
+     ((goRowSizing in Options) and (FCursorState=csRowHeightChanging))
   then
     // TODO: Resizing in progress, add an option to forbid resizing
     //       when DragMode=dmAutomatic
