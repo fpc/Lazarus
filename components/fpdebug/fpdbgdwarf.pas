@@ -324,6 +324,7 @@ type
     function GetAsCardinal: QWord; override;
     function GetAsString: AnsiString; override;
     function IsValidTypeCast: Boolean; override;
+    function GetKind: TDbgSymbolKind; override;
   public
     constructor Create(AOwner: TFpSymbolDwarfData);
   end;
@@ -2179,6 +2180,11 @@ function TFpValueDwarfEnumMember.IsValidTypeCast: Boolean;
 begin
   assert(False, 'TDbgDwarfEnumMemberSymbolValue.IsValidTypeCast can not be returned for typecast');
   Result := False;
+end;
+
+function TFpValueDwarfEnumMember.GetKind: TDbgSymbolKind;
+begin
+  Result := skEnumValue;
 end;
 
 constructor TFpValueDwarfEnumMember.Create(AOwner: TFpSymbolDwarfData);
