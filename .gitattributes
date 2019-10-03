@@ -3344,6 +3344,7 @@ components/lazutils/amigalazfileutils.inc svneol=native#text/plain
 components/lazutils/asiancodepagefunctions.inc svneol=native#text/pascal
 components/lazutils/asiancodepages.inc svneol=native#text/pascal
 components/lazutils/avglvltree.pas svneol=native#text/pascal
+components/lazutils/commoncodepages.inc svneol=native#text/pascal
 components/lazutils/compwriterpas.pas svneol=native#text/plain
 components/lazutils/dynamicarray.pas svneol=native#text/pascal
 components/lazutils/dynhasharray.pp svneol=native#text/pascal
