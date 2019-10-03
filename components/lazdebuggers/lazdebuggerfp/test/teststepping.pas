@@ -161,7 +161,9 @@ begin
     AssertDebuggerState(dsPause);
     TestLocation('At BrkThreadCreateInStep', 'BrkThreadCreateInStep', -1);
 
-    Debugger.RunToNextPause(dcStepOver);
+    // This test can take longer, as the new thread gets very little scheduler time
+    // during the single stepping of the main thread.
+    Debugger.RunToNextPause(dcStepOver, 25000);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterThreadCreateInStep', 'AfterThreadCreateInStep', -1);
     TestEquals('ThreadId AfterThreadCreateInStep', ThreadIdMain, dbg.Threads.CurrentThreads.CurrentThreadId);
