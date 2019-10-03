@@ -44,6 +44,8 @@ const
   PTRACE_O_TRACECLONE                          = 1 << PTRACE_EVENT_CLONE;
 {$endif linux}
   PTRACE_ATTACH                                = 16;
+  PTRACE_DETACH                                = 17;
+  PTRACE_SEIZE                                 = $4206;
 
   RIP                                          = 16;
 

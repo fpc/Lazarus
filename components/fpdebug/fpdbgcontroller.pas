@@ -147,6 +147,8 @@ type
   TDbgController = class
   private
     FRunning, FPauseRequest: cardinal;
+    FAttachToPid: Integer;
+    FDetaching: cardinal;
     FEnvironment: TStrings;
     FExecutableFilename: string;
     FForceNewConsoleWin: boolean;
@@ -186,10 +188,12 @@ type
     procedure Step;
     procedure StepOut;
     function Pause: boolean;
+    function Detach: boolean;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
+    property AttachToPid: Integer read FAttachToPid write FAttachToPid;
     property CurrentProcess: TDbgProcess read FCurrentProcess;
     property CurrentThread: TDbgThread read FCurrentThread;
     property CurrentThreadId: Integer read GetCurrentThreadId write SetCurrentThreadId;
@@ -770,7 +774,10 @@ begin
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags);
+  if AttachToPid <> 0 then
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid)
+  else
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);
@@ -820,8 +827,26 @@ begin
     Result := FCurrentProcess.Pause;
 end;
 
+function TDbgController.Detach: boolean;
+begin
+  InterLockedExchange(FDetaching, 1);
+  Result := Pause;
+end;
+
 procedure TDbgController.ProcessLoop;
 
+  function MaybeDetach: boolean;
+  begin
+    Result := InterLockedExchange(FDetaching, 0) <> 0;
+    if not Result then
+      exit;
+
+    if Assigned(FCommand) then
+      FreeAndNil(FCommand);
+    FPDEvent := deFinishedStep; // go to pause, if detach fails
+    if FCurrentProcess.Detach(FCurrentProcess, FCurrentThread) then
+      FPDEvent := deExitProcess;
+  end;
 var
   AProcessIdentifier: THandle;
   AThreadIdentifier: THandle;
@@ -843,6 +868,9 @@ begin
   if FCommand <> nil then
     FCommand.DoBeforeLoopStart;
 
+  if MaybeDetach then
+    exit;
+
   repeat
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then begin
       // IF there is a pause-request, we will hit a deCreateProcess.
@@ -858,25 +886,26 @@ begin
       // if Pause() is called right here, an Interrupt-Event is scheduled, even though we do not run (yet)
       if InterLockedExchangeAdd(FPauseRequest, 0) = 1 then begin
         FPDEvent := deBreakpoint;
+        InterLockedExchange(FRunning, 0);
         break; // no event handling. Keep Process/Thread from last run
       end
       else begin
-        if not assigned(FCommand) then
-          begin
-          DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
-          FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
-          end
-        else
-          begin
-          DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
-          FCommand.DoContinue(FCurrentProcess, FCurrentThread);
-          end;
+      if not assigned(FCommand) then
+        begin
+        DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
+        FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
+        end
+      else
+        begin
+        DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
+        FCommand.DoContinue(FCurrentProcess, FCurrentThread);
+        end;
 
-          // TODO: replace the dangling pointer with the next best value....
-          // There is still a race condition, for another thread to access it...
-          if (ctid <> 0) and not FCurrentProcess.GetThread(ctid, DummyThread) then
-            FCurrentThread := nil;
-      end;
+        // TODO: replace the dangling pointer with the next best value....
+        // There is still a race condition, for another thread to access it...
+        if (ctid <> 0) and not FCurrentProcess.GetThread(ctid, DummyThread) then
+          FCurrentThread := nil;
+    end;
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then
       Continue;
@@ -931,6 +960,7 @@ begin
        this will remove CurrentThread form the list of threads
        CurrentThread is then destroyed in the next call to continue....
     *)
+
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
     DebugLn(DBG_VERBOSE, 'Process stopped with event %s. IP=%s, SP=%s, BSP=%s. HasBreak: %s',
                          [FPDEventNames[FPDEvent],
@@ -938,6 +968,10 @@ begin
                          FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),
                          FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue),
                          dbgs(CurrentProcess.CurrentBreakpoint<>nil)]);
+
+    if MaybeDetach then
+      break;
+
     IsHandled:=false;
     IsFinished:=false;
     if FPDEvent=deExitProcess then

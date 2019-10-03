@@ -1839,7 +1839,7 @@ begin
     FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
 
   if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto,
-      dcStepOverInstr, dcStepIntoInstr]) and
+      dcStepOverInstr, dcStepIntoInstr, dcAttach]) and
      not assigned(FDbgController.MainProcess)
   then
   begin
@@ -1855,6 +1855,15 @@ begin
     {$ifdef windows}
     FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
     {$endif windows}
+    //FDbgController.AttachToPid := 0;
+    if ACommand = dcAttach then begin
+      FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
+      Result := FDbgController.AttachToPid <> 0;
+      if not Result then begin
+        FileName := '';
+        Exit;
+      end;
+    end;
     FFpDebugThread := TFpDebugThread.Create(Self);
     RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
     RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);
@@ -1947,6 +1956,12 @@ begin
         StartDebugLoop;
         result := true;
       end;
+    dcDetach:
+      begin
+        Result := FDbgController.Detach;
+        if Result and (State in [dsPause, dsInternalPause]) then
+          StartDebugLoop;
+      end;
     dcEvaluate:
       begin
         EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
@@ -2001,7 +2016,9 @@ begin
        because any callstack (never mind which to which IDE-thread object it belongs
        will always get the data for the current thread only
      TODO: callstacks need a field with the thread-id to which they belong *)
-    if (Threads <> nil) and (Threads.CurrentThreads <> nil) then
+    if (Threads <> nil) and (Threads.CurrentThreads <> nil) and
+       (FDbgController.CurrentThread <> nil)
+    then
       Threads.CurrentThreads.CurrentThreadId := FDbgController.CurrentThreadId;
 
     FDbgController.SendEvents(Cont); // This may free the TFpDebugDebugger (self)
@@ -2300,7 +2317,10 @@ end;
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
-           dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput];
+           dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput
+           {$IFDEF windows} , dcAttach, dcDetach {$ENDIF}
+           {$IFDEF linux} , dcAttach, dcDetach {$ENDIF}
+          ];
   if State = dsStop then
     Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;

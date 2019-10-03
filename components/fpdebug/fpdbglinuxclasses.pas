@@ -293,6 +293,8 @@ type
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
+    class function AttachToInstance(AFileName: string; APid: Integer
+      ): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
     destructor Destroy; override;
 
@@ -305,6 +307,7 @@ type
 
     procedure TerminateProcess; override;
     function Pause: boolean; override;
+    function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
@@ -841,6 +844,17 @@ begin
   end;
 end;
 
+class function TDbgLinuxProcess.AttachToInstance(AFileName: string;
+  APid: Integer): TDbgProcess;
+begin
+  Result := nil;
+  fpPTrace(PTRACE_ATTACH, APid, nil, Pointer(PTRACE_O_TRACECLONE));
+
+  result := TDbgLinuxProcess.Create(AFileName, APid, 0);
+
+  // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
+end;
+
 function TDbgLinuxProcess.ReadData(const AAdress: TDbgPtr;
   const ASize: Cardinal; out AData): Boolean;
 
@@ -1006,6 +1020,14 @@ begin
     begin
     DebugLn(DBG_WARNINGS, 'Failed to send SIGTRAP to process %d. Errno: %d',[ProcessID, errno]);
     end;
+end;
+
+function TDbgLinuxProcess.Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
+begin
+  RemoveAllBreakPoints;
+
+  fpPTrace(PTRACE_DETACH, AThread.ID, nil, pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)));
+  Result := True;
 end;
 
 function TDbgLinuxProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean;
@@ -1234,6 +1256,16 @@ begin
       Exit;
       end;
 
+    if (not FProcessStarted) and (wstopsig(FStatus) <> SIGTRAP) then begin
+      // attached, should be SigStop, but may be out of order
+      debugln(DBG_VERBOSE, ['Attached ', wstopsig(FStatus)]);
+      result := deCreateProcess;
+      FProcessStarted:=true;
+      if not wstopsig(FStatus) = SIGSTOP then
+        FPostponedSignals.AddSignal(AThread.Id, FStatus);
+    end
+
+    else
     case wstopsig(FStatus) of
       SIGTRAP:
         begin

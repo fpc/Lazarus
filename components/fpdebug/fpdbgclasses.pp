@@ -364,12 +364,14 @@ type
 
     FMainThread: TDbgThread;
     function GetHandle: THandle; virtual;
+    procedure SetThreadId(AThreadId: Integer);
     procedure SetExitCode(AValue: DWord);
     function GetLastEventProcessIdentifier: THandle; virtual;
     function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
 
     function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; //virtual;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; //virtual;
+    procedure RemoveAllBreakPoints;
     procedure BeforeChangingInstructionCode(const ALocation: TDBGPtr); virtual;
     procedure AfterChangingInstructionCode(const ALocation: TDBGPtr); virtual;
 
@@ -380,6 +382,7 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; virtual;
+    class function AttachToInstance(AFileName: string; APid: Integer): TDbgProcess; virtual;
     constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer); virtual;
     destructor Destroy; override;
     function  AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
@@ -425,6 +428,7 @@ type
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
     procedure TerminateProcess; virtual; abstract;
+    function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; virtual;
 
     property Handle: THandle read GetHandle;
     property Name: String read FFileName write SetFileName;
@@ -1432,19 +1436,29 @@ begin
   result := 0;
 end;
 
+procedure TDbgProcess.SetThreadId(AThreadId: Integer);
+begin
+  assert(FThreadID = 0, 'TDbgProcess.SetThreadId: FThreadID = 0');
+  FThreadID := AThreadId;
+end;
+
 procedure TDbgProcess.SetExitCode(AValue: DWord);
 begin
   FExitCode:=AValue;
 end;
 
-resourcestring
-  sNoDebugSupport = 'Debug support is not available for this platform .';
-
 class function TDbgProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
   AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess;
 begin
-  DebugLn(DBG_VERBOSE, sNoDebugSupport);
+  DebugLn(DBG_VERBOSE, 'Debug support is not available for this platform.');
   result := nil;
+end;
+
+class function TDbgProcess.AttachToInstance(AFileName: string; APid: Integer
+  ): TDbgProcess;
+begin
+  DebugLn(DBG_VERBOSE, 'Attach not supported');
+  Result := nil;
 end;
 
 procedure TDbgProcess.ThreadDestroyed(const AThread: TDbgThread);
@@ -1550,6 +1564,22 @@ begin
     AfterChangingInstructionCode(ALocation);
 end;
 
+procedure TDbgProcess.RemoveAllBreakPoints;
+var
+  b: TFpInternalBreakpoint;
+  i: LongInt;
+begin
+  i := FBreakpointList.Count - 1;
+  while i >= 0 do begin
+    b := FBreakpointList[i];
+    b.ResetBreak;
+    b.FProcess := nil;
+    FBreakpointList.Delete(i);
+    dec(i);
+  end;
+  assert(FBreakMap.Count = 0, 'TDbgProcess.RemoveAllBreakPoints: FBreakMap.Count = 0');
+end;
+
 procedure TDbgProcess.BeforeChangingInstructionCode(const ALocation: TDBGPtr);
 begin
   //
@@ -1633,6 +1663,12 @@ end;
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
 begin
   result := false;
+end;
+
+function TDbgProcess.Detach(AProcess: TDbgProcess; AThread: TDbgThread
+  ): boolean;
+begin
+  Result := False;
 end;
 
 { TDbgThread }

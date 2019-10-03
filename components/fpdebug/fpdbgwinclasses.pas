@@ -187,7 +187,9 @@ type
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
+    class function AttachToInstance(AFileName: string; APid: Integer): TDbgProcess; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
+    function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
@@ -290,7 +292,8 @@ var
   _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
   _GetFinalPathNameByHandle: function(hFile: HANDLE; lpFilename:LPWSTR; cchFilePath, dwFlags: DWORD):DWORD; stdcall = nil;
   _QueryFullProcessImageName: function (hProcess:HANDLE; dwFlags: DWord; lpExeName:LPWSTR; var lpdwSize:DWORD):BOOL; stdcall = nil;
-  _DebugActiveProcessStop : function (ProcessId:DWORD):BOOL; stdcall = nil;
+  _DebugActiveProcessStop: function (ProcessId:DWORD):BOOL; stdcall = nil;
+  _DebugActiveProcess: function (ProcessId:DWORD):BOOL; stdcall = nil;
   _IsWow64Process: function (hProcess:HANDLE; WoW64Process: PBOOL):BOOL; stdcall = nil;
   _Wow64GetThreadContext: function (hThread: THandle; var   lpContext: WOW64_CONTEXT): BOOL; stdcall = nil;
   _Wow64SetThreadContext: function (hThread: THandle; const lpContext: WOW64_CONTEXT): BOOL; stdcall = nil;
@@ -310,6 +313,7 @@ begin
   Pointer(_CreateRemoteThread) := GetProcAddress(hMod, 'CreateRemoteThread');
   Pointer(_QueryFullProcessImageName) := GetProcAddress(hMod, 'QueryFullProcessImageNameW'); // requires Vista
   Pointer(_DebugActiveProcessStop) := GetProcAddress(hMod, 'DebugActiveProcessStop');
+  Pointer(_DebugActiveProcess) := GetProcAddress(hMod, 'DebugActiveProcess');
   Pointer(_GetFinalPathNameByHandle) := GetProcAddress(hMod, 'GetFinalPathNameByHandleW');
   {$ifdef cpux86_64}
   Pointer(_IsWow64Process) := GetProcAddress(hMod, 'IsWow64Process');
@@ -320,6 +324,8 @@ begin
   DebugLn(DBG_WARNINGS and (DebugBreakAddr = nil), ['WARNING: Failed to get DebugBreakAddr']);
   DebugLn(DBG_WARNINGS and (_CreateRemoteThread = nil), ['WARNING: Failed to get CreateRemoteThread']);
   DebugLn(DBG_WARNINGS and (_QueryFullProcessImageName = nil), ['WARNING: Failed to get QueryFullProcessImageName']);
+  DebugLn(DBG_WARNINGS and (_DebugActiveProcessStop = nil), ['WARNING: Failed to get DebugActiveProcessStop']);
+  DebugLn(DBG_WARNINGS and (_DebugActiveProcess = nil), ['WARNING: Failed to get DebugActiveProcess']);
   DebugLn(DBG_WARNINGS and (_GetFinalPathNameByHandle = nil), ['WARNING: Failed to get GetFinalPathNameByHandle']);
   {$ifdef cpux86_64}
   DebugLn(DBG_WARNINGS and (_IsWow64Process = nil), ['WARNING: Failed to get IsWow64Process']);
@@ -599,6 +605,18 @@ begin
   end;
 end;
 
+class function TDbgWinProcess.AttachToInstance(AFileName: string; APid: Integer
+  ): TDbgProcess;
+begin
+  Result := nil;
+  if _DebugActiveProcess = nil then
+    exit;
+  if not _DebugActiveProcess(APid) then
+    exit;
+
+  result := TDbgWinProcess.Create(AFileName, APid, 0);
+  // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
+end;
 
 function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
   SingleStep: boolean): boolean;
@@ -700,6 +718,58 @@ if AThread<>nil then debugln(['## ath.iss ',AThread.NextIsSingleStep]);
   result := true;
 end;
 
+function TDbgWinProcess.Detach(AProcess: TDbgProcess; AThread: TDbgThread
+  ): boolean;
+var
+  t: TDbgWinThread;
+  PendingDebugEvent: TDebugEvent;
+begin
+  Result := _DebugActiveProcessStop <> nil;
+  if not Result then
+    exit;
+
+  RemoveAllBreakPoints;
+
+  // Collect all pending events // Deal with any breakpoint/int3 hit
+  if not GetThread(MDebugEvent.dwThreadId, TDbgThread(AThread)) then begin
+    assert(False, 'TDbgWinProcess.Detach: Missing thread');
+    TDbgThread(AThread) := AddThread(MDebugEvent.dwThreadId);
+  end;
+
+  for TDbgThread(t) in FThreadMap do
+    if not t.ID = MDebugEvent.dwThreadId then
+      t.Suspend;
+
+  TDbgWinThread(AThread).SetSingleStep;
+  Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+  while Windows.WaitForDebugEvent(PendingDebugEvent, 1) do begin
+    if PendingDebugEvent.dwThreadId = MDebugEvent.dwThreadId then
+      break;
+    case PendingDebugEvent.dwDebugEventCode of
+      CREATE_PROCESS_DEBUG_EVENT: begin
+          if PendingDebugEvent.CreateProcessInfo.hFile <> 0 then
+            CloseHandle(PendingDebugEvent.CreateProcessInfo.hFile);
+          _DebugActiveProcessStop(PendingDebugEvent.dwProcessId);
+        end;
+      EXCEPTION_DEBUG_EVENT:
+        case PendingDebugEvent.Exception.ExceptionRecord.ExceptionCode of
+          EXCEPTION_BREAKPOINT, STATUS_WX86_BREAKPOINT: begin
+            if not GetThread(PendingDebugEvent.dwThreadId, TDbgThread(t)) then
+              TDbgThread(t) := AddThread(PendingDebugEvent.dwThreadId);
+            t.CheckAndResetInstructionPointerAfterBreakpoint;
+          end;
+        end;
+    end;
+    Windows.ContinueDebugEvent(PendingDebugEvent.dwProcessId, PendingDebugEvent.dwThreadId, DBG_CONTINUE);
+  end;
+
+  for TDbgThread(t) in FThreadMap do
+    t.Resume;
+
+  Result := _DebugActiveProcessStop(ProcessID);
+//  Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+end;
+
 function TDbgWinProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 var
   t: TDbgWinThread;
@@ -742,7 +812,7 @@ begin
   DebugLn([dbgs(MDebugEvent), ' ', Result]);
   for TDbgThread(t) in FThreadMap do begin
   if t.ReadThreadState then
-    DebugLn('Thr.Id:%d  SSTep %s EF %s     DR6:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
+    DebugLn('Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
   end;
   {$ENDIF}
 
@@ -1132,6 +1202,8 @@ var
   {$endif}
 begin
   FInfo := AInfo;
+  if ThreadID = 0 then
+    SetThreadId(AThreadID);
   {$ifdef cpui386}
   FBitness := b32; // only 32 bit supported
   {$else}
