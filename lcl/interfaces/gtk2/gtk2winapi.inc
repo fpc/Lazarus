@@ -2465,7 +2465,10 @@ var
       TextExtentPoint(PChar(AStr), length(AStr), AP{%H-});
       theRect.Bottom := theRect.Top + TM.tmHeight;
       if (Flags and DT_CALCRECT)<>0 then
-        theRect.Right := theRect.Left +  AP.cX
+      begin
+        theRect.Right := theRect.Left +  AP.cX;
+        theRect.Bottom := theRect.Top +  AP.cY;
+      end
       else
       begin
         theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
