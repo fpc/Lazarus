@@ -1438,13 +1438,15 @@ procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
     end;
 
     if FForm.Name <> tmpCompN then
-      tmpObj := TObject(FForm.FindComponent(tmpCompN))
+      tmpObj := TObject(FForm.FindSubComponent(tmpCompN))
     else
       tmpObj := TObject(FForm);
 
     if VarIsError(AVal) or VarIsEmpty(AVal) or VarIsNull(AVal) then
       ShowMessage('error: invalid var type');
     tmpStr := VarToStr(AVal);
+    //DebugLn(['TDesigner.ExecuteUndoItem: FForm=', FForm.Name, ', CompName=', tmpCompN,
+    //  ', FieldName=', tmpFieldN, ', tmpObj=', tmpObj, ', tmpStr=', tmpStr, ', IsActUndo=', IsActUndo]);
 
     if FUndoList[FUndoCurr].propInfo<>nil then
     begin
@@ -1801,6 +1803,7 @@ var
   SaveControlSelection: TControlSelection;
   AStream: TStringStream;
   APropInfo: PPropInfo;
+  Comp: TComponent;
 begin
   Result := (FUndoLock = 0);
   if not Result then Exit;
@@ -1856,9 +1859,12 @@ begin
       compName := '';
       parentName := '';
       if aPersistent is TComponent then begin
-        compName := TComponent(aPersistent).Name;
-        if TComponent(aPersistent).HasParent then
-          parentName := TComponent(aPersistent).GetParentComponent.Name;
+        Comp := TComponent(aPersistent);
+        compName := Comp.Name;
+        if Comp.Owner <> LookupRoot then                // This is a subcomponent.
+          compName := Comp.Owner.Name + '.' + compName; // Add owner to the name.
+        if Comp.HasParent then
+          parentName := Comp.GetParentComponent.Name;
       end;
       opType := aOpType;
       isValid := true;

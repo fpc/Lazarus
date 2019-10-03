@@ -1629,6 +1629,7 @@ type
     function GetParentComponent: TComponent; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     function GetTopParent: TControl;
+    function FindSubComponent(AName: string): TComponent;
     function IsVisible: Boolean; virtual;// checks parents too
     function IsControlVisible: Boolean; virtual;// does not check parents
     function IsEnabled: Boolean; // checks parent too
