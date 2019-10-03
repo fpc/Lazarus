@@ -1405,7 +1405,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.AutoSnap">
-        <short>AutoSnap - automatically snaps to a grid point or grid line in the Form designer</short>
+        <short>AutoSnap - automatically moves splitter to zero position when split size becomes smaller than MinSize value</short>
         <descr>Boolean property, true if snapping to grid positions</descr>
       </element>
       <!-- property Visibility: public -->
