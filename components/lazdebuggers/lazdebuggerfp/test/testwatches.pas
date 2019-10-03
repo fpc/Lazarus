@@ -926,6 +926,8 @@ for i := StartIdx to t.Count-1 do
     t.Add(AName, p+'Enum2'+e, weEnum('EnVal21', 'TEnum2'));
     t.Add(AName, p+'Enum3'+e, weEnum('EnVal25', 'TEnum2'));
 
+//    t.Add(AName, 'EnVal2', weMatch('xxx', skEnumValue));
+
     t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
 
     t.Add(AName, p+'IntfUnknown1'+e, weMatch('.?', skInterface)) //.Skip(); // only run eval / do not crash
@@ -965,7 +967,7 @@ begin
     t := TWatchExpectationList.Create(Self);
     t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
       skString, skAnsiString, skCurrency, skVariant, skWideString,
-      skInterface];
+      skInterface, skEnumValue];
     t.AddTypeNameAlias('integer', 'integer|longint');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
@@ -1024,6 +1026,12 @@ begin
     t.Add('TMYSTRINGLIST(MyClass1.FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
     t.Add('TMYSTRINGLIST(TMyClass(MyClass1).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
     t.Add('TMYSTRINGLIST(TMyClass(MyClass2).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
+
+    t.Add('EnVal1', 'EnVal1', weMatch('EnVal1 *:?= *0', skEnumValue));
+    t.Add('EnVal2', 'EnVal2', weMatch('EnVal2 *:?= *1', skEnumValue));
+    t.Add('EnVal3', 'EnVal3', weMatch('EnVal3 *:?= *2', skEnumValue));
+    t.Add('EnVal21', 'EnVal21', weMatch('EnVal21 *:?= *3', skEnumValue));
+    t.Add('EnVal23', 'EnVal23', weMatch('EnVal23 *:?= *7', skEnumValue));
 
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');

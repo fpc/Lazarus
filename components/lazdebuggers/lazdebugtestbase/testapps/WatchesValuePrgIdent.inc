@@ -464,9 +464,13 @@
 // short bool ....
 // interface / object vs class / record
 // array dyn/stat / nested of record/class/char/num ... bitpacked
+// array [ enum ]
+// type = array [ enum ]
 // class of
 // class/record helper
 // type
+//   b = 1..5;  c = set of b; // set of subrange
+
 
 // pointer / deref for all above
 
