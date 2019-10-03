@@ -146,6 +146,7 @@ type
 
   TDbgController = class
   private
+    FRunning, FPauseRequest: cardinal;
     FEnvironment: TStrings;
     FExecutableFilename: string;
     FForceNewConsoleWin: boolean;
@@ -813,7 +814,10 @@ end;
 
 function TDbgController.Pause: boolean;
 begin
-  result := FCurrentProcess.Pause;
+  InterLockedExchange(FPauseRequest, 1);
+  Result := InterLockedExchangeAdd(FRunning, 0) = 0; // not running
+  if not Result then
+    Result := FCurrentProcess.Pause;
 end;
 
 procedure TDbgController.ProcessLoop;
@@ -823,7 +827,7 @@ var
   AThreadIdentifier: THandle;
   AExit: boolean;
   IsHandled: boolean;
-  IsFinished: boolean;
+  IsFinished, b: boolean;
   EventProcess: TDbgProcess;
   DummyThread: TDbgThread;
   ctid: Integer;
@@ -840,30 +844,43 @@ begin
     FCommand.DoBeforeLoopStart;
 
   repeat
-    if assigned(FCurrentProcess) and not assigned(FMainProcess) then
-      FMainProcess:=FCurrentProcess
+    if assigned(FCurrentProcess) and not assigned(FMainProcess) then begin
+      // IF there is a pause-request, we will hit a deCreateProcess.
+      // No need to indicate FRunning
+      FMainProcess:=FCurrentProcess;
+    end
     else
     begin
       ctid := 0;
       if FCurrentThread <> nil then
         ctid := FCurrentThread.ID;
-      if not assigned(FCommand) then
-        begin
-        DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
-        FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
-        end
-      else
-        begin
-        DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
-        FCommand.DoContinue(FCurrentProcess, FCurrentThread);
-        end;
+      InterLockedExchange(FRunning, 1);
+      // if Pause() is called right here, an Interrupt-Event is scheduled, even though we do not run (yet)
+      if InterLockedExchangeAdd(FPauseRequest, 0) = 1 then begin
+        FPDEvent := deBreakpoint;
+        break; // no event handling. Keep Process/Thread from last run
+      end
+      else begin
+        if not assigned(FCommand) then
+          begin
+          DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
+          FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
+          end
+        else
+          begin
+          DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
+          FCommand.DoContinue(FCurrentProcess, FCurrentThread);
+          end;
 
-        // TODO: replace the dangling pointer with the next best value....
-        // There is still a race condition, for another thread to access it...
-        if (ctid <> 0) and not FCurrentProcess.GetThread(ctid, DummyThread) then
-          FCurrentThread := nil;
+          // TODO: replace the dangling pointer with the next best value....
+          // There is still a race condition, for another thread to access it...
+          if (ctid <> 0) and not FCurrentProcess.GetThread(ctid, DummyThread) then
+            FCurrentThread := nil;
+      end;
     end;
-    if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
+    if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then
+      Continue;
+    InterLockedExchange(FRunning, 0);
 
     (* Do not change CurrentProcess/Thread,
        unless the debugger can actually controll/debug those processes
@@ -937,8 +954,11 @@ begin
     begin
      case FPDEvent of
        deInternalContinue: AExit := False;
-       deBreakpoint: AExit := (FCurrentProcess.CurrentBreakpoint <> nil) or // no breakpoint? continue
-                              (FCurrentProcess.GetAndClearPauseRequested);
+       deBreakpoint: begin
+           b := FCurrentProcess.GetAndClearPauseRequested;
+           AExit := (FCurrentProcess.CurrentBreakpoint <> nil) or
+                    (b and (InterLockedExchangeAdd(FPauseRequest, 0) = 1))
+         end;
 {        deLoadLibrary :
           begin
             if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
@@ -956,11 +976,15 @@ begin
     end;
     if IsFinished then
       FreeAndNil(FCommand);
-  until AExit;
+  until AExit or (InterLockedExchangeAdd(FPauseRequest, 0) = 1);
 end;
 
 procedure TDbgController.SendEvents(out continue: boolean);
+var
+  HasPauseRequest: Boolean;
 begin
+  // reset pause request. If Pause() is called after this, it will be seen in the next loop
+  HasPauseRequest := InterLockedExchange(FPauseRequest, 0) = 1;
   case FPDEvent of
     deCreateProcess:
       begin
@@ -988,13 +1012,16 @@ begin
           OnHitBreakpointEvent(continue, nil);
         end;
         // but do not continue
+        HasPauseRequest := False;
         continue:=false;
       end;
     deBreakpoint:
       begin
-        continue:=false;
-        if assigned(OnHitBreakpointEvent) then
+        // If there is no breakpoint AND no pause-request then this is a deferred, allready handled pause request
+        continue := (FCurrentProcess.CurrentBreakpoint = nil) and (not HasPauseRequest);
+        if (not continue) and assigned(OnHitBreakpointEvent) then
           OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
+        HasPauseRequest := False;
       end;
     deExitProcess:
       begin
@@ -1008,6 +1035,7 @@ begin
         FProcessMap.Delete(FCurrentProcess.ProcessID);
         FCurrentProcess.Free;
         FCurrentProcess := nil;
+        HasPauseRequest := False;
         continue := false;
       end;
     deException:
@@ -1015,6 +1043,8 @@ begin
         continue:=false;
         if assigned(OnExceptionEvent) then
           OnExceptionEvent(continue, FCurrentProcess.ExceptionClass, FCurrentProcess.ExceptionMessage );
+        if not continue then
+          HasPauseRequest := False;
       end;
     deLoadLibrary:
       begin
@@ -1026,6 +1056,11 @@ begin
       end;
     else
       raise exception.create('Unknown debug controler state');
+  end;
+  if HasPauseRequest then begin
+    continue := False;
+    if assigned(OnHitBreakpointEvent) then
+      OnHitBreakpointEvent(continue, nil);
   end;
 
   if not &continue then begin
