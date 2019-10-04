@@ -4776,9 +4776,8 @@ begin
   ClearAccelKey(Widget);
 
   // untransient
-  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then
     UntransientWindow(PGtkWindow(Widget));
-  end;
 
   // callbacks
   RemoveCallbacks(Widget);
@@ -4862,8 +4861,7 @@ begin
     Result := rsBlank;
 end;
 
-function TGtk2WidgetSet.CreateAPIWidget(
-  AWinControl: TWinControl): PGtkWidget;
+function TGtk2WidgetSet.CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
 // currently only used for csFixed
 var
   Adjustment: PGTKAdjustment;
@@ -4877,23 +4875,21 @@ begin
   gtk_scrolled_window_set_policy(PGTKScrolledWindow(Result),
     GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 
-  Adjustment :=
-    gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Result));
+  Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Result));
   if Adjustment <> nil
   then with Adjustment^ do
   begin
     g_object_set_data(PGObject(Adjustment), odnScrollBar,
-                        PGTKScrolledWindow(Result)^.VScrollBar);
+                      PGTKScrolledWindow(Result)^.VScrollBar);
     Step_Increment := 1;
   end;
 
-  Adjustment :=
-    gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Result));
+  Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Result));
   if Adjustment <> nil
   then with Adjustment^ do
   begin
     g_object_set_data(PGObject(Adjustment), odnScrollBar,
-                        PGTKScrolledWindow(Result)^.HScrollBar);
+                      PGTKScrolledWindow(Result)^.HScrollBar);
     Step_Increment := 1;
   end;
 
