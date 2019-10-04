@@ -218,27 +218,24 @@ end;
 -------------------------------------------------------------------------------}
 function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
+  MainWidget, ClientWidget: PGtkWidget;
   WinWidgetInfo: PWidgetInfo;
-  LCLObject: TObject;
+  GdkWidget, GdkClient: PGDKWindow;
   NewEventMask: TGdkEventMask;
+  LCLObject: TObject;
   TheWinControl: TWinControl;
-  ClientWidget: PGtkWidget;
-  MainWidget: PGtkWidget;
 begin
-  Result := CallBackDefaultReturn;
-  //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
-
+  Result:=CallBackDefaultReturn;
   if Data=nil then ;
   {$IFDEF EventTrace}
   EventTrace('realizeafter', nil);
   {$ENDIF}
-
   MainWidget:=GetMainWidget(Widget);
-  WinWidgetInfo:=GetOrCreateWidgetInfo(MainWidget);
+  Assert(Assigned(MainWidget), 'gtkRealizeAfterCB: MainWidget not assigned.');
+  WinWidgetInfo:=g_object_get_data(PGObject(MainWidget), 'widgetinfo');
   Assert(Assigned(WinWidgetInfo), 'gtkRealizeAfterCB: WinWidgetInfo not assigned.');
   LCLObject:=GetLCLObject(MainWidget);
   if LCLObject=nil then exit;
-  ClientWidget:=GetFixedWidget(Widget);
   if (LCLObject is TWinControl) then
     TheWinControl:=TWinControl(LCLObject)
   else
@@ -246,25 +243,25 @@ begin
 
   // set extra signal masks after the widget window is created
   // define extra events we're interrested in
-  //write('GTKRealizeAfterCB ');
   //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
   //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
   if (TheWinControl<>nil) then begin
     //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
-    NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
-                  or WinWidgetInfo^.EventMask;
+    GdkWidget:=GetControlWindow(Widget);
+    NewEventMask:=gdk_window_get_events(GdkWidget) or WinWidgetInfo^.EventMask;
     gtk_widget_add_events(Widget,NewEventMask);
-    gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
+    gdk_window_set_events(GdkWidget,NewEventMask);
 
-    if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
-    and (GetControlWindow(ClientWidget)<>GetControlWindow(Widget)) then begin
+    ClientWidget:=GetFixedWidget(Widget);
+    GdkClient:=GetControlWindow(ClientWidget);
+    if (ClientWidget<>nil) and (GdkClient<>nil) and (GdkClient<>GdkWidget) then
+    begin
       //DebugLn(['gtkRealizeAfterCB ClientWindow<>Window']);
-      NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
-                    or WinWidgetInfo^.EventMask;
+      NewEventMask:=gdk_window_get_events(GdkClient) or WinWidgetInfo^.EventMask;
       gtk_widget_add_events(ClientWidget,WinWidgetInfo^.EventMask);
-      gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
+      gdk_window_set_events(GdkClient,NewEventMask);
     end;
     //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
