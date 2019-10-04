@@ -348,11 +348,13 @@ begin
   else
   begin
     // gObject
-    if AGTKObject = nil then gObject := ObjectToGTKObject(ALCLObject)
-    else gObject := AGTKObject;
+    if AGTKObject = nil then
+      gObject := ObjectToGTKObject(ALCLObject)
+    else
+      gObject := AGTKObject;
     if gObject = nil then Exit;
 
-    Info:=GetOrCreateWidgetInfo(gObject);
+    Info:=GetWidgetInfo(gObject);
 
     // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
     gFixed := PGTKObject(GetFixedWidget(gObject));
@@ -758,7 +760,7 @@ begin
     if gFixed = nil then gFixed := gObject;
 
     // gCore is the main widget (e.g. TListView has this)
-    gCore:= PGtkObject(GetOrCreateWidgetInfo(gObject)^.CoreWidget);
+    gCore:= PGtkObject(GetWidgetInfo(gObject)^.CoreWidget);
   end;
 
   case AMsg of

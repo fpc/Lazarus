@@ -686,7 +686,7 @@ function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
 var
   Info: PWidgetInfo;
 begin
-  Info := GetOrCreateWidgetInfo(GtkObject);
+  Info := GetWidgetInfo(GtkObject);
   if Info = nil then Exit(0);
   Inc(Info^.ChangeLock, LockOffset);
   Result := Info^.ChangeLock;
@@ -3888,7 +3888,8 @@ begin
   if ParentWidget = nil
   then raise EInterfaceException.Create('SetFixedWidget ParentWidget=nil');
   
-  WidgetInfo := GetOrCreateWidgetInfo(ParentWidget);
+  WidgetInfo := GetWidgetInfo(ParentWidget);
+  Assert(Assigned(WidgetInfo), 'SetFixedWidget: WidgetInfo = Nil.');
   WidgetInfo^.ClientWidget := FixedWidget;
   //TODO: remove old compatebility
   g_object_set_data(ParentWidget, 'Fixed', FixedWidget)
@@ -5067,7 +5068,8 @@ begin
   if (csfUpdateSignalMask in ASFlags) and (AReqSignalMask <> 0)
   then begin
     MainWidget := GetMainWidget(PGtkWidget(AnObject));
-    WinWidgetInfo := GetOrCreateWidgetInfo(MainWidget);
+    WinWidgetInfo := g_object_get_data(PGObject(MainWidget), 'widgetinfo');
+    Assert(Assigned(MainWidget) and Assigned(WinWidgetInfo), 'ConnectSignal: Widget or WidgetInfo = Nil.');
     WinWidgetInfo^.EventMask := WinWidgetInfo^.EventMask or AReqSignalMask;
   end;
   
