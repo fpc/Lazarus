@@ -6004,7 +6004,7 @@ begin
     end else
       ResizeRow(Index, y-OffIni);
     HeaderSizing(false, Index, y-OffIni);
-    Result:=True;
+    exit(true);
   end else
   if (fGridState=gsNormal) and (RowCount>FixedRows) and
      ((FlipX(X)<FGCache.FixedWidth) or
