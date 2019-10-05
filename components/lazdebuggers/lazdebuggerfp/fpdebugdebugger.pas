@@ -113,6 +113,7 @@ type
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
     procedure ClearWatchEvalList;
   protected
+    procedure GetCurrentThreadAndStackFrame(out AThreadId, AStackFrame: Integer);
     function GetContextForEvaluate(const ThreadId, StackFrame: Integer): TFpDbgInfoContext;
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -751,13 +752,7 @@ begin
     exit;
   end;
 
-  CurThreadId := Debugger.Threads.CurrentThreads.CurrentThreadId;
-  CurStackList := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[CurThreadId];
-  if CurStackList <> nil then
-    CurStackFrame := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[CurThreadId].CurrentIndex
-  else
-    CurStackFrame := 0;
-
+  TFpDebugDebugger(Debugger).GetCurrentThreadAndStackFrame(CurThreadId, CurStackFrame);
   AContext := FpDebugger.FindContext(CurThreadId, CurStackFrame);
   if AContext = nil then begin
     ALocals.SetDataValidity(ddsInvalid);
@@ -1356,15 +1351,7 @@ begin
     EvalFlags := AWatchValue.EvaluateFlags;
   end
   else begin
-    ThreadId := Threads.CurrentThreads.CurrentThreadId;
-    StackList := CallStack.CurrentCallStackList.EntriesForThreads[ThreadId];
-    if StackList <> nil then begin
-      StackFrame := CallStack.CurrentCallStackList.EntriesForThreads[ThreadId].CurrentIndex;
-      if StackFrame < 0 then
-        StackFrame := 0;
-    end
-    else
-      StackFrame := 0;
+    GetCurrentThreadAndStackFrame(ThreadId, StackFrame);
     DispFormat := wdfDefault;
     RepeatCnt := -1;
   end;
@@ -1561,6 +1548,22 @@ begin
       TWatchValue(FWatchEvalList[0]).RemoveFreeNotification(@DoWatchFreed);
       FWatchEvalList.Delete(0);
     end;
+end;
+
+procedure TFpDebugDebugger.GetCurrentThreadAndStackFrame(out AThreadId,
+  AStackFrame: Integer);
+var
+  CurStackList: TCallStackBase;
+begin
+  AThreadId := Threads.CurrentThreads.CurrentThreadId;
+  CurStackList := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
+  if CurStackList <> nil then begin
+    AStackFrame := CurStackList.CurrentIndex;
+    if AStackFrame < 0 then
+      AStackFrame := 0;
+  end
+  else
+    AStackFrame := 0;
 end;
 
 function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
