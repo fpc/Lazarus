@@ -1555,12 +1555,12 @@ var
   OldExpanded: boolean;
   OldChangeStep: integer;
   RootDesigner: TIDesigner;
+  CompEditDsg: TComponentEditorDesigner;
   APersistent: TPersistent;
   i: integer;
   NewVal: string;
   oldVal: array of string;
   isExcept: boolean;
-  CompEditDsg: TComponentEditorDesigner;
   prpInfo: PPropInfo;
   Editor: TPropertyEditor;
 begin
@@ -2368,7 +2368,7 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
+procedure TOICustomPropertyGrid.MouseDown(Button:TMouseButton; Shift:TShiftState;
   X,Y:integer);
 var
   IconX,Index:integer;
@@ -4781,9 +4781,10 @@ var
   NewParent: TPersistent;
   NewSelection: TPersistentSelectionList;
   Candidates: TFPList = nil;
+  RootDesigner: TIDesigner;
+  CompEditDsg: TComponentEditorDesigner;
 begin
   if (Selection.Count < 1) then Exit;
-
   try
     Candidates := GetParentCandidates;
     if not ShowChangeParentDlg(Selection, Candidates, NewParentName) then
@@ -4796,14 +4797,23 @@ begin
     NewParent := FPropertyEditorHook.LookupRoot
   else
     NewParent := TWinControl(FPropertyEditorHook.LookupRoot).FindComponent(NewParentName);
-
   if not (NewParent is TWinControl) then Exit;
+
+  // Find designer for Undo actions.
+  RootDesigner := FindRootDesigner(FPropertyEditorHook.LookupRoot);
+  if (RootDesigner is TComponentEditorDesigner) then
+    CompEditDsg := TComponentEditorDesigner(RootDesigner) //if CompEditDsg.IsUndoLocked then Exit;
+  else
+    CompEditDsg := nil;
 
   for i := 0 to Selection.Count-1 do
   begin
     if not (Selection[i] is TControl) then Continue;
     Control := TControl(Selection[i]);
     if Control.Parent = nil then Continue;
+    if Assigned(CompEditDsg) then
+      CompEditDsg.AddUndoAction(Control, uopChange, i=0, 'Parent',
+                                Control.Parent.Name, NewParentName);
     Control.Parent := TWinControl(NewParent);
   end;
 

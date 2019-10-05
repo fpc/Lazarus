@@ -28,9 +28,9 @@ uses
   // LazUtils
   LazLoggerBase,
   // LCL
-  LCLProc, Dialogs, Controls, ComCtrls, Graphics,
+  LCLProc, Dialogs, Forms, Controls, ComCtrls, Graphics,
   // IdeIntf
-  ObjInspStrConsts, PropEdits, PropEditUtils, IDEImagesIntf;
+  ObjInspStrConsts, PropEdits, PropEditUtils, ComponentEditors, IDEImagesIntf;
   
 type
   TCTVGetImageIndexEvent = procedure(APersistent: TPersistent;
@@ -341,22 +341,32 @@ end;
 
 procedure TComponentTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
-  Node, SelNode: TTreeNode;
+  Node, ParentNode, SelNode: TTreeNode;
   ACollection: TCollection;
-  AContainer: TWinControl;
+  AContainer, OldContainer: TWinControl;
   AControl: TControl;
-  ParentNode: TTreeNode;
   InsertType: TTreeViewInsertMarkType;
+  RootDesigner: TIDesigner;
+  CompEditDsg: TComponentEditorDesigner;
   NewIndex, AIndex: Integer;
   ok: Boolean;
 begin
   GetComponentInsertMarkAt(X, Y, Node, InsertType);
   SetInsertMark(nil, tvimNone);
-  ParentNode := Node;
   if InsertType in [tvimAsNextSibling, tvimAsPrevSibling] then
-    ParentNode := ParentNode.Parent;
+    ParentNode := Node.Parent
+  else
+    ParentNode := Node;
   if Assigned(ParentNode) then
   begin
+    // Find designer for Undo actions.
+    Assert(Assigned(FPropertyEditorHook), 'TComponentTreeView.DragDrop: PropertyEditorHook=Nil.');
+    RootDesigner := FindRootDesigner(FPropertyEditorHook.LookupRoot);
+    if (RootDesigner is TComponentEditorDesigner) then
+      CompEditDsg := TComponentEditorDesigner(RootDesigner) //if CompEditDsg.IsUndoLocked then Exit;
+    else
+      CompEditDsg := nil;
+
     if TObject(ParentNode.Data) is TWinControl then
     begin
       AContainer := TWinControl(ParentNode.Data);
@@ -368,7 +378,11 @@ begin
           AControl := TControl(SelNode.Data);
           ok:=false;
           try
+            OldContainer := AControl.Parent;
             AControl.Parent := AContainer;
+            if Assigned(CompEditDsg) then
+              CompEditDsg.AddUndoAction(AControl, uopChange, True, 'Parent',
+                                        OldContainer.Name, AContainer.Name);
             ok:=true;
             DoModified;
           except

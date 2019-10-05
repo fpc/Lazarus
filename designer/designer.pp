@@ -305,7 +305,7 @@ type
     function Undo: Boolean; override;
     function Redo: Boolean; override;
     function AddUndoAction(const aPersistent: TPersistent; aOpType: TUndoOpType;
-      StartNewGroup: boolean; aFieldName: string; const aOldVal, aNewVal: variant): boolean; override;
+      StartNewGroup: boolean; aFieldName: string; const aOldVal, aNewVal: Variant): boolean; override;
     function IsUndoLocked: boolean; override;
     procedure ClearUndoItem(AIndex: Integer);
     procedure AddComponent(const NewRegisteredComponent: TRegisteredComponent;
@@ -1418,96 +1418,84 @@ begin
 end;
 
 procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
+var
+  AValue: Variant;
+  ValueStr, tmpFieldN: string;
+  tmpObj: TComponent;
 
-  procedure SetPropVal(AVal: variant);
+  procedure SetPublished;         // published field
   var
-    tmpStr, tmpFieldN, str: string;
-    tmpCompN: TComponentName;
-    tmpObj: TObject;
-    tmpInt: integer;
     aPropType: PTypeInfo;
+    s: string;
+    i: integer;
   begin
-    tmpCompN := FUndoList[FUndoCurr].compName;
-    tmpFieldN := FUndoList[FUndoCurr].fieldName;
-    if tmpFieldN = 'Name' then
-    begin
-      if IsActUndo then
-        tmpCompN := FUndoList[FUndoCurr].newVal
-      else
-        tmpCompN := FUndoList[FUndoCurr].oldVal;
-    end;
-
-    if FForm.Name <> tmpCompN then
-      tmpObj := TObject(FForm.FindSubComponent(tmpCompN))
-    else
-      tmpObj := TObject(FForm);
-
-    if VarIsError(AVal) or VarIsEmpty(AVal) or VarIsNull(AVal) then
-      ShowMessage('error: invalid var type');
-    tmpStr := VarToStr(AVal);
-    //DebugLn(['TDesigner.ExecuteUndoItem: FForm=', FForm.Name, ', CompName=', tmpCompN,
-    //  ', FieldName=', tmpFieldN, ', tmpObj=', tmpObj, ', tmpStr=', tmpStr, ', IsActUndo=', IsActUndo]);
-
-    if FUndoList[FUndoCurr].propInfo<>nil then
-    begin
-      aPropType:=FUndoList[FUndoCurr].propInfo^.propType;
-      case aPropType^.Kind of
-        tkInteger, tkInt64:
-        begin
-          if (aPropType^.Name = 'TColor') or
-             (aPropType^.Name = 'TGraphicsColor') then
-            SetOrdProp(tmpObj, tmpFieldN, StringToColor(tmpStr))
-          else if aPropType^.Name = 'TCursor' then
-            SetOrdProp(tmpObj, tmpFieldN, StringToCursor(tmpStr))
-          else
-            SetOrdProp(tmpObj, tmpFieldN, StrToInt(tmpStr));
-        end;
-        tkChar, tkWChar, tkUChar:
-        begin
-          if Length(tmpStr) = 1 then
-            SetOrdProp(tmpObj, tmpFieldN, Ord(tmpStr[1]))
-          else if (tmpStr[1] = '#') then
-          begin
-            str := Copy(tmpStr, 2, Length(tmpStr) - 1);
-            if TryStrToInt(str, tmpInt) and (tmpInt >= 0) and (tmpInt <= High(Byte)) then
-              SetOrdProp(tmpObj, tmpFieldN, tmpInt);
-          end;
-        end;
-        tkEnumeration:
-          SetEnumProp(tmpObj, tmpFieldN, tmpStr);
-        tkFloat:
-          SetFloatProp(tmpObj, tmpFieldN, StrToFloat(tmpStr));
-        tkBool:
-          SetOrdProp(tmpObj, tmpFieldN, Integer(StrToBoolOI(tmpStr)));
-        tkString, tkLString, tkAString, tkUString, tkWString:
-          SetStrProp(tmpObj, tmpFieldN, tmpStr);
-        tkSet:
-          SetSetProp(tmpObj, tmpFieldN, tmpStr);
-        tkVariant:
-          SetVariantProp(tmpObj, tmpFieldN, AVal);
-        else
-          ShowMessage(Format('error: unknown TTypeKind(%d)', [Integer(aPropType^.Kind)]));
-      end;
-    end else begin
-      // field is not published
-      if tmpObj is TComponent then
+    aPropType:=FUndoList[FUndoCurr].propInfo^.propType;
+    case aPropType^.Kind of
+      tkInteger, tkInt64:
       begin
-        // special case: TComponent.Left,Top
-        if CompareText(tmpFieldN,'Left')=0 then
-          SetDesignInfoLeft(TComponent(tmpObj),StrToInt(tmpStr))
-        else if CompareText(tmpFieldN,'Top')=0 then
-          SetDesignInfoTop(TComponent(tmpObj),StrToInt(tmpStr));
+        if (aPropType^.Name = 'TColor') or
+           (aPropType^.Name = 'TGraphicsColor') then
+          SetOrdProp(tmpObj, tmpFieldN, StringToColor(ValueStr))
+        else if aPropType^.Name = 'TCursor' then
+          SetOrdProp(tmpObj, tmpFieldN, StringToCursor(ValueStr))
+        else
+          SetOrdProp(tmpObj, tmpFieldN, StrToInt(ValueStr));
+      end;
+      tkChar, tkWChar, tkUChar:
+      begin
+        if Length(ValueStr) = 1 then
+          SetOrdProp(tmpObj, tmpFieldN, Ord(ValueStr[1]))
+        else if (ValueStr[1] = '#') then
+        begin
+          s := Copy(ValueStr, 2, Length(ValueStr) - 1);
+          if TryStrToInt(s, i) and (i >= 0) and (i <= High(Byte)) then
+            SetOrdProp(tmpObj, tmpFieldN, i);
+        end;
+      end;
+      tkEnumeration:
+        SetEnumProp(tmpObj, tmpFieldN, ValueStr);
+      tkFloat:
+        SetFloatProp(tmpObj, tmpFieldN, StrToFloat(ValueStr));
+      tkBool:
+        SetOrdProp(tmpObj, tmpFieldN, Integer(StrToBoolOI(ValueStr)));
+      tkString, tkLString, tkAString, tkUString, tkWString:
+        SetStrProp(tmpObj, tmpFieldN, ValueStr);
+      tkSet:
+        SetSetProp(tmpObj, tmpFieldN, ValueStr);
+      tkVariant:
+        SetVariantProp(tmpObj, tmpFieldN, AValue);
+      else
+        ShowMessage(Format('error: unknown TTypeKind(%d)', [Integer(aPropType^.Kind)]));
+    end;
+  end;
+
+  procedure SetUnPublished;       // field is not published
+  var
+    NewParent: TComponent;
+  begin
+    if tmpObj is TControl then
+    begin
+      if CompareText(tmpFieldN,'Parent')=0 then  // Special treatment for Parent.
+      begin
+        if FForm.Name <> ValueStr then           // Find the parent by name.
+          NewParent := FForm.FindComponent(ValueStr)
+        else
+          NewParent := FForm;
+        Assert(NewParent is TWinControl, 'TDesigner.ExecuteUndoItem: New Parent "'
+                                         + DbgS(NewParent) + '" is not a TWinControl.');
+        TControl(tmpObj).Parent := TWinControl(NewParent);
       end;
     end;
-    PropertyEditorHook.Modified(tmpObj);
   end;
 
 var
   CurTextCompStream: TMemoryStream;
   SaveControlSelection: TControlSelection;
+  CompN: TComponentName;
 begin
-  if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopAdd])) or
-    (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopDelete])) then
+  // Undo Add component
+  if (IsActUndo and (FUndoList[FUndoCurr].opType = uopAdd)) or
+    (not IsActUndo and (FUndoList[FUndoCurr].opType = uopDelete)) then
   begin
     Selection.BeginUpdate;
     try
@@ -1527,8 +1515,9 @@ begin
     end;
   end;
 
-  if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopDelete])) or
-    (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopAdd])) then
+  // Undo Delete component
+  if (IsActUndo and (FUndoList[FUndoCurr].opType = uopDelete)) or
+    (not IsActUndo and (FUndoList[FUndoCurr].opType = uopAdd)) then
   begin
     CurTextCompStream := TMemoryStream.Create;
     try
@@ -1543,14 +1532,42 @@ begin
     end;
   end;
 
+  // Undo Change properties of component
   if FUndoList[FUndoCurr].opType = uopChange then
   begin
     Inc(FUndoLock);
     try
-      if IsActUndo then
-        SetPropVal(FUndoList[FUndoCurr].oldVal)
+      tmpFieldN := FUndoList[FUndoCurr].fieldName;
+      if tmpFieldN = 'Name' then
+      begin
+        if IsActUndo then
+          CompN := FUndoList[FUndoCurr].newVal
+        else
+          CompN := FUndoList[FUndoCurr].oldVal;
+      end
       else
-        SetPropVal(FUndoList[FUndoCurr].newVal);
+        CompN := FUndoList[FUndoCurr].compName;
+
+      if FForm.Name <> CompN then
+        tmpObj := FForm.FindSubComponent(CompN)
+      else
+        tmpObj := FForm;
+
+      if IsActUndo then
+        AValue := FUndoList[FUndoCurr].oldVal
+      else
+        AValue := FUndoList[FUndoCurr].newVal;
+      if VarIsError(AValue) or VarIsEmpty(AValue) or VarIsNull(AValue) then
+        ShowMessage('error: invalid var type');
+      ValueStr := VarToStr(AValue);
+      //DebugLn(['TDesigner.ExecuteUndoItem: FForm=', FForm.Name, ', CompName=', CompN,
+      //  ', FieldName=', tmpFieldN, ', tmpObj=', tmpObj, ', tmpStr=', ValueStr, ', IsActUndo=', IsActUndo]);
+
+      if FUndoList[FUndoCurr].propInfo<>nil then
+        SetPublished
+      else
+        SetUnPublished;
+      PropertyEditorHook.Modified(tmpObj);
     finally
       Dec(FUndoLock);
     end;
@@ -1785,8 +1802,8 @@ begin
 end;
 
 function TDesigner.AddUndoAction(const aPersistent: TPersistent;
-  aOpType: TUndoOpType; StartNewGroup: boolean; aFieldName: string; const aOldVal,
-  aNewVal: variant): boolean;
+  aOpType: TUndoOpType; StartNewGroup: boolean; aFieldName: string;
+  const aOldVal, aNewVal: Variant): boolean;
 
   procedure ShiftUndoList;
   var
