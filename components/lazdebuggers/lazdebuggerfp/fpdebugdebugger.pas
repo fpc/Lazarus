@@ -95,6 +95,8 @@ type
     FCacheLocation: TDBGPtr;
     FCacheBoolean: boolean;
     FCachePointer: pointer;
+    FCacheThreadId, FCacheStackFrame: Integer;
+    FCacheContext: TFpDbgInfoContext;
     {$endif linux}
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
@@ -152,13 +154,15 @@ type
     procedure DoReadData;
     procedure DoPrepareCallStackEntryList;
     procedure DoFreeBreakpoint;
+    procedure DoFindContext;
     {$endif linux}
     function AddBreak(const ALocation: TDbgPtr): TFpInternalBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal): TFpInternalBreakpoint; overload;
     procedure FreeBreakpoint(const ABreakpoint: TFpInternalBreakpoint);
-    function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
+    function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; inline;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
-    procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil);
+    procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
+    function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext; inline;
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
@@ -658,7 +662,7 @@ begin
 
       params := '';
       if (ProcVal <> nil) then begin
-        AContext := AController.CurrentProcess.FindContext(CurThreadId, e.Index);
+        AContext := FpDebugger.FindContext(CurThreadId, e.Index);
         if AContext <> nil then begin
           // TODO: TDbgCallstackEntry.GetParamsAsString
           if AContext <> nil then begin
@@ -754,7 +758,7 @@ begin
   else
     CurStackFrame := 0;
 
-  AContext := AController.CurrentProcess.FindContext(CurThreadId, CurStackFrame);
+  AContext := FpDebugger.FindContext(CurThreadId, CurStackFrame);
   if AContext = nil then begin
     ALocals.SetDataValidity(ddsInvalid);
     exit;
@@ -870,7 +874,7 @@ begin
     bpkSource:    FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Source, cardinal(Line));
   else
     Raise Exception.Create('Breakpoints of this kind are not suported.');
-      end;
+          end;
   debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.SetBreak ' ]);
   FIsSet:=true;
   if not assigned(FInternalBreakpoint) then
@@ -1562,7 +1566,7 @@ end;
 function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
   StackFrame: Integer): TFpDbgInfoContext;
 begin
-  Result := FDbgController.CurrentProcess.FindContext(ThreadId, StackFrame);
+  Result := FindContext(ThreadId, StackFrame);
   if Result <> nil then
     Result.MemManager.DefaultContext := Result;
 end;
@@ -1734,7 +1738,7 @@ begin
 
         if assigned(ABreakPoint) then
           ABreakPoint.Hit(&continue);
-      end;
+        end;
     end
   else if FQuickPause then
     begin
@@ -1747,8 +1751,8 @@ begin
     ALocationAddr := GetLocation;
 
   // if &continue then SetState(dsInternalPause) else
-  SetState(dsPause);
-  DoCurrent(ALocationAddr);
+    SetState(dsPause);
+    DoCurrent(ALocationAddr);
 
   if &continue then begin
     // wait for any watches for Snapshots
@@ -2064,6 +2068,11 @@ begin
   FCacheBreakpoint.Free;
 end;
 
+procedure TFpDebugDebugger.DoFindContext;
+begin
+  FCacheContext := FDbgController.CurrentProcess.FindContext(FCacheThreadId, FCacheStackFrame);
+end;
+
 {$endif linux}
 
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr
@@ -2151,6 +2160,18 @@ begin
   ExecuteInDebugThread(@DoPrepareCallStackEntryList);
 {$else linux}
   AThread.PrepareCallStackEntryList(AFrameRequired);
+{$endif linux}
+end;
+
+function TFpDebugDebugger.FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
+begin
+{$ifdef linux}
+  FCacheThreadId := AThreadId;
+  FCacheStackFrame := AStackFrame;
+  ExecuteInDebugThread(@DoFindContext);
+  Result := FCacheContext;
+{$else linux}
+  Result := FDbgController.CurrentProcess.FindContext(AThreadId, AStackFrame);
 {$endif linux}
 end;
 
