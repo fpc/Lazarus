@@ -808,7 +808,9 @@ type
     FHeaderPushZones: TGridZoneSet;
     FCursorChangeLock: Integer;
     FCursorState: TGridCursorState;
+    FColRowDragIndicatorColor: TColor;
     FSavedCursor: TCursor;
+    FSpecialCursors: array[gcsColWidthChanging..gcsDragging] of TCursor;
     FSizing: TSizingRec;
     FRowAutoInserted: Boolean;
     FMouseWheelOption: TMouseWheelOption;
@@ -873,6 +875,7 @@ type
     function  GetSelectedRange(AIndex: Integer): TGridRect;
     function  GetSelectedRangeCount: Integer;
     function  GetSelection: TGridRect;
+    function  GetSpecialCursor(ACursorState: TGridCursorState): TCursor;
     function  GetTopRow: Longint;
     function  GetVisibleColCount: Integer;
     function  GetVisibleGrid: TRect;
@@ -902,6 +905,7 @@ type
     procedure SetCol(AValue: Integer);
     procedure SetColWidths(Acol: Integer; Avalue: Integer);
     procedure SetColCount(AValue: Integer);
+    procedure SetColRowDragIndicatorColor(const AValue: TColor);
     procedure SetDefColWidth(AValue: Integer);
     procedure SetDefRowHeight(AValue: Integer);
     procedure SetDefaultDrawing(const AValue: Boolean);
@@ -921,9 +925,10 @@ type
     procedure SetScrollBars(const AValue: TScrollStyle);
     procedure SetSelectActive(const AValue: Boolean);
     procedure SetSelection(const AValue: TGridRect);
+    procedure SetSpecialCursor(ACursorState: TGridCursorState; const AValue: TCursor);
     procedure SetTopRow(const AValue: Integer);
     function  StartColSizing(const X, Y: Integer): boolean;
-    procedure ChangeCursor(ACursor: TCursor);
+    procedure ChangeCursor(ACursor: TCursor; ASaveCurrentCursor: Boolean = true);
     function  TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
     procedure TryScrollTo(aCol,aRow: Integer; ClearColOff, ClearRowOff: Boolean);
     procedure UpdateCachedSizes;
@@ -1188,6 +1193,9 @@ type
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount default 5;
     property ColRow: TPoint read GetQuickColRow write SetQuickColRow;
+    property ColRowDraggingCursor: TCursor index gcsDragging read GetSpecialCursor write SetSpecialCursor default crMultiDrag;
+    property ColRowDragIndicatorColor: TColor read FColRowDragIndicatorColor write SetColRowDragIndicatorColor default clRed;
+    property ColSizingCursor: TCursor index gcsColWidthChanging read GetSpecialCursor write SetSpecialCursor default crHSplit;
     property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
@@ -1239,6 +1247,7 @@ type
     property RangeSelectMode: TRangeSelectMode read FRangeSelectMode write SetRangeSelectMode default rsmSingle;
     property Row: Integer read FRow write SetRow;
     property RowCount: Integer read GetRowCount write SetRowCount default 5;
+    property RowSizingCursor: TCursor index gcsRowHeightChanging read GetSpecialCursor write SetSpecialCursor default crVSplit;
     property RowHeights[aRow: Integer]: Integer read GetRowHeights write SetRowHeights;
     property SaveOptions: TSaveOptions read FsaveOptions write FSaveOptions;
     property SelectActive: Boolean read FSelectActive write SetSelectActive;
@@ -1554,6 +1563,9 @@ type
 //    property CellHintPriority;
     property Color;
     property ColCount;
+    property ColRowDraggingCursor;
+    property ColRowDragIndicatorColor;
+    property ColSizingCursor;
     property ColumnClickSorts;
     property Columns;
     property Constraints;
@@ -1587,6 +1599,7 @@ type
     property PopupMenu;
     property RangeSelectMode;
     property RowCount;
+    property RowSizingCursor;
     property ScrollBars;
     property ShowHint;
     property TabAdvance;
@@ -1792,6 +1805,9 @@ type
     property CellHintPriority;
     property Color;
     property ColCount;
+    property ColRowDraggingCursor;
+    property ColRowDragIndicatorColor;
+    property ColSizingCursor;
     property ColumnClickSorts;
     property Columns;
     property Constraints;
@@ -1825,6 +1841,7 @@ type
     property PopupMenu;
     property RangeSelectMode;
     property RowCount;
+    property RowSizingCursor;
     property ScrollBars;
     property ShowHint;
     property TabAdvance;
@@ -2848,11 +2865,13 @@ begin
 
 end;
 
-procedure TCustomGrid.ChangeCursor(ACursor: TCursor);
+procedure TCustomGrid.ChangeCursor(ACursor: TCursor;
+  ASaveCurrentCursor: Boolean = true);
 begin
   if FCursorChangeLock = 0 then
   begin
-    FSavedCursor := Cursor;
+    if ASaveCurrentCursor then
+      FSavedCursor := Cursor;
     inc(FCursorChangeLock);
     Cursor := ACursor;
     dec(FCursorChangeLock);
@@ -4156,7 +4175,7 @@ begin
     Canvas.Polygon([Point(x,y+dy),point(x,y-dy),point(x-dx,y), point(x,y+dy)]);
     {$else}
     Canvas.Pen.Width:=3;
-    Canvas.Pen.Color:=clRed;
+    Canvas.Pen.Color:=FColRowDragIndicatorColor;
     Canvas.MoveTo(fMoveLast.y, 0);
     Canvas.Lineto(fMovelast.y, FGCache.MaxClientXY.Y);
     Canvas.Pen.Width:=1;
@@ -5830,9 +5849,22 @@ begin
   Result:=FRange;
 end;
 
+function TCustomGrid.GetSpecialCursor(ACursorState: TGridCursorState): TCursor;
+begin
+  Result := FSpecialCursors[ACursorState];
+end;
+
 function TCustomGrid.GetSmoothScroll(Which: Integer): Boolean;
 begin
   Result := goSmoothScroll in Options;
+end;
+
+procedure TCustomGrid.SetColRowDragIndicatorColor(const AValue: TColor);
+begin
+  if FColRowDragIndicatorColor = AValue then exit;
+  FColRowDragIndicatorColor := AValue;
+  if FGridState = gsColMoving then
+    DrawColRowMoving;
 end;
 
 procedure TCustomGrid.SetDefaultDrawing(const AValue: Boolean);
@@ -5884,6 +5916,16 @@ begin
       Invalidate;
     end;
   end;
+end;
+
+procedure TCustomGrid.SetSpecialCursor(ACursorState: TGridCursorState;
+  const AValue: TCursor);
+begin
+  if AValue = GetSpecialCursor(ACursorState) then
+    exit;
+  FSpecialCursors[ACursorState] := AValue;
+  if FCursorState <> gcsDefault then
+    ChangeCursor(AValue, false);
 end;
 
 function TCustomGrid.doColSizing(X, Y: Integer): Boolean;
@@ -5970,7 +6012,7 @@ begin
         if FCursorState<>gcsColWidthChanging then begin
           PrevLine := false;
           PrevOffset := -1;
-          ChangeCursor(crHSplit);
+          ChangeCursor(ColSizingCursor);
           FCursorState := gcsColWidthChanging;
         end;
         exit(true);
@@ -6036,7 +6078,7 @@ begin
     if (Index>=FFixedRows)and(Abs(Offset-Y)<=varColRowBorderTolerance) then begin
       // start resizing
       if FCursorState<>gcsRowHeightChanging then begin
-        ChangeCursor(crVSplit);
+        ChangeCursor(RowSizingCursor);
         FCursorState := gcsRowHeightChanging;
         PrevLine := False;
         PrevOffset := -1;
@@ -6060,7 +6102,7 @@ begin
   with FGCache do begin
 
     if (Abs(ClickMouse.X-X)>FDragDX) and (FCursorState<>gcsDragging) then begin
-      ChangeCursor(crMultiDrag);
+      ChangeCursor(ColRowDraggingCursor);
       FCursorState := gcsDragging;
       ResetLastMove;
     end;
@@ -6096,7 +6138,7 @@ begin
   with FGCache do begin
 
     if (FCursorState<>gcsDragging) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
-      ChangeCursor(crMultiDrag);
+      ChangeCursor(ColRowDraggingCursor);
       FCursorState := gcsDragging;
       ResetLastMove;
     end;
@@ -9757,6 +9799,12 @@ begin
   FDescImgInd:=-1;
 
   FValidateOnSetSelection := false;
+
+  FColRowDragIndicatorColor := clRed;
+
+  FSpecialCursors[gcsColWidthChanging] := crHSplit;
+  FSpecialCursors[gcsRowHeightChanging] := crVSplit;
+  FSpecialCursors[gcsDragging] := crMultiDrag;
 
   varRubberSpace := MulDiv(constRubberSpace, Screen.PixelsPerInch, 96);
   varCellPadding := MulDiv(constCellPadding, Screen.PixelsPerInch, 96);
