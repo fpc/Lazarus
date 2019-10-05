@@ -255,6 +255,7 @@ var
 function UnityAppIndicatorInit: Boolean;
 var
   Module: HModule;
+  DeskTop: String;
 
   function TryLoad(const ProcName: string; var Proc: Pointer): Boolean;
   begin
@@ -266,8 +267,9 @@ begin
   Result := False;
   if Loaded then
     Exit(Initialized);
-  Loaded:= True;
-  if GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP') <> 'Unity' then
+  Loaded := True;
+  DeskTop := GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP');
+  if (DeskTop = 'KDE') or (DeskTop = 'X-Cinnamon') then
   begin
     Initialized := False;
     Exit;
