@@ -4196,7 +4196,7 @@ begin
     Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y-dy), point(x-dx,y)]);
     {$else}
     Canvas.Pen.Width:=3;
-    Canvas.Pen.Color:=clRed;
+    Canvas.Pen.Color:=FColRowDragIndicatorColor;
     if UseRightToLeftAlignment then begin
       Canvas.MoveTo(FGCache.ClientRect.Right, FMoveLast.X);
       Canvas.LineTo(FlipX(FGCache.MaxClientXY.X), FMoveLast.X);
