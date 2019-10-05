@@ -251,9 +251,9 @@ type
     function GetEnumerator: TBreakLocationMapEnumerator;
   end;
 
-  { TFpInternalBreakpointBase }
+  { TFpDbgBreakpoint }
 
-  TFpInternalBreakpointBase = class(TObject)
+  TFpDbgBreakpoint = class(TObject)
   public
     function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; virtual; abstract;
     procedure SetBreak; virtual; abstract;
@@ -262,7 +262,7 @@ type
 
   { TFpInternalBreakpoint }
 
-  TFpInternalBreakpoint = class(TFpInternalBreakpointBase)
+  TFpInternalBreakpoint = class(TFpDbgBreakpoint)
   private
     FProcess: TDbgProcess;
     FLocation: TDBGPtrArray;
@@ -395,7 +395,7 @@ type
     function  FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; deprecated 'use FindContext(thread,stack)';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
-    procedure RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
+    procedure RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
     procedure DoBeforeBreakLocationMapChange;
     function  HasBreak(const ALocation: TDbgPtr): Boolean; // TODO: remove, once an address can have many breakpoints
     procedure RemoveThread(const AID: DWord);
@@ -1430,7 +1430,7 @@ begin
   end;
 end;
 
-procedure TDbgProcess.RemoveBreak(const ABreakPoint: TFpInternalBreakpoint);
+procedure TDbgProcess.RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
 begin
   if ABreakPoint=FCurrentBreakpoint then
     FCurrentBreakpoint := nil;

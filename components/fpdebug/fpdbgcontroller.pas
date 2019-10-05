@@ -17,7 +17,7 @@ uses
 type
 
   TOnCreateProcessEvent = procedure(var continue: boolean) of object;
-  TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TFpInternalBreakpoint) of object;
+  TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TFpDbgBreakpoint) of object;
   TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
 

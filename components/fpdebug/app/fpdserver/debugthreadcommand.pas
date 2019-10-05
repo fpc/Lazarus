@@ -746,7 +746,7 @@ end;
 
 function TFpDebugThreadRemoveBreakpointCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
-  Brk: TFpInternalBreakpoint;
+  Brk: TFpDbgBreakpoint;
 begin
   result := false;
   DoProcessLoop:=false;

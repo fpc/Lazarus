@@ -99,7 +99,7 @@ type
 
   TFpServerDbgController = class(TDbgController)
   private type
-    TBreakPointIdMap = specialize TFPGMap<Integer, TFpInternalBreakpoint>;
+    TBreakPointIdMap = specialize TFPGMap<Integer, TFpDbgBreakpoint>;
   function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
   private
     FBreakPointIdCnt: Integer;
@@ -108,10 +108,10 @@ type
     constructor Create; override;
     destructor Destroy; override;
     function AddInternalBreakPointToId(ABrkPoint: TFpInternalBreakpoint): Integer;
-    function GetInternalBreakPointFromId(AnId: Integer): TFpInternalBreakpoint;
-    function GetIdFromInternalBreakPoint(ABrkPoint: TFpInternalBreakpoint): Integer;
+    function GetInternalBreakPointFromId(AnId: Integer): TFpDbgBreakpoint;
+    function GetIdFromInternalBreakPoint(ABrkPoint: TFpDbgBreakpoint): Integer;
     procedure RemoveInternalBreakPoint(AnId: Integer);
-    //procedure RemoveInternalBreakPoint(ABrkPoint: TFpInternalBreakpoint);
+    //procedure RemoveInternalBreakPoint(ABrkPoint: TFpDbgBreakpoint);
     procedure ClearInternalBreakPoint;
   end;
 
@@ -166,7 +166,7 @@ type
     procedure FreeConsoleOutputThread;
   protected
     // Handlers for the FController-events
-    procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpInternalBreakpoint);
+    procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
     procedure FControllerProcessExitEvent(ExitCode: DWord);
     procedure FControllerCreateProcessEvent(var continue: boolean);
     procedure FControllerDebugInfoLoaded(Sender: TObject);
@@ -264,14 +264,14 @@ begin
 end;
 
 function TFpServerDbgController.GetInternalBreakPointFromId(AnId: Integer
-  ): TFpInternalBreakpoint;
+  ): TFpDbgBreakpoint;
 begin
   if not FBreakPointIdMap.TryGetData(AnId, Result) then
     Result := nil;
 end;
 
 function TFpServerDbgController.GetIdFromInternalBreakPoint(
-  ABrkPoint: TFpInternalBreakpoint): Integer;
+  ABrkPoint: TFpDbgBreakpoint): Integer;
 begin
   Result := FBreakPointIdMap.IndexOfData(ABrkPoint);
 end;
@@ -434,7 +434,7 @@ begin
 end;
 
 procedure TFpDebugThread.FControllerHitBreakpointEvent(var continue: boolean;
-  const Breakpoint: TFpInternalBreakpoint);
+  const Breakpoint: TFpDbgBreakpoint);
 var
   ADebugEvent: TFpDebugEvent;
   AnId: Integer;

@@ -83,7 +83,7 @@ type
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
-    FRaiseExceptionBreakpoint: TFpInternalBreakpoint;
+    FRaiseExceptionBreakpoint: TFpDbgBreakpoint;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
@@ -91,7 +91,7 @@ type
     {$ifdef linux}
     FCacheLine: cardinal;
     FCacheFileName: string;
-    FCacheBreakpoint: TFpInternalBreakpoint;
+    FCacheBreakpoint: TFpDbgBreakpoint;
     FCacheLocation: TDBGPtr;
     FCacheBoolean: boolean;
     FCachePointer: pointer;
@@ -103,7 +103,7 @@ type
     function SetSoftwareExceptionBreakpoint: boolean;
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
     procedure FreeDebugThread;
-    procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpInternalBreakpoint);
+    procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
     procedure FDbgControllerCreateProcessEvent(var {%H-}continue: boolean);
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
     procedure FDbgControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
@@ -156,9 +156,9 @@ type
     procedure DoFreeBreakpoint;
     procedure DoFindContext;
     {$endif linux}
-    function AddBreak(const ALocation: TDbgPtr): TFpInternalBreakpoint; overload;
-    function AddBreak(const AFileName: String; ALine: Cardinal): TFpInternalBreakpoint; overload;
-    procedure FreeBreakpoint(const ABreakpoint: TFpInternalBreakpoint);
+    function AddBreak(const ALocation: TDbgPtr): TFpDbgBreakpoint; overload;
+    function AddBreak(const AFileName: String; ALine: Cardinal): TFpDbgBreakpoint; overload;
+    procedure FreeBreakpoint(const ABreakpoint: TFpDbgBreakpoint);
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; inline;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
@@ -270,7 +270,7 @@ type
   private
     FSetBreakFlag: boolean;
     FResetBreakFlag: boolean;
-    FInternalBreakpoint: FpDbgClasses.TFpInternalBreakpoint;
+    FInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint;
     FIsSet: boolean;
     procedure SetBreak;
     procedure ResetBreak;
@@ -289,11 +289,11 @@ type
     FDelayedRemoveBreakpointList: TObjectList;
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TFpInternalBreakpoint);
+    procedure AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TFpDbgBreakpoint);
   public
     constructor Create(const ADebugger: TDebuggerIntf; const ABreakPointClass: TDBGBreakPointClass);
     destructor Destroy; override;
-    function Find(AIntBReakpoint: FpDbgClasses.TFpInternalBreakpoint): TDBGBreakPoint;
+    function Find(AIntBReakpoint: FpDbgClasses.TFpDbgBreakpoint): TDBGBreakPoint;
   end;
 
 procedure Register;
@@ -814,7 +814,7 @@ end;
 
 procedure TFPBreakpoints.DoStateChange(const AOldState: TDBGState);
 var
-  ABrkPoint: FpDbgClasses.TFpInternalBreakpoint;
+  ABrkPoint: FpDbgClasses.TFpDbgBreakpoint;
   i: Integer;
 begin
   inherited DoStateChange(AOldState);
@@ -824,7 +824,7 @@ begin
       debuglnEnter(DBG_BREAKPOINTS, ['TFPBreakpoints.DoStateChange  REMOVE DELAYED']);
       for i := FDelayedRemoveBreakpointList.Count-1 downto 0 do
       begin
-        ABrkPoint := FpDbgClasses.TFpInternalBreakpoint(FDelayedRemoveBreakpointList[i]);
+        ABrkPoint := FpDbgClasses.TFpDbgBreakpoint(FDelayedRemoveBreakpointList[i]);
         TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(ABrkPoint);
         TFpDebugDebugger(Debugger).FreeBreakpoint(ABrkPoint);
         ABrkPoint := nil;
@@ -835,7 +835,7 @@ begin
   end;
 end;
 
-procedure TFPBreakpoints.AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TFpInternalBreakpoint);
+procedure TFPBreakpoints.AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TFpDbgBreakpoint);
 begin
   FDelayedRemoveBreakpointList.Add(ABreakpoint);
 end;
@@ -852,7 +852,7 @@ begin
   inherited Destroy;
 end;
 
-function TFPBreakpoints.Find(AIntBReakpoint: FpDbgClasses.TFpInternalBreakpoint): TDBGBreakPoint;
+function TFPBreakpoints.Find(AIntBReakpoint: FpDbgClasses.TFpDbgBreakpoint): TDBGBreakPoint;
 var
   i: integer;
 begin
@@ -1691,7 +1691,7 @@ begin
 end;
 
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
-  var continue: boolean; const Breakpoint: TFpInternalBreakpoint);
+  var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
 var
   ABreakPoint: TDBGBreakPoint;
   ALocationAddr: TDBGLocationRec;
@@ -1738,7 +1738,7 @@ begin
 
         if assigned(ABreakPoint) then
           ABreakPoint.Hit(&continue);
-        end;
+      end;
     end
   else if FQuickPause then
     begin
@@ -1751,8 +1751,8 @@ begin
     ALocationAddr := GetLocation;
 
   // if &continue then SetState(dsInternalPause) else
-    SetState(dsPause);
-    DoCurrent(ALocationAddr);
+  SetState(dsPause);
+  DoCurrent(ALocationAddr);
 
   if &continue then begin
     // wait for any watches for Snapshots
@@ -2076,7 +2076,7 @@ end;
 {$endif linux}
 
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr
-  ): TFpInternalBreakpoint;
+  ): TFpDbgBreakpoint;
 begin
 {$ifdef linux}
   FCacheLocation:=ALocation;
@@ -2088,7 +2088,7 @@ begin
 end;
 
 function TFpDebugDebugger.AddBreak(const AFileName: String; ALine: Cardinal
-  ): TFpInternalBreakpoint;
+  ): TFpDbgBreakpoint;
 begin
 {$ifdef linux}
   FCacheFileName:=AFileName;
@@ -2101,7 +2101,7 @@ begin
 end;
 
 procedure TFpDebugDebugger.FreeBreakpoint(
-  const ABreakpoint: TFpInternalBreakpoint);
+  const ABreakpoint: TFpDbgBreakpoint);
 begin
 {$ifdef linux}
   if ABreakpoint = nil then exit;
