@@ -490,6 +490,9 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
+    FDelayedEventCtr: Integer;
+    FDelayedWMMove, FDelayedWMSize: Boolean;
+    FIsFirstOnShow, FIsFirstOnActivate: Boolean;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
@@ -499,7 +502,7 @@ type
     procedure CloseModal;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
-    procedure Moved(Data: PtrInt);
+    procedure DelayedEvent(Data: PtrInt);
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);
@@ -590,7 +593,6 @@ type
     procedure VisibleChanged; override;
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;
-    procedure DoSendBoundsToInterface; override;
     procedure DoAutoSize; override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure SetAutoScroll(Value: Boolean); override;
@@ -649,7 +651,8 @@ type
     function CanFocus: Boolean; override;
     procedure SetFocus; override;
     function SetFocusedControl(Control: TWinControl): Boolean ; virtual;
-    procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer; const
+                                ADefaultPosition: Boolean = False);
     procedure Show;
 
     function ShowModal: Integer; virtual;
