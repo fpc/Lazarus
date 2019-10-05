@@ -5244,10 +5244,6 @@ begin
   Result := Parent;
 end;
 
-{------------------------------------------------------------------------------
-  function TControl.IsParentOf(AControl: TControl): boolean;
-
- ------------------------------------------------------------------------------}
 function TControl.IsParentOf(AControl: TControl): boolean;
 begin
   Result := False;
@@ -5264,6 +5260,25 @@ begin
   Result := Self;
   while Assigned(Result.Parent) do
     Result := Result.Parent;
+end;
+
+function TControl.FindSubComponent(AName: string): TComponent;
+// Like TComponent.FindComponent but finds also a subcomponent which name is
+//  separated by a dot. For example 'LabeledEdit1.SubLabel'.
+var
+  i: Integer;
+  SubName: String;
+begin
+  i := Pos('.', AName);
+  if i > 0 then begin
+    SubName := Copy(AName, i+1, Length(AName));
+    Delete(AName, i, Length(AName));
+  end
+  else
+    SubName := '';
+  Result := FindComponent(AName);
+  if Assigned(Result) and (SubName<>'') then
+    Result := Result.FindComponent(SubName);
 end;
 
 {------------------------------------------------------------------------------
