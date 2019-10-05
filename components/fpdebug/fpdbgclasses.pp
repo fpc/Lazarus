@@ -1219,6 +1219,8 @@ begin
   else
   begin
     Thread.PrepareCallStackEntryList(AStackFrame + 1);
+    if AStackFrame >= Thread.CallStackEntryList.Count then
+      exit;
     Frame := Thread.CallStackEntryList[AStackFrame];
     if Frame = nil then
       exit;
