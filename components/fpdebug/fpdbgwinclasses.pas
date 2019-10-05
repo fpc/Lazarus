@@ -117,7 +117,7 @@ uses
   strutils,
   FpDbgInfo,
   FpDbgLoader,
-  DbgIntfBaseTypes,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
   LazLoggerBase, UTF8Process;
 
 type
@@ -146,8 +146,8 @@ type
     procedure SetSingleStepOverBreakPoint;
     procedure EndSingleStepOverBreakPoint;
     procedure SetSingleStep;
-    function AddWatchpoint(AnAddr: TDBGPtr): integer; override;
-    function RemoveWatchpoint(AnId: integer): boolean; override;
+    procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
+    function DetectHardwareWatchpoint: Pointer; override;
     procedure BeforeContinue; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function ReadThreadState: boolean;
@@ -175,6 +175,7 @@ type
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
     procedure InitializeLoaders; override;
+    function CreateWatchPointData: TFpWatchPointData; override;
   public
     constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer); override;
     destructor Destroy; override;
@@ -474,6 +475,11 @@ end;
 procedure TDbgWinProcess.InitializeLoaders;
 begin
   TDbgImageLoader.Create(FInfo.hFile).AddToLoaderList(LoaderList);
+end;
+
+function TDbgWinProcess.CreateWatchPointData: TFpWatchPointData;
+begin
+  Result := TFpIntelWatchPointData.Create;
 end;
 
 constructor TDbgWinProcess.Create(const AFileName: string; const AProcessID,
@@ -812,7 +818,7 @@ begin
   DebugLn([dbgs(MDebugEvent), ' ', Result]);
   for TDbgThread(t) in FThreadMap do begin
   if t.ReadThreadState then
-    DebugLn('Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
+    DebugLn('Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  DR7:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr7, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
   end;
   {$ENDIF}
 
@@ -1481,163 +1487,94 @@ begin
   FThreadContextChanged:=true;
 end;
 
-function TDbgWinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
-
-  function SetBreakpoint(var Dr, Dr7: DWORD; ind: byte): boolean;
-  begin
-    if (Dr=0) and ((Dr7 and (1 shl ind))=0) then
-    begin
-      Dr7 := Dr7 or (1 shl (ind*2));
-      Dr7 := Dr7 or ($30000 shl (ind*4));
-      Dr:=AnAddr;
-      FThreadContextChanged:=true;
-      Result := True;
-    end
-    else
-      Result := False;
-  end;
-  function SetBreakpoint(var Dr, Dr7: DWORD64; ind: byte): boolean;
-  begin
-    if (Dr=0) and ((Dr7 and (1 shl ind))=0) then
-    begin
-      Dr7 := Dr7 or (1 shl (ind*2));
-      Dr7 := Dr7 or ($30000 shl (ind*4));
-      Dr:=AnAddr;
-      FThreadContextChanged:=true;
-      Result := True;
-    end
-    else
-      Result := False;
-  end;
-
+procedure TDbgWinThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
 begin
-  result := -1;
   if FCurrentContext = nil then
     if not ReadThreadState then
       exit;
   {$ifdef cpux86_64}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
-    with FCurrentContext^.WOW do
-    if SetBreakpoint(Dr0, DR7, 0) then
-      result := 0
-    else if SetBreakpoint(Dr1, DR7, 1) then
-      result := 1
-    else if SetBreakpoint(Dr2, DR7, 2) then
-      result := 2
-    else if SetBreakpoint(Dr3, DR7, 3) then
-      result := 3
-    else
-      DebugLn(DBG_WARNINGS ,'No hardware breakpoint available.');
+    with FCurrentContext^.WOW do begin
+      Dr0 := DWORD(TFpIntelWatchPointData(AWatchPointData).Dr03[0]);
+      Dr1 := DWORD(TFpIntelWatchPointData(AWatchPointData).Dr03[1]);
+      Dr2 := DWORD(TFpIntelWatchPointData(AWatchPointData).Dr03[2]);
+      Dr3 := DWORD(TFpIntelWatchPointData(AWatchPointData).Dr03[3]);
+      Dr7 := (Dr7 and $0000FF00) or DWORD(TFpIntelWatchPointData(AWatchPointData).Dr7);
+DebugLn('### WATCH ADDED  dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 %x', [ dr0,dr1,dr2,dr3, dr7]);
+    end;
   end
   else begin
   {$endif}
-    with FCurrentContext^.def do
-    if SetBreakpoint(Dr0, DR7, 0) then
-      result := 0
-    else if SetBreakpoint(Dr1, DR7, 1) then
-      result := 1
-    else if SetBreakpoint(Dr2, DR7, 2) then
-      result := 2
-    else if SetBreakpoint(Dr3, DR7, 3) then
-      result := 3
-    else
-      DebugLn(DBG_WARNINGS ,'No hardware breakpoint available.');
+    with FCurrentContext^.def do begin
+      Dr0 := TFpIntelWatchPointData(AWatchPointData).Dr03[0];
+      Dr1 := TFpIntelWatchPointData(AWatchPointData).Dr03[1];
+      Dr2 := TFpIntelWatchPointData(AWatchPointData).Dr03[2];
+      Dr3 := TFpIntelWatchPointData(AWatchPointData).Dr03[3];
+      Dr7 := (Dr7 and $0000FF00) or TFpIntelWatchPointData(AWatchPointData).Dr7;
+DebugLn('### WATCH ADDED   dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 %x', [ dr0,dr1,dr2,dr3, dr7]);
+    end;
   {$ifdef cpux86_64}
   end;
   {$endif}
+  FThreadContextChanged:=true;
 end;
 
-function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
-
-  function RemoveBreakpoint(var Dr, Dr7: DWORD; ind: byte): boolean;
-  begin
-    if (Dr<>0) and ((Dr7 and (1 shl (ind*2)))<>0) then
-    begin
-      Dr7 := Dr7 xor (1 shl (ind*2));
-      Dr7 := Dr7 xor ($30000 shl (ind*4));
-      Dr:=0;
-      FThreadContextChanged:=true;
-      Result := True;
-    end
-    else
-    begin
-      result := False;
-      DebugLn(DBG_WARNINGS ,'HW watchpoint is not set.');
-    end;
-  end;
-  function RemoveBreakpoint(var Dr, Dr7: DWORD64; ind: byte): boolean;
-  begin
-    if (Dr<>0) and ((Dr7 and (1 shl (ind*2)))<>0) then
-    begin
-      Dr7 := Dr7 xor (1 shl (ind*2));
-      Dr7 := Dr7 xor ($30000 shl (ind*4));
-      Dr:=0;
-      FThreadContextChanged:=true;
-      Result := True;
-    end
-    else
-    begin
-      result := False;
-      DebugLn(DBG_WARNINGS ,'HW watchpoint is not set.');
-    end;
-  end;
-
+function TDbgWinThread.DetectHardwareWatchpoint: Pointer;
+var
+  Dr6: DWORD64;
+  wd: TFpIntelWatchPointData;
 begin
-  Result := False;
+  result := nil;
   if FCurrentContext = nil then
     if not ReadThreadState then
       exit;
+
   {$ifdef cpux86_64}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
-    with FCurrentContext^.WOW do
-    case AnId of
-      0: result := RemoveBreakpoint(Dr0, DR7, 0);
-      1: result := RemoveBreakpoint(Dr1, DR7, 1);
-      2: result := RemoveBreakpoint(Dr2, DR7, 2);
-      3: result := RemoveBreakpoint(Dr3, DR7, 3);
-    end
+    Dr6 := DWORD64(FCurrentContext^.WOW.Dr6);
   end
   else begin
   {$endif}
-    with FCurrentContext^.def do
-    case AnId of
-      0: result := RemoveBreakpoint(Dr0, DR7, 0);
-      1: result := RemoveBreakpoint(Dr1, DR7, 1);
-      2: result := RemoveBreakpoint(Dr2, DR7, 2);
-      3: result := RemoveBreakpoint(Dr3, DR7, 3);
-    end
+    Dr6 := FCurrentContext^.def.Dr6;
   {$ifdef cpux86_64}
   end;
   {$endif}
+
+  wd := TFpIntelWatchPointData(Process.WatchPointData);
+  if dr6 and 1 = 1 then result := wd.Owner[0]
+  else if dr6 and 2 = 2 then result := wd.Owner[1]
+  else if dr6 and 4 = 4 then result := wd.Owner[2]
+  else if dr6 and 8 = 8 then result := wd.Owner[3];
+  if (Result = nil) and ((dr6 and 15) <> 0) then
+    Result := Pointer(-1); // not owned watchpoint
 end;
 
 procedure TDbgWinThread.BeforeContinue;
 begin
-  if ID <> MDebugEvent.dwThreadId then
-    exit;
+  if ID = MDebugEvent.dwThreadId then begin
+    inherited;
 
-  inherited;
-
-  {$ifdef cpux86_64}
-  if (TDbgWinProcess(Process).FBitness = b32) then begin
-    if (FCurrentContext <> nil) and
-       (FCurrentContext^.WOW.Dr6 <> $ffff0ff0) then
-    begin
-      FCurrentContext^.WOW.Dr6:=$ffff0ff0;
-      FThreadContextChanged:=true;
+    {$ifdef cpux86_64}
+    if (TDbgWinProcess(Process).FBitness = b32) then begin
+      if (FCurrentContext <> nil) and
+         (FCurrentContext^.WOW.Dr6 <> $ffff0ff0) then
+      begin
+        FCurrentContext^.WOW.Dr6:=$ffff0ff0;
+        FThreadContextChanged:=true;
+      end;
+    end
+    else begin
+    {$endif}
+      if (FCurrentContext <> nil) and
+         (FCurrentContext^.def.Dr6 <> $ffff0ff0) then
+      begin
+        FCurrentContext^.def.Dr6:=$ffff0ff0;
+        FThreadContextChanged:=true;
+      end;
+    {$ifdef cpux86_64}
     end;
-  end
-  else begin
-  {$endif}
-    if (FCurrentContext <> nil) and
-       (FCurrentContext^.def.Dr6 <> $ffff0ff0) then
-    begin
-      FCurrentContext^.def.Dr6:=$ffff0ff0;
-      FThreadContextChanged:=true;
-    end;
-  {$ifdef cpux86_64}
+    {$endif}
   end;
-  {$endif}
 
   if FThreadContextChanged then
   begin

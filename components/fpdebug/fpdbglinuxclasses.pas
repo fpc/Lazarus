@@ -15,7 +15,7 @@ uses
   process,
   FpDbgClasses,
   FpDbgLoader,
-  DbgIntfBaseTypes,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgLinuxExtra,
   FpDbgInfo,
   FpDbgUtil,
@@ -261,9 +261,8 @@ type
     procedure ResetPauseStates;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
-    function AddWatchpoint(AnAddr: TDBGPtr): integer; override;
-    function RemoveWatchpoint(AnId: integer): boolean; override;
-    function DetectHardwareWatchpoint: integer; override;
+    procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
+    function DetectHardwareWatchpoint: Pointer; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
 
@@ -290,6 +289,7 @@ type
     procedure InitializeLoaders; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
+    function CreateWatchPointData: TFpWatchPointData; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
@@ -558,76 +558,42 @@ begin
   FUserRegsChanged:=true;
 end;
 
-function TDbgLinuxThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
-var
-  dr7: PtrUInt;
-
-  function SetHWBreakpoint(ind: byte): boolean;
-  var
-    Addr: PtrUInt;
-  begin
-    result := false;
-    if ((dr7 and (1 shl ind))=0) then
-    begin
-      if not ReadDebugReg(ind, Addr) or (Addr<>0) then
-        Exit;
-
-      dr7 := dr7 or (1 shl (ind*2));
-      dr7 := dr7 or ($30000 shl (ind*4));
-      if WriteDebugReg(7, dr7) and WriteDebugReg(ind, AnAddr) then
-        result := true;
-    end;
-  end;
-
+procedure TDbgLinuxThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
 var
   i: integer;
-begin
-  result := -1;
-  if not ReadDebugReg(7, dr7) then
-    Exit;
-
-  i := 0;
-  while (i<4) and not SetHWBreakpoint(i) do
-    inc(i);
-  if i=4 then
-    DebugLn(DBG_WARNINGS, 'No hardware breakpoint available.')
-  else
-    result := i;
-end;
-
-function TDbgLinuxThread.RemoveWatchpoint(AnId: integer): boolean;
-var
+  r: boolean;
   dr7: PtrUInt;
   addr: PtrUInt;
 begin
-  result := false;
-  if not ReadDebugReg(7, dr7) or not ReadDebugReg(AnId, addr) then
+  if not ReadDebugReg(7, dr7) then
     Exit;
 
-  if (addr<>0) and ((dr7 and (1 shl (AnId*2)))<>0) then
-  begin
-    dr7 := dr7 xor (1 shl (AnId*2));
-    dr7 := dr7 xor ($30000 shl (AnId*4));
-    if WriteDebugReg(AnId, 0) and WriteDebugReg(7, dr7) then
-      Result := True;
-  end
-  else
-  begin
-    DebugLn(DBG_WARNINGS, 'HW watchpoint %d is not set.',[AnId]);
+  r := True;
+  for i := 0 to 3 do begin
+    addr := PtrUInt(TFpIntelWatchPointData(AWatchPointData).Dr03[i]);
+    r := r and WriteDebugReg(i, addr);
   end;
+  Dr7 := (Dr7 and $0000FF00);
+  if r then
+    Dr7 := Dr7 or PtrUInt(TFpIntelWatchPointData(AWatchPointData).Dr7);
+  WriteDebugReg(7, dr7);
 end;
 
-function TDbgLinuxThread.DetectHardwareWatchpoint: integer;
+function TDbgLinuxThread.DetectHardwareWatchpoint: Pointer;
 var
   dr6: PtrUInt;
+  wd: TFpIntelWatchPointData;
 begin
-  result := -1;
+  result := nil;
   if ReadDebugReg(6, dr6) then
   begin
-    if dr6 and 1 = 1 then result := 0
-    else if dr6 and 2 = 2 then result := 1
-    else if dr6 and 4 = 4 then result := 2
-    else if dr6 and 8 = 8 then result := 3;
+    wd := TFpIntelWatchPointData(Process.WatchPointData);
+    if dr6 and 1 = 1 then result := wd.Owner[0]
+    else if dr6 and 2 = 2 then result := wd.Owner[1]
+    else if dr6 and 4 = 4 then result := wd.Owner[2]
+    else if dr6 and 8 = 8 then result := wd.Owner[3];
+    if (Result = nil) and ((dr6 and 15) <> 0) then
+      Result := Pointer(-1); // not owned watchpoint
   end;
 end;
 
@@ -639,7 +605,7 @@ begin
     exit;
 
   inherited;
-  if Process.CurrentWatchpoint>-1 then
+  if Process.CurrentWatchpoint <> nil then
     WriteDebugReg(6, 0);
 
   if FUserRegsChanged then
@@ -759,6 +725,11 @@ begin
     end
   else
     result := nil;
+end;
+
+function TDbgLinuxProcess.CreateWatchPointData: TFpWatchPointData;
+begin
+  Result := TFpIntelWatchPointData.Create;
 end;
 
 constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,

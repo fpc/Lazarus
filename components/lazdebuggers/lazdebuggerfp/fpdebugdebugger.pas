@@ -95,6 +95,8 @@ type
     FCacheLocation: TDBGPtr;
     FCacheBoolean: boolean;
     FCachePointer: pointer;
+    FCacheReadWrite: TDBGWatchPointKind;
+    FCacheScope: TDBGWatchPointScope;
     FCacheThreadId, FCacheStackFrame: Integer;
     FCacheContext: TFpDbgInfoContext;
     {$endif linux}
@@ -152,6 +154,7 @@ type
     FCallStackEntryListFrameRequired: Integer;
     procedure DoAddBreakLine;
     procedure DoAddBreakLocation;
+    procedure DoAddBWatch;
     procedure DoReadData;
     procedure DoPrepareCallStackEntryList;
     procedure DoFreeBreakpoint;
@@ -159,6 +162,8 @@ type
     {$endif linux}
     function AddBreak(const ALocation: TDbgPtr): TFpDbgBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal): TFpDbgBreakpoint; overload;
+    function AddWatch(const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
+                      AScope: TDBGWatchPointScope): TFpDbgBreakpoint;
     procedure FreeBreakpoint(const ABreakpoint: TFpDbgBreakpoint);
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; inline;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
@@ -861,19 +866,38 @@ begin
 end;
 
 procedure TFPBreakpoint.SetBreak;
+var
+  CurThreadId, CurStackFrame: Integer;
+  CurContext: TFpDbgInfoContext;
+  WatchPasExpr: TFpPascalExpression;
+  R: TFpValue;
+  s: QWord;
 begin
   assert(FInternalBreakpoint=nil);
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.SetBreak  ADD ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
   case Kind of
     bpkAddress:   FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Address);
     bpkSource:    FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Source, cardinal(Line));
-  else
-    Raise Exception.Create('Breakpoints of this kind are not suported.');
+    bpkData: begin
+        TFpDebugDebugger(Debugger).GetCurrentThreadAndStackFrame(CurThreadId, CurStackFrame);
+        CurContext := TFpDebugDebugger(Debugger).GetContextForEvaluate(CurThreadId, CurStackFrame);
+        if CurContext <> nil then begin
+          WatchPasExpr := TFpPascalExpression.Create(WatchData, CurContext);
+          R := WatchPasExpr.ResultValue; // Address and Size
+// TODO: Cache current value
+          if WatchPasExpr.Valid and IsTargetNotNil(R.Address) and R.GetSize(s) then begin
+// pass context
+            FInternalBreakpoint := TFpDebugDebugger(Debugger).AddWatch(R.Address.Address, s, WatchKind, WatchScope);
           end;
+          WatchPasExpr.Free;
+          CurContext.ReleaseReference;
+        end;
+      end;
+  end;
   debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.SetBreak ' ]);
   FIsSet:=true;
   if not assigned(FInternalBreakpoint) then
-    FValid:=vsInvalid
+    FValid:=vsInvalid // pending?
   else
     FValid:=vsValid;
 end;
@@ -1741,6 +1765,14 @@ begin
 
         if assigned(ABreakPoint) then
           ABreakPoint.Hit(&continue);
+
+        if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
+          // For message use location(Address - 1)
+          OnFeedback(self,
+              Format('The Watchpoint for "%1:s" was triggered.%0:s%0:s', // 'Old value: %2:s%0:sNew value: %3:s',
+                     [LineEnding, ABreakPoint.WatchData{, AOldVal, ANewVal}]),
+              '', ftInformation, [frOk]);
+        end;
       end;
     end
   else if FQuickPause then
@@ -1754,8 +1786,10 @@ begin
     ALocationAddr := GetLocation;
 
   // if &continue then SetState(dsInternalPause) else
-  SetState(dsPause);
-  DoCurrent(ALocationAddr);
+  if State <> dsPause then begin
+    SetState(dsPause);
+    DoCurrent(ALocationAddr);
+  end;
 
   if &continue then begin
     // wait for any watches for Snapshots
@@ -2056,6 +2090,11 @@ begin
   FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheLocation);
 end;
 
+procedure TFpDebugDebugger.DoAddBWatch;
+begin
+  FCacheBreakpoint := FDbgController.CurrentProcess.AddWatch(FCacheLocation, FCacheLine, FCacheReadWrite, FCacheScope);
+end;
+
 procedure TFpDebugDebugger.DoReadData;
 begin
   FCacheBoolean:=FDbgController.CurrentProcess.ReadData(FCacheLocation, FCacheLine, FCachePointer^);
@@ -2100,6 +2139,22 @@ begin
   result := FCacheBreakpoint;
 {$else linux}
   result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFileName, ALine);
+{$endif linux}
+end;
+
+function TFpDebugDebugger.AddWatch(const ALocation: TDBGPtr; ASize: Cardinal;
+  AReadWrite: TDBGWatchPointKind; AScope: TDBGWatchPointScope
+  ): TFpDbgBreakpoint;
+begin
+{$ifdef linux}
+  FCacheLocation:=ALocation;
+  FCacheLine:=ASize;
+  FCacheReadWrite:=AReadWrite;
+  FCacheScope:=AScope;
+  ExecuteInDebugThread(@DoAddBWatch);
+  result := FCacheBreakpoint;
+{$else linux}
+  result := FDbgController.CurrentProcess.AddWatch(ALocation, ASize, AReadWrite, AScope);
 {$endif linux}
 end;
 

@@ -117,6 +117,7 @@ type
   TDbgCallstackEntryList = specialize TFPGObjectList<TDbgCallstackEntry>;
 
   TDbgProcess = class;
+  TFpWatchPointData = class;
 
   { TDbgMemReader }
 
@@ -140,7 +141,6 @@ type
     FProcess: TDbgProcess;
     FID: Integer;
     FHandle: THandle;
-
     FPausedAtRemovedBreakPointState: (rbUnknown, rbNone, rbFound{, rbFoundAndDec});
     FPausedAtRemovedBreakPointAddress: TDBGPtr;
 
@@ -163,9 +163,8 @@ type
     function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; // include removed breakpoints that (may have) already triggered
     procedure CheckAndResetInstructionPointerAfterBreakpoint;
     procedure BeforeContinue; virtual;
-    function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
-    function RemoveWatchpoint(AnId: integer): boolean; virtual;
-    function DetectHardwareWatchpoint: integer; virtual;
+    procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); virtual;
+    function DetectHardwareWatchpoint: Pointer; virtual;
 
     function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
@@ -260,15 +259,26 @@ type
     procedure ResetBreak; virtual; abstract;
   end;
 
-  { TFpInternalBreakpoint }
+  { TFpInternalBreakBase }
 
-  TFpInternalBreakpoint = class(TFpDbgBreakpoint)
+  TFpInternalBreakBase = class(TFpDbgBreakpoint)
   private
     FProcess: TDbgProcess;
+  protected
+    property Process: TDbgProcess read FProcess;
+  public
+    constructor Create(const AProcess: TDbgProcess); virtual;
+  end;
+
+  TFpInternalBreakpointList = specialize TFPGObjectList<TFpInternalBreakBase>;
+
+  { TFpInternalBreakpoint }
+
+  TFpInternalBreakpoint = class(TFpInternalBreakBase)
+  private
     FLocation: TDBGPtrArray;
     FInternal: Boolean;
   protected
-    property Process: TDbgProcess read FProcess;
     property Location: TDBGPtrArray read FLocation;
   public
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtrArray); virtual;
@@ -281,8 +291,34 @@ type
   end;
   TFpInternalBreakpointClass = class of TFpInternalBreakpoint;
 
-  TFpInternalBreakpointList = specialize TFPGObjectList<TFpInternalBreakpoint>;
+  { TFpInternalWatchpoint }
 
+  TFpInternalWatchpoint  = class(TFpInternalBreakBase)
+  private
+    FLocation: TDBGPtr;
+    FSize: Cardinal;
+    FReadWrite: TDBGWatchPointKind;
+    FScope: TDBGWatchPointScope;
+
+    FOtherWatchCount: Integer;
+    FFirstWatchLocation: TDBGPtr;
+    FFirstWatchSize,
+    FOtherWatchesSize,
+    FLastWatchSize: Integer;
+  protected
+    property Location: TDBGPtr read FLocation;
+    property Size: Cardinal read FSize;
+    property ReadWrite: TDBGWatchPointKind read FReadWrite;
+    property Scope: TDBGWatchPointScope read FScope;
+  public
+    constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
+                      AScope: TDBGWatchPointScope); virtual;
+    destructor Destroy; override;
+
+    procedure SetBreak; override;
+    procedure ResetBreak; override;
+  end;
+  TFpInternalWatchpointClass = class of TFpInternalWatchpoint;
 
   { TDbgInstance }
 
@@ -342,15 +378,16 @@ type
     FGotExitProcess: Boolean;
     FProcessID: Integer;
     FThreadID: Integer;
+    FWatchPointData: TFpWatchPointData;
 
     function GetPauseRequested: boolean;
     procedure SetPauseRequested(AValue: boolean);
     procedure ThreadDestroyed(const AThread: TDbgThread);
   protected
-    FBreakpointList: TFpInternalBreakpointList;
+    FBreakpointList, FWatchPointList: TFpInternalBreakpointList;
     FCurrentBreakpoint: TFpInternalBreakpoint;  // set if we are executing the code at the break
                                          // if the singlestep is done, set the break again
-    FCurrentWatchpoint: integer;
+    FCurrentWatchpoint: Pointer;         // Indicates the owner
     FReEnableBreakStep: Boolean;         // Set when we are reenabling a breakpoint
                                          // We need a single step, so the IP is after the break to set
 
@@ -380,7 +417,9 @@ type
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; virtual; abstract;
     // Should analyse why the debugger has stopped.
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
-  public
+
+    function CreateWatchPointData: TFpWatchPointData; virtual;
+public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; virtual;
     class function AttachToInstance(AFileName: string; APid: Integer): TDbgProcess; virtual;
     constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer); virtual;
@@ -389,6 +428,9 @@ type
     function  AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
+    function  AddWatch(const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
+                      AScope: TDBGWatchPointScope): TFpInternalWatchpoint;
+    property WatchPointData: TFpWatchPointData read FWatchPointData;
     function  FindProcSymbol(const AName: String): TFpSymbol;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
@@ -438,7 +480,7 @@ type
     property ThreadID: integer read FThreadID;
     property ExitCode: DWord read FExitCode;
     property CurrentBreakpoint: TFpInternalBreakpoint read FCurrentBreakpoint;
-    property CurrentWatchpoint: integer read FCurrentWatchpoint;
+    property CurrentWatchpoint: Pointer read FCurrentWatchpoint;
     property PauseRequested: boolean read GetPauseRequested write SetPauseRequested;
     function GetAndClearPauseRequested: Boolean;
 
@@ -452,10 +494,40 @@ type
   end;
   TDbgProcessClass = class of TDbgProcess;
 
+  { TFpWatchPointData }
+
+  TFpWatchPointData = class
+  private
+    FChanged: Boolean;
+  public
+    function AddOwnedWatchpoint(AnOwner: Pointer; AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean; virtual;
+    function RemoveOwnedWatchpoint(AnOwner: Pointer): boolean; virtual;
+    property Changed: Boolean read FChanged write FChanged;
+  end;
+
+  { TFpIntelWatchPointData }
+
+  TFpIntelWatchPointData = class(TFpWatchPointData)
+  private
+    // For Intel: Dr0..Dr3
+    FOwners: array [0..3] of Pointer;
+    FDr03: array [0..3] of TDBGPtr;
+    FDr7: DWord;
+    function GetDr03(AnIndex: Integer): TDBGPtr; inline;
+    function GetOwner(AnIndex: Integer): Pointer; inline;
+  public
+    function AddOwnedWatchpoint(AnOwner: Pointer; AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean; override;
+    function RemoveOwnedWatchpoint(AnOwner: Pointer): boolean; override;
+    property Dr03[AnIndex: Integer]: TDBGPtr read GetDr03;
+    property Dr7: DWord read FDr7;
+    property Owner[AnIndex: Integer]: Pointer read GetOwner;
+  end;
+
   TOSDbgClasses = class
   public
     DbgThreadClass : TDbgThreadClass;
     DbgBreakpointClass : TFpInternalBreakpointClass;
+    DbgWatchpointClass : TFpInternalWatchpointClass;
     DbgProcessClass : TDbgProcessClass;
   end;
 
@@ -498,6 +570,7 @@ begin
     GOSDbgClasses := TOSDbgClasses.create;
     GOSDbgClasses.DbgThreadClass := TDbgThread;
     GOSDbgClasses.DbgBreakpointClass := TFpInternalBreakpoint;
+    GOSDbgClasses.DbgWatchpointClass := TFpInternalWatchpoint;
     GOSDbgClasses.DbgProcessClass := TDbgProcess;
     {$ifdef windows}
     RegisterDbgClasses;
@@ -1105,6 +1178,13 @@ begin
       end;
 end;
 
+function TDbgProcess.AddWatch(const ALocation: TDBGPtr; ASize: Cardinal;
+  AReadWrite: TDBGWatchPointKind; AScope: TDBGWatchPointScope
+  ): TFpInternalWatchpoint;
+begin
+  Result := OSDbgClasses.DbgWatchpointClass.Create(Self, ALocation, ASize, AReadWrite, AScope);
+end;
+
 constructor TDbgProcess.Create(const AFileName: string; const AProcessID,
   AThreadID: Integer);
 const
@@ -1118,11 +1198,13 @@ begin
   FThreadID := AThreadID;
 
   FBreakpointList := TFpInternalBreakpointList.Create(False);
+  FWatchPointList := TFpInternalBreakpointList.Create(False);
   FThreadMap := TThreadMap.Create(itu4, SizeOf(TDbgThread));
   FLibMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
+  FWatchPointData := CreateWatchPointData;
   FBreakMap := TBreakLocationMap.Create(Self);
   FCurrentBreakpoint := nil;
-  FCurrentWatchpoint := -1;
+  FCurrentWatchpoint := nil;
 
   FSymInstances := TList.Create;
 
@@ -1159,12 +1241,16 @@ begin
 
   for i := 0 to FBreakpointList.Count - 1 do
     FBreakpointList[i].FProcess := nil;
+  for i := 0 to FWatchPointList.Count - 1 do
+    FWatchPointList[i].FProcess := nil;
   FreeAndNil(FBreakpointList);
+  FreeAndNil(FWatchPointList);
   //Assert(FBreakMap.Count=0, 'No breakpoints left');
   //FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
   FreeItemsInMap(FLibMap);
 
+  FreeAndNil(FWatchPointData);
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
@@ -1326,6 +1412,8 @@ begin
     // Determine the address where the execution has stopped
     CurrentAddr:=AThread.GetInstructionPointerRegisterValue;
     FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;
+    if (FCurrentWatchpoint <> nil) and (FWatchPointList.IndexOf(TFpInternalWatchpoint(FCurrentWatchpoint)) < 0) then
+      FCurrentWatchpoint := Pointer(-1);
     FCurrentBreakpoint:=nil;
     AThread.NextIsSingleStep:=false;
 
@@ -1364,6 +1452,7 @@ begin
       assert(FMainThread=nil);
       FMainThread := result;
     end;
+    Result.ApplyWatchPoints(FWatchPointData);
   end
   else
     DebugLn(DBG_WARNINGS, 'Unknown thread ID %u for process %u', [AThreadIdentifier, ProcessID]);
@@ -1403,12 +1492,15 @@ begin
     while not Iterator.EOM do
     begin
       Iterator.GetData(Thread);
+      if FWatchPointData.Changed then
+        Thread.ApplyWatchPoints(FWatchPointData);
       Thread.BeforeContinue;
       iterator.Next;
     end;
   finally
     Iterator.Free;
   end;
+  FWatchPointData.Changed := False;
 end;
 
 procedure TDbgProcess.ThreadsClearCallStack;
@@ -1603,8 +1695,8 @@ end;
 
 procedure TDbgProcess.RemoveAllBreakPoints;
 var
-  b: TFpInternalBreakpoint;
   i: LongInt;
+  b: TFpInternalBreakBase;
 begin
   i := FBreakpointList.Count - 1;
   while i >= 0 do begin
@@ -1612,6 +1704,14 @@ begin
     b.ResetBreak;
     b.FProcess := nil;
     FBreakpointList.Delete(i);
+    dec(i);
+  end;
+  i := FWatchPointList.Count - 1;
+  while i >= 0 do begin
+    b := FWatchPointList[i];
+    b.ResetBreak;
+    b.FProcess := nil;
+    FWatchPointList.Delete(i);
     dec(i);
   end;
   assert(FBreakMap.Count = 0, 'TDbgProcess.RemoveAllBreakPoints: FBreakMap.Count = 0');
@@ -1695,6 +1795,11 @@ begin
     if (Brk.Location >= AAdress) and (Brk.Location < (AAdress+ASize)) then
       TByteArray(AData)[Brk.Location-AAdress] := Brk.OrigValue;
   end;
+end;
+
+function TDbgProcess.CreateWatchPointData: TFpWatchPointData;
+begin
+  Result := TFpWatchPointData.Create;
 end;
 
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
@@ -1860,21 +1965,14 @@ begin
   FPausedAtRemovedBreakPointAddress := 0;
 end;
 
-function TDbgThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
+procedure TDbgThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
 begin
-  DebugLn(DBG_VERBOSE, 'Hardware watchpoints are not available.');
-  result := -1;
+  //
 end;
 
-function TDbgThread.RemoveWatchpoint(AnId: integer): boolean;
+function TDbgThread.DetectHardwareWatchpoint: Pointer;
 begin
-  DebugLn(DBG_VERBOSE, 'Hardware watchpoints are not available: '+self.classname);
-  result := false;
-end;
-
-function TDbgThread.DetectHardwareWatchpoint: integer;
-begin
-  result := -1;
+  result := nil;
 end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
@@ -1969,15 +2067,102 @@ begin
   inherited;
 end;
 
+{ TFpWatchPointData }
+
+function TFpWatchPointData.AddOwnedWatchpoint(AnOwner: Pointer;
+  AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean;
+begin
+  Result := False;
+end;
+
+function TFpWatchPointData.RemoveOwnedWatchpoint(AnOwner: Pointer): boolean;
+begin
+  Result := True;
+end;
+
+{ TFpIntelWatchPointData }
+
+function TFpIntelWatchPointData.GetDr03(AnIndex: Integer): TDBGPtr;
+begin
+  Result := FDr03[AnIndex];
+end;
+
+function TFpIntelWatchPointData.GetOwner(AnIndex: Integer): Pointer;
+begin
+  Result := FOwners[AnIndex];
+end;
+
+function TFpIntelWatchPointData.AddOwnedWatchpoint(AnOwner: Pointer;
+  AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean;
+var
+  SizeBits, ModeBits: DWord;
+  idx: Integer;
+begin
+  Result := False;
+  case ASize of
+    1: SizeBits := $00000 shl 2;
+    2: SizeBits := $10000 shl 2;
+    4: SizeBits := $30000 shl 2;
+    8: SizeBits := $20000 shl 2; // Only certain cpu / must be 8byte aligned
+    else exit;
+  end;
+  case AReadWrite of
+    wpkWrite:     ModeBits := $10000;
+    wpkRead:      ModeBits := $30000; // caller must check
+    wpkReadWrite: ModeBits := $30000;
+    wkpExec:      ModeBits := $00000; // Size must be 1 (SizeBits=0)
+  end;
+
+  for idx := 0 to 3 do begin
+    if (FDr7 and (1 shl (idx * 2))) = 0 then begin
+      FDr7 := FDr7 or (1 shl (idx*2))
+                   or (ModeBits shl (idx*4)) // read/write
+                   or (SizeBits shl (idx*4)); // size
+      FDr03[idx] := AnAddr;
+      FOwners[idx] := AnOwner;
+      Changed := True;
+      Result := True;
+      break;
+    end;
+  end;
+end;
+
+function TFpIntelWatchPointData.RemoveOwnedWatchpoint(AnOwner: Pointer
+  ): boolean;
+var
+  idx: Integer;
+begin
+  Result := False;
+  for idx := 0 to 3 do begin
+    if FOwners[idx] = AnOwner then begin
+      FDr7 := FDr7 and not (
+                   (DWord(3) shl (idx*2)) or
+                   (DWord($F0000) shl (idx*4))
+      );
+      FDr03[idx] := 0;
+      FOwners[idx] := nil;
+      Changed := True;
+      Result := True;
+    end;
+  end;
+end;
+
+{ TFpInternalBreakBase }
+
+constructor TFpInternalBreakBase.Create(const AProcess: TDbgProcess);
+begin
+  inherited Create;
+  FProcess := AProcess;
+end;
+
 { TDbgBreak }
 
 constructor TFpInternalBreakpoint.Create(const AProcess: TDbgProcess;
   const ALocation: TDBGPtrArray);
 begin
-  FProcess := AProcess;
+  inherited Create(AProcess);
   FProcess.FBreakpointList.Add(Self);
   FLocation := ALocation;
-  inherited Create;
   SetBreak;
 end;
 
@@ -2033,6 +2218,132 @@ begin
     exit;
   for i := 0 to High(FLocation) do
     FProcess.FBreakMap.AddLocotion(FLocation[i], Self, True);
+end;
+
+{ TFpInternalWatchpoint }
+
+constructor TFpInternalWatchpoint.Create(const AProcess: TDbgProcess;
+  const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
+  AScope: TDBGWatchPointScope);
+(* FROM INTEL DOCS / About 8 byte watchpoints
+For Pentium® 4 and Intel® Xeon® processors with a CPUID signature corresponding to family 15 (model 3, 4, and 6),
+break point conditions permit specifying 8-byte length on data read/write with an of encoding 10B in the LENn field.
+Encoding 10B is also supported in processors based on Intel Core microarchitecture or
+enhanced Intel Core microarchitecture, the respective CPUID signatures corresponding to family 6, model 15,
+and family 6, DisplayModel value 23 (see CPUID instruction in Chapter 3,
+“Instruction Set Reference, A-L” in the Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 2A).
+The Encoding 10B is supported in processors based on Intel® Atom™ microarchitecture,
+with CPUID signature of family 6, DisplayModel value 1CH. The encoding 10B is undefined for other processors
+*)
+const
+  MAX_WATCH_SIZE = 8;
+  SIZE_TO_BOUNDMASK: array[1..8] of TDBGPtr = (
+    0,        // Size=1
+    1, 0,     // Size=2
+    3, 0,0,0, // Size=4
+    7         // Size=8
+    );
+  SIZE_TO_WATCHSIZE: array[0..8] of Integer = (0, 1, 2, 4, 4, 8, 8, 8, 8);
+var
+  MaxWatchSize: Integer;
+  BoundaryOffset, S, HalfSize: Integer;
+begin
+  inherited Create(AProcess);
+  FProcess.FWatchPointList.Add(Self);
+  FLocation := ALocation;
+  FSize := ASize;
+  FReadWrite := AReadWrite;
+  FScope := AScope;
+
+  MaxWatchSize := MAX_WATCH_SIZE;
+//   Wach at 13FFC20:4 TO First 13FFC18:8 Other 0 (0) Last 0
+
+  FFirstWatchSize := MaxWatchSize;
+  BoundaryOffset := Integer(FLocation and SIZE_TO_BOUNDMASK[FFirstWatchSize]);
+  // As long as the full first half of the watch is unused, use the next smaller watch-size
+  HalfSize := FFirstWatchSize div 2;
+  while (FFirstWatchSize > 1) and
+        ( (BoundaryOffset >= HalfSize) or
+          (FSize <= HalfSize)
+        )
+  do begin
+    FFirstWatchSize := HalfSize;
+    HalfSize := FFirstWatchSize div 2;
+    BoundaryOffset := Integer(FLocation and SIZE_TO_BOUNDMASK[FFirstWatchSize]);
+  end;
+  FFirstWatchLocation := FLocation - BoundaryOffset;
+
+  FOtherWatchesSize := 0;
+  FOtherWatchCount := 0;
+  FLastWatchSize := 0;
+
+  S := FSize - FFirstWatchSize + BoundaryOffset; // remainder size
+  if S > 0 then begin
+    FOtherWatchCount := (S - 1) div MaxWatchSize;
+    if FOtherWatchCount > 0 then
+      FOtherWatchesSize := MaxWatchSize;
+
+    S := S - FOtherWatchCount * FOtherWatchesSize;
+    assert(S >= 0, 'TFpInternalWatchpoint.Create: S >= 0');
+
+    FLastWatchSize := SIZE_TO_WATCHSIZE[S];
+  end;
+  debugln(DBG_VERBOSE, 'Wach at %x:%d TO First %x:%d Other %d (%d) Last %d',
+    [FLocation, FSize, FFirstWatchLocation, FFirstWatchSize, FOtherWatchCount, FOtherWatchesSize, FLastWatchSize]);
+
+  SetBreak;
+end;
+
+destructor TFpInternalWatchpoint.Destroy;
+begin
+  if FProcess <> nil then
+    FProcess.FWatchPointList.Remove(Self);
+  ResetBreak;
+  inherited Destroy;
+end;
+
+procedure TFpInternalWatchpoint.SetBreak;
+var
+  a: TDBGPtr;
+  wd: TFpWatchPointData;
+  R: Boolean;
+  i: Integer;
+begin
+  if FProcess = nil then
+    exit;
+  //TODO: read current mem content. So in case of overlap it can be checked
+
+  wd := FProcess.WatchPointData;
+
+  a := FFirstWatchLocation;
+  R := wd.AddOwnedWatchpoint(Self, a, FFirstWatchSize, FReadWrite);
+  if not R then begin
+    ResetBreak;
+    exit;
+  end;
+
+  a := a + FFirstWatchSize;
+  for i := 0 to FOtherWatchCount - 1 do begin
+    R := wd.AddOwnedWatchpoint(Self, a, FOtherWatchesSize, FReadWrite);
+    if not R then begin
+      ResetBreak;
+      exit;
+    end;
+    a := a + FOtherWatchesSize;
+  end;
+
+  if FLastWatchSize > 0 then
+    R := wd.AddOwnedWatchpoint(Self, a, FLastWatchSize, FReadWrite);
+  if not R then
+    ResetBreak;
+end;
+
+procedure TFpInternalWatchpoint.ResetBreak;
+begin
+  if FProcess = nil then
+    exit;
+
+  FProcess.WatchPointData.RemoveOwnedWatchpoint(Self);
 end;
 
 initialization

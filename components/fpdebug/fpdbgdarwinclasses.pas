@@ -13,7 +13,7 @@ uses
   process,
   FpDbgClasses,
   FpDbgLoader,
-  DbgIntfBaseTypes,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgLinuxExtra,
   FpDbgDwarfDataClasses,
   FpImgReaderMacho,
@@ -113,9 +113,10 @@ type
     function ReadDebugState: boolean;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
-    function AddWatchpoint(AnAddr: TDBGPtr): integer; override;
+    function AddWatchpoint(AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): integer; override;
     function RemoveWatchpoint(AnId: integer): boolean; override;
-    function DetectHardwareWatchpoint: integer; override;
+    procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
+    function DetectHardwareWatchpoint: Pointer; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
 
@@ -144,6 +145,7 @@ type
     procedure InitializeLoaders; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
+    function CreateWatchPointData: TFpWatchPointData; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
@@ -382,128 +384,64 @@ type
   TDr32bitArr = array[0..4] of cuint32;
   TDr64bitArr = array[0..4] of cuint64;
 
-function TDbgDarwinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
-
-  function SetBreakpoint32(ind: byte): boolean;
+procedure TDbgDarwinThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
+  procedure UpdateWatches32;
   var
     drArr: ^TDr32bitArr;
+    i: Integer;
+    r: boolean;
+    addr: cuint32;
   begin
     drArr := @FDebugState32.__dr0;
-    if (drArr^[ind]=0) and ((FDebugState32.__dr7 and (1 shl ind))=0) then
-    begin
-      FDebugState32.__dr7 := FDebugState32.__dr7 or (1 shl (ind*2));
-      FDebugState32.__dr7 := FDebugState32.__dr7 or ($30000 shl (ind*4));
-      drArr^[ind]:=AnAddr;
-      FDebugStateChanged:=true;
-      Result := True;
-    end
-    else
-    begin
-      result := False;
+
+    r := True;
+    for i := 0 to 3 do begin
+      addr := cuint32(TFpIntelWatchPointData(AWatchPointData).Dr03[i]);
+      drArr^[i]:=addr;
     end;
+    FDebugState32.__dr7 := (FDebugState32.__dr7 and $0000FF00);
+    if r then
+      FDebugState32.__dr7 := FDebugState32.__dr7 or cuint32(TFpIntelWatchPointData(AWatchPointData).Dr7);
   end;
 
-  function SetBreakpoint64(ind: byte): boolean;
+  procedure UpdateWatches64;
   var
     drArr: ^TDr64bitArr;
+    i: Integer;
+    r: boolean;
+    addr: cuint64;
   begin
     drArr := @FDebugState64.__dr0;
-    if (drArr^[ind]=0) and ((FDebugState64.__dr7 and (1 shl ind))=0) then
-    begin
-      FDebugState64.__dr7 := FDebugState64.__dr7 or (1 shl (ind*2));
-      FDebugState64.__dr7 := FDebugState64.__dr7 or ($30000 shl (ind*4));
-      drArr^[ind]:=AnAddr;
-      FDebugStateChanged:=true;
-      Result := True;
-    end
-    else
-    begin
-      result := False;
+
+    r := True;
+    for i := 0 to 3 do begin
+      addr := cuint64(TFpIntelWatchPointData(AWatchPointData).Dr03[i]);
+      drArr^[i]:=addr;
     end;
-  end;
-
-var
-  i: integer;
-begin
-  result := -1;
-  if ID<0 then
-    Exit;
-  if not ReadDebugState then
-    exit;
-
-  i := 0;
-  if Process.Mode=dm32 then
-    while (i<4) and not SetBreakpoint32(i) do
-      inc(i)
-  else
-    while (i<4) and not SetBreakpoint64(i) do
-      inc(i);
-  if i=4 then
-    debugln(DBG_WARNINGS, 'No hardware breakpoint available.')
-  else
-    result := i;
-end;
-
-function TDbgDarwinThread.RemoveWatchpoint(AnId: integer): boolean;
-
-  function RemoveBreakpoint32(ind: byte): boolean;
-  var
-    drArr: ^TDr32bitArr;
-  begin
-    drArr := @FDebugState32.__dr0;
-    if (drArr^[ind]<>0) and ((FDebugState32.__dr7 and (1 shl (ind*2)))<>0) then
-    begin
-      FDebugState32.__dr7 := FDebugState32.__dr7 xor (1 shl (ind*2));
-      FDebugState32.__dr7 := FDebugState32.__dr7 xor ($30000 shl (ind*4));
-      drArr^[ind]:=0;
-      FDebugStateChanged:=true;
-      Result := True;
-    end
-    else
-    begin
-      result := False;
-      debugln(DBG_WARNINGS, 'HW watchpoint %d is not set.',[ind]);
-    end;
-  end;
-
-  function RemoveBreakpoint64(ind: byte): boolean;
-  var
-    drArr: ^TDr64bitArr;
-  begin
-    drArr := @FDebugState64.__dr0;
-    if (drArr^[ind]<>0) and ((FDebugState64.__dr7 and (1 shl (ind*2)))<>0) then
-    begin
-      FDebugState64.__dr7 := FDebugState64.__dr7 xor (1 shl (ind*2));
-      FDebugState64.__dr7 := FDebugState64.__dr7 xor ($30000 shl (ind*4));
-      drArr^[ind]:=0;
-      FDebugStateChanged:=true;
-      Result := True;
-    end
-    else
-    begin
-      result := False;
-      debugln(DBG_WARNINGS, 'HW watchpoint %d is not set.',[ind]);
-    end;
+    FDebugState32.__dr7 := (FDebugState32.__dr7 and $0000FF00);
+    if r then
+      FDebugState32.__dr7 := FDebugState32.__dr7 or cuint64(TFpIntelWatchPointData(AWatchPointData).Dr7);
   end;
 
 begin
-  result := false;
   if ID<0 then
     Exit;
   if not ReadDebugState then
     exit;
 
   if Process.Mode=dm32 then
-    result := RemoveBreakpoint32(AnId)
+    result := UpdateWatches32
   else
-    result := RemoveBreakpoint64(AnId);
+    result := UpdateWatches64;
+  FDebugStateChanged:=true;
 end;
 
-function TDbgDarwinThread.DetectHardwareWatchpoint: integer;
+function TDbgDarwinThread.DetectHardwareWatchpoint: Pointer;
 var
   dr6: DWord;
+  wd: TFpIntelWatchPointData;
 begin
-  result := -1;
+  result := nil;
   if ID<0 then
     Exit;
   if ReadDebugState then
@@ -513,10 +451,13 @@ begin
     else
       dr6 := lo(FDebugState64.__dr6);
 
-    if dr6 and 1 = 1 then result := 0
-    else if dr6 and 2 = 2 then result := 1
-    else if dr6 and 4 = 4 then result := 2
-    else if dr6 and 8 = 8 then result := 3;
+    wd := TFpIntelWatchPointData(Process.WatchPointData);
+    if dr6 and 1 = 1 then result := wd.Owner[0]
+    else if dr6 and 2 = 2 then result := wd.Owner[1]
+    else if dr6 and 4 = 4 then result := wd.Owner[2]
+    else if dr6 and 8 = 8 then result := wd.Owner[3];
+    if (Result = nil) and ((dr6 and 15) <> 0) then
+      Result := Pointer(-1); // not owned watchpoint
     end;
 end;
 
@@ -526,7 +467,7 @@ var
   old_StateCnt: mach_msg_Type_number_t;
 begin
   inherited;
-  if Process.CurrentWatchpoint>-1 then
+  if Process.CurrentWatchpoint <> nil then
     begin
     if Process.Mode=dm32 then
       FDebugState32.__dr6:=0
@@ -678,6 +619,11 @@ function TDbgDarwinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainTh
 begin
   IsMainThread:=true;
   result := TDbgDarwinThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
+end;
+
+function TDbgDarwinProcess.CreateWatchPointData: TFpWatchPointData;
+begin
+  Result := TFpIntelWatchPointData.Create;
 end;
 
 constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,

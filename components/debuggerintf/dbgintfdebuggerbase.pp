@@ -292,7 +292,8 @@ type
   TDBGWatchPointKind = (
     wpkWrite,
     wpkRead,
-    wpkReadWrite
+    wpkReadWrite,
+    wkpExec
   );
 
   { TBaseBreakPoint }

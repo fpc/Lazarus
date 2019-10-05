@@ -10,7 +10,7 @@ uses
   SysUtils,
   Maps,
   LazLoggerBase,
-  DbgIntfBaseTypes,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgDisasX86,
   FpDbgClasses;
 
@@ -949,6 +949,7 @@ begin
        deBreakpoint: begin
            b := FCurrentProcess.GetAndClearPauseRequested;
            AExit := (FCurrentProcess.CurrentBreakpoint <> nil) or
+                    ( (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> Pointer(-1)) ) or
                     (b and (InterLockedExchangeAdd(FPauseRequest, 0) = 1))
          end;
 {        deLoadLibrary :
@@ -974,9 +975,14 @@ end;
 procedure TDbgController.SendEvents(out continue: boolean);
 var
   HasPauseRequest: Boolean;
+  CurWatch: TFpInternalWatchpoint;
 begin
   // reset pause request. If Pause() is called after this, it will be seen in the next loop
   HasPauseRequest := InterLockedExchange(FPauseRequest, 0) = 1;
+  CurWatch := nil;
+  if (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> Pointer(-1)) then
+    CurWatch := TFpInternalWatchpoint(FCurrentProcess.CurrentWatchpoint);
+
   case FPDEvent of
     deCreateProcess:
       begin
@@ -993,28 +999,35 @@ begin
       end;
     deFinishedStep:
       begin
+        if assigned(OnHitBreakpointEvent) then begin
+          // if there is a breakpoint at the stepping end, execute its actions
           continue:=false;
-        // if there is a breakpoint at the stepping end, execute its actions
-        if assigned(OnHitBreakpointEvent) and assigned(FCurrentProcess.CurrentBreakpoint) then
+          if (CurWatch <> nil) and assigned(OnHitBreakpointEvent) then
+            OnHitBreakpointEvent(continue, CurWatch);
+          continue:=false;
+          if assigned(FCurrentProcess.CurrentBreakpoint) then
             OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
-        if continue or not assigned(FCurrentProcess.CurrentBreakpoint) then begin
+
           // TODO: dedicated event to set pause and location
           // ensure state = dsPause and location is set
           continue:=false;
           OnHitBreakpointEvent(continue, nil);
+          HasPauseRequest := False;
         end;
-        // but do not continue
-        HasPauseRequest := False;
         continue:=false;
       end;
     deBreakpoint:
       begin
         // If there is no breakpoint AND no pause-request then this is a deferred, allready handled pause request
-        continue := (FCurrentProcess.CurrentBreakpoint = nil) and (not HasPauseRequest);
-        if (not continue) and assigned(OnHitBreakpointEvent) then
+        continue := (FCurrentProcess.CurrentBreakpoint = nil) and (CurWatch = nil) and (not HasPauseRequest);
+        if (not continue) and assigned(OnHitBreakpointEvent) then begin
+          if (CurWatch <> nil) then
+            OnHitBreakpointEvent(continue, CurWatch);
+          if assigned(FCurrentProcess.CurrentBreakpoint) then
             OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
           HasPauseRequest := False;
         end;
+      end;
     deExitProcess:
       begin
       (* Only events for the main process get here / See ProcessLoop *)
