@@ -447,6 +447,12 @@ procedure TTestWatches.TestWatchesScope;
       t.Add(n, 'Result',  0, f).ExpectNotFound;
     end;
 
+    // Test: Nested can see Outer scope
+    if AStackOffs <= 2 then
+      t.Add(n, 'TestEnum',  weEnum('te3'), 0);
+    if AStackOffs <= 1 then
+      t.Add(n, 'TestEnum',  weEnum('te3'), 1);
+
   end;
 
 var
