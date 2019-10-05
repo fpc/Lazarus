@@ -86,15 +86,9 @@ type
 
   TDbgControllerStepIntoLineCmd = class(TDbgControllerHiddenBreakStepCmd)
   private
+    FState: (siSteppingCurrent, siSteppingIn, siSteppingNested, siRunningStepOut);
+    FStepCount, FNestDepth: Integer;
     FStoredStackFrame: TDBGPtr;
-    FInto: boolean;
-    FHiddenWatchpointInto: integer;
-    FHiddenWatchpointOut: integer;
-    FHiddenWatchpointOutStackbase: integer;
-    FLastStackPointerValue: TDBGPtr;
-    FLastStackBaseValue: TDBGPtr;
-    FAssumedProcStartStackPointer: TDBGPtr;
-    FInstCount: integer;
   protected
     procedure Init; override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
@@ -378,9 +372,6 @@ end;
 procedure TDbgControllerStepIntoLineCmd.Init;
 begin
   inherited Init;
-  FHiddenWatchpointInto:=-1;
-  FHiddenWatchpointOut:=-1;
-  FHiddenWatchpointOutStackbase:=-1;
   FStoredStackFrame:=FThread.GetStackBasePointerRegisterValue;
   FThread.StoreStepInfo;
 end;
@@ -395,106 +386,73 @@ var
   l: Integer;
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepIntoLineCmd.DoContinue: FProcess=AProcess');
-  if not FInto then
+  if FState = siSteppingCurrent then
   begin
     l := IsAtCallInstruction;
     if l > 0 then begin
-      FInto := true;
-      FInstCount := 0;
-      FHiddenBreakpoint := AProcess.AddInternalBreak(FThread.GetInstructionPointerRegisterValue + l);
+      FState := siSteppingIn;
+      SetHiddenBreak(FThread.GetInstructionPointerRegisterValue + l);
       FProcess.Continue(FProcess, FThread, true);
       exit;
     end;
   end;
 
-  FProcess.Continue(FProcess, FThread, (FHiddenWatchpointInto=-1) and (FHiddenWatchpointOut=-1));
+  FProcess.Continue(FProcess, FThread, FState <> siRunningStepOut);
 end;
 
 procedure TDbgControllerStepIntoLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Handled, Finished: boolean);
-
 var
-  AStackPointerValue: TDBGPtr;
-  AStackBasePointerValue: TDBGPtr;
-
-  procedure SetHWBreakpoints;
-  var
-    OutStackPos: TDBGPtr;
-    StackBasePos: TDBGPtr;
-    IntoStackPos: TDBGPtr;
-  begin
-    IntoStackPos:=AStackPointerValue-DBGPTRSIZE[FController.FCurrentProcess.Mode];
-    OutStackPos:=FAssumedProcStartStackPointer;
-    StackBasePos:=AStackBasePointerValue;
-
-    FHiddenWatchpointInto := FController.FCurrentThread.AddWatchpoint(IntoStackPos);
-    FHiddenWatchpointOut := FController.FCurrentThread.AddWatchpoint(OutStackPos);
-    FHiddenWatchpointOutStackbase := FController.FCurrentThread.AddWatchpoint(StackBasePos);
-  end;
-
+  CompRes: TFPDCompareStepInfo;
+  SteppedOut: Boolean;
 begin
-  if (FHiddenWatchpointOut<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointOut) then
-    FHiddenWatchpointOut:=-1;
-  if (FHiddenWatchpointInto<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointInto) then
-    FHiddenWatchpointInto:=-1;
-  if (FHiddenWatchpointOutStackbase<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointOutStackbase) then
-    FHiddenWatchpointOutStackbase:=-1;
+  CompRes := FController.FCurrentThread.CompareStepInfo;
+  SteppedOut := FStoredStackFrame < FController.CurrentThread.GetStackBasePointerRegisterValue;
+  Finished := (CompRes = dcsiNewLine) and not
+    ( ( FController.NextOnlyStopOnStartLine  or  SteppedOut ) and
+      (not FController.FCurrentThread.IsAtStartOfLine)
+    );
+  //Finished := Finished or (SteppedOut and (CompRes = dcsiNoLineInfo));
 
-  AStackPointerValue:=FController.CurrentThread.GetStackPointerRegisterValue;
-  AStackBasePointerValue:=FController.CurrentThread.GetStackBasePointerRegisterValue;
-
-  Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
-  if (AnEvent=deBreakpoint) and not assigned(FController.FCurrentProcess.CurrentBreakpoint) then
-  begin
-    if FController.FCurrentThread.CompareStepInfo<>dcsiNewLine then
-    begin
-      AnEvent:=deInternalContinue;
-      Finished:=false;
-      inc(FInstCount);
-
-      if FInto then
-      begin
-        if FHiddenBreakpoint.HasLocation(FThread.GetInstructionPointerRegisterValue) then
-        begin
-          FInto:=false;
-          FInstCount:=0;
-          RemoveHiddenBreak;
-        end
-        else
-        begin
-          if FInstCount=1 then
-            FAssumedProcStartStackPointer:=AStackPointerValue;
-          if (AStackBasePointerValue<>FLastStackBaseValue) or (AStackPointerValue<>FLastStackPointerValue) then
-            FInstCount:=1;
-
-          if FInstCount>4 then
-            SetHWBreakpoints;
-        end;
-      end
-      else
-        FInstCount := 0;
-    end
-    else
-    begin
-      // Also check if the current instruction is at the start of a new
-      // sourceline. (Dwarf only)
-      // Don't do this while stepping into a procedure, only when stepping out.
-      // This because when stepping out of a procedure, the first asm-instruction
-      // could still be part of the instruction-line that made the call to the
-      // procedure in the first place.
-      if ((FStoredStackFrame<AStackBasePointerValue) or (FController.NextOnlyStopOnStartLine))
-        and not FController.FCurrentThread.IsAtStartOfLine then
-      begin
-        Finished:=false;
-        AnEvent:=deInternalContinue;
-      end;
-    end;
-  end;
   Handled := Finished;
   if Finished then
     AnEvent := deFinishedStep;
-  FLastStackPointerValue:=AStackPointerValue;
-  FLastStackBaseValue:=AStackBasePointerValue;
+  If Finished then
+    exit;
+
+  if AnEvent in [deFinishedStep] then
+    AnEvent:=deInternalContinue; // not finished
+
+  if IsAtHiddenBreak or SteppedOut then begin
+    RemoveHiddenBreak;
+    FState := siSteppingCurrent;
+    exit;
+  end;
+
+  if FState = siSteppingCurrent then
+    exit;
+
+  // we stepped into, but no line info
+  assert(FStoredStackFrame > FController.CurrentThread.GetStackBasePointerRegisterValue, 'TDbgControllerStepIntoLineCmd.DoResolveEvent: Stepped in: FStoredStackFrame > FController.CurrentThread.GetStackBasePointerRegisterValue');
+
+  if FState = siSteppingIn then begin
+    FState := siSteppingNested;
+    FStepCount := 0;
+    FNestDepth := 0;
+  end;
+
+  inc(FStepCount);
+  if IsAtCallInstruction > 0 then
+    inc(FNestDepth);
+
+  // FNestDepth = 2  => About to step into 3rd level nested
+  if (FStepCount > 5) or (FNestDepth > 1) then begin
+    assert(FHiddenBreakpoint <> nil, 'TDbgControllerStepIntoLineCmd.DoResolveEvent: Stepping out: FHiddenBreakpoint <> nil');
+    FState := siRunningStepOut; // run to breakpoint
+    exit;
+  end;
+
+  // Just step and see if we find line info
 end;
 
 { TDbgControllerStepOverLineCmd }
@@ -1035,10 +993,10 @@ begin
       end;
     deFinishedStep:
       begin
-        continue:=false;
+          continue:=false;
         // if there is a breakpoint at the stepping end, execute its actions
         if assigned(OnHitBreakpointEvent) and assigned(FCurrentProcess.CurrentBreakpoint) then
-          OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
+            OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
         if continue or not assigned(FCurrentProcess.CurrentBreakpoint) then begin
           // TODO: dedicated event to set pause and location
           // ensure state = dsPause and location is set
@@ -1054,9 +1012,9 @@ begin
         // If there is no breakpoint AND no pause-request then this is a deferred, allready handled pause request
         continue := (FCurrentProcess.CurrentBreakpoint = nil) and (not HasPauseRequest);
         if (not continue) and assigned(OnHitBreakpointEvent) then
-          OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
-        HasPauseRequest := False;
-      end;
+            OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
+          HasPauseRequest := False;
+        end;
     deExitProcess:
       begin
       (* Only events for the main process get here / See ProcessLoop *)
