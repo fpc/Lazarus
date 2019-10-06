@@ -539,33 +539,19 @@ var
   i, Idx: Integer;
   Str: String;
 begin
-  {
-  Idx := MasterPoListBox.ItemIndex;
-  if (Idx <> -1) then
-    PrevItem := MasterPoListBox.Items[Idx]
-  else
-    PrevItem := '';
-  }
   MasterPoListBox.Items.BeginUpdate;
   try
     for i := 0 to S.Count - 1 do
     begin
       Str := S[i];
-      //skip files that do not exist (anymore)
-      if (FileExistsUtf8(Str)) and (not FileExistsUTF8(ExtractFilePath(Str) + '.pocheckerignore')) then
+      //skip ignored files
+      if not FileExistsUTF8(ExtractFilePath(Str) + '.pocheckerignore') then
       begin
         Idx := MasterPoListBox.Items.IndexOf(Str);
         if (Idx = -1) then
           MasterPoListBox.Items.Add(Str);
       end
     end;
-    {
-    if (PrevItem <> '') then
-    begin
-      Idx := MasterPoListBox.Items.IndexOf(PrevItem);
-      MasterPoListBox.ItemIndex := Idx;
-    end;
-    }
   finally
     MasterPoListBox.Items.EndUpdate;
   end;
