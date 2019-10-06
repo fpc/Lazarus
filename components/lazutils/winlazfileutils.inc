@@ -22,9 +22,9 @@ function GetCurrentDirUtf8: String;
 var
   U: UnicodeString;
 begin
-  System.GetDir(0, U);
+  System.GetDir(0, U{%H-});
   // Need to do an explicit encode to utf8, if compiled with "-dDisableUtf8RTL"
-  Result := UTF8Encode(U);
+  Result := {%H-}U;
 end;
 
 procedure GetDirUtf8(DriveNr: Byte; var Dir: String);
@@ -33,12 +33,12 @@ var
 begin
   {$PUSH}
   {$IOCHECKS OFF}
-  GetDir(DriveNr, U);
+  GetDir(DriveNr, U{%H-});
   if IOResult <> 0 then
     U := UnicodeString(Chr(DriveNr + Ord('A') - 1) + ':\');
   {$POP}
   // Need to do an explicit encode to utf8, if compiled with "-dDisableUtf8RTL"
-  Dir := UTF8Encode(U);
+  Dir := {%H-}U;
 end;
 
 function FileOpenUtf8(Const FileName : string; Mode : Integer) : THandle;
