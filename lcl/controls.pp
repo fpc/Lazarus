@@ -2712,15 +2712,15 @@ const
     (akLeft,akRight,akLeft)
     );
 
-function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
+function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl; inline;
 function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
 function FindLCLWindow(const ScreenPos: TPoint; AllowDisabled: Boolean = True): TWinControl;
 function FindControl(Handle: HWND): TWinControl;
 function FindOwnerControl(Handle: HWND): TWinControl;
 function FindLCLControl(const ScreenPos: TPoint): TControl;
 
-function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
-procedure MoveWindowOrg(dc: hdc; X,Y: Integer);
+function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint; inline;
+procedure MoveWindowOrg(dc: hdc; X,Y: Integer); inline;
 
 // Interface support.
 procedure RecreateWnd(const AWinControl:TWinControl);
@@ -2743,8 +2743,8 @@ var
 function CursorToString(Cursor: TCursor): string;
 function StringToCursor(const S: string): TCursor;
 procedure GetCursorValues(Proc: TGetStrProc);
-function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
-function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
+function CursorToIdent(Cursor: Longint; var Ident: string): Boolean; inline;
+function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean; inline;
 
 procedure CheckTransparentWindow(var Handle: THandle; var AWinControl: TWinControl);
 function CheckMouseButtonDownUp(const AWinHandle: THandle; const AWinControl: TWinControl;
@@ -2757,7 +2757,7 @@ function GetKeyShiftState: TShiftState;
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   Left, Top, Right, Bottom: integer);
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
-  const Space: TRect);
+  const Space: TRect); inline;
 
 function IsColorDefault(AControl: TControl): Boolean;
 
