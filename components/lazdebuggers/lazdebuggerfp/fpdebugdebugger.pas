@@ -1736,42 +1736,44 @@ begin
     else
       begin
         ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
+        if ABreakPoint <> nil then begin
 
-        // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
-        if ABreakPoint.Expression <> '' then begin
-          Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
-          if Context <> nil then begin
-            PasExpr := nil;
-            try
-              PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context);
-              PasExpr.ResultValue; // trigger full validation
-              if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
-                 (not PasExpr.ResultValue.AsBool) // false => do not pause
-              then
-                &continue := True;
-            finally
-              PasExpr.Free;
-              Context.ReleaseReference;
+          // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
+          if ABreakPoint.Expression <> '' then begin
+            Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
+            if Context <> nil then begin
+              PasExpr := nil;
+              try
+                PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context);
+                PasExpr.ResultValue; // trigger full validation
+                if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
+                   (not PasExpr.ResultValue.AsBool) // false => do not pause
+                then
+                  &continue := True;
+              finally
+                PasExpr.Free;
+                Context.ReleaseReference;
+              end;
+
+              if &continue then
+                exit;
             end;
-
-            if &continue then
-              exit;
           end;
-        end;
 
-        ALocationAddr := GetLocation;
-        if Assigned(EventLogHandler) then
-          EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
+          ALocationAddr := GetLocation;
+          if Assigned(EventLogHandler) then
+            EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
 
-        if assigned(ABreakPoint) then
-          ABreakPoint.Hit(&continue);
+          if assigned(ABreakPoint) then
+            ABreakPoint.Hit(&continue);
 
-        if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
-          // For message use location(Address - 1)
-          OnFeedback(self,
-              Format('The Watchpoint for "%1:s" was triggered.%0:s%0:s', // 'Old value: %2:s%0:sNew value: %3:s',
-                     [LineEnding, ABreakPoint.WatchData{, AOldVal, ANewVal}]),
-              '', ftInformation, [frOk]);
+          if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
+            // For message use location(Address - 1)
+            OnFeedback(self,
+                Format('The Watchpoint for "%1:s" was triggered.%0:s%0:s', // 'Old value: %2:s%0:sNew value: %3:s',
+                       [LineEnding, ABreakPoint.WatchData{, AOldVal, ANewVal}]),
+                '', ftInformation, [frOk]);
+          end;
         end;
       end;
     end
