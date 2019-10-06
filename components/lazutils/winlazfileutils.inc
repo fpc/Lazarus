@@ -24,7 +24,7 @@ var
 begin
   System.GetDir(0, U{%H-});
   // Need to do an explicit encode to utf8, if compiled with "-dDisableUtf8RTL"
-  Result := {%H-}U;
+  Result := UTF8Encode(U);
 end;
 
 procedure GetDirUtf8(DriveNr: Byte; var Dir: String);
@@ -38,7 +38,7 @@ begin
     U := UnicodeString(Chr(DriveNr + Ord('A') - 1) + ':\');
   {$POP}
   // Need to do an explicit encode to utf8, if compiled with "-dDisableUtf8RTL"
-  Dir := {%H-}U;
+  Dir := UTF8Encode(U);
 end;
 
 function FileOpenUtf8(Const FileName : string; Mode : Integer) : THandle;
