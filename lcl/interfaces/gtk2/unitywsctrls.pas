@@ -252,10 +252,31 @@ var
   Loaded: Boolean;
   Initialized: Boolean;
 
+function NeedAppIndicator: boolean;
+var
+  DeskTop,  VersionSt : String;
+  ProcFile: TextFile;
+begin
+  AssignFile(ProcFile, '/proc/version');
+  try
+    reset(ProcFile);
+    readln(ProcFile, VersionSt);
+  finally
+    CloseFile(ProcFile)
+  end;
+  DeskTop := GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP');
+  if DeskTop = 'Unity' then exit(True);
+  if (DeskTop = 'GNOME') and
+    ( (pos('mageia', VersionSt) > 0) or
+      (pos('Red Hat', VersionSt) > 0) or
+      (pos('SUSE', VersionSt) > 0) )
+  then exit(True);
+  Result := False;
+end;
+
 function UnityAppIndicatorInit: Boolean;
 var
   Module: HModule;
-  DeskTop: String;
 
   function TryLoad(const ProcName: string; var Proc: Pointer): Boolean;
   begin
@@ -268,17 +289,16 @@ begin
   if Loaded then
     Exit(Initialized);
   Loaded := True;
-  DeskTop := GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP');
-  if (DeskTop = 'KDE') or (DeskTop = 'X-Cinnamon') then
+  if not NeedAppIndicator then
   begin
     Initialized := False;
     Exit;
   end;
   if Initialized then
     Exit(True);
-  Module := LoadLibrary(libappindicator_3);        // thats the one we want here.
+  Module := LoadLibrary(libappindicator_3);        // libappindicator v. 3
   if Module = 0 then                               // no libappindicator_3
-     Exit;                                         // hope libappindicator_1 can help you ....
+     Exit;
   Result :=
     TryLoad('app_indicator_get_type', @app_indicator_get_type) and
     TryLoad('app_indicator_new', @app_indicator_new) and
