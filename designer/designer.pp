@@ -1878,8 +1878,9 @@ begin
       if aPersistent is TComponent then begin
         Comp := TComponent(aPersistent);
         compName := Comp.Name;
-        if Comp.Owner <> LookupRoot then                // This is a subcomponent.
-          compName := Comp.Owner.Name + '.' + compName; // Add owner to the name.
+        // Add owner to the name of a subcomponent.
+        if Assigned(Comp.Owner) and (Comp.Owner <> LookupRoot) then
+          compName := Comp.Owner.Name + '.' + compName;
         if Comp.HasParent then
           parentName := Comp.GetParentComponent.Name;
       end;
