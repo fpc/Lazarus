@@ -85,13 +85,12 @@ type
     procedure SetPublishedBounds(AIndex: Integer; AValue: Integer); virtual;
   public
     constructor Create(AOwner: TComponent; ANonFormDesigner: INonFormDesigner); virtual; reintroduce;
+    destructor Destroy; override;
     procedure Paint; override;
-
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure SetDesignerFormBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SetPublishedBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SetLookupRootBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
-
     function DockedDesigner: boolean; virtual;
 
     property NonFormDesigner: INonFormDesigner read FNonFormDesigner  implements INonFormDesigner;
@@ -460,6 +459,20 @@ end;
 
 { TNonFormProxyDesignerForm }
 
+constructor TNonFormProxyDesignerForm.Create(AOwner: TComponent;
+  ANonFormDesigner: INonFormDesigner);
+begin
+  inherited CreateNew(AOwner, 1);
+  FNonFormDesigner := ANonFormDesigner;
+  FNonFormDesigner.Create;
+end;
+
+destructor TNonFormProxyDesignerForm.Destroy;
+begin
+  inherited Destroy;
+  DebugLn(['TNonFormProxyDesignerForm.Destroy: Self=', Self, ', LookupRoot=', FLookupRoot]);
+end;
+
 procedure TNonFormProxyDesignerForm.Notification(AComponent: TComponent;
   AOperation: TOperation);
 begin
@@ -492,15 +505,6 @@ begin
     2: inherited Width := AValue;
     3: inherited Height := AValue;
   end;
-end;
-
-constructor TNonFormProxyDesignerForm.Create(AOwner: TComponent;
-  ANonFormDesigner: INonFormDesigner);
-begin
-  inherited CreateNew(AOwner, 1);
-
-  FNonFormDesigner := ANonFormDesigner;
-  FNonFormDesigner.Create;
 end;
 
 procedure TNonFormProxyDesignerForm.Paint;
@@ -557,8 +561,7 @@ begin
   FCollectedChildren.Add(Child);
 end;
 
-procedure TDesignerMediator.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TDesignerMediator.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
@@ -577,9 +580,8 @@ end;
 procedure TDesignerMediator.SetDesigner(const AValue: TComponentEditorDesigner);
 begin
   if FDesigner=AValue then exit;
-  if FDesigner<>nil then begin
-
-  end;
+  //if FDesigner<>nil then begin
+  //end;
   FDesigner:=AValue;
 end;
 

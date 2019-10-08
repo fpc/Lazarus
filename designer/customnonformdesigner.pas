@@ -90,6 +90,22 @@ end;
 
 { TCustomNonFormDesignerForm }
 
+procedure TCustomNonFormDesignerForm.Create;
+begin
+  inherited Create;
+end;
+
+constructor TCustomNonFormDesignerForm.Create(
+  ANonFormProxyDesignerForm: TNonFormProxyDesignerForm);
+begin
+  FNonFormProxyDesignerForm := ANonFormProxyDesignerForm;
+end;
+
+destructor TCustomNonFormDesignerForm.Destroy;
+begin
+  inherited Destroy;
+end;
+
 function TCustomNonFormDesignerForm.GetLookupRoot: TComponent;
 begin
   Result := FNonFormProxyDesignerForm.LookupRoot;
@@ -116,22 +132,6 @@ begin
   if Operation=opRemove then begin
     if AComponent=FNonFormProxyDesignerForm.LookupRoot then FNonFormProxyDesignerForm.LookupRoot:=nil;
   end;
-end;
-
-constructor TCustomNonFormDesignerForm.Create(
-  ANonFormProxyDesignerForm: TNonFormProxyDesignerForm);
-begin
-  FNonFormProxyDesignerForm := ANonFormProxyDesignerForm;
-end;
-
-destructor TCustomNonFormDesignerForm.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TCustomNonFormDesignerForm.Create;
-begin
-  inherited Create;
 end;
 
 procedure TCustomNonFormDesignerForm.DoLoadBounds;

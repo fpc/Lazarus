@@ -65,6 +65,7 @@ implementation
 
 destructor TFrameDesignerForm.Destroy;
 begin
+  DebugLn(['TFrameDesignerForm.Destroy: Self=', Self, ', LookupRoot=', LookupRoot]);
   if LookupRoot is TControl then
     TControl(LookupRoot).RemoveAllHandlersOfObject(Self);
   inherited Destroy;

@@ -825,6 +825,7 @@ begin
   // was FinalizeFreeDesigner
   Include(FFlags, dfDestroyingForm);
   // free or hide the form
+  DebugLn(['TDesigner.PrepareFreeDesigner: TheFormEditor=', TheFormEditor, ', Designer=', Self]);
   TheFormEditor.DeleteComponent(FLookupRoot,AFreeComponent);
   DisconnectComponent;
   Free;
