@@ -21,8 +21,9 @@ uses
   {$IFDEF USE_GENERICS_COLLECTIONS}
     Generics.Collections, Generics.Defaults,
   {$ELSE}
-    ghashmap, sparta_HashUtils, gvector, contnrs,
+    ghashmap, sparta_HashUtils, gvector,
   {$ENDIF}
+  contnrs,
   // LCL
   LCLIntf, LCLType, LMessages, ComCtrls, Controls, Forms, ExtCtrls, Graphics,
   // IdeIntf
