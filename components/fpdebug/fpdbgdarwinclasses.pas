@@ -428,9 +428,9 @@ begin
     exit;
 
   if Process.Mode=dm32 then
-    result := UpdateWatches32
+    UpdateWatches32
   else
-    result := UpdateWatches64;
+    UpdateWatches64;
   FDebugStateChanged:=true;
 end;
 
