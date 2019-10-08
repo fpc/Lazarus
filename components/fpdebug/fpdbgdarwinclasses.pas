@@ -113,8 +113,6 @@ type
     function ReadDebugState: boolean;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
-    function AddWatchpoint(AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): integer; override;
-    function RemoveWatchpoint(AnId: integer): boolean; override;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
     function DetectHardwareWatchpoint: Pointer; override;
     procedure BeforeContinue; override;
