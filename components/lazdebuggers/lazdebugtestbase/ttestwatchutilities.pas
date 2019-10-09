@@ -271,6 +271,7 @@ type
 
     procedure AddIndexFromPrevious(IndexNames: array of string;
       ValueIndex: array of integer; AnPreviousOffset: Integer = 0);
+    procedure AddMemberFromPrevious(AnPreviousOffset: Integer = 0);
 
 
     procedure Clear;
@@ -318,6 +319,8 @@ function weWideChar(const AExpVal: array of char; ATypeName: String=#1): TWatchE
 function weInteger(const AExpVal: array of Int64; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResultArray;
 function weAnsiStr(const AExpVal: array of string; ATypeName: String=#1): TWatchExpectationResultArray;
 function weShortStr(const AExpVal: array of string; ATypeName: String=#1): TWatchExpectationResultArray;
+function weBool(const AExpVal: array of Boolean; ATypeName: String=#1): TWatchExpectationResultArray;
+function weEnum(const AExpVal: array of string; ATypeName: String=#1): TWatchExpectationResultArray;
 
 
 
@@ -686,6 +689,26 @@ begin
     Result[i] := weShortStr(AExpVal[i], ATypeName);
 end;
 
+function weBool(const AExpVal: array of Boolean; ATypeName: String
+  ): TWatchExpectationResultArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(AExpVal));
+  for i := 0 to Length(AExpVal) - 1 do
+    Result[i] := weBool(AExpVal[i], ATypeName);
+end;
+
+function weEnum(const AExpVal: array of string; ATypeName: String
+  ): TWatchExpectationResultArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(AExpVal));
+  for i := 0 to Length(AExpVal) - 1 do
+    Result[i] := weEnum(AExpVal[i], ATypeName);
+end;
+
 function weRecord(AExpFields: array of TWatchExpectationResult;
   ATypeName: String): TWatchExpectationResult;
 var
@@ -863,8 +886,8 @@ procedure TWatchExpectationResult.MakeCopy;
 var
   i: Integer;
 begin
-  ExpSubResults := copy(ExpSubResults, low(ExpSubResults), high(ExpSubResults));
-  ExpSetData := copy(ExpSetData, low(ExpSetData), high(ExpSetData));
+  ExpSubResults := copy(ExpSubResults, low(ExpSubResults), high(ExpSubResults)-low(ExpSubResults)+1);
+  ExpSetData := copy(ExpSetData, low(ExpSetData), high(ExpSetData)-low(ExpSetData)+1);
   for i := low(ExpSubResults) to high(ExpSubResults) do
     ExpSubResults[i].MakeCopy;
 end;
@@ -1042,7 +1065,7 @@ end;
 function TWatchExpectationList.ParseCommaList(AVal: String; out
   AFoundCount: Integer; AMaxLen: Integer; AComma: char): TStringArray;
 var
-  i, BracketLvl: Integer;
+  i, BracketLvl, SquareLvl: Integer;
   InQuote: Boolean;
 begin
   if AMaxLen < 0 then
@@ -1053,15 +1076,18 @@ begin
   i := 1;
   AFoundCount := 0;
   BracketLvl := 0;
+  SquareLvl := 0;
   InQuote := false;
   while length(AVal) > 0 do begin
     while (i <= length(AVal)) and (
-        (AVal[i] <> AComma) or (BracketLvl > 0) or InQuote
+        (AVal[i] <> AComma) or (BracketLvl > 0) or (SquareLvl > 0) or InQuote
       )
     do begin
       case AVal[i] of
         '(': if not InQuote then inc(BracketLvl);
         ')': if not InQuote then dec(BracketLvl);
+        '[': if not InQuote then inc(SquareLvl);
+        ']': if not InQuote then dec(SquareLvl);
         '''':
           if InQuote and (i < length(AVal)) and (AVal[i+1] = '''') then inc(i)
           else InQuote := not InQuote;
@@ -1982,6 +2008,33 @@ begin
       prev.TstStackFrame, prev.TstMinFpc, prev.TstMinDbg
     );
     t^.TstExpected.MakeCopy;
+    // copy flags from expectation for whole array
+    for st := low(TSymbolTypes) to high(TSymbolTypes) do
+      t^.AddFlag(prev.TstExpected.ExpErrorHandlingFlags[st], [st]);
+  end;
+end;
+
+procedure TWatchExpectationList.AddMemberFromPrevious(AnPreviousOffset: Integer
+  );
+var
+  prev: TWatchExpectation;
+  i: Integer;
+  t: PWatchExpectation;
+  st: TSymbolType;
+  psub: TWatchExpectationResult;
+begin
+  prev := FList[Count-1-AnPreviousOffset];
+
+  for i := 0 to Length(prev.TstExpected.ExpSubResults) -1 do begin
+    psub := prev.TstExpected.ExpSubResults[i];
+    t := Add(Prev.TstTestName + '.'+psub.ExpFieldName,
+      prev.TstWatch.Expression+ '.'+psub.ExpFieldName,
+      psub,
+      prev.TstStackFrame, prev.TstMinFpc, prev.TstMinDbg
+    );
+
+    t^.TstExpected.MakeCopy;
+    t^.TstExpected.ExpFieldName := '';
     // copy flags from expectation for whole array
     for st := low(TSymbolTypes) to high(TSymbolTypes) do
       t^.AddFlag(prev.TstExpected.ExpErrorHandlingFlags[st], [st]);

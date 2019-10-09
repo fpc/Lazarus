@@ -376,6 +376,101 @@
   pre__Set{e}      _OP_ TSet([EnVal2, EnVal4]);          //@@ _pre3_Set;
   pre__SmallSet{e} _OP_ TSmallRangeSet([22, 24,25]);     //@@ _pre3_SmallSet;
 
+
+  {$IFnDEF TestAssign}
+  pre__BitPackBoolArray{e}      _O2_ TBitPackBoolArray    _EQ_ (True, False, True, True);          //@@ _pre3_BitPackBoolArray; // }}
+  pre__BitPackTinyArray{e}      _O2_ TBitPackTinyArray    _EQ_ (1, 0, 3, 2);          //@@ _pre3_BitPackTinyArray; // }}
+  pre__BitPackTinyNegArray{e}   _O2_ TBitPackTinyNegArray _EQ_ (2, 6{-2}, 0, 7{-1});          //@@ _pre3_BitPackTinyNegArray; // }}
+  pre__BitPackEnumArray{e}      _O2_ TBitPackEnumArray    _EQ_ (EnVal3, EnVal1, EnVal2, EnVal3);          //@@ _pre3_BitPackEnumArray; // }}
+  pre__BitPackEnum3Array{e}     _O2_ TBitPackEnum3Array   _EQ_ (EnVal32, EnVal32, EnVal31, EnVal32);          //@@ _pre3_BitPackEnum3Array; // }}
+  pre__BitPackSetArray{e}       _O2_ TBitPackSetArray     _EQ_ ([EnVal3, EnVal1], [], [EnVal3], [EnVal1]);          //@@ _pre3_BitPackSetArray; // }}
+  pre__BitPackSet3Array{e}      _O2_ TBitPackSet3Array    _EQ_ ([EnVal31, EnVal32], [], [EnVal31], [EnVal32]);          //@@ _pre3_BitPackSet3Array; // }}
+
+  pre__BitPackBoolArray2{e}      _O2_ TBitPackBoolArray2    _EQ_ ((True, False, True), (False, True, True));          //@@ _pre3_BitPackBoolArray2; // }}
+  pre__BitPackTinyArray2{e}      _O2_ TBitPackTinyArray2    _EQ_ ((1, 0, 3), (2,3,0));          //@@ _pre3_BitPackTinyArray2; // }}
+  pre__BitPackTinyNegArray2{e}   _O2_ TBitPackTinyNegArray2 _EQ_ ((2, 6{-2}, 0), (1, 0, 7{-1}));          //@@ _pre3_BitPackTinyNegArray2; // }}
+  pre__BitPackEnumArray2{e}      _O2_ TBitPackEnumArray2    _EQ_ ((EnVal3, EnVal1, EnVal2), (EnVal1, EnVal4, EnVal2));          //@@ _pre3_BitPackEnumArray2; // }}
+  pre__BitPackEnum3Array2{e}     _O2_ TBitPackEnum3Array2   _EQ_ ((EnVal32, EnVal32, EnVal31), (EnVal31, EnVal31, EnVal32));          //@@ _pre3_BitPackEnum3Array2; // }}
+//  pre__BitPackSetArray2{e}       _O2_ TBitPackSetArray2     _EQ_ (([EnVal3, EnVal1], [], [EnVal3]), ([],[EnVal1,EnVal2],[EnVal1]));          //@@ _pre3_BitPackSetArray2; // }}
+//  pre__BitPackSet3Array2{e}      _O2_ TBitPackSet3Array2    _EQ_ (([EnVal31, EnVal32], [], [EnVal31]), ([EnVal31,EnVal32],[],[EnVal32]));          //@@ _pre3_BitPackSet3Array2; // }}
+
+  pre__BitPackBoolRecord{e}      _O2_ TBitPackBoolRecord    _EQ_ (a:True; b:False; c:True; d: True; e: False);          //@@ _pre3_BitPackBoolRecord; // }}
+  pre__BitPackTinyRecord{e}      _O2_ TBitPackTinyRecord    _EQ_ (a:1; b:1; c:0; d: 3; e: 0);          //@@ _pre3_BitPackTinyRecord; // }}
+  pre__BitPackTinyNegRecord{e}   _O2_ TBitPackTinyNegRecord _EQ_ (a:3; b:6{-2}; c:7{-1}; d: 0; e: 1);          //@@ _pre3_BitPackTinyNegRecord; // }}
+  pre__BitPackEnumRecord{e}      _O2_ TBitPackEnumRecord    _EQ_ (a:EnVal3; b:EnVal1; c:EnVal2; d: EnVal2; e: EnVal1);          //@@ _pre3_BitPackEnumRecord; // }}
+  pre__BitPackEnum3Record{e}     _O2_ TBitPackEnum3Record   _EQ_ (a:EnVal31; b:EnVal32; c:EnVal31; d: EnVal31; e: EnVal32);          //@@ _pre3_BitPackEnum3Record; // }}
+  pre__BitPackSetRecord{e}       _O2_ TBitPackSetRecord     _EQ_ (a:[EnVal3]; b:[]; c:[EnVal1,EnVal2]; d: [EnVal2]; e: [EnVal1,EnVal3]);          //@@ _pre3_BitPackSetRecord; // }}
+  pre__BitPackSet3Record{e}      _O2_ TBitPackSet3Record    _EQ_ (a:[EnVal31]; b:[]; c:[EnVal31,EnVal32]; d: [EnVal32]; e: [EnVal31]);          //@@ _pre3_BitPackSet3Record; // }}
+
+  pre__BitPackBoolArrayRecord{e}      _O2_ TBitPackBoolArrayRecord    _EQ_ (a:(True, False, True, True); b:(False, True, True, False));          //@@ _pre3_BitPackBoolArrayRecord; // }}
+  pre__BitPackTinyArrayRecord{e}      _O2_ TBitPackTinyArrayRecord    _EQ_ (a:(1, 0, 3, 2); b:(2,3,0,1));          //@@ _pre3_BitPackTinyArrayRecord; // }}
+  pre__BitPackTinyNegArrayRecord{e}   _O2_ TBitPackTinyNegArrayRecord _EQ_ (a:(2, 6{-2}, 0, 7{-1}); b:(1, 0, 7{-1},2));          //@@ _pre3_BitPackTinyNegArrayRecord; // }}
+  pre__BitPackEnumArrayRecord{e}      _O2_ TBitPackEnumArrayRecord    _EQ_ (a:(EnVal3, EnVal1, EnVal2, EnVal4); b:(EnVal1, EnVal4, EnVal2, EnVal4));          //@@ _pre3_BitPackEnumArrayRecord; // }}
+  pre__BitPackEnum3ArrayRecord{e}     _O2_ TBitPackEnum3ArrayRecord   _EQ_ (a:(EnVal32, EnVal32, EnVal31, EnVal31); b:(EnVal31, EnVal31, EnVal32, EnVal31));          //@@ _pre3_BitPackEnum3ArrayRecord; // }}
+  pre__BitPackSetArrayRecord{e}       _O2_ TBitPackSetArrayRecord     _EQ_ (a:([EnVal3, EnVal1], [], [EnVal3], []); b:([],[EnVal1,EnVal2],[EnVal1],[EnVal4]));          //@@ _pre3_BitPackSetArrayRecord; // }}
+  pre__BitPackSet3ArrayRecord{e}      _O2_ TBitPackSet3ArrayRecord    _EQ_ (a:([EnVal31, EnVal32], [], [EnVal31],[EnVal31,EnVal32]); b:([EnVal31,EnVal32],[],[EnVal32],[]));          //@@ _pre3_BitPackSet3ArrayRecord; // }}
+
+
+  pre__FpDbgValueSize{e}   _O2_ TFpDbgValueSize    _EQ_ (Size: 0; BitSize: 2);          //@@ _pre3_FpDbgValueSize; // }}
+
+  {$ELSE}
+  pre__BitPackBoolArray{e}    := _pre2_BitPackBoolArray;         //@@ _pre3_BitPackBoolArray; // }}
+  pre__BitPackTinyArray{e}    := _pre2_BitPackTinyArray;         //@@ _pre3_BitPackTinyArray; // }}
+  pre__BitPackTinyNegArray{e} := _pre2_BitPackTinyNegArray;      //@@ _pre3_BitPackTinyNegArray; // }}
+  pre__BitPackEnumArray{e}    := _pre2_BitPackEnumArray;   //@@ _pre3_BitPackEnumArray; // }}
+  pre__BitPackEnum3Array{e}   := _pre2_BitPackEnum3Array;  //@@ _pre3_BitPackEnum3Array; // }}
+  pre__BitPackSetArray{e}     := _pre2_BitPackSetArray;    //@@ _pre3_BitPackSetArray; // }}
+  pre__BitPackSet3Array{e}    := _pre2_BitPackSet3Array;   //@@ _pre3_BitPackSet3Array; // }}
+
+  pre__BitPackBoolArray2{e}    := _pre2_BitPackBoolArray2;         //@@ _pre3_BitPackBoolArray2; // }}
+  pre__BitPackTinyArray2{e}    := _pre2_BitPackTinyArray2;         //@@ _pre3_BitPackTinyArray2; // }}
+  pre__BitPackTinyNegArray2{e} := _pre2_BitPackTinyNegArray2;      //@@ _pre3_BitPackTinyNegArray2; // }}
+  pre__BitPackEnumArray2{e}    := _pre2_BitPackEnumArray2;   //@@ _pre3_BitPackEnumArray2; // }}
+  pre__BitPackEnum3Array2{e}   := _pre2_BitPackEnum3Array2;  //@@ _pre3_BitPackEnum3Array2; // }}
+//  pre__BitPackSetArray2{e}     := _pre2_BitPackSetArray2;    //@@ _pre3_BitPackSetArray2; // }}
+//  pre__BitPackSet3Array2{e}    := _pre2_BitPackSet3Array2;   //@@ _pre3_BitPackSet3Array2; // }}
+
+  {$IFnDEF TestType}
+  pre__BitPackBoolRecord{e}    := _pre2_BitPackBoolRecord;      //@@ _pre3_BitPackBoolRecord; // }}
+  pre__BitPackTinyRecord{e}    := _pre2_BitPackTinyRecord;      //@@ _pre3_BitPackTinyRecord; // }}
+  pre__BitPackTinyNegRecord{e} := _pre2_BitPackTinyNegRecord;   //@@ _pre3_BitPackTinyNegRecord; // }}
+  pre__BitPackEnumRecord{e}    := _pre2_BitPackEnumRecord;      //@@ _pre3_BitPackEnumRecord; // }}
+  pre__BitPackEnum3Record{e}   := _pre2_BitPackEnum3Record;     //@@ _pre3_BitPackEnum3Record; // }}
+  pre__BitPackSetRecord{e}     := _pre2_BitPackSetRecord;       //@@ _pre3_BitPackSetRecord; // }}
+  pre__BitPackSet3Record{e}    := _pre2_BitPackSet3Record;      //@@ _pre3_BitPackSet3Record; // }}
+
+  pre__BitPackBoolArrayRecord{e}    := _pre2_BitPackBoolArrayRecord;         //@@ _pre3_BitPackBoolArrayRecord; // }}
+  pre__BitPackTinyArrayRecord{e}    := _pre2_BitPackTinyArrayRecord;         //@@ _pre3_BitPackTinyArrayRecord; // }}
+  pre__BitPackTinyNegArrayRecord{e} := _pre2_BitPackTinyNegArrayRecord;      //@@ _pre3_BitPackTinyNegArrayRecord; // }}
+  pre__BitPackEnumArrayRecord{e}    := _pre2_BitPackEnumArrayRecord;   //@@ _pre3_BitPackEnumArrayRecord; // }}
+  pre__BitPackEnum3ArrayRecord{e}   := _pre2_BitPackEnum3ArrayRecord;  //@@ _pre3_BitPackEnum3ArrayRecord; // }}
+  pre__BitPackSetArrayRecord{e}     := _pre2_BitPackSetArrayRecord;    //@@ _pre3_BitPackSetArrayRecord; // }}
+  pre__BitPackSet3ArrayRecord{e}    := _pre2_BitPackSet3ArrayRecord;   //@@ _pre3_BitPackSet3ArrayRecord; // }}
+
+  pre__FpDbgValueSize{e}  :=  _pre2_FpDbgValueSize;  pre__FpDbgValueSize{e}.Size  :=  0;  //@@ _pre3_FpDbgValueSize; // }}
+  {$ELSE}
+  pre__BitPackBoolRecord{e}    := TxBitPackBoolRecord(_pre2_BitPackBoolRecord);      //@@ _pre3_BitPackBoolRecord; // }}
+  pre__BitPackTinyRecord{e}    := TxBitPackTinyRecord(_pre2_BitPackTinyRecord);      //@@ _pre3_BitPackTinyRecord; // }}
+  pre__BitPackTinyNegRecord{e} := TxBitPackTinyNegRecord(_pre2_BitPackTinyNegRecord);   //@@ _pre3_BitPackTinyNegRecord; // }}
+  pre__BitPackEnumRecord{e}    := TxBitPackEnumRecord(_pre2_BitPackEnumRecord);      //@@ _pre3_BitPackEnumRecord; // }}
+  pre__BitPackEnum3Record{e}   := TxBitPackEnum3Record(_pre2_BitPackEnum3Record);     //@@ _pre3_BitPackEnum3Record; // }}
+  pre__BitPackSetRecord{e}     := TxBitPackSetRecord(_pre2_BitPackSetRecord);       //@@ _pre3_BitPackSetRecord; // }}
+  pre__BitPackSet3Record{e}    := TxBitPackSet3Record(_pre2_BitPackSet3Record);      //@@ _pre3_BitPackSet3Record; // }}
+
+  pre__BitPackBoolArrayRecord{e}    := TxBitPackBoolArrayRecord(_pre2_BitPackBoolArrayRecord);         //@@ _pre3_BitPackBoolArrayRecord; // }}
+  pre__BitPackTinyArrayRecord{e}    := TxBitPackTinyArrayRecord(_pre2_BitPackTinyArrayRecord);         //@@ _pre3_BitPackTinyArrayRecord; // }}
+  pre__BitPackTinyNegArrayRecord{e} := TxBitPackTinyNegArrayRecord(_pre2_BitPackTinyNegArrayRecord);      //@@ _pre3_BitPackTinyNegArrayRecord; // }}
+  pre__BitPackEnumArrayRecord{e}    := TxBitPackEnumArrayRecord(_pre2_BitPackEnumArrayRecord);   //@@ _pre3_BitPackEnumArrayRecord; // }}
+  pre__BitPackEnum3ArrayRecord{e}   := TxBitPackEnum3ArrayRecord(_pre2_BitPackEnum3ArrayRecord);  //@@ _pre3_BitPackEnum3ArrayRecord; // }}
+  pre__BitPackSetArrayRecord{e}     := TxBitPackSetArrayRecord(_pre2_BitPackSetArrayRecord);    //@@ _pre3_BitPackSetArrayRecord; // }}
+  pre__BitPackSet3ArrayRecord{e}    := TxBitPackSet3ArrayRecord(_pre2_BitPackSet3ArrayRecord);   //@@ _pre3_BitPackSet3ArrayRecord; // }}
+
+  pre__FpDbgValueSize{e}  :=  TxFpDbgValueSize(_pre2_FpDbgValueSize);   //@@ _pre3_FpDbgValueSize; // }}
+  {$ENDIF}
+
+  {$ENDIF}
+
+
 {$IFnDEF TestParam}
 {$IFnDEF TestArg}
 {$IFnDEF TestPointer}

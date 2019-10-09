@@ -54,6 +54,8 @@ type
 
   TIntRange = -300..300;
   TSmallRange = 20..30;
+  TTinyRange = 0..3;
+  TTinyNegRange = -2..3;
   TCardinalRange = 1..300;
 
   ShortStr1 = String[1];
@@ -142,13 +144,69 @@ type
   TEnum  = (EnVal1, EnVal2, EnVal3, EnVal4);
   TEnumSub =  EnVal1..EnVal2;
   TEnum2 = (EnVal21= 3, EnVal22=4, EnVal23=7, EnVal24=10, EnVal25=30);
+  TEnum3  = (EnVal31, EnVal32);
   TSet   = set of TEnum;
+  TSet3  = set of TEnum3;
   TSmallRangeSet = set of TSmallRange;
 
   TArrayEnum = array [TEnum] of word;
   TArrayEnumSub = array [TEnumSub] of word;
   TArrayEnumElem = array [EnVal1..EnVal4] of word;
   TArrayEnumSubElem = array [EnVal1..EnVal2] of word;
+
+  TBitPackBoolArray     = bitpacked array [0..3] of Boolean;
+  TBitPackTinyArray     = bitpacked array [0..3] of TTinyRange;
+  TBitPackTinyNegArray  = bitpacked array [0..3] of TTinyNegRange;
+  TBitPackEnumArray     = bitpacked array [0..3] of TEnum;
+  TBitPackEnum3Array    = bitpacked array [0..3] of TEnum3;
+  TBitPackSetArray      = bitpacked array [0..3] of TSet;
+  TBitPackSet3Array     = bitpacked array [0..3] of TSet3;
+
+  TBitPackBoolArray2     = bitpacked array [0..1, 0..2] of Boolean;
+  TBitPackTinyArray2     = bitpacked array [0..1, 0..2] of TTinyRange;
+  TBitPackTinyNegArray2  = bitpacked array [0..1, 0..2] of TTinyNegRange;
+  TBitPackEnumArray2     = bitpacked array [0..1, 0..2] of TEnum;
+  TBitPackEnum3Array2    = bitpacked array [0..1, 0..2] of TEnum3;
+  TBitPackSetArray2      = bitpacked array [0..1, 0..2] of TSet;
+  TBitPackSet3Array2     = bitpacked array [0..1, 0..2] of TSet3;
+
+  TBitPackBoolRecord     = bitpacked record a,b,c,d,e: Boolean; end;
+  TBitPackTinyRecord     = bitpacked record a,b,c,d,e: TTinyRange; end;
+  TBitPackTinyNegRecord  = bitpacked record a,b,c,d,e: TTinyNegRange; end;
+  TBitPackEnumRecord     = bitpacked record a,b,c,d,e: TEnum; end;
+  TBitPackEnum3Record    = bitpacked record a,b,c,d,e: TEnum3; end;
+  TBitPackSetRecord      = bitpacked record a,b,c,d,e: TSet; end;
+  TBitPackSet3Record     = bitpacked record a,b,c,d,e: TSet3; end;
+
+  TBitPackBoolArrayRecord     = bitpacked record a,b: TBitPackBoolArray; end;
+  TBitPackTinyArrayRecord     = bitpacked record a,b: TBitPackTinyArray; end;
+  TBitPackTinyNegArrayRecord  = bitpacked record a,b: TBitPackTinyNegArray; end;
+  TBitPackEnumArrayRecord     = bitpacked record a,b: TBitPackEnumArray; end;
+  TBitPackEnum3ArrayRecord    = bitpacked record a,b: TBitPackEnum3Array; end;
+  TBitPackSetArrayRecord      = bitpacked record a,b: TBitPackSetArray; end;
+  TBitPackSet3ArrayRecord     = bitpacked record a,b: TBitPackSet3Array; end;
+
+  TBitPackBoolRecordArray     = bitpacked array [0..3] of bitpacked record a,b,c: Boolean; end;
+  TBitPackTinyRecordArray     = bitpacked array [0..3] of bitpacked record a,b,c: TTinyRange; end;
+  TBitPackTinyNegRecordArray  = bitpacked array [0..3] of bitpacked record a,b,c: TTinyNegRange; end;
+  TBitPackEnumRecordArray     = bitpacked array [0..3] of bitpacked record a,b,c: TEnum; end;
+  TBitPackEnum3RecordArray    = bitpacked array [0..3] of bitpacked record a,b,c: TEnum3; end;
+  TBitPackSetRecordArray      = bitpacked array [0..3] of bitpacked record a,b,c: TSet; end;
+  TBitPackSet3RecordArray     = bitpacked array [0..3] of bitpacked record a,b,c: TSet3; end;
+
+  TBitPackBoolTRecordArray     = bitpacked array [0..3] of TBitPackBoolRecord;
+  TBitPackTinyTRecordArray     = bitpacked array [0..3] of TBitPackTinyRecord;
+  TBitPackTinyNegTRecordArray  = bitpacked array [0..3] of TBitPackTinyNegRecord;
+  TBitPackEnumTRecordArray     = bitpacked array [0..3] of TBitPackEnumRecord;
+  TBitPackEnum3TRecordArray    = bitpacked array [0..3] of TBitPackEnum3Record;
+  TBitPackSetTRecordArray      = bitpacked array [0..3] of TBitPackSetRecord;
+  TBitPackSet3TRecordArray     = bitpacked array [0..3] of TBitPackSet3Record;
+
+  TBitSize = -7..7;
+  TFpDbgValueSize = bitpacked record
+    Size: Int64;        // Also used for stried => can be negative
+    BitSize: TBitSize;  // Must have the same sign as Size
+  end;
 
   TFunc1 = function(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
   TProc1 = procedure();

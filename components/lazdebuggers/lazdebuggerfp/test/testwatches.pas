@@ -957,7 +957,119 @@ StartIdx := t.Count; // tlConst => Only eval the watch. No tests
     t.Add(AName, p+'SomeMeth1Ref'+e,         weMatch('TMeth1.*Proc *= *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*: *TMeth1;[\s\r\n]*Self.*=.*', skRecord) );
     t.Add(AName, p+'SomeMeth1Ref'+e+'.Proc', weMatch('\$[0-9A-F]+ = TMyBaseClass\.SomeMeth1: *function *\(.*AVal.*\): *BOOLEAN', skFunctionRef) );
 for i := StartIdx to t.Count-1 do
-  t.Tests[i].SkipIf(ALoc in [tlConst, tlPointerAny])
+  t.Tests[i].SkipIf(ALoc in [tlConst, tlPointerAny]);
+
+
+  // bitpacked
+    t.Add(AName, p+'BitPackBoolArray'+e,     weStatArray(weBool([True, False, True, True])   ));
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+    t.Add(AName, p+'BitPackTinyArray'+e,     weStatArray(weInteger([1, 0, 3, 2])   ));
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+    t.Add(AName, p+'BitPackTinyNegArray'+e,  weStatArray(weInteger([2, -2, 0, -1])   ));
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+    t.Add(AName, p+'BitPackEnumArray'+e,  weStatArray(weEnum(['EnVal3', 'EnVal1', 'EnVal2', 'EnVal3'])   ));
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+    t.Add(AName, p+'BitPackEnum3Array'+e,  weStatArray(weEnum(['EnVal32', 'EnVal32', 'EnVal31', 'EnVal32'])   ));
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+    t.Add(AName, p+'BitPackSetArray'+e,  weStatArray([ weSet(['EnVal1', 'EnVal3']), weSet([]), weSet(['EnVal3']), weSet(['EnVal1'])]  ))
+      .Skip([stDwarf]);
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+    t.Add(AName, p+'BitPackSet3Array'+e,  weStatArray([weSet(['EnVal31', 'EnVal32']), weSet([]), weSet(['EnVal31']), weSet(['EnVal32'])]  ))
+      .Skip([stDwarf]);
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+
+
+    t.Add(AName, p+'BitPackBoolArray2'+e,     weStatArray([
+       weStatArray(weBool([True, False, True])),
+       weStatArray(weBool([False, True, True]))
+    ]));
+    t.AddIndexFromPrevious(['0','1'], [0,1]);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
+    t.Add(AName, p+'BitPackTinyArray2'+e,     weStatArray([
+        weStatArray(weInteger([1, 0, 3])),
+        weStatArray(weInteger([2, 3, 0]))
+    ]));
+    t.AddIndexFromPrevious(['0','1'], [0,1]);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
+    t.Add(AName, p+'BitPackTinyNegArray2'+e,  weStatArray([
+        weStatArray(weInteger([2, -2, 0])),
+        weStatArray(weInteger([1, 0, -1]))
+    ]));
+    t.AddIndexFromPrevious(['0','1'], [0,1]);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
+    t.Add(AName, p+'BitPackEnumArray2'+e,  weStatArray([
+        weStatArray(weEnum(['EnVal3', 'EnVal1', 'EnVal2'])),
+        weStatArray(weEnum(['EnVal1', 'EnVal4', 'EnVal2']))
+    ]));
+    t.AddIndexFromPrevious(['0','1'], [0,1]);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
+    t.Add(AName, p+'BitPackEnum3Array2'+e,  weStatArray([
+        weStatArray(weEnum(['EnVal32', 'EnVal32', 'EnVal31'])),
+        weStatArray(weEnum(['EnVal31', 'EnVal31', 'EnVal32']))
+    ]));
+    t.AddIndexFromPrevious(['0','1'], [0,1]);
+    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
+    //t.Add(AName, p+'BitPackEnumSet'+e,  weStatArray(weSet(['EnVal3', 'EnVal1']), weSet([]), weSet(['EnVal3']), weSet(['EnVal1'])  ));
+    //t.AddIndexFromPrevious(['0','1'], [0,1]);
+    //t.Add(AName, p+'BitPackEnumSet3'+e,  weStatArray(weSet(['EnVal31', 'EnVal32']), weSet([]), weSet(['EnVal31']), weSet(['EnVal32'])  ));
+    //t.AddIndexFromPrevious(['0','1'], [0,1]);
+
+
+    t.Add(AName, p+'BitPackBoolRecord'+e,     weRecord([
+      weBool(True).N('a'), weBool(False).N('b'), weBool(True).N('c'), weBool(True).N('d'), weBool(False).N('e')
+    ], 'TBitPackBoolRecord')   );
+    t.AddMemberFromPrevious();
+    t.Add(AName, p+'BitPackTinyRecord'+e,     weRecord([
+      weInteger(1).N('a'), weInteger(1).N('b'), weInteger(0).N('c'), weInteger(3).N('d'), weInteger(0).N('e')
+    ], 'TBitPackTinyRecord')   );
+    t.AddMemberFromPrevious();
+    t.Add(AName, p+'BitPackTinyNegRecord'+e,     weRecord([
+      weInteger(3).N('a'), weInteger(-2).N('b'), weInteger(-1).N('c'), weInteger(0).N('d'), weInteger(1).N('e')
+    ], 'TBitPackTinyNegRecord')   );
+    t.AddMemberFromPrevious();
+    t.Add(AName, p+'BitPackEnumRecord'+e,     weRecord([
+      weEnum('EnVal3').N('a'), weEnum('EnVal1').N('b'), weEnum('EnVal2').N('c'), weEnum('EnVal2').N('d'), weEnum('EnVal1').N('e')
+    ], 'TBitPackEnumRecord')   );
+    t.AddMemberFromPrevious();
+    t.Add(AName, p+'BitPackEnum3Record'+e,     weRecord([
+      weEnum('EnVal31').N('a'), weEnum('EnVal32').N('b'), weEnum('EnVal31').N('c'), weEnum('EnVal31').N('d'), weEnum('EnVal32').N('e')
+    ], 'TBitPackEnum3Record')   );
+    t.AddMemberFromPrevious();
+    t.Add(AName, p+'BitPackSetRecord'+e,     weRecord([
+      weSet(['EnVal3']).N('a'), weSet([]).N('b'), weSet(['EnVal1','EnVal2']).N('c'), weSet(['EnVal2']).N('d'), weSet(['EnVal1','EnVal3']).N('e')
+    ], 'TBitPackSetRecord')   )
+      .Skip([stDwarf]);
+    t.AddMemberFromPrevious();
+    t.Add(AName, p+'BitPackSet3Record'+e,     weRecord([
+      weSet(['EnVal31']).N('a'), weSet([]).N('b'), weSet(['EnVal31','EnVal32']).N('c'), weSet(['EnVal32']).N('d'), weSet(['EnVal31']).N('e')
+    ], 'TBitPackSet3Record')   )
+      .Skip([stDwarf]);
+    t.AddMemberFromPrevious();
+
+    t.Add(AName, p+'BitPackBoolArrayRecord'+e,     weRecord([
+       weStatArray(weBool([True, False, True, True])).N('a'),
+       weStatArray(weBool([False, True, True, False])).N('b')
+    ], 'TBitPackBoolArrayRecord')   );
+    t.AddMemberFromPrevious();
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+
+    t.Add(AName, p+'BitPackTinyArrayRecord'+e,     weRecord([
+        weStatArray(weInteger([1, 0, 3, 2])).N('a'),
+        weStatArray(weInteger([2, 3, 0, 1])).N('b')
+    ], 'TBitPackTinyArrayRecord')   );
+    t.AddMemberFromPrevious();
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+    t.Add(AName, p+'BitPackTinyNegArrayRecord'+e,     weRecord([
+        weStatArray(weInteger([2, -2, 0, -1])).N('a'),
+        weStatArray(weInteger([1, 0, -1, 2])).N('b')
+    ], 'TBitPackTinyNegArrayRecord')   );
+    t.AddMemberFromPrevious();
+    t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
+
+
+    t.Add(AName, p+'FpDbgValueSize'+e,     weRecord([weInteger(0).N('Size'), weInteger(2).N('BitSize')], 'TFpDbgValueSize')   )
+      .Skip([stDwarf]).SkipIf(ALoc in [tlConst, tlPointerAny]);
+    t.AddMemberFromPrevious();
 
   end;
 
@@ -1001,14 +1113,7 @@ begin
     RunToPause(BrkPrg);
     t.Clear;
 
-//t.Add( 'gvaString10[1]',   weShortStr('Lbc1',               'ShortStr10'));
-//t.Add( 'gvaShortRec[1]',       weMatch('''L'', *''b'', *''L''', skRecord));
-//t.Add( 'gvAnsiDynArray2',   weShortStr('Lbc1',               'ShortStr10'));
-//t.Add( 'gvaDynDynArrayInt[0]',   weShortStr('Lbc1',               'ShortStr10'));
-//t.Add( 'argCharDynArray',   weShortStr('Lbc1',               'ShortStr10'));
-//t.Add( 'gvUnicodeString2',    weWideStr('BaBcX0123'))         ;
-//t.Add('gvUnicodeString2[1]',    weWideChar('B')) ;
-//t.Add( 'gcString10',   weShortStr('Bbc1',               'ShortStr10'));
+//t.Add('gvBitPackBoolArray',     weStatArray(weBool([True, False, True, True])   ));
 //t.EvaluateWatches;
 //t.CheckResults;
 //exit;
