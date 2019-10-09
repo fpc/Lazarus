@@ -175,6 +175,9 @@ type
   TFpValueDwarfFreePascalArray = class(TFpValueDwarfArray)
   protected
     function GetMemberCount: Integer; override;
+    function DoGetStride(out AStride: TFpDbgValueSize): Boolean; override;
+    function DoGetMainStride(out AStride: TFpDbgValueSize): Boolean; override;
+    function DoGetDimStride(AnIndex: integer; out AStride: TFpDbgValueSize): Boolean; override;
   end;
 
   (* *** Array vs AnsiString *** *)
@@ -920,6 +923,29 @@ begin
 
   // Should not be here. There is no knowledeg how many members there are
   Result := inherited GetMemberCount;
+end;
+
+function TFpValueDwarfFreePascalArray.DoGetStride(out AStride: TFpDbgValueSize
+  ): Boolean;
+begin
+  //Result := inherited DoGetStride(AStride);
+  Result := TFpSymbolDwarfType(TypeInfo.NestedSymbol[0]).ReadStride(Self, AStride);
+end;
+
+function TFpValueDwarfFreePascalArray.DoGetMainStride(out
+  AStride: TFpDbgValueSize): Boolean;
+var
+  ExtraStride: TFpDbgValueSize;
+begin
+  Result := GetMemberSize(AStride);
+end;
+
+function TFpValueDwarfFreePascalArray.DoGetDimStride(AnIndex: integer; out
+  AStride: TFpDbgValueSize): Boolean;
+begin
+  //Result := inherited DoGetDimStride(AnIndex, AStride);
+  Result := True;
+  AStride := ZeroSize;
 end;
 
 { TFpSymbolDwarfV3FreePascalSymbolTypeArray }
