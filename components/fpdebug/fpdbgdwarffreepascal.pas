@@ -118,7 +118,7 @@ type
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
       out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
     function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
-    function DataSize: Integer; override;
+    function DataSize: TFpDbgValueSize; override;
   public
     property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
   end;
@@ -668,7 +668,7 @@ begin
   Result := AValueObj.MemManager <> nil;
   if not Result then
     exit;
-  AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, CompilationUnit.AddressSize);
+  AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
   Result := IsValidLoc(AnAddress);
 
   if (not Result) and
@@ -689,14 +689,14 @@ begin
     Result := inherited GetTypedValueObject(ATypeCast, AnOuterType);
 end;
 
-function TFpSymbolDwarfFreePascalTypePointer.DataSize: Integer;
+function TFpSymbolDwarfFreePascalTypePointer.DataSize: TFpDbgValueSize;
 var
-  Size: QWord;
+  Size: TFpDbgValueSize;
 begin
   if Kind = skClass then begin
     // TODO: get a value object // though fpc does not yet write variable sizes
     if not NestedTypeInfo.ReadSize(nil, Size) then begin
-      Result := 0;
+      Result := ZeroSize;
       SetLastError(CreateError(fpErrAnyError, ['unknown size']));
       exit;
     end;
@@ -780,7 +780,8 @@ end;
 
 function TFpValueDwarfV2FreePascalShortString.GetAsString: AnsiString;
 var
-  len, Size: QWord;
+  len: QWord;
+  Size: TFpDbgValueSize;
   LenSym, StSym: TFpValueDwarf;
 begin
   if FValueDone then
@@ -795,7 +796,7 @@ begin
     SetLastError(CreateError(fpErrAnyError));
     exit('');
   end;
-  if (Size < 0) or (len > Size) then begin
+  if (Size < len) then begin
     SetLastError(CreateError(fpErrAnyError));
     exit('');
   end;
@@ -806,7 +807,7 @@ begin
 
   SetLength(Result, len);
   if len > 0 then
-    if not MemManager.ReadMemory(StSym.DataAddress, len, @Result[1]) then begin
+    if not MemManager.ReadMemory(StSym.DataAddress, SizeVal(len), @Result[1]) then begin
       Result := ''; // TODO: error
       SetLastError(MemManager.LastError);
       StSym.ReleaseReference;
@@ -907,7 +908,7 @@ begin
       exit(0); // dyn array, but bad data
     Addr.Address := Addr.Address - AddressSize;
     //debugln(['TFpValueDwarfArray.GetMemberCount  XXXXXXXXXXXXXXX dwarf 2 read len']);
-    if MemManager.ReadSignedInt(Addr, AddressSize, h) then begin
+    if MemManager.ReadSignedInt(Addr, SizeVal(AddressSize), h) then begin
       Result := Integer(h)+1;
       exit;
     end
@@ -928,7 +929,7 @@ var
   Info: TDwarfInformationEntry;
   t: Cardinal;
   t2: TFpSymbol;
-  CharSize: QWord;
+  CharSize: TFpDbgValueSize;
 begin
   Result := FArrayOrStringType;
   if Result <> iasUnknown then
@@ -959,8 +960,8 @@ begin
       // TODO: check the location parser, if it is a reference
       //FIsShortString := iasShortString;
       if not t2.ReadSize(nil, CharSize) then
-        CharSize := 0; // TODO: error
-      if (CharSize = 2) then
+        CharSize := ZeroSize; // TODO: error
+      if (CharSize.Size = 2) then
         FArrayOrStringType := iasUnicodeString
       else
         FArrayOrStringType := iasAnsiString;
@@ -1095,7 +1096,7 @@ begin
           // read data and check for DW_OP_shr ?
           Addr2 := Addr;
           Addr2.Address := Addr2.Address - AddressSize;
-          if MemManager.ReadSignedInt(Addr2, AddressSize, i) then begin
+          if MemManager.ReadSignedInt(Addr2, SizeVal(AddressSize), i) then begin
             if (i shr 1) = HighBound then
               HighBound := i;
           end
@@ -1116,7 +1117,7 @@ begin
   if t.Kind = skWideString then begin
     SetLength(WResult, HighBound-LowBound+1);
 
-    if not MemManager.ReadMemory(Addr, (HighBound-LowBound+1)*2, @WResult[1]) then begin
+    if not MemManager.ReadMemory(Addr, SizeVal((HighBound-LowBound+1)*2), @WResult[1]) then begin
       WResult := '';
       SetLastError(MemManager.LastError);
     end;
@@ -1124,7 +1125,7 @@ begin
   end else begin
     SetLength(Result, HighBound-LowBound+1);
 
-    if not MemManager.ReadMemory(Addr, HighBound-LowBound+1, @Result[1]) then begin
+    if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @Result[1]) then begin
       Result := '';
       SetLastError(MemManager.LastError);
     end;

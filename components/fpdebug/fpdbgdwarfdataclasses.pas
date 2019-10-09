@@ -1788,6 +1788,7 @@ procedure TDwarfLocationStack.PushConst(const AVal: TDBGPtr);
 begin
   if Length(FList) <= FCount then
     IncCapacity;
+  FList[FCount] := Default(TFpDbgMemLocation);
   with FList[FCount] do begin
     Address := AVal;
     MType := mlfConstant;
@@ -1799,6 +1800,7 @@ procedure TDwarfLocationStack.PushTargetMem(const AVal: TDBGPtr);
 begin
   if Length(FList) <= FCount then
     IncCapacity;
+  FList[FCount] := Default(TFpDbgMemLocation);
   with FList[FCount] do begin
     Address := AVal;
     MType := mlfTargetMem;
@@ -1900,7 +1902,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    Result := FMemManager.ReadAddress(AnAddress, ASize, AValue, FContext);
+    Result := FMemManager.ReadAddress(AnAddress, SizeVal(ASize), AValue, FContext);
     if not Result then
       SetError;
   end;
@@ -1909,7 +1911,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    AValue := FMemManager.ReadAddressEx(AnAddress, AnAddrSpace, ASize, FContext);
+    AValue := FMemManager.ReadAddressEx(AnAddress, AnAddrSpace, SizeVal(ASize), FContext);
     Result := IsValidLoc(AValue);
     if not Result then
       SetError;

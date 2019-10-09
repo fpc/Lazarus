@@ -522,7 +522,7 @@ type
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAddress: TFpDbgMemLocation; override;
-    function DoGetSize(out ASize: QWord): Boolean; override;
+    function DoGetSize(out ASize: TFpDbgValueSize): Boolean; override;
     function GetAsCardinal: QWord; override; // reads men
     function GetTypeInfo: TFpSymbol; override; // TODO: Cardinal? Why? // TODO: does not handle AOffset
   public
@@ -621,7 +621,7 @@ begin
     Result := FValue.AsCardinal
   else
   if svfAddress in f then begin
-    if not FContext.MemManager.ReadUnsignedInt(FValue.Address, FContext.SizeOfAddress, Result) then
+    if not FContext.MemManager.ReadUnsignedInt(FValue.Address, SizeVal(FContext.SizeOfAddress), Result) then
       Result := 0;
   end
   else
@@ -638,7 +638,7 @@ var
   ti: TFpSymbol;
   addr: TFpDbgMemLocation;
   Tmp: TFpValueConstAddress;
-  Size: QWord;
+  Size: TFpDbgValueSize;
 begin
   Result := nil;
 
@@ -656,7 +656,7 @@ begin
       SetLastError(CreateError(fpErrAnyError, ['Can index element of unknown size']));
       exit;
     end;
-    AIndex := AIndex * Size;
+    AIndex := AIndex * SizeToFullBytes(Size);
   end;
   addr.Address := addr.Address + AIndex;
   {$POP}
@@ -766,7 +766,7 @@ end;
 function TFpPasParserValueDerefPointer.GetAddress: TFpDbgMemLocation;
 begin
   Result := FValue.DataAddress;
-  Result := Context.MemManager.ReadAddress(Result, Context.SizeOfAddress);
+  Result := Context.MemManager.ReadAddress(Result, SizeVal(Context.SizeOfAddress));
 
   if FAddressOffset <> 0 then begin
     assert(IsTargetAddr(Result ), 'TFpPasParserValueDerefPointer.GetAddress: TargetLoc(Result)');
@@ -777,7 +777,8 @@ begin
   end;
 end;
 
-function TFpPasParserValueDerefPointer.DoGetSize(out ASize: QWord): Boolean;
+function TFpPasParserValueDerefPointer.DoGetSize(out ASize: TFpDbgValueSize
+  ): Boolean;
 var
   t: TFpSymbol;
 begin
@@ -810,7 +811,7 @@ begin
   FCardinalRead := True;
   Addr := GetAddress;
   if not IsReadableLoc(Addr) then exit;
-  FCardinal := LocToAddrOrNil(m.ReadAddress(Addr, Ctx.SizeOfAddress));
+  FCardinal := LocToAddrOrNil(m.ReadAddress(Addr, SizeVal(Ctx.SizeOfAddress)));
 
   Result := FCardinal;
 end;
@@ -905,7 +906,7 @@ var
   ti: TFpSymbol;
   addr: TFpDbgMemLocation;
   Tmp: TFpValueConstAddress;
-  Size: QWord;
+  Size: TFpDbgValueSize;
 begin
   if (AIndex = 0) or (FValue = nil) then begin
     Result := FValue;
@@ -927,7 +928,7 @@ begin
       SetLastError(CreateError(fpErrAnyError, ['Can index element of unknown size']));
       exit;
     end;
-    AIndex := AIndex * Size;
+    AIndex := AIndex * SizeToFullBytes(Size);
   end;
   addr.Address := addr.Address + AIndex;
   {$POP}

@@ -96,7 +96,7 @@ type
   private
     FEvalFlags: set of (efSizeDone, efSizeUnavail);
     FLastError: TFpError;
-    FSize: QWord;
+    FSize: TFpDbgValueSize;
   protected
     procedure Reset; virtual; // keeps lastmember and structureninfo
     procedure SetLastError(ALastError: TFpError);
@@ -112,9 +112,9 @@ type
     function GetAsFloat: Extended; virtual;
 
     function GetAddress: TFpDbgMemLocation;  virtual;
-    function DoGetSize(out ASize: QWord): Boolean; virtual;
+    function DoGetSize(out ASize: TFpDbgValueSize): Boolean; virtual;
     function GetDataAddress: TFpDbgMemLocation;  virtual;
-    function GetDataSize: QWord;  virtual;
+    function GetDataSize: TFpDbgValueSize;  virtual;
 
     function GetHasBounds: Boolean; virtual;
     function GetOrdHighBound: Int64; virtual;
@@ -137,7 +137,7 @@ type
     constructor Create;
     property RefCount;
 
-    function GetSize(out ASize: QWord): Boolean; inline;
+    function GetSize(out ASize: TFpDbgValueSize): Boolean; inline;
 
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
@@ -159,7 +159,7 @@ type
     *)
     property Address: TFpDbgMemLocation read GetAddress;
     property DataAddress: TFpDbgMemLocation read GetDataAddress; //
-    property DataSize: QWord read GetDataSize;
+    property DataSize: TFpDbgValueSize read GetDataSize;
 
     property HasBounds: Boolean  read GetHasBounds;
     property OrdLowBound: Int64  read GetOrdLowBound;   // need typecast for QuadWord
@@ -352,7 +352,7 @@ type
     procedure NameNeeded; virtual;
     procedure SymbolTypeNeeded; virtual;
     procedure AddressNeeded; virtual;
-    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; virtual;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; virtual;
     procedure TypeInfoNeeded; virtual;
     procedure MemberVisibilityNeeded; virtual;
     //procedure Needed; virtual;
@@ -367,7 +367,7 @@ type
     // Memory; Size is also part of type (byte vs word vs ...)
     property Address:    TFpDbgMemLocation read GetAddress;    // used by Proc/func
     // ReadSize: Return False means no value available, and an error may or may not have occurred
-    function ReadSize(const AValueObj: TFpValue; out ASize: QWord{TDbgPtr}): Boolean; inline;
+    function ReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; inline;
     // TypeInfo used by
     // stValue (Variable): Type
     // stType: Pointer: type pointed to / Array: Element Type / Func: Result / Class: itheritance
@@ -431,7 +431,7 @@ type
     procedure KindNeeded; override;
     procedure NameNeeded; override;
     procedure SymbolTypeNeeded; override;
-    function  DoReadSize(const AValueObj: TFpValue; out ASize: QWord): Boolean; override;
+    function  DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
     procedure TypeInfoNeeded; override;
     procedure MemberVisibilityNeeded; override;
 
@@ -672,7 +672,7 @@ begin
   Result := InvalidLoc;
 end;
 
-function TFpValue.DoGetSize(out ASize: QWord): Boolean;
+function TFpValue.DoGetSize(out ASize: TFpDbgValueSize): Boolean;
 var
   ti: TFpSymbol;
 begin
@@ -691,12 +691,12 @@ begin
   Result := Address;
 end;
 
-function TFpValue.GetDataSize: QWord;
+function TFpValue.GetDataSize: TFpDbgValueSize;
 begin
   GetSize(Result);
 end;
 
-function TFpValue.GetSize(out ASize: QWord): Boolean;
+function TFpValue.GetSize(out ASize: TFpDbgValueSize): Boolean;
 begin
   Result := False;
   if (efSizeUnavail in FEvalFlags) then // If there was an error, then LastError should still be set
@@ -914,8 +914,8 @@ begin
   inherited Destroy;
 end;
 
-function TFpSymbol.ReadSize(const AValueObj: TFpValue; out ASize: QWord
-  ): Boolean;
+function TFpSymbol.ReadSize(const AValueObj: TFpValue; out
+  ASize: TFpDbgValueSize): Boolean;
 begin
   Result := DoReadSize(AValueObj, ASize);
 end;
@@ -1120,10 +1120,10 @@ begin
   SetAddress(InvalidLoc);
 end;
 
-function TFpSymbol.DoReadSize(const AValueObj: TFpValue; out ASize: QWord
-  ): Boolean;
+function TFpSymbol.DoReadSize(const AValueObj: TFpValue; out
+  ASize: TFpDbgValueSize): Boolean;
 begin
-  ASize := 0;
+  ASize := ZeroSize;
   Result := False;
 end;
 
@@ -1206,7 +1206,7 @@ begin
 end;
 
 function TFpSymbolForwarder.DoReadSize(const AValueObj: TFpValue; out
-  ASize: QWord): Boolean;
+  ASize: TFpDbgValueSize): Boolean;
 var
   p: TFpSymbol;
 begin

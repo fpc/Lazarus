@@ -26,9 +26,43 @@ interface
 
 uses
   Classes, SysUtils, math, DbgIntfBaseTypes, FpErrorMessages, LazClasses,
-  Laz_AVL_Tree;
+  Laz_AVL_Tree, LazLoggerBase;
 
 type
+
+  TBitAddr = 0..63; // 0-7 for mem read // 0-63 for register read
+  TBitSize = -7..7;
+
+  TFpDbgMemLocationType = (
+    mlfUninitialized := 0,   // like invalid, but not known // This (0) is the initial value
+    mlfInvalid,
+    mlfTargetMem,            // an address in the target (debuggee) process
+    mlfSelfMem,              // an address in this(the debuggers) process memory; the data is  in TARGET format (endian, ...)
+    // the below will be mapped (and extended) according to endianess
+    mlfTargetRegister,       // reads from the register
+    mlfConstant,             // an (up to) SizeOf(TDbgPtr) (=8) Bytes Value (endian in format of debug process)
+    mlfConstantDeref // A constant that can be used instead of an address (location parser),
+                     // If a value (e.g. literal numeric constant 0x1234) has no address,
+                     //   then this is treated as its virtual address.
+                     // If (and only if) the value is attempted to be derefed, then
+                     //   it will yield the constant as the result of the deref.
+                     // It can also be tested for nil. The virtual address is never nil.
+                     // Any other access must result in an error.
+                     // Used for PFoo(1234)^ or TObject(1234).Foo
+  );
+
+  TFpDbgValueSize = packed record
+    Size: Int64;        // Also used for stride => can be negative
+    BitSize: TBitSize;  // Must have the same sign as Size
+  end;
+  PFpDbgValueSize = ^TFpDbgValueSize;
+
+  TFpDbgMemLocation = packed record
+    Address: TDbgPtr;
+    MType: TFpDbgMemLocationType;
+    BitOffset: TBitAddr;
+  end;
+  PFpDbgMemLocation = ^TFpDbgMemLocation;
 
   TFpDbgAddressContext = class(TRefCountedObject)
   protected
@@ -73,20 +107,23 @@ type
 
 
   TFpDbgMemReadDataType = (
-    rdtAddress, rdtSignedInt, rdtUnsignedInt, rdtfloat,
+    rdtRawRead, rdtAddress, rdtSignedInt, rdtUnsignedInt, rdtfloat,
     rdtEnum, rdtSet
   );
 
   TFpDbgMemConvData = record
-    NewTargetAddress: TDbgPtr;
-    NewDestAddress: Pointer;
-    NewReadSize: Cardinal;
-    PrivData1, PrivData2: Pointer;
+    SourceLocation: TFpDbgMemLocation;
+    SourceSize: TFpDbgValueSize;
+    SourceFullSize: QWord;
+    DestSize: QWord;
   end;
 
   // Todo, cpu/language specific operations, endianess, sign extend, float .... default int value for bool
   // convert from debugge format to debuger format and back
   // TODO: currently it assumes target and own mem are in the same format
+
+  { TFpDbgMemConvertor }
+
   TFpDbgMemConvertor = class
   public
     (* PrepareTargetRead
@@ -94,13 +131,12 @@ type
        In case of reading from a bit-offset more memory may be needed, and must be allocated here
     *)
     function PrepareTargetRead(AReadDataType: TFpDbgMemReadDataType;
-                               ATargetPointer: TDbgPtr; ADestPointer: Pointer;
-                               ATargetSize, ADestSize: Cardinal;
-                               out AConvertorData: TFpDbgMemConvData
+                               var AConvData: TFpDbgMemConvData;
+                               const ADest: Pointer
                               ): boolean; virtual; abstract;
     {function PrepareTargetRead(AReadDataType: TFpDbgMemReadDataType;
-                               ATargetPointer: TDbgPtr; ADestPointer: Pointer;
-                               ATargetSize, ADestSize: Cardinal;
+                               ASourceMemPointer: TDbgPtr; ADestPointer: Pointer;
+                               ASourceMemSize, ADestSize: Cardinal;
                                AnOpts: TFpDbgMemReadOptions;
                                out AConvertorData: TFpDbgMemConvData
                               ): boolean; virtual; abstract;}
@@ -109,13 +145,13 @@ type
        called after every Read operation.
     *)
     function FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
-                              ATargetPointer: TDbgPtr; ADestPointer: Pointer;
-                              ATargetSize, ADestSize: Cardinal;
-                              AConvertorData: TFpDbgMemConvData
+                               const AConvData: TFpDbgMemConvData;
+                               const TmpData: Pointer; // can be equal to ADest
+                               const ADest: Pointer
                              ): boolean; virtual; abstract;
     {function FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
-                              ATargetPointer: TDbgPtr; ADestPointer: Pointer;
-                              ATargetSize, ADestSize: Cardinal;
+                              ASourceMemPointer: TDbgPtr; ADestPointer: Pointer;
+                              ASourceMemSize, ADestSize: Cardinal;
                               AnOpts: TFpDbgMemReadOptions;
                               AConvertorData: TFpDbgMemConvData
                              ): boolean; virtual; abstract;}
@@ -128,7 +164,7 @@ type
        adjust ADestPointer so it points to the low value part of the dest
        No conversion
     *)
-    procedure AdjustIntPointer(var ADataPointer: Pointer; ADataSize, ANewSize: Cardinal); virtual; abstract;
+    function AdjustIntPointer(var ADataPointer: Pointer; ADataSize, ANewSize: Cardinal): Boolean; virtual; abstract;
     //(* SignExtend:
     //   Expects a signed integer value of ASourceSize bytes in the low value end
     //   of the memory (total memory ADataPointer, ADestSize)
@@ -147,19 +183,16 @@ type
   TFpDbgMemConvertorLittleEndian = class(TFpDbgMemConvertor)
   public
     function PrepareTargetRead(AReadDataType: TFpDbgMemReadDataType;
-                               ATargetPointer: TDbgPtr; ADestPointer: Pointer;
-                               ATargetSize, ADestSize: Cardinal;
-                               out AConvertorData: TFpDbgMemConvData
+                               var AConvData: TFpDbgMemConvData;
+                               const ADest: Pointer
                               ): boolean; override;
 
     function FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
-                              {%H-}ATargetPointer: TDbgPtr; ADestPointer: Pointer;
-                              ATargetSize, ADestSize: Cardinal;
-                              {%H-}AConvertorData: TFpDbgMemConvData
-                             ): boolean; override;
+      const AConvData: TFpDbgMemConvData; const TmpData: Pointer;
+  const ADest: Pointer): boolean; override;
     procedure FailedTargetRead({%H-}AConvertorData: TFpDbgMemConvData); override;
 
-    procedure AdjustIntPointer(var {%H-}ADataPointer: Pointer; ADataSize, ANewSize: Cardinal); override;
+    function AdjustIntPointer(var ADataPointer: Pointer; ADataSize, ANewSize: Cardinal): Boolean; override;
 
 
     //procedure SignExtend(ADataPointer: Pointer; ASourceSize, ADestSize: Cardinal); override;
@@ -246,46 +279,27 @@ type
     * Provides access to TFpDbgMemConvertor
     * TODO: allow to pre-read and cache Target mem (e.g. before reading all fields of a record
   *)
-  TFpDbgMemLocationType = (
-    mlfUninitialized := 0,   // like invalid, but not known // This (0) is the initial value
-    mlfInvalid,
-    mlfTargetMem,            // an address in the target (debuggee) process
-    mlfSelfMem,              // an address in this(the debuggers) process memory; the data is  in TARGET format (endian, ...)
-    // the below will be mapped (and extended) according to endianess
-    mlfTargetRegister,       // reads from the register
-    mlfConstant,             // an (up to) SizeOf(TDbgPtr) (=8) Bytes Value (endian in format of debug process)
-    mlfConstantDeref // A constant that can be used instead of an address (location parser),
-                     // If a value (e.g. literal numeric constant 0x1234) has no address,
-                     //   then this is treated as its virtual address.
-                     // If (and only if) the value is attempted to be derefed, then
-                     //   it will yield the constant as the result of the deref.
-                     // It can also be tested for nil. The virtual address is never nil.
-                     // Any other access must result in an error.
-                     // Used for PFoo(1234)^ or TObject(1234).Foo
-  );
-
-  TFpDbgMemLocation = packed record
-    Address: TDbgPtr;
-    MType: TFpDbgMemLocationType;
-  end;
-  PFpDbgMemLocation = ^TFpDbgMemLocation;
 
   { TFpDbgMemManager }
 
   TFpDbgMemManager = class
+  private const
+    TMP_MEM_SIZE = 4096;
   private
     FCacheManager: TFpDbgMemCacheManagerBase;
     FDefaultContext: TFpDbgAddressContext;
     FLastError: TFpError;
     FMemReader: TFpDbgMemReaderBase;
+    FTmpMem: array[0..(TMP_MEM_SIZE div 8)+1] of qword; // MUST have at least ONE extra byte
     FTargetMemConvertor: TFpDbgMemConvertor;
     FSelfMemConvertor: TFpDbgMemConvertor; // used when resizing constants (or register values, which are already in self format)
     function GetCacheManager: TFpDbgMemCacheManagerBase;
+    procedure BitShiftMem(ASrcMem, ADestMem: Pointer; ASrcSize, ADestSize: cardinal; ABitCnt: Integer);
   protected
     function ReadMemory(AReadDataType: TFpDbgMemReadDataType;
-                        const ALocation: TFpDbgMemLocation; ATargetSize: Cardinal;
-                        ADest: Pointer; ADestSize: Cardinal;
-                        AContext: TFpDbgAddressContext = nil): Boolean;
+      const ASourceLocation: TFpDbgMemLocation; const ASourceSize: TFpDbgValueSize;
+      const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgAddressContext
+    ): Boolean;
   public
     procedure SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
     property CacheManager: TFpDbgMemCacheManagerBase read GetCacheManager;
@@ -295,50 +309,51 @@ type
     destructor Destroy; override;
     procedure ClearLastError;
 
-    function ReadMemory(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-                        ADest: Pointer; AContext: TFpDbgAddressContext = nil): Boolean;
-    function ReadMemoryEx(const ALocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer; AContext: TFpDbgAddressContext = nil): Boolean;
+    function ReadMemory(const ASourceLocation: TFpDbgMemLocation; const ASize: TFpDbgValueSize;
+                        const ADest: Pointer; AContext: TFpDbgAddressContext = nil
+                       ): Boolean; inline;
+    function ReadMemoryEx(const ASourceLocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr; ASize: TFpDbgValueSize; ADest: Pointer; AContext: TFpDbgAddressContext = nil): Boolean;
     (* ReadRegister needs a Context, to get the thread/stackframe
     *)
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext {= nil}): Boolean;
 
     // location will be invalid, if read failed
-    function ReadAddress(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    function ReadAddress(const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
                          AContext: TFpDbgAddressContext = nil): TFpDbgMemLocation;
     function ReadAddressEx(const ALocation: TFpDbgMemLocation;  AnAddressSpace: TDbgPtr;
-                           ASize: Cardinal; AContext: TFpDbgAddressContext = nil): TFpDbgMemLocation;
+                           ASize: TFpDbgValueSize; AContext: TFpDbgAddressContext = nil): TFpDbgMemLocation;
 
     // ALocation and AnAddress MUST NOT be the same variable on the callers side
-    function ReadAddress    (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    function ReadAddress    (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
                              out AnAddress: TFpDbgMemLocation;
                              AContext: TFpDbgAddressContext = nil): Boolean; inline;
-    //function ReadAddress    (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    //function ReadAddress    (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AnAddress: TFpDbgMemLocation;
     //                         AnOpts: TFpDbgMemReadOptions; AContext: TFpDbgAddressContext = nil): Boolean;
-    function ReadUnsignedInt(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    function ReadUnsignedInt(const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
                              out AValue: QWord; AContext: TFpDbgAddressContext = nil): Boolean; inline;
-    //function ReadUnsignedInt(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    //function ReadUnsignedInt(const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AValue: QWord;
     //                         AnOpts: TFpDbgMemReadOptions; AContext: TFpDbgAddressContext = nil): Boolean;
-    function ReadSignedInt  (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    function ReadSignedInt  (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
                              out AValue: Int64; AContext: TFpDbgAddressContext = nil): Boolean; inline;
-    //function ReadSignedInt  (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    //function ReadSignedInt  (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AValue: Int64;
     //                         AnOpts: TFpDbgMemReadOptions; AContext: TFpDbgAddressContext = nil): Boolean;
     // //enum/set: may need bitorder swapped
-    function ReadEnum       (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    function ReadEnum       (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
                              out AValue: QWord; AContext: TFpDbgAddressContext = nil): Boolean; inline;
-    //function ReadEnum       (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    //function ReadEnum       (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AValue: QWord;
     //                         AnOpts: TFpDbgMemReadOptions; AContext: TFpDbgAddressContext = nil): Boolean;
-    function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
                              out AValue: TBytes; AContext: TFpDbgAddressContext = nil): Boolean; inline;
-    //function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    //function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AValue: TBytes;
     //                         AnOpts: TFpDbgMemReadOptions; AContext: TFpDbgAddressContext = nil): Boolean;
-    function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
                              out AValue: Extended; AContext: TFpDbgAddressContext = nil): Boolean; inline;
-    //function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+    //function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AValue: Extended;
     //                         AnOpts: TFpDbgMemReadOptions; AContext: TFpDbgAddressContext = nil): Boolean;
 
@@ -357,95 +372,144 @@ function SelfLoc(AnAddress: TDbgPtr): TFpDbgMemLocation; inline;
 function SelfLoc(AnAddress: Pointer): TFpDbgMemLocation; inline;
 function ConstLoc(AValue: QWord): TFpDbgMemLocation; inline;
 
-function IsTargetAddr(ALocation: TFpDbgMemLocation): Boolean; inline;
-function IsConstData(ALocation: TFpDbgMemLocation): Boolean; inline;
-function IsInitializedLoc(ALocation: TFpDbgMemLocation): Boolean; inline;
-function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
-function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
-function IsReadableMem(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
-function IsTargetNil(ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
-function IsTargetNotNil(ALocation: TFpDbgMemLocation): Boolean; inline; // valid targed <> nil
+function AddBitOffset(const AnAddr: TFpDbgMemLocation; ABitOffset: Int64): TFpDbgMemLocation; inline;
 
-operator = (a,b: TFpDbgMemLocation): Boolean; inline;
+function IsTargetAddr(const ALocation: TFpDbgMemLocation): Boolean; inline;
+function IsConstData(const ALocation: TFpDbgMemLocation): Boolean; inline;
+function IsInitializedLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;
+function IsValidLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
+function IsReadableLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
+function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
+function IsTargetNil(const ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
+function IsTargetNotNil(const ALocation: TFpDbgMemLocation): Boolean; inline; // valid targed <> nil
 
-function LocToAddr(ALocation: TFpDbgMemLocation): TDbgPtr; inline;      // does not check valid
-function LocToAddrOrNil(ALocation: TFpDbgMemLocation): TDbgPtr; inline; // save version
+function ZeroSize: TFpDbgValueSize; inline;
+function SizeVal(const ASize: Int64): TFpDbgValueSize; inline;
+function SizeFromBits(const ABits: Int64): TFpDbgValueSize; inline;
 
-function EmptyMemReadOpts:TFpDbgMemReadOptions;
+function IsZeroSize(const ASize: TFpDbgValueSize): Boolean; inline;
+function IsByteSize(const ASize: TFpDbgValueSize): Boolean; inline;
+function SizeToFullBytes(const ASize: TFpDbgValueSize): Int64; inline;  // Bytes needed to contain this size
+function SizeToBits(const ASize: TFpDbgValueSize): Int64; inline;  // Bytes needed to contain this size
 
-function dbgs(ALocation: TFpDbgMemLocation): String; overload;
+operator =  (const a,b: TFpDbgMemLocation): Boolean; inline;
+
+operator =  (const a,b: TFpDbgValueSize): Boolean; inline;
+operator =  (const a: TFpDbgValueSize; b: Int64): Boolean; inline;
+operator >  (const a: TFpDbgValueSize; b: Int64): Boolean; inline;
+operator >= (const a: TFpDbgValueSize; b: Int64): Boolean; inline;
+operator <  (const a: TFpDbgValueSize; b: Int64): Boolean; inline;
+operator <= (const a: TFpDbgValueSize; b: Int64): Boolean; inline;
+
+operator +  (const a,b: TFpDbgValueSize): TFpDbgValueSize; inline;
+operator -  (const a,b: TFpDbgValueSize): TFpDbgValueSize; inline;
+operator *  (const a: TFpDbgValueSize; b: Int64): TFpDbgValueSize; inline;
+
+operator +  (const AnAddr: TFpDbgMemLocation; ASize: TFpDbgValueSize): TFpDbgMemLocation; inline;
+
+function LocToAddr(const ALocation: TFpDbgMemLocation): TDbgPtr; inline;      // does not check valid
+function LocToAddrOrNil(const ALocation: TFpDbgMemLocation): TDbgPtr; inline; // save version
+
+//function EmptyMemReadOpts:TFpDbgMemReadOptions;
+
+function dbgs(const ALocation: TFpDbgMemLocation): String; overload;
+function dbgs(const ASize: TFpDbgValueSize): String; overload;
+function dbgs(const AReadDataType: TFpDbgMemReadDataType): String; overload;
 
 implementation
+var
+  DBG_VERBOSE: PLazLoggerLogGroup;
 
 function NilLoc: TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := 0;
   Result.MType := mlfTargetMem;
 end;
 
 function InvalidLoc: TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := 0;
   Result.MType := mlfInvalid;
 end;
 
 function UnInitializedLoc: TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := 0;
   Result.MType := mlfUninitialized;
 end;
 
 function TargetLoc(AnAddress: TDbgPtr): TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := AnAddress;
   Result.MType := mlfTargetMem;
 end;
 
 function RegisterLoc(ARegNum: Cardinal): TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := ARegNum;
   Result.MType := mlfTargetRegister;
 end;
 
 function SelfLoc(AnAddress: TDbgPtr): TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := AnAddress;
   Result.MType := mlfSelfMem;
 end;
 
 function SelfLoc(AnAddress: Pointer): TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := TDbgPtr(AnAddress);
   Result.MType := mlfSelfMem;
 end;
 
 function ConstLoc(AValue: QWord): TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.Address := AValue;
   Result.MType := mlfConstant;
 end;
 
-function IsTargetAddr(ALocation: TFpDbgMemLocation): Boolean;
+function AddBitOffset(const AnAddr: TFpDbgMemLocation; ABitOffset: Int64
+  ): TFpDbgMemLocation;
+begin
+  {$PUSH}{$R-}{$Q-}
+  Result := AnAddr;
+  Result.Address := AnAddr.Address + ABitOffset div 8;
+  if (ABitOffset < 0) and ((ABitOffset and 7) <> 0) then
+    Result.Address := Result.Address - 1; // Going to ADD some bits back
+                                          // E.g. b=-1 means (b and 7) = 7 and that means adding 7 bits, instead of substracting 1
+  Result.BitOffset := ABitOffset and 7;
+  {$POP}
+end;
+
+function IsTargetAddr(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := ALocation.MType = mlfTargetMem;
 end;
 
-function IsConstData(ALocation: TFpDbgMemLocation): Boolean;
+function IsConstData(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := not(ALocation.MType in [mlfConstant, mlfConstantDeref]);
 end;
 
-function IsInitializedLoc(ALocation: TFpDbgMemLocation): Boolean;
+function IsInitializedLoc(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := ALocation.MType <> mlfUninitialized;
 end;
 
-function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean;
+function IsValidLoc(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := not(ALocation.MType in [mlfInvalid, mlfUninitialized]);
 end;
 
-function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean;
+function IsReadableLoc(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := (not(ALocation.MType in [mlfInvalid, mlfUninitialized])) and
             ( (not(ALocation.MType in [mlfTargetMem, mlfSelfMem])) or
@@ -453,34 +517,220 @@ begin
             );
 end;
 
-function IsReadableMem(ALocation: TFpDbgMemLocation): Boolean;
+function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := (ALocation.MType in [mlfTargetMem, mlfSelfMem]) and
             (ALocation.Address <> 0);
 end;
 
-function IsTargetNil(ALocation: TFpDbgMemLocation): Boolean;
+function IsTargetNil(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := (ALocation.MType = mlfTargetMem) and (ALocation.Address = 0);
 end;
 
-function IsTargetNotNil(ALocation: TFpDbgMemLocation): Boolean;
+function IsTargetNotNil(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := (ALocation.MType = mlfTargetMem) and (ALocation.Address <> 0);
 end;
 
-operator = (a, b: TFpDbgMemLocation): Boolean;
+function ZeroSize: TFpDbgValueSize;
 begin
-  Result := (a.Address = b.Address) and (a.MType = b.MType);
+  Result.Size := 0;
+  Result.BitSize := 0;
 end;
 
-function LocToAddr(ALocation: TFpDbgMemLocation): TDbgPtr;
+function SizeVal(const ASize: Int64): TFpDbgValueSize;
+begin
+  Result.Size := ASize;
+  Result.BitSize := 0;
+end;
+
+function SizeFromBits(const ABits: Int64): TFpDbgValueSize;
+begin
+  Result.Size := ABits div 8;
+  if ABits < 0 then
+    Result.BitSize := -((-ABits) and 7)
+  else
+    Result.BitSize := ABits and 7;
+end;
+
+function IsZeroSize(const ASize: TFpDbgValueSize): Boolean;
+begin
+  Result := (ASize.Size = 0) and (ASize.BitSize = 0);
+end;
+
+function IsByteSize(const ASize: TFpDbgValueSize): Boolean;
+begin
+  Result := (ASize.BitSize = 0);
+end;
+
+function SizeToFullBytes(const ASize: TFpDbgValueSize): Int64;
+begin
+  assert((ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) ), '(ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) )');
+  if ASize < 0 then
+    Result := ASize.Size + (ASize.BitSize - 7) div 8
+  else
+    Result := ASize.Size + (ASize.BitSize + 7) div 8;
+end;
+
+function SizeToBits(const ASize: TFpDbgValueSize): Int64;
+begin
+  assert((ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) ), '(ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) )');
+  Result := ASize.Size * 8 + ASize.BitSize;
+end;
+
+operator = (const a, b: TFpDbgMemLocation): Boolean;
+begin
+  Result := (a.Address = b.Address) and (a.MType = b.MType) and (a.BitOffset = b.BitOffset);
+end;
+
+operator = (const a, b: TFpDbgValueSize): Boolean;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  assert((b.Size=0) or (b.BitSize=0) or ( (b.Size<0) = (b.BitSize<0) ), '(b.Size=0) or (b.BitSize=0) or ( (b.Size<0) = (b.BitSize<0) )');
+  Result := (a.Size = b.Size) and (a.BitSize = b.BitSize);
+end;
+
+operator = (const a: TFpDbgValueSize; b: Int64): Boolean;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  Result := (a.Size = b) and (a.BitSize = 0);
+end;
+
+operator>(const a: TFpDbgValueSize; b: Int64): Boolean;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  Result := (a.Size > b) or
+            (a.Size = b) and (a.BitSize > 0);
+end;
+
+operator>=(const a: TFpDbgValueSize; b: Int64): Boolean;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  Result := (a.Size > b) or
+            (a.Size = b) and (a.BitSize >= 0);
+end;
+
+operator<(const a: TFpDbgValueSize; b: Int64): Boolean;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  Result := (a.Size < b) or
+            (a.Size = b) and (a.BitSize < 0);
+end;
+
+operator<=(const a: TFpDbgValueSize; b: Int64): Boolean;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  Result := (a.Size < b) or
+            (a.Size = b) and (a.BitSize <= 0);
+end;
+
+operator + (const a, b: TFpDbgValueSize): TFpDbgValueSize;
+var
+  bits, low3bits: Int64;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  assert((b.Size=0) or (b.BitSize=0) or ( (b.Size<0) = (b.BitSize<0) ), '(b.Size=0) or (b.BitSize=0) or ( (b.Size<0) = (b.BitSize<0) )');
+  {$PUSH}{$R-}{$Q-}
+  bits := a.BitSize + b.BitSize;
+
+  Result.Size := a.Size + b.Size + bits div 8;
+  low3bits := bits and 7;
+  if low3bits = 0 then
+    Result.BitSize := 0
+  else
+  if (Result.Size < 0) or ( (Result.Size=0) and (bits<0) ) then begin
+    if (bits > 0) then // bits have wrong sign
+      Result.Size := Result.Size + 1;
+    Result.BitSize := low3bits - 8;
+  end
+  else begin
+    if (bits < 0) then // bits have wrong sign
+      Result.Size := Result.Size - 1;
+    Result.BitSize := low3bits;
+  end;
+  {$POP}
+end;
+
+operator - (const a, b: TFpDbgValueSize): TFpDbgValueSize;
+var
+  bits, low3bits: Int64;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  assert((b.Size=0) or (b.BitSize=0) or ( (b.Size<0) = (b.BitSize<0) ), '(b.Size=0) or (b.BitSize=0) or ( (b.Size<0) = (b.BitSize<0) )');
+  {$PUSH}{$R-}{$Q-}
+  bits := a.BitSize - b.BitSize;
+
+  Result.Size := a.Size - b.Size + bits div 8;
+  low3bits := bits and 7;
+  if low3bits = 0 then
+    Result.BitSize := 0
+  else
+  if (Result.Size < 0) or ( (Result.Size=0) and (bits<0) ) then begin
+    if (bits > 0) then // bits have wrong sign
+      Result.Size := Result.Size + 1;
+    Result.BitSize := low3bits - 8;
+  end
+  else begin
+    if (bits < 0) then // bits have wrong sign
+      Result.Size := Result.Size - 1;
+    Result.BitSize := low3bits;
+  end;
+  {$POP}
+end;
+
+operator * (const a: TFpDbgValueSize; b: Int64): TFpDbgValueSize;
+var
+  bits, low3bits: Int64;
+begin
+  assert((a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) ), '(a.Size=0) or (a.BitSize=0) or ( (a.Size<0) = (a.BitSize<0) )');
+  {$PUSH}{$R-}{$Q-}
+  bits := a.BitSize * b;
+
+  Result.Size := a.Size * b + bits div 8;
+  low3bits := bits and 7;
+  if low3bits = 0 then
+    Result.BitSize := 0
+  else
+  if (Result.Size < 0) or ( (Result.Size=0) and (bits<0) ) then begin
+    if (bits > 0) then // bits have wrong sign
+      Result.Size := Result.Size + 1;
+    Result.BitSize := low3bits - 8;
+  end
+  else begin
+    if (bits < 0) then // bits have wrong sign
+      Result.Size := Result.Size - 1;
+    Result.BitSize := low3bits;
+  end;
+  {$POP}
+end;
+
+operator + (const AnAddr: TFpDbgMemLocation; ASize: TFpDbgValueSize
+  ): TFpDbgMemLocation;
+var
+  bits: Int64;
+begin
+  assert((ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) ), '(ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) )');
+  assert(AnAddr.MType in [mlfSelfMem, mlfTargetMem], '+: AnAddr.MType in [mlfSelfMem, mlfTargetMem]');
+  Result := AnAddr;
+  {$PUSH}{$R-}{$Q-}
+  bits := AnAddr.BitOffset + ASize.BitSize;
+
+  Result.Address := AnAddr.Address + ASize.Size + bits div 8;
+  if (bits < 0) and ((bits and 7) <> 0) then
+    Result.Address := Result.Address - 1; // Going to ADD some bits back
+                                          // E.g. bits=-1 means (bits and 7) = 7 and that means adding 7 bits, instead of substracting 1
+  Result.BitOffset := bits and 7;
+  {$POP}
+end;
+
+function LocToAddr(const ALocation: TFpDbgMemLocation): TDbgPtr;
 begin
   assert(ALocation.MType = mlfTargetMem, 'LocToAddr for other than mlfTargetMem');
   Result := ALocation.Address;
 end;
 
-function LocToAddrOrNil(ALocation: TFpDbgMemLocation): TDbgPtr;
+function LocToAddrOrNil(const ALocation: TFpDbgMemLocation): TDbgPtr;
 begin
   if (ALocation.MType = mlfTargetMem) then
     Result := ALocation.Address
@@ -488,44 +738,52 @@ begin
     Result := 0;
 end;
 
-function {%H-}EmptyMemReadOpts: TFpDbgMemReadOptions;
-begin
-  //
-end;
+//function {%H-}EmptyMemReadOpts: TFpDbgMemReadOptions;
+//begin
+//  //
+//end;
 
-function dbgs(ALocation: TFpDbgMemLocation): String;
+function dbgs(const ALocation: TFpDbgMemLocation): String;
 begin
   Result := '';
   if not (ALocation.MType in [low(TFpDbgMemLocationType)..high(TFpDbgMemLocationType)]) then
     Result := 'Location=out-of-range'
   else
-    WriteStr(Result, 'Location=', ALocation.Address, ',', ALocation.MType)
+    WriteStr(Result, 'Location=', ALocation.Address, ':', ALocation.BitOffset, ', ', ALocation.MType);
+end;
+
+function dbgs(const ASize: TFpDbgValueSize): String;
+begin
+  WriteStr(Result, 'Size=', ASize.Size, ':', ASize.BitSize);
+end;
+
+function dbgs(const AReadDataType: TFpDbgMemReadDataType): String;
+begin
+  WriteStr(Result, AReadDataType);
 end;
 
 { TFpDbgMemConvertorLittleEndian }
 
-function TFpDbgMemConvertorLittleEndian.PrepareTargetRead(AReadDataType: TFpDbgMemReadDataType;
-  ATargetPointer: TDbgPtr; ADestPointer: Pointer; ATargetSize, ADestSize: Cardinal; out
-  AConvertorData: TFpDbgMemConvData): boolean;
+function TFpDbgMemConvertorLittleEndian.PrepareTargetRead(
+  AReadDataType: TFpDbgMemReadDataType; var AConvData: TFpDbgMemConvData;
+  const ADest: Pointer): boolean;
 begin
-  Result := ATargetSize <= ADestSize;
+  Result := AConvData.SourceFullSize <= AConvData.DestSize;
   if not Result then
     exit;
-  // just read to begin of data
-  AConvertorData.NewTargetAddress := ATargetPointer;
-  AConvertorData.NewDestAddress   := ADestPointer;
-  AConvertorData.NewReadSize      := Min(ATargetSize, ADestSize);
   case AReadDataType of
     rdtAddress, rdtSignedInt, rdtUnsignedInt,
     rdtEnum, rdtSet: ;
     rdtfloat:
-      Result := (ATargetSize = AConvertorData.NewReadSize) and
-                (ADestSize = SizeOf(Extended)) and // only can read to extended... TODO (if need more)
-                ( (ATargetSize = SizeOf(Extended)) or
-                  (ATargetSize = SizeOf(Double)) or
-                  (ATargetSize = SizeOf(Single)) or
-                  (ATargetSize = SizeOf(real48))
-                )
+      // TODO: reading float from register / or mlfConstant...;
+      Result := IsByteSize(AConvData.SourceSize) and // only support exact size for FLOAT
+                (AConvData.DestSize = SizeOf(Extended)) and // only can read to extended... TODO (if need more)
+                ( (AConvData.SourceSize.Size = SizeOf(Extended)) or
+                  (AConvData.SourceSize.Size = SizeOf(Double)) or
+                  (AConvData.SourceSize.Size = SizeOf(Single)) or
+                  (AConvData.SourceSize.Size = SizeOf(real48))
+                );
+    rdtRawRead: ;
     else begin
       Assert(False, 'TFpDbgMemConvertorLittleEndian.PrepareTargetRead');
       Result := False;
@@ -533,42 +791,72 @@ begin
   end;
 end;
 
-function TFpDbgMemConvertorLittleEndian.FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
-  ATargetPointer: TDbgPtr; ADestPointer: Pointer; ATargetSize, ADestSize: Cardinal;
-  AConvertorData: TFpDbgMemConvData): boolean;
+function TFpDbgMemConvertorLittleEndian.FinishTargetRead(
+  AReadDataType: TFpDbgMemReadDataType;
+  const AConvData: TFpDbgMemConvData; const TmpData: Pointer;
+  const ADest: Pointer): boolean;
 type
   Preal48 = ^real48;
+var
+  s: Boolean;
+  b: TBitAddr;
 begin
-  Result := True;
+  Result := TmpData = ADest;
+  if not Result then
+    exit;
   case AReadDataType of
     rdtAddress, rdtUnsignedInt, rdtEnum, rdtSet: begin
-        if ATargetSize < ADestSize then
-          FillByte((ADestPointer + ATargetSize)^, ADestSize-ATargetSize, $00)
+        if AConvData.SourceFullSize < AConvData.DestSize then
+          FillByte((ADest + AConvData.SourceFullSize)^, AConvData.DestSize-AConvData.SourceFullSize, $00);
+        if AConvData.SourceSize.BitSize <> 0 then begin
+          assert(AConvData.SourceFullSize > 0, 'TFpDbgMemConvertorLittleEndian.FinishTargetRead: AConvData.SourceFullSize > 0');
+          PByte(ADest + AConvData.SourceFullSize - 1)^ := Byte(PByte(ADest + AConvData.SourceFullSize - 1)^ and
+            (Byte($FF) shr (8 - AConvData.SourceSize.BitSize)));
+        end;
       end;
     rdtSignedInt: begin
-        if ATargetSize < ADestSize then
-          if (ATargetSize > 0) and ((PByte(ADestPointer + ATargetSize - 1)^ and $80) <> 0)
-          then
-            FillByte((ADestPointer + ATargetSize)^, ADestSize-ATargetSize, $FF)
+        if AConvData.SourceFullSize < AConvData.DestSize then begin
+          b := AConvData.SourceSize.BitSize;
+          s := False;
+          if (AConvData.SourceFullSize > 0) then begin
+            if b = 0 then
+              s := ((PByte(ADest + AConvData.SourceFullSize - 1)^ and $80) <> 0)
+            else
+              s := ((PByte(ADest + AConvData.SourceFullSize - 1)^ and (1 shl (b-1)) ) <> 0);
+          end;
+
+          if s then
+            FillByte((ADest + AConvData.SourceFullSize)^, AConvData.DestSize-AConvData.SourceFullSize, $FF)
           else
-            FillByte((ADestPointer + ATargetSize)^, ADestSize-ATargetSize, $00);
+            FillByte((ADest + AConvData.SourceFullSize)^, AConvData.DestSize-AConvData.SourceFullSize, $00);
+          if b <> 0 then begin
+            assert(AConvData.SourceFullSize > 0, 'TFpDbgMemConvertorLittleEndian.FinishTargetRead: AConvData.SourceFullSize > 0');
+            if s then
+              PByte(ADest + AConvData.SourceFullSize - 1)^ := Byte(PByte(ADest + AConvData.SourceFullSize - 1)^ or
+                (Byte($FF) shl b))
+            else
+              PByte(ADest + AConvData.SourceFullSize - 1)^ := Byte(PByte(ADest + AConvData.SourceFullSize - 1)^ and
+                (Byte($FF) shr (8 - b)));
+          end;
+        end;
       end;
     rdtfloat: begin
-      assert((ADestSize = SizeOf(Extended)));
-      if (ATargetSize = SizeOf(Extended)) then
+      assert((AConvData.DestSize = SizeOf(Extended)));
+      if (AConvData.SourceFullSize = SizeOf(Extended)) then
         //
       else
-      if (ATargetSize = SizeOf(Double)) then
-        PExtended(ADestPointer)^ := PDouble(ADestPointer)^
+      if (AConvData.SourceFullSize = SizeOf(Double)) then
+        PExtended(ADest)^ := PDouble(ADest)^
       else
-      if (ATargetSize = SizeOf(real48)) then
-        PExtended(ADestPointer)^ := Preal48(ADestPointer)^
+      if (AConvData.SourceFullSize = SizeOf(real48)) then
+        PExtended(ADest)^ := Preal48(ADest)^
       else
-      if (ATargetSize = SizeOf(Single)) then
-        PExtended(ADestPointer)^ := PSingle(ADestPointer)^
+      if (AConvData.SourceFullSize = SizeOf(Single)) then
+        PExtended(ADest)^ := PSingle(ADest)^
       else
         Result := False;
     end;
+    rdtRawRead: ; // TODO: cut bits?
     else begin
       Assert(False, 'TFpDbgMemConvertorLittleEndian.FailedTargetRead');
       Result := False;
@@ -581,10 +869,10 @@ begin
   //
 end;
 
-procedure TFpDbgMemConvertorLittleEndian.AdjustIntPointer(var ADataPointer: Pointer;
-  ADataSize, ANewSize: Cardinal);
+function TFpDbgMemConvertorLittleEndian.AdjustIntPointer(
+  var ADataPointer: Pointer; ADataSize, ANewSize: Cardinal): Boolean;
 begin
-  Assert(ANewSize <= ADataSize, 'TFpDbgMemConvertorLittleEndian.AdjustIntPointer');
+  Result := ANewSize <= ADataSize;
   // no adjustment needed
 end;
 
@@ -803,81 +1091,227 @@ begin
   Result := FCacheManager;
 end;
 
-function TFpDbgMemManager.ReadMemory(AReadDataType: TFpDbgMemReadDataType;
-  const ALocation: TFpDbgMemLocation; ATargetSize: Cardinal; ADest: Pointer;
-  ADestSize: Cardinal; AContext: TFpDbgAddressContext): Boolean;
+procedure TFpDbgMemManager.BitShiftMem(ASrcMem, ADestMem: Pointer; ASrcSize,
+  ADestSize: cardinal; ABitCnt: Integer);
 var
-  Addr2: Pointer;
-  i: Integer;
-  TmpVal: TDbgPtr;
-  ConvData: TFpDbgMemConvData;
+  Next, Cur: Byte;
 begin
-  FLastError := NoError;
+  Next := PByte(ASrcMem)^;
+  dec(ADestSize);
+  while ADestSize > 0 do begin
+    Cur := Next;
+    Next := PByte(ASrcMem + 1)^;
+    PByte(ADestMem)^ := Byte(( Cur shr ABitCnt) or ( Next shl (8 - ABitCnt) ));
+    ASrcMem := ASrcMem + 1;
+    ADestMem := ADestMem + 1;
+    dec(ADestSize);
+  end;
+  Cur := Next;
+  Next := 0;
+  if ASrcSize > ADestSize then
+    Next := PByte(ASrcMem + 1)^;
+  PByte(ADestMem)^ := Byte(( Cur shr ABitCnt) or ( Next shl (8 - ABitCnt) ));
+end;
+
+function TFpDbgMemManager.ReadMemory(AReadDataType: TFpDbgMemReadDataType;
+  const ASourceLocation: TFpDbgMemLocation; const ASourceSize: TFpDbgValueSize;
+  const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgAddressContext
+  ): Boolean;
+var
+  ConvData: TFpDbgMemConvData;
+  ReadData, ReadData2: Pointer;
+  TmpVal: TDbgPtr;
+  BitOffset, SourceExtraSize: Integer;
+  SourceReadSize, SourceFullSize: QWord;
+begin
   Result := False;
+  DebugLn(DBG_VERBOSE, ['$ReadMem: ', dbgs(AReadDataType),' ', dbgs(ASourceLocation), ' ', dbgs(ASourceSize), ' Dest ', ADestSize]);
+  if (ASourceLocation.MType in [mlfInvalid, mlfUninitialized]) or
+     (ASourceSize <= 0)
+  then begin
+    FLastError := CreateError(fpErrCanNotReadInvalidMem);
+    exit;
+  end;
+
+  FLastError := NoError;
   if AContext = nil then
     AContext := FDefaultContext;
-  case ALocation.MType of
-    mlfInvalid, mlfUninitialized:
-      FLastError := CreateError(fpErrCanNotReadInvalidMem);
-    mlfTargetMem, mlfSelfMem: begin
-      Result := TargetMemConvertor.PrepareTargetRead(AReadDataType, ALocation.Address,
-        ADest, ATargetSize, ADestSize, ConvData);
-      if not Result then exit;
 
-      if ALocation.MType = mlfTargetMem then begin
-        Result := CacheManager.ReadMemory(ConvData.NewTargetAddress, ConvData.NewReadSize, ConvData.NewDestAddress);
-        if not Result then
-          FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
-      end
-      else
-      begin
-        try
-          move(Pointer(ConvData.NewTargetAddress)^, ConvData.NewDestAddress^, ConvData.NewReadSize);
-          Result := True;
-        except
-          Result := False;
-        end;
+  ConvData.SourceLocation     := ASourceLocation;
+  ConvData.SourceSize         := ASourceSize; // ONLY valid for target/self-mem // Currently set equal to ADestSize;
+  ConvData.SourceFullSize     := SizeToFullBytes(ASourceSize);
+  ConvData.DestSize           := ADestSize;
+
+  if not TargetMemConvertor.PrepareTargetRead(AReadDataType, ConvData, ADest) then begin
+    FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ASourceLocation.Address]);
+    exit;
+  end;
+  assert(ConvData.DestSize <= ADestSize, 'TFpDbgMemManager.ReadMemory: ConvData.DestSize <= ADestSize');
+
+  // SourceFullSize: excluding any size needed for BitOffset
+  SourceFullSize := ConvData.SourceFullSize;
+  if (SourceFullSize > TMP_MEM_SIZE) and (SourceFullSize > ConvData.DestSize) then begin
+    // The un-shifted (bit-offset) result must fully fit in either ADest or FTmpMem
+    FLastError := CreateError(fpErrFailedReadMem);
+    exit;
+  end;
+
+  (* - If SourceFullSize does not fit into ADest,
+       then FinishTargetRead *MUST* copy the desired part
+     - If SourceFullSize is smaller than ADest,
+       then targetconverter *MUST* fill/zero/compute the missing data.
+       The read data will be alligned ot the first (smallest address) byte.
+     - targetconverter MUST treat FTmpMem as read-only
+  *)
+
+  BitOffset := ConvData.SourceLocation.BitOffset;
+  SourceExtraSize := (BitOffset + ConvData.SourceSize.BitSize + 7) div 8;
+
+  case ASourceLocation.MType of
+    mlfTargetMem, mlfSelfMem: begin
+      assert(BitOffset < 8, 'TFpDbgMemManager.ReadMemory: BitOffset < 8');
+      if QWord(ConvData.SourceSize.Size) > high(SourceReadSize) - SourceExtraSize then begin
+        // bigger than max read size
+        FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ASourceLocation.Address]);
+        exit;
+      end;
+      SourceReadSize := ConvData.SourceSize.Size + SourceExtraSize;
+      // TODO: separate check for selfmem // requires selfmem to have a size field
+      if (SourceReadSize > High(TDbgPtr) - ConvData.SourceLocation.Address) or
+         ( (SourceReadSize > ConvData.DestSize) and ((SourceReadSize - ConvData.DestSize) > TMP_MEM_SIZE) )
+      then begin
+        FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ASourceLocation.Address]);
+        exit;
       end;
 
-      if Result then
-        Result := TargetMemConvertor.FinishTargetRead(AReadDataType, ALocation.Address,
-          ADest, ATargetSize, ADestSize, ConvData)
-      else
-        TargetMemConvertor.FailedTargetRead(ConvData);
+      case ASourceLocation.MType of
+        mlfTargetMem: begin
+            ReadData2 := nil;
+            if SourceReadSize <= ConvData.DestSize then begin
+              // full read to ADest
+              ReadData := ADest;
+              Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, SourceReadSize, ADest);
+            end
+            else
+            if SourceReadSize <= TMP_MEM_SIZE then begin
+              // full read to FTmpMem;
+              // This is the ONLY read that has ReadData <> ADest
+              // *** FinishTargetRead must copy the data ***
+              ReadData := @FTmpMem[0];
+              Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, SourceReadSize, ReadData);
+            end
+            else begin
+              // SPLIT read to ADest/FTmpMem;
+              // BitOffset must be none zero, otherwise the data must fully fit in either ADest or FTmpMem
+              // *** BitShift will copy the date into ADest ***
+              assert(BitOffset <> 0, 'TFpDbgMemManager.ReadMemory: BitOffset <> 0');
+              ReadData := ADest;
+              ReadData2 := @FTmpMem[0];
+              Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, ConvData.DestSize, ADest);
+              if Result then
+                Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address + ConvData.DestSize, SourceReadSize - ConvData.DestSize, ReadData2);
+            end;
+
+            if Result and (BitOffset <> 0) then begin
+              if (ReadData <> ADest) then begin
+                // Read to FTmpMem only
+                if (SourceFullSize <= ConvData.DestSize) then begin
+                  BitShiftMem(ReadData, ADest, SourceReadSize, SourceFullSize, BitOffset);
+                  ReadData := ADest;
+                end
+                else
+                  BitShiftMem(ReadData, ReadData, SourceReadSize, SourceFullSize, BitOffset);
+              end
+              else
+                // Read to ADest or SPLIT
+                BitShiftMem(ReadData, ReadData, ConvData.DestSize, ConvData.DestSize, BitOffset);
+
+              if ReadData2 <> nil then begin
+                // SPLIT read; ReadData=ADest
+                // Since SourceReadSize can have max 1 extra byte => there can only be one byte; which must fit into ADest after shifting BitOffset
+                PByte(ADest+ConvData.DestSize-1)^ := Byte(PByte(ADest+ConvData.DestSize-1)^ or
+                  (PByte(ReadData2)^ shl (8 - BitOffset) ));
+              end;
+            end;
+            // ReadData is now a pointer to the FULL data. Either in ADest or FTmpMem
+
+          end;
+        mlfSelfMem: begin // Can be cached TargetMem, or can be constant data from dwarf
+            try // accessinge SelfMem can fail, because there is on SelfmMem.Length that can be checked
+              Result := True;
+              if BitOffset <> 0 then begin
+                // BitShift will copy the data
+                if (SourceFullSize <= ConvData.DestSize) then
+                  ReadData := @ConvData.SourceLocation.Address
+                else
+                  ReadData := @FTmpMem[0];
+                BitShiftMem(@ConvData.SourceLocation.Address, ReadData, SourceReadSize, SourceFullSize, BitOffset)
+              end
+              else begin
+                // no BitShift
+                ReadData := ADest;
+                if SourceFullSize > ConvData.DestSize then
+                  ReadData := @ConvData.SourceLocation.Address  // ReadData has to be read-only // FinishTargetRead must copy the data
+                else
+                  move(Pointer(ConvData.SourceLocation.Address)^, ADest^, SourceFullSize);
+              end;
+            except
+              Result := False;
+            end;
+          end;
+      end;
     end;
+
     mlfConstant, mlfConstantDeref, mlfTargetRegister:
       begin
-        case ALocation.MType of
+        If (BitOffset <> 0) or (not IsByteSize(ConvData.SourceSize)) then begin
+          // Not yet supported
+          FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ConvData.SourceLocation.Address]);
+          Result := False;
+          exit;
+        end;
+
+        case ASourceLocation.MType of
           mlfConstant, mlfConstantDeref: begin
-              TmpVal := ALocation.Address;
-              i := SizeOf(ALocation.Address);
+              TmpVal := ConvData.SourceLocation.Address;
+              SourceReadSize := SizeOf(ConvData.SourceLocation.Address);
             end;
           mlfTargetRegister: begin
-              i := FMemReader.RegisterSize(Cardinal(ALocation.Address));
-              if i = 0 then
+              SourceReadSize := FMemReader.RegisterSize(Cardinal(ConvData.SourceLocation.Address));
+              if SourceReadSize = 0 then
                 exit; // failed
-              if not FMemReader.ReadRegister(Cardinal(ALocation.Address), TmpVal, AContext) then
+              if not FMemReader.ReadRegister(Cardinal(ConvData.SourceLocation.Address), TmpVal, AContext) then
                 exit; // failed
             end;
         end;
-        if i > ATargetSize then
-          i := ATargetSize;
+        if SourceReadSize > ConvData.SourceSize.Size then
+          SourceReadSize := ConvData.SourceSize.Size;
 
-        Addr2 := @TmpVal;
-        if SizeOf(TmpVal) <> i then
-          FSelfMemConvertor.AdjustIntPointer(Addr2, SizeOf(TmpVal), i);
+        ReadData := @TmpVal;
 
-        Result := FSelfMemConvertor.PrepareTargetRead(AReadDataType, TDbgPtr(Addr2),
-          ADest, i, ADestSize, ConvData);
-        if not Result then exit;
+        if SizeOf(TmpVal) <> SourceReadSize then
+          // TODO: only needed if ADestSize > SourceReadSize ?
+          // Maybe do that after Move to ADest? // Maybe as part of FinishTargetRead ?
+          if not FSelfMemConvertor.AdjustIntPointer(ReadData, SizeOf(TmpVal), SourceReadSize) then begin
+            FLastError := CreateError(fpErrFailedReadMem);
+            exit;
+          end;
 
-        move(Pointer(ConvData.NewTargetAddress)^, ConvData.NewDestAddress^, ConvData.NewReadSize);
 
-        Result := TargetMemConvertor.FinishTargetRead(AReadDataType, TDbgPtr(Addr2),
-          ADest, i, ADestSize, ConvData);
+        if SourceReadSize <= ConvData.DestSize then begin
+          move(ReadData^, ADest^, Min(SizeOf(TmpVal) ,ConvData.DestSize)); // Little Endian only
+          ReadData := ADest;
+        end;
+
         Result := True;
       end;
   end;
+
+  if Result then
+    Result := TargetMemConvertor.FinishTargetRead(AReadDataType, ConvData, ReadData, ADest)
+  else
+    TargetMemConvertor.FailedTargetRead(ConvData);
+
   if (not Result) and (not IsError(FLastError)) then
     FLastError := CreateError(fpErrFailedReadMem);
 end;
@@ -918,81 +1352,31 @@ begin
   FLastError := NoError;
 end;
 
-function TFpDbgMemManager.ReadMemory(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-  ADest: Pointer; AContext: TFpDbgAddressContext): Boolean;
-var
-  Addr2: Pointer;
-  i: Integer;
-  TmpVal: TDbgPtr;
-  ConvData: TFpDbgMemConvData;
+function TFpDbgMemManager.ReadMemory(const ASourceLocation: TFpDbgMemLocation;
+  const ASize: TFpDbgValueSize; const ADest: Pointer;
+  AContext: TFpDbgAddressContext): Boolean;
 begin
-  if ASize > High(TDbgPtr) - ALocation.Address then begin
-    FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
+  Result := ReadMemory(rdtRawRead, ASourceLocation, ASize, ADest, ASize.Size, AContext);
+end;
+
+function TFpDbgMemManager.ReadMemoryEx(
+  const ASourceLocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr;
+  ASize: TFpDbgValueSize; ADest: Pointer; AContext: TFpDbgAddressContext
+  ): Boolean;
+begin
+  FLastError := NoError;
+  if (ASourceLocation.BitOffset <> 0) then begin
+    // Not supported to read at bit offset
+    FLastError := CreateError(fpErrFailedReadMem);
+    Result := False;
     exit;
   end;
 
-  FLastError := NoError;
-  Result := False;
-  if AContext = nil then
-    AContext := FDefaultContext;
-  case ALocation.MType of
-    mlfInvalid, mlfUninitialized: ;
-    mlfTargetMem:
-      begin
-        Result := CacheManager.ReadMemory(ALocation.Address, ASize, ADest);
-        if not Result then
-          FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
-      end;
-    mlfSelfMem:
-      begin
-        move(Pointer(ALocation.Address)^, ADest^, ASize);
-        Result := True;
-      end;
-    mlfConstant, mlfConstantDeref, mlfTargetRegister:
-      begin
-        case ALocation.MType of
-          mlfConstant, mlfConstantDeref: begin
-              TmpVal := ALocation.Address;
-              i := SizeOf(ALocation.Address);
-            end;
-          mlfTargetRegister: begin
-              i := FMemReader.RegisterSize(Cardinal(ALocation.Address));
-              if i = 0 then
-                exit; // failed
-              if not FMemReader.ReadRegister(Cardinal(ALocation.Address), TmpVal, AContext) then
-                exit; // failed
-            end;
-        end;
-
-        Addr2 := @TmpVal;
-        if SizeOf(TmpVal) <> i then
-          FSelfMemConvertor.AdjustIntPointer(Addr2, SizeOf(TmpVal), i);
-
-        Result := FSelfMemConvertor.PrepareTargetRead(rdtUnsignedInt, TDbgPtr(Addr2),
-          ADest, i, ASize, ConvData);
-        if not Result then exit;
-
-        move(Pointer(ConvData.NewTargetAddress)^, ConvData.NewDestAddress^, ConvData.NewReadSize);
-
-        Result := TargetMemConvertor.FinishTargetRead(rdtUnsignedInt, TDbgPtr(Addr2),
-          ADest, i, ASize, ConvData);
-        Result := True;
-      end;
-  end;
-  if (not Result) and (not IsError(FLastError)) then
-    FLastError := CreateError(fpErrFailedReadMem);
-end;
-
-function TFpDbgMemManager.ReadMemoryEx(const ALocation: TFpDbgMemLocation;
-  AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer;
-  AContext: TFpDbgAddressContext): Boolean;
-begin
-  FLastError := NoError;
   // AnAddressSpace is ignored, when not actually reading from target address
-  case ALocation.MType of
-    mlfTargetMem: Result := FMemReader.ReadMemoryEx(ALocation.Address, AnAddressSpace, ASize, ADest);
+  case ASourceLocation.MType of
+    mlfTargetMem: Result := FMemReader.ReadMemoryEx(ASourceLocation.Address, AnAddressSpace, SizeToFullBytes(ASize), ADest);
     else
-      Result := ReadMemory(ALocation, ASize, ADest, AContext);
+      Result := ReadMemory(ASourceLocation, ASize, ADest, AContext);
   end;
   if (not Result) and (not IsError(FLastError)) then
     FLastError := CreateError(fpErrFailedReadMem);
@@ -1006,63 +1390,76 @@ begin
   if AContext = nil then
     AContext := FDefaultContext;
   Result := FMemReader.ReadRegister(ARegNum, AValue, AContext);
+  if not Result then
+    FLastError := CreateError(fpErrFailedReadMem);
 end;
 
-function TFpDbgMemManager.ReadAddress(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-  AContext: TFpDbgAddressContext): TFpDbgMemLocation;
+function TFpDbgMemManager.ReadAddress(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; AContext: TFpDbgAddressContext): TFpDbgMemLocation;
 begin
+  Result := Default(TFpDbgMemLocation);
   Result.MType := mlfTargetMem;
   if not ReadMemory(rdtAddress, ALocation, ASize, @Result.Address, SizeOf(Result.Address), AContext) then
     Result := InvalidLoc;
 end;
 
 function TFpDbgMemManager.ReadAddressEx(const ALocation: TFpDbgMemLocation;
-  AnAddressSpace: TDbgPtr; ASize: Cardinal; AContext: TFpDbgAddressContext): TFpDbgMemLocation;
+  AnAddressSpace: TDbgPtr; ASize: TFpDbgValueSize;
+  AContext: TFpDbgAddressContext): TFpDbgMemLocation;
 begin
   Result := InvalidLoc;
 end;
 
-function TFpDbgMemManager.ReadAddress(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
-  AnAddress: TFpDbgMemLocation; AContext: TFpDbgAddressContext): Boolean;
+function TFpDbgMemManager.ReadAddress(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AnAddress: TFpDbgMemLocation;
+  AContext: TFpDbgAddressContext): Boolean;
 begin
-  Result := ReadMemory(rdtAddress, ALocation, ASize, @AnAddress.Address, SizeOf(AnAddress.Address), AContext);
+  AnAddress := Default(TFpDbgMemLocation);
+  Result := ReadMemory(rdtAddress, ALocation, ASize, @AnAddress.Address, (SizeOf(AnAddress.Address)), AContext);
   if Result
   then AnAddress.MType := mlfTargetMem
   else AnAddress.MType := mlfInvalid;
 end;
 
-function TFpDbgMemManager.ReadUnsignedInt(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-  out AValue: QWord; AContext: TFpDbgAddressContext): Boolean;
+function TFpDbgMemManager.ReadUnsignedInt(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: QWord; AContext: TFpDbgAddressContext
+  ): Boolean;
 begin
-  Result := ReadMemory(rdtUnsignedInt, ALocation, ASize, @AValue, SizeOf(AValue), AContext);
+  Result := ReadMemory(rdtUnsignedInt, ALocation, ASize, @AValue, (SizeOf(AValue)), AContext);
 end;
 
-function TFpDbgMemManager.ReadSignedInt(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-  out AValue: Int64; AContext: TFpDbgAddressContext): Boolean;
+function TFpDbgMemManager.ReadSignedInt(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: Int64; AContext: TFpDbgAddressContext
+  ): Boolean;
 begin
-  Result := ReadMemory(rdtSignedInt, ALocation, ASize, @AValue, SizeOf(AValue), AContext);
+  Result := ReadMemory(rdtSignedInt, ALocation, ASize, @AValue, (SizeOf(AValue)), AContext);
 end;
 
-function TFpDbgMemManager.ReadEnum(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
-  AValue: QWord; AContext: TFpDbgAddressContext): Boolean;
+function TFpDbgMemManager.ReadEnum(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: QWord; AContext: TFpDbgAddressContext
+  ): Boolean;
 begin
-  Result := ReadMemory(rdtEnum, ALocation, ASize, @AValue, SizeOf(AValue), AContext);
+  Result := ReadMemory(rdtEnum, ALocation, ASize, @AValue, (SizeOf(AValue)), AContext);
 end;
 
-function TFpDbgMemManager.ReadSet(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
-  AValue: TBytes; AContext: TFpDbgAddressContext): Boolean;
+function TFpDbgMemManager.ReadSet(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: TBytes; AContext: TFpDbgAddressContext
+  ): Boolean;
 begin
-  SetLength(AValue, ASize);
+  SetLength(AValue, SizeToFullBytes(ASize));
   Result := ASize > 0;
   if Result then
-    Result := ReadMemory(rdtSet, ALocation, ASize, @AValue[0], ASize, AContext);
+    Result := ReadMemory(rdtSet, ALocation, ASize, @AValue[0], Length(AValue), AContext);
 end;
 
-function TFpDbgMemManager.ReadFloat(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
-  AValue: Extended; AContext: TFpDbgAddressContext): Boolean;
+function TFpDbgMemManager.ReadFloat(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: Extended; AContext: TFpDbgAddressContext
+  ): Boolean;
 begin
-  Result := ReadMemory(rdtfloat, ALocation, ASize, @AValue, SizeOf(AValue), AContext);
+  Result := ReadMemory(rdtfloat, ALocation, ASize, @AValue, (SizeOf(AValue)), AContext);
 end;
+
+initialization
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
 
 end.
-

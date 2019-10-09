@@ -871,7 +871,7 @@ var
   CurContext: TFpDbgInfoContext;
   WatchPasExpr: TFpPascalExpression;
   R: TFpValue;
-  s: QWord;
+  s: TFpDbgValueSize;
 begin
   assert(FInternalBreakpoint=nil);
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.SetBreak  ADD ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
@@ -887,7 +887,7 @@ begin
 // TODO: Cache current value
           if WatchPasExpr.Valid and IsTargetNotNil(R.Address) and R.GetSize(s) then begin
 // pass context
-            FInternalBreakpoint := TFpDebugDebugger(Debugger).AddWatch(R.Address.Address, s, WatchKind, WatchScope);
+            FInternalBreakpoint := TFpDebugDebugger(Debugger).AddWatch(R.Address.Address, SizeToFullBytes(s), WatchKind, WatchScope);
           end;
           WatchPasExpr.Free;
           CurContext.ReleaseReference;
@@ -1412,16 +1412,16 @@ begin
       if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
       then begin
         CastName := '';
-        if FMemManager.ReadAddress(ResValue.DataAddress, AContext.SizeOfAddress, ClassAddr) then begin
+        if FMemManager.ReadAddress(ResValue.DataAddress, SizeVal(AContext.SizeOfAddress), ClassAddr) then begin
           {$PUSH}{$Q-}
           ClassAddr.Address := ClassAddr.Address + TDBGPtr(3 * AContext.SizeOfAddress);
           {$POP}
-          if FMemManager.ReadAddress(ClassAddr, AContext.SizeOfAddress, CNameAddr) then begin
-            if (FMemManager.ReadUnsignedInt(CNameAddr, 1, NameLen)) then
+          if FMemManager.ReadAddress(ClassAddr, SizeVal(AContext.SizeOfAddress), CNameAddr) then begin
+            if (FMemManager.ReadUnsignedInt(CNameAddr, SizeVal(1), NameLen)) then
               if NameLen > 0 then begin
                 SetLength(CastName, NameLen);
                 CNameAddr.Address := CNameAddr.Address + 1;
-                FMemManager.ReadMemory(CNameAddr, NameLen, @CastName[1]);
+                FMemManager.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
                 PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', AContext);
                 PasExpr2.ResultValue;
                 if PasExpr2.Valid then begin

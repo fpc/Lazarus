@@ -92,6 +92,7 @@ begin
   i := FFpSymbolInfo.FSymbolList.IndexOf(AName);
   if i > -1 then
   begin
+    val := Default(TFpDbgMemLocation);
     val.Address:=FFpSymbolInfo.FSymbolList.Data[i];
     val.MType:=mlfTargetMem;
     result := TFpValueConstAddress.Create(val);

@@ -767,13 +767,13 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   procedure DoInt;
   var
     n: Integer;
-    ValSize: QWord;
+    ValSize: TFpDbgValueSize;
   begin
     case ADisplayFormat of
       wdfUnsigned: APrintedValue := IntToStr(QWord(AValue.AsInteger));
       wdfHex: begin
           if (svfSize in AValue.FieldFlags) and AValue.GetSize(ValSize) then
-            n := ValSize* 2
+            n := SizeToFullBytes(ValSize)* 2
           else begin
             n := 16;
             if QWord(AValue.AsInteger) <= high(Cardinal) then n := 8;
@@ -797,13 +797,13 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   procedure DoCardinal;
   var
     n: Integer;
-    ValSize: QWord;
+    ValSize: TFpDbgValueSize;
   begin
     case ADisplayFormat of
       wdfDecimal: APrintedValue := IntToStr(Int64(AValue.AsCardinal));
       wdfHex: begin
           if (svfSize in AValue.FieldFlags) and AValue.GetSize(ValSize) then
-            n := ValSize* 2
+            n := SizeToFullBytes(ValSize)* 2
           else begin
             n := 16;
             if AValue.AsCardinal <= high(Cardinal) then n := 8;
@@ -960,7 +960,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     end;
 
     if (MemManager <> nil) and (MemManager.CacheManager <> nil) then
-      Cache := MemManager.CacheManager.AddCache(AValue.DataAddress.Address, AValue.DataSize)
+      Cache := MemManager.CacheManager.AddCache(AValue.DataAddress.Address, SizeToFullBytes(AValue.DataSize))
     else
       Cache := nil;
     try
@@ -1114,7 +1114,7 @@ var
   MemSize: Integer;
   MemDest: array of Byte;
   i: Integer;
-  ValSize: QWord;
+  ValSize: TFpDbgValueSize;
 begin
   if ADBGTypeInfo <> nil then ADBGTypeInfo^ := nil;
   if ANestLevel > 0 then begin
@@ -1126,21 +1126,21 @@ begin
       MemAddr := UnInitializedLoc;
       if svfDataAddress in AValue.FieldFlags then begin
         MemAddr := AValue.DataAddress;
-        MemSize := AValue.DataSize;
+        MemSize := SizeToFullBytes(AValue.DataSize);
       end
       else
       if svfAddress in AValue.FieldFlags then begin
         MemAddr := AValue.Address;
         if not AValue.GetSize(ValSize) then
-          ValSize := 256;
-        MemSize := ValSize;
+          ValSize := SizeVal(256);
+        MemSize := SizeToFullBytes(ValSize);
       end;
       if MemSize < ARepeatCount then MemSize := ARepeatCount;
       if MemSize <= 0 then MemSize := 256;
 
       if IsTargetAddr(MemAddr) then begin
         SetLength(MemDest, MemSize);
-        if FMemManager.ReadMemory(MemAddr, MemSize, @MemDest[0]) then begin
+        if FMemManager.ReadMemory(MemAddr, SizeVal(MemSize), @MemDest[0]) then begin
           APrintedValue := IntToHex(MemAddr.Address, AnAddressSize*2)+ ':' + LineEnding;
           for i := 0 to high(MemDest) do begin
             if (i > 0) and (i mod 16 = 0) then
