@@ -33,7 +33,8 @@ type
     FLogLock: TRTLCriticalSection;
     FLogFile: TLazLoggerFileHandle;
     FLogFileCreated: Boolean;
-    FLogFileName, FLogBufferText: String;
+    FLogFileName: String;
+    FLogBufferText: TStringList;
     procedure InitLog;
     procedure FinishLog;
 
@@ -62,6 +63,8 @@ type
     procedure TearDown; override;
     procedure RunTest; override;
   public
+    constructor Create; override;
+    destructor Destroy; override;
     function SkipTest: Boolean; virtual;
     Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String=''); overload;
     Procedure TestCompile(const PrgName: string; out ExeName: string; const UsesDirs: array of TUsesDir;
@@ -193,6 +196,7 @@ begin
     inc(FIgnoredErrorCnt);
   end else begin
     FTestErrors := FTestErrors + IntToStr(FTestCnt) + ': ' + s + LineEnding;
+    DebugLn(['!!!!! ERROR: ' + IntToStr(FTestCnt) + ': ' + s]);
     inc(FTestErrorCnt);
   end;
 end;
@@ -458,7 +462,7 @@ end;
 procedure TDBGTestCase.InitLog;
 begin
   FLogFileCreated := False;
-  FLogBufferText := '';
+  FLogBufferText.Clear;
 end;
 
 procedure TDBGTestCase.CreateLog;
@@ -494,9 +498,9 @@ begin
     //Rewrite(FLogFile);
     FLogFileCreated := True;
 
-    FLogFile.WriteLnToFile(FLogBufferText);
+    FLogFile.WriteLnToFile(FLogBufferText.Text);
     //writeln(FLogFile, FLogBufferText);
-    FLogBufferText := '';
+    FLogBufferText.Clear;
   finally
     LeaveCriticalsection(FLogLock);
   end;
@@ -513,7 +517,7 @@ begin
     sleep(5);
     RenameFileUTF8(FLogFileName + '.log.running', NewName + '.log');
   end;
-  FLogBufferText := '';
+  FLogBufferText.Clear;
 end;
 
 function EscapeText(s: String): String;
@@ -532,9 +536,9 @@ begin
   else begin
     EnterCriticalsection(FLogLock);
     try
-      if length(FLogBufferText) > 20000000 then
-        Delete(FLogBufferText, 1 , Length(s + LineEnding));
-      FLogBufferText := FLogBufferText + EscapeText(s) + LineEnding;
+      if FLogBufferText.Count > 500000 then
+        FLogBufferText.Delete(1);
+      FLogBufferText.Add(EscapeText(s));
     finally
       LeaveCriticalsection(FLogLock);
     end;
@@ -615,6 +619,18 @@ begin
   finally
     Debugger.CleanAfterTestDone;
   end;
+end;
+
+constructor TDBGTestCase.Create;
+begin
+  inherited Create;
+  FLogBufferText := TStringList.Create;
+end;
+
+destructor TDBGTestCase.Destroy;
+begin
+  FreeAndNil(FLogBufferText);
+  inherited Destroy;
 end;
 
 function TDBGTestCase.SkipTest: Boolean;
