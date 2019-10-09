@@ -29,6 +29,7 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    lblInfo: TLabel;
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -75,7 +76,7 @@ procedure TForm1.PageControl1Change(Sender: TObject);
 const
   AXIS_NAMES: array[0..1] of String = ('left and right', 'top and bottom');
 begin
-  Panel3.Caption := Format('The %s axis lines are at different ' +
+  lblInfo.Caption := Format('The %s axis lines are at different ' +
     'positions. Increase "LabelSize" to align them.', [AXIS_NAMES[PageControl1.PageIndex]]);
 end;
 

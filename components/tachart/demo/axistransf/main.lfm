@@ -14,9 +14,9 @@ object Form1: TForm1
     Height = 434
     Top = 0
     Width = 533
-    ActivePage = tsLinear
+    ActivePage = tsUser
     Align = alClient
-    TabIndex = 0
+    TabIndex = 4
     TabOrder = 0
     object tsLinear: TTabSheet
       Caption = 'Linear'
@@ -414,7 +414,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = lblTolerance
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = pnlLogControls
-          Left = 144
+          Left = 143
           Height = 23
           Top = 0
           Width = 50
@@ -430,7 +430,7 @@ object Form1: TForm1
           Left = 85
           Height = 15
           Top = 4
-          Width = 51
+          Width = 50
           BorderSpacing.Left = 16
           Caption = 'Tolerance'
           ParentColor = False
