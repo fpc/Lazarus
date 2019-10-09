@@ -164,14 +164,20 @@ procedure TTestTypeInfo.ExpResult(AVal: TFpValue; Field: TFpValueFieldFlag;
   ExpValue: QWord);
 var
   s: string;
+  sz: TFpDbgValueSize;
 begin
   ExpFlags([Field]);
   WriteStr(s, FCurrentTestName, Field);
   case Field of
     svfAddress:           AssertEqualsQW('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.Address));
-    svfSize:              AssertEqualsQW('VAlue for '+s, ExpValue, AVal.Size);
+    svfSize:            begin
+                          AVal.GetSize(sz);
+                          AssertEqualsQW('VAlue for '+s, ExpValue, sz.Size);
+                        end;
     svfDataAddress:       AssertEqualsQW('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.DataAddress));
-    svfDataSize:          AssertEqualsQW('VAlue for '+s, ExpValue, AVal.DataSize);
+    svfDataSize:        begin
+                          AssertEqualsQW('VAlue for '+s, ExpValue, AVal.DataSize.Size);
+                        end;
     svfInteger:           AssertEqualsQW('VAlue for '+s, ExpValue, AVal.AsInteger);
     svfCardinal:          AssertEqualsQW('VAlue for '+s, ExpValue, AVal.AsCardinal);
     svfOrdinal:           AssertEqualsQW('VAlue for '+s, ExpValue, AVal.AsCardinal);
@@ -183,14 +189,18 @@ procedure TTestTypeInfo.ExpResult(AVal: TFpValue; Field: TFpValueFieldFlag;
   ExpValue: Int64);
 var
   s: string;
+  sz: TFpDbgValueSize;
 begin
   ExpFlags([Field]);
   WriteStr(s, FCurrentTestName, Field);
   case Field of
     svfAddress:           AssertEquals('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.Address));
-    svfSize:              AssertEquals('VAlue for '+s, ExpValue, AVal.Size);
+    svfSize:            begin
+                          AVal.GetSize(sz);
+                          AssertEquals('VAlue for '+s, ExpValue, sz.Size);
+                        end;
     svfDataAddress:       AssertEquals('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.DataAddress));
-    svfDataSize:          AssertEquals('VAlue for '+s, ExpValue, AVal.DataSize);
+    svfDataSize:          AssertEquals('VAlue for '+s, ExpValue, AVal.DataSize.Size);
     svfInteger:           AssertEquals('VAlue for '+s, ExpValue, AVal.AsInteger);
     svfCardinal:          AssertEquals('VAlue for '+s, ExpValue, AVal.AsCardinal);
     svfOrdinal:           AssertEquals('VAlue for '+s, ExpValue, AVal.AsCardinal);
