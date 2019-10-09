@@ -2329,7 +2329,10 @@ begin
     TFpValueDwarfBase(Result).Context := Context;
   end
   else begin
-    TypeInfo.GetValueLowBound(Self, lb);
+    // TODO: value object for the subrange
+    // TODO: cache the result
+    if not t.GetValueLowBound(nil, lb) then
+      lb := 0;
     if (FNumValue = nil) or (FNumValue.RefCount > 1) then begin // refcount 1 by FTypedNumValue
       FNumValue := TFpValueDwarfConstNumber.Create(FMemberMap[AIndex] + lb, t.Kind = skInteger);
     end
