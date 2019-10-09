@@ -935,6 +935,15 @@ for i := StartIdx to t.Count-1 do
 //    t.Add(AName, 'EnVal2', weMatch('xxx', skEnumValue));
 
     t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
+    t.Add(AName, p+'Set2'+e, weSet(['EnVal1', 'EnVal4'], '{set}')).Skip([stDwarf])
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+
+    t.Add(AName, p+'SmallSet'+e, weSet(['22', '24', '25'], 'TSmallRangeSet')).Skip([stDwarf])
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+    t.Add(AName, p+'SmallSet2'+e, weSet(['21', '24', '25'], '{set}')).Skip([stDwarf])
+      .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+
+
 
     t.Add(AName, p+'IntfUnknown1'+e, weMatch('.?', skInterface)) //.Skip(); // only run eval / do not crash
       .SkipIf(ALoc = tlPointerAny);

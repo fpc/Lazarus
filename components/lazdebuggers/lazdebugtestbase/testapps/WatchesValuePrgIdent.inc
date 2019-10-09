@@ -373,8 +373,17 @@
   pre__Enum2{e} _OP_ TEnum2(EnVal21);          //@@ _pre3_Enum2;
   pre__Enum3{e} _OP_ TEnum2(EnVal25);          //@@ _pre3_Enum3;
 
-  pre__Set{e} _OP_ TSet([EnVal2, EnVal4]);          //@@ _pre3_Set;
+  pre__Set{e}      _OP_ TSet([EnVal2, EnVal4]);          //@@ _pre3_Set;
+  pre__SmallSet{e} _OP_ TSmallRangeSet([22, 24,25]);     //@@ _pre3_SmallSet;
 
+{$IFnDEF TestParam}
+{$IFnDEF TestArg}
+{$IFnDEF TestPointer}
+  pre__Set2{e}      _O2_ set of TEnum       _EQ_ ([EnVal1, EnVal4]);      //@@ _pre3_Set2;
+  pre__SmallSet2{e} _O2_ set of TSmallRange _EQ_ ([21, 24,25]);           //@@ _pre3_SmallSet2;
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
 
   {$IFnDEF TestAssign}
     pre__FiveRec{e}       _O2_ TRecordFive      _EQ_ (a:-22-ADD;b:44);          //@@ _pre3_FiveRec;

@@ -53,6 +53,7 @@ type
   TClass1 = class;
 
   TIntRange = -300..300;
+  TSmallRange = 20..30;
   TCardinalRange = 1..300;
 
   ShortStr1 = String[1];
@@ -142,6 +143,7 @@ type
   TEnumSub =  EnVal1..EnVal2;
   TEnum2 = (EnVal21= 3, EnVal22=4, EnVal23=7, EnVal24=10, EnVal25=30);
   TSet   = set of TEnum;
+  TSmallRangeSet = set of TSmallRange;
 
   TArrayEnum = array [TEnum] of word;
   TArrayEnumSub = array [TEnumSub] of word;
