@@ -1072,7 +1072,10 @@ end;
 function TFpValueDwarfV3FreePascalString.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfString];
+  case TypeInfo.Kind of
+    skWideString: Result := Result + [svfWideString];
+    else          Result := Result + [svfString];
+  end;
 end;
 
 function TFpValueDwarfV3FreePascalString.GetAsString: AnsiString;

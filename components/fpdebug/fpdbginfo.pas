@@ -528,7 +528,7 @@ end;
 
 function TFpValueConstWideChar.GetFieldFlags: TFpValueFieldFlags;
 begin
-  Result := [svfString]
+  Result := [svfWideString]
 end;
 
 function TFpValueConstWideChar.GetAsString: AnsiString;

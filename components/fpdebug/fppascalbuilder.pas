@@ -508,6 +508,74 @@ begin
     ATypeDeclaration := GetIndent + ATypeDeclaration;
 end;
 
+function QuoteWideText(AText: WideString): WideString;
+const
+  HEXCHR: array [0..15] of char = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
+var
+  Len: Integer;
+  c: WideChar;
+  RPos, SPos, SEnd, QPos: PWideChar;
+begin
+  if AText = '' then
+    exit('''''');
+
+  Len := Length(AText);
+
+  SetLength(Result, Len * 4); // This is the maximal length result can get
+  RPos := @Result[1];
+  SPos := @AText[1];
+  SEnd := @AText[Len] + 1;
+
+  repeat
+    RPos^ := ''''; inc(RPos);
+    QPos := RPos;
+
+
+    repeat
+      c := SPos^;
+      case c of
+        #0..#31, #127, #$80..#$9F:
+          break;
+        '''': begin
+          RPos^ := c; inc(RPos);
+          RPos^ := c; inc(RPos);
+          inc(SPos);
+        end;
+        else begin
+          RPos^ := c; inc(RPos);
+          inc(SPos);
+        end;
+      end;
+
+      c := SPos^;
+    until False;;
+
+    if RPos = QPos then
+      dec(RPos)
+    else begin
+      RPos^ := ''''; inc(RPos);
+    end;
+
+    repeat
+      c := SPos^;
+      if (c = #0) and (SPos >= SEnd) then begin
+        // END OF TEXT
+        Assert(RPos-1 <= @Result[Length(Result)], 'RPos-1 <= @Result[Length(Result)]');
+        SetLength(Result, RPos - @Result[1]);
+        exit;
+      end;
+
+      RPos^ := '#'; inc(RPos);
+      RPos^ := '$'; inc(RPos);
+      RPos^ := HEXCHR[Byte(c) >> 4]; inc(RPos);
+      RPos^ := HEXCHR[Byte(c) and 15]; inc(RPos);
+      inc(SPos);
+      c := SPos^;
+    until not(c in [#0..#31, #127, #$80..#$9F]);
+
+  until False;
+end;
+
 function QuoteText(AText: Utf8String): UTf8String;
 // TODO: process large text in chunks to avoid allocating huge memory
 const
@@ -675,7 +743,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
 
     if ADisplayFormat = wdfPointer then exit; // no data
     if svfString in AValue.FieldFlags then
-      APrintedValue := APrintedValue + ' ' + QuoteText(AValue.AsString);
+      APrintedValue := APrintedValue + ' ' + QuoteText(AValue.AsString)
+    else
+    if svfWideString in AValue.FieldFlags then
+      APrintedValue := APrintedValue + ' ' + QuoteWideText(AValue.AsWideString);
 
     Result := True;
   end;
@@ -842,7 +913,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
 
   procedure DoChar;
   begin
-    APrintedValue := QuoteText(AValue.AsString);
+    if svfWideString in AValue.FieldFlags then
+      APrintedValue := QuoteWideText(AValue.AsWideString)
+    else
+      APrintedValue := QuoteText(AValue.AsString);
     if (ppvCreateDbgType in AFlags) then begin
       ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
     end;
@@ -860,7 +934,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
 
   procedure DoWideString;
   begin
-    APrintedValue := QuoteText(AValue.AsString);
+    APrintedValue := QuoteWideText(AValue.AsWideString);
     if (ppvCreateDbgType in AFlags) then begin
       ADBGTypeInfo^ := TDBGType.Create(skWideString, ResTypeName);
     end;

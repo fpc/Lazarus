@@ -2000,6 +2000,7 @@ end;
 function TFpValueDwarfPointer.GetFieldFlags: TFpValueFieldFlags;
 var
   t: TFpSymbol;
+  Size: TFpDbgValueSize;
 begin
   Result := inherited GetFieldFlags;
   //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
@@ -2007,8 +2008,14 @@ begin
 
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
-  if (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then // pchar
-    Result := Result + [svfString]; // data address
+  if (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
+    if not t.ReadSize(nil, Size) then
+      Size := ZeroSize;
+    case Size.Size of
+      1: Result := Result + [svfString];
+      2: Result := Result + [svfWideString];
+    end;
+  end;
 end;
 
 function TFpValueDwarfPointer.GetDataAddress: TFpDbgMemLocation;
