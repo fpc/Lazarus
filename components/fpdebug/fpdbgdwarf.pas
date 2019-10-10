@@ -2008,7 +2008,7 @@ begin
 
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
-  if (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
+  if (t <> nil) and (t.Kind = skChar) and IsValidLoc(GetDerefAddress) then begin // pchar
     if not t.ReadSize(nil, Size) then
       Size := ZeroSize;
     case Size.Size of
