@@ -87,6 +87,7 @@ type
     procedure FillDebuggerClassDropDown;
     procedure UpdateDebuggerClass;
     procedure UpdateDebuggerClassDropDown;
+    procedure UpdateDebuggerPathHistory;
     procedure FetchDebuggerSpecificOptions;
     function  GetDebuggerClassFromDropDown: TDebuggerClass;
     function  GetUniqueName(AName: String): String;
@@ -115,6 +116,7 @@ procedure TDebuggerClassOptionsFrame.cmbDebuggerPathEditingDone(Sender: TObject
 var
   ParsedFName: String;
 begin
+  UpdateDebuggerPathHistory;
   if FSelectedDbgPropertiesConfig = nil then
     exit;
 
@@ -208,6 +210,7 @@ end;
 
 procedure TDebuggerClassOptionsFrame.tbAddNewClick(Sender: TObject);
 begin
+  UpdateDebuggerPathHistory;
   edNameExit(nil);
   UpdateDebuggerClass;
   cmbDebuggerPathEditingDone(nil);
@@ -226,6 +229,7 @@ var
   pc: TDebuggerPropertiesConfig;
   s: String;
 begin
+  UpdateDebuggerPathHistory;
   if FSelectedDbgPropertiesConfig = nil then
     exit;
 
@@ -312,7 +316,6 @@ end;
 procedure TDebuggerClassOptionsFrame.UpdateDebuggerClass;
 var
   c: TDebuggerClass;
-  i: Integer;
 begin
   if FSelectedDbgPropertiesConfig = nil then
     exit;
@@ -320,11 +323,7 @@ begin
   if SelectedDebuggerClass = c then
     exit;
 
-  i := FDebuggerFileHistory.IndexOf(SelectedDebuggerClass.ExePathsMruGroup.ClassName);
-  Assert((i>=0) or (not SelectedDebuggerClass.NeedsExePath), 'Missing dbg lru');
-  if i >= 0 then // not found if not NeedExePath
-    TStringList(FDebuggerFileHistory.Objects[i]).Assign(cmbDebuggerPath.Items);
-
+  UpdateDebuggerPathHistory;
 
   FSelectedDbgPropertiesConfig.ChangeDebuggerClass(c, True);
   // TOOD: Ask user?
@@ -345,10 +344,23 @@ begin
   else SetComboBoxText(cmbDebuggerType, SelectedDebuggerClass.Caption,cstCaseInsensitive);
 end;
 
+procedure TDebuggerClassOptionsFrame.UpdateDebuggerPathHistory;
+var
+  i: Integer;
+begin
+  if FSelectedDbgPropertiesConfig = nil then
+    exit;
+  i := FDebuggerFileHistory.IndexOf(SelectedDebuggerClass.ExePathsMruGroup.ClassName);
+  Assert((i>=0) or (not SelectedDebuggerClass.NeedsExePath), 'Missing dbg lru');
+  if i >= 0 then // not found if not NeedExePath
+    TStringList(FDebuggerFileHistory.Objects[i]).Assign(cmbDebuggerPath.Items);
+end;
+
 procedure TDebuggerClassOptionsFrame.DoNameSelected(Sender: TObject);
 var
   idx: PtrInt;
 begin
+  UpdateDebuggerPathHistory;
   idx := TMenuItem(Sender).Tag;
 
   edNameExit(nil);
@@ -639,6 +651,7 @@ var
   i: Integer;
   EnvConf: TDebuggerPropertiesConfigList;
 begin
+  UpdateDebuggerPathHistory;
   with EnvironmentOptions do
   begin
     for i := 0 to FDebuggerFileHistory.Count - 1 do
