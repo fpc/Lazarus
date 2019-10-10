@@ -2895,6 +2895,8 @@ begin
 end;
 
 function TBuildManager.BuildTargetIDEIsDefault: boolean;
+// check if current BuildLazarus creates the normal lazarus exe
+// aka not some cross compile
 var
   NewTargetOS: String;
   NewTargetCPU: String;
@@ -2908,8 +2910,8 @@ begin
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
   Result:=((NewTargetOS='') or (NewTargetOS=GetCompiledTargetOS))
       and ((NewTargetCPU='') or (NewTargetCPU=GetCompiledTargetCPU))
-      and (NewLCLWidgetSet<>lpNoGUI)
-      and (GetCompilerFilename=EnvironmentOptions.GetParsedCompilerFilename);
+      and (NewLCLWidgetSet<>lpNoGUI);
+      // Note: no need to check if CompilerFilename is the default
 end;
 
 end.
