@@ -1936,6 +1936,23 @@ procedure TTestWatches.TestWatchesExpression;
     t.Add(AName, p+'Byte'+e +'='+ p2+'Byte'+e2,     weBool(n=n2) );
     t.Add(AName, p+'Byte'+e +'='+ p2+'Byte_2'+e2,   weBool(n+1=n2+240) );
 
+    t.Add(AName, p+'String1e'+e + ' = '''' ',   weBool(True));
+    t.Add(AName, p+'String10'+e + ' = '''+AChr1+'bc1'' ',   weBool(True));
+    t.Add(AName, p+'String10'+e + '+''a'' = '''+AChr1+'bc1'' ',   weBool(False));
+    t.Add(AName, p+'String10'+e + '+''a'' = '''+AChr1+'bc1a'' ',   weBool(True));
+
+    t.Add(AName, p+'Ansi3'+e + ' = '''' ',   weBool(True));
+    t.Add(AName, p+'Ansi2'+e + ' = '''+AChr1+'abcd0123'' ',   weBool(True));
+    t.Add(AName, p+'Ansi2'+e + ' +''x'' = '''+AChr1+'abcd0123'' ',   weBool(False));
+    t.Add(AName, p+'Ansi2'+e + ' +''x'' = '''+AChr1+'abcd0123x'' ',   weBool(True));
+
+    t.Add(AName, p+'WideString3'+e + ' = '''' ',   weBool(True)).SkipIf(ALoc = tlConst);
+    t.Add(AName, p+'WideString2'+e + ' = '''+AChr1+'abcX0123'' ',   weBool(True)).SkipIf(ALoc = tlConst);
+    t.Add(AName, p+'WideString2'+e + ' +''x'' = '''+AChr1+'abcX0123'' ',   weBool(False)).SkipIf(ALoc = tlConst);
+    t.Add(AName, p+'WideString2'+e + ' +''x'' = '''+AChr1+'abcX0123x'' ',   weBool(True)).SkipIf(ALoc = tlConst);
+
+    t.Add(AName, p+'String1e'+e + ' = '+p+'Ansi3'+e,   weBool(True));
+
 
     t.Add(AName, p+'IntfUnknown'+e  +'='+ 'nil',              weBool(True) );
     t.Add(AName, p+'IntfUnknown1'+e +'='+ 'nil',              weBool(False) )
@@ -2013,6 +2030,75 @@ begin
     RunToPause(BrkPrg);
 
     t.Clear;
+    // Constant values
+    t.Add('Const-Expr: 107', '107',     weInteger(107));
+    t.Add('Const-Expr: $10', '$10',     weInteger(16));
+    t.Add('Const-Expr: -17', '-17',     weInteger(-17));
+    t.Add('Const-Expr: True', 'True',    weBool(True));
+    t.Add('Const-Expr: False', 'False',    weBool(False));
+
+    t.Add('Const-Expr: ansistring ', '''abc''',    weAnsiStr('abc')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '''''',    weAnsiStr('')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '''abc''''DE''',    weAnsiStr('abcDE')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '''abc''#32''DE''',    weAnsiStr('abc DE')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#32''abc''',    weAnsiStr(' abc')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#49',    weAnsiStr('1')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#49#50',    weAnsiStr('12')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#$30#$31',    weAnsiStr('01')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#&61#&62',    weAnsiStr('12')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#%110001',    weAnsiStr('1')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#%00110001',    weAnsiStr('1')).IgnKind;
+
+    t.Add('Const-Expr: ansistring ', '''a',    weAnsiStr('1')).IgnKind^.AddFlag(ehExpectError);
+    t.Add('Const-Expr: ansistring ', '''',    weAnsiStr('1')).IgnKind^.AddFlag(ehExpectError);
+    t.Add('Const-Expr: ansistring ', '#',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
+    t.Add('Const-Expr: ansistring ', '#$',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
+    t.Add('Const-Expr: ansistring ', '#''',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
+    t.Add('Const-Expr: ansistring ', '#$''',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
+    t.Add('Const-Expr: ansistring ', '#A',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
+    t.Add('Const-Expr: ansistring ', '#$X',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
+
+    t.Add('Const-Op: ', '107 + 1',     weInteger(108));
+    t.Add('Const-Op: ', '107 - 1',     weInteger(106));
+    t.Add('Const-Op: ', '107 + -1',    weInteger(106));
+    t.Add('Const-Op: ', '107 - -1',    weInteger(108));
+    t.Add('Const-Op: ', '11 * 3',      weInteger(33));
+    t.Add('Const-Op: ', '11 * -3',     weInteger(-33));
+    t.Add('Const-Op: ', '-11 * 3',     weInteger(-33));
+    t.Add('Const-Op: ', '-11 * -3',    weInteger(33));
+    t.Add('Const-Op: ', '11 / 3',      weMatch('3\.666', skFloat));
+    t.Add('Const-Op: ', '11 div 3',    weInteger(3));
+    //t.Add('Const-Op: ', '11 mod 3',    weInteger(106));
+    t.Add('Const-precedence: ', '1 + 11 * 3',      weInteger(34));
+    t.Add('Const-precedence: ', '11 * 3 + 1',      weInteger(34));
+    t.Add('Const-bracket: ', '(1 + 11) * 3',      weInteger(36));
+    t.Add('Const-bracket: ', '11 * (3 + 1)',      weInteger(44));
+
+    t.Add('Const-EQ: ', '17 = $11',     weBool(True));
+    t.Add('Const-EQ: ', '18 = $11',     weBool(False));
+    t.Add('Const-EQ: ', '17 <> 17',     weBool(False));
+    t.Add('Const-EQ: ', '18 <> 17',     weBool(True));
+    t.Add('Const-EQ: ', '17 > 18',     weBool(False));
+    t.Add('Const-EQ: ', '17 > 17',     weBool(False));
+    t.Add('Const-EQ: ', '17 > 16',     weBool(True));
+    t.Add('Const-EQ: ', '17 >= 18',     weBool(False));
+    t.Add('Const-EQ: ', '17 >= 17',     weBool(True));
+    t.Add('Const-EQ: ', '17 >= 16',     weBool(True));
+    t.Add('Const-EQ: ', '17 < 18',     weBool(True));
+    t.Add('Const-EQ: ', '17 < 17',     weBool(False));
+    t.Add('Const-EQ: ', '17 < 16',     weBool(False));
+    t.Add('Const-EQ: ', '17 <= 18',     weBool(True));
+    t.Add('Const-EQ: ', '17 <= 17',     weBool(True));
+    t.Add('Const-EQ: ', '17 <= 16',     weBool(False));
+
+    t.Add('Const-EQ: ', '''A'' = #65',     weBool(True));
+    t.Add('Const-EQ: ', '''A'' = #65#65',  weBool(False));
+    t.Add('Const-EQ: ', '''A'' = ''B''',   weBool(False));
+    t.Add('Const-EQ: ', '''A'' <> #65',     weBool(False));
+    t.Add('Const-EQ: ', '''A'' <> #65#65',  weBool(True));
+    t.Add('Const-EQ: ', '''A'' <> ''B''',   weBool(True));
+
+
     AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gv', 001, 'B', '', tlAny);
     AddWatches(t, 'glob',   'gc', 000, 'A', '', tlConst,   'gv', 001, 'B', '', tlAny);
     AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gc', 000, 'A', '', tlConst);
