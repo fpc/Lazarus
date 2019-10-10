@@ -1299,7 +1299,7 @@ begin
 
 
         if SourceReadSize <= ConvData.DestSize then begin
-          move(ReadData^, ADest^, Min(SizeOf(TmpVal) ,ConvData.DestSize)); // Little Endian only
+          move(ReadData^, ADest^, Min(SizeOf(TmpVal), Int64(ConvData.DestSize))); // Little Endian only
           ReadData := ADest;
         end;
 
