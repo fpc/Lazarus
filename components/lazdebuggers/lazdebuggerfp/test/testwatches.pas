@@ -2037,6 +2037,19 @@ begin
     t.Add('Const-Expr: True', 'True',    weBool(True));
     t.Add('Const-Expr: False', 'False',    weBool(False));
 
+    t.Add('Const-EQ: ', 'True and False',     weBool(False));
+    t.Add('Const-EQ: ', 'True and True',     weBool(True));
+    t.Add('Const-EQ: ', 'False and False',     weBool(False));
+    t.Add('Const-EQ: ', 'True or False',     weBool(True));
+    t.Add('Const-EQ: ', 'True or True',     weBool(True));
+    t.Add('Const-EQ: ', 'False or False',     weBool(False));
+    t.Add('Const-EQ: ', 'True xor False',     weBool(True));
+    t.Add('Const-EQ: ', 'True xor True',     weBool(False));
+    t.Add('Const-EQ: ', 'False xor False',     weBool(False));
+
+    t.Add('Const-EQ: ', '(1=7) and (3=3)',     weBool(False));
+    t.Add('Const-EQ: ', '(1<7) and (3>1)',     weBool(True));
+
     t.Add('Const-Expr: ansistring ', '''abc''',    weAnsiStr('abc')).IgnKind;
     t.Add('Const-Expr: ansistring ', '''''',    weAnsiStr('')).IgnKind;
     t.Add('Const-Expr: ansistring ', '''abc''''DE''',    weAnsiStr('abcDE')).IgnKind;
@@ -2068,11 +2081,16 @@ begin
     t.Add('Const-Op: ', '-11 * -3',    weInteger(33));
     t.Add('Const-Op: ', '11 / 3',      weMatch('3\.666', skFloat));
     t.Add('Const-Op: ', '11 div 3',    weInteger(3));
-    //t.Add('Const-Op: ', '11 mod 3',    weInteger(106));
+    t.Add('Const-Op: ', '11 mod 3',    weInteger(2));
     t.Add('Const-precedence: ', '1 + 11 * 3',      weInteger(34));
     t.Add('Const-precedence: ', '11 * 3 + 1',      weInteger(34));
     t.Add('Const-bracket: ', '(1 + 11) * 3',      weInteger(36));
     t.Add('Const-bracket: ', '11 * (3 + 1)',      weInteger(44));
+
+    t.Add('Const-Op: ', '35 And 17',     weInteger(1));
+    t.Add('Const-Op: ', '35 And 7',     weInteger(3));
+    t.Add('Const-Op: ', '35 or 7',     weInteger(39));
+    t.Add('Const-Op: ', '35 Xor 7',     weInteger(36));
 
     t.Add('Const-EQ: ', '17 = $11',     weBool(True));
     t.Add('Const-EQ: ', '18 = $11',     weBool(False));
