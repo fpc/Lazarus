@@ -884,15 +884,14 @@ begin
         if UpperBoundSym <> nil then begin
           val := UpperBoundSym.Value;
           TFpValueDwarf(val).Context := Context;
-          //l := t2.OrdLowBound;
           h := Val.AsInteger;
           val.ReleaseReference;
-          if h > l then begin
+          if h >= 0 then begin
           {$PUSH}{$Q-}
-            if QWord(h - l) > 5000 then
-              h := l + 5000;
+            if QWord(h) > 5000 - 1 then
+              h := 5000 - 1;
           {$POP}
-          Result := h - l + 1;
+          Result := h + 1;
           end
           else
             Result := 0;
