@@ -191,7 +191,12 @@ type
     function DoGetResultValue: TFpValue; override;
   end;
 
+  { TFpPascalExpressionPartConstantText }
+
   TFpPascalExpressionPartConstantText = class(TFpPascalExpressionPartConstant)
+  protected
+    FValue: String;
+    function DoGetResultValue: TFpValue; override;
   end;
 
   { TFpPascalExpressionPartWithPrecedence }
@@ -1543,6 +1548,18 @@ begin
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
+{ TFpPascalExpressionPartConstantText }
+
+function TFpPascalExpressionPartConstantText.DoGetResultValue: TFpValue;
+var
+  f: Extended;
+  s: String;
+begin
+  //s := GetText;
+  Result := TFpValueConstString.Create(FValue);
+  {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+end;
+
 { TFpPascalExpression }
 
 procedure TFpPascalExpression.Parse;
@@ -1677,8 +1694,83 @@ var
   end;
 
   procedure AddConstChar;
+  var
+    str: string;
+    p: PChar;
+    c: LongInt;
+    WasQuote: Boolean;
   begin
-    SetError(Format('Unexpected char ''%0:s'' at pos %1:d', [CurPtr^, PosFromPChar(CurPtr)])); // error
+    dec(TokenEndPtr);
+    str := '';
+    WasQuote := False;
+    while (TokenEndPtr < EndPtr) and FValid do begin
+      case TokenEndPtr^ of
+        '''': begin
+            if WasQuote then
+              str := str + '''';
+            WasQuote := False;
+            inc(TokenEndPtr);
+            p := TokenEndPtr;
+            while (TokenEndPtr < EndPtr) and (TokenEndPtr^ <> '''') do
+              inc(TokenEndPtr);
+            str := str + copy(p, 1, TokenEndPtr - p);
+            if (TokenEndPtr < EndPtr) and (TokenEndPtr^ = '''') then
+              inc(TokenEndPtr)
+            else
+              SetError(fpErrPasParserInvalidExpression, []); // unterminated string
+          end;
+        '#': begin
+            WasQuote := False;
+            inc(TokenEndPtr);
+            if not (TokenEndPtr < EndPtr) then
+              SetError(fpErrPasParserInvalidExpression, []);
+            p := TokenEndPtr;
+            case TokenEndPtr^  of
+              '$': begin
+                  inc(TokenEndPtr);
+                  if (not (TokenEndPtr < EndPtr)) or (not (TokenEndPtr^ in ['0'..'9', 'a'..'f', 'A'..'F'])) then
+                    SetError(fpErrPasParserInvalidExpression, []);
+                  while (TokenEndPtr < EndPtr) and (TokenEndPtr^ in ['0'..'9', 'a'..'f', 'A'..'F']) do
+                    inc(TokenEndPtr);
+                end;
+              '&': begin
+                  inc(TokenEndPtr);
+                  if (not (TokenEndPtr < EndPtr)) or (not (TokenEndPtr^ in ['0'..'7'])) then
+                    SetError(fpErrPasParserInvalidExpression, []);
+                  while (TokenEndPtr < EndPtr) and (TokenEndPtr^ in ['0'..'7']) do
+                    inc(TokenEndPtr);
+                end;
+              '%': begin
+                  inc(TokenEndPtr);
+                  if (not (TokenEndPtr < EndPtr)) or (not (TokenEndPtr^ in ['0'..'1'])) then
+                    SetError(fpErrPasParserInvalidExpression, []);
+                  while (TokenEndPtr < EndPtr) and (TokenEndPtr^ in ['0'..'1']) do
+                    inc(TokenEndPtr);
+                end;
+              '0'..'9': begin
+                  while (TokenEndPtr < EndPtr) and (TokenEndPtr^ in ['0'..'9']) do
+                    inc(TokenEndPtr);
+                end;
+            end;
+            c := StrToIntDef(copy(p , 1 , TokenEndPtr - p), -1);
+            if c < 0 then
+              SetError(fpErrPasParserInvalidExpression, []); // should not happen
+            if c > 255 then // todo: need wide handling
+              str := str + WideChar(c)
+            else
+              str := str + Char(c);
+          end;
+        ' ', #9, #10, #13:
+          inc(TokenEndPtr);
+        else
+          break;
+      end;
+    end;
+    if not FValid then
+      exit;
+    // If Length(str) = 1 then // char
+    AddPart(TFpPascalExpressionPartConstantText);
+    TFpPascalExpressionPartConstantText(NewPart).FValue := str;
   end;
 
 begin
@@ -2588,6 +2680,13 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
       else SetError('Addition not supported');
     end;
   end;
+  function ConcateCharData(ACharVal, AOtherVal: TFpValue): TFpValue;
+  begin
+    if AOtherVal.FieldFlags * [svfString, svfWideString] <> [] then
+      Result := TFpValueConstString.Create(ACharVal.AsString + AOtherVal.AsString)
+    else
+      SetError('Operation + not supported');
+  end;
 
   function SubPointerFromValue(APointerVal, AOtherVal: TFpValue): TFpValue;
   begin
@@ -2641,10 +2740,21 @@ begin
 
   if IsAdd then begin
     case tmp1.Kind of
-      skPointer:  Result := AddSubValueToPointer(tmp1, tmp2);
       skInteger:  Result := AddValueToInt(tmp1, tmp2);
       skCardinal: Result := AddValueToCardinal(tmp1, tmp2);
       skFloat:    Result := AddValueToFloat(tmp1, tmp2);
+      skPointer: begin
+                  // Pchar can concatenate with String. But not with other Pchar
+                  // Maybe allow optional: This does limit undetected/mis-detected strings
+                  if (tmp1.FieldFlags * [svfString, svfWideString] <> []) and
+                     (tmp2.Kind in [skString, skAnsiString, skWideString, skChar{, skWideChar}])
+                  then
+                    Result := ConcateCharData(tmp1, tmp2)
+                  else
+                    Result := AddSubValueToPointer(tmp1, tmp2);
+                 end;
+      skString, skAnsiString, skWideString, skChar{, skWideChar}:
+                  Result := ConcateCharData(tmp1, tmp2);
     end;
   end
   else begin
@@ -2799,105 +2909,126 @@ end;
 
 function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
 {$PUSH}{$R-}{$Q-}
-  function IntEqualToValue(AIntVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function IntEqualToValue(AIntVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
   end;
-  function CardinalEqualToValue(ACardinalVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function CardinalEqualToValue(ACardinalVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
   end;
-  function FloatEqualToValue(AFloatVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function FloatEqualToValue(AFloatVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
   end;
-  function AddressPtrEqualToValue(AIntVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function AddressPtrEqualToValue(AIntVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     if AOtherVal.Kind in [skClass,skInterface,skAddress,skPointer] then
-      Result := TFpValueConstBool.Create((AIntVal.AsCardinal = AOtherVal.AsCardinal) xor ARevert)
+      Result := TFpValueConstBool.Create((AIntVal.AsCardinal = AOtherVal.AsCardinal) xor AReverse)
+    else
+      SetError('= not supported');
+  end;
+  function CharDataEqualToValue(ACharVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
+  begin
+    if (AOtherVal.FieldFlags * [svfString, svfWideString] <> []) then
+      Result := TFpValueConstBool.Create((ACharVal.AsString = AOtherVal.AsString) xor AReverse)
     else
       SetError('= not supported');
   end;
 
-  function IntGreaterThanValue(AIntVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function IntGreaterThanValue(AIntVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
   end;
-  function CardinalGreaterThanValue(ACardinalVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function CardinalGreaterThanValue(ACardinalVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
   end;
-  function FloatGreaterThanValue(AFloatVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function FloatGreaterThanValue(AFloatVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
+  end;
+  function CharDataGreaterThanValue(ACharVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
+  begin
+    if (AOtherVal.FieldFlags * [svfString, svfWideString] <> []) then
+      Result := TFpValueConstBool.Create((ACharVal.AsString > AOtherVal.AsString) xor AReverse)
+    else
+      SetError('= not supported');
   end;
 
-  function IntSmallerThanValue(AIntVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function IntSmallerThanValue(AIntVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
   end;
-  function CardinalSmallerThanValue(ACardinalVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function CardinalSmallerThanValue(ACardinalVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
   end;
-  function FloatSmallerThanValue(AFloatVal, AOtherVal: TFpValue; ARevert: Boolean = False): TFpValue;
+  function FloatSmallerThanValue(AFloatVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
     case AOtherVal.Kind of
-      skInteger:  Result := TFpValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsInteger) xor ARevert);
-      skCardinal: Result := TFpValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsCardinal) xor ARevert);
-      skFloat:    Result := TFpValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsFloat) xor ARevert);
+      skInteger:  Result := TFpValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsInteger) xor AReverse);
+      skCardinal: Result := TFpValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsCardinal) xor AReverse);
+      skFloat:    Result := TFpValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsFloat) xor AReverse);
       else SetError('= not supported');
     end;
+  end;
+  function CharDataSmallerThanValue(ACharVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
+  begin
+    if (AOtherVal.FieldFlags * [svfString, svfWideString] <> []) then
+      Result := TFpValueConstBool.Create((ACharVal.AsString < AOtherVal.AsString) xor AReverse)
+    else
+      SetError('= not supported');
   end;
 
 {$POP}
@@ -2918,12 +3049,24 @@ begin
       skInteger:  Result := IntEqualToValue(tmp1, tmp2, (s = '<>'));
       skCardinal: Result := CardinalEqualToValue(tmp1, tmp2, (s = '<>'));
       skFloat:    Result := FloatEqualToValue(tmp1, tmp2, (s = '<>'));
-      skClass,skInterface,skPointer:
+      skPointer: begin
+                  // Pchar can concatenate with String. But not with other Pchar
+                  // Maybe allow optional: This does limit undetected/mis-detected strings
+                  if (tmp1.FieldFlags * [svfString, svfWideString] <> []) and
+                     (tmp2.Kind in [skString, skAnsiString, skWideString, skChar{, skWideChar}])
+                  then
+                    Result := CharDataEqualToValue(tmp1, tmp2, (s = '<>'))
+                  else
+                    Result := AddressPtrEqualToValue(tmp1, tmp2, (s = '<>'));
+        end;
+      skClass,skInterface:
                   Result := AddressPtrEqualToValue(tmp1, tmp2, (s = '<>'));
       skAddress: begin
                   if tmp2.Kind in [skClass,skInterface,skPointer,skAddress] then
                     Result := AddressPtrEqualToValue(tmp1, tmp2, (s = '<>'));
         end;
+      skString, skAnsiString, skWideString, skChar{, skWideChar}:
+                  Result := CharDataEqualToValue(tmp1, tmp2, (s = '<>'));
     end;
   end
   else
@@ -2932,6 +3075,12 @@ begin
       skInteger:  Result := IntGreaterThanValue(tmp1, tmp2, (s = '<='));
       skCardinal: Result := CardinalGreaterThanValue(tmp1, tmp2, (s = '<='));
       skFloat:    Result := FloatGreaterThanValue(tmp1, tmp2, (s = '<='));
+      skPointer:  if (tmp1.FieldFlags * [svfString, svfWideString] <> []) and
+                     (tmp2.Kind in [skString, skAnsiString, skWideString, skChar{, skWideChar}])
+                   then
+                     Result := CharDataGreaterThanValue(tmp1, tmp2, (s = '<='));
+      skString, skAnsiString, skWideString, skChar{, skWideChar}:
+                  Result := CharDataGreaterThanValue(tmp1, tmp2, (s = '<='));
     end;
   end
   else
@@ -2940,6 +3089,12 @@ begin
       skInteger:  Result := IntSmallerThanValue(tmp1, tmp2, (s = '>='));
       skCardinal: Result := CardinalSmallerThanValue(tmp1, tmp2, (s = '>='));
       skFloat:    Result := FloatSmallerThanValue(tmp1, tmp2, (s = '>='));
+      skPointer:  if (tmp1.FieldFlags * [svfString, svfWideString] <> []) and
+                     (tmp2.Kind in [skString, skAnsiString, skWideString, skChar{, skWideChar}])
+                   then
+                     Result := CharDataSmallerThanValue(tmp1, tmp2, (s = '>='));
+      skString, skAnsiString, skWideString, skChar{, skWideChar}:
+                  Result := CharDataSmallerThanValue(tmp1, tmp2, (s = '>='));
     end;
   end
   else

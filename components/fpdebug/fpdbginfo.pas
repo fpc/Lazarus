@@ -243,6 +243,20 @@ type
     constructor Create(AValue: AnsiString);
   end;
 
+  { TFpValueConstString }
+
+  TFpValueConstString = class(TFpValue) // skString
+  private
+    FValue: String;
+  protected
+    property Value: String read FValue write FValue;
+    function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TFpValueFieldFlags; override;
+    function GetAsString: AnsiString; override;
+  public
+    constructor Create(AValue: AnsiString);
+  end;
+
   { TFpValueConstFloat }
 
   TFpValueConstFloat = class(TFpValue)
@@ -494,6 +508,29 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
+end;
+
+{ TFpValueConstString }
+
+function TFpValueConstString.GetKind: TDbgSymbolKind;
+begin
+  Result := skString;
+end;
+
+function TFpValueConstString.GetFieldFlags: TFpValueFieldFlags;
+begin
+  Result := [svfString]
+end;
+
+function TFpValueConstString.GetAsString: AnsiString;
+begin
+  Result := Value;
+end;
+
+constructor TFpValueConstString.Create(AValue: AnsiString);
+begin
+  inherited Create;
+  FValue := AValue;
 end;
 
 { TFpValueConstChar }
