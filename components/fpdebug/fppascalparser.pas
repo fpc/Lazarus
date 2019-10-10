@@ -387,6 +387,36 @@ type
     function DoGetResultValue: TFpValue; override;
   end;
 
+  { TFpPascalExpressionPartOperatorUnaryNot }
+
+  TFpPascalExpressionPartOperatorUnaryNot = class(TFpPascalExpressionPartUnaryOperator)  // not
+  protected
+    procedure Init; override;
+    function DoGetResultValue: TFpValue; override;
+  end;
+
+  { TFpPascalExpressionPartOperatorAnd }
+
+  TFpPascalExpressionPartOperatorAnd = class(TFpPascalExpressionPartBinaryOperator)    // AND
+  protected
+    procedure Init; override;
+    function DoGetResultValue: TFpValue; override;
+  end;
+
+  { TFpPascalExpressionPartOperatorOr }
+
+  TFpPascalExpressionPartOperatorOr = class(TFpPascalExpressionPartBinaryOperator)    // OR XOR
+  public type
+    TOpOrType = (ootOr, ootXor);
+  protected
+    FOp: TOpOrType;
+    procedure Init; override;
+    function DoGetResultValue: TFpValue; override;
+  public
+    constructor Create(AExpression: TFpPascalExpression; AnOp: TOpOrType; AStartChar: PChar;
+      AnEndChar: PChar = nil);
+  end;
+
   { TFpPascalExpressionPartOperatorCompare }
 
   TFpPascalExpressionPartOperatorCompare = class(TFpPascalExpressionPartBinaryOperator)    // = < > <> ><
@@ -416,8 +446,11 @@ const
   PRECEDENCE_ADRESS_OF  =  6;        // @a
   //PRECEDENCE_POWER      = 10;        // ** (power) must be stronger than unary -
   PRECEDENCE_UNARY_SIGN = 11;        // -a
+  PRECEDENCE_UNARY_NOT  = 11;        // NOT a
   PRECEDENCE_MUL_DIV    = 12;        // a * b
+  PRECEDENCE_AND        = 12;        // a AND b
   PRECEDENCE_PLUS_MINUS = 13;        // a + b
+  PRECEDENCE_OR         = 13;        // a OR b  // XOR
   PRECEDENCE_COMPARE    = 20;        // a <> b // a=b
 
 type
@@ -1560,6 +1593,23 @@ begin
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
+function CheckToken(const tk: String; CurPtr: PChar): boolean; inline;
+var
+  p, t: PChar;
+  l: Integer;
+begin
+  Result := False;
+  l := Length(tk);
+  p := CurPtr + l;
+  t := @tk[l];
+  while p > CurPtr do begin
+    if chr(ord(p^) and $DF) <> t^ then
+      exit;
+    dec(p);
+    dec(t);
+  end;
+  Result := True;
+end;
 { TFpPascalExpression }
 
 procedure TFpPascalExpression.Parse;
@@ -1584,11 +1634,30 @@ var
     while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9'] do
       inc(TokenEndPtr);
     // TODO: Check functions not, and, in, as, is ...
+    if (CurPart <> nil) and (CurPart.CanHaveOperatorAsNext) then
     case TokenEndPtr - CurPtr of
-      3: case CurPtr^ of
-        'd', 'D':
-          if (CurPtr[1] in ['i', 'I']) and (CurPtr[2] in ['v', 'V']) then
-            NewPart := TFpPascalExpressionPartOperatorMulDiv.Create(Self, CurPtr, TokenEndPtr-1);
+      3: case chr(ord(CurPtr^) AND $DF) of
+          'D': if CheckToken('IV', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorMulDiv.Create(Self, CurPtr, TokenEndPtr-1);
+          'M': if CheckToken('OD', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorMulDiv.Create(Self, CurPtr, TokenEndPtr-1);
+          'A': if CheckToken('ND', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorAnd.Create(Self, CurPtr, TokenEndPtr-1);
+          'X': if CheckToken('OR', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorOr.Create(Self, ootXor, CurPtr, TokenEndPtr-1);
+          'N': if CheckToken('OT', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorUnaryNot.Create(Self, CurPtr, TokenEndPtr-1);
+        end;
+      2: case chr(ord(CurPtr^) AND $DF) of
+          'O': if CheckToken('R', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorOr.Create(Self, ootOr, CurPtr, TokenEndPtr-1);
+        end;
+    end
+    else
+    case TokenEndPtr - CurPtr of
+      3: case chr(ord(CurPtr^) AND $DF) of
+          'N': if CheckToken('OT', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorUnaryNot.Create(Self, CurPtr, TokenEndPtr-1);
         end;
     end;
     if NewPart = nil then
@@ -1648,8 +1717,15 @@ var
   procedure AddConstNumber;
   begin
     case CurPtr^ of
-      '$': while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '0'..'9'] do inc(TokenEndPtr);
-      '&': while TokenEndPtr^ in ['0'..'7'] do inc(TokenEndPtr);
+      '$': while TokenEndPtr^ in ['a'..'f', 'A'..'F', '0'..'9'] do inc(TokenEndPtr);
+      '&': if TokenEndPtr^ in ['a'..'z', 'A'..'Z'] then begin
+             // escaped keyword used as identifier
+             while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '0'..'9', '_'] do inc(TokenEndPtr);
+             NewPart := TFpPascalExpressionPartIdentifier.Create(Self, CurPtr, TokenEndPtr-1);
+             exit;
+           end
+           else
+            while TokenEndPtr^ in ['0'..'7'] do inc(TokenEndPtr);
       '%': while TokenEndPtr^ in ['0'..'1'] do inc(TokenEndPtr);
       '0'..'9':
         if (CurPtr^ = '0') and ((CurPtr + 1)^ in ['x', 'X']) and
@@ -2860,13 +2936,31 @@ function TFpPascalExpressionPartOperatorMulDiv.DoGetResultValue: TFpValue;
       else SetError('Div not supported');
     end;
   end;
+
+  function NumModIntByValue(AIntVal, AOtherVal: TFpValue): TFpValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpValueConstNumber.Create(AIntVal.AsInteger mod AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpValueConstNumber.Create(AIntVal.AsInteger mod AOtherVal.AsCardinal, True);
+      else SetError('Div not supported');
+    end;
+  end;
+  function NumModCardinalByValue(ACardinalVal, AOtherVal: TFpValue): TFpValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpValueConstNumber.Create(ACardinalVal.AsCardinal mod AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpValueConstNumber.Create(ACardinalVal.AsCardinal mod AOtherVal.AsCardinal, False);
+      else SetError('Mod not supported');
+    end;
+  end;
 {$POP}
 var
   tmp1, tmp2: TFpValue;
 begin
   Result := nil;
   if Count <> 2 then exit;
-  assert((GetText = '*') or (GetText = '/') or (LowerCase(GetText) = 'div') , 'TFpPascalExpressionPartOperatorUnaryPlusMinus.DoGetResultValue: (GetText = +) or (GetText = -)');
 
   tmp1 := Items[0].ResultValue;
   tmp2 := Items[1].ResultValue;
@@ -2893,10 +2987,142 @@ begin
       skInteger:  Result := NumDivIntByValue(tmp1, tmp2);
       skCardinal: Result := NumDivCardinalByValue(tmp1, tmp2);
     end;
+  end
+  else
+  if LowerCase(GetText) = 'mod' then begin
+    case tmp1.Kind of
+      skInteger:  Result := NumModIntByValue(tmp1, tmp2);
+      skCardinal: Result := NumModCardinalByValue(tmp1, tmp2);
+    end;
   end;
 
  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then
    Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+end;
+
+{ TFpPascalExpressionPartOperatorUnaryNot }
+
+procedure TFpPascalExpressionPartOperatorUnaryNot.Init;
+begin
+  FPrecedence := PRECEDENCE_UNARY_NOT;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorUnaryNot.DoGetResultValue: TFpValue;
+var
+  tmp1: TFpValue;
+begin
+  Result := nil;
+  if Count <> 1 then exit;
+
+  tmp1 := Items[0].ResultValue;
+  if (tmp1 = nil) then exit;
+
+  {$PUSH}{$R-}{$Q-}
+  case tmp1.Kind of
+    skInteger: Result := TFpValueConstNumber.Create(not tmp1.AsInteger, True);
+    skCardinal: Result := TFpValueConstNumber.Create(not tmp1.AsCardinal, False);
+    skBoolean: Result := TFpValueConstBool.Create(not tmp1.AsBool);
+  end;
+  {$POP}
+
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+end;
+
+{ TFpPascalExpressionPartOperatorAnd }
+
+procedure TFpPascalExpressionPartOperatorAnd.Init;
+begin
+  FPrecedence := PRECEDENCE_AND;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorAnd.DoGetResultValue: TFpValue;
+var
+  tmp1, tmp2: TFpValue;
+begin
+  Result := nil;
+  if Count <> 2 then exit;
+
+  tmp1 := Items[0].ResultValue;
+  tmp2 := Items[1].ResultValue;
+  if (tmp1 = nil) or (tmp2 = nil) then exit;
+
+  {$PUSH}{$R-}{$Q-}
+  case tmp1.Kind of
+    skInteger: if tmp2.Kind in [skInteger, skCardinal] then
+                 Result := TFpValueConstNumber.Create(tmp1.AsInteger AND tmp2.AsInteger, True);
+    skCardinal: if tmp2.Kind = skInteger then
+                  Result := TFpValueConstNumber.Create(tmp1.AsInteger AND tmp2.AsInteger, True)
+                else
+                if tmp2.Kind = skCardinal then
+                  Result := TFpValueConstNumber.Create(tmp1.AsInteger AND tmp2.AsInteger, False);
+    skBoolean: if tmp2.Kind = skBoolean then
+                 Result := TFpValueConstBool.Create(tmp1.AsBool AND tmp2.AsBool);
+  end;
+  {$POP}
+
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+end;
+
+{ TFpPascalExpressionPartOperatorOr }
+
+procedure TFpPascalExpressionPartOperatorOr.Init;
+begin
+  FPrecedence := PRECEDENCE_OR;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorOr.DoGetResultValue: TFpValue;
+var
+  tmp1, tmp2: TFpValue;
+  op: Boolean;
+begin
+  Result := nil;
+  if Count <> 2 then exit;
+
+  tmp1 := Items[0].ResultValue;
+  tmp2 := Items[1].ResultValue;
+  if (tmp1 = nil) or (tmp2 = nil) then exit;
+
+  {$PUSH}{$R-}{$Q-}
+  case FOp of
+    ootOr:
+    case tmp1.Kind of
+      skInteger: if tmp2.Kind in [skInteger, skCardinal] then
+                   Result := TFpValueConstNumber.Create(tmp1.AsInteger OR tmp2.AsInteger, True);
+      skCardinal: if tmp2.Kind = skInteger then
+                    Result := TFpValueConstNumber.Create(tmp1.AsInteger OR tmp2.AsInteger, True)
+                  else
+                  if tmp2.Kind = skCardinal then
+                    Result := TFpValueConstNumber.Create(tmp1.AsInteger OR tmp2.AsInteger, False);
+      skBoolean: if tmp2.Kind = skBoolean then
+                   Result := TFpValueConstBool.Create(tmp1.AsBool OR tmp2.AsBool);
+    end;
+    ootXor:
+    case tmp1.Kind of
+      skInteger: if tmp2.Kind in [skInteger, skCardinal] then
+                   Result := TFpValueConstNumber.Create(tmp1.AsInteger XOR tmp2.AsInteger, True);
+      skCardinal: if tmp2.Kind = skInteger then
+                    Result := TFpValueConstNumber.Create(tmp1.AsInteger XOR tmp2.AsInteger, True)
+                  else
+                  if tmp2.Kind = skCardinal then
+                    Result := TFpValueConstNumber.Create(tmp1.AsInteger XOR tmp2.AsInteger, False);
+      skBoolean: if tmp2.Kind = skBoolean then
+                   Result := TFpValueConstBool.Create(tmp1.AsBool XOR tmp2.AsBool);
+    end;
+  end;
+  {$POP}
+
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+end;
+
+constructor TFpPascalExpressionPartOperatorOr.Create(
+  AExpression: TFpPascalExpression; AnOp: TOpOrType; AStartChar: PChar;
+  AnEndChar: PChar);
+begin
+  inherited Create(AExpression, AStartChar, AnEndChar);
+  FOp := AnOp;
 end;
 
 { TFpPascalExpressionPartOperatorCompare }
