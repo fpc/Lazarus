@@ -257,20 +257,24 @@ var
   DeskTop,  VersionSt : String;
   ProcFile: TextFile;
 begin
-  AssignFile(ProcFile, '/proc/version');
-  try
-    reset(ProcFile);
-    readln(ProcFile, VersionSt);
-  finally
-    CloseFile(ProcFile)
-  end;
   DeskTop := GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP');
   if DeskTop = 'Unity' then exit(True);
-  if (DeskTop = 'GNOME') and
-    ( (pos('mageia', VersionSt) > 0) or
-      (pos('Red Hat', VersionSt) > 0) or
-      (pos('SUSE', VersionSt) > 0) )
-  then exit(True);
+  // GNOME needs AppIndicator lib only with some distros. Check them.
+  if (DeskTop = 'GNOME') then
+  begin
+    AssignFile(ProcFile, '/proc/version');
+    try
+      reset(ProcFile);
+      readln(ProcFile, VersionSt);
+    finally
+      CloseFile(ProcFile);
+    end;
+    if (pos('Debian', VersionSt) > 0)
+    or (pos('mageia', VersionSt) > 0)
+    or (pos('Red Hat', VersionSt) > 0)
+    or (pos('SUSE', VersionSt) > 0)
+    then exit(True);
+  end;
   Result := False;
 end;
 
