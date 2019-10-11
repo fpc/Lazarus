@@ -818,7 +818,7 @@ var
   i: Integer;
 begin
   inherited DoStateChange(AOldState);
-  if Debugger.State in [dsPause, dsInternalPause] then
+  if Debugger.State in [dsPause, dsInternalPause, dsStop] then
   begin
     if FDelayedRemoveBreakpointList.Count>0 then begin
       debuglnEnter(DBG_BREAKPOINTS, ['TFPBreakpoints.DoStateChange  REMOVE DELAYED']);
@@ -2254,6 +2254,12 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
+  if state in [dsPause, dsInternalPause] then
+    try
+      FreeAndNil(FRaiseExceptionBreakpoint);
+      SetState(dsStop);
+    except
+    end;
   if assigned(FFpDebugThread) then
     FreeDebugThread;
   ClearWatchEvalList;
