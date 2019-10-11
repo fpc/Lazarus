@@ -255,6 +255,8 @@ end;
 
 destructor TLazLoggerFileHandleMainThread.Destroy;
 begin
+  // Call Syncronize (in the main thread) before destroy to catch any pending log
+  TThread.RemoveQueuedEvents(@MainThreadWrite);
   inherited Destroy;
   DoneCriticalsection(FWriteToFileLock);
 end;
