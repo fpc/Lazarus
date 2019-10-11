@@ -164,7 +164,7 @@ type
   private
     FInfo: TCreateProcessDebugInfo;
     FProcProcess: TProcessUTF8;
-    FJustStarted: boolean;
+    FJustStarted, FTerminated: boolean;
     FBitness: TWinBitness;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
@@ -785,10 +785,22 @@ begin
     Done := True;
     result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
 
-    (* Some events are not processed yet anyway.
-       They never reach AnalyseDebugEvent, so deal with them here
-    *)
+    if Result and FTerminated and (MDebugEvent.dwDebugEventCode <> EXIT_PROCESS_DEBUG_EVENT)
+       and (MDebugEvent.dwDebugEventCode <> EXIT_THREAD_DEBUG_EVENT)
+    then begin
+      // Wait for the terminate event // Do not report any queued breakpoints
+      DebugLn(['Terimating... Skipping event: ', dbgs(MDebugEvent)]);
+      for TDbgThread(t) in FThreadMap do
+        t.Suspend;
+      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+      Done := False;
+    end
+
+    else
     if Result and (MDebugEvent.dwProcessId <> Self.ProcessID) then begin
+      (* Some events are not processed yet anyway.
+         They never reach AnalyseDebugEvent, so deal with them here
+      *)
       case MDebugEvent.dwDebugEventCode of
         CREATE_PROCESS_DEBUG_EVENT: begin
             //child process: ignore
@@ -823,8 +835,9 @@ begin
   {$ENDIF}
 
   RestoreTempBreakInstructionCodes;
-  for TDbgThread(t) in FThreadMap do
-    t.Resume;
+  if not FTerminated then
+    for TDbgThread(t) in FThreadMap do
+      t.Resume;
 
   // Should be done in AnalyseDebugEvent, but that is not called for forked processes
   if (MDebugEvent.dwDebugEventCode = CREATE_PROCESS_DEBUG_EVENT) and
@@ -1257,6 +1270,7 @@ end;
 procedure TDbgWinProcess.TerminateProcess;
 begin
   Windows.TerminateProcess(Handle, 0);
+  FTerminated := True;
 end;
 
 function TDbgWinProcess.AddrOffset: Int64;
@@ -1436,7 +1450,7 @@ begin
     exit;
   r := SuspendThread(Handle);
   FIsSuspended := r <> DWORD(-1);
-  debugln(DBG_WARNINGS and (r = DWORD(-1)), 'Failed to resume Thread %d (handle: %d). Error: %s', [Id, Handle, GetLastErrorText]);
+  debugln(DBG_WARNINGS and (r = DWORD(-1)), 'Failed to suspend Thread %d (handle: %d). Error: %s', [Id, Handle, GetLastErrorText]);
 end;
 
 procedure TDbgWinThread.SuspendForStepOverBreakPoint;
