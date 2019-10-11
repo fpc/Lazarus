@@ -511,6 +511,7 @@ var
   NewName: String;
 begin
   if FLogFileCreated then begin
+    CheckSynchronize(1);
     FreeAndNil(FLogFile);
     //CloseFile(FLogFile);
     NewName := GetFinalLogFileName;
