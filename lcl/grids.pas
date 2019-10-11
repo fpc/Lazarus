@@ -7932,14 +7932,17 @@ end;
 
 procedure TCustomGrid.UpdateHorzScrollBar(const aVisible: boolean;
   const aRange,aPage,aPos: Integer);
+var
+  NeedUpdate: Boolean;
 begin
   {$ifdef DbgScroll}
   DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
     [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
-  if FHSbVisible<>Ord(aVisible) then
+  NeedUpdate := FHSbVisible <> Ord(AVisible);
+  if NeedUpdate then
     ScrollBarShow(SB_HORZ, aVisible);
-  if aVisible then
+  if aVisible or NeedUpdate then
     ScrollBarRange(SB_HORZ, aRange, aPage, aPos);
 end;
 
