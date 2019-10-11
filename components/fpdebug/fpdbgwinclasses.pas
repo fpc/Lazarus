@@ -1105,7 +1105,8 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
 var
   InterceptAtFirst: Boolean;
 begin
-  TDbgWinThread(AThread).EndSingleStepOverBreakPoint;
+  if AThread <> nil then
+    TDbgWinThread(AThread).EndSingleStepOverBreakPoint;
 
   if HandleDebugEvent(MDebugEvent)
   then result := deBreakpoint // unreachable
@@ -1123,7 +1124,8 @@ begin
             end
             else begin
               result := deBreakpoint;
-              AThread.CheckAndResetInstructionPointerAfterBreakpoint;
+              if AThread <> nil then
+                AThread.CheckAndResetInstructionPointerAfterBreakpoint;
             end;
           end;
           EXCEPTION_SINGLE_STEP, STATUS_WX86_SINGLE_STEP: begin

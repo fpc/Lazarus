@@ -253,10 +253,13 @@ procedure TDbgControllerCmd.ResolveEvent(var AnEvent: TFPDEvent;
 var
   dummy: TDbgThread;
 begin
+  Handled := False;
+  Finished := False;
+  if AnEventThread = nil then
+    exit;
   if FThread <> nil then begin
     // ResolveDebugEvent will have removed the thread, but not yet destroyed it
     // Finish, if the thread has gone.
-    Handled := False;
     Finished := not FProcess.GetThread(FThread.ID, dummy);
     if Finished then
       exit;
@@ -920,7 +923,7 @@ begin
     *)
 
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
-    DebugLn(DBG_VERBOSE, 'Process stopped with event %s. IP=%s, SP=%s, BSP=%s. HasBreak: %s',
+    if FCurrentThread <> nil then DebugLn(DBG_VERBOSE, 'Process stopped with event %s. IP=%s, SP=%s, BSP=%s. HasBreak: %s',
                          [FPDEventNames[FPDEvent],
                          FCurrentProcess.FormatAddress(FCurrentThread.GetInstructionPointerRegisterValue),
                          FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),

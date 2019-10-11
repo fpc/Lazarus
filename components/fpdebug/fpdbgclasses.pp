@@ -1404,10 +1404,11 @@ function TDbgProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 var
   CurrentAddr: TDBGPtr;
 begin
-  AThread.ValidateRemovedBreakPointInfo;
+  if AThread <> nil then
+    AThread.ValidateRemovedBreakPointInfo;
   result := AnalyseDebugEvent(AThread);
 
-  if result = deBreakpoint then
+  if (result = deBreakpoint) and (AThread <> nil) then
   begin
     // Determine the address where the execution has stopped
     CurrentAddr:=AThread.GetInstructionPointerRegisterValue;

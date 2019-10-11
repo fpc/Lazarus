@@ -1194,6 +1194,13 @@ var
   Pid: THandle;
   WaitStatus: cint;
 begin
+  if AThread = nil then begin // should not happen... / just assume the most likely safe failbacks
+    if FIsTerminating then
+      result := deExitProcess
+    else
+      result := deInternalContinue;
+  end;
+
   TDbgLinuxThread(AThread).FExceptionSignal:=0;
   TDbgLinuxThread(AThread).FIsPaused := True;
   if wifexited(FStatus) or wifsignaled(FStatus) then
