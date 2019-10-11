@@ -1147,6 +1147,8 @@ begin
     t.Add('TMYSTRINGLIST(TMyClass(MyClass1).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
     t.Add('TMYSTRINGLIST(TMyClass(MyClass2).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
 
+    t.Add('TSize', 'TSize', weMatch('.', skType)).AddFlag(ehNoTypeInfo); // make sure no deep recorsion...
+
     t.Add('EnVal1', 'EnVal1', weMatch('EnVal1 *:?= *0', skEnumValue));
     t.Add('EnVal2', 'EnVal2', weMatch('EnVal2 *:?= *1', skEnumValue));
     t.Add('EnVal3', 'EnVal3', weMatch('EnVal3 *:?= *2', skEnumValue));

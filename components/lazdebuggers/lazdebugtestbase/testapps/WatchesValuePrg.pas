@@ -8,6 +8,7 @@
 *)
 program WatchesValuePrg;
 {$LONGSTRINGS ON}
+{$modeswitch advancedrecords}
 
 uses sysutils, Classes;
 
@@ -208,6 +209,13 @@ type
     BitSize: TBitSize;  // Must have the same sign as Size
   end;
 
+  // recursive declaration
+  TSize = record
+    cx : Longint; cy : Longint;
+   public
+     constructor Create(asz :TSize);
+   end;
+
   TFunc1 = function(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
   TProc1 = procedure();
   TMeth1 = function(AVal: Integer): Boolean of object;
@@ -328,6 +336,8 @@ var
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptrlist_, "_OP_=:PPointerList;//", "_O2_=:PPointerList;//" )
 
 
+constructor TSize.Create(asz :TSize);
+begin end;
 constructor TObjectCreate3Int64.Create;
 begin end;
 destructor TObjectCreate3Int64.Destroy;
