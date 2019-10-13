@@ -628,7 +628,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
     function  DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
-    function DoReadStride(AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean;
+    function DoReadStride(AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean; virtual;
   public
     (* GetTypedValueObject
        AnOuterType: If the type is a "chain" (Declaration > Pointer > ActualType)
@@ -687,6 +687,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure TypeInfoNeeded; override;
     procedure ForwardToSymbolNeeded; override;
     function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
+    function DoReadStride(AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean; override;
     function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; override;
   public
     function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
@@ -708,9 +709,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   { TFpSymbolDwarfTypeSubRange }
 
-  TFpSymbolDwarfTypeSubRange = class(TFpSymbolDwarfTypeModifier)
+  TFpSymbolDwarfTypeSubRange = class(TFpSymbolDwarfTypeModifierBase)
   // TODO not a modifier, maybe have a forwarder base class
-  // GetNextTypeInfoForDataAddress => wrong behaviour, but basetypes should not change addr anyway.
   private
     FLowBoundConst: Int64;
     FLowBoundSymbol: TFpSymbolDwarfData;
@@ -725,7 +725,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FEnumIdxValid: Boolean;
     procedure InitEnumIdx;
   protected
-    function DoGetNestedTypeInfo: TFpSymbolDwarfType;override;
+    function DoGetNestedTypeInfo: TFpSymbolDwarfType; override;
+    procedure ForwardToSymbolNeeded; override;
+    procedure TypeInfoNeeded; override;
 
     procedure NameNeeded; override;
     procedure KindNeeded; override;
@@ -738,6 +740,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure ResetValueBounds; override;
     destructor Destroy; override;
 
+    function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
     function GetValueBounds(AValueObj: TFpValue; out ALowBound, AHighBound: Int64): Boolean; override;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
     function GetValueHighBound(AValueObj: TFpValue; out AHighBound: Int64): Boolean; override;
@@ -3732,6 +3735,7 @@ var
   AttrData: TDwarfAttribData;
 begin
   AStride := ZeroSize;
+  Result := False;
   if InformationEntry.GetAttribData(DW_AT_bit_stride, AttrData) then begin
     Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, BitStride);
     AStride := SizeFromBits(BitStride);
@@ -3944,13 +3948,25 @@ end;
 
 procedure TFpSymbolDwarfTypeModifier.ForwardToSymbolNeeded;
 begin
-  SetForwardToSymbol(NestedTypeInfo)
+  SetForwardToSymbol(NestedTypeInfo);
 end;
 
 function TFpSymbolDwarfTypeModifier.DoReadSize(const AValueObj: TFpValue; out
   ASize: TFpDbgValueSize): Boolean;
 begin
   Result := inherited DoForwardReadSize(AValueObj, ASize);
+end;
+
+function TFpSymbolDwarfTypeModifier.DoReadStride(AValueObj: TFpValueDwarf; out
+  AStride: TFpDbgValueSize): Boolean;
+var
+  p: TFpSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := TFpSymbolDwarfType(p).DoReadStride(AValueObj, AStride)
+  else
+    Result := inherited DoReadStride(AValueObj, AStride);
 end;
 
 function TFpSymbolDwarfTypeModifier.GetNextTypeInfoForDataAddress(
@@ -4047,6 +4063,22 @@ begin
     Result := FCountSymbol.TypeInfo as TFpSymbolDwarfType;
 end;
 
+procedure TFpSymbolDwarfTypeSubRange.ForwardToSymbolNeeded;
+begin
+  SetForwardToSymbol(NestedTypeInfo);
+end;
+
+procedure TFpSymbolDwarfTypeSubRange.TypeInfoNeeded;
+var
+  p: TFpSymbolDwarfType;
+begin
+  p := NestedTypeInfo;
+  if p <> nil then
+    SetTypeInfo(p.TypeInfo)
+  else
+    SetTypeInfo(nil);
+end;
+
 procedure TFpSymbolDwarfTypeSubRange.NameNeeded;
 var
   AName: String;
@@ -4130,6 +4162,20 @@ begin
   FHighBoundSymbol.ReleaseReference;
   FCountSymbol.ReleaseReference;
   inherited Destroy;
+end;
+
+function TFpSymbolDwarfTypeSubRange.GetTypedValueObject(ATypeCast: Boolean;
+  AnOuterType: TFpSymbolDwarfType): TFpValueDwarf;
+var
+  ti: TFpSymbolDwarfType;
+begin
+  if AnOuterType = nil then
+    AnOuterType := Self;
+  ti := NestedTypeInfo;
+  if ti <> nil then
+    Result := ti.GetTypedValueObject(ATypeCast, AnOuterType)
+  else
+    Result := inherited;
 end;
 
 function TFpSymbolDwarfTypeSubRange.GetValueBounds(AValueObj: TFpValue; out

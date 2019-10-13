@@ -19,11 +19,16 @@ type
   TFpDwarfFreePascalSymbolClassMap = class(TFpDwarfDefaultSymbolClassMap)
   strict private
     class var ExistingClassMap: TFpSymbolDwarfClassMap;
+  private
+    FCompilerVersion: Cardinal;
   protected
+    function CanHandleCompUnit(ACU: TDwarfCompilationUnit; AHelperData: Pointer): Boolean; override;
     class function GetExistingClassMap: PFpDwarfSymbolClassMap; override;
   public
+    class function GetInstanceForCompUnit(ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap; override;
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
   public
+    constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
       ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
@@ -53,16 +58,11 @@ type
   TFpDwarfFreePascalSymbolClassMapDwarf3 = class(TFpDwarfFreePascalSymbolClassMap)
   strict private
     class var ExistingClassMap: TFpSymbolDwarfClassMap;
-  private
-    FCompilerVersion: Cardinal;
   protected
-    function CanHandleCompUnit(ACU: TDwarfCompilationUnit; AHelperData: Pointer): Boolean; override;
     class function GetExistingClassMap: PFpDwarfSymbolClassMap; override;
   public
-    class function GetInstanceForCompUnit(ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap; override;
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
   public
-    constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     //class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
     //  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
@@ -113,6 +113,7 @@ type
   protected
     procedure TypeInfoNeeded; override;
     procedure KindNeeded; override;
+    function DoReadStride(AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean; override;
     procedure ForwardToSymbolNeeded; override;
     function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; override;
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
@@ -216,9 +217,63 @@ implementation
 
 { TFpDwarfFreePascalSymbolClassMap }
 
+function TFpDwarfFreePascalSymbolClassMap.CanHandleCompUnit(
+  ACU: TDwarfCompilationUnit; AHelperData: Pointer): Boolean;
+begin
+  Result := (FCompilerVersion = PtrUInt(AHelperData)) and
+            inherited CanHandleCompUnit(ACU, AHelperData);
+end;
+
 class function TFpDwarfFreePascalSymbolClassMap.GetExistingClassMap: PFpDwarfSymbolClassMap;
 begin
   Result := @ExistingClassMap;
+end;
+
+class function TFpDwarfFreePascalSymbolClassMap.GetInstanceForCompUnit(
+  ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap;
+var
+  s: String;
+  i, j, AVersion: Integer;
+begin
+  AVersion := 0;
+  s := LowerCase(ACU.Producer)+' ';
+  i := pos('free pascal', s) + 11;
+
+  if i > 11 then begin
+    while (i < Length(s)) and (s[i] in [' ', #9]) do
+      inc(i);
+    delete(s, 1, i - 1);
+    i := pos('.', s);
+    if (i > 1) then begin
+      j := StrToIntDef(copy(s, 1, i - 1), 0);
+      if (j >= 0) then
+        AVersion := j * $10000;
+      delete(s, 1, i);
+    end;
+    if (AVersion > 0) then begin
+      i := pos('.', s);
+      if (i > 1) then begin
+        j := StrToIntDef(copy(s, 1, i - 1), 0);
+        if (j >= 0) and (j < 99) then
+          AVersion := AVersion + j * $100
+        else
+          AVersion := 0;
+        delete(s, 1, i);
+      end;
+    end;
+    if (AVersion > 0) then begin
+      i := pos(' ', s);
+      if (i > 1) then begin
+        j := StrToIntDef(copy(s, 1, i - 1), 0);
+        if (j >= 0) and (j < 99) then
+          AVersion := AVersion + j
+        else
+          AVersion := 0;
+      end;
+    end;
+  end;
+
+  Result := DoGetInstanceForCompUnit(ACU, Pointer(PtrUInt(AVersion)));
 end;
 
 class function TFpDwarfFreePascalSymbolClassMap.ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean;
@@ -227,6 +282,13 @@ var
 begin
   s := LowerCase(ACU.Producer);
   Result := pos('free pascal', s) > 0;
+end;
+
+constructor TFpDwarfFreePascalSymbolClassMap.Create(ACU: TDwarfCompilationUnit;
+  AHelperData: Pointer);
+begin
+  FCompilerVersion := PtrUInt(AHelperData);
+  inherited Create(ACU, AHelperData);
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetDwarfSymbolClass(
@@ -288,62 +350,9 @@ end;
 
 { TFpDwarfFreePascalSymbolClassMapDwarf3 }
 
-function TFpDwarfFreePascalSymbolClassMapDwarf3.CanHandleCompUnit(
-  ACU: TDwarfCompilationUnit; AHelperData: Pointer): Boolean;
-begin
-  Result := (FCompilerVersion = PtrUInt(AHelperData)) and
-            inherited CanHandleCompUnit(ACU, AHelperData);
-end;
-
 class function TFpDwarfFreePascalSymbolClassMapDwarf3.GetExistingClassMap: PFpDwarfSymbolClassMap;
 begin
   Result := @ExistingClassMap;
-end;
-
-class function TFpDwarfFreePascalSymbolClassMapDwarf3.GetInstanceForCompUnit(
-  ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap;
-var
-  s: String;
-  i, j, v: Integer;
-begin
-  s := LowerCase(ACU.Producer)+' ';
-  v := 0;
-  i := pos('free pascal', s) + 11;
-  if i > 11 then begin
-    while (i < Length(s)) and (s[i] in [' ', #9]) do
-      inc(i);
-    delete(s, 1, i - 1);
-    i := pos('.', s);
-    if (i > 1) then begin
-      j := StrToIntDef(copy(s, 1, i - 1), 0);
-      if (j >= 0) then
-        v := j * $10000;
-      delete(s, 1, i);
-    end;
-    if (v > 0) then begin
-      i := pos('.', s);
-      if (i > 1) then begin
-        j := StrToIntDef(copy(s, 1, i - 1), 0);
-        if (j >= 0) and (j < 99) then
-          v := v + j * $100
-        else
-          v := 0;
-        delete(s, 1, i);
-      end;
-    end;
-    if (v > 0) then begin
-      i := pos(' ', s);
-      if (i > 1) then begin
-        j := StrToIntDef(copy(s, 1, i - 1), 0);
-        if (j >= 0) and (j < 99) then
-          v := v + j
-        else
-          v := 0;
-      end;
-    end;
-  end;
-
-  Result := DoGetInstanceForCompUnit(ACU, Pointer(PtrUInt(v)));
 end;
 
 class function TFpDwarfFreePascalSymbolClassMapDwarf3.ClassCanHandleCompUnit(
@@ -351,13 +360,6 @@ class function TFpDwarfFreePascalSymbolClassMapDwarf3.ClassCanHandleCompUnit(
 begin
   Result := inherited ClassCanHandleCompUnit(ACU);
   Result := Result and (ACU.Version >= 3);
-end;
-
-constructor TFpDwarfFreePascalSymbolClassMapDwarf3.Create(
-  ACU: TDwarfCompilationUnit; AHelperData: Pointer);
-begin
-  FCompilerVersion := PtrUInt(AHelperData);
-  inherited;
 end;
 
 function TFpDwarfFreePascalSymbolClassMapDwarf3.GetDwarfSymbolClass(
@@ -639,6 +641,15 @@ begin
   end
   else
     inherited;
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.DoReadStride(
+  AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean;
+begin
+  if IsInternalPointer then
+    Result := NestedTypeInfo.ReadStride(AValueObj, AStride)
+  else
+    Result := inherited DoReadStride(AValueObj, AStride);
 end;
 
 procedure TFpSymbolDwarfFreePascalTypePointer.ForwardToSymbolNeeded;
@@ -924,8 +935,11 @@ end;
 function TFpValueDwarfFreePascalArray.DoGetStride(out AStride: TFpDbgValueSize
   ): Boolean;
 begin
-  //Result := inherited DoGetStride(AStride);
-  Result := TFpSymbolDwarfType(TypeInfo.NestedSymbol[0]).ReadStride(Self, AStride);
+  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  then
+    Result := inherited DoGetStride(AStride)
+  else
+    Result := TFpSymbolDwarfType(TypeInfo.NestedSymbol[0]).ReadStride(Self, AStride);
 end;
 
 function TFpValueDwarfFreePascalArray.DoGetMainStride(out
@@ -933,15 +947,24 @@ function TFpValueDwarfFreePascalArray.DoGetMainStride(out
 var
   ExtraStride: TFpDbgValueSize;
 begin
-  Result := GetMemberSize(AStride);
+  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  then
+    Result := inherited DoGetMainStride(AStride)
+  else
+    Result := GetMemberSize(AStride);
 end;
 
 function TFpValueDwarfFreePascalArray.DoGetDimStride(AnIndex: integer; out
   AStride: TFpDbgValueSize): Boolean;
 begin
-  //Result := inherited DoGetDimStride(AnIndex, AStride);
-  Result := True;
-  AStride := ZeroSize;
+  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  then
+    Result := inherited DoGetDimStride(AnIndex, AStride)
+  else
+  begin
+    Result := True;
+    AStride := ZeroSize;
+  end;
 end;
 
 { TFpSymbolDwarfV3FreePascalSymbolTypeArray }
