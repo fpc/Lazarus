@@ -4906,8 +4906,14 @@ begin
   else
     exit; // TODO error
   if IsTargetNil(Result) then begin
-    // TODO: return the nil address, for better error message?
     Result := InvalidLoc;
+    SetLastError(AValueObj, CreateError(fpErrAddressIsNil));
+    Exit;
+  end;
+  assert(IsReadableMem(Result), 'DwarfArray MemberAddress');
+  if not IsReadableMem(Result) then begin
+    Result := InvalidLoc;
+    SetLastError(AValueObj, CreateError(fpErrAnyError));
     Exit;
   end;
 
@@ -4959,7 +4965,6 @@ begin
     end;
   end;
 
-  assert(IsReadableMem(Result), 'DwarfArray MemberAddress');
   Result := Result + Offs;
   {$POP}
 end;

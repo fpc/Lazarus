@@ -17,6 +17,7 @@ resourcestring
   MsgfpErrNoMemberWithName                = 'Member not found: %1:s';
   MsgfpErrorNotAStructure                 = 'Cannot get member "%1:s" from none structure type: %2:s';
   MsgfpErrorBadFloatSize                  = 'Unsupported float value: Unknown precission';
+  MsgfpErrAddressIsNil                    = 'Cannot access data, Address is NIL';
 
   MsgfpErrPasParserInvalidExpression      = 'Invalid Expression';
   MsgfpErrPasParserUnexpectedToken        = 'Unexpected token ''%1:s'' at pos %2:d';
@@ -45,6 +46,7 @@ const
   fpErrNoMemberWithName                = TFpErrorCode(3);
   fpErrorNotAStructure                 = TFpErrorCode(4);
   fpErrorBadFloatSize                  = TFpErrorCode(5);
+  fpErrAddressIsNil                    = TFpErrorCode(6);
 
   fpErrPasParserInvalidExpression      = TFpErrorCode(24);
   fpErrPasParserUnexpectedToken        = TFpErrorCode(25);
@@ -177,6 +179,7 @@ function TFpErrorHandler.GetErrorRawString(AnErrorCode: TFpErrorCode): string;
 begin
   case AnErrorCode of
     fpErrAnyError:         Result := MsgfpErrAnyError;
+    fpErrAddressIsNil:     Result := MsgfpErrAddressIsNil;
     fpErrSymbolNotFound:   Result := MsgfpErrSymbolNotFound;
     fpErrNoMemberWithName: Result := MsgfpErrNoMemberWithName;
     fpErrorNotAStructure:  Result := MsgfpErrorNotAStructure;
