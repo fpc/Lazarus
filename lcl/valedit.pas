@@ -6,7 +6,7 @@ interface
 
 uses
   ContNrs, SysUtils, Classes, Variants,
-  LazUtf8, Controls, StdCtrls, Grids, LResources, Dialogs, LCLType;
+  LazUtf8, Controls, StdCtrls, Grids, LResources, Dialogs, LCLType, Laz2_XMLCfg;
 
 type
 
@@ -160,7 +160,9 @@ type
     function GetDefaultEditor(Column: Integer): TWinControl; override;
     function GetRowCount: Integer;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
     procedure ResetDefaultColWidths; override;
+    procedure SaveContent(cfg: TXMLConfig); override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SetFixedRows(const AValue: Integer); override;
@@ -899,6 +901,7 @@ begin
     Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['MoveColRow',' on columns']);
 end;
 
+
 function TValueListEditor.RestoreCurrentRow: Boolean;
 begin
   //DbgOut('RestoreCurrentRow: Row=',DbgS(Row),' FLastEditedRow=',DbgS(FLastEditedRow),' SavedKey=',FRowTextOnEnter.Key,' SavedValue=',FRowTextOnEnter.Value);
@@ -918,6 +921,7 @@ begin
     end;
   end;
 end;
+
 
 procedure TValueListEditor.Sort(ACol: TVleSortCol = colKey);
 begin
@@ -1283,6 +1287,47 @@ begin
     if RestoreCurrentRow then Key := 0;
 end;
 
+procedure TValueListEditor.LoadContent(cfg: TXMLConfig; Version: Integer);
+var
+  ContentSaved, HasColumnTitles, AlwaysShowEditor: Boolean;
+  i,j,k, RC: Integer;
+begin
+  AlwaysShowEditor := (goAlwaysShowEditor in Options);
+  if AlwaysShowEditor then Options := Options - [goAlwaysShowEditor];
+  inherited LoadContent(Cfg, Version);
+  if soContent in SaveOptions then
+  begin
+    ContentSaved:=Cfg.GetValue('grid/saveoptions/content', false);
+    if ContentSaved then
+    begin
+      HasColumnTitles := cfg.getValue('grid/content/hascolumntitles', False);
+      if HasColumnTitles then
+        DisplayOptions := DisplayOptions + [doColumnTitles]
+      else
+        DisplayOptions := DisplayOptions - [doColumnTitles];
+
+      //contrary to other grids we restore the entire saved content,
+      //so we add/delete rows (not columns of course) as needed.
+      RC := cfg.GetValue('grid/content/rowcount', 1);
+      if (RC < 1) then RC := 1;
+      if HasColumnTitles and (RC = 1) then
+        RC := 2;
+      RowCount := RC;
+
+      k:=cfg.getValue('grid/content/cells/cellcount', 0);
+      while k>0 do
+      begin
+        i:=cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/column', -1);
+        j:=cfg.GetValue('grid/content/cells/cell'+IntTostr(k)+'/row',-1);
+        if IsRowIndexValid(j) and IsColumnIndexValid(i) then
+          Cells[i,j]:=UTF8Encode(cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text',''));
+        Dec(k);
+      end;
+    end;
+  end;
+  if AlwaysShowEditor then Options := Options + [goAlwaysShowEditor];
+end;
+
 procedure TValueListEditor.ResetDefaultColWidths;
 begin
   if not AutoFillColumns then
@@ -1292,6 +1337,38 @@ begin
     SetRawColWidths(0, -1);
     VisualChange;
   end;
+end;
+
+procedure TValueListEditor.SaveContent(cfg: TXMLConfig);
+var
+  i,j,k: Integer;
+  //c: PCellProps;
+  Value: String;
+begin
+  inherited SaveContent(cfg);
+  cfg.SetValue('grid/saveoptions/content', soContent in SaveOptions);
+  if soContent in SaveOptions then
+  begin
+    cfg.SetValue('grid/content/hascolumntitles',(doColumnTitles in FDisplayOptions));
+    cfg.SetValue('grid/content/rowcount', RowCount);
+    // Save Cell Contents
+    k:=0;
+    For i:=0 to ColCount-1 do
+      For j:=0 to RowCount-1 do
+      begin
+        //fGrid.Celda is unassigned for cells other than the title row, so we neet to query GetCells here
+        Value := GetCells(i,j);
+        if (Value <> '') then
+        begin
+          Inc(k);
+          //Cfg.SetValue('grid/content/cells/cellcount',k);
+          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/column',i);
+          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/row',j);
+          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/text', Value);
+        end;
+        Cfg.SetValue('grid/content/cells/cellcount',k);
+      end;
+   end;
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
