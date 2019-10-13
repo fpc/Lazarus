@@ -531,6 +531,9 @@ begin
   if (inherited NestedSymbolCount <> 2) then
     exit;
 
+  if (Name <> 'ShortString') and (Name <> 'LongString') then  // DWARF-2 => user types are all caps
+    exit;
+
   LenSym := inherited NestedSymbolByName['length'];
   if (LenSym = nil) or (LenSym.Kind <> skCardinal) // or (LenSym.Size <> 1) // not implemented yet
   then
@@ -542,11 +545,6 @@ begin
   StSymType := StSym.TypeInfo;
   if (StSymType = nil) or (StSymType.Kind <> skArray) or not (StSymType is TFpSymbolDwarfTypeArray) then
     exit;
-
-  // If it were a user declared array, fpc puts the stride in the subrange
-  if not TFpSymbolDwarfTypeArray(StSymType).InformationEntry.HasAttrib(DW_AT_byte_stride) then
-    exit;
-  // check the subrange?
 
   FIsShortString := issShortString;
   Result := True;
