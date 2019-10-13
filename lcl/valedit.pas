@@ -1300,6 +1300,7 @@ begin
     ContentSaved:=Cfg.GetValue('grid/saveoptions/content', false);
     if ContentSaved then
     begin
+      Clean(0,0,ColCount-1,RowCount-1,[]); //need if the to be loaded grid has no entries
       HasColumnTitles := cfg.getValue('grid/content/hascolumntitles', False);
       if HasColumnTitles then
         DisplayOptions := DisplayOptions + [doColumnTitles]
