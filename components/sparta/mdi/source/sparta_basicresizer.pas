@@ -5,9 +5,9 @@ unit sparta_BasicResizer;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, sparta_BasicResizeFrame, Forms, StdCtrls,
-  LCLType, Buttons, Dialogs,
-  sparta_InterfacesMDI, sparta_AbstractResizer;
+  Classes, SysUtils,
+  LCLType, Controls, ExtCtrls, Forms, StdCtrls, Buttons, Dialogs,
+  sparta_BasicResizeFrame, sparta_InterfacesMDI, sparta_AbstractResizer;
 
 type
 

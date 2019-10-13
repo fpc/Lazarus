@@ -14,27 +14,27 @@
     </CompilerOptions>
     <Files Count="8">
       <Item1>
-        <Filename Value="source\generics.collections.pas"/>
+        <Filename Value="source\sparta_generics.collections.pas"/>
         <UnitName Value="Generics.Collections"/>
       </Item1>
       <Item2>
-        <Filename Value="source\generics.defaults.pas"/>
+        <Filename Value="source\sparta_generics.defaults.pas"/>
         <UnitName Value="Generics.Defaults"/>
       </Item2>
       <Item3>
-        <Filename Value="source\generics.hashes.pas"/>
+        <Filename Value="source\sparta_generics.hashes.pas"/>
         <UnitName Value="Generics.Hashes"/>
       </Item3>
       <Item4>
-        <Filename Value="source\generics.helpers.pas"/>
+        <Filename Value="source\sparta_generics.helpers.pas"/>
         <UnitName Value="Generics.Helpers"/>
       </Item4>
       <Item5>
-        <Filename Value="source\generics.memoryexpanders.pas"/>
+        <Filename Value="source\sparta_generics.memoryexpanders.pas"/>
         <UnitName Value="Generics.MemoryExpanders"/>
       </Item5>
       <Item6>
-        <Filename Value="source\generics.strings.pas"/>
+        <Filename Value="source\sparta_generics.strings.pas"/>
         <UnitName Value="Generics.Strings"/>
       </Item6>
       <Item7>

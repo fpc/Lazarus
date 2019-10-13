@@ -4,11 +4,13 @@
 
 unit sparta_Generics;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  Generics.Collections, Generics.Defaults, Generics.Hashes, Generics.Helpers, 
-  Generics.MemoryExpanders, Generics.Strings;
+  sparta_Generics.Collections, sparta_Generics.Defaults, 
+  sparta_Generics.Hashes, sparta_Generics.Helpers, 
+  sparta_Generics.MemoryExpanders, sparta_Generics.Strings;
 
 implementation
 

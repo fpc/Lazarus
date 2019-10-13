@@ -5,8 +5,15 @@ unit DesignEditors;
 interface
 
 uses
-  Classes, SysUtils, ComponentEditors, PropEdits, DesignIntf, DesignMenus, Generics.Defaults,
-  TypInfo, IniFiles, Menus;
+  Classes, SysUtils, TypInfo, IniFiles,
+  Menus,
+  ComponentEditors, PropEdits,
+{$IF FPC_FULLVERSION>=30200}
+  Generics.Defaults,
+{$ELSE}
+  sparta_Generics.Defaults,
+{$ENDIF}
+  DesignIntf, DesignMenus;
 
 type
 

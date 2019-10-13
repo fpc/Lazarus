@@ -5,8 +5,10 @@ unit sparta_BasicResizeFrame;
 interface
 
 uses
-  Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls,
-  Graphics, LCLType, lclintf, Menus, LMessages, Math, Types, sparta_InterfacesMDI;
+  Classes, Types, contnrs, SysUtils, Math,
+  FileUtil,
+  LCLType, LCLIntf, LMessages, Forms, Controls, ExtCtrls, StdCtrls, Graphics, Menus,
+  sparta_InterfacesMDI;
 
 type
   TPositioningCode = (pcPositioning, pcPositioningEnd);

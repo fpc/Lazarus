@@ -18,9 +18,6 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF USE_GENERICS_COLLECTIONS}
-    Generics.Defaults,
-  {$ENDIF}
   // LCL
   Forms, Controls,
   // IdeIntf
@@ -178,8 +175,7 @@ type
 
 { TDesignedNonControlFormImpl }
 
-function TDesignedNonControlFormImpl.GetPublishedBounds(AIndex: Integer
-  ): Integer;
+function TDesignedNonControlFormImpl.GetPublishedBounds(AIndex: Integer): Integer;
 var
   LBounds, LClientRect: TRect;
   LMediator: TDesignerMediator;
@@ -487,8 +483,7 @@ begin
   Result := True;
 end;
 
-procedure TFakeCustomNonControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer
-  );
+procedure TFakeCustomNonControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   SetDesignerFormBounds(ALeft, ATop, AWidth, AHeight);
 end;

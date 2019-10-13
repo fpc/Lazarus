@@ -22,7 +22,7 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="12">
+    <Files Count="11">
       <Item1>
         <Filename Value="source\sparta_reg_dockedformeditor.pas"/>
         <HasRegisterProc Value="True"/>
@@ -65,13 +65,9 @@
         <UnitName Value="sparta_MainIDE"/>
       </Item10>
       <Item11>
-        <Filename Value="source\sparta_hashutils.pas"/>
-        <UnitName Value="sparta_HashUtils"/>
-      </Item11>
-      <Item12>
         <Filename Value="sparta_strconsts.pas"/>
         <UnitName Value="sparta_strconsts"/>
-      </Item12>
+      </Item11>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

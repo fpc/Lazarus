@@ -19,10 +19,10 @@ interface
 uses
   Forms, Classes, SysUtils, Controls, ComCtrls, ComponentReg, ExtCtrls, Buttons,
   Math, LazIDEIntf, PropEdits, LResources, LCLType, Graphics,
-{$IFDEF USE_GENERICS_COLLECTIONS}
+{$IF FPC_FULLVERSION>=30200}
   Generics.Collections,
 {$ELSE}
-  ghashmap, sparta_HashUtils,
+  sparta_Generics.Collections,
 {$ENDIF}
   FormEditingIntf, IDEImagesIntf;
 
@@ -43,14 +43,9 @@ type
   TComponentsPalette = class(TComponent)
   private
     pcComponents: TPageControl;
-
     FFilter: string;
     FRoot: TPersistent;
-{$IFDEF USE_GENERICS_COLLECTIONS}
     FPages: TDictionary<TTabSheet, TPageData>;
-{$ELSE}
-    FPages: THashmap<TTabSheet, TPageData, THash_TObject>;
-{$ENDIF}
     FLastForm: TCustomForm;
     FIgnoreRoot: Boolean;
 
@@ -228,11 +223,7 @@ var
   i, j: Integer;
   LCtrl: TControl;
   LPComponents: TPanel;
-{$IFDEF USE_GENERICS_COLLECTIONS}
   LButtons: TList<TControl>;
-{$ELSE}
-  LButtons: TList;
-{$ENDIF}
   LVisibleButtons: Integer;
   LCompName: string;
   LSearchResult: TTabSheet;
@@ -280,11 +271,7 @@ begin
   // use filter !
   else
   begin
-{$IFDEF USE_GENERICS_COLLECTIONS}
     LButtons := TList<TControl>.Create;
-{$ELSE}
-    LButtons := TList.Create;
-{$ENDIF}
     for i := 1 to pcComponents.PageCount - 1 do
     begin
       LPComponents := FPages[pcComponents.Pages[i]].FComponents;
@@ -341,11 +328,7 @@ var
   LUpDown: TUpDown;
   LLines: Integer;
 begin
-{$IFDEF USE_GENERICS_COLLECTIONS}
   if (pcComponents.ActivePage = nil) or (not FPages.ContainsKey(pcComponents.ActivePage)) then
-{$ELSE}
-  if (pcComponents.ActivePage = nil) or (not FPages.contains(pcComponents.ActivePage)) then
-{$ENDIF}
     Exit;
 
   LPComponents := FPages[pcComponents.ActivePage].FComponents;
@@ -417,11 +400,7 @@ begin
   IDEComponentPalette.AddHandlerComponentAdded(ComponentAdded);
   GlobalDesignHook.AddHandlerSetSelection(OnDesignSetSelection);
 
-{$IFDEF USE_GENERICS_COLLECTIONS}
   FPages := TDictionary<TTabSheet, TPageData>.Create;
-{$ELSE}
-  FPages := THashmap<TTabSheet, TPageData, THash_TObject>.Create;
-{$ENDIF}
 
   pcComponents := TPageControl.Create(AOwner);
   pcComponents.Parent := AParent;
@@ -566,19 +545,10 @@ procedure TComponentsPalette.UpdateComponentsList;
     LPComponents.Top := 0;
     LPComponents.AnchorSideBottom.Control := LPage;
     LPComponents.AnchorSideBottom.Side := asrBottom;
-
-
     LPComponents.ChildSizing.Layout := cclLeftToRightThenTopToBottom;
-
     LPComponents.BevelOuter := bvNone;
-
     LUpDown.Visible := False;
-
-{$IFDEF USE_GENERICS_COLLECTIONS}
     FPages.Add(LPage, TPageData.Create(LUpDown, LPComponents, LButton));
-{$ELSE}
-    FPages.insert(LPage, TPageData.Create(LUpDown, LPComponents, LButton));
-{$ENDIF}
 
     // not each page has components - for example: searching result
     if (APage = nil) or (not APage.Visible) then
@@ -598,7 +568,6 @@ procedure TComponentsPalette.UpdateComponentsList;
           LIcon.Free;
 
           Hint := Format('%s' + sLineBreak + '(%s)', [LClass.ClassName, LClass.UnitName]);
-
           ShowHint := True;
           Flat := True;
           GroupIndex := 1;
@@ -622,42 +591,29 @@ var
 begin
   if FRoot = nil then
     Exit;
-
-{$IFDEF USE_GENERICS_COLLECTIONS}
   FPages.Clear;
-{$ELSE}
-  FPages.Free;
-  FPages := THashmap<TTabSheet, TPageData, THash_TObject>.Create;
-{$ENDIF}
-
   if Assigned(IDEComponentPalette) then
   begin
     for i := pcComponents.PageCount - 1 downto 0 do
       pcComponents.Pages[i].Free;
-
     CreatePage('Search result', nil);
-
     for i := 0 to IDEComponentPalette.Pages.Count-1 do
     begin
       LPage := IDEComponentPalette.Pages[i];
       if not LPage.Visible then
         Continue;
-
       CreatePage(LPage.PageName, LPage);
     end;
   end;
-
   pcComponentsResize(nil);
   RefreshSearchResult;
 end;
 
-procedure TComponentsPalette.OnDesignSetSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TComponentsPalette.OnDesignSetSelection(const ASelection: TPersistentSelectionList);
 begin
   // to replace original components palette
   if not FIgnoreRoot or (csDestroying in ComponentState) then
     Exit;
-
   Root := GlobalDesignHook.LookupRoot;
 end;
 

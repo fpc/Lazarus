@@ -10,8 +10,8 @@ interface
 uses
   sparta_reg_DockedFormEditor, sparta_DesignedForm, sparta_Resizer, 
   sparta_ResizerFrame, SpartaAPI, sparta_FakeCustom, sparta_FakeForm, 
-  sparta_FakeFrame, sparta_FakeNonControl, sparta_MainIDE, sparta_HashUtils, 
-  sparta_strconsts, LazarusPackageIntf;
+  sparta_FakeFrame, sparta_FakeNonControl, sparta_MainIDE, sparta_strconsts, 
+  LazarusPackageIntf;
 
 implementation
 

@@ -5,8 +5,13 @@ unit sparta_MultiplyResizer;
 interface
 
 uses
-  Forms, Classes, SysUtils, Controls, Generics.Collections, LMessages,
-
+  Classes, SysUtils,
+  Forms, Controls, LMessages,
+{$IF FPC_FULLVERSION>=30200}
+  Generics.Collections,
+{$ELSE}
+  sparta_Generics.Collections,
+{$ENDIF}
   sparta_AbstractResizer, sparta_InterfacesMDI, sparta_BasicResizeFrame;
 
 type

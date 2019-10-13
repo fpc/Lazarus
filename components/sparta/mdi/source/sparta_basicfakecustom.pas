@@ -5,8 +5,9 @@ unit sparta_BasicFakeCustom;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, sparta_InterfacesMDI, LCLIntf,
-  LCLType, sparta_FormBackgroundForMDI;
+  Classes, SysUtils,
+  LCLType, LCLIntf, Controls, Forms,
+  sparta_InterfacesMDI, sparta_FormBackgroundForMDI;
 
 type
 

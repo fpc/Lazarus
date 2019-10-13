@@ -1,11 +1,11 @@
 {
-    This file is part of the Free Pascal run time library.
+    This file is part of the Free Pascal/NewPascal run time library.
     Copyright (c) 2014 by Maciej Izak (hnb)
-    member of the Free Sparta development team (http://freesparta.com)
+    member of the NewPascal development team (http://newpascal.org)
 
-    Copyright(c) 2004-2014 DaThoX
+    Copyright(c) 2004-2018 DaThoX
 
-    It contains the Free Pascal generics library
+    It contains the generics collections library
 
     See the file COPYING.FPC, included in this distribution,
     for details about the copyright.
@@ -24,7 +24,7 @@
 
  **********************************************************************}
 
-unit Generics.Collections;
+unit sparta_Generics.Collections;
 
 {$MODE DELPHI}{$H+}
 {$MACRO ON}
@@ -41,27 +41,9 @@ unit Generics.Collections;
 interface
 
 uses
-    RtlConsts, Classes, SysUtils, Generics.MemoryExpanders, Generics.Defaults,
-    Generics.Helpers, Generics.Strings;
-
-{ FPC BUGS related to Generics.* (54 bugs, 19 fixed)
-  REGRESSION: 26483, 26481
-  FIXED REGRESSION: 26480, 26482
-
-  CRITICAL: 24848(!!!), 24872(!), 25607(!), 26030, 25917, 25918, 25620, 24283, 24254, 24287 (Related to? 24872)
-  IMPORTANT: 23862(!), 24097, 24285, 24286 (Similar to? 24285), 24098, 24609 (RTL inconsistency), 24534,
-             25606, 25614, 26177, 26195
-  OTHER: 26484, 24073, 24463, 25593, 25596, 25597, 25602, 26181 (or MYBAD?)
-  CLOSED BUT IMO STILL TO FIX: 25601(!), 25594
-  FIXED: 25610(!), 24064, 24071, 24282, 24458, 24867, 24871, 25604, 25600, 25605, 25598, 25603, 25929, 26176, 26180,
-         26193, 24072
-  MYBAD: 24963, 25599
-}
-
-{ LAZARUS BUGS related to Generics.* (7 bugs, 0 fixed)
-  CRITICAL: 25613
-  OTHER: 25595, 25612, 25615, 25617, 25618, 25619
-}
+  RtlConsts, Classes, SysUtils,
+  sparta_Generics.MemoryExpanders, sparta_Generics.Defaults,
+  sparta_Generics.Helpers, sparta_Generics.Strings;
 
 {.$define EXTRA_WARNINGS}
 {.$define ENABLE_METHODS_WITH_TEnumerableWithPointers}
@@ -698,7 +680,10 @@ type
     procedure ValueNotify(constref AValue: TValue; ACollectionNotification: TCollectionNotification); inline;
     procedure NodeNotify(ANode: PNode; ACollectionNotification: TCollectionNotification; ADispose: boolean); inline;
     procedure SetValue(var AValue: TValue; constref ANewValue: TValue);
+    function GetItem(const AKey: TKey): TValue;
+    procedure SetItem(const AKey: TKey; const AValue: TValue);
 
+    property Items[Index: TKey]: TValue read GetItem write SetItem;
     // for reporting
     procedure WriteStr(AStream: TStream; const AText: string);
   public type
@@ -761,14 +746,17 @@ type
 
     destructor Destroy; override;
     function AddNode(ANode: PNode): boolean; overload; inline;
+    function AddNodeArray(const AArray: TArray<PNode>): boolean; overload; inline;
     function Add(constref APair: TTreePair): PNode; overload; inline;
     function Add(constref AKey: TKey; constref AValue: TValue): PNode; overload; inline;
     function Remove(constref AKey: TKey; ADisposeNode: boolean = true): boolean;
     function ExtractPair(constref AKey: TKey; ADisposeNode: boolean = true): TTreePair; overload;
     function ExtractPair(constref ANode: PNode; ADispose: boolean = true): TTreePair; overload;
-    function ExtractNode(constref AKey: TKey; ADisposeNode: boolean): PNode; overload;
-    function ExtractNode(ANode: PNode; ADispose: boolean): PNode; overload;
+    function Extract(constref AKey: TKey; ADisposeNode: boolean): PNode;
+    function ExtractNode(ANode: PNode; ADispose: boolean): PNode;
+    function ExtractNodeArray(const AArray: TArray<PNode>; ADispose: boolean): TArray<PNode>; overload;
     procedure Delete(ANode: PNode; ADispose: boolean = true); inline;
+    procedure DeleteArray(const AArray: TArray<PNode>; ADispose: boolean = true); inline;
 
     function GetEnumerator: TPairEnumerator;
     property Nodes: TNodeCollection read GetNodeCollection;
@@ -801,6 +789,8 @@ type
   end;
 
   TAVLTreeMap<TKey, TValue> = class(TCustomAVLTreeMap<TKey, TValue, TEmptyRecord>)
+  public
+    property Items; default;
   end;
 
   TIndexedAVLTreeMap<TKey, TValue> = class(TCustomAVLTreeMap<TKey, TValue, SizeInt>)
@@ -827,6 +817,7 @@ type
   protected
     property OnKeyNotify;
     property OnValueNotify;
+    property Items;
   public type
     TItemEnumerator = TKeyEnumerator;
   public
@@ -947,6 +938,7 @@ type
     function Add(constref AValue: T): Boolean; override;
     function Remove(constref AValue: T): Boolean; override;
     function Extract(constref AValue: T): T; override;
+    function PeekPtr(constref AValue: T): PT;
     procedure Clear; override;
     function Contains(constref AValue: T): Boolean; override;
 
@@ -2359,7 +2351,7 @@ end;
 
 { TCustomSet<T> }
 
-function TCustomSet<T>.DoGetEnumerator: Generics.Collections.TEnumerator<T>;
+function TCustomSet<T>.DoGetEnumerator: TEnumerator<T>;
 begin
   Result := GetEnumerator;
 end;
@@ -3338,6 +3330,21 @@ begin
   Result := TValueCollection(FValues);
 end;
 
+function TCustomAVLTreeMap<TREE_CONSTRAINTS>.GetItem(const AKey: TKey): TValue;
+var
+  LNode: PNode;
+begin
+  LNode := Find(AKey);
+  if not Assigned(LNode) then
+    raise EAVLTree.CreateRes(@SDictionaryKeyDoesNotExist);
+  result := LNode.Value;
+end;
+
+procedure TCustomAVLTreeMap<TREE_CONSTRAINTS>.SetItem(const AKey: TKey; const AValue: TValue);
+begin
+  Find(AKey).Value := AValue;
+end;
+
 constructor TCustomAVLTreeMap<TREE_CONSTRAINTS>.Create;
 begin
   FComparer := TComparer<TKey>.Default;
@@ -3402,6 +3409,15 @@ begin
   Result := ANode=InternalAdd(ANode, false);
 end;
 
+function TCustomAVLTreeMap<TREE_CONSTRAINTS>.AddNodeArray(const AArray: TArray<PNode>): boolean;
+var
+  LNode: PNode;
+begin
+  result := true;
+  for LNode in AArray do
+    result := result and AddNode(LNode);
+end;
+
 function TCustomAVLTreeMap<TREE_CONSTRAINTS>.Add(constref APair: TTreePair): PNode;
 begin
   Result := NewNode;
@@ -3449,7 +3465,7 @@ begin
   Result.Value := DoRemove(ANode, cnExtracted, ADispose);
 end;
 
-function TCustomAVLTreeMap<TREE_CONSTRAINTS>.ExtractNode(constref AKey: TKey; ADisposeNode: boolean): PNode;
+function TCustomAVLTreeMap<TREE_CONSTRAINTS>.Extract(constref AKey: TKey; ADisposeNode: boolean): PNode;
 begin
   Result:=Find(AKey);
   if Result<>nil then
@@ -3469,9 +3485,29 @@ begin
     Result := ANode;
 end;
 
+function TCustomAVLTreeMap<TREE_CONSTRAINTS>.ExtractNodeArray(const AArray: TArray<PNode>; ADispose: boolean): TArray<PNode>;
+var
+  LNode: PNode;
+begin
+  for LNode in AArray do
+    ExtractNode(LNode, ADispose);
+  if ADispose then
+    Result := nil
+  else
+    Result := AArray;
+end;
+
 procedure TCustomAVLTreeMap<TREE_CONSTRAINTS>.Delete(ANode: PNode; ADispose: boolean);
 begin
   DoRemove(ANode, cnRemoved, ADispose);
+end;
+
+procedure TCustomAVLTreeMap<TREE_CONSTRAINTS>.DeleteArray(const AArray: TArray<PNode>; ADispose: boolean);
+var
+  LNode: PNode;
+begin
+  for LNode in AArray do
+    Delete(LNode, ADispose);
 end;
 
 procedure TCustomAVLTreeMap<TREE_CONSTRAINTS>.Clear(ADisposeNodes: Boolean);
@@ -4107,6 +4143,17 @@ begin
     Result := AValue;
   end else
     Result := Default(T);
+end;
+
+function TSortedHashSet<T>.PeekPtr(constref AValue: T): PT;
+var
+  LIndex: SizeInt;
+begin
+  LIndex := FInternalDictionary.FindBucketIndex(@AValue);
+  if LIndex >= 0 then
+    result := FInternalDictionary.FItems[LIndex].Pair.Key
+  else
+    result := nil;
 end;
 
 procedure TSortedHashSet<T>.Clear;
