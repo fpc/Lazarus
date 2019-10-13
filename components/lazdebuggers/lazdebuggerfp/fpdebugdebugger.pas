@@ -2168,6 +2168,8 @@ procedure TFpDebugDebugger.DoState(const OldState: TDBGState);
 begin
   LockRelease;
   try
+    if (State in [dsPause{, dsInternalPause}]) then // Make sure we have threads first // this can be removed, once threads are KEPT between pauses
+      Threads.RequestMasterData;
     inherited DoState(OldState);
     if not (State in [dsPause, dsInternalPause]) then
       begin
