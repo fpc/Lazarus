@@ -833,21 +833,21 @@ for i := StartIdx to t.Count-1 do
 
     t.Add(AName, p+'Obj3'+e,   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4000+n).N('c')],
       'TObject3Int64'))
-      .Skip(stDwarf3Up)
+      .Skip(stDwarf3Up)  // fixed in fpc 3.3 with .SkipKind since it reports skRecord
       .SkipIf(ALoc = tlPointerAny);
     t.Add(AName, p+'Obj3Ex'+e,   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4100+n).N('c'), weInteger(555).N('d')],
       'TObject3Int64Ex'))
-      .Skip(stDwarf3Up)
+      .Skip(stDwarf3Up)  // fixed in fpc 3.3 with .SkipKind since it reports skRecord
       .SkipIf(ALoc = tlPointerAny);
     t.Add(AName, p+'Obj3C'+e,   weObject([weInteger(22).N('a'), weInteger(44).N('b'), weInteger(4200+n).N('c')],
       'TObjectCreate3Int64'))
       .AddFlag(ehMissingFields)
-      .Skip(stDwarf3Up)
+      .Skip(stDwarf3Up)  // fixed in fpc 3.3
       .SkipIf(ALoc in [tlConst, tlPointerAny]);
     t.Add(AName, p+'Obj3ExC'+e,   weObject([weInteger(22).N('a'), weInteger(44).N('b'), weInteger(4300+n).N('c'), weInteger(655).N('d')],
       'TObjectCreate3Int64Ex'))
       .AddFlag(ehMissingFields)
-      .Skip(stDwarf3Up)
+      .Skip(stDwarf3Up)  // fixed in fpc 3.3
       .SkipIf(ALoc in [tlConst, tlPointerAny]);
 
 
@@ -1147,7 +1147,10 @@ begin
     t.Add('TMYSTRINGLIST(TMyClass(MyClass1).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
     t.Add('TMYSTRINGLIST(TMyClass(MyClass2).FMyStringList).FLIST^[0]',    weMatch('FString', skRecord) ).IgnTypeName();
 
-    t.Add('TSize', 'TSize', weMatch('.', skType)).AddFlag(ehNoTypeInfo); // make sure no deep recorsion...
+    // make sure no deep recorsion...
+    t.Add('TSize', 'TSize', weMatch('.', skType)).AddFlag(ehNoTypeInfo);
+    t.Add('TFuncSelfRef', 'TFuncSelfRef', weMatch('.', skType)).AddFlag(ehNoTypeInfo);
+    t.Add('PFuncSelfRef', 'PFuncSelfRef', weMatch('.', skType)).AddFlag(ehNoTypeInfo);
 
     t.Add('EnVal1', 'EnVal1', weMatch('EnVal1 *:?= *0', skEnumValue));
     t.Add('EnVal2', 'EnVal2', weMatch('EnVal2 *:?= *1', skEnumValue));
@@ -1643,6 +1646,15 @@ procedure TTestWatches.TestWatchesTypeCast;
       t.Add(AName+' '+tn, tn+'('+p+'Smallint_3'+e+')',    weCardinal(qword((-32012+n)               and tm), tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Longint_3'+e+')',     weCardinal(qword((-20123456+n)            and tm), tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Int64_3'+e+')',       weCardinal(qword((-9123372036854775801+n) and tm), tn, -1));
+
+      // constant
+      t.Add(AName+' '+tn, tn+'($77AA55BBDD)',             weCardinal(qword(($77AA55BBDD)            and tm), tn, -1));
+      // bit packed
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[0]'+e+')',    weCardinal(qword((2)        and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[1]'+e+')',    weCardinal(qword((-2)       and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[2]'+e+')',    weCardinal(qword((0)        and tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[3]'+e+')',    weCardinal(qword((-1)       and tm), tn, -1));
+
       t.Add(AName+' '+tn, tn+'('+p+'Char'+e+')',          weCardinal(ord(AChr1), tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Char2'+e+')',         weCardinal(ord(#0),    tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Char3'+e+')',         weCardinal(ord(' '),   tn, -1));
@@ -1672,6 +1684,12 @@ procedure TTestWatches.TestWatchesTypeCast;
       t.Add(AName+' '+tn, tn+'('+p+'Smallint_3'+e+')',    weInteger(SignedIntAnd(-32012+n              , tm), tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Longint_3'+e+')',     weInteger(SignedIntAnd(-20123456+n           , tm), tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Int64_3'+e+')',       weInteger(SignedIntAnd(-9123372036854775801+n, tm), tn, -1));
+      // bit packed
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[0]'+e+')',  weInteger(SignedIntAnd(2  , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[1]'+e+')',  weInteger(SignedIntAnd(-2 , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[2]'+e+')',  weInteger(SignedIntAnd(0  , tm), tn, -1));
+      t.Add(AName+' '+tn, tn+'('+p+'BitPackTinyNegArray[3]'+e+')',  weInteger(SignedIntAnd(-1 , tm), tn, -1));
+
       t.Add(AName+' '+tn, tn+'('+p+'Char'+e+')',          weInteger(ord(AChr1), tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Char2'+e+')',         weInteger(ord(#0),    tn, -1));
       t.Add(AName+' '+tn, tn+'('+p+'Char3'+e+')',         weInteger(ord(' '),   tn, -1));

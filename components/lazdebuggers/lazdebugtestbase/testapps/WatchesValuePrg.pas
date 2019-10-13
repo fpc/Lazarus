@@ -133,14 +133,22 @@ type
 
   TRecordClass1     =        record Foo: TClass1; end;
 
+  PClass1 = ^TClass1;
+  TClass1a = class;
   TClass1 = class
   public
     FInt: integer;
     FDynInt: TIntDynArray;
     FAnsi: AnsiString;
+    FThis: TClass1;
+    FThat: TClass1a;
+    FMe: PClass1;
+  end;
+  TClass1a = class(TClass1)
+    FThisA: TClass1;
+    FMeA: PClass1;
   end;
 
-  PClass1 = ^TClass1;
 
   TEnum  = (EnVal1, EnVal2, EnVal3, EnVal4);
   TEnumSub =  EnVal1..EnVal2;
@@ -219,6 +227,8 @@ type
   TFunc1 = function(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
   TProc1 = procedure();
   TMeth1 = function(AVal: Integer): Boolean of object;
+  PFuncSelfRef = ^TFuncSelfRef;
+  TFuncSelfRef = function(SomeValue, Foo: PFuncSelfRef): PFuncSelfRef;
 
 type
   (* LOCATION: TYPE *)
@@ -275,6 +285,8 @@ var
 
   MyStringItemList: TMyStringItemListShort;
   MyStringList: TMyStringList;
+
+  dummy1: PFuncSelfRef;
 
 const
 (* LOCATION: global const *)
@@ -422,6 +434,7 @@ begin
   p := nil;
   SomeFunc1(1,1,1,1);
   SomeProc1();
+  dummy1 := nil;
 
 (* use global const / value in "gv" will be overriden... *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, {e}={, "//@@=} :=", _pre3_=gc, _BLOCK_=TestAssignGC)
