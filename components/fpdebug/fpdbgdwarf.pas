@@ -491,7 +491,7 @@ type
     property LocalProcInfo: TFpSymbolDwarf read FLocalProcInfo write SetLocalProcInfo;
 
     function DoForwardReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; inline;
-    function DataSize: TFpDbgValueSize; virtual;
+    function DoReadDataSize(const AValueObj: TFpValue; out ADataSize: TFpDbgValueSize): Boolean; virtual;
   protected
     function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
                                 AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
@@ -870,13 +870,13 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure CreateMembers;
   protected
     procedure KindNeeded; override;
-    function DoReadOrdering(AValObject: TFpValueDwarf; out ARowMajor: Boolean): Boolean;
+    function DoReadOrdering(AValueObj: TFpValueDwarf; out ARowMajor: Boolean): Boolean;
 
     function GetFlags: TDbgSymbolFlags; override;
     // GetNestedSymbolEx: returns the TYPE/range of each index. NOT the data
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
-    function GetMemberAddress(AValObject: TFpValueDwarf; const AIndex: Array of Int64): TFpDbgMemLocation;
+    function GetMemberAddress(AValueObj: TFpValueDwarf; const AIndex: Array of Int64): TFpDbgMemLocation;
   public
     destructor Destroy; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
@@ -1541,11 +1541,8 @@ begin
     AnAddress := Address;
     Result := IsReadableLoc(AnAddress);
 
-    if Result then begin
+    if Result then
       Result := TFpSymbolDwarf(ti).GetDataAddress(Self, AnAddress, ATargetType);
-      if not Result then
-        SetLastError(ti.LastError);
-    end;
   end
 
   else
@@ -1564,11 +1561,8 @@ begin
       AnAddress := FTypeCastSourceValue.Address;
 
     Result := IsReadableLoc(AnAddress);
-    if Result then begin
+    if Result then
       Result := FTypeSymbol.GetDataAddress(Self, AnAddress, ATargetType);
-      if IsError(FTypeSymbol.LastError) then
-        SetLastError(FTypeSymbol.LastError);
-    end;
   end;
 
   if not Result then
@@ -1652,8 +1646,6 @@ begin
 
   if FTypeSymbol <> nil then begin
     Result := FTypeSymbol.ReadSize(Self, ASize);
-    if (not Result) and IsError(FTypeSymbol.LastError) then
-      SetLastError(FTypeSymbol.LastError);
   end
   else
     Result := inherited DoGetSize(ASize);
@@ -2056,6 +2048,11 @@ begin
     i := 2000;
     while (i > 0) and (not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1])) do
       i := i div 2;
+    if i = 0 then begin
+      Result := '';
+      SetLastError(MemManager.LastError);
+      exit;
+    end;
     SetLength(Result,i);
     i := pos(#0, Result);
     if i > 0 then
@@ -2078,6 +2075,11 @@ begin
     i := 4000; // 2000 * 16 bit
     while (i > 0) and (not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1])) do
       i := i div 2;
+    if i = 0 then begin
+      Result := '';
+      SetLastError(MemManager.LastError);
+      exit;
+    end;
     SetLength(Result, i div 2);
     i := pos(#0, Result);
     if i > 0 then
@@ -2505,8 +2507,10 @@ function TFpValueDwarfStruct.GetDataSize: TFpDbgValueSize;
 begin
   Assert((FDataSymbol = nil) or (FDataSymbol.TypeInfo is TFpSymbolDwarf));
   if (FDataSymbol <> nil) and (FDataSymbol.TypeInfo <> nil) then begin
-    if FDataSymbol.TypeInfo.Kind = skClass then
-      Result := TFpSymbolDwarf(FDataSymbol.TypeInfo).DataSize
+    if FDataSymbol.TypeInfo.Kind = skClass then begin
+      if not TFpSymbolDwarf(FDataSymbol.TypeInfo).DoReadDataSize(Self, Result) then
+        Result := ZeroSize;
+    end
     else
       if not GetSize(Result) then
         Result := ZeroSize;
@@ -2556,8 +2560,10 @@ function TFpValueDwarfStructTypeCast.GetDataSize: TFpDbgValueSize;
 begin
   Assert((FTypeSymbol = nil) or (FTypeSymbol is TFpSymbolDwarf));
   if FTypeSymbol <> nil then begin
-    if FTypeSymbol.Kind = skClass then
-      Result := TFpSymbolDwarf(FTypeSymbol).DataSize
+    if FTypeSymbol.Kind = skClass then begin
+      if not TFpSymbolDwarf(FTypeSymbol).DoReadDataSize(Self, Result) then
+        Result := ZeroSize;
+    end
     else
       if not GetSize(Result) then
         Result := ZeroSize;
@@ -3053,15 +3059,19 @@ begin
   Result := inherited DoReadSize(AValueObj, ASize);
 end;
 
-function TFpSymbolDwarf.DataSize: TFpDbgValueSize;
+function TFpSymbolDwarf.DoReadDataSize(const AValueObj: TFpValue; out
+  ADataSize: TFpDbgValueSize): Boolean;
 var
   t: TFpSymbolDwarfType;
 begin
   t := NestedTypeInfo;
   if t <> nil then
-    Result := t.DataSize
+    Result := t.DoReadDataSize(AValueObj, ADataSize)
   else
-    Result := ZeroSize;
+  begin
+    Result := False;
+    ADataSize := ZeroSize;
+  end;
 end;
 
 function TFpSymbolDwarf.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
@@ -3115,7 +3125,7 @@ begin
          Result := True;
       end
       else
-        SetLastError(CreateError(fpErrAnyError));
+        SetLastError(AValueObj, CreateError(fpErrAnyError));
     end
 
     // TODO: loclistptr: DW_FORM_data4, DW_FORM_data8,
@@ -3128,7 +3138,7 @@ begin
     end
 
     else begin
-      SetLastError(CreateError(fpErrAnyError));
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
     end;
 
     // Bit Offset
@@ -3152,7 +3162,7 @@ begin
     end;
 
     if not Result then
-      SetLastError(CreateError(fpErrAnyError));
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
   end;
 
@@ -3163,7 +3173,7 @@ begin
       AnAddress := AddBitOffset(AnAddress, BitOffset);
 
     if not Result then
-      SetLastError(CreateError(fpErrAnyError));
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
   end;
 
 end;
@@ -3193,7 +3203,7 @@ begin
 
     Result := InformationEntry.ReadValue(AnAttribData, AValue);
     if not Result then
-      SetLastError(CreateError(fpErrAnyError));
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
   end
 
   else
@@ -3217,17 +3227,20 @@ begin
         assert(ValObj is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
         TFpValueDwarfBase(ValObj).Context := AValueObj.Context;
         AValue := ValObj.AsInteger;
+        if IsError(ValObj.LastError) then begin
+          Result := False;
+          SetLastError(AValueObj, ValObj.LastError);
+        end;
         ValObj.ReleaseReference;
-        Result := not IsError(RefSymbol.LastError);
-        // TODO: copy the error
+
         if ADataSymbol <> nil then
           ADataSymbol^ := RefSymbol
         else
           RefSymbol.ReleaseReference;
       end;
     end;
-    if not Result then
-      SetLastError(CreateError(fpErrAnyError));
+    if (not Result) and (not HasError(AValueObj)) then
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
   end
 
   else
@@ -3243,6 +3256,9 @@ begin
     if AReadState <> nil then
       AReadState^ := rfExpression;
 
+    // TODO: (or not todo?) AValueObj may be the pointer (internal ptr to object),
+    // but since that is the nearest actual variable => what would the LocExpr expect?
+    // Maybe we need "AddressFor(type)  // see TFpSymbolDwarfFreePascalTypePointer.DoReadDataSize
     InitLocParserData.ObjectDataAddress := AValueObj.Address;
     if not IsValidLoc(InitLocParserData.ObjectDataAddress) then
       InitLocParserData.ObjectDataAddress := AValueObj.OrdOrAddress;
@@ -3251,11 +3267,11 @@ begin
     if Result then
       AValue := Int64(t.Address)
     else
-      SetLastError(CreateError(fpErrLocationParser));
+      SetLastError(AValueObj, CreateError(fpErrLocationParser));
   end
 
   else begin
-    SetLastError(CreateError(fpErrAnyError));
+    SetLastError(AValueObj, CreateError(fpErrAnyError));
   end;
 
   if (not Result) and (AReadState <> nil) then
@@ -3280,11 +3296,13 @@ begin
   // DW_AT_location [block or reference] todo: const
   if not InformationEntry.ReadValue(AnAttribData, Val) then begin
     DebugLn(['LocationFromAttrData: failed to read DW_AT_location']);
+    SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
   end;
 
   if Length(Val) = 0 then begin
     DebugLn('LocationFromAttrData: Warning DW_AT_location empty');
+    SetLastError(AValueObj, CreateError(fpErrAnyError));
     //exit;
   end;
 
@@ -3294,7 +3312,7 @@ begin
   LocationParser.Evaluate;
 
   if IsError(LocationParser.LastError) then
-    SetLastError(LocationParser.LastError);
+    SetLastError(AValueObj, LocationParser.LastError);
 
   AnAddress := LocationParser.ResultData;
   Result := IsValidLoc(AnAddress);
@@ -3471,17 +3489,17 @@ end;
 function TFpSymbolDwarf.GetNestedSymbolEx(AIndex: Int64; out
   AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 begin
+  assert(False, 'TFpSymbolDwarf.GetNestedSymbolEx: False not a structuer');
   Result := nil;
   AnParentTypeSymbol := nil;
-  SetLastError(CreateError(fpErrorNotAStructure, ['', Name]));
 end;
 
 function TFpSymbolDwarf.GetNestedSymbolExByName(AIndex: String; out
   AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 begin
+  assert(False, 'TFpSymbolDwarf.GetNestedSymbolExByName: False not a structuer');
   Result := nil;
   AnParentTypeSymbol := nil;
-  SetLastError(CreateError(fpErrorNotAStructure, [AIndex, Name]));
 end;
 
 function TFpSymbolDwarf.GetNestedSymbol(AIndex: Int64): TFpSymbol;
@@ -3692,22 +3710,16 @@ begin
 
   if InformationEntry.GetAttribData(DW_AT_bit_size, AttrData) then begin
     Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, Bits);
-    if not Result then begin
-      // If AValueObj <> nil then
-      //AValueObj.LastError := LastError;
+    if not Result then
       exit;
-    end;
     ASize := SizeFromBits(Bits);
     exit;
   end;
 
   if InformationEntry.GetAttribData(DW_AT_byte_size, AttrData) then begin
     Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, ASize.Size);
-    if not Result then begin
-      // If AValueObj <> nil then
-      //AValueObj.LastError := LastError;
+    if not Result then
       exit;
-    end;
   end;
 
   // If it does not have a size => No error
@@ -3723,19 +3735,11 @@ begin
   if InformationEntry.GetAttribData(DW_AT_bit_stride, AttrData) then begin
     Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, BitStride);
     AStride := SizeFromBits(BitStride);
-    if not Result then begin
-      // If AValueObj <> nil then
-      //AValueObj.LastError := LastError;
-    end;
     exit;
   end;
 
   if InformationEntry.GetAttribData(DW_AT_byte_stride, AttrData) then begin
     Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, AStride.Size);
-    if not Result then begin
-      // If AValueObj <> nil then
-      //AValueObj.LastError := LastError;
-    end;
     exit;
   end;
 end;
@@ -3988,15 +3992,17 @@ begin
     exit;
 
   Result := AValueObj.MemManager <> nil;
-  if not Result then
+  if not Result then begin
+    SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
+  end;
   AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
   Result := IsValidLoc(AnAddress);
 
   if (not Result) and
      IsError(AValueObj.MemManager.LastError)
   then
-    SetLastError(AValueObj.MemManager.LastError);
+    SetLastError(AValueObj, AValueObj.MemManager.LastError);
   // Todo: other error
 end;
 
@@ -4070,7 +4076,7 @@ var
   t: TFpSymbolDwarfType;
 begin
   Result := inherited DoReadSize(AValueObj, ASize);
-  if Result or IsError(LastError) then
+  if Result or HasError(AValueObj) then
     exit;
 
   t := NestedTypeInfo;
@@ -4305,14 +4311,16 @@ begin
     exit;
 
   Result := AValueObj.MemManager <> nil;
-  if not Result then
+  if not Result then begin
+    SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
+  end;
   AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
   Result := IsValidLoc(AnAddress);
 
   if not Result then
     if IsError(AValueObj.MemManager.LastError) then
-      SetLastError(AValueObj.MemManager.LastError);
+      SetLastError(AValueObj, AValueObj.MemManager.LastError);
   // Todo: other error
 end;
 
@@ -4531,22 +4539,16 @@ begin
 
   if InformationEntry.GetAttribData(DW_AT_bit_size, AttrData) then begin
     Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, Bits);
-    if not Result then begin
-      // If AValueObj <> nil then
-      //AValueObj.LastError := LastError;
+    if not Result then
       exit;
-    end;
     ASize := SizeFromBits(Bits);
     exit;
   end;
 
   if InformationEntry.GetAttribData(DW_AT_byte_size, AttrData) then begin
     Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, ASize.Size);
-    if not Result then begin
-      // If AValueObj <> nil then
-      //AValueObj.LastError := LastError;
+    if not Result then
       exit;
-    end;
   end;
 
   // If it does not have a size => No error
@@ -4560,17 +4562,17 @@ begin
 
   if (AValueObj = nil) or (AValueObj.StructureValue = nil) or (AValueObj.FParentTypeSymbol = nil)
   then begin
-    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(LastError)]);
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser ']);
     Result := False;
-    if not IsError(LastError) then
-      SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
+    if not HasError(AValueObj) then
+      SetLastError(AValueObj, CreateError(fpErrLocationParserInit)); // TODO: error message?
     exit;
   end;
   if not AValueObj.GetStructureDwarfDataAddress(AnAddress, AValueObj.FParentTypeSymbol) then begin
-    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(LastError)]);
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(AValueObj.LastError)]);
     Result := False;
-    if not IsError(LastError) then
-      SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
+    if not HasError(AValueObj) then
+      SetLastError(AValueObj, CreateError(fpErrLocationParserInit)); // TODO: error message?
     exit;
   end;
   //TODO: AValueObj.StructureValue.LastError
@@ -4800,7 +4802,7 @@ begin
   SetKind(skArray); // Todo: static/dynamic?
 end;
 
-function TFpSymbolDwarfTypeArray.DoReadOrdering(AValObject: TFpValueDwarf; out
+function TFpSymbolDwarfTypeArray.DoReadOrdering(AValueObj: TFpValueDwarf; out
   ARowMajor: Boolean): Boolean;
 var
   AVal: Integer;
@@ -4814,9 +4816,7 @@ begin
     if Result then
       ARowMajor := AVal = DW_ORD_row_major
     else
-      // If AValueObj <> nil then
-      //AValueObj.LastError := LastError;
-    ;
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
   end;
 end;
 
@@ -4873,7 +4873,7 @@ begin
   Result := FMembers.Count;
 end;
 
-function TFpSymbolDwarfTypeArray.GetMemberAddress(AValObject: TFpValueDwarf;
+function TFpSymbolDwarfTypeArray.GetMemberAddress(AValueObj: TFpValueDwarf;
   const AIndex: array of Int64): TFpDbgMemLocation;
 var
   Idx, Factor: Int64;
@@ -4883,12 +4883,12 @@ var
   RowMajor: Boolean;
   Offs, StrideInBits: TFpDbgValueSize;
 begin
-  assert((AValObject is TFpValueDwarfArray), 'TFpSymbolDwarfTypeArray.GetMemberAddress AValObject');
+  assert((AValueObj is TFpValueDwarfArray), 'TFpSymbolDwarfTypeArray.GetMemberAddress AValueObj');
 //  ReadOrdering;
-//  ReadStride(AValObject); // TODO Stride per member (member = dimension/index)
+//  ReadStride(AValueObj); // TODO Stride per member (member = dimension/index)
   Result := InvalidLoc;
 
-  if not TFpValueDwarfArray(AValObject).GetMainStride(StrideInBits) then
+  if not TFpValueDwarfArray(AValueObj).GetMainStride(StrideInBits) then
     exit;
   if (StrideInBits <= 0) then
     exit;
@@ -4897,8 +4897,8 @@ begin
   if Length(AIndex) > FMembers.Count then
     exit;
 
-  if AValObject is TFpValueDwarfArray then begin
-    if not TFpValueDwarfArray(AValObject).GetDwarfDataAddress(Result) then begin
+  if AValueObj is TFpValueDwarfArray then begin
+    if not TFpValueDwarfArray(AValueObj).GetDwarfDataAddress(Result) then begin
       Result := InvalidLoc;
       Exit;
     end;
@@ -4915,7 +4915,7 @@ begin
   Factor := 1;
 
 
-  if not TFpValueDwarfArray(AValObject).GetOrdering(RowMajor) then
+  if not TFpValueDwarfArray(AValueObj).GetOrdering(RowMajor) then
     exit;
   {$PUSH}{$R-}{$Q-} // TODO: check range of index
   if RowMajor then begin
@@ -4923,7 +4923,7 @@ begin
       Idx := AIndex[i];
       m := TFpSymbolDwarf(FMembers[i]);
       if i > 0 then begin
-        if not m.GetValueBounds(AValObject, LowBound, HighBound) then begin
+        if not m.GetValueBounds(AValueObj, LowBound, HighBound) then begin
           Result := InvalidLoc;
           exit;
         end;
@@ -4932,7 +4932,7 @@ begin
         Factor := Factor * (HighBound - LowBound + 1);  // TODO range check
       end
       else begin
-        if m.GetValueLowBound(AValObject, LowBound) then
+        if m.GetValueLowBound(AValueObj, LowBound) then
           Idx := Idx - LowBound;
         Offs := Offs + StrideInBits * Idx * Factor;
       end;
@@ -4943,7 +4943,7 @@ begin
       Idx := AIndex[i];
       m := TFpSymbolDwarf(FMembers[i]);
       if i > 0 then begin
-        if not m.GetValueBounds(AValObject, LowBound, HighBound) then begin
+        if not m.GetValueBounds(AValueObj, LowBound, HighBound) then begin
           Result := InvalidLoc;
           exit;
         end;
@@ -4952,7 +4952,7 @@ begin
         Factor := Factor * (HighBound - LowBound + 1);  // TODO range check
       end
       else begin
-        if m.GetValueLowBound(AValObject, LowBound) then
+        if m.GetValueLowBound(AValueObj, LowBound) then
           Idx := Idx - LowBound;
         Offs := Offs + StrideInBits * Idx * Factor;
       end;
@@ -5143,8 +5143,8 @@ begin
     Result := rd.Address;
 
   if IsError(FFrameBaseParser.LastError) then begin
-    SetLastError(FFrameBaseParser.LastError);
-    debugln(FPDBG_DWARF_ERRORS, ['TFpSymbolDwarfDataProc.GetFrameBase location parser failed ', ErrorHandler.ErrorAsString(LastError)]);
+    ASender.SetLastError(FFrameBaseParser.LastError);
+    debugln(FPDBG_DWARF_ERRORS, ['TFpSymbolDwarfDataProc.GetFrameBase location parser failed ', ErrorHandler.ErrorAsString(ASender.LastError)]);
   end
   else
   if Result = 0 then begin

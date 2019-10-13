@@ -659,11 +659,14 @@ begin
     Result := FValue.AsCardinal
   else
   if svfAddress in f then begin
-    if not FContext.MemManager.ReadUnsignedInt(FValue.Address, SizeVal(FContext.SizeOfAddress), Result) then
+    if not FContext.MemManager.ReadUnsignedInt(FValue.Address, SizeVal(FContext.SizeOfAddress), Result) then begin
       Result := 0;
+      SetLastError(FContext.MemManager.LastError);
+    end;
   end
-  else
-    Result := 0;
+  else begin
+    SetLastError(CreateError(fpErrAnyError, ['']));
+  end;
 end;
 
 function TFpPasParserValueCastToPointer.GetDataAddress: TFpDbgMemLocation;
@@ -805,6 +808,10 @@ function TFpPasParserValueDerefPointer.GetAddress: TFpDbgMemLocation;
 begin
   Result := FValue.DataAddress;
   Result := Context.MemManager.ReadAddress(Result, SizeVal(Context.SizeOfAddress));
+  if IsValidLoc(Result) then begin
+    SetLastError(Context.MemManager.LastError);
+    exit;
+  end;
 
   if FAddressOffset <> 0 then begin
     assert(IsTargetAddr(Result ), 'TFpPasParserValueDerefPointer.GetAddress: TargetLoc(Result)');

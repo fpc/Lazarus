@@ -118,7 +118,7 @@ type
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
       out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
     function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
-    function DataSize: TFpDbgValueSize; override;
+    function DoReadDataSize(const AValueObj: TFpValue; out ADataSize: TFpDbgValueSize): Boolean; override;
   public
     property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
   end;
@@ -677,8 +677,7 @@ begin
   if (not Result) and
      IsError(AValueObj.MemManager.LastError)
   then
-    SetLastError(AValueObj.MemManager.LastError);
-  // Todo: other error
+    SetLastError(AValueObj, AValueObj.MemManager.LastError);
 end;
 
 function TFpSymbolDwarfFreePascalTypePointer.GetTypedValueObject(
@@ -692,21 +691,19 @@ begin
     Result := inherited GetTypedValueObject(ATypeCast, AnOuterType);
 end;
 
-function TFpSymbolDwarfFreePascalTypePointer.DataSize: TFpDbgValueSize;
+function TFpSymbolDwarfFreePascalTypePointer.DoReadDataSize(
+  const AValueObj: TFpValue; out ADataSize: TFpDbgValueSize): Boolean;
 var
   Size: TFpDbgValueSize;
 begin
   if Kind = skClass then begin
-    // TODO: get a value object // though fpc does not yet write variable sizes
-    if not NestedTypeInfo.ReadSize(nil, Size) then begin
-      Result := ZeroSize;
-      SetLastError(CreateError(fpErrAnyError, ['unknown size']));
-      exit;
-    end;
-    Result := Size
+    // TODO: get/adjust a value object to have the deref address // see ConstRefOrExprFromAttrData
+    Result := NestedTypeInfo.ReadSize(AValueObj, ADataSize);
+    if not Result then
+      ADataSize := ZeroSize;
   end
   else
-    Result := inherited DataSize;
+    Result := inherited DoReadDataSize(AValueObj, ADataSize);
 end;
 
 { TFpSymbolDwarfFreePascalTypeStructure }

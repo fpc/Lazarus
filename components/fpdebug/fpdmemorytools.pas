@@ -1129,7 +1129,7 @@ begin
   if (ASourceLocation.MType in [mlfInvalid, mlfUninitialized]) or
      (ASourceSize <= 0)
   then begin
-    FLastError := CreateError(fpErrCanNotReadInvalidMem);
+    FLastError := CreateError(fpInternalErrCanNotReadInvalidMem);
     exit;
   end;
 
@@ -1152,7 +1152,7 @@ begin
   SourceFullSize := ConvData.SourceFullSize;
   if (SourceFullSize > TMP_MEM_SIZE) and (SourceFullSize > ConvData.DestSize) then begin
     // The un-shifted (bit-offset) result must fully fit in either ADest or FTmpMem
-    FLastError := CreateError(fpErrFailedReadMem);
+    FLastError := CreateError(fpInternalErrFailedReadMem);
     exit;
   end;
 
@@ -1293,7 +1293,7 @@ begin
           // TODO: only needed if ADestSize > SourceReadSize ?
           // Maybe do that after Move to ADest? // Maybe as part of FinishTargetRead ?
           if not FSelfMemConvertor.AdjustIntPointer(ReadData, SizeOf(TmpVal), SourceReadSize) then begin
-            FLastError := CreateError(fpErrFailedReadMem);
+            FLastError := CreateError(fpInternalErrFailedReadMem);
             exit;
           end;
 
@@ -1313,7 +1313,7 @@ begin
     TargetMemConvertor.FailedTargetRead(ConvData);
 
   if (not Result) and (not IsError(FLastError)) then
-    FLastError := CreateError(fpErrFailedReadMem);
+    FLastError := CreateError(fpInternalErrFailedReadMem);
 end;
 
 procedure TFpDbgMemManager.SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
@@ -1367,7 +1367,7 @@ begin
   FLastError := NoError;
   if (ASourceLocation.BitOffset <> 0) then begin
     // Not supported to read at bit offset
-    FLastError := CreateError(fpErrFailedReadMem);
+    FLastError := CreateError(fpInternalErrFailedReadMem);
     Result := False;
     exit;
   end;
@@ -1379,7 +1379,7 @@ begin
       Result := ReadMemory(ASourceLocation, ASize, ADest, AContext);
   end;
   if (not Result) and (not IsError(FLastError)) then
-    FLastError := CreateError(fpErrFailedReadMem);
+    FLastError := CreateError(fpInternalErrFailedReadMem);
 end;
 
 function TFpDbgMemManager.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
@@ -1391,7 +1391,7 @@ begin
     AContext := FDefaultContext;
   Result := FMemReader.ReadRegister(ARegNum, AValue, AContext);
   if not Result then
-    FLastError := CreateError(fpErrFailedReadMem);
+    FLastError := CreateError(fpErrFailedReadRegister);
 end;
 
 function TFpDbgMemManager.ReadAddress(const ALocation: TFpDbgMemLocation;

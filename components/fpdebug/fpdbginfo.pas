@@ -318,8 +318,6 @@ type
   TFpSymbol = class(TRefCountedObject)
   private
     FEvaluatedFields: TFpSymbolFields;
-    FLastError: TFpError;
-
     // Cached fields
     FName: String;
     FKind: TDbgSymbolKind;
@@ -335,8 +333,8 @@ type
     function GetTypeInfo: TFpSymbol; inline;
     function GetMemberVisibility: TDbgSymbolMemberVisibility; inline;
   protected
-    function  GetLastError: TFpError; virtual;
-    procedure SetLastError(AnError: TFpError);
+    procedure SetLastError(AValueObj: TFpValue; ALastError: TFpError); inline;
+    function  HasError(AValueObj: TFpValue): Boolean; inline;
     // NOT cached fields
     function GetChild({%H-}AIndex: Integer): TFpSymbol; virtual;
     function GetColumn: Cardinal; virtual;
@@ -427,8 +425,6 @@ type
     // TypeCastValue| only fon stType symbols, may return nil
     // Returns a reference to caller / caller must release
     function TypeCastValue({%H-}AValue: TFpValue): TFpValue; virtual;
-
-    property LastError: TFpError read GetLastError; experimental;
   end;
 
   { TFpSymbolForwarder }
@@ -441,7 +437,6 @@ type
     procedure ForwardToSymbolNeeded; virtual;
     function  GetForwardToSymbol: TFpSymbol; inline;
   protected
-    function GetLastError: TFpError; override;
     procedure KindNeeded; override;
     procedure NameNeeded; override;
     procedure SymbolTypeNeeded; override;
@@ -719,8 +714,6 @@ begin
     exit;
 
   Result := ti.ReadSize(Self, ASize);
-  if (not Result) and IsError(ti.LastError) then
-    SetLastError(ti.LastError);
 end;
 
 function TFpValue.GetDataAddress: TFpDbgMemLocation;
@@ -1003,6 +996,17 @@ begin
   Result := FMemberVisibility;
 end;
 
+procedure TFpSymbol.SetLastError(AValueObj: TFpValue; ALastError: TFpError);
+begin
+  if AValueObj <> nil then
+    AValueObj.SetLastError(ALastError);
+end;
+
+function TFpSymbol.HasError(AValueObj: TFpValue): Boolean;
+begin
+  Result := (AValueObj <> nil) and IsError(AValueObj.LastError);
+end;
+
 function TFpSymbol.GetValueObject: TFpValue;
 begin
   Result := nil;
@@ -1027,16 +1031,6 @@ begin
   if not(sfiSymType in FEvaluatedFields) then
     SymbolTypeNeeded;
   Result := FSymbolType;
-end;
-
-function TFpSymbol.GetLastError: TFpError;
-begin
-  Result := FLastError;
-end;
-
-procedure TFpSymbol.SetLastError(AnError: TFpError);
-begin
-  FLastError := AnError;
 end;
 
 function TFpSymbol.GetHasOrdinalValue: Boolean;
@@ -1195,18 +1189,6 @@ begin
   if not(sfiForwardToSymbol in EvaluatedFields) then
     ForwardToSymbolNeeded;
   Result := FForwardToSymbol;
-end;
-
-function TFpSymbolForwarder.GetLastError: TFpError;
-var
-  p: TFpSymbol;
-begin
-  Result := inherited GetLastError;
-  if IsError(Result) then
-    exit;
-  p := GetForwardToSymbol;
-  if p <> nil then
-    Result := p.LastError;
 end;
 
 procedure TFpSymbolForwarder.KindNeeded;

@@ -714,6 +714,7 @@ type
   //TODO: caller keeps data, and determines livetime of data
     constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit;
       AMemManager: TFpDbgMemManager; AContext: TFpDbgAddressContext);
+    procedure SetLastError(ALastError: TFpError);
     procedure Evaluate;
     function ResultData: TFpDbgMemLocation;
     procedure Push(AValue: TFpDbgMemLocation);
@@ -1865,6 +1866,12 @@ begin
   FContext := AContext;
 end;
 
+procedure TDwarfLocationExpression.SetLastError(ALastError: TFpError);
+begin
+  assert(Not IsError(FLastError), 'TDwarfLocationExpression.SetLastError: Not IsError(FLastError)');
+  FLastError := ALastError;
+end;
+
 procedure TDwarfLocationExpression.Evaluate;
 var
   CurInstr, CurData: PByte;
@@ -2046,7 +2053,8 @@ begin
       DW_OP_fbreg: begin
           if (FFrameBase = 0) and (FOnFrameBaseNeeded <> nil) then FOnFrameBaseNeeded(Self);
           if FFrameBase = 0 then begin
-            SetError;
+            if not IsError(FLastError) then
+              SetError;
             exit;
           end;
           {$PUSH}{$R-}{$Q-}
