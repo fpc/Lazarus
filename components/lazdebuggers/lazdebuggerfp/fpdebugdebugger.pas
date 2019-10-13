@@ -7,7 +7,7 @@ interface
 
 uses
   Classes,
-  SysUtils,
+  SysUtils, fgl, math,
   Forms,
   Maps,
   process,
@@ -214,11 +214,31 @@ type
   public
   end;
 
+  { TCallstackAsyncRequest }
+
+  TCallstackAsyncRequest = class
+  private
+    FCallstack: TCallStackBase;
+    FRequiredMinCount: Integer;
+    FDebugger: TFpDebugDebugger;
+    FInDestroy: Boolean;
+    procedure FreeSelf;
+    procedure CallStackFreed(Sender: TObject);
+    procedure RequestAsync(Data: PtrInt);
+  public
+    constructor Create(ADebugger: TFpDebugDebugger; ACallstack: TCallStackBase;
+      ARequiredMinCount: Integer);
+    destructor Destroy; override;
+  end;
+
+  TCallstackAsyncRequestList = class(specialize TFPGObjectList<TCallstackAsyncRequest>);
+
   { TFPCallStackSupplier }
 
   TFPCallStackSupplier = class(TCallStackSupplier)
   private
     FPrettyPrinter: TFpPascalPrettyPrinter;
+    FReqList: TCallstackAsyncRequestList;
   protected
     function  FpDebugger: TFpDebugDebugger;
     procedure DoStateLeavePause; override;
@@ -564,6 +584,105 @@ begin
 {$endif linux}
 end;
 
+{ TCallstackAsyncRequest }
+
+procedure TCallstackAsyncRequest.RequestAsync(Data: PtrInt);
+var
+  AThread: TDbgThread;
+  CurCnt: LongInt;
+  ThreadCallStack: TDbgCallstackEntryList;
+  ReqCnt: Integer;
+begin
+
+  AThread := FDebugger.FDbgController.CurrentThread;
+  if (AThread = nil) then begin
+    FCallstack.SetCountValidity(ddsInvalid);
+    FCallstack.SetHasAtLeastCountInfo(ddsInvalid);
+    FRequiredMinCount := -1;
+    FreeSelf;
+    exit;
+  end;
+
+  ThreadCallStack := AThread.CallStackEntryList;
+  if ThreadCallStack <> nil then
+    CurCnt := ThreadCallStack.Count
+  else
+    CurCnt := 0;
+  if (FRequiredMinCount > CurCnt) then begin
+    ReqCnt := Min(CurCnt + 5, FRequiredMinCount);
+    FDebugger.PrepareCallStackEntryList(ReqCnt);
+
+    ThreadCallStack := AThread.CallStackEntryList;
+    if ThreadCallStack <> nil then begin
+      CurCnt := ThreadCallStack.Count;
+      if (CurCnt < FRequiredMinCount) and (CurCnt >= ReqCnt) then begin
+        Application.QueueAsyncCall(@RequestAsync, 0);
+        exit;
+      end;
+    end;
+  end;
+
+  if (CurCnt = 0) then begin
+    FCallstack.SetCountValidity(ddsInvalid);
+    FCallstack.SetHasAtLeastCountInfo(ddsInvalid);
+    exit;
+  end;
+
+  if (FRequiredMinCount < 0) or (CurCnt < FRequiredMinCount) then
+  begin
+    FCallstack.Count := CurCnt;
+    FCallstack.SetCountValidity(ddsValid);
+  end
+  else
+  begin
+    FCallstack.SetHasAtLeastCountInfo(ddsValid, CurCnt);
+  end;
+
+  // save whatever we have to history // limit to reduce time
+  if (FRequiredMinCount < 1) then
+    FCallstack.PrepareRange(0, Min(CurCnt, 10));
+
+  FRequiredMinCount := -1;
+  FreeSelf;
+end;
+
+procedure TCallstackAsyncRequest.FreeSelf;
+begin
+  if not FInDestroy then
+    TFPCallStackSupplier(FDebugger.CallStack).FReqList.Remove(Self); // calls  Destroy;
+end;
+
+procedure TCallstackAsyncRequest.CallStackFreed(Sender: TObject);
+begin
+  FCallstack := nil;
+  FRequiredMinCount := -1;
+  FreeSelf;
+end;
+
+constructor TCallstackAsyncRequest.Create(ADebugger: TFpDebugDebugger;
+  ACallstack: TCallStackBase; ARequiredMinCount: Integer);
+begin
+  FDebugger := ADebugger;
+  FCallstack := ACallstack;
+  FCallstack.AddFreeNotification(@CallStackFreed);
+  FRequiredMinCount := ARequiredMinCount;
+  RequestAsync(0);
+end;
+
+destructor TCallstackAsyncRequest.Destroy;
+begin
+  assert(not FInDestroy, 'TCallstackAsyncRequest.Destroy: not FInDestroy');
+  FInDestroy := True;
+  if FRequiredMinCount >= 0 then begin
+    FRequiredMinCount := -1;
+    RequestAsync(0);
+  end;
+  Application.RemoveAsyncCalls(Self);
+  if FCallstack <> nil then
+    FCallstack.RemoveFreeNotification(@CallStackFreed);
+  inherited Destroy;
+end;
+
 { TFPCallStackSupplier }
 
 function TFPCallStackSupplier.FpDebugger: TFpDebugDebugger;
@@ -573,6 +692,7 @@ end;
 
 procedure TFPCallStackSupplier.DoStateLeavePause;
 begin
+  FReqList.Clear;
   if (TFpDebugDebugger(Debugger).FDbgController <> nil) and
      (TFpDebugDebugger(Debugger).FDbgController.CurrentProcess <> nil)
   then
@@ -582,12 +702,14 @@ end;
 
 constructor TFPCallStackSupplier.Create(const ADebugger: TDebuggerIntf);
 begin
+  FReqList := TCallstackAsyncRequestList.Create;
   inherited Create(ADebugger);
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
 end;
 
 destructor TFPCallStackSupplier.Destroy;
 begin
+  FReqList.Free;
   inherited Destroy;
   FPrettyPrinter.Free;
 end;
@@ -607,26 +729,9 @@ begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
   end;
-  TFpDebugDebugger(Debugger).PrepareCallStackEntryList(ARequiredMinCount);
-  ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.CallStackEntryList;
-  if ThreadCallStack = nil then
-    exit;
-
-  if ThreadCallStack.Count = 0 then
-  begin
-    ACallstack.SetCountValidity(ddsInvalid);
-    ACallstack.SetHasAtLeastCountInfo(ddsInvalid);
-  end
-  else
-  if (ARequiredMinCount < 0) or (ThreadCallStack.Count < ARequiredMinCount) then
-  begin
-    ACallstack.Count := ThreadCallStack.Count;
-    ACallstack.SetCountValidity(ddsValid);
-  end
-  else
-  begin
-    ACallstack.SetHasAtLeastCountInfo(ddsValid, ThreadCallStack.Count);
-  end;
+  FReqList.add(
+    TCallstackAsyncRequest.Create(FpDebugger, ACallstack, ARequiredMinCount)
+  );
 end;
 
 procedure TFPCallStackSupplier.RequestEntries(ACallstack: TCallStackBase);
@@ -1543,18 +1648,22 @@ begin
   FWatchAsyncQueued := False;
   t := GetTickCount64;
   i := 0;
-  repeat
-    if FWatchEvalList.Count = 0 then
-      exit;
-    WatchValue := TWatchValue(FWatchEvalList[0]);
-    FWatchEvalList.Delete(0);
-    WatchValue.RemoveFreeNotification(@DoWatchFreed);
+  // Do the stack first.
+  // TODO: have ONE proper queue for all async stuff
+  if TFPCallStackSupplier(CallStack).FReqList.Count = 0 then begin
+    repeat
+      if FWatchEvalList.Count = 0 then
+        exit;
+      WatchValue := TWatchValue(FWatchEvalList[0]);
+      FWatchEvalList.Delete(0);
+      WatchValue.RemoveFreeNotification(@DoWatchFreed);
 
-    EvaluateExpression(WatchValue, WatchValue.Expression, AVal, AType);
-    inc(i);
-  {$PUSH}{$Q-}
-  until (GetTickCount64 - t > 60) or (i > 30);
-  {$POP}
+      EvaluateExpression(WatchValue, WatchValue.Expression, AVal, AType);
+      inc(i);
+    {$PUSH}{$Q-}
+    until (GetTickCount64 - t > 60) or (i > 30);
+    {$POP}
+  end;
 
   if (not FWatchAsyncQueued) and (FWatchEvalList.Count > 0) then
     begin
