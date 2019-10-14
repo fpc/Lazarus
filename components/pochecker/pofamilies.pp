@@ -145,13 +145,8 @@ implementation
 
 const
   sCommentIdentifier = '#: ';
-  //sCharSetIdentifier = '"Content-Type: text/plain; charset=';
   sMsgID = 'msgid "';
   sMsgStr = 'msgstr "';
-  //sMsgCtxt = 'msgctxt "';
-  //sFlags = '#, ';
-  //sPrevMsgID = '#| msgid "';
-  //sPrevStr = '#| "';
 
   Divider = '-------------------------------------------------------';
 
