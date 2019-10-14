@@ -55,9 +55,13 @@ type
 
   TCocoaFieldEditor = objcclass;
 
+  NSTextField_LCLExt = objcprotocol
+    procedure lclSetMaxLength(amax: integer); message 'lclSetMaxLength:';
+  end;
+
   { TCocoaTextField }
 
-  TCocoaTextField = objcclass(NSTextField)
+  TCocoaTextField = objcclass(NSTextField, NSTextField_LCLExt)
     callback: ICommonCallback;
     maxLength: Integer;
     function acceptsFirstResponder: LCLObjCBoolean; override;
@@ -75,18 +79,22 @@ type
     procedure otherMouseUp(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+
+    procedure lclSetMaxLength(amax: integer);
   end;
 
   { TCocoaSecureTextField }
 
-  TCocoaSecureTextField = objcclass(NSSecureTextField)
+  TCocoaSecureTextField = objcclass(NSSecureTextField, NSTextField_LCLExt)
   public
+    maxLength: Integer;
     callback: ICommonCallback;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure resetCursorRects; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // key
+    procedure textDidChange(notification: NSNotification); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -96,6 +104,8 @@ type
     procedure otherMouseUp(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+
+    procedure lclSetMaxLength(amax: integer);
   end;
 
   { TCocoaTextView }
@@ -981,6 +991,11 @@ begin
     inherited mouseMoved(event);
 end;
 
+procedure TCocoaTextField.lclSetMaxLength(amax: integer);
+begin
+  maxLength := amax;
+end;
+
 { TCocoaTextView }
 
 procedure TCocoaTextView.changeColor(sender: id);
@@ -1174,6 +1189,15 @@ begin
   callback := nil;
 end;
 
+procedure TCocoaSecureTextField.textDidChange(notification: NSNotification);
+begin
+  inherited;
+  if (maxLength>0) and Assigned(stringValue) and (stringValue.length > maxLength) then
+    setStringValue(stringValue.substringWithRange(NSMakeRange(0,maxLength)));
+  if callback <> nil then
+    callback.SendOnTextChanged;
+end;
+
 procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
@@ -1225,6 +1249,11 @@ procedure TCocoaSecureTextField.mouseMoved(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseMove(event) then
     inherited mouseMoved(event);
+end;
+
+procedure TCocoaSecureTextField.lclSetMaxLength(amax: integer);
+begin
+  MaxLength := amax;
 end;
 
 { TCocoaEditComboBoxList }

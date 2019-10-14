@@ -1007,11 +1007,14 @@ end;
 class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
-  field: TCocoaTextField;
+  field: NSTextField;
 begin
-  field := GetTextField(ACustomEdit);
+  if not (ACustomEdit.HandleAllocated) then Exit;
+  field := NSTextField(ACustomEdit.Handle);
   if not Assigned(field) then Exit;
-  field.maxLength := NewLength;
+
+  if NSObject(field).respondsToSelector( ObjCSelector('lclSetMaxLength:') ) then
+    {%H-}NSTextField_LCLExt(field).lclSetMaxLength(NewLength);
 end;
 
 class procedure TCocoaWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
