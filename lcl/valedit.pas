@@ -1293,14 +1293,20 @@ end;
 
 procedure TValueListEditor.LoadContent(cfg: TXMLConfig; Version: Integer);
 var
-  ContentSaved, HasColumnTitles, AlwaysShowEditor: Boolean;
+  ContentSaved, HasColumnTitles, AlwaysShowEditor, HasSaveContent: Boolean;
   i,j,k, RC: Integer;
 begin
   BeginUpdate;
   try
     AlwaysShowEditor := (goAlwaysShowEditor in Options);
     if AlwaysShowEditor then Options := Options - [goAlwaysShowEditor];
+    HasSaveContent := soContent in SaveOptions;
+    //no need to load content in inherited LoadContent, since we re-implemented that here.
+    if HasSaveContent then
+      SaveOptions := SaveOptions - [soContent];
     inherited LoadContent(Cfg, Version);
+    if HasSaveContent then
+      SaveOptions := SaveOptions + [soContent];
     if soContent in SaveOptions then
     begin
       ContentSaved:=Cfg.GetValue('grid/saveoptions/content', false);
@@ -1341,6 +1347,8 @@ begin
     end;
   finally
     if AlwaysShowEditor then Options := Options + [goAlwaysShowEditor];
+    if HasSaveContent then
+      SaveOptions := SaveOptions + [soContent];
     EndUpdate(True);
   end;
 end;
@@ -1359,33 +1367,44 @@ end;
 procedure TValueListEditor.SaveContent(cfg: TXMLConfig);
 var
   i,j,k: Integer;
-  //c: PCellProps;
   Value: String;
+  HasSaveContent: Boolean;
 begin
-  inherited SaveContent(cfg);
-  cfg.SetValue('grid/saveoptions/content', soContent in SaveOptions);
-  if soContent in SaveOptions then
-  begin
-    cfg.SetValue('grid/content/hascolumntitles',(doColumnTitles in FDisplayOptions));
-    cfg.SetValue('grid/content/rowcount', RowCount);
-    // Save Cell Contents
-    k:=0;
-    For i:=0 to ColCount-1 do
-      For j:=0 to RowCount-1 do
-      begin
-        //fGrid.Celda is unassigned for cells other than the title row, so we neet to query GetCells here
-        Value := GetCells(i,j);
-        if (Value <> '') then
+  HasSaveContent := soContent in SaveOptions;
+  //no need to save content in inherited SaveContent, since we re-implemented that here.
+  if HasSaveContent then
+    SaveOptions := SaveOptions - [soContent];
+  try
+    inherited SaveContent(cfg);
+    if HasSaveContent then
+      SaveOptions := SaveOptions + [soContent];
+    cfg.SetValue('grid/saveoptions/content', soContent in SaveOptions);
+    if soContent in SaveOptions then
+    begin
+      cfg.SetValue('grid/content/hascolumntitles',(doColumnTitles in FDisplayOptions));
+      cfg.SetValue('grid/content/rowcount', RowCount);
+      // Save Cell Contents
+      k:=0;
+      For i:=0 to ColCount-1 do
+        For j:=0 to RowCount-1 do
         begin
-          Inc(k);
-          //Cfg.SetValue('grid/content/cells/cellcount',k);
-          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/column',i);
-          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/row',j);
-          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/text', Value);
+          //fGrid.Celda is unassigned for cells other than the title row, so we neet to query GetCells here
+          Value := GetCells(i,j);
+          if (Value <> '') then
+          begin
+            Inc(k);
+            //Cfg.SetValue('grid/content/cells/cellcount',k);
+            cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/column',i);
+            cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/row',j);
+            cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/text', Value);
+          end;
+          Cfg.SetValue('grid/content/cells/cellcount',k);
         end;
-        Cfg.SetValue('grid/content/cells/cellcount',k);
-      end;
-   end;
+     end;
+  finally
+    if HasSaveContent then
+      SaveOptions := SaveOptions + [soContent];
+  end;
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
