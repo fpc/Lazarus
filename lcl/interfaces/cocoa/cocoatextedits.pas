@@ -394,6 +394,7 @@ type
     procedure lclReleaseSubcontrols; message 'lclReleaseSubcontrols';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
+    procedure textDidChange(notification: NSNotification); override;
     procedure textDidEndEditing(notification: NSNotification); message 'textDidEndEditing:'; override;
     // NSTextFieldDelegateProtocol
     procedure controlTextDidChange(obj: NSNotification); override;
@@ -1960,6 +1961,12 @@ begin
   lNSStr.release;
   // This implements OnChange for both user and code changes
   if callback <> nil then callback.SendOnTextChanged();
+end;
+
+procedure TCocoaSpinEdit.textDidChange(notification: NSNotification);
+begin
+  updateStepper;
+  inherited textDidChange(notification);
 end;
 
 procedure TCocoaSpinEdit.textDidEndEditing(notification: NSNotification);
