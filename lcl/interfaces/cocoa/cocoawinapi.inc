@@ -1996,6 +1996,8 @@ begin
   end;
 end;
 
+{$push}
+{$rangechecks off}
 function TCocoaWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean;
 var
   ctx: TCocoaContext;
@@ -2015,6 +2017,7 @@ begin
   if Result then
     ctx.Polyline(PPointArray(Points)^, NumPts);
 end;
+{$pop}
 
 type
   TLCLEventMessage = objcclass(NSObject)

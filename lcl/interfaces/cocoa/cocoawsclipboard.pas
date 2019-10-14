@@ -347,7 +347,8 @@ begin
       begin
         DataStream.Position := 0;
         SetLength(lText, DataStream.Size);
-        DataStream.Read(lText[1], DataStream.Size);
+        if DataStream.Size > 0 then
+          DataStream.Read(lText[1], DataStream.Size);
         lNSText := NSStringUtf8(lText);
 
         pasteboard.setString_forType(lNSText, lCurFormat.CocoaFormat);

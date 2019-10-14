@@ -173,7 +173,7 @@ procedure DebugDumpParents(fromView: NSView);
 implementation
 
 uses
-  CocoaInt;
+  Math, CocoaInt;
 
 var
   LastMouse: TLastMouseInfo;
@@ -1232,8 +1232,8 @@ begin
   // then send a LM_SIZE message
   if Resized or ClientResized then
   begin
-    LCLSendSizeMsg(Target, NewBounds.Right - NewBounds.Left,
-      NewBounds.Bottom - NewBounds.Top, Owner.lclWindowState, True);
+    LCLSendSizeMsg(Target, Max(NewBounds.Right - NewBounds.Left,0),
+      Max(NewBounds.Bottom - NewBounds.Top,0), Owner.lclWindowState, True);
   end;
 
   // then send a LM_MOVE message
