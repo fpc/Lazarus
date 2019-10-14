@@ -321,6 +321,10 @@ const
   rsVLEKey = 'Key';
   rsVLEValue = 'Value';
   rsVLEInvalidRowColOperation = 'The operation %s is not allowed on a TValueListEditor%s.';
+  //LoadContent errors
+  rsVLENoRowCountFound = 'Error reading file "%s":'^m'No value for RowCount found.';
+  rsVLERowIndexOutOfBounds = 'Error reading file "%s":'^m'Row index out of bounds (%d).';
+  rsVLEColIndexOutOfBounds = 'Error reading file "%s":'^m'Column index out of bounds (%d).';
 
 procedure Register;
 
@@ -1292,41 +1296,53 @@ var
   ContentSaved, HasColumnTitles, AlwaysShowEditor: Boolean;
   i,j,k, RC: Integer;
 begin
-  AlwaysShowEditor := (goAlwaysShowEditor in Options);
-  if AlwaysShowEditor then Options := Options - [goAlwaysShowEditor];
-  inherited LoadContent(Cfg, Version);
-  if soContent in SaveOptions then
-  begin
-    ContentSaved:=Cfg.GetValue('grid/saveoptions/content', false);
-    if ContentSaved then
+  BeginUpdate;
+  try
+    AlwaysShowEditor := (goAlwaysShowEditor in Options);
+    if AlwaysShowEditor then Options := Options - [goAlwaysShowEditor];
+    inherited LoadContent(Cfg, Version);
+    if soContent in SaveOptions then
     begin
-      Clean(0,0,ColCount-1,RowCount-1,[]); //need if the to be loaded grid has no entries
-      HasColumnTitles := cfg.getValue('grid/content/hascolumntitles', False);
-      if HasColumnTitles then
-        DisplayOptions := DisplayOptions + [doColumnTitles]
-      else
-        DisplayOptions := DisplayOptions - [doColumnTitles];
-
-      //contrary to other grids we restore the entire saved content,
-      //so we add/delete rows (not columns of course) as needed.
-      RC := cfg.GetValue('grid/content/rowcount', 1);
-      if (RC < 1) then RC := 1;
-      if HasColumnTitles and (RC = 1) then
-        RC := 2;
-      RowCount := RC;
-
-      k:=cfg.getValue('grid/content/cells/cellcount', 0);
-      while k>0 do
+      ContentSaved:=Cfg.GetValue('grid/saveoptions/content', false);
+      if ContentSaved then
       begin
-        i:=cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/column', -1);
-        j:=cfg.GetValue('grid/content/cells/cell'+IntTostr(k)+'/row',-1);
-        if IsRowIndexValid(j) and IsColumnIndexValid(i) then
-          Cells[i,j]:=UTF8Encode(cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text',''));
-        Dec(k);
+        Clean(0,0,ColCount-1,RowCount-1,[]); //need if the to be loaded grid has no entries
+        HasColumnTitles := cfg.getValue('grid/content/hascolumntitles', False);
+        if HasColumnTitles then
+          DisplayOptions := DisplayOptions + [doColumnTitles]
+        else
+          DisplayOptions := DisplayOptions - [doColumnTitles];
+
+        //contrary to other grids we restore the entire saved content,
+        //so we add/delete rows (not columns of course) as needed.
+        RC := cfg.GetValue('grid/content/rowcount', -1);
+        if (RC = -1) then
+        begin
+          raise EStreamError.CreateFmt(rsVLENoRowCountFound,[cfg.Filename]);
+        end;
+        if (RC < 1) then RC := 1;
+        if HasColumnTitles and (RC = 1) then
+          RC := 2;
+        RowCount := RC;
+
+        k:=cfg.getValue('grid/content/cells/cellcount', 0);
+        while k>0 do
+        begin
+          i:=cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/column', -1);
+          j:=cfg.GetValue('grid/content/cells/cell'+IntTostr(k)+'/row',-1);
+          if not IsRowIndexValid(j) then
+            raise EStreamError.CreateFmt(rsVLERowIndexOutOfBounds,[cfg.Filename,j]);
+          if not IsColumnIndexValid(i) then
+            raise EStreamError.CreateFmt(rsVLEColIndexOutOfBounds,[cfg.Filename,i]);
+            Cells[i,j]:=UTF8Encode(cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text',''));
+          Dec(k);
+        end;
       end;
     end;
+  finally
+    if AlwaysShowEditor then Options := Options + [goAlwaysShowEditor];
+    EndUpdate(True);
   end;
-  if AlwaysShowEditor then Options := Options + [goAlwaysShowEditor];
 end;
 
 procedure TValueListEditor.ResetDefaultColWidths;
