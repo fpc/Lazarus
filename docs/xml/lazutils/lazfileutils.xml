@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lazutils">
-
     <!--
       ====================================================================
         LazFileUtils
       ====================================================================
     -->
-
     <module name="LazFileUtils">
       <short>
-        Contains procedures and functions used for file and directory operations
+        Contains types, procedures, and functions used for file and directory operations
       </short>
       <descr>
         <p>
-          LazFileUtils contains procedures and functions used for file and directory operations. This file is part of the LazUtils package.
+          LazFileUtils contains types, procedures, and functions used for file and directory operations. This file is part of the LazUtils package.
         </p>
         <remark>
           All functions are thread safe unless explicitly stated.
@@ -28,7 +26,7 @@
         </short>
         <descr>
           <p>
-            CompareFilenames is an overloaded Integer function used to compare the specified file names to get their relative order in sorting operations. CompareFilenames provides implementations which accept String or PChar values (and their lengths) as arguments. The implementations are platform- and/or OS-specific; they consider whether the file system is case sensitive or when UTF-8 encoding is supported.
+            <var>CompareFilenames</var> is an overloaded Integer function used to compare the specified file names to get their relative order for sorting operations. CompareFilenames provides implementations which accept String or PChar values (and their lengths) as arguments. The implementations are platform- and/or OS-specific; they consider whether the file system is case sensitive or when UTF-8 encoding is supported.
           </p>
           <p>
             The return value indicates the relative order in a sort operation, and can contain the following values:
@@ -70,7 +68,7 @@
         </short>
         <descr>
           <p>
-            CompareFilenamesIgnoreCase is an overloaded Integer function used to compare the specified file names to get their relative order in case-insensitive sorting operations. CompareFilenamesIgnoreCase provides alternate implementations which accept String or PChar values (and their lengths) as arguments. The implementations are platform- and/or OS-specific; they consider whether the file system is case sensitive or when UTF-8 encoding is supported.
+            <var>CompareFilenamesIgnoreCase</var> is an overloaded Integer function used to compare the specified file names to get their relative order in case-insensitive sorting operations. CompareFilenamesIgnoreCase provides alternate implementations which accept String or PChar values (and their lengths) as arguments. The implementations are platform- and/or OS-specific; they consider whether the file system is case sensitive, and when UTF-8 encoding is supported.
           </p>
           <p>
             The return value indicates the relative order in a case-insensitive sort operation, and can contain the following values:
@@ -112,21 +110,21 @@
         </short>
         <descr>
           <p>
-            CompareFileExt is an Integer function used to compare the file extension in Filename to the value in Ext. Ext may contain the '.' character, but it is not required and will be removed for the comparison. CaseSensitive indicates whether case is ignored in the comparison. When CaseSensitive contains True, CompareStr is called to perform the comparison. Otherwise,  UTF8CompareText is called to compare the values. The return value will contain one of the following:
+            <var>CompareFileExt</var> is an <var>Integer</var> function used to compare the file extension in Filename to the value in Ext. Ext may contain the '.' character, but it is not required and will be removed for the comparison. CaseSensitive indicates whether case is ignored in the comparison. When CaseSensitive contains True, CompareStr is called to perform the comparison. Otherwise,  UTF8CompareText is called to compare the values. The return value will contain one of the following:
           </p>
           <dl>
             <dt>-1</dt>
             <dd>
               Filename value has a lower sort order value than Ext
-            </dd>
+           </dd>
             <dt>0</dt>
             <dd>
               Filename and Ext have the same sort order values
-            </dd>
+           </dd>
             <dt>1</dt>
             <dd>
               Filename value has a higher sort order value than Ext
-            </dd>
+           </dd>
           </dl>
           <p>
             The return is 1 if Filename does not contain a file extension.
@@ -163,7 +161,7 @@
         </short>
         <descr>
           <p>
-            CompareFilenameStarts is an Integer function used to compare the specified file names to determine their relative sort order. Arguments in Filename1 and Filename2 do not need to be the same length. When they have different lengths, the number of characters common to both are used in the comparison. CompareFilenameStarts calls CompareFileNames to perform the comparison, and get the return value for the function.
+            <var>CompareFilenameStarts</var> is an <var>Integer</var> function used to compare the specified file names to determine their relative sort order. Arguments in Filename1 and Filename2 do not need to be the same length. When they have different lengths, the number of characters common to both are used in the comparison. CompareFilenameStarts calls CompareFileNames to perform the comparison, and get the return value for the function.
           </p>
           <p>
             See CompareFilename for more information about the numeric return value and its meaning.
@@ -200,6 +198,40 @@
         <short>Length of the seconds file name</short>
       </element>
 
+      <element name="CompareFilenamesP">
+        <short>Compares file names to determine their relative sort order</short>
+        <descr>
+          <p>
+            <var>CompareFilenamesP</var> is an <var>Integer</var> function used to compare the specified file names to determine their relative sort order.
+          </p>
+          <p>
+            <var>Filename1</var> and <var>Filename2</var> are the PChar arguments containing the file names examined in the routine.
+          </p>
+          <p>
+            <var>IgnoreCase</var> indicates if upper- or lower-case differences are ignored in the file name comparison; the default value for the parameter is <b>False</b> (indicating that case differences are <b>not</b> ignored). For platforms where <b>CaseInsensitiveFilenames</b> is defined, the value in IgnoreCase defaults to <b>True</b>. When IgnoreCase is <b>True</b>, the <var>UTF8CompareText</var> function is called to perform a case-insensitive comparison of the specified file names. Otherwise, the ordinal byte values in the specified file names are compared until a difference is found, or the entire file name in Filename1 has been examined.
+          </p>
+          <p>
+            If either Filename1 or Filename2 are unassigned (contain <b>Nil</b>) or begin with a Null character (<b>Decimal 0</b>), the return value is set <b>0</b> (<b>zero</b>) and no additional actions are performed in the function. See CompareFilename for more information about the numeric return value for the function and its meaning.
+          </p>
+        </descr>
+        <seealso>
+          <link id="CompareFilename"/>
+          <link id="UTF8CompareText"/>
+        </seealso>
+      </element>
+      <element name="CompareFilenamesP.Result">
+        <short>Relative sort order for the compared values</short>
+      </element>
+      <element name="CompareFilenamesP.Filename1">
+        <short>File name used in the comparison</short>
+      </element>
+      <element name="CompareFilenamesP.Filename2">
+        <short>File name used in the comparison</short>
+      </element>
+      <element name="CompareFilenamesP.IgnoreCase">
+        <short>Indicates if case differences in file name comparisons are ignored</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="DirPathExists">
         <short>
@@ -207,7 +239,7 @@
         </short>
         <descr>
           <p>
-            DirPathExists is a Boolean function which indicates if the specified directory name exists in the file system. DirectoryName can contain a trailing path delimiter, but it is removed in the function. DirPathExists calls DirectoryExistsUTF8 to get the return value.
+            <var>DirPathExists</var> is a <var>Boolean</var> function which indicates if the specified directory name exists in the file system. DirectoryName can contain a trailing path delimiter, but it is removed in the function. DirPathExists calls DirectoryExistsUTF8 to get the return value.
           </p>
         </descr>
         <seealso>
@@ -232,7 +264,7 @@
         </short>
         <descr>
           <p>
-            DirectoryIsWritable is a Boolean function used to determine if the specified directory name is writable in the file system. The path name in DirectoryName must already exist on the local file system. The return value is False if a directory with the specified name does not exist.
+            <var>DirectoryIsWritable</var> is a <var>Boolean</var> function used to determine if the specified directory name is writable in the file system. The path name in DirectoryName must already exist on the local file system. The return value is False if a directory with the specified name does not exist.
           </p>
           <p>
             The return value is True when a file can be added, deleted, or modified in the specified path.  To get the return value, DirectoryIsWritable creates a temporary file in DirectoryName, adds content to it, and deletes the temporary file. DirectoryIsWritable calls the FileCreateUTF8, FileWrite, FileClose, and DeleteFileUTF8 routines to perform the file operations. The return value is True when FileWrite completes successfully.
@@ -269,7 +301,7 @@
         </short>
         <descr>
           <p>
-            ExtractFileNameOnly is a String function used to extract the base file name (without the file extension) from the value in AFilename. Path information, up to the last directory separator ('/' or '\') or device separator (':') character, in AFileName is ignored. The file extension, starting at the '.' character, is also omitted.
+            <var>ExtractFileNameOnly</var> is a <var>String</var> function used to extract the base file name (without the file extension) from the value in AFilename. Path information, up to the last directory separator ('/' or '\') or device separator (':') character, in AFileName is ignored. The file extension, starting at the '.' character, is also omitted.
           </p>
         </descr>
         <seealso></seealso>
@@ -292,7 +324,7 @@
         </short>
         <descr>
           <p>
-            FilenameIsAbsolute is a Boolean function used to determine if the value in TheFilename contains an absolute file path (and not a relative one). The implementation for FilenameIsAbsolute is platform- and/or OS-specific.
+            <var>FilenameIsAbsolute</var> is a <var>Boolean</var> function used to determine if the value in TheFilename contains an absolute file path (and not a relative one). The implementation for FilenameIsAbsolute is platform- and/or OS-specific.
           </p>
           <p>
             In  UNIX-like environments, the FilenameIsUnixAbsolute function is used in the implementation. The return value is False if TheFilename is an empty string (''), or does not start with the directory separator for the environment.
@@ -327,7 +359,7 @@
         </short>
         <descr>
           <p>
-            FilenameIsWinAbsolute is a Boolean function used to determine if the value in TheFilename contains an absolute file path (and not a relative one).
+            <var>FilenameIsWinAbsolute</var> is a <var>Boolean</var> function used to determine if the value in TheFilename contains an absolute file path (and not a relative one).
           </p>
           <p>
             On Windows, the FilenameIsWinAbsolute function is called in the implementation of FilenameIsAbsolute. FilenameIsWinAbsolute takes Device identifiers into consideration when examine the value in TheFilename. For example:
@@ -359,7 +391,7 @@
         </short>
         <descr>
           <p>
-            FilenameIsUnixAbsolute is a Boolean function used to determine if the value in TheFilename contains an absolute file path (and not a relative one).
+            <var>FilenameIsUnixAbsolute</var> is a <var>Boolean</var> function used to determine if the value in TheFilename contains an absolute file path (and not a relative one).
           </p>
           <p>
             In  UNIX-like environments, the FilenameIsUnixAbsolute function is used in the implementation of FilenameIsAbsolute. The return value is False if TheFilename is an empty string (''), or does not start with the directory separator for the environment.
@@ -430,36 +462,35 @@
             <dt>lrsFileDoesNotExist</dt>
             <dd>
               Raised when FileExistsUTF8 returns False
-            </dd>
+           </dd>
             <dt>lrsFileIsADirectoryAndNotAnExecutable</dt>
             <dd>
               Raised when DirPathExists indicates the file is actually a directory name
-            </dd>
+           </dd>
             <dt>lrsReadAccessDeniedFor</dt>
             <dd>
               Raised when fpGetErrno() returns ESysEAcces
-            </dd>
+           </dd>
             <dt>lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml</dt>
             <dd>
               Raised when fpGetErrno() returns ESysENoEnt
-            </dd>
+           </dd>
             <dt>lrsADirectoryComponentInIsNotADirectory</dt>
             <dd>
               Raised when fpGetErrno() returns ESysENotDir
-            </dd>
+           </dd>
             <dt>lrsInsufficientMemory</dt>
             <dd>
               Raised when fpGetErrno() returns ESysENoMem
-            </dd>
+           </dd>
             <dt>lrsHasACircularSymbolicLink</dt>
             <dd>
               Raised when fpGetErrno() returns ESysELoop
-            </dd>
-
+           </dd>
             <dt>lrsIsNotExecutable</dt>
             <dd>
               Raised when fpGetErrno() has a value other than the above
-            </dd>
+           </dd>
           </dl>
         </errors>
         <seealso>
@@ -495,6 +526,55 @@
         <short>File name to examine</short>
       </element>
 
+      <element name="FileIsSymlink">
+        <short>Indicates if the specified file is a symbolic link in the file system</short>
+        <descr>
+          <p>
+            <var>FileIsSymlink</var> is a <var>Boolean</var> function used to determine if the specified file name is a symbolic link on the local file system.
+          </p>
+          <p>
+            The implementation of FileIsSymlink is platform-specific. For UNIX-like environments, the <var>FpReadLink</var> function is used to determine if the symbolic link can be resolved to a physical file name in the local file system. For the Windows platform, <var>FileGetAttrUTF8</var> is called to get and examine the file attributes for the specified file name. The file attributes must include the value <b>FILE_ATTRIBUTE_REPARSE_POINT</b>, and one of the Windows API values such as <b>IO_REPARSE_TAG_SYMLINK</b> or <b>IO_REPARSE_TAG_MOUNT_POINT</b> for the corresponding file handle. For the Amiga platform, FileIsSymLink always returns <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="FpReadLink"/>
+          <link id="FileGetAttrUTF8"/>
+        </seealso>
+      </element>
+      <element name="FileIsSymlink.Result">
+        <short>True when the specified file name is a symbolic link</short>
+      </element>
+      <element name="FileIsSymlink.AFilename">
+        <short>File name examined in the routine`</short>
+      </element>
+
+      <element name="FileIsHardLink">
+        <short>
+          Indicates if the specified file has a descriptor or handle on the local file system
+        </short>
+        <descr>
+          <p>
+            <var>FileIsHardLink</var> is a <var>Boolean</var> function used to determine if the specified file name is represented by a file descriptor or handle on the local file system.
+          </p>
+          <p>
+            The implementation of FileIsHardLink is platform- or OS-specific. For UNIX-like environments, a file handle is retrieved by calling the <var>FileOpenUTF8</var> function and passed to the <var>FPFStat</var> function to access the file information. For the Windows platform (excluding WinCE and Windows XP), the <var>GetFileInformationByHandle</var> Windows API routine is called to get information for the file handle. For the Amiga platform, FileIsHardLink always returns <b>False</b>.
+          </p>
+          <p>
+            The return value is <b>False</b> if a file handle could not be accessed for the specified file name or it is actually a symbolic link on the local file system.
+          </p>
+        </descr>
+        <seealso>
+          <link id="FileOpenUTF8"/>
+          <link id="fpfstat"/>
+        </seealso>
+      </element>
+      <element name="FileIsHardLink.Result">
+        <short>True when file information can be accessed by its descriptor or handle</short>
+      </element>
+      <element name="FileIsHardLink.AFilename">
+        <short>File name examined in the routine</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="FileIsReadable">
         <short>
@@ -502,10 +582,13 @@
         </short>
         <descr>
           <p>
-            FileIsReadable is a Boolean function which indicates if the specified file name is readable. For UNIX-like environments, FpAccess is used to get the return value. On Windows, the return value is the result from FileExistsUTF8. In short, the function is not really useful on the Windows platform.
+            FileIsReadable is a Boolean function which indicates if the specified file name is readable. For UNIX-like environments, FpAccess is used to get the return value. On Windows, the return value is the result from FileExistsUTF8. In short, the function is not really useful on the Windows platform where a suitable file attribute does not exist for the purpose.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="FpAccess"/>
+          <link id="FileExistsUTF8"/>
+        </seealso>
       </element>
 
       <!-- function result Visibility: default -->
@@ -528,7 +611,6 @@
             FileIsWritable is a Boolean function which indicates if the specified file name is writable. For UNIX-like environments, FpAccess is used to get the return value. For Windows, FileGetAttrUTF8 is used to determine if faReadOnly is omitted from the attributes for the file.
           </p>
         </descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
 
@@ -647,6 +729,23 @@
         <short>Path and file name for the operation</short>
       </element>
 
+      <element name="ResolveDots">
+        <short>
+          Removes duplicate path delimiters and resolves relative path symbols
+        </short>
+        <descr>
+          <p>
+            This function shortens duplicate path delimiters to single path delimiters. It resolves 'A/../B' to 'B', which might be wrong under Unix if A is a symlink. The function does not check the local file system. The single dot './A' is resolved to 'A', but a single '.' is retained.
+        </p>
+        </descr>
+      </element>
+      <element name="ResolveDots.Result">
+        <short>File name with duplicate delimiters and relative paths resolved</short>
+      </element>
+      <element name="ResolveDots.AFilename">
+        <short>File name examined in the routine</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="CleanAndExpandFilename">
         <short>
@@ -677,10 +776,13 @@
         </short>
         <descr>
           <p>
-            CleanAndExpandDirectory is a String function used to remove whitespace and resolve special characters in the specified path. CleanAndExpandDirectory calls CleanAndExpandFilename to get the return value for the function. CleanAndExpandDirectory calls AppendPathDelim to ensure that a trailing path delimiter is included in the return value. The return value is the current directory when the specified path contains an empty string ('').
+            <var>CleanAndExpandDirectory</var> is a <var>String</var> function used to remove whitespace and resolve special characters in the specified path. CleanAndExpandDirectory calls <var>CleanAndExpandFilename</var> to get the return value for the function. CleanAndExpandDirectory calls <var>AppendPathDelim</var> to ensure that a trailing path delimiter is included in the return value. The return value is the current directory when the specified path contains an empty string (<b>''</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="CleanAndExpandFilename"/>
+          <link id="AppendPathDelim"/>
+        </seealso>
       </element>
 
       <!-- function result Visibility: default -->
@@ -702,10 +804,10 @@
         </short>
         <descr>
           <p>
-            TrimAndExpandFilename is a String function used to remove whitespace and special characters in Filename, and to resolve the relative file path to the directory in BaseDir. TrimAndExpandFilename removes a trailing path delimiter in Filename, and calls ExpandFileNameUTF8 and TrimFilename to get the return value for the function.
+            <var>TrimAndExpandFilename</var> is a <var>String</var> function used to remove whitespace and special characters in Filename, and to resolve the relative file path to the directory in BaseDir. TrimAndExpandFilename removes a trailing path delimiter in Filename, and calls ExpandFileNameUTF8 and TrimFilename to get the return value for the function.
           </p>
           <p>
-            The return value is an empty string ('') if Filename contains an empty string ('').
+            The return value is an empty string (<b>''</b>) if Filename contains an empty string (<b>''</b>).
           </p>
         </descr>
         <seealso></seealso>
@@ -733,16 +835,16 @@
         </short>
         <descr>
           <p>
-            TrimAndExpandDirectory is a String function used to remove whitespace and special characters in the path information, and to resolve a relative path to the specified base directory.
+            <var>TrimAndExpandDirectory</var> is a <var>String</var> function used to remove whitespace and special characters in the path information, and to resolve a relative path to the specified base directory.
           </p>
           <p>
-            TrimAndExpandDirectory calls TrimFilename. The return value is an empty string ('') when TrimFilename returns an empty string ('').
-          </p>
-          <p>
-            TrimAndExpandDirectory calls ExpandFileNameUTF8 to resolve the relative path, and calls TrimFilename to get the return value for the function.
+            TrimAndExpandDirectory calls <var>ExpandFileNameUTF8</var> to resolve the relative path, and calls <var>TrimFilename</var> to get the return value for the function. The return value is an empty string (<b>''</b>) when TrimFilename returns an empty string (<b>''</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="ExpandFileNameUTF8"/>
+          <link id="TrimFilename"/>
+        </seealso>
       </element>
 
       <!-- function result Visibility: default -->
@@ -767,16 +869,13 @@
         </short>
         <descr>
           <p>
-            CreateRelativePath is a String function used to get the relative path from BaseDirectory to Filename. A trailing path delimiter in BaseDirectory is ignored. If there is no relative path, the value in Filename is returned.
+            <var>CreateRelativePath</var> is a <var>String</var> function used to get the relative path from <var>BaseDirectory</var> to <var>Filename</var>. A trailing path delimiter in BaseDirectory is ignored. If there is no relative path, the value in Filename is returned.
           </p>
           <p>
-            When BaseDirectory and Filename contain the same value, and UsePointDirectory is False,  an empty string ('') is used as the return value. If UsePointDirectory contains True, the return value is '.'. Duplicate path delimiters are removed. For example, the following is True:
+            When BaseDirectory and Filename contain the same value, and <var>UsePointDirectory</var> is False,  an empty string (<b>''</b>) is used as the return value. If UsePointDirectory contains <b>True</b>, the return value is the '.' character. Duplicate path delimiters are removed.
           </p>
-          <code>
-            TrimFilename(Filename) = TrimFilename(BaseDirectory+PathDelim+Result).
-          </code>
           <remark>
-            CreateRelativePath is thread safe and therefore does not guarantee that the current directory is correct for file names like 'D:test.txt'.
+            CreateRelativePath is thread safe, and therefore, does not guarantee that the current directory is correct for file names like 'D:test.txt'.
           </remark>
         </descr>
         <seealso></seealso>
@@ -811,7 +910,7 @@
         </short>
         <descr>
           <p>
-            FileIsInPath is a Boolean function which indicates if the file name exists in the specified path. Filename is the file name to locate, and may include optional relative path information. For example: '../filename.txt'.
+            <var>FileIsInPath</var> is a <var>Boolean</var> function which indicates if the file name exists in the specified path. Filename is the file name to locate, and may include optional relative path information. For example: <b>'../filename.txt'</b>.
           </p>
           <p>
             Path is the directory name used to locate the specified file. For example: '/usr/lib/fpc'.
@@ -844,6 +943,76 @@
         <short>Path used for the operation</short>
       </element>
 
+      <element name="TPathDelimSwitch">
+        <short></short>
+        <descr>
+          <var>TPathDelimSwitch</var> is an enumerated type with values that indicate how path delimiters in file names are handled in routines like SwitchPathDelims, CheckPathDelim, and IsCurrentPathDelim. Values in the enumeration represent the various platform- or OS-specific path delimiters available in the Lazarus LCL at run-time.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TPathDelimSwitch.pdsNone">
+        <short>No path delimiter changes were used</short>
+      </element>
+      <element name="TPathDelimSwitch.pdsSystem">
+        <short>Path delimiter is switched to the default path delimiter for the system</short>
+      </element>
+      <element name="TPathDelimSwitch.pdsUnix">
+        <short>Path delimiter is switched to the UNIX path delimiter (forward slash)</short>
+      </element>
+      <element name="TPathDelimSwitch.pdsWindows">
+        <short>Path delimiter is switched to the Windows path delimiter (backslash)</short>
+      </element>
+
+      <element name="PathDelimSwitchToDelim">
+        <short>
+          Constant array with characters used as path delimiters for supported platforms and OS's
+        </short>
+        <descr>
+          <var>PathDelimSwitchToDelim</var> is an array constant with character values for path delimiters associated with <var>TPathDelimSwitch</var> enumeration values. The <var>DirectorySeparator</var> value is used for both pdsNone and pdsSystem enumeration values. For UNIX-like environments (pdsUnix), the Forward slash character ('/' ) is used for the path delimiter. For Windows platforms (pdsWindows) the backslash character ('\') is used for the path delimiter.
+        </descr>
+        <seealso>
+          <link id="TPathDelimSwitch"/>
+          <link id="SwitchPathDelims"/>
+          <link id="DirectorySeparator"/>
+        </seealso>
+      </element>
+
+      <element name="ForcePathDelims">
+        <short>
+          Ensures that path delimiters in the specified file name are correct for the current platform or OS
+        </short>
+        <descr>
+          <p>
+            <var>ForcePathDelims</var> is a procedure used to ensure that path delimiters in the specified file name are correct for the current platform or OS. ForcePathDelims examines each character in <var>FileName</var> to ensure that  path delimiters use the correct notation for the platform or OS defined in the LCL.
+          </p>
+          <p>
+            For Windows, this means any UNIX path delimiters (<b>/</b>) in FileName are converted into the Windows path delimiter (<b>\</b>). Conversely, for all other platforms and environments, the Windows path delimiter (<b>\</b>) is converted to the UNIX notation (<b>/</b>). All path delimiter substitutions in FileName occur inline.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="ForcePathDelims.FileName">
+        <short>File name examined in the routine</short>
+      </element>
+
+      <element name="GetForcedPathDelims">
+        <short>Performs path delimiter substitutions for the specified file name</short>
+        <descr>
+          <p>
+            <var>GetForcedPathDelims</var> is a <var>String</var> function used to perform path delimiter substitutions on the specified file name for the current platform or OS. GetForcedPathDelims calls <var>ForcePathDelims</var> using a copy of <var>FileName</var> as an argument. This ensures that the original file name remains unchanged when path delimiter substitutions are needed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ForcePathDelims"/>
+        </seealso>
+      </element>
+      <element name="GetForcedPathDelims.Result">
+        <short>File name after any path delimiter substitutions</short>
+      </element>
+      <element name="GetForcedPathDelims.FileName">
+        <short>File name examined in the function</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="AppendPathDelim">
         <short>
@@ -851,7 +1020,7 @@
         </short>
         <descr>
           <p>
-            AppendPathDelim is a String function used to ensure that a trailing path delimiter is included in the specified Path. The return value includes the value in Path and the trailing path delimiter (when needed).
+            <var>AppendPathDelim</var> is a <var>String</var> function used to ensure that a trailing path delimiter is included in the specified Path. The return value includes the value in Path and the trailing path delimiter (when needed).
           </p>
         </descr>
         <seealso></seealso>
@@ -874,7 +1043,7 @@
         </short>
         <descr>
           <p>
-            ChompPathDelim is a String function used to remove a trailing path delimiter from the specified value in Path. For  environments where UNC paths are allowed, ChompPathDelim ensures that the UNC path delimiters are retained.  Windows Device identifiers, such as "D:"  are also retained in Path.
+            <var>ChompPathDelim</var> is a <var>String</var> function used to remove a trailing path delimiter from the specified value in Path. For  environments where UNC paths are allowed, ChompPathDelim ensures that the UNC path delimiters are retained.  Windows Device identifiers, such as "D:"  are also retained in Path.
           </p>
         </descr>
         <seealso></seealso>
@@ -890,6 +1059,261 @@
         <short>Path information for the function</short>
       </element>
 
+      <element name="SwitchPathDelims">
+        <short>Replaces path delimiters in a file path with the specified delimiter</short>
+        <descr>
+          <p>
+            <var>SwitchPathDelims</var> is an overloaded <var>String</var> function used to ensure that path delimiter characters in Filename use the required character.
+          </p>
+          <p>
+            One variant of the function uses the Switch argument to pass a TPathDelimSwitch enumeration value that identifies the path delimiter needed, and includes the following:
+          </p>
+          <dl>
+            <dt>pdsNone</dt>
+            <dd>
+              No path delimiter substitutions are performed. The original value in Filename is used as the return value for the function.
+           </dd>
+            <dt>pdsSystem</dt>
+            <dd>
+              Path delimiters use the character required for the current platform or environment  running the application.
+           </dd>
+            <dt>pdsUnix</dt>
+            <dd>
+              Path delimiters use the UNIX forward slash (/) character.
+           </dd>
+            <dt>pdsWindows</dt>
+            <dd>
+              Path delimiters use the Windows backslash (\) character.
+           </dd>
+          </dl>
+          <p>
+            The function examines each character in Filename are replaces any path delimiters encountered with the value specified in Switch.
+          </p>
+          <p>
+            The other variant passes a Boolean value indicating if all occurrences of a path delimiter should use the character required for the  platform or environment hosting the application. It calls the SwitchPathDelims function to perform the substitutions.
+          </p>
+          <p>
+            The return value contains the value from Filename after any path delimiter substitutions have been applied.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPathDelimSwitch"/>
+          <link id="SwitchPathDelims"/>
+        </seealso>
+      </element>
+      <element name="SwitchPathDelims.Result">
+        <short>File path and name after any path delimiter substitutions</short>
+      </element>
+      <element name="SwitchPathDelims.Filename">
+        <short>File path and name examined in the function</short>
+      </element>
+      <element name="SwitchPathDelims.Switch">
+        <short>Indicates the desired path delimiter to use in the return value</short>
+      </element>
+
+      <element name="CheckPathDelim">
+        <short>
+          Determines if the specified path delimiter character is not used on the system
+        </short>
+        <descr>
+          <p>
+            <var>CheckPathDelim</var> is a <var>TPathDelimSwitch</var> function used to determine if a specified path delimiter character is not the one used for the platform or environment running the application. The return value contains an TPathDelimSwitch enumeration value that indicates the path delimiter character notation that does not meet the requirements for the host.
+          </p>
+          <p>
+            CheckPathDelim compares the value in <var>OldPathDelim</var> to the current <var>PathDelim</var> character for the system. When they are different, the return value is set to reflect the delimiter character in use in OldPathDelim. If they are the same, the return value is set to <b>pdsNone</b> indicating that path delimiter substitutions are not needed.
+          </p>
+          <p>
+            <var>Changed</var> is a <var>Boolean</var> output parameter that indicates if the value in OldPathDelim does not match the current path delimiter in use on the system running the application. Changed contains <b>False</b> when the current path delimiter matches the value in OldPathDelim.
+          </p>
+        </descr>
+        <seealso>
+          <link id="SwitchPathDelims"/>
+          <link id="ForcePathDelims"/>
+          <link id="IsCurrentPathDelim"/>
+        </seealso>
+      </element>
+      <element name="CheckPathDelim.Result">
+        <short>Enumeration value indicating the path delimiter substitution required</short>
+      </element>
+      <element name="CheckPathDelim.OldPathDelim">
+        <short>Value to compare to the current path delimiter for the system</short>
+      </element>
+      <element name="CheckPathDelim.Changed">
+        <short></short>
+      </element>
+
+      <element name="IsCurrentPathDelim">
+        <short>
+          Determines if the current path delimiter matches the specified path delimiter notation
+        </short>
+        <descr>
+          <p>
+            <var>IsCurrentPathDelim</var> is a <var>Boolean</var> function used to determine if the path delimiter notation specified in Switch matches the current path delimiter for the system.
+          </p>
+          <p>
+            <var>Switch</var> is a <var>TPathDelimSwitch</var> enumeration value that indicates the notation to compare to the current path delimiter on the system running the application. Switch can include the following values:
+          </p>
+          <dl>
+            <dt>pdsNone</dt>
+            <dd>
+              No comparison is performed since it is not required. Return value is set True.
+            </dd>
+            <dt>pdsSystem</dt>
+            <dd>
+              No comparison is performed since it will always match  the current path delimiter for the system. Return value is set True.
+           </dd>
+            <dt>pdsUnix</dt>
+            <dd>
+              Return value is set to True when PathDelim contains the UNIX forward slash (/) character.
+           </dd>
+            <dt>pdsWindows</dt>
+            <dd>
+              Return value is set to True when PathDelim contains the Windows backslash (\) character.
+           </dd>
+          </dl>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="IsCurrentPathDelim.Result">
+        <short>Boolean result of the path delimiter comparison</short>
+      </element>
+      <element name="IsCurrentPathDelim.Switch">
+        <short>
+          Enumeration value specifying the character compared to the current path delimiter
+        </short>
+      </element>
+
+      <element name="CreateAbsoluteSearchPath">
+        <short>
+          <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory </var>and <var>SearchPath</var> to form an absolute path to search for files
+        </short>
+        <descr>
+          <p>
+            <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory </var> and <var>SearchPath</var> to form an absolute path to search for files.
+          </p>
+          <p>
+            The routine adds the appropriate path delimiters to the BaseDirectory string, and adds the search path. Each directory in the search path is examined to ensure that each is also an absolute directory path. The return value contains the fully-formed absolute search path.
+          </p>
+          <p>
+            If <var>BaseDirectory</var> is empty, the function exits with a return value equal to <var>SearchPath</var>. if <var>SearchPath</var> is empty, the function exits with empty string <b>('')</b> in the return value.
+          </p>
+        </descr>
+      </element>
+      <element name="CreateAbsoluteSearchPath.Result">
+        <short>
+          The absolute path formed by concatenating <var>BaseDirectory</var> and <var>SearchPath</var>
+        </short>
+      </element>
+      <element name="CreateAbsoluteSearchPath.SearchPath">
+        <short>The search path (a relative path)</short>
+      </element>
+      <element name="CreateAbsoluteSearchPath.BaseDirectory">
+        <short>The base directory from which to form the absolute path</short>
+      </element>
+
+      <element name="CreateRelativeSearchPath">
+        <short>
+          Resolves relative path value(s) in the specified search path
+        </short>
+        <descr>
+          <p>
+            <var>CreateRelativeSearchPath</var> is a <var>String</var> function used to resolve one or more paths in <var>SearchPath</var> relative to the directory specified in <var>BaseDirectory</var>. A relative search path is one that assumes the path starts at a given working directory, and could result in an error if that directory is not the current directory on the local file system. CreateRelativeSearchPath ensures that a relative search path is resolved relative to a given directory to provide access to resources in the directory path.
+          </p>
+          <p>
+            SearchPath can contain multiple path values by using the semicolon character (<b>;</b>) to separate the paths.
+          </p>
+          <p>
+            BaseDirectory specifies the directory used as the anchor (or root) for each resolved search path.
+          </p>
+          <p>
+            Paths specified in SearchPath are resolved individually, and recombined with other path values in SearchPath. If either SearchPath or BaseDirectory contain an empty string (<b>''</b>), no actions are performed in the function. The return value contains a copy of the contents in SearchPath with relative paths resolved.
+          </p>
+        </descr>
+        <seealso>
+          <link id="FilenameIsAbsolute"/>
+          <link id="CreateRelativePath"/>
+        </seealso>
+      </element>
+      <element name="CreateRelativeSearchPath.Result">
+        <short>
+          Search path after resolving relative paths to the specified base directory
+        </short>
+      </element>
+      <element name="CreateRelativeSearchPath.SearchPath">
+        <short>
+          Search path(s) examined in the function
+        </short>
+      </element>
+      <element name="CreateRelativeSearchPath.BaseDirectory">
+        <short>
+          Directory used as the anchor for resolved relative paths
+        </short>
+      </element>
+
+      <element name="MinimizeSearchPath">
+        <short>Trims the specified path, and removes empty or duplicate paths</short>
+        <descr>
+          <p>
+            <var>MinimizeSearchPath</var> is a <var>String</var> function used to trim the path(s) specified in <var>SearchPath</var>, and to remove empty or duplicate paths in the argument. SearchPath can contain multiple path specifications separated by the semicolon (';') character.
+          </p>
+          <p>
+            MinimizeSearchPath iterates over the path specifications in SearchPath and calls TrimFilename as needed. ChompPathDelim is calls as well to remove trailing path delimiters as needed. Duplicate occurrence of a search path are reduced to a single occurrence.
+          </p>
+          <p>
+            The return value contains the value in SearchPath after normalization and removal of  duplicate and empty search path specifications.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ChompPathDelim"/>
+          <link id="TrimFilename"/>
+          <link id="FileNameIsTrimmed"/>
+          <link id="FindPathInSearchPath"/>
+        </seealso>
+      </element>
+      <element name="MinimizeSearchPath.Result">
+        <short>Search path after normalization and removal of duplicates</short>
+      </element>
+      <element name="MinimizeSearchPath.SearchPath">
+        <short>Search path(s) examined in the function</short>
+      </element>
+
+      <element name="FindPathInSearchPath">
+        <short>Locates the specified path in a delimiters list of search paths</short>
+        <descr>
+          <p>
+            <var>FindPathInSearchPath</var> is an overloaded function used to locate the path specified in <var>APath</var> in a list of search paths.
+          </p>
+          <p>
+            <var>APath</var> contains the search path to locate in the delimited list of search paths. A trailing path delimiter specified in APath is ignored.
+          </p>
+          <p>
+            <var>SearchPath</var> contains the delimited list of search paths examined in the function. No actions are performed in the routine when SearchPath has not been assigned (contains <b>Nil</b>) or contains an empty string (<b>''</b>).
+          </p>
+          <p>
+            The return value is either an <var>Integer</var> or a <var>PChar</var> value depending on the overloaded variant used in an application. An Integer value represents the position in SearchPath where the value in APath is located. A PChar value contains a pointer to the first character in SearchPath where APath is located. The variant which accepts PChar arguments and returns a PChar value has additional length arguments for the path and search path.
+          </p>
+          <p>
+            Compiler defines determine the mechanism used to perform a comparison of the values in APath and SearchPath; i.e. <var>CaseInsensitiveFilenames</var> and <var>NotLiteralFilenames</var>. <var>CompareFilenames</var> is called to perform the comparison when inline comparison of string values in not supported.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="FindPathInSearchPath.Result">
+        <short>Position or value for the located search path</short>
+      </element>
+      <element name="FindPathInSearchPath.APath">
+        <short>Path to locate in the delimited list of search paths</short>
+      </element>
+      <element name="FindPathInSearchPath.APathLen">
+        <short>Length in characters for the path to locate in the routine</short>
+      </element>
+      <element name="FindPathInSearchPath.SearchPath">
+        <short>Delimited list of search paths examined in the routine</short>
+      </element>
+      <element name="FindPathInSearchPath.SearchPathLen">
+        <short>Length in characters for the search paths list</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="FileExistsUTF8">
         <short>
@@ -897,7 +1321,7 @@
         </short>
         <descr>
           <p>
-            FileExistsUTF8 is a Boolean function which indicates if the specified file name exists in the local file system. For the Windows environment, FileExistsUTF8 uses FileGetAttrUTF8 to ensure that Filename does not have the FILE_ATTRIBUTE_DIRECTORY attribute. For UNIX-like environments, the FileExists function in SysUtils is used to get the return value.
+            <var>FileExistsUTF8</var> is a <var>Boolean</var> function which indicates if the specified file name exists in the local file system. For the Windows environment, FileExistsUTF8 uses FileGetAttrUTF8 to ensure that Filename does not have the <b>FILE_ATTRIBUTE_DIRECTORY</b> attribute. For UNIX-like environments, the FileExists function in <file>SysUtils</file> is used to get the return value.
           </p>
         </descr>
         <seealso></seealso>
@@ -910,7 +1334,7 @@
 
       <!-- argument Visibility: default -->
       <element name="FileExistsUTF8.Filename">
-        <short>File name to locate in the file system</short>
+        <short>UTF-8-encoded file name to locate in the local file system</short>
       </element>
 
       <!-- function Visibility: default -->
@@ -920,14 +1344,13 @@
         </short>
         <descr>
           <p>
-            FileAgeUTF8 is a Longint function which returns the last modification time for the file in FileName. FileAgeUTF8 cannot be used on directories, and returns -1 if FileName indicates a directory.
+            <var>FileAgeUTF8</var> is a <var>Longint</var> function which returns the last modification time for the file specified in <var>FileName</var>. FileAgeUTF8 should not be used on directories; it returns <b>-1</b> if FileName represents a directory instead of a file.
           </p>
           <p>
-            For UNIX-like environments, the return value is provided by the FileAge function in SysUtils. For the Windows environment,  FindFirstFileW is used to get TWin32FindDataW data for the specified file. Its ftLastWriteTime value is converted using WinToDosTime to get the return value for the function.
+            For UNIX-like environments, the return value is provided by the <var>FileAge</var> function in the <file>SysUtils</file> unit. For Windows,  FindFirstFileW is used to get the TWin32FindDataW data for the specified file. Its ftLastWriteTime value is converted using WinToDosTime to get the return value for the function.
           </p>
           <p>
-            The return value is in FileDate format, and can be transformed to TDateTime format with the FileDateToDateTime 
-function.
+            The return value is in FileDate format, and can be transformed to a TDateTime value with the FileDateToDateTime function.
           </p>
         </descr>
         <seealso></seealso>
@@ -940,7 +1363,7 @@ function.
 
       <!-- argument Visibility: default -->
       <element name="FileAgeUTF8.FileName">
-        <short>File name for the function</short>
+        <short>File name examined in the function</short>
       </element>
 
       <!-- function Visibility: default -->
@@ -950,7 +1373,7 @@ function.
         </short>
         <descr>
           <p>
-            DirectoryExistsUTF8 is Boolean function used to determine if the specified path exists on the local file system. For the Windows environment, FileGetAttrUTF8 is called to see if FILE_ATTRIBUTE_DIRECTORY is include in the file attributes for Directory. For UNIX-like environments, the DirectoryExists function in SysUtils is used to get the return value.
+            <var>DirectoryExistsUTF8</var> is <var>Boolean</var> function used to determine if the specified path exists on the local file system. For the Windows environment, FileGetAttrUTF8 is called to see if <b>FILE_ATTRIBUTE_DIRECTORY</b> is included in the file attributes for the specified Directory. For UNIX-like environments, the DirectoryExists function in the <file>SysUtils</file> unit is used to get the return value.
           </p>
         </descr>
         <seealso></seealso>
@@ -973,29 +1396,32 @@ function.
         </short>
         <descr>
           <p>
-            ExpandFileNameUTF8 is a String function which expands the UTF-8-encoded values in FileName and BaseDir to an absolute file name. It changes all directory separator characters to the one appropriate for the system.
+            <var>ExpandFileNameUTF8</var> is a <var>String</var> function which expands the UTF-8-encoded values in FileName and BaseDir to an absolute file name. It changes all directory separator characters to the one appropriate for the system.
           </p>
           <p>
-            If an empty string ('') is passed in Filename, it is expanded to the current directory using GetCurrentDirUTF8. When FileName contains the tilde character ('~'), it is converted to the path to the home directory for the user using the <var>HOME</var> environment variable.  Relative paths in FileName are resolved by calling ResolveDots.
+            If an empty string ('') is passed in Filename, it is expanded to the current directory using GetCurrentDirUTF8. When FileName contains the tilde character (<b>~</b>), it is converted to the path to the home directory for the user using the <var>HOME</var> environment variable.  Relative paths in FileName are resolved by calling ResolveDots.
           </p>
         </descr>
         <errors></errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="GetCurrentDirUTF8"/>
+          <link id="ResolveDots"/>
+        </seealso>
       </element>
 
       <!-- function result Visibility: default -->
       <element name="ExpandFileNameUTF8.Result">
-        <short>File name with an absolute path</short>
+        <short>The file name with an absolute path</short>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="ExpandFileNameUTF8.FileName">
-        <short>File name for the operation</short>
+        <short>File name examined in the function</short>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="ExpandFileNameUTF8.BaseDir">
-        <short>Base directory for the operation</short>
+        <short>Base directory used to resolve a relative path</short>
       </element>
 
       <!-- function Visibility: default -->
@@ -1005,7 +1431,7 @@ function.
         </short>
         <descr>
           <p>
-            FindFirstUTF8 searches the file specified in Path. Normal files, as well as all special files which have the attributes specified in Attr will be returned.
+            <var>FindFirstUTF8</var> searches the for file which match the value specified in Path. Normal files, as well as all special files which have the attributes specified in Attr will be returned.
           </p>
           <p>
             It returns a SearchRec record for further searching in Rslt. Path can contain wildcard characters;  ? (matches any single character) and * (matches 0 or more arbitrary characters). In this case FindFirstUTF8 will return the first file which matches the specified criteria.
@@ -1047,7 +1473,7 @@ function.
         </short>
         <descr>
           <p>
-            FindNextUTF8 is a Longint function used to locate another file matching the TSearchRec value in Rslt. Rslt is populated in a prior call to FindFirstUTF8, and updated in FindNextUTF8.
+            <var>FindNextUTF8</var> is a Longint function used to locate another file matching the TSearchRec value in Rslt. Rslt is populated in a prior call to FindFirstUTF8, and updated in FindNextUTF8.
           </p>
           <p>
             For the Windows environment, FindNextFileW is called to compare the TWIN32FINDDATAW for the matching file. For UNIX-like environments, the FindNext function in SysUtils is used.
@@ -1076,7 +1502,7 @@ function.
         </short>
         <descr>
           <p>
-            FindCloseUTF8 is a procedure used to free resources allocated to the search record in F in FindFirstUTF8. FindCloseUTF8 calls the FindClose function in SysUtils.
+            <var>FindCloseUTF8</var> is a procedure used to free resources allocated to the search record in F by the <var>FindFirstUTF8</var> routine. FindCloseUTF8 calls the FindClose function in the <file>SysUtils</file> unit.
           </p>
         </descr>
         <seealso></seealso>
@@ -1094,7 +1520,7 @@ function.
         </short>
         <descr>
           <p>
-            FileSetDateUTF8 is a Longint function used to set the last modification time for the file to the specified Age in FileDate format. Use DateTimeToFileDate to convert a TDateTime value to FileDate format.
+            <var>FileSetDateUTF8</var> is a <var>Longint</var> function used to set the last modification time for the file to the specified Age in FileDate format. Use DateTimeToFileDate to convert a TDateTime value to FileDate format.
           </p>
           <p>
             For the Windows environment, a handle is created for the specified file name, and SetFileTime is called to store the updated file age. For UNIX-like environments, FileSetDate in SysUtils is called to set the file age. InvalidateFileStateCache is also called for the specified file name.
@@ -1128,7 +1554,7 @@ function.
         </short>
         <descr>
           <p>
-            FileGetAttrUTF8 is a Longint function used to get files attributes for the specified file name. For the Windows environment, GetFileAttributesW in Windows is called to the file attribute value for Filename. For UNIX-like environments, FileGetAttr in SysUtils is called to the the return value.
+            <var>FileGetAttrUTF8</var> is a <var>Longint</var> function used to get files attributes for the specified file name. For the Windows environment, GetFileAttributesW in Windows is called to the file attribute value for Filename. For UNIX-like environments, FileGetAttr in SysUtils is called to the the return value.
           </p>
           <p>
             The return value contains a numeric value that can be OR-ed with the following constants to get a specific file attribute:
@@ -1137,27 +1563,27 @@ function.
             <dt>faReadOnly</dt>
             <dd>
               The file is read-only
-            </dd>
+           </dd>
             <dt>faHidden</dt>
             <dd>
               The file is hidden (On UNIX, the filename starts with a dot)
-            </dd>
+           </dd>
             <dt>faSysFile</dt>
             <dd>
               The file is a system file (On UNIX, the file is a character, block or FIFO file).
-            </dd>
+           </dd>
             <dt>faVolumeId</dt>
             <dd>
               Volume Label (For DOS/Windows on a plain FAT - not VFAT or Fat32)
-            </dd>
+           </dd>
             <dt>faDirectory</dt>
             <dd>
               File is a directory
-            </dd>
+           </dd>
             <dt>faArchive</dt>
             <dd>
               File is ready to be archived (Not possible on UNIX)
-            </dd>
+           </dd>
           </dl>
         </descr>
         <seealso></seealso>
@@ -1180,33 +1606,33 @@ function.
         </short>
         <descr>
           <p>
-            FileSetAttrUTF8 is a Longint function used to set the file attributes for the specified file name to the value in Attr. The value in Attr can be set by AND-ing predefined file attribute constants, such as:
+            <var>FileSetAttrUTF8</var> is a <var>Longint</var> function used to set the file attributes for the specified file name to the value in Attr. The value in Attr can be set by AND-ing predefined file attribute constants, such as:
           </p>
           <dl>
             <dt>faReadOnly</dt>
             <dd>
               The file is read-only
-            </dd>
+           </dd>
             <dt>faHidden</dt>
             <dd>
               The file is hidden (On UNIX, the filename starts with a dot)
-            </dd>
+           </dd>
             <dt>faSysFile</dt>
             <dd>
               The file is a system file (On UNIX, the file is a character, block or FIFO file).
-            </dd>
+           </dd>
             <dt>faVolumeId</dt>
             <dd>
               Volume Label (For DOS/Windows on a plain FAT - not VFAT or Fat32)
-            </dd>
+           </dd>
             <dt>faDirectory</dt>
             <dd>
               File is a directory
-            </dd>
+           </dd>
             <dt>faArchive</dt>
             <dd>
               File is ready to be archived (Not possible on UNIX)
-            </dd>
+           </dd>
           </dl>
           <p>
             For UNIX-like environments,  FileSetAttr in SysUtils is called to set the file attributes value. InvalidateFileStateCache is also called for the specified file name. For the Windows environment, SetFileAttributesW in Windows is called to set the attributes value for the specified file name.
@@ -1240,10 +1666,10 @@ function.
         </short>
         <descr>
           <p>
-            DeleteFileUTF8 is a Boolean function used to delete the specified file name.
+            <var>DeleteFileUTF8</var> is a Boolean function used to delete the specified file name.
           </p>
           <p>
-            For the Windows environment, DeleteFileW in Windows is called to remove the specified file name. For UNIX-like environments, DeleteFile in SysUtils is called to delete the specified file name. InvalidateFileStateCache is also called.
+            For the Windows environment, DeleteFileW in Windows is called to remove the specified file name. For UNIX-like environments, DeleteFile in the <file>SysUtils</file> unit is called to delete the specified file name. InvalidateFileStateCache is also called.
           </p>
           <p>
             The return value contains True when Filename is successfully deleted from the local file system.
@@ -1269,11 +1695,10 @@ function.
         </short>
         <descr>
           <p>
-            RenameFileUTF8 is a Boolean function used to rename a file to the specified new value.
+            <var>RenameFileUTF8</var> is a <var>Boolean</var> function used to rename a file to the value specified in NewName.
           </p>
           <p>
-            For the Windows environment, MoveFileW is called to rename the file using the values specified in OldName and 
-NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename the file to the specified new value. InvalidateFileStateCache is also called.
+            For the Windows environment, MoveFileW is called to rename the file using the values specified in OldName and NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename the file to the specified new value. InvalidateFileStateCache is also called.
           </p>
           <p>
             The return value is True if the file is renamed successfully.
@@ -1305,16 +1730,16 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            FileSearchUTF8 is a String function used to search for files with the specified name in the list of directory paths.
+            <var>FileSearchUTF8</var> is a <var>String</var> function used to search for files with the specified name in the list of directory paths.
           </p>
           <p>
-            DirList is a list of file paths to search in the function. Values in DirList are separated by the PathSeparator character for the environment. No additional directories are searched when DirList contains an empty string ('').
+            <var>DirList</var> is a list of file paths to search in the function. Values in DirList are separated by the <var>PathSeparator</var> character for the environment. No additional directories are searched when DirList contains an empty string ('').
           </p>
           <p>
-            ImplicitCurrentDir controls whether the search is implicitly limited to the current directory. The default value for ImplicitCurrentDir is True. When a file with the specified Name is located in the current directory, no additional searches are needed.  The return value is the name of the file without any path information.
+            <var>ImplicitCurrentDir</var> controls whether the search is implicitly limited to the current directory. The default value for ImplicitCurrentDir is <b>True</b>. When a file with the specified Name is located in the current directory, no additional searches are needed. The return value is the name of the file without any path information.
           </p>
           <p>
-            When ImplicitCurrentDir is False, each path in DirList is searched for a file with the specified name. The search is stopped when the first file with the specified file name is found. The return value contains the path in DirList where the file name was located along with the file name, or an empty string ('') if the specified file is not found.
+            When ImplicitCurrentDir is <b>False</b>, each path in DirList is searched for a file with the specified name. The search is stopped when the first file with the specified file name is found. The return value contains the path in DirList where the file name was located along with the file name, or an empty string ('') if the specified file is not found in the search.
           </p>
         </descr>
         <seealso></seealso>
@@ -1342,7 +1767,7 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            FileIsReadOnlyUTF8 is a Boolean function used to determine if the specified file is marked as read-only in the local file system. FileIsReadOnlyUTF8 calls FileGetAttrUTF8 for the specified file name and checks to see if  faReadOnly has been included in the file attributes value. The return value is True when faReadOnly has been included in the file attributes.
+            <var>FileIsReadOnlyUTF8</var> is a <var>Boolean</var> function used to determine if the specified file is marked as read-only in the local file system. FileIsReadOnlyUTF8 calls FileGetAttrUTF8 for the specified file name and checks to see if  faReadOnly has been included in the file attributes value. The return value is True when faReadOnly has been included in the file attributes.
           </p>
         </descr>
         <seealso></seealso>
@@ -1365,7 +1790,7 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            GetCurrentDirUTF8 is a String function used to get the name for the current directory in the local file system.
+            <var>GetCurrentDirUTF8</var> is a <var>String</var> function used to get the name for the current directory in the local file system.
           </p>
             For the Windows environment, GetCurrentDirectoryW is called to get the current directory name. UTF8Encode is called to convert the WideString value to UTF-8, and used as the return value for the function.
           <p>
@@ -1389,7 +1814,7 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            SetCurrentDirUTF8 is a Boolean function used to set the current directory in the local file system to the specified value.
+            <var>SetCurrentDirUTF8</var> is a <var>Boolean</var> function used to set the current directory in the local file system to the specified value.
           </p>
           <p>
             For the Windows environment, UTFDecode is called to convert NewDir and passed to SetCurrentDirectoryW to set the current directory name. Windows CE raises an exception in SetCurrentDirUtf8; the concept of a current directory does not exist in Windows CE.
@@ -1406,7 +1831,7 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
             <dt>TException</dt>
             <dd>
               Raised for the Windows CE environment; exception message is: '[SetCurrentDirWide] The concept of the current directory doesn't exist in Windows CE'
-            </dd>
+           </dd>
           </dl>
         </errors>
         <seealso></seealso>
@@ -1429,7 +1854,7 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            CreateDirUTF8 is a Boolean function used to create a new directory in the local file system with the specified name. For the Windows environments, the value in NewDir is converted to wide string format and passed to the CreateDirectoryW function in the Windows unit. For UNIX-like environments, CreateDir in SysUtils is used to create the new directory with the specified name.
+            <var>CreateDirUTF8</var> is a <var>Boolean</var> function used to create a new directory in the local file system with the specified name. For the Windows environments, the value in NewDir is converted to wide string format and passed to the CreateDirectoryW function in the Windows unit. For UNIX-like environments, CreateDir in SysUtils is used to create the new directory with the specified name.
           </p>
           <p>
             The return value is True if the new directory is successfully created.
@@ -1460,7 +1885,7 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            RemoveDirUTF8 is a Boolean function used to remove the directory with the specified name from the local file system.
+            <var>RemoveDirUTF8</var> is a <var>Boolean</var> function used to remove the directory with the specified name from the local file system.
           </p>
           <p>
             For the Windows environment, UTF8Decode is called to convert the value in Dir to wide string format. The RemoveDirectoryW function in the Windows unit is called to remove the specified directory.
@@ -1495,13 +1920,13 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            <var>ForceDirectories</var>  is a Boolean function which creates the specified directories if they do not already exist. ForceDirectories examines the value in Dir to determine if it contains a Windows device identifier or a UNC name. If a device identifier or UNC name is found, but not supported on the platform, no actions are performed in the function.
+            <var>ForceDirectories</var>  is a <var>Boolean</var> function which creates the specified directories if they do not already exist. ForceDirectories examines the value in Dir to determine if it contains a Windows device identifier or a UNC name. If a device identifier or UNC name is found, but not supported on the platform, no actions are performed in the function.
           </p>
           <p>
-            ForceDirectories raises an EInOutError exception with the message in SCannotCreateEmptyDir when Dir contains an empty string ('').
+            ForceDirectories raises an <var>EInOutError</var> exception with the message in <var>SCannotCreateEmptyDir</var> when Dir contains an empty string ('').
           </p>
           <p>
-            Each directory in the specified path is checked using DirectoryExistsUTF8.  ForceDirectories calls CreateDirUTF8 if a directory does not already exist, and may exit with a return value of False if directory creation is not successful. The return value is True if all directories in the path information already exist, or are successfully created in the function.
+            Each directory in the specified path is checked using <var>DirectoryExistsUTF8</var>.  ForceDirectories calls <var>CreateDirUTF8</var> if a directory does not already exist, and may exit with a return value of <b>False</b> if directory creation is not successful. The return value is <b>True</b> if all directories in the path information already exist, or are successfully created in the function.
           </p>
         </descr>
         <errors>
@@ -1509,13 +1934,12 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
             <dt>EIOnOutError</dt>
             <dd>
               Raised when the directory name is an empty string (''); Message is SCannotCreateEmptyDir, and ErrorCode is set to 3.
-           </dd>
+          </dd>
           </dl>
         </errors>
         <seealso>
           <link id="ForceDirectory"/>
         </seealso>
-
       </element>
 
       <!-- function result Visibility: default -->
@@ -1530,6 +1954,676 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         <short>Path information to examine the function</short>
       </element>
 
+      <element name="FileOpenUTF8">
+        <short>
+          Opens the specified file name and returns its file handle
+        </short>
+        <descr>
+          <p>
+            <var>FileOpenUTF8</var> is a <var>THandle</var> function used to open the UTF-8-encoded file name in <var>FileName</var>, and return its file handle. FileOpenUTF8 converts the file name to system format by calling <var>UTF8ToSys</var>, and calls the <var>FileOpen</var> routine in the <file>SysUtils</file> unit to get the file handle for the opened file.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#RTL.SysUtils.FileOpen"/>
+          <link id="UTF8ToSys"/>
+        </seealso>
+      </element>
+      <element name="FileOpenUTF8.Result">
+        <short>File handle for the specified file</short>
+      </element>
+      <element name="FileOpenUTF8.FileName">
+        <short>File name opened in the function</short>
+      </element>
+      <element name="FileOpenUTF8.Mode">
+        <short>File access mode requested for the opened file</short>
+      </element>
+
+      <element name="FileCreateUTF8">
+        <short>Creates the specified file and returns its file handle</short>
+        <descr>
+          <p>
+            <var>FileCreateUTF8</var> is a <var>THandle</var> function used to created the file specified in the UTF-8-encoded <var>FileName</var> argument, and returns the file handle for the newly created file. Overloaded variants of the function are provided which allow additional arguments that specify the file sharing mode, or access rights for the newly created file.
+          </p>
+          <p>
+            FileCreateUTF8 calls <var>UTF8ToSys</var> to convert the file name to its system representation, and calls the <var>FileCreate</var> routine in the <file>SysUtils</file> unit to create the file and get its file handle.
+          </p>
+        </descr>
+        <seealso>
+          <link id="UTF8ToSys"/>
+          <link id="#RTL.SysUtils.FileCreate"/>
+        </seealso>
+      </element>
+      <element name="FileCreateUTF8.Result">
+        <short>File handle for the file created in the function</short>
+      </element>
+      <element name="FileCreateUTF8.FileName">
+        <short>File name created in the function</short>
+      </element>
+      <element name="FileCreateUTF8.Rights">
+        <short>File access rights for the new file</short>
+      </element>
+      <element name="FileCreateUTF8.ShareMode">
+        <short>File sharing mode for the new file</short>
+      </element>
+
+      <element name="FileSizeUtf8">
+        <short>Gets the size for the specified file name</short>
+        <descr>
+          <var>FileSizeUTF8</var> is an <var>Int64</var> function used to get the size for the file specified in the UTF-8-encoded <var>Filename</var> argument. FileSizeUTF8 calls <var>UTFToAnsi</var> to convert the value in Filename to an AnsiString type, and calls the <var>FindFirst</var> routine in the <file>SysUtils</file> unit to get the size for the specified file name.
+        </descr>
+        <seealso>
+          <link id="UTF8ToAnsi"/>
+          <link id="#RTL.SysUtils.FindFirst"/>
+        </seealso>
+      </element>
+      <element name="FileSizeUtf8.Result">
+        <short>Size of the file on the local file system</short>
+      </element>
+      <element name="FileSizeUtf8.Filename">
+        <short>File name examined in the function</short>
+      </element>
+
+      <element name="GetFileDescription">
+        <short>Gets descriptive information for the specified file name</short>
+        <descr>
+          <p>
+            GetFileDescription is a String function used to get descriptive information for the file name specified in AFilename. The return value contains file information appropriate to the platform, environment, or file system. The implementation of GetFileDescription and the content of the return value are platform- or OS-specific.
+          </p>
+          <p>
+            For UNIX-like environments, the return value can contain information that indicates the permissions for the user, group, and owner of the file as returned from the FPStat routine. It also includes the file user and group IDs, file size, and modification timestamp. For example:
+          </p>
+          <code>
+ld-rwxrwxrwx Owner: UID.GID Size: 99999 Modified: MM/DD/YYYY hh:nn
+          </code>
+          <dl>
+            <dt>l</dt>
+             <dd>File is a symbolic link</dd>
+            <dt>d</dt>
+            <dd>File is a directory in the file system</dd>
+            <dt>b,c, or -</dt>
+            <dd>Device type for the entry. b is for block-level devices. c is for character devices. All others device types contain the - character.</dd>
+            <dt>r or -</dt>
+            <dd>User read access permission</dd>
+            <dt>w or -</dt>
+            <dd>User write access permission</dd>
+            <dt>x or -</dt>
+            <dd>User executable permission</dd>
+            <dt>r or -</dt>
+            <dd>Group read access permission</dd>
+            <dt>w or -</dt>
+            <dd>Group write access permission</dd>
+            <dt>x or -</dt>
+            <dd>Group executable permission</dd>
+            <dt>r or -</dt>
+            <dd>Other read access permission</dd>
+            <dt>w or -</dt>
+            <dd>Other write access permission</dd>
+            <dt>x or -</dt>
+            <dd>Other executable permission</dd>
+            <dt>UID</dt>
+            <dd>User identifier number assigned as the owner of the file</dd>
+            <dt>GID</dt>
+            <dd>Group identifier number assigned to the group which owns the file</dd>
+            <dt>99999</dt>
+            <dd>Size of the file. May indicate the total number of blocks or characters depending on the device type for the file.</dd>
+            <dt>MM/DD/YYYY hh:nn or ?</dt>
+            <dd>Creation/modification timestamp for the file. ? is included if an exception is raised when accessing the date/time value.</dd>
+          </dl>
+          <p>
+            For the Amiga platform, the content in the return value is derived using a  TFileInfoBlock for a shared lock on the file. The return value can be an empty string if the file could not be locked using a shared lock on the file system. It can contain values like the following:
+          </p>
+        <code>
+ asperwd
+        </code>
+        <dl>
+          <dt>a</dt>
+          <dd>File is an archived (unchanged) file</dd>
+          <dt>s</dt>
+          <dd>File is a script or executable file</dd>
+          <dt>p</dt>
+          <dd>File is command or program that can be made resident</dd>
+          <dt>e</dt>
+          <dd>File is used by the Shell</dd>
+          <dt>r</dt>
+          <dd>File is readable</dd>
+          <dt>w</dt>
+          <dd>File is writable</dd>
+          <dt>d</dt>
+          <dd>File <b>cannot</b> be deleted</dd>
+        </dl>
+        <p>
+          For Windows platforms, the return value contains only the modification date/time for the file using the format:
+        </p>
+        <code>
+Modified: MM/DD/YYYY hh:mm
+        </code>
+        <p>
+          The return value can be 'Modified: ?' if an exception is encountered when getting the date/time value for the file.
+        </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="GetFileDescription.Result">
+        <short>String with the file information for the platform or OS</short>
+      </element>
+      <element name="GetFileDescription.AFilename">
+        <short>File name examined in the function</short>
+      </element>
+
+      <element name="DbgSFileAttr">
+        <short>Displays information for file attributes in the debugger</short>
+        <descr>
+          <p>
+            Attr contains the file attributes examined in the routine, with the following values displayed for the corresponding file attributes:
+          </p>
+          <dl>
+            <dt>-1</dt>
+            <dd>Invalid</dd>
+            <dt>faDirectory</dt>
+            <dd>D</dd>
+            <dt>faArchive</dt>
+            <dd>A</dd>
+            <dt>faSysFile</dt>
+            <dd>S</dd>
+            <dt>faReadOnly</dt>
+            <dd>R</dd>
+            <dt>faHidden</dt>
+            <dd>H</dd>
+            <dt>faVolumeId</dt>
+            <dd>V</dd>
+            <dt>faSymLink</dt>
+            <dd>L</dd>
+          </dl>
+          <p>
+            File attributes not found in Attrib are represented as '-' characters.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="DbgSFileAttr.Result">
+        <short>String with information about the file attributes</short>
+      </element>
+      <element name="DbgSFileAttr.Attr">
+        <short>File attributes examined in the routine</short>
+      </element>
+
+      <element name="ReadAllLinks">
+        <short>
+          Resolves a symbolic link to an actual file name
+        </short>
+        <descr>
+          <p>
+            <var>ReadAllLinks</var> is a <var>String</var> function used to resolve a symbolic link to an actual file name. It does not resolve symbolic links in parent (or ancestor) directories. If a symlink cannot be resolved, and ExceptionOnError is False, the function returns an empty string (''). If ExceptionOnError is True, it raises an EFOpenError with a message, containing more details. For the Windows platform, it simply returns the value in the Filename argument.
+          </p>
+        </descr>
+      </element>
+
+      <element name="TryReadAllLinks">
+        <short>
+          Resolves a symlink to the real file
+        </short>
+        <descr>
+          <p>
+            If a symlink can not be resolved it returns Filename. It calls the ReadAllLinks function.
+          </p>
+        </descr>
+      </element>
+
+      <element name="TPhysicalFilenameOnError">
+        <short>
+          Enumerated type representing actions performed for an unresolved file name
+        </short>
+        <descr>
+          <p>
+            <var>TPhysicalFilenameOnError</var> is an enumerated type with values that indicate the action taken when an error is encountered when retrieving the physical file name for a symbolic link on the local file system. TPhysicalFilenameOnError includes the following enumeration values and meanings:
+          </p>
+          <dl>
+            <dd>pfeException</dd>
+            <dd>
+              Causes an exception to be raised for the missing file name.
+            </dd>
+            <dt>pfeEmpty</dt>
+            <dd>
+              Causes the missing file name to be ignored.
+            </dd>
+            <dt>pfeOriginal</dt>
+            <dd>
+              Causes the original (missing) file name to be retained.
+            </dd>
+        </dl>
+        <p>
+          TPhysicalFilenameOnError is the type used to represent the <var>OnError</var> argument passed to the <var>GetPhysicalFilename</var> function.
+        </p>
+        </descr>
+        <seealso>
+          <link id="GetPhysicalFilename"/>
+        </seealso>
+      </element>
+      <element name="TPhysicalFilenameOnError.pfeException">
+        <short>
+          Causes an exception to be raised for the missing file name.
+        </short>
+      </element>
+      <element name="TPhysicalFilenameOnError.pfeEmpty">
+        <short>
+          Causes the missing file name to be ignored.
+        </short>
+      </element>
+      <element name="TPhysicalFilenameOnError.pfeOriginal">
+        <short>
+          Causes the original (missing) file name to be retained.
+        </short>
+      </element>
+
+      <element name="GetPhysicalFilename">
+        <short>
+          Gets the physical file name for a symbolic link on the local file system
+        </short>
+        <descr>
+          <p>
+            <var>GetPhysicalFilename</var> is a <var>String</var> function used to get the physical file name on the local file system for the specified symbolic link.
+          </p>
+          <p>
+            <var>Filename</var> contains the symbolic link to resolve in the function.
+          </p>
+          <p>
+            <var>OnError</var> is a <var>TPhysicalFilenameOnError</var> enumeration value that indicates the action performed if a physical file name cannot be determined for the symbolic link. When OnError contains <b>pfeException</b>, an exception is raised for the unresolved file name. When OnError contains <b>pfeOriginal</b>, the unresolved symlink is used as the return value.
+          </p>
+          <p>
+            The implementation of GetPhysicalFilename is platform- or OS-dependent. For UNIX-like environments (which support symbolic links), the <var>GetUnixPhysicalFilename</var> function is called to retrieve the file name for the symlink. For other platforms and environments, like Amiga and Windows, symbolic links are not supported and the return values always contains the value in Filename.
+          </p>
+        </descr>
+        <seealso>
+          <link id="GetUnixPhysicalFilename"/>
+        </seealso>
+      </element>
+      <element name="GetPhysicalFilename.Result">
+        <short>Physical file name for the resolved symbolic link</short>
+      </element>
+      <element name="GetPhysicalFilename.Filename">
+        <short>File name examined in the function</short>
+      </element>
+      <element name="GetPhysicalFilename.OnError">
+        <short>
+          Indicates the action performed for a symbolic link that cannot be resolved to a physical file name
+        </short>
+      </element>
+
+      <element name="GetUnixPhysicalFilename">
+        <short>
+          Resolves the symlink in Filename, including omitted directories
+        </short>
+        <descr>
+          <p>
+            If a symlink can not be resolved, and ExceptionOnError is <b>False</b>, the function returns an empty string (<b>''</b>). If ExceptionOnError is <b>True</b>, it raises an EFOpenError exception with a message containing more details.
+          </p>
+          <p>
+            GetUnixPhysicalFilename is used to implement the GetPhysicalFilename function for UNIX-like environments.
+          </p>
+        </descr>
+        <seealso>
+          <link id="GetPhysicalFilename"/>
+        </seealso>
+      </element>
+      <element name="GetUnixPhysicalFilename.Result">
+        <short>Physical file name for the resolved symbolic link</short>
+      </element>
+      <element name="GetUnixPhysicalFilename.Filename">
+        <short>File name (or symlink) examined in the function</short>
+      </element>
+      <element name="GetUnixPhysicalFilename.ExceptionOnError">
+        <short>
+          Indicates if an exception is raised for a symbolic link that cannot be resolved to a physical file name
+        </short>
+      </element>
+
+      <element name="GetAppConfigDirUTF8">
+        <short></short>
+        <descr>
+          <p>
+            <var>GetAppConfigDirUTF8</var> is a <var>String</var> function used to get the directory on the local file system where application configuration and data files are stored.
+          </p>
+          <p>
+            <var>Global</var> is a <var>Boolean</var> argument that determines if the directory is user- or system- specific. When Global contains False, the home directory for the user is used as the path in the return value.
+          </p>
+          <p>
+            <var>Create</var> is a <var>Boolean</var> argument that indicates if the configuration directory should be created if not already present on the local file system.
+          </p>
+          <p>
+            The implementation of GetAppConfigDirUTF8 is platform- and/or OS-specific.
+          </p>
+          <p>
+            For the Amiga platform, the <var>GetAppConfigDir</var> in the <file>SysUtils</file> unit is called to get the return value.
+          </p>
+          <p>
+            For Windows environments, the <var>SHGetFolderPathUTF8</var> function is called to get the path information. The <b>CSIDL</b> (Constant Special Item ID List) required for the setting in Global and the target platform is passed to the routine. When VendorName is provided, it is appended to the path information. ApplicationName is also appended to the path information. If the path cannot be determined, the value from <var>DGetAppConfigDir</var> is used as the directory path.
+          </p>
+          <p>
+            For UNIX-like environments, the <var>GetAppConfigDir</var> function in the <file>SysUtils</file> unit is called to get the path information.
+          </p>
+          <p>
+            If the directory does not exist and Create contains True, the <var>ForceDirectoriesUTF8</var> routine is called to create any missing directories for the path. An <var>EInOutError</var> exception is raised if any missing directory in the path cannot be created.
+          </p>
+          <p>
+            GetAppConfigDirUTF8 is used in the implementation of the Lazarus IDE and help viewer  (LHelp).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#RTL.SysUtils.GetAppConfigDir"/>
+          <link id="ForceDirectoriesUTF8"/>
+        </seealso>
+      </element>
+      <element name="GetAppConfigDirUTF8.Result">
+        <short>
+          Path to the directory used for application configuration or data files
+        </short>
+      </element>
+      <element name="GetAppConfigDirUTF8.Global">
+        <short>
+          Indicates if the system-wide (not user specific) directory is used
+        </short>
+      </element>
+      <element name="GetAppConfigDirUTF8.Create">
+        <short>
+          Indicates if missing directories in the path should be created
+        </short>
+      </element>
+
+      <element name="GetAppConfigFileUTF8">
+        <short>
+          Gets a UTF-8-encoded configuration file name for the current application
+        </short>
+        <descr>
+          <p>
+            <var>GetAppConfigFileUTF8</var> is a <var>String</var> function used to get a UTF-8-encoded configuration file name for the current application. GetAppConfigFileUTF8 calls the <var>GetAppConfigFile</var> function in the <file>SysUtils</file> unit to get the return value for the function. <var>SysToUTF8</var> is called for the file name to ensure that it is encoded using the UTF-8 encoding scheme.
+          </p>
+          <p>
+            <var>Global</var> is a <var>Boolean</var> which indicates if system- or user-specific path information is used in the configuration file name. When Global contains <b>True</b>, the system-wide configuration path is used in the return value. Otherwise, a user-specific path is used in the return value.
+          </p>
+          <p>
+            <var>SubDir</var> is a <var>Boolean</var> value that indicates if a sub-directory for the application is included in the path for the configuration file. When SubDir is <b>True</b>, a sub-directory with the same name as the application is included in the path information.
+          </p>
+          <p>
+            <var>CreateDir</var> is a <var>Boolean</var> argument that indicates if any missing directories in the configuration file path are created in the function. When CreateDir is <b>False</b>, no additional actions are performed in the function. Otherwise, the path information is passed to <var>ForceDirectoriesUTF8</var> to create any missing directories. If any of the directories are not successfully created, an <var>EInOutError</var> exception is raised with the message in <var>lrsUnableToCreateConfigDirectoryS</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#RTL.SysUtils.GetAppConfigFile"/>
+          <link id="#RTL.SysUtils.SysToUTF8"/>
+          <link id="ForceDirectoriesUTF8"/>
+        </seealso>
+      </element>
+      <element name="GetAppConfigFileUTF8.Result">
+        <short>Path to the configuration file for the application</short>
+      </element>
+      <element name="GetAppConfigFileUTF8.Global">
+        <short>
+          Indicates if system-wide settings are used in the configuration file name
+        </short>
+      </element>
+      <element name="GetAppConfigFileUTF8.SubDir">
+        <short>
+          Indicates if a directory for the application is included in the configuration file name
+        </short>
+      </element>
+      <element name="GetAppConfigFileUTF8.CreateDir">
+        <short>
+          Indicates if missing directories in the configuration file path are created
+        </short>
+      </element>
+
+      <element name="GetTempFileNameUTF8">
+        <short>
+          Gets a temporary file name using the specified UTF-8-encoded path and prefix
+        </short>
+        <descr>
+          <p>
+            <var>GetTempFileNameUTF8</var> is a <var>String</var> function used to get a temporary file name with the specified prefix located in the specified directory.
+          </p>
+          <p>
+            <var>Dir</var> contains the path on the local file system where the temporary file should be located.
+          </p>
+          <p>
+            <var>Prefix</var> contains the prefix for the temporary file name. In other words, the temporary file name must start with this sequence of characters.
+          </p>
+          <p>
+            GetTempFileNameUTF8 signals the OnGetTempFile event handler (when assigned) to get the value used as the temporary file name. When OnGetTempFile has not been assigned, a string is constructed using the path information in Dir and a numeric suffix to make the file name unique. For example:
+          </p>
+          <code>
+/usr/tmp/TMP0.tmp
+          </code>
+          <p>
+            GetTempFileNameUTF8 examines the files in the specified directory to determine if a file already exists which starts with the value in  Prefix. If a file is located in the directory, a numeric suffix (starting at 0) is appended to the base file name in Prefix to build a temporary file name which does not already exist in the directory.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="GetTempFileNameUTF8.Result">
+        <short>Temporary file name generated in the routine</short>
+      </element>
+      <element name="GetTempFileNameUTF8.Dir">
+        <short>Directory path for the temporary file name</short>
+      </element>
+      <element name="GetTempFileNameUTF8.Prefix">
+        <short>Prefix for the temporary file name</short>
+      </element>
+
+      <element name="IsUNCPath">
+        <short>Indicates if the specified path uses Universal Naming Convention (UNC)</short>
+        <descr>
+          <p>
+            <var>IsUNCPath</var> is a <var>Boolean</var> function which indicates is the specified path uses Universal Naming Convention (UNC).
+          </p>
+          <p>
+            The implementation of IsUNCPath is platform- and/or OS-specific. For the Windows platform, IsUNCPath checks Path to see if it begins with the double backslash notation used for a UNC path. For example:
+          </p>
+          <code>
+  \\C:\directory\
+  \\?\C:\directory\
+  \\?\UNC\volume\directory\
+          </code>
+          <p>
+            For UNIX-like environments, as well as the Amiga platform, the return value is always False. UNC paths are not used on those platforms.
+          </p>
+          <p>
+            Use ExtractUNCVolume to get host and path information from a file name expressed using UNC notation.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="IsUNCPath.Result">
+        <short>True when the path contains UNC notation</short>
+      </element>
+      <element name="IsUNCPath.Path">
+        <short>Path examined in the function</short>
+      </element>
+
+      <element name="ExtractUNCVolume">
+        <short>Gets UNC host and volume name used in the specified path</short>
+        <descr>
+          <p>
+            <var>ExtractUNCVolume</var> is a <var>String</var> function used to get host and volume information from a path specified using Universal Naming Convention (UNC). UNC notation is recognized using both the long and short formats defined for the naming convention.
+          </p>
+          <p>
+            The return value contains information needed to access shared resources by their host and volume names, and contains one of the following formats:
+          </p>
+          <code>
+  \\server-name\shared-resource-path-name\
+  \\mypc\nas-drive\
+  \\?\c:\
+  \\?\UNC\c:\
+          </code>
+          <p>
+            ExtractUNCVolume calls the <var>IsUNCPath</var> function to determine if the value in <var>Path</var> starts with the UNC naming delimiters. The return value is an empty string (<b>''</b>), and no additional actions are performed in the function, when Path does not use UNC notation.
+          </p>
+          <p>
+            ExtractUNCVolume examines the characters in Path to determine if it uses the long or the short format for UNC notation. Long format notation begins with the characters <b>'\\?\'</b>  or <b>'\\?\UNC\'</b> followed by a drive designation and optional path information such as 'c:\'. Short format notation uses a host name and a shared resource identifier such as <b>'\\mypc\nas-drive\'</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="IsUncPath"/>
+        </seealso>
+      </element>
+      <element name="ExtractUNCVolume.Result">
+        <short>UNC host and volume name extracted from the specified path</short>
+      </element>
+      <element name="ExtractUNCVolume.Path">
+        <short>Path information examined in the function</short>
+      </element>
+
+      <element name="ExtractFileRoot">
+        <short>Gets the root drive/path/directory for the specified file name</short>
+        <descr>
+          <p>
+            <var>ExtractFileRoot</var> is a <var>String</var> function used to get the root directory for the specified file name. It is file system-aware and includes the drive and/or volume information needed for the file name specified in the FileName argument.
+          </p>
+          <p>
+            When FileName uses Universal Naming Convention (UNC),  the return value will contain any server and share/volume information included in the parameter. For example:
+          </p>
+          <code>
+  \\server-name\share-name\
+  \\?\C:\
+         </code>
+         <p>
+           For UNIX-like environments (as well as WinCE), an initial path delimiter marks the root directory in the file system.
+         </p>
+         <p>
+           For the Amiga platform, any characters in FileName up to (but not including) the first ":" character are used as the root directory.
+         </p>
+         <p>
+           For the Windows platform, a drive designation up to and including the first path delimiter are used as the root directory. For example:
+         </p>
+         <code>
+C:\
+          </code>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="ExtractFileRoot.Result">
+        <short>Root directory on the file system for the specified file name </short>
+      </element>
+      <element name="ExtractFileRoot.FileName">
+        <short>File name specifier examined in the routine</short>
+      </element>
+
+      <element name="GetDarwinSystemFilename">
+        <short></short>
+        <descr>
+          Implemented when the platform or OS includes the <b>darwin</b> compiler define. Used in the implementation of TryCreateRelativePath for the Darwin platform.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="GetDarwinSystemFilename.Result">
+        <short></short>
+      </element>
+      <element name="GetDarwinSystemFilename.Filename">
+        <short></short>
+      </element>
+
+      <element name="GetDarwinNormalizedFilename">
+        <short></short>
+        <descr>
+          Implemented when the platform or OS includes the <b>darwin</b> compiler define. Handles canonical string normalization forms for file names on the Darwin platform.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="GetDarwinNormalizedFilename.Result">
+        <short></short>
+      </element>
+      <element name="GetDarwinNormalizedFilename.Filename">
+        <short></short>
+      </element>
+      <element name="GetDarwinNormalizedFilename.nForm">
+        <short></short>
+      </element>
+
+      <element name="SHGetFolderPathUTF8">
+        <short>
+          Works like the WinAPI function SHGetFolderPathW, but returns a UTF-8-encoded string
+        </short>
+      </element>
+      <element name="SHGetFolderPathUTF8.Result">
+        <short>UTF-8-encoded folder path for the identifier</short>
+      </element>
+      <element name="SHGetFolderPathUTF8.ID">
+        <short>Identifier resolved in the function</short>
+      </element>
+
+      <element name="SplitCmdLineParams">
+        <short>
+          Splits command line parameters separated by whitespace characters
+        </short>
+        <descr>
+          <p>
+            Parameters are separated by one or more whitespace characters (#9,#10,#13,#32). Quoted values are parsed as a single parameter. If ReadBackslash contains True,  then <var>\"</var> is replaced with <var>"</var> and not treated as a quoted value. #0 is always treated as the end of the Parameters value.
+          </p>
+        </descr>
+      </element>
+      <element name="SplitCmdLineParams.Params">
+        <short>Whitespace-delimited list of parameters handled in the routine</short>
+      </element>
+      <element name="SplitCmdLineParams.ParamList">
+        <short>List where parameter names and values are stored</short>
+      </element>
+      <element name="SplitCmdLineParams.ReadBackslash">
+        <short>Indicates if backslash characters are consumed and removed in the routine</short>
+      </element>
+
+      <element name="StrToCmdLineParam">
+        <short>
+          Ensures that whitespace and quoting use the format required for command line parameters
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StrToCmdLineParam.Result">
+        <short>
+          Value after normalizing whitespace and quote characters in the command line parameter
+        </short>
+      </element>
+      <element name="StrToCmdLineParam.Param">
+        <short>Command line parameter examined in the function</short>
+      </element>
+
+      <element name="MergeCmdLineParams">
+        <short>Generates a string with the specified list of parameters</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="MergeCmdLineParams.Result">
+        <short>String representation for the list of parameters</short>
+      </element>
+      <element name="MergeCmdLineParams.ParamList">
+        <short>Parameter names and values handled in the function</short>
+      </element>
+
+      <element name="SplitCmdLine">
+        <short>Splits the specified command line into program and parameter values</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="SplitCmdLine.CmdLine">
+        <short>Command line examined in the function</short>
+      </element>
+      <element name="SplitCmdLine.ProgramFilename">
+        <short>Executable name found in the command line</short>
+      </element>
+      <element name="SplitCmdLine.Params">
+        <short>List of parameters and values found in the command line</short>
+      </element>
+
+      <element name="PrepareCmdLineOption">
+        <short>Ensures command line options are formatted properly</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="PrepareCmdLineOption.Result">
+        <short>Command line option after quoting has been applied</short>
+      </element>
+      <element name="PrepareCmdLineOption.Option">
+        <short>Command line option examined in the function</short>
+      </element>
+
       <!-- procedure type Visibility: default -->
       <element name="TInvalidateFileStateCacheEvent">
         <short>
@@ -1537,10 +2631,13 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            TInvalidateFileStateCacheEvent is a type which specifies the event signalled for an invalid file state in the file cache. TInvalidateFileStateCacheEvent is the type used for the OnInvalidateFileStateCache event handler.
+            <var>TInvalidateFileStateCacheEvent</var> is the type which specifies the event signalled for an invalid file state in the file cache. TInvalidateFileStateCacheEvent is the type used for the <var>OnInvalidateFileStateCache</var> event handler signalled in the <var>InvalidateFileStateCache</var> procedure.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="OnInvalidateFileStateCache"/>
+          <link id="InvalidateFileStateCache"/>
+        </seealso>
       </element>
 
       <!-- argument Visibility: default -->
@@ -1555,13 +2652,16 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            OnInvalidateFileStateCache is a TInvalidateFileStateCacheEvent variable which implements the event handler signalled for a file with an invalid file state. OnInvalidateFileStateCache allows an application to respond to the event notification for a specific file. OnInvalidateFileStateCache is signalled when InvalidateFileStateCache is called by routines that perform file manipulation.
+            <var>OnInvalidateFileStateCache</var> is a <var>TInvalidateFileStateCacheEvent</var> variable which implements the event handler signalled for a file with an invalid file state. OnInvalidateFileStateCache allows an application to respond to the event notification for a specific file. OnInvalidateFileStateCache is signalled when InvalidateFileStateCache is called by routines that perform file manipulation.
           </p>
           <p>
             OnInvalidateFileStateCache is significant for UNIX-like environments only, such as Linux and Amiga. OnInvalidateFileStateCache is not used in Windows environments.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TInvalidateFileStateCacheEvent"/>
+          <link id="InvalidateFileStateCacheEvent"/>
+        </seealso>
       </element>
 
       <!-- procedure Visibility: default -->
@@ -1571,7 +2671,7 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
         </short>
         <descr>
           <p>
-            InvalidateFileStateCache is a procedure used to signal the OnInvalidateFileStateCache event handler for the specified file name. InvalidateFileStateCache is used when an invalid file state is detected in routines which perform file manipulation, such as:
+            <var>InvalidateFileStateCache</var> is a procedure used to signal the <var>OnInvalidateFileStateCache</var> event handler for the specified file name. InvalidateFileStateCache is used when an invalid file state is detected in routines which perform file manipulation, such as:
           </p>
           <ul>
             <li>DeleteFileUTF8</li>
@@ -1580,77 +2680,20 @@ NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename 
             <li>RenameFileUTF8</li>
           </ul>
           <p>
-            InvalidateFileStateCache is significant for UNIX-like environments only, such as Linux and Amiga. InvalidateFileStateCache is not used in Windows environments.
+            InvalidateFileStateCache is significant for UNIX-like environments only, such as Linux and Amiga. InvalidateFileStateCache is not used for the Windows platform.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="DeleteFileUTF8"/>
+          <link id="FileSetAttrUTF8"/>
+          <link id="FileSetDateUTF8"/>
+          <link id="RenameFileUTF8"/>
+        </seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="InvalidateFileStateCache.Filename">
-        <short></short>
+        <short>File name for the event notification</short>
       </element>
 
-      <element name="SplitCmdLineParams">
-        <short>
-          Splits command line parameters separated by whitespace characters
-        </short>
-        <descr>
-          <p>
-            Parameters are separated by one or more whitespace characters (#9,#10,#13,#32). Quoted values are parsed as a single parameter. If ReadBackslash contains True,  then <var>\"</var> is replaced with <var>"</var> and not treated as a quoted value. #0 (Decimal 0) is always treated as the end of the Parameters value.
-          </p>
-        </descr>
-      </element>
-
-      <element name="ReadAllLinks">
-        <short>
-          Resolves a symbolic link to an actual file name
-        </short>
-        <descr>
-          <p>
-            Resolves a symbolic link to an actual file name. It does not resolve symlinks in parent directories. If a symlink can not be resolved and if ExceptionOnError is False, the function returns an empty string (''). If ExceptionOnError is True, it raises an EFOpenError with a message, containing more details. On Windows it simply returns Filename.
-          </p>
-        </descr>
-      </element>
-
-      <element name="GetUnixPhysicalFilename">
-        <short>
-          Resolves all symlinks in Filename, including all directories
-        </short>
-        <descr>
-          <p>
-            If a symlink can not be resolved, and ExceptionOnError is False, the function returns the empty string (''). If ExceptionOnError is True, it raises an EFOpenError with a message containing more details.
-        </p>
-        </descr>
-      </element>
-
-      <element name="TryReadAllLinks">
-        <short>
-          Resolves a symlink to the real file
-        </short>
-        <descr>
-          <p>
-            If a symlink can not be resolved it returns Filename. It uses ReadAllLinks.
-          </p>
-        </descr>
-      </element>
-
-      <element name="ResolveDots">
-        <short>
-          Removes duplicate path delimiters and resolves . and ..
-        </short>
-        <descr>
-          <p>
-            This function shortens duplicate path delimiters to single path delimiters. It resolves 'A/../B' to 'B', which might be wrong under Unix if A is a symlink. The functions does not check the file system. The single dot './A' is resolved to 'A', but a single '.' is retained.
-        </p>
-        </descr>
-      </element>
-
-      <element name="SHGetFolderPathUTF8">
-        <short>
-          Works like the WinAPI function SHGetFolderPathW, but returns a UTF-8-encoded string
-        </short>
-      </element>
     </module>
     <!-- LazFileUtils -->
 
