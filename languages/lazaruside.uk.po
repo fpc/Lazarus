@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-09-20 20:58+0200\n"
+"PO-Revision-Date: 2019-10-15 21:34+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -12656,7 +12656,7 @@ msgstr "Редактор визначень CodeTools ..."
 
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
-msgstr "Вибір коментаря"
+msgstr "Закоментувати вибране"
 
 #: lazarusidestrconsts.lismenucomparefiles
 msgid "Compare files ..."
@@ -13890,7 +13890,7 @@ msgstr "Про"
 
 #: lazarusidestrconsts.lismenutogglecomment
 msgid "Toggle Comment in Selection"
-msgstr "Перемкнути коментар в виборі"
+msgstr "Перемкнути коментованість вибраного"
 
 #: lazarusidestrconsts.lismenutools
 msgid "&Tools"
