@@ -477,7 +477,10 @@ begin
   if not Assigned(v) then
     Result := inherited lclClientFrame
   else
-    Result := NSRectToRect( v.frame );
+    if v.isFlipped then
+      Result := NSRectToRect( v.frame )
+    else
+      NSToLCLRect(v.frame, frame.size.height, Result);
 end;
 
 function TCocoaGroupBox.lclContentView: NSView;
