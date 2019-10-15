@@ -22259,7 +22259,7 @@ msgstr "alternar ponto de parada"
 
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
-msgstr ""
+msgstr "habilitar/desabilitar ponto de parada"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"

@@ -381,7 +381,7 @@ msgstr "Selecionar &Todos"
 
 #: pocheckerconsts.sselectedtranslationsarenotavailable
 msgid "Selected translations are not available."
-msgstr ""
+msgstr "Traduções selecionadas não estão disponíveis"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
