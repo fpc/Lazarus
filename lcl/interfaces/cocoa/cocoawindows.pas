@@ -195,6 +195,7 @@ type
   public
     overlay: NSView;
     wincallback: IWindowCallback;
+    function lclWindowState: Integer; override;
     procedure didAddSubview(aview: NSView); override;
     procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
     procedure setNeedsDisplayInRect(arect: NSRect); override;
@@ -220,7 +221,6 @@ type
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
-    function lclWindowState: Integer; override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
@@ -266,6 +266,14 @@ begin
 end;
 
 { TCocoaWindowContent }
+
+function TCocoaWindowContentDocument.lclWindowState: Integer;
+begin
+  if window.lclGetCallback = wincallback then // not embedded
+    Result := window.lclWindowState
+  else
+    Result := inherited lclWindowState
+end;
 
 procedure TCocoaWindowContentDocument.didAddSubview(aview: NSView);
 const
@@ -442,14 +450,6 @@ begin
       wfrm := NSRectToRect(frame);
     OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
-end;
-
-function TCocoaWindowContent.lclWindowState: Integer;
-begin
-  if isembedded then
-    Result := inherited lclWindowState
-  else
-    Result := window.lclWindowState;
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;

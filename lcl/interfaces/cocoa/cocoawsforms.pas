@@ -457,7 +457,7 @@ var
 begin
   Bounds := HandleFrame.lclFrame;
   LCLSendSizeMsg(Target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
-    HandleFrame.lclWindowState, True);
+    Owner.lclWindowState, True);
 end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;
