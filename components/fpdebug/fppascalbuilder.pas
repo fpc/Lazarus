@@ -164,7 +164,7 @@ var
     Result := i > 0;
   end;
 
-  Function MembersAsGdbText(out AText: String; WithVisibilty: Boolean; AFlags: TTypeDeclarationFlags = []): Boolean;
+  Function MembersAsGdbText(out AText: String; WithVisibilty: Boolean; ANewFlags: TTypeDeclarationFlags = []): Boolean;
   var
     CurVis: TDbgSymbolMemberVisibility;
 
@@ -187,15 +187,16 @@ var
   begin
     Result := True;
     AText := '';
+    ANewFlags := ANewFlags + AFlags;
     c := ADbgSymbol.MemberCount;
     i := 0;
     while (i < c) and Result do begin
       m := ADbgSymbol.Member[i];
       AddVisibility(m.MemberVisibility, i= 0);
-      if tdfStopAfterPointer in AFlags then
+      if tdfStopAfterPointer in ANewFlags then
         Result := GetTypeName(s, m)
       else
-        Result := GetTypeAsDeclaration(s, m, [tdfIncludeVarName, tdfStopAfterPointer] + AFlags, AnIndent + 4);
+        Result := GetTypeAsDeclaration(s, m, [tdfIncludeVarName, tdfStopAfterPointer] + ANewFlags, AnIndent + 4);
       if Result then
         AText := AText + GetIndent + s + ';' + LineEnding;
       inc(i);
