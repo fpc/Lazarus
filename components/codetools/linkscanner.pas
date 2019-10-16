@@ -224,7 +224,8 @@ type
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
     cmsOmitRTTI,           { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
-    msMultiHelpers         { off=only one helper per type, on=all }
+    msMultiHelpers,        { off=only one helper per type, on=all }
+    msImplicitFunctionSpecialization { infer types on calls of generic functions }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -312,7 +313,8 @@ const
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
     'OMITRTTI',
-    'MULTIHELPERS'
+    'MULTIHELPERS',
+    'IMPLICITFUNCTIONSPECIALIZATION'
     );
 
 
