@@ -55,7 +55,6 @@ type
     FTotalUntranslated: Integer;
     FTotalFuzzy: Integer;
     FTotalPercTranslated: Double;
-    FTestOptions: TPoTestOptions;
     property Log: TStringList read FLog write FLog;
     property StatLog: TStringList read FStatLog write FStatLog;
     property DupLog: TStringList read FDupLog write FDupLog;
@@ -152,7 +151,7 @@ begin
     GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
     GraphStatForm.Settings := Self.Settings;
 
-    if not (ptoFindAllChildren in FTestOptions) then
+    if Self.PoFamilyList.LangID <> lang_all then
     begin
       GraphStatForm.TranslatedLabel.Caption := Format(sTranslatedStringsTotal, [
         IntToStr(FTotalTranslated), FTotalPercTranslated]);

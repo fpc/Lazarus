@@ -20,7 +20,6 @@ type
     FOnTestEnd: TTestEndEvent;
     FOnTestStart: TTestStartEvent;
     FPoFamilyStats: TPoFamilyStats;
-    FTestOptions: TPoTestOptions;
     FTestTypes: TPoTestTypes;
     function GetItem(Index: Integer): TPoFamily;
     //procedure SetItem(Index: Integer; AValue: TPoFamily);
@@ -36,10 +35,10 @@ type
     procedure Add(PoFamily: TPofamily);
     function Count: Integer;
     procedure RunTests(out TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer; out TotalPercTranslated: Double);
+    property LangID: TLangID read FLangID;
     property Items[Index: Integer]: TPoFamily read GetItem; // write SetItem;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
-    property TestOptions: TPoTestOptions read FTestOptions write FTestOptions;
     property OnTestStart: TTestStartEvent read FOnTestStart write FOnTestStart;
     property OnTestEnd: TTestEndEvent read FOnTestEnd write FOnTestEnd;
   end;
@@ -90,7 +89,7 @@ begin
       //        ''',',ExtractFileName(ChildName),''')');
       if (ALangID = lang_all) or FileExistsUtf8(ChildName) then
       begin
-        APoFamily := TPoFamily.Create(MasterName, ChildName);
+        APoFamily := TPoFamily.Create(MasterName, ChildName, ALangID);
         Add(APoFamily);
       end
       else
@@ -136,10 +135,6 @@ var
   ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount: Integer;
   PoFamily: TPoFamily;
 begin
-  if (FLangID = lang_all) then
-    Include(FTestOptions,ptoFindAllChildren)
-  else
-    Exclude(FTestOptions,ptoFindAllChildren);
   ErrorCount := NoError;
   NonFuzzyErrorCount := NoError;
   WarningCount := NoError;
@@ -153,7 +148,6 @@ begin
     PoFamily.OnTestStart := FOnTestStart;
     PoFamily.OnTestEnd := FOnTestEnd;
     PoFamily.TestTypes := FTesttypes;
-    PoFamily.TestOptions := FTestOptions;
     PoFamily.RunTests(ThisErrorCount, ThisNonFuzzyErrorCount, ThisWarningCount, ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount, InfoLog, StatLog, DupLog);
     PoFamily.PoFamilyStats.AddItemsTo(FPoFamilyStats);
     ErrorCount := ErrorCount + ThisErrorCount;
@@ -171,7 +165,7 @@ begin
   else
     InfoLog.Add(Format(sTotalErrors, [ErrorCount]));
 
-  if not (ptoFindAllChildren in TestOptions) then
+  if FLangID <> lang_all then
   begin
     InfoLog.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
     InfoLog.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));

@@ -21,9 +21,6 @@ Type
                  pttCheckMismatchedOriginals);
   TPoTestTypes = Set of TPoTestType;
 
-  TPoTestOption = (ptoFindAllChildren);
-  TPoTestOptions = set of TPoTestOption;
-
 const
     optRunAllTests: TPoTestTypes = [];
 
@@ -44,6 +41,7 @@ Type
 
   TPoFamily = class
   private
+    FLangID: TLangID;
     FMaster: TPOFile;
     FChild: TPOFile;
     FMasterName: String;
@@ -51,7 +49,6 @@ Type
     FOnTestStart: TTestStartEvent;
     FOnTestEnd: TTestEndEvent;
     FPoFamilyStats: TPoFamilyStats;
-    FTestOptions: TPoTestOptions;
     FTestTypes: TPoTestTypes;
     procedure SetChildName(AValue: String);
     procedure SetMasterName(AValue: String);
@@ -61,7 +58,7 @@ Type
     procedure DoTestStart(const ATestName, APoFileName: String);
     procedure DoTestEnd(const ATestName: String; const ErrorCount: Integer);
   public
-    constructor Create(const AMasterName, AChildName: String);
+    constructor Create(const AMasterName, AChildName: String; ALangID: TLangID);
     destructor Destroy; override;
 
   protected
@@ -81,7 +78,6 @@ Type
     property MasterName: String read FMasterName write SetMasterName;
     property ChildName: String read FChildName write SetChildName;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
-    property TestOptions: TPoTestOptions read FTestOptions write FTestOptions;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
     property ShortMasterName: String read  GetShortMasterName;
     property ShortChildName: String read GetShortChildName;
@@ -353,7 +349,7 @@ begin
   FChildName := AValue;
 end;
 
-constructor TPoFamily.Create(const AMasterName, AChildName: String);
+constructor TPoFamily.Create(const AMasterName, AChildName: String; ALangID: TLangID);
 begin
   if (AMasterName <> '') then
   begin
@@ -367,6 +363,7 @@ begin
     FChildName := AChildName;
     //debugln('TPoFamily.Create: created ',FChildName);
   end;
+  FLangID := ALangID;
   FPoFamilyStats := TPoFamilyStats.Create;
 end;
 
@@ -693,7 +690,7 @@ begin
     end
   end;
 
-  if (ptoFindAllChildren in FTestOptions) then
+  if FLangID = lang_all then
   begin
     SL := FindAllTranslatedPoFiles(FMasterName);
     //We want current Child (if currently assigned) at index 0

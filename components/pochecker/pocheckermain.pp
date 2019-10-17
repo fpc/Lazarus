@@ -69,7 +69,6 @@ type
     procedure OnTestEnd(const {%H-}ATestName: string; const {%H-}ErrorCount: integer);
     procedure FillTestListBox;
     function GetTestTypesFromListBox: TPoTestTypes;
-    function GetTestOptions: TPoTestOptions;
     procedure SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
     procedure ShowError(const Msg: string);
     procedure ScanDirectory(ADir: String);
@@ -298,16 +297,6 @@ begin
   end;
 end;
 
-function TPoCheckerForm.GetTestOptions: TPoTestOptions;
-var
-  ALangID: TLangID;
-begin
-  Result := [];
-  ALangID := LangFilterIndexToLangID(LangFilter.ItemIndex);
-  if ALangID = lang_all then
-    Include(Result,ptoFindAllChildren);
-end;
-
 procedure TPoCheckerForm.SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
 var
   Typ: TPoTestType;
@@ -412,7 +401,6 @@ end;
 procedure TPoCheckerForm.RunSelectedTests;
 var
   TestTypes: TPoTestTypes;
-  TestOptions: TPoTestOptions;
   TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
   TotalPercTranslated: Double;
   ResultDlg: TResultDlgForm;
@@ -424,12 +412,10 @@ begin
     ShowError(sNoTestSelected);
     Exit;
   end;
-  TestOptions := GetTestOptions;
   Application.ProcessMessages;
   mr := mrNone;
   try
     PoFamilyList.TestTypes := TestTypes;
-    PoFamilyList.TestOptions := TestOptions;
 
     PoFamilyList.RunTests(TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, TotalPercTranslated);
 
@@ -442,7 +428,6 @@ begin
 
     ResultDlg := TResultDlgForm.Create(nil);
     try
-      ResultDlg.FTestOptions := TestOptions;
       ResultDlg.FTotalTranslated := TotalTranslatedCount;
       ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
       ResultDlg.FTotalFuzzy := TotalFuzzyCount;
@@ -572,7 +557,6 @@ begin
   ID := LangFilterIndexToLangID(LangFilter.ItemIndex);
   FPoCheckerSettings.LangFilterLanguageAbbr := LanguageAbbr[ID];
   FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
-  FPoCheckerSettings.TestOptions := GetTestOptions;
   FPoCheckerSettings.MainFormWindowState := WindowState;
   if (WindowState = wsNormal) then
     FPoCheckerSettings.MainFormGeometry := BoundsRect
