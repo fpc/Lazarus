@@ -1861,7 +1861,10 @@ var
 begin
   Unused(APointIdx);
   Unused(AXIdx, AYIdx);
-  pt := ParentChart.GraphToImage(AGraphPt);
+  if IsNaN(AGraphPt) then
+    pt := Point(10000, 10000)
+  else
+    pt := ParentChart.GraphToImage(AGraphPt);
   Result := AParams.FDistFunc(AParams.FPoint, pt);
 end;
 
