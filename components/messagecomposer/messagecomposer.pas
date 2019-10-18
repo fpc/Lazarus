@@ -325,9 +325,6 @@ end;
 
 procedure TFormMessagesComposer.FormShow(Sender: TObject);
 begin
-  ClientHeight := ButtonPanel.Top + ButtonPanel.Height;
-  Constraints.MinHeight := ClientHeight;
-  Constraints.MaxHeight := ClientHeight;
   OKButton.Constraints.MinWidth := CancelButton.Width;
   TestButton.Constraints.MinWidth := CancelButton.Width;
 end;
