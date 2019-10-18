@@ -5377,8 +5377,7 @@ begin
   begin
     // previous active form was designer form
     ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
-    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource,
-                                       Screen.CustomFormsZOrdered[1], nil, True);
+    DoCallShowDesignerFormOfSourceHandler(Screen.CustomFormsZOrdered[1], nil, True);
   end else
     DoShowDesignerFormOfCurrentSrc(True);
 end;
@@ -8988,7 +8987,7 @@ var
 begin
   DoShowDesignerFormOfSrc(SourceEditorManager.ActiveEditor, LForm);
   if LForm <> nil then
-    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource, LForm, SourceEditorManager.ActiveEditor, AComponentPaletteClassSelected);
+    DoCallShowDesignerFormOfSourceHandler(LForm, SourceEditorManager.ActiveEditor, AComponentPaletteClassSelected);
 end;
 
 procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface);

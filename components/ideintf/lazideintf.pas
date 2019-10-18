@@ -302,10 +302,8 @@ type
                                        var Handled: boolean): TModalResult;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType;
                                   Sender: TObject); overload;
-    procedure DoCallShowDesignerFormOfSourceHandler(
-      HandlerType: TLazarusIDEHandlerType;
-      Sender: TObject; AEditor: TSourceEditorInterface;
-      AComponentPaletteClassSelected: Boolean);
+    procedure DoCallShowDesignerFormOfSourceHandler(Sender: TObject;
+      AEditor: TSourceEditorInterface; AComponentPaletteClassSelected: Boolean);
     procedure DoCallBuildingFinishedHandler(HandlerType: TLazarusIDEHandlerType;
       Sender: TObject; BuildSuccessful: Boolean);
 
@@ -719,14 +717,13 @@ begin
   FLazarusIDEHandlers[HandlerType].CallNotifyEvents(Sender);
 end;
 
-procedure TLazIDEInterface.DoCallShowDesignerFormOfSourceHandler(
-  HandlerType: TLazarusIDEHandlerType; Sender: TObject;
+procedure TLazIDEInterface.DoCallShowDesignerFormOfSourceHandler(Sender: TObject;
   AEditor: TSourceEditorInterface; AComponentPaletteClassSelected: Boolean);
 var
   i: Integer;
   Handler: TMethodList;
 begin
-  Handler:=FLazarusIDEHandlers[HandlerType];
+  Handler:=FLazarusIDEHandlers[lihtShowDesignerFormOfSource];
   i := Handler.Count;
   while Handler.NextDownIndex(i) do
     TShowDesignerFormOfSourceFunction(Handler[i])(Sender, AEditor,
