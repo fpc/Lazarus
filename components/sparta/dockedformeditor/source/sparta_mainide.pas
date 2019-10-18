@@ -222,7 +222,6 @@ var
 begin
   if ASourceEditor = nil then
     Exit(nil);
-
   LParent := ASourceEditor.EditorControl.Parent;
   while LParent <> nil do
   begin
@@ -230,7 +229,6 @@ begin
       Exit(TModulePageControl(LParent));
     LParent := LParent.Parent;
   end;
-
   Result := nil;
 end;
 
@@ -266,20 +264,13 @@ var
   fi: IDesignedForm = nil;
 begin
   Result := nil;
-
   if ADesigner = nil then
     Exit;
-
   for p in dsgnForms do
   begin
     fi := f.FForm;
-    with fi do
-    begin
-      if (Form.Designer = ADesigner) then
-      begin
-        Exit(f);
-      end;
-    end;
+    if (fi.Form.Designer = ADesigner) then
+      Exit(f);
   end;
 end;
 
@@ -291,11 +282,9 @@ begin
   for LWindow in SourceEditorWindows.Keys do
   begin
     LPageCtrl := FindModulePageControl(LWindow);
-
     // for example LPageCtrl is nil when we clone module to new window
     if (LPageCtrl = nil) or (csDestroying in LWindow.ComponentState) then
       Continue;
-
     if LWindow.ActiveEditor = nil then
       LPageCtrl.HideDesignPage
     else
@@ -314,14 +303,11 @@ var
   f: TDesignFormData;
 begin
   Result := nil;
-
   if AForm = nil then
     Exit;
-
   for Pointer(f) in dsgnForms do
-    with f as IDesignedForm do
-      if (Form = AForm) then
-        Exit(f);
+    if (f as IDesignedForm).Form = AForm then
+      Exit(f);
 end;
 
 function FindDesignFormData(AModulePageCtrl: TModulePageControl): TDesignFormData; overload;
@@ -339,9 +325,7 @@ begin
       LSourceEditor := LSourceWindow.ActiveEditor;
       if LSourceEditor = nil then
         Exit;
-
       Result := FindDesignFormData(LSourceEditor.GetDesigner(True));
-
       Exit;
     end;
   end;
@@ -444,10 +428,8 @@ var
   LImage: TImage;
 begin
   if FFormImages <> nil then
-  begin
     for LImage in FFormImages do
       LImage.OnResize(LImage);
-  end;
 end;
 
 procedure TDesignFormData.DoAddForm;
@@ -467,7 +449,6 @@ end;
 constructor TDesignFormData.Create(AForm: TCustomForm);
 begin
   FForm := TDesignedFormImpl.Create(Self, AForm);
-
   AForm.AddHandlerOnChangeBounds(FormChangeBounds);
 
   FLastScreenshot := TBitmap.Create;
@@ -486,12 +467,10 @@ var
   LImage: TImage;
 begin
   FForm.Form.WindowProc := FWndMethod; // ! important risky point :P
-
   if FFormImages <> nil then
   begin
     for LImage in FFormImages do
       LImage.Free;
-
     FreeAndNil(FFormImages);
   end;
   FLastScreenshot.Free;
@@ -507,12 +486,8 @@ begin
   if (AValue = FDesignFormData) then
     // for show lfm code, if we want after editing lfm go back to form without any error
     // (when we restart IDE some error can be raised )
-    if Assigned(FResizer) then
-    begin
-      if (AValue <> nil) and (FResizer.DesignedForm = AValue as IDesignedForm) then
-        Exit;
-    end
-    else
+    if (FResizer=Nil)
+    or ((AValue <> nil) and (FResizer.DesignedForm = AValue as IDesignedForm)) then
       Exit;
 
   FDesignFormData := AValue;
@@ -544,14 +519,13 @@ end;
 
 procedure TModulePageControl.HideDesignPage;
 begin
-  Pages[1].TabVisible:=False;
+  Pages[1].TabVisible := False;
 end;
 
 procedure TModulePageControl.BoundToDesignTabSheet;
 begin
   if (ActivePageIndex <> 1) then
     Exit;
-
   if Assigned(FResizer) then
     FResizer.TryBoundSizerToDesignedForm(nil);
 end;
@@ -565,20 +539,17 @@ var
 begin
   if FActiveDesignFormData = AValue then
     Exit;
-
   if FActiveDesignFormData <> nil then
     // don't hide now if soon form will be hidden (for example on the IDE start)
     if not FActiveDesignFormData.FHiding then
-    begin
       FActiveDesignFormData.FForm.HideWindow;
-    end;
   FActiveDesignFormData := AValue;
 
   LPageCtrl := FindModulePageControl(FForm);
   if (AValue <> nil) then
   begin
-    with AValue as IDesignedForm do
-    {if not AValue.FHiding and (RealBorderStyle <> bsNone) then
+    {with AValue as IDesignedForm do
+    if not AValue.FHiding and (RealBorderStyle <> bsNone) then
     begin
       //BeginUpdate;
       //RealBorderIcons := [];
@@ -593,7 +564,6 @@ begin
   // when is fired DestroyEditor - from this place we can't navigate to pagecontrol by FForm (we need to handle lastactiveeditor)
   if LPageCtrl = nil then
     Exit;
-
   LPageCtrl.DesignFormData := AValue;
   // for USE_POPUP_PARENT_DESIGNER to eliminate form over code  << maybe not needed any more since USE_POPUP_PARENT_DESIGNER isn't supported any more
   LPageCtrl.OnChange(LPageCtrl);
@@ -654,11 +624,9 @@ var
 begin
   if Index = nil then
     Exit(tdsNone);
-
   LPageCtrl := FindModulePageControl(Index);
   if LPageCtrl = nil then
     Exit(tdsNone);
-
   case LPageCtrl.PageIndex of
     0: Exit(tdsCode);
     1: Exit(tdsDesign);
@@ -722,7 +690,6 @@ procedure TDTXTabMaster.JumpToCompilerMessage(
   ASourceEditor: TSourceEditorInterface);
 begin
   SourceEditorManagerIntf.ActiveEditor := ASourceEditor;
-
   ShowCode(ASourceEditor);
 end;
 
@@ -730,24 +697,18 @@ procedure TDTXTabMaster.ShowCode(ASourceEditor: TSourceEditorInterface);
 begin
   if ASourceEditor = nil then
     Exit;
-
   FindModulePageControl(ASourceEditor).PageIndex := 0;
 end;
 
 procedure TDTXTabMaster.ShowDesigner(ASourceEditor: TSourceEditorInterface; AIndex: Integer);
 var
   LPageCtrl: TModulePageControl;
-  Designer: TIDesigner;
-  Form: TCustomForm;
 begin
   if ASourceEditor = nil then
     Exit;
-
   LPageCtrl := FindModulePageControl(ASourceEditor);
-
   if not LPageCtrl.Pages[1].TabVisible then
     Exit;
-
   LPageCtrl.PageIndex := 1;
   LPageCtrl.OnChange(LPageCtrl);
 end;
@@ -757,9 +718,7 @@ var
   LEditor: TSourceEditorInterface;
 begin
   LEditor := FindSourceEditorForDesigner(AForm.Designer);
-
   SourceEditorManagerIntf.ActiveEditor := LEditor;
-
   ShowDesigner(LEditor);
 end;
 
@@ -771,15 +730,12 @@ var
   LPageCtrl: TModulePageControl;
 begin
   Result := True;
-
   LFormData := FindDesignFormData(FormEditingHook.GetDesignerForm(ALookupRoot){ALookupRoot as TCustomForm});
   if LFormData = nil then
     Exit;
-
   LPageCtrl := FindModulePageControl(LFormData.Form.LastActiveSourceWindow);
   if (LPageCtrl = nil) or (LPageCtrl.Resizer = nil) or (LPageCtrl.Resizer.MainDTU = nil) then
     Exit;
-
   Result := LPageCtrl.Resizer.MainDTU.ShowNonVisualComponents;
 end;
 
@@ -800,9 +756,7 @@ begin
       LFormData := TDesignFormData.Create(Form);
       LFormData.FHiding:=True;
       dsgnForms.Add(LFormData);
-
       LSourceEditor := FindSourceEditorForDesigner(Form.Designer);
-
       if LSourceEditor <> nil then
       begin
         LPageCtrl := FindModulePageControl(LSourceEditor);
@@ -812,7 +766,6 @@ begin
           LPageCtrl.DesignFormData := LFormData;
         end;
       end;
-
       SetTimer(Form.Handle, WM_SETNOFRAME, 10, nil);
     end;
   end
@@ -844,7 +797,6 @@ begin
     begin
       //Form.AddHandlerOnChangeBounds(GlobalOnChangeBounds); // (on-del)
     end;
-
     //Forms.Add(Form); // (on-del)
   end;
 end;
@@ -972,7 +924,6 @@ var
           Result := False;
           Break;
         end;
-
       if Result then
       begin
         LastActiveSourceEditor := se; // after moving code editor into other window, sometimes IDE switch to other tab :\ damn... this line prevent this.
@@ -1000,31 +951,24 @@ begin
         EditorDestroyed(nil);
       EditorCreate(Sender);
     end;
-
     LDesigner := LSourceEditor.GetDesigner(True);
-
     // should be performed during EditorCreate (parent of parent is module page ctrl)
     LPageCtrl := TModulePageControl(LSourceEditor.EditorControl.Parent.Parent);
     if LPageCtrl = nil then
       Exit;
-
     if LDesigner = nil then
       LPageCtrl.HideDesignPage
     else
     begin
       if LPageCtrl.Resizer = nil then
         LPageCtrl.FResizer := TResizer.Create(LPageCtrl.Pages[1], TResizerFrame);
-
       LPageCtrl.ShowDesignPage;
     end;
 
     LSourceEditorWindow := TSourceEditorWindowInterface(LPageCtrl.Owner);
-
     LastActiveSourceEditorWindow := LSourceEditorWindow;
     LastActiveSourceEditor := LSourceEditor;
-
     LDesignFormData := FindDesignFormData(LPageCtrl);
-
     // when we switch tab, design form should be hidden
     if (LDesigner = nil) or (LDesignFormData = nil) then
       SourceEditorWindows[LSourceEditorWindow].ActiveDesignFormData := nil
@@ -1064,16 +1008,13 @@ begin
               //Form.Show;
               //EndUpdate;
               LPageCtrl.BoundToDesignTabSheet;
-
               SetTimer(Form.Handle, WM_BOUNDTODESIGNTABSHEET, 10, nil);
           end;
         end;
     end;
   end
   else
-  begin
     RefreshAllSourceWindowsModulePageControl;
-  end;
 end;
 
 class procedure TSpartaMainIDE.EditorDestroyed(Sender: TObject);
@@ -1151,7 +1092,6 @@ var
     LParent: TWinControl;
   begin
     Result := TModulePageControl.Create(LSourceEditor.EditorControl.Owner);
-
     Result.TabPosition := tpBottom;
     Result.Align:=alClient;
     LParent := LSourceEditor.EditorControl.Parent;
@@ -1166,9 +1106,7 @@ var
     LNewTabSheet.Caption := SDesigner;
 
     Result.OnChange := TabChange;
-
     Result.Parent := LParent;
-
     LSourceEditorWindow := TSourceEditorWindowInterface(Result.Owner);
     SourceEditorWindows[LSourceEditorWindow].AddPageCtrl(LSourceEditor, Result)
   end;
@@ -1213,9 +1151,7 @@ begin
               else
                 for p in SourceEditorWindows[w].FPageCtrlList do
                   if (p.Value.DesignFormData = LFormData) and (p.Value <> Sender) then
-                  begin
                     IDETabMaster.ShowCode(p.Key);
-                  end;
             LSourceWndData.ActiveDesignFormData := LFormData;
             // enable autosizing after creating a new form
             TDTXTabMaster(IDETabMaster).EnableAutoSizing(LFormData.Form.Form);
@@ -1313,7 +1249,6 @@ begin
       e := w.ActiveEditor;
       if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then
         Continue;
-
       p := FindModulePageControl(e);
       if p.PageIndex = 1 then
         Exit;
@@ -1339,13 +1274,11 @@ begin
   LForm := FindDesignFormData(FormEditingHook.GetCurrentDesigner);
   if LForm = nil then
     Exit;
-
   for i := 0 to SourceEditorManagerIntf.SourceWindowCount - 1 do
   begin
     LSourceWindow := SourceEditorManagerIntf.SourceWindows[i];
     if LForm.Form.LastActiveSourceWindow = LSourceWindow then
       Continue;
-
     if LSourceWindow.ActiveEditor <> nil then
       if LSourceWindow.ActiveEditor.GetDesigner(True) = LForm.Form.Form.Designer then
       begin
@@ -1354,22 +1287,14 @@ begin
       end;
   end;
 
-  if LSecondEditor = nil then
-  begin
-    if LForm.Form.LastActiveSourceWindow <> nil then
-    begin
-      IDETabMaster.ShowCode(LForm.Form.LastActiveSourceWindow.ActiveEditor);
-    end;
-  end
-  else
+  if Assigned(LSecondEditor) then
   begin
     IDETabMaster.ShowCode(LSecondEditor);
-  end;
-
-  if LSecondEditor <> nil then
-  begin
     LazarusIDE.DoShowMethod(LSecondEditor, Name);
-  end;
+  end
+  else
+    if Assigned(LForm.Form.LastActiveSourceWindow) then
+      IDETabMaster.ShowCode(LForm.Form.LastActiveSourceWindow.ActiveEditor);
 end;
 
 class procedure TSpartaMainIDE.OnDesignRefreshPropertyValues;
@@ -1401,7 +1326,6 @@ begin
   begin
     if not RootIsSelected then
       Exit;
-
     LForm := FormEditingHook.GetDesignerForm(GlobalDesignHook.LookupRoot);
     LFormData := FindDesignFormData(LForm);
     LSourceWindow := (LFormData as IDesignedFormIDE).LastActiveSourceWindow;
@@ -1414,7 +1338,6 @@ begin
   begin
     if not RootIsSelected then
       Exit;
-
     LForm := TCustomForm(GlobalDesignHook.LookupRoot);
     LFormData := FindDesignFormData(LForm);
     LFormData.RepaintFormImages;

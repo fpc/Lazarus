@@ -24,10 +24,9 @@ type
   public
     constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); override;
     destructor Destroy; override;
+    //procedure TryBoundSizerToDesignedForm(Sender: TObject); override;
 
     property DesignedForm: IDesignedForm read FDesignedForm write SetDesignedForm;
-
-    //procedure TryBoundSizerToDesignedForm(Sender: TObject); override;
   end;
 
 implementation
@@ -45,16 +44,11 @@ procedure TBasicResizer.SetDesignedForm(const AValue: IDesignedForm);
 
 begin
   if FDesignedForm <> nil then
-  begin
     FDesignedForm.OnChangeHackedBounds := nil;
-  end;
-
   FDesignedForm := AValue;
-
   if FDesignedForm <> nil then
   begin
     FDesignedForm.BeginUpdate;
-
     FDesignedForm.Form.Parent := FResizerFrame.pFormHandler;
     // for big forms (bigger than screen resolution) we need to refresh Real* values
     DesignedForm.RealWidth := DesignedForm.Width;
@@ -63,7 +57,6 @@ begin
     FDesignedForm.EndUpdate;
     FDesignedForm.OnChangeHackedBounds := TryBoundSizerToDesignedForm;
   end;
-
   FResizerFrame.DesignedForm := AValue;
 end;
 
@@ -71,7 +64,6 @@ constructor TBasicResizer.Create(AParent: TWinControl;
   AResizerFrameClass: TResizerFrameClass);
 begin
   inherited Create(AParent, AResizerFrameClass);
-
   FResizerFrame := CreateResizeFrame;
 end;
 

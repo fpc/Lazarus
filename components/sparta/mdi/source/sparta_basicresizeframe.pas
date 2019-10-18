@@ -53,7 +53,6 @@ type
     procedure FakeKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
-    { private declarations }
     FOnNodePositioning: TPositioningEvent;
     FOnHorizontalScroll, FOnVerticalScroll: TScrollEvent;
     FLastRightMarign: Integer;
