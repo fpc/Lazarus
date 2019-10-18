@@ -905,7 +905,7 @@ begin
     //Yes, we want to remove the backslash,so don't use ChompPathDelim here
     TShellTreeNode(NewNode).FFileInfo.Name := ExcludeTrailingBackslash(pDrive);
     //On NT platforms drive-roots really have these attributes
-    TShellTreeNode(NewNode).FFileInfo.Attr := faDirectory + faSysFile + faHidden;
+    TShellTreeNode(NewNode).FFileInfo.Attr := faDirectory + faSysFile{%H-} + faHidden{%H-};
     TShellTreeNode(NewNode).SetBasePath('');
     NewNode.HasChildren := True;
     Inc(pDrive, 4);
