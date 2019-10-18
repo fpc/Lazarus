@@ -4709,15 +4709,7 @@ begin
   else
   begin
     // do query wincontrol children, in case they overlap
-    Control := ControlAtPos(SmallPointToPoint(MouseMessage.Pos),
-                            [capfAllowWinControls]);
-    if Control is TWinControl then
-    begin
-      // there is a TWinControl child at this position
-      // TWinControl children get their own messages
-      // => ignore here
-      Control := nil;
-    end;
+    Control := ControlAtPos(SmallPointToPoint(MouseMessage.Pos), []);
   end;
 
   //DebugLn(['TWinControl.IsControlMouseMsg B ',DbgSName(Self),' Control=',DbgSName(Control),' Msg=',TheMessage.Msg]);

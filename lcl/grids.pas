@@ -2536,7 +2536,7 @@ function TCustomGrid.GetColWidths(Acol: Integer): Integer;
 var
   C: TGridColumn;
 begin
-  if not Columns.Enabled or (aCol<FixedCols) then
+  if not Columns.Enabled or (aCol<FirstGridColumn) then
   begin
     if (aCol<ColCount) and (aCol>=0) then
       Result:=FCols[aCol]
@@ -7798,14 +7798,17 @@ end;
 
 procedure TCustomGrid.UpdateHorzScrollBar(const aVisible: boolean;
   const aRange,aPage,aPos: Integer);
+var
+  NeedUpdate: Boolean;
 begin
   {$ifdef DbgScroll}
   DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
     [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
-  if FHSbVisible<>Ord(aVisible) then
+  NeedUpdate := FHSbVisible <> Ord(AVisible);
+  if NeedUpdate then
     ScrollBarShow(SB_HORZ, aVisible);
-  if aVisible then
+  if aVisible or NeedUpdate then
     ScrollBarRange(SB_HORZ, aRange, aPage, aPos);
 end;
 
@@ -11673,11 +11676,19 @@ end;
 procedure TCustomStringGrid.InsertRowWithValues(Index: Integer;
   Values: array of String);
 var
-  i, OldRC: Integer;
+  i, OldRC, Diff: Integer;
 begin
   OldRC := RowCount;
-  if Length(Values) > ColCount then
-    ColCount := Length(Values);
+  Diff := Length(Values) - ColCount;
+  if Diff > 0 then
+  begin
+    if Columns.Enabled then
+    begin
+      for i := 1 to Diff do with Columns.Add do Title.Caption := '';
+    end
+    else
+      ColCount := Length(Values);
+  end;
   InsertColRow(false, Index);
   //if RowCount was 0, then setting ColCount restores RowCount (from FGridPropBackup)
   //which is unwanted here, so reset it (Issue #0026943)

@@ -272,4 +272,14 @@ begin
   FDecimals := 0;
 end;
 
+function TCustomSpinEdit.GetLimitedValue(const AValue: Double): Double;
+begin
+  //The WS may call this function for both TSpinEdit and TFloatSPinEdit, so we cannot change signature to have integer parameters
+  Result := inherited GetLimitedValue(AValue);
+  if Result > MaxInt then
+    Result := MaxInt;
+  if Result < Low(Integer) then
+    Result := Low(Integer);
+end;
+
 // included by spin.pp

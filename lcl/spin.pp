@@ -144,6 +144,7 @@ type
     procedure SetValue(const AValue: integer); overload; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
+    function GetLimitedValue(const AValue: Double): Double; override;
   public
     property Value: integer read GetValue write SetValue default 0;
     property MinValue: integer read GetMinValue write SetMinValue default 0;
