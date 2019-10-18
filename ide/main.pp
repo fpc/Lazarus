@@ -957,8 +957,8 @@ type
     // form editor and designer
     procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); override;
     procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface); override;
-    procedure DoShowMethod(AEditor: TSourceEditorInterface; const AMethodName: String); override;
     procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out AForm: TCustomForm); override;
+    procedure DoShowMethod(AEditor: TSourceEditorInterface; const AMethodName: String); override;
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
                                         AComponent: TComponent): TCustomForm; override;
     // editor and environment options
@@ -8997,6 +8997,59 @@ begin
   DoShowDesignerFormOfSrc(AEditor, LForm);
 end;
 
+procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface;
+  out AForm: TCustomForm);
+var
+  ActiveUnitInfo: TUnitInfo;
+  UnitCodeBuf: TCodeBuffer;
+  aFilename: String;
+begin
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
+  {$ENDIF}
+  AForm := nil;
+  GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
+  if (ActiveUnitInfo = nil) then exit;
+
+  if (ActiveUnitInfo.Component=nil)
+  and (ActiveUnitInfo.Source<>nil) then begin
+    if (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
+      // include file => get unit
+      UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
+      if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
+        // unit found
+        ActiveUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
+        if (ActiveUnitInfo=nil) or (ActiveUnitInfo.OpenEditorInfoCount=0) then begin
+          // open unit in source editor and load form
+          DoOpenEditorFile(UnitCodeBuf.Filename,-1,-1,
+            [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
+          exit;
+        end;
+      end;
+    end;
+    if (CompareFileExt(ActiveUnitInfo.Filename,'.lfm',false)=0) then begin
+      // lfm file => get unit
+      aFilename:=GetUnitFileOfLFM(ActiveUnitInfo.Filename);
+      if aFilename<>'' then begin
+        DoOpenEditorFile(aFilename,-1,-1,
+          [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
+        exit;
+      end;
+    end;
+  end;
+
+  // load the form, if not already done
+  AForm:=GetDesignerFormOfSource(ActiveUnitInfo,true);
+  if AForm=nil then exit;
+  DisplayState:=dsForm;
+  LastFormActivated:=AForm;
+  ShowDesignerForm(AForm);
+  if TheControlSelection.SelectionForm<>AForm then begin
+    // select the new form (object inspector, formeditor, control selection)
+    TheControlSelection.AssignPersistent(ActiveUnitInfo.Component);
+  end;
+end;
+
 procedure TMainIDE.DoShowMethod(AEditor: TSourceEditorInterface;
   const AMethodName: String);
 var
@@ -9048,59 +9101,6 @@ begin
     DebugLn(['Error: (lazarus) TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
-  end;
-end;
-
-procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface;
-  out AForm: TCustomForm);
-var
-  ActiveUnitInfo: TUnitInfo;
-  UnitCodeBuf: TCodeBuffer;
-  aFilename: String;
-begin
-  {$IFDEF VerboseIDEDisplayState}
-  debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
-  {$ENDIF}
-  AForm := nil;
-  GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
-  if (ActiveUnitInfo = nil) then exit;
-
-  if (ActiveUnitInfo.Component=nil)
-  and (ActiveUnitInfo.Source<>nil) then begin
-    if (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
-      // include file => get unit
-      UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
-      if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
-        // unit found
-        ActiveUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
-        if (ActiveUnitInfo=nil) or (ActiveUnitInfo.OpenEditorInfoCount=0) then begin
-          // open unit in source editor and load form
-          DoOpenEditorFile(UnitCodeBuf.Filename,-1,-1,
-            [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
-          exit;
-        end;
-      end;
-    end;
-    if (CompareFileExt(ActiveUnitInfo.Filename,'.lfm',false)=0) then begin
-      // lfm file => get unit
-      aFilename:=GetUnitFileOfLFM(ActiveUnitInfo.Filename);
-      if aFilename<>'' then begin
-        DoOpenEditorFile(aFilename,-1,-1,
-          [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
-        exit;
-      end;
-    end;
-  end;
-
-  // load the form, if not already done
-  AForm:=GetDesignerFormOfSource(ActiveUnitInfo,true);
-  if AForm=nil then exit;
-  DisplayState:=dsForm;
-  LastFormActivated:=AForm;
-  ShowDesignerForm(AForm);
-  if TheControlSelection.SelectionForm<>AForm then begin
-    // select the new form (object inspector, formeditor, control selection)
-    TheControlSelection.AssignPersistent(ActiveUnitInfo.Component);
   end;
 end;
 
