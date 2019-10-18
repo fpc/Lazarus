@@ -332,7 +332,10 @@ begin
   ycalc := CalcBestFitValues(x, y, n, m, FitParams);
   CalcSumOfSquares(y, dy, ycalc, Result.SSE, Result.SSR);
   SetLength(ycalc, 0);
-  chi2 := Result.SSE / (n - mfit);
+  if n > mfit then
+    chi2 := Result.SSE / (n - mfit)
+  else
+    chi2 := NaN;
 
   // Calculate inverse of alpha. This is (almost) the variance-covariance matrix
   invgen(mfit, mfit, alpha[0], term);
