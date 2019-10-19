@@ -9803,9 +9803,9 @@ begin
   FSpecialCursors[gcsRowHeightChanging] := crVSplit;
   FSpecialCursors[gcsDragging] := crMultiDrag;
 
-  varRubberSpace := MulDiv(constRubberSpace, Screen.PixelsPerInch, 96);
-  varCellPadding := MulDiv(constCellPadding, Screen.PixelsPerInch, 96);
-  varColRowBorderTolerance := MulDiv(constColRowBorderTolerance, Screen.PixelsPerInch, 96);
+  varRubberSpace := Scale96ToScreen(constRubberSpace);
+  varCellPadding := Scale96ToScreen(constCellPadding);
+  varColRowBorderTolerance := Scale96ToScreen(constColRowBorderTolerance);
 end;
 
 destructor TCustomGrid.Destroy;

@@ -1880,7 +1880,7 @@ begin
   if not FScaled then
     Result := AImageWidth
   else begin
-    Result := round(AImageWidth * APPI / 96);
+    Result := AImageWidth * APPI div 96;
     if not FData.Find(Result, idx) then begin
       if APPI <= 120 then
         Factor := 100 // 100-125% (96-120 DPI): no scaling
