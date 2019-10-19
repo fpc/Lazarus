@@ -7079,6 +7079,9 @@ begin
   QWidget_raise(Widget);
   {$ENDIF}
   {$IFDEF HASX11}
+  if IsWayland then
+    QWidget_raise(Widget)
+  else
   if (QtWidgetSet.WindowManagerName = 'xfwm4') and not IsMDIChild and
     QWidget_isModal(Widget) then
   begin

@@ -6,6 +6,8 @@ var
   XDisplay: PDisplay;
   WMAtom: TAtom;
 begin
+  if IsWayland then
+    exit(False);
   Result := QX11Info_isPlatformX11();
   if not Result then
     exit;
@@ -16,8 +18,13 @@ begin
 end;
 
 function IsWayland: Boolean;
+var
+  APlatform: WideString;
 begin
-  Result := GetEnvironmentVariable('XDG_SESSION_TYPE') = 'wayland';
+  Result := False;
+  QGuiApplication_platformName(@APlatform);
+  Result := APlatform = 'wayland';
+  // not QX11Info_isPlatformX11() and (GetEnvironmentVariable('XDG_SESSION_TYPE') = 'wayland');
 end;
 
 function IsOldKDEInstallation: Boolean;
@@ -68,7 +75,7 @@ var
   WidgetWin: TWindow;
 begin
   Result := True;
-  if AWidget = nil then
+  if (AWidget = nil) or IsWayland then
     exit;
   Display := QX11Info_display();
   if Display = nil then
@@ -121,6 +128,8 @@ var
    WMAtom: TAtom;
 begin
   Result := False;
+  if IsWayland then
+    exit;
   Display := QX11Info_display();
 
   if Display = nil then
@@ -155,6 +164,11 @@ var
   Valid: Boolean;
 begin
   Result := nil;
+  if IsWayland then
+  begin
+    Result := QApplication_activeWindow();
+    exit;
+  end;
   Display := QX11Info_display();
 
   if Display = nil then
@@ -198,6 +212,13 @@ var
   data: Pointer;
 begin
   Result := '';
+
+  if IsWayland then
+  begin
+    Result := 'wayland';
+    exit;
+  end;
+
   Display := QX11Info_display();
 
   if Display = nil then
@@ -251,7 +272,7 @@ var
    AWin: PtrUInt;
 begin
   Result := False;
-  if Widget = nil then
+  if (Widget = nil) or IsWayland then
     exit;
   Display := QX11Info_display();
 
@@ -275,7 +296,10 @@ var
    ScreenNum: Integer;
    XClient: TXClientMessageEvent;
    WMAtom: TAtom;
+   APlatform: WideString;
 begin
+  if IsWayland then
+    exit;
   Display := QX11Info_display();
 
   if Display = nil then
@@ -318,6 +342,8 @@ var
   data: Pointer;
 begin
   Result := False;
+  if IsWayland then
+    exit;
   Display := QX11Info_display();
 
   if Display = nil then
@@ -365,6 +391,8 @@ var
   n: Cardinal;
 begin
   Result := False;
+  if IsWayland then
+    exit;
   Display := QX11Info_display();
 
   if (Display = nil) then
@@ -382,6 +410,8 @@ end;
 
 procedure MapX11Window(AWinID: PtrUInt);
 begin
+  if IsWayland then
+    exit;
   XMapWindow(QX11Info_display(), TWindow(AWinID));
 end;
 
