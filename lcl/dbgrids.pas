@@ -505,7 +505,6 @@ type
     procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SetFixedCols(const AValue: Integer); override;
-    function  SelectCell(aCol, aRow: Integer): boolean; override;
     procedure UnprepareCellHints; override;
     procedure UpdateActive; virtual;
     procedure UpdateAutoSizeColumns;
@@ -2956,11 +2955,6 @@ begin
   if (FixedCols=AValue) or (AValue<FirstGridColumn) then
     exit;
   inherited SetFixedCols(AValue);
-end;
-
-function TCustomDBGrid.SelectCell(aCol, aRow: Integer): boolean;
-begin
-  Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
 end;
 
 procedure TCustomDBGrid.BeginLayout;

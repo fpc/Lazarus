@@ -2594,12 +2594,12 @@ end;
 
 function TCustomGrid.IsColumnIndexVariable(AIndex: Integer): boolean;
 begin
-  Result := (FFixedCols>0) and (AIndex>=FFixedCols) and (AIndex<ColCount);
+  Result := (AIndex>=FFixedCols) and (AIndex<ColCount);
 end;
 
 function TCustomGrid.IsRowIndexVariable(AIndex: Integer): boolean;
 begin
-  Result := (FFixedRows>0) and (AIndex>=FFixedRows) and (AIndex<RowCount);
+  Result := (AIndex>=FFixedRows) and (AIndex<RowCount);
 end;
 
 function TCustomGrid.GetColWidths(Acol: Integer): Integer;
@@ -4093,8 +4093,7 @@ end;
 
 function TCustomGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
-  Result:=true;
-  //Result:=MoveExtend(False, aCol, aRow);
+  Result := (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
 end;
 
 procedure TCustomGrid.SetCanvasFont(aFont: TFont);
@@ -7876,7 +7875,9 @@ begin
 
   // Calculate
   Result:=False;
-  while not SelectCell(NCol,NRow) do begin
+  while ((ColWidths[NCol]=0)  and (CInc<>0))
+     or ((RowHeights[NRow]=0) and (RInc<>0)) do
+  begin
     if not (IsRowIndexVariable(NRow+RInc) and IsColumnIndexVariable(NCol+CInc)) then
       Exit;
     Inc(NCol, CInc);
@@ -10887,8 +10888,9 @@ end;
 
 function TCustomDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
-  Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
-  if Assigned(OnSelectCell) then OnSelectCell(Self, aCol, aRow, Result);
+  Result := inherited SelectCell(aCol, aRow);
+  if Assigned(OnSelectCell) then
+    OnSelectCell(Self, aCol, aRow, Result);
 end;
 
 procedure TCustomDrawGrid.SetColor(Value: TColor);
