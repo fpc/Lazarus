@@ -1558,8 +1558,8 @@ var
   CompEditDsg: TComponentEditorDesigner;
   APersistent: TPersistent;
   i: integer;
-  NewVal: string;
-  oldVal: array of string;
+  UndoVal: string;
+  OldUndoValues: array of string;
   isExcept: boolean;
   prpInfo: PPropInfo;
   Editor: TPropertyEditor;
@@ -1590,11 +1590,11 @@ begin
   Editor:=CurRow.Editor;
   prpInfo := nil;
   if CompEditDsg<>nil then begin
-    SetLength(oldVal, Editor.PropCount);
+    SetLength(OldUndoValues, Editor.PropCount);
     prpInfo := Editor.GetPropInfo;
     if prpInfo<>nil then begin
       for i := 0 to Editor.PropCount - 1 do
-        oldVal[i] := GetPropValue(Editor,i);
+        OldUndoValues[i] := GetPropValue(Editor,i);
     end;
   end;
 
@@ -1610,7 +1610,7 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     except
       on E: Exception do begin
-        MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
+        MessageDlg(oisError, E.Message + ' with value "'+NewValue+'"', mtError, [mbOk], 0);
         isExcept := true;
       end;
     end;
@@ -1627,9 +1627,9 @@ begin
       begin
         APersistent := Editor.GetComponent(i);
         if APersistent=nil then continue;
-        NewVal := GetPropValue(Editor,i);
+        UndoVal := GetPropValue(Editor,i);
         CompEditDsg.AddUndoAction(APersistent, uopChange, i = 0,
-            Editor.GetName, oldVal[i], NewVal);
+            Editor.GetName, OldUndoValues[i], UndoVal);
       end;
     end;
 
