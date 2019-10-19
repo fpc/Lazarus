@@ -1102,10 +1102,10 @@ type
     procedure InvalidateFromCol(ACol: Integer);
     procedure InvalidateGrid;
     procedure InvalidateFocused;
-    function  IsColumnIndexValid(AIndex: Integer): boolean; inline;
-    function  IsRowIndexValid(AIndex: Integer): boolean; inline;
-    function  IsColumnIndexVariable(AIndex: Integer): boolean; inline;
-    function  IsRowIndexVariable(AIndex: Integer): boolean; inline;
+    function  IsColumnIndexValid(AIndex: Integer): boolean;
+    function  IsRowIndexValid(AIndex: Integer): boolean;
+    function  IsColumnIndexVariable(AIndex: Integer): boolean;
+    function  IsRowIndexVariable(AIndex: Integer): boolean;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
     function  IsEmptyRow(ARow: Integer): Boolean;
@@ -2594,12 +2594,12 @@ end;
 
 function TCustomGrid.IsColumnIndexVariable(AIndex: Integer): boolean;
 begin
-  Result := (AIndex>=FFixedCols) and (AIndex<ColCount);
+  Result := (FFixedCols>0) and (AIndex>=FFixedCols) and (AIndex<ColCount);
 end;
 
 function TCustomGrid.IsRowIndexVariable(AIndex: Integer): boolean;
 begin
-  Result := (AIndex>=FFixedRows) and (AIndex<RowCount);
+  Result := (FFixedRows>0) and (AIndex>=FFixedRows) and (AIndex<RowCount);
 end;
 
 function TCustomGrid.GetColWidths(Acol: Integer): Integer;
@@ -7832,13 +7832,10 @@ begin
     MoveNextSelectable(true, aCol, aRow);
 end;
 
-function TCustomGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer
-  ): Boolean;
+function TCustomGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer): Boolean;
 var
   CInc,RInc: Integer;
   NCol,NRow: Integer;
-  SelOk: Boolean;
-
 begin
   // Reference
   if not Relative then begin
@@ -7878,14 +7875,12 @@ begin
   else           RInc:= 0;
 
   // Calculate
-  SelOk:=SelectCell(NCol,NRow);
   Result:=False;
-  while not SelOk do begin
-    if not IsRowIndexVariable(NRow+RInc) or
-       not IsColumnIndexVariable(NCol+CInc) then Exit;
+  while not SelectCell(NCol,NRow) do begin
+    if not (IsRowIndexVariable(NRow+RInc) and IsColumnIndexVariable(NCol+CInc)) then
+      Exit;
     Inc(NCol, CInc);
     Inc(NRow, RInc);
-    SelOk:=SelectCell(NCol, NRow);
   end;
   Result:=MoveExtend(False, NCol, NRow, True);
 
