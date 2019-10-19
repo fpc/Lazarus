@@ -3445,8 +3445,7 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('Scrollbar
-    Page: Which=',SbToStr(Which), ' Avalue=',dbgs(aPage));
+    DebugLn('Scrollbar Page: Which=',SbToStr(Which), ' Avalue=',dbgs(aPage));
     {$endif}
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE;
