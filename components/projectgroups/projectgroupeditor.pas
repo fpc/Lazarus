@@ -413,11 +413,11 @@ procedure TProjectGroupEditorForm.Localize;
   end;
 
 begin
-  ConfigAction(AProjectGroupSave,'laz_save',lisProjectGroupSaveCaption,lisProjectGroupSaveHint,Nil);
-  ConfigAction(AProjectGroupSaveAs,'menu_saveas',lisProjectGroupSaveAsCaption,lisProjectGroupSaveAsHint,Nil);
-  ConfigAction(AProjectGroupNew,'laz_wand',lisProjectGroupNewCaption,lisProjectGroupNewHint,Nil);
-  ConfigAction(AProjectGroupAddExisting,'menu_project_open',lisProjectGroupAddExistingCaption,lisProjectGroupAddExistingHint,Nil);
-  ConfigAction(AProjectGroupAddCurrent,'menu_project_add',lisProjectGroupAddCurrentProjectCaption,lisProjectGroupAddCurrentProjectHint,Nil);
+  ConfigAction(AProjectGroupSave,'pg_save_simple',lisProjectGroupSaveCaption,lisProjectGroupSaveHint,Nil);
+  ConfigAction(AProjectGroupSaveAs,'pg_save_as_simple',lisProjectGroupSaveAsCaption,lisProjectGroupSaveAsHint,Nil);
+  ConfigAction(AProjectGroupNew,'pg_new',lisProjectGroupNewCaption,lisProjectGroupNewHint,Nil);
+  ConfigAction(AProjectGroupAddExisting,'pg_add_project_from_file',lisProjectGroupAddExistingCaption,lisProjectGroupAddExistingHint,Nil);
+  ConfigAction(AProjectGroupAddCurrent,'pg_add_project',lisProjectGroupAddCurrentProjectCaption,lisProjectGroupAddCurrentProjectHint,Nil);
   ConfigAction(AProjectGroupDelete,'laz_delete',lisProjectGroupDeleteCaption,lisProjectGroupDeleteHint,Nil);
   ConfigAction(AProjectGroupAddNew,'menu_project_new',lisProjectGroupAddNewCaption,lisProjectGroupAddNewHint,Nil);
   ConfigAction(ATargetEarlier,'arrow_up',lisTargetEarlierCaption,lisTargetEarlierHint,Nil);
@@ -1312,7 +1312,7 @@ end;
 
 procedure TProjectGroupEditorForm.LoadImages;
 begin
-  NIProjectGroup := IDEImages.GetImageIndex('projectgroup');
+  NIProjectGroup := IDEImages.GetImageIndex('pg_item');
   NITargetProject := IDEImages.GetImageIndex('item_project');
   NITargetPackage := IDEImages.GetImageIndex('item_package');
   NITargetProjectGroup := NIProjectGroup;
