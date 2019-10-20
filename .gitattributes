@@ -4221,6 +4221,7 @@ components/projectgroups/images/pg_add_project_from_file.png -text svneol=unset#
 components/projectgroups/images/pg_add_project_from_file_150.png -text svneol=unset#image/png
 components/projectgroups/images/pg_add_project_from_file_200.png -text svneol=unset#image/png
 components/projectgroups/images/pg_images.bat svneol=native#text/plain
+components/projectgroups/images/pg_images.sh svneol=native#text/plain
 components/projectgroups/images/pg_images_list.txt svneol=native#text/plain
 components/projectgroups/images/pg_item.png -text svneol=unset#image/png
 components/projectgroups/images/pg_item_150.png -text svneol=unset#image/png
