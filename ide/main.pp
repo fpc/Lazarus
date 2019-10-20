@@ -2893,6 +2893,10 @@ procedure TMainIDE.LoadMenuShortCuts;
       ToolButton.ToolButtonClass := ToolButtonClass;
   end;
 
+  // See also in ToolBarIntf:
+  //  function GetCommand_DropDown
+  //  function GetCommand_ButtonDrop
+
 var
   xBtnItem: TIDEButtonCommand;
 begin
@@ -2903,6 +2907,7 @@ begin
     itmFileNewOther.Command:=GetCommand(ecNew);
     itmFileOpen.Command:=GetCommand(ecOpen, nil, TOpenFileToolButton);
     itmFileOpenUnit.Command:=GetCommand(ecOpenUnit);
+    GetCommand_ButtonDrop(ecOpenRecent, itmFileRecentOpen);
     itmFileRevert.Command:=GetCommand(ecRevert);
     itmFileSave.Command:=GetCommand(ecSave);
     itmFileSaveAs.Command:=GetCommand(ecSaveAs);
@@ -2955,11 +2960,12 @@ begin
     itmSetFreeBookmark.Command:=GetCommand(ecSetFreeBookmark);
     itmJumpToNextBookmark.Command:=GetCommand(ecNextBookmark);
     itmJumpToPrevBookmark.Command:=GetCommand(ecPrevBookmark);
-    itmJumpToInterface.Command:=GetCommand(ecJumpToInterface, nil, TJumpToSectionToolButton);
-    itmJumpToInterfaceUses.Command:=GetCommand(ecJumpToInterfaceUses, nil, TJumpToSectionToolButton);
-    itmJumpToImplementation.Command:=GetCommand(ecJumpToImplementation, nil, TJumpToSectionToolButton);
-    itmJumpToImplementationUses.Command:=GetCommand(ecJumpToImplementationUses, nil, TJumpToSectionToolButton);
-    itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization, nil, TJumpToSectionToolButton);
+    GetCommand_ButtonDrop(ecJumpToSection, itmJumpToSection);
+    itmJumpToInterface.Command:=GetCommand_DropDown(ecJumpToInterface, itmJumpToSection);
+    itmJumpToInterfaceUses.Command:=GetCommand_DropDown(ecJumpToInterfaceUses, itmJumpToSection);
+    itmJumpToImplementation.Command:=GetCommand_DropDown(ecJumpToImplementation, itmJumpToSection);
+    itmJumpToImplementationUses.Command:=GetCommand_DropDown(ecJumpToImplementationUses, itmJumpToSection);
+    itmJumpToInitialization.Command:=GetCommand_DropDown(ecJumpToInitialization, itmJumpToSection);
     GetCmdAndBtn(ecJumpToProcedureHeader, xBtnItem);
     xBtnItem.Caption := lisMenuJumpToProcedureHeader;
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
@@ -3047,7 +3053,8 @@ begin
     // project menu
     itmProjectNew.Command:=GetCommand(ecNewProject);
     itmProjectNewFromFile.Command:=GetCommand(ecNewProjectFromFile);
-    itmProjectOpen.Command:=GetCommand(ecOpenProject);
+    itmProjectOpen.Command:=GetCommand_DropDown(ecOpenProject, itmProjectRecentOpen);
+    GetCommand_ButtonDrop(ecOpenRecentProject, itmProjectRecentOpen);
     itmProjectClose.Command:=GetCommand(ecCloseProject);
     itmProjectSave.Command:=GetCommand(ecSaveProject);
     itmProjectSaveAs.Command:=GetCommand(ecSaveProjectAs);
@@ -3093,8 +3100,9 @@ begin
     // package menu
     itmPkgNewPackage.Command:=GetCommand(ecNewPackage);
     itmPkgOpenLoadedPackage.Command:=GetCommand(ecOpenPackage);
-    itmPkgOpenPackageFile.Command:=GetCommand(ecOpenPackageFile);
+    itmPkgOpenPackageFile.Command:=GetCommand_DropDown(ecOpenPackageFile, itmPkgOpenRecent);
     itmPkgOpenPackageOfCurUnit.Command:=GetCommand(ecOpenPackageOfCurUnit);
+    GetCommand_ButtonDrop(ecOpenRecentPackage, itmPkgOpenRecent);
     itmPkgAddCurFileToPkg.Command:=GetCommand(ecAddCurFileToPkg);
     itmPkgAddNewComponentToPkg.Command:=GetCommand(ecNewPkgComponent);
     itmPkgPkgGraph.Command:=GetCommand(ecPackageGraph);

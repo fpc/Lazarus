@@ -252,6 +252,7 @@ resourcestring
   lisPathOfTheMakeUtility = 'Path of the make utility';
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
+  lisKMOpenRecentProject = 'Open recent project';
   lisFileHasNoProject = 'File has no project';
   lisTheFileIsNotALazarusProjectCreateANewProjectForThi =
      'The file "%s" is not a Lazarus project.'
@@ -307,6 +308,7 @@ resourcestring
   lisPkgEditPublishPackage = 'Publish Package';
   lisPERevertPackage = 'Revert Package';
   lisMenuOpenRecent = 'Open &Recent';
+  lisTBOpenRecent = 'Open Recent';
   lisMenuSave = '&Save';
   lisMenuSaveAs = 'Save &As ...';
   lisKMSaveAs = 'SaveAs';
@@ -4130,6 +4132,7 @@ resourcestring
   lisKMNewPackage = 'New package';
   lisCompPalOpenPackage = 'Open package';
   lisKMOpenPackageFile = 'Open package file';
+  lisKMOpenRecentPackage = 'Open recent package';
   lisCPOpenPackage = 'Open Package %s';
   lisFilterAllMessagesOfType = 'Filter all messages of type %s';
   lisFilterAllMessagesOfCertainType = 'Filter all messages of certain type';
@@ -5096,6 +5099,7 @@ resourcestring
 
   // Standard File menu
   lisKMNewUnit = 'New Unit';
+  lisKMOpenRecent = 'Open Recent';
 
   // Standard Help menu
   lisMenuTemplateAbout = 'About';

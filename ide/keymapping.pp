@@ -510,6 +510,7 @@ begin
     ecNewForm                 : Result:= lisMenuNewForm;
     ecOpen                    : Result:= lisMenuOpen;
     ecOpenUnit                : Result:= lisMenuOpenUnit;
+    ecOpenRecent              : Result:= lisTBOpenRecent;
     ecRevert                  : Result:= lisMenuRevert;
     ecSave                    : Result:= lisSave;
     ecSaveAs                  : Result:= lisMenuSaveAs;
@@ -580,6 +581,7 @@ begin
     ecJumpToNextError         : Result:= lisMenuJumpToNextError;
     ecJumpToPrevError         : Result:= lisMenuJumpToPrevError;
     ecGotoIncludeDirective    : Result:= srkmecGotoIncludeDirective;
+    ecJumpToSection           : Result:= lisMenuJumpTo;
     ecJumpToInterface         : Result:= lisMenuJumpToInterface;
     ecJumpToInterfaceUses     : Result:= lisMenuJumpToInterfaceUses;
     ecJumpToImplementation    : Result:= lisMenuJumpToImplementation;
@@ -653,6 +655,7 @@ begin
     ecNewProject              : Result:= lisMenuNewProject;
     ecNewProjectFromFile      : Result:= lisMenuNewProjectFromFile;
     ecOpenProject             : Result:= lisMenuOpenProject;
+    ecOpenRecentProject       : Result:= lisMenuOpenRecentProject;
     ecCloseProject            : Result:= lisMenuCloseProject;
     ecSaveProject             : Result:= lisMenuSaveProject;
     ecSaveProjectAs           : Result:= lisMenuSaveProjectAs;
@@ -706,6 +709,7 @@ begin
     ecOpenPackage             : Result:= lisMenuOpenPackage;
     ecOpenPackageFile         : Result:= lisMenuOpenPackageFile;
     ecOpenPackageOfCurUnit    : Result:= lisMenuOpenPackageOfCurUnit;
+    ecOpenRecentPackage       : Result:= lisMenuOpenRecentPkg;
     ecAddCurFileToPkg         : Result:= lisMenuAddCurFileToPkg;
     ecNewPkgComponent         : Result:= lisMenuPkgNewPackageComponent;
     ecPackageGraph            : Result:= lisMenuPackageGraph;
@@ -2890,6 +2894,7 @@ begin
   AddDefault(C, 'Find block other end', srkmecFindBlockOtherEnd, ecFindBlockOtherEnd);
   AddDefault(C, 'Find block start', srkmecFindBlockStart, ecFindBlockStart);
   AddDefault(C, 'Goto include directive', lisMenuGotoIncludeDirective, ecGotoIncludeDirective);
+  AddDefault(C, 'Jump to Section', lisMenuJumpTo, ecJumpToSection);
   AddDefault(C, 'Jump to Interface', lisMenuJumpToInterface, ecJumpToInterface);
   AddDefault(C, 'Jump to Interface uses', lisMenuJumpToInterfaceUses, ecJumpToInterfaceUses);
   AddDefault(C, 'Jump to Implementation', lisMenuJumpToImplementation, ecJumpToImplementation);
@@ -3034,6 +3039,7 @@ begin
   AddDefault(C, 'NewForm', lisMenuNewForm, ecNewForm);
   AddDefault(C, 'Open', lisOpen, ecOpen);
   AddDefault(C, 'OpenUnit', lisOpenUnit, ecOpenUnit);
+  AddDefault(C, 'OpenRecent', lisKMOpenRecent, ecOpenRecent);
   AddDefault(C, 'Revert', lisMenuRevert, ecRevert);
   AddDefault(C, 'Save', lisSave, ecSave);
   AddDefault(C, 'SaveAs', lisKMSaveAs, ecSaveAs);
@@ -3081,6 +3087,7 @@ begin
   AddDefault(C, 'New project', lisKMNewProject, ecNewProject);
   AddDefault(C, 'New project from file', lisKMNewProjectFromFile, ecNewProjectFromFile);
   AddDefault(C, 'Open project', lisOpenProject2, ecOpenProject);
+  AddDefault(C, 'Open recent project', lisKMOpenRecentProject, ecOpenRecentProject);
   AddDefault(C, 'Close project', lisKMCloseProject, ecCloseProject);
   AddDefault(C, 'Save project', lisKMSaveProject, ecSaveProject);
   AddDefault(C, 'Save project as', lisKMSaveProjectAs, ecSaveProjectAs);
@@ -3136,6 +3143,7 @@ begin
   AddDefault(C, 'New package', lisKMNewPackage, ecNewPackage);
   AddDefault(C, 'Open package', lisCompPalOpenPackage, ecOpenPackage);
   AddDefault(C, 'Open package file', lisKMOpenPackageFile, ecOpenPackageFile);
+  AddDefault(C, 'Open recent package', lisKMOpenRecentPackage, ecOpenRecentPackage);
   AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit, ecOpenPackageOfCurUnit);
   AddDefault(C, 'Add active unit to a package', lisMenuAddCurFileToPkg, ecAddCurFileToPkg);
   AddDefault(C, 'Add new component to a package', lisMenuPkgNewPackageComponent, ecNewPkgComponent);

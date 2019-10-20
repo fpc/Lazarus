@@ -93,7 +93,7 @@ type
   protected
     FNeedUpdateHighlighters: boolean;
 
-    function CreateMenuSeparator : TMenuItem;
+    function CreateMenuSeparator(Section: TIDEMenuSection): TIDEMenuCommand;
     procedure CreateMenuItem(Section: TIDEMenuSection;
                              var MenuCommand: TIDEMenuCommand;
                              const MenuItemName, MenuItemCaption: String;
@@ -202,13 +202,6 @@ type
   public
     property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
     property DisplayState: TDisplayState read FDisplayState write SetDisplayState;
-  end;
-
-  { TJumpToSectionToolButton }
-
-  TJumpToSectionToolButton = class(TIDEToolButton_DropDown)
-  protected
-    procedure RefreshMenu; override;
   end;
 
   { TSetBuildModeToolButton }
@@ -608,19 +601,6 @@ begin
   Style := tbsDropDown;
 end;
 
-{ TJumpToSectionToolButton }
-
-procedure TJumpToSectionToolButton.RefreshMenu;
-begin
-  AddMenuItem(MainIDEBar.itmJumpToInterface);
-  AddMenuItem(MainIDEBar.itmJumpToInterfaceUses);
-  DropdownMenu.Items.AddSeparator;
-  AddMenuItem(MainIDEBar.itmJumpToImplementation);
-  AddMenuItem(MainIDEBar.itmJumpToImplementationUses);
-  DropdownMenu.Items.AddSeparator;
-  AddMenuItem(MainIDEBar.itmJumpToInitialization);
-end;
-
 {$IFDEF LCLCocoa}
 var
   mnuApple: TIDEMenuSection = nil;
@@ -953,10 +933,13 @@ begin
   {$ENDIF}
 end;
 
-function TMainIDEBase.CreateMenuSeparator : TMenuItem;
+var
+  SeparatorNum: Integer=0;
+
+function TMainIDEBase.CreateMenuSeparator(Section: TIDEMenuSection): TIDEMenuCommand;
 begin
-  Result := TMenuItem.Create(MainIDEBar);
-  Result.Caption := '-';
+  Inc(SeparatorNum);
+  CreateMenuItem(Section, Result, 'Separator'+IntToStr(SeparatorNum), '-');  // Result - var parameter
 end;
 
 procedure TMainIDEBase.CreateMenuItem(Section: TIDEMenuSection;
@@ -1144,8 +1127,10 @@ begin
 
     CreateMenuItem(ParentMI,itmJumpToInterface,'itmJumpToInterface',lisMenuJumpToInterface, 'menu_jumpto_interface');
     CreateMenuItem(ParentMI,itmJumpToInterfaceUses,'itmJumpToInterfaceUses',lisMenuJumpToInterfaceUses, 'menu_jumpto_interfaceuses');
+    CreateMenuSeparator(ParentMI);
     CreateMenuItem(ParentMI,itmJumpToImplementation,'itmJumpToImplementation',lisMenuJumpToImplementation, 'menu_jumpto_implementation');
     CreateMenuItem(ParentMI,itmJumpToImplementationUses,'itmJumpToImplementationUses',lisMenuJumpToImplementationUses, 'menu_jumpto_implementationuses');
+    CreateMenuSeparator(ParentMI);
     CreateMenuItem(ParentMI,itmJumpToInitialization,'itmJumpToInitialization',lisMenuJumpToInitialization, 'menu_jumpto_initialization');
 
     CreateMenuSeparatorSection(mnuSearch,itmBookmarks,'itmBookmarks');
@@ -1409,7 +1394,7 @@ begin
     CreateMenuItem(ParentMI,itmPkgOpenLoadedPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_installed');
     CreateMenuItem(ParentMI,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_open');
     CreateMenuItem(ParentMI,itmPkgOpenPackageOfCurUnit,'itmPkgOpenPackageOfCurUnit',lisMenuOpenPackageOfCurUnit);
-    CreateMenuSubSection(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg);
+    CreateMenuSubSection(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg, 'pkg_open_recent');
 
     CreateMenuSeparatorSection(mnuComponent,itmPkgUnits,'itmPkgUnits');
     ParentMI:=itmPkgUnits;

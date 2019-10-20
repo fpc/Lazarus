@@ -945,6 +945,9 @@ packages/pkg_lrs_200.png
 packages/pkg_open.png
 packages/pkg_open_150.png
 packages/pkg_open_200.png
+packages/pkg_open_recent.png
+packages/pkg_open_recent_150.png
+packages/pkg_open_recent_200.png
 packages/pkg_package_autoinstall.png
 packages/pkg_package_autoinstall_150.png
 packages/pkg_package_autoinstall_200.png

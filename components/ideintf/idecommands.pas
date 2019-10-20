@@ -81,13 +81,14 @@ const
   ecFindBlockStart          = ecFirstLazarus + 22;
   ecOpenFileAtCursor        = ecFirstLazarus + 23;
   ecGotoIncludeDirective    = ecFirstLazarus + 24;
-  ecJumpToInterface         = ecFirstLazarus + 25;
-  ecJumpToInterfaceUses     = ecFirstLazarus + 26;
-  ecJumpToImplementation    = ecFirstLazarus + 27;
-  ecJumpToImplementationUses= ecFirstLazarus + 28;
-  ecJumpToInitialization    = ecFirstLazarus + 29;
-  ecJumpToProcedureHeader   = ecFirstLazarus + 30;
-  ecJumpToProcedureBegin    = ecFirstLazarus + 31;
+  ecJumpToSection           = ecFirstLazarus + 25;
+  ecJumpToInterface         = ecFirstLazarus + 26;
+  ecJumpToInterfaceUses     = ecFirstLazarus + 27;
+  ecJumpToImplementation    = ecFirstLazarus + 28;
+  ecJumpToImplementationUses= ecFirstLazarus + 29;
+  ecJumpToInitialization    = ecFirstLazarus + 30;
+  ecJumpToProcedureHeader   = ecFirstLazarus + 31;
+  ecJumpToProcedureBegin    = ecFirstLazarus + 32;
 
   // edit selection
   ecSelectionUpperCase      = ecFirstLazarus + 50;
@@ -174,8 +175,9 @@ const
   ecRestart                 = ecFirstLazarus + 213;
   ecQuit                    = ecFirstLazarus + 214;
   ecOpenUnit                = ecFirstLazarus + 215;
-  ecCloseOtherTabs          = ecFirstLazarus + 216;
-  ecCloseRightTabs          = ecFirstLazarus + 217;
+  ecOpenRecent              = ecFirstLazarus + 216;
+  ecCloseOtherTabs          = ecFirstLazarus + 217;
+  ecCloseRightTabs          = ecFirstLazarus + 218;
 
   // edit menu
   ecMultiPaste              = ecFirstLazarus + 230;
@@ -305,31 +307,33 @@ const
   ecNewProject              = ecFirstLazarus + 500;
   ecNewProjectFromFile      = ecFirstLazarus + 501;
   ecOpenProject             = ecFirstLazarus + 502;
-  ecCloseProject            = ecFirstLazarus + 503;
-  ecSaveProject             = ecFirstLazarus + 504;
-  ecSaveProjectAs           = ecFirstLazarus + 505;
-  ecPublishProject          = ecFirstLazarus + 506;
-  ecProjectInspector        = ecFirstLazarus + 507;
-  ecAddCurUnitToProj        = ecFirstLazarus + 508;
-  ecRemoveFromProj          = ecFirstLazarus + 509;
-  ecViewProjectUnits        = ecFirstLazarus + 510;
-  ecViewProjectForms        = ecFirstLazarus + 511;
-  ecViewProjectSource       = ecFirstLazarus + 512;
-  ecProjectOptions          = ecFirstLazarus + 513;
-  ecProjectChangeBuildMode  = ecFirstLazarus + 514;
-  ecProjectResaveFormsWithI18n = ecFirstLazarus + 515;
+  ecOpenRecentProject       = ecFirstLazarus + 503;
+  ecCloseProject            = ecFirstLazarus + 504;
+  ecSaveProject             = ecFirstLazarus + 505;
+  ecSaveProjectAs           = ecFirstLazarus + 506;
+  ecPublishProject          = ecFirstLazarus + 507;
+  ecProjectInspector        = ecFirstLazarus + 508;
+  ecAddCurUnitToProj        = ecFirstLazarus + 509;
+  ecRemoveFromProj          = ecFirstLazarus + 510;
+  ecViewProjectUnits        = ecFirstLazarus + 511;
+  ecViewProjectForms        = ecFirstLazarus + 512;
+  ecViewProjectSource       = ecFirstLazarus + 513;
+  ecProjectOptions          = ecFirstLazarus + 514;
+  ecProjectChangeBuildMode  = ecFirstLazarus + 515;
+  ecProjectResaveFormsWithI18n = ecFirstLazarus + 516;
 
   // package menu
   ecOpenPackage             = ecFirstLazarus + 600;
   ecOpenPackageFile         = ecFirstLazarus + 601;
   ecOpenPackageOfCurUnit    = ecFirstLazarus + 602;
-  ecAddCurFileToPkg         = ecFirstLazarus + 603;
-  ecNewPkgComponent         = ecFirstLazarus + 604;
-  ecPackageGraph            = ecFirstLazarus + 605;
-  ecPackageLinks            = ecFirstLazarus + 606;
-  ecEditInstallPkgs         = ecFirstLazarus + 607;
-  ecConfigCustomComps       = ecFirstLazarus + 608;
-  ecNewPackage              = ecFirstLazarus + 609;
+  ecOpenRecentPackage       = ecFirstLazarus + 603;
+  ecAddCurFileToPkg         = ecFirstLazarus + 604;
+  ecNewPkgComponent         = ecFirstLazarus + 605;
+  ecPackageGraph            = ecFirstLazarus + 606;
+  ecPackageLinks            = ecFirstLazarus + 607;
+  ecEditInstallPkgs         = ecFirstLazarus + 608;
+  ecConfigCustomComps       = ecFirstLazarus + 609;
+  ecNewPackage              = ecFirstLazarus + 610;
 
   // custom tools menu
   ecExtToolFirst            = ecFirstLazarus + 700;

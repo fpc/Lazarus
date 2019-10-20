@@ -169,6 +169,9 @@ states directory:
 	state_warning_150.png
 	state_warning_200.png
 
+packages directory
+	pkg_open_recent.png    (used 'pkg_open.png' created by Roland Hahn)
+
 --------------------------------------------------------------------------------
 
 The following component palette and menu/toolbar icons (including equally named
