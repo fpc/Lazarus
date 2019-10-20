@@ -1109,7 +1109,8 @@ var
     ADrawer.SetBrushParams(bsClear, clTAColor);
     ADrawer.Pen := Pen;
     if Styles <> nil then
-      Styles.Apply(ADrawer, AStyleIndex);
+      Styles.Apply(ADrawer, AStyleIndex, true);
+      // "true" avoids painting the gaps of non-solid lines in brush color
     splineStart := 0;
     splineEnd := -2;
     while NextNumberSeq(FGraphPoints, splineStart, splineEnd) do begin

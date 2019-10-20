@@ -1219,15 +1219,17 @@ var
       ADrawer.Brush := FBrush;
       if Styles <> nil then
         Styles.Apply(ADrawer, AYIndex);
-
       if fill then begin
         pts[cnt] := originPt;
         ADrawer.SetPenParams(psClear, clBlack);
         ADrawer.Polygon(pts, 0, cnt + 1);
       end;
+
       ADrawer.Pen := LinePen;
+      ADrawer.SetBrushParams(bsClear, clTAColor);
       if Styles <> nil then
-        Styles.Apply(ADrawer, AYIndex);
+        Styles.Apply(ADrawer, AYIndex, true);
+        // "true" avoids painting the gaps of non-solid lines in the brush color
       ADrawer.PolyLine(pts, 0, cnt);
     end;
 

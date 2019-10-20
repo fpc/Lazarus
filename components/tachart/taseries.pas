@@ -614,7 +614,8 @@ var
     ADrawer.SetBrushParams(bsClear, clTAColor);
     ADrawer.Pen := LinePen;
     if Styles <> nil then
-      Styles.Apply(ADrawer, AIndex);
+      Styles.Apply(ADrawer, AIndex, true);
+      // "true" avoids painting of spaces in non-solid lines in brush color
     if Depth = 0 then
       for i := 0 to High(breaks) - 1 do
         ADrawer.Polyline(points, breaks[i], breaks[i + 1] - breaks[i])
