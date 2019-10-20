@@ -8,24 +8,14 @@
     -->
     <module name="DBActns">
       <short>
-        Standard actions to be used for navigating and manipulating datasets derived from external databases
+        Standard actions used to navigate and manipulate a dataset in a datasource
       </short>
       <descr></descr>
 
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short></short>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="DB">
-        <short></short>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ActnList">
-        <short></short>
-      </element>
+      <!-- unresolved type references Visibility: default -->
+      <element name="Classes"/>
+      <element name="DB"/>
+      <element name="ActnList"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetAction" link="#lcl.ActnList.TAction">
@@ -34,27 +24,38 @@
         </short>
         <descr>
           <p>
-            <var>TDataSetAction</var> is a TAction descendant that is the base class for all other standard <var>TDataSet</var> actions. TDataSetAction provides properties and methods which enable the action to be used with a DataSource and its associated dataset. TDataSetAction provides an overridden Notification method to perform component notifications for DataSource and its DataSet.
+            <var>TDataSetAction</var> is a TAction descendant that is the base class for all other standard <var>TDataSet</var> actions. TDataSetAction provides properties and methods which enables an action to be applied to a DataSource and its associated dataset.
           </p>
           <p>
-            Applications do not use instances of TDataSetAction; use one of the descendant classes that perform a specific action for a dataset.
+            <var>TDataSetAction</var> provides an overridden Notification method to perform component notifications when the <var>DataSource</var> is removed for the action. A virtual <var>GetDataSet</var> method is implemented to ensure that a <var>DataSource</var> is cast to a <var>TDataSource</var> class instance prior to accessing its dataset. The <var>HandlesTarget</var> method is overridden to determine if the class includes both a valid datasource and a dataset for a specified target.
+          </p>
+          <p>
+            Applications do not use instances of <var>TDataSetAction</var>; use one of the descendant classes that perform a specific action for a dataset.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TDataSetAction.FDataSource">
-        <short></short>
-      </element>
+      <element name="TDataSetAction.FDataSource" link="TDataSetAction.DataSource"/>
 
       <!-- procedure Visibility: private -->
       <element name="TDataSetAction.SetDataSource">
-        <short>Sets the value in the DataSource property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Sets the value for the DataSource property</short>
+        <seealso>
+          <link id="TDataSetAction.DataSource"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.SetDataSource.Value">
@@ -63,51 +64,58 @@
 
       <!-- procedure Visibility: protected -->
       <element name="TDataSetAction.Notification">
-        <short>Performs notifications when a component is added or removed</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>
+          Performs a notification when the datasource for the component is removed
+        </short>
+        <descr>
+          <p>
+            <var>Notification</var> is an overridden procedure  used to perform a notification message when the specified component is removed. <var>AComponent</var> contains the component for the notification message. <var>Operation</var> contains the operation for the notification message.
+          </p>
+          <p>
+            <var>Notification</var> calls the inherited method. When <var>Operation</var> contains the value <var>opRemove</var> and <var>AComponent</var> contains the same class instance as the <var>DataSource</var> property, the <var>DataSource</var> property is set to <b>Nil</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetAction.DataSource"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.Notification.AComponent">
-        <short></short>
+        <short>Component for the notification</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.Notification.Operation">
-        <short></short>
+        <short>Operation for the notification</short>
       </element>
 
       <!-- function Visibility: protected -->
       <element name="TDataSetAction.GetDataSet">
-        <short>Gets the value in the Dataset property for the specified target</short>
+        <short>Gets the Dataset assigned to the specified target datasource</short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TDataSetAction.GetDataSet.Result">
-        <short></short>
+        <short>TDataSet assigned to the specified target datasource</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.GetDataSet.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
 
       <!-- function Visibility: public -->
       <element name="TDataSetAction.HandlesTarget">
         <short>Indicates if the action is handled for the specified target</short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
-
       <!-- function result Visibility: default -->
       <element name="TDataSetAction.HandlesTarget.Result">
-        <short></short>
+        <short>True when a valid DataSource and DataSet exist in the Target</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.HandlesTarget.Target">
-        <short></short>
+        <short>Object instance examined in the method</short>
       </element>
 
       <!-- property Visibility: public -->
@@ -117,7 +125,10 @@
         </short>
         <descr>
           <p>
-            <var>DataSource</var> is the locally-stored series of records forming the <var>DataSet</var>, derived (by a query) from the external database.
+            <var>DataSource</var> is a <var>TDataSource</var> property which provides access to properties, methods, and events for the data store. Of primary importance is access to the <var>TDataSet</var> used in the data source. Changing the value for <var>DataSource</var> causes a free notification message to be performed for the new class instance used as the value for the property.
+          </p>
+          <p>
+            DataSource is used for a database action that needs to be invoked without an associated data-aware control.
           </p>
         </descr>
         <seealso></seealso>
@@ -128,387 +139,590 @@
         <short>
           <var>TDataSetFirst</var> moves to first record in the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetFirst</var> is a TDataSetAction descendant which moves to the first record in the dataset for a DataSource. TDataSetFirst can be added to an action list and assigned to controls which perform the corresponding action.
+          </p>
+          <p>
+            <var>TDataSetFirst</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
 
       <!-- procedure Visibility: public -->
       <element name="TDataSetFirst.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its First method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetFirst.ExecuteTarget.Target">
-        <short></short>
+        <short>Target where the action is performed in the method</short>
       </element>
 
       <!-- procedure Visibility: public -->
       <element name="TDataSetFirst.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active and not already positioned at its beginning (or first record). This ensures that the action cannot be performed for a dataset that has not been opened, or does not require repositioning.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetFirst.UpdateTarget.Target">
-        <short></short>
+        <short>Target datasource examined in the method</short>
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetFirst.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetFirst.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetLast">
         <short>
           <var>TDataSetLast</var> moves to last record in the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetLast</var> is a TDataSetAction descendant which moves to the last record in the dataset for a DataSource. TDataSetLast can be added to an action list and assigned to controls which perform the corresponding action.
+          </p>
+          <p>
+            <var>TDataSetLast</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetLast.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Last method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetLast.ExecuteTarget.Target">
-        <short></short>
+        <short>Target datasource examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetLast.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active and not already positioned at end-of-file (last record). This ensures that the action cannot be performed for a dataset that has not been opened, or does not require repositioning.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetLast.UpdateTarget.Target">
-        <short></short>
+        <short>Target datasource examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetLast.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetLast.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetNext">
         <short>
           <var>TDataSetNext</var> moves to next record in the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetNext</var> is a TDataSetAction descendant which moves to the next record in the dataset for a DataSource. TDataSetNext can be added to an action list and assigned to controls which perform the corresponding action.
+          </p>
+          <p>
+            <var>TDataSetNext</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which uses the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetNext.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Next method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetNext.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetNext.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active and not already positioned at end-of-file (or last record). This ensures that the action cannot be performed for a dataset that has not been opened, or does not require repositioning.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetNext.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetNext.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetNext.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetPrior">
         <short>
-          <var>TDataSetPrior</var> moves to previous (prior) record in the <var>DataSet</var>
+          <var>TDataSetPrior</var> moves to previous record in the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetPrior</var> is a TDataSetAction descendant which moves to the previous record in the dataset for a DataSource. TDataSetPrior can be added to an action list and assigned to controls which perform the corresponding action.
+          </p>
+          <p>
+            <var>TDataSetPrior</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetPrior.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Prior method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPrior.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetPrior.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active and not already positioned at its beginning (or first record). This ensures that the action cannot be performed for a dataset that has not been opened, or does not require repositioning.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPrior.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetPrior.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetPrior.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetRefresh">
         <short>
           <var>TDataSetRefresh</var> refreshes the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetRefresh</var> is a TDataSetAction descendant which refreshes the record content in the dataset for a DataSource. TDataSetRefresh can be added to an action list and assigned to controls which perform the corresponding action.
+          </p>
+          <p>
+            <var>TDataSetRefresh</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetRefresh.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Refresh method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetRefresh.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetRefresh.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active. This ensures that the action cannot be performed for a dataset that has not been opened.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetRefresh.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDataSetRefresh.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetRefresh.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetCancel">
         <short>
-          <var>TDataSetCancel</var> cancels the previous operation on the <var>DataSet</var>
+          <var>TDataSetCancel</var> cancels the current edit mode for a <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetCancel</var> is a TDataSetAction descendant which cancels the current edit mode for a dataset record in its DataSource. This includes restoring the values in records to their pre-editing content, updating the record display, and removing any edit mode(s) assigned to the State property in the dataset. TDataSetCancel can be added to an action list and assigned to controls which perform the corresponding action.
+          </p>
+          <p>
+            <var>TDataSetCancel</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetCancel.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Cancel method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetCancel.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetCancel.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active, and its State property is contained in the dsEditModes set. This ensures that the action cannot be performed for a dataset that has not been opened, or has not been placed in edit mode.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetCancel.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetCancel.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetCancel.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetDelete">
         <short>
           <var>TDataSetDelete</var> deletes the current record in the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetDelete</var> is a TDataSetAction descendant which deletes the current record in the dataset for the target DataSource. Delete behavior is dependent on the underlying database engine. Datasets using the DBF engine simply mark a record for deletion; it is not physically removed until the database engine packs the storage structure. Other datasets, such SQL-based ones, may require that changes be committed before they are flushed to the database engine.
+          </p>
+          <p>
+            <var>TDataSetDelete</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetDelete.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Delete method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetDelete.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetDelete.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active, is not positioned at the beginning- or end-of-file, and contains True in its CanModify property. This ensures that the action cannot be performed for a dataset that has not been opened, or when the current record cannot be modified.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetDelete.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetDelete.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetDelete.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetEdit">
         <short>
           <var>TDataSetEdit</var> edits the current record in the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetEdit</var> is a <var>TDataSetAction</var> descendant which edits the current record in the dataset for the target DataSource. TDataSetEdit ensures that the dataset is placed in edit mode (when available) by calling the Edit method for the dataset. Edit behavior is dependent on the underlying database engine.
+          </p>
+          <p>
+            <var>TDataSetEdit</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetInsert"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetEdit.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Edit method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetEdit.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetEdit.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active, contains True in its CanModify property, and its State is in the dsEditModes set. This ensures that the action cannot be performed for a dataset that has not been opened, has not been placed in edit mode, or the current record cannot be modified.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetEdit.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetEdit.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetEdit.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetInsert">
         <short>
           <var>TDataSetInsert</var> inserts (appends) a new record into the <var>DataSet</var>
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>TDataSetInsert</var> is a <var>TDataSetAction</var> descendant which inserts a new record into the dataset for the target DataSource. The new record has blank values in each of its fields, and allows editing of the field values. Positioning of the inserted record is actually determined using the facilities for the underlying database engine. In most cases, the record is simply appended to its data store and ordered using the indexing facilities for the database engine. Some database engines require an additional step to make the record insertion and/or field editing permanent; i.e. SQL databases require use of a COMMIT statement to flush the changes to the database engine.
+          </p>
+          <p>
+            TDataSetInsert calls the Insert method for the target dataset to perform the databse action.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetPost"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetInsert.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Insert method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetInsert.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetInsert.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active. No other conditions are checked for the dataset. This ensures that the action cannot be performed for a dataset that has not been opened.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetInsert.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetInsert.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetInsert.DataSource" link="TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetPost">
         <short>
-          <var>TDataSetPost</var> posts changes on the current record to the <var>DataSet</var>
+          <var>TDataSetPost</var> posts changes for the current record to the <var>DataSet</var>
         </short>
         <descr>
           <p>
-            <var>TDataSetPost</var> posts the editing changes on the current record permanently into the <var>DataSet</var> (may need a separate action to make changes permanently in external database).
+            <var>TDataSetPost</var> posts editing changes for the current record into the <var>DataSet</var>. Some datasets may require additional actions for editing changes to become permanent; i.e. SQL databases use transactions that require a <b>COMMIT</b> statement to be executed before changes are written to the database engine.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="TDataSetFirst"/>
+          <link id="TDataSetLast"/>
+          <link id="TDataSetNext"/>
+          <link id="TDataSetPrior"/>
+          <link id="TDataSetRefresh"/>
+          <link id="TDataSetCancel"/>
+          <link id="TDataSetDelete"/>
+          <link id="TDataSetEdit"/>
+          <link id="TDataSetInsert"/>
+        </seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetPost.ExecuteTarget">
-        <short></short>
+        <short>
+          Retrieves the dataset for the target datasource and calls its Post method
+        </short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPost.ExecuteTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetPost.UpdateTarget">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Enables or disables the action based on the state of the dataset in the target
+        </short>
+        <descr>
+          <p>
+            <var>UpdateTarget</var> is an overridden method which enables or disables the database action based on the state of the dataset in the Target object. <var>UpdateTarget</var> calls the <var>GetDataSet</var> method to retrieve the dataset in the Target datasource. The action is Enabled when the dataset is active, and its State contains a value in the dsEditModes set. This ensures that the action cannot be performed for a dataset that has not been opened, or has not been placed in edit mode.
+          </p>
+          <p>
+            Please note that UpdateTarget does not check the values for fields in the current record to determine if they have actually been altered.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPost.UpdateTarget.Target">
-        <short></short>
+        <short>DataSource object examined in the method</short>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TDataSetPost.DataSource">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDataSetPost.DataSource" link="TDataSetAction.DataSource"/>
+
     </module>
     <!-- DBActns -->
 
