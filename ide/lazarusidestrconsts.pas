@@ -308,7 +308,6 @@ resourcestring
   lisPkgEditPublishPackage = 'Publish Package';
   lisPERevertPackage = 'Revert Package';
   lisMenuOpenRecent = 'Open &Recent';
-  lisTBOpenRecent = 'Open Recent';
   lisMenuSave = '&Save';
   lisMenuSaveAs = 'Save &As ...';
   lisKMSaveAs = 'SaveAs';

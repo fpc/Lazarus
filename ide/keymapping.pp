@@ -510,7 +510,7 @@ begin
     ecNewForm                 : Result:= lisMenuNewForm;
     ecOpen                    : Result:= lisMenuOpen;
     ecOpenUnit                : Result:= lisMenuOpenUnit;
-    ecOpenRecent              : Result:= lisTBOpenRecent;
+    ecOpenRecent              : Result:= lisKMOpenRecent;
     ecRevert                  : Result:= lisMenuRevert;
     ecSave                    : Result:= lisSave;
     ecSaveAs                  : Result:= lisMenuSaveAs;
