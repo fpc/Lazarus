@@ -5938,7 +5938,9 @@ var
   ACombo: TCustomComboBox;
   ListStore: PGtkListStore;
   ItemList: TGtkListStoreStringList;
-  Renderer : PGtkCellRenderer;
+  Renderer: PGtkCellRenderer;
+  bs: string;
+  pos: gint;
 begin
   FWidgetType := FWidgetType + [wtTreeModel, wtComboBox];
   ACombo := TCustomComboBox(LCLObject);
@@ -5959,6 +5961,11 @@ begin
     // do not allow combo button to get focus, entry should take focus
     if PGtkComboBox(Result)^.priv3^.button <> nil then
       PGtkComboBox(Result)^.priv3^.button^.set_can_focus(False);
+
+    bs := Self.LCLObject.Caption;
+    pos := 0;
+    PGtkEditable(PGtkComboBox(Result)^.get_child)^.insert_text(pgChar(PChar(bs)),length(bs),@pos);
+
     // set lclwidget data to entry
     g_object_set_data(PGtkComboBox(Result)^.get_child, 'lclwidget', Self);
     // when we scroll with mouse wheel over entry our scrollevent doesn't catch entry
