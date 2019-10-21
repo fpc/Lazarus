@@ -11832,6 +11832,19 @@ msgstr "注釈：すべてのキーは選択されたスキームの値にセッ
 msgid "Open package file"
 msgstr "パッケージファイルを開く"
 
+#: lazarusidestrconsts.liskmopenrecent
+msgctxt "lazarusidestrconsts.liskmopenrecent"
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentpackage
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentproject
+msgid "Open recent project"
+msgstr ""
+
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
 msgstr "コンポーネントを貼り付け"

@@ -11667,6 +11667,19 @@ msgstr "Not: Tüm tuşlar, seçilen şema değerlerine ayarlanacaktır."
 msgid "Open package file"
 msgstr "Paket dosyası aç"
 
+#: lazarusidestrconsts.liskmopenrecent
+msgctxt "lazarusidestrconsts.liskmopenrecent"
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentpackage
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentproject
+msgid "Open recent project"
+msgstr ""
+
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
 msgstr "Bileşenleri panodan yapıştır"

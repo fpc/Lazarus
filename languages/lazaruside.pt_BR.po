@@ -11734,6 +11734,19 @@ msgstr "Nota: Todas as teclas serão definidas para os valores do esquema escolh
 msgid "Open package file"
 msgstr "Abrir arquivo de pacote"
 
+#: lazarusidestrconsts.liskmopenrecent
+msgctxt "lazarusidestrconsts.liskmopenrecent"
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentpackage
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentproject
+msgid "Open recent project"
+msgstr ""
+
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
 msgstr "Colar componentes"

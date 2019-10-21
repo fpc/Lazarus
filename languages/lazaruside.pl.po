@@ -12075,6 +12075,19 @@ msgstr "Uwaga: Wszystkim klawiszom zostaną przyporządkowane wartości z wybran
 msgid "Open package file"
 msgstr "Otwórz plik pakietu"
 
+#: lazarusidestrconsts.liskmopenrecent
+msgctxt "lazarusidestrconsts.liskmopenrecent"
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentpackage
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentproject
+msgid "Open recent project"
+msgstr ""
+
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
 msgstr "Wklej komponenty ze schowka"

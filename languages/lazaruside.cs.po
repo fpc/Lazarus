@@ -11739,6 +11739,19 @@ msgstr "Poznámka: Všechny klávesy budou nastaveny na hodnoty vybraného sché
 msgid "Open package file"
 msgstr "Otevřít soubor balíčku"
 
+#: lazarusidestrconsts.liskmopenrecent
+msgctxt "lazarusidestrconsts.liskmopenrecent"
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentpackage
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentproject
+msgid "Open recent project"
+msgstr ""
+
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
 msgstr "Vložit komponenty"

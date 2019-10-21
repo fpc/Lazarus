@@ -11704,6 +11704,19 @@ msgstr "Megjegyzés: Minden billentyű a kiválaszott séma szerint fog beállí
 msgid "Open package file"
 msgstr "Csomagfájl megnyitása"
 
+#: lazarusidestrconsts.liskmopenrecent
+msgctxt "lazarusidestrconsts.liskmopenrecent"
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentpackage
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentproject
+msgid "Open recent project"
+msgstr ""
+
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
 msgstr "Komponensek beillesztése"

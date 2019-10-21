@@ -11859,6 +11859,19 @@ msgstr "Pastaba: visų klavišų vertės bus nustatytos pagal pasirinktą derin�
 msgid "Open package file"
 msgstr "Atverti paketo failą"
 
+#: lazarusidestrconsts.liskmopenrecent
+msgctxt "lazarusidestrconsts.liskmopenrecent"
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentpackage
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts.liskmopenrecentproject
+msgid "Open recent project"
+msgstr ""
+
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
 msgstr "Įdėti komponentes iš iškarpinės"
