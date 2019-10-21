@@ -1746,6 +1746,7 @@ begin
           if BuildMode<>'' then
             FBuildModes.Add(TPGBuildMode.Create(Self,BuildMode,false));
         end;
+        xml.Modified := False;
       end;
     finally
       xml.Free;
