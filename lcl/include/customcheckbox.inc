@@ -24,21 +24,11 @@
   Set new state of the checkbox.
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetState(Value: TCheckBoxState);
-var
-  OldState: TCheckBoxState;
 begin
   if FState <> Value then
   begin
-    OldState := FState;
     FState := Value;
-    if Action is TCustomAction then
-      TCustomAction(Action).Checked := FState = cbChecked;
     ApplyChanges;
-    //some widgetsets (gtk*) does not allow to uncheck a radio button
-    //only call OnChange if effectivelly changed
-    FState := RetrieveState;
-    if (FState <> OldState) and not (csLoading in ComponentState) then
-      DoClickOnChange;
   end;
 end;
 
