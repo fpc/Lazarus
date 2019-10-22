@@ -1591,9 +1591,6 @@ end;
 { TFpPascalExpressionPartConstantText }
 
 function TFpPascalExpressionPartConstantText.DoGetResultValue: TFpValue;
-var
-  f: Extended;
-  s: String;
 begin
   //s := GetText;
   Result := TFpValueConstString.Create(FValue);
@@ -3083,7 +3080,6 @@ end;
 function TFpPascalExpressionPartOperatorOr.DoGetResultValue: TFpValue;
 var
   tmp1, tmp2: TFpValue;
-  op: Boolean;
 begin
   Result := nil;
   if Count <> 2 then exit;

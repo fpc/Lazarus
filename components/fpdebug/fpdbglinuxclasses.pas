@@ -1137,7 +1137,6 @@ end;
 function TDbgLinuxProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 var
   PID: THandle;
-  ThreadWithEvent: TDbgLinuxThread;
 begin
   ThreadIdentifier:=-1;
   ProcessIdentifier:=-1;

@@ -702,8 +702,6 @@ end;
 
 function TFpSymbolDwarfFreePascalTypePointer.DoReadDataSize(
   const AValueObj: TFpValue; out ADataSize: TFpDbgValueSize): Boolean;
-var
-  Size: TFpDbgValueSize;
 begin
   if Kind = skClass then begin
     // TODO: get/adjust a value object to have the deref address // see ConstRefOrExprFromAttrData
@@ -942,8 +940,6 @@ end;
 
 function TFpValueDwarfFreePascalArray.DoGetMainStride(out
   AStride: TFpDbgValueSize): Boolean;
-var
-  ExtraStride: TFpDbgValueSize;
 begin
   if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
   then

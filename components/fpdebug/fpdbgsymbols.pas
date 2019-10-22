@@ -51,10 +51,10 @@ procedure AddSymbols(AParent: TFpSymbol; AModule: THandle);
 
 implementation
 
+{$ifdef windows}
 var
   DBG_WARNINGS, FPDBG_DWARF_VERBOSE_LOAD: PLazLoggerLogGroup;
 
-{$ifdef windows}
 procedure AddSymbols(AParent: TFpSymbol; AModule: THandle);
 var
   ModulePtr: Pointer;
@@ -248,7 +248,9 @@ end;
 {$endif}
 
 initialization
+  {$ifdef windows}
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   FPDBG_DWARF_VERBOSE_LOAD  := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE_LOAD' {$IFDEF FPDBG_DWARF_VERBOSE_LOAD} , True {$ENDIF} );
+  {$endif}
 end.
 
