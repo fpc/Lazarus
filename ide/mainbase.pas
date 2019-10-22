@@ -939,6 +939,7 @@ var
 function TMainIDEBase.CreateMenuSeparator(Section: TIDEMenuSection): TIDEMenuCommand;
 begin
   Inc(SeparatorNum);
+  Result:=nil;
   CreateMenuItem(Section, Result, 'Separator'+IntToStr(SeparatorNum), '-');  // Result - var parameter
 end;
 

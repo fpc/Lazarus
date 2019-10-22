@@ -82,7 +82,6 @@ end;
 
 procedure TProjectDebugOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  AFlags: TProjectFlags;
   i: Integer;
 begin
   if not (AOptions is TProjectIDEOptions) then exit;
