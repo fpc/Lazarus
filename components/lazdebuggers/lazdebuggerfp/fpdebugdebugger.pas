@@ -224,7 +224,7 @@ type
     FInDestroy: Boolean;
     procedure FreeSelf;
     procedure CallStackFreed(Sender: TObject);
-    procedure RequestAsync(Data: PtrInt);
+    procedure RequestAsync({%H-}Data: PtrInt);
   public
     constructor Create(ADebugger: TFpDebugDebugger; ACallstack: TCallStackBase;
       ARequiredMinCount: Integer);
@@ -721,8 +721,6 @@ end;
 
 procedure TFPCallStackSupplier.RequestAtLeastCount(ACallstack: TCallStackBase;
   ARequiredMinCount: Integer);
-var
-  ThreadCallStack: TDbgCallstackEntryList;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then begin
@@ -742,7 +740,6 @@ var
   v, params: String;
   i: Integer;
   ProcVal, m: TFpValue;
-  AController: TDbgController;
   CurThreadId: Integer;
   AContext: TFpDbgInfoContext;
   OldContext: TFpDbgAddressContext;
@@ -759,7 +756,7 @@ begin
   then if not It.EOM
   then It.Next;
 
-  AController := FpDebugger.FDbgController;
+  //AController := FpDebugger.FDbgController;
   OldContext := FpDebugger.FMemManager.DefaultContext;
 
   while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index <= ACallstack.HighestUnknown)
@@ -852,7 +849,6 @@ var
   m: TFpValue;
   n, v: String;
   CurThreadId, CurStackFrame: Integer;
-  CurStackList: TCallStackBase;
 begin
   AController := FpDebugger.FDbgController;
   if (AController = nil) or (AController.CurrentProcess = nil) or
@@ -1462,7 +1458,6 @@ var
   RepeatCnt: Integer;
   Res: Boolean;
   StackFrame, ThreadId: Integer;
-  StackList: TCallStackBase;
   ResValue: TFpValue;
   CastName, ResText2: String;
   ClassAddr, CNameAddr: TFpDbgMemLocation;
