@@ -341,6 +341,7 @@ begin
   end;
   try
     Result:=TXMLConfig.CreateWithSource(aFilename,Code.Source);
+    Result.Modified:=false;
   except
     on E: Exception do begin
       debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] xml syntax error in "',aFilename,'": '+E.Message]);
