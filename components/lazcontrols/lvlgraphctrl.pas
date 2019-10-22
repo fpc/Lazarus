@@ -26,7 +26,7 @@ uses
   // LazUtils
   LazLoggerBase, AvgLvlTree,
   // LCL
-  LMessages, LCLType, LCLIntf, GraphType, GraphMath, Graphics, Controls, ImgList,
+  LMessages, LCLType, LCLIntf, GraphType, Graphics, Controls, ImgList,
   Forms, Themes;
 
 type
