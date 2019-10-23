@@ -1345,7 +1345,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline,
-   rtlproc, noreturn
+   rtlproc, noinline, noreturn
 
  proc specifiers with parameters:
    message <id or number>

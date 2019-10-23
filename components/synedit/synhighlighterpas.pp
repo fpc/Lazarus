@@ -1833,7 +1833,8 @@ end;
 function TSynPasSyn.Func92: TtkTokenKind;
 begin
   if D4syntax and KeyComp('overload') then Result := tkKey else
-    if KeyComp('Inherited') then Result := tkKey else Result := tkIdentifier;
+    if KeyComp('NoInline') then Result := tkKey else
+      if KeyComp('Inherited') then Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func94: TtkTokenKind;

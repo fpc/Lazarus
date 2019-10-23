@@ -879,6 +879,7 @@ begin
     Add('MS_ABI_CDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // often used for macros
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOINLINE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NORETURN'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -934,6 +935,7 @@ begin
     Add('LOCAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NEAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOINLINE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NORETURN'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OLDFPCCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
