@@ -691,19 +691,22 @@ begin
         end;
       DoOnChangeBounds;     // delayed onChangeBounds()
     end;
+  { call onShow() or onActivate() for the first time, after first WMSize }
+  if FDelayedWMSize then
+    begin
+      if FIsFirstOnShow then
+        begin
+          FIsFirstOnShow := False;
+          DoShow;
+        end;
+      if FIsFirstOnActivate then
+        begin
+          FIsFirstOnActivate := False;
+          Activate;
+        end;
+    end;
   FDelayedWMMove := False;
   FDelayedWMSize := False;
-  { call onShow() or onActivate() for the first time }
-  if FIsFirstOnShow then
-    begin
-      FIsFirstOnShow := False;
-      DoShow;
-    end;
-  if FIsFirstOnActivate then
-    begin
-      FIsFirstOnActivate := False;
-      Activate;
-    end;
 end;
 
 procedure TCustomForm.WMWindowPosChanged(var Message: TLMWindowPosChanged);
