@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="PoChecker"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Bart Broersma"/>
     <CompilerOptions>
@@ -16,7 +17,7 @@
     <Description Value="Check the validity of translated PO files.
 "/>
     <Version Major="1"/>
-    <Files Count="10">
+    <Files Count="13">
       <Item1>
         <Filename Value="resultdlg.pp"/>
         <UnitName Value="ResultDlg"/>
@@ -58,12 +59,23 @@
         <Filename Value="pocheckerxmlconfig.pp"/>
         <UnitName Value="PoCheckerXMLConfig"/>
       </Item10>
+      <Item11>
+        <Filename Value="pocheckermemodlg.pp"/>
+        <UnitName Value="PoCheckerMemoDlg"/>
+      </Item11>
+      <Item12>
+        <Filename Value="pofamilylists.pp"/>
+        <UnitName Value="PoFamilyLists"/>
+      </Item12>
+      <Item13>
+        <Filename Value="pocheckermemodlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item13>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="IDEIntf"/>
