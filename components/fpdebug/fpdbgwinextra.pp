@@ -157,6 +157,10 @@ uses
 
 
 function GetLastErrorText: String;
+{$ifdef windows}
+var
+  i: DWORD;
+{$endif}
 begin
 {$ifdef windows}
   i := GetLastError;
