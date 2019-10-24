@@ -9,7 +9,8 @@ interface
 
 uses
   ResultDlg, PoFamilies, pocheckermain, pocheckerconsts, GraphStat, 
-  PoCheckerSettings, PoCheckerXMLConfig, LazarusPackageIntf;
+  PoCheckerSettings, PoCheckerXMLConfig, PoCheckerMemoDlg, PoFamilyLists, 
+  LazarusPackageIntf;
 
 implementation
 

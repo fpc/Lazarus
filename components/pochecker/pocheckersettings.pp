@@ -154,7 +154,6 @@ const
   pLangFilter = 'LanguageFilter/';
   pLangPath = 'LanguageFiles/';
   pTestTypes = 'TestTypes/';
-  pTestOptions = 'TestOptions/';
   pWindowsGeometry = 'General/WindowsGeometry/';
   pMasterPoFiles = 'MasterPoFiles/';
   pMasterPoSelection = 'MasterPoSelection/';
@@ -579,9 +578,6 @@ begin
   try
     FConfig.SetDeleteValue('Version','1.0','');
     RemoveUnwantedPaths;
-    //the next line can be removed after some time
-
-
     SaveTestTypes;
     SaveExternalEditorName;
     SaveSelectDirectoryFilename;
@@ -591,9 +587,6 @@ begin
     SaveDisableAntialiasing;
     SaveMasterPoList;
     SaveMasterPoSelList;
-    //not used anymore, clear it. Remove this line after a while
-
-
     FConfig.WriteToDisk;
   except
     debugln('TPoCheckerSettings.SaveConfig: Error saving config.');
