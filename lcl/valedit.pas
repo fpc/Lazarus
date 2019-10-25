@@ -145,6 +145,7 @@ type
     procedure SetOptions(AValue: TGridOptions);
     procedure SetStrings(const AValue: TValueListStrings);
     procedure SetTitleCaptions(const AValue: TStrings);
+    procedure UpdateTitleCaptions(const KeyCap, ValCap: String);
   protected
     class procedure WSRegisterClass; override;
     procedure SetFixedCols(const AValue: Integer); override;
@@ -1050,6 +1051,13 @@ begin
   FTitleCaptions.Assign(AValue);
 end;
 
+procedure TValueListEditor.UpdateTitleCaptions(const KeyCap, ValCap: String);
+begin
+  FTitleCaptions.Clear;
+  FTitleCaptions.Add(KeyCap);
+  FTitleCaptions.Add(ValCap);
+end;
+
 function TValueListEditor.GetKey(Index: Integer): string;
 begin
   Result:=Cells[0,Index];
@@ -1295,7 +1303,10 @@ procedure TValueListEditor.LoadContent(cfg: TXMLConfig; Version: Integer);
 var
   ContentSaved, HasColumnTitles, AlwaysShowEditor, HasSaveContent: Boolean;
   i,j,k, RC: Integer;
+  KeyCap, ValCap, S: String;
 begin
+  KeyCap := '';
+  ValCap := '';
   BeginUpdate;
   try
     AlwaysShowEditor := (goAlwaysShowEditor in Options);
@@ -1312,7 +1323,7 @@ begin
       ContentSaved:=Cfg.GetValue('grid/saveoptions/content', false);
       if ContentSaved then
       begin
-        Clean(0,0,ColCount-1,RowCount-1,[]); //need if the to be loaded grid has no entries
+        Clean(0,0,ColCount-1,RowCount-1,[]); //needed if the to be loaded grid has no entries
         HasColumnTitles := cfg.getValue('grid/content/hascolumntitles', False);
         if HasColumnTitles then
           DisplayOptions := DisplayOptions + [doColumnTitles]
@@ -1334,15 +1345,21 @@ begin
         k:=cfg.getValue('grid/content/cells/cellcount', 0);
         while k>0 do
         begin
-          i:=cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/column', -1);
-          j:=cfg.GetValue('grid/content/cells/cell'+IntTostr(k)+'/row',-1);
+          i := cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/column', -1);
+          j := cfg.GetValue('grid/content/cells/cell'+IntTostr(k)+'/row',-1);
           if not IsRowIndexValid(j) then
             raise EStreamError.CreateFmt(rsVLERowIndexOutOfBounds,[cfg.Filename,j]);
           if not IsColumnIndexValid(i) then
             raise EStreamError.CreateFmt(rsVLEColIndexOutOfBounds,[cfg.Filename,i]);
-            Cells[i,j]:=UTF8Encode(cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text',''));
+          S := cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text','');
+          Cells[i,j] := S;
+          if HasColumnTitles and (i = 0) and (j = 0) then
+            KeyCap := S
+          else if HasColumnTitles and (i = 1) and (j = 0) then
+            ValCap := S;
           Dec(k);
         end;
+        if HasColumnTitles then UpdateTitleCaptions(KeyCap, ValCap);
       end;
     end;
   finally
