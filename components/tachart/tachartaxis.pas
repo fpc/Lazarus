@@ -109,6 +109,7 @@ type
     FMargin: TChartDistance;
     FMarginsForMarks: Boolean;
     FMinors: TChartMinorAxisList;
+    FOnGetMarkText: TChartGetAxisMarkTextEvent;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FPosition: Double;
     FPositionUnits: TChartUnits;
@@ -130,6 +131,7 @@ type
     procedure SetMarginsForMarks(AValue: Boolean);
     procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetMinors(AValue: TChartMinorAxisList);
+    procedure SetOnGetMarkText(AValue: TChartGetAxisMarkTextEvent);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
     procedure SetPosition(AValue: Double);
     procedure SetPositionUnits(AValue: TChartUnits);
@@ -193,8 +195,10 @@ type
       read FTransformations write SetTransformations;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   published
+    property OnGetMarkText: TChartGetAxisMarkTextEvent
+      read FOnGetMarkText write SetOnGetMarkText;
     property OnMarkToText: TChartAxisMarkToTextEvent
-      read FOnMarkToText write SetOnMarkToText;
+      read FOnMarkToText write SetOnMarkToText; deprecated 'Use "OnGetMarkText';
   end;
 
   TChartOnSourceVisitor =
@@ -433,6 +437,7 @@ begin
       Self.FTransformations := Transformations;
       Self.FZPosition := ZPosition;
       Self.FMarginsForMarks := MarginsForMarks;
+      Self.FOnGetMarkText := OnGetMarkText;
       Self.FOnMarkToText := OnMarkToText;
     end;
   inherited Assign(ASource);
@@ -704,6 +709,11 @@ begin
     FRotationCenter := Marks.RotationCenter;
   end;
 
+  if Assigned(FOnGetMarkText) then
+    for i := 0 to High(FMarkValues) do
+      FOnGetMarkText(self, FMarkValues[i].FText, FMarkValues[i].FValue);
+
+  // the following event is deprecated and will be removed...
   if Assigned(FOnMarkToText) then
     for i := 0 to High(FMarkValues) do
       FOnMarkToText(FMarkValues[i].FText, FMarkValues[i].FValue);
@@ -1012,6 +1022,13 @@ end;
 procedure TChartAxis.SetMinors(AValue: TChartMinorAxisList);
 begin
   FMinors.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetOnGetMarkText(AValue: TChartGetAxisMarkTextEvent);
+begin
+  if TMethod(FOnGetMarkText) = TMethod(AValue) then exit;
+  FOnGetMarkText := AValue;
   StyleChanged(Self);
 end;
 
