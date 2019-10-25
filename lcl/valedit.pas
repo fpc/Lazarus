@@ -119,6 +119,7 @@ type
   TValueListEditor = class(TCustomStringGrid)
   private
     FTitleCaptions: TStrings;
+    FCreating: Boolean;
     FStrings: TValueListStrings;
     FKeyOptions: TKeyOptions;
     FDisplayOptions: TDisplayOptions;
@@ -165,6 +166,7 @@ type
     procedure ResetDefaultColWidths; override;
     procedure SaveContent(cfg: TXMLConfig); override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
+    procedure SetColCount(AValue: Integer); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SetFixedRows(const AValue: Integer); override;
     procedure SetRowCount(AValue: Integer);
@@ -326,6 +328,7 @@ const
   rsVLENoRowCountFound = 'Error reading file "%s":'^m'No value for RowCount found.';
   rsVLERowIndexOutOfBounds = 'Error reading file "%s":'^m'Row index out of bounds (%d).';
   rsVLEColIndexOutOfBounds = 'Error reading file "%s":'^m'Column index out of bounds (%d).';
+  rsVLEIllegalColCount = 'ColCount of a TValueListEditor cannot be %d (it can only ever be 2).';
 
 procedure Register;
 
@@ -724,6 +727,7 @@ end;
 constructor TValueListEditor.Create(AOwner: TComponent);
 begin
   //need FStrings before inherited Create, because they are needed in overridden SelectEditor
+  FCreating := True;
   FStrings := TValueListStrings.Create(Self);
   FStrings.NameValueSeparator := '=';
   FTitleCaptions := TStringList.Create;
@@ -757,6 +761,7 @@ begin
   FDropDownRows := 8;
   ShowColumnTitles;
   AutoFillColumns := true;
+  FCreating := False;
 end;
 
 destructor TValueListEditor.Destroy;
@@ -1461,6 +1466,13 @@ begin
     else
       if (Line <> Strings[I]) then Strings[I]:=Line;
   end;
+end;
+
+procedure TValueListEditor.SetColCount(AValue: Integer);
+begin
+  if (not FCreating) and (not (csLoading in ComponentState)) and (AValue <> 2) then
+    raise EGridException.CreateFmt(rsVLEIllegalColCount,[AValue]);
+  inherited SetColCount(AValue);
 end;
 
 function TValueListEditor.GetEditText(ACol, ARow: Integer): string;

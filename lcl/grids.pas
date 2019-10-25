@@ -904,7 +904,6 @@ type
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
     procedure SetColWidths(Acol: Integer; Avalue: Integer);
-    procedure SetColCount(AValue: Integer);
     procedure SetColRowDragIndicatorColor(const AValue: TColor);
     procedure SetDefColWidth(AValue: Integer);
     procedure SetDefRowHeight(AValue: Integer);
@@ -1151,6 +1150,7 @@ type
     procedure SelectEditor; virtual;
     function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
     procedure SetCanvasFont(aFont: TFont);
+    procedure SetColCount(AValue: Integer); virtual;
     procedure SetColor(Value: TColor); override;
     procedure SetColRow(const ACol,ARow: Integer; withEvents: boolean = false);
     procedure SetCursor(AValue: TCursor); override;
