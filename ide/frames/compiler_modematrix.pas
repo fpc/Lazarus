@@ -753,7 +753,7 @@ end;
 
 function TCompOptModeMatrixFrame.ActiveModeAsText: string;
 begin
-  Result:=Grid.Modes[Grid.ActiveMode].Caption;
+  Result:=Grid.Modes[Grid.ActiveModeIndex].Caption;
 end;
 
 procedure TCompOptModeMatrixFrame.CreateNewOption(aTyp, aValue: string);
@@ -991,37 +991,33 @@ var
   GridHasChanged: Boolean;
   ValuesHaveChanged: Boolean;
   aMode: TGroupedMatrixMode;
-  BuildMode: TProjectBuildMode;
-  BuildModes: TProjectBuildModes;
+  BM: TProjectBuildMode;
 begin
   GridHasChanged:=false;
   ValuesHaveChanged:=false;
-
   // add/update build modes
-  BuildModes:=LazProject.BuildModes;
-  for i:=0 to BuildModes.Count-1 do begin
-    BuildMode:=BuildModes[i];
+  for i:=0 to LazProject.BuildModes.Count-1 do begin
+    BM:=LazProject.BuildModes[i];
     aColor:=clDefault;
-    if BuildMode.InSession then aColor:=SessionColor;
+    if BM.InSession then aColor:=SessionColor;
     if i=Grid.Modes.Count then begin
-      Grid.Modes.Add(BuildMode.Identifier,aColor);
+      Grid.Modes.Add(BM.Identifier,aColor);
       GridHasChanged:=true;
     end
     else begin
       aMode:=Grid.Modes[i];
-      //debugln(['TCompOptModeMatrix.UpdateModes aMode.Caption=',aMode.Caption,' BuildMode.Identifier=',BuildMode.Identifier]);
-      if aMode.Caption<>BuildMode.Identifier then begin
-        aMode.Caption:=BuildMode.Identifier;
+      if aMode.Caption<>BM.Identifier then begin
+        aMode.Caption:=BM.Identifier;
         GridHasChanged:=true;
       end;
       if aMode.Color<>aColor then begin
-        ValuesHaveChanged:=true;
         aMode.Color:=aColor;
+        ValuesHaveChanged:=true;
       end;
     end;
   end;
   // delete leftover build modes
-  while Grid.Modes.Count>BuildModes.Count do begin
+  while Grid.Modes.Count>LazProject.BuildModes.Count do begin
     Grid.Modes.Delete(Grid.Modes.Count-1);
     GridHasChanged:=true;
   end;
@@ -1045,7 +1041,7 @@ var
 begin
   i:=LazProject.BuildModes.IndexOf(LazProject.ActiveBuildMode);
   if i>=Grid.Modes.Count then exit;
-  Grid.ActiveMode:=i;
+  Grid.ActiveModeIndex:=i;
 end;
 
 procedure TCompOptModeMatrixFrame.MoveRow(Direction: integer);
@@ -1268,7 +1264,6 @@ procedure TCompOptModeMatrixFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   CompOptions: TProjectCompilerOptions;
 begin
-  //debugln(['TCompOptModeMatrix.ReadSettings ',DbgSName(AOptions)]);
   if not (AOptions is TProjectCompilerOptions) then exit;
   CompOptions:=TProjectCompilerOptions(AOptions);
   if LazProject=CompOptions.LazProject then begin
@@ -1276,9 +1271,7 @@ begin
     UpdateActiveMode;
     exit;
   end;
-
   fProject:=CompOptions.LazProject;
-
   UpdateModes(false);
   FillMenus;
 
@@ -1297,7 +1290,6 @@ begin
 
   // update Grid
   Grid.MatrixChanged;
-
   // select project
   Grid.Row:=Grid.Matrix.IndexOfRow(GroupProject)+1;
   Grid.Col:=Grid.FixedCols;
