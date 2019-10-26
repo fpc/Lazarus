@@ -126,8 +126,6 @@ type
     procedure CreateNewOption(aTyp, aValue: string);
     procedure CreateNewTarget;
     function GetCaptionValue(aCaption, aPattern: string): string;
-    procedure UpdateEnabledModesInGrid(Options: TBuildMatrixOptions;
-                       StorageGroup: TGroupedMatrixGroup; var HasChanged: boolean);
     procedure UpdateGridStorageGroups;
   protected
     procedure VisibleChanged; override;
@@ -852,41 +850,6 @@ begin
   Result:=copy(aCaption,p,length(aCaption)-length(aPattern)+2);
 end;
 
-procedure TCompOptModeMatrixFrame.UpdateEnabledModesInGrid(
-  Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup;
-  var HasChanged: boolean);
-// update enabled modes in grid
-var
-  GrpIndex: Integer;
-  Target: TGroupedMatrixGroup;
-  i: Integer;
-  ValueRow: TGroupedMatrixValue;
-  OptionIndex: Integer;
-  Option: TBuildMatrixOption;
-begin
-  OptionIndex:=0;
-  for GrpIndex:=0 to StorageGroup.Count-1 do begin
-    Target:=TGroupedMatrixGroup(StorageGroup[GrpIndex]);
-    if not (Target is TGroupedMatrixGroup) then
-      exit;
-    //debugln(['TCompOptModeMatrix.UpdateEnabledModesInGrid Target=',Target.AsString]);
-    for i:=0 to Target.Count-1 do begin
-      ValueRow:=TGroupedMatrixValue(Target[i]);
-      if not (ValueRow is TGroupedMatrixValue) then
-        exit;
-      //debugln(['TCompOptModeMatrix.UpdateEnabledModesInGrid ValueRow=',ValueRow.AsString]);
-      if OptionIndex>=Options.Count then exit;
-      Option:=Options[OptionIndex];
-      //debugln(['TCompOptModeMatrix.UpdateEnabledModesInGrid Option.Modes="',dbgstr(Option.Modes),'" ValueRow.GetNormalizedModes="',dbgstr(ValueRow.GetNormalizedModes),'"']);
-      if Option.Modes<>ValueRow.GetNormalizedModes then begin
-        HasChanged:=true;
-        ValueRow.ModeList.Text:=Option.Modes;
-      end;
-      inc(OptionIndex);
-    end;
-  end;
-end;
-
 procedure TCompOptModeMatrixFrame.UpdateGridStorageGroups;
 var
   i, j: Integer;
@@ -1021,14 +984,7 @@ begin
     Grid.Modes.Delete(Grid.Modes.Count-1);
     GridHasChanged:=true;
   end;
-
-  UpdateEnabledModesInGrid(EnvironmentOptions.BuildMatrixOptions,GroupIDE,ValuesHaveChanged);
-  UpdateEnabledModesInGrid(LazProject.BuildModes.SharedMatrixOptions,GroupProject,ValuesHaveChanged);
-  UpdateEnabledModesInGrid(LazProject.BuildModes.SessionMatrixOptions,GroupSession,ValuesHaveChanged);
-
   UpdateActiveMode;
-
-  //debugln(['TCompOptModeMatrix.UpdateModes UpdateGrid=',UpdateGrid,' GridHasChanged=',GridHasChanged]);
   if UpdateGrid and GridHasChanged then
     Grid.MatrixChanged
   else if GridHasChanged or ValuesHaveChanged then

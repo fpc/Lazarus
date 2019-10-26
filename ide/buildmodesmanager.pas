@@ -443,17 +443,19 @@ end;
 procedure TBuildModesForm.RenameButtonClick(Sender: TObject);
 var
   CurMode: TProjectBuildMode;
-  Value: string;
+  Value, OldValue: string;
   i: Integer;
 begin
   i:=BuildModesStringGrid.Row-1;
   if (i<0) then exit;
   CurMode:=fBuildModes[i];
   Value:=CurMode.Identifier;
+  OldValue:=Value;
   if InputQuery(lisRename, lisUIDName, Value) then
   begin
     CurMode.Identifier:=Value;
     FillBuildModesGrid;
+    ModeMatrixFrame.Grid.RenameMode(OldValue, Value);
   end;
 end;
 
