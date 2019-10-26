@@ -265,6 +265,7 @@ type
     procedure MatrixChanging;
     procedure MatrixChanged;
     procedure DeleteMatrixRow(aRow: integer);
+    procedure RenameMode(aOldName, aNewName: string);
     function ModeColFirst: integer;
     function ModeColLast: integer;
     function TypeCol: integer;
@@ -1649,6 +1650,25 @@ begin
     Matrix.DeleteRow(aRow-1);
   finally
     MatrixChanged;
+  end;
+end;
+
+procedure TGroupedMatrixControl.RenameMode(aOldName, aNewName: string);
+var
+  iRow, iMod: Integer;
+  MatRow: TGroupedMatrixRow;
+  ValRow: TGroupedMatrixValue;
+begin
+  for iRow:=0 to Matrix.RowCount-1 do
+  begin
+    MatRow:=Matrix.Rows[iRow];
+    if MatRow is TGroupedMatrixValue then
+    begin
+      ValRow:=TGroupedMatrixValue(MatRow);
+      iMod:=IndexInStringList(ValRow.ModeList,cstCaseInsensitive,aOldName);
+      if iMod>=0 then
+        ValRow.ModeList[iMod]:=aNewName;
+    end;
   end;
 end;
 
