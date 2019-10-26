@@ -447,10 +447,8 @@ var
   i: Integer;
 begin
   i:=BuildModesStringGrid.Row-1;
-  if (i>=0) then
-    CurMode:=fBuildModes[i]
-  else
-    exit;
+  if (i<0) then exit;
+  CurMode:=fBuildModes[i];
   Value:=CurMode.Identifier;
   if InputQuery(lisRename, lisUIDName, Value) then
   begin
