@@ -31,10 +31,10 @@ uses
   // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   // LazUtils
-  FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, UITypes,
-  FPCAdds, // for StrToQWord in older fpc versions
+  FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, LazStringUtils,
+  UITypes, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
-  ObjInspStrConsts, PropEditUtils, PackageDependencyIntf,
+  ObjInspStrConsts, PropEditUtils,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
   FileFilterPropEditor, PagesPropEditDlg, IDEWindowIntf;

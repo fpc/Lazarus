@@ -93,6 +93,10 @@ function SwapCase(Const S: String): String;
 function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer; overload;
 function StringCase(const AString: String; const ACase: array of String; const AIgnoreCase, APartial: Boolean): Integer; overload;
 
+// Test over a string
+function LazIsValidIdent(const Ident: string; AllowDots: Boolean = False;
+                         StrictDots: Boolean = False): Boolean;
+
 implementation
 
 function IsNumber(s: String): Boolean;
@@ -1232,6 +1236,44 @@ begin
   end;
 
   Result := -1;
+end;
+
+function LazIsValidIdent(const Ident: string; AllowDots: Boolean = False;
+                         StrictDots: Boolean = False): Boolean;
+// This is a copy of IsValidIdent from FPC 3.1.
+// ToDo: Switch to using IsValidIdent from FPC 3.2 when it is the minimum requirement.
+const
+  Alpha = ['A'..'Z', 'a'..'z', '_'];
+  AlphaNum = Alpha + ['0'..'9'];
+  Dot = '.';
+var
+  First: Boolean;
+  I, Len: Integer;
+begin
+  Len := Length(Ident);
+  if Len < 1 then
+    Exit(False);
+  First := True;
+  for I := 1 to Len do
+  begin
+    if First then
+    begin
+      Result := Ident[I] in Alpha;
+      First := False;
+    end
+    else if AllowDots and (Ident[I] = Dot) then
+    begin
+      if StrictDots then
+      begin
+        Result := I < Len;
+        First := True;
+      end;
+    end
+    else
+      Result := Ident[I] in AlphaNum;
+    if not Result then
+      Break;
+  end;
 end;
 
 end.

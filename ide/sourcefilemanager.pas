@@ -1763,8 +1763,7 @@ function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName,
-    LFMClassName: string;
+  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName, LFMClassName: string;
   OkToAdd: boolean;
   Owners: TFPList;
   i: Integer;
@@ -1840,7 +1839,7 @@ begin
     Result:=RenameUnitLowerCase(ActiveUnitInfo,true);
     if Result=mrIgnore then Result:=mrOk;
     if Result<>mrOk then begin
-      DebugLn('AddActiveUnitToProject A RenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+      DebugLn('AddUnitToProject A RenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
       exit;
     end;
   end;
@@ -7994,8 +7993,7 @@ begin
           exit;
         end;
       end;
-      if not CodeToolBoss.RenameIdentifier(PascalReferences,
-        OldUnitName,NewUnitName)
+      if not CodeToolBoss.RenameIdentifier(PascalReferences,OldUnitName,NewUnitName)
       then begin
         if (not IgnoreErrors) and (not Quiet) then
           MainIDE.DoJumpToCodeToolBossError;
