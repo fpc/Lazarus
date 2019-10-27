@@ -71,7 +71,7 @@ end;
 procedure TPasJSWebserverProcessesForm.Localize;
 
 begin
-  LCount.Caption:=Format(SWebserversCount, ['0']);
+  LCount.Caption:=SafeFormat(SWebserversCount, ['0']);
   Caption:=SWebserversCaption;
   With LVProcesses do
     begin
@@ -144,10 +144,10 @@ begin
   if (C=Nil) or (C.ServerInstances=Nil) or (C.ServerInstances.Count=0) then
     begin
     LVProcesses.Items.Clear;
-    LCount.Caption:=Format(SWebserversCount, ['0']);
+    LCount.Caption:=SafeFormat(SWebserversCount, ['0']);
     exit;
     end;
-  LCount.Caption:=Format(SWebserversCount, [IntToStr(C.ServerInstances.Count)]);
+  LCount.Caption:=SafeFormat(SWebserversCount, [IntToStr(C.ServerInstances.Count)]);
   With LVProcesses.Items do
     try
       BeginUpdate;

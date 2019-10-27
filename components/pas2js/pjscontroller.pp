@@ -58,6 +58,8 @@ Type
     FOnRefresh: TNotifyEvent;
     FServerInstances: TServerInstanceList;
     function GetPas2JSPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPas2JSWebServerPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPas2JSWebServerPort(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2jsProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
@@ -206,6 +208,28 @@ begin
     Result:='pas2js'; // always return something to get nicer error messages
 end;
 
+function TPJSController.GetPas2JSWebServerPath(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Abort:=False;
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSWebServerPath] ignoring macro Pas2JSWebServer parameter "',s,'"']);
+  Result:=PJSOptions.GetParsedWebServerFilename;
+  if Result='' then
+    Result:=PJSDefaultWebServerName; // always return something to get nicer error messages
+end;
+
+function TPJSController.GetPas2JSWebServerPort(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Abort:=False;
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSWebServerPort] ignoring macro Pas2JSWebServerPort parameter "',s,'"']);
+  Result:=PJSOptions.GetParsedWebServerFilename;
+  if Result='' then
+    Result:=PJSDefaultWebServerName; // always return something to get nicer error messages
+end;
+
 function TPJSController.GetPas2JSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
 
 begin
@@ -309,7 +333,7 @@ begin
   else
     begin
 //    Writeln('No instance running on port ',ServerPort, 'allocating it');
-    aInstance:=ServerInstances.AddInstance(ServerPort,BaseDir,PJSOptions.GetParsedHTTPServerFilename);
+    aInstance:=ServerInstances.AddInstance(ServerPort,BaseDir,PJSOptions.GetParsedWebServerFilename);
     end;
   aInstance.LastProject:=LazarusIDE.ActiveProject.ProjectInfoFile;
   aInstance.StartServer;
@@ -333,6 +357,10 @@ procedure TPJSController.Hook;
 begin
   IDEMacros.Add(TTransferMacro.Create('Pas2JS', '', pjsdPas2JSExecutable, @
     GetPas2JSPath, []));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSWebServer', '', pjsdPas2JSWebServerExe, @
+    GetPas2JSWebServerPath, []));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSWebServerPort', '', pjsdPas2JSWebServerPort, @
+    GetPas2JSWebServerPort, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSBrowser', '',
     pjsdPas2JSSelectedBrowserExecutable, @GetPas2JSBrowser, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS', '',

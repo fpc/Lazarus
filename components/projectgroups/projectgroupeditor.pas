@@ -1,9 +1,11 @@
 {
   Todo:
+    - run (with debug):
+      - start compile server, keep running, restart when options change
+      - close on IDE quit
     - activate project when project is opened
     - deactivate project when project is closed
     - show active build mode
-    - auto load last group on IDE start when option enabled
 }
 unit ProjectGroupEditor;
 

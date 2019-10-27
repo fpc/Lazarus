@@ -7,7 +7,7 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value=" units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
@@ -17,7 +17,7 @@
     </CompilerOptions>
     <Description Value="Adds a Lazarus project for pas2js browser applications."/>
     <License Value="GPL-2"/>
-    <Version Major="1" Release="1"/>
+    <Version Major="1" Release="2"/>
     <Files Count="9">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>

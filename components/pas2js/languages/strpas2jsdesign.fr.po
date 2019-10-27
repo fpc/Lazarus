@@ -15,8 +15,9 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-#: strpas2jsdesign.pjsdbrowsertousewhenopeninghtmlpage
-msgid "Browser to use when opening HTML page"
+#: strpas2jsdesign.pjsdbrowsertoopenhtmlpage
+msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
+msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
 msgstr ""
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
@@ -82,18 +83,42 @@ msgstr ""
 msgid "Pas2JS selected NodeJS excutable"
 msgstr ""
 
+#: strpas2jsdesign.pjsdpas2jswebserverexe
+msgid "Pas2JS webserver executable"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpas2jswebserverport
+msgid "Pas2JS webserver port"
+msgstr ""
+
 #: strpas2jsdesign.pjsdpathof
 #, object-pascal-format
 msgid "Path of %s"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
-msgid "Path of Node.js executable"
+msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
 msgstr ""
 
-#: strpas2jsdesign.pjsdportnumberstostartallocatingfrom
+#: strpas2jsdesign.pjsdpathofpas2jsexecutablemacropas2js
+msgid "Path of pas2js executable, macro $(pas2js)"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpathofxmacropas2js
 #, object-pascal-format
-msgid "Port numbers to start allocating from %s"
+msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
+msgid "Path of %s, macro $(pas2js)"
+msgstr ""
+
+#: strpas2jsdesign.pjsdpathofxmacropas2jswebserver
+#, object-pascal-format
+msgctxt "strpas2jsdesign.pjsdpathofxmacropas2jswebserver"
+msgid "Path of %s, macro $(Pas2JSWebServer)"
+msgstr ""
+
+#: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
+#, object-pascal-format
+msgid "Port number to start allocating from %s"
 msgstr ""
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
@@ -132,8 +157,9 @@ msgstr ""
 msgid "Select pas2js executable"
 msgstr ""
 
-#: strpas2jsdesign.pjsdselectsimpleserverexecutable
-msgid "Select simpleserver executable"
+#: strpas2jsdesign.pjsdselectxexecutable
+#, object-pascal-format
+msgid "Select %s executable"
 msgstr ""
 
 #: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
@@ -181,7 +207,9 @@ msgstr ""
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
 msgstr ""
 
-#: strpas2jsdesign.spasjswebserverscaption
+#: strpas2jsdesign.spasjswebservercaption
+#, fuzzy
+msgctxt "strpas2jsdesign.spasjswebservercaption"
 msgid "Pas2JS WebServers"
 msgstr "WebServers Pas2JS"
 

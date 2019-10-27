@@ -101,7 +101,7 @@ begin
 end;
 
 Const
-  sPas2JSWebserversName = 'Pas2JSWebservers';
+  sPas2JSWebserverName = 'Pas2JSWebservers';
 
 procedure Register;
 
@@ -122,12 +122,12 @@ begin
   ViewCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
   if ViewCategory <> nil then
     begin
-    IDECommand := RegisterIDECommand(ViewCategory,SPas2JSWebserversName,SPasJSWebserversCaption,
+    IDECommand := RegisterIDECommand(ViewCategory,sPas2JSWebserverName,SPasJSWebserverCaption,
                                      CleanIDEShortCut,CleanIDEShortCut,Nil,@ShowServerDialog);
     if IDECommand <> nil then
       RegisterIDEButtonCommand(IDECommand);
     end;
-  RegisterIdeMenuCommand(itmViewDebugWindows,SPas2JSWebserversName,SPasJSWebserversCaption,nil,@ShowServerDialog);
+  RegisterIdeMenuCommand(itmViewDebugWindows,sPas2JSWebserverName,SPasJSWebserverCaption,nil,@ShowServerDialog);
   // Add project options frame
   RegisterIDEOptionsEditor(GroupProject,TPas2JSProjectOptionsFrame, Pas2JSOptionsIndex);
 end;
