@@ -188,6 +188,8 @@ type
     procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer); override;
     function IsEmptyRow: Boolean; {Delphi compatible function}
     function IsEmptyRow(aRow: Integer): Boolean; {This for makes more sense to me}
+    procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=',';
+      UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true); override;
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     function RestoreCurrentRow: Boolean;
     procedure Sort(Index, IndxFrom, IndxTo: Integer);
@@ -889,6 +891,15 @@ begin
     Result := ((inherited GetCells(0,0)) = EmptyStr)  and ((inherited GetCells(1,0)) = EmptyStr)
   else
     Result := Strings.Strings[aRow - FixedRows] = EmptyStr;
+end;
+
+procedure TValueListEditor.LoadFromCSVStream(AStream: TStream;
+  ADelimiter: Char; UseTitles: boolean; FromLine: Integer;
+  SkipEmptyLines: Boolean);
+begin
+  inherited LoadFromCSVStream(AStream, ADelimiter, UseTitles, FromLine,
+    SkipEmptyLines);
+  if UseTitles then UpdateTitleCaptions(Cells[0,0],Cells[1,0]);
 end;
 
 procedure TValueListEditor.MoveColRow(IsColumn: Boolean; FromIndex,

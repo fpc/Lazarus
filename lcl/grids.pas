@@ -1764,7 +1764,7 @@ type
     procedure CopyToClipboard(AUseSelection: boolean = false);
     procedure InsertRowWithValues(Index: Integer; Values: array of String);
     procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=',';
-      UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
+      UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true); virtual;
     procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=',';
       UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
     procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=',';
