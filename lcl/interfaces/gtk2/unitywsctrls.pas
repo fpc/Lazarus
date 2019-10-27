@@ -1,7 +1,11 @@
-{ Copyleft implementation of TTrayIcon for
-  Unity applications indicators
-  Created 2015 by Anthony Walter sysrpl@gmail.com }
+{
+ *****************************************************************************
+  This file is part of the Lazarus Component Library (LCL)
 
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+}
 unit UnityWSCtrls;
 
 interface
@@ -13,7 +17,10 @@ uses
   Graphics, Controls, Forms, ExtCtrls, WSExtCtrls, LCLType, LazUTF8,
   FileUtil;
 
-{ Changed October 2019, we now try and identify those Linux distributions that
+{ Copyleft implementation of TTrayIcon originally for Unity applications indicators
+  Original version 2015 by Anthony Walter sysrpl@gmail.com
+
+  Changed October 2019, we now try and identify those Linux distributions that
   need to use LibAppIndicator3 and allow the remainder to use the older and
   more functional SystemTray. Only a few old distributions can use LibAppIndicator_1
   so don't bother to try it, rely, here on LibAppIndicator3
