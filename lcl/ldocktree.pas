@@ -170,9 +170,9 @@ type
     procedure SetActiveNotebookPageComponent(const AValue: TLazDockPage);
   protected
     function GetFloatingDockSiteClass: TWinControlClass; override;
+    function GetPageClass: TCustomPageClass; override;
     procedure Change; override;
   public
-    constructor Create(TheOwner: TComponent); override;
     property Page[Index: Integer]: TLazDockPage read GetNoteBookPage;
     property ActivePageComponent: TLazDockPage read GetActiveNotebookPageComponent
                                            write SetActiveNotebookPageComponent;
@@ -766,8 +766,7 @@ begin
   Result:=TLazDockPage(inherited Page[Index]);
 end;
 
-procedure TLazDockPages.SetActiveNotebookPageComponent(
-  const AValue: TLazDockPage);
+procedure TLazDockPages.SetActiveNotebookPageComponent(const AValue: TLazDockPage);
 begin
   ActivePageComponent:=AValue;
 end;
@@ -777,16 +776,15 @@ begin
   Result:=TLazDockForm;
 end;
 
+function TLazDockPages.GetPageClass: TCustomPageClass;
+begin
+  Result:=TLazDockPage;
+end;
+
 procedure TLazDockPages.Change;
 begin
   inherited Change;
   TLazDockForm.UpdateMainControlInParents(Self);
-end;
-
-constructor TLazDockPages.Create(TheOwner: TComponent);
-begin
-  PageClass := TLazDockPage;
-  inherited Create(TheOwner);
 end;
 
 { TLazDockTree }
