@@ -1034,39 +1034,37 @@ end;
 
 procedure TInitialSetupDialog.UpdateCompilerNote;
 var
-  CurCaption: String;
-  Note: string;
+  CurCaption, ParsedC, Note, s: String;
   Quality: TSDFilenameQuality;
-  s: String;
   ImageIndex: Integer;
   CfgCache: TPCTargetConfigCache;
 begin
   if csDestroying in ComponentState then exit;
   CurCaption:=CompilerComboBox.Text;
   EnvironmentOptions.CompilerFilename:=CurCaption;
-  if fLastParsedCompiler=EnvironmentOptions.GetParsedCompilerFilename then exit;
-  fLastParsedCompiler:=EnvironmentOptions.GetParsedCompilerFilename;
-  //debugln(['TInitialSetupDialog.UpdateCompilerNote ',fLastParsedCompiler]);
-
+  ParsedC:=EnvironmentOptions.GetParsedCompilerFilename;
+  if fLastParsedCompiler=ParsedC then exit;
+  fLastParsedCompiler:=ParsedC;
   Quality:=CheckFPCExeQuality(fLastParsedCompiler,Note,
                               CodeToolBoss.CompilerDefinesCache.TestFilename);
-  // check compiler again
-  CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                                             fLastParsedCompiler,'','','',true);
-  CfgCache.CompilerDate:=0; // force update
-  if CfgCache.NeedsUpdate then
-    CfgCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename);
-  BuildBoss.SetBuildTargetIDE;
-
+  if Quality=sddqCompatible then
+  begin
+    // check compiler again
+    CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
+                                               fLastParsedCompiler,'','','',true);
+    CfgCache.CompilerDate:=0; // force update
+    if CfgCache.NeedsUpdate then
+      CfgCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename);
+    BuildBoss.SetBuildTargetIDE;
+  end;
   case Quality of
   sddqInvalid: s:=lisError;
   sddqCompatible: s:='';
   else s:=lisWarning;
   end;
-  if EnvironmentOptions.CompilerFilename<>EnvironmentOptions.GetParsedCompilerFilename
-  then
-    s:=lisFile2+EnvironmentOptions.GetParsedCompilerFilename+LineEnding+
-      LineEnding+s;
+  ParsedC:=EnvironmentOptions.GetParsedCompilerFilename;
+  if EnvironmentOptions.CompilerFilename<>ParsedC then
+    s:=lisFile2+ParsedC+LineEnding+LineEnding+s;
   CompilerMemo.Text:=s+Note;
 
   ImageIndex:=QualityToImgIndex(Quality);
