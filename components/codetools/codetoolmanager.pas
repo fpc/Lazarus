@@ -2784,7 +2784,7 @@ begin
     Result:=true;
     exit;
   end;
-  if not IsValidIdent(NewIdentifier) then exit;
+  if not LazIsValidIdent(NewIdentifier,True,True) then exit;
 
   ClearCurCodeTool;
   SourceChangeCache.Clear;
