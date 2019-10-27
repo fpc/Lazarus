@@ -34,6 +34,8 @@ uses
   {$IFnDEF HASAMIGA}
   dynlibs,
   {$ENDIF}
+  // LazUtils
+  LazStringUtils,
   // Codetools
   PPUParser, CodeTree, FileProcs, LazFileUtils, BasicCodeTools, CodeGraph,
   CodeToolManager, CodeToolsStructs;
@@ -669,7 +671,7 @@ begin
             System.Delete(GroupName,i,1);
         if (Groupname='') then continue;
         Groupname:=FPCPPUGroupPrefix+LowerCase(Groupname);
-        if (not IsValidIdent(Groupname)) then continue;
+        if (not LazIsValidIdent(Groupname,true,true)) then continue;
         AddFPCGroup(GroupName,AppendPathDelim(FPCPPUBaseDir)+FileInfo.Name);
       end;
     until FindNextUTF8(FileInfo)<>0;
@@ -698,7 +700,7 @@ begin
       if (CompareFileExt(Filename,'ppu',false)<>0) then continue;
       AUnitName:=ExtractFileNameOnly(Filename);
       Filename:=AppendPathDelim(Directory)+Filename;
-      if not IsValidIdent(AUnitName) then begin
+      if not LazIsValidIdent(AUnitName,true,true) then begin
         DebugLn(['TPPUGroups.AddFPCGroup NOTE: invalid ppu name: ',Filename]);
         continue;
       end;
