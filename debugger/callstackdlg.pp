@@ -39,7 +39,7 @@ uses
   SysUtils, Classes, Controls, Forms, LCLProc, LazLoggerBase,
   IDEWindowIntf, DebuggerStrConst,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls,
-  ActnList, IDEImagesIntf, IDECommands, EnvironmentOpts;
+  ActnList, IDEImagesIntf, IDECommands, DbgIntfDebuggerBase, EnvironmentOpts;
 
 type
 
@@ -699,6 +699,8 @@ var
   Entry: TIdeCallStackEntry;
   Stack: TIdeCallStack;
 begin
+  if {(DebugBoss.State <> dsPause) or} (lvCallStack.Items.Count = 0) then
+    exit;
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]);
   Stack := GetSelectedCallstack;
   if (BreakPoints = nil) or (Stack = nil) then
