@@ -8,8 +8,12 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="tpiprohtmltree"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
