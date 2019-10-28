@@ -832,6 +832,8 @@ begin
   if MaybeDetach then
     exit;
 
+  FCurrentProcess.ThreadsClearCallStack;
+
   repeat
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then begin
       // IF there is a pause-request, we will hit a deCreateProcess.
