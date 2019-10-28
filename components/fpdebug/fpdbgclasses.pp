@@ -340,7 +340,7 @@ type
     destructor Destroy; override;
 
     function AddBreak(const AFileName: String; ALine: Cardinal): TFpInternalBreakpoint; overload;
-    function AddrOffset: Int64; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
+    function AddrOffset: TDBGPtr; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
     procedure LoadInfo; virtual;
 
@@ -1090,7 +1090,7 @@ begin
   end;
 end;
 
-function TDbgInstance.AddrOffset: Int64;
+function TDbgInstance.AddrOffset: TDBGPtr;
 begin
   Result := FLoaderList.ImageBase;
 end;
@@ -1113,9 +1113,12 @@ end;
 
 function TDbgInstance.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
 begin
-  Result := FDbgInfo.FindProcSymbol(AAdress + AddrOffset);
+  {$PUSH}{$R-}{$Q-}
+  AAdress := AAdress + AddrOffset;
+  {$POP}
+  Result := FDbgInfo.FindProcSymbol(AAdress);
   if not assigned(Result) then
-    result := FSymbolTableInfo.FindProcSymbol(AAdress + AddrOffset);
+    result := FSymbolTableInfo.FindProcSymbol(AAdress);
 end;
 
 procedure TDbgInstance.LoadInfo;
