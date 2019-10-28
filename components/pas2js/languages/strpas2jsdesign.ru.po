@@ -18,7 +18,7 @@ msgstr "Обзор"
 #: strpas2jsdesign.pjsdbrowsertoopenhtmlpage
 msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
 msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
-msgstr ""
+msgstr "Браузер для открытия страницы HTML, макрос $(Pas2JSBrowser)"
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
@@ -85,43 +85,31 @@ msgstr "Выбранный исполнимый файл NodeJS для Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jswebserverexe
 msgid "Pas2JS webserver executable"
-msgstr ""
+msgstr "Исполнимый файл веб-сервера Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jswebserverport
 msgid "Pas2JS webserver port"
-msgstr ""
-
-#: strpas2jsdesign.pjsdpathof
-#, object-pascal-format
-msgid "Path of %s"
-msgstr "Путь к %s"
+msgstr "Порт веб-сервера Pas2JS"
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
-#, fuzzy
-#| msgid "Path of Node.js executable"
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
-msgstr "Путь к исполнимому файлу Node.js"
-
-#: strpas2jsdesign.pjsdpathofpas2jsexecutablemacropas2js
-msgid "Path of pas2js executable, macro $(pas2js)"
-msgstr ""
+msgstr "Путь к исполнимому файлу Node.js, макрос $(Pas2JSNodeJS)"
 
 #: strpas2jsdesign.pjsdpathofxmacropas2js
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
-msgstr ""
+msgstr "Путь к %s, макрос $(pas2js)"
 
 #: strpas2jsdesign.pjsdpathofxmacropas2jswebserver
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdpathofxmacropas2jswebserver"
 msgid "Path of %s, macro $(Pas2JSWebServer)"
-msgstr ""
+msgstr "Путь к %s, макрос $(Pas2JSWebServer)"
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
-#, object-pascal-format
-msgid "Port number to start allocating from %s"
-msgstr ""
+msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
+msgstr "Начало диапазона запрашиваемых портов, макрос $(Pas2JSWebServerPort)"
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
@@ -161,8 +149,9 @@ msgstr "Выберите исполнимый файл pas2js"
 
 #: strpas2jsdesign.pjsdselectxexecutable
 #, object-pascal-format
+msgctxt "strpas2jsdesign.pjsdselectxexecutable"
 msgid "Select %s executable"
-msgstr ""
+msgstr "Выберите исполнимый файл %s"
 
 #: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
@@ -210,7 +199,6 @@ msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is search
 msgstr "Можно использовать макросы IDE, например, $MakeExe(). Если полный путь не указан, поиск %s производится при помощи переменной окружения PATH."
 
 #: strpas2jsdesign.spasjswebservercaption
-#, fuzzy
 msgctxt "strpas2jsdesign.spasjswebservercaption"
 msgid "Pas2JS WebServers"
 msgstr "Веб-серверы Pas2JS"

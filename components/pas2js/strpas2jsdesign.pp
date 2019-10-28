@@ -35,12 +35,9 @@ Resourcestring
   pjsdSelectXExecutable = 'Select %s executable';
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
   pjsdSelectBrowserExecutable = 'Select browser executable';
-  pjsdPathOf = 'Path of %s';
   pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea = 'You can use IDE '
     +'macros like $MakeExe(). Without a full path, %s is searched in PATH.';
   pjsdPathOfXMacroPas2js = 'Path of %s, macro $(pas2js)';
-  pjsdPathOfPas2jsExecutableMacroPas2js = 'Path of pas2js executable, macro $('
-    +'pas2js)';
   pjsdBrowse = 'Browse';
   pjsdPathOfXMacroPas2JSWebServer = 'Path of %s, macro $(Pas2JSWebServer)';
   pjsdPortNumberToStartAllocatingFrom = 'Port number to start allocating '

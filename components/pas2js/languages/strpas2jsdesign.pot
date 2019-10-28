@@ -81,17 +81,8 @@ msgstr ""
 msgid "Pas2JS webserver port"
 msgstr ""
 
-#: strpas2jsdesign.pjsdpathof
-#, object-pascal-format
-msgid "Path of %s"
-msgstr ""
-
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
-msgstr ""
-
-#: strpas2jsdesign.pjsdpathofpas2jsexecutablemacropas2js
-msgid "Path of pas2js executable, macro $(pas2js)"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpathofxmacropas2js
@@ -107,8 +98,7 @@ msgid "Path of %s, macro $(Pas2JSWebServer)"
 msgstr ""
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
-#, object-pascal-format
-msgid "Port number to start allocating from %s"
+msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr ""
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
@@ -149,6 +139,7 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdselectxexecutable
 #, object-pascal-format
+msgctxt "strpas2jsdesign.pjsdselectxexecutable"
 msgid "Select %s executable"
 msgstr ""
 
