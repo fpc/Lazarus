@@ -146,6 +146,7 @@ Resourcestring
   lisInfo = 'Info';
   lisSourceDirectoriesOfProjectGroup = 'Source directories of project group:';
 
+  lisProjectGroupsSourcePaths = 'Project group''s source paths';
 
 implementation
 

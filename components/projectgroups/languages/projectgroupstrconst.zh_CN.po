@@ -344,6 +344,10 @@ msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
 msgid "Save project group"
 msgstr "保存工程组"
 
+#: projectgroupstrconst.lisprojectgroupssourcepaths
+msgid "Project group's source paths"
+msgstr ""
+
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
 msgstr "读取错误"

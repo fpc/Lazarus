@@ -607,7 +607,8 @@ begin
   FRedoList:=TObjectList.Create(true);
   IdleConnected:=true;
 
-  IDEMacros.Add(TTransferMacro.Create('PGSrcPaths','','Project groups source paths',@GetPGSrcPaths,[]));
+  IDEMacros.Add(TTransferMacro.Create('PGSrcPaths', '', lisProjectGroupsSourcePaths
+    , @GetPGSrcPaths, []));
 end;
 
 destructor TIDEProjectGroupManager.Destroy;
