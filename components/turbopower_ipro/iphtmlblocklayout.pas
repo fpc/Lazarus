@@ -149,6 +149,7 @@ begin
     FCanvas.Font.Name := aProps.FontName;
     FCanvas.Font.Size := aProps.FontSize;
     FCanvas.Font.Style := aProps.FontStyle;
+    FCanvas.Font.Quality := FOwner.Owner.FontQuality;
     FSizeOfSpace := FCanvas.TextExtent(' ');
     {$IFDEF IP_LAZARUS_DBG}
     if FSizeOfSpace.CX=0 then
@@ -570,6 +571,7 @@ begin
         FCanvas.Font.Name := FCurProps.FontName;
         FCanvas.Font.Size := FCurProps.FontSize;
         FCanvas.Font.Style := FCurProps.FontStyle;
+        FCanvas.Font.Quality := FOwner.Owner.FontQuality;
         aCurElem.Size := FCanvas.TextExtent(NoBreakToSpace(aCurElem.AnsiWord));
         FxySize := aCurElem.Size;
         aCurElem.SizeProp := FCurProps.PropA;
@@ -1123,6 +1125,7 @@ begin
   CurFontSize := 0;
   CurFontStyle := [];
   FCanvas.Font.Style := CurFontStyle;
+  FCanvas.Font.Quality := FOwner.Owner.FontQuality;
   FSizeOfSpace := FCanvas.TextExtent(' ');
   FSizeOfHyphen := FCanvas.TextExtent('-');
   i := 0;
@@ -1251,6 +1254,7 @@ begin
   else
     if (FCurProps = nil) or not FCurProps.BIsEqualTo(aCurWord.Props) then
       FCanvas.Font.Color := aCurWord.Props.FontColor;
+  FIpHtml.Target.Font.Quality := FIpHtml.FontQuality;
   {$IFDEF IP_LAZARUS}
   FIpHtml.Target.Font.EndUpdate;
   {$ENDIF}
@@ -1267,6 +1271,7 @@ var
   OldFontColor: TColor;
   OldFontStyle: TFontStyles;
   OldBrushStyle: TBrushStyle;
+  OldFontQuality: TFontQuality;
 
   procedure saveCanvasProperties;
   begin
@@ -1274,6 +1279,7 @@ var
     OldBrushStyle := FCanvas.Brush.Style;
     OldFontColor := FCanvas.Font.Color;
     OldFontStyle := FCanvas.Font.Style;
+    OldFontQuality := FCanvas.Font.Quality;
   end;
 
   procedure restoreCanvasProperties;
@@ -1282,6 +1288,7 @@ var
     FCanvas.Brush.Color := OldBrushColor;
     FCanvas.Brush.Style := OldBrushStyle;
     FCanvas.Font.Style := OldFontStyle;
+    FCanvas.Font.Quality := OldFontQuality;
   end;
   {$ENDIF}
 
@@ -1321,6 +1328,7 @@ begin
     FCanvas.DrawFocusRect(R);
   if FCanvas.Font.color = -1 then
     FCanvas.Font.color := clBlack;
+  FCanvas.Font.Quality := FOwner.Owner.FontQuality;
   {$ENDIF}
   if aCurWord.AnsiWord <> NAnchorChar then
     FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord));

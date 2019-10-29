@@ -2007,6 +2007,7 @@ type
     FALinkColor: TColor;
     FTextColor: TColor;
     FBgColor: TColor;
+    FFontQuality: TFontQuality;
     FFactBAParag: Real;
     FHasFrames : Boolean;
     FLinksUnderlined: Boolean;
@@ -2332,6 +2333,7 @@ type
     property FixedTypeface: string read FFixedTypeface write FFixedTypeface;
     property DefaultTypeFace: string read FDefaultTypeFace write FDefaultTypeFace;
     property DefaultFontSize: integer read FDefaultFontSize write FDefaultFontSize;
+    property FontQuality: TFontQuality read FFontQuality write FFontQuality;
     property HtmlNode : TIpHtmlNodeHtml read FHtml;
     property CurUrl: string read FCurUrl;
     {$IFDEF IP_LAZARUS}
@@ -2721,6 +2723,7 @@ type
     FCurElement : PIpHtmlElement;
     FPrintSettings: TIpHtmlPrintSettings;
     FFactBAParag: Real;
+    FFontQuality: TFontQuality;
     FWantTabs: Boolean;
     FScrollDist: Integer;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
@@ -2728,6 +2731,7 @@ type
     function FactBAParagNotIs1: Boolean;
     function GetVScrollPos: Integer;
     procedure SetVScrollPos(const Value: Integer);
+    procedure SetFontQuality(const AValue: TFontQuality);
   protected
     FFlagErrors: Boolean;
     FFixedTypeface: string;
@@ -2834,6 +2838,7 @@ type
     property FixedTypeface: string read FFixedTypeface write FFixedTypeface;
     property DefaultTypeFace: string read FDefaultTypeFace write SetDefaultTypeFace;
     property DefaultFontSize: integer read FDefaultFontSize write SetDefaultFontSize;
+    property FontQuality: TFontQuality read FFontQuality write SetFontQuality default fqDefault;
     property HotURL: string read FHotURL;
     property LinkColor: TColor read FLinkColor write FLinkColor default clBlue;
     property LinksUnderlined: Boolean read FLinksUnderlined write FLinksUnderlined default DEFAULT_LINKS_UNDERLINED;
@@ -2871,6 +2876,7 @@ type
     property Anchors;
     {$ENDIF}
     property BgColor;
+    property BorderSpacing;
     property BorderWidth;
     property BorderStyle;
     {$IFDEF VERSION4}
@@ -2879,6 +2885,7 @@ type
     property DataProvider;
     property Enabled;
     property FixedTypeface;
+    property FontQuality;
     property DefaultTypeFace;
     property DefaultFontSize;
     property FactBAParag;
@@ -6983,7 +6990,7 @@ var
   CurBasefont : TIpHtmlNodeBASEFONT;
 begin
   CurBasefont := TIpHtmlNodeBASEFONT.Create(Parent);
-  if CurBasefont=nil then ;
+  if CurBasefont=nil then ;                                  // ???? What's this?????
   CurBasefont.Size := ParseInteger(htmlAttrSIZE, 3);
   NextToken;
 end;
@@ -15756,6 +15763,7 @@ begin
   {$ENDIF}
   DefaultTypeFace := Graphics.DefFontData.Name;
   DefaultFontSize := 12;
+  FFontQuality := fqDefault;
   FPrintSettings := TIpHtmlPrintSettings.Create;
   FFactBAParag := 1;
   FWantTabs := True;
@@ -16249,6 +16257,18 @@ begin
     FDefaultFontSize := Value;
     if (FMasterFrame<>nil)and(FMasterFrame.FHtml<>nil) then begin
       FMasterFrame.FHtml.DefaultFontSize := FDefaultFontSize;
+      Invalidate;
+    end;
+  end;
+end;
+
+procedure TIpHtmlCustomPanel.SetFontQuality(const AValue: TFontQuality);
+begin
+  if FFontQuality <> AValue then begin
+    FFontQuality := AValue;
+    if (FMasterFrame <> nil) and (FMasterFrame.FHtml <> nil) then
+    begin
+      FMasterFrame.FHtml.FontQuality := FFontQuality;
       Invalidate;
     end;
   end;
