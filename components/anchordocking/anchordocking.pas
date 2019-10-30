@@ -308,6 +308,7 @@ type
     procedure MoveRightButtonClick(Sender: TObject); virtual;
     procedure MoveRightMostButtonClick(Sender: TObject); virtual;
     procedure TabPositionClick(Sender: TObject); virtual;
+    function GetPageClass: TCustomPageClass;override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure UpdateDockCaption(Exclude: TControl = nil); override;
@@ -7612,9 +7613,13 @@ end;
 
 constructor TAnchorDockPageControl.Create(TheOwner: TComponent);
 begin
-  PageClass:=DockMaster.PageClass;
   inherited Create(TheOwner);
   PopupMenu:=DockMaster.GetPopupMenu;
+end;
+
+function TAnchorDockPageControl.GetPageClass: TCustomPageClass;
+begin
+  Result:=DockMaster.PageClass;
 end;
 
 { TAnchorDockOverlappingForm }
