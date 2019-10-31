@@ -44,7 +44,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazMethodList, LazUtilities,
+  LazMethodList,
   // LCL
   LCLIntf, LCLType, LCLProc, Graphics, Controls, Clipbrd, ImgList,
   // SynEdit

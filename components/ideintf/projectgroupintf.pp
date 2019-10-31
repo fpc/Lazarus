@@ -7,8 +7,13 @@ unit ProjectGroupIntf;
 interface
 
 uses
-  Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils,
-  LazFileCache, LazMethodList, LazLoggerBase, Forms;
+  Classes, SysUtils,
+  // LCL
+  Forms,
+  // LazUtils
+  LazFileUtils, LazFileCache, LazMethodList, LazLoggerBase,
+  // IdeIntf
+  PackageIntf, ProjectIntf;
 
 Type
   TPGTargetType = (
