@@ -913,6 +913,7 @@ type
     property CompilerMessagesFilename: string read GetCompilerMessagesFilename
               write SetCompilerMessagesFilename; // non English translation file
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory;
+    // ToDo: Remove this from trunk after Lazarus 2.2.0 is out. Now for backwards compatibility.
     property ManyBuildModesSelection: TStringList read FManyBuildModesSelection;
 
     // Primary-config verification
@@ -2818,7 +2819,7 @@ begin
   SaveRecentList(FXMLCfg,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/');
   FXMLCfg.SetDeleteValue(Path+'FppkgConfigFile/Value',FppkgConfigFile,'');
   SaveRecentList(FXMLCfg,FFppkgConfigFileHistory,Path+'FppkgConfigFile/History/');
-  SaveRecentList(FXMLCfg,FManyBuildModesSelection,Path+'ManyBuildModesSelection/');
+  // Note: ManyBuildModesSelection is not stored here any more. Moved to project settings.
 
   // Primary-config verification
   FXMLCfg.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');

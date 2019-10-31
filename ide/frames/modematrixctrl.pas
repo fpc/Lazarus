@@ -1665,7 +1665,7 @@ begin
     if MatRow is TGroupedMatrixValue then
     begin
       ValRow:=TGroupedMatrixValue(MatRow);
-      iMod:=IndexInStringList(ValRow.ModeList,cstCaseInsensitive,aOldName);
+      iMod:=ValRow.ModeList.IndexOf(aOldName);
       if iMod>=0 then
         ValRow.ModeList[iMod]:=aNewName;
     end;

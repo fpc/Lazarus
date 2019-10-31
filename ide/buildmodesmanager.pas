@@ -110,12 +110,13 @@ type
   TBuildModesCheckList = class
   private
     FListForm: TGenericCheckListForm;
+    function IsSelected(AIndex: Integer): Boolean;
+    procedure SaveManyModesSelection;
+    procedure SelectFirst;
     function Show: Boolean;
   public
     constructor Create(InfoCaption: String);
     destructor Destroy; override;
-    function IsSelected(AIndex: Integer): Boolean;
-    procedure SelectFirst;
   end;
 
 function ShowBuildModesDlg(aShowSession: Boolean): TModalResult;
@@ -330,10 +331,11 @@ begin
   Result := False;
   ModeCnt := 0;
   if PrepareForCompileWithMsg <> mrOk then exit;
-  BMList:=TBuildModesCheckList.Create(lisCompileFollowingModes);
+  BMList := TBuildModesCheckList.Create(lisCompileFollowingModes);
   ModeList := TList.Create;
   try
     if not BMList.Show then Exit;
+    BMList.SaveManyModesSelection;      // Remember the selection for next time.
     ActiveMode := Project1.ActiveBuildMode;
     BuildActiveMode := False;
     // Collect modes to be built.
@@ -455,6 +457,11 @@ begin
   begin
     CurMode.Identifier:=Value;
     FillBuildModesGrid;
+    // Rename in many BuildModes selection.
+    i:=fBuildModes.ManyBuildModes.IndexOf(OldValue);
+    if i>=0 then
+      fBuildModes.ManyBuildModes[i]:=Value;
+    // Rename in the ModeMatrix settings frame.
     ModeMatrixFrame.Grid.RenameMode(OldValue, Value);
   end;
 end;
@@ -837,35 +844,27 @@ constructor TBuildModesCheckList.Create(InfoCaption: String);
 var
   i: Integer;
   BM: String;
+  ManyBMs: TStringList;
 begin
   FListForm:=TGenericCheckListForm.Create(Nil);
   //lisApplyForBuildModes = 'Apply for build modes:';
   FListForm.Caption:=lisAvailableProjectBuildModes;
   FListForm.InfoLabel.Caption:=InfoCaption;
+  ManyBMs:=Project1.BuildModes.ManyBuildModes;
+  // Backwards compatibility. Many BuildModes value used to be in EnvironmentOptions.
+  if ManyBMs.Count=0 then
+    ManyBMs:=EnvironmentOptions.ManyBuildModesSelection;
   // Add project build modes to a CheckListBox.
   for i:=0 to Project1.BuildModes.Count-1 do begin
     BM:=Project1.BuildModes[i].Identifier;
     FListForm.CheckListBox1.Items.Add(BM);
-    if EnvironmentOptions.ManyBuildModesSelection.IndexOf(BM) >= 0 then
+    if ManyBMs.IndexOf(BM) >= 0 then
       FListForm.CheckListBox1.Checked[i]:=True;
   end;
 end;
 
 destructor TBuildModesCheckList.Destroy;
-var
-  i: Integer;
-  BM: String;
 begin
-  // Remember selected items before freeing the CheckListBox.
-  EnvironmentOptions.ManyBuildModesSelection.Clear;
-  for i:=0 to FListForm.CheckListBox1.Items.Count-1 do
-  begin
-    if FListForm.CheckListBox1.Checked[i] then
-    begin
-      BM:=FListForm.CheckListBox1.Items[i];
-      EnvironmentOptions.ManyBuildModesSelection.Add(BM);
-    end;
-  end;
   FListForm.Free;
   inherited Destroy;
 end;
@@ -873,6 +872,18 @@ end;
 function TBuildModesCheckList.IsSelected(AIndex: Integer): Boolean;
 begin
   Result := FListForm.CheckListBox1.Checked[AIndex];
+end;
+
+procedure TBuildModesCheckList.SaveManyModesSelection;
+var
+  i: Integer;
+begin
+  // Remember selected items.
+  Project1.BuildModes.ManyBuildModes.Clear;
+  for i:=0 to FListForm.CheckListBox1.Items.Count-1 do
+    if FListForm.CheckListBox1.Checked[i] then
+      Project1.BuildModes.ManyBuildModes.Add(FListForm.CheckListBox1.Items[i]);
+  Project1.Modified:=True;
 end;
 
 procedure TBuildModesCheckList.SelectFirst;
