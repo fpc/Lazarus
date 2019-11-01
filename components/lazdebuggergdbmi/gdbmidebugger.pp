@@ -58,7 +58,8 @@ uses
   // LCL
   Controls, Dialogs, Forms, process,
   // LazUtils
-  FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, LazFileUtils, Maps,
+  FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, Maps,
+  UTF8Process, LazFileUtils,
   // IdeIntf
   BaseIDEIntf, PropEdits, MacroIntf,
   // DebuggerIntf
