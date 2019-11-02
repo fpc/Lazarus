@@ -759,7 +759,11 @@ end;
 procedure TCocoaFilterComboBox.comboboxAction(sender: id);
 begin
   if (indexOfSelectedItem <> lastSelectedItemIndex) then
+  begin
     setDialogFilter(indexOfSelectedItem);
+    if Assigned(Owner) then
+      Owner.IntfFileTypeChanged(lastSelectedItemIndex);
+  end;
   lastSelectedItemIndex := indexOfSelectedItem;
 end;
 
