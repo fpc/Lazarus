@@ -49,21 +49,23 @@ interface
 
 uses
 {$IFdef MSWindows}
-  Windows,
+  Windows, UTF8Process,
 {$ENDIF}
 {$IFDEF UNIX}
-   Unix,BaseUnix,termio,
+   Unix, BaseUnix, termio,
 {$ENDIF}
-  Classes, SysUtils, strutils, math, fgl, Variants,
+  Classes, SysUtils, strutils, math, fgl, Variants, process,
   // LCL
-  Controls, Dialogs, Forms, process,
+  Controls, Dialogs, Forms,
   // LazUtils
-  FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, Maps,
-  UTF8Process, LazFileUtils,
+  FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, LazFileUtils, Maps,
   // IdeIntf
   BaseIDEIntf, PropEdits, MacroIntf,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+{$IFDEF DBG_ENABLE_TERMINAL}
+  DbgIntfPseudoTerminal,
+{$ENDIF}
   // LazDebuggerGdbmi
   DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses, GdbmiStringConstants;
 
