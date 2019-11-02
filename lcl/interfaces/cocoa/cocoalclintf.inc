@@ -328,7 +328,9 @@ begin
       begin
         ctrl := TCocoaAlertController(TCocoaAlertController.alloc).initWithWindow(AnAlert.window);
         try
+          ToggleAppMenu(false);
           Result := AnAlert.runModal;
+          ToggleAppMenu(true); // modal menu doesn't have a window, disabling it
         finally
           ctrl.release;
         end;
