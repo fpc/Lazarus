@@ -440,6 +440,7 @@ begin
     if lFilter <> nil then
       FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
   end;
+  FileDialog.DoClose;
 
 
   // release everything
