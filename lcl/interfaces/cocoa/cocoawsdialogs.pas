@@ -151,6 +151,95 @@ begin
     UpdateOptions(TOpenDialog(src), dst);
 end;
 
+type
+
+  { TCocoaPanelDialog }
+
+  TCocoaPanelDialog = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
+    FileDialog: TFileDialog;
+    OpenDialog: TOpenDialog;
+    selUrl: NSURL;
+    procedure dealloc; override;
+    function panel_shouldEnableURL(sender: id; url: NSURL): Boolean;
+    function panel_validateURL_error(sender: id; url: NSURL; outError: NSErrorPointer): Boolean;
+    procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
+    function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: Boolean): NSString;
+    procedure panel_willExpand(sender: id; expanding: Boolean);
+    procedure panelSelectionDidChange(sender: id);
+  end;
+
+{ TCocoaPanelDialog }
+
+procedure TCocoaPanelDialog.dealloc;
+begin
+  if Assigned(selUrl) then selURL.release;
+  inherited dealloc;
+end;
+
+function TCocoaPanelDialog.panel_shouldEnableURL(sender: id; url: NSURL
+  ): Boolean;
+begin
+  Result := true;
+end;
+
+function TCocoaPanelDialog.panel_validateURL_error(sender: id; url: NSURL;
+  outError: NSErrorPointer): Boolean;
+begin
+  Result := true;
+end;
+
+procedure TCocoaPanelDialog.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
+begin
+  if Assigned(OpenDialog) then
+    OpenDialog.DoFolderChange;
+end;
+
+function TCocoaPanelDialog.panel_userEnteredFilename_confirmed(sender: id;
+  filename: NSString; okFlag: Boolean): NSString;
+begin
+  Result := filename;
+end;
+
+procedure TCocoaPanelDialog.panel_willExpand(sender: id; expanding: Boolean);
+begin
+
+end;
+
+procedure TCocoaPanelDialog.panelSelectionDidChange(sender: id);
+var
+  sp : NSSavePanel;
+  ch : Boolean;     // set to true, if actually getting a new file name
+begin
+  // it only matters for Open or Save dialogs
+  if not Assigned(OpenDialog) then Exit;
+
+  sp := NSSavePanel(sender);
+  ch := false;
+  if not Assigned(sp.URL) then begin
+    if Assigned(selUrl) then selURL.release;
+    ch := true;
+  end
+  else if not Assigned(selUrl) then
+  begin
+    ch := true;
+    selURL := NSURL(sp.URL.copy)
+  end
+  else begin
+    ch := not selURL.isEqualTo(sp.URL);
+    if ch then
+    begin
+      selURL.release;
+      selURL := sp.URL.copy;
+    end;
+  end;
+
+  if ch then
+  begin
+    OpenDialog.FileName := NSStringToString(sp.URL.path);
+    OpenDialog.DoSelectionChange;
+  end;
+end;
+
 { TCocoaWSFileDialog }
 
 {------------------------------------------------------------------------------
@@ -172,6 +261,7 @@ var
   // filter accessory view
   accessoryView: NSView;
   lFilter: TCocoaFilterComboBox;
+  callback: TCocoaPanelDialog;
 
   // setup panel and its accessory view
   procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
@@ -313,41 +403,42 @@ begin
       // accessory view
       CreateAccessoryView(openDlg, openDlg);
     end;
-    openDlg.setTitle(NSStringUtf8(FileDialog.Title));
-    openDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
-    UpdateOptions(FileDialog, openDlg);
-
-    if openDlg.runModal = NSOKButton then
-    begin
-      FileDialog.FileName := NSStringToString(openDlg.URL.path);
-      FileDialog.Files.Clear;
-      for i := 0 to openDlg.filenames.Count - 1 do
-        FileDialog.Files.Add(NSStringToString(
-          NSURL(openDlg.URLs.objectAtIndex(i)).path));
-      FileDialog.UserChoice := mrOk;
-      if lFilter <> nil then
-        FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
-    end;
+    saveDlg := openDlg;
   end
   else if FileDialog.FCompStyle = csSaveFileDialog then
   begin
     saveDlg := NSSavePanel.savePanel;
     saveDlg.setCanCreateDirectories(True);
-    saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
-    saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
     saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
-    UpdateOptions(FileDialog, saveDlg);
     // accessory view
     CreateAccessoryView(nil, saveDlg);
+    openDlg := nil;
+  end;
 
-    if saveDlg.runModal = NSOKButton then
-    begin
-      FileDialog.FileName := NSStringToString(saveDlg.URL.path);
-      FileDialog.Files.Clear;
-      FileDialog.UserChoice := mrOk;
-      if lFilter <> nil then
-        FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
-    end;
+  callback:=TCocoaPanelDialog.alloc;
+  callback.autorelease;
+  callback.FileDialog := FileDialog;
+  if FileDialog is TOpenDialog then
+    callback.OpenDialog := TOpenDialog(FileDialog);
+  saveDlg.setDelegate(callback);
+
+  saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
+  saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
+  UpdateOptions(FileDialog, saveDlg);
+
+  if saveDlg.runModal = NSOKButton then
+  begin
+    FileDialog.FileName := NSStringToString(saveDlg.URL.path);
+    FileDialog.Files.Clear;
+
+    if Assigned(openDlg) then
+      for i := 0 to openDlg.filenames.Count - 1 do
+        FileDialog.Files.Add(NSStringToString(
+          NSURL(openDlg.URLs.objectAtIndex(i)).path));
+
+    FileDialog.UserChoice := mrOk;
+    if lFilter <> nil then
+      FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
   end;
 
 
