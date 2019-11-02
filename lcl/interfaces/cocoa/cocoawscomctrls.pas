@@ -1220,8 +1220,21 @@ end;
 class function TCocoaWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+  lclcb: TLCLListViewCallback;
 begin
-  Result:=inherited ItemGetState(ALV, AIndex, AItem, AState, AIsSet);
+  case AState of
+    lisSelected: begin
+      Result := false;
+      if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
+      Result := (AIndex>=0) and (AIndex <= lTableLV.numberOfRows);
+      AIsSet := lTableLV.isRowSelected(AIndex);
+    end;
+  else
+    Result := inherited ItemGetState(ALV, AIndex, AItem, AState, AIsSet);
+  end;
 end;
 
 class procedure TCocoaWSCustomListView.ItemInsert(const ALV: TCustomListView;
