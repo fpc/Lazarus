@@ -159,6 +159,10 @@ type
 
   NSEventFix = objccategory external (NSEvent)
     class function modifierFlags_: NSUInteger; message 'modifierFlags';
+    // available in 10.7+
+    function hasPreciseScrollingDeltas: LCLObjCBoolean; message 'hasPreciseScrollingDeltas';
+    function scrollingDeltaX: CGFloat; message 'scrollingDeltaX';
+    function scrollingDeltaY: CGFloat; message 'scrollingDeltaY';
   end;
 
   NSWindowTabbingMode = NSInteger;

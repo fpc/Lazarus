@@ -1127,6 +1127,11 @@ var
   MousePos: NSPoint;
   MButton: NSInteger;
   bndPt, clPt, srchPt: TPoint;
+  dx,dy: double;
+const
+  WheelDeltaToLCLY = 1200; // the basic (one wheel-click) is 0.1 on cocoa
+  WheelDeltaToLCLX = 1200; // the basic (one wheel-click) is 0.1 on cocoa
+  LCLStep = 120;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -1149,22 +1154,32 @@ begin
   Msg.Y := round(clPt.Y);
   Msg.State := CocoaModifiersToShiftState(Event.modifierFlags, NSEvent.pressedMouseButtons);
 
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
+  begin
+    dx := event.scrollingDeltaX;
+    dy := event.scrollingDeltaY;
+  end else
+  begin
+    dx := event.deltaX;
+    dy := event.deltaY;
+  end;
+
   // Some info on event.deltaY can be found here:
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
   // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
-  if event.deltaY <> 0 then
+  if dy <> 0 then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
-    Msg.WheelDelta := round(event.deltaY * 120);
+    Msg.WheelDelta := round(dy * WheelDeltaToLCLY);
   end
   else
-  if event.deltaX <> 0 then
+  if dx <> 0 then
   begin
     Msg.Msg := LM_MOUSEHWHEEL;
     // see "deltaX" documentation.
     // on macOS: -1 = right, +1 = left
     // on LCL:   -1 = left,  +1 = right
-    Msg.WheelDelta := round(-event.deltaX * 120);
+    Msg.WheelDelta := round(-dx * WheelDeltaToLCLX);
   end
   else
     // Filter out empty events - See bug 28491
