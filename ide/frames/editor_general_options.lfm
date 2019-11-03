@@ -47,7 +47,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 40
-    Width = 134
+    Width = 135
     BorderSpacing.Left = 6
     Caption = 'GroupUndoCheckBox'
     OnChange = GroupUndoCheckBoxChange
@@ -60,7 +60,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 21
-    Width = 151
+    Width = 152
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'UndoAfterSaveCheckBox'
@@ -74,7 +74,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 86
-    Width = 161
+    Width = 162
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'ScrollPastEndFileCheckBox'
@@ -88,7 +88,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 227
-    Width = 165
+    Width = 166
     BorderSpacing.Left = 6
     Caption = 'ScrollPastEndLineCheckBox'
     OnChange = ScrollPastEndLineCheckBoxChange
@@ -101,7 +101,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 218
     Height = 19
     Top = 86
-    Width = 158
+    Width = 159
     BorderSpacing.Top = 6
     Caption = 'ScrollByOneLessCheckBox'
     OnChange = ScrollByOneLessCheckBoxChange
@@ -114,7 +114,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 105
-    Width = 149
+    Width = 150
     BorderSpacing.Left = 6
     Caption = 'HalfPageScrollCheckBox'
     OnChange = HalfPageScrollCheckBoxChange
@@ -127,7 +127,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 151
-    Width = 140
+    Width = 141
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'KeepCursorXCheckBox'
@@ -141,7 +141,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 170
-    Width = 158
+    Width = 159
     BorderSpacing.Left = 6
     Caption = 'PersistentCursorCheckBox'
     OnChange = PersistentCursorCheckBoxChange
@@ -154,7 +154,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 208
-    Width = 178
+    Width = 179
     BorderSpacing.Left = 6
     Caption = 'AlwaysVisibleCursorCheckBox'
     OnChange = AlwaysVisibleCursorCheckBoxChange
@@ -166,7 +166,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 218
     Height = 19
     Top = 208
-    Width = 182
+    Width = 183
     Caption = 'CursorSkipsSelectionCheckBox'
     OnChange = CursorSkipsSelectionCheckBoxChange
     TabOrder = 15
@@ -199,8 +199,8 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 338
-    Width = 152
+    Top = 357
+    Width = 153
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'PersistentBlockCheckBox'
@@ -213,8 +213,8 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 218
     Height = 19
-    Top = 338
-    Width = 152
+    Top = 357
+    Width = 153
     BorderSpacing.Top = 6
     Caption = 'OverwriteBlockCheckBox'
     OnChange = OverwriteBlockCheckBoxChange
@@ -294,7 +294,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 317
+    Top = 336
     Width = 434
     Caption = 'BlockGroupDivider'
     Anchors = [akTop, akLeft, akRight]
@@ -319,7 +319,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 273
+    Top = 292
     Width = 183
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -331,7 +331,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = MultiCaretOnColumnSelection
     Left = 218
     Height = 19
-    Top = 273
+    Top = 292
     Width = 169
     Caption = 'chkMultiCaretColumnMode'
     TabOrder = 19
@@ -342,7 +342,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 292
+    Top = 311
     Width = 126
     BorderSpacing.Left = 6
     Caption = 'chkMultiCaretMode'
@@ -350,13 +350,13 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   end
   object MultiCaretGroupDivider: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CaretMoveClearsSelectionCheckBox
+    AnchorSideTop.Control = SelectAllNoScrollCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 252
+    Top = 271
     Width = 434
     Caption = 'MultiCaretGroupDivider'
     Anchors = [akTop, akLeft, akRight]
@@ -370,7 +370,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 218
     Height = 19
-    Top = 292
+    Top = 311
     Width = 146
     Caption = 'chkMultiCaretDelSkipCr'
     TabOrder = 20
@@ -382,7 +382,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 218
     Height = 19
     Top = 227
-    Width = 210
+    Width = 211
     Caption = 'CaretMoveClearsSelectionCheckBox'
     OnChange = CaretMoveClearsSelectionCheckBoxChange
     TabOrder = 16
@@ -394,10 +394,22 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Left = 6
     Height = 19
     Top = 189
-    Width = 200
+    Width = 201
     BorderSpacing.Left = 6
     Caption = 'PersistentCursorNoBlinkCheckBox'
     OnChange = PersistentCursorNoBlinkCheckBoxChange
     TabOrder = 9
+  end
+  object SelectAllNoScrollCheckBox: TCheckBox
+    AnchorSideLeft.Control = ScrollPastEndLineCheckBox
+    AnchorSideTop.Control = ScrollPastEndLineCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 246
+    Width = 163
+    Caption = 'SelectAllNoScrollCheckBox'
+    OnChange = CaretMoveClearsSelectionCheckBoxChange
+    TabOrder = 23
   end
 end

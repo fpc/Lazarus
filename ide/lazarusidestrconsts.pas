@@ -1903,6 +1903,7 @@ resourcestring
   dlgCopyWordAtCursorOnCopyNone = 'Copy current word when no selection exists';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
+  dlgSelectAllNoScroll = 'Do not scroll on Select-All / Paragraph or To-Brace';
   dlgMultiCaretOnColumnSelection = 'Enable multi-caret for column selection';
   dlgMultiCaretColumnMode = 'Navigation keys move all carets (column-select)';
   dlgMultiCaretMode = 'Navigation keys move all carets';

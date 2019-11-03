@@ -43,6 +43,7 @@ type
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     CaretMoveClearsSelectionCheckBox: TCheckBox;
+    SelectAllNoScrollCheckBox: TCheckBox;
     PersistentCursorNoBlinkCheckBox: TCheckBox;
     chkMultiCaretColumnMode: TCheckBox;
     chkMultiCaretMode: TCheckBox;
@@ -160,6 +161,7 @@ begin
   CursorSkipsTabCheckBox.Caption := dlgCursorSkipsTab;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
+  SelectAllNoScrollCheckBox.Caption := dlgSelectAllNoScroll;
 
   // multi caret
   MultiCaretGroupDivider.Caption := dlgMultiCaretGroupOptions;
@@ -206,6 +208,7 @@ begin
     chkMultiCaretColumnMode.Checked := MultiCaretDefaultColumnSelectMode = mcmMoveAllCarets;
     chkMultiCaretMode.Checked := MultiCaretDefaultMode = mcmMoveAllCarets;
     chkMultiCaretDelSkipCr.Checked := MultiCaretDeleteSkipLineBreak;
+    SelectAllNoScrollCheckBox.Checked := eoNoScrollOnSelectRange in SynEditOptions2;
 
     // block
     PersistentBlockCheckBox.Checked := eoPersistentBlock in SynEditOptions2;
@@ -277,6 +280,7 @@ begin
     else
       MultiCaretDefaultMode := mcmCancelOnCaretMove;
     MultiCaretDeleteSkipLineBreak := chkMultiCaretDelSkipCr.Checked;
+    UpdateOptionFromBool(SelectAllNoScrollCheckBox.Checked, eoNoScrollOnSelectRange);
 
     // block
     UpdateOptionFromBool(PersistentBlockCheckBox.Checked, eoPersistentBlock);
