@@ -152,6 +152,9 @@ type
   protected
     FCallStackEntryListThread: TDbgThread;
     FCallStackEntryListFrameRequired: Integer;
+    FParamAsString: String;
+    FParamAsStringStackEntry: TDbgCallstackEntry;
+    FParamAsStringPrettyPrinter: TFpPascalPrettyPrinter;
     procedure DoAddBreakLine;
     procedure DoAddBreakLocation;
     procedure DoAddBWatch;
@@ -159,6 +162,7 @@ type
     procedure DoPrepareCallStackEntryList;
     procedure DoFreeBreakpoint;
     procedure DoFindContext;
+    procedure DoGetParamsAsString;
     {$endif linux}
     function AddBreak(const ALocation: TDbgPtr): TFpDbgBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal): TFpDbgBreakpoint; overload;
@@ -169,6 +173,7 @@ type
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext; inline;
+    function GetParamsAsString(AStackEntry: TDbgCallstackEntry; APrettyPrinter: TFpPascalPrettyPrinter): string; inline;
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
@@ -737,75 +742,28 @@ var
   e: TCallStackEntry;
   It: TMapIterator;
   ThreadCallStack: TDbgCallstackEntryList;
-  v, params: String;
-  i: Integer;
-  ProcVal, m: TFpValue;
-  CurThreadId: Integer;
-  AContext: TFpDbgInfoContext;
-  OldContext: TFpDbgAddressContext;
+  cs: TDbgCallstackEntry;
 begin
   It := TMapIterator.Create(ACallstack.RawEntries);
-  //TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.PrepareCallStackEntryList;
-  //CurThreadId := FpDebugger.Threads.CurrentThreads.CurrentThreadId;
-  //ThreadCallStack := FpDebugger.Threads.CurrentThreads.Entries[CurThreadId].CallStackEntryList;
-
-  CurThreadId := FpDebugger.FDbgController.CurrentThread.ID;
   ThreadCallStack := FpDebugger.FDbgController.CurrentThread.CallStackEntryList;
 
   if not It.Locate(ACallstack.LowestUnknown )
   then if not It.EOM
   then It.Next;
 
-  //AController := FpDebugger.FDbgController;
-  OldContext := FpDebugger.FMemManager.DefaultContext;
-
   while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index <= ACallstack.HighestUnknown)
   do begin
     e := TCallStackEntry(It.DataPtr^);
     if e.Validity = ddsRequested then
     begin
-      ProcVal := nil;
-      if ThreadCallStack[e.Index].ProcSymbol <> nil then
-        ProcVal := ThreadCallStack[e.Index].ProcSymbol.Value;
-
-      params := '';
-      if (ProcVal <> nil) then begin
-        AContext := FpDebugger.FindContext(CurThreadId, e.Index);
-        if AContext <> nil then begin
-          // TODO: TDbgCallstackEntry.GetParamsAsString
-          if AContext <> nil then begin
-            AContext.MemManager.DefaultContext := AContext;
-            if ProcVal is TFpValueDwarfBase then
-              TFpValueDwarfBase(ProcVal).Context := AContext;
-            FPrettyPrinter.MemManager := AContext.MemManager;
-            FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
-
-            for i := 0 to ProcVal.MemberCount - 1 do begin
-              m := ProcVal.Member[i];
-              if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
-                FPrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
-                if params <> '' then params := params + ', ';
-                params := params + v;
-              end;
-              m.ReleaseReference;
-            end;
-            if ProcVal is TFpValueDwarfBase then
-              TFpValueDwarfBase(ProcVal).Context := nil;
-            AContext.ReleaseReference;
-          end;
-        end;
-        ProcVal.ReleaseReference;
-      end;
-      if params <> '' then
-        params := '(' + params + ')';
-      e.Init(ThreadCallStack[e.Index].AnAddress, nil,
-        ThreadCallStack[e.Index].FunctionName+params, ThreadCallStack[e.Index].SourceFile,
-        '', ThreadCallStack[e.Index].Line, ddsValid);
+      cs := ThreadCallStack[e.Index];
+      e.Init(cs.AnAddress, nil,
+        cs.FunctionName + FpDebugger.GetParamsAsString(cs, FPrettyPrinter),
+        cs.SourceFile, '', cs.Line, ddsValid);
     end;
     It.Next;
   end;
   It.Free;
-  FpDebugger.FMemManager.DefaultContext := OldContext;
 end;
 
 procedure TFPCallStackSupplier.RequestCurrent(ACallstack: TCallStackBase);
@@ -2223,6 +2181,11 @@ begin
   FCacheContext := FDbgController.CurrentProcess.FindContext(FCacheThreadId, FCacheStackFrame);
 end;
 
+procedure TFpDebugDebugger.DoGetParamsAsString;
+begin
+  FParamAsString := FParamAsStringStackEntry.GetParamsAsString(FParamAsStringPrettyPrinter);
+end;
+
 {$endif linux}
 
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr
@@ -2338,6 +2301,19 @@ begin
   Result := FCacheContext;
 {$else linux}
   Result := FDbgController.CurrentProcess.FindContext(AThreadId, AStackFrame);
+{$endif linux}
+end;
+
+function TFpDebugDebugger.GetParamsAsString(AStackEntry: TDbgCallstackEntry;
+  APrettyPrinter: TFpPascalPrettyPrinter): string;
+begin
+{$ifdef linux}
+  FParamAsStringStackEntry := AStackEntry;
+  FParamAsStringPrettyPrinter := APrettyPrinter;
+  ExecuteInDebugThread(@DoGetParamsAsString);
+  Result := FParamAsString;
+{$else linux}
+  Result := AStackEntry.GetParamsAsString(APrettyPrinter);
 {$endif linux}
 end;
 
