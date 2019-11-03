@@ -10,11 +10,11 @@ object MacroListView: TMacroListView
   Constraints.MinWidth = 300
   OnActivate = FormActivate
   OnDeactivate = FormActivate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Panel1: TPanel
     AnchorSideRight.Control = pnlButtons
     Left = 6
-    Height = 335
+    Height = 313
     Top = 6
     Width = 295
     Align = alLeft
@@ -23,12 +23,12 @@ object MacroListView: TMacroListView
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BevelOuter = bvNone
-    ClientHeight = 335
+    ClientHeight = 313
     ClientWidth = 295
     TabOrder = 0
     object lbMacroView: TListView
       Left = 0
-      Height = 288
+      Height = 266
       Top = 22
       Width = 295
       Align = alClient
@@ -103,7 +103,7 @@ object MacroListView: TMacroListView
     object ToolBar2: TToolBar
       Left = 0
       Height = 22
-      Top = 313
+      Top = 291
       Width = 295
       Align = alBottom
       AutoSize = True
@@ -116,20 +116,20 @@ object MacroListView: TMacroListView
         Left = 1
         Height = 22
         Top = 0
-        Width = 54
+        Width = 52
         Align = alLeft
         Caption = 'lbMoveTo'
         Layout = tlCenter
         ParentColor = False
       end
       object tbMoveProject: TToolButton
-        Left = 55
+        Left = 53
         Top = 0
         Caption = 'tbMoveProject'
         OnClick = tbMoveProjectClick
       end
       object tbMoveIDE: TToolButton
-        Left = 141
+        Left = 139
         Top = 0
         Caption = 'tbMoveIDE'
         OnClick = tbMoveIDEClick
@@ -155,13 +155,13 @@ object MacroListView: TMacroListView
   end
   object pnlButtons: TPanel
     Left = 307
-    Height = 341
+    Height = 319
     Top = 0
     Width = 117
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 341
+    ClientHeight = 319
     ClientWidth = 117
     Constraints.MinHeight = 250
     TabOrder = 1
@@ -212,7 +212,7 @@ object MacroListView: TMacroListView
       AnchorSideBottom.Control = PanelRepeat
       Left = 6
       Height = 25
-      Top = 200
+      Top = 178
       Width = 105
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
@@ -232,7 +232,7 @@ object MacroListView: TMacroListView
       AnchorSideBottom.Control = btnRecordStop
       Left = 6
       Height = 25
-      Top = 285
+      Top = 263
       Width = 105
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
@@ -253,7 +253,7 @@ object MacroListView: TMacroListView
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 25
-      Top = 316
+      Top = 294
       Width = 105
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
@@ -332,7 +332,7 @@ object MacroListView: TMacroListView
       AnchorSideBottom.Control = btnRecord
       Left = 6
       Height = 54
-      Top = 228
+      Top = 206
       Width = 105
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
@@ -381,6 +381,49 @@ object MacroListView: TMacroListView
         BorderSpacing.Bottom = 3
         Caption = 'chkRepeat'
         TabOrder = 1
+      end
+    end
+  end
+  object PanelWarnings: TPanel
+    Left = 0
+    Height = 22
+    Top = 319
+    Width = 424
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 22
+    ClientWidth = 424
+    TabOrder = 3
+    Visible = False
+    object LabelWarning: TLabel
+      Left = 0
+      Height = 22
+      Top = 0
+      Width = 401
+      Align = alClient
+      Font.Color = clRed
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+    object PnlWarnClose: TPanel
+      Left = 401
+      Height = 22
+      Top = 0
+      Width = 23
+      Align = alRight
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 22
+      ClientWidth = 23
+      TabOrder = 0
+      object BtnWarnClose: TSpeedButton
+        Left = 0
+        Height = 22
+        Top = 0
+        Width = 23
+        OnClick = BtnWarnCloseClick
       end
     end
   end

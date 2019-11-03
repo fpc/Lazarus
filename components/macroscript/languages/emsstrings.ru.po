@@ -25,6 +25,10 @@ msgstr "Сценарии редактора"
 msgid "Scripting not active. Selftest failed."
 msgstr "Сценарии отключены. Не прошло самотестирование."
 
+#: emsstrings.emsnotactiveverbose
+msgid "EditorMacroScript failed its self-test and is not active. Some macros may not work."
+msgstr ""
+
 #: emsstrings.emsnotsupported
 msgid "Scripting not active. Not supported on this platform or CPU."
 msgstr "Сценарии отключены. Они не поддерживаются на данной платформе."

@@ -28,6 +28,10 @@ msgstr "Makrokomandos scenarijaus rengyklė"
 msgid "Scripting not active. Selftest failed."
 msgstr "Scenarijaus rengimas nevyksta. Savasis testas nepavyko."
 
+#: emsstrings.emsnotactiveverbose
+msgid "EditorMacroScript failed its self-test and is not active. Some macros may not work."
+msgstr ""
+
 #: emsstrings.emsnotsupported
 msgid "Scripting not active. Not supported on this platform or CPU."
 msgstr "Scenarijaus rengimas nevyksta. Ši platforma ar procesorius nėra palaikomi."

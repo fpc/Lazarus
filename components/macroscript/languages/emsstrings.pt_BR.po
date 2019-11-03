@@ -27,6 +27,10 @@ msgstr "Editor Macro Script"
 msgid "Scripting not active. Selftest failed."
 msgstr "Scripting não ativo.  Autoteste falhou."
 
+#: emsstrings.emsnotactiveverbose
+msgid "EditorMacroScript failed its self-test and is not active. Some macros may not work."
+msgstr ""
+
 #: emsstrings.emsnotsupported
 msgid "Scripting not active. Not supported on this platform or CPU."
 msgstr "Scripting não ativo. Não é suportado nesta plataforma ou CPU."

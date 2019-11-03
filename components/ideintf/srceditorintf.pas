@@ -457,6 +457,15 @@ var
   DefaultBindingClass: TEditorMacroKeyBindingClass = nil;
   EditorMacroPlayerClass: TEditorMacroClass = nil;
 
+function GetMacroListViewerWarningText: String;
+procedure SetMacroListViewerWarningText(AValue: String);
+function GetMacroListViewerWarningChanged: TNotifyProcedure;
+procedure SetMacroListViewerWarningChanged(AValue: TNotifyProcedure);
+
+property MacroListViewerWarningText: string read GetMacroListViewerWarningText write SetMacroListViewerWarningText;
+property MacroListViewerWarningChanged: TNotifyProcedure read GetMacroListViewerWarningChanged write SetMacroListViewerWarningChanged;
+
+
 type
   { TIDEInteractiveStringValue }
 
@@ -743,6 +752,36 @@ procedure TEditorMacro.Resume;
 begin
   DoResume;
   CheckStateAndActivated;
+end;
+
+var
+  FMacroListViewerWarningText: String;
+  FMacroListViewerWarningChanged: TNotifyProcedure;
+
+function GetMacroListViewerWarningText: String;
+begin
+  Result := FMacroListViewerWarningText;
+end;
+
+procedure SetMacroListViewerWarningText(AValue: String);
+begin
+  FMacroListViewerWarningText := AValue;
+  if FMacroListViewerWarningChanged <> nil then
+    FMacroListViewerWarningChanged(nil);
+end;
+
+function GetMacroListViewerWarningChanged: TNotifyProcedure;
+begin
+  Result := FMacroListViewerWarningChanged;
+end;
+
+procedure SetMacroListViewerWarningChanged(AValue: TNotifyProcedure);
+begin
+  FMacroListViewerWarningChanged := AValue;
+  if (FMacroListViewerWarningChanged <> nil) and
+     (FMacroListViewerWarningText <> '')
+  then
+    FMacroListViewerWarningChanged(nil);
 end;
 
 { TEditorMacro }

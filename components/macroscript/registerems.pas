@@ -43,6 +43,7 @@ begin
     MessageDlg(EmsSelfTestErrCaption,
                format(EmsSelfTestFailedLastTime, [LineEnding]),
                mtError, [mbOK], 0);
+    MacroListViewerWarningText := EMSNotActiveVerbose;
     exit;
   end;
 
@@ -56,6 +57,7 @@ begin
                mtError, [mbOK], 0);
   end;
   if conf.SelfTestFailed >= EMSVersion then begin
+    MacroListViewerWarningText := EMSNotActiveVerbose;
     exit;
   end;
 
@@ -76,6 +78,8 @@ begin
     MessageDlg(EmsSelfTestErrCaption,
                format(EmsSelfTestFailed, [LineEnding, SelfTestErrorMsg]),
                mtError, [mbOK], 0);
+
+    MacroListViewerWarningText := EMSNotActiveVerbose;
     exit;
   end;
 

@@ -8,7 +8,7 @@ uses
   Classes, SysUtils,
   // LCL
   LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
-  Spin, Menus,
+  Spin, Menus, Buttons,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
   // SynEdit
@@ -181,18 +181,22 @@ type
     ButtonPanel1: TButtonPanel;
     chkRepeat: TCheckBox;
     GroupBox1: TGroupBox;
+    LabelWarning: TLabel;
     lbMoveTo: TLabel;
     lbMacroView: TListView;
     mnExport: TMenuItem;
     mnImport: TMenuItem;
     OpenDialog1: TOpenDialog;
     Panel1: TPanel;
+    PnlWarnClose: TPanel;
+    PanelWarnings: TPanel;
     PanelRepeat: TPanel;
     pnlButtons: TPanel;
     PopupMenu1: TPopupMenu;
     RenameButton: TPanelBitBtn;
     edRepeat: TSpinEdit;
     SaveDialog1: TSaveDialog;
+    BtnWarnClose: TSpeedButton;
     ToolBar1: TToolBar;
     tbRecorded: TToolButton;
     tbProject: TToolButton;
@@ -210,6 +214,7 @@ type
     procedure btnRenameClick(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
     procedure btnSetKeysClick(Sender: TObject);
+    procedure BtnWarnCloseClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure lbMacroViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
@@ -282,6 +287,17 @@ begin
   if MacroListView = nil then
     MacroListView := TMacroListView.Create(Application);
   Result := MacroListView;
+
+  MacroListView.LabelWarning.Caption := MacroListViewerWarningText;
+  MacroListView.PanelWarnings.Visible := MacroListViewerWarningText <> '';
+end;
+
+procedure DoMacroListViewerWarningChanged(ASender: TObject);
+begin
+  if MacroListView <> nil then begin
+    MacroListView.LabelWarning.Caption := MacroListViewerWarningText;
+    MacroListView.PanelWarnings.Visible := MacroListViewerWarningText <> '';
+  end;
 end;
 
 procedure ShowMacroListViewer;
@@ -1199,6 +1215,11 @@ begin
   if OnKeyMapReloaded <> nil then OnKeyMapReloaded();
 end;
 
+procedure TMacroListView.BtnWarnCloseClick(Sender: TObject);
+begin
+  PanelWarnings.Visible := False;
+end;
+
 procedure TMacroListView.DoMacroStateChanged(Sender: TObject);
 begin
   if OnEditorMacroStateChange <> nil then
@@ -1482,6 +1503,9 @@ begin
   FImageErr := IDEImages.LoadImage('state_error');
   FIsPlaying := False;
 
+  BtnWarnClose.Images := IDEImages.Images_16;
+  BtnWarnClose.ImageIndex := IDEImages.LoadImage('menu_close');
+
   UpdateDisplay;
 end;
 
@@ -1631,6 +1655,8 @@ initialization
   EditorMacroListProj := TEditorMacroList.Create;
   EditorMacroListGlob := TEditorMacroList.Create;
   CurrentEditorMacroList := EditorMacroListRec;
+
+  MacroListViewerWarningChanged := @DoMacroListViewerWarningChanged;
 
 finalization
   CurrentEditorMacroList := nil;
