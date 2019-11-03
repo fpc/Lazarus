@@ -60,6 +60,9 @@ procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeByt
 // returns byte len of call instruction at AAddress // 0 if not a call intruction
 function IsCallInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
 
+function GetFunctionFrameInfo(AData: PByte; ADataLen: Cardinal; const A64Bit: Boolean;
+  out AnIsOutsideFrame: Boolean): Boolean;
+
 implementation
 var
   DBG_WARNINGS: PLazLoggerLogGroup;
@@ -3395,6 +3398,34 @@ begin
   then
       exit;
   Result := AAddress - a;
+end;
+
+function GetFunctionFrameInfo(AData: PByte; ADataLen: Cardinal;
+  const A64Bit: Boolean; out AnIsOutsideFrame: Boolean): Boolean;
+begin
+  while (ADataLen > 0) and (AData^ = $90) do begin // nop
+    inc(AData);
+    dec(ADataLen);
+  end;
+  Result := ADataLen > 0;
+  if not Result then
+    exit;
+
+  AnIsOutsideFrame := False;
+  if AData^ = $55 then begin // push ebp
+    AnIsOutsideFrame := True;
+    exit;
+  end;
+  if AData^ = $C3 then begin // ret
+    AnIsOutsideFrame := True;
+    exit;
+  end;
+  //if (ADataLen >= 2) and (AData[0] = $89) and (AData[1] = $E5) // 32 bit mov ebp, esp
+  if (ADataLen >= 3) and (AData[0] = $48) and (AData[1] = $89) and (AData[2] = $E5)
+  then begin // mov rbp,rsp // AFTER push ebp
+    // Need 1 byte before, to check for "push ebp"
+    exit;
+  end;
 end;
 
 
