@@ -2827,8 +2827,7 @@ begin
       MoveCursorToCleanPos(StartPos);
       ReadNextAtom;
       ReadNextUsedUnit(NamePos,InPos);
-      Result:=true;
-      exit;
+      exit(true);
     end;
     if CurPos.Flag=cafSemicolon then break;
     if CurPos.Flag<>cafComma then break;
@@ -2856,8 +2855,8 @@ begin
   if not IsDottedIdentifier(AnUnitName) then
     RaiseInvalidUnitName;
   BuildTree(lsrImplementationUsesSectionEnd);
-  if FindInSection(FindMainUsesNode) then exit;
-  if FindInSection(FindImplementationUsesNode) then exit;
+  if FindInSection(FindMainUsesNode) then exit(true);
+  if FindInSection(FindImplementationUsesNode) then exit(true);
 end;
 
 function TFindDeclarationTool.GetUnitNameForUsesSection(
@@ -6706,12 +6705,13 @@ function TFindDeclarationTool.FindUnitReferences(UnitCode: TCodeBuffer;
 var
   AUnitName, UpperUnitName: String;
 
-  function CheckUsesSection(UsesNode: TCodeTreeNode; out Found: boolean): boolean;
+  function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
+  // Returns True if unit name is found.
   var
     ReferencePos: TCodeXYPosition;
+    UnitNamePos, UnitInFilePos: TAtomPosition;
   begin
-    Result:=true;
-    Found:=false;
+    Result:=false;
     if UsesNode=nil then exit;
     //DebugLn(['CheckUsesSection ']);
     MoveCursorToNodeStart(UsesNode);
@@ -6722,22 +6722,15 @@ var
     end;
     repeat
       ReadNextAtom;  // read name
+      ReadNextUsedUnit(UnitNamePos,UnitInFilePos); // read dotted name + IN file
       if CurPos.StartPos>SrcLen then break;
       if AtomIsChar(';') then break;
-      AtomIsIdentifierE;
-      //DebugLn(['CheckUsesSection ',GetAtom,' ',AUnitName]);
       if UpAtomIs(UpperUnitName) then begin // compare case insensitive
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
           //DebugLn(['CheckUsesSection found in uses section: ',Dbgs(ReferencePos)]);
-          Found:=true;
+          Result:=true;
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         end;
-      end;
-      ReadNextAtom;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom;
-        if not AtomIsStringConstant then RaiseStrConstExpected(20170421200522);
-        ReadNextAtom;
       end;
       if AtomIsChar(';') then break;
       if not AtomIsChar(',') then
@@ -6768,7 +6761,6 @@ var
 var
   InterfaceUsesNode: TCodeTreeNode;
   ImplementationUsesNode: TCodeTreeNode;
-  Found: boolean;
   StartPos: Integer;
 begin
   Result:=false;
@@ -6782,16 +6774,14 @@ begin
     BuildTree(lsrEnd);
 
     InterfaceUsesNode:=FindMainUsesNode;
-    if not CheckUsesSection(InterfaceUsesNode,Found) then exit;
-
-    StartPos:=-1;
-    if Found then begin
-      StartPos:=InterfaceUsesNode.EndPos;
-    end else begin
+    if CheckUsesSection(InterfaceUsesNode) then
+      StartPos:=InterfaceUsesNode.EndPos
+    else begin
       ImplementationUsesNode:=FindImplementationUsesNode;
-      if not CheckUsesSection(ImplementationUsesNode,Found) then exit;
-      if Found then
-        StartPos:=ImplementationUsesNode.EndPos;
+      if CheckUsesSection(ImplementationUsesNode) then
+        StartPos:=ImplementationUsesNode.EndPos
+      else
+        StartPos:=-1;
     end;
 
     // find unit reference in source
