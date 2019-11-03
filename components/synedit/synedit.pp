@@ -219,6 +219,7 @@ type
   TSynStateFlag = (sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
     sfExplicitTopLine, sfExplicitLeftChar,  // when doing EnsureCursorPos keep top/Left, if they where set explicitly after the caret (only applies before handle creation)
+    sfPreventScrollAfterSelect,
     sfIgnoreNextChar, sfPainting, sfHasPainted, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     sfAfterLoadFromFileNeeded,
@@ -286,7 +287,8 @@ type
     eoOverwriteBlock,          // Allows to overwrite currently selected block, when pasting or typing new text
     eoAutoHideCursor,          // Hide mouse cursor, when new text is typed
     eoColorSelectionTillEol,   // Colorize selection background only till EOL of each line, not till edge of control
-    eoPersistentCaretStopBlink // only if eoPersistentCaret > do not blink, draw fixed line
+    eoPersistentCaretStopBlink,// only if eoPersistentCaret > do not blink, draw fixed line
+    eoNoScrollOnSelectRange    // SelectALl, SelectParagraph, SelectToBrace will not scroll
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
@@ -4434,6 +4436,8 @@ begin
     LastPt.y  := 1;
   SetCaretAndSelection(LogicalToPhysicalPos(LastPt), Point(1, 1), LastPt);
   FBlockSelection.ActiveSelectionMode := smNormal;
+  if eoNoScrollOnSelectRange in FOptions2 then
+    Include(fStateFlags, sfPreventScrollAfterSelect);
   DoDecPaintLock(Self);
 end;
 
@@ -4446,7 +4450,11 @@ end;
 
 procedure TCustomSynEdit.SelectToBrace;
 begin
+  DoIncPaintLock(Self); // No editing is taking place
   FindMatchingBracket(CaretXY,true,true,true,false);
+  if eoNoScrollOnSelectRange in FOptions2 then
+    Include(fStateFlags, sfPreventScrollAfterSelect);
+  DoDecPaintLock(Self);
 end;
 
 procedure TCustomSynEdit.SelectWord;
@@ -5481,6 +5489,8 @@ begin
   FBlockSelection.ActiveSelectionMode := smNormal;
   CaretXY := FBlockSelection.EndLineBytePos;
   //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  if eoNoScrollOnSelectRange in FOptions2 then
+    Include(fStateFlags, sfPreventScrollAfterSelect);
   DoDecPaintLock(Self);
 end;
 
@@ -6517,28 +6527,31 @@ begin
           MaxX:=Min(PhysBlockEndXY.X,MinX+CharsInWindow-1);
       end;
     end;
-    if not (sfExplicitLeftChar in fStateFlags) then begin
-      {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',dbgs(PhysCaretXY.X),
-        ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
-        ' CharsInWindow='+dbgs(CharsInWindow), MinX='+dbgs(MinX),' MaxX='+dbgs(MaxX),
-        ' LeftChar='+dbgs(LeftChar), '');}
-      if MinX < LeftChar then
-        LeftChar := MinX
-      else if LeftChar < MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars) then
-        LeftChar := MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars)
-      else
-        LeftChar := LeftChar;                                                     //mh 2000-10-19
+    if not (sfPreventScrollAfterSelect in fStateFlags) then begin
+      if not (sfExplicitLeftChar in fStateFlags) then begin
+        {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',dbgs(PhysCaretXY.X),
+          ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
+          ' CharsInWindow='+dbgs(CharsInWindow), MinX='+dbgs(MinX),' MaxX='+dbgs(MaxX),
+          ' LeftChar='+dbgs(LeftChar), '');}
+        if MinX < LeftChar then
+          LeftChar := MinX
+        else if LeftChar < MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars) then
+          LeftChar := MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars)
+        else
+          LeftChar := LeftChar;                                                     //mh 2000-10-19
+      end;
+      if not (sfExplicitTopLine in fStateFlags) then begin
+        //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
+        // Make sure Y is visible
+        if CaretY < TopLine then
+          TopLine := CaretY
+        else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
+          TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
+        else
+          TopView := TopView;                                                       //mh 2000-10-19
+      end;
     end;
-    if not (sfExplicitTopLine in fStateFlags) then begin
-      //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
-      // Make sure Y is visible
-      if CaretY < TopLine then
-        TopLine := CaretY
-      else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
-        TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
-      else
-        TopView := TopView;                                                       //mh 2000-10-19
-    end;
+    Exclude(fStateFlags, sfPreventScrollAfterSelect);
   finally
     DoDecPaintLock(Self);
     //{BUG21996} DebugLnExit(['TCustomSynEdit.EnsureCursorPosVisible Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
