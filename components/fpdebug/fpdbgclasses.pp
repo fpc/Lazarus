@@ -103,7 +103,7 @@ type
   public
     constructor create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
     destructor Destroy; override;
-    function GetParamsAsString: string;
+    function GetParamsAsString(APrettyPrinter: TFpPascalPrettyPrinter): string;
     property AnAddress: TDBGPtr read FAnAddress;
     property FrameAdress: TDBGPtr read FFrameAdress;
     property SourceFile: string read GetSourceFile;
@@ -435,6 +435,7 @@ public
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
     function  FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; deprecated 'use FindContext(thread,stack)';
+    function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext; inline;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
@@ -837,43 +838,40 @@ begin
     result := '';
 end;
 
-function TDbgCallstackEntry.GetParamsAsString: string;
+function TDbgCallstackEntry.GetParamsAsString(
+  APrettyPrinter: TFpPascalPrettyPrinter): string;
 var
   ProcVal: TFpValue;
-  InstrPointerValue: TDBGPtr;
   AContext: TFpDbgInfoContext;
-  APrettyPrinter: TFpPascalPrettyPrinter;
   m: TFpValue;
   v: String;
   i: Integer;
+  OldContext: TFpDbgAddressContext;
 begin
   result := '';
   if assigned(ProcSymbol) then begin
     ProcVal := ProcSymbol.Value;
     if (ProcVal <> nil) then begin
-      InstrPointerValue := AnAddress;
-      if InstrPointerValue <> 0 then begin
-        AContext := FThread.Process.DbgInfo.FindContext(FThread.ID, Index, InstrPointerValue);
-        if AContext <> nil then begin
-          AContext.MemManager.DefaultContext := AContext;
-          TFpValueDwarf(ProcVal).Context := AContext;
-          APrettyPrinter:=TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FThread.Process.Mode]);
-          try
-            for i := 0 to ProcVal.MemberCount - 1 do begin
-              m := ProcVal.Member[i];
-              if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
-                APrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
-                if result <> '' then result := result + ', ';
-                result := result + v;
-              end;
-              m.ReleaseReference;
-            end;
-          finally
-            APrettyPrinter.Free;
+      AContext := FThread.Process.ContextFromProc(FThread.ID, Index, ProcSymbol);
+
+      if AContext <> nil then begin
+        OldContext := AContext.MemManager.DefaultContext;
+        AContext.MemManager.DefaultContext := AContext;
+        TFpValueDwarf(ProcVal).Context := AContext;
+        APrettyPrinter.MemManager := AContext.MemManager;
+        APrettyPrinter.AddressSize := AContext.SizeOfAddress;
+        for i := 0 to ProcVal.MemberCount - 1 do begin
+          m := ProcVal.Member[i];
+          if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
+            APrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
+            if result <> '' then result := result + ', ';
+            result := result + v;
           end;
-          TFpValueDwarf(ProcVal).Context := nil;
-          AContext.ReleaseReference;
+          m.ReleaseReference;
         end;
+        TFpValueDwarf(ProcVal).Context := nil;
+        AContext.MemManager.DefaultContext := OldContext;
+        AContext.ReleaseReference;
       end;
       ProcVal.ReleaseReference;
     end;
@@ -1325,6 +1323,11 @@ function TDbgProcess.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
   Result := FDbgInfo.FindContext(AAddress);
   // SymbolTableInfo.FindContext()
+end;
+
+function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext;
+begin
+  Result := FDbgInfo.ContextFromProc(AThreadId, AStackFrame, AProcSym);
 end;
 
 function TDbgProcess.GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;

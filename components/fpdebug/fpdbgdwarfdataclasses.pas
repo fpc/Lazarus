@@ -448,6 +448,8 @@ type
                        AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
 
+    function CreateContext(AThreadId, AStackFrame: Integer; ADwarfInfo: TFpDwarfInfo): TFpDbgInfoContext; virtual;
+
     property CompilationUnit: TDwarfCompilationUnit read FCU;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
   end;
@@ -559,7 +561,7 @@ type
 
     FLineNumberMap: TStringList;
 
-    FAddressMap: TMap; // Holds a key for each DW_TAG_subprogram, stores TDwarfAddressInfo
+    FAddressMap: TMap; // Holds a key for each DW_TAG_subprogram / TFpSymbolDwarfDataProc, stores TDwarfAddressInfo
     FAddressMapBuild: Boolean;
     
     FMinPC: QWord;  // the min and max PC value found in this unit.
@@ -654,6 +656,7 @@ type
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
+    function ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
     //function FindSymbol(const AName: String): TDbgSymbol; override; overload;
@@ -3203,18 +3206,28 @@ var
   Proc: TDbgDwarfSymbolBase;
 begin
   Result := nil;
-  Proc := FindDwarfProcSymbol(AAddress);
+  Proc := FindDwarfProcSymbol(AAddress);  // TFpSymbolDwarfDataProc
   if Proc = nil then
     exit;
 
-  Result := Proc.CompilationUnit.DwarfSymbolClassMap.CreateContext
-    (AThreadId, AStackFrame, AAddress, Proc, Self);
+  Result := Proc.CreateContext(AThreadId, AStackFrame, Self);
   Proc.ReleaseReference;
 end;
 
 function TFpDwarfInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
   result := FindContext(1, 0, AAddress);
+end;
+
+function TFpDwarfInfo.ContextFromProc(AThreadId, AStackFrame: Integer;
+  AProcSym: TFpSymbol): TFpDbgInfoContext;
+begin
+  if not (AProcSym is TDbgDwarfSymbolBase) then begin
+    Result := inherited ContextFromProc(AThreadId, AStackFrame, AProcSym);
+    exit;
+  end;
+
+  Result := TDbgDwarfSymbolBase(AProcSym).CreateContext(AThreadId, AStackFrame, Self);
 end;
 
 function TFpDwarfInfo.GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
@@ -3426,6 +3439,12 @@ destructor TDbgDwarfSymbolBase.Destroy;
 begin
   ReleaseRefAndNil(FInformationEntry);
   inherited Destroy;
+end;
+
+function TDbgDwarfSymbolBase.CreateContext(AThreadId, AStackFrame: Integer;
+  ADwarfInfo: TFpDwarfInfo): TFpDbgInfoContext;
+begin
+  Result := nil;
 end;
 
 { TDwarfLineInfoStateMachine }

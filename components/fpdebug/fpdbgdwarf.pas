@@ -74,12 +74,13 @@ type
   end;
 
   TFpValueDwarf = class;
+  TFpSymbolDwarfDataProc = class;
 
   { TFpDwarfInfoAddressContext }
 
   TFpDwarfInfoAddressContext = class(TFpDbgInfoContext)
   private
-    FSymbol: TFpSymbol;
+    FSymbol: TFpSymbolDwarfDataProc;
     FSelfParameter: TFpValueDwarf;
     FAddress: TDBGPtr;
     FThreadId, FStackFrame: Integer;
@@ -93,7 +94,7 @@ type
     function GetSizeOfAddress: Integer; override;
     function GetMemManager: TFpDbgMemManager; override;
 
-    property Symbol: TFpSymbol read FSymbol;
+    property Symbol: TFpSymbolDwarfDataProc read FSymbol;
     property Dwarf: TFpDwarfInfo read FDwarf;
     property Address: TDBGPtr read FAddress write FAddress;
     property ThreadId: Integer read FThreadId write FThreadId;
@@ -912,6 +913,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); overload;
     destructor Destroy; override;
+    function CreateContext(AThreadId, AStackFrame: Integer; ADwarfInfo: TFpDwarfInfo): TFpDbgInfoContext; override;
     // TODO members = locals ?
     function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpValueDwarf;
   end;
@@ -1305,13 +1307,14 @@ end;
 constructor TFpDwarfInfoAddressContext.Create(AThreadId, AStackFrame: Integer;
   AnAddress: TDbgPtr; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo);
 begin
+  assert(ASymbol is TFpSymbolDwarfDataProc, 'TFpDwarfInfoAddressContext.Create: ASymbol is TFpSymbolDwarfDataProc');
   inherited Create;
   AddReference;
   FAddress := AnAddress;
   FThreadId := AThreadId;
   FStackFrame := AStackFrame;
   FDwarf   := ADwarf;
-  FSymbol  := ASymbol;
+  FSymbol  := TFpSymbolDwarfDataProc(ASymbol);
   FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
 end;
 
@@ -5064,6 +5067,13 @@ destructor TFpSymbolDwarfDataProc.Destroy;
 begin
   FreeAndNil(FStateMachine);
   inherited Destroy;
+end;
+
+function TFpSymbolDwarfDataProc.CreateContext(AThreadId, AStackFrame: Integer;
+  ADwarfInfo: TFpDwarfInfo): TFpDbgInfoContext;
+begin
+  Result := CompilationUnit.DwarfSymbolClassMap.CreateContext
+    (AThreadId, AStackFrame, Address.Address, Self, ADwarfInfo);
 end;
 
 function TFpSymbolDwarfDataProc.GetColumn: Cardinal;
