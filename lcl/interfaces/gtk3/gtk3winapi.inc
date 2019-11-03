@@ -2279,7 +2279,23 @@ begin
       ALogBrush^ := TGtk3Brush(AObject).LogBrush;
       // DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject),' ALogBrush ',dbgHex(PtrUInt(ALogBrush)));
     end;
-  end
+  end else
+  if aObject is TGtk3Font then
+  begin
+    if Buf = nil then
+    begin
+      // DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject),' Buffer is empty ',dbgHex(PtrUInt(ALogBrush)));
+      Result := SizeOf(TLogFont);
+    end else
+    if BufSize >= SizeOf(TLogFont) then
+    begin
+      Result := SizeOf(TLogFont);
+      // ALogBrush^ := TGtk3Brush(aObject).Color;
+       TGtk3Font(AObject).UpdateLogFont;
+      ALogFont^ := TGtk3Font(AObject).LogFont;
+      // DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject),' ALogBrush ',dbgHex(PtrUInt(ALogBrush)));
+    end;
+  end;
 end;
 
 function TGtk3WidgetSet.GetParent(Handle: HWND): HWND;
