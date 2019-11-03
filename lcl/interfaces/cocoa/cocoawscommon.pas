@@ -1268,7 +1268,11 @@ end;
 
 procedure TLCLCommonCallback.BecomeFirstResponder;
 begin
-  LCLSendSetFocusMsg(Target);
+  if not Assigned(Target) then Exit;
+  // LCL is unable to determine the "already focused" message
+  // thus Cocoa related code is doing that.
+  if not Target.Focused then
+    LCLSendSetFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.ResignFirstResponder;
