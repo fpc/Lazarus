@@ -1516,6 +1516,10 @@ var
   i: Integer;
 begin
   Result := inherited Extent;
+
+  if FChart = nil then
+    raise EChartError.Create('Calculation of TBarSeries.Extent is not possible when the series is not added to a chart.');
+
   if IsEmpty then exit;
   if BarWidthStyle = bwPercentMin then
     UpdateMinXRange;
