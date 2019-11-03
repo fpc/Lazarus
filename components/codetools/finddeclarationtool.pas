@@ -2924,7 +2924,8 @@ end;
 function TFindDeclarationTool.FindDeclarationInUsesSection(
   UsesNode: TCodeTreeNode; CleanPos: integer;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
-var AUnitName, UnitInFilename: string;
+var
+  AUnitName, UnitInFilename: string;
   UnitNamePos, UnitInFilePos: TAtomPosition;
 begin
   Result:=false;

@@ -34,11 +34,12 @@ interface
 uses
   Classes, SysUtils, StrUtils, Zipper,
   // LCL
-  LCLType, Forms, Controls, StdCtrls, Dialogs, ExtCtrls, Buttons, ButtonPanel,
+  LCLType, Forms, Controls, StdCtrls, Dialogs, Buttons, ButtonPanel,
   // LazUtils
   FileUtil, LazFileUtils, LazLoggerBase,
   // IdeIntf
-  IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, ProjPackIntf, CompOptsIntf, LazIDEIntf, LCLIntf,
+  IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, ProjPackIntf, CompOptsIntf,
+  LazIDEIntf, LCLIntf,
   // IDE
   ProjectDefs, Project, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions;

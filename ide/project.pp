@@ -5247,8 +5247,7 @@ begin
       if (pfMainUnitIsPascalSource in Flags) then
       begin
         // rename unit in program uses section
-        CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source, OldUnitName,
-          NewUnitName, '');
+        CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source, OldUnitName, NewUnitName, '');
       end;
       if MainUnitInfo = AnUnitInfo then
       begin
