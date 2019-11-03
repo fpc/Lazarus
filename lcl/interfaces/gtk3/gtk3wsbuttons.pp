@@ -72,7 +72,7 @@ type
 implementation
 
 uses
-  LResources, gtk3objects, gtk3procs;
+  graphtype,imglist,LResources, gtk3objects, gtk3procs;
 
 
 { TGtk3WSCustomBitBtn }
@@ -115,17 +115,46 @@ class procedure TGtk3WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonGlyph);
 var
   AImage: PGtkImage;
+  AGlyph: TBitmap;
+  resolution:TCustomImageListResolution;
+  ScaleFactor: Double;
+  raw:TRawImage;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSBitBtn.SetGlyph');
   {$ENDIF}
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
-  if ABitBtn.CanShowGlyph then
-    AImage := gtk_image_new_from_pixbuf(TGtk3Image(ABitBtn.Glyph.Handle).Handle)
-  else
-    AImage := nil;
-  gtk_button_set_image(PGtkButton(TGtk3Button(ABitBtn.Handle).Widget), AImage);
+  if ABitBtn.CanShowGlyph(True) then
+  begin
+    { allocate image which would be cached in TGtk3Button instance }
+    AGlyph := TBitmap.Create;
+    ScaleFactor := ABitBtn.GetCanvasScaleFactor;
+    if (ABitBtn.ImageIndex>=0) and Assigned(ABitBtn.Images) then
+    begin
+      { find imagelist scaled}
+      resolution:=ABitBtn.Images.Resolution[round(AbitBtn.Images.Width*ScaleFactor)];
+      resolution.GetRawImage(ABitBtn.ImageIndex,raw);
+      { convice the bitmap it has actually another format }
+      AGlyph.BeginUpdate();
+      raw.Description.Init_BPP32_R8G8B8A8_BIO_TTB(resolution.Width,resolution.Height);
+      AGlyph.LoadFromRawImage(raw,false);
+      AGlyph.EndUpdate();
+    end else
+      AGlyph.Assign(AValue.Glyph);
+
+    if not AGlyph.Empty then
+      AImage := gtk_image_new_from_pixbuf(TGtk3Image(AGlyph.Handle).Handle)
+    else
+      AImage := nil;
+    if Assigned(AImage) then
+      gtk_button_set_image(PGtkButton(TGtk3Button(ABitBtn.Handle).Widget), AImage)
+    else
+      PGtkButton(TGtk3Button(ABitBtn.Handle).Widget)^.always_show_image:=false;
+
+    { store glyph to prevent leaks }
+    TGtk3Button(ABitBtn.Handle).Image:=AGlyph;
+  end;
 end;
 
 class procedure TGtk3WSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
