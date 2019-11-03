@@ -1029,8 +1029,6 @@ begin
     fpPTrace(PTRACE_KILL, AThread.ID, pointer(1), nil);
     TDbgLinuxThread(AThread).ResetPauseStates;
     Result := CheckNoError;
-    if not FThreadMap.HasId(AThread.ID) then
-      AThread.Free;
     exit;
   end;
 
@@ -1127,8 +1125,6 @@ begin
     Result := CheckNoError;
   end;
 
-  if not FThreadMap.HasId(AThread.ID) then
-    AThread.Free;
   {$IFDEF DebuglnLinuxDebugEvents}
   finally debuglnExit(['<<<<< TDbgLinuxProcess.Continue ' ]); end;
   {$ENDIF}

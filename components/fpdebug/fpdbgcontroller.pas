@@ -816,7 +816,6 @@ var
   IsFinished, b: boolean;
   EventProcess: TDbgProcess;
   DummyThread: TDbgThread;
-  ctid: Integer;
 
 begin
   AExit:=false;
@@ -842,9 +841,6 @@ begin
     end
     else
     begin
-      ctid := 0;
-      if FCurrentThread <> nil then
-        ctid := FCurrentThread.ID;
       InterLockedExchange(FRunning, 1);
       // if Pause() is called right here, an Interrupt-Event is scheduled, even though we do not run (yet)
       if InterLockedExchangeAdd(FPauseRequest, 0) = 1 then begin
@@ -866,8 +862,8 @@ begin
 
         // TODO: replace the dangling pointer with the next best value....
         // There is still a race condition, for another thread to access it...
-        if (ctid <> 0) and not FCurrentProcess.GetThread(ctid, DummyThread) then
-          FCurrentThread := nil;
+        if (FCurrentThread <> nil) and not FCurrentProcess.GetThread(FCurrentThread.ID, DummyThread) then
+          FreeAndNil(FCurrentThread);
     end;
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then

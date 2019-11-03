@@ -644,7 +644,6 @@ var
 begin
 debugln(['TDbgWinProcess.Continue ',SingleStep]);
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
-    AThread.Free;
     AThread := nil;
   end;
 
