@@ -430,6 +430,8 @@ procedure TGtk3Font.UpdateLogFont;
 var
   sz:integer;
   members:TPangoFontMask;
+  AStyle: TPangoStyle;
+  AGravity: TPangoGravity;
 begin
   if not Assigned(fHandle) then exit;
   fillchar(fLogFont,sizeof(fLogFont),0);
@@ -440,11 +442,9 @@ begin
   end;
   if (PANGO_FONT_MASK_STYLE and members<>0) then
   begin
-    case fHandle^.get_style() of
-    PANGO_STYLE_NORMAL:;//  fLogFont.
-    PANGO_STYLE_OBLIQUE:;// flogFont.
-    PANGO_STYLE_ITALIC: fLogFont.lfItalic:=1;
-    end;
+    AStyle := fHandle^.get_style;
+    if AStyle = PANGO_STYLE_ITALIC then
+      fLogFont.lfItalic:=1;
   end;
   if (PANGO_FONT_MASK_WEIGHT and members<>0) then
   begin
@@ -452,13 +452,18 @@ begin
   end;
   if (PANGO_FONT_MASK_GRAVITY and members<>0) then
   begin
-    case fHandle^.get_gravity() of
-    PANGO_GRAVITY_SOUTH: fLogFont.lfOrientation := 0;
-    PANGO_GRAVITY_EAST: fLogFont.lfOrientation := 900;
-    PANGO_GRAVITY_NORTH: fLogFont.lfOrientation := 1800;
-    PANGO_GRAVITY_WEST: fLogFont.lfOrientation := 2700;
-    //PANGO_GRAVITY_AUTO: get from matrix;
-    end;
+    AGravity := fHandle^.get_gravity;
+    if AGravity = PANGO_GRAVITY_SOUTH then
+      fLogFont.lfOrientation := 0
+    else
+    if AGravity = PANGO_GRAVITY_EAST then
+      fLogFont.lfOrientation := 900
+    else
+    if AGravity = PANGO_GRAVITY_NORTH then
+      fLogFont.lfOrientation := 1800
+    else
+    if AGravity = PANGO_GRAVITY_WEST then
+      fLogFont.lfOrientation := 2700;
   end;
   if (PANGO_FONT_MASK_SIZE and members<>0) then
   begin
