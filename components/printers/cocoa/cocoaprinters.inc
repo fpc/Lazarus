@@ -380,12 +380,40 @@ end;
 
 function TCocoaPrinter.GetOutputResolution: PMResolution;
 var
-  res: OSStatus;
   pInfo: NSPrintInfo;
+  prn : PMPrinter;
+  cnt : UInt32;
+  i   : UInt32;
+  rs  : PMResolution;
 begin
+  Result.vRes := 0;
+  Result.hRes := 0;
+  cnt := 0;
   pInfo := NSPrintInfo.sharedPrintInfo;
-  res := PMPrinterGetOutputResolution(GetCurrentPrinter(), pInfo.PMPrintSettings, result{%H-});
-  if res <> noErr then
+  prn := GetCurrentPrinter();
+  // todo: the code has been changed to mirror Carbon implementation
+  //       for some drivers PMPrinterGetOutputResolution() returns failure at all times
+  //       (even if printer dialog has been called).
+  //       Enumeration of resolution doesn't return all possible values either.
+  //       (i.e. Brother MFC 7860DW only gives 300x300 resolution
+  //        while it actually supports 300, 600 and HQ1200 (2400x600) dpis)
+  //       CUPS properties do indicate the actual resoltuion, BUT there's no standard
+  //       way of reading the resolution.
+  //       (i.e. the same Brother printer reports via "lpoptions -l":
+  //         BRResolution/Resolution: 300dpi *600dpi 2400x600dpi)
+  if (PMPrinterGetOutputResolution(prn, pInfo.PMPrintSettings, rs{%H-}) = noErr) then
+    Result := rs
+  else if PMPrinterGetPrinterResolutionCount(prn, cnt) = noErr then
+  begin
+    for i:=1 to cnt do
+    begin
+      if (PMPrinterGetIndexedPrinterResolution(prn, i, rs) = noErr)
+        and ((rs.vRes > Result.vRes) or (rs.hRes > Result.hRes)) then
+        Result := rs;
+    end;
+  end;
+
+  if (Result.vRes = 0) or (Result.hRes = 0) then
   begin
     Result.vRes := 72;
     Result.hRes := 72;
