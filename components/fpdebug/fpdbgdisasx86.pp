@@ -185,10 +185,29 @@ type
     // Condition
     OPSx_o, OPSx_no, OPSx_b, OPSx_nb, OPSx_z, OPSx_nz, OPSx_be, OPSx_nbe, OPSx_s, OPSx_ns, OPSx_p, OPSx_np, OPSx_l, OPSx_nl, OPSx_le, OPSx_nle
   );
+
+
+  TOperandFlag = (ofMemory);
+  TOperandFlags = set of TOperandFlag;
+
   TInstruction = record
     OpCode: TOpCode;
     OpCodeSuffix: TOpCodeSuffix;
     Flags: set of TInstructionFlag;
+    Segment: String;
+
+    Operand: array[1..4] of record
+      CodeIndex: integer;
+      Value: String;
+      Size: TOperandSize;
+      ByteCount: Byte;
+      ByteCount2: Byte;
+      FormatFlags: THexValueFormatFlags;
+      Flags: TOperandFlags;
+    end;
+    OperCnt: Integer;
+
+    ParseFlags: TFlags;
   end;
 
 const
@@ -300,27 +319,13 @@ const
     'o', 'no', 'b', 'nb', 'z', 'nz', 'be', 'nbe', 's', 'ns', 'p', 'np', 'l', 'nl', 'le', 'nle'
   );
 
-type
-  TOperandFlag = (ofMemory);
-  TOperandFlags = set of TOperandFlag;
-
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String;
-out AnInstruction: TInstruction);
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out AnInstruction: TInstruction);
 var
   Code: PByte;
   CodeIdx: Byte;
   Opcode: TOpCode;
-  Operand: array[1..4] of record
-    Value: String;
-    Size: TOperandSize;
-    ByteCount: Byte;
-    ByteCount2: Byte;
-    FormatFlags: THexValueFormatFlags;
-    Flags: TOperandFlags;
-  end;
-  OperIdx: Byte;
+  OperIdx: Integer;
   ModRMIdx: Byte;
-  Segment: String;
   Flags: TFlags;
 
   procedure Check32;
@@ -353,7 +358,7 @@ var
     begin
       Result := True;
       for n := 1 to OperIdx do
-        if ofMemory in Operand[n].Flags then Exit;
+        if ofMemory in AnInstruction.Operand[n].Flags then Exit;
       Result := False;
     end;
   begin
@@ -425,7 +430,7 @@ var
 
   function AddressSize32: TAddressSize;
   begin
-    // effective address size for default 32 operand size
+    // effective address size for default 32 AnInstruction.operand size
     if A64Bit
     then begin
       if preAdr in Flags
@@ -441,7 +446,7 @@ var
 
   function OperandSize32: TOperandSize;
   begin
-    // effective operand size for default 32 operand size
+    // effective AnInstruction.operand size for default 32 AnInstruction.operand size
     if rexW in FLags
     then begin
       Result := os64;
@@ -456,18 +461,18 @@ var
   procedure AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []; AByteCount2: Byte = 0);
   begin
     Inc(OperIdx);
-    if OperIdx > High(Operand)
+    if OperIdx > High(AnInstruction.Operand)
     then begin
-      Debugln(DBG_WARNINGS, 'AddOperand: Only %d operands supported, got %d', [High(Operand), OperIdx]);
+      Debugln(DBG_WARNINGS, 'AddOperand: Only %d operands supported, got %d', [High(AnInstruction.Operand), OperIdx]);
       Exit;
     end;
 
-    Operand[OperIdx].Size := ASize;
-    Operand[OperIdx].ByteCount := AByteCount;
-    Operand[OperIdx].ByteCount2 := AByteCount2;
-    Operand[OperIdx].FormatFlags := AFormatFlags;
-    Operand[OperIdx].Value := AValue;
-    Operand[OperIdx].Flags := AFlags;
+    AnInstruction.Operand[OperIdx].Size := ASize;
+    AnInstruction.Operand[OperIdx].ByteCount := AByteCount;
+    AnInstruction.Operand[OperIdx].ByteCount2 := AByteCount2;
+    AnInstruction.Operand[OperIdx].FormatFlags := AFormatFlags;
+    AnInstruction.Operand[OperIdx].Value := AValue;
+    AnInstruction.Operand[OperIdx].Flags := AFlags;
   end;
 
   procedure AddOperand(const AValue: String; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []);
@@ -477,7 +482,7 @@ var
 
   function SizeReg32(const AReg: String; ASize: TOperandSize): String;
   begin
-    // prefix a reg for default 32 operand size
+    // prefix a reg for default 32 AnInstruction.operand size
     case ASize of
       os64: Result := 'r' + AReg;
       os32: Result := 'e' + AReg;
@@ -1338,7 +1343,7 @@ var
     // sigh, we need to get the operands first, luckely they are all te same.
     AddPq;
     AddQq;
-    // to adjust the instruction length, add an empty operand for the opcode
+    // to adjust the instruction length, add an empty AnInstruction.operand for the opcode
     AddOperand('', 1);
     // calc index of imm_opcode
     idx := 0;
@@ -1346,8 +1351,8 @@ var
     if flagSib in Flags then Inc(idx);
     for n := 1 to OperIdx do
     begin
-      Inc(idx, Operand[n].ByteCount);
-      Inc(idx, Operand[n].ByteCount2);
+      Inc(idx, AnInstruction.Operand[n].ByteCount);
+      Inc(idx, AnInstruction.Operand[n].ByteCount2);
     end;
     // now we can lookup the opcode
     case Code[CodeIdx + idx] of
@@ -1924,7 +1929,7 @@ var
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
             AddVps; AddWq;
-            if ofMemory in Operand[2].Flags
+            if ofMemory in AnInstruction.Operand[2].Flags
             then Opcode := OPmovlps;
           end;
           1: begin AddVps; AddWps; end;
@@ -1961,7 +1966,7 @@ var
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
             AddVps; AddWq;
-            if ofMemory in Operand[2].Flags
+            if ofMemory in AnInstruction.Operand[2].Flags
             then Opcode := OPmovhps;
           end;
           1: begin AddVps; AddWps; end;
@@ -2658,7 +2663,7 @@ var
           Opcode := OPand; CheckLock;
         end;
         $26: begin
-          Segment := Segment + Ignore64('es:');
+          AnInstruction.Segment := AnInstruction.Segment + Ignore64('es:');
         end;
         $27: begin
           Opcode := OPdaa; Check32;
@@ -2668,7 +2673,7 @@ var
           Opcode := OPsub; CheckLock;
         end;
         $2E: begin
-          Segment := Segment + Ignore64('cs:');
+          AnInstruction.Segment := AnInstruction.Segment + Ignore64('cs:');
         end;
         $2F: begin
           Opcode := OPdas; Check32;
@@ -2679,7 +2684,7 @@ var
           Opcode := OPxor; CheckLock;
         end;
         $36: begin
-          Segment := Segment + Ignore64('ss:');
+          AnInstruction.Segment := AnInstruction.Segment + Ignore64('ss:');
         end;
         $37: begin
           Opcode := OPaaa; Check32;
@@ -2689,7 +2694,7 @@ var
           AddStdOperands(Code[CodeIdx]);
         end;
         $3E: begin
-          Segment := Segment + Ignore64('ds:');
+          AnInstruction.Segment := AnInstruction.Segment + Ignore64('ds:');
         end;
         $3F: begin
           Opcode := OPaas; Check32;
@@ -2750,10 +2755,10 @@ var
           end;
         end;
         $64: begin
-          Segment := Segment + 'fs:';
+          AnInstruction.Segment := AnInstruction.Segment + 'fs:';
         end;
         $65: begin
-          Segment := Segment + 'gs:';
+          AnInstruction.Segment := AnInstruction.Segment + 'gs:';
         end;
         $66: begin
           Include(FLags, preOpr);
@@ -3253,126 +3258,143 @@ var
     until Opcode <> OPX_InternalUnknown;
   end;
 
-const
-  MEMPTR: array[TOperandSize] of string = ('byte ptr ', 'word ptr ', 'dword ptr ', 'qword ptr ', '', 'tbyte ptr ', '16byte ptr ');
-{$ifdef debug_OperandSize}
-  OSTEXT: array[TOperandSize] of string = ('os8', 'os16', 'os32', 'os64', 'os48', 'os80', 'os128');
-{$endif}
 var
-  S, Soper: String;
   n: Integer;
-  HasMem: Boolean;
-  OpcodeName: String;
 begin
   Opcode := OPX_Invalid;
   AnInstruction.OpCodeSuffix := OPSx_none;
   AnInstruction.Flags := [];
   Code := AAddress;
 
-  Segment := '';
+  AnInstruction.Segment := '';
   Flags := [];
   CodeIdx := 0;
   OperIdx := 0;
   DoDisassemble;
 
   AnInstruction.OpCode := Opcode;
+  AnInstruction.OperCnt := OperIdx;
+  AnInstruction.ParseFlags := Flags;
 
   if flagModRM in Flags then Inc(CodeIdx);
   if flagSib in Flags then Inc(CodeIdx);
 
-  Soper := '';
-  HasMem := False;
   for n := 1 to OperIdx do
   begin
-    if Operand[n].ByteCount = 0
-    then S := Operand[n].Value
+    AnInstruction.Operand[n].CodeIndex := CodeIdx;
+    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount);
+    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount2);
+  end;
+  Inc(AAddress, CodeIdx);
+end;
+
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
+const
+  MEMPTR: array[TOperandSize] of string = ('byte ptr ', 'word ptr ', 'dword ptr ', 'qword ptr ', '', 'tbyte ptr ', '16byte ptr ');
+{$ifdef debug_OperandSize}
+  OSTEXT: array[TOperandSize] of string = ('os8', 'os16', 'os32', 'os64', 'os48', 'os80', 'os128');
+{$endif}
+var
+  Instr: TInstruction;
+  S, Soper: String;
+  n, i: Integer;
+  HasMem: Boolean;
+  OpcodeName: String;
+  Code: PByte;
+begin
+  Code := AAddress;
+  Disassemble(AAddress, A64Bit, Instr);
+
+  Soper := '';
+  HasMem := False;
+  for n := 1 to Instr.OperCnt do
+  begin
+    if Instr.Operand[n].ByteCount = 0
+    then S := Instr.Operand[n].Value
     else begin
-      if Operand[n].ByteCount2 = 0
-      then S := Format(Operand[n].Value, [HexValue(Code[CodeIdx], Operand[n].ByteCount, Operand[n].FormatFlags)])
-      else S := Format(Operand[n].Value, [HexValue(Code[CodeIdx], Operand[n].ByteCount, Operand[n].FormatFlags), HexValue(Code[CodeIdx + Operand[n].ByteCount], Operand[n].ByteCount2, Operand[n].FormatFlags)])
+      i := Instr.Operand[n].CodeIndex;
+      if Instr.Operand[n].ByteCount2 = 0
+      then S := Format(Instr.Operand[n].Value, [HexValue(Code[i], Instr.Operand[n].ByteCount, Instr.Operand[n].FormatFlags)])
+      else S := Format(Instr.Operand[n].Value, [HexValue(Code[i], Instr.Operand[n].ByteCount, Instr.Operand[n].FormatFlags), HexValue(Code[i + Instr.Operand[n].ByteCount], Instr.Operand[n].ByteCount2, Instr.Operand[n].FormatFlags)])
     end;
 
     if Soper <> '' then Soper := Soper + ',';
-    if ofMemory in Operand[n].Flags
+    if ofMemory in Instr.Operand[n].Flags
     then begin
-      if (OperIdx = 1)
-//      or (Operand[n].Size <> os32)
-      or (Operand[1].Size <> Operand[2].Size)
-      then Soper := Soper + MEMPTR[Operand[n].Size];
-      Soper := Soper + Segment + '[' + S + ']';
+      if (Instr.OperCnt = 1)
+//      or (Instr.Operand[n].Size <> os32)
+      or (Instr.Operand[1].Size <> Instr.Operand[2].Size)
+      then Soper := Soper + MEMPTR[Instr.Operand[n].Size];
+      Soper := Soper + Instr.Segment + '[' + S + ']';
       HasMem := True;
     end
     else Soper := Soper + S;
-    Inc(CodeIdx, Operand[n].ByteCount);
-    Inc(CodeIdx, Operand[n].ByteCount2);
   end;
 {$ifdef debug_OperandSize}
   Soper := Soper + ' | ';
   for n := 1 to OperIdx do
   begin
-    Soper := Soper + ' ' + OSTEXT[Operand[n].Size];
+    Soper := Soper + ' ' + OSTEXT[Instr.Operand[n].Size];
   end;
 {$endif}
 
-  OpcodeName := OPCODE_NAME[Opcode];
-  OpcodeName := OpcodeName + OPCODE_SUFFIX_NAME[AnInstruction.OpCodeSuffix];
-  if AnInstruction.Flags * [ifOnly32, ifOnly64] <> [] then
+  OpcodeName := OPCODE_NAME[Instr.OpCode];
+  OpcodeName := OpcodeName + OPCODE_SUFFIX_NAME[Instr.OpCodeSuffix];
+  if Instr.Flags * [ifOnly32, ifOnly64] <> [] then
     OpcodeName := '**'+OpcodeName + '**';
-  if ifPrefixRep in AnInstruction.Flags then
+  if ifPrefixRep in Instr.Flags then
     OpcodeName := 'rep '+OpcodeName ;
-  if ifPrefixRepE in AnInstruction.Flags then
+  if ifPrefixRepE in Instr.Flags then
     OpcodeName := 'repe '+OpcodeName ;
-  if ifPrefixRepNe in AnInstruction.Flags then
+  if ifPrefixRepNe in Instr.Flags then
     OpcodeName := 'repne '+OpcodeName ;
-  if ifPrefixLock in AnInstruction.Flags then
+  if ifPrefixLock in Instr.Flags then
     OpcodeName := 'lock '+OpcodeName ;
 
   S := '';
-  if preLock in Flags then S := S + '**lock**';
-  if preRep in Flags then S := S + '?rep?';
-  if preRepNE in Flags then S := S + '?repne?';
+  if preLock in Instr.ParseFlags then S := S + '**lock**';
+  if preRep in Instr.ParseFlags then S := S + '?rep?';
+  if preRepNE in Instr.ParseFlags then S := S + '?repne?';
   S := S + OpcodeName;
-  if not HasMem and (Segment <> '') then S := S + ' ?' + Segment + '?';
+  if not HasMem and (Instr.Segment <> '') then S := S + ' ?' + Instr.Segment + '?';
   ACode := S + ' ' + Soper;
 
   // memory
   S := '';
-  for n := 0 to CodeIdx - 1 do
+  for n := 0 to Instr.OperCnt - 1 do
   begin
     S := S + HexStr(Code[n], 2);
   end;
   ACodeBytes := S;
-  Inc(AAddress, CodeIdx);
-end;
-
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
-var
-  Instr: TInstruction;
-begin
-  Disassemble(AAddress, A64Bit, ACodeBytes, ACode, Instr);
 end;
 
 function IsCallInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
 var
-  OutBytes, Code: String;
+  Instr: TInstruction;
   a: PByte;
 begin
   Result := 0;
   a := AAddress;
-  // skip prefix bytes
-  while (a < AAddress + 16) and (a^ in [$26, $2E, $36, $3E, $40..$4F, $64..$67, $F0, $F2, $F3]) do
-      inc(a);
-  // check if it may be a call
-  if not (a^ in [$9A, $E8, $FF]) then
-    exit;
 
-          Disassemble(AAddress, A64Bit, OutBytes, Code);
-  if (Length(Code) < 5) or
-     (code[1] <> 'c') or (code[2] <> 'a') or (code[3] <> 'l') or (code[4] <> 'l') or
-     (code[5] <> ' ')
+  if A64Bit then begin
+    while (a < AAddress + 16) and (a^ in [$40..$4F, $64..$67]) do
+      inc(a);
+    if not (a^ in [$E8, $FF]) then
+      exit;
+  end
+  else begin
+    while (a < AAddress + 16) and (a^ in [$26, $2E, $36, $3E, $64..$67]) do
+      inc(a);
+    if not (a^ in [$9A, $E8, $FF]) then
+      exit;
+  end;
+
+  a := AAddress;
+  Disassemble(AAddress, A64Bit, Instr);
+  if Instr.OpCode <> OPcall
   then
       exit;
-  Result := Length(OutBytes) div 2;
+  Result := AAddress - a;
 end;
 
 
