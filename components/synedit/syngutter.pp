@@ -272,7 +272,7 @@ begin
      TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
   TextDrawer.EndDrawing;
 
-  AClip.Left := Surface.Left;
+  AClip.Left := Surface.Left + LeftOffset;
   AClip.Top  := Surface.TextBounds.Top + FirstLine * TCustomSynEdit(SynEdit).LineHeight;
 
   rcLine := AClip;
