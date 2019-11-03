@@ -522,6 +522,7 @@ begin
   else
   if wifexited(AWaitedStatus) and (ID <> Process.ProcessID) then begin
     Process.RemoveThread(ID); // Done, no postpone
+    Self.Free;
   end
 
   else
