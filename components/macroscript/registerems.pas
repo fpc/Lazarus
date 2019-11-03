@@ -85,6 +85,7 @@ begin
 
   conf.SelfTestActive := False;
   conf.SelfTestError := '';
+  conf.SelfTestFailed := 0;
   conf.Save;
 
   EditorMacroPlayerClass := TEMSEditorMacro;

@@ -100,7 +100,7 @@ type
 function GetEMSConf: TEMSConfig;
 
 const
-  EMSVersion = 1;
+  EMSVersion = 2;
 
 implementation
 
