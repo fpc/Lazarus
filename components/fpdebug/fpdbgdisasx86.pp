@@ -74,22 +74,242 @@ type
   TRegisterType = (reg0, reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug, regX87);
   TModRMType = (modReg, modMem);
   TModRMTypes = set of TModRMType;
-  
+
+  TInstructionFlag = (
+    ifOnly32, ifOnly64,
+    ifPrefixLock, ifPrefixRep, ifPrefixRepE, ifPrefixRepNe
+  );
+
+  TOpCode = (
+    OPX_InternalUnknown,
+    OPX_Invalid,
+    OPX_InvalidX87, OPX_ReservedX87, OPX_Not87,
+    OPX_3dnow,
+    OPX_Group1a, OPX_NotGroup1,
+    OPX_NotGroup2,
+    OPX_NotGroup3,
+    OPX_Group4, OPX_NotGroup4,
+    OPX_Group5, OPX_NotGroup5,
+    OPX_Group6, OPX_NotGroup6,
+    OPX_Group7, OPX_NotGroup7,
+    OPX_Group8, OPX_NotGroup8,
+    OPX_Group9, OPX_NotGroup9,
+    OPX_Group10, OPX_NotGroup10,
+    OPX_Group11, OPX_NotGroup11,
+    OPX_Group12, OPX_NotGroup12,
+    OPX_Group13, OPX_NotGroup13,
+    OPX_Group14, OPX_NotGroup14,
+    OPX_Group15, OPX_NotGroup15,
+    OPX_Group16, OPX_NotGroup16,
+    OPX_GroupP, OPX_NotGroupP,
+    OPXsysenter, OPXsysexit,
+
+    OPfadd, OPfmul, OPfcom, OPfcomp, OPfsub, OPfsubr, OPfdiv, OPfdivr,
+    OPfld, OPfxch, OPfst, OPfstp, OPfldenv, OPfldcw, OPfnstenv, OPfnstcw,
+    OPfchs, OPfabs, OPftst, OPfxam, OPfld1, OPfldl2t, OPfldl2e, OPfldpi, OPfldlg2, OPfldln2, OPfldz,
+    OPf2xm1, OPfyl2x, OPfptan, OPfpatan, OPfxtract, OPfprem1, OPfdecstp,
+    OPfincstp, OPfprem, OPfyl2xp1, OPfsqrt, OPfsincos, OPfrndint,
+    OPfscale, OPfsin, OPfcos, OPnop, OPfiadd, OPfimull,
+    OPficom, OPficomp, OPfisub, OPfisubr, OPfidiv, OPfidivr,
+    OPfcmovb, OPfcmove, OPfcmovbe, OPfcmovu, OPfucompp,
+    OPfild, OPfisttp, OPfist, OPfistp, OPfcmovnb, OPfcmovne, OPfcmovnbe, OPfcmovnu,
+    OPfucomi, OPfcomi, OPfnclex, OPfninit, OPfrstor, OPfnsave, OPfnstsw,
+    OPffree, OPfucomp, OPfaddp, OPfmullp, OPfsubrp, OPfsubp, OPfdivrp,
+    OPfdivp, OPfbld, OPfbstp, OPfcompp, OPfucomip, OPfcomip,
+
+    OPpi2fw, OPpi2fd, OPpf2iw, OPpf2id, OPpfnacc, OPpfpnacc, OPpfcmpge,
+    OPpfmin, OPpfrcp, OPpfrsqrt, OPpfsub, OPpfadd, OPpgcmpgt, OPpfmax,
+    OPpfrcpit1, OPpfrsqit1, OPpfsubr, OPpfacc, OPpfcmpeq, OPpfmul,
+    OPpfrcpit2, OPpmulhrw, OPpswapd, OPpavgusb,
+
+    OPadd, OPor, OPadc, OPsbb, OPand, OPsub, OPxor, OPcmp, OPpop,
+    OProl, OPror, OPrcl, OPrcr, OPshl, OPshr, OPsal, OPsar,
+    OPtest, OPnot, OPneg, OPmul, OPimul, OPdiv, OPidiv,
+    OPinc, OPdec,
+    OPcall, OPjmp, OPpush,
+    OPsldt, OPstr, OPlldt, OPltr, OPverr, OPverw,
+    OPvmrun, OPvmmcall, OPvmload, OPvmsave, OPstgi, OPclgi, OPskinit, OPinvlpga,
+    OPsgdt, OPsidt, OPlgdt, OPlidt, OPsmsw, OPlmsw, OPswapgs, OPrdtscp, OPinvlpg,
+    OPbts, OPbtr, OPbtc, OPbt,
+    OPcmpxchg16b, OPcmpxchg8b,
+
+    OPmov, OPpsrlw, OPpsraw, OPpsllw, OPpsrld, OPpsrad, OPpslld, OPpsrlq, OPpsrldq, OPpsllq,
+    OPfxsave, OPfxrstor, OPldmxcsr, OPstmxcsr, OPlfence, OPmfence, OPclflush,
+    OPprefetch_exclusive, OPprefetch_modified, OPX_prefetch,
+
+    OPpunpcklbw, OPpunpcklwd, OPpunpcklqd, OPpacksswb, OPpcmpgtb, OPpcmpgtw, OPpcmpgtd,
+    OPpackuswb, OPpunpkhbw, OPpunpkhwd, OPpunpkhdq, OPpackssdw, OPpunpcklqdq, OPpunpckhqdq,
+    OPpaddq, OPpmullw, OPpsubusb, OPpsubusw, OPpminub, OPpand, OPpaddusb, OPpaddusw, OPpmaxub, OPpandn,
+    OPpavgb, OPpavgw, OPpmulhuw, OPpmulhw, OPpsubsb, OPpsubsw, OPpminsw,
+    OPpor, OPpaddsb, OPpaddsw, OPpmaxsw, OPpxor, OPpmuludq, OPpmaddwd,
+    OPpsadbw, OPpsubb, OPpsubw, OPpsubd, OPpsubq, OPpaddb, OPpaddw, OPpaddd,
+
+    OPlar, OPlsl, OPsyscall, OPclts, OPsysret, OPinvd, OPwbinvd, OPud2,
+    OPfemms, OPmovups, OPmovss, OPmovupd, OPmovsd, OPmovhlps,
+    OPmovsldup, OPmovlpd, OPmovddup, OPmovlps, OPunpcklps, OPunpcklpd, OPunpckhps, OPunpckhpd, OPmovlhps,
+    OPmovshdup, OPmovhpd, OPmovhps, OPmovaps, OPmovapd,
+    OPcvtpi2ps, OPcvtsi2ss, OPcvtpi2pd, OPcvtsi2sd, OPmovntps, OPmovntpd,
+    OPcvttps2pi, OPcvttss2pi, OPcvttpd2pi, OPcvttsd2pi, OPcvtps2pi, OPcvtss2pi, OPcvtpd2pi, OPcvtsd2pi,
+    OPucomiss, OPucomissd, OPcomiss, OPcomissd, OPwrmsr, OPrdtsc, OPrdmsr, OPrdpmc,
+
+    OPcmov__, OPmovmskps, OPmovmskpd, OPsqrtps, OPsqrtss, OPsqrtpd, OPsqrtsd,
+    OPaddps, OPaddss, OPaddpd, OPaddsd, OPmulps, OPmulss, OPmulpd, OPmulsd,
+    OPsubps, OPsubss, OPsubpd, OPsubsd, OPminps, OPminss, OPminpd, OPminsd,
+    OPdivps, OPdivss, OPdivpd, OPdivsd, OPmaxps, OPmaxss, OPmaxpd, OPmaxsd,
+    OPrsqrtps, OPrsqrtss, OPrcpps, OPrcpss, OPandps, OPandpd, OPandnps, OPandnpd,
+    OPorps, OPorpd, OPxorps, OPxorpd,
+    OPcvtps2pd, OPcvtss2sd, OPcvtpd2ps, OPcvtsd2ss, OPcvtdq2ps, OPcvttps2dq, OPcvtps2dq,
+    OPmovd, OPmovq, OPmovdqu, OPmovdqa, OPpshufw, OPpshufhw, OPpshufd, OPpshuflw,
+    OPpcmpeqb, OPpcmpeqw, OPpcmpeqd, OPemms, OPhaddpd, OPhaddps, OPhsubpd, OPhsubps,
+    OPj__,
+    OPset__, OPcpuid, OPshld, OPrsm, OPshrd,
+    OPcmpxchg, OPlss, OPlfs, OPlgs, OPmovzx, OPbsf, OPbsr, OPmovsx, OPxadd,
+    OPcmpps, OPcmpss, OPcmppd, OPcmpsd, OPmovnti, OPpinsrw, OPpextrw, OPshufps, OPshufpd, OPbswp,
+    OPaddsubpd, OPaddsubps, OPmovq2dq, OPmovdq2q, OPpmovmskb, OPcvtdq2pd, OPcvttpd2dq, OPcvtpd2dq,
+    OPmovntq, OPmovntdqu, OPlddqu, OPmaskmovq, OPmaskmovdqu,
+    OPdaa, OPdas, OPaaa, OPaas, OPpusha, OPpushad, OPpopa, OPpopad, OPbound, OPmovsxd,
+    OParpl, OPinsb, OPinsw, OPinsd, OPoutsb, OPoutsw, OPoutsd,
+    OPxchg, OPlea, OPcdqe, OPcwde, OPcbw, OPcqo, OPcqd, OPcwd,
+    OPwait_fwait,
+    OPpushfq, OPpushfd, OPpushf, OPpopfq, OPpopfd, OPpopf, OPsahf, OPlahf,
+    OPmovsb, OPmovsq, OPmovsw, OPcmpsb, OPcmpsq, OPcmpsw,
+    OPstosb, OPstosq, OPstosd, OPstosw, OPlodsb, OPlodsq, OPlodsd, OPlodsw,
+    OPscasb, OPscasq, OPscasd, OPscasw, OPret, OPles, OPlds,
+    OPenter, OPleave, OPretf, OPint3, OPint, OPint0, OPiretq, OPiretd, OPiret,
+    OPaam, OPaad, OPsalc, OPxlat, OPloopne, OPloope, OPloop, OPjrcxz,
+    OPin, OPout, OPint1, OPhlt, OPcmc, OPclc, OPstc, OPcli, OPsti, OPcld, OPstd
+  );
+
+  TOpCodeSuffix = (
+    OPSx_none,
+    // Condition
+    OPSx_o, OPSx_no, OPSx_b, OPSx_nb, OPSx_z, OPSx_nz, OPSx_be, OPSx_nbe, OPSx_s, OPSx_ns, OPSx_p, OPSx_np, OPSx_l, OPSx_nl, OPSx_le, OPSx_nle
+  );
+  TInstruction = record
+    OpCode: TOpCode;
+    OpCodeSuffix: TOpCodeSuffix;
+    Flags: set of TInstructionFlag;
+  end;
 
 const
   ADDRESS_BYTES: array[TAddressSize] of Byte = (2, 4, 8);
   OPERAND_BYTES: array[TOperandSize] of Byte = (1, 2, 4, 8, 6, 10, 16);
   OPERAND_REG: array[os8..os64] of TRegisterType = (reg8, reg16, reg32, reg64);
   STD_REGS = [reg8..reg64];
+  OPCODE_NAME: array [TOpCode] of String = (
+       '???', // OPX_InternalUnknown
+       '???',
+      '**x87**', '-x87-', '!x87!',
+      '-3dnow-',
+      '**group1a**', '!group1!',
+      '!group2!',
+      '!group3!',
+      '**group4**', '!group4!',
+      '**group5**', '!group5!',
+      '**group6**', '!group6!',
+      '**group7**', '!group7!',
+      '**group8**', '!group8!',
+      '**group9**', '!group9!',
+      '**group10**', '!group10!',
+      '**group11**', '!group11!',
+      '**group12**', '!group12!',
+      '**group13**', '!group13!',
+      '**group14**', '!group14!',
+      '**group15**', '!group15!',
+      '**group16**', '!group16!',
+      '**groupp**', '!groupp!',
+      '**sysenter**', '**sysexit**',
+
+      'fadd', 'fmul', 'fcom', 'fcomp', 'fsub', 'fsubr', 'fdiv', 'fdivr',
+      'fld', 'fxch', 'fst', 'fstp', 'fldenv', 'fldcw', 'fnstenv', 'fnstcw',
+      'fchs', 'fabs', 'ftst', 'fxam', 'fld1', 'fldl2t', 'fldl2e', 'fldpi', 'fldlg2', 'fldln2', 'fldz',
+      'f2xm1', 'fyl2x', 'fptan', 'fpatan', 'fxtract', 'fprem1', 'fdecstp',
+      'fincstp', 'fprem', 'fyl2xp1', 'fsqrt', 'fsincos', 'frndint',
+      'fscale', 'fsin', 'fcos', 'nop', 'fiadd', 'fimull',
+      'ficom', 'ficomp', 'fisub', 'fisubr', 'fidiv', 'fidivr',
+      'fcmovb', 'fcmove', 'fcmovbe', 'fcmovu', 'fucompp',
+      'fild', 'fisttp', 'fist', 'fistp', 'fcmovnb', 'fcmovne', 'fcmovnbe', 'fcmovnu',
+      'fucomi', 'fcomi', 'fnclex', 'fninit', 'frstor', 'fnsave', 'fnstsw',
+      'ffree', 'fucomp', 'faddp', 'fmullp', 'fsubrp', 'fsubp', 'fdivrp',
+      'fdivp', 'fbld', 'fbstp', 'fcompp', 'fucomip', 'fcomip',
+
+      'pi2fw', 'pi2fd', 'pf2iw', 'pf2id', 'pfnacc', 'pfpnacc', 'pfcmpge',
+      'pfmin', 'pfrcp', 'pfrsqrt', 'pfsub', 'pfadd', 'pgcmpgt', 'pfmax',
+      'pfrcpit1', 'pfrsqit1', 'pfsubr', 'pfacc', 'pfcmpeq', 'pfmul',
+      'pfrcpit2', 'pmulhrw', 'pswapd', 'pavgusb',
+
+      'add', 'or', 'adc', 'sbb', 'and', 'sub', 'xor', 'cmp','pop',
+      'rol', 'ror', 'rcl', 'rcr', 'shl', 'shr', 'sal', 'sar',
+      'test', 'not', 'neg', 'mul', 'imul', 'div', 'idiv',
+      'inc', 'dec',
+      'call', 'jmp', 'push',
+      'sldt', 'str', 'lldt', 'ltr', 'verr', 'verw',
+      'vmrun', 'vmmcall', 'vmload', 'vmsave', 'stgi', 'clgi', 'skinit', 'invlpga',
+      'sgdt', 'sidt', 'lgdt', 'lidt', 'smsw', 'lmsw', 'swapgs', 'rdtscp', 'invlpg',
+      'bts', 'btr', 'btc', 'bt',
+      'cmpxchg16b', 'cmpxchg8b',
+
+      'mov', 'psrlw', 'psraw', 'psllw', 'psrld', 'psrad', 'pslld', 'psrlq', 'psrldq', 'psllq',
+      'fxsave', 'fxrstor', 'ldmxcsr', 'stmxcsr', 'lfence', 'mfence', 'clflush',
+      'prefetch exclusive', 'prefetch modified', '--prefetch--',
+
+      'punpcklbw', 'punpcklwd', 'punpcklqd', 'packsswb', 'pcmpgtb', 'pcmpgtw', 'pcmpgtd',
+      'packuswb', 'punpkhbw', 'punpkhwd', 'punpkhdq', 'packssdw', 'punpcklqdq', 'punpckhqdq',
+      'paddq', 'pmullw', 'psubusb', 'psubusw', 'pminub', 'pand', 'paddusb', 'paddusw', 'pmaxub', 'pandn',
+      'pavgb', 'pavgw', 'pmulhuw', 'pmulhw', 'psubsb', 'psubsw', 'pminsw',
+      'por', 'paddsb', 'paddsw', 'pmaxsw', 'pxor', 'pmuludq', 'pmaddwd',
+      'psadbw', 'psubb', 'psubw', 'psubd', 'psubq', 'paddb', 'paddw', 'paddd',
+
+      'lar', 'lsl', 'syscall', 'clts', 'sysret', 'invd', 'wbinvd', 'ud2',
+      'femms', 'movups', 'movss', 'movupd', 'movsd', 'movhlps',
+      'movsldup', 'movlpd', 'movddup', 'movlps', 'unpcklps', 'unpcklpd', 'unpckhps', 'unpckhpd', 'movlhps',
+      'movshdup', 'movhpd', 'movhps', 'movaps', 'movapd',
+      'cvtpi2ps', 'cvtsi2ss', 'cvtpi2pd', 'cvtsi2sd', 'movntps', 'movntpd',
+      'cvttps2pi', 'cvttss2pi', 'cvttpd2pi', 'cvttsd2pi', 'cvtps2pi', 'cvtss2pi', 'cvtpd2pi', 'cvtsd2pi',
+      'ucomiss', 'ucomissd', 'comiss', 'comissd', 'wrmsr', 'rdtsc', 'rdmsr', 'rdpmc',
+
+      'cmov', 'movmskps', 'movmskpd', 'sqrtps', 'sqrtss', 'sqrtpd', 'sqrtsd',
+      'addps', 'addss', 'addpd', 'addsd', 'mulps', 'mulss', 'mulpd', 'mulsd',
+      'subps', 'subss', 'subpd', 'subsd', 'minps', 'minss', 'minpd', 'minsd',
+      'divps', 'divss', 'divpd', 'divsd', 'maxps', 'maxss', 'maxpd', 'maxsd',
+      'rsqrtps', 'rsqrtss', 'rcpps', 'rcpss', 'andps', 'andpd', 'andnps', 'andnpd',
+      'orps', 'orpd', 'xorps', 'xorpd',
+      'cvtps2pd', 'cvtss2sd', 'cvtpd2ps', 'cvtsd2ss', 'cvtdq2ps', 'cvttps2dq', 'cvtps2dq',
+      'movd', 'movq', 'movdqu', 'movdqa', 'pshufw', 'pshufhw', 'pshufd', 'pshuflw',
+      'pcmpeqb', 'pcmpeqw', 'pcmpeqd', 'emms', 'haddpd', 'haddps', 'hsubpd', 'hsubps',
+      'j', // cond jump + suffix
+      'set', 'cpuid', 'shld', 'rsm', 'shrd',
+      'cmpxchg', 'lss', 'lfs', 'lgs', 'movzx', 'bsf', 'bsr', 'movsx', 'xadd',
+      'cmpps', 'cmpss', 'cmppd', 'cmpsd', 'movnti', 'pinsrw', 'pextrw', 'shufps', 'shufpd', 'bswp',
+      'addsubpd', 'addsubps', 'movq2dq', 'movdq2q', 'pmovmskb', 'cvtdq2pd', 'cvttpd2dq', 'cvtpd2dq',
+      'movntq', 'movntdqu', 'lddqu', 'maskmovq', 'maskmovdqu',
+      'daa', 'das', 'aaa', 'aas', 'pusha', 'pushad', 'popa', 'popad', 'bound', 'movsxd',
+      'arpl', 'insb', 'insw', 'insd', 'outsb', 'outsw', 'outsd',
+      'xchg', 'lea', 'cdqe', 'cwde', 'cbw', 'cqo', 'cqd', 'cwd',
+      'wait/fwait',
+      'pushfq', 'pushfd', 'pushf', 'popfq', 'popfd', 'popf', 'sahf', 'lahf',
+      'movsb', 'movsq', 'movsw', 'cmpsb', 'cmpsq', 'cmpsw',
+      'stosb', 'stosq', 'stosd', 'stosw', 'lodsb', 'lodsq', 'lodsd', 'lodsw',
+      'scasb', 'scasq', 'scasd', 'scasw', 'ret', 'les', 'lds',
+      'enter', 'leave', 'retf', 'int3', 'int', 'int0', 'iretq', 'iretd', 'iret',
+      'aam', 'aad', 'salc', 'xlat', 'loopne', 'loope', 'loop', 'jrcxz',
+      'in', 'out', 'int1', 'hlt', 'cmc', 'clc', 'stc', 'cli', 'sti', 'cld', 'std'
+  );
+  OPCODE_SUFFIX_NAME: array [TOpCodeSuffix] of String = (
+    '',
+    'o', 'no', 'b', 'nb', 'z', 'nz', 'be', 'nbe', 's', 'ns', 'p', 'np', 'l', 'nl', 'le', 'nle'
+  );
 
 type
   TOperandFlag = (ofMemory);
   TOperandFlags = set of TOperandFlag;
 
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String;
+out AnInstruction: TInstruction);
 var
   Code: PByte;
   CodeIdx: Byte;
+  Opcode: TOpCode;
   Operand: array[1..4] of record
     Value: String;
     Size: TOperandSize;
@@ -100,35 +320,33 @@ var
   end;
   OperIdx: Byte;
   ModRMIdx: Byte;
-  Opcode: String;
   Segment: String;
   Flags: TFlags;
 
-  function Check32(const Opcode: String): String;
+  procedure Check32;
   begin
     // only valid in 32-bit mode
-    if A64Bit
-    then Result := '**' + Opcode + '**'
-    else Result := Opcode;
+    if A64Bit then
+      Include(AnInstruction.Flags, ifOnly32);
   end;
 
-  function Check64(const Opcode: String): String;
+  procedure Check64;
   begin
     // only valid in 64-bit mode
-    if A64Bit
-    then Result := Opcode
-    else Result := '**' + Opcode + '**';
+    if A64Bit then
+      Include(AnInstruction.Flags, ifOnly64);
   end;
 
-  function Ignore64(const Opcode: String): String;
+  function Ignore64(s: String): String;
   begin
     // ignored in 64-bit mode
-    if A64Bit
-    then Result := '(' + Opcode + ')'
-    else Result := Opcode;
+    if A64Bit then
+      Result := '('+s+')'
+    else
+      Result := s;
   end;
   
-  function CheckLock(const AOpcode: String): String;
+  procedure CheckLock;
     function CheckMem: boolean;
     var
       n: Byte;
@@ -142,46 +360,42 @@ var
     if (preLock in Flags) and CheckMem
     then begin
       Exclude(Flags, preLock);
-      Result := 'lock ' + AOpcode;
-      Exit;
+      Include(AnInstruction.Flags, ifPrefixLock);
     end;
-    Result := AOpcode;
   end;
 
-  function CheckRepeat(const AOpcode: String): String;
+  procedure CheckRepeat;
   begin
     if preRep in Flags
     then begin
       Exclude(Flags, preRep);
-      Result := 'rep ' + AOpcode;
-      Exit;
+      Include(AnInstruction.Flags, ifPrefixRep);
     end;
-    Result := AOpcode;
   end;
   
-  function CheckRepeatX(const AOpcode: String): String;
+  procedure CheckRepeatX;
   begin
     if preRep in Flags
     then begin
       Exclude(Flags, preRep);
-      Result := 'repe ' + AOpcode;
+      Include(AnInstruction.Flags, ifPrefixRepE);
       Exit;
     end;
     if preRepNE in Flags
     then begin
       Exclude(Flags, preRepNE);
-      Result := 'repne ' + AOpcode;
+      Include(AnInstruction.Flags, ifPrefixRepNe);
       Exit;
     end;
-    Result := AOpcode;
   end;
   
   //===================
 
-  function DecodePrefix(const AOpcode, AOpcodeRep, AOpcodeOpr, AOpcodeRepNE: string): Integer;
+  function DecodePrefix(const AOpcode, AOpcodeRep, AOpcodeOpr, AOpcodeRepNE: TOpCode): Integer;
   var
-    S: String;
+    S: TOpCode;
   begin
+    S := OPX_Invalid;
     if preRep in Flags
     then begin
       S := AOpcodeRep;
@@ -204,9 +418,9 @@ var
       S := AOpcode;
       Result := 0;
     end;
-    if S = ''
-    then Result := -1
-    else Opcode := S;
+    if S = OPX_Invalid then
+      Result := -1;
+    Opcode := S;
   end;
 
   function AddressSize32: TAddressSize;
@@ -277,11 +491,13 @@ var
     Result := SizeReg32(AReg, OperandSize32);
   end;
 
-  function StdCond(AIndex: Byte): String;
+  procedure StdCond(AIndex: Byte);
   const
-    COND: array[0..$F] of String = ('o', 'no', 'b', 'nb', 'z', 'nz', 'be', 'nbe', 's', 'ns', 'p', 'np', 'l', 'nl', 'le', 'nle');
+    COND: array[0..$F] of TOpCodeSuffix = (
+      OPSx_o, OPSx_no, OPSx_b, OPSx_nb, OPSx_z, OPSx_nz, OPSx_be, OPSx_nbe, OPSx_s, OPSx_ns, OPSx_p, OPSx_np, OPSx_l, OPSx_nl, OPSx_le, OPSx_nle
+    );
   begin
-    Result := COND[AIndex and $F];
+    AnInstruction.OpCodeSuffix := COND[AIndex and $F];
   end;
 
   function StdReg(AIndex: Byte; AType: TRegisterType; AExtReg: Boolean): String;
@@ -889,9 +1105,6 @@ var
   //===================
 
   procedure DoX87;
-  const
-    INVALID = '**x87**';
-    RESERVED = '-x87-';
   var
     Index: Byte;
     ModRM: Byte;
@@ -943,7 +1156,7 @@ var
 
     procedure DoD8;
     const
-      OPC: array[0..7] of String = ('fadd', 'fmul', 'fcom', 'fcomp', 'fsub', 'fsubr', 'fdiv', 'fdivr');
+      OPC: array[0..7] of TOpCode = (OPfadd, OPfmul, OPfcom, OPfcomp, OPfsub, OPfsubr, OPfdiv, OPfdivr);
     begin
       Opcode := OPC[Index];
       case ModRM of
@@ -955,12 +1168,12 @@ var
 
     procedure DoD9;
     const
-      OPC: array[0..7] of String = ('fld', 'fxch', 'fst', 'fstp', 'fldenv', 'fldcw', 'fnstenv', 'fnstcw');
-      OPCx: array[0..$1F] of String = (
-        'fchs', 'fabs', '', '', 'ftst', 'fxam', '', '',
-        'fld1', 'fldl2t', 'fldl2e', 'fldpi', 'fldlg2', 'fldln2', 'fldz', '',
-        'f2xm1', 'fyl2x', 'fptan', 'fpatan', 'fxtract', 'fprem1', 'fdecstp', 'fincstp',
-        'fprem', 'fyl2xp1', 'fsqrt', 'fsincos', 'frndint', 'fscale', 'fsin', 'fcos'
+      OPC: array[0..7] of TOpCode = (OPfld, OPfxch, OPfst, OPfstp, OPfldenv, OPfldcw, OPfnstenv, OPfnstcw);
+      OPCx: array[0..$1F] of TOpCode = (
+        OPfchs, OPfabs, OPX_InvalidX87, OPX_InvalidX87, OPftst, OPfxam, OPX_InvalidX87, OPX_InvalidX87,
+        OPfld1, OPfldl2t, OPfldl2e, OPfldpi, OPfldlg2, OPfldln2, OPfldz, OPX_InvalidX87,
+        OPf2xm1, OPfyl2x, OPfptan, OPfpatan, OPfxtract, OPfprem1, OPfdecstp, OPfincstp,
+        OPfprem, OPfyl2xp1, OPfsqrt, OPfsincos, OPfrndint, OPfscale, OPfsin, OPfcos
       );
     begin
       case ModRM of
@@ -968,40 +1181,40 @@ var
           Opcode := OPC[Index];
           case Index of
             0, 2, 3: AddMem32;
-            1: Opcode := INVALID;
+            1: Opcode := OPX_InvalidX87;
             4, 6 : AddMem14_28Env;
             5, 7: AddMem16;
           end;
         end;
         $C0..$CF: begin Opcode := OPC[Index]; AddReg0; AddRegN; end;
-        $D0:      begin Opcode := 'nop'; end;
-        $D8..$DF: begin Opcode := RESERVED; end;
+        $D0:      begin Opcode := OPnop; end;
+        $D8..$DF: begin Opcode := OPX_ReservedX87; end;
         $E0..$E1,
         $E4..$E5,
         $E8..$FF: begin Opcode := OPCx[ModRM and $1F]; end;
       else
-        Opcode := INVALID;
+        Opcode := OPX_InvalidX87;
       end;
     end;
 
     procedure DoDA;
     const
-      OPC: array[0..7] of String = ('fiadd', 'fimull', 'ficom', 'ficomp', 'fisub', 'fisubr', 'fidiv', 'fidivr');
-      OPCx: array[0..3] of string = ('fcmovb', 'fcmove', 'fcmovbe', 'fcmovu');
+      OPC: array[0..7] of TOpCode = (OPfiadd, OPfimull, OPficom, OPficomp, OPfisub, OPfisubr, OPfidiv, OPfidivr);
+      OPCx: array[0..3] of TOpCode = (OPfcmovb, OPfcmove, OPfcmovbe, OPfcmovu);
     begin
       case ModRM of
-        $00..$BF: begin Opcode := OPC[Index];  AddMem32;         end;
+        $00..$BF: begin Opcode := OPC[Index]; AddMem32; end;
         $C0..$DF: begin Opcode := OPCx[Index]; AddReg0; AddRegN; end;
-        $E9:      begin Opcode := 'fucompp'; end;
+        $E9:      begin Opcode := OPfucompp; end;
       else
-        Opcode := INVALID;
+        Opcode := OPX_InvalidX87;
       end;
     end;
 
     procedure DoDB;
     const
-      OPC: array[0..7] of String = ('fild', 'fisttp', 'fist', 'fistp', '', 'fld', '', 'fstp');
-      OPCx: array[0..7] of String = ('fcmovnb', 'fcmovne', 'fcmovnbe', 'fcmovnu', '', 'fucomi', 'fcomi', '');
+      OPC: array[0..7] of TOpCode = (OPfild, OPfisttp, OPfist, OPfistp, OPX_InvalidX87, OPfld, OPX_InvalidX87, OPfstp);
+      OPCx: array[0..7] of TOpCode = (OPfcmovnb, OPfcmovne, OPfcmovnbe, OPfcmovnu, OPX_InvalidX87, OPfucomi, OPfcomi, OPX_InvalidX87);
     begin
       case ModRM of
         $00..$BF: begin
@@ -1009,45 +1222,45 @@ var
             0..3: begin Opcode := OPC[Index]; AddMem32; end;
             5, 7: begin Opcode := OPC[Index]; AddMem80; end;
           else
-            Opcode := INVALID;
+            Opcode := OPX_InvalidX87;
           end;
         end;
         $C0..$DF,
         $E8..$F7: begin Opcode := OPCx[Index];  AddReg0; AddRegN; end;
-        $E0..$E1: begin Opcode := RESERVED; end;
-        $E2:      begin Opcode := 'fnclex'; end;
-        $E3:      begin Opcode := 'fninit'; end;
-        $E4:      begin Opcode := RESERVED; end;
+        $E0..$E1: begin Opcode := OPX_ReservedX87; end;
+        $E2:      begin Opcode := OPfnclex; end;
+        $E3:      begin Opcode := OPfninit; end;
+        $E4:      begin Opcode := OPX_ReservedX87; end;
       else
-        Opcode := INVALID;
+        Opcode := OPX_InvalidX87;
       end;
     end;
 
     procedure DoDC;
     const
-      OPC: array[0..7] of String = ('fadd', 'fmul', 'fcom', 'fcomp', 'fsub', 'fsubr', 'fdiv', 'fdivr');
-      OPCx: array[0..7] of String = ('fadd', 'fmul', '', '', 'fsubr', 'fsub', 'fdivr', 'fdiv');
+      OPC: array[0..7] of TOpCode = (OPfadd, OPfmul, OPfcom, OPfcomp, OPfsub, OPfsubr, OPfdiv, OPfdivr);
+      OPCx: array[0..7] of TOpCode = (OPfadd, OPfmul, OPX_InvalidX87, OPX_InvalidX87, OPfsubr, OPfsub, OPfdivr, OPfdiv);
     begin
       case ModRM of
         $00..$BF: begin Opcode := OPC[Index]; AddMem64; end;
         $C0..$CF,
         $E0..$FF: begin Opcode := OPCx[Index]; AddRegN; AddReg0; end;
       else
-        Opcode := RESERVED;
+        Opcode := OPX_ReservedX87;
       end;
     end;
 
     procedure DoDD;
     const
-      OPC: array[0..7] of String = ('fld', 'fisttp', 'fst', 'fstp', 'frstor', '', 'fnsave', 'fnstsw');
-      OPCx: array[0..7] of String = ('ffree', '', 'fst', 'fstp', '', 'fucomp', '', '');
+      OPC: array[0..7] of TOpCode = (OPfld, OPfisttp, OPfst, OPfstp, OPfrstor, OPX_InvalidX87, OPfnsave, OPfnstsw);
+      OPCx: array[0..7] of TOpCode = (OPffree, OPX_InvalidX87, OPfst, OPfstp, OPX_InvalidX87, OPfucomp, OPX_InvalidX87, OPX_InvalidX87);
     begin
       case ModRM of
         $00..$BF: begin
           case Index of
             0..3: begin Opcode := OPC[Index]; AddMem64; end;
             4, 6: begin Opcode := OPC[Index]; AddMem98_108Env; end;
-            5: Opcode := INVALID;
+            5: Opcode := OPX_InvalidX87;
             7:    begin Opcode := OPC[Index]; AddMem16; end;
           end;
         end;
@@ -1055,31 +1268,31 @@ var
         $D0..$DF,
         $E8..$EF: begin Opcode := OPCx[Index]; AddRegN; end;
         $E0..$E7: begin Opcode := OPCx[Index]; AddRegN; AddReg0; end;
-        $C8..$CF: Opcode := RESERVED;
+        $C8..$CF: Opcode := OPX_ReservedX87;
       else
-        Opcode := INVALID;
-      end
+        Opcode := OPX_InvalidX87;
+      end;
     end;
 
     procedure DoDE;
     const
-      OPC: array[0..7] of String = ('fiadd', 'fimull', 'ficom', 'ficomp', 'fisub', 'fisubr', 'fidiv', 'fidivr');
-      OPCx: array[0..7] of String = ('faddp', 'fmullp', '', '', 'fsubrp', 'fsubp', 'fdivrp', 'fdivp');
+      OPC: array[0..7] of TOpCode = (OPfiadd, OPfimull, OPficom, OPficomp, OPfisub, OPfisubr, OPfidiv, OPfidivr);
+      OPCx: array[0..7] of TOpCode = (OPfaddp, OPfmullp, OPX_InvalidX87, OPX_InvalidX87, OPfsubrp, OPfsubp, OPfdivrp, OPfdivp);
     begin
       case ModRM of
         $00..$BF: begin Opcode := OPC[Index]; AddMem16; end;
         $C0..$CF,
         $E0..$FF: begin Opcode := OPCx[Index]; AddRegN; AddReg0; end;
-        $D9:      begin Opcode := 'fcompp'; end;
-        $D0..$D7: Opcode := RESERVED;
+        $D9:      begin Opcode := OPfcompp; end;
+        $D0..$D7: Opcode := OPX_ReservedX87;
       else
-        Opcode := INVALID;
+        Opcode := OPX_InvalidX87;
       end;
     end;
 
     procedure DoDF;
     const
-      OPC: array[0..7] of String = ('fild', 'fisttp', 'fist', 'fistp', 'fbld', 'fild', 'fbstp', 'fistp');
+      OPC: array[0..7] of TOpCode = (OPfild, OPfisttp, OPfist, OPfistp, OPfbld, OPfild, OPfbstp, OPfistp);
     begin
       case ModRM of
         $00..$BF: begin
@@ -1089,12 +1302,12 @@ var
             5, 7: begin Opcode := OPC[Index]; AddMem64; end;
           end;
         end;
-        $E0:      begin Opcode := 'fnstsw';  AddOperand('ax', os16); end;
-        $E8..$EF: begin Opcode := 'fucomip'; AddReg0; AddRegN; end;
-        $F0..$F7: begin Opcode := 'fcomip';  AddReg0; AddRegN; end;
-        $C0..$DF: Opcode := RESERVED;
+        $E0:      begin Opcode := OPfnstsw;  AddOperand('ax', os16); end;
+        $E8..$EF: begin Opcode := OPfucomip; AddReg0; AddRegN; end;
+        $F0..$F7: begin Opcode := OPfcomip;  AddReg0; AddRegN; end;
+        $C0..$DF: Opcode := OPX_ReservedX87;
       else
-        Opcode := INVALID;
+        Opcode := OPX_InvalidX87;
       end;
     end;
     
@@ -1113,7 +1326,7 @@ var
       $DE: DoDE;
       $DF: DoDF;
     else
-      Opcode := '!x87!';
+      Opcode := OPX_Not87;
     end;
   end;
   
@@ -1138,32 +1351,32 @@ var
     end;
     // now we can lookup the opcode
     case Code[CodeIdx + idx] of
-      $0C: Opcode := 'pi2fw';
-      $0D: Opcode := 'pi2fd';
-      $1C: Opcode := 'pf2iw';
-      $1D: Opcode := 'pf2id';
-      $8A: Opcode := 'pfnacc';
-      $8E: Opcode := 'pfpnacc';
-      $90: Opcode := 'pfcmpge';
-      $94: Opcode := 'pfmin';
-      $96: Opcode := 'pfrcp';
-      $97: Opcode := 'pfrsqrt';
-      $9A: Opcode := 'pfsub';
-      $9E: Opcode := 'pfadd';
-      $A0: Opcode := 'pgcmpgt';
-      $A4: Opcode := 'pfmax';
-      $A6: Opcode := 'pfrcpit1';
-      $A7: Opcode := 'pfrsqit1';
-      $AA: Opcode := 'pfsubr';
-      $AE: Opcode := 'pfacc';
-      $B0: Opcode := 'pfcmpeq';
-      $B4: Opcode := 'pfmul';
-      $B6: Opcode := 'pfrcpit2';
-      $B7: Opcode := 'pmulhrw';
-      $BB: Opcode := 'pswapd';
-      $BF: Opcode := 'pavgusb';
+      $0C: Opcode := OPpi2fw;
+      $0D: Opcode := OPpi2fd;
+      $1C: Opcode := OPpf2iw;
+      $1D: Opcode := OPpf2id;
+      $8A: Opcode := OPpfnacc;
+      $8E: Opcode := OPpfpnacc;
+      $90: Opcode := OPpfcmpge;
+      $94: Opcode := OPpfmin;
+      $96: Opcode := OPpfrcp;
+      $97: Opcode := OPpfrsqrt;
+      $9A: Opcode := OPpfsub;
+      $9E: Opcode := OPpfadd;
+      $A0: Opcode := OPpgcmpgt;
+      $A4: Opcode := OPpfmax;
+      $A6: Opcode := OPpfrcpit1;
+      $A7: Opcode := OPpfrsqit1;
+      $AA: Opcode := OPpfsubr;
+      $AE: Opcode := OPpfacc;
+      $B0: Opcode := OPpfcmpeq;
+      $B4: Opcode := OPpfmul;
+      $B6: Opcode := OPpfrcpit2;
+      $B7: Opcode := OPpmulhrw;
+      $BB: Opcode := OPpswapd;
+      $BF: Opcode := OPpavgusb;
     else
-      Opcode := '-3dnow-';
+      Opcode := OPX_3dnow;
     end;
   end;
   
@@ -1171,7 +1384,7 @@ var
   
   procedure DoGroup1;
   const
-    OPC: array[0..7] of String = ('add', 'or', 'adc', 'sbb', 'and', 'sub', 'xor', 'cmp');
+    OPC: array[0..7] of TOpCode = (OPadd, OPor, OPadc, OPsbb, OPand, OPsub, OPxor, OPcmp);
   var
     Index: Byte;
   begin
@@ -1183,10 +1396,10 @@ var
     then begin
       if Index = 0
       then begin
-        Opcode := 'pop';
+        Opcode := OPpop;
         AddEv;
       end
-      else Opcode := '**group1a**';
+      else Opcode := OPX_group1a;
       Exit;
     end;
 
@@ -1195,19 +1408,19 @@ var
     case Code[CodeIdx] of
       $80: begin AddEb; AddIb; end;
       $81: begin AddEv; AddIz; end;
-      $82: begin AddEb; AddIb; Opcode := Check32(Opcode); end;
+      $82: begin AddEb; AddIb; Check32; end;
       $83: begin AddEv; AddIb; end;
     else
-      Opcode := '!group1!';
+      Opcode := OPX_NotGroup1;
       Exit;
     end;
     if (Index <> 7)
-    then  Opcode := CheckLock(Opcode);
+    then  CheckLock;
   end;
   
   procedure DoGroup2;
   const
-    OPC: array[0..7] of String = ('rol', 'ror', 'rcl', 'rcr', 'shl', 'shr', 'sal', 'sar');
+    OPC: array[0..7] of TOpCode = (OProl, OPror, OPrcl, OPrcr, OPshl, OPshr, OPsal, OPsar);
   var
     Index: Byte;
   begin
@@ -1222,13 +1435,13 @@ var
       $D2: begin AddEb; AddOperand('cl', os8); end;
       $D3: begin AddEv; AddOperand('cl', os8); end;
     else
-      Opcode := '!group2!';
+      Opcode := OPX_NotGroup2;
     end;
   end;
   
   procedure DoGroup3;
   const
-    OPC: array[0..7] of String = ('test', 'test', 'not', 'neg', 'mul', 'imul', 'div', 'idiv');
+    OPC: array[0..7] of TOpCode = (OPtest, OPtest, OPnot, OPneg, OPmul, OPimul, OPdiv, OPidiv);
   var
     Index: Byte;
   begin
@@ -1255,11 +1468,11 @@ var
         end;
       end;
     else
-      Opcode := '!group3!';
+      Opcode := OPX_NotGroup3;
       Exit;
     end;
     if (Index = 2) or (Index = 3)
-    then Opcode := CheckLock(Opcode);
+    then CheckLock;
   end;
   
   procedure DoGroup4;
@@ -1269,20 +1482,20 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $FE
     then begin
-      Opcode := '!group4!';
+      Opcode := OPX_NotGroup4;
       Exit;
     end;
     
     Index := (Code[ModRMIdx] shr 3) and 7;
     case Index of
-      0: Opcode := 'inc';
-      1: Opcode := 'dec';
+      0: Opcode := OPinc;
+      1: Opcode := OPdec;
     else
-      Opcode := '**group4**';
+      Opcode := OPX_Group4;
       Exit;
     end;
     AddEb;
-    Opcode := CheckLock(Opcode);
+    CheckLock;
   end;
   
   procedure DoGroup5;
@@ -1292,23 +1505,24 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $FF
     then begin
-      Opcode := '!group5!';
+      Opcode := OPX_NotGroup5;
       Exit;
     end;
 
     Index := (Code[ModRMIdx] shr 3) and 7;
     case Index of
-      0: begin AddEv; Opcode := CheckLock('inc'); end;
-      1: begin AddEv; Opcode := CheckLock('dec'); end;
-      2: begin AddEv; Opcode := 'call';           end;
-      3: begin AddMp; Opcode := 'call';           end;
-      4: begin AddEv; Opcode := 'jmp';            end;
-      5: begin AddMp; Opcode := 'jmp';            end;
-      6: begin AddEv; Opcode := 'push';           end;
+      0: begin AddEv; Opcode := OPinc;  end;
+      1: begin AddEv; Opcode := OPdec;  end;
+      2: begin AddEv; Opcode := OPcall; end;
+      3: begin AddMp; Opcode := OPcall; end;
+      4: begin AddEv; Opcode := OPjmp;  end;
+      5: begin AddMp; Opcode := OPjmp;  end;
+      6: begin AddEv; Opcode := OPpush; end;
     else
-      Opcode := '**group5**';
-      Exit;
+      Opcode := OPX_Group5;
     end;
+    if Index in [0,1] then
+      CheckLock;
   end;
 
   procedure DoGroup6;
@@ -1318,26 +1532,25 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $00
     then begin
-      Opcode := '!group6!';
+      Opcode := OPX_NotGroup5;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
     case Index of
-      0: begin AddMw_Rv; Opcode := 'sldt'; end;
-      1: begin AddMw_Rv; Opcode := 'str';  end;
-      2: begin AddEw;    Opcode := 'lldt'; end;
-      3: begin AddEw;    Opcode := 'ltr';  end;
-      4: begin AddEw;    Opcode := 'verr'; end;
-      5: begin AddEw;    Opcode := 'verw'; end;
+      0: begin AddMw_Rv; Opcode := OPsldt; end;
+      1: begin AddMw_Rv; Opcode := OPstr;  end;
+      2: begin AddEw;    Opcode := OPlldt; end;
+      3: begin AddEw;    Opcode := OPltr;  end;
+      4: begin AddEw;    Opcode := OPverr; end;
+      5: begin AddEw;    Opcode := OPverw; end;
     else
-      Opcode := '**group6**';
-      Exit;
+      Opcode := OPX_Group6;
     end;
   end;
 
   procedure DoGroup7;
   const
-    RM3: array [0..7] of String = ('vmrun', 'vmmcall', 'vmload', 'vmsave', 'stgi', 'clgi', 'skinit', 'invlpga');
+    RM3: array [0..7] of TOpCode = (OPvmrun, OPvmmcall, OPvmload, OPvmsave, OPstgi, OPclgi, OPskinit, OPinvlpga);
   var
     Mode: Byte;
     Index: Byte;
@@ -1346,71 +1559,69 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $01
     then begin
-      Opcode := '!group7!';
+      Opcode := OPX_NotGroup7;
       Exit;
     end;
     Mode :=  (Code[ModRMIdx] shr 6) and 3;
     Index := (Code[ModRMIdx] shr 3) and 7;
     RM :=    (Code[ModRMIdx]      ) and 7;
     case Index of
-      0: begin AddMs; Opcode := 'sgdt'; end;
-      1: begin AddMs; Opcode := 'sidt';  end;
-      2: begin AddMs; Opcode := 'lgdt'; end;
+      0: begin AddMs; Opcode := OPsgdt; end;
+      1: begin AddMs; Opcode := OPsidt;  end;
+      2: begin AddMs; Opcode := OPlgdt; end;
       3: begin
         if Mode = 3
         then begin
           Opcode := RM3[RM];
         end
         else begin
-          AddMs; Opcode := 'lidt';
+          AddMs; Opcode := OPlidt;
         end;
       end;
-      4: begin AddMw_Rv; Opcode := 'smsw'; end;
+      4: begin AddMw_Rv; Opcode := OPsmsw; end;
       //5 : invalid
-      6: begin AddEw;    Opcode := 'lmsw'; end;
+      6: begin AddEw;    Opcode := OPlmsw; end;
       7: begin
         if Mode = 3
         then begin
           case RM of
-            0: Opcode := 'swapgs';
-            1: Opcode := 'rdtscp';
+            0: Opcode := OPswapgs;
+            1: Opcode := OPrdtscp;
           else
-            Opcode := '**group7**';
+            Opcode := OPX_Group7;
           end;
         end
         else begin
-          AddMb; Opcode := 'invlpg';
+          AddMb; Opcode := OPinvlpg;
         end;
       end;
     else
-      Opcode := '**group7**';
-      Exit;
+      Opcode := OPX_Group7;
     end;
   end;
   
   procedure DoGroup8;
+  const
+    RM8: array [0..7] of TOpCode = (OPX_Group8, OPX_Group8, OPX_Group8, OPX_Group8, OPbt, OPbts, OPbtr, OPbtc);
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $BA
     then begin
-      Opcode := '!group8!';
+      Opcode := OPX_NotGroup8;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
     if Index < 4
     then begin
-      Opcode := '**group8**';
+      Opcode := OPX_Group8;
       Exit;
     end;
     AddEv; AddIb;
-    case Index of
-      4: Opcode := 'bt';
-      5: Opcode := CheckLock('bts');
-      6: Opcode := CheckLock('btr');
-      7: Opcode := CheckLock('btc');
-    end;
+    Opcode := RM8[Index];
+    if Index in [5..7] then
+      CheckLock;
   end;
 
   procedure DoGroup9;
@@ -1420,7 +1631,7 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $C7
     then begin
-      Opcode := '!group9!';
+      Opcode := OPX_NotGroup9;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
@@ -1428,15 +1639,18 @@ var
     then begin
       if OperandSize32 = os64
       then begin
-        Opcode := CheckLock('cmpxchg16b');
+        Opcode :=  OPcmpxchg16b;
         AddMdq;
       end
       else begin
-        Opcode := CheckLock('cmpxchg8b');
+        Opcode := OPcmpxchg8b;
         AddMq;
       end;
+      CheckLock;
     end
-    else Opcode := '**group9**';
+    else begin
+      Opcode := OPX_Group9;
+    end;
   end;
 
   procedure DoGroup10;
@@ -1444,11 +1658,11 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $B9
     then begin
-      Opcode := '!group10!';
+      Opcode := OPX_NotGroup10;
       Exit;
     end;
     // whole goup is invalid ??
-    Opcode := '**group10**';
+    Opcode := OPX_Group10;
   end;
 
   procedure DoGroup11;
@@ -1459,7 +1673,7 @@ var
     Index := (Code[ModRMIdx] shr 3) and 7;
     if Index <> 0
     then begin
-      Opcode := '**group11**';
+      Opcode := OPX_NotGroup11;
       Exit;
     end;
     
@@ -1467,76 +1681,76 @@ var
       $C6: begin AddEb; AddIb; end;
       $C7: begin AddEv; AddIz; end;
     else
-      Opcode := '!group5!';
+      Opcode := OPX_Group11;
       Exit;
     end;
-    Opcode := 'mov';
+    Opcode := OPmov;
   end;
   
   procedure DoGroup12;
   const
-    OPC: array[0..7] of String = ('', '', 'psrlw', '', 'psraw', '', 'psllw', '');
+    OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrlw, OPX_Invalid, OPpsraw, OPX_Invalid, OPpsllw, OPX_Invalid);
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $71
     then begin
-      Opcode := '!group12!';
+      Opcode := OPX_NotGroup12;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], '', OPC[Index], '') of
+    case DecodePrefix(OPC[Index], OPX_Invalid, OPC[Index], OPX_Invalid) of
       0: begin AddPRq;  AddIb; end;
       2: begin AddVRdq; AddIb;  end;
     else
-      Opcode := '**group12**';
+      Opcode := OPX_Group12;
     end;
   end;
 
   procedure DoGroup13;
   const
-    OPC: array[0..7] of String = ('', '', 'psrld', '', 'psrad', '', 'pslld', '');
+    OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrld, OPX_Invalid, OPpsrad, OPX_Invalid, OPpslld, OPX_Invalid);
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $72
     then begin
-      Opcode := '!group13!';
+      Opcode := OPX_NotGroup13;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], '', OPC[Index], '') of
+    case DecodePrefix(OPC[Index], OPX_Invalid, OPC[Index], OPX_Invalid) of
       0: begin AddPRq;  AddIb; end;
       2: begin AddVRdq; AddIb;  end;
     else
-      Opcode := '**group13**';
+      Opcode := OPX_Group13;
     end;
   end;
 
   procedure DoGroup14;
   const
-    OPC: array[0..7] of String = ('', '', 'psrlq', 'psrldq', '', '', 'psllq', 'psrldq');
+    OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrlq, OPpsrldq, OPX_Invalid, OPX_Invalid, OPpsllq, OPpsrldq);
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $73
     then begin
-      Opcode := '!group14!';
+      Opcode := OPX_NotGroup14;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], '', OPC[Index], '') of
+    case DecodePrefix(OPC[Index], OPX_Invalid, OPC[Index], OPX_Invalid) of
       0: begin
         if (Index = 3) or (Index = 7)
-        then Opcode := '**group14**'
+        then Opcode := OPX_Group14
         else begin AddPRq; AddIb; end;
       end;
       2: begin AddVRdq; AddIb; end;
     else
-      Opcode := '**group14**';
+      Opcode := OPX_Group14;
     end;
   end;
 
@@ -1548,26 +1762,26 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $AE
     then begin
-      Opcode := '!group15!';
+      Opcode := OPX_NotGroup15;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
     if (Flags * [preOpr, preRep, preRepNE] <> [])
     or (Index = 4)
     then begin
-      Opcode := '**group15**';
+      Opcode := OPX_Group15;
       Exit;
     end;
     Mode :=  (Code[ModRMIdx] shr 6) and 3;
     case Index of
-      0: begin Opcode := 'fxsave';  AddM;  end;
-      1: begin Opcode := 'fxrstor'; AddM;  end;
-      2: begin Opcode := 'ldmxcsr'; AddMd; end;
-      3: begin Opcode := 'stmxcsr'; AddMd; end;
-      5: Opcode := 'lfence';
-      6: Opcode := 'mfence';
-      7: if Mode = 3 then Opcode := 'lfence'
-                     else begin Opcode := 'clflush'; AddMb; end;
+      0: begin Opcode := OPfxsave;  AddM;  end;
+      1: begin Opcode := OPfxrstor; AddM;  end;
+      2: begin Opcode := OPldmxcsr; AddMd; end;
+      3: begin Opcode := OPstmxcsr; AddMd; end;
+      5: Opcode := OPlfence;
+      6: Opcode := OPmfence;
+      7: if Mode = 3 then Opcode := OPlfence
+                     else begin Opcode := OPclflush; AddMb; end;
     end;
   end;
 
@@ -1578,11 +1792,12 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $18
     then begin
-      Opcode := '!group16!';
+      Opcode := OPX_NotGroup16;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
     if Index=0 then ;
+    Opcode := OPX_Invalid;
   end;
 
   procedure DoGroupP;
@@ -1592,15 +1807,15 @@ var
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $0D
     then begin
-      Opcode := '!groupp!';
+      Opcode := OPX_NotGroupP;
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
     case Index of
-      0: Opcode := 'prefetch exclusive';
-      1,3: Opcode := 'prefetch modified';
+      0:   Opcode := OPprefetch_exclusive;
+      1,3: Opcode := OPprefetch_modified;
     else
-      Opcode := '--prefetch--'
+      Opcode := OPX_prefetch;
     end;
   end;
   
@@ -1611,29 +1826,29 @@ var
     INVALID = '**2byte**';
 
   const
-    OPR_6x: array[0..$F] of String = (
-      'punpcklbw', 'punpcklwd', 'punpcklqd', 'packsswb',
-      'pcmpgtb', 'pcmpgtw', 'pcmpgtd', 'packuswb',
-      'punpkhbw', 'punpkhwd', 'punpkhdq', 'packssdw',
-      'punpcklqdq', 'punpckhqdq', '', ''
+    OPR_6x: array[0..$F] of TOpCode = (
+      OPpunpcklbw, OPpunpcklwd, OPpunpcklqd, OPpacksswb,
+      OPpcmpgtb, OPpcmpgtw, OPpcmpgtd, OPpackuswb,
+      OPpunpkhbw, OPpunpkhwd, OPpunpkhdq, OPpackssdw,
+      OPpunpcklqdq, OPpunpckhqdq, OPX_Invalid, OPX_Invalid
     );
-    OPR_Dx: array[0..$F] of String = (
-      '', 'psrlw', 'psrld', 'psrlq',
-      'paddq', 'pmullw', '', '',
-      'psubusb', 'psubusw', 'pminub', 'pand',
-      'paddusb', 'paddusw', 'pmaxub', 'pandn'
+    OPR_Dx: array[0..$F] of TOpCode = (
+      OPX_Invalid, OPpsrlw, OPpsrld, OPpsrlq,
+      OPpaddq, OPpmullw, OPX_Invalid, OPX_Invalid,
+      OPpsubusb, OPpsubusw, OPpminub, OPpand,
+      OPpaddusb, OPpaddusw, OPpmaxub, OPpandn
     );
-    OPR_Ex: array[0..$F] of String = (
-      'pavgb', 'psraw', 'psrad', 'pavgw',
-      'pmulhuw', 'pmulhw', '', '',
-      'psubsb', 'psubsw', 'pminsw', 'por',
-      'paddsb', 'paddsw', 'pmaxsw', 'pxor'
+    OPR_Ex: array[0..$F] of TOpCode = (
+      OPpavgb, OPpsraw, OPpsrad, OPpavgw,
+      OPpmulhuw, OPpmulhw, OPX_Invalid, OPX_Invalid,
+      OPpsubsb, OPpsubsw, OPpminsw, OPpor,
+      OPpaddsb, OPpaddsw, OPpmaxsw, OPpxor
     );
-    OPR_Fx: array[0..$F] of String = (
-      '', 'psllw', 'pslld', 'psllq',
-      'pmuludq', 'pmaddwd', 'psadbw', '',
-      'psubb', 'psubw', 'psubd', 'psubq',
-      'paddb', 'paddw', 'paddd', ''
+    OPR_Fx: array[0..$F] of TOpCode = (
+      OPX_Invalid, OPpsllw, OPpslld, OPpsllq,
+      OPpmuludq, OPpmaddwd, OPpsadbw, OPX_Invalid,
+      OPpsubb, OPpsubw, OPpsubd, OPpsubq,
+      OPpaddb, OPpaddw, OPpaddd, OPX_Invalid
     );
   var
     idx: Integer;
@@ -1648,46 +1863,46 @@ var
         DoGroup7;
       end;
       $02: begin
-        Opcode := 'lar';
+        Opcode := OPlar;
         AddGv; AddEw;
       end;
       $03: begin
-        Opcode := 'lsl';
+        Opcode := OPlsl;
         AddGv; AddEw;
       end;
       // $04: invalid
       $05: begin
-        Opcode := 'syscall';
+        Opcode := OPsyscall;
       end;
       $06: begin
-        Opcode := 'clts';
+        Opcode := OPclts;
       end;
       $07: begin
-        Opcode := 'sysret';
+        Opcode := OPsysret;
       end;
       $08: begin
-        Opcode := 'invd';
+        Opcode := OPinvd;
       end;
       $09: begin
-        Opcode := 'wbinvd';
+        Opcode := OPwbinvd;
       end;
       // $0A: invalid
       $0B: begin
-        Opcode := 'ud2';
+        Opcode := OPud2;
       end;
       // $0C: invalid
       $0D: begin
         DoGroupP;
       end;
       $0E: begin
-        Opcode := 'femms';
+        Opcode := OPfemms;
       end;
       $0F: begin
         Do3DNow;
       end;
       //---
       $10: begin
-        case DecodePrefix('movups', 'movss', 'movupd', 'movsd') of
+        case DecodePrefix(OPmovups, OPmovss, OPmovupd, OPmovsd) of
           0: begin AddVps;    AddWps; end;
           1: begin AddVdq_ss; AddWss; end;
           2: begin AddVpd;    AddWpd; end;
@@ -1695,7 +1910,7 @@ var
         end;
       end;
       $11: begin
-        case DecodePrefix('movups', 'movss', 'movupd', 'movsd') of
+        case DecodePrefix(OPmovups, OPmovss, OPmovupd, OPmovsd) of
           0: begin AddWps; AddVps; end;
           1: begin AddWss; AddVss; end;
           2: begin AddWpd; AddVpd; end;
@@ -1703,14 +1918,14 @@ var
         end;
       end;
       $12: begin
-        case DecodePrefix('movhlps', 'movsldup', 'movlpd', 'movddup') of
+        case DecodePrefix(OPmovhlps, OPmovsldup, OPmovlpd, OPmovddup) of
           0: begin
             // Opcode differs on type found
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
             AddVps; AddWq;
             if ofMemory in Operand[2].Flags
-            then Opcode := 'movlps';
+            then Opcode := OPmovlps;
           end;
           1: begin AddVps; AddWps; end;
           2: begin AddVsd; AddMq;  end;
@@ -1718,49 +1933,49 @@ var
         end;
       end;
       $13: begin
-        case DecodePrefix('movlps', '', 'movlpd', '') of
+        case DecodePrefix(OPmovlps, OPX_Invalid, OPmovlpd, OPX_Invalid) of
           0: begin AddMq; AddVps; end;
           2: begin AddMq; AddVsd; end;
         end;
       end;
       $14: begin
-        case DecodePrefix('unpcklps', '', 'unpcklpd', '') of
+        case DecodePrefix(OPunpcklps, OPX_Invalid, OPunpcklpd, OPX_Invalid) of
           0: begin AddVps; AddWq; end;
           2: begin AddVpd; AddWq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $15: begin
-        case DecodePrefix('unpckhps', '', 'unpckhpd', '') of
+        case DecodePrefix(OPunpckhps, OPX_Invalid, OPunpckhpd, OPX_Invalid) of
           0: begin AddVps; AddWq; end;
           2: begin AddVpd; AddWq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $16: begin
-        case DecodePrefix('movlhps', 'movshdup', 'movhpd', '') of
+        case DecodePrefix(OPmovlhps, OPmovshdup, OPmovhpd, OPX_Invalid) of
           0: begin
             // Opcode differs on type found
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
             AddVps; AddWq;
             if ofMemory in Operand[2].Flags
-            then Opcode := 'movhps';
+            then Opcode := OPmovhps;
           end;
           1: begin AddVps; AddWps; end;
           2: begin AddVsd; AddMq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $17: begin
-        case DecodePrefix('movhps', '', 'movhpd', '') of
+        case DecodePrefix(OPmovhps, OPX_Invalid, OPmovhpd, OPX_Invalid) of
           0: begin AddMq; AddVps; end;
           2: begin AddMq; AddVsd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $18: begin
@@ -1768,44 +1983,44 @@ var
       end;
       $19..$1F: begin
         Include(Flags, flagModRM);
-        Opcode := 'nop';
+        Opcode := OPnop;
       end;
       //---
       $20: begin
-        Opcode := 'mov';
+        Opcode := OPmov;
         AddRd_q; AddCd_q;
       end;
       $21: begin
-        Opcode := 'mov';
+        Opcode := OPmov;
         AddRd_q; AddDd_q;
       end;
       $22: begin
-        Opcode := 'mov';
+        Opcode := OPmov;
         AddCd_q; AddRd_q;
       end;
       $23: begin
-        Opcode := 'mov';
+        Opcode := OPmov;
         AddDd_q; AddRd_q;
       end;
-      // $24..$27: invalid
+      // $24..$27: OPX_Invalid
       $28: begin
-        case DecodePrefix('movaps', '', 'movapd', '') of
+        case DecodePrefix(OPmovaps, OPX_Invalid, OPmovapd, OPX_Invalid) of
           0: begin AddVps; AddWps; end;
           2: begin AddVpd; AddWpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $29: begin
-        case DecodePrefix('movaps', '', 'movapd', '') of
+        case DecodePrefix(OPmovaps, OPX_Invalid, OPmovapd, OPX_Invalid) of
           0: begin AddWps; AddVps; end;
           2: begin AddWpd; AddVpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $2A: begin
-        case DecodePrefix('cvtpi2ps', 'cvtsi2ss', 'cvtpi2pd', 'cvtsi2sd') of
+        case DecodePrefix(OPcvtpi2ps, OPcvtsi2ss, OPcvtpi2pd, OPcvtsi2sd) of
           0: begin AddVps; AddQq;   end;
           1: begin AddVss; AddEd_q; end;
           2: begin AddVpd; AddQq;   end;
@@ -1813,15 +2028,15 @@ var
         end;
       end;
       $2B: begin
-        case DecodePrefix('movntps', '', 'movntpd', '') of
+        case DecodePrefix(OPmovntps, OPX_Invalid, OPmovntpd, OPX_Invalid) of
           0: begin AddMdq; AddVps; end;
           2: begin AddMdq; AddVpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $2C: begin
-        case DecodePrefix('cvttps2pi', 'cvttss2pi', 'cvttpd2pi', 'cvttsd2pi') of
+        case DecodePrefix(OPcvttps2pi, OPcvttss2pi, OPcvttpd2pi, OPcvttsd2pi) of
           0: begin AddPq;   AddWps; end;
           1: begin AddGd_q; AddWss; end;
           2: begin AddPq;   AddWpd; end;
@@ -1829,7 +2044,7 @@ var
         end;
       end;
       $2D: begin
-        case DecodePrefix('cvtps2pi', 'cvtss2pi', 'cvtpd2pi', 'cvtsd2pi') of
+        case DecodePrefix(OPcvtps2pi, OPcvtss2pi, OPcvtpd2pi, OPcvtsd2pi) of
           0: begin AddPq;   AddWps; end;
           1: begin AddGd_q; AddWss; end;
           2: begin AddPq;   AddWpd; end;
@@ -1837,64 +2052,64 @@ var
         end;
       end;
       $2E: begin
-        case DecodePrefix('ucomiss', '', 'ucomissd', '') of
+        case DecodePrefix(OPucomiss, OPX_Invalid, OPucomissd, OPX_Invalid) of
           0: begin AddVss; AddWss; end;
           2: begin AddVsd; AddWsd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $2F: begin
-        case DecodePrefix('comiss', '', 'comissd', '') of
+        case DecodePrefix(OPcomiss, OPX_Invalid, OPcomissd, OPX_Invalid) of
           0: begin AddVss; AddWss; end;
           2: begin AddVsd; AddWsd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       //---
       $30: begin
-        Opcode := 'wrmsr';
+        Opcode := OPwrmsr;
       end;
       $31: begin
-        Opcode := 'rdtsc';
+        Opcode := OPrdtsc;
       end;
       $32: begin
-        Opcode := 'rdmsr';
+        Opcode := OPrdmsr;
       end;
       $33: begin
-        Opcode := 'rdpmc';
+        Opcode := OPrdpmc;
       end;
       $34: begin
-        Opcode := '**sysenter**';
+        Opcode := OPXsysenter;
       end;
       $35: begin
-        Opcode := '**sysexit**';
+        Opcode := OPXsysexit;
       end;
-      // $36..$3F: invalid
+      // $36..$3F: OPX_Invalid
       //---
       $40..$4F: begin
-        Opcode := 'cmov' + StdCond(Code[CodeIdx]);
+        Opcode := OPcmov__; StdCond(Code[CodeIdx]);
         AddGv; AddEv;
       end;
       //---
       $50: begin
-        case DecodePrefix('movmskps', '', 'movmskpd', '') of
+        case DecodePrefix(OPmovmskps, OPX_Invalid, OPmovmskpd, OPX_Invalid) of
           0: begin AddGd; AddVRps; end;
           2: begin AddGd; AddVRpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $51, $58..$59, $5C..$5F: begin
         case Code[CodeIdx] of
-          $51: Idx := DecodePrefix('sqrtps', 'sqrtss', 'sqrtpd', 'sqrtsd');
-          $58: Idx := DecodePrefix('addps', 'addss', 'addpd', 'addsd');
-          $59: Idx := DecodePrefix('mulps', 'mulss', 'mulpd', 'mulsd');
-          $5C: Idx := DecodePrefix('subps', 'subss', 'subpd', 'subsd');
-          $5D: Idx := DecodePrefix('minps', 'minss', 'minpd', 'minsd');
-          $5E: Idx := DecodePrefix('divps', 'divss', 'divpd', 'divsd');
-          $5F: Idx := DecodePrefix('maxps', 'maxss', 'maxpd', 'maxsd');
+          $51: Idx := DecodePrefix(OPsqrtps, OPsqrtss, OPsqrtpd, OPsqrtsd);
+          $58: Idx := DecodePrefix(OPaddps, OPaddss, OPaddpd, OPaddsd);
+          $59: Idx := DecodePrefix(OPmulps, OPmulss, OPmulpd, OPmulsd);
+          $5C: Idx := DecodePrefix(OPsubps, OPsubss, OPsubpd, OPsubsd);
+          $5D: Idx := DecodePrefix(OPminps, OPminss, OPminpd, OPminsd);
+          $5E: Idx := DecodePrefix(OPdivps, OPdivss, OPdivpd, OPdivsd);
+          $5F: Idx := DecodePrefix(OPmaxps, OPmaxss, OPmaxpd, OPmaxsd);
         else
           Idx := -1;
         end;
@@ -1905,60 +2120,60 @@ var
           2: begin AddVpd; AddWpd; end;
           3: begin AddVsd; AddWsd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $52: begin
-        case DecodePrefix('rsqrtps', 'rsqrtss', '', '') of
+        case DecodePrefix(OPrsqrtps, OPrsqrtss, OPX_Invalid, OPX_Invalid) of
           0: begin AddVps; AddWps; end;
           1: begin AddVss; AddWss; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $53: begin
-        case DecodePrefix('rcpps', 'rcpss', '', '') of
+        case DecodePrefix(OPrcpps, OPrcpss, OPX_Invalid, OPX_Invalid) of
           0: begin AddVps; AddWps; end;
           1: begin AddVss; AddWss; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $54: begin
-        case DecodePrefix('andps', '', 'andpd', '') of
+        case DecodePrefix(OPandps, OPX_Invalid, OPandpd, OPX_Invalid) of
           0: begin AddVps; AddWps; end;
           2: begin AddVpd; AddWpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $55: begin
-        case DecodePrefix('andnps', '', 'andnpd', '') of
+        case DecodePrefix(OPandnps, OPX_Invalid, OPandnpd, OPX_Invalid) of
           0: begin AddVps; AddWps; end;
           2: begin AddVpd; AddWpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $56: begin
-        case DecodePrefix('orps', '', 'orpd', '') of
+        case DecodePrefix(OPorps, OPX_Invalid, OPorpd, OPX_Invalid) of
           0: begin AddVps; AddWps; end;
           2: begin AddVpd; AddWpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $57: begin
-        case DecodePrefix('xorps', '', 'xorpd', '') of
+        case DecodePrefix(OPxorps, OPX_Invalid, OPxorpd, OPX_Invalid) of
           0: begin AddVps; AddWps; end;
           2: begin AddVpd; AddWpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       // $58..$59: see $51
       $5A: begin
-        case DecodePrefix('cvtps2pd', 'cvtss2sd', 'cvtpd2ps', 'cvtsd2ss') of
+        case DecodePrefix(OPcvtps2pd, OPcvtss2sd, OPcvtpd2ps, OPcvtsd2ss) of
           0: begin AddVpd; AddWps; end;
           1: begin AddVsd; AddWss; end;
           2: begin AddVps; AddWpd; end;
@@ -1966,19 +2181,19 @@ var
         end;
       end;
       $5B: begin
-        case DecodePrefix('cvtdq2ps', 'cvttps2dq', 'cvtps2dq', '') of
+        case DecodePrefix(OPcvtdq2ps, OPcvttps2dq, OPcvtps2dq, OPX_Invalid) of
           0: begin AddVps; AddWdq; end;
           1: begin AddVdq; AddWps; end;
           2: begin AddVdq; AddWps; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       // $5C..$5F: see $51
       //---
       $60..$6D: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_6x[idx], '', OPR_6x[idx], '');
+        idx := DecodePrefix(OPR_6x[idx], OPX_Invalid, OPR_6x[idx], OPX_Invalid);
 
         if (idx = 0) and (Code[CodeIdx] in [$6C, $6D])
         then idx := -1;
@@ -1990,29 +2205,29 @@ var
             if Code[CodeIdx] = $6B then AddWdq else AddWq;
           end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $6E: begin
-        case DecodePrefix('movd', '', 'movd', '') of
+        case DecodePrefix(OPmovd, OPX_Invalid, OPmovd, OPX_Invalid) of
           0: begin AddPq;  AddEd_q; end;
           2: begin AddVdq; AddEd_q; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $6F: begin
-        case DecodePrefix('movq', 'movdqu', 'movdqa', '') of
+        case DecodePrefix(OPmovq, OPmovdqu, OPmovdqa, OPX_Invalid) of
           0: begin AddPq;  AddQq;  end;
           1: begin AddVdq; AddWdq; end;
           2: begin AddVdq; AddWdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       //---
       $70: begin
-        case DecodePrefix('pshufw', 'pshufhw', 'pshufd', 'pshuflw') of
+        case DecodePrefix(OPpshufw, OPpshufhw, OPpshufd, OPpshuflw) of
           0: begin AddPq;  AddQq;  AddIb; end;
           1: begin AddVq;  AddWq;  AddIb; end;
           2: begin AddVdq; AddWdq; AddIb; end;
@@ -2022,139 +2237,139 @@ var
       $71: begin
         if Flags * [preRep, preRepNE] = []
         then DoGroup12
-        else Opcode := INVALID;
+        else Opcode := OPX_Invalid;
       end;
       $72: begin
         if Flags * [preRep, preRepNE] = []
         then DoGroup13
-        else Opcode := INVALID;
+        else Opcode := OPX_Invalid;
       end;
       $73: begin
         if Flags * [preRep, preRepNE] = []
         then DoGroup14
-        else Opcode := INVALID;
+        else Opcode := OPX_Invalid;
       end;
       $74: begin
-        case DecodePrefix('pcmpeqb', '', 'pcmpeqb', '') of
+        case DecodePrefix(OPpcmpeqb, OPX_Invalid, OPpcmpeqb, OPX_Invalid) of
           0: begin AddPq;  AddQq;  end;
           2: begin AddVdq; AddWdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $75: begin
-        case DecodePrefix('pcmpeqw', '', 'pcmpeqw', '') of
+        case DecodePrefix(OPpcmpeqw, OPX_Invalid, OPpcmpeqw, OPX_Invalid) of
           0: begin AddPq;  AddQq;  end;
           2: begin AddVdq; AddWdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $76: begin
-        case DecodePrefix('pcmpeqd', '', 'pcmpeqd', '') of
+        case DecodePrefix(OPpcmpeqd, OPX_Invalid, OPpcmpeqd, OPX_Invalid) of
           0: begin AddPq;  AddQq;  end;
           2: begin AddVdq; AddWdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $77: begin
         if Flags * [preRep, preRepNE, preOpr] = []
-        then Opcode := 'emms'
-        else Opcode := INVALID;
+        then Opcode := OPemms
+        else Opcode := OPX_Invalid;
       end;
-      // $78..$7B: invalid
+      // $78..$7B: OPX_Invalid
       $7C: begin
-        case DecodePrefix('', '', 'haddpd', 'haddps') of
+        case DecodePrefix(OPX_Invalid, OPX_Invalid, OPhaddpd, OPhaddps) of
           2: begin AddVpd; AddWpd; end;
           3: begin AddVps; AddWps; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $7D: begin
-        case DecodePrefix('', '', 'hsubpd', 'hsubps') of
+        case DecodePrefix(OPX_Invalid, OPX_Invalid, OPhsubpd, OPhsubps) of
           2: begin AddVpd; AddWpd; end;
           3: begin AddVps; AddWps; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $7E: begin
-        case DecodePrefix('movd', 'movq', 'movd', '') of
+        case DecodePrefix(OPmovd, OPmovq, OPmovd, OPX_Invalid) of
           0: begin AddEd_q; AddPd_q; end;
           1: begin AddVq;   AddWq;   end;
           2: begin AddEd_q; AddVd_q; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $7F: begin
-        case DecodePrefix('movq', 'movdqu', 'movdqa', '') of
+        case DecodePrefix(OPmovq, OPmovdqu, OPmovdqa, OPX_Invalid) of
           0: begin AddQq;  AddPq;  end;
           1: begin AddWdq; AddVdq; end;
           2: begin AddWdq; AddVdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       //---
       $80..$8F: begin
-        Opcode := 'j' + StdCond(Code[CodeIdx]);
+        Opcode := OPj__; StdCond(Code[CodeIdx]);
         AddJz;
       end;
       //---
       $90..$9F: begin
-        Opcode := 'set' + StdCond(Code[CodeIdx]);
+        Opcode := OPset__; StdCond(Code[CodeIdx]);
         AddEb;
       end;
       //---
       $A0: begin
-        Opcode := 'push';
+        Opcode := OPpush;
         AddOperand('fs');
       end;
       $A1: begin
-        Opcode := 'pop';
+        Opcode := OPpop;
         AddOperand('fs');
       end;
       $A2: begin
-        Opcode := 'cpuid';
+        Opcode := OPcpuid;
       end;
       $A3: begin
-        Opcode := 'bt';
+        Opcode := OPbt;
         AddEv; AddGv;
       end;
       $A4: begin
-        Opcode := 'shld';
+        Opcode := OPshld;
         AddEv; AddGv; AddIb;
       end;
       $A5: begin
-        Opcode := 'shld';
+        Opcode := OPshld;
         AddEv; AddGv;
         AddOperand('cl');
       end;
-      // $A6..$A7: invalid
+      // $A6..$A7: OPX_Invalid
       $A8: begin
-        Opcode := 'push';
+        Opcode := OPpush;
         AddOperand('gs');
       end;
       $A9: begin
-        Opcode := 'pop';
+        Opcode := OPpop;
         AddOperand('gs');
       end;
       $AA: begin
-        Opcode := 'rsm';
+        Opcode := OPrsm;
       end;
       $AB: begin
-        Opcode := 'bts';
+        Opcode := OPbts;
         AddEv; AddGv;
       end;
       $AC: begin
-        Opcode := 'shrd';
+        Opcode := OPshrd;
         AddEv; AddGv; AddIb;
       end;
       $AD: begin
-        Opcode := 'shld';
+        Opcode := OPshld;
         AddEv; AddGv;
         AddOperand('cl');
       end;
@@ -2162,43 +2377,43 @@ var
         DoGroup15;
       end;
       $AF: begin
-        Opcode := 'imul';
+        Opcode := OPimul;
         AddGv; AddEv;
       end;
       //---
       $B0: begin
         AddEb; AddGb;
-        Opcode := CheckLock('cmpxchg');
+        Opcode := OPcmpxchg; CheckLock;
       end;
       $B1: begin
         AddEv; AddGv;
-        Opcode := CheckLock('cmpxchg');
+        Opcode := OPcmpxchg; CheckLock;
       end;
       $B2: begin
-        Opcode := 'lss';
+        Opcode := OPlss;
         AddGz; AddMp;
       end;
       $B3: begin
-        Opcode := 'btr';
+        Opcode := OPbtr;
         AddEv; AddGv;
       end;
       $B4: begin
-        Opcode := 'lfs';
+        Opcode := OPlfs;
         AddGz; AddMp;
       end;
       $B5: begin
-        Opcode := 'lgs';
+        Opcode := OPlgs;
         AddGz; AddMp;
       end;
       $B6: begin
-        Opcode := 'movzx';
+        Opcode := OPmovzx;
         AddGv; AddEb;
       end;
       $B7: begin
-        Opcode := 'movzx';
+        Opcode := Opmovzx;
         AddGv; AddEw;
       end;
-      // $B8: invalid
+      // $B8: OPX_Invalid
       $B9: begin
         DoGroup10;
       end;
@@ -2206,36 +2421,36 @@ var
         DoGroup8;
       end;
       $BB: begin
-        Opcode := 'btc';
+        Opcode := OPbtc;
         AddEv; AddGv;
       end;
       $BC: begin
-        Opcode := 'bsf';
+        Opcode := OPbsf;
         AddGv; AddEv;
       end;
       $BD: begin
-        Opcode := 'bsr';
+        Opcode := OPbsr;
         AddGv; AddEv;
       end;
       $BE: begin
-        Opcode := 'movsx';
+        Opcode := OPmovsx;
         AddGv; AddEb;
       end;
       $BF: begin
-        Opcode := 'movsx';
+        Opcode := OPmovsx;
         AddGv; AddEw;
       end;
       //---
       $C0: begin
         AddEb; AddGb;
-        Opcode := CheckLock('xadd');
+        Opcode := OPxadd; CheckLock;
       end;
       $C1: begin
         AddEv; AddGv;
-        Opcode := CheckLock('xadd');
+        Opcode := OPxadd; CheckLock;
       end;
       $C2: begin
-        case DecodePrefix('cmpps', 'cmpss', 'cmppd', 'cmpsd') of
+        case DecodePrefix(OPcmpps, OPcmpss, OPcmppd, OPcmpsd) of
           0: begin AddVps; AddWps; AddIb end;
           1: begin AddVss; AddWss; AddIb end;
           2: begin AddVpd; AddWpd; AddIb end;
@@ -2245,167 +2460,168 @@ var
       $C3: begin
         if Flags * [preRep, preRepNE, preOpr] = []
         then begin
-          Opcode := 'movnti';
+          Opcode := OPmovnti;
           AddMd_q; AddGd_q;
         end
-        else Opcode := INVALID;
+        else Opcode := OPX_Invalid;
       end;
       $C4: begin
-        case DecodePrefix('pinsrw', '', 'pinsrw', '') of
+        case DecodePrefix(OPpinsrw, OPX_Invalid, OPpinsrw, OPX_Invalid) of
           0: begin AddPq;  AddEw; AddIb end;
           2: begin AddVdq; AddEw; AddIb end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $C5: begin
-        case DecodePrefix('pextrw', '', 'pextrw', '') of
+        case DecodePrefix(OPpextrw, OPX_Invalid, OPpextrw, OPX_Invalid) of
           0: begin AddGd; AddPRq;  AddIb end;
           2: begin AddGd; AddVRdq; AddIb end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $C6: begin
-        case DecodePrefix('shufps', '', 'shufpd', '') of
+        case DecodePrefix(OPshufps, OPX_Invalid, OPshufpd, OPX_Invalid) of
           0: begin AddVps; AddWps; AddIb end;
           2: begin AddVpd; AddWpd; AddIb end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $C7: begin
         DoGroup9;
       end;
       $C8..$CF: begin
-        Opcode := 'bswp';
+        Opcode := OPbswp;
         AddStdReg(Code[CodeIdx]);
       end;
       //---
       $D0: begin
-        case DecodePrefix('', '', 'addsubpd', 'addsubps') of
+        case DecodePrefix(OPX_Invalid, OPX_Invalid, OPaddsubpd, OPaddsubps) of
           2: begin AddVpd; AddWpd; end;
           3: begin AddVps; AddWps; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $D1..$D5, $D8..$DF: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_Dx[idx], '', OPR_Dx[idx], '');
+        idx := DecodePrefix(OPR_Dx[idx], OPX_Invalid, OPR_Dx[idx], OPX_Invalid);
 
         case Idx of
           0: begin AddPq;  AddQq;  end;
           2: begin AddVdq; AddWdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $D6: begin
-        case DecodePrefix('', 'movq2dq', 'movq', 'movdq2q') of
+        case DecodePrefix(OPX_Invalid, OPmovq2dq, OPmovq, OPmovdq2q) of
           1: begin AddVdq; AddPRq; end;
           2: begin AddWq;  AddVq;  end;
           3: begin AddPq;  AddVRq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $D7: begin
-        case DecodePrefix('pmovmskb', '', 'pmovmskb', '') of
+        case DecodePrefix(OPpmovmskb, OPX_Invalid, OPpmovmskb, OPX_Invalid) of
           0: begin AddGd; AddPRq;  end;
           2: begin AddGd; AddVRdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       // $D8..$DF: see $D1
       //---
       $E0..$E5, $E8..$EF: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_Ex[idx], '', OPR_Ex[idx], '');
+        idx := DecodePrefix(OPR_Ex[idx], OPX_Invalid, OPR_Ex[idx], OPX_Invalid);
 
         case Idx of
           0: begin AddPq;  AddQq;  end;
           2: begin AddVdq; AddWdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $E6: begin
-        case DecodePrefix('', 'cvtdq2pd', 'cvttpd2dq', 'cvtpd2dq') of
+        case DecodePrefix(OPX_Invalid, OPcvtdq2pd, OPcvttpd2dq, OPcvtpd2dq) of
           1: begin AddVpd; AddWq;  end;
           2: begin AddVq;  AddWpd; end;
           3: begin AddVq;  AddWpd; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $E7: begin
-        case DecodePrefix('movntq', '', 'movntdqu', '') of
+        case DecodePrefix(OPmovntq, OPX_Invalid, OPmovntdqu, OPX_Invalid) of
           0: begin AddMq;  AddPq;  end;
           2: begin AddMdq; AddVdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       // $E8..$EF: see $E0
       $F0: begin
         if preRepNE in Flags
         then begin
-          Opcode := 'lddqu';
+          Opcode := OPlddqu;
           AddVpd; AddMdq;
         end
-        else Opcode := INVALID;
+        else Opcode := OPX_Invalid;
       end;
       $F1..$F6, $F8..$FE: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_Fx[idx], '', OPR_Fx[idx], '');
+        idx := DecodePrefix(OPR_Fx[idx], OPX_Invalid, OPR_Fx[idx], OPX_Invalid);
 
         case Idx of
           0: begin AddPq;  AddQq;  end;
           2: begin AddVdq; AddWdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       $F7: begin
-        case DecodePrefix('maskmovq', '', 'maskmovdqu', '') of
+        case DecodePrefix(OPmaskmovq, OPX_Invalid, OPmaskmovdqu, OPX_Invalid) of
           0: begin AddPq;  AddPRq;  end;
           2: begin AddVdq; AddVRdq; end;
         else
-          Opcode := INVALID;
+          Opcode := OPX_Invalid;
         end;
       end;
       // $F8..$FE: see $F1
-      // $FF: invalid
+      // $FF: OPX_Invalid
     else
-      Opcode := INVALID;
+      Opcode := OPX_Invalid;
     end;
   end;
 
   procedure DoDisassemble;
   begin
+    Opcode := OPX_InternalUnknown;
     repeat
       ModRMIdx := CodeIdx + 1;
       case Code[CodeIdx] of
         $00..$05: begin
           AddStdOperands(Code[CodeIdx]);
-          Opcode := CheckLock('add');
+          Opcode := OPadd; CheckLock;
         end;
         $06: begin
-          Opcode := Check32('push');
+          Opcode := OPpush; Check32;
           AddOperand('es');
         end;
         $07: begin
-          Opcode := Check32('pop');
+          Opcode := OPpop; Check32;
           AddOperand('es');
         end;
         $08..$0D: begin
           AddStdOperands(Code[CodeIdx]);
-          Opcode := CheckLock('or');
+          Opcode := OPor; CheckLock;
         end;
         $0E: begin
-          Opcode := Check32('push');
+          Opcode := OPpush; Check32;
           AddOperand('cs');
         end;
         $0F: begin
@@ -2414,69 +2630,69 @@ var
         //---
         $10..$15: begin
           AddStdOperands(Code[CodeIdx]);
-          Opcode := CheckLock('adc');
+          Opcode := OPadc; CheckLock;
         end;
         $16: begin
-          Opcode := Check32('push');
+          Opcode := OPpush; Check32;
           AddOperand('ss');
         end;
         $17: begin
-          Opcode := Check32('pop');
+          Opcode := OPpop; Check32;
           AddOperand('ss');
         end;
         $18..$1D: begin
           AddStdOperands(Code[CodeIdx]);
-          Opcode := CheckLock('sbb');
+          Opcode := OPsbb; CheckLock;
         end;
         $1E: begin
-          Opcode := Check32('push');
+          Opcode := OPpush; Check32;
           AddOperand('ds');
         end;
         $1F: begin
-          Opcode := Check32('pop');
+          Opcode := OPpop; Check32;
           AddOperand('ds');
         end;
         //---
         $20..$25: begin
           AddStdOperands(Code[CodeIdx]);
-          Opcode := CheckLock('and');
+          Opcode := OPand; CheckLock;
         end;
         $26: begin
           Segment := Segment + Ignore64('es:');
         end;
         $27: begin
-          Opcode := Check32('daa');
+          Opcode := OPdaa; Check32;
         end;
         $28..$2D: begin
           AddStdOperands(Code[CodeIdx]);
-          Opcode := CheckLock('sub');
+          Opcode := OPsub; CheckLock;
         end;
         $2E: begin
           Segment := Segment + Ignore64('cs:');
         end;
         $2F: begin
-          Opcode := Check32('das');
+          Opcode := OPdas; Check32;
         end;
         //---
         $30..$35: begin
           AddStdOperands(Code[CodeIdx]);
-          Opcode := CheckLock('xor');
+          Opcode := OPxor; CheckLock;
         end;
         $36: begin
           Segment := Segment + Ignore64('ss:');
         end;
         $37: begin
-          Opcode := Check32('aaa');
+          Opcode := OPaaa; Check32;
         end;
         $38..$3D: begin
-          Opcode := 'cmp';
+          Opcode := OPcmp;
           AddStdOperands(Code[CodeIdx]);
         end;
         $3E: begin
           Segment := Segment + Ignore64('ds:');
         end;
         $3F: begin
-          Opcode := Check32('aas');
+          Opcode := OPaas; Check32;
         end;
         //---
         $40..$4F: begin
@@ -2491,42 +2707,45 @@ var
           else begin
             AddStdReg(Code[CodeIdx]);
             if Code[CodeIdx] <= $47
-            then Opcode := CheckLock('inc')
-            else Opcode := CheckLock('dec');
+            then Opcode := OPinc
+            else Opcode := OPdec;
+            CheckLock;
           end;
         end;
         //---
         $50..$57: begin
-          Opcode := 'push';
+          Opcode := OPpush;
           AddStdReg(Code[CodeIdx]);
         end;
         $58..$5F: begin
-          Opcode := 'pop';
+          Opcode := OPpop;
           AddStdReg(Code[CodeIdx]);
         end;
         //---
         $60: begin
           if OperandSize32 = os16
-          then Opcode := Check32('pusha')
-          else Opcode := Check32('pushad');
+          then Opcode := OPpusha
+          else Opcode := OPpushad;
+          Check32;
         end;
         $61: begin
           if OperandSize32 = os16
-          then Opcode := Check32('popa')
-          else Opcode := Check32('popad');
+          then Opcode := OPpopa
+          else Opcode := OPpopad;
+          Check32;
         end;
         $62: begin
-          Opcode := Check32('bound');
+          Opcode := OPbound; Check32;
           AddGv; AddMa;
         end;
         $63: begin
           if A64Bit
           then begin
-            Opcode := ('movsxd');
+            Opcode := (OPmovsxd);
             AddGv; AddEd;
           end
           else begin
-            Opcode := Check32('arpl');
+            Opcode := OParpl; Check32;
             AddEw; AddGw;
           end;
         end;
@@ -2543,23 +2762,23 @@ var
           Include(FLags, preAdr);
         end;
         $68: begin
-          Opcode := 'push';
+          Opcode := OPpush;
           AddIz;
         end;
         $69: begin
-          Opcode := 'imul';
+          Opcode := OPimul;
           AddGv; AddEv; AddIz;
         end;
         $6A: begin
-          Opcode := 'push';
+          Opcode := OPpush;
           AddIb;
         end;
         $6B: begin
-          Opcode := 'imul';
+          Opcode := OPimul;
           AddGv; AddEv; AddIb;
         end;
         $6C: begin
-          Opcode := CheckRepeat('insb');
+          Opcode := OPinsb; CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddYb;
           AddOperand('dx', os16);
@@ -2567,15 +2786,16 @@ var
         end;
         $6D: begin
           if OperandSize32 = os16
-          then Opcode := CheckRepeat('insw')
-          else Opcode := CheckRepeat('insd');
+          then Opcode := OPinsw
+          else Opcode := OPinsd;
+          CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddYz;
           AddOperand('dx', os16);
           {$endif}
         end;
         $6E: begin
-          Opcode := CheckRepeat('outsb');
+          Opcode := OPoutsb; CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddOperand('dx', os16);
           AddXb;
@@ -2583,15 +2803,16 @@ var
         end;
         $6F: begin
           if OperandSize32 = os16
-          then Opcode := CheckRepeat('outsw')
-          else Opcode := CheckRepeat('outsd');
+          then Opcode := OPoutsw
+          else Opcode := OPoutsd;
+          CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddOperand('dx', os16);
           AddXz;
           {$endif}
         end;
         $70..$7F: begin
-          Opcode := 'j' + StdCond(Code[CodeIdx]);
+          Opcode := OPj__;  StdCond(Code[CodeIdx]);
           AddJb;
         end;
         //---
@@ -2599,35 +2820,35 @@ var
           DoGroup1;
         end;
         $84: begin
-          Opcode := 'test';
+          Opcode := OPtest;
           AddEb; AddGb;
         end;
         $85: begin
-          Opcode := 'test';
+          Opcode := OPtest;
           AddEv; AddGv;
         end;
         $86: begin
           AddEb; AddGb;
-          Opcode := CheckLock('xchg');
+          Opcode := OPxchg; CheckLock;
         end;
         $87: begin
           AddEv; AddGv;
-          Opcode := CheckLock('xchg');
+          Opcode := OPxchg; CheckLock;
         end;
         $88..$8B: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddStdOperands(Code[CodeIdx]);
         end;
         $8C: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddMw_Rv; AddSw;
         end;
         $8D: begin
-          Opcode := 'lea';
+          Opcode := OPlea;
           AddGv; AddM;
         end;
         $8E: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddSw; AddEw;
         end;
         $8F: begin
@@ -2636,127 +2857,129 @@ var
         //---
         $90..$97: begin
           if (Code[CodeIdx] = $90) and not (rexR in Flags)
-          then Opcode := 'nop'
+          then Opcode := OPnop
           else begin
-            Opcode := 'xchg';
+            Opcode := OPxchg;
             AddStdReg(Code[CodeIdx]);
             AddOperand(SizeReg32('ax'));
           end;
         end;
         $98: begin
           case OperandSize32 of
-            os64: Opcode := 'cdqe';
-            os32: Opcode := 'cwde';
+            os64: Opcode := OPcdqe;
+            os32: Opcode := OPcwde;
           else
-            Opcode := 'cbw';
+            Opcode := OPcbw;
           end;
         end;
         $99: begin
           case OperandSize32 of
-            os64: Opcode := 'cqo';
-            os32: Opcode := 'cqd';
+            os64: Opcode := OPcqo;
+            os32: Opcode := OPcqd;
           else
-            Opcode := 'cwd';
+            Opcode := OPcwd;
           end;
         end;
         $9A: begin
-          Opcode := Check32('call');
+          Opcode := OPcall; Check32;
           AddAp;
         end;
         $9B: begin
-          Opcode := 'wait/fwait';
+          Opcode := OPwait_fwait;
         end;
         $9C: begin
           case OperandSize32 of
-            os64: Opcode := 'pushfq';
-            os32: Opcode := 'pushfd';
+            os64: Opcode := OPpushfq;
+            os32: Opcode := OPpushfd;
           else
-            Opcode := 'pushf';
+            Opcode := OPpushf;
           end;
           AddFv;
         end;
         $9D: begin
           case OperandSize32 of
-            os64: Opcode := 'popfq';
-            os32: Opcode := 'popfd';
+            os64: Opcode := OPpopfq;
+            os32: Opcode := OPpopfd;
           else
-            Opcode := 'popf';
+            Opcode := OPpopf;
           end;
           AddFv;
         end;
         $9E: begin
-          Opcode := 'sahf';
+          Opcode := OPsahf;
         end;
         $9F: begin
-          Opcode := 'lahf';
+          Opcode := OPlahf;
         end;
         //---
         $A0: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddOperand('al', os8);
           AddOb;
         end;
         $A1: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddOperand(SizeReg32('ax'));
           AddOv;
         end;
         $A2: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddOb;
           AddOperand('al', os8);
         end;
         $A3: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddOv;
           AddOperand(SizeReg32('ax'));
         end;
         $A4: begin
-          Opcode := CheckRepeat('movsb');
+          Opcode := OPmovsb; CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddYb; AddXb;
           {$endif}
         end;
         $A5: begin
           case OperandSize32 of
-            os64: Opcode := CheckRepeat('movsq');
-            os32: Opcode := CheckRepeat('movsd');
+            os64: Opcode := OPmovsq;
+            os32: Opcode := OPmovsd;
           else
-            Opcode := CheckRepeat('movsw');
+            Opcode := OPmovsw;
           end;
+          CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddYv; AddXv;
           {$endif}
         end;
         $A6: begin
-          Opcode := CheckRepeatX('cmpsb');
+          Opcode := OPcmpsb; CheckRepeatX;
           {$ifdef verbose_string_instructions}
           AddXb; AddYb;
           {$endif}
         end;
         $A7: begin
           case OperandSize32 of
-            os64: Opcode := CheckRepeatX('cmpsq');
-            os32: Opcode := CheckRepeatX('cmpsd');
+            os64: Opcode := OPcmpsq;
+            os32: Opcode := OPcmpsd;
           else
-            Opcode := CheckRepeatX('cmpsw');
+            Opcode := OPcmpsw;
           end;
+          CheckRepeatX;
           {$ifdef verbose_string_instructions}
           AddYv; AddXv;
           {$endif}
         end;
         $A8: begin
-          Opcode := 'test';
+          Opcode := OPtest;
           AddOperand('al', os8);
           AddIb;
         end;
         $A9: begin
-          Opcode := 'test';
+          Opcode := OPtest;
           AddOperand(SizeReg32('ax'));
           AddIv;
         end;
         $AA: begin
-          Opcode := CheckRepeat('stosb');
+          Opcode := OPstosb; CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddYb;
           AddOperand('al', os8);
@@ -2764,18 +2987,19 @@ var
         end;
         $AB: begin
           case OperandSize32 of
-            os64: Opcode := CheckRepeat('stosq');
-            os32: Opcode := CheckRepeat('stosd');
+            os64: Opcode := OPstosq;
+            os32: Opcode := OPstosd;
           else
-            Opcode := CheckRepeat('stosw');
+            Opcode := OPstosw;
           end;
+          CheckRepeat;;
           {$ifdef verbose_string_instructions}
           AddYv;
           AddOperand(SizeReg32('ax'));
           {$endif}
         end;
         $AC: begin
-          Opcode := CheckRepeat('lodsb');
+          Opcode := OPlodsb; CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddOperand('al', os8);
           AddXb;
@@ -2783,18 +3007,19 @@ var
         end;
         $AD: begin
           case OperandSize32 of
-            os64: Opcode := CheckRepeat('lodsq');
-            os32: Opcode := CheckRepeat('lodsd');
+            os64: Opcode := OPlodsq;
+            os32: Opcode := OPlodsd;
           else
-            Opcode := CheckRepeat('lodsw');
+            Opcode := OPlodsw;
           end;
+          CheckRepeat;
           {$ifdef verbose_string_instructions}
           AddOperand(SizeReg32('ax'));
           AddXv;
           {$endif}
         end;
         $AE: begin
-          Opcode := CheckRepeatX('scasb');
+          Opcode := OPscasb; CheckRepeatX;
           {$ifdef verbose_string_instructions}
           AddOperand('al', os8);
           AddYb;
@@ -2802,11 +3027,12 @@ var
         end;
         $AF: begin
           case OperandSize32 of
-            os64: Opcode := CheckRepeatX('scasq');
-            os32: Opcode := CheckRepeatX('scasd');
+            os64: Opcode := OPscasq;
+            os32: Opcode := OPscasd;
           else
-            Opcode := CheckRepeatX('scasw');
+            Opcode := OPscasw;
           end;
+          CheckRepeatX;
           {$ifdef verbose_string_instructions}
           AddOperand(SizeReg32('ax'));
           AddYv;
@@ -2814,12 +3040,12 @@ var
         end;
         //---
         $B0..$B7: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddStdReg(Code[CodeIdx], reg8, rexR in Flags);
           AddIb;
         end;
         $B8..$BF: begin
-          Opcode := 'mov';
+          Opcode := OPmov;
           AddStdReg(Code[CodeIdx]);
           AddIv;
         end;
@@ -2828,53 +3054,53 @@ var
           DoGroup2;
         end;
         $C2: begin
-          Opcode := 'ret';
+          Opcode := OPret;
           AddIw;
         end;
         $C3: begin
-          Opcode := 'ret';
+          Opcode := OPret;
         end;
         $C4: begin
-          Opcode := 'les';
+          Opcode := OPles;
           AddGz; AddMp;
         end;
         $C5: begin
-          Opcode := 'lds';
+          Opcode := OPlds;
           AddGz; AddMp;
         end;
         $C6..$C7: begin
           DoGroup11;
         end;
         $C8: begin
-          Opcode := 'enter';
+          Opcode := OPenter;
           AddIw; AddIb;
         end;
         $C9: begin
-          Opcode := 'leave';
+          Opcode := OPleave;
         end;
         $CA: begin
-          Opcode := 'retf';
+          Opcode := OPretf;
           AddIw;
         end;
         $CB: begin
-          Opcode := 'retf';
+          Opcode := OPretf;
         end;
         $CC: begin
-          Opcode := 'int3';
+          Opcode := OPint3;
         end;
         $CD: begin
-          Opcode := 'int';
+          Opcode := OPint;
           AddIb;
         end;
         $CE: begin
-          Opcode := Check32('int0');
+          Opcode := OPint0; Check32;
         end;
         $CF: begin
           case OperandSize32 of
-            os64: Opcode := 'iretq';
-            os32: Opcode := 'iretd';
+            os64: Opcode := OPiretq;
+            os32: Opcode := OPiretd;
           else
-            Opcode := 'iret';
+            Opcode := OPiret;
           end;
         end;
         //---
@@ -2882,90 +3108,90 @@ var
           DoGroup2;
         end;
         $D4: begin
-          Opcode := Check32('aam');
+          Opcode := OPaam; Check32;
         end;
         $D5: begin
-          Opcode := Check32('aad');
+          Opcode := OPaad; Check32;
         end;
         $D6: begin
-          Opcode := Check32('salc');
+          Opcode := OPsalc; Check32;
         end;
         $D7: begin
-          Opcode := 'xlat';
+          Opcode := OPxlat;
         end;
         $D8..$DF: begin
           DoX87;
         end;
         //---
         $E0: begin
-          Opcode := 'loopne';
+          Opcode := OPloopne;
           AddJb;
         end;
         $E1: begin
-          Opcode := 'loope';
+          Opcode := OPloope;
           AddJb;
         end;
         $E2: begin
-          Opcode := 'loop';
+          Opcode := OPloop;
           AddJb;
         end;
         $E3: begin
-          Opcode := 'jrcxz';
+          Opcode := OPjrcxz;
           AddJb;
         end;
         $E4: begin
-          Opcode := 'in';
+          Opcode := OPin;
           AddOperand('al', os8);
           AddIb;
         end;
         $E5: begin
-          Opcode := 'in';
+          Opcode := OPin;
           AddOperand(SizeReg32('ax'));
           AddIb;
         end;
         $E6: begin
-          Opcode := 'out';
+          Opcode := OPout;
           AddIb;
           AddOperand('al', os8);
         end;
         $E7: begin
-          Opcode := 'out';
+          Opcode := OPout;
           AddIb;
           AddOperand(SizeReg32('ax'));
         end;
         $E8: begin
-          Opcode := 'call';
+          Opcode := OPcall;
           AddJz;
         end;
         $E9: begin
-          Opcode := 'jmp';
+          Opcode := OPjmp;
           AddJz;
         end;
         $EA: begin
-          Opcode := Check32('jmp');
+          Opcode := OPjmp; Check32;
           AddAp;
         end;
         $EB: begin
-          Opcode := 'jmp';
+          Opcode := OPjmp;
           AddJb;
         end;
         $EC: begin
-          Opcode := 'in';
+          Opcode := OPin;
           AddOperand('al', os8);
           AddOperand('dx', os16);
         end;
         $ED: begin
-          Opcode := 'in';
+          Opcode := OPin;
           AddOperand(SizeReg32('ax'));
           AddOperand('dx', os16);
         end;
         $EE: begin
-          Opcode := 'out';
+          Opcode := OPout;
           AddOperand('dx', os16);
           AddOperand('al', os8);
         end;
         $EF: begin
-          Opcode := 'out';
+          Opcode := OPout;
           AddOperand('dx', os16);
           AddOperand(SizeReg32('ax'));
         end;
@@ -2973,7 +3199,7 @@ var
           Include(Flags, preLock);
         end;
         $F1: begin
-          Opcode := 'int1';
+          Opcode := OPint1;
         end;
         $F2: begin
           Include(Flags, preRepNE);
@@ -2982,31 +3208,31 @@ var
           Include(Flags, preRep);
         end;
         $F4: begin
-          Opcode := 'hlt';
+          Opcode := OPhlt;
         end;
         $F5: begin
-          Opcode := 'cmc';
+          Opcode := OPcmc;
         end;
         $F6..$F7: begin
           DoGroup3;
         end;
         $F8: begin
-          Opcode := 'clc';
+          Opcode := OPclc;
         end;
         $F9: begin
-          Opcode := 'stc';
+          Opcode := OPstc;
         end;
         $FA: begin
-          Opcode := 'cli';
+          Opcode := OPcli;
         end;
         $FB: begin
-          Opcode := 'sti';
+          Opcode := OPsti;
         end;
         $FC: begin
-          Opcode := 'cld';
+          Opcode := OPcld;
         end;
         $FD: begin
-          Opcode := 'std';
+          Opcode := OPstd;
         end;
         $FE: begin
           DoGroup4;
@@ -3015,7 +3241,7 @@ var
           DoGroup5;
         end;
       else
-        Opcode := HexValue(Code[CodeIdx], 1, []);
+        Opcode := OPX_Invalid; // HexValue(Code[CodeIdx], 1, []);
       end;
 
       Inc(CodeIdx);
@@ -3024,7 +3250,7 @@ var
         Debugln(DBG_WARNINGS, 'Disassemble: instruction longer than 16 bytes');
         Exit;
       end;
-    until Opcode <> '';
+    until Opcode <> OPX_InternalUnknown;
   end;
 
 const
@@ -3036,15 +3262,20 @@ var
   S, Soper: String;
   n: Integer;
   HasMem: Boolean;
+  OpcodeName: String;
 begin
+  Opcode := OPX_Invalid;
+  AnInstruction.OpCodeSuffix := OPSx_none;
+  AnInstruction.Flags := [];
   Code := AAddress;
 
   Segment := '';
-  Opcode := '';
   Flags := [];
   CodeIdx := 0;
   OperIdx := 0;
   DoDisassemble;
+
+  AnInstruction.OpCode := Opcode;
 
   if flagModRM in Flags then Inc(CodeIdx);
   if flagSib in Flags then Inc(CodeIdx);
@@ -3083,11 +3314,24 @@ begin
   end;
 {$endif}
 
+  OpcodeName := OPCODE_NAME[Opcode];
+  OpcodeName := OpcodeName + OPCODE_SUFFIX_NAME[AnInstruction.OpCodeSuffix];
+  if AnInstruction.Flags * [ifOnly32, ifOnly64] <> [] then
+    OpcodeName := '**'+OpcodeName + '**';
+  if ifPrefixRep in AnInstruction.Flags then
+    OpcodeName := 'rep '+OpcodeName ;
+  if ifPrefixRepE in AnInstruction.Flags then
+    OpcodeName := 'repe '+OpcodeName ;
+  if ifPrefixRepNe in AnInstruction.Flags then
+    OpcodeName := 'repne '+OpcodeName ;
+  if ifPrefixLock in AnInstruction.Flags then
+    OpcodeName := 'lock '+OpcodeName ;
+
   S := '';
   if preLock in Flags then S := S + '**lock**';
   if preRep in Flags then S := S + '?rep?';
   if preRepNE in Flags then S := S + '?repne?';
-  S := S + Opcode;
+  S := S + OpcodeName;
   if not HasMem and (Segment <> '') then S := S + ' ?' + Segment + '?';
   ACode := S + ' ' + Soper;
 
@@ -3101,6 +3345,13 @@ begin
   Inc(AAddress, CodeIdx);
 end;
 
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
+var
+  Instr: TInstruction;
+begin
+  Disassemble(AAddress, A64Bit, ACodeBytes, ACode, Instr);
+end;
+
 function IsCallInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
 var
   OutBytes, Code: String;
@@ -3110,17 +3361,17 @@ begin
   a := AAddress;
   // skip prefix bytes
   while (a < AAddress + 16) and (a^ in [$26, $2E, $36, $3E, $40..$4F, $64..$67, $F0, $F2, $F3]) do
-    inc(a);
+      inc(a);
   // check if it may be a call
   if not (a^ in [$9A, $E8, $FF]) then
     exit;
 
-  Disassemble(AAddress, A64Bit, OutBytes, Code);
+          Disassemble(AAddress, A64Bit, OutBytes, Code);
   if (Length(Code) < 5) or
      (code[1] <> 'c') or (code[2] <> 'a') or (code[3] <> 'l') or (code[4] <> 'l') or
      (code[5] <> ' ')
   then
-    exit;
+      exit;
   Result := Length(OutBytes) div 2;
 end;
 
