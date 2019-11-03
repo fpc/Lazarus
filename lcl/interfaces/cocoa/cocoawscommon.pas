@@ -1170,7 +1170,7 @@ begin
   if dy <> 0 then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
-    Msg.WheelDelta := round(dy * WheelDeltaToLCLY);
+    Msg.WheelDelta := sign(dy) * LCLStep;
   end
   else
   if dx <> 0 then
@@ -1179,7 +1179,7 @@ begin
     // see "deltaX" documentation.
     // on macOS: -1 = right, +1 = left
     // on LCL:   -1 = left,  +1 = right
-    Msg.WheelDelta := round(-dx * WheelDeltaToLCLX);
+    Msg.WheelDelta := sign(-dx) * LCLStep;
   end
   else
     // Filter out empty events - See bug 28491
