@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: emsstrings.emsactive
 msgid "Scripting active."
@@ -27,7 +29,7 @@ msgstr "Сценарии отключены. Не прошло самотест�
 
 #: emsstrings.emsnotactiveverbose
 msgid "EditorMacroScript failed its self-test and is not active. Some macros may not work."
-msgstr ""
+msgstr "EditorMacroScript не прошёл самотестирование и отключился. Некоторые макросы могут не работать."
 
 #: emsstrings.emsnotsupported
 msgid "Scripting not active. Not supported on this platform or CPU."
