@@ -3777,6 +3777,10 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr ""
 
+#: lazarusidestrconsts.dlgselectallnoscroll
+msgid "Do not scroll on Select-All / Paragraph or To-Brace"
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr ""
@@ -22127,6 +22131,18 @@ msgctxt "lazarusidestrconsts.srkmeccopy"
 msgid "Copy"
 msgstr "Copy pilihan ke clipboard"
 
+#: lazarusidestrconsts.srkmeccopyadd
+msgid "Copy (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyaddcurrentline
+msgid "Copy current line (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopycurrentline
+msgid "Copy current line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
 msgstr ""
@@ -22145,6 +22161,18 @@ msgstr ""
 msgctxt "lazarusidestrconsts.srkmeccut"
 msgid "Cut"
 msgstr "Potong pilihan ke clipboard"
+
+#: lazarusidestrconsts.srkmeccutadd
+msgid "Cut (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccutaddcurrentline
+msgid "Cut current line (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccutcurrentline
+msgid "Cut current line"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -22185,6 +22213,10 @@ msgstr "Diff"
 
 #: lazarusidestrconsts.srkmecdown
 msgid "Move cursor down"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecduplicateline
+msgid "Duplicate line (or lines in selection)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeceditorbottom
@@ -22537,6 +22569,14 @@ msgstr "Pindahkan editor ke kanan"
 
 #: lazarusidestrconsts.srkmecmoveeditorrightmost
 msgid "Move editor rightmost"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmovelinedown
+msgid "Move one line down"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmovelineup
+msgid "Move one line up"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmultipaste

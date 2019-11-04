@@ -3874,6 +3874,10 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr ""
 
+#: lazarusidestrconsts.dlgselectallnoscroll
+msgid "Do not scroll on Select-All / Paragraph or To-Brace"
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 #, fuzzy
 #| msgid "&Selected Text"
@@ -22517,6 +22521,18 @@ msgctxt "lazarusidestrconsts.srkmeccopy"
 msgid "Copy"
 msgstr "העתק את הבחירה ללוח הזמני"
 
+#: lazarusidestrconsts.srkmeccopyadd
+msgid "Copy (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyaddcurrentline
+msgid "Copy current line (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopycurrentline
+msgid "Copy current line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
 msgstr "העתק עורך חלון חדש"
@@ -22535,6 +22551,18 @@ msgstr "העתק עורך לחלון החופשי הקודם"
 msgctxt "lazarusidestrconsts.srkmeccut"
 msgid "Cut"
 msgstr "גזור את הבחירה אל הלוח הזמני"
+
+#: lazarusidestrconsts.srkmeccutadd
+msgid "Cut (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccutaddcurrentline
+msgid "Cut current line (Add to Clipboard)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccutcurrentline
+msgid "Cut current line"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -22575,6 +22603,10 @@ msgstr "השווה"
 
 #: lazarusidestrconsts.srkmecdown
 msgid "Move cursor down"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecduplicateline
+msgid "Duplicate line (or lines in selection)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeceditorbottom
@@ -22932,6 +22964,14 @@ msgstr "הזז את העורך ימינה"
 #: lazarusidestrconsts.srkmecmoveeditorrightmost
 msgid "Move editor rightmost"
 msgstr "הצמד את העורך ימינה"
+
+#: lazarusidestrconsts.srkmecmovelinedown
+msgid "Move one line down"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmovelineup
+msgid "Move one line up"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgctxt "lazarusidestrconsts.srkmecmultipaste"
