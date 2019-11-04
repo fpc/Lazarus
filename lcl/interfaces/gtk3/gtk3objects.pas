@@ -290,6 +290,8 @@ procedure Gtk3WordWrap(DC: HDC; AText: PChar;
 function Gtk3DefaultContext: TGtk3DeviceContext;
 function Gtk3ScreenContext: TGtk3DeviceContext;
 
+function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
+
 implementation
 uses math, gtk3int, gtk3procs;
 
@@ -1917,6 +1919,11 @@ end;
 
 
 //various routines for text , copied from gtk2.
+
+function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
+begin
+  Result := StringReplace(S, '&', '_', [rfReplaceAll]);
+end;
 
 {-------------------------------------------------------------------------------
   function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;

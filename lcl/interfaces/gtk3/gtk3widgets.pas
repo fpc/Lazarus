@@ -4017,7 +4017,7 @@ begin
   for i:=0 to AToolbar.ButtonCount-1 do
   begin
     btn:=AToolBar.Buttons[i];
-    bs:=StringReplace(btn.Caption,'&','_',[rfReplaceAll]);
+    bs:= ReplaceAmpersandsWithUnderscores(btn.Caption);
     wicon:=nil;
     if btn is TToolButton then
     begin
@@ -4534,7 +4534,8 @@ begin
 
   if MenuItem.Caption <> cLineCaption then
   begin
-    PGtkMenuItem(Result)^.set_label(PgChar(MenuItem.Caption));
+    PGtkMenuItem(Result)^.use_underline := True;
+    PGtkMenuItem(Result)^.set_label(PgChar(ReplaceAmpersandsWithUnderscores(MenuItem.Caption)));
     PGtkMenuItem(Result)^.set_sensitive(MenuItem.Enabled);
     // there's nothing like this in Gtk3
     // if MenuItem.RightJustify then
@@ -6402,13 +6403,12 @@ procedure TGtk3Button.setText(const AValue: String);
 begin
   if IsWidgetOk then
   begin
-    PGtkButton(FWidget)^.set_label(PgChar(StringReplace(AValue,'&','_',[rfReplaceAll])));
+    PGtkButton(FWidget)^.set_label(PgChar(ReplaceAmpersandsWithUnderscores(AValue)));
   end;
 end;
 
 function TGtk3Button.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
-  img:PGtkImage;
   btn:PGtkButton absolute Result;
 begin
   Result := PGtkWidget(TGtkButton.new);
@@ -6486,14 +6486,19 @@ begin
 end;
 
 function TGtk3CheckBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  check: PGtkCheckButton;
 begin
-  Result := PGtkWidget(TGtkCheckButton.new);
+  check := TGtkCheckButton.new;
+  Result := PGtkWidget(check);
+  check^.set_use_underline(True);
 end;
 
 { TGtk3RadioButton }
 
 function TGtk3RadioButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
+  btn: PGtkRadioButton;
   w: PGtkWidget;
   ctl, Parent: TWinControl;
   rb: TRadioButton;
@@ -6501,7 +6506,9 @@ var
 begin
   if Self.LCLObject.Name='HiddenRadioButton' then
     exit;
-  Result := PGtkWidget(TGtkRadioButton.new(nil));
+  btn := TGtkRadioButton.new(nil);
+  btn^.use_underline := True;
+  Result := PGtkWidget(btn);
   ctl := Self.LCLObject;
   if Assigned(ctl) then
   begin
