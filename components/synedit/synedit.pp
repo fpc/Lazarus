@@ -7100,6 +7100,74 @@ begin
         begin
           if not ReadOnly then PasteFromClipboard;
         end;
+      ecCopyAdd, ecCutAdd:
+        if SelAvail then begin
+          Temp := Clipboard.AsText;
+          Helper := SelText;
+          if (Temp <> '') and (not (Temp[Length(Temp)] in [#10,#13, #9, #32])) and
+             (not (Helper[1] in [#10,#13, #9, #32]))
+          then
+            Temp := Temp + ' ';
+          Clipboard.AsText := Temp + Helper;
+          if (not ReadOnly) and (Command = ecCutAdd) then
+            SelText := '';
+        end;
+      ecCopyCurrentLine, ecCutCurrentLine,
+      ecCopyAddCurrentLine, ecCutAddCurrentLine:
+        begin
+          FInternalBlockSelection.AssignFrom(FBlockSelection);
+          FInternalBlockSelection.ActiveSelectionMode := smLine;
+          FInternalBlockSelection.ForceSingleLineSelected := True;
+          Temp := '';
+          if (Command = ecCopyAddCurrentLine) or (Command = ecCutAddCurrentLine) then begin
+            Temp := Clipboard.AsText;
+            if (Temp <> '') and not (Temp[Length(Temp)] in [#10,#13]) then
+              Temp := Temp + LineEnding;
+          end;
+          Clipboard.AsText := Temp + FInternalBlockSelection.SelText;
+          if (not ReadOnly) and ((Command = ecCutCurrentLine) or (Command = ecCutAddCurrentLine)) then begin
+            FCaret.IncAutoMoveOnEdit;
+            FInternalBlockSelection.SelText := '';
+            FCaret.DecAutoMoveOnEdit;
+          end;
+          FInternalBlockSelection.ForceSingleLineSelected := False;
+        end;
+      ecMoveLineUp:
+        if (not ReadOnly) then begin
+          CY := BlockBegin.y;
+          if CY > 1 then begin
+            FBlockSelection.IncPersistentLock;
+            FCaret.IncAutoMoveOnEdit;
+            FTheLinesView.EditLinesInsert(BlockEnd.y + 1, 1, FTheLinesView[ToIdx(CY) - 1]);
+            FTheLinesView.EditLinesDelete(CY - 1, 1);
+            FCaret.DecAutoMoveOnEdit;
+            FBlockSelection.DecPersistentLock;
+          end;
+        end;
+      ecMoveLineDown:
+        if (not ReadOnly) then begin
+          CY := BlockEnd.y;
+          if CY < FTheLinesView.Count - 1 then begin
+            FBlockSelection.IncPersistentLock;
+            FCaret.IncAutoMoveOnEdit;
+            FTheLinesView.EditLinesInsert(BlockBegin.y, 1, FTheLinesView[ToIdx(CY) + 1]);
+            FTheLinesView.EditLinesDelete(CY + 2, 1);
+            FCaret.DecAutoMoveOnEdit;
+            FBlockSelection.DecPersistentLock;
+          end;
+        end;
+      ecDuplicateLine:
+        if (not ReadOnly) then begin
+          FBlockSelection.IncPersistentLock;
+          FInternalBlockSelection.AssignFrom(FBlockSelection);
+          FInternalBlockSelection.ActiveSelectionMode := smLine;
+          FInternalBlockSelection.ForceSingleLineSelected := True;
+          Temp := FInternalBlockSelection.SelText;
+          FInternalBlockSelection.ForceSingleLineSelected := False;
+          FInternalBlockSelection.StartLineBytePos := Point(1, FInternalBlockSelection.LastLineBytePos.y+1);
+          FInternalBlockSelection.SelText := Temp;
+          FBlockSelection.DecPersistentLock;
+        end;
       ecScrollUp:
         begin
           TopView := TopView - 1;
