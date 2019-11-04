@@ -7281,7 +7281,7 @@ var
   SomeRemoved: Boolean;
 begin
   Result:=mrOk;
-  Assert(Assigned(UnitInfos);
+  Assert(Assigned(UnitInfos));
   // check ToolStatus
   if (MainIDE.ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
     debugln('RemoveUnitsFromProject wrong ToolStatus ',dbgs(ord(MainIDE.ToolStatus)));
