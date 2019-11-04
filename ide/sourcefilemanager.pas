@@ -203,11 +203,9 @@ function SaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult
 function CloseEditorFile(AEditor: TSourceEditorInterface; Flags: TCloseFlags):TModalResult;
 function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
 // interactive unit selection
-function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem;
-  MultiSelect: boolean; var MultiSelectCheckedState: Boolean): TModalResult;
+function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem): TModalResult;
 function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
-  Files: TStringList; MultiSelect: boolean;
-  var MultiSelectCheckedState: Boolean): TModalResult;
+  Files: TStringList): TModalResult;
 // unit search
 function FindUnitFileImpl(const AFilename: string; TheOwner: TObject = nil;
                           Flags: TFindUnitFileFlags = []): string;
@@ -3304,9 +3302,7 @@ begin
   end;
 end;
 
-function SelectProjectItems(ItemList: TViewUnitEntries;
-  ItemType: TIDEProjectItem; MultiSelect: boolean;
-  var MultiSelectCheckedState: Boolean): TModalResult;
+function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem): TModalResult;
 var
   i: integer;
   AUnitName, DlgCaption: string;
@@ -3389,12 +3385,11 @@ begin
     piFrame:     DlgCaption := dlgMainViewFrames;
     else         DlgCaption := '';
   end;
-  Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType);
+  Result := ShowViewUnitsDlg(ItemList, true, DlgCaption, ItemType);
 end;
 
-function SelectUnitComponents(DlgCaption: string;
-  ItemType: TIDEProjectItem; Files: TStringList; MultiSelect: boolean;
-  var MultiSelectCheckedState: Boolean): TModalResult;
+function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
+  Files: TStringList): TModalResult;
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -3529,7 +3524,7 @@ begin
       inc(i);
     end;
     // show dialog
-    Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState,
+    Result := ShowViewUnitsDlg(UnitList, false,
                                DlgCaption, ItemType, ActiveUnitInfo.Filename);
     // create list of selected files
     for Entry in UnitList do
@@ -3557,8 +3552,6 @@ var
   AnUnitInfo: TUnitInfo;
   UnitInfos: TFPList;
   UEntry: TViewUnitsEntry;
-const
-  MultiSelectCheckedState: Boolean = true;
 Begin
   if Project1=nil then exit(mrCancel);
   Project1.UpdateIsPartOfProjectFromMainUnit;
@@ -3574,8 +3567,7 @@ Begin
         ViewUnitEntries.Add(AName,AnUnitInfo.FileName,i,false);
       end;
     end;
-    if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState,
-          lisRemoveFromProject, piUnit) <> mrOk then
+    if ShowViewUnitsDlg(ViewUnitEntries,true,lisRemoveFromProject,piUnit) <> mrOk then
       exit(mrOk);
     { This is where we check what the user selected. }
     UnitInfos:=TFPList.Create;

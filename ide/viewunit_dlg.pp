@@ -150,7 +150,7 @@ type
     procedure UpdateEntries;
   public
     procedure Init(const aCaption: string;
-      AllowMultiSelect, EnableMultiSelect: Boolean; aItemType: TIDEProjectItem;
+      EnableMultiSelect: Boolean; aItemType: TIDEProjectItem;
       TheEntries: TViewUnitEntries; aStartFilename: string = '');
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ItemType: TIDEProjectItem read FItemType write SetItemType;
@@ -158,8 +158,8 @@ type
   end;
 
 // Entries is a list of TViewUnitsEntry(s)
-function ShowViewUnitsDlg(Entries: TViewUnitEntries; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const aCaption: string; ItemType: TIDEProjectItem;
+function ShowViewUnitsDlg(Entries: TViewUnitEntries; CheckMultiSelect: Boolean;
+  const aCaption: string; ItemType: TIDEProjectItem;
   StartFilename: string = '' // if StartFilename is given the Entries are automatically updated
   ): TModalResult;
 
@@ -167,21 +167,16 @@ implementation
 
 {$R *.lfm}
 
-function ShowViewUnitsDlg(Entries: TViewUnitEntries; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const aCaption: string;
-  ItemType: TIDEProjectItem; StartFilename: string): TModalResult;
+function ShowViewUnitsDlg(Entries: TViewUnitEntries; CheckMultiSelect: Boolean;
+  const aCaption: string; ItemType: TIDEProjectItem; StartFilename: string): TModalResult;
 var
   ViewUnitDialog: TViewUnitDialog;
 begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
   try
-    ViewUnitDialog.Init(aCaption,AllowMultiSelect,CheckMultiSelect,ItemType,Entries,
-         StartFilename);
+    ViewUnitDialog.Init(aCaption,CheckMultiSelect,ItemType,Entries,StartFilename);
     // Show the dialog
     Result:=ViewUnitDialog.ShowModal;
-    if Result=mrOk then begin
-      CheckMultiSelect := ViewUnitDialog.mniMultiselect.Checked;
-    end;
   finally
     ViewUnitDialog.Free;
   end;
@@ -338,7 +333,7 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TViewUnitDialog.Init(const aCaption: string; AllowMultiSelect,
+procedure TViewUnitDialog.Init(const aCaption: string;
   EnableMultiSelect: Boolean; aItemType: TIDEProjectItem;
   TheEntries: TViewUnitEntries; aStartFilename: string);
 var
@@ -349,7 +344,7 @@ begin
   Caption:=aCaption;
   ItemType:=aItemType;
   fEntries:=TheEntries;
-  mniMultiselect.Enabled := AllowMultiSelect;
+  mniMultiselect.Enabled := EnableMultiSelect;
   mniMultiselect.Checked := EnableMultiSelect;
   ListBox.MultiSelect := mniMultiselect.Enabled;
   ShowEntries;

@@ -5984,7 +5984,6 @@ end;
 function TMainIDE.DoSelectFrame: TComponentClass;
 var
   UnitList: TStringList;
-  dummy: Boolean;
   i: Integer;
   aFilename: String;
   AComponent: TComponent;
@@ -5992,10 +5991,7 @@ begin
   Result := nil;
   UnitList := TStringList.Create;
   try
-    dummy := false;
-    if SelectUnitComponents(lisSelectFrame,piFrame,UnitList, false, dummy) <> mrOk
-    then
-      exit;
+    if SelectUnitComponents(lisSelectFrame,piFrame,UnitList) <> mrOk then exit;
     for i := 0 to UnitList.Count-1 do
     begin
       aFilename:=UnitList[i];
@@ -6016,7 +6012,6 @@ end;
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
 const
   UseItemType: array[Boolean] of TIDEProjectItem = (piUnit, piComponent);
-  MultiSelectCheckedState: Array [Boolean] of Boolean = (True,True);
 var
   UnitList: TViewUnitEntries;
   AForm: TCustomForm;
@@ -6027,8 +6022,7 @@ begin
   Project1.UpdateIsPartOfProjectFromMainUnit;
   UnitList := TViewUnitEntries.Create;
   try
-    if SelectProjectItems(UnitList, UseItemType[OnlyForms],
-                          true, MultiSelectCheckedState[OnlyForms]) = mrOk then
+    if SelectProjectItems(UnitList, UseItemType[OnlyForms]) = mrOk then
     begin
       { This is where we check what the user selected. }
       AnUnitInfo := nil;
