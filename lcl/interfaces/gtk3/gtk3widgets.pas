@@ -6455,8 +6455,12 @@ begin
 end;
 
 function TGtk3ToggleButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  btn: PGtkToggleButton;
 begin
-  Result := PGtkWidget(TGtkToggleButton.new);
+  btn := TGtkToggleButton.new;
+  btn^.use_underline := True;
+  Result := PGtkWidget(btn);
 end;
 
 { TGtk3CheckBox }
