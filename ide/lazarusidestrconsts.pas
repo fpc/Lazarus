@@ -3115,6 +3115,16 @@ resourcestring
   srkmecCut                   = 'Cut';
   srkmecCopy                  = 'Copy';
   srkmecPaste                 = 'Paste';
+  srkmecCopyAdd               = 'Copy (Add to Clipboard)';
+  srkmecCutAdd                = 'Cut (Add to Clipboard)';
+  srkmecCopyCurrentLine       = 'Copy current line';
+  srkmecCopyAddCurrentLine    = 'Copy current line (Add to Clipboard)';
+  srkmecCutCurrentLine        = 'Cut current line';
+  srkmecCutAddCurrentLine     = 'Cut current line (Add to Clipboard)';
+  srkmecMoveLineUp            = 'Move one line up';
+  srkmecMoveLineDown          = 'Move one line down';
+  srkmecDuplicateLine         = 'Duplicate line (or lines in selection)';
+
   srkmecMultiPaste            = 'MultiPaste';
   srkmecScrollUp              = 'Scroll up one line';
   srkmecScrollDown            = 'Scroll down one line';

@@ -3934,7 +3934,7 @@ begin
         Manager.AddJumpPointClicked(Self);
     end;
 
-  ecCopy,ecCut:
+  ecCopy,ecCut,ecCopyAdd,ecCutAdd:
     begin
       if (not FEditor.SelAvail) then begin
         // nothing selected
