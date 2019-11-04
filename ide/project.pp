@@ -793,11 +793,11 @@ type
     function GetUseLegacyLists: Boolean;
     function JumpHistoryCheckPosition(
                                 APosition:TProjectJumpHistoryPosition): boolean;
-    function OnUnitFileBackup(const Filename: string): TModalResult;
     procedure ClearSourceDirectories;
     procedure EmbeddedObjectModified(Sender: TObject);
-    procedure OnLoadSaveFilename(var AFilename: string; Load: boolean);
-    procedure OnUnitNameChange(AnUnitInfo: TUnitInfo;
+    function FileBackupHandler(const Filename: string): TModalResult;
+    procedure LoadSaveFilenameHandler(var AFilename: string; Load: boolean);
+    procedure UnitNameChangeHandler(AnUnitInfo: TUnitInfo;
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetActiveBuildMode(const AValue: TProjectBuildMode);
@@ -2706,7 +2706,7 @@ begin
   FFlags:=DefaultProjectFlags;
   FJumpHistory:=TProjectJumpHistory.Create;
   FJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
-  FJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
+  FJumpHistory.OnLoadSaveFilename:=@LoadSaveFilenameHandler;
   fMainUnitID := -1;
   fProjectInfoFile := '';
   ProjectSessionFile:='';
@@ -2851,7 +2851,7 @@ begin
   for i := 0 to NewUnitCount - 1 do begin
     SubPath:=Path+'Units/'+FXMLConfig.GetListItemXPath('Unit', i, LegacyList)+'/';
     NewUnitFilename:=FXMLConfig.GetValue(SubPath+'Filename/Value','');
-    OnLoadSaveFilename(NewUnitFilename,true);
+    LoadSaveFilenameHandler(NewUnitFilename,true);
     // load unit and add it
     OldUnitInfo:=UnitInfoWithFilename(NewUnitFilename);
     if OldUnitInfo<>nil then begin
@@ -3598,9 +3598,9 @@ begin
   NewIndex:=UnitCount;
   FUnitList.Add(AnUnit);
   AnUnit.Project:=Self;
-  AnUnit.OnFileBackup:=@OnUnitFileBackup;
-  AnUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
-  AnUnit.OnUnitNameChange:=@OnUnitNameChange;
+  AnUnit.OnFileBackup:=@FileBackupHandler;
+  AnUnit.OnLoadSaveFilename:=@LoadSaveFilenameHandler;
+  AnUnit.OnUnitNameChange:=@UnitNameChangeHandler;
 
   // lock the main unit (when it is changed on disk it must *not* auto revert)
   if MainUnitID=NewIndex then
@@ -4120,12 +4120,12 @@ end;
 
 procedure TProject.ConvertToLPIFilename(var AFilename: string);
 begin
-  OnLoadSaveFilename(AFilename,false);
+  LoadSaveFilenameHandler(AFilename,false);
 end;
 
 procedure TProject.ConvertFromLPIFilename(var AFilename: string);
 begin
-  OnLoadSaveFilename(AFilename,true);
+  LoadSaveFilenameHandler(AFilename,true);
 end;
 
 function TProject.GetMainResourceFilename(AnUnitInfo: TUnitInfo):string;
@@ -4358,7 +4358,7 @@ begin
   UpdateSessionFilename;
 end;
 
-function TProject.OnUnitFileBackup(const Filename: string): TModalResult;
+function TProject.FileBackupHandler(const Filename: string): TModalResult;
 begin
   if Assigned(fOnFileBackup) then
     Result:=fOnFileBackup(Filename)
@@ -4366,7 +4366,7 @@ begin
     Result:=mrOk;
 end;
 
-procedure TProject.OnLoadSaveFilename(var AFilename: string; Load:boolean);
+procedure TProject.LoadSaveFilenameHandler(var AFilename: string; Load:boolean);
 { This function is used after reading a filename from the config
   and before writing a filename to a config.
   The config can be the lpi or the session.
@@ -5223,7 +5223,7 @@ begin
   SessionModified := true;
 end;
 
-procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;
+procedure TProject.UnitNameChangeHandler(AnUnitInfo: TUnitInfo;
   const OldUnitName, NewUnitName: string; CheckIfAllowed: boolean;
   var Allowed: boolean);
 var
