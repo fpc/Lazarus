@@ -26,7 +26,7 @@ interface
 uses
   Classes, SysUtils, types, CocoaWSCommon, CocoaPrivate, CocoaUtils, LCLType, Cocoa_Extra,
   LMessages, LCLMessageGlue,
-  Controls, LazLoggerBase, WSLCLClasses, gl, MacOSAll, CocoaAll;
+  Controls, LazLoggerBase, WSLCLClasses, MacOSAll, CocoaAll;
 
 function LBackingScaleFactor(Handle: HWND): single;
 procedure LSetWantsBestResolutionOpenGLSurface(const AValue: boolean; Handle: HWND);
