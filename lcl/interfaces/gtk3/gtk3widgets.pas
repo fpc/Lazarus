@@ -3063,12 +3063,21 @@ end;
 procedure TGtk3Panel.DoBeforeLCLPaint;
 var
   DC: TGtk3DeviceContext;
+  NColor: TColor;
 begin
   inherited DoBeforeLCLPaint;
   // example how to paint borderstyle/bevels of TPanel before we send event to lcl
   DC := TGtk3DeviceContext(FContext);
   if not Visible then
     exit;
+
+  NColor := LCLObject.Color;
+  if (NColor <> clNone) and (NColor <> clDefault) then
+  begin
+    DC.CurrentBrush.Color := ColorToRGB(NColor);
+    DC.fillRect(0, 0, LCLObject.Width, LCLObject.Height);
+  end;
+
   if BorderStyle <> bsNone then
     DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, LCLObject.Color <> clDefault);
 end;
