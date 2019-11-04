@@ -7278,14 +7278,10 @@ var
   ShortUnitName, UnitPath: String;
   ObsoleteUnitPaths, ObsoleteIncPaths: String;
   i: Integer;
-  Dummy: Boolean;
+  SomeRemoved: Boolean;
 begin
   Result:=mrOk;
-  if UnitInfos=nil then exit;
-  // check if something will change
-  i:=UnitInfos.Count-1;
-  while (i>=0) and (not TUnitInfo(UnitInfos[i]).IsPartOfProject) do dec(i);
-  if i<0 then exit;
+  Assert(Assigned(UnitInfos);
   // check ToolStatus
   if (MainIDE.ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
     debugln('RemoveUnitsFromProject wrong ToolStatus ',dbgs(ord(MainIDE.ToolStatus)));
@@ -7293,19 +7289,21 @@ begin
   end;
   // commit changes from source editor to codetools
   SaveEditorChangesToCodeCache(nil);
-
+  SomeRemoved:=false;
   ObsoleteUnitPaths:='';
   ObsoleteIncPaths:='';
   Project1.BeginUpdate(true);
   try
-    for i:=0 to UnitInfos.Count-1 do begin
+    for i:=0 to UnitInfos.Count-1 do
+    begin
       AnUnitInfo:=TUnitInfo(UnitInfos[i]);
-      //debugln(['RemoveUnitsFromProject Unit ',AnUnitInfo.Filename]);
       if not AnUnitInfo.IsPartOfProject then continue;
       UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
       AnUnitInfo.IsPartOfProject:=false;
+      SomeRemoved:=true;
       Project1.Modified:=true;
-      if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
+      if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+      begin
         if FilenameIsAbsolute(AnUnitInfo.Filename) then
           ObsoleteUnitPaths:=MergeSearchPaths(ObsoleteUnitPaths,UnitPath);
         // remove from project's unit section
@@ -7313,33 +7311,27 @@ begin
         and (pfMainUnitIsPascalSource in Project1.Flags)
         then begin
           ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
-          //debugln(['RemoveUnitsFromProject UnitName=',ShortUnitName]);
           if (ShortUnitName<>'') then begin
-            Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
-                                      Project1.MainUnitInfo.Source,ShortUnitName);
-            if not Dummy then begin
+            if not CodeToolBoss.RemoveUnitFromAllUsesSections(
+                                 Project1.MainUnitInfo.Source,ShortUnitName) then
+            begin
               MainIDE.DoJumpToCodeToolBossError;
               exit(mrCancel);
             end;
           end;
         end;
         // remove CreateForm statement from project
-        if (Project1.MainUnitID>=0)
-        and (pfMainUnitHasCreateFormStatements in Project1.Flags)
-        and (AnUnitInfo.ComponentName<>'') then begin
-          Dummy:=Project1.RemoveCreateFormFromProjectFile(
-              'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
-          if not Dummy then begin
-            MainIDE.DoJumpToCodeToolBossError;
-            exit(mrCancel);
-          end;
-        end;
+        if (Project1.MainUnitID>=0) and (AnUnitInfo.ComponentName<>'')
+        and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
+          // Do not care if this fails. A user may have removed the line from source.
+          Project1.RemoveCreateFormFromProjectFile(AnUnitInfo.ComponentName);
       end;
       if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then
         // include file
         if FilenameIsAbsolute(AnUnitInfo.Filename) then
           ObsoleteIncPaths:=MergeSearchPaths(ObsoleteIncPaths,UnitPath);
     end;
+    if not SomeRemoved then exit;  // No units were actually removed.
 
     // removed directories still used for ObsoleteUnitPaths, ObsoleteIncPaths
     AnUnitInfo:=Project1.FirstPartOfProject;
@@ -7363,7 +7355,8 @@ begin
 
   finally
     // all changes were handled automatically by events, just clear the logs
-    CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
+    if SomeRemoved then
+      CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
     Project1.EndUpdate;
   end;
 end;

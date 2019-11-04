@@ -971,8 +971,7 @@ type
 
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
-    function RemoveCreateFormFromProjectFile(const {%H-}AClassName,
-                                                         AName: string):boolean;
+    function RemoveCreateFormFromProjectFile(const AName: string): boolean;
     function FormIsCreatedInProjectFile(const AClassname, AName:string):boolean;
     function GetAutoCreatedFormsList: TStrings;
     property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
@@ -3997,8 +3996,7 @@ end;
 function TProject.AddCreateFormToProjectFile(const AClassName, AName: string):boolean;
 begin
   if (pfMainUnitHasCreateFormStatements in Project1.Flags) then begin
-    Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
-      AClassName,AName);
+    Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,AClassName,AName);
     if Result then begin
       MainUnitInfo.Modified:=true;
     end;
@@ -4007,12 +4005,11 @@ begin
   end;
 end;
 
-function TProject.RemoveCreateFormFromProjectFile(const AClassName,AName:string):boolean;
+function TProject.RemoveCreateFormFromProjectFile(const AName:string):boolean;
 begin
   Result:=CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,AName);
-  if Result then begin
+  if Result then
     MainUnitInfo.Modified:=true;
-  end;
 end;
 
 function TProject.FormIsCreatedInProjectFile(const AClassname,AName:string):boolean;
