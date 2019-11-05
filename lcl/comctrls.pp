@@ -464,12 +464,6 @@ type
   //Delphi compatible properties
     function CanChange: Boolean; virtual;
     property DisplayRect: TRect read GetDisplayRect;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property MultiSelect: Boolean read FMultiSelect write FMultiSelect default False;
-    property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw default False;
-    property RaggedRight: Boolean read FRaggedRight write FRaggedRight default False;
-    property ScrollOpposite: Boolean read FScrollOpposite write FScrollOpposite default False;
-    property Style: TTabStyle read FStyle write SetStyle default tsTabs;
     property Tabs: TStrings read FAccess write SetPages;
     property TabIndex: Integer read FPageIndex write SetPageIndex default -1;
     property OnChange: TNotifyEvent read FOnPageChanged write FOnPageChanged;
@@ -488,21 +482,27 @@ type
     function PageToTabIndex(AIndex: integer): integer;
   public
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property Images: TCustomImageList read FImages write SetImages;
     property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
+    property MultiSelect: Boolean read FMultiSelect write FMultiSelect default False;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
     property OnCloseTabClicked: TNotifyEvent read FOnCloseTabClicked
                                              write FOnCloseTabClicked;
     property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
                                                 write FOnGetImageIndex;
     property Options: TCTabControlOptions read FOptions write SetOptions default [];
+    property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw default False;
     property Page[Index: Integer]: TCustomPage read GetPage;
     property PageCount: integer read GetPageCount;
     property PageIndex: Integer read FPageIndex write SetPageIndex default -1;
     //property PageList: TList read FPageList; - iff paged
     property Pages: TStrings read FAccess write SetPages;
+    property RaggedRight: Boolean read FRaggedRight write FRaggedRight default False;
+    property ScrollOpposite: Boolean read FScrollOpposite write FScrollOpposite default False;
     property ShowTabs: Boolean read FShowTabs write SetShowTabs default True;
+    property Style: TTabStyle read FStyle write SetStyle default tsTabs;
     property TabHeight: Smallint read FTabHeight write SetTabHeight default 0;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
     property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
@@ -615,7 +615,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    //property HotTrack;
+    property HotTrack;
     property Images;
     property ImagesWidth;
     property MultiLine;
@@ -624,11 +624,11 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    //property RaggedRight;
-    //property ScrollOpposite;
+    property RaggedRight;
+    property ScrollOpposite;
     property ShowHint;
     property ShowTabs;
-    //property Style;
+    property Style;
     property TabHeight;
     property TabIndex;
     property TabOrder;
