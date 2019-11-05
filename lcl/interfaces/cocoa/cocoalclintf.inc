@@ -330,6 +330,8 @@ begin
         try
           ToggleAppMenu(false);
           Result := AnAlert.runModal;
+          if Result = NSCancelButton then
+            Result := EscapeResult;
           ToggleAppMenu(true); // modal menu doesn't have a window, disabling it
         finally
           ctrl.release;
