@@ -662,10 +662,27 @@ begin
 end;
 
 function TCocoaWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+var
+  obj : NSObject;
 begin
   Result := hWnd <> 0;
   if Result then
-    NSObject(hWnd).lclSetEnabled(bEnable)
+  begin
+    obj := NSObject(hWnd);
+
+    // The following check is actually a hack. LCL enables all windows disabled
+    // during ShowModal form. No matter if the windows are on the stack of the modality or not.
+    // Since Cocoa doesn't do much of the "modal" control over the windows
+    // (runWindowModal isn't used... maybe it should be?)
+    // It's possible that windows "disabled" by a another model window would be
+    // re-enabled. This check verifies that only a window on the top of the modal stack
+    // will be brought back active... what about other windows?
+    if bEnable and isModalSession and (obj.isKindOfClass(TCocoaWindowContent)) then begin
+      if not (TCocoaWindowContent(obj).isembedded)
+        and not isTopModalWin(TCocoaWindowContent(obj).window) then Exit;
+    end;
+    obj.lclSetEnabled(bEnable)
+  end;
 end;
 
 function TCocoaWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;

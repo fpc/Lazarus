@@ -206,6 +206,7 @@ type
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
     function StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
     procedure EndModal(awin: NSWindow);
+    function isTopModalWin(awin: NSWindow): Boolean;
     function isModalSession: Boolean;
 
     {todo:}
@@ -794,6 +795,15 @@ begin
 
   ms.Free;
   Modals.Delete(Modals.Count-1);
+end;
+
+function TCocoaWidgetSet.isTopModalWin(awin: NSWindow): Boolean;
+begin
+  if not isModalSession then begin
+    Result := false;
+    Exit;
+  end;
+  Result := TModalSession(Modals[Modals.Count-1]).window = awin;
 end;
 
 function TCocoaWidgetSet.isModalSession: Boolean;
