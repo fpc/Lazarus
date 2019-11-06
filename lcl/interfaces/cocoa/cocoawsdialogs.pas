@@ -153,12 +153,13 @@ end;
 
 type
 
-  { TCocoaPanelDialog }
+  { TOpenSaveDelegate }
 
-  TCocoaPanelDialog = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
+  TOpenSaveDelegate = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
     FileDialog: TFileDialog;
     OpenDialog: TOpenDialog;
     selUrl: NSURL;
+    filter: NSOpenSavePanelDelegateProtocol;
     procedure dealloc; override;
     function panel_shouldEnableURL(sender: id; url: NSURL): Boolean;
     function panel_validateURL_error(sender: id; url: NSURL; outError: NSErrorPointer): Boolean;
@@ -168,44 +169,47 @@ type
     procedure panelSelectionDidChange(sender: id);
   end;
 
-{ TCocoaPanelDialog }
+{ TOpenSaveDelegate }
 
-procedure TCocoaPanelDialog.dealloc;
+procedure TOpenSaveDelegate.dealloc;
 begin
   if Assigned(selUrl) then selURL.release;
   inherited dealloc;
 end;
 
-function TCocoaPanelDialog.panel_shouldEnableURL(sender: id; url: NSURL
+function TOpenSaveDelegate.panel_shouldEnableURL(sender: id; url: NSURL
   ): Boolean;
 begin
-  Result := true;
+  if Assigned(filter) then
+    Result := filter.panel_shouldEnableURL(sender, url)
+  else
+    Result := false;
 end;
 
-function TCocoaPanelDialog.panel_validateURL_error(sender: id; url: NSURL;
+function TOpenSaveDelegate.panel_validateURL_error(sender: id; url: NSURL;
   outError: NSErrorPointer): Boolean;
 begin
   Result := true;
 end;
 
-procedure TCocoaPanelDialog.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
+procedure TOpenSaveDelegate.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
 begin
   if Assigned(OpenDialog) then
     OpenDialog.DoFolderChange;
 end;
 
-function TCocoaPanelDialog.panel_userEnteredFilename_confirmed(sender: id;
+function TOpenSaveDelegate.panel_userEnteredFilename_confirmed(sender: id;
   filename: NSString; okFlag: Boolean): NSString;
 begin
   Result := filename;
 end;
 
-procedure TCocoaPanelDialog.panel_willExpand(sender: id; expanding: Boolean);
+procedure TOpenSaveDelegate.panel_willExpand(sender: id; expanding: Boolean);
 begin
 
 end;
 
-procedure TCocoaPanelDialog.panelSelectionDidChange(sender: id);
+procedure TOpenSaveDelegate.panelSelectionDidChange(sender: id);
 var
   sp : NSSavePanel;
   ch : Boolean;     // set to true, if actually getting a new file name
@@ -261,7 +265,7 @@ var
   // filter accessory view
   accessoryView: NSView;
   lFilter: TCocoaFilterComboBox;
-  callback: TCocoaPanelDialog;
+  callback: TOpenSaveDelegate;
 
   // setup panel and its accessory view
   procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
@@ -415,13 +419,13 @@ begin
     openDlg := nil;
   end;
 
-  callback:=TCocoaPanelDialog.alloc;
+  callback:=TOpenSaveDelegate.alloc;
   callback.autorelease;
   callback.FileDialog := FileDialog;
   if FileDialog is TOpenDialog then
     callback.OpenDialog := TOpenDialog(FileDialog);
+  callback.filter := lFilter;
   saveDlg.setDelegate(callback);
-
   saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
   saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
   UpdateOptions(FileDialog, saveDlg);
