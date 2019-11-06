@@ -171,6 +171,9 @@ type
     // modal session
     CurModalForm: NSWindow;
     Modals : TList;
+    ModalCounter: Integer; // the cheapest way to determine if modal window was called
+                           // used in mouse handling (in callbackobject)
+                           // Might not be needed, if native Modality used
     MainMenuEnabled: Boolean; // the latest main menu status
     PrevMenu : NSMenu;
     PrevLCLMenu : TMenu;
@@ -776,6 +779,7 @@ begin
     Modals.Add( TModalSession.Create(awin, sess, PrevMenuEnabled, PrevMenu, PrevLCLMenu));
 
   Result := true;
+  inc(ModalCounter);
 end;
 
 procedure TCocoaWidgetSet.EndModal(awin: NSWindow);

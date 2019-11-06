@@ -909,6 +909,7 @@ var
   bndPt, clPt, srchPt: TPoint; // clPt - is the one to send to LCL
                                // srchPt - is the one to use for each chidlren (clPt<>srchPt for TScrollBox)
   menuHandled : Boolean;
+  mc: Integer; // modal counter
 begin
   if Assigned(Owner) and not NSObjectIsLCLEnabled(Owner) then
   begin
@@ -954,6 +955,7 @@ begin
     lEventType := NSLeftMouseUp;
 
   Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
+  mc := CocoaWidgetSet.ModalCounter;
   case lEventType of
     NSLeftMouseDown,
     NSRightMouseDown,
@@ -995,6 +997,14 @@ begin
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
     end;
+  end;
+
+  if mc <> CocoaWidgetSet.ModalCounter then
+  begin
+    // showing of a modal window is causing "mouse" event to be lost.
+    // so, preventing Cocoa from handling it
+    Result := true;
+    Exit;
   end;
 
   //debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
