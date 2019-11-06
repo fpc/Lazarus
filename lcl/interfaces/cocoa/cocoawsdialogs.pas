@@ -162,7 +162,6 @@ type
     filter: NSOpenSavePanelDelegateProtocol;
     procedure dealloc; override;
     function panel_shouldEnableURL(sender: id; url: NSURL): Boolean;
-    function panel_validateURL_error(sender: id; url: NSURL; outError: NSErrorPointer): Boolean;
     procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
     function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: Boolean): NSString;
     procedure panel_willExpand(sender: id; expanding: Boolean);
@@ -184,12 +183,6 @@ begin
     Result := filter.panel_shouldEnableURL(sender, url)
   else
     Result := false;
-end;
-
-function TOpenSaveDelegate.panel_validateURL_error(sender: id; url: NSURL;
-  outError: NSErrorPointer): Boolean;
-begin
-  Result := true;
 end;
 
 procedure TOpenSaveDelegate.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
