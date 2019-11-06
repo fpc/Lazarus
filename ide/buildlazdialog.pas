@@ -569,7 +569,7 @@ begin
     // for $IFDEF.
     if pos(' ',MakeIDECfgFilename)>0 then
       MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
-    AppendExtraOption('@'+MakeIDECfgFilename);
+    AppendExtraOption('@'+MakeIDECfgFilename,false);
   end;
 end;
 
