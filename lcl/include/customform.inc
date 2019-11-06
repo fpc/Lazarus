@@ -70,17 +70,18 @@ end;
   Gets called after the construction of the object
  ------------------------------------------------------------------------------}
 procedure TCustomForm.AfterConstruction;
+var
+  MonPPI: Integer;
 begin
   SetRestoredBounds(Left, Top, Width, Height, True);
-
   DoCreate;
-
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 
-  if Application.Scaled and Scaled and (Monitor.PixelsPerInch<>PixelsPerInch) then
-    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
-      Width, MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch));
+  MonPPI := Monitor.PixelsPerInch;
+  if Application.Scaled and Scaled and (MonPPI > 0) and (MonPPI <> PixelsPerInch) then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, MonPPI,
+                     Width, MulDiv(Width, MonPPI, PixelsPerInch));
 end;
 
 {------------------------------------------------------------------------------
@@ -423,17 +424,19 @@ begin
 end;
 
 procedure TCustomForm.AutoScale;
+var
+  MonPPI: Integer;
 begin
   if not Scaled then
   begin
     Scaled := True; // will execute AutoScale
     Exit;
   end;
-
-  if Application.Scaled and (PixelsPerInch<>Monitor.PixelsPerInch) then
-    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
-      MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch),
-      MulDiv(Height, Monitor.PixelsPerInch, PixelsPerInch));
+  MonPPI := Monitor.PixelsPerInch;
+  if Application.Scaled and (MonPPI > 0) and (MonPPI <> PixelsPerInch) then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, MonPPI,
+                     MulDiv(Width, MonPPI, PixelsPerInch),
+                     MulDiv(Height, MonPPI, PixelsPerInch));
 end;
 
 {------------------------------------------------------------------------------
@@ -2276,10 +2279,13 @@ end;
   procedure TCustomForm.Show;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Show;
+var
+  MonPPI: Integer;
 begin
-  if Application.Scaled and Scaled and (Monitor.PixelsPerInch<>PixelsPerInch) then
-    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
-      Width, MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch));
+  MonPPI := Monitor.PixelsPerInch;
+  if Application.Scaled and Scaled and (MonPPI > 0) and (MonPPI <> PixelsPerInch) then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, MonPPI,
+                     Width, MulDiv(Width, MonPPI, PixelsPerInch));
 
   Visible := True;
   { wxMaximized secondary forms are not being shown maximized }
