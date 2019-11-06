@@ -1181,6 +1181,7 @@ begin
   begin
     AWindow := gdk_get_default_root_window;
     AWindow^.get_geometry(@x, @y, @w, @h);
+    w:=1; h:=1;
     // ParentPixmap := gdk_pixbuf_get_from_window(AWindow, x, y, w, h);
     // Widget := gdk_cairo_create(AWindow);
     // gdk_cairo_set_source_pixbuf(Widget, ParentPixmap, 0, 0);
