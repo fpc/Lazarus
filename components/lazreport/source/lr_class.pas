@@ -4745,23 +4745,8 @@ begin
 end;
 
 procedure TfrCustomMemoView.GetBlob(b: TfrTField);
-var
-  M: TMemoryStream;
 begin
-  // todo: TBLobField.AssignTo is not implemented yet
-  //       even if I supply a patch for 2.0.4 it will
-  //       not be integrated because it's in RC1 now
-  //       (I guess)
-  //
-  //Memo1.Assign(b);
-  M := TMemoryStream.Create;
-  try
-    TBlobField(B).SaveToStream(M);
-    M.Position := 0;
-    Memo1.LoadFromStream(M);
-  finally
-    M.Free;
-  end;
+  Memo1.Text := TBlobField(b).AsString;
 end;
 
 procedure TfrCustomMemoView.FontChange(sender: TObject);
