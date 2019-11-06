@@ -569,7 +569,7 @@ begin
     // for $IFDEF.
     if pos(' ',MakeIDECfgFilename)>0 then
       MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
-    AppendExtraOption('@'+MakeIDECfgFilename,false);
+    AppendExtraOption('@'+MakeIDECfgFilename);
   end;
 end;
 
@@ -854,7 +854,7 @@ begin
   if aOption='' then exit;
   if fExtraOptions<>'' then
     fExtraOptions:=fExtraOptions+' ';
-  if AutoQuote then
+  if AutoQuote and (pos(' ',aOption)>0) then
     fExtraOptions:=fExtraOptions+AnsiQuotedStr(aOption,'"')
   else
     fExtraOptions:=fExtraOptions+aOption;
