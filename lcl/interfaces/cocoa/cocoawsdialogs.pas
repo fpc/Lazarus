@@ -182,7 +182,7 @@ begin
   if Assigned(filter) then
     Result := filter.panel_shouldEnableURL(sender, url)
   else
-    Result := false;
+    Result := true;
 end;
 
 procedure TOpenSaveDelegate.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
