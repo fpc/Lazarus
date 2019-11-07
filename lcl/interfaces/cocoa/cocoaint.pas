@@ -243,6 +243,12 @@ var
   // The icon would have to be changed manually. By default LCL behaviour is used
   CocoaIconUse: Boolean = false;
 
+  {$ifdef COCOALOOPHIJACK}
+  // The flag is set to true once hi-jacked loop is finished (at the end of app)
+  // The flag is checked in Menus to avoid "double" Cmd+Q menu
+  LoopHiJackEnded : Boolean = false;
+  {$endif}
+
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
@@ -597,6 +603,7 @@ begin
     Result := nil;
     aloop();
     stop(nil); // this should stop the main loop
+    LoopHiJackEnded := true;
     exit;
   end;
   {$endif}

@@ -18,6 +18,7 @@ unit CocoaWSMenus;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec2}
+{$include cocoadefines.inc}
 
 interface
 
@@ -440,6 +441,12 @@ end;
 
 procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
 begin
+  {$ifdef COCOALOOPHIJACK}
+  // see bug #36265. if hot-key (Cmd+Q) is used the menu item
+  // would be called once. 1) in LCL controlled loop 2) after the loop finished
+  // The following if statement prevents "double" form close
+  if LoopHiJackEnded then Exit;
+  {$endif}
   // Should be used instead of Application.Terminate to allow events to be sent, see bug 32148
   Application.MainForm.Close;
 end;
