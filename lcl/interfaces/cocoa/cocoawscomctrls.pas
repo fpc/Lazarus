@@ -1473,6 +1473,11 @@ class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
+const
+  GridStyle : array [boolean] of NSUInteger = (
+    NSTableViewGridNone,
+    NSTableViewSolidHorizontalGridLineMask or NSTableViewSolidVerticalGridLineMask
+  );
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   case AProp of
@@ -1480,9 +1485,9 @@ begin
   lvpCheckboxes: lTableLV.lclSetFirstColumCheckboxes(AIsSet);
   lvpColumnClick: lTableLV.setAllowsColumnSelection(AIsSet);
 {  lvpFlatScrollBars,
-  lvpFullDrag,
-  lvpGridLines,
-  lvpHideSelection,
+  lvpFullDrag,}
+  lvpGridLines: lTableLV.setGridStyleMask(GridStyle[AIsSet]);
+  {lvpHideSelection,
   lvpHotTrack,}
   lvpMultiSelect: lTableLV.setAllowsMultipleSelection(AIsSet);
   {lvpOwnerDraw,}
