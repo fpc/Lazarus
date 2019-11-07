@@ -33,7 +33,7 @@ uses
   WSForms, WSLCLClasses, WSProc, WSDialogs, LCLMessageGlue,
   // LCL Cocoa
   CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects
-  ,Cocoa_Extra;
+  ,Cocoa_Extra, CocoaWSMenus;
 
 type
 
@@ -423,25 +423,30 @@ begin
   saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
   UpdateOptions(FileDialog, saveDlg);
 
-  if saveDlg.runModal = NSOKButton then
-  begin
-    FileDialog.FileName := NSStringToString(saveDlg.URL.path);
-    FileDialog.Files.Clear;
+  ToggleAppMenu(false);
+  try
+    if saveDlg.runModal = NSOKButton then
+    begin
+      FileDialog.FileName := NSStringToString(saveDlg.URL.path);
+      FileDialog.Files.Clear;
 
-    if Assigned(openDlg) then
-      for i := 0 to openDlg.filenames.Count - 1 do
-        FileDialog.Files.Add(NSStringToString(
-          NSURL(openDlg.URLs.objectAtIndex(i)).path));
+      if Assigned(openDlg) then
+        for i := 0 to openDlg.filenames.Count - 1 do
+          FileDialog.Files.Add(NSStringToString(
+            NSURL(openDlg.URLs.objectAtIndex(i)).path));
 
-    FileDialog.UserChoice := mrOk;
-    if lFilter <> nil then
-      FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
+      FileDialog.UserChoice := mrOk;
+      if lFilter <> nil then
+        FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
+    end;
+    FileDialog.DoClose;
+
+
+    // release everything
+    LocalPool.Release;
+  finally
+    ToggleAppMenu(true);
   end;
-  FileDialog.DoClose;
-
-
-  // release everything
-  LocalPool.Release;
 
 end;  {TCocoaWSFileDialog.ShowModal}
 
