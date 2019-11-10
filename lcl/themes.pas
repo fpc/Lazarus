@@ -2315,7 +2315,7 @@ begin
   // teHeader should not be here, it has no disabled state
 
   Result := False;
-  if (Details.Element in [teButton, teToolBar, teComboBox]) or
+  if (Details.Element in [teButton, teToolBar, teComboBox, teEdit]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
      ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
      (Details.Part <= WP_MDIHELPBUTTON)) then
