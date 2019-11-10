@@ -12459,6 +12459,7 @@ const
   QStyleState_Sibling =   $00200000;
   QStyleState_Editing =   $00400000;
   QStyleState_KeyboardFocusChange =   $00800000;
+  QStyleState_HasEditFocus = $01000000;
   QStyleState_ReadOnly =   $02000000;
   QStyleState_Small =   $04000000;
   QStyleState_Mini =   $08000000;
