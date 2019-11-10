@@ -132,7 +132,7 @@ type
     procedure setDialogFilter(ASelectedFilterIndex: Integer); message 'setDialogFilter:';
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     // NSOpenSavePanelDelegateProtocol
-    function panel_shouldEnableURL(sender: id; url: NSURL): Boolean; message 'panel:shouldEnableURL:';
+    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean; message 'panel:shouldEnableURL:';
   end;
 
 implementation
@@ -161,10 +161,10 @@ type
     selUrl: NSURL;
     filter: NSOpenSavePanelDelegateProtocol;
     procedure dealloc; override;
-    function panel_shouldEnableURL(sender: id; url: NSURL): Boolean;
+    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
     procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
-    function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: Boolean): NSString;
-    procedure panel_willExpand(sender: id; expanding: Boolean);
+    function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: LCLObjCBoolean): NSString;
+    procedure panel_willExpand(sender: id; expanding: LCLObjCBoolean);
     procedure panelSelectionDidChange(sender: id);
   end;
 
@@ -177,7 +177,7 @@ begin
 end;
 
 function TOpenSaveDelegate.panel_shouldEnableURL(sender: id; url: NSURL
-  ): Boolean;
+  ): LCLObjCBoolean;
 begin
   if Assigned(filter) then
     Result := filter.panel_shouldEnableURL(sender, url)
@@ -192,12 +192,12 @@ begin
 end;
 
 function TOpenSaveDelegate.panel_userEnteredFilename_confirmed(sender: id;
-  filename: NSString; okFlag: Boolean): NSString;
+  filename: NSString; okFlag: LCLObjCBoolean): NSString;
 begin
   Result := filename;
 end;
 
-procedure TOpenSaveDelegate.panel_willExpand(sender: id; expanding: Boolean);
+procedure TOpenSaveDelegate.panel_willExpand(sender: id; expanding: LCLObjCBoolean);
 begin
 
 end;
@@ -861,7 +861,7 @@ begin
   lastSelectedItemIndex := indexOfSelectedItem;
 end;
 
-function TCocoaFilterComboBox.panel_shouldEnableURL(sender: id; url: NSURL): Boolean;
+function TCocoaFilterComboBox.panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
 var
   lPath, lExt, lCurExt: NSString;
   lExtStr, lCurExtStr: String;
