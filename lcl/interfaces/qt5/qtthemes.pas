@@ -566,7 +566,7 @@ var
   Context: TQtDeviceContext;
   Widget: QWidgetH;
   W: WideString;
-  TextRect: TRect;
+  TextRect, SelRect: TRect;
   AOldMode: Integer;
   ATextPalette: Cardinal;
   AQColor: TQColor;
@@ -707,6 +707,13 @@ begin
         begin
           if IsDisabled(Details) then
             QPalette_setCurrentColorGroup(Palette, QPaletteDisabled);
+          if GetControlState(Details) and QStyleState_Selected <> 0 then
+          begin
+            Context.font.Metrics.boundingRect(@SelRect, @R, DTFlagsToQtFlags(Flags), @W);
+            ColorRefToTQColor(ColorToRGB(clHighlight), AQColor);
+            QPainter_fillRect(Context.Widget, @SelRect,  PQColor(@AQColor));
+            ATextPalette := QPaletteHighlightedText;
+          end;
         end;
 
         QStyle_drawItemText(Style, Context.Widget, @R,
