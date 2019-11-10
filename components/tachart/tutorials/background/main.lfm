@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.3'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
     Height = 300
@@ -19,6 +19,7 @@ object Form1: TForm1
         Grid.Color = clSkyBlue
         Grid.Visible = False
         Marks.Format = '%.0n'
+        Marks.LabelBrush.Style = bsClear
         Marks.Style = smsCustom
         Minors = <>
         Title.LabelFont.Height = -16
@@ -26,15 +27,18 @@ object Form1: TForm1
         Title.LabelFont.Style = [fsBold]
         Title.Visible = True
         Title.Caption = 'Downloads per year'
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Grid.Visible = False
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Height = -16
         Title.LabelFont.Style = [fsBold]
         Title.Visible = True
         Title.Caption = 'Year'
+        Title.LabelBrush.Style = bsClear
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -47,10 +51,9 @@ object Form1: TForm1
       'Lazarus Downloads'
     )
     Title.Visible = True
-    OnBeforeDrawBackground = Chart1BeforeDrawBackground
-    OnBeforeDrawBackWall = Chart1BeforeDrawBackWall
+    OnBeforeCustomDrawBackground = Chart1BeforeCustomDrawBackground
+    OnBeforeCustomDrawBackWall = Chart1BeforeCustomDrawBackWall
     Align = alClient
-    ParentColor = False
     object Chart1BarSeries1: TBarSeries
       Shadow.Color = clNavy
       Shadow.OffsetX = 4
