@@ -2005,7 +2005,7 @@ var
   AInkRect: TPangoRectangle;
   ALogicalRect: TPangoRectangle;
   AMetrics: PPangoFontMetrics;
-  ACharWidth: gint;
+  ACharWidth,ATextWidth,ATextHeight: gint;
 begin
   NewStr:=Str;
   // first check if Str contains an ampersand:
@@ -2038,8 +2038,10 @@ begin
     descent^ := AMetrics^.get_descent;
   if width <> nil then
   begin
-    ACharWidth := AMetrics^.get_approximate_char_width;
-    width^ := (StrLength * ACharWidth) div PANGO_SCALE;
+    {ACharWidth := AMetrics^.get_approximate_char_width;
+    width^ := (utf8length(Str, StrLength) * ACharWidth) div PANGO_SCALE;}
+    TheFont.Layout^.get_pixel_size(@ATextWidth, @ATextHeight);
+    width^:=ATextWidth;
   end;
   // PANGO_PIXELS(char_width)
 
