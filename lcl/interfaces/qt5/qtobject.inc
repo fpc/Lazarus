@@ -311,8 +311,12 @@ end;
 procedure TQtWidgetSet.AppTerminate;
 begin
   // free hooks
-  QObject_hook_destroy(FAppEvenFilterHook);
-  QApplication_hook_destroy(FAppFocusChangedHook);
+  if Assigned(FAppEvenFilterHook) then
+    QObject_hook_destroy(FAppEvenFilterHook);
+  if Assigned(FAppFocusChangedHook) then
+    QApplication_hook_destroy(FAppFocusChangedHook);
+  FAppEvenFilterHook := nil;
+  FAppFocusChangedHook := nil;
   // do not quit application if we are library
   if not FIsLibraryInstance then
   begin
