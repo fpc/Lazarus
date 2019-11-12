@@ -1409,6 +1409,7 @@ begin
          (lfWeight = FW_NORMAL) and
          (lfItalic = 0) and
          (lfUnderline = 0) and
+         (lfStrikeOut = 0) and
          (lfOrientation = 0) and
          IsFontNameDefault(lfFacename) then
       begin
@@ -1517,14 +1518,18 @@ begin
           AttrList := pango_attr_list_new();
           AttrListTemporary := True;
         end;
-        if LogFont.lfUnderline <> 0 then
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
-        else
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
-        pango_attr_list_change(AttrList, Attr);
 
-        Attr := pango_attr_strikethrough_new(LogFont.lfStrikeOut<>0);
-        pango_attr_list_change(AttrList, Attr);
+        if LogFont.lfUnderline<>0 then
+        begin
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE);
+          pango_attr_list_change(AttrList, Attr);
+        end;
+
+        if LogFont.lfStrikeOut<>0 then
+        begin
+          Attr := pango_attr_strikethrough_new(True);
+          pango_attr_list_change(AttrList, Attr);
+        end;
 
         pango_layout_set_attributes(CurFont, AttrList);
         
