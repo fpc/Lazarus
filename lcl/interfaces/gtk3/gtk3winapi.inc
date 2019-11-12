@@ -630,6 +630,8 @@ var
   l: LongInt;
   Pt: TPoint;
   SavedRect: TRect; // if font orientation <> 0
+  LineHeight: Integer;
+  Size: TSize;
 
   function LeftOffset: Longint;
   begin
@@ -674,17 +676,13 @@ var
   procedure DoCalcRect;
   var
     AP: TSize;
-    J, MaxWidth,
-    LineWidth: Integer;
-    PR1, PR2: TPangoRectangle;
-    Alignment: Integer;
-    ADevOffset: TPoint;
+    J, MaxWidth, DefHeight,
+    LineWidth, LineHeight: Integer;
   begin
-
-
     theRect := Rect;
 
     MaxWidth := theRect.Right - theRect.Left;
+    DefHeight := theRect.Bottom - theRect.Top;
 
     (*
     if Flags and DT_CENTER  <> 0then
@@ -722,7 +720,10 @@ var
       TextExtentPoint(PChar(AStr), length(AStr), AP{%H-});
       theRect.Bottom := theRect.Top + TM.tmHeight;
       if (Flags and DT_CALCRECT)<>0 then
-        theRect.Right := theRect.Left +  AP.cX
+      begin
+        theRect.Right := theRect.Left +  AP.cX;
+        theRect.Bottom := theRect.Top + AP.cY;
+      end
       else
       begin
         theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
@@ -745,6 +746,7 @@ var
         // do not break at word boundaries
         TextExtentPoint(PChar(AStr), length(AStr), AP);
         MaxWidth := AP.cX;
+        DefHeight := AP.cY;
       end;
 
       Gtk3WordWrap(DC, PChar(AStr), MaxWidth, Lines, NumLines);
@@ -752,20 +754,25 @@ var
       if (Flags and DT_CALCRECT)<>0 then
       begin
         LineWidth := 0;
+        LineHeight := 0;
         if (Lines <> nil) then
         begin
           for J := 0 to NumLines - 1 do
           begin
             TextExtentPoint(Lines[J], StrLen(Lines[J]), AP);
             LineWidth := Max(LineWidth, AP.cX);
+            Inc(LineHeight, AP.cY);
           end;
         end;
         LineWidth := Min(MaxWidth, LineWidth);
       end else
+      begin
         LineWidth := MaxWidth;
+        LineHeight := NumLines*TM.tmHeight;
+      end;
 
       theRect.Right := theRect.Left + LineWidth;
-      theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
+      theRect.Bottom := theRect.Top + LineHeight;
       if NumLines>1 then
         Inc(theRect.Bottom, (NumLines-1)*TM.tmDescent);// space between lines
 
@@ -1022,12 +1029,17 @@ begin
       and (tm.tmHeight > (theRect.Bottom - theRect.Top))
       then Break;
 
-      if Lines[i] <> nil then begin
+      if Lines[i] <> nil then
+      begin
         l:=StrLen(Lines[i]);
         DrawLine(Lines[i], l, theRect.Top);
         dec(pIndex,l+length(LineEnding));
-      end;
-      Inc(theRect.Top, TM.tmDescent + TM.tmHeight);// space between lines
+        GetTextExtentPoint(DC, Lines[i], l, Size);
+        LineHeight := Size.cY;
+      end
+      else
+        LineHeight := TM.tmHeight;
+      Inc(theRect.Top, LineHeight + TM.tmDescent); // space between lines
     end;
 
   finally
