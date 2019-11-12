@@ -1135,7 +1135,7 @@ begin
   if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
      (FPageIndexOnLastChange <> FPageIndex) then
   begin
-    if Assigned(CurPage) and HasFocusedControl(Page[FPageIndexOnLastChange]) then
+    if Assigned(CurPage) and CurPage.enabled and HasFocusedControl(Page[FPageIndexOnLastChange]) then
       CurPage.SetFocus;
     Page[FPageIndexOnLastChange].Visible := False;
   end;
