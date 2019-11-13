@@ -551,7 +551,7 @@ Var
         If (sText[i] In [#10, #09, #13]) Or (i = iLen) Then
         Begin
           // Add the text before this point into a single Text Run
-          If i > iStart Then
+          If i >= iStart Then
           Begin
             // If end of line AND end of line isn't a special char, then
             // inc(i) to ensure the math in the Copy works :-)
