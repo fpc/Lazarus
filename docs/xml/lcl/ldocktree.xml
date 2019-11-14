@@ -497,21 +497,6 @@
       <element name="TLazDockPages.SetActiveNotebookPageComponent.AValue">
         <short/>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TLazDockPages.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TLazDockPages</var>: sets <var>PageClass</var> as <var>TLazDockPage</var>, then calls inherited <var>Create</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.ComCtrls.TCustomTabControl.Create">TCustomTabControl.Create</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLazDockPages.Create.TheOwner">
-        <short/>
-      </element>
       <!-- property Visibility: public -->
       <element name="TLazDockPages.Page">
         <short>
@@ -715,6 +700,18 @@
           <link id="#LCL.Controls.TControl.GetFloatingDockSiteClass">TControl.GetFloatingDockSiteClass</link>
         </seealso>
       </element>
+
+      <element name="TLazDockPages.GetPageClass">
+        <short>
+          Gets the TLazDockPage class type used as the page class for the tabbed control
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TLazDockPages.GetPageClass.Result">
+        <short>TLazDockPage class type used for the page class</short>
+      </element>
+
       <element name="TLazDockPages.Change">
         <short>
           <var>Change</var> - calls inherited method, then ensures that all parents recognize MainControl</short>
@@ -875,7 +872,7 @@ initializes splitter size, title height and width</short>
 
   The created gap will be tried to fill up.
   It removes TLazDockSplitter, TLazDockPage and TLazDockPages if they are no
-  longer needed.                                
+  longer needed.
 
  Examples:
 

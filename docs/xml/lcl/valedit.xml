@@ -1230,6 +1230,18 @@
         <short>New values for the property</short>
       </element>
 
+      <element name="TValueListEditor.UpdateTitleCaptions">
+        <short>Updates TitleCaptions with the specified key and value captions</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TValueListEditor.UpdateTitleCaptions.KeyCap">
+        <short>Caption used for the Key column</short>
+      </element>
+      <element name="TValueListEditor.UpdateTitleCaptions.ValCap">
+        <short>Caption used for the Value column</short>
+      </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.WSRegisterClass">
         <short>Registers the class type for the widget set</short>
@@ -1543,6 +1555,20 @@
         <short>Shift state value</short>
       </element>
 
+      <element name="TValueListEditor.LoadContent">
+        <short>
+          Loads configuration and content for the control from the specified XML configuration file
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TValueListEditor.LoadContent.Cfg">
+        <short>XML configuration file with values loaded in the method</short>
+      </element>
+      <element name="TValueListEditor.LoadContent.Version">
+        <short>Control vrsion for the stored content</short>
+      </element>
+
       <element name="TValueListEditor.ResetDefaultColWidths">
         <short>
           Resets columns to their default widths
@@ -1566,6 +1592,17 @@
             TValueListEditor.DisplayOptions
           </link>
         </seealso>
+      </element>
+
+      <element name="TValueListEditor.SaveContent">
+        <short>
+          Saves the configuration and content in the control to the specified XML configuration file
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TValueListEditor.SaveContent.Cfg">
+        <short>XML configuration file where values are stored in the method</short>
       </element>
 
       <!-- procedure Visibility: protected -->
@@ -2013,6 +2050,35 @@
       </element>
       <element name="TValueListEditor.IsEmptyRow.Result">
         <short>True if the specified row has empty key name and value cells</short>
+      </element>
+
+      <element name="TValueListEditor.LoadFromCSVStream">
+        <short>
+          Loads the content for the control from the comma-separated values in the specified stream
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TValueListEditor.LoadFromCSVStream.AStream">
+        <short>TStream instance with the values loaded in the method</short>
+      </element>
+      <element name="TValueListEditor.LoadFromCSVStream.ADelimiter">
+        <short>Delimiter between cell values; default is Comma (',')</short>
+      </element>
+      <element name="TValueListEditor.LoadFromCSVStream.UseTitles">
+        <short>
+          Indicates whether title captions included as the first row in the CSV data
+        </short>
+      </element>
+      <element name="TValueListEditor.LoadFromCSVStream.FromLine">
+        <short>
+          Initial line number in the stream loaded in the method
+        </short>
+      </element>
+      <element name="TValueListEditor.LoadFromCSVStream.SkipEmptyLines">
+        <short>
+          Indicates whether empty lines are ignored when loading the content for the control
+        </short>
       </element>
 
       <element name="TValueListEditor.MoveColRow">
@@ -2852,6 +2918,26 @@
       <element name="rsVLEInvalidRowColOperation">
         <short>
           Exception message for an invalid row or column operation
+        </short>
+      </element>
+      <element name="rsVLENoRowCountFound">
+        <short>
+          Error message displayed when a row count is not found when loading content in TValueListEditor
+        </short>
+      </element>
+      <element name="rsVLERowIndexOutOfBounds">
+        <short>
+          Error message displayed when an invalid row number is found when loading content in TValueListEditor
+        </short>
+      </element>
+      <element name="rsVLEColIndexOutOfBounds">
+        <short>
+          Error message displayed when an invalid column number is found when loading content in TValueListEditor
+        </short>
+      </element>
+      <element name="rsVLEIllegalColCount">
+        <short>
+          Error message displayed when an invalid column count is found when loading content in TValueListEditor; column count is always 2 in TValueListEditor
         </short>
       </element>
 

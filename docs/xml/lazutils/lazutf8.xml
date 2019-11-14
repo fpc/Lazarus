@@ -2175,6 +2175,22 @@
         <seealso></seealso>
       </element>
 
+      <element name="UTF8GetStandardCodePage">
+        <short>Gets the default system code page for the wide string manager</short>
+        <descr>
+          <p>
+            <var>UTF8GetStandardCodePage</var> is a <var>TSystemCodePage</var> function used to get the default code page for strings in the Wide String manager. UTF8GetStandardCodePage is implemented for Windows platforms that use a UTF-8-enabled Runtime Library (RTL). It is assigned as the procedure used by the wide string manager for the platform.
+          </p>
+          <p>
+            <var>stdcp</var> contains the <var>TStandardCodePageEnum</var> enumeration value that identifies the default code page for the platform.
+          </p>
+          <p>
+            The return value contains CP_UTF8 constant.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
     </module>
     <!-- LazUTF8 -->
   </package>

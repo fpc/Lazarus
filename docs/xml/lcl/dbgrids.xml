@@ -3201,7 +3201,7 @@
         </short>
         <descr>
           <p>
-            <var>RestoreEditor</var> is a procedure used to re-enable the editor control in the grid after processing scrollbar messages. RestoreEditor is used when EditorMode contains True. No actions are performed in the method when EditorMode contains False. RestoreEditor toggles the value in EditorMode to force the editor for the SelectCell to be refreshed and redrawn.
+            <var>RestoreEditor</var> is a procedure used to re-enable the editor control in the grid after processing scrollbar messages. RestoreEditor is used when EditorMode contains True. No actions are performed in the method when EditorMode contains False. RestoreEditor toggles the value in EditorMode to force the editor to be refreshed and redrawn.
           </p>
         </descr>
         <seealso></seealso>
@@ -4093,31 +4093,6 @@
       <!-- argument visibility: default -->
       <element name="TCustomDBGrid.SetEditText.Value">
         <short></short>
-      </element>
-
-      <!-- function visibility: protected -->
-      <element name="TCustomDBGrid.SelectCell">
-        <short>
-          Indicates if the cell at the specified coordinates can be selected in the control
-        </short>
-        <descr>
-          <p>
-            <var>SelectCell</var> is an overridden Boolean function that indicates if the cell at the specified coordinates can be selected in the control. SelectCell uses ColWidths and RowHeights to determine if the cell can be visually selected. The return value is True when both contain positive non-zero values.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-      <!-- function result visibility: default -->
-      <element name="TCustomDBGrid.SelectCell.Result">
-        <short>True when the cell can be selected</short>
-      </element>
-      <!-- argument visibility: default -->
-      <element name="TCustomDBGrid.SelectCell.aCol">
-        <short>Column for the cell</short>
-      </element>
-      <!-- argument visibility: default -->
-      <element name="TCustomDBGrid.SelectCell.aRow">
-        <short>Row for the cell</short>
       </element>
 
       <!-- procedure visibility: protected -->

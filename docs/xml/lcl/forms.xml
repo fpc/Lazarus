@@ -9,144 +9,42 @@
     <module name="Forms">
       <short>Contains definitions and descriptions for constructing the Forms which are the basis of the Lazarus Graphical User Interface</short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="TypInfo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Math">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="AvgLvlTree">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Maps">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="InterfaceBase">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Menus">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LMessages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="CustomTimer">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ActnList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ClipBrd">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="CustApp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="HelpIntfs">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLClasses">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
+      <!-- unresolved type references Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Types"/>
+      <element name="TypInfo"/>
+      <element name="Math"/>
+      <element name="CustApp"/>
+      <element name="LCLStrConsts"/>
+      <element name="LCLTypes"/>
+      <element name="LCLProc"/>
+      <element name="LCLIntf"/>
+      <element name="LCLVersion"/>
+      <element name="LCLClasses"/>
+      <element name="InterfaceBase"/>
+      <element name="LResources"/>
+      <element name="GraphType"/>
+      <element name="Graphics"/>
+      <element name="Menus"/>
+      <element name="LMessages"/>
+      <element name="CustomTimer"/>
+      <element name="ActnList"/>
+      <element name="ClipBrd"/>
+      <element name="HelpIntfs"/>
+      <element name="Controls"/>
+      <element name="ImgList"/>
+      <element name="Themes"/>
+      <element name="LazFileUtils"/>
+      <element name="LazUTF8"/>
+      <element name="Maps"/>
+      <element name="IntegerList"/>
+      <element name="LazMethodList"/>
+      <element name="LazLoggerBase"/>
+      <element name="LazUtilities"/>
+      <element name="UITypes"/>
+
       <!-- procedure type Visibility: default -->
       <element name="TProcedure">
         <short>The type of a procedure that takes no arguments.</short>
@@ -1607,7 +1505,7 @@
       <element name="TShortCutEvent.Handled">
         <short>Set Handled to True to prevent further processing of the key.</short>
       </element>
-<!-- object Visibility: default -->
+      <!-- object Visibility: default -->
       <element name="TCustomForm">
         <short>The base type for <var>TForm</var>.
         </short>
@@ -1728,6 +1626,13 @@
       <notes><note>?</note>
         </notes>
       </element>
+
+      <element name="TCustomForm.FDelayedEventCtr"/>
+      <element name="TCustomForm.FDelayedWMMove"/>
+      <element name="TCustomForm.FDelayedWMSize"/>
+      <element name="TCustomForm.FIsFirstOnShow"/>
+      <element name="TCustomForm.FIsFirstOnActivate"/>
+
       <element name="TCustomForm.FWindowState" link="TCustomForm.WindowState"/>
       <!-- function Visibility: private -->
       <element name="TCustomForm.GetClientHandle" link="TCustomForm.ClientHandle"/>
@@ -1824,6 +1729,16 @@
       <element name="TCustomForm.IsKeyPreviewStored.Result">
         <short/>
       </element>
+
+      <element name="TCustomForm.DelayedEvent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomForm.DelayedEvent.Data">
+        <short></short>
+      </element>
+
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetActive" link="TCustomForm.Active"/>
       <element name="TCustomForm.SetActive.AValue">
@@ -2568,8 +2483,7 @@
       <element name="TCustomForm.VisibleIsStored.Result">
         <short/>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoSendBoundsToInterface" link="#LCL.Controls.TWinControl.DoSendBoundsToInterface"/>
+
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize"/>
       <!-- procedure Visibility: protected -->
@@ -2990,6 +2904,7 @@
       <notes><note>?</note>
         </notes>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.SetRestoredBounds">
         <short>Sets the bounds defining the restored control.</short>
@@ -3010,6 +2925,10 @@
       <element name="TCustomForm.SetRestoredBounds.AHeight">
         <short/>
       </element>
+      <element name="TCustomForm.SetRestoredBounds.ADefaultPosition">
+        <short/>
+      </element>
+
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Show" link="#LCL.Controls.TControl.Show"/>
       <!-- function Visibility: public -->
