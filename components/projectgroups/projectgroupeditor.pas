@@ -17,7 +17,7 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
-  ActnList, LCLProc, Clipbrd, ImgList,
+  ActnList, LCLProc, Clipbrd, ImgList, LCLType,
   // LazUtils
   LazFileUtils, LazLoggerBase, LazFileCache,
   // IdeIntf
@@ -163,6 +163,7 @@ type
       Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
       var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
     procedure TVPGDblClick(Sender: TObject);
+    procedure TVPGKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure TVPGMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure TVPGSelectionChanged(Sender: TObject);
@@ -743,6 +744,24 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TProjectGroupEditorForm.TVPGKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Shift=[ssCtrl] then
+    case Key of
+      VK_UP:
+      begin
+        TBTargetUp.Click;
+        Key := 0;
+      end;
+      VK_DOWN:
+      begin
+        TBTargetLater.Click;
+        Key := 0;
+      end;
+    end;
 end;
 
 procedure TProjectGroupEditorForm.TVPGMouseDown(Sender: TObject;

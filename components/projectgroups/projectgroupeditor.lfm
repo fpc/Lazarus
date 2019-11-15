@@ -104,6 +104,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     TabOrder = 1
     OnAdvancedCustomDrawItem = TVPGAdvancedCustomDrawItem
     OnDblClick = TVPGDblClick
+    OnKeyDown = TVPGKeyDown
     OnMouseDown = TVPGMouseDown
     OnSelectionChanged = TVPGSelectionChanged
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
