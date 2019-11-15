@@ -50,7 +50,7 @@ uses
 
 const
   PGOptionsFileName = 'projectgroupsoptions.xml';
-  PGFileVersion = 1;
+  PGFileVersion = 2;
 
 type
   { TIDECompileTarget }
@@ -71,7 +71,7 @@ type
     function GetRequiredPackages(Index: integer): TPGDependency; override;
     procedure LoadPackage;
     procedure LoadProject;
-    procedure LoadProject_GroupSettings(XMLConfig: TXMLConfig; aPath: string);
+    procedure LoadProject_GroupSettings(XMLConfig: TXMLConfig; aPath: string; FileVersion: Integer);
     procedure SaveProject_GroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure LoadProjectGroup(Recursively: boolean);
     function ProjectAction(AAction: TPGTargetAction; StartBuildMode: string = ''): TPGActionResult;
@@ -86,7 +86,7 @@ type
   public
     destructor Destroy; override;
     procedure LoadTarget(Recursively: boolean); virtual;
-    procedure LoadGroupSettings(XMLConfig: TXMLConfig; aPath: string);
+    procedure LoadGroupSettings(XMLConfig: TXMLConfig; aPath: string; FileVersion: Integer);
     procedure SaveGroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure UnLoadTarget; virtual;
     procedure Modified; override;
@@ -1261,12 +1261,12 @@ function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions
 Var
   ARoot: String;
   TargetFileName: String;
-  BaseDir, APath: String;
+  BaseDir, APath, ATargetPath: String;
   XMLConfig: TXMLConfig;
-  i,ACount: Integer;
+  i,ACount, FileVersion: Integer;
   Target: TIDECompileTarget;
   aGroup: TProjectGroup;
-  Changed: Boolean;
+  Changed, IsLegacyList: Boolean;
 begin
   Result:=false;
   if not FilenameIsAbsolute(FileName) then exit;
@@ -1286,12 +1286,15 @@ begin
   try
     XMLConfig := LoadXML(Filename,pgloSkipDialog in Options);
     try
-      ARoot:='ProjectGroup';
-      ACount:=XMLConfig.GetValue(ARoot+'/Targets/Count',0);
+      ARoot:='ProjectGroup/';
+      FileVersion := XMLConfig.GetValue(ARoot+'FileVersion',0);
+      ATargetPath := ARoot+'Targets/';
+      IsLegacyList := (FileVersion<=1) or XMLConfig.IsLegacyList(ATargetPath);
+      ACount:=XMLConfig.GetListItemCount(ATargetPath, 'Target', IsLegacyList);
       for i:=0 to ACount-1 do
       begin
         Target:=Nil;
-        APath:=Format(ARoot+'/Targets/Target%d/',[i]);
+        APath:=ATargetPath+XMLConfig.GetListItemXPath('Target', i, IsLegacyList, False)+'/';
         TargetFileName:=XMLConfig.GetValue(APath+'FileName','');
         TargetFileName:=TrimFilename(GetForcedPathDelims(TargetFileName));
         if not FilenameIsAbsolute(TargetFileName) then
@@ -1334,7 +1337,7 @@ begin
             exit;
           end;
         if Target<>nil then
-          Target.LoadGroupSettings(XMLConfig,APath)
+          Target.LoadGroupSettings(XMLConfig,APath,FileVersion)
         else
           Changed:=true;
       end;
@@ -1355,7 +1358,7 @@ function TIDEProjectGroup.SaveToFile: Boolean;
 Var
   TargetPath: String;
   RelativeFileName: String;
-  ARoot, APath: String;
+  ARoot, APath, ATargetsPath: String;
   XMLConfig: TXMLConfig;
   i,ACount: Integer;
   aTarget: TIDECompileTarget;
@@ -1367,20 +1370,21 @@ begin
     XMLConfig := CreateXML(FileName,false);
     try
       TargetPath:=ExtractFilePath(FileName);
-      ARoot:='ProjectGroup';
-      XMLConfig.SetValue(ARoot+'/FileVersion',PGFileVersion);
+      ARoot:='ProjectGroup/';
+      XMLConfig.SetValue(ARoot+'FileVersion',PGFileVersion);
+      ATargetsPath := ARoot+'Targets/';
+      XMLConfig.SetListItemCount(ATargetsPath, TargetCount, False);
       ACount:=0;
       For i:=0 to TargetCount-1 do
       begin
         aTarget:=TIDECompileTarget(GetTarget(i));
-        APath:=Format(ARoot+'/Targets/Target%d/',[ACount]);
+        APath:=ATargetsPath+XMLConfig.GetListItemXPath('Target', i, False, False)+'/';
         RelativeFileName:=ExtractRelativepath(TargetPath,aTarget.FileName);
         StringReplace(RelativeFileName,'\','/',[rfReplaceAll]); // normalize, so that files look the same x-platform, for less svn changes
         XMLConfig.SetDeleteValue(APath+'FileName',RelativeFileName,'');
         aTarget.SaveGroupSettings(XMLConfig,APath);
         Inc(ACount);
       end;
-      XMLConfig.SetDeleteValue(ARoot+'/Targets/Count',ACount,0);
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
@@ -1421,10 +1425,10 @@ begin
 end;
 
 procedure TIDECompileTarget.LoadGroupSettings(XMLConfig: TXMLConfig;
-  aPath: string);
+  aPath: string; FileVersion: Integer);
 begin
   case TargetType of
-    ttProject: LoadProject_GroupSettings(XMLConfig,aPath);
+    ttProject: LoadProject_GroupSettings(XMLConfig,aPath,FileVersion);
   end;
   if not Missing then
     if XMLConfig.GetValue(APath+'Active',False) then
@@ -1757,15 +1761,22 @@ begin
 end;
 
 procedure TIDECompileTarget.LoadProject_GroupSettings(XMLConfig: TXMLConfig;
-  aPath: string);
+  aPath: string; FileVersion: Integer);
 var
   Cnt, i: Integer;
-  SubPath, aName: String;
+  SubPath, aName, RootPath: String;
   aMode: TPGBuildMode;
+  IsLegacyList: Boolean;
 begin
-  Cnt:=XMLConfig.GetValue(aPath+'BuildModes/Count',0);
-  for i:=1 to Cnt do begin
-    SubPath:=aPath+'Mode'+IntToStr(i)+'/';
+  RootPath := aPath;
+  aPath := aPath+'BuildModes/';
+  IsLegacyList := (FileVersion<=1) or XMLConfig.IsLegacyList(aPath);
+  Cnt:=XMLConfig.GetListItemCount(aPath, 'Mode', IsLegacyList);
+  for i:=0 to Cnt-1 do begin
+    if IsLegacyList then
+      SubPath:=RootPath+'Mode'+IntToStr(i+1)+'/' // important: legacy list has wrong structure here - the mode elements are not within the BuildModes element
+    else
+      SubPath:=aPath+XMLConfig.GetListItemXPath('Mode', i, IsLegacyList, True)+'/';
     aName:=XMLConfig.GetValue(SubPath+'Name','');
     aMode:=FindBuildMode(aName);
     if aMode=nil then continue;
@@ -1780,10 +1791,11 @@ var
   SubPath: String;
   aMode: TPGBuildMode;
 begin
-  XMLConfig.SetDeleteValue(aPath+'BuildModes/Count',BuildModeCount,0);
-  for i:=1 to BuildModeCount do begin
-    SubPath:=aPath+'Mode'+IntToStr(i)+'/';
-    aMode:=BuildModes[i-1];
+  aPath := aPath+'BuildModes/';
+  XMLConfig.SetListItemCount('Mode', BuildModeCount, False);
+  for i:=0 to BuildModeCount-1 do begin
+    SubPath:=aPath+XMLConfig.GetListItemXPath('Mode', i, False, True)+'/';
+    aMode:=BuildModes[i];
     XMLConfig.SetDeleteValue(SubPath+'Name',aMode.Identifier,'');
     XMLConfig.SetDeleteValue(SubPath+'Compile',aMode.Compile,false);
   end;
