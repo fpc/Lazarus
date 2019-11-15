@@ -577,10 +577,9 @@ begin
 
     if not WithoutExtraIndent then
     begin
-      if eoTabsToSpaces in EditorOptions.EditorOpts.SynEditOptions then
-        Indent := Indent+StringOfChar(' ',EditorOptions.EditorOpts.TabWidth)
-      else
-        Indent := Indent+#9;
+      Indent := Indent
+        +StringOfChar(#9,EditorOptions.EditorOpts.BlockTabIndent)
+        +StringOfChar(' ',EditorOptions.EditorOpts.BlockIndent);
     end;
 
     Value:='';
