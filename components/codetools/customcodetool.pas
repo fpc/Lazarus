@@ -743,6 +743,10 @@ begin
     exit(false);
   p1:=@Src[CleanStartPos1];
   p2:=@Src[CleanStartPos2];
+  if p1^='&' then
+    Inc(p1);
+  if p2^='&' then
+    Inc(p2);
   while IsIdentChar[p1^] do begin
     if (UpChars[p1^]<>UpChars[p2^]) then
       exit(false);
@@ -3039,6 +3043,10 @@ function TCustomCodeTool.CompareSrcIdentifiers(Identifier1, Identifier2: PChar
 begin
   Result:=false;
   if (Identifier1=nil) or (Identifier2=nil) then exit;
+  if Identifier1^='&' then
+    Inc(Identifier1);
+  if Identifier2^='&' then
+    Inc(Identifier2);
   while IsIdentChar[Identifier1^] do begin
     if (UpChars[Identifier1^]=UpChars[Identifier2^]) then begin
       inc(Identifier1);
@@ -3055,6 +3063,14 @@ begin
   Result:=false;
   if (AnIdentifier=nil) or (CleanStartPos<1) or (CleanStartPos>SrcLen) then
     exit;
+  if AnIdentifier^='&' then
+    Inc(AnIdentifier);
+  if Src[CleanStartPos]='&' then
+  begin
+    Inc(CleanStartPos);
+    if CleanStartPos>SrcLen then
+      exit;
+  end;
   while IsIdentChar[AnIdentifier^] do begin
     if (UpChars[AnIdentifier^]=UpChars[Src[CleanStartPos]]) then begin
       inc(AnIdentifier);
