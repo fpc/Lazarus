@@ -3765,7 +3765,7 @@ begin
 
             Node:=Node.FirstChild;
             while Node<>nil do begin
-              List.Add(EnumPrefix+GetIdentifier(@Tool.Src[Node.StartPos]));
+              List.Add(EnumPrefix+GetIdentifier(@Tool.Src[Node.StartPos], False));
               Node:=Node.NextBrother;
             end;
           end;
