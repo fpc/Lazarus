@@ -44,6 +44,7 @@ type
     ICContainsFilterCheckBox: TCheckBox;
     ICAddDoCheckBox: TCheckBox;
     ICAutoAddParameterBracketsCheckBox: TCheckBox;
+    ICIncludeCodeTemplatesCheckBox: TCheckBox;
     ICMiscDividerBevel: TDividerBevel;
     ICOpenDividerBevel: TDividerBevel;
     ICAutoStartAfterPointCheckBox: TCheckBox;
@@ -110,6 +111,7 @@ begin
     dlgIncludeWordsToIdentCompl_IncludeFromAllUnits+LineEnding+
     dlgIncludeWordsToIdentCompl_IncludeFromCurrentUnit+LineEnding+
     dlgIncludeWordsToIdentCompl_DontInclude;
+  ICIncludeCodeTemplatesCheckBox.Caption := dlgIncludeCodeTemplatesToIdentCompl;
 
   ICAppearanceDividerBevel.Caption:=lisAppearance;
   ICUseIconsInCompletionBoxCheckBox.Caption := dlgUseIconsInCompletionBox;
@@ -138,6 +140,7 @@ begin
     ICSortForHistoryCheckBox.Checked:=IdentComplSortForHistory;
     ICSortForScopeCheckBox.Checked:=IdentComplSortForScope;
     ICContainsFilterCheckBox.Checked:=IdentComplUseContainsFilter;
+    ICIncludeCodeTemplatesCheckBox.Checked:=IdentComplIncludeCodeTemplates;
     ICUseIconsInCompletionBoxCheckBox.Checked:=IdentComplShowIcons;
     case IdentComplIncludeWords of
       icwIncludeFromAllUnits: ICAddWordsComboBox.ItemIndex:=0;
@@ -165,6 +168,7 @@ begin
     IdentComplSortForHistory:=ICSortForHistoryCheckBox.Checked;
     IdentComplSortForScope:=ICSortForScopeCheckBox.Checked;
     IdentComplUseContainsFilter:=ICContainsFilterCheckBox.Checked;
+    IdentComplIncludeCodeTemplates:=ICIncludeCodeTemplatesCheckBox.Checked;
     IdentComplShowIcons:=ICUseIconsInCompletionBoxCheckBox.Checked;
     case ICAddWordsComboBox.ItemIndex of
       0: IdentComplIncludeWords := icwIncludeFromAllUnits;

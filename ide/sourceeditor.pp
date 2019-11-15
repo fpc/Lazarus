@@ -56,7 +56,7 @@ uses
   LazStringUtils,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
-  LinkScanner, CodeTree, SourceChanger,
+  LinkScanner, CodeTree, SourceChanger, IdentCompletionTool,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
@@ -1204,8 +1204,6 @@ type
     procedure OnSourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
     procedure OnSourceMarksGetSynEdit(Sender: TObject; aFilename: string;
       var aSynEdit: TSynEdit);
-    property CodeTemplateModul: TSynEditAutoComplete
-                               read FCodeTemplateModul write FCodeTemplateModul;
     // goto dialog
     function GotoDialog: TfrmGoto;
   public
@@ -1216,6 +1214,8 @@ type
                              AnID: Integer = -1
                             ): TSourceNotebook;
     function SenderToEditor(Sender: TObject): TSourceEditor;
+    property CodeTemplateModul: TSynEditAutoComplete
+                               read FCodeTemplateModul write FCodeTemplateModul;
   private
     // Context-Menu
     procedure CloseOtherPagesClicked(Sender: TObject);
@@ -2427,6 +2427,7 @@ var
   OldCompletionType: TCompletionType;
   prototypeAdded: boolean;
   SourceNoteBook: TSourceNotebook;
+  IdentItem: TIdentifierListItem;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   DebugLnEnter(['TSourceNotebook.ccComplete START']);
@@ -2444,22 +2445,29 @@ Begin
              SourceStart,SourceEnd,KeyChar,Shift);
           Manager.FActiveCompletionPlugin:=nil;
         end else begin
+          IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Position];
           // add to history
-          CodeToolBoss.IdentifierHistory.Add(
-            CodeToolBoss.IdentifierList.FilteredItems[Position]);
-          // get value
-          NewValue:=GetIdentCompletionValue(Self, KeyChar, ValueType, CursorToLeft);
-          if ValueType=icvIdentifier then ;
-          // insert value plus special chars like brackets, semicolons, ...
-          if ValueType <> icvNone then
-            Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
-          if ValueType in [icvProcWithParams,icvIndexedProp] then
-            prototypeAdded := true;
-          if CursorToLeft>0 then
+          CodeToolBoss.IdentifierHistory.Add(IdentItem);
+          if IdentItem is TCodeTemplateIdentifierListItem then
           begin
-            NewCaretXY:=Editor.CaretXY;
-            dec(NewCaretXY.X,CursorToLeft);
-            Editor.CaretXY:=NewCaretXY;
+            if IdentItem.Identifier<>'' then
+              Manager.CodeTemplateModul.ExecuteCompletion(IdentItem.Identifier, Editor);
+          end else
+          begin
+            // get value
+            NewValue:=GetIdentCompletionValue(Self, KeyChar, ValueType, CursorToLeft);
+            if ValueType=icvIdentifier then ;
+            // insert value plus special chars like brackets, semicolons, ...
+            if ValueType <> icvNone then
+              Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
+            if ValueType in [icvProcWithParams,icvIndexedProp] then
+              prototypeAdded := true;
+            if CursorToLeft>0 then
+            begin
+              NewCaretXY:=Editor.CaretXY;
+              dec(NewCaretXY.X,CursorToLeft);
+              Editor.CaretXY:=NewCaretXY;
+            end;
           end;
           ccSelection := '';
           Value:='';

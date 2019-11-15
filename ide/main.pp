@@ -667,6 +667,7 @@ type
     function OIHelpProvider: TAbstractIDEHTMLProvider;
     procedure DoAddWordsToIdentCompletion(Sender: TIdentifierList;
       FilteredList: TFPList; PriorityCount: Integer);
+    procedure DoAddCodeTemplatesToIdentCompletion;
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
@@ -2053,6 +2054,8 @@ procedure TMainIDE.CodeToolBossGatherUserIdentifiers(
   );
 begin
   FIdentifierWordCompletionEnabled := not (ilcfStartIsSubIdent in ContextFlags);
+  if not (ilcfStartIsSubIdent in ContextFlags) then
+    DoAddCodeTemplatesToIdentCompletion;
 end;
 
 procedure TMainIDE.CodeToolBossGatherUserIdentifiersToFilteredList(
@@ -7295,6 +7298,24 @@ begin
       exit;
   end;
   AbortBuild;
+end;
+
+procedure TMainIDE.DoAddCodeTemplatesToIdentCompletion;
+var
+  New: TCodeTemplateIdentifierListItem;
+  I: Integer;
+begin
+  if not CodeToolsOpts.IdentComplIncludeCodeTemplates then
+    Exit;
+
+  for I := 0 to SourceEditorManager.CodeTemplateModul.Completions.Count-1 do
+  begin
+    New := TCodeTemplateIdentifierListItem.Create(CodeTemplateCompatibility, False, CodeTemplateHistoryIndex,
+      PChar(SourceEditorManager.CodeTemplateModul.Completions[I]),
+      CodeTemplateLevel, nil, nil, ctnCodeTemplate);
+    New.Comment := SourceEditorManager.CodeTemplateModul.CompletionComments[I];
+    CodeToolBoss.IdentifierList.Add(New);
+  end;
 end;
 
 procedure TMainIDE.DoCompile;

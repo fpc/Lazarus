@@ -78,12 +78,12 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 344
+    Top = 365
     Width = 124
     Caption = 'ICReplaceCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 12
+    TabOrder = 13
   end
   object ICAddDoCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -174,7 +174,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 329
+    Top = 350
     Width = 537
     Caption = 'ICMiscDividerBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -189,12 +189,12 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 363
+    Top = 384
     Width = 151
     Caption = 'ICJumpToErrorCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 13
+    TabOrder = 14
   end
   object ICAutoUseSingleIdent: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -223,13 +223,13 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
   end
   object ICAppearanceDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ICAddWordsComboBox
+    AnchorSideTop.Control = ICIncludeCodeTemplatesCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 293
+    Top = 314
     Width = 537
     Caption = 'ICAppearanceDividerBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -243,10 +243,10 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 308
+    Top = 329
     Width = 222
     Caption = 'ICUseIconsInCompletionBoxCheckBox'
-    TabOrder = 11
+    TabOrder = 12
   end
   object ICContentDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
@@ -288,5 +288,17 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     ItemHeight = 15
     Style = csDropDownList
     TabOrder = 10
+  end
+  object ICIncludeCodeTemplatesCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAddWordsComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 293
+    Width = 205
+    BorderSpacing.Top = 2
+    Caption = 'ICIncludeCodeTemplatesCheckBox'
+    TabOrder = 11
   end
 end

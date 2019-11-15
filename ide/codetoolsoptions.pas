@@ -124,6 +124,7 @@ type
     FIdentComplAutoStartAfterPoint: boolean;
     FIdentComplAutoUseSingleIdent: boolean;
     FIdentComplUseContainsFilter: Boolean;
+    FIdentComplIncludeCodeTemplates: Boolean;
     FIdentComplIncludeWords: TIdentComplIncludeWords;
     FIdentComplShowIcons: Boolean;
 
@@ -256,6 +257,8 @@ type
                                            write FIdentComplAutoUseSingleIdent;
     property IdentComplUseContainsFilter: boolean read FIdentComplUseContainsFilter
                                            write FIdentComplUseContainsFilter;
+    property IdentComplIncludeCodeTemplates: boolean read FIdentComplIncludeCodeTemplates
+                                           write FIdentComplIncludeCodeTemplates;
     property IdentComplIncludeWords: TIdentComplIncludeWords read FIdentComplIncludeWords
                                            write FIdentComplIncludeWords;
     property IdentComplShowIcons: boolean read FIdentComplShowIcons
@@ -574,6 +577,8 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AutoUseSingleIdent',true);
     FIdentComplUseContainsFilter:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/UseContainsFilter',true);
+    FIdentComplIncludeCodeTemplates:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/IncludeCodeTemplates',true);
     FIdentComplIncludeWords:=IdentComplIncludeWordsNamesToEnum(XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/IncludeWords',
       IdentComplIncludeWordsNames[icwIncludeFromAllUnits]));
@@ -749,6 +754,8 @@ begin
       FIdentComplAutoUseSingleIdent,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/UseContainsFilter',
       FIdentComplUseContainsFilter,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/IncludeCodeTemplates',
+      FIdentComplIncludeCodeTemplates,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/IncludeWords',
       IdentComplIncludeWordsNames[FIdentComplIncludeWords],
       IdentComplIncludeWordsNames[icwIncludeFromAllUnits]);
@@ -903,6 +910,7 @@ begin
     FIdentComplAutoStartAfterPoint:=CodeToolsOpts.FIdentComplAutoStartAfterPoint;
     FIdentComplAutoUseSingleIdent:=CodeToolsOpts.FIdentComplAutoUseSingleIdent;
     FIdentComplUseContainsFilter:=CodeToolsOpts.FIdentComplUseContainsFilter;
+    FIdentComplIncludeCodeTemplates:=CodeToolsOpts.FIdentComplIncludeCodeTemplates;
     FIdentComplShowIcons:=CodeToolsOpts.FIdentComplShowIcons;
     FIdentComplAddParameterBrackets:=CodeToolsOpts.FIdentComplAddParameterBrackets;
     FIdentComplReplaceIdentifier:=CodeToolsOpts.FIdentComplReplaceIdentifier;
@@ -970,6 +978,7 @@ begin
   FIdentComplAutoStartAfterPoint:=true;
   FIdentComplAutoUseSingleIdent:=true;
   FIdentComplUseContainsFilter:=true;
+  FIdentComplIncludeCodeTemplates:=true;
   FIdentComplShowIcons:=false;
   FIdentComplAddParameterBrackets:=true;
   FIdentComplReplaceIdentifier:=true;
@@ -1056,6 +1065,7 @@ begin
     and (FIdentComplAutoStartAfterPoint=CodeToolsOpts.FIdentComplAutoStartAfterPoint)
     and (FIdentComplAutoUseSingleIdent=CodeToolsOpts.FIdentComplAutoUseSingleIdent)
     and (FIdentComplUseContainsFilter=CodeToolsOpts.FIdentComplUseContainsFilter)
+    and (FIdentComplIncludeCodeTemplates=CodeToolsOpts.FIdentComplIncludeCodeTemplates)
     and (FIdentComplShowIcons=CodeToolsOpts.FIdentComplShowIcons)
     and (FIdentComplAddParameterBrackets=CodeToolsOpts.FIdentComplAddParameterBrackets)
     and (FIdentComplReplaceIdentifier=CodeToolsOpts.FIdentComplReplaceIdentifier)

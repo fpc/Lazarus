@@ -90,6 +90,11 @@ type
     procedure BeautifyIdentifier(IdentList: TIdentifierList); override;
   end;
 
+  TCodeTemplateIdentifierListItem = class(TIdentifierListItem)
+  public
+    Comment: string;
+  end;
+
 procedure SetupTextConverters;
 procedure FreeTextConverters;
 
@@ -128,7 +133,11 @@ function BreakLinesInText(const s: string; MaxLineLength: integer): string;
 
 const
   ctnWord = ctnUser + 1;
+  ctnCodeTemplate = ctnUser + 2;
   WordCompatibility = icompUnknown;
+  CodeTemplateCompatibility = icompUnknown;
+  CodeTemplateHistoryIndex = High(Integer);
+  CodeTemplateLevel = High(Integer);
 
 implementation
 
@@ -497,6 +506,12 @@ begin
         s:='text';
       end;
 
+    ctnCodeTemplate:
+      begin
+        AColor:=clGray;
+        s:='template';
+      end;
+
     ctnNone:
       if not UseImages then
       begin
@@ -703,6 +718,11 @@ begin
           if IdentItem.IsFunction then
             s := s + ':' + IdentItem.ResultType;
           s:=s+';'
+        end;
+      ctnCodeTemplate:
+        begin
+          if IdentItem is TCodeTemplateIdentifierListItem then
+            s:=' - '+TCodeTemplateIdentifierListItem(IdentItem).Comment;
         end;
       end;
     end;
