@@ -12645,7 +12645,7 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
       xtContext:
         begin
           case SubExprType.Context.Node.Desc of
-          ctnClass, ctnRecordType, ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
+          ctnClass, ctnRecordType, ctnClassHelper, ctnRecordHelper, ctnTypeHelper, ctnClassInterface:
             begin
               AliasType:=CleanFindContext;
               if not SubExprType.Context.Tool.FindEnumeratorOfClass(
