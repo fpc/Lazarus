@@ -104,14 +104,14 @@ type
   private
     FItems: TList;
     function GetItems(Index: integer): THistoryList;
-    function GetXMLListPath(const Path: string; i: integer): string;
+    function GetXMLListPath(const Path: string; i: integer; ALegacyList: Boolean): string;
   public
     constructor Create;
     destructor Destroy;  override;
     procedure Clear;
     function Count: integer;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; const ALegacyList: Boolean);
     function IndexOfName(const Name: string): integer;
     function GetList(const Name: string;
       CreateIfNotExists: boolean; ListType: TRecentListType): THistoryList;
@@ -512,7 +512,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Clean/SourcesFilemask',FCleanSourcesFileMask,
                                            DefaultProjectCleanSourcesFileMask);
   // history lists
-  FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/');
+  FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/',True);
   // diff dialog
   for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
     XMLConfig.SetDeleteValue(
@@ -732,9 +732,10 @@ begin
   Result:=THistoryList(FItems[Index]);
 end;
 
-function THistoryLists.GetXMLListPath(const Path: string; i: integer): string;
+function THistoryLists.GetXMLListPath(const Path: string; i: integer;
+  ALegacyList: Boolean): string;
 begin
-  Result:=Path+'List'+IntToStr(i)+'/';
+  Result:=Path+TXMLConfig.GetListItemXPath('List', i, ALegacyList, False)+'/';
 end;
 
 constructor THistoryLists.Create;
@@ -768,10 +769,12 @@ var
   CurList: THistoryList;
   ListName, ListPath: string;
   ListType: TRecentListType;
+  IsLegacyList: Boolean;
 begin
-  MergeCount:=XMLConfig.GetValue(Path+'Count',0);
+  IsLegacyList:=XMLConfig.IsLegacyList(Path);
+  MergeCount:=XMLConfig.GetListItemCount(Path, 'List', IsLegacyList);
   for i:=0 to MergeCount-1 do begin
-    ListPath:=GetXMLListPath(Path,i);
+    ListPath:=GetXMLListPath(Path,i,IsLegacyList);
     ListName:=XMLConfig.GetValue(ListPath+'Name','');
     if ListName='' then continue;
     ListType:=StrToRecentListType(XMLConfig.GetValue(ListPath+'Type',''));
@@ -780,15 +783,16 @@ begin
   end;
 end;
 
-procedure THistoryLists.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure THistoryLists.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; const ALegacyList: Boolean);
 var
   i, CurID: integer;
 begin
-  XMLConfig.SetDeleteValue(Path+'Count',Count,0);
+  XMLConfig.SetListItemCount(Path,Count,ALegacyList);
   CurID:=0;
   for i:=0 to Count-1 do begin
     if Items[i].Count>0 then begin
-      Items[i].SaveToXMLConfig(XMLConfig,GetXMLListPath(Path,CurID));
+      Items[i].SaveToXMLConfig(XMLConfig,GetXMLListPath(Path,CurID,ALegacyList));
       inc(CurID);
     end;
   end;

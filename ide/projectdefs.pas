@@ -269,7 +269,7 @@ type
     procedure Insert(Index: integer; APosition: TProjectJumpHistoryPosition);
     procedure InsertSmart(Index: integer; APosition: TProjectJumpHistoryPosition);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; const ALegacyLists: Boolean);
     procedure WriteDebugReport;
     property HistoryIndex: integer read FHistoryIndex write SetHistoryIndex;
     property Items[Index:integer]:TProjectJumpHistoryPosition 
@@ -576,18 +576,22 @@ procedure TProjectJumpHistory.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var i, NewCount, NewHistoryIndex: integer;
   NewPosition: TProjectJumpHistoryPosition;
+  JmpPath, PosPath: string;
+  IsLegacyList: Boolean;
 begin
   Clear;
-  NewCount:=XMLConfig.GetValue(Path+'JumpHistory/Count',0);
-  NewHistoryIndex:=XMLConfig.GetValue(Path+'JumpHistory/HistoryIndex',0);
+  JmpPath := Path+'JumpHistory/';
+  IsLegacyList:=XMLConfig.IsLegacyList(JmpPath);
+  NewCount:=XMLConfig.GetListItemCount(JmpPath, 'Position', IsLegacyList);
+  NewHistoryIndex:=XMLConfig.GetValue(JmpPath+'HistoryIndex',0);
   NewPosition:=nil;
   for i:=0 to NewCount-1 do begin
     if NewPosition=nil then begin
       NewPosition:=TProjectJumpHistoryPosition.Create('',Point(0,0),0);
       NewPosition.OnLoadSaveFilename:=OnLoadSaveFilename;
     end;
-    NewPosition.LoadFromXMLConfig(XMLConfig,
-                                 Path+'JumpHistory/Position'+IntToStr(i+1)+'/');
+    PosPath := JmpPath+XMLConfig.GetListItemXPath('Position', i, IsLegacyList, True)+'/';
+    NewPosition.LoadFromXMLConfig(XMLConfig, PosPath);
     if (NewPosition.Filename<>'') and (NewPosition.CaretXY.Y>0)
     and (NewPosition.CaretXY.X>0) and (NewPosition.TopLine>0)
     and (NewPosition.TopLine<=NewPosition.CaretXY.Y) then begin
@@ -603,14 +607,16 @@ begin
 end;
 
 procedure TProjectJumpHistory.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; const ALegacyLists: Boolean);
 var i: integer;
+  JmpPath, PosPath: string;
 begin
-  XMLConfig.SetDeleteValue(Path+'JumpHistory/Count',Count,0);
-  XMLConfig.SetDeleteValue(Path+'JumpHistory/HistoryIndex',HistoryIndex,0);
+  JmpPath := Path+'JumpHistory/';
+  XMLConfig.SetListItemCount(JmpPath,Count,ALegacyLists);
+  XMLConfig.SetDeleteValue(JmpPath+'HistoryIndex',HistoryIndex,0);
   for i:=0 to Count-1 do begin
-    Items[i].SaveToXMLConfig(XMLConfig,
-                             Path+'JumpHistory/Position'+IntToStr(i+1)+'/');
+    PosPath := JmpPath+XMLConfig.GetListItemXPath('Position', i, ALegacyLists, True)+'/';
+    Items[i].SaveToXMLConfig(XMLConfig, PosPath);
   end;
 end;
 

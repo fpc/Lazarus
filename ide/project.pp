@@ -3217,7 +3217,7 @@ begin
   and (not (pwfSkipJumpPoints in FProjectWriteFlags)) then begin
     if (pfSaveJumpHistory in Flags) then begin
       FJumpHistory.DeleteInvalidPositions;
-      FJumpHistory.SaveToXMLConfig(FXMLConfig,Path);
+      FJumpHistory.SaveToXMLConfig(FXMLConfig,Path,UseLegacyLists);
     end
     else
       FXMLConfig.DeletePath(Path+'JumpHistory');
@@ -3277,7 +3277,7 @@ begin
   PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
   // save the Run and Build parameter options
   RunParameterOptions.LegacySave(FXMLConfig,Path,fCurStorePathDelim);
-  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPI);
+  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPI, UseLegacyLists);
   // save dependencies
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
     FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
@@ -3344,9 +3344,9 @@ begin
   // save session info
   SaveSessionInfo(Path);
   // save the Run and Build parameter options
-  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPS);
+  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPS, UseLegacyLists);
   // save history lists
-  HistoryLists.SaveToXMLConfig(FXMLConfig,Path+'HistoryLists/');
+  HistoryLists.SaveToXMLConfig(FXMLConfig,Path+'HistoryLists/', UseLegacyLists);
 
   // Notifiy hooks
   if Assigned(OnSaveProjectInfo) then
