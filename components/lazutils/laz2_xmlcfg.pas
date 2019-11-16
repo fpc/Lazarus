@@ -128,7 +128,7 @@ type
     function GetChildCount(const APath: string): Integer;
     function IsLegacyList(const APath: string): Boolean;
     function GetListItemCount(const APath, AItemName: string; const aLegacyList: Boolean): Integer;
-    function GetListItemXPath(const AName: string; const AIndex: Integer; const aLegacyList: Boolean;
+    class function GetListItemXPath(const AName: string; const AIndex: Integer; const aLegacyList: Boolean;
       const aLegacyList1Based: Boolean = False): string;
     procedure SetListItemCount(const APath: string; const ACount: Integer; const ALegacyList: Boolean);
     property Modified: Boolean read FModified write FModified;
@@ -443,7 +443,7 @@ begin
   end;
 end;
 
-function TXMLConfig.GetListItemXPath(const AName: string;
+class function TXMLConfig.GetListItemXPath(const AName: string;
   const AIndex: Integer; const aLegacyList: Boolean;
   const aLegacyList1Based: Boolean): string;
 begin
