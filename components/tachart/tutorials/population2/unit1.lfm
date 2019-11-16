@@ -1,0 +1,120 @@
+object Form1: TForm1
+  Left = 365
+  Height = 409
+  Top = 169
+  Width = 470
+  Caption = 'Form1'
+  ClientHeight = 409
+  ClientWidth = 470
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object Chart1: TChart
+    Left = 0
+    Height = 409
+    Top = 0
+    Width = 470
+    AxisList = <    
+      item
+        Grid.Visible = False
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Population'
+        Transformations = LeftAxisTransformations
+        OnMarkToText = Chart1AxisList0MarkToText
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calBottom
+        Minors = <>
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Age (Years)'
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calRight
+        Minors = <>
+        Range.UseMin = True
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Male-to-female ratio'
+        Transformations = RightAxisTransformations
+      end>
+    BackColor = clWhite
+    Foot.Alignment = taLeftJustify
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Foot.Text.Strings = (
+      'Source:'
+      'http://www.census.gov/population/international/data/worldpop/tool_population.php'
+    )
+    Foot.Visible = True
+    Legend.Alignment = laBottomCenter
+    Legend.ColumnCount = 2
+    Legend.GroupFont.Style = [fsBold]
+    Legend.GroupTitles.Strings = (
+      'left:'
+      'right:'
+    )
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'World population'
+    )
+    Title.Visible = True
+    Align = alClient
+    ParentColor = False
+    object LineSeries_male: TLineSeries
+      Legend.GroupIndex = 0
+      Title = 'male'
+      AxisIndexY = 0
+      LinePen.Color = clSkyBlue
+      Source = ChartSource_male
+    end
+    object LineSeries_female: TLineSeries
+      Legend.GroupIndex = 0
+      Title = 'female'
+      AxisIndexY = 0
+      LinePen.Color = 16744703
+      Source = ChartSource_female
+    end
+    object LineSeries_ratio: TLineSeries
+      Legend.GroupIndex = 1
+      Title = 'ratio'
+      AxisIndexY = 2
+      Source = ChartSource_ratio
+    end
+  end
+  object ChartSource_male: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceGetChartDataItem
+    left = 130
+    top = 25
+  end
+  object ChartSource_female: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceGetChartDataItem
+    left = 130
+    top = 79
+  end
+  object ChartSource_ratio: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceGetChartDataItem
+    left = 130
+    top = 137
+  end
+  object LeftAxisTransformations: TChartAxisTransformations
+    left = 267
+    top = 25
+    object LeftAxisAutoScaleTransform: TAutoScaleAxisTransform
+    end
+  end
+  object RightAxisTransformations: TChartAxisTransformations
+    left = 267
+    top = 136
+    object RightAxisAutoScaleTransform: TAutoScaleAxisTransform
+    end
+  end
+end

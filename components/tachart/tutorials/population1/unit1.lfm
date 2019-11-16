@@ -1,0 +1,105 @@
+object Form1: TForm1
+  Left = 342
+  Height = 360
+  Top = 128
+  Width = 480
+  Caption = 'World population'
+  ClientHeight = 360
+  ClientWidth = 480
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Panel1: TPanel
+    Left = 0
+    Height = 36
+    Top = 0
+    Width = 480
+    Align = alTop
+    ClientHeight = 36
+    ClientWidth = 480
+    TabOrder = 0
+    object ComboBox1: TComboBox
+      Left = 12
+      Height = 23
+      Top = 5
+      Width = 196
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Total population'
+        'Male population'
+        'Female population'
+        'Ratio male/female (%)'
+      )
+      OnSelect = ComboBox1Select
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'Total population'
+    end
+  end
+  object Chart1: TChart
+    Left = 0
+    Height = 324
+    Top = 36
+    Width = 480
+    AxisList = <    
+      item
+        Grid.Visible = False
+        Alignment = calRight
+        AxisPen.Visible = True
+        Marks.Visible = False
+        Minors = <>
+      end    
+      item
+        Grid.Color = clSilver
+        Alignment = calBottom
+        AxisPen.Visible = True
+        Minors = <>
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Age'
+      end    
+      item
+        Grid.Color = clSilver
+        AxisPen.Visible = True
+        Marks.Format = '%.0n'
+        Marks.Style = smsCustom
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+      end>
+    BackColor = clWhite
+    Extent.UseYMin = True
+    Foot.Alignment = taLeftJustify
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Foot.Text.Strings = (
+      'Source:'
+      'http://www.census.gov/population/international/data/worldpop/tool_population.php'
+    )
+    Foot.Visible = True
+    Margins.Left = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'World population'
+    )
+    Title.Visible = True
+    Align = alClient
+    ParentColor = False
+    object Chart1AreaSeries1: TAreaSeries
+      AreaBrush.Color = clSkyBlue
+      AreaLinesPen.Style = psClear
+      Source = UserDefinedChartSource1
+    end
+  end
+  object UserDefinedChartSource1: TUserDefinedChartSource
+    OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem
+    left = 552
+    top = 152
+  end
+end
