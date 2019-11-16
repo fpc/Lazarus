@@ -3298,6 +3298,8 @@ begin
     CurFlags:=FProjectWriteFlags;
     if not FSaveSessionInLPI then
       CurFlags:=CurFlags+[pwfSkipSeparateSessionInfo];
+    if UseLegacyLists then
+      CurFlags:=CurFlags+[pwfCompatibilityMode];
     OnSaveProjectInfo(Self,FXMLConfig,CurFlags);
   end;
 

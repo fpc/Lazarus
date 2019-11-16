@@ -466,7 +466,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnLoadFilename: TOnLoadFilenameFromConfig;
                       const OnGetGroup: TOnGetGroupByName); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; const ALegacyList: Boolean;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
     property Master: TDBGBreakPoints read FMaster write SetMaster;
   public
@@ -524,7 +524,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig;
                                 const Path: string); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
-                              const Path: string); virtual;
+      const Path: string; const ALegacyList: Boolean); virtual;
     function GetGroupByName(const GroupName: string): TIDEBreakPointGroup;
     function FindGroupByName(const GroupName: string;
                              Ignore: TIDEBreakPointGroup): TIDEBreakPointGroup;
@@ -748,7 +748,8 @@ type
     function Find(const AExpression: String): TCurrentWatch; reintroduce;
     // IDE
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
-    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
+      const ALegacyList: Boolean);
   public
     property Items[const AnIndex: Integer]: TCurrentWatch read GetItem
                                                       write SetItem; default;
@@ -788,7 +789,8 @@ type
   public
     procedure Clear;
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
-    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
+      const ALegacyList: Boolean);
 
     procedure BeginIgnoreModified;
     procedure EndIgnoreModified;
@@ -1693,7 +1695,7 @@ type
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
                                 const APath: string);
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
-                              const APath: string);
+                              const APath: string; const ALegacyList: Boolean);
     procedure AddIfNeeded(AName: string);
     procedure Reset; override;
     property Items[const AIndex: Integer]: TIDEException read GetItem
@@ -3596,9 +3598,10 @@ begin
   CurrentWatches.LoadFromXMLConfig(AConfig, APath);
 end;
 
-procedure TIdeWatchesMonitor.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TIdeWatchesMonitor.SaveToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; const ALegacyList: Boolean);
 begin
-  CurrentWatches.SaveToXMLConfig(AConfig, APath);
+  CurrentWatches.SaveToXMLConfig(AConfig, APath, ALegacyList);
 end;
 
 procedure TIdeWatchesMonitor.BeginIgnoreModified;
@@ -5082,15 +5085,18 @@ var
   i: Integer;
   LoadBreakPoint: TIDEBreakPoint;
   BreakPoint: TIDEBreakPoint;
+  IsLegacyList: Boolean;
+  BreakPointPath: string;
 begin
   Clear;
-  NewCount:=XMLConfig.GetValue(Path+'Count',0);
+  IsLegacyList := XMLConfig.IsLegacyList(Path);
+  NewCount := XMLConfig.GetListItemCount(Path, 'Item', IsLegacyList);
 
   for i:=0 to NewCount-1 do
   begin
     LoadBreakPoint := TIDEBreakPoint.Create(nil);
-    LoadBreakPoint.LoadFromXMLConfig(XMLConfig,
-      Path+'Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
+    BreakPointPath := Path+XMLConfig.GetListItemXPath('Item', i, IsLegacyList, True)+'/';
+    LoadBreakPoint.LoadFromXMLConfig(XMLConfig, BreakPointPath, OnLoadFilename, OnGetGroup);
 
     case LoadBreakPoint.Kind of
       bpkSource:
@@ -5119,18 +5125,20 @@ begin
 end;
 
 procedure TIDEBreakPoints.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; const OnSaveFilename: TOnSaveFilenameToConfig);
+  const Path: string; const ALegacyList: Boolean;
+  const OnSaveFilename: TOnSaveFilenameToConfig);
 var
   Cnt: Integer;
   i: Integer;
   CurBreakPoint: TIDEBreakPoint;
+  BreakPointPath: string;
 begin
   Cnt:=Count;
-  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+  XMLConfig.SetListItemCount(Path,Cnt,ALegacyList);
   for i:=0 to Cnt-1 do begin
+    BreakPointPath := Path+XMLConfig.GetListItemXPath('Item', i, ALegacyList, True)+'/';
     CurBreakPoint:=Items[i];
-    CurBreakPoint.SaveToXMLConfig(XMLConfig,
-      Path+'Item'+IntToStr(i+1)+'/',OnSaveFilename);
+    CurBreakPoint.SaveToXMLConfig(XMLConfig, BreakPointPath, OnSaveFilename);
   end;
 end;
 
@@ -5302,14 +5310,17 @@ var
   NewGroup: TIDEBreakPointGroup;
   i: Integer;
   OldGroup: TIDEBreakPointGroup;
+  ItemPath: string;
+  IsLegacyList: Boolean;
 begin
   Clear;
-  NewCount := XMLConfig.GetValue(Path+'Count', 0);
+  IsLegacyList := XMLConfig.IsLegacyList(Path);
+  NewCount := XMLConfig.GetListItemCount(Path, 'Item',IsLegacyList);
   for i := 0 to NewCount - 1 do
   begin
     NewGroup := TIDEBreakPointGroup(inherited Add);
-    NewGroup.LoadFromXMLConfig(XMLConfig,
-                               Path+'Item'+IntToStr(i+1)+'/');
+    ItemPath := Path+XMLConfig.GetListItemXPath('Item', i, IsLegacyList, True)+'/';
+    NewGroup.LoadFromXMLConfig(XMLConfig, ItemPath);
     OldGroup := FindGroupByName(NewGroup.Name, NewGroup);
     if OldGroup <> nil then
       NewGroup.Free;
@@ -5317,19 +5328,20 @@ begin
 end;
 
 procedure TIDEBreakPointGroups.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; const ALegacyList: Boolean);
 var
   Cnt: Integer;
   CurGroup: TIDEBreakPointGroup;
   i: Integer;
+  ItemPath: string;
 begin
   Cnt:=Count;
-  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+  XMLConfig.SetListItemCount(Path,Cnt,ALegacyList);
   for i := 0 to Cnt - 1 do
   begin
     CurGroup := Items[i];
-    CurGroup.SaveToXMLConfig(XMLConfig,
-                             Path+'Item'+IntToStr(i+1)+'/');
+    ItemPath := Path+XMLConfig.GetListItemXPath('Item', i, ALegacyList, True)+'/';
+    CurGroup.SaveToXMLConfig(XMLConfig, ItemPath);
   end;
 end;
 
@@ -5677,17 +5689,21 @@ var
   NewCount: Integer;
   i: Integer;
   Watch: TCurrentWatch;
+  IsLegacyList: Boolean;
+  ItemPath: string;
 begin
   if FMonitor <> nil then
     FMonitor.BeginIgnoreModified;
   try
     Clear;
-    NewCount := AConfig.GetValue(APath + 'Count', 0);
+    IsLegacyList := AConfig.IsLegacyList(APath);
+    NewCount := AConfig.GetListItemCount(APath, 'Item', IsLegacyList);
     for i := 0 to NewCount-1 do
     begin
       // Call inherited Add, so NotifyAdd can be send, after the Watch was loaded
       Watch := TCurrentWatch(inherited Add(''));
-      Watch.LoadFromXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
+      ItemPath := APath+AConfig.GetListItemXPath('Item', i, IsLegacyList, True)+'/';
+      Watch.LoadFromXMLConfig(AConfig, ItemPath);
       NotifyAdd(Watch);
     end;
   finally
@@ -5712,18 +5728,21 @@ begin
     FMonitor.DoModified;
 end;
 
-procedure TCurrentWatches.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TCurrentWatches.SaveToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; const ALegacyList: Boolean);
 var
   Cnt: Integer;
   i: Integer;
   Watch: TCurrentWatch;
+  ItemPath: string;
 begin
   Cnt := Count;
-  AConfig.SetDeleteValue(APath + 'Count', Cnt, 0);
+  AConfig.SetListItemCount(APath, Cnt, ALegacyList);
   for i := 0 to Cnt - 1 do
   begin
     Watch := Items[i];
-    Watch.SaveToXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
+    ItemPath := APath+AConfig.GetListItemXPath('Item', i, ALegacyList, True)+'/';
+    Watch.SaveToXMLConfig(AConfig, ItemPath);
   end;
 end;
 
@@ -6734,33 +6753,37 @@ var
   NewCount: Integer;
   i: Integer;
   IDEException: TIDEException;
+  IsLegacyList: Boolean;
+  ItemPath: string;
 begin
   Clear;
-  NewCount := AXMLConfig.GetValue(APath + 'Count', 0);
+  IsLegacyList := AXMLConfig.IsLegacyList(APath);
+  NewCount := AXMLConfig.GetListItemCount(APath, 'Item', IsLegacyList);
   FIgnoreAll := AXMLConfig.GetValue(APath + 'IgnoreAll', False);
   for i := 0 to NewCount-1 do
   begin
     IDEException := TIDEException(inherited Add(''));
-    IDEException.LoadFromXMLConfig(AXMLConfig,
-                                    Format('%sItem%d/', [APath, i + 1]));
+    ItemPath := APath+AXMLConfig.GetListItemXPath('Item', i, IsLegacyList, True)+'/';
+    IDEException.LoadFromXMLConfig(AXMLConfig, ItemPath);
   end;
 end;
 
-procedure TIDEExceptions.SaveToXMLConfig (const AXMLConfig: TXMLConfig;
-  const APath: string);
+procedure TIDEExceptions.SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+  const APath: string; const ALegacyList: Boolean);
 var
   Cnt: Integer;
   i: Integer;
   IDEException: TIDEException;
+  ItemPath: string;
 begin
   Cnt := Count;
-  AXMLConfig.SetDeleteValue(APath + 'Count', Cnt, 0);
+  AXMLConfig.SetListItemCount(APath, Cnt, ALegacyList);
   AXMLConfig.SetDeleteValue(APath + 'IgnoreAll', IgnoreAll, False);
   for i := 0 to Cnt - 1 do
   begin
     IDEException := Items[i];
-    IDEException.SaveToXMLConfig(AXMLConfig,
-                                  Format('%sItem%d/', [APath, i + 1]));
+    ItemPath := APath+AXMLConfig.GetListItemXPath('Item', i, ALegacyList, True)+'/';
+    IDEException.SaveToXMLConfig(AXMLConfig, ItemPath);
   end;
 end;
 

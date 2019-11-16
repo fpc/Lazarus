@@ -2216,15 +2216,15 @@ begin
   if not (pwfSkipSeparateSessionInfo in Flags) then
   begin
     FBreakPointGroups.SaveToXMLConfig(XMLConfig,
-                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
+                                      'Debugging/'+XMLBreakPointGroupsNode+'/', pwfCompatibilityMode in Flags);
     FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
-                                 @Project1.ConvertToLPIFilename);
-    FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
+      pwfCompatibilityMode in Flags, @Project1.ConvertToLPIFilename);
+    FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/', pwfCompatibilityMode in Flags);
   end;
   if not (pwfSkipProjectInfo in Flags) then
   begin
     // exceptions are not part of the project info (#0015256)
-    FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
+    FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/', pwfCompatibilityMode in Flags);
   end;
 end;
 

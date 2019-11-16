@@ -59,7 +59,8 @@ type
     pwfSkipJumpPoints,
     pwfSkipProjectInfo,         // do not write lpi file
     pwfSkipSeparateSessionInfo, // do not write lps file
-    pwfIgnoreModified  // write always even if nothing modified (e.g. to upgrade to a newer lpi version)
+    pwfIgnoreModified, // write always even if nothing modified (e.g. to upgrade to a newer lpi version)
+    pwfCompatibilityMode // maximize compatibility to open LPI files in legacy Lazarus installations
     );
   TProjectWriteFlags = set of TProjectWriteFlag;
 const
