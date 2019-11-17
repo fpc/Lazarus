@@ -556,13 +556,13 @@ begin
   OldPageIndex:=PageControl1.PageIndex;
   PgIndex:=2;
   ToolIndex:=0;
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TShowCompilerOptionsDlg.UpdateExecuteBeforeAfter'){$ENDIF};
   try
     AddTool(CompilerOpts.ExecuteBefore,'Execute Before');
     AddTool(CompilerOpts.ExecuteAfter,'Execute After');
     PageControl1.PageIndex:=OldPageIndex;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TShowCompilerOptionsDlg.UpdateExecuteBeforeAfter'){$ENDIF};
   end;
 end;
 

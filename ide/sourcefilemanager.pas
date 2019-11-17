@@ -40,6 +40,9 @@ uses
   LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
   LazUTF8, LazTracer, AvgLvlTree,
   // Codetools
+  {$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+  {$ENDIF}
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
   // IdeIntf
