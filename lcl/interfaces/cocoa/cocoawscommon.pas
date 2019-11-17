@@ -1693,41 +1693,29 @@ var
   Cell: NSCell;
   Str: NSAttributedString;
   NewStr: NSMutableAttributedString;
-  Dict: NSDictionary;
   Range: NSRange;
 begin
-  if (AWinControl.HandleAllocated) then
+  if not (AWinControl.HandleAllocated) then Exit;
+
+  Obj := NSObject(AWinControl.Handle).lclContentView;
+
+  if Obj.isKindOfClass(NSControl) then
   begin
-    Obj := NSObject(AWinControl.Handle);
-    if Obj.isKindOfClass(NSScrollView) then
-      Obj := NSScrollView(Obj).documentView;
-    if Obj.isKindOfClass(NSControl) then
+    Cell := NSCell(NSControl(Obj).cell);
+    Cell.setFont(TCocoaFont(AFont.Reference.Handle).Font);
+    // try to assign foreground color?
+    Str := Cell.attributedStringValue;
+    if Assigned(Str) then
     begin
-      Cell := NSCell(NSControl(Obj).cell);
-      Cell.setFont(TCocoaFont(AFont.Reference.Handle).Font);
-      // try to assign foreground color?
-      Str := Cell.attributedStringValue;
-      if Assigned(Str) then
-      begin
-        NewStr := NSMutableAttributedString.alloc.initWithAttributedString(Str);
-        Range.location := 0;
-        Range.length := NewStr.length;
-        if AFont.Color = clDefault then
-          NewStr.removeAttribute_range(NSForegroundColorAttributeName, Range)
-        else
-          NewStr.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(ColorToRGB(AFont.Color)), Range);
-        Cell.setAttributedStringValue(NewStr);
-        NewStr.release;
-      end;
-    end
-    else
-    if Obj.isKindOfClass(NSText) then
-    begin
-      NSText(Obj).setFont(TCocoaFont(AFont.Reference.Handle).Font);
+      NewStr := NSMutableAttributedString.alloc.initWithAttributedString(Str);
+      Range.location := 0;
+      Range.length := NewStr.length;
       if AFont.Color = clDefault then
-        NSText(Obj).setTextColor(nil)
+        NewStr.removeAttribute_range(NSForegroundColorAttributeName, Range)
       else
-        NSText(Obj).setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
+        NewStr.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(ColorToRGB(AFont.Color)), Range);
+      Cell.setAttributedStringValue(NewStr);
+      NewStr.release;
     end;
   end;
 end;
