@@ -969,6 +969,7 @@ class procedure TWin32WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   wHandle: HWND;
   NewStyle: integer;
+  lTickStyle: DWORD;
 const
   StyleMask = TBS_AUTOTICKS or TBS_NOTICKS or TBS_VERT or TBS_TOP or TBS_BOTH or
     TBS_ENABLESELRANGE or TBS_REVERSED;
@@ -982,7 +983,12 @@ begin
   begin
     { cache handle }
     wHandle := Handle;
-    NewStyle := TickStyleStyle[TickStyle] or OrientationStyle[Orientation] or
+    lTickStyle := TickStyleStyle[TickStyle];
+    {$IFNDEF WIN32}
+    if Max - Min > $7FFF then  // Workaround for #36046:
+      lTickStyle := 0;         // No ticks to avoid hanging if range is too large
+    {$ENDIF}
+    NewStyle := lTickStyle or OrientationStyle[Orientation] or
                 TickMarksStyle[TickMarks] or SelRangeStyle[ShowSelRange] or ReversedStyle[Reversed];
     UpdateWindowStyle(wHandle, NewStyle, StyleMask);
     Windows.SendMessage(wHandle, TBM_SETRANGEMAX, Windows.WPARAM(True), Max);
