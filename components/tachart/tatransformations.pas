@@ -683,6 +683,12 @@ end;
 procedure TAutoScaleAxisTransform.ClearBounds;
 begin
   inherited ClearBounds;
+
+  // Avoid crashing when called too early, e.g. when a TNavPanel is on the form
+  // https://forum.lazarus.freepascal.org/index.php/topic,47429.0.html
+  if FDrawData = nil then
+    exit;
+
   with TAutoScaleTransformData(FDrawData) do begin
     FMin := SafeInfinity;
     FMax := NegInfinity;
