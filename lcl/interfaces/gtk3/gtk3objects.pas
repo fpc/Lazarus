@@ -525,7 +525,6 @@ var
   AContext: PPangoContext;
   ADescription: PPangoFontDescription;
   AttrList: PPangoAttrList;
-  AttrListTemporary: Boolean;
   Attr: PPangoAttribute;
 begin
   FLogFont := ALogFont;
@@ -548,24 +547,18 @@ begin
   end;
   if ALogFont.lfHeight <> 0 then
     FHandle^.set_absolute_size(Abs(ALogFont.lfHeight) * PANGO_SCALE);
-
   if ALogFont.lfItalic > 0 then
     FHandle^.set_style(PANGO_STYLE_ITALIC);
-
   FHandle^.set_weight(ALogFont.lfWeight);
-
   FLayout := pango_layout_new(AContext);
   FLayout^.set_font_description(FHandle);
 
   if (ALogFont.lfUnderline<>0) or (ALogFont.lfStrikeOut<>0) then
   begin
-    AttrListTemporary := false;
     AttrList := pango_layout_get_attributes(FLayout);
     if (AttrList = nil) then
-    begin
       AttrList := pango_attr_list_new();
-      AttrListTemporary := True;
-    end;
+    pango_attr_list_ref(AttrList);
     if ALogFont.lfUnderline <> 0 then
       Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
     else
@@ -574,13 +567,9 @@ begin
 
     Attr := pango_attr_strikethrough_new(ALogFont.lfStrikeOut<>0);
     pango_attr_list_change(AttrList, Attr);
-
     pango_layout_set_attributes(FLayout, AttrList);
-
-    if AttrListTemporary then
-      pango_attr_list_unref(AttrList);
+    pango_attr_list_unref(AttrList);
   end;
-
   g_object_unref(AContext);
 end;
 
