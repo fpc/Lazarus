@@ -397,8 +397,6 @@ end;
 
 function TGtk3WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
-var
-  ALogFontName: String;
 begin
   Result := HFONT(TGtk3Font.Create(LogFont, LongFontName));
 end;
@@ -1740,8 +1738,7 @@ begin
     if AData <> nil then
     begin
       // DebugLn('TGtk3WidgetSet.GetActiveWindow found window from data ...',dbgsName(TGtk3Widget(AData).LCLObject));
-      Result := HWND(AData);
-      exit;
+      exit(HWND(AData));
     end;
     for i := 0 to Screen.FormCount - 1 do
     begin
@@ -1831,7 +1828,7 @@ function TGtk3WidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
   cr: Pcairo_t;
-  Pt: TPoint;
+  //Pt: TPoint;
   ARect: TGdkRectangle;
 begin
   //{$IFDEF GTK3DEBUGNOTIMPLEMENTED}
@@ -2254,7 +2251,7 @@ var
   aObject: TObject;
   ALogFont: PLogFont absolute Buf;
   ALogPen: PLogPen absolute Buf;
-  AExtLogPen: PExtLogPen absolute Buf;
+  //AExtLogPen: PExtLogPen absolute Buf;
   ALogBrush: PLogBrush absolute Buf;
 begin
   Result := 0;
@@ -2824,7 +2821,8 @@ end;
 function TGtk3WidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   AWindow: PGdkWindow;
-  x, y, w, h: gint;
+  x, y: gint;
+  //w, h: gint;
   GRect: TGdkRectangle;
   Allocation: TGtkAllocation;
 begin
@@ -2835,8 +2833,8 @@ begin
     if AWindow <> nil then
     begin
       AWindow^.get_origin(@x, @y);
-      w := AWindow^.get_width;
-      h := AWindow^.get_height;
+      //w := AWindow^.get_width;
+      //h := AWindow^.get_height;
       AWindow^.get_frame_extents(@GRect);
       // R := RectFromGdkRect(GRect);
       ARect := Bounds(0, 0, GRect.width, GRect.Height);
@@ -2894,10 +2892,9 @@ begin
   end;
 end;
 
-function TGtk3WidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean
-  ): Boolean;
-var
-  R: TRect;
+function TGtk3WidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
+//var
+//  R: TRect;
 begin
   Result := False; // inherited InvalidateRgn(Handle, Rgn, Erase);
   if IsValidHandle(Handle) then
@@ -2964,11 +2961,11 @@ end;
 
 function TGtk3WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 var
-  Matrix: cairo_matrix_t;
+  //Matrix: cairo_matrix_t;
   cr: PCairo_t;
   P: PPoint;
   dx, dy: Double;
-  Pt: TPoint;
+  //Pt: TPoint;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   // DebugLn('WARNING: TGtk3WidgetSet.LPtoDP not implemented ...');
@@ -3947,20 +3944,19 @@ function TGtk3WidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 var
   Matrix: cairo_matrix_t;
-  dx: Double;
-  dy: Double;
+  //dx, dy: Double;
 begin
   Result := False; // inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
   if IsValidDC(DC) then
   begin
     GetWindowOrgEx(dc, OldPoint);
     cairo_get_matrix(TGtk3DeviceContext(DC).Widget, @Matrix);
-    dx := 0;
-    dy := 0;
+    //dx := 0;
+    //dy := 0;
     // cairo_matrix_init_translate(Matrix, -NewX, -NewY);
     cairo_matrix_translate(@Matrix,
     	-NewX - TGtk3DeviceContext(DC).fncOrigin.x,
-      -NewY - TGtk3DeviceContext(DC).fncOrigin.Y);
+        -NewY - TGtk3DeviceContext(DC).fncOrigin.Y);
     cairo_transform(TGtk3DeviceContext(DC).Widget, @Matrix);
     // cairo_set_matrix(TGtk3DeviceContext(DC).Widget, Matrix);
     // DebugLn('TGtk3WidgetSet.SetWindowOrgEx NewX=',dbgs(NewX),' NewY=',dbgs(NewY));
@@ -4000,7 +3996,7 @@ function TGtk3WidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
 var
   AWidget: TGtk3Widget;
   // AScrolledWin: PGtkScrolledWindow;
-  NewPolicy, OldPolicy: TGtkPolicyType;
+  NewPolicy: TGtkPolicyType;
 begin
   Result := IsValidHandle(Handle);
   if not Result then
@@ -4077,7 +4073,7 @@ var
   DestContext: TGtk3DeviceContext absolute DestDC;
   SrcContext: TGtk3DeviceContext absolute SrcDC;
   ATargetRect, ASrcRect: TRect;
-  AImage: PGdkPixbuf;
+  //AImage: PGdkPixbuf;
 begin
   Result := False;
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
