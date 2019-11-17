@@ -3894,10 +3894,9 @@ begin
       begin
         if (rfInteractive in AFlags)
         and (IDEQuestionDialog(lisStopDebugging, lisStopTheDebugging,
-                 mtConfirmation, [mrYes, lisStop,
-                                  mrCancel, lisContinue]) <> mrYes)
+                 mtConfirmation, [mrYes,lisStop, mrCancel,lisContinue]) <> mrYes)
         then exit;
-        if (DebugBoss.DoStopProject = mrOK) and (ToolStatus = itDebugger) and (rfCloseOnDone in AFlags) then
+        if (DebugBoss.DoStopProject = mrOK) and (rfCloseOnDone in AFlags) then
           FWaitForClose := True;
         if rfSuccessOnTrigger in AFlags then
           exit(true);
