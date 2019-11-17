@@ -3335,6 +3335,20 @@ begin
       if (Modifiers = QtShiftModifier or QtControlModifier) then
         Text := '';
     end;
+  end else
+  if (Modifiers = QtShiftModifier or QtAltModifier) then
+  begin
+    ScanCode := QKeyEvent_nativeScanCode(QKeyEventH(Event));
+    if (length(Text) = 1) and (ScanCode in [10..19]) then
+    begin
+      if ScanCode = 19 then
+        ScanCode := 48
+      else
+        ScanCode := ScanCode + 39;
+      KeyMsg.CharCode := Word(ScanCode);
+      if (Modifiers = QtShiftModifier or QtAltModifier) then
+        Text := '';
+    end;
   end;
   {$ENDIF}
   {$ENDIF}
