@@ -346,6 +346,9 @@ procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
 
 implementation
 
+uses
+  CocoaInt;
+
 const
   VerticalScrollerVisible: array[TScrollStyle] of boolean = (
  {ssNone          } false,
@@ -1900,7 +1903,7 @@ var
   btn: NSButton;
   cl: NSButtonCell;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSTexturedRoundedBezelStyle, NSToggleButton);
+  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, CocoaToggleBezel, CocoaToggleType);
   cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
   Result := TLCLIntfHandle(btn);

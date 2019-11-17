@@ -242,6 +242,8 @@ var
   // if set to true, then WS would not assign icons via TCocoaWSForm SetIcon
   // The icon would have to be changed manually. By default LCL behaviour is used
   CocoaIconUse: Boolean = false;
+  CocoaToggleBezel : NSBezelStyle = NSRoundedBezelStyle;
+  CocoaToggleType  : NSButtonType = NSPushOnPushOffButton;
 
   {$ifdef COCOALOOPHIJACK}
   // The flag is set to true once hi-jacked loop is finished (at the end of app)
