@@ -1967,7 +1967,9 @@ begin
     FLinkClicked := False;
     FHoverColumn := -1;
     FHoverNode := nil;
-    OpenURL(FLink);
+    if Trim(FLink) <> '' then
+      OpenURL(FLink);
+    FLink := '';
   end;
 end;
 
