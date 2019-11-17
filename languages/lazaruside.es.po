@@ -2398,6 +2398,10 @@ msgstr ""
 "Existe un escritorio con el mismo nombre.\n"
 "Por favor, confirme el nombre del escritorio:\n"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Incluir identificadores que contengan el prefijo"

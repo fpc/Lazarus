@@ -2288,6 +2288,10 @@ msgstr ""
 "Aynı ada sahip bir masaüstü zaten var.\n"
 "Lütfen masaüstü adını doğrulayın:"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Önek içeren tanımlayıcıları dahil et"

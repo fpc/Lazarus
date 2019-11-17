@@ -2317,6 +2317,10 @@ msgstr ""
 "Uma área de trabalho com o mesmo nome já existe.\n"
 "Favor confirmar o nome da área de trabalho:"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Incluir identificadores contendo prefixo"

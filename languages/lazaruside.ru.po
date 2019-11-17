@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-11-05 02:11+0300\n"
+"PO-Revision-Date: 2019-11-18 00:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2318,9 +2318,13 @@ msgstr ""
 "Рабочий стол с таким именем уже имеется.\n"
 "Подтвердите это имя:"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr "Добавлять шаблоны кода"
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
-msgstr "Показывать идентификаторы, содержащие префикс"
+msgstr "Добавлять идентификаторы, содержащие префикс"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"

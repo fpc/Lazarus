@@ -2429,6 +2429,10 @@ msgstr ""
 "Pulpit o takiej samej nazwie już istnieje.\n"
 "Proszę potwierdzić nazwę pulpitu:\n"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr ""

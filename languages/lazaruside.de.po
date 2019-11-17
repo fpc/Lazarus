@@ -2360,6 +2360,10 @@ msgstr ""
 "Ein Desktop mit dem gleichen Namen existiert bereits.\n"
 "Bitte bestätigen Sie den Desktopnamen:\n"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr ""

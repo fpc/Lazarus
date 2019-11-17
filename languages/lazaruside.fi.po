@@ -2303,6 +2303,10 @@ msgstr ""
 "Samanniminen työpöytä on jo olemassa.\n"
 "Vahvista työpöydän nimi:\n"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr ""

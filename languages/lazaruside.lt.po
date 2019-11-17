@@ -2378,6 +2378,10 @@ msgstr ""
 "Egzistuoja darbalaukis tokiu pat pavadinimu.\n"
 "Patvirkinte darbalaukio pavadinimą:\n"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr ""

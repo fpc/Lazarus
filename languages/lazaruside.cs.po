@@ -2335,6 +2335,10 @@ msgstr ""
 "Již existuje plocha se stejným jménem.\n"
 "Prosím potvrďte jméno plochy:\n"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Zahrnout identifikátory obsahující prefix"

@@ -2317,6 +2317,10 @@ msgstr ""
 "Egy felület már létezik ugyanezzel a névvel.\n"
 "A név jóváhagyása szükséges:"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Előtagokat tartalmazó azonosítókkal együtt"

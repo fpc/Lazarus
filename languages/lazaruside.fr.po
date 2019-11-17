@@ -2327,6 +2327,10 @@ msgstr ""
 "Un bureau portant le même nom existe déjà.\n"
 "Veuillez confirmer le nom du bureau :"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Inclure les identificateurs avec préfixe"

@@ -2320,6 +2320,10 @@ msgstr ""
 "Стільниця з такою назвою вже існує.\n"
 "Підтвердьте назву стільниці:"
 
+#: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
+msgid "Include code templates"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Включити ідентифікатори, що містять префікс"
