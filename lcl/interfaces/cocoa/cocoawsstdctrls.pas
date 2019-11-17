@@ -409,6 +409,7 @@ begin
   Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
+    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     Result.callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSControlValue(Result, AParams.Caption);
   end;
@@ -419,6 +420,7 @@ begin
   Result := TCocoaSecureTextField.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
+    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
