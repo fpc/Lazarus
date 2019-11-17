@@ -1041,23 +1041,33 @@ begin
       debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: missing executable: "',s,'"']);
       exit;
     end;
-    if DirectoryExistsUTF8(s) then begin
+    if DirectoryExistsUTF8(s) {$IFDEF DARWIN}and (ExtractFileExt(s)<>'.app'){$ENDIF} then begin
       debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: executable is a directory: "',s,'"']);
       exit;
     end;
-    if not FileIsExecutable(s) then begin
+    if {$IFDEF DARWIN}(ExtractFileExt(s)<>'.app') and{$ENDIF} not FileIsExecutable(s) then begin
       debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: executable lacks permission to run: "',s,'"']);
       exit;
     end;
-    Proc.Executable:=s;
+
+    {$IFDEF DARWIN}
+    if DirectoryExistsUTF8(s) then
+    begin
+      Proc.Executable:='/usr/bin/open';
+      s:=s+LineEnding+ToolOptions.CmdLineParams;
+    end
+    else
+    {$ENDIF}
+    begin
+      Proc.Executable:=s;
+      s:=ToolOptions.CmdLineParams;
+    end;
 
     // params
-    s:=ToolOptions.CmdLineParams;
-    if ToolOptions.ResolveMacros then begin
-      if not GlobalMacroList.SubstituteStr(s) then begin
-        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: macros in cmd line params "',ToolOptions.CmdLineParams,'"']);
-        exit;
-      end;
+    if ToolOptions.ResolveMacros and not GlobalMacroList.SubstituteStr(s) then begin
+      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,
+               ' failed: macros in cmd line params "',ToolOptions.CmdLineParams,'"']);
+      exit;
     end;
     sl:=TStringList.Create;
     try
