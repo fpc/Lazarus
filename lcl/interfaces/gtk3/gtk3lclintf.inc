@@ -230,7 +230,8 @@ begin
          ImageFormat := CAIRO_FORMAT_ARGB32;
   end;
   ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
-  ABitmap := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, ImageFormat, True));
+  ABitmap := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, ImageFormat,
+                     not ASkipMask));  // Using ASkipMask for DataOwner param prevents a crash later.
   Result := ABitmap <> 0;
 
   if ASkipMask then Exit;
