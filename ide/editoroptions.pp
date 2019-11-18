@@ -4612,8 +4612,6 @@ end;
 constructor TEditorOptions.Create;
 var
   ConfFileName: String;
-  fs: TFileStreamUTF8;
-  res: TResourceStream;
 begin
   inherited Create;
   InitLocale;
@@ -4643,23 +4641,6 @@ begin
   fCodeTemplateFileNameRaw :=
     TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultCodeTemplatesFilename);
   CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
-  if not FileExistsUTF8(CodeTemplateFileNameExpand) then
-  begin
-    res := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
-    try
-      InvalidateFileStateCache;
-      fs := TFileStreamUTF8.Create(CodeTemplateFileNameExpand, fmCreate);
-      try
-        fs.CopyFrom(res, res.Size);
-      finally
-        fs.Free;
-      end;
-    except
-      DebugLn('WARNING: unable to write code template file "',
-        CodeTemplateFileNameExpand, '"');
-    end;
-    res.Free;
-  end;
 
   FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
   FMultiWinEditAccessOrder.InitDefaults;
