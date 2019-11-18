@@ -13279,7 +13279,7 @@
             Cleans all cells in the grid subject to the given <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region. See <link id="TGridZoneSet"/> for more information.
           </p>
           <p>
-            The cleaning operation does not change the number of rows and columns.
+            The cleaning operation does not change the number of rows and columns. It only replaces the cell content by empty strings.
           </p>
           <p>
             Some examples:
