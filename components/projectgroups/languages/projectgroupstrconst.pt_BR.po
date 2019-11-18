@@ -333,7 +333,7 @@ msgstr "Salvar grupo de projeto"
 
 #: projectgroupstrconst.lisprojectgroupssourcepaths
 msgid "Project group's source paths"
-msgstr ""
+msgstr "Caminho de origem do grupo de projeto"
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"

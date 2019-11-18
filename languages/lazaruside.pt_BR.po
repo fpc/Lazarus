@@ -2319,7 +2319,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
 msgid "Include code templates"
-msgstr ""
+msgstr "Incluir modelos de código"
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
@@ -3659,7 +3659,7 @@ msgstr "Selecionar todos os controles filhos juntamente com seus pais."
 
 #: lazarusidestrconsts.dlgselectallnoscroll
 msgid "Do not scroll on Select-All / Paragraph or To-Brace"
-msgstr ""
+msgstr "Não rolar em Selecionar Tudo / Parágrafo ou Até Colchete"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -21395,15 +21395,15 @@ msgstr "Copiar"
 
 #: lazarusidestrconsts.srkmeccopyadd
 msgid "Copy (Add to Clipboard)"
-msgstr ""
+msgstr "Copiar (adicionar à área de transferência)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
 msgid "Copy current line (Add to Clipboard)"
-msgstr ""
+msgstr "Copiar linha atual (adicionar à área de transferência)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
 msgid "Copy current line"
-msgstr ""
+msgstr "Copiar linha atual"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -21424,15 +21424,15 @@ msgstr "Recortar"
 
 #: lazarusidestrconsts.srkmeccutadd
 msgid "Cut (Add to Clipboard)"
-msgstr ""
+msgstr "Recortar (adicionar à área de transferência)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
 msgid "Cut current line (Add to Clipboard)"
-msgstr ""
+msgstr "Recortar linha atual (adicionar à área de transferência)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
 msgid "Cut current line"
-msgstr ""
+msgstr "Recortar linha atual"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -21477,7 +21477,7 @@ msgstr "Mover cursor abaixo"
 
 #: lazarusidestrconsts.srkmecduplicateline
 msgid "Duplicate line (or lines in selection)"
-msgstr ""
+msgstr "Duplicar linha (ou linhas na seleção)"
 
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
@@ -21798,11 +21798,11 @@ msgstr "Mover editor extremo direito"
 
 #: lazarusidestrconsts.srkmecmovelinedown
 msgid "Move one line down"
-msgstr ""
+msgstr "Mover uma linha abaixo"
 
 #: lazarusidestrconsts.srkmecmovelineup
 msgid "Move one line up"
-msgstr ""
+msgstr "Mover uma linha acima"
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgctxt "lazarusidestrconsts.srkmecmultipaste"

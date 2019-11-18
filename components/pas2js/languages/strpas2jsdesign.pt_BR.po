@@ -110,10 +110,8 @@ msgid "Path of %s, macro $(Pas2JSWebServer)"
 msgstr "Caminho de %s, macro $(Pas2JSWebServer)"
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
-#, fuzzy, badformat
-#| msgid "Port number to start allocating from %s"
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
-msgstr "Número de porta para iniciar alocação de %s"
+msgstr "Número de porta de onde iniciar alocação, macro $(Pas2JSWebServerPort)"
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
