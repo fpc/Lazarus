@@ -622,7 +622,7 @@ begin
   finally
     Dec(FUpdateCount);
   end;
-  Notify;
+  UpdateCachesAfterAdd(AX[0], AY);
 end;
 
 function TListChartSource.AddXListYList(const AX, AY: array of Double;
@@ -645,7 +645,7 @@ begin
   finally
     Dec(FUpdateCount);
   end;
-  Notify;
+  UpdateCachesAfterAdd(AX[0], AY[0]);
 end;
 
 function TListChartSource.AddXYList(
@@ -665,7 +665,7 @@ begin
   finally
     Dec(FUpdateCount);
   end;
-  Notify;
+  UpdateCachesAfterAdd(AX, AY[0]);
 end;
 
 procedure TListChartSource.Clear;
