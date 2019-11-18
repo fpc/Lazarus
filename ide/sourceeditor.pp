@@ -10252,21 +10252,8 @@ begin
 
   AutoStartCompletionBoxTimer.Interval:=EditorOpts.AutoDelayInMSec;
   // reload code templates
-  with CodeTemplateModul do begin
-    if FileExistsUTF8(EditorOpts.CodeTemplateFileNameExpand) then
-      LoadStringsFromFileUTF8(AutoCompleteList,EditorOpts.CodeTemplateFileNameExpand)
-    else begin
-      Filename:=EnvironmentOptions.GetParsedLazarusDirectory
-        +GetForcedPathDelims('ide/lazarus.dci');
-      if FileExistsUTF8(Filename) then begin
-        try
-          LoadStringsFromFileUTF8(AutoCompleteList,Filename);
-        except
-        end;
-      end;
-    end;
-    IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
-  end;
+  EditorOpts.LoadCodeTemplates(CodeTemplateModul);
+  CodeTemplateModul.IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
 
   FHints.AutoHintTimer.Interval:=EditorOpts.AutoHintDelayInMSec;
 
@@ -11152,8 +11139,6 @@ begin
 end;
 
 constructor TSourceEditorManager.Create(AOwner: TComponent);
-var
-  DCIFilename: String;
 begin
   inherited Create(AOwner);
 
@@ -11199,16 +11184,9 @@ begin
 
   // code templates
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
+
+  EditorOpts.LoadCodeTemplates(FCodeTemplateModul);
   with FCodeTemplateModul do begin
-    DCIFilename:=EditorOpts.CodeTemplateFileNameExpand;
-    if not FileExistsCached(DCIFilename) then
-      DCIFilename:=EnvironmentOptions.GetParsedLazarusDirectory
-        +GetForcedPathDelims('ide/lazarus.dci');
-    if FileExistsCached(DCIFilename) then
-      try
-        LoadStringsFromFileUTF8(AutoCompleteList,DCIFilename);
-      except
-      end;
     IndentToTokenStart := EditorOpts.CodeTemplateIndentToTokenStart;
     OnTokenNotFound := @OnCodeTemplateTokenNotFound;
     OnExecuteCompletion := @OnCodeTemplateExecuteCompletion;

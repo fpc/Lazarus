@@ -42,7 +42,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, typinfo, resource,
   // LCL
-  Graphics, LCLProc, LResources, Forms, Dialogs, ComCtrls, LCLType,
+  Graphics, LCLProc, LResources, Forms, Dialogs, ComCtrls, LCLType, Controls,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, LazClasses, LazUTF8Classes, Laz2_XMLCfg,
   LazStringUtils,
@@ -1545,6 +1545,8 @@ type
     procedure Init;
     procedure Load;
     procedure Save;
+    function LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete): TModalResult;
+    function SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete): TModalResult;
     procedure TranslateResourceStrings;
     function GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
     function GetSynEditOptionName(SynOption: TSynEditorOption): string;
@@ -5228,6 +5230,34 @@ begin
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Save] ERROR: ', e.Message);
+  end;
+end;
+
+function TEditorOptions.LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete
+  ): TModalResult;
+var
+  s: String;
+begin
+  s := CodeTemplateFileNameExpand;
+  Result := mrAbort;
+  if FileExistsUTF8(s) then begin
+    try
+      LoadStringsFromFileUTF8(AnAutoComplete.AutoCompleteList, s);
+      Result := mrOK;
+    except
+      Result := mrAbort;
+    end;
+  end;
+end;
+
+function TEditorOptions.SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete
+  ): TModalResult;
+begin
+  try
+    SaveStringsToFileUTF8(AnAutoComplete.AutoCompleteList, CodeTemplateFileNameExpand);
+    Result := mrOK;
+  except
+    Result := mrAbort;
   end;
 end;
 

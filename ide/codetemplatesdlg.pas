@@ -823,7 +823,6 @@ end;
 
 procedure TCodeTemplateDialog.FormCreate(Sender: TObject);
 var
-  s: String;
   ColorScheme: String;
 begin
   IDEDialogLayoutList.ApplyLayout(Self,600,450);
@@ -873,16 +872,8 @@ begin
   TemplateSynEdit.Gutter.Visible:=false;
 
   // init SynAutoComplete
-  with SynAutoComplete do begin
-    s:=EditorOpts.CodeTemplateFileNameExpand;
-    if FileExistsUTF8(s) then
-      try
-         LoadStringsFromFileUTF8(AutoCompleteList,s);
-      except
-        DebugLn('NOTE: unable to read code template file ''',s,'''');
-      end;
-  end;
-  
+  EditorOpts.LoadCodeTemplates(SynAutoComplete);
+
   // init listbox
   FillCodeTemplateListBox;
   with TemplateListBox do
@@ -919,9 +910,8 @@ begin
   if BuildBorlandDCIFile(SynAutoComplete) then begin
     Res:=mrOk;
     repeat
-      try
-        SaveStringsToFileUTF8(SynAutoComplete.AutoCompleteList,EditorOpts.CodeTemplateFileNameExpand);
-      except
+      res := EditorOpts.SaveCodeTemplates(SynAutoComplete);
+      if res <> mrOK then begin
         res:=IDEMessageDialog(lisCCOErrorCaption, 'Unable to write code '
           +'templates to file '''
           +EditorOpts.CodeTemplateFileNameExpand+'''! ',mtError
