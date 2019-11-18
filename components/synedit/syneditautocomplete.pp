@@ -147,6 +147,9 @@ procedure TCustomSynAutoComplete.AddCompletion(AToken, AValue, AComment: string;
   TheAttributes: TStrings);
 begin
   if AToken <> '' then begin
+    if not fParsed then
+      ParseCompletionList;
+
     fCompletions.Add(AToken);
     fCompletionComments.Add(AComment);
     fCompletionValues.Add(AValue);
