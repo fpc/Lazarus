@@ -5237,6 +5237,8 @@ function TEditorOptions.LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete
   ): TModalResult;
 var
   s: String;
+  data: TResourceStream;
+  i: Int64;
 begin
   s := CodeTemplateFileNameExpand;
   Result := mrAbort;
@@ -5247,6 +5249,16 @@ begin
     except
       Result := mrAbort;
     end;
+  end
+  else begin
+    data := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
+    i := data.Size;
+    if i > 0 then begin
+      SetLength(s, i);
+      data.Read(s[1], i);
+      AnAutoComplete.AutoCompleteList.Text := s;
+    end;
+    data.Free;
   end;
 end;
 
