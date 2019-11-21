@@ -70,7 +70,7 @@ end;
 {$ELSEIF defined(freebsd) or defined(darwin)}
 var
   mib: array[0..1] of cint;
-  len: cint;
+  len: csize_t;
   t: cint;
 begin
   mib[0] := CTL_HW;
