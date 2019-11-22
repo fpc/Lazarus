@@ -135,7 +135,6 @@ type
 
     // WSControl functions
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     // WSEdit functions
@@ -959,23 +958,6 @@ begin
     field.setBackgroundColor( NSColor.textBackgroundColor )
   else
     field.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
-end;
-
-class procedure TCocoaWSCustomEdit.SetFont(const AWinControl: TWinControl;
-  const AFont: TFont);
-var
-  field: TCocoaTextField;
-begin
-  if not AWinControl.HandleAllocated or not Assigned(AFont) then Exit;
-
-  TCocoaWSWinControl.SetFont(AWinControl, AFont);
-
-  field := GetTextField(AWinControl);
-  if not Assigned(field) then Exit;
-  if AFont.Color = clDefault then
-    field.setTextColor(nil)
-  else
-    field.setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
 end;
 
 class procedure TCocoaWSCustomEdit.SetBorderStyle(

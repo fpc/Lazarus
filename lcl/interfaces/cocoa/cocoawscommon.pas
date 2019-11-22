@@ -1687,6 +1687,12 @@ begin
   end;
 end;
 
+type
+  NSFontSetter = objccategory external(NSObject)
+    procedure setFont(afont: NSFont); message 'setFont:';
+    procedure setTextColor(clr: NSColor); message 'setTextColor:';
+  end;
+
 class procedure TCocoaWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 var
   Obj: NSObject;
@@ -1699,24 +1705,15 @@ begin
 
   Obj := NSObject(AWinControl.Handle).lclContentView;
 
-  if Obj.isKindOfClass(NSControl) then
+  if Obj.respondsToSelector(ObjCSelector('setFont:')) then
+    Obj.setFont(TCocoaFont(AFont.Reference.Handle).Font);
+
+  if Obj.respondsToSelector(ObjCSelector('setTextColor:')) then
   begin
-    Cell := NSCell(NSControl(Obj).cell);
-    Cell.setFont(TCocoaFont(AFont.Reference.Handle).Font);
-    // try to assign foreground color?
-    Str := Cell.attributedStringValue;
-    if Assigned(Str) then
-    begin
-      NewStr := NSMutableAttributedString.alloc.initWithAttributedString(Str);
-      Range.location := 0;
-      Range.length := NewStr.length;
-      if AFont.Color = clDefault then
-        NewStr.removeAttribute_range(NSForegroundColorAttributeName, Range)
-      else
-        NewStr.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(ColorToRGB(AFont.Color)), Range);
-      Cell.setAttributedStringValue(NewStr);
-      NewStr.release;
-    end;
+    if AFont.Color = clDefault then
+      Obj.setTextColor(nil)
+    else
+      Obj.setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
   end;
 end;
 
