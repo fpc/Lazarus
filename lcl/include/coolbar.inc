@@ -1002,7 +1002,7 @@ begin
 end;
 
 procedure TCustomCoolBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var aBand, w, h: Integer;
+var aBand, w, h, offs: Integer;
     newRowBelow, needRecalc, needBandMaximize, aGrabber: Boolean;
 begin
   inherited MouseUp(Button, Shift, X, Y);
@@ -1014,14 +1014,16 @@ begin
     end;
     if needBandMaximize then begin
       MouseToBandPos(X, Y, aBand, aGrabber);
-      if aGrabber then begin
+      if aGrabber and Assigned(FVisiBands[aBand].control) then begin
         w:=0;
         h:=0;
         FVisiBands[aBand].control.GetPreferredSize(w,h);
+        offs:=FVisiBands[aBand].CalcControlLeft
+             +FVisiBands[aBand].cDivider + HorizontalSpacing;
         if vertical then
-          FVisiBands[aBand].width:=FVisiBands[aBand].CalcControlLeft+h+HorizontalSpacing+FVisiBands[aBand].cDivider
+          FVisiBands[aBand].width:=offs+h
         else
-          FVisiBands[aBand].width:=FVisiBands[aBand].CalcControlLeft+w+HorizontalSpacing+FVisiBands[aBand].cDivider;
+          FVisiBands[aBand].width:=offs+w;
         FDraggedBandIndex:=-1;
       end;
     end;
