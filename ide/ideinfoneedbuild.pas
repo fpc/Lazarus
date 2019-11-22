@@ -150,6 +150,7 @@ begin
 
   IDEDialogLayoutList.ApplyLayout(Self);
   IdleConnected:=true;
+  TargetComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TIDEInfoNeedBuildDlg.FormDestroy(Sender: TObject);

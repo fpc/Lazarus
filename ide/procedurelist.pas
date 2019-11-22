@@ -272,6 +272,7 @@ end;
 procedure TProcedureListForm.FormShow(Sender: TObject);
 begin
   edMethods.SetFocus;
+  cbObjects.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TProcedureListForm.SGDblClick(Sender: TObject);

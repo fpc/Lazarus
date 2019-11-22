@@ -55,7 +55,8 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDE
-  IDEProcs, MiscOptions, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts;
+  IDEProcs, MiscOptions, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts,
+  EnvironmentOpts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -933,6 +934,11 @@ end;
 
 procedure TRunParamsOptsDlg.FormCreate(Sender: TObject);
 begin
+  ModesComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  SaveInComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  CmdLineParametersComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  UseLaunchingApplicationComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  WorkingDirectoryComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TRunParamsOptsDlg.HelpButtonClick(Sender: TObject);

@@ -143,6 +143,10 @@ begin
   ImageIndexFile := IDEImages.LoadImage('laz_delete');
 
   ButtonPanel1.OKButton.ModalResult:=mrNone;
+  ProjOutMaskComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  ProjSrcMaskComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  PkgOutMaskComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  PkgSrcMaskComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TCleanBuildProjectDialog.FormDestroy(Sender: TObject);

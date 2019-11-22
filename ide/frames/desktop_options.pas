@@ -29,7 +29,7 @@ uses
   // LazUtils
   FileUtil,
   // LCL
-  Forms, StdCtrls, Dialogs, LCLProc, ExtCtrls,
+  Forms, StdCtrls, Dialogs, LCLProc, ExtCtrls, Spin,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -47,6 +47,8 @@ type
     AutoSaveIntervalInSecsComboBox: TComboBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
+    lblDropDownCount: TLabel;
+    lblComboBoxes: TDividerBevel;
     lblCheckAndAutoSave: TDividerBevel;
     lblImportExport: TDividerBevel;
     lblGlyphs: TDividerBevel;
@@ -71,6 +73,7 @@ type
     ExportDesktopButton: TButton;
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
+    spDropDownCount: TSpinEdit;
     procedure ExportDesktopButtonClick(Sender: TObject);
     procedure ImportDesktopButtonClick(Sender: TObject);
   private
@@ -159,6 +162,10 @@ begin
   ImportDesktopButton.Caption := lisImport;
   ExportDesktopButton.Hint := lisExportEnvironmentOptions;
   ImportDesktopButton.Hint := lisImportEnvironmentOptions;
+
+  // comboboxes
+  lblComboBoxes.Caption := lisComboBoxes;
+  lblDropDownCount.Caption := lisDropDownCount;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -187,6 +194,9 @@ begin
       sbgNever: rbMenuGlyphShowNever.Checked := True;
       sbgSystem: rbMenuGlyphShowSystem.Checked := True;
     end;
+
+    // comboboxes
+    spDropDownCount.Value := DropDownCount;
 
     // check and auto save files
     CheckDiskChangesWithLoadingCheckBox.Checked:=CheckDiskChangesWithLoading;
@@ -236,6 +246,9 @@ begin
     AutoSaveProject:=AutoSaveProjectCheckBox.Checked;
     AutoSaveIntervalInSecs:=StrToIntDef(
       AutoSaveIntervalInSecsComboBox.Text,AutoSaveIntervalInSecs);
+
+    // comboboxes
+    DropDownCount := spDropDownCount.Value;
   end;
 end;
 

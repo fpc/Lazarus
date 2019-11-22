@@ -48,6 +48,7 @@ type
     DiffTreeView: TTreeView;
     ModeComboBox: TComboBox;
     ModeLabel: TLabel;
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ModeComboBoxChange(Sender: TObject);
   private
@@ -125,6 +126,11 @@ begin
   finally
     sl.Free;
   end;
+end;
+
+procedure TBuildModeDiffDialog.FormActivate(Sender: TObject);
+begin
+  ModeComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TBuildModeDiffDialog.FillDiffTreeView;

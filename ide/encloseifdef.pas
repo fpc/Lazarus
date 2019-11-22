@@ -54,7 +54,7 @@ interface
 uses
   Classes, SysUtils, Controls, Forms, StdCtrls, Buttons, ButtonPanel,
   LCLProc, LCLType, LazConf, LazFileUtils, Laz2_XMLCfg, LazFileCache,
-  IDEHelpIntf, IDEImagesIntf, LazarusIDEStrConsts;
+  IDEHelpIntf, IDEImagesIntf, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
 
@@ -266,6 +266,8 @@ begin
     end else
       ItemIndex := i;
   end;
+  FirstTest.DropDownCount := EnvironmentOptions.DropDownCount;
+  SecondTest.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TEncloseIfDefForm.FormShow(Sender: TObject);

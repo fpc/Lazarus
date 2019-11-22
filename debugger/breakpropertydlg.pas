@@ -14,7 +14,7 @@ uses
   DbgIntfDebuggerBase,
   // IDE
   BreakPropertyDlgGroups, DebuggerDlg, Debugger,
-  BaseDebugManager, LazarusIDEStrConsts, InputHistory, IDEProcs;
+  BaseDebugManager, LazarusIDEStrConsts, InputHistory, IDEProcs, EnvironmentOpts;
 
 type
 
@@ -73,6 +73,7 @@ type
     procedure cmbGroupKeyPress(Sender: TObject; var Key: char);
     procedure edtDisableGroupsButtonClick(Sender: TObject);
     procedure edtEnableGroupsButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FBreakpointsNotification : TIDEBreakPointsNotification;
     FBreakpoint: TIDEBreakPoint;
@@ -145,6 +146,12 @@ begin
   s := edtEnableGroups.Text;
   if ExecuteBreakPointGroupDlg(FBreakpoint, s, DebugBoss.BreakPointGroups, bgaEnable) = mrok
   then edtEnableGroups.Text := s;
+end;
+
+procedure TBreakPropertyDlg.FormCreate(Sender: TObject);
+begin
+  edtCondition.DropDownCount := EnvironmentOptions.DropDownCount;
+  cmbGroup.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TBreakPropertyDlg.btnHelpClick(Sender: TObject);

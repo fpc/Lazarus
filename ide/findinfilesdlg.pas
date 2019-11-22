@@ -31,7 +31,7 @@ uses
   ProjectGroupIntf,
   // IDE
   LazarusIDEStrConsts, InputHistory, InputhistoryWithSearchOpt, EditorOptions, Project,
-  IDEProcs, SearchFrm, SearchResultView;
+  IDEProcs, SearchFrm, SearchResultView, EnvironmentOpts;
 
 type
   { TLazFindInFilesDialog }
@@ -55,6 +55,7 @@ type
     procedure DirectoriesBrowseClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender : TObject);
     procedure ReplaceCheckBoxChange(Sender: TObject);
@@ -212,6 +213,14 @@ begin
 
   AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
   IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TLazFindInFilesDialog.FormShow(Sender: TObject);
+begin
+  TextToFindComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  ReplaceTextComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  DirectoriesComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  FileMaskComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TLazFindInFilesDialog.HelpButtonClick(Sender: TObject);

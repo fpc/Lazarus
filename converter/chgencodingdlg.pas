@@ -41,7 +41,7 @@ uses
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
-  IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts;
+  IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
 
@@ -165,6 +165,9 @@ begin
     OwnerComboBox.Text:='';
   FFiles:=TFilenameToStringTree.Create(FilenamesCaseSensitive);
   UpdatePreview;
+  OwnerComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  NewEncodingComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  FileFilterCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TChgEncodingDialog.FormDestroy(Sender: TObject);

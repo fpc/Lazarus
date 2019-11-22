@@ -220,6 +220,7 @@ type
     UnitFilterEdit: TEdit;
     procedure BrowseTreeViewMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,
       {%H-}Y: Integer);
+    procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure UseIdentifierInCurUnitMenuItemClick(Sender: TObject);
     procedure UsePkgInCurUnitMenuItemClick(Sender: TObject);
@@ -799,6 +800,11 @@ begin
       sl.Free;
     end;
   end;
+end;
+
+procedure TCodeBrowserView.FormActivate(Sender: TObject);
+begin
+  ScopeComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TCodeBrowserView.SetIdleConnected(AValue: boolean);

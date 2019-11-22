@@ -36,7 +36,7 @@ uses
   Buttons, ExtCtrls, Dialogs, Graphics, ButtonPanel,
   SynEditTypes, SynEdit,
   IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
-  LazarusIdeStrConsts, InputHistory;
+  LazarusIdeStrConsts, InputHistory, EnvironmentOpts;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -76,6 +76,7 @@ type
     procedure EnableAutoCompleteSpeedButtonClick(Sender: TObject);
     procedure FormChangeBounds(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
+    procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OptionsGroupBoxResize(Sender: TObject);
     procedure ReplaceWithCheckboxChange(Sender: TObject);
@@ -202,6 +203,12 @@ procedure TLazFindReplaceDialog.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TLazFindReplaceDialog.FormShow(Sender: TObject);
+begin
+  TextToFindComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  ReplaceTextComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TLazFindReplaceDialog.UpdateHints;

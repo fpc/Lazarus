@@ -7,9 +7,10 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
   Caption = 'BuildModeDiffDialog'
   ClientHeight = 409
   ClientWidth = 476
+  OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '2.1.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
@@ -35,9 +36,9 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = ModeComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 15
+    Height = 14
     Top = 10
-    Width = 59
+    Width = 60
     BorderSpacing.Left = 6
     Caption = 'ModeLabel'
     ParentColor = False
@@ -48,22 +49,22 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 71
+    Left = 72
     Height = 23
     Top = 6
-    Width = 399
+    Width = 398
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 15
+    ItemHeight = 14
     OnChange = ModeComboBoxChange
     Style = csDropDownList
     TabOrder = 0
   end
   object DiffLabel: TLabel
     Left = 6
-    Height = 15
+    Height = 14
     Top = 33
-    Width = 47
+    Width = 48
     Caption = 'DiffLabel'
     ParentColor = False
   end
@@ -71,13 +72,12 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = DiffLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 317
-    Top = 54
+    Height = 318
+    Top = 53
     Width = 464
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    DefaultItemHeight = 18
     TabOrder = 1
   end
 end

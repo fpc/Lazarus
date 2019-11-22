@@ -197,6 +197,7 @@ type
     procedure AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure GraphOptsMenuItemClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
@@ -2388,6 +2389,11 @@ begin
     end;
   end;
   Result:=nil;
+end;
+
+procedure TUnitDependenciesWindow.FormActivate(Sender: TObject);
+begin
+  SearchCustomFilesComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 function TUnitDependenciesWindow.GetImgIndex(Node: TUDNode): integer;

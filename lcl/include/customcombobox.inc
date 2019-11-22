@@ -696,6 +696,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetDropDownCount(const AValue: Integer);
 begin
+  if AValue = FDropDownCount then
+    exit;
   FDropDownCount := AValue;
   if HandleAllocated then
     TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, AValue);
@@ -710,12 +712,9 @@ procedure TCustomComboBox.SetItemHeight(const AValue: Integer);
 begin
   if AValue = FItemHeight then
     exit;
-
   FItemHeight := AValue;
-
-  if (not HandleAllocated) then 
+  if not HandleAllocated then
     exit;
-
   if Style in [csOwnerDrawFixed, csOwnerDrawVariable,
                csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
     TWSCustomComboBoxClass(WidgetSetClass).SetItemHeight(Self, FItemHeight);

@@ -557,6 +557,8 @@ begin
     IDEImages.AssignImage(ButtonPanel1.CloseButton, 'laz_save');
   ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
   ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;
+  DestDirComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  FilterCombobox.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TPublishModuleDialog.BrowseDestDirBitBtnCLICK(Sender: TObject);

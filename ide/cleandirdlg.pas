@@ -39,7 +39,7 @@ uses
   IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   // IDE
   IDEProcs, LazarusIDEStrConsts, LazConf, TransferMacros, InputHistory,
-  ShowDeletingFilesDlg;
+  ShowDeletingFilesDlg, EnvironmentOpts;
 
 type
 
@@ -144,6 +144,9 @@ begin
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   IDEDialogLayoutList.ApplyLayout(Self);
+  DirCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  RemoveCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  KeepCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TCleanDirectoryDialog.FormDestroy(Sender: TObject);

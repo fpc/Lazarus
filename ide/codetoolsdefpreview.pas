@@ -43,7 +43,7 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEHelpIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs;
+  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs, EnvironmentOpts;
 
 type
   TCodeToolsDefinesNodeValues = class
@@ -478,6 +478,7 @@ begin
 
   ReportTabSheet.Caption:=dlgReport;
   PageControl1.PageIndex:=0;
+  DirectoryCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCLOSE(Sender: TObject;

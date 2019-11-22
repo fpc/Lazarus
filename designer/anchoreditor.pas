@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, StdCtrls, Buttons, Spin,
   ExtCtrls, Graphics, IDECommands, PropEdits, IDEDialogs, LazarusIDEStrConsts,
-  IDEOptionDefs, IDEImagesIntf;
+  IDEOptionDefs, IDEImagesIntf, EnvironmentOpts;
 
 type
 
@@ -159,6 +159,7 @@ type
     TopRefTopSpeedButton: TSpeedButton;
     TopSiblingComboBox: TComboBox;
     TopSiblingLabel: TLabel;
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -1116,6 +1117,14 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TAnchorDesigner.FormActivate(Sender: TObject);
+begin
+  LeftSiblingComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  RightSiblingComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  TopSiblingComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  BottomSiblingComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 class function TAnchorDesigner.ControlToStr(AControl: TControl): string;

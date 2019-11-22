@@ -47,7 +47,7 @@ uses
   // IdeIntf
   IDEWindowIntf, PackageIntf, IDEHelpIntf,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, PackageDefs, PackageSystem, EnvironmentOpts;
 
 type
 
@@ -62,6 +62,7 @@ type
     ShowAllCheckBox: TCheckBox;
     procedure AddFileToAPackageDlgClose(Sender: TObject;
       var {%H-}CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PackagesGroupBoxResize(Sender: TObject);
@@ -208,6 +209,11 @@ destructor TAddFileToAPackageDialog.Destroy;
 begin
   FreeAndNil(fPackages);
   inherited Destroy;
+end;
+
+procedure TAddFileToAPackageDialog.FormCreate(Sender: TObject);
+begin
+  PackagesComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TAddFileToAPackageDialog.UpdateAvailablePackages;

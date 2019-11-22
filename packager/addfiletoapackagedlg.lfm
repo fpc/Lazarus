@@ -8,24 +8,25 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   ClientHeight = 272
   ClientWidth = 469
   OnClose = AddFileToAPackageDlgClose
+  OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object FileGroupBox: TGroupBox
     Left = 6
-    Height = 58
+    Height = 54
     Top = 6
     Width = 457
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FileGroupBox'
-    ClientHeight = 39
+    ClientHeight = 36
     ClientWidth = 453
     TabOrder = 0
     object FileNameEdit: TEdit
       Left = 6
-      Height = 27
+      Height = 20
       Top = 6
       Width = 439
       Anchors = [akTop, akLeft, akRight]
@@ -37,32 +38,32 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   end
   object PackagesGroupBox: TGroupBox
     Left = 6
-    Height = 85
-    Top = 70
+    Height = 77
+    Top = 66
     Width = 457
     Align = alTop
     Anchors = [akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'PackagesGroupBox'
-    ClientHeight = 66
+    ClientHeight = 59
     ClientWidth = 453
     TabOrder = 1
     object PackagesComboBox: TComboBox
       Left = 6
-      Height = 27
+      Height = 23
       Top = 6
       Width = 441
       Align = alTop
       BorderSpacing.Around = 6
-      ItemHeight = 0
+      ItemHeight = 14
       TabOrder = 0
       Text = 'PackagesComboBox'
     end
     object ShowAllCheckBox: TCheckBox
       Left = 6
-      Height = 21
-      Top = 39
+      Height = 18
+      Top = 35
       Width = 441
       Align = alTop
       BorderSpacing.Around = 6
@@ -73,8 +74,8 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 32
-    Top = 234
+    Height = 26
+    Top = 240
     Width = 457
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

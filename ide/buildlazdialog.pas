@@ -1112,6 +1112,11 @@ begin
   end;
 
   SetupInfoPage;
+  BuildProfileComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  LCLWidgetTypeComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  TargetOSComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  TargetCPUComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  TargetDirectoryComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TConfigureBuildLazarusDlg.FormResize(Sender: TObject);

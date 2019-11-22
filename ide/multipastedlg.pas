@@ -47,7 +47,7 @@ uses
   // IdeIntf
   IDEHelpIntf,
   // IDE
-  InputHistory, IDEProcs, LazarusIDEStrConsts;
+  InputHistory, IDEProcs, LazarusIDEStrConsts, EnvironmentOpts;
 
 const
   hlFormatPasteTxtBefore = 'FormatPasteTxtBefore';
@@ -124,6 +124,9 @@ begin
   EscQuotesStyleComboBox.Items[1] := lismpCStyle;
   TrimClipbrdContentsCheckBox.Caption := lismpTrimClipboardContents;
   PreviewGroupBox.Caption := lismpPreview;
+  TxtBeforeLinesComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  TxtAfterLinesComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  EscQuotesStyleComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TMultiPasteDialog.FormDestroy(Sender: TObject);

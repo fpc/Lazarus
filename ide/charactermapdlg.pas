@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LCLType, LCLUnicodeData, GraphType, Grids, ButtonPanel, ComCtrls,
-  IDEHelpIntf, LazUTF8,
+  IDEHelpIntf, LazUTF8, Math,
   {$ifdef WINDOWS}Windows,{$endif} lconvencoding,
   LazarusIDEStrConsts, IDEImagesIntf, EditorOptions, EnvironmentOpts;
 
@@ -217,6 +217,8 @@ begin
   FUnicodeBlockIndex:=NOT_SELECTED;
   FillUniRangeList(SortUniRangeListButton.Down);
   FillUnicodeGrid;
+  cbCodePage.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
+  cbUniRange.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
 end;
 
 procedure TCharacterMapDialog.SortUniRangeListButtonClick(Sender: TObject);

@@ -1378,6 +1378,8 @@ resourcestring
     +'jump history and search results.';
   lisExportEnvironmentOptions = 'Export environment options';
   lisImportEnvironmentOptions = 'Import environment options';
+  lisComboBoxes = 'Combo Boxes';
+  lisDropDownCount = 'Drop Down Count';
 
   // Desktop options
   dlgManageDesktops = 'Manage desktops';

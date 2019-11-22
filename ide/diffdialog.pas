@@ -49,7 +49,7 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, InputHistory, DiffPatch, SourceEditor;
+  LazarusIDEStrConsts, EditorOptions, InputHistory, DiffPatch, SourceEditor, EnvironmentOpts;
 
 type
 
@@ -127,6 +127,7 @@ type
 
     procedure CancelScanningButtonClick(Sender: TObject);
     procedure FileOpenClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
     procedure Text1ComboboxChange(Sender: TObject);
@@ -472,6 +473,12 @@ begin
   for i:=0 to fAvailableFiles.Count-1 do
     Text2Combobox.Items.Add(fAvailableFiles[i].Name);
   Text2Combobox.Items.EndUpdate;
+end;
+
+procedure TDiffDlg.FormCreate(Sender: TObject);
+begin
+  Text1Combobox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  Text2Combobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TDiffDlg.SaveSettings;

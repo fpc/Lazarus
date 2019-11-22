@@ -528,6 +528,9 @@ begin
 
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
+
+  BuildWorkDirCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  RunWorkDirCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TBuildFileDialog.BuildBrowseWorkDirButtonCLICK(Sender: TObject);
