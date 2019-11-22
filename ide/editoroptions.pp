@@ -5255,43 +5255,45 @@ begin
     try
       LoadStringsFromFileUTF8(AnAutoComplete.AutoCompleteList, s);
       Result := mrOK;
-
-      FileVersion := AnAutoComplete.Completions.Count;
-      if (FileVersion > 0) then begin
-        FileVersion := AnAutoComplete.CompletionAttributes[0].IndexOfName(DciFileVersionName);
-        if (FileVersion >= 0) then
-          FileVersion := StrToIntDef(AnAutoComplete.CompletionAttributes[0][FileVersion], 0);
-      end;
-      if FileVersion < DciFileVersion then begin
-        // Merge new entries
-        NewAutoComplete := TSynEditAutoComplete.Create(nil);
-        NewAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
-        Added := False;
-        for i := 0 to NewAutoComplete.Completions.Count - 1 do begin
-          j := NewAutoComplete.CompletionAttributes[i].IndexOfName(DciVersionName);
-          if j < 0 then
-            continue;
-          v := StrToIntDef(AnAutoComplete.CompletionAttributes[i][j], 0);
-          if v <= FileVersion then
-            continue;
-          if AnAutoComplete.Completions.IndexOf(NewAutoComplete.Completions[i]) >= 0 then
-            continue;
-          Attr := TStringList.Create;
-          Attr.Assign(NewAutoComplete.CompletionAttributes[i]); // will be owned by AnAutoComplete;
-          AnAutoComplete.AddCompletion(
-            NewAutoComplete.Completions[i],
-            NewAutoComplete.CompletionValues[i],
-            NewAutoComplete.CompletionComments[i],
-            Attr);
-          Added := True;
-        end;
-        NewAutoComplete.Free;
-        if Added then
-          if BuildBorlandDCIFile(AnAutoComplete) then
-            SaveCodeTemplates(AnAutoComplete);
-      end;
     except
       Result := mrAbort;
+    end;
+    if Result = mrAbort then
+      exit;
+
+    FileVersion := AnAutoComplete.Completions.Count;
+    if (FileVersion > 0) then begin
+      FileVersion := AnAutoComplete.CompletionAttributes[0].IndexOfName(DciFileVersionName);
+      if (FileVersion >= 0) then
+        FileVersion := StrToIntDef(AnAutoComplete.CompletionAttributes[0][FileVersion], 0);
+    end;
+    if FileVersion < DciFileVersion then begin
+      // Merge new entries
+      NewAutoComplete := TSynEditAutoComplete.Create(nil);
+      NewAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
+      Added := False;
+      for i := 0 to NewAutoComplete.Completions.Count - 1 do begin
+        j := NewAutoComplete.CompletionAttributes[i].IndexOfName(DciVersionName);
+        if j < 0 then
+          continue;
+        v := StrToIntDef(NewAutoComplete.CompletionAttributes[i][j], 0);
+        if v <= FileVersion then
+          continue;
+        if AnAutoComplete.Completions.IndexOf(NewAutoComplete.Completions[i]) >= 0 then
+          continue;
+        Attr := TStringList.Create;
+        Attr.Assign(NewAutoComplete.CompletionAttributes[i]); // will be owned by AnAutoComplete;
+        AnAutoComplete.AddCompletion(
+          NewAutoComplete.Completions[i],
+          NewAutoComplete.CompletionValues[i],
+          NewAutoComplete.CompletionComments[i],
+          Attr);
+        Added := True;
+      end;
+      NewAutoComplete.Free;
+      if Added then
+        if BuildBorlandDCIFile(AnAutoComplete) then
+          SaveCodeTemplates(AnAutoComplete);
     end;
   end
   else begin
