@@ -7078,6 +7078,46 @@ var
     Result := True;
   end;
 
+  procedure CheckWin64StepOverFinally;
+  var
+    R: TGDBMIExecResult;
+    DisAsm: TGDBMIDisassembleResultList;
+    i: Integer;
+  begin
+    if (FExecType <> ectStepOver) or
+       (TargetInfo^.TargetOS <> osWindows) or
+       (FTheDebugger.FRtlUnwindExBreak.GetInfoAddr(Self) = 0)
+    then
+      exit;
+    if (not ExecuteCommand('-data-disassemble -s $pc -e $pc+12 -- 0', [], R)) or
+       (R.State = dsError)
+    then
+      exit;
+
+    DisAsm := TGDBMIDisassembleResultList.Create(R);
+    try
+      i := 0;
+      if (DisAsm.Count > i) and (DisAsm.Item[i]^.Statement = 'nop') then
+        inc(i);
+
+      if (DisAsm.Count <= i) or (copy(DisAsm.Item[i]^.Statement, 1,3) <> 'mov') then
+        exit;
+      inc(i);
+      if (DisAsm.Count > i) and (copy(DisAsm.Item[i]^.Statement, 1,3) = 'mov') then
+        inc(i);
+
+      if (DisAsm.Count <= i) or (copy(DisAsm.Item[i]^.Statement, 1,4) <> 'call') or
+         (pos('fin$', DisAsm.Item[i]^.Statement) < 0)
+      then
+        exit;
+
+      FExecType := ectStepInto;
+      FCurrentExecCmd := ectStepInto;
+    finally
+      DisAsm.Free;
+    end;
+  end;
+
 var
   StoppedParams, RunWarnings: String;
   ContinueExecution, ContinueStep: Boolean;
@@ -7103,7 +7143,10 @@ begin
     FCurrentExecCmd := ectContinue;
     EnablePopCatches;
     EnableRtlUnwind;
-  end;
+  end
+  else
+    CheckWin64StepOverFinally; // Finally is in a subroutine, and may need step into
+
   if (FExecType in [ectRunTo, ectStepOver{, ectStepInto}, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) and
      (ieRaiseBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints)
   then
