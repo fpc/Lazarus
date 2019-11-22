@@ -2016,6 +2016,8 @@ procedure TCocoaContext.Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; Us
 var
   cg: CGContextRef;
 begin
+  if (X1=X2) or (Y1=Y2) then Exit;
+
   cg := CGContext;
   if not Assigned(cg) then Exit;
 
