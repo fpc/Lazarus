@@ -2741,16 +2741,9 @@ begin
     TM.tmBreakChar := '?';
 
     TM.tmItalic := Ord(AFont.Handle^.get_style = PANGO_STYLE_ITALIC);
-    AList := AFont.Layout^.get_attributes;
-    if AList <> nil then
-    begin
-      AList^.unref;
-    end;
     //  APangoMetrics^.get_underline_position;
     // TM.tmUnderlined :=
     // TM.tmStruckOut :=
-
-
     pango_font_metrics_unref(APangoMetrics);
     Result := True;
   end;
