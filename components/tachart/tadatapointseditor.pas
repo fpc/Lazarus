@@ -78,18 +78,23 @@ function DataPointsEditor(AListChartSource: TListChartsource;
   AOptions: TDataPointsEditorOptions = []): Boolean;
 var
   F: TDataPointsEditorForm;
+  wasSorted: Boolean;
 begin
   Result := false;
   F := TDataPointsEditorForm.Create(Application);
   try
+    wasSorted := AListChartSource.Sorted;
+    AListChartSource.Sorted := false;
     F.InitData(
       AListChartSource.XCount,
       AListChartSource.YCount,
       AListChartSource.DataPoints,
       AOptions
     );
-    if F.ShowModal = mrOK then
+    if F.ShowModal = mrOK then begin
       F.ExtractData(Result);
+      if wasSorted then AListChartSource.Sorted := true;
+    end;
   finally
     F.Free;
   end;
