@@ -2,10 +2,10 @@ object Form1: TForm1
   Left = 605
   Height = 494
   Top = 364
-  Width = 691
+  Width = 705
   Caption = 'Form1'
   ClientHeight = 494
-  ClientWidth = 691
+  ClientWidth = 705
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
@@ -13,7 +13,7 @@ object Form1: TForm1
     Left = 0
     Height = 494
     Top = 0
-    Width = 691
+    Width = 705
     ActivePage = tsFast
     Align = alClient
     TabIndex = 0
@@ -22,12 +22,12 @@ object Form1: TForm1
     object tsFast: TTabSheet
       Caption = 'Fast drawing'
       ClientHeight = 466
-      ClientWidth = 683
+      ClientWidth = 697
       object chFast: TChart
         Left = 0
         Height = 427
         Top = 39
-        Width = 683
+        Width = 697
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -69,12 +69,12 @@ object Form1: TForm1
         Left = 0
         Height = 39
         Top = 0
-        Width = 683
+        Width = 697
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 39
-        ClientWidth = 683
+        ClientWidth = 697
         TabOrder = 1
         object cbLineType: TComboBox
           AnchorSideLeft.Control = Panel1
@@ -134,12 +134,12 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel1
           AnchorSideTop.Side = asrCenter
-          Left = 357
+          Left = 327
           Height = 25
           Top = 7
           Width = 48
           AutoSize = True
-          BorderSpacing.Left = 80
+          BorderSpacing.Left = 50
           Caption = 'Add'
           OnClick = btnAddSeriesClick
           TabOrder = 3
@@ -149,7 +149,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel1
           AnchorSideTop.Side = asrCenter
-          Left = 523
+          Left = 492
           Height = 23
           Top = 8
           Width = 76
@@ -162,10 +162,10 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel1
           AnchorSideTop.Side = asrCenter
-          Left = 413
+          Left = 383
           Height = 25
           Top = 7
-          Width = 102
+          Width = 101
           AutoSize = True
           BorderSpacing.Left = 8
           Caption = 'Timed refresh:'
@@ -187,10 +187,16 @@ object Form1: TForm1
           TabOrder = 6
         end
         object lblPointsCount: TLabel
-          Left = 0
-          Height = 1
-          Top = 14
-          Width = 1
+          AnchorSideLeft.Control = edTime
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edTime
+          AnchorSideTop.Side = asrCenter
+          Left = 574
+          Height = 15
+          Top = 12
+          Width = 79
+          BorderSpacing.Left = 6
+          Caption = 'lblPointsCount'
           ParentColor = False
         end
       end
@@ -198,12 +204,12 @@ object Form1: TForm1
     object tsPointers: TTabSheet
       Caption = 'Pointers'
       ClientHeight = 466
-      ClientWidth = 683
+      ClientWidth = 697
       object chPointers: TChart
         Left = 0
         Height = 466
         Top = 0
-        Width = 513
+        Width = 527
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -230,7 +236,7 @@ object Form1: TForm1
         Align = alClient
       end
       object pnlPointers: TPanel
-        Left = 513
+        Left = 527
         Height = 466
         Top = 0
         Width = 170
@@ -260,12 +266,12 @@ object Form1: TForm1
     object tsCustomDrawPointer: TTabSheet
       Caption = 'Customdrawn pointer'
       ClientHeight = 466
-      ClientWidth = 683
+      ClientWidth = 697
       object Chart_CustomDrawPointer: TChart
         Left = 0
         Height = 427
         Top = 39
-        Width = 683
+        Width = 697
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -299,12 +305,12 @@ object Form1: TForm1
         Left = 0
         Height = 39
         Top = 0
-        Width = 683
+        Width = 697
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 39
-        ClientWidth = 683
+        ClientWidth = 697
         TabOrder = 1
         object cbBitmapPointer: TCheckBox
           AnchorSideLeft.Control = Panel2
@@ -393,12 +399,12 @@ object Form1: TForm1
     object tsGetPointerStyle: TTabSheet
       Caption = 'OnGetPointerStyle event'
       ClientHeight = 466
-      ClientWidth = 683
+      ClientWidth = 697
       object ChartGetPointerStyleEvent: TChart
         Left = 0
         Height = 466
         Top = 0
-        Width = 683
+        Width = 697
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -432,12 +438,12 @@ object Form1: TForm1
     object tsOscilloscope: TTabSheet
       Caption = 'Oscilloscope'
       ClientHeight = 466
-      ClientWidth = 683
+      ClientWidth = 697
       object chOscillator: TChart
         Left = 0
         Height = 466
         Top = 0
-        Width = 683
+        Width = 697
         AxisList = <        
           item
             Grid.Color = clMedGray
@@ -481,17 +487,17 @@ object Form1: TForm1
     object tsColorEach: TTabSheet
       Caption = 'Color each data point'
       ClientHeight = 466
-      ClientWidth = 683
+      ClientWidth = 697
       object pnlColorEach: TPanel
         Left = 0
         Height = 39
         Top = 0
-        Width = 683
+        Width = 697
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 39
-        ClientWidth = 683
+        ClientWidth = 697
         TabOrder = 0
         object cbColorEach: TComboBox
           AnchorSideLeft.Control = pnlColorEach
@@ -524,7 +530,7 @@ object Form1: TForm1
         Left = 0
         Height = 427
         Top = 39
-        Width = 683
+        Width = 697
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
