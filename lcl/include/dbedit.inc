@@ -222,9 +222,8 @@ end;
 procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
 begin
   inherited WMKillFocus(Message);
-
   FFocusedDisplay := False;
-
+  if csDestroying in ComponentState then Exit;
   if FDatalink.Editing then
   begin
     FDatalink.UpdateRecord;
