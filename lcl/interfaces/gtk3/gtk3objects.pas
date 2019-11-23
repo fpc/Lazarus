@@ -523,7 +523,6 @@ end;
 constructor TGtk3Font.Create(ALogFont: TLogFont; const ALongFontName: String);
 var
   AContext: PPangoContext;
-  ADescription: PPangoFontDescription;
   AttrList: PPangoAttrList;
   Attr: PPangoAttribute;
 begin
@@ -535,16 +534,10 @@ begin
     if Gtk3WidgetSet.DefaultAppFontName <> '' then
       FHandle := pango_font_description_from_string(PgChar(Gtk3WidgetSet.DefaultAppFontName))
     else
-    begin
-      ADescription := pango_context_get_font_description(AContext);
-      FHandle := pango_font_description_copy(ADescription);
-    end;
-    FFontName := FHandle^.get_family;
+      FHandle := pango_font_description_copy(pango_context_get_font_description(AContext));
   end else
-  begin
     FHandle := pango_font_description_from_string(PgChar(FFontName));
-    FFontName := FHandle^.get_family;
-  end;
+  FFontName := FHandle^.get_family;
   if ALogFont.lfHeight <> 0 then
     FHandle^.set_absolute_size(Abs(ALogFont.lfHeight) * PANGO_SCALE);
   if ALogFont.lfItalic > 0 then
@@ -558,7 +551,6 @@ begin
     AttrList := pango_layout_get_attributes(FLayout);
     if (AttrList = nil) then
       AttrList := pango_attr_list_new();
-    pango_attr_list_ref(AttrList);
     if ALogFont.lfUnderline <> 0 then
       Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
     else
