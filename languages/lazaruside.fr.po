@@ -7022,6 +7022,10 @@ msgstr "Retourne"
 msgid "Visibility"
 msgstr "Visibilité"
 
+#: lazarusidestrconsts.liscomboboxes
+msgid "Combo Boxes"
+msgstr ""
+
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -9011,6 +9015,10 @@ msgstr "Dessiner les lignes de la grille"
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "Dessiner la sélection comme focalisée même si la fenêtre des messages ne l'est pas. Utilisez ceci si votre thème rend le dessin des éléments non focalisés à peine visibles."
+
+#: lazarusidestrconsts.lisdropdowncount
+msgid "Drop Down Count"
+msgstr ""
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"

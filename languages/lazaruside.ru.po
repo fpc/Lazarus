@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-11-18 00:25+0300\n"
+"PO-Revision-Date: 2019-11-25 01:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6994,6 +6994,10 @@ msgstr "Тип результата"
 msgid "Visibility"
 msgstr "Видимость"
 
+#: lazarusidestrconsts.liscomboboxes
+msgid "Combo Boxes"
+msgstr "Раскрывающиеся списки"
+
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -8980,6 +8984,10 @@ msgstr "Отображать линии сетки"
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "Отрисовывать выделенное как находящееся в фокусе даже если окно сообщений фокуса не имеет. Воспользуйтесь этой возможностью, если используемая тема оформления имеет плохо заметную отрисовку элементов не в фокусе."
+
+#: lazarusidestrconsts.lisdropdowncount
+msgid "Drop Down Count"
+msgstr "Количество отображаемых элементов списка"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"

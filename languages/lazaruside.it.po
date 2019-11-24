@@ -7134,6 +7134,10 @@ msgstr "Ritorna"
 msgid "Visibility"
 msgstr "Visibilità"
 
+#: lazarusidestrconsts.liscomboboxes
+msgid "Combo Boxes"
+msgstr ""
+
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -9138,6 +9142,10 @@ msgstr "Disegna linee griglia"
 #| msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "Disegnare come se avesse il fuoco, anche se la finestra non ha il fuoco. Usare se il disegno del vostro tema è poco visibile quando non ha il fuoco."
+
+#: lazarusidestrconsts.lisdropdowncount
+msgid "Drop Down Count"
+msgstr ""
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"

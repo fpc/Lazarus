@@ -7118,6 +7118,10 @@ msgstr "リターン"
 msgid "Visibility"
 msgstr "可視性"
 
+#: lazarusidestrconsts.liscomboboxes
+msgid "Combo Boxes"
+msgstr ""
+
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -9110,6 +9114,10 @@ msgstr "グリッド線を描く"
 #| msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "たとえもしメッセージウィンドウにフォーカスがなくても選択されたものにフォーカスを描きます。もしあなたのテーマのフォーカスが見難い場合にこれを用いて下さい。"
+
+#: lazarusidestrconsts.lisdropdowncount
+msgid "Drop Down Count"
+msgstr ""
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"

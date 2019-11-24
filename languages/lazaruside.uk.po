@@ -6999,6 +6999,10 @@ msgstr "Повертає"
 msgid "Visibility"
 msgstr "Видимість"
 
+#: lazarusidestrconsts.liscomboboxes
+msgid "Combo Boxes"
+msgstr ""
+
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -8985,6 +8989,10 @@ msgstr "Малювати лінії сітки"
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "Показувати вибране як таке, що перебуває у фокусі, навіть якщо вікно повідомлень не у фокусі. Користуйтесь цим, якщо елементи не у фокусі малопомітні у даній темі оформлення."
+
+#: lazarusidestrconsts.lisdropdowncount
+msgid "Drop Down Count"
+msgstr ""
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"

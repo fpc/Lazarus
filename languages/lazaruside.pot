@@ -6979,6 +6979,10 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
+#: lazarusidestrconsts.liscomboboxes
+msgid "Combo Boxes"
+msgstr ""
+
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -8962,6 +8966,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
+msgstr ""
+
+#: lazarusidestrconsts.lisdropdowncount
+msgid "Drop Down Count"
 msgstr ""
 
 #: lazarusidestrconsts.lisdsgcopycomponents

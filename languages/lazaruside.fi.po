@@ -6990,6 +6990,10 @@ msgstr "Palauttaa"
 msgid "Visibility"
 msgstr "Näkyvyys"
 
+#: lazarusidestrconsts.liscomboboxes
+msgid "Combo Boxes"
+msgstr ""
+
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -8964,6 +8968,10 @@ msgstr "Näytä kohdistusviivat"
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "Piirrä valinta aina fokusoituna vaikkei viesti-ikkunalla olisi fokusta. Hyödyllinen jos työpöydän teema piirtää sen vaikeasti erottuvana."
+
+#: lazarusidestrconsts.lisdropdowncount
+msgid "Drop Down Count"
+msgstr ""
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
