@@ -3364,9 +3364,10 @@ begin
 
   // memory
   S := '';
-  for n := 0 to Instr.OperCnt - 1 do
+  while Code < AAddress do
   begin
     S := S + HexStr(Code[n], 2);
+    inc(Code);
   end;
   ACodeBytes := S;
 end;
