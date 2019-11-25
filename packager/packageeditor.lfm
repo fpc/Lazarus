@@ -4,6 +4,7 @@ object PackageEditorForm: TPackageEditorForm
   Top = 248
   Width = 464
   AllowDropFiles = True
+  BorderIcons = [biSystemMenu]
   Caption = 'PackageEditorForm'
   ClientHeight = 455
   ClientWidth = 464
