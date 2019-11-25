@@ -3,6 +3,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   Height = 358
   Top = 198
   Width = 646
+  BorderIcons = [biSystemMenu]
   Caption = 'ProjectGroupEditorForm'
   ClientHeight = 358
   ClientWidth = 646
