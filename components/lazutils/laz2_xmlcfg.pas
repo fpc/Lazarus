@@ -933,7 +933,7 @@ begin
         if (DefInstance <> nil) then
           DefValue := GetOrdProp(DefInstance, PropInfo);
         if ((DefInstance <> nil)  and (Value = DefValue)) or
-           (not IsStoredProp(Instance, PropInfo))
+           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
         then
           DeleteValue(Path)
         else begin
@@ -972,7 +972,7 @@ begin
         if (DefInstance <> nil) then
          DefFloatValue := GetFloatProp(DefInstance, PropInfo);
         if ((DefInstance <> nil)  and (DefFloatValue = FloatValue)) or
-           (not IsStoredProp(Instance, PropInfo))
+           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
         then
           DeleteValue(Path)
         else
@@ -984,7 +984,7 @@ begin
         if (DefInstance <> nil) then
            DefStrValue := GetStrProp(DefInstance, PropInfo);
         if ((DefInstance <> nil)  and (DefStrValue = StrValue)) or
-           (not IsStoredProp(Instance, PropInfo))
+           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
         then
           DeleteValue(Path)
         else
@@ -996,7 +996,7 @@ begin
         if (DefInstance <> nil) then
            WDefStrValue := GetWideStrProp(DefInstance, PropInfo);
         if ((DefInstance <> nil)  and (WDefStrValue = WStrValue)) or
-           (not IsStoredProp(Instance, PropInfo))
+           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
         then
           DeleteValue(Path)
         else
@@ -1008,7 +1008,7 @@ begin
         if (DefInstance <> nil) then
           DefInt64Value := GetInt64Prop(DefInstance, PropInfo)
         if ((DefInstance <> nil) and (Int64Value = DefInt64Value)) or
-           (not IsStoredProp(Instance, PropInfo))
+           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
         then
           DeleteValue(Path, Path)
         else
@@ -1020,7 +1020,7 @@ begin
         if (DefInstance <> nil) then
           DefBoolValue := GetOrdProp(DefInstance, PropInfo)<>0;
         if ((DefInstance <> nil) and (BoolValue = DefBoolValue)) or
-           (not IsStoredProp(Instance, PropInfo))
+           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
         then
           DeleteValue(Path)
         else
