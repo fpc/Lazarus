@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2019-10-01 15:23+0200\n"
+"PO-Revision-Date: 2019-11-25 14:02+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
 msgid "Set free bookmark"
-msgstr ""
+msgstr "Nastav voľnú záložku"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
 msgid "Select current Line (Full)"
@@ -4227,7 +4227,7 @@ msgstr ""
 
 #: lazarusidestrconsts.histdlgbtnshowhisthint
 msgid "View history"
-msgstr ""
+msgstr "Zobraziť históriu"
 
 #: lazarusidestrconsts.histdlgbtnshowsnaphint
 msgid "View Snapshots"
@@ -4245,7 +4245,7 @@ msgstr ""
 #: lazarusidestrconsts.histdlgformname
 msgctxt "lazarusidestrconsts.histdlgformname"
 msgid "History"
-msgstr ""
+msgstr "História"
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
@@ -6540,10 +6540,9 @@ msgid "Add code template"
 msgstr "Pridať šablónu kódu"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, fuzzy,badformat
-#| msgid " A token %s%s%s already exists! "
+#, object-pascal-format
 msgid " A token \"%s\" already exists! "
-msgstr "Token %s%s%s už existuje!"
+msgstr " Token \"%s\" už existuje! "
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
 #, fuzzy
@@ -8451,10 +8450,9 @@ msgid "Unable to load file"
 msgstr "Nemožno načítať súbor"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-#, fuzzy,badformat
-#| msgid "Unable to load file %s%s%s."
+#, object-pascal-format
 msgid "Unable to load file \"%s\"."
-msgstr "Nemožno načítať súbor %s%s%s."
+msgstr "Nemožno načítať súbor \"%s\"."
 
 #: lazarusidestrconsts.lisdecimal
 msgctxt "lazarusidestrconsts.lisdecimal"
@@ -8505,7 +8503,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
-msgstr "Z&mazať všetky "
+msgstr "Z&mazať všetky"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints
 msgid "Delete all breakpoints?"
@@ -8534,11 +8532,11 @@ msgstr "Zmazať nejednoznačný súbor?"
 
 #: lazarusidestrconsts.lisdeletebreakpoint
 msgid "Delete Breakpoint"
-msgstr ""
+msgstr "Zmazať bod prerušenia"
 
 #: lazarusidestrconsts.lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr "Zmazať bod prerušenia na %s\"%s\" riadku %d?"
+msgstr "Zmazať bod prerušenia na%s\"%s\" riadok %d?"
 
 #: lazarusidestrconsts.lisdeletebreakpointforaddress
 msgid "Delete breakpoint for address %s?"
@@ -9047,7 +9045,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor Macros"
-msgstr ""
+msgstr "Makrá editora"
 
 #: lazarusidestrconsts.liseditortoolbar
 msgid "Editor ToolBar"
@@ -10233,7 +10231,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto Line"
-msgstr ""
+msgstr "Choď na riadok"
 
 #: lazarusidestrconsts.lisgotoselected
 msgid "Goto selected"
@@ -11562,7 +11560,7 @@ msgstr "Vybrať slovo napravo"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
-msgstr "Nastaviť voľnú záložku"
+msgstr "Nastav voľnú záložku"
 
 #: lazarusidestrconsts.liskmsetmarker0
 #, fuzzy
@@ -11678,10 +11676,8 @@ msgid "View Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-#, fuzzy
-#| msgid "Toggle view Breakpoints"
 msgid "View Breakpoints"
-msgstr "Prepnúť zobrazenie Body prerušenia"
+msgstr "Zobraziť body prerušenia"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
 #, fuzzy
@@ -11719,7 +11715,6 @@ msgid "Toggle view Documentation Editor"
 msgstr "Prepnúť zobrazenie Editor dokumentácie"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-#, fuzzy
 msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
 msgid "View History"
 msgstr "Zobraziť históriu"
@@ -12384,10 +12379,8 @@ msgid "About FPC"
 msgstr "O FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-#, fuzzy
-#| msgid "Add breakpoint"
 msgid "Add &Breakpoint"
-msgstr "Pridať bod prerušenia"
+msgstr "Pridať &bod prerušenia"
 
 #: lazarusidestrconsts.lismenuaddcurfiletopkg
 msgid "Add Active File to Package ..."
@@ -12406,10 +12399,8 @@ msgid "Add Editor File to Project"
 msgstr "Pridať z editora do projektu"
 
 #: lazarusidestrconsts.lismenuaddwatch
-#, fuzzy
-#| msgid "Add watch ..."
 msgid "Add &Watch ..."
-msgstr "Pridať pozorovanie ..."
+msgstr "Pridať &pozorovanie ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
@@ -12515,32 +12506,22 @@ msgid "&Continue"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
-#, fuzzy
-#| msgid "Convert Delphi package to Lazarus package ..."
 msgid "Convert Delphi Package to Lazarus Package ..."
 msgstr "Konvertovať balíček Delphi na Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdelphiproject
-#, fuzzy
-#| msgid "Convert Delphi project to Lazarus project ..."
 msgid "Convert Delphi Project to Lazarus Project ..."
 msgstr "Konvertovať projekt Delphi na Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdelphiunit
-#, fuzzy
-#| msgid "Convert Delphi unit to Lazarus unit ..."
 msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Konvertovať jednotku Deplhi na Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#, fuzzy
-#| msgid "Convert binary DFM to text LFM + check syntax ..."
 msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
-msgstr "Konvertovať súbor DFM na LFM ..."
+msgstr "Konvertovať súbor DFM na LFM + kontrola syntaxe ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
-#, fuzzy
-#| msgid "Convert encoding of projects/packages ..."
 msgid "Convert Encoding of Projects/Packages ..."
 msgstr "Konvertovať kódovanie projektov/balíčkov ..."
 
@@ -13191,8 +13172,6 @@ msgid "Goto Include Directive"
 msgstr "Choď na direktívu include"
 
 #: lazarusidestrconsts.lismenugotoline
-#, fuzzy
-#| msgid "Goto line ..."
 msgid "Goto Line ..."
 msgstr "Choď na riadok ..."
 
@@ -13243,8 +13222,6 @@ msgid "Insert CVS Keyword"
 msgstr "Kľúčové slovo CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
-#, fuzzy
-#| msgid "Current date and time"
 msgid "Current Date and Time"
 msgstr "Aktuálny dátum a čas"
 
@@ -13292,8 +13269,6 @@ msgid "Modified LGPL Notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
-#, fuzzy
-#| msgid "Current username"
 msgid "Current Username"
 msgstr "Meno aktuálneho používateľa"
 
@@ -13366,7 +13341,7 @@ msgstr "Výber na malé písmená"
 
 #: lazarusidestrconsts.lismenumacrolistview
 msgid "Editor Macros ..."
-msgstr ""
+msgstr "Makrá editora ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -13797,7 +13772,7 @@ msgstr "Formuláre ..."
 #: lazarusidestrconsts.lismenuviewhistory
 msgctxt "lazarusidestrconsts.lismenuviewhistory"
 msgid "History"
-msgstr ""
+msgstr "História"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
@@ -18742,10 +18717,9 @@ msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy,badformat
-#| msgid "There is already a form with the name %s%s%s"
+#, object-pascal-format
 msgid "There is already a form with the name \"%s\""
-msgstr "Formulár s menom %s%s%suž existuje"
+msgstr "Formulár s menom \"%s\" už existuje"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
 msgid "There is already a macro with the name \"%s\"."
@@ -20074,7 +20048,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
-msgstr "Pozorovať vlastnosti"
+msgstr "Vlastnosti pozorovania"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"
@@ -20186,11 +20160,9 @@ msgid "&Properties"
 msgstr "&Vlastnosti"
 
 #: lazarusidestrconsts.liswlwatchlist
-#, fuzzy
-#| msgid "Watch list"
 msgctxt "lazarusidestrconsts.liswlwatchlist"
 msgid "Watches"
-msgstr "Zoznam Pozorovaní"
+msgstr "Pozorovania"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -20708,8 +20680,6 @@ msgid "add data/watchpoint"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecaddjumppoint
-#, fuzzy
-#| msgid "Add jump point"
 msgid "Add Jump Point"
 msgstr "Pridať bod skoku"
 
@@ -20803,11 +20773,11 @@ msgstr "Zmazať celý text"
 
 #: lazarusidestrconsts.srkmecclearallbookmark
 msgid "Clear all Bookmarks"
-msgstr ""
+msgstr "Vymazať všetky záložky"
 
 #: lazarusidestrconsts.srkmecclearbookmarkforfile
 msgid "Clear Bookmarks for current file"
-msgstr ""
+msgstr "Vymazať záložky pre aktuálny súbor"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"
@@ -21597,11 +21567,10 @@ msgstr "Vybrať slovo vpravo"
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"
 msgid "Set a free Bookmark"
-msgstr "Nastaviť voľnú záložku"
+msgstr "Nastav voľnú záložku"
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy
-#| msgid "Set Marker %d"
+#, object-pascal-format
 msgid "Set bookmark %d"
 msgstr "Nastav značku %d"
 
@@ -21797,7 +21766,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
-msgstr ""
+msgstr "prepnúť bod prerušenia"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -21911,7 +21880,7 @@ msgstr "Zobraziť komponenty"
 
 #: lazarusidestrconsts.srkmecvieweditormacros
 msgid "View editor macros"
-msgstr ""
+msgstr "Zobraziť makrá editora"
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
@@ -22260,11 +22229,9 @@ msgid "Refactoring"
 msgstr "Refactoring"
 
 #: lazarusidestrconsts.uemsetfreebookmark
-#, fuzzy
-#| msgid "Set a free Bookmark"
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"
-msgstr "Nastaviť voľnú záložku"
+msgstr "Nastav voľnú záložku"
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
@@ -22293,7 +22260,7 @@ msgstr "Prepnúť záložku ..."
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "Toggle &Breakpoint"
-msgstr ""
+msgstr "Prepnúť &bod prerušenia"
 
 #: lazarusidestrconsts.uemviewcallstack
 msgctxt "lazarusidestrconsts.uemviewcallstack"
