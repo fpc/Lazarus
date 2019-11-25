@@ -5,12 +5,13 @@ object ProjectInspectorForm: TProjectInspectorForm
   Width = 299
   ActiveControl = ItemsTreeView
   AllowDropFiles = True
+  BorderIcons = [biSystemMenu]
   Caption = 'ProjectInspectorForm'
   ClientHeight = 456
   ClientWidth = 299
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ItemsTreeView: TTreeView
     Left = 0
     Height = 378
@@ -133,15 +134,15 @@ object ProjectInspectorForm: TProjectInspectorForm
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup
-    left = 72
-    top = 112
+    Left = 72
+    Top = 112
     object MenuItem1: TMenuItem
       Caption = 'New Item1'
     end
   end
   object AddPopupMenu: TPopupMenu
-    left = 74
-    top = 163
+    Left = 74
+    Top = 163
     object mnuAddDiskFile: TMenuItem
       Caption = 'Add file from disk'
       Default = True
