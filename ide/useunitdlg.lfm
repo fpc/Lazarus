@@ -13,11 +13,12 @@ object UseUnitDialog: TUseUnitDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
+    AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 27
-    Top = 389
+    Height = 26
+    Top = 390
     Width = 351
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -34,20 +35,19 @@ object UseUnitDialog: TUseUnitDialog
     ShowBevel = False
   end
   object SectionRadioGroup: TRadioGroup
-    AnchorSideLeft.Control = UnitsListBox
-    AnchorSideTop.Control = UnitsListBox
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = UnitsListBox
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 49
-    Top = 334
+    Height = 51
+    Top = 333
     Width = 351
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
-    BorderSpacing.Top = 3
-    BorderSpacing.Bottom = 3
+    AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'Insert into Uses Section'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -57,7 +57,7 @@ object UseUnitDialog: TUseUnitDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 22
+    ClientHeight = 31
     ClientWidth = 347
     Columns = 2
     ItemIndex = 0
@@ -70,13 +70,14 @@ object UseUnitDialog: TUseUnitDialog
   end
   object UnitsListBox: TListBox
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FilterEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AllUnitsCheckBox
     Left = 6
-    Height = 270
-    Top = 32
+    Height = 267
+    Top = 35
     Width = 351
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
@@ -91,12 +92,11 @@ object UseUnitDialog: TUseUnitDialog
   object AllUnitsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = SectionRadioGroup
-    Left = 12
-    Height = 20
+    Left = 6
+    Height = 19
     Top = 308
-    Width = 115
+    Width = 93
     Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 6
     BorderSpacing.Around = 6
     Caption = 'Show all units'
     OnChange = AllUnitsCheckBoxChange
@@ -105,15 +105,17 @@ object UseUnitDialog: TUseUnitDialog
   object FilterEdit: TListFilterEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 29
+    Height = 23
     Top = 6
     Width = 351
     OnAfterFilter = FilterEditAfterFilter
     ButtonWidth = 23
-    NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
+    NumGlyphs = 1
     MaxLength = 0
     ParentFont = False
     TabOrder = 0
