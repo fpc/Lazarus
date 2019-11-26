@@ -107,6 +107,9 @@ procedure FPVUDebugLn(AStr: string);
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
 {$endif}
 
+procedure AddStringToArray(var A: TStringArray; const B: String);
+procedure AddStringsToArray(var A: TStringArray; const B: TStringArray);
+
 var
   FPVUDebugOutCallback: TFPVUDebugOutCallback; // executes DebugLn
   FPVDebugBuffer: string;
@@ -1191,6 +1194,22 @@ begin
   Result := LCLIntf.CreatePolygonRgn(@Points[0], Length(Points), WindingMode);
 end;
 {$endif}
+
+procedure AddStringToArray(var A: TStringArray; const B: String);
+begin
+  SetLength(A, Length(A) + 1);
+  A[High(A)] := B;
+end;
+
+procedure AddStringsToArray(var A: TStringArray; const B: TStringArray);
+var
+  n, i: Integer;
+begin
+  n := Length(A);
+  SetLength(A, n + Length(B));
+  for i:=0 to High(B) do
+    A[i + n] := B[i];
+end;
 
 end.
 
