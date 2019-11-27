@@ -92,6 +92,7 @@ type
 
   TLPLUpdate = class(TCustomApplication)
   private
+    FExecuteCommands: boolean;
     FLazarusDir: string;
     FLinksDir: string;
     FPkgDir: string;
@@ -123,6 +124,7 @@ type
     property Verbose: Boolean read FVerbose write FVerbose;
     property Quiet: Boolean read FQuiet write FQuiet;
     property WriteCommands: boolean read FWriteCommands write FWriteCommands;
+    property ExecuteCommands: boolean read FExecuteCommands write FExecuteCommands;
   end;
 
 { TLPLUpdate }
@@ -134,7 +136,7 @@ var
   Links: TLinks;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hvqlLpc','help verbose quiet lazarusdir pkgdir linksdir commands');
+  ErrorMsg:=CheckOptions('hvqlLpcx','help verbose quiet lazarusdir pkgdir linksdir commands');
   if ErrorMsg<>'' then begin
     Error(ErrorMsg);
     Terminate;
@@ -173,12 +175,18 @@ begin
     Error('links directory not found: '+LinksDir);
 
   WriteCommands:=HasOption('c','commands');
+  ExecuteCommands:=HasOption('x','execute');
 
   if Verbose then begin
-    writeln('TLPLUpdate.DoRun LazarusDir=',LazarusDir);
-    writeln('TLPLUpdate.DoRun PkgDir=',PkgDir);
-    writeln('TLPLUpdate.DoRun LinksDir=',LinksDir);
+    writeln('Info: LazarusDir=',LazarusDir);
+    writeln('Info: PkgDir=',PkgDir);
+    writeln('Info: LinksDir=',LinksDir);
+    writeln('Info: Show commands: ',WriteCommands);
+    writeln('Info: Execute commands: ',ExecuteCommands);
   end;
+
+  if WriteCommands and ExecuteCommands then
+    Error('Either -c or -x, not both');
 
   Packages:=TPackages.create(true);
   Links:=TLinks.create(true);
@@ -343,17 +351,31 @@ procedure TLPLUpdate.WriteMissingLinks(Packages: TPackages; Links: TLinks);
 var
   i: Integer;
   Pkg: TPackage;
-  LinkFilename: String;
+  LPLFilename, Line: String;
+  sl: TStringList;
 begin
   for i:=0 to Packages.Count-1 do begin
     Pkg:=Packages[i];
     if Links.FindLinkWithName(Pkg.Name)<>nil then continue;
     if not (Quiet and WriteCommands) then
       writeln('Missing link ',Pkg.Name+'-'+Pkg.VersionAsString,' in '+CreateRelativePath(Pkg.Filename,PkgDir));
+    LPLFilename:=CreateRelativePath(LinksDir,LazarusDir)+PathDelim+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
+    Line:='$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll]);
     if WriteCommands then begin
-      LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+PathDelim+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
-      writeln('echo ''$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll])+''' > '+LinkFilename);
-      writeln('svn add '+LinkFilename);
+      writeln('echo '''+Line+''' > '+LPLFilename);
+      writeln('svn add '+LPLFilename);
+    end else if ExecuteCommands then begin
+      if not Quiet then
+        writeln('Info: creating '+LPLFilename);
+      sl:=TStringList.Create;
+      try
+        sl.Add(Line);
+        sl.SaveToFile(LPLFilename);
+      finally
+        sl.Free;
+      end;
+      if WriteCommands then
+        writeln('ToDo: svn add '+LPLFilename);
     end;
   end;
 end;
@@ -365,6 +387,7 @@ var
   Pkg: TPackage;
   Link: TLink;
   LinkFilename: String;
+  sl: TStringList;
 begin
   for i:=0 to Links.Count-1 do begin
     Link:=Links[i];
@@ -377,6 +400,16 @@ begin
         writeln('Wrong filename in link ',ExtractFileNameOnly(Link.LPLFilename),' should be '+LinkFilename);
       if WriteCommands then begin
         writeln('echo ''',LinkFilename+''' > '+Link.LPLFilename);
+      end else if ExecuteCommands then begin
+        if not Quiet then
+          writeln('Info: fixing '+Link.LPLFilename+': '+LinkFilename);
+        sl:=TStringList.Create;
+        try
+          sl.Add(LinkFilename);
+          sl.SaveToFile(Link.LPLFilename);
+        finally
+          sl.Free;
+        end;
       end;
     end;
   end;
@@ -401,6 +434,11 @@ begin
       end;
       if WriteCommands then begin
         writeln('svn rm ',CreateRelativePath(Link.LPLFilename,LazarusDir));
+      end else if ExecuteCommands then begin
+        if not Quiet then
+          writeln('Info: deleting '+Link.LPLFilename);
+        if not DeleteFileUTF8(Link.LPLFilename) then
+          Error('unable to delete file "'+Link.LPLFilename+'"');
       end;
     end;
   end;
@@ -414,6 +452,7 @@ var
   Link: TLink;
   j: Integer;
   Pkg: TPackage;
+  NewLPLFilename, OldLPLFilename: String;
 begin
   for i:=0 to Links.Count-1 do begin
     Link:=Links[i];
@@ -430,8 +469,16 @@ begin
         then begin
           if not (Quiet and WriteCommands) then
             writeln('Version mismatch link ',ExtractFileNameOnly(Link.LPLFilename),' <> ',Pkg.VersionAsString,' in ',CreateRelativePath(Pkg.Filename,PkgDir));
-          if WriteCommands then
-            writeln('svn mv ',CreateRelativePath(Link.LPLFilename,LazarusDir),' ',AppendPathDelim(CreateRelativePath(LinksDir,LazarusDir))+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl');
+          OldLPLFilename:=CreateRelativePath(Link.LPLFilename,LazarusDir);
+          NewLPLFilename:=AppendPathDelim(CreateRelativePath(LinksDir,LazarusDir))+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
+          if WriteCommands then begin
+            writeln('svn mv ',OldLPLFilename,' ',NewLPLFilename);
+          end else if ExecuteCommands then begin
+            if not Quiet then
+              writeln('Info: renaming "'+OldLPLFilename+'" -> "'+NewLPLFilename+'"');
+            if not RenameFileUTF8(OldLPLFilename,NewLPLFilename) then
+              Error('Unable to rename file "'+OldLPLFilename+'" -> "'+NewLPLFilename+'"');
+          end;
         end;
         break;
       end;
@@ -471,6 +518,9 @@ begin
   writeln('-l <directory of lpl files> --linksdir=<dir>');
   writeln('    The directory where to search for lpl files.');
   writeln('    Default is ',GetDefaultLinksDirectory);
+  writeln;
+  writeln('-x, --execute');
+  writeln('    Create, delete, rename, alter lpl files.');
   writeln;
   writeln('-v, --verbose');
   writeln;
