@@ -869,7 +869,7 @@ begin
     Exit;
   end;
   case FDBGInfo.Kind of
-    skClass: InspectClass();
+    skClass, skObject, skInterface: InspectClass();
     skRecord: InspectRecord();
     skVariant: InspectVariant();
     skEnum: InspectEnum;
@@ -882,6 +882,10 @@ begin
     skArray: InspectSimple();
     skPointer: InspectPointer();
   //  skDecomposable: ;
+    else begin
+        Clear;
+        StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+      end;
   end;
 end;
 
