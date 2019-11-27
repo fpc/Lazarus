@@ -22,6 +22,7 @@ type
   TPackageUsageOptionsFrame = class(TAbstractIDEOptionsEditor)
     AddOptionsGroupBox: TGroupBox;
     AddPackageUnitToProjectCheckBox: TCheckBox;
+    CompatibilityModeCheckBox: TCheckBox;
     AddPathsGroupBox: TGroupBox;
     CustomOptionsLabel: TLabel;
     CustomOptionsMemo: TMemo;
@@ -34,6 +35,7 @@ type
     ObjectPathEdit: TEdit;
     ObjectPathLabel: TLabel;
     ProjectGroupBox: TGroupBox;
+    PackageGroupBox: TGroupBox;
     UnitPathEdit: TEdit;
     UnitPathLabel: TLabel;
   private
@@ -187,6 +189,9 @@ begin
 
   ProjectGroupBox.Caption := dlgProject;
   AddPackageUnitToProjectCheckBox.Caption := podAddPackageUnitToUsesSection;
+  PackageGroupBox.Caption := lisPackage;
+  CompatibilityModeCheckBox.Caption := lisLPKCompatibilityModeCheckBox;
+  CompatibilityModeCheckBox.Hint := lisLPKCompatibilityModeCheckBoxHint;
 end;
 
 procedure TPackageUsageOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -202,6 +207,7 @@ begin
     CustomOptionsMemo.Text := CustomOptions;
   end;
   AddPackageUnitToProjectCheckBox.Checked := FLazPackage.AddToProjectUsesSection;
+  CompatibilityModeCheckBox.Checked := FLazPackage.UseLegacyLists;
 end;
 
 procedure TPackageUsageOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -219,6 +225,7 @@ begin
     CustomOptions := CustomOptionsMemo.Text;
   end;
   LazPackage.AddToProjectUsesSection := AddPackageUnitToProjectCheckBox.Checked;
+  FLazPackage.UseLegacyLists := CompatibilityModeCheckBox.Checked;
 end;
 
 class function TPackageUsageOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

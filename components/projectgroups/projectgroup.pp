@@ -845,6 +845,7 @@ var
     DefaultFilename, Paths, BaseDir: String;
   Cnt, i, p: Integer;
   Pkg: TIDEPackage;
+  LegacyList: Boolean;
 begin
   if LPKFiles.Contains(LPKFilename) then exit;
   //debugln(['TIDEProjectGroupManager.AddLPKSrcPaths ',LPKFilename]);
@@ -876,9 +877,10 @@ begin
     BaseDir:=ExtractFilePath(LPKFilename);
     // list of files
     Path:='Files/';
-    Cnt:=xml.GetValue(Path+'Count',0);
-    for i:=1 to Cnt do begin
-      SubPath:=Path+'Item'+IntToStr(i)+'/';
+    LegacyList:=xml.IsLegacyList(Path);
+    Cnt:=xml.GetListItemCount(Path, 'Item', LegacyList);
+    for i:=0 to Cnt-1 do begin
+      SubPath:=Path+xml.GetListItemXPath('Item', i, LegacyList, True)+'/';
       CurFilename:=xml.GetValue(SubPath+'Filename/Value','');
       if CurFilename='' then continue;
       AddSrcPathOfFile(SrcPaths,CurFilename);
@@ -886,9 +888,10 @@ begin
 
     // load list of RequiredPackages from lpk
     Path:='Package/RequiredPkgs/';
-    Cnt:=xml.GetValue(Path+'Count',0);
-    for i:=1 to Cnt do begin
-      SubPath:=Path+'Item'+IntToStr(i)+'/';
+    LegacyList:=xml.IsLegacyList(Path);
+    Cnt:=xml.GetListItemCount(Path, 'Item', LegacyList);
+    for i:=0 to Cnt-1 do begin
+      SubPath:=Path+xml.GetListItemXPath('Item', i, LegacyList, True)+'/';
       PkgName:=xml.GetValue(SubPath+'PackageName/Value','');
       if not IsValidPkgName(PkgName) then continue;
       PreferredFilename:=xml.GetValue(SubPath+'DefaultFilename/Prefer','');

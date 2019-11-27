@@ -1357,6 +1357,8 @@ resourcestring
   lisFilesInASCIIOrUTF8Encoding = 'Files in ASCII or UTF-8 encoding';
   lisFilesNotInASCIINorUTF8Encoding = 'Files not in ASCII nor UTF-8 encoding';
   podAddPackageUnitToUsesSection = 'Add package unit to uses section';
+  lisLPKCompatibilityModeCheckBox = 'Maximize compatibility of package file (LPK)';
+  lisLPKCompatibilityModeCheckBoxHint = 'Check this if you want to open your package in legacy (2.0 and older) Lazarus versions.';
   lisCodeBrowser = 'Code Browser';
 
   // IDE General options

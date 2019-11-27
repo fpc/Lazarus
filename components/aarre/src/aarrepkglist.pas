@@ -381,11 +381,12 @@ end;
 procedure TAarrePkgListItem.LoadLPK(LPKFilename: string);
 var
   xml: TXMLConfig;
-  Path: String;
+  Path, SubPath: String;
   FileVersion: Integer;
   i: Integer;
   NewCount: Integer;
   PkgDependency: TAPkgDependency;
+  LegacyList: Boolean;
 begin
   xml:=TXMLConfig.Create(LPKFilename);
   try
@@ -403,11 +404,13 @@ begin
     License:=FixUTF8(xml.GetValue(Path+'License/Value',''));
     Version.Load(xml,Path+'Version/');
 
-    NewCount:=xml.GetValue(Path+'RequiredPkgs/Count',0);
+    LegacyList:=xml.IsLegacyList(Path+'RequiredPkgs/');
+    NewCount:=xml.GetListItemCount(Path+'RequiredPkgs/', 'Item', LegacyList);
     Dependencies.Clear;
     for i:=0 to NewCount-1 do begin
       PkgDependency:=TAPkgDependency.Create;
-      PkgDependency.Load(xml,Path+'RequiredPkgs/Item'+IntToStr(i+1)+'/');
+      SubPath:=Path+'RequiredPkgs/'+xml.GetListItemXPath('Item', i, LegacyList, True)+'/';
+      PkgDependency.Load(xml,SubPath);
       Dependencies.Add(PkgDependency);
     end;
 

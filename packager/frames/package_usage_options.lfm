@@ -1,9 +1,9 @@
 object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
   Left = 0
-  Height = 415
+  Height = 528
   Top = 0
   Width = 535
-  ClientHeight = 415
+  ClientHeight = 528
   ClientWidth = 535
   TabOrder = 0
   DesignLeft = 762
@@ -241,6 +241,36 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'AddPackageUnitToProjectCheckBox'
+      TabOrder = 0
+    end
+  end
+  object PackageGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ProjectGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 51
+    Top = 382
+    Width = 535
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'PackageGroupBox'
+    ClientHeight = 31
+    ClientWidth = 531
+    TabOrder = 3
+    object CompatibilityModeCheckBox: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 519
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'CompatibilityModeCheckBox'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
   end
