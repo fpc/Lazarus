@@ -630,6 +630,7 @@ begin
   if (CurCnt = 0) then begin
     FCallstack.SetCountValidity(ddsInvalid);
     FCallstack.SetHasAtLeastCountInfo(ddsInvalid);
+    FreeSelf;
     exit;
   end;
 
@@ -671,7 +672,6 @@ begin
   FCallstack := ACallstack;
   FCallstack.AddFreeNotification(@CallStackFreed);
   FRequiredMinCount := ARequiredMinCount;
-  RequestAsync(0);
 end;
 
 destructor TCallstackAsyncRequest.Destroy;
@@ -726,15 +726,17 @@ end;
 
 procedure TFPCallStackSupplier.RequestAtLeastCount(ACallstack: TCallStackBase;
   ARequiredMinCount: Integer);
+var
+  r: TCallstackAsyncRequest;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
   end;
-  FReqList.add(
-    TCallstackAsyncRequest.Create(FpDebugger, ACallstack, ARequiredMinCount)
-  );
+  r := TCallstackAsyncRequest.Create(FpDebugger, ACallstack, ARequiredMinCount);
+  FReqList.add(r);
+  r.RequestAsync(0);
 end;
 
 procedure TFPCallStackSupplier.RequestEntries(ACallstack: TCallStackBase);
