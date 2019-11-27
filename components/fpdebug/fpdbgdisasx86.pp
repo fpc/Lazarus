@@ -3366,7 +3366,7 @@ begin
   S := '';
   while Code < AAddress do
   begin
-    S := S + HexStr(Code[n], 2);
+    S := S + HexStr(Code^, 2);
     inc(Code);
   end;
   ACodeBytes := S;
