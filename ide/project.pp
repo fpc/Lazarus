@@ -3280,7 +3280,7 @@ begin
   RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPI, UseLegacyLists);
   // save dependencies
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-    FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
+    FFirstRequiredDependency,pdlRequires,fCurStorePathDelim,pfCompatibilityMode in FFlags);
   // save units
   SaveUnits(Path,FSaveSessionInLPI);
 

@@ -1733,9 +1733,10 @@ begin
 
         // load list of RequiredPackages from lpi
         Path:='ProjectOptions/RequiredPackages/';
-        Cnt:=xml.GetValue(Path+'Count',0);
-        for i:=1 to Cnt do begin
-          SubPath:=Path+'Item'+IntToStr(i)+'/';
+        LegacyList:=(ALPIFileVersion<=11) or xml.IsLegacyList(Path);
+        Cnt:=xml.GetListItemCount(Path, 'Item', LegacyList);
+        for i:=0 to Cnt-1 do begin
+          SubPath:=Path+xml.GetListItemXPath('Item', i, LegacyList, True)+'/';
           PkgName:=xml.GetValue(SubPath+'PackageName/Value','');
           if PkgName='' then continue;
           FRequiredPackages.Add(TPGDependency.Create(Self,PkgName));

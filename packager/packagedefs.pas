@@ -831,7 +831,7 @@ procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   HoldPackages, SortList: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyList;
-  UsePathDelim: TPathDelimSwitch);
+  UsePathDelim: TPathDelimSwitch;LegacyLists:Boolean);
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
@@ -945,14 +945,17 @@ var
   List: TFPList;
   FileVersion: Integer;
   Last: TPkgDependency;
+  LegacyList: Boolean;
+  SubPath: string;
 begin
   FileVersion:=XMLConfig.GetValue(ThePath+'Version',0);
-  NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
+  LegacyList:=XMLConfig.IsLegacyList(ThePath);
+  NewCount:=XMLConfig.GetListItemCount(ThePath, 'Item', LegacyList);
   List:=TFPList.Create;
   for i:=0 to NewCount-1 do begin
     PkgDependency:=TPkgDependency.Create;
-    PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
-                                    FileVersion);
+    SubPath:=ThePath+XMLConfig.GetListItemXPath('Item', i, LegacyList, True)+'/';
+    PkgDependency.LoadFromXMLConfig(XMLConfig,SubPath,FileVersion);
     PkgDependency.HoldPackage:=HoldPackages;
     // IsMakingSense checks if the package-name is a valid identifier. This is
     // not applicable to FPMake-packages.
@@ -979,19 +982,21 @@ end;
 
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyList;
-  UsePathDelim: TPathDelimSwitch);
+  UsePathDelim: TPathDelimSwitch; LegacyLists: Boolean);
 var
   i: Integer;
   Dependency: TPkgDependency;
+  SubPath: string;
 begin
   i:=0;
   Dependency:=First;
   while Dependency<>nil do begin
-    inc(i);
-    Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/',UsePathDelim);
+    SubPath:=ThePath+XMLConfig.GetListItemXPath('Item', i, LegacyLists, True)+'/';
+    Dependency.SaveToXMLConfig(XMLConfig,SubPath,UsePathDelim);
     Dependency:=Dependency.NextDependency[ListType];
+    inc(i);
   end;
-  XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
+  XMLConfig.SetListItemCount(ThePath, i, LegacyLists);
 end;
 
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
@@ -2963,7 +2968,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18NForLFM/Value', EnableI18NForLFM, false);
 
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pdlRequires,UsePathDelim);
+                        FFirstRequiredDependency,pdlRequires,UsePathDelim,True);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/',UsePathDelim);
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
