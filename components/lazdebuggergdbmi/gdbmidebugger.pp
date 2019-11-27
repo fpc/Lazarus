@@ -6845,18 +6845,18 @@ var
 
     // RtlUnwind, set a breakpoint at next except handler (instead of srPopExceptStack/srCatches)
     if FTheDebugger.FStoppedReason = srRtlUnwind then begin
-      Address := GetPtrValue(TargetInfo^.TargetRegisters[r1], []);
-      if Address <> 0 then
+          Address := GetPtrValue(TargetInfo^.TargetRegisters[r1], []);
+          if Address <> 0 then
         FTheDebugger.FSehRaiseBreaks.AddAddr(Self, Address);
-      FCurrentExecCmd := ectContinue;
-      Result := True;
+          FCurrentExecCmd := ectContinue;
+          Result := True;
 
       // because we can get more exceptions in finally blocks
       // TODO: remove if finally blocks are entered
       if RunMode = rmStepToFinally then
         FTheDebugger.FRtlUnwindExBreak.Disable(Self);
-      exit;
-    end;
+          exit;
+        end;
 
     // F7 or F8 was used in raise exception, stop at next finally or except handler
     //   ecContinue has stopped
@@ -7107,7 +7107,7 @@ var
         inc(i);
 
       if (DisAsm.Count <= i) or (copy(DisAsm.Item[i]^.Statement, 1,4) <> 'call') or
-         (pos('fin$', DisAsm.Item[i]^.Statement) < 0)
+         (pos('fin$', DisAsm.Item[i]^.Statement) <= 0)
       then
         exit;
 
@@ -7162,8 +7162,8 @@ begin
         if (not ContinueStep) and (not (RunMode in [rmStepToFinally])) and
            (FExecType in [ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction, ectStepIntoInstruction])
         then
-          FP := GetCurrentFp;
-          FInitialFP := FP;
+            FP := GetCurrentFp;
+            FInitialFP := FP;
 
         FTheDebugger.FCurrentStackFrameValid := False;
         FTheDebugger.FCurrentThreadIdValid   := False;
@@ -11261,60 +11261,60 @@ begin
     Instr.AddReference;
     Instr.Cmd := Self;
 
-  if (pos('-stack-list-', ACommand) = 1) or
-     (pos('-thread-info', ACommand) = 1)
-  then begin
-    // includes locals
-    Instr.ApplyMemLimit(DebuggerProperties.GdbLocalsValueMemLimit);
-    if FTheDebugger.FGDBVersionMajor >= 7 then
-      Instr.ApplyArrayLenLimit(DebuggerProperties.MaxLocalsLengthForStaticArray);
-  end
-  else
-  if not( (Length(ACommand) < 2) or
-          ( (ACommand[1] = '-') and (
-            ( (ACommand[2] = 'd') and (
-              (pos('-data-list-register-', ACommand) = 1) or
-              (pos('-data-list-changed-registers', ACommand) = 1) or
-              (pos('-data-disassemble', ACommand) = 1) or
-              (pos('-data-read-memory', ACommand) = 1)
+    if (pos('-stack-list-', ACommand) = 1) or
+       (pos('-thread-info', ACommand) = 1)
+    then begin
+      // includes locals
+      Instr.ApplyMemLimit(DebuggerProperties.GdbLocalsValueMemLimit);
+      if FTheDebugger.FGDBVersionMajor >= 7 then
+        Instr.ApplyArrayLenLimit(DebuggerProperties.MaxLocalsLengthForStaticArray);
+    end
+    else
+    if not( (Length(ACommand) < 2) or
+            ( (ACommand[1] = '-') and (
+              ( (ACommand[2] = 'd') and (
+                (pos('-data-list-register-', ACommand) = 1) or
+                (pos('-data-list-changed-registers', ACommand) = 1) or
+                (pos('-data-disassemble', ACommand) = 1) or
+                (pos('-data-read-memory', ACommand) = 1)
+              )) or
+              ( (ACommand[2] = 'g') and (
+                (pos('-gdb-version ', ACommand) = 1) or
+                (pos('-gdb-set ', ACommand) = 1) or
+                (pos('-gdb-exit', ACommand) = 1)
+              )) or
+              ( (not(ACommand[2] in ['d', 'g'])) and (
+                (pos('-exec-', ACommand) = 1) or
+                (pos('-file-exec-', ACommand) = 1) or
+                (pos('-break-', ACommand) = 1)
+              ))
             )) or
-            ( (ACommand[2] = 'g') and (
-              (pos('-gdb-version ', ACommand) = 1) or
-              (pos('-gdb-set ', ACommand) = 1) or
-              (pos('-gdb-exit', ACommand) = 1)
+            ( (ACommand[1] = 'i') and (
+              (pos('info line', ACommand) = 1) or
+              (pos('info address', ACommand) = 1) or
+              (pos('info pid', ACommand) = 1) or
+              (pos('info proc', ACommand) = 1) or
+              (pos('info function', ACommand) = 1) or
+              (pos('interrupt', ACommand) = 1) or
+              (pos('info program', ACommand) = 1)
             )) or
-            ( (not(ACommand[2] in ['d', 'g'])) and (
-              (pos('-exec-', ACommand) = 1) or
-              (pos('-file-exec-', ACommand) = 1) or
-              (pos('-break-', ACommand) = 1)
+            ( (ACommand[1] = 's') and (
+              (pos('set ', ACommand) = 1) or
+              (pos('show ', ACommand) = 1)
+            )) or
+            ( (ACommand[1] = 'm') and (
+              (pos('maint ', ACommand) = 1)
             ))
-          )) or
-          ( (ACommand[1] = 'i') and (
-            (pos('info line', ACommand) = 1) or
-            (pos('info address', ACommand) = 1) or
-            (pos('info pid', ACommand) = 1) or
-            (pos('info proc', ACommand) = 1) or
-            (pos('info function', ACommand) = 1) or
-            (pos('interrupt', ACommand) = 1) or
-            (pos('info program', ACommand) = 1)
-          )) or
-          ( (ACommand[1] = 's') and (
-            (pos('set ', ACommand) = 1) or
-            (pos('show ', ACommand) = 1)
-          )) or
-          ( (ACommand[1] = 'm') and (
-            (pos('maint ', ACommand) = 1)
-          ))
-        )
-  then begin
-    Instr.ApplyMemLimit(DebuggerProperties.GdbValueMemLimit);
-    if FTheDebugger.FGDBVersionMajor >= 7 then
-      Instr.ApplyArrayLenLimit(DebuggerProperties.MaxDisplayLengthForStaticArray);
+          )
+    then begin
+      Instr.ApplyMemLimit(DebuggerProperties.GdbValueMemLimit);
+      if FTheDebugger.FGDBVersionMajor >= 7 then
+        Instr.ApplyArrayLenLimit(DebuggerProperties.MaxDisplayLengthForStaticArray);
 
-  end
-  else
-    TestForceBreak := (not (dfForceBreakDetected in FTheDebugger.DebuggerFlags)) and
-      (pos('-break-insert -f ', ACommand) = 1); // -f MUST be exactly ONE space after insert
+    end
+    else
+      TestForceBreak := (not (dfForceBreakDetected in FTheDebugger.DebuggerFlags)) and
+        (pos('-break-insert -f ', ACommand) = 1); // -f MUST be exactly ONE space after insert
 
     FTheDebugger.FInstructionQueue.RunInstruction(Instr);
 
