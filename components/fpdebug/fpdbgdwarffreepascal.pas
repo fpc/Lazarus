@@ -496,7 +496,8 @@ begin
   end;
 
   if (par_fp <> cur_fp) or (cur_fp = 0) or
-      not MemManager.ReadRegister(RegPc, pc, SearchCtx)
+     (i <= 0) or
+     not MemManager.ReadRegister(RegPc, pc, SearchCtx)
   then begin
     FOuterNotFound := True;
     SearchCtx.ReleaseReference;
