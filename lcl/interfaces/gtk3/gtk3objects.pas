@@ -239,6 +239,8 @@ type
       mask: PGdkPixBuf; maskRect: PRect);
     procedure drawImage(targetRect: PRect; image: PGdkPixBuf; sourceRect: PRect;
       mask: PGdkPixBuf; maskRect: PRect);
+    procedure drawImage1(targetRect: PRect; image: PGdkPixBuf; sourceRect: PRect;
+      mask: PGdkPixBuf; maskRect: PRect);
     procedure drawPixmap(p: PPoint; pm: PGdkPixbuf; sr: PRect);
     procedure drawPolyLine(P: PPoint; NumPts: Integer);
     procedure drawPolygon(P: PPoint; NumPts: Integer; FillRule: integer);
@@ -1468,12 +1470,43 @@ begin
     // ASurface := cairo_image_surface_create_for_data(AData, CAIRO_FORMAT_ARGB32, gdk_pixbuf_get_width(pm), gdk_pixbuf_get_height(pm), gdk_pixbuf_get_rowstride(pm));
     // cairo_set_source_surface(Widget, ASurface, targetRect^.Left, targetRect^.Top);
     gdk_cairo_set_source_pixbuf(Widget, Image, 0, 0);
+    with targetRect^ do
+    cairo_rectangle(Widget, Left, Top, Right-Left, Bottom-Top);
     cairo_paint(Widget);
   finally
     // cairo_surface_destroy(ASurface);
     cairo_restore(Widget);
   end;
 end;
+
+procedure TGtk3DeviceContext.drawImage1(targetRect: PRect; image: PGdkPixBuf;
+  sourceRect: PRect; mask: PGdkPixBuf; maskRect: PRect);
+var
+  M: cairo_matrix_t;
+begin
+  {$IFDEF VerboseGtk3DeviceContext}
+  DebugLn('TGtk3DeviceContext.DrawImage ');
+  {$ENDIF}
+  cairo_save(Widget);
+  try
+    gdk_cairo_set_source_pixbuf(Widget, Image, 0, 0);
+    with targetRect^ do
+      cairo_rectangle(Widget, Left, Top, Right - Left, Bottom - Top);
+
+    cairo_matrix_init_identity(@M);
+    cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);
+    cairo_matrix_scale(@M,  (sourceRect^.Right-sourceRect^.Left) / (targetRect^.Right-targetRect^.Left),
+        (sourceRect^.Bottom-sourceRect^.Top) / (targetRect^.Bottom-targetRect^.Top));
+    cairo_matrix_translate(@M, -targetRect^.Left, -targetRect^.Top);
+    cairo_pattern_set_matrix(cairo_get_source(Widget), @M);
+    //cairo_fill (Widget);
+    cairo_clip(Widget);
+    cairo_paint(Widget);
+  finally
+    cairo_restore(Widget);
+  end;
+end;
+
 
 procedure TGtk3DeviceContext.drawPixmap(p: PPoint; pm: PGdkPixbuf; sr: PRect);
 var

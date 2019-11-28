@@ -4066,7 +4066,6 @@ var
   DestContext: TGtk3DeviceContext absolute DestDC;
   SrcContext: TGtk3DeviceContext absolute SrcDC;
   ATargetRect, ASrcRect: TRect;
-  //AImage: PGdkPixbuf;
 begin
   Result := False;
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
@@ -4074,11 +4073,7 @@ begin
   {$ENDIF}
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
-  // AImage := gdk_pixbuf_new_subpixbuf();
-  // DestContext.drawImage(@ATargetRect, SrcContext.ParentPixmap, @ASrcRect, nil, nil);
-  // Ask for DestContext type of surface (surface/image) and then draw
-  DestContext.drawSurface(@ATargetRect, SrcContext.CairoSurface, @ASrcRect, nil, nil);
-  // DestContext.drawImage();
+  DestContext.drawImage1(@ATargetRect, PgdkPixbuf(SrcContext.CurrentImage.Handle) , @ASrcRect, nil, nil);
   // Result := True;
 end;
 

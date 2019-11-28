@@ -224,10 +224,7 @@ begin
     1: ImageFormat := CAIRO_FORMAT_A1;
     2: ImageFormat := CAIRO_FORMAT_A8;
     else
-      if Desc.AlphaPrec=0 then
-         ImageFormat := CAIRO_FORMAT_RGB24
-      else
-         ImageFormat := CAIRO_FORMAT_ARGB32;
+       ImageFormat := CAIRO_FORMAT_ARGB32;
   end;
   ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
   ABitmap := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, ImageFormat,
