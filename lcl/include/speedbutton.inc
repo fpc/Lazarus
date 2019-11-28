@@ -419,6 +419,8 @@ end;
 
 procedure TCustomSpeedButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
+var
+  ImagesRes: TScaledImageListResolution;
 begin
   inherited ActionChange(Sender,CheckDefaults);
   if Sender is TCustomAction then
@@ -429,7 +431,10 @@ begin
         Self.GroupIndex := GroupIndex;
       if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
          (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-        ActionList.Images.GetBitmap(ImageIndex, Glyph);
+      begin
+        ImagesRes := ActionList.Images.ResolutionForPPI[ImageWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
+        ImagesRes.GetBitmap(ImageIndex, Glyph);
+      end;
     end;
   end;
 end;
