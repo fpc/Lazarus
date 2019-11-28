@@ -25,8 +25,14 @@ type
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.AssignCacheToItemData(const AIndex: Integer;
   const AData: Pointer);
+var
+  SelectItem: Boolean;
 begin
-  if PCustomListBoxItemRecord(AData)^.Selected or (not MultiSelect and (FItemIndex = AIndex)) then
+  if MultiSelect then
+    SelectItem := PCustomListBoxItemRecord(AData)^.Selected
+  else
+    SelectItem := FItemIndex = AIndex;
+  if SelectItem then
   begin
     LockSelectionChange;
     SendItemSelected(AIndex, True);
@@ -88,6 +94,38 @@ procedure TCustomListBox.AssignItemDataToCache(const AIndex: Integer;
   const AData: Pointer);
 begin
   PCustomListBoxItemRecord(AData)^.Selected := Selected[AIndex];
+end;
+
+procedure TCustomListBox.ClearSelectedCache;
+var
+  i: Integer;
+  CacheItems: TExtendedStringList;
+begin
+  if not FCacheValid then
+    raise EInvalidOperation.Create('Cache is not valid.');
+  CacheItems := FItems as TExtendedStringList;
+  for i := 0 to CacheItems.Count - 1 do
+    PCustomListBoxItemRecord(CacheItems.Records[i])^.Selected := False;
+end;
+
+procedure TCustomListBox.SetSelectedCache(Index: Integer; IsSelected: Boolean);
+var
+  CacheItems: TExtendedStringList;
+begin
+  if not FCacheValid then
+    raise EInvalidOperation.Create('Cache is not valid.');
+  CacheItems := FItems as TExtendedStringList;
+  PCustomListBoxItemRecord(CacheItems.Records[Index])^.Selected := IsSelected;
+end;
+
+function TCustomListBox.GetSelectedCache(Index: Integer): Boolean;
+var
+  CacheItems: TExtendedStringList;
+begin
+  if not FCacheValid then
+    raise EInvalidOperation.Create('Cache is not valid.');
+  CacheItems := FItems as TExtendedStringList;
+  Result := PCustomListBoxItemRecord(CacheItems.Records[Index])^.Selected;
 end;
 
 {------------------------------------------------------------------------------
@@ -392,7 +430,7 @@ begin
     if HandleAllocated then
       SendItemSelected(Index, Val)
     else
-      PCustomListBoxItemRecord(GetCachedData(Index))^.Selected := Val;
+      SetSelectedCache(Index, Val);
   end;
 end;
 
@@ -405,7 +443,7 @@ begin
   if HandleAllocated then
     Result := TWSCustomListBoxClass(WidgetSetClass).GetSelected(Self, Index)
   else
-    Result := PCustomListBoxItemRecord(GetCachedData(Index))^.Selected;
+    Result := GetSelectedCache(Index);
 end;
 
 {------------------------------------------------------------------------------}
@@ -610,8 +648,17 @@ begin
     RaiseIndexOutOfBounds(AIndex);
   if AIndex < 0 then AIndex := -1;
   FItemIndex := AIndex;
-  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
-    SendItemIndex;
+  if HandleAllocated then
+  begin
+    if ([csLoading,csDestroying]*ComponentState=[]) then
+      SendItemIndex;
+  end
+  else
+  begin
+    ClearSelectedCache;
+    if FItemIndex >= 0 then
+      SetSelectedCache(FItemIndex, True);
+  end;
   DoSelectionChange(false);
 end;
 
