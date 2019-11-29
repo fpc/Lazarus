@@ -522,6 +522,11 @@ var
   m: TMenuItem;
   i: Integer;
 begin
+  {$IFDEF linux}
+  // Workaround for issue https://bugs.freepascal.org/view.php?id=36305 https://bugs.freepascal.org/view.php?id=36306
+  tbDropMenu := TPopupMenu.Create(Self);
+  tbSelect.DropdownMenu := tbDropMenu;
+  {$ENDIF}
   tbDropMenu.Items.Clear;
   for i := 0 to FCopiedDbgPropertiesConfigList.Count - 1 do
     if (not FCopiedDbgPropertiesConfigList.Opt[i].IsDeleted) and
