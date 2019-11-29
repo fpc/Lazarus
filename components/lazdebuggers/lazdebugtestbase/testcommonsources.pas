@@ -83,7 +83,7 @@ begin
   if (i < 0) or (FBreakPoints.Objects[i] = nil) then
     raise Exception.Create('Break unknown '+AName);
   Result := Integer(PtrInt(FBreakPoints.Objects[i]));
-TestLogger.DebugLn(['Break: ',AName, '  ',Result]);
+//TestLogger.DebugLn(['Break: ',AName, '  ',Result]);
 end;
 
 function TCommonSource.GetOtherSrc(AName: String): TCommonSource;

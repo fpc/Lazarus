@@ -308,6 +308,7 @@ end;
 function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
   Result := GdbClass.Create(DebuggerInfo.ExeName);
+  Debugger.LazDebugger := Result;
   Result.OnDbgOutput  := @InternalDbgOutPut;
   Result.OnFeedback := @InternalFeedBack;
   Result.OnDbgEvent:=@InternalDbgEvent;
@@ -432,6 +433,7 @@ initialization
   DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER', True  )^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('DBGMI_TYPE_INFO', True  )^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('DBGMI_TIMEOUT_DEBUG', True  )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBG_THREAD_AND_FRAME', True  )^.Enabled := True;
 
   DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS', True);
   DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH', True)^.Enabled := True;

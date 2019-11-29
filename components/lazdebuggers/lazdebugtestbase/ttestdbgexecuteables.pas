@@ -119,7 +119,7 @@ type
 
     procedure CleanAfterTestDone; virtual;
 
-    property LazDebugger: TDebuggerIntf read FLazDebugger;
+    property LazDebugger: TDebuggerIntf read FLazDebugger write FLazDebugger;
 
     property CallStack: TTestCallStackMonitor read FCallStack;
     property Disassembler: TBaseDisassembler read FDisassembler;

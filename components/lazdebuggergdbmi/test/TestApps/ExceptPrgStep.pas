@@ -17,7 +17,7 @@ begin
     foo;
     foo;
   except
-    Freemem(GetMem(1));
+    Freemem(GetMem(1));  // TEST_BREAKPOINT=BREAK_LINE_EXCEPT_1
   end;
   Freemem(GetMem(2));
 
@@ -28,11 +28,11 @@ begin
       foo;
       foo;
     except
-      Freemem(GetMem(1));
+      Freemem(GetMem(1));  // TEST_BREAKPOINT=BREAK_LINE_EXCEPT_2
     end;
   Freemem(GetMem(2));
   except
-    Freemem(GetMem(1));
+    Freemem(GetMem(1));  // TEST_BREAKPOINT=BREAK_LINE_EXCEPT_3
   end;
 
   try
@@ -47,11 +47,11 @@ begin
   raise Exception.create('xxx');
   Freemem(GetMem(2));
   except
-    Freemem(GetMem(1));
+    Freemem(GetMem(1));  // TEST_BREAKPOINT=BREAK_LINE_EXCEPT_4
   end;
 
   Freemem(GetMem(2));
-  Freemem(GetMem(2));
+  Freemem(GetMem(2));  // TEST_BREAKPOINT=BREAK_LINE_EXCEPT_END
   Freemem(GetMem(2));
 
 end.
