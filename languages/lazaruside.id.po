@@ -12828,6 +12828,14 @@ msgstr ""
 msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
 msgstr ""
 
+#: lazarusidestrconsts.lislpkcompatibilitymodecheckbox
+msgid "Maximize compatibility of package file (LPK)"
+msgstr ""
+
+#: lazarusidestrconsts.lislpkcompatibilitymodecheckboxhint
+msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
+msgstr ""
+
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
 msgid "lpk has vanished on disk. Using as alternative%s"
