@@ -5662,8 +5662,6 @@ begin
     then
       Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
 
-    FTheDebugger.FRtlUnwindExBreak.EnableOrSetByAddr(Self);
-
     SetDebuggerState(dsInit); // triggers all breakpoints to be set.
     FTheDebugger.RunQueue;  // run all the breakpoints
     Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
@@ -5920,8 +5918,6 @@ begin
   then FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
   if ieRunErrorBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints
   then FTheDebugger.FRunErrorBreak.SetByAddr(Self);
-
-  FTheDebugger.FRtlUnwindExBreak.EnableOrSetByAddr(Self);
 
   if not(DebuggerState in [dsPause]) then
     SetDebuggerState(dsPause);
@@ -6908,11 +6904,13 @@ const
   end;
   procedure EnableFpcSpecificHandler; inline;
   begin
-    if TargetInfo^.TargetOS = osWindows then begin
-      if TargetInfo^.TargetPtrSize = 8 then begin // 64 bit SEH only
+    if (TargetInfo^.TargetOS = osWindows) and (TargetInfo^.TargetPtrSize = 8) then // 64 bit SEH only
       FTheDebugger.FFpcSpecificHandler.EnableOrSetByAddr(Self);
   end;
-    end;
+  procedure EnableRtlUnwind; inline;
+  begin
+    if (TargetInfo^.TargetOS = osWindows) and (TargetInfo^.TargetPtrSize = 8) then // 64 bit SEH only
+      FTheDebugger.FRtlUnwindExBreak.EnableOrSetByAddr(Self);
   end;
   procedure DisablePopCatches; inline;
   begin
@@ -7062,6 +7060,7 @@ var
              (FTheDebugger.FSehCatchesBreaks.IndexOfAddrWithFrame(Address, FrameAddr) < 0)
           then
             FTheDebugger.FSehCatchesBreaks.AddAddr(Self, Address, FrameAddr);
+          FTheDebugger.FRtlUnwindExBreak.Disable(Self);
           FCurrentExecCmd := ectContinue;
           Result := True;
           exit;
@@ -7119,6 +7118,7 @@ var
         then begin
           EnablePopCatches;
           EnableFpcSpecificHandler;
+          EnableRtlUnwind;
           // Continue below => set a breakpoint at the end of the intended stepping range
         end;
       // Check the stackframe, if the "current" function has been exited
@@ -7317,7 +7317,7 @@ var
   begin
     if (not (FExecType in [ectStepOver, ectStepInto, ectStepOut])) or
        (TargetInfo^.TargetOS <> osWindows) or
-       (not FTheDebugger.FRtlUnwindExBreak.Enabled)
+       (TargetInfo^.TargetPtrSize <> 8)
     then
       exit;
     if (not ExecuteCommand('-data-disassemble -s $pc -e $pc+12 -- 0', [], R)) or
@@ -7383,6 +7383,7 @@ begin
     FCurrentExecCmd := ectContinue;
     EnablePopCatches;
     EnableFpcSpecificHandler;
+    EnableRtlUnwind;
   end
   else
     CheckWin64StepOverFinally; // Finally is in a subroutine, and may need step into
