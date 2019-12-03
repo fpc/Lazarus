@@ -824,7 +824,7 @@ begin
     exit;
   end;
 
-  FCommandToBeFreed.Free;
+  FreeAndNil(FCommandToBeFreed);
   if FCommand <> nil then
     FCommand.DoBeforeLoopStart;
 
@@ -1069,7 +1069,8 @@ begin
       OnHitBreakpointEvent(continue, nil);
   end;
 
-  if not &continue then begin
+  if (not &continue) and (FCommand <> nil) then begin
+    assert(FCommandToBeFreed=nil, 'TDbgController.SendEvents: FCommandToBeFreed=nil');
     FCommandToBeFreed := FCommand;
     FCommand := nil;
   end;
