@@ -7028,7 +7028,7 @@ msgstr "Visibilidade"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
-msgstr ""
+msgstr "Caixas de Combinação"
 
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
@@ -9019,7 +9019,7 @@ msgstr "Desenhar a seleção focada, mesmo se a janela Mensagens não estiver em
 
 #: lazarusidestrconsts.lisdropdowncount
 msgid "Drop Down Count"
-msgstr ""
+msgstr "Contagem Lista Suspensa"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -12463,11 +12463,11 @@ msgstr "Verifique se você deseja abrir projetos em versões legadas do Lazarus 
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckbox
 msgid "Maximize compatibility of package file (LPK)"
-msgstr ""
+msgstr "Maximizar compatibilidade de arquivo de pacote (LPK)"
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckboxhint
 msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Marcar isto se você deseja abrir seu pacote em versões legadas do Lazarus (2.0 e mais antigas)."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
