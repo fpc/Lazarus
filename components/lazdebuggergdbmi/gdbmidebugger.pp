@@ -7066,7 +7066,7 @@ var
           exit;
         end;
       // SEH
-      srSehCatches, srSehFinally: begin
+      srSehFinally: begin
           DoEndStepping;
           exit;
         end;
@@ -12973,6 +12973,7 @@ begin
     FList.List^[i].FCount := FList.List^[i].FCount + 1;
     if ABasePtr <> 0 then
       FList.List^[i].AddBasePointer(ABasePtr);
+    exit;
   end;
 
   E.FCount := 1;
