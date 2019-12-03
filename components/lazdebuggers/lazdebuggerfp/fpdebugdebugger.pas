@@ -1859,8 +1859,11 @@ begin
 
   if &continue then begin
     // wait for any watches for Snapshots
-    while FWatchAsyncQueued do
+    while FWatchAsyncQueued do begin
+      if TFPCallStackSupplier(CallStack).FReqList.Count > 0 then
+        Application.Idle(False);
       ProcessASyncWatches(0);
+    end;
   end;
 end;
 
