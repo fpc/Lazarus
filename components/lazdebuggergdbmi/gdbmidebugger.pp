@@ -750,6 +750,7 @@ type
     FMainAddrFound: TDBGPtr;       // The address found for this named location
     FSetByAddrMethod: TInternBrkSetMethod;
     FUseForceFlag: Boolean;
+    FNoSymErr: Boolean;
     function  BreakSet(ACmd: TGDBMIDebuggerCommand; ABreakLoc: String;
                        ALoc: TInternalBreakLocation;
                        AClearIfSet: TClearOpt): Boolean;
@@ -6900,6 +6901,10 @@ const
   procedure EnablePopCatches; inline;
   begin
     FTheDebugger.FPopExceptStack.EnableOrSetByAddr(Self, True);
+    if (TargetInfo^.TargetOS = osWindows) and (TargetInfo^.TargetPtrSize = 8) and
+       (not FTheDebugger.FPopExceptStack.Enabled)
+    then
+      exit; // break not avail under Win 64bit
     FTheDebugger.FCatchesBreak.EnableOrSetByAddr(Self, True);
   end;
   procedure EnableFpcSpecificHandler; inline;
@@ -12578,6 +12583,7 @@ var
   ResultList: TGDBMINameValueList;
 begin
   Result := True; // true, if already set (dsError does not matter)
+  FNoSymErr := False;
   if ACmd.DebuggerState = dsError then exit;
 
   if AClearIfSet = coClearIfSet then
@@ -12598,6 +12604,11 @@ begin
   else
     ACmd.ExecuteCommand('-break-insert %s', [ABreakLoc], R);
   Result := R.State <> dsError;
+  if (not Result) and (ALoc in [iblAsterix, iblNamed]) then begin
+    if ALoc = iblAsterix then
+      Delete(ABreakLoc, 1,1); // *name
+    FNoSymErr := pos('no symbol \"'+LowerCase(ABreakLoc)+'\" ', LowerCase(R.Values)) > 0;
+  end;
   if not Result then exit;
   FEnabled := True; // TODO: What if some bp are disabled?
 
@@ -12729,7 +12740,7 @@ begin
   end;
   if (FSetByAddrMethod = ibmAddrDirect) then begin
     BreakSet(ACmd, '*'+FName, iblAsterix, coKeepIfSet);
-    if IsBreakSet then
+    if IsBreakSet or FNoSymErr then
       exit;
   end;
 
