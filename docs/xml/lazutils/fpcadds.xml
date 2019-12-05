@@ -1,92 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lazutils">
+    <!--
+      ====================================================================
+        FPCAdds
+      ====================================================================
+    -->
+    <module name="FPCAdds">
+      <short>
+        Contains additional types and routines not currently available in FPC
+      </short>
+      <descr>
+        <file>fpcadds.pas</file> contains code in its initialization section to set the code page for conversions and the <var>RTL</var> file system to <var>CP_UTF8</var>. The initialization code is included only for platforms or OS-es where the <var>RTL</var> (<b>Run-Time Library</b>) is UTF-8-enabled.
+      </descr>
 
-<!--
-  ====================================================================
-    FPCAdds
-  ====================================================================
--->
+      <!-- unresolved type references Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
 
-<module name="FPCAdds">
-<short/>
-<descr>
-</descr>
+      <element name="TStreamSeekType">
+        <short>Alias to the Int64 type used as the origin for TStream seek operations</short>
+        <descr>
+          <p>
+            Used in the implementation of classes including:
+          </p>
+          <ul>
+            <li>TBitmap</li>
+            <li>TIcon</li>
+            <li>TSharedCursorImage</li>
+            <li>TImageList</li>
+            <li>TClipboard</li>
+          </ul>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TMemStreamSeekType">
+        <short>Alias to the PtrInt type used as the origin for TMemoryStream seek operations</short>
+        <descr>
+          Used in the implementation of <var>TSynCustomExporter</var>.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TCompareMemSize">
+        <short>Alias to the PtrUInt type used when comparing memory blocks</short>
+        <descr>
+          Used in the implementation of <var>TSynCustomExporter</var> and <var>TGraphic</var>.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- alias type Visibility: default -->
-<element name="TStreamSeekType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="PHandle">
+        <short>Type used for a pointer to a THandle type</short>
+        <descr>
+          Also defined in <file>lcltype.pp</file>.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- alias type Visibility: default -->
-<element name="TMemStreamSeekType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="StrToWord">
+        <short>Converts the value in a String to a Word data type</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="StrToWord.Result">
+        <short>Word value calculated for the specified String</short>
+      </element>
+      <element name="StrToWord.s">
+        <short>String value examined in the method</short>
+      </element>
 
-<!-- alias type Visibility: default -->
-<element name="TCompareMemSize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="AlignToPtr">
+        <short>
+          Aligns the specified pointer to the boundaries required for the FPC compiler
+        </short>
+        <descr>
+          <p>
+            <var>AlignToPtr</var> is a <var>Pointer</var> function used to adjust the pointer specified in <var>p</var> to the boundaries required for the FPC compiler. AlignToPtr is influenced by the <b>FPC_REQUIRES_PROPER_ALIGNMENT</b> compiler define; when it is defined, the Align routine is called to adjust the pointer to the size required for Pointer data types. When it is not defined, the pointer in <var>p</var> does not require alignment, and is used as the return value.
+          </p>
+        </descr>
+        <seealso>
+          <link id=AlignToInt""/>
+        </seealso>
+      </element>
+      <element name="AlignToPtr.p">
+        <short>Pointer affected in the routine</short>
+      </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PHandle">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="AlignToInt">
+        <short>
+          Aligns the specified pointer to the size of an Integer data type
+        </short>
+        <descr>
+          <p>
+            <var>AlignToInt</var> is a <var>Pointer</var> function used to adjust the pointer in <var>p</var> to the size needed for an <var>Integer</var> data type. <var>AlignToInt</var> is influenced by the <b>FPC_REQUIRES_PROPER_ALIGNMENT</b> compiler define; when it is defined, the <var>Align</var> routine is called to adjust the pointer size to the boundaries required for an <var>Integer</var> data type. When it is not defined, the pointer in <var>p</var> is used as the return value.
+          </p>
+        </descr>
+        <notes>
+          <note>Not currently used in any other units.</note>
+        </notes>
+        <seealso>
+          <link id="AlignToPtr"/>
+        </seealso>
+      </element>
+      <element name="AlignToInt.p">
+        <short></short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="StrToWord">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="StrToWord.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="StrToWord.s">
-<short/>
-</element>
-</module> <!-- FPCAdds -->
-</package>
+    </module>
+    <!-- FPCAdds -->
+  </package>
 </fpdoc-descriptions>
