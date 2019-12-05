@@ -402,6 +402,10 @@ msgstr "&Значення"
 msgid "Quote string values"
 msgstr "Брати в лапки рядкові значення"
 
+#: tmainform.misaveformatted.caption
+msgid "Save Formatted JSON"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Сортувати елементи об'єкта"

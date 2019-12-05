@@ -393,6 +393,10 @@ msgstr "&Arvot"
 msgid "Quote string values"
 msgstr "Merkkijonot lainausmerkkeihin"
 
+#: tmainform.misaveformatted.caption
+msgid "Save Formatted JSON"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Lajittele oliojäsenet"

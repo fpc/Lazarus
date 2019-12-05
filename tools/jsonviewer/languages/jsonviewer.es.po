@@ -402,6 +402,10 @@ msgstr "&Valores"
 msgid "Quote string values"
 msgstr ""
 
+#: tmainform.misaveformatted.caption
+msgid "Save Formatted JSON"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Ordenar objetos miembros"

@@ -404,6 +404,10 @@ msgstr "值(&V)"
 msgid "Quote string values"
 msgstr "引用字符串值"
 
+#: tmainform.misaveformatted.caption
+msgid "Save Formatted JSON"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "排序对象成员"

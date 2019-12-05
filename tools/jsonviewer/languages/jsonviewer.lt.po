@@ -406,6 +406,10 @@ msgstr "Vertė&s"
 msgid "Quote string values"
 msgstr "Teksto vertes apgaubti kabutėmis"
 
+#: tmainform.misaveformatted.caption
+msgid "Save Formatted JSON"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Rikiuoti objekto narius"

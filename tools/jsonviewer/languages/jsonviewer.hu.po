@@ -400,6 +400,10 @@ msgstr "Érté&kek"
 msgid "Quote string values"
 msgstr "Szövegértékek idézőjelben"
 
+#: tmainform.misaveformatted.caption
+msgid "Save Formatted JSON"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Objektum-tagok rendezése"

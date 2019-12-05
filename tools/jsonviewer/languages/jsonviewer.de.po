@@ -403,6 +403,10 @@ msgstr "Werte"
 msgid "Quote string values"
 msgstr "Stringwerte in Anführungszeichen"
 
+#: tmainform.misaveformatted.caption
+msgid "Save Formatted JSON"
+msgstr "Fomatiertes JSON speichern"
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Objektfelder sortieren "
