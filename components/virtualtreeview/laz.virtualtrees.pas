@@ -6122,6 +6122,8 @@ begin
               DoPaintText(Node, Self.Canvas, Column, ttNormal);
           //force the default hint font color
           Canvas.Font.Color := Screen.HintFont.Color;
+          if Canvas.Font.Color = clDefault then
+            Canvas.Font.Color := clInfoText;
         end;
 
         //let THintWindow do the job
@@ -8315,7 +8317,7 @@ begin
     else
       TextColor := FHeader.Treeview.FColors.HeaderFontColor;
     if TextColor = clDefault then
-      TextColor := clBtnText;
+      TextColor := FHeader.Treeview.GetDefaultColor(dctFont);
     SetTextColor(DC, ColorToRGB(TextColor));
     DrawText(DC, PChar(Caption), Length(Caption), Bounds, DrawFormat);
   end;
@@ -9617,6 +9619,9 @@ begin
     // Use shortcuts for the images and the font.
     Images := FHeader.FImages;
     Font := FHeader.FFont;
+    if Font.Color = clDefault then
+      Font.Color := FHeader.Treeview.GetDefaultColor(dctFont);
+
     {$IF LCL_FullVersion >= 2000000}
     if Images <> nil then
       ImagesRes := Images.ResolutionForPPI[FHeader.ImagesWidth, Font.PixelsPerInch, Header.TreeView.GetCanvasScaleFactor];
@@ -33622,7 +33627,7 @@ begin
       end;
     end;
     if Canvas.Font.Color = clDefault then
-      Canvas.Font.Color := clWindowText;
+      Canvas.Font.Color := GetDefaultColor(dctFont);
   end;
 end;
 
@@ -33736,6 +33741,8 @@ begin
   with PaintInfo do
   begin
     Canvas.Font := Font;
+    if Font.Color = clDefault then
+      Canvas.Font.Color := GetDefaultColor(dctFont);
     if toFullRowSelect in FOptions.FSelectionOptions then
     begin
       if Node = FDropTargetNode then
@@ -33749,10 +33756,12 @@ begin
         if vsSelected in Node.States then
         begin
           if Focused or (toPopupMode in FOptions.FPaintOptions) then
-          Canvas.Font.Color := FColors.SelectionTextColor
+            Canvas.Font.Color := FColors.SelectionTextColor
           else
             Canvas.Font.Color := FColors.NodeFontColor;
         end;
+      if Canvas.Font.Color = clDefault then
+        Canvas.Font.Color := GetDefaultColor(dctFont);
     end;
 
     DrawFormat := DT_NOPREFIX or DT_VCENTER or DT_SINGLELINE;

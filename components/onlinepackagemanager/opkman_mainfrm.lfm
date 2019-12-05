@@ -38,7 +38,6 @@ object MainFrm: TMainFrm
       BevelOuter = bvNone
       Caption = 'No items to show'
       Font.CharSet = ANSI_CHARSET
-      Font.Color = clBlack
       Font.Height = -16
       Font.Name = 'Verdana'
       Font.Pitch = fpVariable
@@ -258,6 +257,7 @@ object MainFrm: TMainFrm
       Color = clBtnFace
       ParentColor = False
       TabOrder = 3
+      Visible = False
       OnResize = pnReturnResize
       object bReturn: TButton
         Left = 384

@@ -1618,6 +1618,8 @@ procedure TVisualTree.VSTPaintText(Sender: TBaseVirtualTree;
  function GetTextColor(const ADefColor: TColor; AIsFocusedNode: Boolean): TColor;
  begin
    Result := ADefColor;
+   if Result = clDefault then
+     Result := Sender.GetDefaultColor(dctFont);
    if AIsFocusedNode then
    {$IFDEF WINDOWS}
      Result := clWhite;
