@@ -686,8 +686,6 @@ begin
   Result.DocNo:=DC;
   Result.FileName:='';
   Result.ImageIndex:=16;
-  If FOptions.FNewObject then
-    Result.Root:=TJSONObject.Create;
 end;
 
 procedure TMainForm.SetCaption;
@@ -706,8 +704,11 @@ begin
 end;
 
 procedure TMainForm.ANewExecute(Sender: TObject);
+var Tab:TJSONTab;
 begin
-  NewDocument;
+  Tab:=NewDocument;
+  If FOptions.FNewObject then
+    Tab.Root:=TJSONObject.Create;
 end;
 
 function TMainForm.NewDocument: TJSONTab;
