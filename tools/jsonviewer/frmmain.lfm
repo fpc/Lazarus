@@ -51,8 +51,8 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  SessionProperties = 'Height;Left;MIdocument.Checked;MIStrict.Checked;Top;Width;MICompact.Checked'
-  LCLVersion = '1.9.0.0'
+  SessionProperties = 'Height;Left;MICompact.Checked;MIdocument.Checked;MIStrict.Checked;Top;Width;MISaveFormatted.Checked'
+  LCLVersion = '2.1.0.0'
   object TBJSON: TToolBar
     Left = 0
     Height = 26
@@ -463,6 +463,11 @@ object MainForm: TMainForm
         AutoCheck = True
         Caption = 'Quote string values'
         OnClick = MIQuoteStringsClick
+      end
+      object MISaveFormatted: TMenuItem
+        AutoCheck = True
+        Caption = 'Save Formatted JSON'
+        OnClick = MISaveFormattedClick
       end
     end
     object MFavourites: TMenuItem
@@ -1178,6 +1183,11 @@ object MainForm: TMainForm
       item
         Name = 'RestPanelHeight'
         OnRestore = PSMainStoredValues7Restore
+      end    
+      item
+        Name = 'SaveFormatted'
+        Value = '0'
+        OnRestore = PSMainStoredValues8Restore
       end>
     Active = False
     left = 384
@@ -1223,5 +1233,10 @@ object MainForm: TMainForm
     object MenuItem14: TMenuItem
       Action = AExpandCurrentContainer
     end
+  end
+  object SynJScriptSyn1: TSynJScriptSyn
+    Enabled = False
+    left = 373
+    top = 220
   end
 end

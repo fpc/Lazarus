@@ -131,7 +131,7 @@ msgstr ""
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Pascal Code erstellen"
 
 #: tcreatecodeform.cgoptions.caption
 msgid "Other options"
@@ -214,7 +214,7 @@ msgstr ""
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Pascal Code erstellen"
 
 #: tmainform.acut.caption
 msgid "C&ut"
