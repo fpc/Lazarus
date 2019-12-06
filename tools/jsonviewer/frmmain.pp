@@ -591,6 +591,8 @@ begin
   else
     // value node. Allow change for simple not null values
     AllowEdit:=Not (CurrentNodeType in [jtNull,jtArray,jtObject]);
+  // compact mode is for viewing only. Editing does not work.
+  if FOptions.FCompact then AllowEdit:=false;
 end;
 
 function TMainForm.GetCurrentFind: TTreeNode;
@@ -1674,24 +1676,31 @@ procedure TJSONTab.JSONFromPreview;
 var P : TJSONParser;
 D : TJSONData;
 begin
-  try
-    {$IF FPC_FULLVERSION>=30002}
-     P:=TJSONParser.Create(FSyn.Text,[]);
-     P.Options:=P.Options+[joStrict, joComments];
-    {$ELSE}
-     P:=TJSONParser.Create(FSyn.Text);
-    {$ENDIF}
-    D:=P.Parse;
-    Root:=D;
-    Modified:=true;
-  finally
-    P.Free;
+  if FSyn.Modified then
+  begin
+   try
+     {$IF FPC_FULLVERSION>=30002}
+      P:=TJSONParser.Create(FSyn.Text,[]);
+      P.Options:=P.Options+[joStrict, joComments];
+     {$ELSE}
+      P:=TJSONParser.Create(FSyn.Text);
+     {$ENDIF}
+      D:=P.Parse;
+      Root:=D;
+      Modified:=true;
+   finally
+     P.Free;
+   end;
   end;
 end;
 
 procedure TJSONTab.ShowJSONDocumentText;
 begin
-  IF Assigned(Root) then FSyn.Text:=Root.FormatJSON();
+  IF Assigned(Root) then
+  begin
+   FSyn.Text:=Root.FormatJSON();
+   FSyn.Modified:=false;
+  end;
 end;
 
 procedure TJSONTab.ShowJSONData(AParent : TTreeNode; Data : TJSONData);
