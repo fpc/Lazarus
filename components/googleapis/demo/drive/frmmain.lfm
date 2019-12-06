@@ -8,7 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 756
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.5'
+  LCLVersion = '2.1.0.0'
   object BRefreshFolders: TButton
     Left = 72
     Height = 25
@@ -25,20 +25,20 @@ object MainForm: TMainForm
     Width = 756
     Align = alBottom
     Caption = 'Please provide Google API access code'
-    ClientHeight = 45
-    ClientWidth = 752
+    ClientHeight = 55
+    ClientWidth = 754
     TabOrder = 1
     Visible = False
     object LEAccess: TLabel
       Left = 16
-      Height = 12
+      Height = 17
       Top = 8
-      Width = 56
+      Width = 69
       Caption = 'Access code'
       ParentColor = False
     end
     object BSetAccess: TButton
-      Left = 582
+      Left = 584
       Height = 25
       Top = 1
       Width = 75
@@ -48,7 +48,7 @@ object MainForm: TMainForm
       TabOrder = 0
     end
     object BCancel: TButton
-      Left = 662
+      Left = 664
       Height = 25
       Top = 0
       Width = 75
@@ -59,7 +59,7 @@ object MainForm: TMainForm
     end
     object EAccessCode: TEdit
       Left = 112
-      Height = 18
+      Height = 29
       Top = 8
       Width = 400
       TabOrder = 2
@@ -78,7 +78,7 @@ object MainForm: TMainForm
   end
   object LTasks: TLabel
     Left = 392
-    Height = 12
+    Height = 17
     Top = 16
     Width = 215
     Anchors = [akTop, akLeft, akRight]
@@ -87,9 +87,9 @@ object MainForm: TMainForm
   end
   object Label1: TLabel
     Left = 22
-    Height = 12
+    Height = 17
     Top = 16
-    Width = 34
+    Width = 41
     Caption = 'Folders'
     ParentColor = False
   end
@@ -99,7 +99,6 @@ object MainForm: TMainForm
     Top = 35
     Width = 344
     Anchors = [akTop, akLeft, akBottom]
-    DefaultItemHeight = 14
     ReadOnly = True
     TabOrder = 3
     OnSelectionChanged = TVFoldersSelectionChanged
