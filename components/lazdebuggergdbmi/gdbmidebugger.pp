@@ -7033,6 +7033,12 @@ var
 
     // Did we just leave an SEH finally block?
     if (FStepStartedInFinSub = sfsStepExited) and (FTheDebugger.FStoppedReason = srNone) then begin
+      if (UpperCase(FTheDebugger.FCurrentLocation.FuncName) <> '__FPC_SPECIFIC_HANDLER') and
+         (FTheDebugger.FCurrentLocation.SrcFile <> '')
+      then begin
+        DoEndStepping;
+        exit;
+      end;
       // run to next finally
       if ExecuteCommand('-data-read-memory $pc-2 x 1 1 2', [], R, [cfNoThreadContext, cfNoStackContext, cfNoMemLimits]) and
          (r.State <> dsError)
@@ -7045,14 +7051,18 @@ var
         then begin
           FTheDebugger.FFpcSpecificHandlerCallFin.Clear(Self);
           FTheDebugger.FFpcSpecificHandlerCallFin.SetAtCustomAddr(Self, MemDump.Addr);
-        end;
+          FStepStartedInFinSub := sfsNone;
+          FCurrentExecCmd := ectContinue;
+          EnableFpcSpecificHandler;
+          Result := True;
+        end
+        else
+          DoEndStepping;
         MemDump.Free;
+      end
+      else begin
+        DoEndStepping;
       end;
-
-      FStepStartedInFinSub := sfsNone;
-      FCurrentExecCmd := ectContinue;
-      EnableFpcSpecificHandler;
-      Result := True;
       exit;
     end;
 
@@ -7393,7 +7403,7 @@ begin
   else
     CheckWin64StepOverFinally; // Finally is in a subroutine, and may need step into
 
-  if (FExecType in [ectRunTo, ectStepOver{, ectStepInto}, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) and
+  if (FExecType in [ectRunTo, ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) and
      (ieRaiseBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints)
   then
     FTheDebugger.FReRaiseBreak.EnableOrSetByAddr(Self, True)
