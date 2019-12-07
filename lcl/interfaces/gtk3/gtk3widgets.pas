@@ -7138,10 +7138,7 @@ begin
   end
   else
   if FileDialog is TSelectDirectoryDialog then
-  begin
     Action := GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
-    Button1 := GTK_STOCK_OPEN;
-  end;
 
   FWidget := gtk_file_chooser_dialog_new(PgChar(FileDialog.Title), nil,
     Action, PChar(GTK_STOCK_CANCEL),

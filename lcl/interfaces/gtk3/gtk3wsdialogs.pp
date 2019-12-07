@@ -59,9 +59,12 @@ type
 
   TGtk3WSOpenDialog = class(TWSOpenDialog)
   protected
-    class function CreateOpenDialogFilter(OpenDialog: TOpenDialog; SelWidget: PGtkWidget): string; virtual;
-    class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog; SelWidget: PGtkWidget); virtual;
-    class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); virtual;
+    class function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+      Chooser: PGtkFileChooser): string; virtual;
+    class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
+      SelWidget: PGtkWidget); virtual;
+    class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
+      Chooser: PGtkFileChooser); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
@@ -1082,8 +1085,7 @@ end;
 { TGtk3WSOpenDialog }
 
 class function TGtk3WSOpenDialog.CreateOpenDialogFilter(
-  OpenDialog: TOpenDialog; SelWidget: PGtkWidget): string;
-
+  OpenDialog: TOpenDialog; Chooser: PGtkFileChooser): string;
 var
   ListOfFileSelFilterEntry: TFPList;
   i, j, k: integer;
@@ -1111,7 +1113,7 @@ begin
         gtk_file_filter_add_pattern(GtkFilter, PgChar(MaskList.Strings[k]));
       gtk_file_filter_set_name(GtkFilter, PgChar(FilterEntry.Description));
 
-      gtk_file_chooser_add_filter(PGtkFileChooser(SelWidget), GtkFilter);
+      gtk_file_chooser_add_filter(Chooser, GtkFilter);
 
       if j = FilterIndex then
         GtkSelFilter := GtkFilter;
@@ -1123,10 +1125,10 @@ begin
   end;
 
   FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry);
-  //g_object_set_data(PGObject(SelWidget), 'LCLFilterList', ListOfFileSelFilterEntry);
+  //g_object_set_data(PGObject(Chooser), 'LCLFilterList', ListOfFileSelFilterEntry);
 
   if GtkSelFilter <> nil then
-    gtk_file_chooser_set_filter(PGtkFileChooser(SelWidget), GtkSelFilter);
+    gtk_file_chooser_set_filter(Chooser, GtkSelFilter);
 
   Result := 'hm'; { Don't use '' as null return as this is used for *.* }
 end;
@@ -1208,25 +1210,17 @@ begin
 end;
 
 class procedure TGtk3WSOpenDialog.CreatePreviewDialogControl(
-  PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget);
+  PreviewDialog: TPreviewFileDialog; Chooser: PGtkFileChooser);
 var
   PreviewWidget: PGtkWidget;
   AControl: TPreviewFileControl;
-  FileChooser: PGtkFileChooser;
 begin
   AControl := PreviewDialog.PreviewFileControl;
   if AControl = nil then Exit;
-
-  FileChooser := PGtkFileChooser(SelWidget);
-
   PreviewWidget := TGtk3CustomControl(AControl.Handle).Widget;
-
-  g_object_set_data(PGObject(PreviewWidget),'LCLPreviewFixed',
-                      PreviewWidget);
+  g_object_set_data(PGObject(PreviewWidget),'LCLPreviewFixed',PreviewWidget);
   gtk_widget_set_size_request(PreviewWidget,AControl.Width,AControl.Height);
-
-  gtk_file_chooser_set_preview_widget(FileChooser, PreviewWidget);
-
+  gtk_file_chooser_set_preview_widget(Chooser, PreviewWidget);
   gtk_widget_show(PreviewWidget);
 end;
 
@@ -1244,53 +1238,49 @@ end;
 }
 class function TGtk3WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
-  FileSelWidget: PGtkFileChooser;
   OpenDialog: TOpenDialog absolute ACommonDialog;
   HelpButton: PGtkWidget;
   InitialFilename: String;
+  Dlg: TGtk3Dialog;
+  Chooser: PGtkFileChooser;
   //FrameWidget: PGtkWidget;
   //HBox: PGtkWidget;
   //FileDetailLabel: PGtkWidget;
 begin
-  Result := THandle(TGtk3FileDialog.Create(ACommonDialog));
-  TGtk3WSFileDialog.SetCallbacks(TGtk3Dialog(Result).Widget, TGtk3Dialog(Result));
-
-  FileSelWidget := PGtkFileChooser(TGtk3FileDialog(Result).Widget);
+  Dlg := TGtk3FileDialog.Create(ACommonDialog);
+  Result := THandle(Dlg);
+  Chooser := PGtkFileChooser(Dlg.Widget);
+  TGtk3WSFileDialog.SetCallbacks(Dlg.Widget, Dlg);
 
   if OpenDialog.InheritsFrom(TSaveDialog) then
-  begin
     if OpenDialog.InitialDir <> '' then
-      gtk_file_chooser_set_current_folder(FileSelWidget, Pgchar(OpenDialog.InitialDir));
-  end;
-  
+      gtk_file_chooser_set_current_folder(Chooser, Pgchar(OpenDialog.InitialDir));
+
   // Help button
   if (ofShowHelp in OpenDialog.Options) then
   begin
-    HelpButton := gtk_dialog_add_button(PGtkDialog(FileSelWidget), GTK_STOCK_HELP, GTK_RESPONSE_NONE);
-
-    g_signal_connect_data(HelpButton,
-      'clicked', TGCallback(@gtkDialogHelpclickedCB), TGtk3Dialog(Result), nil, 0);
+    HelpButton := gtk_dialog_add_button(PGtkDialog(Dlg.Widget), GTK_STOCK_HELP, GTK_RESPONSE_NONE);
+    g_signal_connect_data(HelpButton, 'clicked', TGCallback(@gtkDialogHelpclickedCB), Dlg, nil, 0);
   end;
 
   if ofAllowMultiSelect in OpenDialog.Options then
-    gtk_file_chooser_set_select_multiple(FileSelWidget, True);
+    gtk_file_chooser_set_select_multiple(Chooser, True);
 
   // History List - a frame with an option menu
-  CreateOpenDialogHistory(OpenDialog, PGtkWidget(FileSelWidget));
+  CreateOpenDialogHistory(OpenDialog, Dlg.Widget);
 
   // Filter
-  CreateOpenDialogFilter(OpenDialog, PGtkWidget(FileSelWidget));
+  CreateOpenDialogFilter(OpenDialog, Chooser);
 
   // connect change event
-  g_signal_connect_data(FileSelWidget,
-    'selection-changed', TGCallback(@gtkFileChooserSelectionChangedCB),
-    TGtk3Dialog(Result), nil, 0);
+  g_signal_connect_data(Dlg.Widget,
+    'selection-changed', TGCallback(@gtkFileChooserSelectionChangedCB), Dlg, nil, 0);
 
   // Sets the dialog options
 
   // ofForceShowHidden
   if (ofForceShowHidden in OpenDialog.Options) then
-    gtk_file_chooser_set_show_hidden(FileSelWidget, True);
+    gtk_file_chooser_set_show_hidden(Chooser, True);
 
   (*  TODO
   // Details - a frame with a label
@@ -1298,10 +1288,10 @@ begin
 
     // create the frame around the information
     FrameWidget:=gtk_frame_new(PChar(rsFileInformation));
-    //gtk_box_pack_start(GTK_BOX(FileSelWidget^.main_vbox),
+    //gtk_box_pack_start(GTK_BOX(Dlg.Widget^.main_vbox),
     //                   FrameWidget,false,false,0);
-    gtk_box_pack_start(GTK_BOX(gtk_file_chooser_get_extra_widget(
-             PGtkFileChooser(SelWidget))), FrameWidget,false,false,0);
+    gtk_box_pack_start(GTK_BOX(gtk_file_chooser_get_extra_widget(Chooser)),
+                       FrameWidget,false,false,0);
     gtk_widget_show(FrameWidget);
     // create a HBox, so that the information is left justified
     HBox:=gtk_hbox_new(false,0);
@@ -1312,12 +1302,11 @@ begin
     gtk_widget_show_all(HBox);
   end else
     FileDetailLabel:=nil;
-  g_object_set_data(PGObject(SelWidget), 'FileDetailLabel',
-                      FileDetailLabel);
+  g_object_set_data(PGObject(SelWidget), 'FileDetailLabel', FileDetailLabel);
   *)
   // preview
   if (OpenDialog is TPreviewFileDialog) then
-    CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog), PGtkWidget(FileSelWidget));
+    CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog), Chooser);
 
   // set initial filename (gtk expects an absolute filename)
   InitialFilename := TrimFilename(OpenDialog.FileName);
@@ -1327,11 +1316,11 @@ begin
       InitialFilename := TrimFilename(OpenDialog.InitialDir + PathDelim + InitialFilename);
     if not FilenameIsAbsolute(InitialFilename) then
       InitialFilename := CleanAndExpandFilename(InitialFilename);
-    gtk_file_chooser_set_filename(FileSelWidget, PChar(InitialFilename));
+    gtk_file_chooser_set_filename(Chooser, PChar(InitialFilename));
   end;
 
   //if InitialFilter <> 'none' then
-  //  PopulateFileAndDirectoryLists(FileSelWidget, InitialFilter);
+  //  PopulateFileAndDirectoryLists(Dlg.Widget, InitialFilter);
 
 end;
 
