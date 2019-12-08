@@ -56,6 +56,7 @@
 {"hash":14765539,"name":"tmainform.misortmembers.caption","sourcebytes":[83,111,114,116,32,111,98,106,101,99,116,32,109,101,109,98,101,114,115],"value":"Sort object members"},
 {"hash":258842249,"name":"tmainform.micompact.caption","sourcebytes":[67,111,109,112,97,99,116,32,100,105,115,112,108,97,121],"value":"Compact display"},
 {"hash":96098419,"name":"tmainform.miquotestrings.caption","sourcebytes":[81,117,111,116,101,32,115,116,114,105,110,103,32,118,97,108,117,101,115],"value":"Quote string values"},
+{"hash":75172158,"name":"tmainform.misaveformatted.caption","sourcebytes":[83,97,118,101,32,70,111,114,109,97,116,116,101,100,32,74,83,79,78],"value":"Save Formatted JSON"},
 {"hash":114147859,"name":"tmainform.mfavourites.caption","sourcebytes":[70,97,118,111,117,114,105,116,101,115],"value":"Favourites"},
 {"hash":33139909,"name":"tmainform.odjson.title","sourcebytes":[83,101,108,101,99,116,32,97,32,74,83,79,78,32,102,105,108,101],"value":"Select a JSON file"},
 {"hash":65890053,"name":"tmainform.sdjson.title","sourcebytes":[83,97,118,101,32,74,83,79,78,32,100,111,99,117,109,101,110,116,32,116,111,32,102,105,108,101],"value":"Save JSON document to file"}

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="12"/>
     <General>
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <Title Value="JSON Data viewer"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -25,9 +25,6 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -113,6 +110,7 @@
         <Filename Value="frmaddtofavourite.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SaveRequestDataForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit10>
     </Units>
