@@ -55,18 +55,6 @@ uses
 }  
 
 
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
-
-// returns byte len of call instruction at AAddress // 0 if not a call intruction
-function IsCallInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
-
-function GetFunctionFrameInfo(AData: PByte; ADataLen: Cardinal; const A64Bit: Boolean;
-  out AnIsOutsideFrame: Boolean): Boolean;
-
-implementation
-var
-  DBG_WARNINGS: PLazLoggerLogGroup;
-
 type
   TFlag = (flagRex, flagSib, flagModRM, rexB, rexX, rexR, rexW, preOpr, preAdr, preLock, preRep{N}, preRepNE);
   TFlags = set of TFlag;
@@ -212,6 +200,20 @@ type
 
     ParseFlags: TFlags;
   end;
+
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out AnInstruction: TInstruction);
+
+// returns byte len of call instruction at AAddress // 0 if not a call intruction
+function IsCallInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
+function IsReturnInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
+
+function GetFunctionFrameInfo(AData: PByte; ADataLen: Cardinal; const A64Bit: Boolean;
+  out AnIsOutsideFrame: Boolean): Boolean;
+
+implementation
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
 
 const
   ADDRESS_BYTES: array[TAddressSize] of Byte = (2, 4, 8);
@@ -3396,6 +3398,20 @@ begin
   a := AAddress;
   Disassemble(AAddress, A64Bit, Instr);
   if Instr.OpCode <> OPcall
+  then
+      exit;
+  Result := AAddress - a;
+end;
+
+function IsReturnInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
+var
+  Instr: TInstruction;
+  a: PByte;
+begin
+  Result := 0;
+  a := AAddress;
+  Disassemble(AAddress, A64Bit, Instr);
+  if (Instr.OpCode <> OPret) and (Instr.OpCode <> OPretf)
   then
       exit;
   Result := AAddress - a;

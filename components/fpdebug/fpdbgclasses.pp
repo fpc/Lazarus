@@ -48,7 +48,7 @@ uses
 type
   TFPDEvent = (deExitProcess, deFinishedStep, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
-  TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo);
+  TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo, dcsiZeroLine);
 
   { TDbgRegisterValue }
 
@@ -151,7 +151,6 @@ type
     FRegisterValueList: TDbgRegisterValueList;
     FStoreStepSrcFilename: string;
     FStoreStepSrcLineNo: integer;
-    FStoreStepStackFrame: TDBGPtr;
     FStoreStepFuncAddr: TDBGPtr;
     procedure LoadRegisterValues; virtual;
     property Process: TDbgProcess read FProcess;
@@ -173,9 +172,9 @@ type
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     procedure ClearCallStack;
     destructor Destroy; override;
-    function CompareStepInfo: TFPDCompareStepInfo;
+    function CompareStepInfo(AnAddr: TDBGPtr = 0): TFPDCompareStepInfo;
     function IsAtStartOfLine: boolean;
-    procedure StoreStepInfo;
+    procedure StoreStepInfo(AnAddr: TDBGPtr = 0);
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
     property NextIsSingleStep: boolean read FNextIsSingleStep write FNextIsSingleStep;
@@ -329,6 +328,7 @@ type
     FProcess: TDbgProcess;
     FSymbolTableInfo: TFpSymbolInfo;
     FLoaderList: TDbgImageLoaderList;
+    function GetPointerSize: Integer;
 
   protected
     FDbgInfo: TDbgInfo;
@@ -348,6 +348,7 @@ type
     property DbgInfo: TDbgInfo read FDbgInfo;
     property SymbolTableInfo: TFpSymbolInfo read FSymbolTableInfo;
     property Mode: TFPDMode read FMode;
+    property PointerSize: Integer read GetPointerSize;
   end;
 
   { TDbgLibrary }
@@ -563,7 +564,7 @@ uses
 
 var
   GOSDbgClasses : TOSDbgClasses;
-  DBG_VERBOSE, DBG_WARNINGS, DBG_BREAKPOINTS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
 
 function OSDbgClasses: TOSDbgClasses;
 begin
@@ -1135,6 +1136,13 @@ end;
 procedure TDbgInstance.SetFileName(const AValue: String);
 begin
   FFileName := AValue;
+end;
+
+function TDbgInstance.GetPointerSize: Integer;
+const
+  PTRSZ: array[TFPDMode] of Integer = (4, 8); // (dm32, dm64)
+begin
+  Result := PTRSZ[FMode];
 end;
 
 procedure TDbgInstance.InitializeLoaders;
@@ -1865,20 +1873,27 @@ begin
   result := FRegisterValueList;
 end;
 
-function TDbgThread.CompareStepInfo: TFPDCompareStepInfo;
+function TDbgThread.CompareStepInfo(AnAddr: TDBGPtr): TFPDCompareStepInfo;
 var
-  AnAddr: TDBGPtr;
   Sym: TFpSymbol;
 begin
-  AnAddr := GetInstructionPointerRegisterValue;
+  if FStoreStepSrcLineNo = -1 then begin // stepping from location with no line info
+    Result := dcsiNewLine;
+    exit;
+  end;
+
+  if AnAddr = 0 then
+    AnAddr := GetInstructionPointerRegisterValue;
   sym := FProcess.FindProcSymbol(AnAddr);
   if assigned(sym) then
   begin
-    if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) and
-              (FStoreStepFuncAddr=sym.Address.Address) then
+    debugln(FPDBG_COMMANDS, ['CompareStepInfo @IP=',AnAddr,' ',sym.FileName, ':',sym.Line, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
+    if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) then
       result := dcsiSameLine
-    else if sym.Line = 0 then
+    else if sym.FileName = '' then
       result := dcsiNoLineInfo
+    else if sym.Line = 0 then
+      result := dcsiZeroLine
     else
       result := dcsiNewLine;
     sym.ReleaseReference;
@@ -1911,23 +1926,25 @@ begin
   sym.ReleaseReference;
 end;
 
-procedure TDbgThread.StoreStepInfo;
+procedure TDbgThread.StoreStepInfo(AnAddr: TDBGPtr);
 var
-  AnAddr: TDBGPtr;
   Sym: TFpSymbol;
 begin
-  FStoreStepStackFrame := GetStackBasePointerRegisterValue;
-  AnAddr := GetInstructionPointerRegisterValue;
+  if AnAddr = 0 then
+    AnAddr := GetInstructionPointerRegisterValue;
   sym := FProcess.FindProcSymbol(AnAddr);
   if assigned(sym) then
   begin
+    debugln(FPDBG_COMMANDS, ['StoreStepInfo @IP=',AnAddr,' ',sym.FileName, ':',sym.Line, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
     FStoreStepSrcFilename:=sym.FileName;
     FStoreStepSrcLineNo:=sym.Line;
     FStoreStepFuncAddr:=sym.Address.Address;
     sym.ReleaseReference;
   end
-  else
+  else begin
+    debugln(FPDBG_COMMANDS, ['StoreStepInfo @IP=',AnAddr,' - No symbol']);
     FStoreStepSrcLineNo:=-1;
+  end;
 end;
 
 procedure TDbgThread.LoadRegisterValues;
@@ -2432,6 +2449,7 @@ initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_BREAKPOINTS := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
+  FPDBG_COMMANDS := DebugLogger.FindOrRegisterLogGroup('FPDBG_COMMANDS' {$IFDEF FPDBG_COMMANDS} , True {$ENDIF} );
 
 
 finalization
