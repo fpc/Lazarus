@@ -20,6 +20,8 @@ type
   TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TFpDbgBreakpoint) of object;
   TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
+  TOnLibraryLoadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
+  TOnLibraryUnloadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
 
   TDbgController = class;
 
@@ -168,6 +170,8 @@ type
 
   TDbgController = class
   private
+    FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
+    FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
     FRunning, FPauseRequest: cardinal;
     FAttachToPid: Integer;
     FDetaching: cardinal;
@@ -239,6 +243,8 @@ type
     property OnProcessExitEvent: TOnProcessExitEvent read FOnProcessExitEvent write FOnProcessExitEvent;
     property OnExceptionEvent: TOnExceptionEvent read FOnExceptionEvent write FOnExceptionEvent;
     property OnDebugInfoLoaded: TNotifyEvent read FOnDebugInfoLoaded write FOnDebugInfoLoaded;
+    property OnLibraryLoadedEvent: TOnLibraryLoadedEvent read FOnLibraryLoadedEvent write FOnLibraryLoadedEvent;
+    property OnLibraryUnloadedEvent: TOnLibraryUnloadedEvent read FOnLibraryUnloadedEvent write FOnLibraryUnloadedEvent;
   end;
 
 implementation
@@ -1259,6 +1265,15 @@ begin
     deLoadLibrary:
       begin
         continue:=true;
+        if assigned(OnLibraryLoadedEvent) and Assigned(FCurrentProcess.LastLibraryLoaded) then
+          OnLibraryLoadedEvent(continue, FCurrentProcess.LastLibraryLoaded);
+      end;
+    deUnloadLibrary:
+      begin
+        continue:=true;
+        if assigned(OnLibraryUnloadedEvent) and Assigned(FCurrentProcess.LastLibraryUnloaded) then
+          OnLibraryUnloadedEvent(continue, FCurrentProcess.LastLibraryUnloaded);
+        FCurrentProcess.LastLibraryUnloaded := nil;
       end;
     deInternalContinue:
       begin

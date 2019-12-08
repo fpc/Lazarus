@@ -46,7 +46,7 @@ uses
   FpDbgDwarfDataClasses, FpDbgDisasX86;
 
 type
-  TFPDEvent = (deExitProcess, deFinishedStep, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
+  TFPDEvent = (deExitProcess, deFinishedStep, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deUnloadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
   TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo, dcsiZeroLine);
 
@@ -86,6 +86,7 @@ type
   { TDbgCallstackEntry }
   TDbgThread = class;
   TFPDThreadArray = array of TDbgThread;
+  TDbgLibrary = class;
 
   TDbgCallstackEntry = class
   private
@@ -199,6 +200,16 @@ type
   TThreadMap = class(TMap)
   public
     function GetEnumerator: TThreadMapEnumerator;
+  end;
+
+  { TLibraryMap }
+
+  TLibraryMap = class(TMap)
+  private
+    FLastLibraryAdded: TDbgLibrary;
+  public
+    procedure Add(const AId, AData);
+    property LastLibraryAdded: TDbgLibrary read FLastLibraryAdded;
   end;
 
   TFpInternalBreakpointArray = array of TFpInternalBreakpoint;
@@ -377,10 +388,12 @@ type
     FExceptionMessage: string;
     FExitCode: DWord;
     FGotExitProcess: Boolean;
+    FLastLibraryUnloaded: TDbgLibrary;
     FProcessID: Integer;
     FThreadID: Integer;
     FWatchPointData: TFpWatchPointData;
 
+    function GetLastLibraryLoaded: TDbgLibrary;
     function GetPauseRequested: boolean;
     procedure SetPauseRequested(AValue: boolean);
     procedure ThreadDestroyed(const AThread: TDbgThread);
@@ -395,7 +408,7 @@ type
     FSymInstances: TList;  // list of dbgInstances with debug info
 
     FThreadMap: TThreadMap; // map ThreadID -> ThreadObject
-    FLibMap: TMap;    // map LibAddr -> LibObject
+    FLibMap: TLibraryMap;    // map LibAddr -> LibObject
     FBreakMap: TBreakLocationMap;  // map BreakAddr -> BreakObject
     FTmpRemovedBreaks: array of TDBGPtr;
     FPauseRequested: longint;
@@ -406,6 +419,8 @@ type
     procedure SetExitCode(AValue: DWord);
     function GetLastEventProcessIdentifier: THandle; virtual;
     function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
+    procedure SetLastLibraryUnloaded(ALib: TDbgLibrary);
+    procedure SetLastLibraryUnloadedNil(ALib: TDbgLibrary);
 
     function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; //virtual;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; //virtual;
@@ -444,6 +459,8 @@ public
     function  FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; deprecated 'use FindContext(thread,stack)';
     function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext; inline;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
+    property  LastLibraryLoaded: TDbgLibrary read GetLastLibraryLoaded;
+    property  LastLibraryUnloaded: TDbgLibrary read FLastLibraryUnloaded write SetLastLibraryUnloadedNil;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
     procedure DoBeforeBreakLocationMapChange;
@@ -549,7 +566,7 @@ var
 
 const
   DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
-  FPDEventNames: array[TFPDEvent] of string = ('deExitProcess', 'deFinishedStep', 'deBreakpoint', 'deException', 'deCreateProcess', 'deLoadLibrary', 'deInternalContinue');
+  FPDEventNames: array[TFPDEvent] of string = ('deExitProcess', 'deFinishedStep', 'deBreakpoint', 'deException', 'deCreateProcess', 'deLoadLibrary', 'deUnloadLibrary', 'deInternalContinue');
 
 function OSDbgClasses: TOSDbgClasses;
 
@@ -616,6 +633,14 @@ end;
 function TThreadMap.GetEnumerator: TThreadMapEnumerator;
 begin
   Result := TThreadMapEnumerator.Create(Self);
+end;
+
+{ TLibraryMap }
+
+procedure TLibraryMap.Add(const AId, AData);
+begin
+  inherited Add(AId, AData);
+  FLastLibraryAdded := TDbgLibrary(AData);
 end;
 
 { TBreakLocationEntry }
@@ -1216,7 +1241,7 @@ begin
   FBreakpointList := TFpInternalBreakpointList.Create(False);
   FWatchPointList := TFpInternalBreakpointList.Create(False);
   FThreadMap := TThreadMap.Create(itu4, SizeOf(TDbgThread));
-  FLibMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
+  FLibMap := TLibraryMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
   FWatchPointData := CreateWatchPointData;
   FBreakMap := TBreakLocationMap.Create(Self);
   FCurrentBreakpoint := nil;
@@ -1254,6 +1279,7 @@ var
   i: Integer;
 begin
   FProcessID:=0;
+  SetLastLibraryUnloaded(nil);
 
   for i := 0 to FBreakpointList.Count - 1 do
     FBreakpointList[i].FProcess := nil;
@@ -1658,6 +1684,11 @@ begin
   Result := Boolean(InterLockedExchangeAdd(FPauseRequested, 0));
 end;
 
+function TDbgProcess.GetLastLibraryLoaded: TDbgLibrary;
+begin
+  Result := FLibMap.LastLibraryAdded;
+end;
+
 function TDbgProcess.GetAndClearPauseRequested: Boolean;
 begin
   Result := Boolean(InterLockedExchange(FPauseRequested, ord(False)));
@@ -1702,6 +1733,19 @@ begin
   Result := True;
   if not FCurrentBreakpoint.Hit(AThreadId, BreakpointAddress)
   then FCurrentBreakpoint := nil; // no need for a singlestep if we continue
+end;
+
+procedure TDbgProcess.SetLastLibraryUnloaded(ALib: TDbgLibrary);
+begin
+  if FLastLibraryUnloaded <> nil then
+    FLastLibraryUnloaded.Destroy;
+  FLastLibraryUnloaded := ALib;
+end;
+
+procedure TDbgProcess.SetLastLibraryUnloadedNil(ALib: TDbgLibrary);
+begin
+  assert(ALib = nil, 'TDbgProcess.SetLastLibraryUnloadedNil: ALib = nil');
+  SetLastLibraryUnloaded(nil);
 end;
 
 function TDbgProcess.InsertBreakInstructionCode(const ALocation: TDBGPtr; out

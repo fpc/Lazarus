@@ -110,6 +110,8 @@ type
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
     procedure FDbgControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
+    procedure FDbgControllerLibraryLoaded(var continue: boolean; ALib: TDbgLibrary);
+    procedure FDbgControllerLibraryUnloaded(var continue: boolean; ALib: TDbgLibrary);
     function GetDebugInfo: TDbgInfo;
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
@@ -1587,6 +1589,26 @@ begin
   end;
 end;
 
+procedure TFpDebugDebugger.FDbgControllerLibraryLoaded(var continue: boolean;
+  ALib: TDbgLibrary);
+var
+  n: String;
+  AProc: TFpSymbol;
+  AnAddr: TDBGPtr;
+begin
+  n := ExtractFileName(ALib.Name);
+  DoDbgEvent(ecModule, etModuleLoad, 'Loaded: ' + n + ' (' + ALib.Name +')');
+end;
+
+procedure TFpDebugDebugger.FDbgControllerLibraryUnloaded(var continue: boolean;
+  ALib: TDbgLibrary);
+var
+  n: String;
+begin
+  n := ExtractFileName(ALib.Name);
+  DoDbgEvent(ecModule, etModuleUnload, 'Unloaded: ' + n + ' (' + ALib.Name +')');
+end;
+
 procedure TFpDebugDebugger.DoWatchFreed(Sender: TObject);
 begin
   FWatchEvalList.Remove(pointer(Sender));
@@ -2332,6 +2354,8 @@ begin
   FDbgController.OnProcessExitEvent:=@FDbgControllerProcessExitEvent;
   FDbgController.OnExceptionEvent:=@FDbgControllerExceptionEvent;
   FDbgController.OnDebugInfoLoaded := @FDbgControllerDebugInfoLoaded;
+  FDbgController.OnLibraryLoadedEvent := @FDbgControllerLibraryLoaded;
+  FDbgController.OnLibraryUnloadedEvent := @FDbgControllerLibraryUnloaded;
   FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
 end;
 

@@ -1177,7 +1177,7 @@ begin
       end;
       UNLOAD_DLL_DEBUG_EVENT: begin
         //DumpEvent('UNLOAD_DLL_DEBUG_EVENT');
-        result := deInternalContinue;
+        result := deUnloadLibrary;
       end;
       OUTPUT_DEBUG_STRING_EVENT: begin
         //DumpEvent('OUTPUT_DEBUG_STRING_EVENT');
@@ -1300,7 +1300,7 @@ begin
   if not FLibMap.GetData(ID, Lib) then Exit;
   FSymInstances.Remove(Lib);
   FLibMap.Delete(ID);
-  Lib.Free;
+  SetLastLibraryUnloaded(Lib);
 end;
 
 { TDbgWinThread }
