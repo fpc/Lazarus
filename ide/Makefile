@@ -387,6 +387,7 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/lazdebuggers/cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/lazdebuggers/lazdebuggerlldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/lazdebuggers/lazdebuggerfplldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/lazdebuggers/lazdebuggerfp/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/leakview/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/tachart/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \

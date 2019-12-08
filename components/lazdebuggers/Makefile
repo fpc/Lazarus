@@ -1641,13 +1641,16 @@ bigide:
 	$(MAKE) -C cmdlinedebuggerbase
 	$(MAKE) -C lazdebuggerlldb
 	$(MAKE) -C lazdebuggerfplldb
+	$(MAKE) -C lazdebuggerfp
 all: base bigide
 clean:
 	$(MAKE) -C cmdlinedebuggerbase clean
 	$(MAKE) -C lazdebuggerlldb clean
 	$(MAKE) -C lazdebuggerfplldb clean
+	$(MAKE) -C lazdebuggerfp clean
 cleanall: clean
 distclean:
 	$(MAKE) -C cmdlinedebuggerbase distclean
 	$(MAKE) -C lazdebuggerlldb distclean
 	$(MAKE) -C lazdebuggerfplldb distclean
+	$(MAKE) -C lazdebuggerfp distclean
