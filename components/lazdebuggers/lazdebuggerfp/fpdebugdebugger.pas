@@ -139,7 +139,7 @@ type
 
     TAddressFrameList = class(specialize TFPGMapObject<TDbgPtr, TFrameList>)
     public
-      function Add(const AKey: TKey): TFrameList; inline;
+      function Add(const AKey: TDbgPtr): TFrameList; inline;
     end;
   const
     DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
@@ -615,8 +615,7 @@ end;
 
 { TFpDebugExceptionStepping.TAddressFrameList }
 
-function TFpDebugExceptionStepping.TAddressFrameList.Add(const AKey: TKey
-  ): TFrameList;
+function TFpDebugExceptionStepping.TAddressFrameList.Add(const AKey: TDbgPtr): TFrameList;
 begin
   Result := TFrameList.Create;
   inherited Add(AKey, Result);
