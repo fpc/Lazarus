@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="fpdebug"/>
     <Type Value="RunAndDesignTime"/>
@@ -39,6 +39,7 @@ File(s) with other licenses (see also header in file(s):
 
   (Any modifications/translations of this file are from duby)
 "/>
+    <Version Minor="9"/>
     <Files Count="31">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
