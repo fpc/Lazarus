@@ -1124,12 +1124,12 @@ begin
       else begin
         if not assigned(FCommand) then
           begin
-          DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
+          DebugLnEnter(FPDBG_COMMANDS, 'Continue process without command.');
           FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
           end
         else
           begin
-          DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
+          DebugLnEnter(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
           FCommand.DoContinue(FCurrentProcess, FCurrentThread);
           end;
 
@@ -1140,6 +1140,7 @@ begin
             FCommand.Thread := nil;
           FreeAndNil(FCurrentThread);
         end;
+        DebugLnExit(FPDBG_COMMANDS);
       end;
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then
