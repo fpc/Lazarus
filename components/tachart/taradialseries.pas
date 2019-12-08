@@ -81,6 +81,7 @@ type
     FInnerRadiusPercent: Integer;
     FSlices: array of TPieSlice;
     FStartAngle: Integer;
+    FAngleRange: Integer;
     FEdgePen: TPen;
     FExploded: Boolean;
     FFixedRadius: TChartDistance;
@@ -89,6 +90,7 @@ type
     function FixAspectRatio(P: TPoint): TPoint;
     function GetViewAngle: Integer;
     procedure Measure(ADrawer: IChartDrawer);
+    procedure SetAngleRange(AValue: Integer);
     procedure SetEdgePen(AValue: TPen);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
@@ -115,6 +117,8 @@ type
     property Radius: Integer read FRadius;
     property StartAngle: Integer
       read FStartAngle write SetStartAngle default 0;
+    property AngleRange: Integer
+      read FAngleRange write SetAngleRange default 360;
     property ViewAngle: Integer
       read GetViewAngle write SetViewAngle default 60;
     property OnCustomDrawPie: TCustomDrawPieEvent
@@ -333,6 +337,7 @@ constructor TCustomPieSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ViewAngle := 60;
+  FAngleRange := 360;
   FEdgePen := TPen.Create;
   FEdgePen.OnChange := @StyleChanged;
 
@@ -824,6 +829,16 @@ begin
   end;
 end;
 
+procedure TCustomPieSeries.SetAngleRange(AValue: Integer);
+begin
+  if FAngleRange = AValue then exit;
+  if AValue = 0 then
+    FAngleRange := 360
+  else
+    FAngleRange := EnsureRange(AValue, 1, 360);
+  UpdateParentChart;
+end;
+
 procedure TCustomPieSeries.SetEdgePen(AValue: TPen);
 begin
   if FEdgePen = AValue then exit;
@@ -1144,6 +1159,7 @@ begin
   total := Source.ValuesTotal;
   if total = 0 then
     exit;
+  total := total * 360 / FAngleRange;
   prevAngle := start_angle;
   for i := 0 to Count - 1 do begin
     di := Source[i];

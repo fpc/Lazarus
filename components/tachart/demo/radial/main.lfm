@@ -401,16 +401,16 @@ object Form1: TForm1
           TabOrder = 12
         end
         object seViewAngle: TSpinEdit
-          AnchorSideLeft.Control = lblViewAngle
-          AnchorSideLeft.Side = asrBottom
+          AnchorSideLeft.Control = seAngleRange
           AnchorSideTop.Control = seDistance
           AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = cmbOrientation
           AnchorSideRight.Side = asrBottom
-          Left = 549
+          Left = 562
           Height = 23
           Top = 64
           Width = 62
-          BorderSpacing.Right = 6
+          Anchors = [akTop, akRight]
           Enabled = False
           MaxValue = 89
           OnChange = seViewAngleChange
@@ -418,14 +418,15 @@ object Form1: TForm1
           Value = 60
         end
         object lblViewAngle: TLabel
-          AnchorSideLeft.Control = seDepth
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = seViewAngle
           AnchorSideTop.Side = asrCenter
-          Left = 484
+          AnchorSideRight.Control = seViewAngle
+          Left = 497
           Height = 15
           Top = 68
           Width = 57
+          Anchors = [akTop, akRight]
           BorderSpacing.Left = 12
           BorderSpacing.Right = 8
           Caption = 'View angle'
@@ -433,17 +434,17 @@ object Form1: TForm1
           ParentColor = False
         end
         object cmbOrientation: TComboBox
-          AnchorSideLeft.Control = lblViewAngle
+          AnchorSideLeft.Control = seDepthBrightnessDelta
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = cbMarkAttachment
           AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = seViewAngle
           AnchorSideRight.Side = asrBottom
-          Left = 484
+          Left = 496
           Height = 23
           Top = 93
-          Width = 127
-          Anchors = [akTop, akLeft, akRight]
+          Width = 128
           AutoSize = False
+          BorderSpacing.Left = 24
           BorderSpacing.Bottom = 8
           Enabled = False
           ItemHeight = 15
@@ -457,6 +458,36 @@ object Form1: TForm1
           Style = csDropDownList
           TabOrder = 14
           Text = 'normal'
+        end
+        object lblAngleRange: TLabel
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seAngleRange
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seAngleRange
+          Left = 493
+          Height = 15
+          Top = 39
+          Width = 64
+          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 12
+          BorderSpacing.Right = 8
+          Caption = 'Angle range'
+          ParentColor = False
+        end
+        object seAngleRange: TSpinEdit
+          AnchorSideTop.Control = seStartAngle
+          AnchorSideRight.Control = cmbOrientation
+          AnchorSideRight.Side = asrBottom
+          Left = 565
+          Height = 23
+          Top = 35
+          Width = 59
+          Anchors = [akTop, akRight]
+          MaxValue = 360
+          MinValue = 1
+          OnChange = seAngleRangeChange
+          TabOrder = 15
+          Value = 360
         end
       end
     end
@@ -601,7 +632,7 @@ object Form1: TForm1
       '0|7|?|'
       '0|3|?|'
       '0|1|?|'
-      '0.20000000000000001|0.20000000000000001|?|'
+      '0.2|0.2|?|'
       '0|1|?|'
     )
     left = 64

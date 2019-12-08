@@ -33,6 +33,7 @@ type
     lblViewAngle: TLabel;
     lblDistance: TLabel;
     lblStartAngle: TLabel;
+    lblAngleRange: TLabel;
     seDepth: TSpinEdit;
     seViewAngle: TSpinEdit;
     seDepthBrightnessDelta: TSpinEdit;
@@ -49,6 +50,7 @@ type
     RandomChartSource1: TRandomChartSource;
     sbTransparency: TScrollBar;
     seStartAngle: TSpinEdit;
+    seAngleRange: TSpinEdit;
     seWords: TSpinEdit;
     seLabelAngle: TSpinEdit;
     seInnerRadius: TSpinEdit;
@@ -70,6 +72,7 @@ type
     procedure seDepthBrightnessDeltaChange(Sender: TObject);
     procedure seDepthChange(Sender: TObject);
     procedure seDistanceChange(Sender: TObject);
+    procedure seAngleRangeChange(Sender: TObject);
     procedure seInnerRadiusChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sbTransparencyChange(Sender: TObject);
@@ -180,6 +183,11 @@ end;
 procedure TForm1.seDistanceChange(Sender: TObject);
 begin
   ChartPiePieSeries1.Marks.Distance := seDistance.Value;
+end;
+
+procedure TForm1.seAngleRangeChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.AngleRange := seAngleRange.Value;
 end;
 
 procedure TForm1.seInnerRadiusChange(Sender: TObject);

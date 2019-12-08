@@ -145,6 +145,7 @@ type
   public
     property Radius;
   published
+    property AngleRange;
     property EdgePen;
     property Depth;
     property DepthBrightnessDelta;
