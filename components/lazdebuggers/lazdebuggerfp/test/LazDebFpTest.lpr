@@ -6,7 +6,7 @@ uses
   {$IFDEF UNIX}
   cthreads,
   {$ENDIF}
-  TestDbgControlForm, Interfaces, Forms, GuiTestRunner, TestVarious,
+  TestDbgControlForm, Interfaces, Forms, GuiTestRunner, LazClasses, TestVarious,
   TestWatches, TestBase, TestBreakPoint, TestStepping;
 
 {$R *.res}
