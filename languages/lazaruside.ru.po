@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-12-02 00:19+0300\n"
+"PO-Revision-Date: 2019-12-09 01:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12447,7 +12447,7 @@ msgstr "Ресурсы Lazarus (.lrs)"
 
 #: lazarusidestrconsts.lismacpreferences
 msgid "Preferences..."
-msgstr "Параметры..."
+msgstr "Настройки..."
 
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
