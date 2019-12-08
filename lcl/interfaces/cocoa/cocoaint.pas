@@ -673,6 +673,13 @@ begin
 end;
 
 
+procedure InternalInit;
+begin
+  // MacOSX 10.6 reports a lot of warnings during initialization process
+  // adding the autorelease pool for the whole Cocoa widgetset
+  MainPool := NSAutoreleasePool.alloc.init;
+end;
+
 procedure InternalFinal;
 begin
   if Assigned(MainPool) then
@@ -688,13 +695,6 @@ end;
 {$I cocoawinapi.inc}
 // the implementation of the extra LCL interface methods
 {$I cocoalclintf.inc}
-
-procedure InternalInit;
-begin
-  // MacOSX 10.6 reports a lot of warnings during initialization process
-  // adding the autorelease pool for the whole Cocoa widgetset
-  MainPool := NSAutoreleasePool.alloc.init;
-end;
 
 procedure TCocoaWidgetSet.DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
 var
@@ -850,7 +850,6 @@ end;
 
 initialization
 //  {$I Cocoaimages.lrs}
-  InternalInit;
 
 finalization
   InternalFinal;
