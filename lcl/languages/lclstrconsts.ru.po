@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-06 02:48+0300\n"
+"PO-Revision-Date: 2019-12-08 23:58+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -730,6 +730,28 @@ msgstr "Зелёный"
 #, object-pascal-format
 msgid "List index exceeds bounds (%d)"
 msgstr "Индекс списка вне диапазона (%d)"
+
+#: lclstrconsts.rsmacosmenuhide
+#, object-pascal-format
+msgid "Hide %s"
+msgstr "Скрыть %s"
+
+#: lclstrconsts.rsmacosmenuhideothers
+msgid "Hide Others"
+msgstr "Скрыть остальные"
+
+#: lclstrconsts.rsmacosmenuquit
+#, object-pascal-format
+msgid "Quit %s"
+msgstr "Завершить %s"
+
+#: lclstrconsts.rsmacosmenuservices
+msgid "Services"
+msgstr "Службы"
+
+#: lclstrconsts.rsmacosmenushowall
+msgid "Show All"
+msgstr "Показать все"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
