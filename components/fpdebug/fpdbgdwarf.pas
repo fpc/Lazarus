@@ -5121,6 +5121,7 @@ end;
 function TFpSymbolDwarfDataProc.StateMachineValid: Boolean;
 var
   SM1, SM2: TDwarfLineInfoStateMachine;
+  SM2val: Boolean;
 begin
   Result := FStateMachine <> nil;
   if Result then Exit;
@@ -5134,19 +5135,21 @@ begin
   // we cannot restore a statemachine to its current state
   // so we shouldn't modify FAddressInfo^.StateMachine
   // so use clones to navigate
+  if FAddress < FAddressInfo^.StateMachine.Address
+  then
+    Exit;    // The address we want to find is before the start of this symbol ??
+
   SM1 := FAddressInfo^.StateMachine.Clone;
-  if FAddress < SM1.Address
-  then begin
-    // The address we want to find is before the start of this symbol ??
-    SM1.Free;
-    Exit;
-  end;
   SM2 := FAddressInfo^.StateMachine.Clone;
 
   repeat
-    if (FAddress = SM1.Address)
-    or not SM2.NextLine
-    or (FAddress < SM2.Address)
+    SM2val := SM2.NextLine;
+    if (not SM1.EndSequence) and
+       ( (FAddress = SM1.Address) or
+         ( (FAddress > SM1.Address) and
+           SM2val and (FAddress < SM2.Address)
+         )
+       )
     then begin
       // found
       FStateMachine := SM1;
