@@ -16,6 +16,13 @@ uses
 
 type
 
+  { TFpSymbolTableProc }
+
+  TFpSymbolTableProc = class(TFpSymbol)
+  public
+    constructor Create(const AName: String; AnAddr: TDbgPtr);
+  end;
+
   TFpSymbolInfo = class;
 
   { TFpSymbolContext }
@@ -47,10 +54,21 @@ type
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
     function FindProcSymbol(const AName: String): TFpSymbol; override; overload;
+    function FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol; overload;
     property Image64Bit: boolean read FImage64Bit;
   end;
 
 implementation
+
+{ TFpSymbolTableProc }
+
+constructor TFpSymbolTableProc.Create(const AName: String; AnAddr: TDbgPtr);
+begin
+  inherited Create(AName);
+  SetAddress(TargetLoc(AnAddr));
+  SetKind(skProcedure);
+  SetSymbolType(stType);
+end;
 
 { TFpSymbolContext }
 
@@ -129,18 +147,40 @@ end;
 function TFpSymbolInfo.FindContext(AThreadId, AStackFrame: Integer;
   AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
-  Result:=FContext;
+  assert(False, 'TFpSymbolInfo.FindContext: False');
+  Result:=FContext; // TODO: nil
 end;
 
 function TFpSymbolInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
-  Result:=FContext;
+  assert(False, 'TFpSymbolInfo.FindContext: False');
+  Result:=FContext; // TODO: nil
 end;
 
 function TFpSymbolInfo.FindProcSymbol(const AName: String): TFpSymbol;
+var
+  i: integer;
 begin
-  result := nil;
-  //Result:=FContext.FindSymbol(AName);
+  i := FSymbolList.IndexOf(AName);
+  if i >= 0 then
+    Result := TFpSymbolTableProc.Create(AName, FSymbolList.Data[i])
+  else
+    result := nil;
+end;
+
+function TFpSymbolInfo.FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol;
+var
+  i: integer;
+begin
+  Result := nil;
+  i := FSymbolList.Count - 1;
+  while i >= 0 do begin
+    if FSymbolList.Data[i] = AnAdress then begin
+      Result := TFpSymbolTableProc.Create(FSymbolList.Keys[i], FSymbolList.Data[i]);
+      exit;
+    end;
+    dec(i);
+  end;
 end;
 
 end.

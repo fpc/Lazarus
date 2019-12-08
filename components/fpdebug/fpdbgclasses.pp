@@ -432,6 +432,12 @@ public
     function  AddWatch(const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope): TFpInternalWatchpoint;
     property WatchPointData: TFpWatchPointData read FWatchPointData;
+    (* FindProcSymbol(Address)
+         Search the program and all libraries.
+       FindProcSymbol(Name)
+         Search ONLY the program.
+         Names can be ambigious, as dll can have the same names.
+    *)
     function  FindProcSymbol(const AName: String): TFpSymbol;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
@@ -1283,7 +1289,8 @@ end;
 function TDbgProcess.FindProcSymbol(const AName: String): TFpSymbol;
 begin
   Result := FDbgInfo.FindProcSymbol(AName);
-  // SymbolTableInfo.FindProcSymbol()
+  if Result = nil then
+    Result := SymbolTableInfo.FindProcSymbol(AName);
 end;
 
 function TDbgProcess.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
@@ -1298,7 +1305,6 @@ begin
     if Result <> nil then Exit;
   end;
   Result := nil;
-  // SymbolTableInfo.FindProcSymbol()
 end;
 
 function TDbgProcess.FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;

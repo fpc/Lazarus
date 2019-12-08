@@ -1701,26 +1701,22 @@ end;
 function TFpDebugDebugger.SetSoftwareExceptionBreakpoint: boolean;
 var
   AContext: TFpDbgInfoContext;
-  AValue: TFpValue;
   AnAddr: TDBGPtr;
+  AProc: TFpSymbol;
 begin
   result := false;
   if assigned(FDbgController.CurrentProcess.SymbolTableInfo) then
   begin
-    AContext := FDbgController.CurrentProcess.SymbolTableInfo.FindContext(0);
-    if Assigned(AContext) then
+    AProc := FDbgController.CurrentProcess.FindProcSymbol('FPC_RAISEEXCEPTION');
+    if AProc <> nil then
     begin
-      AValue := AContext.FindSymbol('FPC_RAISEEXCEPTION');
-      if assigned(AValue) then
-      begin
-        AnAddr:=AValue.Address.Address;
-        AValue.ReleaseReference;
-        debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.SetSoftwareExceptionBreakpoint FPC_RAISEEXCEPTION' ]);
-        FRaiseExceptionBreakpoint := AddBreak(AnAddr);
-        debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.SetSoftwareExceptionBreakpoint ' ]);
-        if assigned(FRaiseExceptionBreakpoint) then
-          result := True;
-      end;
+      AnAddr:=AProc.Address.Address;
+      AProc.ReleaseReference;
+      debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.SetSoftwareExceptionBreakpoint FPC_RAISEEXCEPTION' ]);
+      FRaiseExceptionBreakpoint := AddBreak(AnAddr);
+      debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.SetSoftwareExceptionBreakpoint ' ]);
+      if assigned(FRaiseExceptionBreakpoint) then
+        result := True;
     end;
   end;
 end;
