@@ -150,7 +150,8 @@ type
     FCallStackEntryList: TDbgCallstackEntryList;
     FRegisterValueListValid: boolean;
     FRegisterValueList: TDbgRegisterValueList;
-    FStoreStepSrcFilename: string;
+    FStoreStepSrcFilename, FStoreStepFuncName: string;
+    FStoreStepStartAddr, FStoreStepEndAddr: TDBGPtr;
     FStoreStepSrcLineNo: integer;
     FStoreStepFuncAddr: TDBGPtr;
     procedure LoadRegisterValues; virtual;
@@ -173,7 +174,7 @@ type
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     procedure ClearCallStack;
     destructor Destroy; override;
-    function CompareStepInfo(AnAddr: TDBGPtr = 0): TFPDCompareStepInfo;
+    function CompareStepInfo(AnAddr: TDBGPtr = 0; ASubLine: Boolean = False): TFPDCompareStepInfo;
     function IsAtStartOfLine: boolean;
     procedure StoreStepInfo(AnAddr: TDBGPtr = 0);
     property ID: Integer read FID;
@@ -181,6 +182,7 @@ type
     property NextIsSingleStep: boolean read FNextIsSingleStep write FNextIsSingleStep;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property CallStackEntryList: TDbgCallstackEntryList read FCallStackEntryList;
+    property StoreStepFuncName: String read FStoreStepFuncName;
   end;
   TDbgThreadClass = class of TDbgThread;
 
@@ -1999,7 +2001,8 @@ begin
   result := FRegisterValueList;
 end;
 
-function TDbgThread.CompareStepInfo(AnAddr: TDBGPtr): TFPDCompareStepInfo;
+function TDbgThread.CompareStepInfo(AnAddr: TDBGPtr; ASubLine: Boolean
+  ): TFPDCompareStepInfo;
 var
   Sym: TFpSymbol;
   l: TDBGPtr;
@@ -2011,6 +2014,21 @@ begin
 
   if AnAddr = 0 then
     AnAddr := GetInstructionPointerRegisterValue;
+
+  if (FStoreStepStartAddr <> 0) then begin
+    if (AnAddr > FStoreStepStartAddr) and (AnAddr < FStoreStepEndAddr)
+    then begin
+      result := dcsiSameLine;
+      exit;
+    end
+    else
+    if ASubLine then begin
+      // this is used for the (unmarked) proloque of finally handlers in 3.1.1
+      result := dcsiNewLine; // may have the same line number, but has a new address block
+      exit;
+    end;
+  end;
+
   sym := FProcess.FindProcSymbol(AnAddr);
   if assigned(sym) then
   begin
@@ -2064,11 +2082,16 @@ begin
   if AnAddr = 0 then
     AnAddr := GetInstructionPointerRegisterValue;
   sym := FProcess.FindProcSymbol(AnAddr);
+  FStoreStepStartAddr := AnAddr;
+  FStoreStepEndAddr := AnAddr;
   if assigned(sym) then
   begin
     FStoreStepSrcFilename:=sym.FileName;
     FStoreStepFuncAddr:=sym.Address.Address;
+    FStoreStepFuncName:=sym.Name;
     if sym is TFpSymbolDwarfDataProc then begin
+      FStoreStepStartAddr := TFpSymbolDwarfDataProc(sym).LineStartAddress;
+      FStoreStepEndAddr := TFpSymbolDwarfDataProc(sym).LineEndAddress;
       FStoreStepSrcLineNo := TFpSymbolDwarfDataProc(sym).LineUnfixed;
     end
     else

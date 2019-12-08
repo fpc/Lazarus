@@ -16,22 +16,28 @@ uses
 
 type
 
+  TDbgController = class;
+  TDbgControllerCmd = class;
+
   TOnCreateProcessEvent = procedure(var continue: boolean) of object;
   TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TFpDbgBreakpoint) of object;
   TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
   TOnLibraryLoadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
   TOnLibraryUnloadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
-
-  TDbgController = class;
+  TOnProcessLoopCycleEvent = procedure(var AFinishLoopAndSendEvents: boolean; var AnEventType: TFPDEvent;
+    var ACurCommand: TDbgControllerCmd; var AnIsFinished: boolean) of object;
 
   { TDbgControllerCmd }
 
   TDbgControllerCmd = class
+  private
+    procedure SetThread(AValue: TDbgThread);
   protected
     FController: TDbgController;
     FThread: TDbgThread;
     FProcess: TDbgProcess;
+    FThreadRemoved: boolean;
     FIsInitialized: Boolean;
     procedure Init; virtual;
     function IsAtCallInstruction: Integer;
@@ -42,6 +48,7 @@ type
     procedure DoBeforeLoopStart;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
     procedure ResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); virtual;
+    property Thread: TDbgThread read FThread write SetThread;
   end;
 
   { TDbgControllerContinueCmd }
@@ -83,6 +90,7 @@ type
     function IsAtOrOutOfHiddenBreakFrame: Boolean;  inline; // Stopped in/out-of the origin frame, maybe by a breakpoint after an exception
     procedure SetHiddenBreak(AnAddr: TDBGPtr);
     procedure RemoveHiddenBreak;
+    property NextInstruction: TInstruction read FNextInstruction;
 
     function CheckForCallAndSetBreak: boolean; // True, if break is newly set
 
@@ -110,10 +118,16 @@ type
 
   TDbgControllerLineStepBaseCmd = class(TDbgControllerHiddenBreakStepBaseCmd)
   private
+    FStartedInFuncName: String;
     FStepInfoUpdatedForStepOut, FStepInfoUnavailAfterStepOut: Boolean;
+    FStoreStepInfoAtInit: Boolean;
   protected
+    procedure Init; override;
     procedure UpdateThreadStepInfoAfterStepOut;
     function HasSteppedAwayFromOriginLine: boolean; // Call only, if in original frame (or updated frame)
+  public
+    constructor Create(AController: TDbgController; AStoreStepInfoAtInit: Boolean = False);
+    property StartedInFuncName: String read FStartedInFuncName;
   end;
 
   { TDbgControllerStepIntoLineCmd }
@@ -123,9 +137,10 @@ type
     FState: (siSteppingCurrent, siSteppingIn, siSteppingNested, siRunningStepOut);
     FStepCount, FNestDepth: Integer;
   protected
-    procedure Init; override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+  public
+    constructor Create(AController: TDbgController);
   end;
 
   { TDbgControllerStepOverLineCmd }
@@ -135,6 +150,8 @@ type
     procedure Init; override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+  public
+    constructor Create(AController: TDbgController);
   end;
 
   { TDbgControllerStepOutCmd }
@@ -146,10 +163,10 @@ type
     FWasOutsideFrame: boolean;
   protected
     function  GetOutsideFrame(var AnOutside: Boolean): Boolean;
-    procedure SetReturnAdressBreakpoint(AProcess: TDbgProcess; AnOutsideFrame: Boolean);
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
+    procedure SetReturnAdressBreakpoint(AProcess: TDbgProcess; AnOutsideFrame: Boolean);
   end;
 
   { TDbgControllerRunToCmd }
@@ -171,6 +188,8 @@ type
   private
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
+    FOnThreadBeforeProcessLoop: TNotifyEvent;
+    FOnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent;
     FRunning, FPauseRequest: cardinal;
     FAttachToPid: Integer;
     FDetaching: cardinal;
@@ -204,18 +223,22 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    (* InitializeCommand: set new command
+       Not called if command is replaced by OnThreadProcessLoopCycleEvent  *)
     procedure InitializeCommand(ACommand: TDbgControllerCmd);
+    procedure AbortCurrentCommand;
     function Run: boolean;
     procedure Stop;
     procedure StepIntoInstr;
     procedure StepOverInstr;
     procedure Next;
     procedure Step;
-    procedure StepOut;
+    procedure StepOut(AForceStoreStepInfo: Boolean = False);
     function Pause: boolean;
     function Detach: boolean;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
+    property CurrentCommand: TDbgControllerCmd read FCommand;
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -244,6 +267,14 @@ type
     property OnDebugInfoLoaded: TNotifyEvent read FOnDebugInfoLoaded write FOnDebugInfoLoaded;
     property OnLibraryLoadedEvent: TOnLibraryLoadedEvent read FOnLibraryLoadedEvent write FOnLibraryLoadedEvent;
     property OnLibraryUnloadedEvent: TOnLibraryUnloadedEvent read FOnLibraryUnloadedEvent write FOnLibraryUnloadedEvent;
+    (* Events fired inside the debug thread.
+       The "continue" param, is true by default. It is treated as: "continue to sent this event in procedure "SendEvents"
+       By setting "continue" to false, the event can be hidden.
+       That is, the debug thread will not interrupt for "SendEvents"
+    *)
+
+    property OnThreadBeforeProcessLoop: TNotifyEvent read FOnThreadBeforeProcessLoop write FOnThreadBeforeProcessLoop;
+    property OnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent read FOnThreadProcessLoopCycleEvent write FOnThreadProcessLoopCycleEvent;
   end;
 
 implementation
@@ -252,6 +283,14 @@ var
   DBG_VERBOSE, DBG_WARNINGS, FPDBG_COMMANDS: PLazLoggerLogGroup;
 
 { TDbgControllerCmd }
+
+procedure TDbgControllerCmd.SetThread(AValue: TDbgThread);
+begin
+  if FThread = AValue then Exit;
+  FThread := AValue;
+  if AValue = nil then
+    FThreadRemoved := True; // Only get here if FThread was <> nil;
+end;
 
 procedure TDbgControllerCmd.Init;
 begin
@@ -301,13 +340,16 @@ procedure TDbgControllerCmd.ResolveEvent(var AnEvent: TFPDEvent;
 var
   dummy: TDbgThread;
 begin
-  Finished := False;
+  Finished := FThreadRemoved;
+  if Finished then
+    exit;
   if AnEventThread = nil then
     exit;
   if FThread <> nil then begin
     // ResolveDebugEvent will have removed the thread, but not yet destroyed it
     // Finish, if the thread has gone.
-    Finished := not FProcess.GetThread(FThread.ID, dummy);
+    FThreadRemoved := (not FProcess.GetThread(FThread.ID, dummy)) or (FThread <> dummy);
+    Finished := FThreadRemoved;
     if Finished then
       exit;
     // Only react to events for the correct thread. (Otherwise return Finished = False)
@@ -511,6 +553,15 @@ end;
 
 { TDbgControllerLineStepBaseCmd }
 
+procedure TDbgControllerLineStepBaseCmd.Init;
+begin
+  if FStoreStepInfoAtInit then begin
+    FThread.StoreStepInfo;
+    FStartedInFuncName := FThread.StoreStepFuncName;
+  end;
+  inherited Init;
+end;
+
 procedure TDbgControllerLineStepBaseCmd.UpdateThreadStepInfoAfterStepOut;
 begin
   if FStepInfoUpdatedForStepOut or not IsSteppedOut then
@@ -565,6 +616,13 @@ begin
   Result := True;
 end;
 
+constructor TDbgControllerLineStepBaseCmd.Create(AController: TDbgController;
+  AStoreStepInfoAtInit: Boolean);
+begin
+  FStoreStepInfoAtInit := AStoreStepInfoAtInit;
+  inherited Create(AController);
+end;
+
 { TDbgControllerStepIntoLineCmd }
 
 procedure TDbgControllerStepIntoLineCmd.InternalContinue(AProcess: TDbgProcess;
@@ -583,10 +641,9 @@ begin
   FProcess.Continue(FProcess, FThread, FState <> siRunningStepOut);
 end;
 
-procedure TDbgControllerStepIntoLineCmd.Init;
+constructor TDbgControllerStepIntoLineCmd.Create(AController: TDbgController);
 begin
-  FThread.StoreStepInfo;
-  inherited Init;
+  inherited Create(AController, True);
 end;
 
 procedure TDbgControllerStepIntoLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
@@ -649,6 +706,11 @@ begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverLineCmd.DoContinue: FProcess=AProcess');
   CheckForCallAndSetBreak;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
+end;
+
+constructor TDbgControllerStepOverLineCmd.Create(AController: TDbgController);
+begin
+  inherited Create(AController, True);
 end;
 
 procedure TDbgControllerStepOverLineCmd.Init;
@@ -900,6 +962,15 @@ begin
   inherited Destroy;
 end;
 
+procedure TDbgController.AbortCurrentCommand;
+begin
+  if FCommand = nil then
+    exit;
+  assert(FCommandToBeFreed=nil, 'TDbgController.AbortCurrentCommand: FCommandToBeFreed=nil');
+  FCommandToBeFreed := FCommand;
+  FCommand := nil;
+end;
+
 procedure TDbgController.InitializeCommand(ACommand: TDbgControllerCmd);
 begin
   if assigned(FCommand) then
@@ -974,9 +1045,9 @@ begin
   InitializeCommand(TDbgControllerStepIntoLineCmd.Create(self));
 end;
 
-procedure TDbgController.StepOut;
+procedure TDbgController.StepOut(AForceStoreStepInfo: Boolean);
 begin
-  InitializeCommand(TDbgControllerStepOutCmd.Create(self));
+  InitializeCommand(TDbgControllerStepOutCmd.Create(self, AForceStoreStepInfo));
 end;
 
 function TDbgController.Pause: boolean;
@@ -1014,6 +1085,7 @@ var
   IsFinished, b: boolean;
   EventProcess: TDbgProcess;
   DummyThread: TDbgThread;
+  CurCmd: TDbgControllerCmd;
 
 begin
   AExit:=false;
@@ -1031,6 +1103,9 @@ begin
 
   FCurrentProcess.ThreadsClearCallStack;
 
+  if Assigned(FOnThreadBeforeProcessLoop) then
+    FOnThreadBeforeProcessLoop(Self);
+
   repeat
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then begin
       // IF there is a pause-request, we will hit a deCreateProcess.
@@ -1047,22 +1122,25 @@ begin
         break; // no event handling. Keep Process/Thread from last run
       end
       else begin
-      if not assigned(FCommand) then
-        begin
-        DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
-        FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
-        end
-      else
-        begin
-        DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
-        FCommand.DoContinue(FCurrentProcess, FCurrentThread);
-        end;
+        if not assigned(FCommand) then
+          begin
+          DebugLn(FPDBG_COMMANDS, 'Continue process without command.');
+          FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
+          end
+        else
+          begin
+          DebugLn(FPDBG_COMMANDS, 'Continue process with command '+FCommand.ClassName);
+          FCommand.DoContinue(FCurrentProcess, FCurrentThread);
+          end;
 
         // TODO: replace the dangling pointer with the next best value....
         // There is still a race condition, for another thread to access it...
-        if (FCurrentThread <> nil) and not FCurrentProcess.GetThread(FCurrentThread.ID, DummyThread) then
+        if (FCurrentThread <> nil) and not FCurrentProcess.GetThread(FCurrentThread.ID, DummyThread) then begin
+          if (FCommand <> nil) and (FCommand.FThread = FCurrentThread) then
+            FCommand.Thread := nil;
           FreeAndNil(FCurrentThread);
-    end;
+        end;
+      end;
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then
       Continue;
@@ -1130,8 +1208,10 @@ begin
       break;
 
     IsFinished:=false;
-    if FPDEvent=deExitProcess then
-      FreeAndNil(FCommand)
+    if FPDEvent=deExitProcess then begin
+      FreeAndNil(FCommand);
+      break;
+    end
     else
     if assigned(FCommand) then
     begin
@@ -1148,7 +1228,7 @@ begin
            b := FCurrentProcess.GetAndClearPauseRequested;
            AExit := (FCurrentProcess.CurrentBreakpoint <> nil) or
                     ( (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> Pointer(-1)) ) or
-                    (b and (InterLockedExchangeAdd(FPauseRequest, 0) = 1))
+                    (b and (InterLockedExchangeAdd(FPauseRequest, 0) = 1));
          end;
 {        deLoadLibrary :
           begin
@@ -1165,8 +1245,25 @@ begin
           end; }
       end; {case}
     end;
+
+    if assigned(FOnThreadProcessLoopCycleEvent) then begin
+      CurCmd := FCommand;
+      FOnThreadProcessLoopCycleEvent(AExit, FPDEvent, CurCmd, IsFinished);
+      if CurCmd = FCommand then begin
+        if IsFinished then
+          FreeAndNil(FCommand);
+      end
+      else begin
+        FreeAndNil(FCommand);
+        FCommand := CurCmd;
+        if FCommand <> nil then
+          FCommand.DoBeforeLoopStart;
+      end;
+    end
+    else
     if IsFinished then
       FreeAndNil(FCommand);
+
   until AExit or (InterLockedExchangeAdd(FPauseRequest, 0) = 1);
 end;
 

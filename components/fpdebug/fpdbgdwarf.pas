@@ -896,6 +896,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
     FFrameBaseParser: TDwarfLocationExpression;
+    function GetLineEndAddress: TDBGPtr;
+    function GetLineStartAddress: TDBGPtr;
     function GetLineUnfixed: TDBGPtr;
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
@@ -917,6 +919,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function CreateContext(AThreadId, AStackFrame: Integer; ADwarfInfo: TFpDwarfInfo): TFpDbgInfoContext; override;
     // TODO members = locals ?
     function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpValueDwarf;
+    // Contineous (sub-)part of the line
+    property LineStartAddress: TDBGPtr read GetLineStartAddress;
+    property LineEndAddress: TDBGPtr read GetLineEndAddress;
     property LineUnfixed: TDBGPtr read GetLineUnfixed; // with 0 lines
   end;
 
@@ -5107,6 +5112,31 @@ begin
     end;
   end
   else Result := inherited GetLine;
+end;
+
+function TFpSymbolDwarfDataProc.GetLineEndAddress: TDBGPtr;
+var
+  sm: TDwarfLineInfoStateMachine;
+begin
+  if StateMachineValid
+  then begin
+    sm := FStateMachine.Clone;
+    if sm.NextLine then
+      Result := sm.Address
+    else
+      Result := 0;
+    sm.Free;
+  end
+  else Result := 0;
+end;
+
+function TFpSymbolDwarfDataProc.GetLineStartAddress: TDBGPtr;
+begin
+  if StateMachineValid
+  then
+    Result := FStateMachine.Address
+  else
+    Result := 0;
 end;
 
 function TFpSymbolDwarfDataProc.GetLineUnfixed: TDBGPtr;
