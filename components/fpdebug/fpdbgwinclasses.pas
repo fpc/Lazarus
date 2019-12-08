@@ -384,19 +384,17 @@ begin
 
   // GetFinalPathNameByHandle is only available on Windows Vista / Server 2008
   if assigned(_GetFinalPathNameByHandle) then begin
-    SetLength(u, MAX_PATH);
+    SetLength(u, MAX_PATH+1);
 
     len := _GetFinalPathNameByHandle(AModuleHandle, @u[1], MAX_PATH, 0);
     s:='';
     if len > 0
     then begin
-      SetLength(u, len - 1);
-      if (u<>'') and (u[length(u)]=#0) then
-      begin
-        // On some older Windows versions there's a bug in GetFinalPathNameByHandleW,
-        // which leads to a trailing #0.
-        Delete(u,length(u),1);
-      end;
+      // On some older Windows versions there's a bug in GetFinalPathNameByHandleW,
+      // which leads to a trailing #0.
+      if (u[len]=#0) then
+        dec(len);
+      SetLength(u, len);
       s:=UTF8Encode(u);
     end else begin
       u := '';
