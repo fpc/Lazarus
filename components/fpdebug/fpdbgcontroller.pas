@@ -36,12 +36,12 @@ type
     procedure Init; virtual;
     function IsAtCallInstruction: Integer;
     function GetAsmInstruction(var AnInstr: TInstruction): Integer;
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); virtual; abstract;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); virtual; abstract;
   public
     constructor Create(AController: TDbgController); virtual;
     procedure DoBeforeLoopStart;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
-    procedure ResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); virtual;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); virtual;
   end;
 
   { TDbgControllerContinueCmd }
@@ -49,7 +49,7 @@ type
   TDbgControllerContinueCmd = class(TDbgControllerCmd)
   protected
     procedure Init; override;
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
   public
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
@@ -58,7 +58,7 @@ type
 
   TDbgControllerStepIntoInstructionCmd = class(TDbgControllerCmd)
   protected
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
   public
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
@@ -102,9 +102,8 @@ type
 
   TDbgControllerStepOverInstructionCmd = class(TDbgControllerHiddenBreakStepBaseCmd)
   protected
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
-  public
   end;
 
   { TDbgControllerLineStepBaseCmd }
@@ -125,7 +124,7 @@ type
     FStepCount, FNestDepth: Integer;
   protected
     procedure Init; override;
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
 
@@ -134,7 +133,7 @@ type
   TDbgControllerStepOverLineCmd = class(TDbgControllerLineStepBaseCmd)
   protected
     procedure Init; override;
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
 
@@ -148,7 +147,7 @@ type
   protected
     function  GetOutsideFrame(var AnOutside: Boolean): Boolean;
     procedure SetReturnAdressBreakpoint(AProcess: TDbgProcess; AnOutsideFrame: Boolean);
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
   end;
@@ -160,7 +159,7 @@ type
     FLocation: TDBGPtrArray;
   protected
     procedure Init; override;
-    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled, Finished: boolean); override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
     constructor Create(AController: TDbgController; ALocation: TDBGPtrArray);
@@ -298,11 +297,10 @@ begin
 end;
 
 procedure TDbgControllerCmd.ResolveEvent(var AnEvent: TFPDEvent;
-  AnEventThread: TDbgThread; out Handled, Finished: boolean);
+  AnEventThread: TDbgThread; out Finished: boolean);
 var
   dummy: TDbgThread;
 begin
-  Handled := False;
   Finished := False;
   if AnEventThread = nil then
     exit;
@@ -316,7 +314,7 @@ begin
     if FThread <> AnEventThread then
       exit;
   end;
-  DoResolveEvent(AnEvent, AnEventThread, Handled, Finished);
+  DoResolveEvent(AnEvent, AnEventThread, Finished);
 end;
 
 { TDbgControllerContinueCmd }
@@ -334,9 +332,8 @@ begin
 end;
 
 procedure TDbgControllerContinueCmd.DoResolveEvent(var AnEvent: TFPDEvent;
-  AnEventThread: TDbgThread; out Handled, Finished: boolean);
+  AnEventThread: TDbgThread; out Finished: boolean);
 begin
-  Handled := false;
   Finished := (AnEvent<>deInternalContinue); // TODO: always False? will be aborted, if another event terminates the ProcessLoop
 end;
 
@@ -350,11 +347,9 @@ begin
 end;
 
 procedure TDbgControllerStepIntoInstructionCmd.DoResolveEvent(
-  var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled,
-  Finished: boolean);
+  var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 begin
   Finished := (AnEvent<>deInternalContinue);
-  Handled := Finished;
   if Finished then
     AnEvent := deFinishedStep;
 end;
@@ -498,14 +493,12 @@ begin
 end;
 
 procedure TDbgControllerStepOverInstructionCmd.DoResolveEvent(
-  var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Handled,
-  Finished: boolean);
+  var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 begin
   if FHiddenBreakpoint <> nil then
     Finished := IsAtOrOutOfHiddenBreakFrame
   else
     Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
-  Handled := Finished;
   if Finished then
   begin
     AnEvent := deFinishedStep;
@@ -597,7 +590,7 @@ begin
 end;
 
 procedure TDbgControllerStepIntoLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
-  AnEventThread: TDbgThread; out Handled, Finished: boolean);
+  AnEventThread: TDbgThread; out Finished: boolean);
 var
   CompRes: TFPDCompareStepInfo;
 begin
@@ -618,7 +611,6 @@ begin
     Finished := CompRes = dcsiNewLine;
   end;
 
-  Handled := Finished;
   if Finished then
     AnEvent := deFinishedStep
   else
@@ -666,7 +658,7 @@ begin
 end;
 
 procedure TDbgControllerStepOverLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
-  AnEventThread: TDbgThread; out Handled, Finished: boolean);
+  AnEventThread: TDbgThread; out Finished: boolean);
 begin
   UpdateThreadStepInfoAfterStepOut;
   if IsAtOrOutOfHiddenBreakFrame then
@@ -677,7 +669,6 @@ begin
   else
     Finished := HasSteppedAwayFromOriginLine;
 
-  Handled := Finished;
   if Finished then
     AnEvent := deFinishedStep
   else
@@ -767,7 +758,7 @@ begin
 end;
 
 procedure TDbgControllerStepOutCmd.DoResolveEvent(var AnEvent: TFPDEvent;
-  AnEventThread: TDbgThread; out Handled, Finished: boolean);
+  AnEventThread: TDbgThread; out Finished: boolean);
 begin
   Finished := False;
 
@@ -790,7 +781,6 @@ begin
       Finished := HasSteppedAwayFromOriginLine;
   end;
 
-  Handled := Finished;
   if Finished then
     AnEvent := deFinishedStep
   else
@@ -820,10 +810,9 @@ begin
 end;
 
 procedure TDbgControllerRunToCmd.DoResolveEvent(var AnEvent: TFPDEvent;
-  AnEventThread: TDbgThread; out Handled, Finished: boolean);
+  AnEventThread: TDbgThread; out Finished: boolean);
 begin
   Finished := (AnEvent<>deInternalContinue);
-  Handled := Finished;
   if Finished then begin
     RemoveHiddenBreak;
     AnEvent := deFinishedStep;
@@ -1022,7 +1011,6 @@ var
   AProcessIdentifier: THandle;
   AThreadIdentifier: THandle;
   AExit: boolean;
-  IsHandled: boolean;
   IsFinished, b: boolean;
   EventProcess: TDbgProcess;
   DummyThread: TDbgThread;
@@ -1141,19 +1129,18 @@ begin
     if MaybeDetach then
       break;
 
-    IsHandled:=false;
     IsFinished:=false;
     if FPDEvent=deExitProcess then
       FreeAndNil(FCommand)
     else
     if assigned(FCommand) then
     begin
-      FCommand.ResolveEvent(FPDEvent, FCurrentThread, IsHandled, IsFinished);
-      DebugLn(FPDBG_COMMANDS, 'Command %s: IsFinished=%s, IsHandled=%s', [FCommand.ClassName, dbgs(IsFinished), dbgs(IsHandled)])
+      FCommand.ResolveEvent(FPDEvent, FCurrentThread, IsFinished);
+      DebugLn(FPDBG_COMMANDS, 'Command %s: IsFinished=%s', [FCommand.ClassName, dbgs(IsFinished)])
     end;
 
     AExit:=true;
-    if not IsHandled then
+    if not IsFinished then
     begin
      case FPDEvent of
        deInternalContinue: AExit := False;
