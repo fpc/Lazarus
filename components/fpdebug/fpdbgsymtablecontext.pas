@@ -115,6 +115,8 @@ begin
   for i := 0 to ALoaderList.Count-1 do
     ALoaderList[i].ParseSymbolTable(FSymbolList);
   FImage64Bit := ALoaderList.Image64Bit;
+  if FSymbolList.Count > 0 then
+    SetHasInfo;
 end;
 
 destructor TFpSymbolInfo.Destroy;

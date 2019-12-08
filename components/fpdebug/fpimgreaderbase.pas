@@ -13,7 +13,7 @@ uses
   {$endif}
   fgl, lazfglhash,
   fpDbgSymTable,
-  Classes, SysUtils, LazUTF8Classes, contnrs;
+  Classes, SysUtils, LazUTF8Classes, DbgIntfBaseTypes, contnrs;
 
 type
   TDbgImageSection = record
@@ -89,6 +89,7 @@ type
   private
     FImage64Bit: Boolean;
     FImageBase: QWord;
+    FLoadedTargetImageAddr: TDBGPtr;
     FReaderErrors: String;
     FUUID: TGuid;
   protected
@@ -103,6 +104,7 @@ type
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
+    procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; OwnSource: Boolean); virtual;
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
 
@@ -113,6 +115,8 @@ type
     property SubFiles: TStrings read GetSubFiles;
     property AddressMapList: TDbgAddressMapList read GetAddressMapList;
     property ReaderErrors: String read FReaderErrors;
+
+    property LoadedTargetImageAddr: TDBGPtr read FLoadedTargetImageAddr write FLoadedTargetImageAddr;
   end;
   TDbgImageReaderClass = class of TDbgImageReader;
 
@@ -345,6 +349,11 @@ procedure TDbgImageReader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
 begin
   // The format of the symbol-table-section(s) can be different on each
   // platform. That's why parsing the data is done in TDbgImageReader.
+end;
+
+procedure TDbgImageReader.ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList);
+begin
+  //
 end;
 
 constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);

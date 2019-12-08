@@ -39,8 +39,8 @@ unit FpImgReaderWinPE;
 interface
 
 uses
-  Classes, SysUtils, math, FpImgReaderBase, FpImgReaderWinPETypes, LazLoggerBase,
-  fpDbgSymTable, DbgIntfBaseTypes;
+  Classes, {$ifdef windows}windows,{$endif} SysUtils, math, FpImgReaderBase, FpImgReaderWinPETypes,
+  LazLoggerBase, fpDbgSymTable, DbgIntfBaseTypes;
   
 type
 
@@ -54,6 +54,8 @@ type
     FCodeBase   : DWord;
   protected
     function GetSection(const AName: String): PDbgImageSection; override;
+    function GetSection(const AVirtAddr: QWord): PDbgImageSection;
+    function MapVirtAddressToSection(AVirtAddr: Pointer): Pointer;
 
     procedure LoadSections;
   public
@@ -63,6 +65,7 @@ type
     constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean); override;
     destructor Destroy; override;
     procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
+    procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); override;
   end;
 
 implementation
@@ -159,6 +162,90 @@ begin
   end;
 end;
 
+procedure TPEFileSource.ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList);
+{$ifdef windows}
+var
+  hBase: PImageDosHeader;
+  header64: PImageNtHeaders64;
+  header32: PImageNtHeaders32;
+  ExportSect: PIMAGE_EXPORT_DIRECTORY;
+  ExportSize: DWord;
+  NameCnt, FuncCnt: DWord;
+  NameList, FuncList: PDWORD;
+  OrdList: PWORD;
+  i: Integer;
+  NameAddr: PByte;
+  FuncName: AnsiString;
+  OrdVal: Word;
+  FuncAddr: TDBGPtr;
+{$ENDIF}
+begin
+  {$ifdef windows}
+  if LoadedTargetImageAddr = 0 then
+    exit;
+
+  FFileLoader.LoadMemory(0, 1, hBase); // size does not matter, only obtain address
+  if (hBase = nil) or (hBase^.e_magic <> IMAGE_DOS_SIGNATURE) then
+    exit;
+
+  if Image64Bit then begin
+    header64 := PImageNtHeaders64(PByte(hBase) + hBase^.e_lfanew);
+    if (header64^.Signature <> IMAGE_NT_SIGNATURE) or
+       (header64^.OptionalHeader.NumberOfRvaAndSizes = 0)
+    then
+      exit;
+
+    ExportSect := MapVirtAddressToSection(
+      PIMAGE_EXPORT_DIRECTORY(PtrUInt(header64^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress))
+    );
+    ExportSize := header64^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
+  end
+  else begin
+    header32 := PImageNtHeaders32(PByte(hBase) + hBase^.e_lfanew);
+    if (header32^.Signature <> IMAGE_NT_SIGNATURE) or
+       (header32^.OptionalHeader.NumberOfRvaAndSizes = 0)
+    then
+      exit;
+
+    ExportSect := MapVirtAddressToSection(
+      PIMAGE_EXPORT_DIRECTORY(PtrUInt(header32^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress))
+    );
+    ExportSize := header32^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
+  end;
+
+  if (ExportSect = nil) or (ExportSect^.AddressOfNames = 0) or (ExportSize = 0) then
+    exit;
+
+  NameCnt := ExportSect^.NumberOfNames;
+  FuncCnt := ExportSect^.NumberOfFunctions;
+  if (NameCnt = 0) or (FuncCnt = 0) then
+    exit;
+
+  NameList := MapVirtAddressToSection(PDWORD(PtrUInt(ExportSect^.AddressOfNames)));
+  OrdList  := MapVirtAddressToSection( PWORD(PtrUInt(ExportSect^.AddressOfNameOrdinals)));
+  FuncList := MapVirtAddressToSection(PDWORD(PtrUInt(ExportSect^.AddressOfFunctions)));
+  if (NameList = nil) or (OrdList = nil) or (FuncList = nil) then
+    exit;
+
+  for i := 0 to NameCnt - 1 do begin
+    NameAddr := MapVirtAddressToSection(PByte(PtrUInt(NameList[i])));
+    if IndexByte(NameAddr^, 500, 0) < 0 then
+      continue;
+    FuncName := PChar(NameAddr);
+    OrdVal := OrdList[i];
+
+    if OrdVal >= FuncCnt then
+      continue;
+
+    FuncAddr := TDBGPtr(FuncList[OrdVal]);
+    if FuncAddr = 0 then
+      Continue;
+
+    AFpSymbolInfo.Add(FuncName, LoadedTargetImageAddr + FuncAddr);
+  end;
+  {$ENDIF}
+end;
+
 function TPEFileSource.GetSection(const AName: String): PDbgImageSection;
 var
   i: Integer;
@@ -174,6 +261,41 @@ begin
     exit;
   ex^.Loaded  := True;
   FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
+end;
+
+function TPEFileSource.GetSection(const AVirtAddr: QWord): PDbgImageSection;
+var
+  i: Integer;
+  ex: PDbgImageSectionEx;
+begin
+  for i := 0 to FSections.Count - 1 do begin
+    ex := PDbgImageSectionEx(FSections.Objects[i]);
+    Result := @ex^.Sect;
+    if (Result^.VirtualAddress <= AVirtAddr) and
+       (Result^.VirtualAddress + Result^.Size > AVirtAddr)
+    then begin
+      FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
+      exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+function TPEFileSource.MapVirtAddressToSection(AVirtAddr: Pointer): Pointer;
+var
+  Sect: PDbgImageSection;
+begin
+  (* AVirtAddress is a 32bit pointer (DWORD) as found in the mem mapped file.
+     It will be mapped to the Address to which the file has been loaded. (native pointer)
+  *)
+  Result := nil;
+  Sect := GetSection(QWord(AVirtAddr));
+  if Sect = nil then
+    exit;
+
+  {$PUSH}{$R-}
+  Result := (PByte(Sect^.RawData) + (QWord(AVirtAddr) - Sect^.VirtualAddress));
+  {$POP}
 end;
 
 procedure TPEFileSource.LoadSections;

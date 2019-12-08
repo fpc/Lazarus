@@ -441,7 +441,7 @@ end;
 
 procedure tDbgWinLibrary.InitializeLoaders;
 begin
-  TDbgImageLoader.Create(FInfo.hFile).AddToLoaderList(LoaderList);
+  TDbgImageLoaderLibrary.Create(FInfo.hFile, nil, TDBGPtr(FInfo.lpBaseOfDll)).AddToLoaderList(LoaderList);
 end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
@@ -1286,7 +1286,7 @@ begin
   Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), AInfo);
   ID := TDbgPtr(AInfo.lpBaseOfDll);
   FLibMap.Add(ID, Result);
-  if Result.DbgInfo.HasInfo
+  if (Result.DbgInfo.HasInfo) or (Result.SymbolTableInfo.HasInfo)
   then FSymInstances.Add(Result);
 end;
 
@@ -1298,8 +1298,7 @@ begin
   if FLibMap = nil then Exit;
   ID := TDbgPtr(AInfo.lpBaseOfDll);
   if not FLibMap.GetData(ID, Lib) then Exit;
-  if Lib.DbgInfo.HasInfo
-  then FSymInstances.Remove(Lib);
+  FSymInstances.Remove(Lib);
   FLibMap.Delete(ID);
   Lib.Free;
 end;
