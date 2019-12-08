@@ -1876,6 +1876,7 @@ end;
 function TDbgThread.CompareStepInfo(AnAddr: TDBGPtr): TFPDCompareStepInfo;
 var
   Sym: TFpSymbol;
+  l: TDBGPtr;
 begin
   if FStoreStepSrcLineNo = -1 then begin // stepping from location with no line info
     Result := dcsiNewLine;
@@ -1887,12 +1888,16 @@ begin
   sym := FProcess.FindProcSymbol(AnAddr);
   if assigned(sym) then
   begin
-    debugln(FPDBG_COMMANDS, ['CompareStepInfo @IP=',AnAddr,' ',sym.FileName, ':',sym.Line, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
-    if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) then
+    if sym is TFpSymbolDwarfDataProc then
+      l := TFpSymbolDwarfDataProc(sym).LineUnfixed
+    else
+      l := Sym.Line;
+    debugln(FPDBG_COMMANDS, ['CompareStepInfo @IP=',AnAddr,' ',sym.FileName, ':',l, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
+    if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=l)) {or FStepOut}) then
       result := dcsiSameLine
     else if sym.FileName = '' then
       result := dcsiNoLineInfo
-    else if sym.Line = 0 then
+    else if l = 0 then
       result := dcsiZeroLine
     else
       result := dcsiNewLine;
@@ -1935,10 +1940,14 @@ begin
   sym := FProcess.FindProcSymbol(AnAddr);
   if assigned(sym) then
   begin
-    debugln(FPDBG_COMMANDS, ['StoreStepInfo @IP=',AnAddr,' ',sym.FileName, ':',sym.Line, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
     FStoreStepSrcFilename:=sym.FileName;
-    FStoreStepSrcLineNo:=sym.Line;
     FStoreStepFuncAddr:=sym.Address.Address;
+    if sym is TFpSymbolDwarfDataProc then begin
+      FStoreStepSrcLineNo := TFpSymbolDwarfDataProc(sym).LineUnfixed;
+    end
+    else
+      FStoreStepSrcLineNo:=sym.Line;
+    debugln(FPDBG_COMMANDS, ['StoreStepInfo @IP=',AnAddr,' ',sym.FileName, ':',FStoreStepSrcLineNo, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
     sym.ReleaseReference;
   end
   else begin
