@@ -1053,10 +1053,8 @@ end;
 
 function TGtk3WidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.Ellipse not implemented ...');
-  {$ENDIF}
-  Result:=inherited Ellipse(DC, x1, y1, x2, y2);
+  TGtk3DeviceContext(DC).drawEllipse(x1,y1,x2-x1,y2-y1);
+  Result:=true;
 end;
 
 function TGtk3WidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal
@@ -3265,7 +3263,9 @@ begin
   R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);
   with R do
-    TGtk3DeviceContext(DC).drawRect(Left, Top, Right - Left, Bottom - Top, false);
+    TGtk3DeviceContext(DC).drawRect(Left, Top, Right - Left, Bottom - Top,
+      TGtk3DeviceContext(DC).CurrentBrush.Style<>BS_NULL{bsClear}
+      );
   Result := True;
 end;
 

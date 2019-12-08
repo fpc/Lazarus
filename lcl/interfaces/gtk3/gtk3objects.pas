@@ -1329,17 +1329,15 @@ procedure TGtk3DeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer;
 begin
   cairo_save(Widget);
   try
-    applyPen;
-    // strange about adding +1 -1 to rectangle, but this works ok.
-    //cairo_rectangle(Widget, x1 + 1, y1 + 1, w - 1, h -1);
+    ApplyPen;
     cairo_rectangle(Widget, x1, y1, w, h);
+    cairo_stroke(Widget);
     if AFill then
     begin
-      cairo_stroke_preserve(Widget);
-      applyBrush;
-      cairo_fill_preserve(Widget);
-    end else
-      cairo_stroke(Widget);
+      cairo_rectangle(Widget, x1, y1, w - 1, h - 1);
+      ApplyBrush;
+      cairo_fill(Widget);
+    end;
   finally
     cairo_restore(Widget);
   end;
@@ -1422,8 +1420,29 @@ end;
 
 procedure TGtk3DeviceContext.drawEllipse(x: Integer; y: Integer; w: Integer;
   h: Integer);
+var
+  save_matrix:cairo_matrix_t;
 begin
-
+  cairo_save(Widget);
+  cairo_get_matrix(Widget, @save_matrix);
+  cairo_translate (Widget, x + w / 2.0, y + h / 2.0);
+  cairo_scale (Widget, w / 2.0, h / 2.0);
+  cairo_new_path(Widget);
+  cairo_arc
+      (
+        (*cr =*) Widget,
+        (*xc =*) 0,
+        (*yc =*) 0,
+        (*radius =*) 1,
+        (*angle1 =*) 0,
+        (*angle2 =*) 2 * Pi
+      );
+  cairo_close_path(Widget);
+  ApplyBrush;
+  cairo_fill_preserve(Widget);
+  cairo_restore(Widget);
+  ApplyPen;
+  cairo_stroke(Widget);
 end;
 
 procedure TGtk3DeviceContext.drawSurface(targetRect: PRect;
