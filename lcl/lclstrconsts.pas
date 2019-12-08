@@ -89,7 +89,14 @@ resourceString
   rsPostRecordHint = 'Post';
   rsCancelRecordHint = 'Cancel';
   rsRefreshRecordsHint = 'Refresh';
-  
+
+  // macOS (cocoa) interface
+  rsMacOSMenuHide = 'Hide %s';
+  rsMacOSMenuHideOthers = 'Hide Others';
+  rsMacOSMenuQuit = 'Quit %s';
+  rsMacOSMenuServices = 'Services';
+  rsMacOSMenuShowAll = 'Show All';
+
   // gtk interface
   rsWarningUnremovedPaintMessages = ' WARNING: There are %s unremoved LM_'
     +'PAINT/LM_GtkPAINT message links left.';
