@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="LazDebuggerFp"/>
     <Type Value="RunAndDesignTime"/>
     <Author Value="Joost van der Sluis"/>
@@ -13,8 +13,12 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="This package adds a stand-alone debugger to the IDE. For now it is only a proof-of-concept. Evaluating data is not (yet) possible."/>
+    <Description Value="This package is a debugger backend for the Lazarus-IDE.
+- It is based on FpDebug and requires no external debugger executable.
+- It currently supports Windows and Linux. 
+"/>
     <License Value="GPLv2"/>
+    <Version Minor="9"/>
     <Files Count="1">
       <Item1>
         <Filename Value="fpdebugdebugger.pas"/>

@@ -1,0 +1,64 @@
+#   File generated automatically by Lazarus Package Manager
+#
+#   Makefile.fpc for LazDebuggerFp 0.9
+#
+#   This file was generated on 08/12/2019
+
+[package]
+name=lazdebuggerfp
+version=0.9
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../fpdebug/lib/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -Si- $(DBG_OPTIONS)
+
+[target]
+units=lazdebuggerfp.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
+
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
+
+[rules]
+.PHONY: cleartarget compiled all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lazdebuggerfp$(PPUEXT)
+
+compiled:
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerFp.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggerfp$(PPUEXT) compiled
+
+distclean: clean
+        ${DELTREE} lib/*
