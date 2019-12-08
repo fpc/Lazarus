@@ -1937,7 +1937,8 @@ end;
 
 function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 begin
-  Result := StringReplace(S, '&', '_', [rfReplaceAll]);
+  Result := StringReplace(S, '_', '__', [rfReplaceAll]);
+  Result := StringReplace(Result, '&', '_', [rfReplaceAll]);
 end;
 
 {-------------------------------------------------------------------------------
