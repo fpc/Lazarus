@@ -31,7 +31,9 @@ type
     cbtGray,  // grayscale bitmap
     cbtRGB,   // color bitmap 8-8-8 R-G-B
     cbtARGB,  // color bitmap with alpha channel first 8-8-8-8 A-R-G-B
-    cbtRGBA   // color bitmap with alpha channel last 8-8-8-8 R-G-B-A
+    cbtRGBA,  // color bitmap with alpha channel last 8-8-8-8 R-G-B-A
+    cbtABGR,  // color bitmap with alpha channel first 8-8-8-8 A-B-G-R
+    cbtBGRA   // color bitmap with alpha channel last 8-8-8-8 B-G-R-A
   );
 
 const
@@ -870,6 +872,43 @@ end;
 constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
   AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
   AData: Pointer; ACopyData: Boolean);
+
+type
+  TColorEntry = packed record
+    C1, C2, C3, C4: Byte;
+  end;
+  PColorEntry = ^TColorEntry;
+
+  TColorEntryArray = array[0..MaxInt div SizeOf(TColorEntry) - 1] of TColorEntry;
+  PColorEntryArray = ^TColorEntryArray;
+
+
+  procedure CopySwappedColorComponents(ASrcData, ADestData: PColorEntryArray; ADataSize: Integer; AType: TCocoaBitmapType);
+  var
+    I: Integer;
+  begin
+    //switch B and R components
+    for I := 0 to ADataSize div SizeOf(TColorEntry) - 1 do
+    begin
+      case AType of
+        cbtABGR:
+        begin
+          ADestData^[I].C1 := ASrcData^[I].C1;
+          ADestData^[I].C2 := ASrcData^[I].C4;
+          ADestData^[I].C3 := ASrcData^[I].C3;
+          ADestData^[I].C4 := ASrcData^[I].C2;
+        end;
+        cbtBGRA:
+        begin
+          ADestData^[I].C1 := ASrcData^[I].C3;
+          ADestData^[I].C2 := ASrcData^[I].C2;
+          ADestData^[I].C3 := ASrcData^[I].C1;
+          ADestData^[I].C4 := ASrcData^[I].C4;
+        end;
+      end;
+    end;
+  end;
+
 begin
   inherited Create(False);
   {$ifdef VerboseBitmaps}
@@ -885,7 +924,15 @@ begin
     System.GetMem(FData, FDataSize);
     FFreeData := True;
     if AData <> nil then
-      System.Move(AData^, FData^, FDataSize) // copy data
+    begin
+      if AType in [cbtABGR, cbtBGRA] then
+      begin
+        Assert(AWidth * AHeight * SizeOf(TColorEntry) = FDataSize);
+        CopySwappedColorComponents(AData, FData, FDataSize, AType);
+      end
+      else
+        System.Move(AData^, FData^, FDataSize) // copy data
+    end
     else
       FillDWord(FData^, FDataSize shr 2, 0); // clear bitmap
   end
@@ -982,14 +1029,14 @@ var
   HasAlpha: Boolean;
   BitmapFormat: NSBitmapFormat;
 begin
-  HasAlpha := FType in [cbtARGB, cbtRGBA];
+  HasAlpha := FType in [cbtARGB, cbtRGBA, cbtABGR, cbtBGRA];
   // Non premultiplied bitmaps can't be used for bitmap context
   // So we need to pre-multiply ourselves, but only if we were allowed
   // to copy the data, otherwise we might corrupt the original
   if FFreeData then
     PreMultiplyAlpha();
   BitmapFormat := 0;
-  if FType in [cbtARGB, cbtRGB] then
+  if FType in [cbtARGB, cbtABGR, cbtRGB] then
     BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
 
   //WriteLn('[TCocoaBitmap.Create] FSamplesPerPixel=', FSamplesPerPixel,
