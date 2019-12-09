@@ -1042,7 +1042,7 @@ resourcestring
   lisTheOutputDirectoryIsMissing = 'The output directory "%s" is missing.';
   lisCreateIt = 'Create it';
   lisInvalidFileName = 'Invalid file name';
-  lisTheTargetFileNameIsADirectory = '\"%s\"\nThe target file name is a directory.';
+  lisTheTargetFileNameIsADirectory = 'The target file name is a directory.';
   lisNotAValidFppkgPrefix ='Free Pascal compiler not found at the given prefix.';
   lisIncorrectFppkgConfiguration = 'there is a problem with the Fppkg configuration. (%s)';
   lisFppkgCompilerProblem = 'there is a problem with the Free Pascal compiler executable, ';
