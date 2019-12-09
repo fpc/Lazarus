@@ -21280,7 +21280,7 @@ msgid "Character set:"
 msgstr "字符集:"
 
 #: lazarusidestrconsts.rscloseall
-msgid "Close all tabs"
+msgid "Close all pages"
 msgstr ""
 
 #: lazarusidestrconsts.rsclosecurrentpage
@@ -21288,15 +21288,15 @@ msgid "Close current page"
 msgstr "关闭当前页"
 
 #: lazarusidestrconsts.rscloseleft
-msgid "Close tab(s) on the left"
+msgid "Close page(s) on the left"
 msgstr ""
 
 #: lazarusidestrconsts.rscloseothers
-msgid "Close other tab(s)"
+msgid "Close other page(s)"
 msgstr ""
 
 #: lazarusidestrconsts.rscloseright
-msgid "Close tab(s) on the right"
+msgid "Close page(s) on the right"
 msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines

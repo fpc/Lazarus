@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-12-10 00:56+0300\n"
+"PO-Revision-Date: 2019-12-10 01:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -20839,7 +20839,7 @@ msgid "Character set:"
 msgstr "Набор символов:"
 
 #: lazarusidestrconsts.rscloseall
-msgid "Close all tabs"
+msgid "Close all pages"
 msgstr "Закрыть все вкладки"
 
 #: lazarusidestrconsts.rsclosecurrentpage
@@ -20847,15 +20847,15 @@ msgid "Close current page"
 msgstr "Закрыть текущую вкладку"
 
 #: lazarusidestrconsts.rscloseleft
-msgid "Close tab(s) on the left"
+msgid "Close page(s) on the left"
 msgstr "Закрыть вкладки слева"
 
 #: lazarusidestrconsts.rscloseothers
-msgid "Close other tab(s)"
+msgid "Close other page(s)"
 msgstr "Закрыть прочие вкладки"
 
 #: lazarusidestrconsts.rscloseright
-msgid "Close tab(s) on the right"
+msgid "Close page(s) on the right"
 msgstr "Закрыть вкладки справа"
 
 #: lazarusidestrconsts.rsconditionaldefines

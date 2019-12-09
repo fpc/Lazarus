@@ -20879,23 +20879,32 @@ msgid "Character set:"
 msgstr "Jeu de caractères :"
 
 #: lazarusidestrconsts.rscloseall
-msgid "Close all tabs"
+#, fuzzy
+#| msgid "Close all tabs"
+msgid "Close all pages"
 msgstr "Fermer tous les onglets"
 
 #: lazarusidestrconsts.rsclosecurrentpage
+#, fuzzy
 msgid "Close current page"
 msgstr "Fermer l'onglet actif"
 
 #: lazarusidestrconsts.rscloseleft
-msgid "Close tab(s) on the left"
+#, fuzzy
+#| msgid "Close tab(s) on the left"
+msgid "Close page(s) on the left"
 msgstr "Fermer le(s) onglet(s) de gauche"
 
 #: lazarusidestrconsts.rscloseothers
-msgid "Close other tab(s)"
+#, fuzzy
+#| msgid "Close other tab(s)"
+msgid "Close other page(s)"
 msgstr "Fermer tous les autre(s) onglet(s)"
 
 #: lazarusidestrconsts.rscloseright
-msgid "Close tab(s) on the right"
+#, fuzzy
+#| msgid "Close tab(s) on the right"
+msgid "Close page(s) on the right"
 msgstr "Fermer le(s) onglet(s) de droite"
 
 #: lazarusidestrconsts.rsconditionaldefines
