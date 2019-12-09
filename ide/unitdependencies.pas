@@ -563,7 +563,7 @@ end;
 
 procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
-  Name := NonModalIDEWindowNames[nmiwUnitDependenciesName];
+  Name := NonModalIDEWindowNames[nmiwUnitDependencies];
 
   FGroupLvlGraphSelectionsList := TStringList.Create;
   FPendingUnitDependencyRoute:=TStringList.Create;

@@ -291,7 +291,7 @@ begin
   CodeHelpBoss.AddHandlerOnChanging(@OnFPDocChanging);
   CodeHelpBoss.AddHandlerOnChanged(@OnFPDocChanged);
 
-  Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
+  Name := NonModalIDEWindowNames[nmiwFPDocEditor];
 
   IDEImages.AssignImage(BoldFormatButton, 'formatbold');
   IDEImages.AssignImage(UnderlineFormatButton, 'formatunderline');

@@ -6345,10 +6345,10 @@ var
 begin
   FPageIndex := -1;
   i := 1;
-  n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]);
+  n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBook]);
   while (n <> nil) do begin
     inc(i);
-    n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]+IntToStr(i));
+    n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBook]+IntToStr(i));
   end;
 
   Create(AOwner, i-1);
@@ -6364,9 +6364,9 @@ begin
   FIsClosing := False;
   FWindowID := AWindowID;
   if AWindowID > 0 then
-    Name := NonModalIDEWindowNames[nmiwSourceNoteBookName] + IntToStr(AWindowID+1)
+    Name := NonModalIDEWindowNames[nmiwSourceNoteBook] + IntToStr(AWindowID+1)
   else
-    Name := NonModalIDEWindowNames[nmiwSourceNoteBookName];
+    Name := NonModalIDEWindowNames[nmiwSourceNoteBook];
 
   if AWindowID > 0 then
     FBaseCaption := locWndSrcEditor + ' (' + IntToStr(AWindowID+1) + ')'
@@ -9199,7 +9199,7 @@ begin
   SRCED_CLOSE := DebugLogger.RegisterLogGroup('SRCED_CLOSE' {$IFDEF SRCED_CLOSE} , True {$ENDIF} );
   SRCED_PAGES := DebugLogger.RegisterLogGroup('SRCED_PAGES' {$IFDEF SRCED_PAGES} , True {$ENDIF} );
 
-  IDEWindowsGlobalOptions.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName], False);
+  IDEWindowsGlobalOptions.Add(NonModalIDEWindowNames[nmiwSourceNoteBook], False);
 end;
 
 procedure InternalFinal;
@@ -10016,8 +10016,8 @@ begin
   DockSibling:='';
   DockAlign:=alNone;
   i:=StrToIntDef(
-       copy(aFormName,length(NonModalIDEWindowNames[nmiwSourceNoteBookName])+1,
-            length(aFormName)),0);
+    copy(aFormName,length(NonModalIDEWindowNames[nmiwSourceNoteBook])+1,length(aFormName)),
+    0);
   {$IFDEF VerboseIDEDocking}
   debugln(['TSourceEditorManager.GetDefaultLayout ',aFormName,' i=',i]);
   {$ENDIF}
@@ -10037,7 +10037,7 @@ begin
   aBounds.Right:=ScreenR.Right-MulDiv(30, Screen.PixelsPerInch, 96);
   aBounds.Bottom:=ScreenR.Bottom-MulDiv(200, Screen.PixelsPerInch, 96);
   if (i=0) and (IDEDockMaster<>nil) then begin
-    DockSibling:=NonModalIDEWindowNames[nmiwMainIDEName];
+    DockSibling:=NonModalIDEWindowNames[nmiwMainIDE];
     DockAlign:=alBottom;
   end;
 end;
@@ -11197,10 +11197,9 @@ begin
   CreateEditorToolBar(@DoConfigureEditorToolbar);
 
   // layout
-  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName],
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSourceNoteBook],
     nil,@CreateSourceWindow,'250','100','+70%','+70%',
-    NonModalIDEWindowNames[nmiwMainIDEName],alBottom,
-    true,@GetDefaultLayout);
+    NonModalIDEWindowNames[nmiwMainIDE],alBottom,true,@GetDefaultLayout);
 
   Application.AddOnIdleHandler(@OnIdle);
   Application.AddOnUserInputHandler(@OnUserInput);

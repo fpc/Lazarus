@@ -472,7 +472,7 @@ begin
   FMode := CodeExplorerOptions.Mode;
   UpdateMode;
 
-  Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
+  Name:=NonModalIDEWindowNames[nmiwCodeExplorer];
   UpdateCaption;
 
   case CodeExplorerOptions.Page of

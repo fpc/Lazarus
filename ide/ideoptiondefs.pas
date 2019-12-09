@@ -78,17 +78,17 @@ type
 type
   TNonModalIDEWindow = (
     nmiwNone, // empty/none/undefined
-    nmiwMainIDEName,
-    nmiwSourceNoteBookName,
-    nmiwMessagesViewName,
-    nmiwUnitDependenciesName,
-    nmiwCodeExplorerName,
-    nmiwFPDocEditorName,
-    nmiwClipbrdHistoryName,
+    nmiwMainIDE,
+    nmiwSourceNoteBook,
+    nmiwMessagesView,
+    nmiwUnitDependencies,
+    nmiwCodeExplorer,
+    nmiwFPDocEditor,
+    nmiwClipbrdHistory,
     nmiwPkgGraphExplorer,
     nmiwProjectInspector,
     nmiwEditorFileManager,
-    nmiwSearchResultsViewName,
+    nmiwSearchResultsView,
     nmiwAnchorEditor,
     nmiwTabOrderEditor,
     nmiwCodeBrowser,
@@ -102,11 +102,11 @@ const
   // on startup. These windows are opened automatically when needed.
 {  NonModalIDEWindowManualOpen = [
     nmiwNone,
-    nmiwMainIDEName,
-    nmiwSourceNoteBookName,
+    nmiwMainIDE,
+    nmiwSourceNoteBook,
     //nmiwDbgOutput,
     //nmiwDbgEvents,
-    nmiwSearchResultsViewName,
+    nmiwSearchResultsView,
     nmiwAnchorEditor
     ];
 }

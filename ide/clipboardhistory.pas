@@ -96,7 +96,7 @@ constructor TClipBoardHistory.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   
-  Name:=NonModalIDEWindowNames[nmiwClipbrdHistoryName];
+  Name:=NonModalIDEWindowNames[nmiwClipbrdHistory];
   Caption := 'Clipboard History';
 
   CopyToIDEBitBtn:=TBitBtn.Create(Self);

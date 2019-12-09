@@ -295,7 +295,7 @@ begin
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
   ResultsNoteBook.Update;
 
-  Name:=NonModalIDEWindowNames[nmiwSearchResultsViewName];
+  Name:=NonModalIDEWindowNames[nmiwSearchResultsView];
   Caption:=lisMenuViewSearchResults;
 
   SearchAgainButton.Hint:=rsStartANewSearch;

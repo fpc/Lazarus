@@ -96,7 +96,7 @@ implementation
 
 procedure TMessagesView.FormCreate(Sender: TObject);
 begin
-  Name := NonModalIDEWindowNames[nmiwMessagesViewName];
+  Name := NonModalIDEWindowNames[nmiwMessagesView];
   IDEMessagesWindow:=Self;
   Caption:=lisMenuViewMessages;
   {$IFNDEF LCLGtk2}
