@@ -401,7 +401,7 @@ msgstr "Citar valores \"string\""
 
 #: tmainform.misaveformatted.caption
 msgid "Save Formatted JSON"
-msgstr ""
+msgstr "Salvar JSON formatado"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
