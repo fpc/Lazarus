@@ -2480,8 +2480,10 @@ begin
   if AColor = nil then
     AColor := BackgroundBrush.getColor;
   // stop asserts from qtlib
+  {issue #36411. Seem that assert triggered in Qt4 < 4.7 only.
   if (w < x) or (h < y) then
     exit;
+  }
   q_DrawPlainRect(Widget, x, y, w, h, AColor, lineWidth, FillBrush);
 end;
 
