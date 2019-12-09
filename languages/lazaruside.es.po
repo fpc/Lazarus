@@ -21273,9 +21273,25 @@ msgstr "Construcción:"
 msgid "Character set:"
 msgstr "Conjunto de caracteres:"
 
+#: lazarusidestrconsts.rscloseall
+msgid "Close all tabs"
+msgstr ""
+
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
 msgstr "Cerrar página actual"
+
+#: lazarusidestrconsts.rscloseleft
+msgid "Close tab(s) on the left"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseothers
+msgid "Close other tab(s)"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseright
+msgid "Close tab(s) on the right"
+msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"

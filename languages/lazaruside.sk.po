@@ -21442,9 +21442,25 @@ msgstr "Vy&budovať:"
 msgid "Character set:"
 msgstr "Množina znakov:"
 
+#: lazarusidestrconsts.rscloseall
+msgid "Close all tabs"
+msgstr ""
+
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
 msgstr "zatvoriť túto stránku"
+
+#: lazarusidestrconsts.rscloseleft
+msgid "Close tab(s) on the left"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseothers
+msgid "Close other tab(s)"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseright
+msgid "Close tab(s) on the right"
+msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"

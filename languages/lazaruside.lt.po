@@ -21130,9 +21130,25 @@ msgstr "&Darymas:"
 msgid "Character set:"
 msgstr "Koduotė:"
 
+#: lazarusidestrconsts.rscloseall
+msgid "Close all tabs"
+msgstr ""
+
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
 msgstr "Užverti veikiamąjį lapą"
+
+#: lazarusidestrconsts.rscloseleft
+msgid "Close tab(s) on the left"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseothers
+msgid "Close other tab(s)"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseright
+msgid "Close tab(s) on the right"
+msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"

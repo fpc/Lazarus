@@ -21094,9 +21094,25 @@ msgstr "構築(&B)"
 msgid "Character set:"
 msgstr "キャラクタセット"
 
+#: lazarusidestrconsts.rscloseall
+msgid "Close all tabs"
+msgstr ""
+
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
 msgstr "現在のページを閉じる"
+
+#: lazarusidestrconsts.rscloseleft
+msgid "Close tab(s) on the left"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseothers
+msgid "Close other tab(s)"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseright
+msgid "Close tab(s) on the right"
+msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"

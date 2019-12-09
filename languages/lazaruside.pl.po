@@ -21406,9 +21406,25 @@ msgstr "&Buduj:"
 msgid "Character set:"
 msgstr "Zestaw znaków:"
 
+#: lazarusidestrconsts.rscloseall
+msgid "Close all tabs"
+msgstr ""
+
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
 msgstr "Zamknij bieżącą stronę"
+
+#: lazarusidestrconsts.rscloseleft
+msgid "Close tab(s) on the left"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseothers
+msgid "Close other tab(s)"
+msgstr ""
+
+#: lazarusidestrconsts.rscloseright
+msgid "Close tab(s) on the right"
+msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines
 #, fuzzy
