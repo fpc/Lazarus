@@ -7,78 +7,139 @@ object SearchResultsView: TSearchResultsView
   Caption = 'SearchResultsView'
   ClientHeight = 273
   ClientWidth = 799
+  Constraints.MinWidth = 400
   KeyPreview = True
   OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ResultsNoteBook: TPageControl
-    AnchorSideTop.Control = ToolBar
-    AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 251
-    Top = 22
-    Width = 799
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Height = 274
+    Top = 26
+    Width = 896
+    Align = alClient
     MultiLine = True
-    TabOrder = 1
+    TabOrder = 0
     OnChange = ResultsNoteBookPageChanged
-    OnChanging = ResultsNoteBookChanging
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
+    OnResize = ResultsNoteBookResize
     Options = [nboShowCloseButtons, nboMultiLine]
   end
-  object ToolBar: TToolBar
+  object ControlBar1: TPanel
     Left = 0
-    Height = 22
+    Height = 26
     Top = 0
-    Width = 55
-    Align = alNone
-    AutoSize = True
-    EdgeBorders = []
-    TabOrder = 2
-    object SearchAgainButton: TToolButton
-      Left = 1
-      Top = 0
-      Caption = 'SearchAgainButton'
-      OnClick = SearchAgainButtonClick
-    end
-    object ClosePageButton: TToolButton
-      Left = 24
-      Top = 0
-      Caption = 'ClosePageButton'
-      OnClick = ClosePageButtonClick
-    end
-    object ToolButton3: TToolButton
-      Left = 47
+    Width = 896
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 26
+    ClientWidth = 896
+    TabOrder = 1
+    TabStop = True
+    object ToolBar: TToolBar
+      Left = 3
       Height = 22
-      Top = 0
-      Caption = 'ToolButton3'
-      Style = tbsSeparator
+      Top = 2
+      Width = 47
+      Align = alNone
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      EdgeInner = esNone
+      EdgeOuter = esNone
+      TabOrder = 0
+      object SearchAgainButton: TToolButton
+        Left = 1
+        Top = 0
+        AutoSize = True
+        Caption = 'SearchAgainButton'
+        ImageIndex = 0
+        OnClick = SearchAgainButtonClick
+      end
+      object ClosePageButton: TToolButton
+        Left = 24
+        Top = 0
+        Caption = 'ClosePageButton'
+        ImageIndex = 1
+        OnClick = ClosePageButtonClick
+      end
     end
-  end
-  object SearchInListEdit: TTreeFilterEdit
-    AnchorSideLeft.Control = ToolBar
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = ToolBar
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 61
-    Height = 23
-    Top = 0
-    Width = 738
-    ButtonWidth = 23
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    NumGlyphs = 1
-    MaxLength = 0
-    TabOrder = 0
-    OnChange = SearchInListChange
+    object SearchInListEdit: TTreeFilterEdit
+      Left = 53
+      Height = 23
+      Top = 2
+      Width = 716
+      ButtonWidth = 23
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 2
+      BorderSpacing.Bottom = 1
+      BorderSpacing.Around = 2
+      AutoSize = False
+      NumGlyphs = 1
+      MaxLength = 0
+      TabOrder = 1
+      OnChange = SearchInListChange
+    end
+    object CloseTabs: TToolBar
+      Left = 774
+      Height = 22
+      Top = 3
+      Width = 118
+      Align = alNone
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Around = 2
+      EdgeBorders = []
+      EdgeInner = esNone
+      EdgeOuter = esNone
+      Indent = 2
+      TabOrder = 2
+      Wrapable = False
+      object tbbCloseLeft: TToolButton
+        AnchorSideRight.Control = ToolButton1
+        Left = 2
+        Top = 0
+        Action = actCloseLeft
+      end
+      object tbbCloseRight: TToolButton
+        Left = 64
+        Top = 0
+        Action = actCloseRight
+      end
+      object tbbCloseOthers: TToolButton
+        Left = 33
+        Top = 0
+        Action = actCloseOthers
+      end
+      object ToolButton1: TToolButton
+        Left = 25
+        Height = 22
+        Top = 0
+        Style = tbsSeparator
+      end
+      object ToolButton3: TToolButton
+        Left = 87
+        Height = 22
+        Top = 0
+        Style = tbsSeparator
+      end
+      object tbbCloseAll: TToolButton
+        Left = 95
+        Top = 0
+        Action = actCloseAll
+      end
+      object ToolButton2: TToolButton
+        Left = 56
+        Height = 22
+        Top = 0
+        Caption = 'ToolButton2'
+        Style = tbsSeparator
+      end
+    end
   end
   object popList: TPopupMenu
-    Left = 190
-    Top = 133
+    left = 190
+    top = 133
     object mniCopyItem: TMenuItem
       Caption = 'Copy Item'
       OnClick = mniCopyItemClick
@@ -104,9 +165,10 @@ object SearchResultsView: TSearchResultsView
     end
   end
   object ActionList: TActionList
-    Left = 93
-    Top = 133
+    left = 93
+    top = 133
     object actClosePage: TAction
+      ImageIndex = 1
       OnExecute = ClosePageButtonClick
       ShortCut = 16499
     end
@@ -117,6 +179,23 @@ object SearchResultsView: TSearchResultsView
     object actPrevPage: TAction
       OnExecute = actPrevPageExecute
       ShortCut = 24585
+    end
+    object actCloseLeft: TAction
+      ImageIndex = 5
+      OnExecute = tbbCloseLeftClick
+    end
+    object actCloseOthers: TAction
+      ImageIndex = 6
+      OnExecute = tbbCloseOthersClick
+    end
+    object actCloseRight: TAction
+      ImageIndex = 7
+      OnExecute = tbbCloseRightClick
+    end
+    object actCloseAll: TAction
+      ImageIndex = 8
+      OnExecute = tbbCloseAllClick
+      ShortCut = 24691
     end
   end
 end

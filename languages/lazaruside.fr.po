@@ -20878,9 +20878,25 @@ msgstr "&Construction :"
 msgid "Character set:"
 msgstr "Jeu de caractères :"
 
+#: lazarusidestrconsts.rscloseall
+msgid "Close all tabs"
+msgstr "Fermer tous les onglets"
+
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
-msgstr "Fermer la page en cours"
+msgstr "Fermer l'onglet actif"
+
+#: lazarusidestrconsts.rscloseleft
+msgid "Close tab(s) on the left"
+msgstr "Fermer le(s) onglet(s) de gauche"
+
+#: lazarusidestrconsts.rscloseothers
+msgid "Close other tab(s)"
+msgstr "Fermer tous les autre(s) onglet(s)"
+
+#: lazarusidestrconsts.rscloseright
+msgid "Close tab(s) on the right"
+msgstr "Fermer le(s) onglet(s) de droite"
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"

@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, strutils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
-  ActnList,
+  ActnList, ExtCtrls,
   // LazControls
   TreeFilterEdit,
   // LazUtils
@@ -53,7 +53,7 @@ uses
 
 type
   { TLazSearchMatchPos }
-  
+
   TLazSearchMatchPos = class(TObject)
   private
     FFileEndPos: TPoint;
@@ -131,29 +131,47 @@ type
     function ItemsAsStrings: TStrings;
   end;
 
-
   { TSearchResultsView }
 
   TSearchResultsView = class(TForm)
     actClosePage: TAction;
+    actCloseLeft: TAction;
+    actCloseOthers: TAction;
+    actCloseRight: TAction;
+    actCloseAll: TAction;
     actNextPage: TAction;
     actPrevPage: TAction;
     ActionList: TActionList;
+    ClosePageButton1: TToolButton;
+    ControlBar1: TPanel;
     MenuItem1: TMenuItem;
     mniCollapseAll: TMenuItem;
     mniExpandAll: TMenuItem;
     mniCopySelected: TMenuItem;
     mniCopyAll: TMenuItem;
     mniCopyItem: TMenuItem;
+    pnlToolBars: TPanel;
     popList: TPopupMenu;
     ResultsNoteBook: TPageControl;
+    tbbCloseLeft: TToolButton;
+    tbbCloseOthers: TToolButton;
+    tbbCloseRight: TToolButton;
     ToolBar: TToolBar;
     SearchAgainButton: TToolButton;
-    ToolButton3: TToolButton;
+    CloseTabs: TToolBar;
+    ToolButton1: TToolButton;
     ClosePageButton: TToolButton;
     SearchInListEdit: TTreeFilterEdit;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    tbbCloseAll: TToolButton;
     procedure actNextPageExecute(Sender: TObject);
     procedure actPrevPageExecute(Sender: TObject);
+    procedure ResultsNoteBookResize(Sender: TObject);
+    procedure tbbCloseAllClick(Sender: TObject);
+    procedure tbbCloseLeftClick(Sender: TObject);
+    procedure tbbCloseOthersClick(Sender: TObject);
+    procedure tbbCloseRightClick(Sender: TObject);
     procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -183,6 +201,9 @@ type
     procedure TreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
+    type
+      TOnSide = (osLeft, osOthers, osRight); { Handling of multi tab closure }
+  private
     FMaxItems: integer;
     FFocusTreeViewInOnChange: Boolean;
     FFocusTreeViewInEndUpdate: Boolean;
@@ -196,6 +217,9 @@ type
     function GetItems(Index: integer): TStrings;
     procedure SetMaxItems(const AValue: integer);
     procedure UpdateToolbar;
+    function  GetPagesOnActiveLine:TFPlist;
+    procedure ClosePageOnSides(aOnSide : TOnSide);
+    procedure UpdateCloseTabs(aState : boolean);
   protected
     procedure Loaded; override;
     procedure ActivateControl(aWinControl: TWinControl);
@@ -268,7 +292,7 @@ begin
   Dest.ShownFilename := Src.ShownFilename;
   Result := True;
 end;
-  
+
 function GetTreeSelectedItemsAsText(ATreeView: TCustomTreeView): string;
 var
   sl: TStringList;
@@ -284,6 +308,7 @@ begin
   Result:=sl.Text;
   sl.Free;
 end;
+
 
 { TSearchResultsView }
 
@@ -301,6 +326,12 @@ begin
   SearchAgainButton.Hint:=rsStartANewSearch;
   ClosePageButton.Hint := rsCloseCurrentPage;
   SearchInListEdit.Hint:=rsFilterTheListWithString;
+  { Close tabs buttons }
+  actCloseLeft.Hint:=rsCloseLeft;
+  actCloseRight.Hint:=rsCloseRight;
+  actCloseOthers.Hint:=rsCloseOthers;
+  actCloseAll.Hint:=rsCloseAll;
+
   CloseCommand := IDECommandList.FindIDECommand(ecClose);
   if CloseCommand <> nil then
   begin
@@ -325,6 +356,13 @@ begin
   ClosePageButton.ImageIndex := IDEImages.LoadImage('menu_close');
   ActionList.Images := IDEImages.Images_16;
   actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
+  { Close tabs buttons }
+  CloseTabs.Images := IDEImages.Images_16;
+  actCloseLeft.ImageIndex   := IDEImages.LoadImage('tab_close_L');
+  actCloseOthers.ImageIndex := IDEImages.LoadImage('tab_close_LR');
+  actCloseRight.ImageIndex  := IDEImages.LoadImage('tab_close_R');
+  actCloseAll.ImageIndex    := IDEImages.LoadImage('tab_close_All');
+  UpdateCloseTabs(False);
 end;
 
 procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -345,14 +383,14 @@ begin
   end;
 end;
 
-procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word; 
+procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_ESCAPE) then
   begin
     Key := VK_UNKNOWN;
     Close;
-  end;  
+  end;
 end;
 
 procedure TSearchResultsView.mniCopyAllClick(Sender: TObject);
@@ -422,11 +460,79 @@ end;
 procedure TSearchResultsView.actNextPageExecute(Sender: TObject);
 begin
   ResultsNoteBook.SelectNextPage(True);
+  UpdateCloseTabs(True);
 end;
 
 procedure TSearchResultsView.actPrevPageExecute(Sender: TObject);
 begin
   ResultsNoteBook.SelectNextPage(False);
+  UpdateCloseTabs(True);
+end;
+
+procedure TSearchResultsView.ResultsNoteBookResize(Sender: TObject);
+begin
+  UpdateCloseTabs(ResultsNoteBook.PageCount>0);
+end;
+
+{ Handling of tabs closure. Only tabs on pages at the level of active page in
+  multiline ResultsNoteBook will be closed by Left / Others and Right }
+procedure TSearchResultsView.ClosePageOnSides(aOnSide: TOnSide);
+var
+  lvPageList: TFPList = nil;
+  lCurTabSheet: TTabSheet;
+  ix: integer;
+  lTabSheet: TTabSheet;
+  lNeedsRefresh : boolean = false;
+  lCurTV:TLazSearchResultTV;
+begin
+  lvPageList := GetPagesOnActiveLine;
+  with ResultsNoteBook do begin
+    lCurTabSheet := ActivePage;
+    if aOnSide = osLeft then
+      ix := lvPageList.IndexOf(lCurTabSheet)-1
+    else
+      ix := lvPageList.Count - 1;
+    while ix >= 0 do begin
+      lTabSheet := TTabSheet(lvPageList[ix]);
+      if lTabSheet = lCurTabSheet then begin
+        if aOnSide = osRight then
+          break;
+      end
+      else begin
+        ClosePage(lTabSheet.TabIndex);
+        lNeedsRefresh := True;
+      end;
+      Dec(ix);
+    end;
+  end;
+  lvPageList.Free;
+  if lNeedsRefresh then begin { ~bk force realign alClient }
+    lCurTV := GetTreeView(ResultsNoteBook.PageIndex);
+    if assigned(lCurTV) then
+      lCurTV.Height:=lCurTV.Height+1;
+  end;
+end;
+
+procedure TSearchResultsView.tbbCloseLeftClick(Sender: TObject);
+begin
+  ClosePageOnSides(osLeft);
+end;
+
+procedure TSearchResultsView.tbbCloseOthersClick(Sender: TObject);
+begin
+  ClosePageOnSides(osOthers);
+end;
+
+procedure TSearchResultsView.tbbCloseRightClick(Sender: TObject);
+begin
+  ClosePageOnSides(osRight);
+end;
+
+procedure TSearchResultsView.tbbCloseAllClick(Sender: TObject);
+begin
+  with ResultsNoteBook do
+    while PageCount>0 do
+      ClosePage(PageCount-1);
 end;
 
 {Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true
@@ -684,7 +790,9 @@ begin
     ResultsNoteBook.Pages[PageIndex].Free;
   end;
   if ResultsNoteBook.PageCount = 0 then
-    Close;
+    Close
+  else
+    UpdateCloseTabs(True);
 end;
 
 {Sets the Items from the treeview on the currently selected page in the TNoteBook}
@@ -737,6 +845,68 @@ begin
   SearchAgainButton.Enabled := state;
   ClosePageButton.Enabled := state;
   SearchInListEdit.Enabled := state;
+  if state then
+    UpdateCloseTabs(state);
+end;
+
+// <wp> a good tip as usual
+// https://forum.lazarus.freepascal.org/index.php/
+//   topic,39500.msg271287.html?PHPSESSID=t8cr445mhbtlnqm2jq0ckj2ul6#msg271287
+{ Returns a list of all pages on the same line of Tabs as the ActivaPage }
+function TSearchResultsView.GetPagesOnActiveLine: TFPlist;
+var
+  lRect: TRect;
+  lActiveMidX: integer;
+  lActiveMidY: integer;
+  ix: integer;
+begin
+  Result := TFPList.Create;
+  with ResultsNoteBook do begin
+    if ActivePage = Nil then Exit;
+    lRect := TabRect(ActivePage.TabIndex);
+    lActiveMidX := (lRect.Right - lRect.Left) div 2;
+    lActiveMidY := (lRect.Bottom - lRect.Top) div 2;
+    // Some widgetsets returned a negative value from Bottom-Top calculation
+    //  although they might be fixed now.
+    if lActiveMidY < 0 then begin
+      DebugLn(['TSearchResultsView.GetPagesOnActiveLine: TabRect Bottom-Top calculation'+
+               ' for ActivePage returned a negative value "', lActiveMidY, '".']);
+      lActiveMidY := -lActiveMidY;
+    end;
+    //DebugLn(['Width=',Width, ' MidX=',lActiveMidX, ' MidY=',lActiveMidY]);
+    //DebugLn(['Rect(TabIndex)=[',dbgs(lRect), ']']);
+    for ix := 0 to PageCount - 1 do begin
+      lRect := TabRect(ix);
+      //DebugLn(['Rect=[',dbgs(lRect), ']']);
+      if (lRect.Top < lActiveMidY) and (lRect.Bottom > lActiveMidY)
+      and (lRect.Right > lActiveMidX) and (lRect.Left < Width - lActiveMidX) then
+        Result.Add(Pages[ix]);
+    end;
+  end;
+end;
+
+procedure TSearchResultsView.UpdateCloseTabs(aState: boolean);
+var
+  lPageList: TFPlist = nil;
+  lActiveIx : integer = -1;
+begin
+  if aState and (ResultsNoteBook.PageCount>0) then begin
+    lPageList := GetPagesOnActiveLine;
+    if lPageList.Count>0 then
+      repeat
+        inc(lActiveIx);
+        if lPageList[lActiveIx]=Pointer(ResultsNoteBook.ActivePage) then
+          Break;
+      until lActiveIx>=lPageList.Count -1
+    else
+      FreeAndNil(lPageList);
+  end;
+  aState := aState and Assigned(lPageList);
+  actCloseLeft.Enabled  := aState and (lActiveIx>0);
+  actCloseOthers.Enabled:= aState and (lPageList.Count>1);
+  actCloseRight.Enabled := aState and (lActiveIx<lPageList.Count-1);
+  actCloseAll.Enabled   := aState;
+  lPageList.Free;
 end;
 
 procedure TSearchResultsView.ResultsNoteBookClosetabclicked(Sender: TObject);
@@ -769,7 +939,7 @@ begin
     Key:=VK_UNKNOWN;
     if Assigned(FOnSelectionChanged) then
       FOnSelectionChanged(Self);
-  end;     
+  end;
 end;
 
 { Add Result will create a tab in the Results view window with an new

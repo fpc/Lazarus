@@ -1042,7 +1042,7 @@ resourcestring
   lisTheOutputDirectoryIsMissing = 'The output directory "%s" is missing.';
   lisCreateIt = 'Create it';
   lisInvalidFileName = 'Invalid file name';
-  lisTheTargetFileNameIsADirectory = 'The target file name is a directory.';
+  lisTheTargetFileNameIsADirectory = '\"%s\"\nThe target file name is a directory.';
   lisNotAValidFppkgPrefix ='Free Pascal compiler not found at the given prefix.';
   lisIncorrectFppkgConfiguration = 'there is a problem with the Fppkg configuration. (%s)';
   lisFppkgCompilerProblem = 'there is a problem with the Free Pascal compiler executable, ';
@@ -5481,6 +5481,10 @@ resourcestring
   rsStartANewSearch = 'Start a new search';
   rsCloseCurrentPage = 'Close current page';
   rsFilterTheListWithString = 'Filter the lines in list with a string';
+  rsCloseLeft = 'Close tab(s) on the left';
+  rsCloseRight = 'Close tab(s) on the right';
+  rsCloseOthers = 'Close other tab(s)';
+  rsCloseAll = 'Close all tabs';
 
   // Application Bundle
   lisErrorLoadingFrom = 'Error loading %s from%s%s%s%s';
