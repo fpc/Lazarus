@@ -1586,6 +1586,8 @@ begin
   Config.SetDeleteValue(Path+'Desktop/FormIdCount',Count,0);
   //debugln(['TSimpleWindowLayoutList.SaveToConfig ',Count]);
   for i:=0 to Count-1 do begin
+    if Items[i].FormID = 'SearchResults' then
+      DebugLn(['*** TSimpleWindowLayoutList.SaveToConfig: Saving ', Items[i].FormID, '.']);
     Config.SetDeleteValue(Path+'Desktop/FormIdList/a'+IntToStr(i+1),Items[i].FormID,'');
     Items[i].SaveToConfig(Config,Path);
   end;
@@ -2219,12 +2221,21 @@ begin
 
   // auto create a layout storage for every shown form
   Layout:=SimpleLayoutStorage.ItemByFormID(AForm.Name);
+  if AForm.Name = 'SearchResults' then
+    DebugLn(['TIDEWindowCreatorList.ShowForm: SearchResults layout=', Layout,
+             ', BringToFront=', BringToFront, ', AMoveToVisbleMode=', AMoveToVisbleMode]);
   if Layout=nil then begin
-    if not IsFormDesign(AForm) then
+    if not IsFormDesign(AForm) then begin
+      if AForm.Name = 'SearchResults' then
+        DebugLn([' TIDEWindowCreatorList.ShowForm: Calling CreateWindowLayout for SearchResults.']);
       SimpleLayoutStorage.CreateWindowLayout(AForm);
+    end;
   end
-  else
+  else begin
+    if AForm.Name = 'SearchResults' then
+      DebugLn([' TIDEWindowCreatorList.ShowForm: Setting SearchResults form for layout.']);
     Layout.Form:=AForm;
+  end;
 
   if (IDEDockMaster<>nil) and (not IsFormDesign(AForm))
   and (FindWithName(AForm.Name)<>nil) then
