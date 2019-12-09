@@ -5481,10 +5481,10 @@ resourcestring
   rsStartANewSearch = 'Start a new search';
   rsCloseCurrentPage = 'Close current page';
   rsFilterTheListWithString = 'Filter the lines in list with a string';
-  rsCloseLeft = 'Close tab(s) on the left';
-  rsCloseRight = 'Close tab(s) on the right';
-  rsCloseOthers = 'Close other tab(s)';
-  rsCloseAll = 'Close all tabs';
+  rsCloseLeft = 'Close page(s) on the left';
+  rsCloseRight = 'Close page(s) on the right';
+  rsCloseOthers = 'Close other page(s)';
+  rsCloseAll = 'Close all pages';
 
   // Application Bundle
   lisErrorLoadingFrom = 'Error loading %s from%s%s%s%s';
