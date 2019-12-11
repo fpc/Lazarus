@@ -374,15 +374,13 @@ type
     SelFont: TQtFont;
     SelBrush: TQtBrush;
     SelPen: TQtPen;
-    PenColor: TQColor;
     FMetrics: TQtFontMetrics;
     function GetMetrics: TQtFontMetrics;
     function GetRop: Integer;
     function DeviceSupportsComposition: Boolean;
     function DeviceSupportsRasterOps: Boolean;
     function R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
-    procedure RestorePenColor;
-    procedure RestoreTextColor;
+    procedure SetTextPen;
     procedure SetRop(const AValue: Integer);
   public
     { public fields }
@@ -2732,19 +2730,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtDeviceContext.RestorePenColor
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.RestorePenColor;
-begin
-  {$ifdef VerboseQt}
-  writeln('TQtDeviceContext.RestorePenColor() ');
-  {$endif}
-  QPainter_setPen(Widget, @PenColor);
-end;
-
 function TQtDeviceContext.GetRop: Integer;
 begin
   Result := FRopMode;
@@ -2756,23 +2741,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtDeviceContext.RestoreTextColor
+  Function: TQtDeviceContext.SetTextPen
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.RestoreTextColor;
+procedure TQtDeviceContext.SetTextPen;
 var
-  CurPen: QPenH;
   TxtColor: TQColor;
 begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.RestoreTextColor() ');
   {$endif}
-  CurPen := QPainter_Pen(Widget);
-  QPen_color(CurPen, @PenColor);
-  TxtColor := PenColor;
+  TxtColor := Default(TQColor);
   ColorRefToTQColor(vTextColor, TxtColor);
-  QPainter_setPen(Widget, @txtColor);
+  QPainter_setPen(Widget, PQColor(@txtColor));
 end;
 
 procedure TQtDeviceContext.SetRop(const AValue: Integer);
@@ -2794,8 +2776,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer;
   h: Integer);
-var
-  PW: Double;
 begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.drawRect() x1: ',x1,' y1: ',y1,' w: ',w,' h: ',h);
@@ -2822,6 +2802,8 @@ end;
   To get a correct behavior we need to sum the text's height to the Y coordinate.
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
+var
+  APen: QPenH;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
@@ -2838,17 +2820,16 @@ begin
   // what about Metrics.descent and Metrics.leading ?
   y := y + Metrics.ascent;
 
-  RestoreTextColor;
-
+  APen := QPen_create(QPainter_pen(Widget));
+  SetTextPen;
   // The ascent is only applied here, because it also needs
   // to be rotated
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Metrics.ascent, s)
   else
     QPainter_drawText(Widget, x, y, s);
-
-  RestorePenColor;
-  
+  QPainter_setPen(Widget, APen);
+  QPen_destroy(APen);
   // Restore previous angle
   if Font.Angle <> 0 then
   begin
@@ -2869,6 +2850,8 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x, y, w, h, flags: Integer; s: PWideString);
+var
+  APen: QPenH;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
@@ -2882,12 +2865,14 @@ begin
     Rotate(-0.1 * Font.Angle);
   end;
 
-  RestoreTextColor;
+  APen := QPen_create(QPainter_pen(Widget));
+  SetTextPen;
   if Font.Angle <> 0 then
     QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
   else
     QPainter_DrawText(Widget, x, y, w, h, Flags, s);
-  RestorePenColor;
+  QPainter_setPen(Widget, APen);
+  QPen_destroy(APen);
 
   // Restore previous angle
   if Font.Angle <> 0 then
