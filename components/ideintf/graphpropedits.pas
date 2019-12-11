@@ -654,6 +654,10 @@ end;
 
 { TImageIndexPropertyEditor }
 
+type
+  TOwnedCollectionHelper = class(TOwnedCollection)
+  end;
+
 function TImageIndexPropertyEditor.GetImageList: TCustomImageList;
 var
   Persistent: TPersistent;
@@ -663,8 +667,25 @@ var
 begin
   Result := nil;
   Persistent := GetComponent(0);
-  if not (Persistent is TComponent) then
+
+  if (Persistent is TCollectionItem) and
+    (TCollectionItem(Persistent).Collection <> nil) and
+    (TCollectionItem(Persistent).Collection is TOwnedCollection) and
+    (TOwnedCollectionHelper(TCollectionItem(Persistent).Collection).Owner <> nil) and
+    (TOwnedCollectionHelper(TCollectionItem(Persistent).Collection).Owner is TComponent) then
+  begin
+    Component := TComponent(TOwnedCollectionHelper(TCollectionItem(Persistent).Collection).Owner);
+    PropInfo := TypInfo.GetPropInfo(Component, 'Images');
+    if PropInfo = nil then
+      Exit;
+    Obj := GetObjectProp(Component, PropInfo);
+    if Obj is TCustomImageList then
+      Exit(TCustomImageList(Obj));
     Exit;
+  end
+  else
+    if not (Persistent is TComponent) then
+      Exit;
 
   if Component is TMenuItem then
   begin
@@ -788,6 +809,8 @@ initialization
   RegisterPropertyEditor(TypeInfo(AnsiString), TFont, 'Name', TFontNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'ImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'OverlayImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'SelectedImageIndex', TImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TGridColumnTitle, 'ImageIndex', TGridImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TCustomGrid, 'ImageIndexSortAsc', TGridImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TCustomGrid, 'ImageIndexSortDesc', TGridImageIndexPropertyEditor);
