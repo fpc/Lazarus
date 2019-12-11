@@ -74,7 +74,7 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
-{$if FPC_FULLVERSION < 30300}
+{$if FPC_FULLVERSION < 30301}
   NSAppearance = objcclass external(NSObject)
     function name: NSString; message 'name';
     class function currentAppearance: NSAppearance; message 'currentAppearance';
