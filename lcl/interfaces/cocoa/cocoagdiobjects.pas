@@ -144,6 +144,7 @@ type
       AGlobal: Boolean = False);
     destructor Destroy; override;
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
+    procedure ApplyAsPenColor(ADC: TCocoaContext; UseROP2: Boolean = True);
 
     // for brushes created by NCColor
     property Color: NSColor read FColor write SetColor;
@@ -448,6 +449,13 @@ type
     procedure SetPixel(X,Y:integer; AColor:TColor); virtual;
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
+    // draws a rectangle by given LCL coordinates.
+    // always outlines rectangle
+    // if FillRect is set to true, then fills with either Context brush
+    // OR with "UseBrush" brush, if provided
+    // if FillRect is set to false, draws outlines only.
+    //   if "UseBrush" is not provided, uses the current pen
+    //   if "useBrush" is provided, uses the color from the defined brush
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure BackgroundFill(dirtyRect:NSRect);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
@@ -2062,12 +2070,14 @@ end;
 procedure TCocoaContext.Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
 var
   cg: CGContextRef;
+  resetPen: Boolean;
 begin
   if (X1=X2) or (Y1=Y2) then Exit;
 
   cg := CGContext;
   if not Assigned(cg) then Exit;
 
+  resetPen := false;
   CGContextBeginPath(cg);
 
   if FillRect then
@@ -2082,11 +2092,25 @@ begin
        FBrush.Apply(Self);
   end
   else
+  begin
     CGContextAddLCLRect(cg, X1, Y1, X2, Y2, true);
+    // this is a "special" case, when UseBrush is provided
+    // but "FillRect" is set to false. Use for FrameRect() function
+    // (it deserves a redesign)
+    if Assigned(UseBrush) then
+    begin
+      UseBrush.Apply(Self);
+      UseBrush.ApplyAsPenColor(Self);
+      resetPen := true;
+    end;
+  end;
 
   CGContextStrokePath(cg);
 
   AttachedBitmap_SetModified();
+
+  if resetPen and Assigned(fPen) then // pen was modified by brush. Setting it back
+    fPen.Apply(Self);
 end;
 
 procedure TCocoaContext.BackgroundFill(dirtyRect:NSRect);
@@ -3326,6 +3350,29 @@ begin
   begin
     CGContextSetRGBFillColor(ADC.CGContext, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
   end;
+end;
+
+procedure TCocoaBrush.ApplyAsPenColor(ADC: TCocoaContext; UseROP2: Boolean);
+var
+  AR, AG, AB, AA: CGFloat;
+  AROP2: Integer;
+  ADashes: array [0..15] of CGFloat;
+  ADashLen: Integer;
+  StatDash: PCocoaStatDashes;
+  isCosm  : Boolean;
+  WidthMul : array [Boolean] of CGFloat;
+begin
+  if ADC = nil then Exit;
+  if ADC.CGContext = nil then Exit;
+
+  if UseROP2 then
+    AROP2 := ADC.ROP2
+  else
+    AROP2 := R2_COPYPEN;
+
+  GetRGBA(AROP2, AR, AG, AB, AA);
+
+  CGContextSetRGBStrokeColor(ADC.CGContext, AR, AG, AB, AA);
 end;
 
 { TCocoaGDIObject }
