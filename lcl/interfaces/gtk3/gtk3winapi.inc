@@ -4073,8 +4073,13 @@ begin
   {$ENDIF}
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
-  DestContext.drawImage1(@ATargetRect, PgdkPixbuf(SrcContext.CurrentImage.Handle) , @ASrcRect, nil, nil);
-  // Result := True;
+
+  if (DestContext.OwnsSurface) then
+    DestContext.drawImage1(@ATargetRect, PgdkPixbuf(SrcContext.CurrentImage.Handle) , @ASrcRect, nil, nil)
+  else
+    DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, nil, nil);
+
+  Result := True;
 end;
 
 function TGtk3WidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
