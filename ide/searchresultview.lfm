@@ -1,12 +1,13 @@
 object SearchResultsView: TSearchResultsView
   Left = 344
-  Height = 273
+  Height = 275
   Top = 327
-  Width = 799
+  Width = 722
   BorderIcons = [biSystemMenu]
   Caption = 'SearchResultsView'
-  ClientHeight = 273
-  ClientWidth = 799
+  ClientHeight = 275
+  ClientWidth = 722
+  Constraints.MinHeight = 100
   Constraints.MinWidth = 400
   KeyPreview = True
   OnClose = FormClose
@@ -15,9 +16,9 @@ object SearchResultsView: TSearchResultsView
   LCLVersion = '2.1.0.0'
   object ResultsNoteBook: TPageControl
     Left = 0
-    Height = 274
+    Height = 249
     Top = 26
-    Width = 896
+    Width = 722
     Align = alClient
     MultiLine = True
     TabOrder = 0
@@ -25,17 +26,17 @@ object SearchResultsView: TSearchResultsView
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
     OnResize = ResultsNoteBookResize
-    Options = [nboShowCloseButtons, nboMultiLine]
+    Options = [nboShowCloseButtons, nboMultiLine, nboDoChangeOnSetIndex]
   end
   object ControlBar1: TPanel
     Left = 0
     Height = 26
     Top = 0
-    Width = 896
+    Width = 722
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 26
-    ClientWidth = 896
+    ClientWidth = 722
     TabOrder = 1
     TabStop = True
     object ToolBar: TToolBar
@@ -69,7 +70,7 @@ object SearchResultsView: TSearchResultsView
       Left = 53
       Height = 23
       Top = 2
-      Width = 716
+      Width = 542
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 2
@@ -82,7 +83,7 @@ object SearchResultsView: TSearchResultsView
       OnChange = SearchInListChange
     end
     object CloseTabs: TToolBar
-      Left = 774
+      Left = 600
       Height = 22
       Top = 3
       Width = 118
@@ -138,8 +139,8 @@ object SearchResultsView: TSearchResultsView
     end
   end
   object popList: TPopupMenu
-    left = 190
-    top = 133
+    Left = 129
+    Top = 48
     object mniCopyItem: TMenuItem
       Caption = 'Copy Item'
       OnClick = mniCopyItemClick
@@ -165,8 +166,8 @@ object SearchResultsView: TSearchResultsView
     end
   end
   object ActionList: TActionList
-    left = 93
-    top = 133
+    Left = 32
+    Top = 48
     object actClosePage: TAction
       ImageIndex = 1
       OnExecute = ClosePageButtonClick
