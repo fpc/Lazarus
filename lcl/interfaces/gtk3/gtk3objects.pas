@@ -229,12 +229,12 @@ type
     procedure DeleteObjects;
   public
     procedure drawPoint(x1: Integer; y1: Integer);
-    procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer; const AFill: Boolean);
+    procedure drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
     procedure drawText(x: Integer; y: Integer; const s: String); overload;
     procedure drawText(x,y,w,h,flags: Integer; const s: String); overload;
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
-    procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
+    procedure drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
     procedure drawSurface(targetRect: PRect; Surface: Pcairo_surface_t; sourceRect: PRect;
       mask: PGdkPixBuf; maskRect: PRect);
     procedure drawImage(targetRect: PRect; image: PGdkPixBuf; sourceRect: PRect;
@@ -243,7 +243,8 @@ type
       mask: PGdkPixBuf; maskRect: PRect);
     procedure drawPixmap(p: PPoint; pm: PGdkPixbuf; sr: PRect);
     procedure drawPolyLine(P: PPoint; NumPts: Integer);
-    procedure drawPolygon(P: PPoint; NumPts: Integer; FillRule: integer);
+    procedure drawPolygon(P: PPoint; NumPts: Integer; FillRule: Integer; AFill,
+      ABorder: Boolean);
     procedure drawPolyBezier(P: PPoint; NumPoints: Integer; Filled, Continuous: boolean);
     procedure EllipseArcPath(CX, CY, RX, RY: Double; Angle1, Angle2: Double; Clockwise, Continuous: Boolean);
     procedure eraseRect(ARect: PRect);
@@ -1324,19 +1325,21 @@ begin
   cairo_stroke(Widget);
 end;
 
-procedure TGtk3DeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer;
-  h: Integer; const AFill: Boolean);
+procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
 begin
   cairo_save(Widget);
   try
-    ApplyPen;
-    cairo_rectangle(Widget, x1, y1, w, h);
-    cairo_stroke(Widget);
     if AFill then
     begin
       cairo_rectangle(Widget, x1, y1, w - 1, h - 1);
       ApplyBrush;
       cairo_fill(Widget);
+    end;
+    if ABorder then
+    begin
+      ApplyPen;
+      cairo_rectangle(Widget, x1, y1, w - 1, h - 1);
+      cairo_stroke(Widget);
     end;
   finally
     cairo_restore(Widget);
@@ -1407,7 +1410,6 @@ begin
   finally
     cairo_restore(Widget);
   end;
-
 end;
 
 procedure TGtk3DeviceContext.drawLine(x1: Integer; y1: Integer; x2: Integer;
@@ -1418,31 +1420,41 @@ begin
   cairo_line_to(Widget, x2, y2);
 end;
 
-procedure TGtk3DeviceContext.drawEllipse(x: Integer; y: Integer; w: Integer;
-  h: Integer);
+procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
 var
   save_matrix:cairo_matrix_t;
 begin
   cairo_save(Widget);
-  cairo_get_matrix(Widget, @save_matrix);
-  cairo_translate (Widget, x + w / 2.0, y + h / 2.0);
-  cairo_scale (Widget, w / 2.0, h / 2.0);
+  try
+    cairo_get_matrix(Widget, @save_matrix);
+    cairo_translate (Widget, x + w / 2.0, y + h / 2.0);
+    cairo_scale (Widget, w / 2.0, h / 2.0);
+    cairo_new_path(Widget);
+    cairo_arc
+        (
+          (*cr =*) Widget,
+          (*xc =*) 0,
+          (*yc =*) 0,
+          (*radius =*) 1,
+          (*angle1 =*) 0,
+          (*angle2 =*) 2 * Pi
+        );
+    cairo_close_path(Widget);
+    if AFill then
+    begin
+      ApplyBrush;
+      cairo_fill_preserve(Widget);
+    end;
+  finally
+    cairo_restore(Widget);
+  end;
+  if ABorder then
+  begin
+    ApplyPen;
+    cairo_stroke(Widget);
+  end;
+  //if ABorder=false, need to clear current path
   cairo_new_path(Widget);
-  cairo_arc
-      (
-        (*cr =*) Widget,
-        (*xc =*) 0,
-        (*yc =*) 0,
-        (*radius =*) 1,
-        (*angle1 =*) 0,
-        (*angle2 =*) 2 * Pi
-      );
-  cairo_close_path(Widget);
-  ApplyBrush;
-  cairo_fill_preserve(Widget);
-  cairo_restore(Widget);
-  ApplyPen;
-  cairo_stroke(Widget);
 end;
 
 procedure TGtk3DeviceContext.drawSurface(targetRect: PRect;
@@ -1568,7 +1580,7 @@ begin
 end;
 
 procedure TGtk3DeviceContext.drawPolygon(P: PPoint; NumPts: Integer;
-  FillRule: integer);
+  FillRule: Integer; AFill, ABorder: Boolean);
 var
   i: Integer;
 const
@@ -1576,25 +1588,28 @@ const
 begin
   cairo_save(Widget);
   try
-    // first apply the fill because the line is drawn over the filled area after
-    applyBrush;
-    cairo_set_fill_rule(Widget, cairo_fill_rule_t(FillRule));
-    // + Offset is so the center of the pixel is used.
-    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
-    for i := 1 to NumPts-1 do
-      cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
+    if AFill then
+    begin
+      // first apply the fill because the line is drawn over the filled area after
+      ApplyBrush;
+      cairo_set_fill_rule(Widget, cairo_fill_rule_t(FillRule));
+      // + Offset is so the center of the pixel is used.
+      cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
+      for i := 1 to NumPts-1 do
+        cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
+      cairo_close_path(Widget);
+      cairo_fill(Widget);
+    end;
 
-    cairo_close_path(Widget);
-    cairo_fill_preserve(Widget);
-
-    // now draw the line
-    ApplyPen;
-    //cairo_set_antialias(widget, CAIRO_ANTIALIAS_SUBPIXEL);
-    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
-    for i := 1 to NumPts-1 do
-      cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
-    cairo_close_path(Widget);
-    cairo_stroke_preserve(Widget);
+    if ABorder then
+    begin
+      ApplyPen;
+      cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
+      for i := 1 to NumPts-1 do
+        cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
+      cairo_close_path(Widget);
+      cairo_stroke(Widget);
+    end;
   finally
     cairo_restore(Widget);
   end;
@@ -1657,10 +1672,9 @@ end;
 
 procedure TGtk3DeviceContext.fillRect(x, y, w, h: Integer; ABrush: HBRUSH);
 var
-  devx, devy, dx, dy, dw, dh: Double;
-  ATarget: Pcairo_surface_t;
-  ANewSurface: Pcairo_surface_t;
-  ACairo: Pcairo_t;
+  //devx, devy, dx, dy, dw, dh: Double;
+  //ATarget: Pcairo_surface_t;
+  //ANewSurface: Pcairo_surface_t;
   ATempBrush: TGtk3Brush;
 begin
   {$ifdef VerboseGtk3DeviceContext}
@@ -1668,24 +1682,24 @@ begin
   {$endif}
 
   cairo_save(Widget);
-  ATempBrush := nil;
-  if ABrush <> 0 then
-  begin
-    ATempBrush := FCurrentBrush;
-    fBkMode:=OPAQUE;
-    SetCurrentBrush(TGtk3Brush(ABrush));
+  try
+    ATempBrush := nil;
+    if ABrush <> 0 then
+    begin
+      ATempBrush := FCurrentBrush;
+      fBkMode:=OPAQUE;
+      SetCurrentBrush(TGtk3Brush(ABrush));
+    end;
+
+    applyBrush;
+    cairo_rectangle(Widget, x, y, w - 1, h - 1);
+    cairo_fill(Widget);
+
+    if ABrush <> 0 then
+      SetCurrentBrush(ATempBrush);
+  finally
+    cairo_restore(Widget);
   end;
-
-  applyBrush;
-  cairo_rectangle(Widget, x, y, w, h);
-  cairo_stroke_preserve(Widget);
-  cairo_fill(Widget);
-  // cairo_clip(Widget);
-
-  // cairo_fill_preserve(Widget);
-  if ABrush <> 0 then
-    SetCurrentBrush(ATempBrush);
-  cairo_restore(Widget);
 
   // ATarget := cairo_get_target(Widget);
   (*

@@ -3079,7 +3079,7 @@ begin
   end;
 
   if BorderStyle <> bsNone then
-    DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, LCLObject.Color <> clDefault);
+    DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, LCLObject.Color <> clDefault, True);
 end;
 
 function TGtk3Panel.getText: String;
