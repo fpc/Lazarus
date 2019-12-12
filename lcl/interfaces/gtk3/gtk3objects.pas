@@ -1329,18 +1329,20 @@ procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorde
 begin
   cairo_save(Widget);
   try
+    cairo_rectangle(Widget, x1, y1, w - 1, h - 1);
+
     if AFill then
     begin
-      cairo_rectangle(Widget, x1, y1, w - 1, h - 1);
       ApplyBrush;
-      cairo_fill(Widget);
+      cairo_fill_preserve(Widget);
     end;
     if ABorder then
     begin
       ApplyPen;
-      cairo_rectangle(Widget, x1, y1, w - 1, h - 1);
       cairo_stroke(Widget);
     end;
+
+    cairo_new_path(Widget);
   finally
     cairo_restore(Widget);
   end;
@@ -1588,28 +1590,26 @@ const
 begin
   cairo_save(Widget);
   try
+    // add offset so the center of the pixel is used
+    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
+    for i := 1 to NumPts-1 do
+      cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
+    cairo_close_path(Widget);
+
     if AFill then
     begin
-      // first apply the fill because the line is drawn over the filled area after
       ApplyBrush;
       cairo_set_fill_rule(Widget, cairo_fill_rule_t(FillRule));
-      // + Offset is so the center of the pixel is used.
-      cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
-      for i := 1 to NumPts-1 do
-        cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
-      cairo_close_path(Widget);
-      cairo_fill(Widget);
+      cairo_fill_preserve(Widget);
     end;
 
     if ABorder then
     begin
       ApplyPen;
-      cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
-      for i := 1 to NumPts-1 do
-        cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
-      cairo_close_path(Widget);
       cairo_stroke(Widget);
     end;
+
+    cairo_new_path(Widget);
   finally
     cairo_restore(Widget);
   end;
