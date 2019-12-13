@@ -2497,8 +2497,7 @@ begin
     FWidget^.Visible := AValue;
 end;
 
-function TGtk3Widget.QueryInterface(constref iid: TGuid; out obj): LongInt;
-  cdecl;
+function TGtk3Widget.QueryInterface(constref iid: TGuid; out obj): LongInt; cdecl;
 begin
   if GetInterface(iid, obj) then
     Result := 0

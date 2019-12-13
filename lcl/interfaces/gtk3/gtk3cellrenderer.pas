@@ -97,26 +97,21 @@ uses gtk3widgets, gtk3int;
 type
   TCustomListViewAccess = class(TCustomListView);
 
-function GetControl(cell: PGtkCellRenderer; Widget: PGtkWidget): TWinControl;
+function GetControl(Widget: PGtkWidget): TWinControl;
 var
   AHWND: HWND;
-  AWidget: PGtkWidget;
 begin
   Result := nil;
-  AHWND := HwndFromGtkWidget(Widget);
-  if AHWND = 0 then
-  begin
-    AWidget := Widget^.get_parent;
-    while (AWidget <> nil) do
-    begin
-      AHWND := HwndFromGtkWidget(AWidget);
-      if AHWND <> 0 then
-        break;
-      AWidget := AWidget^.get_parent;
-    end;
-  end;
-  if AHWND <> 0 then
+  repeat
+    AHWND := HwndFromGtkWidget(Widget);
+    if AHWND <> 0 then break;
+    Widget := Widget^.get_parent;
+    if Widget = Nil then break;
+  until False;
+  if AHWND <> 0 then begin
     Result := TGtk3Widget(AHWND).LCLObject;
+    Assert(Result is TWinControl, 'GetControl: LCLObject for Gtk3Widget is not TWinControl.');
+  end;
 end;
 
 function GetItemIndex(cell: PLCLIntfCellRenderer; {%H-}widget: PGtkWidget): Integer;
@@ -144,9 +139,9 @@ var
   ItemIndex: Integer;
   Msg: TLMMeasureItem;
   MeasureItemStruct: TMeasureItemStruct;
-  Requisition, NaturalSize: TGtkRequisition;
-  AMinHeight, ANaturalHeight: gint;
-  Value: TGValue;
+  //Requisition, NaturalSize: TGtkRequisition;
+  //AMinHeight, ANaturalHeight: gint;
+  //Value: TGValue;
   R1, R2: TGdkRectangle;
 begin
   {$IFDEF GTK3DEBUGCELLRENDERER}
@@ -165,7 +160,8 @@ begin
   // DebugLn('Cell_Area ',dbgs(RectFromGdkRect(cell_area^)),' Aligned_Area ',dbgs(RectFromGdkRect(aligned_area^)));
   // cell^.get_preferred_size(Widget, @AMinSize, @ANatSize);
 
-  AWinControl := GetControl(cell, widget);
+  AWinControl := GetControl(widget);
+  if AWinControl = Nil then exit;
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
 
   if AWinControl is TCustomListbox then
@@ -242,8 +238,7 @@ var
   Msg: TLMMeasureItem;
   MeasureItemStruct: TMeasureItemStruct;
   //Requisition, NaturalSize: TGtkRequisition;
-  AMinHeight, ANaturalHeight: gint;
-  Value: TGValue;
+  AMinHeight{, ANaturalHeight}: gint;
 begin
   {$IFDEF GTK3DEBUGCELLRENDERER}
   DebugLn('*** LCLIntfCellRenderer_GetPreferredHeightForWidth *** width=',dbgs(Width));
@@ -256,22 +251,21 @@ begin
     // exit;
   end;
 
-
   CellClass^.DefaultGetPreferredHeightForWidth(cell, widget, width, minimum_height, natural_height);
-
 
   if minimum_height <> nil then
     AMinHeight := minimum_height^
   else
     AMinHeight := 0;
-  if natural_height <> nil then
+{  if natural_height <> nil then
     ANaturalHeight := natural_height^
   else
     ANaturalHeight := 0;
-
+}
   // writeln('1.minimumheight ',AMinHeight,' naturalheight ',ANaturalHeight,' min ',dbgs(minimum_height <> nil),' nat ',dbgs(natural_height <> nil));
 
-  AWinControl := GetControl(cell, widget);
+  AWinControl := GetControl(widget);
+  if AWinControl = Nil then exit;
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
 
   if AWinControl is TCustomListbox then
@@ -320,7 +314,8 @@ begin
   CellClass^.DefaultGtkGetSize(cell, Widget, cell_area, x_offset, y_offset,
                                width, height);
   //DebugLn(['LCLIntfCellRenderer_GetSize ',GetWidgetDebugReport(Widget)]);
-  AWinControl := GetControl(cell, widget);
+  AWinControl := GetControl(widget);
+  if AWinControl = Nil then exit;
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
 
   if AWinControl is TCustomListbox then
@@ -383,7 +378,7 @@ begin
 
   ColumnIndex := PLCLIntfCellRenderer(cell)^.ColumnIndex;
 
-  AWinControl := GetControl(cell, widget);
+  AWinControl := GetControl(widget);
 
   if (ColumnIndex = -1) and (AWinControl <> nil) and
     (AWinControl.FCompStyle = csListView) then
@@ -476,20 +471,15 @@ begin
   // do default draw only if we are not customdrawn.
   if (ColumnIndex > -1) or ((ColumnIndex < 0) and (AWinControl = nil)) then
   begin
-    CellClass^.DefaultGtkRender(cell, cr, Widget, background_area, cell_area,
-      flags);
+    CellClass^.DefaultGtkRender(cell, cr, Widget, background_area, cell_area, flags);
   end;
   
   if ColumnIndex < 0 then  // is a listbox or combobox
   begin
     // send LM_DrawListItem message
-    AWinControl := GetControl(cell, widget);
+    AWinControl := GetControl(widget);
     // DebugLn('Paint 2 ** ', dbgsName(AWinControl));
-    if not Assigned(AWinControl) then
-    begin
-      // DebugLn('Paint 2 ** EXIT ! NO WINCONTROL .... ',dbgHex(PtrUInt(Widget)));
-      exit;
-    end;
+    if AWinControl = Nil then exit;
     if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
   
     // check if the LCL object wants item paint messages
@@ -500,15 +490,13 @@ begin
       if TCustomCombobox(AWinControl).Style < csOwnerDrawFixed then
         exit;
 
-    // get itemindex and area
-  
-    AreaRect := Bounds(background_area^.x, background_area^.y,
-                     background_area^.Width, background_area^.Height);
-
     ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
 
     if ItemIndex < 0 then
       ItemIndex := 0;
+
+    AreaRect := Bounds(background_area^.x, background_area^.y,
+                       background_area^.Width, background_area^.Height);
 
     // collect state flags
     State:=[odBackgroundPainted];
