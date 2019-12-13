@@ -1,913 +1,1396 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
-  ====================================================================
-    Laz2_XMLCfg
-  ====================================================================
--->
-
-<module name="Laz2_XMLCfg">
-<short></short>
-<descr>
-</descr>
-
-<!-- class Visibility: default -->
-<element name="TXMLConfig">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLConfig.FFilename">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLConfig.FReadFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLConfig.FWriteFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TXMLConfig.SetFilename">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetFilename.AFilename">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TXMLConfig.doc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TXMLConfig.FModified">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TXMLConfig.fDoNotLoadFromFile">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TXMLConfig.fAutoLoadFromSource">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TXMLConfig.fPathCache">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TXMLConfig.fPathNodeCache">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TXMLConfig.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TXMLConfig.ExtendedToStr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.ExtendedToStr.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.ExtendedToStr.e">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TXMLConfig.StrToExtended">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.StrToExtended.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.StrToExtended.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.StrToExtended.ADefault">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TXMLConfig.ReadXMLFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.ReadXMLFile.ADoc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.ReadXMLFile.AFilename">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TXMLConfig.WriteXMLFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.WriteXMLFile.ADoc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.WriteXMLFile.AFileName">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TXMLConfig.FreeDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TXMLConfig.SetPathNodeCache">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetPathNodeCache.Index">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetPathNodeCache.Node">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TXMLConfig.GetPathNodeCache">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.GetPathNodeCache.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.GetPathNodeCache.Index">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TXMLConfig.InvalidateCacheTilEnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.InvalidateCacheTilEnd.StartIndex">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TXMLConfig.InternalFindNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.InternalFindNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.InternalFindNode.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.InternalFindNode.PathLen">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.InternalFindNode.CreateNodes">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TXMLConfig.InternalCleanNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.InternalCleanNode.Node">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TXMLConfig.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.Create.AFilename">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TXMLConfig.CreateClean">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.CreateClean.AFilename">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TXMLConfig.CreateWithSource">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.CreateWithSource.AFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.CreateWithSource.Source">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TXMLConfig.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.Flush">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.ReadFromStream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.ReadFromStream.s">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.WriteToStream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.WriteToStream.s">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TXMLConfig.GetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.GetValue.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.GetValue.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.GetValue.ADefault">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TXMLConfig.GetExtendedValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.GetExtendedValue.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.GetExtendedValue.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.GetExtendedValue.ADefault">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.SetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetValue.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetValue.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.SetDeleteValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetDeleteValue.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetDeleteValue.AValue">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetDeleteValue.DefValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.SetExtendedValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetExtendedValue.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetExtendedValue.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.SetDeleteExtendedValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetDeleteExtendedValue.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetDeleteExtendedValue.AValue">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.SetDeleteExtendedValue.DefValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.DeletePath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.DeletePath.APath">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.DeleteValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.DeleteValue.APath">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TXMLConfig.FindNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.FindNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.FindNode.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.FindNode.PathHasValue">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TXMLConfig.HasPath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.HasPath.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.HasPath.APath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.HasPath.PathHasValue">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TXMLConfig.HasChildPaths">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLConfig.HasChildPaths.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLConfig.HasChildPaths.APath">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TXMLConfig.Modified">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TXMLConfig.InvalidatePathCache">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TXMLConfig.Filename">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TXMLConfig.Document">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TXMLConfig.ReadFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TXMLConfig.WriteFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TRttiXMLConfig">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TRttiXMLConfig.WriteProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteProperty.Path">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteProperty.Instance">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteProperty.PropInfo">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteProperty.DefInstance">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteProperty.OnlyProperty">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TRttiXMLConfig.ReadProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadProperty.Path">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadProperty.Instance">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadProperty.PropInfo">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadProperty.DefInstance">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadProperty.OnlyProperty">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TRttiXMLConfig.WriteObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteObject.Path">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteObject.Obj">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteObject.DefObject">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.WriteObject.OnlyProperty">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TRttiXMLConfig.ReadObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadObject.Path">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadObject.Obj">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadObject.DefObject">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TRttiXMLConfig.ReadObject.OnlyProperty">
-<short></short>
-</element>
-
-</module> <!-- Laz2_XMLCfg -->
-
-</package>
+  <package name="lazutils">
+    <!--
+      ====================================================================
+        Laz2_XMLCfg
+      ====================================================================
+    -->
+    <module name="Laz2_XMLCfg">
+      <short>
+        Implements classes used to read and write configuration data files in XML format
+      </short>
+      <descr></descr>
+
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazFileCache"/>
+      <element name="Laz2_DOM"/>
+      <element name="Laz2_XMLRead"/>
+      <element name="Laz2_XMLWrite"/>
+      <element name="LazUtilities"/>
+      <element name="TypInfo"/>
+
+      <element name="TXMLConfig">
+        <short>
+          Implements a class used to access and maintain an XML configuration data file
+        </short>
+        <descr>
+          <p>
+            <var>TXMLConfig</var> is a <var>TComponent</var> descendant used to store configuration data using XML format. TXMLConfig is a simpler mechanism for accessing the content in an XML document. It uses path specifiers to describe the hierarchy of elements and attribute values, instead of focusing on DOM nodes. See the <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> topic for more information about path specifiers in TXMLConfig.
+          </p>
+          <p>
+            TXMLConfig provides method used to get or set the value for a path specifier in the XML document. Overloaded methods are includes to handle values using String, Integer, Extended, TRect, or Boolean data types. See the <link id="TXMLConfig-Using">Using TXMLConfig</link> topic for more information about using TXMLConfig.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig-Using"/>
+          <link id="TXMLConfig-PathSyntax"/>
+          <link id="TRttiXMLConfig"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.FFilename"/>
+      <element name="TXMLConfig.FReadFlags"/>
+      <element name="TXMLConfig.FWriteFlags"/>
+      <element name="TXMLConfig.FPointSettings"/>
+
+      <element name="TXMLConfig.CreateConfigNode">
+        <short>Creates a DOM element representing the root node in Document</short>
+        <descr>
+          <p>
+            <var>CreateConfigNode</var> is a procedure used to create a DOM element for the root node (or document element) in the XML Document. CreateConfigNode ensures that <var>Document</var> is a valid <var>TXMLDocument</var> instance; it is created when not already assigned (contains Nil). A <var>TDomElement</var> is created (if needed) with the element name CONFIG; it is stored as the document element (root node) in Document.
+          </p>
+          <p>
+            CreateConfigNode is used in the implementation of various methods, and is called when Document has not been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.WriteToStream"/>
+          <link id="TXMLConfig.SetValue"/>
+          <link id="TXMLConfig.SetFilename"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.InitFormatSettings">
+        <short>Sets the default format settings used in the class instance</short>
+        <descr>
+          <p>
+            <var>InitFormatSettings</var> is a procedure which sets the default format settings used in the class instance. InitFormatSettings updates an internal <var>TFormatSettings</var> member to  the values returned by <var>DefaultFormatSettings</var>. It also specifies that the decimal separator is '.' (Period), and the thousands separator is ',' (Comma).
+          </p>
+          <remark>
+            While this may not agree with format settings for some locales, it is the format expected in the XML data files for the class instance.
+          </remark>
+          <p>
+            InitFormatSettings is called from the <var>Create</var> constructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Create"/>
+          <link id="DefaultFormatSettings"/>
+          <link id="TFormatSettings"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.SetFilename">
+        <short>Sets the value for the Filename property</short>
+        <descr></descr>
+        <seealso>
+          <link id="TXMLConfig.Filename"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.SetFilename.AFilename">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TXMLConfig.doc">
+        <short>Internal member with the TXMLDocument for the class instance</short>
+        <descr>
+          <p>
+            <var>Doc</var> is a <var>TXMLDocument</var> member with the document instance used to store the XML content for the configuration file. The value in Doc is assigned in the <var>Clear</var>, <var>SetFilename</var>, or <var>CreateConfigNode</var> methods. It is checked in other methods to ensure that a valid XML document exists prior to performing Input/Output operations.
+          </p>
+          <p>
+            Use the <var>FreeDoc</var> method to free the XML document for the class instance.
+          </p>
+          <remark>
+            The visibility for the Doc member is protected.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Clear"/>
+          <link id="TXMLConfig.CreateConfigNode"/>
+          <link id="TXMLConfig.Destroy"/>
+          <link id="TXMLConfig.InternalFindNode"/>
+          <link id="TXMLConfig.ReadFromStream"/>
+          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.SetValue"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.FModified">
+        <short>Member used to indicate the configuration file has been modified</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TXMLConfig.fDoNotLoadFromFile">
+        <short>
+          Member used to indicate that the data was created manually, and not loaded from a file or stream
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TXMLConfig.fAutoLoadFromSource">
+        <short>
+          Member used to store String content loaded into the configuration file
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TXMLConfig.fPathCache">
+        <short></short>
+        <descr>
+          Not used/updated in the current implementation.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TXMLConfig.fPathNodeCache">
+        <short>Member used to cache DOM nodes accessed using paths in the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TXMLConfig.Loaded">
+        <short>Signals that LCL component streaming has been completed</short>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden method in TXMLConfig used to perform actions needed when the component has finished loading during LCL component streaming. Loaded calls the inherited method. It calls <var>SetFilename</var> to load the XML configuration file data when the <var>Filename</var> property is assigned in the component.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Filename"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.ExtendedToStr">
+        <short>Converts an extended value to its representation as a String</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TXMLConfig.ExtendedToStr.Result">
+        <short>String representation for the Extended value</short>
+      </element>
+      <element name="TXMLConfig.ExtendedToStr.e">
+        <short>Extended value converted in the method</short>
+      </element>
+
+      <element name="TXMLConfig.StrToExtended">
+        <short>Converts the specified String value to an Extended data type</short>
+        <descr>
+          <p>
+            <var>StrToExtended</var> converts the specified <var>String</var> value to its representation as an <var>Extended</var> data type.
+          </p>
+          <p>
+            <var>ADefault</var> contains the default value used in the method when the string is empty or contains an invalid representation for an Extended data type. StrToExtended calls the <var>StrToFloatDef</var> routine to convert the string value using the format settings for the class.
+          </p>
+          <p>
+            <var>StrToExtended</var> is used in the implementation of the <var>GetExtendedValue</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.GetExtendedValue"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.StrToExtended.Result">
+        <short>Extended value converted in the method</short>
+      </element>
+      <element name="TXMLConfig.StrToExtended.s">
+        <short>String converted to an Extended value</short>
+      </element>
+      <element name="TXMLConfig.StrToExtended.ADefault">
+        <short>Default value used when no value can be derived from the string</short>
+      </element>
+
+      <element name="TXMLConfig.ReadXMLFile">
+        <short>
+          Reads the XML content from the specified file into a TXMLDocument instance
+        </short>
+        <descr>
+          <p>
+            <var>ReadXMLFile</var> is a procedure used to read the XML content in <var>AFilename</var> into the  <var>TXMLDocument</var> instance returned in <var>ADoc</var>. ReadXMLFile calls <var>InvalidatePathCache</var> to remove cached DOM nodes in the class instance. ReadXMLFile calls the <var>ReadXMLFile</var> method in the <file>Laz2_XMLRead</file> unit to load the file content into the XML document instance.
+          </p>
+          <p>
+            Use <var>ReadFromStream</var> to load the XML content in the class from a <var>TStream</var> instance.
+          </p>
+          <p>
+            Use <var>WriteXMLFile</var> or <var>WriteToStream</var> to store the XML content for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.InvalidatePathCache"/>
+          <link id="TXMLConfig.ReadFromStream"/>
+          <link id="TXMLConfig.WriteToStream"/>
+          <link id="TXMLConfig.WriteXMLFile"/>
+          <link id="#LazUtils.Laz2_XMLRead.ReadXMLFile"/>
+        </seealso>
+      </element>.
+      <element name="TXMLConfig.ReadXMLFile.ADoc">
+        <short>XML document with the content loaded in the method</short>
+      </element>
+      <element name="TXMLConfig.ReadXMLFile.AFilename">
+        <short>File name containing the XML content for the configuration file</short>
+      </element>
+
+      <element name="TXMLConfig.WriteXMLFile">
+        <short>
+          Writes XML configuration data in Document to the specified file name
+        </short>
+        <descr>
+          <p>
+            <var>WriteXMLFile</var> is a procedure used to write the XML content in the <var>Document</var> property to the file specified in <var>AFilename</var>. WriteXMLFile calls the <var>WriteXMLFile</var> routine in <file>LazUtils</file> to write the XML content using the <var>WriteFlags</var> defined in the class instance. The <var>InvalidateFileStateCache</var> routine is called to invalidate a file cache entry for the  specified file name.
+          </p>
+          <p>
+            Use <var>WriteToSteam</var> to store the XML content in <var>Document</var> to a <var>TStream</var> instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.WriteToStream"/>
+          <link id="TXMLConfig.ReadXMLFile"/>
+          <link id="TXMLConfig.ReadFromStream"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.WriteXMLFile.ADoc">
+        <short>Document with the XML content written in the method</short>
+      </element>
+      <element name="TXMLConfig.WriteXMLFile.AFileName">
+        <short>File name where the XML content is stored</short>
+      </element>
+
+      <element name="TXMLConfig.FreeDoc">
+        <short>Frees the TXMLDocument instance for the XML configuration file</short>
+        <descr>
+          <p>
+            <var>FreeDoc</var> is a procedure used to free the <var>TXMLDocument</var> instance used in the <var>Document</var> property. FreeDoc calls <var>InvalidatePathCache</var> to remove all cached DOM nodes from the Document. <var>FreeAndNil</var> is used to free the object instance and to set the value for the member to Nil.
+          </p>
+          <p>
+            FreeDoc is used in the implementation of various methods like <var>Destroy</var>, <var>Clear</var>, <var>ReadFromStream</var>, and <var>SetFilename</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.Destroy"/>
+          <link id="TXMLConfig.Clear"/>
+          <link id="TXMLConfig.ReadFromStream"/>
+          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.InvalidatePathCache"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.SetPathNodeCache">
+        <short>
+          Ensures a DOM node is present in the internal cache for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>SetPathNodeCache</var> is a procedure used to ensure that the DOM node with the specified position and name is present in the node cache for the class instance. SetPathNodeCache adjusts the length of the internal node cache when needed to accommodate a new DOM node. <var>InvalidateCacheTilEnd</var> is called to refresh the cache when the Node is not found starting at the specified position.
+          </p>
+          <p>
+            SetPathNodeCache is used in the implementation of the <var>InternalFindNode</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.InternalFindNode"/>
+          <link id="TNodeCache"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.SetPathNodeCache.Index">
+        <short>Position in the cache to start looking for the specified DOM node</short>
+      </element>
+      <element name="TXMLConfig.SetPathNodeCache.Node">
+        <short>DOM node to locate in the internal cache</short>
+      </element>
+      <element name="TXMLConfig.SetPathNodeCache.aNodeSearchName">
+        <short>DOM node name to locate in the cache</short>
+      </element>
+
+      <element name="TXMLConfig.GetCachedPathNode">
+        <short>Gets a cached DOM node starting at the specified position in the cache</short>
+        <descr>
+          <p>
+            <var>GetCachedPathNode</var> is an overloaded <var>TDomNode</var> function used to get the document element at the specified position in the cached DOM nodes for the <var>Document</var>. GetCachedPathNode is used in the implementation of the <var>InternalFindNode</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.InternalFindNode"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.GetCachedPathNode.Result">
+        <short>DOM node with the specified name, or Nil when the cache is invalid</short>
+      </element>
+      <element name="TXMLConfig.GetCachedPathNode.Index">
+        <short>Position in the cache for the initial DOM node in the search</short>
+      </element>
+      <element name="TXMLConfig.GetCachedPathNode.aNodeSearchName">
+        <short>Node name located in the cache</short>
+      </element>
+
+      <element name="TXMLConfig.InvalidateCacheTilEnd">
+        <short>
+          Removes DOM nodes from the internal cache starting at the specified ordinal position
+        </short>
+        <descr>
+          <p>
+            <var>InvalidateCacheTilEnd</var> iterates over the <var>TNodeCache</var> items in <var>PathNodeCache</var> stating at the position in <var>StartIndex</var>, and sets the node references to Nil to invalidate the DOM node in the cache.
+          </p>
+          <p>
+            <var>InvalidateCacheTilEnd</var> is used in the implementation of the <var>InvalidatePathCache</var>,  <var>SetPathNodeCache</var>, and <var>FindChildNode</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.PathNodeCache"/>
+          <link id="TXMLConfig.InvalidatePathCache"/>
+          <link id="TXMLConfig.SetPathNodeCache"/>
+          <link id="TXMLConfig.FindChildNode"/>
+          <link id="TNodeCache"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.InvalidateCacheTilEnd.StartIndex">
+        <short>Initial position in the cache affected in the method</short>
+      </element>
+
+      <element name="TXMLConfig.InternalFindNode">
+        <short>
+          Searches for the DOM node with the specified path, and updates the node cache
+        </short>
+        <descr>
+          <p>
+            <var>InternalFindNode</var> is a <var>TDOMNode</var> function used to locate the node stored at the path specified in <var>Document</var>. <var>InternalFindNode</var> ensures that the node cache for the class is updated to include the <var>TDOMNode</var> at <var>APath</var> when it is accessed in the method. It also ensures that all element nodes for the specifier in APath are included in the cache as well. The <var>FindChildNode</var> method is used to locate  <var>TDOMNodes</var> in the hierarchy. When <var>CreateNodes</var> is <b>True</b>, any missing DOM nodes in the hierarchy are created.
+          </p>
+          <p>
+            <var>InternalFindNode</var> is used in the implementation of the <var>GetValue</var>, <var>SetValue</var>, <var>GetListItemCount</var>, <var>DeletePath</var>, and <var>FindNode</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.SetPathNodeCache"/>
+          <link id="TXMLConfig.GetCachedPathNode"/>
+          <link id="TXMLConfig.FindChildNode"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.InternalFindNode.Result">
+        <short>DOM node located for the specified path</short>
+      </element>
+      <element name="TXMLConfig.InternalFindNode.APath">
+        <short>Path specifier for the DOM node</short>
+      </element>
+      <element name="TXMLConfig.InternalFindNode.PathLen">
+        <short>Length of the path specifier</short>
+      </element>
+      <element name="TXMLConfig.InternalFindNode.CreateNodes">
+        <short>Indicates if missing DOM nodes in Document are created</short>
+      </element>
+
+      <element name="TXMLConfig.InternalCleanNode">
+        <short>Removes the specified node and all of its children from the Document</short>
+        <descr>
+          <p>
+            <var>InternalCleanNode</var> ensures that the specified DOM node is removed from the <var>Document</var>, both as a parent or child node in the element tree. InternalCleanNode calls <var>InvalidatePathCache</var> to reflect the change in the Document, and sets the value in <var>Modified</var> to <b>True</b>.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method when Node is unassigned (contains <b>Nil</b>).
+          </remark>
+          <p>
+            InternalCleanNode is used in the implementation of the <var>DeletePath</var> and <var>DeleteValue</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.DeletePath"/>
+          <link id="TXMLConfig.DeleteValue"/>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.Modified"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.InternalCleanNode.Node">
+        <short>DOM Node to remove from the Document</short>
+      </element>
+
+      <element name="TXMLConfig.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overloaded, overridden constructor for the class instance.
+          </p>
+          <p>
+            Calling Create with the <var>AFilename</var> argument causes the XML content in the specified <var>Filename</var> to be loaded into the class instance. The variant that specifies an owner simply sets the default values in <var>ReadFlags</var>, <var>WriteFlags</var>, and its internal format settings.
+          </p>
+          <p>
+            Alternate constructors, like <var>CreateClean</var> and <var>CreateWithSource</var>, are provided to create an empty XML configuration file or to load its content from a String variable.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.CreateClean"/>
+          <link id="TXMLConfig.CreateWithSource"/>
+          <link id="TXMLConfig.Destroy"/>
+          <link id="TXMLConfig.ReadFlags"/>
+          <link id="TXMLConfig.WriteFlags"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.Create.AOwner">
+        <short>Owner of the class instance</short>
+      </element>
+      <element name="TXMLConfig.Create.AFilename">
+        <short>File with the XML content loaded in the class instance</short>
+      </element>
+
+      <element name="TXMLConfig.CreateClean">
+        <short>
+          Alternate constructor used to create the class without reading existing XML content in the specified file
+        </short>
+        <descr>
+          <p>
+            <var>CreateClean</var> is an alternate constructor for the class instance. CreateClean sets an internal flag to indicate that the XML content in <var>AFilename</var> is not automatically loaded when the value in the <var>Filename</var> property is assigned. This ensures that the class instance is "clean" (has no XML content).
+          </p>
+          <p>
+            CreateClean calls an overloaded variant of <var>Create</var> using <var>AFilename</var> as an argument. The value in <var>Modified</var> is set to True if the specified file exists in the cache for the local file system.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Create"/>
+          <link id="TXMLConfig.Filename"/>
+          <link id="TXMLConfig.Modified"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.CreateClean.AFilename">
+        <short>File name where XML content will be stored</short>
+      </element>
+
+      <element name="TXMLConfig.CreateWithSource">
+        <short>
+          Alternate constructor used to create the class using the XML content specified in Source
+        </short>
+        <descr>
+          <p>
+            <var>CreateWithSource</var> is an alternate constructor used to create the class instance and load the XML content specified in the <var>Source</var> argument. CreateWithSource sets an internal member used for the XML content in Source. CreateWithSource calls the <var>CreateClean</var> method to initialize the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.CreateClean"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.CreateWithSource.AFilename">
+        <short>File name where XML configuration data will be stored</short>
+      </element>
+      <element name="TXMLConfig.CreateWithSource.Source">
+        <short>String with the XML content loaded in the class instance</short>
+      </element>
+
+      <element name="TXMLConfig.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that a <var>TXMLDocument</var> instance in the <var>Document</var> property is written to disk and freed before the object instance is destroyed. Destroy calls the inherited destructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.Flush"/>
+          <link id="TXMLConfig.FreeDoc"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.Clear">
+        <short>Removes existing XML content in the Document property</short>
+        <descr>
+          <p>
+            <var>Clear</var> is a procedure used to remove existing XML content in the <var>Document</var> property. Clear calls <var>FreeDoc</var> to free the <var>Document</var> instance, and re-creates the member along with its <b>CONFIG</b> document element.
+          </p>
+          <p>
+            Clear is used in the implementation of the <var>ReadFromStream</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.FreeDoc"/>
+          <link id="TXMLConfig.ReadFromStream"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.Flush">
+        <short>
+          Forces the XML content for the configuration file to be written to Filename
+        </short>
+        <descr>
+          <p>
+            <var>Flush</var> is a procedure which forces the XML content in <var>Document</var> to be written to the file specified in <var>Filename</var>. Flush uses the value in the <var>Modified</var> property to determine if the content in Document has been altered.
+          </p>
+          <p>
+            Flush calls the <var>WriteXMLFile</var> method to store Document to the required Filename. The value in Modified is set to False when the Document has been written to the local file system.
+          </p>
+          <remark>
+            No  actions are performed in the method when <var>Modified</var> is False, or when <var>Filename</var> contains an empty string ('').
+          </remark>
+          <p>
+            Flush is used in the implementation of methods like <var>Destroy</var> and <var>SetFilename</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Destroy"/>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.Filename"/>
+          <link id="TXMLConfig.Modified"/>
+          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.WriteXMLFile"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.ReadFromStream">
+        <short>Reads the XML content in Document from the specified stream instance</short>
+        <descr>
+          <p>
+            <var>ReadFromStream</var> is a procedure used to read the XML content for the <var>Document</var> from the <var>TStream</var> instance in <var>S</var>. ReadFromStream calls <var>FreeDoc</var> to ensure that any existing XML content in the configuration file is discarded prior to loading values from the stream.
+          </p>
+          <p>
+            ReadFromStream calls the <var>ReadXMLFile</var> routine in the <file>Laz2_XMLRead</file> unit to load the XML content. If Document was not assigned in ReadXMLFile, the <var>Clear</var> method is called to create a Document with the correct default values.
+          </p>
+          <p>
+            Use <var>ReadXMLFile</var> to read XML content from a file on the local file system.
+          </p>
+          <p>
+            Use <var>WriteToStream</var> or <var>WriteXMLFile</var> to store XML content in the Document property to a stream or file.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Clear"/>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.FreeDoc"/>
+          <link id="TXMLConfig.ReadXMLFile"/>
+          <link id="TXMLConfig.WriteToStream"/>
+          <link id="TXMLConfig.WriteXMLFile"/>
+          <link id="#LazUtils.Laz2_XMLRead.ReadXMLFile"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.ReadFromStream.s">
+        <short>TStream instance with the XML content read in the method</short>
+      </element>
+
+      <element name="TXMLConfig.WriteToStream">
+        <short>
+          Writes the XML content for the configuration file to the specified stream instance
+        </short>
+        <descr>
+          <p>
+            <var>WriteToStream</var> is a procedure used to write the XML content for the configuration file to the <var>TStream</var> instance specified in <var>S</var>. WriteToStream checks the <var>Document</var> property to ensure that a valid <var>TXMLDocument</var> instance has been assigned to the member. When Document is unassigned (contains Nil), the <var>CreateConfigNode</var> method is called to allocate a document instance with the required CONFIG document element.
+          </p>
+          <p>
+            The <var>WriteXMLFile</var> routine in the <file>Laz2_XMLWrite</file> unit is called to store the XML document to the TStream specified in <var>S</var> using the <var>WriteFlags</var> for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.CreateConfigNode"/>
+          <link id="TXMLConfig.WriteFlags"/>
+          <link id="#LazUtils.Laz2_XMLWrite.WriteXMLFile"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.WriteToStream.s">
+        <short>
+          TStream instance where the XML content in Document is stored in the method
+        </short>
+      </element>
+
+      <element name="TXMLConfig.GetValue">
+        <short>
+          Gets the value from the DOM node at the specified path in the XML configuration file
+        </short>
+        <descr>
+          <p>
+            <var>GetValue is</var> an overloaded function used to get the value stored in a DOM node at the path specified in <var>APath</var>. Overloaded variants are provided to return <var>String</var>, <var>Integer</var>, <var>Boolean</var>, and <var>TRect</var> data types.
+          </p>
+          <p>
+            <var>APath</var> contain the path specifier that represents the hierarchy of elements and attributes in <var>Document</var> where the value is stored. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
+          </p>
+          <p>
+            <var>ADefault</var> contains the default value returned when the DOM node does not have any content representing a value.
+          </p>
+          <p>
+            <var>ARect</var> is the <var>TRect</var> output parameter used to return the value in the overloaded method.
+          </p>
+          <p>
+            Use <var>GetExtendedValue</var> to get the value for a DOM node as an <var>Extended</var> (or <var>Float</var>) data type.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.GetExtendedValue"/>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig-PathSyntax"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.GetValue.Result">
+        <short>Value for the Node at the specified path</short>
+      </element>
+      <element name="TXMLConfig.GetValue.APath">
+        <short>Path to locate in the Document</short>
+      </element>
+      <element name="TXMLConfig.GetValue.ADefault">
+        <short>Default value used when the DOM node has no content</short>
+      </element>
+      <element name="TXMLConfig.GetValue.ARect">
+        <short>TRect with the value for the DOM node</short>
+      </element>
+
+      <element name="TXMLConfig.GetExtendedValue">
+        <short>
+          Gets the value for a DOM node at the specified path as an extended data type
+        </short>
+        <descr>
+          <p>
+            <var>GetExtendedValue</var> is an <var>Extended</var> function used to get the value for a DOM node at the specified path as an Extended data type. GetExtendedValue is similar to the <link id="GetValue"/> method; in fact it calls GetValue to retrieve the value for the DOM node in <var>APath</var>. It calls <var>StrToExtended</var> to convert the node value to the Extended data type used as the return value.
+          </p>
+          <p>
+            Use <var>ADefault</var> to specify the default value used in the method when the DOM node does not contain any content (or value).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.GetValue"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.GetExtendedValue.Result">
+        <short>Extended value for the specified DOM node</short>
+      </element>
+      <element name="TXMLConfig.GetExtendedValue.APath">
+        <short>Path to the DOM node examined in the method</short>
+      </element>
+      <element name="TXMLConfig.GetExtendedValue.ADefault">
+        <short>Default value used when the DOM node has no content</short>
+      </element>
+
+      <element name="TXMLConfig.SetValue">
+        <short>Sets the value in a DOM node at the specified path</short>
+        <descr>
+          <p>
+            <var>SetValue</var> is an overloaded procedure used to set the value in the DOM node located at the path specified in <var>APath</var>. <var>AValue</var> contains the content stored in the specified DOM node. Overloaded variants of the method are provided where AValue is either a <var>String</var>, <var>Integer</var>, or <var>Boolean</var> data type. The String variant of the method is called to store the various value types in a DOM node.
+          </p>
+          <p>
+            Use SetExtendedValue to store an Extended data type in a specified DOM node.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.SetExtendedValue"/>
+          <link id="TXMLConfig.DeleteValue"/>
+          <link id="TXMLConfig.SetDeleteValue"/>
+          <link id="TXMLConfig.SetDeleteExtendedValue"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.SetValue.APath">
+        <short>Path to the DOM node updated in the method</short>
+      </element>
+      <element name="TXMLConfig.SetValue.AValue">
+        <short>Value to store in the specified DOM node</short>
+      </element>
+
+      <element name="TXMLConfig.SetDeleteValue">
+        <short>Updates or removes the value at the specified path </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TXMLConfig.SetDeleteValue.APath">
+        <short>Path specifier for the value affected in the method</short>
+      </element>
+      <element name="TXMLConfig.SetDeleteValue.AValue">
+        <short>Value to store at the specified path</short>
+      </element>
+      <element name="TXMLConfig.SetDeleteValue.DefValue">
+        <short>Value which indicates the path should be removed instead of updated</short>
+      </element>
+
+      <element name="TXMLConfig.SetExtendedValue">
+        <short>
+          Sets the value in the DOM node at the specified path using an extended data type
+        </short>
+        <descr>
+          <p>
+            <var>SetExtendedValue</var> is a procedure used to set the value in the DOM node at the specified path to the value in the <var>Extended</var> data type.
+          </p>
+          <p>
+            <var>APath</var> contains the path specifier which describes the hierarchy of elements and attributes to the value. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers. <var>AValue</var> contains the Extended data type stored at the specified path.
+          </p>
+          <p>
+            SetExtendedValue is similar to the <link id="TXMLConfig.SetValue"/> method; in fact, it calls <var>SetValue</var> to store the string representation of <var>AValue</var> prepared using <var>ExtendedToStr</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.SetValue"/>
+          <link id="TXMLConfig.ExtendedToStr"/>
+          <link id="TXMLConfig-PathSyntax"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.SetExtendedValue.APath">
+        <short>Path to the DOM node updated in the method</short>
+      </element>
+      <element name="TXMLConfig.SetExtendedValue.AValue">
+        <short>Value stored in the specified DOM node</short>
+      </element>
+
+      <element name="TXMLConfig.SetDeleteExtendedValue">
+        <short>Updates or removes the Extended value at the specified path</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TXMLConfig.SetDeleteExtendedValue.APath">
+        <short>Path specifier to the node affected in the method</short>
+      </element>
+      <element name="TXMLConfig.SetDeleteExtendedValue.AValue">
+        <short>Value stored at the specified path</short>
+      </element>
+      <element name="TXMLConfig.SetDeleteExtendedValue.DefValue">
+        <short>Value which indicates the node should be removed instead of updated</short>
+      </element>
+
+      <element name="TXMLConfig.DeletePath">
+        <short>Deletes the DOM node at the specified path in the Document</short>
+        <descr>
+          <p>
+            <var>DeletePath</var> is a procedure used to delete the DOM node at the specified path in the <var>Document</var>. <var>APath</var> contains the path specifier that describes the hierarchy of elements and attributes needed to access the DOM node.  See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
+          </p>
+          <p>
+            <var>DeletePath</var> calls <var>InternalFindNode</var> to get the node removed in the method. The node is removed from its parent DOM node, and the value in <var>Modified</var> is set to <b>True</b>. The <var>InvalidatePathCache</var> method is called to reflect the change in the Document. <var>InternalCleanNode</var> is called to ensure that the node is removed from the parent DOM node in <var>Document</var>.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method when a node for the specified path cannot be located, or the node does not have a parent node (it is the root node in the Document).
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Document"/>
+          <link id="TXMLConfig.InternalFindNode"/>
+          <link id="TXMLConfig.InternalCleanNode"/>
+          <link id="TXMLConfig.InvalidatePathCache"/>
+          <link id="TXMLConfig-PathSyntax"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.DeletePath.APath">
+        <short>Path specifier for the DOM node to locate in the Document</short>
+      </element>
+
+      <element name="TXMLConfig.DeleteValue">
+        <short>Deletes the value stored in the DOM node at the specified path</short>
+        <descr>
+          <p>
+            <var>DeleteValue</var> is a procedure used to remove the value for a DOM node stored at the path specified in <var>APath</var>.  <var>APath</var> contains the path specifier which describes the hierarchy of elements and attributes needed to access the DOM node. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
+          </p>
+          <p>
+            DeleteValue calls the <var>FindNode</var> method to get the DOM node updated in the method.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method when a node cannot be found with the specified path.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig-PathSyntax"/>
+          <link id="TXMLConfig.FindNode"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.DeleteValue.APath">
+        <short>Path to the DOM node affected in the method</short>
+      </element>
+
+      <element name="TXMLConfig.FindNode">
+        <short>Retrieves the DOM node with the specified path</short>
+        <descr>
+          <p>
+            <var>FindNode</var> is a <var>TDOMNode</var> function used to retrieve the DOM node stored at the path specified in <var>APath</var> in the <var>Document</var> instance. <var>FindNode</var> calls <var>InternalFindNode</var> to locate the DOM node used as the return value for the method.
+          </p>
+          <p>
+            <var>APath</var> contains the path specifier used to locate the DOM node. It contains the hierarchy of elements and attributes needed to access the DOM node, as described in <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link>.
+          </p>
+          <p>
+            <var>PathHasValue</var> indicates if <var>APath</var> includes a specifier for the attribute where the value is stored. When <var>PathHasValue</var> is <b>True</b>, the trailing path identifier (for the attribute name) is removed from <var>APath</var>. Otherwise, the value in <var>APath</var> is used in its unmodified state.
+          </p>
+          <p>
+            <var>FindNode</var> is used in the implementation of the <var>DeleteValue</var>, <var>GetChildCount</var>, <var>HasPath</var>, and <var>HasChildPaths</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.DeleteValue"/>
+          <link id="TXMLConfig.GetChildCount"/>
+          <link id="TXMLConfig.HasPath"/>
+          <link id="TXMLConfig.HasChildPaths"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.FindNode.Result">
+        <short>DOM node stored at the specified path</short>
+      </element>
+      <element name="TXMLConfig.FindNode.APath">
+        <short>Path to the DOM node retrieve in the method</short>
+      </element>
+      <element name="TXMLConfig.FindNode.PathHasValue">
+        <short>Indicates if the path is checked for a value</short>
+      </element>
+
+      <element name="TXMLConfig.HasPath">
+        <short>Indicates if a DOM node exists for the specified path</short>
+        <descr></descr>
+        <seealso>
+          <link id="TXMLConfig.FindNode"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.HasPath.Result">
+        <short>True when a DOM node exists with the specified path</short>
+      </element>
+      <element name="TXMLConfig.HasPath.APath">
+        <short>Path examined in the method</short>
+      </element>
+      <element name="TXMLConfig.HasPath.PathHasValue">
+        <short>Indicates if the DOM node has content representing the value</short>
+      </element>
+
+      <element name="TXMLConfig.HasChildPaths">
+        <short>Indicates if the DOM node at the specified path has child nodes</short>
+        <descr></descr>
+        <seealso>
+          <link id="TXMLConfig.FindNode"/>
+          <link id="#LazUtils.Laz2_Dom.TDOMNode.HasChildNodes"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.HasChildPaths.Result">
+        <short>True when the specified path has child nodes in the Document</short>
+      </element>
+      <element name="TXMLConfig.HasChildPaths.APath">
+        <short>Path to the DOM node examined in the method</short>
+      </element>
+
+      <element name="TXMLConfig.GetChildCount">
+        <short>Gets the number of child nodes used in the DOM node at the specified path</short>
+        <descr></descr>
+        <seealso>
+          <link id="TXMLConfig.FindNode"/>
+          <link id="#LazUtils.Laz2_Dom.TDOMNode.GetChildCount"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.GetChildCount.Result">
+        <short>Number of child nodes in the specified DOM node</short>
+      </element>
+      <element name="TXMLConfig.GetChildCount.APath">
+        <short>Path to the DOM node examined in the method</short>
+      </element>
+
+      <element name="TXMLConfig.IsLegacyList">
+        <short></short>
+        <descr>
+          Not used in the current implementation.
+        </descr>
+        <notes>
+          <note>???</note>
+        </notes>
+        <seealso></seealso>
+      </element>
+      <element name="TXMLConfig.IsLegacyList.Result">
+        <short></short>
+      </element>
+      <element name="TXMLConfig.IsLegacyList.APath">
+        <short></short>
+      </element>
+
+      <element name="TXMLConfig.GetListItemCount">
+        <short></short>
+        <descr>
+          Not used in the current implementation.
+        </descr>
+        <notes>
+          <note>???</note>
+        </notes>
+        <seealso></seealso>
+      </element>
+      <element name="TXMLConfig.GetListItemCount.Result">
+        <short></short>
+      </element>
+      <element name="TXMLConfig.GetListItemCount.APath">
+        <short></short>
+      </element>
+      <element name="TXMLConfig.GetListItemCount.AItemName">
+        <short></short>
+      </element>
+      <element name="TXMLConfig.GetListItemCount.ALegacyList">
+        <short></short>
+      </element>
+
+      <element name="TXMLConfig.GetListItemXPath">
+        <short>
+          Gets the path specifier used to access a list item at the specified position
+        </short>
+        <descr>
+          <p>
+            GetListItemXPath is a String class function used to get the path specifier used to access a list item at the specified position in the Document. The return value contains the path specifier constructed for the  list item. For example:
+          </p>
+          <code>
+'item0'
+'item1'
+'item[0]'
+          </code>
+        </descr>
+        <notes>
+          <note>???</note>
+        </notes>
+        <seealso></seealso>
+      </element>
+      <element name="TXMLConfig.GetListItemXPath.Result">
+        <short>Path specifier for the list item at the specified position</short>
+      </element>
+      <element name="TXMLConfig.GetListItemXPath.AName">
+        <short>Name for the list item</short>
+      </element>
+      <element name="TXMLConfig.GetListItemXPath.AIndex">
+        <short>Position for the list item</short>
+      </element>
+      <element name="TXMLConfig.GetListItemXPath.ALegacyList">
+        <short>
+          Indicates that array-style notation (with square brackets) is not used when True
+        </short>
+      </element>
+      <element name="TXMLConfig.GetListItemXPath.ALegacyList1Based">
+        <short>Indicates if positions in the list start at 1 instead of 0</short>
+      </element>
+
+      <element name="TXMLConfig.SetListItemCount">
+        <short></short>
+        <descr>
+          Not used in the current implementation.
+        </descr>
+        <notes>
+          <note>???</note>
+        </notes>
+        <seealso></seealso>
+      </element>
+      <element name="TXMLConfig.SetListItemCount.APath">
+        <short></short>
+      </element>
+      <element name="TXMLConfig.SetListItemCount.ACount">
+        <short></short>
+      </element>
+      <element name="TXMLConfig.SetListItemCount.ALegacyList">
+        <short></short>
+      </element>
+
+      <element name="TXMLConfig.Modified">
+        <short>Indicates if the XML content in the class has been modified</short>
+        <descr>
+          <var>Modified</var> is a <var>Boolean</var> property used to indicate if the XML content in <var>Document</var> has been altered since it was loaded or created. The value in <var>Modified</var> is updated in methods like <var>CreateClean</var>, <var>Flush</var>,  <var>SetValue</var>, <var>DeletePath</var>, <var>DeleteValue</var>, and <var>InternalCleanNode</var>.
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.CreateClean"/>
+          <link id="TXMLConfig.Flush"/>
+          <link id="TXMLConfig.SetValue"/>
+          <link id="TXMLConfig.DeletePath"/>
+          <link id="TXMLConfig.DeleteValue"/>
+          <link id="TXMLConfig.InternalCleanNode"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.InvalidatePathCache">
+        <short>Removes cached DOM nodes for paths in the XML configuration file</short>
+        <descr>
+          <p>
+            <var>InvalidatePathCache</var> is a procedure used to invalidate all of the cached references to DOM nodes used in the class instance. <var>InvalidatePathCache</var> calls the <var>InvalidateCacheTilEnd</var> method starting at position 0 in the internal array of DOM nodes used for the cache.
+          </p>
+          <p>
+            <var>InvalidatePathCache</var> is used in the implementation of methods like: <var>DeletePath</var>, <var>ReadXMLFile</var>, <var>FreeDoc</var>, <var>InternalCleanNode</var>, and <var>SetFilename</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.InvalidateCacheTilEnd"/>
+          <link id="TXMLConfig.DeletePath"/>
+          <link id="TXMLConfig.ReadXMLFile"/>
+          <link id="TXMLConfig.FreeDoc"/>
+          <link id="TXMLConfig.InternalCleanNode"/>
+          <link id="TXMLConfig.SetFilename"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.Filename">
+        <short>File name used to read or write the XML content in the class instance</short>
+        <descr>
+          <p>
+            <var>Filename</var> is a <var>String</var> property which specifies the file name on the local file system where the content for the XML configuration file is stored. Changing the value in <var>Filename</var> causes the DOM node cache to be cleared by calling the <var>InvalidatePathCache</var> method.
+          </p>
+          <p>
+            If <var>Document</var> contains a valid <var>TXMLDocument</var> instance, the <var>Flush</var> method is called to write any pending changes to disk. The <var>FreeDoc</var> method is called to re-initialize the <var>Document</var> instance. The XML content in <var>Document</var> is then reloaded using the file or string content as required.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method when the value in <var>Filename</var> is assigned as the component is loaded using the LCL streaming mechanism.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.InvalidatePathCache"/>
+          <link id="TXMLConfig.Flush"/>
+          <link id="TXMLConfig.FreeDoc"/>
+          <link id="TXMLConfig-PathSyntax"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.Document">
+        <short>XML document used for the class instance</short>
+        <descr>
+          <p>
+            <var>Document</var> is a read-only <var>TXMLDocument</var> property which contains  the XML content in the configuration file. <var>Document</var> is a hierarchical sequence of DOM nodes which represent the paths and values for configuration data. DOM nodes are added and deleted in <var>Document</var> using a path specifier which represents the hierarchical structure for the XML content. See the <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> topic for more information about path specifiers in TXMLConfig.
+          </p>
+          <p>
+            The <var>TXMLDocument</var> instance in Document is created and freed in methods like <var>Clear</var>, <var>FreeDoc</var>, <var>CreateConfigNode</var>, and <var>SetFilename</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Clear"/>
+          <link id="TXMLConfig.FreeDoc"/>
+          <link id="TXMLConfig.CreateConfigNode"/>
+          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLDocument"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.ReadFlags">
+        <short>TXMLReaderFlags for the XML configuration file</short>
+        <descr>
+          <p>
+            <var>ReadFlags</var> is a <var>TXMLReaderFlags</var> property which represents the options enabled when reading the XML content for the configuration file. Values in <var>ReadFlags</var> are passed as an argument in <var>ReadFromStream</var> and <var>ReadXMLFile</var> to routines used to read the XML content.
+          </p>
+          <p>
+            The set in <var>ReadFlags</var> is initialized in the <var>Create</var> constructor to the following enumeration values:
+          </p>
+          <ul>
+            <li>xrfAllowLowerThanInAttributeValue</li>
+            <li>xrfAllowSpecialCharsInAttributeValue</li>
+          </ul>
+          <p>
+            See <var>TXMLReaderFlags</var> for a description of enumeration values and their meanings.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLReaderFlags"/>
+          <link id="TXMLConfig.ReadFromStream"/>
+          <link id="TXMLConfig.ReadXMLFile"/>
+          <link id="TXMLConfig.Create"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfig.WriteFlags">
+        <short>TXMLWriteFlags for the XML configuration file</short>
+        <descr>
+          <p>
+            <var>WriteFlags</var> is a <var>TXMLWriteFlags</var> property which represents the options enabled when writing the XML content for the configuration file. Values in <var>WriteFlags</var> are passed as an argument in <var>WriteToSteam</var> and <var>WriteXMLFile</var> to routines used to write the XML content.
+          </p>
+          <p>
+            The set in <var>WriteFlags</var> is initialized in the <var>Create</var> constructor to the following enumeration values:
+          </p>
+          <ul>
+            <li>xwfSpecialCharsInAttributeValue</li>
+          </ul>
+          <p>
+            See <var>TXMLWriterFlags</var> for a description of enumeration values and their meanings.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.Create"/>
+          <link id="TXMLConfig.WriteToSteam"/>
+          <link id="TXMLConfig.WriteXMLFile"/>
+          <link id="TXMLWriterFlags"/>
+        </seealso>
+      </element>
+
+      <element name="TRttiXMLConfig">
+        <short>Implements an XML configuration file with RTTI support</short>
+        <descr>
+          <p>
+            <var>TRttiXMLConfig</var> is a <var>TXMLConfig</var> descendant which implements support for reading and writing objects and their property values using RTTI (Run-Time Type Information). TRttiXMLConfig extends the ancestor class to include methods used to read and write objects, or just specific properties, using path specifiers supported in the class. See the <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> topic for more information about path specifiers in TXMLConfig.
+          </p>
+          <p>
+            Type information provided by RTTI (Run-Time Type Information) is used to determine the value and formatting used  for supported data types. Supported RTTI type kinds include:
+          </p>
+          <ul>
+            <li>tkChar</li>
+            <li>tkWChar</li>
+            <li>tkSString</li>
+            <li>tkLString</li>
+            <li>tkAString</li>
+            <li>tkInteger</li>
+            <li>tkFloat</li>
+            <li>tkEnumeration</li>
+            <li>tkSet</li>
+            <li>tkBool</li>
+            <li>tkClass</li>
+          </ul>
+          <remark>
+            Please note: Properties must be implemented with both getter and setter procedures to be available for use in <var>TRttiXMLConfig</var>. Properties which do not use both types of procedure are ignored.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig"/>
+          <link id="TXMLConfig-PathSyntax"/>
+        </seealso>
+      </element>
+
+      <element name="TRttiXMLConfig.WriteProperty">
+        <short>
+          Writes a property value from an object to the specified path in the XML Document
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TRttiXMLConfig.WriteProperty.Path">
+        <short>Path to the DOM node where property values are stored</short>
+      </element>
+      <element name="TRttiXMLConfig.WriteProperty.Instance">
+        <short>Object instance with property value examined in the method</short>
+      </element>
+      <element name="TRttiXMLConfig.WriteProperty.PropInfo">
+        <short>RTTI property information used to get the value written in the method</short>
+      </element>
+      <element name="TRttiXMLConfig.WriteProperty.DefInstance">
+        <short>Object instance used to provide a default value for the property</short>
+      </element>
+      <element name="TRttiXMLConfig.WriteProperty.OnlyProperty">
+        <short>
+          List of property names included in the process; all properties are included when omitted
+        </short>
+      </element>
+
+      <element name="TRttiXMLConfig.ReadProperty">
+        <short>
+          Stores the value for the specified path to a property in an object instance.
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TRttiXMLConfig.ReadProperty.Path">
+        <short>Path where the value is stored in the Document</short>
+      </element>
+      <element name="TRttiXMLConfig.ReadProperty.Instance">
+        <short>Object instance where the value is stored</short>
+      </element>
+      <element name="TRttiXMLConfig.ReadProperty.PropInfo">
+        <short>RTTI property information for the update property</short>
+      </element>
+      <element name="TRttiXMLConfig.ReadProperty.DefInstance">
+        <short>Object instance with the default value for the property</short>
+      </element>
+      <element name="TRttiXMLConfig.ReadProperty.OnlyProperty">
+        <short>
+          List of property names included in the process; all properties are included when omitted
+        </short>
+      </element>
+
+      <element name="TRttiXMLConfig.WriteObject">
+        <short>
+          Stores property values from an object to the specified path in the document
+        </short>
+        <descr></descr>
+        <seealso>
+          <link id="TRttiXMLConfig.WriteProperty"/>
+          <link id="TRttiXMLConfig.ReadObject"/>
+        </seealso>
+      </element>
+      <element name="TRttiXMLConfig.WriteObject.Path">
+        <short>Path used as a container for property values from the object</short>
+      </element>
+      <element name="TRttiXMLConfig.WriteObject.Obj">
+        <short>Object instance with property values written in the method</short>
+      </element>
+      <element name="TRttiXMLConfig.WriteObject.DefObject">
+        <short>Object instance with the default values for the properties</short>
+      </element>
+      <element name="TRttiXMLConfig.WriteObject.OnlyProperty">
+        <short>
+          List of property names included in the process, or all properties when omitted
+        </short>
+      </element>
+
+      <element name="TRttiXMLConfig.ReadObject">
+        <short>
+          Stores property values from the specified path to an object instance
+        </short>
+        <descr></descr>
+        <seealso>
+          <link id="TRttiXMLConfig.ReadProperty"/>
+          <link id="TRttiXMLConfig.WriteObject"/>
+        </seealso>
+      </element>
+      <element name="TRttiXMLConfig.ReadObject.Path">
+        <short>Path with the property values loaded into the object in the method</short>
+      </element>
+      <element name="TRttiXMLConfig.ReadObject.Obj">
+        <short>Object instance where property values are stored</short>
+      </element>
+      <element name="TRttiXMLConfig.ReadObject.DefObject">
+        <short>Object instance with default values used for properties in the method</short>
+      </element>
+      <element name="TRttiXMLConfig.ReadObject.OnlyProperty">
+        <short>
+          List of property names included in the process, or all properties when omitted
+        </short>
+      </element>
+
+      <element name="CompareDomNodeNames">
+        <short>Compares the names for the specified DOM nodes</short>
+        <descr>
+          <p>
+            <var>CompareDomNodeNames</var> is an <var>Integer</var> function used to compare the pointers to DOM nodes specified in <var>DOMNode1</var> and <var>DOMNode2</var>. CompareDomNodeNames calls <var>CompareStr</var> to examine the names in the pointers. The return value contains the relative sort order for the node names as determined in the <var>CompareStr</var> routine.
+          </p>
+          <p>
+            CompareDomNodeNames is the routine passed as an argument to MergeSortLen in the <var>TXMLConfig.TNodeCache.RefreshChildren</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.TNodeCache.RefreshChildren"/>
+        </seealso>
+      </element>
+      <element name="CompareDomNodeNames.Result">
+        <short>Relative sort order for the specified node pointers</short>
+      </element>
+      <element name="CompareDomNodeNames.DOMNode1">
+        <short>Pointer to a DOM node examined in the routine</short>
+      </element>
+      <element name="CompareDomNodeNames.DOMNode2">
+        <short>Pointer to a DOM node examined in the routine</short>
+      </element>
+
+      <topic name="TXMLConfig-Using">
+        <short>Using TXMLConfig</short>
+        <descr>
+          <p>
+            <b>What is TXMLConfig</b>
+          </p>
+          <p>
+            TXMLConfig provides a simple mechanism for storing and retrieving values in an XML file. It is intended for use with configuration setting and option values. It is also used as the ancestor for an RTTI-enabled version which store values for object properties using the facilities provided by Run-Time Type Information (<b>RTTI</b>).
+          </p>
+          <p>
+            Using TXMLConfig is easier than building DOM nodes, child nodes, and attribute values in a TXMLDocument instance. This ease of use is made possible by its use of path specifiers to describe the hierarchy of elements and attributes in the XML document. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for a description of the path specifier syntax.
+          </p>
+          <p>
+            Path specifiers are passed as arguments to the GetValue and SetValue methods which  read and write values in the XML document. The methods are overloaded to support  the use of String, Integer, Boolean, and TRect data types in the value.
+          </p>
+          <p>
+            <b>Creating Instances of TXMLConfig</b>
+          </p>
+          <p>
+            Various constructors are available in the class to create TXMLConfig instances. Specifically, they are the Create, CreateClean, and CreateWithSource methods. CreateClean allows an empty XML document to be created that is ultimately stored in the specified file name. CreateWithSource creates an XML document with content specified in a String argument passed to the constructor.
+          </p>
+          <p>
+            Use the Filename property to change the file name on the local file system where the XML document is stored. Use the Modified property to determine if the XML content in the document has been altered since it was created or loaded.
+          </p>
+          <p>
+            <b>Loading and Saving XML Content</b>
+          </p>
+          <p>
+            If the XML document was created was a destination file name, it can be written to disk using the Flush method. TXMLConfig includes other methods that can be used to read or write the XML content in the document to/from a specific file name, or to a TStream instance. Used the ReadXMLFile and WriteXMLFile methods to read and write XML content to a file. Use ReadFromStream and WriteToSteam to read and write XML content using a TStream instance.
+          </p>
+          <code>
+// load the content in an existing configuration file
+ACfg := TXMLConfig.Create('/path/to/file.xml');
+          </code>
+          <code>
+//create an empty XML configuration file
+ACfg := TXMLConfig.CreateClean('/path/to/file.xml');
+          </code>
+          <code>
+//create an XML configuration file with the specified content, same as CreateClean
+ACfg := TXMLConfig.CreateWithSource('/path/to/file.xml', '&lt;CONFIG&gt;&lt;/CONFIG&gt;');
+          </code>
+          <code>
+// stores changes to disk
+ACfg.Flush;
+          </code>
+          <code>
+// write XML content to a different file
+ACfg.WriteXMLFile('/another/path/to/file.xml');
+          </code>
+          <code>
+// write XML content to a stream
+AStream := TStream.Create;
+ACfg.WriteToSteam(ASteam);
+          </code>
+          <code>
+ACfg := TXMLConfig.CreateClean('myappconfig.xml');
+ACfg.SetValue('settings/backup/path', './backup');
+ACfg.SetValue('settings/backup/enabled', True);
+ACfg.SetValue('settings/spellcheck/enabled', False);
+
+if ACfg.Modified then ACfg.Flush;
+ACfg.Free;
+          </code>
+          <p>
+            The <file>myappconfig.xml</file> file contains the following:
+          </p>
+          <code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;CONFIG&gt;
+  &lt;settings&gt;
+    &lt;backup path="./backup" enabled="True"/&gt;
+    &lt;spellcheck enabled="False"/&gt;
+  &lt;/settings&gt;
+&lt;/CONFIG&gt;
+          </code>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig"/>
+          <link id="TRttiXMLConfig"/>
+          <link id="TXMLConfig-PathSyntax"/>
+        </seealso>
+      </topic>
+
+      <topic name="TXMLConfig-PathSyntax">
+        <short>TXMLConfig Path Syntax</short>
+        <descr>
+          <p>
+            Path specifiers in TXMLConfig are used to get or set a value in the XML configuration file. Its syntax describes the hierarchy of elements and attributes needed to access a value in the XML document. It consists of a relative path to a DOM node and an attribute name where the value is stored.
+          </p>
+          <p>
+            The path specifier should NOT include a root node (or document element name); that is assumed to be a DOM node with the name "CONFIG". Use of the root node in the specifier is invalid in TXMLConfig.
+          </p>
+          <p>
+            Element and attributes names in the hierarchy are separated by the '/' (Forward Slash) character. The final identifier in the path specifier is the attribute name where a value is stored in the XML document.
+          </p>
+          <p>
+            Lists or arrays of elements can be read /written using a path specifier that includes notation which indicates the ordinal position of the element. For example:
+          </p>
+          <code>
+ACfg.SetValue('list/items/item[0]/name', 'itemA');
+ACfg.SetValue('list/items/item[0]/value', 'valueA');
+ACfg.SetValue('list/items/item[1]/name', 'itemB');
+ACfg.SetValue('list/items/item[1]/value', 'ValueB');
+ACfg.SetValue('list/items/item[2]/name', 'itemC');
+ACfg.SetValue('list/items/item[2]/value', 'valueC');
+          </code>
+          <p>
+            Results in the following XML content:
+          </p>
+          <code>
+&lt;list&gt;
+  &lt;items&gt;
+    &lt;item name="itemA" value="valueA"/&gt;
+    &lt;item name="itemB" value="valueB"/&gt;
+    &lt;item name="itemC" value="valueC"/&gt;
+  &lt;/items&gt;
+&lt;/list&gt;
+          </code>
+
+          <!-- TODO:
+            discuss reading and writing TRect
+
+            ACfg.SetValue('window/position/top', ARect.Top);
+            ACfg.SetValue('window/position/left', ARect.Left);
+            ACfg.SetValue('window/position/bottom', ARect.Bottom);
+            ACfg.SetValue('window/position/right', ARect.Right);
+
+            ACfg.GetValue('window/position/', ARect, ADefRect);
+
+            window
+              position left= top= right= bottom=
+          -->
+
+          <remark>
+            There is no overloaded variant of the SetValue method which handles writing a TRect data type in the current implementation. You must write the Top, Left, Right, and Bottom coordinates as separate calls to SetValue using the desired path.
+          </remark>
+
+          <remark>
+            Please note: Contrary to suggestions in source code comments, the syntax used for path specifiers in TXMLConfig is not XPath-compatible.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig"/>
+          <link id="TXMLConfig-Using"/>
+        </seealso>
+      </topic>
+
+    </module>
+    <!-- Laz2_XMLCfg -->
+  </package>
 </fpdoc-descriptions>
