@@ -2284,13 +2284,17 @@ begin
     LastFrameBase := FrameBase;
     if OutSideFrame then begin
       if not Process.ReadData(StackPtr, Size, Address) or (Address = 0) then Break;
+      {$PUSH}{$R-}{$Q-}
       StackPtr := StackPtr + 1 * Size; // After popping return-addr from "StackPtr"
       LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
+      {$POP}
       // last stack has no frame
       //AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(0, '0',Size, BP);
     end
     else begin
+      {$PUSH}{$R-}{$Q-}
       StackPtr := FrameBase + 2 * Size; // After popping return-addr from "FrameBase + Size"
+      {$POP}
       if not Process.ReadData(FrameBase + Size, Size, Address) or (Address = 0) then Break;
       if not Process.ReadData(FrameBase, Size, FrameBase) then Break;
     end;
