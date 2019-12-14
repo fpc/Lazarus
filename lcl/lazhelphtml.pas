@@ -18,6 +18,7 @@ unit LazHelpHTML;
 interface
 
 uses
+  {$IFDEF Windows}Windows, ShellApi,{$ENDIF}
   Classes, SysUtils,
   // LazUtils
   LazFileUtils, UTF8Process, LazUTF8, LazConfigStorage,
@@ -320,6 +321,7 @@ var
   URLMacroPos: LongInt;
   BrowserProcess: TProcessUTF8;
   Executable, ParamsStr: String;
+  IsShellStr: Boolean = false;
 begin
   Result:=shrViewerError;
   ErrMsg:='';
@@ -351,16 +353,19 @@ begin
   //otherwise FileExistsUf8 and FileIsExecutable fail. Issue #0030502
   if (Length(Executable) > 1) and (Executable[1] = '"') and (Executable[Length(Executable)] = '"') then
     Executable := Copy(Executable, 2, Length(Executable)-2);
+  // Preparation of special handling for Microsoft Edge in Win10, issue #35659
+  IsShellStr := UpperCase(LeftStr(Executable,Pos(':',Executable)))='SHELL:';
   {$endif windows}
-  if (not FileExistsUTF8(Executable)) then begin
-    ErrMsg:=Format(hhsHelpBrowserNotFound, [Executable]);
-    exit;
+  if not IsShellStr then begin
+    if (not FileExistsUTF8(Executable)) then begin
+      ErrMsg:=Format(hhsHelpBrowserNotFound, [Executable]);
+      exit;
+    end;
+    if (not FileIsExecutable(Executable)) then begin
+      ErrMsg:=Format(hhsHelpBrowserNotExecutable, [Executable]);
+      exit;
+    end;
   end;
-  if (not FileIsExecutable(Executable)) then begin
-    ErrMsg:=Format(hhsHelpBrowserNotExecutable, [Executable]);
-    exit;
-  end;
-
   //debugln('THTMLBrowserHelpViewer.ShowNode Node.URL=',Node.URL);
 
   // create params and replace %ParamsStr for URL
@@ -378,6 +383,15 @@ begin
   {$ENDIF}
 
   // run
+  {$IFDEF Windows}
+  // Special handling for Microsoft Edge in Win10, issue #35659
+  if IsShellStr then begin
+    if ShellExecute(0,'open',PChar(Executable),PChar(ParamsStr),'',SW_SHOWNORMAL)<=32 then
+      ErrMsg := Format(hhsHelpErrorWhileExecuting,[Executable+' ',ParamsStr, LineEnding, 'ShellExecute']) 
+    else
+      Result := shrSuccess;
+  end else
+  {$ENDIF}
   try
     BrowserProcess:=TProcessUTF8.Create(nil);
     try
