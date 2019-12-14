@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="laz.virtualtreeview_package"/>
     <Type Value="RunAndDesignTime"/>
     <Author Value="Mike Lischke (LCL Port: Luiz Américo)"/>
@@ -11,11 +11,11 @@
         <OtherUnitFiles Value="units/$(LCLWidgetType)"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)-$(LCLWidgetType)"/>
       </SearchPaths>
-      <Conditionals Value="if VirtualTreeView_Debug = 'True' then
+      <Conditionals Value="if VirtualTreeView_Debug = &apos;True&apos; then
 begin
-  CustomOptions := '-dDEBUG_VTV';
-  UnitPath += ';$PkgOutDir(multiloglaz)';
-  UsageUnitPath += ';$PkgOutDir(multiloglaz)';
+  CustomOptions := &apos;-dDEBUG_VTV&apos;;
+  UnitPath += &apos;;$PkgOutDir(multiloglaz)&apos;;
+  UsageUnitPath += &apos;;$PkgOutDir(multiloglaz)&apos;;
 end;"/>
       <BuildMacros>
         <Count Value="1"/>
@@ -35,6 +35,9 @@ end;"/>
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
     </CompilerOptions>
     <Description Value="Virtual Treeview is an advanced TreeView component
 "/>
