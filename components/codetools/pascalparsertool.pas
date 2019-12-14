@@ -239,7 +239,7 @@ type
     function ReadWithStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     function ReadOnStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     procedure ReadVariableType;
-    procedure ReadHintModifiers;
+    procedure ReadHintModifiers(AllowSemicolonSep: boolean);
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     function ReadTilGetterOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
@@ -2588,7 +2588,7 @@ begin
     if CurPos.Flag=cafSemicolon then begin
       ReadNextAtom;
       p:=CurPos.StartPos;
-      ReadHintModifiers;
+      ReadHintModifiers(true);
       if p=CurPos.StartPos then
         UndoReadNextAtom;
     end;
@@ -3500,7 +3500,7 @@ begin
 
   // optional: hint modifier
   if CurPos.Flag=cafWord then
-    ReadHintModifiers;
+    ReadHintModifiers(false);
 
   if (ParentNode.Desc=ctnVarSection) then begin
     // optional: initial value
@@ -3593,7 +3593,7 @@ begin
   EndChildNode;
 end;
 
-procedure TPascalParserTool.ReadHintModifiers;
+procedure TPascalParserTool.ReadHintModifiers(AllowSemicolonSep: boolean);
 // after reading the cursor is at next atom, e.g. the semicolon
 // e.g. var c: char deprecated;
 
@@ -3629,6 +3629,13 @@ begin
       CurNode.EndPos:=CurPos.StartPos;
     end;
     EndChildNode;
+    if AllowSemicolonSep and (CurPos.Flag=cafSemicolon) then begin
+      ReadNextAtom;
+      if not IsModifier then begin
+        UndoReadNextAtom;
+        exit;
+      end;
+    end;
   end;
 end;
 
@@ -3907,7 +3914,7 @@ begin
       ReadConstant(true,false,[]);
       // read hint modifier
       if CurPos.Flag=cafWord then
-        ReadHintModifiers;
+        ReadHintModifiers(false);
       // read ;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseCharExpectedButAtomFound(20170421195707,';');
@@ -4079,7 +4086,7 @@ begin
     ReadConstExpr;
   // optional: hint modifier
   if CurPos.Flag=cafWord then
-    ReadHintModifiers;
+    ReadHintModifiers(false);
   if CurPos.Flag=cafSemicolon then begin
     if (CurNode.Parent.Desc=ctnConstSection)
     and (CurNode.Parent.Parent.Desc in AllCodeSections) then begin
@@ -4176,7 +4183,7 @@ begin
   ParseType(CurPos.StartPos);
   // read hint modifier
   if CurPos.Flag=cafWord then
-    ReadHintModifiers;
+    ReadHintModifiers(false);
   // read ;
   if CurPos.Flag<>cafSemicolon then
     SaveRaiseCharExpectedButAtomFound(20170421195736,';');
@@ -4495,7 +4502,7 @@ begin
     end;
     // read hint modifier
     if CurPos.Flag=cafWord then
-      ReadHintModifiers;
+      ReadHintModifiers(false);
     if CurPos.Flag<>cafSemicolon then
       UndoReadNextAtom;
   end;
@@ -4733,7 +4740,7 @@ begin
   end;
   // read hint modifier
   if CurPos.Flag=cafWord then
-    ReadHintModifiers;
+    ReadHintModifiers(false);
   if CurPos.Flag=cafSemicolon then
     ReadNextAtom;
   // read post modifiers
@@ -5298,7 +5305,7 @@ begin
         debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase Hint modifier: "',GetAtom,'"']);
         {$ENDIF}
         if CurPos.Flag=cafWord then
-          ReadHintModifiers;
+          ReadHintModifiers(false);
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
       end;
