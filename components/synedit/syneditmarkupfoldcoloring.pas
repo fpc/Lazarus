@@ -633,6 +633,7 @@ var
   lKeepLevel: Boolean;
   LastNode: TSynFoldNodeInfo;
   cnf: TSynCustomFoldConfig;
+  cnfCnt, fType: Integer;
 begin
   lLineIdx := ToIdx(pRow);
   fNestList.Line := lLineIdx;
@@ -644,9 +645,15 @@ begin
     FColumnCache[lLineIdx] := FirstCharacterColumn[lLineIdx];
 
   lLvl := 0;
+  cnfCnt := TSynCustomFoldHighlighter(Highlighter).FoldConfigCount;
   i := 0; // starting at the node with the lowest line number
   while i < fNestList.Count do begin
-    cnf := TSynCustomFoldHighlighter(Highlighter).FoldConfig[PtrInt(fNestList.NodeFoldType[i])];
+    fType := PtrInt(fNestList.NodeFoldType[i]);
+    if fType >= cnfCnt then begin
+      inc(i);
+      continue;
+    end;
+    cnf := TSynCustomFoldHighlighter(Highlighter).FoldConfig[fType];
     if (not cnf.Enabled) or not(fmOutline in cnf.Modes) then begin
       inc(i);
       continue;
