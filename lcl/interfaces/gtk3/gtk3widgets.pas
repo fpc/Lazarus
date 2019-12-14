@@ -3599,6 +3599,7 @@ var
 begin
   if IsWidgetOK then
   begin
+    PGtkScale(FWidget)^.set_draw_value(ATickStyle <> tsNone);
     if ATickStyle = tsNone then
       PGtkScale(FWidget)^.clear_marks
     else
