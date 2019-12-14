@@ -27,7 +27,7 @@ begin
   Changed(False);
 end;
 
-procedure TListControlItem.SetImageIndex(AValue: SmallInt);
+procedure TListControlItem.SetImageIndex(AValue: TImageIndex);
 begin
   if FImageIndex=AValue then exit;
   FImageIndex:=AValue;
@@ -59,21 +59,21 @@ end;
 
 { TComboExItem.Setters }
 
-procedure TComboExItem.SetIndent(AValue: SmallInt);
+procedure TComboExItem.SetIndent(AValue: Integer);
 begin
   if FIndent=AValue then exit;
   FIndent:=AValue;
   Changed(False);
 end;
 
-procedure TComboExItem.SetOverlayImageIndex(AValue: SmallInt);
+procedure TComboExItem.SetOverlayImageIndex(AValue: TImageIndex);
 begin
   if FOverlayImageIndex=AValue then exit;
   FOverlayImageIndex:=AValue;
   { Changed(False); }
 end;
 
-procedure TComboExItem.SetSelectedImageIndex(AValue: SmallInt);
+procedure TComboExItem.SetSelectedImageIndex(AValue: TImageIndex);
 begin
   if FSelectedImageIndex=AValue then exit;
   FSelectedImageIndex:=AValue;
@@ -287,8 +287,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TCustomComboBoxEx.Add(const ACaption: string; AIndent: SmallInt; AImgIdx: SmallInt;
-  AOverlayImgIdx: SmallInt; ASelectedImgIdx: SmallInt);
+procedure TCustomComboBoxEx.Add(const ACaption: string; AIndent: Integer;
+  AImgIdx: TImageIndex; AOverlayImgIdx: TImageIndex; ASelectedImgIdx: TImageIndex);
 begin
   Insert(ItemsEx.Count, ACaption, AIndent, AImgIdx, AOverlayImgIdx, ASelectedImgIdx);
 end;
@@ -437,8 +437,8 @@ begin
   FRightToLeft:=IsRightToLeft;
 end;
 
-procedure TCustomComboBoxEx.Insert(AIndex: Integer; const ACaption: string; AIndent: SmallInt = -1;
-            AImgIdx: SmallInt = -1; AOverlayImgIdx: SmallInt = -1; ASelectedImgIdx: SmallInt = -1);
+procedure TCustomComboBoxEx.Insert(AIndex: Integer; const ACaption: string; AIndent: Integer = -1;
+            AImgIdx: TImageIndex = -1; AOverlayImgIdx: TImageIndex = -1; ASelectedImgIdx: TImageIndex = -1);
 var aItem: TCollectionItem;
 begin
   aItem:=ItemsEx.Insert(AIndex);
