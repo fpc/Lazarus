@@ -468,7 +468,7 @@ type
     // errors
     SelfEntity: TvEntity;
     Parent: TvEntity;
-    Errors: TStrings;
+    Errors: TStringArray; //was: TStrings; -- avoid mem leak when copying RenderInfo
   end;
 
   TvEntityFeatures = record
@@ -2697,7 +2697,10 @@ begin
   end;
 
   if (ARenderInfo.Errors <> nil) and (lPage.RenderInfo.Errors <> nil) then
-    ARenderInfo.Errors.AddStrings(lPage.RenderInfo.Errors);
+  begin
+    AddStringsToArray(ARenderInfo.Errors, lPage.RenderInfo.Errors);
+    // was: ARenderInfo.Errors.AddStrings(lPage.RenderInfo.Errors);
+  end;
   CalcEntityCanvasMinMaxXY(ARenderInfo, CoordToCanvasX(X), CoordToCanvasY(Y));
   CalcEntityCanvasMinMaxXY(ARenderInfo,
     CoordToCanvasX(X + Document.Width),
@@ -3660,14 +3663,19 @@ begin
 
   ARenderInfo.SelfEntity := ASelf;
   if ACreateObjs then
-    ARenderInfo.Errors := TStringList.Create;
+    SetLength(ARenderInfo.Errors, 0);
+    //ARenderInfo.Errors := TStringList.Create;
+    // Avoid memory leak when RenderInfo is copied
 end;
 
 class procedure TvEntity.FinalizeRenderInfo(var ARenderInfo: TvRenderInfo);
 begin
+  Finalize(ARenderInfo.Errors);
+{
   if ARenderInfo.Errors <> nil then
     ARenderInfo.Errors.Free;
   ARenderInfo.Errors := nil;
+}
 end;
 
 class procedure TvEntity.CopyAndInitDocumentRenderInfo(out ATo: TvRenderInfo;
@@ -4230,7 +4238,8 @@ begin
     begin
       lStr := RenderInfo_GenerateParentTree(ARenderInfo);
       if ARenderInfo.Errors <> nil then
-        ARenderInfo.Errors.Add(Format('[%s] Empty Brush.Gradient_colors', [lStr]));
+        AddStringToArray(ARenderInfo.Errors, Format('[%s] Empty Brush.Gradient_colors', [lStr]));
+        //was: ARenderInfo.Errors.Add(Format('[%s] Empty Brush.Gradient_colors', [lStr]));
       ADest.Pen.FPColor := colBlack;
     end;
 
