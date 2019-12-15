@@ -109,11 +109,11 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..35] of shortstring =(
+  FPCOperatingSystemNames: array[1..36] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
-     'freebsd','netbsd','openbsd',
+     'freebsd','netbsd','openbsd','dragonfly',
      'aix',
      'amiga',
      'android',
@@ -141,7 +141,7 @@ const
      'wdosx',
      'wii'
     );
-  FPCOperatingSystemCaptions: array[1..35] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..36] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
@@ -149,6 +149,7 @@ const
      'Atari',
      'BeOS',
      'Darwin',
+     'DragonFly',
      'Embedded',
      'emx',
      'FreeBSD',
@@ -213,7 +214,7 @@ const
     'ECMAScript6'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..91] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..111] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -294,6 +295,21 @@ const
     'x86_64-freebsd-qt5',
     'x86_64-freebsd-fpgui',
     'x86_64-freebsd-nogui',
+    'x86_64-openbsd-gtk2',
+    'x86_64-openbsd-qt',
+    'x86_64-openbsd-qt5',
+    'x86_64-openbsd-fpgui',
+    'x86_64-openbsd-nogui',
+    'x86_64-netbsd-gtk2',
+    'x86_64-netbsd-qt',
+    'x86_64-netbsd-qt5',
+    'x86_64-netbsd-fpgui',
+    'x86_64-netbsd-nogui',
+    'x86_64-dragonfly-gtk2',
+    'x86_64-dragonfly-qt',
+    'x86_64-dragonfly-qt5',
+    'x86_64-dragonfly-fpgui',
+    'x86_64-dragonfly-nogui',
     'x86_64-linux-gtk',
     'x86_64-linux-gtk2',
     'x86_64-linux-qt',
@@ -3615,6 +3631,7 @@ begin
   or (CompareText(TargetOS,'freebsd')=0)
   or (CompareText(TargetOS,'netbsd')=0)
   or (CompareText(TargetOS,'openbsd')=0)
+  or (CompareText(TargetOS,'dragonfly')=0)
   or (CompareText(TargetOS,'darwin')=0)
   or (CompareText(TargetOS,'solaris')=0)
   or (CompareText(TargetOS,'haiku')=0)
@@ -3635,6 +3652,7 @@ begin
   if (CompareText(TargetOS,'freebsd')=0)
   or (CompareText(TargetOS,'netbsd')=0)
   or (CompareText(TargetOS,'openbsd')=0)
+  or (CompareText(TargetOS,'dragonfly')=0)
   or (CompareText(TargetOS,'darwin')=0)
   then
     Result:='bsd'

@@ -1066,6 +1066,7 @@ begin
       Add('Linux');
       Add('NetBSD');
       Add('OpenBSD');
+      Add('DragonFly');
       Add('Solaris');
       Add('Win32');
       Add('Win64');

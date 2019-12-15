@@ -713,7 +713,7 @@ function TargetNeedsFPCOptionCG(TargetOS, TargetCPU: string): boolean;
 begin
   Result:= (TargetCPU='x86_64')
     and ((TargetOS='linux') or (TargetOS='freebsd') or (TargetOS='netbsd')
-      or (TargetOS='openbsd') or (TargetOS='solaris'));
+      or (TargetOS='openbsd') or (TargetOS='dragonfly') or (TargetOS='solaris'));
 end;
 
 procedure GatherInheritedOptions(AddOptionsList: TFPList;
