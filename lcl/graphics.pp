@@ -1105,10 +1105,10 @@ type
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean = False;
-                         Continuous: boolean = False); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+                         Continuous: boolean = True); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure PolyBezier(const Points: array of TPoint;
                          Filled: boolean = False;
-                         Continuous: boolean = False); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+                         Continuous: boolean = True); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
                       StartIndex: Integer = 0;
