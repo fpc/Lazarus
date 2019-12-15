@@ -6506,7 +6506,8 @@ var
   w: PGtkWidget;
   ctl, Parent: TWinControl;
   rb: TRadioButton;
-  pl: PGsList;
+  //pl: PGsList;
+  i: Integer;
 begin
   if Self.LCLObject.Name='HiddenRadioButton' then
     exit;
@@ -6517,15 +6518,33 @@ begin
   if Assigned(ctl) then
   begin
     Parent := ctl.Parent;
-    if (Parent is TRadioGroup) and (TRadioGroup(Parent).Items.Count>0) then
+    if (Parent is TRadioGroup) then
     begin
-      rb := TRadioButton(Parent.Controls[0]);
-      if rb<>ctl then
+      if (TRadioGroup(Parent).Items.Count>0) then
       begin
-        w := TGtk3RadioButton(rb.Handle).Widget;
-        pl := PGtkRadioButton(w)^.get_group;
-        PGtkRadioButton(Result)^.set_group(pl);
-      end;
+        rb := TRadioButton(Parent.Controls[0]);
+        if rb<>ctl then
+        begin
+          w := TGtk3RadioButton(rb.Handle).Widget;
+          //pl := PGtkRadioButton(w)^.get_group;
+          //PGtkRadioButton(Result)^.set_group(pl);
+          PGtkRadioButton(Result)^.join_group(PGtkRadioButton(w));
+        end;
+      end
+    end
+    else
+    begin
+      for i := 0 to Parent.ControlCount - 1 do
+        if Parent.Controls[i] is TRadioButton and
+           TWinControl(Parent.Controls[i]).HandleAllocated then
+        begin
+          rb := TRadioButton(Parent.Controls[i]);
+          w := TGtk3RadioButton(rb.Handle).Widget;
+          //pl := PGtkRadioButton(w)^.get_group;
+          //PGtkRadioButton(Result)^.set_group(pl);
+          PGtkRadioButton(Result)^.join_group(PGtkRadioButton(w));
+          Break;
+        end;
     end;
   end;
 end;
