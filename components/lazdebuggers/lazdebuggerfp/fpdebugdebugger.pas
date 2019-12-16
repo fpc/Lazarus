@@ -458,7 +458,7 @@ uses
   FpDbgDisasX86;
 
 var
-  DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
 
 type
 
@@ -2793,7 +2793,7 @@ end;
 procedure TFpDebugDebugger.StartDebugLoop;
 begin
   {$ifdef DBG_FPDEBUG_VERBOSE}
-  DebugLn('StartDebugLoop');
+  DebugLn(DBG_VERBOSE, 'StartDebugLoop');
   {$endif DBG_FPDEBUG_VERBOSE}
   RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
 end;
@@ -2805,7 +2805,7 @@ begin
   LockRelease;
   try
     {$ifdef DBG_FPDEBUG_VERBOSE}
-    DebugLn('DebugLoopFinished');
+    DebugLn(DBG_VERBOSE, 'DebugLoopFinished');
     {$endif DBG_FPDEBUG_VERBOSE}
 
     (* Need to ensure CurrentThreadId is correct,
@@ -2838,7 +2838,7 @@ end;
 
 procedure TFpDebugDebugger.DoRelease;
 begin
-  DebugLn(['++++ dorelase  ', Dbgs(ptrint(FDbgController)), dbgs(state)]);
+  DebugLn(DBG_VERBOSE, ['++++ dorelase  ', Dbgs(ptrint(FDbgController)), dbgs(state)]);
 //  SetState(dsDestroying);
   if (State <> dsDestroying) and //assigned(FFpDebugThread) and //???
      (FDbgController <> nil) and (FDbgController.MainProcess <> nil)
@@ -3225,6 +3225,7 @@ begin
 end;
 
 initialization
+  DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_BREAKPOINTS := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
   FPDBG_COMMANDS := DebugLogger.FindOrRegisterLogGroup('FPDBG_COMMANDS' {$IFDEF FPDBG_COMMANDS} , True {$ENDIF} );
 

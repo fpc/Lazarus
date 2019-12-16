@@ -418,7 +418,7 @@ function dbgs(const AReadDataType: TFpDbgMemReadDataType): String; overload;
 
 implementation
 var
-  DBG_VERBOSE: PLazLoggerLogGroup;
+  FPDBG_VERBOSE_MEM: PLazLoggerLogGroup;
 
 function NilLoc: TFpDbgMemLocation;
 begin
@@ -1125,7 +1125,7 @@ var
   SourceReadSize, SourceFullSize: QWord;
 begin
   Result := False;
-  DebugLn(DBG_VERBOSE, ['$ReadMem: ', dbgs(AReadDataType),' ', dbgs(ASourceLocation), ' ', dbgs(ASourceSize), ' Dest ', ADestSize]);
+  DebugLn(FPDBG_VERBOSE_MEM, ['$ReadMem: ', dbgs(AReadDataType),' ', dbgs(ASourceLocation), ' ', dbgs(ASourceSize), ' Dest ', ADestSize]);
   if (ASourceLocation.MType in [mlfInvalid, mlfUninitialized]) or
      (ASourceSize <= 0)
   then begin
@@ -1460,6 +1460,6 @@ begin
 end;
 
 initialization
-  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  FPDBG_VERBOSE_MEM := DebugLogger.FindOrRegisterLogGroup('FPDBG_VERBOSE_MEM' {$IFDEF FPDBG_VERBOSE_MEM} , True {$ENDIF} );
 
 end.

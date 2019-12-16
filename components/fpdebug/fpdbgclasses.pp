@@ -1507,7 +1507,6 @@ begin
     while (not Result) and (sz > 1) do begin
       sz := sz div 2;
       Result := ReadData(AAdress, sz, (@AData + Offs)^);
-debugln(['>>>>>>>>> PART READ MEM ', Offs, ' : ', sz, ' ',Result, ' ', APartSize]);
     end;
     if not Result then
       break;
@@ -2160,7 +2159,6 @@ begin
   Result := ( (FPausedAtRemovedBreakPointState = rbFound) and
               (FPausedAtRemovedBreakPointAddress = t) ) or
             ( (t <> 0) and Process.HasInsertedBreakInstructionAtLocation(t - 1) );
-debugln(['####### CHECK ',result, ' for id ', ID, ' stored ', FPausedAtRemovedBreakPointState=rbFound, ' ',FPausedAtRemovedBreakPointAddress=t, ' ',dbghex(t), ' ', dbghex(FPausedAtRemovedBreakPointAddress)]);
 end;
 
 procedure TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint;

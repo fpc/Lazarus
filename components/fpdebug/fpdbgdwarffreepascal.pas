@@ -215,6 +215,9 @@ type
 
 implementation
 
+var
+  FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
+
 { TFpDwarfFreePascalSymbolClassMap }
 
 function TFpDwarfFreePascalSymbolClassMap.CanHandleCompUnit(
@@ -455,7 +458,7 @@ begin
   ParentFpVal := ParentFpSym.Value;
   ApplyContext(ParentFpVal);
   if not (svfOrdinal in ParentFpVal.FieldFlags) then begin
-    DebugLn('no ordinal for parentfp');
+    DebugLn(FPDBG_DWARF_VERBOSE, 'no ordinal for parentfp');
     ParentFpSym.ReleaseReference;
     ParentFpVal.ReleaseReference;
     FOuterNotFound := True;
@@ -465,9 +468,8 @@ begin
   par_fp := ParentFpVal.AsCardinal;
   ParentFpVal.ReleaseReference;
   ParentFpSym.ReleaseReference;
-    DebugLn(['par_fp=',par_fp]);
   if par_fp = 0 then begin
-    DebugLn('no ordinal for parentfp');
+    DebugLn(FPDBG_DWARF_VERBOSE, 'no ordinal for parentfp');
     FOuterNotFound := True;
     exit;
   end;
@@ -1187,6 +1189,8 @@ end;
 initialization
   DwarfSymbolClassMapList.AddMap(TFpDwarfFreePascalSymbolClassMapDwarf2);
   DwarfSymbolClassMapList.AddMap(TFpDwarfFreePascalSymbolClassMapDwarf3);
+
+  FPDBG_DWARF_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
 
 end.
 

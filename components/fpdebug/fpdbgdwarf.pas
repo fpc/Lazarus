@@ -1268,9 +1268,7 @@ begin
           // TODO: only valid, as long as context is valid, because if context is freed, then self is lost too
           ADbgValue := SelfParam.MemberByName[AName];
           assert(ADbgValue <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
-        end
-else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
-        ;
+        end;
         if ADbgValue = nil then begin // Todo: abort the searh /SetError
           ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
         end;
@@ -3308,13 +3306,13 @@ begin
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
   if not InformationEntry.ReadValue(AnAttribData, Val) then begin
-    DebugLn(['LocationFromAttrData: failed to read DW_AT_location']);
+    DebugLn([FPDBG_DWARF_VERBOSE, 'LocationFromAttrData: failed to read DW_AT_location']);
     SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
   end;
 
   if Length(Val) = 0 then begin
-    DebugLn('LocationFromAttrData: Warning DW_AT_location empty');
+    DebugLn(FPDBG_DWARF_VERBOSE, 'LocationFromAttrData: Warning DW_AT_location empty');
     SetLastError(AValueObj, CreateError(fpErrAnyError));
     //exit;
   end;
@@ -3331,7 +3329,7 @@ begin
   Result := IsValidLoc(AnAddress);
   if IsTargetAddr(AnAddress) and  AnAdjustAddress then
     AnAddress.Address :=CompilationUnit.MapAddressToNewValue(AnAddress.Address);
-  debugln(not Result, ['TDbgDwarfIdentifier.LocationFromAttrDataFAILED']); // TODO
+  debugln(FPDBG_DWARF_VERBOSE and (not Result), ['TDbgDwarfIdentifier.LocationFromAttrDataFAILED']); // TODO
 
   LocationParser.Free;
 end;
@@ -3359,7 +3357,7 @@ begin
     if not Result then
       AnAddress := InvalidLoc;
     if not Result then
-      DebugLn(['LocationFromTag: failed to read DW_AT_..._location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
+      DebugLn([FPDBG_DWARF_VERBOSE, 'LocationFromTag: failed to read DW_AT_..._location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
     exit;
   end;
 
@@ -4613,8 +4611,8 @@ end;
 function TFpSymbolDwarfDataMember.GetValueAddress(AValueObj: TFpValueDwarf; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  if AValueObj = nil then debugln(['TFpSymbolDwarfDataMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
-  else if AValueObj.StructureValue = nil then debugln(['TFpSymbolDwarfDataMember.InitLocationParser: NO STRUCT Obj !!!!!!!!!!!!!!!']);
+  if AValueObj = nil then debugln([FPDBG_DWARF_VERBOSE, 'TFpSymbolDwarfDataMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
+  else if AValueObj.StructureValue = nil then debugln(FPDBG_DWARF_VERBOSE, ['TFpSymbolDwarfDataMember.InitLocationParser: NO STRUCT Obj !!!!!!!!!!!!!!!']);
 
   if (AValueObj = nil) or (AValueObj.StructureValue = nil) or (AValueObj.FParentTypeSymbol = nil)
   then begin
@@ -5035,13 +5033,11 @@ procedure TFpSymbolDwarfTypeArray.ResetValueBounds;
 var
   i: Integer;
 begin
-  debuglnEnter(['TFpSymbolDwarfTypeArray.ResetValueBounds ' , Self.ClassName, dbgs(self)]); try
   inherited ResetValueBounds;
   if FMembers <> nil then
     for i := 0 to FMembers.Count - 1 do
       if TObject(FMembers[i]) is TFpSymbolDwarfType then
         TFpSymbolDwarfType(FMembers[i]).ResetValueBounds;
-  finally debuglnExit(['TFpSymbolDwarfTypeArray.ResetValueBounds ' ]); end;
 end;
 
 { TDbgDwarfSymbol }

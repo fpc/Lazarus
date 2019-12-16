@@ -102,7 +102,7 @@
 unit FpDbgWinClasses;
 
 {$mode objfpc}{$H+}
-{$DEFINE DebuglnWinDebugEvents}
+{off $DEFINE DebuglnWinDebugEvents}
 
 interface
 
@@ -1512,7 +1512,7 @@ begin
       Dr2 := DWORD(TFpIntelWatchPointData(AWatchPointData).Dr03[2]);
       Dr3 := DWORD(TFpIntelWatchPointData(AWatchPointData).Dr03[3]);
       Dr7 := (Dr7 and $0000FF00) or DWORD(TFpIntelWatchPointData(AWatchPointData).Dr7);
-DebugLn('### WATCH ADDED  dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 %x', [ dr0,dr1,dr2,dr3, dr7]);
+DebugLn(DBG_VERBOSE, '### WATCH ADDED  dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 %x', [ dr0,dr1,dr2,dr3, dr7]);
     end;
   end
   else begin
@@ -1523,7 +1523,7 @@ DebugLn('### WATCH ADDED  dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 %x', [ dr0,dr1
       Dr2 := TFpIntelWatchPointData(AWatchPointData).Dr03[2];
       Dr3 := TFpIntelWatchPointData(AWatchPointData).Dr03[3];
       Dr7 := (Dr7 and $0000FF00) or TFpIntelWatchPointData(AWatchPointData).Dr7;
-DebugLn('### WATCH ADDED   dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 %x', [ dr0,dr1,dr2,dr3, dr7]);
+DebugLn(DBG_VERBOSE, '### WATCH ADDED   dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 %x', [ dr0,dr1,dr2,dr3, dr7]);
     end;
   {$ifdef cpux86_64}
   end;
