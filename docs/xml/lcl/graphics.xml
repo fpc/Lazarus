@@ -5566,15 +5566,11 @@ If the Continuous flag is TRUE then each subsequent curve requires three more po
 
 
 
-If the continuous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
+If the Filled flag is set to TRUE then a straight line is drawn to the starting point, and the entire curve is filled with the current brush.<br/><br/>
 
 
 
-Any additional points which do not add up to a full Bezier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points for an drawing to occur. <br/><br/>
-
-
-
-If the Filled Flag is set to TRUE then the resulting Poly-Bezier will be drawn as a Polygon.</descr>
+Any additional points which do not add up to a full Bezier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points for a drawing to occur. </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.PolyBezier.Points">
