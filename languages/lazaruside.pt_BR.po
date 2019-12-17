@@ -20891,7 +20891,7 @@ msgstr "Conjunto caracteres:"
 
 #: lazarusidestrconsts.rscloseall
 msgid "Close all pages"
-msgstr ""
+msgstr "Fechar todas as páginas"
 
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
@@ -20899,15 +20899,15 @@ msgstr "Fechar página atual"
 
 #: lazarusidestrconsts.rscloseleft
 msgid "Close page(s) on the left"
-msgstr ""
+msgstr "Fechar página(s) à esquerda."
 
 #: lazarusidestrconsts.rscloseothers
 msgid "Close other page(s)"
-msgstr ""
+msgstr "Fechar outra(s) página(s)"
 
 #: lazarusidestrconsts.rscloseright
 msgid "Close page(s) on the right"
-msgstr ""
+msgstr "Fechar página(s) à direita."
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
