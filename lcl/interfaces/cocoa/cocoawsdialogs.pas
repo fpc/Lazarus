@@ -213,7 +213,11 @@ begin
   sp := NSSavePanel(sender);
   ch := false;
   if not Assigned(sp.URL) then begin
-    if Assigned(selUrl) then selURL.release;
+    if Assigned(selUrl) then
+    begin
+      selURL.release;
+      selURL := nil;
+    end;
     ch := true;
   end
   else if not Assigned(selUrl) then
