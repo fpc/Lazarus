@@ -2946,6 +2946,7 @@ type
     function get_monitor_width_mm(monitor_num: gint): gint; cdecl; inline;
     procedure get_monitor_workarea(monitor_num: gint; dest: PGdkRectangle); cdecl; inline;
     function get_n_monitors: gint; cdecl; inline;
+    function get_monitor_scale_factor(monitor_num: gint): gint; cdecl; inline;
     function get_number: gint; cdecl; inline;
     function get_primary_monitor: gint; cdecl; inline;
     function get_resolution: gdouble; cdecl; inline;
@@ -4083,6 +4084,7 @@ function gdk_screen_get_primary_monitor(screen: PGdkScreen): gint; cdecl; extern
 function gdk_screen_get_resolution(screen: PGdkScreen): gdouble; cdecl; external;
 function gdk_screen_get_rgba_visual(screen: PGdkScreen): PGdkVisual; cdecl; external;
 function gdk_screen_get_root_window(screen: PGdkScreen): PGdkWindow; cdecl; external;
+function gdk_screen_get_monitor_scale_factor(screen: PGdkScreen; monitor_num: gint): gint; cdecl; external;
 function gdk_screen_get_setting(screen: PGdkScreen; name: Pgchar; value: PGValue): gboolean; cdecl; external;
 function gdk_screen_get_system_visual(screen: PGdkScreen): PGdkVisual; cdecl; external;
 function gdk_screen_get_toplevel_windows(screen: PGdkScreen): PGList; cdecl; external;
@@ -4165,6 +4167,7 @@ function gdk_window_get_visible_region(window: PGdkWindow): Pcairo_region_t; cde
 function gdk_window_get_visual(window: PGdkWindow): PGdkVisual; cdecl; external;
 function gdk_window_get_width(window: PGdkWindow): gint; cdecl; external;
 function gdk_window_get_window_type(window: PGdkWindow): TGdkWindowType; cdecl; external;
+function gdk_window_get_scale_factor(window: PGdkWindow): gint; cdecl; external;
 function gdk_window_has_native(window: PGdkWindow): gboolean; cdecl; external;
 function gdk_window_is_destroyed(window: PGdkWindow): gboolean; cdecl; external;
 function gdk_window_is_input_only(window: PGdkWindow): gboolean; cdecl; external;
@@ -4657,6 +4660,11 @@ end;
 function TGdkScreen.get_n_monitors: gint; cdecl;
 begin
   Result := LazGdk3.gdk_screen_get_n_monitors(@self);
+end;
+
+function TGdkScreen.get_monitor_scale_factor(monitor_num: gint): gint; cdecl;
+begin
+   Result := LazGdk3.gdk_screen_get_monitor_scale_factor(@self, monitor_num);
 end;
 
 function TGdkScreen.get_number: gint; cdecl;

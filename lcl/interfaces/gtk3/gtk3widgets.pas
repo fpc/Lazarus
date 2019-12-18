@@ -54,7 +54,7 @@ type
     wtGroupBox, wtCalendar, wtTrackBar, wtScrollBar,
     wtScrollingWin, wtListBox, wtListView, wtCheckListBox, wtMemo, wtTreeModel,
     wtCustomControl, wtScrollingWinControl,
-    wtWindow, wtDialog, wtHintWindow);
+    wtWindow, wtDialog, wtHintWindow, wtGLArea);
   TGtk3WidgetTypes = set of TGtk3WidgetType;
 
   { TGtk3Widget }
@@ -165,7 +165,7 @@ type
     procedure SetParent(AParent: TGtk3Widget; const ALeft, ATop: Integer); virtual;
     procedure Show; virtual;
     procedure ShowAll; virtual;
-    procedure Update(ARect: PRect);
+    procedure Update(ARect: PRect); virtual;
     property CairoContext: Pcairo_t read GetCairoContext;
     property Color: TColor read GetColor write SetColor;
     property Context: HDC read GetContext;
@@ -822,6 +822,16 @@ type
   public
     constructor Create(const ACommonDialog: TCommonDialog); virtual; overload;
   end;
+
+  { TGtk3GLArea }
+  TGtk3GLArea = class(TGtk3Widget)
+  protected
+    function CreateWidget(const Params: TCreateParams): PGtkWidget; override;
+  public
+    procedure Update(ARect: PRect); override;
+  end;
+
+
 
 {main event filter for all widgets, also called from widgetset main eventfilter}
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
@@ -7208,6 +7218,19 @@ begin
   CommonDialog := ACommonDialog;
 end;
 
+{ TGtk3GLArea }
+
+procedure TGtk3GLArea.Update(ARect: PRect);
+begin
+  if IsWidgetOK then
+    PGtkGLArea(Widget)^.queue_render;
+end;
+
+function TGtk3GLArea.CreateWidget(const Params: TCreateParams): PGtkWidget;
+begin
+  FWidgetType := [wtWidget, wtGLArea];
+  Result := TGtkGLArea.new;
+end;
 
 end.
 

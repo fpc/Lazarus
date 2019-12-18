@@ -1747,6 +1747,18 @@ type
     function get_child: PGtkWidget; cdecl; inline;
   end;
 
+  PGtkGLArea = ^TGtkGLArea;
+  TGtkGLArea = object(TGtkWidget)
+    function new: PGtkWidget; cdecl; inline; static;
+    procedure set_auto_render(auto_render: gboolean); cdecl; inline;
+    procedure make_current; cdecl; inline;
+    procedure queue_render; cdecl; inline;
+    procedure set_has_depth_buffer(has_depth_buffer: gboolean); cdecl; inline;
+    procedure set_has_stencil_buffer(has_stencil_buffer: gboolean); cdecl; inline;
+    procedure set_has_alpha(has_alpha: gboolean); cdecl; inline;
+    procedure set_required_version(major: gint; minor: gint); cdecl; inline;
+  end;
+
   PPGtkWindowType = ^PGtkWindowType;
   PGtkWindowType = ^TGtkWindowType;
 
@@ -11791,6 +11803,14 @@ function gtk_grid_get_row_homogeneous(grid: PGtkGrid): gboolean; cdecl; external
 function gtk_grid_get_row_spacing(grid: PGtkGrid): guint; cdecl; external;
 function gtk_grid_get_type: TGType; cdecl; external;
 function gtk_grid_new: PGtkGrid; cdecl; external;
+function gtk_gl_area_new: PGtkWidget; cdecl; external;
+procedure gtk_gl_area_make_current(area: PGtkGLArea); cdecl; external;
+procedure gtk_gl_area_queue_render(area: PGtkGLArea); cdecl; external;
+procedure gtk_gl_area_set_auto_render(area: PGtkGLArea; auto_render: gboolean); cdecl; external;
+procedure gtk_gl_area_set_has_depth_buffer(area: PGtkGLArea; has_depth_buffer: gboolean); cdecl; external;
+procedure gtk_gl_area_set_has_stencil_buffer(area: PGtkGLArea; has_stencil_buffer: gboolean); cdecl; external;
+procedure gtk_gl_area_set_has_alpha(area: PGtkGLArea; has_alpha: gboolean); cdecl; external;
+procedure gtk_gl_area_set_required_version(area: PGtkGLArea; major: gint; minor: gint); cdecl; external;
 function gtk_handle_box_get_type: TGType; cdecl; external;
 function gtk_hbox_get_type: TGType; cdecl; external;
 function gtk_hbutton_box_get_type: TGType; cdecl; external;
@@ -16526,6 +16546,46 @@ end;
 procedure TGtkWindow.unstick; cdecl;
 begin
   LazGtk3.gtk_window_unstick(@self);
+end;
+
+function TGtkGLArea.new: PGtkWidget; cdecl;
+begin
+  Result := LazGtk3.gtk_gl_area_new();
+end;
+
+procedure TGtkGLArea.set_auto_render(auto_render: gboolean); cdecl;
+begin
+  LazGtk3.gtk_gl_area_set_auto_render(@self, auto_render);
+end;
+
+procedure TGtkGLArea.make_current; cdecl;
+begin
+  gtk_gl_area_make_current(@self);
+end;
+
+procedure TGtkGLArea.queue_render; cdecl;
+begin
+  gtk_gl_area_queue_render(@self);
+end;
+
+procedure TGtkGLArea.set_has_depth_buffer(has_depth_buffer: gboolean); cdecl;
+begin
+  gtk_gl_area_set_has_depth_buffer(@self, has_depth_buffer);
+end;
+
+procedure TGtkGLArea.set_has_stencil_buffer(has_stencil_buffer: gboolean); cdecl;
+begin
+  gtk_gl_area_set_has_stencil_buffer(@self, has_stencil_buffer);
+end;
+
+procedure TGtkGLArea.set_has_alpha(has_alpha: gboolean); cdecl;
+begin
+  gtk_gl_area_set_has_alpha(@self, has_alpha);
+end;
+
+procedure TGtkGLArea.set_required_version(major: gint; minor: gint); cdecl;
+begin
+  gtk_gl_area_set_required_version(@self, major, minor);
 end;
 
 function TGtkDialog.new: PGtkDialog; cdecl;
