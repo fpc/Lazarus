@@ -27,7 +27,7 @@ procedure TDBLookupListBox.UpdateData(Sender: TObject);
 begin
   if (ItemIndex < 0) then
     Exit;
-  FLookup.UpdateData(ItemIndex, FScrollListDataset);
+  FLookup.UpdateData(ItemIndex);
 end;
 
 function TDBLookupListBox.IsUnbound: boolean;
@@ -134,6 +134,11 @@ begin
   Result := FLookup.NullValueKey;
 end;
 
+function TDBLookupListBox.GetScrollListDataset: Boolean;
+begin
+  Result := FLookup.ScrollListDataset;
+end;
+
 procedure TDBLookupListBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
@@ -172,6 +177,11 @@ end;
 procedure TDBLookupListBox.SetNullValueKey(const AValue: TShortCut);
 begin
   FLookup.NullValueKey := AValue;
+end;
+
+procedure TDBLookupListBox.SetScrollListDataset(AValue: Boolean);
+begin
+  FLookup.ScrollListDataset := AValue;
 end;
 
 procedure TDBLookupListBox.UpdateLookup;

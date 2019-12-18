@@ -33,7 +33,7 @@ begin
     ItemIndex := Items.IndexOf(Text);
   i := ItemIndex;
   if i <> -1 then
-    FLookup.UpdateData(i, FScrollListDataset)
+    FLookup.UpdateData(i)
   else
   if FDatalink.EditingSource then
     FDatalink.Dataset.Cancel
@@ -153,6 +153,11 @@ begin
   result := FLookup.NullValueKey;
 end;
 
+function TDBLookupComboBox.GetScrollListDataset: Boolean;
+begin
+  Result := FLookup.ScrollListDataset;
+end;
+
 procedure TDBLookupComboBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField := Value;
@@ -191,6 +196,11 @@ end;
 procedure TDBLookupComboBox.SetNullValueKey(const AValue: TShortCut);
 begin
   FLookup.NullValueKey := AValue;
+end;
+
+procedure TDBLookupComboBox.SetScrollListDataset(AValue: Boolean);
+begin
+  FLookup.ScrollListDataset := AValue;
 end;
 
 procedure TDBLookupComboBox.UpdateLookup;
