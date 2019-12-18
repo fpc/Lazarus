@@ -1617,7 +1617,8 @@ end;
 
 procedure TGtk3DeviceContext.drawPolyBezier(P: PPoint; NumPoints: Integer; Filled, Continuous: boolean);
 var
-  i: Integer;
+  MaxIndex, i: Integer;
+  bFill, bBorder: Boolean;
 const
   PixelOffset = 0.5;
 begin
@@ -1625,35 +1626,53 @@ begin
   if (NumPoints < 4) then
     Exit;
 
+  bFill := CurrentBrush.Style <> BS_NULL;
+  bBorder := CurrentPen.Style <> psClear;
+
+  // we need 3 points left for continuous and 4 for not continous
+  MaxIndex := NumPoints - 3 - Ord(not Continuous);
+
   cairo_save(Widget);
   try
-    ApplyPen;
-
     i := 0;
-    // we need 3 points left for continuous and 4 for not continous
-    while i < NumPoints-1 - (3 + ord(not Continuous)) do
+    while i <= MaxIndex do
     begin
-      if (i = 0) or Not Continuous then
+      if i = 0 then
       begin
         cairo_move_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset); // start point
         Inc(i);
+      end
+      else
+      if not Continuous then
+      begin
+        cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset); // start point
+        Inc(i);
       end;
+
       cairo_curve_to(Widget,
                      P[i].X+PixelOffset, P[i].Y+PixelOffset, // control point 1
                      P[i+1].X+PixelOffset, P[i+1].Y+PixelOffset, // control point 2
                      P[i+2].X+PixelOffset, P[i+2].Y+PixelOffset); // end point and start point of next
       Inc(i, 3);
     end;
-    cairo_stroke_preserve(Widget);
 
     if Filled then
     begin
-      ApplyBrush;
-      // join start and end points
       cairo_close_path(Widget);
-      cairo_fill(Widget);
+      if bFill then
+      begin
+        ApplyBrush;
+        cairo_fill_preserve(Widget);
+      end;
     end;
 
+    if bBorder then
+    begin
+      ApplyPen;
+      cairo_stroke(Widget);
+    end
+    else
+      cairo_new_path(Widget);
   finally
     cairo_restore(Widget);
   end;

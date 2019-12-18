@@ -3162,11 +3162,11 @@ begin
   Result:= True;
 end;
 
-function TGtk3WidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer
-  ): boolean;
+function TGtk3WidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 begin
   if not IsValidDC(DC) then
     exit(False);
+  if TGtk3DeviceContext(DC).CurrentPen.Style = psClear then Exit;
   TGtk3DeviceContext(DC).drawPolyLine(Points, NumPts);
   Result:=True;
 end;
