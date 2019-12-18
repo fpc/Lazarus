@@ -3959,26 +3959,19 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PolyBezier">
         <short>Draws Bezier curves.</short>
-        <descr>
-          <p>
-            Use Polybezier to draw cubic Bézier curves.
-          </p><p>
-            The first curve is drawn from the first point to the fourth point
+        <descr><p>Use PolyBezier to draw cubic Bézier curves.
+          </p><p>The first curve is drawn from the first point to the fourth point
             with the second and third points being the control points.
-          </p><p>
-            If the Continuous flag is TRUE then each subsequent curve
+          </p><p>If the <var>Continuous</var> flag is TRUE then each subsequent curve
             requires three more points, using the end-point of the previous Curve
             as its starting point.
-          </p><p>
-            If the Continuous flag is set to FALSE, then each subsequent Curve
+          </p><p>If the <var>Continuous</var> flag is set to FALSE, then each subsequent curve
             requires 4 additional points, which are used exactly as in the first curve.
-          </p><p>
-            Any additional points which do not add up to a full
+          </p><p>If the <var>Filled</var> flag is set to TRUE then a straight line is drawn from the last connected point to the starting
+            point, and the entire curve is filled with the current brush.
+          </p><p>Any additional points which do not add up to a full
             Bezier (4 for Continuous, 3 otherwise) are ignored.
-            There must be at least 4 points for an drawing to occur.
-          </p><p>
-            If the Filled Flag is TRUE then the resulting Poly-Bézier
-            will be drawn as a Polygon.
+            There must be at least 4 points to be connected.
           </p>
         </descr>
         <errors/>

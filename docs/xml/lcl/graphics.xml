@@ -5097,9 +5097,7 @@ Zero degrees is at the 3 o'clock position.</descr>
         <descr/>
         <short>
           <var>Ellipse</var> draws a filled circle or ellipse on the canvas, using the method for the current interface or widget set</short>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Ellipse">TFPCustomCanvas.Ellipse</link>
-          <link id="#LCL.LCLIntf.Ellipse">LCLIntf.Ellipse</link>
+        <seealso><link id="#fcl.FPCanvas.TFPCustomCanvas.Ellipse">TFPCustomCanvas.Ellipse</link><link id="#LCL.LCLIntf.Ellipse">LCLIntf.Ellipse</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5562,15 +5560,19 @@ The first curve is drawn from the first point to the fourth point with the secon
 
 
 
-If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
+If the <var>Continuous</var> flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
 
 
 
-If the Filled flag is set to TRUE then a straight line is drawn to the starting point, and the entire curve is filled with the current brush.<br/><br/>
+If the <var>Continuous</var> flag is set to FALSE, then each subsequent curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
 
 
 
-Any additional points which do not add up to a full Bezier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points for a drawing to occur. </descr>
+If the <var>Filled</var> flag is set to TRUE then a straight line is drawn from the last connected point to the starting point, and the entire curve is filled with the current brush.<br/><br/>
+
+
+
+Any additional points which do not add up to a full Bezier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points to be connected. </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.PolyBezier.Points">
@@ -6072,10 +6074,12 @@ Calling the <var>MoveTo</var>
           The exact text position depends on the specified rectangle, the <var>TextStyle</var> of the canvas, and the <var>X, Y</var> coordinates:
         </p>
           <ul>
-            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var></li>
+            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var>
+            </li>
             <li><var>TextStyle.Alignment = taCenter</var>: Text center is in the center of the rectangle (horizontally)</li>
             <li><var>TextStyle.Alignment = taRightJustify</var>: Text ends at right edge of the rectangle</li>
-            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var></li>
+            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var>
+            </li>
             <li><var>TextStyle.Layout = tlCenter</var>: Text center is in the center of the rectangle (vertically)</li>
             <li><var>TextStyle.Layout = tlBottom</var>: Text sits above the the bottom edge of the rectangle</li>
           </ul>
