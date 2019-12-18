@@ -86,6 +86,7 @@ type
     modals : NSMutableDictionary;
     inputclient : TCocoaInputClient;
     inputctx    : NSTextInputContext;
+    isfinishLaunch: Boolean;
 
     procedure dealloc; override;
     {$ifdef COCOALOOPOVERRIDE}
@@ -120,7 +121,7 @@ type
   TCocoaWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
-    FNSApp: NSApplication;
+    FNSApp: TCocoaApplication;
     FNSApp_Delegate: TAppDelegate;
     FCurrentCursor: HCursor;
     FCaptureControl: HWND;
@@ -224,7 +225,7 @@ type
     function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
     function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
     class function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
-    property NSApp: NSApplication read FNSApp;
+    property NSApp: TCocoaApplication read FNSApp;
     property CurrentCursor: HCursor read FCurrentCursor write FCurrentCursor;
     property CaptureControl: HWND read FCaptureControl;
     // the winapi compatibility methods

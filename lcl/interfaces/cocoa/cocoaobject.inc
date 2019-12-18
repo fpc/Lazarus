@@ -38,7 +38,7 @@ begin
   ScreenInfo.PixelsPerInchY := CocoaBasePPI;
 
   { Creates the application NSApp object }
-  FNSApp := TCocoaApplication.sharedApplication;
+  FNSApp := TCocoaApplication(TCocoaApplication.sharedApplication);
   FNSApp_Delegate := TAppDelegate.alloc.init;
   FNSApp.setDelegate(FNSApp_Delegate);
 
@@ -69,9 +69,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
-  {$ifdef COCOALOOPOVERRIDE}
-  NSApp.finishLaunching;
-  {$endif}
   if Assigned(ALoop) then
   begin
     TCocoaApplication(NSApp).aloop:=ALoop;
@@ -84,6 +81,14 @@ var
   event: NSEvent;
   pool:NSAutoReleasePool;
 begin
+  {$ifdef COCOALOOPOVERRIDE}
+  if not fNSApp.isfinishLaunch then
+  begin
+    FNSApp.finishLaunching;
+    FNSApp.isfinishLaunch := true;
+  end;
+  {$endif}
+
   repeat
     pool := NSAutoreleasePool.alloc.init;
     {$ifdef BOOLFIX}
