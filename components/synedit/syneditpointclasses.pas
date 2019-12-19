@@ -1796,7 +1796,7 @@ end;
 procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
   aLineBrkCnt: Integer; aText: String);
 
-  function AdjustPoint(aPoint: Tpoint; AIsStart: Boolean): TPoint; inline;
+  function AdjustPoint(aPoint: Tpoint; AIsStart: Boolean): TPoint; //inline;
   begin
     Result := aPoint;
     if aLineBrkCnt < 0 then begin
@@ -1810,11 +1810,23 @@ procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBy
     else
     if aLineBrkCnt > 0 then begin
       (* Lines Inserted *)
-      if (aPoint.y = aLinePos) and (aPoint.x >= aBytePos) then begin
-        Result.x := Result.x - aBytePos + 1;
-        Result.y := Result.y + aLineBrkCnt;
-      end;
       if aPoint.y > aLinePos then begin
+        Result.y := Result.y + aLineBrkCnt;
+      end
+      else
+      if (aPoint.y = aLinePos) and (aPoint.x >= aBytePos) then begin
+        if (aPoint.x = aBytePos) then begin
+          if (FWeakPersistentIdx > 0) and (FWeakPersistentIdx > FStrongPersistentIdx) then begin
+            if not AIsStart then
+              exit;
+          end
+          else
+          if (FStrongPersistentIdx > 0) then begin
+            if AIsStart then
+              exit;
+          end;
+        end;
+        Result.x := Result.x - aBytePos + 1;
         Result.y := Result.y + aLineBrkCnt;
       end;
     end
