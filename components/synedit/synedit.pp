@@ -7158,9 +7158,12 @@ begin
         if (not ReadOnly) then begin
           CY := BlockBegin.y;
           if CY > 1 then begin
-            FBlockSelection.IncPersistentLock;
+            FBlockSelection.IncPersistentLock(sbpWeak);
+            if SelAvail and (BlockEnd.x = 1) then
+              FTheLinesView.EditLinesInsert(BlockEnd.y, 1, FTheLinesView[ToIdx(CY) - 1])
+            else
+              FTheLinesView.EditLinesInsert(BlockEnd.y + 1, 1, FTheLinesView[ToIdx(CY) - 1]);
             FCaret.IncAutoMoveOnEdit;
-            FTheLinesView.EditLinesInsert(BlockEnd.y + 1, 1, FTheLinesView[ToIdx(CY) - 1]);
             FTheLinesView.EditLinesDelete(CY - 1, 1);
             FCaret.DecAutoMoveOnEdit;
             FBlockSelection.DecPersistentLock;
@@ -7169,8 +7172,10 @@ begin
       ecMoveLineDown:
         if (not ReadOnly) then begin
           CY := BlockEnd.y;
+          if SelAvail and (BlockEnd.x = 1) then
+            Dec(CY);
           if CY < FTheLinesView.Count - 1 then begin
-            FBlockSelection.IncPersistentLock;
+            FBlockSelection.IncPersistentLock(sbpWeak);
             FCaret.IncAutoMoveOnEdit;
             FTheLinesView.EditLinesInsert(BlockBegin.y, 1, FTheLinesView[ToIdx(CY) + 1]);
             FTheLinesView.EditLinesDelete(CY + 2, 1);
@@ -7180,10 +7185,18 @@ begin
         end;
       ecDuplicateLine:
         if (not ReadOnly) then begin
-          FBlockSelection.IncPersistentLock;
+          FBlockSelection.IncPersistentLock(sbpWeak);
           FInternalBlockSelection.AssignFrom(FBlockSelection);
+          if FInternalBlockSelection.IsBackwardSel then begin
+            FInternalBlockSelection.StartLineBytePos := FBlockSelection.EndLineBytePos;
+            FInternalBlockSelection.EndLineBytePos   := FBlockSelection.StartLineBytePos;
+          end;
           FInternalBlockSelection.ActiveSelectionMode := smLine;
           FInternalBlockSelection.ForceSingleLineSelected := True;
+          If (FInternalBlockSelection.EndBytePos = 1) and
+             (FInternalBlockSelection.EndLinePos > FInternalBlockSelection.StartLinePos)
+          then
+            FInternalBlockSelection.EndLineBytePos := Point(1, FInternalBlockSelection.EndLinePos-1);
           Temp := FInternalBlockSelection.SelText;
           FInternalBlockSelection.ForceSingleLineSelected := False;
           FInternalBlockSelection.StartLineBytePos := Point(1, FInternalBlockSelection.LastLineBytePos.y+1);
