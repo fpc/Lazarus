@@ -256,7 +256,7 @@ type
     function getBpp: integer;
     function getDepth: integer;
     function getDeviceSize: TPoint;
-    function LineTo(const X, Y: Integer): Boolean;
+    function LineTo(X, Y: Integer): Boolean;
     function MoveTo(const X, Y: Integer; OldPoint: PPoint): Boolean;
     function SetClipRegion(ARgn: TGtk3Region): Integer;
     procedure SetSourceColor(AColor: TColor);
@@ -1868,18 +1868,49 @@ begin
   end;
 end;
 
-function TGtk3DeviceContext.LineTo(const X, Y: Integer): Boolean;
+function TGtk3DeviceContext.LineTo(X, Y: Integer): Boolean;
+const
+  PixelOffset = 0.5;
+var
+  FX, FY: Double;
+  X0, Y0: Integer;
 begin
   if not Assigned(Widget) then
     exit(False);
   ApplyPen;
-  cairo_line_to(Widget, X, Y);
+
+  // we must paint line until, but NOT including, (X,Y)
+  // let's offset X, Y by 1 px, but only for horizontal and vertical lines (yet?)
+  cairo_get_current_point(Widget, @FX, @FY);
+  X0 := Round(FX-PixelOffset);
+  Y0 := Round(FY-PixelOffset);
+  if X0 = X then
+  begin
+    if Y = Y0 then
+      exit
+    else
+    if Y > Y0 then
+      Dec(Y)
+    else
+      Inc(Y);
+  end
+  else
+  if Y0 = Y then
+  begin
+    if X > X0 then
+      Dec(X)
+    else
+      Inc(X);
+  end;
+
+  cairo_line_to(Widget, X+PixelOffset, Y+PixelOffset);
   cairo_stroke(Widget);
   Result := True;
 end;
 
-function TGtk3DeviceContext.MoveTo(const X, Y: Integer; OldPoint: PPoint
-  ): Boolean;
+function TGtk3DeviceContext.MoveTo(const X, Y: Integer; OldPoint: PPoint): Boolean;
+const
+  PixelOffset = 0.5;
 var
   dx: Double;
   dy: Double;
@@ -1892,7 +1923,7 @@ begin
     OldPoint^.X := Round(dx);
     OldPoint^.Y := Round(dy);
   end;
-  cairo_move_to(Widget, X, Y);
+  cairo_move_to(Widget, X+PixelOffset, Y+PixelOffset);
   Result := True;
 end;
 
