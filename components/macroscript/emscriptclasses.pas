@@ -1068,7 +1068,7 @@ begin
               'ssoSearchInReplacement, ssoRegExpr, ssoRegExprMultiLine, ssoFindContinue)'
   );
   AComp.AddTypeS('TSynSearchOptions', 'set of TSynSearchOption');
-  AComp.AddTypeS('TSynCaretAdjustMode', '(scamIgnore, scamAdjust, scamEnd, scamBegin)');
+  AComp.AddTypeS('TSynCaretAdjustMode', '(scamIgnore, scamAdjust, scamForceAdjust, scamEnd, scamBegin)');
   AComp.AddTypeS('TSynEditTextFlag', '(setSelect);');
   AComp.AddTypeS('TSynEditTextFlags', 'set of TSynEditTextFlag;');
   AComp.AddTypeS('TSynMarksAdjustMode', '(smaMoveUp, smaKeep);');
