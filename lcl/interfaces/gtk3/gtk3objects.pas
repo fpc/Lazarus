@@ -296,7 +296,11 @@ function Gtk3ScreenContext: TGtk3DeviceContext;
 function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 
 implementation
+
 uses math, gtk3int, gtk3procs;
+
+const
+  PixelOffset = 0.5; // Cairo API needs 0.5 pixel offset to not make blurry lines
 
 const
   Dash_Dash:        array [0..1] of double = (18, 6);             //____ ____
@@ -1329,7 +1333,7 @@ procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorde
 begin
   cairo_save(Widget);
   try
-    cairo_rectangle(Widget, x1, y1, w - 1, h - 1);
+    cairo_rectangle(Widget, x1 + PixelOffset, y1 + PixelOffset, w - 1, h - 1);
 
     if AFill then
     begin
@@ -1429,7 +1433,7 @@ begin
   cairo_save(Widget);
   try
     cairo_get_matrix(Widget, @save_matrix);
-    cairo_translate (Widget, x + w / 2.0, y + h / 2.0);
+    cairo_translate (Widget, x + w / 2.0 + PixelOffset, y + h / 2.0 + PixelOffset);
     cairo_scale (Widget, w / 2.0, h / 2.0);
     cairo_new_path(Widget);
     cairo_arc
@@ -1471,7 +1475,7 @@ begin
   cairo_save(Widget);
   try
     with targetRect^ do
-      cairo_rectangle(Widget, Left, Top, Right - Left, Bottom - Top);
+      cairo_rectangle(Widget, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
     cairo_set_source_surface(Widget, Surface, 0, 0);
     cairo_matrix_init_identity(@M);
     cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);
@@ -1488,23 +1492,23 @@ end;
 
 procedure TGtk3DeviceContext.drawImage(targetRect: PRect; image: PGdkPixBuf;
   sourceRect: PRect; mask: PGdkPixBuf; maskRect: PRect);
-var
-  pm: PGdkPixbuf;
-  AData: PByte;
-  ASurface: Pcairo_surface_t;
+//var
+//  pm: PGdkPixbuf;
+//  AData: PByte;
+//  ASurface: Pcairo_surface_t;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawImage ');
   {$ENDIF}
   cairo_save(Widget);
   try
-    pm := Image;
+    // pm := Image;
     // AData := PByte(gdk_pixbuf_get_pixels(pm));
     // ASurface := cairo_image_surface_create_for_data(AData, CAIRO_FORMAT_ARGB32, gdk_pixbuf_get_width(pm), gdk_pixbuf_get_height(pm), gdk_pixbuf_get_rowstride(pm));
     // cairo_set_source_surface(Widget, ASurface, targetRect^.Left, targetRect^.Top);
     gdk_cairo_set_source_pixbuf(Widget, Image, 0, 0);
     with targetRect^ do
-    cairo_rectangle(Widget, Left, Top, Right-Left, Bottom-Top);
+      cairo_rectangle(Widget, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
     cairo_paint(Widget);
   finally
     // cairo_surface_destroy(ASurface);
@@ -1524,7 +1528,7 @@ begin
   try
     gdk_cairo_set_source_pixbuf(Widget, Image, 0, 0);
     with targetRect^ do
-      cairo_rectangle(Widget, Left, Top, Right - Left, Bottom - Top);
+      cairo_rectangle(Widget, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
 
     cairo_matrix_init_identity(@M);
     cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);
@@ -1563,8 +1567,6 @@ begin
 end;
 
 procedure TGtk3DeviceContext.drawPolyLine(P: PPoint; NumPts: Integer);
-const
-  PixelOffset = 0.5;
 var
   i: Integer;
 begin
@@ -1585,8 +1587,6 @@ procedure TGtk3DeviceContext.drawPolygon(P: PPoint; NumPts: Integer;
   FillRule: Integer; AFill, ABorder: Boolean);
 var
   i: Integer;
-const
-  PixelOffset = 0.5;
 begin
   cairo_save(Widget);
   try
@@ -1619,8 +1619,6 @@ procedure TGtk3DeviceContext.drawPolyBezier(P: PPoint; NumPoints: Integer; Fille
 var
   MaxIndex, i: Integer;
   bFill, bBorder: Boolean;
-const
-  PixelOffset = 0.5;
 begin
   // 3 points per curve + a starting point for the first curve
   if (NumPoints < 4) then
@@ -1691,9 +1689,6 @@ end;
 
 procedure TGtk3DeviceContext.fillRect(x, y, w, h: Integer; ABrush: HBRUSH);
 var
-  //devx, devy, dx, dy, dw, dh: Double;
-  //ATarget: Pcairo_surface_t;
-  //ANewSurface: Pcairo_surface_t;
   ATempBrush: TGtk3Brush;
 begin
   {$ifdef VerboseGtk3DeviceContext}
@@ -1706,36 +1701,24 @@ begin
     if ABrush <> 0 then
     begin
       ATempBrush := FCurrentBrush;
-      fBkMode:=OPAQUE;
+      fBkMode := OPAQUE;
       SetCurrentBrush(TGtk3Brush(ABrush));
     end;
 
     applyBrush;
-    cairo_rectangle(Widget, x, y, w - 1, h - 1);
-    cairo_fill(Widget);
+    cairo_rectangle(Widget, x + PixelOffset, y + PixelOffset, w - 1, h - 1);
+    cairo_fill_preserve(Widget);
+
+    // must paint border, filling is not enough
+    SetSourceColor(FCurrentBrush.Color);
+    cairo_set_line_width(Widget, 1);
+    cairo_stroke(Widget);
 
     if ABrush <> 0 then
       SetCurrentBrush(ATempBrush);
   finally
     cairo_restore(Widget);
   end;
-
-  // ATarget := cairo_get_target(Widget);
-  (*
-  cairo_save(Widget);
-  dx := x;
-  dy := y;
-  dw := w;
-  dh := h;
-  ANewSurface := cairo_surface_create_similar(ATarget, cairo_surface_get_content(ATarget), w, h);
-  cairo_set_source_surface(Widget, ANewSurface, x , y);
-  cairo_clip(Widget);
-  vBrush.SetColor(clRed);
-  cairo_rectangle(Widget, dx, dy, dw, dh);
-  cairo_fill(Widget);
-  cairo_surface_destroy(ANewSurface);
-  cairo_restore(Widget);
-  *)
 end;
 
 procedure TGtk3DeviceContext.fillRect(x, y, w, h: Integer);
@@ -1779,15 +1762,14 @@ begin
   end;
 end;
 
-function TGtk3DeviceContext.RoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer
-  ): Boolean;
+function TGtk3DeviceContext.RoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer): Boolean;
 var
-  DX: Double;
-  DY: Double;
-  Pt: TPoint;
+  DX, DY: Double;
 begin
   Result := False;
   cairo_surface_get_device_offset(cairo_get_target(Widget), @DX, @DY);
+  DX := DX+PixelOffset;
+  DY := DY+PixelOffset;
   cairo_translate(Widget, DX, DY);
   try
     cairo_move_to(Widget, SX(X1+RX), SY(Y1));
@@ -1869,8 +1851,6 @@ begin
 end;
 
 function TGtk3DeviceContext.LineTo(X, Y: Integer): Boolean;
-const
-  PixelOffset = 0.5;
 var
   FX, FY: Double;
   X0, Y0: Integer;
@@ -1909,8 +1889,6 @@ begin
 end;
 
 function TGtk3DeviceContext.MoveTo(const X, Y: Integer; OldPoint: PPoint): Boolean;
-const
-  PixelOffset = 0.5;
 var
   dx: Double;
   dy: Double;
@@ -2100,10 +2078,8 @@ procedure GetTextExtentIgnoringAmpersands(TheFont: TGtk3Font;
 var
   NewStr : PChar;
   i: integer;
-  AInkRect: TPangoRectangle;
-  ALogicalRect: TPangoRectangle;
   AMetrics: PPangoFontMetrics;
-  ACharWidth,ATextWidth,ATextHeight: gint;
+  {ACharWidth,}ATextWidth,ATextHeight: gint;
 begin
   NewStr:=Str;
   // first check if Str contains an ampersand:

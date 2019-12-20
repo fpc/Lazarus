@@ -1699,6 +1699,8 @@ begin
 end;
 
 function TGtk3WidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
+const
+  PixelOffset = 0.5;
 var
   cr: Pcairo_t;
 begin
@@ -1709,7 +1711,7 @@ begin
   if not IsValidDC(DC) then
     exit;
   cr := TGtk3DeviceContext(DC).Widget;
-  cairo_rectangle(cr, ARect.Left, ARect.Top, ARect.Right-ARect.Left-1, ARect.Bottom-ARect.Top-1);
+  cairo_rectangle(cr, ARect.Left+PixelOffset, ARect.Top+PixelOffset, ARect.Right-ARect.Left-1, ARect.Bottom-ARect.Top-1);
   if IsValidGDIObject(hBr) then
     TGtk3DeviceContext(DC).SetSourceColor(TGtk3Brush(HBR).Color);
   cairo_set_line_width(cr, 1);
