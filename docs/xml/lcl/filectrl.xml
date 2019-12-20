@@ -237,7 +237,6 @@
       <element name="TFileListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TFileListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <element name="TFileListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TFileListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
       <element name="TFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted"/>
       <element name="TFileListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
       <element name="TFileListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>

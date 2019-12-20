@@ -1345,17 +1345,17 @@
         <descr/>
         <seealso/>
       </element>
+
       <element name="TCustomTabControl">
         <short>
-          <var>TCustomTabControl</var>: The base type for  <var>TTabControl</var> and  <var>TPageControl</var>
-        </short>
+          <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
         <descr>
           <p>
-            <var>TCustom Notebook</var>: The base type for
-            <var>TTabControl</var> and
-            <var>TPageControl</var>
+            <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
           </p>
-          <p>A tab control has a series of <var>Tabs</var> and it may or may not contain pages.</p>
+          <p>
+            A tab control has a series of <var>Tabs</var> and it may or may not contain pages.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
@@ -1822,7 +1822,7 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTabControl.Create.TheOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomTabControl.Destroy">
@@ -1833,13 +1833,14 @@
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
+          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.TabIndexAtClientPos">
         <short>
           <var>TabIndexAtClientPos</var> - the index value of the Tab at the specified position
-
           <var>ClientPos</var>
         </short>
         <descr/>
@@ -1863,7 +1864,8 @@
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.GetImageIndex">
         <short>
-          <var>GetImageIndex</var> - find the index number of the image associated with the specified Page index</short>
+          <var>GetImageIndex</var> - find the index number of the image associated with the specified Page index
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2049,13 +2051,6 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomTabControl.TabPosition">
-        <short>
-          <var>TabPosition</var> - top, bottom, left or right</short>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- property Visibility: published -->
       <element name="TCustomTabControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr/>
@@ -2164,18 +2159,6 @@
         <short>TTabStyle</short>
         <descr/>
         <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsTabs">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsButtons">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsFlatButtons">
-        <short/>
       </element>
       <!-- object Visibility: default -->
       <element name="TTabSheet">
@@ -2608,17 +2591,6 @@
       <element name="TPageControl.FindNextPage.CheckTabVisible">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPageControl.SelectNextPage">
-        <descr>
-          <p>If GoForward is True, goes to next (higher index) page;</p>
-          <p>if False, goes to previous (lower index)</p>
-        </descr>
-        <errors/>
-        <seealso/>
-        <short>
-          <var>SelectNextPage</var> - goes to next page and selects it</short>
-      </element>
       <!-- argument Visibility: default -->
       <element name="TPageControl.SelectNextPage.GoForward">
         <short/>
@@ -2634,10 +2606,6 @@
         </descr>
         <errors/>
         <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPageControl.SelectNextPage.GoForward">
-        <short/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPageControl.SelectNextPage.CheckTabVisible">
@@ -3650,27 +3618,8 @@
       <element name="TDrawTabEvent.Active">
         <short/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TCustomTabControl">
-        <short>
-          <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
-        </short>
-        <descr>
-          <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
-        </descr>
-        <errors/>
-        <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
-        </seealso>
-      </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTabControl.FImageChangeLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomTabControl.FImages">
         <short/>
         <descr/>
         <seealso/>
@@ -3688,19 +3637,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomTabControl.FOnChanging">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
       <element name="TCustomTabControl.FOnDrawTab">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomTabControl.FOnGetImageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -3713,12 +3650,6 @@
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTabControl.FTabControlCreating">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomTabControl.FTabPosition">
         <short/>
         <descr/>
         <seealso/>
@@ -3853,17 +3784,6 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomTabControl.SetImages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomTabControl.SetImages.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
       <element name="TCustomTabControl.SetMultiLine">
         <short/>
         <descr/>
@@ -3941,17 +3861,6 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomTabControl.SetTabPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomTabControl.SetTabPosition.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
       <element name="TCustomTabControl.SetTabs">
         <short/>
         <descr/>
@@ -4002,14 +3911,6 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.Change">
-        <short>
-          <var>Change</var> - software emulation of the <var>OnChange</var> event</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.DrawTab">
         <short>
           <var>DrawTab</var> - software emulation of the <var>OnDrawTab </var>event</short>
@@ -4029,31 +3930,12 @@
       <element name="TCustomTabControl.DrawTab.Active">
         <short/>
       </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomTabControl.GetImageIndex">
-        <short>
-          <var>GetImageIndex</var> - software emulation of the <var>OnGetImageIndex</var> event</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomTabControl.GetImageIndex.Result">
-        <short/>
-      </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTabControl.GetImageIndex.ATabIndex">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.Loaded" link="#LCL.Controls.TWinControl.Loaded">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
@@ -4184,14 +4066,6 @@
         </seealso>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomTabControl.Images">
-        <short>
-          <var>Images</var> - the list of Images available for display in the <var>DisplayRect</var>
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
       <element name="TCustomTabControl.MultiLine">
         <short>
           <var>MultiLine</var> - whether the Tab's caption is allowed to have multiple lines</short>
@@ -4206,30 +4080,9 @@
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomTabControl.OnChange">
-        <short>
-          <var>OnChange</var> - event handler for a change in the Tabs</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomTabControl.OnChanging">
-        <short>
-          <var>OnChanging</var> - event handler while Tab is changing</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
       <element name="TCustomTabControl.OnDrawTab">
         <short>
           <var>OnDrawTab</var> - event handler for drawing a Tab</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomTabControl.OnGetImageIndex">
-        <short>
-          <var>OnGetImageIndex</var> - event handler for finding the index value of the required image</short>
         <descr/>
         <seealso/>
       </element>
@@ -4295,33 +4148,6 @@
           <var>TabWidth</var> - width of the tabs</short>
         <descr/>
         <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCustomTabControl.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomTabControl</var>: calls inherited <var>Create</var>, sets initial bounds, forms links and sets some defaults</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomTabControl.Create.TheOwner">
-        <short/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TCustomTabControl.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for <var>TCustomTabControl</var>: frees links and tabs, then calls inherited <var>Destroy</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.IndexOfTabAt">
@@ -4431,12 +4257,6 @@
       <!-- function result Visibility: default -->
       <element name="TCustomTabControl.IsUpdating.Result">
         <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomTabControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TTabControl">
@@ -17882,22 +17702,17 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TTreeNodeExpandedState.Apply">
         <short>
           <var>Apply</var> - begin reconstructing the tree structure by inserting the first node
+
+          <var>Apply</var> - continue reconstructing the tree structure by adding the remaining nodes in succession
         </short>
         <descr/>
         <errors/>
         <seealso/>
+        <notes><note>TODO: Minor conflict in descriptions from duplicate topics.</note></notes>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTreeNodeExpandedState.Apply.FirstTreeNode">
         <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="TTreeNodeExpandedState.Apply">
-        <short>
-          <var>Apply</var> - continue reconstructing the tree structure by adding the remaining nodes in succession</short>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TTreeNodeExpandedState.Apply.TreeView">

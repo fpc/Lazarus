@@ -31,7 +31,7 @@
   Issues:
     The maximum capacity is the PrimeNumber. You can store more items, but the
     performance decreases. The best idea is to provide your own hash function.
-    
+
     Important: Items in the TDynHashArray must not change their key.
       When changing the key of an item, remove it and add it after the change.
 </code>
@@ -52,13 +52,6 @@
       <element name="LCLProc">
         <short/>
         <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TDynHashArray">
-        <short>Name of the class that store all functions and data for an hashed array.</short>
-        <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- function type Visibility: default -->
@@ -165,7 +158,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDynHashArray">
-        <short>Implements set/associative array</short>
+        <short>Name of the class that store all functions and data for an hashed array.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -365,13 +358,6 @@
       <!-- argument Visibility: default -->
       <element name="TDynHashArray.SaveCacheItem.Index">
         <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TDynHashArray.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDynHashArray.Create">

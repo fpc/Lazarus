@@ -1721,15 +1721,6 @@
       <element name="TValueListEditor.Sort.ColSorting">
         <short>Not used n the current implementation</short>
       </element>
-      <element name="TValueListEditor.Sort.Index">
-        <short></short>
-      </element>
-      <element name="TValueListEditor.Sort.IndxFrom">
-        <short></short>
-      </element>
-      <element name="TValueListEditor.Sort.IndxTo">
-        <short></short>
-      </element>
 
       <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.TitlesChanged">

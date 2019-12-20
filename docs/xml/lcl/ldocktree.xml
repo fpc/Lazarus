@@ -46,24 +46,6 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TLazDockPages">
-        <short>
-          <var>TLazDockPages</var> a notebook in which each page is a <var>TLazDockPage</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TLazDockPage">
-        <short>
-          <var>TLazDockPage</var> - an entity similar to a <var>TLazDockForm</var>, but forming a page in a notebook of <var>TLazDockPages</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
       <element name="TLazDockSplitter">
         <short>
           <var>TLazDockSplitter</var> - a splitter used with Lazarus Docking components</short>
@@ -519,14 +501,6 @@
       <element name="TLazDockPages.Pages" link="#LCL.ComCtrls.TCustomNotebook.Pages">
         <short/>
         <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TLazDockSplitter">
-        <short>
-          <var>TLazDockSplitter</var> - a splitter used with Lazarus Docking components</short>
-        <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->

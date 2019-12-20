@@ -410,29 +410,8 @@
 <short/>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TDynamicDataQueue.Push">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.Push.Result">
-<short/>
-</element>
-
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Push.AStream">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Push.Count">
 <short/>
 </element>
 
@@ -462,29 +441,8 @@
 <short/>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TDynamicDataQueue.Pop">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.Pop.Result">
-<short/>
-</element>
-
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Pop.AStream">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Pop.Count">
 <short/>
 </element>
 
@@ -514,29 +472,8 @@
 <short/>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TDynamicDataQueue.Top">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.Top.Result">
-<short/>
-</element>
-
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Top.AStream">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Top.Count">
 <short/>
 </element>
 

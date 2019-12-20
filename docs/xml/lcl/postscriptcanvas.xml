@@ -296,22 +296,6 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TPostscriptPrinterCanvas.Write">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Write.Lst">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.WriteComment">
 <short/>
 <descr>
@@ -491,27 +475,6 @@
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern.Lst">
 <short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetBorder">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetFill">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostscriptPrinterCanvas.SetBrushFillPattern">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
@@ -1209,108 +1172,6 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostscriptPrinterCanvas.Arc">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.x">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.y">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.width">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.height">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.SX">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.SY">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.EX">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Arc.EY">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostscriptPrinterCanvas.Chord">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.x">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.y">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.width">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.height">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.SX">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.SY">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.EX">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.Chord.EY">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Frame3d">
 <short/>
 <descr>
@@ -1333,57 +1194,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Frame3d.Style">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostscriptPrinterCanvas.RadialPie">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.x">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.y">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.width">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.height">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.sx">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.sy">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.ex">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostscriptPrinterCanvas.RadialPie.ey">
 <short/>
 </element>
 

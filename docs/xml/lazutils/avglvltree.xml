@@ -466,19 +466,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TAvgLvlTree.Add.ANode">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TAvgLvlTree.Add">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- function result Visibility: default -->
       <element name="TAvgLvlTree.Add.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Add.ANode">
         <short/>
       </element>
       <!-- argument Visibility: default -->
@@ -649,13 +642,6 @@
       <!-- argument Visibility: default -->
       <element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
         <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TAvgLvlTree.Create">
-        <short>Version of the <var>Create</var> constructor without specified arguments</short>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TAvgLvlTree.Destroy">
@@ -915,7 +901,12 @@
           <var>PStringToStringItem</var> -  pointer to a TStringToStringItem</short>
       </element>
       <element name="TStringToStringTree.Create">
-        <short>The instance of the <var>Create</var> constructor that allows the programmer to specify whether or not the string operations are to be Case Sensitive</short>
+        <short>
+          Constuctor for the class instance
+        </short>
+        <descr>
+          Create is the constuctor for the class instance. Overloaded variants of the Create method are provided in the implementation. One variant allows the programmer to specify whether or not the string operations are to be Case Sensitive. A second variant allows the programmer to specify how items in the list are compared.
+        </descr>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
@@ -923,12 +914,6 @@
       <element name="TStringToStringTree.Create.CaseSensitive">
         <short>
           <var>CaseSensitive</var> - if True, string operations (comparisons etc) must be case sensitive</short>
-      </element>
-      <element name="TStringToStringTree.Create">
-        <short>The instance of the <var>Create</var> constructor that allows the programmer to specify how items in the list are to be compared</short>
-        <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
-        </seealso>
       </element>
       <element name="TStringToStringTree.Destroy">
         <short>

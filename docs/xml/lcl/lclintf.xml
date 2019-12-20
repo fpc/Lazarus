@@ -5958,25 +5958,7 @@ end;
       <element name="NotifyUser.DialogType">
         <short></short>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="NotifyUser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
 
-      <element name="NotifyUser.DialogCaption">
-        <short></short>
-      </element>
-
-      <element name="NotifyUser.DialogMessage">
-        <short></short>
-      </element>
-
-      <element name="NotifyUser.DialogType">
-        <short></short>
-      </element>
       <!-- procedure Visibility: default -->
       <element name="NotifyUserAtXY">
         <short></short>
@@ -6000,33 +5982,6 @@ end;
       <element name="NotifyUserAtXY.Y">
         <short></short>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="NotifyUserAtXY">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <element name="NotifyUserAtXY.DialogCaption">
-        <short></short>
-      </element>
-
-      <element name="NotifyUserAtXY.DialogMessage">
-        <short></short>
-      </element>
-
-      <element name="NotifyUserAtXY.DialogType">
-        <short></short>
-      </element>
-
-      <element name="NotifyUserAtXY.X">
-        <short></short>
-      </element>
-
-      <element name="NotifyUserAtXY.Y">
-        <short></short>
-      </element>
 
       <element name="PromptUser">
         <short></short>
@@ -6036,76 +5991,6 @@ end;
       </element>
 
       <element name="PromptUser.Result">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.DialogMessage">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.DialogType">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.Buttons">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.DefaultIndex">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.EscapeResult">
-        <short></short>
-      </element>
-
-      <element name="PromptUser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <element name="PromptUser.Result">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.DialogMessage">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.DialogType">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.Buttons">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.ButtonCount">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.DefaultIndex">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.EscapeResult">
-        <short></short>
-      </element>
-
-      <element name="PromptUser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <element name="PromptUser.Result">
-        <short></short>
-      </element>
-
-      <element name="PromptUser.DialogCaption">
         <short></short>
       </element>
 
@@ -6164,83 +6049,6 @@ end;
         <short></short>
       </element>
 
-      <element name="PromptUserAtXY.Y">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <element name="PromptUserAtXY.Result">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.DialogMessage">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.DialogType">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.Buttons">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.ButtonCount">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.DefaultIndex">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.EscapeResult">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.X">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY.Y">
-        <short></short>
-      </element>
-
-      <element name="PromptUserAtXY">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-      <element name="PromptUserAtXY.Result">
-        <short></short>
-      </element>
-      <element name="PromptUserAtXY.DialogCaption">
-        <short></short>
-      </element>
-      <element name="PromptUserAtXY.DialogMessage">
-        <short></short>
-      </element>
-      <element name="PromptUserAtXY.DialogType">
-        <short></short>
-      </element>
-      <element name="PromptUserAtXY.Buttons">
-        <short></short>
-      </element>
-      <element name="PromptUserAtXY.DefaultIndex">
-        <short></short>
-      </element>
-      <element name="PromptUserAtXY.EscapeResult">
-        <short></short>
-      </element>
-      <element name="PromptUserAtXY.X">
-        <short></short>
-      </element>
       <element name="PromptUserAtXY.Y">
         <short></short>
       </element>

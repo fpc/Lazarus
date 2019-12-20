@@ -57,13 +57,6 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TPostScript">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPSPaintType">
         <short/>
@@ -90,13 +83,6 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TPSTileType.ttFast"><short/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TPostScriptCanvas">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TPSPattern">
@@ -751,13 +737,6 @@
       <!-- argument Visibility: default -->
       <element name="TPostScriptCanvas.Rectangle.Y2"><short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPostScriptCanvas.Rectangle">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- argument Visibility: default -->
       <element name="TPostScriptCanvas.Rectangle.Rect"><short/>
       </element>
@@ -792,13 +771,6 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TPostScriptCanvas.Ellipse.y2"><short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPostScriptCanvas.Ellipse">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPostScriptCanvas.Ellipse.Rect"><short/>

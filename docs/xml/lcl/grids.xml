@@ -13119,18 +13119,6 @@
         <short></short>
       </element>
 
-      <!-- procedure Visibility: protected -->
-      <element link="#LCL.Grids.TCustomGrid.SetEditText" name="TCustomStringGrid.SetEditText"/>
-      <element name="TCustomStringGrid.SetEditText.aCol">
-        <short></short>
-      </element>
-      <element name="TCustomStringGrid.SetEditText.aRow">
-        <short></short>
-      </element>
-      <element name="TCustomStringGrid.SetEditText.aValue">
-        <short></short>
-      </element>
-
       <element name="TCustomStringGrid.SelectionSetHTML">
         <short>Sets the value for the current Selection to the specified HTML content</short>
         <descr></descr>
@@ -13668,7 +13656,6 @@
       <element link="#LCL.Controls.TControl.OnStartDock" name="TStringGrid.OnStartDock"/>
       <element link="#LCL.Controls.TControl.OnStartDrag" name="TStringGrid.OnStartDrag"/>
       <element link="#LCL.Grids.TCustomGrid.OnTopLeftChanged" name="TStringGrid.OnTopLeftChanged"/>
-      <element name="TStringGrid.OnUserCheckboxBitmap" link="TCustomGrid.OnUserCheckboxBitmap"/>
       <element name="TStringGrid.OnUserCheckboxBitmap" link="TCustomGrid.OnUserCheckboxBitmap"/>
       <element link="#LCL.Controls.TWinControl.OnUTF8KeyPress" name="TStringGrid.OnUTF8KeyPress"/>
       <element name="TStringGrid.OnValidateEntry" link="TCustomGrid.OnValidateEntry"/>

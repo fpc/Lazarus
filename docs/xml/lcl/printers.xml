@@ -28,13 +28,6 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TPrinter">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
       <element name="EPrinter">
         <short>
           <var>EPrinter</var> - Exception handler for printer error</short>

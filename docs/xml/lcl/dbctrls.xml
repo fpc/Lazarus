@@ -2481,20 +2481,6 @@ introduced. These functions interface with the LCLInterface. </p>
         </seealso>
       </element>
 
-      <element name="TDBCheckBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
-        <short/>
-        <descr/>
-        <seealso>
-          <link id="TControl.BorderSpacing"/>
-        </seealso>
-      </element>
-
-      <element name="TDBCheckBox.Color" link="#LCL.Controls.TControl.Color">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
       <element name="TDBCheckBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
@@ -3175,18 +3161,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
 
       <element name="TDBComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
 
-      <element name="TDBComboBox.DataChange" link=""/>
-      <element name="TDBComboBox.DataChange.Sender">
-        <short></short>
-      </element>
-
       <element name="TDBComboBox.KeyPress" link=""/>
       <element name="TDBComboBox.KeyPress.Key">
-        <short></short>
-      </element>
-
-      <element name="TDBComboBox.UpdateData" link=""/>
-      <element name="TDBComboBox.UpdateData.Sender">
         <short></short>
       </element>
 

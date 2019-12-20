@@ -444,16 +444,10 @@
 
     <!-- variable Visibility: public -->
     <element name="TLazPositionInfo.longitude">
-    <short>Longitude in degrees using the World Geodetic System 1984 (WGS84) datum</short>
-    <descr>
-    </descr>
-    <seealso>
-    </seealso>
-    </element>
-
-    <!-- variable Visibility: public -->
-    <element name="TLazPositionInfo.longitude">
-    <short>In meters / second</short>
+    <short>
+      Longitude in degrees using the World Geodetic System 1984 (WGS84) datum
+      In meters / second
+    </short>
     <descr>
     </descr>
     <seealso>

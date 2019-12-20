@@ -895,22 +895,6 @@
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="ShowTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowTableOfContents.Result">
-<short/>
-</element>
-
 <!-- argument Visibility: default -->
 <element name="ShowTableOfContents.ErrMsg">
 <short/>
@@ -974,32 +958,6 @@
 </element>
 
 <!-- function Visibility: default -->
-<element name="ShowHelpForContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpForContext.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForContext.HelpContext">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForContext.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
 <element name="ShowHelpOrErrorForKeyword">
 <short/>
 <descr>
@@ -1043,32 +1001,6 @@
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForKeyword.HelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForKeyword.HelpKeyword">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForKeyword.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpForKeyword.Result">
 <short/>
 </element>
 

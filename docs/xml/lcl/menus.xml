@@ -82,27 +82,11 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TMenu">
-        <short>
-          <var>TMenu</var> - a menu appearing in a form. Base class for <var>TMainMenu</var> or <var>TPopupMenu</var>
-        </short>
-        <descr>
-          <p>
-            <var>TMenu</var> : The base class for all menus</p>
-          <p>The class definition contains very few public or published properties or methods accessible to the application programmer, but contains the entry Items which points to the Menu Items that appear in the menu displays</p>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
       <element name="TMenuItem"/>
       <!-- object Visibility: default -->
       <element name="EMenuError">
         <short>
           <var>EMenuError </var>
-
-
-
 - Exception handler for error in Menu access</short>
       </element>
       <!-- enumeration type Visibility: default -->
@@ -292,7 +276,7 @@
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsOnExecuteLinked" link="#rtl.Classes.TBasicActionLink.IsOnExecuteLinked">
         <descr>
-          <var>IsOnExecuteLinked</var> always returns true in <var>TBasicActionLink</var>. 
+          <var>IsOnExecuteLinked</var> always returns true in <var>TBasicActionLink</var>.
 Descendent classes can override this method to provide a different result.
 </descr>
         <errors/>
@@ -1747,22 +1731,19 @@ Descendent classes can override this method to provide a different result.
       <element name="TFindItemKind.fkShortCut">
         <short/>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TMenu">
         <short>
-          <var>TMenu</var>
-
-
-
-: The base class for all menus</short>
+          <var>TMenu</var> - a menu appearing in a form. Base class for <var>TMainMenu</var> or <var>TPopupMenu</var>
+        </short>
         <descr>
           <p>
-            <var>TMenu</var>
-
-
-
-: The base class for all menus</p>
-          <p>The class definition contains very few public or published properties or methods accessible to the application programmer, but contains the entry <var>Items </var>which points to the Menu Items that appear in the menu displays</p>
+            <var>TMenu</var> is the base class for all menus.
+          </p>
+          <p>
+            The class definition contains very few public or published properties or methods accessible to the application programmer, but contains the entry Items which points to the Menu Items that appear in the menu displays.
+          </p>
         </descr>
         <seealso>
           <link id="HowToUseMenus"/>

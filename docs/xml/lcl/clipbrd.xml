@@ -147,23 +147,23 @@
           <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting</short>
         <descr>
           <p>
-            <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting</p>
+            <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting.</p>
           <p>The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object: <link id="PrimarySelection"/>, <link id="SecondarySelection"/> and <link id="Clipboard"/>. There is no difference between the three objects except their type.</p>
           <p>A lot of information about Clipboard Formats, including predefined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
-&#x9;&#x9;  <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, 
-&#x9;&#x9;  <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, 
-&#x9;&#x9;  <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
-&#x9;&#x9;  <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
-&#x9;&#x9;  <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+          <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>,
+          <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>,
+          <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
+          <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
+          <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
           </p>
         </descr>
         <errors/>
         <seealso>
-          <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, 
-&#x9;&#x9;<link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, 
-&#x9;&#x9;<link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
-&#x9;&#x9;<link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
-&#x9;&#x9;<link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+          <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>,
+          <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>,
+          <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
+          <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
+          <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -219,17 +219,6 @@
       <element name="TClipboard.AssignGraphic.Source">
         <short/>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TClipboard.AssignGraphic">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TClipboard.AssignGraphic.Source">
-        <short/>
-      </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.AssignGraphic.FormatID">
         <short/>
@@ -257,26 +246,11 @@
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TClipboard.AssignToGraphic.Dest">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TClipboard.AssignToGraphic">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TClipboard.AssignToGraphic.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TClipboard.AssignToGraphic.Dest">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="TClipboard.AssignToGraphic.FormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignToGraphic.Dest">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
@@ -434,14 +408,6 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       <element name="TClipboard.AddFormat.Stream">
         <short/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TClipboard.AddFormat.Result">
-        <short>True if format added correctly</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TClipboard.AddFormat.FormatID">
-        <short/>
-      </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.AddFormat.Buffer">
         <short/>
@@ -490,13 +456,6 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       <element name="TClipboard.Create">
         <short>
           <var>Create</var> - Constructor: make a new instance of a clipboard</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TClipboard.Create">
-        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -591,13 +550,6 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       <!-- argument Visibility: default -->
       <element name="TClipboard.SupportedFormats.List">
         <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TClipboard.SupportedFormats">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.SupportedFormats.AFormatCount">
@@ -719,7 +671,7 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       var
         FormatList: TClipboardFormat;
       begin
-        if (not SelAvail) 
+        if (not SelAvail)
         or (PrimarySelection.OnRequest=@PrimarySelectionRequest) then exit;
         FormatList:=CF_TEXT;
         PrimarySelection.SetSupportedFormats(1,@FormatList);

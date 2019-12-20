@@ -70,25 +70,6 @@
         </seealso>
       </element>
 
-      <!-- object visibility: default -->
-      <element name="TColumn">
-        <short>
-          Represents a display column in a database grid
-        </short>
-        <descr>
-          <p>
-            <var>TColumn</var> is a <var>TGridColumn</var> descendant that represents a display column in a database grid control. TColumn provides properties and methods needed to access and maintain the Dataset, Field, FieldName, and DisplayFormat for the column.  TColumn provides overridden functions which implement facilities from the ancestor class.
-          </p>
-          <p>
-            TColumn instances can be created at run-time or design-time;  properties are provided to indicate when the instance was created. The display order for columns need not correspond to the order of the Fields in the dataset, nor do all Fields in the dataset need to be represented by a display column.
-          </p>
-          <p>
-            TColumn instances are used as the collection item for the <var>TDBGridColumns</var> collection.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
       <!-- procedure type visibility: default -->
       <element name="TDatasetScrolledEvent">
         <short>
@@ -1713,7 +1694,16 @@
         </short>
         <descr>
           <p>
-            <var>TColumn </var> is a TGridColumn descendant which implements a display column for the TDBGrid grid control. TColumn extends the ancestor class to provide support for using TField for data access, display formatting, alignment, as well as use of checkbox and lookuplist Fields. TColumn also implements support for features in TDBGrid like: automatic rows, and design-time vs run-time column ordering.
+            <var>TColumn</var> is a <var>TGridColumn</var> descendant that represents a display column in a database grid control. TColumn extends the ancestor class to provide support for using TField for data access, display formatting, alignment, as well as use of checkbox and lookuplist Fields. TColumn also implements support for features in TDBGrid like: automatic rows, and design-time vs run-time column ordering.
+          </p>
+          <p>
+            TColumn provides properties and methods needed to access and maintain the Dataset, Field, FieldName, and DisplayFormat for the column.  TColumn provides overridden functions which implement facilities from the ancestor class.
+          </p>
+          <p>
+            TColumn instances can be created at run-time or design-time;  properties are provided to indicate when the instance was created. The display order for columns need not correspond to the order of the Fields in the dataset, nor do all Fields in the dataset need to be represented by a display column.
+          </p>
+          <p>
+            TColumn instances are used as the collection item for the <var>TDBGridColumns</var> collection.
           </p>
           <p>
             TColumn is the class type used for items in the TDBGridColumns collection.
@@ -1726,7 +1716,6 @@
           <link id="#fcl.DB.TField">TField</link>
           <link id="#fcl.DB.TDataset">TDataset</link>
         </seealso>
-
       </element>
 
       <!-- variable visibility: private -->

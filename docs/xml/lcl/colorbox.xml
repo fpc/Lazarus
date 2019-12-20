@@ -338,12 +338,6 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Palette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
       <element name="TColorBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>

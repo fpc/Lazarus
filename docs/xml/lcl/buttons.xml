@@ -1850,17 +1850,6 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomSpeedButton.SetTransparent">
-        <short>Sets the value for the Transparent property</short>
-        <descr></descr>
-        <seealso>
-          <link id="TCustomSpeedButton.Transparent"/>
-        </seealso>
-      </element>
-      <element name="TCustomSpeedButton.SetTransparent.Value">
-        <short>New value for the property</short>
-      </element>
-
       <element name="TCustomSpeedButton.SetShowAccelChar">
         <short>Sets the value for the ShowAccelChar property</short>
         <descr></descr>

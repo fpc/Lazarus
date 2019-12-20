@@ -79,7 +79,7 @@
   for Start and End Radial-Points, such as are used in the Windows API Arc
   Pie and Chord routines. The angles are 1/16th of a degree. For example, a
   full circle equals 5760 (16*360). Positive values of Angle and AngleLength
-  mean counter-clockwise while negative values mean clockwise direction. 
+  mean counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3 o'clock position.</pre>
         </descr>
         <errors/>
@@ -187,33 +187,6 @@
       <element name="Bezier">
         <short>
           <var>Bezier</var> - function to get a Bezier figure from the given points</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="Bezier.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Bezier.C1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Bezier.C2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Bezier.C3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Bezier.C4">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="Bezier">
-        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -449,29 +422,6 @@
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="Distance">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="Distance.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Distance.Pt">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Distance.SP">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Distance.EP">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
       <element name="EccentricAngle">
         <short>
           <var>EccentricAngle</var> - get the Eccentric Angle of a given point on any non-rotated ellipse</short>
@@ -619,56 +569,6 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="PolyBezier2Polyline.Count">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="PolyBezier2Polyline">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Beziers">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Points">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Count">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Continuous">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="PolyBezier2Polyline">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Beziers">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.BCount">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Points">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Count">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PolyBezier2Polyline.Continuous">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
