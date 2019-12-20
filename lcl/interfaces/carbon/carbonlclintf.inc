@@ -69,11 +69,6 @@ begin
   TCarbonDeviceContext(DC).DrawGrid(R, DX, DY);
 end;
 
-function TCarbonWidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result := True;
-end;
-
 function TCarbonWidgetSet.GetAcceleratorString(const AVKey: Byte;
   const AShiftState: TShiftState): String;
 begin

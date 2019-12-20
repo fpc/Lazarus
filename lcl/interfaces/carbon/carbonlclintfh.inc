@@ -24,8 +24,6 @@
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 
-function FontCanUTF8({%H-}Font: HFont): boolean; override;
-
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;

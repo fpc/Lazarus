@@ -333,12 +333,6 @@ begin
   Result:=TextOut(DC,X,Y,Str,Count);
 end;
 
-
-function TWidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result:=false;
-end;
-
 function TWidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 begin
   Result:=false;

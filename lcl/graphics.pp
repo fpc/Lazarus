@@ -480,8 +480,6 @@ type
 
   TFont = class(TFPCustomFont)
   private
-    FCanUTF8: boolean;
-    FCanUTF8Valid: boolean;
     FIsMonoSpace: boolean;
     FIsMonoSpaceValid: boolean;
     FOrientation: Integer;
@@ -497,7 +495,6 @@ type
     FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
     FReference: TWSFontReference;
     procedure FreeReference;
-    function GetCanUTF8: boolean;
     function GetHandle: HFONT;
     function GetData: TFontData;
     function GetIsMonoSpace: boolean;
@@ -547,7 +544,6 @@ type
     function IsEqual(AFont: TFont): boolean; virtual;
     property IsMonoSpace: boolean read GetIsMonoSpace;
     procedure SetDefault;
-    property CanUTF8: boolean read GetCanUTF8; deprecated;
     property PixelsPerInch: Integer read FPixelsPerInch write SetPixelsPerInch;
     property Reference: TWSFontReference read GetReference;
   published

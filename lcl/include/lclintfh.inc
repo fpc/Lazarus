@@ -62,8 +62,6 @@ procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImage
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function FontCanUTF8(Font: HFont): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} deprecated;
 function FontIsMonoSpace(Font: HFont): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TGraphicsBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

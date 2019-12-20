@@ -8407,8 +8407,7 @@ begin
         Style := [];        // Reserved for Highlighter
       end;
       //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
-      //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
-      //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
+      //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),' CharHeight=',dbgs(CharHeight));
 
       fTextDrawer.BaseFont := FFontDummy;
       if Assigned(fHighlighter) then
@@ -8435,7 +8434,7 @@ begin
   finally
     DecStatusChangeLock;
   end;
-  //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
+  //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8));
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);

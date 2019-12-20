@@ -7260,8 +7260,7 @@ begin
   //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
   if Widgetset.GetLCLCapability(lcSendsUTF8KeyPress) = LCL_CAPABILITY_NO then
   begin
-    // current interface does not (yet) send UTF8 key press notifications
-    // -> emulate
+    // current interface does not (yet) send UTF8 key press notifications -> emulate
     if (Message.CharCode < %11000000) then
     begin
       c:=chr(Message.CharCode);

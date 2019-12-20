@@ -93,16 +93,6 @@ begin
   Result := ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
 end;
 
-{------------------------------------------------------------------------------
-  function FontCanUTF8(Font: HFont): boolean;
-
-  True if font recognizes Unicode UTF8 encoding.
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result := True;
-end;
-
 type
   TFontIsMonoSpaceRec = record
     Name: string;

@@ -43,18 +43,6 @@ const
   );
 
 
-{------------------------------------------------------------------------------
-  function FontCanUTF8(Font: HFont): boolean;
-
-  True if font recognizes Unicode UTF8 encoding.
-  
-  FPGUI supports only Unicode
- ------------------------------------------------------------------------------}
-function TFpGuiWidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result := True;
-end;
-
 function TFpGuiWidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
   DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
   EscapeResult: Longint): Longint;

@@ -40,8 +40,6 @@ procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
                     Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
-
-function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;

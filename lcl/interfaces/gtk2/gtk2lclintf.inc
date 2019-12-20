@@ -190,16 +190,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtk2WidgetSet.FontCanUTF8(Font: HFont): boolean;
-  
-  True if font recognizes Unicode UTF8 encoding.
- ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result:=IsValidGDIObject(Font);
-end;
-
-{------------------------------------------------------------------------------
   function TGtk2WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 
   True if font characters have all the same width.

@@ -312,16 +312,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: FontCanUTF8
-  Params:
-  Returns:
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result := IsValidGDIObject(Font);
-end;
-
-{------------------------------------------------------------------------------
   Function: FontIsMonoSpace
   Params:
   Returns:

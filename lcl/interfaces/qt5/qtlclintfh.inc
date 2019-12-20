@@ -44,12 +44,9 @@ procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 procedure DestroyRubberBand(ARubberBand: HWND); override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
-
-function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
-
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
 
 function PromptUser(const DialogCaption : string;

@@ -34,11 +34,9 @@ function CreateEmptyRegion: hRGN; override;
 function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
-procedure DestroyRubberBand(ARubberBand: HWND); override;*)
-
-(*function FontCanUTF8(Font: HFont): boolean; override; // Dont implement, deprecated
-function FontIsMonoSpace(Font: HFont): boolean; override;*)
-
+procedure DestroyRubberBand(ARubberBand: HWND); override;
+function FontIsMonoSpace(Font: HFont): boolean; override;
+*)
 function GetAvailableNativeCanvasTypes(DC: HDC; AAllowFallbackToParent: Boolean = False): TNativeCanvasTypes; override;
 function GetAvailableNativeHandleTypes(Handle: HWND; AAllowFallbackToParent: Boolean = False): TNativeHandleTypes; override;
 //function GetDesignerDC(WindowHandle: HWND): HDC; override;

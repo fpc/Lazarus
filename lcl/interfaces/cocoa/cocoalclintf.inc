@@ -62,12 +62,6 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  // no so deprecated, after all. SynEdit is still using it and caused the issue #34594
-  Result:=true;
-end;
-
 (*
 {------------------------------------------------------------------------------
   Method:  DrawGrid
@@ -92,11 +86,6 @@ function TCarbonWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result:=inherited ExtUTF8Out(DC, X, Y, Options, Rect, Str, Count, Dx);
-end;
-
-function TCarbonWidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result := True;
 end;
 
 function TCarbonWidgetSet.GetAcceleratorString(const AVKey: Byte;

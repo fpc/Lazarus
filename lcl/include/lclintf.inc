@@ -188,11 +188,6 @@ begin
   Result := WidgetSet.TextUTF8Out(DC,X,Y,Str,Count);
 end;
 
-function FontCanUTF8(Font: HFont): boolean;
-begin
-  Result := WidgetSet.FontCanUTF8(Font){%H-};
-end;
-
 function FontIsMonoSpace(Font: HFont): boolean;
 begin
   Result := WidgetSet.FontIsMonoSpace(Font);

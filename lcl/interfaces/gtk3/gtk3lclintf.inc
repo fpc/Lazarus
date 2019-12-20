@@ -156,16 +156,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtk3WidgetSet.FontCanUTF8(Font: HFont): boolean;
-  
-  True if font recognizes Unicode UTF8 encoding.
- ------------------------------------------------------------------------------}
-function TGtk3WidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result := True; // IsValidGDIObject(Font);
-end;
-
-{------------------------------------------------------------------------------
   function TGtk3WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 
   True if font characters have all the same width.

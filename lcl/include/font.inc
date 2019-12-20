@@ -1169,7 +1169,6 @@ begin
   finally
     FontResourceCache.Unlock;
   end;
-  FCanUTF8Valid := False;
   FIsMonoSpaceValid := False;
 end;
 
@@ -1228,16 +1227,6 @@ begin
   end else
     DeleteObject(HGDIOBJ(FReference.Handle));
   FReference._lclHandle := 0;
-end;
-
-function TFont.GetCanUTF8: boolean;
-begin
-  if not FCanUTF8Valid then
-  begin
-    FCanUTF8 := {%H-}FontCanUTF8(HFONT(Reference.Handle));
-    FCanUTF8Valid := True;
-  end;
-  Result := FCanUTF8;
 end;
 
 function TFont.GetCharSet: TFontCharSet;

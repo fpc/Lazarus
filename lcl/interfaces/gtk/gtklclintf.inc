@@ -171,20 +171,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
-  
-  True if font recognizes Unicode UTF8 encoding.
- ------------------------------------------------------------------------------}
-function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
-begin
-  Result:=IsValidGDIObject(Font)
-    {$IFDEF Gtk1}
-    and FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject)
-    {$ENDIF}
-    ;
-end;
-
-{------------------------------------------------------------------------------
   function TGTKWidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 
   True if font characters have all the same width.
