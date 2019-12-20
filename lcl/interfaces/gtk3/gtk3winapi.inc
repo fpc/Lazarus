@@ -170,13 +170,13 @@ begin
     FormatCount, Formats);
 end;
 
-function TGtk3WidgetSet.ClipboardRegisterFormat(const AMimeType: string
-  ): TClipboardFormat;
+function TGtk3WidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ClipboardRegisterFormat not implemented ...');
-  {$ENDIF}
-  Result:=inherited ClipboardRegisterFormat(AMimeType);
+  if Assigned(Application) then
+    Result := TClipboardFormat(TGdkAtom.intern(PChar(AMimeType), False))
+  else
+    RaiseGDBException(
+      'ERROR: TGtk3WidgetSet.ClipboardRegisterFormat gdk not initialized');
 end;
 
 function TGtk3WidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;

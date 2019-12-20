@@ -2885,8 +2885,8 @@ type
   PGdkAtom = ^TGdkAtom;
   TGdkAtom = object
     function name: Pgchar; cdecl; inline;
-    function intern(atom_name: Pgchar; only_if_exists: gboolean): TGdkAtom; cdecl; inline; static;
-    function intern_static_string(atom_name: Pgchar): TGdkAtom; cdecl; inline; static;
+    function intern(atom_name: Pgchar; only_if_exists: gboolean): PGdkAtom; cdecl; inline; static;
+    function intern_static_string(atom_name: Pgchar): PGdkAtom; cdecl; inline; static;
   end;
   TGdkDisplay = object(TGObject)
     function get_default: PGdkDisplay; cdecl; inline; static;
@@ -3891,8 +3891,8 @@ type
 
 
 function gdk_app_launch_context_get_type: TGType; cdecl; external;
-function gdk_atom_intern(atom_name: Pgchar; only_if_exists: gboolean): TGdkAtom; cdecl; external;
-function gdk_atom_intern_static_string(atom_name: Pgchar): TGdkAtom; cdecl; external;
+function gdk_atom_intern(atom_name: Pgchar; only_if_exists: gboolean): PGdkAtom; cdecl; external;
+function gdk_atom_intern_static_string(atom_name: Pgchar): PGdkAtom; cdecl; external;
 function gdk_atom_name(atom: TGdkAtom): Pgchar; cdecl; external;
 function gdk_cairo_create(window: PGdkWindow): Pcairo_t; cdecl; external;
 function gdk_cairo_get_clip_rectangle(cr: Pcairo_t; rect: PGdkRectangle): gboolean; cdecl; external;
@@ -4502,12 +4502,12 @@ begin
   Result := LazGdk3.gdk_atom_name(self);
 end;
 
-function TGdkAtom.intern(atom_name: Pgchar; only_if_exists: gboolean): TGdkAtom; cdecl;
+function TGdkAtom.intern(atom_name: Pgchar; only_if_exists: gboolean): PGdkAtom; cdecl;
 begin
   Result := LazGdk3.gdk_atom_intern(atom_name, only_if_exists);
 end;
 
-function TGdkAtom.intern_static_string(atom_name: Pgchar): TGdkAtom; cdecl;
+function TGdkAtom.intern_static_string(atom_name: Pgchar): PGdkAtom; cdecl;
 begin
   Result := LazGdk3.gdk_atom_intern_static_string(atom_name);
 end;
