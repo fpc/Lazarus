@@ -1253,7 +1253,9 @@ begin
     ParentMI:=itmSourceCodeToolChecks;
     CreateMenuItem(ParentMI,itmSourceSyntaxCheck,'itmSourceSyntaxCheck',lisMenuQuickSyntaxCheck, 'menu_tool_syntax_check');
     CreateMenuItem(ParentMI,itmSourceGuessUnclosedBlock,'itmSourceGuessUnclosedBlock',lisMenuGuessUnclosedBlock);
+    {$IFDEF GuessMisplacedIfdef}
     CreateMenuItem(ParentMI,itmSourceGuessMisplacedIFDEF,'itmSourceGuessMisplacedIFDEF',lisMenuGuessMisplacedIFDEF);
+    {$ENDIF}
 
     CreateMenuSeparatorSection(mnuSource,itmSourceInsertions,'itmSourceInsertions');
     ParentMI:=itmSourceInsertions;

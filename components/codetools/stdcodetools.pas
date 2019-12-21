@@ -273,8 +273,10 @@ type
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 
     // compiler directives
+    {$IFDEF GuessMisplacedIfdef}
     function GuessMisplacedIfdefEndif(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+    {$ENDIF}
     function FindEnclosingIncludeDirective(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindModeDirective(DoBuildTree: boolean;
@@ -6290,6 +6292,7 @@ begin
   Result:=true;
 end;
 
+{$IFDEF GuessMisplacedIfdef}
 function TStandardCodeTool.GuessMisplacedIfdefEndif(
   const CursorPos: TCodeXYPosition;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
@@ -6321,6 +6324,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 function TStandardCodeTool.FindEnclosingIncludeDirective(
   const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition; out

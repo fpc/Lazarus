@@ -272,7 +272,9 @@ type
     procedure mnuSourceUseUnitClicked(Sender: TObject);
     procedure mnuSourceSyntaxCheckClicked(Sender: TObject);
     procedure mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
+    {$IFDEF GuessMisplacedIfdef}
     procedure mnuSourceGuessMisplacedIFDEFClicked(Sender: TObject);
+    {$ENDIF}
     // source->insert CVS keyword
     procedure mnuSourceInsertCVSAuthorClick(Sender: TObject);
     procedure mnuSourceInsertCVSDateClick(Sender: TObject);
@@ -923,7 +925,9 @@ type
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
     procedure DoJumpToGuessedUnclosedBlock(FindNextUTF8: boolean);
+    {$IFDEF GuessMisplacedIfdef}
     procedure DoJumpToGuessedMisplacedIFDEF(FindNextUTF8: boolean);
+    {$ENDIF}
     procedure DoGotoIncludeDirective;
 
     // tools
@@ -2746,7 +2750,9 @@ begin
     // CodeTool Checks
     itmSourceSyntaxCheck.OnClick := @mnuSourceSyntaxCheckClicked;
     itmSourceGuessUnclosedBlock.OnClick := @mnuSourceGuessUnclosedBlockClicked;
+    {$IFDEF GuessMisplacedIfdef}
     itmSourceGuessMisplacedIFDEF.OnClick := @mnuSourceGuessMisplacedIFDEFClicked;
+    {$ENDIF}
     // Refactor
     itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
     itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
@@ -3012,7 +3018,9 @@ begin
 
     itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
     itmSourceGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);
+    {$IFDEF GuessMisplacedIfdef}
     itmSourceGuessMisplacedIFDEF.Command:=GetCommand(ecGuessMisplacedIFDEF);
+    {$ENDIF}
 
     itmSourceInsertCVSAuthor.Command:=GetCommand(ecInsertCVSAuthor);
     itmSourceInsertCVSDate.Command:=GetCommand(ecInsertCVSDate);
@@ -3609,7 +3617,9 @@ begin
   ecExtToolFirst..ecExtToolLast: DoRunExternalTool(Command-ecExtToolFirst,false);
   ecSyntaxCheck:              DoCheckSyntax;
   ecGuessUnclosedBlock:       DoJumpToGuessedUnclosedBlock(true);
+  {$IFDEF GuessMisplacedIfdef}
   ecGuessMisplacedIFDEF:      DoJumpToGuessedMisplacedIFDEF(true);
+  {$ENDIF}
   ecMakeResourceString:       DoMakeResourceString;
   ecDiff:                     DoDiff;
   ecConvertDFM2LFM:           DoConvertDFMtoLFM;
@@ -4710,10 +4720,12 @@ begin
   DoJumpToGuessedUnclosedBlock(true);
 end;
 
+{$IFDEF GuessMisplacedIfdef}
 procedure TMainIDE.mnuSourceGuessMisplacedIFDEFClicked(Sender: TObject);
 begin
   DoJumpToGuessedMisplacedIFDEF(true);
 end;
+{$ENDIF}
 
 procedure TMainIDE.mnuRefactorMakeResourceStringClicked(Sender: TObject);
 begin
@@ -10764,6 +10776,7 @@ begin
   end;
 end;
 
+{$IFDEF GuessMisplacedIfdef}
 procedure TMainIDE.DoJumpToGuessedMisplacedIFDEF(FindNextUTF8: boolean);
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -10791,6 +10804,7 @@ begin
   end else
     DoJumpToCodeToolBossError;
 end;
+{$ENDIF}
 
 procedure TMainIDE.DoGotoIncludeDirective;
 var ActiveSrcEdit: TSourceEditor;

@@ -210,7 +210,9 @@ type
       //itmSourceCodeToolChecks: TIDEMenuSection;
         itmSourceSyntaxCheck: TIDEMenuCommand;
         itmSourceGuessUnclosedBlock: TIDEMenuCommand;
+        {$IFDEF GuessMisplacedIfdef}
         itmSourceGuessMisplacedIFDEF: TIDEMenuCommand;
+        {$ENDIF}
       //itmSourceInsertCVSKeyWord: TIDEMenuSection;
         itmSourceInsertCVSAuthor: TIDEMenuCommand;
         itmSourceInsertCVSDate: TIDEMenuCommand;

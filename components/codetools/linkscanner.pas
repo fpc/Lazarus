@@ -795,12 +795,12 @@ type
 
     function SearchIncludeFile(AFilename: string; out NewCode: Pointer;
                          var MissingIncludeFile: TMissingIncludeFile): boolean;
-
+    {$IFDEF GuessMisplacedIfdef}
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
                                       StartCode: pointer;
                                       out EndCursorPos: integer;
                                       out EndCode: Pointer): boolean;
-
+    {$ENDIF}
     function GetHiddenUsedUnits: string; // comma separated
 
     // global write lock
@@ -2737,9 +2737,8 @@ end;
   Params: StartCursorPos: integer; StartCode: pointer;
           var EndCursorPos: integer; var EndCode: Pointer;
   Result: boolean;
-
-
 -------------------------------------------------------------------------------}
+{$IFDEF GuessMisplacedIfdef}
 function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
   StartCode: pointer;
   out EndCursorPos: integer; out EndCode: Pointer): boolean;
@@ -3126,6 +3125,7 @@ begin
     SearchedCodes.Free;
   end;
 end;
+{$ENDIF}
 
 function TLinkScanner.GetHiddenUsedUnits: string;
 var
