@@ -193,15 +193,8 @@ type
     FvClipRect: TRect;
     FCurrentPen: TGtk3Pen;
     FBkMode: Integer;
-    function GetBkMode: Integer;
-    function getBrush: TGtk3Brush;
-    function GetFont: TGtk3Font;
     function GetOffset: TPoint;
-    function getPen: TGtk3Pen;
-    function GetvImage: TGtk3Image;
-    procedure SetBkMode(AValue: Integer);
     procedure setBrush(AValue: TGtk3Brush);
-    procedure SetCurrentTextColor(AValue: TColorRef);
     procedure SetFont(AValue: TGtk3Font);
     procedure SetOffset(AValue: TPoint);
     procedure setPen(AValue: TGtk3Pen);
@@ -260,29 +253,25 @@ type
     function MoveTo(const X, Y: Integer; OldPoint: PPoint): Boolean;
     function SetClipRegion(ARgn: TGtk3Region): Integer;
     procedure SetSourceColor(AColor: TColor);
-    procedure SetCurrentBrush(ABrush: TGtk3Brush);
-    procedure SetCurrentFont(AFont: TGtk3Font);
-    procedure SetCurrentPen(APen: TGtk3Pen);
-    procedure SetCurrentImage(AImage: TGtk3Image);
     procedure SetImage(AImage: TGtk3Image);
     function ResetClip: Integer;
     procedure TranslateCairoToDevice;
     procedure Translate(APoint: TPoint);
-    property BkMode: Integer read GetBkMode write SetBkMode;
+    property BkMode: Integer read FBkMode write FBkMode;
     property CanRelease: Boolean read FCanRelease write FCanRelease;
-    property CurrentBrush: TGtk3Brush read FCurrentBrush;
-    property CurrentFont: TGtk3Font read FCurrentFont;
-    property CurrentImage: TGtk3Image read FCurrentImage;
-    property CurrentPen: TGtk3Pen read FCurrentPen;
+    property CurrentBrush: TGtk3Brush read FCurrentBrush write FCurrentBrush;
+    property CurrentFont: TGtk3Font read FCurrentFont write FCurrentFont;
+    property CurrentImage: TGtk3Image read FCurrentImage write FCurrentImage;
+    property CurrentPen: TGtk3Pen read FCurrentPen write FCurrentPen;
     property CurrentRegion: TGtk3Region read FCurrentRegion;
-    property CurrentTextColor: TColorRef read FCurrentTextColor write SetCurrentTextColor;
+    property CurrentTextColor: TColorRef read FCurrentTextColor write FCurrentTextColor;
     property Offset: TPoint read GetOffset write SetOffset;
     property OwnsSurface: Boolean read FOwnsSurface;
-    property vBrush: TGtk3Brush read getBrush write setBrush;
+    property vBrush: TGtk3Brush read FBrush write setBrush;
     property vClipRect: TRect read FvClipRect write FvClipRect;
-    property vFont: TGtk3Font read GetFont write SetFont;
-    property vImage: TGtk3Image read GetvImage write SetvImage;
-    property vPen: TGtk3Pen read getPen write setPen;
+    property vFont: TGtk3Font read FFont write SetFont;
+    property vImage: TGtk3Image read FvImage write SetvImage;
+    property vPen: TGtk3Pen read FPen write setPen;
   end;
 
 function CheckBitmap(const ABitmap: HBITMAP; const AMethodName: String;
@@ -934,21 +923,6 @@ end;
 
 { TGtk3DeviceContext }
 
-function TGtk3DeviceContext.getBrush: TGtk3Brush;
-begin
-  Result := FBrush;
-end;
-
-function TGtk3DeviceContext.GetBkMode: Integer;
-begin
-  Result := FBkMode;
-end;
-
-function TGtk3DeviceContext.GetFont: TGtk3Font;
-begin
-  Result := FFont;
-end;
-
 function TGtk3DeviceContext.GetOffset: TPoint;
 var
   dx,dy: Double;
@@ -957,32 +931,11 @@ begin
   Result := Point(Round(dx), Round(dy));
 end;
 
-function TGtk3DeviceContext.getPen: TGtk3Pen;
-begin
-  Result := FPen;
-end;
-
-function TGtk3DeviceContext.GetvImage: TGtk3Image;
-begin
-  Result := FvImage;
-end;
-
-procedure TGtk3DeviceContext.SetBkMode(AValue: Integer);
-begin
-  FBkMode := AValue;
-end;
-
 procedure TGtk3DeviceContext.setBrush(AValue: TGtk3Brush);
 begin
   if Assigned(FBrush) then
     FBrush.Free;
   FBrush := AValue;
-end;
-
-procedure TGtk3DeviceContext.SetCurrentTextColor(AValue: TColorRef);
-begin
-  if FCurrentTextColor=AValue then Exit;
-  FCurrentTextColor:=AValue;
 end;
 
 procedure TGtk3DeviceContext.SetFont(AValue: TGtk3Font);
@@ -1053,7 +1006,6 @@ begin
     AFont := FCurrentFont
   else
     AFont := FFont;
-
 end;
 
 procedure TGtk3DeviceContext.ApplyPen;
@@ -1702,7 +1654,7 @@ begin
     begin
       ATempBrush := FCurrentBrush;
       fBkMode := OPAQUE;
-      SetCurrentBrush(TGtk3Brush(ABrush));
+      CurrentBrush:= TGtk3Brush(ABrush);
     end;
 
     applyBrush;
@@ -1715,7 +1667,7 @@ begin
     cairo_stroke(Widget);
 
     if ABrush <> 0 then
-      SetCurrentBrush(ATempBrush);
+      CurrentBrush:= ATempBrush;
   finally
     cairo_restore(Widget);
   end;
@@ -1922,26 +1874,6 @@ var
 begin
   TColorToRGB(AColor, R, G, B);
   cairo_set_source_rgb(Widget, R, G, B);
-end;
-
-procedure TGtk3DeviceContext.SetCurrentBrush(ABrush: TGtk3Brush);
-begin
-  FCurrentBrush := ABrush;
-end;
-
-procedure TGtk3DeviceContext.SetCurrentFont(AFont: TGtk3Font);
-begin
-  FCurrentFont := AFont;
-end;
-
-procedure TGtk3DeviceContext.SetCurrentPen(APen: TGtk3Pen);
-begin
-  FCurrentPen := APen;
-end;
-
-procedure TGtk3DeviceContext.SetCurrentImage(AImage: TGtk3Image);
-begin
-  FCurrentImage := AImage;
 end;
 
 procedure TGtk3DeviceContext.SetImage(AImage: TGtk3Image);

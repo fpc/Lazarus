@@ -3481,18 +3481,18 @@ begin
     begin
       // DebugLn('TGtk3WidgetSet.SelectObject PEN ');
       Result := HGDIOBJ(TGtk3DeviceContext(DC).CurrentPen);
-      TGtk3DeviceContext(DC).SetCurrentPen(TGtk3Pen(GDIObj));
+      TGtk3DeviceContext(DC).CurrentPen:= TGtk3Pen(GDIObj);
     end else
     if TObject(GDIObj) is TGtk3Brush then
     begin
       Result := HGDIOBJ(TGtk3DeviceContext(DC).CurrentBrush);
       // DebugLn('TGtk3WidgetSet.SelectObject BRUSH ',dbgHex(Result),'  ',TimeToStr(Now()));
-      TGtk3DeviceContext(DC).SetCurrentBrush(TGtk3Brush(GDIObj));
+      TGtk3DeviceContext(DC).CurrentBrush:= TGtk3Brush(GDIObj);
     end else
     if TObject(GDIObj) is TGtk3Font then
     begin
       Result := HGDIOBJ(TGtk3DeviceContext(DC).CurrentFont);
-      TGtk3DeviceContext(DC).SetCurrentFont(TGtk3Font(GDIObj));
+      TGtk3DeviceContext(DC).CurrentFont:= TGtk3Font(GDIObj);
       // DebugLn('TGtk3WidgetSet.SelectObject Font ');
     end else
     if TObject(GDIObj) is TGtk3Region then
