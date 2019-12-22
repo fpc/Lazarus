@@ -1349,6 +1349,7 @@
       <element name="TCustomTabControl">
         <short>
           <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
+        </short>
         <descr>
           <p>
             <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
