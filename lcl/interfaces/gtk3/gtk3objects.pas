@@ -59,13 +59,12 @@ type
     FLogFont: TLogFont;
     FFontName: String;
     FHandle: PPangoFontDescription;
-    procedure SetFontName(const AValue: String);
   public
     constructor Create(ACairo: Pcairo_t; AWidget: PGtkWidget = nil);
     constructor Create(ALogFont: TLogFont; const ALongFontName: String);
     destructor Destroy; override;
     procedure UpdateLogFont;
-    property FontName: String read FFontName write SetFontName;
+    property FontName: String read FFontName write FFontName;
     property Handle: PPangoFontDescription read FHandle;
     property Layout: PPangoLayout read FLayout;
     property LogFont: TLogFont read FLogFont;
@@ -78,15 +77,13 @@ type
     FColor: TColor;
     FContext: TGtk3DeviceContext;
     FStyle: LongWord;
-    function GetColor: TColor;
     procedure SetColor(AValue: TColor);
-    procedure SetStyle(AValue: cardinal);
   public
     LogBrush: TLogBrush;
     constructor Create; override;
-    property Color: TColor read GetColor write SetColor;
+    property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
-    property Style: LongWord read FStyle write SetStyle;
+    property Style: LongWord read FStyle write FStyle;
   end;
 
   { TGtk3Pen }
@@ -102,28 +99,22 @@ type
     FColor: TColor;
     FContext: TGtk3DeviceContext;
     FIsExtPen: Boolean;
-    function GetColor: TColor;
-    function GetWidth: Integer;
     procedure SetColor(AValue: TColor);
     procedure setCosmetic(b: Boolean);
-    procedure SetEndCap(AValue: TPenEndCap);
-    procedure SetJoinStyle(AValue: TPenJoinStyle);
-    procedure SetPenMode(AValue: TPenMode);
-    procedure SetStyle(AValue: TFPPenStyle);
     procedure setWidth(p1: Integer);
   public
     LogPen: TLogPen;
     constructor Create; override;
-    property Color: TColor read GetColor write SetColor;
+    property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
 
     property Cosmetic: Boolean read FCosmetic write SetCosmetic;
-    property EndCap: TPenEndCap read FEndCap write SetEndCap;
+    property EndCap: TPenEndCap read FEndCap write FEndCap;
     property IsExtPen: Boolean read FIsExtPen write FIsExtPen;
-    property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle;
-    property Mode: TPenMode read FPenMode write SetPenMode;
-    property Style: TFPPenStyle read FStyle write SetStyle;
-    property Width: Integer read GetWidth write SetWidth;
+    property JoinStyle: TPenJoinStyle read FJoinStyle write FJoinStyle;
+    property Mode: TPenMode read FPenMode write FPenMode;
+    property Style: TFPPenStyle read FStyle write FStyle;
+    property Width: Integer read FWidth write SetWidth;
   end;
 
   { TGtk3Region }
@@ -164,7 +155,7 @@ type
     function bits: PByte;
     function numBytes: LongWord;
     function bytesPerLine: Integer;
-    function getFormat: cairo_format_t;
+    property Format: cairo_format_t read FFormat;
     property Handle: PGdkPixbuf read FHandle;
   end;
 
@@ -417,12 +408,6 @@ begin
 end;
 
 { TGtk3Font }
-
-procedure TGtk3Font.SetFontName(const AValue: String);
-begin
-  if FFontName=AValue then Exit;
-  FFontName:=AValue;
-end;
 
 procedure TGtk3Font.UpdateLogFont;
 var
@@ -806,22 +791,7 @@ begin
   Result := FHandle^.rowstride;
 end;
 
-function TGtk3Image.getFormat: cairo_format_t;
-begin
-  Result := FFormat;
-end;
-
 { TGtk3Pen }
-
-function TGtk3Pen.GetColor: TColor;
-begin
-  Result := FColor;
-end;
-
-function TGtk3Pen.GetWidth: Integer;
-begin
-  Result := FWidth;
-end;
 
 procedure TGtk3Pen.SetColor(AValue: TColor);
 var
@@ -831,27 +801,6 @@ begin
   ColorToCairoRGB(FColor, ARed, AGreen, ABlue);
   if Assigned(FContext) and Assigned(FContext.Widget) then
     cairo_set_source_rgb(FContext.Widget, ARed, AGreen, ABlue);
-end;
-
-procedure TGtk3Pen.SetEndCap(AValue: TPenEndCap);
-begin
-  FEndCap := AValue;
-end;
-
-procedure TGtk3Pen.SetJoinStyle(AValue: TPenJoinStyle);
-begin
-  FJoinStyle:=AValue;
-end;
-
-procedure TGtk3Pen.SetPenMode(AValue: TPenMode);
-begin
-  if FPenMode=AValue then Exit;
-  FPenMode:=AValue;
-end;
-
-procedure TGtk3Pen.SetStyle(AValue: TFPPenStyle);
-begin
-  FStyle := AValue;
 end;
 
 constructor TGtk3Pen.Create;
@@ -890,11 +839,6 @@ end;
 
 { TGtk3Brush }
 
-function TGtk3Brush.GetColor: TColor;
-begin
-  Result := FColor;
-end;
-
 procedure TGtk3Brush.SetColor(AValue: TColor);
 var
   ARed, AGreen, ABlue: Double;
@@ -903,12 +847,6 @@ begin
   ColorToCairoRGB(FColor, ARed, AGreen, ABlue);
   if Assigned(FContext) then
     cairo_set_source_rgb(FContext.Widget, ARed, AGreen, ABlue);
-end;
-
-procedure TGtk3Brush.SetStyle(AValue: cardinal);
-begin
-  if FStyle=AValue then Exit;
-  FStyle:=AValue;
 end;
 
 constructor TGtk3Brush.Create;
@@ -1897,7 +1835,7 @@ begin
   if FOwnsSurface and (CairoSurface <> nil) then
     cairo_surface_destroy(CairoSurface);
   CairoSurface := cairo_image_surface_create_for_data(APixBuf^.pixels,
-                                                AImage.getFormat,
+                                                AImage.Format,
                                                 APixBuf^.get_width,
                                                 APixBuf^.get_height,
                                                 APixBuf^.rowstride);

@@ -276,7 +276,7 @@ begin
   ADesc.LineOrder := riloTopToBottom;
   ADesc.LineEnd := rileDWordBoundary;
 
-  ADesc.Depth := CairoImageFormatToDepth[Image.getFormat];
+  ADesc.Depth := CairoImageFormatToDepth[Image.Format];
   ADesc.BitsPerPixel := ADesc.Depth;
   if ADesc.BitsPerPixel = 24 then
     ADesc.BitsPerPixel := 32;
