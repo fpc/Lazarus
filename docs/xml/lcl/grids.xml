@@ -13549,7 +13549,7 @@
       <element link="#LCL.Grids.TCustomGrid.DefaultDrawing" name="TStringGrid.DefaultDrawing"/>
       <element link="#LCL.Grids.TCustomGrid.DefaultRowHeight" name="TStringGrid.DefaultRowHeight"/>
       <element name="TStringGrid.DoubleBuffered" link="#LCL.Controls.TControl.DoubleBuffered"/>
-      <element name="TStringGrid.DragCursor"link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TStringGrid.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TStringGrid.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TStringGrid.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element link="#LCL.Controls.TControl.Enabled" name="TStringGrid.Enabled"/>
@@ -13614,7 +13614,7 @@
       <element name="TStringGrid.OnButtonClick" link="TCustomGrid.OnButtonClick"/>
       <element link="#LCL.Controls.TControl.OnEditingDone" name="TStringGrid.OnEditingDone"/>
       <element name="TStringGrid.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
-      <element name="TStringGrid.OnEndDrag"link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TStringGrid.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element link="#LCL.Controls.TWinControl.OnEnter" name="TStringGrid.OnEnter"/>
       <element link="#LCL.Controls.TWinControl.OnExit" name="TStringGrid.OnExit"/>
       <element name="TStringGrid.OnGetCellHint" link="#LCL.Grids.TCustomGrid.OnGetCellHint"/>
