@@ -429,12 +429,7 @@ begin
       g_object_set_data(PGObject(AWindow), 'havesavedcursor', gpointer(1));
       g_object_set_data(PGObject(AWindow), 'savedcursor', gpointer(OldCursor));
     end;
-    gdk_pointer_grab(AWindow, False, 0, AWindow, Cursor, 1);
-    try
-      gdk_window_set_cursor(AWindow, Cursor);
-    finally
-      gdk_pointer_ungrab(0);
-    end;
+    gdk_window_set_cursor(AWindow, Cursor);
   end else
   begin
     if g_object_steal_data(PGObject(AWindow), 'havesavedcursor') <> nil then
