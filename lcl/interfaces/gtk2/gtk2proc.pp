@@ -586,7 +586,6 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 //--
 
 // accelerators
-function DeleteAmpersands(var Str: String): Longint;
 function Ampersands2Underscore(Src: PChar): PChar;
 function Ampersands2Underscore(const ASource: String): String;
 function EscapeUnderscores(const Str: String): String; inline;

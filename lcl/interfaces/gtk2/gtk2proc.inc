@@ -8992,49 +8992,6 @@ begin
   end;
 end;
 
-function DeleteAmpersands(var Str : String) : Longint;
-// convert double ampersands to single & and delete single &
-// return the position of the letter after the first deleted single ampersand
-// in the new string
-var
-  Tmp : String;
-  SrcPos, DestPos, SrcLen: integer;
-begin
-  Result := -1;
-  
-  // for speedup reasons check if Str must be changed
-  SrcLen:=length(Str);
-  SrcPos:=SrcLen;
-  while (SrcPos>=1) and (Str[SrcPos]<>'&') do dec(SrcPos);
-  if SrcPos<1 then exit;
-
-  // copy Str to Tmp and convert ampersands on the fly
-  SetLength(Tmp,SrcLen);
-  SrcPos:=1;
-  DestPos:=1;
-  while (SrcPos<=SrcLen) do begin
-    if Str[SrcPos]<>'&' then begin
-      // copy normal char
-      Tmp[DestPos]:=Str[SrcPos];
-      inc(SrcPos);
-      inc(DestPos);
-    end else begin
-      inc(SrcPos);
-      if (SrcPos<=SrcLen) and (Str[SrcPos]='&') then begin
-        // double ampersand
-        Tmp[DestPos]:='&';
-        inc(DestPos);
-        inc(SrcPos);
-      end else begin
-        // single ampersand
-        if Result<1 then Result:=DestPos;
-      end;
-    end;
-  end;
-  SetLength(Tmp,DestPos-1);
-  Str:=Tmp;
-end;
-
 {-------------------------------------------------------------------------------
   function Ampersands2Underscore(Src: PChar) : PChar;
 

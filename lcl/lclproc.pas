@@ -130,7 +130,8 @@ procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   out Left,Top,Width,Height: integer);
 
-function DeleteAmpersands(var Str : String) : Longint;
+// Ampersands
+function DeleteAmpersands(var Str : String) : Integer;
 
 function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareHandles(h1, h2: THandle): integer;
@@ -344,10 +345,10 @@ var
   DebugNestAtBOL: Boolean;
   {$ENDIF}
 
-function DeleteAmpersands(var Str : String) : Longint;
-// Replace all &x with x
-// and return the position of the first ampersand letter in the resulting Str.
-// double ampersands && are converted to a single & and are ignored.
+function DeleteAmpersands(var Str : String) : Integer;
+// Replace all &x with x and return the position of the first accelerator letter in
+//  the resulting Str, meaning the letter following the first & in the original Str.
+// Double ampersands && are converted to a single & and ignored.
 var
   SrcPos, DestPos, SrcLen: Integer;
 begin
@@ -359,7 +360,7 @@ begin
     if (Str[SrcPos]='&') and (SrcPos<SrcLen) then begin
       // & found
       inc(SrcPos); // skip &
-      if (Str[SrcPos]<>'&') and (Result<1) then
+      if (Str[SrcPos]<>'&') and (Result<1) then  // Ignore && as accelerator
         Result:=DestPos;
     end;
     if DestPos<SrcPos then

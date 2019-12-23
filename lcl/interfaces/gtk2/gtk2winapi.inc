@@ -2730,11 +2730,7 @@ begin
       AStr := StringReplace(AStr, #9, TabString, [rfReplaceAll]);
 
     if (Flags and DT_NOPREFIX) <> DT_NOPREFIX then
-    begin
-      pIndex := DeleteAmpersands(AStr);
-      if pIndex > Length(AStr) then
-        pIndex := -1; // String ended in '&', which was deleted
-    end
+      pIndex := DeleteAmpersands(AStr)
     else
       pIndex := -1;
 
