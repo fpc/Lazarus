@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="DateTimeCtrlsDsgn"/>
     <Type Value="RunAndDesignTime"/>
@@ -13,8 +13,11 @@
         <OtherUnitFiles Value="."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
     </CompilerOptions>
-    <Description Value="TDateTimePicker - the cross-platform control behaving much like VCL's TDateTimePicker. TDBDateTimePicker - the data-aware version of TDateTimePicker"/>
+    <Description Value="TDateTimePicker - the cross-platform control behaving much like VCL&apos;s TDateTimePicker. TDBDateTimePicker - the data-aware version of TDateTimePicker"/>
     <License Value="Modified LGPL"/>
     <Version Major="1" Minor="5" Release="1"/>
     <Files Count="3">
