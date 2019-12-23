@@ -127,6 +127,10 @@ type
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
     procedure lclInvalidate; message 'lclInvalidate';
     procedure lclUpdate; message 'lclUpdate';
+
+    // Returns the position of the view or window, in the immediate
+    // parent (view or screen), relative to its client coordinates system
+    // Left and Top are always returned in LCL coordinate system.
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::';
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::';
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::';
@@ -1024,9 +1028,19 @@ begin
 end;
 
 procedure LCLViewExtension.lclRelativePos(var Left, Top: Integer);
+var
+  sv : NSView;
+  fr : NSRect;
 begin
   Left := Round(frame.origin.x);
-  Top := Round(frame.origin.y);
+  sv := superview;
+  if Assigned(sv) and (not sv.isFlipped) then
+  begin
+    fr := frame;
+    Top := Round(sv.frame.size.height - fr.origin.y - fr.size.height);
+  end
+  else
+    Top := Round(frame.origin.y);
 end;
 
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
@@ -1035,18 +1049,22 @@ var
 
 begin
   // 1. convert to window base
+  // Convert from View-lcl to View-cocoa
   P.x := X;
   if isFlipped then
     p.y := Y
   else
     P.y := frame.size.height-y;   // convert to Cocoa system
 
+  // Convert from View-cocoa to Window-cocoa
   P := convertPoint_ToView(P, nil);
 
+  // Convert from Window-cocoa to Window-lcl
   X := Round(P.X);
   Y := Round(window.frame.size.height-P.Y); // convert to LCL system
 
   // 2. convert window to screen
+  // Use window function to convert fomr Window-lcl to Screen-lcl
   window.lclLocalToScreen(X, Y);
 end;
 
@@ -1055,13 +1073,17 @@ var
   P: NSPoint;
 begin
   // 1. convert from screen to window
-
+  // use window function to onvert from Screen-lcl to Window-lcl
   window.lclScreenToLocal(X, Y);
+  // Convert from Window-lcl to Window-cocoa
   P.x := X;
   P.y := Round(window.frame.size.height-Y); // convert to Cocoa system
 
   // 2. convert from window to local
+  //    Convert from Window-cocoa to View-cocoa
   P := convertPoint_FromView(P, nil);
+
+  // Convert from View-cocoa to View-lcl
   X := Round(P.x);
   if isFlipped then
     Y := Round(p.y)
@@ -1079,7 +1101,7 @@ var
   v: NSView;
 begin
   v := superview;
-  if Assigned(v) then
+  if Assigned(v) and not v.isFlipped then
     NSToLCLRect(frame, v.frame.size.height, Result)
   else
     Result := NSRectToRect(frame);

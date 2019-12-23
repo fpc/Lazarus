@@ -221,6 +221,7 @@ type
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
+    procedure lclRelativePos(var Left, Top: Integer); override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
@@ -450,6 +451,14 @@ begin
       wfrm := NSRectToRect(frame);
     OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
+end;
+
+procedure TCocoaWindowContent.lclRelativePos(var Left, Top: Integer);
+begin
+  if isembedded then
+    inherited lclRelativePos(Left, Top)
+  else
+    window.lclRelativePos(Left, Top);
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
