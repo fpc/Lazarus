@@ -618,6 +618,7 @@ begin
     ns := NSStringUTF8(s);
     text.setString(ns);
     ns.release;
+    text.undoManager.removeAllActions;
   end;
 end;
 

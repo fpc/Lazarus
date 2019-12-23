@@ -1173,12 +1173,8 @@ begin
 end;
 
 procedure TCocoaMemoStrings.SetTextStr(const Value: string);
-var
-  ns: NSString;
 begin
-  ns := NSStringUtf8(LineBreaksToUnix(Value));
-  FTextView.setString(ns);
-  ns.release;
+  SetNSText(FTextView, LineBreaksToUnix(Value));
 
   FTextView.textDidChange(nil);
 end;
@@ -1301,6 +1297,8 @@ begin
   FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
 
   if not ro then FTextView.setEditable(ro);
+
+  FTextView.undoManager.removeAllActions;
 end;
 
 procedure TCocoaMemoStrings.LoadFromFile(const FileName: string);
@@ -1471,9 +1469,7 @@ begin
   txt.callback := lcl;
   txt.setDelegate(txt);
 
-  ns := NSStringUtf8(AParams.Caption);
-  txt.setString(ns);
-  ns.release;
+  SetNSText(txt, AParams.Caption);
 
   scr.callback := txt.callback;
 
@@ -1684,13 +1680,10 @@ end;
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
 var
   txt: TCocoaTextView;
-  ns: NSString;
 begin
   txt := GetTextView(AWinControl);
   if not Assigned(txt) then Exit;
-  ns := NSStringUtf8(LineBreaksToUnix(AText));
-  txt.setString(ns);
-  ns.release;
+  SetNSText(txt, LineBreaksToUnix(AText));
 end;
 
 class function TCocoaWSCustomMemo.GetText(const AWinControl: TWinControl; var AText: String): Boolean;

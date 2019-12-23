@@ -124,7 +124,6 @@ type
 
     procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
-    function undoManager: NSUndoManager; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -153,6 +152,7 @@ type
     // delegate methods
     procedure textDidChange(notification: NSNotification); message 'textDidChange:';
     procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
+    function undoManagerForTextView(view: NSTextView): NSUndoManager; message 'undoManagerForTextView:';
   end;
 
   { TCococaFieldEditorExt }
@@ -1037,18 +1037,6 @@ begin
   Result := NSViewCanFocus(Self);
 end;
 
-function TCocoaTextView.undoManager: NSUndoManager;
-begin
-  if allowsUndo then
-  begin
-    if not Assigned(FUndoManager) then
-      FUndoManager := NSUndoManager.alloc.init;
-    Result := FUndoManager;
-  end
-  else
-    Result := nil;
-end;
-
 function TCocoaTextView.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -1185,6 +1173,13 @@ begin
   wantArrows := true;
   wantReturn := true;
   wantAll := true;
+end;
+
+function TCocoaTextView.undoManagerForTextView(view: NSTextView): NSUndoManager;
+begin
+  if not Assigned(FUndoManager) then
+    FUndoManager := NSUndoManager.alloc.init;
+  Result := FUndoManager;
 end;
 
 { TCocoaSecureTextField }
