@@ -1024,8 +1024,8 @@ begin
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 3;
     SPI_GETWORKAREA:
     begin
-      NSToLCLRect(NSScreen.mainScreen.visibleFrame
-        , NSScreen.mainScreen.frame.size.height
+      NSToLCLRect(NSScreen(NSScreen.screens.objectAtIndex(0)).visibleFrame
+        , NSScreenZeroHeight
         , TRect(pvParam^));
     end;
   else
@@ -1123,7 +1123,7 @@ begin
   begin
     lpPoint.x := Round(x);
     // cocoa returns cursor with inverted y coordinate
-    lpPoint.y := Round(NSScreen.mainScreen.frame.size.height-y);
+    lpPoint.y := Round(NSScreenZeroHeight-y);
   end;
   //debugln('GetCursorPos='+DbgS(lpPoint));
   Result := True;
@@ -1131,6 +1131,7 @@ end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
+  Scr0Height:  CGFloat;
   ScreenID: NSScreen;
   idx : NSUInteger;
 begin
@@ -1140,9 +1141,10 @@ begin
   Result := (idx < NSScreen.screens.count);
   if not Result then Exit;
 
+  Scr0Height := NSScreenZeroHeight;
   ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
-  lpmi^.rcMonitor := NSRectToRect(ScreenID.frame);
-  NSToLCLRect(ScreenID.visibleFrame, ScreenID.frame.size.height, lpmi^.rcWork);
+  NSToLCLRect(ScreenID.frame, Scr0Height, lpmi^.rcMonitor);
+  NSToLCLRect(ScreenID.visibleFrame, Scr0Height, lpmi^.rcWork);
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
   if idx = 0 then
@@ -1502,7 +1504,7 @@ begin
   begin
     window:=windows.objectAtIndex(win);
     p.x:=Point.X;
-    p.y:=window.screen.frame.size.height-Point.Y;
+    p.y:=NSScreenZeroHeight-Point.Y;
     winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
     windowbelowpoint:=NSWindow(NSApp.windowWithWindowNumber(winnr));
     if windowbelowpoint=window then
