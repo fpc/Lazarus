@@ -86,7 +86,6 @@ type
     modals : NSMutableDictionary;
     inputclient : TCocoaInputClient;
     inputctx    : NSTextInputContext;
-    isfinishLaunch: Boolean;
 
     procedure dealloc; override;
     {$ifdef COCOALOOPOVERRIDE}

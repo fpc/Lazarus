@@ -41,6 +41,9 @@ begin
   FNSApp := TCocoaApplication(TCocoaApplication.sharedApplication);
   FNSApp_Delegate := TAppDelegate.alloc.init;
   FNSApp.setDelegate(FNSApp_Delegate);
+  {$ifdef COCOALOOPOVERRIDE}
+  FNSApp.finishLaunching;
+  {$endif}
 
   // Sandboxing
   lDict := NSProcessInfo.processInfo.environment;
@@ -81,14 +84,6 @@ var
   event: NSEvent;
   pool:NSAutoReleasePool;
 begin
-  {$ifdef COCOALOOPOVERRIDE}
-  if not fNSApp.isfinishLaunch then
-  begin
-    FNSApp.finishLaunching;
-    FNSApp.isfinishLaunch := true;
-  end;
-  {$endif}
-
   repeat
     pool := NSAutoreleasePool.alloc.init;
     {$ifdef BOOLFIX}
