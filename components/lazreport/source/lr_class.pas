@@ -28,6 +28,7 @@ uses
 
 const
   lrMaxBandsInReport       = 256; //temp fix. in future need remove this limit
+  lrSnapDistance: Integer  = 10;
 
 const
 // object flags
@@ -352,6 +353,7 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: Integer);
 
     function PointInView(aX,aY : Integer) : Boolean; virtual;
+    function FindAlignSide(const vert:boolean; const value: Integer; out found: Integer): boolean; virtual;
     procedure Invalidate;
 
     property Canvas : TCanvas read fCanvas write fCanvas;
@@ -3279,6 +3281,29 @@ begin
   Rc:=Bounds(bx, by, bx1, by1);
 
   Result:=((aX>Rc.Left) and (aX<Rc.Right) and (aY>Rc.Top) and (aY<Rc.Bottom));
+end;
+
+function TfrView.FindAlignSide(const vert: boolean; const value: Integer;
+  out found: Integer): boolean;
+begin
+  result := false;
+  if vert then
+  begin
+    found := y;
+    if abs(value-found)<=lrSnapDistance then exit(true);
+    found := y+dy;
+    if abs(value-found)<=lrSnapDistance then exit(true);
+    found := y+dy div 2;
+    if abs(value-found)<=lrSnapDistance then exit(true);
+  end else
+  begin
+    found := x;
+    if abs(value-found)<=lrSnapDistance then exit(true);
+    found := x+dx;
+    if abs(value-found)<=lrSnapDistance then exit(true);
+    found := x+dx div 2;
+    if abs(value-found)<=lrSnapDistance then exit(true);
+  end;
 end;
 
 procedure TfrView.Invalidate;

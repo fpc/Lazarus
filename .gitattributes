@@ -2810,6 +2810,7 @@ components/lazreport/images/designer/lrd_copy.png -text
 components/lazreport/images/designer/lrd_cut.png -text
 components/lazreport/images/designer/lrd_grid.png -text
 components/lazreport/images/designer/lrd_grid_align.png -text
+components/lazreport/images/designer/lrd_guides.png -text
 components/lazreport/images/designer/lrd_ins_fields.bmp -text svneol=unset#image/x-ms-bmp
 components/lazreport/images/designer/lrd_italic.png -text
 components/lazreport/images/designer/lrd_new.png -text
