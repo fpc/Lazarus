@@ -71,6 +71,7 @@ const
   fmtBoolean               = 4;
   
 type
+  TfrSetOfTyp = set of byte;
   TfrDrawMode = (drAll, drCalcHeight, drAfterCalcHeight, drPart);
   TfrBandType = (btReportTitle, btReportSummary,
                  btPageHeader, btPageFooter,

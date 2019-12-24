@@ -249,17 +249,25 @@ type
   TAlignGuides = class
   private
     fOwner: TfrDesignerPage;
+    fSelBounds: TRect;
+    fSelMouse: TPoint;
     fX,fY: Integer;
     px,py: PInteger;
+    fMoveSelectionTracking: boolean;
     procedure InvalidateHorzGuide;
     procedure InvalidateVertGuide;
     procedure PaintGuides;
+    procedure ChangeGuide(vert, show: boolean; value:Integer);
+    function  FindAnyGuide(const vert: boolean; const ax,ay:Integer; out snap: Integer;
+                           skipSel:boolean; skipTyp:TfrSetOfTyp): boolean;
   public
     constructor Create(aOwner: TfrDesignerPage);
     procedure Paint;
-    procedure FindGuides(ax, ay:Integer);
+    procedure FindGuides(ax, ay:Integer; skipSel:boolean=false; skipTyp:TfrSetOfTyp=[]);
     function  SnapToGuide(var ax, ay: Integer): boolean;
+    function  SnapSelectionToGuide(const kx, ky: Integer; var ax, ay:Integer): boolean;
     procedure HideGuides;
+    procedure ResetMoveSelection(ax, ay: Integer);
     //property X: PInteger read px;
     //property Y: PInteger read py;
   end;
@@ -779,6 +787,27 @@ begin
   DeleteObject(TR);
 end;
 
+function SelectionBounds(out r: TRect): boolean;
+var
+  i: Integer;
+  t: TfrView;
+begin
+  r := rect(Maxint, MaxInt, 0 , 0);
+  result := false;
+  with r do
+    for i:=0 to Objects.Count-1 do
+    begin
+      t := TfrView(Objects[i]);
+      if t.Selected then begin
+        if t.x<left then left := t.x;
+        if t.x+t.dx>right then right := t.x+t.dx;
+        if t.y<top then top := t.y;
+        if t.y+t.dy>bottom then bottom := t.y+t.dy;
+        result := true;
+      end;
+    end;
+end;
+
 { TAlignGuides }
 
 procedure TAlignGuides.InvalidateHorzGuide;
@@ -821,6 +850,8 @@ begin
 
       // paint object's aligned sides
       // TODO: make an option for the fixed values
+      // TODO: a different visualization hint could be having
+      //       the view redraw itself in a distinctive color?
 
       Pen.Cosmetic := true;
       Pen.Style := psSolid;
@@ -871,10 +902,27 @@ begin
     end;
 end;
 
-constructor TAlignGuides.Create(aOwner: TfrDesignerPage);
+procedure TAlignGuides.ChangeGuide(vert, show: boolean; value: Integer);
 begin
-  inherited create;
-  fOwner := aOwner;
+  if vert then
+  begin
+    InvalidateVertGuide;
+    if show then begin
+      fy := value;
+      py := @fy;
+      InvalidateVertGuide;
+    end else
+      py := nil;
+  end else
+  begin
+    InvalidateHorzGuide;
+    if show then begin
+      fx := value;
+      px := @fx;
+      InvalidateHorzGuide;
+    end else
+      px := nil;
+  end;
 end;
 
 procedure TAlignGuides.Paint;
@@ -882,60 +930,57 @@ begin
   PaintGuides;
 end;
 
-procedure TAlignGuides.FindGuides(ax, ay: Integer);
+function TAlignGuides.FindAnyGuide(const vert: boolean; const ax, ay: Integer;
+  out snap: Integer; skipSel: boolean; skipTyp: TfrSetOfTyp): boolean;
 var
-  i, tx, ty: Integer;
+  i, value: Integer;
   t: TfrView;
-  foundVert, foundHorz: boolean;
 begin
-  foundVert := false;
-  foundHorz := false;
+  result := false;
 
   // TODO: start looking at the nearest object to (ax, ay)
 
-  for i := 0 to Objects.Count-1 do
+  if vert then  value := ay
+  else          value := ax;
+
+  for i := Objects.Count-1 downto 0 do
   begin
     t := TfrView(Objects[i]);
-
-    if not foundHorz and t.FindAlignSide(false, ax, tx) then
-    begin
-      if (px=nil) or (px^<>tx) then
-      begin
-        InvalidateHorzGuide;
-        fx := tx;
-        px := @fx;
-        InvalidateHorzGuide;
-      end;
-      foundHorz := true;
-    end;
-
-    if not foundVert and t.FindAlignSide(true, ay, ty) then
-    begin
-      if (py=nil) or (py^<>ty) then
-      begin
-        InvalidateVertGuide;
-        fy := ty;
-        py := @fy;
-        InvalidateVertGuide;
-      end;
-      foundvert := true;
-    end;
-
-    if foundHorz and foundVert then
+    if (skipSel and t.Selected) or
+       (t.typ in skipTyp) then
+         continue;
+    if t.FindAlignSide(vert, value, snap) then begin
+      result := true;
       break;
+    end;
   end;
 
-  if not foundHorz and (px<>nil) then
+  if vert then
   begin
-    InvalidateHorzGuide;
-    px := nil;
+    if result and (py<>nil) and (py^=snap) then
+      exit;
+    ChangeGuide(true, result, snap);
+  end else
+  begin
+    if result and (px<>nil) and (px^=snap) then 
+      exit;
+    ChangeGuide(false, result, snap);
   end;
+end;
 
-  if not foundVert and (py<>nil) then
-  begin
-    InvalidateVertGuide;
-    py := nil;
-  end;
+constructor TAlignGuides.Create(aOwner: TfrDesignerPage);
+begin
+  inherited create;
+  fOwner := aOwner;
+end;
+
+procedure TAlignGuides.FindGuides(ax, ay: Integer; skipSel: boolean;
+  skipTyp: TfrSetOfTyp);
+var
+  dummy: Integer;
+begin
+  FindAnyGuide(true,  ax, ay, dummy, skipSel, skipTyp);
+  FindAnyGuide(false, ax, ay, dummy, skipSel, skipTyp);
 end;
 
 function TAlignGuides.SnapToGuide(var ax, ay: Integer): boolean;
@@ -955,12 +1000,103 @@ begin
   end;
 end;
 
+function TAlignGuides.SnapSelectionToGuide(const kx, ky: Integer; var ax,
+  ay: Integer): boolean;
+var
+  moveBounds, displayedBounds: TRect;
+  snap, deltaX, deltaY, snapDeltaX, snapDeltaY: Integer;
+  pts: array[0..2] of TPoint;
+
+  procedure TestPoints(vert: boolean; var delta:integer);
+  var
+    p: TPoint;
+  begin
+    delta := 0;
+    for p in pts do
+    begin
+      if FindAnyGuide(vert, p.x, p.y, snap, true, []) then
+      begin
+        if vert then delta := snap - p.y
+        else         delta := snap - p.x;
+        result := true;
+        break;
+      end;
+    end;
+  end;
+
+begin
+  result := false;
+
+  if not fMoveSelectionTracking then begin
+    if not SelectionBounds(fSelBounds) then 
+      exit;
+    HideGuides;
+    fMoveSelectionTracking := true;
+  end;
+
+  // real bounds
+  moveBounds := fSelBounds;
+  deltaX := ax - fSelMouse.x;
+  deltaY := ay - fSelMouse.y;
+  moveBounds.Offset(deltaX, deltaY);
+
+  // find potential snap points
+  snapDeltaX := 0;
+  snapDeltaY := 0;
+
+  pts[2] := Point(ax, ay);  // could be ommited if less matching guides are needed
+
+  if deltaX<0 then
+  begin
+    pts[0] := Point(moveBounds.left, ay);
+    pts[1] := Point(moveBounds.right, ay);
+  end else
+  if deltaX>0 then
+  begin
+    pts[0] := Point(moveBounds.right, ay);
+    pts[1] := Point(moveBounds.left, ay);
+  end;
+  if deltaX<>0 then
+    TestPoints(false, snapDeltaX);
+
+  if deltaY<0 then
+  begin
+    pts[0] := Point(ax, moveBounds.top);
+    pts[1] := Point(ax, moveBounds.Bottom);
+  end else
+  if deltaY>0 then
+  begin
+    pts[0] := Point(ax, moveBounds.Bottom);
+    pts[1] := Point(ax, moveBounds.top);
+  end;
+  if deltaY<>0 then
+    TestPoints(true, snapDeltaY);
+
+  // adjust the moving bounds by the extra snapping if it exists
+  moveBounds.Offset(snapDeltaX, snapDeltaY);
+  // get displayed bounds
+  // TODO: Optmize: should not be necessary to compute displayed bounds for this
+  SelectionBounds(displayedBounds);
+  // cheating new mouse values
+  ax := (ax - kx) + (moveBounds.Left - displayedBounds.Left);
+  ay := (ay - ky) + (moveBounds.Top - displayedBounds.Top);
+
+  result := true; // either we snap to something or not, we always succeed
+end;
+
 procedure TAlignGuides.HideGuides;
 begin
   InvalidateHorzGuide;
   InvalidateVertGuide;
   px := nil;
   py := nil;
+  fMoveSelectionTracking := false;
+end;
+
+procedure TAlignGuides.ResetMoveSelection(ax, ay: Integer);
+begin
+  fMoveSelectionTracking := false;
+  fSelMouse := Point(ax, ay);
 end;
 
 { TPaintSel }
@@ -1843,12 +1979,16 @@ begin
          begin
             with FDesigner do
             begin
-              if GridAlign then
-              begin
-                if not FindNearestEdge(x, y) then
+              if ShowGuides and fGuides.SnapToGuide(x, y) then
+                // x and/or y are at the right value now
+              else begin
+                if GridAlign then
                 begin
-                  x := Round(x / GridSize) * GridSize;
-                  y := Round(y / GridSize) * GridSize;
+                  if not FindNearestEdge(x, y) then
+                  begin
+                    x := Round(x / GridSize) * GridSize;
+                    y := Round(y / GridSize) * GridSize;
+                  end;
                 end;
               end;
             end;
@@ -1869,7 +2009,10 @@ begin
             Exit;
          end;
   end;
-  
+
+  if FDesigner.ShowGuides then
+    fGuides.ResetMoveSelection(x, y);
+
   if Cursor = crDefault then
   begin
     f := False;
@@ -2432,6 +2575,21 @@ var
       end;
     end;
   end;
+
+  function SnapCoords: boolean;
+  begin
+    result := true;
+    if FDesigner.ShowGuides and fGuides.SnapToGuide(x, y) then begin
+      kx := x - LastX;
+      ky := y - LastY;
+    end else begin
+      kx := x - LastX;
+      ky := y - LastY;
+      if FDesigner.GridAlign and not GridCheck then
+        result := false;
+    end;
+  end;
+
 begin
   {$IFDEF DebugLR}
   DebugLnEnter('TfrDesignerPage.MMove(X=%d,Y=%d)  INIT',[x,y]);
@@ -2439,8 +2597,16 @@ begin
   Moved := True;
   w := 2;
 
-  if FDesigner.ShowGuides then
-    fGuides.FindGuides(x, y);
+  if FDesigner.ShowGuides then begin
+    if not down then
+      // normal snap guide to any object
+      fGuides.FindGuides(x, y)
+    else begin
+      if Cursor = crPencil then
+        // normal snap to guide for drawing lines
+        fGuides.FindGuides(x, y);
+    end;
+  end;
 
   if FirstChange and Down and not RFlag then
   begin
@@ -2570,9 +2736,7 @@ begin
   //line drawing
   if Down and (Cursor = crPencil) then
   begin
-    kx := x - LastX;
-    ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then begin
+    if not SnapCoords then begin
       {$IFDEF DebugLR}
       DebugLnExit('TfrDesignerPage.MMove DONE: not gridcheck and gridalign');
       {$ENDIF}
@@ -2665,19 +2829,11 @@ begin
   // sizing several objects
   if Down and TfrDesignerForm(frDesigner).MRFlag and (Mode = mdSelect) and (Cursor <> crDefault) then
   begin
-
-    if FDesigner.ShowGuides and fGuides.SnapToGuide(x, y) then begin
-      kx := x - LastX;
-      ky := y - LastY;
-    end else begin
-      kx := x - LastX;
-      ky := y - LastY;
-      if FDesigner.GridAlign and not GridCheck then begin
-        {$IFDEF DebugLR}
-        DebugLnExit('TfrDesignerPage.MMove DONE: sizing seveal, not gridcheck');
-        {$ENDIF}
-        Exit;
-      end;
+    if not SnapCoords then begin
+      {$IFDEF DebugLR}
+      DebugLnExit('TfrDesignerPage.MMove DONE: sizing seveal, not gridcheck');
+      {$ENDIF}
+      Exit;
     end;
 
     if FDesigner.ShapeMode = smFrame then
@@ -2736,11 +2892,17 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then begin
-      {$IFDEF DebugLR}
-      DebugLnExit('TfrDesignerPage.MMove DONE: moving');
-      {$ENDIF}
-      Exit;
+    if FDesigner.ShowGuides and fGuides.SnapSelectionToGuide(kx, ky, x, y) then
+    begin
+      kx := x - LastX;
+      ky := y - LastY;
+    end else begin
+      if FDesigner.GridAlign and not GridCheck then begin
+        {$IFDEF DebugLR}
+        DebugLnExit('TfrDesignerPage.MMove DONE: moving');
+        {$ENDIF}
+        Exit;
+      end;
     end;
     if FirstBandMove and (TfrDesignerForm(frDesigner).SelNum = 1) and ((kx <> 0) or (ky <> 0)) and
       not (ssAlt in Shift) then
