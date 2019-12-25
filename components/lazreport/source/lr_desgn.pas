@@ -2597,13 +2597,17 @@ begin
   Moved := True;
   w := 2;
 
-  if FDesigner.ShowGuides then begin
+  if FDesigner.ShowGuides then
+  begin
     if not down then
       // normal snap guide to any object
       fGuides.FindGuides(x, y)
-    else begin
-      if Cursor = crPencil then
-        // normal snap to guide for drawing lines
+    else
+    begin
+      if (Cursor = crPencil) or
+         (Cursor = crCross)
+      then
+        // normal snap to guide for inserting objects or drawing lines
         fGuides.FindGuides(x, y);
     end;
   end;
