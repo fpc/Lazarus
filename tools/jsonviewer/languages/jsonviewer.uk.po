@@ -4,9 +4,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-19 17:08+0200\n"
+"PO-Revision-Date: 2019-12-24 09:52+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
@@ -404,7 +404,7 @@ msgstr "Брати в лапки рядкові значення"
 
 #: tmainform.misaveformatted.caption
 msgid "Save Formatted JSON"
-msgstr ""
+msgstr "Зберегти форматований JSON"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"

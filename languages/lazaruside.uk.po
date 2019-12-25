@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-10-15 21:34+0200\n"
+"PO-Revision-Date: 2019-12-24 11:23+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -2322,7 +2322,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
 msgid "Include code templates"
-msgstr ""
+msgstr "Включити шаблони коду"
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
@@ -7001,7 +7001,7 @@ msgstr "Видимість"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
-msgstr ""
+msgstr "Розкривні списки"
 
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
@@ -8992,7 +8992,7 @@ msgstr "Показувати вибране як таке, що перебува
 
 #: lazarusidestrconsts.lisdropdowncount
 msgid "Drop Down Count"
-msgstr ""
+msgstr "Кількість розкривних списків"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -11725,15 +11725,15 @@ msgstr "Відкриття файлу пакунка"
 #: lazarusidestrconsts.liskmopenrecent
 msgctxt "lazarusidestrconsts.liskmopenrecent"
 msgid "Open Recent"
-msgstr ""
+msgstr "Відкрити недавній"
 
 #: lazarusidestrconsts.liskmopenrecentpackage
 msgid "Open recent package"
-msgstr ""
+msgstr "Відкрити недавній пакунок"
 
 #: lazarusidestrconsts.liskmopenrecentproject
 msgid "Open recent project"
-msgstr ""
+msgstr "Відкрити недавній проєкт"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
@@ -12426,15 +12426,15 @@ msgstr "Максимізувати сумісність файлів проєк�
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
 msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
-msgstr "Перевірте це, якщо потрібно відкривати проєкт у застарілих (2.0 і нижче) версіях Lazarus."
+msgstr "Позначте, якщо потрібно відкривати проєкт у застарілих (2.0 і нижче) версіях Lazarus."
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckbox
 msgid "Maximize compatibility of package file (LPK)"
-msgstr ""
+msgstr "Максимізувати сумісність файла пакунка (LPK)"
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckboxhint
 msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Позначте, якщо потрібно відкривати пакунок у застарілих (2.0 і нижче) версіях Lazarus."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
@@ -20844,7 +20844,7 @@ msgstr "Набір символів:"
 
 #: lazarusidestrconsts.rscloseall
 msgid "Close all pages"
-msgstr ""
+msgstr "Закрити всі сторінки"
 
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
@@ -20852,15 +20852,15 @@ msgstr "Закрити поточну сторінку"
 
 #: lazarusidestrconsts.rscloseleft
 msgid "Close page(s) on the left"
-msgstr ""
+msgstr "Закрити сторінки ліворуч"
 
 #: lazarusidestrconsts.rscloseothers
 msgid "Close other page(s)"
-msgstr ""
+msgstr "Закрити іншу сторінку(и)"
 
 #: lazarusidestrconsts.rscloseright
 msgid "Close page(s) on the right"
-msgstr ""
+msgstr "Закрити сторінки праворуч"
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
@@ -21380,15 +21380,15 @@ msgstr "Копіювати"
 
 #: lazarusidestrconsts.srkmeccopyadd
 msgid "Copy (Add to Clipboard)"
-msgstr ""
+msgstr "Копіювати (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
 msgid "Copy current line (Add to Clipboard)"
-msgstr ""
+msgstr "Копіювати поточний рядок (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
 msgid "Copy current line"
-msgstr ""
+msgstr "Копіювати поточний рядок"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -21409,15 +21409,15 @@ msgstr "Вирізати"
 
 #: lazarusidestrconsts.srkmeccutadd
 msgid "Cut (Add to Clipboard)"
-msgstr ""
+msgstr "Вирізати (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
 msgid "Cut current line (Add to Clipboard)"
-msgstr ""
+msgstr "Вирізати поточний рядок (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
 msgid "Cut current line"
-msgstr ""
+msgstr "Вирізати поточний рядок"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -21462,7 +21462,7 @@ msgstr "Змістити курсор вниз"
 
 #: lazarusidestrconsts.srkmecduplicateline
 msgid "Duplicate line (or lines in selection)"
-msgstr ""
+msgstr "Дублювати рядок (або вибрані рядки)"
 
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
@@ -21783,11 +21783,11 @@ msgstr "Перемістити редактор вправо в кінець"
 
 #: lazarusidestrconsts.srkmecmovelinedown
 msgid "Move one line down"
-msgstr ""
+msgstr "Перемістити на рядок вниз"
 
 #: lazarusidestrconsts.srkmecmovelineup
 msgid "Move one line up"
-msgstr ""
+msgstr "Перемістити на рядок вгору"
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgctxt "lazarusidestrconsts.srkmecmultipaste"
