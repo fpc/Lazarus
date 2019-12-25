@@ -70,10 +70,9 @@ uses
   IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
   PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef,
   // IDE
-  LazConf, LazarusIDEStrConsts, Project, BuildManager, IDEProcs,
-  EnvironmentOpts, EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor,
-  FindInFilesDlg, DesktopManager, Splash, MainBar, MainIntf, Designer, Debugger,
-  RunParamsOpts;
+  LazConf, LazarusIDEStrConsts, Project, BuildManager, EnvironmentOpts,
+  EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor, FindInFilesDlg,
+  DesktopManager, Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts;
 
 type
   TResetToolFlag = (
