@@ -4038,7 +4038,7 @@ begin
         if Assigned(AToolBar.Images) and (btn.ImageIndex>=0) then
         begin
           bmp:=TBitmap.Create; { this carries gdk pixmap }
-          resolution:=Atoolbar.Images.Resolution[Atoolbar.Images.Width];
+          resolution:=AToolBar.Images.Resolution[AToolBar.ImagesWidth]; // not AToolBar.Images.Width, issue #36465
           resolution.GetRawImage(btn.ImageIndex,raw);
           { convince the bitmap it has actually another format }
           bmp.BeginUpdate();
@@ -4069,6 +4069,7 @@ begin
         begin
           gtb:=TGtkToggleToolButton.new();
           PGtkToolButton(gtb)^.set_label(PgChar(bs));
+          PGtkToolButton(gtb)^.set_icon_widget(wicon);
         end
   	  else
     	  gtb:=TGtkToolButton.new(wicon,PgChar(bs));
