@@ -2603,13 +2603,14 @@ begin
       // normal snap guide to any object
       fGuides.FindGuides(x, y)
     else
-    begin
-      if (Cursor = crPencil) or
-         (Cursor = crCross)
-      then
-        // normal snap to guide for inserting objects or drawing lines
-        fGuides.FindGuides(x, y);
-    end;
+    if (Cursor = crPencil) or
+       (Cursor = crCross) then
+      // normal snap to guide for inserting objects or drawing lines
+      fGuides.FindGuides(x, y)
+    else
+    if (TfrDesignerForm(frDesigner).SelNum >= 1) then
+      // don't create a guide for the object(s) being resized
+      fGuides.FindGuides(x, y, true);
   end;
 
   if FirstChange and Down and not RFlag then
@@ -2950,6 +2951,8 @@ begin
   //resizing
   if Down and (Mode = mdSelect) and (TfrDesignerForm(frDesigner).SelNum = 1) and (Cursor <> crDefault) then
   begin
+    if FDesigner.ShowGuides then
+      fGuides.SnapToGuide(x, y);
     kx := x - LastX;
     ky := y - LastY;
     if FDesigner.GridAlign and not GridCheck then begin
