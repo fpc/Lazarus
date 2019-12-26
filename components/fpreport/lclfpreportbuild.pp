@@ -14,7 +14,6 @@ uses
   fpreportstreamer,
   fpreport,
   fpreportdb,
-  fpreportdom,
   fpreportcanvashelper,
   fpreportcontnr,
   fpreportbarcode,
