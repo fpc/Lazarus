@@ -3,40 +3,52 @@ object Form1: TForm1
   Height = 419
   Top = 182
   Width = 892
-  Caption = 'Form1'
+  Caption = 'TChartListbox demo'
   ClientHeight = 419
   ClientWidth = 892
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '2.1.0.0'
   object Chart: TChart
-    Left = 296
+    Left = 292
     Height = 419
     Top = 0
-    Width = 453
+    Width = 457
     AxisList = <    
       item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Intervals.MaxLength = 100
+        Marks.LabelBrush.Style = bsClear
         Minors = <        
           item
             Grid.Color = clSilver
             Intervals.MinLength = 5
             Intervals.Options = [aipUseCount, aipUseMinLength]
+            Marks.LabelBrush.Style = bsClear
           end>
         Title.LabelFont.Orientation = 900
         Title.LabelFont.Style = [fsBold]
         Title.Visible = True
         Title.Caption = 'y axis'
+        Title.LabelBrush.Style = bsClear
       end    
       item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Intervals.MaxLength = 100
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <        
           item
             Grid.Color = clSilver
             Intervals.MinLength = 5
             Intervals.Options = [aipUseCount, aipUseMinLength]
+            Marks.LabelBrush.Style = bsClear
           end>
         Title.LabelFont.Style = [fsBold]
         Title.Visible = True
         Title.Caption = 'x axis'
+        Title.LabelBrush.Style = bsClear
       end>
     BackColor = clWhite
     Foot.Brush.Color = clBtnFace
@@ -48,7 +60,6 @@ object Form1: TForm1
     )
     Align = alClient
     DoubleBuffered = True
-    ParentColor = False
     object SinSeries: TLineSeries
       Title = 'sin(x)'
       LinePen.Color = clRed
@@ -68,47 +79,11 @@ object Form1: TForm1
     ClientHeight = 419
     ClientWidth = 138
     TabOrder = 1
-    object CheckListBox1: TCheckListBox
-      Left = 0
-      Height = 83
-      Top = 336
-      Width = 138
-      Align = alBottom
-      Items.Strings = (
-        'Item1'
-        'Item2'
-        'Item3'
-        'Item4'
-        'Item5'
-      )
-      ItemHeight = 15
-      TabOrder = 0
-      Data = {
-        050000000000000000
-      }
-    end
-    object ListBox1: TListBox
-      Left = 0
-      Height = 80
-      Top = 256
-      Width = 138
-      Align = alBottom
-      Items.Strings = (
-        'Item1'
-        'Item2'
-        'Item3'
-        'Item4'
-        'Item5'
-        'Item6'
-      )
-      ItemHeight = 13
-      TabOrder = 1
-    end
     object ChartListbox: TChartListbox
-      Left = 0
-      Height = 256
-      Top = 0
-      Width = 138
+      Left = 6
+      Height = 407
+      Top = 6
+      Width = 126
       Chart = Chart
       OnAddSeries = ChartListboxAddSeries
       OnCheckboxClick = ChartListboxCheckboxClick
@@ -116,9 +91,10 @@ object Form1: TForm1
       OnPopulate = ChartListboxPopulate
       OnSeriesIconDblClick = ChartListboxSeriesIconDblClick
       Align = alClient
+      BorderSpacing.Around = 6
       Color = clInfoBk
       ItemHeight = 20
-      TabOrder = 2
+      TabOrder = 0
     end
   end
   object Splitter: TSplitter
@@ -133,54 +109,87 @@ object Form1: TForm1
     Left = 0
     Height = 419
     Top = 0
-    Width = 296
+    Width = 292
     Align = alLeft
+    AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ClientHeight = 419
-    ClientWidth = 296
+    ClientWidth = 292
     TabOrder = 3
     object BtnAddSeries: TButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = BtnDeleteSeries
+      AnchorSideRight.Side = asrBottom
       Left = 8
       Height = 25
-      Top = 12
-      Width = 81
+      Top = 8
+      Width = 91
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       Caption = 'Add series'
       OnClick = BtnAddSeriesClick
       TabOrder = 0
     end
     object BtnToggleCOS: TButton
-      Left = 104
+      AnchorSideLeft.Control = BtnDeleteSeries
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnDeleteSeries
+      AnchorSideRight.Control = BtnToggleSIN
+      AnchorSideRight.Side = asrBottom
+      Left = 105
       Height = 25
-      Top = 40
-      Width = 81
+      Top = 39
+      Width = 94
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
       Caption = 'Toggle cos(x)'
       OnClick = BtnToggleCOSClick
       TabOrder = 1
     end
     object BtnToggleChart: TButton
-      Left = 9
+      AnchorSideLeft.Control = BtnAddSeries
+      AnchorSideTop.Control = Memo
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = CbShowCheckboxes
+      Left = 8
       Height = 25
-      Top = 232
-      Width = 159
+      Top = 269
+      Width = 164
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Bottom = 16
       Caption = 'Toggle ChartListbox.Chart'
       OnClick = BtnToggleChartClick
       TabOrder = 2
     end
     object BtnToggleSIN: TButton
-      Left = 104
+      AnchorSideLeft.Control = BtnAddSeries
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnAddSeries
+      Left = 105
       Height = 25
-      Top = 12
-      Width = 82
+      Top = 8
+      Width = 94
+      AutoSize = True
+      BorderSpacing.Left = 6
       Caption = 'Toggle sin(x)'
       OnClick = BtnToggleSINClick
       TabOrder = 3
     end
     object CbShowCheckboxes: TCheckBox
-      Left = 9
-      Height = 17
-      Top = 280
-      Width = 105
+      AnchorSideLeft.Control = Panel1
+      AnchorSideBottom.Control = CbCheckStyle
+      Left = 8
+      Height = 19
+      Top = 310
+      Width = 114
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Bottom = 12
       Caption = 'Show checkboxes'
       Checked = True
       OnChange = CbShowCheckboxesChange
@@ -188,10 +197,13 @@ object Form1: TForm1
       TabOrder = 4
     end
     object CbShowSeriesIcon: TCheckBox
-      Left = 152
-      Height = 17
-      Top = 280
-      Width = 104
+      AnchorSideLeft.Control = Bevel2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CbShowCheckboxes
+      Left = 151
+      Height = 19
+      Top = 310
+      Width = 112
       Caption = 'Show series icons'
       Checked = True
       OnChange = CbShowSeriesIconChange
@@ -199,81 +211,147 @@ object Form1: TForm1
       TabOrder = 5
     end
     object CbCheckStyle: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideBottom.Control = CbKeepSeriesOut
       Left = 8
-      Height = 17
-      Top = 312
-      Width = 84
+      Height = 19
+      Top = 341
+      Width = 91
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Bottom = 32
       Caption = 'Radiobuttons'
       OnChange = CbCheckStyleChange
       TabOrder = 6
     end
     object Memo: TMemo
-      Left = 9
-      Height = 106
-      Top = 104
-      Width = 275
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = BtnToggleChart
+      Left = 8
+      Height = 160
+      Top = 103
+      Width = 276
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
       ScrollBars = ssAutoVertical
       TabOrder = 7
     end
     object Label1: TLabel
-      Left = 9
-      Height = 14
-      Top = 88
-      Width = 57
+      AnchorSideLeft.Control = BtnAddSeries
+      AnchorSideTop.Control = Bevel1
+      AnchorSideTop.Side = asrBottom
+      Left = 8
+      Height = 15
+      Top = 86
+      Width = 63
+      BorderSpacing.Top = 6
       Caption = 'Click viewer'
       ParentColor = False
     end
     object EdColumns: TSpinEdit
-      Left = 208
-      Height = 21
-      Top = 308
-      Width = 50
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Label2
+      AnchorSideTop.Side = asrCenter
+      Left = 206
+      Height = 23
+      Top = 339
+      Width = 60
+      Alignment = taRightJustify
+      BorderSpacing.Left = 4
       MinValue = 1
       OnChange = EdColumnsChange
       TabOrder = 8
       Value = 1
     end
     object Label2: TLabel
-      Left = 152
-      Height = 14
-      Top = 313
-      Width = 45
+      AnchorSideLeft.Control = Bevel2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CbCheckStyle
+      AnchorSideTop.Side = asrCenter
+      Left = 151
+      Height = 15
+      Top = 343
+      Width = 51
       Caption = 'Columns:'
       ParentColor = False
     end
     object BtnDeleteSeries: TButton
-      Left = 9
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = BtnAddSeries
+      AnchorSideTop.Side = asrBottom
+      Left = 8
       Height = 25
-      Top = 40
-      Width = 81
+      Top = 39
+      Width = 91
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       Caption = 'Delete series'
       OnClick = BtnDeleteSeriesClick
       TabOrder = 9
     end
     object CbKeepSeriesOut: TCheckBox
-      Left = 9
-      Height = 17
-      Top = 376
-      Width = 227
+      AnchorSideLeft.Control = Panel1
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 8
+      Height = 19
+      Top = 392
+      Width = 245
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Bottom = 6
       Caption = 'Keep sin and cos series out of ChartListBox'
       OnChange = CbKeepSeriesOutChange
       TabOrder = 10
     end
     object Bevel1: TBevel
-      Left = 9
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = BtnDeleteSeries
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 8
       Height = 4
       Top = 76
-      Width = 278
+      Width = 276
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 12
+      BorderSpacing.Right = 6
       Shape = bsBottomLine
     end
     object BtnAddPoint: TButton
-      Left = 209
+      AnchorSideLeft.Control = BtnToggleSIN
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnAddSeries
+      Left = 205
       Height = 25
-      Top = 12
-      Width = 75
+      Top = 8
+      Width = 79
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
       Caption = 'Add point'
       OnClick = BtnAddPointClick
       TabOrder = 11
+    end
+    object Bevel2: TBevel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideLeft.Side = asrCenter
+      Left = 141
+      Height = 72
+      Top = 304
+      Width = 10
+      Shape = bsSpacer
     end
   end
   object RandomChartSource: TRandomChartSource

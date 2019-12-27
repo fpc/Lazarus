@@ -15,6 +15,7 @@ type
 
   TForm1 = class(TForm)
     Bevel1: TBevel;
+    Bevel2: TBevel;
     BtnAddSeries: TButton;
     BtnDeleteSeries: TButton;
     BtnToggleCOS: TButton;
@@ -27,11 +28,9 @@ type
     CbCheckStyle: TCheckBox;
     CbKeepSeriesOut: TCheckBox;
     ChartListbox: TChartListbox;
-    CheckListBox1: TCheckListBox;
     ColorDialog: TColorDialog;
     Label1: TLabel;
     Label2: TLabel;
-    ListBox1: TListBox;
     Memo: TMemo;
     SinSeries: TLineSeries;
     CosSeries: TLineSeries;
@@ -186,8 +185,6 @@ end;
 procedure TForm1.EdColumnsChange(Sender: TObject);
 begin
   ChartListbox.Columns := EdColumns.Value;
-  CheckListbox1.Columns := EdColumns.Value;
-  Listbox1.Columns := EdColumns.Value;
 end;
 
 procedure TForm1.BtnAddSeriesClick(Sender: TObject);
