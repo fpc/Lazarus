@@ -273,7 +273,6 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
                           const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
                           MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
                           const AParams: TCreateParams): HWND;
-
 var
   {$IFDEF ModernGL} { Used with glXCreateContextAttribsARB to select 3.X and above context }
   Context3X: array [0..6] of Integer;
@@ -323,16 +322,30 @@ begin
       AttrList.ContextFlags:=0;
       //if DebugContext then
       // AttrList.ContextFlags:=Attribs.ContextFlags or GLX_CONTEXT_DEBUG_BIT_ARB;
-      if (MultiSampling > 1) and GLX_ARB_multisample(XDisplay,ScreenNum) then
-	      AttrList.MultiSampling := MultiSampling
-      else
-	      AttrList.MultiSampling:=0;
-
+      if (MultiSampling > 1) and GLX_ARB_multisample(XDisplay,ScreenNum) then begin
+         AttrList.MultiSampling := MultiSampling;
+      end else begin
+        AttrList.MultiSampling:=0;
+        {$IFDEF UNIX}writeln('Multi-sampling not supported');{$ENDIF}
+      end;
       FBConfigsCount:=0;
       FBConfigs:=glXChooseFBConfig(XDisplay, ScreenNum, @AttrList.AttributeList[0], FBConfigsCount);
-      if FBConfigsCount = 0 then
+      if FBConfigsCount = 0 then begin
+         {$IFDEF UNIX}writeln('Could not find FB config: will try without multi-sampling');{$ENDIF}
+         FreeMem(AttrList.AttributeList);
+         AttrList.AttributeList := CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers, 0);
+         AttrList.MajorVersion:=MajorVersion;
+         AttrList.MinorVersion:=MinorVersion;
+         // fill in context flags
+         AttrList.ContextFlags:=0;
+         FBConfigs:=glXChooseFBConfig(XDisplay, ScreenNum, @AttrList.AttributeList[0], FBConfigsCount);
+      end;
+      if FBConfigsCount = 0 then begin
       	raise Exception.Create('Could not find FB config');
-
+        //{$IFDEF UNIX}writeln('Could not find FB config: this may end poorly.');{$ENDIF}
+        //NewQtWidget.glxcontext := glXCreateContext(NewQtWidget.xdisplay,NewQtWidget.visual, nil, direct);
+        //goto 123;
+     end;
         // if multisampling is requested try to get a number of sample buffers as
         // close to the specified number as possible
       if AttrList.MultiSampling > 0 then
@@ -416,6 +429,7 @@ begin
     {$ENDIF}
       NewQtWidget.glxcontext := glXCreateContext(NewQtWidget.xdisplay,
         NewQtWidget.visual, nil, direct);
+    //123:
     NewQtWidget.ref_count := 1;
 
     NewQtWidget.AttachEvents;
@@ -449,10 +463,12 @@ var
   procedure CreateList;
   begin
     p:=0;
+    //UseFBConfig := false;
     if UseFBConfig then
     begin
       Add(GLX_X_RENDERABLE); Add(1);
-      Add(GLX_X_VISUAL_TYPE); Add(GLX_TRUE_COLOR);
+      Add(GLX_X_VISUAL_TYPE);
+      Add(GLX_TRUE_COLOR);
     end;
     if DoubleBuffered then
     begin
@@ -485,7 +501,7 @@ var
       Add(GLX_AUX_BUFFERS);  Add(AUXBuffers);
     end;
     {$IFDEF ModernGL}
-	  if MultiSampling>0 then
+	  if MultiSampling>1 then
     begin
       Add(GLX_SAMPLE_BUFFERS);  Add(1);
       Add(GLX_SAMPLES);  Add(MultiSampling);
