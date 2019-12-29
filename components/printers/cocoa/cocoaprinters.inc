@@ -391,6 +391,13 @@ var
   i   : UInt32;
   rs  : PMResolution;
 begin
+  // JRA: This method should return the user desired output resolution, and not the higher
+  //      resolution that the printer can handle. In fact, it seems that the old method of
+  //      setting up some output resolution is now deprecated in cocoa. Drawing at
+  //      "high resolution" should be now made through setting up some transformation
+  //      matrix. That is a TODO. At the moment, some printing, even if it is a lower
+  //      lower resolution, is better than no printing at all.
+  {
   Result.vRes := 0;
   Result.hRes := 0;
   cnt := 0;
@@ -406,6 +413,7 @@ begin
   //       way of reading the resolution.
   //       (i.e. the same Brother printer reports via "lpoptions -l":
   //         BRResolution/Resolution: 300dpi *600dpi 2400x600dpi)
+  //
   if (PMPrinterGetOutputResolution(prn, pInfo.PMPrintSettings, rs{%H-}) = noErr) then
     Result := rs
   else if PMPrinterGetPrinterResolutionCount(prn, cnt) = noErr then
@@ -417,12 +425,12 @@ begin
         Result := rs;
     end;
   end;
-
   if (Result.vRes = 0) or (Result.hRes = 0) then
   begin
+  }
     Result.vRes := 72;
     Result.hRes := 72;
-  end;
+  //end;
 end;
 
 function TCocoaPrinter.GetXDPI: Integer;
