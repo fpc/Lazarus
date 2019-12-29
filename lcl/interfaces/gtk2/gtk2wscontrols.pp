@@ -505,11 +505,6 @@ var
   ChildWidget: PGTKWidget;
   pFixed: PGTKWidget;
 begin
-  {$IFDEF OldToolBar}
-  if (AControl.Parent is TToolbar) then
-    exit;
-  {$ENDIF}
-
   AParent := TWinControl(AControl).Parent;
   // DebugLn('LM_AddChild: ',dbgsName(AControl),' ',dbgs(AParent<>nil));
   if not Assigned(AParent) then
@@ -947,33 +942,6 @@ begin
   case AWinControl.fCompStyle of
     csBitBtn,
     csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', AWinControl.ClassName);
-
-    {$IFDEF OldToolBar}
-    csToolButton:
-      with PgtkButton(P)^ do
-      begin
-        //aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
-        aLabel := Ampersands2Underscore(PLabel);
-        Try
-          //StrPCopy(aLabel, AnsiString(PLabel));
-          //Accel := Ampersands2Underscore(aLabel);
-          if gtk_bin_get_child(P) = nil then
-          begin
-            //DebugLn(Format('trace:  [TGtkWidgetSet.SetLabel] %s has no child label', [AWinControl.ClassName]));
-             gtk_container_add(P, gtk_label_new(aLabel));
-          end else
-          begin
-            //DebugLn(Format('trace:  [TGtkWidgetSet.SetLabel] %s has child label', [AWinControl.ClassName]));
-            gtk_label_set_text(pgtkLabel( gtk_bin_get_child(P)), aLabel);
-          end;
-          //If Accel <> -1 then
-          AccelKey:=gtk_label_parse_uline(PGtkLabel( gtk_bin_get_child(P)), aLabel);
-          Accelerate(AWinControl,PGtkWidget(P),AccelKey,0,'clicked');
-        finally
-          StrDispose(aLabel);
-        end;
-      end;
-    {$ENDIF OldToolBar}
 
     csForm,
     csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
