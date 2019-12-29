@@ -20,7 +20,7 @@
 // the first request to process an event, and run LCL loop from there.
 // Such approach is some what an ugly solution, yet it's reliable, in a sense
 // that Cocoa performs ALL of this methods.
-{.$define COCOALOOPOVERRIDE}
+{$define COCOALOOPOVERRIDE}
 
 // Not override "run" method. Catch any FPC exception
 // The biggest problem of the Native approach - LCL "runloop" method is not called

@@ -254,6 +254,12 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.ClipboardFormatNeedsNullByte(
+  const AFormat: TPredefinedClipboardFormat): Boolean;
+begin
+  Result := False
+end;
+
 function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
 begin
   Result := LCLType.Error;
@@ -558,6 +564,93 @@ begin
   end;
 end;
 
+procedure DrawEdgeRect(dst: TCocoaContext; const r: TRect; flags: Cardinal;
+  LTColor, BRColor: TColor);
+begin
+  dst.Pen.SetColor(LTColor, true);
+  dst.Pen.Apply(dst);
+  if flags and BF_LEFT > 0 then
+  begin
+    dst.MoveTo(r.Left, r.Bottom);
+    dst.LineTo(r.Left, r.Top);
+  end;
+  if flags and BF_TOP > 0 then
+  begin
+    dst.MoveTo(r.Left, r.Top);
+    dst.LineTo(r.Right, r.Top);
+  end;
+
+  dst.Pen.SetColor(BRColor, true);
+  dst.Pen.Apply(dst);
+  if flags and BF_RIGHT > 0 then
+  begin
+    dst.MoveTo(r.Right, r.Top);
+    dst.LineTo(r.Right, r.Bottom);
+  end;
+  if flags and BF_BOTTOM > 0 then
+  begin
+    dst.MoveTo(r.Right, r.Bottom);
+    // there's a missing pixel. Seems like it's accumulating an offset
+    dst.LineTo(r.Left-1, r.Bottom);
+  end;
+end;
+
+function TCocoaWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
+  grfFlags: Cardinal): Boolean;
+var
+  ctx: TCocoaContext;
+  r: TRect;
+  keepPen   : TCocoaPen;
+  edgePen   : TCocoaPen;
+  keepBrush : TCocoaBrush;
+  edgeBrush : TCocoaBrush;
+const
+  OutLT = cl3DLight;    // the next to hilight
+  OutBR = cl3DDkShadow; // the darkest (almost black)
+  InnLT = cl3DHiLight;  // the lightest (almost white)
+  InnBR = cl3DShadow;   // darker than light, lighter than dark shadow
+begin
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if not Result then Exit;
+
+  keepPen := ctx.Pen;
+  keepBrush := ctx.Brush;
+  try
+    edgePen := TCocoaPen.Create($FFFFFF, psSolid, false, 1, pmCopy, pecRound, pjsRound);
+    edgeBrush := TCocoaBrush.Create(NSColor.whiteColor, false);
+    edgeBrush.Solid := false;
+    ctx.Pen := edgePen;
+    ctx.Brush := edgeBrush;
+
+    r := Rect;
+    if (edge and BDR_OUTER > 0) then
+    begin
+      if edge and BDR_RAISEDOUTER > 0 then
+        DrawEdgeRect(ctx, r, grfFlags, OutLT, OutBR)
+      else
+        DrawEdgeRect(ctx, r, grfFlags, InnBR, InnLT);
+      InflateRect(r, -1, -1);
+    end;
+
+    if (edge and BDR_INNER > 0) then
+    begin
+      if edge and BDR_RAISEDINNER > 0 then
+        DrawEdgeRect(ctx, r, grfFlags, InnLT, InnBR)
+      else
+        DrawEdgeRect(ctx, r, grfFlags, OutBR, OutLT);
+    end;
+
+  finally
+    ctx.Pen := keepPen;
+    ctx.Brush := keepBrush;
+    edgeBrush.Free;
+    edgePen.Free;
+  end;
+
+  Result := true;
+end;
+
 function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   ctx: TCocoaContext;
@@ -569,10 +662,27 @@ begin
 end;
 
 function TCocoaWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+var
+  obj : NSObject;
 begin
   Result := hWnd <> 0;
   if Result then
-    NSObject(hWnd).lclSetEnabled(bEnable)
+  begin
+    obj := NSObject(hWnd);
+
+    // The following check is actually a hack. LCL enables all windows disabled
+    // during ShowModal form. No matter if the windows are on the stack of the modality or not.
+    // Since Cocoa doesn't do much of the "modal" control over the windows
+    // (runWindowModal isn't used... maybe it should be?)
+    // It's possible that windows "disabled" by a another model window would be
+    // re-enabled. This check verifies that only a window on the top of the modal stack
+    // will be brought back active... what about other windows?
+    if bEnable and isModalSession and (obj.isKindOfClass(TCocoaWindowContent)) then begin
+      if not (TCocoaWindowContent(obj).isembedded)
+        and not isTopModalWin(TCocoaWindowContent(obj).window) then Exit;
+    end;
+    obj.lclSetEnabled(bEnable)
+  end;
 end;
 
 function TCocoaWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
@@ -914,8 +1024,8 @@ begin
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 3;
     SPI_GETWORKAREA:
     begin
-      NSToLCLRect(NSScreen.mainScreen.visibleFrame
-        , NSScreen.mainScreen.frame.size.height
+      NSToLCLRect(NSScreen(NSScreen.screens.objectAtIndex(0)).visibleFrame
+        , NSScreenZeroHeight
         , TRect(pvParam^));
     end;
   else
@@ -1013,7 +1123,7 @@ begin
   begin
     lpPoint.x := Round(x);
     // cocoa returns cursor with inverted y coordinate
-    lpPoint.y := Round(NSScreen.mainScreen.frame.size.height-y);
+    lpPoint.y := Round(NSScreenZeroHeight-y);
   end;
   //debugln('GetCursorPos='+DbgS(lpPoint));
   Result := True;
@@ -1021,6 +1131,7 @@ end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
+  Scr0Height:  CGFloat;
   ScreenID: NSScreen;
   idx : NSUInteger;
 begin
@@ -1030,9 +1141,10 @@ begin
   Result := (idx < NSScreen.screens.count);
   if not Result then Exit;
 
+  Scr0Height := NSScreenZeroHeight;
   ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
-  lpmi^.rcMonitor := NSRectToRect(ScreenID.frame);
-  NSToLCLRect(ScreenID.visibleFrame, ScreenID.frame.size.height, lpmi^.rcWork);
+  NSToLCLRect(ScreenID.frame, Scr0Height, lpmi^.rcMonitor);
+  NSToLCLRect(ScreenID.visibleFrame, Scr0Height, lpmi^.rcWork);
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
   if idx = 0 then
@@ -1208,12 +1320,7 @@ function TCocoaWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: 
 begin
   Result := Handle <> 0;
   if Result then
-  begin
-    if TCocoaWindowContent(handle).isembedded then
-       TCocoaWindowContent(handle).lclRelativePos(Left, Top)
-    else
-       TCocoaWindowContent(handle).window.lclRelativePos(Left, Top);
-  end
+    NSObject(handle).lclRelativePos(Left, Top);
 end;
 
 function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
@@ -1397,7 +1504,7 @@ begin
   begin
     window:=windows.objectAtIndex(win);
     p.x:=Point.X;
-    p.y:=window.screen.frame.size.height-Point.Y;
+    p.y:=NSScreenZeroHeight-Point.Y;
     winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
     windowbelowpoint:=NSWindow(NSApp.windowWithWindowNumber(winnr));
     if windowbelowpoint=window then
@@ -1501,6 +1608,9 @@ begin
   Result := Assigned(obj);
   if not Result then Exit;
 
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+    obj := TCocoaManualScrollHost(obj).documentView;
+
   if obj.isKindOfClass(NSScrollView) then
   begin
     sc := NSScrollView(obj);
@@ -1534,6 +1644,9 @@ begin
   obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
+
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+    obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollBar) then
     Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), ScrollInfo)
@@ -1625,18 +1738,30 @@ begin
       Result := NSColor.scrollBarColor;
     COLOR_BTNFACE:
       Result := NSColor.controlBackgroundColor;
-    COLOR_BTNSHADOW:
-      Result := NSColor.controlShadowColor;
+    COLOR_BTNSHADOW:  // COLOR_3DSHADOW
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.5)
+      else
+        Result := NSColor.controlShadowColor;
     COLOR_BTNHIGHLIGHT:
-      Result := NSColor.controlLightHighlightColor;//controlHighlightColor has no contrast with COLOR_BTNFACE which affects TBevel. In Win32 this has value white
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.0)
+      else
+        Result := NSColor.controlLightHighlightColor;//controlHighlightColor has no contrast with COLOR_BTNFACE which affects TBevel. In Win32 this has value white
     COLOR_BTNTEXT:
       Result := NSColor.controlTextColor;
     COLOR_GRAYTEXT:
       Result := NSColor.disabledControlTextColor;
     COLOR_3DDKSHADOW:
-      Result := NSColor.controlDarkShadowColor;
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.75)
+      else
+        Result := NSColor.controlDarkShadowColor;
     COLOR_3DLIGHT:
-      Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.25)
+      else
+        Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
 
     // macOS doesn't provide any API to get the hint window colors.
     // default = macosx10.4 yellow color. (See InitInternals below)
@@ -1713,10 +1838,18 @@ var
   f   : NSSize;
   sz  : NSSize;
   flg : NSUInteger;
+  hosted: Boolean;
 begin
   obj := NSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
+
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+  begin
+    hosted := true;
+    obj := TCocoaManualScrollHost(obj).documentView;
+  end else
+    hosted := false;
 
   if obj.isKindOfClass(TCocoaScrollView) then
   begin
@@ -1769,6 +1902,9 @@ begin
     else
       Result := 0;
 
+    if hosted then
+      NSView(obj).lclInvalidate;
+
   end else if obj.isKindOfClass(TCocoaScrollBar) then
   begin
     Result := CocoaScrollBarSetScrollInfo(TCocoaScrollBar(obj), ScrollInfo);
@@ -1786,6 +1922,9 @@ begin
   obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
+
+  if obj.isKindOfClass(TCocoaManualScrollHost) then
+    obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollView)
   then begin
@@ -1871,6 +2010,8 @@ begin
   end;
 end;
 
+{$push}
+{$rangechecks off}
 function TCocoaWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean;
 var
   ctx: TCocoaContext;
@@ -1890,6 +2031,7 @@ begin
   if Result then
     ctx.Polyline(PPointArray(Points)^, NumPts);
 end;
+{$pop}
 
 type
   TLCLEventMessage = objcclass(NSObject)
@@ -2415,7 +2557,7 @@ begin
     end
     else
     begin
-      lView := GetNSObjectView(Obj);
+      lView := obj.lclContentView;
       if lView <> nil then
       begin
         if lView.window <> nil then

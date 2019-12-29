@@ -421,6 +421,8 @@ begin
     // We need to call the inherited regardless of the result of the call to
     // MouseUpDownEvent otherwise mouse clicks don't work, see bug 30131
     inherited mouseDown(event);
+    if Assigned(callback) then
+      callback.MouseUpDownEvent(event, true);
   end;
 end;
 

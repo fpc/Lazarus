@@ -42,13 +42,14 @@ function NSRectToRect(const NS: NSRect): TRect;
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
+function NSScreenZeroHeight: CGFloat;
+
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
 function NSStringUtf8(s: PChar): NSString;
 function NSStringUtf8(const s: String): NSString;
 function NSStringToString(ns: NSString): String;
 
-function GetNSObjectView(obj: NSObject): NSView;
 function GetNSObjectWindow(obj: NSObject): NSWindow;
 
 procedure SetNSText(text: NSText; const s: String); inline;
@@ -365,9 +366,14 @@ begin
 end;
 
 function NSColorToRGB(const Color: NSColor): TColorRef; inline;
+var
+  alpha: CGFloat;
 begin
+  // TColorRef doesn't bear an alpha channel information.
+  // Thus RGB needs to be multiplied by it.
+  alpha := Color.alphaComponent;
   with Color do
-    Result := RGBToColorFloat(redComponent, greenComponent, blueComponent);
+    Result := RGBToColorFloat(redComponent*alpha, greenComponent*alpha, blueComponent*alpha);
 end;
 
 function NSColorToColorRef(const Color: NSColor): TColorRef;
@@ -444,36 +450,14 @@ begin
   result:=CFStringToStr(AString);
 end;
 
-// Return the content view of a given non-view or
-// for a view. For Window and Box and similar containers
-// it returns the content view
-function GetNSObjectView(obj: NSObject): NSView;
-begin
-  Result := nil;
-  if not Assigned(obj) then Exit;
-  if obj.isKindOfClass_(NSBox) then
-    Result := NSBox(obj).contentView
-  else if obj.isKindOfClass_(NSView) then
-    Result := NSView(obj)
-  else if obj.isKindOfClass_(NSWindow) then
-    Result := NSWindow(obj).contentView
-  else if obj.isKindOfClass_(NSTabViewItem) then
-    Result := NSTabViewItem(obj).view;
-end;
-
 function GetNSObjectWindow(obj: NSObject): NSWindow;
-var
-  lView: NSView;
 begin
   Result := nil;
   if not Assigned(obj) then Exit;
   if obj.isKindOfClass_(NSWindow) then
     Result := NSWindow(obj)
-  else
-  begin
-    lView := GetNSObjectView(obj);
-    if lView <> nil then Result := lView.window;
-  end;
+  else if obj.isKindOfClass_(NSView) then
+    Result := NSView(obj).window;
 end;
 
 function GetNSSize(width, height: CGFloat): NSSize; inline;
@@ -591,6 +575,11 @@ begin
   ns.size.height:=lcl.Bottom-lcl.Top;
 end;
 
+function NSScreenZeroHeight: CGFloat;
+begin
+  Result := NSScreen(NSScreen.screens.objectAtIndex(0)).frame.size.height;
+end;
+
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 begin
   with params do Result:=GetNSRect(X,Y,Width,Height);
@@ -629,6 +618,8 @@ begin
     ns := NSStringUTF8(s);
     text.setString(ns);
     ns.release;
+    if Assigned(text.undoManager) then
+      text.undoManager.removeAllActions;
   end;
 end;
 
@@ -962,23 +953,50 @@ begin
 end;
 
 function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
-var
+{var
   ti : NSTimeInterval;
-  d  : NSDate;
 begin
   ti := (aDateTime - EncodeDate(2001, 1, 1)) * SecsPerDay;
-  d  := NSDate.alloc.init;
-  Result:= d.dateWithTimeIntervalSinceReferenceDate(ti);
+  ti := ti - double(NSTimeZone.localTimeZone.secondsFromGMT);
+  Result := NSDate.dateWithTimeIntervalSinceReferenceDate(ti);}
+var
+  cmp : NSDateComponents;
+  y,m,d: Word;
+  h,s,z: Word;
+begin
+  cmp := NSDateComponents.alloc.init;
+  DecodeDate(ADateTime, y,m,d);
+  cmp.setYear(y);
+  cmp.setMonth(m);
+  cmp.setDay(d);
+  DecodeTime(ADateTime, h, m, s,z);
+  cmp.setHour(h);
+  cmp.setMinute(m);
+  cmp.setSecond(s);
+  Result := NSCalendar.currentCalendar.dateFromComponents(cmp);
 end;
 
 function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
+var
+  cmp : NSDateComponents;
+  mn : TdateTime;
+const
+  convFlag = NSYearCalendarUnit
+  or NSMonthCalendarUnit
+  or NSDayCalendarUnit
+  or NSHourCalendarUnit
+  or NSMinuteCalendarUnit
+  or NSSecondCalendarUnit;
 begin
   if aDateTime = nil then
   begin
     Result:= 0.0;
     Exit;
   end;
-  Result:= aDateTime.timeIntervalSince1970 / SecsPerDay + EncodeDate(1970, 1, 1);
+  cmp := NSCalendar.currentCalendar.components_fromDate(convFlag, aDateTime);
+  TryEncodeDate(cmp.year, cmp.month, cmp.day, Result);
+  TryEncodeTime(cmp.hour, cmp.minute, cmp.second, 0, mn);
+  Result := Result + mn;
 end;
 
 function ControlTitleToStr(const ATitle: string): String;

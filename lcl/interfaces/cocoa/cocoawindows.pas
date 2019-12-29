@@ -195,6 +195,7 @@ type
   public
     overlay: NSView;
     wincallback: IWindowCallback;
+    function lclWindowState: Integer; override;
     procedure didAddSubview(aview: NSView); override;
     procedure setNeedsDisplay_(aflag: LCLObjCBoolean); override;
     procedure setNeedsDisplayInRect(arect: NSRect); override;
@@ -220,7 +221,7 @@ type
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
-    function lclWindowState: Integer; override;
+    procedure lclRelativePos(var Left, Top: Integer); override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
@@ -230,9 +231,6 @@ type
     procedure setStringValue(avalue: NSString); message 'setStringValue:';
     function stringValue: NSString; message 'stringValue';
   end;
-
-procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
-procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
 
 implementation
 
@@ -266,6 +264,14 @@ begin
 end;
 
 { TCocoaWindowContent }
+
+function TCocoaWindowContentDocument.lclWindowState: Integer;
+begin
+  if window.lclGetCallback = wincallback then // not embedded
+    Result := window.lclWindowState
+  else
+    Result := inherited lclWindowState
+end;
 
 procedure TCocoaWindowContentDocument.didAddSubview(aview: NSView);
 const
@@ -437,19 +443,19 @@ begin
   begin
     //Window bounds should return "client rect" in screen coordinates
     if Assigned(window.screen) then
-      NSToLCLRect(window.frame, window.screen.frame.size.height, wfrm)
+      NSToLCLRect(window.frame, NSScreenZeroHeight, wfrm)
     else
       wfrm := NSRectToRect(frame);
     OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
 end;
 
-function TCocoaWindowContent.lclWindowState: Integer;
+procedure TCocoaWindowContent.lclRelativePos(var Left, Top: Integer);
 begin
   if isembedded then
-    Result := inherited lclWindowState
+    inherited lclRelativePos(Left, Top)
   else
-    Result := window.lclWindowState;
+    window.lclRelativePos(Left, Top);
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
@@ -1147,7 +1153,7 @@ begin
   begin
     f:=frame;
     Left := Round(f.origin.x);
-    Top := Round(screen.frame.size.height - f.size.height - f.origin.y);
+    Top := Round(NSScreenZeroHeight - f.size.height - f.origin.y);
     //debugln('Top:'+dbgs(Top));
   end;
 end;
@@ -1160,7 +1166,7 @@ begin
   begin
     f := frame;
     inc(X, Round(f.origin.x));
-    inc(Y, Round(screen.frame.size.height - f.size.height - f.origin.y));
+    inc(Y, Round(NSScreenZeroHeight - f.size.height - f.origin.y));
   end;
 end;
 
@@ -1183,7 +1189,7 @@ begin
   else
   begin
     if Assigned(screen) then
-      NSToLCLRect(frame, screen.frame.size.height, Result)
+      NSToLCLRect(frame, NSScreenZeroHeight, Result)
     else
       Result := NSRectToRect(frame);
   end;
@@ -1219,42 +1225,12 @@ begin
   NSScreenGetRect(sc, NSScreen.mainScreen.frame.size.height, r);
 end;
 
-function GetScreenForPoint(x,y: Integer): NSScreen;
-var
-  scarr : NSArray;
-  sc    : NSScreen;
-  r     : TRect;
-  h     : double;
-  p     : TPoint;
-  i     : Integer;
-begin
-  p.x := x;
-  p.y := y;
-  scarr := NSScreen.screens;
-  h := NSScreen.mainScreen.frame.size.height;
-  sc := NSScreen(scarr.objectAtIndex(0));
-  for i:=0 to scarr.count-1 do begin
-    sc:=NSScreen(scarr.objectAtIndex(i));
-    NSScreenGetRect(sc, h, r);
-    if Types.PtInRect(r, p) then begin
-      Result := sc;
-      Exit;
-    end;
-  end;
-  Result := NSScreen.mainScreen;
-end;
-
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
   ns : NSRect;
   h  : integer;
-  sc : NSScreen;
-  srect : NSRect;
 begin
-  sc := GetScreenForPoint(r.Left, r.Top);
-  srect := sc.frame;
-
-  LCLToNSRect(r, srect.size.height, ns);
+  LCLToNSRect(r, NSScreenZeroHeight, ns);
 
   // add topbar height
   h:=lclGetTopBarHeight;

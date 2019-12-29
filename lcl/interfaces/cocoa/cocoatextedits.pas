@@ -55,9 +55,13 @@ type
 
   TCocoaFieldEditor = objcclass;
 
+  NSTextField_LCLExt = objcprotocol
+    procedure lclSetMaxLength(amax: integer); message 'lclSetMaxLength:';
+  end;
+
   { TCocoaTextField }
 
-  TCocoaTextField = objcclass(NSTextField)
+  TCocoaTextField = objcclass(NSTextField, NSTextField_LCLExt)
     callback: ICommonCallback;
     maxLength: Integer;
     function acceptsFirstResponder: LCLObjCBoolean; override;
@@ -75,18 +79,23 @@ type
     procedure otherMouseUp(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
+
+    procedure lclSetMaxLength(amax: integer);
   end;
 
   { TCocoaSecureTextField }
 
-  TCocoaSecureTextField = objcclass(NSSecureTextField)
+  TCocoaSecureTextField = objcclass(NSSecureTextField, NSTextField_LCLExt)
   public
+    maxLength: Integer;
     callback: ICommonCallback;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure resetCursorRects; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // key
+    procedure textDidChange(notification: NSNotification); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -96,6 +105,9 @@ type
     procedure otherMouseUp(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
+
+    procedure lclSetMaxLength(amax: integer);
   end;
 
   { TCocoaTextView }
@@ -112,7 +124,6 @@ type
 
     procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
-    function undoManager: NSUndoManager; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -141,6 +152,7 @@ type
     // delegate methods
     procedure textDidChange(notification: NSNotification); message 'textDidChange:';
     procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
+    function undoManagerForTextView(view: NSTextView): NSUndoManager; message 'undoManagerForTextView:';
   end;
 
   { TCococaFieldEditorExt }
@@ -175,6 +187,7 @@ type
     procedure otherMouseUp(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
   end;
 
 const
@@ -394,6 +407,7 @@ type
     procedure lclReleaseSubcontrols; message 'lclReleaseSubcontrols';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
+    procedure textDidChange(notification: NSNotification); override;
     procedure textDidEndEditing(notification: NSNotification); message 'textDidEndEditing:'; override;
     // NSTextFieldDelegateProtocol
     procedure controlTextDidChange(obj: NSNotification); override;
@@ -418,7 +432,6 @@ type
     procedure otherMouseDragged(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-    procedure scrollWheel(event: NSEvent); override;
   end;
 {$ENDIF}
 
@@ -891,6 +904,19 @@ begin
     inherited mouseMoved(event);
 end;
 
+procedure TCocoaFieldEditor.scrollWheel(event: NSEvent);
+var
+  v : NSView;
+begin
+  v := GetEditBox(Self);
+  if Assigned(v) then
+  begin
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.scrollWheel(event) then
+      inherited mouseMoved(event);
+  end else
+    inherited scrollWheel(event);
+end;
+
 { TCocoaTextField }
 
 function TCocoaTextField.acceptsFirstResponder: LCLObjCBoolean;
@@ -980,6 +1006,17 @@ begin
     inherited mouseMoved(event);
 end;
 
+procedure TCocoaTextField.scrollWheel(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
+end;
+
+procedure TCocoaTextField.lclSetMaxLength(amax: integer);
+begin
+  maxLength := amax;
+end;
+
 { TCocoaTextView }
 
 procedure TCocoaTextView.changeColor(sender: id);
@@ -998,18 +1035,6 @@ end;
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := NSViewCanFocus(Self);
-end;
-
-function TCocoaTextView.undoManager: NSUndoManager;
-begin
-  if allowsUndo then
-  begin
-    if not Assigned(FUndoManager) then
-      FUndoManager := NSUndoManager.alloc.init;
-    Result := FUndoManager;
-  end
-  else
-    Result := nil;
 end;
 
 function TCocoaTextView.lclGetCallback: ICommonCallback;
@@ -1150,6 +1175,13 @@ begin
   wantAll := true;
 end;
 
+function TCocoaTextView.undoManagerForTextView(view: NSTextView): NSUndoManager;
+begin
+  if not Assigned(FUndoManager) then
+    FUndoManager := NSUndoManager.alloc.init;
+  Result := FUndoManager;
+end;
+
 { TCocoaSecureTextField }
 
 function TCocoaSecureTextField.acceptsFirstResponder: LCLObjCBoolean;
@@ -1171,6 +1203,15 @@ end;
 procedure TCocoaSecureTextField.lclClearCallback;
 begin
   callback := nil;
+end;
+
+procedure TCocoaSecureTextField.textDidChange(notification: NSNotification);
+begin
+  inherited;
+  if (maxLength>0) and Assigned(stringValue) and (stringValue.length > maxLength) then
+    setStringValue(stringValue.substringWithRange(NSMakeRange(0,maxLength)));
+  if callback <> nil then
+    callback.SendOnTextChanged;
 end;
 
 procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
@@ -1224,6 +1265,17 @@ procedure TCocoaSecureTextField.mouseMoved(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseMove(event) then
     inherited mouseMoved(event);
+end;
+
+procedure TCocoaSecureTextField.scrollWheel(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
+end;
+
+procedure TCocoaSecureTextField.lclSetMaxLength(amax: integer);
+begin
+  MaxLength := amax;
 end;
 
 { TCocoaEditComboBoxList }
@@ -1962,6 +2014,12 @@ begin
   if callback <> nil then callback.SendOnTextChanged();
 end;
 
+procedure TCocoaSpinEdit.textDidChange(notification: NSNotification);
+begin
+  updateStepper;
+  inherited textDidChange(notification);
+end;
+
 procedure TCocoaSpinEdit.textDidEndEditing(notification: NSNotification);
 begin
   updateStepper;
@@ -2121,12 +2179,6 @@ procedure TCocoaSpinEdit.mouseMoved(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
     inherited mouseMoved(event);
-end;
-
-procedure TCocoaSpinEdit.scrollWheel(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.scrollWheel(event) then
-    inherited scrollWheel(event);
 end;
 
 {$ENDIF}

@@ -18,6 +18,7 @@ unit CocoaWSMenus;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec2}
+{$include cocoadefines.inc}
 
 interface
 
@@ -29,7 +30,7 @@ uses
   sysutils,
   // LCL
   Controls, Forms, Menus, Graphics, LCLType, LMessages, LCLProc, Classes,
-  LCLMessageGlue,
+  LCLMessageGlue, LCLStrConsts,
   // Widgetset
   WSMenus, WSLCLClasses,
   // LCL Cocoa
@@ -342,33 +343,33 @@ begin
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
 
   // Services
-  item := LCLMenuItemInit( TCocoaMenuItem.alloc, 'Services');
+  item := LCLMenuItemInit( TCocoaMenuItem.alloc, rsMacOSMenuServices);
   item.setTarget(nil);
   item.setAction(nil);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.setSubmenu(NSMenu.alloc.initWithTitle( NSSTR('Services')));
+  item.setSubmenu(NSMenu.alloc.initWithTitle( ControlTitleToNSStr(rsMacOSMenuServices)));
   NSApplication(NSApp).setServicesMenu(item.submenu);
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
 
   // Hide App     Meta-H
-  item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, 'Hide ' + Application.Title, VK_H, [ssMeta]);
+  item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
 
   // Hide Others  Meta-Alt-H
-  item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, 'Hide Others', VK_H, [ssMeta, ssAlt]);
+  item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
 
   // Show All
-  item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, 'Show All');
+  item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
 
   // Quit   Meta-Q
-  item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, 'Quit '+Application.Title, VK_Q, [ssMeta]);
+  item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
 
   attachedAppleMenuItems := True;
@@ -440,6 +441,12 @@ end;
 
 procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
 begin
+  {$ifdef COCOALOOPHIJACK}
+  // see bug #36265. if hot-key (Cmd+Q) is used the menu item
+  // would be called once. 1) in LCL controlled loop 2) after the loop finished
+  // The following if statement prevents "double" form close
+  if LoopHiJackEnded then Exit;
+  {$endif}
   // Should be used instead of Application.Terminate to allow events to be sent, see bug 32148
   Application.MainForm.Close;
 end;
@@ -803,13 +810,6 @@ begin
 end;
 
 { TCocoaWSPopupMenu }
-
-function LCLCoordsToCocoa(AControl: TControl; X, Y: Integer): NSPoint;
-begin
-  Result.x := X;
-  Result.y := NSScreen.mainScreen.frame.size.height - Y;
-  if AControl <> nil then Result.y := Result.y - AControl.Height;
-end;
 
 {------------------------------------------------------------------------------
   Method:  TCocoaWSPopupMenu.Popup

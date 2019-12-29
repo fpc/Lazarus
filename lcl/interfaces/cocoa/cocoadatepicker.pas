@@ -20,6 +20,7 @@ type
     retainAspectRatio: boolean;
 
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
 
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -56,13 +57,13 @@ begin
 
       // After mouse event, has our date changed
       newDate:= NSDateToDateTime(Self.dateValue);
-      if oldDate <> newDate then
+      if (oldDate <> newDate) and Assigned(callback) then
         callback.SendOnChange;
 
       // This also calls OnClick....
       if Assigned(Callback) then
         callback.MouseUpDownEvent(event, true);
-      end;
+    end;
   end;
 end;
 
@@ -81,6 +82,11 @@ end;
 function TCocoaDatePicker.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
+end;
+
+procedure TCocoaDatePicker.lclClearCallback;
+begin
+  callback := nil;
 end;
 
 procedure TCocoaDatePicker.setFrame(aframe: NSRect);

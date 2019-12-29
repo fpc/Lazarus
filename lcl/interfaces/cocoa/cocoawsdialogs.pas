@@ -33,7 +33,7 @@ uses
   WSForms, WSLCLClasses, WSProc, WSDialogs, LCLMessageGlue,
   // LCL Cocoa
   CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects
-  ,Cocoa_Extra;
+  ,Cocoa_Extra, CocoaWSMenus;
 
 type
 
@@ -132,7 +132,7 @@ type
     procedure setDialogFilter(ASelectedFilterIndex: Integer); message 'setDialogFilter:';
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     // NSOpenSavePanelDelegateProtocol
-    function panel_shouldEnableURL(sender: id; url: NSURL): Boolean; message 'panel:shouldEnableURL:';
+    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean; message 'panel:shouldEnableURL:';
   end;
 
 implementation
@@ -149,6 +149,96 @@ procedure UpdateOptions(src: TFileDialog; dst: NSSavePanel);
 begin
   if (src is TOpenDialog) then
     UpdateOptions(TOpenDialog(src), dst);
+end;
+
+type
+
+  { TOpenSaveDelegate }
+
+  TOpenSaveDelegate = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
+    FileDialog: TFileDialog;
+    OpenDialog: TOpenDialog;
+    selUrl: NSURL;
+    filter: NSOpenSavePanelDelegateProtocol;
+    procedure dealloc; override;
+    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
+    procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
+    function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: LCLObjCBoolean): NSString;
+    procedure panel_willExpand(sender: id; expanding: LCLObjCBoolean);
+    procedure panelSelectionDidChange(sender: id);
+  end;
+
+{ TOpenSaveDelegate }
+
+procedure TOpenSaveDelegate.dealloc;
+begin
+  if Assigned(selUrl) then selURL.release;
+  inherited dealloc;
+end;
+
+function TOpenSaveDelegate.panel_shouldEnableURL(sender: id; url: NSURL
+  ): LCLObjCBoolean;
+begin
+  if Assigned(filter) then
+    Result := filter.panel_shouldEnableURL(sender, url)
+  else
+    Result := true;
+end;
+
+procedure TOpenSaveDelegate.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
+begin
+  if Assigned(OpenDialog) then
+    OpenDialog.DoFolderChange;
+end;
+
+function TOpenSaveDelegate.panel_userEnteredFilename_confirmed(sender: id;
+  filename: NSString; okFlag: LCLObjCBoolean): NSString;
+begin
+  Result := filename;
+end;
+
+procedure TOpenSaveDelegate.panel_willExpand(sender: id; expanding: LCLObjCBoolean);
+begin
+
+end;
+
+procedure TOpenSaveDelegate.panelSelectionDidChange(sender: id);
+var
+  sp : NSSavePanel;
+  ch : Boolean;     // set to true, if actually getting a new file name
+begin
+  // it only matters for Open or Save dialogs
+  if not Assigned(OpenDialog) then Exit;
+
+  sp := NSSavePanel(sender);
+  ch := false;
+  if not Assigned(sp.URL) then begin
+    if Assigned(selUrl) then
+    begin
+      selURL.release;
+      selURL := nil;
+    end;
+    ch := true;
+  end
+  else if not Assigned(selUrl) then
+  begin
+    ch := true;
+    selURL := NSURL(sp.URL.copy)
+  end
+  else begin
+    ch := not selURL.isEqualTo(sp.URL);
+    if ch then
+    begin
+      selURL.release;
+      selURL := sp.URL.copy;
+    end;
+  end;
+
+  if ch then
+  begin
+    OpenDialog.FileName := NSStringToString(sp.URL.path);
+    OpenDialog.DoSelectionChange;
+  end;
 end;
 
 { TCocoaWSFileDialog }
@@ -172,6 +262,7 @@ var
   // filter accessory view
   accessoryView: NSView;
   lFilter: TCocoaFilterComboBox;
+  callback: TOpenSaveDelegate;
 
   // setup panel and its accessory view
   procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
@@ -313,46 +404,53 @@ begin
       // accessory view
       CreateAccessoryView(openDlg, openDlg);
     end;
-    openDlg.setTitle(NSStringUtf8(FileDialog.Title));
-    openDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
-    UpdateOptions(FileDialog, openDlg);
-
-    if openDlg.runModal = NSOKButton then
-    begin
-      FileDialog.FileName := NSStringToString(openDlg.URL.path);
-      FileDialog.Files.Clear;
-      for i := 0 to openDlg.filenames.Count - 1 do
-        FileDialog.Files.Add(NSStringToString(
-          NSURL(openDlg.URLs.objectAtIndex(i)).path));
-      FileDialog.UserChoice := mrOk;
-      if lFilter <> nil then
-        FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
-    end;
+    saveDlg := openDlg;
   end
   else if FileDialog.FCompStyle = csSaveFileDialog then
   begin
     saveDlg := NSSavePanel.savePanel;
     saveDlg.setCanCreateDirectories(True);
-    saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
-    saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
     saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
-    UpdateOptions(FileDialog, saveDlg);
     // accessory view
     CreateAccessoryView(nil, saveDlg);
+    openDlg := nil;
+  end;
 
+  callback:=TOpenSaveDelegate.alloc;
+  callback.autorelease;
+  callback.FileDialog := FileDialog;
+  if FileDialog is TOpenDialog then
+    callback.OpenDialog := TOpenDialog(FileDialog);
+  callback.filter := lFilter;
+  saveDlg.setDelegate(callback);
+  saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
+  saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
+  UpdateOptions(FileDialog, saveDlg);
+
+  ToggleAppMenu(false);
+  try
     if saveDlg.runModal = NSOKButton then
     begin
       FileDialog.FileName := NSStringToString(saveDlg.URL.path);
       FileDialog.Files.Clear;
+
+      if Assigned(openDlg) then
+        for i := 0 to openDlg.filenames.Count - 1 do
+          FileDialog.Files.Add(NSStringToString(
+            NSURL(openDlg.URLs.objectAtIndex(i)).path));
+
       FileDialog.UserChoice := mrOk;
       if lFilter <> nil then
         FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
     end;
+    FileDialog.DoClose;
+
+
+    // release everything
+    LocalPool.Release;
+  finally
+    ToggleAppMenu(true);
   end;
-
-
-  // release everything
-  LocalPool.Release;
 
 end;  {TCocoaWSFileDialog.ShowModal}
 
@@ -759,11 +857,15 @@ end;
 procedure TCocoaFilterComboBox.comboboxAction(sender: id);
 begin
   if (indexOfSelectedItem <> lastSelectedItemIndex) then
+  begin
     setDialogFilter(indexOfSelectedItem);
+    if Assigned(Owner) then
+      Owner.IntfFileTypeChanged(lastSelectedItemIndex);
+  end;
   lastSelectedItemIndex := indexOfSelectedItem;
 end;
 
-function TCocoaFilterComboBox.panel_shouldEnableURL(sender: id; url: NSURL): Boolean;
+function TCocoaFilterComboBox.panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
 var
   lPath, lExt, lCurExt: NSString;
   lExtStr, lCurExtStr: String;

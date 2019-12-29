@@ -147,12 +147,15 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl;
+      const ABorderStyle: TBorderStyle); override;
   end;
 
 // Utility WS functions. todo: it makes sense to put them into CocoaScollers
 
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaScrollView;
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
+function EmbedInManualScrollHost(AView: TCocoaManualScrollView): TCocoaManualScrollHost;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
 
@@ -170,7 +173,7 @@ procedure DebugDumpParents(fromView: NSView);
 implementation
 
 uses
-  CocoaInt;
+  Math, CocoaInt;
 
 var
   LastMouse: TLastMouseInfo;
@@ -273,6 +276,38 @@ begin
   SetViewDefaults(Result);
   if AView.isKindOfClass(TCocoaCustomControl) then
     TCocoaCustomControl(AView).auxMouseByParent := true;
+end;
+
+function EmbedInManualScrollHost(AView: TCocoaManualScrollView
+  ): TCocoaManualScrollHost;
+var
+  r: TRect;
+  p: NSView;
+begin
+  if not Assigned(AView) then
+    Exit(nil);
+  r := AView.lclFrame;
+  p := AView.superview;
+  Result := TCocoaManualScrollHost.alloc.initWithFrame(NSNullRect);
+  if Assigned(p) then p.addSubView(Result);
+  Result.lclSetFrame(r);
+  {$ifdef BOOLFIX}
+  Result.setHidden_(Ord(AView.isHidden));
+  {$else}
+  Result.setHidden(AView.isHidden);
+  {$endif}
+  Result.setDocumentView(AView);
+  Result.setDrawsBackground(false); // everything is covered anyway
+  Result.contentView.setAutoresizesSubviews(true);
+  AView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
+
+  AView.release;
+  {$ifdef BOOLFIX}
+  AView.setHidden_(Ord(false));
+  {$else}
+  AView.setHidden(false);
+  {$endif}
+  SetViewDefaults(Result);
 end;
 
 { TLCLCommonCallback }
@@ -437,7 +472,7 @@ begin
   Result := nil;
   if CocoaWidgetSet.CaptureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSet.CaptureControl);
-  lCaptureView := GetNSObjectView(obj);
+  lCaptureView := obj.lclContentView;
   if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
   begin
     Result := lCaptureView.lclGetCallback;
@@ -874,6 +909,7 @@ var
   bndPt, clPt, srchPt: TPoint; // clPt - is the one to send to LCL
                                // srchPt - is the one to use for each chidlren (clPt<>srchPt for TScrollBox)
   menuHandled : Boolean;
+  mc: Integer; // modal counter
 begin
   if Assigned(Owner) and not NSObjectIsLCLEnabled(Owner) then
   begin
@@ -919,6 +955,7 @@ begin
     lEventType := NSLeftMouseUp;
 
   Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
+  mc := CocoaWidgetSet.ModalCounter;
   case lEventType of
     NSLeftMouseDown,
     NSRightMouseDown,
@@ -960,6 +997,14 @@ begin
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
     end;
+  end;
+
+  if mc <> CocoaWidgetSet.ModalCounter then
+  begin
+    // showing of a modal window is causing "mouse" event to be lost.
+    // so, preventing Cocoa from handling it
+    Result := true;
+    Exit;
   end;
 
   //debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
@@ -1053,7 +1098,7 @@ begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
       FIsEventRouting:=true;
        //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
-      obj := GetNSObjectView(NSObject(targetControl.Handle));
+      obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
@@ -1092,6 +1137,11 @@ var
   MousePos: NSPoint;
   MButton: NSInteger;
   bndPt, clPt, srchPt: TPoint;
+  dx,dy: double;
+const
+  WheelDeltaToLCLY = 1200; // the basic (one wheel-click) is 0.1 on cocoa
+  WheelDeltaToLCLX = 1200; // the basic (one wheel-click) is 0.1 on cocoa
+  LCLStep = 120;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -1114,19 +1164,32 @@ begin
   Msg.Y := round(clPt.Y);
   Msg.State := CocoaModifiersToShiftState(Event.modifierFlags, NSEvent.pressedMouseButtons);
 
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
+  begin
+    dx := event.scrollingDeltaX;
+    dy := event.scrollingDeltaY;
+  end else
+  begin
+    dx := event.deltaX;
+    dy := event.deltaY;
+  end;
+
   // Some info on event.deltaY can be found here:
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
   // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
-  if event.deltaY <> 0 then
+  if dy <> 0 then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
-    Msg.WheelDelta := round(event.deltaY * 120);
+    Msg.WheelDelta := sign(dy) * LCLStep;
   end
   else
-  if event.deltaX <> 0 then
+  if dx <> 0 then
   begin
     Msg.Msg := LM_MOUSEHWHEEL;
-    Msg.WheelDelta := round(event.deltaX * 120);
+    // see "deltaX" documentation.
+    // on macOS: -1 = right, +1 = left
+    // on LCL:   -1 = left,  +1 = right
+    Msg.WheelDelta := sign(-dx) * LCLStep;
   end
   else
     // Filter out empty events - See bug 28491
@@ -1194,8 +1257,8 @@ begin
   // then send a LM_SIZE message
   if Resized or ClientResized then
   begin
-    LCLSendSizeMsg(Target, NewBounds.Right - NewBounds.Left,
-      NewBounds.Bottom - NewBounds.Top, Owner.lclWindowState, True);
+    LCLSendSizeMsg(Target, Max(NewBounds.Right - NewBounds.Left,0),
+      Max(NewBounds.Bottom - NewBounds.Top,0), Owner.lclWindowState, True);
   end;
 
   // then send a LM_MOVE message
@@ -1215,7 +1278,11 @@ end;
 
 procedure TLCLCommonCallback.BecomeFirstResponder;
 begin
-  LCLSendSetFocusMsg(Target);
+  if not Assigned(Target) then Exit;
+  // LCL is unable to determine the "already focused" message
+  // thus Cocoa related code is doing that.
+  //if not Target.Focused then
+    LCLSendSetFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.ResignFirstResponder;
@@ -1376,7 +1443,7 @@ var
   cr:TCocoaCursor;
 begin
   Result := False;
-  View := CocoaUtils.GetNSObjectView(Owner);
+  View := HandleFrame.lclContentView;
   if View = nil then Exit;
   if not Assigned(Target) then Exit;
   if not (csDesigning in Target.ComponentState) then
@@ -1572,10 +1639,7 @@ var
 begin
   if not AWinControl.HandleAllocated then Exit;
 
-  //todo: GetNSObjectView must be replaced with oop approach
-  //      note that client rect might be smaller than the bounds of TWinControl itself
-  //      thus extra size should be adapted
-  lView := CocoaUtils.GetNSObjectView(NSObject(AWinControl.Handle));
+  lView := NSObject(AWinControl.Handle).lclContentView;
   if lView = nil then Exit;
 
   //todo: using fittingSize is wrong - it's based on constraints of the control solely.
@@ -1623,48 +1687,33 @@ begin
   end;
 end;
 
+type
+  NSFontSetter = objccategory external(NSObject)
+    procedure setFont(afont: NSFont); message 'setFont:';
+    procedure setTextColor(clr: NSColor); message 'setTextColor:';
+  end;
+
 class procedure TCocoaWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 var
   Obj: NSObject;
   Cell: NSCell;
   Str: NSAttributedString;
   NewStr: NSMutableAttributedString;
-  Dict: NSDictionary;
   Range: NSRange;
 begin
-  if (AWinControl.HandleAllocated) then
+  if not (AWinControl.HandleAllocated) then Exit;
+
+  Obj := NSObject(AWinControl.Handle).lclContentView;
+
+  if Obj.respondsToSelector(ObjCSelector('setFont:')) then
+    Obj.setFont(TCocoaFont(AFont.Reference.Handle).Font);
+
+  if Obj.respondsToSelector(ObjCSelector('setTextColor:')) then
   begin
-    Obj := NSObject(AWinControl.Handle);
-    if Obj.isKindOfClass(NSScrollView) then
-      Obj := NSScrollView(Obj).documentView;
-    if Obj.isKindOfClass(NSControl) then
-    begin
-      Cell := NSCell(NSControl(Obj).cell);
-      Cell.setFont(TCocoaFont(AFont.Reference.Handle).Font);
-      // try to assign foreground color?
-      Str := Cell.attributedStringValue;
-      if Assigned(Str) then
-      begin
-        NewStr := NSMutableAttributedString.alloc.initWithAttributedString(Str);
-        Range.location := 0;
-        Range.length := NewStr.length;
-        if AFont.Color = clDefault then
-          NewStr.removeAttribute_range(NSForegroundColorAttributeName, Range)
-        else
-          NewStr.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(ColorToRGB(AFont.Color)), Range);
-        Cell.setAttributedStringValue(NewStr);
-        NewStr.release;
-      end;
-    end
+    if AFont.Color = clDefault then
+      Obj.setTextColor(nil)
     else
-    if Obj.isKindOfClass(NSText) then
-    begin
-      NSText(Obj).setFont(TCocoaFont(AFont.Reference.Handle).Font);
-      if AFont.Color = clDefault then
-        NSText(Obj).setTextColor(nil)
-      else
-        NSText(Obj).setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
-    end;
+      Obj.setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
   end;
 end;
 
@@ -1709,7 +1758,7 @@ var
 begin
   if (not AWinControl.HandleAllocated) or (not AChild.HandleAllocated) then Exit;
 
-  pr:=NSView(AWinControl.Handle);
+  pr := NSView(AWinControl.Handle).lclContentView;
 
   //todo: sorting might be a better option than removing / adding a view
   //      (whenever a focused (firstrepsonder view) is moved to front, focus is lost.
@@ -1783,7 +1832,9 @@ class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl
 var
   ctrl : TCocoaCustomControl;
   sl   : TCocoaManualScrollView;
+  hs   : TCocoaManualScrollHost;
   lcl  : TLCLCommonCallback;
+
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
@@ -1793,9 +1844,21 @@ begin
 
   sl := EmbedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
-  lcl.HandleFrame:=sl;
 
-  Result := TLCLIntfHandle(sl);
+  hs := EmbedInManualScrollHost(sl);
+  hs.callback := ctrl.callback;
+  lcl.HandleFrame:=hs;
+
+  ScrollViewSetBorderStyle(hs, TCustomControl(AWinControl).BorderStyle );
+
+  Result := TLCLIntfHandle(hs);
+end;
+
+class procedure TCocoaWSCustomControl.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not Assigned(AWinControl) or not (AWinControl.HandleAllocated) then Exit;
+  ScrollViewSetBorderStyle(  TCocoaManualScrollHost(AWinControl.Handle), ABorderStyle );
 end;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;

@@ -74,7 +74,7 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
-{$if FPC_FULLVERSION < 30300}
+{$if FPC_FULLVERSION < 30301}
   NSAppearance = objcclass external(NSObject)
     function name: NSString; message 'name';
     class function currentAppearance: NSAppearance; message 'currentAppearance';
@@ -159,6 +159,10 @@ type
 
   NSEventFix = objccategory external (NSEvent)
     class function modifierFlags_: NSUInteger; message 'modifierFlags';
+    // available in 10.7+
+    function hasPreciseScrollingDeltas: LCLObjCBoolean; message 'hasPreciseScrollingDeltas';
+    function scrollingDeltaX: CGFloat; message 'scrollingDeltaX';
+    function scrollingDeltaY: CGFloat; message 'scrollingDeltaY';
   end;
 
   NSWindowTabbingMode = NSInteger;
@@ -235,7 +239,9 @@ const
   NSAppKitVersionNumber10_11 = 1404;
   NSAppKitVersionNumber10_12 = 1504;
   NSAppKitVersionNumber10_13 = 1561;
-  NSAppKitVersionNumber10_14 = 1641.10;
+  //NSAppKitVersionNumber10_14 = 1641.10; // Mojave's beta?
+  NSAppKitVersionNumber10_14 = 1671;
+
 
 
 function NSNormalWindowLevel: NSInteger; inline;

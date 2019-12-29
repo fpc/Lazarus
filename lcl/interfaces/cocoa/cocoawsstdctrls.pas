@@ -27,7 +27,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
-  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue,
+  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue, Forms,
   // LazUtils
   LazUTF8, LazUTF8Classes, TextStrings,
   // Widgetset
@@ -258,6 +258,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TLCLCheckBoxCallback }
@@ -345,6 +346,9 @@ procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
 
 implementation
 
+uses
+  CocoaInt;
+
 const
   VerticalScrollerVisible: array[TScrollStyle] of boolean = (
  {ssNone          } false,
@@ -404,6 +408,7 @@ begin
   Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
+    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     Result.callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSControlValue(Result, AParams.Caption);
   end;
@@ -414,6 +419,7 @@ begin
   Result := TCocoaSecureTextField.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
+    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
@@ -597,6 +603,8 @@ end;
 procedure TLCLListBoxCallback.tableSelectionChange(ARow: Integer; Added,
   Removed: NSIndexSet);
 begin
+  // do not notify about selection changes while clearing
+  if Assigned(strings) and (strings.isClearing) then Exit;
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
@@ -741,6 +749,15 @@ class function TCocoaWSButton.GetTextLen(const AWinControl: TWinControl;
 begin
   // The text is static, so let the LCL fallback to FCaption
   Result := false;
+end;
+
+class procedure TCocoaWSButton.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  if not (AWinControl.HandleAllocated) then Exit;
+  TCocoaWSWinControl.SetFont(AWinControl, AFont);
+  TCocoaButton(AWinControl.Handle).adjustFontToControlSize := (AFont.Name = 'default')
+    and (AFont.Size = 0);
 end;
 
 { TCocoaWSCustomCheckBox }
@@ -995,11 +1012,14 @@ end;
 class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
-  field: TCocoaTextField;
+  field: NSTextField;
 begin
-  field := GetTextField(ACustomEdit);
+  if not (ACustomEdit.HandleAllocated) then Exit;
+  field := NSTextField(ACustomEdit.Handle);
   if not Assigned(field) then Exit;
-  field.maxLength := NewLength;
+
+  if NSObject(field).respondsToSelector( ObjCSelector('lclSetMaxLength:') ) then
+    {%H-}NSTextField_LCLExt(field).lclSetMaxLength(NewLength);
 end;
 
 class procedure TCocoaWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
@@ -1153,12 +1173,8 @@ begin
 end;
 
 procedure TCocoaMemoStrings.SetTextStr(const Value: string);
-var
-  ns: NSString;
 begin
-  ns := NSStringUtf8(LineBreaksToUnix(Value));
-  FTextView.setString(ns);
-  ns.release;
+  SetNSText(FTextView, LineBreaksToUnix(Value));
 
   FTextView.textDidChange(nil);
 end;
@@ -1281,6 +1297,8 @@ begin
   FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
 
   if not ro then FTextView.setEditable(ro);
+
+  FTextView.undoManager.removeAllActions;
 end;
 
 procedure TCocoaMemoStrings.LoadFromFile(const FileName: string);
@@ -1451,9 +1469,7 @@ begin
   txt.callback := lcl;
   txt.setDelegate(txt);
 
-  ns := NSStringUtf8(AParams.Caption);
-  txt.setString(ns);
-  ns.release;
+  SetNSText(txt, AParams.Caption);
 
   scr.callback := txt.callback;
 
@@ -1664,13 +1680,10 @@ end;
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
 var
   txt: TCocoaTextView;
-  ns: NSString;
 begin
   txt := GetTextView(AWinControl);
   if not Assigned(txt) then Exit;
-  ns := NSStringUtf8(LineBreaksToUnix(AText));
-  txt.setString(ns);
-  ns.release;
+  SetNSText(txt, LineBreaksToUnix(AText));
 end;
 
 class function TCocoaWSCustomMemo.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -1885,7 +1898,7 @@ var
   btn: NSButton;
   cl: NSButtonCell;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSTexturedRoundedBezelStyle, NSToggleButton);
+  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, CocoaToggleBezel, CocoaToggleType);
   cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
   Result := TLCLIntfHandle(btn);
@@ -1897,8 +1910,22 @@ class function TCocoaWSScrollBar.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
   scr : TCocoaScrollBar;
+  prm : TCreateParams;
+const
+  ScrollBase = 15; // the shorter size of the scroller. There's a NSScroller class method for that
 begin
-  scr:=NSView(TCocoaScrollBar.alloc).lclInitWithCreateParams(AParams);
+  prm := AParams;
+  // forcing the initial size to follow the designated kind of the scroll
+  if (TCustomScrollBar(AWinControl).Kind = sbVertical) then begin
+    prm.Width:=ScrollBase;
+    prm.Height:=ScrollBase*4;
+  end else
+  begin
+    prm.Width:=ScrollBase*4;
+    prm.Height:=ScrollBase;
+  end;
+
+  scr:=NSView(TCocoaScrollBar.alloc).lclInitWithCreateParams(prm);
   scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
 
   // OnChange (scrolling) event handling
@@ -1910,13 +1937,17 @@ begin
   scr.pageInt:=TCustomScrollBar(AWinControl).PageSize;
 
   Result:=TLCLIntfHandle(scr);
+
+  scr.lclSetFrame( Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
 end;
 
 // vertical/horizontal in Cocoa is set automatically according to
 // the geometry of the scrollbar, it cannot be forced to an unusual value
 class procedure TCocoaWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean);
 begin
-  // do nothing
+  // the scroll type can be changed when creating a scroll.
+  // since the size got changed, we have to create the handle
+  RecreateWnd(AScrollBar);
 end;
 
 class procedure TCocoaWSScrollBar.SetParams(const AScrollBar:TCustomScrollBar);
@@ -2176,8 +2207,13 @@ begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
 
-  list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
-  list.scrollRowToVisible(AIndex);
+  if (AIndex < 0) then
+    list.deselectAll(nil)
+  else
+  begin
+    list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
+    list.scrollRowToVisible(AIndex);
+  end;
 end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);

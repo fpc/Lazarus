@@ -331,9 +331,20 @@ end;
 
 { TLCLWindowCallback }
 
+type
+  TWinControlAccess = class(TWinControl)
+  end;
+
 function TLCLWindowCallback.CanActivate: Boolean;
 begin
   Result := Enabled;
+  // it's possible that a Modal window requests this (target) window
+  // to become visible (i.e. when modal is closing)
+  // All other Windows are disabled while modal is active.
+  // Thus must check wcfUpdateShowing flag (which set when changing window visibility)
+  // And if it's used, then we allow the window to become Key window
+  if not Result and (Target is TWinControl) then
+    Result := wcfUpdateShowing in TWinControlAccess(Target).FWinControlFlags;
 end;
 
 constructor TLCLWindowCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
@@ -457,7 +468,7 @@ var
 begin
   Bounds := HandleFrame.lclFrame;
   LCLSendSizeMsg(Target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
-    HandleFrame.lclWindowState, True);
+    Owner.lclWindowState, True);
 end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;
@@ -568,11 +579,11 @@ begin
     if lList.Count>0 then
       begin
       prevControl := TWinControl(lList.Items[lList.Count-1]);
-      lPrevView := GetNSObjectView(NSObject(prevControl.Handle));
+      lPrevView := NSObject(prevControl.Handle).lclContentView;
       for i := 0 to lList.Count-1 do
       begin
         curControl := TWinControl(lList.Items[i]);
-        lCurView := GetNSObjectView(NSObject(curControl.Handle));
+        lCurView := NSObject(curControl.Handle).lclContentView;
 
         if (lCurView <> nil) and (lPrevView <> nil) then
           lPrevView.setNextKeyView(lCurView);
@@ -793,7 +804,7 @@ begin
   begin
     if AParams.WndParent <> 0 then
     begin
-      lDestView := GetNSObjectView(NSObject(AParams.WndParent));
+      lDestView := NSObject(AParams.WndParent).lclContentView;
       lDestView.addSubView(cnt);
       //cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then
@@ -1101,15 +1112,22 @@ begin
   end
   else
   begin
+    w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
     if not lShow then
     begin
       // macOS 10.6. If a window with a parent window is hidden, then parent is also hidden.
       // Detaching from the parent first!
-      w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
       if Assigned(w) and Assigned(w.parentWindow) then
         w.parentWindow.removeChildWindow(w);
+      // if the same control needs to be shown again, it will be redrawn
+      // without this invalidation, Cocoa might should the previously cached contents
+      TCocoaWindowContent(AWinControl.Handle).documentView.setNeedsDisplay_(true);
     end;
     TCocoaWSWinControl.ShowHide(AWinControl);
+
+    // ShowHide() also actives (sets focus to) the window
+    if lShow and Assigned(w) then
+      w.makeKeyWindow;
   end;
 
   if (lShow) then

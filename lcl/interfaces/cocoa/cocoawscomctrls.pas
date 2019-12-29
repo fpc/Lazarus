@@ -115,6 +115,7 @@ type
     isSetTextFromWS: Integer; // allows to suppress the notifation about text change
                               // when initiated by Cocoa itself.
     checkedIdx : NSMutableIndexSet;
+    ownerData  : Boolean;
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
@@ -192,7 +193,7 @@ type
     //carbon//class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetImageList(const ALV: TCustomListView; const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
-    (*class procedure SetOwnerData(const ALV: TCustomListView; const {%H-}AValue: Boolean); override;*)
+    class procedure SetOwnerData(const ALV: TCustomListView; const {%H-}AValue: Boolean); override;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
@@ -1196,7 +1197,7 @@ begin
     Result := false;
     Exit;
   end;
-  Result:=lclcb.checkedIdx.containsIndex(AIndex);
+  Result := lclcb.checkedIdx.containsIndex(AIndex);
 end;
 
 class function TCocoaWSCustomListView.ItemGetPosition(
@@ -1219,8 +1220,21 @@ end;
 class function TCocoaWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+  lclcb: TLCLListViewCallback;
 begin
-  Result:=inherited ItemGetState(ALV, AIndex, AItem, AState, AIsSet);
+  case AState of
+    lisSelected: begin
+      Result := false;
+      if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
+      Result := (AIndex>=0) and (AIndex <= lTableLV.numberOfRows);
+      AIsSet := lTableLV.isRowSelected(AIndex);
+    end;
+  else
+    Result := inherited ItemGetState(ALV, AIndex, AItem, AState, AIsSet);
+  end;
 end;
 
 class procedure TCocoaWSCustomListView.ItemInsert(const ALV: TCustomListView;
@@ -1442,11 +1456,28 @@ begin
   lTableLV.noteNumberOfRowsChanged();
 end;
 
+class procedure TCocoaWSCustomListView.SetOwnerData(const ALV: TCustomListView;
+  const AValue: Boolean);
+var
+  lCocoaLV : TCocoaListView;
+  lTableLV : TCocoaTableListView;
+  cb       : TLCLListViewCallback;
+begin
+  if not CheckParamsCb(lCocoaLV, lTableLV, cb, ALV) then Exit;
+  cb.ownerData := AValue;
+  if cb.ownerData then cb.checkedIdx.removeAllIndexes; // releasing memory
+end;
+
 class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;
   const AProp: TListViewProperty; const AIsSet: Boolean);
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
+const
+  GridStyle : array [boolean] of NSUInteger = (
+    NSTableViewGridNone,
+    NSTableViewSolidHorizontalGridLineMask or NSTableViewSolidVerticalGridLineMask
+  );
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   case AProp of
@@ -1454,9 +1485,9 @@ begin
   lvpCheckboxes: lTableLV.lclSetFirstColumCheckboxes(AIsSet);
   lvpColumnClick: lTableLV.setAllowsColumnSelection(AIsSet);
 {  lvpFlatScrollBars,
-  lvpFullDrag,
-  lvpGridLines,
-  lvpHideSelection,
+  lvpFullDrag,}
+  lvpGridLines: lTableLV.setGridStyleMask(GridStyle[AIsSet]);
+  {lvpHideSelection,
   lvpHotTrack,}
   lvpMultiSelect: lTableLV.setAllowsMultipleSelection(AIsSet);
   {lvpOwnerDraw,}
@@ -1638,7 +1669,10 @@ function TLCLListViewCallback.GetItemCheckedAt(ARow, ACol: Integer;
 var
   BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
 begin
-  IsChecked := BoolState[checkedIdx.containsIndex(ARow)];
+  if ownerData and Assigned(listView) and (ARow>=0) and (ARow < listView.Items.Count) then
+    IsChecked := BoolState[listView.Items[ARow].Checked]
+  else
+    IsChecked := BoolState[checkedIdx.containsIndex(ARow)];
   Result := true;
 end;
 

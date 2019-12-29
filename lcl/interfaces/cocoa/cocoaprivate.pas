@@ -127,6 +127,10 @@ type
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
     procedure lclInvalidate; message 'lclInvalidate';
     procedure lclUpdate; message 'lclUpdate';
+
+    // Returns the position of the view or window, in the immediate
+    // parent (view or screen), relative to its client coordinates system
+    // Left and Top are always returned in LCL coordinate system.
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::';
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::';
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::';
@@ -477,7 +481,10 @@ begin
   if not Assigned(v) then
     Result := inherited lclClientFrame
   else
-    Result := NSRectToRect( v.frame );
+    if v.isFlipped then
+      Result := NSRectToRect( v.frame )
+    else
+      NSToLCLRect(v.frame, frame.size.height, Result);
 end;
 
 function TCocoaGroupBox.lclContentView: NSView;
@@ -910,7 +917,7 @@ var
 begin
   p := nil;
   if (AParams.WndParent <> 0) then
-    p := CocoaUtils.GetNSObjectView(NSObject(AParams.WndParent));
+    p := NSView(AParams.WndParent).lclContentView;
 
   if Assigned(p) then
     LCLToNSRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
@@ -1021,9 +1028,19 @@ begin
 end;
 
 procedure LCLViewExtension.lclRelativePos(var Left, Top: Integer);
+var
+  sv : NSView;
+  fr : NSRect;
 begin
   Left := Round(frame.origin.x);
-  Top := Round(frame.origin.y);
+  sv := superview;
+  if Assigned(sv) and (not sv.isFlipped) then
+  begin
+    fr := frame;
+    Top := Round(sv.frame.size.height - fr.origin.y - fr.size.height);
+  end
+  else
+    Top := Round(frame.origin.y);
 end;
 
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
@@ -1032,18 +1049,22 @@ var
 
 begin
   // 1. convert to window base
+  // Convert from View-lcl to View-cocoa
   P.x := X;
   if isFlipped then
     p.y := Y
   else
     P.y := frame.size.height-y;   // convert to Cocoa system
 
+  // Convert from View-cocoa to Window-cocoa
   P := convertPoint_ToView(P, nil);
 
+  // Convert from Window-cocoa to Window-lcl
   X := Round(P.X);
   Y := Round(window.frame.size.height-P.Y); // convert to LCL system
 
   // 2. convert window to screen
+  // Use window function to convert fomr Window-lcl to Screen-lcl
   window.lclLocalToScreen(X, Y);
 end;
 
@@ -1052,15 +1073,22 @@ var
   P: NSPoint;
 begin
   // 1. convert from screen to window
-
+  // use window function to onvert from Screen-lcl to Window-lcl
   window.lclScreenToLocal(X, Y);
+  // Convert from Window-lcl to Window-cocoa
   P.x := X;
   P.y := Round(window.frame.size.height-Y); // convert to Cocoa system
 
   // 2. convert from window to local
+  //    Convert from Window-cocoa to View-cocoa
   P := convertPoint_FromView(P, nil);
+
+  // Convert from View-cocoa to View-lcl
   X := Round(P.x);
-  Y := Round(frame.size.height-P.y);   // convert to Cocoa system
+  if isFlipped then
+    Y := Round(p.y)
+  else
+    Y := Round(frame.size.height-P.y);   // convert to Cocoa system
 end;
 
 function LCLViewExtension.lclParent:id;
@@ -1073,7 +1101,7 @@ var
   v: NSView;
 begin
   v := superview;
-  if Assigned(v) then
+  if Assigned(v) and not v.isFlipped then
     NSToLCLRect(frame, v.frame.size.height, Result)
   else
     Result := NSRectToRect(frame);
@@ -1152,6 +1180,7 @@ var
   i    : Integer;
   cs   : NSString;
   nr   : NSRect;
+  dr   : NSRect;
   al   : TAlignment;
   x    : Integer;
   txt  : string;
@@ -1180,15 +1209,22 @@ begin
 
     if not barcallback.GetBarItem(i, txt, w, al) then Continue;
 
-
     if i = cnt - 1 then w := r.Right - x;
     nr.size.width := w;
     nr.origin.x := x;
 
+    // dr - draw rect. should be 1 pixel wider
+    // and 1 pixel taller, than the actual rect.
+    // to produce a better visual effect
+    dr := nr;
+    dr.size.width := dr.size.width + 1;
+    dr.size.height := dr.size.height + 1;
+    dr.origin.y := dr.origin.y-1;
+
     cs := NSStringUtf8(txt);
     panelCell.setTitle(cs);
     panelCell.setAlignment(CocoaAlign[al]);
-    panelCell.drawWithFrame_inView(nr, Self);
+    panelCell.drawWithFrame_inView(dr, Self);
     cs.release;
     barcallback.DrawPanel(i, NSRectToRect(nr));
     inc(x, w);
