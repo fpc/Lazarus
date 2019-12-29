@@ -132,6 +132,8 @@ procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
 
 // Ampersands
 function DeleteAmpersands(var Str : String) : Integer;
+function RemoveAmpersands(const ASource: String): String;
+function RemoveAmpersands(Src: PChar; LineLength: Longint): PChar;
 
 function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareHandles(h1, h2: THandle): integer;
@@ -357,8 +359,8 @@ begin
   SrcPos:=1;
   DestPos:=1;
   while SrcPos<=SrcLen do begin
-    if (Str[SrcPos]='&') and (SrcPos<SrcLen) then begin
-      // & found
+    if (Str[SrcPos]='&') and (SrcPos<SrcLen) then
+    begin
       inc(SrcPos); // skip &
       if (Str[SrcPos]<>'&') and (Result<1) then  // Ignore && as accelerator
         Result:=DestPos;
@@ -370,6 +372,37 @@ begin
   end;
   if DestPos<SrcPos then
     SetLength(Str,DestPos-1);
+end;
+
+function RemoveAmpersands(const ASource: String): String;
+var
+  n: Integer;
+  DoubleAmp: Boolean;
+begin
+  Result := ASource;
+  n := 1;
+  while n <= Length(Result) do
+  begin
+    if Result[n] = '&' then
+    begin
+      DoubleAmp := (n < Length(Result)) and (Result[n+1] = '&');
+      Delete(Result, n, 1);
+      if DoubleAmp then
+        Inc(n);            // skip the second & of &&
+    end;
+    Inc(n);
+  end;
+end;
+
+function RemoveAmpersands(Src: PChar; LineLength: Longint): PChar;
+var
+  s: String;
+begin
+  SetLength(s, LineLength);
+  strlcopy(PChar(s), Src, LineLength);
+  s := RemoveAmpersands(s);
+  Result := StrAlloc(Length(s)+1); // +1 for #0 char at end
+  strcopy(Result, PChar(s));
 end;
 
 //-----------------------------------------------------------------------------

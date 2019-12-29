@@ -588,8 +588,6 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 function Ampersands2Underscore(Src: PChar): PChar;
 function Ampersands2Underscore(const ASource: String): String;
 function EscapeUnderscores(const Str: String): String; inline;
-function RemoveAmpersands(Src: PChar; LineLength: Longint): PChar;
-function RemoveAmpersands(const ASource: String): String;
 procedure LabelFromAmpersands(var AText, APattern: String; var AAccelChar: Char);
 
 function GetAccelGroup(const Widget: PGtkWidget;
