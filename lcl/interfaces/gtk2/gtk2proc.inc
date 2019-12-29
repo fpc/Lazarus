@@ -8957,83 +8957,22 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function Ampersands2Underscore(Src: PChar) : PChar;
-
   Creates a new PChar. Deletes escaping ampersands, replaces the first single
-  ampersand with an underscore and deleting all other single ampersands.
+  ampersand with an underscore and deletes all other single ampersands.
 -------------------------------------------------------------------------------}
 function Ampersands2Underscore(Src: PChar) : PChar;
 var
-  i, j: Longint;
-  ShortenChars, FirstAmpersand, NewLength, SrcLength: integer;
+  s: String;
 begin
-  // count ampersands and find first ampersand
-  ShortenChars:= 0;  // chars to delete
-  FirstAmpersand:= -1;
-  SrcLength:= StrLen(Src);
-
-  { Look for amperands. If found, check if it is an escaped ampersand.
-    If it is, don't count it in. }
-  i:=0;
-  while i<SrcLength do begin
-    if Src[i] = '&' then begin
-      if (i < SrcLength - 1) and (Src[i+1] = '&') then begin
-        // escaping ampersand found
-        inc(ShortenChars);
-        inc(i,2);
-        Continue;
-      end else begin
-        // single ampersand found
-        if (FirstAmpersand < 0) then
-          // the first will be replaced ...
-          FirstAmpersand:= i
-        else
-          // ... and all others will be deleted
-          inc(ShortenChars);
-      end; 
-    end;
-    inc(i);
-  end;
-  // create new PChar
-  NewLength:= SrcLength - ShortenChars;
-
-  Result:=StrAlloc(NewLength+1); // +1 for #0 char at end
-
-  // copy string without ampersands
-  i:=0;
-  j:=0;
-  while (j < NewLength) do begin
-    if Src[i] <> '&' then begin
-      // copy normal char
-      Result[j]:= Src[i];
-    end else begin
-      // ampersand
-      if (i < (SrcLength - 1)) and (Src[i+1] = '&') then begin
-        // escaping ampersand found
-        inc(i);
-        Result[j]:='&';
-      end else begin
-        // single ampersand found
-        if i = FirstAmpersand then begin
-          // replace first single ampersand with underscore
-          Result[j]:='_';
-        end else begin
-          // delete single ampersand
-          dec(j);
-        end;
-      end;
-    end;
-    Inc(i);
-    Inc(j);
-  end;
-  Result[NewLength]:=#0;
+  s := StrPas(Src);
+  s := Ampersands2Underscore(s);
+  Result := StrAlloc(Length(s)+1); // +1 for #0 char at end
+  strcopy(Result, PChar(s));
 end;
 
 {-------------------------------------------------------------------------------
-  function Ampersands2Underscore(const ASource: String): String;
-
   Deletes escaping ampersands, replaces the first single
-  ampersand with an underscore and deleting all other single ampersands.
+  ampersand with an underscore and deletes all other single ampersands.
 -------------------------------------------------------------------------------}
 function Ampersands2Underscore(const ASource: String): String;
 var
@@ -9046,25 +8985,19 @@ begin
   n := 1;
   while n <= Length(Result) do
   begin
-    if Result[n] = '&'
-    then begin
-      if (n < Length(Result))
-      and (Result[n + 1] = '&')
-      then begin
-        // we got a &&, remove the first
-        Delete(Result, n, 1);
-        Inc(n);
-        Continue;
-      end;
+    if Result[n] = '&' then
+    begin
       if FirstFound
+      or ( (n < Length(Result)) and (Result[n+1] = '&') ) // got &&
       then begin
-        // simply remove it
         Delete(Result, n, 1);
-        Continue;
+        if not FirstFound then
+          Inc(n);               // Skip the second & of &&
+      end
+      else begin
+        FirstFound := True;
+        Result[n] := '_';
       end;
-      // if we are here it's our first
-      FirstFound := True;
-      Result[n] := '_';
     end;
     Inc(n);
   end;
