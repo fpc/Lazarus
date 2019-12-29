@@ -31,8 +31,16 @@ uses
   SysUtils, Classes, dos, LazUTF8
   {$IFDEF EnableIconvEnc},iconvenc{$ENDIF};
 
+type
+  TConvertEncodingErrorMode = (
+    ceemSkip,
+    ceemException,
+    ceemReplace,
+    ceemReturmEmpty
+    );
+
 var
-  ConvertEncodingFromUtf8RaisesException: boolean = False;
+  ConvertEncodingErrorMode: TConvertEncodingErrorMode = ceemSkip;
 
 //encoding names
 const
@@ -2105,8 +2113,19 @@ begin
         inc(Dest);
       end
       else
-      if ConvertEncodingFromUtf8RaisesException then
-        raise EConvertError.Create('Cannot convert UTF8 to single byte');
+      case ConvertEncodingErrorMode of
+        ceemSkip:
+          begin end;
+        ceemException:
+          raise EConvertError.Create('Cannot convert UTF8 to single byte');
+        ceemReplace:
+          begin
+            Dest^:='?';
+            inc(Dest);
+          end;
+        ceemReturmEmpty:
+          Exit('');
+      end;
     end;
   end;
   SetLength(Result,Dest-PChar(Result));

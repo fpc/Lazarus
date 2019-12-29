@@ -46,6 +46,20 @@ begin
       begin
         l:=UnicodeToUTF8Inline(code,Dest);
         inc(Dest,l);
+      end
+      else
+      case ConvertEncodingErrorMode of
+        ceemSkip:
+          begin end;
+        ceemException:
+          raise EConvertError.Create('Cannot convert DBCS code page to UTF8');
+        ceemReplace:
+          begin
+            Dest^:='?';
+            Inc(Dest);
+          end;
+        ceemReturmEmpty:
+          Exit('');
       end;
     end;
   until false;
@@ -209,8 +223,19 @@ begin
         Inc(Dest);
       end
       else
-      if ConvertEncodingFromUtf8RaisesException then
-        raise EConvertError.Create('Cannot convert UTF8 to DBCS code page');
+      case ConvertEncodingErrorMode of
+        ceemSkip:
+          begin end;
+        ceemException:
+          raise EConvertError.Create('Cannot convert UTF8 to DBCS code page');
+        ceemReplace:
+          begin
+            Dest^ := '?';
+            Inc(Dest);
+          end;
+        ceemReturmEmpty:
+          Exit('');
+      end;
     end;
   until false;
   //SetLength(Result, Dest - PChar(Result));
