@@ -144,7 +144,12 @@ var
   aInfo: NSPrintInfo;
   validationResult: Boolean;
   pmOr: PMOrientation;
+  kx, ky: Double;
 begin
+
+  kx := XDPI/72;
+  ky := YDPI/72;
+
   aInfo := NSPrintInfo.sharedPrintInfo;
   if aInfo.orientation=NSPortraitOrientation then
     pmOr := kPMPortrait
@@ -188,13 +193,13 @@ begin
 
       PaperRect.PhysicalRect.Left := 0;
       PaperRect.PhysicalRect.Top := 0;
-      PaperRect.PhysicalRect.Right := Round(paperR.right - paperR.left);
-      PaperRect.PhysicalRect.Bottom := Round(paperR.bottom - paperR.top);
+      PaperRect.PhysicalRect.Right := Round((paperR.right - paperR.left)*kx);
+      PaperRect.PhysicalRect.Bottom := Round((paperR.bottom - paperR.top)*ky);
 
-      PaperRect.WorkRect.Left := Round(-paperR.left);
-      PaperRect.WorkRect.Top := Round(-paperR.top);
-      PaperRect.WorkRect.Right := Round(pageR.right - pageR.left - paperR.left);
-      PaperRect.WorkRect.Bottom := Round(pageR.bottom - pageR.top - paperR.top);
+      PaperRect.WorkRect.Left := Round(-paperR.left*kx);
+      PaperRect.WorkRect.Top := Round(-paperR.top*ky);
+      PaperRect.WorkRect.Right := Round((pageR.right - pageR.left - paperR.left)*kx);
+      PaperRect.WorkRect.Bottom := Round((pageR.bottom - pageR.top - paperR.top)*ky);
     end;
   end;
 
