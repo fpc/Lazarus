@@ -603,7 +603,7 @@ const
     '', // 0xb8
     '', // 0xb9
     ';', // 0xba - VK_OEM_1 - Can vary by keyboard, US keyboard, the ';:' key
-    '+', // 0xbb - VK_OEM_PLUS - For any country/region, the '+' key
+    '=', // 0xbb - VK_OEM_PLUS - For any country/region, the '+/=' key Delphi returns '=' Issue #0036489
     ',', // 0xbc - VK_OEM_COMMA - For any country/region, the ',' key
     '-', // 0xbd - VK_OEM_MINUS - For any country/region, the '-' key
     '.', // 0xbe - VK_OEM_PERIOD - For any country/region, the '.' key
