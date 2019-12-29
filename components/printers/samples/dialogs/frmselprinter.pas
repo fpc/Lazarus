@@ -91,6 +91,7 @@ type
     procedure PrintSamplePage(PrintImgs:boolean);
     procedure PrintMultiPage;
     procedure PrintMultiPageMultiPaper;
+    procedure PrintRulersPage;
     procedure PrintTest;
   public
   
@@ -370,6 +371,91 @@ begin
 
 end;
 
+procedure TForm1.PrintRulersPage;
+const
+  LONG_LINE   = 3.0;
+  MID_LINE    = 2.1;
+  SMALL_LINE  = 1.3;
+var
+  pgw, pgh, oldFontSize: Integer;
+  h, w: Double;
+  oldStyle: TBrushStyle;
+  ts: TSize;
+  procedure DrawVertRuler(x: double);
+  var
+    y: double;
+    lSize: double;
+  begin
+    Printer.Canvas.Line(mm(x), 0, mm(x), mm(h));
+    y := 0.0;
+    Printer.Canvas.TextOut( MM(x - LONG_LINE) - ts.cx - 3, MM(y) - ts.cy div 2, format('%3.0f',[y]));
+    while y<h do begin
+      if trunc(y) mod 10 = 0 then lSize := LONG_LINE else
+      if trunc(y) mod 5 = 0 then  lSize := MID_LINE
+      else                        lSize := SMALL_LINE;
+      Printer.Canvas.Line( MM(x - lSize), MM(y), MM(x + lSize)+1, MM(y) );
+      y := y + 1.0;
+      if trunc(y) mod 10 = 0 then
+        Printer.Canvas.TextOut( MM(x - lSize) - ts.cx - 3, MM(y) - ts.cy div 2, format('%3.0f',[y]));
+    end;
+  end;
+  procedure DrawHorzRuler(y: double);
+  var
+    x: double;
+    lSize: double;
+  begin
+    Printer.Canvas.Line(0, mm(y), mm(w), mm(y));
+    x := 0.0;
+    Printer.Canvas.TextOut( MM(x) - ts.cx div 2, MM(y + LONG_LINE) + ts.cy + 3, format('%3.0f',[x]));
+    while x<w do begin
+      if trunc(x) mod 10 = 0 then lSize := LONG_LINE else
+      if trunc(x) mod 5 = 0 then  lSize := MID_LINE
+      else                        lSize := SMALL_LINE;
+      Printer.Canvas.Line( MM(x), MM(y - lSize), MM(x), MM(y + lSize)+1);
+      x := x + 1.0;
+      if trunc(x) mod 10 = 0 then
+        Printer.Canvas.TextOut( MM(x) - ts.cx div 2, MM(y + LONG_LINE) + 3, format('%3.0f',[x]));
+    end;
+  end;
+begin
+  try
+    Printer.Title := 'printers4lazarus Rulers sample page';
+    if chkOutputFile.Checked then
+      Printer.FileName := txtOutputFile.FileName
+    else
+      Printer.FileName := '';
+
+    Printer.BeginDoc;
+
+    // for testing high resolution printing, where available.
+    Printer.Canvas.Font.Size := 6;
+    Printer.Canvas.Font.Color := clBlack;
+    Printer.Canvas.Brush.Style := bsClear;
+    Printer.Canvas.Pen.Width := 1;
+    Printer.Canvas.Pen.Color := clBlack;
+    pgw := Printer.PageWidth;
+    pgh := Printer.PageHeight;
+
+    h := pgh*25.4/Printer.YDPI;
+    w := pgw*25.4/Printer.XDPI;
+    ts := Printer.Canvas.TextExtent('000');
+
+    DrawVertRuler( w/2 );
+    DrawHorzRuler( h/2 );
+
+    Printer.EndDoc;
+
+  except
+    on E:Exception do
+    begin
+      Printer.Abort;
+      Application.MessageBox(pChar(e.message),'Error',mb_iconhand);
+    end;
+  end;
+
+  UpdatePrinterInfo;
+end;
+
 procedure TForm1.UpdatePrinterInfo;
 var
   i: Integer;
@@ -606,6 +692,8 @@ begin
       PrintMultiPage;
     3:
       PrintMultiPageMultiPaper;
+    4:
+      PrintRulersPage;
     else
       PrintSamplePage(false);
   end;
