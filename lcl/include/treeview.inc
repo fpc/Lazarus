@@ -320,7 +320,11 @@ begin
   // we must trigger TCustomTreeView.OnDeletion event before
   // unbinding. See issue #17832.
   if Assigned(Owner) and Assigned(Owner.Owner) then
+  begin
     Owner.Owner.Delete(Self);
+    Include(Owner.Owner.FStates, tvsScrollbarChanged);;
+    Owner.Owner.UpdateScrollbars;
+  end;
 
   // Remove the accessibility object too
   if Assigned(Owner) and Assigned(Owner.Owner) then
@@ -2339,6 +2343,8 @@ begin
       lAccessibleObject.DataObject := Result;
     end;
   finally
+    Include(FOwner.FStates, tvsScrollbarChanged);
+    FOwner.UpdateScrollbars;
     // this construction creates nicer exception output
     if not ok then
       Result.Free;
@@ -4704,6 +4710,7 @@ begin
     NDelta := (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
     ScrolledTop := ScrolledTop - NDelta;
     Result := true;
+    UpdateScrollbars;
   end;
   UpdateTooltip(MousePos.X, MousePos.Y);
 end;
@@ -4783,7 +4790,7 @@ begin
       Exclude(FStates,tvoFocusedPainting);
     if (tvoAutoItemHeight in fOptions) then
       UpdateDefaultItemHeight;
-    UpdateScrollbars;
+    //UpdateScrollbars;
     with Canvas do
     begin
       if IsCustomDrawn(dtControl, cdPrePaint) then
@@ -5421,6 +5428,7 @@ end;
 
 procedure TCustomTreeView.Expand(Node: TTreeNode);
 begin
+  UpdateScrollbars;
   if Assigned(FOnExpanded) then FOnExpanded(Self, Node);
 end;
 
@@ -5437,6 +5445,7 @@ end;
 
 procedure TCustomTreeView.Collapse(Node: TTreeNode);
 begin
+  UpdateScrollbars;
   if Assigned(FOnCollapsed) then FOnCollapsed(Self, Node);
 end;
 
@@ -5770,6 +5779,8 @@ begin
   end else
     Selected := ANewNode;
   ANewNode.MakeVisible;
+
+  UpdateScrollbars;
 end;
 
 procedure TCustomTreeView.MouseLeave;
@@ -5936,6 +5947,7 @@ begin
   ScrollArea := ClientRect;
   InflateRect(ScrollArea, -BorderWidth, -BorderWidth);
   ScrollWindowEx(Handle, DeltaX, DeltaY, @ScrollArea, @ScrollArea, 0, nil, ScrollFlags);
+  UpdateScrollbars;
 end;
 
 procedure TCustomTreeView.WMVScroll(var Msg: TLMScroll);
@@ -6010,6 +6022,7 @@ procedure TCustomTreeView.Resize;
 begin
   FStates:=FStates+[tvsScrollbarChanged,tvsBottomItemNeedsUpdate];
   inherited Resize;
+  UpdateScrollbars;
 end;
 
 function TCustomTreeView.GetSelectedChildAccessibleObject: TLazAccessibleObject;
