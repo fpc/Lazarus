@@ -269,69 +269,33 @@ end;
 
 
 {------------------------------------------------------------------------------
-  function CreatePChar(const s: string): PChar;
-
   Allocates a new PChar
- ------------------------------------------------------------------------------}
+ ------------------------------------------------------------------------------
 function CreatePChar(const s: string): PChar;
 begin
   Result:=StrAlloc(length(s) + 1);
   StrPCopy(Result, s);
 end;
-
-{------------------------------------------------------------------------------
-  function ComparePChar(P1, P2: PChar): boolean;
-
-  Checks if P1 and P2 have the same content.
- ------------------------------------------------------------------------------}
-function ComparePChar(P1, P2: PChar): boolean;
-begin
-  if (P1<>P2) then begin
-    if (P1<>nil) and (P2<>nil) then begin
-      while (P1^=P2^) do begin
-        if P1^<>#0 then begin
-          inc(P1);
-          inc(P2);
-        end else begin
-          Result:=true;
-          exit;
-        end;
-      end;
-    end;
-    Result:=false;
-  end else begin
-    Result:=true;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  function FindChar(c: char; p:PChar; Max: integer): integer;
- ------------------------------------------------------------------------------}
+}
 function FindChar(c: char; p:PChar; Max: integer): integer;
 begin
   Result:=0;
-  while (Result<Max) do begin
-    if p[Result]<>c then
-      inc(Result)
-    else
-      exit;
+  while Result<Max do begin
+    if p[Result]=c then exit;
+    inc(Result);
   end;
   Result:=-1;
 end;
 
 {------------------------------------------------------------------------------
-  function FindLineLen(p: PChar; Max: integer): integer;
-  
   Find line end
  ------------------------------------------------------------------------------}
 function FindLineLen(p: PChar; Max: integer): integer;
 begin
   Result:=0;
-  while (Result<Max) do begin
-    if not (p[Result] in [#10,#13]) then
-      inc(Result)
-    else
-      exit;
+  while Result<Max do begin
+    if p[Result] in [#10,#13] then exit;
+    inc(Result);
   end;
   Result:=-1;
 end;
@@ -4987,7 +4951,7 @@ end;
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
 begin
   for Result:=Low(TDesignSignalType) to High(TDesignSignalType) do
-    if ComparePChar(DesignSignalNames[Result],Name)
+    if SamePChar(DesignSignalNames[Result],Name)
     and (DesignSignalAfter[Result]=After) then exit;
   Result:=dstUnknown;
 end;

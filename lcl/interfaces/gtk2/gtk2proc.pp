@@ -49,7 +49,7 @@ uses
   LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, ExtDlgs, ImgList, LCLMessageGlue,
   // LazUtils
-  Masks, FileUtil, LazFileUtils, LazLoggerBase, LazUTF8, DynHashArray,
+  Masks, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase, LazUTF8, DynHashArray,
   // Gtk2
   Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug;
 
@@ -311,8 +311,7 @@ function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 function DeliverMessage(const Target: Pointer; var AMessage): PtrInt;
 
 // PChar
-function CreatePChar(const s: string): PChar;
-function ComparePChar(P1, P2: PChar): boolean;
+//function CreatePChar(const s: string): PChar;
 function FindChar(c: char; p:PChar; Max: integer): integer;
 function FindLineLen(p:PChar; Max: integer): integer;
 

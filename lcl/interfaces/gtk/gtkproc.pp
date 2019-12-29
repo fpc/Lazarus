@@ -47,9 +47,10 @@ uses
     glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   Math, // Math after gtk to get the correct Float type
-  LazUTF8, LMessages, LCLMessageGlue, LCLProc, LCLStrConsts, LCLIntf, LCLType,
-  DynHashArray, Masks, GraphType, GraphMath, Graphics, Controls, Forms, Menus,
-  StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs, FileUtil, LazFileUtils,
+  Masks, LazUTF8, FileUtil, LazFileUtils, LazStringUtils, DynHashArray,
+  LMessages, LCLMessageGlue, LCLProc, LCLStrConsts, LCLIntf, LCLType,
+  GraphType, GraphMath, Graphics, Controls, Forms, Menus,
+  StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
   ImgList, GtkFontCache, GTKGlobals, GtkDef, GtkExtra, GtkDebug;
 
 const
@@ -301,7 +302,6 @@ procedure BeginGDKErrorTrap;
 procedure EndGDKErrorTrap;
 function dbgGRect(const ARect: PGDKRectangle): string; overload;
 
-
 // gtk resources
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
 
@@ -310,8 +310,7 @@ function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 function DeliverMessage(const Target: Pointer; var AMessage): PtrInt;
 
 // PChar
-function CreatePChar(const s: string): PChar;
-function ComparePChar(P1, P2: PChar): boolean;
+//function CreatePChar(const s: string): PChar;
 function FindChar(c: char; p:PChar; Max: integer): integer;
 function FindLineLen(p:PChar; Max: integer): integer;
 
