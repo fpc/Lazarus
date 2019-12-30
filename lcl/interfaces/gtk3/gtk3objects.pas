@@ -212,7 +212,7 @@ type
     procedure CreateObjects;
     procedure DeleteObjects;
   public
-    procedure drawPoint(x1: Integer; y1: Integer);
+    procedure drawPixel(x, y: Integer; AColor: TColor);
     procedure drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
     procedure drawText(x: Integer; y: Integer; const s: String); overload;
@@ -1211,11 +1211,13 @@ begin
     FreeAndNil(FvImage);
 end;
 
-procedure TGtk3DeviceContext.drawPoint(x1: Integer; y1: Integer);
+procedure TGtk3DeviceContext.drawPixel(x, y: Integer; AColor: TColor);
+// Seems that painting line from (a-1, b-1) to (a,b) gives one pixel
 begin
-  applyPen;
-  cairo_move_to(Widget , x1, y1);
-  cairo_line_to(Widget, x1, y1);
+  SetSourceColor(AColor);
+  cairo_set_line_width(Widget, 1);
+  cairo_move_to(Widget, x - PixelOffset, y - PixelOffset);
+  cairo_line_to(Widget, x + PixelOffset, y + PixelOffset);
   cairo_stroke(Widget);
 end;
 

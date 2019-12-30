@@ -609,22 +609,10 @@ begin
   end;
 end;
 
-procedure TGtk3WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
-  AColor: TGraphicsColor);
-var
-  ASavedPenColor: TColor;
-  cr: PCairo_t;
+procedure TGtk3WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: Integer; AColor: TGraphicsColor);
 begin
   if IsValidDC(CanvasHandle) then
-  begin
-    cr := TGtk3DeviceContext(CanvasHandle).Widget;
-    ASavedPenColor := TGtk3DeviceContext(CanvasHandle).CurrentPen.Color;
-    TGtk3DeviceContext(CanvasHandle).CurrentPen.Color := AColor;
-    cairo_move_to(cr, X, Y);
-    cairo_line_to(cr, X, Y);
-    cairo_stroke(cr);
-    TGtk3DeviceContext(CanvasHandle).CurrentPen.Color := ASavedPenColor;
-  end;
+    TGtk3DeviceContext(CanvasHandle).drawPixel(X, Y, AColor);
 end;
 
 procedure TGtk3WidgetSet.DCRedraw(CanvasHandle: HDC);
