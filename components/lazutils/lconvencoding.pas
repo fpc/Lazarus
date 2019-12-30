@@ -36,10 +36,12 @@ type
     ceemSkip,
     ceemException,
     ceemReplace,
-    ceemReturmEmpty
+    ceemReturnEmpty
     );
 
 var
+  //Global variable which controls behaviour of encoding conversion error, in 3 places:
+  //a) UTF8 to single byte encoding, b) DBCS (Asian) encoding to UTF8, c) UTF8 to DBCS
   ConvertEncodingErrorMode: TConvertEncodingErrorMode = ceemSkip;
 
 //encoding names
@@ -2123,7 +2125,7 @@ begin
             Dest^:='?';
             inc(Dest);
           end;
-        ceemReturmEmpty:
+        ceemReturnEmpty:
           Exit('');
       end;
     end;

@@ -58,7 +58,7 @@ begin
             Dest^:='?';
             Inc(Dest);
           end;
-        ceemReturmEmpty:
+        ceemReturnEmpty:
           Exit('');
       end;
     end;
@@ -233,7 +233,7 @@ begin
             Dest^ := '?';
             Inc(Dest);
           end;
-        ceemReturmEmpty:
+        ceemReturnEmpty:
           Exit('');
       end;
     end;
