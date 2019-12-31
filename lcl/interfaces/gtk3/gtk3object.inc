@@ -588,23 +588,20 @@ begin
     Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new(CursorValue)));
 end;
 
-function TGtk3WidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
-  ): TGraphicsColor;
+function TGtk3WidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 var
-  ANewPix: PGdkPixbuf;
+  pixbuf: PGdkPixbuf;
+  pixels: pointer;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.DCGetPixel not implemented ...');
-  {$ENDIF}
   Result := 0;
   if IsValidDC(CanvasHandle) then
   begin
-    if (TGtk3DeviceContext(CanvasHandle).ParentPixmap <> nil) then
+    pixbuf := gdk_pixbuf_get_from_surface(TGtk3DeviceContext(CanvasHandle).CairoSurface, X, Y, 1, 1);
+    if Assigned(pixbuf) then
     begin
-      ANewPix := gdk_pixbuf_new_subpixbuf(TGtk3DeviceContext(CanvasHandle).ParentPixmap, X, Y, 1, 1);
-      // cairo_get_c
-      // gdk_pixbuf_get_pixels(ANewPix);
-      ANewPix^.unref;
+      pixels := gdk_pixbuf_get_pixels(pixbuf);
+      if Assigned(pixels) then
+        Result := PLongInt(pixels)^ and $FFFFFF; // take first 3 bytes at pixels^
     end;
   end;
 end;
