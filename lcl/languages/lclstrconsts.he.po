@@ -734,6 +734,26 @@ msgstr "לימוני"
 msgid "List index exceeds bounds (%d)"
 msgstr "אינדקס הרשימה עובר את הגבול"
 
+#: lclstrconsts.rsmacosmenuhide
+msgid "Hide %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuhideothers
+msgid "Hide Others"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuquit
+msgid "Quit %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuservices
+msgid "Services"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenushowall
+msgid "Show All"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "ערמוני"

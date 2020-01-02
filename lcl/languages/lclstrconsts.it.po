@@ -694,6 +694,26 @@ msgstr "Verde brillante"
 msgid "List index exceeds bounds (%d)"
 msgstr "Indice della lista fuori dai limiti (%d)"
 
+#: lclstrconsts.rsmacosmenuhide
+msgid "Hide %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuhideothers
+msgid "Hide Others"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuquit
+msgid "Quit %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuservices
+msgid "Services"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenushowall
+msgid "Show All"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Marrone"

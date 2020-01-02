@@ -692,6 +692,26 @@ msgstr "Зелений"
 msgid "List index exceeds bounds (%d)"
 msgstr "Індекс списку поза діапазоном (%d)"
 
+#: lclstrconsts.rsmacosmenuhide
+msgid "Hide %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuhideothers
+msgid "Hide Others"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuquit
+msgid "Quit %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuservices
+msgid "Services"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenushowall
+msgid "Show All"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Коричнево-малиновий"
