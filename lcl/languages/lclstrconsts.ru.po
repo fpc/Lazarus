@@ -690,24 +690,26 @@ msgid "List index exceeds bounds (%d)"
 msgstr "Индекс списка вне диапазона (%d)"
 
 #: lclstrconsts.rsmacosmenuhide
+#, object-pascal-format
 msgid "Hide %s"
-msgstr ""
+msgstr "Скрыть %s"
 
 #: lclstrconsts.rsmacosmenuhideothers
 msgid "Hide Others"
-msgstr ""
+msgstr "Скрыть остальные"
 
 #: lclstrconsts.rsmacosmenuquit
+#, object-pascal-format
 msgid "Quit %s"
-msgstr ""
+msgstr "Завершить %s"
 
 #: lclstrconsts.rsmacosmenuservices
 msgid "Services"
-msgstr ""
+msgstr "Службы"
 
 #: lclstrconsts.rsmacosmenushowall
 msgid "Show All"
-msgstr ""
+msgstr "Показать все"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
