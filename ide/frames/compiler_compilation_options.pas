@@ -385,15 +385,15 @@ procedure TCompilerCompilationOptionsFrame.WriteSettings(AOptions: TAbstractIDEO
 
 var
   Options: TBaseCompilerOptions absolute AOptions;
+  HL: THistoryList;
 begin
   Options.CreateMakefileOnBuild := chkCreateMakefile.Checked;
 
   // execute before
   Options.ExecuteBefore.Command := ExecuteBeforeCommandComboBox.Text;
-  with InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltCaseSensitive) do begin
-    Assign(ExecuteBeforeCommandComboBox.Items);
-    Push(Options.ExecuteBefore.Command);
-  end;
+  HL := InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltCaseSensitive);
+  HL.Assign(ExecuteBeforeCommandComboBox.Items);
+  HL.Push(Options.ExecuteBefore.Command);
 
   WriteSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckListBox);
 
@@ -416,10 +416,9 @@ begin
 
   // execute after
   Options.ExecuteAfter.Command := ExecuteAfterCommandComboBox.Text;
-  with InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltCaseSensitive) do begin
-    Assign(ExecuteAfterCommandComboBox.Items);
-    Push(Options.ExecuteAfter.Command);
-  end;
+  HL := InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltCaseSensitive);
+  HL.Assign(ExecuteAfterCommandComboBox.Items);
+  HL.Push(Options.ExecuteAfter.Command);
   WriteSettingsParsers(Options.ExecuteAfter,ExecAfterParsersCheckListBox);
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
     Options.ExecuteAfter.CompileReasons :=
