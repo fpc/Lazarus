@@ -210,6 +210,8 @@ type
     property UseBackground: boolean read fUseBackground write fUseBackground;
   end;
 
+  ESynExport = class(Exception);
+
 implementation
 
 uses
@@ -309,16 +311,17 @@ var
   TheLines: TSynEditStringsBase;
 begin
   // abort if not all necessary conditions are met
-  if not Assigned(ALines) or not Assigned(Highlighter) or (ALines.Count = 0)
-    or (Start.Y > ALines.Count) or (Start.Y > Stop.Y)
-  then
-    Abort;
+  if not Assigned(ALines) or not Assigned(Highlighter) then
+    Raise ESynExport.Create('TSynCustomExporter.ExportAll: no lines or highlighter assigned.');
+
+  if (ALines.Count = 0) or (Start.Y > ALines.Count) or (Start.Y > Stop.Y) then
+    Exit; //simply terminate (and export nothing), no reason to raise an exception here
 
   Stop.Y := Max(1, Min(Stop.Y, ALines.Count));
   Stop.X := Max(1, Min(Stop.X, Length(ALines[Stop.Y - 1]) + 1));
   Start.X := Max(1, Min(Start.X, Length(ALines[Start.Y - 1]) + 1));
   if (Start.Y = Stop.Y) and (Start.X >= Stop.X) then
-    Abort;
+    Exit;
 
   if ALines is TSynEditStringsBase then
     TheLines := TSynEditStringsBase(ALines)
