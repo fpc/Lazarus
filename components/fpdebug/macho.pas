@@ -22,7 +22,9 @@ unit macho;
    * @APPLE_LICENSE_HEADER_END@
     }
 
-{$mode objfpc}{$H+}
+{ converted by Dmitry Boyarintsev 2009 }
+
+{$H+}
 
 interface
 
@@ -48,6 +50,12 @@ type
 
   uint64_t  = QWord;
 
+// mach/thread_status.h
+
+{$ifdef i386}
+
+{$endif i386}
+
 // mach/machine.h
 
 type
@@ -55,9 +63,298 @@ type
   cpu_subtype_t    = integer_t;
   cpu_threadtype_t = integer_t;
 
+const
+  CPU_STATE_MAX		= 4;
+
+  CPU_STATE_USER		= 0;
+  CPU_STATE_SYSTEM	= 1;
+  CPU_STATE_IDLE		= 2;
+  CPU_STATE_NICE		= 3;
+
+  {* Capability bits used in the definition of cpu_type. }
+  CPU_ARCH_MASK	  = $ff000000;	{ mask for architecture bits }
+  CPU_ARCH_ABI64	= $01000000;	{ 64 bit ABI }
+
+  {	Machine types known by all. }
+
+  CPU_TYPE_ANY		  = -1;
+  CPU_TYPE_VAX		  = 1;
+  CPU_TYPE_MC680x0	= 6;
+  CPU_TYPE_X86		  = 7;
+  CPU_TYPE_I386		  = CPU_TYPE_X86;		{ compatibility }
+  CPU_TYPE_X86_64	  = CPU_TYPE_X86 or CPU_ARCH_ABI64;
+  // skip CPU_TYPE_MIPS		= 8;
+  CPU_TYPE_MC98000	= 10;
+  CPU_TYPE_HPPA     = 11;
+  CPU_TYPE_ARM		  = 12;
+  CPU_TYPE_ARM64          = CPU_TYPE_ARM or CPU_ARCH_ABI64;
+  CPU_TYPE_MC88000	= 13;
+  CPU_TYPE_SPARC		= 14;
+  CPU_TYPE_I860		  = 15;
+  // skip	CPU_TYPE_ALPHA		= 16;	*/
+
+  CPU_TYPE_POWERPC	  = 18;
+  CPU_TYPE_POWERPC64	= CPU_TYPE_POWERPC or CPU_ARCH_ABI64;
+
+{*
+ *	Machine subtypes (these are defined here, instead of in a machine
+ *	dependent directory, so that any program can get all definitions
+ *	regardless of where is it compiled).
+ *}
+
+{*
+ * Capability bits used in the definition of cpu_subtype.
+ *}
+  CPU_SUBTYPE_MASK 	= $ff000000;	{ mask for feature flags }
+  CPU_SUBTYPE_LIB64	= $80000000;	{ 64 bit libraries }
+
+
+{*
+ *	Object files that are hand-crafted to run on any
+ *	implementation of an architecture are tagged with
+ *	CPU_SUBTYPE_MULTIPLE.  This functions essentially the same as
+ *	the "ALL" subtype of an architecture except that it allows us
+ *	to easily find object files that may need to be modified
+ *	whenever a new implementation of an architecture comes out.
+ *
+ *	It is the responsibility of the implementor to make sure the
+ *	software handles unsupported implementations elegantly.
+ *}
+ 	CPU_SUBTYPE_MULTIPLE		  = -1;
+  CPU_SUBTYPE_LITTLE_ENDIAN	= 0;
+  CPU_SUBTYPE_BIG_ENDIAN		= 1;
+
+{*
+ *     Machine threadtypes.
+ *     This is none - not defined - for most machine types/subtypes.
+ *}
+  CPU_THREADTYPE_NONE	=	0;
+
+{*
+ *	VAX subtypes (these do *not* necessary conform to the actual cpu
+ *	ID assigned by DEC available via the SID register).
+ *}
+
+ 	CPU_SUBTYPE_VAX_ALL	= 0;
+  CPU_SUBTYPE_VAX780	= 1;
+  CPU_SUBTYPE_VAX785	= 2;
+  CPU_SUBTYPE_VAX750	= 3;
+  CPU_SUBTYPE_VAX730	= 4;
+  CPU_SUBTYPE_UVAXI	  = 5;
+  CPU_SUBTYPE_UVAXII	= 6;
+  CPU_SUBTYPE_VAX8200	= 7;
+  CPU_SUBTYPE_VAX8500	= 8;
+  CPU_SUBTYPE_VAX8600	= 9;
+  CPU_SUBTYPE_VAX8650	= 10;
+  CPU_SUBTYPE_VAX8800	= 11;
+  CPU_SUBTYPE_UVAXIII	= 12;
+
+{*
+ * 	680x0 subtypes
+ *
+ * The subtype definitions here are unusual for historical reasons.
+ * NeXT used to consider 68030 code as generic 68000 code.  For
+ * backwards compatability:
+ *
+ *	CPU_SUBTYPE_MC68030 symbol has been preserved for source code
+ *	compatability.
+ *
+ *	CPU_SUBTYPE_MC680x0_ALL has been defined to be the same
+ *	subtype as CPU_SUBTYPE_MC68030 for binary comatability.
+ *
+ *	CPU_SUBTYPE_MC68030_ONLY has been added to allow new object
+ *	files to be tagged as containing 68030-specific instructions.
+ *}
+
+ 	CPU_SUBTYPE_MC680x0_ALL  = 1;
+  CPU_SUBTYPE_MC68030		   = 1; { compat }
+  CPU_SUBTYPE_MC68040		   = 2;
+ 	CPU_SUBTYPE_MC68030_ONLY = 3;
+
+  {* I386 subtypes *}
+
+ 	CPU_SUBTYPE_I386_ALL	     =  3 + (0 shl 4);
+  CPU_SUBTYPE_386				     =  3 + (0 shl 4);
+  CPU_SUBTYPE_486				     =  4 + (0 shl 4);
+  CPU_SUBTYPE_486SX			     =  4 + (8 shl 4); // 8 << 4 = 128
+  CPU_SUBTYPE_586				     =  5 + (0 shl 4);
+  CPU_SUBTYPE_PENT	         =  5 + (0 shl 4);
+  CPU_SUBTYPE_PENTPRO	       =  6 + (1 shl 4);
+  CPU_SUBTYPE_PENTII_M3	     =  6 + (3 shl 4);
+  CPU_SUBTYPE_PENTII_M5	     =  6 + (5 shl 4);
+  CPU_SUBTYPE_CELERON				 =  7 + (6 shl 4);
+  CPU_SUBTYPE_CELERON_MOBILE =  7 + (7 shl 4);
+  CPU_SUBTYPE_PENTIUM_3			 =  8 + (0 shl 4);
+  CPU_SUBTYPE_PENTIUM_3_M		 =  8 + (1 shl 4);
+  CPU_SUBTYPE_PENTIUM_3_XEON =  8 + (2 shl 4);
+  CPU_SUBTYPE_PENTIUM_M			 =  9 + (0 shl 4);
+  CPU_SUBTYPE_PENTIUM_4			 = 10 + (0 shl 4);
+  CPU_SUBTYPE_PENTIUM_4_M		 = 10 + (1 shl 4);
+  CPU_SUBTYPE_ITANIUM				 = 11 + (0 shl 4);
+  CPU_SUBTYPE_ITANIUM_2		   = 11 + (1 shl 4);
+  CPU_SUBTYPE_XEON				   = 12 + (0 shl 4);
+  CPU_SUBTYPE_XEON_MP			   = 12 + (1 shl 4);
+
+  CPU_SUBTYPE_INTEL_FAMILY_MAX	=  15;
+  CPU_SUBTYPE_INTEL_MODEL_ALL	= 0;
+
+  {* X86 subtypes. *}
+
+  CPU_SUBTYPE_X86_ALL		 = 3;
+  CPU_SUBTYPE_X86_64_ALL = 3;
+  CPU_SUBTYPE_X86_ARCH1	 = 4;
+
+
+  CPU_THREADTYPE_INTEL_HTT = 1;
+
+  {*	Mips subtypes. *}
+
+ 	CPU_SUBTYPE_MIPS_ALL	  = 0;
+  CPU_SUBTYPE_MIPS_R2300	= 1;
+  CPU_SUBTYPE_MIPS_R2600	= 2;
+  CPU_SUBTYPE_MIPS_R2800	= 3;
+  CPU_SUBTYPE_MIPS_R2000a	= 4;	{* pmax *}
+  CPU_SUBTYPE_MIPS_R2000	= 5;
+  CPU_SUBTYPE_MIPS_R3000a	= 6;	{ 3max *}
+  CPU_SUBTYPE_MIPS_R3000	= 7;
+
+  {* MC98000 (PowerPC) subtypes *}
+ 	CPU_SUBTYPE_MC98000_ALL	= 0;
+  CPU_SUBTYPE_MC98601	    = 1;
+
+{*
+ *	HPPA subtypes for Hewlett-Packard HP-PA family of
+ *	risc processors. Port by NeXT to 700 series.
+ *}
+
+ 	CPU_SUBTYPE_HPPA_ALL		= 0;
+  CPU_SUBTYPE_HPPA_7100		= 0; {* compat *}
+  CPU_SUBTYPE_HPPA_7100LC	= 1;
+
+  {* MC88000 subtypes. *}
+
+ 	CPU_SUBTYPE_MC88000_ALL	= 0;
+  CPU_SUBTYPE_MC88100	    = 1;
+  CPU_SUBTYPE_MC88110	    = 2;
+
+  {* SPARC subtypes  *}
+ 	CPU_SUBTYPE_SPARC_ALL		= 0;
+
+  {* I860 subtypes *}
+  CPU_SUBTYPE_I860_ALL	=  0;
+  CPU_SUBTYPE_I860_860	=  1;
+
+  {* PowerPC subtypes *}
+
+  CPU_SUBTYPE_POWERPC_ALL		= 0;
+  CPU_SUBTYPE_POWERPC_601		= 1;
+  CPU_SUBTYPE_POWERPC_602		= 2;
+  CPU_SUBTYPE_POWERPC_603		= 3;
+  CPU_SUBTYPE_POWERPC_603e	= 4;
+  CPU_SUBTYPE_POWERPC_603ev	= 5;
+  CPU_SUBTYPE_POWERPC_604		= 6;
+  CPU_SUBTYPE_POWERPC_604e	= 7;
+  CPU_SUBTYPE_POWERPC_620		= 8;
+  CPU_SUBTYPE_POWERPC_750		= 9;
+  CPU_SUBTYPE_POWERPC_7400	= 10;
+  CPU_SUBTYPE_POWERPC_7450	= 11;
+  CPU_SUBTYPE_POWERPC_970		= 100;
+
+  {* ARM subtypes *}
+  CPU_SUBTYPE_ARM_ALL       = 0;
+  CPU_SUBTYPE_ARM_V4T       = 5;
+  CPU_SUBTYPE_ARM_V6        = 6;
+  CPU_SUBTYPE_ARM_V5TEJ     = 7;
+  CPU_SUBTYPE_ARM_XSCALE		= 8;
+
+{*
+ *	CPU families (sysctl hw.cpufamily)
+ *
+ * These are meant to identify the CPU's marketing name - an
+ * application can map these to (possibly) localized strings.
+ * NB: the encodings of the CPU families are intentionally arbitrary.
+ * There is no ordering, and you should never try to deduce whether
+ * or not some feature is available based on the family.
+ * Use feature flags (eg, hw.optional.altivec) to test for optional
+ * functionality.
+ *}
+  CPUFAMILY_UNKNOWN    = 0;
+  CPUFAMILY_POWERPC_G3 = $cee41549;
+  CPUFAMILY_POWERPC_G4 = $77c184ae;
+  CPUFAMILY_POWERPC_G5 = $ed76d8aa;
+  CPUFAMILY_INTEL_6_13 = $aa33392b;
+  CPUFAMILY_INTEL_6_14 = $73d67300;  { "Intel Core Solo" and "Intel Core Duo" (32-bit Pentium-M with SSE3) }
+  CPUFAMILY_INTEL_6_15 = $426f69ef;  { "Intel Core 2 Duo" }
+  CPUFAMILY_INTEL_6_23 = $78ea4fbc;  { Penryn }
+  CPUFAMILY_INTEL_6_26 = $6b5a4cd2;  { Nehalem }
+  CPUFAMILY_ARM_9      = $e73283ae;
+  CPUFAMILY_ARM_11     = $8ff620d8;
+  CPUFAMILY_ARM_XSCALE = $53b005f5;
+
+  CPUFAMILY_INTEL_YONAH	  = CPUFAMILY_INTEL_6_14;
+  CPUFAMILY_INTEL_MEROM	  = CPUFAMILY_INTEL_6_15;
+  CPUFAMILY_INTEL_PENRYN	= CPUFAMILY_INTEL_6_23;
+  CPUFAMILY_INTEL_NEHALEM	= CPUFAMILY_INTEL_6_26;
+
+  CPUFAMILY_INTEL_CORE	 = CPUFAMILY_INTEL_6_14;
+  CPUFAMILY_INTEL_CORE2	 = CPUFAMILY_INTEL_6_15;
+
 // mach/vm_prot.h
 type
   vm_prot_t = Integer;
+
+const
+  VM_PROT_NONE	 = $00;
+
+  VM_PROT_READ	 = $01;	{* read permission *}
+  VM_PROT_WRITE	 = $02;	{* write permission *}
+  VM_PROT_EXECUTE	= $04;	{* execute permission *}
+
+{*
+ *	The default protection for newly-created virtual memory
+ *}
+
+  VM_PROT_DEFAULT	= VM_PROT_READ or VM_PROT_WRITE;
+
+{*
+ *	The maximum privileges possible, for parameter checking.
+ *}
+
+  VM_PROT_ALL	 = VM_PROT_READ or VM_PROT_WRITE or VM_PROT_EXECUTE;
+
+{*
+ *	An invalid protection value.
+ *	Used only by memory_object_lock_request to indicate no change
+ *	to page locks.  Using -1 here is a bad idea because it
+ *	looks like VM_PROT_ALL and then some.
+ *}
+
+  VM_PROT_NO_CHANGE	= $08;
+
+{*
+ *      When a caller finds that he cannot obtain write permission on a
+ *      mapped entry, the following flag can be used.  The entry will
+ *      be made "needs copy" effectively copying the object (using COW),
+ *      and write permission will be added to the maximum protections
+ *      for the associated entry.
+ *}
+
+  VM_PROT_COPY = $10;
+
+
+{*
+ *	Another invalid protection value.
+ *	Used only by memory_object_data_request upon an object
+ *	which has specified a copy_call copy strategy. It is used
+ *	when the kernel wants a page belonging to a copy of the
+ *	object, and is only asking the object as a result of
+ *	following a shadow chain. This solves the race between pages
+ *	being pushed up by the memory manager and the kernel
+ *	walking down the shadow chain.
+ *}
+
+  VM_PROT_WANTS_COPY = $10;
+
 
 { Constant for the magic field of the mach_header (32-bit architectures)  the mach magic number  }
 
@@ -69,7 +366,7 @@ const
 type
   { * The 32-bit mach header appears at the very beginning of the object file for 32-bit architectures. }
   mach_header = record
-    magic       : uint32_t;       { mach magic number identifier  }
+    magic       : uint32_t;      { mach magic number identifier  }
     cputype     : cpu_type_t;    { cpu specifier  }
     cpusubtype  : cpu_subtype_t; { machine specifier  }
     filetype    : uint32_t;      { type of file  }
@@ -132,34 +429,32 @@ const
   MH_DYLINKER   = $7; { dynamic link editor  }
   MH_BUNDLE     = $8; { dynamically bound bundle file  }
   MH_DYLIB_STUB = $9; { shared library stub for static  }
-  MH_DSYM       = $a; {  linking only, no section contents  }
-                      { companion file with only debug  }
-
-
-  {  sections  }
-  { Constants for the flags field of the mach_header  }
+  MH_DSYM       = $a; { linking only, no section contents   }
+                      { companion file with only debug sections  }
 
 const
-  MH_NOUNDEFS = $1; { the object file has no undefined references  }
-  MH_INCRLINK = $2; { the object file is the output of an  incremental link against a base file and can't be link edited again  }
-  MH_DYLDLINK = $4; { the object file is input for the dynamic linker and can't be staticly link edited again  }
-  MH_BINDATLOAD = $8; { the object file's undefined references are bound by the dynamic linker when loaded.  }
-  MH_PREBOUND = $10; { the file has its dynamic undefined references prebound.  }
-  MH_SPLIT_SEGS = $20; { the file has its read-only and read-write segments split  }
-  MH_LAZY_INIT = $40; { the shared library init routine is to be run lazily via catching memory faults to its writeable segments (obsolete)  }
-  MH_TWOLEVEL = $80; { the image is using two-level name space bindings  }
-  MH_FORCE_FLAT = $100; { the executable is forcing all images to use flat name space bindings  }
-  MH_NOMULTIDEFS = $200; { this umbrella guarantees no multiple defintions of symbols in its sub-images so the two-level namespace hints can always be used.  }
-  MH_NOFIXPREBINDING = $400; { do not have dyld notify the prebinding agent about this executable  }
-  MH_PREBINDABLE = $800; { the binary is not prebound but can have its prebinding redone. only used when MH_PREBOUND is not set.  }
-  MH_ALLMODSBOUND = $1000; { indicates that this binary binds to  all two-level namespace modules of
-                 					   its dependent libraries. only used  when MH_PREBINDABLE and MH_TWOLEVEL are both set.  }
+  { Constants for the flags field of the mach_header  }
+
+  MH_NOUNDEFS     = $1;   { the object file has no undefined references  }
+  MH_INCRLINK     = $2;   { the object file is the output of an  incremental link against a base file and can't be link edited again  }
+  MH_DYLDLINK     = $4;   { the object file is input for the dynamic linker and can't be staticly link edited again  }
+  MH_BINDATLOAD   = $8;   { the object file's undefined references are bound by the dynamic linker when loaded.  }
+  MH_PREBOUND     = $10;  { the file has its dynamic undefined references prebound.  }
+  MH_SPLIT_SEGS   = $20;  { the file has its read-only and read-write segments split  }
+  MH_LAZY_INIT    = $40;  { the shared library init routine is to be run lazily via catching memory faults to its writeable segments (obsolete)  }
+  MH_TWOLEVEL     = $80;  { the image is using two-level name space bindings  }
+  MH_FORCE_FLAT   = $100; { the executable is forcing all images to use flat name space bindings  }
+  MH_NOMULTIDEFS  = $200; { this umbrella guarantees no multiple defintions of symbols in its sub-images so the two-level namespace hints can always be used.  }
+  MH_NOFIXPREBINDING = $400;  { do not have dyld notify the prebinding agent about this executable  }
+  MH_PREBINDABLE     = $800;  { the binary is not prebound but can have its prebinding redone. only used when MH_PREBOUND is not set.  }
+  MH_ALLMODSBOUND    = $1000; { indicates that this binary binds to  all two-level namespace modules of                }
+                 			    		{ its dependent libraries. only used  when MH_PREBINDABLE and MH_TWOLEVEL are both set.  }
   MH_SUBSECTIONS_VIA_SYMBOLS = $2000; { safe to divide up the sections into sub-sections via symbols for dead code stripping  }
-  MH_CANONICAL = $4000; { the binary has been canonicalized via the unprebind operation  }
-  MH_WEAK_DEFINES = $8000; { the final linked image contains external weak symbols  }
-  MH_BINDS_TO_WEAK = $10000; { the final linked image uses weak symbols  }
-  MH_ALLOW_STACK_EXECUTION = $20000; { When this bit is set, all stacks in the task will be given stack
-                                    	execution privilege.  Only used in MH_EXECUTE filetypes.  }
+  MH_CANONICAL      = $4000;  { the binary has been canonicalized via the unprebind operation  }
+  MH_WEAK_DEFINES   = $8000;  { the final linked image contains external weak symbols  }
+  MH_BINDS_TO_WEAK  = $10000; { the final linked image uses weak symbols  }
+  MH_ALLOW_STACK_EXECUTION = $20000; { When this bit is set, all stacks in the task will be given stack }
+                                     {	execution privilege.  Only used in MH_EXECUTE filetypes.        }
   MH_ROOT_SAFE = $40000; { When this bit is set, the binary declares it is safe for use in processes with uid zero  }
   MH_SETUID_SAFE = $80000; { When this bit is set, the binary declares it is safe for use in processes when issetugid() is true  }
   MH_NO_REEXPORTED_DYLIBS = $100000; { When this bit is set on a dylib, the static linker does not need to examine dependent dylibs to see if any are re-exported  }
@@ -199,27 +494,27 @@ type
    * image.  Other load commands without this bit that are not understood will
    * simply be ignored.
     }
+const
+  LC_REQ_DYLD   = $80000000;
 
 { Constants for the cmd field of all load commands, the type  }
-
 const
-  LC_REQ_DYLD   = $80000000; { segment of this file to be mapped  }
-  LC_SEGMENT    = $1; { link-edit stab symbol table info  }
-  LC_SYMTAB     = $2;  { link-edit gdb symbol table info (obsolete)  }
-  LC_SYMSEG     = $3;  { thread  }
-  LC_THREAD     = $4;  { unix thread (includes a stack)  }
-  LC_UNIXTHREAD = $5;  { load a specified fixed VM shared library  }
-  LC_LOADFVMLIB = $6;  { fixed VM shared library identification  }
-  LC_IDFVMLIB   = $7;    { object identification info (obsolete)  }
-  LC_IDENT      = $8;     { fixed VM file inclusion (internal use)  }
-  LC_FVMFILE    = $9;  { prepage command (internal use)  }
-  LC_PREPAGE    = $a;  { dynamic link-edit symbol table info  }
-  LC_DYSYMTAB   = $b; { load a dynamically linked shared library  }
-  LC_LOAD_DYLIB = $c; { dynamically linked shared lib ident  }
-  LC_ID_DYLIB   = $d; { load a dynamic linker  }
-  LC_LOAD_DYLINKER  = $e; { dynamic linker identification  }
-  LC_ID_DYLINKER    = $f; { modules prebound for a dynamically  }
-  LC_PREBOUND_DYLIB = $10;  {  linked shared library  }
+  LC_SEGMENT        = $1;  { segment of this file to be mapped }
+  LC_SYMTAB         = $2;  { link-edit stab symbol table info  }
+  LC_SYMSEG         = $3;  { link-edit gdb symbol table info (obsolete)  }
+  LC_THREAD         = $4;  { thread  }
+  LC_UNIXTHREAD     = $5;  { unix thread (includes a stack)  }
+  LC_LOADFVMLIB     = $6;  { load a specified fixed VM shared library  }
+  LC_IDFVMLIB       = $7;  { fixed VM shared library identification  }
+  LC_IDENT          = $8;  { object identification info (obsolete)  }
+  LC_FVMFILE        = $9;  { fixed VM file inclusion (internal use)  }
+  LC_PREPAGE        = $a;  { prepage command (internal use)  }
+  LC_DYSYMTAB       = $b;  { dynamic link-edit symbol table info  }
+  LC_LOAD_DYLIB     = $c;  { load a dynamically linked shared library  }
+  LC_ID_DYLIB       = $d;  { dynamically linked shared lib ident  }
+  LC_LOAD_DYLINKER  = $e;  { load a dynamic linker  }
+  LC_ID_DYLINKER    = $f;  { dynamic linker identification  }
+  LC_PREBOUND_DYLIB = $10; { modules prebound for a dynamically linked shared library  }
   LC_ROUTINES       = $11; { image routines  }
   LC_SUB_FRAMEWORK  = $12; { sub framework  }
   LC_SUB_UMBRELLA   = $13; { sub umbrella  }
@@ -269,21 +564,21 @@ type
    * section structures directly follow the segment command and their size is
    * reflected in cmdsize.
     }
-  
-  { for 32-bit architectures  }            
-  
-  segment_command = record           
-    cmd      : uint32_t;             { LC_SEGMENT  }                          
-    cmdsize  : uint32_t;             { includes sizeof section structs  }     
-    segname  : array[0..15] of char; { segment name  }                        
-    vmaddr   : uint32_t;             { memory address of this segment  }      
-    vmsize   : uint32_t;             { memory size of this segment  }         
-    fileoff  : uint32_t;             { file offset of this segment  }         
-    filesize : uint32_t;             { amount to map from the file  }         
-    maxprot  : vm_prot_t;            { maximum VM protection  }               
-    initprot : vm_prot_t;            { initial VM protection  }               
-    nsects   : uint32_t;             { number of sections in segment  }       
-    flags    : uint32_t;             { flags  }                               
+
+  { for 32-bit architectures  }
+
+  segment_command = record
+    cmd      : uint32_t;             { LC_SEGMENT  }
+    cmdsize  : uint32_t;             { includes sizeof section structs  }
+    segname  : array[0..15] of char; { segment name  }
+    vmaddr   : uint32_t;             { memory address of this segment  }
+    vmsize   : uint32_t;             { memory size of this segment  }
+    fileoff  : uint32_t;             { file offset of this segment  }
+    filesize : uint32_t;             { amount to map from the file  }
+    maxprot  : vm_prot_t;            { maximum VM protection  }
+    initprot : vm_prot_t;            { initial VM protection  }
+    nsects   : uint32_t;             { number of sections in segment  }
+    flags    : uint32_t;             { flags  }
   end;
   psegment_command = ^segment_command;
 
@@ -294,43 +589,43 @@ type
    * command and their size is reflected in cmdsize.
     }
   { for 64-bit architectures  }
-  
+
   segment_command_64 = record
-    cmd      : uint32_t;              { LC_SEGMENT_64  }                      
+    cmd      : uint32_t;              { LC_SEGMENT_64  }
     cmdsize  : uint32_t;              { includes sizeof section_64 structs  }
-    segname  : array[0..15] of char;  { segment name  }                      
-    vmaddr   : uint64_t;              { memory address of this segment  }    
-    vmsize   : uint64_t;              { memory size of this segment  }       
-    fileoff  : uint64_t;              { file offset of this segment  }       
-    filesize : uint64_t;              { amount to map from the file  }       
-    maxprot  : vm_prot_t;             { maximum VM protection  }             
-    initprot : vm_prot_t;             { initial VM protection  }             
-    nsects   : uint32_t;              { number of sections in segment  }     
-    flags    : uint32_t;              { flags  }                             
+    segname  : array[0..15] of char;  { segment name  }
+    vmaddr   : uint64_t;              { memory address of this segment  }
+    vmsize   : uint64_t;              { memory size of this segment  }
+    fileoff  : uint64_t;              { file offset of this segment  }
+    filesize : uint64_t;              { amount to map from the file  }
+    maxprot  : vm_prot_t;             { maximum VM protection  }
+    initprot : vm_prot_t;             { initial VM protection  }
+    nsects   : uint32_t;              { number of sections in segment  }
+    flags    : uint32_t;              { flags  }
   end;
   psegment_command_64 = ^segment_command_64;
 
   { Constants for the flags field of the segment_command  }
-  { the file contents for this segment is for
-  				   the high part of the VM space, the low part
-  				   is zero filled (for stacks in core files)  }
 
-  const
-     SG_HIGHVM = $1;
-  { this segment is the VM that is allocated by
-  				   a fixed VM library, for overlap checking in
-  				   the link editor  }
-     SG_FVMLIB = $2;
-  { this segment has nothing that was relocated
-  				   in it and nothing relocated to it, that is
-  				   it maybe safely replaced without relocation }
-     SG_NORELOC = $4;
-  { This segment is protected.  If the
-  				       segment starts at file offset 0, the
-  				       first page of the segment is not
-  				       protected.  All other pages of the
-  				       segment are protected.  }
-     SG_PROTECTED_VERSION_1 = $8;
+const
+   SG_HIGHVM = $1; { the file contents for this segment is for   }
+                   { the high part of the VM space, the low part }
+                   { is zero filled (for stacks in core files)   }
+
+  SG_FVMLIB = $2;  { this segment is the VM that is allocated by }
+                   {	a fixed VM library, for overlap checking in }
+                   { the link editor  }
+
+  SG_NORELOC = $4; { this segment has nothing that was relocated }
+                   { in it and nothing relocated to it, that is  }
+                   { it maybe safely replaced without relocation }
+
+  SG_PROTECTED_VERSION_1 = $8;  { This segment is protected.  If the    }
+                                {	segment starts at file offset 0, the  }
+                                {	first page of the segment is not      }
+                                {	protected.  All other pages of the    }
+                                {	segment are protected.                }
+
   {* A segment is made up of zero or more sections.  Non-MH_OBJECT files have
    * all of their segments with the proper sections in each, and padded to the
    * specified segment alignment when produced by the link editor.  The first
@@ -432,15 +727,17 @@ const
   S_DTRACE_DOF               = $f;    { section contains DTrace Object Format  }
   S_LAZY_DYLIB_SYMBOL_POINTERS = $10; { section with only lazy symbol pointers to lazy loaded dylibs  }
 
-  {* Constants for the section attributes part of the flags field of a section
-   * structure.  }
-  SECTION_ATTRIBUTES_USR = $ff000000; { User setable attributes  }
+  {* Constants for the section attributes part of the flags field of a section structure.  }
 
-  S_ATTR_PURE_INSTRUCTIONS = $80000000; { section contains only true machine instructions  }
-  S_ATTR_NO_TOC = $40000000; { section contains coalesced symbols that are not to be in a ranlib table of contents  }
-  S_ATTR_STRIP_STATIC_SYMS = $20000000; { ok to strip static symbols in this section in files with the MH_DYLDLINK flag  }
-  S_ATTR_NO_DEAD_STRIP = $10000000;{ no dead stripping  }
-  S_ATTR_LIVE_SUPPORT = $08000000; { blocks are live if they reference live blocks  }
+  SECTION_ATTRIBUTES_USR     = $ff000000; { User setable attributes  }
+
+  S_ATTR_PURE_INSTRUCTIONS   = $80000000; { section contains only true machine instructions  }
+  S_ATTR_NO_TOC              = $40000000; { section contains coalesced symbols }
+                                          { that are not to be in a ranlib table of contents  }
+  S_ATTR_STRIP_STATIC_SYMS   = $20000000; { ok to strip static symbols this section }
+                                          { in files with the MH_DYLDLINK flag  }
+  S_ATTR_NO_DEAD_STRIP       = $10000000; { no dead stripping  }
+  S_ATTR_LIVE_SUPPORT        = $08000000; { blocks are live if they reference live blocks  }
   S_ATTR_SELF_MODIFYING_CODE = $04000000; { Used with i386 code stubs written on by dyld  }
 
   {
@@ -451,14 +748,19 @@ const
    * a section type S_REGULAR.  The static linker will not copy section contents
    * from sections with this attribute into its output file.  These sections
    * generally contain DWARF debugging info.
-    }
-  S_ATTR_DEBUG = $02000000; { a debug section  }
-
-  SECTION_ATTRIBUTES_SYS = $00ffff00; { system setable attributes  }
-  S_ATTR_SOME_INSTRUCTIONS = $00000400; { section contains some machine instructions  }
-  S_ATTR_EXT_RELOC = $00000200; { section has external relocation entries  }
-  S_ATTR_LOC_RELOC = $00000100; { section has local relocation entries  }
-
+    }  { a debug section  }
+     S_ATTR_DEBUG = $02000000;
+  { system setable attributes  }
+     SECTION_ATTRIBUTES_SYS = $00ffff00;
+  { section contains some
+  						   machine instructions  }
+     S_ATTR_SOME_INSTRUCTIONS = $00000400;
+  { section has external
+  						   relocation entries  }
+     S_ATTR_EXT_RELOC = $00000200;
+  { section has local
+  						   relocation entries  }
+     S_ATTR_LOC_RELOC = $00000100;
   {
    * The names of segments and sections in them are mostly meaningless to the
    * link-editor.  But there are few things to support traditional UNIX
@@ -472,8 +774,8 @@ const
    * section in the "__DATA" segment.  It will create the section and segment
    * if needed.
     }
-
   { The currently known segment names and the section names in those segments  }
+
 
   SEG_PAGEZERO = '__PAGEZERO'; { the pagezero segment which has no  }
                                { protections and catches NULL references for MH_EXECUTE files  }
@@ -483,7 +785,7 @@ const
   SECT_FVMLIB_INIT0 = '__fvmlib_init0'; { the fvmlib initialization   section  }
   SECT_FVMLIB_INIT1 = '__fvmlib_init1'; { the section following the fvmlib initialization  section  }
 
-  EG_DATA = '__DATA';       { the tradition UNIX data segment  }
+  SEG_DATA = '__DATA';       { the tradition UNIX data segment  }
   SECT_DATA   = '__data';   { the real initialized data section no padding, no bss overlap  }
   SECT_BSS    = '__bss';    { the real uninitialized data section no padding  }
   SECT_COMMON = '__common'; { the section common symbols are allocated in by the link editor  }
@@ -507,8 +809,6 @@ const
   SEG_IMPORT = '__IMPORT'; { the segment for the self (dyld)  }
                            { modifing code stubs that has read, write and execute permissions  }
 
-
-
   {* Fixed virtual memory shared libraries are identified by two things.  The
    * target pathname (the name of the library as found for execution), and the
    * minor version number.  The address of where the headers are loaded is in
@@ -520,8 +820,6 @@ type
     minor_version : uint32_t; { library's minor version number  }
     header_addr   : uint32_t; { library's header address  }
   end;
-
-
 
   {* A fixed virtual shared library (filetype == MH_FVMLIB in the mach header)
    * contains a fvmlib_command (cmd == LC_IDFVMLIB) to identify the library.
@@ -535,8 +833,6 @@ type
     fvmlib  : fvmlib;   { the library identification  }
   end;
   pfvmlib_command = ^fvmlib_command;
-
-
 
   {* Dynamicly linked shared libraries are identified by two things.  The
    * pathname (the name of the library as found for execution), and the
@@ -560,7 +856,7 @@ type
    * LC_REEXPORT_DYLIB) for each library it uses. }
 
   dylib_command = record
-    cmd     : uint32_t; { LC_ID_DYLIB, LC_LOAD_,WEAK_DYLIB, LC_REEXPORT_DYLIB  }
+    cmd     : uint32_t; { LC_ID_DYLIB, LC_LOAD_DYLIB,WEAK_DYLIB, LC_REEXPORT_DYLIB  }
     cmdsize : uint32_t; { includes pathname string  }
     dylib   : dylib;    { the library identification  }
   end;
@@ -581,6 +877,7 @@ type
     umbrella  : lc_str;   { the umbrella framework name  }
   end;
   psub_framework_command = ^sub_framework_command;
+
 
   {* For dynamically linked shared libraries that are subframework of an umbrella
    * framework they can allow clients other than the umbrella framework or other
@@ -616,10 +913,8 @@ type
     cmdsize       : uint32_t; { includes sub_umbrella string  }
     sub_umbrella  : lc_str;   { the sub_umbrella framework name  }
   end;
-  psub_umbrella_command = ^sub_umbrella_command;
 
-  {
-   * A dynamically linked shared library may be a sub_library of another shared
+  {* A dynamically linked shared library may be a sub_library of another shared
    * library.  If so it will be linked with "-sub_library library_name" where
    * Where "library_name" is the name of the sub_library shared library.  When
    * staticly linking when -twolevel_namespace is in effect a twolevel namespace
@@ -631,41 +926,37 @@ type
    * will be the umbrella framework (or dynamic library). Zero or more sub_library
    * shared libraries may be use by an umbrella framework or (or dynamic library).
    * The name of a sub_library framework is recorded in the following structure.
-   * For example /usr/lib/libobjc_profile.A.dylib would be recorded as "libobjc".
-    }
+   * For example /usr/lib/libobjc_profile.A.dylib would be recorded as "libobjc".}
 
   sub_library_command = record
-    cmd         : uint32_t;  { LC_SUB_LIBRARY  }
-    cmdsize     : uint32_t;  { includes sub_library string  }
-    sub_library : lc_str;    { the sub_library name  }
+    cmd         : uint32_t; { LC_SUB_LIBRARY  }
+    cmdsize     : uint32_t; { includes sub_library string  }
+    sub_library : lc_str;   { the sub_library name  }
   end;
   psub_library_command = ^sub_library_command;
 
-  {
-   * A program (filetype == MH_EXECUTE) that is
+  {* A program (filetype == MH_EXECUTE) that is
    * prebound to its dynamic libraries has one of these for each library that
    * the static linker used in prebinding.  It contains a bit vector for the
    * modules in the library.  The bits indicate which modules are bound (1) and
    * which are not (0) from the library.  The bit for module 0 is the low bit
    * of the first byte.  So the bit for the Nth module is:
-   * (linked_modules[N/8] >> N%8) & 1
-    }
+   * (linked_modules[N/8] >> N%8) & 1 }
 
   prebound_dylib_command = record
-    cmd            : uint32_t; { LC_PREBOUND_DYLIB  }
-    cmdsize        : uint32_t; { includes strings  }
-    name           : lc_str;   { library's path name  }
-    nmodules       : uint32_t; { number of modules in library  }
-    linked_modules : lc_str;   { bit vector of linked modules  }
+    cmd      : uint32_t;     { LC_PREBOUND_DYLIB  }
+    cmdsize  : uint32_t;     { includes strings  }
+    name     : lc_str;       { library's path name  }
+    nmodules : uint32_t;     { number of modules in library  }
+    linked_modules : lc_str; { bit vector of linked modules  }
   end;
   pprebound_dylib_command = ^prebound_dylib_command;
 
-  {
-   * A program that uses a dynamic linker contains a dylinker_command to identify
+
+  {* A program that uses a dynamic linker contains a dylinker_command to identify
    * the name of the dynamic linker (LC_LOAD_DYLINKER).  And a dynamic linker
    * contains a dylinker_command to identify the dynamic linker (LC_ID_DYLINKER).
-   * A file can have at most one of these.
-    }
+   * A file can have at most one of these.}
 
   dylinker_command = record
     cmd     : uint32_t; { LC_ID_DYLINKER or LC_LOAD_DYLINKER  }
@@ -695,14 +986,14 @@ type
    * created (based on the shell's limit for the stack size).  Command arguments
    * and environment variables are copied onto that stack.
     }
-  
+
   thread_command = record
-    cmd     : uint32_t; { LC_THREAD or  LC_UNIXTHREAD  }                                        
-    cmdsize : uint32_t; { total size of this command  }                                  
-                        { uint32_t flavor		   flavor of thread state  }                 
-                        { uint32_t count		   count of longs in thread state  }         
+    cmd     : uint32_t; { LC_THREAD or  LC_UNIXTHREAD  }
+    cmdsize : uint32_t; { total size of this command  }
+    flavor  : uint32_t; { uint32_t flavor		   flavor of thread state  }
+    count   : uint32_t; { uint32_t count		   count of longs in thread state  }
                         { struct XXX_thread_state state   thread state for this flavor  }
-                        { ...  }                                                         
+                        { ...  }
   end;
   pthread_command = ^thread_command;
 
@@ -713,13 +1004,13 @@ type
    * and then calls it.  This gets called before any module initialization
    * routines (used for C++ static constructors) in the library.  }
   { for 32-bit architectures  }
-  
+
   routines_command = record
-    cmd     : uint32_t;       { LC_ROUTINES  }                      
-    cmdsize : uint32_t;       { total size of this command  }       
+    cmd     : uint32_t;       { LC_ROUTINES  }
+    cmdsize : uint32_t;       { total size of this command  }
     init_address : uint32_t;  { address of initialization routine  }
-    init_module  : uint32_t;  { index into the module table that  } 
-    reserved1 : uint32_t;     {  the init routine is defined in  }  
+    init_module  : uint32_t;  { index into the module table that the init routine is defined in }
+    reserved1 : uint32_t;
     reserved2 : uint32_t;
     reserved3 : uint32_t;
     reserved4 : uint32_t;
@@ -730,13 +1021,13 @@ type
 
   { * The 64-bit routines command.  Same use as above. }
   { for 64-bit architectures  }
-  
+
   routines_command_64 = record
-    cmd     : uint32_t;         { LC_ROUTINES_64  }                   
-    cmdsize : uint32_t;         { total size of this command  }       
+    cmd     : uint32_t;         { LC_ROUTINES_64  }
+    cmdsize : uint32_t;         { total size of this command  }
     init_address : uint64_t;    { address of initialization routine  }
-    init_module  : uint64_t;    { index into the module table that  } 
-                                {  the init routine is defined in  }  
+    init_module  : uint64_t;    { index into the module table that  }
+                                {  the init routine is defined in  }
     reserved1 : uint64_t;
     reserved2 : uint64_t;
     reserved3 : uint64_t;
@@ -752,12 +1043,12 @@ type
     }
 
   symtab_command = record
-    cmd     : uint32_t;  { LC_SYMTAB  }                       
-    cmdsize : uint32_t;  { sizeof(struct symtab_command)  }   
-    symoff  : uint32_t;  { symbol table offset  }             
-    nsyms   : uint32_t;  { number of symbol table entries  }  
-    stroff  : uint32_t;  { string table offset  }             
-    strsize : uint32_t;  { string table size in bytes  }      
+    cmd     : uint32_t;  { LC_SYMTAB  }
+    cmdsize : uint32_t;  { sizeof(struct symtab_command)  }
+    symoff  : uint32_t;  { symbol table offset  }
+    nsyms   : uint32_t;  { number of symbol table entries  }
+    stroff  : uint32_t;  { string table offset  }
+    strsize : uint32_t;  { string table size in bytes  }
   end;
   psymtab_command = ^symtab_command;
 
@@ -805,106 +1096,105 @@ type
   dysymtab_command = record
     cmd             : uint32_t; { LC_DYSYMTAB  }
     cmdsize         : uint32_t; { sizeof(struct dysymtab_command)  }
-    {
-    * The symbols indicated by symoff and nsyms of the LC_SYMTAB load command
-    * are grouped into the following three groups:
-    *    local symbols (further grouped by the module they are from)
-    *    defined external symbols (further grouped by the module they are from)
-    *    undefined symbols
-    *
-    * The local symbols are used only for debugging.  The dynamic binding
-    * process may have to use them to indicate to the debugger the local
-    * symbols for a module that is being bound.
-    *
-    * The last two groups are used by the dynamic binding process to do the
-    * binding (indirectly through the module table and the reference symbol
-    * table when this is a dynamically linked shared library file). }
+  {
+       * The symbols indicated by symoff and nsyms of the LC_SYMTAB load command
+       * are grouped into the following three groups:
+       *    local symbols (further grouped by the module they are from)
+       *    defined external symbols (further grouped by the module they are from)
+       *    undefined symbols
+       *
+       * The local symbols are used only for debugging.  The dynamic binding
+       * process may have to use them to indicate to the debugger the local
+       * symbols for a module that is being bound.
+       *
+       * The last two groups are used by the dynamic binding process to do the
+       * binding (indirectly through the module table and the reference symbol
+       * table when this is a dynamically linked shared library file).
+        }
     ilocalsym       : uint32_t; { index to local symbols  }
     nlocalsym       : uint32_t; { number of local symbols  }
     iextdefsym      : uint32_t; { index to externally defined symbols  }
     nextdefsym      : uint32_t; { number of externally defined symbols  }
     iundefsym       : uint32_t; { index to undefined symbols  }
     nundefsym       : uint32_t; { number of undefined symbols  }
-    {
-    * For the for the dynamic binding process to find which module a symbol
-    * is defined in the table of contents is used (analogous to the ranlib
-    * structure in an archive) which maps defined external symbols to modules
-    * they are defined in.  This exists only in a dynamically linked shared
-    * library file.  For executable and object modules the defined external
-    * symbols are sorted by name and is use as the table of contents.
-    }
+  {
+       * For the for the dynamic binding process to find which module a symbol
+       * is defined in the table of contents is used (analogous to the ranlib
+       * structure in an archive) which maps defined external symbols to modules
+       * they are defined in.  This exists only in a dynamically linked shared
+       * library file.  For executable and object modules the defined external
+       * symbols are sorted by name and is use as the table of contents.
+        }
     tocoff          : uint32_t; { file offset to table of contents  }
     ntoc            : uint32_t; { number of entries in table of contents  }
-    {
-    * To support dynamic binding of "modules" (whole object files) the symbol
-    * table must reflect the modules that the file was created from.  This is
-    * done by having a module table that has indexes and counts into the merged
-    * tables for each module.  The module structure that these two entries
-    * refer to is described below.  This exists only in a dynamically linked
-    * shared library file.  For executable and object modules the file only
-    * contains one module so everything in the file belongs to the module.
-    }
+  {
+       * To support dynamic binding of "modules" (whole object files) the symbol
+       * table must reflect the modules that the file was created from.  This is
+       * done by having a module table that has indexes and counts into the merged
+       * tables for each module.  The module structure that these two entries
+       * refer to is described below.  This exists only in a dynamically linked
+       * shared library file.  For executable and object modules the file only
+       * contains one module so everything in the file belongs to the module.
+        }
     modtaboff       : uint32_t; { file offset to module table  }
     nmodtab         : uint32_t; { number of module table entries  }
-    {
-    * To support dynamic module binding the module structure for each module
-    * indicates the external references (defined and undefined) each module
-    * makes.  For each module there is an offset and a count into the
-    * reference symbol table for the symbols that the module references.
-    * This exists only in a dynamically linked shared library file.  For
-    * executable and object modules the defined external symbols and the
-    * undefined external symbols indicates the external references.
-    }
+  {
+       * To support dynamic module binding the module structure for each module
+       * indicates the external references (defined and undefined) each module
+       * makes.  For each module there is an offset and a count into the
+       * reference symbol table for the symbols that the module references.
+       * This exists only in a dynamically linked shared library file.  For
+       * executable and object modules the defined external symbols and the
+       * undefined external symbols indicates the external references.
+        }
     extrefsymoff    : uint32_t; { offset to referenced symbol table  }
     nextrefsyms     : uint32_t; { number of referenced symbol table entries  }
-    {
-    * The sections that contain "symbol pointers" and "routine stubs" have
-    * indexes and (implied counts based on the size of the section and fixed
-    * size of the entry) into the "indirect symbol" table for each pointer
-    * and stub.  For every section of these two types the index into the
-    * indirect symbol table is stored in the section header in the field
-    * reserved1.  An indirect symbol table entry is simply a 32bit index into
-    * the symbol table to the symbol that the pointer or stub is referring to.
-    * The indirect symbol table is ordered to match the entries in the section.
-    }
+  {
+       * The sections that contain "symbol pointers" and "routine stubs" have
+       * indexes and (implied counts based on the size of the section and fixed
+       * size of the entry) into the "indirect symbol" table for each pointer
+       * and stub.  For every section of these two types the index into the
+       * indirect symbol table is stored in the section header in the field
+       * reserved1.  An indirect symbol table entry is simply a 32bit index into
+       * the symbol table to the symbol that the pointer or stub is referring to.
+       * The indirect symbol table is ordered to match the entries in the section.
+        }
     indirectsymoff  : uint32_t; { file offset to the indirect symbol table  }
     nindirectsyms   : uint32_t; { number of indirect symbol table entries  }
-    {
-    * To support relocating an individual module in a library file quickly the
-    * external relocation entries for each module in the library need to be
-    * accessed efficiently.  Since the relocation entries can't be accessed
-    * through the section headers for a library file they are separated into
-    * groups of local and external entries further grouped by module.  In this
-    * case the presents of this load command who's extreloff, nextrel,
-    * locreloff and nlocrel fields are non-zero indicates that the relocation
-    * entries of non-merged sections are not referenced through the section
-    * structures (and the reloff and nreloc fields in the section headers are
-    * set to zero).
-    *
-    * Since the relocation entries are not accessed through the section headers
-    * this requires the r_address field to be something other than a section
-    * offset to identify the item to be relocated.  In this case r_address is
-    * set to the offset from the vmaddr of the first LC_SEGMENT command.
-    * For MH_SPLIT_SEGS images r_address is set to the the offset from the
-    * vmaddr of the first read-write LC_SEGMENT command.
-    *
-    * The relocation entries are grouped by module and the module table
-    * entries have indexes and counts into them for the group of external
-    * relocation entries for that the module.
-    *
-    * For sections that are merged across modules there must not be any
-    * remaining external relocation entries for them (for merged sections
-    * remaining relocation entries must be local).
-    }
+  {    * To support relocating an individual module in a library file quickly the
+       * external relocation entries for each module in the library need to be
+       * accessed efficiently.  Since the relocation entries can't be accessed
+       * through the section headers for a library file they are separated into
+       * groups of local and external entries further grouped by module.  In this
+       * case the presents of this load command who's extreloff, nextrel,
+       * locreloff and nlocrel fields are non-zero indicates that the relocation
+       * entries of non-merged sections are not referenced through the section
+       * structures (and the reloff and nreloc fields in the section headers are
+       * set to zero).
+       *
+       * Since the relocation entries are not accessed through the section headers
+       * this requires the r_address field to be something other than a section
+       * offset to identify the item to be relocated.  In this case r_address is
+       * set to the offset from the vmaddr of the first LC_SEGMENT command.
+       * For MH_SPLIT_SEGS images r_address is set to the the offset from the
+       * vmaddr of the first read-write LC_SEGMENT command.
+       *
+       * The relocation entries are grouped by module and the module table
+       * entries have indexes and counts into them for the group of external
+       * relocation entries for that the module.
+       *
+       * For sections that are merged across modules there must not be any
+       * remaining external relocation entries for them (for merged sections
+       * remaining relocation entries must be local).
+        }
     extreloff       : uint32_t; { offset to external relocation entries  }
     nextrel         : uint32_t; { number of external relocation entries  }
-    {    * All the local relocation entries are grouped together (they are not
-    * grouped by their module since they are only used if the object is moved
-    * from it staticly link edited address).      }
+    {   * All the local relocation entries are grouped together (they are not
+       * grouped by their module since they are only used if the object is moved
+       * from it staticly link edited address).      }
     locreloff       : uint32_t; { offset to local relocation entries  }
     nlocrel         : uint32_t; { number of local relocation entries  }
   end;
-  pdysymtab_command = ^dysymtab_command;
 
   {
    * An indirect symbol table entry is simply a 32bit index into the symbol table
@@ -916,19 +1206,15 @@ type
 
 const
   INDIRECT_SYMBOL_LOCAL = $80000000;
-  INDIRECT_SYMBOL_ABS   = $40000000;
+  INDIRECT_SYMBOL_ABS = $40000000;
 
 type
-  { a table of contents entry  }
-
-  dylib_table_of_contents = record
+  dylib_table_of_contents = record { a table of contents entry  }
     symbol_index : uint32_t; { the defined external symbol (index into the symbol table)  }
     module_index : uint32_t; { index into the module table this symbol is defined in  }
   end;
 
-  { a module table entry  }
-
-  dylib_module = record
+  dylib_module = record     { a module table entry  }
     module_name : uint32_t; { the module name (index into string table)  }
     iextdefsym  : uint32_t; { index into externally defined symbols  }
     nextdefsym  : uint32_t; { number of externally defined symbols  }
@@ -938,28 +1224,34 @@ type
     nlocalsym   : uint32_t; { number of local symbols  }
     iextrel     : uint32_t; { index into external relocation entries  }
     nextrel     : uint32_t; { number of external relocation entries  }
-    iinit_iterm : uint32_t;  { low 16 bits are the index into the init section, high 16 bits are the index into  the term section  }
-    ninit_nterm : uint32_t;  { low 16 bits are the number of init section entries, high 16 bits are the number of term section entries  }
-    objc_module_info_addr : uint32_t; { for this module address of the start of the (__OBJC,__module_info) section  }
-    objc_module_info_size : uint32_t; { for this module size of the (__OBJC,__module_info) section  }
+    iinit_iterm : uint32_t; { low 16 bits are the index into the init
+  				   section, high 16 bits are the index into
+  			           the term section  }
+    ninit_nterm : uint32_t; { low 16 bits are the number of init section
+  				   entries, high 16 bits are the number of
+  				   term section entries  }
+    objc_module_info_addr : uint32_t;  { for this module address of the start of the (__OBJC,__module_info) section  }
+    objc_module_info_size : uint32_t;  { for this module size of  the (__OBJC,__module_info) section  }
   end;
 
-  { a 64-bit module table entry  }
-
-  dylib_module_64 = record
-    module_name : uint32_t; { the module name (index into string table)  }
-    iextdefsym  : uint32_t; { index into externally defined symbols  }
-    nextdefsym  : uint32_t; { number of externally defined symbols  }
-    irefsym     : uint32_t; { index into reference symbol table  }
-    nrefsym     : uint32_t; { number of reference symbol table entries  }
-    ilocalsym   : uint32_t; { index into symbols for local symbols  }
-    nlocalsym   : uint32_t; { number of local symbols  }
-    iextrel     : uint32_t; { index into external relocation entries  }
-    nextrel     : uint32_t; { number of external relocation entries  }
-    iinit_iterm : uint32_t; { low 16 bits are the index into the init section, high 16 bits are the index into the term section  }
-    ninit_nterm : uint32_t; { low 16 bits are the number of init section entries, high 16 bits are the number of term section entries  }
+  dylib_module_64 = record   { a 64-bit module table entry  }
+    module_name : uint32_t;  { the module name (index into string table)  }
+    iextdefsym  : uint32_t;  { index into externally defined symbols  }
+    nextdefsym  : uint32_t;  { number of externally defined symbols  }
+    irefsym     : uint32_t;  { index into reference symbol table  }
+    nrefsym     : uint32_t;  { number of reference symbol table entries  }
+    ilocalsym   : uint32_t;  { index into symbols for local symbols  }
+    nlocalsym   : uint32_t;  { number of local symbols  }
+    iextrel     : uint32_t;  { index into external relocation entries  }
+    nextrel     : uint32_t;  { number of external relocation entries  }
+    iinit_iterm : uint32_t;  { low 16 bits are the index into the init
+                    				   section, high 16 bits are the index into
+                    				   the term section  }
+    ninit_nterm : uint32_t; { low 16 bits are the number of init section
+                    				  entries, high 16 bits are the number of
+                    				  term section entries  }
     objc_module_info_size : uint32_t; { for this module size of the (__OBJC,__module_info) section  }
-    objc_module_info_addr : uint64_t; { for this module address of the start of  the (__OBJC,__module_info) section  }
+    objc_module_info_addr : uint64_t; { for this module address of the start of the (__OBJC,__module_info) section  }
   end;
 
   {
@@ -971,24 +1263,33 @@ type
    * <mach-o/nlist.h> as they are also used for symbol table entries.
     }
   { index into the symbol table  }
-
+  { flags to indicate the type of reference  }
   dylib_reference = record
-    flag0 : longint; { flags to indicate the type of reference  }
+    flag0 : longint;
   end;
 
 
+{  const
+     bm_dylib_reference_isym = $FFFFFF;
+     bp_dylib_reference_isym = 0;
+     bm_dylib_reference_flags = $FF000000;
+     bp_dylib_reference_flags = 24;
+
+  function isym(var a : dylib_reference) : uint32_t;
+  procedure set_isym(var a : dylib_reference; __isym : uint32_t);
+  function flags(var a : dylib_reference) : uint32_t;
+  procedure set_flags(var a : dylib_reference; __flags : uint32_t);}
+
+  {* The twolevel_hints_command contains the offset and number of hints in the
+   * two-level namespace lookup hints table.}
 
 type
-  {* The twolevel_hints_command contains the offset and number of hints in the
-   * two-level namespace lookup hints table.  }
-
   twolevel_hints_command = record
     cmd     : uint32_t; { LC_TWOLEVEL_HINTS  }
     cmdsize : uint32_t; { sizeof(struct twolevel_hints_command)  }
     offset  : uint32_t; { offset to the hint table  }
     nhints  : uint32_t; { number of hints in the hint table  }
   end;
-  ptwolevel_hints_command = ^twolevel_hints_command;
 
   {
    * The entries in the two-level namespace lookup hints table are twolevel_hint
@@ -1012,18 +1313,29 @@ type
     flag0 : longint;
   end;
 
-  {
-   * The prebind_cksum_command contains the value of the original check sum for
+
+{  const
+     bm_twolevel_hint_isub_image = $FF;
+     bp_twolevel_hint_isub_image = 0;
+     bm_twolevel_hint_itoc = $FFFFFF00;
+     bp_twolevel_hint_itoc = 8;
+
+  function isub_image(var a : twolevel_hint) : uint32_t;
+  procedure set_isub_image(var a : twolevel_hint; __isub_image : uint32_t);
+  function itoc(var a : twolevel_hint) : uint32_t;
+  procedure set_itoc(var a : twolevel_hint; __itoc : uint32_t);
+}
+
+type
+  {* The prebind_cksum_command contains the value of the original check sum for
    * prebound files or zero.  When a prebound file is first created or modified
    * for other than updating its prebinding information the value of the check sum
    * is set to zero.  When the file has it prebinding re-done and if the value of
    * the check sum is zero the original check sum is calculated and stored in
    * cksum field of this load command in the output file.  If when the prebinding
    * is re-done and the cksum field is non-zero it is left unchanged from the
-   * input file.
-    }
+   * input file. }
 
-type
   prebind_cksum_command = record
     cmd     : uint32_t; { LC_PREBIND_CKSUM  }
     cmdsize : uint32_t; { sizeof(struct prebind_cksum_command)  }
@@ -1031,18 +1343,20 @@ type
   end;
   pprebind_cksum_command = ^prebind_cksum_command;
 
+
   {* The uuid load command contains a single 128-bit unique random number that
    * identifies an object produced by the static link editor. }
 
   uuid_command = record
-    cmd     : uint32_t;                 { LC_UUID  }
-    cmdsize : uint32_t;                 { sizeof(struct uuid_command)  }
-    uuid    : array[0..15] of uint8_t;  { the 128-bit uuid  }
+    cmd     : uint32_t;                { LC_UUID  }
+    cmdsize : uint32_t;                { sizeof(struct uuid_command)  }
+    uuid    : array[0..15] of uint8_t; { the 128-bit uuid  }
   end;
   puuid_command = ^uuid_command;
 
+
   {* The rpath_command contains a path which at runtime should be added to
-   * the current run path used to find @rpath prefixed dylibs. }
+   * the current run path used to find @rpath prefixed dylibs.}
 
   rpath_command = record
     cmd     : uint32_t; { LC_RPATH  }
@@ -1051,19 +1365,21 @@ type
   end;
   prpath_command = ^rpath_command;
 
+
   {* The linkedit_data_command contains the offsets and sizes of a blob
-   * of data in the __LINKEDIT segment. }
+   * of data in the __LINKEDIT segment.}
 
   linkedit_data_command = record
-    cmd       : uint32_t; { LC_CODE_SIGNATURE or LC_SEGMENT_SPLIT_INFO  }
-    cmdsize   : uint32_t; { sizeof(struct linkedit_data_command)  }
-    dataoff   : uint32_t; { file offset of data in __LINKEDIT segment  }
-    datasize  : uint32_t; { file size of data in __LINKEDIT segment   }
+    cmd      : uint32_t; { LC_CODE_SIGNATURE or LC_SEGMENT_SPLIT_INFO  }
+    cmdsize  : uint32_t; { sizeof(struct linkedit_data_command)  }
+    dataoff  : uint32_t; { file offset of data in __LINKEDIT segment  }
+    datasize : uint32_t; { file size of data in __LINKEDIT segment   }
   end;
   plinkedit_data_command = ^linkedit_data_command;
 
+
   {* The encryption_info_command contains the file offset and size of an
-   * of an encrypted segment. }
+   * of an encrypted segment.}
 
   encryption_info_command = record
     cmd       : uint32_t; { LC_ENCRYPTION_INFO  }
@@ -1074,15 +1390,14 @@ type
   end;
   pencryption_info_command = ^encryption_info_command;
 
-  {
-   * The symseg_command contains the offset and size of the GNU style
+
+  {* The symseg_command contains the offset and size of the GNU style
    * symbol table information as described in the header file <symseg.h>.
    * The symbol roots of the symbol segments must also be aligned properly
    * in the file.  So the requirement of keeping the offsets aligned to a
    * multiple of a 4 bytes translates to the length field of the symbol
    * roots also being a multiple of a long.  Also the padding must again be
-   * zeroed. (THIS IS OBSOLETE and no longer supported).
-    }
+   * zeroed. (THIS IS OBSOLETE and no longer supported). }
 
   symseg_command = record
     cmd     : uint32_t; { LC_SYMSEG  }
@@ -1092,10 +1407,11 @@ type
   end;
   psymseg_command = ^symseg_command;
 
+
   {* The ident_command contains a free format string table following the
    * ident_command structure.  The strings are null terminated and the size of
    * the command is padded out with zero bytes to a multiple of 4 bytes/
-   * (THIS IS OBSOLETE and no longer supported). }
+   * (THIS IS OBSOLETE and no longer supported).}
 
   ident_command = record
     cmd     : uint32_t; { LC_IDENT  }
@@ -1103,21 +1419,22 @@ type
   end;
   pident_command = ^ident_command;
 
+
   {* The fvmfile_command contains a reference to a file to be loaded at the
    * specified virtual address.  (Presently, this command is reserved for
    * internal use.  The kernel ignores this command when loading a program into
    * memory).  }
 
   fvmfile_command = record
-    cmd         : uint32_t; { LC_FVMFILE  }
-    cmdsize     : uint32_t; { includes pathname string  }
-    name        : lc_str;   { files pathname  }
-    header_addr : uint32_t; { files virtual address  }
+    cmd         : uint32_t;  { LC_FVMFILE  }
+    cmdsize     : uint32_t;  { includes pathname string  }
+    name        : lc_str;    { files pathname  }
+    header_addr : uint32_t;  { files virtual address  }
   end;
   pfvmfile_command = ^fvmfile_command;
 
-  {
-   * This header file describes the structures of the file format for "fat"
+
+  {* This header file describes the structures of the file format for "fat"
    * architecture specific file (wrapper design).  At the begining of the file
    * there is one fat_header structure followed by a number of fat_arch
    * structures.  For each architecture in the file, specified by a pair of
@@ -1128,47 +1445,26 @@ type
    * can support them as long as they read as zeros.
    *
    * All structures defined here are always written and read to/from disk
-   * in big-endian order.
-    }
-  {
-   * <mach/machine.h> is needed here for the cpu_type_t and cpu_subtype_t types
-   * and contains the constants for the possible values of these types.
-    }
+   * in big-endian order.}
+  {* <mach/machine.h> is needed here for the cpu_type_t and cpu_subtype_t types
+   * and contains the constants for the possible values of these types.}
 
 const
   FAT_MAGIC = $cafebabe;
   FAT_CIGAM = $bebafeca;
 
-const
-  CPU_ARCH_MASK  = $ff000000;  { mask for architecture bits }
-  CPU_ARCH_ABI64 = $01000000;  { 64 bit ABI }
-
-  CPU_TYPE_VAX       = 1;
-  CPU_TYPE_MC680x0   = 6;
-  CPU_TYPE_X86       = 7;
-  CPU_TYPE_I386      = CPU_TYPE_X86;
-  CPU_TYPE_X86_64    = CPU_TYPE_X86 or CPU_ARCH_ABI64;
-  CPU_TYPE_MC98000   = 10;
-  CPU_TYPE_HPPA      = 11;
-  CPU_TYPE_ARM       = 12;
-  CPU_TYPE_MC88000   = 13;
-  CPU_TYPE_SPARC     = 14;
-  CPU_TYPE_I860      = 15;
-  CPU_TYPE_POWERPC   = 18;
-  CPU_TYPE_POWERPC64 = CPU_TYPE_POWERPC or CPU_ARCH_ABI64;
-
 type
   fat_header = record
-    magic     : uint32_t; { FAT_MAGIC  }
-    nfat_arch : uint32_t; { number of structs that follow  }
+    magic       : uint32_t;      { FAT_MAGIC  }
+    nfat_arch   : uint32_t;      { number of structs that follow  }
   end;
 
   fat_arch = record
-    cputype    : cpu_type_t;    { cpu specifier (int)  }
-    cpusubtype : cpu_subtype_t; { machine specifier (int)  }
-    offset     : uint32_t;      { file offset to this object file  }
-    size       : uint32_t;      { size of this object file  }
-    align      : uint32_t;      { alignment as a power of 2  }
+    cputype     : cpu_type_t;    { cpu specifier (int)  }
+    cpusubtype  : cpu_subtype_t; { machine specifier (int)  }
+    offset      : uint32_t;      { file offset to this object file  }
+    size        : uint32_t;      { size of this object file  }
+    align       : uint32_t;      { alignment as a power of 2  }
   end;
 
 
@@ -1185,11 +1481,10 @@ type
   nlist = record
     n_un : record
     case longint of
-    // n_name is not used / but if IDE is compiled 64bit, debugging 32 bit targed, then pchar = 8 bytes => wrong
-//      {$ifndef __LP64__}
-//      0 : ( n_name : Pchar );   { for use when in-core }
-//      {$endif}
-      1 : ( n_strx : uint32_t ); { index into the string table  }
+      {$ifndef __LP64__}
+      0 : ( n_name : Pchar );   { for use when in-core }
+      {$endif}
+      1 : ( n_strx : int32_t ); { index into the string table  }
     end;
     n_type  : uint8_t;  { type flag, see below  }
     n_sect  : uint8_t;  { section number or NO_SECT  }
@@ -1382,49 +1677,6 @@ const
    * a defintion of a Thumb function. }
   N_ARM_THUMB_DEF = $0008; { symbol is a Thumb function (ARM)  }
 
-
-  {
-   * Relocation types used in the ppc implementation.  Relocation entries for
-   * things other than instructions use the same generic relocation as discribed
-   * above and their r_type is RELOC_VANILLA.  The rest of the relocation types
-   * are for instructions.  Since they are for instructions the r_address field
-   * indicates the 32 bit instruction that the relocation is to be preformed on.
-   * The fields r_pcrel and r_length are ignored for non-RELOC_VANILLA r_types
-   * except for PPC_RELOC_BR14.
-   *
-   * For PPC_RELOC_BR14 if the r_length is the unused value 3, then the branch was
-   * statically predicted setting or clearing the Y-bit based on the sign of the
-   * displacement or the opcode.  If this is the case the static linker must flip
-   * the value of the Y-bit if the sign of the displacement changes for non-branch
-   * always conditions.
-    }
-
-type
-  reloc_type_ppc = (
-    PPC_RELOC_VANILLA,    { generic relocation as discribed above  }
-    PPC_RELOC_PAIR,       { the second relocation entry of a pair  }
-    PPC_RELOC_BR14,       { 14 bit branch displacement (to a word address)  }
-    PPC_RELOC_BR24,       { 24 bit branch displacement (to a word address)  }
-    PPC_RELOC_HI16,       { a PAIR follows with the low half  }
-    PPC_RELOC_LO16,       { a PAIR follows with the high half  }
-    PPC_RELOC_HA16,       { Same as the RELOC_HI16 except the low 16 bits and the
-                      			 * high 16 bits are added together with the low 16 bits
-                      			 * sign extened first.  This means if bit 15 of the low
-                      			 * 16 bits is set the high 16 bits stored in the
-                      			 * instruction will be adjusted. }
-    PPC_RELOC_LO14,       { Same as the LO16 except that the low 2 bits are not
-                      			 * stored in the instruction and are always zero.  This
-                      			 * is used in double word load/store instructions.}
-    PPC_RELOC_SECTDIFF,      { a PAIR follows with subtract symbol value  }
-    PPC_RELOC_PB_LA_PTR,     { prebound lazy pointer  }
-    PPC_RELOC_HI16_SECTDIFF, { section difference forms of above.  a PAIR  }
-    PPC_RELOC_LO16_SECTDIFF, { follows these with subtract symbol value  }
-    PPC_RELOC_HA16_SECTDIFF,
-    PPC_RELOC_JBSR,
-    PPC_RELOC_LO14_SECTDIFF,
-    PPC_RELOC_LOCAL_SECTDIFF  { like PPC_RELOC_SECTDIFF, but the symbol referenced was local.   }
-  );
-
   {* There are two known orders of table of contents for archives.  The first is
    * the order ranlib(1) originally produced and still produces without any
    * options.  This table of contents has the archive member name "__.SYMDEF"
@@ -1464,26 +1716,22 @@ type
     ran_off : uint32_t;
   end;
 
+type
    {* Format of a relocation entry of a Mach-O file.  Modified from the 4.3BSD
    * format.  The modifications from the original format were changing the value
    * of the r_symbolnum field for "local" (r_extern == 0) relocation entries.
    * This modification is required to support symbols in an arbitrary number of
    * sections not just the three sections (text, data and bss) in a 4.3BSD file.
-   * Also the last 4 bits have had the r_type tag added to them.
-    }
-  { offset in the section to what is being
-  				   relocated  }
-  { symbol index if r_extern == 1 or section
-  				   ordinal if r_extern == 0  }
-  { was relocated pc relative already  }
-  { 0=byte, 1=word, 2=long, 3=quad  }
-  { does not include value of sym referenced  }
-  { if not 0, machine specific relocation type  }
+   * Also the last 4 bits have had the r_type tag added to them. }
 
-type
   relocation_info = record
-    r_address : int32_t;
-    flag0     : longint;
+    r_address : int32_t;  { offset in the section to what is being relocated  }
+    r_info    : longint;
+    // r_symbolnum:24,	{* symbol index if r_extern == 1 or section  ordinal if r_extern == 0 *}
+		// r_pcrel:1; 	    {* was relocated pc relative already *}
+ 		// r_length:2;	    {* 0=byte, 1=word, 2=long, 3=quad *}
+ 		// r_extern:1;     	{* does not include value of sym referenced *}
+	 	// r_type:4; 	      {* if not 0, machine specific relocation type *}
   end;
 
 
@@ -1491,6 +1739,10 @@ type
 
 const
   R_ABS = 0;
+  R_SCATTERED = $80000000;   { mask to be applied to the r_address field }
+            { of a relocation_info structure to tell that }
+  				  { is is really a scattered_relocation_info }
+  				  { stucture  }
 
   {
    * The r_address is not really the address as it's name indicates but an offset.
@@ -1552,7 +1804,7 @@ const
    * compilers don't so scattered loading can be done on those that do guarantee
    * this.
     }
-//{$if defined(__BIG_ENDIAN__) || defined(__LITTLE_ENDIAN__)}
+
   {
    * The reason for the ifdef's of __BIG_ENDIAN__ and __LITTLE_ENDIAN__ are that
    * when stattered relocation entries were added the mistake of using a mask
@@ -1560,44 +1812,25 @@ const
    * design work this structure must be laid out in memory the same way so the
    * mask can be applied can check the same bit each time (r_scattered).
     }
-//{$endif}
 
-  { defined(__BIG_ENDIAN__) || defined(__LITTLE_ENDIAN__)  }
-  { mask to be applied to the r_address field
-  				   of a relocation_info structure to tell that
-  				   is is really a scattered_relocation_info
-  				   stucture  }
-
-const
-  R_SCATTERED = $80000000;
-
-//{$ifdef __BIG_ENDIAN__}
-  { 1=scattered, 0=non-scattered (see above)  }
-  { was relocated pc relative already  }
-  { 0=byte, 1=word, 2=long, 3=quad  }
-  { if not 0, machine specific relocation type  }
-  { offset in the section to what is being
-  				   relocated  }
-  { the value the item to be relocated is
-  				   refering to (without any offset added)  }
-//{$endif}
-  { __BIG_ENDIAN__  }
-//{$ifdef __LITTLE_ENDIAN__}
-  { offset in the section to what is being
-  				   relocated  }
-  { if not 0, machine specific relocation type  }
-  { 0=byte, 1=word, 2=long, 3=quad  }
-  { was relocated pc relative already  }
-  { 1=scattered, 0=non-scattered (see above)  }
-  { the value the item to be relocated is
-  				   refering to (without any offset added)  }
-  //{$endif}
-  { __LITTLE_ENDIAN__  }
 
 type
   scattered_relocation_info = record
-    flag0   : longint;
+    {$ifdef ENDIAN_BIG}
+    r_info  : longint;  { r_scattered:1,	/* 1=scattered, 0=non-scattered (see above) */
+                          r_pcrel:1,   	/* was relocated pc relative already */
+                  		    r_length:2, 	/* 0=byte, 1=word, 2=long, 3=quad */
+                  		    r_type:4,   	/* if not 0, machine specific relocation type */
+                          r_address:24;	/* offset in the section to what is being relocated */}
+    r_value : int32_t;  {* the value the item to be relocated is refering to (without any offset added) *}
+    {$else}
     r_value : int32_t;
+    r_info  : longint; {*	r_address:24,	  /* offset in the section to what is being relocated */
+                      		r_type:4,	      /* if not 0, machine specific relocation type */
+                      		r_length:2,	    /* 0=byte, 1=word, 2=long, 3=quad */
+                      		r_pcrel:1, 	    /* was relocated pc relative already */
+                      		r_scattered:1;	/* 1=scattered, 0=non-scattered (see above) */   *}
+    {$endif}
   end;
 
   {
@@ -1619,28 +1852,206 @@ type
    * entry where the r_value feild is the value of the lazy pointer not prebound.
     }
 
-type
-  reloc_type_generic = (
-    GENERIC_RELOC_VANILLA,        { generic relocation as discribed above  }
-    GENERIC_RELOC_PAIR,
-    GENERIC_RELOC_SECTDIFF,       { Only follows a GENERIC_RELOC_SECTDIFF  }
-    GENERIC_RELOC_PB_LA_PTR,      { prebound lazy pointer  }
-    GENERIC_RELOC_LOCAL_SECTDIFF
-  );
+const
+  GENERIC_RELOC_VANILLA        = 0; { generic relocation as discribed above  }
+  GENERIC_RELOC_PAIR           = 1; { Only follows a GENERIC_RELOC_SECTDIFF  }
+  GENERIC_RELOC_SECTDIFF       = 2;
+  GENERIC_RELOC_PB_LA_PTR      = 3; { prebound lazy pointer  }
+  GENERIC_RELOC_LOCAL_SECTDIFF = 4;
 
-type
-  reloc_type_x86_64 = (
-    X86_64_RELOC_UNSIGNED,
-    X86_64_RELOC_SIGNED,
-    X86_64_RELOC_BRANCH,
-    X86_64_RELOC_GOT_LOAD,
-    X86_64_RELOC_GOT,
-    X86_64_RELOC_SUBTRACTOR,
-    X86_64_RELOC_SIGNED_1,
-    X86_64_RELOC_SIGNED_2,
-    X86_64_RELOC_SIGNED_4
-  );
+{*
+ * Relocations for x86_64 are a bit different than for other architectures in
+ * Mach-O: Scattered relocations are not used.  Almost all relocations produced
+ * by the compiler are external relocations.  An external relocation has the
+ * r_extern bit set to 1 and the r_symbolnum field contains the symbol table
+ * index of the target label.
+ *
+ * When the assembler is generating relocations, if the target label is a local
+ * label (begins with 'L'), then the previous non-local label in the same
+ * section is used as the target of the external relocation.  An addend is used
+ * with the distance from that non-local label to the target label.  Only when
+ * there is no previous non-local label in the section is an internal
+ * relocation used.
+ *
+ * The addend (i.e. the 4 in _foo+4) is encoded in the instruction (Mach-O does
+ * not have RELA relocations).  For PC-relative relocations, the addend is
+ * stored directly in the instruction.  This is different from other Mach-O
+ * architectures, which encode the addend minus the current section offset.
+ *
+ * The relocation types are:
+ *
+ * 	X86_64_RELOC_UNSIGNED	// for absolute addresses
+ * 	X86_64_RELOC_SIGNED		// for signed 32-bit displacement
+ * 	X86_64_RELOC_BRANCH		// a CALL/JMP instruction with 32-bit displacement
+ * 	X86_64_RELOC_GOT_LOAD	// a MOVQ load of a GOT entry
+ * 	X86_64_RELOC_GOT		// other GOT references
+ * 	X86_64_RELOC_SUBTRACTOR	// must be followed by a X86_64_RELOC_UNSIGNED
+ *
+ * The following are sample assembly instructions, followed by the relocation
+ * and section content they generate in an object file:
+ *
+ * 	call _foo
+ * 		r_type=X86_64_RELOC_BRANCH, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		E8 00 00 00 00
+ *
+ * 	call _foo+4
+ * 		r_type=X86_64_RELOC_BRANCH, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		E8 04 00 00 00
+ *
+ * 	movq _foo@GOTPCREL(%rip), %rax
+ * 		r_type=X86_64_RELOC_GOT_LOAD, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		48 8B 05 00 00 00 00
+ *
+ * 	pushq _foo@GOTPCREL(%rip)
+ * 		r_type=X86_64_RELOC_GOT, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		FF 35 00 00 00 00
+ *
+ * 	movl _foo(%rip), %eax
+ * 		r_type=X86_64_RELOC_SIGNED, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		8B 05 00 00 00 00
+ *
+ * 	movl _foo+4(%rip), %eax
+ * 		r_type=X86_64_RELOC_SIGNED, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		8B 05 04 00 00 00
+ *
+ * 	movb  $0x12, _foo(%rip)
+ * 		r_type=X86_64_RELOC_SIGNED, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		C6 05 FF FF FF FF 12
+ *
+ * 	movl  $0x12345678, _foo(%rip)
+ * 		r_type=X86_64_RELOC_SIGNED, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_foo
+ * 		C7 05 FC FF FF FF 78 56 34 12
+ *
+ * 	.quad _foo
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_foo
+ * 		00 00 00 00 00 00 00 00
+ *
+ * 	.quad _foo+4
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_foo
+ * 		04 00 00 00 00 00 00 00
+ *
+ * 	.quad _foo - _bar
+ * 		r_type=X86_64_RELOC_SUBTRACTOR, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_bar
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_foo
+ * 		00 00 00 00 00 00 00 00
+ *
+ * 	.quad _foo - _bar + 4
+ * 		r_type=X86_64_RELOC_SUBTRACTOR, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_bar
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_foo
+ * 		04 00 00 00 00 00 00 00
+ *
+ * 	.long _foo - _bar
+ * 		r_type=X86_64_RELOC_SUBTRACTOR, r_length=2, r_extern=1, r_pcrel=0, r_symbolnum=_bar
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=2, r_extern=1, r_pcrel=0, r_symbolnum=_foo
+ * 		00 00 00 00
+ *
+ * 	lea L1(%rip), %rax
+ * 		r_type=X86_64_RELOC_SIGNED, r_length=2, r_extern=1, r_pcrel=1, r_symbolnum=_prev
+ * 		48 8d 05 12 00 00 00
+ * 		// assumes _prev is the first non-local label 0x12 bytes before L1
+ *
+ * 	lea L0(%rip), %rax
+ * 		r_type=X86_64_RELOC_SIGNED, r_length=2, r_extern=0, r_pcrel=1, r_symbolnum=3
+ * 		48 8d 05 56 00 00 00
+ * 		// assumes L0 is in third section, has an address of 0x00000056 in .o
+ * 		// file, and there is no previous non-local label
+ *
+ * 	.quad L1
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_prev
+ * 		12 00 00 00 00 00 00 00
+ * 		// assumes _prev is the first non-local label 0x12 bytes before L1
+ *
+ * 	.quad L0
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=0, r_pcrel=0, r_symbolnum=3
+ * 		56 00 00 00 00 00 00 00
+ * 		// assumes L0 is in third section, has an address of 0x00000056 in .o
+ * 		// file, and there is no previous non-local label
+ *
+ * 	.quad _foo - .
+ * 		r_type=X86_64_RELOC_SUBTRACTOR, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_prev
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_foo
+ * 		EE FF FF FF FF FF FF FF
+ * 		// assumes _prev is the first non-local label 0x12 bytes before this
+ * 		// .quad
+ *
+ * 	.quad _foo - L1
+ * 		r_type=X86_64_RELOC_SUBTRACTOR, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_prev
+ * 		r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_extern=1, r_pcrel=0, r_symbolnum=_foo
+ * 		EE FF FF FF FF FF FF FF
+ * 		// assumes _prev is the first non-local label 0x12 bytes before L1
+ *
+ * 	.quad L1 - _prev
+ * 		// No relocations.  This is an assembly time constant.
+ * 		12 00 00 00 00 00 00 00
+ * 		// assumes _prev is the first non-local label 0x12 bytes before L1
+ *
+ *
+ *
+ * In final linked images, there are only two valid relocation kinds:
+ *
+ *     r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_pcrel=0, r_extern=1, r_symbolnum=sym_index
+ *	This tells dyld to add the address of a symbol to a pointer sized (8-byte)
+ *  piece of data (i.e on disk the 8-byte piece of data contains the addend). The
+ *  r_symbolnum contains the index into the symbol table of the target symbol.
+ *
+ *     r_type=X86_64_RELOC_UNSIGNED, r_length=3, r_pcrel=0, r_extern=0, r_symbolnum=0
+ * This tells dyld to adjust the pointer sized (8-byte) piece of data by the amount
+ * the containing image was loaded from its base address (e.g. slide).
+ *
+ *}
 
+const
+  X86_64_RELOC_UNSIGNED   = 0; // for absolute addresses
+  X86_64_RELOC_SIGNED     = 1; // for signed 32-bit displacement
+  X86_64_RELOC_BRANCH     = 2; // a CALL/JMP instruction with 32-bit displacement
+  X86_64_RELOC_GOT_LOAD   = 3; // a MOVQ load of a GOT entry
+  X86_64_RELOC_GOT        = 4; // other GOT references
+  X86_64_RELOC_SUBTRACTOR = 5; // must be followed by a X86_64_RELOC_UNSIGNED
+  X86_64_RELOC_SIGNED_1   = 6; // for signed 32-bit displacement with a -1 addend
+  X86_64_RELOC_SIGNED_2   = 7; // for signed 32-bit displacement with a -2 addend
+  X86_64_RELOC_SIGNED_4   = 8; // for signed 32-bit displacement with a -4 addend
+
+
+
+
+  {* Relocation types used in the ppc implementation.  Relocation entries for
+   * things other than instructions use the same generic relocation as discribed
+   * above and their r_type is RELOC_VANILLA.  The rest of the relocation types
+   * are for instructions.  Since they are for instructions the r_address field
+   * indicates the 32 bit instruction that the relocation is to be preformed on.
+   * The fields r_pcrel and r_length are ignored for non-RELOC_VANILLA r_types
+   * except for PPC_RELOC_BR14.
+   *
+   * For PPC_RELOC_BR14 if the r_length is the unused value 3, then the branch was
+   * statically predicted setting or clearing the Y-bit based on the sign of the
+   * displacement or the opcode.  If this is the case the static linker must flip
+   * the value of the Y-bit if the sign of the displacement changes for non-branch
+   * always conditions.
+    }
+
+const
+  PPC_RELOC_VANILLA   = 0; { generic relocation as discribed above  }
+  PPC_RELOC_PAIR      = 1; { the second relocation entry of a pair  }
+  PPC_RELOC_BR14      = 2; { 14 bit branch displacement (to a word address)  }
+  PPC_RELOC_BR24      = 3; { 24 bit branch displacement (to a word address)  }
+  PPC_RELOC_HI16      = 4; { a PAIR follows with the low half  }
+  PPC_RELOC_LO16      = 5; { a PAIR follows with the high half  }
+  PPC_RELOC_HA16      = 6; { Same as the RELOC_HI16 except the low 16 bits and the  }
+                      		 { * high 16 bits are added together with the low 16 bits }
+                      		 { * sign extened first.  This means if bit 15 of the low }
+                      		 { * 16 bits is set the high 16 bits stored in the        }
+                      		 { * instruction will be adjusted. }
+  PPC_RELOC_LO14      = 7; { Same as the LO16 except that the low 2 bits are not    }
+                      		 { * stored in the instruction and are always zero.  This }
+                       		 { * is used in double word load/store instructions.      }
+  PPC_RELOC_SECTDIFF  = 8;       { a PAIR follows with subtract symbol value  }
+  PPC_RELOC_PB_LA_PTR = 9;       { prebound lazy pointer  }
+  PPC_RELOC_HI16_SECTDIFF  = 10; { section difference forms of above.  a PAIR  }
+  PPC_RELOC_LO16_SECTDIFF  = 11; { follows these with subtract symbol value  }
+  PPC_RELOC_HA16_SECTDIFF  = 12;
+  PPC_RELOC_JBSR           = 13;
+  PPC_RELOC_LO14_SECTDIFF  = 14;
+  PPC_RELOC_LOCAL_SECTDIFF = 15; { like PPC_RELOC_SECTDIFF, but the symbol referenced was local.   }
 
   {
    * Symbolic debugger symbols.  The comments give the conventional use for
@@ -1688,4 +2099,3 @@ const
 implementation
 
 end.
-
