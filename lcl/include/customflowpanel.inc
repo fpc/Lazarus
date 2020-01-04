@@ -401,13 +401,22 @@ begin
     begin
       xControl := FControlList.Items[I].Control;
       if FFlowStyle in [fsLeftRightTopBottom, fsRightLeftTopBottom, fsLeftRightBottomTop, fsRightLeftBottomTop] then
+      begin
         PreferredHeight := Max(PreferredHeight,
           xControl.BoundsRect.Bottom+xControl.BorderSpacing.Around+xControl.BorderSpacing.Bottom +
-          xTestRect.Bottom-xClientRect.Bottom-xTestRect.Top+xClientRect.Top)
-      else
+          xTestRect.Bottom-xClientRect.Bottom-xTestRect.Top+xClientRect.Top);
+        PreferredWidth := Max(PreferredWidth,
+          xControl.Width + xControl.BorderSpacing.AroundLeft + xControl.BorderSpacing.AroundRight
+        );
+      end else
+      begin
         PreferredWidth := Max(PreferredWidth,
           xControl.BoundsRect.Right+xControl.BorderSpacing.Around+xControl.BorderSpacing.Right +
           xTestRect.Right-xClientRect.Right-xTestRect.Left+xClientRect.Left);
+        PreferredHeight := Max(PreferredHeight,
+          xControl.Height + xControl.BorderSpacing.AroundTop + xControl.BorderSpacing.AroundBottom
+        );
+      end;
     end;
   end;
 end;
