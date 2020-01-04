@@ -494,8 +494,8 @@ end;
 
 function TDbgLinuxThread.CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
 begin
-  Assert(not FIsPaused, 'Got WaitStatus while already paused');
-  assert(FExceptionSignal = 0, 'TDbgLinuxThread.CheckSignalForPostponing: FExceptionSignal = 0');
+  //Assert(not FIsPaused, 'Got WaitStatus while already paused');
+  //assert(FExceptionSignal = 0, 'TDbgLinuxThread.CheckSignalForPostponing: FExceptionSignal = 0');
   Result := FIsPaused;
   DebugLn(DBG_VERBOSE and (Result), ['Warning: Thread already paused', ID]);
   if Result then
