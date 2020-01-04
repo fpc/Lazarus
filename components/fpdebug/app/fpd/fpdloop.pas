@@ -49,6 +49,7 @@ type
     FLast: string;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FMemConvertor: TFpDbgMemConvertor;
     procedure ShowDisas;
     procedure ShowCode;
     procedure GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
@@ -258,7 +259,8 @@ procedure TFPDLoop.Initialize;
 begin
   inherited Initialize;
   FMemReader := TPDDbgMemReader.Create;
-  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+  FMemConvertor := TFpDbgMemConvertorLittleEndian.Create;
+  FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConvertor);
   //TODO: Maybe DebugLogger.OnLog ....
   //GController.OnLog:=@OnLog;
   GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
@@ -272,6 +274,7 @@ destructor TFPDLoop.Destroy;
 begin
   FMemManager.Free;
   FMemReader.Free;
+  FMemConvertor.Free;
   inherited Destroy;
 end;
 
