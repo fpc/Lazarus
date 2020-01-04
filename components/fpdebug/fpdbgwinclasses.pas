@@ -185,6 +185,7 @@ type
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; override;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; override;
 
+    procedure Interrupt; // required by app/fpd
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
@@ -546,6 +547,48 @@ begin
   then Buf[BytesRead] := #0
   else Buf[AMaxSize] := #0;
   AData := PWChar(@Buf[0]);
+end;
+
+procedure TDbgWinProcess.Interrupt;
+var
+  _UC: record
+    C: TContext;
+    D: array[1..16] of Byte;
+  end;
+  Context: PContext;
+begin
+  // Interrupting is implemented by suspending the thread and set DB0 to the
+  // (to be) executed EIP. When the thread is resumed, it will generate a break
+  // Single stepping doesn't work in all cases.
+
+  // A context needs to be aligned to 16 bytes. Unfortunately, the compiler has
+  // no directive for this, so align it somewhere in our "reserved" memory
+  Context := AlignPtr(@_UC, $10);
+  SuspendThread(FInfo.hThread);
+  try
+    Context^.ContextFlags := CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
+    if not GetThreadContext(FInfo.hThread, Context^)
+    then begin
+      DebugLn(DBG_WARNINGS, 'Proces %u interrupt: Unable to get context', [ProcessID]);
+      Exit;
+    end;
+
+    Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
+    {$ifdef cpui386}
+    Context^.Dr0 := Context^.Eip;
+    {$else}
+    Context^.Dr0 := Context^.Rip;
+    {$endif}
+    Context^.Dr7 := (Context^.Dr7 and $FFF0FFFF) or $1;
+
+    if not SetThreadContext(FInfo.hThread, Context^)
+    then begin
+      DebugLn(DBG_WARNINGS, 'Proces %u interrupt: Unable to set context', [ProcessID]);
+      Exit;
+    end;
+  finally
+    ResumeTHread(FInfo.hThread);
+  end;
 end;
 
 { ------------------------------------------------------------------
