@@ -531,20 +531,21 @@ begin
 00000001000374BB E89022FEFF               call -$0001DD70
 
 }
-  case NextOpCode of
-    OPmov:
-      if UpperCase(NextInstruction.Operand[2].Value) = 'RBP' then
-        FFinState := fsMov;
-    OPcall:
-      if FFinState = fsMov then begin
-        CheckForCallAndSetBreak;
-        FProcess.Continue(FProcess, FThread, True); // Step into
-        FFinState := fsCall;
-        exit;
-      end;
-    else
-      FFinState := fsNone;
-  end;
+  if (AThread = FThread) then
+    case NextOpCode of
+      OPmov:
+        if UpperCase(NextInstruction.Operand[2].Value) = 'RBP' then
+          FFinState := fsMov;
+      OPcall:
+        if FFinState = fsMov then begin
+          CheckForCallAndSetBreak;
+          FProcess.Continue(FProcess, FThread, True); // Step into
+          FFinState := fsCall;
+          exit;
+        end;
+      else
+        FFinState := fsNone;
+    end;
   inherited InternalContinue(AProcess, AThread);
 end;
 
@@ -593,7 +594,7 @@ procedure TDbgControllerStepThroughFpcSpecialHandler.InternalContinue(
   AProcess: TDbgProcess; AThread: TDbgThread);
 begin
   {$PUSH}{$Q-}{$R-}
-  if (NextOpCode = OPcall) and
+  if (AThread = FThread) and (NextOpCode = OPcall) and
      (FThread.GetInstructionPointerRegisterValue + NextInstructionLen = FAfterFinCallAddr)
   then begin
     RemoveHiddenBreak;
