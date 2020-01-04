@@ -1731,6 +1731,7 @@ end;
 procedure TFpDebugExceptionStepping.DoNtDllLoaded(ALib: TDbgLibrary);
 begin
   debugln(DBG_BREAKPOINTS, ['SetSoftwareExceptionBreakpoint RtlUnwind']);
+  FBreakPoints[bplRtlUnwind].Free;
   FBreakPoints[bplRtlUnwind] := FDebugger.AddBreak('RtlUnwindEx', ALib, False);
 end;
 
