@@ -21,9 +21,13 @@ unit gtk3objects;
 interface
 
 uses
-  Classes, SysUtils, Graphics, types, LCLType, LCLProc, LazUTF8, IntegerList,
-  LazGtk3, LazGdk3, LazGObject2, LazPango1, LazPangoCairo1, LazGdkPixbuf2,
-  LazGLib2, LazCairo1, FPCanvas;
+  Classes, SysUtils, Types, FPCanvas,
+  // LazUtils
+  LazUTF8, IntegerList, LazStringUtils,
+  // LCL
+  LCLType, LCLProc, Graphics,
+  LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazGdkPixbuf2,
+  LazPango1, LazPangoCairo1, LazCairo1;
 
 type
   TGtk3DeviceContext = class;
@@ -1875,67 +1879,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
-
-  Creates a new PChar removing all escaping ampersands.
--------------------------------------------------------------------------------}
-function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
-var
-  i, j: Longint;
-  ShortenChars, NewLength, SrcLength: integer;
-begin
-  // count ampersands and find first ampersand
-  ShortenChars:= 0;  // chars to delete
-  SrcLength:= LineLength;
-
-  { Look for amperands. If found, check if it is an escaped ampersand.
-    If it is, don't count it in. }
-  i:=0;
-  while i<SrcLength do
-  begin
-    if Src[i] = '&' then
-    begin
-      if (i < SrcLength - 1) and (Src[i+1] = '&') then
-      begin
-        // escaping ampersand found
-        inc(ShortenChars);
-        inc(i,2);
-        Continue;
-      end
-      else
-        inc(ShortenChars);
-    end;
-    inc(i);
-  end;
-  // create new PChar
-  NewLength:= SrcLength - ShortenChars;
-
-  Result:=StrAlloc(NewLength+1); // +1 for #0 char at end
-
-  // copy string without ampersands
-  i:=0;
-  j:=0;
-  while (j < NewLength) do begin
-    if Src[i] <> '&' then begin
-      // copy normal char
-      Result[j]:= Src[i];
-    end else begin
-      // ampersand
-      if (i < (SrcLength - 1)) and (Src[i+1] = '&') then begin
-        // escaping ampersand found
-        inc(i);
-        Result[j]:='&';
-      end else
-        // delete single ampersand
-        dec(j);
-    end;
-    Inc(i);
-    Inc(j);
-  end;
-  Result[NewLength]:=#0;
-end;
-
-{-------------------------------------------------------------------------------
   function GetTextExtentIgnoringAmpersands(TheFont: PGDKFont;
     Str : PChar; StrLength: integer;
     MaxWidth: Longint; lbearing, rbearing, width, ascent, descent : Pgint);
@@ -1949,24 +1892,15 @@ procedure GetTextExtentIgnoringAmpersands(TheFont: TGtk3Font;
   lbearing, rbearing, width, ascent, descent : Pgint);
 var
   NewStr : PChar;
-  i: integer;
   AMetrics: PPangoFontMetrics;
   {ACharWidth,}ATextWidth,ATextHeight: gint;
 begin
-  NewStr:=Str;
-  // first check if Str contains an ampersand:
-  if (Str<>nil) then
-  begin
-    i:=0;
-    while (Str[i]<>'&') and (i<StrLength) do inc(i);
-    if i<StrLength then
-    begin
-      NewStr := RemoveAmpersands(Str, StrLength);
-      StrLength:=StrLen(NewStr);
-    end;
-  end;
-  TheFont.Layout^.set_text(Str, StrLength);
-
+  // check if Str contains an ampersand before removing them all.
+  if StrLScan(Str, '&', StrLength) <> nil then
+    NewStr := RemoveAmpersands(Str, StrLength)
+  else
+    NewStr := Str;
+  TheFont.Layout^.set_text(NewStr, StrLength);
   // TheFont.Layout^.get_extents(@AInkRect, @ALogicalRect);
 
   AMetrics := pango_context_get_metrics(TheFont.Layout^.get_context, TheFont.Handle, TheFont.Layout^.get_context^.get_language);
@@ -1995,7 +1929,7 @@ begin
   // rBearing^ := 0;
   // gdk_text_extents(TheFont, NewStr, StrLength,
   //                 lbearing, rBearing, width, ascent, descent);
-  if NewStr<>Str then
+  if NewStr <> Str then
     StrDispose(NewStr);
   AMetrics^.unref;
 end;

@@ -133,7 +133,7 @@ procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
 // Ampersands
 function DeleteAmpersands(var Str : String) : Integer;
 function RemoveAmpersands(const ASource: String): String;
-function RemoveAmpersands(Src: PChar; LineLength: Longint): PChar;
+function RemoveAmpersands(Src: PChar; var LineLength: Longint): PChar;
 
 function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareHandles(h1, h2: THandle): integer;
@@ -394,14 +394,15 @@ begin
   end;
 end;
 
-function RemoveAmpersands(Src: PChar; LineLength: Longint): PChar;
+function RemoveAmpersands(Src: PChar; var LineLength: Longint): PChar;
 var
   s: String;
 begin
   SetLength(s, LineLength);
   strlcopy(PChar(s), Src, LineLength);
   s := RemoveAmpersands(s);
-  Result := StrAlloc(Length(s)+1); // +1 for #0 char at end
+  LineLength := Length(s);
+  Result := StrAlloc(LineLength+1); // +1 for #0 char at end
   strcopy(Result, PChar(s));
 end;
 

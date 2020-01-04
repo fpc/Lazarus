@@ -2108,21 +2108,17 @@ var
 begin
   ACaption := Str;
   Result := false;
-  position := UTF8Pos(AmpersandChar, ACaption);
-  // if AmpersandChar is on the last position then there is nothing to underscore, ignore this character
-  while (position > 0) and (position < UTF8Length(ACaption)) do
-  begin
+  repeat
+    position := UTF8Pos(AmpersandChar, ACaption);
+    // Not found or found at the end of string. Nothing to underscore.
+    if (position <= 0) or (position >= UTF8Length(ACaption)) then break;
     FoundChar := UTF8Copy(ACaption, position+1, 1);
     // two AmpersandChar characters together are not valid hot key
-    if FoundChar <> AmpersandChar then begin
-      Result := UTF8UpperCase(UTF16ToUTF8(WideString(WideChar(VK)))) = UTF8UpperCase(FoundChar);
-      exit;
-    end
-    else begin
-      UTF8Delete(ACaption, 1, position+1);
-      position := UTF8Pos(AmpersandChar, ACaption);
-    end;
-  end;
+    if FoundChar = AmpersandChar then
+      UTF8Delete(ACaption, 1, position+1)
+    else
+      Exit(UTF8UpperCase(UTF16ToUTF8(WideString(WideChar(VK)))) = UTF8UpperCase(FoundChar));
+  until false;
 end;
 
 //==============================================================================

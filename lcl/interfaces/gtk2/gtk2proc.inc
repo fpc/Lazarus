@@ -9071,22 +9071,16 @@ procedure GetTextExtentIgnoringAmpersands(TheFont: TGtkIntfFont;
   Str : PChar; StrLength: integer;
   lbearing, rbearing, width, ascent, descent : Pgint);
 var
-  NewStr : PChar;
-  i: integer;
+  NewStr: PChar;
 begin
-  NewStr:=Str;
-  // first check if Str contains an ampersand:
-  if (Str<>nil) then begin
-    i:=0;
-    while (Str[i]<>'&') and (i<StrLength) do inc(i);
-    if i<StrLength then begin
-      NewStr := RemoveAmpersands(Str, StrLength);
-      StrLength:=StrLen(NewStr);
-    end;
-  end;
+  // check if Str contains an ampersand before removing them all.
+  if StrLScan(Str, '&', StrLength) <> nil then
+    NewStr := RemoveAmpersands(Str, StrLength)
+  else
+    NewStr := Str;
   gdk_text_extents(TheFont, NewStr, StrLength,
                    lbearing, rBearing, width, ascent, descent);
-  if NewStr<>Str then
+  if NewStr <> Str then
     StrDispose(NewStr);
 end;
 
