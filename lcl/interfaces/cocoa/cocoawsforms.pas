@@ -1126,7 +1126,7 @@ begin
     TCocoaWSWinControl.ShowHide(AWinControl);
 
     // ShowHide() also actives (sets focus to) the window
-    if lShow and Assigned(w) then
+    if lShow and Assigned(w) and not (w.isKindOfClass(NSPanel)) then
       w.makeKeyWindow;
   end;
 
