@@ -516,10 +516,12 @@ procedure TDbgControllerHiddenBreakStepBaseCmd.DoContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   InternalContinue(AProcess, AThread);
-  if ((FNextInstruction.OpCode = OPret) or (FNextInstruction.OpCode = OPretf)) and
-     (FHiddenBreakpoint = nil)
-  then
-    FIsSteppedOut := True;
+  if (AThread = FThread) then begin
+    if ((FNextInstruction.OpCode = OPret) or (FNextInstruction.OpCode = OPretf)) and
+       (FHiddenBreakpoint = nil)
+    then
+      FIsSteppedOut := True;
+  end;
   FNextInstruction.OpCode := OPX_InternalUnknown;
   FNextInstructionLen := 0;
 end;
@@ -530,7 +532,8 @@ procedure TDbgControllerStepOverInstructionCmd.InternalContinue(
   AProcess: TDbgProcess; AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverInstructionCmd.DoContinue: FProcess=AProcess');
-  CheckForCallAndSetBreak;
+  if (AThread = FThread) then
+    CheckForCallAndSetBreak;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
 
@@ -629,7 +632,7 @@ procedure TDbgControllerStepIntoLineCmd.InternalContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepIntoLineCmd.DoContinue: FProcess=AProcess');
-  if FState = siSteppingCurrent then
+  if (FState = siSteppingCurrent) and (AThread = FThread) then
   begin
     if CheckForCallAndSetBreak then begin
       FState := siSteppingIn;
@@ -704,7 +707,8 @@ procedure TDbgControllerStepOverLineCmd.InternalContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverLineCmd.DoContinue: FProcess=AProcess');
-  CheckForCallAndSetBreak;
+  if (AThread = FThread) then
+    CheckForCallAndSetBreak;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
 
@@ -781,38 +785,40 @@ var
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOutCmd.DoContinue: FProcess=AProcess');
 
-  if IsSteppedOut then begin
-    CheckForCallAndSetBreak;
-  end
-  else
-  if not assigned(FHiddenBreakpoint) then begin
-    if GetOutsideFrame(Outside) then begin
-      SetReturnAdressBreakpoint(AProcess, Outside);
+  if (AThread = FThread) then begin
+    if IsSteppedOut then begin
+      CheckForCallAndSetBreak;
     end
     else
-    if FStepCount < 12 then
-    begin
-      // During the prologue and epiloge of a procedure the call-stack might not been
-      // setup already. To avoid problems in these cases, start with a few (max
-      // 12) single steps.
-      Inc(FStepCount);
-      Opc := NextOpCode;
-      if (Opc = OPcall) or (Opc = OPleave)  then  // asm "call" // set break before "leave" or the frame becomes unavail
-      begin
-        SetReturnAdressBreakpoint(AProcess, False);
+    if not assigned(FHiddenBreakpoint) then begin
+      if GetOutsideFrame(Outside) then begin
+        SetReturnAdressBreakpoint(AProcess, Outside);
       end
       else
-      if (Opc = OPret) or (Opc = OPretf) then  // asm "ret"
+      if FStepCount < 12 then
       begin
-        FStepCount := MaxInt; // Do one more single-step, and we're finished.
-        FProcess.Continue(FProcess, FThread, True);
-        exit;
+        // During the prologue and epiloge of a procedure the call-stack might not been
+        // setup already. To avoid problems in these cases, start with a few (max
+        // 12) single steps.
+        Inc(FStepCount);
+        Opc := NextOpCode;
+        if (Opc = OPcall) or (Opc = OPleave)  then  // asm "call" // set break before "leave" or the frame becomes unavail
+        begin
+          SetReturnAdressBreakpoint(AProcess, False);
+        end
+        else
+        if (Opc = OPret) or (Opc = OPretf) then  // asm "ret"
+        begin
+          FStepCount := MaxInt; // Do one more single-step, and we're finished.
+          FProcess.Continue(FProcess, FThread, True);
+          exit;
+        end;
+      end
+      else
+      begin
+        // Enough with the single-stepping
+        SetReturnAdressBreakpoint(AProcess, False);
       end;
-    end
-    else
-    begin
-      // Enough with the single-stepping
-      SetReturnAdressBreakpoint(AProcess, False);
     end;
   end;
 
