@@ -2783,6 +2783,11 @@ end;
 
 procedure TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
 begin
+  if ThreadID = FFpDebugThread.ThreadID then begin
+    AMethod();
+    exit;
+  end;
+
   assert(not assigned(FFpDebugThread.AsyncMethod));
   FFpDebugThread.AsyncMethod:=AMethod;
   RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
