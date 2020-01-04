@@ -38,9 +38,9 @@ interface
 uses
   SysUtils, Classes,
 {$ifdef windows}
-  Windows, fgl,
+  Windows,
 {$endif}
-  LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil, CustApp,
+  fgl, LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil, CustApp,
   FpPascalParser,
   FPDbgController,
   FpPascalBuilder,
