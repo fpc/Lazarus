@@ -90,6 +90,7 @@ type
     //class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     //class function GetPageRealIndex(const ATabControl: TCustomTabControl; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ATabControl: TCustomTabControl; const AIndex: Integer): TRect; override;
     class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;
     class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
@@ -785,6 +786,58 @@ begin
   if not Assigned(lTabPage) then
     Exit;
   Result := lTabControl.exttabIndexOfTabViewItem(lTabPage);
+end;
+
+class function TCocoaWSCustomTabControl.GetTabRect(
+  const ATabControl: TCustomTabControl; const AIndex: Integer): TRect;
+var
+  lTabControl: TCocoaTabControl;
+  lTabPage: NSTabViewItem;
+  tb : TCocoaTabPageView;
+  i   : integer;
+  idx : integer;
+  tr  : TRect;
+  w   : array of Double;
+  mw  : Double;
+  ofs : Double; // aprx offset between label and the text (from both sides)
+  x   : Double;
+begin
+  Result:=inherited GetTabRect(ATabControl, AIndex);
+  if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  lTabControl := TCocoaTabControl(ATabControl.Handle);
+  // unable to determine the rectangle view
+
+  if (AIndex<0) or (AIndex>=ATabControl.PageCount) then Exit;
+  tb := TCocoaTabPageView(ATabControl.Page[AIndex].Handle);
+  if not Assigned(tb) then Exit;
+
+  idx := lTabControl.tabViewItems.indexOfObject( tb.tabPage );
+  if (idx = Integer(NSNotFound)) then Exit;
+
+  if not GetTabsRect(lTabControl, tr) then Exit;
+
+  SetLength(w, lTabControl.tabViewItems.count);
+  if (length(w) = 0) then Exit; // no tabs!
+
+  mw := 0;
+  for i:=0 to Integer(lTabControl.tabViewItems.count)-1 do
+  begin
+    lTabPage := lTabControl.tabViewItemAtIndex(i);
+    w[i] := lTabPage.sizeOfLabel(false).width;
+    mw := mw + w[i];
+  end;
+  if (mw = 0) then Exit; // 0 for the total tabs width?
+
+  ofs := (tr.Right - tr.Left - mw) / length(w);
+
+  x := tr.Left;
+  for i:=0 to idx-1 do
+    x:=x+ofs+w[i];
+
+  Result.Left := Round(x);
+  Result.Top := tr.Top;
+  Result.Right := Round(Result.Left + w[idx]);
+  Result.Bottom := tr.Bottom;
 end;
 
 class procedure TCocoaWSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);

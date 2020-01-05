@@ -56,9 +56,8 @@ type
     prevarr  : NSButton;
     nextarr  : NSButton;
 
-    leftmost : Integer;         // index of the left-most tab shown
-
   public
+    leftmost : Integer;         // index of the left-most tab shown
     ignoreChange: Boolean;
     callback: ITabControlCallback;
 
@@ -116,7 +115,45 @@ type
 
 function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
 
+// Hack: The function attempts to determine the tabs view
+// if the view is found it would return its frame rect in LCL coordinates
+// if the view cannot be determinted, the function returns false
+// This is implemented as ObjC method, because "prevarr" and "nextarr"
+// are private methods.
+// It's unknown, if it's safe to cache the result, so the search is performed
+// everytime
+function GetTabsRect(tabs: TCocoaTabControl; var r: TRect): Boolean;
+
 implementation
+
+function GetTabsRect(tabs: TCocoaTabControl; var r: TRect): Boolean;
+var
+  i  : integer;
+  sv : NSView;
+  f  : NSRect;
+begin
+  Result:=Assigned(tabs);
+  if not Result then Exit;
+
+  for i:=0 to Integer(tabs.subviews.count)-1 do
+  begin
+    sv:=NSView(tabs.subviews.objectAtIndex(i));
+    if not Assigned(sv)
+       or (sv = tabs.nextarr)
+       or (sv = tabs.prevarr)
+       or (sv.isKindOfClass(TCocoaTabPageView))
+    then Continue;
+
+    f := sv.frame;
+    if tabs.isFlipped then
+      r := NSRectToRect( f )
+    else
+      NSToLCLRect( f, tabs.frame.size.height, r );
+    Result := true;
+    Exit;
+  end;
+  Result:=false;
+end;
 
 function AllocArrowButton(isPrev: Boolean): NSButton;
 var
