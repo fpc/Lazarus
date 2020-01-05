@@ -801,6 +801,7 @@ var
   mw  : Double;
   ofs : Double; // aprx offset between label and the text (from both sides)
   x   : Double;
+  vt  : NSTabViewType;
 begin
   Result:=inherited GetTabRect(ATabControl, AIndex);
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
@@ -819,25 +820,51 @@ begin
   SetLength(w, lTabControl.tabViewItems.count);
   if (length(w) = 0) then Exit; // no tabs!
 
-  mw := 0;
-  for i:=0 to Integer(lTabControl.tabViewItems.count)-1 do
+  vt := lTabControl.tabViewType;
+  if (vt = NSTopTabsBezelBorder) or (vt = NSBottomTabsBezelBorder) then
   begin
-    lTabPage := lTabControl.tabViewItemAtIndex(i);
-    w[i] := lTabPage.sizeOfLabel(false).width;
-    mw := mw + w[i];
+    mw := 0;
+    for i := 0 to Integer(lTabControl.tabViewItems.count)-1 do
+    begin
+      lTabPage := lTabControl.tabViewItemAtIndex(i);
+      w[i] := lTabPage.sizeOfLabel(false).width;
+      mw := mw + w[i];
+    end;
+    if (mw = 0) then Exit; // 0 for the total tabs width?
+
+    ofs := (tr.Right - tr.Left - mw) / length(w);
+
+    x := tr.Left;
+    for i := 0 to idx-1 do
+      x := x+ofs+w[i];
+
+    Result.Left := Round(x);
+    Result.Right := Round(Result.Left + w[idx]);
+    Result.Top := tr.Top;
+    Result.Bottom := tr.Bottom;
+  end
+  else
+  begin
+    mw := 0;
+    for i := 0 to Integer(lTabControl.tabViewItems.count)-1 do
+    begin
+      lTabPage := lTabControl.tabViewItemAtIndex(i);
+      w[i] := lTabPage.sizeOfLabel(false).height;
+      mw := mw + w[i];
+    end;
+    if (mw = 0) then Exit; // 0 for the total tabs width?
+
+    ofs := (tr.Bottom - tr.Top - mw) / length(w);
+
+    x := tr.Top;
+    for i := 0 to idx-1 do
+      x := x+ofs+w[i];
+
+    Result.Left := tr.Left;
+    Result.Right := tr.Right;
+    Result.Top := Round(x);
+    Result.Bottom := Round(Result.Top + w[idx]);
   end;
-  if (mw = 0) then Exit; // 0 for the total tabs width?
-
-  ofs := (tr.Right - tr.Left - mw) / length(w);
-
-  x := tr.Left;
-  for i:=0 to idx-1 do
-    x:=x+ofs+w[i];
-
-  Result.Left := Round(x);
-  Result.Top := tr.Top;
-  Result.Right := Round(Result.Left + w[idx]);
-  Result.Bottom := tr.Bottom;
 end;
 
 class procedure TCocoaWSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);
