@@ -1301,6 +1301,7 @@ type
     FBreakID: Integer;
     FHitCnt: Integer;
     FValid: TValidState;
+    FBaseValid: TValidState; // insert-state / without condition or other attribs
     FWatchData: String;
     FWatchKind: TDBGWatchPointKind;
     FWatchScope: TDBGWatchPointScope;
@@ -1354,6 +1355,7 @@ type
     FExpression: string;
     FUpdateEnabled: Boolean;
     FUpdateExpression: Boolean;
+    FValid: TValidState;
   protected
     function DoExecute: Boolean; override;
   public
@@ -1378,6 +1380,7 @@ type
     FParsedExpression: String;
     FCurrentCmd: TGDBMIDebuggerCommandBreakPointBase;
     FUpdateFlags: TGDBMIBreakPointUpdateFlags;
+    FBaseValid: TValidState; // insert-state / without condition or other attribs
     procedure DoLogExpressionCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
     procedure SetBreakPoint;
@@ -10082,11 +10085,14 @@ end;
 
 function TGDBMIDebuggerCommandBreakPointBase.ExecBreakCondition(ABreakId: Integer;
   AnExpression: string): Boolean;
+var
+  R: TGDBMIExecResult;
 begin
   Result := False;
   if ABreakID = 0 then Exit;
 
-  Result := ExecuteCommand('-break-condition %d %s', [ABreakID, UpperCaseSymbols(AnExpression)], []);
+  Result := ExecuteCommand('-break-condition %d %s', [ABreakID, UpperCaseSymbols(AnExpression)], R) and
+    (R.State <> dsError);
 end;
 
 { TGDBMIDebuggerCommandBreakInsert }
@@ -10210,6 +10216,7 @@ begin
   FContext.StackContext := ccNotRequired;
 
   FValid := vsInvalid;
+  FBaseValid := vsInvalid;
   DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
     if FReplaceId <> 0
@@ -10217,12 +10224,15 @@ begin
 
     if ExecBreakInsert(FBreakID, FHitCnt, FAddr, Pending) then
       FValid := vsValid;
+    FBaseValid := FValid;
     if FValid = vsInvalid then Exit;
     if Pending then
       FValid := vsPending;
 
-    if (FExpression <> '') and not (dcsCanceled in SeenStates)
-    then ExecBreakCondition(FBreakID, FExpression);
+    if (FExpression <> '') and not (dcsCanceled in SeenStates) then begin
+      if not ExecBreakCondition(FBreakID, FExpression) then
+        FValid := vsInvalid;
+    end;
 
     if not (dcsCanceled in SeenStates)
     then ExecBreakEnabled(FBreakID, FEnabled);
@@ -10323,13 +10333,16 @@ end;
 function TGDBMIDebuggerCommandBreakUpdate.DoExecute: Boolean;
 begin
   Result := True;
+  FValid := vsValid;
   FContext.ThreadContext := ccNotRequired;
   FContext.StackContext := ccNotRequired;
 
   DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
-  if FUpdateExpression
-  then ExecBreakCondition(FBreakID, FExpression);
+  if FUpdateExpression then begin
+    if not ExecBreakCondition(FBreakID, FExpression) then
+      FValid := vsInvalid;
+  end;
   if FUpdateEnabled
   then ExecBreakEnabled(FBreakID, FEnabled);
   finally
@@ -10483,7 +10496,7 @@ begin
   then SetBreakpoint;
 end;
 
-procedure TGDBMIBreakPoint.SetBreakpoint;
+procedure TGDBMIBreakPoint.SetBreakPoint;
 begin
   if Debugger = nil then Exit;
   if IsUpdating
@@ -10577,11 +10590,20 @@ begin
   if Sender = FCurrentCmd
   then FCurrentCmd := nil;
 
+  if (Sender is TGDBMIDebuggerCommandBreakUpdate) then begin
+    if TGDBMIDebuggerCommandBreakUpdate(Sender).FValid = vsInvalid then
+      SetValid(vsInvalid)
+    else
+    if FBaseValid = vsValid then
+      SetValid(vsValid);
+  end
+  else
   if (Sender is TGDBMIDebuggerCommandBreakInsert)
   then begin
     // Check Insert Result
     BeginUpdate;
 
+    FBaseValid := TGDBMIDebuggerCommandBreakInsert(Sender).FBaseValid;
     case TGDBMIDebuggerCommandBreakInsert(Sender).Valid of
       vsValid: SetValid(vsValid);
       vsPending: SetValid(vsPending);
