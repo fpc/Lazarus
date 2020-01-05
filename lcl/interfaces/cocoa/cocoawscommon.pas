@@ -1512,6 +1512,9 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
 
+  if Assigned(CocoaWidgetSet) and (AWinControl.Handle = CocoaWidgetSet.GetCapture) then
+    CocoaWidgetSet.ReleaseCapture;
+
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSView) then
   begin

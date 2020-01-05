@@ -681,7 +681,10 @@ begin
       if not (TCocoaWindowContent(obj).isembedded)
         and not isTopModalWin(TCocoaWindowContent(obj).window) then Exit;
     end;
-    obj.lclSetEnabled(bEnable)
+    obj.lclSetEnabled(bEnable);
+
+    if (not bEnable) and (hWnd = CaptureControl) then
+      ReleaseCapture;
   end;
 end;
 
