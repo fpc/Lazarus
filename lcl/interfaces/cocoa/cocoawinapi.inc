@@ -683,8 +683,11 @@ begin
     end;
     obj.lclSetEnabled(bEnable);
 
-    if (not bEnable) and (hWnd = CaptureControl) then
-      ReleaseCapture;
+    if (CaptureControl <> 0)
+      and (not bEnable)
+      and (obj.isKindOfClass(NSView))
+      and NSViewIsLCLEnabled(NSView(obj)) then
+      ReleaseCapture
   end;
 end;
 
