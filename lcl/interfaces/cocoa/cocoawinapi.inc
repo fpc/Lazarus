@@ -681,7 +681,13 @@ begin
       if not (TCocoaWindowContent(obj).isembedded)
         and not isTopModalWin(TCocoaWindowContent(obj).window) then Exit;
     end;
-    obj.lclSetEnabled(bEnable)
+    obj.lclSetEnabled(bEnable);
+
+    if (CaptureControl <> 0)
+      and (not bEnable)
+      and (obj.isKindOfClass(NSView))
+      and NSViewIsLCLEnabled(NSView(obj)) then
+      ReleaseCapture
   end;
 end;
 
