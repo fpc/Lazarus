@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2018-10-08 11:44+0200\n"
+"PO-Revision-Date: 2020-01-06 10:06+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -29,19 +29,19 @@ msgstr "Insérer une ligne"
 
 #: tachartstrconsts.desmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Déplacer vers le bas"
 
 #: tachartstrconsts.desmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Déplacer vers le haut"
 
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
-msgstr ""
+msgstr "La valeur doit être un entier."
 
 #: tachartstrconsts.desnonumber
 msgid "Non-numeric value."
-msgstr ""
+msgstr "Valeur non numérique."
 
 #: tachartstrconsts.destext
 msgid "Text"
@@ -61,7 +61,7 @@ msgstr "Échelle automatique"
 
 #: tachartstrconsts.rsaxisclicktool
 msgid "Axis click"
-msgstr ""
+msgstr "Clic sur l'axe"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
@@ -186,27 +186,27 @@ msgstr "Triangle en bas"
 
 #: tachartstrconsts.rserrfitdimerror
 msgid "Non-matching count of x and y values."
-msgstr ""
+msgstr "Compte incohérent de valeurs x et y."
 
 #: tachartstrconsts.rserrfitmoreparamsthanvalues
 msgid "There are more fitting parameters than data values."
-msgstr ""
+msgstr "Il existe des paramètres plus appropriés que les valeurs des données."
 
 #: tachartstrconsts.rserrfitnobasefunctions
 msgid "Not enough user-provided base functions."
-msgstr ""
+msgstr "Pas assez de fonctions de base proposées par l'utilisateur."
 
 #: tachartstrconsts.rserrfitnofitparams
 msgid "No fit parameters specified."
-msgstr ""
+msgstr "Pas de spécification de paramètres appropriés."
 
 #: tachartstrconsts.rserrfitsingular
 msgid "Fitting matrix is (nearly) singular."
-msgstr ""
+msgstr "La matrice d'ajustement est (presque) singulière."
 
 #: tachartstrconsts.rserrillegalfitparamcount
 msgid "The number of fit parameters cannot be less than 1."
-msgstr ""
+msgstr "Le nombre de paramètres appropriés ne peut pas être inférieur à 1."
 
 #: tachartstrconsts.rserrinvalidresulttype
 #, object-pascal-format
@@ -287,7 +287,7 @@ msgstr "Séries de fonctions"
 
 #: tachartstrconsts.rsheaderfooterclicktool
 msgid "Header/footer click"
-msgstr ""
+msgstr "Clic sur l'en-tête ou le pied de page"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
@@ -331,7 +331,7 @@ msgstr "Triangle à gauche"
 
 #: tachartstrconsts.rslegendclicktool
 msgid "Legend click"
-msgstr ""
+msgstr "Clic sur la légende"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -344,17 +344,17 @@ msgstr "Séries de lignes"
 #: tachartstrconsts.rslistsourcecolorerror
 #, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
-msgstr ""
+msgstr "La chaîne %0:s.DataPoints \"%1:s\" n'est pas un entier."
 
 #: tachartstrconsts.rslistsourcenumericerror
 #, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
-msgstr ""
+msgstr "La chaîne %0:s.DataPoints \"%1:s\" n'est pas un numéro correct."
 
 #: tachartstrconsts.rslistsourcestringformaterror
 #, object-pascal-format
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
-msgstr ""
+msgstr "Le nombre de valeurs de données dans la chaîne de DataPoints %0:s. \"%1:s\" diffère de ce qui est attendu de XCount et de YCount."
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
@@ -464,21 +464,21 @@ msgstr "Triangle à droite"
 #: tachartstrconsts.rssourcecounterror
 #, object-pascal-format
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "%0:s nécessite une source graphique avec au moins %1:d %2:s valeur(s) par point de données."
 
 #: tachartstrconsts.rssourcecounterror2
 #, object-pascal-format
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "Cette instance %0:s doit avoir au moins %1:d %2:s valeur(s) par point de donnée."
 
 #: tachartstrconsts.rssourcenoteditable
 msgid "Editable chart source required"
-msgstr ""
+msgstr "Source de graphique modifiable requise"
 
 #: tachartstrconsts.rssourcesorterror
 #, object-pascal-format
 msgid "Selected sorting parameters are not supported by %s."
-msgstr ""
+msgstr "Les paramètres de tri sélectionnés ne sont pas pris en charge par %s."
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"

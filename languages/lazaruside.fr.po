@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-07 12:54+0100\n"
+"PO-Revision-Date: 2020-01-06 11:17+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -329,7 +329,7 @@ msgstr "Extra 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagehorizwheel
 msgid "Horizontal-Wheel"
-msgstr ""
+msgstr "Roulette horizontale"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
@@ -725,10 +725,9 @@ msgid "Include assertion code"
 msgstr "Inclure le code d'assertion"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Associated debug desktop"
+#, object-pascal-format
 msgid "Associated debug desktop for \"%s\""
-msgstr "Bureau de débogage associé"
+msgstr "Bureau de débogage associé pour \"%s\""
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
@@ -1079,10 +1078,8 @@ msgid "Reverse fold-order in Popup"
 msgstr "Inverser l'ordre de pliage dans le menu surgissant"
 
 #: lazarusidestrconsts.dlgcogdb
-#, fuzzy
-#| msgid "Generate debugging info for GDB (slower / increases exe-size)"
 msgid "Generate info for the debugger (slower / increases exe-size)"
-msgstr "Générer les informations de débogage pour GDB (ralentit et augmente la taille de l'exécutable)"
+msgstr "Générer les informations de débogage (ralentit et augmente la taille de l'exécutable)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 msgid "Use Heaptrc unit (check for mem-leaks)"
@@ -1093,10 +1090,8 @@ msgid "Include files (-Fi):"
 msgstr "Inclure les fichiers (-Fi) :"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-#, fuzzy
-#| msgid "Info for GDB"
 msgid "Debugger info"
-msgstr "Informations concernant GDB"
+msgstr "Informations concernant le débogueur"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1394,14 +1389,13 @@ msgid "Delete mode"
 msgstr "Supprimer le mode"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
 msgid "Delete"
 msgstr "Supprimer"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
 msgid "Delete selected desktop"
-msgstr ""
+msgstr "Supprimer le bureau sélectionné"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1740,10 +1734,8 @@ msgid "Extra line spacing"
 msgstr "Interligne supplémentaire"
 
 #: lazarusidestrconsts.dlgextsymb
-#, fuzzy
-#| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
-msgstr "Utiliser un fichier d'informations de débogage externe pour GDB"
+msgstr "Utiliser un fichier d'informations de débogage externe"
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2100,7 +2092,7 @@ msgstr "Répertoire des codes sources de FPC"
 
 #: lazarusidestrconsts.dlgfppkgconfigurationfile
 msgid "Fppkg configuration file (e.g. fppkg.cfg)"
-msgstr ""
+msgstr "Fichier de configuration Fppkg (ex. fppkg.cfg)"
 
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
@@ -2329,7 +2321,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
 msgid "Include code templates"
-msgstr ""
+msgstr "Inclure les modèles de code"
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
@@ -2461,10 +2453,8 @@ msgid "Guide lines Left,Top"
 msgstr "Lignes directrices (gauche, haut)"
 
 #: lazarusidestrconsts.dlglevel1opt
-#, fuzzy
-#| msgid "1 (quick, debugger friendly)"
 msgid "1 (quick, debugger friendly with small limitations)"
-msgstr "Niveau 1 (rapide avec débogueur convivial)"
+msgstr "Niveau 1 (rapide, avec débogueur convivial et quelques limitations)"
 
 #: lazarusidestrconsts.dlglevel2opt
 msgid "2 (-O1 + quick optimizations)"
@@ -2479,10 +2469,8 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "4 (-O3 + optimisations agressives - à utiliser avec prudence)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#, fuzzy
-#| msgid "0 (no optimization)"
 msgid "0 (no optimization, for debugging)"
-msgstr "Niveau 0 (pas d'optimisations)"
+msgstr "Niveau 0 (pas d'optimisations, pour débogage)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
@@ -2769,11 +2757,11 @@ msgstr "Molette vers le bas"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelleft
 msgid "Wheel left"
-msgstr ""
+msgstr "Roulette gauche"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelright
 msgid "Wheel right"
-msgstr ""
+msgstr "Roulette droite"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelup
 msgid "Wheel up"
@@ -3191,18 +3179,17 @@ msgstr "Autres fichiers unités (-Fu)"
 
 #: lazarusidestrconsts.dlgoverviewgutterback1color
 msgid "Background 1"
-msgstr ""
+msgstr "Arrière-plan 1"
 
 #: lazarusidestrconsts.dlgoverviewgutterback2color
 msgid "Background 2"
-msgstr ""
+msgstr "Arrière-plan 2"
 
 #: lazarusidestrconsts.dlgoverviewguttercolor
 msgid "Overview Gutter"
-msgstr ""
+msgstr "Plan d'ensemble de la gouttière"
 
 #: lazarusidestrconsts.dlgoverviewgutterpagecolor
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
 msgid "Page"
 msgstr "Page"
@@ -3299,7 +3286,6 @@ msgid "Create Application Bundle"
 msgstr "Créer un ensemble application"
 
 #: lazarusidestrconsts.dlgpodebugger
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgpodebugger"
 msgid "Debugger"
 msgstr "Débogueur"
@@ -3483,14 +3469,13 @@ msgid "Rename desktop"
 msgstr "Renommer le bureau"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
 msgid "Rename"
 msgstr "Renommer"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
 msgid "Rename selected desktop"
-msgstr ""
+msgstr "Renommer le bureau sélectionné"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3505,14 +3490,13 @@ msgid "Report"
 msgstr "Rapport"
 
 #: lazarusidestrconsts.dlgreset
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "Réinitialiser"
 
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
-msgstr ""
+msgstr "Tout réinitialiser"
 
 #: lazarusidestrconsts.dlgrightbottomclr
 msgid "Guide lines Right,Bottom"
@@ -3591,7 +3575,7 @@ msgstr "Paramètres d'exécution"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
-msgstr ""
+msgstr "Enregistrer le bureau courant"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3599,11 +3583,11 @@ msgstr "Enregistrer le bureau courant sous"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
 msgid "Save active desktop as ..."
-msgstr ""
+msgstr "Sauvegarder le bureau actif sous..."
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
 msgid "Save active desktop as"
-msgstr ""
+msgstr "Sauvegarder le bureau actif sous"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3677,20 +3661,18 @@ msgstr "Sélectionner tous les contrôles enfants avec leur parent."
 
 #: lazarusidestrconsts.dlgselectallnoscroll
 msgid "Do not scroll on Select-All / Paragraph or To-Brace"
-msgstr ""
+msgstr "Ne faites pas défiler sur Tout sélectionner/ Paragraphe ou Jusqu'à l'accolade"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "&Texte sélectionné"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
 msgid "Set active"
 msgstr "Rendre actif"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "Rendre actif"
@@ -3965,16 +3947,14 @@ msgstr "&Texte à chercher"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
-msgstr ""
+msgstr "L'élément utilise (et édite) les schémas :"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
 msgid "Toggle as debug desktop"
 msgstr "Basculer en bureau de débogage"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Basculer en bureau de débogage"
@@ -4055,7 +4035,7 @@ msgstr "Utiliser le fichier de configuration standard du compilateur (fpc.cfg)"
 
 #: lazarusidestrconsts.dlgusehighlight
 msgid "Use Highlight"
-msgstr ""
+msgstr "Utiliser la surbrillance"
 
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
@@ -4075,16 +4055,12 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Échec du chargement du fichier de profil utilisateur %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-#, fuzzy
-#| msgid "Use (and edit) global scheme settings"
 msgid "- Scheme globals -"
-msgstr "Utiliser (et éditer) les paramètres globaux du profil"
+msgstr "- Schémas globaux -"
 
 #: lazarusidestrconsts.dlguseschemelocal
-#, fuzzy
-#| msgid "Use local scheme settings"
 msgid "selected language"
-msgstr "Utiliser les paramètres locaux du profil"
+msgstr "langage choisi"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -4553,7 +4529,7 @@ msgstr "Arrêté"
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
-msgstr "Arrêter le chargement du projet"
+msgstr "Abandonner le chargement du projet"
 
 #: lazarusidestrconsts.lisabortwholeloading
 msgid "Abort whole loading"
@@ -7024,7 +7000,7 @@ msgstr "Visibilité"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
-msgstr ""
+msgstr "Boîtes Combo"
 
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
@@ -7042,7 +7018,7 @@ msgstr "Compiler"
 
 #: lazarusidestrconsts.liscompileanddonotaskagain
 msgid "Compile and do not ask again"
-msgstr ""
+msgstr "Compiler et ne plus demander"
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
@@ -7099,7 +7075,7 @@ msgstr "Compiler"
 
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
-msgstr ""
+msgstr "Compiler avec les paramètres du projet"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -7983,10 +7959,8 @@ msgid "Create Filter"
 msgstr "Créer un filtre"
 
 #: lazarusidestrconsts.liscreatefppkgconfig
-#, fuzzy
-#| msgid "Create new Fppkg configuration"
 msgid "Restore Fppkg configuration"
-msgstr "Créer une nouvelle configuration Fppkg"
+msgstr "Restaurer la configuration de Fppkg"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
@@ -8384,7 +8358,7 @@ msgstr "Fermer automatiquement la fenêtre de l'assembleur si le code source est
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbackend
 msgid "Debugger backend"
-msgstr ""
+msgstr "Backend du débogueur"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -8401,7 +8375,7 @@ msgstr "Débogueur"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
 msgid "Debugger Backend:"
-msgstr ""
+msgstr "Backend du débogueur :"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -8454,7 +8428,6 @@ msgid "Module"
 msgstr "Module"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmname
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
 msgid "Name:"
 msgstr "Nom :"
@@ -8506,7 +8479,7 @@ msgstr "Tâche"
 #: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
 #, object-pascal-format
 msgid "Unknown Debugger backend \"%s\""
-msgstr ""
+msgstr "Backend du débogueur inconnu : \"%s\""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
@@ -8514,7 +8487,7 @@ msgstr "Utiliser les couleurs du journal d'événements"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
 msgid "-- Use IDE default Debugger --"
-msgstr ""
+msgstr "-- Utiliser le débogueur par défaut de l'EDI --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
@@ -8557,7 +8530,7 @@ msgstr "Section par défaut des méthodes"
 
 #: lazarusidestrconsts.lisdelayforcompletionbox
 msgid "Delay for completion box"
-msgstr ""
+msgstr "Délai pour la boîte de complétion"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -8565,7 +8538,7 @@ msgstr "Durée pour les conseils sur une longue ligne dans la boîte de complét
 
 #: lazarusidestrconsts.lisdelayforhints
 msgid "Delay for hints"
-msgstr ""
+msgstr "Délai pour les conseils"
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -9018,7 +8991,7 @@ msgstr "Dessiner la sélection comme focalisée même si la fenêtre des message
 
 #: lazarusidestrconsts.lisdropdowncount
 msgid "Drop Down Count"
-msgstr ""
+msgstr "Nombre d'éléments de liste déroulante"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -10129,7 +10102,7 @@ msgstr "chercher dans les &répertoires"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "search in project &group"
-msgstr ""
+msgstr "recherche dans le &groupe de projets"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
@@ -10258,17 +10231,17 @@ msgstr "Il y a une erreur de syntaxe dans l'élément FPDoc \"%s\":%s%s"
 #: lazarusidestrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr ""
+msgstr "Le compilateur [%s] configuré pour Fppkg n'est pas un fichier exécutable."
 
 #: lazarusidestrconsts.lisfppkgcompilernotexists
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr ""
+msgstr "Le compilateur [%s] configuré pour Fppkg n'existe pas."
 
 #: lazarusidestrconsts.lisfppkgcompilernotfound
 #, object-pascal-format
 msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr ""
+msgstr "Impossible de trouver le compilateur [%s] configuré pour Fppkg."
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -10276,62 +10249,61 @@ msgstr "il y a un problème avec l'exécutable du compilateur Free Pascal, "
 
 #: lazarusidestrconsts.lisfppkgconfgenproblems
 msgid "Warnings have to be resolved first"
-msgstr ""
+msgstr "Les avertissements doivent d'abord être résolus"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
-msgstr ""
+msgstr "Le fichier de configuration porte généralement le nom \"fppkg.cfg\". En cas d'erreur, il peut être impossible de résoudre les dépendances des paquets Free Pascal. Laissez vide pour utiliser la valeur par défaut."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 #, object-pascal-format
 msgid "Failed to generate the configuration file \"%s\": %s"
-msgstr ""
+msgstr "Échec de la génération du fichier de configuration \"%s\" : %s"
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
 msgid "Files to be written:"
-msgstr ""
+msgstr "Fichiers à écrire :"
 
 #: lazarusidestrconsts.lisfppkgfixconfiguration
 msgid "You could try to restore the configuration files automatically, or adapt the configuration file manually."
-msgstr ""
+msgstr "Vous pourriez essayer de restaurer automatiquement les fichiers de configuration ou adapter manuellement le fichier de configuration."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgcheckfailed
 msgid "Failed to retrieve the version of the fpcmkcfg configuration tool."
-msgstr ""
+msgstr "Impossible de retrouver la version de l'outil de configuration fpcmkcfg."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgmissing
 msgid "Could not find the fpcmkcfg configuration tool, which is needed to create the configuration files."
-msgstr ""
+msgstr "Impossible de trouver l'outil de configuration fpcmkcfg, qui est nécessaire pour créer les fichiers de configuration."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgneeded
 msgid "An up-to-date version is needed to create the configuration files."
-msgstr ""
+msgstr "Une version à jour est nécessaire pour créer les fichiers de configuration."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold
 msgctxt "lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold"
 msgid "It is probably too old to create the configuration files."
-msgstr ""
+msgstr "Probablement trop ancien pour créer les fichiers de configuration."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgtooold
 #, object-pascal-format
 msgid "The fpcmkcfg configuration tool it too old [%s]."
-msgstr ""
+msgstr "L'outil de configuration de fpcmkcfg est trop ancien [%s]."
 
 #: lazarusidestrconsts.lisfppkginstallationpath
-#, object-pascal-format, fuzzy
-#| msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+#, object-pascal-format
 msgid "The prefix of the Free Pascal Compiler installation is required. For example it has the units \"%s\" and/or \"%s\""
-msgstr "Le préfixe de l'installation du compilateur Free Pascal est requis pour créer de nouveaux fichiers de configuration pour Fppkg. Par exemple, il a les unités \"%s\" et/ou \" %s\""
+msgstr "Le préfixe de l'installation du compilateur Free Pascal est requis. Par exemple, il a les unités \"%s\" et/ou \" %s\""
 
 #: lazarusidestrconsts.lisfppkglibprefix
 #, object-pascal-format
 msgid "Fpc library prefix: %s"
-msgstr ""
+msgstr "Préfixe de bibliothèque Fpc : %s"
 
 #: lazarusidestrconsts.lisfppkgprefix
 #, object-pascal-format
 msgid "Fpc prefix: %s"
-msgstr ""
+msgstr "Préfixe FPC : %s"
 
 #: lazarusidestrconsts.lisfppkgproblem
 msgid "Problem with Fppkg configuration"
@@ -10339,11 +10311,11 @@ msgstr "Problème avec la configuration de Fppkg"
 
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
-msgstr ""
+msgstr "Assurez-vous qu'une version récente est installée et disponible dans le chemin ou auprès de l'exécutable du compilateur."
 
 #: lazarusidestrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
-msgstr ""
+msgstr "Fppkg indique que la RTL n'est pas installée."
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 #, object-pascal-format
@@ -10351,14 +10323,13 @@ msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
 msgstr "Un problème s'est produit lors de la tentative de création d'une nouvelle configuration Fppkg : %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
+#, object-pascal-format
 msgid "Failed to create a new Fppkg configuration (%s) You will have to fix the configuration manually or reinstall Free Pascal."
-msgstr "Impossible de créer une nouvelle configuration Fppkg. Vous devrez corriger la configuration manuellement ou réinstaller Free Pascal."
+msgstr "Impossible de créer une nouvelle configuration Fppkg (%s). Vous devrez corriger la configuration manuellement ou réinstaller Free Pascal."
 
 #: lazarusidestrconsts.lisfppkgwriteconfigfile
 msgid "Write new configuration files"
-msgstr ""
+msgstr "Écrire les nouveaux fichiers de configuration"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -10459,20 +10430,20 @@ msgstr "Général"
 #: lazarusidestrconsts.lisgeneratefppkgcfg
 #, object-pascal-format
 msgid "Fppkg configuration: %s"
-msgstr ""
+msgstr "Configuration de Fppkg : %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgcompcfg
 #, object-pascal-format
 msgid "Fppkg compiler configuration: %s"
-msgstr ""
+msgstr "Configuration du compilateur de Fppkg : %s"
 
 #: lazarusidestrconsts.lisgeneratefppkgconfiguration
 msgid "Use this screen to generate new Fppkg configuration files with the fpcmkcfg tool."
-msgstr ""
+msgstr "Utiliser cet écran pour générer les nouveaux fichiers de configuration Fppkg avec l'outil fpcmkcfg."
 
 #: lazarusidestrconsts.lisgeneratefppkgconfigurationcaption
 msgid "Generate new Fppkg configuration files"
-msgstr ""
+msgstr "Générer de nouveaux fichiers de configuration Fppkg"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
@@ -10989,10 +10960,9 @@ msgid "Incorrect configuration directory found"
 msgstr "Le répertoire de configuration trouvé est incorrect"
 
 #: lazarusidestrconsts.lisincorrectfppkgconfiguration
-#, object-pascal-format, fuzzy, badformat
-#| msgid "the Fppkg configuration is corrupt."
+#, object-pascal-format
 msgid "there is a problem with the Fppkg configuration. (%s)"
-msgstr "la configuration de Fppkg est corrompue."
+msgstr "la configuration de Fppkg est corrompue. (%s)"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -11755,15 +11725,15 @@ msgstr "Ouvrir un fichier paquet"
 #: lazarusidestrconsts.liskmopenrecent
 msgctxt "lazarusidestrconsts.liskmopenrecent"
 msgid "Open Recent"
-msgstr ""
+msgstr "Ouvrir les plus récents"
 
 #: lazarusidestrconsts.liskmopenrecentpackage
 msgid "Open recent package"
-msgstr ""
+msgstr "Ouvrir un paquet récent"
 
 #: lazarusidestrconsts.liskmopenrecentproject
 msgid "Open recent project"
-msgstr ""
+msgstr "Ouvrir un projet récent"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
@@ -12453,19 +12423,19 @@ msgstr "Chaîne de caractères en minuscules donnée en paramètre."
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckbox
 msgid "Maximize compatibility of project files (LPI and LPS)"
-msgstr ""
+msgstr "Maximiser la compatibilité des fichiers de projet (LPI et LPS)"
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
 msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Vérifiez ceci si vous souhaitez ouvrir votre projet avec les versions Lazarus (2.0 et plus) héritées."
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckbox
 msgid "Maximize compatibility of package file (LPK)"
-msgstr ""
+msgstr "Maximiser la compatibilité du fichier de paquet (LPK)"
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckboxhint
 msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Vérifiez ceci si vous souhaitez ouvrir votre paquet avec les versions Lazarus (2.0 et plus) héritées."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
@@ -12482,7 +12452,7 @@ msgstr "Fichiers d'inclusion des ressources Lazarus (.lrs)"
 
 #: lazarusidestrconsts.lismacpreferences
 msgid "Preferences..."
-msgstr ""
+msgstr "Préférences..."
 
 #: lazarusidestrconsts.lismacro
 #, object-pascal-format
@@ -14458,7 +14428,7 @@ msgstr "Déplacer"
 
 #: lazarusidestrconsts.lismovedown
 msgid "Move Down"
-msgstr ""
+msgstr "Déplacer vers le bas"
 
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
@@ -14510,7 +14480,7 @@ msgstr "Déplacer vers : "
 
 #: lazarusidestrconsts.lismoveup
 msgid "Move Up"
-msgstr ""
+msgstr "Déplacer vers le haut"
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -15265,7 +15235,7 @@ msgstr "Informations concernant le paquet"
 #: lazarusidestrconsts.lispackageisdesigntimeonlysoitshouldonlybecompiledint
 #, object-pascal-format
 msgid "Package \"%s\" is designtime only, so it should only be compiled into the IDE, and not with the project settings.%sPlease use \"Install\" or \"Tools / Build Lazarus\" to build the IDE packages."
-msgstr ""
+msgstr "Le paquet \"%s\" est en conception seulement. Il doit seulement être compilé dans l'EDI et non pas avec les paramètres du projet.%sVeuillez utiliser \"Installer\" ou \"Outils / Construire Lazarus\" pour construire les paquets de l'EDI."
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."
@@ -18173,7 +18143,7 @@ msgstr "Montrer la position de l'éditeur de source"
 
 #: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
 msgid "Show property filter"
-msgstr ""
+msgstr "Afficher le filtre de propriété"
 
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
@@ -19129,7 +19099,7 @@ msgstr "Une unité du projet porte déjà le nom \"%s\".%sVeuillez choisir un no
 #: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "fpc.exe n'est pas dans le répertoire de %s. D'habitude, l'exécutable Make est installé au même endroit que le compilateur FPC."
+msgstr "Fpc.exe n'est pas dans le répertoire de %s. D'habitude, l'exécutable Make est installé au même endroit que le compilateur FPC."
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -20701,116 +20671,114 @@ msgstr "Parcourir de nouveau les fichiers lpl"
 
 #: lazarusidestrconsts.lvlgraphaddhorizontalspacing
 msgid "Add horizontal spacing between columns"
-msgstr ""
+msgstr "Ajouter l'espacement horizontal entre les colonnes"
 
 #: lazarusidestrconsts.lvlgraphaddverticalspacingar
 msgid "Add vertical spacing around nodes"
-msgstr ""
+msgstr "Ajouter l'espacement vertical autour des nœuds"
 
 #: lazarusidestrconsts.lvlgraphextraspacing
 msgid "Extra spacing (x/y)"
-msgstr ""
+msgstr "Espacement supplémentaire (x/y)"
 
 #: lazarusidestrconsts.lvlgraphnamesabovenode
 msgid "Names above node"
-msgstr ""
+msgstr "Noms au-dessus des nœuds"
 
 #: lazarusidestrconsts.lvlgraphoptabsolutelimi
 msgid "Absolute limit for height of levels"
-msgstr ""
+msgstr "Limite absolue pour la hauteur des niveaux"
 
 #: lazarusidestrconsts.lvlgraphoptcrossings
 msgid "Crossings"
-msgstr ""
+msgstr "Croisements"
 
 #: lazarusidestrconsts.lvlgraphoptedgelen
 msgid "Edge len"
-msgstr ""
+msgstr "Longueur de bord"
 
 #: lazarusidestrconsts.lvlgraphoptedges
 msgid "Edges"
-msgstr ""
+msgstr "Bords"
 
 #: lazarusidestrconsts.lvlgraphoptinfo
 msgid "Info"
-msgstr ""
+msgstr "Informations"
 
 #: lazarusidestrconsts.lvlgraphoptlevels
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
 msgid "Levels"
 msgstr "Niveaux"
 
 #: lazarusidestrconsts.lvlgraphoptlimitheightoflvl
 msgid "Limit height of Levels"
-msgstr ""
+msgstr "Limitez la hauteur des niveaux"
 
 #: lazarusidestrconsts.lvlgraphoptlimitrelativ
 #, object-pascal-format
 msgid "Limit relative to node-count for height of levels.%0sLimit = min(3, val*sqrt(NodeCount))"
-msgstr ""
+msgstr "Limite par rapport au nombre de nœuds pour la hauteur des niveaux.%0sLimite = min(3, val*sqrt(NodeCount))"
 
 #: lazarusidestrconsts.lvlgraphoptsplitpoints
 msgid "Splitpoints"
-msgstr ""
+msgstr "Points de partage"
 
 #: lazarusidestrconsts.lvlgraphreducebackedges
 msgid "Reduce backedges"
-msgstr ""
+msgstr "Réduire les rebords"
 
 #: lazarusidestrconsts.lvlgraphshapecalculatelay
 msgid "Calculate layout from high-edge"
-msgstr ""
+msgstr "Calculer la mise en page à partir du bord élevé"
 
 #: lazarusidestrconsts.lvlgraphshapecurved
 msgid "Curved"
-msgstr ""
+msgstr "Courbé"
 
 #: lazarusidestrconsts.lvlgraphshapeedgesshape
 msgid "Edges shape"
-msgstr ""
+msgstr "Forme des bords"
 
 #: lazarusidestrconsts.lvlgraphshapeedgessplitmo
 msgid "Edges split mode"
-msgstr ""
+msgstr "Mode de fractionnement des bords"
 
 #: lazarusidestrconsts.lvlgraphshapeminimizeedge
 msgid "Minimize edges len"
-msgstr ""
+msgstr "Minimiser la longueur des bords"
 
 #: lazarusidestrconsts.lvlgraphshapenodes
 msgid "Nodes"
-msgstr ""
+msgstr "Nœuds"
 
 #: lazarusidestrconsts.lvlgraphshapestraight
 msgid "Straight"
-msgstr ""
+msgstr "Direct"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
-msgstr ""
+msgstr "Fusionner au plus haut"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeatsourc
 msgid "Merge at source"
-msgstr ""
+msgstr "Fusionner à la source"
 
 #: lazarusidestrconsts.lvlgraphsplitmergeattarge
 msgid "Merge at target"
-msgstr ""
+msgstr "Fusionner à la cible"
 
 #: lazarusidestrconsts.lvlgraphsplitnone
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
 msgid "None"
 msgstr "Aucun"
 
 #: lazarusidestrconsts.lvlgraphsplitseparate
 msgid "Separate"
-msgstr ""
+msgstr "Séparer"
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
-msgstr ""
+msgstr "Redresser le graphique"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
@@ -20879,31 +20847,22 @@ msgid "Character set:"
 msgstr "Jeu de caractères :"
 
 #: lazarusidestrconsts.rscloseall
-#, fuzzy
-#| msgid "Close all tabs"
 msgid "Close all pages"
 msgstr "Fermer tous les onglets"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-#, fuzzy
 msgid "Close current page"
 msgstr "Fermer l'onglet actif"
 
 #: lazarusidestrconsts.rscloseleft
-#, fuzzy
-#| msgid "Close tab(s) on the left"
 msgid "Close page(s) on the left"
 msgstr "Fermer le(s) onglet(s) de gauche"
 
 #: lazarusidestrconsts.rscloseothers
-#, fuzzy
-#| msgid "Close other tab(s)"
 msgid "Close other page(s)"
 msgstr "Fermer tous les autre(s) onglet(s)"
 
 #: lazarusidestrconsts.rscloseright
-#, fuzzy
-#| msgid "Close tab(s) on the right"
 msgid "Close page(s) on the right"
 msgstr "Fermer le(s) onglet(s) de droite"
 
@@ -21118,7 +21077,7 @@ msgstr "Numérotation de version"
 
 #: lazarusidestrconsts.showoptions
 msgid "Show options"
-msgstr ""
+msgstr "Afficher les options"
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
@@ -21425,15 +21384,15 @@ msgstr "Copier"
 
 #: lazarusidestrconsts.srkmeccopyadd
 msgid "Copy (Add to Clipboard)"
-msgstr ""
+msgstr "Copier (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
 msgid "Copy current line (Add to Clipboard)"
-msgstr ""
+msgstr "Copier la ligne en cours (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
 msgid "Copy current line"
-msgstr ""
+msgstr "Copier la ligne en cours"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -21454,15 +21413,15 @@ msgstr "Couper"
 
 #: lazarusidestrconsts.srkmeccutadd
 msgid "Cut (Add to Clipboard)"
-msgstr ""
+msgstr "Couper (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
 msgid "Cut current line (Add to Clipboard)"
-msgstr ""
+msgstr "Couper la ligne en cours (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
 msgid "Cut current line"
-msgstr ""
+msgstr "Couper la ligne encours"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -21507,7 +21466,7 @@ msgstr "Déplacer le curseur vers le bas"
 
 #: lazarusidestrconsts.srkmecduplicateline
 msgid "Duplicate line (or lines in selection)"
-msgstr ""
+msgstr "Dupliquer la ligne (ou les lignes sélectionnées)"
 
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
@@ -21828,11 +21787,11 @@ msgstr "Déplacer l'éditeur tout à droite"
 
 #: lazarusidestrconsts.srkmecmovelinedown
 msgid "Move one line down"
-msgstr ""
+msgstr "Déplacer d'une ligne vers le bas"
 
 #: lazarusidestrconsts.srkmecmovelineup
 msgid "Move one line up"
-msgstr ""
+msgstr "Déplacer d'une ligne vers le haut"
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgctxt "lazarusidestrconsts.srkmecmultipaste"
@@ -22346,7 +22305,7 @@ msgstr "inverser le point d'arrêt"
 
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
-msgstr ""
+msgstr "activer/désactiver le point d'arrêt"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -22676,23 +22635,23 @@ msgstr "Signet %s"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
-msgstr "Fermer t&outes les autres pages"
+msgstr "Fermer t&ous les autres onglets"
 
 #: lazarusidestrconsts.uemcloseotherpagesplain
 msgid "Close All Other Pages"
-msgstr "Fermer toutes les autres pages"
+msgstr "Fermer tous les autres onglets"
 
 #: lazarusidestrconsts.uemcloseotherpagesright
 msgid "Close Pages on the &Right"
-msgstr "Fermer les pages à &droite"
+msgstr "Fermer les onglets à &droite"
 
 #: lazarusidestrconsts.uemcloseotherpagesrightplain
 msgid "Close Pages on the Right"
-msgstr "Fermer les pages à droite"
+msgstr "Fermer les onglets à droite"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
-msgstr "&Fermer la page"
+msgstr "&Fermer l'onglet"
 
 #: lazarusidestrconsts.uemcopyfilename
 msgid "Copy Filename"
@@ -22879,11 +22838,11 @@ msgstr "Lecture seule"
 
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
-msgstr ""
+msgstr "Options du graphe des paquets"
 
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
-msgstr ""
+msgstr "Options du graphe des unités"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

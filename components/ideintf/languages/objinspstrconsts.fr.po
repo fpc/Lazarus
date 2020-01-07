@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-07 12:06+0100\n"
+"PO-Revision-Date: 2020-01-04 16:00+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -890,7 +890,7 @@ msgstr "Afficher la boîte d'information"
 
 #: objinspstrconsts.oisshowpropertyfilter
 msgid "Show Property Filter"
-msgstr ""
+msgstr "Afficher le filtre de propriété"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"

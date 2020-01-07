@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-07 12:18+0100\n"
+"PO-Revision-Date: 2020-01-04 16:12+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -53,7 +53,7 @@ msgstr "Le mode de construction \"%s\" est introuvable."
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
-msgstr ""
+msgstr "Cible de \"Compiler\" et \"Construire\""
 
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
@@ -71,7 +71,7 @@ msgstr "Ignorer les modifications"
 
 #: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
 msgid "Enable to show target filenames with paths."
-msgstr ""
+msgstr "Montrer les fichiers cibles avec leurs chemins."
 
 #: projectgroupstrconst.liserrnosuchfile
 #, object-pascal-format
@@ -99,12 +99,12 @@ msgstr "La cible n'existe pas. Faut-il la retirer ?"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr ""
+msgstr "Les commandes \"Compiler\" et \"Construire\" de l'EDI invoquent la cible sélectionnée dans l'éditeur du groupe"
 
 #: projectgroupstrconst.lisinfo
 msgctxt "projectgroupstrconst.lisinfo"
 msgid "Info"
-msgstr ""
+msgstr "Informations"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
@@ -133,7 +133,7 @@ msgstr "Projets Lazarus (*.lpi)"
 
 #: projectgroupstrconst.lislazarussupportedinprojectgroups
 msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
-msgstr ""
+msgstr "Fichiers Lazarus (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
@@ -186,11 +186,11 @@ msgstr "Cibles"
 
 #: projectgroupstrconst.lisonidestartreopenlastopengroup
 msgid "On IDE start reopen last open group."
-msgstr ""
+msgstr "Ouvrir le dernier groupe au démarrage de l'EDI."
 
 #: projectgroupstrconst.lisopenlastgrouponstart
 msgid "Open last group on start"
-msgstr ""
+msgstr "Ouvrir le dernier groupe au démarrage"
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -202,7 +202,7 @@ msgstr "Ouvrir un groupe de projets récent"
 
 #: projectgroupstrconst.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
@@ -241,25 +241,22 @@ msgid "Project Group: %s"
 msgstr "Groupe de projets : %s"
 
 #: projectgroupstrconst.lisprojectgroupaddcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
 msgstr "Ajouter"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
 msgid "Add current project"
-msgstr ""
+msgstr "Ajouter le projet en cours"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
 msgid "Add current project to project group"
-msgstr ""
+msgstr "Ajouter le projet en cours au groupe"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
-#, fuzzy
-#| msgid "Add"
 msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
 msgid "Add from file"
-msgstr "Ajouter"
+msgstr "Ajouter depuis un fichier"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
@@ -267,7 +264,7 @@ msgstr "Ajouter une cible existante au groupe de projets"
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
-msgstr ""
+msgstr "Ajouter des cibles au groupe de projets"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
@@ -300,13 +297,11 @@ msgstr ""
 "Que voulez-vous faire ?"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
 msgid "New"
 msgstr "Nouveau"
 
 #: projectgroupstrconst.lisprojectgroupnewhint
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Nouveau groupe de projets"
@@ -338,7 +333,7 @@ msgstr "Enregistrer le groupe de projets"
 
 #: projectgroupstrconst.lisprojectgroupssourcepaths
 msgid "Project group's source paths"
-msgstr ""
+msgstr "Chemins sources du groupe"
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
@@ -346,7 +341,7 @@ msgstr "Erreur de lecture"
 
 #: projectgroupstrconst.lisredo
 msgid "Redo"
-msgstr ""
+msgstr "Refaire"
 
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
@@ -369,7 +364,7 @@ msgstr "Enregistrer le groupe de projets sous..."
 
 #: projectgroupstrconst.lisshowtargetpaths
 msgid "Show target paths"
-msgstr ""
+msgstr "Montrer les chemins cibles"
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
@@ -377,7 +372,7 @@ msgstr "Supprimer toutes les cibles incorrectes"
 
 #: projectgroupstrconst.lissourcedirectoriesofprojectgroup
 msgid "Source directories of project group:"
-msgstr ""
+msgstr "Dossiers sources du groupe :"
 
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
@@ -428,8 +423,6 @@ msgid "Compile selected target"
 msgstr "Compiler la cible choisie"
 
 #: projectgroupstrconst.listargetcopyfilename
-#, fuzzy
-#| msgid "Copy file name"
 msgid "Copy Filename"
 msgstr "Copier le nom du fichier"
 
@@ -453,7 +446,7 @@ msgstr "Construire la cible plus tôt"
 #: projectgroupstrconst.listargetinfocaption
 msgctxt "projectgroupstrconst.listargetinfocaption"
 msgid "Info ..."
-msgstr ""
+msgstr "Informations..."
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
@@ -562,7 +555,7 @@ msgstr "Impossible d'écrire le fichier du groupe de projets \"%s\"%s%s"
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
-msgstr ""
+msgstr "Défaire"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

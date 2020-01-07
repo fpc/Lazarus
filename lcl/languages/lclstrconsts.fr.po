@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2018-10-08 11:49+0200\n"
+"PO-Revision-Date: 2020-01-04 15:59+0100\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
 "Project-Id-Version: \n"
 "Language: fr\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 #, object-pascal-format
@@ -28,7 +28,7 @@ msgstr "Erreur pendant l'exécution de \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr "Impossible de trouver un navigateur HTML. "
+msgstr "Impossible de trouver un navigateur HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, object-pascal-format
@@ -68,7 +68,7 @@ msgstr "Meta"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
-msgstr "Maj."
+msgstr "Maj"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
@@ -299,7 +299,7 @@ msgstr "Le répertoire \"%s\" n'existe pas."
 #: lclstrconsts.rsfdfilealreadyexists
 #, object-pascal-format
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr "Le fichier \"%s\" existe déjà. L'écraser ? "
+msgstr "Le fichier \"%s\" existe déjà. Faut-il l'écraser ?"
 
 #: lclstrconsts.rsfdfilemustexist
 msgid "File must exist"
@@ -564,7 +564,7 @@ msgstr "Mot-clé d'aide \"%s\" introuvable."
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 #, object-pascal-format
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Mot-clé d'aide \"%s\" introuvable dans la base de données \"%s\". "
+msgstr "Mot-clé d'aide \"%s\" introuvable dans la base de données \"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, object-pascal-format
@@ -667,7 +667,7 @@ msgstr "Légende inactive"
 #: lclstrconsts.rsindexoutofbounds
 #, object-pascal-format
 msgid "%s Index %d out of bounds 0 .. %d"
-msgstr "%s Index %d hors des limites 0 .. %d "
+msgstr "%s Index %d hors des limites 0 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format
@@ -695,11 +695,11 @@ msgstr "Date incorrecte : %s"
 #: lclstrconsts.rsinvaliddaterangehint
 #, object-pascal-format
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr "Date incorrecte : %s. Doit être entre %s et %s "
+msgstr "Date incorrecte : %s. Doit être entre %s et %s"
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "Flux de fiche incorrect"
+msgstr "flux de fiche incorrect"
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -734,24 +734,24 @@ msgstr "Index de liste hors limites (%d)"
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
 msgid "Hide %s"
-msgstr ""
+msgstr "Masquer %s"
 
 #: lclstrconsts.rsmacosmenuhideothers
 msgid "Hide Others"
-msgstr ""
+msgstr "Masquer les autres"
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format
 msgid "Quit %s"
-msgstr ""
+msgstr "Quitter %s"
 
 #: lclstrconsts.rsmacosmenuservices
 msgid "Services"
-msgstr ""
+msgstr "Services"
 
 #: lclstrconsts.rsmacosmenushowall
 msgid "Show All"
-msgstr ""
+msgstr "Tout afficher"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
@@ -1166,17 +1166,17 @@ msgstr " ATTENTION : Il y a %d DCs non libres, en voici le détail :"
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
 #, object-pascal-format
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr " ATTENTION : Il y a %d GDIObjects non libres, en voici le détail : "
+msgstr " ATTENTION : Il y a %d GDIObjects non libérés, en voici le détail :"
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
 #, object-pascal-format
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr " ATTENTION : il y a %d messages en file d'attente ! Ils seront supprimés."
+msgstr " ATTENTION : Il y a %d messages en file d'attente ! Ils seront supprimés"
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
 #, object-pascal-format
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr " ATTENTION : Il reste %d structures TimerInfo ; elles seront supprimés."
+msgstr " ATTENTION : Il reste %d structures TimerInfo ; elles seront supprimées"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
 #, object-pascal-format
@@ -1189,15 +1189,15 @@ msgstr "Blanc"
 
 #: lclstrconsts.rswholewordsonly
 msgid "Whole words only"
-msgstr "Mots entiers seulement "
+msgstr "Mots entiers seulement"
 
 #: lclstrconsts.rswin32error
 msgid "Error:"
-msgstr "Erreur : "
+msgstr "Erreur :"
 
 #: lclstrconsts.rswin32warning
 msgid "Warning:"
-msgstr "Attention : "
+msgstr "Attention :"
 
 #: lclstrconsts.rswindowcolorcaption
 msgid "Window"
@@ -1378,7 +1378,7 @@ msgstr "Nombre entier incorrect : %s"
 #: lclstrconsts.sparlocinfo
 #, object-pascal-format
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (à %d,%d, offset flux %d)"
+msgstr " (à %d,%d - offset flux %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
@@ -1404,25 +1404,17 @@ msgid "%s bytes"
 msgstr "%s octets"
 
 #: lclstrconsts.sshellctrlsinvalidpath
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Invalid pathname:\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\""
 msgstr ""
 "Nom de chemin incorrect :\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Invalid relative pathname:\n"
-#| "\"%s\"\n"
-#| "in relation to rootpath:\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Invalid relative pathname:\n"
 "\"%s\"\n"
@@ -1432,20 +1424,17 @@ msgstr ""
 "Nom de chemin relatif incorrect :\n"
 "\"%s\"\n"
 "en relation avec le chemin de la racine :\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlsinvalidroot
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Invalid pathname:\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\""
 msgstr ""
 "Nom de chemin incorrect :\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlskb
 #, object-pascal-format
@@ -1462,16 +1451,13 @@ msgid "Name"
 msgstr "Nom"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The selected item does not exist on disk:\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\""
 msgstr ""
 "L'élément choisi n'existe pas sur le disque :\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
