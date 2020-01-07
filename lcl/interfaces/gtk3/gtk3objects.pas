@@ -217,11 +217,11 @@ type
     procedure DeleteObjects;
   public
     procedure drawPixel(x, y: Integer; AColor: TColor);
+    function getPixel(x, y: Integer): TColor;
     procedure drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
     procedure drawText(x: Integer; y: Integer; const s: String); overload;
     procedure drawText(x,y,w,h,flags: Integer; const s: String); overload;
-    procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
     procedure drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
     procedure drawSurface(targetRect: PRect; Surface: Pcairo_surface_t; sourceRect: PRect;
       mask: PGdkPixBuf; maskRect: PRect);
@@ -1225,6 +1225,21 @@ begin
   cairo_stroke(Widget);
 end;
 
+function TGtk3DeviceContext.getPixel(x, y: Integer): TColor;
+var
+  pixbuf: PGdkPixbuf;
+  pixels: pointer;
+begin
+  Result := 0;
+  pixbuf := gdk_pixbuf_get_from_surface(CairoSurface, X, Y, 1, 1);
+  if Assigned(pixbuf) then
+  begin
+    pixels := gdk_pixbuf_get_pixels(pixbuf);
+    if Assigned(pixels) then
+      Result := PLongInt(pixels)^ and $FFFFFF; // take first 3 bytes at pixels^
+  end;
+end;
+
 procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
 begin
   cairo_save(Widget);
@@ -1312,14 +1327,6 @@ begin
   finally
     cairo_restore(Widget);
   end;
-end;
-
-procedure TGtk3DeviceContext.drawLine(x1: Integer; y1: Integer; x2: Integer;
-  y2: Integer);
-begin
-  ApplyPen;
-  cairo_move_to(Widget, x1, y1);
-  cairo_line_to(Widget, x2, y2);
 end;
 
 procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);

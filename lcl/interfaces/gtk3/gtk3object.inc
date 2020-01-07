@@ -589,21 +589,11 @@ begin
 end;
 
 function TGtk3WidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
-var
-  pixbuf: PGdkPixbuf;
-  pixels: pointer;
 begin
-  Result := 0;
   if IsValidDC(CanvasHandle) then
-  begin
-    pixbuf := gdk_pixbuf_get_from_surface(TGtk3DeviceContext(CanvasHandle).CairoSurface, X, Y, 1, 1);
-    if Assigned(pixbuf) then
-    begin
-      pixels := gdk_pixbuf_get_pixels(pixbuf);
-      if Assigned(pixels) then
-        Result := PLongInt(pixels)^ and $FFFFFF; // take first 3 bytes at pixels^
-    end;
-  end;
+    Result := TGtk3DeviceContext(CanvasHandle).getPixel(X, Y)
+  else
+    Result := 0;
 end;
 
 procedure TGtk3WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: Integer; AColor: TGraphicsColor);
