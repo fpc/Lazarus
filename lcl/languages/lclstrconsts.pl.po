@@ -1220,10 +1220,6 @@ msgstr "Żółty"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Nie można ustawić aktywności na niedostępnym lub niewidocznym oknie"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "Nie można ustawiać projektowania podczas PPI."
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Zdublowane menu"

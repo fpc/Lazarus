@@ -4616,6 +4616,23 @@ begin
   end;
 end;
 
+procedure TWinControl.FixDesignFontsPPIWithChildren(const ADesignTimePPI: Integer);
+  procedure FixChildren(const AParent: TWinControl);
+  var
+    I: Integer;
+  begin
+    for I := 0 to AParent.ControlCount-1 do
+    begin
+      AParent.Controls[I].FixDesignFontsPPI(ADesignTimePPI);
+      if AParent.Controls[I] is TWinControl then
+        FixChildren(TWinControl(AParent.Controls[I]));
+    end;
+  end;
+begin
+  FixDesignFontsPPI(ADesignTimePPI);
+  FixChildren(Self);
+end;
+
 procedure TWinControl.SelectFirst;
 var
   Form : TCustomForm;

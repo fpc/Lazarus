@@ -1217,10 +1217,6 @@ msgstr "Keltainen"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Ei voi fokusoida estettyä tai näkymätöntä ikkunaa"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "Suunnitteluaikaisen PPI:n muuttaminen ei onnistu."
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Samanlaiset valikot"

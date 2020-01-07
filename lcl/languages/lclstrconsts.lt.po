@@ -1222,10 +1222,6 @@ msgstr "Geltona"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Negalima sufokusuoti neveiksnaus ar nematomo lango"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "Nepavyko nustatyti konstravimo rėžimo „PPI“."
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Meniu dubliuojasi"

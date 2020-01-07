@@ -1249,10 +1249,6 @@ msgstr ""
 msgid "Cannot focus a disabled or invisible window"
 msgstr "No puc accedir a una finestra invisible o tancada"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr ""
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Menús duplicats"

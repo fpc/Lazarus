@@ -1227,10 +1227,6 @@ msgstr "Geel"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Kan geen focus geven aan een onzichtbaar of disabled venster"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "Kan design time PPI niet zetten"
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Dubbele menus"

@@ -223,7 +223,6 @@ resourceString
   sInvalidImageSize = 'Invalid image size';
   sDuplicateMenus = 'Duplicate menus';
   sCannotFocus = 'Cannot focus a disabled or invisible window';
-  sCannotSetDesignTimePPI = 'Cannot set design time PPI.';
   sParentRequired = 'Control "%s" has no parent window.';
   sInvalidCharSet = 'The char set in mask "%s" is not valid!';
   SMaskEditNoMatch = 'The current text does not match the specified mask.';

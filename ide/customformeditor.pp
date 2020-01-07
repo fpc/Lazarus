@@ -1089,6 +1089,8 @@ begin
       Ancestor:=nil;
       if AncestorUnit<>nil then
         Ancestor:=AncestorUnit.Component;
+      if AnUnitInfo.Component is TCustomDesignControl then // set DesignTimePPI on save
+        TCustomDesignControl(AnUnitInfo.Component).DesignTimePPI := TCustomDesignControl(AnUnitInfo.Component).PixelsPerInch;
       Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
       if DestroyDriver then Writer.Driver.Free;
       FreeAndNil(Writer);

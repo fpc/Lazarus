@@ -1219,10 +1219,6 @@ msgstr "Жёлтый"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Невозможно перевести фокус в отключённое или невидимое окно"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "Невозможно установить PPI времени разработки."
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Дублирующиеся меню"

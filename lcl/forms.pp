@@ -268,20 +268,20 @@ type
     FDesignTimePPI: Integer;
     FPixelsPerInch: Integer;
 
+    function DesignTimePPIIsStored: Boolean;
     procedure SetDesignTimePPI(const ADesignTimePPI: Integer);
   protected
     procedure SetScaled(const AScaled: Boolean); virtual;
 
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
-    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
 
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromPPI,
       AToPPI, AOldFormWidth, ANewFormWidth: Integer); override;
   public
-    property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
+    property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI stored DesignTimePPIIsStored;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch stored False;
     property Scaled: Boolean read FScaled write SetScaled default True;
   end;

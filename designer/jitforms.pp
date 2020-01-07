@@ -57,7 +57,7 @@ uses
   PackageDependencyIntf, PropEditUtils, PropEdits, UnitResources, IDEDialogs,
   // IDE
   {$IFDEF VerboseJITForms}DesignerProcs,{$ENDIF}
-  PackageDefs;
+  PackageDefs, Project, EnvironmentOpts;
 
 type
   //----------------------------------------------------------------------------
@@ -1136,6 +1136,7 @@ var
   AncestorStreams: TFPList;
   i, j: Integer;
   OldStreamClass: TClass;
+  DsgnComp, DsgnOwner: TCustomDesignControl;
 begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
@@ -1195,6 +1196,19 @@ begin
               SetComponentAncestorMode(Component.Components[j],true);
           // next
           Ancestor:=TComponent(Ancestors[i]);
+        end;
+        // scale to Owner's DesignTimePPI to get correct designed sizes - issue #36370
+        if (Project1.Scaled or EnvironmentOptions.ForceDPIScalingInDesignTime)
+        and Assigned(Component) and (Component is TCustomDesignControl) and (NewOwner is TCustomDesignControl) then
+        begin
+          DsgnComp := TCustomDesignControl(Component);
+          DsgnOwner := TCustomDesignControl(NewOwner);
+          if DsgnComp.Scaled and DsgnOwner.Scaled
+          and (DsgnComp.DesignTimePPI<>DsgnOwner.PixelsPerInch) then
+          begin
+            DsgnComp.AutoAdjustLayout(lapAutoAdjustForDPI, DsgnComp.PixelsPerInch, DsgnOwner.DesignTimePPI, 0, 0);
+            DsgnComp.DesignTimePPI := DsgnOwner.DesignTimePPI;
+          end;
         end;
       end;
     finally

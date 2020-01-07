@@ -1243,10 +1243,6 @@ msgstr "צהוב"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "לא יכול להתמקד בחלון מנוטרל או בלתי נראה"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr ""
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "תפריטים כפולים"

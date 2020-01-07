@@ -25,10 +25,24 @@ end;
 procedure TCustomDesignControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
   const AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth: Integer);
 begin
-  inherited;
+  if (AMode = lapAutoAdjustForDPI) and (AToPPI=FPixelsPerInch) then // don't do anything if FPixelsPerInch already is AToPPI
+    Exit;
+
+  // override AFromPPI with FPixelsPerInch - it is needed e.g. when a frame is placed on form
+  // - the frame can have a different PPI than the parent form.
+  // See issue #36370
+  inherited AutoAdjustLayout(AMode, FPixelsPerInch, AToPPI, AOldFormWidth, ANewFormWidth);
 
   if AMode = lapAutoAdjustForDPI then
     FPixelsPerInch := AToPPI;
+end;
+
+function TCustomDesignControl.DesignTimePPIIsStored: Boolean;
+begin
+  if Assigned(Owner) then
+    Result := False // inplace frames do not store DesignTimePPI - always the parent's DesignTimePPI is used
+  else
+    Result := FDesignTimePPI<>96;
 end;
 
 procedure TCustomDesignControl.DoAutoAdjustLayout(
@@ -56,42 +70,14 @@ begin
   end;
 end;
 
-procedure TCustomDesignControl.Loaded;
-  procedure FixChildren(const AParent: TWinControl);
-  var
-    I: Integer;
-  begin
-    for I := 0 to AParent.ControlCount-1 do
-    begin
-      AParent.Controls[I].FixDesignFontsPPI(FDesignTimePPI);
-      if AParent.Controls[I] is TWinControl then
-        FixChildren(TWinControl(AParent.Controls[I]));
-    end;
-  end;
-begin
-  inherited Loaded;
-
-  FPixelsPerInch := FDesignTimePPI;
-
-  if Application.Scaled and Scaled then
-  begin
-    FixDesignFontsPPI(FDesignTimePPI);
-    FixChildren(Self);
-  end;
-end;
-
 procedure TCustomDesignControl.SetDesignTimePPI(const ADesignTimePPI: Integer);
 begin
   if FDesignTimePPI=ADesignTimePPI then
     Exit;
 
-  if (csLoading in ComponentState) // allow setting only when loading
-  or not (csDesigning in ComponentState) // or in runtime (the programmer has to know why he is doing that)
-  or ((csDesigning in ComponentState) and (ADesignTimePPI=Screen.PixelsPerInch)) // or in designtime when setting the correct value
-  then
-    FDesignTimePPI := ADesignTimePPI
-  else
-    raise EInvalidOperation.Create(sCannotSetDesignTimePPI);
+  FDesignTimePPI := ADesignTimePPI;
+  if csLoading in ComponentState then
+    FPixelsPerInch := FDesignTimePPI; // set FPixelsPerInch in LFM loading
 end;
 
 procedure TCustomDesignControl.SetScaled(const AScaled: Boolean);

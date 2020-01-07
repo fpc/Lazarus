@@ -1231,10 +1231,6 @@ msgstr "Amarelo"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Impossível focar uma janela inativa ou invisível"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr ""
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Duplicar menus"

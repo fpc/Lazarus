@@ -1220,10 +1220,6 @@ msgstr "黄色"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "無効または不可視ウィンドウにフォーカスはできません"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "設計時PPIをセットできません"
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "メニューが重複しています"

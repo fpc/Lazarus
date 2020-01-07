@@ -1221,10 +1221,6 @@ msgstr "Gelb"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Kann abgeschaltetes oder unsichtbares Fenster nicht fokussieren"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "Kann die Entwurfszeit-PPI nicht festlegen."
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Doppelte Menüs"

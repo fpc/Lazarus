@@ -1219,10 +1219,6 @@ msgstr "Sarı"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Etkisizleştirilmiş ya da görünmez pencerelere odaklanılamaz"
 
-#: lclstrconsts.scannotsetdesigntimeppi
-msgid "Cannot set design time PPI."
-msgstr "Tasarım zamanı PPI ayarlanamıyor."
-
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Birbirinin aynı menüler"
