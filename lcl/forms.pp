@@ -435,8 +435,8 @@ type
   );
 
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
-  TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
-  TDropFilesEvent = procedure (Sender: TObject; const FileNames: Array of String) of object;
+  TCloseQueryEvent = procedure(Sender : TObject; var CanClose: Boolean) of object;
+  TDropFilesEvent = procedure (Sender: TObject; const FileNames: array of string) of object;
   THelpEvent = function(Command: Word; Data: PtrInt; var CallHelp: Boolean): Boolean of object;
   TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
   TModalDialogFinished = procedure (Sender: TObject; AResult: Integer) of object;
