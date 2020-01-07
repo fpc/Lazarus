@@ -928,6 +928,7 @@ type
     procedure SetTopRow(const AValue: Integer);
     function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: TCursor; ASaveCurrentCursor: Boolean = true);
+    function TitleFontIsStored: Boolean;
     function  TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
     procedure TryScrollTo(aCol,aRow: Integer; ClearColOff, ClearRowOff: Boolean);
     procedure UpdateCachedSizes;
@@ -1256,7 +1257,7 @@ type
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoBoth;
     property StrictSort: boolean read FStrictSort write FStrictSort;
-    property TitleFont: TFont read FTitleFont write SetTitleFont;
+    property TitleFont: TFont read FTitleFont write SetTitleFont stored TitleFontIsStored;
     property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle default tsLazarus;
     property TopRow: Integer read GetTopRow write SetTopRow;
     property UseXORFeatures: boolean read FUseXORFeatures write SetUseXorFeatures default false;
@@ -4089,6 +4090,11 @@ procedure TCustomGrid.StartPushCell;
 begin
   fGridState := gsButtonColumnClicking;
   DoPushCell;
+end;
+
+function TCustomGrid.TitleFontIsStored: Boolean;
+begin
+  Result := not FTitleFontIsDefault;
 end;
 
 function TCustomGrid.SelectCell(ACol, ARow: Integer): Boolean;
