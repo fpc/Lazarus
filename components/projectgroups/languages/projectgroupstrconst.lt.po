@@ -52,6 +52,10 @@ msgstr "Nerastas darymo rėžimas"
 msgid "Build mode \"%s\" not found."
 msgstr "Nerastas darymo rėžimas „%s“."
 
+#: projectgroupstrconst.lischangesgetlostatreload
+msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
+msgstr ""
+
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
 msgstr ""
@@ -148,10 +152,6 @@ msgstr "„lazbuild“ nerastas"
 msgid "More"
 msgstr "Daugiau"
 
-#: projectgroupstrconst.lisneedsave
-msgid "Need save"
-msgstr "Būtina įrašyti"
-
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
@@ -229,11 +229,6 @@ msgstr "Paketas „%s“ nerastas."
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "Paskalio failai (*.pas;*.pp;*.p)"
-
-#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
-msgid "Please save your changes before reloading the project group."
-msgstr "Prieš iš naujo įkeliant projekto grupę reikia įrašyti pakeitimus."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format

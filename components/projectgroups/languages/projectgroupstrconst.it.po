@@ -41,6 +41,10 @@ msgstr "Modalità di costruzione non trovata"
 msgid "Build mode \"%s\" not found."
 msgstr "Modalità di costruzione \"%s\" non trovata."
 
+#: projectgroupstrconst.lischangesgetlostatreload
+msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
+msgstr ""
+
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
 msgstr ""
@@ -137,10 +141,6 @@ msgstr "lazbuild non trovato"
 msgid "More"
 msgstr "Altro"
 
-#: projectgroupstrconst.lisneedsave
-msgid "Need save"
-msgstr "Salvataggio richiesto"
-
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
@@ -224,11 +224,6 @@ msgstr "Pacchetto \"%s\" non trovato."
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "File Pascal (*.pas;*.pp;*.p)"
-
-#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
-msgid "Please save your changes before reloading the project group."
-msgstr "Salvare i cambiamenti prima di ricaricare il gruppo di progetti."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format

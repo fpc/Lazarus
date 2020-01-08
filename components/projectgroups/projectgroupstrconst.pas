@@ -128,8 +128,8 @@ Resourcestring
   lisLazarusPackagesLpk = 'Lazarus packages (*.lpk)';
   lisLazarusProjectGroupsLpg = 'Lazarus project groups (*.lpg)';
   lisPascalFilePasPpP = 'Pascal files (*.pas;*.pp;*.p)';
-  lisNeedSave = 'Need save';
-  lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou = 'Please save your changes before reloading the project group.';
+  lisChangesGetLostAtReload = 'There are unsaved changes that get lost if you reload the project group. '+
+    'Do you really want to reload?';
   lisProjectGroupReload = 'Reload';
   lisMore = 'More';
 

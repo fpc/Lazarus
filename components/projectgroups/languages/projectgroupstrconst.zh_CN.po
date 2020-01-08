@@ -52,6 +52,10 @@ msgstr "构建模式未找到"
 msgid "Build mode \"%s\" not found."
 msgstr "构建模式\"%s\"未找到"
 
+#: projectgroupstrconst.lischangesgetlostatreload
+msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
+msgstr ""
+
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
 msgstr ""
@@ -148,10 +152,6 @@ msgstr "lazbuild未找到"
 msgid "More"
 msgstr "更多"
 
-#: projectgroupstrconst.lisneedsave
-msgid "Need save"
-msgstr "需要保存"
-
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
@@ -229,11 +229,6 @@ msgstr "包\"%s\"未找到."
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "Pascal文件(*.pas;*.pp;*.p)"
-
-#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
-msgid "Please save your changes before reloading the project group."
-msgstr "请保存你的更改 在重新加载该工程组前."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format

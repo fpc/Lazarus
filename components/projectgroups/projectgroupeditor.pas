@@ -970,11 +970,9 @@ begin
   begin
     PG:=TIDEProjectGroup(ProjectGroup);
     if PG.Modified then begin
-      // ToDo: revert
-      IDEMessageDialog(lisNeedSave, lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou,
-        mtError,[mbOK]);
       PG.UpdateMissing;
-      exit;
+      if IDEMessageDialog(lisProjectGroupModified, lisChangesGetLostAtReload, mtConfirmation, mbYesNo)<>mrYes then
+        exit;
     end;
     ProjectGroup:=nil;
     try

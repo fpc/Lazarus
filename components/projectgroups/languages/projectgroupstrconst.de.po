@@ -52,6 +52,10 @@ msgstr "Erstellmodus nicht gefunden"
 msgid "Build mode \"%s\" not found."
 msgstr "Erstellmodus \"%s\" nicht gefunden."
 
+#: projectgroupstrconst.lischangesgetlostatreload
+msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
+msgstr ""
+
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
 msgstr ""
@@ -148,10 +152,6 @@ msgstr "lazbuild nicht gefunden"
 msgid "More"
 msgstr "Weitere"
 
-#: projectgroupstrconst.lisneedsave
-msgid "Need save"
-msgstr ""
-
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
@@ -229,11 +229,6 @@ msgstr "Package \"%s\" nicht gefunden."
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "Pascal-Dateien (*.pas;*.pp;*.p)"
-
-#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
-msgid "Please save your changes before reloading the project group."
-msgstr "Bitte speichern Sie ihre Änderungen vor dem Neuladen der Projektgruppe."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format

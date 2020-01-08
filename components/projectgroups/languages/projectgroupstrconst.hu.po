@@ -51,6 +51,10 @@ msgstr "Építési mód nem található."
 msgid "Build mode \"%s\" not found."
 msgstr "A(z) \"%s\" építési mód nem található."
 
+#: projectgroupstrconst.lischangesgetlostatreload
+msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
+msgstr ""
+
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
 msgstr "\"Fordítás\" és \"Építés\" a projektcsoportnak megfelelően"
@@ -143,10 +147,6 @@ msgstr "lazbuild nem található"
 msgid "More"
 msgstr "Továbbiak"
 
-#: projectgroupstrconst.lisneedsave
-msgid "Need save"
-msgstr "Mentés szükséges"
-
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
@@ -224,11 +224,6 @@ msgstr "A(z) \"%s\" csomag nem található."
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "Pascal fájlok (*.pas;*.pp;*.p)"
-
-#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
-msgid "Please save your changes before reloading the project group."
-msgstr "Menteni kell a változásokat mielőtt újra betölti a projektcsoportot."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format

@@ -52,6 +52,10 @@ msgstr "Режим збирання не знайдено"
 msgid "Build mode \"%s\" not found."
 msgstr "Режим збирання \"%s\" не знайдено."
 
+#: projectgroupstrconst.lischangesgetlostatreload
+msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
+msgstr ""
+
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
 msgstr "\"Компілювати\" і \"Зібрати\" компілюють ціль"
@@ -144,10 +148,6 @@ msgstr "Програму lazbuild не знайдено"
 msgid "More"
 msgstr "Більше"
 
-#: projectgroupstrconst.lisneedsave
-msgid "Need save"
-msgstr "Потрібно зберегти"
-
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
@@ -225,11 +225,6 @@ msgstr "Пакунок \"%s\" не знайдено."
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "Файли Паскалю (*.pas;*.pp;*.p)"
-
-#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
-msgid "Please save your changes before reloading the project group."
-msgstr "Збережіть ваші зміни перед перезавантаженням групи проєктів."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format

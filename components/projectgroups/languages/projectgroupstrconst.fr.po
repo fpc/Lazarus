@@ -51,6 +51,10 @@ msgstr "Mode de construction introuvable"
 msgid "Build mode \"%s\" not found."
 msgstr "Le mode de construction \"%s\" est introuvable."
 
+#: projectgroupstrconst.lischangesgetlostatreload
+msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
+msgstr ""
+
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
 msgstr "Cible de \"Compiler\" et \"Construire\""
@@ -143,10 +147,6 @@ msgstr "lazbuild introuvable"
 msgid "More"
 msgstr "Plus"
 
-#: projectgroupstrconst.lisneedsave
-msgid "Need save"
-msgstr "Enregistrement nécessaire"
-
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
@@ -224,11 +224,6 @@ msgstr "Paquet \"%s\" non trouvé."
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "Fichiers Pascal (*.pas;*.pp;*.p)"
-
-#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
-msgid "Please save your changes before reloading the project group."
-msgstr "Veuillez enregistrer les modifications avant de recharger le groupe de projets."
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format
