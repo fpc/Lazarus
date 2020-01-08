@@ -136,7 +136,7 @@ end;
 
 function TDbgImageLoaderList.GetImageBase: QWord;
 begin
-  if Count<0 then
+  if Count>0 then
     result := Items[0].ImageBase
   else
     result := 0;
