@@ -209,6 +209,10 @@ end;
 {   TCustomListView ColClick                                                   }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.ColClick(AColumn: TListColumn);
+const
+  DirToIndicator : array [TSortDirection] of TSortIndicator = (siAscending, siDescending);
+var
+  i: Integer;
 begin
   if IsEditing then
   begin
@@ -226,8 +230,14 @@ begin
     if SortType <> stNone then
     begin
       if AColumn.Index <> SortColumn then begin
+        if FAutoSortIndicator then
+          for i:=0 to Columns.Count-1 do
+            if (i <> AColumn.Index) and (Columns[i].SortIndicator <> siNone) then
+              Columns[i].SortIndicator := siNone;
+
         SortColumn := AColumn.Index;
         SortDirection := sdAscending;
+        if FAutoSortIndicator then AColumn.SortIndicator := siAscending;
       end
       else
       begin
@@ -236,6 +246,7 @@ begin
           SortDirection := sdDescending
         else
           SortDirection := sdAscending;
+        if FAutoSortIndicator then AColumn.SortIndicator := DirToIndicator[SortDirection];
       end;
     end;
   end;
