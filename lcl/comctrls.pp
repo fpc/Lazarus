@@ -1187,6 +1187,8 @@ type
 
   TWidth = 0..MaxInt;
 
+  TSortIndicator = (siNone, siAscending, siDescending);
+
   TListColumn = class(TCollectionItem)
   private
     FAlignment: TAlignment;
@@ -1198,6 +1200,7 @@ type
     FWidth: TWidth;
     FImageIndex: TImageIndex;
     FTag: PtrInt;
+    FSortIndicator: TSortIndicator;
     function GetWidth: TWidth;
     procedure WSCreateColumn;
     procedure WSDestroyColumn;
@@ -1211,6 +1214,7 @@ type
     procedure SetCaption(const AValue: TTranslateString);
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetImageIndex(const AValue: TImageIndex);
+    procedure SetSortIndicator(AValue: TSortIndicator);
   protected
     procedure SetIndex(AValue: Integer); override;
     function GetDisplayName: string; override;
@@ -1230,6 +1234,7 @@ type
     property Tag: PtrInt read FTag write FTag default 0;
     property Visible: Boolean read FVisible write SetVisible default true;
     property Width: TWidth read GetWidth write SetWidth default 50;
+    property SortIndicator: TSortIndicator read FSortIndicator write SetSortIndicator default siNone;
   end;
 
 

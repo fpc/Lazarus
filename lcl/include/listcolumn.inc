@@ -95,6 +95,8 @@ begin
   end;
   WSC.ColumnSetImage(LV, Index, Self, FImageIndex);
   WSC.ColumnSetVisible(LV, Index, Self, FVisible);
+  if FSortIndicator<>siNone then
+    WSC.ColumnSetSortIndicator(LV, Index, Self, FSortIndicator);
 end;
 
 procedure TListColumn.WSDestroyColumn;
@@ -137,6 +139,19 @@ begin
       FWidth := WSWidth;
   end;
   Result := FWidth;
+end;
+
+procedure TListColumn.SetSortIndicator(AValue: TSortIndicator);
+var
+  LV: TCustomListView;
+begin
+  if FSortIndicator = AValue then Exit;
+  FSortIndicator := AValue;
+  Changed(False);
+  if not WSUpdateAllowed then Exit;
+
+  LV := TListColumns(Collection).FOwner;
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetSortIndicator(LV, Index, Self, FSortIndicator);
 end;
 
 procedure TListColumn.SetAlignment(const AValue: TAlignment);
