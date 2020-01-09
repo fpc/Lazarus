@@ -53,7 +53,7 @@ msgstr "Режим сборки \"%s\" не найден."
 
 #: projectgroupstrconst.lischangesgetlostatreload
 msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
-msgstr ""
+msgstr "При перезагрузке группы проектов будут утеряны несохранённые изменения. Вы действительно хотите перезагрузить её?"
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
