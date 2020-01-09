@@ -1083,6 +1083,36 @@ begin
   end;
 end;
 
+class procedure TGtk2WSCustomListView.ColumnSetSortIndicator(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const ASortIndicator: TSortIndicator);
+const
+  GtkOrder : array [ TSortIndicator] of TGtkSortType = (0, GTK_SORT_ASCENDING, GTK_SORT_DESCENDING);
+var
+  Widgets: PTVWidgets;
+  GtkColumn: PGtkTreeViewColumn;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetCaption')
+  then Exit;
+
+  GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets);
+
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
+
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn <> nil then
+  begin
+    if ASortIndicator = siNone then
+      gtk_tree_view_column_set_sort_indicator(GtkColumn, false)
+    else
+    begin
+      gtk_tree_view_column_set_sort_indicator(GtkColumn, true);
+      gtk_tree_view_column_set_sort_order(GtkColumn, GtkOrder[ASortIndicator]);
+    end;
+  end;
+end;
+
 class procedure TGtk2WSCustomListView.ItemDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 var

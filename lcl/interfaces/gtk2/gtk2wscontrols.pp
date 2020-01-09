@@ -506,12 +506,12 @@ var
   pFixed: PGTKWidget;
 begin
   AParent := TWinControl(AControl).Parent;
-  // DebugLn('LM_AddChild: ',dbgsName(AControl),' ',dbgs(AParent<>nil));
+  DebugLn('LM_AddChild: ',dbgsName(AControl),' ',dbgs(AParent<>nil));
   if not Assigned(AParent) then
     Assert(true, Format('Trace: [TGtkWSWinControl.AddControl] %s --> Parent is not assigned', [AControl.ClassName]))
   else
   begin
-    // DebugLn(Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
+    DebugLn(Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
 
     ParentWidget := {%H-}PGtkwidget(AParent.Handle);
     pFixed := GetFixedWidget(ParentWidget);
