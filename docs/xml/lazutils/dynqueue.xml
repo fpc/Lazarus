@@ -1,508 +1,546 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
-  ====================================================================
-    DynQueue
-  ====================================================================
--->
-
-<module name="DynQueue">
-<short/>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TDynamicQueueItem">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TDynamicQueueItem.Size">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TDynamicQueueItem.Data">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PDynamicQueueItem">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="ListOfPDynamicQueueItem">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TDynamicDataQueue">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FItems">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FItemCapacity">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FTopIndex">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FLastIndex">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FMaximumBlockSize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FMinimumBlockSize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FSize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FTopItemSpace">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDynamicDataQueue.FLastItemSpace">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDynamicDataQueue.SetMaximumBlockSize">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.SetMaximumBlockSize.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDynamicDataQueue.SetMinimumBlockSize">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.SetMinimumBlockSize.AValue">
-<short/>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDynamicDataQueue.GrowItems">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDynamicDataQueue.AddItem">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.AddItem.ItemSize">
-<short/>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDynamicDataQueue.CalculateItemSize">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.CalculateItemSize.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.CalculateItemSize.ItemSize">
-<short/>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDynamicDataQueue.PushInternal">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.PushInternal.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.PushInternal.Source">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.PushInternal.AStream">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.PushInternal.Count">
-<short/>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDynamicDataQueue.PopTopInternal">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.PopTopInternal.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.PopTopInternal.Dest">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.PopTopInternal.AStream">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.PopTopInternal.Count">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.PopTopInternal.KeepData">
-<short/>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TDynamicDataQueue.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TDynamicDataQueue.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TDynamicDataQueue.Clear">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TDynamicDataQueue.ConsistencyCheck">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TDynamicDataQueue.WriteDebugReport">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.WriteDebugReport.WriteData">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TDynamicDataQueue.Push">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.Push.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Push.Buffer">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Push.Count">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Push.AStream">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TDynamicDataQueue.Pop">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.Pop.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Pop.Buffer">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Pop.Count">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Pop.AStream">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TDynamicDataQueue.Top">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDynamicDataQueue.Top.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Top.Buffer">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Top.Count">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDynamicDataQueue.Top.AStream">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDynamicDataQueue.Size">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDynamicDataQueue.MinimumBlockSize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDynamicDataQueue.MaximumBlockSize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- DynQueue -->
-</package>
+  <package name="lcl">
+    <!--
+    ====================================================================
+      DynQueue
+    ====================================================================
+    -->
+    <module name="DynQueue">
+      <short>
+        <file>dynqueue.pp</file> contains types and classes needed to implement a dynamic FIFO queue for arbitrary data
+      </short>
+      <descr/>
+
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazLoggerBase"/>
+
+      <!-- record type Visibility: default -->
+      <element name="TDynamicQueueItem">
+        <short>Represents the size and content for a data item in TDynamicDataQueue</short>
+        <descr>
+          <p>
+            <var>TDynamicQueueItem</var> is a record type used to represent the size and content for an arbitrary data item added to <var>TDynamicDataQueue</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue"/>
+        </seealso>
+      </element>
+
+      <!-- variable Visibility: default -->
+      <element name="TDynamicQueueItem.Size">
+        <short>Size for the item structure and its Data</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- variable Visibility: default -->
+      <element name="TDynamicQueueItem.Data">
+        <short>Content for the queue item</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- pointer type Visibility: default -->
+      <element name="PDynamicQueueItem">
+        <short>Pointer to a TDynamicQueueItem type</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- pointer type Visibility: default -->
+      <element name="ListOfPDynamicQueueItem">
+        <short>Pointer to the PDynamicQueueItem type</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- object Visibility: default -->
+      <element name="TDynamicDataQueue">
+        <short>Implements a FIFO queue for arbitrary data</short>
+        <descr>
+          <p>
+            <var>TDynamicDataQueue</var> is a class used to queue arbitrary data for First-In-First-Out usage.
+          </p>
+          <p>
+            <var>TDynamicDataQueue</var> provides overloaded <var>Push</var> and <var>Pop</var> methods used to enqueue or dequeue data using an untyped buffer or a <var>TStream</var> instance. Use the <var>Top</var> method to peek at data in the queue without removing it.
+          </p>
+          <p>
+            Internally, <var>TDynamicDataQueue</var> maintains a ring queue for pointers to  chunks of data using the <var>TDynamicQueueItem</var> type. It is optimized to reduce the amount of data movement required when adding or removing items.
+          </p>
+          <p>
+            <var>TDynamicDataQueue</var> is used to implement storage for the <var>TCustomLazComponentQueue</var> component in the <file>lresources.pp</file> unit in the Lazarus Component Library (LCL).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicQueueItem"/>
+          <link id="#LCL.LResources.TCustomLazComponentQueue"/>
+        </seealso>
+      </element>
+
+      <!-- variable Visibility: private -->
+      <element name="TDynamicDataQueue.FItems"/>
+      <element name="TDynamicDataQueue.FItemCapacity"/>
+      <element name="TDynamicDataQueue.FTopIndex"/>
+      <element name="TDynamicDataQueue.FLastIndex"/>
+      <element name="TDynamicDataQueue.FMaximumBlockSize"/>
+      <element name="TDynamicDataQueue.FMinimumBlockSize"/>
+      <element name="TDynamicDataQueue.FSize"/>
+      <element name="TDynamicDataQueue.FTopItemSpace"/>
+      <element name="TDynamicDataQueue.FLastItemSpace"/>
+
+      <!-- method Visibility: private -->
+      <element name="TDynamicDataQueue.SetMaximumBlockSize">
+        <short>Sets the value for the MaximumBlockSize property</short>
+        <descr/>
+        <seealso>
+          <link id="TDynamicDataQueue.MaximumBlockSize"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.SetMaximumBlockSize.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TDynamicDataQueue.SetMinimumBlockSize">
+        <short>Sets the value for the MinimumBlockSize property</short>
+        <descr/>
+        <seealso>
+          <link id="TDynamicDataQueue.MinimumBlockSize"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.SetMinimumBlockSize.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TDynamicDataQueue.GrowItems">
+        <short>
+          Re-allocates the storage for the ring queue, optionally increasing its size
+        </short>
+        <descr>
+          <p>
+            <var>GrowItems</var> is a procedure used to re-allocate the storage for the ring queue. GrowItems ensures that the capacity for the internal queue storage is a minimum of eight (<b>8</b>) <var>TDynamicQueueItem</var> entries. If that threshold has already been crossed, the capacity is doubled with each call to the method.
+          </p>
+          <p>
+            GrowItems copies existing items in the queue into the newly allocated storage, and frees the memory allocated to the old queue storage. The internal index positions to the top and bottom of the queue are reset to their new values.
+          </p>
+          <p>
+            GrowItems is called from the <var>AddItem</var> method when additional storage is needed for the ring queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.AddItem"/>
+          <link id="TDynamicQueueItem"/>
+          <link id="PDynamicQueueItem"/>
+          <link id="ListOfPDynamicQueueItem"/>
+        </seealso>
+      </element>
+
+      <element name="TDynamicDataQueue.AddItem">
+        <short>Ensures space is available, and allocates storage for a new queue item</short>
+        <descr>
+          <p>
+            <var>AddItem</var> is a procedure used to allocate storage for a new item in the ring queue. AddItem ensures that space is available in the queue for a new queue entry, and calls <var>GrowItems</var> when needed.
+          </p>
+          <p>
+            AddItem checks the internal storage for the queue to ensure that it is assigned, and does not already contain a data item at the next position in the queue. An <var>Exception</var> is raised when either condition is not met.
+          </p>
+          <p>
+            AddItem allocates memory at the queue position by calling <var>GetMem</var> using the size of the <var>TDynamicQueueItem</var> type and the additional space specified in <var>ItemSize</var>.
+          </p>
+          <p>
+            AddItem is used in the implementation of the <var>PushInternal</var> method.
+          </p>
+        </descr>
+        <errors>
+          <p>
+            Raises an <var>Exception</var> if the item storage is not assigned, or when it already contains an item at the new position. The exception message is:  <b>'TDynamicDataQueue.AddItem NewIndex=[n]'</b>.
+          </p>
+        </errors>
+        <seealso>
+          <link id="TDynamicQueue.GrowItems"/>
+          <link id="TDynamicQueue.PushInternal"/>
+          <link id="TDynamicQueue.Push"/>
+          <link id="TDynamicQueueItem"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.AddItem.ItemSize">
+        <short>Space required for the arbitrary data stored in the new queue item</short>
+      </element>
+
+      <element name="TDynamicDataQueue.CalculateItemSize">
+        <short>Calculates the size for a memory block allocated for a new queue item</short>
+        <descr>
+          <p>
+            <var>CalculateItemSize</var> is an <var>Integer</var> function used to calculate the memory block size needed for a new item added to the queue.
+          <p>
+          </p>
+          <var>ItemSize</var> contains the size requested for the data structure and its arbitrary content, and is used by default as the return value for the method.  CalculateItemSize ensures that the return value is in the range defined by the  <var>MinimumBlockSize</var> and <var>MaximumBlockSize</var> properties.
+          </p>
+          <p>
+            CalculateItemSize is used in the implementation of the <var>PushInternal</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.MinimumBlockSize"/>
+          <link id="TDynamicDataQueue.MaximumBlockSize"/>
+          <link id="TDynamicDataQueue.PushInternal"/>
+          <link id="TDynamicDataQueue.Push"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.CalculateItemSize.Result">
+        <short>
+          Size of the memory block size needed to store a new item with the specified data size
+        </short>
+      </element>
+      <element name="TDynamicDataQueue.CalculateItemSize.ItemSize">
+        <short>Size requested for the queue item structure and its data</short>
+      </element>
+
+      <element name="TDynamicDataQueue.PushInternal">
+        <short>
+          Performs actions needed to store arbitrary byte values for an item in the FIFO queue
+        </short>
+        <descr>
+          <p>
+            <var>PushInternal</var> is an <var>Integer</var> function used to perform actions needed to store arbitrary data for queue items in the FIFO queue. The new queue item is added to the bottom (end, tail, etc.) of the queue.
+          </p>
+          <p>
+            Arguments to the method provide the location where the data for the new item is stored, and the number of bytes required for the arbitrary byte data. <var>Source</var> is the untyped buffer with the item data. <var>AStream</var> is the <var>TStream</var> instance where the item data can be found. Both storage mechanisms are not used at the same time; preference is given to Source (when assigned).
+          </p>
+          <p>
+            PushInternal calls <var>System.Move</var> to transfer byte data from Source to the internal storage for the queue, or calls the Read method in AStream to read the item data. The <var>Size</var> property is incremented by the number of bytes actually read in the method. <var>AddItem</var> is called to adjust the internal storage allocation for the calculated item size.
+          </p>
+          <remark>
+            Please note: PushInternal assumes that the TStream instance is already positioned at the location needed to access the item data for the queue entry. It does not reposition the stream prior to or following a call to the TStream.Read method. Be aware that reading from a stream can raise an exception.
+          </remark>
+          <p>
+            The return value contains the number of bytes transferred to the internal queue storage in the method.
+          </p>
+          <p>
+            PushInternal is used in the implementation of the overloaded <var>Push</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.Push"/>
+          <link id="TDynamicDataQueue.Size"/>
+          <link id="TDynamicDataQueue.AddItem"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.PushInternal.Result">
+        <short>Number of bytes stored in the queue storage for the new item</short>
+      </element>
+      <element name="TDynamicDataQueue.PushInternal.Source">
+        <short>Untyped buffer with the arbitrary byte data added to the queue</short>
+      </element>
+      <element name="TDynamicDataQueue.PushInternal.AStream">
+        <short>TStream instance where the arbitrary byte data for the item can be found</short>
+      </element>
+      <element name="TDynamicDataQueue.PushInternal.Count">
+        <short>Number of bytes expected in the data for the queue item</short>
+      </element>
+
+      <element name="TDynamicDataQueue.PopTopInternal">
+        <short>
+          Performs actions needed to read, and to optionally remove, an item in the FIFO queue
+        </short>
+        <descr></descr>
+        <seealso>
+          <link id="TDynamicDataQueue.Pop"/>
+          <link id="TDynamicDataQueue.Top"/>
+          <link id="TDynamicDataQueue.Push"/>
+          <link id="TDynamicDataQueue.Clear"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.PopTopInternal.Result">
+        <short>Number of bytes read/removed from the internal queue storage</short>
+      </element>
+      <element name="TDynamicDataQueue.PopTopInternal.Dest">
+        <short>Untyped buffer where data for the queue item is stored</short>
+      </element>
+      <element name="TDynamicDataQueue.PopTopInternal.AStream">
+        <short>Stream instance where data for the queue item is stored</short>
+      </element>
+      <element name="TDynamicDataQueue.PopTopInternal.Count">
+        <short>Number of bytes expected in the queue item</short>
+      </element>
+      <element name="TDynamicDataQueue.PopTopInternal.KeepData">
+        <short>Indicates if item data should remain in the internal queue storage; used to implement Top</short>
+      </element>
+
+      <!-- constructor Visibility: public -->
+      <element name="TDynamicDataQueue.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance. Create sets the default values for the following properties:
+          </p>
+          <dl>
+            <dt>MinimumBlockSize</dt>
+            <dd>Set to 512 (bytes)</dd>
+            <dt>MaximumBlockSize</dt>
+            <dd>Set to 4096 (bytes)</dd>
+          </dl>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.MinimumBlockSize"/>
+          <link id="TDynamicDataQueue.MaximumBlockSize"/>
+          <link id="TDynamicDataQueue.Destroy"/>
+        </seealso>
+      </element>
+
+      <!-- destructor Visibility: public -->
+      <element name="TDynamicDataQueue.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls the <var>Clear</var> method to remove items stored in the queue, and to free memory allocated for their storage. Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.Clear"/>
+        </seealso>
+      </element>
+
+      <!-- procedure Visibility: public -->
+      <element name="TDynamicDataQueue.Clear">
+        <short>Frees data items and storage allocated for the queue</short>
+        <descr>
+          <p>
+            <var>Clear</var> is a procedure used to free all items stored in the queue, and the memory allocated for their storage. Clear iterates over the items in the queue, and calls <var>FreeMem</var> to de-allocate memory reserved to store each item structure and its data. The internal storage for the queue is set to <b>Nil</b> when all items have been de-allocated.
+          </p>
+          <p>
+            Clear resets the values for internal members used for the queue <var>Size</var>, and those used for item positions in the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.Size"/>
+        </seealso>
+      </element>
+
+      <!-- procedure Visibility: public -->
+      <element name="TDynamicDataQueue.ConsistencyCheck">
+        <short>Checks for errors in queue settings, item storage space, or item content</short>
+        <descr>
+          <p>
+            <var>ConsistencyCheck</var> is a procedure used to raise an exception when an error is detected in queue settings, its item storage space, or the content for item data. ConsistencyCheck raises an exception when the following conditions are detected:
+          </p>
+        <ul>
+          <li>Size contains a negative non-zero value.</li>
+          <li>MinimumBlockSize is larger than MaximumBlockSize.</li>
+          <li>MinimumBlockSize is less than sixteen (16) bytes.</li>
+          <li>Internal storage has not been assigned, but Size contains a non-zero value.</li>
+          <li>The item capacity is zero (0) or a negative value.</li>
+          <li>Internal index positions for Top and new items contain a negative value.</li>
+          <li>Internal index positions for Top and new items are larger than the capacity for the queue.</li>
+        </ul>
+        <remark>
+          <p>
+            <var>ConsistencyCheck</var> is <b>NOT</b> used in the current implementation.
+          </p>
+        </remark>
+        </descr>
+        <errors>
+          <p>
+            Raises an <var>Exception</var> when an error condition is found in the queue settings, its storage space, or the items in the queue. The exception message is: 'TDynamicDataQueue.ConsistencyCheck'.
+          </p>
+        </errors>
+        <seealso></seealso>
+      </element>
+
+      <!-- procedure Visibility: public -->
+      <element name="TDynamicDataQueue.WriteDebugReport">
+        <short>
+          Generates debugging information for the queue state and optional item data in the queue
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TDynamicDataQueue.WriteDebugReport.WriteData">
+        <short>Includes the contents of the item data when set to True</short>
+      </element>
+
+      <!-- function Visibility: public -->
+      <element name="TDynamicDataQueue.Push">
+        <short>Adds the specified content to the FIFO queue</short>
+        <descr>
+          <p>
+            <var>Push</var> is an overloaded <var>Integer</var> function used to add the specified item data to the bottom of the FIFO queue. Overloaded variants are provided to supply item data as a sequence of arbitrary byte values, either from an untyped buffer or from a <var>TStream</var> instance.
+          </p>
+          <remark>
+            Please note: Push assumes that <var>AStream</var> is already positioned at the start of the data for the new item. It does not reposition the stream instance.
+          </remark>
+          <p>
+            Push calls the <var>PushInternal</var> method to perform the actions needed to enqueue the specified item data.
+          </p>
+          <p>
+            The return value contains the number of bytes added for the new item data to the internal storage for the ring queue.
+          </p>
+          <p>
+            Use <var>Pop</var> to dequeue an item from the top of the queue. Use <var>Top</var> to get the item data for the next item without removing it from the queue. Use <var>Size</var> to get the number of bytes allocated for items in the internal storage in the FIFO queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.PushInternal"/>
+          <link id="TDynamicDataQueue.Pop"/>
+          <link id="TDynamicDataQueue.Top"/>
+          <link id="TDynamicDataQueue.Size"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.Push.Result">
+        <short>Number of bytes added to the internal queue storage in the method</short>
+      </element>
+      <element name="TDynamicDataQueue.Push.Buffer">
+        <short>Untyped buffer with the arbitrary item data added in the method</short>
+      </element>
+      <element name="TDynamicDataQueue.Push.Count">
+        <short>Number of bytes needed for the item data added in the method</short>
+      </element>
+      <element name="TDynamicDataQueue.Push.AStream">
+        <short>TStream instance where the byte values for the item data is stored</short>
+      </element>
+
+      <!-- function Visibility: public -->
+      <element name="TDynamicDataQueue.Pop">
+        <short>Removes an item from the top of the FIFO queue</short>
+        <descr>
+          <p>
+            <var>Pop</var> is an overloaded <var>Integer</var> function used to remove an item from the top of the FIFO queue. Overloaded variants are provided to get item data and store them as a sequence of arbitrary byte values, either in an untyped buffer or in a <var>TStream</var> instance.
+          </p>
+          <remark>
+            Please note: Pop assumes that <var>AStream</var> is already positioned where the item data will be written. It does not reposition the stream instance. Be aware that writing to a stream can raise an exception.
+          </remark>
+          <p>
+            Pop calls the <var>PopTopInternal</var> method to perform the actions needed to get the data for the queue item, and to removed the entry from the top of FIFO queue.
+          </p>
+          <p>
+            The return value contains the number of bytes needed for the item data, and removed from the internal storage for the queue.
+          </p>
+          <p>
+            Use <var>Push</var> to enqueue a new item to the bottom of the FIFO queue. Use <var>Top</var> to get the item data at the top of the queue without removing it from the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.PopTopInternal"/>
+          <link id="TDynamicDataQueue.Push"/>
+          <link id="TDynamicDataQueue.Top"/>
+          <link id="TDynamicDataQueue.Size"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.Pop.Result">
+        <short>Number of bytes needed for item data removed from the queue</short>
+      </element>
+      <element name="TDynamicDataQueue.Pop.Buffer">
+        <short>Untyped buffer where the queue item is stored after removal</short>
+      </element>
+      <element name="TDynamicDataQueue.Pop.Count">
+        <short>Number of bytes for the item data</short>
+      </element>
+      <element name="TDynamicDataQueue.Pop.AStream">
+        <short>TStream instance where the item data removed from the queue is stored</short>
+      </element>
+
+      <!-- function Visibility: public -->
+      <element name="TDynamicDataQueue.Top">
+        <short>
+          Gets the data for the first queue entry, but does not remove it from the queue
+        </short>
+        <descr>
+          <p>
+            <var>Top</var> is an overloaded Integer function used to get the item data stored at the top of the FIFO queue without removing it from the queue internal storage. Overloaded variants are provided to get and store item data as a sequence of arbitrary byte values, either in an untyped buffer or in a <var>TStream</var> instance.
+          </p>
+          <p>
+            Please note: Top assumes that <var>AStream</var> is already positioned where the item data will be written. It does not reposition the stream instance. Be aware that writing to a stream can raise an exception.
+          </p>
+          <p>
+            Top calls the <var>PopTopInternal</var> method to perform the actions needed to get the data for the queue item from the top of FIFO queue.
+          </p>
+          <p>
+            The return value contains the number of bytes needed for the item data in the internal storage for the queue.
+          </p>
+          <p>
+            Use <var>Push</var> to enqueue a new item to the bottom of the FIFO queue. Use <var>Pop</var> to get and remove the item data at the top of the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.PopTopInternal"/>
+          <link id="TDynamicDataQueue.Push"/>
+          <link id="TDynamicDataQueue.Pop"/>
+          <link id="TDynamicDataQueue.Size"/>
+        </seealso>
+      </element>
+      <element name="TDynamicDataQueue.Top.Result">
+        <short>Number of bytes needed for item data in the queue</short>
+      </element>
+      <element name="TDynamicDataQueue.Top.Buffer">
+        <short>Untyped buffer where the queue item is stored</short>
+      </element>
+      <element name="TDynamicDataQueue.Top.Count">
+        <short>Number of bytes for the item data</short>
+      </element>
+      <element name="TDynamicDataQueue.Top.AStream">
+        <short>TStream instance where the item data is stored</short>
+      </element>
+
+      <!-- property Visibility: public -->
+      <element name="TDynamicDataQueue.Size">
+        <short>Total memory required for item data stored in the queue</short>
+        <descr>
+          <p>
+            <var>Size</var> is a read-only <var>Int64</var> property that contains the total memory required for item data stored in the queue. The value in Size in incremented in <var>PushInternal</var> when an item is successfully added to the ring queue storage. Conversely, the value in Size is decremented when the <var>PopTopInternal</var> method successfully removes an item from the storage for the ring queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.PushInternal"/>
+          <link id="TDynamicDataQueue.Push"/>
+          <link id="TDynamicDataQueue.PopTopInternal"/>
+          <link id="TDynamicDataQueue.Pop"/>
+        </seealso>
+      </element>
+
+      <!-- property Visibility: public -->
+      <element name="TDynamicDataQueue.MinimumBlockSize">
+        <short>
+          Indicates the smallest memory block size allocated for an item added to the queue
+        </short>
+        <descr>
+          <p>
+            <var>MinimumBlockSize</var> is an <var>Integer</var> property which indicates the smallest memory block size allocated for an item added to the queue. MinimumBlockSize and <var>MaximumBlockSize</var> are used in the <var>CalculateItemSize</var> method to derive the actual block size allocated for a queue item and its arbitrary data.
+          </p>
+          <p>
+            The default value for MinimumBlockSize is <b>512</b>, as set in the <var>Create</var> constructor. MinimumBlockSize cannot be set to a value smaller than sixteen (<b>16</b>) bytes, or a value larger than MaximumBlockSize.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.MaximumBlockSize"/>
+          <link id="TDynamicDataQueue.CalculateItemSize"/>
+          <link id="TDynamicDataQueue.Create"/>
+        </seealso>
+      </element>
+
+      <!-- property Visibility: public -->
+      <element name="TDynamicDataQueue.MaximumBlockSize">
+        <short>
+          Indicates the largest memory block size allocated for an item added to the queue
+        </short>
+        <descr>
+          <p>
+            <var>MaximumBlockSize</var> is an <var>Integer</var> property which indicates the largest  memory block size allocated for an item added to the queue. <var>MinimumBlockSize</var> and <var>MaximumBlockSize</var> are used in the <var>CalculateItemSize</var> method to derive the actual block size allocated for a queue item and its arbitrary data.
+          </p>
+          <p>
+            The default value for MaximumBlockSize is <b>4096</b>, as set in the <var>Create</var> constructor. MaximumBlockSize cannot be set to a value smaller than  MinimumBlockSize.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDynamicDataQueue.MinimumBlockSize"/>
+          <link id="TDynamicDataQueue.CalculateItemSize"/>
+          <link id="TDynamicDataQueue.Create"/>
+        </seealso>
+      </element>
+
+    </module>
+    <!-- DynQueue -->
+  </package>
 </fpdoc-descriptions>
