@@ -943,6 +943,58 @@
         <short>Path used for the operation</short>
       </element>
 
+      <element name="PathIsInPath">
+        <short>Checks whether the specified directory exists in a given path</short>
+        <descr>
+          <p>
+            <var>PathIsInPath</var> is a <var>Boolean</var> function used to determine if the specified <var>Directory</var> exists in the <var>Path</var> argument. The return value is <b>False</b> when Path contains an empty string (''), or when the Directory does not exist in Path.
+          </p>
+          <p>
+            PathIsInPath calls the <var>CompareFilenames</var> routine to determine the return value for the function.
+          </p>
+          <remark>
+            Please note: PathIsInPath ensures that a trailing path delimiter is included in the Path and Directory arguments prior to performing its comparison. On Windows, this results in a Path like 'C:' being treated as if it contains 'C:\'.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="PathIsInPath.Result">
+        <short>True when Directory exists in Path</short>
+      </element>
+      <element name="PathIsInPath.Path">
+        <short>Path examined in the routine</short>
+      </element>
+      <element name="PathIsInPath.Directory">
+        <short>Directory name to locate in the specified path</short>
+      </element>
+
+      <element name="ShortDisplayFilename">
+        <short>
+          Gets a shortened version of the specified file name up to a maximum length
+        </short>
+        <descr>
+          <p>
+            <var>ShortDisplayFilename</var> is a <var>String</var> function used to get a shortened version of the specified file name up to the specified maximum length. The characters '...' are appended to a shortened file name.
+          </p>
+          <remark>
+            Please note: These are three (3) Period characters and not an Ellipsis character.
+          </remark>
+          <p>
+            The return value is the same as the <var>aFileName</var> argument if the file name did not need to be shortened.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="ShortDisplayFilename.Result">
+        <short>Shortened version of the specifed file name</short>
+      </element>
+      <element name="ShortDisplayFilename.aFileName">
+        <short>File name examined in the routine</short>
+      </element>
+      <element name="ShortDisplayFilename.aLimit">
+        <short>Maximum number of characters for the shortened file name</short>
+      </element>
+
       <element name="TPathDelimSwitch">
         <short></short>
         <descr>

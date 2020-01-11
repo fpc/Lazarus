@@ -507,6 +507,70 @@
         <short></short>
       </element>
 
+      <element name="SamePChar">
+        <short>Return True if P1 and P2 have the same content</short>
+        <descr>
+          Returns False if either P1 or P2 are unassigned (contain Nil).
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="SamePChar.Result">
+        <short>True when P1 and P2 have the same content, or are the same pointer</short>
+      </element>
+      <element name="SamePChar.P1">
+        <short>Pointer to characters compared in the routine</short>
+      </element>
+      <element name="SamePChar.P2">
+        <short>Pointer to characters compared in the routine</short>
+      </element>
+
+      <element name="StrLScan">
+        <short>
+          Like StrScan but compares only the specified number of characters in MaxLen
+        </short>
+        <descr>
+          <p>
+            The return value is Nil when P is unassigned (contains Nil), or when P contains a null termination character prior to finding a match for c before comparing the requested number of characters in MaxLen.
+          </p>
+          <p>
+            When c is located in P, the return value is a PChar pointer to the location where c was located.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="StrLScan.Result">
+        <short>Pointer to the character located in P, or Nil</short>
+      </element>
+      <element name="StrLScan.P">
+        <short>Pointer to characters examined in the routine</short>
+      </element>
+      <element name="StrLScan.c">
+        <short>Character to locate in the specified values</short>
+      </element>
+      <element name="StrLScan.MaxLen">
+        <short>Maximum number of characters examined in the routine</short>
+      </element>
+
+      <element name="LazIsValidIdent">
+        <short>This is a copy of IsValidIdent from FPC 3.1</short>
+        <descr>
+          TODO: Switch to using IsValidIdent from FPC 3.2 when it is the minimum requirement.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="LazIsValidIdent.Result">
+        <short></short>
+      </element>
+      <element name="LazIsValidIdent.Ident">
+        <short></short>
+      </element>
+      <element name="LazIsValidIdent.AllowDots">
+        <short></short>
+      </element>
+      <element name="LazIsValidIdent.StrictDots">
+        <short></short>
+      </element>
+
     </module>
     <!-- LazStringUtils -->
 
