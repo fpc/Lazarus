@@ -2881,6 +2881,37 @@
         <seealso></seealso>
       </element>
 
+      <element name="TGridColumnTitle.FixDesignFontsPPI">
+        <!-- TODO -->
+        <short></short>
+        <descr>
+          <p>
+            <var>FixDesignFontsPPI</var> is a procedure used to...
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TGridColumnTitle.FixDesignFontsPPI.ADesignTime">
+        <short></short>
+      </element>
+
+      <element name="TGridColumnTitle.ScaleFontsPPI">
+        <!-- TODO -->
+        <short></short>
+        <descr>
+          <p>
+            <var>ScaleFontsPPI</var> is an overridden procedure used to...
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TGridColumnTitle.ScaleFontsPPI.AToPPI">
+        <short></short>
+      </element>
+      <element name="TGridColumnTitle.ScaleFontsPPI.AProportion">
+        <short></short>
+      </element>
+
       <!-- function Visibility: public -->
       <element name="TGridColumnTitle.IsDefault">
         <short>
@@ -3673,6 +3704,37 @@
         </short>
         <descr></descr>
         <seealso></seealso>
+      </element>
+
+      <element name="TGridColumn.FixDesignFontsPPI">
+        <!-- TODO -->
+        <short></short>
+        <descr>
+          <p>
+            <var>FixDesignFontsPPI</var> is a procedure used to...
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TGridColumn.FixDesignFontsPPI.ADesignTime">
+        <short></short>
+      </element>
+
+      <element name="TGridColumn.ScaleFontsPPI">
+        <!-- TODO -->
+        <short></short>
+        <descr>
+          <p>
+            <var>ScaleFontsPPI</var> is an overridden procedure used to...
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TGridColumn.ScaleFontsPPI.AToPPI">
+        <short></short>
+      </element>
+      <element name="TGridColumn.ScaleFontsPPI.AProportion">
+        <short></short>
       </element>
 
       <!-- function Visibility: public -->
@@ -9240,6 +9302,37 @@
       </element>
       <element name="TCustomGrid.SaveGridOptions.cfg">
         <short>XML configuration file where values are stored</short>
+      </element>
+
+      <element name="TCustomGrid.FixDesignFontsPPI">
+        <!-- TODO -->
+        <short></short>
+        <descr>
+          <p>
+            <var>FixDesignFontsPPI</var> is a procedure used to...
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomGrid.FixDesignFontsPPI.ADesignTime">
+        <short></short>
+      </element>
+
+      <element name="TCustomGrid.ScaleFontsPPI">
+        <!-- TODO -->
+        <short></short>
+        <descr>
+          <p>
+            <var>ScaleFontsPPI</var> is an overridden procedure used to...
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomGrid.ScaleFontsPPI.AToPPI">
+        <short></short>
+      </element>
+      <element name="TCustomGrid.ScaleFontsPPI.AProportion">
+        <short></short>
       </element>
 
       <!-- procedure Visibility: protected -->

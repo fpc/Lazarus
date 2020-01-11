@@ -14078,6 +14078,16 @@ end;
         <short/>
       </element>
 
+      <element name="TWinControl.FixDesignFontsPPIWithChildren">
+        <!-- TODO -->
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TWinControl.FixDesignFontsPPIWithChildren.ADesignTimePPI">
+        <short></short>
+      </element>
+
       <element name="TWinControl.Create">
         <short>Constructor for the class instance</short>
         <descr>
