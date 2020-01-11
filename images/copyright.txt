@@ -22,6 +22,8 @@ actions directory:
 	arrow__darkred_right.png
 	arrow__darkred_up.png
 	autocomplete.png
+	filter_any_place.png    (used 'item_filter.png' created by Roland Hahn)
+	filter_from_begin.png    (used 'item_filter.png' created by Roland Hahn)
 	laz_open.png
 	laz_open_recent.png
 	laz_open_unit.png
@@ -114,6 +116,7 @@ menu directory:
 	menu_search_openfile_atcursor.png
 	menu_search_previous_bookmark.png
 	menu_search_previous_error.png    (used 'state_error.png' created by Roland Hahn)
+	menu_search_procedure_list.png    (used 'cc_procedure.png' created by Roland Hahn)
 	menu_search_replace.png
 	menu_search_set_bookmark.png
 	menu_set_free_bookmark.png

@@ -49,6 +49,12 @@ actions/autocomplete_200.png
 actions/execute.png
 actions/execute_150.png
 actions/execute_200.png
+actions/filter_any_place.png
+actions/filter_any_place_150.png
+actions/filter_any_place_200.png
+actions/filter_from_begin.png
+actions/filter_from_begin_150.png
+actions/filter_from_begin_200.png
 actions/laz_add.png
 actions/laz_add_150.png
 actions/laz_add_200.png
@@ -753,6 +759,9 @@ menu/menu_search_previous_bookmark_200.png
 menu/menu_search_previous_error.png
 menu/menu_search_previous_error_150.png
 menu/menu_search_previous_error_200.png
+menu/menu_search_procedure_list.png
+menu/menu_search_procedure_list_150.png
+menu/menu_search_procedure_list_200.png
 menu/menu_search_replace.png
 menu/menu_search_replace_150.png
 menu/menu_search_replace_200.png

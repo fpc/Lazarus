@@ -7696,6 +7696,12 @@ images/actions/autocomplete_200.png -text
 images/actions/execute.png -text
 images/actions/execute_150.png -text svneol=unset#image/png
 images/actions/execute_200.png -text svneol=unset#image/png
+images/actions/filter_any_place.png -text svneol=unset#image/png
+images/actions/filter_any_place_150.png -text svneol=unset#image/png
+images/actions/filter_any_place_200.png -text svneol=unset#image/png
+images/actions/filter_from_begin.png -text svneol=unset#image/png
+images/actions/filter_from_begin_150.png -text svneol=unset#image/png
+images/actions/filter_from_begin_200.png -text svneol=unset#image/png
 images/actions/laz_add.png -text svneol=unset#image/png
 images/actions/laz_add_150.png -text
 images/actions/laz_add_200.png -text
@@ -8861,6 +8867,9 @@ images/menu/menu_search_previous_bookmark_200.png -text
 images/menu/menu_search_previous_error.png -text svneol=unset#image/png
 images/menu/menu_search_previous_error_150.png -text svneol=unset#image/png
 images/menu/menu_search_previous_error_200.png -text svneol=unset#image/png
+images/menu/menu_search_procedure_list.png -text svneol=unset#image/png
+images/menu/menu_search_procedure_list_150.png -text svneol=unset#image/png
+images/menu/menu_search_procedure_list_200.png -text svneol=unset#image/png
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_search_replace_150.png -text
 images/menu/menu_search_replace_200.png -text
