@@ -137,6 +137,9 @@ type
 
 implementation
 
+uses
+  CocoaInt;
+
 // API irony.
 // In LCL the base dialog is TOpenDialog (savedialog inherits from it)
 // In Cocoa the base dialog is SaveDialog (opendialog inherites from it)
@@ -654,6 +657,8 @@ begin
   oldFont := oldHandle.Font;
   //oldFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
   newFont := FontPanel.panelConvertFont(oldFont);
+  if (CocoaBasePPI<>72) then
+    newFont := NSFont.fontWithDescriptor_size(newFont.fontDescriptor, newFont.pointSize * CocoaBasePPI / 72);
   newHandle := TCocoaFont.Create(newFont);
   FontDialog.Font.Handle := HFONT(newHandle);
 end;
