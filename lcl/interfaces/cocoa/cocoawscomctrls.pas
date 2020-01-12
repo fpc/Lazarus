@@ -1027,6 +1027,7 @@ begin
     lCocoaLV.callback := lclcb;
 
     ScrollViewSetBorderStyle(lCocoaLV, TCustomListView(AWinControl).BorderStyle);
+    UpdateFocusRing(lTableLV, TCustomListView(AWinControl).BorderStyle);
 
     {$IFDEF COCOA_DEBUG_LISTVIEW}
     WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));
@@ -1039,6 +1040,7 @@ class procedure TCocoaWSCustomListView.SetBorderStyle(
 begin
   if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
   ScrollViewSetBorderStyle(NSScrollView(AWinControl.Handle), ABorderStyle);
+  UpdateFocusRing(NSView(NSScrollView(AWinControl.Handle).documentView), ABorderStyle);
 end;
 
 class procedure TCocoaWSCustomListView.ColumnDelete(const ALV: TCustomListView;

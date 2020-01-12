@@ -245,6 +245,8 @@ var
   CocoaToggleBezel : NSBezelStyle = NSRoundedBezelStyle;
   CocoaToggleType  : NSButtonType = NSPushOnPushOffButton;
 
+  CocoaHideFocusNoBorder : Boolean = true;
+
   {$ifdef COCOALOOPHIJACK}
   // The flag is set to true once hi-jacked loop is finished (at the end of app)
   // The flag is checked in Menus to avoid "double" Cmd+Q menu

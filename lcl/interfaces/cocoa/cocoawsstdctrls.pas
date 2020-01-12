@@ -943,6 +943,7 @@ begin
   end;
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
   TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
+  UpdateFocusRing(field, TCustomEdit(AWinControl).BorderStyle);
 
   Result:=TLCLIntfHandle(field);
 end;
@@ -969,6 +970,7 @@ begin
   if not Assigned(field) then Exit;
   field.setBordered_( ObjCBool(ABorderStyle <> bsNone) );
   field.setBezeled_( ObjCBool(ABorderStyle <> bsNone) );
+  UpdateFocusRing(field, ABorderStyle);
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -1440,6 +1442,7 @@ begin
   scr.setDrawsBackground(false);
 
   ScrollViewSetBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
+  UpdateFocusRing(txt, TCustomMemo(AWinControl).BorderStyle);
 
   nr:=scr.documentVisibleRect;
   txt.setFrame(nr);
@@ -1531,6 +1534,7 @@ begin
   if not Assigned(sv) then Exit;
 
   ScrollViewSetBorderStyle(sv, ABorderStyle);
+  UpdateFocusRing(NSView(sv.documentView), ABorderStyle);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
@@ -2086,6 +2090,7 @@ begin
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
   ScrollViewSetBorderStyle(scroll, lclListBox.BorderStyle);
+  UpdateFocusRing(list, lclListBox.BorderStyle);
 
   Result := TLCLIntfHandle(scroll);
 end;
@@ -2198,6 +2203,7 @@ begin
   if not Assigned(list) then Exit;
 
   ScrollViewSetBorderStyle(list.enclosingScrollView, ABorderStyle);
+  UpdateFocusRing(list, ABorderStyle);
 end;
 
 class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
