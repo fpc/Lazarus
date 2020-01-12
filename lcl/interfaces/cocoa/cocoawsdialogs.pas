@@ -548,6 +548,7 @@ var
   accessoryView: NSView;
   lRect: NSRect;
   okButton, cancelButton: NSButton;
+  fn : NSFont;
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFontDialog.ShowModal for ' + ACommonDialog.Name);
@@ -557,7 +558,10 @@ begin
 
   fontPanel := NSFontPanel.sharedFontPanel();
   inFont := TCocoaFont(FontDialog.Font.Handle);
-  fontPanel.setPanelFont_isMultiple(inFont.Font, False);
+  fn := inFont.Font;
+  if (CocoaBasePPI<>72) and (CocoaBasePPI<>0) then
+    fn := NSFont.fontWithDescriptor_size(fn.fontDescriptor, fn.pointSize / CocoaBasePPI * 72);
+  fontPanel.setPanelFont_isMultiple(fn, False);
 
   FontDelegate := TFontPanelDelegate.alloc.init();
   FontDelegate.FontPanel := FontPanel;
