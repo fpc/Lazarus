@@ -559,8 +559,13 @@ begin
   fontPanel := NSFontPanel.sharedFontPanel();
   inFont := TCocoaFont(FontDialog.Font.Handle);
   fn := inFont.Font;
-  if (CocoaBasePPI<>72) and (CocoaBasePPI<>0) then
-    fn := NSFont.fontWithDescriptor_size(fn.fontDescriptor, fn.pointSize / CocoaBasePPI * 72);
+  if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then
+  begin
+    if (FontDialog.Font.Size<>0) then // assign font size directly to avoid rounding errors
+      fn := NSFont.fontWithDescriptor_size(fn.fontDescriptor, Abs(FontDialog.Font.Size)) // ToDo: emulate negative Size values from WinAPI
+    else // fallback for default font size: round the result because currently the LCL doesn't support floating-point sizes, so there is no reason to show them to the user
+      fn := NSFont.fontWithDescriptor_size(fn.fontDescriptor, Round(fn.pointSize * 72 / FontDialog.Font.PixelsPerInch));
+  end;
   fontPanel.setPanelFont_isMultiple(fn, False);
 
   FontDelegate := TFontPanelDelegate.alloc.init();
@@ -661,8 +666,8 @@ begin
   oldFont := oldHandle.Font;
   //oldFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
   newFont := FontPanel.panelConvertFont(oldFont);
-  if (CocoaBasePPI<>72) then
-    newFont := NSFont.fontWithDescriptor_size(newFont.fontDescriptor, newFont.pointSize * CocoaBasePPI / 72);
+  if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then
+    newFont := NSFont.fontWithDescriptor_size(newFont.fontDescriptor, newFont.pointSize * FontDialog.Font.PixelsPerInch / 72);
   newHandle := TCocoaFont.Create(newFont);
   FontDialog.Font.Handle := HFONT(newHandle);
 end;
