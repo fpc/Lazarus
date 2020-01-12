@@ -5230,156 +5230,44 @@ end;
 
 procedure TMainIDE.ProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
-  AProject: TProject;
-
-  function SetTitle: Boolean;
-  var
-    TitleStat, ProjTitle: String;
-  begin
-    Result := True;
-    TitleStat := '';
-    CodeToolBoss.GetApplicationTitleStatement(AProject.MainUnitInfo.Source, TitleStat);
-    ProjTitle:=AProject.GetTitle;
-    //DebugLn(['ProjectOptionsAfterWrite: Project title=',ProjTitle,
-    //         ', Default=',AProject.GetDefaultTitle,', Title Statement=',TitleStat]);
-    if pfMainUnitHasTitleStatement in AProject.Flags then
-    begin                            // Add Title statement if not there already.
-      if ((TitleStat = '') or (TitleStat = ProjTitle)) and AProject.TitleIsDefault then
-        Exit;
-      //DebugLn(['ProjectOptionsAfterWrite: Setting Title to ',ProjTitle]);
-      if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, ProjTitle) then
-      begin
-        IDEMessageDialog(lisProjOptsError,
-          Format(lisUnableToChangeProjectTitleInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-          mtWarning, [mbOk]);
-        Result := False;
-      end;
-    end
-    else begin                          // Remove Title statement if it is there.
-      if TitleStat <> ProjTitle then
-        Exit;
-      //DebugLn(['ProjectOptionsAfterWrite: Removing Title']);
-      if not CodeToolBoss.RemoveApplicationTitleStatement(AProject.MainUnitInfo.Source) then
-      begin
-        IDEMessageDialog(lisProjOptsError,
-          Format(lisUnableToRemoveProjectTitleFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-          mtWarning, [mbOk]);
-        Result := False;
-      end;
-    end;
-  end;
-
-  function SetScaled: Boolean;
-  var
-    ScaledStat, ProjScaled: Boolean;
-  begin
-    Result := True;
-    ScaledStat := False;
-    CodeToolBoss.GetApplicationScaledStatement(AProject.MainUnitInfo.Source, ScaledStat);
-    ProjScaled:=AProject.Scaled;
-    //DebugLn(['ProjectOptionsAfterWrite: Project Scaled=',ProjScaled,', Scaled Statement=',ScaledStat]);
-    if pfMainUnitHasScaledStatement in AProject.Flags then
-    begin                           // Add Scaled statement if not there already.
-      if (ScaledStat = ProjScaled) or not ProjScaled then
-        Exit;
-      //DebugLn(['ProjectOptionsAfterWrite: Setting Scaled to ',ProjScaled]);
-      if not CodeToolBoss.SetApplicationScaledStatement(AProject.MainUnitInfo.Source, ProjScaled) then
-      begin
-        IDEMessageDialog(lisProjOptsError,
-          Format(lisUnableToChangeProjectScaledInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-          mtWarning, [mbOk]);
-        Result := False;
-      end;
-    end
-    else begin                      // Remove Scaled statement if it is there.
-      if ScaledStat <> ProjScaled then
-        Exit;
-      //DebugLn(['ProjectOptionsAfterWrite: Removing Scaled']);
-      if not CodeToolBoss.RemoveApplicationScaledStatement(AProject.MainUnitInfo.Source) then
-      begin
-        IDEMessageDialog(lisProjOptsError,
-          Format(lisUnableToRemoveProjectScaledFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-          mtWarning, [mbOk]);
-        Result := False;
-      end;
-    end;
-  end;
-
-  function SetAutoCreateForms: boolean;
-  var
-    i: integer;
-    OldList: TStrings;
-  begin
-    Result := True;
-    if not (pfMainUnitHasCreateFormStatements in AProject.Flags) then
-      Exit;
-    OldList := AProject.GetAutoCreatedFormsList;
-    if (OldList = nil) then
-      Exit;
-    try
-      if OldList.Count = AProject.TmpAutoCreatedForms.Count then
-      begin
-        { Just exit if the form list is the same }
-        i := OldList.Count - 1;
-        while (i >= 0)
-        and (SysUtils.CompareText(OldList[i], AProject.TmpAutoCreatedForms[i]) = 0) do
-          Dec(i);
-        if i < 0 then
-          Exit;
-      end;
-
-      if not CodeToolBoss.SetAllCreateFromStatements(AProject.MainUnitInfo.Source,
-        AProject.TmpAutoCreatedForms) then
-      begin
-        IDEMessageDialog(lisProjOptsError,
-          Format(lisProjOptsUnableToChangeTheAutoCreateFormList, [LineEnding]),
-          mtWarning, [mbOK]);
-        Result := False;
-        Exit;
-      end;
-    finally
-      OldList.Free;
-    end;
-  end;
-
-var
+  aProject: TProject;
   aFilename: String;
 begin
   //debugln(['TMainIDE.ProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
   if not (Sender is TProjectIDEOptions) then exit;
-  AProject:=TProjectIDEOptions(Sender).Project;
-  Assert(Assigned(AProject), 'TMainIDE.ProjectOptionsAfterWrite: Project=Nil.');
+  aProject:=TProjectIDEOptions(Sender).Project;
+  Assert(Assigned(aProject), 'TMainIDE.ProjectOptionsAfterWrite: Project=Nil.');
+  Assert(aProject=Project1, 'TMainIDE.ProjectOptionsAfterWrite: Project<>Project1.');
   if Restore then
   begin
-    AProject.RestoreBuildModes;
-    AProject.RestoreSession;
+    Project1.RestoreBuildModes;
+    Project1.RestoreSession;
   end
   else begin
-    if AProject.MainUnitID >= 0 then
+    if Project1.MainUnitID >= 0 then
     begin
-      SetTitle;
-      SetScaled;
-      SetAutoCreateForms;
-      AProject.AutoAddOutputDirToIncPath;  // extend include path
-      if AProject.ProjResources.Modified then
-        if not AProject.ProjResources.Regenerate(AProject.MainFilename, True, False, '') then
-          IDEMessageDialog(lisCCOWarningCaption, AProject.ProjResources.Messages.Text,
+      UpdateAppTitleInSource;
+      UpdateAppScaledInSource;
+      UpdateAppAutoCreateForms;
+      Project1.AutoAddOutputDirToIncPath;  // extend include path
+      if Project1.ProjResources.Modified then
+        if not Project1.ProjResources.Regenerate(Project1.MainFilename, True, False, '') then
+          IDEMessageDialog(lisCCOWarningCaption, Project1.ProjResources.Messages.Text,
                            mtWarning, [mbOk]);
     end;
     UpdateCaption;
     if Assigned(ProjInspector) then
       ProjInspector.UpdateTitle;
-    AProject.DefineTemplates.AllChanged;
+    Project1.DefineTemplates.AllChanged;
     IncreaseCompilerParseStamp;
 
-    if AProject.UseAsDefault then
+    if Project1.UseAsDefault then
     begin
       // save as default
       aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
-      AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
+      Project1.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
         aFilename,EnvironmentOptions.BuildMatrixOptions);
     end;
-
     Project1.UpdateAllSyntaxHighlighter;
     SourceEditorManager.BeginGlobalUpdate;
     try

@@ -231,6 +231,9 @@ procedure OpenProject(aMenuItem: TIDEMenuItem);
 function CompleteLoadingProjectInfo: TModalResult;
 procedure CloseAll;
 procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook; CloseOnRightSideOnly: Boolean = False);
+function UpdateAppTitleInSource: Boolean;
+function UpdateAppScaledInSource: Boolean;
+function UpdateAppAutoCreateForms: boolean;
 // designer
 function DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
 function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
@@ -4309,6 +4312,115 @@ begin
   end;
 end;
 
+function UpdateAppTitleInSource: Boolean;
+var
+  TitleStat, ProjTitle: String;
+begin
+  Result := True;
+  TitleStat := '';
+  CodeToolBoss.GetApplicationTitleStatement(Project1.MainUnitInfo.Source, TitleStat);
+  ProjTitle:=Project1.GetTitle;
+  //DebugLn(['ProjectOptionsAfterWrite: Project title=',ProjTitle,
+  //         ', Default=',Project1.GetDefaultTitle,', Title Statement=',TitleStat]);
+  if pfMainUnitHasTitleStatement in Project1.Flags then
+  begin                            // Add Title statement if not there already.
+    if ((TitleStat = '') or (TitleStat = ProjTitle)) and Project1.TitleIsDefault then
+      Exit;
+    //DebugLn(['ProjectOptionsAfterWrite: Setting Title to ',ProjTitle]);
+    if not CodeToolBoss.SetApplicationTitleStatement(Project1.MainUnitInfo.Source, ProjTitle) then
+    begin
+      IDEMessageDialog(lisProjOptsError,
+        Format(lisUnableToChangeProjectTitleInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
+        mtWarning, [mbOk]);
+      Result := False;
+    end;
+  end
+  else begin                          // Remove Title statement if it is there.
+    if TitleStat <> ProjTitle then
+      Exit;
+    //DebugLn(['ProjectOptionsAfterWrite: Removing Title']);
+    if not CodeToolBoss.RemoveApplicationTitleStatement(Project1.MainUnitInfo.Source) then
+    begin
+      IDEMessageDialog(lisProjOptsError,
+        Format(lisUnableToRemoveProjectTitleFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
+        mtWarning, [mbOk]);
+      Result := False;
+    end;
+  end;
+end;
+
+function UpdateAppScaledInSource: Boolean;
+var
+  ScaledStat, ProjScaled: Boolean;
+begin
+  Result := True;
+  ScaledStat := False;
+  CodeToolBoss.GetApplicationScaledStatement(Project1.MainUnitInfo.Source, ScaledStat);
+  ProjScaled:=Project1.Scaled;
+  //DebugLn(['ProjectOptionsAfterWrite: Project Scaled=',ProjScaled,', Scaled Statement=',ScaledStat]);
+  if pfMainUnitHasScaledStatement in Project1.Flags then
+  begin                           // Add Scaled statement if not there already.
+    if (ScaledStat = ProjScaled) or not ProjScaled then
+      Exit;
+    //DebugLn(['ProjectOptionsAfterWrite: Setting Scaled to ',ProjScaled]);
+    if not CodeToolBoss.SetApplicationScaledStatement(Project1.MainUnitInfo.Source, ProjScaled) then
+    begin
+      IDEMessageDialog(lisProjOptsError,
+        Format(lisUnableToChangeProjectScaledInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
+        mtWarning, [mbOk]);
+      Result := False;
+    end;
+  end
+  else begin                      // Remove Scaled statement if it is there.
+    if ScaledStat <> ProjScaled then
+      Exit;
+    //DebugLn(['ProjectOptionsAfterWrite: Removing Scaled']);
+    if not CodeToolBoss.RemoveApplicationScaledStatement(Project1.MainUnitInfo.Source) then
+    begin
+      IDEMessageDialog(lisProjOptsError,
+        Format(lisUnableToRemoveProjectScaledFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
+        mtWarning, [mbOk]);
+      Result := False;
+    end;
+  end;
+end;
+
+function UpdateAppAutoCreateForms: boolean;
+var
+  i: integer;
+  OldList: TStrings;
+begin
+  Result := True;
+  if not (pfMainUnitHasCreateFormStatements in Project1.Flags) then
+    Exit;
+  OldList := Project1.GetAutoCreatedFormsList;
+  if OldList = nil then
+    Exit;
+  try
+    if OldList.Count = Project1.TmpAutoCreatedForms.Count then
+    begin
+      i := OldList.Count - 1;
+      while (i >= 0)
+      and (CompareText(OldList[i], Project1.TmpAutoCreatedForms[i]) = 0) do
+        Dec(i);
+      if i < 0 then
+        Exit;                  // Just exit if the form list is the same
+    end;
+    if not CodeToolBoss.SetAllCreateFromStatements(Project1.MainUnitInfo.Source,
+      Project1.TmpAutoCreatedForms) then
+    begin
+      IDEMessageDialog(lisProjOptsError,
+        Format(lisProjOptsUnableToChangeTheAutoCreateFormList, [LineEnding]),
+        mtWarning, [mbOK]);
+      Result := False;
+      Exit;
+    end;
+  finally
+    OldList.Free;
+  end;
+end;
+
+///
 function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
   NewOwner: TObject; NewFilename: string;
   var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
