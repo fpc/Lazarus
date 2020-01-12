@@ -1024,6 +1024,7 @@ begin
     lTableLV.setDataSource(lTableLV);
     lTableLV.setDelegate(lTableLV);
     lTableLV.setAllowsColumnReordering(False);
+    lTableLV.setAllowsColumnSelection(False);
     lCocoaLV.callback := lclcb;
 
     ScrollViewSetBorderStyle(lCocoaLV, TCustomListView(AWinControl).BorderStyle);
@@ -1565,7 +1566,7 @@ begin
   case AProp of
   {lvpAutoArrange,}
   lvpCheckboxes: lTableLV.lclSetFirstColumCheckboxes(AIsSet);
-  lvpColumnClick: lTableLV.setAllowsColumnSelection(AIsSet);
+ // lvpColumnClick: lTableLV.setAllowsColumnSelection(AIsSet);
 {  lvpFlatScrollBars,
   lvpFullDrag,}
   lvpGridLines: lTableLV.setGridStyleMask(GridStyle[AIsSet]);
