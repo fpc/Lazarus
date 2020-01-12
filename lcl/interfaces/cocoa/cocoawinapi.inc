@@ -1300,7 +1300,7 @@ begin
       Result := SizeOf(TLogFont);
       FillChar(ALogFont^, SizeOf(ALogFont^), 0);
       ALogFont^.lfFaceName := AFont.Name;
-      ALogFont^.lfHeight := -AFont.Size;
+      ALogFont^.lfHeight := -AFont.Size; // Cocoa supports only full height (with leading) that corresponds with a negative value in WinAPI
       Traits := NSFontManager.sharedFontManager.traitsOfFont(AFont.Font);
       if (Traits and NSFontBoldTrait) <> 0 then
         ALogFont^.lfWeight := FW_BOLD

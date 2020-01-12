@@ -646,7 +646,7 @@ begin
     if ALogFont.lfHeight = 0 then
       FSize := Round(NSFont.systemFontSize)
     else
-      FSize := Abs(ALogFont.lfHeight);
+      FSize := Abs(ALogFont.lfHeight); // To-Do: emulate WinAPI difference between negative and absolute height values
 
     // create font attributes
     Win32Weight := ALogFont.lfWeight;
