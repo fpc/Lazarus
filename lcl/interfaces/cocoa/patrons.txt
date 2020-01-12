@@ -2,7 +2,6 @@ The following people have been providing a financial support for Cocoa developme
 
 Active (in alphabetical order):
  Alexey Torgashin
- Andrew Fox
  Christopher Rorden
  Dan Star
  Daniele Ponteggia
@@ -12,9 +11,14 @@ Active (in alphabetical order):
  Jonas Maebe
  Marc Hanisch
  Marcus Fernstrom
+ Max Terentiev
  Siegfried Rohdewald
+ Sergey
+ Siegfried Rohdewald
+ Tobias Giesen
  Trevor Roydhouse
 
 Former:
  Andrea Mauri
  Mike Margerum
+ Andrew Fox

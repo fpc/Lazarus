@@ -137,6 +137,9 @@ type
 
 implementation
 
+uses
+  CocoaInt;
+
 // API irony.
 // In LCL the base dialog is TOpenDialog (savedialog inherits from it)
 // In Cocoa the base dialog is SaveDialog (opendialog inherites from it)
@@ -545,6 +548,7 @@ var
   accessoryView: NSView;
   lRect: NSRect;
   okButton, cancelButton: NSButton;
+  fn : NSFont;
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFontDialog.ShowModal for ' + ACommonDialog.Name);
@@ -554,7 +558,15 @@ begin
 
   fontPanel := NSFontPanel.sharedFontPanel();
   inFont := TCocoaFont(FontDialog.Font.Handle);
-  fontPanel.setPanelFont_isMultiple(inFont.Font, False);
+  fn := inFont.Font;
+  if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then
+  begin
+    if (FontDialog.Font.Size<>0) then // assign font size directly to avoid rounding errors
+      fn := NSFont.fontWithDescriptor_size(fn.fontDescriptor, Abs(FontDialog.Font.Size)) // ToDo: emulate negative Size values from WinAPI
+    else // fallback for default font size: round the result because currently the LCL doesn't support floating-point sizes, so there is no reason to show them to the user
+      fn := NSFont.fontWithDescriptor_size(fn.fontDescriptor, Round(fn.pointSize * 72 / FontDialog.Font.PixelsPerInch));
+  end;
+  fontPanel.setPanelFont_isMultiple(fn, False);
 
   FontDelegate := TFontPanelDelegate.alloc.init();
   FontDelegate.FontPanel := FontPanel;
@@ -654,6 +666,8 @@ begin
   oldFont := oldHandle.Font;
   //oldFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
   newFont := FontPanel.panelConvertFont(oldFont);
+  if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then
+    newFont := NSFont.fontWithDescriptor_size(newFont.fontDescriptor, newFont.pointSize * FontDialog.Font.PixelsPerInch / 72);
   newHandle := TCocoaFont.Create(newFont);
   FontDialog.Font.Handle := HFONT(newHandle);
 end;

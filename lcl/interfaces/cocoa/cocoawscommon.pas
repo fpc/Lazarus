@@ -160,6 +160,7 @@ function EmbedInManualScrollHost(AView: TCocoaManualScrollView): TCocoaManualScr
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
 
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
+procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
 
 function ButtonStateToShiftState(BtnState: PtrUInt): TShiftState;
 function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
@@ -216,6 +217,17 @@ const
 begin
   if not Assigned(sv) then Exit;
   sv.setBorderType( NSBorderStyle[astyle] );
+end;
+
+procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
+const
+  NSFocusRing : array [TBorderStyle] of NSBorderType = (
+    NSFocusRingTypeNone,   // bsNone
+    NSFocusRingTypeDefault // bsSingle  s
+  );
+begin
+  if Assigned(v) and CocoaHideFocusNoBorder then
+    v.setFocusRingType( NSFocusRing[astyle] );
 end;
 
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean): TCocoaScrollView;

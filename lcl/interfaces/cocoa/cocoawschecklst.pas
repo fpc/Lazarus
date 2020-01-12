@@ -244,6 +244,7 @@ begin
   scroll.setAutohidesScrollers(true);
 
   ScrollViewSetBorderStyle(scroll, TCustomCheckListBox(AWinControl).BorderStyle);
+  UpdateFocusRing(list, TCustomCheckListBox(AWinControl).BorderStyle);
 
   Result := TLCLIntfHandle(scroll);
 end;
