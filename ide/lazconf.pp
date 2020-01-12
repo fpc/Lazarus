@@ -327,6 +327,8 @@ begin
     Result:='.exe'
   else if SameText(TargetOS, 'browser') or SameText(TargetOS,'nodejs') then
     Result:='.js'
+  else if SameText(TargetOS, 'embedded') then
+      Result:='.elf'
   else
     Result:='';
 end;
