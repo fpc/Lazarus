@@ -18,7 +18,7 @@ unit LazHelpHTML;
 interface
 
 uses
-  {$IFDEF Windows}Windows, ShellApi,{$ENDIF}
+  {$IFDEF MSWindows}Windows, ShellApi,{$ENDIF} // needed for ShellExecute, not good for WinCE, issue #36558
   Classes, SysUtils,
   // LazUtils
   LazFileUtils, UTF8Process, LazUTF8, LazConfigStorage,
@@ -383,7 +383,7 @@ begin
   {$ENDIF}
 
   // run
-  {$IFDEF Windows}
+  {$IFDEF MSWindows}     // not good for WinCE! Issue #36558.
   // Special handling for Microsoft Edge in Win10, issue #35659
   if IsShellStr then begin
     if ShellExecute(0,'open',PChar(Executable),PChar(ParamsStr),'',SW_SHOWNORMAL)<=32 then
