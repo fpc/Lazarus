@@ -1939,6 +1939,10 @@ begin
   scr.minInt:=TCustomScrollBar(AWinControl).Min;
   scr.maxInt:=TCustomScrollBar(AWinControl).Max;
   scr.pageInt:=TCustomScrollBar(AWinControl).PageSize;
+  scr.largeInc:=abs(TCustomScrollBar(AWinControl).LargeChange);
+  scr.smallInc:=abs(TCustomScrollBar(AWinControl).SmallChange);
+  if scr.largeInc=0 then scr.largeInc:=1;
+  if scr.smallInc=0 then scr.smallInc:=1;
 
   Result:=TLCLIntfHandle(scr);
 

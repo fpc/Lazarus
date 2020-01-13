@@ -105,6 +105,8 @@ type
     maxInt  : Integer;
     pageInt : Integer;
     suppressLCLMouse: Boolean;
+    largeInc: Integer;
+    smallInc: Integer;
 
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
@@ -127,7 +129,6 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
-
   end;
 
   { TCocoaManualScrollHost }
@@ -175,19 +176,26 @@ end;
 
 function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 var
-  adj : Integer;
+  adj : integer;
   sz  : Integer;
   dlt : double;
   v   : double;
 begin
-  Result := isIncDecPagePart(prt);
-  if not Result then Exit;
+  Result := false;
+  case prt of
+    NSScrollerDecrementPage: adj := -sc.largeInc;
+    NSScrollerIncrementPage: adj := sc.largeInc;
+    NSScrollerDecrementLine: adj := -sc.smallInc;
+    NSScrollerIncrementLine: adj := sc.smallInc;
+  else
+    adj := 0;
+  end;
+  if adj = 0 then Exit;
+
   sz := sc.maxInt - sc.minInt - sc.pageInt;
   if sz = 0 then Exit; // do nothing!
 
-  if sc.pageInt = 0 then dlt := 1 / sz
-  else dlt := sc.pageInt / sz;
-  if prt = NSScrollerDecrementPage then dlt := -dlt;
+  dlt := adj / sz;
 
   v := sc.doubleValue;
   v := v + dlt;
