@@ -226,7 +226,7 @@ begin
 
   if (FDBGInfo = nil) or (FExpression = '') then exit;
 
-  if (FDBGInfo.Kind in [skClass, skRecord]) then begin
+  if (FDBGInfo.Kind in [skClass, skRecord, skObject]) then begin
     i := FGridData.Row;
     if (i < 1) or (i >= FGridData.RowCount) then exit;
     s := FGridData.Cells[1, i];
