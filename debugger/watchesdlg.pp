@@ -499,7 +499,8 @@ end;
 procedure TWatchesDlg.ContextChanged(Sender: TObject);
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
-  UpdateAll;
+  if (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause]) then
+    UpdateAll;
 end;
 
 procedure TWatchesDlg.actEnableSelectedExecute(Sender: TObject);
