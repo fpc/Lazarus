@@ -849,16 +849,16 @@ begin
   FontName := LogFont.lfFaceName;
 
   TempLogFont := LogFont;
-  if SameText(FontName, DefFontData.Name) then
+  if IsFontNameDefault(FontName) then
   begin
     TempLogFontW.lfFaceName := UTF8ToUTF16(FMetrics.lfMessageFont.lfFaceName); // FMetrics must be UTF16
-    if TempLogFont.lfHeight = 0 then
-      TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
   end
   else
   begin
     TempLogFontW.lfFaceName := UTF8ToUTF16(FontName);
   end;
+  if TempLogFont.lfHeight = 0 then
+    TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
   Result := Windows.CreateFontIndirectW(@TempLogFontW);
 end;
 
