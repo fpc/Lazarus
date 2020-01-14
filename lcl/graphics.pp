@@ -1972,8 +1972,6 @@ function CreateCompatibleBitmaps(const ARawImage: TRawImage; out ABitmap, AMask:
 function CreateBitmapFromFPImage(Img: TFPCustomImage): TBitmap;
 function AllocPatternBitmap(colorBG, colorFG: TColor): TBitmap;
 
-// Font
-function IsFontNameDefault(const AName: string): boolean; inline;
 
 var
   { Stores information about the current screen
@@ -2031,11 +2029,6 @@ uses
 var
   GraphicsUpdateCount: Integer = 0;
   UpdateLock: TCriticalSection;
-
-function IsFontNameDefault(const AName: string): boolean;
-begin
-  Result := CompareText(AName, DefFontData.Name) = 0;
-end;
 
 procedure UpdateHandleObjects;
 begin
