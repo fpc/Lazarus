@@ -1114,16 +1114,25 @@ var
   AImageList: TCustomImageList;
   FreeImageList: Boolean;
   AImageIndex, AImagesWidth: Integer;
+  ATransparentColor: TColor;
   APPI: longint;
 begin
   AMenuItem.GetImageList(AImageList, AImagesWidth);
   if (AImageList = nil) or (AMenuItem.ImageIndex < 0) then // using icon from Bitmap
   begin
+    if not (Assigned(AMenuItem.Bitmap) and (AMenuItem.Bitmap.Height>0)) then
+      Exit;
     AImageList := TImageList.Create(nil);
-    AImageList.Width := AMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
+    AImageList.Width := AMenuItem.Bitmap.Width;
     AImageList.Height := AMenuItem.Bitmap.Height;
-    if not AMenuItem.Bitmap.Transparent then
-      AImageIndex := AImageList.AddMasked(AMenuItem.Bitmap, AMenuItem.Bitmap.Canvas.Pixels[0, AImageList.Height-1])
+    if AMenuItem.Bitmap.Transparent then
+    begin
+      case AMenuItem.Bitmap.TransparentMode of
+        tmAuto:  ATransparentColor := AMenuItem.Bitmap.Canvas.Pixels[0, AImageList.Height-1];
+        tmFixed: ATransparentColor := AMenuItem.Bitmap.TransparentColor;
+      end;
+      AImageIndex := AImageList.AddMasked(AMenuItem.Bitmap, ATransparentColor);
+    end
     else
       AImageIndex := AImageList.Add(AMenuItem.Bitmap, nil);
     FreeImageList := True;
