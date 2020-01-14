@@ -28,6 +28,7 @@ type
     DefaultIconButton: TBitBtn;
     LongPathCheckBox: TCheckBox;
     DarwinDividerBevel: TDividerBevel;
+    AnsiUTF8CheckBox: TCheckBox;
     NameEdit: TEdit;
     DescriptionEdit: TEdit;
     NameLabel: TLabel;
@@ -198,6 +199,7 @@ begin
   ExecutionLevelComboBox.Enabled := aEnable;
   UIAccessCheckBox.Enabled := aEnable;
   LongPathCheckBox.Enabled := aEnable;
+  AnsiUTF8CheckBox.Enabled := aEnable;
   NameEdit.Enabled := aEnable;
   DescriptionEdit.Enabled := aEnable;
 end;
@@ -267,6 +269,7 @@ begin
     DpiAwareComboBox.Items.Add(DpiLevelNames[DpiLevel] + ' (' + ManifestDpiAwareValues[DpiLevel] + ')');
   UIAccessCheckBox.Caption := dlgPOUIAccess;
   LongPathCheckBox.Caption := dlgPOLongPathAware;
+  AnsiUTF8CheckBox.Caption := dlgPOAnsiUTF8;
   NameLabel.Caption := lisName;
   DescriptionLabel.Caption := lisCodeHelpDescrTag;
 
@@ -312,6 +315,7 @@ begin
       ExecutionLevelComboBox.ItemIndex := Ord(ExecutionLevel);
       UIAccessCheckBox.Checked := UIAccess;
       LongPathCheckBox.Checked := LongPathAware;
+      AnsiUTF8CheckBox.Checked := AnsiUTF8;
       NameEdit.Text := TextName;
       DescriptionEdit.Text := TextDesc;
     end;
@@ -352,6 +356,7 @@ begin
       ExecutionLevel := TXPManifestExecutionLevel(ExecutionLevelComboBox.ItemIndex);
       UIAccess := UIAccessCheckBox.Checked;
       LongPathAware := LongPathCheckBox.Checked;
+      AnsiUTF8 := AnsiUTF8CheckBox.Checked;
       TextName := NameEdit.Text;
       TextDesc := DescriptionEdit.Text;
     end;
