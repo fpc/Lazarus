@@ -67,7 +67,6 @@ type
     fhscroll : NSScroller;
     fvscroll : NSScroller;
   public
-    isHosted: Boolean;
     callback: ICommonCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -93,17 +92,6 @@ type
     function allocVerticalScroller(avisible: Boolean): NSScroller; message 'allocVerticalScroller:';
     // mouse
     function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
-    procedure mouseDown(event: NSEvent); override;
-    procedure mouseUp(event: NSEvent); override;
-    procedure rightMouseDown(event: NSEvent); override;
-    procedure rightMouseUp(event: NSEvent); override;
-    procedure rightMouseDragged(event: NSEvent); override;
-    procedure otherMouseDown(event: NSEvent); override;
-    procedure otherMouseUp(event: NSEvent); override;
-    procedure otherMouseDragged(event: NSEvent); override;
-    procedure mouseDragged(event: NSEvent); override;
-    procedure mouseMoved(event: NSEvent); override;
-    procedure scrollWheel(event: NSEvent); override;
   end;
 
   { TCocoaScrollBar }
@@ -117,6 +105,8 @@ type
     maxInt  : Integer;
     pageInt : Integer;
     suppressLCLMouse: Boolean;
+    largeInc: Integer;
+    smallInc: Integer;
 
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
@@ -139,15 +129,14 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
-
   end;
 
   { TCocoaManualScrollHost }
 
   TCocoaManualScrollHost = objcclass(TCocoaScrollView)
-    procedure setDocumentView(aview: NSView); override;
     function lclContentView: NSView; override;
     function lclClientFrame: TRect; override;
+    procedure scrollWheel(theEvent: NSEvent); override;
   end;
 
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
@@ -187,19 +176,26 @@ end;
 
 function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 var
-  adj : Integer;
+  adj : integer;
   sz  : Integer;
   dlt : double;
   v   : double;
 begin
-  Result := isIncDecPagePart(prt);
-  if not Result then Exit;
+  Result := false;
+  case prt of
+    NSScrollerDecrementPage: adj := -sc.largeInc;
+    NSScrollerIncrementPage: adj := sc.largeInc;
+    NSScrollerDecrementLine: adj := -sc.smallInc;
+    NSScrollerIncrementLine: adj := sc.smallInc;
+  else
+    adj := 0;
+  end;
+  if adj = 0 then Exit;
+
   sz := sc.maxInt - sc.minInt - sc.pageInt;
   if sz = 0 then Exit; // do nothing!
 
-  if sc.pageInt = 0 then dlt := 1 / sz
-  else dlt := sc.pageInt / sz;
-  if prt = NSScrollerDecrementPage then dlt := -dlt;
+  dlt := adj / sz;
 
   v := sc.doubleValue;
   v := v + dlt;
@@ -292,13 +288,6 @@ end;
 
 { TCocoaManualScrollHost }
 
-procedure TCocoaManualScrollHost.setDocumentView(aview: NSView);
-begin
-  inherited setDocumentView(aview);
-  if Assigned(aview) and (aview.isKindOfClass(TCocoaManualScrollView)) then
-    TCocoaManualScrollView(aview).isHosted := true;
-end;
-
 function TCocoaManualScrollHost.lclContentView: NSView;
 begin
   if Assigned(documentView) then
@@ -314,6 +303,16 @@ begin
     Result:=documentView.lclClientFrame;
   end
   else Result:=inherited lclClientFrame;
+end;
+
+procedure TCocoaManualScrollHost.scrollWheel(theEvent: NSEvent);
+var
+  nr : NSResponder;
+begin
+  nr := nextResponder;
+  // do not call inherited scrollWheel, it suppresses the scroll event
+  if Assigned(nr) then nr.scrollWheel(theEvent)
+  else inherited scrollWheel(theEvent);
 end;
 
 { TCocoaManualScrollView }
@@ -623,83 +622,6 @@ begin
   end;
 end;
 
-procedure TCocoaManualScrollView.mouseDown(event: NSEvent);
-begin
-  if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-  begin
-    inherited mouseDown(event);
-  end;
-end;
-
-procedure TCocoaManualScrollView.mouseUp(event: NSEvent);
-begin
-  if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseUp(event);
-end;
-
-procedure TCocoaManualScrollView.rightMouseDown(event: NSEvent);
-begin
-  if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
-end;
-
-procedure TCocoaManualScrollView.rightMouseUp(event: NSEvent);
-begin
-  if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
-end;
-
-procedure TCocoaManualScrollView.rightMouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDragged(event);
-end;
-
-procedure TCocoaManualScrollView.otherMouseDown(event: NSEvent);
-begin
-  if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
-end;
-
-procedure TCocoaManualScrollView.otherMouseUp(event: NSEvent);
-begin
-  if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
-end;
-
-procedure TCocoaManualScrollView.otherMouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited otherMouseDragged(event);
-end;
-
-procedure TCocoaManualScrollView.mouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
-end;
-
-procedure TCocoaManualScrollView.mouseMoved(event: NSEvent);
-begin
-  if isMouseEventInScrollBar(self, event) then
-  begin
-    inherited mouseMoved(event)
-  end
-  else if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseMoved(event);
-end;
-
-procedure TCocoaManualScrollView.scrollWheel(event: NSEvent);
-begin
-  // when hosted, the processing of scrollWheel is duplciated
-  if not isHosted then
-  begin
-    if isMouseEventInScrollBar(self, event) or not Assigned(callback) or not callback.scrollWheel(event) then
-      inherited scrollWheel(event);
-  end;
-end;
-
-
 { TCocoaScrollView }
 
 function TCocoaScrollView.lclClientFrame: TRect;
@@ -736,6 +658,10 @@ begin
   if holdscroll>0 then Exit;
   inc(holdscroll);
   try
+    // update scrollers (this is required, if scrollWheel was called)
+    // so processing LM_xSCROLL will not cause any actually scrolling,
+    // as the current position will match!
+    self.reflectScrolledClipView(contentView);
     if (dx<>0) and assigned(callback) then
       callback.scroll(false, round(nw.origin.x));
 
