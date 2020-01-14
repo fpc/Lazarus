@@ -4420,7 +4420,6 @@ begin
   end;
 end;
 
-///
 function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
   NewOwner: TObject; NewFilename: string;
   var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;

@@ -220,8 +220,7 @@ type
     function getPixel(x, y: Integer): TColor;
     procedure drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
-    procedure drawText(x: Integer; y: Integer; const s: String); overload;
-    procedure drawText(x,y,w,h,flags: Integer; const s: String); overload;
+    procedure drawText(x, y: Integer; AText: PChar; ALen: Integer);
     procedure drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
     procedure drawSurface(targetRect: PRect; Surface: Pcairo_surface_t; sourceRect: PRect;
       mask: PGdkPixBuf; maskRect: PRect);
@@ -1268,7 +1267,7 @@ begin
   RoundRect(x, y, w, h, rx, ry);
 end;
 
-procedure TGtk3DeviceContext.drawText(x: Integer; y: Integer; const s: String);
+procedure TGtk3DeviceContext.drawText(x, y: Integer; AText: PChar; ALen: Integer);
 var
   e: cairo_font_extents_t;
   R: Double;
@@ -1292,37 +1291,8 @@ begin
     ColorToCairoRGB(TColor(CurrentTextColor), R, G , B);
     cairo_set_source_rgb(Widget, R, G, B);
     // writeln('DRAWINGTEXT ',S,' WITH R=',dbgs(R),' G=',dbgs(G),' B=',dbgs(B));
-    FCurrentFont.Layout^.set_text(PChar(S), length(S));
+    FCurrentFont.Layout^.set_text(AText, ALen);
     // writeln('Family: ',FCurrentFont.Handle^.get_family,' size ',FCurrentFont.Handle^.get_size,' weight ',FCurrentFont.Handle^.get_weight);
-    pango_cairo_show_layout(Widget, FCurrentFont.Layout);
-  finally
-    cairo_restore(Widget);
-  end;
-end;
-
-procedure TGtk3DeviceContext.drawText(x, y, w, h, flags: Integer; const s: String
-  );
-var
-  e: cairo_font_extents_t;
-  R: Double;
-  G: Double;
-  B: Double;
-  // dx, dy: Double;
-begin
-  cairo_save(Widget);
-  try
-    // TranslateCairoToDevice;
-    // cairo_surface_get_device_offset(CairoSurface, @dx, @dy);
-    cairo_font_extents(Widget, @e);
-    if e.ascent <> 0 then
-    begin
-      // writeln('2.EXTENTS !!!! ',Format('%2.2n',[e.ascent]));
-    end;
-    cairo_move_to(Widget, x, y + e.ascent);
-    ColorToCairoRGB(CurrentTextColor, R, G , B);
-    cairo_set_source_rgb(Widget, R, G, B);
-    // cairo_show_text(Widget, PChar(s));
-    FCurrentFont.Layout^.set_text(PChar(S), length(S));
     pango_cairo_show_layout(Widget, FCurrentFont.Layout);
   finally
     cairo_restore(Widget);

@@ -1560,7 +1560,7 @@ begin
   if IsValidDC(DC) then
   begin
     Result := True;
-    TGtk3DeviceContext(DC).drawText(X, Y , Str);
+    TGtk3DeviceContext(DC).drawText(X, Y, Str, Count);
   end;
 end;
 
@@ -4098,23 +4098,18 @@ begin
   Result:=inherited SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
 end;
 
-function TGtk3WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: Pchar;
-  Count: Integer): Boolean;
-var
-  S: String;
+function TGtk3WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
 begin
-  // Result:=inherited TextOut(DC, X, Y, Str, Count);
   {$IFDEF VerboseGtk3DeviceContext}
-  DebugLn('TGtk3WidgetSet.TextOut x=',dbgs(x),' y=',dbgs(y),' Text ',dbgs(Str),' count ',dbgs(Count));
+  DebugLn('TGtk3WidgetSet.TextOut X=',dbgs(x),' Y=',dbgs(y),' Text=',dbgs(Str),' Count=',dbgs(Count));
   {$ENDIF}
   Result := False;
+  if Count <= 0 then
+    Exit;
   if IsValidDC(DC) then
   begin
     Result := True;
-    S := StrPas(Str);
-    if Count > 0 then
-      S := UTF8Copy(S, 1, Count);
-    TGtk3DeviceContext(DC).drawText(X, Y , S);
+    TGtk3DeviceContext(DC).drawText(X, Y, Str, Count);
   end;
 end;
 
