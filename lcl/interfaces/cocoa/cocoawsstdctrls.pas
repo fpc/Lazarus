@@ -329,7 +329,8 @@ procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
 procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
 procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
-procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState);
+procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
+  SkipChangeEvent: Boolean = true);
 
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
 
@@ -448,10 +449,13 @@ begin
     end;
 end;
 
-procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState);
+procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
+  SkipChangeEvent: Boolean = true);
 const
   buttonState: array [TcheckBoxState] of NSInteger =
     (NSOffState, NSOnState, NSMixedState);
+var
+  cb : IButtonCallback;
 begin
   if NewState = cbGrayed then
     {$ifdef BOOLFIX}
@@ -459,7 +463,18 @@ begin
     {$else}
     btn.setAllowsMixedState(true);
     {$endif}
-  btn.setState(buttonState[NewState]);
+  if SkipChangeEvent and (btn.isKindOfClass(TCocoaButton)) then
+  begin
+    //todo: This place needs a cleanup!
+    //      Assigning state, while having callback removed
+    //      TCocoaButton.setState is causing OnChange event, if callback is not nil
+    cb := TCocoaButton(btn).callback;
+    TCocoaButton(btn).callback := nil;
+    btn.setState(buttonState[NewState]);
+    TCocoaButton(btn).callback := cb;
+  end
+  else
+    btn.setState(buttonState[NewState]);
 end;
 
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
@@ -801,13 +816,6 @@ begin
     NSButton(btn).setAllowsMixedState(true);
     {$endif}
     ;
-  //todo: This place needs a cleanup!
-  //      Assigning state, while having callback removed
-  //      TCocoaButton.setState is causing OnChange event, if callback is not nil
-  cb := btn.callback;
-  btn.callback := nil;
-  ButtonSetState(btn, TCustomCheckBox(AWinControl).State);
-  btn.callback := cb;
   Result := TLCLIntfHandle(btn);
 end;
 
@@ -845,7 +853,7 @@ const
   buttonState: array [TcheckBoxState] of NSInteger = (NSOffState, NSOnState, NSMixedState);
 begin
   if not ACustomCheckBox.HandleAllocated then Exit;
-  ButtonSetState(NSButton(ACustomCheckBox.Handle), ACustomCheckBox.State);
+  ButtonSetState(NSButton(ACustomCheckBox.Handle), NewState);
 end;
 
 class procedure TCocoaWSCustomCheckBox.GetPreferredSize(
@@ -889,15 +897,9 @@ class function TCocoaWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   btn: TCocoaButton;
-  cb: IButtonCallback;
 begin
   btn := AllocButton(AWinControl, TLCLRadioButtonCallback, AParams, 0, NSRadioButton);
   Result := TLCLIntfHandle(btn);
-  //todo: this needs to be improved!
-  cb := btn.callback;
-  btn.callback := nil;
-  ButtonSetState(btn, TCustomCheckBox(AWinControl).State);
-  btn.callback := cb;
 end;
 
 class procedure TCocoaWSRadioButton.SetState(
