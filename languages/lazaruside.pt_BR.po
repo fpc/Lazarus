@@ -3267,6 +3267,10 @@ msgstr "Cursor texto visível em editor fora de foco"
 msgid "Caret in unfocused editor does not blink"
 msgstr "Cursor texto em editor fora de foco não pisca"
 
+#: lazarusidestrconsts.dlgpoansiutf8
+msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
 msgstr "Aplicação"

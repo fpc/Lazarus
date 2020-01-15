@@ -3386,6 +3386,10 @@ msgstr "Cursor Persistente"
 msgid "Caret in unfocused editor does not blink"
 msgstr "Simbolo de intercalación en editor sin foco no parpadea"
 
+#: lazarusidestrconsts.dlgpoansiutf8
+msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
 msgstr "Aplicación"
