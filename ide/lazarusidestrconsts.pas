@@ -2715,7 +2715,7 @@ resourcestring
   dlgPODpiAwarenessOldOnNewPerMonitorV2 = 'Vista-8: on, 8.1/10+: per monitor/V2';
   dlgPOUIAccess = 'UI Access (uiAccess)';
   dlgPOLongPathAware = 'Long path awareness';
-  dlgPOAnsiUTF8  = 'Ansi codepage is UTF8 (Windows 10 1903+)';
+  dlgPOAnsiUTF8  = 'ANSI codepage is UTF-8 (Windows 10 1903+)';
   dlgPOAsInvoker = 'as invoker (asInvoker)';
   dlgPOHighestAvailable = 'highest available (highestAvailable)';
   dlgPORequireAdministrator = 'require administrator (requireAdministrator)';
