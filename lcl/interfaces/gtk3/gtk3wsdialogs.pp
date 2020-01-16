@@ -1416,7 +1416,7 @@ var
 begin
   (*
   Color := TColor(ColorToRGB(Color));
-  SelectionColor := TColortoTGDKColor(Color);
+  SelectionColor := TColorToTGDKColor(Color);
   colorSel := PGtkColorSelection(ColorSelection^.colorsel);
   gtk_color_selection_set_current_color(colorSel, @SelectionColor);
   gtk_color_selection_set_previous_color(colorSel, @SelectionColor);
@@ -1443,7 +1443,7 @@ var
     for i := 0 to Palette.Count - 1 do
       if ExtractColorIndexAndColor(Palette, i, AIndex, AColor) then
         if AIndex < colors_len then
-          colors[AIndex] := TColortoTGDKColor(AColor);
+          colors[AIndex] := TColorToTGDKColor(AColor);
   end;
   *)
 begin

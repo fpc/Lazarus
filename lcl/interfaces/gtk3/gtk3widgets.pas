@@ -3021,7 +3021,7 @@ begin
     StyleContext^.get_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
 
     // writeln('ACOLOR R=',AColor.Red,' G=',AColor.green,' B=',AColor.blue);
-    // AColor := TColortoTGDKColor(AValue);
+    // AColor := TColorToTGDKColor(AValue);
     {AGdkRGBA.alpha := 0;
     AGdkRGBA.red := AColor.red / 65535.00;
     AGdkRGBA.blue := AColor.blue / 65535.00;
@@ -3033,7 +3033,7 @@ begin
     FWidget^.override_background_color(GTK_STATE_FLAG_SELECTED, @AGdkRGBA);
   end else
   begin
-    AColor := TColortoTGDKColor(AValue);
+    AColor := TColorToTGDKColor(AValue);
     // writeln('ACOLOR R=',AColor.Red,' G=',AColor.green,' B=',AColor.blue);
     //inherited SetColor(AValue);
   end;

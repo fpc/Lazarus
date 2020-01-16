@@ -279,7 +279,7 @@ function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TPoint;
 function Gtk3ScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 
 function TGDKColorToTColor(const value : TGDKColor) : TColor;
-function TColortoTGDKColor(const value : TColor) : TGDKColor;
+function TColorToTGDKColor(const value : TColor) : TGDKColor;
 function TGdkRGBAToTColor(const value : TGdkRGBA) : TColor;
 function TColortoTGdkRGBA(const value : TColor; IgnoreAlpha: Boolean = True) : TGdkRGBA;
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
@@ -613,7 +613,7 @@ begin
            + (Value.Red shr 8);
 end;
 
-function TColortoTGDKColor(const value : TColor) : TGDKColor;
+function TColorToTGDKColor(const value : TColor) : TGDKColor;
 begin
   if Value<0 then
   begin
