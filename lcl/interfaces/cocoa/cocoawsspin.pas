@@ -69,6 +69,8 @@ begin
   lSpin.decimalPlaces := -1;
   lSpin.lclCreateSubcontrols(AParams);
   lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
+  if (lSpin.Stepper.isKindOfClass(TCocoaSpinEditStepper)) then
+    TCocoaSpinEditStepper(lSpin.Stepper).callback:=lSpin.callback;
 end;
 
 class procedure TCocoaWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
