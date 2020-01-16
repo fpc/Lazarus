@@ -1591,107 +1591,70 @@ end;
 
 function TGtk3WidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
+const
+  PixelOffset = 0.5;
+  NColorLight = clWindow;
+  NColorDark = clBtnShadow;
 var
-  AStyleWidget: PGtkWidget;
-  c1: TGdkRGBA;
-  c2: TGdkRGBA;
-  AWidth: Integer;
-  i: Integer;
+  Color1, Color2: TGdkRGBA;
   cr: Pcairo_t;
+  i: Integer;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.Frame3D not implemented ...');
-  {$ENDIF}
-  Result := False; // inherited Frame3d(DC, ARect, FrameWidth, Style);
-  // need style widgets. Must implement them first and/or create them on demand
-  // AStyle := gtk_widget_get_default_style;
-  // PGtkWidget(nil)^.get_style^.light;
+  Result := False;
   if not IsValidDC(DC) then
-    exit;
+    Exit;
+  Result := True;
+  if FrameWidth <= 0 then
+    Exit;
+
+  case Style of
+    bvNone:
+      Exit;
+    bvSpace:
+      begin
+        InflateRect(ARect, -FrameWidth, -FrameWidth);
+        Exit;
+      end;
+    bvRaised:
+      begin
+        Color1 := TColorToTGdkRGBA(ColorToRGB(NColorLight));
+        Color2 := TColorToTGdkRGBA(ColorToRGB(NColorDark));
+      end;
+    bvLowered:
+      begin
+        Color1 := TColorToTGdkRGBA(ColorToRGB(NColorDark));
+        Color2 := TColorToTGdkRGBA(ColorToRGB(NColorLight));
+      end;
+  end;
+
   cr := TGtk3DeviceContext(DC).Widget;
-  AStyleWidget := GetStyleWidget(lgsButton);
-  if Gtk3IsWidget(AStyleWidget) then
-  begin
-    AStyleWidget^.get_style_context^.get_background_color(GTK_STATE_NORMAL, @c1);
-    AStyleWidget^.get_style_context^.get_border_color(GTK_STATE_NORMAL, @c2);
-    // writeln('Frame3d style ',Style,' border ',FrameWidth);
-    // DebugLn('Button bg R ',dbgs(c1.red * 255),' G ',dbgs(c1.green * 255),' B ',dbgs(c1.blue * 255),
-    //  ' fg R ',dbgs(c2.red),' G ',dbgs(c2.green),' B ',dbgs(c2.blue));
-    AWidth := FrameWidth;
-    case Style of
-      bvNone:
-        begin
-          InflateRect(ARect, -AWidth, -AWidth);
-          Exit;
-        end;
-      bvLowered:
-        begin
-          // AStyleWidget^.get_style_context^.get_color(GTK_STATE_NORMAL, @c2);
-          AStyleWidget^.get_style_context^.get_background_color(GTK_STATE_NORMAL, @c2);
-          AStyleWidget^.get_style_context^.get_border_color(GTK_STATE_NORMAL, @c1);
-          // AStyleWidget^.get_style_context^.lookup_color('red', @c1);
-          // AStyleWidget^.get_style_context^.get_color(GTK_STATE_NORMAL, @c1);
+  cairo_save(cr);
+  try
+    cairo_set_line_width(cr, 1);
+    cairo_set_line_cap(cr, cairo_line_cap_t.CAIRO_LINE_CAP_ROUND);
+    cairo_set_line_join(cr, cairo_line_join_t.CAIRO_LINE_JOIN_ROUND);
 
-          // gc1 := TheStyle^.dark_gc[GTK_STATE_NORMAL];
-          // gc2 := TheStyle^.light_gc[GTK_STATE_NORMAL];
-        end;
-      bvRaised:
-        begin
-          // AStyleWidget^.get_style_context^.get_color(GTK_STATE_NORMAL, @c1);
-          AStyleWidget^.get_style_context^.get_background_color(GTK_STATE_NORMAL, @c1);
-          AStyleWidget^.get_style_context^.get_border_color(GTK_STATE_NORMAL, @c2);
-          // AStyleWidget^.get_style_context^.lookup_color('red', @c2);
-          // AStyleWidget^.get_style_context^.get_color(GTK_STATE_NORMAL, @c2);
-          // gc1 := TheStyle^.light_gc[GTK_STATE_NORMAL];
-          // gc2 := TheStyle^.dark_gc[GTK_STATE_NORMAL];
-        end;
-      bvSpace:
-        begin
-          InflateRect(ARect, -AWidth, -AWidth);
-          Exit;
-        end;
-    end;
-
-    cairo_save(cr);
-    for i := 1 to AWidth do
+    for i := 1 to FrameWidth do
     begin
-      cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-      cairo_set_line_width(cr, 1);
-      cairo_set_line_cap(cr, cairo_line_cap_t.CAIRO_LINE_CAP_ROUND);
-      cairo_set_line_join(cr, cairo_line_join_t.CAIRO_LINE_JOIN_ROUND);
-      cairo_set_source_rgb(cr, c1.red, c1.green, c1.blue);
-      cairo_move_to(cr,ARect.Left, ARect.Top);
-      cairo_line_to(cr,ARect.Right {- 2}, ARect.Top);
-      cairo_move_to(cr,ARect.Left, ARect.Top);
-      cairo_line_to(cr,ARect.Left, ARect.Bottom {- 2});
+      cairo_set_source_rgb(cr, Color1.red, Color1.green, Color1.blue);
+      cairo_move_to(cr, ARect.Left+PixelOffset, ARect.Top+PixelOffset);
+      cairo_line_to(cr, ARect.Right+PixelOffset-1, ARect.Top+PixelOffset);
+      cairo_move_to(cr, ARect.Left+PixelOffset, ARect.Top+PixelOffset);
+      cairo_line_to(cr, ARect.Left+PixelOffset, ARect.Bottom+PixelOffset-1);
       cairo_stroke(cr);
-      cairo_set_source_rgb(cr, c2.red, c2.green, c2.blue);
-      cairo_move_to(cr,ARect.Left, ARect.Bottom {- 1});
-      cairo_line_to(cr,ARect.Right {- 1}, ARect.Bottom {- 1});
-      cairo_move_to(cr,ARect.Right {- 1}, ARect.Top);
-      cairo_line_to(cr,ARect.Right {- 1}, ARect.Bottom {- 1});
-      cairo_stroke(cr);
-      (*
-      gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
-        ARect.Right + Offset.x - 2, ARect.Top + Offset.y);
-      gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
-        ARect.Left + Offset.x, ARect.Bottom + Offset.y - 2);
 
-      gdk_draw_line(Drawable, gc2, ARect.Left + Offset.x, ARect.Bottom + Offset.y - 1,
-        ARect.Right + Offset.x - 1, ARect.Bottom + Offset.y - 1);
-      gdk_draw_line(Drawable, gc2, ARect.Right + Offset.x - 1, ARect.Top + Offset.y,
-        ARect.Right + Offset.x - 1, ARect.Bottom + Offset.y - 1);
-        *)
-      // inflate the rectangle (! ARect will be returned to the user with this)
+      cairo_set_source_rgb(cr, Color2.red, Color2.green, Color2.blue);
+      cairo_move_to(cr, ARect.Left+PixelOffset, ARect.Bottom+PixelOffset-1);
+      cairo_line_to(cr, ARect.Right+PixelOffset-1, ARect.Bottom+PixelOffset-1);
+      cairo_move_to(cr, ARect.Right+PixelOffset-1, ARect.Top+PixelOffset);
+      cairo_line_to(cr, ARect.Right+PixelOffset-1, ARect.Bottom+PixelOffset-1);
+      cairo_stroke(cr);
+
       InflateRect(ARect, -1, -1);
-   end;
-   cairo_restore(cr);
-
-  end else
-    DebugLn('TGtk3WidgetSet.Frame3d failed to get style widget lgsButton');
-
-
-
+    end;
+  finally
+    cairo_restore(cr);
+  end;
 end;
 
 function TGtk3WidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
