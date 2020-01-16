@@ -125,6 +125,7 @@ type
   TGtk3WSCustomPanel = class(TWSCustomPanel)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
   { TGtk3WSPanel }
@@ -174,6 +175,15 @@ begin
   APanel.Text := AWinControl.Caption;
 
   Result := TLCLIntfHandle(APanel);
+end;
+
+class procedure TGtk3WSCustomPanel.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  APanel: TGtk3Panel;
+begin
+  APanel := TGtk3Panel(AWinControl.Handle);
+  APanel.BorderStyle := ABorderStyle;
 end;
 
 { TGtk3WSCustomTrayIcon }

@@ -3075,10 +3075,10 @@ var
   NColor: TColor;
 begin
   inherited DoBeforeLCLPaint;
-  // example how to paint borderstyle/bevels of TPanel before we send event to lcl
-  DC := TGtk3DeviceContext(FContext);
   if not Visible then
     exit;
+
+  DC := TGtk3DeviceContext(FContext);
 
   NColor := LCLObject.Color;
   if (NColor <> clNone) and (NColor <> clDefault) then
@@ -3088,7 +3088,10 @@ begin
   end;
 
   if BorderStyle <> bsNone then
-    DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, LCLObject.Color <> clDefault, True);
+  begin
+    DC.CurrentPen.Color := ColorToRGB(clBtnShadow); // not sure what color to use here?
+    DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, False, True);
+  end;
 end;
 
 function TGtk3Panel.getText: String;
