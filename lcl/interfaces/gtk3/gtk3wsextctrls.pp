@@ -170,8 +170,6 @@ begin
   APanel := TGtk3Panel.Create(AWinControl, AParams);
 
   APanel.BorderStyle := TCustomControl(AWinControl).BorderStyle;
-  APanel.BevelInner := TCustomPanel(AWinControl).BevelInner;
-  APanel.BevelOuter := TCustomPanel(AWinControl).BevelOuter;
   APanel.Text := AWinControl.Caption;
 
   Result := TLCLIntfHandle(APanel);

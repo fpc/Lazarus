@@ -604,8 +604,6 @@ type
 
   TGtk3Panel = class(TGtk3Bin)
   private
-    FBevelInner: TBevelCut;
-    FBevelOuter: TBevelCut;
     FBorderStyle: TBorderStyle;
     FText: String;
   protected
@@ -615,8 +613,6 @@ type
     function getText: String; override;
     procedure setText(const AValue: String); override;
   public
-    property BevelInner: TBevelCut read FBevelInner write FBevelInner;
-    property BevelOuter: TBevelCut read FBevelOuter write FBevelOuter;
     property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle;
   end;
 
@@ -3046,8 +3042,6 @@ var
 begin
   FHasPaint := True;
   FBorderStyle := bsNone;
-  FBevelInner := bvNone;
-  FBevelOuter := bvNone;
   // wtLayout = using GtkLayout
   // FWidgetType := [wtWidget, wtLayout];
   // Result := TGtkLayout.new(nil, nil);
