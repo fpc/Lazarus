@@ -571,6 +571,7 @@ type
     procedure SetColumnMinWidth(AIndex: Integer; AColumn: TListColumn; AMinWidth: Integer);
     procedure SetColumnWidth(AIndex: Integer; AColumn: TListColumn; AWidth: Integer);
     procedure SetColumnVisible(AIndex: Integer; AColumn: TListColumn; AVisible: Boolean);
+    procedure ColumnSetSortIndicator(const AIndex: Integer; const AColumn: TListColumn; const ASortIndicator: TSortIndicator);
 
     procedure ItemDelete(AIndex: Integer);
     procedure ItemInsert(AIndex: Integer; AItem: TListItem);
@@ -5812,6 +5813,27 @@ begin
   if AGtkColumn <> nil then
   begin
     AGtkColumn^.set_visible(AVisible and (TListView(LCLObject).ViewStyle in [vsList, vsReport]));
+  end;
+end;
+
+procedure TGtk3ListView.ColumnSetSortIndicator(const AIndex: Integer;
+  const AColumn: TListColumn; const ASortIndicator: TSortIndicator);
+const
+  GtkOrder : array [ TSortIndicator] of TGtkSortType = (0, {GTK_SORT_ASCENDING}0, {GTK_SORT_DESCENDING}1);
+var
+  AGtkColumn: PGtkTreeViewColumn;
+begin
+  AGtkColumn := PGtkTreeView(getContainerWidget)^.get_column(AIndex);
+
+  if AGtkColumn <> nil then
+  begin
+    if ASortIndicator = siNone then
+      AGtkColumn^.set_sort_indicator(false)
+    else
+    begin
+      AGtkColumn^.set_sort_indicator(true);
+      AgtkColumn^.set_sort_order(GtkOrder[ASortIndicator]);
+    end;
   end;
 end;
 
