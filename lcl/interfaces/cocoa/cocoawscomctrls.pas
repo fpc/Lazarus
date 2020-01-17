@@ -158,6 +158,7 @@ type
     class procedure ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AMinWidth: integer); override;
     class procedure ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AWidth: Integer); override;
     class procedure ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AVisible: Boolean); override;
+    class procedure ColumnSetSortIndicator(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ASortIndicator: TSortIndicator); override;
 
     // Item
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
@@ -1230,6 +1231,29 @@ begin
   {$else}
   lNSColumn.setHidden(not AVisible);
   {$endif}
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetSortIndicator(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const ASortIndicator: TSortIndicator);
+var
+  lTableLV: TCocoaTableListView;
+  lNSColumn: NSTableColumn;
+begin
+  if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
+
+  case ASortIndicator of
+    siNone:
+     lTableLV.setIndicatorImage_inTableColumn(nil, lNSColumn);
+    siAscending:
+      lTableLV.setIndicatorImage_inTableColumn(
+        NSImage.imageNamed(NSSTR('NSAscendingSortIndicator')),
+        lNSColumn);
+    siDescending:
+      lTableLV.setIndicatorImage_inTableColumn(
+        NSImage.imageNamed(NSSTR('NSDescendingSortIndicator')),
+        lNSColumn);
+  end;
 end;
 
 class procedure TCocoaWSCustomListView.ItemDelete(const ALV: TCustomListView;

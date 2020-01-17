@@ -484,6 +484,28 @@ begin
   else ListView_SetColumnWidth(ALV.Handle, AIndex, 0);
 end;
 
+class procedure TWin32WSCustomListView.ColumnSetSortIndicator(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AAndicator: TSortIndicator);
+var
+  Hdr: HWND;
+  Itm: THDITEM;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetSortIndicator')
+  then Exit;
+
+  Hdr := ListView_GetHeader(ALV.Handle);
+  FillChar(itm, sizeof(itm),0);
+  itm.mask := HDI_FORMAT;
+  Header_GetItem(Hdr, AIndex, Itm);
+  case AAndicator of
+    siNone:        itm.fmt := itm.fmt and (not (HDF_SORTDOWN or HDF_SORTUP));
+    siAscending:   itm.fmt := (itm.fmt or HDF_SORTUP) and (not HDF_SORTDOWN);
+    siDescending:  itm.fmt := (itm.fmt or HDF_SORTDOWN) and (not HDF_SORTUP);
+  end;
+  Header_SetItem(Hdr, AIndex, Itm);
+end;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Item code
 ////////////////////////////////////////////////////////////////////////////////

@@ -18600,6 +18600,10 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element><element name="TCustomListView.OnDataHint"><short>Called for owner-data mode.</short>
       </element><element name="TCustomListView.OnDataStateChange"><short>Called for owner-data mode.</short>
       </element>
+    <element name="TListColumn.SortIndicator"><short>Indicator of the sorting order. Serves only the visual purpose, doesn't affect the actual sorting order</short>
+      </element><element name="TCustomListView.AutoSortIndicator"><short>If AutoSort is used on TListView, this property controls, if TListView should also automatically set SortIndicator for the selected sorting column</short><seealso><link id="TListColumn.SortIndicator"/>SortIndicator&lt;/link&gt;
+</seealso>
+      </element>
     </module>
     <!-- ComCtrls -->
   </package>
