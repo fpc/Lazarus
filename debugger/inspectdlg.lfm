@@ -10,21 +10,22 @@ object IDEInspectDlg: TIDEInspectDlg
   Constraints.MinHeight = 200
   Constraints.MinWidth = 200
   KeyPreview = True
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  LCLVersion = '1.3'
+  LCLVersion = '2.1.0.0'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 383
+    Height = 19
+    Top = 387
     Width = 295
     Panels = <>
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 336
-    Top = 47
+    Height = 338
+    Top = 49
     Width = 295
     ActivePage = DataPage
     Align = alClient
@@ -44,11 +45,11 @@ object IDEInspectDlg: TIDEInspectDlg
   end
   object EdInspect: TComboBox
     Left = 0
-    Height = 21
+    Height = 23
     Top = 0
     Width = 295
     Align = alTop
-    ItemHeight = 13
+    ItemHeight = 14
     OnEditingDone = EdInspectEditingDone
     OnKeyDown = EdInspectKeyDown
     TabOrder = 2
@@ -58,13 +59,13 @@ object IDEInspectDlg: TIDEInspectDlg
     AnchorSideTop.Control = EdInspect
     Left = 0
     Height = 26
-    Top = 21
+    Top = 23
     Width = 295
     Caption = 'ToolBar1'
     ShowCaptions = True
     TabOrder = 3
     object btnUseInstance: TToolButton
-      Left = 54
+      Left = 52
       Hint = 'Use Instance class'
       Top = 2
       AllowAllUp = True
@@ -75,14 +76,14 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
-      Left = 104
+      Left = 105
+      Height = 22
       Top = 2
-      Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
     object btnColClass: TToolButton
-      Left = 109
+      Left = 110
       Hint = 'Show Class Column'
       Top = 2
       AllowAllUp = True
@@ -94,7 +95,7 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsCheck
     end
     object btnColType: TToolButton
-      Left = 132
+      Left = 133
       Top = 2
       AllowAllUp = True
       Caption = 'T'
@@ -105,7 +106,7 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsCheck
     end
     object btnColVisibility: TToolButton
-      Left = 155
+      Left = 156
       Top = 2
       AllowAllUp = True
       Caption = 'V'
@@ -122,15 +123,15 @@ object IDEInspectDlg: TIDEInspectDlg
       OnClick = btnBackwardClick
     end
     object btnForward: TToolButton
-      Left = 25
+      Left = 24
       Top = 2
       Caption = '>>'
       OnClick = btnForwardClick
     end
     object ToolButton4: TToolButton
-      Left = 49
+      Left = 47
+      Height = 22
       Top = 2
-      Width = 5
       Caption = 'ToolButton4'
       Style = tbsDivider
     end

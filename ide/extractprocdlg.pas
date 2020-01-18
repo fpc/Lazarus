@@ -40,7 +40,7 @@ uses
   // IdeIntf
   IDEHelpIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, MiscOptions;
+  LazarusIDEStrConsts, MiscOptions, EnvironmentOpts;
 
 type
 
@@ -191,6 +191,7 @@ begin
   FuncVariableLabel.Caption:=lisResult2;
   
   ButtonPanel.OkButton.Caption:=lisExtract;
+  FuncVariableComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TExtractProcDialog.HelpButtonClick(Sender: TObject);

@@ -12,7 +12,7 @@ uses
   // SynEdit
   SynEditTypes, SynTextDrawer,
   // IDE
-  EditorOptions, SourceMarks, LazarusIDEStrConsts;
+  EditorOptions, SourceMarks, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
 
@@ -768,6 +768,13 @@ constructor TSynColorAttrEditor.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FShowPrior := False;
+  ForegroundColorBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  BackGroundColorBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  FrameColorBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  FrameEdgesBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  FrameStyleBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  MarkupFoldColorBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  MarkupFoldStyleBox.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TSynColorAttrEditor.Setup;

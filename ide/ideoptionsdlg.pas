@@ -149,6 +149,7 @@ begin
   ButtonPanel.HelpButton.Caption:= lisMenuHelp;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   IDEDialogLayoutList.ApplyLayout(Self);
+  BuildModeComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TIDEOptionsDialog.FormShow(Sender: TObject);

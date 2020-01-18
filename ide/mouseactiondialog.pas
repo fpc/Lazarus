@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin, CheckLst,
-  SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands, types;
+  SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands, types, EnvironmentOpts;
 
 var
   ButtonName: Array [TSynMouseButton] of String;
@@ -180,6 +180,8 @@ begin
   BtnDefault.Caption :=  dlgMouseOptBtnModDef;
   PriorLabel.Caption := dlgMouseOptPriorLabel;
   Opt2Label.Caption := dlgMouseOptOpt2Label;
+  ActionBox.DropDownCount := EnvironmentOptions.DropDownCount;
+  OptBox.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TMouseaActionDialog.ResetInputs;

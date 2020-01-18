@@ -37,7 +37,7 @@ uses
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs,
-  Debugger, DebuggerDlg, DebuggerStrConst;
+  Debugger, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
 
 type
 
@@ -70,6 +70,7 @@ type
     procedure btnUseInstanceClick(Sender: TObject);
     procedure EdInspectEditingDone(Sender: TObject);
     procedure EdInspectKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -831,6 +832,11 @@ end;
 procedure TIDEInspectDlg.Execute(const AExpression: ansistring);
 begin
   InternalExecute(AExpression);
+end;
+
+procedure TIDEInspectDlg.FormActivate(Sender: TObject);
+begin
+  EdInspect.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TIDEInspectDlg.GotoHistory(AIndex: Integer);

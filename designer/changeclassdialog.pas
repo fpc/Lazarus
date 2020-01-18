@@ -43,7 +43,7 @@ uses
   // IdeIntf
   ComponentReg, PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, CheckLFMDlg, Project, MainIntf;
+  LazarusIDEStrConsts, CheckLFMDlg, Project, MainIntf, EnvironmentOpts;
 
 type
 
@@ -303,6 +303,7 @@ procedure TChangeClassDlg.ChangeClassDlgCreate(Sender: TObject);
 begin
   OldGroupBox.Caption:=lisOldClass;
   NewGroupBox.Caption:=lisNewClass;
+  NewClassComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TChangeClassDlg.NewClassComboBoxEditingDone(Sender: TObject);

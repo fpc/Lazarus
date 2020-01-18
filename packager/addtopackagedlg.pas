@@ -268,6 +268,8 @@ begin
   fIconNormGUI:=TIconGuiStuff.Create(IconNormBitBtn, IconNormInfoLabel, lisA2PIcon24x24);
   fIcon150GUI:=TIconGuiStuff.Create(Icon150BitBtn, Icon150InfoLabel, lisA2PIcon36x36);
   fIcon200GUI:=TIconGuiStuff.Create(Icon200BitBtn, Icon200InfoLabel, lisA2PIcon48x48);
+  AncestorComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  PalettePageCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TAddToPackageDlg.FormDestroy(Sender: TObject);

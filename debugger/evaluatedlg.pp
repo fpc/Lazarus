@@ -46,7 +46,7 @@ uses
   DbgIntfDebuggerBase,
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs,
-  Debugger, DebuggerDlg, DebuggerStrConst;
+  Debugger, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
 
 type
 
@@ -79,6 +79,7 @@ type
     procedure cmbExpressionSelect(Sender: TObject);
     procedure cmbNewValueKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -159,6 +160,12 @@ end;
 procedure TEvaluateDlg.Execute(const AExpression: String);
 begin
   SetFindText(AExpression);
+end;
+
+procedure TEvaluateDlg.FormActivate(Sender: TObject);
+begin
+  cmbExpression.DropDownCount := EnvironmentOptions.DropDownCount;
+  cmbNewValue.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TEvaluateDlg.UpdateData;
