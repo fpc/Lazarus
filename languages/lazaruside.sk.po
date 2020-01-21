@@ -22074,6 +22074,10 @@ msgstr ""
 msgid "Duplicate line (or lines in selection)"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecduplicateselection
+msgid "Duplicate selection"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
 msgstr "Posunúť kurzor na úplný koniec"
@@ -22406,11 +22410,27 @@ msgid "Move editor rightmost"
 msgstr "Posunúť editor úplne vpraco"
 
 #: lazarusidestrconsts.srkmecmovelinedown
-msgid "Move one line down"
+msgid "Move line down"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmovelineup
-msgid "Move one line up"
+msgid "Move line up"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectdown
+msgid "Move selection down"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectleft
+msgid "Move selection left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectright
+msgid "Move selection right"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectup
+msgid "Move selection up"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmultipaste

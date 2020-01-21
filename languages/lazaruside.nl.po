@@ -22153,6 +22153,10 @@ msgstr ""
 msgid "Duplicate line (or lines in selection)"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecduplicateselection
+msgid "Duplicate selection"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
 msgstr "Verplaats cursor naar het absolute eind"
@@ -22502,11 +22506,27 @@ msgid "Move editor rightmost"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmovelinedown
-msgid "Move one line down"
+msgid "Move line down"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmovelineup
-msgid "Move one line up"
+msgid "Move line up"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectdown
+msgid "Move selection down"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectleft
+msgid "Move selection left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectright
+msgid "Move selection right"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectup
+msgid "Move selection up"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmultipaste

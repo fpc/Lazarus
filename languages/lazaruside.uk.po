@@ -21468,6 +21468,10 @@ msgstr "Змістити курсор вниз"
 msgid "Duplicate line (or lines in selection)"
 msgstr "Дублювати рядок (або вибрані рядки)"
 
+#: lazarusidestrconsts.srkmecduplicateselection
+msgid "Duplicate selection"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
 msgstr "Пересунути курсор на абсолютний кінець"
@@ -21786,12 +21790,32 @@ msgid "Move editor rightmost"
 msgstr "Перемістити редактор вправо в кінець"
 
 #: lazarusidestrconsts.srkmecmovelinedown
-msgid "Move one line down"
+#, fuzzy
+#| msgid "Move one line down"
+msgid "Move line down"
 msgstr "Перемістити на рядок вниз"
 
 #: lazarusidestrconsts.srkmecmovelineup
-msgid "Move one line up"
+#, fuzzy
+#| msgid "Move one line up"
+msgid "Move line up"
 msgstr "Перемістити на рядок вгору"
+
+#: lazarusidestrconsts.srkmecmoveselectdown
+msgid "Move selection down"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectleft
+msgid "Move selection left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectright
+msgid "Move selection right"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveselectup
+msgid "Move selection up"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgctxt "lazarusidestrconsts.srkmecmultipaste"

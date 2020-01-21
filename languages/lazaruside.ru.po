@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-01-16 01:40+0300\n"
+"PO-Revision-Date: 2020-01-22 01:48+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -21464,6 +21464,10 @@ msgstr "Переместить курсор вниз"
 msgid "Duplicate line (or lines in selection)"
 msgstr "Дублировать строку (или выделенные строки)"
 
+#: lazarusidestrconsts.srkmecduplicateselection
+msgid "Duplicate selection"
+msgstr "Дублировать выделенное"
+
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
 msgstr "Переместить курсор в самый конец"
@@ -21782,12 +21786,28 @@ msgid "Move editor rightmost"
 msgstr "Поместить редактор справа"
 
 #: lazarusidestrconsts.srkmecmovelinedown
-msgid "Move one line down"
-msgstr "Переместить на одну строку вниз"
+msgid "Move line down"
+msgstr "Переместить на строку вниз"
 
 #: lazarusidestrconsts.srkmecmovelineup
-msgid "Move one line up"
-msgstr "Переместить на одну строку вверх"
+msgid "Move line up"
+msgstr "Переместить на строку вверх"
+
+#: lazarusidestrconsts.srkmecmoveselectdown
+msgid "Move selection down"
+msgstr "Переместить выделенное вниз"
+
+#: lazarusidestrconsts.srkmecmoveselectleft
+msgid "Move selection left"
+msgstr "Переместить выделенное влево"
+
+#: lazarusidestrconsts.srkmecmoveselectright
+msgid "Move selection right"
+msgstr "Переместить выделенное вправо"
+
+#: lazarusidestrconsts.srkmecmoveselectup
+msgid "Move selection up"
+msgstr "Переместить выделенное вверх"
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgctxt "lazarusidestrconsts.srkmecmultipaste"
