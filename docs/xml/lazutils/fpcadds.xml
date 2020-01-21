@@ -81,7 +81,7 @@
           </p>
         </descr>
         <seealso>
-          <link id=AlignToInt""/>
+          <link id="AlignToInt"/>
         </seealso>
       </element>
       <element name="AlignToPtr.p">
