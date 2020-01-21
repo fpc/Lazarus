@@ -7156,8 +7156,14 @@ begin
         end;
       ecMoveLineUp:
         if (not ReadOnly) then begin
-          CY := BlockBegin.y;
+          if FBlockSelection.SelAvail then
+            CY := BlockBegin.Y
+          else
+            CY := FCaret.LinePos;
           if CY > 1 then begin
+            InternalBeginUndoBlock;
+            if not FBlockSelection.SelAvail then
+              FBlockSelection.Clear;
             FBlockSelection.IncPersistentLock(sbpWeak);
             if SelAvail and (BlockEnd.x = 1) then
               FTheLinesView.EditLinesInsert(BlockEnd.y, 1, FTheLinesView[ToIdx(CY) - 1])
@@ -7167,24 +7173,36 @@ begin
             FTheLinesView.EditLinesDelete(CY - 1, 1);
             FCaret.DecAutoMoveOnEdit;
             FBlockSelection.DecPersistentLock;
+            InternalEndUndoBlock;
           end;
         end;
       ecMoveLineDown:
         if (not ReadOnly) then begin
-          CY := BlockEnd.y;
-          if SelAvail and (BlockEnd.x = 1) then
-            Dec(CY);
+          if FBlockSelection.SelAvail then begin
+            CY := BlockBegin.Y;
+            if (BlockEnd.x = 1) then
+              Dec(CY);
+          end
+          else
+            CY := FCaret.LinePos;
           if CY < FTheLinesView.Count - 1 then begin
+            InternalBeginUndoBlock;
+            if not FBlockSelection.SelAvail then
+              FBlockSelection.Clear;
             FBlockSelection.IncPersistentLock(sbpWeak);
             FCaret.IncAutoMoveOnEdit;
             FTheLinesView.EditLinesInsert(BlockBegin.y, 1, FTheLinesView[ToIdx(CY) + 1]);
             FTheLinesView.EditLinesDelete(CY + 2, 1);
             FCaret.DecAutoMoveOnEdit;
             FBlockSelection.DecPersistentLock;
+            InternalEndUndoBlock;
           end;
         end;
       ecDuplicateLine:
         if (not ReadOnly) then begin
+          InternalBeginUndoBlock;
+          if not FBlockSelection.SelAvail then
+            FBlockSelection.Clear;
           FBlockSelection.IncPersistentLock(sbpWeak);
           FInternalBlockSelection.AssignFrom(FBlockSelection);
           if FInternalBlockSelection.IsBackwardSel then begin
@@ -7202,6 +7220,7 @@ begin
           FInternalBlockSelection.StartLineBytePos := Point(1, FInternalBlockSelection.LastLineBytePos.y+1);
           FInternalBlockSelection.SelText := Temp;
           FBlockSelection.DecPersistentLock;
+          InternalEndUndoBlock;
         end;
       ecScrollUp:
         begin
