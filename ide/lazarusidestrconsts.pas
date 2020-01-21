@@ -3130,6 +3130,11 @@ resourcestring
   srkmecMoveLineUp            = 'Move line up';
   srkmecMoveLineDown          = 'Move line down';
   srkmecDuplicateLine         = 'Duplicate line (or lines in selection)';
+  srkmecDuplicateSelection    = 'Duplicate selection';
+  srkmecMoveSelectUp          = 'Move selection up';
+  srkmecMoveSelectDown        = 'Move selection down';
+  srkmecMoveSelectLeft        = 'Move selection left';
+  srkmecMoveSelectRight       = 'Move selection right';
 
   srkmecMultiPaste            = 'MultiPaste';
   srkmecScrollUp              = 'Scroll up one line';

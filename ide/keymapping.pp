@@ -423,6 +423,11 @@ begin
     ecMoveLineUp              : Result:= srkmecMoveLineUp;
     ecMoveLineDown            : Result:= srkmecMoveLineDown;
     ecDuplicateLine           : Result:= srkmecDuplicateLine;
+    ecMoveSelectUp            : Result:= srkmecMoveSelectUp;
+    ecMoveSelectDown          : Result:= srkmecMoveSelectDown;
+    ecMoveSelectLeft          : Result:= srkmecMoveSelectLeft;
+    ecMoveSelectRight         : Result:= srkmecMoveSelectRight;
+    ecDuplicateSelection      : Result:= srkmecDuplicateSelection;
     ecMultiPaste              : Result:= srkmecMultiPaste;
     ecScrollUp                : Result:= srkmecScrollUp;
     ecScrollDown              : Result:= srkmecScrollDown;
@@ -1028,6 +1033,11 @@ begin
   ecMoveLineUp:          SetSingle(VK_UP,[XCtrl, ssShift, ssAlt]);
   ecMoveLineDown:        SetSingle(VK_DOWN,[XCtrl, ssShift, ssAlt]);
   ecDuplicateLine:       SetSingle(VK_INSERT,[XCtrl, ssShift, ssAlt]);
+  ecMoveSelectUp:        SetSingle(VK_NUMPAD8,[XCtrl, ssAlt]);
+  ecMoveSelectDown:      SetSingle(VK_NUMPAD2,[XCtrl, ssAlt]);
+  ecMoveSelectLeft:      SetSingle(VK_NUMPAD4,[XCtrl, ssAlt]);
+  ecMoveSelectRight:     SetSingle(VK_NUMPAD6,[XCtrl, ssAlt]);
+  ecDuplicateSelection:  SetSingle(VK_NUMPAD0,[XCtrl, ssAlt]);
 
   ecMultiPaste:          SetSingle(VK_UNKNOWN,[]);
   ecNormalSelect:        SetSingle(VK_UNKNOWN,[]);
@@ -2795,7 +2805,12 @@ begin
   AddDefault(C, 'Break line, leave cursor', srkmecInsertLine, ecInsertLine);
   AddDefault(C, 'Move one line up', srkmecMoveLineUp, ecMoveLineUp);
   AddDefault(C, 'Move one line down', srkmecMoveLineDown, ecMoveLineDown);
+  AddDefault(C, 'Move selection up', srkmecMoveSelectUp, ecMoveSelectUp);
+  AddDefault(C, 'Move selection down', srkmecMoveSelectDown, ecMoveSelectDown);
+  AddDefault(C, 'Move selection left', srkmecMoveSelectLeft, ecMoveSelectLeft);
+  AddDefault(C, 'Move selection right', srkmecMoveSelectRight, ecMoveSelectRight);
   AddDefault(C, 'Duplicate line or lines in selection', srkmecDuplicateLine, ecDuplicateLine);
+  AddDefault(C, 'Duplicate selection', srkmecDuplicateSelection, ecDuplicateSelection);
   AddDefault(C, 'Enclose in $IFDEF', lisEncloseInIFDEF, ecSelectionEncloseIFDEF);
   AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter, ecInsertCharacter);
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);

@@ -505,6 +505,7 @@ type
     FInternalCaret: TSynEditCaret;
     //FScreenCaret: TSynEditScreenCaret;
     FInternalBlockSelection: TSynEditSelection;
+    FLastCaretXForMoveSelection: Integer;
     FOnChangeUpdating: TChangeUpdatingEvent;
     FMouseSelectionMode: TSynSelectionMode;
     FMouseSelectionCmd: TSynEditorMouseCommand;
@@ -6635,6 +6636,8 @@ begin
     DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
       ,' AChar=',AChar,' Data=',DbgS(Data)]);
     {$ENDIF}
+    if (Command <> ecMoveSelectUp) and (Command <> ecMoveSelectDown) then
+      FLastCaretXForMoveSelection := -1;
     // first the program event handler gets a chance to process the command
     InitialCmd := Command;
     if not(hcfInit in ASkipHooks) then
@@ -6699,7 +6702,7 @@ var
   Len: Integer;
   Temp: string;
   Helper: string;
-  moveBkm: boolean;
+  moveBkm, CurBack: boolean;
   WP: TPoint;
   Caret: TPoint;
   CaretNew: TPoint;
@@ -6707,6 +6710,7 @@ var
   LogCounter: integer;
   LogCaretXY: TPoint;
   CY: Integer;
+  CurSm: TSynSelectionMode;
 
 begin
   IncPaintLock;
@@ -6721,6 +6725,8 @@ begin
       FBlockSelection.ActiveSelectionMode := smColumn;
     if Command in [ecSelCmdRangeStart..ecSelCmdRangeEnd] then
       FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+    if (Command <> ecMoveSelectUp) and (Command <> ecMoveSelectDown) then
+      FLastCaretXForMoveSelection := -1;
 
     FBlockSelection.AutoExtend := Command in [ecSelectionStart..ecSelectionEnd];
     FCaret.ChangeOnTouch;
@@ -7220,6 +7226,59 @@ begin
           FInternalBlockSelection.StartLineBytePos := Point(1, FInternalBlockSelection.LastLineBytePos.y+1);
           FInternalBlockSelection.SelText := Temp;
           FBlockSelection.DecPersistentLock;
+          InternalEndUndoBlock;
+        end;
+      ecMoveSelectUp,
+      ecMoveSelectDown,
+      ecMoveSelectLeft,
+      ecMoveSelectRight:
+        if (not ReadOnly) and SelAvail then begin
+          InternalBeginUndoBlock;
+          if FLastCaretXForMoveSelection < 0 then
+            FLastCaretXForMoveSelection := FBlockSelection.FirstLineBytePos.x;
+          CurSm := FBlockSelection.ActiveSelectionMode;
+          CurBack := FBlockSelection.IsBackwardSel;
+          Temp := FBlockSelection.SelText;
+
+          if CurSm = smColumn then
+            FCaret.IncForcePastEOL;
+          SetSelTextExternal('');
+          FCaret.LineBytePos := FBlockSelection.StartLineBytePos;
+          if (Command = ecMoveSelectUp) or (Command = ecMoveSelectDown) then
+            FCaret.KeepCaretXPos := FLastCaretXForMoveSelection;
+          case Command of
+            ecMoveSelectUp:    MoveCaretVert(-1);
+            ecMoveSelectDown:  MoveCaretVert(1);
+            ecMoveSelectLeft:  FCaret.MoveHoriz(-1);
+            ecMoveSelectRight: FCaret.MoveHoriz(1);
+          end;
+          FBlockSelection.Clear;
+          FBlockSelection.SetSelTextPrimitive(CurSm, PChar(Temp), False, True);
+
+          if CurBack then begin
+            FBlockSelection.SortSelectionPoints(True);
+            FCaret.LineBytePos := FBlockSelection.EndLineBytePos;
+          end;
+          if (Command = ecMoveSelectUp) or (Command = ecMoveSelectDown) then
+            FCaret.KeepCaretXPos := FLastCaretXForMoveSelection;
+
+          if CurSm = smColumn then
+            FCaret.DecForcePastEOL;
+          InternalEndUndoBlock;
+        end;
+      ecDuplicateSelection:
+        if (not ReadOnly) and SelAvail then begin
+          InternalBeginUndoBlock;
+          FCaret.IncForcePastEOL;
+          CurSm := FBlockSelection.ActiveSelectionMode;
+          CurBack := FBlockSelection.IsBackwardSel;
+          Temp := FBlockSelection.SelText;
+          FCaret.LineBytePos := FBlockSelection.FirstLineBytePos;
+          FBlockSelection.Clear;
+          FBlockSelection.SetSelTextPrimitive(CurSm, PChar(Temp), False, True);
+          if CurBack then
+            FBlockSelection.SortSelectionPoints(True);
+          FCaret.DecForcePastEOL;
           InternalEndUndoBlock;
         end;
       ecScrollUp:

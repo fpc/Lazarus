@@ -162,12 +162,12 @@ type
     constructor Create(ALines: TSynEditStrings; aActOnLineChanges: Boolean);
     destructor Destroy; override;
     procedure AssignFrom(Src: TSynEditSelection);
-    procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar; AReplace: Boolean = False);
+    procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar; AReplace: Boolean = False; ASetTextSelected: Boolean = False);
     function  SelAvail: Boolean;
     function  SelCanContinue(ACaret: TSynEditCaret): Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
     procedure BeginMinimumSelection; // current selection will be minimum while follow caret (autoExtend) // until next setSelStart or end of follow
-    procedure SortSelectionPoints;
+    procedure SortSelectionPoints(AReverse: Boolean = False);
     procedure IgnoreNextCaretMove;
     // Mode can NOT be changed in nested calls
     procedure IncPersistentLock(AMode: TSynBlockPersistMode = sbpDefault); // Weak: Do not extend (but rather move) block, if at start/end
@@ -1881,8 +1881,8 @@ begin
   end;
 end;
 
-procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode;
-  Value : PChar; AReplace: Boolean = False);
+procedure TSynEditSelection.SetSelTextPrimitive(PasteMode: TSynSelectionMode;
+  Value: PChar; AReplace: Boolean; ASetTextSelected: Boolean);
 var
   BB, BE: TPoint;
 
@@ -2178,7 +2178,12 @@ begin
     FInternalCaret.LineBytePos := StartLineBytePos;
     if (Value <> nil) and (Value[0] <> #0) then begin
       InsertText;
-      StartLineBytePos := FInternalCaret.LineBytePos; // reset selection
+      if ASetTextSelected then begin
+        EndLineBytePos := FInternalCaret.LineBytePos;
+        FActiveSelectionMode := PasteMode;
+      end
+      else
+        StartLineBytePos := FInternalCaret.LineBytePos; // reset selection
     end;
     if FCaret <> nil then
       FCaret.LineCharPos := FInternalCaret.LineCharPos;
@@ -2205,7 +2210,7 @@ procedure TSynEditSelection.ConstrainStartLineBytePos(var Value: TPoint);
 begin
   Value.y := MinMax(Value.y, 1, Max(fLines.Count, 1));
 
-  if (FCaret = nil) or FCaret.AllowPastEOL then
+  if (FCaret = nil) or FCaret.AllowPastEOL or (FCaret.FForcePastEOL > 0) then
     Value.x := Max(Value.x, 1)
   else
     Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
@@ -2498,9 +2503,9 @@ begin
   end;
 end;
 
-procedure TSynEditSelection.SortSelectionPoints;
+procedure TSynEditSelection.SortSelectionPoints(AReverse: Boolean);
 begin
-  if IsBackwardSel then begin
+  if IsBackwardSel xor AReverse then begin
     SwapInt(FStartLinePos, FEndLinePos);
     SwapInt(FStartBytePos, FEndBytePos);
   end;

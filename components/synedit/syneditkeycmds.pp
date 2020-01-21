@@ -282,6 +282,13 @@ const
   ecMoveLineDown    = 631; // Moves current line (or selection) one line down
   ecDuplicateLine   = 632; // Line or selection (full lines)
 
+  ecMoveSelectUp      = 633; // Moves selection one line up
+  ecMoveSelectDown    = 634; // Moves selection one line down
+  ecMoveSelectLeft    = 635; // Moves selection one line up
+  ecMoveSelectRight   = 636; // Moves selection one line down
+  ecDuplicateSelection= 637;
+
+
   ecString          = 640;  //Insert a whole string
 
   ecAutoCompletion  = 650;
@@ -506,7 +513,7 @@ end;
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..166] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..171] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -603,7 +610,12 @@ const
     (Value: ecCutAddCurrentLine; Name: 'ecCutAddCurrentLine'),
     (Value: ecMoveLineUp; Name: 'ecMoveLineUp'),
     (Value: ecMoveLineDown; Name: 'ecMoveLineDown'),
+    (Value: ecMoveSelectUp; Name: 'ecMoveSelectUp'),
+    (Value: ecMoveSelectDown; Name: 'ecMoveSelectDown'),
+    (Value: ecMoveSelectLeft; Name: 'ecMoveSelectLeft'),
+    (Value: ecMoveSelectRight; Name: 'ecMoveSelectRight'),
     (Value: ecDuplicateLine; Name: 'ecDuplicateLine'),
+    (Value: ecDuplicateSelection; Name: 'ecDuplicateSelection'),
     (Value: ecScrollUp; Name: 'ecScrollUp'),
     (Value: ecScrollDown; Name: 'ecScrollDown'),
     (Value: ecScrollLeft; Name: 'ecScrollLeft'),
