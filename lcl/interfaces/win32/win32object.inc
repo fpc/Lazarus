@@ -564,6 +564,7 @@ begin
     lcNeedMininimizeAppWithMainForm: Result := LCL_CAPABILITY_NO;
     lcSendsUTF8KeyPress: Result := LCL_CAPABILITY_YES;
     lcTransparentWindow: Result := LCL_CAPABILITY_YES;
+    lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES;
     lcTextHint:
     begin
       if (ComCtlVersion >= ComCtlVersionIE6) then
