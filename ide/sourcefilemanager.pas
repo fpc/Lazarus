@@ -4320,13 +4320,13 @@ begin
   TitleStat := '';
   CodeToolBoss.GetApplicationTitleStatement(Project1.MainUnitInfo.Source, TitleStat);
   ProjTitle:=Project1.GetTitle;
-  //DebugLn(['ProjectOptionsAfterWrite: Project title=',ProjTitle,
+  //DebugLn(['UpdateAppTitleInSource: Project title=',ProjTitle,
   //         ', Default=',Project1.GetDefaultTitle,', Title Statement=',TitleStat]);
   if pfMainUnitHasTitleStatement in Project1.Flags then
   begin                            // Add Title statement if not there already.
     if ((TitleStat = '') or (TitleStat = ProjTitle)) and Project1.TitleIsDefault then
       Exit;
-    //DebugLn(['ProjectOptionsAfterWrite: Setting Title to ',ProjTitle]);
+    //DebugLn(['UpdateAppTitleInSource: Setting Title to ',ProjTitle]);
     if not CodeToolBoss.SetApplicationTitleStatement(Project1.MainUnitInfo.Source, ProjTitle) then
     begin
       IDEMessageDialog(lisProjOptsError,
@@ -4338,7 +4338,7 @@ begin
   else begin                          // Remove Title statement if it is there.
     if TitleStat <> ProjTitle then
       Exit;
-    //DebugLn(['ProjectOptionsAfterWrite: Removing Title']);
+    //DebugLn(['UpdateAppTitleInSource: Removing Title']);
     if not CodeToolBoss.RemoveApplicationTitleStatement(Project1.MainUnitInfo.Source) then
     begin
       IDEMessageDialog(lisProjOptsError,
@@ -4357,12 +4357,12 @@ begin
   ScaledStat := False;
   CodeToolBoss.GetApplicationScaledStatement(Project1.MainUnitInfo.Source, ScaledStat);
   ProjScaled:=Project1.Scaled;
-  //DebugLn(['ProjectOptionsAfterWrite: Project Scaled=',ProjScaled,', Scaled Statement=',ScaledStat]);
+  //DebugLn(['UpdateAppScaledInSource: Project Scaled=',ProjScaled,', Scaled Statement=',ScaledStat]);
   if pfMainUnitHasScaledStatement in Project1.Flags then
   begin                           // Add Scaled statement if not there already.
     if (ScaledStat = ProjScaled) or not ProjScaled then
       Exit;
-    //DebugLn(['ProjectOptionsAfterWrite: Setting Scaled to ',ProjScaled]);
+    //DebugLn(['UpdateAppScaledInSource: Setting Scaled to ',ProjScaled]);
     if not CodeToolBoss.SetApplicationScaledStatement(Project1.MainUnitInfo.Source, ProjScaled) then
     begin
       IDEMessageDialog(lisProjOptsError,
@@ -4372,9 +4372,7 @@ begin
     end;
   end
   else begin                      // Remove Scaled statement if it is there.
-    if ScaledStat <> ProjScaled then
-      Exit;
-    //DebugLn(['ProjectOptionsAfterWrite: Removing Scaled']);
+    //DebugLn(['UpdateAppScaledInSource: Removing Scaled']);
     if not CodeToolBoss.RemoveApplicationScaledStatement(Project1.MainUnitInfo.Source) then
     begin
       IDEMessageDialog(lisProjOptsError,
