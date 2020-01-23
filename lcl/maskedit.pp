@@ -230,6 +230,7 @@ const
     procedure DeleteSelected;
     procedure DeleteChars(NextChar : Boolean);
   protected
+    class procedure WSRegisterClass; override;
     function ApplyMaskToText(Value: TCaption): TCaption;
     function CanShowEmulatedTextHint: Boolean; override;
     function DisableMask(const NewText: String): Boolean;
@@ -1387,6 +1388,13 @@ begin
   end;
 end;
 
+class procedure TCustomMaskEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TCustomMaskEdit, 'TextHintFontColor','Used in a previous version of Lazarus','');
+  RegisterPropertyToSkip(TCustomMaskEdit, 'TextHintFontStyle','Used in a previous version of Lazarus','');
+end;
+
 function TCustomMaskEdit.ApplyMaskToText(Value: TCaption): TCaption;
 { This tries to mimic Delphi behaviour (D3):
   - if mask contains no literals text is set, if necessary padded with blanks,
@@ -2202,10 +2210,5 @@ procedure Register;
 begin
   RegisterComponents('Additional',[TMaskEdit]);
 end;
-
-
-initialization
-  RegisterPropertyToSkip(TCustomMaskEdit, 'TextHintFontColor','Used in a previous version of Lazarus','');
-  RegisterPropertyToSkip(TCustomMaskEdit, 'TextHintFontStyle','Used in a previous version of Lazarus','');
 
 end.

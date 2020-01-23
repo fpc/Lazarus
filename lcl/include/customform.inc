@@ -3115,6 +3115,15 @@ begin
   Result:=Parent=nil;
 end;
 
+class procedure TForm.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TForm, 'TextHeight', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TForm, 'Scaled', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TForm, 'TransparentColorValue', 'VCL compatibility property', '');
+end;
+
 procedure TForm.CreateWnd;
 begin
   if (Application<>nil) then

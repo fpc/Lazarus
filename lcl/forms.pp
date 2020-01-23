@@ -755,6 +755,7 @@ type
     FLCLVersion: string;
     function LCLVersionIsStored: boolean;
   protected
+    class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
     procedure Loaded; override;
   public
@@ -2282,10 +2283,6 @@ begin
 end;
 
 initialization
-  RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TForm, 'TextHeight', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TForm, 'Scaled', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TForm, 'TransparentColorValue', 'VCL compatibility property', '');
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   ThemesImageDrawEvent:=@ImageDrawEvent;
   IsFormDesign := @IsFormDesignFunction;

@@ -1722,7 +1722,4 @@ end;
 
 {$I customstatictext.inc}
 
-initialization
-  RegisterPropertyToSkip(TCustomEdit, 'TextHintFontColor','Used in a previous version of Lazarus','');
-  RegisterPropertyToSkip(TCustomEdit, 'TextHintFontStyle','Used in a previous version of Lazarus','');
 end.

@@ -256,6 +256,7 @@ type
     procedure MoveEnd(ASelect: Boolean = False); virtual; abstract;
     function ReturnKeyHandled: Boolean; virtual; abstract;
     function GetDefaultGlyphName: string; override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -588,6 +589,7 @@ type
     procedure SetDateOrder(const AValue: TDateOrder);
     function DateToText(Value: TDateTime): String;
   protected
+    class procedure WSRegisterClass; override;
     function GetDefaultGlyphName: string; override;
     procedure ButtonClick; override;
     procedure EditDblClick; override;
@@ -1300,6 +1302,12 @@ end;
 function TCustomControlFilterEdit.GetDefaultGlyphName: string;
 begin
   Result := ResBtnListFilter;
+end;
+
+class procedure TCustomControlFilterEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TCustomControlFilterEdit, 'UseFormActivate', 'Property streamed in older Lazarus revision','');
 end;
 
 { TFileNameEdit }
@@ -2039,6 +2047,13 @@ begin
   end;
 end;
 
+class procedure TDateEdit.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TDateEdit, 'OKCaption', 'Property streamed in older Lazarus revision','');
+  RegisterPropertyToSkip(TDateEdit, 'CancelCaption', 'Property streamed in older Lazarus revision','');
+end;
+
 { TTimeEdit }
 
 function TTimeEdit.GetTime: TDateTime;
@@ -2254,10 +2269,5 @@ begin
   RegisterComponents('Misc', [TEditButton,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TTimeEdit,TCalcEdit]);
 end;
-
-Initialization
-  RegisterPropertyToSkip(TDateEdit, 'OKCaption', 'Property streamed in older Lazarus revision','');
-  RegisterPropertyToSkip(TDateEdit, 'CancelCaption', 'Property streamed in older Lazarus revision','');
-  RegisterPropertyToSkip(TCustomControlFilterEdit, 'UseFormActivate', 'Property streamed in older Lazarus revision','');
 
 end.

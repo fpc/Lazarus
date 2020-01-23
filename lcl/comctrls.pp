@@ -818,6 +818,7 @@ type
     procedure SetTabStop(const AValue: Boolean);
     procedure SetTabWidth(AValue: Smallint);
   protected
+    class procedure WSRegisterClass; override;
     procedure SetOptions(const AValue: TCTabControlOptions); override;
     procedure AddRemovePageHandle(APage: TCustomPage); override;
     function CanChange: Boolean; override;
@@ -4206,8 +4207,5 @@ begin
     RegisterWSComponent(TCustomTabControl, TWSCustomTabControl);
   Done := True;
 end;
-
-initialization
-  RegisterPropertyToSkip(TTabControl, 'OnDrawTab', 'Property streamed in older Lazarus revision','');
 
 end.

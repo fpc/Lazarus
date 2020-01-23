@@ -85,5 +85,10 @@ begin
     Result := -1;
 end;
 
-
+class procedure TPage.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TPage, 'ClientHeight', 'This property was published for a long time in Lazarus 0.9.31', '');
+  RegisterPropertyToSkip(TPage, 'ClientWidth', 'This property was published for a long time in Lazarus 0.9.31', '');
+end;
 // included by extctrls.pp

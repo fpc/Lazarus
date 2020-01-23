@@ -395,6 +395,8 @@ begin
   RegisterPropertyToSkip(TCustomEdit, 'BevelKind',  'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomEdit, 'BevelOuter', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomEdit, 'OEMConvert', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomEdit, 'TextHintFontColor','Used in a previous version of Lazarus','');
+  RegisterPropertyToSkip(TCustomEdit, 'TextHintFontStyle','Used in a previous version of Lazarus','');
 end;
 
 function TCustomEdit.CanShowEmulatedTextHint: Boolean;

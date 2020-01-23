@@ -48,6 +48,7 @@ type
     FOnBeforeShow: TBeforeShowPageEvent;
     function GetPageIndex: Integer;
   protected
+    class procedure WSRegisterClass; override;
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1720,7 +1721,5 @@ end;
 
 initialization
   DockSplitterClass := TSplitter;
-  RegisterPropertyToSkip(TPage, 'ClientHeight', 'This property was published for a long time in Lazarus 0.9.31', '');
-  RegisterPropertyToSkip(TPage, 'ClientWidth', 'This property was published for a long time in Lazarus 0.9.31', '');
 
 end.
