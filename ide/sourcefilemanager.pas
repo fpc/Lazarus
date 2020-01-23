@@ -4360,7 +4360,7 @@ begin
   //DebugLn(['UpdateAppScaledInSource: Project Scaled=',ProjScaled,', Scaled Statement=',ScaledStat]);
   if pfMainUnitHasScaledStatement in Project1.Flags then
   begin                           // Add Scaled statement if not there already.
-    if (ScaledStat = ProjScaled) or not ProjScaled then
+    if ScaledStat = ProjScaled then
       Exit;
     //DebugLn(['UpdateAppScaledInSource: Setting Scaled to ',ProjScaled]);
     if not CodeToolBoss.SetApplicationScaledStatement(Project1.MainUnitInfo.Source, ProjScaled) then
