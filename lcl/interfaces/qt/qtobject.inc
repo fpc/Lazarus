@@ -1307,6 +1307,7 @@ begin
     lcRadialGradientBrush: Result := LCL_CAPABILITY_YES;
     lcTransparentWindow: Result := LCL_CAPABILITY_YES;
     lcNativeTaskDialog: Result := {$ifdef MSWINDOWS} LCL_CAPABILITY_NO {$else} LCL_CAPABILITY_YES {$endif};
+    lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;
