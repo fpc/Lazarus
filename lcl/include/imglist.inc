@@ -2133,7 +2133,7 @@ end;
 
 procedure TCustomImageList.WriteData(AStream: TStream);
 begin
-  GetResolution(FWidth).WriteData(AStream, False); // Change to ACompress=True after Lazarus 1.10 has been released to retain compatibility with 1.8 that doesn't support imagelist compression
+  GetResolution(FWidth).WriteData(AStream, True); // compress data. LFMs can be opened only with Lazarus 2.0 and later
 end;
 
 procedure TCustomImageList.WriteAdvData(AStream: TStream);
