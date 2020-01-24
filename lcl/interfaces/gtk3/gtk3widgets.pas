@@ -4511,13 +4511,28 @@ end;
 function TGtk3MenuItem.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   ndx:integer;
-  pmenu:TMenuItem;
   pl:PGsList;
+  parentMenu:TMenuItem;
+  picon:PGtkImage;
+  pmenu:PGtkMenuItem;
+  pimgmenu:PgtkImageMenuItem absolute pmenu;
+  img:TGtk3Image;
 begin
+  Result:=nil;
   FWidgetType := [wtWidget, wtMenuItem];
   if MenuItem.Caption = cLineCaption then
     Result := TGtkSeparatorMenuItem.new
   else
+  if (MenuItem.HasIcon) then
+  begin
+    pimgmenu := TGtkImageMenuItem.new();
+    MenuItem.UpdateImage(true);
+    img:=Tgtk3Image(MenuItem.Bitmap.Handle);
+    picon := TGtkImage.new_from_pixbuf(img.Handle);
+    pimgmenu^.set_image(picon);
+    pimgmenu^.set_always_show_image(true);
+    Result:=pimgmenu;
+  end else
   if MenuItem.RadioItem and not MenuItem.HasIcon then
   begin
     Result := TGtkRadioMenuItem.new(nil);
@@ -4526,31 +4541,29 @@ begin
       ndx:=menuItem.Parent.IndexOf(MenuItem);
       if (ndx>0) then
       begin
-        pMenu:=menuItem.Parent.Items[ndx-1];
-        if (MenuItem.GroupIndex>0) and (pMenu.GroupIndex=MenuItem.GroupIndex) then
+        ParentMenu:=menuItem.Parent.Items[ndx-1];
+        if (MenuItem.GroupIndex>0) and (ParentMenu.GroupIndex=MenuItem.GroupIndex) then
         begin
-          pl:=PGtkRadioMenuItem(TGtk3MenuItem(pMenu.Handle).Widget)^.get_group;
+          pl:=PGtkRadioMenuItem(TGtk3MenuItem(ParentMenu.Handle).Widget)^.get_group;
           PGtkRadioMenuItem(Result)^.set_group(pl);
         end;
       end;
     end;
   end
   else
-  if MenuItem.IsCheckItem or MenuItem.HasIcon then
+  if MenuItem.IsCheckItem and not MenuItem.HasIcon then
     Result := TGtkCheckMenuItem.new
   else
     Result := TGtkMenuItem.new;
 
-  if MenuItem.Caption <> cLineCaption then
+  if Assigned(Result) and (MenuItem.Caption <> cLineCaption) {and not MenuItem.HasIcon} then
   begin
     PGtkMenuItem(Result)^.use_underline := True;
     PGtkMenuItem(Result)^.set_label(PgChar(ReplaceAmpersandsWithUnderscores(MenuItem.Caption)));
     PGtkMenuItem(Result)^.set_sensitive(MenuItem.Enabled);
-    // there's nothing like this in Gtk3
-    // if MenuItem.RightJustify then
-    //  gtk_menu_item_right_justify(PGtkMenuItem(Widget));
-
   end;
+
+
 end;
 
 constructor TGtk3MenuItem.Create(const AMenuItem: TMenuItem);

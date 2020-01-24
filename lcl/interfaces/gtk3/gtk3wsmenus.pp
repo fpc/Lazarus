@@ -548,7 +548,7 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
   // if gtk_is_check_menu_item({%H-}Pointer(AMenuItem.Handle)) <> HasIcon then
-  //  AMenuItem.RecreateHandle;
+  AMenuItem.RecreateHandle;
 end;
 
 { TGtk3WSMenu }
