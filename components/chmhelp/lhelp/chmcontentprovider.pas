@@ -69,12 +69,12 @@ type
     fActiveChmTitle: String;
     FLoadingSearchURL: Boolean; // use this to try to highlight search terms
 
-    function  MakeURI(AUrl: String; AChm: TChmReader): String;
+    function  MakeURI(Const AUrl: String; AChm: TChmReader): String;
 
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
-    procedure AddHistory(URL: String);
-    procedure DoOpenChm(AFile: String; ACloseCurrent: Boolean = True);
+    procedure AddHistory(Const URL: String);
+    procedure DoOpenChm(Const AFile: String; ACloseCurrent: Boolean = True);
     procedure DoCloseChm;
     procedure DoLoadContext(Context: THelpContext);
     procedure DoLoadUri(Uri: String; AChm: TChmReader = nil);
@@ -100,7 +100,7 @@ type
     procedure SearchEditChange(Sender: TObject);
     procedure TOCExpand(Sender: TObject; Node: TTreeNode);
     procedure TOCCollapse(Sender: TObject; Node: TTreeNode);
-    procedure SelectTreeItemFromURL(AUrl: String);
+    procedure SelectTreeItemFromURL(Const AUrl: String);
     {$IFDEF CHM_SEARCH}
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
@@ -219,7 +219,7 @@ begin
 
 end;
 
-function GetURIFileName(AURI: String): String;
+function GetURIFileName(Const AURI: String): String;
 var
   FileStart,
   FileEnd: Integer;
@@ -230,7 +230,7 @@ begin
   Result := Copy(AURI, FileStart, FileEnd-FileStart);
 end;
 
-function GetURIURL(AURI: String): String;
+function GetURIURL(Const AURI: String): String;
 var
   URLStart: Integer;
 begin
@@ -238,7 +238,7 @@ begin
   Result := Copy(AURI, URLStart, Length(AURI));
 end;
 
-function ChmURI(AUrl: String; AFileName: String): String;
+function ChmURI(Const AUrl: String; Const AFileName: String): String;
 var
   FileNameNoPath: String;
 begin
@@ -262,7 +262,7 @@ begin
   fStatusbar.Visible := AValue;
 end;
 
-function TChmContentProvider.MakeURI ( AUrl: String; AChm: TChmReader ) : String;
+function TChmContentProvider.MakeURI (Const  AUrl: String; AChm: TChmReader ) : String;
 var
   ChmIndex: Integer;
 begin
@@ -291,7 +291,7 @@ begin
   end;
 end;
 
-procedure TChmContentProvider.AddHistory(URL: String);
+procedure TChmContentProvider.AddHistory(Const URL: String);
 begin
   if fHistoryIndex < fHistory.Count then
   begin
@@ -307,7 +307,7 @@ type
   TCHMHack = class(TChmFileList)
   end;
 
-procedure TChmContentProvider.DoOpenChm(AFile: String; ACloseCurrent: Boolean = True);
+procedure TChmContentProvider.DoOpenChm(Const AFile: String; ACloseCurrent: Boolean = True);
 begin
   if (fChms <> nil) and fChms.IsAnOpenFile(AFile) then Exit;
   if ACloseCurrent then DoCloseChm;
@@ -832,7 +832,7 @@ begin
   end;
 end;
 
-procedure TChmContentProvider.SelectTreeItemFromURL(AUrl: String);
+procedure TChmContentProvider.SelectTreeItemFromURL(Const AUrl: String);
 var
   FileName: String;
   URL: String;
