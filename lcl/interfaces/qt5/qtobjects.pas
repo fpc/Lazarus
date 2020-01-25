@@ -2535,7 +2535,7 @@ begin
       Palette := QWidget_palette(Parent);
   end;
   // since q_DrawWinPanel doesnot supports lineWidth we should do it ourself
-  for i := 1 to lineWidth - 2 do
+  for i := 1 to lineWidth - 1 do
   begin
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken);
     inc(x);
