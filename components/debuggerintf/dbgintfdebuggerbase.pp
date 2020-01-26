@@ -1021,6 +1021,7 @@ type
     function GetEntryByIdx(AnIndex: Integer): TRegisters;
   protected
   public
+    procedure InvalidateItems;
     property EntriesByIdx[AnIndex: Integer]: TRegisters read GetEntryByIdx;
     property Entries[AThreadId, AStackFrame: Integer]: TRegisters read GetEntry; default;
   end;
@@ -3363,6 +3364,19 @@ end;
 function TRegistersList.GetEntryByIdx(AnIndex: Integer): TRegisters;
 begin
   Result := TRegisters(inherited EntriesByIdx[AnIndex]);
+end;
+
+procedure TRegistersList.InvalidateItems;
+var
+  i, j: Integer;
+begin
+  Assert(not Immutable, 'TRegisterList.InvalidateItems Immutable');
+  if Count = 0 then
+    exit;
+  for i := 0 to Count-1 do begin
+    EntriesByIdx[i].DataValidity := ddsUnknown;
+  end;
+  DoCleared;
 end;
 
 { TWatchesBase }

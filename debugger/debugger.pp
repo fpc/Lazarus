@@ -1045,6 +1045,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure InvalidateItems;
     procedure AddNotification(const ANotification: TRegistersNotification);
     procedure RemoveNotification(const ANotification: TRegistersNotification);
     property  CurrentRegistersList: TCurrentIDERegistersList read GetCurrentRegistersList;
@@ -5941,22 +5942,17 @@ end;
 
 function TCurrentIDERegisters.Count: Integer;
 begin
-  case DataValidity of
-    ddsUnknown:   begin
-        AddReference;
-        try
-          Result := 0;
-          DataValidity := ddsRequested;
-          FMonitor.RequestData(Self);  // Locals can be cleared, if debugger is "run" again
-          if DataValidity = ddsValid then Result := inherited Count();
-        finally
-          ReleaseReference;
-        end;
-      end;
-    ddsRequested, ddsEvaluating: Result := 0;
-    ddsValid:                    Result := inherited Count;
-    ddsInvalid, ddsError:        Result := 0;
+  if DataValidity = ddsUnknown then begin
+    AddReference;
+    try
+      Result := 0;
+      DataValidity := ddsRequested;
+      FMonitor.RequestData(Self);  // Locals can be cleared, if debugger is "run" again
+    finally
+      ReleaseReference;
+    end;
   end;
+  result := TDbgEntityValuesList(self).Count;
 end;
 
 { TCurrentIDERegistersList }
@@ -5989,14 +5985,14 @@ procedure TIdeRegistersMonitor.DoStateEnterPause;
 begin
   inherited DoStateEnterPause;
   if CurrentRegistersList = nil then exit;
-  Clear;
+  InvalidateItems;
 end;
 
 procedure TIdeRegistersMonitor.DoStateLeavePauseClean;
 begin
   inherited DoStateLeavePauseClean;
   if CurrentRegistersList = nil then exit;
-  Clear;
+  InvalidateItems;
 end;
 
 procedure TIdeRegistersMonitor.DoEndUpdate;
@@ -6050,6 +6046,11 @@ end;
 procedure TIdeRegistersMonitor.Clear;
 begin
   CurrentRegistersList.Clear;
+end;
+
+procedure TIdeRegistersMonitor.InvalidateItems;
+begin
+  CurrentRegistersList.InvalidateItems;
 end;
 
 procedure TIdeRegistersMonitor.AddNotification(const ANotification: TRegistersNotification);
