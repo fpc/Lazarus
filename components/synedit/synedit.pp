@@ -7185,7 +7185,7 @@ begin
       ecMoveLineDown:
         if (not ReadOnly) then begin
           if FBlockSelection.SelAvail then begin
-            CY := BlockBegin.Y;
+            CY := BlockEnd.Y;
             if (BlockEnd.x = 1) then
               Dec(CY);
           end

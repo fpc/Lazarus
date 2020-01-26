@@ -24,15 +24,19 @@ type
     TrimType: TSynEditStringTrimmingType;
     TrimEnabled: Boolean;
   private
-    AllowPastEOL: Boolean;
+    AllowPastEOL, FPersistSel: Boolean;
     FDoInit: procedure of object;
     FTestLines: function: TStringArray of object;
     Procedure DoInit1;
     function TestLines1: TStringArray;
+    function TestLines2: TStringArray;
   private
     FTestCommand:TSynEditorCommand;
     procedure TestCommand(Name:String; X, Y: Integer;
                            ExpX1, ExpY1: Integer; Repl: Array of const);
+    procedure TestCommand(Name:String; X, Y, X2, Y2: Integer;
+                           ExpX1, ExpY1, ExpX2, ExpY2: Integer;
+                           Repl: Array of const);
     procedure TestCommand(Name:String; X, Y: Integer;
                            ExpX1, ExpY1: Integer; Repl: Array of const;
                            ExpX2, ExpY2: Integer; Repl2: Array of const);
@@ -52,6 +56,7 @@ type
     procedure TestCaretEcDeleteEOL;
     procedure TestWordBreaker;
     procedure TestSearchReplace;
+    procedure TestMoveLineUpDown;
   end;
 
 implementation
@@ -64,6 +69,9 @@ begin
   if AllowPastEOL
   then SynEdit.Options := SynEdit.Options + [eoScrollPastEol]
   else SynEdit.Options := SynEdit.Options - [eoScrollPastEol];
+  if FPersistSel
+  then SynEdit.Options2 := SynEdit.Options2 + [eoPersistentBlock]
+  else SynEdit.Options2 := SynEdit.Options2 - [eoPersistentBlock];
   SynEdit.TabWidth := 7;
   SetLines(FTestLines());
 end;
@@ -98,6 +106,19 @@ begin
   Result[15] := '';
 end;
 
+function TTestBasicSynEdit.TestLines2: TStringArray;
+begin
+  SetLength(Result, 7);
+              // 1    6    11 14
+  Result[0]  := 'abc def ghi'; // 1
+  Result[1]  := 'ABC DEF GHI'; // 2
+  Result[2]  := '123 456 789'; // 3
+  Result[3]  := 'mno pqr stu'; // 4
+  Result[4]  := 'MNO PQR STU';  //5
+  Result[5]  := 'xyz XYZ vw';
+  Result[6] := '';
+end;
+
 procedure TTestBasicSynEdit.TestCommand(Name: String; X, Y: Integer; ExpX1,
   ExpY1: Integer; Repl: array of const);
 begin
@@ -105,6 +126,16 @@ begin
   SetCaretPhys(X,Y);
   SynEdit.CommandProcessor(FTestCommand, '', nil);
   TestIsCaretPhys(Name + '(1st)', ExpX1, ExpY1);
+  TestIsFullText(Name +  '(1st)', FTestLines(), Repl);
+end;
+
+procedure TTestBasicSynEdit.TestCommand(Name: String; X, Y, X2, Y2: Integer;
+  ExpX1, ExpY1, ExpX2, ExpY2: Integer; Repl: array of const);
+begin
+  FDoInit();
+  SetCaretAndSel(X,Y, x2,y2);
+  SynEdit.CommandProcessor(FTestCommand, '', nil);
+  TestIsCaretAndSel(Name + '(1st)', ExpX1, ExpY1, ExpX2, ExpY2);
   TestIsFullText(Name +  '(1st)', FTestLines(), Repl);
 end;
 
@@ -199,6 +230,7 @@ procedure TTestBasicSynEdit.TestEditEmpty;
 
   end;
 begin
+  FPersistSel := False;
   TrimEnabled := True;
   TrimType := settEditLine;
   PushBaseName('Trim=EditLine');
@@ -234,6 +266,7 @@ end;
 
 procedure TTestBasicSynEdit.TestEditTabs;
 begin
+  FPersistSel := False;
   ReCreateEdit;
   // witout eoAutoIndent
   SynEdit.Options  := SynEdit.Options
@@ -347,6 +380,7 @@ var
 
   end;
 begin
+  FPersistSel := False;
   TrimEnabled := False; // Trim has its own test
 
   // Testing ecChar. Tab is ecTab, so not included
@@ -622,6 +656,7 @@ procedure TTestBasicSynEdit.TestPhysicalLogical;
   end;
 
 begin
+  FPersistSel := False;
   ReCreateEdit;
   SynEdit.TabWidth := 6;
 
@@ -763,6 +798,7 @@ procedure TTestBasicSynEdit.TestLogicalAdjust;
 var
   tb: TSynEditStrings;
 begin
+  FPersistSel := False;
   tb := SynEdit.TextBuffer;
   // #$CC#$81 Combining
   AssertEquals('LogicPosIsAtChar 1 ', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 1)); // a
@@ -1461,6 +1497,7 @@ var
   end;
 
 begin
+  FPersistSel := False;
   for TestOrder := 0 to 11 do // CheckAtPos (8) only runs first 4
     for UseLock := low(Boolean) to high(Boolean) do
       for UseAdjustToNextChar := low(Boolean) to high(Boolean) do
@@ -1500,7 +1537,7 @@ debugln(dbgstr(SynEdit.Text));
 const
   cr = LineEnding;
 begin
-
+  FPersistSel := False;
 
   DoTest('simple insert',              2,2,   2,1,  2,1, 'X',      2,3);
   DoTest('simple insert CR',           2,2,   2,1,  2,1, 'X'+cr,   3,2);
@@ -1539,6 +1576,7 @@ end;
 
 procedure TTestBasicSynEdit.TestCaretEcDeleteWord;
 begin
+  FPersistSel := False;
   FDoInit := @DoInit1;
   FTestLines := @TestLines1;
   FTestCommand := ecDeleteWord;
@@ -1613,6 +1651,7 @@ end;
 
 procedure TTestBasicSynEdit.TestCaretEcDeleteLastWord;
 begin
+  FPersistSel := False;
   FDoInit := @DoInit1;
   FTestLines := @TestLines1;
   FTestCommand := ecDeleteLastWord;
@@ -1680,6 +1719,7 @@ end;
 
 procedure TTestBasicSynEdit.TestCaretEcDeleteEOL;
 begin
+  FPersistSel := False;
   FDoInit := @DoInit1;
   FTestLines := @TestLines1;
   FTestCommand := ecDeleteEOL;
@@ -1713,6 +1753,7 @@ procedure TTestBasicSynEdit.TestWordBreaker;
 var
   WBrker: TSynWordBreaker;
 begin
+  FPersistSel := False;
   WBrker := TSynWordBreaker.Create;
   WBrker.IdentChars := ['a'..'z', 'A'..'Z', '0'..'9']; // not used
   WBrker.WhiteChars := [' ', #9];
@@ -2443,6 +2484,7 @@ const
   var f, r: String;
   var txl: Integer;
 begin
+  FPersistSel := False;
   TheTestText := TestText1;
   txl := length(TheTestText)-1;
   NextTestSetSelection := nextSel(0,0, 0,0);
@@ -2568,6 +2610,63 @@ begin
     PopBaseName;
 
   PopBaseName;
+end;
+
+procedure TTestBasicSynEdit.TestMoveLineUpDown;
+begin
+  FDoInit := @DoInit1;
+  FPersistSel := False;
+  FTestLines := @TestLines2;
+
+  FTestCommand := ecMoveLineUp;
+  TestCommand('ecMoveLineUp - no sel',           1,3,       1,2,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - no sel',           4,3,       4,2,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 1L part sel',      2,3, 4,3,  2,2, 4,2,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 1L part sel',      2,3, 1,4,  2,2, 1,3,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 1L full sel',      1,3, 1,4,  1,2, 1,3,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+
+  TestCommand('ecMoveLineUp - 2L part sel',      2,3, 3,4,  2,2, 3,3,  [2, '123 456 789',  3, 'mno pqr stu', 4, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 2L part sel',      2,3, 1,5,  2,2, 1,4,  [2, '123 456 789',  3, 'mno pqr stu', 4, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 2L full sel',      1,3, 1,5,  1,2, 1,4,  [2, '123 456 789',  3, 'mno pqr stu', 4, 'ABC DEF GHI']);
+
+
+  FTestCommand := ecMoveLineDown;
+  TestCommand('ecMoveLineDown - no sel',           1,2,       1,3,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - no sel',           4,2,       4,3,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - 1L part sel',      2,2, 4,2,  2,3, 4,3,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - 1L part sel',      2,2, 1,3,  2,3, 1,4,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - 1L full sel',      1,2, 1,3,  1,3, 1,4,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+
+  TestCommand('ecMoveLineDown - 2L part sel',      2,2, 3,3,  2,3, 3,4,  [2, 'mno pqr stu', 3, 'ABC DEF GHI', 4, '123 456 789']);
+  TestCommand('ecMoveLineDown - 2L part sel',      2,2, 1,4,  2,3, 1,5,  [2, 'mno pqr stu', 3, 'ABC DEF GHI', 4, '123 456 789']);
+  TestCommand('ecMoveLineDown - 2L full sel',      1,2, 1,4,  1,3, 1,5,  [2, 'mno pqr stu', 3, 'ABC DEF GHI', 4, '123 456 789']);
+
+
+  FPersistSel := true;
+
+  FTestCommand := ecMoveLineUp;
+  TestCommand('ecMoveLineUp - no sel',           1,3,       1,2,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - no sel',           4,3,       4,2,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 1L part sel',      2,3, 4,3,  2,2, 4,2,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 1L part sel',      2,3, 1,4,  2,2, 1,3,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 1L full sel',      1,3, 1,4,  1,2, 1,3,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+
+  TestCommand('ecMoveLineUp - 2L part sel',      2,3, 3,4,  2,2, 3,3,  [2, '123 456 789',  3, 'mno pqr stu', 4, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 2L part sel',      2,3, 1,5,  2,2, 1,4,  [2, '123 456 789',  3, 'mno pqr stu', 4, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineUp - 2L full sel',      1,3, 1,5,  1,2, 1,4,  [2, '123 456 789',  3, 'mno pqr stu', 4, 'ABC DEF GHI']);
+
+
+  FTestCommand := ecMoveLineDown;
+  TestCommand('ecMoveLineDown - no sel',           1,2,       1,3,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - no sel',           4,2,       4,3,       [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - 1L part sel',      2,2, 4,2,  2,3, 4,3,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - 1L part sel',      2,2, 1,3,  2,3, 1,4,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+  TestCommand('ecMoveLineDown - 1L full sel',      1,2, 1,3,  1,3, 1,4,  [2, '123 456 789',  3, 'ABC DEF GHI']);
+
+  TestCommand('ecMoveLineDown - 2L part sel',      2,2, 3,3,  2,3, 3,4,  [2, 'mno pqr stu', 3, 'ABC DEF GHI', 4, '123 456 789']);
+  TestCommand('ecMoveLineDown - 2L part sel',      2,2, 1,4,  2,3, 1,5,  [2, 'mno pqr stu', 3, 'ABC DEF GHI', 4, '123 456 789']);
+  TestCommand('ecMoveLineDown - 2L full sel',      1,2, 1,4,  1,3, 1,5,  [2, 'mno pqr stu', 3, 'ABC DEF GHI', 4, '123 456 789']);
+
 end;
 
 
