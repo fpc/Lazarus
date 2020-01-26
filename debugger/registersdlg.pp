@@ -467,12 +467,16 @@ end;
 
 procedure TRegistersDlg.DoBeginUpdate;
 begin
+  {$IFnDEF WINDOWS}
   lvRegisters.BeginUpdate;
+  {$ENDIF}
 end;
 
 procedure TRegistersDlg.DoEndUpdate;
 begin
+  {$IFnDEF WINDOWS}
   lvRegisters.EndUpdate;
+  {$ENDIF}
   if FNeedUpdateAgain then RegistersChanged(nil);
 end;
 
