@@ -24,7 +24,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils,
+  Types, Math, Classes, SysUtils,
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
@@ -565,7 +565,7 @@ begin
   begin
     f := frame;
     w := NSScroller.scrollerWidth;
-    r := NSMakeRect(0, 0, f.size.width, NSScroller.scrollerWidth);
+    r := NSMakeRect(0, 0, Max(f.size.width,w+1), w); // width<height to create a horizontal scroller
     allocScroller( self, fhscroll, r, avisible);
     fhscroll.setAutoresizingMask(NSViewWidthSizable);
     Result := fhscroll;
@@ -584,7 +584,7 @@ begin
   begin
     f := frame;
     w := NSScroller.scrollerWidth;
-    r := NSMakeRect(f.size.width-w, 0, w, f.size.height);
+    r := NSMakeRect(0, 0, w, Max(f.size.height,w+1)); // height<width to create a vertical scroller
     allocScroller( self, fvscroll, r, avisible);
     fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
     Result := fvscroll;

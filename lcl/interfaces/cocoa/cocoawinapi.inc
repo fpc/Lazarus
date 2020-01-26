@@ -1903,6 +1903,7 @@ begin
     if Assigned(bar) then
     begin
       Result := CocoaScrollBarSetScrollInfo(bar, ScrollInfo);
+      //debugln('TCocoaWidgetSet.SetScrollInfo page=',bar.pageInt,' min=',bar.minInt,' max=',bar.maxInt,' ',bar.lclPos);
       ShowScrollBar(Handle, SBStyle, bar.pageInt < bar.maxInt-bar.minInt);
     end
     else
