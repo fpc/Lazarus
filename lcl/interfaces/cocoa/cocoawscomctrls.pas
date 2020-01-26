@@ -994,6 +994,7 @@ var
   lTableLV: TCocoaTableListView;
   ns: NSRect;
   lclcb: TLCLListViewCallback;
+  sz: NSSize;
 begin
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn('[TCocoaWSCustomListView.CreateHandle] AWinControl='+IntToStr(PtrInt(AWinControl)));
@@ -1031,6 +1032,10 @@ begin
     ScrollViewSetBorderStyle(lCocoaLV, TCustomListView(AWinControl).BorderStyle);
     UpdateFocusRing(lTableLV, TCustomListView(AWinControl).BorderStyle);
 
+    sz := lTableLV.intercellSpacing;
+    // Windows compatibility. on Windows there's no extra space between columns
+    sz.width := 0;
+    lTableLV.setIntercellSpacing(sz);;
     {$IFDEF COCOA_DEBUG_LISTVIEW}
     WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));
     {$ENDIF}
