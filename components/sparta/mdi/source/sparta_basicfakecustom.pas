@@ -205,7 +205,7 @@ procedure TFormImpl.SetRealBounds(AIndex: Integer; AValue: Integer);
     LFormRect := Rect(0, 0, 0, 0);;
     LCLIntf.GetClientRect(GetForm.Handle, LFormRect);
     LRealValue := GetRealBounds(AIndex);
-    {$IF FPC_FULLVERSION < 301010}
+    {$IF FPC_FULLVERSION < 30101}
     case AIndex of
       0: LValue := LFormRect.Left;
       1: LValue := LFormRect.Top;
