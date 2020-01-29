@@ -3730,6 +3730,8 @@ begin
 end;
 
 procedure TfrCustomMemoView.AssignFont(aCanvas: TCanvas);
+var
+  fs: Integer;
 begin
   {$IFDEF DebugLR}
   DebugLnEnter('AssignFont (%s) INIT: Self.Font.Size=%d aCanvas.Font.Size=%d',
@@ -3741,7 +3743,13 @@ begin
     aCanvas.Font.Name := 'default';
   //Font := Self.Font;
   if not IsPrinting and (ScaleY<>0) then
-    ACanvas.Font.Height := -Round(Self.Font.Size * 96 / 72 * ScaleY);
+  begin
+    if Self.Font.Size = 0 then
+      fs := Round((-GetFontData(Self.Font.Handle).Height * 72 / Self.Font.PixelsPerInch))
+    else
+      fs := Self.Font.Size;
+    ACanvas.Font.Height := -Round(fs * Self.Font.PixelsPerInch / 72 * ScaleY);
+  end;
   {$IFDEF DebugLR}
   DebugLnExit('AssignFont (%s) DONE: Self.Font.Size=%d aCanvas.Font.Size=%d',
     [self.Font.Name,Self.Font.Size,ACanvas.Font.Size]);
@@ -4014,7 +4022,11 @@ var
 begin
   WCanvas := TempBmp.Canvas;
   WCanvas.Font.Assign(Font);
-  WCanvas.Font.Height := -Round(Font.Size * 96 / 72);
+  if WCanvas.Font.Size = 0 then
+    size := Round((-GetFontData(WCanvas.Font.Handle).Height * 72 / WCanvas.Font.PixelsPerInch))
+  else
+    size := WCanvas.Font.Size;
+  WCanvas.Font.Height := -Round(size * WCanvas.Font.PixelsPerInch / 72);
   {$IFDEF DebugLR}
   DebugLnEnter('TfrMemoView.WrapMemo INI Font.PPI=%d Font.Size=%d Canvas.Font.PPI=%d WCanvas.Font.Size=%d',
     [Font.PixelsPerInch, Font.Size,Canvas.Font.PixelsPerInch,WCanvas.Font.Size]);
@@ -4162,7 +4174,11 @@ var
     // calc our reference at 100% and then scale it
     // NOTE: this should not be r((Self.Font.Size*96/72 + LineSpacing)*ScaleY)
     //       as our base at 100% is rounded.
-    thf := Round(Self.Font.Size*96/72 + LineSpacing)* ScaleY;
+    if Self.Font.Size = 0 then
+      i := Round((-GetFontData(Self.Font.Handle).Height * 72 / Self.Font.PixelsPerInch))
+    else
+      i := Self.Font.Size;
+    thf := Round(i*96/72 + LineSpacing)* ScaleY;
     // Corrects font height, that's the total line height minus the scaled linespacing
     Canvas.Font.Height := -Round(thf - LineSpc);
     {$IFDEF DebugLR}
@@ -4237,7 +4253,11 @@ var
           x:=x+dx-VHeight;
       end;
       curx := x + InternalGapX;
-      th := -Canvas.Font.Height + Round(LineSpacing * ScaleY);
+      if Canvas.Font.Height = 0 then
+        i := GetFontData(Canvas.Font.Reference.Handle).Height
+      else
+        i := Canvas.Font.Height;
+      th := -i + Round(LineSpacing * ScaleY);
       CurStrNo := 0;
       for i := 0 to Memo1.Count - 1 do
         OutLine(Memo1[i]);
@@ -4318,7 +4338,11 @@ begin
   {$ENDIF}
   CalcRect := Rect(0, 0, dx, dy);
   Canvas.Font.Assign(Font);
-  Canvas.Font.Height := -Round(Font.Size * 96 / 72);
+  if Font.Size = 0 then
+    n := Round((-GetFontData(Font.Handle).Height * 72 / Font.PixelsPerInch))
+  else
+    n := Font.Size;
+  Canvas.Font.Height := -Round(n * 96 / 72);
   {$IFDEF DebugLR}
   DebugLn('Canvas.Font.PPI=%d Canvas.Font.Size=%d',[Canvas.Font.PixelsPerInch,Canvas.Font.Size]);
   {$ENDIF}
