@@ -1508,22 +1508,13 @@ begin
   System.EnterCriticalsection(ACritSec^);
 end;
 
-(*function TQtWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+function TCDWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
-var
-  i: integer;
-  Desktop: QDesktopWidgetH;
 begin
-  Desktop := QApplication_desktop();
-  Result := True;
-  for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
-  begin
-    Result := Result and lpfnEnum(i + 1, 0, nil, dwData);
-    if not Result then break;
-  end;
+  Result := lpfnEnum(1, 0, nil, dwData);
 end;
 
-
+(*
 function CharsetToQtCharSet(const ALCLCharset: Byte): QFontDatabaseWritingSystem;
 begin
   Result := QFontDatabaseAny;
@@ -2909,25 +2900,16 @@ begin
   else
     Result := 0;
 end;
-
-function TQtWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
-var
-  Desktop: QDesktopWidgetH;
+*)
+function TCDWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 begin
-  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor = 0);
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor <> 1);
   if not Result then Exit;
-  Desktop := QApplication_desktop();
-  Dec(Monitor);
-  Result := (Monitor >= 0) and (Monitor < PtrUInt(QDesktopWidget_numScreens(Desktop)));
-  if not Result then Exit;
-  QDesktopWidget_screenGeometry(Desktop, @lpmi^.rcMonitor, Monitor);
-  QDesktopWidget_availableGeometry(Desktop, @lpmi^.rcWork, Monitor);
-  if PtrUInt(QDesktopWidget_primaryScreen(Desktop)) = Monitor then
-    lpmi^.dwFlags := MONITORINFOF_PRIMARY
-  else
-    lpmi^.dwFlags := 0;
+  lpmi^.rcMonitor:=Types.Rect(0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+  lpmi^.rcWork:=lpmi^.rcMonitor;
+  lpmi^.dwFlags := MONITORINFOF_PRIMARY
 end;
-
+(*
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetDeviceSize
   Params:  none
