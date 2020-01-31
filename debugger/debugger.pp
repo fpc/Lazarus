@@ -1964,9 +1964,6 @@ end;
 { TDebuggerConfigStore }
 
 procedure TDebuggerConfigStore.Load;
-const
-  OLD_GDB_DBG_NAME = 'GNU debugger (gdb)';
-  OLD_SSH_DBG_NAME = 'GNU debugger through SSH (gdb)';
 begin
   inherited;
   ConfigStore.AppendBasePath('WatchesDlg/');

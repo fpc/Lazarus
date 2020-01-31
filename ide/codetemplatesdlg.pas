@@ -36,7 +36,7 @@ uses
   LCLProc, Forms, Controls, Dialogs, ClipBrd, StdCtrls, ExtCtrls, Menus,
   ButtonPanel, EditBtn,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8Classes, LazLoggerBase, LazStringUtils,
+  FileUtil, LazFileUtils, LazLoggerBase, LazStringUtils,
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete,
   // codetools

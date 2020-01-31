@@ -51,7 +51,7 @@ uses
   // LazControls
   ExtendedNotebook,
   // LazUtils
-  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes,
+  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
   LazMethodList, LazLoggerBase, LazLogger, Translations, LazUtilities, LazTracer,
   LazStringUtils,
   // codetools
@@ -10245,7 +10245,6 @@ end;
 procedure TSourceEditorManager.ReloadEditorOptions;
 var
   i: Integer;
-  Filename: string;
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ReloadEditorOptions;
