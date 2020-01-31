@@ -3368,7 +3368,7 @@ end;
 
 procedure TRegistersList.InvalidateItems;
 var
-  i, j: Integer;
+  i: Integer;
 begin
   Assert(not Immutable, 'TRegisterList.InvalidateItems Immutable');
   if Count = 0 then
