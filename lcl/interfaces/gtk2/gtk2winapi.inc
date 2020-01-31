@@ -2784,7 +2784,7 @@ begin
         l:=StrLen(Lines[i]);
         DrawLine(Lines[i], l, theRect.Top);
         dec(pIndex,l+length(LineEnding));
-        GetTextExtentPoint(DC, Lines[i], l, Size);
+        GetTextExtentPoint(DC, Lines[i], l, Size{%H-});
         LineHeight := Size.cY;
       end
       else

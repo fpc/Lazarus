@@ -50,7 +50,7 @@ type
   published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
     class function InvalidateStartY(const FixedHeight, RowOffset: Integer): integer; virtual;
-    class procedure Invalidate(sender: TCustomGrid); virtual;
+    class procedure Invalidate(sender: TCustomGrid); virtual; reintroduce;
     class function GetEditorBoundsFromCellRect(ACanvas: TCanvas;
       const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect; virtual;
   end;
