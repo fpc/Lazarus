@@ -2903,7 +2903,7 @@ end;
 *)
 function TCDWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 begin
-  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor <> 1);
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) and (Monitor = 1);
   if not Result then Exit;
   lpmi^.rcMonitor:=Types.Rect(0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
   lpmi^.rcWork:=lpmi^.rcMonitor;
