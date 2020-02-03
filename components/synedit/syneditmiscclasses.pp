@@ -2951,21 +2951,21 @@ function TSynSizedDifferentialAVLTree.FindNodeAtPosition(APosition: INteger;
   AMode: TSynSizedDiffAVLFindMode; out aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
 var
-  NxtPrv: Array [0..1] of TSynSizedDifferentialAVLNode;
-  NxtPrvBefore, NxtPrvPos: Array [0..1] of Integer;
+  NxtPrv: TSynSizedDifferentialAVLNode;
+  NxtPrvBefore, NxtPrvPos: Integer;
 
-  procedure Store(i: integer; N: TSynSizedDifferentialAVLNode); inline;
+  procedure Store(N: TSynSizedDifferentialAVLNode); inline;
   begin
-    NxtPrv[i] := N;
-    NxtPrvBefore[i] := aSizesBeforeSum;
-    NxtPrvPos[i]    := aStartPosition;
+    NxtPrv := N;
+    NxtPrvBefore := aSizesBeforeSum;
+    NxtPrvPos    := aStartPosition;
   end;
 
-  function Restore(i: integer): TSynSizedDifferentialAVLNode; inline;
+  function Restore: TSynSizedDifferentialAVLNode; inline;
   begin
-    Result := NxtPrv[i];
-    aSizesBeforeSum := NxtPrvBefore[i];
-    aStartPosition  := NxtPrvPos[i];
+    Result := NxtPrv;
+    aSizesBeforeSum := NxtPrvBefore;
+    aStartPosition  := NxtPrvPos;
   end;
 
   function CreateRoot: TSynSizedDifferentialAVLNode; inline;
@@ -2998,8 +2998,7 @@ var
 begin
   aSizesBeforeSum := 0;
   aStartPosition := 0;
-  Store(0, nil);
-  Store(1, nil);
+  Store(nil);
   aStartPosition := fRootOffset;
   Result := FRoot;
   if (Result = nil) then begin
@@ -3018,12 +3017,13 @@ begin
         case AMode of
           afmCreate: Result := CreateLeft(Result, aStartPosition);
           afmNil:    Result := nil;
-          afmPrev:   Result := Restore(0); // Precessor
+          afmPrev:   Result := Restore; // Precessor
           //afmNext:   Result := ; //already contains next node
         end;
         break;
       end;
-      Store(1, Result); // Successor
+      if AMode = afmNext then
+        Store(Result); // Successor
       Result := Result.FLeft;
     end
 
@@ -3040,12 +3040,13 @@ begin
         case AMode of
           afmCreate: Result := CreateRight(Result, aStartPosition);
           afmNil:    Result := nil;
-          afmNext:   Result := Restore(1); // Successor
+          afmNext:   Result := Restore; // Successor
           //afmPrev :  Result := ; //already contains prev node
         end;
         break;
       end;
-      Store(0, Result); // Precessor
+      if AMode = afmPrev then
+        Store(Result); // Precessor
       aSizesBeforeSum := aSizesBeforeSum + Result.FSize;
       Result := Result.FRight;
     end;
