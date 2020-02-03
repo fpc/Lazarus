@@ -3029,11 +3029,13 @@ begin
 
     else
     if APosition = aStartPosition then begin
+      aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum;
       break;
     end
 
     else
     if aStartPosition < APosition then begin
+      aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum;
       if (Result.FRight = nil) then begin
         case AMode of
           afmCreate: Result := CreateRight(Result, aStartPosition);
@@ -3044,7 +3046,7 @@ begin
         break;
       end;
       Store(0, Result); // Precessor
-      aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum + Result.FSize;
+      aSizesBeforeSum := aSizesBeforeSum + Result.FSize;
       Result := Result.FRight;
     end;
   end; // while
@@ -3078,20 +3080,26 @@ end;
 procedure TSynSizedDifferentialAVLTree.AdjustForLinesDeleted(AStartLine, ALineCount: Integer);
 var
   Current : TSynSizedDifferentialAVLNode;
-  CurrentLine, LastLineToDelete: Integer;
+  CurrentLine: Integer;
 begin
   Current := TSynSizedDifferentialAVLNode(fRoot);
   CurrentLine := FRootOffset;;
-  LastLineToDelete := AStartLine + ALineCount - 1; // only valid for delete; ALineCount < 0
+//  LastLineToDelete := AStartLine + ALineCount - 1; // only valid for delete; ALineCount < 0
 
   while (Current <> nil) do begin
     CurrentLine := CurrentLine + Current.FPositionOffset;
 
-    if (AStartLine = CurrentLine) or
-       ((AStartLine < CurrentLine) and (LastLineToDelete >= CurrentLine)) then begin
-      { $IFDEF AssertSynMemIndex}
-      raise Exception.Create('TSynEditMarkLineList.AdjustForLinesDeleted node to remove');
-      { $ENDIF}
+    if (AStartLine = CurrentLine) then begin
+      Current := Current.FRight;
+      if Current = nil then
+        break;
+      assert((Current.FPositionOffset > ALineCount), 'TSynSizedDifferentialAVLTree.AdjustForLinesDeleted: (Current=nil) or (Current.FPositionOffset > ALineCount)');
+      Current.FPositionOffset := Current.FPositionOffset - ALineCount;
+      break;
+      // ((AStartLine < CurrentLine) and (LastLineToDelete >= CurrentLine)) then begin
+      //{ $IFDEF AssertSynMemIndex}
+      //raise Exception.Create('TSynEditMarkLineList.AdjustForLinesDeleted node to remove');
+      //{ $ENDIF}
     end
 
     else if AStartLine < CurrentLine then begin
