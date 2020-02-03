@@ -121,6 +121,8 @@ type
     FAltStartLinePos, FAltStartBytePos: Integer; // 1 based // Alternate, for min selection
     FEndLinePos: Integer; // 1 based
     FEndBytePos: Integer; // 1 based
+    FLeftCharPos: Integer;
+    FRightCharPos: Integer;
     FPersistent: Boolean;
     FPersistentLock, FWeakPersistentIdx, FStrongPersistentIdx: Integer;
     FIgnoreNextCaretMove: Boolean;
@@ -131,9 +133,13 @@ type
     FLastCarePos: TPoint;
     FStickyAutoExtend: Boolean;
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
+    function GetColumnEndBytePos(ALinePos: Integer): integer;
+    function GetColumnStartBytePos(ALinePos: Integer): integer;
     function  GetFirstLineBytePos: TPoint;
     function  GetLastLineBytePos: TPoint;
     function GetLastLineHasSelection: Boolean;
+    function GetColumnLeftCharPos: Integer;
+    function GetColumnRightCharPos: Integer;
     procedure SetAutoExtend(AValue: Boolean);
     procedure SetCaret(const AValue: TSynEditCaret);
     procedure SetEnabled(const Value : Boolean);
@@ -197,6 +203,12 @@ type
     // First and Last Pos are ordered according to the text flow (LTR)
     property  FirstLineBytePos: TPoint read GetFirstLineBytePos;
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
+    // For column mode selection: Phys-Char pos of left and right side. (Start/End could each be either left or right)
+    property  ColumnLeftCharPos: Integer read GetColumnLeftCharPos;
+    property  ColumnRightCharPos: Integer read GetColumnRightCharPos;
+    property  ColumnStartBytePos[ALinePos: Integer]: integer read GetColumnStartBytePos;
+    property  ColumnEndBytePos[ALinePos: Integer]: integer read GetColumnEndBytePos;
+    //
     property  LastLineHasSelection: Boolean read GetLastLineHasSelection;
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
     property  Caret: TSynEditCaret read FCaret write SetCaret;
@@ -1858,6 +1870,8 @@ procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBy
 var
   empty, back: Boolean;
 begin
+  FLeftCharPos  := -1;
+  FRightCharPos := -1;
   if FIsSettingText then exit;
   if FPersistent or (FPersistentLock > 0) or
      ((FCaret <> nil) and (not FCaret.Locked))
@@ -2232,6 +2246,8 @@ begin
   FStickyAutoExtend := False;
   FAltStartLinePos := -1;
   FAltStartBytePos := -1;
+  FLeftCharPos  := -1;
+  FRightCharPos := -1;
   WasAvail := SelAvail;
 
   ConstrainStartLineBytePos(Value);
@@ -2262,6 +2278,8 @@ end;
 
 procedure TSynEditSelection.AdjustStartLineBytePos(Value: TPoint);
 begin
+  FLeftCharPos  := -1;
+  FRightCharPos := -1;
   if FEnabled then begin
     ConstrainStartLineBytePos(Value);
 
@@ -2294,6 +2312,8 @@ var
   s: string;
 {$ENDIF}
 begin
+  FLeftCharPos  := -1;
+  FRightCharPos := -1;
   if FEnabled then begin
     FStickyAutoExtend := False;
 
@@ -2424,6 +2444,20 @@ begin
   if Result <> BytePos then debugln(['Selection needed byte adjustment  Line=', Line, ' BytePos=', BytePos, ' Result=', Result]);
 end;
 
+function TSynEditSelection.GetColumnEndBytePos(ALinePos: Integer): integer;
+begin
+  FInternalCaret.Invalidate;
+  FInternalCaret.LineCharPos := Point(GetColumnRightCharPos, ALinePos);
+  Result := FInternalCaret.BytePos;
+end;
+
+function TSynEditSelection.GetColumnStartBytePos(ALinePos: Integer): integer;
+begin
+  FInternalCaret.Invalidate;
+  FInternalCaret.LineCharPos := Point(GetColumnLeftCharPos, ALinePos);
+  Result := FInternalCaret.BytePos;
+end;
+
 function TSynEditSelection.GetFirstLineBytePos: TPoint;
 begin
   if IsBackwardSel then
@@ -2443,6 +2477,34 @@ end;
 function TSynEditSelection.GetLastLineHasSelection: Boolean;
 begin
   Result := (LastLineBytePos.x > 1) or ((FActiveSelectionMode = smLine) and FForceSingleLineSelected);
+end;
+
+function TSynEditSelection.GetColumnLeftCharPos: Integer;
+begin
+  if FLeftCharPos < 0 then begin
+    FInternalCaret.Invalidate;
+    FInternalCaret.LineBytePos := FirstLineBytePos;
+    FLeftCharPos := FInternalCaret.CharPos;
+    FInternalCaret.LineBytePos := LastLineBytePos;
+    FRightCharPos := FInternalCaret.CharPos;
+    if FLeftCharPos > FRightCharPos then
+      SwapInt(FLeftCharPos, FRightCharPos);
+  end;
+  Result := FLeftCharPos;
+end;
+
+function TSynEditSelection.GetColumnRightCharPos: Integer;
+begin
+  if FLeftCharPos < 0 then begin
+    FInternalCaret.Invalidate;
+    FInternalCaret.LineBytePos := FirstLineBytePos;
+    FLeftCharPos := FInternalCaret.CharPos;
+    FInternalCaret.LineBytePos := LastLineBytePos;
+    FRightCharPos := FInternalCaret.CharPos;
+    if FLeftCharPos > FRightCharPos then
+      SwapInt(FLeftCharPos, FRightCharPos);
+  end;
+  Result := FRightCharPos;
 end;
 
 procedure TSynEditSelection.SetAutoExtend(AValue: Boolean);
