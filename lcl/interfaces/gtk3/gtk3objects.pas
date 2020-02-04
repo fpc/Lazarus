@@ -1269,25 +1269,19 @@ end;
 
 procedure TGtk3DeviceContext.drawText(X, Y: Integer; AText: PChar; ALen: Integer);
 var
-  //e: cairo_font_extents_t;
   R, G, B: Double;
   gColor: TGdkColor;
   Attr: PPangoAttribute;
   AttrList: PPangoAttrList;
   UseBack: boolean;
+  ornt:integer;
 begin
   cairo_save(Widget);
   try
-    {
-    // TranslateCairoToDevice;
-    // cairo_surface_get_device_offset(CairoSurface, @dx, @dy);
-    cairo_font_extents(Widget, @e);
-    if e.ascent <> 0 then
-    begin
-      // WriteLn('EXTENTS !!!! ',Format('%2.2n',[e.ascent]));
-    end;
-    }
-    cairo_move_to(Widget, X, Y {+ e.ascent});
+    cairo_move_to(Widget, X, Y);
+    ornt := Self.FCurrentFont.FLogFont.lfOrientation;
+    if ornt<>0 then
+      cairo_rotate(Widget, - pi * (ornt / 10)/180);
     ColorToCairoRGB(TColor(CurrentTextColor), R, G, B);
     cairo_set_source_rgb(Widget, R, G, B);
 
@@ -1303,7 +1297,6 @@ begin
       FCurrentFont.Layout^.set_attributes(AttrList);
     end;
 
-    // WriteLn('Family: ',FCurrentFont.Handle^.get_family,' size ',FCurrentFont.Handle^.get_size,' weight ',FCurrentFont.Handle^.get_weight);
     pango_cairo_show_layout(Widget, FCurrentFont.Layout);
 
     if UseBack then
