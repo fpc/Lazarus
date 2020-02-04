@@ -5664,18 +5664,12 @@ begin
     FTheDebugger.FFpcSpecificHandlerCallFin.SetByAddrMethod := ibmAddrDirect;
     FTheDebugger.FFpcSpecificHandler.SetByAddrMethod := ibmAddrIndirect; // must be at first asm line
 
-{$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
-    FTheDebugger.FExceptionBreak.SetByAddr(Self, True);
-    FTheDebugger.FBreakErrorBreak.SetByAddr(Self, True);
-    FTheDebugger.FRunErrorBreak.SetByAddr(Self, True);
-{$Else}
     if ieRaiseBreakPoint in DbgProp.InternalExceptionBreakPoints
     then FTheDebugger.FExceptionBreak.SetByAddr(Self);
     if ieBreakErrorBreakPoint in DbgProp.InternalExceptionBreakPoints
     then FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
     if ieRunErrorBreakPoint in DbgProp.InternalExceptionBreakPoints
     then FTheDebugger.FRunErrorBreak.SetByAddr(Self);
-{$ENDIF}
     if (not ((FTheDebugger.FExceptionBreak.IsBreakSet  or not (ieRaiseBreakPoint      in DbgProp.InternalExceptionBreakPoints)) and
              (FTheDebugger.FBreakErrorBreak.IsBreakSet or not (ieBreakErrorBreakPoint in DbgProp.InternalExceptionBreakPoints)) and
              (FTheDebugger.FRunErrorBreak.IsBreakSet   or not (ieRunErrorBreakPoint   in DbgProp.InternalExceptionBreakPoints)) )) and
@@ -8346,11 +8340,9 @@ begin
   FFpcSpecificHandlerCallFin:= TGDBMIInternalBreakPoint.Create('');
   FSehFinallyBreaks  := TGDBMIInternalSehFinallyBreakPointList.Create;
   FSehCatchesBreaks  := TGDBMIInternalAddrBreakPointList.Create;
-{$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
-  FBreakErrorBreak.UseForceFlag := True;
-  FRunErrorBreak.UseForceFlag := True;
-  FExceptionBreak.UseForceFlag := True;
-{$ENDIF}
+  FBreakErrorBreak.UseForceFlag := not TGDBMIDebuggerProperties(GetProperties).DisableForcedBreakpoint;
+  FRunErrorBreak.UseForceFlag   := not TGDBMIDebuggerProperties(GetProperties).DisableForcedBreakpoint;
+  FExceptionBreak.UseForceFlag  := not TGDBMIDebuggerProperties(GetProperties).DisableForcedBreakpoint;
 
   FInstructionQueue := TGDBMIDbgInstructionQueue.Create(Self);
   FCommandQueue := TGDBMIDebuggerCommandList.Create;
@@ -12643,7 +12635,9 @@ begin
   FBreaks[ALoc].BreakAddr := 0;
   FBreaks[ALoc].BreakFunction := '';
 
-  if UseForceFlag and ACmd.FTheDebugger.CanForceBreakPoints then
+  if UseForceFlag and ACmd.FTheDebugger.CanForceBreakPoints and
+     (ABreakLoc <> '') and not(ABreakLoc[1] in ['+', '*'])
+  then
   begin
     if (not ACmd.ExecuteCommand('-break-insert -f %s', [ABreakLoc], R)) or
        (R.State = dsError)
