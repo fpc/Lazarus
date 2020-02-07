@@ -3375,7 +3375,9 @@ begin
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
   if (ScrollInfo.fMask and SIF_Range > 0) then
     ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
-  Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
+  { ~bk passing BRedraw True/False might change the windows visual enabled state
+        that would not be reflected in TScollBar.Enabled property }
+  Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw and WidgetSet.IsWindowEnabled(Handle));
 end;
 
 {------------------------------------------------------------------------------
