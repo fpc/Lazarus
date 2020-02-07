@@ -53,8 +53,8 @@ type
     FPropertyName: String;
     procedure FillCollectionListBox;
     function GetDataSet: TDataSet;
-    procedure SelectInObjectInspector;
-    procedure UnSelectInObjectInspector;
+    procedure SelectInObjectInspector(ForceUpdate: Boolean);
+    procedure UnSelectInObjectInspector(ForceUpdate: Boolean);
     procedure UpdDesignHook(aSelection: TPersistentSelectionList);
   protected
     procedure UpdateCaption;
@@ -114,7 +114,7 @@ begin
   // (OnClick does not)
   UpdateButtons;
   UpdateCaption;
-  SelectInObjectInspector;
+  SelectInObjectInspector(False);
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actAddExecute(Sender: TObject);
@@ -125,7 +125,7 @@ begin
   FillCollectionListBox;
   if CollectionListBox.Items.Count > 0 then
     CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
-  SelectInObjectInspector;
+  SelectInObjectInspector(True);
   UpdateButtons;
   UpdateCaption;
   Modified;
@@ -169,7 +169,7 @@ begin
   if (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation,
                  [mbYes, mbNo], 0) = mrYes) then
     try
-      UnSelectInObjectInspector;
+      UnSelectInObjectInspector(True);
       FCollection.Clear;
     finally
       RefreshPropertyValues;
@@ -193,7 +193,7 @@ begin
 
   CollectionListBox.ItemIndex := -1;
   // unselect all items in OI (collections can act strange on delete)
-  UnSelectInObjectInspector;
+  UnSelectInObjectInspector(True);
   // now delete
   FCollection.Items[I].Free;
   // update listbox after whatever happened
@@ -204,9 +204,8 @@ begin
   if I >= 0 then
   begin
     CollectionListBox.ItemIndex := I;
-    SelectInObjectInspector;
+    SelectInObjectInspector(False);
   end;
-  //debugln('TDBGridColumnsPropertyEditorForm.DeleteClick B');
   Modified;
   UpdateButtons;
   UpdateCaption;
@@ -247,7 +246,7 @@ begin
   CollectionListBox.ItemIndex := I + 1;
 
   FillCollectionListBox;
-  SelectInObjectInspector;
+  SelectInObjectInspector(True);
   Modified;
 end;
 
@@ -264,7 +263,7 @@ begin
   CollectionListBox.ItemIndex := I - 1;
 
   FillCollectionListBox;
-  SelectInObjectInspector;
+  SelectInObjectInspector(True);
   Modified;
 end;
 
@@ -365,7 +364,7 @@ begin
   Result:=TCustomDBGrid(FOwnerPersistent).DataSource.DataSet;
 end;
 
-procedure TDBGridColumnsPropertyEditorForm.SelectInObjectInspector;
+procedure TDBGridColumnsPropertyEditorForm.SelectInObjectInspector(ForceUpdate: Boolean);
 var
   I: Integer;
   NewSelection: TPersistentSelectionList;
@@ -373,6 +372,7 @@ begin
   Assert(Assigned(FCollection), 'SelectInObjectInspector: FCollection=Nil.');
   // select in OI
   NewSelection := TPersistentSelectionList.Create;
+  NewSelection.ForceUpdate := ForceUpdate;
   try
     for I := 0 to CollectionListBox.Items.Count - 1 do
       if CollectionListBox.Selected[I] then
@@ -383,11 +383,12 @@ begin
   end;
 end;
 
-procedure TDBGridColumnsPropertyEditorForm.UnSelectInObjectInspector;
+procedure TDBGridColumnsPropertyEditorForm.UnSelectInObjectInspector(ForceUpdate: Boolean);
 var
   EmptySelection: TPersistentSelectionList;
 begin
   EmptySelection := TPersistentSelectionList.Create;
+  EmptySelection.ForceUpdate := ForceUpdate;
   try
     UpdDesignHook(EmptySelection);
   finally
