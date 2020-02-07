@@ -597,12 +597,6 @@ begin
   end else
     Result:=0;
 end;
-
-function UTF8GetStandardCodePage(const stdcp: TStandardCodePageEnum
-  ): TSystemCodePage;
-begin
-  Result:=CP_UTF8;
-end;
 {$ENDIF}
 
 procedure InitLazUtf8;
@@ -641,7 +635,6 @@ begin
   widestringmanager.StrICompAnsiStringProc:=@UTF8StrICompAnsiString;
   widestringmanager.StrLCompAnsiStringProc:=@UTF8StrLCompAnsiString;
   widestringmanager.StrLICompAnsiStringProc:=@UTF8StrLICompAnsiString;
-  widestringmanager.GetStandardCodePageProc:=@UTF8GetStandardCodePage;
   // Does anyone need these two?
   //widestringmanager.StrLowerAnsiStringProc;
   //widestringmanager.StrUpperAnsiStringProc;
