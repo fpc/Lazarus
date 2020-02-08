@@ -49,6 +49,8 @@ Resourcestring
   pjsdUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro = 'Use this browser '
     +'when opening the URL or HTML file of a web browser project';
   pjsdPathOfNodeJsExecutable = 'Path of Node.js executable, macro $(Pas2JSNodeJS)';
+  pjsdHTTPServerOptsLabelCaption = 'HTTP Server extra command-line options (one per line)';
+  pjsdHTTPServerOptsLabelHint = 'Add extra command-line options for the command which starts the webserver.';
 
   // Project options frame
   pjsdWebProjectPas2js = 'Web Project (pas2js)';
@@ -70,6 +72,7 @@ Resourcestring
   pjsdPas2JSBrowserProjectOptions = 'Pas2JS Browser project options';
   pjsdCreateInitialHTMLPage = 'Create initial HTML page';
   pjsdUseBrowserApplicationObject = 'Use Browser Application object';
+
 
   // New NodeJS project options form
   pjsdNodeJSProjectOptions = 'NodeJS project options';

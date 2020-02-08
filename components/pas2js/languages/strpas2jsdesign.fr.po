@@ -43,6 +43,14 @@ msgstr "le fichier \"%s\" n'est pas exécutable"
 msgid "file \"%s\" not found"
 msgstr "fichier \"%s\" non trouvé"
 
+#: strpas2jsdesign.pjsdhttpserveroptslabelcaption
+msgid "HTTP Server extra command-line options (one per line)"
+msgstr ""
+
+#: strpas2jsdesign.pjsdhttpserveroptslabelhint
+msgid "Add extra command-line options for the command which starts the webserver."
+msgstr ""
+
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
 msgstr "Gérer la page HTML"

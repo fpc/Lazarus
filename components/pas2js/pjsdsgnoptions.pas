@@ -59,8 +59,10 @@ type
   private
     FCachedOptions: array[TPas2jsCachedOption] of TPas2jsCachedValue;
     FChangeStamp: int64;
+    FHTTPServerOpts: TStrings;
     FSavedStamp: int64;
     FStartAtPort: Word;
+    procedure DoOptsChanged(Sender: TObject);
     function GetBrowserFileName: String;
     function GetCompilerFilename: string;
     function GetStartAtPort: Word;
@@ -70,6 +72,7 @@ type
     function GetParsedOptionValue(Option: TPas2jsCachedOption): string;
     procedure SetBrowserFileName(AValue: String);
     procedure SetWebServerFileName(AValue: string);
+    procedure SetHTTPServerOpts(AValue: TStrings);
     procedure SetModified(AValue: boolean);
     procedure SetCompilerFilename(AValue: string);
     procedure SetNodeJSFileName(AValue: string);
@@ -91,6 +94,7 @@ type
   public
     property CompilerFilename: string read GetCompilerFilename write SetCompilerFilename;
     Property WebServerFileName : string Read GetWebServerFileName Write SetWebServerFileName;
+    Property HTTPServerOpts : TStrings Read FHTTPServerOpts Write SetHTTPServerOpts;
     Property NodeJSFileName : string Read GetNodeJSFileName Write SetNodeJSFileName;
     Property BrowserFileName : String Read GetBrowserFileName Write SetBrowserFileName;
     Property StartAtPort : Word Read GetStartAtPort Write SetStartAtPort;
@@ -208,6 +212,11 @@ begin
   Result:=FCachedOptions[p2jcoBrowserFilename].RawValue;
 end;
 
+procedure TPas2jsOptions.DoOptsChanged(Sender: TObject);
+begin
+  Self.Modified:=True;
+end;
+
 function TPas2jsOptions.GetCompilerFilename: string;
 begin
   Result:=FCachedOptions[p2jcoCompilerFilename].RawValue;
@@ -251,10 +260,13 @@ begin
   FCachedOptions[p2jcoBrowserFilename].RawValue:=PJSDefaultBrowser;
   for o in TPas2jsCachedOption do
     FCachedOptions[o].Stamp:=LUInvalidChangeStamp64;
+  FHTTPServerOpts:=TStringList.Create;
+  TStringList(FHTTPServerOpts).OnChange:=@DoOptsChanged;
 end;
 
 destructor TPas2jsOptions.Destroy;
 begin
+  FreeAndNil(FHTTPServerOpts);
   inherited Destroy;
 end;
 
@@ -290,6 +302,7 @@ end;
 Const
   KeyCompiler = 'compiler/value';
   KeyHTTPServer = 'webserver/value';
+  KeyHTTPServerOptions = 'webserver/extraoptions/value';
   KeyBrowser = 'webbrowser/value';
   KeyNodeJS = 'nodejs/value';
   KeyStartPortAt = 'webserver/startatport/value';
@@ -302,6 +315,7 @@ begin
   BrowserFileName:=Cfg.GetValue(KeyBrowser,PJSDefaultBrowser);
   NodeJSFileName:=Cfg.GetValue(KeyNodeJS,PJSDefaultNodeJS);
   StartAtPort :=Cfg.GetValue(KeyStartPortAt,PJSDefaultStartAtPort);
+  Cfg.GetValue(KeyHTTPServerOptions,FHTTPServerOpts);
   Modified:=false;
 end;
 
@@ -313,6 +327,7 @@ begin
   Cfg.SetDeleteValue(KeyStartPortAt,StartAtPort,PJSDefaultStartAtPort);
   Cfg.SetDeleteValue(KeyNodeJS,NodeJSFileName,PJSDefaultNodeJS);
   Cfg.SetDeleteValue(KeyBrowser,BrowserFileName,PJSDefaultBrowser);
+  Cfg.SetValue(KeyHTTPServerOptions,FHTTPServerOpts);
   Modified:=false;
 end;
 
@@ -398,6 +413,12 @@ procedure TPas2jsOptions.SetWebServerFileName(AValue: string);
 begin
   AValue:=TrimFilename(AValue);
   SetCachedOption(p2jcoHTTPServerFilename,AValue);
+end;
+
+procedure TPas2jsOptions.SetHTTPServerOpts(AValue: TStrings);
+begin
+  if FHTTPServerOpts=AValue then Exit;
+  FHTTPServerOpts.Assign(AValue);
 end;
 
 procedure TPas2jsOptions.SetStartAtPort(AValue: Word);

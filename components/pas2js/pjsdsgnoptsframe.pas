@@ -38,6 +38,8 @@ Type
     Pas2jsPathLabel: TLabel;
     ServerPortLabel: TLabel;
     ServerPortSpinEdit: TSpinEdit;
+    HTTPServerOptsLabel: TLabel;
+    HTTPServerOptionsMemo: TMemo;
     procedure BBrowserBrowseButtonClick(Sender: TObject);
     procedure HTTPServerBrowseButtonClick(Sender: TObject);
     procedure NodeJSBrowseButtonClick(Sender: TObject);
@@ -183,7 +185,6 @@ var
   DefPas2jsExe: String;
 begin
   DefPas2jsExe:=GetStandardPas2jsExe;
-
   Pas2jsPathLabel.Caption:=SafeFormat(pjsdPathOfXMacroPas2js, ['pas2js'+GetExeExt]);
   Pas2jsPathLabel.Hint:=Format(
     pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [DefPas2jsExe]);
@@ -202,6 +203,8 @@ begin
   BrowserLabel.Hint:=pjsdUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro;
 
   NodeJSLabel.Caption:=pjsdPathOfNodeJsExecutable;
+  HTTPServerOptsLabel.Caption:=pjsdHTTPServerOptsLabelCaption;
+  HTTPServerOptsLabel.Hint:=pjsdHTTPServerOptsLabelHint;
 end;
 
 procedure TPas2jsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -209,8 +212,9 @@ begin
   SetComboBoxText(Pas2jsPathComboBox,PJSOptions.CompilerFilename,cstFilename,30);
   SetComboBoxText(HTTPServerComboBox,PJSOptions.WebServerFileName,cstFilename,30);
   ServerPortSpinEdit.Value:=PJSOptions.StartAtPort;
-  SetComboBoxText(BrowserComboBox,PJSOptions.BrowserFileName,cstFilename,30);
+   SetComboBoxText(BrowserComboBox,PJSOptions.BrowserFileName,cstFilename,30);
   SetComboBoxText(NodeJSComboBox,PJSOptions.NodejsFileName,cstFilename,30);
+  HTTPServerOptionsMemo.Lines:=PJSOptions.HTTPServerOpts;
 end;
 
 procedure TPas2jsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -220,6 +224,7 @@ begin
   PJSOptions.StartAtPort:=ServerPortSpinEdit.Value;
   PJSOptions.BrowserFileName:=BrowserComboBox.Text;
   PJSOptions.NodeJSFileName:=NodeJSComboBox.Text;
+  PJSOptions.HTTPServerOpts:=HTTPServerOptionsMemo.Lines;
   If PJSOptions.Modified then
     PJSOptions.Save;
 end;

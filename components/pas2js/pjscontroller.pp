@@ -156,6 +156,7 @@ begin
   FProcess.Parameters.Add('-q');
   FProcess.Parameters.Add('-p');
   FProcess.Parameters.Add(IntToStr(Port));
+  FProcess.Parameters.AddStrings(PJSOptions.HTTPServerOpts);
   {$IFDEF WINDOWS}
   FProcess.Options:=[poNoConsole];
   {$ENDIF}
