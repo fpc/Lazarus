@@ -490,9 +490,8 @@ var
 begin
   with AScrollBar do
   begin
-    AMax := Max - 1;
+    AMax := Max;
     if AMax < Min then AMax := Min;
-    if AMax < Max then AMax := Max;
 
     ScrollInfo.cbSize := SizeOf(TScrollInfo);
     ScrollInfo.fMask := SIF_POS or SIF_Range or SIF_PAGE;
