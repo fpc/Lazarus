@@ -872,8 +872,10 @@ begin
   if Assigned(DTPickersParentForm) then begin
     DTPickersParentForm.AddHandlerOnVisibleChanged(@VisibleOfParentChanged);
     DTPickersParentForm.FreeNotification(Self);
-  end;
-  PopupMode := pmAuto;
+    PopupParent := DTPickersParentForm;
+    PopupMode := pmExplicit;
+  end else
+    PopupMode := pmAuto;
 
   P := Point(0, 0);
 
