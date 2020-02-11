@@ -45,11 +45,11 @@ msgstr "arquivo \"%s\" não encontrado"
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelcaption
 msgid "HTTP Server extra command-line options (one per line)"
-msgstr ""
+msgstr "Opções extra de linha de comando do servidor HTTP (uma por linha)"
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelhint
 msgid "Add extra command-line options for the command which starts the webserver."
-msgstr ""
+msgstr "Adicionar opções extra de linha de comando para o comando que inicia o servidor web."
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
