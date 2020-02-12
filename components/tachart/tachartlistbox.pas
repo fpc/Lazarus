@@ -289,10 +289,6 @@ procedure TChartListbox.DrawItem(
   AIndex: Integer; ARect: TRect; AState: TOwnerDrawState);
 { draws the listbox item }
 const
-  UNTHEMED_FLAGS: array [TCheckboxesStyle, Boolean] of Integer = (
-    (DFCS_BUTTONCHECK, DFCS_BUTTONCHECK or DFCS_CHECKED),
-    (DFCS_BUTTONRADIO, DFCS_BUTTONRADIO or DFCS_CHECKED)
-  );
   THEMED_FLAGS: array [TCheckboxesStyle, Boolean] of TThemedButton = (
     (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal),
     (tbRadioButtonUnCheckedNormal, tbRadioButtonCheckedNormal)
@@ -316,13 +312,8 @@ begin
 
   if cloShowCheckboxes in Options then begin
     ch := Checked[AIndex];
-    if ThemeServices.ThemesEnabled then begin
-      te := ThemeServices.GetElementDetails(THEMED_FLAGS[FCheckStyle, ch]);
-      ThemeServices.DrawElement(Canvas.Handle, te, rcb);
-    end
-    else
-      DrawFrameControl(
-        Canvas.Handle, rcb, DFC_BUTTON, UNTHEMED_FLAGS[FCheckStyle, ch]);
+    te := ThemeServices.GetElementDetails(THEMED_FLAGS[FCheckStyle, ch]);
+    ThemeServices.DrawElement(Canvas.Handle, te, rcb);
     x := rcb.Right;
   end
   else
