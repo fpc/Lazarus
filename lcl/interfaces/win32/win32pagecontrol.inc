@@ -615,8 +615,11 @@ var
   hittestInfo: TC_HITTESTINFO;
   Orect: TRect;
 begin
-  if ATabControl is TTabControl then
-    exit(0);
+  if ATabControl is TTabControl then begin
+    Result := 0;;
+    exit;
+  end;
+
   GetLCLClientBoundsOffset(ATabControl, ORect);
   hittestInfo.pt.x := AClientPos.x + ORect.Left;
   hittestInfo.pt.y := AClientPos.y + ORect.Top;
@@ -625,6 +628,8 @@ end;
 
 class function TWin32WSCustomTabControl.GetTabRect(const ATabControl: TCustomTabControl;
   const AIndex: Integer): TRect;
+var
+  Orect: TRect;
 begin
   if ATabControl is TTabControl then begin
     Result.Top := 0;;
@@ -633,8 +638,16 @@ begin
     Result.Right := 0;;
     exit;
   end;
-  if Windows.SendMessage(ATabControl.Handle, TCM_GETITEMRECT, WPARAM(AIndex), LPARAM(@Result)) = 0
-  then
+
+  GetLCLClientBoundsOffset(ATabControl, ORect);
+  if Windows.SendMessage(ATabControl.Handle, TCM_GETITEMRECT, WPARAM(AIndex), LPARAM(@Result)) <> 0
+  then begin
+    Result.Top := Result.Top - Orect.Top;
+    Result.Bottom := Result.Bottom - Orect.Top;
+    Result.Left := Result.Left - Orect.Left;
+    Result.Right := Result.Right - Orect.Left;
+  end
+  else
     Result := inherited GetTabRect(ATabControl, AIndex);
 end;
 
