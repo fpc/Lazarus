@@ -78,11 +78,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = HTTPServerComboBox
     AnchorSideBottom.Side = asrBottom
-    Left = 468
+    Left = 452
     Height = 25
     Top = 69
-    Width = 19
+    Width = 35
     Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Right = 6
     Caption = '...'
     OnClick = HTTPServerBrowseButtonClick
@@ -96,7 +97,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     Left = 6
     Height = 23
     Top = 71
-    Width = 462
+    Width = 446
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     ItemHeight = 15
@@ -137,7 +138,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     Left = 6
     Height = 23
     Top = 261
-    Width = 462
+    Width = 446
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     ItemHeight = 15
@@ -163,11 +164,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BrowserComboBox
     AnchorSideBottom.Side = asrBottom
-    Left = 468
+    Left = 452
     Height = 23
     Top = 261
-    Width = 19
+    Width = 35
     Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Right = 6
     Caption = '...'
     OnClick = BBrowserBrowseButtonClick
@@ -194,7 +196,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     Left = 6
     Height = 23
     Top = 307
-    Width = 462
+    Width = 446
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     ItemHeight = 15
@@ -207,11 +209,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = NodeJSComboBox
     AnchorSideBottom.Side = asrBottom
-    Left = 468
+    Left = 452
     Height = 23
     Top = 307
-    Width = 19
+    Width = 35
     Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Right = 6
     Caption = '...'
     OnClick = NodeJSBrowseButtonClick
@@ -226,11 +229,11 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     Left = 6
     Height = 73
     Top = 165
-    Width = 462
+    Width = 481
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 2
-    BorderSpacing.Right = 25
+    BorderSpacing.Right = 6
     TabOrder = 9
   end
   object HTTPServerOptsLabel: TLabel
