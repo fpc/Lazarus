@@ -15,9 +15,9 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 17
+    Height = 15
     Top = 6
-    Width = 160
+    Width = 151
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Pas2JS command executable'
@@ -31,12 +31,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Pas2jsPathBrowseButton
     Left = 6
-    Height = 29
-    Top = 25
-    Width = 458
+    Height = 23
+    Top = 23
+    Width = 446
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
-    ItemHeight = 0
+    ItemHeight = 15
     TabOrder = 0
   end
   object Pas2jsPathBrowseButton: TButton
@@ -45,10 +45,10 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Pas2jsPathComboBox
     AnchorSideBottom.Side = asrBottom
-    Left = 464
-    Height = 29
-    Top = 25
-    Width = 23
+    Left = 452
+    Height = 23
+    Top = 23
+    Width = 35
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -63,9 +63,9 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Control = Pas2jsPathComboBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 62
-    Width = 170
+    Height = 15
+    Top = 54
+    Width = 162
     BorderSpacing.Left = 6
     BorderSpacing.Top = 8
     Caption = 'Simple HTTP Server command'
@@ -79,8 +79,8 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Control = HTTPServerComboBox
     AnchorSideBottom.Side = asrBottom
     Left = 468
-    Height = 31
-    Top = 79
+    Height = 25
+    Top = 69
     Width = 19
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Right = 6
@@ -94,12 +94,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = HTTPServerBrowseButton
     Left = 6
-    Height = 29
-    Top = 81
+    Height = 23
+    Top = 71
     Width = 462
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
-    ItemHeight = 0
+    ItemHeight = 15
     TabOrder = 3
   end
   object ServerPortSpinEdit: TSpinEdit
@@ -107,8 +107,8 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Control = ServerPortLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 29
-    Top = 137
+    Height = 23
+    Top = 119
     Width = 74
     BorderSpacing.Top = 2
     MaxValue = 65353
@@ -121,9 +121,9 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Control = HTTPServerComboBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 118
-    Width = 116
+    Height = 15
+    Top = 102
+    Width = 106
     BorderSpacing.Left = 6
     BorderSpacing.Top = 8
     Caption = 'Standard server port'
@@ -135,12 +135,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = BBrowserBrowseButton
     Left = 6
-    Height = 29
-    Top = 289
+    Height = 23
+    Top = 261
     Width = 462
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
-    ItemHeight = 0
+    ItemHeight = 15
     TabOrder = 5
     Text = 'BrowserComboBox'
   end
@@ -149,9 +149,9 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Control = HTTPServerOptionsMemo
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 270
-    Width = 260
+    Height = 15
+    Top = 244
+    Width = 250
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Browser to launch when opening project HTML'
@@ -164,8 +164,8 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Control = BrowserComboBox
     AnchorSideBottom.Side = asrBottom
     Left = 468
-    Height = 29
-    Top = 289
+    Height = 23
+    Top = 261
     Width = 19
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Right = 6
@@ -173,31 +173,31 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     OnClick = BBrowserBrowseButtonClick
     TabOrder = 6
   end
-  object BrowserLabel1: TLabel
+  object NodeJSLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BrowserComboBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 324
-    Width = 106
+    Height = 15
+    Top = 290
+    Width = 99
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Node.js executable'
     ParentColor = False
   end
   object NodeJSComboBox: TComboBox
-    AnchorSideLeft.Control = BrowserLabel1
-    AnchorSideTop.Control = BrowserLabel1
+    AnchorSideLeft.Control = NodeJSLabel
+    AnchorSideTop.Control = NodeJSLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = NodeJSBrowseButton
     Left = 6
-    Height = 29
-    Top = 343
+    Height = 23
+    Top = 307
     Width = 462
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
-    ItemHeight = 0
+    ItemHeight = 15
     TabOrder = 7
     Text = 'NodeJSComboBox'
   end
@@ -208,8 +208,8 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Control = NodeJSComboBox
     AnchorSideBottom.Side = asrBottom
     Left = 468
-    Height = 29
-    Top = 343
+    Height = 23
+    Top = 307
     Width = 19
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Right = 6
@@ -225,7 +225,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 73
-    Top = 191
+    Top = 165
     Width = 462
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -238,9 +238,9 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Control = ServerPortSpinEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 172
-    Width = 306
+    Height = 15
+    Top = 148
+    Width = 291
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'HTTP Server extra command-line options (one per line)'
