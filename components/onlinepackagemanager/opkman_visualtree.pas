@@ -221,21 +221,23 @@ begin
      begin
        Position := 2;
        Alignment := taCenter;
-       Width := FVST.Scale96ToForm(90);
+       Width := FVST.Scale96ToForm(110);
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
        Text := rsMainFrm_VSTHeaderColumn_Repository;
+       Hint := rsMainFrm_VSTHeaderColumn_Repository_Hint;
      end;
      with Header.Columns.Add do
      begin
        Position := 3;
        Alignment := taCenter;
-       Width := FVST.Scale96ToForm(90);
+       Width := FVST.Scale96ToForm(110);
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
        Text := rsMainFrm_VSTHeaderColumn_Update;
+       Hint := rsMainFrm_VSTHeaderColumn_Update_Hint;
      end;
      with Header.Columns.Add do
      begin
@@ -261,7 +263,7 @@ begin
         Width := FVST.Scale96ToForm(20);
         Options := Options - [coResizable];
      end;
-     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible];
+     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoShowHint];
      {$IFDEF LCLCarbon}
      Header.Options := Header.Options - [hoShowSortGlyphs];
      {$ENDIF}
