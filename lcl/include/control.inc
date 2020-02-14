@@ -1749,11 +1749,9 @@ begin
   {$IFDEF VerboseDrag}
   DebugLn('TControl.DragOver ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
   {$ENDIF}
-  Accept := False;
-  if Assigned(FOnDragOver) then begin
-    Accept := True;
+  Accept := Assigned(FOnDragOver);
+  if Accept then
     FOnDragOver(Self,Source,X,Y,State,Accept);
-  end;
 end;
 
 {------------------------------------------------------------------------------

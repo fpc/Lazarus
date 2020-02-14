@@ -950,7 +950,9 @@ end;
 procedure TCustomAbstractGroupedEdit.EditDragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  if Assigned(FOnEditDragOver) then FOnEditDragOver(Self, Source, X, Y, State, Accept);
+  Accept:=Assigned(FOnEditDragOver);
+  if Accept then
+    FOnEditDragOver(Self, Source, X, Y, State, Accept);
 end;
 
 procedure TCustomAbstractGroupedEdit.EditEditingDone;
