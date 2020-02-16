@@ -20,13 +20,18 @@
 
 unit TAChartListbox;
 
-{$mode objfpc}{$H+}
+{$MODE objfpc}{$H+}
+
+{$IFDEF DARWIN}
+  {$DEFINE USE_BITMAPS}
+{$ENDIF}
 
 interface
 
 uses
-  Classes, Controls, StdCtrls,
+  Classes, Controls, StdCtrls, Types,
   TAChartUtils, TACustomSeries, TALegend, TAGraph;
+
 
 type
   TChartListbox = class;
@@ -51,7 +56,10 @@ type
   TChartListbox = class(TCustomListbox)
   private
     FChart: TChart;
+    FCheckBoxSize: TSize;
     FCheckStyle: TCheckBoxesStyle;
+    FDown: Boolean;
+    FHot: Boolean;
     FLegendItems: TChartLegendItems;
     FListener: TListener;
     FOnAddSeries: TChartListboxAddSeriesEvent;
@@ -77,8 +85,10 @@ type
     procedure DrawItem(
       AIndex: Integer; ARect: TRect; AState: TOwnerDrawState); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
-    procedure MouseDown(
-      AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
+    procedure MouseDown(AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+    procedure MouseUp(AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
   protected
     procedure CalcRects(
       const AItemRect: TRect; out ACheckboxRect, ASeriesIconRect: TRect);
@@ -185,10 +195,48 @@ uses
   Graphics, Math, LCLIntf, LCLType, SysUtils, Themes,
   TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
 
-procedure Register;
+type
+  TThemedStatesUsed = {%H-}tbRadioButtonUnCheckedNormal..tbCheckboxCheckedDisabled;
+
+{$IFDEF USE_BITMAPS}
+var
+  ThemedBitmaps: Array[TThemedStatesUsed] of TBitmap;
+
+function CreateBitmap(AThemedButton: TThemedButton; ABkColor: TColor): TBitmap;
+var
+  s: TSize;
+  details: TThemedElementDetails;
 begin
-  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartListbox]);
+  Result := ThemedBitmaps[AThemedButton];
+  if Assigned(Result) and (Result.Canvas.Pixels[0, 0] = ABkColor) then
+    exit;
+  FreeAndNil(Result);
+  Result := TBitmap.Create;
+  details := ThemeServices.GetElementDetails(AThemedButton);
+  s := ThemeServices.GetDetailSize(details);
+  Result.SetSize(s.CX, s.CY);
+  Result.Canvas.Brush.Color := ABkColor;
+  Result.Canvas.FillRect(0, 0, Result.Width, Result.Height);
+  ThemeServices.DrawElement(Result.Canvas.Handle, details, Rect(0, 0, Result.Width, Result.Height));
+  ThemedBitmaps[AThemedButton] := Result;
 end;
+
+procedure InitBitmaps;
+var
+  tb: TThemedButton;
+begin
+  for tb in TThemedStatesUsed do
+    ThemedBitmaps[tb] := nil;
+end;
+
+procedure FreeBitmaps;
+var
+  tb: TThemedButton;
+begin
+  for tb in TThemedStatesUsed do
+    FreeAndNil(ThemedBitmaps[tb]);
+end;
+{$ENDIF}
 
 { TChartListbox }
 
@@ -211,17 +259,18 @@ procedure TChartListbox.CalcRects(
   const AItemRect: TRect; out ACheckboxRect, ASeriesIconRect: TRect);
 { based on the rect of a listbox item, calculates the locations of the
   checkbox and of the series icon }
+const
+  MARGIN = 4;
 var
-  w, x: Integer;
+  x: Integer;
 begin
   ACheckBoxRect := ZeroRect;
   ASeriesIconRect := ZeroRect;
 
-  w := Canvas.TextHeight('Tg');
-  x := 4;
+  x := AItemRect.Left + MARGIN;
   if cloShowCheckboxes in Options then begin
-    with AItemRect do
-      ACheckboxRect := Bounds(Left + 4, (Top + Bottom - w) div 2, w, w);
+    ACheckBoxRect := Rect(0, 0, FCheckboxSize.CX, FCheckboxSize.CY);
+    OffsetRect(ACheckboxRect, x, (AItemRect.Top + AItemRect.Bottom - FCheckboxSize.CY) div 2);
     if cloShowIcons in Options then
       x += ACheckboxRect.Right;
   end
@@ -285,35 +334,67 @@ begin
     ClickedSeriesIcon(FSeriesIconClicked);
 end;
 
+function GetThemedButtonOffset(Hot, Pressed, Disabled: Boolean): Integer;
+begin
+  Result := 0;
+  if Disabled then
+    Result := 3
+  else if Hot then
+    Result := 1
+  else if Pressed then
+    Result := 2;
+end;
+
 procedure TChartListbox.DrawItem(
   AIndex: Integer; ARect: TRect; AState: TOwnerDrawState);
 { draws the listbox item }
 const
-  THEMED_FLAGS: array [TCheckboxesStyle, Boolean] of TThemedButton = (
+  THEMED_BASE: array [TCheckboxesStyle, Boolean] of TThemedButton = (
     (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal),
     (tbRadioButtonUnCheckedNormal, tbRadioButtonCheckedNormal)
   );
 var
   id: IChartDrawer;
   rcb, ricon: TRect;
-  te: TThemedElementDetails;
   x: Integer;
-  ch: Boolean;
+  tb: TThemedButton;
+  tbBase, tbOffs: Integer;
+  {$IFDEF USE_BITMAPS}
+  bmp: TBitmap;
+  {$ELSE}
+  ted: TThemedElementDetails;
+  {$ENDIF}
 begin
   if Assigned(OnDrawItem) then begin
     OnDrawItem(Self, AIndex, ARect, AState);
     exit;
   end;
+
   if (FChart = nil) or not InRange(AIndex, 0, Count - 1) then
     exit;
 
   Canvas.FillRect(ARect);
+  if cloShowCheckboxes in Options then begin
+    tbBase := ord(THEMED_BASE[FCheckStyle, Checked[AIndex]]);
+    tbOffs := GetThemedButtonOffset(FHot, FDown, false);
+    tb := TThemedButton(ord(tbBase) + tbOffs);
+    {$IFDEF USE_BITMAPS}
+    bmp := CreateBitmap(tb, Canvas.Brush.Color);
+    FCheckboxSize := Size(bmp.Width, bmp.Height);
+    {$ELSE}
+    ted := ThemeServices.GetElementDetails(tb);
+    FCheckboxSize := ThemeServices.GetDetailSize(ted);
+    {$ENDIF}
+  end;
+
   CalcRects(ARect, rcb, ricon);
 
   if cloShowCheckboxes in Options then begin
-    ch := Checked[AIndex];
-    te := ThemeServices.GetElementDetails(THEMED_FLAGS[FCheckStyle, ch]);
-    ThemeServices.DrawElement(Canvas.Handle, te, rcb);
+    {$IFDEF USE_BITMAPS}
+    Canvas.Draw(rcb.Left, rcb.Top, bmp);
+    {$ELSE}
+    ThemeServices.DrawElement(Canvas.Handle, ted, rcb);
+    {$ENDIF}
     x := rcb.Right;
   end
   else
@@ -417,8 +498,6 @@ begin
     AHeight := Max(AHeight, GetSystemMetrics(SM_CYMENUCHECK) + 2);
 end;
 
-procedure TChartListbox.MouseDown(
-  AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
 { standard MouseDown handler: checks if the click occured on the checkbox,
   on the series icon, or on the text.
   The visibility state of the item's series is changed when clicking on the
@@ -428,11 +507,14 @@ procedure TChartListbox.MouseDown(
   An event OnItemClick is generated when the click occured neither on the
   checkbox nor the series icon.
 }
+procedure TChartListbox.MouseDown(
+  AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
 var
   rcb, ricon: TRect;
   index: Integer;
   p: TPoint;
 begin
+  FDown := true;
   FSeriesIconClicked := -1;
   try
     if AButton <> mbLeft then exit;
@@ -452,6 +534,24 @@ begin
   end;
 end;
 
+procedure TChartListbox.MouseEnter;
+begin
+  FHot := true;
+  inherited;
+end;
+
+procedure TChartListbox.MouseLeave;
+begin
+  FHot := false;
+  inherited;
+end;
+
+procedure TChartListBox.MouseUp(
+  AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
+begin
+  FDown := false;
+  inherited;
+end;
 procedure TChartListbox.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
   if (AOperation = opRemove) and (AComponent = FChart) then
@@ -600,6 +700,19 @@ begin
   EnsureSingleChecked;
   Invalidate;
 end;
+
+procedure Register;
+begin
+  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartListbox]);
+end;
+
+{$IFDEF USE_BITMAPS}
+initialization
+  InitBitmaps;
+
+finalization
+  FreeBitmaps;
+{$ENDIF}
 
 end.
 
