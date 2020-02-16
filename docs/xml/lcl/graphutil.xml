@@ -15,7 +15,13 @@
           <var>GraphUtil.pp</var> contains routines and types used when drawing graphics. They focus primarily on converting colors and drawing gradients, scroll bars, and arrows.
         </p>
         <p>
-          It includes routines used to convert between both the HSL (hue, saturation, lightness) and HSV (hue, saturation, brightness value) alternative representations of the RGB color model. HSV models the way different colors mix together, with the saturation dimension resembling various tints of brightly colored paint, and the value dimension resembling the mixture of those paints with varying amounts of black or white paint. HSL places saturated colors around a circle at a lightness value of ​.5, where a lightness value of 0 or 1 is fully black or white (respectively).
+          It includes routines used to convert between both the HSL (hue, saturation, lightness) and HSV (hue, saturation, brightness value) alternative representations of the RGB color model.
+        </p>
+        <p>
+          HSV models the way different colors mix together, with the saturation dimension resembling various tints of brightly colored paint, and the value dimension resembling the mixture of those paints with varying amounts of black or white paint.
+        </p>
+        <p>
+          HSL places saturated colors around a circle with a lightness value of 0.5, where a lightness value of 0 or 1 is fully black or white (respectively).
         </p>
         <p>
           GraphUtil is used in the Lazarus IDE, in LCL WidgetSet components, and optional Lazarus components like FPReport, SynEdit, and TAChart.
@@ -494,7 +500,7 @@
         <short>Direction for the arrow</short>
       </element>
       <element name="DrawArrow.Location">
-        <short>Point that indictes the canvas coordinates where the arrow is drawn</short>
+        <short>Point that indicates the canvas coordinates where the arrow is drawn</short>
       </element>
       <element name="DrawArrow.Size">
         <short></short>

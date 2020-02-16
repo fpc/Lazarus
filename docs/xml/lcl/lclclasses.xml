@@ -2,201 +2,262 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    LCLClasses
-  ====================================================================
--->
+    ====================================================================
+      LCLClasses
+    ====================================================================
+    -->
     <module name="LCLClasses">
       <short>Defines the base class for all LCL TComponents including controls</short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <!-- unresolved type references Visibility: default -->
+      <element name="Classes"/>
+      <element name="WSLCLClasses"/>
+      <element name="WSReferences"/>
+      <element name="LCLType"/>
+      <element name="LCLProc"/>
+
+      <element name="LazLongRec">
+        <short></short>
+        <descr>
+          <p>
+            <file>SysUtils</file> has a <var>LongRec</var> structure which uses an unsigned <var>Word</var> type for <var>Lo</var> and <var>Hi</var>. <var>LazLongRec</var>  provides a similar record with signed <var>SmallInt</var> members.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="WSLCLClasses">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="LazLongRec.Lo">
+        <short>The low-order signed small integer value</short>
       </element>
-<!-- object Visibility: default -->
+      <element name="LazLongRec.Hi">
+        <short>The high-order signed small integer value</short>
+      </element>
+
+      <!-- object Visibility: default -->
       <element name="TLCLComponent">
-        <short>The base class for LCL components associated with widgets.
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The base class for LCL components which have an associated widget</short>
+        <descr>
+          <p>
+            <var>TLCLComponent</var> is a <var>TComponent</var> descendant which is used as the ancestor for many components in the Lazarus Component Library (<b>LCL</b>), including:
+          </p>
+          <ul>
+            <li>TApplicationProperties</li>
+            <li>TCommonDialog</li>
+            <li>TControl</li>
+            <li>TCustomImageList</li>
+            <li>TCustomTrayIcon</li>
+            <li>TLCLReferenceComponent</li>
+            <li>TMenu</li>
+            <li>TMenuItem</li>
+            <li>TScreen</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TLCLReferenceComponent"/>
+          <link id="#LCL.Classes.TComponent"/>
+        </seealso>
       </element>
+
       <!-- variable Visibility: private -->
       <element name="TLCLComponent.FWidgetSetClass" link="TLCLComponent.WidgetSetClass"/>
       <element name="TLCLComponent.FLCLRefCount" link="TLCLComponent.LCLRefCount"/>
-      <!-- property Visibility: protected -->
-      <element name="TLCLComponent.WidgetSetClass">
-        <short>The widget for this component is derived from WidgetSetClass.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+
       <element name="TLCLComponent.WSRegisterClass">
-        <short>Registers this component class with the current WidgetSet.
-        </short>
+        <short>Registers this component class with the current WidgetSet</short>
       </element>
+
       <!-- class function Visibility: default -->
       <element name="TLCLComponent.GetWSComponentClass">
-        <short>This method allows descendents to override the WidgetSetClass.
-        </short>
+        <short>This method allows descendants to override the WidgetSetClass</short>
         <descr>
+          <p>
+            <var>GetWSComponentClass</var> is a <var>TWSLCLComponentClass</var> class function which allows descendants to override the <var>WidgetSetClass</var> class type  used to create instances of the component. When WidgetSetClass has not been assigned (contains Nil), the return value is set to the <var>TWSLCLComponent</var> type.
+          </p>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TLCLComponent.WidgetSetClass"/>
+          <link id="#LCL.WidgetSet.FindWSComponentClass"/>
+          <link id="#LCL.WidgetSet.TWSLCLComponent"/>
         </seealso>
       </element>
       <element name="TLCLComponent.GetWSComponentClass.Result">
-        <short/>
+        <short>Class type used to create instances of the specified component</short>
       </element>
       <element name="TLCLComponent.GetWSComponentClass.ASelf">
-        <short/>
+        <short>Component instance examined in the method</short>
       </element>
-      <element name="TLCLComponent.Create"/>
+
+      <element name="TLCLComponent.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor. It also provides support for additional debugging information when <b>DebugLCLComponents</b> has been defined.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
       <element name="TLCLComponent.Create.TheOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
-      <element name="TLCLComponent.Destroy"/>
+
+      <element name="TLCLComponent.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy provides support for additional debugging information when <b>DebugLCLComponents</b> has been defined. Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
       <!-- function Visibility: public -->
       <element name="TLCLComponent.NewInstance">
-        <short>Registers the class and initializes WidgetSetClass.
+        <short>
+          Creates and registers a new instance of the class, and initializes the  WidgetSetClass property
         </short>
         <descr/>
-        <errors/>
         <seealso>
           <link id="TLCLComponent.WidgetSetClass"/>
-          <link id="#rtl.System.TObject.NewInstance">TObject.NewInstance</link>
+          <link id="#RTL.System.TObject.NewInstance"/>
         </seealso>
       </element>
       <element name="TLCLComponent.NewInstance.Result">
-        <short/>
+        <short>Class instance created in the method</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TLCLComponent.RemoveAllHandlersOfObject">
-        <short>Override this method to remove all references to notification handlers in AnObject.
+        <short>
+          Override this method to remove all references to notification handlers in AnObject
         </short>
-        <descr>An override is required as soon as a component allows one to add notification handlers.
-          Then all such handlers must be removed, when their owner (AnObject) is destroyed.
+        <descr>
+          <p>
+            An override is required as soon as a component allows one to add notification handlers. Then all such handlers must be removed, when their owner (AnObject) is destroyed.
+          </p>
         </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TLCLComponent.RemoveAllHandlersOfObject.AnObject">
-        <short>The object whose handlers shall be removed.
-        </short>
+        <short>The object whose handlers shall be removed</short>
       </element>
+
       <element name="TLCLComponent.IncLCLRefCount" link="TLCLComponent.LCLRefCount"/>
       <element name="TLCLComponent.DecLCLRefCount" link="TLCLComponent.LCLRefCount"/>
+
       <element name="TLCLComponent.LCLRefCount">
-        <short>The number of references to this component.</short>
-        <descr>
-        </descr>
-      <notes><note>Which are the possible owners of such references?</note>
-        </notes>
-      </element>
-<!-- object Visibility: default -->
-      <element name="TLCLReferenceComponent">
-        <short>Base class for all components having an associated widget.
-        </short>
+        <short>The number of references to this component</short>
         <descr>
           <p>
-            The widget is created by the LCL control whenever required,
-            and its reference is stored in FReferencePtr.
-            This reference is for internal use by the LCL control, not by application code.
+            <var>LCLRefCount</var> is a read-only Integer property that contains the number of references to this component. The value in <var>LCLRefCount</var> is updated when the <var>IncLCLRefCount</var> and <var>DecLCLRefCount</var> methods are called while handling messages where the component instance is the target.
           </p>
-          <p>This reference is different from the OS/window manager specific window Handle.</p>
-          <p>Applications only can send messages to a windowed control, using its window Handle.</p>
+        </descr>
+        <seealso>
+          <link id="TLCLComponent.IncLCLRefCount"/>
+          <link id="TLCLComponent.DecLCLRefCount"/>
+          <link id="#LCL.Controls.TWinControl.IntfUTF8KeyPress"/>
+        </seealso>
+      </element>
+
+      <element name="TLCLComponent.WidgetSetClass">
+        <short>The class type used to create instances of this component</short>
+        <descr>
+          <p>
+            <var>WidgetSetClass</var> is a read-only <var>TWSLCLComponentClass</var> property which contains the class type used to create new instances of the component. The value for the property is set in the <var>NewInstance</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLCLComponent.NewInstance"/>
+        </seealso>
+      </element>
+
+      <!-- object Visibility: default -->
+      <element name="TLCLReferenceComponent">
+        <short>Base class for all components having an associated widget with a handle</short>
+        <descr>
+          <p>
+            The widget is created by the LCL control whenever required, and its reference is stored in the FReferencePtr member. This reference is for internal use by the LCL control, and not by application code.
+          </p>
+          <p>
+            This reference is different from the OS/window manager-specific window Handle.
+          </p>
+          <p>
+            Applications only can send messages to a windowed control, using its window Handle.
+          </p>
         </descr>
         <seealso>
           <link id="TLCLReferenceComponent.ReferenceNeeded"/>
         </seealso>
-      <notes><note>can be?</note>
+        <notes><note>can be?</note>
         </notes>
       </element>
+
       <!-- variable Visibility: private -->
       <element name="TLCLReferenceComponent.FReferencePtr">
-        <short>Pointer to a widget class Reference.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Pointer to a widget class Reference</short>
       </element>
-      <!-- variable Visibility: private -->
       <element name="TLCLReferenceComponent.FCreating">
-        <short>Set while we are creating the Reference.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Set while we are creating the Reference</short>
       </element>
+
       <!-- function Visibility: private -->
       <element name="TLCLReferenceComponent.GetHandle" link="TLCLReferenceComponent.Handle"/>
       <element name="TLCLReferenceComponent.GetHandle.Result">
         <short/>
       </element>
+
       <!-- function Visibility: private -->
       <element name="TLCLReferenceComponent.GetReferenceAllocated">
-        <short>Checks for a valid widget reference.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Checks for a valid widget reference</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
       <element name="TLCLReferenceComponent.GetReferenceAllocated.Result">
         <short/>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.CreateParams">
-        <short>Override this method to supply specific widget creation parameters.
-        </short>
+        <short>Override this method to supply specific widget creation parameters</short>
       </element>
       <element name="TLCLReferenceComponent.CreateParams.AParams">
-        <short>The parameter record to update.</short>
+        <short>The parameter record to update</short>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.DestroyReference">
-        <short>Destroys the reference object.
-        </short>
+        <short>Destroys the reference object</short>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.GetReferenceHandle">
-        <short>Override this method to return the Handle from the reference
-        </short>
-      <notes><note>what is Handle?</note>
-        </notes>
+        <short>Override this method to return the Handle from the reference</short>
+        <notes><note>what is Handle?</note></notes>
       </element>
       <element name="TLCLReferenceComponent.GetReferenceHandle.Result">
         <short/>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.ReferenceCreated">
-        <short>Called after the Reference is created.</short>
+        <short>Called after the Reference is created</short>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.ReferenceDestroying">
         <short>Called before the Reference is destroyed</short>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.ReferenceNeeded">
-        <short>Creates a Reference, if not already done.
-        </short>
+        <short>Creates a Reference, if not already done</short>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.WSCreateReference">
-        <short>Tells the widgetset to create a Reference.
-        </short>
-        <descr>This implementation returns Nil, should be overridden in every derived class.
+        <short>Tells the widgetset to create a Reference</short>
+        <descr>
+          This implementation returns Nil, and should be overridden in derived classes.
         </descr>
       </element>
       <element name="TLCLReferenceComponent.WSCreateReference.Result">
@@ -205,24 +266,31 @@
       <element name="TLCLReferenceComponent.WSCreateReference.AParams">
         <short/>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.WSDestroyReference">
-        <short>Tells the widgetset to destroy the Reference.</short>
+        <short>Tells the widgetset to destroy the Reference</short>
       </element>
+
       <!-- function Visibility: public -->
-      <element name="TLCLReferenceComponent.Destroy"/>
-      <element name="TLCLReferenceComponent.Handle">
-        <short>Get the Handle of this component.</short>
-        <descr>The Handle is  sort of pointer or reference, allocated by the operating system or widgetset to this component.
-          A window handle can be used for sending messages to the component.</descr>
-      <notes><note>?</note>
-        </notes>
+      <element name="TLCLReferenceComponent.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls <var>DestroyReference</var> to release an assigned internal reference for the widgetset class. Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLCLReferenceComponent.DestroyReference"/>
+        </seealso>
       </element>
+
       <element name="TLCLReferenceComponent.HandleAllocated" link="TLCLReferenceComponent.ReferenceAllocated"/>
+
       <element name="TLCLReferenceComponent.ReferenceAllocated">
-        <short>If True, a Reference has been allocated for this component.
-        </short>
+        <short>If True, a Reference has been allocated for this component</short>
       </element>
+
     </module>
     <!-- LCLClasses -->
   </package>

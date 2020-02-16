@@ -491,12 +491,23 @@
           <seealso></seealso>
       </element>
 
-      <!-- TODO:: -->
       <element name="TCustomShellTreeView.PopulateWithBaseFiles">
-        <short></short>
+        <short>Fills the tree view when the Root directory is empty</short>
         <descr>
           <remark>
-            The implementation for PopulateWithBaseFiles is present for Windows platforms other than Windows CE. For other platforms, the implementation is empty.
+            The implementation of PopulateWithBaseFiles is platform-specific.
+          </remark>
+          <p>
+            For Windows platforms other than Windows CE, the tree view is filled with <var>TShellTreeNode</var> entries for the logical drive names found on the system. The drive information is retrieved using the <var>GetLogicalDriveStrings</var> routine in the Windows API.
+          </p>
+          <p>
+            For other platforms, which do not use drive letters, the tree view is populated with nodes for the files or directories in the base path for the control.
+          </p>
+          <p>
+            PopulateWithBaseFiles is called from the <var>Loaded</var>, <var>SetRoot</var>, and <var>SetFileSortType</var> methods when an empty string (<b>''</b>) is assigned to the <var>Root</var> property.
+          </p>
+          <remark>
+            No actions are performed in the method at design-time, or when the component is loaded using the LCL streaming mechanism on platforms other than Windows.
           </remark>
         </descr>
         <seealso></seealso>
@@ -527,14 +538,21 @@
         </seealso>
       </element>
 
-      <!-- TODO: Expand  -->
       <!-- property Visibility: public -->
       <element name="TCustomShellTreeView.ShellListView">
         <short>
           Connects this ShellTreeView to a ShellListView
         </short>
         <descr>
-          The ShellListView will show the contents of the currently selected directory in the ShellListView.
+          <p>
+            <var>ShellListView</var> is a <var>TCustomShellListView</var> property used to connect the tree view to a list view control.
+          </p>
+          <p>
+            Methods and properties in the list view control can be used to change the currently selected directory, or to limit its display to specified object types. Changes to the <var>Root</var> or <var>ObjectTypes</var> properties in the list view are propogated to the associated tree view.
+          </p>
+          <p>
+            In a similar fashion, changes to the <var>Root</var> property or the selected item in the tree view causes the changes to be propogated to the associated list view control.
+          </p>
         </descr>
         <seealso>
           <link id="TShellListView"/>
@@ -572,32 +590,75 @@
         </seealso>
       </element>
 
-      <!-- TODO: Expand -->
       <!-- property Visibility: public -->
       <element name="TCustomShellTreeView.Root">
         <short>
           Indicates the directory to start showing the list of items
         </short>
         <descr>
-          Indicates the directory to start showing the list of items. If empty, indicates that the entire file system structure should be shown.
+          <p>
+            <var>Root</var> is a <var>String</var> property used to set the directory (or logical device) used to fill the list of items in the tree view control. Changing the value in Root causes the Items in the control to be re-populated.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method when a new value is set for the the Root property while the component is being loaded using the LCL streaming mechanism. The actions are performed when the Loaded method is called.
+          </remark>
+          <p>
+            An empty string (<b>''</b>) indicates that the base path for the platform should be used to populate the tree view. This causes the PopulateWithBaseFiles method to be called to determine the Items displayed in the control.
+          </p>
+          <p>
+            Setting Root to an invalid path name causes an EInvalidPath exception to be raised at run-time; the error is ignored at design-time to prevent crashing the Lazarus IDE.
+          </p>
+          <p>
+            TShellTreeNode instances are created and added to the Items property using the  expanded fully qualified path name in Root.
+          </p>
+          <p>
+            If ShellListView has been assigned for the control, its Root property is updated to match the new value for the property.
+          </p>
         </descr>
         <seealso>
+          <link id="TShellTreeView.GetBasePath"/>
+          <link id="TShellTreeView.PopulateWithBaseFiles"/>
+          <link id="TShellTreeView.Items"/>
+          <link id="TShellTreeView.ShellListView"/>
+          <link id="TShellListView"/>
+          <link id="TShellTreeNode"/>
         </seealso>
       </element>
 
-      <!-- TODO: Expand -->
       <element name="TCustomShellTreeView.Path">
         <short>Path to the directory displayed in the shell control</short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>Path</var> is a <var>String</var> property which represents the path on the local file system to the Selected tree node in the  control.
+          </p>
+          <p>
+            Reading the value for the property calls the <var>GetPathFromNode</var> method to derive the value for the property using the <var>Selected</var> tree node. The full path for the <var>TShellTreeNode</var> is used, with a path delimiter appended for a directory entry. If the path is not absolute, the base path name is prepended to the path value.
+          </p>
+          <p>
+            Setting the value for the property causes the the new value to be resolved to a fully qualified path name when needed. A relative path is expanded into a fully qualified absolute path value resolved relative to the base path in <var>Root</var>.
+          </p>
+          <p>
+            An <var>EInvalidPath</var> exception is raised when setting Path to a value that is not valid, including:
+          </p>
+          <ul>
+            <li>The path does not exist on the local file system</li>
+            <li>The path cannot be resolved as a directory located under the Root directory</li>
+            <li>The path represents an entry not valid for the settings in ObjectTypes</li>
+          </ul>
+        </descr>
         <seealso></seealso>
+        <notes><note>Needs review.</note></notes>
       </element>
 
-      <!-- TODO: Expand -->
       <element name="TCustomShellTreeView.OnAddItem">
         <short>
           Event handler signalled when an item (tree node) is added to the shell control
         </short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>OnAddItem</var> is a <var>TAddItemEvent</var> property which contains the event handler signalled when an item (tree node) is added to the shell control. OnAddItem is signalled from the <var>PopulateTreeNodeWithFiles</var> method.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
@@ -870,18 +931,22 @@
       </element>
 
       <element name="TCustomShellListView.DoAddItem">
-        <short></short>
+        <short>
+          Signals the OnAddItem event handler when an entry is added to the Items in the control
+        </short>
         <descr></descr>
         <seealso></seealso>
       </element>
       <element name="TCustomShellListView.DoAddItem.ABasePath">
-        <short></short>
+        <short>Base path for the list view</short>
       </element>
       <element name="TCustomShellListView.DoAddItem.AFileInfo">
-        <short></short>
+        <short>TSearchRec with the information for the new entry</short>
       </element>
       <element name="TCustomShellListView.DoAddItem.CanAdd">
-        <short></short>
+        <short>
+          Set the argument to True to allow the item to be added; set to False to prevent adding the item
+        </short>
       </element>
 
       <element name="TCustomShellListView.OnFileAdded">
@@ -1259,7 +1324,7 @@
         </seealso>
       </element>
       <element name="TShellTreeNode.FullFilename.Result">
-        <short></short>
+        <short>The full path and name for the file system object</short>
       </element>
 
       <element name="TShellTreeNode.IsDirectory">
@@ -1343,11 +1408,11 @@
           <p>
             For <var>TMaskCaseSensitivity</var>, a string version of the enumeration value is used as the return value. For example:
           </p>
-          <pre>
-            'mcsPlatformDefault'
-            'mcsCaseInsensitive'
-            'mcsCaseSensitive'
-          </pre>
+          <code>
+    'mcsPlatformDefault'
+    'mcsCaseInsensitive'
+    'mcsCaseSensitive'
+        </code>
         </descr>
         <seealso>
           <link id="TObjectTypes"/>
@@ -1366,8 +1431,12 @@
 
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short>Registers components in the package</short>
-        <descr></descr>
+        <short>Registers components for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is a procedure used to add the <var>TShellTreeView</var> and <var>TShellListView</var> components to the Misc tab in the Lazarus IDE.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 

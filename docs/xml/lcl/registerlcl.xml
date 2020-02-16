@@ -1,30 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lcl">
+    <!--
+    ====================================================================
+      RegisterLCL
+    ====================================================================
+    -->
+    <module name="RegisterLCL">
+      <short>
+        Registers LCL components and packages
+      </short>
+      <descr>
+        <p>
+          This unit registers all LCL components in a predefined order. It is called from the
+          <file>ide/formeditor.pp</file> unit.
+        </p>
+      </descr>
 
-<!--
-  ====================================================================
-    RegisterLCL
-  ====================================================================
--->
+      <!-- unresolved external references -->
+      <element name="LazarusPackageIntf"/>
+      <element name="Menus"/>
+      <element name="Buttons"/>
+      <element name="StdCtrls"/>
+      <element name="ExtCtrls"/>
+      <element name="ComCtrls"/>
+      <element name="MaskEdit"/>
+      <element name="CheckLst"/>
+      <element name="Forms"/>
+      <element name="Grids"/>
+      <element name="Controls"/>
+      <element name="Dialogs"/>
+      <element name="Spin"/>
+      <element name="Arrow"/>
+      <element name="Calendar"/>
+      <element name="PairSplitter"/>
+      <element name="ExtDlgs"/>
+      <element name="StdActns"/>
+      <element name="DbCtrls"/>
+      <element name="DbExtCtrls"/>
+      <element name="DBGrids"/>
+      <element name="DBActns"/>
+      <element name="EditBtn"/>
+      <element name="ActnList"/>
+      <element name="FileCtrl"/>
+      <element name="Graphics"/>
+      <element name="XMLPropStorage"/>
+      <element name="IniPropStorage"/>
+      <element name="JSONPropStorage"/>
+      <element name="ColorBox"/>
+      <element name="ButtonPanel"/>
+      <element name="LResources"/>
+      <element name="LazHelpHTML"/>
+      <element name="PopupNotifier"/>
+      <element name="AsyncProcess"/>
+      <element name="UTF8Process"/>
+      <element name="ShellCtrls"/>
+      <element name="ValEdit"/>
+      <element name="ComboEx"/>
 
-<module name="RegisterLCL">
-<short/>
-<descr>
-</descr>
+      <element name="Register">
+        <short>
+          Registers units in the Lazarus IDE to get a predefined order in the component palette
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="RegisterLCLBase">
+        <short>
+          Registers the LCLBase package in the Lazarus IDE
+        </short>
+        <descr>
+          Calls the Register routine to manually register units needed for the package.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-</module> <!-- RegisterLCL -->
-
-</package>
+    </module>
+    <!-- RegisterLCL -->
+  </package>
 </fpdoc-descriptions>

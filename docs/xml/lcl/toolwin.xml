@@ -1,74 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
-
     <!--
     ====================================================================
       Toolwin
     ====================================================================
     -->
-
     <module name="Toolwin">
       <short>
         Implements a control which can paint its client area with borders
       </short>
       <descr></descr>
 
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <!-- unresolved type references Visibility: default -->
+      <element name="Classes"/>
+      <element name="LCLProc"/>
+      <element name="Controls"/>
+      <element name="SysUtils"/>
+      <element name="GraphType"/>
+      <element name="Graphics"/>
+      <element name="LCLType"/>
+      <element name="LCLIntf"/>
+      <element name="StdCtrls"/>
 
       <!-- enumeration type Visibility: default -->
       <element name="TEdgeBorder">
@@ -77,27 +30,26 @@
         </short>
         <descr>
           <p>
-            TEdgeBorder is an enumeration type with values that indicate the border edges to draw in TToolWindow. Values in TEdgeBorder are stored in the TEdgeBorders set type.
+            <var>TEdgeBorder</var> is an enumeration type with values that indicate the border edges to draw in <var>TToolWindow</var>. Values in TEdgeBorder are stored in the <var>TEdgeBorders</var> set type.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TToolWindow"/>
+          <link id="TEdgeBorders"/>
+        </seealso>
       </element>
-
       <!-- enumeration value Visibility: default -->
       <element name="TEdgeBorder.ebLeft">
         <short>Draws the border on the left edge of the control</short>
       </element>
-
       <!-- enumeration value Visibility: default -->
       <element name="TEdgeBorder.ebTop">
         <short>Draws the border on the top edge of the control</short>
       </element>
-
       <!-- enumeration value Visibility: default -->
       <element name="TEdgeBorder.ebRight">
         <short>Draws the border on the right edge of the control</short>
       </element>
-
       <!-- enumeration value Visibility: default -->
       <element name="TEdgeBorder.ebBottom">
         <short>Draws the border on the bottom edge of the control</short>
@@ -110,12 +62,12 @@
         </short>
         <descr>
           <p>
-            TEdgeBorders is a set type used to store values from the TEdgeBorder enumeration. TEdgeBorders is the type used for the TToolWindow.EdgeBorders property.
+            <var>TEdgeBorders</var> is a set type used to store values from the <var>TEdgeBorder</var> enumeration. TEdgeBorders is the type used for the <var>TToolWindow.EdgeBorders</var> property.
           </p>
         </descr>
         <seealso>
-          <link id="TEdgeBorder">TEdgeBorder</link>
-          <link id="TToolWindow.EdgeBorders">TToolWindow.EdgeBorders</link>
+          <link id="TEdgeBorder"/>
+          <link id="TToolWindow.EdgeBorders"/>
         </seealso>
       </element>
 
@@ -126,69 +78,60 @@
         </short>
         <descr>
           <p>
-            TEdgeStyle is an enumeration type with values that specify the drawing style for borders on a control. TEdgeStyle is the type used to implement the TToolWindow.EdgeInner and TToolWindow.EdgeOuter properties.
+            <var>TEdgeStyle</var> is an enumeration type with values that specify the drawing style for borders on a control. TEdgeStyle is the type used to implement the <var>TToolWindow.EdgeInner</var> and <var>TToolWindow.EdgeOuter</var> properties.
           </p>
         </descr>
         <seealso>
-          <link id="TToolWindow.EdgeInner">TToolWindow.EdgeInner</link>
-          <link id="TToolWindow.EdgeOuter">TToolWindow.EdgeOuter</link>
+          <link id="TToolWindow.EdgeInner"/>
+          <link id="TToolWindow.EdgeOuter"/>
         </seealso>
       </element>
-
       <!-- enumeration value Visibility: default -->
       <element name="TEdgeStyle.esNone">
         <short>No edge style is used</short>
       </element>
-
       <!-- enumeration value Visibility: default -->
       <element name="TEdgeStyle.esRaised">
         <short>Edge is drawn with a raised appearance</short>
       </element>
-
       <!-- enumeration value Visibility: default -->
       <element name="TEdgeStyle.esLowered">
         <short>Edge is drawn with a lowered or sunken appearance</short>
       </element>
 
       <!-- object Visibility: default -->
-      <element name="TToolWindow" link="#lcl,Controls.TCustomControl">
+      <element name="TToolWindow" link="#LCL.Controls.TCustomControl">
         <short>
           Implements a control which can paint its client area with borders
         </short>
         <descr>
           <p>
-            TToolWindow is a TCustomControl which supports sizing and drawing its client area with borders. TToolWindow contains properties used to specify the borders (inner and outer) for the control. Methods are provided which adjust the client rectangle for the control, and paint the control to its canvas handle with the desired border edges and style.
+            <var>TToolWindow</var> is a <var>TCustomControl</var> which supports sizing and drawing its client area with borders. TToolWindow contains properties used to specify the borders (inner and outer) for the control. Methods are provided which adjust the client rectangle for the control, and paint the control to its canvas handle with the desired border edges and style.
           </p>
           <p>
-            TToolWindow is the ancestor for TToolBar and TCoolBar.
+            TToolWindow is the ancestor for <var>TToolBar</var> and <var>TCoolBar</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#LCL.Controls.TCustomControl"/>
+          <link id="#LCL.ComCtrls.TToolbar"/>
+          <link id="#LCL.ComCtrls.TCoolbar"/>
+        </seealso>
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TToolWindow.FEdgeBorders">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TToolWindow.FEdgeInner">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TToolWindow.FEdgeOuter">
-        <short></short>
-      </element>
+      <element name="TToolWindow.FEdgeBorders"/>
+      <element name="TToolWindow.FEdgeInner"/>
+      <element name="TToolWindow.FEdgeOuter"/>
 
       <!-- procedure Visibility: private -->
       <element name="TToolWindow.SetEdgeBorders">
         <short>Sets the value in the EdgeBorders property</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TToolWindow.EdgeBorders"/>
+        </seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TToolWindow.SetEdgeBorders.Value">
         <short>New value for the property</short>
       </element>
@@ -197,10 +140,10 @@
       <element name="TToolWindow.SetEdgeInner">
         <short>Sets the value for the EdgeInner property</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TToolWindow.EdgeInner"/>
+        </seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TToolWindow.SetEdgeInner.Value">
         <short>New value for the property</short>
       </element>
@@ -209,10 +152,10 @@
       <element name="TToolWindow.SetEdgeOuter">
         <short>Sets the value in the EdgeOuter property</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TToolWindow.EdgeOuter"/>
+        </seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TToolWindow.SetEdgeOuter.Value">
         <short>New value for the property</short>
       </element>
@@ -229,13 +172,15 @@
         </short>
         <descr>
           <p>
-            AdjustClientRect is a procedure used to adjust the specified client rectangle when borders are drawn for the control. AdjustClientRect ensures that the client rectangle is increased in size according to values in EdgeBorders and the drawing style in EdgeOuter and EdgeInner.
+            <var>AdjustClientRect</var> is a procedure used to adjust the specified client rectangle when borders are drawn for the control. AdjustClientRect ensures that the client rectangle is increased in size according to values in <var>EdgeBorders</var> and the drawing styles in <var>EdgeOuter</var> and <var>EdgeInner</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TToolWindow.EdgeBorders"/>
+          <link id="TToolWindow.EdgeOuter"/>
+          <link id="TToolWindow.EdgeInner"/>
+        </seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TToolWindow.AdjustClientRect.ARect">
         <short>Client rectangle for the control</short>
       </element>
@@ -247,10 +192,14 @@
         </short>
         <descr>
           <p>
-            Paint is an overridden procedure that draws the control with the borders and styles indicated in EdgeBorders, EdgeInner, and EdgeOuter. Paint calls DrawEdge to render the control, and calls the inherited Paint method.
+            <var>Paint</var> is an overridden procedure that draws the control with the borders and styles indicated in <var>EdgeBorders</var>, <var>EdgeInner</var>, and <var>EdgeOuter</var>. Paint calls <var>DrawEdge</var> to render the control, and calls the inherited <var>Paint</var> method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TToolWindow.EdgeBorders"/>
+          <link id="TToolWindow.EdgeOuter"/>
+          <link id="TToolWindow.EdgeInner"/>
+        </seealso>
       </element>
 
       <!-- constructor Visibility: public -->
@@ -258,7 +207,7 @@
         <short>Constructor for the class instance</short>
         <descr>
           <p>
-            Create is the constructor for the class instance, and calls the inherited constructor using TheOwner as the owner of the control. Create sets the default values for the following properties:
+            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor using <var>TheOwner</var> as the owner of the control. Create sets the default values for the following properties:
           </p>
           <dl>
             <dt>EdgeBorders</dt>
@@ -269,11 +218,12 @@
             <dd>esLowered</dd>
           </dl>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="TToolWindow.EdgeBorders"/>
+          <link id="TToolWindow.EdgeOuter"/>
+          <link id="TToolWindow.EdgeInner"/>
+        </seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TToolWindow.Create.TheOwner">
         <short>Owner of the class instance</short>
       </element>
@@ -282,7 +232,6 @@
       <element name="TToolWindow.BeginUpdate">
         <short>Increments the internal counter for buffering calls to Update</short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
 
@@ -290,7 +239,6 @@
       <element name="TToolWindow.EndUpdate">
         <short>Decrements the internal counter for buffering calls to Update</short>
         <descr></descr>
-        <errors></errors>
         <seealso></seealso>
       </element>
 
@@ -301,10 +249,15 @@
         </short>
         <descr>
           <p>
-            EdgeBorders is a TEdgeBorders property that indicates the edges to be drawn with a border on the control. The default value for EdgeBorders is [ebLeft, ebTop, ebRight, ebBottom]. EdgeBorders is used in the Paint method to render the control with borders in the specified positions with the drawing style in EdgeInner and EdgeOuter.
+            <var>EdgeBorders</var> is a <var>TEdgeBorders</var> property that indicates the edges to be drawn with a border on the control. The default value for EdgeBorders is <b>[ebLeft, ebTop, ebRight, ebBottom]</b>. EdgeBorders is used in the <var>Paint</var> method to render the control with borders in the specified positions with the drawing style in <var>EdgeInner</var> and <var>EdgeOuter</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TEdgeBorders"/>
+          <link id="TToolWindow.EdgeBorders"/>
+          <link id="TToolWindow.EdgeOuter"/>
+          <link id="TToolWindow.EdgeInner"/>
+        </seealso>
       </element>
 
       <!-- property Visibility: public -->
@@ -314,16 +267,20 @@
       </short>
         <descr>
           <p>
-            EdgeInner is a TEdgeStyle property that specifies the drawing style used for the inner border of the control. The default value for the property is esRaised.
+            <var>EdgeInner</var> is a <var>TEdgeStyle</var> property that specifies the drawing style used for the inner border of the control. The default value for the property is <var>esRaised</var>.
           </p>
           <p>
-            EdgeInner is used, along with EdgeOuter, to give the control a beveled 3D appearance. Use EdgeOuter to control the drawing style for the outer border on the control.
+            EdgeInner is used, along with <var>EdgeOuter</var>, to give the control a beveled 3D appearance. Use <var>EdgeOuter</var> to control the drawing style for the outer border on the control.
           </p>
           <p>
-            Use EdgeBorders to specify the positions (for both inner and outer) where borders are drawn.
+            Use <var>EdgeBorders</var> to specify the positions (for both inner and outer) where borders are drawn.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TEdgeStyle"/>
+          <link id="TToolWindow.EdgeOuter"/>
+          <link id="TToolWindow.EdgeBorders"/>
+        </seealso>
       </element>
 
       <!-- property Visibility: public -->
@@ -333,19 +290,22 @@
         </short>
         <descr>
           <p>
-            EdgeOuter is a TEdgeStyle property that specifies the drawing style used for the outer border of the control. The default value for the property is esLowered.
+            <var>EdgeOuter</var> is a <var>TEdgeStyle</var> property that specifies the drawing style used for the outer border of the control. The default value for the property is <var>esLowered</var>.
           </p>
           <p>
-            EdgeOuter is used, along with EdgeInner, to give the control a beveled 3D appearance. Use EdgeInner to control the drawing style for the inner border on the control.
+            EdgeOuter is used, along with <var>EdgeInner</var>, to give the control a beveled 3D appearance. Use <var>EdgeInner</var> to control the drawing style for the inner border on the control.
           </p>
           <p>
-            Use EdgeBorders to specify the positions (for both inner and outer) where borders are drawn.
+            Use <var>EdgeBorders</var> to specify the positions (for both inner and outer) where borders are drawn.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TEdgeStyle"/>
+          <link id="TToolWindow.EdgeInner"/>
+          <link id="TToolWindow.EdgeBorders"/>
+        </seealso>
       </element>
     </module>
     <!-- Toolwin -->
-
   </package>
 </fpdoc-descriptions>

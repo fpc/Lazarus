@@ -1095,8 +1095,9 @@
       <element name="TCustomDesignControl.FScaled"/>
       <element name="TCustomDesignControl.FDesignTimePPI"/>
       <element name="TCustomDesignControl.FPixelsPerInch"/>
+
+      <!-- TODO -->
       <element name="TCustomDesignControl.DesignTimePPIIsStored">
-        <!-- TODO -->
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -3720,18 +3721,30 @@
           <link id="TWindowState"/>
         </seealso>
       </element>
+
       <!-- "class of" type Visibility: default -->
       <element name="TCustomFormClass" link="TCustomForm"/>
+
       <!-- object Visibility: default -->
-      <element name="TForm">
-      </element>
+      <element name="TForm" link="TCustomForm"/>
+
       <!-- variable Visibility: private -->
       <element name="TForm.FLCLVersion" link="TForm.LCLVersion"/>
+
       <!-- function Visibility: private -->
       <element name="TForm.LCLVersionIsStored" link="TForm.LCLVersion"/>
       <element name="TForm.LCLVersionIsStored.Result">
         <short/>
       </element>
+
+      <element name="TForm.WSRegisterClass">
+        <short></short>
+        <descr>
+          WSRegisterClass is an overridden class procedure used to register the widget set class used to create new instances of the form.
+        </descr>
+        <seealso></seealso>
+      </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TForm.CreateWnd" link="#lcl.Controls.TWinControl.CreateWnd"/>
       <element name="TForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded"/>

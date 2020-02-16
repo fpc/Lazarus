@@ -2741,8 +2741,11 @@
         </short>
         <descr>
           <p>
-            <var>WriteData</var> is a procedure used to write the image data for the default resolution to the stream specified in AStream. WriteData calls <var>GetResolution</var> using the value in <var>Width</var> to retrieve the default image resolution. The WriteData method in <var>TCustomImageListResolution</var> is called to perform the write operation using the specified stream. Data compression is not enabled for image data to retain compatibility with earlier versions of Lazarus.
+            <var>WriteData</var> is a procedure used to write the image data for the default resolution to the stream specified in AStream. WriteData calls <var>GetResolution</var> using the value in <var>Width</var> to retrieve the default image resolution. The WriteData method in <var>TCustomImageListResolution</var> is called to perform the write operation using the specified stream.
           </p>
+          <remark>
+            Please note: Data compression is enabled when writing image data for the resolution. Data compression was not enabled in previous LCL versions to maintain compatibility with earlier versions of Lazarus. That backward compatibility is no longer possible with image compression enabled.
+          </remark>
           <p>
             Use <var>WriteAdvData</var> to write image data for all resolutions in the image list.
           </p>
@@ -2750,6 +2753,9 @@
             Use ReadData to read image data from a stream.
           </p>
         </descr>
+        <version>
+          Image compression was enabled as a default in revision 62583, and will be included in Lazarus versions after 2.0.6.
+        </version>
         <seealso>
           <link id="TCustomImageList.GetResolution"/>
           <link id="TCustomImageList.WriteAdvData"/>
