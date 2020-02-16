@@ -2,1023 +2,1728 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    MaskEdit
-  ====================================================================
--->
+    ====================================================================
+      MaskEdit
+    ====================================================================
+    -->
     <module name="MaskEdit">
-      <short>Defines classes for Mask Editing, i.e. editing with a masking string in place to obscure the text being entered</short>
+      <short>
+        Defines classes for a masked edit control, i.e. editing with a masking string in place to obscure, format, or validate the text entered in the control
+      </short>
       <descr/>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LResources"/>
+      <element name="Forms"/>
+      <element name="Controls"/>
+      <element name="Graphics"/>
+      <element name="Dialogs"/>
+      <element name="ExtCtrls"/>
+      <element name="StdCtrls"/>
+      <element name="LMessages"/>
+      <element name="Clipbrd"/>
+      <element name="LCLType"/>
+      <element name="LCLProc"/>
+      <element name="LCLStrConsts"/>
+      <element name="LazUtf8"/>
+
+      <element name="cMask_SpecialChar">
+        <short>After this you can set an arbitrary char</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="cMask_UpperCase">
+        <short>After this the chars are in upper case</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="cMask_LowerCase">
+        <short>After this the chars are in lower case</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="cMask_Letter">
+        <short>Can contain an optional letter only</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LMessages">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="cMask_LetterFixed">
+        <short>Must contain a letter only</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="cMask_AlphaNum">
+        <short>An optional alphanumeric character</short>
+        <descr>['A'..'Z','a..'z','0'..'9']</descr>
+        <seealso></seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="cMask_AlphaNumFixed">
+        <short>A required alphanumeric character</short>
+        <descr>['A'..'Z','a..'z','0'..'9']</descr>
+        <seealso></seealso>
       </element>
+
+      <element name="cMask_AllChars">
+        <short>An optional UTF-8 character</short>
+        <descr>Any UTF-8 character in the range #32 to #255</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_AllCharsFixed">
+        <short>A required UTF-8 character</short>
+        <descr>Any UTF-8 character in the range #32 to #255</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_Number">
+        <short>An optional numeric character</short>
+        <descr>In the range '0' to '9'</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_NumberFixed">
+        <short>A required numeric character</short>
+        <descr>In the range '0' to '9'</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_NumberPlusMin">
+        <short>An optional numeric or sign character</short>
+        <descr>Includes the characters: 0,1,2,3,4,5,6,7,8,9,+, and -</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_HourSeparator">
+        <short>Inserts the hour separator char</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_DateSeparator">
+        <short>Inserts the date separator character</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_Hex">
+        <short>An optional hexadecimal character</short>
+        <descr> (['0'..'9','a'..'f']). A Lazarus extension, not supported in Delphi.</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_HexFixed">
+        <short>A required hexadecimal character</short>
+        <descr> (['0'..'9','a'..'f']). A Lazarus extension, not supported in Delphi.</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_Binary">
+        <short>An optional binary character</short>
+        <descr>['0'..'1']. A Lazarus extension, not supported in Delphi.</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_BinaryFixed">
+        <short>A required binary character</short>
+        <descr>['0'..'1']. A Lazarus extension, not supported in Delphi.</descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="cMask_NoLeadingBlanks">
+        <short>Causes leading blanks to be trimmed from the value</short>
+        <descr>Trailing blanks are trimmed by default.</descr>
+        <seealso></seealso>
+      </element>
+
       <!-- constant Visibility: default -->
       <element name="DefaultBlank">
-        <short/>
-        <descr/>
+        <short>Represents a blank character value in a mask</short>
+        <descr>Can be changed at run-time.</descr>
         <seealso/>
       </element>
+
       <!-- constant Visibility: default -->
       <element name="MaskFieldSeparator">
-        <short/>
-        <descr/>
+        <short>Delimiter used between fields in a mask</short>
+        <descr>Can be changed at run-time.</descr>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="MaskNoSave">
-        <short/>
-        <descr/>
+        <short>Represents a character that is not stored  in a mask</short>
+        <descr>Can be changed at run-time.</descr>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mDirReverse">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TMaskedType">
+        <short>Enumeration with values representing mask character types</short>
+        <descr>
+          <p>
+            <var>TMaskType</var> is an enumerated type which contains values representing mask character types used in TCustomMaskEdit and TMaskEdit. Mask character types control the letters, numbers, literals, space characters, and trimming options allowed for each position in a masked edit control. TMaskType values are stored in the TInternalMask type used in the implementation of TCustomMaskEdit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TInternalMask"/>
+          <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TCustomMaskEdit.AddToMask"/>
+          <link id="TCustomMaskEdit.SetMask"/>
+          <link id="TCustomMaskEdit.CharMatchesMask"/>
+        </seealso>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mDirUpperCase">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_Start">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mDirLowerCase">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_Number">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mDirLiteral">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_NumberFixed">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskAlpha">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_NumberPlusMin">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskAlphaOpt">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_Letter">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskAlphaNum">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_LetterFixed">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskAlphaNumOpt">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_LetterUpCase">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskAscii">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_LetterDownCase">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskAsciiOpt">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_LetterFixedUpCase">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskNumeric">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_LetterFixedDownCase">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskNumericOpt">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_AlphaNum">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskNumSymOpt">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_AlphaNumFixed">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskTimeSeparator">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_AlphaNumUpCase">
+        <short></short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="mMskDateSeparator">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TMaskedType.Char_AlphaNumDownCase">
+        <short></short>
       </element>
+      <element name="TMaskedType.Char_AlphaNumFixedUpCase">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_AlphaNumFixedDownCase">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_All">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_AllFixed">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_AllUpCase">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_AllDownCase">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_AllFixedUpCase">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_AllFixedDownCase">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_HourSeparator">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_DateSeparator">
+        <short></short>
+      </element>
+      <element name="TMaskedType.Char_Hex">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_HexFixed">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_HexUpCase">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_HexDownCase">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_HexFixedUpCase">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_HexFixedDownCase">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_Binary">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_BinaryFixed">
+        <short></short>
+        <descr>Lazarus extension, not supported by Delphi.</descr>
+      </element>
+      <element name="TMaskedType.Char_Stop">
+        <short></short>
+      </element>
+
+      <element name="TInternalMask">
+        <short>
+          Array type used to represent an edit mask in TCustomMaskEdit
+        </short>
+        <descr>
+          <p>
+            <var>TInternalMask</var> is an array type which contains up to 255 UTF-8-encoded character values. It is used to implement internal members in <var>TCustomMaskEdit</var>, and exposed as its <var>EditMask</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.EditMask"/>
+        </seealso>
+      </element>
+
+      <element name="TMaskEditTrimType">
+        <short>Controls how the value in a masked edit control is trimmed</short>
+        <descr>
+          TMaskEditTrimType is an enumerated type with values that control if/how the text in TCustomMaskEdit is trimmed.
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TCustomMaskEdit.SetMask"/>
+          <link id="TCustomMaskEdit.DisableMask"/>
+          <link id="TCustomMaskEdit.ApplyMaskToText"/>
+        </seealso>
+      </element>
+      <element name="TMaskEditTrimType.metTrimLeft">
+        <short>Trims leading spaces from the value for a masked edit control</short>
+      </element>
+      <element name="TMaskEditTrimType.metTrimRight">
+        <short>
+          Trims trailing spaces from the value for a masked edit control; this is the default action in TCustomMaskEdit
+        </short>
+      </element>
+
       <!-- object Visibility: default -->
       <element name="EDBEditError">
+        <short>Exception class raised for an error in a masked edit control</short>
+        <descr>
+          <p>
+            Raised in the <var>TCustomMaskEdit.ValidateEdit</var> method when exiting the edit control where its text is in an invalid state for its edit mask.
+          </p>
+          <remark>
+            There is no good reason for the name used for this exception. It has nothing to do with databases.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="EInvalidUtf8">
+        <short>Ancestor for UTF-8 exceptions</short>
+        <descr>
+          <p>
+            <var>EInvalidUtf8</var> is an <var>Exception</var> descendant that implements the ancestor for exceptions that occur for UTF-8-encoded content.
+          </p>
+        </descr>
+        <seealso>
+          <link id="EInvalidCodePoint"/>
+        </seealso>
+      </element>
+
+      <element name="EInvalidCodePoint">
         <short>
-          <i>EDBEditError</i> - Exception class for handling an error in a data-aware Edit box</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          Exeption raised when an error occurs while setting a UTF-8 Code Point in a String
+        </short>
+        <descr>
+          <p>
+            <var>EInvalidCodePoint</var> is an <var>EInvalidUtf8</var> descendant that implements the Exeption raised when an error occurs while setting a UTF-8 Code Point in a String. The exception message contains the constant value in <var>SInvalidCodePoint</var>.
+          </p>
+          <p>
+            Used in the <var>SetCodePoint</var> routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="SetCodePoint"/>
+          <link id="SInvalidCodePoint"/>
+        </seealso>
       </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TMbcsByteType">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="SInvalidCodePoint">
+        <short>Message displayed in the EInvalidCodePoint exception</short>
+        <descr></descr>
+        <seealso>
+          <link id="EInvalidUtf8"/>
+          <link id="SetCodePoint"/>
+        </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMbcsByteType.mbSingleByte">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMbcsByteType.mbLeadByte">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMbcsByteType.mbTrailByte">
-        <short/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TMaskCharType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcNone">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcLiteral">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcIntlLiteral">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcDirective">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcMask">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcMaskOpt">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcFieldSeparator">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskCharType.mcField">
-        <short/>
-      </element>
-      <!-- set type Visibility: default -->
-      <element name="TMaskDirectives">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskDirectives.mdReverseDir">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskDirectives.mdUpperCase">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskDirectives.mdLowerCase">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskDirectives.mdLiteralChar">
-        <short/>
-      </element>
-      <!-- set type Visibility: default -->
-      <element name="TMaskedState">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskedState.msMasked">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskedState.msReEnter">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TMaskedState.msDBSetText">
-        <short/>
-      </element>
+
       <!-- object Visibility: default -->
       <element name="TCustomMaskEdit">
-        <short>
-          <i>TCustomMaskEdit</i> - base class for <i>TMaskEdit</i>, an Edit box with characters masked out to avoid unauthorized reading</short>
-        <descr>Custom Mask Edit: the base type for Mask Edit
-</descr>
+        <short>Ancestor for TMaskEdit</short>
+        <descr>
+          <p>
+            <var>TCustomMaskEdit</var> is a TCustomEdit descendant, and the base class for <var>TMaskEdit</var>. TCustomMaskEdit provides an Edit box with masking features for characters displayed (or hidden) in the control.
+          </p>
+          <remark>
+            FOR ANYONE WHO CARES TO FIX / ENHANCE THIS CODE:
+          </remark>
+          <p>
+            Since we want total control over anything that is done to the text in the control,  we have to take into consideration the fact that currently we cannot prevent cutting/pasting/clearing or dragging selected text in the control. These operations are handled by the OS, and text is changed before we can prevent it. Not all widgetsets currently handle the messages for cut/paste/clear. Actually, we would like to have a LM_BEFORE_PASTE (etc.) message... If we allow the OS to cut/clear/paste etc. A situation can occur where mask-literals in the control are changed to random characters (which cannot be undone), or text is shorter or larger than the editmask calls for, which again cannot be undone.
+          </p>
+          <p>
+            So, as a horrible hack, I decided  to only allow changing the text if we coded this change ourself. This is done by setting the FChangeAllowed field to True before any write action (in RealSetTextWhileMasked() ). We try to intercept the messages for cut/paste/copy/clear and perform the appropriate actions instead. If this fails, then in TextChanged we check and will see that FChangeAllowed = False and we will undo the changes made.
+          </p>
+          <p>
+            To make this undo possible, it is necessary to set FCurrentText every time you set the text in the control! This is achieved in RealSetTextWhileMasked() only. So please note:
+          </p>
+          <remark>
+            It is unsafe to make a call to RealSetText unless done so via RealSetTextWhileMasked!!!
+          </remark>
+          <p>
+            Bart Broersma, January 2009
+          </p>
+        </descr>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomMaskEdit.FEditMask">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.FRealMask">
+        <short>Real mask inserted</short>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomMaskEdit.FMaskBlank">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomMaskEdit.FMask">
+        <short>Actual internal mask</short>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomMaskEdit.FMaxChars">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomMaskEdit.FMaskLength">
+        <short>Length of the internal mask</short>
       </element>
-      <!-- variable Visibility: private -->
+      <element name="TCustomMaskEdit.FFirstFreePos">
+        <short>First position where user can enter text</short>
+      </element>
       <element name="TCustomMaskEdit.FMaskSave">
-        <short/>
+        <short>Save mask as part of the data?</short>
+      </element>
+      <element name="TCustomMaskEdit.FTrimType">
+        <short>Trim leading or trailing spaces in GetText</short>
+      </element>
+      <element name="TCustomMaskEdit.FSpaceChar">
+        <short>Character used for space characters (default value is '_')</short>
+      </element>
+      <element name="TCustomMaskEdit.FCurrentText">
+        <short>FCurrentText is our backup. See the notes for TCustomMaskEdit.</short>
+      </element>
+      <element name="TCustomMaskEdit.FTextOnEnter">
+        <short>Text when user enters the control, used for Reset()</short>
+      </element>
+      <element name="TCustomMaskEdit.FCursorPos">
+        <short>Current caret position</short>
+      </element>
+      <element name="TCustomMaskEdit.FChangeAllowed">
+        <short>
+          Indicates if text can be changed by the OS (copy/cut/paste/clear via the context menu)
+        </short>
+      </element>
+      <element name="TCustomMaskEdit.FInitialText">
+        <short>Value for the text set in the form designer (must be handled in Loaded)</short>
+      </element>
+      <element name="TCustomMaskEdit.FInitialMask">
+        <short>EditMask set in the form designer (must be handled in Loaded)</short>
+      </element>
+      <element name="TCustomMaskEdit.FSettingInitialText">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.FValidationFailed">
+        <short>Flag used in DoEnter</short>
+      </element>
+      <element name="TCustomMaskEdit.FMaskIsPushed">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.FSavedMask">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.FSavedMaskLength">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.FTextChangedBySetText">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.FInRealSetTextWhileMasked">
+        <short></short>
+      </element>
+
+      <element name="TCustomMaskEdit.ClearInternalMask">
+        <short>Fills the specified mask with Null characters (decimal 0)</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.ClearInternalMask.AMask">
+        <short>Mask updated in the method</short>
+      </element>
+      <element name="TCustomMaskEdit.ClearInternalMask.ALengthIndicator">
+        <short>Set to zero (0) to indicate that the mask is empty</short>
+      </element>
+
+      <element name="TCustomMaskEdit.AddToMask">
+        <short>Appends the specified UTF-8 character to the internal mask value</short>
+        <descr>
+          <p>
+            <var>AddToMask</var> is a procedure used to append the UTF-8 character in <var>Value</var> to the internal mask for the edit control. AddToMask increments the internal counter which tracks the length of the mask value, and stores Value at the end of the <var>TInternalMask</var> instance.
+          </p>
+          <p>
+            Used in the implementation of the <var>SetMask</var> procedure which sets the value for the <var>EditMask</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TCustomMaskEdit.SetMask"/>
+          <link id="TInternalMask"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.AddToMask.Value">
+        <short>UTF-8 character appended to the mask for the edit control</short>
+      </element>
+
+      <element name="TCustomMaskEdit.GetModified">
+        <short>Sets the value for the Modified property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomMaskEdit.Modified"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomMaskEdit.FMaskState">
-        <short/>
+      <element name="TCustomMaskEdit.GetModified.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomMaskEdit.SetMask">
+        <short>Sets the value for the EditMask property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TCustomMaskEdit.AddToMask"/>
+          <link id="TCustomMaskEdit.ClearInternalMask"/>
+          <link id="TCustomMaskEdit.RealGetText"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomMaskEdit.FCaretPos">
-        <short/>
+      <element name="TCustomMaskEdit.SetMask.Value">
+        <short>New value for the EditMask property</short>
+      </element>
+
+      <element name="TCustomMaskEdit.GetIsMasked">
+        <short>Gets the value for the IsMasked property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomMaskEdit.IsMasked"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomMaskEdit.FBtnDownX">
-        <short/>
+      <element name="TCustomMaskEdit.GetIsMasked.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomMaskEdit.SetModified">
+        <short>Sets the value for the Modified property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link ide="TCustomMaskEdit.Modified"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomMaskEdit.FOldValue">
-        <short/>
+      <element name="TCustomMaskEdit.SetModified.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomMaskEdit.SetSpaceChar">
+        <short>Sets the value for the SpaceChar property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomMaskEdit.SpaceChar"/>
+        </seealso>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.IsCharAlpha">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TCustomMaskEdit.SetSpaceChar.Value">
+        <short>New value for the property</short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.IsCharAlpha.Result">
-        <short/>
+
+      <element name="TCustomMaskEdit.SetCursorPos">
+        <short>Sets the cursor position, and selects the character in the control</short>
+        <descr>
+          <p>
+            <var>SetCursorPos</var> is a procedure used to set the cursor or current caret position in the edit control. An internal member contains the offset in the control where the cursor is positioned. The cursor position cannot exceed the length of the mask in the control.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method at design-time.
+          </remark>
+          <p>
+            SetCursorPos is used in the implementation of methods which respond to keyboard or mouse navigation, or when the value in the control is changed and/or validated.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.IsCharAlpha.AChar">
-        <short/>
+
+      <element name="TCustomMaskEdit.SelectNextChar">
+        <short>
+          Selects the next character in the edit control
+        </short>
+        <descr>
+          <p>
+            <var>SelectNextChar</var> is a procedure used to move to and select the next character in the value for the edit control. Mask literals in the control value are skipped. SelectNextChar calls the <var>SetCursorPos</var> method to update the caret (or cursor) position for the control.
+          </p>
+          <p>
+            Used in the implementation of the <var>KeyDown</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.SetCursorPos"/>
+          <link id="TCustomMaskEdit.IsLiteral"/>
+        </seealso>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.IsCharAlphaNumeric">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.SelectPrevChar">
+        <short>Selects the previous character in the edit control</short>
+        <descr>
+          <p>
+            <var>SelectPrevChar</var> is a procedure used to move to and select the previous character in the value for the edit control. Mask literals in the control value are skipped. SelectPrevChar calls the <var>SetCursorPos</var> method to update the caret (or cursor) position for the control.
+          </p>
+          <p>
+            Used in the implementation of the <var>KeyDown</var> method.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.IsCharAlphaNumeric.Result">
-        <short/>
+
+      <element name="TCustomMaskEdit.SelectFirstChar">
+        <short>Selects the first character in the edit control</short>
+        <descr>
+          <p>
+          </p>
+          <var>SelectFirstChar</var> is a procedure used to move to and select the first character in the edit control. SelectFirstChar sets the value for the internal member used to track the cursor (or caret) position, and calls    <var>SetCursorPos</var> to update the cursor in the control.
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.IsCharAlphaNumeric.AChar">
-        <short/>
+
+      <element name="TCustomMaskEdit.GotoEnd">
+        <short></short>
+        <descr>
+          <p>
+            <var>GotoEnd</var> is a procedure used to set the caret (or cursor) to the last position in the edit control. GotoEnd updates the internal member used to track the cursor position, and calls the <var>SetCursorPos</var> method to apply the cursor position to the control.
+          </p>
+          <p>
+            Used in the implementation of the <var>KeyDown</var> method.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.DoInputChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.JumpToNextDot">
+        <short>
+          Moves to the next occurrance of the specified character in the value for the edit control
+        </short>
+        <descr>
+          <p>
+            <var>JumpToNextDot</var> is a procedure used to move to the next occurrance of the character in <var>Dot</var> in the mask for the edit control. Dot must be included in the mask, and must occur after the current cursor position. Dot must contain either a Period ('.') or Comma (',') character; no actions are performed in the method when Dot contains another character value.
+          </p>
+          <p>
+            If a mask contains both Period and Comma characters, only the first character can be accesses using the method. A mask literal cannot appear after the requested occurrance of Dot, and the next occurrance cannot be the last character in the mask.
+          </p>
+          <p>
+            JumpToNextDot calls the <var>SetCursorPos</var> method to update the caret position in the edit control.
+          </p>
+          <p>
+            JumpToNextDot is used in the implementation of the <var>HandleKeyPress</var> method.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.DoInputChar.Result">
-        <short/>
+      <element name="TCustomMaskEdit.JumpToNextDot.Dot">
+        <short>Character to locate in the edit mask for the control</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.DoInputChar.NewChar">
-        <short/>
+
+      <element name="TCustomMaskEdit.HasSelection">
+        <short>Indicates if any characters are currently selected in the edit control</short>
+        <descr>
+          <p>
+            <var>HasSelection</var> is a <var>Boolean</var> function which indicates if any characters are currently selected in the edit control. The return value is <b>True</b> when <var>GetSelLength</var> returns a value greater than one (1).
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.DoInputChar.MaskOffset">
-        <short/>
+      <element name="TCustomMaskEdit.HasSelection.Result">
+        <short>True when characters are selected at the caret position</short>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.InputChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.HasExtSelection">
+        <short>
+          Returns True if more than one (1) character is selected in the value for the control
+        </short>
+        <descr>
+          <p>
+            Influences handling of the Backspace key. In addition, the <var>InsertChar</var> method will delete an extended selection prior to inserting a new character value.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.InputChar.Result">
-        <short/>
+      <element name="TCustomMaskEdit.HasExtSelection.Result">
+        <short>True when the current selection in the control is more than one character</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.InputChar.NewChar">
-        <short/>
+
+      <element name="TCustomMaskEdit.CharToMask">
+        <short>Transforms the specified UTF-8 character to a TMaskType enumeration value</short>
+        <descr>
+          <p>
+            <var>CharToMask</var> is a <var>TMaskedType</var> function used to transform the UTF-8-encoded character in <var>UCh</var> to a value from the    <var>TMaskedType</var> enumeration. UCh cannot contain a multi-byte UTF-8 value; it must be a single byte value. No actions are performed in the method when UCh contains multiple byte values in the UTF-8 code point. The ordinal value for the character is used to get the corresponding TMaskedType enumeration value used as the return value for the method.
+          </p>
+          <p>
+            CharToMask is used in the implementation of the following methods:
+          </p>
+          <ul>
+            <li>IsMaskChar</li>
+            <li>SetSpaceChar</li>
+            <li>IsLiteral</li>
+            <li>CharMatchesMask</li>
+            <li>ClearChar</li>
+            <li>CanInsertChar</li>
+          </ul>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.InputChar.Offset">
-        <short/>
+      <element name="TCustomMaskEdit.CharToMask.Result">
+        <short>TMaskType value for the specified character</short>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.DeleteSelection">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TCustomMaskEdit.CharToMask.UCh">
+        <short>UTF-8 character examined in the method</short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.DeleteSelection.Result">
-        <short/>
+
+      <element name="TCustomMaskEdit.MaskToChar">
+        <short>
+          Transforms the specified TMaskType enumeration value into a character for use in TInternalMask
+        </short>
+        <descr>
+          <p>
+            <var>MaskToChar</var> is a <var>Char</var> function used to transform the specified <var>TMaskType</var> enumeration value into a character for use in the internal   <var>TInternalMask</var> instance in the control. The return value from MaskToChar is passed as an argument to the <var>AddToMask</var> method to populate the TInternalMask for the control.
+          </p>
+          <p>
+            MaskToChar is used (along with AddToMask) in the implementation of the <var>SetMask</var> method (the write access specifier for the <var>EditMask</var> property).
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.DeleteSelection.Value">
-        <short/>
+      <element name="TCustomMaskEdit.MaskToChar.Result">
+        <short>Character value to add to the internal mask structure for the control</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.DeleteSelection.Offset">
-        <short/>
+      <element name="TCustomMaskEdit.MaskToChar.Value">
+        <short>TMaskType enumeration value converted in the method</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.DeleteSelection.Len">
-        <short/>
+
+      <element name="TCustomMaskEdit.IsMaskChar">
+        <short>Indicates whether the specified character is a valid mask character</short>
+        <descr>
+          <p>
+            <var>IsMaskChar</var> is a <var>Boolean</var> function used to determine if the UTF-8 character in <var>Ch</var> is a valid mask character. Ch contains one the characters values from the <var>TInternalMask</var> used in the control. IsMaskChar returns <b>True</b> when the value in Ch is any of the TMaskType values other than <var>Char_Start</var>.
+          </p>
+          <p>
+            IsMaskChar is used in the implementation of methods like <var>IsLiteral</var> and <var>SetSpaceChar</var>.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.InputString">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TCustomMaskEdit.IsMaskChar.Result">
+        <short>True when the character is a mask type character other than Char_Start</short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.InputString.Result">
-        <short/>
+      <element name="TCustomMaskEdit.IsMaskChar.Ch">
+        <short>Mask type character examined in the method</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.InputString.Value">
-        <short/>
+
+      <element name="TCustomMaskEdit.IsLiteral">
+        <short>Indicates whether the specified character is a mask literal</short>
+        <descr>
+          <p>
+            <var>IsLiteral</var> is a <var>Boolean</var> function which indicates whether the UTF-8 character in <var>Ch</var> represents a mask literal which cannot be edited in the control. The return value is <b>False</b> for any of the following conditions:
+          </p>
+          <ul>
+            <li>
+              IsMaskChar(Ch) returns False
+            </li>
+            <li>
+              IsMaskChar(Ch) does not return Char_HourSeparator or Char_DateSeparator
+            </li>
+          </ul>
+          <p>
+            IsLiteral is used in the implementation of methods like <var>SetMask</var>, <var>SetSpaceChar</var>, <var>SelectNextChar</var>, <var>SelectPrevChar</var>, <var>JumpToNextDot</var>, and <var>SetEditText</var>.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.InputString.NewValue">
-        <short/>
+      <element name="TCustomMaskEdit.IsLiteral.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.InputString.Offset">
-        <short/>
+      <element name="TCustomMaskEdit.IsLiteral.Ch">
+        <short></short>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.AddEditFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.TextIsValid">
+        <short>
+          Indicates whether the specified valuel is valid for the EditMask in the control
+        </short>
+        <descr>
+          <p>
+            Returns <b>False</b> if the length of <var>Value</var> does not match the length for the edit mask, or when a UTF-8 Code Point in <var>Value</var> is not valid for the edit mask.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.CharMatchesMask"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.AddEditFormat.Result">
-        <short/>
+      <element name="TCustomMaskEdit.TextIsValid.Result">
+        <short>True when the value is valid for the edit mask</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.AddEditFormat.Value">
-        <short/>
+      <element name="TCustomMaskEdit.TextIsValid.Value">
+        <short>Value examined in the method</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.AddEditFormat.Active">
-        <short/>
+
+      <element name="TCustomMaskEdit.CharMatchesMask">
+        <short>
+          Determines if a character in the control value is valid for the specified EditMask
+        </short>
+        <descr>
+          <p>
+            <var>CharMatchesMask</var> is a <var>Boolean</var> function used to determine if a character in the value for the control is valid for its EditMask. <var>Ch</var> contains the UTF-8 character examined in the method. Position contains the offset into the EditMask for the mask character compared in the method.
+          </p>
+          <p>
+            <var>Position</var> is in the range 1..MaxLength. When Position is not in this range, no actions are performed in the method and the return value is set to <b>False</b>.
+          </p>
+          <p>
+            CharMatchesMask calls <var>CharToMask</var> to convert the mask character at Position to a <var>TMaskType</var> enumeration value which determines if the value in Ch is valid. The return value is <b>True</b> when Ch contains a valid character value for the mask character type.
+          </p>
+          <p>
+            CharMatchesMask is used in the implementation of the <var>TextIsValid</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.TextIsValid"/>
+          <link id="TCustomMaskEdit.CharToMask"/>
+          <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TMaskType"/>
+        </seealso>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.RemoveEditFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TCustomMaskEdit.CharMatchesMask.Result">
+        <short>
+          True when the character value is valid for the corresponding position in the EditMask
+        </short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.RemoveEditFormat.Result">
-        <short/>
+      <element name="TCustomMaskEdit.CharMatchesMask.Ch">
+        <short>Character value examined in the method</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.RemoveEditFormat.Value">
-        <short/>
+      <element name="TCustomMaskEdit.CharMatchesMask.Position">
+        <short>Offset into the edit mask for the character value</short>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.FindLiteralChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.ClearChar">
+        <short>Clears a character which is not a literal at the specified Position</short>
+        <descr>
+          <p>
+            Fixed literals, like date or time separators, and escaped characters are ignored in the method. For Delphi compatibilty, only literals remain; all other character values are replaced with the character designated in the <var>SpaceChar</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.ApplyMaskToText"/>
+          <link id="TCustomMaskEdit.Clear"/>
+          <link id="TCustomMaskEdit.DeleteSelected"/>
+          <link id="TCustomMaskEdit.InsertChar"/>
+          <link id="TCustomMaskEdit.SetEditText"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.FindLiteralChar.Result">
-        <short/>
+      <element name="TCustomMaskEdit.ClearChar.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.FindLiteralChar.MaskOffset">
-        <short/>
+      <element name="TCustomMaskEdit.ClearChar.Position">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.FindLiteralChar.InChar">
-        <short/>
+
+      <element name="TCustomMaskEdit.RealSetTextWhileMasked">
+        <short>Sets the text in the control when a mask is in use</short>
+        <descr>
+          <p>
+            <var>RealSetTextWhileMasked</var> is a method used to set the <var>Text</var> in the control to the content specified in <var>Value</var>.
+          </p>
+          <p>
+            RealSetTextWhileMasked calls the inherited <var>RealGetText</var> to get the current value for the control. No actions are performed in the method when <var>Value</var> is the same as the current text assigned to the control.
+          </p>
+          <p>
+            RealSetTextWhileMasked set values in internal members used to protect against unhandled exceptions from an assigned <var>OnChange</var> event handler. This  ensures that the control is not left in an "unsafe" state after changes to the text value.
+          </p>
+          <p>
+            RealSetTextWhileMasked calls the inherited <var>RealSetText</var> method to store Value in the Text for the control. Values in the internal members are reset prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.Text"/>
+          <link id="TCustomMaskEdit.EditText"/>
+          <link id="TCustomMaskEdit.OnChange"/>
+          <link id="TCustomMaskEdit.RealGetText"/>
+          <link id="TCustomEdit.RealGetText"/>
+          <link id="TCustomMaskEdit.RealSetText"/>
+          <link id="TCustomEdit.RealSetText"/>
+        </seealso>
       </element>
-      <!-- function Visibility: private -->
+      <element name="TCustomMaskEdit.RealSetTextWhileMasked.Value">
+        <short>New value for the Text in the control</short>
+      </element>
+
+      <element name="TCustomMaskEdit.InsertChar">
+        <short>Inserts a single UTF-8 character at the current position for the cursor</short>
+        <descr>
+          <p>
+            <var>InsertChar</var> is a procedure used to insert the specified UTF-8 character at the current position for the cursor.
+          </p>
+          <p>
+            <var>Ch</var> contains the UTF-8 character stored at the cursor (or caret) position. InsertChar calls <var>CanInsertChar</var> to determine if the value in Ch is valid for the mask character at the cursor position. If CanInsertChar returns <b>False</b>, the current selection in the control is deleted (done for Delphi compatibility).
+          </p>
+          <p>
+            If the character is valid for the mask position, any selected characters in the control are replaced with blank values by calling <var>SetCodePoint</var> with the value from <var>ClearChar</var>. SetCodePoint is also called to store Ch at the current position in the text value. <var>RealSetTextWhileMasked</var> is called to notify the control of the change to its Text value. <var>SelectNextChar</var> is called to advance the cursor position to the next available position in the control (when available).
+          </p>
+          <p>
+            InsertChar is used in the implementation of the <var>HandleKeyPress</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.CanInsertChar"/>
+          <link id="TCustomMaskEdit.ClearChar"/>
+          <link id="TCustomMaskEdit.HandleKeyPress"/>
+          <link id="SetCodePoint"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.InsertChar.Ch">
+        <short>Character value inserted at the current cursor position</short>
+      </element>
+
+      <element name="TCustomMaskEdit.CanInsertChar">
+        <short>
+          Indicates if the specified character can be inserted at a given position in the control
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.CanInsertChar.Result">
+        <short>True when the character is valid for the mask character type</short>
+      </element>
+      <element name="TCustomMaskEdit.CanInsertChar.Position">
+        <short>Position in the control value and mask examined in the method</short>
+      </element>
+      <element name="TCustomMaskEdit.CanInsertChar.Ch">
+        <short>Character value examined in the method</short>
+      </element>
+      <element name="TCustomMaskEdit.CanInsertChar.IsPasting">
+        <short>
+          Indicates if the character originates from a Paste operation (Ctrl+V or Shift+Insert)
+        </short>
+      </element>
+
+      <element name="TCustomMaskEdit.DeleteSelected">
+        <short>Clears values in the current selection for the control</short>
+        <descr>
+          <p>
+            <var>DeleteSelected</var> is a method used to clear values in the current selection for the control. DeleteSelected calls <var>GetSel</var> to determine the starting and ending positions for characters currently selected in the control. DeleteSelected calls <var>SetCodePoint</var> to store blank values for mask positions selected in the value for the control.
+          </p>
+          <p>
+            DeleteSelected calls <var>RealSetTextWhileMasked</var> to store the updated Text value in the control. <var>SetCursorPos</var> is called to update the caret position in the control.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method when <var>HasSelection</var> returns <b>False</b>.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.DeleteChars">
+        <short>Deletes one or more characters at the current cursor position</short>
+        <descr>
+          <p>
+            The number of characters affected in the method is determined by the value from <var>HasSelection</var>. When <b>True</b>, the current selection is control is affected. When <b>False</b>, a single character value is deleted.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.DeleteChars.NextChar">
+        <short>
+          When True the following character(s) are deleted; when False the preceeding character(s) are deleted
+        </short>
+      </element>
+
+      <element name="TCustomMaskEdit.WSRegisterClass">
+        <short>
+          Registers the widget set class reference used to create new instances of the control
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.ApplyMaskToText">
+        <short>Applies the edit mask in the control to the specified value</short>
+        <descr>
+          <p>
+            <var>ApplyMaskToText</var> is a <var>TCaption</var> function used to apply the edit mask in the control to the text specified in <var>Value</var>. This method mimics the behavior implemented in Delphi version 3, including:
+          </p>
+          <ul>
+            <li>
+              Pads the text with blank values if needed when literals are not used in the mask.
+            </li>
+            <li>
+              When literals are present in the edit mask, matching literals in the text are located and processed as "segments" with the literal(s) used as delimiters.
+            </li>
+          </ul>
+          <p>
+            Some examples to clarify:
+          </p>
+          <table>
+            <th>
+              <td>EditMask</td>
+              <td>Text to be set</td>
+              <td>Result</td>
+            </th>
+            <tr>
+              <td>99</td>
+              <td>1 </td>
+              <td>1_</td>
+            </tr>
+            <tr>
+              <td>cc-cc</td>
+              <td>1-2</td>
+              <td>1_-2_</td>
+            </tr>
+            <tr>
+              <td>!99</td>
+              <td>1</td>
+              <td>_1</td>
+            </tr>
+            <tr>
+              <td>!cc-cc</td>
+              <td>1-2</td>
+              <td>_1-_2</td>
+            </tr>
+            <tr>
+              <td>cc-cc@cc</td>
+              <td>1-2@3</td>
+              <td>1_-2_@3_</td>
+            </tr>
+            <tr>
+              <td>cc-cc@cc</td>
+              <td>12@3</td>
+              <td>12-__@3_</td>
+            </tr>
+            <tr>
+              <td>cc-cc@cc</td>
+              <td>123-456@789</td>
+              <td>12-45@78</td>
+            </tr>
+            <tr>
+              <td>!cc-cc@cc</td>
+              <td>123-456@789</td>
+              <td>23-56@89</td>
+            </tr>
+          </table>
+          <p>
+            This feauture seems to be invented for easy use of dates:
+          </p>
+          <table>
+            <th>
+              <td>EditMask</td>
+              <td>Text to be set</td>
+              <td>Result</td>
+            </th>
+            <tr>
+              <td>99/99/00</td>
+              <td>23/1/2009</td>
+              <td>23/1_/20 if your locale DateSeparator is '/'</td>
+            </tr>
+            <tr>
+              <td>!99/99/00</td>
+              <td>23/1/2009</td>
+              <td>23/_1/09 if your locale DateSeparator is '/'</td>
+            </tr>
+          </table>
+          <p>
+            The resulting text will always have length defined for the TInternalMask type used in the control. The new text value does not have to pass validation.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.ApplyMaskToText.Result">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.ApplyMaskToText.Value">
+        <short></short>
+      </element>
+
+      <element name="TCustomMaskEdit.CanShowEmulatedTextHint">
+        <short>
+          Indicates if the control can display its Hint or TextHint using the LCL capatibility layer
+        </short>
+        <descr>
+          <p>
+            <var>CanShowEmulatedTextHint</var> is an overridden <var>Boolean</var> function which indicates if the control can display its <var>Hint</var> or <var>TextHint</var> using the LCL capatibility layer in the Widget set class. CanShowEmulatedTextHint returns <b>False</b> when an edit mask has been assigned for the control. Otherwise, the inherited method is called to get the return value for the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.CanShowEmulatedTextHint"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.CanShowEmulatedTextHint.Result">
+        <short></short>
+      </element>
+
+      <element name="TCustomMaskEdit.DisableMask">
+        <short>Saves and disables the edit mask in the control</short>
+        <descr>
+          <p>
+            <var>DisableMask</var> is a <var>Boolean</var> function used to save the current edit mask to an internal member, and then disables the edit mask in the control. This gives developers the opportunity to set any text in the control without affecting the control state. Whether or not the function succeeds, <var>NewText</var> will be set as the new Text in  the control. There is no need to retain the saved internal mask or trim type; they are only set in <var>SetMask</var>.
+          </p>
+          <p>
+            Use <var>RestoreMask</var> to re-enable the saved edit mask for the control.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.DisableMask.Result">
+        <short>
+          Returns True on success, or False when an edit mask is not used in the control
+        </short>
+      </element>
+      <element name="TCustomMaskEdit.DisableMask.NewText">
+        <short>New value for the Text property in the control</short>
+      </element>
+
+      <element name="TCustomMaskEdit.RestoreMask">
+        <short>Restores the saved edit mask in the control</short>
+        <descr>
+          <p>
+            <var>RestoreMask</var> is a procedure used to restore the saved edit mask in the control. The edit mask is saved when <var>DisableMask</var> is called and an edit mask is active for the control. The return value is <b>True</b> when the edit mask (and control state and value) are successfullly restored.
+          </p>
+          <p>
+            In either circumstance, the value in <var>NewText</var> is assigned as the value for the <var>Text</var> property in the control.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.RestoreMask.Result">
+        <short>True on success</short>
+      </element>
+      <element name="TCustomMaskEdit.RestoreMask.NewText">
+        <short>New vaule assigned to the Text property</short>
+      </element>
+
+      <element name="TCustomMaskEdit.RealSetText">
+        <short>Sets the value for the Text in the control</short>
+        <descr>
+          <p>
+            <var>RealSetText</var> is an overridden procedure used to set the value for the Text in the control.
+          </p>
+          <p>
+            Setting the value in <var>Text</var> prior to completion of LCL component streaming has unwanted side-effects. To prevent the condition, RealSetText stores the text in <var>AValue</var> to an internal member that is applied in the <var>Loaded</var> method. No additional actions are performed in the method when <var>csLoading</var> is in the <var>ComponentState</var> property.
+          </p>
+          <p>
+            RealSetText uses the value from <var>IsMasked</var> to determine if an edit mask is used for the control. When <b>False</b>, the inherited <var>RealSetText</var> method is called to set the value in the <var>Text</var> property. When   <b>True</b>, the <var>SetTextApplyMask</var> method is called to store the content in AValue guided by the <var>EditMask</var> for the control.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.RealSetText.AValue">
+        <short>Value stored in the text for the control</short>
+      </element>
+
+      <element name="TCustomMaskEdit.RealGetText">
+        <short>Gets the value for the Text in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.RealGetText.Result">
+        <short></short>
+      </element>
+
+      <element name="TCustomMaskEdit.GetTextWithoutMask">
+        <short>
+          Gets the raw value for the control without formatting applied by an edit mask
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.GetTextWithoutMask.Result">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.GetTextWithoutMask.Value">
+        <short></short>
+      </element>
+
+      <element name="TCustomMaskEdit.GetTextWithoutSpaceChar">
+        <short>
+          Gets the value for the control without Space characters inserted by an edit mask
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.GetTextWithoutSpaceChar.Result">
+        <short></short>
+      </element>
+      <element name="TCustomMaskEdit.GetTextWithoutSpaceChar.Value">
+        <short></short>
+      </element>
+
+      <element name="TCustomMaskEdit.SetTextApplyMask">
+        <short>Sets the value for the control after applying its edit mask</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.SetTextApplyMask.Value">
+        <short></short>
+      </element>
+
       <element name="TCustomMaskEdit.GetEditText">
-        <short>Get the text in the edit box (the string that has been masked)</short>
+        <short>Gets the text in the edit box (the string value that has been masked)</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomMaskEdit.GetEditText.Result">
         <short/>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.GetMasked">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetMasked.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.GetMaskText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetMaskText.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.GetMaxLength">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetMaxLength.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomMaskEdit.CharKeys">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.CharKeys.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.CharKeys.CharCode">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
+
       <element name="TCustomMaskEdit.SetEditText">
         <short>
-          <var>SetEditText</var> - specifies the text to appear in the Edit box</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          Sets the value for the Text displayed in the control
+        </short>
+        <descr>
+          <p>
+            <var>SetEditText</var> sets the value for the Text displayed in the control. The new value for the text is padded (when needed) to the length defined in the edit mask. SetEditText calls <var>RealSetTextWhileMasked</var> to store the value in  the <var>Text</var> in the control.
+          </p>
+          <remark>
+            Please note: This method is not Delphi compatible, but it is by design. Delphi allows setting the EditText to any length, which is extremely dangerous! This method ensures that the text assigned in the control does not exceed the length specified by its edit mask.
+          </remark>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomMaskEdit.SetEditText.Value">
-        <short/>
+        <short>New value applied to the Text in the control</short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.SetEditMask">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.GetSel">
+        <short>
+          Finds the starting and ending positions for the selection
+        </short>
+        <descr>
+          <var>GetSel</var> finds the starting and ending positions for the selected text in the control. Calls GetSelStart to get the value for the _SelStart argument. Calls  GetSelLength to get the number of characters selected, and calculates the value for _SelStop.
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.SetEditMask.Value">
-        <short/>
+      <element name="TCustomMaskEdit.GetSel._SelStart">
+        <short>Stating position for the text selected in the control</short>
       </element>
-      <!-- procedure Visibility: private -->
+      <element name="TCustomMaskEdit.GetSel._SelStop">
+        <short>Ending position for the text selected in the  control</short>
+      </element>
+
+      <element name="TCustomMaskEdit.SetSel">
+        <short>
+          Specifies the starting and ending positions for the text selected in the control
+        </short>
+        <descr>
+          <var>SetSel</var> specifies the starting and ending positions for the text selected in the control.
+        </descr>
+      </element>
+      <element name="TCustomMaskEdit.SetSel._SelStart">
+        <short>Starting position for text selected in the control</short>
+      </element>
+      <element name="TCustomMaskEdit.SetSel._SelStop">
+        <short>Ending position for text selected in the control</short>
+      </element>
+
+      <element name="TCustomMaskEdit.TextChanged">
+        <short></short>
+        <descr>
+          <p>
+            <var>TextChanged</var> is an overridden procedure used to respond to a change in the value for the Text property. Its purpose is to avoid leaving the control in an invalid state when:
+          </p>
+          <ul>
+            <li>
+              A Cut, Paster, or Clear operation from an Operating System context menu. We try to catch and handle these messages.
+            </li>
+            <li>
+              Dragging selected text in the control with the mouse.
+            </li>
+          </ul>
+          <p>
+            If one of these operations happen, then the internal logic for cursor positioning and character insertion can be invalid.  So, we simply restore the text value from an internal member used to track the current text value.
+          </p>
+          <p>
+            The inherited TextChanged method is called when IsMasked is False, or when an internal update to the control value is performed. Otherwise, RealSetTextWhileMasked is called followed by SetCursorPos.
+          </p>
+        </descr>
+        <seealso>
+           <link id="#LCL.StdCtrls.TCustomEdit.TextChanged"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.Change">
+        <short>
+          Suppresses the OnChange event when the initial value for the control is assigned
+        </short>
+        <descr>
+          <p>
+            <var>Change</var> is an overridden procedure used to perform actions when the value for the control is changed. Change suppresses firing the <var>OnChange</var> event handler when the initial value for the control is assigned by using an internal member variable in the class instance. If the variable is not set, the inherited <var>Change</var> method is called to signal the <var>OnChange</var> event handler (and/or the <var>OnChangeHandler</var> event handler) for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.OnChangeHandler"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.Change"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.OnChange"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.SetCharCase">
+        <short>Sets the value in the CharCase property</short>
+        <descr>
+          <p>
+            <var>SetCharCase</var> is an overridden procedure used to set the value in the <var>CharCase</var> property.
+          </p>
+          <p>
+            <var>SetCharCase</var> is modified in TCustomMaskEdit to discard changes to the property when an edit mask has been assigned in the control. The value <var>ecNormal</var> is assigned to the property when <var>IsMasked</var> contains <b>True</b>. It is assumed that case conversions are performed according to the mask specification.
+          </p>
+          <p>
+            When IsMasked is <b>False</b>, the inherited property is set to the content in the <var>Value</var> argument.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.SetCharCase"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.CharCase"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.SetCharCase.Value">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomMaskEdit.GetCharCase">
+        <short>Gets the value for the CharCase property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomMaskEdit.GetCharCase.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TCustomMaskEdit.SetMaxLength">
-        <short/>
+        <short>Sets the value for the MaxLength property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomMaskEdit.MaxLength"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomMaskEdit.SetMaxLength.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.SetMaskText">
-        <short/>
+
+      <element name="TCustomMaskEdit.GetMaxLength">
+        <short>Gets the value for the MaxLength property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomMaskEdit.MaxLength"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.SetMaskText.Value">
-        <short/>
+      <element name="TCustomMaskEdit.GetMaxLength.Result">
+        <short>Value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.DeleteKeys">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.SetNumbersOnly">
+        <short>Sets the value for the NumbersOnly property</short>
+        <descr>
+          <p>
+            <var>SetNumbersOnly</var> is an overridden <var>Boolean</var> function used as the write access specifier for the <var>NumbersOnly</var> property.
+          </p>
+          <p>
+            SetNumbersOnly provides support use of an edit mask in the control. When <var>IsMasked</var> is <b>True</b>, setting NumbersOnly to True can interfere with the masking logic in the control; the property is automatically set to <b>False</b> when IsMasked is True. Otherwise, the inherited SetNumbersOnly method is called to set to the value for the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.SetNumbersOnly"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.NumbersOnly"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.DeleteKeys.CharCode">
-        <short/>
+      <element name="TCustomMaskEdit.SetNumbersOnly.Value">
+        <short>New value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.HomeEndKeys">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.Loaded">
+        <short>
+          Performs actions when a component has been loaded from the LCL streaming mechanism
+        </short>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden procedure used to perform actions when a component has been completely loaded from the LCL component streaming mechanism. Loaded calls the inherited method, and sets the value in internal members used to track the <var>EditMask</var> and <var>Text</var> values in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.HomeEndKeys.CharCode">
-        <short/>
+
+      <element name="TCustomMaskEdit.LMPasteFromClip">
+        <short>
+          <var>LMPasteFromClip</var> is the LCL message method for pasting from the clipboard
+        </short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.HomeEndKeys.Shift">
-        <short/>
+
+      <element name="TCustomMaskEdit.LMCutToClip">
+        <short>
+          <var>LMCutToClip</var> is the LCL message method for cutting to the clipboard
+        </short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.CursorInc">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCustomMaskEdit.LMClearSel">
+        <short>
+          <var>LMClearSel</var> is the LCL message method for clearing selected items
+        </short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.CursorInc.CursorPos">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.CursorInc.Incr">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.CursorDec">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.CursorDec.CursorPos">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.ArrowKeys">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.ArrowKeys.CharCode">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.ArrowKeys.Shift">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomMaskEdit.CMTextChanged">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.CMTextChanged.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.ReformatText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.ReformatText.NewMask">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.SetCursor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.SetCursor.Pos">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.KeyDown" link="#LCL.Controls.TWinControl.KeyDown">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.KeyDown.Key">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.KeyDown.Shift">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.KeyUp">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.KeyUp.Key">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.KeyUp.Shift">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.KeyPress" link="#LCL.Controls.TWinControl.KeyPress">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.KeyPress.Key">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
+
       <element name="TCustomMaskEdit.EditCanModify">
         <short>If True, the Edit box is allowed to modify the contents</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomMaskEdit.EditCanModify.Result">
         <short/>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.MouseDown">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseDown.Button">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseDown.Shift">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseDown.X">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseDown.Y">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.MouseUp" link="#LCL.Controls.TControl.MouseUp">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseUp.Button">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseUp.Shift">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseUp.X">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.MouseUp.Y">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.DoEnter" link="#LCL.Controls.TWinControl.DoEnter">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.DoExit" link="#LCL.Controls.TWinControl.DoExit">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TCustomMaskEdit.Reset">
-        <short>Reset - put back to its default state with mask appearing in Text box and no string input</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomMaskEdit.GetFirstEditChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetFirstEditChar.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomMaskEdit.GetLastEditChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetLastEditChar.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomMaskEdit.GetNextEditChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetNextEditChar.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.GetNextEditChar.Offset">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomMaskEdit.GetPriorEditChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetPriorEditChar.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.GetPriorEditChar.Offset">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomMaskEdit.GetMaxChars">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.GetMaxChars.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomMaskEdit.Validate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomMaskEdit.Validate.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.Validate.Value">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.Validate.Pos">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.ValidateError">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMaskEdit.CheckCursor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomMaskEdit.EditMask">
-        <short>EditMask - the sequence of characters used to obscure the string being typed (typically a sequence of asterisks)</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomMaskEdit.MaskState">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomMaskEdit.MaxLength">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCustomMaskEdit.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMaskEdit.Create.AOwner">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomMaskEdit.ValidateEdit">
-        <short>Validate the string that has been typed in the edit box</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomMaskEdit.Clear" link="#LCL.StdCtrls.TCustomEdit.Clear">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomMaskEdit.IsMasked">
         <short>
-          <var>isMasked</var> - True if the text is masked</short>
+          Reset returns the edit to its default state with mask appearing in Text box and no string input
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomMaskEdit.EditText">
-        <short>The string that has been typed in the Edit Box and obscured by the Masking characters</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomMaskEdit.Text">
-        <short>The <var>Text</var> string that is to be masked (or not)</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TMaskEdit">
-        <short>
-          <i>TMaskEdit</i> - an Edit box with characters masked out to avoid unauthorized reading</short>
-        <descr>Mask Edit: Displays an Edit Box with the input text masked by a selected character specified by PasswordChar, usually an asterisk, or by EditMask (a complete string), specified in TCustomMaskEdit. <br/>
-Useful for inputting passwords etc.
-</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.Align">
-        <short>Used to align the control in one of four directions.</short>
+
+      <element name="TCustomMaskEdit.DoEnter">
+        <short>Performs actions needed when the control is entered</short>
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
-          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent control</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>
+            <var>DoEnter</var> is an overridden procedure used to perform actions needed the control is entered. DoEnter extends the behavior in the inherited method to track the value for control when entered and to perform auto selection logic when an edit mask is in use.
           </p>
         </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.DoEnter"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.DoExit">
+        <short>Performs actions needed when the control is exited</short>
+        <descr></descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.DoExit"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.KeyDown">
+        <short>Performs actions needed to apply key down messages</short>
+        <descr>
+          <p>
+            Calls the inherited <var>KeyDown</var> method. If an edit mask is not assigned in the control, no additional actions are required in the method. If <var>Key</var> and <var>Shift</var> are extended selection navigation keys, no additional actions are required; i. e. Shift+Left, Shift+Right, Shift+Home, Shift+End.
+          </p>
+          <p>
+            KeyDown ensures that the value in the control is reset to its value on entry when <var>Key</var> is the Escape key. KeyDown provides support for clipboard operations, as well as the Delete and Backspace keys.
+          </p>
+          <p>
+            KeyDown handles Ctrl navigations keys as if they were the unmodified variant of the key; i. e. Ctrl+Left, Ctrl+Right, Ctrl+Home, Ctrl+End. Please note that the Ctrl+Up and Ctrl+Down key and modifier are not valid in TCustomMaskEdit; the keystroke is digested.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.KeyDown"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.KeyDown.Key">
+        <short>Key code examined in the method</short>
+      </element>
+      <element name="TCustomMaskEdit.KeyDown.Shift">
+        <short>Key modifier examined in the method</short>
+      </element>
+
+      <element name="TCustomMaskEdit.KeyPress">
+        <short>Performs actions needed to handle the specified character in the control</short>
+        <descr>
+          <p>
+            <var>KeyPress</var> is an overridden procedure used to apply the character specified in <var>Key</var> to the control. KeyPress calls the inherited method, and converts the character in Key to a UTF-8-encoded character which is passed to the <var>HandleKeyPress</var> method. All character values handled in HandleKeyPress are set to an empty character, and causes the value in Key to be digested in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.UTF8KeyPress"/>
+          <link id="#LCL.Controls.TWinControl.KeyPress"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.KeyPress.Key">
+        <short>Character handled in the method</short>
+      </element>
+
+      <element name="TCustomMaskEdit.MouseUp">
+        <short>Perfoems actions needed to handle a mouse button up message</short>
+        <descr>
+          <p>
+            Calls the inherited <var>MouseUp</var> method. When a mask is used in the control, the cursor is moved to the beginning of the current selection in the control and <var>SetCursorPos</var> is called to update the caret position.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.MouseUp"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.MouseUp.Button">
+        <short>Mouse button for the message</short>
+      </element>
+      <element name="TCustomMaskEdit.MouseUp.Shift">
+        <short>Shift modifier for the message</short>
+      </element>
+      <element name="TCustomMaskEdit.MouseUp.X">
+        <short>Horizontal coordinate for the mouse position</short>
+      </element>
+      <element name="TCustomMaskEdit.MouseUp.Y">
+        <short>Vertical coordinate for the mouse position</short>
+      </element>
+
+      <element name="TCustomMaskEdit.CheckCursor">
+        <short>
+          Updates the position for the cursor (or caret) when an EditMask is used in the control
+        </short>
+        <descr>
+          <p>
+            <var>CheckCursor</var> is a procedure used to update the position for the cursor  (or caret) when an <var>EditMask</var> is used in the control. CheckCursor uses the value from <var>IsMasked</var> to determine if the cursor position needs to be updated by calling <var>SetCursorPos</var>. When <var>IsMasked</var> returns <b>False</b>, no actions are performed in the method.
+          </p>
+          <p>
+            Used in the implementation of the <var>SetSpaceChar</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.IsMasked"/>
+          <link id="TCustomMaskEdit.SetCursorPos"/>
+          <link id="TCustomMaskEdit.SetSpaceChar"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.EditText">
+        <short>
+          The string that has been typed in the Edit Box and obscured by the Masking characters
+        </short>
+        <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+
+      <element name="TCustomMaskEdit.IsMasked">
+        <short>
+          <var>isMasked</var> is True if the text is masked
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomMaskEdit.SpaceChar">
+        <short>
+          <var>SpaceChar</var> is the character that is to be used as a Space character
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.MaxLength">
+        <short>
+          Indicates the maximum number of characters that can be stored in the value for the control
+        </short>
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
-          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, i.e. no auto-sizing</p>
+          <p>
+            <var>MaxLength</var> is an <var>Integer</var> property that represents the maximum number of characters that can be stored in the edit control. <var>TCustomMaskEdit</var> re-implements the read and write access specifiers for the property to provide support for use of an edit mask in the control.
+          </p>
+          <p>
+            Setting a new value for the property causes the internal length for the edit mask to be used as the value property. The specified <var>Value</var> is discarded when <var>IsMasked</var> is <b>True</b>. Otherwise, the new <var>Value</var> is stored using the inherited property accessor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.MaxLength"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.EditMask">
+        <short>
+          EditMask - the sequence of characters used to obscure the string being typed (typically a sequence of asterisks)
+        </short>
+        <descr>
+          <p>
+            <var>EditMask</var> is a <var>String</var> property which contains the mask specification for the edit control. EditMask contains the delimited mask fields with the character types, storage specifier, and the character used to represent a space in the edit mask. For example:
+          </p>
+          <code>AMaskEdit.EditMask := '999.999;1;0';</code>
+          <p>
+            Setting a new value for the property causes the value to be decomposed into the internal <var>TInternalMask</var> representing the individual characters in the edit mask. Individual UTF-8 characters in <var>Value</var> are either added to the mask as literals or character types. <var>Clear</var> is called to remove the displayed value in the control, and the initial <var>Text</var> value is set to the value from <var>RealGetText</var>.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.CutToClipBoard" link="#LCL.StdCtrls.TCustomEdit.CutToClipboard"/>
+      <element name="TCustomMaskEdit.PasteFromClipBoard" link="#LCL.StdCtrls.TCustomEdit.PasteFromClipboard"/>
+
+      <element name="TCustomMaskEdit.Create" link="#rtl.Classes.TComponent.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. Create sets the default values for internal members and properties specific to <var>TCustomMaskEdit</var>. The value in <var>SpaceChar</var> is set to '_'.
+          </p>
+          <p>
+            Create calls the inherited constructor, and sets the value in the internal member used for the text in the edit control by calling the inherited <var>RealGetText</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.ClearInternalMask"/>
+          <link id="TMaskEditTrimType.metTrimRight"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.RealGetText"/>
+        </seealso>
+      </element>
+      <element name="TCustomMaskEdit.Create.AOwner">
+        <short>Owner for the class instance</short>
+      </element>
+
+      <element name="TCustomMaskEdit.Clear">
+        <short>Clears the value for the edit control</short>
+        <descr>
+          <p>
+            <var>Clear</var> is an overridden procedure used to clear the value for the text in the edit control. Clear uses the value from <var>IsMasked</var> to determine if a mask specification has been assigned for the edit control.
+          </p>
+          <p>
+            When IsMasked is <b>True</b>, the <var>ClearChar</var> method is called for each position in the <var>EditMask</var> to get the blank value for the mask character. <var>RealSetTextWhileMasked</var> is called to store the new value for the control. The cursor (or caret) is reset to the beginning of the text, and <var>SetCursorPos</var> is called to update the cursor position.
+          </p>
+          <p>
+            When IsMasked is <b>False</b>, the inherited <var>Clear</var> method is called to update the content for the control.
+          </p>
+          <p>
+            Clear is used in the implementation of the <var>SetMask</var>,     <var>RestoreMask</var>, and <var>SetTextApplyMask</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.IsMasked"/>
+          <link id="TCustomMaskEdit.ClearChar"/>
+          <link id="TCustomMaskEdit.SetMask"/>
+          <link id="TCustomMaskEdit.RestoreMask"/>
+          <link id="TCustomMaskEdit.SetTextApplyMask"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.Clear"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.ValidateEdit">
+        <short>
+          Validates the value for the edit control when an EditMask has been specified
+        </short>
+        <descr>
+          <p>
+            <var>ValidateEdit</var> is a procedure used to validate the text for the edit control using the assigned mask. ValidateEdit uses the value in     <var>IsMasked</var> to determine if a mask has been assigned in the control.
+          </p>
+          <p>
+            When IsMasked is <b>True</b>, the value for the control is validated. The <var>TextIsValid</var> method is called with the value from the <var>Text</var> property. If the Text is not valid, an <var>EDBEditError</var> exception is raised for the error condition.
+          </p>
+          <p>
+            When IsMasked is <b>False</b>, no actions are performed in the method.
+          </p>
+          <p>
+            ValidateEdit is used in the implementation of the <var>DoExit</var> method.
+          </p>
+        </descr>
+        <errors>
+          Raises an <var>EDBEditError</var> if the <var>Text</var> for the control is not valid. Raised with the message in <var>SMaskEditNoMatch</var>.
+        </errors>
+        <seealso>
+          <link id="TCustomMaskEdit.IsMasked"/>
+          <link id="TMaskEdit.Text"/>
+          <link id="TCustomMaskEdit.TextIsValid"/>
+          <link id="TCustomMaskEdit.DoExit"/>
+          <link id="EDBEditError"/>
+          <link id="SMaskEditNoMatch"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomMaskEdit.Modified">
+        <short>Indicates if the value for the edit control has been changed</short>
+        <descr>
+          Modified is a Boolean property which indicates if the value for the edit control has been changed.
+        </descr>
+        <seealso></seealso>
+        <notes>
+          <note>Discuss relationship between Text, EditText, RealSetText, et. al.</note>
+      </notes>
+      </element>
+
+      <element name="TMaskEdit">
+        <short>
+          <var>TMaskEdit</var> is an Edit box with characters masked out to avoid unauthorized reading
+        </short>
+        <descr>
+          <p>
+            <var>TMaskEdit</var> is used to display an Edit Box with the input text masked by a selected character specified by PasswordChar, usually an asterisk, or by EditMask (a complete string), specified in TCustomMaskEdit.
+          </p>
+          <p>
+            Useful for inputting passwords or capturing input using a specific format and validation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit"/>
+        </seealso>
+      </element>
+
+      <element name="TMaskEdit.IsMasked" link="TCustomMaskEdit.IsMasked"/>
+      <element name="TMaskEdit.EditText" link="TCustomMaskEdit.EditText"/>
+      <element name="TMaskEdit.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TMaskEdit.Alignment" link="#LCL.StdCtrls.TCustomEdit.Alignment"/>
+
+      <element name="TMaskEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
+        <descr>
+          <p>One of the standard properties, which should be supported by all descendants.</p>
+          <p>Determines how the control is to be anchored to its client or parent control.</p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>.</p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
+      <element name="TMaskEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
+
+      <element name="TMaskEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+        <descr>
+          <p>One of the standard properties, which should be supported by all descendants.</p>
+          <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
+          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, i.e. no auto-sizing.</p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+
       <element name="TMaskEdit.BorderSpacing">
         <short>Determines the border spacing for this control</short>
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines the border spacing for this control</p>
+          <p>One of the standard properties, which should be supported by all descendants.</p>
+          <p>Determines the border spacing for this control.</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          <p>The properties are defined in the parent class
+            <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>.
           </p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
+      <element name="TMaskEdit.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+
       <element name="TMaskEdit.CharCase" link="#LCL.StdCtrls.TCustomEdit.CharCase">
         <descr>
-          <p>Indicates how text is displayed in a text editing control in the following ways:</p>
+          <p>
+            Indicates how text is displayed in a text editing control in the following ways:
+          </p>
           <ul>
             <li>Normal case letters</li>
             <li>Upper case letters</li>
@@ -1028,408 +1733,337 @@ Useful for inputting passwords etc.
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TMaskEdit.Color" link="#LCL.Controls.TControl.Color">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
+          <p>One of the standard properties, which should be supported by all descendants.</p>
           <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
           <p>The default color is the same as the window in which the control is located.</p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TMaskEdit.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>One of the standard properties, which should be supported by all descendants.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.DragCursor" link="#LCL.Controls.TControl.DragCursor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.DragKind" link="#LCL.Controls.TControl.DragKind">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.DragMode" link="#LCL.Controls.TControl.DragMode">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
+      <element name="TMaskEdit.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TMaskEdit.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TMaskEdit.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+
       <element name="TMaskEdit.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
-          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
+          <p>
+            One of the standard properties, which should be supported by all descendants.
+          </p>
+          <p>
+            Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'.
+          </p>
+          <p>
+            Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.
+          </p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.EditMask" link="#LCL.MaskEdit.TCustomMaskEdit.EditMask">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
       <element name="TMaskEdit.Font" link="#LCL.Controls.TControl.Font">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>
+            One of the standard properties, which should be supported by all descendants.
+          </p>
+          <p>
+            Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so.
+          </p>
+          <p>
+            The properties of <var>Font</var> are defined in the parent class
+            <link id="#lcl.Graphics.TFont">TFont</link>.
           </p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.PasswordChar">
-        <short>
-          <i>PasswordChar</i>: the character which appears in the Edit box replacing and masking the actual character typed</short>
-        <descr>
-          <p>
-            <i>PasswordChar</i>
 
+      <element name="TMaskEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength"/>
+      <element name="TMaskEdit.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TMaskEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TMaskEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TMaskEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
 
-
-: the character which appears in the Edit box replacing and masking the actual character typed.</p>
-          <p>Typically used in password input, to prevent the typed characters from being seen by passers-by or casual observers (or even malicious observers!)</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
       <element name="TMaskEdit.PopupMenu">
         <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>
- Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.ReadOnly">
-        <short>
-          <i>ReadOnly </i>- the contents of the edit box may only be read, not written or erased</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.ShowHint">
-        <short>Flag to determine: Is hint to be displayed for this control?</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>
-Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
-        <descr>Reads or writes information in flag; default is -1
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>
-          <p>Reads or writes boolean flag; default is False</p>
-          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.Text" link="#LCL.MaskEdit.TCustomMaskEdit.Text">
-        <descr>
-          <i>Text</i>
-
-
-
-: the character string contained in the Edit Box
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.Visible" link="#LCL.Controls.TControl.Visible">
-        <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
-          If Visible is True the control is shown, otherwise it is hidden.
-          Calling Show sets, among others, Visible to True.
-          Setting Visible to False is equivalent to calling Hide method.</pre>
-          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>
+            One of the standard properties, which should be supported by all descendants.
           </p>
-          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
+          <p>
+            Reads the details of the pop-up menu, or stores them. Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>.
+          </p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
+      <element name="TMaskEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
+        <short>
+          <var>ReadOnly</var> indicates if the contents of the edit box may only be read, not written or erased
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.ShowHint">
+        <short>Flag to determine if the hint is displayed for this control</short>
+        <descr>
+          <p>
+            One of the standard properties, which should be supported by all descendants.
+          </p>
+          <p>
+            Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+        <descr>Reads or writes information in flag; default is -1.</descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+        <short/>
+        <descr>
+          <p>
+            Reads or writes boolean flag; default is False.
+          </p>
+          <p>
+            Use the TabStop to allow or disallow access to the control using the Tab key. If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.Visible" link="#LCL.Controls.TControl.Visible">
+        <short/>
+        <descr>
+          <p>
+            The <var>Visible</var> property indicates the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden. Calling Show sets, among others, Visible to True. Setting Visible to False is equivalent to calling the Hide method.
+          </p>
+          <remark>
+            The Visible property does not depend on the visibility for a parent control. Use the IsVisible method to consider this and get effective visibility.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
+
+      <element name="TMaskEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
+        <short/>
+        <descr>
+          <p>
+            One of the standard properties, which should be supported by all descendants.
+          </p>
+          <p>
+            This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>.
+          </p>
+          <p>
+            Reads or writes a flag if a mouse click is detected, and sets a flag if a value is stored.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="TMaskEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
-        <descr>
-          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+        <short/>
         <descr>
           <p>
-            <i>OnKeyDown</i>
- - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
-        </descr>
+            Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.
+          </p>
+         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
-        <descr>
-          <p>
-            <i>OnKeyPress</i>
- - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
-        <descr>
-          <p>
-            <i>OnKeyUp</i>
-  - event handler for instance when a key is up (not pressed) while the control has focus</p>
-          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TMaskEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="FormatMaskText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="FormatMaskText.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="FormatMaskText.EditMask">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="FormatMaskText.Value">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="MaskGetMaskSave">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MaskGetMaskSave.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskGetMaskSave.EditMask">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="MaskGetMaskBlank">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MaskGetMaskBlank.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskGetMaskBlank.EditMask">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="MaskGetFldSeparator">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MaskGetFldSeparator.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskGetFldSeparator.EditMask">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMaskEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
-      <element name="TMaskEdit.EchoMode">
-        <short>
-          <i>EchoMode </i>- how to echo key presses on screen: normal (returning the actual character for that key), all upper or lower case, or a masking character as used in entering passwords</short>
-      </element>
-      <element name="TMaskEdit.OnChangeBounds">
-        <short>Event handler for a change in bounds of the control</short>
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads or Writes flag if bounds are changed</p>
-        </descr>
-      </element>
-      <element name="TMaskEdit.OnEditingDone">
-        <short>Event handler when editing is done</short>
-      </element>
-      <element name="TMaskEdit.OnResize">
-        <short>Event Handler for resize of control</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>
-Reads or Writes flag if control is re-sized.
-</descr>
-      </element>
-      <element name="TEditMask">
-        <short>
-          <i>TEditMask</i> - a string type containing a sequence of characters to act as a mask in an edit box</short>
-      </element>
-      <element name="TCustomMaskEdit.CMEnter">
-        <short>
-          <var>CMEnter</var> - control message method for pressing the Enter key</short>
-      </element>
-      <element name="TCustomMaskEdit.LMMButtonUp">
-        <short>
-          <var>LMMButtonUp</var> - LCL message method for Button Up</short>
-      </element>
-      <element name="TCustomMaskEdit.LMPasteFromClip">
-        <short>
-          <var>LMPasteFromClip</var> - LCL message method for pasting from clipboard</short>
-      </element>
-      <element name="TCustomMaskEdit.LMCutToClip">
-        <short>
-          <var>LMCutToClip</var> - LCL message method for cutting to clipboard</short>
-      </element>
-      <element name="TCustomMaskEdit.LMClearSel">
-        <short>
-          <var>LMClearSel</var> - LCL message method for clearing selected items</short>
-      </element>
-      <element name="TCustomMaskEdit.GetSel">
-        <short>
-          <var>GetSel</var> - finds the start and end positions of the selection</short>
-      </element>
-      <element name="TCustomMaskEdit.SetSel">
-        <short>
-          <var>SetSel</var> - specifies the start and end positions of the selection</short>
-      </element>
-      <element name="TCustomMaskEdit.SpaceChar">
-        <short>
-          <var>SpaceChar</var> - the character that is to be used as a Space character</short>
-      </element>
-      <element name="TMaskEdit.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
-      <element name="TMaskEdit.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
-      <element name="TMaskEdit.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+
+      <element name="TMaskEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TMaskEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TMaskEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
       <element name="TMaskEdit.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="TMaskEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TMaskEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TMaskEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+
+      <element name="TMaskEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+        <short/>
+        <descr>
+          <p>
+            <var>OnKeyDown</var> is an event handler signalled when a key is down while control has focus.
+          </p>
+          <p>
+            Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+        <short/>
+        <descr>
+          <p>
+            <var>OnKeyPress</var> is an event handler signalled when a key is pressed while the control has focus.
+          </p>
+          <p>
+            Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var> the key may have already been down when the control received focus.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaskEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+        <short/>
+        <descr>
+          <p>
+            <var>OnKeyUp</var> is an event handler signalled when a key is released (not pressed) while the control has focus.
+          </p>
+          <p>
+            The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.OnKeyUp"/>
+        </seealso>
+      </element>
+
+      <element name="TMaskEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TMaskEdit.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TMaskEdit.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
+      <element name="TMaskEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TMaskEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TMaskEdit.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TMaskEdit.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TMaskEdit.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
       <element name="TMaskEdit.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
+      <element name="TMaskEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TMaskEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TMaskEdit.EditMask" link="TCustomMaskEdit.EditMask"/>
+
+      <element name="TMaskEdit.Text">
+        <short></short>
+        <descr>
+          Text is a public property in TMaskEdit which provides access to the value for the edit control.
+        </descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.Text"/>
+          <link id="#LCL.Controls.TControl.Text"/>
+          <link id="TCustomMaskEdit.EditText"/>
+          <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TCustomMaskEdit.RealGetText"/>
+          <link id="TCustomMaskEdit.RealSetText"/>
+          <link id="TCustomMaskEdit.RealSetTextWhileMasked"/>
+        </seealso>
+        <notes>
+          <note>Discuss relationship between Text, EditText, RealSetText, et. al.</note>
+        </notes>
+      </element>
+
+      <element name="TMaskEdit.TextHint" link="#LCL.StdCtrls.TCustomEdit.TextHint"/>
       <element name="TMaskEdit.SpaceChar" link="#LCL.MaskEdit.TCustomMaskEdit.SpaceChar"/>
-      <element name="TCustomMaskEdit.GetText" link="#LCL.Controls.TControl.GetText"/>
-      <element name="TCustomMaskEdit.SetText" link="#LCL.Controls.TControl.SetText"/>
-      <element name="TCustomMaskEdit.TextChanged" link="#LCL.Controls.TControl.TextChanged"/>
-      <element name="TCustomMaskEdit.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
-      <element name="TCustomMaskEdit.CutToClipBoard" link="#LCL.StdCtrls.TCustomEdit.CutToClipboard"/>
-      <element name="TCustomMaskEdit.PasteFromClipBoard" link="#LCL.StdCtrls.TCustomEdit.PasteFromClipboard"/>
+
+      <element name="FormatMaskText">
+        <short>Applies an edit mask to the specified string value</short>
+        <descr>
+          <p>
+            <var>FormatMaskText</var> is a <var>String</var> function used to apply an edit mask to the specified String value. FormatMaskText creates a temporary instance of <var>TCustomMaskEdit</var> that  is used to apply the edit mask in <var>AEditMask</var> when required. The value in AEditMask is assigned to the <var>EditMask</var> property in TCustomMaskEdit.
+          </p>
+          <p>
+            The <var>Value</var> argument contains the data without any mask literals, escaped characters,  or space characters inserted by the editing mask. When the <var>IsMasked</var> method in the TCustomMaskEdit returns <b>True</b>, the <var>ApplyMaskToText</var> method is used to generate the return value for the routine. To maintain Delphi compatibility, the GetTextWithoutSpaceChar is also called to translate space characters represented using the character in the mask field to the Space character (decimal 32).
+          </p>
+          <p>
+            When IsMasked is <b>False</b>, the unmodified content in <var>Value</var> is used as the return value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TCustomMaskEdit.IsMasked"/>
+          <link id="TCustomMaskEdit.ApplyMaskToText"/>
+          <link id="TCustomMaskEdit.GetTextWithoutSpaceChar"/>
+        </seealso>
+      </element>
+      <element name="FormatMaskText.Result">
+        <short>Value after applying the specified mask</short>
+      </element>
+      <element name="FormatMaskText.EditMask">
+        <short>Edit mask applied to the specified content</short>
+      </element>
+      <element name="FormatMaskText.Value">
+        <short>Original content modified in the routine</short>
+      </element>
+
+      <element name="SplitEditMask">
+        <short>
+          Separates fields in the edit mask into the arguments passed to the routine
+        </short>
+        <descr>
+          <p>
+            <var>SplitEditMask</var> is a procedure used to separate fields in the edit mask into arguments passed to the routine. <var>AEditMask</var> is the editing mask with the delimited fields to examine the procedure. If AEditMask contains a value like:
+          </p>
+          <code>'999.999;0;_'</code>
+          <p>
+            The procedure returns the following values in the corresponding arguments:
+          </p>
+          <dl>
+            <dt>
+              AMaskPart - Mask characters
+            </dt>
+            <dd>
+              '999.999'.
+            </dd>
+            <dt>
+              AMaskSave - Indicates if mask characters are included in the value for a control
+            </dt>
+            <dd>False. Optional. Default value is True.</dd>
+            <dt>
+              ASpaceChar - Character used to represent a space in the masked value
+            </dt>
+            <dd>
+              '_'. Optional. Default value is DefaultBlank. Not relevant when AMaskSave is False.
+            </dd>
+          </dl>
+          <p>
+            SplitEditMask is used in the implementation of the <var>SetMask</var> method in <var>TCustomMaskEdit</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.SetMask"/>
+          <link id="TCustomMaskEdit.EditMask"/>
+        </seealso>
+      </element>
+      <element name="SplitEditMask.AEditMask">
+        <short>Delimited mask specification examined in the method</short>
+      </element>
+      <element name="SplitEditMask.AMaskPart">
+        <short>Contains the mask chatracters or literals in the specification</short>
+      </element>
+      <element name="SplitEditMask.AMaskSave">
+        <short>Indicates if mask data is saved with the value in a control</short>
+      </element>
+      <element name="SplitEditMask.ASpaceChar">
+        <short>Character representing the Space character in the masked value</short>
+      </element>
+
+      <element name="Register">
+        <short>Registers component for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is a procedure used to register components in the <file>maskedit.pp</file> unit for use in the Lazarus IDE. Register calls <var>RegisterComponents</var> to add the <var>TMaskEdit</var> class to the <b>Additional</b> tab in the Lazarus IDE.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMaskEdit"/>
+          <link id="#LCL.Classes.RegisterComponents"/>
+        </seealso>
+      </element>
+
     </module>
     <!-- MaskEdit -->
   </package>
