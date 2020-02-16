@@ -67,10 +67,10 @@ resourcestring
   rsMainFrm_VSTHeaderColumn_PackageName = 'Packages';
   rsMainFrm_VSTHeaderColumn_LazarusPackage = 'Lazarus Package (.lpk)';
   rsMainFrm_VSTHeaderColumn_Repository = 'OPM repository';
-  rsMainFrm_VSTHeaderColumn_Repository_Hint = 'Packages available in the OPM repository(https://packages.lazarus-ide.org/)';
+  rsMainFrm_VSTHeaderColumn_Repository_Hint = 'Packages available in the OPM repository (https://packages.lazarus-ide.org/)';
   rsMainFrm_VSTHeaderColumn_Installed = 'Installed';
   rsMainFrm_VSTHeaderColumn_Update = 'External repository';
-  rsMainFrm_VSTHeaderColumn_Update_Hint = 'Packages available at the developer''s webpage(see node "External link(JSON)" for more details)';
+  rsMainFrm_VSTHeaderColumn_Update_Hint = 'Packages available at the developer''s webpage (see node "External link (JSON)" for more details)';
   rsMainFrm_VSTHeaderColumn_Data = 'Status/Data';
   rsMainFrm_VSTHeaderColumn_Button = '';
   rsMainFrm_VSTHeaderColumn_Rating = 'Rating';

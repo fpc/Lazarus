@@ -957,14 +957,26 @@ msgid "Rating"
 msgstr "Avaliação"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
+#, fuzzy
+#| msgid "Repository"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
-msgid "Repository"
+msgid "OPM repository"
 msgstr "Repositório"
 
+#: opkman_const.rsmainfrm_vstheadercolumn_repository_hint
+msgid "Packages available in the OPM repository (https://packages.lazarus-ide.org/)"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vstheadercolumn_update
+#, fuzzy
+#| msgid "External"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
-msgid "External"
+msgid "External repository"
 msgstr "Externo"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_update_hint
+msgid "Packages available at the developer's webpage (see node \"External link (JSON)\" for more details)"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
