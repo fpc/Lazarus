@@ -453,6 +453,41 @@ procedure RegisterComponentEditor(ComponentClasses: array of TComponentClass;
 function GetComponentEditor(Component: TComponent;
   const Designer: TComponentEditorDesigner): TBaseComponentEditor;
 
+
+type
+{ TComponentRequirements
+
+  Providing this class for a component class allows to influence the
+  requirements for that component (for example which units or packages should
+  be referenced upon adding the component to a form).
+
+  RequiredUnits
+    Called to determine the units that a component requires. By default the
+    Units parameter contains the unit the component is contained in.
+
+  RequiredPkgs
+    Called to determine the packages that a component requires. By default the
+    Pkgs parameter contains the packages of the units returned by RequiredUnits
+  }
+  TComponentRequirements = class
+  private
+    FComponentClass: TComponentClass;
+  public
+    constructor Create(AComponentClass: TComponentClass); virtual;
+    procedure RequiredUnits({%H-}Units: TStrings); virtual;
+    procedure RequiredPkgs({%H-}Pkgs: TStrings); virtual;
+    property ComponentClass: TComponentClass read FComponentClass;
+  end;
+
+  TComponentRequirementsClass = class of TComponentRequirements;
+
+
+procedure RegisterComponentRequirements(ComponentClass: TComponentClass;
+  ComponentRequirements: TComponentRequirementsClass);
+procedure RegisterComponentRequirements(ComponentClasses: array of TComponentClass;
+  ComponentRequirements: TComponentRequirementsClass);
+function GetComponentRequirements(ComponentClass: TComponentClass): TComponentRequirements;
+
 type
   TPropertyEditorFilterFunc =
     function(const ATestEditor: TPropertyEditor): Boolean of object;
@@ -1380,9 +1415,84 @@ end;
 
 //------------------------------------------------------------------------------
 
+{ RegisterComponentRequirements }
+type
+  PComponentClassReqRec = ^TComponentClassReqRec;
+  TComponentClassReqRec = record
+    ComponentClass: TComponentClass;
+    RequirementsClass: TComponentRequirementsClass;
+  end;
+
+const
+  ComponentClassReqList: TList = Nil;
+
+procedure RegisterComponentRequirements(ComponentClass: TComponentClass;
+  ComponentRequirements: TComponentRequirementsClass);
+var
+  P: PComponentClassReqRec;
+begin
+  if not Assigned(ComponentClass) or not Assigned(ComponentRequirements) then
+    Exit;
+  if not Assigned(ComponentClassReqList) then
+    ComponentClassReqList := TList.Create;
+  New(P);
+  P^.ComponentClass := ComponentClass;
+  P^.RequirementsClass := ComponentRequirements;
+  ComponentClassReqList.Add(P);
+end;
+
+procedure RegisterComponentRequirements(ComponentClasses: array of TComponentClass;
+  ComponentRequirements: TComponentRequirementsClass);
+var
+  I: Integer;
+begin
+  for I := 0 to High(ComponentClasses) do
+    RegisterComponentRequirements(ComponentClasses[I], ComponentRequirements);
+end;
+
+function GetComponentRequirements(ComponentClass: TComponentClass): TComponentRequirements;
+var
+  I: Integer;
+  P: PComponentClassReqRec;
+begin
+  if not Assigned(ComponentClass) or not Assigned(ComponentClassReqList) then
+    Exit(Nil);
+  for I := 0 to ComponentClassReqList.Count - 1 do
+  begin
+    P := PComponentClassReqRec(ComponentClassReqList[i]);
+    if P^.ComponentClass = ComponentClass then
+    begin
+      Result := P^.RequirementsClass.Create(ComponentClass);
+      Exit;
+    end;
+  end;
+  Result := Nil;
+end;
+
+{ TComponentRequirements }
+
+constructor TComponentRequirements.Create(AComponentClass: TComponentClass);
+begin
+  inherited Create;
+  FComponentClass := AComponentClass;
+end;
+
+procedure TComponentRequirements.RequiredUnits(Units: TStrings);
+begin
+  ; // Inherit classes can override as needed.
+end;
+
+procedure TComponentRequirements.RequiredPkgs(Pkgs: TStrings);
+begin
+  ; // Inherit classes can override as needed.
+end;
+
+//------------------------------------------------------------------------------
+
 procedure InternalFinal;
 var
   p: PComponentClassRec;
+  pq: PComponentClassReqRec;
   i: integer;
 begin
   if ComponentClassList<>nil then begin
@@ -1391,6 +1501,13 @@ begin
       Dispose(p);
     end;
     ComponentClassList.Free;
+  end;
+  if Assigned(ComponentClassReqList) then begin
+    for i:=0 to ComponentClassReqList.Count-1 do begin
+      pq:=PComponentClassReqRec(ComponentClassReqList[i]);
+      Dispose(pq);
+    end;
+    ComponentClassReqList.Free;
   end;
 
   EditorForms.Free;
