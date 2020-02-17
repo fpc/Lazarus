@@ -417,25 +417,23 @@ begin
     Result := ThemeServices.GetElementDetails(ButtonPart)
 end;
 
-procedure TCustomSpeedButton.ActionChange(Sender: TObject;
-  CheckDefaults: Boolean);
+procedure TCustomSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 var
-  ImagesRes: TScaledImageListResolution;
+  NewAct: TCustomAction;
+  Imgs: TCustomImageList;
+  ImgRes: TScaledImageListResolution;
 begin
   inherited ActionChange(Sender,CheckDefaults);
   if Sender is TCustomAction then
   begin
-    with TCustomAction(Sender) do
-    begin
-      if CheckDefaults or (Self.GroupIndex = 0) then
-        Self.GroupIndex := GroupIndex;
-      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
-         (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-      begin
-        ImagesRes := ActionList.Images.ResolutionForPPI[ImageWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
-        ImagesRes.GetBitmap(ImageIndex, Glyph);
-      end;
-    end;
+    NewAct := TCustomAction(Sender);
+    if (not CheckDefaults) or (GroupIndex = 0) then
+      GroupIndex := NewAct.GroupIndex;
+    if (NewAct.ActionList = nil) or (NewAct.ImageIndex < 0) then Exit;
+    Imgs := NewAct.ActionList.Images;
+    if (Imgs = nil) or (NewAct.ImageIndex >= Imgs.Count) then Exit;
+    ImgRes := Imgs.ResolutionForPPI[ImageWidth,Font.PixelsPerInch,GetCanvasScaleFactor];
+    ImgRes.GetBitmap(NewAct.ImageIndex, Glyph);
   end;
 end;
 

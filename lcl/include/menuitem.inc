@@ -1553,7 +1553,7 @@ end;
   interface. This procedure just sets the private variables.
 
   //todo
-  MWE: ??? shouln'd we get checked from the interface in that case ???
+  MWE: ??? shouldn't we get checked from the interface in that case ???
  ------------------------------------------------------------------------------}
 procedure TMenuItem.TurnSiblingsOff;
 var

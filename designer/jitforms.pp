@@ -494,8 +494,8 @@ procedure TComponentWithOverrideValidateRename.ValidateRename(
 var
   Designer: TIDesigner;
 begin
-  debugln(['TComponentWithOverrideValidateRename.ValidateRename ',DbgSName(Self),
-           ' ',DbgSName(AComponent),' CurName=',CurName,' NewName=',NewName]);
+  //debugln(['TComponentWithOverrideValidateRename.ValidateRename ',DbgSName(Self),
+  //         ' ',DbgSName(AComponent),' CurName=',CurName,' NewName=',NewName]);
   inherited ValidateRename(AComponent, CurName, NewName);
   Designer:=FindRootDesigner(Self);
   if Designer <> nil then
