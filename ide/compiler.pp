@@ -106,7 +106,7 @@ type
     procedure SetValue(aValue: string; aOrigLine: integer);
   protected
     procedure ParseEditKind; virtual;
-    procedure ParseOption(aDescr: string; aIndent: integer); virtual;
+    function ParseOption(aDescr: string; aIndent: integer): Boolean; virtual;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
@@ -139,7 +139,7 @@ type
     function OneCharOptions(aOptAndValue: string): TCompilerOpt;
   protected
     procedure ParseEditKind; override;
-    procedure ParseOption(aDescr: string; aIndent: integer); override;
+    function ParseOption(aDescr: string; aIndent: integer): Boolean; override;
   public
     constructor Create(aOwnerReader: TCompilerOptReader; aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
@@ -473,14 +473,14 @@ begin
     AddChoicesByOptOld;
 end;
 
-procedure TCompilerOpt.ParseOption(aDescr: string; aIndent: integer);
+function TCompilerOpt.ParseOption(aDescr: string; aIndent: integer): Boolean;
 var
   i: Integer;
 begin
+  Result := True;
   fIndentation := aIndent;
+  if aDescr[1] <> '-' then Exit(False);     // Skip free text explanations.
   // Separate the actual option and description from each other
-  if aDescr[1] <> '-' then
-    raise Exception.CreateFmt('Option "%s" does not start with "-"', [aDescr]);
   i := 1;
   while (i <= Length(aDescr)) and (aDescr[i] <> ' ') do
     Inc(i);
@@ -754,11 +754,12 @@ begin
   fEditKind := oeGroup;
 end;
 
-procedure TCompilerOptGroup.ParseOption(aDescr: string; aIndent: integer);
+function TCompilerOptGroup.ParseOption(aDescr: string; aIndent: integer): Boolean;
 var
   i: Integer;
 begin
-  inherited ParseOption(aDescr, aIndent);
+  Result := inherited ParseOption(aDescr, aIndent);
+  if not Result then Exit;
   i := Length(fOption);
   fIncludeNegativeOpt := Copy(fOption, i-3, 4) = '[NO]';
   if fIncludeNegativeOpt then
