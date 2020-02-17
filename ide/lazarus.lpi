@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="12"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <LRSInOutputDirectory Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
-      <MainUnit Value="0"/>
       <Title Value="Lazarus"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
@@ -36,7 +36,6 @@
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
-      <Modes Count="0"/>
     </RunParams>
     <RequiredPackages Count="7">
       <Item1>
@@ -62,7 +61,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="243">
+    <Units Count="242">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -1306,7 +1305,10 @@
       <Unit220>
         <Filename Value="allcompileroptions.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmAllCompilerOptions"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="AllCompilerOptions"/>
       </Unit220>
       <Unit221>
         <Filename Value="jumphistoryview.pas"/>
@@ -1351,79 +1353,75 @@
         <IsPartOfProject Value="True"/>
       </Unit229>
       <Unit230>
-        <Filename Value="objectlists.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit230>
-      <Unit231>
         <Filename Value="mouseactiondialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit231>
-      <Unit232>
+      </Unit230>
+      <Unit231>
         <Filename Value="basedebugmanager.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="BaseDebugManager"/>
-      </Unit232>
-      <Unit233>
+      </Unit231>
+      <Unit232>
         <Filename Value="imexportcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ImExportCompOptsDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit233>
-      <Unit234>
+      </Unit232>
+      <Unit233>
         <Filename Value="initialsetupproc.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="InitialSetupProc"/>
-      </Unit234>
-      <Unit235>
+      </Unit233>
+      <Unit234>
         <Filename Value="qfinitlocalvardlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="QFInitLocalVarDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit235>
-      <Unit236>
+      </Unit234>
+      <Unit235>
         <Filename Value="../packager/interpkgconflictfiles.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit236>
-      <Unit237>
+      </Unit235>
+      <Unit236>
         <Filename Value="encloseifdef.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EncloseIfDefForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="EncloseIfDef"/>
-      </Unit237>
-      <Unit238>
+      </Unit236>
+      <Unit237>
         <Filename Value="definesgui.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DefinesGuiForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DefinesGui"/>
-      </Unit238>
-      <Unit239>
+      </Unit237>
+      <Unit238>
         <Filename Value="inputhistorywithsearchopt.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="InputhistoryWithSearchOpt"/>
-      </Unit239>
-      <Unit240>
+      </Unit238>
+      <Unit239>
         <Filename Value="projectdescriptors.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ProjectDescriptors"/>
-      </Unit240>
-      <Unit241>
+      </Unit239>
+      <Unit240>
         <Filename Value="etpas2jsmsgparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="etPas2jsMsgParser"/>
-      </Unit241>
-      <Unit242>
+      </Unit240>
+      <Unit241>
         <Filename Value="exttoolside.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ExtToolsIDE"/>
-      </Unit242>
+      </Unit241>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

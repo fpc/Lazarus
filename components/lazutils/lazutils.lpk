@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="LazUtils"/>
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
@@ -17,7 +17,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="102">
+    <Files Count="103">
       <Item1>
         <Filename Value="LazLoggerImpl.inc"/>
         <Type Value="Include"/>
@@ -426,6 +426,10 @@
         <Filename Value="lazutf8sysutils.pas"/>
         <UnitName Value="LazUTF8SysUtils"/>
       </Item102>
+      <Item103>
+        <Filename Value="objectlists.pas"/>
+        <UnitName Value="ObjectLists"/>
+      </Item103>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

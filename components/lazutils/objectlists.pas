@@ -26,9 +26,10 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
-  
+
   Abstract:
     Classes to associate objects/pointers with objects/pointers.
+    Converted to use generics by Juha. Item and Object types can now be defined.
 }
 unit ObjectLists;
 
@@ -37,48 +38,50 @@ unit ObjectLists;
 interface
 
 uses
-  Classes, SysUtils; 
-  
+  Classes, SysUtils;
+
 type
   T2Pointer = record
     Item, Associated: Pointer;
   end;
   P2Pointer = ^T2Pointer;
 
-  TObjectArray = class
+  { TObjectArray }
+
+  generic TObjectArray<TItem, TObj> = class
   private
     FCapacity: Integer;
     FCount: Integer;
     FList: P2Pointer;
   protected
-    function Get(Index: Integer): Pointer;
-    procedure Put(Index: Integer; const AValue: Pointer);
-    function GetObject(Index: Integer): Pointer;
-    procedure PutObject(Index: Integer; const AValue: Pointer);
+    function Get(Index: Integer): TItem;
+    procedure Put(Index: Integer; const AValue: TItem);
+    function GetObject(Index: Integer): TObj;
+    procedure PutObject(Index: Integer; const AValue: TObj);
     procedure SetCapacity(const AValue: Integer);
     procedure SetCount(const AValue: Integer);
     procedure Grow;
     procedure Shrink;
   public
     destructor Destroy; override;
-    function Add(Item: Pointer): Integer;
-    function AddObject(Item, Associated: Pointer): Integer;
+    function Add(Item: TItem): Integer;
+    function AddObject(Item: TItem; Associated: TObj): Integer;
     procedure Clear; virtual;
     procedure Delete(Index: Integer);
     procedure Exchange(Index1, Index2: Integer);
-    function First: Pointer;
-    function IndexOf(Item: Pointer): Integer;
-    procedure Insert(Index: Integer; Item: Pointer);
-    procedure InsertObject(Index: Integer; Item, Associated: Pointer);
-    function Last: Pointer;
+    function First: TItem;
+    function IndexOf(Item: TItem): Integer;
+    procedure Insert(Index: Integer; Item: TItem);
+    procedure InsertObject(Index: Integer; Item: TItem; Associated: TObj);
+    function Last: TItem;
     procedure Move(CurIndex, NewIndex: Integer);
     procedure Assign(SrcList: TList);
-    function Remove(Item: Pointer): Integer;
+    function Remove(Item: TItem): Integer;
     procedure Pack;
     property Capacity: Integer read FCapacity write SetCapacity;
     property Count: Integer read FCount write SetCount;
-    property Items[Index: Integer]: Pointer read Get write Put; default;
-    property Objects[Index: Integer]: Pointer read GetObject write PutObject;
+    property Items[Index: Integer]: TItem read Get write Put; default;
+    property Objects[Index: Integer]: TObj read GetObject write PutObject;
     property List: P2Pointer read FList;
   end;
 
@@ -86,24 +89,24 @@ implementation
 
 { TObjectArray }
 
-function TObjectArray.GetObject(Index: Integer): Pointer;
+function TObjectArray.Get(Index: Integer): TItem;
 begin
-  Result:=FList[Index].Associated;
+  Result:=TItem(FList[Index].Item);
 end;
 
-procedure TObjectArray.PutObject(Index: Integer; const AValue: Pointer);
-begin
-  FList[Index].Associated:=AValue;
-end;
-
-function TObjectArray.Get(Index: Integer): Pointer;
-begin
-  Result:=FList[Index].Item;
-end;
-
-procedure TObjectArray.Put(Index: Integer; const AValue: Pointer);
+procedure TObjectArray.Put(Index: Integer; const AValue: TItem);
 begin
   FList[Index].Item:=AValue;
+end;
+
+function TObjectArray.GetObject(Index: Integer): TObj;
+begin
+  Result:=TObj(FList[Index].Associated);
+end;
+
+procedure TObjectArray.PutObject(Index: Integer; const AValue: TObj);
+begin
+  FList[Index].Associated:=AValue;
 end;
 
 procedure TObjectArray.SetCapacity(const AValue: Integer);
@@ -138,12 +141,12 @@ begin
   inherited Destroy;
 end;
 
-function TObjectArray.Add(Item: Pointer): Integer;
+function TObjectArray.Add(Item: TItem): Integer;
 begin
   Result:=AddObject(Item,nil);
 end;
 
-function TObjectArray.AddObject(Item, Associated: Pointer): Integer;
+function TObjectArray.AddObject(Item: TItem; Associated: TObj): Integer;
 begin
   if FCount=FCapacity then Grow;
   FList[FCount].Item:=Item;
@@ -177,26 +180,26 @@ begin
   FList[Index2]:=SwapDummy;
 end;
 
-function TObjectArray.First: Pointer;
+function TObjectArray.First: TItem;
 begin
   if FCount>0 then
-    Result:=FList[0].Item
+    Result:=TItem(FList[0].Item)
   else
     Result:=nil;
 end;
 
-function TObjectArray.IndexOf(Item: Pointer): Integer;
+function TObjectArray.IndexOf(Item: TItem): Integer;
 begin
   Result:=FCount-1;
-  while (Result>=0) and (FList[Result].Item<>Item) do dec(Result);
+  while (Result>=0) and (TItem(FList[Result].Item)<>Item) do dec(Result);
 end;
 
-procedure TObjectArray.Insert(Index: Integer; Item: Pointer);
+procedure TObjectArray.Insert(Index: Integer; Item: TItem);
 begin
   InsertObject(Index,Item,nil);
 end;
 
-procedure TObjectArray.InsertObject(Index: Integer; Item, Associated: Pointer);
+procedure TObjectArray.InsertObject(Index: Integer; Item: TItem; Associated: TObj);
 begin
   if FCount=FCapacity then Grow;
   if Index<FCount then
@@ -206,10 +209,10 @@ begin
   FList[Index].Associated:=Associated;
 end;
 
-function TObjectArray.Last: Pointer;
+function TObjectArray.Last: TItem;
 begin
   if FCount>0 then
-    Result:=FList[FCount-1].Item
+    Result:=TItem(FList[FCount-1].Item)
   else
     Result:=nil;
 end;
@@ -241,7 +244,7 @@ begin
   end;
 end;
 
-function TObjectArray.Remove(Item: Pointer): Integer;
+function TObjectArray.Remove(Item: TItem): Integer;
 begin
   Result:=IndexOf(Item);
   if Result>=0 then Delete(Result);

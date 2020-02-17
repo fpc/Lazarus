@@ -349,7 +349,6 @@ begin
     P.Sources.AddSrc('msgvieweditor.pas');
     P.Sources.AddSrc('newdialog.pas');
     P.Sources.AddSrc('newprojectdlg.pp');
-    P.Sources.AddSrc('objectlists.pas');
     P.Sources.AddSrc('outputfilter.pas');
     P.Sources.AddSrc('patheditordlg.pas');
     P.Sources.AddSrc('procedurelist.pas');

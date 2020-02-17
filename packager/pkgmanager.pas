@@ -52,7 +52,7 @@ uses
   Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
   LazUTF8, Laz2_XMLCfg, LazUTF8Classes, LazTracer, LazUtilities, LazStringUtils,
-  LazFileUtils, LazFileCache, StringHashList, Translations, AvgLvlTree,
+  LazFileUtils, LazFileCache, StringHashList, AvgLvlTree, ObjectLists, Translations,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
   FileProcs, CodeTree, CTUnitGraph,
@@ -62,10 +62,9 @@ uses
   IDEExternToolIntf, MacroIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   ComponentReg, ComponentEditors, PropEdits, IDEDialogs, UnitResources,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
-  DialogProcs, IDEOptionDefs, EnvironmentOpts,
-  MiscOptions, InputHistory, Project, PackageEditor, AddToPackageDlg,
-  PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
+  IDECmdLine, LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs,
+  EnvironmentOpts, MiscOptions, InputHistory, Project, PackageEditor,
+  AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,
   TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector,
   SourceEditor, ProjPackChecks, AddFileToAPackageDlg, LazarusPackageIntf,
@@ -74,6 +73,10 @@ uses
   MainBar, MainIntf, MainBase, ModeMatrixOpts;
 
 type
+
+  TPackagePackageArray = specialize TObjectArray<TLazPackageID, TLazPackageID>;
+  TOwnerPackageArray = specialize TObjectArray<TObject, TLazPackageID>;
+
   { TPkgManager }
 
   TPkgManager = class(TBasePkgManager)
@@ -361,13 +364,13 @@ type
                          ComponentClassnames: TStrings;
                          Quiet: boolean = false): TModalResult; override;
     function GetUnitsAndDependenciesForComponents(ComponentClassNames: TStrings;
-                         out PackageList: TObjectArray; out UnitList: TStrings): TModalResult;
+          out PackageList: TPackagePackageArray; out UnitList: TStringList): TModalResult;
     function GetMissingDependenciesForUnit(const UnitFilename: string;
                          ComponentClassnames: TStrings;
-                         var List: TObjectArray): TModalResult;
+                         var List: TOwnerPackageArray): TModalResult;
     function FilterMissingDependenciesForUnit(const UnitFilename: string;
-                         InputPackageList: TObjectArray;
-                         out OutputPackageList: TObjectArray): TModalResult;
+                         InputPackageList: TPackagePackageArray;
+                         out OutputPackageList: TOwnerPackageArray): TModalResult;
     function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; override; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
                                     Proc: TGetStrProc); override;
@@ -4307,10 +4310,8 @@ var
   i: Integer;
 begin
   Result:='';
-  if FilenameIsAbsolute(Filename) then begin
-    Result:=Filename;
-    exit;
-  end;
+  if FilenameIsAbsolute(Filename) then
+    exit(Filename);
   PkgList:=nil;
   PackageGraph.GetAllRequiredPackages(nil,aProject.FirstRequiredDependency,
     PkgList,[pirCompileOrder]);
@@ -4319,8 +4320,7 @@ begin
     for i:=0 to PkgList.Count-1 do begin
       APackage:=TLazPackage(PkgList[i]);
       IncPath:=APackage.CompilerOptions.GetIncludePath(false);
-      Result:=SearchFileInPath(Filename,APackage.Directory,IncPath,';',
-                               ctsfcDefault);
+      Result:=SearchFileInPath(Filename,APackage.Directory,IncPath,';',ctsfcDefault);
       if Result<>'' then exit;
     end;
   finally
@@ -4355,9 +4355,9 @@ function TPkgManager.AddUnitDependenciesForComponentClasses(
   Quiet: boolean): TModalResult;
 var
   UnitBuf: TCodeBuffer;
-  UnitNames: TStrings;
-  Dependencies, MissingDependencies: TObjectArray;
-  
+  UnitNames: TStringList;
+  MissingDependencies: TOwnerPackageArray;
+
   function LoadAndParseUnitBuf: TModalResult;
   begin
     if not CodeToolBoss.GatherExternalChanges then begin
@@ -4422,8 +4422,8 @@ var
     PackageAdditions:='';
     if MissingDependencies<>nil then begin
       for i:=0 to MissingDependencies.Count-1 do begin
-        UnitOwner:=TObject(MissingDependencies[i]);
-        RequiredPackage:=TLazPackageID(MissingDependencies.Objects[i]);
+        UnitOwner:=MissingDependencies[i];
+        RequiredPackage:=MissingDependencies.Objects[i];
         if RequiredPackage is TIDEPackage then
           RequiredPackage:=RedirectPackageDependency(TIDEPackage(RequiredPackage));
         if UnitOwner is TProject then begin
@@ -4460,8 +4460,8 @@ var
   begin
     if MissingDependencies<>nil then begin
       for i:=0 to MissingDependencies.Count-1 do begin
-        UnitOwner:=TObject(MissingDependencies[i]);
-        RequiredPackage:=TLazPackageID(MissingDependencies.Objects[i]);
+        UnitOwner:=MissingDependencies[i];
+        RequiredPackage:=MissingDependencies.Objects[i];
         if RequiredPackage is TIDEPackage then
           RequiredPackage:=RedirectPackageDependency(TIDEPackage(RequiredPackage));
         if UnitOwner is TProject then begin
@@ -4495,6 +4495,9 @@ var
     end;
     Result:=mrOk;
   end;
+
+var
+  Dependencies: TPackagePackageArray;
 
 begin
   Result:=mrCancel;
@@ -4535,8 +4538,8 @@ begin
 end;
 
 function TPkgManager.GetUnitsAndDependenciesForComponents(
-  ComponentClassNames: TStrings; out PackageList: TObjectArray;
-  out UnitList: TStrings): TModalResult;
+  ComponentClassNames: TStrings; out PackageList: TPackagePackageArray;
+  out UnitList: TStringList): TModalResult;
 // returns a list of packages and units needed to use the Component in the unit
 var
   CurClassID: Integer;
@@ -4546,7 +4549,8 @@ var
   PkgFile: TPkgFile;
   RequiredPackage: TLazPackageID;
   CurUnitName: String;
-  CurPackages, AllPackages, CurUnitNames: TStrings;
+  CurUnitNames: TStrings;
+  CurPackages, AllPackages: TStringList;
   CurCompReq: TComponentRequirements;
   Helper: TPackageIterateHelper;
 begin
@@ -4578,8 +4582,8 @@ begin
           for CurUnitIdx:=0 to CurUnitNames.Count-1 do begin
             if UnitList=nil then begin
               UnitList:=TStringList.Create;
-              TStringList(UnitList).CaseSensitive:=False;
-              TStringList(UnitList).Duplicates:=dupIgnore;
+              UnitList.CaseSensitive:=False;
+              UnitList.Duplicates:=dupIgnore;
             end;
             CurUnitName:=CurUnitNames[CurUnitIdx];
             UnitList.Add(CurUnitName);
@@ -4593,8 +4597,8 @@ begin
               if RequiredPackage<>nil then begin
                 if CurPackages=nil then begin
                   CurPackages:=TStringList.Create;
-                  TStringList(CurPackages).Duplicates:=dupIgnore;
-                  TStringList(CurPackages).CaseSensitive:=False;
+                  CurPackages.Duplicates:=dupIgnore;
+                  CurPackages.CaseSensitive:=False;
                 end else
                   CurPackages.Clear;
                 CurPackages.Add(RequiredPackage.Name);
@@ -4604,8 +4608,8 @@ begin
                 try
                   if AllPackages=nil then begin
                     AllPackages:=TStringList.Create;
-                    TStringList(AllPackages).CaseSensitive:=False;
-                    TStringList(AllPackages).Duplicates:=dupIgnore;
+                    AllPackages.CaseSensitive:=False;
+                    AllPackages.Duplicates:=dupIgnore;
                   end;
                   Helper.PackageNames:=CurPackages;
                   Helper.PackageList:=AllPackages;
@@ -4623,9 +4627,10 @@ begin
       end;
     end;
     if AllPackages.Count>0 then begin
-      if AllPackages.Count>0 then PackageList:=TObjectArray.Create;
+      if AllPackages.Count>0 then
+        PackageList:=TPackagePackageArray.Create;
       for CurPackageIdx:=0 to AllPackages.Count-1 do
-        PackageList.Add(AllPackages.Objects[CurPackageIdx]);
+        PackageList.Add(TLazPackageID(AllPackages.Objects[CurPackageIdx]));
     end;
   finally
     CurUnitNames.Free;
@@ -4636,8 +4641,8 @@ begin
 end;
 
 function TPkgManager.FilterMissingDependenciesForUnit(const UnitFilename: string;
-                     InputPackageList: TObjectArray;
-                     out OutputPackageList: TObjectArray): TModalResult;
+                     InputPackageList: TPackagePackageArray;
+                     out OutputPackageList: TOwnerPackageArray): TModalResult;
 // returns a list of packages that are not yet used by the project the unit
 // belongs to
 var
@@ -4660,15 +4665,14 @@ begin
       else
         FirstDependency:=nil;
       for CurPackageIdx:=0 to InputPackageList.Count-1 do begin
-        RequiredPackage:=TLazPackageID(InputPackageList.Items[CurPackageIdx]);
+        RequiredPackage:=InputPackageList.Items[CurPackageIdx];
         if (RequiredPackage<>nil)
         and (RequiredPackage<>UnitOwner)
-        and (FindCompatibleDependencyInList(FirstDependency,pdlRequires,
-          RequiredPackage)=nil)
-        and (PackageGraph.FindPackageProvidingName(FirstDependency,
-          RequiredPackage.Name)=nil)
+        and (FindCompatibleDependencyInList(FirstDependency,pdlRequires,RequiredPackage)=nil)
+        and (PackageGraph.FindPackageProvidingName(FirstDependency,RequiredPackage.Name)=nil)
         then begin
-          if OutputPackageList=nil then OutputPackageList:=TObjectArray.Create;
+          if OutputPackageList=nil then
+            OutputPackageList:=TOwnerPackageArray.Create;
           OutputPackageList.AddObject(UnitOwner,RequiredPackage);
           //debugln(['TPkgManager.FilterMissingDependenciesForUnit A ',UnitOwner.ClassName,' ',RequiredPackage.Name]);
           //if TObject(OutputPackageList[OutputPackageList.Count-1])<>UnitOwner then RaiseGDBException('A');
@@ -4685,17 +4689,16 @@ end;
 
 function TPkgManager.GetMissingDependenciesForUnit(
   const UnitFilename: string; ComponentClassnames: TStrings;
-  var List: TObjectArray): TModalResult;
+  var List: TOwnerPackageArray): TModalResult;
 // returns a list of packages needed to use the Component in the unit
 var
-  AllPackages: TObjectArray;
-  AllUnits: TStrings;
+  AllPackages: TPackagePackageArray;
+  AllUnits: TStringList;
 begin
   List:=nil;
   Result:=GetUnitsAndDependenciesForComponents(ComponentClassnames,AllPackages,AllUnits);
   try
     if Result<>mrOK then Exit;
-
     Result:=FilterMissingDependenciesForUnit(UnitFilename,AllPackages,List);
   finally
     AllPackages.Free;
