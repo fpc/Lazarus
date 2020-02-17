@@ -807,25 +807,25 @@ begin
     if PackageLink = nil then
     begin
       Author := Info.Author;
-      Description := Info.Description;
+      Description := Trim(Info.Description);
       License := Info.License;
     end
     else
     begin
       Author := PackageLink.Author;
-      Description := PackageLink.Description;
+      Description := Trim(PackageLink.Description);
       License := PackageLink.License;
     end;
 
-    if Author<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Author);
-    if Description<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract + ': ' + Description);
-    if License<>'' then
-      PkgInfoMemoLicense.Lines.Add(lisPckOptsLicense + ': ' + License);
-
+    if Description<>'' then         // Description is the most interesting piece.
+      PkgInfoMemo.Lines.Add(Description); // Put it first.
     PkgInfoMemo.Lines.Add('');
-    PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [Info.LPKFilename]));
+    if Author<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Author);         // Author
+    PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [Info.LPKFilename])); // Pkg name
+
+    if License<>'' then             // License has its own memo.
+      PkgInfoMemoLicense.Lines.Add(lisPckOptsLicense + ': ' + License);
 
     InfoStr:=lisCurrentState;
     if Info.Installed<>pitNope then
