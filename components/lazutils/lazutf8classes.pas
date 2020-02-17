@@ -19,14 +19,7 @@ type
 
   { TFileStreamUTF8 }
 
-  TFileStreamUTF8 = class(TFileStream)
-  private
-    FFileName: string;
-  public
-    constructor Create(const AFileName: string; Mode: Word);
-    constructor Create(const AFileName: string; Mode: Word; Rights: Cardinal);
-    property FileName: string Read FFilename;
-  end;
+  TFileStreamUTF8 = TFileStream;
 
   { TStringListUTF8 }
 
@@ -122,38 +115,6 @@ begin
   finally
     S.free;
   end;
-end;
-
-constructor TFileStreamUTF8.Create(const AFileName: string; Mode: Word);
-begin
-  Create(AFileName,Mode,438);
-  { Rights 438 is the default in the FCL TFileStream
-    Under Unix:
-      438 = &666 = owner/group/others can read/write
-      Note: the real rights are "Rights and not umask"
-    Under Windows Rights is not used.
-  }
-end;
-
-constructor TFileStreamUTF8.Create(const AFileName: string; Mode: Word; Rights: Cardinal);
-var
-  lHandle: THandle;
-begin
-  FFileName:=AFileName;
-  if (Mode and fmCreate) > 0 then
-    lHandle:=FileCreateUTF8(AFileName,Mode,Rights)
-  else
-    lHandle:=FileOpenUTF8(AFileName,Mode);
-
-  if (THandle(lHandle)=feInvalidHandle) then
-  begin
-    if Mode=fmcreate then
-      raise EFCreateError.createfmt({SFCreateError}'Unable to create file "%s"',[AFileName])
-    else
-      raise EFOpenError.Createfmt({SFOpenError}'Unable to open file "%s"',[AFilename]);
-  end
-  else
-    THandleStream(Self).Create(lHandle);
 end;
 
 function TStringListUTF8.DoCompareText(const s1, s2: string): PtrInt;
