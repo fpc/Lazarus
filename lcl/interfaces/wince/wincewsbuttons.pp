@@ -59,7 +59,8 @@ procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; DrawStruct: PDrawItemStruct);
 
 implementation
 
-uses ImgList, WinCEInt, WinCEExtra;
+uses
+  ImgList, WinCEInt, WinCEExtra;
 
 type
   TBitBtnAceess = class(TCustomBitBtn)
@@ -91,7 +92,6 @@ var
   XDestText, YDestText: integer; // X,Y coordinates of destination rectangle for caption
   newWidth, newHeight: integer; // dimensions of new combined bitmap
   srcWidth, srcHeight: integer; // width of glyph to use, bitmap may have multiple glyphs
-  ButtonCaption: PWideChar;
   ButtonState: TButtonState;
   AIndex: Integer;
   AImageRes: TScaledImageListResolution;
@@ -100,12 +100,12 @@ var
   procedure DrawBitmap;
   var
     TextFlags: integer; // flags for caption (enabled or disabled)
+    OldFontHandle: HFONT; // handle of previous font
+    ButtonCaptionW: WideString;
   begin
     TextFlags := DST_PREFIXTEXT;
     if ButtonState = bsDisabled then
       TextFlags := TextFlags or DSS_DISABLED;
-
-    // fill with background color
 
     if (srcWidth <> 0) and (srcHeight <> 0) then
     begin
@@ -124,7 +124,11 @@ var
       SetTextColor(DrawStruct^._hDC, $FFFFFF)
     else
       SetTextColor(DrawStruct^._hDC, 0);
-    DrawState(DrawStruct^._hDC, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
+
+    OldFontHandle := SelectObject(DrawStruct^._hDC, BitBtn.Font.Reference.Handle);
+    ButtonCaptionW := UTF8ToUTF16(BitBtn.Caption);
+    DrawState(DrawStruct^._hDC, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
+    SelectObject(DrawStruct^._hDC, OldFontHandle);
   end;
 
 var
@@ -151,8 +155,6 @@ begin
   // DFCS_ADJUSTRECT doesnot work
   InflateRect(DrawRect, -4, -4);
 
-  ButtonCaption := PWideChar(UTF8Decode(BitBtn.Caption));
-
   // gather info about bitbtn
   if BitBtn.CanShowGlyph(True) then
   begin
@@ -172,7 +174,7 @@ begin
 
   BitBtnLayout := BitBtn.Layout;
 
-  MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
+  MeasureText(BitBtn, BitBtn.Caption, TextSize.cx, TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
