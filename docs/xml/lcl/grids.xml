@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
@@ -11357,6 +11358,20 @@
         <short>
           True when multi-select range selection mode is enabled and in use for the grid
         </short>
+      </element>
+
+      <element name="TCustomGrid.HideSortArrow">
+        <short>Hide the arrow drawn for the sort indicator</short>
+        <descr>
+          <p>
+            <var>HideSortArrow</var> is a procedure used to hide the arrow drawn for the sort indicator defined in <var>SortColumn</var>. HideSortArrow sets the value in SortColumn to <b>-1</b> to indicate that the sort column is not defined, and calls <var>InvalidateGrid</var> to redraw the contents in the grid control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.SortColumn"/>
+          <link id="TCustomGrid.InvalidateGrid"/>
+          <link id="TCustomGrid.Sort"/>
+        </seealso>
       </element>
 
       <!-- procedure Visibility: protected -->
