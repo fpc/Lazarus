@@ -1,16 +1,16 @@
-# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017, 2018, 2019.
+# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017, 2018, 2019, 2020.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2019-09-20 20:08+0200\n"
+"PO-Revision-Date: 2020-02-18 22:35+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 19.04.3\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -959,26 +959,22 @@ msgid "Rating"
 msgstr "Рейтинг"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
-#, fuzzy
-#| msgid "Repository"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
 msgid "OPM repository"
-msgstr "Сховище"
+msgstr "Сховище OPM"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository_hint
 msgid "Packages available in the OPM repository (https://packages.lazarus-ide.org/)"
-msgstr ""
+msgstr "Пакунки, доступні у сховищі OPM (https://packages.lazarus-ide.org/)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "External"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External repository"
-msgstr "Зовнішній"
+msgstr "Зовнішнє сховище"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update_hint
 msgid "Packages available at the developer's webpage (see node \"External link (JSON)\" for more details)"
-msgstr ""
+msgstr "Пакунки, доступні на сторінці розробника (докладніше див. вузол \"Зовнішнє посилання (JSON)\")"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
