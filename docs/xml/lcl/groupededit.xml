@@ -1,4022 +1,2309 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
-  ====================================================================
-    GroupedEdit
-  ====================================================================
--->
-
-<module name="GroupedEdit">
-<short></short>
-<descr>
-</descr>
-
-<!-- class Visibility: default -->
-<element name="TGEEdit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TGEEdit.PerformTab">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TGEEdit.PerformTab.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TGEEdit.PerformTab.ForwardTab">
-<short></short>
-</element>
-
-<!-- "class of" type Visibility: default -->
-<element name="TGEEditClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TCustomAbstractGroupedEdit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FAutoSizeHeightIsEditHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FBuddy">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FDirectInput">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FEdit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FFocusOnBuddyClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FInitialColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FIsReadOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FLayout">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FTextHintFontColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FTextHintFontStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnBuddyClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditDblClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditDragDrop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditDragOver">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditEditingDone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditEndDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditExit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditKeyDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditKeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditKeyUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseLeave">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseWheel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseWheelUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditMouseWheelDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditStartDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.FOnEditUtf8KeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetAlignment">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetAlignment.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetAutoSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetAutoSelect.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetAutoSelected">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetAutoSelected.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetCanUndo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetCanUndo.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetCaretPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetCaretPos.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetCharCase">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetCharCase.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetColor.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetDirectInput">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetDirectInput.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetEchoMode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetEchoMode.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetEditMask">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetEditMask.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetEditText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetEditText.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetHideSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetHideSelection.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetIsMasked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetIsMasked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetMaxLength">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetMaxLength.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetModified">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetModified.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetNumbersOnly">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetNumbersOnly.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetParentColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetParentColor.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetPasswordChar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetPasswordChar.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetReadOnly">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetReadOnly.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetSelLength">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetSelLength.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetSelStart">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetSelStart.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetSelText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetSelText.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTabStop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTabStop.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTextHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTextHint.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTextHintFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTextHintFontColor.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTextHintFontStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.GetTextHintFontStyle.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnBuddyClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnBuddyClick.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditClick.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDblClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDblClick.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditChange.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.State">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Accept">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEditingDone">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEditingDone.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEnter.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditExit.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.Target">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown.Shift">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyPress.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyPress.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp.Shift">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Button">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Button">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseEnter.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseLeave">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseLeave.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.WheelDelta">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.MousePos">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.Handled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.MousePos">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.Handled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.MousePos">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.Handled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress.UTF8Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditStartDrag">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditStartDrag.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.InternalOnEditStartDrag.DragObject">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetAlignment">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetAlignment.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetAutoSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetAutoSelect.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetAutoSelected">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetAutoSelected.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetCaretPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetCaretPos.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetCharCase">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetCharCase.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetEchoMode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetEchoMode.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetEditMask">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetEditMask.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetEditText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetEditText.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetHideSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetHideSelection.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetLayout">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetLayout.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetMaxLength">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetMaxLength.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetModified">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetModified.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetNumbersOnly">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetNumbersOnly.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetParentColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetParentColor.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetPasswordChar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetPasswordChar.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetPopupMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetPopupMenu.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetReadOnly">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetReadOnly.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetSelLength">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetSelLength.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetSelStart">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetSelStart.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetSelText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetSelText.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetSpacing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetSpacing.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetTabStop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetTabStop.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomAbstractGroupedEdit.SetTextHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetTextHint.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.DoAutoAdjustLayout">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.DoAutoAdjustLayout.AMode">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.DoAutoAdjustLayout.AXProportion">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.DoAutoAdjustLayout.AYProportion">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.DoAutoAdjustLayout.AScale0Fonts">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.CalculatePreferredSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.CalculatePreferredSize.PreferredWidth">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.CalculatePreferredSize.PreferredHeight">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.CalculatePreferredSize.WithThemeSpace">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.CreateBuddy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.CreateBuddy.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.CreateEditor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.CreateEditor.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetEditorClassType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetEditorClassType.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyClassType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyClassType.Result">
-<short></short>
-</element>
-
-<!-- class function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetControlClassDefaultSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetControlClassDefaultSize.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetDirectInput">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetDirectInput.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.RealGetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.RealGetText.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.RealSetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.RealSetText.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetEditPopupMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetEditPopupMenu.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyCaption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyCaption.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyCursor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyCursor.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyHint.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetBuddyWidth.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyCaption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyCaption.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyCursor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyCursor.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyHint.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetBuddyWidth.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.BuddyClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.DoEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditDblClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditDragDrop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragDrop.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragDrop.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragDrop.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditDragOver">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragOver.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragOver.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragOver.Y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragOver.State">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditDragOver.Accept">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditEditingDone">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditEndDrag">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditEndDrag.Target">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditEndDrag.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditEndDrag.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditKeyDown.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditKeyDown.Shift">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditKeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditKeyPress.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditKeyUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditKeyUp.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditKeyUp.Shift">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseDown.Button">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseDown.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseDown.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseDown.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseUp.Button">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseUp.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseUp.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseUp.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseLeave">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseMove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseMove.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseMove.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseMove.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheel">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheel.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheel.WheelDelta">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheel.MousePos">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheel.Handled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.MousePos">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.Handled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.MousePos">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.Handled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditUtf8KeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditUtf8KeyPress.UTF8Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditStartDrag">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.EditStartDrag.DragObject">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.UpdateSpacing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.CheckCursor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.CMParentColorChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.CMParentColorChanged.Message">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditCanModify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditCanModify.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetSel">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.GetSel._SelStart">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.GetSel._SelStop">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetSpacing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.GetSpacing.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetSel">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetSel._SelStart">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetSel._SelStop">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.Reset">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetAutoSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetAutoSize.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetColor.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.SetCursor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.SetCursor.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust.AWidth">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust.AHeight">
-<short></short>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.AutoSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.AutoSelected">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.Buddy">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.BuddyCaption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.BuddyCursor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.BuddyHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.BuddyWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.Color">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.DirectInput">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.BaseEditor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditMask">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.EditText">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.FocusOnBuddyClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.IsMasked">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.Layout">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.Spacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomAbstractGroupedEdit.OnBuddyClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomAbstractGroupedEdit.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.SetFocus">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Focused">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Focused.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.ClearSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.CopyToClipboard">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.CutToClipboard">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.PasteFromClipboard">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.SelectAll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Undo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.ValidateEdit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Autosize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Alignment">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.CanUndo">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.CaretPos">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.CharCase">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.ParentColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.EchoMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.HideSelection">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.MaxLength">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Modified">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.NumbersOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.PasswordChar">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.ReadOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.SelLength">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.SelStart">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.SelText">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.TabStop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.Text">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.TextHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.TextHintFontColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.TextHintFontStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnDblClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnDragDrop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnDragOver">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnEditingDone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnEndDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnExit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnKeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnKeyDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnKeyUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseLeave">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseWheel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseWheelUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseWheelDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnStartDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomAbstractGroupedEdit.OnUtf8KeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TAbstractGroupedEdit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAbstractGroupedEdit.AutoSelected">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.NumbersOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Action">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.AutoSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.AutoSizeHeightIsEditHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.AutoSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Align">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Alignment">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.BiDiMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.BorderSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.BorderStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.BuddyCaption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.BuddyCursor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.BuddyHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.BuddyWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.CharCase">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Color">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Constraints">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Cursor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.DirectInput">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.EchoMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.FocusOnBuddyClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Font">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Layout">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.MaxLength">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnDblClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnDragDrop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnDragOver">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnContextPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnEditingDone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnEndDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnExit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnKeyDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnKeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnKeyUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseLeave">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseWheel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseWheelDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnMouseWheelUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnStartDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.OnUTF8KeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.ParentBiDiMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.ParentColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.ParentFont">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.PasswordChar">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.ReadOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.ShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Spacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.TabOrder">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.TabStop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Text">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.TextHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAbstractGroupedEdit.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- GroupedEdit -->
-
-</package>
+  <package name="lcl">
+    <!--
+      ====================================================================
+        GroupedEdit
+      ====================================================================
+    -->
+    <module name="GroupedEdit">
+      <short>Provides the base class for grouped edit controls</short>
+      <descr>
+        <p>
+          Provides a base class where a <var>TCustomMaskEdit</var> (derived) control is grouped inside a <var>TCustomControl</var> with another <var>TControl</var> derived class. The objective of this base class is to forward all relevant methods and properties of TCustomMaskEdit. Grouping the controls inside a TCustomControl is done, so that the resulting control can be aligned and anchored.
+        </p>
+        <p>
+          Initial implementation 2016 by Bart Broersma
+        </p>
+      </descr>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LCLProc"/>
+      <element name="LResources"/>
+      <element name="LCLStrConsts"/>
+      <element name="Types"/>
+      <element name="LCLType"/>
+      <element name="LMessages"/>
+      <element name="Graphics"/>
+      <element name="Controls"/>
+      <element name="Forms"/>
+      <element name="LazFileUtils"/>
+      <element name="Dialogs"/>
+      <element name="StdCtrls"/>
+      <element name="Buttons"/>
+      <element name="Menus"/>
+      <element name="MaskEdit"/>
+
+      <element name="TGEEdit">
+        <short>Implements the edit control used in TCustomAbstractGroupedEdit</short>
+        <descr>
+          <p>
+            <var>TGEEdit</var> is a <var>TCustomMaskedit</var> descendant which implements the edit control used in <var>TCustomAbstractGroupedEdit</var>. TGEEdit provides an overridden method to handle <b>Tab</b> keys. The key can be frowarded to the control that owns the class instance, to the ancestor class, or simply discarded.
+          </p>
+          <p>
+            TGEEdit is the type used to implement the <var>BaseEditor</var> property in <var>TCustomAbstractGroupedEdit</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.MaskEdit.TCustomMaskEdit.BaseEditor"/>
+          <link id="#LCL.MaskEdit.TCustomMaskEdit.PerformTab"/>
+          <link id="TGEEdit.PerformTab"/>
+        </seealso>
+      </element>
+
+      <element name="TGEEdit.PerformTab">
+        <short>Handles Tab key presses for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TGEEdit.PerformTab.Result">
+        <short>True when the Tab key has been handled</short>
+      </element>
+      <element name="TGEEdit.PerformTab.ForwardTab">
+        <short>True forwards the key to the ancestor class</short>
+      </element>
+
+      <element name="TGEEditClass">
+        <short>Class type used to create instances of TGEEdit</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit">
+        <short>Implements a grouped edit control</short>
+        <descr>
+          <p>
+            <var>TCustomAbstractGroupedEdit</var> is a <var>TCustomControl</var> descendant which implements a grouped edit control. TCustomAbstractGroupedEdit is composed of a TGEEdit control that provides an editor for the control value, and a related TControl descendant.
+          </p>
+          <p>
+            TCustomAbstractGroupedEdit basically acts as a container for the grouped controls, and ensures that Aligment and Anchoring are performed. TCustomAbstractGroupedEdit forwards relevant methods and properties to the <var>BaseEditor</var> or <var>Buddy</var> members, and receives event notifications from both.
+          </p>
+          <p>
+            Derived classes should implement their own BaseEditor and Buddy properties so that they will have the correct class types.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomAbstractGroupedEdit.Buddy"/>
+          <link id="TGEEdit"/>
+          <link id="#LCL.Controls.TCustomControl"/>
+          <link id="#LCL.Controls.TControl"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.FAutoSizeHeightIsEditHeight"/>
+      <element name="TCustomAbstractGroupedEdit.FBuddy"/>
+      <element name="TCustomAbstractGroupedEdit.FDirectInput"/>
+      <element name="TCustomAbstractGroupedEdit.FEdit"/>
+      <element name="TCustomAbstractGroupedEdit.FFocusOnBuddyClick"/>
+      <element name="TCustomAbstractGroupedEdit.FInitialColor"/>
+      <element name="TCustomAbstractGroupedEdit.FIsReadOnly"/>
+      <element name="TCustomAbstractGroupedEdit.FLayout"/>
+      <element name="TCustomAbstractGroupedEdit.FSpacing"/>
+      <element name="TCustomAbstractGroupedEdit.FTextHintFontColor"/>
+      <element name="TCustomAbstractGroupedEdit.FTextHintFontStyle"/>
+      <element name="TCustomAbstractGroupedEdit.FOnBuddyClick"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditClick"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditChange"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditDblClick"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditDragDrop"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditDragOver"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditEditingDone"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditEndDrag"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditExit"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditKeyDown"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditKeyPress"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditEnter"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditKeyUp"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseDown"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseUp"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseEnter"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseLeave"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseMove"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseWheel"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseWheelUp"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditMouseWheelDown"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditStartDrag"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditUtf8KeyPress"/>
+
+      <element name="TCustomAbstractGroupedEdit.GetAlignment">
+        <short>Gets the value for the Alignment property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Alignment"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetAlignment.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetAutoSelect">
+        <short>Gets the value for the AutoSelect property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.AutoSelect"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetAutoSelect.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetAutoSelected">
+        <short>Gets the value for the AutoSelected property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.AutoSelected"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetAutoSelected.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetCanUndo">
+        <short>Gets the value for the CanUndo property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.CanUndo"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetCanUndo.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetCaretPos">
+        <short>Gets the value for the CaretPos property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.CaretPos"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetCaretPos.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetCharCase">
+        <short>Gets the value for the CharCase property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.CharCase"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetCharCase.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetColor">
+        <short>Gets the value for the Color property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Color"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetColor.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetDirectInput">
+        <short>Gets the value for the DirectInput property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.DirectInput"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetDirectInput.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetEchoMode">
+        <short>Gets the value for the EchoMode property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.EchoMode"/>
+        </seealso>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetEchoMode.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetEditMask">
+        <short>Gets the value for the EditMask property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.EditMask"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetEditMask.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetEditText">
+        <short>Gets the value for the EditText property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.EditText"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetEditText.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetHideSelection">
+        <short>Gets the value for the HideSelection property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.HideSelection"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetHideSelection.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetIsMasked">
+        <short>Gets the value for the IsMasked property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.IsMasked"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetIsMasked.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetMaxLength">
+        <short>Gets the value for the MaxLength property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.MaxLength"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetMaxLength.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetModified">
+        <short>Gets the value for the Modified property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Modified"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetModified.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetNumbersOnly">
+        <short>Gets the value for the NumbersOnly property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.NumbersOnly"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetNumbersOnly.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetParentColor">
+        <short>Gets the value for the ParentColor property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.ParentColor"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetParentColor.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetPasswordChar">
+        <short>Gets the value for the PasswordChar property</short>
+        <descr>
+          Read access for the the value is redirected to the PasswordChar property in BaseEditor.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.PasswordChar"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetPasswordChar.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetReadOnly">
+        <short>Gets the value for the ReadOnly property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.ReadOnly"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetReadOnly.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetSelLength">
+        <short>Gets the value for the SelLength property</short>
+        <descr>
+          Read access to the property value is redirected to BaseEditor.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.SelLength"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetSelLength.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetSelStart">
+        <short>Gets the value for the SelStart property</short>
+        <descr>
+          Read access to the property value is redirected to BaseEditor.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.SelStart"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetSelStart.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetSelText">
+        <short>Gets the value for the SelText property</short>
+        <descr>
+          Read access to the property value is redirected to BaseEditor.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.SelText"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetSelText.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetTabStop">
+        <short>Gets the value for the TabStop property</short>
+        <descr>
+          Read access to the property value is redirected to BaseEditor.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.TabStop"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetTabStop.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetTextHint">
+        <short>Gets the value for the TextHint property</short>
+        <descr>
+          Read access to the property value is redirected to BaseEditor.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.TextHint"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetTextHint.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnBuddyClick">
+        <short>Executes the click event handler for the Buddy control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnBuddyClick.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditClick">
+        <short>Executes the click event handler for the BaseEditor control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditClick.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDblClick">
+        <short>Executes the double click event handler for the BaseEditor control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDblClick.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditChange">
+        <short>Executes the OnChange event handler for the BaseEditor control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditChange.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop">
+        <short>Executes the OnEditDragDrop event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.Source">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver">
+        <short>Executes the OnEditDragOver event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Source">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Y">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.State">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditDragOver.Accept">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEditingDone">
+        <short>Executes the OnEditingDone event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEditingDone.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEnter">
+        <short>Executes the OnEditEnter event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEnter.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditExit">
+        <short>Executes the OnEditExit event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditExit.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag">
+        <short>Executes the OnEditEndDrag event handler for the control</short>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.Target">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditEndDrag.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown">
+        <short>Executes the OnEditKeyDown event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown.Key">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyDown.Shift">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyPress">
+        <short>Executes the OnEditKeyPress event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyPress.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyPress.Key">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp">
+        <short>Executes the OnEditKeyUp event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp.Key">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditKeyUp.Shift">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown">
+        <short>Executes the OnEditMouseDown event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Button">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseDown.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp">
+        <short>Executes the OnEditMouseUp event handler for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Sender">
+        <short>Object instance for the event notification</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Button">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseUp.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseEnter">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseEnter.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseLeave">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseLeave.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.Sender">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseMove.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.Sender">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.WheelDelta">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.MousePos">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheel.Handled">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.Sender">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.MousePos">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelUp.Handled">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.Sender">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.MousePos">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditMouseWheelDown.Handled">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress.Sender">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress.UTF8Key">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditStartDrag">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditStartDrag.Sender">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditStartDrag.DragObject">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetAlignment">
+        <short>Sets the value for the Alignment property</short>
+        <descr>
+          Write access for the property value is redirected to the <var>Alignment</var> property in <var>BaseEditor</var>.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.Alignment"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetAlignment.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetAutoSelect">
+        <short>Sets the value for the AutoSelect property</short>
+        <descr>
+          Write access for the property value is redirected to <var>BaseEditor</var>.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetAutoSelect.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetAutoSelected">
+        <short>Sets the value for the AutoSelected property</short>
+        <descr>
+          Write access to the property value is redirected to <var>BaseEditor</var>.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.AutoSelect"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.AutoSelect"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetAutoSelected.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetCaretPos">
+        <short>Sets the value for the CaretPos property</short>
+        <descr>
+          Write access to the property value is redirected to <var>BaseEditor</var>.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.CaretPos"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.CaretPos"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetCaretPos.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetCharCase">
+        <short>Sets the value for the CharCase property</short>
+        <descr>
+          <p>
+            Write access to the property value is redirected to <var>BaseEditor</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.CharCase"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.CharCase"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetCharCase.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetEchoMode">
+        <short>Sets the value for the EchoMode property</short>
+        <descr>
+          Write access to the property value is redirected to <var>BaseEditor</var>.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.EchoMode"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.EchoMode"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetEchoMode.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetEditMask">
+        <short>Sets the value for the EditMask property</short>
+        <descr>
+          Write access to the property value is redirected to <var>BaseEditor</var>.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.EditMask"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.EditMask"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetEditMask.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetEditText">
+        <short>Sets the value for the EditText property</short>
+        <descr>
+          Write access to the property value is redirected to <var>BaseEditor</var>.
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.EditText"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.EditText"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetEditText.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetHideSelection">
+        <short>Sets the value for the HideSelection property</short>
+        <descr>
+          <p>
+            Read and write access for the property value is redirected to <var>BaseEditor</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.HideSelection"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.HideSelection"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetHideSelection.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetLayout">
+        <short>Sets the value for the Layout property</short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Layout"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetLayout.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetMaxLength">
+        <short>Sets the value for the MaxLength property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.MaxLength"/>
+          <link id="TCustomEdit.MaxLength"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetMaxLength.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetModified">
+        <short>Sets the value for the Modified property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Modified"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.Modified"/>
+          <link id="TCustomEdit.Modified"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetModified.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetNumbersOnly">
+        <short>Sets the value for the NumbersOnly property</short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.NumbersOnly"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.NumbersOnly"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetNumbersOnly.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetParentColor">
+        <short>Sets the value for the ParentColor property</short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.ParentColor"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomEdit.ParentColor"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetParentColor.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetPasswordChar">
+        <short>Sets the value for the PasswordChar property</short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.PasswordChar"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.PasswordChar"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetPasswordChar.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetPopupMenu">
+        <short>Sets the value for the PopupMenu property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetPopupMenu.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetReadOnly">
+        <short>Sets the value for the ReadOnly property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetReadOnly.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetSelLength">
+        <short>Sets the value for the SelLength property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetSelLength.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetSelStart">
+        <short>Sets the value for the SelStart property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetSelStart.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetSelText">
+        <short>Sets the value for the SelText property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetSelText.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetSpacing">
+        <short>Sets the value for the Spacing property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetSpacing.Value">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetTabStop">
+        <short>Sets the value for the TabStop property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetTabStop.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetTextHint">
+        <short>Sets the value for the TextHint property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetTextHint.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element
+        name="TCustomAbstractGroupedEdit.WSRegisterClass"
+        link="#LCL.Controls.TCustomControl.WSRegisterClass">
+        <short>Registers the widget set class used to create new instances of the grouped edit</short>
+        <descr>
+          <p>
+            Calls the inherited method, and registers the following properties to be skipped during LCL component streaming:
+          </p>
+          <dl>
+            <dt>TextHintFontColor</dt>
+            <dd>Used in a previous version of Lazarus</dd>
+            <dt>TextHintFontStyle</dt>
+            <dd>Used in a previous version of Lazarus</dd>
+          </dl>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CalculatePreferredSize">
+        <short>
+          Calculates the preferred size for the control with optional space reserved by theme services
+        </short>
+        <descr>
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden procedure used to calculate the dimensions for the control. The calculated values are returned in <var>PreferredWidth</var> and <var>PreferredHeight</var>.
+          </p>
+          <p>
+            CalculatePreferredSize calls the inherited method, and forwards the method call to the <var>BaseEditor</var> control. When <var>AutoSizeHeightIsEditHeight</var> is set to <b>True</b>, the value calculated as the control height in BaseEditor is used as the value in the PreferredHeight argument. The value in PreferredWidth is always set to zero (<b>0</b>).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight"/>
+          <link id="#LCL.Controls.TWinControl.CalculatePreferredSize"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.CalculatePreferredSize.PreferredWidth">
+        <short>Width for the control; always zero in the method</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.CalculatePreferredSize.PreferredHeight">
+        <short>Height for the control</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.CalculatePreferredSize.WithThemeSpace">
+        <short>Indicates if additional space needed for theme services is reserved</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CreateBuddy">
+        <short>Creates the TControl instance assigned to the Buddy property</short>
+        <descr>
+          <p>
+            <var>CreateBuddy</var> is a <var>TControl</var> function used to create the <var>TControl</var> instance assigned to the <var>Buddy</var> property. CreateBuddy calls <var>GetBuddyClassType</var> to get the class reference used to create new instances of the control, and calls its Create method using the current class  instance as the owner for the TControl instance.
+          </p>
+          <p>
+            CreateBuddy is used the <var>Create</var> constructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Buddy"/>
+          <link id="TCustomAbstractGroupedEdit.GetBuddyClassType"/>
+          <link id="TCustomAbstractGroupedEdit.Create"/>
+          <link id="TCustomAbstractGroupedEdit.CreateEditor"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.CreateBuddy.Result">
+        <short>TControl instance created in the method</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CreateEditor">
+        <short>Creates the TGEEdit instance used in the BaseEditor property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.CreateEditor.Result">
+        <short>TGEEdit instance created in the method</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll">
+        <short>Gives focus to the control, and optionally selects text in its editor</short>
+        <descr>
+          <p>
+            <var>FocusAndMaybeSelectAll</var> is a procedure used to give focus to the control, and to optionally select text in its editor.  FocusAndMaybeSelectAll calls the <var>SetFocus</var> method in <var>BaseEditor</var> to ensure that the editor portion of the grouped edit control has focus.
+          </p>
+          <p>
+            The value in <var>AutoSelect</var> is used to determine the selected text in the BaseEditor control. When AutoSelect is set to <b>True</b>, the <var>SelectAll</var> method in BaseEditor is called to select all of the content in the control. When <b>False</b>, the <var>SelStart</var> method in BaseEditor is set to the maximum value for an <var>Integer</var>, ensuring that the caret position is located at the end of the control value.
+          </p>
+          <p>
+            FocusAndMaybeSelectAll is used in the implementation of the <var>BuddyClick</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomAbstractGroupedEdit.AutoSelect"/>
+          <link id="TCustomAbstractGroupedEdit.BuddyClick"/>
+          <link id="TCustomMaskEdit.SelectAll"/>
+          <link id="TCustomMaskEdit.SelStart"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetEditorClassType">
+        <short>Gets the class reference used to create the BaseEditor for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetEditorClassType.Result">
+        <short>Class reference used to create the BaseEditor for the control</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetBuddyClassType">
+        <short>Gets the class reference used to create the Buddy for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetBuddyClassType.Result">
+        <short>Class reference sed to create the Buddy for the control</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetControlClassDefaultSize">
+        <short>Gets the default size for new instances of the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetControlClassDefaultSize.Result">
+        <short>Default size for new class instances</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetDirectInput">
+        <short>Sets the value for the DirectInput property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetDirectInput.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.RealGetText">
+        <short>Gets the value for the text in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.RealGetText.Result">
+        <short>Value for the text in the control</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.RealSetText">
+        <short>Sets the value for the text in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.RealSetText.AValue">
+        <short>New value for the text in the control</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetEditPopupMenu">
+        <short>Gets the popup menu for the BaseEditor in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetEditPopupMenu.Result">
+        <short>The popup menu for the BaseEditor in the control</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetBuddyCaption">
+        <short>Gets the Caption used in the Buddy property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetBuddyCaption.Result">
+        <short>Caption used in the Buddy property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetBuddyCursor">
+        <short>Gets the value for the BuddyCursor property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BuddyCursor"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetBuddyCursor.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetBuddyHint">
+        <short>Gets the value for the BuddyHint property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BuddyHint"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetBuddyHint.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetBuddyWidth">
+        <short>Gets the value for the BuddyWidth property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BuddyWidth"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetBuddyWidth.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetBuddyCaption">
+        <short>Sets the Caption used in the Buddy property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BuddyCaption"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetBuddyCaption.AValue">
+        <short>Value assigned as the Caption in the Buddy property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetBuddyCursor">
+        <short>Sets the cursor shape used in the Buddy property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BuddyCursor"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetBuddyCursor.AValue">
+        <short>Value assigned as the Cursor in the Buddy property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetBuddyHint">
+        <short>Sets the Hint displayed for the Buddy property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BuddyHint"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetBuddyHint.AValue">
+        <short>Value assigned as the Hint in the Buddy property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetBuddyWidth">
+        <short>Sets the Width used for the Buddy property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BuddyWidth"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetBuddyWidth.AValue">
+        <short>Value assigned as the Width in the Buddy property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.BuddyClick">
+        <short>Performs actions needed when the Buddy control is clicked</short>
+        <descr>
+          <p>
+            Used in internal methods to redirect events from the <var>Buddy</var> control to the container class (the current class instance).
+          </p>
+          <p>
+            <var>BuddyClick</var> uses the value in <var>ReadOnly</var> to determine if the grouped edit control should respond to a Click event from the <var>Buddy</var> control. When ReadOnly is <b>True</b>, no actions are performed in the method.
+          </p>
+          <p>
+            BuddyClick signals the <var>OnBuddyEvent</var> handler (when assigned). When the BuddyClick code points to this method (and not an overridden one in a descendant),  the <var>FocusOnBuddyClick</var> method is called to determine if focus and selection changes are handled by the current class instance.
+          </p>
+          <p>
+            Derived controls may override <var>BuddyClick</var> to run a dialog after calling the inherited method. In this scenario, selecting the text in this method is most likely premature. It is the responsibility of the derived control to implement focus changes and selection as needed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Buddy"/>
+          <link id="TCustomAbstractGroupedEdit.ReadOnly"/>
+          <link id="TCustomAbstractGroupedEdit.FocusOnBuddyClick"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.DoEnter">
+        <short>Performs actions needed when the control is entered</short>
+        <descr>
+          <p>
+            <var>DoEnter</var> is an overridden procedure used to perform actions needed when the control is entered using keyboard navigation. DoEnter calls the inherited DoEnter method to signal the OnEnter event handler, and calls the <var>SetFocus</var> method in <var>BaseEditor</var> at run-time. The focus change is not performed at design-time.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DoEnter"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditChange">
+        <short>Signals the OnEditChange event handler, when assigned</short>
+        <descr>
+          <p>
+            <var>EditChange</var> is a procedure used to signals the <var>OnEditChange</var> event handler, when assigned. EditChange is used in the implementation of the <var>InternalOnEditChange</var> method, which is assigned as the    <var>OnChange</var> event handler in the <var>BaseEditor</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.OnEditChange"/>
+          <link id="TCustomAbstractGroupedEdit.InternalOnEditChange"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomEdit.OnChange"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditClick">
+        <short>Signals the OnEditClick event handler, when assigned</short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.OnEditClick"/>
+          <link id="TCustomAbstractGroupedEdit.InternalOnEditClick"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomEdit.OnClick"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditDblClick">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditDragDrop">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragDrop.Source">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragDrop.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragDrop.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditDragOver">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragOver.Source">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragOver.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragOver.Y">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragOver.State">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditDragOver.Accept">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditEditingDone">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditEndDrag">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditEndDrag.Target">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditEndDrag.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditEndDrag.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditEnter">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditExit">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditKeyDown">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditKeyDown.Key">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditKeyDown.Shift">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditKeyPress">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditKeyPress.Key">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditKeyUp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditKeyUp.Key">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditKeyUp.Shift">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseDown">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseDown.Button">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseDown.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseDown.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseDown.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseUp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseUp.Button">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseUp.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseUp.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseUp.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseEnter">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseLeave">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseMove">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseMove.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseMove.X">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseMove.Y">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheel">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheel.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheel.WheelDelta">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheel.MousePos">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheel.Handled">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.MousePos">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.Handled">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.Shift">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.MousePos">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.Handled">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditUtf8KeyPress">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditUtf8KeyPress.UTF8Key">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditStartDrag">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditStartDrag.DragObject">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.UpdateSpacing">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CheckCursor">
+        <short>Forwards a CheckCursor method call to the BaseEditor for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CMParentColorChanged">
+        <short>
+          Handles the control message received when the ParentColor property is changed
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.CMParentColorChanged.Message">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditCanModify">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditCanModify.Result">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetSel">
+        <short>Gets the offsets for the current text selection in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetSel._SelStart">
+        <short>Starting position for the text selection in the control</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetSel._SelStop">
+        <short>Ending position for the text selection in the control</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.GetSpacing">
+        <short>Gets the value for the Spacing property</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.GetSpacing.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetSel">
+        <short>Sets the current text selection in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetSel._SelStart">
+        <short>Initial position selected in the control</short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetSel._SelStop">
+        <short>Final position selected in the control</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Loaded">
+        <short>
+          Performs actions when the control has finished loading in the LCL streaming mechanism
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Reset">
+        <short>Forwards a Reset method call to the BaseEditor in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetAutoSize">
+        <short>Sets the value for the AutoSize property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.AutoSize"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetAutoSize.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetColor">
+        <short>Sets the value for the Color property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Color"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetColor.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetCursor">
+        <short>Sets the value for the Cursor property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Cursor"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.SetCursor.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust.AWidth">
+        <short></short>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust.AHeight">
+        <short></short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.AutoSelect">
+        <short>
+          Indicates if the text in the control is automatically selected when focus is received
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.AutoSelected">
+        <short>Indicates if the current text selection was performed automatically</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Buddy">
+        <short>Represents the associated TControl instance in the grouped edit control</short>
+        <descr>
+          <p>
+            <var>Buddy</var> normally contains a <var>TSpeedButton</var>, <var>TUpDown</var> or similar control. Derived classes may implement a different class type for the control using the <var>GetBuddyClassType</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomAbstractGroupedEdit.GetBuddyClassType"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.BuddyCaption">
+        <short>Caption used for the Buddy control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.BuddyCursor">
+        <short>Cursor shape used for the Buddy control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.BuddyHint">
+        <short>Hint displayed for the Buddy control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.BuddyWidth">
+        <short>Width for the Buddy control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Color">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.DirectInput">
+        <short>Indicates if text can be entered directly into the BaseEditor control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.BaseEditor">
+        <short>
+          Represents the control used as the editor for the value in the grouped edit control
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Buddy"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditMask">
+        <short>Contains the masking characters used in the editor for the control</short>
+        <descr>
+          <p>
+            <var>EditMask</var> is a <var>String</var> property that contains the masking characters used in the editor for the control. EditMask redirects read and write access for the property to the <var>TGEEdit</var> instance in the <var>BaseEditor</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TGEEdit"/>
+          <link id="#LCL.MaskEdit.TCustomMaskEdit.EditMask"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EditText">
+        <short>
+          Contains the value entered in the control including masking characters
+        </short>
+        <descr>
+          <p>
+            <var>EditText</var> is a <var>String</var> property which contains the value entered in the control including masking characters. Read and write access to the property value are redirected to the <var>BaseEditor</var> control.
+          </p>
+          <p>
+            Use the <var>Text</var> property to access the actual characters in the control value, excluding any characters introduced by an edit mask.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.MaskEdit.TCustomMaskEdit.EditText"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.FocusOnBuddyClick">
+        <short>Determines if the control receives focus when the Buddy conrol is clicked</short>
+        <descr>
+          <p>
+            <var>FocusOnBuddyClick</var> is a <var>Boolean</var> property which determines if the control receives focus (and a potential change to the text selection in the editor) when the <var>Buddy</var> control is clicked. The default value for the property is False.
+          </p>
+          <p>
+            FocusOnBuddyClick is used in the implementation of the BuddyClick method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.Buddy"/>
+          <link id="TCustomAbstractGroupedEdit.BuddyClick"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.IsMasked">
+        <short>
+          Indicates if an edit mask is in use in the BaseEditor in the grouped edit control
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Layout">
+        <short></short>
+        <descr>
+          <p>
+            <var>Layout</var> is a <var>TLeftRight</var> property that determines the setting for the Align property in the <var>BaseEditor</var> and the <var>Buddy</var> controls. The default value for the property is <var>taLeftJustify</var>.
+          </p>
+          <p>
+            Changing the value in Layout cause the Align properties in the grouped controls to be set to the appropriate values. For example:
+          </p>
+          <dl>
+            <dt>taLeftJustify</dt>
+            <dd>
+              Causes the Buddy control to be right aligned (opposite of the editor control).
+            </dd>
+            <dt>taRightJustify</dt>
+            <dd>
+              Causes the Buddy control to be left aligned (opposite of the editor control).
+            </dd>
+          </dl>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomAbstractGroupedEdit.Buddy"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Spacing">
+        <short>Spacing used  between the BaseEditor and the Buddy controls</short>
+        <descr>
+          <p>
+            <var>Spacing</var> is an <var>Integer</var> property that contains the spacing used  between the <var>BaseEditor</var> and the <var>Buddy</var> controls.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.OnBuddyClick">
+        <short>Event handler signalled when the Buddy control is clicked</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. Create allocates resources needed for the <var>BaseEditor</var> and <var>Buddy</var> properties prior to calling the inherited constructor. The default values for properties and event handlers are assigned in the constructor, including those needed in the BaseEditor and Buddy properties.
+          </p>
+          <p>
+            The Buddy control is aligned to the right edge of the current class instance.
+          </p>
+          <p>
+            BaseEditor is aligned to the remaining client area in the control. Event handlers in BaseEditor are set to the internal methods used to redirect mouse and keyboard events for the current class instance.
+          </p>
+          <p>
+            Both Buddy and BaseEditor use the current class instance in their <var>Parent</var> properties.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.Create.AOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls the inherited destructor.
+          </p>
+          <remark>
+            Please note: Resources allocated for BaseEditor and Buddy in the constructor are not explicitly freed in the destructor; that action is performed using the Notification that occurs when this class instance (which is the owner for those resources) is freed.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SetFocus">
+        <short>Sets the focus to the editor in the control</short>
+        <descr>
+          <p>
+            <var>SetFocus</var> is an overridden procedure which gives focus to the grouped edit control. SetFocus redirects the method call to the SetFocus method in the <var>BaseEditor</var> for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll"/>
+          <link id="TCustomAbstractGroupedEdit.DoEnter"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Focused">
+        <short>Performs actions needed when the control receives focus</short>
+        <descr>
+          <p>
+            <var>Focused</var> is an overridden <var>Boolean</var> function used to perform actions needed when the control receives focus. Focused calls the    <var>Focused</var> method in the <var>BaseEditor</var> for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.Controls.TWinControl.Focused"/>
+        </seealso>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.Focused.Result">
+        <short>True when the control has focus</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Clear">
+        <short>Removes the text content in the control</short>
+        <descr>
+          <p>
+            <var>Clear</var> is a procedure used to remove the text content in the control. Clear class the Clear method in <var>BaseEditor</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.Clear"/>
+        </seealso>
+      </element>
+
+      <!-- WIP -->
+
+      <element name="TCustomAbstractGroupedEdit.ClearSelection">
+        <short>Clears the content for the current selection in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CopyToClipboard">
+        <short>Copies content in the control to the clipboard</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CutToClipboard">
+        <short>
+          Copies content in the control to the clipboard, and removes it from the control
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.PasteFromClipboard">
+        <short>Pastes content into the control from the clipboard</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SelectAll">
+        <short>Selects all of the content in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Undo">
+        <short>Reverses the last edit performed on the control value</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.ValidateEdit">
+        <short>Performs actions needed to validate the value for the control</short>
+        <descr>
+          <p>
+            <var>ValidateEdit</var> is a procedure used to perform actions needed to validate the value for the control. The method calls the ValidateEdit method in the <var>BaseEditor</var> member to validate its Text against the edit mask assigned to  the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.ValidateEdit"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Autosize" link="#LCL.Controls.TControl.AutoSize"/>
+
+      <element name="TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight">
+        <short>
+          Indicates if the height for  BaseEditor is used as the height for the control when autosizing
+        </short>
+        <descr>
+          <p>
+            <var>AutoSizeHeightIsEditHeight</var> is a <var>Boolean</var> property which indicates if the height for <var>BaseEditor</var> is used as the height for the control when autosizing is enabled. The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            AutoSizeHeightIsEditHeight is used in the implementation of the <var>CalculatePreferredSize</var> method called when CanAutoSize is True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomAbstractGroupedEdit.CalculatePreferredSize"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Alignment">
+        <short>Indicates the text alignment used for the control value</short>
+        <descr>
+          <p>
+            <var>Alignment</var> is a <var>TAlignment</var> property which indicates the text alignment used for the control value in the <var>BaseEditor</var> control. Read and write access for the property value are redirected to the BaseEditor control.
+          </p>
+          <p>
+            The default value for the property is <var>taLeftJustify</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomEdit.Alignment"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CanUndo">
+        <short>
+          Indicates if the Undo method can used to revert changes to the control value
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CaretPos">
+        <short>Position of the editing caret in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.CharCase">
+        <short>Controls the case conversion used for a value entered in the control</short>
+        <descr>
+          <p>
+            <var>CharCase</var> is a <var>TEditCharCase</var> property that controls the case conversion used (if any) for a value entered in the control. The default value for the property is <var>ecNormal</var>, and indicates that no case conversion is used. See <link id="#LCL.StdCtrls.TEditCharCase"/> for more information about the enumeration values supported for the type.
+          </p>
+          <p>
+            Read and write access to the property value are redirected to the   <var>BaseEditor</var> control.
+          </p>
+          <remark>
+            Please note:  The value in CharCase can automatically be changed to ecNormal when an edit mask is assigned to the control.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="#LCL.MaskEdit.TCustomMaskEdit.CharCase"/>
+          <link id="#LCL.MaskEdit.TCustomMaskEdit.EditMask"/>
+          <link id="#LCL.StdCtrls.TEditCharCase"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.ParentColor">
+        <short>Indicates if the color in the Parent control is used</short>
+        <descr>
+          <p>
+            <var>ParentColor</var> is a <var>Boolean</var> property which indicates if the <var>Color</var> from the <var>Parent</var> control is used instead the value  assigned to the control. When this property is True, all changes to Color  in the parent will also be applied to the Color in the control, ensuring that they both contain the same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+          <p>
+            Read and write access to the property value are redirected to the   <var>BaseEditor</var> control. The defaul value for the property is <b>False</b>.
+          </p>
+          <p>
+            Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.EchoMode">
+        <short>
+          Indicates if characters entered in the control value are hidden, displayed, or obscured
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.HideSelection">
+        <short>Hides the current text selection in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.MaxLength">
+        <short>Maximum number of characters allowed in the editor for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Modified">
+        <short>Indicates if the content in the control has been changed</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.NumbersOnly">
+        <short>Indicates that only numbers can be enetered in the control value</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.PasswordChar">
+        <short>Contains the character displayed when entering a password value</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.PopupMenu">
+        <short>PopupMenu for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.ReadOnly">
+        <short>Indicates if value in the control cannot be changed</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SelLength">
+        <short>Number of characters in the current selection for the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SelStart">
+        <short>Starting position for the current selection in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.SelText">
+        <short>Returns the selected text in the control</short>
+        <descr>
+          <p>
+            <var>GetSelText</var> is a <var>String</var> function used to get the selected text in the grouped edit control. Read and write access to the property are redirected to the <var>BaseEdit</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomAbstractGroupedEdit.GetSelText"/>
+          <link id="TCustomAbstractGroupedEdit.SetSelText"/>
+          <link id="TCustomMaskEdit.SelText"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.TabStop">
+        <descr>
+          <p>
+            <var>TabStop</var> is a <var>Boolean</var> property which indicates if the control can be accessed using Tab or Shift+Tab keyboard navigation. Read and write access to the property value is redirected to the <var>BaseEditor</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.TabStop"/>
+          <link id="#LCL.Controls.TWinControl.TabStop"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.Text" link="#LCL.Controls.TControl.Text">
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.EditText"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.TextHint">
+        <short>Contains the hint text displayed for the grouped edit control</short>
+        <descr>
+          <p>
+            <var>TextHint</var> is a <var>TTranslateString</var> property which contains the hint text displayed for the grouped edit control. Read and write access to the property value are redirected to the <var>BaseEditor</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomMaskEdit.TextHint"/>
+          <link id="#LCL.Controls.TControl.Hint"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.OnChange">
+        <short>Event handler signalled when the value for the control is changed</short>
+        <descr>
+          <p>
+            <var>OnChange</var> is a <var>TNotifyEvent</var> property that contains the event handler signalled when the value for the control is changed.  OnChange is triggered from the <var>EditChange</var> method called when the   <var>BaseEditor</var> control has modified its value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+          <link id="TCustomAbstractGroupedEdit.EditChange"/>
+          <link id="TCustomMaskEdit.OnChange"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TCustomAbstractGroupedEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TCustomAbstractGroupedEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TCustomAbstractGroupedEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TCustomAbstractGroupedEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
+      <element name="TCustomAbstractGroupedEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TCustomAbstractGroupedEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TCustomAbstractGroupedEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TCustomAbstractGroupedEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TCustomAbstractGroupedEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TCustomAbstractGroupedEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TCustomAbstractGroupedEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TCustomAbstractGroupedEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+
+      <element name="TCustomAbstractGroupedEdit.OnUtf8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress">
+        <descr>
+          <p>
+            <var>OnUTF8KeyPress</var> uses the <var>InternalOnEditUtf8KeyPress</var> method as the default event handler for the control, as assigned in the <var>Create</var> constructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress"/>
+          <link id="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+        </seealso>
+      </element>
+
+      <element name="TAbstractGroupedEdit" link="TCustomAbstractGroupedEdit">
+        <seealso>
+          <link id="TCustomAbstractGroupedEdit"/>
+        </seealso>
+      </element>
+
+      <element name="TAbstractGroupedEdit.AutoSelected" link="TCustomAbstractGroupedEdit.AutoSelected"/>
+      <element name="TAbstractGroupedEdit.NumbersOnly" link="TCustomAbstractGroupedEdit.NumbersOnly"/>
+      <element name="TAbstractGroupedEdit.Action" link="#LCL.Controls.TControl.Action"/>
+      <element name="TAbstractGroupedEdit.AutoSelect" link="TCustomAbstractGroupedEdit.AutoSelect"/>
+      <element name="TAbstractGroupedEdit.AutoSizeHeightIsEditHeight" link="TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight"/>
+      <element name="TAbstractGroupedEdit.AutoSize" link="TCustomAbstractGroupedEdit.AutoSize"/>
+      <element name="TAbstractGroupedEdit.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TAbstractGroupedEdit.Alignment" link="TCustomAbstractGroupedEdit.Alignment"/>
+      <element name="TAbstractGroupedEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TAbstractGroupedEdit.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TAbstractGroupedEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TAbstractGroupedEdit.BorderStyle" link="#LCL.Controls.TCustomControl.BorderStyle"/>
+      <element name="TAbstractGroupedEdit.BuddyCaption" link="TCustomAbstractGroupedEdit.BuddyCaption"/>
+      <element name="TAbstractGroupedEdit.BuddyCursor" link="TCustomAbstractGroupedEdit.BuddyCursor"/>
+      <element name="TAbstractGroupedEdit.BuddyHint" link="TCustomAbstractGroupedEdit.BuddyHint"/>
+      <element name="TAbstractGroupedEdit.BuddyWidth" link="TCustomAbstractGroupedEdit.BuddyWidth"/>
+      <element name="TAbstractGroupedEdit.CharCase" link="TCustomAbstractGroupedEdit.CharCase"/>
+      <element name="TAbstractGroupedEdit.Color" link="TCustomAbstractGroupedEdit.Color"/>
+      <element name="TAbstractGroupedEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TAbstractGroupedEdit.Cursor" link="#LCL.Controls.TControl.Cursor"/>
+      <element name="TAbstractGroupedEdit.DirectInput" link="TCustomAbstractGroupedEdit.DirectInput"/>
+      <element name="TAbstractGroupedEdit.EchoMode" link="TCustomAbstractGroupedEdit.EchoMode"/>
+      <element name="TAbstractGroupedEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TAbstractGroupedEdit.FocusOnBuddyClick" link="TCustomAbstractGroupedEdit.FocusOnBuddyClick"/>
+      <element name="TAbstractGroupedEdit.Font" link="#LCL.Controls.TControl.Font"/>
+      <element name="TAbstractGroupedEdit.Hint" link="#LCL.Controls.TControl.Hint"/>
+      <element name="TAbstractGroupedEdit.Layout" link="TCustomAbstractGroupedEdit.Layout"/>
+      <element name="TAbstractGroupedEdit.MaxLength" link="TCustomAbstractGroupedEdit.MaxLength"/>
+      <element name="TAbstractGroupedEdit.OnChange" link="TCustomAbstractGroupedEdit.OnChange"/>
+      <element name="TAbstractGroupedEdit.OnClick" link="TCustomAbstractGroupedEdit.OnClick"/>
+      <element name="TAbstractGroupedEdit.OnDblClick" link="TCustomAbstractGroupedEdit.OnDblClick"/>
+      <element name="TAbstractGroupedEdit.OnDragDrop" link="TCustomAbstractGroupedEdit.OnDragDrop"/>
+      <element name="TAbstractGroupedEdit.OnDragOver" link="TCustomAbstractGroupedEdit.OnDragOver"/>
+      <element name="TAbstractGroupedEdit.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TAbstractGroupedEdit.OnEditingDone" link="TCustomAbstractGroupedEdit.OnEditingDone"/>
+      <element name="TAbstractGroupedEdit.OnEndDrag" link="TCustomAbstractGroupedEdit.OnEndDrag"/>
+      <element name="TAbstractGroupedEdit.OnEnter" link="TCustomAbstractGroupedEdit.OnEnter"/>
+      <element name="TAbstractGroupedEdit.OnExit" link="TCustomAbstractGroupedEdit.OnExit"/>
+      <element name="TAbstractGroupedEdit.OnKeyDown" link="TCustomAbstractGroupedEdit.OnKeyDown"/>
+      <element name="TAbstractGroupedEdit.OnKeyPress" link="TCustomAbstractGroupedEdit.OnKeyPress"/>
+      <element name="TAbstractGroupedEdit.OnKeyUp" link="TCustomAbstractGroupedEdit.OnKeyUp"/>
+      <element name="TAbstractGroupedEdit.OnMouseDown" link="TCustomAbstractGroupedEdit.OnMouseDown"/>
+      <element name="TAbstractGroupedEdit.OnMouseEnter" link="TCustomAbstractGroupedEdit.OnMouseEnter"/>
+      <element name="TAbstractGroupedEdit.OnMouseLeave" link="TCustomAbstractGroupedEdit.OnMouseLeave"/>
+      <element name="TAbstractGroupedEdit.OnMouseMove" link="TCustomAbstractGroupedEdit.OnMouseMove"/>
+      <element name="TAbstractGroupedEdit.OnMouseUp" link="TCustomAbstractGroupedEdit.OnMouseUp"/>
+      <element name="TAbstractGroupedEdit.OnMouseWheel" link="TCustomAbstractGroupedEdit.OnMouseWheel"/>
+      <element name="TAbstractGroupedEdit.OnMouseWheelDown" link="TCustomAbstractGroupedEdit.OnMouseWheelDown"/>
+      <element name="TAbstractGroupedEdit.OnMouseWheelUp" link="TCustomAbstractGroupedEdit.OnMouseWheelUp"/>
+      <element name="TAbstractGroupedEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TAbstractGroupedEdit.OnUTF8KeyPress" link="TCustomAbstractGroupedEdit.OnUTF8KeyPress"/>
+      <element name="TAbstractGroupedEdit.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TAbstractGroupedEdit.ParentColor" link="TAbstractGroupedEdit.ParentColor"/>
+      <element name="TAbstractGroupedEdit.ParentFont" link="#LCL.Controls.TControl.ParentShowFont"/>
+      <element name="TAbstractGroupedEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TAbstractGroupedEdit.PasswordChar" link="TCustomAbstractGroupedEdit.PasswordChar"/>
+      <element name="TAbstractGroupedEdit.PopupMenu" link="TCustomAbstractGroupedEdit.PopupMenu"/>
+      <element name="TAbstractGroupedEdit.ReadOnly" link="TCustomAbstractGroupedEdit.ReadOnly"/>
+      <element name="TAbstractGroupedEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TAbstractGroupedEdit.Spacing" link="TCustomAbstractGroupedEdit.Spacing"/>
+      <element name="TAbstractGroupedEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TAbstractGroupedEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TAbstractGroupedEdit.Text" link="#LCL.Controls.TControl.Text"/>
+      <element name="TAbstractGroupedEdit.TextHint" link="TCustomAbstractGroupedEdit.TextHint"/>
+      <element name="TAbstractGroupedEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
+
+    </module>
+    <!-- GroupedEdit -->
+  </package>
 </fpdoc-descriptions>
