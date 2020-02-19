@@ -1323,6 +1323,7 @@ type
     procedure EraseBackground(DC: HDC); override;
     function  Focused: Boolean; override;
     function  HasMultiSelection: Boolean;
+    procedure HideSortArrow;
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCol(ACol: Integer);
     procedure InvalidateRange(const aRange: TRect);
@@ -3274,6 +3275,12 @@ begin
     QuickSort(IndxFrom, IndxTo);
     EndUpdate;
   end;
+end;
+
+procedure TCustomGrid.HideSortArrow;
+begin
+  FSortColumn := -1;
+  InvalidateGrid;
 end;
 
 procedure TCustomGrid.doTopleftChange(DimChg: Boolean);
