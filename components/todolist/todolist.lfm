@@ -14,11 +14,11 @@ object IDETodoWindow: TIDETodoWindow
   OnShow = FormShow
   Position = poScreenCenter
   SessionProperties = 'chkListed.Checked;chkUsed.Checked;chkSourceEditor.Checked;chkPackages.Checked'
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object lvTodo: TListView
     Left = 6
-    Height = 240
-    Top = 54
+    Height = 203
+    Top = 91
     Width = 825
     Align = alClient
     BorderSpacing.Around = 6
@@ -56,12 +56,11 @@ object IDETodoWindow: TIDETodoWindow
     TabOrder = 1
     ViewStyle = vsReport
     OnClick = lvTodoClick
-    OnColumnClick = lvTodoColumnClick
     OnCompare = lvTodoCompare
   end
   object ToolBar: TToolBar
     Left = 0
-    Height = 48
+    Height = 85
     Top = 0
     Width = 837
     AutoSize = True
@@ -79,39 +78,39 @@ object IDETodoWindow: TIDETodoWindow
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 53
+      Left = 56
       Top = 2
       Action = acGoto
       AutoSize = True
     end
     object tbExport: TToolButton
-      Left = 100
+      Left = 103
       Top = 2
       Action = acExport
       AutoSize = True
     end
     object N1: TToolButton
-      Left = 147
+      Left = 151
       Height = 46
       Top = 2
       Caption = 'N1'
       Style = tbsDivider
     end
     object grbOptions: TGroupBox
-      Left = 152
-      Height = 39
+      Left = 156
+      Height = 83
       Top = 2
-      Width = 252
+      Width = 281
       AutoSize = True
       Caption = 'Options'
-      ClientHeight = 24
-      ClientWidth = 248
+      ClientHeight = 53
+      ClientWidth = 277
       TabOrder = 0
       object chkListed: TCheckBox
         Left = 0
-        Height = 24
+        Height = 53
         Top = 0
-        Width = 59
+        Width = 65
         Align = alLeft
         Caption = '&Listed'
         Checked = True
@@ -120,10 +119,10 @@ object IDETodoWindow: TIDETodoWindow
         TabOrder = 0
       end
       object chkUsed: TCheckBox
-        Left = 59
-        Height = 24
+        Left = 65
+        Height = 53
         Top = 0
-        Width = 53
+        Width = 60
         Align = alLeft
         Caption = '&Used'
         Checked = True
@@ -132,10 +131,10 @@ object IDETodoWindow: TIDETodoWindow
         TabOrder = 1
       end
       object chkSourceEditor: TCheckBox
-        Left = 112
-        Height = 24
+        Left = 125
+        Height = 53
         Top = 0
-        Width = 60
+        Width = 66
         Align = alLeft
         Caption = 'Editor'
         Checked = True
@@ -144,10 +143,10 @@ object IDETodoWindow: TIDETodoWindow
         TabOrder = 2
       end
       object chkPackages: TCheckBox
-        Left = 172
-        Height = 24
+        Left = 191
+        Height = 53
         Top = 0
-        Width = 76
+        Width = 86
         Align = alLeft
         Caption = '&Packages'
         OnChange = chkPackagesChange
@@ -155,7 +154,7 @@ object IDETodoWindow: TIDETodoWindow
       end
     end
     object tbHelp: TToolButton
-      Left = 404
+      Left = 437
       Top = 2
       Action = acHelp
     end
