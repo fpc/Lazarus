@@ -4005,8 +4005,7 @@ begin
   end;
 
   // check fpc<something>
-  // Note: fpc.exe is just a wrapper, it can call pas2js
-  if CompareFilenames(ShortFilename,'fpc')=0 then
+  if IsFPCExecutable(AFilename,ErrorMsg,Run) then
     exit(true);
 
   ErrorMsg:='fpc executable should start with fpc or ppc';
