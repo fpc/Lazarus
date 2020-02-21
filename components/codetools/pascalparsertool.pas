@@ -1993,6 +1993,15 @@ begin
         AtomIsIdentifierSaveE(20180411194104);
         ReadNextAtom;
       end;
+    end else if UpAtomIs('VARARGS') then begin
+      ReadNextAtom;
+      if UpAtomIs('OF') then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnVarArgs;
+        ReadNextAtom;
+        ReadTypeReference(true);
+        EndChildNode;
+      end;
     end else begin
       // read specifier without parameters
       if UpAtomIs('FORWARD') then HasForwardModifier:=true;

@@ -83,7 +83,7 @@ const
   ctnVarDefinition      = 21;
   ctnConstDefinition    = 22;
   ctnGlobalProperty     = 23;
-  ctnVarArgs            = 24;
+  ctnVarArgs            = 24; // macpas ... parameter
   ctnSrcName            = 25; // children are ctnIdentifier
   ctnUseUnit            = 26; // StartPos=unit, EndPos=unitname+inFilename, children ctnUseUnitNamespace, ctnUseUnitClearName, parent ctnUsesSection
   ctnUseUnitNamespace   = 27; // <namespace>.clearname.pas, parent ctnUseUnit
