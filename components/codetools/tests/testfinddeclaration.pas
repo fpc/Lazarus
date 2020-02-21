@@ -104,6 +104,7 @@ type
     procedure TestFindDeclaration_AnonymProc;
     procedure TestFindDeclaration_AnonymProc_ExprDot;
     procedure TestFindDeclaration_ArrayMultiDimDot;
+    procedure TestFindDeclaration_VarArgsOfType;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -1015,6 +1016,20 @@ begin
   '  tmp: TArray2;',
   'begin',
   '  tmp[0,0].Field{declaration:tmyclass.field};',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_VarArgsOfType;
+begin
+  StartProgram;
+  Add([
+  'procedure Run; varargs of word;',
+  'begin',
+  '  Run{declaration:run}(1,2);',
+  'end;',
+  'begin',
+  '  Run{declaration:run}(3);',
   'end.']);
   FindDeclarations(Code);
 end;
