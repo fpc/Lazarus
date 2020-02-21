@@ -57,7 +57,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, Forms, Controls, Buttons, ComCtrls,
+  LCLProc, LCLType, LCLIntf, Forms, Controls, Buttons, ComCtrls,
   Menus, Dialogs, FileUtil, LazFileUtils, LazFileCache, ExtCtrls, Graphics,
   // LazControls
   TreeFilterEdit,
@@ -130,6 +130,7 @@ type
     procedure mnuAddEditorFilesClick(Sender: TObject);
     procedure mnuAddFPMakeReqClick(Sender: TObject);
     procedure mnuAddReqClick(Sender: TObject);
+    procedure mnuOpenFolderClick(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
     procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
@@ -384,6 +385,11 @@ end;
 procedure TProjectInspectorForm.mnuAddReqClick(Sender: TObject);
 begin
   DoAddDepDialog;
+end;
+
+procedure TProjectInspectorForm.mnuOpenFolderClick(Sender: TObject);
+begin
+  OpenDocument(LazProject.Directory);
 end;
 
 procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
@@ -689,6 +695,8 @@ begin
     AddPopupMenuItem(lisBtnDlgAdd, @mnuAddBitBtnClick);
     if not LazProject.IsVirtual then
       AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick);
+    AddPopupMenuItem(cLineCaption, Nil, False);                // Separator
+    AddPopupMenuItem(lisMenuOpenFolder, @mnuOpenFolderClick);
   end
   else if ItemsTreeView.Selected = FDependenciesNode then
   begin

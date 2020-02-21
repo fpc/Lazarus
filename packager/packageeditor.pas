@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, contnrs,
   // LCL
   Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, Menus, Dialogs,
-  ExtCtrls, LCLType, LCLProc,
+  ExtCtrls, LCLType, LCLProc, LCLIntf,
   TreeFilterEdit,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, AvgLvlTree,
@@ -76,6 +76,7 @@ var
   PkgEditMenuCollapseDirectory: TIDEMenuCommand;
   PkgEditMenuUseAllUnitsInDirectory: TIDEMenuCommand;
   PkgEditMenuUseNoUnitsInDirectory: TIDEMenuCommand;
+  PkgEditMenuOpenFolder: TIDEMenuCommand;
 
   // dependencies
   PkgEditMenuRemoveDependency: TIDEMenuCommand;
@@ -289,6 +290,7 @@ type
     procedure MoveUpBtnClick(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure OpenFileMenuItemClick(Sender: TObject);
+    procedure OpenFolderMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -601,6 +603,7 @@ begin
   PkgEditMenuCollapseDirectory:=RegisterIDEMenuCommand(AParent, 'Collapse directory', lisPECollapseDirectory);
   PkgEditMenuUseAllUnitsInDirectory:=RegisterIDEMenuCommand(AParent, 'Use all units in directory', lisPEUseAllUnitsInDirectory);
   PkgEditMenuUseNoUnitsInDirectory:=RegisterIDEMenuCommand(AParent, 'Use no units in directory', lisPEUseNoUnitsInDirectory);
+  PkgEditMenuOpenFolder:=RegisterIDEMenuCommand(AParent, 'Open folder', lisMenuOpenFolder);
 
   // register the section for operations on dependencies
   PkgEditMenuSectionDependency:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'Dependency');
@@ -801,37 +804,34 @@ var
     VirtualFileExists: Boolean;
     NewMenuItem: TIDEMenuCommand;
   begin
-    if Assigned(SingleSelectedFile) then
-    begin
-      PkgEditMenuSectionFileType.Clear;
-      VirtualFileExists:=(SingleSelectedFile.FileType=pftVirtualUnit)
-                      and FileExistsCached(SingleSelectedFile.GetFullFilename);
-      for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-        NewMenuItem:=RegisterIDEMenuCommand(PkgEditMenuSectionFileType,
-                        'SetFileType'+IntToStr(ord(CurPFT)),
-                        GetPkgFileTypeLocalizedName(CurPFT),
-                        @ChangeFileTypeMenuItemClick);
-        if CurPFT=SingleSelectedFile.FileType then
-        begin
-          // menuitem to keep the current type
-          NewMenuItem.Enabled:=true;
-          NewMenuItem.Checked:=true;
-        end else if VirtualFileExists then
-          // a virtual unit that exists can be changed into anything
-          NewMenuItem.Enabled:=true
-        else if (not (CurPFT in PkgFileUnitTypes)) then
-          // all other files can be changed into all non unit types
-          NewMenuItem.Enabled:=true
-        else if FilenameIsPascalUnit(SingleSelectedFile.Filename) then
-          // a pascal file can be changed into anything
-          NewMenuItem.Enabled:=true
-        else
-          // default is to not allow
-          NewMenuItem.Enabled:=false;
-      end;
-    end
-    else
-      PkgEditMenuSectionFileType.Visible:=False;
+    PkgEditMenuSectionFileType.Visible:=Assigned(SingleSelectedFile);
+    if not PkgEditMenuSectionFileType.Visible then Exit;
+    PkgEditMenuSectionFileType.Clear;
+    VirtualFileExists:=(SingleSelectedFile.FileType=pftVirtualUnit)
+                    and FileExistsCached(SingleSelectedFile.GetFullFilename);
+    for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
+      NewMenuItem:=RegisterIDEMenuCommand(PkgEditMenuSectionFileType,
+                      'SetFileType'+IntToStr(ord(CurPFT)),
+                      GetPkgFileTypeLocalizedName(CurPFT),
+                      @ChangeFileTypeMenuItemClick);
+      if CurPFT=SingleSelectedFile.FileType then
+      begin
+        // menuitem to keep the current type
+        NewMenuItem.Enabled:=true;
+        NewMenuItem.Checked:=true;
+      end else if VirtualFileExists then
+        // a virtual unit that exists can be changed into anything
+        NewMenuItem.Enabled:=true
+      else if not (CurPFT in PkgFileUnitTypes) then
+        // all other files can be changed into all non unit types
+        NewMenuItem.Enabled:=true
+      else if FilenameIsPascalUnit(SingleSelectedFile.Filename) then
+        // a pascal file can be changed into anything
+        NewMenuItem.Enabled:=true
+      else
+        // default is to not allow
+        NewMenuItem.Enabled:=false;
+    end;
   end;
 
 var
@@ -856,6 +856,7 @@ begin
               Writable);
       SetItem(PkgEditMenuAddNewComp, @mnuAddNewCompClick, UserSelection=[pstFilesNode],
               Writable);
+      // Required packages root node
       SetItem(PkgEditMenuAddNewReqr, @mnuAddNewReqrClick, UserSelection=[pstReqPackNode],
               Writable);
       SetItem(PkgEditMenuAddNewFPMakeReqr, @mnuAddFPMakeReqClick, UserSelection=[pstReqPackNode],
@@ -863,11 +864,12 @@ begin
       // selected files
       SetItem(PkgEditMenuOpenFile, @OpenFileMenuItemClick,
               UserSelection*[pstFilesNode,pstReqPackNode,pstFPMake]=[]);
-      SetItem(PkgEditMenuReAddFile, @ReAddMenuItemClick, UserSelection=[pstRemFile]);
+      SetItem(PkgEditMenuRemoveFile, @RemoveBitBtnClick,
+              UserSelection=[pstFile], RemoveBitBtn.Enabled);
+      SetItem(PkgEditMenuReAddFile, @ReAddMenuItemClick,
+              UserSelection=[pstRemFile]);
       SetItem(PkgEditMenuCopyMoveToDirectory, @CopyMoveToDirMenuItemClick,
               (UserSelection=[pstFile]) and LazPackage.HasDirectory);
-      SetItem(PkgEditMenuRemoveFile, @RemoveBitBtnClick, UserSelection=[pstFile],
-              RemoveBitBtn.Enabled);
       AddFileTypeMenuItem;
       SetItem(PkgEditMenuEditVirtualUnit, @EditVirtualUnitMenuItemClick,
               Assigned(SingleSelectedFile) and (SingleSelectedFile.FileType=pftVirtualUnit),
@@ -882,6 +884,7 @@ begin
       SetItem(PkgEditMenuCollapseDirectory, @CollapseDirectoryMenuItemClick);
       SetItem(PkgEditMenuUseAllUnitsInDirectory, @UseAllUnitsInDirectoryMenuItemClick);
       SetItem(PkgEditMenuUseNoUnitsInDirectory, @UseNoUnitsInDirectoryMenuItemClick);
+      SetItem(PkgEditMenuOpenFolder, @OpenFolderMenuItemClick);
     end;
 
     // items for dependencies, under section PkgEditMenuSectionDependency
@@ -1525,11 +1528,6 @@ begin
   PackageEditors.UninstallPackage(LazPackage);
 end;
 
-procedure TPackageEditorForm.UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
-begin
-  DoUseUnitsInDirectory(true);
-end;
-
 procedure TPackageEditorForm.ViewPkgSourceClick(Sender: TObject);
 begin
   PackageEditors.ViewPkgSource(LazPackage);
@@ -1576,9 +1574,19 @@ begin
   UpdateApplyDependencyButton;
 end;
 
+procedure TPackageEditorForm.UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
+begin
+  DoUseUnitsInDirectory(true);
+end;
+
 procedure TPackageEditorForm.UseNoUnitsInDirectoryMenuItemClick(Sender: TObject);
 begin
   DoUseUnitsInDirectory(false);
+end;
+
+procedure TPackageEditorForm.OpenFolderMenuItemClick(Sender: TObject);
+begin
+  OpenDocument(LazPackage.Directory);
 end;
 
 procedure TPackageEditorForm.mnuAddDiskFileClick(Sender: TObject);
