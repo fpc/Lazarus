@@ -4498,7 +4498,6 @@ var
 
 var
   Dependencies: TPackagePackageArray;
-
 begin
   Result:=mrCancel;
   UnitNames:=nil;
@@ -4509,8 +4508,11 @@ begin
                                           Dependencies,UnitNames);
     if Result<>mrOk then exit;
 
-    Result:=FilterMissingDependenciesForUnit(UnitFilename,Dependencies,MissingDependencies);
-    if Result<>mrOk then exit;
+    if (Dependencies<>nil) then
+    begin
+      Result:=FilterMissingDependenciesForUnit(UnitFilename,Dependencies,MissingDependencies);
+      if Result<>mrOk then exit;
+    end;
 
     Result:=RemoveExistingUnitnames;
     if Result<>mrOk then exit;
