@@ -1028,8 +1028,13 @@ begin
   'begin',
   '  Run{declaration:run}(1,2);',
   'end;',
+  'procedure Fly; varargs;',
+  'begin',
+  '  Run{declaration:run}(2,3);',
+  'end;',
   'begin',
   '  Run{declaration:run}(3);',
+  '  Fly{declaration:fly}(4);',
   'end.']);
   FindDeclarations(Code);
 end;
