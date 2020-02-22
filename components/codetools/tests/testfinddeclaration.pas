@@ -101,6 +101,7 @@ type
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
+    procedure TestFindDeclaration_VarArgsOfType;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -922,6 +923,20 @@ begin
   'begin',
   'end.',
   '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_VarArgsOfType;
+begin
+  StartProgram;
+  Add([
+  'procedure Run; varargs of word;',
+  'begin',
+  '  Run{declaration:run}(1,2);',
+  'end;',
+  'begin',
+  '  Run{declaration:run}(3);',
+  'end.']);
   FindDeclarations(Code);
 end;
 
