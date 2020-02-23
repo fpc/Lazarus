@@ -180,9 +180,9 @@ var
   sz  : Integer;
   dlt : double;
   v   : double;
-const
-  WinPageOfs : integer = 64; // this is an "ofset" of the pageInc used in Windows
-                             // so the click on "large" makes two pages overlap
+//const
+  //WinPageOfs : integer = 64; // this is an "ofset" of the pageInc used in Windows
+                               // so the click on "large" makes two pages overlap
 begin
   Result := false;
   case prt of
@@ -191,8 +191,8 @@ begin
       if adj = 0 then
       begin
         adj := -sc.pageInt;
-        if (sc.PageInt>WinPageOfs) then
-          inc(adj, WinPageOfs);
+        //if (sc.PageInt>WinPageOfs) then
+        //  inc(adj, WinPageOfs);
       end;
     end;
     NSScrollerIncrementPage: begin
@@ -200,8 +200,8 @@ begin
       if adj = 0 then
       begin
         adj := sc.pageInt;
-        if (sc.PageInt>WinPageOfs) then
-          dec(adj, WinPageOfs);
+        //if (sc.PageInt>WinPageOfs) then
+        //  dec(adj, WinPageOfs);
       end;
     end;
     NSScrollerDecrementLine: begin
