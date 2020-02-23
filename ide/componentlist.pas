@@ -394,7 +394,7 @@ var
   CurIcon: TImageIndex;
 begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   ListTree.BeginUpdate;
   PalletteTree.BeginUpdate;
   InheritanceTree.Items.BeginUpdate;
@@ -446,7 +446,7 @@ begin
     InheritanceTree.Items.EndUpdate;
     PalletteTree.EndUpdate;
     ListTree.EndUpdate;
-    Screen.Cursor := crDefault;
+    Screen.EndWaitCursor;
   end;
 end;
 

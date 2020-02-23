@@ -63,7 +63,7 @@ begin
   UpdateTime(0);
   Memo.Clear;
   Application.ProcessMessages;
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   try
     InList.Clear;
     for i := 0 to SpinEdit1.Value - 1 do
@@ -75,7 +75,7 @@ begin
     end;
     Memo.Lines.Assign(inList);
   finally
-    Screen.Cursor := crDefault;
+    Screen.EndWaitCursor;
   end;
 end;
 
@@ -84,7 +84,7 @@ var
   DSL :TLookupStringList;
   T :TDateTime;
 begin
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   try
     T := Now;
     DSL := TLookupStringList.Create;
@@ -97,7 +97,7 @@ begin
     end;
     UpdateTime(Now - T);
   finally
-    Screen.Cursor := crDefault;
+    Screen.EndWaitCursor;
   end;
 end;
 

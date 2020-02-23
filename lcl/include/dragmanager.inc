@@ -220,7 +220,7 @@ begin
 
     if FDragImageList <> nil then
       FDragImageList.EndDrag;
-    WidgetSet.SetCursor(Screen.Cursors[Screen.Cursor]);
+    WidgetSet.SetCursor(Screen.Cursors[Screen.RealCursor]);
     if (ADragObjectCopy.DragTarget <> nil) and (ADragObjectCopy.DragTarget is TControl) then
       TargetPos := ADragObjectCopy.DragTargetPos //controls can override the position
     else

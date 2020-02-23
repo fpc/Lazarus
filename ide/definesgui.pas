@@ -159,7 +159,7 @@ var
   i, ListInd: Integer;
 begin
   IdleConnected := False;
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   try
     FOptionsThread.EndParsing;            // Make sure the options are read.
     // Parse and separate defines from other options.
@@ -177,7 +177,7 @@ begin
       DefinesCheckList.Checked[ListInd] := True;
     end;
   finally
-    Screen.Cursor := crDefault;
+    Screen.EndWaitCursor;
   end;
 end;
 

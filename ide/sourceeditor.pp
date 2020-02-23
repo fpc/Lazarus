@@ -9848,7 +9848,7 @@ begin
     FUpdateFlags := [];
     // Debugger cause ProcessMessages, which could lead to entering methods in unexpected order
     DebugBoss.LockCommandProcessing;
-    Screen.Cursor := crHourGlass;
+    Screen.BeginWaitCursor;
   end;
   inc(FUpdateLock);
 end;
@@ -9858,7 +9858,7 @@ begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
     try
-      Screen.Cursor := crDefault;
+      Screen.EndWaitCursor;
       if (ufShowWindowOnTop in FUpdateFlags) then
         ShowActiveWindowOnTop(ufShowWindowOnTopFocus in FUpdateFlags);
       if (ufMgrActiveEditorChanged in FUpdateFlags) then

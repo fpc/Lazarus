@@ -393,7 +393,7 @@ var
   SrcEdit: TSourceEditor;
 begin
   if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
-  Screen.Cursor:=crHourGlass;
+  Screen.BeginWaitCursor;
   try
     FOtherUnits := TStringList.Create;
     FOtherUnits.Sorted := True;
@@ -413,7 +413,7 @@ begin
         end;
       end;
   finally
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
   end;
 end;
 

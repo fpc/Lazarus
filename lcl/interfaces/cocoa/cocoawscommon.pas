@@ -1470,7 +1470,7 @@ begin
   if not Assigned(Target) then Exit;
   if not (csDesigning in Target.ComponentState) then
   begin
-    ACursor := Screen.Cursor;
+    ACursor := Screen.RealCursor;
     if ACursor = crDefault then
     begin
       // traverse visible child controls

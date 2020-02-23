@@ -782,82 +782,59 @@ var
   Item: TListItem;
   WS: TApiWidgetset;
 begin
-  Screen.Cursor := crHourGlass;
   lvExisting.BeginUpdate;
-  Clear;
-
+  Screen.BeginWaitCursor;
   Lines := TStringList.Create;
-  Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'ps', Lines);
-  for n := 0 to Lines.Count - 1 do
-  begin
-    Line := TApiLine.Create;
-    Line.Declaration := Lines[n];
-    Line.WinApi := True;
-    S := GetName(Lines[n]);
-    FLineInfo.AddObject(S, Line);
-  end;
+  try
+    Clear;
 
-  Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'pi', Lines);
-  for n := 0 to Lines.Count - 1 do
-  begin
-    S := GetName(Lines[n]);
-    if FLineInfo.IndexOf(s) >= 0 then Continue;  //overloaded
+    Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'ps', Lines);
+    for n := 0 to Lines.Count - 1 do
+    begin
+      Line := TApiLine.Create;
+      Line.Declaration := Lines[n];
+      Line.WinApi := True;
+      S := GetName(Lines[n]);
+      FLineInfo.AddObject(S, Line);
+    end;
 
-    Line := TApiLine.Create;
-    Line.Independent := True;
-    Line.WinApi := True;
-    Line.Declaration := Lines[n];
-    FLineInfo.AddObject(S, Line);
-  end;
+    Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'pi', Lines);
+    for n := 0 to Lines.Count - 1 do
+    begin
+      S := GetName(Lines[n]);
+      if FLineInfo.IndexOf(s) >= 0 then Continue;  //overloaded
 
-  Scan(txtLazarus.text + '/lcl/include/lclintfh.inc', 'ps', Lines);
-  for n := 0 to Lines.Count - 1 do
-  begin
-    Line := TApiLine.Create;
-    Line.Declaration := Lines[n];
-    S := GetName(Lines[n]);
-    FLineInfo.AddObject(S, Line);
-  end;
+      Line := TApiLine.Create;
+      Line.Independent := True;
+      Line.WinApi := True;
+      Line.Declaration := Lines[n];
+      FLineInfo.AddObject(S, Line);
+    end;
 
-  Scan(txtLazarus.text + '/lcl/include/lclintfh.inc', 'pi', Lines);
-  for n := 0 to Lines.Count - 1 do
-  begin
-    S := GetName(Lines[n]);
-    if FLineInfo.IndexOf(s) >= 0 then Continue;  //overloaded
+    Scan(txtLazarus.text + '/lcl/include/lclintfh.inc', 'ps', Lines);
+    for n := 0 to Lines.Count - 1 do
+    begin
+      Line := TApiLine.Create;
+      Line.Declaration := Lines[n];
+      S := GetName(Lines[n]);
+      FLineInfo.AddObject(S, Line);
+    end;
 
-    Line := TApiLine.Create;
-    Line.Independent := True;
-    Line.Declaration := Lines[n];
-    FLineInfo.AddObject(S, Line);
-  end;
+    Scan(txtLazarus.text + '/lcl/include/lclintfh.inc', 'pi', Lines);
+    for n := 0 to Lines.Count - 1 do
+    begin
+      S := GetName(Lines[n]);
+      if FLineInfo.IndexOf(s) >= 0 then Continue;  //overloaded
 
-  // implementations
+      Line := TApiLine.Create;
+      Line.Independent := True;
+      Line.Declaration := Lines[n];
+      FLineInfo.AddObject(S, Line);
+    end;
 
-  Scan(txtLazarus.text + '/lcl/include/intfbasewinapi.inc', 'ps', Lines);
-  for n := 0 to Lines.Count - 1 do
-  begin
-    S := GetName(Lines[n]);
-    idx := FLineInfo.IndexOf(S);
-    if idx = -1 then Continue;
+    // implementations
 
-    Line := TApiLine(FLineInfo.Objects[idx]);
-    Line.Base := True;
-  end;
-
-  Scan(txtLazarus.text + '/lcl/include/intfbaselcl.inc', 'ps', Lines);
-  for n := 0 to Lines.Count - 1 do
-  begin
-    S := GetName(Lines[n]);
-    idx := FLineInfo.IndexOf(S);
-    if idx = -1 then Continue;
-
-    Line := TApiLine(FLineInfo.Objects[idx]);
-    Line.Base := True;
-  end;
-
-  for WS := Low(WS) to High(Ws) do
-  begin
-    Scan(txtLazarus.text + '/lcl/interfaces/' + WS_NAME[WS] + '/' +  WS_NAME[WS] + 'winapih.inc', 'ps', Lines);
+    Scan(txtLazarus.text + '/lcl/include/intfbasewinapi.inc', 'ps', Lines);
     for n := 0 to Lines.Count - 1 do
     begin
       S := GetName(Lines[n]);
@@ -865,10 +842,10 @@ begin
       if idx = -1 then Continue;
 
       Line := TApiLine(FLineInfo.Objects[idx]);
-      Include(Line.Widgetsets, WS);
+      Line.Base := True;
     end;
 
-    Scan(txtLazarus.text + '/lcl/interfaces/' + WS_NAME[WS] + '/' +  WS_NAME[WS] + 'lclintfh.inc', 'ps', Lines);
+    Scan(txtLazarus.text + '/lcl/include/intfbaselcl.inc', 'ps', Lines);
     for n := 0 to Lines.Count - 1 do
     begin
       S := GetName(Lines[n]);
@@ -876,51 +853,74 @@ begin
       if idx = -1 then Continue;
 
       Line := TApiLine(FLineInfo.Objects[idx]);
-      Include(Line.Widgetsets, WS);
-    end;
-  end;
-
-
-  for n := 0 to FLineInfo.Count - 1 do
-  begin
-    Item := lvExisting.Items.Add;
-    Item.Caption := FLineInfo[n];
-    Line := TApiLine(FLineInfo.Objects[n]);
-    Item.Data := Line;
-
-    if Line.WinApi
-    then Item.SubItems.Add('Win')
-    else Item.SubItems.Add('LCL');
-
-    if Line.Independent
-    then Item.SubItems.Add('X')
-    else Item.SubItems.Add('');
-
-    if Line.Base
-    then Item.SubItems.Add('X')
-    else begin
-      if Line.Independent
-      then Item.SubItems.Add('-')
-      else Item.SubItems.Add('');
+      Line.Base := True;
     end;
 
     for WS := Low(WS) to High(Ws) do
     begin
-      if WS in Line.Widgetsets
+      Scan(txtLazarus.text + '/lcl/interfaces/' + WS_NAME[WS] + '/' +  WS_NAME[WS] + 'winapih.inc', 'ps', Lines);
+      for n := 0 to Lines.Count - 1 do
+      begin
+        S := GetName(Lines[n]);
+        idx := FLineInfo.IndexOf(S);
+        if idx = -1 then Continue;
+
+        Line := TApiLine(FLineInfo.Objects[idx]);
+        Include(Line.Widgetsets, WS);
+      end;
+
+      Scan(txtLazarus.text + '/lcl/interfaces/' + WS_NAME[WS] + '/' +  WS_NAME[WS] + 'lclintfh.inc', 'ps', Lines);
+      for n := 0 to Lines.Count - 1 do
+      begin
+        S := GetName(Lines[n]);
+        idx := FLineInfo.IndexOf(S);
+        if idx = -1 then Continue;
+
+        Line := TApiLine(FLineInfo.Objects[idx]);
+        Include(Line.Widgetsets, WS);
+      end;
+    end;
+
+
+    for n := 0 to FLineInfo.Count - 1 do
+    begin
+      Item := lvExisting.Items.Add;
+      Item.Caption := FLineInfo[n];
+      Line := TApiLine(FLineInfo.Objects[n]);
+      Item.Data := Line;
+
+      if Line.WinApi
+      then Item.SubItems.Add('Win')
+      else Item.SubItems.Add('LCL');
+
+      if Line.Independent
+      then Item.SubItems.Add('X')
+      else Item.SubItems.Add('');
+
+      if Line.Base
       then Item.SubItems.Add('X')
       else begin
         if Line.Independent
         then Item.SubItems.Add('-')
         else Item.SubItems.Add('');
       end;
+
+      for WS := Low(WS) to High(Ws) do
+      begin
+        if WS in Line.Widgetsets
+        then Item.SubItems.Add('X')
+        else begin
+          if Line.Independent
+          then Item.SubItems.Add('-')
+          else Item.SubItems.Add('');
+        end;
+      end;
     end;
+  finally
+    Lines.Free;
+    Screen.EndWaitCursor;
+    lvExisting.EndUpdate;
   end;
-
-  lvExisting.EndUpdate;
-
-  Lines.Free;
-
-  Screen.Cursor := crDefault;
 end;
 
 procedure TApiWizForm.FormDestroy(Sender: TObject);

@@ -9973,6 +9973,15 @@
         </descr>
         <seealso/>
       </element>
+      <element name="TScreen.BeginTempCursor">
+        <short>Override the Cursor property with a temporary value. Use EndTempCursor to release it.</short>
+      </element>
+      <element name="TScreen.EndTempCursor">
+        <short>Release the temporary cursor set with BeginTempCursor.</short>
+      </element>
+      <element name="TScreen.RealCursor">
+        <short>Get the Cursor property with taking temporary cursors into account.</short>
+      </element>
     </module>
     <!-- Forms -->
   </package>

@@ -25,9 +25,12 @@ const
 procedure TDragImageList.SetDragCursor(const AValue: TCursor);
 begin
   if FDragCursor = AValue then exit;
-  FDragCursor := AValue;
   if Dragging then
-    WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
+  begin
+    Screen.BeginTempCursor(AValue);
+    Screen.EndTempCursor(DragCursor);
+  end;
+  FDragCursor := AValue;
 end;
 
 procedure TDragImageList.SetDragHotspot(const aDragHotspot: TPoint);
@@ -184,7 +187,6 @@ begin
   inherited Create(TheOwner);
 
   FLastDragPos := Point(0, 0);
-  FOldCursor := crNone;
   FLockedWindow := NoLockedWindow;
 end;
 
@@ -197,8 +199,7 @@ begin
   if Result then
   begin
     DragLock(Window, X, Y);
-    FOldCursor := Screen.Cursor;
-    WidgetSet.SetCursor(Screen.Cursors[ImageList.DragCursor])
+    Screen.BeginTempCursor(ImageList.DragCursor);
   end;
 end;
 
@@ -250,7 +251,7 @@ begin
   DragUnlock;
   TWSDragImageListResolutionClass(WidgetSetClass).EndDrag(Self);
   FDragging := False;
-  WidgetSet.SetCursor(Screen.Cursors[FOldCursor])
+  Screen.EndTempCursor(ImageList.DragCursor);
 end;
 
 function TDragImageListResolution.GetHotSpot: TPoint;

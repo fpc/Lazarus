@@ -398,15 +398,13 @@ var
   Bmp: TBitmap;
   AStat: TStat;
   Index: Integer;
-  Cur: TCursor;
 begin
   if Assigned(FImgList) then FImgList.Free;
   FImgList := TImageList.CreateSize(BmpWH, BmpWH);
   ListView.Clear;
   ListView.LargeImages := FImgList;
   ListView.BeginUpdate;
-  Cur := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   try
     StatusLabel.Visible := True;
     for Index := 0 to FPoFamilyStats.Count - 1 do
@@ -429,7 +427,7 @@ begin
     end;
   finally
     ListView.EndUpdate;
-    Screen.Cursor := Cur;
+    Screen.EndWaitCursor;
     StatusLabel.Visible := False;
   end;
 end;

@@ -341,7 +341,7 @@ begin
   Widget := GetCarbonWidget(Control);
   if Widget = nil then Exit;
   
-  if Screen.Cursor = crDefault then // we can change cursor
+  if Screen.RealCursor = crDefault then // we can change cursor
   begin
     ACursorWasSet := False;
     
@@ -502,7 +502,7 @@ begin
   DeliverMessage(AWidget.LCLObject, Msg);
 }
 
-  ACursor := Screen.Cursor;
+  ACursor := Screen.RealCursor;
   if ACursor = crDefault then
   begin
     ACursor := AWidget.LCLObject.Cursor;

@@ -208,7 +208,7 @@ var
   i, j: Integer;
   LastDir: String;
 begin
-  Screen.Cursor:=crHourGlass;
+  Screen.BeginWaitCursor;
   Searcher:=TListFileSearcher.Create(Self);
   IncludedDirs:=TStringList.Create;
   AllDirs:=Nil;
@@ -246,7 +246,7 @@ begin
     AllDirs.Free;
     IncludedDirs.Free;
     Searcher.Free;
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
   end;
 end;
 

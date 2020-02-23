@@ -2914,7 +2914,6 @@ var
   DisabledList: TList;
   SavedFocusState: TFocusState;
   ActiveWindow: HWnd;
-  SavedCursor: TCursor;
 begin
   if Self = nil then
     raise EInvalidOperation.Create('TCustomForm.ShowModal Self = nil');
@@ -2939,11 +2938,10 @@ begin
       RecreateWnd(Self); // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
     ActiveWindow := GetActiveWindow;
     SavedFocusState := SaveFocusState;
-    SavedCursor := Screen.Cursor;
     Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
     Screen.FFocusedForm := Self;
     Screen.MoveFormToFocusFront(Self);
-    Screen.Cursor := crDefault;
+    Screen.BeginTempCursor(crDefault);
     ModalResult := 0;
 
     try
@@ -3001,7 +2999,7 @@ begin
       end;
     finally
       RestoreFocusState(SavedFocusState);
-      Screen.Cursor := SavedCursor;
+      Screen.EndTempCursor(crDefault);
       if LCLIntf.IsWindow(ActiveWindow) then
         SetActiveWindow(ActiveWindow);
       Exclude(FFormState, fsModal);

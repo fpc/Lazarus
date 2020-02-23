@@ -295,6 +295,22 @@ begin
   AddHandler(snRemoveForm,TMethod(OnRemoveForm),AsFirst);
 end;
 
+procedure TScreen.BeginTempCursor(const aCursor: TCursor);
+var
+  OldCursor: TCursor;
+begin
+  OldCursor := RealCursor;
+  SetLength(FTempCursors, Length(FTempCursors)+1);
+  FTempCursors[High(FTempCursors)] := aCursor;
+  if OldCursor<>RealCursor then
+    WidgetSet.SetCursor(Cursors[RealCursor]);
+end;
+
+procedure TScreen.BeginWaitCursor;
+begin
+  BeginTempCursor(crHourGlass);
+end;
+
 procedure TScreen.RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
 begin
   RemoveHandler(snRemoveForm,TMethod(OnRemoveForm));
@@ -407,6 +423,30 @@ begin
       EnableWindow(AWindow, True);
   end;
   FreeAndNil(AFormList);
+end;
+
+procedure TScreen.EndTempCursor(const aCursor: TCursor);
+var
+  I: Integer;
+  OldCursor: TCursor;
+begin
+  OldCursor := RealCursor;
+  for I := High(FTempCursors) downto Low(FTempCursors) do
+  begin
+    if FTempCursors[I]=aCursor then
+    begin
+      Delete(FTempCursors, I, 1);
+      if OldCursor<>RealCursor then
+        WidgetSet.SetCursor(Cursors[RealCursor]);
+      Exit;
+    end;
+  end;
+  raise Exception.CreateFmt('Unbalanced BeginTempCursor/EndTempCursor calls for cursor %d', [aCursor]);
+end;
+
+procedure TScreen.EndWaitCursor;
+begin
+  EndTempCursor(crHourGlass);
 end;
 
 function TScreen.UpdatedMonitor(AHandle: HMONITOR; ADefault: TMonitorDefaultTo;
@@ -807,6 +847,14 @@ begin
   Result := nil;
 end;
 
+function TScreen.GetRealCursor: TCursor;
+begin
+  if Length(FTempCursors)>0 then
+    Result := FTempCursors[High(FTempCursors)]
+  else
+    Result := Cursor;
+end;
+
 function TScreen.GetSystemFont: TFont;
 begin
   if (FSystemFont = nil) then
@@ -909,11 +957,15 @@ end;
   procedure TScreen.SetCursor(const AValue: TCursor);
  ------------------------------------------------------------------------------}
 procedure TScreen.SetCursor(const AValue: TCursor);
+var
+  OldCursor: TCursor;
 begin
   if AValue <> Cursor then
   begin
+    OldCursor := RealCursor;
     FCursor := AValue;
-    WidgetSet.SetCursor(Cursors[FCursor]);
+    if OldCursor<>RealCursor then
+      WidgetSet.SetCursor(Cursors[RealCursor]);
   end;
 end;
 

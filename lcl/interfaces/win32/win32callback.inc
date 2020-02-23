@@ -851,7 +851,7 @@ begin
   begin
     if not (csDesigning in lWinControl.ComponentState) and (LOWORD(LParam) = HTCLIENT) then
     begin
-      ACursor := Screen.Cursor;
+      ACursor := Screen.RealCursor;
       if ACursor = crDefault then
       begin
         Windows.GetCursorPos(Windows.POINT(P));

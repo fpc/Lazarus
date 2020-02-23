@@ -163,7 +163,7 @@ var
 begin
   IdleConnected := False;
   if FOptionsThread=nil then exit;
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   try
     FOptionsThread.EndParsing;            // Make sure the options are read.
     if FOptionsReader.ErrorMsg <> '' then
@@ -176,7 +176,7 @@ begin
                       FormatTimeWithMs(Now-StartTime)]));
     end;
   finally
-    Screen.Cursor := crDefault;
+    Screen.EndWaitCursor;
   end;
   FRenderedOnce := True;
 end;

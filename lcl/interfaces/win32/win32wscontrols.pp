@@ -502,7 +502,7 @@ begin
     Exit;
   end;
 
-  if Screen.Cursor <> crDefault then exit;
+  if Screen.RealCursor <> crDefault then exit;
 
   Windows.GetCursorPos(CursorPos);
 

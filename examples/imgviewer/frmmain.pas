@@ -212,7 +212,7 @@ var
 begin
   if SelectDirectory(SSelectImageDir, '/', Dir, true) then
   begin
-    Screen.Cursor := crHourglass; //Show user he may have to wait for big directories
+    Screen.BeginWaitCursor; //Show user he may have to wait for big directories
     try
       LBFiles.Items.BeginUpdate; //Indicate to the listbox that we're doing a lengthy operation
       WasSorted:=LBFiles.Sorted;
@@ -221,7 +221,7 @@ begin
       LBFiles.Sorted:=WasSorted;
     finally
       LBFiles.Items.EndUpdate;
-      Screen.Cursor := crDefault;
+      Screen.EndWaitCursor;
     end;
   end;
 end;
@@ -270,7 +270,7 @@ var
 begin
   if SelectDirectory(SSelectImageDirRec, '/', Dir, true) then
   begin
-    Screen.Cursor := crHourglass; //Show user he may have to wait for big directories
+    Screen.BeginWaitCursor; //Show user he may have to wait for big directories
     try
       LBFiles.Items.BeginUpdate; //Indicate to the listbox that we're doing a lengthy operation
       WasSorted:=LBFiles.Sorted;
@@ -279,7 +279,7 @@ begin
       LBFiles.Sorted:=WasSorted;
     finally
       LBFiles.Items.EndUpdate;
-      Screen.Cursor := crDefault;
+      Screen.EndWaitCursor;
     end;
   end;
 end;
@@ -461,14 +461,14 @@ begin
     else
     begin
       S := ParamStrUTF8(I);
-      Screen.Cursor := crHourglass; //Show user he may have to wait
+      Screen.BeginWaitCursor; //Show user he may have to wait
       try
         if DirectoryExistsUTF8(S) then
           AddDir(ExpandFileNameUTF8(S), FRecursive)
         else if FileExistsUTF8(S) then
           AddFile(ExpandFileNameUTF8(S), LBFiles.Items.Count = 0);
       finally
-        Screen.Cursor := crDefault;
+        Screen.EndWaitCursor;
       end;
     end;
   end;

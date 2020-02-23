@@ -1104,7 +1104,7 @@ begin
     DebugLn('');
     DebugLn('TConvertDelphiProjPack.ConvertAllFormFiles: '+lisConvDelphiRepairingFormFiles);
   end;
-  Screen.Cursor:=crHourGlass;
+  Screen.BeginWaitCursor;
   try
     for i:=0 to ConverterList.Count-1 do begin
       Converter:=TDelphiUnit(ConverterList[i]); // Converter created in cycle1.
@@ -1117,7 +1117,7 @@ begin
       if Result<>mrOK then exit;
     end;
   finally
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
   end;
   Result:=mrOK;
 end;
@@ -1601,7 +1601,7 @@ var
   p: LongInt;
   ui: TUnitInfo;
 begin
-  Screen.Cursor:=crHourGlass;
+  Screen.BeginWaitCursor;
   FoundUnits:=nil;
   MisUnits:=nil;
   NormalUnits:=nil;
@@ -1649,7 +1649,7 @@ begin
     FoundUnits.Free;
     MisUnits.Free;
     NormalUnits.Free;
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
   end;
   Result:=mrOK;
 end;

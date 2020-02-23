@@ -1030,11 +1030,11 @@ var
 begin
   if MessageDlgEx(rsMainFrm_rsRepositoryCleanup0, mtInformation, [mbYes, mbNo], Self) = mrYes then
   begin
-    Screen.Cursor := crHourGlass;
+    Screen.BeginWaitCursor;
     try
       Cnt := SerializablePackages.Cleanup;
     finally
-      Screen.Cursor := crDefault;
+      Screen.EndWaitCursor;
     end;
     MessageDlgEx(Format(rsMainFrm_rsRepositoryCleanup1, [IntToStr(Cnt)]),
       mtInformation, [mbOk], Self);

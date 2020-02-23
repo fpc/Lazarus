@@ -276,7 +276,7 @@ begin
   if fUpdating then Exit;
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
 
-  Screen.Cursor:=crHourGlass;
+  Screen.BeginWaitCursor;
   lvTodo.BeginUpdate;
   Units:=nil;
   try
@@ -324,7 +324,7 @@ begin
     Units.Free;
     CodeToolBoss.DeactivateWriteLock;
     lvTodo.EndUpdate;
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
     fUpdating:=False;
   end;
 end;

@@ -565,7 +565,6 @@ end;
 function TLFMFixer.ShowConvertLFMWizard: TModalResult;
 var
   FixLFMDialog: TFixLFMDialog;
-  PrevCursor: TCursor;
 begin
   Result:=mrCancel;
   FixLFMDialog:=TFixLFMDialog.Create(nil, self);
@@ -579,14 +578,7 @@ begin
     and ((fSettings.TypeReplaceMode=raAutomatic) or not fHasMissingObjectTypes) then
       Result:=ReplaceAndRemoveAll  // Can return mrRetry.
     else begin
-      // Cursor is earlier set to HourGlass. Show normal cursor while in dialog.
-      PrevCursor:=Screen.Cursor;
-      Screen.Cursor:=crDefault;
-      try
-        Result:=FixLFMDialog.ShowModal;
-      finally
-        Screen.Cursor:=PrevCursor;
-      end;
+      Result:=FixLFMDialog.ShowModal;
     end;
   finally
     FixLFMDialog.Free;

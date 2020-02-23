@@ -267,7 +267,7 @@ Var
         Dec(P.X, BoundsOffset.Left);
         Dec(P.Y, BoundsOffset.Top);
       end;
-      ACursor := Screen.Cursor;
+      ACursor := Screen.RealCursor;
       if ACursor = crDefault then
       begin
         // statictext controls do not get WM_SETCURSOR messages...

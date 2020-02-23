@@ -886,7 +886,7 @@ begin
   Target_PPUs:=nil;
   FPC_PPUs:=nil;
   IDEMessagesWindow.Clear;
-  Screen.Cursor:=crHourGlass;
+  Screen.BeginWaitCursor;
   try
     // make sure there is no invalid cache due to bugs
     InvalidateFileStateCache();
@@ -986,7 +986,7 @@ begin
       AddMsg(lisCCOTestsSuccess,'',-1);
 
   finally
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
     CompilerFiles.Free;
     CompileTool.Free;
     FTest:=cotNone;

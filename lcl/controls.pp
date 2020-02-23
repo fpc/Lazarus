@@ -356,7 +356,6 @@ type
   private
     FDragging: Boolean;
     FDragHotspot: TPoint;
-    FOldCursor: TCursor;
     FLastDragPos: TPoint;
     FLockedWindow: HWND;// window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)
 

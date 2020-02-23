@@ -366,7 +366,7 @@ var
   HasFiles: Boolean;
   IsDone: Boolean;
 begin
-  Screen.Cursor:=crHourGlass;
+  Screen.BeginWaitCursor;
   try
     HasFiles:=GetFiles;
     PreviewListView.Items.Clear;
@@ -396,7 +396,7 @@ begin
       Format(lisNumberOfFilesToConvert, [IntToStr(PreviewListView.Items.Count)]);
     ApplyButton.Enabled:=True;
   finally
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
   end;
 end;
 

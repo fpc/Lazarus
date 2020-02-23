@@ -322,10 +322,8 @@ var
   SL, ML, OL, CurFiles, MissingFiles: TStringList;
   i: Integer;
   S, Mn: String;
-  Cur: TCursor;
 begin
-  Cur := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   StatusBar.SimpleText := sScanningInProgress;
   try
     ML := FindAllFiles(ADir, '*.pot', True);
@@ -376,7 +374,7 @@ begin
     MissingFiles.Free;
     SL.Free;
     StatusBar.SimpleText := '';
-    Screen.Cursor := Cur;
+    Screen.EndWaitCursor;
   end;
 end;
 

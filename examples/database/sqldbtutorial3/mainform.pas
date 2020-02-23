@@ -135,7 +135,7 @@ var
 begin
   result:=false;
   Conn:=TSQLConnector.Create(nil);
-  Screen.Cursor:=crHourglass;
+  Screen.BeginWaitCursor;
   try
     // ...actual connector type is determined by this property.
     // Make sure the ChosenConfig.DBType string matches
@@ -154,7 +154,7 @@ begin
     end;
     Conn.Close;
   finally
-    Screen.Cursor:=crDefault;
+    Screen.EndWaitCursor;
     Conn.Free;
   end;
 end;

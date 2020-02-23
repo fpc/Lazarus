@@ -51,13 +51,13 @@ var
 begin
   OpenDialog1.InitialDir:=GetCurrentDirUTF8;
   if not OpenDialog1.Execute then exit;
-  Screen.Cursor := crHourGlass;
+  Screen.BeginWaitCursor;
   try
     if Help.ServerRunning = false then
       Help.StartHelpServer(IPCFile, GetLHelpFilename);
     Res := Help.OpenFile(OpenDialog1.FileName);
   finally
-    Screen.Cursor := crDefault;
+    Screen.EndWaitCursor;
   end;
   Label1.Caption := ResponseToString(Res);
 end;
