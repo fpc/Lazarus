@@ -91,7 +91,7 @@ type
     procedure DidResignKeyNotification;
     procedure SendOnChange;
     procedure SendOnTextChanged;
-    procedure scroll(isVert: Boolean; Pos: Integer);
+    procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart = NSScrollerNoPart);
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;

@@ -180,29 +180,16 @@ var
   sz  : Integer;
   dlt : double;
   v   : double;
-//const
-  //WinPageOfs : integer = 64; // this is an "ofset" of the pageInc used in Windows
-                               // so the click on "large" makes two pages overlap
 begin
   Result := false;
   case prt of
     NSScrollerDecrementPage: begin
       adj := -sc.largeInc;
-      if adj = 0 then
-      begin
-        adj := -sc.pageInt;
-        //if (sc.PageInt>WinPageOfs) then
-        //  inc(adj, WinPageOfs);
-      end;
+      if adj = 0 then adj := -sc.pageInt;
     end;
     NSScrollerIncrementPage: begin
       adj := sc.largeInc;
-      if adj = 0 then
-      begin
-        adj := sc.pageInt;
-        //if (sc.PageInt>WinPageOfs) then
-        //  dec(adj, WinPageOfs);
-      end;
+      if adj = 0 then adj := sc.pageInt;
     end;
     NSScrollerDecrementLine: begin
       adj := -sc.smallInc;
@@ -843,7 +830,7 @@ begin
     HandleMouseDown(self, locInWin, prt);
 
   if Assigned(callback) then
-    callback.scroll( not IsHorizontal(), lclPos);
+    callback.scroll(not IsHorizontal(), lclPos, prt);
 end;
 
 function TCocoaScrollBar.IsHorizontal: Boolean;
