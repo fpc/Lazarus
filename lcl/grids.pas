@@ -6572,7 +6572,7 @@ begin
   end;
 
   // adjust sorted column
-  if IsColumn and (FSortColumn>=0) then
+  if IsColumn and (FSortColumn>=0) then begin
     if Between(FSortColumn, FromIndex, ToIndex) then begin
       if FSortColumn=FromIndex then
         FSortColumn := ToIndex
@@ -6582,6 +6582,8 @@ begin
       else
         Inc(FSortColumn);
     end;
+  end else
+    FSortColumn := -1;
 end;
 
 procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
