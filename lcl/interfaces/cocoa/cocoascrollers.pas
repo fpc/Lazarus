@@ -183,10 +183,22 @@ var
 begin
   Result := false;
   case prt of
-    NSScrollerDecrementPage: adj := -sc.largeInc;
-    NSScrollerIncrementPage: adj := sc.largeInc;
-    NSScrollerDecrementLine: adj := -sc.smallInc;
-    NSScrollerIncrementLine: adj := sc.smallInc;
+    NSScrollerDecrementPage: begin
+      adj := -sc.largeInc;
+      if adj = 0 then adj := -sc.pageInt;
+    end;
+    NSScrollerIncrementPage: begin
+      adj := sc.largeInc;
+      if adj = 0 then adj := sc.pageInt;
+    end;
+    NSScrollerDecrementLine: begin
+      adj := -sc.smallInc;
+      if adj = 0 then adj := -1;
+    end;
+    NSScrollerIncrementLine: begin
+      adj := sc.smallInc;
+      if adj = 0 then adj := 1;
+    end;
   else
     adj := 0;
   end;
@@ -818,7 +830,7 @@ begin
     HandleMouseDown(self, locInWin, prt);
 
   if Assigned(callback) then
-    callback.scroll( not IsHorizontal(), lclPos);
+    callback.scroll(not IsHorizontal(), lclPos, prt);
 end;
 
 function TCocoaScrollBar.IsHorizontal: Boolean;

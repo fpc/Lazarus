@@ -92,7 +92,7 @@ type
     procedure DidResignKeyNotification; virtual;
     procedure SendOnChange; virtual;
     procedure SendOnTextChanged; virtual; // text controls (like spin) respond to OnChange for this event, but not for SendOnChange
-    procedure scroll(isVert: Boolean; Pos: Integer); virtual;
+    procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart); virtual;
     function DeliverMessage(var Msg): LRESULT; virtual; overload;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
@@ -1329,10 +1329,12 @@ begin
   SendSimpleMessage(Target, CM_TEXTCHANGED);
 end;
 
-procedure TLCLCommonCallback.scroll(isVert: Boolean; Pos: Integer);
+procedure TLCLCommonCallback.scroll(isVert: Boolean; Pos: Integer;
+  AScrollPart: NSScrollerPart);
 var
   LMScroll: TLMScroll;
   b: Boolean;
+  lclCode: Integer;
 begin
   FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
   //todo: this should be a part of a parameter
@@ -1344,7 +1346,15 @@ begin
     LMScroll.Msg := LM_HSCROLL;
 
   LMScroll.Pos := Pos;
-  LMScroll.ScrollCode := SB_THUMBPOSITION; //SIF_POS;
+  case AScrollPart of
+    NSScrollerDecrementPage: lclCode := SB_PAGELEFT;
+    NSScrollerIncrementPage: lclCode := SB_PAGERIGHT;
+    NSScrollerDecrementLine: lclCode := SB_LINELEFT;
+    NSScrollerIncrementLine: lclCode := SB_LINERIGHT;
+  else
+    lclCode := SB_THUMBPOSITION;
+  end;
+  LMScroll.ScrollCode := lclCode; //SIF_POS;
 
   LCLMessageGlue.DeliverMessage(Target, LMScroll);
 end;

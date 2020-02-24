@@ -395,10 +395,13 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
-  TCocoaSpinEdit = objcclass(TCocoaTextField, NSTextFieldDelegateProtocol)
+  TCocoaSpinEdit = objcclass(TCocoaTextField)
     Stepper: NSStepper;
     NumberFormatter: NSNumberFormatter;
     decimalPlaces: Integer;
+
+    avoidChangeEvent: Integer;
+
     //Spin: TCustomFloatSpinEdit;
     procedure dealloc; override;
     function updateStepper: boolean; message 'updateStepper';
@@ -408,9 +411,6 @@ type
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     procedure textDidChange(notification: NSNotification); override;
-    procedure textDidEndEditing(notification: NSNotification); message 'textDidEndEditing:'; override;
-    // NSTextFieldDelegateProtocol
-    procedure controlTextDidChange(obj: NSNotification); override;
     // lcl
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
@@ -1953,9 +1953,6 @@ begin
   Stepper.setTarget(Self);
   Stepper.setAction(objcselector('StepperChanged:'));
 
-  // Accept numbers only
-  setDelegate(Self);
-
   { The default way to do this in Cocoa is with NSNumberFormatter
     But it is a bit annoying, it just disallows losing focus from the control
     instead of the Windows like solution to just override with the last value
@@ -2011,27 +2008,20 @@ begin
   setStringValue(lNSStr);
   lNSStr.release;
   // This implements OnChange for both user and code changes
-  if callback <> nil then callback.SendOnTextChanged();
+  if (callback <> nil) and (avoidChangeEvent=0) then
+    callback.SendOnTextChanged();
 end;
 
 procedure TCocoaSpinEdit.textDidChange(notification: NSNotification);
 begin
-  updateStepper;
-  inherited textDidChange(notification);
-end;
-
-procedure TCocoaSpinEdit.textDidEndEditing(notification: NSNotification);
-begin
-  updateStepper;
-  StepperChanged(nil); // and refresh self
-  inherited textDidEndEditing(notification);
-  //if Assigned(callback) then callback.SendOnTextChanged;
-end;
-
-procedure TCocoaSpinEdit.controlTextDidChange(obj: NSNotification);
-begin
-  updateStepper;
-  if Assigned(callback) then callback.SendOnTextChanged;
+  inc(avoidChangeEvent);
+  try
+    updateStepper;
+    StepperChanged(nil); // and refresh self
+    inherited textDidChange(notification);
+  finally
+    dec(avoidChangeEvent);
+  end;
 end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: LCLObjCBoolean;

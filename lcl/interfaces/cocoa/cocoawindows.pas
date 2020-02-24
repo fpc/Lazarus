@@ -143,6 +143,7 @@ type
     _keyEvCallback: ICommonCallback;
     callback: IWindowCallback;
     keepWinLevel : NSInteger;
+    stopKeyEquivalent: Boolean;
     //LCLForm: TCustomForm;
     procedure dealloc; override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
@@ -168,6 +169,7 @@ type
     procedure sendEvent(event: NSEvent); override;
     // key
     procedure keyDown(event: NSEvent); override;
+    function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
 
@@ -989,7 +991,18 @@ begin
       Exit;
   end;
 
+  // we tried everything (all keyEquiovalents), see calls above
+  // now we just want to stop the Beep
+  stopKeyEquivalent:=true;
   inherited keyDown(event);
+  stopKeyEquivalent:=false;
+end;
+
+function TCocoaWindow.performKeyEquivalent(event: NSEvent): LCLObjCBoolean;
+begin
+  Result:=inherited performKeyEquivalent(event);
+  if stopKeyEquivalent and not Result then
+    Result := true;
 end;
 
 function TCocoaWindowContentDocument.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
