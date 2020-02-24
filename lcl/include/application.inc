@@ -78,9 +78,6 @@ begin
     Result := '';
 end;
 
-{------------------------------------------------------------------------------
-       TApplication Constructor
-------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
 begin
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
@@ -128,9 +125,6 @@ begin
   OnGetApplicationName := @GetApplicationName;
 end;
 
-{------------------------------------------------------------------------------
-       TApplication Destructor
-------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
 var
   HandlerType: TApplicationHandlerType;
@@ -219,17 +213,11 @@ begin
     CancelHint;
 end;
 
-{------------------------------------------------------------------------------
-       TApplication BringToFront
-------------------------------------------------------------------------------}
 procedure TApplication.BringToFront;
 begin
   WidgetSet.AppBringToFront;
 end;
 
-{------------------------------------------------------------------------------
-       TApplication Messagebox
-------------------------------------------------------------------------------}
 function TApplication.MessageBox(Text, Caption: PChar; Flags: Longint) : Integer;
 begin
   if Assigned(MessageBoxFunction) then
@@ -243,9 +231,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-       TApplication GetExename
-------------------------------------------------------------------------------}
 function TApplication.GetExename: String;
 Begin
   Result := ParamStrUTF8(0);
@@ -302,8 +287,6 @@ end;
   Method: TApplication.ControlDestroyed
   Params: None
   Returns:  Nothing
-
-
  ------------------------------------------------------------------------------}
 procedure TApplication.ControlDestroyed(AControl: TControl);
 begin
@@ -418,9 +401,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  TApplication HintMouseMEssage
-------------------------------------------------------------------------------}
 procedure TApplication.HintMouseMessage(Control : TControl;
   var AMessage : TLMessage);
 begin
@@ -515,10 +495,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.GetControlAtMouse: TControl;
-
- ------------------------------------------------------------------------------}
 function TApplication.GetControlAtMouse: TControl;
 var
   P: TPoint;
@@ -604,10 +580,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
-
- ------------------------------------------------------------------------------}
 procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
 begin
   //debugln(['TApplication.UpdateMouseControl Old=',DbgSName(FMouseControl),' New=',DbgSName(NewMouseControl)]);
@@ -638,9 +610,6 @@ begin
   FIcon.Assign(AValue);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.SetShowHint(const AValue: Boolean);
- ------------------------------------------------------------------------------}
 procedure TApplication.SetShowHint(const AValue: Boolean);
 begin
   if FShowHint = AValue then
@@ -655,27 +624,18 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.SetTitle(const AValue: String);
- ------------------------------------------------------------------------------}
 procedure TApplication.SetTitle(const AValue: String);
 begin
   inherited SetTitle(AValue);
   WidgetSet.AppSetTitle(GetTitle);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.StopHintTimer;
- ------------------------------------------------------------------------------}
 procedure TApplication.StopHintTimer;
 begin
   if FHintTimer <> nil then
     FHintTimer.Enabled := False;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.ValidateHelpSystem;
- ------------------------------------------------------------------------------}
 function TApplication.ValidateHelpSystem: Boolean;
 begin
   Result := HelpManager <> nil;
@@ -698,10 +658,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.NotifyIdleEndHandler;
-
- ------------------------------------------------------------------------------}
 procedure TApplication.NotifyIdleEndHandler;
 begin
   FApplicationHandlers[ahtIdleEnd].CallNotifyEvents(Self);
@@ -727,10 +683,6 @@ begin
     Screen.CustomForms[i].Perform(Msg, 0, 0);
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.IsHintMsg(var Msg: TMsg): Boolean;
-
- ------------------------------------------------------------------------------}
 function TApplication.IsHintMsg(var Msg: TMsg): Boolean;
 begin
   Result := False;
@@ -757,10 +709,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.DoOnMouseMove;
-
- ------------------------------------------------------------------------------}
 procedure TApplication.DoOnMouseMove;
 var
   CursorPos: TPoint;
@@ -771,9 +719,6 @@ begin
   ActivateHint(CursorPos, True);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
- ------------------------------------------------------------------------------}
 procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
 
   function GetCursorHeightMargin: integer;
@@ -886,10 +831,6 @@ begin
   {$endif}
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.StartHintTimer(Interval: integer;
-    TimerType: TAppHintTimerType);
- ------------------------------------------------------------------------------}
 procedure TApplication.StartHintTimer(Interval: integer;
   TimerType: TAppHintTimerType);
 begin
@@ -910,9 +851,6 @@ begin
     OnHintTimer(Self);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.OnHintTimer(Sender: TObject);
- ------------------------------------------------------------------------------}
 procedure TApplication.OnHintTimer(Sender: TObject);
 var
   Info: THintInfoAtMouse;
@@ -946,9 +884,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.UpdateVisible;
- ------------------------------------------------------------------------------}
 procedure TApplication.UpdateVisible;
 
   function AppUseSingleButton: Boolean;
@@ -992,9 +927,6 @@ begin
   WidgetSet.AppSetVisible(HasVisibleForms);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.DoIdleActions;
- ------------------------------------------------------------------------------}
 procedure TApplication.DoIdleActions;
 var
   i: Integer;
@@ -1103,9 +1035,6 @@ begin
   Result:=ParamStrUTF8(Index);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TApplication.IconChanged
- ------------------------------------------------------------------------------}
 procedure TApplication.IconChanged(Sender: TObject);
 var
   i: integer;
@@ -1194,7 +1123,6 @@ end;
   Method: TApplication.HandleException
   Params: Sender
   Returns:  Nothing
-
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
   procedure ShowInvalidException(ExObject: TObject; ExAddr: Pointer);
@@ -1283,9 +1211,6 @@ begin
   if not Terminated then Idle(true);
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.HelpContext(Context: THelpContext): Boolean;
-------------------------------------------------------------------------------}
 function TApplication.HelpContext(Context: THelpContext): Boolean;
 var
   CallHelp: Boolean;
@@ -1300,9 +1225,6 @@ begin
     Result := False;
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.HelpKeyword(const Keyword: String): Boolean;
-------------------------------------------------------------------------------}
 function TApplication.HelpKeyword(const Keyword: String): Boolean;
 var
   CallHelp: Boolean;
@@ -1323,9 +1245,6 @@ begin
     TControl(Sender).ShowHelp;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.RemoveStayOnTop;
-------------------------------------------------------------------------------}
 procedure TApplication.RemoveStayOnTop(const ASystemTopAlso: Boolean = False);
 var
   i: Integer;
@@ -1367,17 +1286,11 @@ begin
     end;
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.IsWaiting: boolean;
-------------------------------------------------------------------------------}
 function TApplication.IsWaiting: boolean;
 begin
   Result:=AppWaiting in FFlags;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.CancelHint;
-------------------------------------------------------------------------------}
 procedure TApplication.CancelHint;
 begin
   StopHintTimer;
@@ -1386,9 +1299,6 @@ begin
   FHintTimerType := ahttNone;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.HideHint;
-------------------------------------------------------------------------------}
 procedure TApplication.HideHint;
 begin
   if FHintWindow <> nil then
@@ -1459,10 +1369,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication WndPRoc                                                   }
-{                                                                              }
-{------------------------------------------------------------------------------}
 procedure TApplication.WndProc(var AMessage : TLMessage);
 begin
   case AMessage.Msg of
@@ -1552,9 +1458,6 @@ begin
   Result := AppActive in Flags;
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.GetCurrentHelpFile: string;
-------------------------------------------------------------------------------}
 function TApplication.GetCurrentHelpFile: string;
 var
   ActiveForm: TCustomForm;
@@ -1566,9 +1469,6 @@ begin
     Result := HelpFile;
 end;
 
-{------------------------------------------------------------------------------
-       TApplication ShowException
-------------------------------------------------------------------------------}
 procedure TApplication.ShowException(E: Exception);
 var
   Msg: string;
@@ -1627,10 +1527,6 @@ begin
   dec(FIdleLockCount);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.NotifyUserInputHandler;
-
- ------------------------------------------------------------------------------}
 procedure TApplication.NotifyUserInputHandler(Sender: TObject; Msg: Cardinal);
 var
   i: integer;
@@ -1968,9 +1864,6 @@ begin
     FApplicationHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.IntfEndSession;
-------------------------------------------------------------------------------}
 procedure TApplication.IntfEndSession;
 begin
   if Assigned(FOnEndSession) then FOnEndSession(Self);
@@ -1993,9 +1886,6 @@ begin
     Deactivate(1);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.IntfQueryEndSession(var Cancel: Boolean);
-------------------------------------------------------------------------------}
 procedure TApplication.IntfQueryEndSession(var Cancel: Boolean);
 var
   i: LongInt;
@@ -2006,18 +1896,12 @@ begin
     TQueryEndSessionEvent(FApplicationHandlers[ahtQueryEndSession][i])(Cancel);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.IntfAppMinimize;
-------------------------------------------------------------------------------}
 procedure TApplication.IntfAppMinimize;
 begin
   if Assigned(FOnMinimize) then FOnMinimize(Self);
   FApplicationHandlers[ahtMinimize].CallNotifyEvents(Self);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.IntfAppRestore;
-------------------------------------------------------------------------------}
 procedure TApplication.IntfAppRestore;
 begin
   Screen.RestoreLastActive;
@@ -2089,9 +1973,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
-------------------------------------------------------------------------------}
 procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
 begin
   //debugln(['TApplication.DoBeforeMouseMessage ',DbgSName(CurMouseControl)]);
