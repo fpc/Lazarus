@@ -12423,18 +12423,6 @@ msgstr "Verileri girin"
 msgid "Enter run parameters"
 msgstr "Çalıştırma parametrelerini girin"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Ana birimde Application.CreateForm ifadeleri var"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "Ana birimde Application.scaled deyimi vardır"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "Ana ünite Application.Title deyimine sahiptir"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Ana birim, tüm proje birimlerini içeren Uses bölümüne sahiptir"
@@ -20066,6 +20054,18 @@ msgstr "Olağandışı pas2js derleyici dosya adı. Genellikle pas2js ile başla
 #: lazarusidestrconsts.lisup
 msgid "Up"
 msgstr "Yukarı"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

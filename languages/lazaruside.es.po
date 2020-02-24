@@ -12792,18 +12792,6 @@ msgstr "Introducir datos"
 msgid "Enter run parameters"
 msgstr "Introducir Parámetros de Ejecución"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "La unidad principal tiene instrucciones Application.CreateForm"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "La unidad principal tiene instrucciones Application.Scaled"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "La unidad principal tiene instrucciones Application.Title"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "La unidad principal tiene una sección uses que contiene todas las unidades del proyecto"
@@ -20592,6 +20580,18 @@ msgstr "Inusual nombre de archivo pas2js. Por lo general, comienza con pas2js."
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Arriba"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

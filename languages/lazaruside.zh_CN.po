@@ -12786,19 +12786,6 @@ msgstr "输入数据"
 msgid "Enter run parameters"
 msgstr "输入运行参数"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-#, fuzzy
-msgid "Main unit has Application.CreateForm statements"
-msgstr "主单元有应用.CreateForm声明"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr ""
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr ""
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr ""
@@ -20592,6 +20579,18 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "上"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

@@ -12870,20 +12870,6 @@ msgstr "Masukkan data"
 msgid "Enter run parameters"
 msgstr "Masukkan parameter menjalankan"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-#, fuzzy
-#| msgid "Main Unit has Application.CreateForm statements"
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Unit Utama mempunyai pernyataan Application.CreateForm"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr ""
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr ""
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 #, fuzzy
 #| msgid "Main Unit has Uses Section containing all Units of project"
@@ -20936,6 +20922,18 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Naik"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

@@ -12468,18 +12468,6 @@ msgstr "Írjon be adatot"
 msgid "Enter run parameters"
 msgstr "Írja be a futtatási paramétereket"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "A fő unit tartalmazza az Application.CreateForm állományt"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "A fő unit tartalmazza az Application.Scaled állományt"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "A fő unit tartalmazza az Application.Title állományt"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "A fő unit uses szakasza tartalmazza a projekt összes unit-ját"
@@ -20163,6 +20151,18 @@ msgstr "A pas2js fordító fájlneve nem szokványos. A név eleje általában p
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Fel"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

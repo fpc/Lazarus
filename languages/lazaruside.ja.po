@@ -12613,18 +12613,6 @@ msgstr "データを入力してください"
 msgid "Enter run parameters"
 msgstr "実行時引数を入力してください"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "メインユニットはApplication.CreateForm文を保有"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "メインユニットはApplication.Scaled文を保有"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "メインユニットはApplication.Titled文を保有"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "メインユニットはプロジェクトのすべてのユニットを含む uses 節を保有"
@@ -20410,6 +20398,18 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "上へ"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-01-22 01:48+0300\n"
+"PO-Revision-Date: 2020-02-25 00:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12466,18 +12466,6 @@ msgstr "Введите данные"
 msgid "Enter run parameters"
 msgstr "Введите параметры запуска"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Главный модуль имеет выражения Application.CreateForm"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "Главный модуль имеет выражение Application.Scaled"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "Главный модуль имеет выражение Application.Title"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Главный модуль имеет выражение uses, включающее все модули проекта"
@@ -20162,6 +20150,18 @@ msgstr "Необычное имя файла компилятора pas2js. Ка
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Вверх"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr "Обновлять выражения Application.CreateForm в главном модуле"
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr "Обновлять выражение Application.Scaled в главном модуле"
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr "Обновлять выражение Application.Title в главном модуле"
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

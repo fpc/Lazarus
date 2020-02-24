@@ -12642,18 +12642,6 @@ msgstr "Įveskite duomenis"
 msgid "Enter run parameters"
 msgstr "Įveskite starto parametrus"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Pagrindiniame modulyje yra sakinių „Application.CreateForm“"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "Pagrindiniame modulyje yra sakinys „Application.Scaled“"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "Pagrindiniame modulyje yra sakinys „Application.Title“"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Pagrindiniame modulyje yra sekcija „Uses“, kurioje paminėti visi projekto moduliai"
@@ -20448,6 +20436,18 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Viršun"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

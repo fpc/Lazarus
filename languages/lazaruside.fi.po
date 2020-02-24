@@ -12399,18 +12399,6 @@ msgstr "Anna data"
 msgid "Enter run parameters"
 msgstr "Syötä suoritusparametrit"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Pääohjelmassa on Application.CreateForm lause"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "Pääohjelmassa on Application.Scaled lause"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "Pääohjelmassa on Application.Title lause"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Pääohjelman Uses-lauseessa on kaikki projektin käännösyksiköt"
@@ -20047,6 +20035,18 @@ msgstr "Epätavallinen pas2js kääntäjän nimi. Yleensä se alkaa pas2js."
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Ylös"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

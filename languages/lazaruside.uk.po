@@ -12470,18 +12470,6 @@ msgstr "Введіть дані"
 msgid "Enter run parameters"
 msgstr "Введіть параметри запуску"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Головний модуль має оператори Application.CreateForm"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "Головний модуль має вираз Application.Scaled"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "Головний модуль має вираз Application.Title"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Головний модуль має секцію Uses, що містить всі модулі проєкту"
@@ -20166,6 +20154,18 @@ msgstr "Незвична назва файлу компілятора pas2js. З
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Вверх"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

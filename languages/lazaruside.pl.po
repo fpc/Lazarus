@@ -12848,18 +12848,6 @@ msgstr "Wprowadź dane"
 msgid "Enter run parameters"
 msgstr "Wprowadź parametry uruchomieniowe"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Główny moduł zawiera deklarację Application.CreateForm"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "Główny moduł zawiera deklarację Application.Scaled"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "Główny moduł zawiera deklarację Application.Title"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Główny moduł posiada sekcję Uses zawierającą wszystkie moduły projektu"
@@ -20708,6 +20696,18 @@ msgstr "Nietypowa nazwa kompilatora. Zwykle zaczyna się od fpc, ppc lub ppcross
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "W górę"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 #, fuzzy

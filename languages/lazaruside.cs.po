@@ -12513,18 +12513,6 @@ msgstr "Zadejte údaje"
 msgid "Enter run parameters"
 msgstr "Zadejte spouštěcí parametry"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "Hlavní jednotka obsahuje Application.CreateForm"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "Hlavní jednotka má příkaz Application.Scaled"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "Hlavní jednotka má příkaz Application.Title"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Hlavní jednotka má v sekci Uses všechny jednotky projektu"
@@ -20239,6 +20227,18 @@ msgstr "Neobvyklé jméno pas2js překladače. Obvykle začíná s pas2js."
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Nahoru"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

@@ -12471,18 +12471,6 @@ msgstr "Entrer les données"
 msgid "Enter run parameters"
 msgstr "Entrer les paramètres d'exécution"
 
-#: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main unit has Application.CreateForm statements"
-msgstr "L'unité principale comprend des instructions Application.CreateForm"
-
-#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
-msgid "Main unit has Application.Scaled statement"
-msgstr "L'unité principale comprend une instruction Application.Scaled"
-
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
-msgid "Main unit has Application.Title statement"
-msgstr "L'unité principale comprend une instruction Application.Title"
-
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
 msgstr "L'unité principale a une clause uses contenant toutes les unités du projet"
@@ -20170,6 +20158,18 @@ msgstr "Nom de fichier du compilateur pas2js inhabituel. Normalement, il commenc
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Haut"
+
+#: lazarusidestrconsts.lisupdateapplicationcreateform
+msgid "Update Application.CreateForm statements in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationscaledstatement
+msgid "Update Application.Scaled statement in main unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisupdateapplicationtitlestatement
+msgid "Update Application.Title statement in main unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"
