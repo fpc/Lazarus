@@ -128,6 +128,9 @@ type
     class procedure ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer); override;
     class procedure ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); override;
 
+    class procedure ColumnSetSortIndicator(const ALV: TCustomListView; const AIndex: Integer;
+      const AColumn: TListColumn; const ASortIndicator: TSortIndicator);
+      override;
 
     {items}
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
@@ -863,6 +866,33 @@ begin
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   QtTreeWidget.Header.moveSection(AOldIndex, ANewIndex);
+end;
+
+class procedure TQtWSCustomListView.ColumnSetSortIndicator(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const ASortIndicator: TSortIndicator);
+const
+  QtSortOrder : array [TSortIndicator] of QtSortOrder = (QtAscendingOrder, QtAscendingOrder, QtDescendingOrder);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetCaption') then
+    Exit;
+
+  if IsIconView(ALV) then
+    exit;
+
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  if Assigned(QtTreeWidget) then
+  begin
+    if ASortIndicator = siNone then
+      QtTreeWidget.Header.SetSortIndicatorVisible(false)
+    else
+    begin
+      QtTreeWidget.Header.SetSortIndicatorVisible(true);
+      QtTreeWidget.Header.SetSortIndicator(AIndex, QtSortOrder[ASortIndicator]);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
