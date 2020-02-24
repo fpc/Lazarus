@@ -63,11 +63,12 @@ begin
   MainUnitIsPascalSourceCheckBox.Hint := lisMainUnitIsPascalSourceHint;
   MainUnitHasUsesSectionForAllUnitsCheckBox.Caption := lisMainUnitHasUsesSectionContainingAllUnitsOfProject;
   MainUnitHasUsesSectionForAllUnitsCheckBox.Hint := lisNewUnitsAreAddedToUsesSections;
-  MainUnitHasCreateFormStatementsCheckBox.Caption := lisMainUnitHasApplicationCreateFormStatements;
+  MainUnitHasCreateFormStatementsCheckBox.Caption := lisUpdateApplicationCreateForm;
   MainUnitHasCreateFormStatementsCheckBox.Hint := lisUsedForAutoCreatedForms;
-  MainUnitHasTitleStatementCheckBox.Caption := lisMainUnitHasApplicationTitleStatement;
+  MainUnitHasTitleStatementCheckBox.Caption := lisUpdateApplicationTitleStatement;
   MainUnitHasTitleStatementCheckBox.Hint := lisIdeMaintainsTheTitleInMainUnit;
-  MainUnitHasScaledStatementCheckBox.Caption := lisMainUnitHasApplicationScaledStatement;
+  MainUnitHasScaledStatementCheckBox.Caption := lisUpdateApplicationScaledStatement;
+
   MainUnitHasScaledStatementCheckBox.Hint := lisIdeMaintainsScaledInMainUnit;
   CompatibilityModeCheckBox.Caption := lisLPICompatibilityModeCheckBox;
   CompatibilityModeCheckBox.Hint := lisLPICompatibilityModeCheckBoxHint;
@@ -96,9 +97,16 @@ begin
   begin
     MainUnitIsPascalSourceCheckBox.Checked := (pfMainUnitIsPascalSource in Flags);
     MainUnitHasUsesSectionForAllUnitsCheckBox.Checked := (pfMainUnitHasUsesSectionForAllUnits in Flags);
-    MainUnitHasCreateFormStatementsCheckBox.Checked := (pfMainUnitHasCreateFormStatements in Flags);
-    MainUnitHasTitleStatementCheckBox.Checked := (pfMainUnitHasTitleStatement in Flags);
-    MainUnitHasScaledStatementCheckBox.Checked := (pfMainUnitHasScaledStatement in Flags);
+    if TProjectIDEOptions(AOptions).LclApp then begin
+      MainUnitHasCreateFormStatementsCheckBox.Checked := (pfMainUnitHasCreateFormStatements in Flags);
+      MainUnitHasTitleStatementCheckBox.Checked := (pfMainUnitHasTitleStatement in Flags);
+      MainUnitHasScaledStatementCheckBox.Checked := (pfMainUnitHasScaledStatement in Flags);
+    end
+    else begin  // Disable these for a console program.
+      MainUnitHasCreateFormStatementsCheckBox.Enabled := False;
+      MainUnitHasTitleStatementCheckBox.Enabled := False;
+      MainUnitHasScaledStatementCheckBox.Enabled := False;
+    end;
     CompatibilityModeCheckBox.Checked := (pfCompatibilityMode in Flags);
     RunnableCheckBox.Checked := (pfRunnable in Flags);
     UseDesignTimePkgsCheckBox.Checked := (pfUseDesignTimePackages in Flags);

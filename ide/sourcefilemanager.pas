@@ -4314,73 +4314,51 @@ end;
 
 function UpdateAppTitleInSource: Boolean;
 var
-  TitleStat, ProjTitle: String;
+  TitleProject, ErrMsg: String;
 begin
   Result := True;
-  TitleStat := '';
-  CodeToolBoss.GetApplicationTitleStatement(Project1.MainUnitInfo.Source, TitleStat);
-  ProjTitle:=Project1.GetTitle;
-  //DebugLn(['UpdateAppTitleInSource: Project title=',ProjTitle,
-  //         ', Default=',Project1.GetDefaultTitle,', Title Statement=',TitleStat]);
-  if pfMainUnitHasTitleStatement in Project1.Flags then
-  begin                            // Add Title statement if not there already.
-    if ((TitleStat = '') or (TitleStat = ProjTitle)) and Project1.TitleIsDefault then
-      Exit;
-    //DebugLn(['UpdateAppTitleInSource: Setting Title to ',ProjTitle]);
-    if not CodeToolBoss.SetApplicationTitleStatement(Project1.MainUnitInfo.Source, ProjTitle) then
-    begin
-      IDEMessageDialog(lisProjOptsError,
-        Format(lisUnableToChangeProjectTitleInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-        mtWarning, [mbOk]);
-      Result := False;
-    end;
+  if not (pfMainUnitHasTitleStatement in Project1.Flags) then Exit;
+  TitleProject := Project1.GetTitle;
+  //DebugLn(['UpdateAppTitleInSource: Project title=',TitleProject,', Default=',Project1.GetDefaultTitle]);
+  if (TitleProject <> Project1.GetDefaultTitle) then
+  begin        // Add or update Title statement.
+    //DebugLn(['UpdateAppTitleInSource: Setting Title to ',TitleProject]);
+    Result := CodeToolBoss.SetApplicationTitleStatement(Project1.MainUnitInfo.Source, TitleProject);
+    ErrMsg := lisUnableToChangeProjectTitleInSource; // Used in case of error.
   end
-  else begin                          // Remove Title statement if it is there.
-    if TitleStat <> ProjTitle then
-      Exit;
+  else begin   // Remove Title statement if it's not needed.
     //DebugLn(['UpdateAppTitleInSource: Removing Title']);
-    if not CodeToolBoss.RemoveApplicationTitleStatement(Project1.MainUnitInfo.Source) then
-    begin
-      IDEMessageDialog(lisProjOptsError,
-        Format(lisUnableToRemoveProjectTitleFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-        mtWarning, [mbOk]);
-      Result := False;
-    end;
+    Result := CodeToolBoss.RemoveApplicationTitleStatement(Project1.MainUnitInfo.Source);
+    ErrMsg := lisUnableToRemoveProjectTitleFromSource;
   end;
+  if not Result then
+    IDEMessageDialog(lisProjOptsError,
+                     Format(ErrMsg, [LineEnding, CodeToolBoss.ErrorMessage]),
+                     mtWarning, [mbOk]);
 end;
 
 function UpdateAppScaledInSource: Boolean;
 var
-  ScaledStat, ProjScaled: Boolean;
+  ErrMsg: String;
 begin
   Result := True;
-  ScaledStat := False;
-  CodeToolBoss.GetApplicationScaledStatement(Project1.MainUnitInfo.Source, ScaledStat);
-  ProjScaled:=Project1.Scaled;
-  //DebugLn(['UpdateAppScaledInSource: Project Scaled=',ProjScaled,', Scaled Statement=',ScaledStat]);
-  if pfMainUnitHasScaledStatement in Project1.Flags then
-  begin                           // Add Scaled statement if not there already.
-    if ScaledStat = ProjScaled then
-      Exit;
-    //DebugLn(['UpdateAppScaledInSource: Setting Scaled to ',ProjScaled]);
-    if not CodeToolBoss.SetApplicationScaledStatement(Project1.MainUnitInfo.Source, ProjScaled) then
-    begin
-      IDEMessageDialog(lisProjOptsError,
-        Format(lisUnableToChangeProjectScaledInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-        mtWarning, [mbOk]);
-      Result := False;
-    end;
+  if not (pfMainUnitHasScaledStatement in Project1.Flags) then Exit;
+  //DebugLn(['UpdateAppScaledInSource: Project Scaled=',Project1.Scaled]);
+  if Project1.Scaled then
+  begin        // Add or update Scaled statement.
+    //DebugLn(['UpdateAppScaledInSource: Setting Scaled to ',Project1.Scaled]);
+    Result := CodeToolBoss.SetApplicationScaledStatement(Project1.MainUnitInfo.Source, Project1.Scaled);
+    ErrMsg := lisUnableToChangeProjectScaledInSource; // Used in case of error.
   end
-  else begin                      // Remove Scaled statement if it is there.
+  else begin   // Remove Scaled statement if it's not needed.
     //DebugLn(['UpdateAppScaledInSource: Removing Scaled']);
-    if not CodeToolBoss.RemoveApplicationScaledStatement(Project1.MainUnitInfo.Source) then
-    begin
-      IDEMessageDialog(lisProjOptsError,
-        Format(lisUnableToRemoveProjectScaledFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
-        mtWarning, [mbOk]);
-      Result := False;
-    end;
+    Result := CodeToolBoss.RemoveApplicationScaledStatement(Project1.MainUnitInfo.Source);
+    ErrMsg := lisUnableToRemoveProjectScaledFromSource;
   end;
+  if not Result then
+    IDEMessageDialog(lisProjOptsError,
+                     Format(ErrMsg, [LineEnding, CodeToolBoss.ErrorMessage]),
+                     mtWarning, [mbOk]);
 end;
 
 function UpdateAppAutoCreateForms: boolean;
@@ -4389,11 +4367,9 @@ var
   OldList: TStrings;
 begin
   Result := True;
-  if not (pfMainUnitHasCreateFormStatements in Project1.Flags) then
-    Exit;
+  if not (pfMainUnitHasCreateFormStatements in Project1.Flags) then Exit;
   OldList := Project1.GetAutoCreatedFormsList;
-  if OldList = nil then
-    Exit;
+  if OldList = nil then Exit;
   try
     if OldList.Count = Project1.TmpAutoCreatedForms.Count then
     begin

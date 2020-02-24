@@ -5212,32 +5212,29 @@ begin
 end;
 
 procedure TMainIDE.ProjectOptionsBeforeRead(Sender: TObject);
-var
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  AProject: TProject;
+//var
+//  ActiveSrcEdit: TSourceEditor;
+//  ActiveUnitInfo: TUnitInfo;
 begin
-  //debugln(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
+  //DebugLn(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
   if not (Sender is TProjectIDEOptions) then exit;
-  ActiveSrcEdit:=nil;
-  BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
-  AProject:=TProjectIDEOptions(Sender).Project;
-  AProject.BackupSession;
-  AProject.BackupBuildModes;
-  AProject.UpdateExecutableType;
-  AProject.UseAsDefault := False;
+  Assert(Assigned(TProjectIDEOptions(Sender).Project), 'TMainIDE.ProjectOptionsBeforeRead: Project=Nil.');
+  //ActiveSrcEdit:=nil;
+  //BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
+  Project1.BackupSession;
+  Project1.BackupBuildModes;
+  Project1.UpdateExecutableType;
+  Project1.UseAsDefault := False;
+  TProjectIDEOptions(Sender).CheckLclApp;
 end;
 
 procedure TMainIDE.ProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
-  aProject: TProject;
   aFilename: String;
 begin
   //debugln(['TMainIDE.ProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
   if not (Sender is TProjectIDEOptions) then exit;
-  aProject:=TProjectIDEOptions(Sender).Project;
-  Assert(Assigned(aProject), 'TMainIDE.ProjectOptionsAfterWrite: Project=Nil.');
-  Assert(aProject=Project1, 'TMainIDE.ProjectOptionsAfterWrite: Project<>Project1.');
+  Assert(Assigned(TProjectIDEOptions(Sender).Project), 'TMainIDE.ProjectOptionsAfterWrite: Project=Nil.');
   if Restore then
   begin
     Project1.RestoreBuildModes;
@@ -5246,9 +5243,12 @@ begin
   else begin
     if Project1.MainUnitID >= 0 then
     begin
-      UpdateAppTitleInSource;
-      UpdateAppScaledInSource;
-      UpdateAppAutoCreateForms;
+      if TProjectIDEOptions(Sender).LclApp then
+      begin
+        UpdateAppTitleInSource;
+        UpdateAppScaledInSource;
+        UpdateAppAutoCreateForms;
+      end;
       Project1.AutoAddOutputDirToIncPath;  // extend include path
       if Project1.ProjResources.Modified then
         if not Project1.ProjResources.Regenerate(Project1.MainFilename, True, False, '') then
@@ -6414,7 +6414,7 @@ begin
   {$pop}
 end;
 
-function TMainIDE.DoSaveProject(Flags: TSaveFlags):TModalResult;
+function TMainIDE.DoSaveProject(Flags: TSaveFlags): TModalResult;
 begin
   Result:=SaveProject(Flags);
 end;

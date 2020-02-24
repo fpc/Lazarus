@@ -305,7 +305,10 @@ begin
   with FProject do
   begin
     TitleEdit.Text := Title;
-    UseLCLScalingCheckBox.Checked := Scaled;
+    if TProjectIDEOptions(AOptions).LclApp then
+      UseLCLScalingCheckBox.Checked := Scaled
+    else
+      UseLCLScalingCheckBox.Enabled := False; // Disable for a console program.
     UseAppBundleCheckBox.Checked := UseAppBundle;
     // Manifest
     with ProjResources.XPManifest do

@@ -2755,11 +2755,11 @@ resourcestring
   lisMainUnitIsPascalSourceHint = 'Assume Pascal even if it does not end with .pas/.pp suffix.';
   lisMainUnitHasUsesSectionContainingAllUnitsOfProject = 'Main unit has Uses '
     +'section containing all units of project';
-  lisMainUnitHasApplicationCreateFormStatements = 'Main unit has Application.CreateForm statements';
+  lisUpdateApplicationCreateForm = 'Update Application.CreateForm statements in main unit';
   lisUsedForAutoCreatedForms = 'Used for auto-created forms.';
-  lisMainUnitHasApplicationTitleStatement = 'Main unit has Application.Title statement';
+  lisUpdateApplicationTitleStatement = 'Update Application.Title statement in main unit';
   lisIdeMaintainsTheTitleInMainUnit = 'The IDE maintains the title in main unit.';
-  lisMainUnitHasApplicationScaledStatement = 'Main unit has Application.Scaled statement';
+  lisUpdateApplicationScaledStatement = 'Update Application.Scaled statement in main unit';
   lisIdeMaintainsScaledInMainUnit = 'The IDE maintains Application.Scaled (Hi-DPI) in main unit.';
   lisLPICompatibilityModeCheckBox = 'Maximize compatibility of project files (LPI and LPS)';
   lisLPICompatibilityModeCheckBoxHint = 'Check this if you want to open your project in legacy (2.0 and older) Lazarus versions.';

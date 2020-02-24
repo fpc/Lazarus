@@ -52,7 +52,7 @@ uses
   LCLProc, Forms, Controls, Dialogs,
   // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
-  LinkScanner, CodeToolManager, CodeCache, FileProcs,
+  LinkScanner, CodeToolManager, CodeCache, CodeTree, FileProcs,
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
   LazLoggerBase, LazUTF8, Laz2_XMLCfg, Maps,
@@ -676,13 +676,16 @@ type
   TProjectIDEOptions = class(TAbstractIDEProjectOptions)
   private
     FProject: TProject;
+    FLclApp: Boolean;
   public
     constructor Create(AProject: TProject);
     destructor Destroy; override;
     function GetProject: TLazProject; override;
+    function CheckLclApp: Boolean;
     class function GetInstance: TAbstractIDEOptions; override;
     class function GetGroupCaption: string; override;
     property Project: TProject read FProject;
+    property LclApp: Boolean read FLclApp;
   end;
 
   { TProject }
@@ -885,10 +888,10 @@ type
     function NeedsDefineTemplates: boolean;
     procedure BeginRevertUnit(AnUnitInfo: TUnitInfo);
     procedure EndRevertUnit(AnUnitInfo: TUnitInfo);
+    function IsLclApplication: Boolean;
     function IsReverting(AnUnitInfo: TUnitInfo): boolean;
-
-    // load/save
     function IsVirtual: boolean; override;
+    // load/save
     function SomethingModified(CheckData, CheckSession: boolean; Verbose: boolean = false): boolean;
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
@@ -2658,7 +2661,13 @@ end;
 
 function TProjectIDEOptions.GetProject: TLazProject;
 begin
-  Result:=FProject;
+  Result := FProject;
+end;
+
+function TProjectIDEOptions.CheckLclApp: Boolean;
+begin
+  FLclApp := FProject.IsLclApplication;
+  Result := FLclApp;
 end;
 
 class function TProjectIDEOptions.GetInstance: TAbstractIDEOptions;
@@ -4137,6 +4146,31 @@ begin
     exit;
   end else
     Result:=CodeBuf.Filename;
+end;
+
+function TProject.IsLclApplication: Boolean;
+var
+  CodeTool: TCodeTool;
+  UsesNode: TCodeTreeNode;
+begin
+  Result := False;
+  // LCL dependency must be there.
+  if FindDependencyByName('LCL') = Nil then Exit;
+  //DebugLn(['IsLclApplication: Found LCL dependency.']);
+  try
+    // Check is uses section has "Forms" unit.
+    if not CodeToolBoss.InitCurCodeTool(MainUnitInfo.Source) then Exit;
+    CodeTool := CodeToolBoss.CurCodeTool;
+    CodeTool.BuildTree(lsrMainUsesSectionEnd);
+    UsesNode := CodeTool.FindMainUsesNode;
+    if UsesNode = Nil then Exit;
+    //DebugLn(['IsLclApplication: Found "uses" node.']);
+    if CodeTool.FindNameInUsesSection(UsesNode, 'forms') = Nil then Exit;
+    //DebugLn(['IsLclApplication: Found "Forms" unit.']);
+    Result := True;
+  except
+    DebugLn(['IsLclApplication: Codetools could not parse the source.']);
+  end;
 end;
 
 function TProject.IsVirtual: boolean;

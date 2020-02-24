@@ -45,7 +45,7 @@ uses
   // LazUtils
   LazFileUtils, LazUTF8, Laz2_XMLCfg,
   // IdeIntf
-  ProjectIntf, LazIDEIntf,
+  ProjectIntf,
   // IDE
   PublishModule;
 
