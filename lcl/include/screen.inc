@@ -426,6 +426,14 @@ begin
 end;
 
 procedure TScreen.EndTempCursor(const aCursor: TCursor);
+  procedure _Delete(const _Index: Integer); // FPC 3.0.x doesn't support Delete() for arrays #36728
+  var
+    I: Integer;
+  begin
+    for I := _Index to High(FTempCursors)-1 do
+      FTempCursors[I] := FTempCursors[I+1];
+    SetLength(FTempCursors, Length(FTempCursors)-1);
+  end;
 var
   I: Integer;
   OldCursor: TCursor;
@@ -435,7 +443,7 @@ begin
   begin
     if FTempCursors[I]=aCursor then
     begin
-      Delete(FTempCursors, I, 1);
+      _Delete(I);
       if OldCursor<>RealCursor then
         WidgetSet.SetCursor(Cursors[RealCursor]);
       Exit;
