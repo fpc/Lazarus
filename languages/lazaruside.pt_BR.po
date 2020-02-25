@@ -20204,15 +20204,15 @@ msgstr "Acima"
 
 #: lazarusidestrconsts.lisupdateapplicationcreateform
 msgid "Update Application.CreateForm statements in main unit"
-msgstr ""
+msgstr "Atualizar declarações \"Application.CreateForm\" na unidade principal."
 
 #: lazarusidestrconsts.lisupdateapplicationscaledstatement
 msgid "Update Application.Scaled statement in main unit"
-msgstr ""
+msgstr "Atualizar a declaração \"Application.Scaled\" na unidade principal."
 
 #: lazarusidestrconsts.lisupdateapplicationtitlestatement
 msgid "Update Application.Title statement in main unit"
-msgstr ""
+msgstr "Atualizar a declaração \"Application.Title\" na unidade principal."
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"

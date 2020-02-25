@@ -319,7 +319,7 @@ msgstr "Descrição"
 #: opkman_const.rscreaterepositoryfrm_vsttext_downloadurl
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_downloadurl"
 msgid "Update link (JSON)"
-msgstr "Atualizar vínculo (JSON)"
+msgstr "Vínculo de atualização (JSON)"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility"
@@ -482,7 +482,7 @@ msgstr "Nome exibição:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbdownloadurl_caption
 msgid "Update link (JSON):"
-msgstr "Atualizar vínculo (JSON):"
+msgstr "Vínculo de atualização (JSON):"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbfpccompatibility_caption
 msgid "FPC compatibility:"
@@ -957,26 +957,22 @@ msgid "Rating"
 msgstr "Avaliação"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
-#, fuzzy
-#| msgid "Repository"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
 msgid "OPM repository"
-msgstr "Repositório"
+msgstr "Repositório do GPO"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository_hint
 msgid "Packages available in the OPM repository (https://packages.lazarus-ide.org/)"
-msgstr ""
+msgstr "Pacotes disponíveis no repositório do GPO (https://packages.lazarus-ide.org/)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "External"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External repository"
-msgstr "Externo"
+msgstr "Repositório externo"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update_hint
 msgid "Packages available at the developer's webpage (see node \"External link (JSON)\" for more details)"
-msgstr ""
+msgstr "Pacotes disponíveis nas páginas web dos desenvolvedores (veja nó \"Vínculo externo (JSON)\" para mais detalhes)"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
@@ -1288,7 +1284,7 @@ msgstr "Não perguntar novamente"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
-msgstr "Para funcionar corretamente, o OPM necessita das bibliotecas OpenSSL: \"libeay32.dll\" e \"ssleay32.dll\""
+msgstr "Para funcionar corretamente, o GPO necessita das bibliotecas OpenSSL: \"libeay32.dll\" e \"ssleay32.dll\""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
@@ -1606,7 +1602,7 @@ msgstr "Me avisar sobre pacotes já instalados"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
 msgid "If a package is already installed, OPM will show a warning message"
-msgstr "Se um pacote já estiver instalado, o OPM irá exibir uma mensagem de aviso"
+msgstr "Se um pacote já estiver instalado, o GPO irá exibir uma mensagem de aviso"
 
 #: opkman_const.rsoption_cbincompatiblepackage_caption
 msgid "Warn me about incompatible/untested packages"
@@ -1614,7 +1610,7 @@ msgstr "Me avisar sobre pacotes incompatíveis/não testados"
 
 #: opkman_const.rsoption_cbincompatiblepackage_hint
 msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
-msgstr "Se um pacote for incompatível com a \"widgetset\" atual ou a versão do Lazarus/FPC, o OPM irá exibir uma mensagem de aviso"
+msgstr "Se um pacote for incompatível com a \"widgetset\" atual ou a versão do Lazarus/FPC, o GPO irá exibir uma mensagem de aviso"
 
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
