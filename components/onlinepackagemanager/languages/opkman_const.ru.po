@@ -960,11 +960,11 @@ msgstr "Рейтинг"
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
 msgid "OPM repository"
-msgstr "Репозиторий OPM"
+msgstr "Репозиторий диспетчера"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository_hint
 msgid "Packages available in the OPM repository (https://packages.lazarus-ide.org/)"
-msgstr "Пакеты из репозитория OPM (https://packages.lazarus-ide.org/)"
+msgstr "Пакеты из репозитория диспетчера (https://packages.lazarus-ide.org/)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
@@ -1199,7 +1199,7 @@ msgstr "Доступна новая версия"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate7
 msgid "Ahead of OPM"
-msgstr "Опережает OPM"
+msgstr "Новее версии из репозитория"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
@@ -1285,7 +1285,7 @@ msgstr "Не спрашивать в следующий раз"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
-msgstr "Для корректной работы OPM требуется наличие библиотек OpenSSL: \"libeay32.dll\" и \"ssleay32.dll\""
+msgstr "Для корректной работы диспетчера требуется наличие библиотек OpenSSL: \"libeay32.dll\" и \"ssleay32.dll\""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
