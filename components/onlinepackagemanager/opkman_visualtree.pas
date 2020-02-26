@@ -137,6 +137,7 @@ type
       Node: PVirtualNode; Column: TColumnIndex; const {%H-}CellRect: TRect);
     procedure VSTDblClick(Sender: TObject);
     procedure VSTScroll(Sender: TBaseVirtualTree; {%H-}DeltaX, {%H-}DeltaY: Integer);
+    procedure VSTIncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode; const SearchText: String; var Result: Integer);
     procedure VSTClick(Sender: TObject);
     procedure VSTAfterPaint(Sender: TBaseVirtualTree; {%H-}TargetCanvas: TCanvas);
     procedure VSTEnter(Sender: TObject);
@@ -271,6 +272,10 @@ begin
      HintMode := hmHint;
      ShowHint := True;
      TabOrder := 2;
+     IncrementalSearch := isVisibleOnly;
+     IncrementalSearchDirection := sdForward;
+     IncrementalSearchStart := ssFocusedNode;
+     IncrementalSearchTimeout := 3000;
      TreeOptions.MiscOptions := [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toWheelPanning];
      TreeOptions.PaintOptions := [toHideFocusRect, toAlwaysHideSelection, toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toThemeAware];
      TreeOptions.SelectionOptions := [toFullRowSelect, toRightClickSelect];
@@ -298,6 +303,7 @@ begin
      OnEnter := @VSTEnter;
      OnFreeNode := @VSTFreeNode;
      OnScroll := @VSTScroll;
+     OnIncrementalSearch := @VSTIncrementalSearch;
    end;
   FShowHintFrm := TShowHintFrm.Create(nil);
   if AImgList <> nil then
@@ -1966,6 +1972,18 @@ procedure TVisualTree.VSTScroll(Sender: TBaseVirtualTree; DeltaX, DeltaY: Intege
 begin
   if FShowHintFrm.Visible then
     FShowHintFrm.Hide;
+end;
+
+procedure TVisualTree.VSTIncrementalSearch(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; const SearchText: String; var Result: Integer);
+var
+  Data: PData;
+begin
+  Data := FVST.GetNodeData(Node);
+  if FVST.GetNodeLevel(Node) = 1 then
+    Result := StrLIComp(PChar(SearchText), PChar(Data^.PackageDisplayName), Min(Length(SearchText), Length(Data^.PackageDisplayName)))
+  else
+    Result := -1;
 end;
 
 procedure TVisualTree.VSTClick(Sender: TObject);
