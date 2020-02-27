@@ -210,17 +210,19 @@ var
   Term: String;
 begin
   Result := '';
-  List := TStringList.Create;
-  {$IFDEF MSWINDOWS}
-  List.Delimiter := ';';
-  {$ELSE}
-  List.Delimiter := ':';
-  {$ENDIF}
   Term := ATerm;
   if Term = '' then
     Term := GetEnvironmentVariableUTF8('TERM');
+  List := TStringList.Create;
+  {$IFDEF MSWINDOWS}
+  List.Delimiter := ';';
+  if Term = '' then
+    Term := 'cmd.exe';
+  {$ELSE}
+  List.Delimiter := ':';
   if Term = '' then
     Term := 'xterm';
+  {$ENDIF}
   List.DelimitedText := GetEnvironmentVariableUTF8('PATH');
   for i := 0 to List.Count - 1 do
   begin
@@ -231,6 +233,8 @@ begin
       if Term = 'gnome-terminal' then
         Result := S + ' -t ' + DefaultLauncherTitle + ' -e ' +
           '''' + DefaultLauncherApplication + ''''
+      else if SameText(Term,'cmd.exe') then
+        Result := S + ' /C ${TargetCmdLine}'
       else
         Result := S + ' -T ' + DefaultLauncherTitle + ' -e ' +
           DefaultLauncherApplication;
