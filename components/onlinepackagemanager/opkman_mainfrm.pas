@@ -437,7 +437,8 @@ begin
   case AErrTyp of
     etNone:
       begin
-        SetupMessage(rsMainFrm_rsMessageParsingJSON);
+        if (not Options.LoadJsonLocally) then
+          SetupMessage(rsMainFrm_rsMessageParsingJSON);
         if (SerializablePackages.Count = 0) then
         begin
           EnableDisableControls(True);
