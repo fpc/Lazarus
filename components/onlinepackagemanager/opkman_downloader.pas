@@ -31,7 +31,7 @@ unit opkman_downloader;
 interface
 
 uses
-  Classes, SysUtils, fpjson, LazIDEIntf,
+  Classes, SysUtils, fpjson, LazIDEIntf, md5,
   // OpkMan
   opkman_common, opkman_serializablepackages, opkman_const, opkman_options,
   {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
@@ -256,6 +256,7 @@ end;
 procedure TThreadDownload.DoOnJSONDownloadCompleted;
 var
   JSON: TJSONStringType;
+  JSONFile: String;
 begin
   if Assigned(FOnJSONComplete) then
   begin
@@ -263,6 +264,9 @@ begin
     begin
       SetLength(JSON, FMS.Size);
       FMS.Read(Pointer(JSON)^, Length(JSON));
+      JSONFile := ExtractFilePath(LocalRepositoryConfigFile) + 'packagelist' + '_' + MD5Print(MD5String(Options.RemoteRepository[Options.ActiveRepositoryIndex])) + '.json';
+      FMS.Position := 0;
+      FMS.SaveToFile(JSONFile);
       SerializablePackages.JSONToPackages(JSON);
       FOnJSONComplete(Self, JSON, FErrTyp, '');
     end

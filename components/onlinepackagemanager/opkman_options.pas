@@ -57,6 +57,8 @@ type
     FRemoteRepository: TStringList;
     FRemoteRepositoryTmp: TStringList;
     FActiveRepositoryIndex: Integer;
+    FLoadJsonLocally: Boolean;
+    FLoadJsonLocallyCnt: Integer;
     FForceDownloadAndExtract: Boolean;
     FDeleteZipAfterInstall: Boolean;
     FIncompatiblePackages: Boolean;
@@ -105,6 +107,8 @@ type
     property RemoteRepository: TStringList read FRemoteRepository write FRemoteRepository;
     property RemoteRepositoryTmp: TStringList read FRemoteRepositoryTmp write FRemoteRepositoryTmp;
     property ActiveRepositoryIndex: Integer read FActiveRepositoryIndex write FActiveRepositoryIndex;
+    property LoadJsonLocally: Boolean read FLoadJsonLocally write FLoadJsonLocally;
+    property LoadJsonLocallyCnt: Integer read FLoadJsonLocallyCnt write FLoadJsonLocallyCnt;
     property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
     property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
     property IncompatiblePackages: Boolean read FIncompatiblePackages write FIncompatiblePackages;
@@ -196,6 +200,8 @@ begin
   if Trim(FRemoteRepository.Text) = '' then
     FRemoteRepository.Add(cRemoteRepository);
   FActiveRepositoryIndex := FXML.GetValue('General/ActiveRepositoryIndex/Value', 0);
+  FLoadJsonLocally := FXML.GetValue('General/LoadJsonLocally/Value', False);
+  FLoadJsonLocallyCnt := FXML.GetValue('General/LoadJsonLocallyCnt/Value', 0);
   FForceDownloadAndExtract := FXML.GetValue('General/ForceDownloadAndExtract/Value', True);
   FDeleteZipAfterInstall := FXML.GetValue('General/DeleteZipAfterInstall/Value', True);
   FIncompatiblePackages := FXML.GetValue('General/IncompatiblePackages/Value', True);
@@ -235,6 +241,8 @@ begin
   FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
   FXML.SetDeleteValue('General/RemoteRepository/Value', FRemoteRepository.Text, '');
   FXML.SetDeleteValue('General/ActiveRepositoryIndex/Value', FActiveRepositoryIndex, 0);
+  FXML.SetDeleteValue('General/LoadJsonLocally/Value', FLoadJsonLocally, False);
+  FXML.SetDeleteValue('General/LoadJsonLocallyCnt/Value', FLoadJsonLocallyCnt, 0);
   FXML.SetDeleteValue('General/ForceDownloadAndExtract/Value', FForceDownloadAndExtract, True);
   FXML.SetDeleteValue('General/DeleteZipAfterInstall/Value', FDeleteZipAfterInstall, True);
   FXML.SetDeleteValue('General/IncompatiblePackages/Value', FIncompatiblePackages, True);
@@ -281,6 +289,8 @@ begin
   FHintFormOptionColors.Clear;
   CheckColors;
   FActiveRepositoryIndex := 0;
+  FLoadJsonLocally := False;
+  FLoadJsonLocallyCnt := 0;
   FForceDownloadAndExtract := True;
   FDeleteZipAfterInstall := True;
   FIncompatiblePackages := True;

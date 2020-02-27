@@ -265,6 +265,8 @@ resourcestring
   rsOptions_tsFolders_Caption = 'Folders';
   rsOptions_tsProfiles_Caption = 'Profiles';
   rsOptions_lbRemoteRepository_Caption = 'Remote repository';
+  rsOptions_cbLoadJsonLocally_Caption = 'If available, parse the json from local source';
+  rsOptions_cbLoadJsonLocally_Hint = 'If this option is checked the json is parsed from a local source, useful if the internet connection is slow. After 25 local parse, OPM will attempt a live update';
   rsOptions_cbForceDownloadExtract_Caption = 'Always force download and extract';
   rsOptions_cbForceDownloadExtract_Hint = 'If this option is checked the packages are always re-downloaded/extracted before install';
   rsOptions_lbConTimeOut_Caption = 'Connection timeout (seconds):';

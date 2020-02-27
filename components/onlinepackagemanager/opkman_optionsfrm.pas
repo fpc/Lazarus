@@ -60,6 +60,7 @@ type
     bColors: TButton;
     cbIncompatiblePackages: TCheckBox;
     cbAlreadyInstalledPackages: TCheckBox;
+    cbLoadJsonLocally: TCheckBox;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
@@ -420,6 +421,7 @@ begin
   if Options.RemoteRepositoryTmp.Count > 0 then
     Options.RemoteRepository.Text := Options.RemoteRepositoryTmp.Text;
   Options.ActiveRepositoryIndex := cbRemoteRepository.ItemIndex;
+  Options.LoadJsonLocally := cbLoadJsonLocally.Checked;
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
   Options.ConTimeOut := spConTimeOut.Value;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
@@ -488,10 +490,13 @@ begin
   for I := 0 to Options.RemoteRepository.Count - 1 do
     cbRemoteRepository.Items.Add(Options.RemoteRepository.Strings[I]);
   cbRemoteRepository.ItemIndex := Options.ActiveRepositoryIndex;
+  cbLoadJsonLocally.Checked := Options.LoadJsonLocally;
   cbForceDownloadExtract.Checked := Options.ForceDownloadAndExtract;
   cbDeleteZipAfterInstall.Checked := Options.DeleteZipAfterInstall;
   cbIncompatiblePackages.Checked := Options.IncompatiblePackages;
   cbAlreadyInstalledPackages.Checked := Options.AlreadyInstalledPackages;
+  cbLoadJsonLocally.Caption := rsOptions_cbLoadJsonLocally_Caption;
+  cbLoadJsonLocally.Hint := rsOptions_cbLoadJsonLocally_Hint;
   cbForceDownloadExtract.Caption := rsOptions_cbForceDownloadExtract_Caption;
   cbForceDownloadExtract.Hint := rsOptions_cbForceDownloadExtract_Hint;
   lbConTimeOut.Caption := rsOptions_lbConTimeOut_Caption;
