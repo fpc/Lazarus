@@ -285,7 +285,10 @@ begin
       MS.Position := 0;
       SetLength(JSON, MS.Size);
       MS.Read(Pointer(JSON)^, Length(JSON));
-      SuccessfullyLoaded := SerializablePackages.JSONToPackages(JSON);
+      try
+        SuccessfullyLoaded := SerializablePackages.JSONToPackages(JSON);
+      except
+      end;
       if SuccessfullyLoaded then
       begin
         DoOnJSONDownloadCompleted(Self, JSON, etNone);
