@@ -513,6 +513,8 @@ type
     FProject: TProject;
     FCompileReasons: TCompileReasons;
     procedure InvalidateOptions;
+    procedure AfterWriteExec(Sender: TObject; Restore: boolean);
+    procedure BeforeReadExec(Sender: TObject);
   protected
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
@@ -6301,6 +6303,18 @@ begin
   //if (LazProject=nil) then exit;
 end;
 
+procedure TProjectCompilerOptions.AfterWriteExec(Sender:TObject;Restore:boolean);
+begin
+ if Restore and (LazProject<>nil) then
+   LazProject.RestoreBuildModes;
+end;
+
+procedure TProjectCompilerOptions.BeforeReadExec(Sender:TObject);
+begin
+ if LazProject<>nil then
+   LazProject.BackupBuildModes;
+end;
+
 procedure TProjectCompilerOptions.SetAlternativeCompile(const Command: string;
   ScanFPCMsgs: boolean);
 begin
@@ -6325,6 +6339,8 @@ begin
   if AOwner <> nil then
     FProject := AOwner as TProject;
   ParsedOpts.OnLocalSubstitute:=@SubstituteProjectMacros;
+  OnAfterWrite:=@AfterWriteExec;
+  OnBeforeRead:=@BeforeReadExec;
 end;
 
 destructor TProjectCompilerOptions.Destroy;

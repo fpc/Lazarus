@@ -5222,7 +5222,6 @@ begin
   //ActiveSrcEdit:=nil;
   //BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   Project1.BackupSession;
-  Project1.BackupBuildModes;
   Project1.UpdateExecutableType;
   Project1.UseAsDefault := False;
   TProjectIDEOptions(Sender).CheckLclApp;
@@ -5236,10 +5235,7 @@ begin
   if not (Sender is TProjectIDEOptions) then exit;
   Assert(Assigned(TProjectIDEOptions(Sender).Project), 'TMainIDE.ProjectOptionsAfterWrite: Project=Nil.');
   if Restore then
-  begin
-    Project1.RestoreBuildModes;
-    Project1.RestoreSession;
-  end
+    Project1.RestoreSession
   else begin
     if Project1.MainUnitID >= 0 then
     begin
