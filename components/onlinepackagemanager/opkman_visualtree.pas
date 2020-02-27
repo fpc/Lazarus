@@ -1514,7 +1514,7 @@ begin
         1: if Data^.HasUpdate then
              CellText := 'NEW';
         2: begin
-             if (Data^.InstalledVersion <> '') and (Data^.UpdateVersion <> '') then
+             if (Data^.UpdateVersion <> '') then
                CellText := Data^.UpdateVersion
              else
                CellText := '-';

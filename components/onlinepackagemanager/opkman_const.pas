@@ -194,7 +194,7 @@ resourcestring
   rsMainFrm_PackageAlreadyDownloaded = 'The following repository packages already exist in the target folder. Continue?';
   rsMainFrm_PackageUpdateWarning = 'Installing packages from external link is not without a risk!' + sLineBreak + 'Only install if you trust the package maintainer. Continue?';
   rsMainFrm_PackageUpdate0 = 'The following repository packages are not available externally. The packages will be skipped. Continue?';
-  rsMainFrm_PackageUpdate1 = 'None of the checked repository packages are available externally.';
+  rsMainFrm_PackageUpdate1 = 'None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:' + sLineBreak + 'Options->General->Check for package updates.';
   rsMainFrm_rsMessageNoPackage = 'No packages to show.';
   rsMainFrm_rsMessageParsingJSON = 'Parsing JSON. Please wait...';
   rsMainFrm_rsMessageDownload = 'Downloading package list. Please wait...';
