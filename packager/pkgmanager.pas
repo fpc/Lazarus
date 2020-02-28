@@ -4333,14 +4333,11 @@ type
   public
     PackageNames: TStrings;
     PackageList: TStrings;
-    DefaultPackage: TLazPackageID;
     procedure AddDependency(APackageID: TLazPackageID);
   end;
 
 procedure TPackageIterateHelper.AddDependency(APackageID: TLazPackageID);
 begin
-  if Assigned(DefaultPackage) and (APackageID.IDAsString=DefaultPackage.IDAsString) then
-    Exit;
   { are we looking for this package? }
   if PackageNames.IndexOf(APackageID.Name)<0 then
     Exit;
@@ -4615,7 +4612,6 @@ begin
                   end;
                   Helper.PackageNames:=CurPackages;
                   Helper.PackageList:=AllPackages;
-                  Helper.DefaultPackage:=RequiredPackage;
                   PackageGraph.IteratePackages(fpfSearchAllExisting,@Helper.AddDependency);
                 finally
                   Helper.Free;
@@ -4656,6 +4652,8 @@ var
 begin
   Result:=mrCancel;
   OutputPackageList:=nil;
+  if (InputPackageList=nil) or (InputPackageList.Count=0) then
+    Exit(mrOK);
   UnitOwners:=GetOwnersOfUnit(UnitFilename);
   if (UnitOwners<>nil) then begin
     for CurOwnerID:=0 to UnitOwners.Count-1 do begin
