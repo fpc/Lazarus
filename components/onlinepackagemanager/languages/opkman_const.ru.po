@@ -719,8 +719,12 @@ msgid "The following repository packages are not available externally. The packa
 msgstr "Следующие пакеты из репозитория недоступны во внешних источниках. Они будут пропущены. Продолжить?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository packages are available externally."
-msgstr "Ни один из отмеченных пакетов из репозитория не доступен во внешних источниках."
+msgid ""
+"None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
+"Options->General->Check for package updates."
+msgstr ""
+"Ни один из отмеченных пакетов из репозитория не доступен во внешних источниках. Убедитесь, что проверка наличия обновлений пакетов включена:\n"
+"Параметры->Общие->Проверять наличие обновлений пакетов."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
@@ -1376,6 +1380,14 @@ msgstr "Всегда загружать и распаковывать"
 #: opkman_const.rsoptions_cbforcedownloadextract_hint
 msgid "If this option is checked the packages are always re-downloaded/extracted before install"
 msgstr "При включении этого параметра пакеты всегда повторно загружаются и распаковываются перед установкой"
+
+#: opkman_const.rsoptions_cbloadjsonlocally_caption
+msgid "If available, parse the JSON from local source"
+msgstr "По возможности анализировать уже имеющийся JSON"
+
+#: opkman_const.rsoptions_cbloadjsonlocally_hint
+msgid "If this option is checked the JSON is parsed from a local source (useful if the internet connection is slow). After 25 local parses, OPM will attempt a live update."
+msgstr "При включении этого параметра будет анализироваться JSON, уже загруженный ранее (полезно при медленном соединении с сетью). Диспетчер попытается сделать обновление после 25 таких анализов."
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"

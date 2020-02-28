@@ -748,7 +748,9 @@ msgid "The following repository packages are not available externally. The packa
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository packages are available externally."
+msgid ""
+"None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
+"Options->General->Check for package updates."
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -1412,6 +1414,14 @@ msgstr "总是强制下载和提取(extract)"
 
 #: opkman_const.rsoptions_cbforcedownloadextract_hint
 msgid "If this option is checked the packages are always re-downloaded/extracted before install"
+msgstr ""
+
+#: opkman_const.rsoptions_cbloadjsonlocally_caption
+msgid "If available, parse the JSON from local source"
+msgstr ""
+
+#: opkman_const.rsoptions_cbloadjsonlocally_hint
+msgid "If this option is checked the JSON is parsed from a local source (useful if the internet connection is slow). After 25 local parses, OPM will attempt a live update."
 msgstr ""
 
 #: opkman_const.rsoptions_cbproxy_caption

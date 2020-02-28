@@ -787,7 +787,9 @@ msgstr "Los siguientes paquetes de repositorio no están instalados o no tienen 
 #: opkman_const.rsmainfrm_packageupdate1
 #, fuzzy
 #| msgid "None of the checked repository packages is installed or has a valid external download link."
-msgid "None of the checked repository packages are available externally."
+msgid ""
+"None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
+"Options->General->Check for package updates."
 msgstr "Ninguno de los repositorios marcados tiene un enlace externo de descarga válido."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -1474,6 +1476,14 @@ msgstr "Forzar siempre descarga y extracción"
 #: opkman_const.rsoptions_cbforcedownloadextract_hint
 msgid "If this option is checked the packages are always re-downloaded/extracted before install"
 msgstr "Si esta opción es marcada los paquetes son siempre re-descargados/extraídos antes de la instalación"
+
+#: opkman_const.rsoptions_cbloadjsonlocally_caption
+msgid "If available, parse the JSON from local source"
+msgstr ""
+
+#: opkman_const.rsoptions_cbloadjsonlocally_hint
+msgid "If this option is checked the JSON is parsed from a local source (useful if the internet connection is slow). After 25 local parses, OPM will attempt a live update."
+msgstr ""
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"
