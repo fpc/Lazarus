@@ -101,7 +101,11 @@ begin
   GlobalNameSpace.BeginWrite;
   Screen.FSaveFocusedList.Remove(Self);
   RemoveFixupReferences(Self, '');
-  if FormStyle <> fsMDIChild then Hide;
+  if FormStyle <> fsMDIChild then
+    Hide
+  else
+  if Assigned(Menu) and Assigned(Application.MainForm) and Assigned(Application.MainForm.Menu) then
+    Application.MainForm.Menu.Unmerge(Menu);
   DoDestroy;
   // don't call the inherited method because it calls Destroying which is already called
 end;
@@ -659,18 +663,24 @@ begin
 
   inherited WMSize(Message);
 
-  FDelayedWMSize := True;
-  Inc(FDelayedEventCtr);
-  Application.QueueAsyncCall(@DelayedEvent, 0);
+  if not (csDestroying in ComponentState) then
+  begin
+    FDelayedWMSize := True;
+    Inc(FDelayedEventCtr);
+    Application.QueueAsyncCall(@DelayedEvent, 0);
+  end;
 end;
 
 procedure TCustomForm.WMMove(var Message: TLMMove);
 begin
   inherited WMMove(Message);
 
-  FDelayedWMMove := True;
-  Inc(FDelayedEventCtr);
-  Application.QueueAsyncCall(@DelayedEvent, 0);
+  if not (csDestroying in ComponentState) then
+  begin
+    FDelayedWMMove := True;
+    Inc(FDelayedEventCtr);
+    Application.QueueAsyncCall(@DelayedEvent, 0);
+  end;
 end;
 
 procedure TCustomForm.DelayedEvent(Data: PtrInt);
@@ -796,12 +806,26 @@ end;
 
 procedure TCustomForm.CMActivate(var Message: TLMessage);
 begin
+  if (FormStyle=fsMDIChild) and
+     Assigned(Menu) and
+     Assigned(Application.MainForm) and
+     (Application.MainForm.FormStyle=fsMDIForm) and
+     Assigned(Application.MainForm.Menu)
+  then
+    Application.MainForm.Menu.Merge(Menu);
   Activate;
 end;
 
 procedure TCustomForm.CMDeactivate(var Message: TLMessage);
 begin
   Deactivate;
+  if (FormStyle=fsMDIChild) and
+     Assigned(Menu) and
+     Assigned(Application.MainForm) and
+     (Application.MainForm.FormStyle=fsMDIForm) and
+     Assigned(Application.MainForm.Menu)
+  then
+    Application.MainForm.Menu.Unmerge(Menu);
 end;
 
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
@@ -1378,7 +1402,7 @@ begin
 
         if FormStyle = fsMDIFORM then
         begin
-          // ToDo
+          Exit;
         end
         else
         begin
@@ -2214,12 +2238,15 @@ function TCustomForm.CloseQuery: boolean;
     Result:=true;
   end;
 
+var
+  I: Integer;
 begin
   if FormStyle = fsMDIForm then
   begin
     // Query children forms whether we can close
     if not Check(Self) then exit(False);
-    // TODO: mdi logic
+    for I := 0 to MDIChildCount - 1 do
+      if not MDIChildren[I].CloseQuery then Exit(False);
   end;
   Result := True;
   if Assigned(FOnCloseQuery) then
@@ -3211,6 +3238,22 @@ begin
     exit;
   if HandleAllocated and not (csDesigning in ComponentState) then
     TWSCustomFormClass(WidgetSetClass).Tile(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TForm.ArrangeIcons
+  Params:  None
+  Returns: Nothing
+
+  Arranges the minimized MDI icons in an MDI form.
+  ArrangeIcons works only if the form FormStyle = fsMDIForm.
+ ------------------------------------------------------------------------------}
+procedure TForm.ArrangeIcons;
+begin
+  if (FormStyle <> fsMDIForm) then
+    Exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    TWSCustomFormClass(WidgetSetClass).ArrangeIcons(Self);
 end;
 
 //==============================================================================

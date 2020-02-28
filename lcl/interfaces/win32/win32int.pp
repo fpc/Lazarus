@@ -129,6 +129,7 @@ type
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
     FDefaultFont: HFONT;
+    FMDIClientHandle: HWND;
 
     FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
@@ -150,6 +151,7 @@ type
     function WinRegister: Boolean;
 
     procedure CreateAppHandle;
+    function GetMDIClientHandle: HWND;
   protected
     function CreateThemeServices: TThemeServices; override;
     function GetAppHandle: THandle; override;
@@ -200,6 +202,11 @@ type
     // thread synchronize support
     procedure HandleWakeMainThread(Sender: TObject);
     property DefaultFont: HFONT read FDefaultFont;
+
+    // MDI client handle (if any)
+    property MDIClientHandle: HWND read GetMDIClientHandle;
+
+    procedure UpdateMDIClientBounds;
 
     {$I win32winapih.inc}
     {$I win32lclintfh.inc}

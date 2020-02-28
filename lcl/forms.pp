@@ -769,6 +769,8 @@ type
     procedure Previous;
     { mdi related routine}
     procedure Tile;
+    { mdi related routine}
+    procedure ArrangeIcons;
     { mdi related property}
     property ClientHandle;
 

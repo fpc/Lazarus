@@ -136,11 +136,11 @@ begin
   FHandle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
   CheckChildrenHandles;
 
-  if Parent <> nil then
+  if MergedParent <> nil then
   begin
-    Parent.HandleNeeded;
+    MergedParent.HandleNeeded;
     //DebugLn('TMenuItem.CreateHandle Attaching ... ',Name,':',ClassName);
-    if Parent.HandleAllocated then
+    if MergedParent.HandleAllocated then
       TWSMenuItemClass(WidgetSetClass).AttachMenu(Self);
 
     if HandleAllocated then
@@ -172,6 +172,7 @@ begin
   FItems.Delete(Index);
   Cur.FParent := nil;
   Cur.FOnChange := nil;
+  InvalidateMergedItems;
   MenuChanged(Count = 0);
 end;
 
@@ -201,6 +202,8 @@ begin
       Dec(i);
     end;
   end;
+  if Assigned(FMerged) then
+    MergeWith(nil);
   FreeAndNil(FItems);
   FreeAndNil(FActionLink);
   FreeAndNil(FImageChangeLink);
@@ -210,6 +213,7 @@ begin
     FParent.FItems.Remove(Self);
   if FCommand <> 0 then TWSMenuItemClass(WidgetSetClass).CloseCommand(FCommand);
   //debugln('TMenuItem.Destroy B ',dbgsName(Self));
+  FreeAndNil(FMergedItems);
   inherited Destroy;
 end;
 
@@ -343,34 +347,52 @@ procedure TMenuItem.CheckChildrenHandles;
 
   function GetMenu(Item: TMenuItem): TMenu;
   begin
+    Result := nil;
     repeat
-      Result := Item.Menu;
-      Item := Item.Parent;
-    until (Result <> nil) or (Item = nil);
+      if Assigned(Item.FMergedWith) then
+      begin
+        if Assigned(Item.FMergedWith.Menu) then
+          Result := Item.FMergedWith.Menu;
+        Item := Item.FMergedWith;
+      end else
+      begin
+        if Assigned(Item.Menu) then
+          Result := Item.Menu;
+        Item := Item.Parent;
+      end;
+    until (Item = nil);
   end;
 
 var
   i: Integer;
   AMenu: TMenu;
+  AMergedItems: TMergedMenuItems;
 begin
-  if FItems <> nil then
+  if FItems = nil then
+    Exit;
+
+  AMenu := GetMenu(Self);
+  AMergedItems := MergedItems;
+  for i := 0 to AMergedItems.InvisibleCount-1 do
+    if AMergedItems.InvisibleItems[i].HandleAllocated then
+      AMergedItems.InvisibleItems[i].DestroyHandle;
+
+  for i := 0 to AMergedItems.VisibleCount-1 do
   begin
-    AMenu := GetMenu(Self);
-    for i := 0 to Count - 1 do
-    begin
-      if Items[i].Visible then
-      begin
-        if Items[i].HandleAllocated and (GetMenu(Items[i]) <> AMenu) then
-          Items[i].DestroyHandle;
-        Items[i].HandleNeeded;
-      end;
-    end;
+    if AMergedItems.VisibleItems[i].HandleAllocated and (GetMenu(AMergedItems.VisibleItems[i]) <> AMenu) then
+      AMergedItems.VisibleItems[i].DestroyHandle;
+    AMergedItems.VisibleItems[i].HandleNeeded;
   end;
 end;
 
 procedure TMenuItem.IntfDoSelect;
 begin
   Application.Hint := GetLongHint(Hint);
+end;
+
+procedure TMenuItem.InvalidateMergedItems;
+begin
+  FreeAndNil(FMergedItems);
 end;
 
 {------------------------------------------------------------------------------
@@ -532,6 +554,30 @@ function TMenuItem.GetMenuIndex: Integer;
 begin
   Result := -1;
   if FParent <> nil then Result := FParent.IndexOf(Self);
+end;
+
+function TMenuItem.GetMergedItems: TMergedMenuItems;
+begin
+  if not Assigned(FMergedItems) then
+    FMergedItems := TMergedMenuItems.Create(Self);
+  Result := FMergedItems;
+end;
+
+function TMenuItem.GetMergedParent: TMenuItem;
+begin
+  Result := Parent;
+  if Assigned(Result) and Assigned(Result.MergedWith) then
+    Result := Result.MergedWith;
+end;
+
+function TMenuItem.GetMergedParentMenu: TMenu;
+var
+  Item: TMenuItem;
+begin
+  Item := Self;
+  while Item.MergedParent <> nil do
+    Item := Item.MergedParent;
+  Result := Item.FMenu;
 end;
 
 {------------------------------------------------------------------------------
@@ -761,13 +807,12 @@ begin
   //DebugLn('TMenuItem.DestroyHandle ',dbgsName(Self),' ',dbgs(Self));
   if Assigned(FItems) then
   begin
-    i := FItems.Count - 1;
-    while i >= 0 do
-    begin
+    for i := FItems.Count - 1 downto 0 do
       TMenuItem(FItems[i]).DestroyHandle;
-      dec(i);
-    end;
   end;
+  if Assigned(FMerged) then
+    for i := FMerged.Count - 1 downto 0 do
+      FMerged[i].DestroyHandle;
   TWSMenuItemClass(WidgetSetClass).DestroyHandle(Self);
   FHandle := 0;
 end;
@@ -854,6 +899,7 @@ begin
   Item.FOnChange := @SubItemChanged;
   FItems.Insert(Index, Item);
 
+  InvalidateMergedItems;
   if HandleAllocated and Item.Visible then
     Item.HandleNeeded;
   MenuChanged(FItems.Count = 1);
@@ -892,36 +938,19 @@ end;
   Returns the index of the menuitem of all visible menuitems
  ------------------------------------------------------------------------------}
 function TMenuItem.VisibleIndexOf(Item: TMenuItem): Integer;
-
-  procedure RaiseVisibleInconsistency;
-  begin
-    raise Exception.Create('TMenuItem.VisibleIndexOf '+dbgsName(Item)+' is visible, but not in parents list');
-  end;
-
 var
   i: Integer;
   CurMenuItem: TMenuItem;
+  IsMerged: Boolean;
+  AMergedItems: TMergedMenuItems;
 begin
-  if (FItems = nil) or (Item=nil) or (not Item.Visible) then
-    Result := -1
-  else
-  begin
-    Result := 0;
-    i := 0;
-    while (i<FItems.Count) do
-    begin
-      CurMenuItem := TMenuItem(FItems[i]);
-      if CurMenuItem.Visible then
-      begin
-        if CurMenuItem=Item then Exit;
-        Inc(Result);
-      end;
-      Inc(i);
-    end;
-    Result := -1;
-    if Item.Visible then
-      RaiseVisibleInconsistency;
-  end;
+  if not Item.Visible then
+    Exit(-1);
+  AMergedItems := GetMergedItems;
+  for I := 0 to AMergedItems.VisibleCount-1 do
+    if AMergedItems.VisibleItems[I]=Item then
+      Exit(I);
+  Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -970,8 +999,11 @@ end;
   function TMenuItem.IsInMenuBar: boolean;
  ------------------------------------------------------------------------------}
 function TMenuItem.IsInMenuBar: boolean;
+var
+  AMergedParent: TMenuItem;
 begin
-  Result := (FParent <> nil) and (FParent.FMenu <> nil) and (FParent.FMenu is TMainMenu);
+  AMergedParent := MergedParent;
+  Result := (AMergedParent <> nil) and (AMergedParent.FMenu <> nil) and (AMergedParent.FMenu is TMainMenu);
 end;
 
 {------------------------------------------------------------------------------
@@ -1063,6 +1095,30 @@ begin
     Result:=-1
   else
     Result:=Parent.VisibleIndexOf(Self);
+end;
+
+procedure TMenuItem.MergeWith(const aMenu: TMenuItem);
+var
+  i: Integer;
+begin
+  if (Assigned(aMenu) and (csDestroying in aMenu.ComponentState))
+  or (FMerged=aMenu) then
+    Exit;
+
+  if Assigned(FMerged) then
+  begin
+    for i := 0 to FMerged.Count-1 do
+      FMerged[i].DestroyHandle;
+    FMerged.FMergedWith := nil;
+  end;
+  FMerged := aMenu;
+  if Assigned(FMerged) then
+  begin
+    FMerged.FMergedWith := Self;
+    FMerged.FreeNotification(Self);
+  end;
+  InvalidateMergedItems;
+  CheckChildrenHandles;
 end;
 
 procedure TMenuItem.WriteDebugReport(const Prefix: string);
@@ -1456,6 +1512,8 @@ begin
     end;
     FVisible := AValue;
   end;
+  if MergedParent<>nil then
+    MergedParent.InvalidateMergedItems;
 end;
 
 procedure TMenuItem.UpdateImage(forced: Boolean);

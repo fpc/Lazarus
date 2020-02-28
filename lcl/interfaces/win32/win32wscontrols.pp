@@ -468,6 +468,10 @@ begin
       Windows.SetWindowPos(Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
   end;
   LCLControlSizeNeedsUpdate(AWinControl, True);
+  // If this control is a child of an MDI form, then we need to update the MDI client bounds in
+  // case this control has affected the client area
+  if Assigned(Application.MainForm) and (AWinControl.Parent=Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
+    Win32WidgetSet.UpdateMDIClientBounds;
 end;
 
 class procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);
@@ -545,7 +549,12 @@ begin
   {$ifdef RedirectDestroyMessages}
   SetWindowLong(Handle, GWL_WNDPROC, PtrInt(@DestroyWindowProc));
   {$endif}
-  DestroyWindow(Handle);
+  // Instead of calling DestroyWindow directly, we need to call WM_MDIDESTROY for MDI children
+  if Assigned(Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) and
+    (AWinControl is TCustomForm) and (TCustomForm(AWinControl).FormStyle=fsMDIChild) then
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIDESTROY, Handle, 0)
+  else
+    DestroyWindow(Handle);
 end;
 
 class procedure TWin32WSWinControl.Invalidate(const AWinControl: TWinControl);
@@ -571,7 +580,11 @@ const
   VisibilityToFlag: array[Boolean] of UINT = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
 begin
   Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
-    SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
+    SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible]);
+  // If this control is a child of an MDI form, then we need to update the MDI client bounds in
+  // case altering this control's visibility has affected the client area
+  if Assigned(Application.MainForm) and (AWinControl.Parent=Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
+    Win32WidgetSet.UpdateMDIClientBounds;
 end;
 
 class procedure TWin32WSWinControl.ScrollBy(const AWinControl: TWinControl;
