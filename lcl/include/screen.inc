@@ -302,8 +302,8 @@ begin
   OldCursor := RealCursor;
   SetLength(FTempCursors, Length(FTempCursors)+1);
   FTempCursors[High(FTempCursors)] := aCursor;
-  if OldCursor<>RealCursor then
-    WidgetSet.SetCursor(Cursors[RealCursor]);
+  if OldCursor<>aCursor then
+    WidgetSet.SetCursor(Cursors[aCursor]);
 end;
 
 procedure TScreen.BeginWaitCursor;
