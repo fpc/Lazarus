@@ -82,12 +82,16 @@ type
     FContext: TGtk3DeviceContext;
     FStyle: LongWord;
     procedure SetColor(AValue: TColor);
+    procedure SetStyle(AStyle:longword);
   public
+    brush_pattern:pcairo_pattern_t;
     LogBrush: TLogBrush;
     constructor Create; override;
+    destructor Destroy;override;
+    procedure UpdatePattern;
     property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
-    property Style: LongWord read FStyle write FStyle;
+    property Style: LongWord read FStyle write SetStyle;
   end;
 
   { TGtk3Pen }
@@ -280,7 +284,7 @@ function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 
 implementation
 
-uses math, gtk3int, gtk3procs;
+uses gtk3int, gtk3procs;
 
 const
   PixelOffset = 0.5; // Cairo API needs 0.5 pixel offset to not make blurry lines
@@ -294,6 +298,45 @@ const
 var
   FDefaultContext: TGtk3DeviceContext = nil;
   FScreenContext: TGtk3DeviceContext = nil;
+
+  function create_stipple(stipple_data:pbyte;width,height:integer):pcairo_pattern_t;forward;
+
+  const COLOR_A_PRE = $3093BA52;
+  const COLOR_B_PRE = $30FFFFFF;
+  (*function PREMULTIPLY(argb:dword);inline                                                                          \
+        ((argb & 0xFF << 24) |                                                                         \
+         ((((argb & 0xFF << 16) >> 16) * ((argb & 0xFF << 24) >> 24) / 0xFF) << 16) |                  \
+         ((((argb & 0xFF << 8) >> 8) * ((argb & 0xFF << 24) >> 24) / 0xFF) << 8) |                     \
+         ((((argb & 0xFF << 0) >> 0) * ((argb & 0xFF << 24) >> 24) / 0xFF) << 0))
+  #define COLOR_A_PRE PREMULTIPLY (COLOR_A)
+  #define COLOR_B_PRE PREMULTIPLY (COLOR_B)
+  *)
+  const
+       stipple_data: array[0..8 * 8-1] of dword = (
+            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
+            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
+            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
+            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
+            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
+
+            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
+            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
+            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
+            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
+            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE);
+
+        (* the stipple patten should look like that
+         *	    1 1 1 0  0 0 0 1
+         *	    1 1 0 0  0 0 1 1
+         *	    1 0 0 0  0 1 1 1
+         *	    0 0 0 0  1 1 1 1
+         *
+         *	    0 0 0 1  1 1 1 0
+         *	    0 0 1 1  1 1 0 0
+         *	    0 1 1 1  1 0 0 0
+         *	    1 1 1 1  0 0 0 0
+         *)
+
 
 function Gtk3DefaultContext: TGtk3DeviceContext;
 begin
@@ -852,6 +895,13 @@ begin
     cairo_set_source_rgb(FContext.Widget, ARed, AGreen, ABlue);
 end;
 
+procedure TGtk3Brush.SetStyle(AStyle: longword);
+begin
+  if AStyle=fStyle then exit;
+  fStyle:=AStyle;
+  Self.UpdatePattern;
+end;
+
 constructor TGtk3Brush.Create;
 begin
   inherited Create;
@@ -860,6 +910,36 @@ begin
   FContext := nil;
   FColor := clNone;
   FillChar(LogBrush, SizeOf(TLogBrush), #0);
+end;
+
+destructor TGtk3Brush.Destroy;
+begin
+  if Assigned(brush_pattern) then
+    cairo_pattern_destroy(brush_pattern);
+  inherited Destroy;
+end;
+
+procedure TGtk3Brush.UpdatePattern;
+begin
+  if Assigned(Self.brush_pattern) then
+     cairo_pattern_destroy(brush_pattern);
+  self.brush_pattern:=create_stipple(@stipple_data,8,8); // this stipple_data is 8x8
+end;
+
+function create_stipple(stipple_data:pbyte;width,height:integer):pcairo_pattern_t;
+var
+  surface:pcairo_surface_t;
+	pattern:pcairo_pattern_t;
+  stride:integer;
+begin
+	stride := cairo_format_stride_for_width (CAIRO_FORMAT_ARGB32, width);
+	surface := cairo_image_surface_create_for_data (stipple_data, CAIRO_FORMAT_ARGB32, width, height,
+	                                               stride);
+	pattern := cairo_pattern_create_for_surface (surface);
+	cairo_surface_destroy (surface);
+	cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
+
+	result:= pattern;
 end;
 
 { TGtk3DeviceContext }
@@ -937,6 +1017,12 @@ begin
     //cairo_set_source_surface(Widget, CairoSurface, 0 , 0);
   end else
     SetSourceColor(FCurrentBrush.Color);
+
+  if Self.FCurrentBrush.Style<>0 then
+  begin
+    if Assigned(Self.FCurrentBrush.brush_pattern) then
+    cairo_set_source(Widget,Self.FCurrentBrush.brush_pattern);
+  end;
 end;
 
 procedure TGtk3DeviceContext.ApplyFont;
