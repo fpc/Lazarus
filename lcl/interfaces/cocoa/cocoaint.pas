@@ -39,7 +39,7 @@ uses
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
-  IntfGraphics, Graphics, CocoaWSFactory, Interfaces, CocoaWSDialogs;
+  IntfGraphics, Graphics, CocoaWSFactory;
 
 type
 
