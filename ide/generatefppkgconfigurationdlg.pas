@@ -150,7 +150,7 @@ begin
 
   ChkPath := ExtractFileDir(ExtractFileDir(EnvironmentOptions.GetParsedCompilerFilename));
   {$IFDEF WINDOWS}
-  ChkPath := ExtractFileDir(ExtractFileDir(ChkPath));
+  ChkPath := ExtractFileDir(ChkPath);
   {$ENDIF WINDOWS}
   CheckPath(ChkPath, FpcPrefixCombobox.Items);
 
