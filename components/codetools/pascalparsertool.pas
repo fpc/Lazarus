@@ -6068,23 +6068,7 @@ begin
   repeat
     // read identifier (a parameter of the generic type)
     Next;
-    AtomIsIdentifierSaveE(20180411194303);
-    if CreateChildNodes then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnSpecializeParam;
-      CurNode.EndPos:=CurPos.EndPos;
-    end;
-    Next;
-    while Curpos.Flag=cafPoint do begin
-      // first identifier was unitname, now read the type
-      Next;
-      AtomIsIdentifierSaveE(20180411194305);
-      if CreateChildNodes then
-        CurNode.EndPos:=CurPos.EndPos;
-      Next;
-    end;
-    if CreateChildNodes then
-      EndChildNode; // close ctnSpecializeParam
+    ReadTypeReference( CreateChildNodes ); // May be a nested specialize structure
     if AtomIsChar('>') then
       break
     else if CurPos.Flag=cafComma then begin
