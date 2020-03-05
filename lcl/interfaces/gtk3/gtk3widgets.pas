@@ -1457,8 +1457,16 @@ begin
   Msg.SizeType := SIZE_RESTORED;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
-  Msg.Width := Word(NewSize.cx);
-  Msg.Height := Word(NewSize.cy);
+
+  if ACtl is TGtk3Window then
+  begin
+    Msg.Width := Word(NewSize.cx);
+    Msg.Height := Word(NewSize.cy);
+  end else
+  begin
+    Msg.Width := ACtl.LCLObject.Width;//Word(NewSize.cx);
+    Msg.Height := ACtl.LCLObject.Height;//Word(NewSize.cy);
+  end;
   ACtl.DeliverMessage(Msg);
 
   if (wtWindow in ACtl.WidgetType) and
