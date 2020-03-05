@@ -261,11 +261,11 @@ function FindFPCTool(const Executable, CompilerFilename: string): string;
 begin
   if ConsoleVerbosity>=0 then
     DebugLn('Hint: (lazarus) FindFPCTool Executable="',Executable,'" CompilerFilename="',CompilerFilename,'"');
-  Result:=FindDefaultExecutablePath(Executable);
-  if Result<>'' then exit;
   Result:=AppendPathDelim(ExtractFilePath(CompilerFilename))+Executable;
   if ConsoleVerbosity>=0 then
     DebugLn('Hint: (lazarus) FindFPCTool Try="',Result);
+  if FileExistsUTF8(Result) then exit;
+  Result:=FindDefaultExecutablePath(Executable);
   if FileExistsUTF8(Result) then exit;
   Result:='';
 end;
