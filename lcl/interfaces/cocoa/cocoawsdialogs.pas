@@ -627,7 +627,7 @@ end;
 
 procedure TColorPanelDelegate.doPickColor();
 begin
-  ColorDialog.Color := NSColorToRGB(colorPanel.color);
+  ColorDialog.Color := NSColorToColorRef(colorPanel.color);
 end;
 
 procedure TColorPanelDelegate.pickColor();
