@@ -28,7 +28,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, Masks;
 
-{$if defined(Windows) or defined(darwin)}
+{$if defined(Windows) or defined(darwin) or defined(HASAMIGA))}
 {$define CaseInsensitiveFilenames}
 {$endif}
 {$IF defined(CaseInsensitiveFilenames) or defined(darwin)}

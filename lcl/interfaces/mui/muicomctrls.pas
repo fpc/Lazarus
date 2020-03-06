@@ -249,10 +249,10 @@ begin
     Exit;
   if BlockRedraw or BlockLayout then
     Exit;
-  w := Min(FWidth, OBJ_MaxWidth(FObject));
-  w := Max(w, OBJ_MinWidth(FObject));
-  h := Min(FHeight, OBJ_MaxHeight(FObject));
-  h := Max(h, OBJ_MinHeight(FObject));
+  w := Min(FWidth, LongInt(OBJ_MaxWidth(FObject)));
+  w := Max(w, LongInt(OBJ_MinWidth(FObject)));
+  h := Min(FHeight, LongInt(OBJ_MaxHeight(FObject)));
+  h := Max(h, LongInt(OBJ_MinHeight(FObject)));
   //writeln(self.classname,' setsize ', FLeft, ', ', FTop, ' - ', FWidth, ', ', FHeight,' count: ', Fchilds.Count, ' obj ', HexStr(FObject));
   MUI_Layout(FObject, FLeft, FTop, w, h, 0);
   //writeln(self.classname, '  setsize done');

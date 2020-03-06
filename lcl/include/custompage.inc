@@ -136,7 +136,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomPage.CMHitTest(var Message: TLMNCHITTEST);
 begin
-  if Parent is TCustomTabControl and
+  if (Parent is TCustomTabControl) and
      (TCustomTabControl(Parent).ActivePageComponent <> Self) then
     Message.Result := 0 // no hit
   else
