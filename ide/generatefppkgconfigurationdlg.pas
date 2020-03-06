@@ -154,6 +154,13 @@ begin
   {$ENDIF WINDOWS}
   CheckPath(ChkPath, FpcPrefixCombobox.Items);
 
+  {$IFNDEF WINDOWS}
+  // Check if the user provided the compiler-executable inside the lib-directory
+  // itself. (prefix/lib/3.3.1/ppcarm or something)
+  ChkPath := ExtractFileDir(ExtractFileDir(ChkPath));
+  CheckPath(ChkPath, FpcPrefixCombobox.Items);
+  {$ENDIF}
+
   {$IFDEF WINDOWS}
   CheckPath('C:\PP', FpcPrefixCombobox.Items);
   CheckPath('D:\PP', FpcPrefixCombobox.Items);
