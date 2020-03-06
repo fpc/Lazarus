@@ -154,10 +154,11 @@ end;
 
 type
 
-  { TCocoaAlertController }
+  { TCocoaAlertCancelAccessoryView }
 
-  TCocoaAlertController = objcclass(NSWindowController)
-    procedure keyUp(theEvent: NSEvent); override;
+  TCocoaAlertCancelAccessoryView = objcclass(NSView)
+    sheetOfWindow: NSWindow;
+    function performKeyEquivalent (theEvent: NSEvent): LCLObjCBoolean; override;
   end;
 
   TCocoaSheetDelegate = objcclass(NSObject)
@@ -236,7 +237,8 @@ var
   I: Integer;
   aButton: NSButton;
   Str: string;
-  ctrl : TCocoaAlertController;
+  cancelAccessory: TCocoaAlertCancelAccessoryView;
+  needsCancel: Boolean;
 begin
   {Str := 'TCocoaWidgetSet.PromptUser DialogCaption: ' + DialogCaption +
     ' DialogMessage: ' + DialogMessage + ' DialogType: ' + DbgS(DialogType) +
@@ -252,6 +254,7 @@ begin
   Result := -1;
   AnAlert := NSAlert.alloc.init;
   try
+    cancelAccessory := nil;
     informativeText := NSStringUtf8(DialogMessage);
     messageText := NSStringUtf8(DialogCaption);
     case DialogType of
@@ -264,6 +267,7 @@ begin
       anAlert.setInformativeText(informativeText);
       anAlert.setMessageText(messageText);
 
+      needsCancel := True;
       for I := 0 to ButtonCount - 1 do
       begin
         if Buttons[I] = idButtonHelp then
@@ -292,11 +296,20 @@ begin
             // from the first button.
             aButton.setKeyEquivalent(NSSTR(''));
 
-          if Buttons[I]=mrCancel then
+          if Buttons[I]=mrCancel then begin
+            needsCancel := False;
             aButton.setKeyEquivalent(NSSTR(#27));
+          end;
 
           aButton.setTag(Buttons[I]);
         end;
+      end;
+
+      if needsCancel then begin
+        cancelAccessory := TCocoaAlertCancelAccessoryView.alloc.init;
+        cancelAccessory.sheetOfWindow := sheetOfWindow;
+        cancelAccessory.setBounds(NSZeroRect);
+        anAlert.setAccessoryView(cancelAccessory);
       end;
 
       ApplicationWillShowModal;
@@ -315,18 +328,14 @@ begin
       end
       else
       begin
-        ctrl := TCocoaAlertController(TCocoaAlertController.alloc).initWithWindow(AnAlert.window);
-        try
-          ToggleAppMenu(false);
-          Result := AnAlert.runModal;
-          if Result = NSCancelButton then
-            Result := EscapeResult;
-          ToggleAppMenu(true); // modal menu doesn't have a window, disabling it
-        finally
-          ctrl.release;
-        end;
+        ToggleAppMenu(false);
+        Result := AnAlert.runModal;
+        if Result = NSCancelButton then
+          Result := EscapeResult;
+        ToggleAppMenu(true); // modal menu doesn't have a window, disabling it
       end;
     finally
+      if Assigned(cancelAccessory) then cancelAccessory.release;
       informativeText.release;
       messageText.release;
     end;
@@ -342,15 +351,20 @@ end;
 
 {TCocoaWidgetSet.PromptUser}
 
-{ TCocoaAlertController }
+{ TCocoaAlertCancelAccessoryView }
 
-procedure TCocoaAlertController.keyUp(theEvent: NSEvent);
-const
-  NSModalResponseCancel = NSCancelButton; // NSCancelButton is deprecated
+function TCocoaAlertCancelAccessoryView.performKeyEquivalent(theEvent: NSEvent): LCLObjCBoolean;
 begin
-  inherited keyUp(theEvent);
   if theEvent.keyCode = kVK_Escape then
-    NSApplication(NSApp).stopModalWithCode(NSModalResponseCancel);
+  begin
+    if Assigned(sheetOfWindow) then
+      NSApplication(NSApp).endSheet(window) // use "sheetOfWindow.endSheet(window)" on 10.9+
+    else
+      NSApplication(NSApp).stopModalWithCode(NSCancelButton);
+    Result := True;
+  end
+  else
+    Result := inherited performKeyEquivalent(theEvent);
 end;
 
 {------------------------------------------------------------------------------
