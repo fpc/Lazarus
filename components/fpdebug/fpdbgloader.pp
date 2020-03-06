@@ -74,12 +74,12 @@ type
     constructor Create; virtual;
     constructor Create(AFileName: String; ADebugMap: TObject = nil;
       ALoadedTargetImageAddr: TDBGPtr = 0);
-    procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     {$ifdef USE_WIN_FILE_MAPPING}
     constructor Create(AFileHandle: THandle; ADebugMap: TObject = nil;
       ALoadedTargetImageAddr: TDBGPtr = 0);
     {$endif}
     destructor Destroy; override;
+    procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     procedure CloseFileLoader;
     procedure AddToLoaderList(ALoaderList: TDbgImageLoaderList);
     function IsValid: Boolean;
@@ -224,14 +224,10 @@ begin
   FFileName := AFileName;
   FFileLoader := TDbgFileLoader.Create(AFileName);
   FImgReader := GetImageReader(FFileLoader, ADebugMap, False);
-  if FImgReader = nil then FreeAndNil(FFileLoader);
-  FImgReader.LoadedTargetImageAddr := ALoadedTargetImageAddr;
-end;
-
-procedure TDbgImageLoader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
-begin
-  if IsValid then
-    FImgReader.ParseSymbolTable(AFpSymbolInfo);
+  if Assigned(FImgReader) then
+    FImgReader.LoadedTargetImageAddr := ALoadedTargetImageAddr
+  else
+    FreeAndNil(FFileLoader);
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}
@@ -240,8 +236,10 @@ constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject;
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
   FImgReader := GetImageReader(FFileLoader, ADebugMap, False);
-  if FImgReader = nil then FreeAndNil(FFileLoader);
-  FImgReader.LoadedTargetImageAddr := ALoadedTargetImageAddr;
+  if Assigned(FImgReader) then
+    FImgReader.LoadedTargetImageAddr := ALoadedTargetImageAddr
+  else
+    FreeAndNil(FFileLoader);
 end;
 {$endif}
 
@@ -250,6 +248,12 @@ begin
   FreeAndNil(FImgReader);
   FreeAndNil(FFileLoader);
   inherited Destroy;
+end;
+
+procedure TDbgImageLoader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
+begin
+  if IsValid then
+    FImgReader.ParseSymbolTable(AFpSymbolInfo);
 end;
 
 procedure TDbgImageLoader.CloseFileLoader;
