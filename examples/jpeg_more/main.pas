@@ -135,7 +135,7 @@ begin
   try
     jpeg.LoadFromFile(filename);
     jpeg.CompressionQuality := SbQuality.Position;
-    {$IF FPC_FullVersion >= 30400}
+    {$IF FPC_FullVersion >= 30004}
     jpeg.GrayScale := CbGrayScale.Checked;
     {$IFEND}
     jpeg.ProgressiveEncoding := CbProgressive.Checked;
@@ -171,7 +171,7 @@ begin
   LblProgressive.Caption := '';
   BtnReadClick(nil);
   SbQualityChange(nil);
-  {$IF FPC_FullVersion >= 30400}
+  {$IF FPC_FullVersion >= 30004}
   CbGrayScale.Enabled := false;
   {$ENDIF}
 end;
