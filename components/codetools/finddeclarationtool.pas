@@ -521,7 +521,7 @@ type
   public
     function AddFromHelperNode(HelperNode: TCodeTreeNode;
       Tool: TFindDeclarationTool; Replace: Boolean): TFDHelpersListItem;
-    procedure AddFromList(const ExtList: TFDHelpersList);
+    procedure AddFromList(const Tool: TFindDeclarationTool; const ExtList: TFDHelpersList);
     function IterateFromClassNode(ClassNode: TCodeTreeNode;
       Tool: TFindDeclarationTool; out HelperContext: TFindContext; out Iterator: TAVLTreeNode): boolean; // returns newest (rightmost)
     function GetNext(out HelperContext: TFindContext; var Iterator: TAVLTreeNode): boolean;
@@ -1770,13 +1770,14 @@ begin
   Result := ComparePointers(I1^.Context.Node, I2.ForExprType.Context.Node);
 end;
 
-procedure TFDHelpersList.AddFromList(const ExtList: TFDHelpersList);
+procedure TFDHelpersList.AddFromList(const Tool: TFindDeclarationTool;
+  const ExtList: TFDHelpersList);
   function CopyNode(ANode: TAVLTreeNode): TFDHelpersListItem;
   var
     FromNode: TFDHelpersListItem;
   begin
     FromNode := TFDHelpersListItem(ANode.Data);
-    if Kind=fdhlkDelphiHelper then
+    if (Kind=fdhlkDelphiHelper) and not (msMultiHelpers in Tool.Scanner.CompilerModeSwitches) then
       if FTree.FindKey(FromNode, @CompareHelpersList) <> nil then
         Exit(nil); //FPC & Delphi don't support duplicate class helpers!
     Result := TFDHelpersListItem.Create;
@@ -1840,7 +1841,7 @@ begin
 
   if ExprType.Desc in xtAllIdentTypes then
   begin
-    if Kind=fdhlkDelphiHelper then begin
+    if (Kind=fdhlkDelphiHelper) and not (msMultiHelpers in Tool.Scanner.CompilerModeSwitches) then begin
       // class/type/record helpers only allow one helper per class
       OldKey := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
       if OldKey <> nil then
@@ -4519,7 +4520,8 @@ var
       finally
         Params.Flags := OldFlags;
       end;
-    until (HelperKind=fdhlkDelphiHelper) or (not Helpers.GetNext(HelperContext,HelperIterator));
+    until ((HelperKind=fdhlkDelphiHelper) and not (msMultiHelpers in Params.StartTool.Scanner.CompilerModeSwitches))
+     or (not Helpers.GetNext(HelperContext,HelperIterator));
     //debugln(['SearchInHelpers END']);
   end;
 
@@ -6015,7 +6017,7 @@ begin
     for HelperKind in TFDHelpersListKind do begin
       Cache:=FInterfaceHelperCache[HelperKind];
       if (Cache<>nil) and (Cache.Count>0) then
-        Params.GetHelpers(HelperKind,true).AddFromList(FInterfaceHelperCache[HelperKind]);
+        Params.GetHelpers(HelperKind,true).AddFromList(AskingTool, FInterfaceHelperCache[HelperKind]);
     end;
   end;
 end;
