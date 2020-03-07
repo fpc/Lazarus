@@ -512,6 +512,7 @@ var
   item    : NSMenuItem;
   MenuObj : NSObject;
   Menu    : NSMenu;
+  idx     : Integer;
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) or not Assigned(AMenuItem.Parent) or (AMenuItem.Parent.Handle=0) then Exit;
   ParObj:=NSObject(AMenuItem.Parent.Handle);
@@ -549,7 +550,11 @@ begin
   end;
 
   if Assigned(item) then
-    Parent.insertItem_atIndex(NSMenuItem(item), AMenuItem.MenuVisibleIndex)
+  begin
+    idx := AMenuItem.MenuVisibleIndex;
+    if idx < 0 then idx := Parent.numberOfItems;
+    Parent.insertItem_atIndex(NSMenuItem(item), idx)
+  end;
 end;
 
 {------------------------------------------------------------------------------
