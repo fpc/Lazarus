@@ -172,6 +172,7 @@ begin
   FItems.Delete(Index);
   Cur.FParent := nil;
   Cur.FOnChange := nil;
+  Cur.Free;
   InvalidateMergedItems;
   MenuChanged(Count = 0);
 end;
@@ -1016,7 +1017,7 @@ var
   I: Integer;
 begin
   for I := Count - 1 downto 0 do
-    Items[I].Free;
+    Delete(I);
 end;
 
 function TMenuItem.HasBitmap: boolean;
