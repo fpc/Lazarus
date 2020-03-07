@@ -786,11 +786,14 @@ begin
     // active project, can be virtual
     //debugln(['TIDEProjectGroupManager.AddProjectSrcPaths Active project']);
     AddSrcPathOfFile(SrcPaths,aProject.ProjectInfoFile);
-    Paths:=aProject.LazCompilerOptions.GetSrcPath(false);
+    Paths:=aProject.LazCompilerOptions.GetSrcPath(false)
+      +';'+aProject.LazCompilerOptions.GetUnitPath(false)
+      +';'+aProject.LazCompilerOptions.GetIncludePath(false);
     //debugln(['TIDEProjectGroupManager.AddProjectSrcPaths Active project Paths="',Paths,'"']);
     p:=1;
     repeat
       Path:=GetNextDelimitedItem(Paths,';',p);
+      if Path='' then continue;
       if p>length(Paths) then break;
       SrcPaths[Path]:='1';
     until false;
@@ -801,9 +804,6 @@ begin
     for i:=0 to Target.FileCount-1 do
       AddSrcPathOfFile(SrcPaths,Target.Files[i]);
   end;
-  // add SrcPaths of required packages
-  for i:=0 to Target.RequiredPackageCount-1 do
-    AddPackageNameSrcPaths(Target.RequiredPackages[i].PackageName,'','',SrcPaths,LPKFiles);
 end;
 
 procedure TIDEProjectGroupManager.AddPackageSrcPaths(Target: TIDECompileTarget;
@@ -857,11 +857,14 @@ begin
       // loaded package, can be virtual
       //debugln(['TIDEProjectGroupManager.AddPackageSrcPaths LOADED Pkg.Filename=',Pkg.Filename]);
       AddSrcPathOfFile(SrcPaths,Pkg.Filename);
-      Paths:=Pkg.LazCompilerOptions.GetSrcPath(false);
+      Paths:=Pkg.LazCompilerOptions.GetSrcPath(false)
+        +';'+Pkg.LazCompilerOptions.GetUnitPath(false)
+        +';'+Pkg.LazCompilerOptions.GetIncludePath(false);
       //debugln(['TIDEProjectGroupManager.AddPackageSrcPaths LOADED Paths=',Paths]);
       p:=1;
       repeat
         Path:=GetNextDelimitedItem(Paths,';',p);
+        if Path='' then continue;
         if p>length(Paths) then break;
         SrcPaths[Path]:='1';
       until false;
@@ -884,23 +887,6 @@ begin
       CurFilename:=xml.GetValue(SubPath+'Filename/Value','');
       if CurFilename='' then continue;
       AddSrcPathOfFile(SrcPaths,CurFilename);
-    end;
-
-    // load list of RequiredPackages from lpk
-    Path:='Package/RequiredPkgs/';
-    LegacyList:=xml.IsLegacyList(Path);
-    Cnt:=xml.GetListItemCount(Path, 'Item', LegacyList);
-    for i:=0 to Cnt-1 do begin
-      SubPath:=Path+xml.GetListItemXPath('Item', i, LegacyList, True)+'/';
-      PkgName:=xml.GetValue(SubPath+'PackageName/Value','');
-      if not IsValidPkgName(PkgName) then continue;
-      PreferredFilename:=xml.GetValue(SubPath+'DefaultFilename/Prefer','');
-      if (PreferredFilename<>'') and not FilenameIsAbsolute(PreferredFilename) then
-        PreferredFilename:=ResolveDots(BaseDir+PreferredFilename);
-      DefaultFilename:=xml.GetValue(SubPath+'DefaultFilename/Value','');
-      if (DefaultFilename<>'') and not FilenameIsAbsolute(DefaultFilename) then
-        DefaultFilename:=ResolveDots(BaseDir+DefaultFilename);
-      AddPackageNameSrcPaths(PkgName,PreferredFilename,DefaultFilename,SrcPaths,LPKFiles);
     end;
   finally
     xml.Free;
