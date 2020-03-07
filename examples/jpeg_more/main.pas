@@ -171,7 +171,7 @@ begin
   LblProgressive.Caption := '';
   BtnReadClick(nil);
   SbQualityChange(nil);
-  {$IF FPC_FullVersion >= 30004}
+  {$IF FPC_FullVersion < 30004}
   CbGrayScale.Enabled := false;
   {$ENDIF}
 end;
