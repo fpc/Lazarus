@@ -309,10 +309,19 @@ begin
     Exit;
   Wdgt := TQtWidget(AWinControl.Handle);
   Assert(Assigned(Wdgt), 'TQtWSWinControl.SetText: AWinControl.Handle=Nil');
-  DebugLn(['TQtWSWinControl.SetText: Widget.ClassName=', Wdgt.ClassName]);
-  Wdgt.BeginUpdate;
-  Wdgt.setText(GetUtf8String(AText));
-  Wdgt.EndUpdate;
+  try
+    DebugLn(['TQtWSWinControl.SetText: Widget.ClassName=', Wdgt.ClassName]);
+    if not QtWidgetSet.IsValidHandle(AWinControl.Handle) then
+      DebugLn(['TQtWSWinControl.SetText: "', Wdgt.ClassName,
+               '" has invalid handle=$', IntToHex(AWinControl.Handle,SizeOf(HWND)*2)]);
+    Wdgt.BeginUpdate;
+    Wdgt.setText(GetUtf8String(AText));
+    Wdgt.EndUpdate;
+  except
+    on E: Exception do
+      DebugLn(['TQtWSWinControl.SetText: "', E.Message, '" with "',
+               Wdgt.ClassName, '", handle=$', IntToHex(AWinControl.Handle,SizeOf(HWND)*2)]);
+  end;
 end;
 
 class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,
