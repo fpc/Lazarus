@@ -6168,10 +6168,6 @@ begin
   if AControl is TWinControl then
   begin
     ListAdd(FTabList, AControl);
-
-    if (csDesigning in ComponentState) and (not (csLoading in ComponentState))
-    and AControl.CanTab then
-      TWinControl(AControl).TabStop := true;
   end;
 
   AControl.FParent := Self;
