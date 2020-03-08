@@ -482,6 +482,8 @@ begin
   ACommonDialog.UserChoice := mrCancel;
 
   colorPanel := NSColorPanel.sharedColorPanel();
+  if (colorPanel.respondsToSelector(ObjCSelector('setRestorable:'))) then
+    colorPanel.setRestorable(false);
   colorPanel.setColor(ColorToNSColor(ColorDialog.Color));
 
   colorDelegate := TColorPanelDelegate.alloc.init();
@@ -557,6 +559,8 @@ begin
   ACommonDialog.UserChoice := mrCancel;
 
   fontPanel := NSFontPanel.sharedFontPanel();
+  if (fontPanel.respondsToSelector(ObjCSelector('setRestorable:'))) then
+    fontPanel.setRestorable(false);
   inFont := TCocoaFont(FontDialog.Font.Handle);
   fn := inFont.Font;
   if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then

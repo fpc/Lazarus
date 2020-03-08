@@ -174,6 +174,8 @@ type
     // 10.7+
     procedure toggleFullScreen(sender: id); message 'toggleFullScreen:';
     function backingScaleFactor: CGFloat; message 'backingScaleFactor';
+    function isRestorable: LCLObjCBoolean; message 'isRestorable';
+    procedure setRestorable(ARestore: LCLObjCBoolean); message 'setRestorable:';
     // 10.12
     procedure setTabbingMode(amode: NSWindowTabbingMode); message 'setTabbingMode:';
     function tabbingMode: NSWindowTabbingMode; message 'tabbingMode';
