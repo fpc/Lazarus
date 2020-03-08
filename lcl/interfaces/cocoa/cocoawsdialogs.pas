@@ -92,7 +92,7 @@ type
   public
     colorPanel: NSColorPanel;
     ColorDialog: TColorDialog;
-    DontPickColorOnClose: Boolean;
+    didPickColor: Boolean;
     // NSWindowDelegateProtocol
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     //
@@ -621,7 +621,7 @@ end;
 
 procedure TColorPanelDelegate.windowWillClose(notification: NSNotification);
 begin
-  if not DontPickColorOnClose then
+  if didPickColor then
   begin
     ColorDialog.UserChoice := mrOk;
     doPickColor();
@@ -637,15 +637,13 @@ end;
 procedure TColorPanelDelegate.pickColor();
 begin
   ColorDialog.UserChoice := mrCancel;
-  DontPickColorOnClose := True;
+  didPickColor := True;
   doPickColor();
   exit();
 end;
 
 procedure TColorPanelDelegate.exit();
 begin
-  ColorDialog.UserChoice := mrOk;
-  DontPickColorOnClose := True;
   colorPanel.close();
 end;
 
