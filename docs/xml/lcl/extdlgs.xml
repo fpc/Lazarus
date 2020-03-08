@@ -2,1305 +2,1544 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    ExtDlgs
-  ====================================================================
--->
+    ====================================================================
+      ExtDlgs
+    ====================================================================
+    -->
     <module name="ExtDlgs">
-      <short>Some useful extra dialogs such as Calendar, Calculator and Open/Save Picture</short>
+      <short>
+        Contains useful extra dialogs such as Calendar, Calculator and Open/Save Picture
+      </short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FileUtil">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Dialogs">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ExtCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Forms">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Calendar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Buttons">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+
+      <!-- unresolved type references -->
+      <element name="Types"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LCLProc"/>
+      <element name="LResources"/>
+      <element name="LCLType"/>
+      <element name="LCLStrConsts"/>
+      <element name="InterfaceBase"/>
+      <element name="LCLPlatformDef"/>
+      <element name="FileUtil"/>
+      <element name="LazFileUtils"/>
+      <element name="Controls"/>
+      <element name="Dialogs"/>
+      <element name="GraphType"/>
+      <element name="Graphics"/>
+      <element name="ExtCtrls"/>
+      <element name="StdCtrls"/>
+      <element name="Forms"/>
+      <element name="Calendar"/>
+      <element name="Buttons"/>
+      <element name="Masks"/>
+      <element name="CalcForm"/>
+
       <element name="TPreviewFileControl">
         <short>
-          <var>TPreviewFileControl</var> - a windowed control allowing the contents of a file to be previewed before opening</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>TPreviewFileControl</var> - a windowed control allowing the contents of a file to be previewed before opening
+        </short>
+        <descr>
+          <p>
+            <var>TPreviewFileControl</var> is a <var>TWinControl</var> descendant which implements a windowed control that allows the content in a file to be viewed in a <var>TPreviewFileDialog</var> class instance.
+          </p>
+          <p>
+            TPreviewFileControl is the type used to implement the <var>PreviewFileControl</var> property in <var>TPreviewFileDialog</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.PreviewFileControl"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPreviewFileControl.FPreviewFileDialog">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
+
+      <element name="TPreviewFileControl.FPreviewFileDialog"/>
+
+      <element name="TPreviewFileControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
+      <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+
       <element name="TPreviewFileControl.SetPreviewFileDialog">
         <short>
-          <var>SetPreviewFileDialog</var> - specify the PreviewFile Dialog to be used</short>
+          Sets the value for the PreviewFileDialog property
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPreviewFileControl.PreviewFileDialog"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPreviewFileControl.SetPreviewFileDialog.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TPreviewFileControl.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <p>
+            Overridden to ensure proper handling of the WS_CHILD flag in Style in the Parent control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLType.TCreateParams"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPreviewFileControl.CreateParams.Params">
         <short/>
       </element>
-      <!-- constructor Visibility: public -->
+
       <element name="TPreviewFileControl.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor. Create sets the value for the <var>CompStyle</var> member (deprecated), and calls <var>SetInitialBounds</var> to size the control using the values returned from <var>GetControlClassDefaultSize</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileControl.GetControlClassDefaultSize"/>
+          <link id="#lcl.Controls.TControl.SetInitialBounds"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPreviewFileControl.Create.TheOwner">
-        <short/>
+        <short>Owner for the class instance</short>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPreviewFileControl.PreviewFileDialog">
-        <short>The <var>PreviewFileDialog</var> that is used for this control</short>
-        <descr/>
-        <seealso/>
+        <short>Dialog which created the file preview control</short>
+        <descr>
+          <p>
+            <var>PreviewFileDialog</var> is a <var>TPreviewFileDialog</var> property which contains the dialog which created the file preview control. The value in PreviewFileDialog is is assigned in the <var>CreatePreviewControl</var> method in  <var>TPreviewFileDialog</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.CreatePreviewControl"/>
+        </seealso>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TPreviewFileDialog">
+
+      <element name="TPreviewFileDialog" link="#lcl.Dialogs.TOpenDialog">
         <short>
-          <var>TPreviewFileDialog</var> - a dialog that allows the file contents to be inspected before opening the file</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>TPreviewFileDialog</var> - a dialog that allows the contents of a file to be inspected before opening the file
+        </short>
+        <descr>
+          <p>
+            <var>TPreviewFileDialog</var> is a <var>TOpenDialog</var> descendant which implement a dialog used to preview and select a file on the local file system. TPreviewFileDialog extends the ancestor class with additional properties, methods, and events used to configure and execute the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileControl"/>
+          <link id="#lcl.Dialogs.TOpenDialog"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPreviewFileDialog.FPreviewFileControl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
+
+      <element name="TPreviewFileDialog.FPreviewFileControl"/>
+
+      <element name="TPreviewFileDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
       <element name="TPreviewFileDialog.CreatePreviewControl">
         <short>
-          <var>CreatePreviewControl</var> - create an instance of the windowed control that uses this dialog</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>CreatePreviewControl</var> - create an instance of the windowed control used in the dialog
+        </short>
+        <descr>
+          <p>
+            <var>CreatePreviewControl</var> is a procedure used to create and initialize the class instance used in the <var>PreviewFileControl</var> property. CreatePreviewControl create a <var>TPreviewFileControl</var> instance, sets its <var>PreviewFileDialog</var> property to the current class, and calls the <var>InitPreviewControl</var> method.
+          </p>
+          <p>
+            CreatePreviewControl is called from the <var>DoExecute</var> method in <var>TPreviewFileDialog</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.PreviewFileControl"/>
+          <link id="TPreviewFileControl"/>
+          <link id="TPreviewFileDialog.DoExecute"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TPreviewFileDialog.InitPreviewControl">
         <short>
-          <var>InitPreviewControl</var> - initializes the windowed control that uses this dialog</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>InitPreviewControl</var> - initializes the windowed control created for the dialog
+        </short>
+        <descr>
+          <p>
+            <var>InitPreviewControl</var> is a procedure used to initialize the <var>PreviewFileControl</var> property used in the dialog. InitPreviewControl sets the name for the control. InitPreviewControl is called from the <var>CreatePreviewControl</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.PreviewFileControl"/>
+          <link id="TPreviewFileDialog.CreatePreviewControl"/>
+        </seealso>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TPreviewFileDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TPreviewFileDialog.DoExecute" link="#LCL.Dialogs.TOpenDialog.DoExecute">
+        <short>Creates the PreviewFileControl and displays the dialog</short>
+        <descr>
+          <p>
+            <var>DoExecute</var> is an overridden Boolean function in   <var>TPreviewFileDialog</var>.
+          </p>
+          <p>
+            DoExecute calls the <var>CreatePreviewControl</var> method to allocate resources for the <var>PreviewFileControl</var> property. It calls the inherited method to display the dialog, select a file on the local file system, and get the return value for the method. The return value is <b>True</b> when the dialog return value in <var>UserChoice</var> is <var>mrOk</var>.
+          </p>
+          <p>
+            DoExecute is called from the <var>Execute</var> method in the    <var>TCommonDialog</var> ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.CreatePreviewControl"/>
+          <link id="TPreviewFileDialog.PreviewFileControl"/>
+          <link id="#lcl.Dialogs.TCommonDialog.Execute"/>
+          <link id="#lcl.Dialogs.TCommonDialog.UserChoice"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TPreviewFileDialog.Execute.Result">
-        <short/>
-      </element>
-      <!-- constructor Visibility: public -->
+
       <element name="TPreviewFileDialog.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor, and sets the value in CompStyle (deprecated) to <var>csPreviewFileDialog</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.Dialogs.TCommonDialog.FCompStyle"/>
+          <link id="#lcl.LCLType.csPreviewFileDialog"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPreviewFileDialog.Create.TheOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPreviewFileDialog.PreviewFileControl">
         <short>
-          <var>PreviewFileControl</var> - the windowed control that uses this dialog</short>
-        <descr/>
-        <seealso/>
+          Windowed control used to preview the contents of a file in the  dialog
+        </short>
+        <descr>
+          <p>
+            <var>PreviewFileControl</var> is a read-only <var>TPreviewFileControl</var> property which contains the windowed control used to preview the contents of a file in the dialog. The resources for the property are allocated in the <var>CreatePreviewControl</var> method called when the dialog is executed. The property value is unassigned (contains <b>Nil</b>) prior to calling <var>Execute</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileControl"/>
+          <link id="TPreviewFileDialog.CreatePreviewControl"/>
+          <link id="TPreviewFileDialog.Execute"/>
+        </seealso>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TOpenPictureDialog">
         <short>
-          <var>TOpenPictureDialog</var> - a preview dialog that shows a preview of a picture before opening the file</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>TOpenPictureDialog</var> - a preview dialog that shows a preview of a picture before opening the file
+        </short>
+        <descr>
+          <p>
+            <var>TOpenPictureDialog</var> is a <var>TPreviewFileDialog</var> descendant which implements a dialog used to preview and select image files using common image formats recognized for the platform or OS. It provides <var>DefaultFilter</var> and <var>Filter</var> properties which use  file masks for file extensions supported for the <var>TGraphic</var> class. The <var>ImageCtrl</var> property provides the image preview for the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+          <link id="TOpenPictureDialog.DefaultFilter"/>
+          <link id="TOpenPictureDialog.Filter"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TOpenPictureDialog.FDefaultFilter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TOpenPictureDialog.FImageCtrl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TOpenPictureDialog.FPictureGroupBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TOpenPictureDialog.FPreviewFilename">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
+
+      <element name="TOpenPictureDialog.FDefaultFilter"/>
+      <element name="TOpenPictureDialog.FImageCtrl"/>
+      <element name="TOpenPictureDialog.FPictureGroupBox"/>
+      <element name="TOpenPictureDialog.FPreviewFilename"/>
+
+      <element name="TOpenPictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
       <element name="TOpenPictureDialog.IsFilterStored">
         <short>
-          <var>IsFilterStored</var> - returns True if a filter is stored</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>IsFilterStored</var> - returns True if a filter is stored
+        </short>
+        <descr>
+          <p>
+            <var>IsFilterStored</var> is a <var>Boolean</var> function used to get the value for the storage specifier for the <var>Filter</var> property. The return value indicates if the value in Filter is included in the content read and written using the LCL component streaming mechanism. It returns <b>True</b> when the value in Filter is different than the value in <var>DefaultFilter</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.Filter"/>
+          <link id="TOpenPictureDialog.DefaultFilter"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TOpenPictureDialog.IsFilterStored.Result">
-        <short/>
+        <short>True when Filter is included in the LCL component streaming content</short>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.PreviewKeyDown">
-        <short>
-          <var>PreviewKeyDown</var> - determines if the Preview key has been pressed</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TOpenPictureDialog.PreviewKeyDown.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TOpenPictureDialog.PreviewKeyDown.Key">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.PreviewClick">
-        <short>
-          <var>PreviewClick</var> - method for emulating a click on the Preview button</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TOpenPictureDialog.PreviewClick.Sender">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoClose" link="#LCL.Dialogs.TCommonDialog.DoClose">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoSelectionChange" link="#LCL.Dialogs.TOpenDialog.DoSelectionChange">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoShow" link="#LCL.Dialogs.TCommonDialog.DoShow">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
+
       <element name="TOpenPictureDialog.ImageCtrl">
         <short>
-          <var>ImageCtrl</var> - the Image used as a control</short>
-        <descr/>
-        <seealso/>
+          TImage used to preview the content in an image file
+        </short>
+        <descr>
+          <var>ImageCtrl</var> is a read-only TImage property which contains the image used to preview the content for an image file on the local file system.
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.ClearPreview"/>
+          <link id="TOpenPictureDialog.UpdatePreview"/>
+        </seealso>
       </element>
-      <!-- property Visibility: protected -->
+
       <element name="TOpenPictureDialog.PictureGroupBox">
         <short>
-          <var>PictureGroupBox</var> - a groupbox related to a single picture</short>
-        <descr/>
-        <seealso/>
+          <var>PictureGroupBox</var> - a groupbox related to a single picture ???
+        </short>
+        <descr>
+          <p>
+            <var>PictureGroupBox</var> is a read-only <var>TGroupBox</var> property which provides a container for the <var>ImageCtrl</var> in the dialog. PictureGroupBox is assigned as the Parent for the ImageCtrl property, and provides the bounds to which the ImageCtrl is aligned. In turn, PictureGroupBox uses the PreviewFileControl as its Parent.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+          <link id="TOpenPictureDialog.PreviewFileControl"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TOpenPictureDialog.InitPreviewControl" link="#LCL.ExtDlgs.TPreviewFileDialog.InitPreviewControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Initializes the PreviewFileControl for the dialog</short>
+        <descr>
+          <p>
+            <var>InitPreviewControl</var> is overridden in <var>TOpenPictureDialog</var>. InitPreviewControl calls the inherited method, and ensures that  <var>PreviewFileControl</var> is assigned as the Parent control for <var>PictureGroupBox</var>. InitPreviewControl is called from the inherited <var>CreatePreviewControl</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.PreviewFileControl"/>
+          <link id="TPreviewFileDialog.CreatePreviewControl"/>
+          <link id="TPreviewFileDialog.PictureGroupBox"/>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TOpenPictureDialog.ClearPreview">
         <short>
-          <var>ClearPreview</var> - clears the preview area</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>ClearPreview</var> - clears the preview area
+        </short>
+        <descr>
+          <p>
+            <var>ClearPreview</var> is a procedure used to clear the image content and the caption displayed in the dialog. ClearPreview is called from the      <var>DoShow</var>, <var>DoClose</var>, and <var>UpdatePreview</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.PictureGroupBox"/>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+          <link id="TOpenPictureDialog.DoShow"/>
+          <link id="TOpenPictureDialog.DoClose"/>
+          <link id="TOpenPictureDialog.UpdatePreview"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TOpenPictureDialog.UpdatePreview">
         <short>
-          <var>UpdatePreview</var> - updates the preview image, implementing any pending changes</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>UpdatePreview</var> - updates the preview image, implementing any pending changes
+        </short>
+        <descr>
+          <p>
+            <var>UpdatePreview</var> is a procedure used to update the file name and image used in the preview dialog. Please note: No actions are needed or performed in the method when FileName has the same value as PreviewFileName.
+          </p>
+          <p>
+            The <var>FileName</var> property is assigned to <var>PreviewFileName</var>, which is used as the source for the content displayed in <var>ImageCtrl</var>. FileName must be a valid file name on the local file system, and have read permissions. PreviewFileName is loaded into the picture for the ImageCtrl, and the caption in <var>PictureGroupBox</var> is updated to display the Width and Height for the stored image in the format <b>'(%dx%d)'</b>.
+          </p>
+          <p>
+            If the file is not successully loaded (due to permissions or image format), the <var>ClearPreview</var> method is called.
+          </p>
+          <p>
+            UpdatePreview is called from the <var>DoSelectionChange</var> method when the selected file name for the preview dialog has changed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+          <link id="TOpenPictureDialog.PictureGroupBox"/>
+          <link id="TOpenPictureDialog.DoSelectionChange"/>
+          <link id="TOpenPictureDialog.ClearPreview"/>
+          <link id="TPreviewFileDialog.PreviewFileName"/>
+          <link id="TFileDialog.FileName"/>
+        </seealso>
       </element>
-      <!-- constructor Visibility: public -->
+
       <element name="TOpenPictureDialog.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor.
+          </p>
+          <p>
+            Creates sets the value in <var>DefaultFilter</var> to the all files mask for common image format used on the platform or OS. This value is also assigned to the <var>Filter</var> property for the dialog.
+          </p>
+          <p>
+            Create allocates resources needed for the <var>PictureGroupBox</var> and <var>ImageCtrl</var> properties, and sets their parentage, alignment, and display properties.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.PictureGroupBox"/>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+          <link id="TOpenPictureDialog.DefaultFilter"/>
+          <link id="TOpenPictureDialog.Filter"/>
+          <link id="#lcl.Graphics.GraphicFilter"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TOpenPictureDialog.Create.TheOwner">
-        <short/>
+        <short>Owner for the class instance</short>
       </element>
-      <!-- property Visibility: public -->
+
+      <element name="TOpenPictureDialog.DoClose" link="#LCL.Dialogs.TCommonDialog.DoClose">
+        <short>
+          Performs actions needed when the dialog is closed
+        </short>
+        <descr>
+          <p>
+            <var>DoClose</var> is an overridden method used to perform actions needed when the dialog is closed. DoClose calls <var>ClearPreview</var> to remove image content displayed in <var>ImageCtrl</var> and to clear the caption assigned to <var>PictureGroupBox</var>.
+          </p>
+          <p>
+            DoClose calls the inherited method to signal the <var>OnClose</var> event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.ClearPreview"/>
+          <link id="TOpenPictureDialog.PictureGroupBox"/>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+          <link id="#lcl.Dialogs.TCommonDialog.DoClose"/>
+          <link id="#lcl.Dialogs.TCommonDialog.OnClose"/>
+        </seealso>
+      </element>
+
+      <element name="TOpenPictureDialog.DoSelectionChange" link="#LCL.Dialogs.TOpenDialog.DoSelectionChange">
+        <short>
+          Performs actions needed when the selected file name for the dialog is changed
+        </short>
+        <descr>
+          <p>
+            <var>DoSelectionChange</var> is an overridden method used to perform actions needed when the selected file name for the dialog is changed. DoSelectionChange calls <var>UpdatePreview</var> to update the <var>PreviewFileName</var>, <var>ImageCtrl</var> and <var>PictureGroupBox</var> properties.
+          </p>
+          <p>
+            DoSelectionChange calls the inherited method to signal the   <var>OnSelectionChange</var> event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.PreviewFileName"/>
+          <link id="TOpenPictureDialog.ImageCtrl"/>
+          <link id="TOpenPictureDialog.PictureGroupBox"/>
+          <link id="#LCL.Dialogs.TOpenDialog.FileName"/>
+          <link id="#LCL.Dialogs.TOpenDialog.DoSelectionChange"/>
+          <link id="#LCL.Dialogs.TOpenDialog.OnSelectionChange"/>
+        </seealso>
+      </element>
+
+      <element name="TOpenPictureDialog.DoShow" link="#lcl.Dialogs.TCommonDialog.DoShow">
+        <short>
+          Performs actions needed to display the preview dialog in its initial state
+        </short>
+        <descr>
+          <p>
+            <var>DoShow</var> is an overridden procedure used to display the Picture FIle Open preview dialog. DoShow calls <var>ClearPreview</var> to set the dialog to the state needed prior to selecting an image file name in the preview dialog.
+          </p>
+          <p>
+            DoShow calls the inherited method to signal the <var>OnShow</var> event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.ClearPreview"/>
+          <link id="#lcl.Dialogs.TCommonDialog.DoShow"/>
+          <link id="#lcl.Dialogs.TCommonDialog.OnShow"/>
+        </seealso>
+      </element>
+
+      <element name="TOpenPictureDialog.GetFilterExt">
+        <short>
+          <var>GetFilterExt</var> - returns the extension for filtering filenames
+        </short>
+        <descr>
+          <p>
+            <var>GetFilterExt</var> is a <var>String</var> function used to get the file extension for the value in the Filter property. GetFilterExt parses the value in <var>Filter</var>, and ignores the all files mask (<b>'*.*'</b>) in favor of actual file extensions included  in the property.
+          </p>
+          <p>
+            The return value contains the file extension found in the Filter property. If no file extension is found in Filter, the value in <var>DefaultExt</var> is used as the return value.
+          </p>
+          <p>
+            GetFilterEx is used by the Lazarus IDE in the implementation of property editors for <var>TGraphic</var> and <var>TImageList</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.Filter"/>
+          <link id="#lcl.Dialogs.TFileDialog.DefaultExt"/>
+          <link id="#lcl.Graphics.TGraphic"/>
+          <link id="#lcl.ImgList.TCustomImageList"/>
+        </seealso>
+      </element>
+      <element name="TOpenPictureDialog.GetFilterExt.Result">
+        <short>
+          File extension found in the method, or an empty string when no extension is available
+        </short>
+      </element>
+
       <element name="TOpenPictureDialog.DefaultFilter">
         <short>
-          <var>DefaultFilter</var> - the default filename filter</short>
-        <descr/>
-        <seealso/>
+          <var>DefaultFilter</var> - the default filename filter
+        </short>
+        <descr>
+          <p>
+            <var>DefaultFilter</var> is a read-only <var>String</var> property which provides the default value for the <var>Filter</var> property. DefaultFilter is populated in the <var>Create</var> constructor with the common image formats supported for the platform or OS. Its value is assigned as the default value for the Filter property in the constructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.Create"/>
+          <link id="TOpenPictureDialog.Filter"/>
+          <link id="#lcl.Graphics.GraphicFilter"/>
+        </seealso>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TOpenPictureDialog.Filter" link="#LCL.Dialogs.TFileDialog.Filter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TSavePictureDialog">
         <short>
-          <var>TSavePictureDialog</var> - a dialog for saving the picture in the current buffer to a file</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          Contains a delimited list of descriptions and extensions for file available in the dialog
+        </short>
+        <descr>
+          <p>
+            <var>Filter</var> is a <var>String</var> property which contains a delimited list of file name filters available in the dialog. Each value in the delimited list is separated by a Pipe (or vertical bar) character ('|') and consists of a description and file extension for files matching the filter value.
+          </p>
+          <p>
+            The initial value for Filter is assigned in <var>Create</var> using the value from the <var>DefaultFilter</var> property.
+          </p>
+          <p>
+            Use <var>GetFilterExt</var> to get the file extension for the current Filter value selected in the dialog. Use <var>FilterIndex</var> to determine the position for the selected file filter.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TOpenPictureDialog.Create"/>
+          <link id="TOpenPictureDialog.DefaultFilter"/>
+          <link id="TOpenPictureDialog.GetFilterExt"/>
+          <link id="#lcl.Dialogs.TFileDialog.FilterIndex"/>
+        </seealso>
       </element>
-      <!-- constructor Visibility: public -->
+
+      <element name="TSavePictureDialog" link="TOpenPictureDialog">
+        <short>
+          <var>TSavePictureDialog</var> - a dialog for saving the picture in the current buffer to a file
+        </short>
+        <descr>
+          <p>
+            <var>TSavePictureDialog</var> is a <var>TOpenPictureDialog</var> descendant which implements a dialog used to save a picture to a file. TSavePictureDialog provides the same preview capabilities implemented in ancestor classes, and provides an overridden <var>DefaultTitle</var> method to set the title displayed in the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSavePictureDialog.DefaultTitle"/>
+          <link id="TOpenPictureDialog"/>
+        </seealso>
+      </element>
+
+      <element name="TSavePictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
+      <element name="TSavePictureDialog.DefaultTitle" link="TOpenPictureDialog.DefaultTitle">
+        <short>Gets the default value for the Title property</short>
+        <descr>
+          <p>
+            <var>DefaultTitle</var> is an overridden <var>String</var> function in <var>TSavePictureDialog</var>. It returns the value in <var>rsfdFileSaveAs</var> as the <var>Title</var> used for the dialog. DefaultTitle is used in the constructor in <var>TCommonDialog</var> to set the value for the <var>Title</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.Dialogs.TCommonDialog.Create"/>
+          <link id="#lcl.Dialogs.TCommonDialog.Title"/>
+          <link id="#lcl.LCLStrConsts.rsfdFileSaveAs"/>
+        </seealso>
+      </element>
+      <element name="TSavePictureDialog.DefaultTitle.Result">
+        <short>Default value for the Title property</short>
+      </element>
+
       <element name="TSavePictureDialog.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor. Create sets the value in the <var>FCompStyle</var> member (deprecated) to the value <var>csSaveFileDialog</var>.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSavePictureDialog.Create.TheOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="DefCalcPrecision">
-        <short/>
+
+      <element name="TExtCommonDialog" link="#lcl.Dialogs.TCommonDialog">
+        <short>The common base class for custom drawn dialogs (Calculator and Calendar)</short>
+        <descr>
+          <p>
+            <var>TExtCommonDialog</var> is a <var>TCommonDialog</var> descendant which implements a common base class for custom drawn dialogs such as <var>TCalculatorDialog</var> and <var>TCalendarDialog</var>. It provides additional properties used to set the position for the form displayed in the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TExtCommonDialog.DlgForm"/>
+          <link id="TExtCommonDialog.DialogPosition"/>
+          <link id="TExtCommonDialog.Left"/>
+          <link id="TExtCommonDialog.Top"/>
+          <link id="#lcl.Dialogs.TCommonDialog"/>
+          <link id="TCalculatorDialog"/>
+          <link id="TCalendarDialog"/>
+        </seealso>
+      </element>
+
+      <element name="TExtCommonDialog.FDialogPosition"/>
+      <element name="TExtCommonDialog.FLeft"/>
+      <element name="TExtCommonDialog.FTop"/>
+      <element name="TExtCommonDialog.FDlgForm"/>
+
+      <element name="TExtCommonDialog.GetLeft">
+        <short>Gets the value for the Left property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TExtCommonDialog.Left"/>
+        </seealso>
       </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TCalcState">
-        <short/>
+      <element name="TExtCommonDialog.GetLeft.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TExtCommonDialog.GetHeight" link="#lcl.Dialogs.TCommonDialog.GetHeight">
+        <short>Gets the value for the Height property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TExtCommonDialog.Height"/>
+        </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TCalcState.csFirst">
-        <short/>
+      <element name="TExtCommonDialog.GetHeight.Result">
+        <short>Value for the property</short>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TCalcState.csValid">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TCalcState.csError">
-        <short/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TCalculatorLayout">
-        <short/>
+
+      <element name="TExtCommonDialog.GetTop">
+        <short>Gets the value for the Top property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TExtCommonDialog.Top"/>
+        </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TCalculatorLayout.clNormal">
-        <short/>
+      <element name="TExtCommonDialog.GetTop.Result">
+        <short>Value for the property</short>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TCalculatorLayout.clSimple">
-        <short/>
+
+      <element name="TExtCommonDialog.GetWidth" link="#lcl.Dialogs.TCommonDialog.GetWidth">
+        <short>Gets the value for the Width property</short>
+        <descr/>
+        <seealso>
+          <link id="TExtCommonDialog.Width"/>
+        </seealso>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TCalculatorDialog">
+      <element name="TExtCommonDialog.GetWidth.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TExtCommonDialog.SetLeft">
+        <short>Sets the value for the Left property</short>
+        <descr/>
+        <seealso>
+          <link id="TExtCommonDialog.Left"/>
+        </seealso>
+      </element>
+      <element name="TExtCommonDialog.SetLeft.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TExtCommonDialog.SetTop">
+        <short>Sets the value for the Top property</short>
+        <descr/>
+        <seealso>
+          <link id="TExtCommonDialog.Top"/>
+        </seealso>
+      </element>
+      <element name="TExtCommonDialog.SetTop.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TExtCommonDialog.DlgForm">
         <short>
-          <var>TCalculatorDialog</var> - a small calculator window that pops up, allowing the user to perform simple calculations and return the value to the calling Component</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          Contains the form displayed modally for the custom-drawn dialog
+        </short>
+        <descr>
+          <p>
+            <var>DlgForm</var> is a <var>TCustomForm</var> property which contains the form displayed with the content for the custom-drawn dialog.
+          </p>
+          <p>
+            The value in DlgForm is assigned in descendent classes to use the form type required for the dialog. Changes to values in the <var>Top</var>, <var>Left</var>, and <var>DialogPosition</var> properties are applied to the corresponding properties in DlgForm.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TExtCommonDialog.DialogPosition"/>
+          <link id="TExtCommonDialog.Left"/>
+          <link id="TExtCommonDialog.Top"/>
+          <link id="TCommonDialog.Height"/>
+          <link id="TCommonDialog.Width"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FLayout">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TExtCommonDialog.Create" link="#lcl.Dialogs.TCommonDialog.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method. Create sets the default value for the <var>DialogPosition</var> property to <var>poMainFormCenter</var>.
+        </descr>
+        <seealso>
+          <link id="TExtCommonDialog.DialogPosition"/>
+          <link id="#lcl.Forms.TPosition"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FValue">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TExtCommonDialog.Create.AOwner">
+        <short>Owner of the class instance</short>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FMemory">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FTitle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FCtl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FPrecision">
-        <short/>
+
+      <element name="TExtCommonDialog.Destroy" link="#lcl.Dialogs.TCommonDialog.Destroy">
+        <short>Destructor for the class instance</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FBeepOnError">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TExtCommonDialog.Left">
+        <short>Contains the left coordinate for the dialog form</short>
+        <descr>
+          <p>
+            <var>Left</var> is an <var>Integer</var> property which contains the client coordinate for the left-hand edge of the dialog. Read and write access for the property value are redirected to the Left property in DlgForm (when assigned).
+          </p>
+          <p>
+            Use the Top <var>property</var> to access the coordinate for the top edge of the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TExtCommonDialog.DlgForm"/>
+          <link id="TExtCommonDialog.Top"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FHelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TExtCommonDialog.Top">
+        <short>Contains the top coordinate for the dialog form</short>
+        <descr>
+          <p>
+            <var>Top</var> is an <var>Integer</var> property which contains the client coordinate for the top edge of the dialog. Read and write access for the property value are redirected to the Top property in DlgForm (when assigned).
+          </p>
+          <p>
+            Use the <var>Left</var> property to access the coordinate for the left-hand edge of the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TExtCommonDialog.DlgForm"/>
+          <link id="TExtCommonDialog.Left"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FCalc">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TExtCommonDialog.DialogPosition">
+        <short>
+          Specifies the position where the dialog is displayed
+        </short>
+        <descr>
+          <p>
+            <var>DialogPosition</var> is a <var>TPosition</var> property which specifies the position where the dialog is displayed. The default value for the property is <var>poMainFormCenter</var>, and indicates that the dialog is centered both horizontally and vertically on the main form for the application.
+          </p>
+          <p>
+            See <link id="#lcl.Forms.TPosition"/> for more information about the values in the TPosition enumeration and their meanings.
+          </p>
+          <p>
+            The value in DialogPosition is used in descendent classes when the dialog is Executed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.Forms.TPosition.poMainFormCenter"/>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="TCalendarDialog.Execute"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TCalculatorDialog" link="TExtCommonDialog">
+        <short>
+          Implements a pop-up calculator dialog used to perform simple calculations and return the value
+        </short>
+        <descr>
+          <p>
+            <var>TCalculatorDialog</var> is a <var>TExtCommonDialog</var> descendant which implements a pop-up calculator dialog used to perform calculations and return the result in the Value property. Value uses the Double type, and can be represented using the number of digits in the Precision property.
+          </p>
+          <p>
+            TCalculatorDialog uses a TCalculatorForm instance in the DlgForm property which includes separate panels to display the input value, numeric keys, labels, and other buttons on the dialog form. A CalculatorLayout property allows use of  a detailed or a simplified view on the form. Properties are provided to set the colors used for components on DlgForm, including:
+          </p>
+          <ul>
+            <li>ColorBtnDigits</li>
+            <li>ColorBtnMemory</li>
+            <li>ColorBtnOk</li>
+            <li>ColorBtnCancel</li>
+            <li>ColorBtnClear</li>
+            <li>ColorBtnOthers</li>
+            <li>ColorDisplayText</li>
+            <li>ColorDisplayBack</li>
+          </ul>
+          <p>
+            Use the Memory property to store or retrieve a value for the calculator dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TExtCommonDialog"/>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FOnCalcKey">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorDialog.FOnDisplayChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
+
+      <element name="TCalculatorDialog.FLayout"/>
+      <element name="TCalculatorDialog.FValue"/>
+      <element name="TCalculatorDialog.FMemory"/>
+      <element name="TCalculatorDialog.FPrecision"/>
+      <element name="TCalculatorDialog.FBeepOnError"/>
+      <element name="TCalculatorDialog.FOnChange"/>
+      <element name="TCalculatorDialog.FOnCalcKey"/>
+      <element name="TCalculatorDialog.FOnDisplayChange"/>
+      <element name="TCalculatorDialog.FDialogScale"/>
+      <element name="TCalculatorDialog.FColorBtnDigits"/>
+      <element name="TCalculatorDialog.FColorBtnOthers"/>
+      <element name="TCalculatorDialog.FColorBtnMemory"/>
+      <element name="TCalculatorDialog.FColorBtnOk"/>
+      <element name="TCalculatorDialog.FColorBtnCancel"/>
+      <element name="TCalculatorDialog.FColorBtnClear"/>
+      <element name="TCalculatorDialog.FColorDisplayText"/>
+      <element name="TCalculatorDialog.FColorDisplayBack"/>
+
       <element name="TCalculatorDialog.GetDisplay">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Gets the value for the CalcDisplay property</short>
+        <descr>
+          <p>
+            <var>GetDisplay</var> is a <var>Double</var> function used to get the display value from the form instance in <var>DlgForm</var>. If DlgForm has not been assigned,   the <var>Value</var> property is used as the return value for the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorDialog.CalcDisplay"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCalculatorDialog.GetDisplay.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCalculatorDialog.GetTitle">
-        <short/>
+
+      <element name="TCalculatorDialog.SetDialogScale">
+        <short>Sets the value for the DialogScale property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+        </seealso>
+        <link id="TCalculatorDialog.DialogScale"/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalculatorDialog.GetTitle.Result">
-        <short/>
+      <element name="TCalculatorDialog.SetDialogScale.AValue">
+        <short>New value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalculatorDialog.SetTitle">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCalculatorDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
+      <element name="TCalculatorDialog.OnDialogClose">
+        <short>Implements the event handler signalled when the dialog is closed</short>
+        <descr>
+          <p>
+              <var>OnDialogClose</var> implements the event handler signalled when the dialog form is closed.  OnDialogClose calls the DoClose method to execute the OnClose event handler (when assigned).
+          </p>
+          <p>
+            <var>OnDialogClose</var> is assigned as the <var>OnClose</var> event handler for the form in <var>DlgForm</var> in the <var>Execute</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorForm.OnClose"/>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="TCalculatorDialog.DoClose"/>
+          <link id="TCalculatorDialog.OnClose"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorDialog.SetTitle.AValue">
-        <short/>
+      <element name="TCalculatorDialog.OnDialogClose.Sender">
+        <short>Object for the event notification</short>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCalculatorDialog.TitleStored">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TCalculatorDialog.OnDialogClose.CloseAction">
+        <short>Action performed to close the dialog</short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalculatorDialog.TitleStored.Result">
-        <short/>
+
+      <element name="TCalculatorDialog.OnDialogShow">
+        <short>Implements the event handler signalled when the dialog is displayed</short>
+        <descr>
+          <p>
+            <var>OnDialogShow</var> implements the event handler signalled when the dialog form is displayed. OnDialogShow calls the <var>DoShow</var> method to signal the <var>OnShow</var> event handler (when assigned).
+          </p>
+          <p>
+            OnDialogShow is assigned as the <var>OnShow</var> event handler for the form in <var>DlgForm</var> in the <var>Execute</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorForm.OnShow"/>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="TCalculatorDialog.DoShow"/>
+          <link id="TCalculatorDialog.OnShow"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorDialog.OnDialogShow.Sender">
+        <short>Object for the event notification</short>
+      </element>
+
+      <element name="TCalculatorDialog.OnDialogCloseQuery">
+        <short>
+          Implements the event handler signalled to determine if the dialog can be closed
+        </short>
+        <descr>
+          <p>
+            <var>OnDialogCloseQuery</var> implements the event handler signalled to determine if the dialog can be closed.  OnDialogCloseQuery sets the value in the <var>UserChoice</var> property to the modal result returned by the dialog form in <var>DlgForm</var>. It calls <var>DoCanClose</var> to signal the <var>OnCanClose</var> event handler (when assigned).
+          </p>
+          <p>
+            OnDialogCloseQuery is assigned as the <var>OnCloseQuery</var> event handler for the form in DlgForm in the <var>Execute</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorForm.OnCloseQuery"/>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="TCalculatorDialog.DoCanClose"/>
+          <link id="TCalculatorDialog.OnCanClose"/>
+        </seealso>
+      </element>
+      <element name="TCalculatorDialog.OnDialogCloseQuery.Sender">
+        <short>Object for the event notification</short>
+      </element>
+      <element name="TCalculatorDialog.OnDialogCloseQuery.CanClose">
+        <short>True when the dialog can be closed</short>
+      </element>
+
       <element name="TCalculatorDialog.Change">
         <short>
-          <var>Change</var> - software emulator for the <var>OnChange</var> event</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>Change</var> - software emulator for the <var>OnChange</var> event ???
+        </short>
+        <descr>
+          <p>
+            <var>Change</var> is a procedure used to perform actions needed when the dialog has been changed. Change signals the <var>OnChange</var> event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorDialog.OnChange"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TCalculatorDialog.CalcKey">
         <short>
-          <var>CalcKey</var> - software emulator for the <var>OnCalcKey</var> event</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          Implements the event handler signalled to process keys in the dialog
+        </short>
+        <descr>
+          <p>
+            <var>CalcKey</var> is a procedure which implements the event handler signalled to process keys in the dialog. CalcKey signals the <var>OnCalcKey</var> event handler (when assigned).
+          </p>
+          <p>
+            CalcKey is assigned as the <var>OnCalcKey</var> event handler for <var>DlgForm</var> in the <var>Execute</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorForm.OnCalcKey"/>
+          <link id="TCalculatorDialog.OnCalcKey"/>
+          <link id="TCalculatorDialog.Execute"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCalculatorDialog.CalcKey.Key">
-        <short/>
+        <short>Key examined in the event handler</short>
       </element>
-      <!-- procedure Visibility: protected -->
+
+      <element name="TCalculatorDialog.DefaultTitle" link="#lcl.Dialogs.TCommonDialog.DefaultTitle">
+        <short>
+          Gets the default value used in the Title property for the calculator dialog
+        </short>
+        <descr>
+          <p>
+            <var>DefaultTitle</var> is an overridden <var>String</var> function which gets the default value used in the <var>Title</var> property for the calculator dialog. The return value is set to the <var>rsCalculator</var> resource string in <var>TCalculatorDialog</var>.
+          </p>
+          <p>
+            The value from DefaultTitle is assigned as the value for the Title property in the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.Dialogs.TCommonDialog.Title"/>
+          <link id="#lcl.Dialogs.TCommonDialog.Create"/>
+          <link id="TCalculatorDialog.Create"/>
+        </seealso>
+      </element>
+      <element name="TCalculatorDialog.DefaultTitle.Result">
+        <short></short>
+      </element>
+
       <element name="TCalculatorDialog.DisplayChange">
         <short>
-          <var>DisplayChange</var> - software emulator for the <var>OnDisplayChange</var> event</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCalculatorDialog.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorDialog.Create.AOwner">
-        <short/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TCalculatorDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCalculatorDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalculatorDialog.Execute.Result">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCalculatorDialog.CalcDisplay">
-        <short>
-          <var>CalcDisplay</var> - the current numerical value in the main calculator display</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCalculatorDialog.Memory">
-        <short>
-          <var>Memory</var> - the value stored in the calculator's memory</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.BeepOnError">
-        <short>
-          <var>BeepOnError</var> - if True, beeps when there is an entry error or other calculator error</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.Ctl3D">
-        <short>
-          <var>Ctl3D</var> - deprecated property (for Delphi compatibility)</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.HelpContext" link="#LCL.Dialogs.TCommonDialog.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.CalculatorLayout">
-        <short>
-          <var>CalculatorLayout</var> - whether simple or normal</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.Precision">
-        <short>
-          <var>Precision</var> - the level of precision to be used in calculations; default is set by <var>DefCalcPrecision</var>
+          <var>DisplayChange</var> - software emulator for the <var>OnDisplayChange</var> event
         </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title">
-        <short/>
+
+      <element name="TCalculatorDialog.Create" link="#rtl.Classes.TComponent.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCalculatorDialog.Create.AOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TCalculatorDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
+        <short>Destructor for the class instance</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.Value">
-        <short>
-          <var>Value</var> - the numerical value (result) returned by the calculator</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.OnCalcKey">
-        <short>
-          <var>OnCalcKey</var> - event handler for a key press in the calculator</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.OnChange">
-        <short>
-          <var>OnChange</var> - event handler for any change in the calculator</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.OnDisplayChange">
-        <short>
-          <var>OnDisplayChange</var> - event handler for any change in the calculator display</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TCalculatorForm">
-        <short>
-          <var>TCalculatorForm</var> - a normal form with a built-in calculator</short>
+
+      <element name="TCalculatorDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
+        <short>Creates, configures, and displays the form for the calculator dialog</short>
         <descr>
           <p>
-            <var>TCalculatorForm</var> - a normal form with a built-in calculator</p>
-          <p>There is a <var>MainPanel</var> in which the standard LCL widgets can be placed, and a <var>CalcPanel </var>which displays a calculator which has the functionality of a <var>TCalculatorDialog</var> but remains permanently displayed</p>
+            <var>Execute</var> is an overridden <var>Boolean</var> function used to create, configure, display, and capture the result from the form for the calculator dialog. Execute calls <var>CreateCalculatorForm</var> to create the <var>TCalculatorForm</var> in the <var>DlgForm</var> property, and sets the event handlers for the form to methods defined in the class instance. For example:
+          </p>
+          <dl>
+            <dt>DlgForm.OnCalcKey</dt>
+            <dd>Set to the CalcKey method</dd>
+            <dt>DlgForm .OnDisplayChange</dt>
+            <dd>Set to the DisplayChange method</dd>
+            <dt>DlgForm.OnShow</dt>
+            <dd>Set to the OnDialogShow method</dd>
+            <dt>DlgForm.OnClose</dt>
+            <dd>Set to the OnDialogClose method</dd>
+            <dt>DlgForm.OnCloseQuery</dt>
+            <dd>Set to the OnDialogCloseQuery method</dd>
+          </dl>
+          <p>
+            When <var>DialogScale</var> contains any value other than <b>100</b>, the scaling percentage is applied to DlgForm.
+          </p>
+          <p>
+            The value in <var>DialogPosition</var> is stored in DlgForm as well. At design-time, the dialog position is always aligned to the center of the screen (or current monitor). When DialogPosition is <var>poDesigned</var>, the form coordinates in DlgForm are set to the values in the <var>Left</var> and  <var>Top</var> properties. The content stored in the <var>Title</var>, <var>Memory</var>, <var>Precision</var>, and <var>Value</var> properties are copied into the corresponding properties in DlgForm.
+          </p>
+          <p>
+            Execute calls the <var>ShowModal</var> method in DlgForm to display the modal calculator dialog form. The return value for the method is set to <b>True</b> when the modal result from the form is <var>mrOk</var>. When the result is <b>True</b>, the <var>Memory</var> and <var>Value</var> properties are updated with the values form the dialog form. The <var>Change</var> method is called when the Value property has been altered.
+          </p>
+          <p>
+            The coordinates for the form are captured on exit, and stored in the      <var>Left</var> and <var>Top</var> properties. The dimensions for the form (Width and Height) are also stored.
+          </p>
+          <p>
+            Execute frees the resources allocated to the DlgForm property prior to exit from the method.
+          </p>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.CalcForm.CreateCalculatorForm"/>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="TCalculatorDialog.DialogPosition"/>
+          <link id="TCalculatorDialog.Left"/>
+          <link id="TCalculatorDialog.Top"/>
+          <link id="TCalculatorDialog.Title"/>
+          <link id="TCalculatorDialog.Memory"/>
+          <link id="TCalculatorDialog.Precision"/>
+          <link id="TCalculatorDialog.Value"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorForm.FMainPanel">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCalculatorDialog.Execute.Result">
+        <short>True when the modal result for the form is mrOk</short>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorForm.FCalcPanel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorForm.FDisplayPanel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalculatorForm.FDisplayLabel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalculatorForm.FormKeyPress">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.FormKeyPress.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.FormKeyPress.Key">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalculatorForm.CopyItemClick">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.CopyItemClick.Sender">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCalculatorForm.GetValue">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalculatorForm.GetValue.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalculatorForm.PasteItemClick">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.PasteItemClick.Sender">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalculatorForm.SetValue">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.SetValue.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCalculatorForm.OkClick">
+
+      <element name="TCalculatorDialog.CalcDisplay">
         <short>
-          <var>OkClick</var> - method to handle a click on the OK button</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>CalcDisplay</var> - the current numeric value in the main calculator display
+        </short>
+        <descr>
+          <p>
+            <var>CalcDisplay</var> is a read-only <var>Double</var> property which contains the current numeric value for the calculator. The property value is read from the <var>TCalculatorForm</var> instance in <var>DlgForm</var> when it has been assigned. Otherwise the content stored in <var>Value</var> is used as the property value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="TCalculatorDialog.Value"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.OkClick.Sender">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCalculatorForm.CancelClick">
+
+      <element name="TCalculatorDialog.Memory">
         <short>
-          <var>CancelClick</var> - method to handle a click on the Cancel button</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>Memory</var> - the value stored in the calculator's memory
+        </short>
+        <descr>
+          <p>
+            <var>Memory</var> is a read-only <var>Double</var> property which contains the numeric value stored using the Memory button on the calculator dialog. The value in Memory is passed to the form in <var>DlgForm</var> in the <var>Execute</var> method, and updated when the modal result for the calculator form is    <var>mrOk</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="TCalculatorDialog.UserChoice"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.CancelClick.Sender">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCalculatorForm.CalcKey">
+
+      <element name="TCalculatorDialog.BeepOnError">
         <short>
-          <var>CalcKey</var> - method to handle activation of the specified calculator key</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>BeepOnError</var> - if True, beeps when there is an entry error or other calculator error
+        </short>
+        <descr>
+          <p>
+            <var>BeepOnError</var> is a <var>Boolean</var> property which indicates if a beep occurs when an error occurs in the calculator dialog. The default value for the property is <b>True</b>. The value in BeepOnError is assigned to the corresponding property in <var>DlgForm</var> in the <var>Execute</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="TCalculatorDialog.Execute"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.CalcKey.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.CalcKey.Key">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCalculatorForm.DisplayChange">
+
+      <element name="TCalculatorDialog.CalculatorLayout">
         <short>
-          <var>DisplayChange</var> - method for handling a change in the calculator display</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>CalculatorLayout</var> - whether simple or normal
+        </short>
+        <descr>
+          <p>
+            <var>CalculatorLayout</var> is a <var>TCalculatorLayout</var> property which specifies the layout used for  the calculator dialog form in <var>DlgForm</var>. CalculatorLayout is passed as an argument to the <var>CreateCalculatorForm</var> routine in <var>Execute</var>, and determines the size and position for the panels and buttons on the form.
+          </p>
+          <dl>
+            <dt>clNormal</dt>
+            <dd>Buttons and panels use a larger size with more whitespace</dd>
+            <dl>clSimple</dl>
+            <dd>Buttons and panels use a more compact size with less whitespace</dd>
+          </dl>
+          <p>
+            The default value for the property is <var>clNormal</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.CalcForm.TCalculatorLayout"/>
+          <link id="#lcl.CalcForm.CreateCalculatorForm"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="TCalculatorDialog.Execute"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.DisplayChange.Sender">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCalculatorForm.InitForm">
+
+      <element name="TCalculatorDialog.Precision">
         <short>
-          <var>InitForm</var> - initialize the form, using the specified calculator layout</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>Precision</var> - the level of precision to be used in calculations; default is set by <var>DefCalcPrecision</var>
+        </short>
+        <descr>
+          <p>
+            <var>Precision</var> is a <var>Byte</var> property which indicates the number of precision digits used when formatting the display for the <var>Value</var> property. Precision is assigned to the dialog form in <var>DlgForm</var>, and passed as an argument when calling the <var>FloatToStrF</var> routine.
+          </p>
+          <p>
+            The default value for the property is determined by the <var>CalcDefPrecision</var> constant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorDialog.Value"/>
+          <link id="TCalculatorDialog.CalcDisplay"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="#lcl.CalcForm.CalcDefPrecision"/>
+          <link id="#rtl.SysUtils.FloatToStrF"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.InitForm.ALayout">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalculatorForm.MainPanel">
-        <short>The <var>MainPanel</var> of the Form, which can contain any sort of LCL components</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalculatorForm.CalcPanel">
-        <short>The <var>CalcPanel</var> which displays the calculator</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalculatorForm.DisplayPanel">
-        <short>The <var>DisplayPanel</var> within the calculator panel, that holds the numeric display</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalculatorForm.DisplayLabel">
-        <short>The <var>DisplayLabel </var>for the calculator display</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCalculatorForm.Create">
+
+      <element name="TCalculatorDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title"/>
+
+      <element name="TCalculatorDialog.Value">
         <short>
-          <var>Create</var> - constructor for the whole form, not just the calculator</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>Value</var> - the numeric value (result) returned by the calculator
+        </short>
+        <descr>
+          <p>
+            <var>Value</var> is a <var>Double</var> property which contains the numeric value passed to and returned from the calculator dialog form. Value is assigned to the <var>TCalculatorForm</var> instance in <var>DlgForm</var> in the <var>Execute</var> method, and updated when the modal result for the form is <var>mrOk</var>.
+          </p>
+          <p>
+            Value is used as the value for the <var>CalcDisplay</var> property when the dialog form in DlgForm has not been assigned (contains <b>Nil</b>).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalendarDialog.CalcDisplay"/>
+          <link id="TCalendarDialog.Execute"/>
+          <link id="TCalendarDialog.DlgForm"/>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.Create.AOwner">
-        <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCalculatorForm.CreateLayout">
+
+      <element name="TCalculatorDialog.OnCalcKey">
         <short>
-          <var>CreateLayout</var> - constructor for the calculator panel using the specified layout</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>OnCalcKey</var> - event handler for a key press in the calculator
+        </short>
+        <descr>
+          <p>
+            <var>OnCalcKey</var> is a <var>TKeyPressEvent</var> property used as the event handler for key press events in the calculator dialog form. OnCalcKey is signalled from the <var>CalcKey</var> method which is assigned as the <var>OnCalcKey</var> event handler in <var>DlgForm</var>.
+          </p>
+          <p>
+            Applications must implement an object procedure using the signature in <var><link id="#lcl.Controls.TKeyPressEvent"/></var> to respond to the event notification.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorDialog.CalcKey"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="#lcl.CalcFrom.TCalculatorForm.OnCalcKey"/>
+          <link id="#lcl.Controls.TKeyPressEvent"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.CreateLayout.AOwner">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalculatorForm.CreateLayout.ALayout">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCalculatorForm.Value">
+
+      <element name="TCalculatorDialog.OnChange">
         <short>
-          <var>Value</var> - the numeric value, the result of the calculation, to be returned to the main program</short>
-        <descr/>
-        <seealso/>
+          <var>OnChange</var> - event handler for any change in the calculator
+        </short>
+        <descr>
+          <p>
+            <var>OnChange</var> is a <var>TNotifyEvent</var> property used as the event handler signalled when the value for the calculator dialog is changed. OnChange is signalled from the <var>Change</var> method when the calculator dialog returns a modified  value for the <var>Value</var> property.
+          </p>
+          <p>
+            Applications must implement an object procedure using the signature in <var><link id="#rtl.Classes.TNotifyEvent"/></var> to respond to the event notification.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorDialog.Change"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="#rtl.Classes.TNotifyEvent"/>
+        </seealso>
       </element>
-      <!-- function Visibility: default -->
-      <element name="CreateCalculatorForm">
+
+      <element name="TCalculatorDialog.OnDisplayChange">
         <short>
-          <var>CreateCalculatorForm</var> - returns the created calculator form, using the specified layout and help context</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>OnDisplayChange</var> - event handler for any change in the calculator display
+        </short>
+        <descr>
+          <var>OnDisplayChange</var> is a <var>TNotifyEvent</var> property used as the event handler signalled when the display value for the calculator dialog is changed. OnDisplayChange is signalled from the <var>DisplayChanged</var> method which is assigned as the <var>OnDisplayChange</var> event handler in <var>DlgForm</var>.
+        </descr>
+        <seealso>
+          <link id="#lcl.CalcForm.TCalculatorForm.OnDisplayChange"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="TCalculatorDialog.DisplayChange"/>
+          <link id="#rtl.Classes.TNotifyEvent"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="CreateCalculatorForm.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateCalculatorForm.AOwner">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateCalculatorForm.ALayout">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateCalculatorForm.AHelpContext">
-        <short/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TCalendarDialogForm">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialogForm.FCalendar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialogForm.FPanel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialogForm.FOK">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialogForm.FCancel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCalendarDialogForm.GetDate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalendarDialogForm.GetDate.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalendarDialogForm.SetDate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalendarDialogForm.SetDate.Value">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCalendarDialogForm.GetDisplaySettings">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalendarDialogForm.GetDisplaySettings.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalendarDialogForm.SetDisplaySettings">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalendarDialogForm.SetDisplaySettings.AValue">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalendarDialogForm.Calendar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalendarDialogForm.ButtonPanel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalendarDialogForm.OKButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCalendarDialogForm.CancelButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCalendarDialogForm.InitForm">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCalendarDialogForm.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalendarDialogForm.Create.AOwner">
-        <short/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TCalendarDialogForm.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCalendarDialogForm.Date">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCalendarDialogForm.DisplaySettings">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TCalendarDialog">
+
+      <element name="TCalculatorDialog.DialogScale">
         <short>
-          <var>TCalendarDialog</var> - a popup calendar dialog that allows a date to be selected and returned to the main program</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          Scaling percentage applied to the calculator dialog form
+        </short>
+        <descr>
+          <p>
+            <var>DialogScale</var> is an <var>Integer</var> property which indicates the scaling percentage applied to the height and width for the calculator dialog. When the value for the property is changed, it its validated and adjusted to ensure that it is in the range <b>80...400</b> (the minuimum and maximum allowed for the property).
+          </p>
+          <p>
+            DialogScale is passed as the multiplier argument to the <var>ScaleBy</var> method in <var>TCalculatorForm</var>; the divisor is always set to <b>100</b>.
+          </p>
+          <p>
+            The default value for the property is <b>100</b>, and indicates that the dialog is displayed at <b>100%</b> of its designed size.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCalculatorDialog.Execute"/>
+          <link id="TCalculatorDialog.DlgForm"/>
+          <link id="#lcl.CalcForm.TCalculatorForm.ScaleBy"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialog.FDate">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialog.FDayChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialog.FDisplaySettings">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialog.FHelpContext">
-        <short/>
+
+      <element name="TCalculatorDialog.ColorBtnDigits">
+        <short>Color for the digit buttons displayed in the calculator dialog</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialog.FMonthChanged">
-        <short/>
+
+      <element name="TCalculatorDialog.ColorBtnMemory">
+        <short>Color for the Memory button displayed in the calculator dialog</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCalendarDialog.FYearChanged">
-        <short/>
+
+      <element name="TCalculatorDialog.ColorBtnOk">
+        <short>Color for the OK button displayed in the calculator dialog</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TCalendarDialog.GetDialogTitle">
-        <short/>
+
+      <element name="TCalculatorDialog.ColorBtnCancel">
+        <short>Color for the Cancel button displayed in the calculator dialog</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalendarDialog.GetDialogTitle.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCalendarDialog.SetDialogTitle">
-        <short/>
-        <descr/>
-        <errors/>
+
+      <element name="TCalculatorDialog.ColorBtnClear">
+        <short>Color for the Clear button displayed in the calculator dialog</short>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCalendarDialog.SetDialogTitle.AValue">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCalendarDialog.IsTitleStored">
-        <short/>
+
+      <element name="TCalculatorDialog.ColorBtnOthers">
+        <short>Color for other buttons displayed in the calculator dialog</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalendarDialog.IsTitleStored.Result">
-        <short/>
+
+      <element name="TCalculatorDialog.ColorDisplayText">
+        <short>Color for text displayed in the calculator dialog</short>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- constructor Visibility: public -->
+
+      <element name="TCalculatorDialog.ColorDisplayBack">
+        <short>Color for background in the display area for the calculator dialog</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCalendarDialog" link="TExtCommonDialog">
+        <short>
+          <var>TCalendarDialog</var> - a popup calendar dialog that allows a date to be selected and returned to the main program
+        </short>
+        <descr>
+          <p>
+            <var>TCalendarDialog</var> is a <var>TExtCommonDialog</var> descendant which implements a calendar dialog used to select a date from a <var>TCalendar</var> control. It provides a Date property that contains the date used when selecting a date using the Calendar control displayed in the dialog.
+          </p>
+          <p>
+            TCalendarDialog creates and configures a <var>TForm</var> instance that is displayed in the <var>Execute</var> method for the dialog. The form uses the <var>Title</var>, <var>DialogPosition</var>, <var>DisplaySettings</var>, and <var>Date</var> properties assigned in the class. A new <var>TCalendar</var> control is created for the form, and stored in the <var>Calendar</var> property. Methods which implement the event handlers for the calendar control are also assigned. The form instance is displayed modally, and the modal result is captured in the <var>UserChoice</var> property. <var>Date</var> is updated when a calendar date is selected while the form is active.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TExtCommonDialog"/>
+          <link id="TCalendarDialog.DlgForm"/>
+          <link id="TCalendarDialog.Date"/>
+          <link id="TCalendarDialog.DialopPosition"/>
+          <link id="TCalendarDialog.Execute"/>
+          <link id="TCalendarDialog.UserChoice"/>
+          <link id="TCalendarDialog.Calendar"/>
+          <link id="#lcl.Calendar.TCalendar"/>
+        </seealso>
+      </element>
+
+      <element name="TCalendarDialog.FDate"/>
+      <element name="TCalendarDialog.FDayChanged"/>
+      <element name="TCalendarDialog.FDisplaySettings"/>
+      <element name="TCalendarDialog.FMonthChanged"/>
+      <element name="TCalendarDialog.FYearChanged"/>
+      <element name="TCalendarDialog.FOnChange"/>
+      <element name="TCalendarDialog.FOKCaption"/>
+      <element name="TCalendarDialog.FCancelCaption"/>
+      <element name="TCalendarDialog.FCalendar"/>
+      <element name="TCalendarDialog.okButton"/>
+      <element name="TCalendarDialog.cancelButton"/>
+      <element name="TCalendarDialog.panel"/>
+
+      <element name="TCalendarDialog.OnDialogClose">
+        <short>Implements the event handler signalled when the dialog form is closed</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.OnDialogClose.Sender">
+        <short></short>
+      </element>
+      <element name="TCalendarDialog.OnDialogClose.CloseAction">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.OnDialogCloseQuery">
+        <short>
+          Implements an event handler signalled to determine if the dialog form can be closed
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.OnDialogCloseQuery.Sender">
+        <short></short>
+      </element>
+      <element name="TCalendarDialog.OnDialogCloseQuery.CanClose">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.OnDialogShow">
+        <short>
+          Implements an event handler signalled when the dialog form is displayed
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.OnDialogShow.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.OnCalendarDayChanged">
+        <short>
+          Implements an event handler signalled when the day number in Date is changed
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.OnCalendarDayChanged.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.OnCalendarMonthChanged">
+        <short>
+          Implements an event handler signalled when the month in Date is changed
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.OnCalendarMonthChanged.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.OnCalendarYearChanged">
+        <short>
+          Implements an event handler signalled when the year in Date is changed
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.OnCalendarYearChanged.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.OnCalendarChange">
+        <short>
+          Event handler used to signal the OnChange event when the Calendar is updated
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.OnCalendarChange.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
+      <element name="TCalendarDialog.GetNewDate">
+        <short>
+          <var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, which transfers the selected date to the calling program
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.GetNewDate.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.CalendarDblClick">
+        <short>
+          <var>CalendarDblClick</var> - method for handling doubleclick on the calendar
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.CalendarDblClick.Sender">
+        <short></short>
+      </element>
+
+      <element name="TCalendarDialog.DefaultTitle">
+        <short>
+          Contains the default value for the Title displayed on the calendar dialog form
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCalendarDialog.DefaultTitle.Result">
+        <short></short>
+      </element>
+
       <element name="TCalendarDialog.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
+        <short>Constructor for the class instance</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCalendarDialog.Create.AOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
-      <!-- destructor Visibility: public -->
-      <element name="TCalendarDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
+
       <element name="TCalendarDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
-        <short/>
+        <short>
+          Configures and dIsplays the form for the calendar dialog, and captures the results
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCalendarDialog.Execute.Result">
         <short/>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TCalendarDialog.CreateForm">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TCalendarDialog.Left">
+        <short>Contains the left coordinate for the dialog</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCalendarDialog.CreateForm.Result">
-        <short/>
+
+      <element name="TCalendarDialog.Top">
+        <short>Contains the top coordinate for the dialog</short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TCalendarDialog.DialogTitle">
-        <short>
-          <var>DialogTitle</var> - caption for the calendar dialog</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
       <element name="TCalendarDialog.Date">
         <short>The selected <var>Date</var>, for return to the main program</short>
         <descr>
-          <p>The selected <var>Date</var>, for return to the main program</p>
-          <p>This is NOT the standard RTL Date function</p>
+          <p>The selected <var>Date</var>, for return to the main program.</p>
+          <p>This is NOT the standard RTL Date function.</p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TCalendarDialog.DisplaySettings">
         <short>
-          <var>DisplaySettings</var> - the user-selected settings determining the appearance of the display</short>
+          <var>DisplaySettings</var> - the user-selected settings determining the appearance of the display
+        </short>
         <descr>
           <p>
-            <var>DisplaySettings</var> - the user-selected settings determining the appearance of the display</p>
-          <p>Possible values are: ShowHeadings,ShowDayNames, NoMonthChange, ShowWeekNumbers, StartMonday</p>
-          <p>This is a set which may contain zero or more settings</p>
+            <var>DisplaySettings</var> contains the user-specified settings which determine  the appearance for the calendar displayed in the dialog.
+          </p>
+          <p>
+            DisplaySettings is a set type which may contain zero or more settings. Possible values include: ShowHeadings,ShowDayNames, NoMonthChange, ShowWeekNumbers, StartMonday.
+          </p>
         </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TCalendarDialog.HelpContext" link="#LCL.Dialogs.TCommonDialog.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
       <element name="TCalendarDialog.OnDayChanged">
         <short>
-          <var>OnDayChanged</var> - event handler when a different day is selected</short>
+          <var>OnDayChanged</var> - event handler when a different day is selected
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TCalendarDialog.OnMonthChanged">
         <short>
-          <var>OnMonthChanged</var> - event handler when a different month is selected</short>
-        <descr/>
+          Event handler signalled when a different month is selected
+        </short>
+        <descr>
+          <p>
+            <var>OnMonthChanged</var> is an event handler signalled when the value for the Month in the Date is changed.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TCalendarDialog.OnYearChanged">
         <short>
-          <var>OnYearChanged</var> - event handler when a different year is selected</short>
+          <var>OnYearChanged</var> - event handler when a different year is selected
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="CreateCalendarForm">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="CreateCalendarForm.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateCalendarForm.AOwner">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateCalendarForm.AHelpContext">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TCalendarDialog.DialogPosition">
+
+      <element name="TCalendarDialog.OnChange">
         <short>
-          <var>DialogPosition</var> - position to display the dialog - by default in the center of the main form</short>
+          Event handler signalled when the valuein Date has been changed
+        </short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <element name="TCalendarDialog.OKCaption">
         <short>
-          <var>OKCaption</var> - caption for the OK button</short>
+          Caption displayed on the OK button
+        </short>
+        <descr>
+          <p>
+            <var>OKCaption</var> is a String property which contains the caption displayed on the OK button in the dialog.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
+
       <element name="TCalendarDialog.CancelCaption">
         <short>
-          <var>CancelCaption</var> - caption for the Cancel button</short>
+          Caption displayed on the Cancel button for the calendar dialog form
+        </short>
+        <descr>
+          <p>
+            <var>CancelCaption</var> is a String property which contains the caption displayed on the Cancel button for the dialog.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <element name="TCalendarDialog.GetNewDate">
-        <short>
-          <var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, which transfers the selected date to the calling program</short>
+
+      <element name="Register">
+        <short>Registers components in the unit for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is a procedure used to register components in the <file>extdlgs.pas</file> unit for use in the Lazarus IDE. Register adds the <var>TOpenPictureDialog</var>, <var>TSavePictureDialog</var>, <var>TCalendarDialog</var>, and <var>TCalculatorDialog</var> components to the <b>'Dialogs'</b> tab in the Lazarus IDE.
+          </p>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TOpenPictureDialog.GetFilterExt">
-        <short>
-          <var>GetFilterExt</var> - returns the extension for filtering filenames</short>
-      </element>
-      <element name="TCalendarDialog.CalendarDblClick">
-        <short>
-          <var>CalendarDblClick</var> - method for handling doubleclick on the calendar</short>
-      </element>
-      <element name="TPreviewFileControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TPreviewFileDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TOpenPictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TSavePictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCalculatorDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCalculatorForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCalendarDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
     </module>
     <!-- ExtDlgs -->
   </package>
