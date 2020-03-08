@@ -4601,7 +4601,7 @@ begin
           +' TestEnVi='+dbgs(Next.Enabled and Next.IsVisible)]);}
         if (((not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
-        and (Next.Enabled and Next.IsVisible) then
+        and (Next.CanTab and Next.IsVisible) then
           Result := Next;
 
         // if we reached the start then exit because we traversed the loop and
