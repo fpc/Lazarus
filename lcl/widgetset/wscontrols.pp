@@ -238,8 +238,7 @@ begin
 
 end;
 
-class function TWSControl.GetCanvasScaleFactor(const AControl: TControl
-  ): Double;
+class function TWSControl.GetCanvasScaleFactor(const AControl: TControl): Double;
 begin
   Result := 1;
 end;

@@ -271,8 +271,7 @@ begin
 end;
 
 class procedure TQtWSWinControl.SetBiDiMode(const AWinControl : TWinControl;
-  UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean
-  );
+  UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
     Exit;
@@ -308,20 +307,9 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then
     Exit;
   Wdgt := TQtWidget(AWinControl.Handle);
-  Assert(Assigned(Wdgt), 'TQtWSWinControl.SetText: AWinControl.Handle=Nil');
-  try
-    DebugLn(['TQtWSWinControl.SetText: Widget.ClassName=', Wdgt.ClassName]);
-    if not QtWidgetSet.IsValidHandle(AWinControl.Handle) then
-      DebugLn(['TQtWSWinControl.SetText: "', Wdgt.ClassName,
-               '" has invalid handle=$', IntToHex(AWinControl.Handle,SizeOf(HWND)*2)]);
-    Wdgt.BeginUpdate;
-    Wdgt.setText(GetUtf8String(AText));
-    Wdgt.EndUpdate;
-  except
-    on E: Exception do
-      DebugLn(['TQtWSWinControl.SetText: "', E.Message, '" with "',
-               Wdgt.ClassName, '", handle=$', IntToHex(AWinControl.Handle,SizeOf(HWND)*2)]);
-  end;
+  Wdgt.BeginUpdate;
+  Wdgt.setText(GetUtf8String(AText));
+  Wdgt.EndUpdate;
 end;
 
 class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,

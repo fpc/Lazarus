@@ -27,10 +27,8 @@ uses
   qtobjects, qtwidgets, qtproc,
   // LCL
   SysUtils, Classes, types, Controls, LCLType, Forms,
-  // LazUtils
-  LazLoggerBase,
   // Widgetset
-  InterfaceBase, WSForms, WSProc, WSLCLClasses;
+  WSForms, WSProc, WSLCLClasses;
 
 type
 
@@ -1070,19 +1068,13 @@ end;
 class procedure TQtWSHintWindow.ShowHide(const AWinControl: TWinControl);
 var
   AWidget: TQtHintWindow;
-  ToBeVisible: Boolean;
 begin
-  DebugLn(['TQtWSHintWindow.ShowHide: Enter.']);
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     Exit;
   AWidget := TQtHintWindow(AWinControl.Handle);
-  ToBeVisible := AWinControl.HandleObjectShouldBeVisible;
-  DebugLn([' TQtWSHintWindow.ShowHide: Handle is ', AWidget.ClassName,
-           ', Visible=', ToBeVisible]);
   AWidget.BeginUpdate;
-  AWidget.setVisible(ToBeVisible);
+  AWidget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   AWidget.EndUpdate;
-  DebugLn([' TQtWSHintWindow.ShowHide: End.']);
 end;
 
 end.
