@@ -105,7 +105,7 @@ begin
   writeln('[20180608074905] lazarus.pp ide/revision.inc: ',LazarusRevisionStr);
   {$ENDIF}
   Application.Title:='Lazarus';
-  Application.Scaled := True;
+  Application.Scaled:=True;
   OnGetApplicationName:=@GetLazarusApplicationName;
 
   {$IFDEF Windows}
