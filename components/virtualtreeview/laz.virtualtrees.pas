@@ -6067,7 +6067,7 @@ procedure TVirtualTreeHintWindow.Paint;
 begin
   with FHintData do
   begin
-    if Tree is TCustomVirtualDrawTree and Assigned(Node) then
+    if (Tree is TCustomVirtualDrawTree) and Assigned(Node) then
     begin
       // The draw tree has by default no hint text so let it draw the hint itself.
       // HintBorderWidth is a private constant in hint code and is set to two
