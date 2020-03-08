@@ -33,8 +33,15 @@ unit IdeCoolbarData;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, ComCtrls, ToolWin, Controls, fgl,
-  IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig;
+  Classes, SysUtils, fgl,
+  // LCL
+  LCLProc, ComCtrls, Controls, Graphics, Dialogs, ToolWin,
+  // LazUtils
+  Laz2_XMLCfg,
+  // IdeIntf
+  IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, ToolbarConfig;
 
 type
 
@@ -137,7 +144,9 @@ type
     FWidth: Integer;     //same as Isvisible
     // Used for assigning and testing the default configuration.
     FDefaultOptions: TDefaultCoolBarOptions;
+    procedure DisableToolbarButtons(IDEToolbar: TIDEToolBar);
     procedure SetIsVisible(AValue: Boolean);
+    procedure ToolBarClick(Sender: TObject);
   public
     constructor Create(ACoolBar: TCoolBar);
     destructor Destroy; override;
@@ -147,10 +156,18 @@ type
     procedure CopyFromOptions(Options: TIDECoolBarOptions);
     procedure CopyToOptions(Options: TIDECoolBarOptions);
     function Add: TIDEToolBar;
+    function AddBand(ToolBar: TToolBar; aBreak: Boolean): TCoolBand;
+    procedure AddExtra;
+    procedure Delete;
     function FindByToolBar(const aToolBar: TToolBar): Integer;
+    procedure Config;
     procedure Sort;
+    procedure PopulateToolBar;
+    function GetSelectedBand: Integer;
     function IsDefaultCoolbar: Boolean;
     function IsDefaultToolbar: Boolean;
+    procedure SelectBand(const ID: integer);
+    procedure SelectBandAtXY(X, Y: integer);
   public
     property ToolBars: TIDEToolBarList read FCoolBarToolBars;
     property CoolBar: TCoolBar read FCoolBar;
@@ -384,12 +401,12 @@ begin
     ButtonWidth := 22;
     Height := 22;
     Width := 0;
-    Flat     := True;
+    Flat := True;
     AutoSize := True;
     Transparent := True;
     EdgeInner := esNone;
     EdgeOuter := esNone;
-    Images   := IDEImages.Images_16;
+    Images := IDEImages.Images_16;
     ShowHint := True;
     OnClick := @DoToolBarClick;
   end;
@@ -430,13 +447,6 @@ end;
 
 { TIDECoolBar }
 
-procedure TIDECoolBar.SetIsVisible(AValue: Boolean);
-begin
-  FIsVisible := AValue;
-  if Assigned(FCoolBar) then
-    FCoolBar.Visible := AValue;
-end;
-
 constructor TIDECoolBar.Create(ACoolBar: TCoolBar);
 begin
   inherited Create;
@@ -455,6 +465,22 @@ begin
   FreeAndNil(FDefaultOptions);
   FreeAndNil(FCoolBarToolBars);
   inherited Destroy;
+end;
+
+procedure TIDECoolBar.SetIsVisible(AValue: Boolean);
+begin
+  FIsVisible := AValue;
+  if Assigned(FCoolBar) then
+    FCoolBar.Visible := AValue;
+end;
+
+procedure TIDECoolBar.ToolBarClick(Sender: TObject);
+var
+  CoolBand: TCoolBand;
+begin
+  CoolBand := FCoolbar.Bands.FindBand(Sender as TToolBar);
+  if CoolBand <> nil then
+    SelectBand(CoolBand.Index);
 end;
 
 procedure TIDECoolBar.SetCoolBarDefaults;
@@ -530,14 +556,82 @@ begin
   FCoolBarToolBars.Add(Result);
 end;
 
+function TIDECoolBar.AddBand(ToolBar: TToolBar; aBreak: Boolean): TCoolBand;
+begin
+  Result := FCoolBar.Bands.Add;
+  Result.Break := aBreak;
+  Result.Control := Toolbar;
+  //Result.MinWidth := 25;
+  //Result.MinHeight := 22;
+  Result.FixedSize := True;
+end;
+
+procedure TIDECoolBar.AddExtra;
+var
+  IDEToolbar: TIDEToolBar;
+begin
+  IDEToolbar := Add;
+  IDEToolbar.CurrentOptions.Break := False;
+  IDEToolbar.OnToolBarClick := @ToolBarClick;
+  IDEToolbar.ToolBar.DisabledImages := IDEToolbar.ToolBar.Images;
+  SelectBand(AddBand(IDEToolbar.ToolBar, True).Index);
+end;
+
+procedure TIDECoolBar.Delete;
+var
+  I: integer;
+  ToDelete: integer;
+begin
+  if FCoolbar.Bands.Count = 1 then
+  begin
+    MessageDlg(lisCoolbarDeleteWarning, mtInformation, [mbOk], 0);
+    Exit;
+  end;
+  ToDelete := GetSelectedBand;
+  if ToDelete > -1 then
+  begin
+    if MessageDlg(lisCoolbarDeleteToolBar, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      if ToDelete < FCoolBar.Bands.Count-1 then
+        SelectBand(ToDelete + 1)
+      else if ToDelete > 0 then
+        SelectBand(ToDelete - 1);
+      I := FindByToolBar((FCoolBar.Bands.Items[ToDelete].Control as TToolBar));
+      Assert(I = ToDelete, 'TIDECoolBar.Delete: index mismatch.');
+      ToolBars.Delete(ToDelete);
+    end;
+  end;
+end;
+
 function TIDECoolBar.FindByToolBar(const aToolBar: TToolBar): Integer;
 var
   I: Integer;
 begin
-  Result := -1;
   for I := 0 to FCoolbarToolBars.Count-1 do
     if ToolBars[I].ToolBar = aToolBar then
       Exit(I);
+  Result := -1;
+end;
+
+procedure TIDECoolBar.Config;
+var
+  ToConfig: Integer;
+  ToolBar: TToolBar;
+  IDEToolbar: TIDEToolBar;
+begin
+  ToConfig := GetSelectedBand;
+  if ToConfig = -1 then
+  begin
+    MessageDlg(lisCoolbarSelectToolBar, mtInformation, [mbOk], 0);
+    Exit;
+  end;
+  ToolBar := FCoolbar.Bands.Items[ToConfig].Control as TToolBar;
+  Assert(Assigned(ToolBar), 'TIDECoolBar.Config: ToolBar=Nil.');
+  Assert(ToConfig=FindByToolBar(ToolBar), 'TIDECoolBar.Config: Indices differ!');
+  IDEToolbar := ToolBars[ToConfig];
+  if ShowToolBarConfig(IDEToolbar.CurrentOptions.ButtonNames) = mrOK then
+    DisableToolbarButtons(IDEToolbar);
+  FCoolbar.AutosizeBands;
 end;
 
 function Compare(const Item1, Item2: TIDEToolBar): Integer;
@@ -548,6 +642,44 @@ end;
 procedure TIDECoolBar.Sort;
 begin
   FCoolbarToolBars.Sort(@Compare);
+end;
+
+procedure TIDECoolBar.DisableToolbarButtons(IDEToolbar: TIDEToolBar);
+var
+  I: Integer;
+begin
+  IDEToolbar.UseCurrentOptions;
+  for I := 0 to Pred(IDEToolbar.ToolBar.ButtonCount) do
+    IDEToolbar.ToolBar.Buttons[I].Enabled := False;
+end;
+
+procedure TIDECoolBar.PopulateToolBar;
+var
+  I: Integer;
+  IDEToolbar: TIDEToolBar;
+begin
+  FCoolBar.Bands.Clear;
+  for I := 0 to ToolBars.Count - 1 do
+  begin
+    IDEToolbar := ToolBars[I];
+    IDEToolbar.OnToolBarClick := @ToolBarClick;
+    IDEToolbar.ToolBar.DisabledImages := IDEToolbar.ToolBar.Images;
+    AddBand(IDEToolbar.ToolBar, IDEToolbar.CurrentOptions.Break);
+    DisableToolbarButtons(IDEToolbar);
+  end;
+  if FCoolBar.Bands.Count > 0 then
+    SelectBand(0);
+  FCoolbar.AutosizeBands;
+end;
+
+function TIDECoolBar.GetSelectedBand: Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to FCoolBar.Bands.Count - 1 do
+    if FCoolBar.Bands.Items[I].Color = clHighlight then
+      Exit(I);
+  Result := -1;
 end;
 
 function TIDECoolBar.IsDefaultCoolbar: Boolean;
@@ -568,6 +700,40 @@ begin
   finally
     TempOpts.Free;
   end;
+end;
+
+procedure TIDECoolBar.SelectBand(const ID: integer);
+var
+  I: integer;
+  Band: TCoolBand;
+begin
+  FCoolbar.Color := clDefault;
+  for I := 0 to FCoolBar.Bands.Count - 1 do
+  begin
+    Band := FCoolBar.Bands.Items[I];
+    if I <> ID then
+    begin
+      Band.Color := clDefault;
+      Band.Control.Color := clDefault;
+    end
+    else
+    begin
+      Band.Color := clHighlight;
+      Band.Control.Color := clHighLight;
+    end;
+  end;
+end;
+
+procedure TIDECoolBar.SelectBandAtXY(X, Y: integer);
+var
+  ABand: integer;
+  AGrabber: boolean;
+begin
+  FCoolBar.MouseToBandPos(X, Y, ABand, AGrabber);
+  if ABand < 0 then
+    Exit;
+  if FCoolBar.Bands.Items[ABand].Color <> clHighlight then
+    SelectBand(ABand);
 end;
 
 end.

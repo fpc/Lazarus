@@ -30,13 +30,13 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, ExtCtrls, ComCtrls, Buttons, Controls, Graphics, Dialogs, StdCtrls, Spin, LCLProc,
+  Forms, ExtCtrls, ComCtrls, Buttons, Controls, StdCtrls, Spin,
   // LazControls
   DividerBevel,
   // IDEIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IdeCoolbarData;
+  LazarusIDEStrConsts, MainBar, EnvironmentOpts, IdeCoolbarData;
 
 type
 
@@ -88,13 +88,8 @@ type
     FTempCoolBarOptions: TIDECoolBarOptions;
     // Used for assigning and testing the default configuration.
     FDefaultOptions: TDefaultCoolBarOptions;
-    function AddBand(ToolBar: TToolBar; aBreak: Boolean): TCoolBand;
     procedure EnableDisableGeneralButtons;
     procedure EnableDisableToolbarButtons;
-    procedure SelectBand(const ID: integer);
-    function GetSelectedBand: Integer;
-    procedure ToolBarClick(Sender: TObject);
-    procedure PopulateToolBar;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -107,8 +102,6 @@ type
 
 
 implementation
-
-uses MainBar, ToolbarConfig;
 
 {$R *.lfm}
 
@@ -200,7 +193,8 @@ begin
   else
     FTempCoolBar.CopyFromOptions(Opts);
 
-  PopulateToolBar;
+  FTempCoolBar.PopulateToolBar;
+  EnableDisableToolbarButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -226,15 +220,8 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.CoolBarMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-var
-  ABand: integer;
-  AGrabber: boolean;
 begin
-  FTempCoolBar.CoolBar.MouseToBandPos(X, Y, ABand, AGrabber);
-  if ABand < 0 then
-    Exit;
-  if FTempCoolBar.CoolBar.Bands.Items[ABand].Color <> clHighlight then
-    SelectBand(ABand);
+  FTempCoolBar.SelectBandAtXY(X, Y);
 end;
 
 procedure TIdeCoolbarOptionsFrame.CoolbarResize(Sender: TObject);
@@ -288,47 +275,6 @@ begin
   EnableDisableGeneralButtons;
 end;
 
-procedure TIdeCoolbarOptionsFrame.SelectBand(const ID: integer);
-var
-  I: integer;
-  Band: TCoolBand;
-begin
-  FTempCoolBar.Coolbar.Color := clDefault;
-  for I := 0 to FTempCoolBar.CoolBar.Bands.Count - 1 do
-  begin
-    Band := FTempCoolBar.CoolBar.Bands.Items[I];
-    if I <> ID then
-    begin
-      Band.Color := clDefault;
-      Band.Control.Color := clDefault;
-    end
-    else
-    begin
-      Band.Color := clHighlight;
-      Band.Control.Color := clHighLight;
-    end;
-  end;
-end;
-
-function TIdeCoolbarOptionsFrame.GetSelectedBand: Integer;
-var
-  I: Integer;
-begin
-  Result := -1;
-  for I := 0 to FTempCoolBar.CoolBar.Bands.Count - 1 do
-    if FTempCoolBar.CoolBar.Bands.Items[I].Color = clHighlight then
-      Exit(I);
-end;
-
-procedure TIdeCoolbarOptionsFrame.ToolBarClick(Sender: TObject);
-var
-  CoolBand: TCoolBand;
-begin
-  CoolBand := FTempCoolBar.Coolbar.Bands.FindBand(Sender as TToolBar);
-  if CoolBand <> nil then
-    SelectBand(CoolBand.Index);
-end;
-
 procedure TIdeCoolbarOptionsFrame.EnableDisableGeneralButtons;
 begin
   bDefaultGeneral.Enabled := not FTempCoolBar.IsDefaultCoolbar;
@@ -336,122 +282,30 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.EnableDisableToolbarButtons;
 var
-  I: Integer;
-  Selected: Boolean;
+  IsSel: Boolean;
 begin
-  Selected := False;
-  for I := 0 to FTempCoolBar.Coolbar.Bands.Count - 1 do
-  begin
-    if FTempCoolBar.Coolbar.Bands[I].Color = clHighlight then
-    begin
-      Selected := True;
-      Break;
-    end;
-  end;
-  bConfig.Enabled := Selected;
-  bDelete.Enabled := Selected;
+  IsSel := FTempCoolBar.GetSelectedBand > -1;
+  bConfig.Enabled := IsSel;
+  bDelete.Enabled := IsSel;
   bDefaultToolbar.Enabled := not FTempCoolBar.IsDefaultToolbar;
 end;
 
-procedure UseToolbarButtons(IDEToolbar: TIDEToolBar);
-var
-  I: Integer;
-begin
-  IDEToolbar.UseCurrentOptions;
-  for I := 0 to Pred(IDEToolbar.ToolBar.ButtonCount) do
-    IDEToolbar.ToolBar.Buttons[I].Enabled := False;
-end;
-
-function TIdeCoolbarOptionsFrame.AddBand(ToolBar: TToolBar; aBreak: Boolean): TCoolBand;
-begin
-  Result := FTempCoolBar.CoolBar.Bands.Add;
-  Result.Break := aBreak;
-  Result.Control := Toolbar;
-  //Result.MinWidth := 25;
-  //Result.MinHeight := 22;
-  Result.FixedSize := True;
-end;
-
-procedure TIdeCoolbarOptionsFrame.PopulateToolBar;
-var
-  I: Integer;
-  IDEToolbar: TIDEToolBar;
-begin
-  FTempCoolBar.CoolBar.Bands.Clear;
-  for I := 0 to FTempCoolBar.ToolBars.Count - 1 do
-  begin
-    IDEToolbar := FTempCoolBar.ToolBars[I];
-    IDEToolbar.OnToolBarClick := @ToolBarClick;
-    IDEToolbar.ToolBar.DisabledImages := IDEToolbar.ToolBar.Images;
-    AddBand(IDEToolbar.ToolBar, IDEToolbar.CurrentOptions.Break);
-    UseToolbarButtons(IDEToolbar);
-  end;
-  if FTempCoolBar.CoolBar.Bands.Count > 0 then
-    SelectBand(0);
-  FTempCoolBar.Coolbar.AutosizeBands;
-  EnableDisableToolbarButtons;
-end;
-
 procedure TIdeCoolbarOptionsFrame.bAddClick(Sender: TObject);
-var
-  IDEToolbar: TIDEToolBar;
 begin
-  IDEToolbar := FTempCoolBar.Add;
-  IDEToolbar.CurrentOptions.Break := False;
-  IDEToolbar.OnToolBarClick := @ToolBarClick;
-  IDEToolbar.ToolBar.DisabledImages := IDEToolbar.ToolBar.Images;
-  SelectBand(AddBand(IDEToolbar.ToolBar, True).Index);
+  FTempCoolBar.AddExtra;
   EnableDisableToolbarButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.bConfigClick(Sender: TObject);
-var
-  ToConfig: Integer;
-  ToolBar: TToolBar;
-  IDEToolbar: TIDEToolBar;
 begin
-  ToConfig := GetSelectedBand;
-  if ToConfig = -1 then
-  begin
-    MessageDlg(lisCoolbarSelectToolBar, mtInformation, [mbOk], 0);
-    Exit;
-  end;
-  ToolBar := FTempCoolBar.Coolbar.Bands.Items[ToConfig].Control as TToolBar;
-  Assert(Assigned(ToolBar), 'TIdeCoolbarOptionsFrame.bConfigClick: ToolBar=Nil.');
-  Assert(ToConfig = FTempCoolBar.FindByToolBar(ToolBar),
-         'TIdeCoolbarOptionsFrame.bConfigClick: Indices differ!');
-  IDEToolbar := FTempCoolBar.ToolBars[ToConfig];
-  if ShowToolBarConfig(IDEToolbar.CurrentOptions.ButtonNames) = mrOK then
-    UseToolbarButtons(IDEToolbar);
-  FTempCoolBar.Coolbar.AutosizeBands;
+  FTempCoolBar.Config;
   EnableDisableToolbarButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.bDeleteClick(Sender: TObject);
-var
-  I: integer;
-  ToDelete: integer;
 begin
-  if FTempCoolBar.Coolbar.Bands.Count = 1 then
-  begin
-    MessageDlg(lisCoolbarDeleteWarning, mtInformation, [mbOk], 0);
-    Exit;
-  end;
-  ToDelete := GetSelectedBand;
-  if ToDelete > -1 then
-  begin
-    if MessageDlg(lisCoolbarDeleteToolBar, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-    begin
-      if ToDelete < FTempCoolBar.CoolBar.Bands.Count-1 then
-        SelectBand(ToDelete + 1)
-      else if ToDelete > 0 then
-        SelectBand(ToDelete - 1);
-      I := FTempCoolBar.FindByToolBar((FTempCoolBar.CoolBar.Bands.Items[ToDelete].Control as TToolBar));
-      Assert(I = ToDelete, 'TIdeCoolbarOptionsFrame.bDeleteClick: index mismatch.');
-      // CoolBar Band gets deleted at the same go with FTempCoolBar item.
-      FTempCoolBar.ToolBars.Delete(ToDelete);
-    end;
-  end;
+  FTempCoolBar.Delete;
+  // CoolBar Band gets deleted at the same go with FTempCoolBar item.
   EnableDisableToolbarButtons;
 end;
 
@@ -472,7 +326,8 @@ end;
 procedure TIdeCoolbarOptionsFrame.bDefaultToolbarClick(Sender: TObject);
 begin
   FTempCoolBar.SetToolBarDefaults;
-  PopulateToolBar;
+  FTempCoolBar.PopulateToolBar;
+  EnableDisableToolbarButtons;
 end;
 
 
