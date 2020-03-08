@@ -1127,8 +1127,17 @@ end;
 class procedure TCocoaWSCustomListView.ColumnSetAlignment(
   const ALV: TCustomListView; const AIndex: Integer;
   const AColumn: TListColumn; const AAlignment: TAlignment);
+var
+  lTableLV: TCocoaTableListView;
+  lNSColumn: NSTableColumn;
+const
+  txtAlign : array[TAlignment] of NSTextAlignment = (
+    NSLeftTextAlignment, NSRightTextAlignment, NSCenterTextAlignment
+  );
 begin
-  inherited ColumnSetAlignment(ALV, AIndex, AColumn, AAlignment);
+  if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
+  NSCell(lNSColumn.headerCell).setAlignment( txtAlign[AAlignment] );
+  NSCell(lNSColumn.dataCell).setAlignment( txtAlign[AAlignment] );
 end;
 
 class procedure TCocoaWSCustomListView.ColumnSetAutoSize(
