@@ -553,26 +553,6 @@ begin
      // todo: this should be called for "Default" or "Modal" loops
      NSApp.updateWindows;
 
-     // color panel has allocated at least once
-     if (NSColorPanel.sharedColorPanelExists)
-        // Color panel has been shown
-        and (NSColorPanel.sharedColorPanel.isVisible)
-        // LCL color panel will will assign accessoryView
-        and (NSColorPanel.sharedColorPanel.accessoryView = nil) then
-      begin
-        NSColorPanel.sharedColorPanel.close;
-      end;
-
-      // the same check for font panel
-      if (NSFontPanel.sharedFontPanelExists)
-       and (NSFontPanel.sharedFontPanel.sharedFontPanel.isVisible)
-       and (not Assigned(NSFontPanel.sharedFontPanel.accessoryView)
-         or (NSFontPanel.sharedFontPanel.accessoryView.subviews.count = 0))
-     then
-     begin
-       NSFontPanel.sharedFontPanel.close;
-     end;
-
   finally
 
     // Focus change notification used to be in makeFirstResponder method
