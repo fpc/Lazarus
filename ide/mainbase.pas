@@ -72,7 +72,7 @@ uses
   // IDE
   LazConf, LazarusIDEStrConsts, Project, BuildManager, EnvironmentOpts,
   EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor, FindInFilesDlg,
-  DesktopManager, Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts;
+  Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts;
 
 type
   TResetToolFlag = (

@@ -2020,24 +2020,14 @@ begin
   SrcEditMenuInspect.Tag := Ord(ddtInspect);
 end;
 
+function GetCommand(ACommand: word): TIDECommand;
+begin
+  Result:=IDECommandList.FindIDECommand(ACommand);
+  if Result<>nil then
+    RegisterIDEButtonCommand(Result);
+end;
+
 procedure TDebugManager.SetupMainBarShortCuts;
-
-  function GetCmdAndBtn(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
-  begin
-    Result:=IDECommandList.FindIDECommand(ACommand);
-    if Result<>nil then
-      ToolButton := RegisterIDEButtonCommand(Result)
-    else
-      ToolButton := nil;
-  end;
-
-  function GetCommand(ACommand: word): TIDECommand;
-  var
-    ToolButton: TIDEButtonCommand;
-  begin
-    Result:=GetCmdAndBtn(ACommand, ToolButton);
-  end;
-
 begin
   with MainIDEBar do
   begin
@@ -2064,23 +2054,6 @@ begin
 end;
 
 procedure TDebugManager.SetupSourceMenuShortCuts;
-
-  function GetCmdAndBtn(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
-  begin
-    Result:=IDECommandList.FindIDECommand(ACommand);
-    if Result<>nil then
-      ToolButton := RegisterIDEButtonCommand(Result)
-    else
-      ToolButton := nil;
-  end;
-
-  function GetCommand(ACommand: word): TIDECommand;
-  var
-    ToolButton: TIDEButtonCommand;
-  begin
-    Result:=GetCmdAndBtn(ACommand, ToolButton);
-  end;
-
 begin
   SrcEditMenuToggleBreakpoint.Command:=GetCommand(ecToggleBreakPoint);
   SrcEditMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
