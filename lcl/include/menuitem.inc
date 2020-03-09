@@ -1005,13 +1005,9 @@ end;
 procedure TMenuItem.Clear;
 var
   I: Integer;
-  M: TMenuItem;
 begin
-  for I := Count - 1 downto 0 do begin
-    M := Items[I];
-    Delete(I);
-    M.Free;
-  end;
+  for I := Count - 1 downto 0 do
+    Delete(I).Free;
 end;
 
 function TMenuItem.HasBitmap: boolean;
