@@ -282,7 +282,8 @@ end;
 class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  Assert(AWinControl.HandleAllocated, 'GetPreferredSize: Handle not allocated');
+  if not WSCheckHandleAllocated(AWinControl, 'GetPreferredSize') then
+    Exit;
   TQtWidget(AWinControl.Handle).PreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
 end;
 

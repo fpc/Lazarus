@@ -265,6 +265,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
+  {issue #36773}
+  {$IFDEF HASX11}
+  Application.CancelHint;
+  QtWidgetSet.RemoveAllHintsHandles;
+  {$ENDIF}
   inherited CloseModal(ACustomForm);
 end;
 
@@ -662,6 +667,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
+  {issue #36773}
+  {$IFDEF HASX11}
+  Application.CancelHint;
+  QtWidgetSet.RemoveAllHintsHandles;
+  {$ENDIF}
   {
     Setting modal flags is done in TQtWSCustomControl.ShowHide
     Since that flags has effect only when Widget is not visible

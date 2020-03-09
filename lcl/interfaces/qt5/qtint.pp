@@ -177,6 +177,7 @@ type
     // qt hints handles map (needed on X11 only)
     procedure AddHintHandle(AHandle: TObject);
     procedure RemoveHintHandle(AHandle: TObject);
+    procedure RemoveAllHintsHandles;
     function IsValidHintHandle(AHandle: TObject): Boolean;
     procedure HideAllHints;
     procedure RestoreAllHints;

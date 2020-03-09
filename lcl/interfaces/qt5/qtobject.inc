@@ -1435,6 +1435,37 @@ begin
   System.LeaveCriticalsection(CriticalSection);
 end;
 
+procedure TQtWidgetSet.RemoveAllHintsHandles;
+var
+  i: Integer;
+  AWidget: TQtHintWindow;
+begin
+  System.EnterCriticalsection(CriticalSection);
+  try
+    if not Assigned(SavedHintHandlesList) then
+      exit;
+    for i := SavedHintHandlesList.Count - 1 downto 0 do
+    begin
+      if IsValidHintHandle(TObject(SavedHintHandlesList.Items[i])) then
+      begin
+        AWidget := TQtHintWindow(SavedHintHandlesList.Items[i]);
+        if Assigned(AWidget.LCLObject) and (AWidget.LCLObject.Parent = nil) and
+          (AWidget.LCLObject is THintWindow) then
+        begin
+          AWidget.BeginUpdate;
+          AWidget.LCLObject.Visible := False;
+          AWidget.Hide;
+          AWidget.EndUpdate;
+          AWidget.setParent(nil);
+          THintWindow(AWidget.LCLObject).ReleaseHandle;
+        end;
+      end;
+    end;
+  finally
+    System.LeaveCriticalsection(CriticalSection);
+  end;
+end;
+
 function TQtWidgetSet.IsValidHintHandle(AHandle: TObject): Boolean;
 begin
   if (AHandle = nil) then
