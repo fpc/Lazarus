@@ -1136,8 +1136,7 @@ const
   );
 begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
-  NSCell(lNSColumn.headerCell).setAlignment( txtAlign[AAlignment] );
-  NSCell(lNSColumn.dataCell).setAlignment( txtAlign[AAlignment] );
+  lTableLV.lclSetColumnAlign(lNSColumn, txtAlign[AAlignment]);
 end;
 
 class procedure TCocoaWSCustomListView.ColumnSetAutoSize(

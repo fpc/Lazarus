@@ -125,6 +125,7 @@ type
     function lclGetIconRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetIconRect:::';
 
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
+    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); message 'lclSetColumn:Align:';
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -201,6 +202,7 @@ type
     procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
+    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
   end;
 
   TCellCocoaTableListView1013 = objcclass(TCellCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
@@ -465,6 +467,12 @@ begin
   // a row has been inserted or removed
   // the following rows needs to be invalidated
   // as well as number of total items in the table should be marked as modified
+end;
+
+procedure TCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
+  aalignment: NSTextAlignment);
+begin
+
 end;
 
 function TCocoaTableListView.acceptsFirstResponder: LCLObjCBoolean;
@@ -944,6 +952,14 @@ end;
 procedure TCellCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
 begin
   noteNumberOfRowsChanged;
+end;
+
+procedure TCellCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
+  aalignment: NSTextAlignment);
+begin
+  if not Assigned(acolumn) then Exit;
+  NSCell(acolumn.headerCell).setAlignment( aalignment );
+  NSCell(acolumn.dataCell).setAlignment( aalignment );
 end;
 
 function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
