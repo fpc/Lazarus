@@ -1137,6 +1137,8 @@ const
 begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
   lTableLV.lclSetColumnAlign(lNSColumn, txtAlign[AAlignment]);
+  lTableLV.setNeedsDisplayInRect(lTableLV.rectOfColumn(AIndex));
+  lTableLV.headerView.setNeedsDisplayInRect( lTableLV.headerView.headerRectOfColumn(AIndex) );
 end;
 
 class procedure TCocoaWSCustomListView.ColumnSetAutoSize(
