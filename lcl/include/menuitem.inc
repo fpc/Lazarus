@@ -152,26 +152,17 @@ begin
   //DebugLn('TMenuItem.CreateHandle END ',Name,':',ClassName);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.Delete
-  Params:  Index:
-  Returns: Nothing
-
-  Description of the procedure for the class.
- ------------------------------------------------------------------------------}
-procedure TMenuItem.Delete(Index: Integer);
-var
-  Cur: TMenuItem;
+function TMenuItem.Delete(Index: Integer): TMenuItem;
 begin
   if (Index < 0) or (FItems = nil) or (Index >= GetCount) then
     raise EMenuError.Create(SMenuIndexError);
-  Cur := TMenuItem(FItems[Index]);
-  if Cur = nil then
+  Result := TMenuItem(FItems[Index]);
+  if Result = nil then
     raise EMenuError.Create(SMenuItemIsNil);
-  Cur.DestroyHandle;
+  Result.DestroyHandle;
   FItems.Delete(Index);
-  Cur.FParent := nil;
-  Cur.FOnChange := nil;
+  Result.FParent := nil;
+  Result.FOnChange := nil;
   InvalidateMergedItems;
   MenuChanged(Count = 0);
 end;

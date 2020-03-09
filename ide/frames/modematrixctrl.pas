@@ -1042,7 +1042,7 @@ begin
   end;
   // delete not needed items
   while fTypePopupMenu.Items.Count>TypeColumn.PickList.Count do
-    fTypePopupMenu.Items[fTypePopupMenu.Items.Count-1].Free;
+    fTypePopupMenu.Items.Delete(fTypePopupMenu.Items.Count-1).Free;
 
   XY:=Point(0,0);
   i:=TypeColumn.PickList.Count-1;
