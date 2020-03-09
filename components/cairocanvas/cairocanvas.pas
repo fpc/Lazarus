@@ -1,5 +1,23 @@
 unit CairoCanvas;
 
+(*TFilePrinterCanvas (printers.pas)
+  |
+  |___TCairoPrinterCanvas
+      |
+      |___TCairoControlCanvas (cairographics.pas)
+      |
+      |___TCairoFileCanvas
+          |
+          |____TCairoFilePrinter (cairoprinter.pas)
+          |
+          |____TCairoPdfCanvas
+          |
+          |____TCairoPngCanvas
+          |
+          |____TCairoPsCanvas
+          |
+          |____TCairoSvgCanvas
+*)
 {$mode objfpc}{$H+}
 
 {$if (FPC_FULLVERSION>=20701)}
@@ -7,7 +25,7 @@ unit CairoCanvas;
 {$endif}
 
 {$define pangocairo}
-{-$define breaklines}   // disabled as it's not UTF-8 safe
+
 {-$define DebugClip}
 
 interface
@@ -27,10 +45,8 @@ type
 
   TCairoPrinterCanvas = class(TFilePrinterCanvas)
   private
-    cr: Pcairo_t;
-  private
-    FLazClipRect: TRect;
     FUserClipRect: Pcairo_rectangle_t;
+    FLazClipRect: TRect;
     {$ifdef pangocairo}
     fFontDesc: PPangoFontDescription;
     fFontDescStr: string;
@@ -38,8 +54,7 @@ type
     function StylesToStr(Styles: TFontStyles):string;
     procedure UpdatePangoLayout(Layout: PPangoLayout);
     {$endif}
-    procedure SelectFontEx(AStyle: TFontStyles; const AName: string;
-      ASize: double; aPitch: TFontPitch);
+    procedure SelectFontEx(AStyle: TFontStyles; const AName: string;ASize: double; aPitch: TFontPitch);
     function SX(x: double): double;
     function SY(y: double): double;
     function SX2(x: double): double;
@@ -62,7 +77,8 @@ type
     procedure DrawRefRect(x,y,awidth,aheight: double; color:TColor);
     procedure DebugSys;
   protected
-    ScaleX, ScaleY, FontScale: Double;
+    cr: Pcairo_t;
+    FontScale,ScaleX, ScaleY: Double;
     procedure SetLazClipRect(r: TRect);
     procedure DoLineTo(X1,Y1: Integer); override;
     procedure DoMoveTo({%H-}x, {%H-}y: integer); override;
@@ -129,10 +145,13 @@ type
 
   TCairoFileCanvas = class (TCairoPrinterCanvas)
   protected
-    sf: Pcairo_surface_t;
     fStream: TStream;
+    sf: Pcairo_surface_t;
     procedure DestroyCairoHandle; override;
+    procedure UpdatePageTransform;
+    procedure SetHandle(NewHandle: HDC); override;
   public
+    function GetPageProperties(out aWidth, aHeight: double):String;
     property Stream: TStream read fStream write fStream;
   end;
 
@@ -159,17 +178,11 @@ type
     procedure SetPenMode;override;
     function CreateCairoHandle: HDC; override;
     procedure DestroyCairoHandle; override;
-  public
-    constructor Create(APrinter: TPrinter); override;
   end;
 
   { TCairoPsCanvas }
 
   TCairoPsCanvas = class(TCairoFileCanvas)
-  private
-    fHandle: Pcairo_t;
-    procedure GetPageProperties(out aWidth, aHeight: double; out orStr:string);
-    procedure UpdatePageTransform;
   protected
     function CreateCairoHandle: HDC; override;
   public
@@ -283,7 +296,7 @@ begin
 
   // dashed patterns do not look ok  combined with round or squared caps
   // make it flat until a solution is found
-  case Pen.Style of
+  {%H-}case Pen.Style of
     psDash, psDot, psDashDot, psDashDotDot:
       cap := CAIRO_LINE_CAP_BUTT
   end;
@@ -299,18 +312,6 @@ end;
 procedure TCairoPrinterCanvas.SetBrushProperties;
 begin
   SetSourceColor(Brush.Color);
-{  case Brush.Style of
-    bsSolid
-    bsClear
-    bsHorizontal
-    bsVertical
-    bsFDiagonal
-    bsBDiagonal
-    bsCross
-    bsDiagCross
-    bsImage
-    bsPattern
-  end;}
 end;
 
 procedure TCairoPrinterCanvas.DoLineTo(X1, Y1: Integer);
@@ -333,19 +334,14 @@ end;
 
 procedure TCairoPrinterCanvas.DestroyCairoHandle;
 begin
+  //virtual
 end;
 
 procedure TCairoPrinterCanvas.SetHandle(NewHandle: HDC);
 begin
-  if NewHandle = {%H-}HDC(cr) then
-    exit;
-
-  if (NewHandle=0) and (cr<>nil) then
-    DestroyHandle;
-
-  cr := {%H-}Pcairo_t(NewHandle);
-
-  // update state
+  if  NewHandle = {%H-}HDC(cr)   then exit;
+  if (NewHandle=0) and (cr<>nil) then DestroyHandle;
+  cr := {%H-}Pcairo_t(NewHandle); //Set CairoRecord Handle
   inherited SetHandle(NewHandle);
 end;
 
@@ -377,6 +373,9 @@ begin
     FLazClipRect:=printer.PaperSize.PaperRect.WorkRect;
     if HandleAllocated then
       UpdatePageSize;
+  end else begin
+    RequiredState([csHandleValid]);
+    UpdatePageSize;
   end;
   fPageBegun := true;
 end;
@@ -393,10 +392,12 @@ end;
 
 procedure TCairoPrinterCanvas.CreateBrush;
 begin
+   //revoked
 end;
 
 procedure TCairoPrinterCanvas.CreateFont;
 begin
+  //revoked
 end;
 
 procedure TCairoPrinterCanvas.CreateHandle;
@@ -408,14 +409,17 @@ end;
 
 procedure TCairoPrinterCanvas.CreatePen;
 begin
+  //revoked
 end;
 
 procedure TCairoPrinterCanvas.CreateRegion;
 begin
+  //revoked
 end;
 
 procedure TCairoPrinterCanvas.RealizeAntialiasing;
 begin
+  //revoked
 end;
 
 procedure TCairoPrinterCanvas.DestroyHandle;
@@ -478,8 +482,7 @@ begin
   RequiredState([csHandleValid]);
   cairo_reset_clip(cr);
 
-  if not AValue then begin
-    // free user cliprect if exists
+  if not AValue then begin  // free user cliprect if exists
     if fUserClipRect<>nil then
       Dispose(fUserClipRect);
     fUserClipRect := nil;
@@ -492,8 +495,7 @@ begin
         cairo_rectangle(cr, x, y, width, height);
         cairo_clip(cr);
       end;
-    end else
-      ; // cairo_reset_clip always clip
+    end; // cairo_reset_clip always clip
   end;
 end;
 
@@ -819,6 +821,7 @@ end;
 
 procedure TCairoPrinterCanvas.UpdatePageSize;
 begin
+  //virtual
 end;
 
 procedure TCairoPrinterCanvas.Ellipse(X1, Y1, X2, Y2: Integer);
@@ -1053,56 +1056,9 @@ begin
   Changed;
 end;
 
-{$ifdef breaklines}
-type
-  TLine = class
-    Start, EndL: Integer;
-    Width: Double;
-  end;
-{$endif}
-
 procedure TCairoPrinterCanvas.TextRect(ARect: TRect; X1, Y1: integer; const Text: string; const Style: TTextStyle);
 var
   s: string;
-{$ifdef breaklines}
-  te: cairo_text_extents_t;
-  Lines: TList;
-  CurLine: TLine;
-  len: integer;
-  LastBreakEndL: Integer;
-  LastBreakStart: Integer;
-
-  procedure BreakLine(en, st: Integer);
-  var
-    s1: string;
-    te: cairo_text_extents_t;
-  begin
-    if en>=0 then begin
-      //if en>1 then begin
-        if en <= len then
-          CurLine.EndL := en
-        else
-          CurLine.EndL := len;
-      //end else
-        //CurLine.EndL := 1;
-      s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
-      cairo_text_extents(cr, PChar(s1), @te);
-      CurLine.Width := te.width;
-    end;
-    if st > 0 then begin
-      CurLine := TLine.Create;
-      Lines.Add(CurLine);
-      //if st <= len then
-        CurLine.Start := st;
-      //else
-      //  CurLine.Start := len;
-      CurLine.EndL := 0;
-    end;
-    LastBreakEndL := 0;
-    LastBreakStart := 0;
-  end;
-{$endif}
-
 var
   fd: TFontData;
   s1: string;
@@ -1116,14 +1072,7 @@ var
   ink,logical: TPangoRectangle;
   {$endif}
 
-  {$ifdef breaklines}
-  fe: cairo_font_extents_t;
-  BreakBoxWidth: Double;
-  j: integer;
-  ch: string;
-  {$else}
   Lines: TStringList;
-  {$endif}
 begin
   Changing;
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
@@ -1138,12 +1087,6 @@ begin
     StartTop := SY(Y1);
     //DebugLn('Box= l=%f t=%f',[BoxLeft,BoxTop]);
     //DebugLn('     x=%f y=%f',[StartLeft,StartTop]);
-    {$ifdef breaklines}
-    if Style.Alignment = taLeftJustify then
-      BreakBoxWidth := SX(ARect.Right - X1)
-    else
-      BreakBoxWidth := BoxWidth;
-    {$endif}
 
     if Style.Clipping then begin
       r := BoxWidth+Pen.Width;
@@ -1197,76 +1140,8 @@ begin
     cairo_font_extents(cr, @fe);
     {$endif}
 
-    {$ifdef breaklines}
-    Lines := TList.Create;
-    //Break lines
-    len := Length(s);
-    BreakLine(-1, 1);
-    i := 1;
-    while i<=len+1 do begin
-      if i<=len then
-        ch := s[i]
-      else
-        ch := '';
-      //CR LF breaking
-      if ch = #13 then begin
-        if (i < len) and (s[i+1] = #10) then begin
-          BreakLine(i-1, i+2);
-          inc(i, 2);
-          Continue;
-        end else begin
-          BreakLine(i-1, i+1);
-          inc(i, 1);
-          Continue;
-        end;
-      end;
-      if ch = #10 then begin
-        BreakLine(i-1, i+1);
-        inc(i, 1);
-        Continue;
-      end;
-
-      //Word breaking
-      if Style.Wordbreak then begin
-        if (ch = '') or (ch = ' ') then begin //'' last char
-          s1 := Copy(s, CurLine.Start, i-CurLine.Start);
-          {$ifdef pangocairo}
-          {$else}
-          cairo_text_extents(cr, PChar(s1), @te);
-          {$endif}
-          //skip following break chars
-          j := i+1;
-          while (j<=len) and (s[j] = ' ') do
-            inc(j);
-          if (te.width+te.x_bearing) <= BreakBoxWidth then begin
-            LastBreakEndL := i-1;
-            LastBreakStart := j;
-          end else begin //overflow
-            if LastBreakEndL<=0 then begin //cannot break
-              BreakLine(i-1, j);
-              inc(i);
-              Continue;
-            end else begin
-              i := LastBreakStart; //before BreakLine where is LastBreakStart changed
-              BreakLine(LastBreakEndL, LastBreakStart);
-              Continue;
-            end;
-          end;
-        end;
-      end;
-
-      //next char
-      inc(i);
-    end;
-    //Close last CurLine
-    BreakLine(Len, -1);
-
-    {$else breaklines}
-
     Lines := TStringList.Create;
     Lines.Text := s;
-
-    {$endif}
 
     {$ifdef pangocairo}
     if Style.Wordbreak then begin
@@ -1304,12 +1179,7 @@ begin
     //Text output
     for i := 0 to Lines.Count-1 do begin
 
-      {$ifdef breaklines}
-      CurLine := TLine(Lines.Items[i]);
-      s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
-      {$else}
       s1 := Lines[i];
-      {$endif}
 
       //DebugLn('i=%i y=%f s1=%s',[i,y,s1]);
       {$ifdef pangocairo}
@@ -1317,7 +1187,7 @@ begin
       pango_layout_get_extents(Layout, @ink, @logical);
       x := 0;
       if not Style.Wordbreak then begin
-        case Style.Alignment of
+        {%H-}case Style.Alignment of
           taCenter:       x := BoxWidth/2 - logical.width/PANGO_SCALE/2;
           taRightJustify: x := BoxWidth - logical.Width/PANGO_SCALE;
         end;
@@ -1344,10 +1214,6 @@ begin
 
   finally
     cairo_restore(cr);
-    {$ifdef breaklines}
-    for i := 0 to Lines.Count-1 do
-      TLine(Lines.Items[i]).Free;
-    {$endif}
     Lines.Free;
   end;
   Changed;
@@ -1489,12 +1355,55 @@ end;
 
 { TCairoFileCanvas }
 
+procedure TCairoFileCanvas.SetHandle(NewHandle: HDC);
+begin
+  inherited SetHandle(NewHandle);
+  if HandleAllocated then
+    UpdatePageTransform;
+end;
+
 procedure TCairoFileCanvas.DestroyCairoHandle;
 begin
   cairo_surface_finish(sf);
   cairo_surface_destroy(sf);
   sf := nil;
 end;
+
+procedure TCairoFileCanvas.UpdatePageTransform;
+  var
+  W, H: double;
+  procedure TranslateAndRotate(W,H,PiRelative:Double);
+  begin
+    cairo_translate(cr, W, H);
+    cairo_rotate(cr, PI * PiRelative);
+  end;
+begin
+  cairo_identity_matrix(cr);
+  GetPageProperties(W, H);
+    case Orientation of
+    poPortrait        : TranslateAndRotate(      0 ,      0 , 0  );
+    poLandscape       : TranslateAndRotate(      0 ,max(W,h),-0.5);
+    poReverseLandscape: TranslateAndRotate(min(H,W),      0 , 0.5);
+    poReversePortrait : TranslateAndRotate(min(H,W),max(W,h), 1  );
+  end;
+end;
+
+
+function TCairoFileCanvas.GetPageProperties(out aWidth, aHeight: double):String;
+begin
+  // Case sensitive in PS file:
+  // "%%PageOrientation: portrait|landscape" differs from "%%Orientation: Portrait|Landscape".
+  if Orientation in [poLandscape, poReverseLandscape] then begin
+    Result := '%%PageOrientation: landscape';
+    aWidth := PaperHeight*ScaleY; //switch H, W
+    aHeight := PaperWidth*ScaleX;
+  end else begin
+    Result := '%%PageOrientation: portait';
+    aWidth := PaperWidth*ScaleX;
+    aHeight := PaperHeight*ScaleY;
+  end;
+end;
+
 
 { TCairoPdfCanvas }
 
@@ -1508,67 +1417,33 @@ begin
   result := {%H-}HDC(cairo_create(sf));
 end;
 
+
 procedure TCairoPdfCanvas.UpdatePageSize;
+var
+  H,W:Double;
 begin
-  cairo_pdf_surface_set_size(sf, PaperWidth*ScaleX, PaperHeight*ScaleY);
+  GetPageProperties(W,H);
+  if Orientation in [poLandscape,poReverseLandscape] then //PDF's
+    cairo_pdf_surface_set_size(sf, H, W)
+  else
+    cairo_pdf_surface_set_size(sf, W, H);
+  UpdatePageTransform;
 end;
 
 { TCairoPsCanvas }
-
-procedure TCairoPsCanvas.GetPageProperties(out aWidth, aHeight: double; out
-  orStr: string);
-begin
-  if Orientation in [poLandscape, poReverseLandscape] then begin
-    orStr := '%%PageOrientation: Landscape';
-    aWidth := PaperHeight*ScaleY; //switch H, W
-    aHeight := PaperWidth*ScaleX;
-  end else begin
-    orStr := '%%PageOrientation: Portait';
-    aWidth := PaperWidth*ScaleX;
-    aHeight := PaperHeight*ScaleY;
-  end;
-
-end;
-
-procedure TCairoPsCanvas.UpdatePageTransform;
-var
-  W, H: double;
-  Dummy: string;
-begin
-  GetPageProperties(W, H, Dummy);
-
-  cairo_identity_matrix(fHandle);
-
-  case Orientation of
-    poLandscape: begin
-      cairo_translate(fHandle, 0, H);
-      cairo_rotate(fHandle, -PI/2);
-    end;
-    poReverseLandscape: begin
-      cairo_translate(fHandle, W, 0);
-      cairo_rotate(fHandle, PI/2);
-    end;
-    poReversePortrait: begin
-      cairo_translate(fHandle, W, H);
-      cairo_rotate(fHandle, PI);
-    end;
-  end;
-
-end;
 
 function TCairoPsCanvas.CreateCairoHandle: HDC;
 var
   s: string;
   W, H: Double;
 begin
-  GetPageProperties(W, H, s);
+  s:=GetPageProperties(W, H);
 
   //Sizes are in Points, 72DPI (1pt = 1/72")
   if fStream<>nil then
     sf := cairo_ps_surface_create_for_stream(@WriteToStream, fStream, W, H)
   else
     sf := cairo_ps_surface_create(PChar(FOutputFileName), W, H);
-  fHandle := cairo_create(sf);
 
   cairo_ps_surface_dsc_begin_setup(sf);
   cairo_ps_surface_dsc_comment(sf, PChar(s));
@@ -1580,10 +1455,7 @@ begin
     exit(0);
   end;
 
-  //rotate and move
-  UpdatePageTransform;
-
-  result := {%H-}HDC(fHandle);
+  result := {%H-}HDC(cairo_create(sf));
 end;
 
 procedure TCairoPsCanvas.UpdatePageSize;
@@ -1591,18 +1463,10 @@ var
   W, H: Double;
   S: string;
 begin
-  GetPageProperties(W, H, S);
-
+  s:=GetPageProperties(W, H);
   cairo_ps_surface_dsc_begin_page_setup(sf);
   cairo_ps_surface_dsc_comment(sf, PChar(s));
-  cairo_ps_surface_set_size(sf, W, H);
-
   UpdatePageTransform;
-end;
-
-constructor TCairoPngCanvas.Create(APrinter: TPrinter);
-begin
-  inherited Create(APrinter);
 end;
 
 { TCairoSvgCanvas }
@@ -1624,7 +1488,7 @@ procedure TCairoPngCanvas.SetPenMode;
 begin
   inherited SetPenMode;
   { bitwise color operators make sense only for raster graphics }
-  case Pen.Mode of
+  {%H-}case Pen.Mode of
     pmXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
     pmNotXor: cairo_set_operator(cr, CAIRO_OPERATOR_XOR);
   end;
