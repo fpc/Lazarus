@@ -448,7 +448,7 @@ begin
   end;
   // remove unneeded items
   while SetDefaultMenuItem.Count>TheIndex do
-    SetDefaultMenuItem.Items.Delete(SetDefaultMenuItem.Count-1).Free;
+    SetDefaultMenuItem.Delete(SetDefaultMenuItem.Count-1).Free;
 end;
 
 class procedure TNewFormUnitToolButton.UpdateHints;
