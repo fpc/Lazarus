@@ -4947,6 +4947,18 @@ resourcestring
   lisCoolbarDeleteWarning = 'There must be at least one toolbar!';
   lisCoolbarRestoreDefaults = 'Restore defaults';
 
+  //embedded designer
+  lisEmbDsgn_Title = 'Embedded Designer';
+  lisEmbDsgn_Options = 'Options';
+  lisEmbDsgn_UseEmbeddedDesign = 'Enable embedded design';
+  lisEmbDsgn_UseScreenPreview = 'Use/View Screen Preview';
+  lisEmbDsgn_BackColor = 'Designer Back Color';
+  lisEmbDsgn_SreenPreviewBackColor = 'Screen Preview Back Color';
+  lisEmbDsgn_InfopanelColor = 'Info Panel Color';
+  lisEmbDsgn_SetDafault = 'Restore Defaults';
+  lisEmbDsgn_RestartIDECaption = 'Information';
+  lisEmbDsgn_RestartIDEText = 'In order for the chagnes to take effect, please restart the IDE.';
+
   // Editor Toolbar
   lisEditorToolbar = 'Editor ToolBar';
   lisConfigureEditorToolbar = 'Configure Toolbar';

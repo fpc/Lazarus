@@ -21,7 +21,7 @@ Arnold Bosch
 Attila Tamás - Hungarian translation
 August Klein
 Babak Mahmoudabadi
-Balazs Szekely
+Balázs Székely
 Bald Zhang
 Bart Broersma
 Benito van der Zander
@@ -186,6 +186,7 @@ Petr Kristan
 Philip J. Hess
 Philippe Picard
 Pierre Gillmann
+PilotLogic Software House
 Pino Toscano
 Przemyslaw Nagay
 Radek Cervinka

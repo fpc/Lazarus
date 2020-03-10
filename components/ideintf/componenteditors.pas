@@ -60,6 +60,8 @@ type
   protected
     FForm: TCustomForm;
     FHandlers: array[TComponentEditorDesignerHookType] of TMethodList;
+    FIsActive: Boolean;
+    procedure SetIsActive(const AVal: Boolean); virtual;
     function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
     function GetHandlerCount(HookType: TComponentEditorDesignerHookType): integer;
     procedure AddHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
@@ -108,6 +110,7 @@ type
     property Form: TCustomForm read FForm;
     property ChangeStamp: int64 read FChangeStamp;// increased on calling Modified
     procedure DisconnectComponent; virtual;
+    property IsActive:boolean read FIsActive write SetIsActive;
   public
     // Handlers
     procedure RemoveAllHandlersForObject(const HandlerObject: TObject);
@@ -1658,6 +1661,13 @@ begin
 end;
 
 { TComponentEditorDesigner }
+
+procedure TComponentEditorDesigner.SetIsActive(const AVal: Boolean);
+begin
+  if FIsActive <> AVal then 
+    FIsActive := AVal;
+end;
+
 
 function TComponentEditorDesigner.GetHandlerCount(
   HookType: TComponentEditorDesignerHookType): integer;

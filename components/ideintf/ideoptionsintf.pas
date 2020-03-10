@@ -164,6 +164,7 @@ const
     EnvOptionsBackup        = 700;
     EnvOptionsNaming        = 800;
     EnvOptionsFileFilters   = 900;
+    EnvOptionsEmbeddedDsg   = 950;
 
   GroupEditor       = 200;
     EdtOptionsGeneral     = 100;
