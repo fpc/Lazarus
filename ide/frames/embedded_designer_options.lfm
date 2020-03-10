@@ -6,14 +6,15 @@ object IDEEmbeddedDesignerSettingsFrame: TIDEEmbeddedDesignerSettingsFrame
   ClientHeight = 443
   ClientWidth = 435
   TabOrder = 0
-  DesignLeft = 324
-  DesignTop = 144
+  DesignLeft = 261
+  DesignTop = 191
   object ButtonSetDafault: TButton
     Left = 10
     Height = 25
     Hint = 'Set Default'
     Top = 240
-    Width = 126
+    Width = 111
+    AutoSize = True
     Caption = 'Restore Defaults'
     OnClick = ButtonSetDafaultClick
     ParentShowHint = False

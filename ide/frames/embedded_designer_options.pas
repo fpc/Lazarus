@@ -87,13 +87,13 @@ end;
 
 procedure TIDEEmbeddedDesignerSettingsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  UseEmbeddedDesignerCheckBox.Caption := lisEmbDsgn_UseEmbeddedDesign;
+  UseEmbeddedDesignerCheckBox.Caption := lisEmbDsgn_EnableEmbeddedDesigner;
   grOptions.Caption := lisEmbDsgn_Options;
-  UseEmbeddedScreenPreviewCheckBox.Caption := lisEmbDsgn_UseScreenPreview;
+  UseEmbeddedScreenPreviewCheckBox.Caption := lisEmbDsgn_ShowScreenPreview;
   UseDesignerBackColorText.Caption := lisEmbDsgn_BackColor;
   UseSreenPreviewBackColorText.Caption := lisEmbDsgn_SreenPreviewBackColor;
   UseInfopanelColorCheckText.Caption := lisEmbDsgn_InfopanelColor;
-  ButtonSetDafault.Caption := lisEmbDsgn_SetDafault;
+  ButtonSetDafault.Caption := lisEmbDsgn_SetDefault;
 end;
 
 procedure TIDEEmbeddedDesignerSettingsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -123,7 +123,7 @@ begin
   if Assigned(SourceEditorManagerIntf) then
     SourceEditorManagerIntf.UpdateEmbedFormDsgSettings;
   if FOldUseEmbeddedDesigner <> (AOptions as TEnvironmentOptions).UseEmbeddedDesigner then
-    IDEMessageDialog(lisEmbDsgn_RestartIDECaption, lisEmbDsgn_RestartIDEText, mtInformation, [mbOk]);
+    IDEMessageDialog(lisInformation, lisEmbDsgn_RestartIDEText, mtInformation, [mbOk]);
 end;
 
 procedure TIDEEmbeddedDesignerSettingsFrame.EnableDisableControls(
