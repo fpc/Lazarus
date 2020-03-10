@@ -648,6 +648,7 @@ procedure TLCLListBoxCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
 var
   DrawStruct: TDrawListItemStruct;
 begin
+  if not listview.isOwnerDraw then Exit;
   DrawStruct.ItemState := state;
   DrawStruct.Area := r;
   DrawStruct.DC := HDC(ctx);
@@ -2074,7 +2075,7 @@ end;
 procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 begin
   if not Assigned(list) then Exit;
-  list.isCustomDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+  list.isOwnerDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
   list.isDynamicRowHeight := AStyle = lbOwnerDrawVariable;
   //todo: if flag isCustomRowHeight changes in runtime
   //      noteHeightOfRowsWithIndexesChanged, should be sent to listview

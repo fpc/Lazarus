@@ -230,7 +230,7 @@ begin
   list.readOnly := true;
   //todo:
   //list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;
-  list.isCustomDraw := TCustomCheckListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+  list.isOwnerDraw := TCustomCheckListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then

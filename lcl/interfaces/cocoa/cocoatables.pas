@@ -78,7 +78,7 @@ type
 
     isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
-    isCustomDraw : Boolean;
+    isOwnerDraw : Boolean;
     isDynamicRowHeight: Boolean;
     CustomRowHeight: Integer;
 
@@ -97,6 +97,7 @@ type
     procedure resetCursorRects; override;
 
     procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
+    procedure drawRect(dirtyRect: NSRect); override;
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -510,7 +511,6 @@ var
   ItemState: TOwnerDrawState;
 begin
   inherited;
-  if not isCustomDraw then Exit;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
@@ -524,6 +524,13 @@ begin
   finally
     ctx.Free;
   end;
+end;
+
+procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
+begin
+  inherited drawRect(dirtyRect);
+  if CheckMainThread and Assigned(callback) then
+    callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): Integer;
