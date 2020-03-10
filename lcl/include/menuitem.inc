@@ -364,15 +364,29 @@ begin
 
   AMenu := GetMenu(Self);
   AMergedItems := MergedItems;
+
+  // issue #36776
+  if FItems.Count <> AMergedItems.InvisibleCount + AMergedItems.VisibleCount then
+  begin
+    DebugLn(Format('WARNING: TMenuItem.CheckChildrenHandles(%s): items %d invisibleCount %d visibleCount %d',
+      [dbgsName(Self),FItems.Count, AMergedItems.InvisibleCount, AMergedItems.VisibleCount]));
+    for i := 0 to FItems.Count - 1 do
+      if Assigned(FItems[i]) then
+        DebugLn(Format('Item[%d] %s',[i, dbgsName(TMenuItem(FItems[i]))]));
+  end;
+
   for i := 0 to AMergedItems.InvisibleCount-1 do
-    if AMergedItems.InvisibleItems[i].HandleAllocated then
+    if (FItems.IndexOf(AMergedItems.InvisibleItems[i]) >= 0) and AMergedItems.InvisibleItems[i].HandleAllocated then
       AMergedItems.InvisibleItems[i].DestroyHandle;
 
   for i := 0 to AMergedItems.VisibleCount-1 do
   begin
-    if AMergedItems.VisibleItems[i].HandleAllocated and (GetMenu(AMergedItems.VisibleItems[i]) <> AMenu) then
-      AMergedItems.VisibleItems[i].DestroyHandle;
-    AMergedItems.VisibleItems[i].HandleNeeded;
+    if (FItems.IndexOf(AMergedItems.VisibleItems[i]) >= 0) then
+    begin
+      if AMergedItems.VisibleItems[i].HandleAllocated and (GetMenu(AMergedItems.VisibleItems[i]) <> AMenu) then
+        AMergedItems.VisibleItems[i].DestroyHandle;
+      AMergedItems.VisibleItems[i].HandleNeeded;
+    end;
   end;
 end;
 
