@@ -365,7 +365,7 @@ begin
       AddMode(i, Project1.BuildModes[i]);
   // remove unused menuitems
   while Items.Count > CurIndex do
-    Items.Delete(Items.Count-1).Free;
+    Items[Items.Count - 1].Free;
 
   inherited DoPopup(Sender);
 end;
@@ -448,7 +448,7 @@ begin
   end;
   // remove unneeded items
   while SetDefaultMenuItem.Count>TheIndex do
-    SetDefaultMenuItem.Delete(SetDefaultMenuItem.Count-1).Free;
+    SetDefaultMenuItem.Items[SetDefaultMenuItem.Count-1].Free;
 end;
 
 class procedure TNewFormUnitToolButton.UpdateHints;

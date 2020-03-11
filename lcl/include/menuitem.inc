@@ -152,17 +152,26 @@ begin
   //DebugLn('TMenuItem.CreateHandle END ',Name,':',ClassName);
 end;
 
-function TMenuItem.Delete(Index: Integer): TMenuItem;
+{------------------------------------------------------------------------------
+  Method:  TMenuItem.Delete
+  Params:  Index:
+  Returns: Nothing
+
+  Description of the procedure for the class.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.Delete(Index: Integer);
+var
+  Cur: TMenuItem;
 begin
   if (Index < 0) or (FItems = nil) or (Index >= GetCount) then
     raise EMenuError.Create(SMenuIndexError);
-  Result := TMenuItem(FItems[Index]);
-  if Result = nil then
+  Cur := TMenuItem(FItems[Index]);
+  if Cur = nil then
     raise EMenuError.Create(SMenuItemIsNil);
-  Result.DestroyHandle;
+  Cur.DestroyHandle;
   FItems.Delete(Index);
-  Result.FParent := nil;
-  Result.FOnChange := nil;
+  Cur.FParent := nil;
+  Cur.FOnChange := nil;
   InvalidateMergedItems;
   MenuChanged(Count = 0);
 end;
@@ -364,29 +373,15 @@ begin
 
   AMenu := GetMenu(Self);
   AMergedItems := MergedItems;
-
-  // issue #36776
-  if FItems.Count <> AMergedItems.InvisibleCount + AMergedItems.VisibleCount then
-  begin
-    DebugLn(Format('WARNING: TMenuItem.CheckChildrenHandles(%s): items %d invisibleCount %d visibleCount %d',
-      [dbgsName(Self),FItems.Count, AMergedItems.InvisibleCount, AMergedItems.VisibleCount]));
-    for i := 0 to FItems.Count - 1 do
-      if Assigned(FItems[i]) then
-        DebugLn(Format('Item[%d] %s',[i, dbgsName(TMenuItem(FItems[i]))]));
-  end;
-
   for i := 0 to AMergedItems.InvisibleCount-1 do
-    if (FItems.IndexOf(AMergedItems.InvisibleItems[i]) >= 0) and AMergedItems.InvisibleItems[i].HandleAllocated then
+    if AMergedItems.InvisibleItems[i].HandleAllocated then
       AMergedItems.InvisibleItems[i].DestroyHandle;
 
   for i := 0 to AMergedItems.VisibleCount-1 do
   begin
-    if (FItems.IndexOf(AMergedItems.VisibleItems[i]) >= 0) then
-    begin
-      if AMergedItems.VisibleItems[i].HandleAllocated and (GetMenu(AMergedItems.VisibleItems[i]) <> AMenu) then
-        AMergedItems.VisibleItems[i].DestroyHandle;
-      AMergedItems.VisibleItems[i].HandleNeeded;
-    end;
+    if AMergedItems.VisibleItems[i].HandleAllocated and (GetMenu(AMergedItems.VisibleItems[i]) <> AMenu) then
+      AMergedItems.VisibleItems[i].DestroyHandle;
+    AMergedItems.VisibleItems[i].HandleNeeded;
   end;
 end;
 
@@ -1021,7 +1016,7 @@ var
   I: Integer;
 begin
   for I := Count - 1 downto 0 do
-    Delete(I).Free;
+    Items[I].Free;
 end;
 
 function TMenuItem.HasBitmap: boolean;

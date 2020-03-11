@@ -265,7 +265,7 @@ type
     procedure Add(const AItems: array of TMenuItem);
     procedure AddSeparator;
     procedure Click; virtual;
-    function Delete(Index: Integer): TMenuItem;
+    procedure Delete(Index: Integer);
     procedure HandleNeeded; virtual;
     procedure Insert(Index: Integer; Item: TMenuItem);
     procedure RecreateHandle; virtual;
