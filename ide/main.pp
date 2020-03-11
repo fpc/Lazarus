@@ -113,7 +113,7 @@ uses
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
-  MsgWnd_Options, files_options, desktop_options, window_options, embedded_designer_options,
+  MsgWnd_Options, files_options, desktop_options, window_options,
   Backup_Options, naming_options, fpdoc_options, idecoolbar_options, editortoolbar_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
   editor_mouseaction_options_advanced, editor_color_options, editor_markup_options,
@@ -1658,8 +1658,6 @@ begin
   IDECommandList.StartUpdateEvents;
   FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
-  if IDEDockMaster <> nil then
-    IDEDockMaster.Loaded := True;
 end;
 
 destructor TMainIDE.Destroy;
@@ -2212,8 +2210,6 @@ begin
   SourceEditorManager.OnPopupMenu := @SrcNoteBookPopupMenu;
   SourceEditorManager.OnNoteBookCloseQuery := @SrcNoteBookCloseQuery;
   SourceEditorManager.OnPackageForSourceEditor := @PkgBoss.GetPackageOfSourceEditor;
-  if EnvironmentOptions.UseEmbeddedDesigner then
-    SourceEditorManager.OnToggleFormOrSource := @SrcNoteBookActivated;
   DebugBoss.ConnectSourceNotebookEvents;
 
   OnSearchResultsViewSelectionChanged := @SearchResultsViewSelectionChanged;
@@ -3852,11 +3848,6 @@ begin
     AForm.BringToFront;
     LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
   end;
-  if EnvironmentOptions.UseEmbeddedDesigner then
-  begin
-    DisplayState := dsForm;
-    SourceEditorManager.DisplayState := dsForm;
-  end;
 end;
 
 procedure TMainIDE.DoViewAnchorEditor(State: TIWGetFormState);
@@ -4237,8 +4228,6 @@ begin
   for i := 0 to SourceEditorManager.SourceWindowCount - 1 do
     SourceEditorManager.SourceWindows[i].Show;
   SourceEditorManager.ShowActiveWindowOnTop(False);
-  if EnvironmentOptions.UseEmbeddedDesigner then
-    SourceEditorManager.DisplayState := dsSource;
 end;
 
 {------------------------------------------------------------------------------}
@@ -8887,19 +8876,10 @@ begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.DoBringToFrontFormOrUnit ',dbgs(DisplayState)]);
   {$ENDIF}
-  if EnvironmentOptions.UseEmbeddedDesigner then
-  begin
-    if SourceEditorManager.DisplayState <> dsSource then
-      DoShowSourceOfActiveDesignerForm
-    else
-      DoShowDesignerFormOfCurrentSrc(true);
-  end
-  else
-  begin
-    if DisplayState <> dsSource then
-      DoShowSourceOfActiveDesignerForm
-    else
-      DoShowDesignerFormOfCurrentSrc(false);
+  if DisplayState <> dsSource then begin
+    DoShowSourceOfActiveDesignerForm;
+  end else begin
+    DoShowDesignerFormOfCurrentSrc(false);
   end;
 end;
 
@@ -9063,7 +9043,6 @@ begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.DoShowSourceOfActiveDesignerForm ']);
   {$ENDIF}
-  SourceEditorManager.DisplayState := dsSource;
   DisplayState:=dsSource;
 end;
 
@@ -9168,8 +9147,6 @@ begin
       if FocusEditor then begin
         IDEWindowCreators.ShowForm(MessagesView,true);
         SourceEditorManager.ShowActiveWindowOnTop(True);
-        if EnvironmentOptions.UseEmbeddedDesigner then
-          SourceEditorManager.DisplayState := dsSource;
       end;
       if IDETabMaster <> nil then
         IDETabMaster.JumpToCompilerMessage(SrcEdit);
@@ -9255,8 +9232,6 @@ begin
         if FocusEditor then begin
           IDEWindowCreators.ShowForm(SearchResultsView,true);
           SourceEditorManager.ShowActiveWindowOnTop(True);
-          if EnvironmentOptions.UseEmbeddedDesigner then
-            SourceEditorManager.DisplayState := dsSource;
         end;
         try
           SrcEdit.BeginUpdate;
@@ -9303,8 +9278,6 @@ begin
     SearchResultsView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowSearchResultsView'){$ENDIF};
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
-  if EnvironmentOptions.UseEmbeddedDesigner then
-    SourceEditorManager.DisplayState := dsSource;
 end;
 
 function TMainIDE.GetTestBuildDirectory: string;
@@ -10173,8 +10146,6 @@ begin
 
     if jfFocusEditor in Flags then
       SourceEditorManager.ShowActiveWindowOnTop(True);
-    if EnvironmentOptions.UseEmbeddedDesigner then
-      SourceEditorManager.DisplayState := dsSource;
     UpdateSourceNames;
     Result:=mrOk;
   finally
@@ -10346,8 +10317,6 @@ begin
           TopLine:=ErrorTopLine;
       end;
       SourceEditorManager.ShowActiveWindowOnTop(True);
-      if EnvironmentOptions.UseEmbeddedDesigner then
-        SourceEditorManager.DisplayState := dsSource;
       SourceEditorManager.ClearErrorLines;
       ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
     end;
@@ -11006,8 +10975,6 @@ procedure TMainIDE.JumpHistoryViewSelectionChanged(sender : TObject);
 begin
   SourceEditorManager.HistoryJump(self, jhaViewWindow);
   SourceEditorManager.ShowActiveWindowOnTop(True);
-  if EnvironmentOptions.UseEmbeddedDesigner then
-    SourceEditorManager.DisplayState := dsSource;
 end;
 
 procedure TMainIDE.LazInstancesGetOpenedProjectFileName(
@@ -11030,11 +10997,7 @@ begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.OnSrcNotebookEditorActived']);
   {$ENDIF}
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    DisplayState := dsSource
-  else
-    DisplayState := SourceEditorManager.DisplayState;
-    
+  DisplayState:=dsSource;
   Project1.UpdateVisibleUnit(ASrcEdit, ASrcEdit.SourceNotebook.WindowID);
 
   ActiveUnitInfo := Project1.UnitWithEditorComponent(ASrcEdit);
@@ -11286,8 +11249,6 @@ begin
 
   SourceEditorManager.ActiveEditor := AnEditor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
-  if EnvironmentOptions.UseEmbeddedDesigner then
-    SourceEditorManager.DisplayState := dsSource;
   try
     AnEditor.BeginUpdate;
     AnEditor.EditorComponent.GotoBookMark(ID);
@@ -11573,16 +11534,10 @@ begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.OnSrcNoteBookActivated']);
   {$ENDIF}
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    DisplayState := dsSource
-  else
-    DisplayState := SourceEditorManager.DisplayState;
+  DisplayState:=dsSource;
 end;
 
 procedure TMainIDE.DesignerActivated(Sender: TObject);
-var
-  ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
 begin
   {$IFDEF VerboseIDEDisplayState}
   if DisplayState<>dsForm then begin
@@ -11590,30 +11545,17 @@ begin
     DumpStack;
   end;
   {$ENDIF}
-
-  if EnvironmentOptions.UseEmbeddedDesigner then
-  begin
-    if LastFormActivated <> nil then
-    begin
-      GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
-      if (ActiveUnitInfo <> nil) then
-        TheControlSelection.AssignPersistent(ActiveUnitInfo.Component);
-    end;
-  end else
-  begin
-    DisplayState:= dsForm;
-    LastFormActivated := (Sender as TDesigner).Form;
-    if EnvironmentOptions.FormTitleBarChangesObjectInspector
-    and (TheControlSelection.SelectionForm <> LastFormActivated) then
-      TheControlSelection.AssignPersistent(LastFormActivated);
-    {$IFDEF VerboseComponentPalette}
-    DebugLn('***');
-    DebugLn(['** TMainIDE.DesignerActivated: Calling UpdateIDEComponentPalette(true)',
-             ', IDEStarted=', FIDEStarted, ' **']);
-    {$ENDIF}
-    MainIDEBar.UpdateIDEComponentPalette(true);
-  end;
-
+  DisplayState:= dsForm;
+  LastFormActivated := (Sender as TDesigner).Form;
+  if EnvironmentOptions.FormTitleBarChangesObjectInspector
+  and (TheControlSelection.SelectionForm <> LastFormActivated) then
+    TheControlSelection.AssignPersistent(LastFormActivated);
+  {$IFDEF VerboseComponentPalette}
+  DebugLn('***');
+  DebugLn(['** TMainIDE.DesignerActivated: Calling UpdateIDEComponentPalette(true)',
+           ', IDEStarted=', FIDEStarted, ' **']);
+  {$ENDIF}
+  MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
 procedure TMainIDE.DesignerCloseQuery(Sender: TObject);
@@ -11643,8 +11585,7 @@ begin
   end;
   if FDesignerToBeFreed=nil then
     FDesignerToBeFreed:=TFilenameToStringTree.Create(false);
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    FDesignerToBeFreed[AnUnitInfo.Filename] := '1';
+  FDesignerToBeFreed[AnUnitInfo.Filename]:='1';
 end;
 
 procedure TMainIDE.DesignerRenameComponent(ADesigner: TDesigner;

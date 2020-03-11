@@ -358,9 +358,6 @@ type
     procedure InvalidateMarklingsOfAllFiles(aProducer: TSourceMarklingProducer); virtual; abstract;
     procedure InvalidateMarklings(aProducer: TSourceMarklingProducer; aFilename: string); virtual; abstract;
     property ShowTabs: Boolean read GetShowTabs write SetShowTabs;
-    procedure UpdateEmbedFormDsgSettings; virtual; abstract;
-    Procedure StartExecuteDock(TheDockSite: TCustomForm; TheDockControl : TControl); virtual; abstract;
-    Procedure StartExecuteUnDock(TheDockSite: TCustomForm; TheUnDockControl : TControl); virtual; abstract;
   end;
 
 

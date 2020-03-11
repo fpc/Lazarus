@@ -715,13 +715,6 @@ type
     //component list
     FComponentListKeepOpen: Boolean;
 
-    //Embedded designer
-    FUseEmbeddedDesigner: Boolean;
-    FUseEmbeddedScreenPreview: Boolean;
-    FUseEmbeddedDesignerBackColor: TColor;
-    FUseEmbeddedSreenPreviewBackColor: TColor;
-    FUseEmbeddedInfopanelColor: TColor;
-
     // Desktop
     FDesktops: TDesktopOptList;
     FDesktop: TDesktopOpt;
@@ -1055,14 +1048,6 @@ type
     // default template for each 'new item' category: Name=Path, Value=TemplateName
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
-
-    //Embedded designer
-    property UseEmbeddedDesigner: Boolean read FUseEmbeddedDesigner write FUseEmbeddedDesigner;
-    property UseEmbeddedScreenPreview: Boolean read FUseEmbeddedScreenPreview  write FUseEmbeddedScreenPreview;
-    property UseEmbeddedDesignerBackColor: TColor read FUseEmbeddedDesignerBackColor write FUseEmbeddedDesignerBackColor;
-    property UseEmbeddedSreenPreviewBackColor: TColor read FUseEmbeddedSreenPreviewBackColor write FUseEmbeddedSreenPreviewBackColor;
-    property UseEmbeddedInfopanelColor: TColor read FUseEmbeddedInfopanelColor write FUseEmbeddedInfopanelColor;
-
     // Desktop
     property Desktops: TDesktopOptList read FDesktops;
     property Desktop: TDesktopOpt read FDesktop;               // the working desktop, standalone
@@ -2242,13 +2227,6 @@ begin
   // global build options
   FBuildMatrixOptions:=TBuildMatrixOptions.Create;
 
-  //Embedded designer
-  FUseEmbeddedDesigner := False;
-  FUseEmbeddedScreenPreview := True;
-  FUseEmbeddedDesignerBackColor := clWhite;
-  FUseEmbeddedSreenPreviewBackColor := $00A56E3A;
-  FUseEmbeddedInfopanelColor := $00EAFFEF;
-
   // Desktop collection
   FDesktops := TDesktopOptList.Create(Self);
   // FDesktop points to the IDE properties
@@ -2763,13 +2741,6 @@ begin
       end;
     end;
 
-    //Embedded designer
-    FUseEmbeddedDesigner := FXMLCfg.GetValue(Path+'EmbeddedDesigner/UseEmbeddedDesigner/Value', False);
-    FUseEmbeddedScreenPreview := FXMLCfg.GetValue(Path+'EmbeddedDesigner/UseEmbeddedScreenPreview/Value', True);
-    FUseEmbeddedDesignerBackColor := FXMLCfg.GetValue(Path+'EmbeddedDesigner/UseEmbeddedDesignerBackColor/Value', clWhite);
-    FUseEmbeddedSreenPreviewBackColor := FXMLCfg.GetValue(Path+'EmbeddedDesigner/UseEmbeddedSreenPreviewBackColor/Value', $00A56E3A);
-    FUseEmbeddedInfopanelColor:=FXMLCfg.GetValue(Path+'EmbeddedDesigner/UseEmbeddedInfopanelColor/Value', $00EAFFEF);
-
     // The user can define many desktops. They are saved under path Desktops/.
     FDesktops.Clear;
     FDesktops.SetConfig(FXMLCfg, FConfigStore);
@@ -3115,13 +3086,6 @@ begin
         end;
       end;
     end;
-
-    //Embedded designer
-    FXMLCfg.SetDeleteValue(Path+'EmbeddedDesigner/UseEmbeddedDesigner/Value', FUseEmbeddedDesigner, False);
-    FXMLCfg.SetDeleteValue(Path+'EmbeddedDesigner/UseEmbeddedScreenPreview/Value', FUseEmbeddedScreenPreview, True);
-    FXMLCfg.SetDeleteValue(Path+'EmbeddedDesigner/UseEmbeddedDesignerBackColor/Value', FUseEmbeddedDesignerBackColor, clWhite);
-    FXMLCfg.SetDeleteValue(Path+'EmbeddedDesigner/UseEmbeddedSreenPreviewBackColor/Value', FUseEmbeddedSreenPreviewBackColor, $00A56E3A);
-    FXMLCfg.SetDeleteValue(Path+'EmbeddedDesigner/UseEmbeddedInfopanelColor/Value', FUseEmbeddedInfopanelColor, $00EAFFEF);
 
     //automatically save active desktops
     if AutoSaveActiveDesktop

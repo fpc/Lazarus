@@ -70,8 +70,6 @@ uses
   EditorSyntaxHighlighterDef,
   // DebuggerIntf
   DbgIntfDebuggerBase,
-  //Embedded designer
-   embedded_designer_basics, embedded_designer_formeditor, embedded_designer_notebook,
   // IDE units
   IDECmdLine, LazarusIDEStrConsts, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
@@ -367,12 +365,6 @@ type
     procedure AfterCodeBufferReplace;
     function Close: Boolean;
   public
-    FParentEmbedTabSheet: TEmbedTabSheet;
-    Function  GetNotebook: TEmbedNotebook;
-    procedure ShowSourceTab;
-    procedure ShowFormTab;   
-    property Notebook: TEmbedNotebook read GetNotebook;
-    property TabSheet: TEmbedTabSheet read fParentEmbedTabSheet;
     constructor Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
     destructor Destroy; override;
 
@@ -663,9 +655,7 @@ type
       const ARect: TRect);
     procedure TabPopUpMenuPopup(Sender: TObject);
   private
-    FNotebook: TEmbedNotebook;
-    FOnToggleFormOrSource: TNotifyEvent;
-    Last_Source_Editor: TSourceEditor;   
+    FNotebook: TExtendedNotebook;
     FBaseCaption: String;
     FIsClosing: Boolean;
     FSrcEditsSortedForFilenames: TAvlTree; // TSourceEditorInterface sorted for Filename
@@ -673,7 +663,6 @@ type
     procedure ApplyPageIndex;
     procedure ExecuteEditorItemClick(Sender: TObject);
   public
-    property OnToggleFormOrSource: TNotifyEvent read FOnToggleFormOrSource write FOnToggleFormOrSource;    
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointEnabledClicked(Sender: TObject);
@@ -1142,27 +1131,10 @@ type
     procedure DeleteLastJumpPointClicked(Sender: TObject);
     procedure ViewJumpHistoryClicked(Sender: TObject);
   protected
-    FOnToggleFormOrSource: TNotifyEvent;
-    Function  GetDisplayState: TDisplayState;
-    Procedure SetDisplayState(const val:TDisplayState);    
     // Bookmarks
     procedure BookMarkToggleClicked(Sender: TObject);
     procedure BookMarkGotoClicked(Sender: TObject);
   public
-    procedure EmbeddedForm(Sender: TObject; aForm: TCustomForm);
-    procedure ScreenFormVisibleChanged(Sender: TObject; aForm: TCustomForm);
-    procedure UpdateEmbedFormDsgSettings; override;
-
-    Procedure StartExecuteDock(TheDockSite: TCustomForm; TheDockControl : TControl); override;
-    Procedure StartExecuteUnDock(TheDockSite: TCustomForm; TheUnDockControl : TControl); override;
-
-    procedure CloseAllEmbedFormEditors;
-    Function  GetSEWithEmbedForm(aform:TcustomForm):TSourceEditor;
-    Function  SetActiveSEWithEmbedForm(aform:TcustomForm):Boolean;
-
-    property  DisplayState: TDisplayState read GetDisplayState write SetDisplayState;
-    property  OnToggleFormOrSource:TNotifyEvent read FOnToggleFormOrSource write FOnToggleFormOrSource;
-    
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
     procedure JumpToPos(FileName: string; Pos: TCodeXYPosition; TopLine: Integer);
@@ -3461,10 +3433,6 @@ begin
     FInEditorChangedUpdating := False;
   end;
   PopupMenu := nil;
-
-  if FParentEmbedTabSheet<>nil then 
-    FParentEmbedTabSheet.EditPages_Free;
-
   if (FAOwner<>nil) and (FEditor<>nil) then begin
     UnbindEditor;
     FEditor.Visible:=false;
@@ -5084,8 +5052,6 @@ begin
 end;
 
 procedure TSourceEditor.UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TTabSheet);
-var 
- xForm: TCustomForm;
 begin
   if FSourceNoteBook = ANewNoteBook then exit;
 
@@ -5097,31 +5063,8 @@ begin
   // Change the Owner of the SynEdit
   EditorComponent.Owner.RemoveComponent(EditorComponent);
   FSourceNoteBook.InsertComponent(EditorComponent);
-
-  TEmbedTabSheet(ANewPage).EditPages_Create;
-  EditorComponent.Parent := TEmbedTabSheet(ANewPage).FEditPageForSource;
-  ANewNoteBook.Last_Source_Editor := Self;
-  xForm := nil;
-  if FParentEmbedTabSheet <> nil then
-  begin
-    xForm:= FParentEmbedTabSheet.LoadedForm;
-    FParentEmbedTabSheet.EditPages_Free;
-    if xForm <> nil then
-    begin
-      if (CN_FORM_DESIGNER_PARENT_TYPE = ctptParentWindow) then
-        xForm.ParentWindow := 0;
-      xForm.Parent := nil;
-      ShowWindow(xform.Handle, SW_HIDE);
-    end;
-  end;
-  FParentEmbedTabSheet := TEmbedTabSheet(ANewPage);
-  FParentEmbedTabSheet.FSynEditor := Self.FEditor;
-  if xForm<>nil then
-  begin
-    FParentEmbedTabSheet.EmbeddedForm(nil, xForm);
-    FParentEmbedTabSheet.ShowSourceTab;
-  end;
-  FEditor.Visible := True;
+  // And the Parent
+  EditorComponent.Parent := ANewPage;
 end;
 
 { AOwner is the TSourceNotebook
@@ -5179,13 +5122,7 @@ Begin
       OnMultiCaretBeforeCommand := @DoMultiCaretBeforeCommand;
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
-
-      FParentEmbedTabSheet:=TEmbedTabSheet(AParent);
-      FParentEmbedTabSheet.EditPages_Free;
-      FParentEmbedTabSheet.EditPages_Create;
-      FEditor.Parent := TEmbedTabSheet(AParent).FEditPageForSource;      
-      TSourceNotebook(FAOwner).Last_Source_Editor:=self;     
-      
+      Parent := AParent;
       if AParent.Font.PixelsPerInch<>96 then
         AutoAdjustLayout(lapAutoAdjustForDPI, 96, AParent.Font.PixelsPerInch, 0, 0);
     end;
@@ -5202,13 +5139,8 @@ Begin
 
     RefreshEditorSettings;
     FEditor.EndUpdate;
-  end else 
-  begin  
-    FParentEmbedTabSheet:=TEmbedTabSheet(AParent);
-    FParentEmbedTabSheet.EditPages_Free;
-    FParentEmbedTabSheet.EditPages_Create;
-    FEditor.Parent := TEmbedTabSheet(AParent).FEditPageForSource;
-    TSourceNotebook(FAOwner).Last_Source_Editor:=self;  
+  end else begin
+    FEditor.Parent:=AParent;
   end;
 end;
 
@@ -5461,9 +5393,6 @@ end;
 function TSourceEditor.Close: Boolean;
 Begin
   DebugLnEnter(SRCED_CLOSE, ['TSourceEditor.Close ShareCount=', FSharedValues.SharedEditorCount]);
-  if FParentEmbedTabSheet <> nil then 
-    FParentEmbedTabSheet.EditPages_Free;
-
   Result := True;
   Visible := False;
   Manager.EditorRemoved(Self);
@@ -5991,9 +5920,6 @@ var
   Dialog: TMultiPasteDialog;
 begin
   if ReadOnly then Exit;
-
-  ShowSourceTab;
-
   Dialog := TMultiPasteDialog.Create(nil);
   try
     if Dialog.ShowModal <> mrOK then Exit;
@@ -6406,35 +6332,9 @@ end;
 
 procedure TSourceEditor.DoEditorExecuteCommand(EditorCommand: word);
 begin
-  ShowSourceTab;
   EditorComponent.CommandProcessor(TSynEditorCommand(EditorCommand),' ',nil);
 end;
 
-Function TSourceEditor.GetNotebook:TEmbedNotebook;
-begin
- result:=nil;
- if FSourceNotebook<> nil then
-   if FSourceNotebook.FNotebook<>nil then
-     result:=FSourceNotebook.FNotebook;
-end;
-
-procedure TSourceEditor.ShowSourceTab;
-begin
- if EnvironmentOptions.UseEmbeddedDesigner then
-  if FSourceNotebook<> nil then
-   if FSourceNotebook.FNotebook<>nil then
-    if FSourceNotebook.FNotebook.DisplayState<>dsSource then
-       FSourceNotebook.FNotebook.DisplayState:=dsSource;
-end;
-
-procedure TSourceEditor.ShowFormTab;
-begin
- if EnvironmentOptions.UseEmbeddedDesigner then
-  if FSourceNotebook<> nil then
-   if FSourceNotebook.FNotebook<>nil then
-    if FSourceNotebook.FNotebook.DisplayState<>dsForm then
-       FSourceNotebook.FNotebook.DisplayState:=dsForm;
-end;
 {------------------------------------------------------------------------}
                       { TSourceNotebook }
 
@@ -6506,10 +6406,6 @@ begin
   except
   end;
   {$ENDIF}
-  
-  if EnvironmentOptions.UseEmbeddedDesigner then
-   if Manager <> nil then
-     OnToggleFormOrSource := Manager.OnToggleFormOrSource;
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -6539,7 +6435,7 @@ end;
 
 procedure TSourceNotebook.CreateNotebook;
 var
-  APage: TEmbedTabSheet;
+  APage: TTabSheet;
 Begin
   {$IFDEF IDE_DEBUG}
   debugln('[TSourceNotebook.CreateNotebook] START');
@@ -6547,7 +6443,7 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
-  FNotebook := TEmbedNotebook.Create(self);
+  FNotebook := TExtendedNotebook.Create(self);
   {$IFDEF IDE_DEBUG}
   debugln('[TSourceNotebook.CreateNotebook] B');
   {$ENDIF}
@@ -6562,7 +6458,7 @@ Begin
     debugln('[TSourceNotebook.CreateNotebook] C');
     {$ENDIF}
     Align := alClient;
-    APage:=TEmbedTabSheet.Create(FNotebook);
+    APage:=TTabSheet.Create(FNotebook);
     APage.Caption:='unit1';
     APage.Parent:=FNotebook;
     PageIndex := 0;   // Set it to the first page
@@ -7696,7 +7592,7 @@ begin
   inherited DragOver(Source, X, Y, State, Accept);
   if State = dsDragLeave then
     FUpdateTabAndPageTimer.Enabled := True
-  else if Source is TEmbedNotebook then
+  else if Source is TExtendedNotebook then
     FNotebook.ShowTabs := (Manager=nil) or Manager.ShowTabs;
 end;
 
@@ -8707,8 +8603,6 @@ begin
     if TabIndex>=0 then
       FNotebook.ActivePageIndex := TabIndex;
   end;
-  if Manager.ActiveSourceWindow <> self then 
-    Manager.ActiveSourceWindow := Self;
 end;
 
 procedure TSourceNotebook.NotebookMouseUp(Sender: TObject;
@@ -8795,7 +8689,7 @@ begin
   FUpdateTabAndPageTimer.Enabled := False;
   if State = dsDragLeave then
     FUpdateTabAndPageTimer.Enabled := True
-  else if Source is TEmbedNotebook then
+  else if Source is TExtendedNotebook then
     FNotebook.ShowTabs := (Manager=nil) or Manager.ShowTabs;
 end;
 
@@ -8865,9 +8759,6 @@ Begin
     DebugBoss.UnLockCommandProcessing;
   end;
   DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.NotebookPageChanged ']);
- if EnvironmentOptions.UseEmbeddedDesigner then
-   if FNotebook.DisplayState=dsForm then
-       FNotebook.ActivatedDesigner; 
 end;
 
 procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
@@ -10354,7 +10245,6 @@ end;
 procedure TSourceEditorManager.ReloadEditorOptions;
 var
   i: Integer;
-  Filename: string;
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ReloadEditorOptions;
@@ -11312,19 +11202,10 @@ begin
 
   Application.AddOnIdleHandler(@OnIdle);
   Application.AddOnUserInputHandler(@OnUserInput);
-  if EnvironmentOptions.UseEmbeddedDesigner then
-  begin
-    Screen.AddHandlerFormAdded(@EmbeddedForm);
-    Screen.AddHandlerFormVisibleChanged(@ScreenFormVisibleChanged);
-  end;
 end;
 
 destructor TSourceEditorManager.Destroy;
 begin
-  if EnvironmentOptions.UseEmbeddedDesigner then
-  begin
-    Screen.RemoveAllHandlersOfObject(Self);
-  end;
   FreeAndNil(FHints);
   SourceEditorMarks.OnAction := nil;
   Application.RemoveAllHandlersOfObject(Self);
@@ -11492,221 +11373,6 @@ procedure TSourceEditorManager.EditorPropertiesClicked(Sender: TObject);
 begin
   LazarusIDE.DoOpenIDEOptions(TEditorGeneralOptionsFrame);
 end;
-
-function TSourceEditorManager.GetDisplayState: TDisplayState;
-var
-  aa: TSourceNotebook;
-begin
- Result := dsSource;
- aa := GetActiveSourceNotebook;
- if aa = nil then
-   Exit;
- if aa.FNotebook = nil then
-   Exit;
- Result := aa.FNotebook.DisplayState;
-end;
-
-procedure TSourceEditorManager.SetDisplayState(const val: TDisplayState);
-var
-  aa: TSourceNotebook;
-begin
- if EnvironmentOptions.UseEmbeddedDesigner = False then
-   Exit;
- aa := GetActiveSourceNotebook;
- if aa = nil then
-   Exit;
- if aa.FNotebook = nil then
-   Exit;
- aa.FNotebook.DisplayState := val;
-end;
-
-function TSourceEditorManager.GetSEWithEmbedForm(aform: TcustomForm): TSourceEditor;
-var
-  i,j: integer;
-  xEmbedNotebook: TEmbedNotebook;
-  xPage: TEmbedTabSheet;
-begin
-  Result := nil;
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    Exit;
-  if aform = nil then
-    Exit;
-  if SourceWindowCount < 1 then
-    Exit;
-  xEmbedNotebook := Nil;
-  xPage := Nil;
-
-  for i := 0 to SourceWindowCount - 1 do
-  begin
-    xEmbedNotebook := SourceWindows[i].FNotebook;
-    if xEmbedNotebook<>nil then
-    begin
-      for j := 0 to xEmbedNotebook.PageCount - 1 do
-      begin
-        xPage := TEmbedTabSheet(xEmbedNotebook.Page[j]);
-        if xPage <> nil then
-          if xPage.FFormEditor <> nil then
-            if xPage.FFormEditor.FDesignPanel <> nil then
-              if xPage.FFormEditor.FDesignPanel.LoadedForm <> nil then
-                if xPage.FFormEditor.FDesignPanel.LoadedForm = aform then
-                  Result:=FindSourceEditorWithEditorComponent(xPage.FSynEditor);
-
-      end;
-    end;
-  end;
-end;
-
-function TSourceEditorManager.SetActiveSEWithEmbedForm(aform:TcustomForm):Boolean;
-var
-  xSE: TSourceEditor;
-begin
-  Result := False;
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    Exit;
-  if aform = nil then
-    Exit;
-  xSE := GetSEWithEmbedForm(aform);
-  if xSE = nil then
-    Exit;
-  ActiveEditor := xSE;
-end;
-
-procedure TSourceEditorManager.UpdateEmbedFormDsgSettings;
-var
-  i: Integer;
-begin
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    Exit;
-  if SourceWindowCount < 1 then
-    Exit;
-  for i := 0 to SourceWindowCount-1 do
-    if Assigned(SourceWindows[i]) then
-      if Assigned(SourceWindows[i].FNotebook) then
-        SourceWindows[i].FNotebook.UpdateEmbedFormDsgSettings;
-end;
-
-procedure TSourceEditorManager.CloseAllEmbedFormEditors;
-var
-  i: integer;
-begin
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    Exit;
-  if SourceWindowCount < 1 then
-    Exit;
-  for i := 0 to SourceWindowCount-1 do
-    if Assigned(SourceWindows[i]) then
-      if Assigned(SourceWindows[i].FNotebook) then
-        SourceWindows[i].FNotebook.CloseAllEmbedFormEditors;
-end;
-
-function _HasSameDockSite(aControl1, aControl2: TControl): Boolean;
-var
-  xtest, xParent1, xParent2: TControl;
-begin
-  Result:=false;
-  if aControl1 = nil then
-    Exit;
-  if aControl2 = nil then
-   Exit;
-
-  xParent1 := aControl1;
-  xParent2 := aControl2;
-
-  xtest := aControl1;
-  repeat
-    if xtest.Parent<>nil then
-      xtest := xtest.Parent
-    else
-      xtest := nil;
-    if xtest <> nil then
-      xParent1:=xtest;
-  until xtest=nil;
-
-  xtest := aControl2;
-  repeat
-    if xtest.Parent <> nil then
-      xtest := xtest.Parent
-    else
-      xtest:=nil;
-    if xtest <> nil then
-      xParent2 := xtest;
-  until xtest = nil;
-  result:=(xParent1=xParent2);
-end;
-
-procedure TSourceEditorManager.StartExecuteDock(TheDockSite: TCustomForm; TheDockControl : TControl);
-  var i:integer;
-begin
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    Exit;
-  if SourceWindowCount < 1 then
-    Exit;
-  for i:=0 to SourceWindowCount-1 do
-    if Assigned(SourceWindows[i]) then
-        if Assigned(SourceWindows[i].FNotebook) then
-          if _HasSameDockSite(SourceWindows[i].FNotebook,TheDockSite) then
-           SourceWindows[i].FNotebook.CloseAllEmbedFormEditors;
-
-end;
-
-procedure TSourceEditorManager.StartExecuteUnDock(TheDockSite: TCustomForm; TheUnDockControl : TControl);
-  var i:integer;
-Begin
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    Exit;
-  if SourceWindowCount < 1 then
-    Exit;
-  for i := 0 to SourceWindowCount - 1 do
-    if Assigned(SourceWindows[i]) then
-      if Assigned(SourceWindows[i].FNotebook) then
-        if _HasSameDockSite(SourceWindows[i].FNotebook, TheDockSite) then
-          SourceWindows[i].FNotebook.CloseAllEmbedFormEditors;
-end;
-
-procedure TSourceEditorManager.ScreenFormVisibleChanged(Sender: TObject; aForm: TCustomForm);
-begin
-  //
-end;
-
-procedure TSourceEditorManager.EmbeddedForm(Sender: TObject; aForm: TCustomForm);
-var
-  xSE: TSourceEditor;
-  xPage: TEmbedTabSheet;
-  I: integer;
-
-  procedure CheckSourceWin(aWin : TSourceNotebook);
-  begin
-    if aWin= nil then exit;
-    xPage:=nil;
-    xSE:=nil;
-
-   if xSE = nil then xSE:=TSourceEditor(aWin.ActiveEditor);
-   if xSE = nil then xSE:=aWin.Last_Source_Editor;
-   if xSE = nil then Exit;
-   if sepuNewShared in xSE.FProjectFileUpdatesNeeded then
-     Exit;
-
-   xPage:=xSE.FParentEmbedTabSheet;
-   if xPage=nil then
-     Exit;
-   xPage.FSynEditor:=xSE.FEditor;
-   TEmbedNotebook(aWin.FNotebook).EmbeddedForm(Sender,aForm,xPage);
-   if xSE.FSourceNoteBook <> nil then
-     xPage.OnToggleFormOrSource:=xSE.FSourceNoteBook.OnToggleFormOrSource;
-  end;
-
-begin
-  if EnvironmentOptions.UseEmbeddedDesigner = False then
-    Exit;
-  if Embed_IsDesignForm(aForm)=false then
-    Exit;
-  if SourceWindowCount < 1 then
-    Exit;
-
-  for i:=0 to SourceWindowCount-1 do
-    CheckSourceWin(SourceWindows[i]);
-end;
-
 
 initialization
   InternalInit;
