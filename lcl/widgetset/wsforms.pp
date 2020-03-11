@@ -101,7 +101,6 @@ type
     class function Next(const AForm: TCustomForm): Boolean; virtual;
     class function Previous(const AForm: TCustomForm): Boolean; virtual;
     class function Tile(const AForm: TCustomForm): Boolean; virtual;
-    class function ArrangeIcons(const AForm: TCustomForm): Boolean; virtual;
     class function MDIChildCount(const AForm: TCustomForm): Integer; virtual;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
@@ -251,11 +250,6 @@ begin
 end;
 
 class function TWSCustomForm.Previous(const AForm: TCustomForm): Boolean;
-begin
-  Result := False;
-end;
-
-class function TWSCustomForm.ArrangeIcons(const AForm: TCustomForm): Boolean;
 begin
   Result := False;
 end;

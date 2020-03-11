@@ -72,43 +72,16 @@ var
   depthLen: integer;
 {$endif}
   setComboWindow: boolean;
-  WindowInfo: PWin32WindowInfo;
 begin
 {$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
   depthLen := Length(MessageStackDepth);
   if depthLen > 0 then
     MessageStackDepth[depthLen] := '#';
 {$endif}
-  WindowInfo := GetWin32WindowInfo(Window);
-  PrevWndProc := WindowInfo^.DefWndProc;
+  PrevWndProc := GetWin32WindowInfo(Window)^.DefWndProc;
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
   then begin
-    if WindowInfo^.WinControl is TCustomForm then
-    begin
-      case TCustomForm(WindowInfo^.WinControl).FormStyle of
-        fsMDIForm:
-        begin
-          if Msg <> WM_COMMAND then
-            Result := Windows.DefFrameProcW(Window, Win32WidgetSet.MDIClientHandle, Msg, WParam, LParam)
-          else
-          if (LoWord(WParam)=SC_CLOSE) or
-             (LoWord(WParam)=SC_MAXIMIZE) or
-             (LoWord(WParam)=SC_MINIMIZE) or
-             (LoWord(WParam)=SC_RESTORE) or
-             (LoWord(WParam)=SC_NEXTWINDOW) or
-             (LoWord(WParam)=SC_PREVWINDOW)
-          then
-            Result := Windows.DefFrameProcW(Window, Win32WidgetSet.MDIClientHandle, Msg, WParam, LParam)
-          else
-            Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam);
-        end;
-        fsMDIChild:
-          Result := Windows.DefMDIChildProcW(Window, Msg, WParam, LParam);
-      else
-        Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam);
-      end;
-    end else
-      Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam);
+    Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
   end
   else begin
     // combobox child edit weirdness: combobox handling WM_SIZE will compare text
@@ -1969,7 +1942,6 @@ var
   R: TRect;
   ACtl: TWinControl;
   LMouseEvent: TTRACKMOUSEEVENT;
-  MaximizedActiveChild: WINBOOL;
 {$IF NOT DECLARED(WM_DPICHANGED)} // WM_DPICHANGED was added in FPC 3.1.1
 const
   WM_DPICHANGED = $02E0;
@@ -2056,16 +2028,6 @@ begin
       if HIWORD(lParam) = 0 then //if not system menu
       begin
         TargetObject := GetPopMenuItemObject;
-        // Check if the menu was the maximized icon menu for an MDI child window and ignore it in that case
-        if (LoWord(LParam)=0) and (lWinControl=Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
-        begin
-          MaximizedActiveChild := False;
-          if SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIGETACTIVE, 0, Windows.WPARAM(@MaximizedActiveChild)) <> 0 then
-          begin
-            if MaximizedActiveChild then
-              TargetObject := nil;
-          end;
-        end;
         if TargetObject is TMenuItem then
         begin
           LMessage.Msg := LM_ACTIVATE;
@@ -2078,16 +2040,6 @@ begin
     WM_MENUSELECT:
     begin
       TargetObject := GetMenuItemObject((HIWORD(Integer(WParam)) and MF_POPUP) <> 0);
-      // Check if the menu was the maximized icon menu for an MDI child window and ignore it in that case
-      if (LoWord(WParam)=0) and (lWinControl=Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
-      begin
-        MaximizedActiveChild := False;
-        if SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIGETACTIVE, 0, Windows.WPARAM(@MaximizedActiveChild)) <> 0 then
-        begin
-          if MaximizedActiveChild then
-            TargetObject := nil;
-        end;
-      end;
       if TargetObject is TMenuItem then
         TMenuItem(TargetObject).IntfDoSelect
       else
@@ -2466,13 +2418,6 @@ begin
     if Msg >= WM_USER then
       SetLMessageAndParams(Msg, True);
   end;  // case Msg of
-
-  // Update MDI form client bounds
-  if WinProcess and (Msg=WM_SIZE) and (Window=Application.MainFormHandle) and (Application.MainForm.FormStyle=fsMDIForm) then
-  begin
-    Win32WidgetSet.UpdateMDIClientBounds;
-    WinProcess := False;
-  end;
 
   if WinProcess then
   begin

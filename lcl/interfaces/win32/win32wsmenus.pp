@@ -184,7 +184,6 @@ var
   FirstMenuItem: TMenuItem;
   SiblingMenuItem: TMenuItem;
   i: integer;
-  AMergedItems: TMergedMenuItems;
 begin
   Result := MakeLResult(0, MNC_IGNORE);
   MenuItemIndex := -1;
@@ -194,15 +193,13 @@ begin
 
   FirstMenuItem := TMenuItem(ItemInfo.dwItemData);
   if FirstMenuItem = nil then exit;
-  AMergedItems := FirstMenuItem.MergedParent.MergedItems;
-  for i := 0 to AMergedItems.VisibleCount-1 do
+  i := 0;
+  while (i < FirstMenuItem.Parent.Count) and (MenuItemIndex < 0) do
   begin
-    SiblingMenuItem := AMergedItems.VisibleItems[i];
+    SiblingMenuItem := FirstMenuItem.Parent.Items[i];
     if IsAccel(ACharCode, SiblingMenuItem.Caption) then
-    begin
-      MenuItemIndex := i;
-      break;
-    end;
+      MenuItemIndex := SiblingMenuItem.MenuVisibleIndex;
+    inc(i);
   end;
   if MenuItemIndex > -1 then
     Result := MakeLResult(MenuItemIndex, MNC_EXECUTE);
@@ -600,24 +597,26 @@ const
 
   function IsLast: Boolean;
   var
-    AMergedItems: TMergedMenuItems;
+    Index, i: Integer;
   begin
-    AMergedItems := AMenuItem.MergedParent.MergedItems;
-    Result := (AMergedItems.VisibleCount>0) and (AMergedItems.VisibleItems[AMergedItems.VisibleCount-1]=AMenuItem);
+    Index := AMenuItem.Parent.IndexOf(AMenuItem);
+    for i := Index + 1 to AMenuItem.Parent.Count - 1 do
+      if AMenuItem.Parent.Items[i].Visible then
+        Exit(False);
+    Result := True;
   end;
 var
   MenuState: TThemedMenu;
   Metrics: TVistaBarMenuMetrics;
   Details, Tmp: TThemedElementDetails;
-  BGRect, BGClip, WndRect, TextRect, ImageRect, ItemRect: TRect;
+  BGRect, BGClip, WndRect, TextRect, ImageRect: TRect;
   IconSize: TPoint;
   TextFlags: DWord;
   AFont, OldFont: HFONT;
   IsRightToLeft: Boolean;
   Info: tagMENUBARINFO;
-  AWnd, ActiveChild: HWND;
+  AWnd: HWND;
   CalculatedSize: TSIZE;
-  MaximizedActiveChild: WINBOOL;
 begin
   if (ItemState and ODS_SELECTED) <> 0 then
     MenuState := tmBarItemPushed
@@ -635,8 +634,8 @@ begin
 
   // draw backgound
   // This is a hackish way to draw. Seems windows itself draws this in WM_PAINT or another paint handler?
-  AWnd := TCustomForm(AMenuItem.GetMergedParentMenu.Parent).Handle;
-  if (AMenuItem.MergedParent.VisibleIndexOf(AMenuItem) = 0) then
+  AWnd := TCustomForm(AMenuItem.GetParentMenu.Parent).Handle;
+  if (AMenuItem.Parent.VisibleIndexOf(AMenuItem) = 0) then
   begin
     /// if we are painting the first item then request full repaint to draw the bg correctly
     if (GetProp(AWnd, 'LCL_MENUREDRAW') = 0) then
@@ -655,28 +654,6 @@ begin
     OffsetRect(Info.rcBar, -WndRect.Left, -WndRect.Top);
     Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
     ThemeDrawElement(AHDC, Tmp, Info.rcBar, nil);
-    // if there is any maximized MDI child, the call above erased its icon... so we'll
-    // need to redraw the icon again
-    if (AMenuItem.GetMergedParentMenu.Parent=Application.MainForm) and
-       (Application.MainForm.FormStyle=fsMDIForm) then
-    begin
-      MaximizedActiveChild := False;
-      ActiveChild := HWND(SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIGETACTIVE, 0, Windows.WPARAM(@MaximizedActiveChild)));
-      if ActiveChild <> 0 then
-      begin
-        if MaximizedActiveChild then
-        begin
-          if GetMenuItemRect(AWnd, Info.hMenu, 0, @ItemRect) then
-          begin
-            OffsetRect(ItemRect, -WndRect.Left, -WndRect.Top);
-            DrawIconEx(AHDC, ItemRect.Left + (ItemRect.Width - 16) div 2, ItemRect.Top + (ItemRect.Height - 16) div 2,
-              GetClassLong(ActiveChild, GCL_HICONSM),
-              16, 16, 0, 0,
-              DI_NORMAL);
-          end;
-        end;
-      end;
-    end;
   end;
 
   BGRect := ARect;
@@ -1327,7 +1304,7 @@ procedure TriggerFormUpdate(const AMenuItem: TMenuItem);
 var
   lMenu: TMenu;
 begin
-  lMenu := AMenuItem.GetMergedParentMenu;
+  lMenu := AMenuItem.GetParentMenu;
   if (lMenu<>nil) and (lMenu.Parent<>nil)
   and (lMenu.Parent is TCustomForm)
   and TCustomForm(lMenu.Parent).HandleAllocated
@@ -1342,12 +1319,12 @@ begin
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   MenuInfo.cbSize := sizeof(TMenuItemInfo);
   MenuInfo.fMask := MIIM_FTYPE;         // don't retrieve caption (MIIM_STRING not included)
-  GetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
+  GetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
   else
     MenuInfo.fType := MenuInfo.fType and (not Flag);
-  Result := SetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
+  Result := SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1380,7 +1357,7 @@ var
   MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   WideBuffer: widestring;
 begin
-  if (AMenuItem.MergedParent = nil) or not AMenuItem.MergedParent.HandleAllocated then
+  if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
     Exit;
 
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
@@ -1389,7 +1366,7 @@ begin
     cbSize := sizeof(TMenuItemInfo);
     fMask := MIIM_FTYPE or MIIM_STATE;  // don't retrieve current caption
   end;
-  GetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
+  GetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   with MenuInfo do
   begin
     // change enabled too since we can change from '-' to normal caption and vice versa
@@ -1414,7 +1391,7 @@ begin
       fState := MFS_DISABLED;
     end;
   end;
-  SetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
+  SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
 
   // MIIM_BITMAP is needed to request new measure item call
   with MenuInfo do
@@ -1422,7 +1399,7 @@ begin
     fMask := MIIM_BITMAP;
     dwTypeData := nil;
   end;
-  SetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
+  SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
 
   // set owner drawn
   with MenuInfo do
@@ -1430,7 +1407,7 @@ begin
     fMask := MIIM_FTYPE;      // don't set caption
     fType := (fType or MFT_OWNERDRAW) and not (MIIM_STRING or MFT_SEPARATOR);
   end;
-  SetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
+  SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1441,21 +1418,18 @@ var
   ParentOfParent: HMenu;
   CallMenuRes: Boolean;
   WideBuffer: widestring;
-  ItemIndex: Integer;
 begin
-  if AMenuItem.MergedParent=nil then
-    Exit;
-  ParentMenuHandle := AMenuItem.MergedParent.Handle;
+  ParentMenuHandle := AMenuItem.Parent.Handle;
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   MenuInfo.cbSize := sizeof(TMenuItemInfo);
 
   // Following part fixes the case when an item is added in runtime
   // but the parent item has not defined the submenu flag (hSubmenu=0)
-  if AMenuItem.MergedParent.MergedParent <> nil then
+  if AMenuItem.Parent.Parent <> nil then
   begin
-    ParentOfParent := AMenuItem.MergedParent.MergedParent.Handle;
+    ParentOfParent := AMenuItem.Parent.Parent.Handle;
     MenuInfo.fMask := MIIM_SUBMENU;
-    CallMenuRes := GetMenuItemInfoW(ParentOfParent, AMenuItem.MergedParent.Command, False, @MenuInfo);
+    CallMenuRes := GetMenuItemInfoW(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo);
     if CallMenuRes then
     begin
       // the parent menu item is not defined with submenu flag
@@ -1463,28 +1437,12 @@ begin
       if MenuInfo.hSubmenu = 0 then
       begin
         MenuInfo.hSubmenu := ParentMenuHandle;
-        CallMenuRes := SetMenuItemInfoW(ParentOfParent, AMenuItem.MergedParent.Command, False, @MenuInfo);
+        CallMenuRes := SetMenuItemInfoW(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo);
         if not CallMenuRes then
           DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
       end;
     end;
   end;
-
-  ItemIndex := AMenuItem.MergedParent.VisibleIndexOf(AMenuItem);
-  if ItemIndex<0 then
-  begin
-    DebugLn(['Invisible menu item: ', AMenuItem.Name, ' (', AMenuItem.Caption, ')']);
-    Exit;
-  end;
-  // MDI forms with a maximized MDI child insert a menu at the first index for
-  // the MDI child's window menu, so we need to take that into account
-  if Assigned(Application.MainForm) and
-     (Application.MainForm.Menu=AMenuItem.MergedParent.Menu) and
-     (Application.MainForm.FormStyle=fsMDIForm) and
-     Assigned(Application.MainForm.ActiveMDIChild) and
-     (Application.MainForm.ActiveMDIChild.WindowState=wsMaximized)
-  then
-    Inc(ItemIndex);
 
   with MenuInfo do
   begin
@@ -1528,7 +1486,7 @@ begin
     if AMenuItem.Default then
       fState := fState or MFS_DEFAULT;
   end;
-  CallMenuRes := InsertMenuItemW(ParentMenuHandle, ItemIndex, True, @MenuInfo);
+  CallMenuRes := InsertMenuItemW(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo);
   if not CallMenuRes then
     DebugLn(['InsertMenuItem failed with error: ', GetLastErrorReport]);
   TriggerFormUpdate(AMenuItem);
@@ -1545,27 +1503,27 @@ var
   MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   CallMenuRes: Boolean;
 begin
-  if Assigned(AMenuItem.MergedParent) then
+  if Assigned(AMenuItem.Parent) then
   begin
-    ParentHandle := AMenuItem.MergedParent.Handle;
+    ParentHandle := AMenuItem.Parent.Handle;
     RemoveMenu(ParentHandle, AMenuItem.Command, MF_BYCOMMAND);
     // convert submenu to a simple menu item if needed
-    if (GetMenuItemCount(ParentHandle) = 0) and Assigned(AMenuItem.MergedParent.MergedParent) and
-       AMenuItem.MergedParent.MergedParent.HandleAllocated then
+    if (GetMenuItemCount(ParentHandle) = 0) and Assigned(AMenuItem.Parent.Parent) and
+       AMenuItem.Parent.Parent.HandleAllocated then
     begin
-      ParentOfParentHandle := AMenuItem.MergedParent.MergedParent.Handle;
+      ParentOfParentHandle := AMenuItem.Parent.Parent.Handle;
       FillChar(MenuInfo, SizeOf(MenuInfo), 0);
       with MenuInfo do
       begin
         cbSize := sizeof(TMenuItemInfo);
         fMask := MIIM_SUBMENU;
       end;
-      GetMenuItemInfoW(ParentOfParentHandle, AMenuItem.MergedParent.Command, False, @MenuInfo);
+      GetMenuItemInfoW(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo);
       // the parent menu item is defined with submenu flag then reset it
       if MenuInfo.hSubmenu <> 0 then
       begin
         MenuInfo.hSubmenu := 0;
-        CallMenuRes := SetMenuItemInfoW(ParentOfParentHandle, AMenuItem.MergedParent.Command, False, @MenuInfo);
+        CallMenuRes := SetMenuItemInfoW(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo);
         if not CallMenuRes then
           DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
         // Set menu item info destroys/corrupts our internal popup menu for the
@@ -1573,7 +1531,7 @@ begin
         if not IsMenu(ParentHandle) then
         begin
           ParentHandle := CreatePopupMenu;
-          AMenuItem.MergedParent.Handle := ParentHandle;
+          AMenuItem.Parent.Handle := ParentHandle;
         end;
       end;
     end;
@@ -1603,7 +1561,7 @@ var
   EnableFlag: DWord;
 begin
   EnableFlag := MF_BYCOMMAND or EnabledToStateFlag[Enabled];
-  Result := Boolean(Windows.EnableMenuItem(AMenuItem.MergedParent.Handle, AMenuItem.Command, EnableFlag));
+  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
   TriggerFormUpdate(AMenuItem);
 end;
 

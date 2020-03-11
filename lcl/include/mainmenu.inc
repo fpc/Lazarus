@@ -50,20 +50,6 @@ begin
   inherited MenuChanged(Sender, Source, Rebuild);
 end;
 
-procedure TMainMenu.Merge(Menu: TMainMenu);
-begin
-  if Assigned(Menu) then
-    Items.MergeWith(Menu.Items)
-  else
-    Items.MergeWith(nil);
-end;
-
-procedure TMainMenu.Unmerge(Menu: TMainMenu);
-begin
-  if Assigned(Menu) and (Items.Merged = Menu.Items) then
-    Items.MergeWith(nil);
-end;
-
 {------------------------------------------------------------------------------
   Method: TMainMenu.Create
   Params:  AOwner: the owner of the class

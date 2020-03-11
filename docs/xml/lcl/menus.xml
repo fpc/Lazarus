@@ -2490,15 +2490,6 @@ tbLeftButton - only left button is used to activate a menu item
         <short>
           <var>Alignment</var> - determines the position of popup menu relative to the popup coordinate</short>
       </element>
-    <element name="TMenuItem.GetMergedParentMenu">
-      <short><var>GetMergedParentMenu</var> - returns the parent menu to which this menu item belongs with taking the merged menu into account</short>
-    </element>
-    <element name="TMenuItem.MergedItems">
-      <short>Returns the visible and invisible child items with taking the merged menu into account</short>
-    </element>
-    <element name="TMenuItem.MergedParent">
-      <short>Returns the parent menu item and with taking the merged menu into account</short>
-    </element>
     </module>
     <!-- Menus -->
   </package>
