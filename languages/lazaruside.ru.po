@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-03-11 02:01+0300\n"
+"PO-Revision-Date: 2020-02-25 00:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9228,44 +9228,6 @@ msgstr "Рабочий каталог:"
 msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
 msgstr "Всегда отображать сообщение как важное (по умолчанию оно относится к менее важным \"подробным\")"
 
-#: lazarusidestrconsts.lisembdsgn_backcolor
-msgid "Designer Back Color"
-msgstr "Цвет фона редактора форм"
-
-#: lazarusidestrconsts.lisembdsgn_enableembeddeddesigner
-msgid "Enable embedded designer"
-msgstr "Внедрить редактор форм"
-
-#: lazarusidestrconsts.lisembdsgn_infopanelcolor
-msgid "Info Panel Color"
-msgstr "Цвет информационной панели"
-
-#: lazarusidestrconsts.lisembdsgn_options
-msgctxt "lazarusidestrconsts.lisembdsgn_options"
-msgid "Options"
-msgstr "Параметры"
-
-#: lazarusidestrconsts.lisembdsgn_restartidetext
-msgid "In order for the changes to take effect, please restart the IDE."
-msgstr "Перезапустите IDE, чтобы изменения вступили в силу."
-
-#: lazarusidestrconsts.lisembdsgn_setdefault
-msgctxt "lazarusidestrconsts.lisembdsgn_setdefault"
-msgid "Restore Defaults"
-msgstr "Восстановить значения по умолчанию"
-
-#: lazarusidestrconsts.lisembdsgn_showscreenpreview
-msgid "Show screen preview"
-msgstr "Показывать миниатюру экрана"
-
-#: lazarusidestrconsts.lisembdsgn_sreenpreviewbackcolor
-msgid "Screen Preview Back Color"
-msgstr "Цвет фона миниатюры экрана"
-
-#: lazarusidestrconsts.lisembdsgn_title
-msgid "Embedded Designer"
-msgstr "Внедрённый редактор форм"
-
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
@@ -11010,7 +10972,6 @@ msgid "Index"
 msgstr "Индекс"
 
 #: lazarusidestrconsts.lisinformation
-msgctxt "lazarusidestrconsts.lisinformation"
 msgid "Information"
 msgstr "Сведения"
 

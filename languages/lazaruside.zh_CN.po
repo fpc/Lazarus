@@ -9508,45 +9508,6 @@ msgstr "工作目录:"
 msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
 msgstr ""
 
-#: lazarusidestrconsts.lisembdsgn_backcolor
-msgid "Designer Back Color"
-msgstr ""
-
-#: lazarusidestrconsts.lisembdsgn_enableembeddeddesigner
-msgid "Enable embedded designer"
-msgstr ""
-
-#: lazarusidestrconsts.lisembdsgn_infopanelcolor
-msgid "Info Panel Color"
-msgstr ""
-
-#: lazarusidestrconsts.lisembdsgn_options
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisembdsgn_options"
-msgid "Options"
-msgstr "选项"
-
-#: lazarusidestrconsts.lisembdsgn_restartidetext
-msgid "In order for the changes to take effect, please restart the IDE."
-msgstr ""
-
-#: lazarusidestrconsts.lisembdsgn_setdefault
-msgctxt "lazarusidestrconsts.lisembdsgn_setdefault"
-msgid "Restore Defaults"
-msgstr ""
-
-#: lazarusidestrconsts.lisembdsgn_showscreenpreview
-msgid "Show screen preview"
-msgstr ""
-
-#: lazarusidestrconsts.lisembdsgn_sreenpreviewbackcolor
-msgid "Screen Preview Back Color"
-msgstr ""
-
-#: lazarusidestrconsts.lisembdsgn_title
-msgid "Embedded Designer"
-msgstr ""
-
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
@@ -11333,7 +11294,6 @@ msgid "Index"
 msgstr "索引"
 
 #: lazarusidestrconsts.lisinformation
-msgctxt "lazarusidestrconsts.lisinformation"
 msgid "Information"
 msgstr "信息"
 
