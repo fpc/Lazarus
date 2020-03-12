@@ -122,7 +122,7 @@ implementation
 
 uses
   LazLoggerBase, StrUtils,
-  {$IFNDEF WINDOWS}BaseUnix;
+  {$IFNDEF WINDOWS}BaseUnix, termio;
   {$ELSE}winsock2, windows;
   {$ENDIF}
 
@@ -157,26 +157,25 @@ function TRspConnection.FWaitForData({timeout: integer}): boolean;
 {$if defined(unix) or defined(windows)}
 var
   FDS: TFDSet;
-  //TimeV: TTimeVal;
+  r: integer;
 {$endif}
 begin
   Result:=False;
-//{$if defined(unix) or defined(windows)}
-//  TimeV.tv_usec := timeout * 1000;  // 1 msec
-//  TimeV.tv_sec := 0;
-//{$endif}
-{$ifdef unix}
+{$if defined(unix)}
   FDS := Default(TFDSet);
   fpFD_Zero(FDS);
   fpFD_Set(self.Handle, FDS);
-  Result := fpSelect(self.Handle + 1, @FDS, nil, nil, nil{@TimeV}) > 0;
-{$else}
-{$ifdef windows}
+  fpSelect(self.Handle + 1, @FDS, nil, nil, nil);
+  // FDS is set even if the socket has been closed.
+  // Read available data and if 0 data is available then socket must be closed/ or error
+  r := 0;
+  FpIOCtl(self.Handle, FIONREAD, @r);
+  Result := r > 0;
+{$elseif defined(windows)}
   FDS := Default(TFDSet);
   FD_Zero(FDS);
   FD_Set(self.Handle, FDS);
-  Result := Select(self.Handle + 1, @FDS, nil, nil, nil{@TimeV}) > 0;
-{$endif}
+  Result := Select(self.Handle + 1, @FDS, nil, nil, nil) > SOCKET_ERROR;
 {$endif}
 end;
 
@@ -439,6 +438,7 @@ begin
   if not FWaitForData() then
   begin
     msg := '';
+    result := SIGHUP;
     exit;
   end;
 

@@ -228,7 +228,7 @@ end;
 
 function TDbgAvrThread.ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
 begin
-  if TDbgAvrProcess(Process).FIsTerminating then
+  if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
     DebugLn(DBG_WARNINGS, 'TDbgRspThread.GetDebugReg called while FIsTerminating is set.');
     Result := false;
@@ -252,7 +252,7 @@ end;
 
 function TDbgAvrThread.WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
 begin
-  if TDbgAvrProcess(Process).FIsTerminating then
+  if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
     DebugLn(DBG_WARNINGS, 'TDbgRspThread.WriteDebugReg called while FIsTerminating is set.');
     Result := false;
@@ -296,7 +296,7 @@ begin
     DebugLn(DBG_WARNINGS, 'TDbgRspThread.RequestInternalPause called while FIsTerminating is set.');
 
   Result := False;
-  if FInternalPauseRequested or FIsPaused then
+  if FInternalPauseRequested or FIsPaused or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
     exit;
 
   DebugLn(DBG_VERBOSE, 'TDbgRspThread.RequestInternalPause requesting Ctrl-C.');
@@ -404,7 +404,7 @@ var
   i: integer;
   regs: TBytes;
 begin
-  if TDbgAvrProcess(Process).FIsTerminating then
+  if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
     DebugLn(DBG_WARNINGS, 'TDbgRspThread.LoadRegisterValues called while FIsTerminating is set.');
     exit;
@@ -583,7 +583,7 @@ end;
 function TDbgAvrProcess.ReadData(const AAdress: TDbgPtr;
   const ASize: Cardinal; out AData): Boolean;
 begin
-  if FIsTerminating then
+  if FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
     DebugLn(DBG_WARNINGS, 'TDbgRspProcess.ReadData called while FIsTerminating is set.');
     Result := false;
@@ -597,7 +597,7 @@ end;
 function TDbgAvrProcess.WriteData(const AAdress: TDbgPtr;
   const ASize: Cardinal; const AData): Boolean;
 begin
-  if FIsTerminating then
+  if FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
     DebugLn(DBG_WARNINGS, 'TDbgRspProcess.WriteData called while FIsTerminating is set.');
     Result := false;
@@ -610,7 +610,7 @@ end;
 procedure TDbgAvrProcess.TerminateProcess;
 begin
   // Try to prevent access to the RSP socket after it has been closed
-  if not FIsTerminating then
+  if not (FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP)) then
   begin
     DebugLn(DBG_VERBOSE, 'Removing all break points');
     RemoveAllBreakPoints;
@@ -622,7 +622,7 @@ end;
 
 function TDbgAvrProcess.Pause: boolean;
 begin
-  if FIsTerminating then
+  if FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
     DebugLn(DBG_WARNINGS, 'TDbgRspProcess.Pause called while FIsTerminating is set.');
     Result := false;
@@ -660,7 +660,7 @@ var
   initRegs: TInitializedRegisters;
 begin
   // Terminating process and all threads
-  if FIsTerminating then
+  if FIsTerminating or (FStatus = SIGHUP) then
   begin
     AThread.BeforeContinue;
     TDbgAvrThread(AThread).InvalidateRegisters;
@@ -791,7 +791,7 @@ end;
 function TDbgAvrProcess.InsertBreakInstructionCode(const ALocation: TDBGPtr;
   out OrigValue: Byte): Boolean;
 begin
-  if FIsTerminating then
+  if FIsTerminating or (FStatus = SIGHUP) then
     DebugLn(DBG_WARNINGS, 'TDbgRspProcess.InsertBreakInstruction called while FIsTerminating is set.');
 
   result := ReadData(ALocation, SizeOf(OrigValue), OrigValue);
@@ -809,7 +809,7 @@ end;
 function TDbgAvrProcess.RemoveBreakInstructionCode(const ALocation: TDBGPtr;
   const OrigValue: Byte): Boolean;
 begin
-  if FIsTerminating then
+  if FIsTerminating or (FStatus = SIGHUP) then
   begin
     DebugLn(DBG_WARNINGS, 'TDbgRspProcess.RemoveBreakInstructionCode called while FIsTerminating is set');
     result := false;
