@@ -12,7 +12,8 @@ uses
   DbgIntfBaseTypes,
   fpDbgSymTable,
   FpdMemoryTools,
-  FpDbgInfo;
+  FpDbgInfo,
+  FpDbgCommon;
 
 type
 
@@ -47,7 +48,6 @@ type
   private
     FSymbolList: TfpSymbolList;
     FContext: TFpSymbolContext;
-    FImage64Bit: boolean;
   public
     constructor Create(ALoaderList: TDbgImageLoaderList); override;
     destructor Destroy; override;
@@ -55,7 +55,6 @@ type
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
     function FindProcSymbol(const AName: String): TFpSymbol; override; overload;
     function FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol; overload;
-    property Image64Bit: boolean read FImage64Bit;
   end;
 
 implementation
@@ -96,7 +95,7 @@ constructor TFpSymbolContext.Create(AFpSymbolInfo: TFpSymbolInfo);
 begin
   inherited create;
   FFpSymbolInfo:=AFpSymbolInfo;
-  if AFpSymbolInfo.Image64Bit then
+  if AFpSymbolInfo.TargetInfo.bitness = b64 then
     FSizeOfAddress:=8
   else
     FSizeOfAddress:=4;
@@ -132,7 +131,7 @@ begin
   FSymbolList := TfpSymbolList.Create;
   for i := 0 to ALoaderList.Count-1 do
     ALoaderList[i].ParseSymbolTable(FSymbolList);
-  FImage64Bit := ALoaderList.Image64Bit;
+  FTargetInfo := ALoaderList.TargetInfo;
   if FSymbolList.Count > 0 then
     SetHasInfo;
 end;

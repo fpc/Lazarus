@@ -43,7 +43,8 @@ interface
 uses
   Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
   FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages,
-  LazLoggerBase, LazClasses, LazFileUtils, LazUTF8, contnrs, DbgIntfBaseTypes;
+  LazLoggerBase, LazClasses, LazFileUtils, LazUTF8, contnrs, DbgIntfBaseTypes,
+  FpDbgCommon;
 
 type
   TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
@@ -644,7 +645,6 @@ type
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
-    FImage64Bit: Boolean;
     FMemManager: TFpDbgMemManager;
     FFiles: array of TDwarfDebugFile;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
@@ -669,7 +669,6 @@ type
     property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
 
     property ImageBase: QWord read FImageBase;
-    property Image64Bit: Boolean read FImage64Bit;
   end;
 
   TDwarfLocationExpression = class;
@@ -3169,7 +3168,7 @@ var
   i: Integer;
 begin
   inherited Create(ALoaderList);
-  FImage64Bit := ALoaderList.Image64Bit;
+  FTargetInfo := ALoaderList.TargetInfo;
   FCompilationUnits := TList.Create;
   FImageBase := ALoaderList.ImageBase;
 

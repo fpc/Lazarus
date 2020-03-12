@@ -21,7 +21,8 @@ uses
   MacOSAll,
   FpDbgUtil,
   UTF8Process,
-  LazLoggerBase;
+  LazLoggerBase,
+  FpDbgCommon;
 
 type
   x86_thread_state32_t = record
@@ -146,6 +147,7 @@ type
     function CreateWatchPointData: TFpWatchPointData; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
+    class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); override;
     destructor Destroy; override;
 
@@ -162,6 +164,7 @@ type
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function Pause: boolean; override;
   end;
+  TDbgDarwinProcessClass = class of TDbgDarwinProcess;
 
 implementation
 
@@ -710,6 +713,18 @@ begin
         FpClose(AMasterPtyFd);
     end;
   end;
+end;
+
+class function TDbgDarwinProcess.isSupported(ATargetInfo: TTargetDescriptor
+  ): boolean;
+begin
+  Result := inherited isSupported(ATargetInfo);
+end;
+
+class function TDbgLinuxProcess.isSupported(target: TTargetDescriptor): boolean;
+begin
+  result := (target.OS = osDarwin) and
+            (target.machineType = mtX86_64);
 end;
 
 function TDbgDarwinProcess.ReadData(const AAdress: TDbgPtr;

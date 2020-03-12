@@ -43,7 +43,7 @@ uses
   LCLType,
   FpImgReaderBase, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho,
   fpDbgSymTable, DbgIntfBaseTypes,
-  Classes, SysUtils, contnrs;
+  Classes, SysUtils, contnrs, FpDbgCommon;
 
 type
 
@@ -63,12 +63,11 @@ type
     function GetAddressMapList: TDbgAddressMapList;
     function GetReaderErrors: String;
     function GetSubFiles: TStrings;
-    function GetImage64Bit: Boolean;
+    function GetTargetInfo: TTargetDescriptor;
     function GetUUID: TGuid;
   protected
     FImageBase: QWord unimplemented;
     function GetSection(const AName: String): PDbgImageSection; virtual;
-    //procedure SetImageBase(ABase: QWord);
     property ImgReader: TDbgImageReader read FImgReader write FImgReader;
   public
     constructor Create; virtual;
@@ -85,7 +84,8 @@ type
     function IsValid: Boolean;
     property FileName: String read FFileName; // Empty if using USE_WIN_FILE_MAPPING
     property ImageBase: QWord read FImageBase; unimplemented;
-    Property Image64Bit: Boolean read GetImage64Bit;
+    property TargetInfo: TTargetDescriptor read GetTargetInfo;
+
     property UUID: TGuid read GetUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
     // On Darwin, the Dwarf-debuginfo is not linked into the main
@@ -108,31 +108,19 @@ type
 
   TDbgImageLoaderList = class(TFPObjectList)
   private
-    function GetImage64Bit: Boolean;
     function GetImageBase: QWord;
+    function GetTargetInfo: TTargetDescriptor;
     function GetItem(Index: Integer): TDbgImageLoader;
     procedure SetItem(Index: Integer; AValue: TDbgImageLoader);
   public
     property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
     property ImageBase: QWord read GetImageBase;
-    Property Image64Bit: Boolean read GetImage64Bit;
+    property TargetInfo: TTargetDescriptor read GetTargetInfo;
   end;
 
 implementation
 
 { TDbgImageLoaderList }
-
-function TDbgImageLoaderList.GetImage64Bit: Boolean;
-begin
-  if Count>0 then
-    result := Items[0].Image64Bit
-  else
-    {$ifdef CPU64}
-    result := true
-    {$else}
-    result := false;
-    {$endif}
-end;
 
 function TDbgImageLoaderList.GetImageBase: QWord;
 begin
@@ -140,6 +128,14 @@ begin
     result := Items[0].ImageBase
   else
     result := 0;
+end;
+
+function TDbgImageLoaderList.GetTargetInfo: TTargetDescriptor;
+begin
+  if Count>0 then
+    result := Items[0].TargetInfo
+  else
+    Result := hostDescriptor;
 end;
 
 function TDbgImageLoaderList.GetItem(Index: Integer): TDbgImageLoader;
@@ -163,16 +159,12 @@ end;
 
 { TDbgImageLoader }
 
-function TDbgImageLoader.GetImage64Bit: Boolean;
+function TDbgImageLoader.GetTargetInfo: TTargetDescriptor;
 begin
-  if not assigned(ImgReader) then
-    {$ifdef cpui386}
-    result := false
-    {$else}
-    result := true
-    {$endif}
+  if assigned(ImgReader) then
+    result := ImgReader.TargetInfo
   else
-    result := ImgReader.Image64Bit;
+    result := hostDescriptor;
 end;
 
 function TDbgImageLoader.GetAddressMapList: TDbgAddressMapList;

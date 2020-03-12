@@ -118,11 +118,11 @@ uses
   FpDbgInfo,
   FpDbgLoader, FpDbgDisasX86,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  LazLoggerBase, UTF8Process;
+  LazLoggerBase, UTF8Process,
+  FpDbgCommon;
 
 type
 
-  TWinBitness = (b32, b64);
   TFpWinCtxFlags = (cfSkip, cfControl, cfFull);
 
   { TDbgWinThread }
@@ -165,7 +165,7 @@ type
     FInfo: TCreateProcessDebugInfo;
     FProcProcess: TProcessUTF8;
     FJustStarted, FTerminated: boolean;
-    FBitness: TWinBitness;
+    FBitness: TBitness;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
@@ -190,6 +190,9 @@ type
 
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
     class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
+
+    class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
+
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
@@ -206,6 +209,7 @@ type
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
   end;
+  TDbgWinProcessClass = class of TDbgWinProcess;
 
   { tDbgWinLibrary }
 
@@ -654,6 +658,13 @@ begin
 
   result := TDbgWinProcess.Create(AFileName, APid, 0, AnOsClasses);
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
+end;
+
+class function TDbgWinProcess.isSupported(ATargetInfo: TTargetDescriptor
+  ): boolean;
+begin
+  result := (ATargetInfo.OS = osWindows) and
+            (ATargetInfo.machineType in [mt386, mtX86_64]);
 end;
 
 function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;

@@ -20,7 +20,8 @@ uses
   FpDbgInfo,
   FpDbgUtil,
   UTF8Process,
-  LazLoggerBase, Maps;
+  LazLoggerBase, Maps,
+  FpDbgCommon;
 
 type
   user_regs_struct64 = record
@@ -295,6 +296,7 @@ type
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
     class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses
       ): TDbgProcess; override;
+    class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); override;
     destructor Destroy; override;
 
@@ -312,6 +314,7 @@ type
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
   end;
+  TDbgLinuxProcessClass = class of TDbgLinuxProcess;
 
 implementation
 
@@ -817,6 +820,13 @@ begin
   result := TDbgLinuxProcess.Create(AFileName, APid, 0, AnOsClasses);
 
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
+end;
+
+class function TDbgLinuxProcess.isSupported(ATargetInfo: TTargetDescriptor
+  ): boolean;
+begin
+  result := (ATargetInfo.OS = osLinux) and
+            (ATargetInfo.machineType in [mt386, mtX86_64]);
 end;
 
 function TDbgLinuxProcess.ReadData(const AAdress: TDbgPtr;

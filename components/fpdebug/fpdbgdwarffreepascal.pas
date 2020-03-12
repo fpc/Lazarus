@@ -215,6 +215,9 @@ type
 
 implementation
 
+uses
+  FpDbgCommon;
+
 var
   FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
 
@@ -412,7 +415,7 @@ var
   d, i: Integer;
   ParentFpSym: TFpSymbolDwarf;
 begin
-  if Dwarf.Image64Bit then begin
+  if Dwarf.TargetInfo.bitness = b64 then begin
     RegFP := RegFp64;
     RegPc := RegPc64;
   end

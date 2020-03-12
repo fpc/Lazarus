@@ -276,6 +276,9 @@ type
 
 implementation
 
+uses
+  FpImgReaderBase, FpDbgCommon;
+
 var
   DBG_VERBOSE, DBG_WARNINGS, FPDBG_COMMANDS: PLazLoggerLogGroup;
 
@@ -510,7 +513,7 @@ procedure TDbgControllerStepOverInstructionCmd.InternalContinue(
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverInstructionCmd.DoContinue: FProcess=AProcess');
   if (AThread = FThread) then
-    CheckForCallAndSetBreak;
+  CheckForCallAndSetBreak;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
 
@@ -685,7 +688,7 @@ procedure TDbgControllerStepOverLineCmd.InternalContinue(AProcess: TDbgProcess;
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverLineCmd.DoContinue: FProcess=AProcess');
   if (AThread = FThread) then
-    CheckForCallAndSetBreak;
+  CheckForCallAndSetBreak;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
 
@@ -758,39 +761,39 @@ begin
   assert(FProcess=AProcess, 'TDbgControllerStepOutCmd.DoContinue: FProcess=AProcess');
 
   if (AThread = FThread) then begin
-    if IsSteppedOut then begin
-      CheckForCallAndSetBreak;
+  if IsSteppedOut then begin
+    CheckForCallAndSetBreak;
+  end
+  else
+  if not assigned(FHiddenBreakpoint) then begin
+    if GetOutsideFrame(Outside) then begin
+      SetReturnAdressBreakpoint(AProcess, Outside);
     end
     else
-    if not assigned(FHiddenBreakpoint) then begin
-      if GetOutsideFrame(Outside) then begin
-        SetReturnAdressBreakpoint(AProcess, Outside);
-      end
-      else
-      if FStepCount < 12 then
-      begin
-        // During the prologue and epiloge of a procedure the call-stack might not been
-        // setup already. To avoid problems in these cases, start with a few (max
-        // 12) single steps.
-        Inc(FStepCount);
+    if FStepCount < 12 then
+    begin
+      // During the prologue and epiloge of a procedure the call-stack might not been
+      // setup already. To avoid problems in these cases, start with a few (max
+      // 12) single steps.
+      Inc(FStepCount);
       if NextInstruction.IsCallInstruction or NextInstruction.IsLeaveStackFrame then  // asm "call" // set break before "leave" or the frame becomes unavail
-        begin
-          SetReturnAdressBreakpoint(AProcess, False);
-        end
-        else
-      if NextInstruction.IsReturnInstruction then  // asm "ret"
-        begin
-          FStepCount := MaxInt; // Do one more single-step, and we're finished.
-          FProcess.Continue(FProcess, FThread, True);
-          exit;
-        end;
+      begin
+        SetReturnAdressBreakpoint(AProcess, False);
       end
       else
+      if NextInstruction.IsReturnInstruction then  // asm "ret"
       begin
-        // Enough with the single-stepping
-        SetReturnAdressBreakpoint(AProcess, False);
+        FStepCount := MaxInt; // Do one more single-step, and we're finished.
+        FProcess.Continue(FProcess, FThread, True);
+        exit;
       end;
+    end
+    else
+    begin
+      // Enough with the single-stepping
+      SetReturnAdressBreakpoint(AProcess, False);
     end;
+  end;
   end;
 
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
@@ -874,8 +877,28 @@ begin
 end;
 
 procedure TDbgController.CheckExecutableAndLoadClasses;
+var
+  source: TDbgFileLoader;
+  imgReader: TDbgImageReader;
+  ATargetInfo: TTargetDescriptor;
 begin
-  FOsDbgClasses := FpDbgClasses.GetDbgProcessClass;
+  if (FExecutableFilename <> '') and FileExists(FExecutableFilename) then
+  begin
+   DebugLn(DBG_VERBOSE, 'TDbgController.CheckExecutableAndLoadClasses');
+    try
+      source := TDbgFileLoader.Create(FExecutableFilename);
+      imgReader := GetImageReader(source, nil, false);
+
+      ATargetInfo := imgReader.TargetInfo;
+    finally
+      FreeAndNil(imgReader);  // TODO: Store object reference, it will be needed again
+      FreeAndNil(source);
+    end;
+  end
+  else
+    ATargetInfo := hostDescriptor;
+
+  FOsDbgClasses := FpDbgClasses.GetDbgProcessClass(ATargetInfo);
 end;
 
 procedure TDbgController.SetExecutableFilename(AValue: string);
@@ -1273,10 +1296,16 @@ begin
   case FPDEvent of
     deCreateProcess:
       begin
-      (* Only events for the main process get here / See ProcessLoop *)
-        FCurrentProcess.LoadInfo;
-        if not FCurrentProcess.DbgInfo.HasInfo then
-          DebugLn(DBG_WARNINGS, 'No Dwarf-debug information available. The debugger will not function properly. [CurrentProcess='+dbgsname(FCurrentProcess)+',DbgInfo='+dbgsname(FCurrentProcess.DbgInfo)+']');
+        (* Only events for the main process get here / See ProcessLoop *)
+        if not Assigned(FCurrentProcess.DbgInfo) then
+          FCurrentProcess.LoadInfo;
+
+        DebugLn(DBG_WARNINGS and (not Assigned(FCurrentProcess.DbgInfo) or not(FCurrentProcess.DbgInfo.HasInfo)),
+          ['TDbgController.SendEvents called - deCreateProcess - No debug info. [CurrentProcess=',dbgsname(FCurrentProcess),',DbgInfo=',dbgsname(FCurrentProcess.DbgInfo),']']);
+        DebugLn(DBG_VERBOSE, Format('  Target.MachineType = %d', [FCurrentProcess.DbgInfo.TargetInfo.machineType]));
+        DebugLn(DBG_VERBOSE, Format('  Target.Bitness     = %d', [FCurrentProcess.DbgInfo.TargetInfo.bitness]));
+        DebugLn(DBG_VERBOSE, Format('  Target.byteOrder   = %d', [FCurrentProcess.DbgInfo.TargetInfo.byteOrder]));
+        DebugLn(DBG_VERBOSE, Format('  Target.OS          = %d', [FCurrentProcess.DbgInfo.TargetInfo.OS]));
 
         DoOnDebugInfoLoaded(self);
 

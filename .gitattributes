@@ -1417,6 +1417,7 @@ components/fpdebug/app/fpdserver/fpdserver.lpi svneol=native#text/plain
 components/fpdebug/app/fpdserver/fpdserver.lpr svneol=native#text/plain
 components/fpdebug/app/fpdserver/readme.txt svneol=native#text/plain
 components/fpdebug/fpdbgclasses.pp svneol=native#text/pascal
+components/fpdebug/fpdbgcommon.pas svneol=native#text/pascal
 components/fpdebug/fpdbgcontroller.pas svneol=native#text/plain
 components/fpdebug/fpdbgdarwinclasses.pas svneol=native#text/plain
 components/fpdebug/fpdbgdisasx86.pp svneol=native#text/plain

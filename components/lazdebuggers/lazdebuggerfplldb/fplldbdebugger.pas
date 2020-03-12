@@ -28,7 +28,8 @@ uses
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
   LldbInstructions, LldbHelper, DbgIntfBaseTypes, DbgIntfDebuggerBase, LCLProc,
   Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazClasses, FpPascalParser,
-  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal;
+  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
+  FpDbgCommon;
 
 type
 
@@ -638,7 +639,7 @@ begin
 
 
   // WINDOWS gdb dwarf names
-  if FDebugger.FDwarfInfo.Image64Bit then begin
+  if FDebugger.FDwarfInfo.TargetInfo.bitness = b64 then begin
     case ARegNum of
        0:  rname := 'RAX'; // RAX
        1:  rname := 'RDX'; // RDX
@@ -723,7 +724,7 @@ end;
 
 function TFpLldbDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
 begin
-  if FDebugger.FDwarfInfo.Image64Bit then
+  if FDebugger.FDwarfInfo.TargetInfo.bitness = b64 then
     Result := 8 // for the very few supported...
   else
     Result := 4; // for the very few supported...
@@ -1165,7 +1166,7 @@ begin
     FDwarfInfo := Loader.DwarfInfo;
     Loader.Free;
 
-    if FDwarfInfo.Image64Bit then
+    if FDwarfInfo.TargetInfo.bitness = b64 then
       FPrettyPrinter := TFpPascalPrettyPrinter.Create(8)
     else
       FPrettyPrinter := TFpPascalPrettyPrinter.Create(4);
@@ -1194,7 +1195,7 @@ begin
     FDwarfInfo.MemManager := FMemManager;
     FDwarfInfo.LoadCompilationUnits;
 
-    if FDwarfInfo.Image64Bit then
+    if FDwarfInfo.TargetInfo.bitness = b64 then
       FPrettyPrinter := TFpPascalPrettyPrinter.Create(8)
     else
       FPrettyPrinter := TFpPascalPrettyPrinter.Create(4);

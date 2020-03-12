@@ -13,7 +13,8 @@ uses
   {$endif}
   fgl, lazfglhash,
   fpDbgSymTable,
-  Classes, SysUtils, LazUTF8Classes, DbgIntfBaseTypes, contnrs;
+  Classes, SysUtils, LazUTF8Classes, DbgIntfBaseTypes, contnrs,
+  FpDbgCommon;
 
 type
   TDbgImageSection = record
@@ -87,18 +88,17 @@ type
 
   TDbgImageReader = class(TObject) // executable parser
   private
-    FImage64Bit: Boolean;
     FImageBase: QWord;
     FLoadedTargetImageAddr: TDBGPtr;
     FReaderErrors: String;
     FUUID: TGuid;
   protected
+    FTargetInfo: TTargetDescriptor;
     function GetSubFiles: TStrings; virtual;
     function GetAddressMapList: TDbgAddressMapList; virtual;
     function GetSection(const AName: String): PDbgImageSection; virtual; abstract;
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
-    procedure SetImage64Bit(AValue: Boolean);
     procedure AddReaderError(AnError: String);
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
@@ -109,7 +109,9 @@ type
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
 
     property ImageBase: QWord read FImageBase;
-    Property Image64Bit: Boolean read FImage64Bit;
+
+    property TargetInfo: TTargetDescriptor read FTargetInfo;
+
     property UUID: TGuid read FUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
     property SubFiles: TStrings read GetSubFiles;
@@ -331,11 +333,6 @@ end;
 procedure TDbgImageReader.SetImageBase(ABase: QWord);
 begin
   FImageBase := ABase;
-end;
-
-procedure TDbgImageReader.SetImage64Bit(AValue: Boolean);
-begin
-  FImage64Bit := AValue;
 end;
 
 procedure TDbgImageReader.AddReaderError(AnError: String);

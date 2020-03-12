@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, DbgIntfBaseTypes, FpDbgLoader, FpdMemoryTools, FpErrorMessages,
-  LazLoggerBase, LazClasses;
+  LazLoggerBase, LazClasses, FpDbgCommon;
 
 type
 
@@ -478,6 +478,7 @@ type
   private
     FHasInfo: Boolean;
   protected
+    FTargetInfo: TTargetDescriptor;
     procedure SetHasInfo;
   public
     constructor Create({%H-}ALoaderList: TDbgImageLoaderList); virtual;
@@ -494,6 +495,7 @@ type
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
+    property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
   end;
 
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;

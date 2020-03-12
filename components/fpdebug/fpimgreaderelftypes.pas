@@ -67,11 +67,11 @@ const
   EI_MAG2       = 2; // L
   EI_MAG3       = 3; // F
   EI_CLASS      = 4;
-  EI_DATA       = 1;
-  EI_VERSION    = 1;
-  EI_OSABI      = 1;
-  EI_ABIVERSION = 1;
-  
+  EI_DATA       = 5;
+  EI_VERSION    = 6;
+  EI_OSABI      = 7;
+  EI_ABIVERSION = 8;
+
   ELFMAGIC     = chr($7f)+'ELF';
 
   //elf class
@@ -86,7 +86,9 @@ const
   
   // Operating System and ABI Identifiers, e_ident[EI_OSABI] 
   ELFOSABI_SYSV = 0;  // System V ABI 
-  ELFOSABI_HPUX = 1;  // HP-UX operating system 
+  ELFOSABI_HPUX = 1;  // HP-UX operating system
+  ELFOSABI_NETBSD = 2;
+  ELFOSABI_LINUX = 3;
   ELFOSABI_STANDALONE = 255; // Standalone (embedded) application 
   
   
@@ -151,6 +153,7 @@ const
   EM_OLD_ALPHA   = 41;
   EM_IA_64       = 50;
   EM_X86_64      = 62;
+  EM_AVR         = 83;
   EM_ALPHA       = $9026; //unofficial, but used by gnu toolchain
 
   //elf version       {Elf32_Hdr.e_version}

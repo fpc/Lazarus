@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-  FpDbgLoader;
+  FpDbgLoader, FpDbgCommon;
 
 var
   DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
@@ -213,7 +213,7 @@ begin
   if assigned(p) and assigned(ps) then
   begin
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
-    if Image64Bit then
+    if TargetInfo.Bitness = b64 then
       begin
         SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
         SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist_64);
@@ -225,7 +225,7 @@ begin
       end;
     for i := 0 to SymbolCount-1 do
     begin
-      if Image64Bit then
+      if TargetInfo.Bitness = b64 then
       begin
         SymbolType := SymbolArr64[i].n_type;
         StringOffset := SymbolArr64[i].n_un.n_strx;
@@ -264,7 +264,7 @@ begin
       Break;
     end;
   end;
-  SetImage64Bit((fFile.header.cputype and CPU_ARCH_ABI64)=CPU_ARCH_ABI64);
+  FTargetInfo := fFile.TargetInfo;
   SetUUID(fFile.UUID);
   fileRead := true;
 end;
@@ -298,7 +298,7 @@ begin
     SectionSize := StabsCmd.strsize;
   end else begin
     SectionOffset := StabsCmd.symoff;
-    if Image64Bit then
+    if TargetInfo.Bitness = b64 then
       SectionSize := Int64(StabsCmd.nsyms * sizeof(nlist_64))
     else
       SectionSize := Int64(StabsCmd.nsyms * sizeof(nlist));
@@ -624,7 +624,7 @@ begin
   if assigned(p) and assigned(ps) then
   begin
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
-    if Image64Bit then
+    if TargetInfo.Bitness = b64 then
     begin
       SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
       SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist_64);
@@ -637,7 +637,7 @@ begin
     state := dtsEnd;
     for i := 0 to SymbolCount-1 do
     begin
-      if Image64Bit then
+      if TargetInfo.Bitness = b64 then
       begin
         SymbolType := SymbolArr64[i].n_type;
         StringOffset := SymbolArr64[i].n_un.n_strx;
@@ -768,7 +768,7 @@ begin
   if assigned(p) and assigned(ps) then
   begin
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
-    if Image64Bit then
+    if TargetInfo.Bitness = b64 then
     begin
       SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
       SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist_64);
@@ -780,7 +780,7 @@ begin
     end;
     for i := 0 to SymbolCount-1 do
     begin
-      if Image64Bit then
+      if TargetInfo.Bitness = b64 then
       begin
         SymbolType := SymbolArr64[i].n_type;
         StringOffset := SymbolArr64[i].n_un.n_strx;

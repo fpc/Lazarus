@@ -7,7 +7,8 @@ interface
 //todo: powerpc, x86_64
 
 uses
-  Classes, SysUtils, macho, FpImgReaderBase;
+  Classes, SysUtils, macho, FpImgReaderBase,
+  FpDbgCommon;
 
 type
   TMachOsection = class(TObject)
@@ -21,6 +22,7 @@ type
   TMachOFile = class(TObject)
   private
     cmdbuf    : array of byte;
+    FTargetInfo   : TTargetDescriptor;
   public
     header    : mach_header;
     commands  : array of pload_command;
@@ -29,6 +31,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function  LoadFromFile(ALoader: TDbgFileLoader): Boolean;
+    property TargetInfo: TTargetDescriptor read FTargetInfo;
   end;
 
 
@@ -69,9 +72,28 @@ begin
   Result := (header.magic = MH_MAGIC) or (header.magic = MH_CIGAM) or i64;
 
   if i64 then
-    hs := sizeof(mach_header_64)
+  begin
+    hs := sizeof(mach_header_64);
+    FTargetInfo.bitness := b64;
+  end
   else
+  begin
     hs := SizeOf(mach_header);
+    FTargetInfo.bitness := b32;
+  end;
+  case header.cputype of
+    CPU_TYPE_I386       : FTargetInfo.MachineType := mt386;
+    CPU_TYPE_ARM        : FTargetInfo.MachineType := mtARM;
+    CPU_TYPE_SPARC      : FTargetInfo.MachineType := mtSPARC;
+    //CPU_TYPE_ALPHA      : FTargetInfo.MachineType := mtALPHA;
+    CPU_TYPE_POWERPC    : FTargetInfo.MachineType := mtPPC;
+    CPU_TYPE_POWERPC64  : FTargetInfo.MachineType := mtPPC;
+    CPU_TYPE_X86_64     : FTargetInfo.MachineType := mtX86_64;
+    CPU_TYPE_ARM64      : FTargetInfo.MachineType := mtARM;
+  else
+    FTargetInfo.machineType := mtNone;
+  end;
+
   SetLength(cmdbuf, header.sizeofcmds);
   ALoader.Read(hs, header.sizeofcmds, @cmdbuf[0]);
 

@@ -34,8 +34,8 @@ uses
   Classes, SysUtils,
   FpImgReaderBase,
   fpDbgSymTable, DbgIntfBaseTypes,
-  FpImgReaderElfTypes, LCLProc;  // these files are part of
-
+  FpImgReaderElfTypes, LCLProc,  // these files are part of
+  FpDbgCommon;
 
 type
   TElfSection = packed record
@@ -49,7 +49,8 @@ type
 
   TElfFile = class(TObject)
   private
-    FIs64Bit: boolean;
+    FTargetInfo: TTargetDescriptor;
+    function FElfToMachineType(machinetype: word): TMachineType;
   protected
     function Load32BitFile(ALoader: TDbgFileLoader): Boolean;
     function Load64BitFile(ALoader: TDbgFileLoader): Boolean;
@@ -59,7 +60,6 @@ type
     seccount  : Integer;
     function LoadFromFile(ALoader: TDbgFileLoader): Boolean;
     function FindSection(const Name: String): Integer;
-    property Is64Bit: boolean read FIs64Bit;
   end;
 
   { TElfDbgSource }
@@ -117,6 +117,36 @@ const
 
 { TElfFile }
 
+function TElfFile.FElfToMachineType(machinetype: word): TMachineType;
+begin
+  case machinetype of
+    EM_386:       result := mt386;
+    EM_68K:       result := mt68K;
+    EM_PPC:       result := mtPPC;
+    EM_PPC64:     result := mtPPC64;
+    EM_ARM:       result := mtARM;
+    EM_OLD_ALPHA: result := mtOLD_ALPHA;
+    EM_IA_64:     result := mtIA_64;
+    EM_X86_64:    result := mtX86_64;
+    EM_AVR:       result := mtAVR8;
+    EM_ALPHA:     result := mtALPHA;
+  else
+    result := mtNone;
+  end;
+
+  // If OS is not encoded in header, take some guess based on machine type
+  if FTargetInfo.OS = osNone then
+  begin
+    if result = mtAVR8 then
+      FTargetInfo.OS := osEmbedded
+    else
+      // Default to the same as host...
+      FTargetInfo.OS := {$if defined(Linux)}osLinux
+                    {$elseif defined(Darwin)}osDarwin
+                    {$else}osWindows{$endif};
+  end;
+end;
+
 function TElfFile.Load32BitFile(ALoader: TDbgFileLoader): Boolean;
 var
   hdr   : Elf32_Ehdr;
@@ -129,12 +159,14 @@ begin
   Result := ALoader.Read(0, sizeof(hdr), @hdr) = sizeof(hdr);
   if not Result then Exit;
 
+  FTargetInfo.machineType := FElfToMachineType(hdr.e_machine);
+
   SetLength(sect, hdr.e_shnum);
   //ALoader.Position := hdr.e_shoff;
 
   sz := hdr.e_shetsize * hdr.e_shnum;
   if sz > LongWord(length(sect)*sizeof(Elf32_shdr)) then begin
-    debugln(['TElfFile.Load64BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf32_shdr))]);
+    debugln(['TElfFile.Load32BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf32_shdr))]);
     sz := LongWord(length(sect)*sizeof(Elf32_shdr));
   end;
   //ALoader.Read(sect[0], sz);
@@ -152,7 +184,6 @@ begin
       nm := PChar( @strs[sh_name] );
       AddSection(nm, sh_offset, sh_addr, sh_size );
     end;
-
 end;
 
 function TElfFile.Load64BitFile(ALoader: TDbgFileLoader): Boolean;
@@ -166,7 +197,9 @@ var
 begin
   Result := ALoader.Read(0, sizeof(hdr), @hdr) = sizeof(hdr);
   if not Result then Exit;
-  FIs64Bit:=true;
+
+  FTargetInfo.machineType := FElfToMachineType(hdr.e_machine);
+
   SetLength(sect, hdr.e_shnum);
   //ALoader.Position := hdr.e_shoff;
 
@@ -190,8 +223,6 @@ begin
       nm := PChar( @strs[sh_name] );
       AddSection(nm, sh_offset, sh_address, sh_size );
     end;
-
-  Result := False;
 end;
 
 procedure TElfFile.AddSection(const name: AnsiString; FileOffset, Address,
@@ -223,13 +254,28 @@ begin
     if not Result then Exit;
 
     Result := False;
+    case ident[EI_DATA] of
+      ELFDATA2LSB: FTargetInfo.ByteOrder := boLSB;
+      ELFDATA2MSB: FTargetInfo.ByteOrder := boMSB;
+    else
+      FTargetInfo.byteOrder := boNone;
+    end;
+
+    case ident[EI_OSABI] of
+      ELFOSABI_LINUX: FTargetInfo.OS := osLinux;
+      ELFOSABI_STANDALONE: FTargetInfo.OS := osEmbedded;
+    else
+      FTargetInfo.OS := osNone;  // Will take a guess after machine type is available
+    end;
 
     if ident[EI_CLASS] = ELFCLASS32 then begin
+      FTargetInfo.bitness := b32;
       Result := Load32BitFile(ALoader);
       exit;
     end;
 
     if ident[EI_CLASS] = ELFCLASS64 then begin
+      FTargetInfo.bitness := b64;
       Result := Load64BitFile(ALoader);
       exit;
     end;
@@ -319,7 +365,9 @@ begin
     p^.Loaded := False;
     FSections.Objects[idx] := TObject(p);
   end;
-  SetImage64Bit(fElfFile.Is64Bit);
+
+  FTargetInfo := fElfFile.FTargetInfo;
+
   inherited Create(ASource, ADebugMap, OwnSource);
 end;
 
@@ -351,7 +399,7 @@ begin
   if assigned(p) and assigned(ps) then
   begin
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
-    if Image64Bit then
+    if FTargetInfo.Bitness = b64 then
     begin
       SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
       SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(TElf64symbol);

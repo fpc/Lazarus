@@ -70,6 +70,9 @@ type
 
 implementation
 
+uses
+  FpDbgCommon;
+
 const
   // Symbol-map section name
   _symbol        = '.symbols';
@@ -188,7 +191,7 @@ begin
   if (hBase = nil) or (hBase^.e_magic <> IMAGE_DOS_SIGNATURE) then
     exit;
 
-  if Image64Bit then begin
+  if TargetInfo.bitness = b64 then begin
     header64 := PImageNtHeaders64(PByte(hBase) + hBase^.e_lfanew);
     if (header64^.Signature <> IMAGE_NT_SIGNATURE) or
        (header64^.OptionalHeader.NumberOfRvaAndSizes = 0)
@@ -330,6 +333,11 @@ var
   StringTableLen: DWord;
   StringTableStart: QWord;
 begin
+  FTargetInfo.machineType := mtNONE;
+  FTargetInfo.bitness     := bNone;
+  FTargetInfo.byteOrder   := boNone;
+  FTargetInfo.OS          := osNone;
+
   FFileLoader.Read(0, sizeof(DosHeader), @DosHeader);
   if (DosHeader.e_magic <> IMAGE_DOS_SIGNATURE)
   or (DosHeader.e_lfanew = 0)
@@ -344,10 +352,36 @@ begin
     //WriteLn('Invalid NT header: ', IntToHex(NtHeaders^.Signature, 8));
     Exit;
   end;
+  FTargetInfo.OS := osWindows;
 
-  SetImage64Bit(NtHeaders.Sys.OptionalHeader.Magic = IMAGE_NT_OPTIONAL_HDR64_MAGIC);
+  case NtHeaders.Sys.FileHeader.Machine of
+    IMAGE_FILE_MACHINE_I386:
+    begin
+      FTargetInfo.machineType := mt386;
+      FTargetInfo.byteOrder := boLSB;
+    end;
+    IMAGE_FILE_MACHINE_ARM:
+    begin
+      FTargetInfo.machineType := mtARM;
+      FTargetInfo.byteOrder := boLSB;
+    end;
+    IMAGE_FILE_MACHINE_IA64, IMAGE_FILE_MACHINE_AMD64:
+    begin
+      FTargetInfo.machineType := mtX86_64;
+      FTargetInfo.byteOrder := boLSB;
+    end;
+  else
+    FTargetInfo.OS := osNone;
+  end;
 
-  if Image64Bit
+  case NtHeaders.Sys.OptionalHeader.Magic of
+    IMAGE_NT_OPTIONAL_HDR32_MAGIC: FTargetInfo.Bitness := b32;
+    IMAGE_NT_OPTIONAL_HDR64_MAGIC: FTargetInfo.Bitness := b64;
+  else
+    FTargetInfo.Bitness := bNone;
+  end;
+
+  if FTargetInfo.Bitness = b64
   then SetImageBase(NtHeaders.W64.OptionalHeader.ImageBase)
   else SetImageBase(NtHeaders.W32.OptionalHeader.ImageBase);
   FCodeBase := NtHeaders.W32.OptionalHeader.BaseOfCode;
