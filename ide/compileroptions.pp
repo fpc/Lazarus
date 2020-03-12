@@ -2594,6 +2594,14 @@ var
       tempsw+=c;
   end;
 
+  function FixExeExtForEmbeddedCompiler(exename: string): string;
+  begin
+    if SameStr(TargetOS, 'embedded') then
+      Result := ChangeFileExt(exename, '')
+    else
+      Result := exename;
+  end;
+
 begin
   switches := '';
 
@@ -3214,7 +3222,8 @@ begin
     if not (ccloAbsolutePaths in Flags) then
       CurTargetFilename := CreateRelativePath(CurTargetFilename, BaseDirectory);
     if CurTargetFilename<>'' then
-      switches := switches + ' '+PrepareCmdLineOption('-o' + CurTargetFilename);
+      switches := switches + ' '+PrepareCmdLineOption('-o' +
+        FixExeExtForEmbeddedCompiler(CurTargetFilename));
   end;
 
   // append custom options as last, so they can override
