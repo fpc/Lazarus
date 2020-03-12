@@ -241,10 +241,10 @@ type
     FLastErrWasMem: Boolean;
     FCodeBin: array[0..MAX_CODEBIN_LEN-1] of byte;
     FLastInstr: TX86DisassemblerInstruction;
-    function FMaxInstrSz: integer; override;
-    function FMinInstrSz: integer; override;
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
+    function GetMaxInstrSize: integer; override;
+    function GetMinInstrSize: integer; override;
     function ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal): Boolean; inline;
     procedure Disassemble(var AAddress: Pointer; out AnInstruction: TInstruction);
   public
@@ -3522,19 +3522,19 @@ end;
 
 { TX86Disassembler }
 
-function TX86Disassembler.FMaxInstrSz: integer;
-begin
-  result := FMaxInstructionSize;
-end;
-
-function TX86Disassembler.FMinInstrSz: integer;
-begin
-  result := FMinInstructionSize;
-end;
-
 function TX86Disassembler.GetLastErrorWasMemReadErr: Boolean;
 begin
   Result := FLastErrWasMem;
+end;
+
+function TX86Disassembler.GetMaxInstrSize: integer;
+begin
+  Result := 16;
+end;
+
+function TX86Disassembler.GetMinInstrSize: integer;
+begin
+  Result := 1;
 end;
 
 function TX86Disassembler.ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal

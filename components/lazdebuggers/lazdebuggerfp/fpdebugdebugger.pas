@@ -1296,7 +1296,7 @@ end;
 
 function TFPDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean;
 var
-  ARange: TDBGDisassemblerEntryRange;
+  ARange, AReversedRange: TDBGDisassemblerEntryRange;
   AnEntry: TDisassemblerEntry;
   CodeBin: TBytes;
   p: pointer;
@@ -1304,17 +1304,19 @@ var
   AStatement,
   ASrcFileName: string;
   ASrcFileLine: integer;
-  i,j, sz, prevInstructionSize, bytesDisassembled: Integer;
+  i,j, sz, bytesDisassembled, bufOffset: Integer;
   Sym: TFpSymbol;
   StatIndex: integer;
   FirstIndex: integer;
-  ALastAddr: TDBGPtr;
+  ALastAddr, tmpAddr, tmpPointer, prevInstructionSize: TDBGPtr;
+  ADisassembler: FpDbgClasses.TDbgDisassembler;
 
 begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State = dsPause) then
     exit;
 
+  ADisassembler := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.Disassembler;
   Sym:=nil;
   ASrcFileLine:=0;
   ASrcFileName:='';
@@ -1324,10 +1326,110 @@ begin
   ARange.RangeStartAddr:=AnAddr;
   ALastAddr:=0;
 
-  Assert(ALinesBefore<>0,'TFPDBGDisassembler.PrepareEntries LinesBefore not supported');
+  if (ALinesBefore > 0) and
+    ADisassembler.CanReverseDisassemble then
+   begin
+     AReversedRange := TDBGDisassemblerEntryRange.Create;
+     tmpAddr := AnAddr;  // do not modify AnAddr in this loop
+     // Large enough block of memory for whole loop
+     sz := ADisassembler.MaxInstructionSize * ALinesBefore;
+     SetLength(CodeBin, sz);
 
-  if ALinesAfter < 1 then exit;
-  sz := ALinesAfter * TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.Disassembler.MaxInstructionSize;
+     // TODO: Check if AnAddr is at lower address than length(CodeBin)
+     //       and ensure ReadData size doesn't exceed available target memory.
+     //       Fill out of bounds memory in buffer with "safe" value e.g. 0
+     if sz + ADisassembler.MaxInstructionSize > AnAddr then
+     begin
+       FillByte(CodeBin[0], sz, 0);
+       // offset into buffer where active memory should start
+       bufOffset := sz - AnAddr;
+       // size of active memory to read
+       sz := integer(AnAddr);
+     end
+     else
+     begin
+       bufOffset := 0;
+     end;
+
+     // Everything now counts back from starting address...
+     bytesDisassembled := 0;
+     // Only read up to byte before this address
+     if not TFpDebugDebugger(Debugger).ReadData(tmpAddr-sz, sz, CodeBin[bufOffset]) then
+       DebugLn(Format('Reverse disassemble: Failed to read memory at %s.', [FormatAddress(tmpAddr)]))
+     else
+       for i := 0 to ALinesBefore-1 do
+       begin
+         if bytesDisassembled >= sz then
+           break;
+
+         tmpPointer := TDBGPtr(@CodeBin[bufOffset]) + TDBGPtr(sz) - TDBGPtr(bytesDisassembled);
+         p := pointer(tmpPointer);
+         ADisassembler.ReverseDisassemble(p, ADump, AStatement); // give statement before pointer p, pointer p points to decoded instruction on return
+         prevInstructionSize := tmpPointer - PtrUInt(p);
+         bytesDisassembled := bytesDisassembled + prevInstructionSize;
+         DebugLn(DBG_VERBOSE, format('Disassembled: [%.8X:  %s] %s',[tmpAddr, ADump, Astatement]));
+
+         Dec(tmpAddr, prevInstructionSize);
+         Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(tmpAddr);
+         // If this is the last statement for this source-code-line, fill the
+         // SrcStatementCount from the prior statements.
+         if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
+           (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
+         begin
+           for j := 0 to StatIndex-1 do
+           begin
+             with AReversedRange.EntriesPtr[FirstIndex+j]^ do
+               SrcStatementCount := StatIndex;
+           end;
+           StatIndex := 0;
+           FirstIndex := i;
+         end;
+
+         if assigned(sym) then
+         begin
+           ASrcFileName:=sym.FileName;
+           ASrcFileLine:=sym.Line;
+           sym.ReleaseReference;
+         end
+         else
+         begin
+           ASrcFileName:='';
+           ASrcFileLine:=0;
+         end;
+         AnEntry.Addr := tmpAddr;
+         AnEntry.Dump := ADump;
+         AnEntry.Statement := AStatement;
+         AnEntry.SrcFileLine:=ASrcFileLine;
+         AnEntry.SrcFileName:=ASrcFileName;
+         AnEntry.SrcStatementIndex:=StatIndex;  // should be inverted for reverse parsing
+         AReversedRange.Append(@AnEntry);
+         inc(StatIndex);
+       end;
+
+     if AReversedRange.Count>0 then
+     begin
+       // Update start of range
+       ARange.RangeStartAddr := tmpAddr;
+       // Copy range in revese order of entries
+       for i := 0 to AReversedRange.Count-1 do
+       begin
+         // Reverse order of statements
+         with AReversedRange.Entries[AReversedRange.Count-1 - i] do
+         begin
+           for j := 0 to SrcStatementCount-1 do
+             SrcStatementIndex := SrcStatementCount - 1 - j;
+         end;
+
+         ARange.Append(AReversedRange.EntriesPtr[AReversedRange.Count-1 - i]);
+       end;
+     end;
+     // Entries are all pointers, don't free entries
+     FreeAndNil(AReversedRange);
+   end;
+
+  if ALinesAfter > 0 then
+  begin
+  sz := ALinesAfter * ADisassembler.MaxInstructionSize;
   SetLength(CodeBin, sz);
   bytesDisassembled := 0;
   if not TFpDebugDebugger(Debugger).ReadData(AnAddr, sz, CodeBin[0]) then
@@ -1339,8 +1441,7 @@ begin
     for i := 0 to ALinesAfter-1 do
       begin
       p := @CodeBin[bytesDisassembled];
-      TFpDebugDebugger(Debugger).FDbgController.CurrentProcess
-        .Disassembler.Disassemble(p, ADump, AStatement);
+      ADisassembler.Disassemble(p, ADump, AStatement);
 
       prevInstructionSize := p - @CodeBin[bytesDisassembled];
       bytesDisassembled := bytesDisassembled + prevInstructionSize;
@@ -1378,6 +1479,9 @@ begin
       inc(StatIndex);
       Inc(AnAddr, prevInstructionSize);
       end;
+  end
+  else
+    ALastAddr := AnAddr;
 
   if ARange.Count>0 then
     begin

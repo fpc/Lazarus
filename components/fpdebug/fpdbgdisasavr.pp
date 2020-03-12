@@ -73,17 +73,16 @@ type
 { TAvrDisassembler }
 
   TAvrDisassembler = class(TDbgDisassembler)
-  private const
-    FMaxInstructionSize = 4;
-    FMinInstructionSize = 2;
   private
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;
     FLastInstr: TAvrDisassemblerInstruction;
-    function FMaxInstrSz: integer; override;
-    function FMinInstrSz: integer; override;
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
+    function GetMaxInstrSize: integer; override;
+    function GetMinInstrSize: integer; override;
+    function GetCanReverseDisassemble: boolean; override;
+
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; override;
 
@@ -214,19 +213,24 @@ begin
     Result := 4;
 end;
 
-function TAvrDisassembler.FMaxInstrSz: integer;
-begin
-  result := FMaxInstructionSize;
-end;
-
-function TAvrDisassembler.FMinInstrSz: integer;
-begin
-
-end;
-
 function TAvrDisassembler.GetLastErrorWasMemReadErr: Boolean;
 begin
   Result := FLastErrWasMem;
+end;
+
+function TAvrDisassembler.GetMaxInstrSize: integer;
+begin
+  Result := 4;
+end;
+
+function TAvrDisassembler.GetMinInstrSize: integer;
+begin
+  Result := 2;
+end;
+
+function TAvrDisassembler.GetCanReverseDisassemble: boolean;
+begin
+  Result := true;
 end;
 
 procedure TAvrDisassembler.Disassemble(var AAddress: Pointer; out

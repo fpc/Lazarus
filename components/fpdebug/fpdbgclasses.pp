@@ -413,18 +413,22 @@ type
   TDbgDisassembler = class
   protected
     function GetLastErrorWasMemReadErr: Boolean; virtual;
-    function FMaxInstrSz: integer; virtual; abstract;
-    function FMinInstrSz: integer; virtual; abstract;
+    function GetMaxInstrSize: integer; virtual; abstract;
+    function GetMinInstrSize: integer; virtual; abstract;
+    function GetCanReverseDisassemble: boolean; virtual;
   public
     constructor Create(AProcess: TDbgProcess); virtual; abstract;
 
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual; abstract;
+    procedure ReverseDisassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual;
+
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; virtual; abstract;
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual;
 
     property LastErrorWasMemReadErr: Boolean read GetLastErrorWasMemReadErr;
-    property MaxInstructionSize: integer read FMaxInstrSz;  // abstract
-    property MinInstructionSize: integer read FMinInstrSz;  // abstract
+    property MaxInstructionSize: integer read GetMaxInstrSize;  // abstract
+    property MinInstructionSize: integer read GetMinInstrSize;  // abstract
+    property CanReverseDisassemble: boolean read GetCanReverseDisassemble;
   end;
   TDbgDisassemblerClass = class of TDbgDisassembler;
 
@@ -1300,6 +1304,35 @@ end;
 function TDbgDisassembler.GetLastErrorWasMemReadErr: Boolean;
 begin
   Result := False;
+end;
+
+function TDbgDisassembler.GetCanReverseDisassemble: boolean;
+begin
+  Result := false;
+end;
+
+// Naive backwards scanner, decode MaxInstructionSize
+// if pointer to next instruction matches, done!
+// If not decrease instruction size and try again.
+// Many pitfalls with X86 instruction encoding...
+// Avr may give 130/65535 = 0.2% errors per instruction reverse decoded
+procedure TDbgDisassembler.ReverseDisassemble(var AAddress: Pointer; out
+  ACodeBytes: String; out ACode: String);
+var
+  i, instrLen: integer;
+  tmpAddress: PtrUint;
+begin
+  // Decode max instruction length backwards,
+  instrLen := MaxInstructionSize + MinInstructionSize;
+  repeat
+    dec(instrLen, MinInstructionSize);
+    tmpAddress := PtrUInt(AAddress) - instrLen;
+    Disassemble(pointer(tmpAddress), ACodeBytes, ACode);
+  until (tmpAddress >= PtrUInt(AAddress)) or (instrLen = MinInstructionSize);
+
+  // After disassemble tmpAddress points to the starting address of next instruction
+  // Decrement with the instruction length to point to the start of this instruction
+  AAddress := AAddress - instrLen;
 end;
 
 function TDbgDisassembler.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
