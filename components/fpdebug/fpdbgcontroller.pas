@@ -183,6 +183,7 @@ type
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
     FOnThreadBeforeProcessLoop: TNotifyEvent;
     FOnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent;
+    FOsDbgClasses: TOSDbgClasses;
     FRunning, FPauseRequest: cardinal;
     FAttachToPid: Integer;
     FDetaching: cardinal;
@@ -207,6 +208,8 @@ type
     procedure SetExecutableFilename(AValue: string);
     procedure DoOnDebugInfoLoaded(Sender: TObject);
     procedure SetParams(AValue: TStringList);
+
+    procedure CheckExecutableAndLoadClasses;
   protected
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
@@ -232,6 +235,7 @@ type
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
     property CurrentCommand: TDbgControllerCmd read FCommand;
+    property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -869,6 +873,11 @@ begin
   FParams.Assign(AValue);
 end;
 
+procedure TDbgController.CheckExecutableAndLoadClasses;
+begin
+  FOsDbgClasses := FpDbgClasses.GetDbgProcessClass;
+end;
+
 procedure TDbgController.SetExecutableFilename(AValue: string);
 begin
   if FExecutableFilename=AValue then Exit;
@@ -975,13 +984,22 @@ begin
     Exit;
     end;
 
+  // Get exe info, load classes
+  CheckExecutableAndLoadClasses;
+  if not Assigned(OsDbgClasses) then
+  begin
+    result := false;
+    DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
+    exit;
+  end;
+
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
   if AttachToPid <> 0 then
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid)
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses)
   else
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags);
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);

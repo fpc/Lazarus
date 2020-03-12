@@ -12,7 +12,7 @@ uses
   termio,
   process,
   FpDbgClasses,
-  FpDbgLoader,
+  FpDbgLoader, FpDbgDisasX86,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgLinuxExtra,
   FpDbgDwarfDataClasses,
@@ -145,8 +145,8 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -162,8 +162,6 @@ type
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function Pause: boolean; override;
   end;
-
-procedure RegisterDbgClasses;
 
 implementation
 
@@ -225,13 +223,6 @@ function posix_openpt(oflag: cint): cint;cdecl;external 'c' name 'posix_openpt';
 function ptsname(__fd:longint):Pchar;cdecl;external 'c' name 'ptsname';
 function grantpt(__fd:longint):longint;cdecl;external 'c' name 'grantpt';
 function unlockpt(__fd:longint):longint;cdecl;external 'c' name 'unlockpt';
-
-procedure RegisterDbgClasses;
-begin
-  OSDbgClasses.DbgProcessClass:=TDbgDarwinProcess;
-  OSDbgClasses.DbgThreadClass:=TDbgDarwinThread;
-  OSDbgClasses.DbgDisassemblerClass := TX86Disassembler;
-end;
 
 Function WIFSTOPPED(Status: Integer): Boolean;
 begin
@@ -626,11 +617,11 @@ begin
 end;
 
 constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer);
+  AThreadID: Integer; AnOsClasses: TOSDbgClasses);
 var
   aKernResult: kern_return_t;
 begin
-  inherited Create(AName, AProcessID, AThreadID);
+  inherited Create(AName, AProcessID, AThreadID, AnOsClasses);
 
   GetDebugAccessRights;
   aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort);
@@ -648,7 +639,7 @@ end;
 
 class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;
@@ -705,7 +696,7 @@ begin
     PID:=AProcess.ProcessID;
 
     sleep(100);
-    result := TDbgDarwinProcess.Create(AFileName, Pid, -1);
+    result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AnOsClasses);
     TDbgDarwinProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgDarwinProcess(result).FProcProcess := AProcess;
     TDbgDarwinProcess(result).FExecutableFilename := AnExecutabeFilename;
@@ -957,5 +948,11 @@ end;
 initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+
+  RegisterDbgOsClasses(TOSDbgClasses.Create(
+    TDbgDarwinProcess,
+    TDbgDarwinThread,
+    TX86Disassembler
+  ));
 
 end.

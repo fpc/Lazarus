@@ -14,7 +14,7 @@ uses
   termio, fgl,
   process,
   FpDbgClasses,
-  FpDbgLoader,
+  FpDbgLoader, FpDbgDisasX86,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgLinuxExtra,
   FpDbgInfo,
@@ -292,10 +292,10 @@ type
     function CreateWatchPointData: TFpWatchPointData; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
+    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses
       ): TDbgProcess; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -313,21 +313,12 @@ type
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
   end;
 
-procedure RegisterDbgClasses;
-
 implementation
 
 var
   DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
   GConsoleTty: string;
   GSlavePTyFd: cint;
-
-procedure RegisterDbgClasses;
-begin
-  OSDbgClasses.DbgProcessClass:=TDbgLinuxProcess;
-  OSDbgClasses.DbgThreadClass:=TDbgLinuxThread;
-  OSDbgClasses.DbgDisassemblerClass := TX86Disassembler;
-end;
 
 Function WIFSTOPPED(Status: Integer): Boolean;
 begin
@@ -735,11 +726,11 @@ begin
 end;
 
 constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer);
+  AThreadID: Integer; AnOsClasses: TOSDbgClasses);
 begin
   FMasterPtyFd:=-1;
   FPostponedSignals := TFpDbgLinuxSignalQueue.Create;
-  inherited Create(AName, AProcessID, AThreadID);
+  inherited Create(AName, AProcessID, AThreadID, AnOsClasses);
 end;
 
 destructor TDbgLinuxProcess.Destroy;
@@ -751,7 +742,7 @@ end;
 
 class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;
@@ -800,7 +791,7 @@ begin
     PID:=AProcess.ProcessID;
 
     sleep(100);
-    result := TDbgLinuxProcess.Create(AFileName, Pid, -1);
+    result := TDbgLinuxProcess.Create(AFileName, Pid, -1, AnOsClasses);
     TDbgLinuxProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgLinuxProcess(result).FProcProcess := AProcess;
   except
@@ -818,12 +809,12 @@ begin
 end;
 
 class function TDbgLinuxProcess.AttachToInstance(AFileName: string;
-  APid: Integer): TDbgProcess;
+  APid: Integer; AnOsClasses: TOSDbgClasses): TDbgProcess;
 begin
   Result := nil;
   fpPTrace(PTRACE_ATTACH, APid, nil, Pointer(PTRACE_O_TRACECLONE));
 
-  result := TDbgLinuxProcess.Create(AFileName, APid, 0);
+  result := TDbgLinuxProcess.Create(AFileName, APid, 0, AnOsClasses);
 
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;
@@ -1367,4 +1358,11 @@ end;
 initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+
+  RegisterDbgOsClasses(TOSDbgClasses.Create(
+    TDbgLinuxProcess,
+    TDbgLinuxThread,
+    TX86Disassembler
+  ));
+
 end.
