@@ -471,8 +471,8 @@ type
     procedure SetLastLibraryUnloaded(ALib: TDbgLibrary);
     procedure SetLastLibraryUnloadedNil(ALib: TDbgLibrary);
 
-    function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; //virtual;
-    function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; //virtual;
+    function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; virtual;
+    function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; virtual;
     procedure RemoveAllBreakPoints;
     procedure BeforeChangingInstructionCode(const ALocation: TDBGPtr); virtual;
     procedure AfterChangingInstructionCode(const ALocation: TDBGPtr); virtual;
