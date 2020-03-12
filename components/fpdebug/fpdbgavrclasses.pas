@@ -51,7 +51,7 @@ type
     FIsSteppingBreakPoint: boolean;
     FDidResetInstructionPointer: Boolean;
     FHasThreadState: boolean;
-    function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
+    function ReadDebugReg(ind: byte; out AVal: TDbgPtr): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
 
     // Cache registers if reported in event
@@ -226,7 +226,7 @@ procedure TDbgAvrProcess.OnForkEvent(Sender: TObject);
 begin
 end;
 
-function TDbgAvrThread.ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
+function TDbgAvrThread.ReadDebugReg(ind: byte; out AVal: TDbgPtr): boolean;
 begin
   if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin

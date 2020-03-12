@@ -100,8 +100,8 @@ type
     function SingleStep(): boolean;
 
     // Data exchange
-    function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
-    function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
+    function ReadDebugReg(ind: byte; out AVal: TDbgPtr): boolean;
+    function WriteDebugReg(ind: byte; AVal: TDbgPtr): boolean;
     function ReadRegisters(out regs; const sz: integer): boolean;  // size is not required by protocol, but is used to preallocate memory for the response
     function WriteRegisters(constref regs; const sz: integer): boolean;
     function ReadData(const AAddress: TDbgPtr; const ASize: cardinal; out AData
@@ -590,20 +590,24 @@ begin
     DebugLn(DBG_WARNINGS, ['Warning: SingleStep command failure in TRspConnection.SingleStep()']);
 end;
 
-function TRspConnection.ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
+function TRspConnection.ReadDebugReg(ind: byte; out AVal: TDbgPtr): boolean;
 var
   cmd, reply: string;
+  tmp: qword;
 begin
   cmd := 'p'+IntToHex(ind, 2);
   result := FSendCmdWaitForReply(cmd, reply);
   if result then
-    result := convertHexWithLittleEndianSwap(reply, aval);
+  begin
+    result := convertHexWithLittleEndianSwap(reply, tmp);
+    AVal := PtrUInt(tmp);
+  end;
 
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: "p" command returned unexpected result: ', reply]);
 end;
 
-function TRspConnection.WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
+function TRspConnection.WriteDebugReg(ind: byte; AVal: TDbgPtr): boolean;
 var
   cmd, reply: string;
 begin
