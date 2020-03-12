@@ -2457,9 +2457,15 @@ begin
       Result := Boolean(Windows.GetWindowRect(Handle, @R));
       SetWidthHeightFromRect(R);
     end;
-  end
-  else
-    SetWidthHeightFromRect(WP.rcNormalPosition);
+  end else
+  begin
+    // rcNormalPosition is not valid for MDI children se we use GetWindowRect instead
+    if (GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_MDICHILD) <> 0 then begin
+      Windows.GetWindowRect(Handle, R);
+      SetWidthHeightFromRect(R);
+    end else
+      SetWidthHeightFromRect(WP.rcNormalPosition);
+  end;
 
   WindowInfo := GetWin32WindowInfo(Handle);
 
@@ -3285,7 +3291,12 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
-  Result := Windows.SetForegroundWindow(HWnd);
+  // MDI children need to use WM_MDIACTIVATE to bring themselves into the foreground
+  if (GetWindowLong(HWnd, GWL_EXSTYLE) and WS_EX_MDICHILD) <> 0 then begin
+    SendMessage(GetParent(HWnd), WM_MDIACTIVATE, HWnd, 0);
+    Result := True;
+  end else
+    Result := Windows.SetForegroundWindow(HWnd);
 end;
 
 function TWin32WidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;

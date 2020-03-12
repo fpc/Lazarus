@@ -83,6 +83,16 @@ type
        const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    {mdi support}
+    class function ActiveMDIChild(const AForm: TCustomForm): TCustomForm; override;
+    class function Cascade(const AForm: TCustomForm): Boolean; override;
+    class function GetClientHandle(const AForm: TCustomForm): HWND; override;
+    class function GetMDIChildren(const AForm: TCustomForm; AIndex: Integer): TCustomForm; override;
+    class function Next(const AForm: TCustomForm): Boolean; override;
+    class function Previous(const AForm: TCustomForm): Boolean; override;
+    class function Tile(const AForm: TCustomForm): Boolean; override;
+    class function ArrangeIcons(const AForm: TCustomForm): Boolean; override;
+    class function MDIChildCount(const AForm: TCustomForm): Integer; override;
   end;
 
   { TWin32WSForm }
@@ -394,6 +404,7 @@ var
   lForm: TCustomForm absolute AWinControl;
   Bounds: TRect;
   SystemMenu: HMenu;
+  MaximizeForm: Boolean = False;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
@@ -423,6 +434,22 @@ begin
           Parent := Win32WidgetSet.AppHandle;
           FlagsEx := FlagsEx and not WS_EX_APPWINDOW;
         end;
+      end;
+    end;
+    if (not (csDesigning in lForm.ComponentState)) and
+       (lForm.FormStyle=fsMDIChild) and
+       (lForm <> Application.MainForm) and
+       Assigned(Application.MainForm) and
+       (Application.MainForm.FormStyle=fsMDIForm) then
+    begin
+      Parent := Win32WidgetSet.MDIClientHandle;
+      if Parent <> 0 then
+      begin
+        Flags := Flags or WS_CHILD;
+        FlagsEx := FlagsEx or WS_EX_MDICHILD;
+        // If there is already a maximized MDI child, we'll need to maximize the new one too
+        if Assigned(Application.MainForm) and Assigned(Application.MainForm.ActiveMDIChild) then
+          MaximizeForm := Application.MainForm.ActiveMDIChild.WindowState=wsMaximized;
       end;
     end;
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
@@ -460,6 +487,22 @@ begin
   SetStdBiDiModeParams(AWinControl, Params);
   // create window
   FinishCreateWindow(AWinControl, Params, False);
+
+  if (not (csDesigning in lForm.ComponentState)) and
+     (lForm.FormStyle=fsMDIChild) and
+     (lForm <> Application.MainForm) and
+     Assigned(Application.MainForm) and
+     (Application.MainForm.FormStyle=fsMDIForm) then
+  begin
+    // Force a resize event to align children
+    GetWindowRect(Params.Window, Bounds);
+    lForm.BoundsRect := Bounds;
+    // New MDI forms are always activated
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIACTIVATE, Params.Window, 0);
+    // Maximize the form if there was already a maximized MDI child
+    if MaximizeForm then
+      lForm.WindowState := wsMaximized;
+  end;
 
   Result := Params.Window;
 
@@ -731,6 +774,130 @@ begin
       SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW)
   else
     Windows.ShowWindow(AWinControl.Handle, SW_HIDE);
+end;
+
+class function TWin32WSCustomForm.ActiveMDIChild(const AForm: TCustomForm): TCustomForm;
+var
+  ActiveChildHWND: HWND;
+  PInfo: PWin32WindowInfo;
+begin
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    ActiveChildHWND := SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIGETACTIVE, 0, 0);
+    if ActiveChildHWND=0 then Exit(nil);
+    PInfo := GetWin32WindowInfo(ActiveChildHWND);
+    if not (PInfo^.WinControl is TCustomForm) then Exit(nil);
+    Result := TCustomForm(PInfo^.WinControl);
+  end else
+    Result := nil;
+end;
+
+class function TWin32WSCustomForm.Cascade(const AForm: TCustomForm): Boolean;
+begin
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDICASCADE, 0, 0);
+    Result := True;
+  end else
+    Result := False;
+end;
+
+class function TWin32WSCustomForm.GetClientHandle(const AForm: TCustomForm): HWND;
+begin
+  if AForm.FormStyle=fsMDIForm then
+    Result := Win32WidgetSet.MDIClientHandle
+  else
+    Result := 0;
+end;
+
+class function TWin32WSCustomForm.GetMDIChildren(const AForm: TCustomForm;
+  AIndex: Integer): TCustomForm;
+var
+  ChildHWND: HWND;
+  PInfo: PWin32WindowInfo;
+  Index: Integer;
+begin
+  Index := 0;
+  Result := nil;
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    ChildHWND := GetWindow(Win32WidgetSet.MDIClientHandle, GW_CHILD);
+    while ChildHWND <> 0 do
+    begin
+      if (GetWindowLong(ChildHWND, GWL_EXSTYLE) and WS_EX_MDICHILD) <> 0 then
+      begin
+        PInfo := GetWin32WindowInfo(ChildHWND);
+        if (PInfo^.WinControl is TCustomForm) and not (csDestroying in PInfo^.WinControl.ComponentState) then
+        begin
+          if Index=AIndex then Exit(TCustomForm(PInfo^.WinControl));
+          Inc(Index);
+        end;
+      end;
+      ChildHWND := GetWindow(ChildHWND, GW_HWNDNEXT);
+    end;
+  end;
+end;
+
+class function TWin32WSCustomForm.Next(const AForm: TCustomForm): Boolean;
+begin
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDINEXT, 0, 1);
+    Result := True;
+  end else
+    Result := False;
+end;
+
+class function TWin32WSCustomForm.Previous(const AForm: TCustomForm): Boolean;
+begin
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDINEXT, 0, 0);
+    Result := True;
+  end else
+    Result := False;
+end;
+
+class function TWin32WSCustomForm.Tile(const AForm: TCustomForm): Boolean;
+begin
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDITILE, MDITILE_HORIZONTAL, 0);
+    Result := True;
+  end else
+    Result := False;
+end;
+
+class function TWin32WSCustomForm.ArrangeIcons(const AForm: TCustomForm): Boolean;
+begin
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIICONARRANGE, 0, 0);
+    Result := True;
+  end else
+    Result := False;
+end;
+
+class function TWin32WSCustomForm.MDIChildCount(const AForm: TCustomForm): Integer;
+var
+  ChildHWND: HWND;
+  PInfo: PWin32WindowInfo;
+begin
+  Result := 0;
+  if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
+  begin
+    ChildHWND := GetWindow(Win32WidgetSet.MDIClientHandle, GW_CHILD);
+    while ChildHWND <> 0 do
+    begin
+      if (GetWindowLong(ChildHWND, GWL_EXSTYLE) and WS_EX_MDICHILD) <> 0 then
+      begin
+        PInfo := GetWin32WindowInfo(ChildHWND);
+        if (PInfo^.WinControl is TCustomForm) and not (csDestroying in PInfo^.WinControl.ComponentState) then
+          Inc(Result);
+      end;
+      ChildHWND := GetWindow(ChildHWND, GW_HWNDNEXT);
+    end;
+  end;
 end;
 
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);

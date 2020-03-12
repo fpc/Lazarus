@@ -403,8 +403,17 @@ begin
           PostQuitMessage(AMessage.wParam);
           break;
         end;
-        TranslateMessage(@AMessage);
-        DispatchMessageW(@AMessage);
+        // Handle MDI form accelerators
+        if Assigned(Application) and
+           Assigned(Application.MainForm) and
+           (Application.MainForm.FormStyle=fsMDIForm) and
+           TranslateMDISysAccel(Win32WidgetSet.MDIClientHandle, @AMessage)
+        then begin
+          // handled by TranslateMDISysAccel
+        end else begin
+          TranslateMessage(@AMessage);
+          DispatchMessageW(@AMessage);
+        end;
       end;
     end else
     if retVal = WAIT_TIMEOUT then
@@ -635,6 +644,31 @@ begin
     Windows.PostMessage(FAppHandle, WM_NULL, 0, 0);
 end;
 
+procedure TWin32WidgetSet.UpdateMDIClientBounds;
+
+  function CalculateClientArea: TRect;
+  var
+    I: Integer;
+  begin
+    Windows.GetClientRect(Application.MainFormHandle, Result);
+    for I := 0 to Application.MainForm.ControlCount - 1 do
+      if Application.MainForm.Controls[I].Visible then
+        case Application.MainForm.Controls[I].Align of
+          alLeft: Inc(Result.Left, Application.MainForm.Controls[I].Width);
+          alTop: Inc(Result.Top, Application.MainForm.Controls[I].Height);
+          alRight: Dec(Result.Right, Application.MainForm.Controls[I].Width);
+          alBottom: Dec(Result.Bottom, Application.MainForm.Controls[I].Height);
+        end;
+  end;
+
+var
+  R: TRect;
+begin
+  if not (Assigned(Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm)) then Exit;
+  R := CalculateClientArea;
+  MoveWindow(Win32WidgetSet.MDIClientHandle, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, True);
+end;
+
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------
@@ -695,6 +729,27 @@ begin
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+end;
+
+function TWin32WidgetSet.GetMDIClientHandle: HWND;
+const
+  MDIClientW: array[0..9] of WideChar = ('M', 'D', 'I', 'C', 'L', 'I', 'E', 'N', 'T', #0);
+var
+  CCS: TCLIENTCREATESTRUCT;
+begin
+  if (FMDIClientHandle=0) and
+     Assigned(Application) and
+     Assigned(Application.MainForm) and
+     (Application.MainForm.FormStyle=fsMDIForm) then
+  begin
+    CCS.hWindowMenu := 0;
+    CCS.idFirstChild := 0;
+    FMDIClientHandle := CreateWindowW(@MDIClientW, nil,
+      WS_CHILD or WS_CLIPCHILDREN or WS_CLIPSIBLINGS or WS_VSCROLL or WS_HSCROLL,
+      0, 0, 0, 0, Application.MainForm.Handle, 0, HInstance, @CCS);
+    ShowWindow(FMDIClientHandle, SW_SHOW);
+  end;
+  Result := FMDIClientHandle;
 end;
 
 function TWin32WidgetSet.CreateThemeServices: TThemeServices;
