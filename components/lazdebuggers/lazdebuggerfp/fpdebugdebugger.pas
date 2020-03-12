@@ -1298,13 +1298,13 @@ function TFPDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALines
 var
   ARange: TDBGDisassemblerEntryRange;
   AnEntry: TDisassemblerEntry;
-  CodeBin: array[0..20] of byte;
+  CodeBin: TBytes;
   p: pointer;
   ADump,
   AStatement,
   ASrcFileName: string;
   ASrcFileLine: integer;
-  i,j: Integer;
+  i,j, sz, prevInstructionSize, bytesDisassembled: Integer;
   Sym: TFpSymbol;
   StatIndex: integer;
   FirstIndex: integer;
@@ -1326,21 +1326,25 @@ begin
 
   Assert(ALinesBefore<>0,'TFPDBGDisassembler.PrepareEntries LinesBefore not supported');
 
-  for i := 0 to ALinesAfter-1 do
+  if ALinesAfter < 1 then exit;
+  sz := ALinesAfter * TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.Disassembler.MaxInstructionSize;
+  SetLength(CodeBin, sz);
+  bytesDisassembled := 0;
+  if not TFpDebugDebugger(Debugger).ReadData(AnAddr, sz, CodeBin[0]) then
     begin
-    if not TFpDebugDebugger(Debugger).ReadData(AnAddr,sizeof(CodeBin),CodeBin) then
+    DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
+    inc(AnAddr);
+    end
+  else
+    for i := 0 to ALinesAfter-1 do
       begin
-      DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
-      inc(AnAddr);
-      end
-    else
-      begin
-      p := @CodeBin;
+      p := @CodeBin[bytesDisassembled];
       TFpDebugDebugger(Debugger).FDbgController.CurrentProcess
         .Disassembler.Disassemble(p, ADump, AStatement);
 
+      prevInstructionSize := p - @CodeBin[bytesDisassembled];
+      bytesDisassembled := bytesDisassembled + prevInstructionSize;
       Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnAddr);
-
       // If this is the last statement for this source-code-line, fill the
       // SrcStatementCount from the prior statements.
       if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
@@ -1372,9 +1376,8 @@ begin
       ARange.Append(@AnEntry);
       ALastAddr:=AnAddr;
       inc(StatIndex);
-      Inc(AnAddr, {%H-}PtrUInt(p) - {%H-}PtrUInt(@CodeBin));
+      Inc(AnAddr, prevInstructionSize);
       end;
-    end;
 
   if ARange.Count>0 then
     begin

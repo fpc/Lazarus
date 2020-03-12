@@ -74,15 +74,16 @@ type
 
   TAvrDisassembler = class(TDbgDisassembler)
   private const
-    MAX_CODEBIN_LEN = 50;
+    FMaxInstructionSize = 4;
+    FMinInstructionSize = 2;
   private
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;
-    FCodeBin: array[0..MAX_CODEBIN_LEN-1] of byte;
     FLastInstr: TAvrDisassemblerInstruction;
+    function FMaxInstrSz: integer; override;
+    function FMinInstrSz: integer; override;
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
-    function ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal): Boolean; inline;
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; override;
 
@@ -213,15 +214,18 @@ begin
     Result := 4;
 end;
 
-function TAvrDisassembler.GetLastErrorWasMemReadErr: Boolean;
+function TAvrDisassembler.FMaxInstrSz: integer;
 begin
-  Result := FLastErrWasMem;
+  result := FMaxInstructionSize;
 end;
 
-function TAvrDisassembler.ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal
-  ): Boolean;
+function TAvrDisassembler.FMinInstrSz: integer;
 begin
-  FLastErrWasMem := not FProcess.ReadData(AnAddress, ALen, FCodeBin[0], ALen);
+
+end;
+
+function TAvrDisassembler.GetLastErrorWasMemReadErr: Boolean;
+begin
   Result := FLastErrWasMem;
 end;
 

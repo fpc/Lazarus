@@ -413,6 +413,8 @@ type
   TDbgDisassembler = class
   protected
     function GetLastErrorWasMemReadErr: Boolean; virtual;
+    function FMaxInstrSz: integer; virtual; abstract;
+    function FMinInstrSz: integer; virtual; abstract;
   public
     constructor Create(AProcess: TDbgProcess); virtual; abstract;
 
@@ -421,6 +423,8 @@ type
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual;
 
     property LastErrorWasMemReadErr: Boolean read GetLastErrorWasMemReadErr;
+    property MaxInstructionSize: integer read FMaxInstrSz;  // abstract
+    property MinInstructionSize: integer read FMinInstrSz;  // abstract
   end;
   TDbgDisassemblerClass = class of TDbgDisassembler;
 
