@@ -39,7 +39,7 @@ type
     FProcess: TDbgProcess;
     FThreadRemoved: boolean;
     FIsInitialized: Boolean;
-    FNextInstruction: TDbgDisassemblerInstruction;
+    FNextInstruction: TDbgAsmInstruction;
     procedure Init; virtual;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); virtual; abstract;
   public
@@ -48,7 +48,7 @@ type
     procedure DoBeforeLoopStart;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
     procedure ResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
-    function NextInstruction: TDbgDisassemblerInstruction; inline;
+    function NextInstruction: TDbgAsmInstruction; inline;
     property Thread: TDbgThread read FThread write SetThread;
   end;
 
@@ -342,7 +342,7 @@ begin
   DoResolveEvent(AnEvent, AnEventThread, Finished);
 end;
 
-function TDbgControllerCmd.NextInstruction: TDbgDisassemblerInstruction;
+function TDbgControllerCmd.NextInstruction: TDbgAsmInstruction;
 begin
   if FNextInstruction = nil then begin
     FNextInstruction := FProcess.Disassembler.GetInstructionInfo(FThread.GetInstructionPointerRegisterValue);

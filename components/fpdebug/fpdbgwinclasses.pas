@@ -1747,7 +1747,7 @@ initialization
   RegisterDbgOsClasses(TOSDbgClasses.Create(
     TDbgWinProcess,
     TDbgWinThread,
-    TX86Disassembler
+    TX86AsmDecoder
   ));
 
 end.

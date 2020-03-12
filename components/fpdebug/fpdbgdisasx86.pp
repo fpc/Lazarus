@@ -201,15 +201,15 @@ type
     ParseFlags: TFlags;
   end;
 
-  TX86Disassembler = class;
+  TX86AsmDecoder = class;
 
-  { TX86DisassemblerInstruction }
+  { TX86AsmInstruction }
 
-  TX86DisassemblerInstruction = class(TDbgDisassemblerInstruction)
+  TX86AsmInstruction = class(TDbgAsmInstruction)
   const
     INSTR_CODEBIN_LEN = 16;
   private
-    FDisassembler: TX86Disassembler;
+    FAsmDecoder: TX86AsmDecoder;
     FAddress: TDBGPtr;
     FCodeBin: array[0..INSTR_CODEBIN_LEN-1] of byte;
     FInstruction: TInstruction;
@@ -219,7 +219,7 @@ type
     procedure ReadCode; inline;
     procedure Disassemble; inline;
   public
-    constructor Create(ADisassembler: TX86Disassembler);
+    constructor Create(AAsmDecoder: TX86AsmDecoder);
     procedure SetAddress(AnAddress: TDBGPtr);
     function IsCallInstruction: boolean; override;
     function IsReturnInstruction: boolean; override;
@@ -229,9 +229,9 @@ type
     property X86Instruction: TInstruction read FInstruction; // only valid after call to X86OpCode
   end;
 
-  { TX86Disassembler }
+  { TX86AsmDecoder }
 
-  TX86Disassembler = class(TDBGDisassembler)
+  TX86AsmDecoder = class(TDbgAsmDecoder)
   private const
     MAX_CODEBIN_LEN = 50;
     FMaxInstructionSize = 16;
@@ -240,7 +240,7 @@ type
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;
     FCodeBin: array[0..MAX_CODEBIN_LEN-1] of byte;
-    FLastInstr: TX86DisassemblerInstruction;
+    FLastInstr: TX86AsmInstruction;
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
     function GetMaxInstrSize: integer; override;
@@ -253,7 +253,7 @@ type
     destructor Destroy; override;
 
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
-    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; override;
+    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
 
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out
       AnIsOutsideFrame: Boolean): Boolean; override;
@@ -372,44 +372,44 @@ const
     'o', 'no', 'b', 'nb', 'z', 'nz', 'be', 'nbe', 's', 'ns', 'p', 'np', 'l', 'nl', 'le', 'nle'
   );
 
-{ TX86DisassemblerInstruction }
+{ TX86AsmInstruction }
 
-procedure TX86DisassemblerInstruction.ReadCode;
+procedure TX86AsmInstruction.ReadCode;
 begin
   if not (diCodeRead in FFlags) then begin
-    if not FDisassembler.FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
+    if not FAsmDecoder.FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
       Include(FFlags, diCodeReadError);
     Include(FFlags, diCodeRead);
   end;
 end;
 
-procedure TX86DisassemblerInstruction.Disassemble;
+procedure TX86AsmInstruction.Disassemble;
 var
   a: PByte;
 begin
   if not (diDisAss in FFlags) then begin
     ReadCode;
     a := @FCodeBin[0];
-    FDisassembler.Disassemble(a, FInstruction);
+    FAsmDecoder.Disassemble(a, FInstruction);
     FInstrLen := a - @FCodeBin[0];
     Include(FFlags, diDisAss);
   end;
 end;
 
-constructor TX86DisassemblerInstruction.Create(ADisassembler: TX86Disassembler);
+constructor TX86AsmInstruction.Create(AAsmDecoder: TX86AsmDecoder);
 begin
-  FDisassembler := ADisassembler;
+  FAsmDecoder := AAsmDecoder;
   inherited Create;
   AddReference;
 end;
 
-procedure TX86DisassemblerInstruction.SetAddress(AnAddress: TDBGPtr);
+procedure TX86AsmInstruction.SetAddress(AnAddress: TDBGPtr);
 begin
   FAddress := AnAddress;
   FFlags := [];
 end;
 
-function TX86DisassemblerInstruction.IsCallInstruction: boolean;
+function TX86AsmInstruction.IsCallInstruction: boolean;
 var
   a: PByte;
 begin
@@ -417,7 +417,7 @@ begin
   ReadCode;
   a := @FCodeBin[0];
 
-  if (FDisassembler.FProcess.Mode = dm64) then begin
+  if (FAsmDecoder.FProcess.Mode = dm64) then begin
     while (a < @FCodeBin[0] + INSTR_CODEBIN_LEN) and (a^ in [$40..$4F, $64..$67]) do
       inc(a);
     if not (a^ in [$E8, $FF]) then
@@ -434,31 +434,31 @@ begin
   Result := FInstruction.OpCode = OPcall;
 end;
 
-function TX86DisassemblerInstruction.IsReturnInstruction: boolean;
+function TX86AsmInstruction.IsReturnInstruction: boolean;
 begin
   Disassemble;
   Result := (FInstruction.OpCode = OPret) or (FInstruction.OpCode = OPretf);
 end;
 
-function TX86DisassemblerInstruction.IsLeaveStackFrame: boolean;
+function TX86AsmInstruction.IsLeaveStackFrame: boolean;
 begin
   Disassemble;
   Result := (FInstruction.OpCode = OPleave);
 end;
 
-function TX86DisassemblerInstruction.InstructionLength: Integer;
+function TX86AsmInstruction.InstructionLength: Integer;
 begin
   Disassemble;
   Result := FInstrLen;
 end;
 
-function TX86DisassemblerInstruction.X86OpCode: TOpCode;
+function TX86AsmInstruction.X86OpCode: TOpCode;
 begin
   Disassemble;
   Result := FInstruction.OpCode;
 end;
 
-procedure TX86Disassembler.Disassemble(var AAddress: Pointer; out AnInstruction: TInstruction);
+procedure TX86AsmDecoder.Disassemble(var AAddress: Pointer; out AnInstruction: TInstruction);
 var
   Code: PByte;
   CodeIdx: Byte;
@@ -3427,7 +3427,7 @@ begin
   Inc(AAddress, CodeIdx);
 end;
 
-procedure TX86Disassembler.Disassemble(var AAddress: Pointer;
+procedure TX86AsmDecoder.Disassemble(var AAddress: Pointer;
   out ACodeBytes: String; out ACode: String);
 const
   MEMPTR: array[TOperandSize] of string = ('byte ptr ', 'word ptr ', 'dword ptr ', 'qword ptr ', '', 'tbyte ptr ', '16byte ptr ');
@@ -3509,36 +3509,36 @@ begin
   ACodeBytes := S;
 end;
 
-function TX86Disassembler.GetInstructionInfo(AnAddress: TDBGPtr
-  ): TDbgDisassemblerInstruction;
+function TX86AsmDecoder.GetInstructionInfo(AnAddress: TDBGPtr
+  ): TDbgAsmInstruction;
 begin
   if (FLastInstr = nil) or (FLastInstr.RefCount > 1) then begin
     ReleaseRefAndNil(FLastInstr);
-    FLastInstr := TX86DisassemblerInstruction.Create(Self);
+    FLastInstr := TX86AsmInstruction.Create(Self);
   end;
 
   FLastInstr.SetAddress(AnAddress);
   Result := FLastInstr;
 end;
 
-{ TX86Disassembler }
+{ TX86AsmDecoder }
 
-function TX86Disassembler.GetLastErrorWasMemReadErr: Boolean;
+function TX86AsmDecoder.GetLastErrorWasMemReadErr: Boolean;
 begin
   Result := FLastErrWasMem;
 end;
 
-function TX86Disassembler.GetMaxInstrSize: integer;
+function TX86AsmDecoder.GetMaxInstrSize: integer;
 begin
   Result := 16;
 end;
 
-function TX86Disassembler.GetMinInstrSize: integer;
+function TX86AsmDecoder.GetMinInstrSize: integer;
 begin
   Result := 1;
 end;
 
-function TX86Disassembler.GetCanReverseDisassemble: boolean;
+function TX86AsmDecoder.GetCanReverseDisassemble: boolean;
 begin
   {$IFDEF FPDEBUG_WITH_REVERSE_DISASM}
   Result := true;
@@ -3547,25 +3547,25 @@ begin
   {$ENDIF}
 end;
 
-function TX86Disassembler.ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal
+function TX86AsmDecoder.ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal
   ): Boolean;
 begin
   FLastErrWasMem := not FProcess.ReadData(AnAddress, ALen, FCodeBin[0], ALen);
   Result := FLastErrWasMem;
 end;
 
-constructor TX86Disassembler.Create(AProcess: TDbgProcess);
+constructor TX86AsmDecoder.Create(AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
 end;
 
-destructor TX86Disassembler.Destroy;
+destructor TX86AsmDecoder.Destroy;
 begin
   ReleaseRefAndNil(FLastInstr);
   inherited Destroy;
 end;
 
-function TX86Disassembler.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
+function TX86AsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
   AnIsOutsideFrame: Boolean): Boolean;
 var
   ADataLen: Cardinal;

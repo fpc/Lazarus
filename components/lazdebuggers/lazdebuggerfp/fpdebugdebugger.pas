@@ -523,7 +523,7 @@ end;
 procedure TDbgControllerStepOverOrFinallyCmd.InternalContinue(
   AProcess: TDbgProcess; AThread: TDbgThread);
 var
-  Instr: TDbgDisassemblerInstruction;
+  Instr: TDbgAsmInstruction;
 begin
 {
 00000001000374AE 4889C1                   mov rcx,rax
@@ -534,10 +534,10 @@ begin
 }
   if (AThread = FThread) then begin
     Instr := NextInstruction;
-    if Instr is TX86DisassemblerInstruction then begin
-      case TX86DisassemblerInstruction(Instr).X86OpCode of
+    if Instr is TX86AsmInstruction then begin
+      case TX86AsmInstruction(Instr).X86OpCode of
         OPmov:
-          if UpperCase(TX86DisassemblerInstruction(Instr).X86Instruction.Operand[2].Value) = 'RBP' then
+          if UpperCase(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value) = 'RBP' then
             FFinState := fsMov;
         OPcall:
           if FFinState = fsMov then begin
@@ -1309,7 +1309,7 @@ var
   StatIndex: integer;
   FirstIndex: integer;
   ALastAddr, tmpAddr, tmpPointer, prevInstructionSize: TDBGPtr;
-  ADisassembler: FpDbgClasses.TDbgDisassembler;
+  ADisassembler: TDbgAsmDecoder;
 
 begin
   Result := False;

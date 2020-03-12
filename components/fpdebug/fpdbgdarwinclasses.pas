@@ -967,7 +967,7 @@ initialization
   RegisterDbgOsClasses(TOSDbgClasses.Create(
     TDbgDarwinProcess,
     TDbgDarwinThread,
-    TX86Disassembler
+    TX86AsmDecoder
   ));
 
 end.

@@ -44,17 +44,17 @@ type
   //The function Disassemble decodes the instruction at the given address.
   //Unrecognized instructions are assumed to be data statements [dw XXXX]
 
-  TAvrDisassembler = class;
+  TAvrAsmDecoder = class;
 
   { TX86DisassemblerInstruction }
 
-  { TAvrDisassemblerInstruction }
+  { TAvrAsmInstruction }
 
-  TAvrDisassemblerInstruction = class(TDbgDisassemblerInstruction)
+  TAvrAsmInstruction = class(TDbgAsmInstruction)
   private const
     INSTR_CODEBIN_LEN = 4;
   private
-    FDisassembler: TAvrDisassembler;
+    FAsmDecoder: TAvrAsmDecoder;
     FAddress: TDBGPtr;
     FCodeBin: array[0..INSTR_CODEBIN_LEN-1] of byte;
     FInstrLen: Integer;
@@ -62,7 +62,7 @@ type
   protected
     procedure ReadCode; inline;
   public
-    constructor Create(ADisassembler: TAvrDisassembler);
+    constructor Create(AAsmDecoder: TAvrAsmDecoder);
     procedure SetAddress(AnAddress: TDBGPtr);
     function IsCallInstruction: boolean; override;
     function IsReturnInstruction: boolean; override;
@@ -70,13 +70,13 @@ type
     function InstructionLength: Integer; override;
   end;
 
-{ TAvrDisassembler }
+{ TAvrAsmDecoder }
 
-  TAvrDisassembler = class(TDbgDisassembler)
+  TAvrAsmDecoder = class(TDbgAsmDecoder)
   private
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;
-    FLastInstr: TAvrDisassemblerInstruction;
+    FLastInstr: TAvrAsmInstruction;
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
     function GetMaxInstrSize: integer; override;
@@ -84,7 +84,7 @@ type
     function GetCanReverseDisassemble: boolean; override;
 
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
-    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; override;
+    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
 
     // returns byte len of call instruction at AAddress // 0 if not a call intruction
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out
@@ -145,31 +145,31 @@ begin
   result := format(opConstHex16, ['dw', instr]);
 end;
 
-{ TAvrDisassemblerInstruction }
+{ TAvrAsmInstruction }
 
-procedure TAvrDisassemblerInstruction.ReadCode;
+procedure TAvrAsmInstruction.ReadCode;
 begin
   if not (diCodeRead in FFlags) then begin
-    if not FDisassembler.FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
+    if not FAsmDecoder.FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
       Include(FFlags, diCodeReadError);
     Include(FFlags, diCodeRead);
   end;
 end;
 
-constructor TAvrDisassemblerInstruction.Create(ADisassembler: TAvrDisassembler);
+constructor TAvrAsmInstruction.Create(AAsmDecoder: TAvrAsmDecoder);
 begin
-  FDisassembler := ADisassembler;
+  FAsmDecoder := AAsmDecoder;
   inherited Create;
   AddReference;
 end;
 
-procedure TAvrDisassemblerInstruction.SetAddress(AnAddress: TDBGPtr);
+procedure TAvrAsmInstruction.SetAddress(AnAddress: TDBGPtr);
 begin
   FAddress := AnAddress;
   FFlags := [];
 end;
 
-function TAvrDisassemblerInstruction.IsCallInstruction: boolean;
+function TAvrAsmInstruction.IsCallInstruction: boolean;
 var
   LoByte, HiByte: byte;
 begin
@@ -183,7 +183,7 @@ begin
     Result := true;
 end;
 
-function TAvrDisassemblerInstruction.IsReturnInstruction: boolean;
+function TAvrAsmInstruction.IsReturnInstruction: boolean;
 var
   LoByte, HiByte: byte;
 begin
@@ -195,12 +195,12 @@ begin
     Result := true;
 end;
 
-function TAvrDisassemblerInstruction.IsLeaveStackFrame: boolean;
+function TAvrAsmInstruction.IsLeaveStackFrame: boolean;
 begin
   Result := false;
 end;
 
-function TAvrDisassemblerInstruction.InstructionLength: Integer;
+function TAvrAsmInstruction.InstructionLength: Integer;
 var
   LoByte, HiByte: byte;
 begin
@@ -213,27 +213,27 @@ begin
     Result := 4;
 end;
 
-function TAvrDisassembler.GetLastErrorWasMemReadErr: Boolean;
+function TAvrAsmDecoder.GetLastErrorWasMemReadErr: Boolean;
 begin
   Result := FLastErrWasMem;
 end;
 
-function TAvrDisassembler.GetMaxInstrSize: integer;
+function TAvrAsmDecoder.GetMaxInstrSize: integer;
 begin
   Result := 4;
 end;
 
-function TAvrDisassembler.GetMinInstrSize: integer;
+function TAvrAsmDecoder.GetMinInstrSize: integer;
 begin
   Result := 2;
 end;
 
-function TAvrDisassembler.GetCanReverseDisassemble: boolean;
+function TAvrAsmDecoder.GetCanReverseDisassemble: boolean;
 begin
   Result := true;
 end;
 
-procedure TAvrDisassembler.Disassemble(var AAddress: Pointer; out
+procedure TAvrAsmDecoder.Disassemble(var AAddress: Pointer; out
   ACodeBytes: String; out ACode: String);
 var
   CodeIdx, r, d, k, q: byte;
@@ -836,30 +836,30 @@ begin
   Inc(AAddress, CodeIdx);
 end;
 
-function TAvrDisassembler.GetInstructionInfo(AnAddress: TDBGPtr
-  ): TDbgDisassemblerInstruction;
+function TAvrAsmDecoder.GetInstructionInfo(AnAddress: TDBGPtr
+  ): TDbgAsmInstruction;
 begin
   if (FLastInstr = nil) or (FLastInstr.RefCount > 1) then begin
     ReleaseRefAndNil(FLastInstr);
-    FLastInstr := TAvrDisassemblerInstruction.Create(Self);
+    FLastInstr := TAvrAsmInstruction.Create(Self);
   end;
 
   FLastInstr.SetAddress(AnAddress);
   Result := FLastInstr;
 end;
 
-function TAvrDisassembler.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
+function TAvrAsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
   AnIsOutsideFrame: Boolean): Boolean;
 begin
   result := false;
 end;
 
-constructor TAvrDisassembler.Create(AProcess: TDbgProcess);
+constructor TAvrAsmDecoder.Create(AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
 end;
 
-destructor TAvrDisassembler.Destroy;
+destructor TAvrAsmDecoder.Destroy;
 begin
   ReleaseRefAndNil(FLastInstr);
   inherited Destroy;

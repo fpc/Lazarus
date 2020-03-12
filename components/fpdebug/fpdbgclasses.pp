@@ -397,9 +397,9 @@ type
   TStartInstanceFlag = (siRediretOutput, siForceNewConsole);
   TStartInstanceFlags = set of TStartInstanceFlag;
 
-  { TDbgDisassemblerInstruction }
+  { TDbgAsmInstruction }
 
-  TDbgDisassemblerInstruction = class(TRefCountedObject)
+  TDbgAsmInstruction = class(TRefCountedObject)
   public
     // returns byte len of call instruction at AAddress // 0 if not a call intruction
     function IsCallInstruction: boolean; virtual;
@@ -408,9 +408,9 @@ type
     function InstructionLength: Integer; virtual;
   end;
 
-  { TDbgDisassembler }
+  { TDbgAsmDecoder }
 
-  TDbgDisassembler = class
+  TDbgAsmDecoder = class
   protected
     function GetLastErrorWasMemReadErr: Boolean; virtual;
     function GetMaxInstrSize: integer; virtual; abstract;
@@ -422,7 +422,7 @@ type
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual; abstract;
     procedure ReverseDisassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual;
 
-    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; virtual; abstract;
+    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; virtual; abstract;
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual;
 
     property LastErrorWasMemReadErr: Boolean read GetLastErrorWasMemReadErr;
@@ -430,7 +430,7 @@ type
     property MinInstructionSize: integer read GetMinInstrSize;  // abstract
     property CanReverseDisassemble: boolean read GetCanReverseDisassemble;
   end;
-  TDbgDisassemblerClass = class of TDbgDisassembler;
+  TDbgDisassemblerClass = class of TDbgAsmDecoder;
 
   { TDbgProcess }
 
@@ -438,7 +438,7 @@ type
   protected const
     Int3: Byte = $CC;
   private
-    FDisassembler: TDbgDisassembler;
+    FDisassembler: TDbgAsmDecoder;
     FExceptionClass: string;
     FExceptionMessage: string;
     FExitCode: DWord;
@@ -449,7 +449,7 @@ type
     FThreadID: Integer;
     FWatchPointData: TFpWatchPointData;
 
-    function GetDisassembler: TDbgDisassembler;
+    function GetDisassembler: TDbgAsmDecoder;
     function GetLastLibraryLoaded: TDbgLibrary;
     function GetPauseRequested: boolean;
     procedure SetPauseRequested(AValue: boolean);
@@ -580,7 +580,7 @@ public
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property MainThread: TDbgThread read FMainThread;
     property GotExitProcess: Boolean read FGotExitProcess write FGotExitProcess;
-    property Disassembler: TDbgDisassembler read GetDisassembler;
+    property Disassembler: TDbgAsmDecoder read GetDisassembler;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -1277,36 +1277,36 @@ begin
   SetValue(ANumValue, trim(FlagS),4,Cardinal(-1));
 end;
 
-{ TDbgDisassemblerInstruction }
+{ TDbgAsmInstruction }
 
-function TDbgDisassemblerInstruction.IsCallInstruction: boolean;
+function TDbgAsmInstruction.IsCallInstruction: boolean;
 begin
   Result := False;
 end;
 
-function TDbgDisassemblerInstruction.IsReturnInstruction: boolean;
+function TDbgAsmInstruction.IsReturnInstruction: boolean;
 begin
   Result := False;
 end;
 
-function TDbgDisassemblerInstruction.IsLeaveStackFrame: boolean;
+function TDbgAsmInstruction.IsLeaveStackFrame: boolean;
 begin
   Result := False;
 end;
 
-function TDbgDisassemblerInstruction.InstructionLength: Integer;
+function TDbgAsmInstruction.InstructionLength: Integer;
 begin
   Result := 0;
 end;
 
-{ TDbgDisassembler }
+{ TDbgAsmDecoder }
 
-function TDbgDisassembler.GetLastErrorWasMemReadErr: Boolean;
+function TDbgAsmDecoder.GetLastErrorWasMemReadErr: Boolean;
 begin
   Result := False;
 end;
 
-function TDbgDisassembler.GetCanReverseDisassemble: boolean;
+function TDbgAsmDecoder.GetCanReverseDisassemble: boolean;
 begin
   Result := false;
 end;
@@ -1316,7 +1316,7 @@ end;
 // If not decrease instruction size and try again.
 // Many pitfalls with X86 instruction encoding...
 // Avr may give 130/65535 = 0.2% errors per instruction reverse decoded
-procedure TDbgDisassembler.ReverseDisassemble(var AAddress: Pointer; out
+procedure TDbgAsmDecoder.ReverseDisassemble(var AAddress: Pointer; out
   ACodeBytes: String; out ACode: String);
 var
   i, instrLen: integer;
@@ -1335,7 +1335,7 @@ begin
   AAddress := AAddress - instrLen;
 end;
 
-function TDbgDisassembler.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
+function TDbgAsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
   AnIsOutsideFrame: Boolean): Boolean;
 begin
   Result := False;
@@ -1957,7 +1957,7 @@ begin
   Result := FLibMap.LastLibraryAdded;
 end;
 
-function TDbgProcess.GetDisassembler: TDbgDisassembler;
+function TDbgProcess.GetDisassembler: TDbgAsmDecoder;
 begin
   if FDisassembler = nil then
     FDisassembler := OSDbgClasses.DbgDisassemblerClass.Create(Self);
