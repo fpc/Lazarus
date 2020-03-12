@@ -287,6 +287,7 @@ type
     procedure OnForkEvent(Sender : TObject);
     {$endif}
   protected
+    function GetRequiresExecutionInDebuggerThread: boolean; override;
     procedure InitializeLoaders; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
@@ -705,6 +706,11 @@ begin
 end;
 
 { TDbgLinuxProcess }
+
+function TDbgLinuxProcess.GetRequiresExecutionInDebuggerThread: boolean;
+begin
+  Result := True;
+end;
 
 procedure TDbgLinuxProcess.InitializeLoaders;
 begin

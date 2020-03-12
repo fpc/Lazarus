@@ -470,6 +470,7 @@ type
     function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
     procedure SetLastLibraryUnloaded(ALib: TDbgLibrary);
     procedure SetLastLibraryUnloadedNil(ALib: TDbgLibrary);
+    function GetRequiresExecutionInDebuggerThread: boolean; virtual;
 
     function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; virtual;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; virtual;
@@ -553,6 +554,7 @@ public
     function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; virtual;
 
     property OSDbgClasses: TOSDbgClasses read FOSDbgClasses;
+    property RequiresExecutionInDebuggerThread: boolean read GetRequiresExecutionInDebuggerThread;
     property Handle: THandle read GetHandle;
     property Name: String read FFileName write SetFileName;
     property ProcessID: integer read FProcessID;
@@ -1906,6 +1908,11 @@ end;
 function TDbgProcess.GetPauseRequested: boolean;
 begin
   Result := Boolean(InterLockedExchangeAdd(FPauseRequested, 0));
+end;
+
+function TDbgProcess.GetRequiresExecutionInDebuggerThread: boolean;
+begin
+  Result := False;
 end;
 
 function TDbgProcess.GetLastLibraryLoaded: TDbgLibrary;

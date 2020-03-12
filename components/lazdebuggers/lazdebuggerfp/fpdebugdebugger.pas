@@ -203,7 +203,7 @@ type
     FMemManager: TFpDbgMemManager;
     FExceptionStepper: TFpDebugExceptionStepping;
     FConsoleOutputThread: TThread;
-    {$ifdef linux}
+    // Helper vars to run in debug-thread
     FCacheLine: cardinal;
     FCacheFileName: string;
     FCacheLib: TDbgLibrary;
@@ -215,7 +215,7 @@ type
     FCacheScope: TDBGWatchPointScope;
     FCacheThreadId, FCacheStackFrame: Integer;
     FCacheContext: TFpDbgInfoContext;
-    {$endif linux}
+    //
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
@@ -267,8 +267,8 @@ type
     procedure DoOnIdle;
     procedure DoState(const OldState: TDBGState); override;
     function GetIsIdle: Boolean; override;
-    {$ifdef linux}
   protected
+    // Helper vars to run in debug-thread
     FCallStackEntryListThread: TDbgThread;
     FCallStackEntryListFrameRequired: Integer;
     FParamAsString: String;
@@ -284,7 +284,7 @@ type
     procedure DoFreeBreakpoint;
     procedure DoFindContext;
     procedure DoGetParamsAsString;
-    {$endif linux}
+    //
     function AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function AddBreak(const AFuncName: String; ALib: TDbgLibrary = nil; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
@@ -455,7 +455,8 @@ implementation
 
 uses
   FpDbgUtil,
-  FpDbgDisasX86;
+  FpDbgDisasX86,
+  FpDbgCommon;
 
 var
   DBG_VERBOSE, DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
@@ -467,13 +468,11 @@ type
   TFpDbgMemReader = class(TDbgMemReader)
   private
     FFpDebugDebugger: TFpDebugDebugger;
-    {$ifdef linux}
     FRegNum: Cardinal;
     FRegValue: TDbgPtr;
     FRegContext: TFpDbgAddressContext;
     FRegResult: Boolean;
     procedure DoReadRegister;
-    {$endif linux}
   protected
     function GetDbgProcess: TDbgProcess; override;
     function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; override;
@@ -799,12 +798,10 @@ begin
     Result := FFpDebugDebugger.FDbgController.CurrentThread;
 end;
 
-{$ifdef linux}
 procedure TFpDbgMemReader.DoReadRegister;
 begin
   FRegResult := inherited ReadRegister(FRegNum, FRegValue, FRegContext);
 end;
-{$endif linux}
 
 constructor TFpDbgMemReader.create(AFpDebugDebuger: TFpDebugDebugger);
 begin
@@ -825,15 +822,16 @@ end;
 function TFpDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
   AContext: TFpDbgAddressContext): Boolean;
 begin
-{$ifdef linux}
-  FRegNum := ARegNum;
-  FRegContext := AContext;
-  FFpDebugDebugger.ExecuteInDebugThread(@DoReadRegister);
-  AValue := FRegValue;
-  result := FRegResult;
-{$else linux}
-  result := inherited ReadRegister(ARegNum, AValue, AContext);
-{$endif linux}
+  if FFpDebugDebugger.FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FRegNum := ARegNum;
+    FRegContext := AContext;
+    FFpDebugDebugger.ExecuteInDebugThread(@DoReadRegister);
+    AValue := FRegValue;
+    result := FRegResult;
+  end
+  else
+    result := inherited ReadRegister(ARegNum, AValue, AContext);
 end;
 
 { TCallstackAsyncRequest }
@@ -2907,7 +2905,6 @@ begin
   Result := FIsIdle;
 end;
 
-{$ifdef linux}
 procedure TFpDebugDebugger.DoAddBreakLine;
 begin
   FCacheBreakpoint := TDbgInstance(FDbgController.CurrentProcess).AddBreak(FCacheFileName, FCacheLine, FCacheBoolean);
@@ -2959,94 +2956,99 @@ begin
   FParamAsString := FParamAsStringStackEntry.GetParamsAsString(FParamAsStringPrettyPrinter);
 end;
 
-{$endif linux}
 
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean
   ): TFpDbgBreakpoint;
 begin
-{$ifdef linux}
-  FCacheLocation:=ALocation;
-  FCacheBoolean:=AnEnabled;
-  ExecuteInDebugThread(@DoAddBreakLocation);
-  result := FCacheBreakpoint;
-{$else linux}
-  if ALocation = 0 then
-    result := FDbgController.CurrentProcess.AddBreak(nil, AnEnabled)
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheLocation:=ALocation;
+    FCacheBoolean:=AnEnabled;
+    ExecuteInDebugThread(@DoAddBreakLocation);
+    result := FCacheBreakpoint;
+  end
   else
-    result := FDbgController.CurrentProcess.AddBreak(ALocation, AnEnabled);
-{$endif linux}
+    if ALocation = 0 then
+      result := FDbgController.CurrentProcess.AddBreak(nil, AnEnabled)
+    else
+      result := FDbgController.CurrentProcess.AddBreak(ALocation, AnEnabled);
 end;
 
 function TFpDebugDebugger.AddBreak(const AFileName: String; ALine: Cardinal;
   AnEnabled: Boolean): TFpDbgBreakpoint;
 begin
-{$ifdef linux}
-  FCacheFileName:=AFileName;
-  FCacheLine:=ALine;
-  FCacheBoolean:=AnEnabled;
-  ExecuteInDebugThread(@DoAddBreakLine);
-  result := FCacheBreakpoint;
-{$else linux}
-  result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFileName, ALine, AnEnabled);
-{$endif linux}
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheFileName:=AFileName;
+    FCacheLine:=ALine;
+    FCacheBoolean:=AnEnabled;
+    ExecuteInDebugThread(@DoAddBreakLine);
+    result := FCacheBreakpoint;
+  end
+  else
+    result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFileName, ALine, AnEnabled);
 end;
 
 function TFpDebugDebugger.AddBreak(const AFuncName: String; ALib: TDbgLibrary;
   AnEnabled: Boolean): TFpDbgBreakpoint;
 begin
-{$ifdef linux}
-  FCacheFileName:=AFuncName;
-  FCacheLib:=ALib;
-  FCacheBoolean:=AnEnabled;
-  ExecuteInDebugThread(@DoAddBreakFuncLib);
-  result := FCacheBreakpoint;
-{$else linux}
-  if ALib <> nil then
-    result := ALib.AddBreak(AFuncName, AnEnabled)
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheFileName:=AFuncName;
+    FCacheLib:=ALib;
+    FCacheBoolean:=AnEnabled;
+    ExecuteInDebugThread(@DoAddBreakFuncLib);
+    result := FCacheBreakpoint;
+  end
   else
-    result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFuncName, AnEnabled);
-{$endif linux}
+    if ALib <> nil then
+      result := ALib.AddBreak(AFuncName, AnEnabled)
+    else
+      result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFuncName, AnEnabled);
 end;
 
 function TFpDebugDebugger.AddWatch(const ALocation: TDBGPtr; ASize: Cardinal;
   AReadWrite: TDBGWatchPointKind; AScope: TDBGWatchPointScope
   ): TFpDbgBreakpoint;
 begin
-{$ifdef linux}
-  FCacheLocation:=ALocation;
-  FCacheLine:=ASize;
-  FCacheReadWrite:=AReadWrite;
-  FCacheScope:=AScope;
-  ExecuteInDebugThread(@DoAddBWatch);
-  result := FCacheBreakpoint;
-{$else linux}
-  result := FDbgController.CurrentProcess.AddWatch(ALocation, ASize, AReadWrite, AScope);
-{$endif linux}
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheLocation:=ALocation;
+    FCacheLine:=ASize;
+    FCacheReadWrite:=AReadWrite;
+    FCacheScope:=AScope;
+    ExecuteInDebugThread(@DoAddBWatch);
+    result := FCacheBreakpoint;
+  end
+  else
+    result := FDbgController.CurrentProcess.AddWatch(ALocation, ASize, AReadWrite, AScope);
 end;
 
 procedure TFpDebugDebugger.FreeBreakpoint(
   const ABreakpoint: TFpDbgBreakpoint);
 begin
-{$ifdef linux}
   if ABreakpoint = nil then exit;
-  FCacheBreakpoint:=ABreakpoint;
-  ExecuteInDebugThread(@DoFreeBreakpoint);
-{$else linux}
-  ABreakpoint.Free;
-{$endif linux}
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheBreakpoint:=ABreakpoint;
+    ExecuteInDebugThread(@DoFreeBreakpoint);
+  end
+  else
+    ABreakpoint.Free;
 end;
 
 function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
 begin
-{$ifdef linux}
-  FCacheLocation := AAdress;
-  FCacheLine:=ASize;
-  FCachePointer := @AData;
-  ExecuteInDebugThread(@DoReadData);
-  result := FCacheBoolean;
-{$else linux}
-  result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData);
-{$endif linux}
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheLocation := AAdress;
+    FCacheLine:=ASize;
+    FCachePointer := @AData;
+    ExecuteInDebugThread(@DoReadData);
+    result := FCacheBoolean;
+  end
+  else
+    result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData);
 end;
 
 function TFpDebugDebugger.ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
@@ -3078,38 +3080,41 @@ begin
      (AThread.CallStackEntryList <> nil) and
      (AFrameRequired < AThread.CallStackEntryList.Count) then
     exit;
-{$ifdef linux}
-  FCallStackEntryListThread := AThread;
-  FCallStackEntryListFrameRequired := AFrameRequired;
-  ExecuteInDebugThread(@DoPrepareCallStackEntryList);
-{$else linux}
-  AThread.PrepareCallStackEntryList(AFrameRequired);
-{$endif linux}
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCallStackEntryListThread := AThread;
+    FCallStackEntryListFrameRequired := AFrameRequired;
+    ExecuteInDebugThread(@DoPrepareCallStackEntryList);
+  end
+  else
+    AThread.PrepareCallStackEntryList(AFrameRequired);
 end;
 
 function TFpDebugDebugger.FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
 begin
-{$ifdef linux}
-  FCacheThreadId := AThreadId;
-  FCacheStackFrame := AStackFrame;
-  ExecuteInDebugThread(@DoFindContext);
-  Result := FCacheContext;
-{$else linux}
-  Result := FDbgController.CurrentProcess.FindContext(AThreadId, AStackFrame);
-{$endif linux}
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheThreadId := AThreadId;
+    FCacheStackFrame := AStackFrame;
+    ExecuteInDebugThread(@DoFindContext);
+    Result := FCacheContext;
+  end
+  else
+    Result := FDbgController.CurrentProcess.FindContext(AThreadId, AStackFrame);
 end;
 
 function TFpDebugDebugger.GetParamsAsString(AStackEntry: TDbgCallstackEntry;
   APrettyPrinter: TFpPascalPrettyPrinter): string;
 begin
-{$ifdef linux}
-  FParamAsStringStackEntry := AStackEntry;
-  FParamAsStringPrettyPrinter := APrettyPrinter;
-  ExecuteInDebugThread(@DoGetParamsAsString);
-  Result := FParamAsString;
-{$else linux}
-  Result := AStackEntry.GetParamsAsString(APrettyPrinter);
-{$endif linux}
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FParamAsStringStackEntry := AStackEntry;
+    FParamAsStringPrettyPrinter := APrettyPrinter;
+    ExecuteInDebugThread(@DoGetParamsAsString);
+    Result := FParamAsString;
+  end
+  else
+    Result := AStackEntry.GetParamsAsString(APrettyPrinter);
 end;
 
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
