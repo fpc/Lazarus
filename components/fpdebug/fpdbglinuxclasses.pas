@@ -326,6 +326,7 @@ procedure RegisterDbgClasses;
 begin
   OSDbgClasses.DbgProcessClass:=TDbgLinuxProcess;
   OSDbgClasses.DbgThreadClass:=TDbgLinuxThread;
+  OSDbgClasses.DbgDisassemblerClass := TX86Disassembler;
 end;
 
 Function WIFSTOPPED(Status: Integer): Boolean;

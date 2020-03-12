@@ -450,7 +450,8 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgContr
       else
         begin
         p := @CodeBin;
-        FpDbgDisasX86.Disassemble(p, {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.Mode=dm64, ADump, AStatement);
+        AController.CurrentProcess.Disassembler
+          .Disassemble(p, ADump, AStatement);
 
         Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindProcSymbol(AnAddr);
 

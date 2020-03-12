@@ -103,7 +103,7 @@ type
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
-    constructor Create(AController: TDbgController; AnAfterFinCallAddr: TDbgPtr);
+    constructor Create(AController: TDbgController; AnAfterFinCallAddr: TDbgPtr); reintroduce;
   end;
 
   { TFpDebugExceptionStepping }
@@ -510,7 +510,7 @@ procedure TDbgControllerStepOverFirstFinallyLineCmd.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 begin
   Finished := (FThread.CompareStepInfo(0, True) <> dcsiSameLine) or
-              (NextOpCode = OPret) or IsSteppedOut;
+              (NextInstruction.IsReturnInstruction) or IsSteppedOut;
 
   if Finished then
     AnEvent := deFinishedStep
@@ -523,6 +523,8 @@ end;
 
 procedure TDbgControllerStepOverOrFinallyCmd.InternalContinue(
   AProcess: TDbgProcess; AThread: TDbgThread);
+var
+  Instr: TDbgDisassemblerInstruction;
 begin
 {
 00000001000374AE 4889C1                   mov rcx,rax
@@ -531,21 +533,25 @@ begin
 00000001000374BB E89022FEFF               call -$0001DD70
 
 }
-  if (AThread = FThread) then
-    case NextOpCode of
-      OPmov:
-        if UpperCase(NextInstruction.Operand[2].Value) = 'RBP' then
-          FFinState := fsMov;
-      OPcall:
-        if FFinState = fsMov then begin
-          CheckForCallAndSetBreak;
-          FProcess.Continue(FProcess, FThread, True); // Step into
-          FFinState := fsCall;
-          exit;
-        end;
-      else
-        FFinState := fsNone;
+  if (AThread = FThread) then begin
+    Instr := NextInstruction;
+    if Instr is TX86DisassemblerInstruction then begin
+      case TX86DisassemblerInstruction(Instr).X86OpCode of
+        OPmov:
+          if UpperCase(TX86DisassemblerInstruction(Instr).X86Instruction.Operand[2].Value) = 'RBP' then
+            FFinState := fsMov;
+        OPcall:
+          if FFinState = fsMov then begin
+            CheckForCallAndSetBreak;
+            FProcess.Continue(FProcess, FThread, True); // Step into
+            FFinState := fsCall;
+            exit;
+          end;
+        else
+          FFinState := fsNone;
+      end;
     end;
+  end;
   inherited InternalContinue(AProcess, AThread);
 end;
 
@@ -582,7 +588,7 @@ begin
   if IsAtOrOutOfHiddenBreakFrame then
     RemoveHiddenBreak;
 
-  Finished := IsSteppedOut or FDone or ((not HasHiddenBreak) and (NextOpCode = OPret));
+  Finished := IsSteppedOut or FDone or ((not HasHiddenBreak) and (NextInstruction.IsReturnInstruction));
   if Finished then
     AnEvent := deFinishedStep
   else
@@ -594,8 +600,9 @@ procedure TDbgControllerStepThroughFpcSpecialHandler.InternalContinue(
   AProcess: TDbgProcess; AThread: TDbgThread);
 begin
   {$PUSH}{$Q-}{$R-}
-  if (AThread = FThread) and (NextOpCode = OPcall) and
-     (FThread.GetInstructionPointerRegisterValue + NextInstructionLen = FAfterFinCallAddr)
+  if (AThread = FThread) and
+     (NextInstruction.IsCallInstruction) and
+     (FThread.GetInstructionPointerRegisterValue + NextInstruction.InstructionLength = FAfterFinCallAddr)
   then begin
     RemoveHiddenBreak;
     FProcess.Continue(FProcess, FThread, True);
@@ -1331,7 +1338,8 @@ begin
     else
       begin
       p := @CodeBin;
-      FpDbgDisasX86.Disassemble(p, TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.Mode=dm64, ADump, AStatement);
+      TFpDebugDebugger(Debugger).FDbgController.CurrentProcess
+        .Disassembler.Disassemble(p, ADump, AStatement);
 
       Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnAddr);
 

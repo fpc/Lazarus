@@ -43,7 +43,7 @@ uses
   DbgIntfDebuggerBase,
   FpPascalBuilder,
   fpDbgSymTableContext,
-  FpDbgDwarfDataClasses, FpDbgDisasX86;
+  FpDbgDwarfDataClasses;
 
 type
   TFPDEvent = (deExitProcess, deFinishedStep, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deUnloadLibrary, deInternalContinue);
@@ -394,12 +394,40 @@ type
   TStartInstanceFlag = (siRediretOutput, siForceNewConsole);
   TStartInstanceFlags = set of TStartInstanceFlag;
 
+  { TDbgDisassemblerInstruction }
+
+  TDbgDisassemblerInstruction = class(TRefCountedObject)
+  public
+    // returns byte len of call instruction at AAddress // 0 if not a call intruction
+    function IsCallInstruction: boolean; virtual;
+    function IsReturnInstruction: boolean; virtual;
+    function IsLeaveStackFrame: boolean; virtual;
+    function InstructionLength: Integer; virtual;
+  end;
+
+  { TDbgDisassembler }
+
+  TDbgDisassembler = class
+  protected
+    function GetLastErrorWasMemReadErr: Boolean; virtual;
+  public
+    constructor Create(AProcess: TDbgProcess); virtual; abstract;
+
+    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual; abstract;
+    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; virtual; abstract;
+    function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual;
+
+    property LastErrorWasMemReadErr: Boolean read GetLastErrorWasMemReadErr;
+  end;
+  TDbgDisassemblerClass = class of TDbgDisassembler;
+
   { TDbgProcess }
 
   TDbgProcess = class(TDbgInstance)
   protected const
     Int3: Byte = $CC;
   private
+    FDisassembler: TDbgDisassembler;
     FExceptionClass: string;
     FExceptionMessage: string;
     FExitCode: DWord;
@@ -409,6 +437,7 @@ type
     FThreadID: Integer;
     FWatchPointData: TFpWatchPointData;
 
+    function GetDisassembler: TDbgDisassembler;
     function GetLastLibraryLoaded: TDbgLibrary;
     function GetPauseRequested: boolean;
     procedure SetPauseRequested(AValue: boolean);
@@ -533,6 +562,7 @@ public
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property MainThread: TDbgThread read FMainThread;
     property GotExitProcess: Boolean read FGotExitProcess write FGotExitProcess;
+    property Disassembler: TDbgDisassembler read GetDisassembler;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -571,6 +601,7 @@ public
     DbgBreakpointClass : TFpInternalBreakpointClass;
     DbgWatchpointClass : TFpInternalWatchpointClass;
     DbgProcessClass : TDbgProcessClass;
+    DbgDisassemblerClass : TDbgDisassemblerClass;
   end;
 
 var
@@ -1168,6 +1199,41 @@ begin
   SetValue(ANumValue, trim(FlagS),4,Cardinal(-1));
 end;
 
+{ TDbgDisassemblerInstruction }
+
+function TDbgDisassemblerInstruction.IsCallInstruction: boolean;
+begin
+  Result := False;
+end;
+
+function TDbgDisassemblerInstruction.IsReturnInstruction: boolean;
+begin
+  Result := False;
+end;
+
+function TDbgDisassemblerInstruction.IsLeaveStackFrame: boolean;
+begin
+  Result := False;
+end;
+
+function TDbgDisassemblerInstruction.InstructionLength: Integer;
+begin
+  Result := 0;
+end;
+
+{ TDbgDisassembler }
+
+function TDbgDisassembler.GetLastErrorWasMemReadErr: Boolean;
+begin
+  Result := False;
+end;
+
+function TDbgDisassembler.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
+  AnIsOutsideFrame: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
 { TDbgInstance }
 
 function TDbgInstance.AddBreak(const AFileName: String; ALine: Cardinal;
@@ -1398,6 +1464,7 @@ begin
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
   FreeAndNil(FSymInstances);
+  FreeAndNil(FDisassembler);
   inherited;
 end;
 
@@ -1764,6 +1831,13 @@ end;
 function TDbgProcess.GetLastLibraryLoaded: TDbgLibrary;
 begin
   Result := FLibMap.LastLibraryAdded;
+end;
+
+function TDbgProcess.GetDisassembler: TDbgDisassembler;
+begin
+  if FDisassembler = nil then
+    FDisassembler := OSDbgClasses.DbgDisassemblerClass.Create(Self);
+  Result := FDisassembler;
 end;
 
 function TDbgProcess.GetAndClearPauseRequested: Boolean;
@@ -2195,7 +2269,6 @@ procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
 const
   MAX_FRAMES = 50000; // safety net
 var
-  CodeBin: array[0..50] of byte;
   Address, FrameBase, LastFrameBase: QWord;
   Size, CountNeeded, IP, BP, CodeReadErrCnt, SP: integer;
   AnEntry: TDbgCallstackEntry;
@@ -2271,13 +2344,12 @@ begin
   CodeReadErrCnt := 0;
   while (CountNeeded > 0) and (FrameBase <> 0) and (FrameBase > LastFrameBase) do
   begin
-    if not Process.ReadData(Address, sizeof(CodeBin), CodeBin, AReadSize) then begin
-      inc(CodeReadErrCnt);
-      if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
-    end
-    else begin
-      if not GetFunctionFrameInfo(@CodeBin[0], AReadSize, FProcess.Mode=dm64, OutSideFrame) then
-        OutSideFrame := False;
+    if not Process.Disassembler.GetFunctionFrameInfo(Address, OutSideFrame) then begin
+      if Process.Disassembler.LastErrorWasMemReadErr then begin
+        inc(CodeReadErrCnt);
+        if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
+      end;
+      OutSideFrame := False;
     end;
     LastFrameBase := FrameBase;
     if OutSideFrame then begin

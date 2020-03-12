@@ -116,7 +116,7 @@ uses
   FpDbgWinExtra,
   strutils,
   FpDbgInfo,
-  FpDbgLoader,
+  FpDbgLoader, FpDbgDisasX86,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   LazLoggerBase, UTF8Process;
 
@@ -341,6 +341,7 @@ begin
   OSDbgClasses.DbgThreadClass:=TDbgWinThread;
   OSDbgClasses.DbgBreakpointClass:=TFpInternalBreakpoint;
   OSDbgClasses.DbgProcessClass:=TDbgWinProcess;
+  OSDbgClasses.DbgDisassemblerClass := TX86Disassembler;
 end;
 
 procedure TDbgWinProcess.LogLastError;

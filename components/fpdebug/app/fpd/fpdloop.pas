@@ -145,7 +145,8 @@ begin
     end;
     p := @CodeBin;
 
-    Disassemble(p, GController.CurrentProcess.Mode=dm64, CodeBytes, Code);
+    GController.CurrentProcess.Disassembler
+      .Disassemble(p, CodeBytes, Code);
 
     WriteLN(' ', CodeBytes:20, '    ', Code);
     Inc(a, PtrUInt(p) - PtrUInt(@CodeBin));

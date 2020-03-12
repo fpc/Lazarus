@@ -39,8 +39,8 @@ interface
 {.$define verbose_string_instructions}
 
 uses
-  SysUtils,
-  FpDbgUtil, FpDbgInfo, DbgIntfBaseTypes, FpdMemoryTools, LazLoggerBase;
+  SysUtils, FpDbgUtil, FpDbgInfo, DbgIntfBaseTypes, FpdMemoryTools,
+  FpDbgClasses, LazLoggerBase, LazClasses;
 
 {                   
   The function Disassemble decodes the instruction at the given address.
@@ -201,15 +201,58 @@ type
     ParseFlags: TFlags;
   end;
 
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out AnInstruction: TInstruction);
+  TX86Disassembler = class;
 
-// returns byte len of call instruction at AAddress // 0 if not a call intruction
-function IsCallInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
-function IsReturnInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
+  { TX86DisassemblerInstruction }
 
-function GetFunctionFrameInfo(AData: PByte; ADataLen: Cardinal; const A64Bit: Boolean;
-  out AnIsOutsideFrame: Boolean): Boolean;
+  TX86DisassemblerInstruction = class(TDbgDisassemblerInstruction)
+  private
+    FDisassembler: TX86Disassembler;
+    FAddress: TDBGPtr;
+    FCodeBin: array[0..16] of byte;
+    FInstruction: TInstruction;
+    FInstrLen: Integer;
+    FFlags: set of (diCodeRead, diCodeReadError, diDisAss);
+  const
+    INSTR_CODEBIN_LEN = 16;
+  protected
+    procedure ReadCode; inline;
+    procedure Disassemble; inline;
+  public
+    constructor Create(ADisassembler: TX86Disassembler);
+    procedure SetAddress(AnAddress: TDBGPtr);
+    function IsCallInstruction: boolean; override;
+    function IsReturnInstruction: boolean; override;
+    function IsLeaveStackFrame: boolean; override;
+    function InstructionLength: Integer; override;
+    function X86OpCode: TOpCode;
+    property X86Instruction: TInstruction read FInstruction; // only valid after call to X86OpCode
+  end;
+
+  { TX86Disassembler }
+
+  TX86Disassembler = class(TDBGDisassembler)
+  private
+    FProcess: TDbgProcess;
+    FLastErrWasMem: Boolean;
+    FCodeBin: array[0..50] of byte;
+    FLastInstr: TX86DisassemblerInstruction;
+  const
+    MAX_CODEBIN_LEN = 50;
+  protected
+    function GetLastErrorWasMemReadErr: Boolean; override;
+    function ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal): Boolean; inline;
+    procedure Disassemble(var AAddress: Pointer; out AnInstruction: TInstruction);
+  public
+    constructor Create(AProcess: TDbgProcess); override;
+    destructor Destroy; override;
+
+    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
+    function GetInstructionInfo(AnAddress: TDBGPtr): TDbgDisassemblerInstruction; override;
+
+    function GetFunctionFrameInfo(AnAddress: TDBGPtr; out
+      AnIsOutsideFrame: Boolean): Boolean; override;
+  end;
 
 implementation
 var
@@ -324,7 +367,93 @@ const
     'o', 'no', 'b', 'nb', 'z', 'nz', 'be', 'nbe', 's', 'ns', 'p', 'np', 'l', 'nl', 'le', 'nle'
   );
 
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out AnInstruction: TInstruction);
+{ TX86DisassemblerInstruction }
+
+procedure TX86DisassemblerInstruction.ReadCode;
+begin
+  if not (diCodeRead in FFlags) then begin
+    if not FDisassembler.FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
+      Include(FFlags, diCodeReadError);
+    Include(FFlags, diCodeRead);
+  end;
+end;
+
+procedure TX86DisassemblerInstruction.Disassemble;
+var
+  a: PByte;
+begin
+  if not (diDisAss in FFlags) then begin
+    ReadCode;
+    a := @FCodeBin[0];
+    FDisassembler.Disassemble(a, FInstruction);
+    FInstrLen := a - @FCodeBin[0];
+    Include(FFlags, diDisAss);
+  end;
+end;
+
+constructor TX86DisassemblerInstruction.Create(ADisassembler: TX86Disassembler);
+begin
+  FDisassembler := ADisassembler;
+  inherited Create;
+  AddReference;
+end;
+
+procedure TX86DisassemblerInstruction.SetAddress(AnAddress: TDBGPtr);
+begin
+  FAddress := AnAddress;
+  FFlags := [];
+end;
+
+function TX86DisassemblerInstruction.IsCallInstruction: boolean;
+var
+  a: PByte;
+begin
+  Result := False;
+  ReadCode;
+  a := @FCodeBin[0];
+
+  if (FDisassembler.FProcess.Mode = dm64) then begin
+    while (a < @FCodeBin[0] + INSTR_CODEBIN_LEN) and (a^ in [$40..$4F, $64..$67]) do
+      inc(a);
+    if not (a^ in [$E8, $FF]) then
+      exit;
+  end
+  else begin
+    while (a < @FCodeBin[0] + INSTR_CODEBIN_LEN) and (a^ in [$26, $2E, $36, $3E, $64..$67]) do
+      inc(a);
+    if not (a^ in [$9A, $E8, $FF]) then
+      exit;
+  end;
+
+  Disassemble;
+  Result := FInstruction.OpCode = OPcall;
+end;
+
+function TX86DisassemblerInstruction.IsReturnInstruction: boolean;
+begin
+  Disassemble;
+  Result := (FInstruction.OpCode = OPret) or (FInstruction.OpCode = OPretf);
+end;
+
+function TX86DisassemblerInstruction.IsLeaveStackFrame: boolean;
+begin
+  Disassemble;
+  Result := (FInstruction.OpCode = OPleave);
+end;
+
+function TX86DisassemblerInstruction.InstructionLength: Integer;
+begin
+  Disassemble;
+  Result := FInstrLen;
+end;
+
+function TX86DisassemblerInstruction.X86OpCode: TOpCode;
+begin
+  Disassemble;
+  Result := FInstruction.OpCode;
+end;
+
+procedure TX86Disassembler.Disassemble(var AAddress: Pointer; out AnInstruction: TInstruction);
 var
   Code: PByte;
   CodeIdx: Byte;
@@ -336,21 +465,21 @@ var
   procedure Check32;
   begin
     // only valid in 32-bit mode
-    if A64Bit then
+    if (FProcess.Mode = dm64) then
       Include(AnInstruction.Flags, ifOnly32);
   end;
 
   procedure Check64;
   begin
     // only valid in 64-bit mode
-    if A64Bit then
+    if (FProcess.Mode = dm64) then
       Include(AnInstruction.Flags, ifOnly64);
   end;
 
   function Ignore64(s: String): String;
   begin
     // ignored in 64-bit mode
-    if A64Bit then
+    if (FProcess.Mode = dm64) then
       Result := '('+s+')'
     else
       Result := s;
@@ -436,7 +565,7 @@ var
   function AddressSize32: TAddressSize;
   begin
     // effective address size for default 32 AnInstruction.operand size
-    if A64Bit
+    if (FProcess.Mode = dm64)
     then begin
       if preAdr in Flags
       then Result := as32
@@ -574,7 +703,7 @@ var
     {64}(os8, os16, os32, os64, os64, os128, os16, os64, os64, os80)
     );
   begin
-    AddOperand(StdReg(AIndex, AType, AExtReg), REGSIZE[A64Bit, AType]);
+    AddOperand(StdReg(AIndex, AType, AExtReg), REGSIZE[(FProcess.Mode = dm64), AType]);
   end;
 
   procedure AddStdReg(AIndex: Byte);
@@ -907,7 +1036,7 @@ var
 
   procedure AddMs;
   begin
-    if A64Bit
+    if (FProcess.Mode = dm64)
     then AddModRM([modMem], os80, reg0 {do not care})
     else AddModRM([modMem], os48, reg0 {do not care});
   end;
@@ -958,7 +1087,7 @@ var
 
   procedure AddRd_q;
   begin
-    if A64Bit
+    if (FProcess.Mode = dm64)
     then AddModRM([modReg], os64, reg64)
     else AddModRM([modReg], os32, reg32);
   end;
@@ -2706,7 +2835,7 @@ var
         end;
         //---
         $40..$4F: begin
-          if A64Bit
+          if (FProcess.Mode = dm64)
           then begin
             if (Code[CodeIdx] and 1) <> 0 then Include(Flags, rexB);
             if (Code[CodeIdx] and 2) <> 0 then Include(Flags, rexX);
@@ -2749,7 +2878,7 @@ var
           AddGv; AddMa;
         end;
         $63: begin
-          if A64Bit
+          if (FProcess.Mode = dm64)
           then begin
             Opcode := (OPmovsxd);
             AddGv; AddEd;
@@ -3293,7 +3422,8 @@ begin
   Inc(AAddress, CodeIdx);
 end;
 
-procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
+procedure TX86Disassembler.Disassemble(var AAddress: Pointer;
+  out ACodeBytes: String; out ACode: String);
 const
   MEMPTR: array[TOperandSize] of string = ('byte ptr ', 'word ptr ', 'dword ptr ', 'qword ptr ', '', 'tbyte ptr ', '16byte ptr ');
 {$ifdef debug_OperandSize}
@@ -3308,7 +3438,7 @@ var
   Code: PByte;
 begin
   Code := AAddress;
-  Disassemble(AAddress, A64Bit, Instr);
+  Disassemble(AAddress, Instr);
 
   Soper := '';
   HasMem := False;
@@ -3374,52 +3504,55 @@ begin
   ACodeBytes := S;
 end;
 
-function IsCallInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
-var
-  Instr: TInstruction;
-  a: PByte;
+function TX86Disassembler.GetInstructionInfo(AnAddress: TDBGPtr
+  ): TDbgDisassemblerInstruction;
 begin
-  Result := 0;
-  a := AAddress;
-
-  if A64Bit then begin
-    while (a < AAddress + 16) and (a^ in [$40..$4F, $64..$67]) do
-      inc(a);
-    if not (a^ in [$E8, $FF]) then
-      exit;
-  end
-  else begin
-    while (a < AAddress + 16) and (a^ in [$26, $2E, $36, $3E, $64..$67]) do
-      inc(a);
-    if not (a^ in [$9A, $E8, $FF]) then
-      exit;
+  if (FLastInstr = nil) or (FLastInstr.RefCount > 1) then begin
+    ReleaseRefAndNil(FLastInstr);
+    FLastInstr := TX86DisassemblerInstruction.Create(Self);
   end;
 
-  a := AAddress;
-  Disassemble(AAddress, A64Bit, Instr);
-  if Instr.OpCode <> OPcall
-  then
-      exit;
-  Result := AAddress - a;
+  FLastInstr.SetAddress(AnAddress);
+  Result := FLastInstr;
 end;
 
-function IsReturnInstruction(AAddress: Pointer; const A64Bit: Boolean): Integer;
+{ TX86Disassembler }
+
+function TX86Disassembler.GetLastErrorWasMemReadErr: Boolean;
+begin
+  Result := FLastErrWasMem;
+end;
+
+function TX86Disassembler.ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal
+  ): Boolean;
+begin
+  FLastErrWasMem := not FProcess.ReadData(AnAddress, ALen, FCodeBin[0], ALen);
+  Result := FLastErrWasMem;
+end;
+
+constructor TX86Disassembler.Create(AProcess: TDbgProcess);
+begin
+  FProcess := AProcess;
+end;
+
+destructor TX86Disassembler.Destroy;
+begin
+  ReleaseRefAndNil(FLastInstr);
+  inherited Destroy;
+end;
+
+function TX86Disassembler.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
+  AnIsOutsideFrame: Boolean): Boolean;
 var
-  Instr: TInstruction;
-  a: PByte;
+  ADataLen: Cardinal;
+  AData: PByte;
 begin
-  Result := 0;
-  a := AAddress;
-  Disassemble(AAddress, A64Bit, Instr);
-  if (Instr.OpCode <> OPret) and (Instr.OpCode <> OPretf)
-  then
-      exit;
-  Result := AAddress - a;
-end;
+  ADataLen := MAX_CODEBIN_LEN;
+  Result := False;
+  if not ReadCodeAt(AnAddress, ADataLen) then
+    exit;
+  AData := @FCodeBin[0];
 
-function GetFunctionFrameInfo(AData: PByte; ADataLen: Cardinal;
-  const A64Bit: Boolean; out AnIsOutsideFrame: Boolean): Boolean;
-begin
   while (ADataLen > 0) and (AData^ = $90) do begin // nop
     inc(AData);
     dec(ADataLen);
