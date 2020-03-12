@@ -53,6 +53,7 @@ uses
   // The $ifdef below will not work for cross debugging of a remote target
   {$ifdef DARWIN}FpDbgDarwinClasses,{$endif}
   {$ifdef LINUX}FpDbgLinuxClasses,{$endif}
+  FpDbgAvrClasses,
   FpDbgCommon;
 
 {$ifdef windows}
