@@ -3294,8 +3294,11 @@ end;
 
 constructor TSynEditScreenCaret.Create(AHandleOwner: TWinControl);
 begin
+  {$ifdef LCLMui}
+  Create(AHandleOwner, TSynEditScreenCaretPainterInternal);
+  {$else}
   Create(AHandleOwner, TSynEditScreenCaretPainterSystem);
-  //Create(AHandleOwner, TSynEditScreenCaretPainterInternal);
+  {$endif}
 end;
 
 constructor TSynEditScreenCaret.Create(AHandleOwner: TWinControl;

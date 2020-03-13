@@ -2090,7 +2090,11 @@ begin
   FCaret.AddChangeHandler(@CaretChanged);
   FInternalCaret := TSynEditCaret.Create;
   FInternalCaret.MaxLeftChar := @CurrentMaxLineLen;
+  {$ifdef LCLMui}
+  FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterInternal;
+  {$else}
   FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterSystem;
+  {$endif}
 
   // Create the lines/views
   FTrimmedLinesView := TSynEditStringTrimmingList.Create(fLines, fCaret);
