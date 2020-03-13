@@ -48,6 +48,7 @@ typedef struct QCheckBox_hook__ { PTRINT dummy; } *QCheckBox_hookH;
 typedef struct QModelIndex__ { PTRINT dummy; } *QModelIndexH;
 typedef struct QLocale__ { PTRINT dummy; } *QLocaleH;
 typedef struct QWidget__ { PTRINT dummy; } *QWidgetH;
+typedef struct QLCLOpenGLWidget__ { PTRINT dummy; } *QLCLOpenGLWidgetH;
 typedef struct QRadialGradient__ { PTRINT dummy; } *QRadialGradientH;
 typedef struct QStyle__ { PTRINT dummy; } *QStyleH;
 typedef struct QFontComboBox_hook__ { PTRINT dummy; } *QFontComboBox_hookH;

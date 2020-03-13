@@ -13,7 +13,7 @@
 # Binding Release Version 2.6 against Qt5 5.6 LTS release.
 # WebKit widgets are disabled until webenginewidgets are implemented.
 
-VERSION = 1.2.7
+VERSION = 1.2.8
 
 QT += gui network printsupport
 TARGET = Qt5Pas
@@ -158,6 +158,7 @@ HEADERS +=  \
            qwindow_hook.h \           
            qwidget_c.h \
            qwidget_hook.h \
+           qlclopenglwidget_c.h \ 
            qlayoutitem_c.h \
            qlayout_c.h \
            qlayout_hook.h \
@@ -505,6 +506,7 @@ SOURCES +=  \
            qscreen_c.cpp \
            qwindow_c.cpp \           
            qwidget_c.cpp \
+           qlclopenglwidget_c.cpp \ 
            qlayoutitem_c.cpp \
            qlayout_c.cpp \
            qboxlayout_c.cpp \
