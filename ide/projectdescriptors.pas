@@ -145,6 +145,9 @@ begin
     +'  {$IFDEF UNIX}'+LineEnding
     +'  cthreads,'+LineEnding
     +'  {$ENDIF}'+LineEnding
+    +'  {$IFDEF HASAMIGA}'+LineEnding
+    +'  athreads,'+LineEnding
+    +'  {$ENDIF}'+LineEnding
     +'  Interfaces, // this includes the LCL widgetset'+LineEnding
     +'  Forms'+LineEnding
     +'  { you can add units after this };'+LineEnding
