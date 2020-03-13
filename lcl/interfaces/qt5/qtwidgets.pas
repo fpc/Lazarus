@@ -207,7 +207,7 @@ type
     function SlotMouseWheel(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
     procedure SlotPaintBg(Sender: QObjectH; Event: QEventH); cdecl; virtual;
-    procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
+    procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl; virtual;
     procedure SlotResize(Event: QEventH); cdecl;
     function SlotContextMenu(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;

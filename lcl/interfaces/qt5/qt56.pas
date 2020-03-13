@@ -365,6 +365,7 @@ QObjectH = class(TObject) end;
       QPushButtonH = class(QAbstractButtonH) end;
       QRadioButtonH = class(QAbstractButtonH) end;
       QToolButtonH = class(QAbstractButtonH) end;
+      QLCLOpenGLWidgetH = class(QWidgeth) end;
     QAbstractSliderH = class(QWidgetH) end;
       QScrollBarH = class(QAbstractSliderH) end;
       QSliderH = class(QAbstractSliderH) end;
