@@ -3979,6 +3979,7 @@ components/opengl/lazopenglcontext.pas svneol=native#text/plain
 components/opengl/makeicon.bat svneol=native#text/plain
 components/opengl/openglcontext.pas svneol=native#text/plain
 components/opengl/openglcontext.res -text
+components/opengl/qlclopenglwidget.pas svneol=native#text/plain
 components/opengl/topenglcontrol.png -text svneol=unset#image/png
 components/opengl/topenglcontrol_150.png -text svneol=unset#image/png
 components/opengl/topenglcontrol_200.png -text svneol=unset#image/png
