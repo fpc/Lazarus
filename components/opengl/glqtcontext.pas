@@ -22,12 +22,12 @@ uses
   //glx,
   //WSLCLClasses,
   {$IFDEF ModernGL} ctypes,{$ENDIF}
-  Classes, SysUtils, Controls, LCLProc, LCLType, X, XUtil, XLib, gl,
+  Classes, SysUtils, Types, Controls, LCLProc, LCLType, X, XUtil, XLib, gl,
   InterfaceBase,
   WSLCLClasses,glx,
   // Bindings
   {$IFDEF LCLQt}qt4,{$ENDIF}
-  {$IFDEF LCLQt5}qt5,{$ENDIF}
+  {$IFDEF LCLQt5}qt5, qlclopenglwidget,{$ENDIF}
   qtwidgets, qtobjects, qtproc, qtint,
   QtWSControls;
 
@@ -119,9 +119,12 @@ end;
 type
   { TQtGLWidget }
 
-  TQtGLWidget = class(TQtWidget)
+  TQtGLWidget = class({$IFDEF LCLQt5}TQtOpenGLWidget{$ELSE}TQtWidget{$ENDIF})
   protected
     function PaintGLControl(Sender: QObjectH; Event: QEventH): boolean; cdecl;
+    {$IFDEF LCLQt5}
+    procedure paintGL(); cdecl; override;
+    {$ENDIF}
   public
     xdisplay: PDisplay;
     visual: PXVisualInfo;
@@ -183,13 +186,31 @@ begin
   end;
 end;
 
+{$IFDEF LCLQt5}
+procedure TQtGLWidget.paintGL(); cdecl;
+var
+  AEvent: QPaintEventH;
+  ARect: TRect;
+begin
+  QWidget_rect(Widget, @ARect);
+  AEvent := QPaintEvent_Create(PRect(@ARect));
+  PaintGLControl(Widget, AEvent);
+  QPaintEvent_Destroy(AEvent);
+end;
+{$ENDIF}
+
+
 function TQtGLWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 begin
   Result := False;
   if QEvent_type(Event) = QEventPaint then
   begin
+    {$IFDEF LCLQt}
     PaintGLControl(Sender, Event);
+    {$ELSE}
+    Result := True;
+    {$ENDIF}
   end else
     Result := inherited EventFilter(Sender, Event);
 end;
@@ -298,9 +319,11 @@ begin
   AttrList.AttributeList := CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers, MultiSampling);
   try
     NewQtWidget:=TQtGLWidget.Create(AWinControl,AParams);
+    {$ifdef LCLQt}
     NewQtWidget.setAttribute(QtWA_PaintOnScreen);
     NewQtWidget.setAttribute(QtWA_NoSystemBackground);
     NewQtWidget.setAttribute(QtWA_OpaquePaintEvent);
+    {$endif}
     NewQtWidget.HasPaint := false;
     NewQtWidget.xdisplay := QX11Info_display;
     NewQtWidget.visual := glXChooseVisual(NewQtWidget.xdisplay,
