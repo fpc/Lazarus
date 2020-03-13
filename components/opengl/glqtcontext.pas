@@ -208,8 +208,6 @@ begin
   begin
     {$IFDEF LCLQt}
     PaintGLControl(Sender, Event);
-    {$ELSE}
-    Result := True;
     {$ENDIF}
   end else
     Result := inherited EventFilter(Sender, Event);
