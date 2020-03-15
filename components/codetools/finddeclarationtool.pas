@@ -1777,7 +1777,7 @@ procedure TFDHelpersList.AddFromList(const Tool: TFindDeclarationTool;
     FromNode: TFDHelpersListItem;
   begin
     FromNode := TFDHelpersListItem(ANode.Data);
-    if (Kind=fdhlkDelphiHelper) and not (msMultiHelpers in Tool.Scanner.CompilerModeSwitches) then
+    if (Kind=fdhlkDelphiHelper) and not (cmsMultiHelpers in Tool.Scanner.CompilerModeSwitches) then
       if FTree.FindKey(FromNode, @CompareHelpersList) <> nil then
         Exit(nil); //FPC & Delphi don't support duplicate class helpers!
     Result := TFDHelpersListItem.Create;
@@ -1841,7 +1841,7 @@ begin
 
   if ExprType.Desc in xtAllIdentTypes then
   begin
-    if (Kind=fdhlkDelphiHelper) and not (msMultiHelpers in Tool.Scanner.CompilerModeSwitches) then begin
+    if (Kind=fdhlkDelphiHelper) and not (cmsMultiHelpers in Tool.Scanner.CompilerModeSwitches) then begin
       // class/type/record helpers only allow one helper per class
       OldKey := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
       if OldKey <> nil then
@@ -4520,7 +4520,7 @@ var
       finally
         Params.Flags := OldFlags;
       end;
-    until ((HelperKind=fdhlkDelphiHelper) and not (msMultiHelpers in Params.StartTool.Scanner.CompilerModeSwitches))
+    until ((HelperKind=fdhlkDelphiHelper) and not (cmsMultiHelpers in Params.StartTool.Scanner.CompilerModeSwitches))
      or (not Helpers.GetNext(HelperContext,HelperIterator));
     //debugln(['SearchInHelpers END']);
   end;

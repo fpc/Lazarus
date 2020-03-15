@@ -213,19 +213,21 @@ type
                                 ansistring; similarly, char becomes unicodechar rather than ansichar }
     cmsTypeHelpers,        { allows the declaration of "type helper" (non-Delphi) or "record helper"
                                   (Delphi) for primitive types }
-    cmsClosures,           { Anonymous methods }
+    cmsClosures,           { Anonymous methods } // not in tmodeswitch / globtype.pas !!!
     cmsCBlocks,            { support for http://en.wikipedia.org/wiki/Blocks_(C_language_extension) }
     cmsISOlike_IO,         { I/O as it required by an ISO compatible compiler }
     cmsISOLike_Program_Para, { program parameters as it required by an ISO compatible compiler }
     cmsISOLike_Mod,        { mod operation as it is required by an iso compatible compiler }
     cmsArrayOperators,     { use Delphi compatible array operators instead of custom ones ("+") }
+    cmsMultiHelpers,       { helpers can appear in multiple scopes simultaneously }
+    cmsArray2dynarray,     { regular arrays can be implicitly converted to dynamic arrays }
+    cmsPrefixedAttributes, { enable attributes that are defined before the type they belong to }
+
     // not yet in FPC, supported by pas2js:
-    cmsPrefixedAttributes, { allow Delphi attributes, disable FPC [] proc modifier }
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
     cmsOmitRTTI,           { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
-    msMultiHelpers,        { off=only one helper per type, on=all }
-    msImplicitFunctionSpecialization { infer types on calls of generic functions }
+    cmsImplicitFunctionSpecialization { infer types on calls of generic functions }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -303,17 +305,19 @@ const
     'FINALFIELDS',
     'UNICODESTRINGS',
     'TYPEHELPERS',
-    'CLOSURES',
+    'CLOSURES',  // not in tmodeswitch / globtype.pas
     'CBLOCKS',
     'ISOIO',
     'ISOPROGRAMPARAS',
     'ISOMOD',
     'ARRAYOPERATORS',
+    'MULTIHELPERS',
+    'ARRAYTODYNARRAY',
     'PREFIXEDATTRIBUTES',
+    // not yet in FPC, supported by pas2js:
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
     'OMITRTTI',
-    'MULTIHELPERS',
     'IMPLICITFUNCTIONSPECIALIZATION'
     );
 
