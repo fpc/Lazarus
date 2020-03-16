@@ -355,6 +355,9 @@ begin
 end;
 
 function ReadFileToString(const Filename: String): String;
+// Read and return the contents of a text file in one slurp.
+// Note: FileSize() returns 0 for virtual files at least in Unix like systems.
+//       Then use different ways to read contents, eg. TStringList.LoadFromFile();
 var
   SrcHandle: THandle;
   ReadCount: LongInt;
