@@ -63,7 +63,6 @@ begin
   //the changes have been validated
   ValidateEdit;
   FDataLink.Field.Text := Text;
-  Modified := False;
 end;
 
 function TDBEdit.GetDataField: string;
