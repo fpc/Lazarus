@@ -718,8 +718,8 @@ end;
 class function TDbgDarwinProcess.isSupported(ATargetInfo: TTargetDescriptor
   ): boolean;
 begin
-  result := (target.OS = osDarwin) and
-            (target.machineType = mtX86_64);
+  result := (ATargetInfo.OS = osDarwin) and
+            (ATargetInfo.machineType = mtX86_64);
 end;
 
 function TDbgDarwinProcess.ReadData(const AAdress: TDbgPtr;
