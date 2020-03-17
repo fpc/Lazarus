@@ -111,6 +111,16 @@ type
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
+  { TLegendItemBrushPenRect }
+
+  TLegendItemBrushPenRect = class(TLegendItemBrushRect)
+  strict private
+    FPen: TFPCustomPen;
+  public
+    constructor Create(ABrush: TFPCustomBrush; APen: TFPCustomPen; const AText: String);
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+  end;
+
   TLegendItemsEnumerator = class(TListEnumerator)
   public
     function GetCurrent: TLegendItem;
@@ -512,6 +522,21 @@ begin
       ADrawer.SetBrushParams(FBrush.Style, Color);
   end;
   ADrawer.Rectangle(ARect);
+end;
+
+{ TLegendItemBrushPenRect }
+
+constructor TLegendItemBrushPenRect.Create(
+  ABrush: TFPCustomBrush; APen: TFPCustomPen; const AText: String);
+begin
+  inherited Create(ABrush, AText);
+  FPen := APen;
+end;
+
+procedure TLegendItemBrushPenRect.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+begin
+  ADrawer.Pen := FPen;
+  inherited Draw(ADrawer, ARect);
 end;
 
 { TChartLegend }

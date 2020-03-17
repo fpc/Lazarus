@@ -303,7 +303,7 @@ type
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; virtual;
     function GetLabelDirection(AValue: Double;
       const ACenterLevel: Double): TLabelDirection;
-    procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
+    procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush; APen: TPen);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
     function HasMissingYValue(AIndex: Integer; AMaxYIndex: Integer = MaxInt): Boolean;
@@ -1547,22 +1547,22 @@ begin
 end;
 
 procedure TBasicPointSeries.GetLegendItemsRect(
-  AItems: TChartLegendItems; ABrush: TBrush);
+  AItems: TChartLegendItems; ABrush: TBrush; APen: TPen);
 var
   i: Integer;
-  li: TLegendItemBrushRect;
+  li: TLegendItemBrushPenRect;
   s: TChartStyle;
 begin
   case Legend.Multiplicity of
     lmSingle:
       begin
-        li := TLegendItemBrushRect.Create(ABrush, LegendTextSingle);
+        li := TLegendItemBrushPenRect.Create(ABrush, APen, LegendTextSingle);
         li.TextFormat := Legend.TextFormat;
         AItems.Add(li);
       end;
     lmPoint:
       for i := 0 to Count - 1 do begin
-        li := TLegendItemBrushRect.Create(ABrush, LegendTextPoint(i));
+        li := TLegendItemBrushPenRect.Create(ABrush, APen, LegendTextPoint(i));
         li.Color := GetColor(i);
         li.TextFormat := Legend.TextFormat;
         AItems.Add(li);
@@ -1570,8 +1570,10 @@ begin
     lmStyle:
       if Styles <> nil then
         for s in Styles.Styles do
-          AItems.Add(TLegendItemBrushRect.Create(
-            IfThen(s.UseBrush, s.Brush, ABrush) as TBrush, LegendTextStyle(s)
+          AItems.Add(TLegendItemBrushPenRect.Create(
+            IfThen(s.UseBrush, s.Brush, ABrush) as TBrush,
+            IfThen(s.UsePen, s.Pen, APen) as TPen,
+            LegendTextStyle(s)
           ));
   end;
 end;

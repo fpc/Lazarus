@@ -1580,7 +1580,7 @@ end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  GetLegendItemsRect(AItems, BarBrush);
+  GetLegendItemsRect(AItems, BarBrush, BarPen);
 end;
 
 function TBarSeries.GetNearestPoint(const AParams: TNearestPointParams;
@@ -2193,7 +2193,7 @@ end;
 
 procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  GetLegendItemsRect(AItems, AreaBrush);
+  GetLegendItemsRect(AItems, AreaBrush, AreaContourPen);
 end;
 
 function TAreaSeries.GetSeriesColor: TColor;

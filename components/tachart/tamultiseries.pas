@@ -651,7 +651,7 @@ end;
 
 procedure TBubbleSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  GetLegendItemsRect(AItems, BubbleBrush);
+  GetLegendItemsRect(AItems, BubbleBrush, BubblePen);
 end;
 
 function TBubbleSeries.GetNearestPoint(const AParams: TNearestPointParams;
