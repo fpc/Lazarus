@@ -28,7 +28,19 @@
 			<short>Default property is not supported</short>
 		</issue>
 		<issue name="TPageControl.MultiLine">
-			<short>MultiLine property is not supported</short>
+			<short>not supported</short>
+		</issue>
+		<issue name="TPageControl.MultiSelect">
+			<short>not supported</short>
+		</issue>
+		<issue name="TPageControl.RaggedRight">
+			<short>not supported</short>
+		</issue>
+		<issue name="TPageControl.ScrollOpposite">
+			<short>not supported</short>
+		</issue>
+		<issue name="TPageControl.Style">
+			<short>not supported</short>
 		</issue>
 		<issue name="TTabControl.MultiLine">
 			<short>MultiLine property is not supported</short>
