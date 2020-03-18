@@ -1360,7 +1360,7 @@ begin
   begin
     FCurrentEdit.SetFocus;
     if (FCurrentEdit is TEdit) then
-      (FCurrentEdit as TEdit).SelStart := Length((FCurrentEdit as TEdit).Text);
+      TEdit(FCurrentEdit).SelStart := Length((FCurrentEdit as TEdit).Text);
   end;
 end;
 
@@ -2032,7 +2032,7 @@ begin
     //debugln('TOICustomPropertyGrid.AddPropertyEditor A ',PropEditor.GetName);
     if Favorites is TOIRestrictedProperties then
     begin
-      WidgetSets := (Favorites as TOIRestrictedProperties).AreRestricted(
+      WidgetSets := TOIRestrictedProperties(Favorites).AreRestricted(
                                                   Selection,PropEditor.GetName);
       if WidgetSets = [] then
       begin
@@ -2048,9 +2048,9 @@ begin
   end;
   if PropEditor is TClassPropertyEditor then
   begin
-    (PropEditor as TClassPropertyEditor).SubPropsNameFilter := PropNameFilter;
-    (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
-    (PropEditor as TClassPropertyEditor).HideClassName:=FHideClassNames;
+    TClassPropertyEditor(PropEditor).SubPropsNameFilter := PropNameFilter;
+    TClassPropertyEditor(PropEditor).SubPropsTypeFilter := FFilter;
+    TClassPropertyEditor(PropEditor).HideClassName:=FHideClassNames;
   end;
   NewRow := TOIPropertyGridRow.Create(Self, PropEditor, nil, WidgetSets);
   FRows.Add(NewRow);
@@ -2186,9 +2186,9 @@ begin
 
   if PropEditor is TClassPropertyEditor then
   begin
-    (PropEditor as TClassPropertyEditor).SubPropsNameFilter := PropNameFilter;
-    (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
-    (PropEditor as TClassPropertyEditor).HideClassName:=FHideClassNames;
+    TClassPropertyEditor(PropEditor).SubPropsNameFilter := PropNameFilter;
+    TClassPropertyEditor(PropEditor).SubPropsTypeFilter := FFilter;
+    TClassPropertyEditor(PropEditor).HideClassName:=FHideClassNames;
   end;
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow, []);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
@@ -3619,7 +3619,7 @@ procedure TOICustomPropertyGrid.ValueControlMouseMove(Sender: TObject;
 begin
   // when the cursor is divider change it to default
   if (Sender as TControl).Parent.Cursor <> crDefault then
-    (Sender as TControl).Parent.Cursor := crDefault;
+    TControl(Sender).Parent.Cursor := crDefault;
 end;
 
 procedure TOICustomPropertyGrid.IncreaseChangeStep;
@@ -3736,7 +3736,7 @@ begin
   FHeight:=FTree.RealDefaultItemHeight;
   FIndex:=-1;
   LastPaintedValue:='';
-  FWidgetSets := WidgetSets;
+  FWidgetSets:=WidgetSets;
 end;
 
 destructor TOIPropertyGridRow.Destroy;
