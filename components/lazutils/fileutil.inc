@@ -824,10 +824,14 @@ var
   Dir: String;
   i: Integer;
   OtherDir: String;
+  MaskOptions: TMaskOptions;
 begin
   if FSearching then RaiseSearchingError;
-
-  MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, CaseSensitive);
+  if CaseSensitive then
+    MaskOptions := [moCaseSensitive]
+  else
+    MaskOptions := [];
+  MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, MaskOptions);
   // empty mask = all files mask
   if MaskList.Count = 0 then
     FreeAndNil(MaskList);
