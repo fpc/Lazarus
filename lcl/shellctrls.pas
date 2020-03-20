@@ -664,6 +664,7 @@ var
   FileItem: TFileItem;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
+  MaskOptions: TMaskOptions;
   {$endif}
 begin
   {$if defined(windows) and not defined(wince)}
@@ -694,11 +695,15 @@ begin
       //and it would break backwards compatibilty and could raise unexpected EConvertError where it did not in the past.
       //If you need sets in the MaskList, use the OnAddItem event for that. (BB)
       MaskStr := StringReplace(MaskStr, '[', '[[]', [rfReplaceAll]);
+      MaskOptions := [];
       {$ifdef NotLiteralFilenames}
-      MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity = mcsCaseSensitive));  //False by default
+      if (ACaseSensitivity = mcsCaseSensitive) then
+        MaskOptions := [moCaseSensitive];
       {$else}
-      MaskList := TMaskList.Create(MaskStr, ';', (ACaseSensitivity <> mcsCaseInsensitive)); //True by default
+      if (ACaseSensitivity <> mcsCaseInsensitive) then
+        MaskOptions := [moCaseSensitive];
       {$endif}
+      MaskList := TMaskList.Create(MaskStr, ';', MaskOptions);  //False by default
     end;
 
     try
