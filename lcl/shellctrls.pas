@@ -694,7 +694,6 @@ begin
       //this behaviour would be incompatible with the situation if no MaskList was used
       //and it would break backwards compatibilty and could raise unexpected EConvertError where it did not in the past.
       //If you need sets in the MaskList, use the OnAddItem event for that. (BB)
-      MaskStr := StringReplace(MaskStr, '[', '[[]', [rfReplaceAll]);
       MaskOptions := [];
       {$ifdef NotLiteralFilenames}
       if (ACaseSensitivity = mcsCaseSensitive) then
