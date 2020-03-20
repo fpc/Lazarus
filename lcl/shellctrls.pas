@@ -694,13 +694,13 @@ begin
       //this behaviour would be incompatible with the situation if no MaskList was used
       //and it would break backwards compatibilty and could raise unexpected EConvertError where it did not in the past.
       //If you need sets in the MaskList, use the OnAddItem event for that. (BB)
-      MaskOptions := [];
+      MaskOptions := [moDisableSets];
       {$ifdef NotLiteralFilenames}
       if (ACaseSensitivity = mcsCaseSensitive) then
-        MaskOptions := [moCaseSensitive];
+        MaskOptions := [moDisableSets, moCaseSensitive];
       {$else}
       if (ACaseSensitivity <> mcsCaseInsensitive) then
-        MaskOptions := [moCaseSensitive];
+        MaskOptions := [moDisableSets, moCaseSensitive];
       {$endif}
       MaskList := TMaskList.Create(MaskStr, ';', MaskOptions);  //False by default
     end;
