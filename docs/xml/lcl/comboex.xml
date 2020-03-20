@@ -1,3416 +1,2493 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
-  ====================================================================
-    ComboEx
-  ====================================================================
--->
-
-<module name="ComboEx">
-<short></short>
-<descr>
-</descr>
-
-<!-- enumeration type Visibility: default -->
-<element name="TAutoCompleteOption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TAutoCompleteOption.acoAutoSuggest">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TAutoCompleteOption.acoAutoAppend">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TAutoCompleteOption.acoSearch">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TAutoCompleteOption.acoFilterPrefixes">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TAutoCompleteOption.acoUseTab">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TAutoCompleteOption.acoUpDownKeyDropsList">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TAutoCompleteOption.acoRtlReading">
-<short></short>
-</element>
-
-<!-- set type Visibility: default -->
-<element name="TAutoCompleteOptions">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TComboBoxExStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyle.csExDropDown">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyle.csExSimple">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyle.csExDropDownList">
-<short></short>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TComboBoxExStyleEx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyleEx.csExCaseSensitive">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyleEx.csExNoEditImage">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyleEx.csExNoEditImageIndent">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyleEx.csExNoSizeLimit">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TComboBoxExStyleEx.csExPathWordBreak">
-<short></short>
-</element>
-
-<!-- set type Visibility: default -->
-<element name="TComboBoxExStyles">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TCustomData">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TListControlItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function type Visibility: default -->
-<element name="TListItemsCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TListItemsCompare.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItemsCompare.AList">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItemsCompare.AItem1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItemsCompare.AItem2">
-<short></short>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TListItemsSortType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure type Visibility: default -->
-<element name="TCheckItemChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckItemChange.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckItemChange.AIndex">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TListControlItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function type Visibility: default -->
-<element name="TListCompareEvent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TListCompareEvent.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListCompareEvent.AList">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListCompareEvent.AItem1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListCompareEvent.AItem2">
-<short></short>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TListControlItem.FCaption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TListControlItem.FData">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TListControlItem.FImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TListControlItem.SetCaption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TListControlItem.SetCaption.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TListControlItem.SetImageIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TListControlItem.SetImageIndex.AValue">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TListControlItem.Data">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TListControlItem.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TListControlItem.Create.ACollection">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TListControlItem.Caption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TListControlItem.ImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TComboExItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TComboExItem.FIndent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TComboExItem.FOverlayImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TComboExItem.FSelectedImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TComboExItem.SetIndent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TComboExItem.SetIndent.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TComboExItem.SetOverlayImageIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TComboExItem.SetOverlayImageIndex.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TComboExItem.SetSelectedImageIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TComboExItem.SetSelectedImageIndex.AValue">
-<short></short>
-</element>
-
-<!-- constant Visibility: protected -->
-<element name="TComboExItem.cDefCaption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TComboExItem.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItem.Create.ACollection">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TComboExItem.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboExItem.Indent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboExItem.OverlayImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboExItem.SelectedImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TListControlItems.FCaseSensitive">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TListControlItems.FSortType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TListControlItems.FOnCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TListControlItems.FCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TListControlItems.GetItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TListControlItems.GetItems.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TListControlItems.GetItems.AIndex">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TListControlItems.SetCaseSensitive">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TListControlItems.SetCaseSensitive.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TListControlItems.SetSortType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TListControlItems.SetSortType.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TListControlItems.CompareItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TListControlItems.CompareItems.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TListControlItems.CompareItems.AItem1">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TListControlItems.CompareItems.AItem2">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TListControlItems.DoCustomSort">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TListControlItems.DoCustomSort.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TListControlItems.DoCustomSort.AItem1">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TListControlItems.DoCustomSort.AItem2">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TListControlItems.DoOnCompare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: protected -->
-<element name="TListControlItems.DoOnCompare.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TListControlItems.DoOnCompare.AItem1">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TListControlItems.DoOnCompare.AItem2">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TListControlItems.Update">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TListControlItems.Update.AItem">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TListControlItems.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TListControlItems.Add.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TListControlItems.CustomSort">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TListControlItems.CustomSort.ACompare">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TListControlItems.Sort">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TListControlItems.Items">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TListControlItems.Items.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TListControlItems.CaseSensitive">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TListControlItems.SortType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TListControlItems.OnCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TComboExItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TComboExItems.GetComboItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TComboExItems.GetComboItems.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TComboExItems.GetComboItems.AIndex">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TComboExItems.FAddingOrDeletingItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TComboExItems.Notify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TComboExItems.Notify.Item">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TComboExItems.Notify.Action">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TComboExItems.Update">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TComboExItems.Update.Item">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TComboExItems.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TComboExItems.Add.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TComboExItems.AddItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TComboExItems.AddItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.AddItem.ACaption">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.AddItem.AImageIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.AddItem.AOverlayImageIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.AddItem.ASelectedImageIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.AddItem.AIndent">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.AddItem.AData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TComboExItems.Insert">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TComboExItems.Insert.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.Insert.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TComboExItems.ComboItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TComboExItems.ComboItems.AIndex">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TCustomComboBoxEx">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomComboBoxEx.FAutoCompleteOptions">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomComboBoxEx.FImages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomComboBoxEx.FItemsEx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomComboBoxEx.FStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomComboBoxEx.FStyleEx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomComboBoxEx.SetImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomComboBoxEx.SetImages.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomComboBoxEx.SetStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomComboBoxEx.SetStyle.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomComboBoxEx.SetStyleEx">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomComboBoxEx.SetStyleEx.AValue">
-<short></short>
-</element>
-
-<!-- constant Visibility: protected -->
-<element name="TCustomComboBoxEx.cDefAutoCompOpts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: protected -->
-<element name="TCustomComboBoxEx.cDefStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomComboBoxEx.FNeedMeasure">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomComboBoxEx.FRightToLeft">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomComboBoxEx.FTextHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomComboBoxEx.CMBiDiModeChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomComboBoxEx.CMBiDiModeChanged.Message">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomComboBoxEx.DrawItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomComboBoxEx.DrawItem.Index">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomComboBoxEx.DrawItem.ARect">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomComboBoxEx.DrawItem.State">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomComboBoxEx.FontChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomComboBoxEx.FontChanged.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomComboBoxEx.InitializeWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomComboBoxEx.SetItemHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomComboBoxEx.SetItemHeight.AValue">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomComboBoxEx.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCustomComboBoxEx.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomComboBoxEx.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TCustomComboBoxEx.Add.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Add.ACaption">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Add.AIndent">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Add.AImgIdx">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Add.AOverlayImgIdx">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Add.ASelectedImgIdx">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomComboBoxEx.AddItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.AddItem.Item">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.AddItem.AnObject">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomComboBoxEx.AssignItemsEx">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.AssignItemsEx.AItems">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.AssignItemsEx.AItemsEx">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomComboBoxEx.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomComboBoxEx.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Delete.AIndex">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomComboBoxEx.DeleteSelected">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomComboBoxEx.Insert">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Insert.AIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Insert.ACaption">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Insert.AIndent">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Insert.AImgIdx">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Insert.AOverlayImgIdx">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomComboBoxEx.Insert.ASelectedImgIdx">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomComboBoxEx.AutoCompleteOptions">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomComboBoxEx.Images">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomComboBoxEx.ItemsEx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomComboBoxEx.Style">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomComboBoxEx.StyleEx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TComboBoxEx">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Align">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ArrowKeysTraverseList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.AutoComplete">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.AutoCompleteOptions">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.AutoCompleteText">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.AutoDropDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.AutoSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.AutoSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.BidiMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.BorderSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.BorderStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.CharCase">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Color">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Constraints">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.DragCursor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.DragKind">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.DragMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.DropDownCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Font">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Images">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ItemHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ItemsEx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ItemIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ItemWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.MaxLength">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnCloseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnContextPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnDblClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnDragDrop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnDragOver">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnDropDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnEditingDone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnEndDock">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnEndDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnExit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnGetItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnKeyDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnKeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnKeyUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseLeave">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseWheel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseWheelDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnMouseWheelUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnStartDock">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnStartDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.OnUTF8KeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ParentBidiMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ParentColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ParentFont">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ReadOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.ShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Style">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.StyleEx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.TabOrder">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.TabStop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Text">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBoxEx.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TCheckComboItemState">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCheckComboItemState.State">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCheckComboItemState.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCheckComboItemState.Data">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PTCheckComboItemState">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TCustomCheckCombo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomCheckCombo.FAllowGrayed">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomCheckCombo.FOnItemChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomCheckCombo.GetChecked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomCheckCombo.GetChecked.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.GetChecked.AIndex">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomCheckCombo.GetCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomCheckCombo.GetCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomCheckCombo.GetItemEnabled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomCheckCombo.GetItemEnabled.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.GetItemEnabled.AIndex">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomCheckCombo.GetObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomCheckCombo.GetObject.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.GetObject.AIndex">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomCheckCombo.GetState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TCustomCheckCombo.GetState.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.GetState.AIndex">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomCheckCombo.SetChecked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetChecked.AIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetChecked.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomCheckCombo.SetItemEnabled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetItemEnabled.AIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetItemEnabled.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomCheckCombo.SetObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetObject.AIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetObject.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomCheckCombo.SetState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetState.AIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TCustomCheckCombo.SetState.AValue">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FCheckHighlight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FCheckSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FHiLiteLeft">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FHiLiteRight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FNeedMeasure">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FRejectDropDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FRejectToggleOnSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FRightToLeft">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomCheckCombo.FTextHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.CMBiDiModeChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.CMBiDiModeChanged.Message">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.ClearItemStates">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.CloseUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.DrawItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.DrawItem.Index">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.DrawItem.ARect">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.DrawItem.State">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.DropDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.FontChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.FontChanged.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.InitializeWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.InitItemStates">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.KeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.KeyDown.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.KeyDown.Shift">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.MouseLeave">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.MouseMove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.MouseMove.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.MouseMove.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.MouseMove.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.SetItemHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: protected -->
-<element name="TCustomCheckCombo.SetItemHeight.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomCheckCombo.Select">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomCheckCombo.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCustomCheckCombo.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomCheckCombo.AddItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.AddItem.AItem">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.AddItem.AState">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.AddItem.AEnabled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomCheckCombo.AssignItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.AssignItems.AItems">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomCheckCombo.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomCheckCombo.DeleteItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.DeleteItem.AIndex">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomCheckCombo.CheckAll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.CheckAll.AState">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.CheckAll.AAllowGrayed">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.CheckAll.AAllowDisabled">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomCheckCombo.Toggle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.Toggle.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomCheckCombo.AllowGrayed">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomCheckCombo.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomCheckCombo.Checked">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.Checked.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomCheckCombo.ItemEnabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.ItemEnabled.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomCheckCombo.Objects">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.Objects.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomCheckCombo.State">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TCustomCheckCombo.State.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomCheckCombo.OnItemChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TCheckComboBox">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Align">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.AllowGrayed">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ArrowKeysTraverseList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.AutoDropDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.AutoSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.BidiMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.BorderSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.BorderStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Color">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Constraints">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.DragCursor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.DragKind">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.DragMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.DropDownCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Font">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ItemHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ItemIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Items">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ItemWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.MaxLength">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnCloseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnContextPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnDblClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnDragDrop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnDragOver">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnEndDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnDropDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnEditingDone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnExit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnGetItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnItemChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnKeyDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnKeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnKeyUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseEnter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseLeave">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseWheel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseWheelDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnMouseWheelUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnStartDrag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.OnUTF8KeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ParentBidiMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ParentColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ParentFont">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.ShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Sorted">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.TabOrder">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.TabStop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Text">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckComboBox.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- ComboEx -->
-
-</package>
+  <package name="lcl">
+    <!--
+     ====================================================================
+      ComboEx
+    ====================================================================
+    -->
+    <module name="ComboEx">
+      <short>
+        Contains classes, types, and routines used to implement the TComboBoxEx and TCheckComboBox visual components
+      </short>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Types"/>
+      <element name="LCLIntf"/>
+      <element name="LCLType"/>
+      <element name="LMessages"/>
+      <element name="LResources"/>
+      <element name="LazLoggerBase"/>
+      <element name="ImgList"/>
+      <element name="Controls"/>
+      <element name="StdCtrls"/>
+      <element name="ComCtrls"/>
+      <element name="ExtCtrls"/>
+      <element name="Graphics"/>
+      <element name="GraphUtil"/>
+      <element name="Themes"/>
+      <element name="Forms"/>
+
+      <element name="TAutoCompleteOption">
+        <short>
+          Enumerated type with values representing the autocomplete options used in TComboBoxEx
+        </short>
+        <descr>
+          <p>
+            <var>TAutoCompleteOption</var> is an enumerated type with values representing the autocomplete options used in <var>TCustomComboBoxEx</var> and    <var>TComboBoxEx</var>. Values from the enumeration are stored in the <var>TAutoCompleteOptions</var> set type used to implement the <var>AutoCompleteOptions</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>. Including a value from the enumeration in the TAutoCompleteOptions set enables the corresponding feature.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TAutoCompleteOptions"/>
+          <link id="TCustomComboBoxEx.AutoCompleteOptions"/>
+          <link id="TComboBoxEx.AutoCompleteOptions"/>
+        </seealso>
+      </element>
+      <element name="TAutoCompleteOption.acoAutoSuggest">
+        <short>Enables auto suggest</short>
+      </element>
+      <element name="TAutoCompleteOption.acoAutoAppend">
+        <short>Enables auto appending items to the combo box box</short>
+      </element>
+      <element name="TAutoCompleteOption.acoSearch">
+        <short>Enables searching items for the current value in the edit control</short>
+      </element>
+      <element name="TAutoCompleteOption.acoFilterPrefixes">
+        <short>Enables prefixes in the filter for the control</short>
+      </element>
+      <element name="TAutoCompleteOption.acoUseTab">
+        <short>Enables Tab key navigation in the control</short>
+      </element>
+      <element name="TAutoCompleteOption.acoUpDownKeyDropsList">
+        <short>
+          Enables toggling the visibility of the drop down using Up and Down cursor keys
+        </short>
+      </element>
+      <element name="TAutoCompleteOption.acoRtlReading">
+        <short>Enables Right-to-Left text rendering (BiDi Mode) in the control</short>
+      </element>
+
+      <element name="TAutoCompleteOptions">
+        <short>Sets type used to store TAutoCompleteOption values</short>
+        <descr>
+          <p>
+            <var>TAutoCompleteOptions</var> is a set type used to store zero or more values from the <var>TAutoCompleteOption</var> enumeration. TAutoCompleteOptions is the type used to implement the <var>AutoCompleteOptions</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>. When an enumeration  value is included in the set type, the corresponding feature enabled. When the value is excluded, the feature is disabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TAutoCompleteOption"/>
+          <link id="TCustomComboBoxEx.AutoCompleteOptions"/>
+          <link id="TComboBoxEx.AutoCompleteOptions"/>
+        </seealso>
+      </element>
+
+      <element name="TComboBoxExStyle">
+        <short>
+          Enumerated type with values for display styles available in TCustomComboBoxEx
+        </short>
+        <descr>
+          <p>
+            <var>TComboBoxExStyle</var> is an enumerated type with values representing the display styles available in <var>TCustomComboBoxEx</var>. TComboBoxExStyle is the type used to implement the <var>Style</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>.
+          </p>
+          <p>
+            TComboBoxExStyle replaces the values used in the ancestor class; there is no need for the various owner-drawn styles from the ancestor control. The extended combo box  controls are always owner-drawn using the fixed style in its <var>DrawItem</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBoxEx.Style"/>
+          <link id="TComboBoxEx.Style"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.Style"/>
+          <link id="TCustomComboBoxEx.DrawItem"/>
+        </seealso>
+      </element>
+      <element name="TComboBoxExStyle.csExDropDown">
+        <short>Drawn as a drop down control</short>
+      </element>
+      <element name="TComboBoxExStyle.csExSimple">
+        <short>Drawn as simple edit control</short>
+      </element>
+      <element name="TComboBoxExStyle.csExDropDownList">
+        <short>Drawn as a list which drops down when focused</short>
+      </element>
+
+      <element name="TComboBoxExStyleEx">
+        <short>Enumerated type with values which modify the behavior in TComboEx</short>
+        <descr>
+          <p>
+            <var>TComboBoxExStyleEx</var> is an enumerated type with values which modify the behavior in <var>TComboEx</var>. Values from the enumeration are stored in the <var>TComboBoxExStyles</var> set type, and used in the <var>StyleEx</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboBoxExStyles"/>
+          <link id="TCustomComboBoxEx.StyleEx"/>
+          <link id="TComboBoxEx.StyleEx"/>
+        </seealso>
+        <notes><note>No used in the current LCL implementation.</note></notes>
+      </element>
+      <element name="TComboBoxExStyleEx.csExCaseSensitive">
+        <short>Enables case-sensitive comparisons in the control</short>
+        <notes><note>No used in the current LCL implementation.</note></notes>
+      </element>
+      <element name="TComboBoxExStyleEx.csExNoEditImage">
+        <short/>
+        <notes><note>No used in the current LCL implementation.</note></notes>
+      </element>
+      <element name="TComboBoxExStyleEx.csExNoEditImageIndent">
+        <short/>
+        <notes><note>No used in the current LCL implementation.</note></notes>
+      </element>
+      <element name="TComboBoxExStyleEx.csExNoSizeLimit">
+        <short/>
+        <notes><note>No used in the current LCL implementation.</note></notes>
+      </element>
+      <element name="TComboBoxExStyleEx.csExPathWordBreak">
+        <short/>
+        <notes><note>No used in the current LCL implementation.</note></notes>
+      </element>
+
+      <element name="TComboBoxExStyles">
+        <short>Set type used to store TComboBoxExStyle enumeration values</short>
+        <descr>
+          <p>
+            <var>TComboBoxExStyles</var> is a set type used to store values from the <var>TComboBoxExStyle</var> enumeration. TComboBoxExStyles is the type used to implement the <var>StyleEx</var> property in <var>TCustomComboBoxEx</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboBoxExStyle"/>
+          <link id="TCustomComboBoxEx.StyleEx"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomData">
+        <short>Pointer type used to access the arbitrary data in TListControlItem</short>
+        <descr>
+          <p>
+            <var>TCustomData</var> is a <var>Pointer</var> type used to implement the <var>Data</var> property in <var>TListControlItem</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItem.Data"/>
+        </seealso>
+      </element>
+
+      <element name="TListItemsCompare">
+        <short>Specifies a function type used to compare items in TComboEx</short>
+        <descr>
+          <p>
+            <var>TListItemsCompare</var> is an <var>Integer</var> function type used to implement a comparison between the items stored at the specified positions in <var>AList</var>. The return value contains the relative sort order for the compared values, for example:
+          </p>
+          <dl>
+            <dt>-1</dt>
+            <dd>Aitem1 occurs before AItem2</dd>
+            <dt>0</dt>
+            <dd>AItem1 and AItem2 have the same values</dd>
+            <dt>1</dt>
+            <dd>AItem1 occurs after AItem2 </dd>
+          </dl>
+          <p>
+            TListItemsCompare implements the sort operation performed in <var>TListControlItems</var> when its <var>CustomSort</var> method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems.CustomSort"/>
+          <link id="TListControlItems.Sort"/>
+          <link id="TListControlItems.SortType"/>
+          <link id="TListControlItems.Data"/>
+          <link id="TListControlItems.OnCompare"/>
+          <link id="TListControlItems.CompareItems"/>
+        </seealso>
+      </element>
+      <element name="TListItemsCompare.Result">
+        <short>
+          Integer with the relative order for the compared values at the specified positions
+        </short>
+      </element>
+      <element name="TListItemsCompare.AList">
+        <short>Collection with the items compared in the routine</short>
+      </element>
+      <element name="TListItemsCompare.AItem1">
+        <short>Ordinal position for the first item in the comparison</short>
+      </element>
+      <element name="TListItemsCompare.AItem2">
+        <short>Ordinal position for the second item in the comparison</short>
+      </element>
+
+      <element name="TListItemsSortType" link="#lcl.ComCtrls.TSortType">
+        <short>Alias to the TSortType in <file>ComCtrls.pp</file></short>
+        <descr/>
+        <seealso>
+          <link id="#lcl.ComCtrls.TSortType"/>
+        </seealso>
+      </element>
+
+      <element name="TCheckItemChange">
+        <short>
+          Specifies an event handler signalled when a checkbox in TCustomCheckCombo is changed
+        </short>
+        <descr>
+          <p>
+            <var>TCheckItemChange</var> is an object procedure which specifies an event handler signalled when a checkbox in <var>TCustomCheckCombo</var> is changed. TCheckItemChange is the type used to implement the <var>OnItemChange</var> property in <var>TCustomCheckCombo</var> and <var>TCheckComboBox</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.OnItemChange"/>
+          <link id="TCheckCombo.OnItemChange"/>
+          <link id="TCustomCheckCombo.Checked"/>
+          <link id="TCustomCheckCombo.SetChecked"/>
+          <link id="TCustomCheckCombo.State"/>
+          <link id="TCustomCheckCombo.SetState"/>
+        </seealso>
+      </element>
+      <element name="TCheckItemChange.Sender">
+        <short>Object for the event notification</short>
+      </element>
+      <element name="TCheckItemChange.AIndex">
+        <short>Ordinal position for the changed checkbox</short>
+      </element>
+
+      <element name="TListCompareEvent" link="TListItemsCompare">
+        <short/>
+        <descr>
+          <p>
+            Similar to <var>TListItemsSortType</var>, but implemented as an object function.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TListCompareEvent.Result">
+        <short></short>
+      </element>
+      <element name="TListCompareEvent.AList">
+        <short></short>
+      </element>
+      <element name="TListCompareEvent.AItem1">
+        <short></short>
+      </element>
+      <element name="TListCompareEvent.AItem2">
+        <short></short>
+      </element>
+
+      <element name="TListControlItem">
+        <short>Implements a collection item added to a list control</short>
+        <descr>
+          <p>
+            <var>TListControlItem</var> is a <var>TCollectionItem</var> descendant which implements the base type for list items used in <var>TComboBoxEx</var>. It is used as the ancestor for <var>TComboExItem</var>. TListControlItem is the type maintained in the <var>TListControlItems</var> collection.
+          </p>
+          <p>
+            TListControlItem provides properties needed to represent an item displayed in a list control, including:
+          </p>
+          <ul>
+            <li>Caption</li>
+            <li>Data</li>
+            <li>ImageIndex</li>
+          </ul>
+          <p>
+            Applications and libraries do no normally create instances of this class; use the TComboExItem descendant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems"/>
+          <link id="TComboExItem"/>
+          <link id="TCustomComboBoxEx.ItemsEx"/>
+          <link id="TComboBoxEx.ItemsEx"/>
+        </seealso>
+      </element>
+
+      <element name="TListControlItem.FCaption"/>
+      <element name="TListControlItem.FData"/>
+      <element name="TListControlItem.FImageIndex"/>
+
+      <element name="TListControlItem.SetCaption">
+        <short>Sets the value for the Caption property</short>
+        <descr/>
+        <seealso>
+          <link id="TListControlItem.Caption"/>
+        </seealso>
+      </element>
+      <element name="TListControlItem.SetCaption.AValue">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TListControlItem.SetImageIndex">
+        <short>Sets the value for the ImageIndex property</short>
+        <descr/>
+        <seealso>
+          <link id="TListControlItem.ImageIndex"/>
+        </seealso>
+      </element>
+      <element name="TListControlItem.SetImageIndex.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TListControlItem.Data">
+        <short>Pointer to the data used in custom sort operations</short>
+        <descr>
+          <p>
+            <var>Data</var> is a <var>Pointer</var> type used to access arbitrary data associated with the list item. The content stored in Data is dependent on the control which implements the list item.
+          </p>
+          <p>
+            Data is used in the <var>Sort</var> method in <var>TListControlItems</var> collection when its <var>SortType</var> is set to <var>stData</var> or <var>stBoth</var>.
+          </p>
+          <p>
+            Use the <var>Caption</var> property to maintain the textual value displayed for the list item.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItem.Caption"/>
+          <link id="TListControlItems.Sort"/>
+          <link id="TListControlItems.SortType"/>
+        </seealso>
+      </element>
+
+      <element name="TListControlItem.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor using the value in <var>ACollection</var> as the owner for the collection item.
+          </p>
+          <p>
+            Create sets the default value for <var>ImageIndex</var> to <b>-1</b> to indicate an index value has not been explicitly assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItem.ImageIndex"/>
+        </seealso>
+      </element>
+      <element name="TListControlItem.Create.ACollection">
+        <short>Collection where the class instance is stored</short>
+      </element>
+
+      <element name="TListControlItem.Caption">
+        <short>Text displayed for the collection item</short>
+        <descr>
+          <p>
+            <var>Caption</var> is a <var>String</var> property which contains the text displayed in the list control for the item. Changing the value for the property causes the <var>Changed</var> method to be called to update the list item in its owner collection.
+          </p>
+          <p>
+            Use DisplayName to access the value displayed at design-time in the Object Inspector.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.ClassesTCollectionItem.DisplayName"/>
+        </seealso>
+      </element>
+
+      <element name="TListControlItem.ImageIndex">
+        <short>Ordinal position for the image displayed for the collection item</short>
+        <descr>
+          <p>
+            <var>ImageIndex</var> is an <var>Integer</var> property used to specify the ordinal position in an image list for the bitmap displayed for the list item. <b>-1</b> (the default value for the property) indicates that an explicit value has not been assigned for the property, and no image should be displayed for the collection item.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TComboExItem">
+        <short>Implements an extended item used in TComboEx</short>
+        <descr>
+          <p>
+            <var>TComboExItem</var> is a <var>TListControlItem</var> descendant which implements an extended item used in <var>TComboEx</var>. TComboExItem extends the ancestor class to include the following properties for the extended item:
+          </p>
+          <ul>
+            <li>Indent</li>
+            <li>OverlayImageIndex</li>
+            <li>SelectedImageIndex</li>
+          </ul>
+          <p>
+            <var>TComboExItem</var> is the type maintained in the <var>TComboExItems</var> collection used to implement the <var>ItemsEx</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItem"/>
+          <link id="TComboExItems"/>
+          <link id="TCustomComboBoxEx.ItemsEx"/>
+          <link id="TComboBoxEx.ItemsEx"/>
+        </seealso>
+      </element>
+
+      <element name="TComboExItem.FIndent"/>
+      <element name="TComboExItem.FOverlayImageIndex"/>
+      <element name="TComboExItem.FSelectedImageIndex"/>
+
+      <element name="TComboExItem.SetIndent">
+        <short>Sets the value for the Indent property</short>
+        <descr/>
+        <seealso>
+          <link id="TComboExItem.Indent"/>
+        </seealso>
+      </element>
+      <element name="TComboExItem.SetIndent.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TComboExItem.SetOverlayImageIndex">
+        <short>Sets the value for the OverlayImageIndex property</short>
+        <descr/>
+        <seealso>
+          <link id="TComboExItem.OverlayImageIndex"/>
+        </seealso>
+      </element>
+      <element name="TComboExItem.SetOverlayImageIndex.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TComboExItem.SetSelectedImageIndex">
+        <short>Sets the value for the SelectedImageIndex property</short>
+        <descr/>
+        <seealso>
+          <link id="TComboExItem.SelectedImageIndex"/>
+        </seealso>
+      </element>
+      <element name="TComboExItem.SetSelectedImageIndex.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TComboExItem.cDefCaption">
+        <short>Default caption used for a new item</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TComboExItem.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> calls the inherited constructor, and sets the default values for properties in the class instance.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TComboExItem.Create.ACollection">
+        <short>Collection which owns the collection item</short>
+      </element>
+
+      <element name="TComboExItem.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance.
+          </p>
+          <p>
+            Destroy ensures that the number of items in the <var>Collection</var> and the <var>Owner</var> for the  collection are kept in sync. Normally, the value in <var>Count</var> is maintained when the Collection frees an item instance in its <var>Delete</var> method. Destroy handles the situation where the collection item is destroyed by calling the <var>Free</var> method in the collection item instead.
+          </p>
+          <p>
+            A component notification message is performed for the Collection to signal the delete operation. The <var>Notify</var> method in Collection is not called when Collection is unassigned or does not have an Owner, or when the Owner of the Collection is being freed.
+          </p>
+          <p>
+            Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboExItems.Notify"/>
+          <link id="TCustomComboBoxEx.Items"/>
+          <link id="#rtl.Classes.TCollectionItem.Collection"/>
+          <link id="#rtl.Classes.TCollection.Owner"/>
+          <link id="#rtl.Classes.TCollection.Count"/>
+          <link id="#rtl.Classes.TCollection.Delete"/>
+          <link id="#rtl.Classes.TComponent.ComponentState"/>
+        </seealso>
+      </element>
+
+      <element name="TComboExItem.Indent">
+        <short>Space reserved between the Image and the caption for the item</short>
+        <descr>
+          <p>
+            The default value for the property is <b>-1</b> and indicates that indent spacing is not used for the Combo Box item. The value is assigned when the    <var>AddItem</var> method in <var>TComboExItems</var> is used to create the item using the parameter value passed to the method. Changing the value for the property causes the <var>Changed</var> method to be called to update the current item.
+          </p>
+          <p>
+            The value in Indent is used when the <var>DrawItem</var> method in <var>TCustomComboBoxEx</var> is called to render an extended item in the Combo Box.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboExItems.AddItem"/>
+          <link id="TCustomComboBoxEx.DrawItem"/>
+        </seealso>
+      </element>
+
+      <element name="TComboExItem.OverlayImageIndex">
+        <short>
+          Ordinal position for the image drawn as an overlay for the Image in the combo box item
+        </short>
+        <descr>
+          <p>
+            The default value for the property is <b>-1</b>, and indicates that an overlay image index has not been explicitly assigned for the item. The overlay image is not drawn when the property contains <b>-1</b>.
+          </p>
+          <remark>
+            Please note: Changing the value for the property does not call the <var>Changed</var> method in the current LCL version. This may be different than the behavior from a previous LCL version.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="#rtl.Classes.TCollectionItem.Changed"/>
+        </seealso>
+      </element>
+
+      <element name="TComboExItem.SelectedImageIndex">
+        <short>
+          Ordinal position for the image drawn when the item is selected in the Combo Box
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TListControlItems">
+        <short>Container for the items added to a list control</short>
+        <descr>
+          <p>
+            <var>TListControlItems</var> is a <var>TOwnedCollection</var> descendant which implements a container for items added to a list control. TListControlItems  extends the ancestor class to provides case sensitivity when comparing Items in the collection, sort types, and custom sorting using an event handler.
+          </p>
+          <p>
+            TListControlItems is the ancestor for the <var>TComboExItems</var> collection class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboExItems"/>
+          <link id="#rtl.Classes.TOwnedCollection"/>
+        </seealso>
+      </element>
+
+      <element name="TListControlItems.FCaseSensitive"/>
+      <element name="TListControlItems.FSortType"/>
+      <element name="TListControlItems.FOnCompare"/>
+      <element name="TListControlItems.FCompare"/>
+
+      <element name="TListControlItems.GetItems">
+        <short>Gets the value for the indexed Items property</short>
+        <descr>
+          <p>
+            <var>GetItems</var> ensures that the collection Item is cast to the <var>TListControlItem</var> type used in <var>TListControlItems</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems.Items"/>
+          <link id="TListControlItem"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.GetItems.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TListControlItems.GetItems.AIndex">
+        <short>Ordinal position in the collection for the requested item</short>
+      </element>
+
+      <element name="TListControlItems.SetCaseSensitive">
+        <short>Sets the value for the CaseSensitive property</short>
+        <descr/>
+        <seealso>
+          <link id="TListControlItems.CaseSensitive"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.SetCaseSensitive.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TListControlItems.SetSortType">
+        <short>Sets the value for the SortType property</short>
+        <descr/>
+        <seealso>
+          <link id="TListControlItems.SortType"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.SetSortType.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TListControlItems.CompareItems">
+        <short>Implements a comparison function for items in the collection</short>
+        <descr>
+          <p>
+            <var>CompareItems</var> is an <var>Integer</var> function used to perform a comparison for items in the collection. <var>AItem1</var> and <var>AItem2</var> contains the list items compared in the method.
+          </p>
+          <p>
+            CompareItems uses the value in <var>CaseSensitive</var> to determine if the comparison of captions value uses case sensitivity. When CaseSensitive is <b>True</b>, caption values are converted to lowercase prior to performing the comparison.
+          </p>
+          <p>
+            CompareItems calls <var>CompareStr</var> to perform a comparison for the Captions assigned for the specified list items. The return value contains the relative sort order for the items calculated as a difference between the ASCII values for characters in the item captions. For example:
+          </p>
+          <dl>
+            <dt>&lt; 0</dt>
+            <dd>The caption in AItem1 comes before the caption in AItem2</dd>
+            <dt>0</dt>
+            <dd>The captions in AItem1 and Aitem2 are the same</dd>
+            <dt>&gt; 0</dt>
+            <dd>The caption in AItem1 comes after caption in AItem2</dd>
+          </dl>
+          <p>
+            CompareItems is used in the implementation of the <var>Sort</var> method when <var>SortType</var> contains the value <var>stText</var> or <var>stBoth</var>.
+          </p>
+          <p>
+            Use the <var>OnCompare</var> event handler when SortType contains <var>stData</var> or <var>stBoth</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems.CaseSensitive"/>
+          <link id="TListControlItems.Sort"/>
+          <link id="TListControlItems.SortType"/>
+          <link id="#rtl.SysUtils.CompareStr"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.CompareItems.Result">
+        <short>Relative sort order for the compared items </short>
+      </element>
+      <element name="TListControlItems.CompareItems.AItem1">
+        <short>First list item for the comparison</short>
+      </element>
+      <element name="TListControlItems.CompareItems.AItem2">
+        <short>Second list item for the comparison</short>
+      </element>
+
+      <element name="TListControlItems.DoCustomSort">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TListControlItems.DoCustomSort.Result">
+        <short></short>
+      </element>
+      <element name="TListControlItems.DoCustomSort.AItem1">
+        <short></short>
+      </element>
+      <element name="TListControlItems.DoCustomSort.AItem2">
+        <short></short>
+      </element>
+
+      <element name="TListControlItems.DoOnCompare">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TListControlItems.DoOnCompare.Result">
+        <short></short>
+      </element>
+      <element name="TListControlItems.DoOnCompare.AItem1">
+        <short></short>
+      </element>
+      <element name="TListControlItems.DoOnCompare.AItem2">
+        <short></short>
+      </element>
+
+      <element name="TListControlItems.Update" link="#rtl.Classes.TCollection.Update">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="#rtl.Classes.TCollection.Update"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.Update.AItem">
+        <short>Collection item updated in the method</short>
+      </element>
+
+      <element name="TListControlItems.Add">
+        <short>Adds a new item to the collection</short>
+        <descr>
+          <p>
+            <var>Add</var> is a <var>TListControlItem</var> function used to add a new item to the collection. Add reimplements the method defined in the <var>TCollection</var> ancestor class to return the TListControlItem type. The return value contains the TListControlItem instance created and stored in the collection. The current class instance is used as the owner for the collection item.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItem"/>
+          <link id="#rtl.Classes.TCollection.Add"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.Add.Result">
+        <short>Item added to the collection</short>
+      </element>
+
+      <element name="TListControlItems.CustomSort">
+        <short>Performs a custom sort using the specified routine</short>
+        <descr>
+          <p>
+            <var>CustomSort</var> is a procedure used to perform a custom sort for items in the collection using the specified <var>TListItemsCompare</var> routine to implement the comparison. When ACompare is assigned, it is temporarily stored in an internal member and the <var>Sort</var> method is called. No actions are performed in the method when ACompare has not been assigned (contains <b>Nil</b>).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItemsCompare"/>
+          <link id="TListControlItems.Sort"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.CustomSort.ACompare">
+        <short>Routine used to perform the comparison for the items in the collection</short>
+      </element>
+
+      <element name="TListControlItems.Sort">
+        <short>Performs the Sort routine required for the setting in SortType</short>
+        <descr>
+          Sort is a procedure used to perform the sort routine indicated in the SortType property.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TListControlItems.Items" link="#rtl.Classes.TCollection.Items">
+        <short>Provides indexed access to the list of items maintained in the collection</short>
+        <descr>
+          <p>
+            <var>Items</var> is a read-only indexed <var>TListControlItem</var> property which provides access to the list of items maintained in the collection. TListControlItems reimplements the read access specifier to return the TListControlItem type required for the collection.
+          </p>
+          <p>
+            Use the Count property to determine the number of Items stored in the collection. Use the Add or Insert method to create a new item in the collection. Use Delete or Clear to remove one or all items in the collection.
+          </p>
+          <p>
+            Items is the default property for the collection, and the property examined by the TCollectionEnumerator returned by the GetEnumerator method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItem"/>
+          <link id="TListControlItems.Count"/>
+          <link id="#rtl.Classes.TCollection.Add"/>
+          <link id="#rtl.Classes.TCollection.Insert"/>
+          <link id="#rtl.Classes.TCollection.Clear"/>
+          <link id="#rtl.Classes.TCollection.Delete"/>
+        </seealso>
+      </element>
+      <element name="TListControlItems.Items.AIndex">
+        <short>Ordinal position for the item requested</short>
+      </element>
+
+      <element name="TListControlItems.CaseSensitive">
+        <short>
+          Indicates if case sensitivity is used when comparing items in the collection
+        </short>
+        <descr>
+          <p>
+            <var>CaseSensitive</var> is a <var>Boolean</var> property which indicates if case sensitivity is used when comparing items in the collection. The value in CaseSensitive is used in the <var>CompareItems</var> method. When set to <b>False</b>, the captions for the compared Items are converted to lowercase prior to comparing their values.
+          </p>
+          <p>
+            Set <var>SortType</var> to <var>stText</var> to use case sensitive sorting for the Items in the collection.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems.CompareItems"/>
+          <link id="TListControlItems.Sort"/>
+          <link id="TListControlItems.SortType"/>
+          <link id="TListItemsSortType"/>
+        </seealso>
+      </element>
+
+      <element name="TListControlItems.SortType">
+        <short>
+          Determines the comparison mechanism used for collection items in the Sort method
+        </short>
+        <descr>
+          <p>
+            <var>SortType</var> is a <var>TListItemsSortType</var> property which determines the comparison mechanism used for collection items in the <var>Sort</var> method.The default value for the property is <var>stNone</var> and indicates that no sorting is performed for Items in the collection. Changing the value for the property causes the Sort method to be called to apply the new order to the collection Items.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems.Sort"/>
+          <link id="TListControlItems.Items"/>
+          <link id="TListItemsSortType"/>
+        </seealso>
+      </element>
+
+      <element name="TListControlItems.OnCompare">
+        <short>
+          Event handler signalled to sort the collection using the data in the collection items
+        </short>
+        <descr>
+          <p>
+            <var>OnCompare</var> is a <var>TListCompareEvent</var> property with the event handler signalled to sort the collection using the arbitrary data stored in each collection item. Applications must implement and assign an object procedure using the signature in TListCompareEvent to allow responding to the event notification.
+          </p>
+          <p>
+            OnCompare is signalled in the <var>DoOnCompare</var> method. Set the value in <var>SortType</var> to <var>stData</var> to enable the event handler when the <var>Sort</var> method is called. Use the <var>CustomSort</var> method to sort the collection using a <var>TListItemsCompare</var> routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems.DoOnCompare"/>
+          <link id="TListControlItems.SortType"/>
+          <link id="TListControlItems.Sort"/>
+          <link id="TListControlItems.CustomSort"/>
+          <link id="TListCompareEvent"/>
+          <link id="TListItemsCompare"/>
+          <link id="TListItemsSortType"/>
+        </seealso>
+      </element>
+
+      <element name="TComboExItems">
+        <short>Implements a collection for the items added to TCustomComboBoxEx</short>
+        <descr>
+          <p>
+            <var>TComboExItems</var> is a <var>TListControlItems</var> descendant which Implements a collection for the items added to <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>. TComboExItems extends the ancestor class to use the <var>TComboExItem</var> type for items added to the collection. Reimplemented methods are provided to add, insert, and retrieve collection items using the ItemClass required for the collection. An <var>AddItem</var> method is introduced to create a new collection item and configure its property values. The <var>Notify</var> and <var>Update</var> methods are overridden to use the correct ItemClass as well.
+          </p>
+          <p>
+            TComboExItems is the type used to implement the ItemsEx property in TCustomComboBoxEx.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems"/>
+          <link id="TCustomComboBoxEx.ItemsEx"/>
+          <link id="TComboBoxEx.ItemsEx"/>
+        </seealso>
+      </element>
+
+      <element name="TComboExItems.GetComboItems">
+        <short>Gets the value for the indexed ComboItems property</short>
+        <descr/>
+        <seealso>
+          <link id="TComboExItems.ComboItems"/>
+        </seealso>
+      </element>
+      <element name="TComboExItems.GetComboItems.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TComboExItems.GetComboItems.AIndex">
+        <short>Ordinal position for the item accessed in the method</short>
+      </element>
+
+      <element name="TComboExItems.FAddingOrDeletingItem">
+        <short>Tracks the add or delete status for the collection</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TComboExItems.Notify">
+        <short>
+          Performs component notifications when a collection item is added to or removed from the collection
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+      <element name="TComboExItems.Notify.Item">
+        <short>Collection item for the notification</short>
+      </element>
+      <element name="TComboExItems.Notify.Action">
+        <short>Action for the notification</short>
+      </element>
+
+      <element name="TComboExItems.Update">
+        <short>Updates the collection when the specified item has been changed</short>
+        <descr>
+          Forces the owner of the collection (the control) to be redrawn when needed.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TComboExItems.Update.Item">
+        <short>Collection item examined in the method</short>
+      </element>
+
+      <element name="TComboExItems.Add" link="TListControlItems.Add">
+        <short>Adds a new item to the collection</short>
+        <descr>
+          <p>
+            <var>Add</var> is a <var>TComboExItem</var> function used to add a new item to the collection. Add reimplements the method in <var>TListControlItems</var> to use the type required for the derived collection. The return value contains the TComboExItem instance allocated in the method. The current class instance is used as the Owner of the  collection item. Add is used in the implementation of the <var>AddItem</var> method.
+          </p>
+          <p>
+            Use <var>AddItem</var> to create a new collection item with the values specified in the arguments to the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboExItems.AddItem"/>
+          <link id="TComboExItem"/>
+          <link id="TListControlItems.Add"/>
+        </seealso>
+      </element>
+      <element name="TComboExItems.Add.Result">
+        <short>Item added to the collection</short>
+      </element>
+
+      <element name="TComboExItems.AddItem">
+        <short>Adds a new item with the specified values to the collection</short>
+        <descr>
+          <p>
+            <var>AddItem</var> is a <var>TComboExItem</var> function used to add a new item to the collection with the values specified in the parameters passed to the method. AddItem calls the <var>Add</var> method to create a new TComboExItem instance. The following properties are updated in the collection item to use the values specified in the arguments:
+          </p>
+          <ul>
+            <li>Caption</li>
+            <li>indent</li>
+            <li>ImageIndex</li>
+            <li>OverlayImageIndex</li>
+            <li>SelectedImageIndex</li>
+            <li>Data</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TComboExItems.Add"/>
+          <link id="TComboExItem"/>
+          <link id="TComboExItem.Caption"/>
+          <link id="TComboExItem.Indent"/>
+          <link id="TComboExItem.ImageIndex"/>
+          <link id="TComboExItem.OverlayImageIndex"/>
+          <link id="TComboExItem.SetSelectedImageIndex"/>
+          <link id="TComboExItem.Data"/>
+        </seealso>
+      </element>
+      <element name="TComboExItems.AddItem.Result">
+        <short>Item added to the collection</short>
+      </element>
+      <element name="TComboExItems.AddItem.ACaption">
+        <short>Caption for the item</short>
+      </element>
+      <element name="TComboExItems.AddItem.AImageIndex">
+        <short>Image index for the item</short>
+      </element>
+      <element name="TComboExItems.AddItem.AOverlayImageIndex">
+        <short>Overlay image index for the item</short>
+      </element>
+      <element name="TComboExItems.AddItem.ASelectedImageIndex">
+        <short>Selected image index for the item</short>
+      </element>
+      <element name="TComboExItems.AddItem.AIndent">
+        <short>Indent spacing for the item</short>
+      </element>
+      <element name="TComboExItems.AddItem.AData">
+        <short>Pointer to the arbitrary data associated with the item</short>
+      </element>
+
+      <element name="TComboExItems.Insert" link="#rtl.Classes.TCollection.Insert">
+        <short>Inserts a collection item at the specified position in the collection</short>
+        <descr>
+          <p>
+            <var>Insert</var> is a <var>TComboExItem</var> function used to insert a new collection item at the specified position in the collection. Insert reimplements the method in <var>TCollection</var> to create and return the TComboExItem type used in the derived collection. Inserts calls the inherited method, and casts the return value to a TComboExItem type.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboExItem"/>
+          <link id="TComboExItems.Add"/>
+          <link id="TComboExItems.AddItem"/>
+          <link id="#rtl.Classes.TCollection.Insert"/>
+        </seealso>
+      </element>
+      <element name="TComboExItems.Insert.Result">
+        <short>Collection item created and stored at the specified position</short>
+      </element>
+      <element name="TComboExItems.Insert.AIndex">
+        <short>Ordinal position in the collection where the new item is inserted</short>
+      </element>
+
+      <element name="TComboExItems.ComboItems">
+        <short>Provides indexed access to the items in the collection</short>
+        <descr>
+          <p>
+            <var>ComboItems</var> is a read-only indexed <var>TComboExItem</var> property used to provide access to the <var>Items</var> in the collection. The read access specifier for the property ensures that values in Items are cast to the TComboExItem type used in the derived collection.
+          </p>
+          <p>
+            ComboItems is the default property for the collection, and the subject visited in an enumerator for the class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListControlItems.Items"/>
+          <link id="#rtl.Classes.TCollection.GetEnumerator"/>
+        </seealso>
+      </element>
+      <element name="TComboExItems.ComboItems.AIndex">
+        <short>Ordinal position for the collection item requested in the method</short>
+      </element>
+
+      <element name="TCustomComboBoxEx">
+        <short>
+          Implements the base class for an extended/enhanced combo box
+        </short>
+        <descr>
+          <p>
+            <var>TCustomComboBoxEx</var> is a <var>TCustomComboBox</var> descendant which implements the base class for <var>TComboBoxEx</var>.
+          </p>
+          <p>
+            TCustomComboBoxEx provides an extended combo box with added features and capabilities like auto completion, additional display styles, more editing options, and a list with Images used in the control. Another key feature in the class is an extended Items property which provides normal, selected, and overlay image indexes and allows indentation between the image and caption for items in the combo box. A pointer to arbitrary data for Items used in sort operations is also provided.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboBoxEx"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.FAutoCompleteOptions"/>
+      <element name="TCustomComboBoxEx.FImages"/>
+      <element name="TCustomComboBoxEx.FItemsEx"/>
+      <element name="TCustomComboBoxEx.FStyle"/>
+      <element name="TCustomComboBoxEx.FStyleEx"/>
+      <element name="TCustomComboBoxEx.FImagesWidth"/>
+
+      <element name="TCustomComboBoxEx.SetImages">
+        <short>Sets the value for the Images property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBoxEx.Images"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.SetImages.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.SetImagesWidth">
+        <short>Sets the value for the ImagesWidth property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBoxEx.ImagesWidth"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.SetImagesWidth.AImagesWidth">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.SetStyle">
+        <short>Sets the value for the Style property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBoxEx.Style"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.SetStyle.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.SetStyleEx">
+        <short>Sets the value for the StyleEx property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBoxEx.StyleEx"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.SetStyleEx.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.cDefAutoCompOpts">
+        <short>Default value for the AutoCompleteOptions property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBoxEx.AutoCompleteOptions"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.cDefStyle">
+        <short>Default value for the Style property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBoxEx.Style"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.FNeedMeasure">
+        <short>
+          Internal flag which indicates if the text height needs to be calculated when drawing an item in the control
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.FRightToLeft">
+        <short>Internal flag which tracks the BidiMode setting in the control</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.FTextHeight">
+        <short>Internal derived text height for an item in the combo box</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.CMBiDiModeChanged">
+        <short>
+          Performs actions needed when the BiDiMode setting is changed for the control
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomComboBoxEx.CMBiDiModeChanged.Message">
+        <short></short>
+      </element>
+
+      <element name="TCustomComboBoxEx.DrawItem">
+        <short>Draws an item in the control</short>
+        <descr>
+          <p>
+            <var>DrawItem</var> is an overridden procedure used to draw an item in the extended combo box control.
+          </p>
+          <p>
+            Index contains the ordinal position for the TComboExItem instance in ItemsEx that is drawn in the method.
+          </p>
+          <p>
+            <var>ARect</var> is the rectangle with the coordinates for the item drawn in the method. The values in ARect are set in the calling procedure (LMDrawListItem in TCustomComboBox). When the left coordinate is greater than zero (0), the item is a sub-item (not a main item). Sub-items are drawn using the additional spacing in Indent applied to the edge boundary in the drawing rectangle.
+          </p>
+          <p>
+            <var>State</var> contains the owner draw state used to render the item, and determines the window, border, and font colors for the control.
+          </p>
+          <p>
+            DrawItem uses <var>ThemeServices</var> to get theme details applied to enabled items in the combo box. DrawItem ensures that a valid text height is available for the control <var>Canvas</var>, and is used to draw the text for the item.
+          </p>
+          <p>
+            When <var>Images</var> have been assigned for the control, the image index appropriate to the value in State is determined. The value <var>odSelected</var> causes the <var>SelectedImageIndex</var> for the item is be used. Otherwise, the <var>ImageIndex</var> for the item is used.
+          </p>
+          <p>
+            The image size is determined by calling the <var>SizeForPPI</var> method in <var>Images</var> using the <var>ImagesWidth</var> and the display density for the current <var>Font</var> in the control. DrawItem determines the location for the image and the indent spacing for the current BiDiMode setting for the control. Right-to-Left rendering aligns the image and indent to the right-hand edge of the drawing rectangle. The <var>DrawIcon</var> method in <var>ThemeServices</var> is called to render the icon to the control Canvas using the theme details.
+          </p>
+          <p>
+            Images are <b>not</b> drawn when Images is unassigned or contains zero (0) images, or when values have not been explicitly assigned to the ImageIndex or SelectedImageIndex properties for the extended item in Index.
+          </p>
+          <p>
+            DrawItem configures the Canvas to use the brush style and font color needed for the value in State. Text drawing flags are derived for the item, and the text is rendered by calling the <var>DrawText</var> method in ThemeServices.
+          </p>
+          <remark>
+            Please note: DrawItem does <b>NOT</b> call the inherited method in <var>TCustomComboBox</var> or trigger its <var>OnDrawItem</var> event handler. The item is rendered entirely in this method.
+          </remark>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.DrawItem.Index">
+        <short>Ordinal position for the item drawn in the method</short>
+      </element>
+      <element name="TCustomComboBoxEx.DrawItem.ARect">
+        <short>Display rectangle for the item drawn in the method</short>
+      </element>
+      <element name="TCustomComboBoxEx.DrawItem.State">
+        <short>State used to draw the item in the control</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.FontChanged" link="#lcl.Controls.TWinControl.FontChanged">
+        <short>
+          Performs actions needed when the font in the control has been changed
+        </short>
+        <descr>
+          <p>
+            <var>FontChanged</var> is an overridden procedure in <var>TCustomComboBoxEx</var>. FontChanged sets the value in the internal <var>FNeedMeasure</var> flag to <b>True</b> to force the text height for <var>Items</var> to be recalculated. FontChanged calls the inherited method prior to exiting from the procedure.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.Controls.TWinControl.FontChanged"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.FontChanged.Sender">
+        <short>Object for the event notification</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.InitializeWnd" link="#lcl.StdCtrls.TCustomComboBox.InitializeWnd">
+        <short>Initializes the window handle for the control</short>
+        <descr>
+          <p>
+            <var>InitializeWnd</var> is an overridden procedure used to initialize the window handle for the control. InitializeWnd calls the inherited method, and sets the internal flag used to track the setting in <var>IsRightToLeft</var> for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.StdCtrls.TCustomComboBox.InitializeWnd"/>
+          <link id="#lcl.Controls.TControl.IsRightToLeft"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.SetItemHeight">
+        <short>Sets the value for the ItemHeight property</short>
+        <descr>
+          <p>
+            Overridden in TCustomComboBoxEx to set the internal FNeedMeasure flag.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.ItemHeight"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.SetItemHeight.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor, and allocates resources needed for the class instance. Create sets the default values for the following properties:
+          </p>
+          <dl>
+            <dt>AutoCompleteOptions</dt>
+            <dd>Set to the constant in cDefAutoCompOpts</dd>
+            <dt>ReadOnly</dt>
+            <dd>Set to True</dd>
+            <dt>Style</dt>
+            <dd>
+              The inherited property is set to csOwnerDrawFixed; the value is set to the constant in cDefStyle in the class instance
+            </dd>
+            <dt>StyleEx</dt>
+            <dd>Set to an empty set ([])</dd>
+            <dt>FNeedMeasure</dt>
+            <dd>Set to True to force the item height to be recalculated</dd>
+          </dl>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomComboBoxEx.Create.TheOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to the <var>ItemEx</var> property are freed prior to destroying the class instance. Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.StdCtrls.TCustomComboBox.Destroy"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.Add">
+        <short>
+          Adds a new item to the extended combo box control
+        </short>
+        <descr>
+          <p>
+            <var>Add</var> is an overloaded method used to add a new item to the extended combo box control. Both procedure and function variants are provided.
+          </p>
+          <p>
+            The function variant accepts no arguments, and returns an Integer value with the ordinal position in ItemsEx where the new item was inserted. The caption for the new item is set to the TComboExItem.cDefCaption constant.
+          </p>
+          <p>
+            The procedure variant does not return the new position for the inserted item. Use the Count property in ItemsEx to determine the ordinal position for the item on exit from the method. Use the parameters to specify the values stored in the corresponding properties in the TComboExItem class instance.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomComboBoxEx.Add.Result">
+        <short>Item added to the control</short>
+      </element>
+      <element name="TCustomComboBoxEx.Add.ACaption">
+        <short>Caption for the added item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Add.AIndent">
+        <short>Indent for the added item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Add.AImgIdx">
+        <short>Image index for the added item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Add.AOverlayImgIdx">
+        <short>Overlay image index for the added item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Add.ASelectedImgIdx">
+        <short>Select image index for the added item</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.AddItem">
+        <short>Adds the specified item and object instance to the control</short>
+        <descr>
+          <p>
+            <var>AddItem</var> is a procedure used to create a new item in the extended combo box control with the specified caption and object data. <var>Item</var> contains the caption assigned to the new <var>TComboExItem</var> instance. AnObject is an object with the data stored in the new TComboExItem instance.
+          </p>
+          <p>
+            AddItem calls <var>Insert</var> to create, update, and store the item in the <var>ItemsEx</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBoxEx.ItemsEx"/>
+          <link id="TListControlItem.Caption"/>
+          <link id="TListControlItem.Data"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.AddItem.Item">
+        <short>Item added to the control</short>
+      </element>
+      <element name="TCustomComboBoxEx.AddItem.AnObject">
+        <short>Object with data for the item added to the control</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.AssignItemsEx">
+        <short>Assigns the specified values to the ItemsEx property</short>
+        <descr>
+          <p>
+            <var>AssignItemsEx</var> is an overloaded procedure used to assign the specified values to the <var>ItemsEx</var> property.
+          </p>
+          <p>
+            The overloaded variants are used to specify different source types with the values stored in the method. When <var>AItemsEx</var> (<var>TComboExItems</var>) is used as the source, the <var>Assign</var> method in ItemsEx is called to store the new values in the property. When AItems (<var>TStrings</var>) is used as the source, additional processing is performed to clear the content in ItemsEx prior to calling its <var>AddItem</var> method for each of the captions in AItems.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboExItems.ItemsEx"/>
+          <link id="TComboExItems.AddItem"/>
+          <link id="TComboExItems.Clear"/>
+          <link id="TComboExItems.Assign"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.AssignItemsEx.AItems">
+        <short>TStrings instance with values stored in the ItemsEx property</short>
+      </element>
+      <element name="TCustomComboBoxEx.AssignItemsEx.AItemsEx">
+        <short>TComboExItems instance with values stored in the ItemsEx property</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.Clear">
+        <short>Clears the contents in the ItemsEx collection</short>
+        <descr>
+          <p>
+            <var>Clear</var> is an overridden method used to clear the contents in the <var>ItemsEx</var> collection. Clear overrides the behavior from the ancestor class by accessing the Clear method in the ItemsEx property, instead of the <var>Items</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBoxEx.ItemsEx"/>
+          <link id="TCustomComboBoxEx.Items"/>
+          <link id="TComboExItems.Clear"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.Delete">
+        <short>
+          Deletes the item stored at the specified ordinal position in ItemsEx
+        </short>
+        <descr>
+          <p>
+            <var>Delete</var> calls the Delete method in <var>ItemsEx</var> to remove the collection item at the position specified in <var>AIndex</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id-="TComboExItems.Delete"/>
+          <link id="TCustomComboBoxEx.ItemsEx"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.Delete.AIndex">
+        <short>Ordinal position for the item deleted in the method</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.DeleteSelected">
+        <short>Deletes the current item selected in the control</short>
+        <descr>
+          <p>
+            <var>DeleteSelected</var> uses the value in <var>ItemIndex</var> to determine if an item in the control has been selected. When ItemIndex contains a value other than <b>-1</b>, the <var>Delete</var> method is called to remove the item at the position in ItemIndex from the <var>ItemsEx</var> property. No actions are performed in the method when ItemIndex contains a non-zero negative value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBoxEx.ItemIndex"/>
+          <link id="TCustomComboBoxEx.ItemsEx"/>
+          <link id="TCustomComboBoxEx.Delete"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.Insert">
+        <short>Inserts a new item with the specified values at the given position</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomComboBoxEx.Insert.AIndex">
+        <short>Ordinal position where the new item is stored</short>
+      </element>
+      <element name="TCustomComboBoxEx.Insert.ACaption">
+        <short>Caption for the new combo box item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Insert.AIndent">
+        <short>Indent spacing for the new combo box item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Insert.AImgIdx">
+        <short>Image index for the new combo box item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Insert.AOverlayImgIdx">
+        <short>Overlay image index for the new combo box item</short>
+      </element>
+      <element name="TCustomComboBoxEx.Insert.ASelectedImgIdx">
+        <short>Selected image index for the new combo box item</short>
+      </element>
+
+      <element name="TCustomComboBoxEx.AutoCompleteOptions">
+        <short>Contains settings for autocompletion features enabled in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.Images">
+        <short>
+          Contains images which can be displayed for items defined in the ItemsEx property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.ImagesWidth">
+        <short>Specifies the width for images displayed in the control</short>
+        <descr>
+          <p>
+            <var>ImagesWidth</var> is an <var>Integer</var> property used to specify the width for <var>Images</var> displayed in the extended combo box control. The property value is the image size used at the design-time display density (PPI). The value may be adjusted in the <var>DrawItem</var> method to a scaled value relative to the PPI setting for the current <var>Font</var> in the control. The scaled value determines the image resolution requested when accessing the Images assigned for the control.
+          </p>
+          <p>
+            The default value for the property is zero (<b>0</b>) and indicates that an explicit value has not been assigned for the property.
+          </p>
+          <p>
+            Changing the value for the property causes the <var>Invalidate</var> method to be called to refresh the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBoxEx.Images"/>
+          <link id="TCustomComboBoxEx.DrawItem"/>
+          <link id="TCustomComboBoxEx.Invalidate"/>
+          <link id="TComboBoxEx.Font"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.ItemsEx">
+        <short>
+          Collection with the extended items defined for the control
+        </short>
+        <descr>
+          <p>
+            <var>ItemsEx</var> is a <var>TComboExItems</var> property which provides access to the extended items defined for the combo box control.  ItemsEx uses <var>TComboExItem</var> as the <var>ItemClass</var> for the collection. The collection is maintained using the <var>Add</var>, <var>AddItem</var>, <var>Delete</var>, <var>DeleteSelected</var>, and <var>Clear</var> methods. Use <var>AssignItemsEx</var> to set the values in the collection to the values from a specific source.
+          </p>
+          <p>
+            Values in ItemsEx are used in the <var>DrawItem</var> method to render the item(s) using the theme details for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TComboExItems"/>
+          <link id="TCustomComboBoxEx.DrawItem"/>
+          <link id="TCustomComboBoxEx.Add"/>
+          <link id="TCustomComboBoxEx.AddItem"/>
+          <link id="TCustomComboBoxEx.Delete"/>
+          <link id="TCustomComboBoxEx.DeleteSelected"/>
+          <link id="TCustomComboBoxEx.Clear"/>
+          <link id="TCustomComboBoxEx.AssignItemsEx"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.Style">
+        <short>
+          Specifies the control style used for the edit in the combo box control
+        </short>
+        <descr>
+          <p>
+            <var>Style</var> is a <var>TComboBoxExStyle</var> property which specifies the control style used for the control. This is a narrower range of values than those used in the <var>TCustomComboBox</var> ancestor class; the owner drawn options are not needed in this class. The following values are used:
+          </p>
+          <dl>
+            <dt>csExDropDown</dt>
+            <dd>Displays an edit control with a button to make the drop down visible</dd>
+            <dt>csExSimple</dt>
+            <dd>Displays an edit control only</dd>
+            <dt>csExDropDownList</dt>
+            <dd>Displays a read-only value with a button to make the drop down visible</dd>
+          </dl>
+          <p>
+            The default value for the property is set using the <var>cDefStyle</var> constant.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomComboBoxEx.StyleEx">
+        <short>
+          Enables feature or behaviors in the extended combo box control
+        </short>
+        <descr>
+          <p>
+            <var>StyleEx</var> is a <var>TComboBoxExStyles</var> property used to store <var>TComboBoxExStyleEx</var> values which enable features in the extended combo box control. Including a value from the enumeration enables the corresponding feature or behavior in the control. See  <link id="TComboBoxExStyleEx"/> for more information on the enumeration values and their meanings.
+          </p>
+          <p>
+            The default value for the property is an empty set ([]).
+          </p>
+          <remark>
+            Please note: Values in StyleEx are not used in the current implementation of TCustomComboBoxEx.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TComboBoxEx" link="TCustomComboBoxEx">
+        <short>Implements an extended Combo Box component</short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomComboBoxEx"/>
+        </seealso>
+      </element>
+
+      <element name="TComboBoxEx.Align" link="#lcl.Controls.TControl.Align"/>
+      <element name="TComboBoxEx.Anchors" link="#lcl.Controls.TControl.Anchors"/>
+      <element name="TComboBoxEx.ArrowKeysTraverseList" link="#lcl.StdCtrls.TCustomComboBox.ArrowKeysTraverseList"/>
+      <element name="TComboBoxEx.AutoComplete" link="#lcl.StdCtrls.TCustomComboBox.AutoComplete"/>
+      <element name="TComboBoxEx.AutoCompleteOptions" link="TCustomComboBoxEx.AutoCompleteOptions"/>
+      <element name="TComboBoxEx.AutoCompleteText" link="TCustomComboBoxEx.AutoCompleteText"/>
+      <element name="TComboBoxEx.AutoDropDown" link="#lcl.StdCtrls.TCustomComboBox.AutoDropDown"/>
+      <element name="TComboBoxEx.AutoSelect" link="#lcl.StdCtrls.TCustomComboBox.AutoSelect"/>
+      <element name="TComboBoxEx.AutoSize" link="#lcl.StdCtrls.TCustomComboBox.AutoSize"/>
+      <element name="TComboBoxEx.BidiMode" link="#lcl.Controls.TControl.BidiMode"/>
+      <element name="TComboBoxEx.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing"/>
+      <element name="TComboBoxEx.BorderStyle" link="#lcl.Controls.TWinControl.BorderStyle"/>
+      <element name="TComboBoxEx.CharCase" link="#lcl.StdCtrls.TCustomComboBox.CharCase"/>
+      <element name="TComboBoxEx.Color" link="#lcl.Controls.TControl.Color"/>
+      <element name="TComboBoxEx.Constraints" link="#lcl.Controls.TControl.Constraints"/>
+      <element name="TComboBoxEx.DragCursor" link="#lcl.Controls.TControl.DragCursor"/>
+      <element name="TComboBoxEx.DragKind" link="#lcl.Controls.TControl.DragKind"/>
+      <element name="TComboBoxEx.DragMode" link="#lcl.Controls.TControl.DragMode"/>
+      <element name="TComboBoxEx.DropDownCount" link="#lcl.StdCtrls.TCustomComboBox.DropDownCount"/>
+      <element name="TComboBoxEx.Enabled" link="#lcl.Controls.TControl.Enabled"/>
+      <element name="TComboBoxEx.Font" link="#lcl.Controls.TControl.Font"/>
+      <element name="TComboBoxEx.Images" link="TCustomComboBoxEx.Images"/>
+      <element name="TComboBoxEx.ImagesWidth" link="TCustomComboBoxEx.ImagesWidth"/>
+      <element name="TComboBoxEx.ItemHeight" link="#lcl.StdCtrls.TCustomComboBox.ItemHeight"/>
+      <element name="TComboBoxEx.ItemsEx" link="TCustomComboBoxEx.ItemsEx"/>
+      <element name="TComboBoxEx.ItemIndex" link="#lcl.StdCtrls.TCustomComboBox.ItemIndex"/>
+      <element name="TComboBoxEx.ItemWidth" link="#lcl.StdCtrls.TCustomComboBox.ItemWidth"/>
+      <element name="TComboBoxEx.MaxLength" link="#lcl.StdCtrls.TCustomComboBox.MaxLength"/>
+      <element name="TComboBoxEx.OnChange" link="#lcl.StdCtrls.TCustomComboBox.OnChange"/>
+      <element name="TComboBoxEx.OnChangeBounds" link="#lcl.Controls.TControl.OnChangeBounds"/>
+      <element name="TComboBoxEx.OnClick" link="#lcl.Controls.TControl.OnClick"/>
+      <element name="TComboBoxEx.OnCloseUp" link="#lcl.StdCtrls.TCustomComboBox.OnCloseUp"/>
+      <element name="TComboBoxEx.OnContextPopup" link="#lcl.Controls.TControl.OnContextPopup"/>
+      <element name="TComboBoxEx.OnDblClick" link="#lcl.Controls.TControl.OnDblClick"/>
+      <element name="TComboBoxEx.OnDragDrop" link="#lcl.Controls.TControl.OnDragDrop"/>
+      <element name="TComboBoxEx.OnDragOver" link="#lcl.Controls.TControl.OnDragOver"/>
+      <element name="TComboBoxEx.OnDropDown" link="#lcl.StdCtrls.TCustomComboBox.OnDropDown"/>
+      <element name="TComboBoxEx.OnEditingDone" link="#lcl.Controls.TControl.OnEditingDone"/>
+      <element name="TComboBoxEx.OnEndDock" link="#lcl.Controls.TControl.OnEndDock"/>
+      <element name="TComboBoxEx.OnEndDrag" link="#lcl.Controls.TControl.OnEndDrag"/>
+      <element name="TComboBoxEx.OnEnter" link="#lcl.Controls.TWinControl.OnEnter"/>
+      <element name="TComboBoxEx.OnExit" link="#lcl.Controls.TWinControl.OnExit"/>
+      <element name="TComboBoxEx.OnGetItems" link="#lcl.StdCtrls.TCustomComboBox.OnGetItems"/>
+      <element name="TComboBoxEx.OnKeyDown" link="#lcl.Controls.TWinControl.OnKeyDown"/>
+      <element name="TComboBoxEx.OnKeyPress" link="#lcl.Controls.TWinControl.OnKeyPress"/>
+      <element name="TComboBoxEx.OnKeyUp" link="#lcl.Controls.TWinControl.OnKeyUp"/>
+      <element name="TComboBoxEx.OnMouseDown" link="#lcl.Controls.TControl.OnMouseDown"/>
+      <element name="TComboBoxEx.OnMouseEnter" link="#lcl.Controls.TControl.OnMouseEnter"/>
+      <element name="TComboBoxEx.OnMouseLeave" link="#lcl.Controls.TControl.OnMouseLeave"/>
+      <element name="TComboBoxEx.OnMouseMove" link="#lcl.Controls.TControl.OnMouseMove"/>
+      <element name="TComboBoxEx.OnMouseUp" link="#lcl.Controls.TControl.OnMouseUp"/>
+      <element name="TComboBoxEx.OnMouseWheel" link="#lcl.Controls.TControl.OnMouseWheel"/>
+      <element name="TComboBoxEx.OnMouseWheelDown" link="#lcl.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TComboBoxEx.OnMouseWheelUp" link="#lcl.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TComboBoxEx.OnSelect" link="#lcl.StdCtrls.TCustomComboBox.OnSelect"/>
+      <element name="TComboBoxEx.OnStartDock" link="#lcl.Controls.TControl.OnStartDock"/>
+      <element name="TComboBoxEx.OnStartDrag" link="#lcl.Controls.TControl.OnStartDrag"/>
+      <element name="TComboBoxEx.OnUTF8KeyPress" link="#lcl.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TComboBoxEx.ParentBidiMode" link="#lcl.Controls.TControl.ParentBidiMode"/>
+      <element name="TComboBoxEx.ParentColor" link="#lcl.StdCtrls.TCustomComboBox.ParentColor"/>
+      <element name="TComboBoxEx.ParentFont" link="#lcl.Controls.TControl.ParentFont"/>
+      <element name="TComboBoxEx.ParentShowHint" link="#lcl.Controls.TControl.ParentShowHint"/>
+      <element name="TComboBoxEx.PopupMenu" link="#lcl.Controls.TControl.PopupMenu"/>
+      <element name="TComboBoxEx.ReadOnly" link="#lcl.StdCtrls.TCustomComboBox.ReadOnly"/>
+      <element name="TComboBoxEx.ShowHint" link="#lcl.Controls.TControl.ShowHint"/>
+      <element name="TComboBoxEx.Style" link="TCustomComboBoxEx.Style"/>
+      <element name="TComboBoxEx.StyleEx" link="TCustomComboBoxEx.StyleEx"/>
+      <element name="TComboBoxEx.TabOrder" link="#lcl.Controls.TWinControl.TabOrder"/>
+      <element name="TComboBoxEx.TabStop" link="#lcl.StdCtrls.TCustomComboBox.TabStop"/>
+      <element name="TComboBoxEx.Text" link="#lcl.StdCtrls.TCustomComboBox.Text"/>
+      <element name="TComboBoxEx.Visible" link="#lcl.Controls.TControl.Visible"/>
+
+      <element name="TCheckComboItemState">
+        <short>
+          Represents state and data for a Checkbox item displayed in TCustomCheckCombo
+        </short>
+        <descr>
+          <p>
+            <var>TCheckComboItemState</var> is a class used to represent state and data for a Checkbox item displayed in <var>TCustomCheckCombo</var> and   <var>TCheckComboBox</var>. Properties are provided to store the checkbox state, the enabled setting for the checkbox control, and arbitrary data used for the checkbox.
+          </p>
+          <p>
+            TCheckComboItemState instances are created when the checkboxes are added or assigned in TCustomCheckCombo.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.AddItem"/>
+          <link id="TCustomCheckCombo.AssignItems"/>
+          <link id="TCustomCheckCombo.Objects"/>
+          <link id="TCheckComboBox"/>
+        </seealso>
+      </element>
+
+      <element name="TCheckComboItemState.State">
+        <short>Represents the current state for a checkbox</short>
+        <descr>
+          <p>
+            <var>State</var> is a <var>TCheckBoxState</var> property with the enumeration value which represents the current checked, unchecked, or grayed state for the checkbox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCheckBoxState"/>
+          <link id="TCustomCheckCombo.Checked"/>
+          <link id="TCustomCheckCombo.State"/>
+          <link id="TCustomCheckCombo.Objects"/>
+        </seealso>
+      </element>
+
+      <element name="TCheckComboItemState.Enabled">
+        <short>Indicates the current enabled state for a checkbox</short>
+        <descr>
+          <p>
+            <var>Enabled</var> is a <var>Boolean</var> property which indicates the current enabled state for a checkbox control in <var>TCustomCheckCombo</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.ItemEnabled"/>
+          <link id="TCustomCheckCombo.State"/>
+          <link id="TCustomCheckCombo.Objects"/>
+        </seealso>
+      </element>
+
+      <element name="TCheckComboItemState.Data">
+        <short>Contains arbitrary data associated with a checkbox item</short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomCheckCombo.Objects"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo">
+        <short>
+          Implements the base class for a combo box which displays checkboxes for items in the control
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FAllowGrayed"/>
+      <element name="TCustomCheckCombo.FOnItemChange"/>
+
+      <element name="TCustomCheckCombo.AsyncCheckItemStates">
+        <short>Checks for valid state information in the Items for the control</short>
+        <descr>
+          <p>
+            <var>AsyncCheckItemStates</var> calls the <var>CheckItemStates</var> method to ensure that <var>TCheckComboItemState</var> instances have been created for the <var>Items</var> in the control. Used in the implementation of the <var>QueueCheckItemStates</var> method. Queued as an asynchronous call using the <var>Application.QueueAsyncCall</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.State"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.Items"/>
+          <link id="TCheckComboItemState"/>
+          <link id="#Lcl.Forms.TApplication.QueueAsyncCall"/>
+          <link id="#lcl.Forms.Application"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.AsyncCheckItemStates.Data">
+        <short>
+          Pointer to an Integer value examined in the method; not used in the current implementation
+        </short>
+      </element>
+
+      <element name="TCustomCheckCombo.GetChecked">
+        <short>Gets the value for the indexed Checked property</short>
+        <descr/>
+        <seealso>
+          <Link id="TCustomCheckCombo.Checked"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.GetChecked.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TCustomCheckCombo.GetChecked.AIndex">
+        <short>Ordinal position for the item examined in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.GetCount">
+        <short>Gets the value for the Count property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.Count"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.GetCount.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomCheckCombo.GetItemEnabled">
+        <short>Gets the value for the indexed ItemEnabled property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.ItemEnabled"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.GetItemEnabled.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TCustomCheckCombo.GetItemEnabled.AIndex">
+        <short>Ordinal position for the item examined in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.GetObject">
+        <short>Gets the value for the indexed Object property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.Object"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.GetObject.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TCustomCheckCombo.GetObject.AIndex">
+        <short>Ordinal position for the item examined in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.GetState">
+        <short>Gets the value for the indexed State property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.State"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.GetState.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TCustomCheckCombo.GetState.AIndex">
+        <short>Ordinal position for the item examined in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.SetChecked">
+        <short>Sets the value for the indexed Checked property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.Checked"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.SetChecked.AIndex">
+        <short>Ordinal position for the item updated in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.SetChecked.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomCheckCombo.SetItemEnabled">
+        <short>Sets the value for the indexed ItemEnabled property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.ItemEnabled"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.SetItemEnabled.AIndex">
+        <short>Ordinal position for the item updated in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.SetItemEnabled.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomCheckCombo.SetObject">
+        <short>Sets the value for the indexed Object property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.Object"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.SetObject.AIndex">
+        <short>Ordinal position for the item updated in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.SetObject.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomCheckCombo.SetState">
+        <short>Sets the value for the indexed State property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomCheckCombo.State"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.SetState.AIndex">
+        <short>Ordinal position for the item updated in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.SetState.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomCheckCombo.FCheckHighlight">
+        <short>Internal member used to to track the highlighting state</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FCheckSize">
+        <short>Internal member used to track size adjusts needed for them services</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FDropped">
+        <short>Internal members used to track the state for the drop down in the control</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FHilightedIndex">
+        <short>Internal member used to track the item highlighted in the control</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FHiLiteLeft">
+        <short>Internal member used to track the left coordinate for the highlight</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FHiLiteRight">
+        <short>Internal member used to track the right coordinate for the highlight</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FNeedMeasure">
+        <short>
+          Internal member used to track whether the text height has been calculated for items in the control
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FRejectDropDown">
+        <short>
+          Internal member used to track whether drop down requests should be rejected; i. e. the drop down is already visible
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FRejectToggleOnSelect">
+        <short>
+          Internal member used to track whether the current checkbox selection can toggle its value; i. e. whether the drop down is visible
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FRightToLeft">
+        <short>Internal member used to track the BiDi status for the control</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FTextHeight">
+        <short>
+          Internal member used to track the text height for checkboxes in the control
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.CMBiDiModeChanged">
+        <short>
+          Performs actions needed when the BiDiMode setting is changed for the control
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomCheckCombo.CMBiDiModeChanged.Message">
+        <short></short>
+      </element>
+
+      <element name="TCustomCheckCombo.ClearItemStates">
+        <short>Removes all state classes allocated for the checkboxes in the control</short>
+        <descr>
+          <p>
+            <var>ClearItemStates</var> is a procedure used to remove all state information classes allocated for the checkboxes in the control. ClearItemStates iterates over the <var>Items</var> defined in the control, and frees the <var>TCheckBoxState</var> class instances stored in its <var>Objects</var> property.
+          </p>
+          <p>
+            ClearItemStates is used in the implementation of the <var>SetItems</var>, <var>AssignItems</var>, and <var>Clear</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.Items"/>
+          <link id="TCustomCheckCombo.SetItems"/>
+          <link id="TCustomCheckCombo.AssignItems"/>
+          <link id="TCustomCheckCombo.Clear"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.CloseUp">
+        <short>Closes the drop down displayed for the control</short>
+        <descr>
+          <p>
+            <var>CloseUp</var> is overridden in <var>TCustomCheckCombo</var> to use the internal member which tracks the visibility for the drop down portion of the control. When it is already visible, the flag value is toggled and the <var>Update</var> method is called to refresh the control. Otherwise, the inherited method is called to perform actions defined in the ancestor class.
+          </p>
+          <p>
+            Use the DropDown method to make the drop down portion of control visible.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.Update"/>
+          <link id="TCustomCheckCombo.DropDown"/>
+          <link id="TCustomComboBox.CloseUp"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.DrawItem">
+        <short>
+          Draws a checkbox item defined in the combo box control
+        </short>
+        <descr>
+          <p>
+            <var>DrawItem</var> is an overridden procedure used to draw a checkbox defined in the Items for the control.
+          </p>
+          <p>
+            Index contains the ordinal position for the TComboExItem instance in ItemsEx that is drawn in the method.
+          </p>
+          <p>
+            <var>ARect</var> is the rectangle with the coordinates for the checkbox item drawn in the method. The values in ARect are set in the calling procedure (LMDrawListItem in TCustomComboBox).
+          </p>
+          <p>
+            <var>State</var> contains the owner draw state used to render the checkbox item, and determines the window and font colors for the checkbox.
+          </p>
+          <p>
+            DrawItem uses <var>ThemeServices</var> to get theme element details applied to checkbox items in the combo box. DrawItem ensures that a valid text height is available for the control <var>Canvas</var>, and is used to draw the text for the check box.
+          </p>
+          <p>
+            DrawItem configures the Canvas to use the brush style and font color needed for the value in State. Text drawing flags are derived for the item, and the text is rendered by calling the <var>DrawText</var> method in ThemeServices.
+          </p>
+          <remark>
+            Please note: DrawItem does <b>NOT</b> call the inherited method in <var>TCustomComboBox</var> or trigger its <var>OnDrawItem</var> event handler. The item is rendered entirely in this method.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomCheckCombo.DrawItem.Index">
+        <short>Ordinal position for the checkbox drawn in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.DrawItem.ARect">
+        <short>Rectangle with the coordinates for the checkbox drawn in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.DrawItem.State">
+        <short>Owner draw state for the check box</short>
+      </element>
+
+      <element name="TCustomCheckCombo.DropDown" link="#lcl.StdCtrls.TCustomComboBox.DropDown">
+        <short>Displays the drop down for the combo box</short>
+        <descr>
+          <p>
+            <var>DropDown</var> is an overridden method used to display the drop down for the combo box if it is not already visible. DropDown calls the inherited method to trigger the <var>OnDropDown</var> method (when assigned). When the drop down is already visible, the value in an enabled at <var>ItemIndex</var> is   <var>Toggle</var>d.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.StdCtrls.TCustomComboBox.OnDropDown"/>
+          <link id="TCustomCheckCombo.ItemIndex"/>
+          <link id="TCustomCheckCombo.ItemEnabled"/>
+          <link id="TCustomCheckCombo.Toggle"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.FontChanged">
+        <short>Performs actions needed when the font for the control has been changed</short>
+        <descr>
+          <p>
+            <var>FontChanged</var> is an overridden method in <var>TCustomCheckCombo</var>. It sets the internal <var>FNeedMeasure</var> flag to recalculate the text height for checkbox <var>Items</var> displayed in the control, and calls the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.FNeedMeasure"/>
+          <link id="#lcl.Controls.TWinControl.FontChanged"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.FontChanged.Sender">
+        <short>Object for the event notification</short>
+      </element>
+
+      <element name="TCustomCheckCombo.InitializeWnd">
+        <short>Initializes the window handle for the control</short>
+        <descr>
+          <p>
+            <var>InitializeWnd</var> is an overridden method used to Initializes the window handle for the control. InitializeWnd ensures that the item states for checkboxes defined in <var>Items</var> is initialized by calling the <var>InitItemStates</var> method. InitializeWnd call the inherited method, and sets the internal <var>FRightToLeft</var> flag used to track the BiDi mode for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.InitializeWnd"/>
+          <link id="TCustomComboBox.Items"/>
+          <link id="TCustomCheckCombo.State"/>
+          <link id="TCustomCheckCombo.InitItemStates"/>
+          <link id="TCustomCheckCombo.CheckItemStates"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.InitItemStates">
+        <short>Initializes checkbox state information for items in the control</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.CheckItemStates">
+        <short>
+          Ensures that checkbox item state classes have been allocated for items in the control
+        </short>
+        <descr>
+          <p>
+            <var>CheckItemStates</var> is a procedure used to ensure that <var>TCheckComboItemState</var> class instances exist for the <var>Items</var> defined in the checkbox combo control. CheckItemStates iterates over the values in Items to determine if its Object property contains a valid TCheckComboItemState instance. An Exception is raised when the Object is not derived from TCheckComboItemState.
+          </p>
+          <p>
+            CheckItemStates is used in the implementation of the <var>InitializeWnd</var> and <var>AsyncCheckItemStates</var> methods.
+          </p>
+        </descr>
+        <errors>
+          Raises an Exception when a checkbox in Items does not have a valid TCheckComboItemState object.
+        </errors>
+        <seealso>
+          <link id="TCustomCheckCombo.Items"/>
+          <link id="TCustomCheckCombo.InitializeWnd"/>
+          <link id="TCustomCheckCombo.AsyncCheckItemStates"/>
+          <link id="TCheckComboItemState"/>
+          <link id="#rtl.Classes.TStrings.Object"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.QueueCheckItemStates">
+        <short>
+          Queues an asynchronous call to AsyncCheckItemStates in the Application singleton
+        </short>
+        <descr>
+          <p>
+            <var>QueueCheckItemStates</var> is a procedure used to queue an asynchronous call to the <var>AsyncCheckItemStates</var> method in the global Application singleton. QueueCheckItemStates is called from the <var>DrawItem</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.AsyncCheckItemStates"/>
+          <link id="TCustomCheckCombo.DrawItem"/>
+          <link id="#lcl.Forms.TApplication.QueueAsyncCall"/>
+          <link id="#lcl.Forms.Application"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.KeyDown">
+        <short>Handles key down events for the control</short>
+        <descr>
+          <p>
+            <var>KeyDown</var> is the overridden method used to handle key down events for the control. KeyDown ensures that Return (<var>VK_RETURN</var>) and Space (<var>VK_SPACE</var>) are applied to the control. Return causes the value for an enabled item to be toggled when highlighted. Space also toggles the value in an enabled checkbox,  and makes the item selected before hiding the drop down for  the combo box.
+          </p>
+          <p>
+            KeyDown calls the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.SDTCustomComboBox.KeyDown"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.KeyDown.Key">
+        <short>Key examined in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.KeyDown.Shift">
+        <short>Keystroke modifier examined in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.Loaded">
+        <short>
+          Performs actions needed when the component has finished loading from the LCL streaming mechanism
+        </short>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden method used to perform actions needed when the component has finished loading from the LCL streaming mechanism. Loaded calls the inherited method, and calls <var>InitItemStates</var> to allocate <var>TCheckComboItemState</var> instances (when needed) for the checkbox Items defined in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.InitItemStates"/>
+          <link id="TCustomCheckCombo.Items"/>
+          <link id="TCheckComboItemState"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.MouseLeave" link="#lcl.Controls.TControl.MouseLeave">
+        <short>
+          Deactivates tracking the highlighted checkbox when the mouse leaves the control
+        </short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.MouseMove" link="#lcl.Controls.TControl.MouseMove">
+        <short>
+          Tracks changes to the highlighted checkbox in the control
+        </short>
+        <descr>
+          <p>
+            <var>MouseMove</var> is overridden in <var>TCustomCheckCombo</var> to track the X  and Y coordinates for the highlighted checkbox item, and to refresh the control when needed. MouseMove calls the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.Controls.TControl.MouseMove"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.MouseMove.Shift">
+        <short>Mouse event modifier examined in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.MouseMove.X">
+        <short>Horizontal coordinate for the mouse pointer examined in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.MouseMove.Y">
+        <short>Vertical coordinate for the mouse pointer examined in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.SetItemHeight">
+        <short>Sets the value for the ItemHeight property</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomCheckCombo.SetItemHeight.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomCheckCombo.SetItems">
+        <short>Sets the value for the Items property</short>
+        <descr/>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomCheckCombo.SetItems.Value">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomCheckCombo.Select" link="#lcl.StdCtrls.TCustomComboBox.Select">
+        <short>Toggles the value for the current item selected in the control</short>
+        <descr>
+          <p>
+            <var>Select</var> is an overridden procedure used to toggle the value for the current item in the combo box. Select calls the inherited method.
+          </p>
+          <p>
+            For the Windows platform, the value for the selection cannot be changed if the combo box is not in a dropped down state. This can be achieved in code by calling the <var>DropDown</var> method.
+          </p>
+          <p>
+            Select calls the <var>Toggle</var> method using the value in <var>ItemIndex</var> as the affected checkbox item. The internal flag used to track drop down state is reset prior to exiting from the method.
+          </p>
+          <p>
+            Alternatively, you can use the <var>Checked</var> property to assign an explicit <var>Boolean</var> value for the checkbox in ItemIndex.
+          </p>
+          <p>
+            Select is called from the <var>KeyDown</var> event handler to apply a <b>Space</b> key which occurs in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.ItemIndex"/>
+          <link id="TCustomCheckCombo.Toggle"/>
+          <link id="TCustomCheckCombo.KeyDown"/>
+          <link id="TCustomCheckCombo.DropDown"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.Select"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method.  Create ensures that the <var>Items</var> property is configured to ignore duplicate values. Create sets the default values for the following properties and members:
+          </p>
+          <dl>
+            <dt>ReadOnly</dt>
+            <dd>Set to True</dd>
+            <dt>Style</dt>
+            <dd>Set to the value csOwnerDrawFixed</dd>
+            <dt>FNeedMeasure</dt>
+            <dd>Set to True to force item height to be recalculated</dd>
+            <dt>FRejectToggleOnSelect</dt>
+            <dd>Set to True until the control is dropped down</dd>
+          </dl>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.Items"/>
+          <link id="#rtl.Classes.TStringList.Duplicates"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.Create.AOwner">
+        <short>Owner of the object instance</short>
+      </element>
+
+      <element name="TCustomCheckCombo.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls <var>ClearItemStates</var> to free the <var>TCheckComboItemState</var> instances allocated for <var>Items</var> in the control. Destroy calls the inherited destructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.ClearItemStates"/>
+          <link id="TCustomCheckCombo.Items"/>
+          <link id="TCheckComboItemState"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.AddItem" link ="#Lcl.StdCtrls.TCustomComboBox.AddItem">
+        <short>Adds a checkbox with the specified settings to the Items property</short>
+        <descr>
+          <p>
+            <var>AddItem</var> is a reintroduced procedure used to add a checkbox with the specified settings to the <var>Items</var> property. AddItem creates a TCheckComboItemState instance which stores the values specified in the <var>AItem</var>, <var>AState</var>, and <var>AEnabled</var> parameters. AddItem calls the inherited method to allocate a new item for the control with the associated item state object.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.AddItem.AItem">
+        <short>Caption for the new checkbox item</short>
+      </element>
+      <element name="TCustomCheckCombo.AddItem.AState">
+        <short>Checkbox State for the new checkbox item</short>
+      </element>
+      <element name="TCustomCheckCombo.AddItem.AEnabled">
+        <short>Enabled state for the new checkbox item</short>
+      </element>
+
+      <element name="TCustomCheckCombo.AssignItems">
+        <short>
+          Assigns the content in the specified TStringList to the Items in the control
+        </short>
+        <descr>
+          <p>
+            <var>AssignItems</var> calls <var>ClearItemStates</var> to reset the state flags for the existing Items. The <var>Assign</var> method in <var>Items</var> is called to store the values in <var>AItems</var>. The <var>InitItemStates</var> method is called to initialize the Objects properties in Items with <var>TCheckComboItemState</var> instances for each of the check boxes.
+          </p>
+          <remark>
+            Please note: InitItemStates can raise an exception if any of the Objects in AItems contains a class not derived from TCheckComboItemState.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.ClearItemStates"/>
+          <link id="TCustomCheckCombo.InitItemStates"/>
+          <link id="TCheckComboItemState"/>
+          <link id="#rtl.Classes.TStringList.Assign"/>
+          <link id="#rtl.Classes.TStringList.Objects"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.AssignItems.AItems">
+        <short>TStringList with values stored in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.Clear">
+        <short>Removes the values stored in the Items property</short>
+        <descr>
+          <p>
+            <var>Clear</var> is an overridden procedure in <var>TCustomCheckCombo</var> used to remove checkbox item state information. Clear calls <var>ClearItemStates</var> to free <var>TCheckComboItemState</var> classes instances stored in the <var>Objects</var> property in <var>Items</var>. Clear calls the inherited method prior to exit to remove its contents.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.ClearItemStates"/>
+          <link id="#rtl.Classes.TStringList.Clear"/>
+          <link id="#rtl.Classes.TStringList.Objects"/>
+          <link id="TCheckComboItemState"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.DeleteItem">
+        <short>Deletes the checkbox at the specified position</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomCheckCombo.DeleteItem.AIndex">
+        <short>Ordinal position for the checkbox removed in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.CheckAll">
+        <short>
+          Sets the state for all checkboxes defined in the control meeting the specified  criteria
+        </short>
+        <descr>
+          <p>
+            <var>CheckAll</var> is a procedure used to set the checked state for all checkboxes defined in the <var>Items</var> for the control. <var>AState</var> contains the  state applied to the checkboxes defined in the control.
+          </p>
+          <p>
+            <var>AAllowGrayed</var> indicates whether checkboxes with an indeterminate ("grayed") state can be updated in the method. <var>AAllowDisabled</var> indicates whether checkboxes which are not enabled can be updated in the method.
+          </p>
+          <p>
+            CheckAll iterates over the <var>Items</var> defined for the control, and when allowed using the specified arguments, sets the value in the <var>State</var> property to the value in <var>AState</var>.
+          </p>
+          <p>
+            CheckAll is a convenience method; the same result can be achieved by setting the value in the <var>State</var> or <var>Checked</var> properties for an individual checkbox at a specified position.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.Checked"/>
+          <link id="TCustomCheckCombo.State"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.CheckAll.AState">
+        <short>Checked state for the matching checkboxes</short>
+      </element>
+      <element name="TCustomCheckCombo.CheckAll.AAllowGrayed">
+        <short>Indicates if grayed checkboxes can be updated in the method</short>
+      </element>
+      <element name="TCustomCheckCombo.CheckAll.AAllowDisabled">
+        <short>Indicates if disabled checkboxes can be updated in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.Toggle">
+        <short>Toggles the value for the checkbox at the specified position</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCustomCheckCombo.Toggle.AIndex">
+        <short>Ordinal position for the checkbox affected in the method</short>
+      </element>
+
+      <element name="TCustomCheckCombo.AllowGrayed">
+        <short>Indicates if checkboxes can be drawn in the indeterminate state</short>
+        <descr>
+          <p>
+            <var>AllowGrayed</var> is a <var>Boolean</var> property which indicates if checkboxes can be displayed in the "grayed" or indeterminate state. The default value for the property is <b>False</b>.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.Count">
+        <short>Reflects the number of checkboxes defined for the control</short>
+        <descr>
+          <p>
+            <var>Count</var> is a read-only <var>Integer</var> property which reflects the number of checkboxes defined for the control. The value for the property is retrieved from the corresponding property in <var>Items</var>.
+          </p>
+          <p>
+            Use the <var>AddItem</var> method to add a new checkbox to the control. Use the <var>DeleteItem</var> method to remove a specific checkbox defined in  <var>Items</var>. Use <var>Clear</var> to remove all checkboxes defined for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.Classes.TStringList.Count"/>
+          <link id="TCustomCheckCombo.Items"/>
+          <link id="TCustomCheckCombo.AddItem"/>
+          <link id="TCustomCheckCombo.DeleteItem"/>
+          <link id="TCustomCheckCombo.Clear"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckCombo.Checked">
+        <short>
+          Provides indexed access to the Boolean value for a checkbox defined in Items
+        </short>
+        <descr>
+          <p>
+            <var>Checked</var> is an indexed <var>Boolean</var> property which provides access to the checked state for a checkbox item defined in the control. AIndex specifies the ordinal position in Items for the checkbox. Checked uses the value from the TCheckComboItemState object stored in the Items property. True indicates that TCheckComboItemState.Checked contains the value cbChecked. False indicates that it contains the value cbUnchecked.
+          </p>
+          <p>
+            Changing the value for the property causes the OnItemChange event handler to be signalled, and the Invalidate method is called when AIndex is also the selected ItemIndex for the control.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.Checked.AIndex">
+        <short>Ordinal position for the requested checkbox value</short>
+      </element>
+
+      <element name="TCustomCheckCombo.ItemEnabled">
+        <short>
+          Provides indexed access to the Boolean enabled value for a checkbox defined in Items
+        </short>
+        <descr></descr>
+        <seealso>
+          <link id="TCustomCheckCombo.State"/>
+          <link id="TCustomCheckCombo.Checked"/>
+          <link id="TCustomCheckCombo.Objects"/>
+          <link id="TCheckComboItemState.Enabled"/>
+          <link id="TCheckComboItemState.State"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.ItemEnabled.AIndex">
+        <short>Ordinal position for the requested checkbox enabled value</short>
+      </element>
+
+      <element name="TCustomCheckCombo.Objects">
+        <short>
+          Provides indexed access to the Data for a checkbox defined in Items
+        </short>
+        <descr>
+          <p>
+            <var>Objects</var> is an indexed <var>TObject</var> property which provides access to the Data for a checkbox defined in <var>Items</var>. AIndex specifies the ordinal position in Items for the checkbox. Objects return the value from the TCheckComboItemState object stored in the Items property. The object instance is the property value that represents the content stored in the TCheckComboItemState.Data property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCheckComboItemState.Data"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.Objects.AIndex">
+        <short>Ordinal position for the requested checkbox item state</short>
+      </element>
+
+      <element name="TCustomCheckCombo.State">
+        <short>
+          Provides indexed access to the checked State for a checkbox defined in Items
+        </short>
+        <descr>
+          <p>
+            <var>State</var> is an indexed <var>TCheckBoxState</var> property which provides access to the checked State for a checkbox defined in Items. <var>AIndex</var> specifies the ordinal position in Items for the checkbox. State returns the <var>TCheckBoxState</var> value in <var>TCheckComboItemState.State</var> for the associated object instance.
+          </p>
+          <p>
+            Changing the value for the property causes the <var>OnItemChange</var> event handler to be signalled. The <var>Invalidate</var> method is also called when <var>AIndex</var> is the current value in the <var>ItemIndex</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.ItemEnabled"/>
+          <link id="TCustomCheckCombo.Checked"/>
+          <link id="TCustomCheckCombo.Objects"/>
+          <link id="TCheckComboItemState.Enabled"/>
+          <link id="TCheckComboItemState.State"/>
+        </seealso>
+      </element>
+      <element name="TCustomCheckCombo.State.AIndex">
+        <short>Ordinal position for the checkbox state requested</short>
+      </element>
+
+      <element name="TCustomCheckCombo.OnItemChange">
+        <short>
+          Event handler signalled when the state for a checkbox in the control is changed
+        </short>
+        <descr>
+          <p>
+            <var>OnItemChange</var> is a <var>TCheckItemChange</var> property with the event handler signalled when a value in the <var>Checked</var> or <var>State</var> properties is changed. Arguments passed to the event handler identify the object for the event notification, and the ordinal position in <var>Items</var> for the modified checkbox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckCombo.Checked"/>
+          <link id="TCustomCheckCombo.SetChecked"/>
+          <link id="TCustomCheckCombo.State"/>
+          <link id="TCustomCheckCombo.SetState"/>
+          <link id="TCustomCheckCombo.Items"/>
+        </seealso>
+      </element>
+
+      <element name="TCheckComboBox" link="TCustomCheckCombo">
+        <short>Custom combo box which displays checkboxes for the items in the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCheckComboBox.Align" link="#lcl.Controls.TControl.Align"/>
+      <element name="TCheckComboBox.AllowGrayed" link="TCustomCheckCombo.AllowGrayed"/>
+      <element name="TCheckComboBox.Anchors" link="#lcl.Controls.TControl.Anchors"/>
+      <element name="TCheckComboBox.ArrowKeysTraverseList" link="TCustomComboBox.ArrowKeysTraverseList"/>
+      <element name="TCheckComboBox.AutoDropDown" link="TCustomComboBox.AutoDropDown"/>
+      <element name="TCheckComboBox.AutoSize" link="TCustomComboBox.AutoSize"/>
+      <element name="TCheckComboBox.BidiMode" link="#lcl.Controls.TControl.BidiMode"/>
+      <element name="TCheckComboBox.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing"/>
+      <element name="TCheckComboBox.BorderStyle" link="#lcl.Controls.TControl.BorderStyle"/>
+      <element name="TCheckComboBox.Color" link="#lcl.Controls.TControl.Color"/>
+      <element name="TCheckComboBox.Constraints" link="#lcl.Controls.TControl.Constraints"/>
+      <element name="TCheckComboBox.Count" link="TCustomComboBox.Count"/>
+      <element name="TCheckComboBox.DragCursor" link="#lcl.Controls.TControl.DragCursor"/>
+      <element name="TCheckComboBox.DragKind" link="#lcl.Controls.TControl.DragKind"/>
+      <element name="TCheckComboBox.DragMode" link="#lcl.Controls.TControl.DragMode"/>
+      <element name="TCheckComboBox.DropDownCount" link="TCustomComboBox.DropDownCount"/>
+      <element name="TCheckComboBox.Enabled" link="#lcl.Controls.TControl.Enabled"/>
+      <element name="TCheckComboBox.Font" link="#lcl.Controls.TControl.Font"/>
+      <element name="TCheckComboBox.ItemHeight" link="TCustomComboBox.ItemHeight"/>
+      <element name="TCheckComboBox.ItemIndex" link="TCustomComboBox.ItemIndex"/>
+      <element name="TCheckComboBox.Items" link="TCustomComboBox.Items"/>
+      <element name="TCheckComboBox.ItemWidth" link="TCustomComboBox.ItemWidth"/>
+      <element name="TCheckComboBox.MaxLength" link="TCustomComboBox.MaxLength"/>
+      <element name="TCheckComboBox.OnChange" link="TCustomComboBox.OnChange"/>
+      <element name="TCheckComboBox.OnChangeBounds" link="#lcl.Controls.TControl.OnChangeBounds"/>
+      <element name="TCheckComboBox.OnClick" link="#lcl.Controls.TControl.OnClick"/>
+      <element name="TCheckComboBox.OnCloseUp" link="TCustomComboBox.OnCloseUp"/>
+      <element name="TCheckComboBox.OnContextPopup" link="#lcl.Controls.TControl.OnContextPopup"/>
+      <element name="TCheckComboBox.OnDblClick" link="#lcl.Controls.TControl.OnDblClick"/>
+      <element name="TCheckComboBox.OnDragDrop" link="#lcl.Controls.TControl.OnDragDrop"/>
+      <element name="TCheckComboBox.OnDragOver" link="#lcl.Controls.TControl.OnDragOver"/>
+      <element name="TCheckComboBox.OnEndDrag" link="#lcl.Controls.TControl.OnEndDrag"/>
+      <element name="TCheckComboBox.OnDropDown" link="TCustomComboBox.OnDropDown"/>
+      <element name="TCheckComboBox.OnEditingDone" link="#lcl.Controls.TControl.OnEditingDone"/>
+      <element name="TCheckComboBox.OnEnter" link="#lcl.Controls.TWinControl.OnExit"/>
+      <element name="TCheckComboBox.OnExit" link="#lcl.Controls.TWinControl.OnExit"/>
+      <element name="TCheckComboBox.OnGetItems" link="TCustomComboBox.OnGetItems"/>
+      <element name="TCheckComboBox.OnItemChange" link="TCustomCheckCombo.OnItemChange"/>
+      <element name="TCheckComboBox.OnKeyDown" link="#lcl.Controls.TWinControl.OnKeyDown"/>
+      <element name="TCheckComboBox.OnKeyPress" link="#lcl.Controls.TWinControl.OnKeyPress"/>
+      <element name="TCheckComboBox.OnKeyUp" link="#lcl.Controls.TWinControl.OnKeyUp"/>
+      <element name="TCheckComboBox.OnMouseDown" link="#lcl.Controls.TControl.OnMouseDown"/>
+      <element name="TCheckComboBox.OnMouseEnter" link="#lcl.Controls.TControl.OnMouseEnter"/>
+      <element name="TCheckComboBox.OnMouseLeave" link="#lcl.Controls.TControl.OnMouseLeave"/>
+      <element name="TCheckComboBox.OnMouseMove" link="#lcl.Controls.TControl.OnMouseMove"/>
+      <element name="TCheckComboBox.OnMouseUp" link="#lcl.Controls.TControl.OnMouseUp"/>
+      <element name="TCheckComboBox.OnMouseWheel" link="#lcl.Controls.TControl.OnMouseWheel"/>
+      <element name="TCheckComboBox.OnMouseWheelDown" link="#lcl.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TCheckComboBox.OnMouseWheelUp" link="#lcl.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TCheckComboBox.OnSelect" link="#lcl.StdCtrls.TCustomComboBox.OnSelect"/>
+      <element name="TCheckComboBox.OnStartDrag" link="#lcl.Controls.TControl.OnStartDrag"/>
+      <element name="TCheckComboBox.OnUTF8KeyPress" link="#lcl.Controls.TControl.OnUTF8KeyPress"/>
+      <element name="TCheckComboBox.ParentBidiMode" link="#lcl.Controls.TControl.ParentBidiMode"/>
+      <element name="TCheckComboBox.ParentColor" link="#lcl.Controls.TControl.ParentColor"/>
+      <element name="TCheckComboBox.ParentFont" link="#lcl.Controls.TControl.ParentFont"/>
+      <element name="TCheckComboBox.ParentShowHint" link="#lcl.Controls.TControl.ParentShowHint"/>
+      <element name="TCheckComboBox.PopupMenu" link="#lcl.Controls.TControl.PopupMenu"/>
+      <element name="TCheckComboBox.ShowHint" link="#lcl.Controls.TControl.ShowHint"/>
+      <element name="TCheckComboBox.Sorted" link="#lcl.StdCtrls.TCustomComboBox.Sorted"/>
+      <element name="TCheckComboBox.TabOrder" link="#lcl.Controls.TWinControl.TabOrder"/>
+      <element name="TCheckComboBox.TabStop" link="#lcl.StdCtrls.TCustomComboBox.TabStop"/>
+      <element name="TCheckComboBox.Text" link="#lcl.StdCtrls.TCustomComboBox.Text"/>
+      <element name="TCheckComboBox.Visible" link="#lcl.Controls.TControl.Visible"/>
+
+      <element name="Register">
+        <short>Registers components for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is a procedure used to register components in the <file>comboex.pas</file> unit for use in the Lazarus IDE. Register adds the <var>TComboBoxEx</var> and <var>TCheckComboBox</var> components to the    <b>Misc</b> tab in the Lazarus IDE.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+    </module>
+    <!-- ComboEx -->
+  </package>
 </fpdoc-descriptions>
