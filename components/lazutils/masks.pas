@@ -17,6 +17,8 @@ uses
 
 type
   TMaskCharType = (mcChar, mcCharSet, mcAnyChar, mcAnyText);
+  TMaskOption = (moCaseSensitive, moDisableSets);
+  TMaskOptions = set of TMaskOption;
 
   TCharSet = set of Char;
   PCharSet = ^TCharSet;
@@ -41,12 +43,13 @@ type
   TMask = class
   private
     FMask: TMaskString;
-    fCaseSensitive: Boolean;
     fInitialMask: String;
-    procedure InitMaskString(const AValue: String; const CaseSensitive: Boolean);
+    fOptions: TMaskOptions;
+    procedure InitMaskString(const AValue: String);
     procedure ClearMaskString;
   public
-    constructor Create(const AValue: String; const CaseSensitive: Boolean = False);
+    constructor Create(const AValue: String; const CaseSensitive: Boolean); deprecated 'use overload with Options parameter';
+    constructor Create(const AValue: String; const AOptions: TMaskOptions = []);
     destructor Destroy; override;
 
     function Matches(const AFileName: String): Boolean;
@@ -68,7 +71,8 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
-    constructor Create(const AValue: String; ASeparator: Char = ';'; const CaseSensitive: Boolean = False);
+    constructor Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean); deprecated 'use overload with Options parameter';
+    constructor Create(const AValue: String; ASeparator: Char = ';'; const AOptions: TMaskOptions = []);
     destructor Destroy; override;
 
     function Matches(const AFileName: String): Boolean;
@@ -78,10 +82,19 @@ type
     property Items[Index: Integer]: TMask read GetItem;
   end;
 
-function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean = False): Boolean;
-function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean = False): Boolean;
-function MatchesMaskList(const FileName, Mask: String; Separator: Char = ';'; const CaseSensitive: Boolean = False): Boolean;
-function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char = ';'; const CaseSensitive: Boolean = False): Boolean;
+function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesMask(const FileName, Mask: String; const Options: TMaskOptions = []): Boolean;
+function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesWindowsMask(const FileName, Mask: String; const Options: TMaskOptions = []): Boolean;
+
+function MatchesMaskList(const FileName, Mask: String): Boolean;
+function MatchesMaskList(const FileName, Mask: String; Separator: Char): Boolean;
+function MatchesMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesMaskList(const FileName, Mask: String; Separator: Char; const Options: TMaskOptions): Boolean;
+function MatchesWindowsMaskList(const FileName, Mask: String): Boolean;
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char): Boolean;
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const Options: TMaskOptions): Boolean;
 
 implementation
 
@@ -106,10 +119,18 @@ end;
 
 
 function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
+begin
+  if CaseSensitive then
+    Result := MatchesMask(FileName, Mask, [moCaseSensitive])
+  else
+    Result := MatchesMask(FileName, Mask, [])
+end;
+
+function MatchesMask(const FileName, Mask: String; const Options: TMaskOptions): Boolean;
 var
   AMask: TMask;
 begin
-  AMask := TMask.Create(Mask, CaseSensitive);
+  AMask := TMask.Create(Mask, Options);
   try
     Result := AMask.Matches(FileName);
   finally
@@ -117,11 +138,11 @@ begin
   end;
 end;
 
-function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
+function MatchesWindowsMask(const FileName, Mask: String; const Options: TMaskOptions): Boolean;
 var
   AMask: TMask;
 begin
-  AMask := TMask.Create(Mask, CaseSensitive);
+  AMask := TMask.Create(Mask, Options);
   try
     Result := AMask.MatchesWindowsMask(FileName);
   finally
@@ -129,11 +150,37 @@ begin
   end;
 end;
 
+function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
+begin
+  if CaseSensitive then
+    Result := MatchesWindowsMask(FileName, Mask, [moCaseSensitive])
+  else
+    Result := MatchesWindowsMask(FileName, Mask, [])
+end;
+
+function MatchesMaskList(const FileName, Mask: String): Boolean;
+begin
+  Result := MatchesMaskList(FileName, Mask, ';', []);
+end;
+
+function MatchesMaskList(const FileName, Mask: String; Separator: Char): Boolean;
+begin
+  Result := MatchesMaskList(FileName, Mask, Separator, []);
+end;
+
 function MatchesMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean;
+begin
+  if CaseSensitive then
+    Result := MatchesMaskList(FileName, Mask, Separator, [moCaseSensitive])
+  else
+    Result := MatchesMaskList(FileName, Mask, Separator, []);
+end;
+
+function MatchesMaskList(const FileName, Mask: String; Separator: Char; const Options: TMaskOptions): Boolean;
 var
   AMaskList: TMaskList;
 begin
-  AMaskList := TMaskList.Create(Mask, Separator, CaseSensitive);
+  AMaskList := TMaskList.Create(Mask, Separator, Options);
   try
     Result := AMaskList.Matches(FileName);
   finally
@@ -141,11 +188,30 @@ begin
   end;
 end;
 
+
+function MatchesWindowsMaskList(const FileName, Mask: String): Boolean;
+begin
+  Result := MatchesWindowsMaskList(FileName, Mask, ';', []);
+end;
+
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char): Boolean;
+begin
+  Result := MatchesWindowsMaskList(FileName, Mask, Separator, []);
+end;
+
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean;
+begin
+  if CaseSensitive then
+    Result := MatchesWindowsMaskList(FileName, Mask, Separator, [moCaseSensitive])
+  else
+    Result := MatchesWindowsMaskList(FileName, Mask, Separator, []);
+end;
+
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const Options: TMaskOptions): Boolean;
 var
   AMaskList: TMaskList;
 begin
-  AMaskList := TMaskList.Create(Mask, Separator, CaseSensitive);
+  AMaskList := TMaskList.Create(Mask, Separator, Options);
   try
     Result := AMaskList.MatchesWindowsMask(FileName);
   finally
@@ -153,9 +219,10 @@ begin
   end;
 end;
 
+
 { TMask }
 
-procedure TMask.InitMaskString(const AValue: String; const CaseSensitive: Boolean);
+procedure TMask.InitMaskString(const AValue: String);
 var
   I: Integer;
   SkipAnyText: Boolean;
@@ -230,7 +297,7 @@ var
             if (I > Utf8Length(AValue)) then CharSetError;
             CP := GetCodePoint(AValue, I);
             if (Length(CP) <> 1) then CharSetError;
-            if fCaseSensitive then
+            if (moCaseSensitive in fOptions) then
             begin
               //writeln('MaskUtf8: Set:  ' + Last + '-' + (CP[1]));
               for C := Last to CP[1] do
@@ -251,7 +318,7 @@ var
           end;
         else
         begin
-          if fCaseSensitive then
+          if (moCaseSensitive in fOptions) then
             Last := CP[1]
           else
             Last := LowerCase(CP[1]);
@@ -279,7 +346,7 @@ var
     with FMask.Chars[High(FMask.Chars)] do
     begin
       CharType := mcChar;
-      if fCaseSensitive then
+      if (moCaseSensitive in fOptions) then
         CharValue := GetCodePoint(AValue,I)
       else
         CharValue := Utf8LowerCase(GetCodePoint(AValue,I));
@@ -292,7 +359,6 @@ var
   end;
 
 begin
-  fCaseSensitive:=CaseSensitive;
   SetLength(FMask.Chars, 0);
   FMask.MinLength := 0;
   FMask.MaxLength := 0;
@@ -304,7 +370,12 @@ begin
     case GetCodePoint(AValue,I) of
       '*': AddAnyText;
       '?': AddAnyChar;
-      '[': AddCharSet;
+      '[': begin
+             if not (moDisableSets in FOptions) then
+               AddCharSet
+             else
+               AddChar;
+           end
       else AddChar;
     end;
   end;
@@ -319,12 +390,20 @@ begin
       Dispose(FMask.Chars[I].SetValue);
 end;
 
+constructor TMask.Create(const AValue: String; const AOptions: TMaskOptions);
+begin
+  fInitialMask := AValue;
+  fOptions := AOptions;
+  InitMaskString(AValue);
+end;
+
 constructor TMask.Create(const AValue: String; const CaseSensitive: Boolean);
 
 begin
-  fInitialMask := AValue;
-  fCaseSensitive := CaseSensitive;
-  InitMaskString(AValue, CaseSensitive);
+  if CaseSensitive then
+    Create(AValue, [moCaseSensitive])
+  else
+    Create(AValue, []);
 end;
 
 destructor TMask.Destroy;
@@ -403,7 +482,8 @@ begin
   end;
 
   if (L < FMask.MinLength) or (L > FMask.MaxLength) then Exit;
-  if fCaseSensitive then
+  if (moCaseSensitive in fOptions) then
+  //if fCaseSensitive then
     S := AFileName
   else
   begin
@@ -429,11 +509,11 @@ begin
   begin
     NewMaskValue := Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-2);
     ClearMaskString;
-    InitMaskString(NewMaskValue, fCaseSensitive);
+    InitMaskString(NewMaskValue);
     Result := Matches(AFileName);
     //Restore initial state of FMask
     ClearMaskString;
-    InitMaskString(fInitialMask, fCaseSensitive);
+    InitMaskString(fInitialMask);
   end
   //else if (Length(fInitialMask) > 1) and (RightStr(fInitialMask,2) = '*.') then
   else if (Utf8Length(fInitialMask) > 1) and (GetCodePoint(fInitialMask,Utf8Length(fInitialMask)) = '.') then
@@ -447,11 +527,11 @@ begin
     begin
       NewMaskValue := Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-1);
       ClearMaskString;
-      InitMaskString(NewMaskValue, fCaseSensitive);
+      InitMaskString(NewMaskValue);
       Result := Matches(AFileName);
       //Restore initial state of FMask
       ClearMaskString;
-      InitMaskString(fInitialMask, fCaseSensitive);
+      InitMaskString(fInitialMask);
     end
     else
     begin
@@ -462,7 +542,8 @@ begin
   //foo.*  (but not '.*')
   begin
     //First see if we have 'foo'
-    if fCaseSensitive then
+    if (moCaseSensitive in fOptions) then
+    //if fCaseSensitive then
       Result := (AFileName = Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-2))
     else
       Result := (Utf8CompareText(AFileName,Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-2)) = 0);
@@ -503,25 +584,33 @@ begin
   Result := TMask(FMasks.Items[Index]);
 end;
 
+
 function TMaskList.GetCount: Integer;
 begin
   Result := FMasks.Count;
 end;
 
-constructor TMaskList.Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean);
+constructor TMaskList.Create(const AValue: String; ASeparator: Char; const AOptions: TMaskOptions);
 var
   S: TParseStringList;
   I: Integer;
 begin
   FMasks := TObjectList.Create(True);
-
   S := TParseStringList.Create(AValue, ASeparator);
   try
     for I := 0 to S.Count - 1 do
-      FMasks.Add(TMask.Create(S[I], CaseSensitive));
+      FMasks.Add(TMask.Create(S[I], AOptions));
   finally
     S.Free;
   end;
+end;
+
+constructor TMaskList.Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean);
+begin
+  if CaseSensitive then
+    Create(AValue, ASeparator, [moCaseSensitive])
+  else
+    Create(AValue, ASeparator, []);
 end;
 
 destructor TMaskList.Destroy;
