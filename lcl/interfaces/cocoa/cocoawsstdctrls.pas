@@ -1931,7 +1931,7 @@ var
   btn: NSButton;
   cl: NSButtonCell;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, CocoaToggleBezel, CocoaToggleType);
+  btn := AllocButton(AWinControl, TLCLCheckBoxCallback, AParams, CocoaToggleBezel, CocoaToggleType);
   cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
   Result := TLCLIntfHandle(btn);
