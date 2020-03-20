@@ -414,68 +414,68 @@ begin
   SetLength(FEdits, Len);
 
   FForm:= TDummyForInput.CreateNew(nil);
-  FForm.Width:= FForm.Scale96ToForm(600);
-  FForm.Height:= FForm.Scale96ToForm(400);
-  FForm.BorderStyle:= bsDialog;
-  FForm.Position:= poScreenCenter;
-  FForm.Caption:= ACaption;
-  FForm.FOnCloseEvent:= ACloseEvent;
-
-  NSpacing:= FForm.Scale96ToForm(cInputQuerySpacingSize);
-  NEditWidth:= Max(
-    FForm.Scale96ToForm(cInputQueryEditSizePixels),
-    _InputQueryActiveMonitor.Width * cInputQueryEditSizePercents div 100);
-
-  FButtons:= TButtonPanel.Create(FForm);
-  FButtons.Parent:= FForm;
-  FButtons.ShowButtons:= [pbOK, pbCancel];
-  FButtons.ShowBevel:= false;
-  FButtons.OKButton.OnClick:= @FForm.FOnClick;
-  FButtons.OKButton.ModalResult:= mrNone;
-
-  for i:= 0 to Len-1 do
-  begin
-    FPanels[i]:= TPanel.Create(FForm);
-    FPanels[i].Parent:= FForm;
-    FPanels[i].Align:= alTop;
-    FPanels[i].BevelInner:= bvNone;
-    FPanels[i].BevelOuter:= bvNone;
-    FPanels[i].AutoSize:= true;
-    FPanels[i].BorderSpacing.Around:= NSpacing;
-
-    //fix order of panels
-    if i>0 then
-      FPanels[i].Top:= FPanels[i-1].Top+10;
-
-    FEdits[i]:= TEdit.Create(FForm);
-    FEdits[i].Parent:= FPanels[i];
-    FEdits[i].Align:= alRight;
-    FEdits[i].Width:= NEditWidth;
-    FEdits[i].Text:= AValues[i];
-    if i<Length(APrompts) then
-      FEdits[i].PasswordChar:= GetPasswordChar(APrompts[i]);
-
-    FLabels[i]:= TPanel.Create(FForm);
-    FLabels[i].Parent:= FPanels[i];
-    FLabels[i].Align:= alRight;
-    FLabels[i].BevelInner:= bvNone;
-    FLabels[i].BevelOuter:= bvNone;
-    if i<Length(APrompts) then
-      FLabels[i].Caption:= GetPromptCaption(APrompts[i]);
-    FLabels[i].BorderSpacing.Right:= NSpacing;
-    FLabels[i].Width:= FLabels[i].Canvas.TextWidth(FLabels[i].Caption);
-
-    FEdits[i].Left:= FForm.Width; // place edits to right
-  end;
-
-  FButtons.Align:= alTop;
-  FButtons.Top:= FPanels[Len-1].Top+10; // place buttons to bottom
-
-  FForm.AutoSize:= true;
-  FForm.ActiveControl:= FEdits[0];
-  FForm.FEditsPtr:= @FEdits;
-
   try
+    FForm.Width:= FForm.Scale96ToForm(600);
+    FForm.Height:= FForm.Scale96ToForm(400);
+    FForm.BorderStyle:= bsDialog;
+    FForm.Position:= poScreenCenter;
+    FForm.Caption:= ACaption;
+    FForm.FOnCloseEvent:= ACloseEvent;
+
+    NSpacing:= FForm.Scale96ToForm(cInputQuerySpacingSize);
+    NEditWidth:= Max(
+      FForm.Scale96ToForm(cInputQueryEditSizePixels),
+      _InputQueryActiveMonitor.Width * cInputQueryEditSizePercents div 100);
+
+    FButtons:= TButtonPanel.Create(FForm);
+    FButtons.Parent:= FForm;
+    FButtons.ShowButtons:= [pbOK, pbCancel];
+    FButtons.ShowBevel:= false;
+    FButtons.OKButton.OnClick:= @FForm.FOnClick;
+    FButtons.OKButton.ModalResult:= mrNone;
+
+    for i:= 0 to Len-1 do
+    begin
+      FPanels[i]:= TPanel.Create(FForm);
+      FPanels[i].Parent:= FForm;
+      FPanels[i].Align:= alTop;
+      FPanels[i].BevelInner:= bvNone;
+      FPanels[i].BevelOuter:= bvNone;
+      FPanels[i].AutoSize:= true;
+      FPanels[i].BorderSpacing.Around:= NSpacing;
+
+      //fix order of panels
+      if i>0 then
+        FPanels[i].Top:= FPanels[i-1].Top+10;
+
+      FEdits[i]:= TEdit.Create(FForm);
+      FEdits[i].Parent:= FPanels[i];
+      FEdits[i].Align:= alRight;
+      FEdits[i].Width:= NEditWidth;
+      FEdits[i].Text:= AValues[i];
+      if i<Length(APrompts) then
+        FEdits[i].PasswordChar:= GetPasswordChar(APrompts[i]);
+
+      FLabels[i]:= TPanel.Create(FForm);
+      FLabels[i].Parent:= FPanels[i];
+      FLabels[i].Align:= alRight;
+      FLabels[i].BevelInner:= bvNone;
+      FLabels[i].BevelOuter:= bvNone;
+      if i<Length(APrompts) then
+        FLabels[i].Caption:= GetPromptCaption(APrompts[i]);
+      FLabels[i].BorderSpacing.Right:= NSpacing;
+      FLabels[i].Width:= FLabels[i].Canvas.TextWidth(FLabels[i].Caption);
+
+      FEdits[i].Left:= FForm.Width; // place edits to right
+    end;
+
+    FButtons.Align:= alTop;
+    FButtons.Top:= FPanels[Len-1].Top+10; // place buttons to bottom
+
+    FForm.AutoSize:= true;
+    FForm.ActiveControl:= FEdits[0];
+    FForm.FEditsPtr:= @FEdits;
+
     Result:= FForm.ShowModal=mrOk;
     if Result then
       for i:= 0 to Len-1 do
