@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="LCL">
+    <!--
+    ====================================================================
+      FindDlgUnit
+    ====================================================================
+    -->
+    <module name="FindDlgUnit">
+      <short/>
+      <descr>
+        <p>
+          Only the .lfm file is used by the LCL (dialogs.pp). This unit is itself is not compiled into the LCL. This form is used to design the .lfm file.
+        </p>
+        <p>
+          The source code is a copy of <file>../lcl/include/finddialog.inc</file>.
+        </p>
+      </descr>
+
+      <!-- used units -->
+      <element name="System"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Forms"/>
+      <element name="Controls"/>
+      <element name="Graphics"/>
+      <element name="Dialogs"/>
+      <element name="StdCtrls"/>
+      <element name="Buttons"/>
+      <element name="ExtCtrls"/>
+
+      <element name="TFindDialogForm">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.BtnPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.EntireScopeCheckBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.FindButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.CancelButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.FlagsPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.HelpButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.WholeWordsOnlyCheckBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.CaseSensitiveCheckBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.EditFind">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.FindLabel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.DirectionRadioGroup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.EditFindChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFindDialogForm.EditFindChange.Sender">
+        <short/>
+      </element>
+
+      <element name="TFindDialogForm.FormCreate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFindDialogForm.FormCreate.Sender">
+        <short/>
+      </element>
+
+    </module>
+    <!-- FindDlgUnit-->
+  </package>
+</fpdoc-descriptions>

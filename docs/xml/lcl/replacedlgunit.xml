@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="LCL">
+    <!--
+    ====================================================================
+      ReplaceDlgUnit
+    ====================================================================
+    -->
+    <module name="ReplaceDlgUnit">
+      <short/>
+      <descr>
+        <p>
+          Only the .lfm file is used by the LCL (dialogs.pp). This unit is itself is not compiled into the LCL. This form is used to design the .lfm file.
+        </p>
+        <p>
+          The source code is a copy of <file>../lcl/include/finddialog.inc</file>.
+        </p>
+      </descr>
+
+      <!-- used units -->
+      <element name="System"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Forms"/>
+      <element name="Controls"/>
+      <element name="Graphics"/>
+      <element name="Dialogs"/>
+      <element name="StdCtrls"/>
+      <element name="Buttons"/>
+      <element name="FindDlgUnit"/>
+      <element name="ExtCtrls"/>
+
+      <element name="TReplaceDialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.PromptOnReplaceCheckBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.EntireScopeCheckBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.FindMoreButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.ReplaceButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.ReplaceAllButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.CancelButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.HelpButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.WholeWordsOnlyCheckBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.CaseSensitiveCheckBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.EditFind">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.EditReplace">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.TextLabel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.ReplaceLabel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TReplaceDialogForm.DirectionRadioGroup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+    </module>
+    <!-- ReplaceDlgUnit -->
+  </package>
+</fpdoc-descriptions>

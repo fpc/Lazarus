@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="LCL">
+    <!--
+    ====================================================================
+      TimePopup
+    ====================================================================
+    -->
+    <module name="TimePopup">
+      <short>Contains Forms, Types, and routines used to display a pop-up for TTimeEdit</short>
+      <descr/>
+
+      <!-- used untis -->
+      <element name="System"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="DateUtils"/>
+      <element name="FileUtil"/>
+      <element name="LCLType"/>
+      <element name="Forms"/>
+      <element name="Controls"/>
+      <element name="Graphics"/>
+      <element name="Dialogs"/>
+      <element name="Grids"/>
+      <element name="ExtCtrls"/>
+      <element name="Buttons"/>
+      <element name="StdCtrls"/>
+      <element name="ActnList"/>
+      <element name="WSForms"/>
+
+      <element name="TReturnTimeEvent">
+        <short>Specifies an event handler signalled to get a time return value</short>
+        <descr>
+          <p>
+            <var>TReturnTimeEvent</var> specifies an event handler signalled to validate or assign a time value. It is an object procedure which must be implemented in an application to respond to the event notification.
+          </p>
+          <p>
+            <var>Sender</var> is the object generating the event notification.
+          </p>
+          <p>
+            <var>ATime</var> is a <var>TDateTime</var> value which contains the time value used in the event handler. Only the time portion of the type is significant.
+          </p>
+          <p>
+            <var>TReturnTimeEvent</var> is the type passed as an argument to the <var>ShowTimePopup</var> routine, and implemented as a private member in <var> TTimePopupForm</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTimePopupForm"/>
+          <link id="ShowTimePopup"/>
+        </seealso>
+      </element>
+      <element name="TReturnTimeEvent.Sender">
+        <short>Object for the event notification</short>
+      </element>
+      <element name="TReturnTimeEvent.ATime">
+        <short>Time value examined or updated in the event handler</short>
+      </element>
+
+      <element name="TTimePopupForm">
+        <short>Implements a form displayed to capture a time value</short>
+        <descr>
+          <p>
+            <var>TTimePopupForm</var> implements a form displayed to capture and return a time value.
+          </p>
+          <p>
+            The form contains grids with Hour and Minute values which can be selected to form the time value. The Minutes displayed in the grid are in either 5 minute or 30 minute intervals, depending on the layout selected using the <var>SetLayout</var> method; Simple layout uses a 5 minute interval and is the default layout for the form.
+          </p>
+          <p>
+            It uses an internal <var>TReturnTimeEvent</var> handler to validate or update the time value. There are also internal members used to track the control associated with the form, and the coordinates where the form is displayed. These internals are assigned using values passed as arguments to the <var>ShowTimePopup</var> routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ShowTimePopup"/>
+          <link id="TReturnTimeEvent"/>
+          <link id="#lcl.EditBtn.TTimeEdit"/>
+        </seealso>
+      </element>
+
+      <element name="TTimePopupForm.Bevel1"/>
+      <element name="TTimePopupForm.MainPanel"/>
+      <element name="TTimePopupForm.HoursGrid"/>
+      <element name="TTimePopupForm.MinutesGrid"/>
+      <element name="TTimePopupForm.MoreLessBtn"/>
+
+      <element name="TTimePopupForm.GridsDblClick">
+        <short>Implements the OnDblClick event handler for grids controls on the form</short>
+        <descr>
+          <p>
+            Calls <var>ReturnTime</var> to signal the <var>OnReturnTime</var> event handler (when assigned) and close the form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTimePopupForm.OnReturnTime"/>
+          <link id="TCustomForm.Close"/>
+          <link id="TReturnTimeEvent"/>
+        </seealso>
+      </element>
+      <element name="TTimePopupForm.GridsDblClick.Sender">
+        <short>Object for the event notification</short>
+      </element>
+
+      <element name="TTimePopupForm.GridsKeyDown">
+        <short>Implements the OnKeyDown event handler for grid controls on the form</short>
+        <descr>
+          <p>
+            <var>GridsKeyDown</var> ensures that the virtual key in <var>Key</var> and <var>Shift</var> is applied, when required. GridsKeyDown calls for form methods for the following:
+          </p>
+          <dl>
+            <dt>VK_ESC</dt>
+            <dd>Calls the close method to close the Form.</dd>
+            <dt>VK_RETURN, VK_SPACE</dt>
+            <dd>Call ReturnTime to validate/update the time value, and close the Form.</dd>
+          </dl>
+          <p>
+            When <var>Key</var> is handled in the method, it is set to zero (0). Otherwise, it is retained for use in Form or Application key events.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TTimePopupForm.GridsKeyDown.Sender">
+        <short>Object for the event notification</short>
+      </element>
+      <element name="TTimePopupForm.GridsKeyDown.Key">
+        <short>Virtual key code examined in the method</short>
+      </element>
+      <element name="TTimePopupForm.GridsKeyDown.Shift">
+        <short>Key Modifier examined in the method</short>
+      </element>
+
+      <element name="TTimePopupForm.GridPrepareCanvas">
+        <short>
+          Sets the canvas text style for a grid on the form
+        </short>
+        <descr>
+          <p>
+            <var>GridPrepareCanvas</var> ensures that the Canvas used to draw grid controls (<var>TStringGrid</var>) on the form has been initialized. GridPrepareCanvas sets the text layout and alignment needed for the Canvas property in the control.
+          </p>
+          <p>
+            <var>Sender</var> contains the grid control updated in the method. All other parameters are ignored in the current implementation.
+          </p>
+      </descr>
+        <seealso/>
+      </element>
+      <element name="TTimePopupForm.GridPrepareCanvas.sender">
+        <short>Control updated in the method</short>
+      </element>
+      <element name="TTimePopupForm.GridPrepareCanvas.aCol">
+        <short>Ignored</short>
+      </element>
+      <element name="TTimePopupForm.GridPrepareCanvas.aRow">
+        <short>Ignored</short>
+      </element>
+      <element name="TTimePopupForm.GridPrepareCanvas.aState">
+        <short>Ignored</short>
+      </element>
+
+      <element name="TTimePopupForm.MoreLessBtnClick">
+        <short>
+          Implements the OnClick event handler for the MoreLessBtn button on the form
+        </short>
+        <descr>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TTimePopupForm.MoreLessBtnClick.Sender">
+        <short>Object for the event notification</short>
+      </element>
+
+      <element name="TTimePopupForm.FClosed"/>
+      <element name="TTimePopupForm.FOnReturnTime"/>
+      <element name="TTimePopupForm.FSimpleLayout"/>
+      <element name="TTimePopupForm.FPopupOrigin"/>
+      <element name="TTimePopupForm.FCaller"/>
+
+      <element name="TTimePopupForm.ActivateDoubleBuffered">
+        <short>
+          Ensures that the DoubleBuffered property is updated with the current value from the widget set class
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTimePopupForm.CalcGridHeights">
+        <short>Calculates the total height for the Hours and Minutes grids on the form</short>
+        <descr/>
+      </element>
+
+      <element name="TTimePopupForm.GetTime">
+        <short>Gets a TDateTime value for the selected cells in Hours and Minutes grids</short>
+        <descr>
+          Calls EncodeTime to get the return value for the selected cells.
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TTimePopupForm.GetTime.Result">
+        <short>
+          TDateTime value for the selected cells; only the time portion of the value is relevant
+        </short>
+      </element>
+
+      <element name="TTimePopupForm.Initialize">
+        <short>Initializes the form using the origin and time values specified</short>
+        <descr>
+          Calls KeepInView to ensure that the form origin remains visible on the current monitor. Called from the ShowTimePopup routine.
+         </descr>
+        <seealso/>
+      </element>
+      <element name="TTimePopupForm.Initialize.PopupOrigin">
+        <short>Upper left coordinates for the form</short>
+      </element>
+      <element name="TTimePopupForm.Initialize.ATime">
+        <short>Initial time value displayed on the form</short>
+      </element>
+
+      <element name="TTimePopupForm.KeepInView">
+        <short>Ensures that form remains visible on the current monitor</short>
+        <descr>
+          <p>
+            KeepInView ensures that form remains visible on the current monitor. KeepInView tries to put the form on a "nice" place on the screen and make sure the entire form is visible. TheCaller typically will be a TTimeEdit control, and uses the following logic:
+          </p>
+          <ul>
+            <li>Places the form right under Caller control. If it does not fit...</li>
+            <li>Place the form above the Caller control. If it does not fit...</li>
+            <li>Sets the top coordinate to 0 and allows covering the Caller control.</li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TTimePopupForm.KeepInView.PopupOrigin">
+        <short>Upper left coordinates where the form is displayed</short>
+      </element>
+
+      <element name="TTimePopupForm.ReturnTime">
+        <short>Validates the current time value for the form</short>
+        <descr>
+          <p>
+            <var>ReturnTime</var> is a procedure used to validate and possibly update the current time value for the form. <var>GetTime</var> is called to get the time value using the selected cells in the Hour and Minute grids.
+          </p>
+          <p>
+            ReturnTime signals the internal <var>TReturnTimeEvent</var> event handler (when assigned) to validate/update the time value. The TReturnTimeEvent event handler is passed as an argument to the <var>ShowTimePopup</var> routine.
+          </p>
+          <p>
+            The <var>Close</var> method is called to close the form if it has not already been  hidden.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTimePopupForm.GetTime"/>
+          <link id="ShowTimePopup"/>
+          <link id="#lcl.Forms.TCustomForm.Close"/>
+        </seealso>
+      </element>
+
+      <element name="TTimePopupForm.SetLayout">
+        <short>Sets the layout used in Minute grid for the form</short>
+        <descr>
+          <p>
+            <var>SimpleLayout</var> indicates whether the Minutes grid on the form use the simple layout. Simple layout uses a 30 minute interval between cells in the grid, and offers a more compact appearance. When SimpleLayout is False, a 5 minute interval is used between cells in the Minute grid.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TTimePopupForm.SetLayout.SimpleLayout">
+        <short>Uses the compact 30 minute interval when True</short>
+      </element>
+
+      <element name="TTimePopupForm.SetTime">
+        <short>Sets the time value displayed on the form</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTimePopupForm.SetTime.ATime">
+        <short>Time value applied to the Hour and Minute grid</short>
+      </element>
+
+      <element name="TTimePopupForm.FormClose">
+        <short>Performs actions needed when the form is closed</short>
+        <descr>
+          <p>
+            <var>FormClose</var> reimplements the FormClose event handler for the form to ensure that the <var>FormDeactivate</var> method is removed from the registered deactivate handlers in the global <var>Application</var> instance. FormClose sets the value in <var>CloseAction</var> to <var>caFree</var> to free the form instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTimePopupForm.FormDeactivate"/>
+          <link id="#lcl.Forms.Application"/>
+          <link id="#lcl.Forms.TApplication.RemoveOnDeactivateHandler"/>
+        </seealso>
+      </element>
+      <element name="TTimePopupForm.FormClose.Sender">
+        <short>Object for the event notification</short>
+      </element>
+      <element name="TTimePopupForm.FormClose.CloseAction">
+        <short>Close action to perform on exit form the method</short>
+      </element>
+
+      <element name="TTimePopupForm.FormCreate">
+        <short>Performs actions needed when the form instance is created</short>
+        <descr>
+          <p>
+            <var>FormCreate</var> reimplements the FormCreate method to initialize the form instance, and register its deactivation handler. FormCreate sets the form to us the Simple layout, calls <var>SetLayout</var>, and registers the <var>FormDeactivate</var> method as a deactivation handler in the global <var>Application</var> instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTimePopupForm.FormDeactivate"/>
+          <link id="TTimePopupForm.SetLayout"/>
+          <link id="#lcl.Forms.Application"/>
+          <link id="#lcl.Forms.TApplication.AddOnDeactivateHandler"/>
+        </seealso>
+      </element>
+      <element name="TTimePopupForm.FormCreate.Sender">
+        <short>Object for the event notification</short>
+      </element>
+
+      <element name="TTimePopupForm.FormDeactivate">
+        <short>Performs action needed when the form is deactivated</short>
+        <descr>
+          <p>
+            <var>FormDeactivate</var> reimplements the FormDeactivate event handler for the form. FormDeactivate call the <var>Hide</var> method to immediately hide the form. Otherwise, it would remain visible while in a Drag operation, for example. If not already active, the <var>Close</var> method is called prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.Close"/>
+          <link id="TCustomForm.Hide"/>
+        </seealso>
+      </element>
+      <element name="TTimePopupForm.FormDeactivate.Sender">
+        <short>Object for the event notification</short>
+      </element>
+
+      <element name="ShowTimePopup">
+        <short>
+          Creates, initializes, and displays a TTimePopupForm instance
+        </short>
+        <descr>
+          <p>
+            <var>ShowTimePopup</var> is a routine used to create, initialize, and display a <var>TTimePopupForm</var> instance. Arguments passed to the routine identify the time value and the control associated with the pop-up, event handlers assigned to the form instance, and the layout and position for the form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTimePopupForm"/>
+          <link id="TReturnTimeEvent"/>
+        </seealso>
+      </element>
+      <element name="ShowTimePopup.Position">
+        <short>Coordinates where the form is displayed</short>
+      </element>
+      <element name="ShowTimePopup.ATime">
+        <short>Initial time value for the form</short>
+      </element>
+      <element name="ShowTimePopup.DoubleBufferedForm">
+        <short>Indicates if DoubleBuffered is enabled in the form instance</short>
+      </element>
+      <element name="ShowTimePopup.OnReturnTime">
+        <short>Event handler signalled when the time value is changed</short>
+      </element>
+      <element name="ShowTimePopup.OnShowHide">
+        <short>Event handler signalled when the form is show or hidden</short>
+      </element>
+      <element name="ShowTimePopup.SimpleLayout">
+        <short>
+          True indicates the simple (compact) layout is used for the Minute grid on the form
+        </short>
+      </element>
+      <element name="ShowTimePopup.ACaller">
+        <short>Control with the time value updated using the pop-up form</short>
+      </element>
+
+    </module>
+    <!-- TimePopup -->
+  </package>
+</fpdoc-descriptions>
