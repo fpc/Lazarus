@@ -6539,8 +6539,9 @@ begin
   if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
 
   // save old project
-  if AskSaveProject(lisDoYouStillWantToOpenAnotherProject,
-                    lisDiscardChangesAndOpenProject)<>mrOk then exit;
+  if not (ofRevert in Flags)
+  and (AskSaveProject(lisDoYouStillWantToOpenAnotherProject, lisDiscardChangesAndOpenProject)<>mrOk) then
+    exit;
 
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
@@ -8566,7 +8567,7 @@ begin
         mtConfirmation, [mrYes, lisReopenProject,
                          mrIgnore], '') = mrYes
       then begin
-        DoOpenProjectFile(Project1.ProjectInfoFile,[]);
+        DoOpenProjectFile(Project1.ProjectInfoFile,[ofRevert]);
       end else begin
         Project1.IgnoreProjectInfoFileOnDisk;
       end;

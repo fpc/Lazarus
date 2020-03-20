@@ -7872,7 +7872,7 @@ begin
   if Project1=nil then exit(mrOk);
   if not SomethingOfProjectIsModified then exit(mrOk);
 
-  DataModified:=Project1.SomeDataModified(false);
+  DataModified:=Project1.SomeDataModified(false) or Project1.HasProjectInfoFileChangedOnDisk;
   SrcModified:=SourceEditorManager.SomethingModified(false);
 
   if Project1.IsVirtual
