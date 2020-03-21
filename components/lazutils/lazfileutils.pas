@@ -572,10 +572,11 @@ function FileIsText(const AFilename: string; out FileReadable: boolean): boolean
 var
   Buf: string;
   Len: integer;
-  NewLine: boolean;
   p: PChar;
   ZeroAllowed: Boolean;
   fHandle: THandle;
+const
+  BufSize = 2048;
 begin
   Result:=false;
   FileReadable:=true;
@@ -583,7 +584,7 @@ begin
   if (THandle(fHandle) <> feInvalidHandle)  then
   begin
     try
-      Len:=1024;
+      Len:=BufSize;
       SetLength(Buf,Len+1);
       Len := FileRead(fHandle,Buf[1],Len);
 
@@ -603,7 +604,6 @@ begin
           inc(p,2);
           ZeroAllowed:=true;
         end;
-        NewLine:=false;
         while true do begin
           case p^ of
           #0:
@@ -615,12 +615,10 @@ begin
           // #12: form feed
           // #26: end of file
           #1..#8,#11,#14..#25,#27..#31: exit;
-          #10,#13: NewLine:=true;
           end;
           inc(p);
         end;
-        if NewLine or (Len<1024) then
-          Result:=true;
+        Result:=true;
       end else
         Result:=true;
     finally
