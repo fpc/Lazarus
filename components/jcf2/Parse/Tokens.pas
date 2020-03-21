@@ -371,7 +371,7 @@ const
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
-  HintDirectives: TTokenTypeSet  = [ttDeprecated, ttLibrary, ttPlatform,
+  HintDirectives: TTokenTypeSet  = [ttDeprecated, ttLibrary, ttPlatform, ttCVar,
                                     ttExperimental, ttUnimplemented, ttStatic];
 
   AllDirectives: TTokenTypeSet =
