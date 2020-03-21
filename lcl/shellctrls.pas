@@ -662,9 +662,9 @@ var
   MaskList: TMaskList;
   Files: TList;
   FileItem: TFileItem;
+  MaskOptions: TMaskOptions;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
-  MaskOptions: TMaskOptions;
   {$endif}
 begin
   {$if defined(windows) and not defined(wince)}
