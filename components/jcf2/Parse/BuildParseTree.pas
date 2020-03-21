@@ -781,7 +781,7 @@ begin
 
   }
   while fcTokenList.FirstSolidTokenType in [ttConst, ttResourceString,
-      ttType, ttVar, ttThreadVar, ttOpenSquareBracket, ttExports, ttOperator] + ProcedureWords do
+      ttType, ttVar, ttThreadVar, ttOpenSquareBracket, ttExports, ttOperator, ttProperty] + ProcedureWords do
     RecogniseInterfaceDecl;
 end;
 
@@ -815,6 +815,11 @@ begin
       RecogniseAttributes;
     ttExports:
       RecogniseExportsSection;
+    ttProperty:
+    begin
+      RecogniseProperty;
+      Recognise(ttSemicolon);
+    end
     else
       raise TEParseError.Create('Expected const, type, var, procedure or function', lc);
   end;
@@ -955,6 +960,12 @@ begin
       RecogniseProcedureDeclSection;
     ttExports:
       RecogniseExportsSection;
+    ttProperty:
+    begin
+      RecogniseProperty;
+      Recognise(ttSemicolon);
+    end
+
     else
       raise TEParseError.Create(
         'Expected label, const, type, var, procedure or function', lc);
