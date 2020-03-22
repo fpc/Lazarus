@@ -309,6 +309,8 @@ type
     property OnDeletion;
     property OnDragDrop;
     property OnDragOver;
+    property OnEdited;
+    property OnEditing;
     property OnEndDrag;
     property OnKeyDown;
     property OnKeyPress;
