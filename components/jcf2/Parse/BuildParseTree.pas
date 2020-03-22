@@ -2376,7 +2376,7 @@ const
   OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttExponent,
     ttEquals, ttGreaterThan, ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual,
     ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign, ttXor,
-    ttAnd, ttOr, ttEnumerator];
+    ttAnd, ttOr, ttEnumerator, ttNot, ttDiv, ttMod, ttIn, ttShl, ttShr];
 begin
   Recognise(OperatorTokens);
 end;
