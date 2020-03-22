@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+    ======================================================================
+      LazVersion
+    ======================================================================
+    -->
+    <module name="LazVersion">
+      <short>
+        Contains constants which identify the version numbers for the Lazarus IDE installed on the local system
+      </short>
+      <descr>
+        <p>
+          Values in the unit are used as the basis for corresponding LCL version numbers in the <file>lclversion.pas</file> unit.
+        </p>
+      </descr>
+
+      <element name="laz_major">
+        <short>Major version number for the Lazarus IDE</short>
+        <descr>
+          For the Lazarus version number 2.1.0.42, the value in laz_major is 2.
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLVersion.lcl_major"/>
+        </seealso>
+        <version>
+          Added in revision 57504, and available since Lazarus 1.8.4.0.
+        </version>
+      </element>
+
+      <element name="laz_minor">
+        <short>Minor version number for the Lazarus IDE</short>
+        <descr>
+          For the Lazarus version number 2.1.0.42, the value in laz_minor is 1.
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLVersion.lcl_minor"/>
+        </seealso>
+        <version>
+          Added in revision 57504, and available since Lazarus 1.8.4.0.
+        </version>
+      </element>
+
+      <element name="laz_release">
+        <short>Release number for the Lazarus IDE</short>
+        <descr>
+          For the Lazarus version number 2.1.0.42, the value in laz_release is 0.
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLVersion.lcl_release"/>
+        </seealso>
+        <version>
+          Added in revision 57504, and available since Lazarus 1.8.4.0.
+        </version>
+      </element>
+
+      <element name="laz_patch">
+        <short>Patch level for the Lazarus IDE</short>
+        <descr>
+          For the Lazarus version number 2.1.0.42, the value in laz_patch is 42.
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLVersion.lcl_patch"/>
+        </seealso>
+        <version>
+          Added in revision 57504, and available since Lazarus 1.8.4.0.
+        </version>
+      </element>
+
+      <element name="laz_fullversion">
+        <short>Numeric version number for the Lazarus IDE</short>
+        <descr>
+          For the Lazarus version number 2.1.0.42, the value in laz_fullversion is 2010042.
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLVersion.lcl_fullversion"/>
+        </seealso>
+        <version>
+          Added in revision 57504, and available since Lazarus 1.8.4.0.
+        </version>
+      </element>
+
+      <element name="laz_version">
+        <short>String with the full version number for the Lazarus IDE</short>
+        <descr>
+          For the Lazarus version number 2.1.0.42, the value in laz_version is '2.1.0.42'.
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLVersion.lcl_version"/>
+        </seealso>
+        <version>
+          Added in revision 57504, and available since Lazarus 1.8.4.0.
+        </version>
+      </element>
+
+    </module>
+    <!-- LazVersion -->
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="LazUtils">
+    <!--
+    ====================================================================
+      CompWriterPas
+    ====================================================================
+    -->
+    <module name="CompWriterPas">
+      <short>
+        Contains types, classes, and rotuinees used to serialize components into Pascal code
+      </short>
+      <descr>
+        <p>
+          The following features and functionality are currently implemented:
+        </p>
+        <ul>
+          <li>signature begin, end, versionli</li>
+          <li>boolean, set of boolean</li>
+          <li>char, widechar, custom char, set of custom char</li>
+          <li>integers, custom int, set of custom int</li>
+          <li>strings, codepage system and UTF8</li>
+          <li>float, currency</li>
+          <li>enum, custom enum range</li>
+          <li>set of enum, set of custom enum range</li>
+          <li>variant: integers, boolean, string, floats, currency</li>
+          <li>method</li>
+          <li>persistent</li>
+          <li>component children, use SetParentComponent or optional Parent</li>
+          <li>collection</li>
+          <li>IInterfaceComponentReference</li>
+          <li>with ancestor</li>
+          <li>ancestor: change ComponentIndex -> call SetChildPos</li>
+          <li>reference foreign root, reference foreign component</li>
+          <li>
+            create components before setting properties to avoid having to set references
+            later
+          </li>
+          <li>
+            inline component, csInline, call SetInline, inherited inline, inline on inherited
+          </li>
+          <li>TComponent.Left/Right via DesignInfo</li>
+          <li>DefineProperties</li>
+          <li>RegisterDefinePropertiesPas</li>
+        </ul>
+        <p>
+          TCompWriterPas is used in the implementation of the TCustomFormEditor class in the Lazarus IDE.
+        </p>
+        <p>
+          Author: Mattias Gaertner
+        </p>
+      </descr>
+
+      <!-- used units -->
+      <element name="System"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="typinfo"/>
+      <element name="RtlConsts"/>
+      <element name="contnrs"/>
+      <element name="LazLoggerBase"/>
+      <element name="LazUTF8"/>
+
+      <element name="CSPVersion">
+        <short>Component Serialization to Pascal version</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultSignature">
+        <short>Default signature written before serialized component data</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultSignatureBegin">
+        <short>Default begin signature written before a serialized component</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultSignatureEnd">
+        <short>Default end signature written after a serialized component</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultAccessClass">
+        <short>Default class name used to access protected TComponent members</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultExecCustomProc">
+        <short>Default value for the ExecCustomProc property in TCompWriterPas</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultExecCustomProcUnit">
+        <short>Default value for the ExecCustomProcUnit property in TCompWriterPas</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultMaxColumn">
+        <short>Default value for the MaxColumn property in TCompWriterPas</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CSPDefaultAssignOp">
+        <short>Default value for the AssignOp property in TCompWriterPas</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="CWPSkipParentName">
+        <short>Parent property name to skip when writing component data</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCWPFindAncestorEvent">
+        <short>Specifies an event handler used to find ancestor class in TCompWriterPas</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCWPFindAncestorEvent.Writer">
+        <short></short>
+      </element>
+      <element name="TCWPFindAncestorEvent.Component">
+        <short></short>
+      </element>
+      <element name="TCWPFindAncestorEvent.Name">
+        <short></short>
+      </element>
+      <element name="TCWPFindAncestorEvent.Ancestor">
+        <short></short>
+      </element>
+      <element name="TCWPFindAncestorEvent.RootAncestor">
+        <short></short>
+      </element>
+
+      <element name="TCWPGetMethodName">
+        <short>
+          Specifies an event handler used to get property information and an identifer name for a property
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCWPGetMethodName.Writer">
+        <short></short>
+      </element>
+      <element name="TCWPGetMethodName.Instance">
+        <short></short>
+      </element>
+      <element name="TCWPGetMethodName.PropInfo">
+        <short></short>
+      </element>
+      <element name="TCWPGetMethodName.Name">
+        <short></short>
+      </element>
+
+      <element name="TCWPGetParentPropertyEvent">
+        <short>
+          Specifies an event handler used to get a parent property name for a component instance
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCWPGetParentPropertyEvent.Writer">
+        <short></short>
+      </element>
+      <element name="TCWPGetParentPropertyEvent.Component">
+        <short></short>
+      </element>
+      <element name="TCWPGetParentPropertyEvent.PropName">
+        <short></short>
+      </element>
+
+      <element name="TCWPDefinePropertiesEvent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCWPDefinePropertiesEvent.Writer">
+        <short></short>
+      </element>
+      <element name="TCWPDefinePropertiesEvent.Instance">
+        <short></short>
+      </element>
+      <element name="TCWPDefinePropertiesEvent.Identifier">
+        <short></short>
+      </element>
+      <element name="TCWPDefinePropertiesEvent.Handled">
+        <short></short>
+      </element>
+
+      <element name="TCWPOption">
+        <short>Enumeration which defines options available in TCompWriterPas</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCWPOption.cwpoNoSignature">
+        <short>Do not write Begin, End signatures</short>
+      </element>
+      <element name="TCWPOption.cwpoNoSelf">
+        <short>Enclose in "with LookupRootname do begin"</short>
+      </element>
+      <element name="TCWPOption.cwpoSetParentFirst">
+        <short>Add "SetParentComponent" before setting properties, default: after</short>
+      </element>
+      <element name="TCWPOption.cwpoSrcCodepageUTF8">
+        <short>
+          Target unit uses $codepage utf-8, aka do not convert UTF-8 string literals
+        </short>
+      </element>
+      <element name="TCWPOption.cwpoNoWithBlocks">
+        <short>Do not use with ... do</short>
+      </element>
+      <element name="TCWPOption.cwpoNoFinalLineBreak">
+        <short>
+          Do not include a final line break at the end of the serialized component data
+        </short>
+      </element>
+
+      <element name="TCWPOptions">
+        <short>Set type used to stores values from the TCWPOption enumeration</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCWPChildrenStep">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCWPChildrenStep.cwpcsCreate">
+        <short></short>
+      </element>
+      <element name="TCWPChildrenStep.cwpcsProperties">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas">
+        <short>Serializes a component to Pascal code</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.FAccessClass"/>
+      <element name="TCompWriterPas.FAncestor"/>
+      <element name="TCompWriterPas.FAncestorPos"/>
+      <element name="TCompWriterPas.FAncestors"/>
+      <element name="TCompWriterPas.FAssignOp"/>
+      <element name="TCompWriterPas.FCurIndent"/>
+      <element name="TCompWriterPas.FCurrentPos"/>
+      <element name="TCompWriterPas.FDefaultDefineProperties"/>
+      <element name="TCompWriterPas.FExecCustomProc"/>
+      <element name="TCompWriterPas.FExecCustomProcUnit"/>
+      <element name="TCompWriterPas.FIgnoreChildren"/>
+      <element name="TCompWriterPas.FIndentStep"/>
+      <element name="TCompWriterPas.FLineEnding"/>
+      <element name="TCompWriterPas.FLookupRoot"/>
+      <element name="TCompWriterPas.FMaxColumn"/>
+      <element name="TCompWriterPas.FNeedAccessClass"/>
+      <element name="TCompWriterPas.FNeededUnits"/>
+      <element name="TCompWriterPas.FOnDefineProperties"/>
+      <element name="TCompWriterPas.FOnFindAncestor"/>
+      <element name="TCompWriterPas.FOnGetMethodName"/>
+      <element name="TCompWriterPas.FOnGetParentProperty"/>
+      <element name="TCompWriterPas.FOnWriteMethodProperty"/>
+      <element name="TCompWriterPas.FOnWriteStringProperty"/>
+      <element name="TCompWriterPas.FOptions"/>
+      <element name="TCompWriterPas.FParent"/>
+      <element name="TCompWriterPas.FPropPath"/>
+      <element name="TCompWriterPas.FRoot"/>
+      <element name="TCompWriterPas.FRootAncestor"/>
+      <element name="TCompWriterPas.FSignatureBegin"/>
+      <element name="TCompWriterPas.FSignatureEnd"/>
+      <element name="TCompWriterPas.FStream"/>
+
+      <element name="TCompWriterPas.AddToAncestorList">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.AddToAncestorList.Component">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.DetermineAncestor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.DetermineAncestor.Component">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.SetNeededUnits">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.SetNeededUnits.AValue">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.SetRoot">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.SetRoot.AValue">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteComponentData">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteComponentData.Instance">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteChildren">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteChildren.Component">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.WriteChildren.Step">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteProperty">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteProperty.Instance">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.WriteProperty.PropInfo">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteProperties">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteProperties.Instance">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteDefineProperties">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteDefineProperties.Instance">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteCollection">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteCollection.PropName">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.WriteCollection.Collection">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.ShortenFloat">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.ShortenFloat.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.ShortenFloat.s">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.Create">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.Create.AStream">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.Destroy">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.WriteDescendant">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteDescendant.ARoot">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.WriteDescendant.AnAncestor">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteComponentCreate">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteComponentCreate.Component">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteComponent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteComponent.Component">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteIndent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.Write">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.Write.s">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteLn">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.WriteStatement">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteStatement.s">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteAssign">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteAssign.LHS">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.WriteAssign.RHS">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteWithDo">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.WriteWithDo.Expr">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.WriteWithEnd">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.GetComponentPath">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetComponentPath.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetComponentPath.Component">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetBoolLiteral">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetBoolLiteral.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetBoolLiteral.b">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetCharLiteral">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetCharLiteral.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetCharLiteral.c">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetWideCharLiteral">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetWideCharLiteral.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetWideCharLiteral.c">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetStringLiteral">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetStringLiteral.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetStringLiteral.s">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetWStringLiteral">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetWStringLiteral.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetWStringLiteral.p">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetWStringLiteral.Count">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetFloatLiteral">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetFloatLiteral.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetFloatLiteral.e">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetCurrencyLiteral">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetCurrencyLiteral.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetCurrencyLiteral.c">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetEnumExpr">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetEnumExpr.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetEnumExpr.TypeInfo">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetEnumExpr.Value">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.GetEnumExpr.AllowOutOfRange">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.GetVersionStatement">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.GetVersionStatement.Result">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.CreatedByAncestor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.CreatedByAncestor.Result">
+        <short></short>
+      </element>
+      <element name="TCompWriterPas.CreatedByAncestor.Component">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.AddNeededUnit">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCompWriterPas.AddNeededUnit.AnUnitName">
+        <short></short>
+      </element>
+
+      <element name="TCompWriterPas.Indent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.Unindent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.Stream">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.Root">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.LookupRoot">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.Ancestor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.RootAncestor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.Parent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.OnFindAncestor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.OnGetMethodName">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.PropertyPath">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.CurIndent">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.IndentStep">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.Options">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.IgnoreChildren">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.OnGetParentProperty">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.OnWriteMethodProperty">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.OnWriteStringProperty">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.OnDefineProperties">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.LineEnding">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.AssignOp">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.SignatureBegin">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.SignatureEnd">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.AccessClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.ExecCustomProc">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.ExecCustomProcUnit">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.MaxColumn">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.NeedAccessClass">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TCompWriterPas.NeededUnits">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="WriteComponentToPasStream">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="WriteComponentToPasStream.AComponent">
+        <short></short>
+      </element>
+      <element name="WriteComponentToPasStream.AStream">
+        <short></short>
+      </element>
+
+      <element name="TCWPDefinePropertiesProc">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TCWPDefinePropertiesProc.Sender">
+        <short></short>
+      </element>
+      <element name="TCWPDefinePropertiesProc.Instance">
+        <short></short>
+      </element>
+      <element name="TCWPDefinePropertiesProc.Identifier">
+        <short></short>
+      </element>
+      <element name="TCWPDefinePropertiesProc.Handled">
+        <short></short>
+      </element>
+
+      <element name="RegisterDefinePropertiesPas">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="RegisterDefinePropertiesPas.aClass">
+        <short></short>
+      </element>
+      <element name="RegisterDefinePropertiesPas.OnDefineProperties">
+        <short></short>
+      </element>
+
+      <element name="UnregisterDefinePropertiesPas">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="UnregisterDefinePropertiesPas.OnDefineProperties">
+        <short></short>
+      </element>
+
+      <element name="CallDefinePropertiesPas">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="CallDefinePropertiesPas.Writer">
+        <short></short>
+      </element>
+      <element name="CallDefinePropertiesPas.Instance">
+        <short></short>
+      </element>
+      <element name="CallDefinePropertiesPas.Identifier">
+        <short></short>
+      </element>
+      <element name="CallDefinePropertiesPas.Handled">
+        <short></short>
+      </element>
+
+    </module>
+    <!-- CompWriterPas -->
+
+  </package>
+</fpdoc-descriptions>

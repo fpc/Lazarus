@@ -6215,6 +6215,7 @@ docs/xml/StyleGuide.txt svneol=native#text/plain
 docs/xml/ide/aboutfrm.xml svneol=native#text/plain
 docs/xml/ide/environmentopts.xml svneol=native#text/xml
 docs/xml/lazutils/avglvltree.xml svneol=native#text/plain
+docs/xml/lazutils/compwriterpas.xml -text svneol=native#text/plain
 docs/xml/lazutils/dynamicarray.xml svneol=native#text/plain
 docs/xml/lazutils/dynhasharray.xml svneol=native#text/plain
 docs/xml/lazutils/dynqueue.xml svneol=native#text/plain
@@ -6225,6 +6226,7 @@ docs/xml/lazutils/fpcadds.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/fpmake.xml svneol=native#text/plain
 docs/xml/lazutils/graphtype.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/html2textrender.xml svneol=native#text/plain
+docs/xml/lazutils/integerlist.xml -text svneol=native#text/plain
 docs/xml/lazutils/laz2_dom.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlcfg.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlread.xml svneol=native#text/plain
@@ -6264,6 +6266,7 @@ docs/xml/lazutils/lazutf8sysutils.xml svneol=native#text/plain
 docs/xml/lazutils/lazutilities.xml svneol=native#text/plain
 docs/xml/lazutils/lazutils.xml svneol=native#text/plain
 docs/xml/lazutils/lazutilsstrconsts.xml svneol=native#text/plain
+docs/xml/lazutils/lazversion.xml -text svneol=native#text/plain
 docs/xml/lazutils/lconvencoding.xml svneol=native#text/plain
 docs/xml/lazutils/lcsvutils.xml svneol=native#text/plain
 docs/xml/lazutils/lookupstringlist.xml svneol=native#text/plain
