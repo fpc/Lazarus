@@ -160,6 +160,7 @@ end;
 var
   LPKFiles: TStringList;
   LazbuildOut: TStringList;
+  LazbuildExe: String;
 begin
   if Paramcount>0 then begin
     writeln('Updates for every lpk in the lazarus directory the Makefile.fpc, Makefile.compiled and Makefile.');
@@ -178,6 +179,12 @@ begin
   writeln(LPKFiles.Text);
   LPKFiles.StrictDelimiter:=true;
   LPKFiles.Delimiter:=' ';
+  LazbuildExe:=SetDirSeparators(LazarusDir+'/lazbuild'+ExeExt);
+  if not FileIsExecutable(LazbuildExe) then
+  begin
+    writeln('Error: missing ',LazbuildExe);
+    Halt(1);
+  end;
   LazbuildOut:=RunTool(SetDirSeparators(LazarusDir+'/lazbuild'+ExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
   writeln(LazbuildOut.Text);
   LPKFiles.Free;

@@ -14,7 +14,11 @@ unit StatusBarPropEdit;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, PropEdits, ComponentEditors, ObjInspStrConsts;
+  Classes, SysUtils,
+  // LCL
+  ComCtrls,
+  // IdeIntf
+  PropEdits, ComponentEditors, ObjInspStrConsts;
 
 type
   { TStatusBarComponentEditor }

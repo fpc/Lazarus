@@ -19,7 +19,7 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazMethodList,
-  // IdeIntf
+  // BuildIntf
   IDEOptionsIntf;
 
 type

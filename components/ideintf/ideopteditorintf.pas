@@ -28,8 +28,10 @@ uses
   Classes, SysUtils,
   // LCL
   LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, EditorSyntaxHighlighterDef;
+  EditorSyntaxHighlighterDef;
 
 type
   // forward

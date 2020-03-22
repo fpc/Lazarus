@@ -19,8 +19,10 @@ uses
   LCLType, Forms, Controls, Graphics,
   // LazUtils
   FileUtil, Laz2_XMLCfg, LazStringUtils,
+  // BuildIntf
+  ProjectIntf,
   // IdeIntf
-  ProjectIntf, IDECommands;
+  IDECommands;
   
 type
   TSourceMarklingType = (

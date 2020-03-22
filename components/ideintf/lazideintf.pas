@@ -21,9 +21,10 @@ uses
   LCLProc, Forms, Controls, Dialogs, LazHelpHTML,
   // LazUtils
   LazMethodList,
+  // BuildIntf
+  BaseIDEIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf,
   // IdeIntf
-  BaseIDEIntf, IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, ProjectIntf,
-  IDEExternToolIntf, SrcEditorIntf, IDEWindowIntf, PropEdits;
+  IDEOptEditorIntf, SrcEditorIntf, IDEWindowIntf, PropEdits;
 
 type
   TIDEDirective = (

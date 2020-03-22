@@ -8,22 +8,19 @@ unit IDEIntf;
 interface
 
 uses
-  ActionsEditor, ActionsEditorStd, BaseIDEIntf, CheckGroupEditorDlg, 
+  ActionsEditor, ActionsEditorStd, ChangeParentDlg, CheckGroupEditorDlg, 
   CheckListboxEditorDlg, CollectionPropEditForm, ColumnDlg, ComponentEditors, 
-  ComponentReg, ComponentTreeView, CompOptsIntf, DBPropEdits, 
+  ComponentReg, ComponentTreeView, DBGridColumnsPropEditForm, DBPropEdits, 
   EditorSyntaxHighlighterDef, fieldseditor, FieldsList, FileFilterPropEditor, 
   FormEditingIntf, frmSelectProps, GraphicPropEdit, GraphPropEdits, 
-  HeaderControlPropEdit, HelpFPDoc, IDECommands, IDEDialogs, 
-  IDEExternToolIntf, IDEHelpIntf, IDEImagesIntf, IDEMsgIntf, IDEOptionsIntf, 
-  IDETextConverter, IDEUtils, IDEWindowIntf, ImageListEditor, 
-  KeyValPropEditDlg, LazIDEIntf, LazStringGridEdit, ListViewPropEdit, 
-  MacroDefIntf, MacroIntf, MaskPropEdit, MenuIntf, NewField, NewItemIntf, 
-  ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, PackageIntf, 
-  ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, SrcEditorIntf, 
-  StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
-  UnitResources, ProjPackIntf, DBGridColumnsPropEditForm, ToolBarIntf, 
-  ChangeParentDlg, PackageDependencyIntf, PackageLinkIntf, FppkgIntf, 
-  LazMsgDialogs, ProjectGroupIntf, LazarusPackageIntf;
+  HeaderControlPropEdit, HelpFPDoc, IDECommands, IDEDialogs, IDEHelpIntf, 
+  IDEImagesIntf, IDEMsgIntf, IDEOptEditorIntf, IDETextConverter, IDEUtils, 
+  IDEWindowIntf, ImageListEditor, KeyValPropEditDlg, LazIDEIntf, 
+  LazStringGridEdit, ListViewPropEdit, MaskPropEdit, MenuIntf, NewField, 
+  ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, ProjectGroupIntf, 
+  PropEdits, PropEditUtils, SrcEditorIntf, StatusBarPropEdit, 
+  StringsPropEditDlg, TextTools, ToolBarIntf, TreeViewPropEdit, UnitResources, 
+  LazarusPackageIntf;
 
 implementation
 

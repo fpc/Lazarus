@@ -17,8 +17,8 @@ uses
   Classes, SysUtils, Math, Laz_AVL_Tree,
   // LazUtils
   UTF8Process, LazFileUtils, LazFileCache, LazMethodList, LazLoggerBase,
-  // IdeIntf
-  ObjInspStrConsts;
+  // BuildIntf
+  BuildStrConsts;
 
 const
   SubToolFPC = 'FPC';
@@ -1019,7 +1019,7 @@ end;
 
 class function TDefaultParser.GetLocalizedParserName: string;
 begin
-  Result:=oisShowAllOutputLines;
+  Result:=lisShowAllOutputLines;
 end;
 
 class function TDefaultParser.Priority: integer;
@@ -1341,8 +1341,7 @@ begin
   raise Exception.Create(Format(lisUnableToFindParserForTool, [SubTool]));
 end;
 
-function TAbstractExternalTool.AddParser(ParserClass: TExtToolParserClass
-  ): TExtToolParser;
+function TAbstractExternalTool.AddParser(ParserClass: TExtToolParserClass): TExtToolParser;
 var
   i: Integer;
 begin

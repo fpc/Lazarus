@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, resource,
-  // IdeIntf
+  // BuildIntf
   CompOptsIntf, ProjectIntf;
 
 type

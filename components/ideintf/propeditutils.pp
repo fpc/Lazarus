@@ -11,7 +11,9 @@ unit PropEditUtils;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LazLoggerBase;
+  Classes, SysUtils, TypInfo,
+  // LazUtils
+  LazLoggerBase;
 
 type
   {

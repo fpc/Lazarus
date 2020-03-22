@@ -25,7 +25,7 @@ uses
   LazFileUtils,
   // LCL
   LCLProc, HelpIntfs, LazHelpIntf, LazHelpHTML,
-  // IdeIntf
+  // BuildIntf
   MacroIntf;
 
 type

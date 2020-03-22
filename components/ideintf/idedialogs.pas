@@ -22,7 +22,7 @@ uses
   Dialogs,
   // LazUtils
   UITypes, LazFileCache,
-  // IdeIntf
+  // BuildIntf
   LazMsgDialogs;
 
 type

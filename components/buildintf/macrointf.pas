@@ -18,7 +18,7 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazFileUtils,
-  // IdeIntf
+  // BuildIntf
   MacroDefIntf;
 
 type

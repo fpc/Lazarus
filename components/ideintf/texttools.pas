@@ -16,7 +16,9 @@ unit TextTools;
 interface
 
 uses
-  Classes, SysUtils, Forms;
+  Classes, SysUtils,
+  // LazUtils
+  UITypes;
 
   { Sorting }
 type

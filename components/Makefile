@@ -806,6 +806,7 @@ EXEEXT=.exe
 PPLEXT=.ppl
 PPUEXT=.ppu
 OEXT=.o
+LTOEXT=.bc
 ASMEXT=.s
 SMARTEXT=.sl
 STATICLIBEXT=.a
@@ -1451,12 +1452,14 @@ ifdef CLEAN_UNITS
 override CLEANPPUFILES+=$(addsuffix $(PPUEXT),$(CLEAN_UNITS))
 endif
 ifdef CLEANPPUFILES
-override CLEANPPULINKFILES:=$(subst $(PPUEXT),$(OEXT),$(CLEANPPUFILES)) $(addprefix $(STATICLIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(CLEANPPUFILES))) $(addprefix $(IMPORTLIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(CLEANPPUFILES)))
+override CLEANPPULINKFILES:=$(subst $(PPUEXT),$(OEXT),$(CLEANPPUFILES)) $(subst $(PPUEXT),$(LTOEXT),$(CLEANPPUFILES)) $(addprefix $(STATICLIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(CLEANPPUFILES))) $(addprefix $(IMPORTLIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(CLEANPPUFILES)))
 ifdef DEBUGSYMEXT
 override CLEANPPULINKFILES+=$(subst $(PPUEXT),$(DEBUGSYMEXT),$(CLEANPPUFILES))
 endif
-override CLEANPPUFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPUFILES))
-override CLEANPPULINKFILES:=$(wildcard $(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPULINKFILES)))
+override CLEANPPUFILENAMES:=$(CLEANPPUFILES)
+override CLEANPPUFILES=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPUFILENAMES))
+override CLEANPPULINKFILENAMES:=$(CLEANPPULINKFILES)
+override CLEANPPULINKFILES=$(wildcard $(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPULINKFILENAMES)))
 endif
 fpc_clean: $(CLEANTARGET)
 ifdef CLEANEXEFILES
@@ -1480,8 +1483,9 @@ endif
 ifdef LIB_NAME
 	-$(DEL) $(LIB_NAME) $(LIB_FULLNAME)
 endif
-	-$(DEL) $(FPCMADE) Package.fpc $(PPAS) script.res link.res $(FPCEXTFILE) $(REDIRFILE)
-	-$(DEL) *$(ASMEXT) *_ppas$(BATCHEXT) ppas$(BATCHEXT) ppaslink$(BATCHEXT)
+	-$(DEL) $(FPCMADE) *$(FULL_TARGET).fpm Package.fpc *$(ASMEXT)
+	-$(DEL) $(FPCEXTFILE) $(REDIRFILE) script*.res link*.res *_script.res *_link.res
+	-$(DEL) $(PPAS) *_ppas$(BATCHEXT) ppas$(BATCHEXT) ppaslink$(BATCHEXT)
 fpc_cleanall: $(CLEANTARGET)
 ifdef CLEANEXEFILES
 	-$(DEL) $(CLEANEXEFILES)
@@ -1501,13 +1505,15 @@ ifdef CLEAN_FILES
 	-$(DEL) $(CLEAN_FILES)
 endif
 	-$(DELTREE) units
-	-$(DEL) *$(OEXT) *$(PPUEXT) *$(RSTEXT) *$(ASMEXT) *$(STATICLIBEXT) *$(SHAREDLIBEXT) *$(PPLEXT)
+	-$(DELTREE) bin
+	-$(DEL) *$(OEXT) *$(LTOEXT) *$(PPUEXT) *$(RSTEXT) *$(ASMEXT) *$(STATICLIBEXT) *$(SHAREDLIBEXT) *$(PPLEXT)
 ifneq ($(PPUEXT),.ppu)
 	-$(DEL) *.o *.ppu *.a
 endif
 	-$(DELTREE) *$(SMARTEXT)
-	-$(DEL) fpcmade.* Package.fpc $(PPAS) script.res link.res $(FPCEXTFILE) $(REDIRFILE)
-	-$(DEL) *_ppas$(BATCHEXT) ppas$(BATCHEXT) ppaslink$(BATCHEXT)
+	-$(DEL) fpcmade.* Package.fpc *.fpm
+	-$(DEL) $(FPCEXTFILE) $(REDIRFILE) script*.res link*.res *_script.res *_link.res
+	-$(DEL) $(PPAS) *_ppas$(BATCHEXT) ppas$(BATCHEXT) ppaslink$(BATCHEXT)
 ifdef AOUTEXT
 	-$(DEL) *$(AOUTEXT)
 endif
@@ -1652,16 +1658,21 @@ help:
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all         same as base + bigide"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
-	@$(ECHO) "   base        build lazutils, codetools, lazcontrols, synedit and ideintf"
+	@$(ECHO) "   base        build lazutils, codetools, buildintf"
 	@$(ECHO) "               requires packager/registration"
+	@$(ECHO) "               needed by lcl"
+	@$(ECHO) "   basecomponents  build lazcontrols, ideintf, synedit"
+	@$(ECHO) "               requires lcl"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
-	@$(ECHO) "               requires base"
+	@$(ECHO) "               requires basecomponents"
 base:
 	$(MAKE) -C lazutils
 	$(MAKE) -C codetools
+	$(MAKE) -C buildintf
+basecomponents:
 	$(MAKE) -C lazcontrols
-	$(MAKE) -C synedit
 	$(MAKE) -C ideintf
+	$(MAKE) -C synedit
 	$(MAKE) -C debuggerintf
 	$(MAKE) -C lazdebuggergdbmi
 bigide:
@@ -1698,7 +1709,7 @@ bigide:
 	$(MAKE) -C virtualtreeview
 	$(MAKE) -C onlinepackagemanager
 	$(MAKE) -C pas2js
-all: base bigide
+all: base basecomponents bigide
 clean:
 	$(MAKE) -C lazutils clean
 	$(MAKE) -C codetools clean
@@ -1706,6 +1717,7 @@ clean:
 	$(MAKE) -C lazdebuggergdbmi clean
 	$(MAKE) -C lazcontrols clean
 	$(MAKE) -C lazcontrols/design clean
+	$(MAKE) -C buildintf clean
 	$(MAKE) -C ideintf clean
 	$(MAKE) -C synedit clean
 	$(MAKE) -C synedit/design clean
@@ -1748,6 +1760,7 @@ distclean:
 	$(MAKE) -C lazdebuggergdbmi distclean
 	$(MAKE) -C lazcontrols distclean
 	$(MAKE) -C lazcontrols/design distclean
+	$(MAKE) -C buildintf distclean
 	$(MAKE) -C ideintf distclean
 	$(MAKE) -C synedit distclean
 	$(MAKE) -C synedit/design distclean

@@ -26,19 +26,27 @@ help:
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all         same as base + bigide"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
-	@$(ECHO) "   base        build lazutils, codetools, lazcontrols, synedit and ideintf"
+	@$(ECHO) "   base        build lazutils, codetools, buildintf"
 	@$(ECHO) "               requires packager/registration"
+	@$(ECHO) "               needed by lcl"
+	@$(ECHO) "   basecomponents  build lazcontrols, ideintf, synedit"
+	@$(ECHO) "               requires lcl"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
-	@$(ECHO) "               requires base"
+	@$(ECHO) "               requires basecomponents"
 
 #-----------------------------------------------------------------------------
 # build base packages, requires packager/registration
 base:
 	$(MAKE) -C lazutils
 	$(MAKE) -C codetools
+	$(MAKE) -C buildintf
+
+#-----------------------------------------------------------------------------
+# build base packages, requires lcl
+basecomponents:
 	$(MAKE) -C lazcontrols
-	$(MAKE) -C synedit
 	$(MAKE) -C ideintf
+	$(MAKE) -C synedit
 	$(MAKE) -C debuggerintf
 	$(MAKE) -C lazdebuggergdbmi
 
@@ -79,7 +87,7 @@ bigide:
 	$(MAKE) -C onlinepackagemanager
 	$(MAKE) -C pas2js
 
-all: base bigide
+all: base basecomponents bigide
 
 clean:
 	$(MAKE) -C lazutils clean
@@ -88,6 +96,7 @@ clean:
 	$(MAKE) -C lazdebuggergdbmi clean
 	$(MAKE) -C lazcontrols clean
 	$(MAKE) -C lazcontrols/design clean
+	$(MAKE) -C buildintf clean
 	$(MAKE) -C ideintf clean
 	$(MAKE) -C synedit clean
 	$(MAKE) -C synedit/design clean
@@ -132,6 +141,7 @@ distclean:
 	$(MAKE) -C lazdebuggergdbmi distclean
 	$(MAKE) -C lazcontrols distclean
 	$(MAKE) -C lazcontrols/design distclean
+	$(MAKE) -C buildintf distclean
 	$(MAKE) -C ideintf distclean
 	$(MAKE) -C synedit distclean
 	$(MAKE) -C synedit/design distclean

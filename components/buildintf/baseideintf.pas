@@ -19,7 +19,7 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazUTF8, LazConfigStorage,
-  // IdeIntf
+  // BuildIntf
   MacroIntf;
   
 type

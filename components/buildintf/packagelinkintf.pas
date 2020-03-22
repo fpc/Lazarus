@@ -6,11 +6,9 @@ interface
 
 uses
   SysUtils, Classes,
-  // LCL
-  Forms,
   // LazUtils
-  LazFileUtils,
-  // IdeIntf
+  LazFileUtils, UITypes,
+  // BuildIntf
   PackageDependencyIntf, PackageIntf;
 
 type

@@ -19,7 +19,7 @@ uses
   Classes, SysUtils, contnrs,
   // LazUtils
   LazConfigStorage, LazMethodList, LazLoggerBase, UITypes,
-  // IdeIntf
+  // BuildIntf
   NewItemIntf, ProjPackIntf, PackageDependencyIntf, IDEOptionsIntf;
   
 const

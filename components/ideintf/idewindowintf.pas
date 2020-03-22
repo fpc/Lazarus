@@ -22,7 +22,7 @@ uses
   LCLProc, LCLIntf, Forms, Controls, LCLType,
   // LazUtils
   LazConfigStorage, LazUTF8, LazMethodList,
-  // IdeIntf
+  // BuildIntf
   IDEOptionsIntf;
 
 const

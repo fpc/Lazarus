@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils,
-  // IdeIntf
+  // BuildIntf
   IDEOptionsIntf, CompOptsIntf;
 
 type

@@ -22,7 +22,7 @@ uses
   // LCL
   Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls,
   // IdeIntf
-  PropEdits, Componenteditors, ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
+  PropEdits, ComponentEditors, ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 
 type
 

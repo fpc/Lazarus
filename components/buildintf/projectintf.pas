@@ -19,8 +19,8 @@ uses
   Classes, SysUtils, Contnrs,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazMethodList, UITypes, AvgLvlTree,
-  // IdeIntf
-  IDEOptionsIntf, NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts;
+  // BuildIntf
+  IDEOptionsIntf, NewItemIntf, ProjPackIntf, CompOptsIntf, BuildStrConsts;
 
 const
   FileDescGroupName = 'File';
@@ -1098,12 +1098,12 @@ end;
 
 function TFileDescPascalUnit.GetLocalizedName: string;
 begin
-  Result:=pirsUnit;
+  Result:=lirsUnit;
 end;
 
 function TFileDescPascalUnit.GetLocalizedDescription: string;
 begin
-  Result:=oisCreateANewPascalUnit;
+  Result:=lisCreateANewPascalUnit;
 end;
 
 function TFileDescPascalUnit.GetUnitDirectives: string;

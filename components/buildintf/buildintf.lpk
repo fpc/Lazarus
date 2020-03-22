@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="BuildIntf"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Lazarus"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="BuildIntf - Non-GUI interface units."/>
+    <License Value="Modified LGPL2"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="baseideintf.pas"/>
+        <UnitName Value="BaseIDEIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="buildstrconsts.pas"/>
+        <UnitName Value="BuildStrConsts"/>
+      </Item>
+      <Item>
+        <Filename Value="compoptsintf.pas"/>
+        <UnitName Value="CompOptsIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="fppkgintf.pas"/>
+        <UnitName Value="FppkgIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="ideexterntoolintf.pas"/>
+        <UnitName Value="IDEExternToolIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="ideoptionsintf.pas"/>
+        <UnitName Value="IDEOptionsIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="lazmsgdialogs.pas"/>
+        <UnitName Value="LazMsgDialogs"/>
+      </Item>
+      <Item>
+        <Filename Value="macrodefintf.pas"/>
+        <UnitName Value="MacroDefIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="macrointf.pas"/>
+        <UnitName Value="MacroIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="newitemintf.pas"/>
+        <UnitName Value="NewItemIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="packagedependencyintf.pas"/>
+        <UnitName Value="PackageDependencyIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="packageintf.pas"/>
+        <UnitName Value="PackageIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="packagelinkintf.pas"/>
+        <UnitName Value="PackageLinkIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="projectintf.pas"/>
+        <UnitName Value="ProjectIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="projectresourcesintf.pas"/>
+        <UnitName Value="ProjectResourcesIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="projpackintf.pas"/>
+        <UnitName Value="ProjPackIntf"/>
+      </Item>
+    </Files>
+    <LazDoc Paths="docs"/>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazUtils"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
