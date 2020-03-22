@@ -181,6 +181,7 @@ type
     FCodeToolsPackage: TLazPackage;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
+    FBuildIntfPackage: TLazPackage;
     FIDEIntfPackage: TLazPackage;
     FDebuggerIntfPackage: TLazPackage;
     FLazDebuggerGdbmiPackage: TLazPackage;
@@ -470,6 +471,7 @@ type
     property LazControlsPackage: TLazPackage read FLazControlsPackage;
     property LazUtilsPackage: TLazPackage read FLazUtilsPackage;
     property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
+    property BuildIntfPackage: TLazPackage read FBuildIntfPackage;
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
     property LazDebuggerGdbmiPackage: TLazPackage read FLazDebuggerGdbmiPackage;
@@ -1125,6 +1127,8 @@ begin
 
   if CurPkg=FCLPackage then
     FFCLPackage:=nil
+  else if CurPkg=BuildIntfPackage then
+    FBuildIntfPackage:=nil
   else if CurPkg=LCLBasePackage then
     FLCLBasePackage:=nil
   else if CurPkg=LCLPackage then
@@ -2090,6 +2094,10 @@ begin
     end
     else if SysUtils.CompareText(APackage.Name,'LazUtils')=0 then
       SetBasePackage(FLazUtilsPackage)
+    else if SysUtils.CompareText(APackage.Name,'BuildIntf')=0 then begin
+      SetBasePackage(FBuildIntfPackage);
+      APackage.SetAllComponentPriorities(IDEIntfCompPriority);
+    end
     else if SysUtils.CompareText(APackage.Name,'LCLBase')=0 then begin
       SetBasePackage(FLCLBasePackage);
       APackage.SetAllComponentPriorities(LCLCompPriority);

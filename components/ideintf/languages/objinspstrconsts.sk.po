@@ -299,16 +299,6 @@ msgstr ""
 msgid "Set value"
 msgstr ""
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr ""
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -488,10 +478,6 @@ msgstr "Podtvrdiť zmazanie"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "Kopírovať komponenty"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Vytvoriť novú pascalovskú jednotku."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -877,10 +863,6 @@ msgstr "Nastaviť na predvolené: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
 msgstr ""
 
 #: objinspstrconsts.oisshowclasses
@@ -1298,10 +1280,6 @@ msgstr "Editor filtra"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "Meno filtra"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr ""
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

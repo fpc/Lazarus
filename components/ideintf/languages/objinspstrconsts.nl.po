@@ -294,16 +294,6 @@ msgstr ""
 msgid "Set value"
 msgstr ""
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr ""
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 #, fuzzy
 #| msgid "Add page"
@@ -498,10 +488,6 @@ msgstr "Bevestig verwijderen"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "&Kopieer"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Nieuwe pascal unit aanmaken"
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -889,10 +875,6 @@ msgstr "Zet naar standaardinstelling: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Zet eigenschapwaarde naar standardistelling"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr ""
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1312,10 +1294,6 @@ msgstr ""
 
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
-msgstr ""
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
 msgstr ""
 
 #: objinspstrconsts.rscdalignment

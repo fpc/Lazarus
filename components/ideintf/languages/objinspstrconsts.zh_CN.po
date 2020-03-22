@@ -299,16 +299,6 @@ msgstr ""
 msgid "Set value"
 msgstr "设置值"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr "不能找到剖析器对于工具\"%s\""
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -483,10 +473,6 @@ msgstr "确定删除"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "复制(&C)"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "创建一个新的pascal单元"
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -867,10 +853,6 @@ msgstr "设为默认: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "设置属性值为默认"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr "显示所有输出行"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1280,10 +1262,6 @@ msgstr "过滤器编辑器"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "过滤器名称"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Pascal单元"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

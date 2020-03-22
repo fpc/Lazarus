@@ -299,16 +299,6 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "Wert setzen"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr "Kann keinen Parser für Werkzeug \"%s\" finden"
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -483,10 +473,6 @@ msgstr "Löschen bestätigen"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "Komponente kopieren"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Eine neue Pascal-Unit erzeugen."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -867,10 +853,6 @@ msgstr "Auf Voreinstellung %s setzen"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Eigenschaftswert auf Vorgabe setzen"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr ""
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1280,10 +1262,6 @@ msgstr "Filter-Editor"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "Filter-Name"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Unit"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

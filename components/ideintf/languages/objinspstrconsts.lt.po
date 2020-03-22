@@ -299,16 +299,6 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "Keisti vertę"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr "Įrankiui „%s“ neina rasti nalizatoriaus"
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -483,10 +473,6 @@ msgstr "Patvirtinimas šalinant"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "&Kopijuoti"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Kurti naują Paskalio modulį."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -867,10 +853,6 @@ msgstr "Keisti į numatytą: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Savybės vertę atstatyti į numatytą"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr ""
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1280,10 +1262,6 @@ msgstr "Failo rengyklė"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "Filtro pavadinimas"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Paskalio modulis"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

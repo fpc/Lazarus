@@ -296,16 +296,6 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "値を設定"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr ""
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -483,10 +473,6 @@ msgstr "削除の確認"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "コピー(&C)"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "新しく Pascal ユニットを作成します。"
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -870,10 +856,6 @@ msgstr "デフォルトに設定: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "プロパティ値を既定値に設定"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr ""
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1287,10 +1269,6 @@ msgstr "フィルターエディタ"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "フィルター名"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Pascalユニット"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

@@ -301,16 +301,6 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "Вказати значення"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr "Не вдалось знайти парсер для засобу \"%s\""
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr "Не вдалось знайти парсер з назвою \"%s\""
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -485,10 +475,6 @@ msgstr "Підтвердити видалення"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "&Копіювати"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Створити новий модуль Паскаля."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -869,10 +855,6 @@ msgstr "Встановити за замовчуванням: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Встановити типове значення властивості"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr "Показати всі виведені рядки"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1282,10 +1264,6 @@ msgstr "Редактор фільтру"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "Ім'я фільтру"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Модуль Паскаль"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

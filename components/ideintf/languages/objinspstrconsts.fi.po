@@ -291,16 +291,6 @@ msgstr ""
 msgid "Set value"
 msgstr "Aseta arvo"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr "Jäsentäjää työkalulle \"%s\" ei löydy"
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr "Jäsentäjää nimellä \"%s\" ei löydy"
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -475,10 +465,6 @@ msgstr "Vahvista poisto"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "&Kopioi"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Luo uusi käännösyksikkö."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -859,10 +845,6 @@ msgstr "Aseta oletusarvo: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Aseta ominaisuuden arvoksi oletus"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr "Näytä kaikki tulosterivit"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1272,10 +1254,6 @@ msgstr "Suodattimen muokkain"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "Suodattimen nimi"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Pascal käännösyksikkö"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

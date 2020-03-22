@@ -124,14 +124,16 @@ begin
 
     P.Directory:=ADirectory;
 
+    P.Dependencies.Add('fcl');
+    P.Dependencies.Add('lazutils');
+    P.Dependencies.Add('buildintf');
     P.Dependencies.Add('lcl');
-    P.Dependencies.Add('synedit');
     P.Dependencies.Add('codetools');
     P.Dependencies.Add('lazcontrols');
     P.Dependencies.Add('ideintf');
+    P.Dependencies.Add('synedit');
     P.Dependencies.Add('debuggerintf');
     P.Dependencies.Add('lazdebuggergdbmi');
-    P.Dependencies.Add('fcl');
 
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');

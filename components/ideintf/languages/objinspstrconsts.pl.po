@@ -299,16 +299,6 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr ""
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr ""
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -483,10 +473,6 @@ msgstr "Potwierdź usunięcie"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "&Kopiuj"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Utwórz nowy moduł (plik źródłowy pascala)."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -866,10 +852,6 @@ msgstr "Ustaw domyślną wartość: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
 msgstr ""
 
 #: objinspstrconsts.oisshowclasses
@@ -1280,10 +1262,6 @@ msgstr "Edytor filtra"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "Nazwa filtra"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Moduł pascala"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

@@ -296,16 +296,6 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "קבע ערך"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr ""
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr ""
-
 #: objinspstrconsts.nbcesaddpage
 #, fuzzy
 #| msgid "Add page"
@@ -500,10 +490,6 @@ msgstr "וודא מחיקה"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "העתק"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "צור יחידת פסקל חדשה"
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -890,10 +876,6 @@ msgstr "קבע כברירת מחדל: s%"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
 msgstr ""
 
 #: objinspstrconsts.oisshowclasses
@@ -1322,10 +1304,6 @@ msgstr "עורך מסננים"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "שם מסנן"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "יחידת פסקל"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

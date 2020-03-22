@@ -298,16 +298,6 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "Değer ayarla"
 
-#: objinspstrconsts.lisunabletofindparserfortool
-#, object-pascal-format
-msgid "Unable to find parser for tool \"%s\""
-msgstr "\"%s\" aracı için çözümleyici bulunamadı."
-
-#: objinspstrconsts.lisunabletofindparserwithname
-#, object-pascal-format
-msgid "Unable to find parser with name \"%s\""
-msgstr "\"%s\" adında ayrıştırıcı bulunamadı"
-
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
@@ -482,10 +472,6 @@ msgstr "Silmeyi onayla"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "&Kopyala"
-
-#: objinspstrconsts.oiscreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Yeni pascal birimi oluştur."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -866,10 +852,6 @@ msgstr "Varsayılan olarak ayarla :%s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Özellik değerini Varsayılan olarak ayarla"
-
-#: objinspstrconsts.oisshowalloutputlines
-msgid "Show all output lines"
-msgstr "Tüm çıktı satırlarını göster"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1279,10 +1261,6 @@ msgstr "Filtre düzenleyici"
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
 msgstr "Filtre adı"
-
-#: objinspstrconsts.pirsunit
-msgid "Pascal unit"
-msgstr "Pascal birimi"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

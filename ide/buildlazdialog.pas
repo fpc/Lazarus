@@ -317,7 +317,7 @@ begin
   CleanDir(fWorkingDir+PathDelim+'ide');
   CleanDir(fWorkingDir+PathDelim+'packager');
   CleanDir(fWorkingDir+PathDelim+'lcl');
-  CleanDir(fWorkingDir+PathDelim+'ideintf');
+  CleanDir(fWorkingDir+PathDelim+'ideintf'); // from very old lazarus
   CleanDir(fWorkingDir+PathDelim+'tools');
   CleanDir(fWorkingDir+PathDelim+'test');
 
