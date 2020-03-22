@@ -292,7 +292,7 @@ begin
   MacroListView.PanelWarnings.Visible := MacroListViewerWarningText <> '';
 end;
 
-procedure DoMacroListViewerWarningChanged(ASender: TObject);
+procedure DoMacroListViewerWarningChanged({%H-}ASender: TObject);
 begin
   if MacroListView <> nil then begin
     MacroListView.LabelWarning.Caption := MacroListViewerWarningText;
