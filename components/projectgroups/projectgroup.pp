@@ -221,7 +221,7 @@ type
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SetIdleConnected(const AValue: boolean);
     procedure AddSrcPathOfFile(SrcPaths: TFilenameToStringTree; Filename: string);
-    procedure AddProjectSrcPaths(Target: TIDECompileTarget; SrcPaths, LPKFiles: TFilenameToStringTree);
+    procedure AddProjectSrcPaths(Target: TIDECompileTarget; SrcPaths, {%H-}LPKFiles: TFilenameToStringTree);
     procedure AddPackageSrcPaths(Target: TIDECompileTarget; SrcPaths, LPKFiles: TFilenameToStringTree);
     procedure AddPackageNameSrcPaths(PkgName, PreferredFile, DefaultFile: string; SrcPaths, LPKFiles: TFilenameToStringTree);
     procedure AddLPKSrcPaths(LPKFilename: string; SrcPaths, LPKFiles: TFilenameToStringTree);
@@ -841,8 +841,8 @@ procedure TIDEProjectGroupManager.AddLPKSrcPaths(LPKFilename: string; SrcPaths,
   LPKFiles: TFilenameToStringTree);
 var
   xml: TXMLConfig;
-  Path, SubPath, CurFilename, PkgName, PreferredFilename,
-    DefaultFilename, Paths, BaseDir: String;
+  Path, SubPath, CurFilename,
+    Paths: String;
   Cnt, i, p: Integer;
   Pkg: TIDEPackage;
   LegacyList: Boolean;
@@ -877,7 +877,7 @@ begin
   try
     if xml=nil then exit;
     AddSrcPathOfFile(SrcPaths,LPKFilename);
-    BaseDir:=ExtractFilePath(LPKFilename);
+    //BaseDir:=ExtractFilePath(LPKFilename);
     // list of files
     Path:='Files/';
     LegacyList:=xml.IsLegacyList(Path);
