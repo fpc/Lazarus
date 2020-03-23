@@ -1,0 +1,36 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Language: ru\n"
+
+#: buildstrconsts.lirsunit
+msgid "Pascal unit"
+msgstr "Модуль Паскаля"
+
+#: buildstrconsts.liscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "Создать новый модуль Паскаля."
+
+#: buildstrconsts.lisshowalloutputlines
+msgid "Show all output lines"
+msgstr "Показать все строки вывода"
+
+#: buildstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
+msgid "Unable to find parser for tool \"%s\""
+msgstr "Невозможно найти анализатор для средства \"%s\""
+
+#: buildstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
+msgid "Unable to find parser with name \"%s\""
+msgstr "Невозможно найти анализатор с именем \"%s\""
+
