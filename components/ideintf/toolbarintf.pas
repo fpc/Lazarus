@@ -16,9 +16,9 @@ unit ToolBarIntf;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes,
   // LCL
-  Controls, ComCtrls, Menus, Forms, LCLType,
+  Controls, ComCtrls, Menus,
   // IdeIntf
   IDECommands, MenuIntf, IDEImagesIntf, SrcEditorIntf;
 

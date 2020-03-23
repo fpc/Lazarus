@@ -34,9 +34,9 @@ uses
   // LCL
   LCLProc, LCLType, LCLIntf, Forms, Menus,
   // LazUtils
-  LazMethodList, LazLoggerBase,
+  LazLoggerBase, LazTracer,
   // IdeIntf
-  PropEdits, IDEImagesIntf;
+  IDEImagesIntf;
   
 const
   { editor commands constants. see syneditkeycmds.pp for more

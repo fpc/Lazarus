@@ -30,11 +30,11 @@ uses
   // IMPORTANT: the object inspector is a tool and can be used in other programs
   //            too. Don't put Lazarus IDE specific things here.
   // RTL / FCL
-  SysUtils, Types, Classes, TypInfo, math, FPCanvas,
+  Classes, SysUtils, Types, TypInfo, math,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLType, LCLIntf, Forms, Buttons, Graphics,
   GraphType, StdCtrls, Controls, ComCtrls, ExtCtrls, Menus, Dialogs, Themes,
-  LMessages, LCLProc,
+  LMessages, ImgList,
   // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   TreeFilterEdit, ListFilterEdit,
@@ -43,7 +43,7 @@ uses
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
   PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,
-  ComponentEditors, ChangeParentDlg, ImgList;
+  ComponentEditors, ChangeParentDlg;
 
 const
   OIOptionsFileVersion = 3;

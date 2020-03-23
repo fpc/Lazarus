@@ -17,7 +17,7 @@ unit IDEHelpIntf;
 interface
 
 uses
-  Classes, Types, SysUtils,
+  Classes, SysUtils,
   // LCL
   LMessages, LCLType, LCLIntf, Forms, Controls, Graphics, HelpIntfs, LazHelpIntf,
   // IdeIntf

@@ -16,10 +16,14 @@ unit GraphPropEdits;
 interface
 
 uses
-  Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
-  LazFileUtils, Graphics, Buttons, Menus, ExtCtrls, Dialogs, Grids,
-  LCLIntf, PropEdits, PropEditUtils, ImgList, EditBtn, Math,
-  GraphicPropEdit; // defines TGraphicPropertyEditorForm
+  Classes, TypInfo, SysUtils, Math,
+  // LCL
+  LCLType, Forms, GraphType, Graphics, Buttons, Menus, Dialogs, Grids, ImgList,
+  EditBtn,
+  // LazUtils
+  UITypes, LazFileUtils,
+  // IdeIntf
+  PropEdits, GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
 { TGraphicPropertyEditor

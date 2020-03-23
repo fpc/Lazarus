@@ -16,7 +16,7 @@ unit MacroDefIntf;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes;
 
 Type
   TTransferMacro = class;

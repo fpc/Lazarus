@@ -7,6 +7,7 @@ interface
 uses
   Classes,
   SysUtils,
+  // BuildIntf
   PackageIntf;
 
 type

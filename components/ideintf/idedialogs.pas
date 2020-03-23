@@ -17,7 +17,7 @@ unit IDEDialogs;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes,
   // LCL
   Dialogs,
   // LazUtils

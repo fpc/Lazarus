@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, DB,
   // LCL
-  Dialogs, DbCtrls, DBGrids, Forms, LCLProc,
+  Dialogs, Forms, DbCtrls, DBGrids,
   // IdeIntf
   PropEdits, PropEditUtils, ComponentEditors, DBGridColumnsPropEditForm,
   ObjInspStrConsts;

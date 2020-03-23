@@ -5,9 +5,9 @@ unit FileFilterPropEditor;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes,
   // LCL
-  Forms, Controls, ButtonPanel, Grids, Buttons,
+  Forms, ButtonPanel, Grids, Buttons,
   // IdeIntf
   ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 

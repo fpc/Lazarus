@@ -13,8 +13,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
-  ComCtrls, StdCtrls, Buttons, ExtCtrls,
+  Forms, Controls, Dialogs, ComCtrls, StdCtrls, Buttons, ExtCtrls,
+  // LazUtils
+  LazLoggerBase,
   // IdeIntf
   ObjInspStrConsts;
 

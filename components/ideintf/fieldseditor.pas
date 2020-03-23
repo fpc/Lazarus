@@ -16,7 +16,7 @@ unit fieldseditor;
 interface
 
 uses
-  Classes, SysUtils, types, db,
+  Classes, SysUtils, db,
   // LCL
   LCLType, Forms, Controls, Menus, Dialogs, ComCtrls, ActnList, StdCtrls,
   // IdeIntf

@@ -21,14 +21,13 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   // LCL
-  LCLProc, LResources, Forms, Controls, Menus, ExtCtrls, CustomTimer, Graphics,
-  Grids, CheckLst, Buttons, ComCtrls, Dialogs, GraphType,
+  LCLProc, Forms, Controls, Menus, ExtCtrls, CustomTimer,
+  Grids, CheckLst, ComCtrls, Dialogs,
   // LazUtils
-  Maps, LazMethodList, LazLoggerBase,
+  Maps, LazLoggerBase,
   // IdeIntf
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg,
-  PropEdits, PropEditUtils, ComponentReg,
-  ObjInspStrConsts;
+  PropEdits, PropEditUtils, ComponentReg, ObjInspStrConsts;
 
 type
   { TComponentEditorDesigner }

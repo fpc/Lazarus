@@ -18,9 +18,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, Dialogs, LazHelpHTML,
+  Forms, Controls, LazHelpHTML,
   // LazUtils
-  LazMethodList,
+  UITypes, LazMethodList,
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf,
   // IdeIntf

@@ -36,16 +36,15 @@ uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
-  Dialogs, Graphics, Buttons, ButtonPanel,
+  Dialogs, Graphics, Buttons, ButtonPanel, LazHelpHTML, HelpIntfs,
   // LazUtils
   LConvEncoding, LazUTF8Classes, LazFileUtils, HTML2TextRender,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   // IDEIntf
-  PropEdits, ObjectInspector, TextTools,
-  IDEDialogs, LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf,
-  IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
+  PropEdits, ObjectInspector, TextTools, IDEDialogs, LazHelpIntf, MacroIntf,
+  IDEWindowIntf, IDEMsgIntf, PackageIntf, LazIDEIntf, HelpFPDoc, IDEHelpIntf,
   IDEExternToolIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, ObjInspExt, EnvironmentOpts, AboutFrm,

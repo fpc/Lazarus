@@ -22,9 +22,9 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils,
-  LazFileUtils,
+  LazFileUtils, LazLoggerBase,
   // LCL
-  LCLProc, HelpIntfs, LazHelpIntf, LazHelpHTML,
+  HelpIntfs, LazHelpIntf, LazHelpHTML,
   // BuildIntf
   MacroIntf;
 

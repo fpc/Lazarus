@@ -7,7 +7,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, LCLProc, Forms, Controls, Dialogs, ComCtrls, StdCtrls, ActnList,
+  LCLType, Forms, Controls, Dialogs, ComCtrls, StdCtrls, ActnList,
+  // LazUtils
+  LazLoggerBase,
   // IdeIntf
   ObjInspStrConsts, PropEditUtils, IDEImagesIntf, IDEWindowIntf;
 

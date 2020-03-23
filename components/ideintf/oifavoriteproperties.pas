@@ -12,11 +12,11 @@ interface
 
 uses
   // FCL
-  SysUtils, Classes,
+  Classes, SysUtils,
   // LCL
-  LCLProc, LCLPlatformDef,
+  LCLPlatformDef,
   // LazUtils
-  LazConfigStorage,
+  LazUtilities, LazConfigStorage, LazLoggerBase,
   // IdeIntf
   PropEdits;
 
@@ -521,8 +521,7 @@ begin
           and (AClass.InheritsFrom(BaseClass));
 end;
 
-function TOIFavoriteProperty.Compare(AFavorite: TOIFavoriteProperty
-  ): integer;
+function TOIFavoriteProperty.Compare(AFavorite: TOIFavoriteProperty): integer;
 
   function CompareBaseClass: integer;
   begin

@@ -26,7 +26,7 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LCL
-  LCLIntf, LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
+  LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
   Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList,
   // IDEIntf
   ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf,

@@ -20,11 +20,11 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, LCLProc, Menus, ImgList, Graphics,
+  LCLProc, LCLType, Menus, ImgList, Graphics,
   // LazUtils
-  LazMethodList, LazLoggerBase,
+  LazLoggerBase, LazTracer,
   // IdeIntf
-  IDECommands, IDEImagesIntf;
+  IDECommands;
   
 type
   TIDEMenuItem = class;

@@ -18,9 +18,9 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LCL
-  Forms, Menus,
+  Forms,
   // LazUtils
-  IDEExternToolIntf, LazFileUtils, LazLoggerBase,
+  IDEExternToolIntf, LazLoggerBase,
   // IdeIntf
   MenuIntf;
 

@@ -11,7 +11,7 @@ unit LazStringGridEdit;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes,
   // LCL
   Forms, Controls, Dialogs, Arrow, StdCtrls, Buttons, Grids, ExtCtrls,
   // IdeIntf

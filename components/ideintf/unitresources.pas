@@ -21,7 +21,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLMemManager, Forms, LResources;
+  LCLMemManager, Forms, LResources,
+  // LazUtils
+  UITypes;
 
 type
 

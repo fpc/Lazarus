@@ -19,9 +19,9 @@ interface
 uses
   Math, Classes, SysUtils,
   // LCL
-  LCLProc, LCLIntf, Forms, Controls, LCLType,
+  LCLIntf, LCLType, Forms, Controls,
   // LazUtils
-  LazConfigStorage, LazUTF8, LazMethodList,
+  LazConfigStorage, LazUTF8, LazMethodList, LazLoggerBase,
   // BuildIntf
   IDEOptionsIntf;
 

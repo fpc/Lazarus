@@ -27,11 +27,12 @@ unit ImageListEditor;
 interface
 
 uses
-  Classes, SysUtils, Types, Math,
+  Classes, SysUtils, Math,
   // LCL
-  LCLProc, Forms, Controls, Graphics, GraphType, Dialogs, StdCtrls,
+  LCLIntf, LCLType, Forms, Controls, Graphics, GraphType, Dialogs, StdCtrls,
   ExtCtrls, ExtDlgs, ColorBox, Buttons, ButtonPanel, ImgList, LCLTaskDialog,
-  LCLIntf, LCLType,
+  // LazUtils
+  LazLoggerBase,
   // IdeIntf
   IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 

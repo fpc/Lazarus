@@ -36,10 +36,10 @@ uses
   Classes, SysUtils, contnrs,
   // LCL
   Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, Menus, Dialogs,
-  ExtCtrls, LCLType, LCLProc, LCLIntf,
+  ExtCtrls, ImgList, LCLType, LCLIntf,
   TreeFilterEdit,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, AvgLvlTree,
+  FileUtil, LazFileUtils, LazFileCache, AvgLvlTree, LazLoggerBase, LazTracer,
   // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf,
   FormEditingIntf, PackageDependencyIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
@@ -48,7 +48,7 @@ uses
   MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   EnvironmentOpts, DialogProcs, InputHistory, PackageDefs, AddToPackageDlg,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor,
-  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps, ImgList;
+  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';

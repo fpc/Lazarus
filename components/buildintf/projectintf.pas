@@ -643,8 +643,7 @@ const
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
-function CompilationExecutableTypeNameToType(const s: string
-                                             ): TCompilationExecutableType;
+function CompilationExecutableTypeNameToType(const s: string): TCompilationExecutableType;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
@@ -783,8 +782,7 @@ begin
   Result:=pssInProjectInfo;
 end;
 
-function CompilationExecutableTypeNameToType(const s: string
-  ): TCompilationExecutableType;
+function CompilationExecutableTypeNameToType(const s: string): TCompilationExecutableType;
 begin
   for Result:=Low(TCompilationExecutableType) to High(TCompilationExecutableType)
   do if CompareText(s,CompilationExecutableTypeNames[Result])=0 then exit;

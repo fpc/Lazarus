@@ -14,7 +14,7 @@ unit HeaderControlPropEdit;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes,
   // LCL
   ComCtrls,
   // IdeIntf

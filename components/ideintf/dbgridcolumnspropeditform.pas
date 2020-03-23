@@ -7,9 +7,11 @@ interface
 uses
   Classes, SysUtils, typinfo, db,
   // LCL
-  Controls, Dialogs, LCLProc, Forms, ComCtrls, StdCtrls, ActnList, LCLType, DBGrids,
+  LCLType, Dialogs, Forms, ComCtrls, StdCtrls, ActnList, DBGrids,
+  // LazUtils
+  UITypes, LazLoggerBase,
   // IdeIntf
-  IDEImagesIntf, ObjInspStrConsts, PropEdits, PropEditUtils;
+  ObjInspStrConsts, IDEImagesIntf, PropEdits, PropEditUtils;
 
 type
   { TDBGridColumnsPropertyEditorForm }

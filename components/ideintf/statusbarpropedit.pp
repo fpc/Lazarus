@@ -14,7 +14,7 @@ unit StatusBarPropEdit;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes,
   // LCL
   ComCtrls,
   // IdeIntf

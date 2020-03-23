@@ -26,9 +26,9 @@ interface
 uses
   Classes, SysUtils, typinfo, Laz_AVL_Tree, fgl,
   // LCL
-  Controls, LCLProc,
+  Controls,
   // LazUtils
-  Laz2_XMLCfg, LazMethodList;
+  LazLoggerBase, Laz2_XMLCfg, LazMethodList;
 
 type
   TComponentPriorityCategory = (

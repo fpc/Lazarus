@@ -40,16 +40,17 @@ uses
   // FCL
   Classes, SysUtils, contnrs, typinfo, Laz_AVL_Tree,
   // LCL
-  LCLType, LResources, Graphics, Controls, Forms, Dialogs,
+  Forms,
   // Codetools
-  FileProcs, LazConfigStorage, BasicCodeTools, DefineTemplates, CodeToolManager,
+  LazConfigStorage, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsCfgScript, CodeToolsStructs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazTracer, LazUtilities,
-  Laz2_XMLCfg, AvgLvlTree,
+  FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
+  LazTracer, LazLoggerBase, UITypes, Laz2_XMLCfg, AvgLvlTree,
+  // BuildIntf
+  MacroIntf, MacroDefIntf, IDEOptionsIntf, PackageDependencyIntf, PackageIntf,
   // IDEIntf
-  PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, IDEOptionsIntf, IDEOptEditorIntf,
-  PackageDependencyIntf, PackageIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
+  LazIDEIntf, IDEOptEditorIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
   LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList,
@@ -1425,7 +1426,7 @@ begin
   ForcePathDelims(NewFilename);
   if Filename=NewFilename then exit;
   fFilename:=NewFilename;
-  fFullFilenameStamp:=CTInvalidChangeStamp;
+  fFullFilenameStamp:=LUInvalidChangeStamp;
   OldDirectory:=FDirectory;
   FDirectory:=ExtractFilePath(Filename);
   if OldDirectory<>FDirectory then begin
@@ -2450,7 +2451,7 @@ begin
     FDirectory:=FFilename
   else
     FDirectory:=ExtractFilePath(FFilename);
-  FDirectoryExpandedChangeStamp:=CTInvalidChangeStamp;
+  FDirectoryExpandedChangeStamp:=LUInvalidChangeStamp;
   FHasDirectory:=(FDirectory<>'') and (FDirectory[length(FDirectory)]=PathDelim);
   FHasStaticDirectory:=FHasDirectory and FilenameIsAbsolute(FDirectory);
   FUsageOptions.BaseDirectory:=FDirectory;
@@ -2718,7 +2719,7 @@ begin
     CompilerOptions.Clear;
     FDescription:='';
     FDirectory:='';
-    FDirectoryExpandedChangeStamp:=CTInvalidChangeStamp;
+    FDirectoryExpandedChangeStamp:=LUInvalidChangeStamp;
     FEnableI18N:=false;
     FEnableI18NForLFM:=false;
     FPOOutputDirectory:='';
@@ -4043,7 +4044,7 @@ begin
   Result:=PkgFile.Unit_Name;
   // compare with RTTI unit name
   if ComponentClass<>nil then begin
-    TIUnitName:=GetClassUnitName(ComponentClass);
+    TIUnitName:=ComponentClass.UnitName;
     if SysUtils.CompareText(TIUnitName,Result)<>0 then
       Result:=TIUnitName;
   end;
@@ -4371,7 +4372,7 @@ constructor TLazPackageDefineTemplates.Create(AOwner: IProjPack);
 begin
   inherited Create(AOwner);
   Include(FFlags, ptfIsPackageTemplate);
-  fLastSourceDirStamp:=CTInvalidChangeStamp;
+  fLastSourceDirStamp:=LUInvalidChangeStamp;
 end;
 
 destructor TLazPackageDefineTemplates.Destroy;

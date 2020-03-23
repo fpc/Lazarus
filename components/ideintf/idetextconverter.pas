@@ -23,9 +23,9 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   // LCL
-  LCLProc, Controls, Forms,
+  LCLProc,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase,
+  UITypes, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase,
   // IdeIntf
   SrcEditorIntf, PropEdits, ObjInspStrConsts;
   
@@ -650,8 +650,7 @@ begin
   if not SupportsType(aTextType) then RaiseNotSupported;
 end;
 
-function TIDETextConverter.SupportsType(aTextType: TTextConverterType
-  ): boolean;
+function TIDETextConverter.SupportsType(aTextType: TTextConverterType): boolean;
 begin
   Result:=(aTextType in [tctSource,tctFile,tctStrings])
       or ((TextConverterToolClasses<>nil)
@@ -833,8 +832,7 @@ end;
 
 { TCustomTextReplaceTool }
 
-procedure TCustomTextReplaceTool.SetOptions(
-  const AValue: TTextReplaceToolOptions);
+procedure TCustomTextReplaceTool.SetOptions(const AValue: TTextReplaceToolOptions);
 begin
   if FOptions=AValue then exit;
   FOptions:=AValue;
@@ -852,8 +850,7 @@ begin
   FSearchFor:=AValue;
 end;
 
-function TCustomTextReplaceTool.Execute(aText: TIDETextConverter
-  ): TModalResult;
+function TCustomTextReplaceTool.Execute(aText: TIDETextConverter): TModalResult;
 var
   Source: String;
   Flags: TSrcEditSearchOptions;

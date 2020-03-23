@@ -14,11 +14,11 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes,
   // LCL
   LCLType, Forms, Controls, Graphics,
   // LazUtils
-  FileUtil, Laz2_XMLCfg, LazStringUtils,
+  Laz2_XMLCfg, LazStringUtils,
   // BuildIntf
   ProjectIntf,
   // IdeIntf

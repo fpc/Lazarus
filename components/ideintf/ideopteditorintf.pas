@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
+  Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf

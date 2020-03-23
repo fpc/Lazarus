@@ -54,10 +54,13 @@ uses
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
-  // IDEIntf,
-  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
-  MacroDefIntf, ProjectIntf, FppkgIntf,
-  PackageDependencyIntf, PackageLinkIntf, PackageIntf, LazarusPackageIntf,
+  // BuildIntf
+  IDEExternToolIntf, MacroDefIntf, ProjectIntf, CompOptsIntf, FppkgIntf,
+  PackageDependencyIntf, PackageLinkIntf, PackageIntf,
+  // IDEIntf
+  IDEDialogs, IDEMsgIntf, LazIDEIntf,
+  // Package registration
+  LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
   TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
