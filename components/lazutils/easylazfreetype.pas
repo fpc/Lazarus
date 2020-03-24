@@ -1838,9 +1838,11 @@ var i,j: integer;
   value,value2: string;
 
 begin
-  setlength(FNamesArray, maxNameIndex+1);
+  // setlength(FNamesArray, maxNameIndex+1);
+  // wp: Move this into the "if" to avoid ignoring font files after reading defective one.
   if CheckFace then
   begin
+    setlength(FNamesArray, maxNameIndex+1);
     for i := 0 to TT_Get_Name_Count(FFace)-1 do
     begin
       if TT_Get_Name_ID(FFace, i, nrPlatformID, nrEncodingID,
