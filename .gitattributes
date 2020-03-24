@@ -11274,6 +11274,7 @@ packager/globallinks/aggpaslcl-1.lpl svneol=native#text/plain
 packager/globallinks/anchordocking-1.lpl svneol=native#text/plain
 packager/globallinks/anchordockingdsgn-1.lpl svneol=native#text/plain
 packager/globallinks/appforms-1.lpl svneol=native#text/plain
+packager/globallinks/buildintf-1.lpl svneol=native#text/plain
 packager/globallinks/cairocanvas_pkg-0.lpl svneol=native#text/plain
 packager/globallinks/chmhelppkg-0.2.lpl svneol=native#text/plain
 packager/globallinks/cmdlinedebuggerbase-0.lpl svneol=native#text/plain
