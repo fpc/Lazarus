@@ -1275,16 +1275,6 @@ begin
   end;
 end;
 
-function gtk2WSDelayedSelStart(Data: Pointer): gboolean; cdecl;
-var
-  Entry: PGtkEntry;
-begin
-  Result := False;
-  Entry := PGtkEntry(PWidgetInfo(Data)^.CoreWidget);
-  gtk_editable_set_position(PGtkEditable(Entry), PWidgetInfo(Data)^.CursorPos);
-  g_idle_remove_by_data(Data);
-end;
-
 class procedure TGtk2WSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit;
   const NewPos: TPoint);
 var
@@ -1305,12 +1295,7 @@ begin
     NewStart := Min(NewPos.X, Entry^.text_length);
   WidgetInfo := GetWidgetInfo(Entry);
   WidgetInfo^.CursorPos := NewStart;
-  if LockOnChange(PgtkObject(Entry),0) > 0 then
-  begin
-    // postpone
-    g_idle_add(@gtk2WSDelayedSelStart, WidgetInfo);
-  end else
-    gtk_editable_set_position(PGtkEditable(Entry), NewStart);
+  gtk_editable_set_position(PGtkEditable(Entry), NewStart);
 end;
 
 class procedure TGtk2WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
@@ -1378,12 +1363,7 @@ begin
     NewPos := Min(NewStart, Entry^.text_length);
   WidgetInfo := GetWidgetInfo(Entry);
   WidgetInfo^.CursorPos := NewPos;
-  if LockOnChange(PgtkObject(Entry),0) > 0 then
-  begin
-    // postpone
-    g_idle_add(@gtk2WSDelayedSelStart, WidgetInfo);
-  end else
-    gtk_editable_set_position(PGtkEditable(Entry), NewPos);
+  gtk_editable_set_position(PGtkEditable(Entry), NewPos);
 end;
 
 class procedure TGtk2WSCustomEdit.SetSelLength(
