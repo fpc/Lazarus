@@ -285,6 +285,7 @@ type
     ttGreaterThanOrEqual,
     ttLessThanOrEqual,
     ttNotEqual,
+    ttSetSymDif,
     ttBackSlash, { legal in char literals }
 
     // FreePascal c-style operators
@@ -400,7 +401,7 @@ const
 
   VariantTypes: TTokenTypeSet = [ttVariant, ttOleVariant];
 
-  Operators: TTokenTypeSet = [ttAnd .. ttNotEqual, ttEnumerator];
+  Operators: TTokenTypeSet = [ttAnd .. ttSetSymDif, ttEnumerator];
 
   { these words are
   - operators
@@ -410,7 +411,8 @@ const
 
   RelationalOperators: TTokenTypeSet = [
     ttIn, ttIs, ttAs, ttGreaterThan,
-    ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual, ttEquals, ttNotEqual];
+    ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual, ttEquals,
+    ttNotEqual, ttSetSymDif];
 
   AddOperators: TTokenTypeSet = [ttPlus, ttMinus, ttOr, ttXor];
 
@@ -422,7 +424,7 @@ const
     // all operators that are always binary
     ttAnd, ttAs, ttDiv, ttIn, ttIs, ttMod, ttOr, ttShl, ttShr, ttXor,
     ttTimes, ttFloatDiv, ttExponent, ttEquals, ttGreaterThan, ttLessThan,
-    ttGreaterThanOrEqual, ttLessThanOrEqual, ttNotEqual];
+    ttGreaterThanOrEqual, ttLessThanOrEqual, ttNotEqual, ttSetSymDif];
 
   StringWords: TTokenTypeSet = [ttString, ttAnsiString, ttWideString];
 
@@ -788,6 +790,7 @@ begin
   AddKeyword('>=', wtOperator, ttGreaterThanOrEqual);
   AddKeyword('<=', wtOperator, ttLessThanOrEqual);
   AddKeyword('<>', wtOperator, ttNotEqual);
+  AddKeyword('><', wtOperator, ttSetSymDif);
   // these must come after the above as they are shorter
   AddKeyword('>', wtOperator, ttGreaterThan);
   AddKeyword('<', wtOperator, ttLessThan);
