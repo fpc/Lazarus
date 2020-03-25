@@ -1782,6 +1782,11 @@ StartIdx := t.Count; // tlConst => Only eval the watch. No tests
       if p='gv' then
         t.Add(AName, 'PTxWord(gvp_'+'Word'+e+')^',             weCardinal(100+n,         'TxWord',     2));
 
+      t.Add(AName, 'PTxWord($'+IntToHex(StrToInt64Def(val, 0), 8)+')^',    weCardinal(100+n,         'TxWord',     2));
+      t.Add(AName, '^TxWord('+val+')^',                                    weCardinal(100+n,         'TxWord',     2));
+      t.Add(AName, '^TxWord($'+IntToHex(StrToInt64Def(val, 0), 8)+')^',    weCardinal(100+n,         'TxWord',     2));
+
+
       val := t2.Tests[6]^.TstWatch.Values[Thread, 0].Value;
       t.Add(AName, 'PTxFiveRec(@'+p+'FiveRec'+e+')^',                  weMatch('a *=.*b *= *44',skRecord));
       t.Add(AName, 'PTxFiveRec('+val+')^',                             weMatch('a *=.*b *= *44',skRecord));
@@ -1885,6 +1890,11 @@ begin
 //t.CheckResults;
 
     t.Clear;
+    t.Add('pbyte(0)', 'pbyte(0)',  wePointerAddr(nil,    'PByte'));
+    t.Add('pbyte($0)', 'pbyte($0)',  wePointerAddr(nil,    'PByte'));
+    t.Add('^byte(0)', '^byte(0)',  wePointerAddr(nil,    '^Byte'));
+    t.Add('^byte($0)', '^byte($0)',  wePointerAddr(nil,    '^Byte'));
+
     AddWatchesConv(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatchesConv(t, 'glob var',   'gv', 001, 'B');
 
