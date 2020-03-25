@@ -1285,18 +1285,6 @@ begin
   g_idle_remove_by_data(Data);
 end;
 
-function gtk2WSDelayedSetSelLength(Data: Pointer): gboolean; cdecl;
-var
-  Entry: PGtkEntry;
-begin
-  Result := False;
-  Entry := PGtkEntry(PWidgetInfo(Data)^.CoreWidget);
-  gtk_entry_select_region(Entry,
-      PWidgetInfo(Data)^.CursorPos,
-      PWidgetInfo(Data)^.CursorPos + PWidgetInfo(Data)^.SelLength);
-  g_idle_remove_by_data(Data);
-end;
-
 class procedure TGtk2WSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit;
   const NewPos: TPoint);
 var
@@ -1414,13 +1402,9 @@ begin
   if WidgetInfo^.CursorPos = 0 then
     WidgetInfo^.CursorPos := SelStart;
   WidgetInfo^.SelLength := NewLength;
-  if LockOnChange(PgtkObject(Entry),0) > 0 then
-    // delay setting of selection length. issue #20890
-    g_idle_add(@gtk2WSDelayedSetSelLength, WidgetInfo)
-  else
-    gtk_entry_select_region(Entry,
-      SelStart,
-      SelStart + NewLength);
+  gtk_entry_select_region(Entry,
+    SelStart + NewLength,
+    SelStart );
 end;
 
 class procedure TGtk2WSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
