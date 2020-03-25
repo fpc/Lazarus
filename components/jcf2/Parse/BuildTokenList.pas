@@ -113,7 +113,7 @@ uses
   JcfRegistrySettings;
 
 const
-  CurlyLeft = '{'; //widechar(123);
+  CurlyLeft =  '{'; //widechar(123);
   CurlyRight = '}'; //widechar(125);
 
 function CheckMultiByte(const pcChar: char): boolean;
@@ -642,7 +642,7 @@ begin
   Result := True;
 end;
 
-{ ~bk 2014.11.01 - Bin numbers are prefixed with % }
+{ Bin numbers are prefixed with % }
 function TBuildTokenList.TryBinNumber(const pcToken: TSourceToken): boolean;
 begin
   Result := False;

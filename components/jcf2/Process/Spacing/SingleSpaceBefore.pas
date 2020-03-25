@@ -206,7 +206,7 @@ begin
   end;
 
   { 'absolute' as a var directive }
-  if (pt.TokenType = ttAbsolute) and pt.HasParentNode(nAbsoluteVar) then
+  if (pt.TokenType = ttAbsolute) and pt.HasParentNode(nVarAbsolute) then
   begin
     Result := True;
     exit;

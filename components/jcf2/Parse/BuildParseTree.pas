@@ -2385,7 +2385,20 @@ procedure TBuildParseTree.RecogniseVarDecl;
 var
   lc: TSourceToken;
 begin
-  // VarDecl -> IdentList ':' Type [(ABSOLUTE (Ident | ConstExpr)) | '=' ConstExpr]
+  // (* attempted EBNF definition of a variable definition *)
+  // named : 'name' var_name
+  // exppubl : ( 'export' | 'public' ) [named] ';'
+  // external : ( 'external' [[lib_name] [named]] ';'
+  // absolute : 'absolute' var_name
+  // initvalue : '=' ConstExpr
+  // hints : [ 'deprecated'
+  // | 'experimental'
+  // | 'platform'
+  // | 'unimplemented' ]
+  // identlist : var_name { ',' var_name }
+  //
+  // vardef : identlist ':' vartype [ absolute ] ';'
+  // [( exppubl | external )] [ hints ]
 
   PushNode(nVarDecl);
 
@@ -2397,7 +2410,7 @@ begin
 
   if lc.TokenType = ttAbsolute then
   begin
-    PushNode(nAbsoluteVar);
+    PushNode(nVarAbsolute);
     Recognise(ttAbsolute);
 
     if (fcTokenList.FirstSolidWordType in IdentifierTypes) then

@@ -63,9 +63,9 @@ type
     ttUnknown, // default category used for unrecognised input
 
     // spacing
-    ttReturn, // CR & LF chars
+    ttReturn,     // CR & LF chars
     ttWhiteSpace, // spaces & tabs
-    ttComment, // one of these
+    ttComment,    // one of these
     ttConditionalCompilationRemoved,
 
 
@@ -73,13 +73,13 @@ type
     ttQuotedLiteralString, // 'This is a string'
     ttSemicolon,     // ;
     ttColon,         // :
-    ttComma,
-    ttOpenBracket,
-    ttCloseBracket,
-    ttOpenSquareBracket,
-    ttCloseSquareBracket,
-    ttDot,
-    ttHash,
+    ttComma,         // ,
+    ttOpenBracket,       // (
+    ttCloseBracket,      // )
+    ttOpenSquareBracket, // [
+    ttCloseSquareBracket,// ]
+    ttDot,       // .
+    ttHash,      // #
     ttDoubleDot, // '..' as in '[1 .. 2]'
     ttAssign,    // :=
     ttAmpersand, // '&' is used in Asm

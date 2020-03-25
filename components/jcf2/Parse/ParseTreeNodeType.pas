@@ -77,7 +77,7 @@ type
     nProcedureType,
     nVarSection,
     nVarDecl,
-    nAbsoluteVar,
+    nVarAbsolute,
     nVariableInit,
     nDesignator,
     nExpression,
@@ -279,7 +279,7 @@ begin
       Result := 'Var section';
     nVarDecl:
       Result := 'Var decl';
-    nAbsoluteVar:
+    nVarAbsolute:
       Result := 'Absolute var';
     nVariableInit:
       Result := 'Variable init';
