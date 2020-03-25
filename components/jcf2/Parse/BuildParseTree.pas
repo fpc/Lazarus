@@ -4018,6 +4018,12 @@ begin
         begin
           Recognise(ttEnumerator);
           RecogniseIdentifier(False, idStrict);
+        end;
+        ttDeprecated:
+        begin
+          Recognise(ttDeprecated);
+          if fcTokenList.FirstSolidTokenType <> ttSemicolon then
+            RecogniseConstantExpression;
         end
         else
           Recognise(ProcedureDirectives);
