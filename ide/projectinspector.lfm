@@ -9,7 +9,9 @@ object ProjectInspectorForm: TProjectInspectorForm
   Caption = 'ProjectInspectorForm'
   ClientHeight = 456
   ClientWidth = 299
+  OnActivate = FormActivate
   OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
   OnDropFiles = FormDropFiles
   LCLVersion = '2.1.0.0'
   object ItemsTreeView: TTreeView
@@ -31,7 +33,6 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnDragDrop = ItemsTreeViewDragDrop
     OnDragOver = ItemsTreeViewDragOver
     OnKeyDown = ItemsTreeViewKeyDown
-    OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object BtnPanel: TPanel

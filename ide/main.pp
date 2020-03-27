@@ -393,7 +393,7 @@ type
     UpdatePackageCommandsStamp: TPackageCommandsStamp;
     UpdateBookmarkCommandsStamp: TBookmarkCommandsStamp;
     BookmarksStamp: Int64;
-  public
+  //public
     procedure UpdateMainIDECommands(Sender: TObject);
     procedure UpdateFileCommands(Sender: TObject);
     procedure UpdateEditorCommands(Sender: TObject);
@@ -4157,29 +4157,18 @@ begin
 
   // project change build mode
   ACmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
+  AHint := lisChangeBuildMode+' '+KeyValuesToCaptionStr(ACmd.ShortcutA,ACmd.ShortcutB,'(');
   if Assigned(Project1) then
-    AHint :=
-      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '(')) + sLineBreak +
-      Format('[%s]', [Project1.ActiveBuildMode.GetCaption])
-  else
-    AHint :=
-      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '('));
+    AHint := AHint + sLineBreak + Project1.ActiveBuildMode.GetCaption;
   ACmd.Hint := AHint;
   if ProjInspector<>nil then
-  begin
-    ProjInspector.OptionsBitBtn.Hint := AHint;
-    ProjInspector.UpdateTitle;
-  end;
+    ProjInspector.OptionsBitBtn.Hint := AHint;    //ProjInspector.UpdateTitle;
 
   // run
   ACmd := IDECommandList.FindIDECommand(ecRun);
+  AHint := lisRun+' '+KeyValuesToCaptionStr(ACmd.ShortcutA,ACmd.ShortcutB,'(');
   if Assigned(Project1) and Assigned(Project1.RunParameterOptions.GetActiveMode) then
-    AHint :=
-      Trim(lisRun + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '(')) + sLineBreak +
-      Format('[%s]', [Project1.RunParameterOptions.GetActiveMode.Name])
-  else
-    AHint :=
-      Trim(lisRun + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '('));
+    AHint := AHint + sLineBreak + Project1.RunParameterOptions.GetActiveMode.Name;
   ACmd.Hint := AHint;
 end;
 
