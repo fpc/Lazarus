@@ -6654,6 +6654,7 @@ begin
        +LazarusSrcDir+'/packager;'
        +LazarusSrcDir+'/packager/registration;'
        +LazarusSrcDir+'/packager/frames;'
+       +LazarusSrcDir+'/components/buildintf;'
        +LazarusSrcDir+'/components/ideintf;'
        +LazarusSrcDir+'/components/lazutils;'
        +LazarusSrcDir+'/components/lazcontrols;'
@@ -6688,6 +6689,7 @@ begin
        +';../lcl'
        +';../lcl/interfaces'
        +';../lcl/interfaces/'+WidgetType
+       +';../components/buildintf'
        +';../components/ideintf'
        +';../components/synedit'
        +';../components/codetools'
@@ -6721,6 +6723,7 @@ begin
       d(LazarusSrcDir+'/debugger;'
        +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/ide;'
+       +LazarusSrcDir+'/components/buildintf;'
        +LazarusSrcDir+'/components/ideintf;'
        +LazarusSrcDir+'/components/lazutils;'
        +LazarusSrcDir+'/components/codetools;'
@@ -6741,6 +6744,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',
       d('../ide'
+       +';../components/buildintf'
        +';../components/ideintf'
        +';../components/lazutils'
        +';../components/codetools'
@@ -6761,12 +6765,13 @@ begin
   DirTempl:=TDefineTemplate.Create('Packager',ctsDesignerDirectory,
     '','packager',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('src path addition',
-    Format(ctsAddsDirToSourcePath,['lcl synedit codetools lazcontrols ideintf']),
+    Format(ctsAddsDirToSourcePath,['lcl synedit codetools lazcontrols ideintf buildintf']),
     SrcPathMacroName,
       d(LazarusSrcDir+'/lcl'
       +';'+LazarusSrcDir+'/lcl/interfaces'
       +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType
       +';'+LazarusSrcDir+'/ide'
+      +';'+LazarusSrcDir+'/components/buildintf'
       +';'+LazarusSrcDir+'/components/ideintf'
       +';'+LazarusSrcDir+'/components/synedit'
       +';'+LazarusSrcDir+'/components/lazcontrols'
