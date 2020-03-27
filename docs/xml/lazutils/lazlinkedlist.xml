@@ -1,303 +1,317 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      LazLinkedList
+    ====================================================================
+    -->
+    <module name="LazLinkedList">
+      <short>Defines a simple doubly linked list</short>
+      <descr></descr>
 
-<!--
-  ====================================================================
-    LazLinkedList
-  ====================================================================
--->
+      <!-- used units -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
 
-<module name="LazLinkedList">
-<short></short>
-<descr>
-</descr>
+      <element name="TLinkListItem">
+        <short>Implements an item in a doubly linked list</short>
+        <descr>
+          <p>
+            <var>TLinkListItem</var> is a class which implements an item in a doubly linked list. It represents the traversal nodes used in <var>TLinkList</var>, including the terminal (or sentinel) node. Properties are provided to access and maintain the <var>Prior</var> and <var>Next</var> items in the node traversal order.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkListItem.Prior"/>
+          <link id="TLinkListItem.Next"/>
+          <link id="TLinkList.First"/>
+          <link id="TLinkList.Last"/>
+          <link id="TLinkList.FFirstFree"/>
+        </seealso>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TLinkListItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkListItem.Next">
+        <short>Contains a reference to the next item in the doubly linked list</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TLinkListItem.Next">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkListItem.Prior">
+        <short>Contains a reference to the previous item in the doubly linked list</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TLinkListItem.Prior">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkListItem.ResetItem">
+        <short>Removes the references to the previous and next items for the list item</short>
+        <descr>
+          <p>
+            <var>ResetItem</var> sets the values in the <var>Prior</var> and <var>Next</var> properties to <b>Nil</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkListItem.Prior"/>
+          <link id="TLinkListItem.Next"/>
+        </seealso>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="TLinkListItem.ResetItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList">
+        <short>Defines a simple doubly linked list class</short>
+        <descr>
+          <p>
+            <var>TLinkList</var> is a class which defines a navigational interface for a simple doubly linked list.
+          </p>
+          <p>
+            TLinkList provides properties used to access the First and Last items in the linked list, the number of list items in Count, and the first free item in the linked list. Items in the linked list are represented using the TLinkListItem class, which provides Prior and Next properties for navigation of items in the list.
+          </p>
+          <p>
+            TLinkList contains an abstract virtual <var>CreateItem</var> method that is used to create new items for the linked list. The method <b>must</b> be implemented in a descendent class to provided implementation details that address storage and ownership of the linked list items. See TGtkMessageQueue for an example of a concrete implementation of the TLinkList class.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TLinkList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.FFirstFree">
+        <short>First free item in the linked list</short>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TLinkList.FFirstFree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.FFreeCount">
+        <short>Number of free items in the linked list</short>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TLinkList.FFreeCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.FFirst">
+        <short>First list item in the linked list</short>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TLinkList.FFirst">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.FLast">
+        <short>Last list item in the linked list</short>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TLinkList.FLast">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.FCount">
+        <short>Number of items in the linked list</short>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TLinkList.FCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.DisposeItem">
+        <short>
+          Removes the specified item from the linked list, and optionally frees the item instance
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TLinkList.DisposeItem.AnItem">
+        <short>List item updated in the method</short>
+      </element>
 
-<!-- procedure Visibility: private -->
-<element name="TLinkList.DisposeItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.Unbind">
+        <short>Removes the traversal nodes for the specified linked list item</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TLinkList.Unbind.AnItem">
+        <short>Linked list item updated in the method</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLinkList.DisposeItem.AnItem">
-<short></short>
-</element>
+      <element name="TLinkList.CreateItem">
+        <short>
+          Specifies the interface used to create a new linked list item for the class
+        </short>
+        <descr>
+          <p>
+            <var>CreateItem</var> is an abstract virtual method which specifies the interface used to create a new linked list item for the class. The return value is the <var>TLinkListItem</var> class instance allocated in the method. CreateItem must be be implemented in a descendent class to handle storage and ownership for the items created in the linked list.
+          </p>
+          <p>
+            CreateItem is used in the implementation of the <var>GetNewItem</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.GetNewItem"/>
+        </seealso>
+      </element>
+      <element name="TLinkList.CreateItem.Result">
+        <short>New link list item allocated in the method</short>
+      </element>
 
-<!-- procedure Visibility: private -->
-<element name="TLinkList.Unbind">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.GetNewItem">
+        <short>
+          Gets a new linked list item by reusing a free item or creating a new one
+        </short>
+        <descr>
+          <p>
+            <var>GetNewItem</var> is a <var>TLinkListItem</var> function used to get a new item for the doubly linked list. GetNewItem checks for an unused item in the linked list, and creates a new TLinkListItem instance when a free item is not found. A reused item is updated to remove the <var>Prior</var> and <var>Next</var> traversal nodes in the linked list item. A new item is retrieved by calling the CreateItem method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.CreateItem"/>
+          <link id="TLinkList.FFirstFree"/>
+          <link id="TLinkList.FFreeCount"/>
+          <link id="TLinkListItem.Prior"/>
+          <link id="TLinkListItem.Next"/>
+        </seealso>
+      </element>
+      <element name="TLinkList.GetNewItem.Result">
+        <short>Linked list item reused or created in the method</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLinkList.Unbind.AnItem">
-<short></short>
-</element>
+      <element name="TLinkList.AddAsLast">
+        <short>
+          Configures and adds the specified item as the terminal node for the doubly linked list
+        </short>
+        <descr>
+          <p>
+            <var>AddAsLast</var> is a procedure used to make the specified list item the terminal node in the doubly linked list. AddAsLast updates the list item in <var>AnItem</var> by setting its <var>Prior</var> property to the node in <var>Last</var>. The value in its <var>Next</var> property is set to <b>Nil</b>. The updated list item is then assigned as the new value for the Last property. The value in <var>First</var> may be set to the value in AnItem when a prior node in the traversal order is not available.
+          </p>
+          <p>
+            AddAdLast increments the value in the Count property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.Count"/>
+          <link id="TLinkList.Last"/>
+          <link id="TLinkList.First"/>
+          <link id="TLinkListItem.Prior"/>
+          <link id="TLinkListItem.Next"/>
+        </seealso>
+      </element>
+      <element name="TLinkList.AddAsLast.AnItem">
+        <short>Item saved as the last item in the linked list</short>
+      </element>
 
-<!-- function Visibility: protected -->
-<element name="TLinkList.CreateItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.First">
+        <short>First item in the doubly linked list</short>
+        <descr>
+          <p>
+            <var>First</var> is a read-only <var>TLinkListItem</var> property which represents the first traversal node in the doubly linked list. The value in First is updated in methods like <var>Unbind</var> and <var>AddAsLast</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.Last"/>
+          <link id="TLinkList.AddAsLast"/>
+          <link id="TLinkList.Unbind"/>
+        </seealso>
+      </element>
 
-<!-- function result Visibility: protected -->
-<element name="TLinkList.CreateItem.Result">
-<short></short>
-</element>
+      <element name="TLinkList.Last">
+        <short>Last item in the doubly linked list</short>
+        <descr>
+          <p>
+            <var>Last</var> is a read-only <var>TLinkListItem</var> property which represents the last (or terminal) traversal node in the doubly linked list. The value in Last is updated in methods like <var>Unbind</var> anf <var>AddAsLast</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.AddAsLast"/>
+          <link id="TLinkList.Unbind"/>
+          <link id="TLinkList.FLast"/>
+        </seealso>
+      </element>
 
-<!-- function Visibility: protected -->
-<element name="TLinkList.GetNewItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.Count">
+        <short>Total number of items used in the doubly linked list</short>
+        <descr>
+          <p>
+            <var>Count</var> is a read-only <var>Integer</var> property which contains the number of traversal nodes  in the doubly linked list. The value in Count is updated in method like <var>Unbind</var> and <var>AddAsLast</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.Unbind"/>
+          <link id="TLinkList.AddAsLast"/>
+          <link id="TLinkList.FCount"/>
+          <link id="TLinkList.FFreeCount"/>
+        </seealso>
+      </element>
 
-<!-- function result Visibility: protected -->
-<element name="TLinkList.GetNewItem.Result">
-<short></short>
-</element>
+      <element name="TLinkList.Delete">
+        <short>Removes the specified list item from the doubly linked list</short>
+        <descr>
+          <p>
+            <var>Delete</var> is a procedure used to remove the specified list item from the traversal nodes in the doubly linked list. No actions are performed in the method when <var>AnItem</var> is unassigned (contains <b>Nil</b>).
+          </p>
+          <p>
+            Delete calls <var>Unbind</var> to update the traversal node for the affected list items. The <var>Prior</var> and <var>Next</var> nodes in <var>AnItem</var> are set to <b>Nil</b> to remove the item from the node order. Delete decrements the value in the <var>Count</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.Unbind"/>
+          <link id="TLinkList.Count"/>
+          <link id="TLinkListItem.Prior"/>
+          <link id="TLinkListItem.Next"/>
+        </seealso>
+      </element>
+      <element name="TLinkList.Delete.AnItem">
+        <short>Item removed from the traversal nodes in the list</short>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TLinkList.AddAsLast">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.MoveToLast">
+        <short>
+          Relocates the specified list item to the last (or terminal) node for the linked list
+        </short>
+        <descr>
+          <p>
+            <var>MoveToLast</var> is a procedure used to move the specified list item to the last (or terminal) node in the doubly linked list. No actions are performed in the method when <var>AnItem</var> is unassigned (contains <b>Nil</b>).
+          </p>
+          <p>
+            MoveToLast calls <var>Unbind</var> to ensure that AnItem is removed from the node traversal order in the linked list. MoveToLast calls <var>AddAsLast</var> to update the values in the Prior and Next properties in AnItem making it the terminal node in the traversal order.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.Unbind"/>
+          <link id="TLinkList.AddAsLast"/>
+          <link id="TLinkListItem.Prior"/>
+          <link id="TLinkListItem.Next"/>
+        </seealso>
+      </element>
+      <element name="TLinkList.MoveToLast.AnItem">
+        <short>Item moved to the last node in the linked list</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TLinkList.AddAsLast.AnItem">
-<short></short>
-</element>
+      <element name="TLinkList.Clear">
+        <short>Removes all items in the doubly linked list</short>
+        <descr>
+          <p>
+            <var>Clear</var> is a procedure used to remove all items in the doubly linked list. Clear uses the class instance in <var>First</var> as the initial TLinkListItem in the node traversal order. While the node is assigned, it calls the    <var>Delete</var> method for each of the <var>TLinkListItem</var> instances.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.FIrst"/>
+          <link id="TLinkList.Delete"/>
+        </seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLinkList.First">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.ConsistencyCheck">
+        <short>
+          Checks the validity of traversal nodes and node counts in the doubly linked list
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TLinkList.ConsistencyCheck.Result">
+        <short>
+          Returns 0 when the traversal nodes and counts are valid, or a negative value an inconsistency is found
+        </short>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLinkList.Last">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          Create calls the inherited constructor.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLinkList.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TLinkList.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> calls <var>Clear</var>, and frees the unused items in the linked list. Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLinkList.Clear"/>
+          <link id="TLinkList.FFirstFree"/>
+          <link id="TLinkListItem.Next"/>
+        </seealso>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLinkList.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLinkList.Delete.AnItem">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLinkList.MoveToLast">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLinkList.MoveToLast.AnItem">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLinkList.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLinkList.ConsistencyCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TLinkList.ConsistencyCheck.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TLinkList.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TLinkList.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- LazLinkedList -->
-
-</package>
+    </module>
+    <!-- LazLinkedList -->
+  </package>
 </fpdoc-descriptions>

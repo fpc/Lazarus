@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          html2textrender.pas contains an HTML-to-Text renderer. It converts HTML into plain text by stripping tags and their attributes.
+          html2textrender.pas contains an HTML-to-Text renderer. It converts HTML into plain text by converting tags and their attributes to a representation as plain text.
         </p>
       </descr>
 
@@ -57,24 +57,29 @@
           <p>
             A UTF-8 Byte Order Mark in the HTML is ignored.
           </p>
+          <p>
+            Set values for properties in the class instance to customize the content and formatting produced in the output. Use the Render method to parse and process the HTML content passed to the constructor, and generate the output for the class instance.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="THTML2TextRenderer.Render"/>
+          <link id="THTML2TextRenderer.Create"/>
+        </seealso>
       </element>
 
-      <!-- Visibility: private -->
       <element name="THTML2TextRenderer.fHTML">
-        <short></short>
+        <short>HTML content examined in the class</short>
       </element>
       <element name="THTML2TextRenderer.fOutput">
-        <short></short>
+        <short>Output value without HTML tags and attributes</short>
       </element>
       <element name="THTML2TextRenderer.fMaxLines">
-        <short></short>
+        <short>Maximum number of lines allowed in the output from the class</short>
       </element>
       <element name="THTML2TextRenderer.fLineEndMark">
         <short>End of line marker, by default standard LineEnding</short>
       </element>
-      <element name="THTML2TextRenderer.fTitleMartk">
+      <element name="THTML2TextRenderer.fTitleMark">
         <short>Markup used at the start/end of title text</short>
       </element>
       <element name="THTML2TextRenderer.fHorzLine">
@@ -93,148 +98,369 @@
         <short>Text added when there are too many lines</short>
       </element>
       <element name="THTML2TextRenderer.fInHeader">
-        <short></short>
+        <short>Flag used to suppress output of line breaks in the output</short>
       </element>
       <element name="THTML2TextRenderer.fInDivTitle">
-        <short></short>
+        <short>
+          Flag used to indicate that a DIV tag with a TITLE attribute is being processed
+        </short>
       </element>
       <element name="THTML2TextRenderer.fPendingSpace">
-        <short></short>
+        <short>
+          Flag used to indicate that a space character needs to be added the end of a wrapped line
+        </short>
       </element>
       <element name="THTML2TextRenderer.fPendingNewLineCnt">
-        <short></short>
+        <short>Indicates a line break needs to be appended in the output</short>
       </element>
       <element name="THTML2TextRenderer.fIndentStep">
         <short>Increment (in spaces) for each nested HTML level</short>
       </element>
       <element name="THTML2TextRenderer.fIndent">
-        <short></short>
+        <short>
+          The current indentation level for the renderer
+        </short>
       </element>
       <element name="THTML2TextRenderer.fLineCnt">
-        <short></short>
+        <short>Number of lines added to the output for the class</short>
       </element>
       <element name="THTML2TextRenderer.fHtmlLen">
-        <short></short>
+        <short>Length of the HTML examined in the class</short>
       </element>
       <element name="THTML2TextRenderer.p">
-        <short></short>
+        <short>Current character position in the HTML</short>
       </element>
 
       <element name="THTML2TextRenderer.AddNewLine">
         <short>Sets a pending line break to be added later</short>
       </element>
+
       <element name="THTML2TextRenderer.AddOneNewLine">
         <short>Sets a maximum of one pending line break to be added later</short>
       </element>
+
       <element name="THTML2TextRenderer.AddOutput">
         <short>Appends text to the plaint-text output for the renderer</short>
+        <descr>
+          <p>
+            <var>AddOutput</var> is a <var>Boolean</var> function used to append the value specified in <var>aText</var> to the output  for the renderer.
+          </p>
+          <p>
+            AddOutput ensures that a space character is included for wrapped lines in the HTML when there are no pending new lines . Otherwise, the required number of line ending sequences are appended to the output for the render and the line count is increased accordingly.  If the line count exceeds the maximum number allowed in <var>Render</var>, the value in <var>MoreMark</var> is appended to the output.
+          </p>
+          <p>
+            Pending new line(s) also cause required indentation spaces to be appended to the output.
+          </p>
+          <p>
+            The value in aText is appended to the output for the renderer prior to exiting from the method.
+          </p>
+          <p>
+            AddOutput is used in the implementation of the <var>Render</var>,      <var>HtmlTag</var>, and <var>HtmlEntity</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.Render"/>
+          <link id="THTML2TextRenderer.HtmlTag"/>
+          <link id="THTML2TextRenderer.HtmlEntity"/>
+          <link id="THTML2TextRenderer.LineEndMark"/>
+          <link id="THTML2TextRenderer.MoreMark"/>
+        </seealso>
       </element>
       <element name="THTML2TextRenderer.AddOutput.aText">
-        <short></short>
+        <short>Text value appended to the output for the renderer</short>
       </element>
       <element name="THTML2TextRenderer.AddOutput.Result">
-        <short></short>
-      </element>
-      <element name="THTML2TextRenderer.HtmlTag">
-        <short>Handles an HTML tag and its attributes values</short>
-      </element>
-      <element name="THTML2TextRenderer.HtmlTag.Result">
-        <short></short>
-      </element>
-      <element name="THTML2TextRenderer.HtmlEntity">
-        <short>Handles an HTML character entity</short>
-      </element>
-      <element name="THTML2TextRenderer.HtmlEntity.Result">
-        <short></short>
-      </element>
-      <element name="THTML2TextRenderer.Reset">
-        <short>Rest the state and output for the renderer</short>
+        <short>
+          True when the value was added to the output; False when the maximum number of lines is exceeded
+        </short>
       </element>
 
-      <!-- Visibility: public -->
+      <element name="THTML2TextRenderer.HtmlTag">
+        <short>Handles an HTML tag and its attributes values</short>
+        <descr>
+          <p>
+            <var>HtmlTag</var> is a <var>Boolean</var> function used to locate and process an HTML start or end tag,  and any attribute name/value pairs present in the tag. HtmlTag handles the following HTML tag and attribute/value names:
+          </p>
+          <dl>
+            <dt>HTML</dt>
+            <dd>Sets the FInHeader flag to indicate that the content is for a whole page.</dd>
+
+            <dt>BODY</dt>
+            <dd>Call Reset to initialize the renderer.</dd>
+
+            <dt>P, /P, BR, /UL</dt>
+            <dd>Adds a new line sequence to the output.</dd>
+
+            <dt>DIV CLASS="Title"</dt>
+            <dd>
+              Sets the fInDivTitle flag, and adds a NewLine and a TitleMark to the output. When the CLASS attribute is omitted or has a different value, only a NewLine sequence is appended.
+            </dd>
+
+            <dt>/DIV</dt>
+            <dd>
+              Appends a trailing TitleMark, resets the FInDivTitle flag, and appends a NewLine sequence and decrements the indentation level.
+            </dd>
+
+            <dt>LI</dt>
+            <dd>
+              Increments the indentation level and adds a single NewLine prior to adding the content in the list.
+            </dd>
+
+            <dt>/LI</dt>
+            <dd>Decrements the indentation level.</dd>
+
+            <dt>A</dt>
+            <dd>Appends a Space character and the LinkBegin sequence to the output.</dd>
+
+            <dt>/A</dt>
+            <dd>Appends a LinkEnd sequence and a Space character to the output.</dd>
+
+            <dt>HR</dt>
+            <dd>Adds a single NewLine and the content in HorzLine to the output.</dd>
+          </dl>
+          <p>
+            All other tag names are ignored in the method.
+          </p>
+          <p>
+          The return value contains <b>True</b> when the HTML content is successfully added by calling <var>AddOutput</var>. The return value is <b>False</b> when the maximum number of lines specified in the <var>Render</var> method is exceeded.
+          </p>
+        </descr>
+        <notes>
+          <note>
+            Does not appear to recognize HTML5 empty attributes (with no attribute value assignment).
+          </note>
+        </notes>
+      </element>
+      <element name="THTML2TextRenderer.HtmlTag.Result">
+        <short>
+          True when output is successfully added to the output; False when the maximum number of lines is exceeded
+        </short>
+      </element>
+
+      <element name="THTML2TextRenderer.HtmlEntity">
+        <short>Handles an HTML character entity</short>
+        <descr>
+          <p>
+            <var>HtmlEntity</var> is a <var>Boolean</var> function used to convert  common character entities in HTML to their plain text equivalent. The following Named character entities are converted to their plain text equivalent:
+          </p>
+          <dl>
+            <dt>&amp;nbsp;</dt>
+            <dd>' '</dd>
+            <dt>&amp;lt;</dt>
+            <dd>'&lt;'</dd>
+            <dt>&amp;gt;</dt>
+            <dd>'&gt;;'</dd>
+            <dt>&amp;amp;</dt>
+            <dd>'&amp;'</dd>
+          </dl>
+          <p>
+            Other named character entities or numeric character entities are included verbatim in the plain text output.
+          </p>
+          <p>
+            The return value is the result from the <var>AddOutput</var> method, and contains <b>False</b> when the maximum number of lines has been exceeded in the renderer.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.AddOutput"/>
+        </seealso>
+      </element>
+      <element name="THTML2TextRenderer.HtmlEntity.Result">
+        <short>True on success, False when the maximum number of lines is exceeded</short>
+      </element>
+
+      <element name="THTML2TextRenderer.Reset">
+        <short>Resets the state and output for the renderer</short>
+        <descr>
+          <p>
+            <var>Reset</var> is a procedure used to reset the state and output for the renderer. Reset sets values for internal flags used in the class, and clears any content stored in the render output.
+          </p>
+        </descr>
+      </element>
+
       <element name="THTML2TextRenderer.Create">
-        <short>Creates the class instance</short>
-        <descr></descr>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overloaded constructor for the class instance. An argument passed to the method contains the HTML content examined in the class as either a <var>String</var> value or a <var>TStream</var> instance. The Stream-based variant reads the content in Stream into a String variable for processing. The position in the stream is not changed prior to or after reading its content.
+          </p>
+          <p>
+            Create stores the HTML content in <var>aHTML</var> to an internal member used when parsing and processing using methods in the class. A UTF-8 Byte Order Mark (BOM) at the start of the HTML content is removed prior to processing.
+          </p>
+          <p>
+            Create sets the default values for the following properties:
+          </p>
+          <dl>
+            <dt>LineEndMark</dt>
+            <dd>Set to the value in the LineEnding constant for the platform or OS.</dd>
+            <dt>TitleMark</dt>
+            <dd>Set to  the UTF-8 character '◈' (#9672 or #x25C8)</dd>
+            <dt>HorzLineMark</dt>
+            <dd>Set to the UTF-8 characters '——————————————————'.</dd>
+            <dt>LinkBeginMark</dt>
+            <dd>Set to the character '_'. </dd>
+            <dt>LinkEndMark</dt>
+            <dd>Set to the character '_'. </dd>
+            <dt>ListItemMark</dt>
+            <dd>Set to the UTF-8 characters '✶ ' (Hex  #$2736).</dd>
+            <dt>MoreMark</dt>
+            <dd>
+              Set to the characters '...' (Three Period characters - not an Ellipsis character).
+            </dd>
+            <dt>IndentStep</dt>
+            <dd>Set to 2.</dd>
+          </dl>
+        </descr>
         <seealso></seealso>
       </element>
       <element name="THTML2TextRenderer.Create.aHTML">
-        <short></short>
+        <short>String with the HTML content examined in the class</short>
       </element>
       <element name="THTML2TextRenderer.Create.Stream">
-        <short></short>
+        <short>TStream instance with the HTML content examined in the class</short>
       </element>
 
       <element name="THTML2TextRenderer.Destroy">
         <short>Frees the class instance</short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls the inherited destructor.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
       <element name="THTML2TextRenderer.Render">
         <short>
-          Parses the HTML and renders to plain text
+          Parses the HTML and renders the plain text output
         </short>
         <descr>
           <p>
-            Parses the HTML and renders to plain text. Output is limited to aMaxLines lines. Note: AddOutput, HtmlTag and HtmlEntity return False if MaxLines was exceeded.
+            <var>Render</var> is a <var>String</var> function used to parse the HTML passed as an argument to the constructor, and to render the plain text output in the return value. The output is limited to the number of lines specified in the <var>aMaxLines</var> argument. The default value for the argument is the <var>MaxInt</var> constant.
+          </p>
+          <remark>
+            Please note: <var>AddOutput</var>, <var>HtmlTag</var>, and <var>HtmlEntity</var> return <b>False</b> if <var>aMaxLines</var> was exceeded.
+          </remark>
+          <p>
+            Renders calls the <var>Reset</var> method to set the initial values for members and flags used in the class instance. The parsing mechanism looks for HTML tags and character entities/references, processes their content, and calls the <var>AddOutput</var> method. Whitespace (characters #32, #9, #10, and #13) between tags and entities is always normalized into a single space character.
+          </p>
+          <p>
+            Render calls the HtmlTag, HtmlEntity, and AddOutput methods to process the HTML content passed to the method.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="THTML2TextRenderer.Render.aMaxLines">
-        <short></short>
+        <short>Maximum number of lines to process in the method</short>
       </element>
       <element name="THTML2TextRenderer.Render.Result">
-        <short></short>
+        <short>String with the plain text content extracted from the HTML</short>
       </element>
 
       <element name="THTML2TextRenderer.LineEndMark">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Defines the end-of-line character sequence</short>
+        <descr>
+          <p>
+            <var>LineEndMark</var> is a <var>String</var> property which contains the end-of-line character sequence inserted in the plain text output for the renderer. The default value for the property is the value from the <var>LineEnding</var> constant defined for the platform or OS. The value is inserted in the renderer output in the <var>AddOutput</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.AddOutput"/>
+          <link id="#rtl.System.LineEnding"/>
+        </seealso>
       </element>
 
       <element name="THTML2TextRenderer.TitleMark">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Defines the character used to delimit a title or header</short>
+        <descr>
+          <p>
+            <var>TitleMark</var> is inserted both prior to and following a title/header found in the HTML content in the <var>HtmlTag</var> method. The default value is the UTF-8 character '◈' (Decimal #9672 or Hex #x25C8).
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.HtmlTag"/>
+        </seealso>
       </element>
 
       <element name="THTML2TextRenderer.HorzLineMark">
-        <short></short>
-        <descr></descr>
+        <short>Represents a HR tag in the plaint text output</short>
+        <descr>
+          <p>
+            <var>HorzLineMark</var> is used in the implementation of the <var>HtmlTag</var> method when a <b>HR</b> tag is encountered in the HTML content. The default value for the property is the UTF-8  characters '——————————————————' (Eighteen Hex #$2013 characters).
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
       <element name="THTML2TextRenderer.LinkBeginMark">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Represents an A start tag in the plain text output</short>
+        <descr>
+          <p>
+            <var>LinkBeginMark</var> is a <var>String</var> property used to represent the start of the plain text output for an HTML A tag. <var>LinkEndMark</var> is used to represent the end of the anchor. The value is added to the plain text output for the renderer in the <var>HtmlTag</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.LinkEndMark"/>
+          <link id="THTML2TextRenderer.HtmlTag"/>
+        </seealso>
       </element>
 
       <element name="THTML2TextRenderer.LinkEndMark">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Represents an A end tag in the plain text output</short>
+        <descr>
+          <p>
+            <var>LinkEndMark</var> is a <var>String</var> property used to represent the end  of the plain text output for an HTML A tag. <var>LinkBeginMark</var> is used to represent the start of the anchor. The value is added to the plain text output for the renderer in the <var>HtmlTag</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.LinkBeginMark"/>
+          <link id="THTML2TextRenderer.HtmlTag"/>
+        </seealso>
       </element>
 
       <element name="THTML2TextRenderer.ListItemMark">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Represents a list item in the plain text output</short>
+        <descr>
+          <p>
+            <var>ListItemMark</var> is a <var>String</var> property which contains the character(s) inserted before a HTML LI tag. The value is added to the plain text output for the renderer in the <var>HtmlTag</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.HtmlTag"/>
+          <link id="THTML2TextRenderer.AddOutput"/>
+        </seealso>
       </element>
 
       <element name="THTML2TextRenderer.MoreMark">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Indicates that the plain text output is truncated due to a line limit restriction
+        </short>
+        <descr>
+          <p>
+            The default value for the property is three (3) Period ('.') characters - <b>NOT</b> an Ellipsis character. The value is added to the plain text output for the renderer when the maximum number of lines has been exceeded in the <var>AddOutput</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.AddOutput"/>
+          <link id="THTML2TextRenderer.HtmlTag"/>
+          <link id="THTML2TextRenderer.HtmlEntity"/>
+        </seealso>
       </element>
 
       <element name="THTML2TextRenderer.IndentStep">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Number of space characters used for each indentation level in the plain text output
+        </short>
+        <descr>
+          <p>
+            <var>IndentStep</var> is an <var>Integer</var> property used to indicate the number of space characters generated for each indentation level in the plain text output for the renderer. The default value for the property is <b>2</b>, and is used in the implementation of the <var>AddOutput</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.AddOutput"/>
+          <link id="THTML2TextRenderer.HtmlTag"/>
+        </seealso>
       </element>
+
     </module>
     <!-- html2textrender -->
   </package>
