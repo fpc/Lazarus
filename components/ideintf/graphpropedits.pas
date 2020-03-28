@@ -759,27 +759,27 @@ procedure TImageIndexPropertyEditor.ListDrawValue(const CurValue: ansistring;
 var
   Images: TCustomImageList;
   R: TRect;
-  OldColor: TColor;
+  dh: Integer;
 begin
   if GetDefaultOrdValue <> NoDefaultValue then
     Dec(Index);
   Images := GetImageList;
   R := ARect;
+  dh := R.Bottom - R.Top;  // Rect height.
   if Assigned(Images) then
   begin
     if (pedsInComboList in AState) and not (pedsInEdit in AState) then
     begin
-      OldColor := ACanvas.Brush.Color;
       if pedsSelected in AState then
         ACanvas.Brush.Color := clHighlight
       else
         ACanvas.Brush.Color := clWhite;
       ACanvas.FillRect(R);
-      ACanvas.Brush.Color := OldColor;
     end;
-
-    Images.Draw(ACanvas, R.Left + 1, R.Top + 1, Index, True);
-    R.Left := R.Left + Images.Width + 2;
+    Images.Draw(ACanvas, R.Left + 1, R.Top + 1, Index);
+    Inc(R.Left, Images.Width + 2);
+    // The numeric value in list goes too low without an adjustment. Why?
+    Dec(R.Top, (dh - ACanvas.TextHeight(CurValue)) div 2);
   end;
   inherited ListDrawValue(CurValue, Index, ACanvas, R, AState);
 end;

@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, contnrs,
   // LCL
   LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
-  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList,
+  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList, ImgList,
   // IDEIntf
   ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf,
   IDEImagesIntf;
@@ -756,14 +756,17 @@ end;
 procedure TActionListEditor.lstActionNameDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
+  lb: TListBox;
   ACanvas: TCanvas;
   R: TRect;
-  dh, dth: Integer;
+  dh: Integer;
+  Imgs: TCustomImageList;
   AAction: TCustomAction;
   S: String;
 begin
-  if FActionList=nil then exit;;
-  ACanvas := TListBox(Control).Canvas;
+  if FActionList=nil then exit;
+  lb := TListBox(Control);
+  ACanvas := lb.Canvas;
   if odSelected in State then
   begin
     ACanvas.Brush.Color := clHighlight;
@@ -773,27 +776,21 @@ begin
     ACanvas.Brush.Color := clWindow;
     ACanvas.Font.Color := clWindowText;
   end;
-  S := TListBox(Control).Items[Index];
   R := ARect;
   dh := R.Bottom - R.Top;
   ACanvas.FillRect(R);
   inc(R.Left, 2);
-  if (TListBox(Control).Items.Objects[Index] is TCustomAction)
-  and (FActionList.Images <> nil) then begin
-    AAction := TListBox(Control).Items.Objects[Index] as TCustomAction;
+  Imgs := FActionList.Images;
+  if (lb.Items.Objects[Index] is TCustomAction) and Assigned(Imgs) then
+  begin
+    AAction := TCustomAction(lb.Items.Objects[Index]);
     R.Right := R.Left + dh;
     if AAction.ImageIndex <> -1 then
-    begin
-      dth := FActionList.Images.Height;
-      if dth > dh then
-        FActionList.Images.StretchDraw(ACanvas, AAction.ImageIndex, Rect(R.Left, R.Top + 1, R.Left + dh - 2, R.Bottom - 1))
-      else
-        FActionList.Images.Draw(ACanvas, R.Left, R.Top + (dh -dth) div 2, AAction.ImageIndex);
-    end;
+      Imgs.Draw(ACanvas, R.Left, R.Top + (dh-Imgs.Height) div 2, AAction.ImageIndex);
     Inc(R.Left, dh + 2);
   end;
-  dth := Canvas.TextHeight(S);
-  ACanvas.TextOut(R.Left, R.Top + (dh - dth) div 2, S);
+  S := lb.Items[Index];
+  ACanvas.TextOut(R.Left, R.Top + (dh-Canvas.TextHeight(S)) div 2, S);
   if odFocused in State then
     ACanvas.DrawFocusRect(ARect);
 end;
@@ -906,7 +903,12 @@ begin
   if FActionList = AActionList then exit;
   if FActionList<>nil then RemoveFreeNotification(FActionList);
   FActionList := AActionList;
-  if FActionList<>nil then FreeNotification(FActionList);
+  if FActionList<>nil then
+  begin
+    FreeNotification(FActionList);
+    if FActionList.Images<>nil then
+      lstActionName.ItemHeight := FActionList.Images.Height;
+  end;
   FillCategories;
   //FillActionByCategory(-1);
 end;
