@@ -144,6 +144,7 @@ type
     procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure DirRefreshSpeedButtonClick(Sender: TObject);
     procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuItemClick(Sender: TObject);
     procedure JumpToImplementationMenuItemClick(Sender: TObject);
@@ -180,6 +181,9 @@ type
     FOnJumpToCode: TOnJumpToCode;
     FOnShowOptions: TNotifyEvent;
     fSortCodeTool: TCodeTool;
+    fLastCodeTool: TCodeTool;
+    fCodeSortedForStartPos: TAvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
+    fNodesWithPath: TAvlTree; // tree of TViewNodeData sorted for Path and Params
     FUpdateCount: integer;
     ImgIDClass: Integer;
     ImgIDClassInterface: Integer;
@@ -243,14 +247,10 @@ type
     procedure UpdateMode;
     procedure UpdateCaption;
     function OnExpandedStateGetNodeText(Node: TTreeNode): string;
-  protected
-    fLastCodeTool: TCodeTool;
-    fCodeSortedForStartPos: TAvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
-    fNodesWithPath: TAvlTree; // tree of TViewNodeData sorted for Path and Params
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
-    function FilterNode(ANode: TTreeNode; const TheFilter: string): boolean;
+    function FilterNode(ANode: TTreeNode; const TheFilter: string; DoTopLevel: Boolean): boolean;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -545,13 +545,11 @@ end;
 
 procedure TCodeExplorerView.CodeFilterEditChange(Sender: TObject);
 begin
-  if Sender=nil then ;
   CodeFilterChanged;
 end;
 
 procedure TCodeExplorerView.DirectivesFilterEditChange(Sender: TObject);
 begin
-  if Sender=nil then ;
   DirectivesFilterChanged;
 end;
 
@@ -577,6 +575,12 @@ procedure TCodeExplorerView.DirectivesTreeViewKeyUp(Sender: TObject;
 begin
   if (Key=VK_RETURN) and (Shift=[]) then
     JumpToSelection;
+end;
+
+procedure TCodeExplorerView.DirRefreshSpeedButtonClick(Sender: TObject);
+begin
+  FLastDirectivesChangeStep:=CTInvalidChangeStamp;
+  RefreshDirectives(true);
 end;
 
 procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
@@ -657,12 +661,14 @@ end;
 procedure TCodeExplorerView.RefreshMenuItemClick(Sender: TObject);
 begin
   FLastCodeChangeStep:=CTInvalidChangeStamp;
+  FLastDirectivesChangeStep:=CTInvalidChangeStamp;
   Refresh(true);
 end;
 
 procedure TCodeExplorerView.CodeRefreshSpeedButtonClick(Sender: TObject);
 begin
-  RefreshMenuItemClick(Sender);
+  FLastCodeChangeStep:=CTInvalidChangeStamp;
+  RefreshCode(true);
 end;
 
 procedure TCodeExplorerView.RenameMenuItemClick(Sender: TObject);
@@ -2008,7 +2014,7 @@ end;
 
 procedure TCodeExplorerView.ApplyCodeFilter;
 var
-  ANode: TTreeNode;
+  ANode, NextNode: TTreeNode;
   TheFilter: String;
 begin
   TheFilter:=GetCodeFilter;
@@ -2017,25 +2023,28 @@ begin
   CodeTreeview.BeginUpdate;
   ANode:=CodeTreeview.Items.GetFirstNode;
   while ANode<>nil do begin
-    FilterNode(ANode,TheFilter);
-    ANode:=ANode.GetNextSibling;
+    NextNode:=ANode.GetNextSibling;
+    FilterNode(ANode,TheFilter,False);
+    ANode:=NextNode;
   end;
   CodeTreeview.EndUpdate;
 end;
 
 procedure TCodeExplorerView.ApplyDirectivesFilter;
 var
-  ANode: TTreeNode;
+  ANode, NextNode: TTreeNode;
   TheFilter: String;
 begin
   TheFilter:=GetDirectivesFilter;
+  //DebugLn(['TCodeExplorerView.ApplyDirectivesFilter ====================="',TheFilter,'"']);
   FLastDirectivesFilter:=TheFilter;
   DirectivesTreeView.BeginUpdate;
   DirectivesTreeView.Options:=DirectivesTreeView.Options+[tvoAllowMultiselect];
   ANode:=DirectivesTreeView.Items.GetFirstNode;
   while ANode<>nil do begin
-    FilterNode(ANode,TheFilter);
-    ANode:=ANode.GetNextSibling;
+    NextNode:=ANode.GetNextSibling;
+    FilterNode(ANode,TheFilter,True);
+    ANode:=NextNode;
   end;
   DirectivesTreeView.EndUpdate;
 end;
@@ -2628,25 +2637,26 @@ begin
     Include(FFlags,cevDirectivesRefreshNeeded);
     exit;
   end;
-  ApplyDirectivesFilter;
+  FLastDirectivesChangeStep:=CTInvalidChangeStamp;
+  RefreshDirectives(False);
 end;
 
 function TCodeExplorerView.FilterNode(ANode: TTreeNode;
-  const TheFilter: string): boolean;
+  const TheFilter: string; DoTopLevel: Boolean): boolean;
 var
-  ChildNode: TTreeNode;
-  NextNode: TTreeNode;
+  ChildNode, NextNode: TTreeNode;
 begin
   if ANode=nil then exit(false);
   ChildNode:=ANode.GetFirstChild;
   while ChildNode<>nil do begin
     NextNode:=ChildNode.GetNextSibling;
-    FilterNode(ChildNode,TheFilter);
+    FilterNode(ChildNode,TheFilter,DoTopLevel);
     ChildNode:=NextNode;
   end;
-  Result:=(ANode.Parent<>nil) and (ANode.GetFirstChild=nil)
-          and (not FilterFits(ANode.Text,TheFilter));
-  //debugln(['TCodeExplorerView.FilterNode "',ANode.Text,'" Parent=',ANode.Parent<>nil,' Child=',ANode.GetFirstChild<>nil,' Filter=',FilterFits(ANode.Text,TheFilter),' Result=',Result]);
+  Result:=(DoTopLevel or Assigned(ANode.Parent))
+    and (ANode.GetFirstChild=nil) and not FilterFits(ANode.Text,TheFilter);
+  //DebugLn(['TCodeExplorerView.FilterNode "',ANode.Text,'" Parent=',ANode.Parent,
+  //  ' Child=',ANode.GetFirstChild,' Filter=',FilterFits(ANode.Text,TheFilter),' Result=',Result]);
   if Result then
     DeleteTVNode(ANode);
 end;
