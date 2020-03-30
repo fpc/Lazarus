@@ -9,7 +9,7 @@ object CodeExplorerView: TCodeExplorerView
   KeyPreview = True
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object MainNotebook: TPageControl
     Left = 0
     Height = 517
@@ -40,6 +40,7 @@ object CodeExplorerView: TCodeExplorerView
         OnDblClick = CodeTreeviewDblClick
         OnDeletion = CodeTreeviewDeletion
         OnKeyUp = CodeTreeviewKeyUp
+        OnMouseDown = CodeTreeviewMouseDown
         Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
       end
       object CodeTreeviewButtonPanel: TPanel

@@ -138,6 +138,8 @@ type
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
                                 Shift: TShiftState);
     procedure CodeFilterEditChange(Sender: TObject);
+    procedure CodeTreeviewMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure DirectivesFilterEditChange(Sender: TObject);
     procedure DirectivesFilterEditEnter(Sender: TObject);
     procedure DirectivesTreeViewDblClick(Sender: TObject);
@@ -527,8 +529,7 @@ begin
   JumpToSelection;
 end;
 
-procedure TCodeExplorerView.CodeTreeviewDeletion(Sender: TObject;
-  Node: TTreeNode);
+procedure TCodeExplorerView.CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
 begin
   if Node.Data<>nil then
     TViewNodeData(Node.Data).Free;
@@ -544,6 +545,18 @@ end;
 procedure TCodeExplorerView.CodeFilterEditChange(Sender: TObject);
 begin
   CodeFilterChanged;
+end;
+
+procedure TCodeExplorerView.CodeTreeviewMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+begin
+  if Button=mbMiddle then begin
+    Node:=CodeTreeview.GetNodeAt(X,Y);
+    Node.Selected:=true;
+    JumpToSelection(true);
+  end;
 end;
 
 procedure TCodeExplorerView.DirectivesFilterEditChange(Sender: TObject);
