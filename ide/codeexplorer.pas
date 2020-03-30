@@ -132,37 +132,33 @@ type
     TreePopupmenu: TPopupMenu;
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
-    procedure CodeFilterEditEnter(Sender: TObject);
-    procedure CodeTreeviewDblClick(Sender: TObject);
-    procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
-    procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
-                                Shift: TShiftState);
     procedure CodeFilterEditChange(Sender: TObject);
     procedure CodeTreeviewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure DirectivesFilterEditChange(Sender: TObject);
-    procedure DirectivesFilterEditEnter(Sender: TObject);
-    procedure DirectivesTreeViewDblClick(Sender: TObject);
-    procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
-    procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DirRefreshSpeedButtonClick(Sender: TObject);
+    procedure FilterEditEnter(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuItemClick(Sender: TObject);
     procedure JumpToImplementationMenuItemClick(Sender: TObject);
-    procedure OnCloseIDE(Sender: TObject);
+    procedure CloseIDEHandler(Sender: TObject);
     procedure ShowSrcEditPosMenuItemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
     procedure CodeModeSpeedButtonClick(Sender: TObject);
-    procedure CodeOptionsSpeedButtonClick(Sender: TObject);
-    procedure RefreshMenuItemClick(Sender: TObject);
     procedure CodeRefreshSpeedButtonClick(Sender: TObject);
+    procedure OptionsSpeedButtonClick(Sender: TObject);
+    procedure RefreshMenuItemClick(Sender: TObject);
     procedure RenameMenuItemClick(Sender: TObject);
     procedure TreePopupmenuPopup(Sender: TObject);
-    procedure OnUserInput(Sender: TObject; {%H-}Msg: Cardinal);
+    procedure TreeviewDblClick(Sender: TObject);
+    procedure TreeviewDeletion(Sender: TObject; Node: TTreeNode);
+    procedure TreeviewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure UserInputHandler(Sender: TObject; {%H-}Msg: Cardinal);
   private
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
     FCodeFilename: string;
+    FCodeCmd1, FCodeCmd2, FCodeCmd3: TIDECommand;
     FDirectivesFilename: string;
     FFlags: TCodeExplorerViewFlags;
     FLastCodeChangeStep: integer;
@@ -505,8 +501,8 @@ begin
 
   fNodesWithPath:=TAvlTree.Create(@CompareViewNodePathsAndParams);
 
-  Application.AddOnUserInputHandler(@OnUserInput);
-  LazarusIDE.AddHandlerOnIDEClose(@OnCloseIDE);
+  Application.AddOnUserInputHandler(@UserInputHandler);
+  LazarusIDE.AddHandlerOnIDEClose(@CloseIDEHandler);
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
@@ -517,29 +513,6 @@ begin
   FreeAndNil(fCodeSortedForStartPos);
   if CodeExplorerView=Self then
     CodeExplorerView:=nil;
-end;
-
-procedure TCodeExplorerView.CodeFilterEditEnter(Sender: TObject);
-begin
-  CodeFilterEdit.SelectAll;
-end;
-
-procedure TCodeExplorerView.CodeTreeviewDblClick(Sender: TObject);
-begin
-  JumpToSelection;
-end;
-
-procedure TCodeExplorerView.CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
-begin
-  if Node.Data<>nil then
-    TViewNodeData(Node.Data).Free;
-end;
-
-procedure TCodeExplorerView.CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key=VK_RETURN) and (Shift=[]) then
-    JumpToSelection;
 end;
 
 procedure TCodeExplorerView.CodeFilterEditChange(Sender: TObject);
@@ -564,34 +537,23 @@ begin
   DirectivesFilterChanged;
 end;
 
-procedure TCodeExplorerView.DirectivesFilterEditEnter(Sender: TObject);
-begin
-  DirectivesFilterEdit.SelectAll;
-end;
-
-procedure TCodeExplorerView.DirectivesTreeViewDblClick(Sender: TObject);
-begin
-  JumpToSelection;
-end;
-
-procedure TCodeExplorerView.DirectivesTreeViewDeletion(Sender: TObject;
-  Node: TTreeNode);
-begin
-  if Node.Data<>nil then
-    TObject(Node.Data).Free;
-end;
-
-procedure TCodeExplorerView.DirectivesTreeViewKeyUp(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if (Key=VK_RETURN) and (Shift=[]) then
-    JumpToSelection;
-end;
-
 procedure TCodeExplorerView.DirRefreshSpeedButtonClick(Sender: TObject);
 begin
   FLastDirectivesChangeStep:=CTInvalidChangeStamp;
   RefreshDirectives(true);
+end;
+
+procedure TCodeExplorerView.FilterEditEnter(Sender: TObject);
+begin
+  (Sender as TEdit).SelectAll;
+end;
+
+procedure TCodeExplorerView.FormActivate(Sender: TObject);
+begin
+  DebugLn(['TCodeExplorerView.FormActivate!']);
+  FCodeCmd1:=IDECommandList.FindIDECommand(ecFindDeclaration);
+  FCodeCmd2:=IDECommandList.FindIDECommand(ecFindProcedureDefinition);
+  FCodeCmd3:=IDECommandList.FindIDECommand(ecFindProcedureMethod);
 end;
 
 procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
@@ -632,7 +594,7 @@ begin
   JumpToSelection(true);
 end;
 
-procedure TCodeExplorerView.OnCloseIDE(Sender: TObject);
+procedure TCodeExplorerView.CloseIDEHandler(Sender: TObject);
 begin
   CodeExplorerOptions.Save;
 end;
@@ -660,7 +622,13 @@ begin
     SetMode(cemCategory);
 end;
 
-procedure TCodeExplorerView.CodeOptionsSpeedButtonClick(Sender: TObject);
+procedure TCodeExplorerView.CodeRefreshSpeedButtonClick(Sender: TObject);
+begin
+  FLastCodeChangeStep:=CTInvalidChangeStamp;
+  RefreshCode(true);
+end;
+
+procedure TCodeExplorerView.OptionsSpeedButtonClick(Sender: TObject);
 begin
   if Assigned(FOnShowOptions) then
   begin
@@ -674,12 +642,6 @@ begin
   FLastCodeChangeStep:=CTInvalidChangeStamp;
   FLastDirectivesChangeStep:=CTInvalidChangeStamp;
   Refresh(true);
-end;
-
-procedure TCodeExplorerView.CodeRefreshSpeedButtonClick(Sender: TObject);
-begin
-  FLastCodeChangeStep:=CTInvalidChangeStamp;
-  RefreshCode(true);
 end;
 
 procedure TCodeExplorerView.RenameMenuItemClick(Sender: TObject);
@@ -730,7 +692,34 @@ begin
   //DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
 end;
 
-procedure TCodeExplorerView.OnUserInput(Sender: TObject; Msg: Cardinal);
+procedure TCodeExplorerView.TreeviewDblClick(Sender: TObject);
+begin
+  JumpToSelection;
+end;
+
+procedure TCodeExplorerView.TreeviewDeletion(Sender: TObject; Node: TTreeNode);
+begin
+  if Node.Data<>nil then
+    TObject(Node.Data).Free;
+end;
+
+procedure TCodeExplorerView.TreeviewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_RETURN) and (Shift=[])
+  or ((Key=FCodeCmd1.ShortcutA.Key1) and (Shift=FCodeCmd1.ShortcutA.Shift1))
+  or ((Key=FCodeCmd1.ShortcutB.Key1) and (Shift=FCodeCmd1.ShortcutB.Shift1))
+  or ((Key=FCodeCmd2.ShortcutA.Key1) and (Shift=FCodeCmd2.ShortcutA.Shift1))
+  or ((Key=FCodeCmd2.ShortcutB.Key1) and (Shift=FCodeCmd2.ShortcutB.Shift1))
+  or ((Key=FCodeCmd3.ShortcutA.Key1) and (Shift=FCodeCmd3.ShortcutA.Shift1))
+  or ((Key=FCodeCmd3.ShortcutB.Key1) and (Shift=FCodeCmd3.ShortcutB.Shift1))
+  then begin
+    JumpToSelection;
+    Key:=0;
+  end;
+end;
+
+procedure TCodeExplorerView.UserInputHandler(Sender: TObject; Msg: Cardinal);
 begin
   if CodeExplorerOptions.Refresh=cerOnIdle then
     CheckOnIdle;
@@ -2047,7 +2036,7 @@ begin
   //DebugLn(['TCodeExplorerView.ApplyDirectivesFilter ====================="',TheFilter,'"']);
   FLastDirectivesFilter:=TheFilter;
   DirectivesTreeView.BeginUpdate;
-  DirectivesTreeView.Options:=DirectivesTreeView.Options+[tvoAllowMultiselect];
+  //DirectivesTreeView.Options:=DirectivesTreeView.Options+[tvoAllowMultiselect];
   ANode:=DirectivesTreeView.Items.GetFirstNode;
   while ANode<>nil do begin
     NextNode:=ANode.GetNextSibling;
