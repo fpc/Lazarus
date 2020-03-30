@@ -27,11 +27,11 @@ uses
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // RTL, FCL, LCL
-  SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc,
+  SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, LCLProc,
   InterfaceBase, LMessages, LCLMessageGlue, LazUTF8, LazUtf8Classes,
   // Widgetset
   WSControls, WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls, WinCEExtra,
-  WSProc;
+  WSProc, WinCEProc;
 
 type
 
@@ -1022,11 +1022,13 @@ class procedure TWinCEWSCustomEdit.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
-  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  if MeasureText(AWinControl, 'Fj', PreferredWidth, PreferredHeight) then
   begin
-    Inc(PreferredWidth, 5);
-    Inc(PreferredHeight, 5);
+    PreferredWidth := 0;
+    if TCustomEdit(AWinControl).BorderStyle <> bsNone then
+      Inc(PreferredHeight, 5);
   end;
+  {$ifdef VerboseSizeMsg}DebugLn(Format('[TWinCEWSCustomEdit.GetPreferredSize] %s: CX %d CY %d',[AWinControl.Name, PreferredWidth, PreferredHeight]));{$endif}
 end;
 
 { TWinCEWSCustomMemo }
