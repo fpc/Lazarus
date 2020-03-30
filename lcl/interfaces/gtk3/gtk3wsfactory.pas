@@ -137,7 +137,7 @@ uses
 uses
   Gtk3WSImgList, Gtk3WSControls, Gtk3WSForms, Gtk3WSButtons, Gtk3WSStdCtrls,
   Gtk3WSComCtrls, Gtk3WSExtCtrls, Gtk3WSSpin, Gtk3WSMenus, Gtk3WSCalendar,
-  Gtk3WSDialogs, Gtk3WSCheckLst, Gtk3WSExtDlgs, gtk3wssplitter;
+  Gtk3WSDialogs, Gtk3WSCheckLst, Gtk3WSExtDlgs, gtk3wssplitter, Gtk3WSTrayIcon;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
@@ -457,7 +457,11 @@ end;
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
 begin
   // RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
-  Result := False;
+  Result := True;
+  if Gtk3AppIndicatorInit then
+     RegisterWSComponent(TCustomTrayIcon, TGtk3WSTrayIcon)
+  else
+     Result := False;
 end;
 
 //ExtDlgs
