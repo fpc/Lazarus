@@ -2,15 +2,15 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2020-02-18 22:35+0200\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2020-03-29 00:47+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 19.04.3\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -720,12 +720,12 @@ msgid "The following repository packages are not available externally. The packa
 msgstr "Такі пакунки зі сховища не доступні в зовнішніх джерелах. Вони будуть пропущені. Продовжити?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository packages are available externally."
 msgid ""
 "None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
 "Options->General->Check for package updates."
-msgstr "Жоден з позначених пакунків зі сховища не доступний у зовнішніх джерелах."
+msgstr ""
+"Жоден з позначених пакунків зі сховища не доступний у зовнішніх джерелах. Переконайтесь, що оновлення пакунків типово увімкнено:\n"
+"Параметри->Загальні->Перевіряти наявність оновлень пакунків."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
@@ -1384,11 +1384,11 @@ msgstr "При вмиканні цього параметра пакунки з�
 
 #: opkman_const.rsoptions_cbloadjsonlocally_caption
 msgid "If available, parse the JSON from local source"
-msgstr ""
+msgstr "Якщо доступно, аналізувати JSON з локального джерела"
 
 #: opkman_const.rsoptions_cbloadjsonlocally_hint
 msgid "If this option is checked the JSON is parsed from a local source (useful if the internet connection is slow). After 25 local parses, OPM will attempt a live update."
-msgstr ""
+msgstr "Якщо позначено, аналізується JSON з локального джерела (корисно за малої швидкості Інтернету). Після 25 локальних аналізів, OPM спробує оновити з мережі."
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"

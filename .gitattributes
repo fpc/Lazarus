@@ -571,6 +571,7 @@ components/buildintf/ideexterntoolintf.pas svneol=native#text/plain
 components/buildintf/ideoptionsintf.pas svneol=native#text/pascal
 components/buildintf/languages/buildstrconsts.pot svneol=native#text/plain
 components/buildintf/languages/buildstrconsts.ru.po svneol=native#text/plain
+components/buildintf/languages/buildstrconsts.uk.po svneol=native#text/plain
 components/buildintf/lazmsgdialogs.pas svneol=native#text/pascal
 components/buildintf/macrodefintf.pas svneol=native#text/plain
 components/buildintf/macrointf.pas svneol=native#text/pascal
