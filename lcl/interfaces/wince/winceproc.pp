@@ -867,8 +867,7 @@ begin
   Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
 end;
 
-procedure LCLBoundsToWin32Bounds(Sender: TObject;
-  var Left, Top, Width, Height: Integer);
+procedure LCLBoundsToWin32Bounds(Sender: TObject; var Left, Top: Integer);
 var
   ORect: TRect;
 Begin
