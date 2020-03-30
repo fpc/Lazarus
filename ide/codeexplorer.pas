@@ -223,15 +223,12 @@ type
                               CodeNode: TCodeTreeNode): integer;
     function GetDirectiveNodeImage(CodeNode: TCodeTreeNode): integer;
     procedure CreateIdentifierNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
-                          ParentViewNode, InFrontViewNode: TTreeNode;
-                          CreateSiblings: boolean);
+                          ParentViewNode: TTreeNode);
     function GetCTNodePath(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode): string;
     procedure CreateNodePath(ACodeTool: TCodeTool; aNodeData: TObject);
     procedure AddImplementationNode(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode);
     procedure CreateDirectiveNodes(ADirectivesTool: TDirectivesTool;
-                          CodeNode: TCodeTreeNode;
-                          ParentViewNode, InFrontViewNode: TTreeNode;
-                          CreateSiblings: boolean);
+      CodeNode: TCodeTreeNode; ParentViewNode: TTreeNode);
     procedure CreateObservations(Tool: TCodeTool);
     function CreateObserverNode(Tool: TCodeTool; f: TCEObserverCategory): TTreeNode;
     procedure CreateObserverNodesForStatement(Tool: TCodeTool;
@@ -250,7 +247,8 @@ type
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
-    function FilterNode(ANode: TTreeNode; const TheFilter: string; DoTopLevel: Boolean): boolean;
+    function FilterNode(ANode: TTreeNode; const TheFilter: string;
+      KeepTopLevel: Boolean): boolean;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -982,18 +980,17 @@ begin
 end;
 
 procedure TCodeExplorerView.CreateIdentifierNodes(ACodeTool: TCodeTool;
-  CodeNode: TCodeTreeNode;
-  ParentViewNode, InFrontViewNode: TTreeNode; CreateSiblings: boolean);
+  CodeNode: TCodeTreeNode; ParentViewNode: TTreeNode);
 var
   NodeData: TViewNodeData;
   NodeText: String;
-  ViewNode: TTreeNode;
+  ViewNode, CurParentViewNode, InFrontViewNode: TTreeNode;
   NodeImageIndex: Integer;
   ShowNode: Boolean;
   ShowChilds: Boolean;
   Category: TCodeExplorerCategory;
-  CurParentViewNode: TTreeNode;
 begin
+  InFrontViewNode:=nil;
   while CodeNode<>nil do begin
     ShowNode:=true;
     ShowChilds:=true;
@@ -1133,23 +1130,22 @@ begin
       AddImplementationNode(ACodeTool,CodeNode);
     end;
     if ShowChilds then
-      CreateIdentifierNodes(ACodeTool,CodeNode.FirstChild,ViewNode,nil,true);
-    if not CreateSiblings then break;
+      CreateIdentifierNodes(ACodeTool,CodeNode.FirstChild,ViewNode);
     CodeNode:=CodeNode.NextBrother;
   end;
 end;
 
 procedure TCodeExplorerView.CreateDirectiveNodes(ADirectivesTool: TDirectivesTool;
-  CodeNode: TCodeTreeNode; ParentViewNode, InFrontViewNode: TTreeNode;
-  CreateSiblings: boolean);
+  CodeNode: TCodeTreeNode; ParentViewNode: TTreeNode);
 var
   NodeData: TViewNodeData;
   NodeText: String;
-  ViewNode: TTreeNode;
+  ViewNode, InFrontViewNode: TTreeNode;
   NodeImageIndex: Integer;
   ShowNode: Boolean;
   ShowChilds: Boolean;
 begin
+  InFrontViewNode:=nil;
   while CodeNode<>nil do begin
     ShowNode:=true;
     ShowChilds:=true;
@@ -1177,8 +1173,7 @@ begin
       InFrontViewNode:=ViewNode;
     end;
     if ShowChilds then
-      CreateDirectiveNodes(ADirectivesTool,CodeNode.FirstChild,ViewNode,nil,true);
-    if not CreateSiblings then break;
+      CreateDirectiveNodes(ADirectivesTool,CodeNode.FirstChild,ViewNode);
     CodeNode:=CodeNode.NextBrother;
   end;
 end;
@@ -2024,7 +2019,7 @@ begin
   ANode:=CodeTreeview.Items.GetFirstNode;
   while ANode<>nil do begin
     NextNode:=ANode.GetNextSibling;
-    FilterNode(ANode,TheFilter,False);
+    FilterNode(ANode,TheFilter,True);
     ANode:=NextNode;
   end;
   CodeTreeview.EndUpdate;
@@ -2043,7 +2038,7 @@ begin
   ANode:=DirectivesTreeView.Items.GetFirstNode;
   while ANode<>nil do begin
     NextNode:=ANode.GetNextSibling;
-    FilterNode(ANode,TheFilter,True);
+    FilterNode(ANode,TheFilter,False);
     ANode:=NextNode;
   end;
   DirectivesTreeView.EndUpdate;
@@ -2269,7 +2264,7 @@ begin
 
       if (ACodeTool<>nil) and (ACodeTool.Tree<>nil) and (ACodeTool.Tree.Root<>nil)
       then begin
-        CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
+        CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil);
         if (Mode = cemCategory) then
         begin
           if (cecCodeObserver in CodeExplorerOptions.Categories) then
@@ -2372,7 +2367,7 @@ begin
     if (ADirectivesTool<>nil) and (ADirectivesTool.Tree<>nil)
     and (ADirectivesTool.Tree.Root<>nil) then
     begin
-      CreateDirectiveNodes(ADirectivesTool,ADirectivesTool.Tree.Root,nil,nil,true);
+      CreateDirectiveNodes(ADirectivesTool,ADirectivesTool.Tree.Root,nil);
     end;
 
     // restore old expanded state
@@ -2642,22 +2637,31 @@ begin
 end;
 
 function TCodeExplorerView.FilterNode(ANode: TTreeNode;
-  const TheFilter: string; DoTopLevel: Boolean): boolean;
+  const TheFilter: string; KeepTopLevel: Boolean): boolean;
+// Return True if ANode passes the filter. Delete nodes which do not pass.
+// Filter recursively all subnodes.
 var
   ChildNode, NextNode: TTreeNode;
+  ChildPass, ChildrenPassed: Boolean;
 begin
   if ANode=nil then exit(false);
   ChildNode:=ANode.GetFirstChild;
+  ChildrenPassed:=false;
   while ChildNode<>nil do begin
     NextNode:=ChildNode.GetNextSibling;
-    FilterNode(ChildNode,TheFilter,DoTopLevel);
+    ChildPass:=FilterNode(ChildNode,TheFilter,KeepTopLevel);
+    ChildrenPassed:=ChildrenPassed or ChildPass;
     ChildNode:=NextNode;
   end;
-  Result:=(DoTopLevel or Assigned(ANode.Parent))
-    and (ANode.GetFirstChild=nil) and not FilterFits(ANode.Text,TheFilter);
+  Result:=((ANode.Parent=nil) and KeepTopLevel)
+      or ChildrenPassed or FilterFits(ANode.Text,TheFilter);
   //DebugLn(['TCodeExplorerView.FilterNode "',ANode.Text,'" Parent=',ANode.Parent,
   //  ' Child=',ANode.GetFirstChild,' Filter=',FilterFits(ANode.Text,TheFilter),' Result=',Result]);
-  if Result then
+  if Result then begin
+    if ChildrenPassed and (TheFilter<>'') then
+      ANode.Expanded:=True;
+  end
+  else
     DeleteTVNode(ANode);
 end;
 
