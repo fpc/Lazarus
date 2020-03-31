@@ -479,6 +479,8 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FillTitleDefaultFont;
+    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
+    procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); virtual;
     function IsDefault: boolean;
     property Column: TGridColumn read FColumn;
   published
@@ -582,6 +584,8 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FillDefaultFont;
+    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
+    procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); virtual;
     function  IsDefault: boolean; virtual;
     property Grid: TCustomGrid read GetGrid;
     property DefaultWidth: Integer read GetDefaultWidth;
@@ -909,6 +913,7 @@ type
     procedure SetTopRow(const AValue: Integer);
     function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: Integer = MAXINT);
+    function TitleFontIsStored: Boolean;
     function  TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
     procedure TryScrollTo(aCol,aRow: Integer; ClearColOff, ClearRowOff: Boolean);
     procedure UpdateCachedSizes;
@@ -1116,6 +1121,8 @@ type
     procedure RowHeightsChanged; virtual;
     procedure SaveContent(cfg: TXMLConfig); virtual;
     procedure SaveGridOptions(cfg: TXMLConfig); virtual;
+    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); override;
+    procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); override;
     procedure ScrollBarRange(Which:Integer; aRange,aPage,aPos: Integer);
     procedure ScrollBarPosition(Which, Value: integer);
     function  ScrollBarIsVisible(Which:Integer): Boolean;
@@ -1225,7 +1232,7 @@ type
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoBoth;
     property StrictSort: boolean read FStrictSort write FStrictSort;
-    property TitleFont: TFont read FTitleFont write SetTitleFont;
+    property TitleFont: TFont read FTitleFont write SetTitleFont stored TitleFontIsStored;
     property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle default tsLazarus;
     property TopRow: Integer read GetTopRow write SetTopRow;
     property UseXORFeatures: boolean read FUseXORFeatures write SetUseXorFeatures default false;
@@ -4022,6 +4029,11 @@ procedure TCustomGrid.StartPushCell;
 begin
   fGridState := gsButtonColumnClicking;
   DoPushCell;
+end;
+
+function TCustomGrid.TitleFontIsStored: Boolean;
+begin
+  Result := not FTitleFontIsDefault;
 end;
 
 function TCustomGrid.SelectCell(ACol, ARow: Integer): Boolean;
@@ -8351,6 +8363,20 @@ begin
   result := FixedCols;
 end;
 
+procedure TCustomGrid.FixDesignFontsPPI(const ADesignTimePPI: Integer);
+var
+  LTitleFontIsDefault: Boolean;
+  I: Integer;
+begin
+  inherited FixDesignFontsPPI(ADesignTimePPI);
+
+  LTitleFontIsDefault := FTitleFontIsDefault;
+  DoFixDesignFontPPI(TitleFont, ADesignTimePPI);
+  FTitleFontIsDefault := LTitleFontIsDefault;
+  for I := 0 to FColumns.Count-1 do
+    FColumns[I].FixDesignFontsPPI(ADesignTimePPI);
+end;
+
 function TCustomGrid.FixedGrid: boolean;
 begin
   result := (FixedCols=ColCount) or (FixedRows=RowCount)
@@ -9755,6 +9781,18 @@ begin
   end;
 end;
 
+procedure TCustomGrid.ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double);
+var
+  LTitleFontIsDefault: Boolean;
+  I: Integer;
+begin
+  inherited ScaleFontsPPI(AToPPI, AProportion);
+  LTitleFontIsDefault := FTitleFontIsDefault;
+  DoScaleFontPPI(TitleFont, AToPPI, AProportion);
+  FTitleFontIsDefault := LTitleFontIsDefault;
+  for I := 0 to FColumns.Count-1 do
+    FColumns[I].ScaleFontsPPI(AToPPI, AProportion);
+end;
 
 type
   TWinCtrlAccess=class(TWinControl);
@@ -11956,6 +11994,15 @@ begin
   FIsDefaultTitleFont := True;
 end;
 
+procedure TGridColumnTitle.FixDesignFontsPPI(const ADesignTimePPI: Integer);
+var
+  LIsDefaultTitleFont: Boolean;
+begin
+  LIsDefaultTitleFont := FIsDefaultTitleFont;
+  FColumn.Grid.DoFixDesignFontPPI(Font, ADesignTimePPI);
+  FIsDefaultTitleFont := LIsDefaultTitleFont;
+end;
+
 function TGridColumnTitle.GetFont: TFont;
 begin
   Result := FFont;
@@ -11992,6 +12039,15 @@ end;
 function TGridColumnTitle.IsLayoutStored: boolean;
 begin
   result := FLayout <> nil;
+end;
+
+procedure TGridColumnTitle.ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double);
+var
+  LIsDefaultTitleFont: Boolean;
+begin
+  LIsDefaultTitleFont := FIsDefaultTitleFont;
+  FColumn.Grid.DoScaleFontPPI(Font, AToPPI, AProportion);
+  FIsDefaultTitleFont := LIsDefaultTitleFont;
 end;
 
 procedure TGridColumnTitle.SetAlignment(const AValue: TAlignment);
@@ -12352,6 +12408,16 @@ end;
 function TGridColumn.IsWidthStored: boolean;
 begin
   result := FWidth <> nil;
+end;
+
+procedure TGridColumn.ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double);
+var
+  LisDefaultFont: Boolean;
+begin
+  LisDefaultFont := FisDefaultFont;
+  Grid.DoScaleFontPPI(Font, AToPPI, AProportion);
+  FisDefaultFont := LisDefaultFont;
+  Title.ScaleFontsPPI(AToPPI, AProportion);
 end;
 
 procedure TGridColumn.SetAlignment(const AValue: TAlignment);
@@ -12718,6 +12784,16 @@ begin
     FFont.Assign(AGrid.Font);
     FIsDefaultFont := True;
   end;
+end;
+
+procedure TGridColumn.FixDesignFontsPPI(const ADesignTimePPI: Integer);
+var
+  LisDefaultFont: Boolean;
+begin
+  LisDefaultFont := FisDefaultFont;
+  Grid.DoFixDesignFontPPI(Font, ADesignTimePPI);
+  FisDefaultFont := LisDefaultFont;
+  Title.FixDesignFontsPPI(ADesignTimePPI);
 end;
 
 function TGridColumn.IsDefault: boolean;
