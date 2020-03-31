@@ -748,7 +748,7 @@ begin
     QtTreeWidget.ViewStyle := Ord(TCustomListViewHack(AWinControl).ViewStyle);
     QtTreeWidget.OwnerDrawn := ALV.IsCustomDrawn(dtControl, cdPrePaint) or (ALV.OwnerDraw and
       (ALV.ViewStyle = vsReport));
-    QtTreeWidget.setStretchLastSection(False);
+    QtTreeWidget.setStretchLastSection(ALV.AutoWidthLastColumn);
     QTreeView_setItemsExpandable(QTreeViewH(QtTreeWidget.Widget), False);
     QtTreeWidget.setRootIsDecorated(False);
     QtTreeWidget.AttachEvents;
