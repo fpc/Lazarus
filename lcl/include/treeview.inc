@@ -291,7 +291,11 @@ begin
     Result:=0;
     Node1.TreeView.OnCompare(Node1.TreeView,Node1, Node2, Result);
   end else
+    {$IFDEF UNIX}
+    Result := CompareStr(Node1.Text, Node2.Text);
+    {$ELSE}
     Result := AnsiCompareStr(Node1.Text,Node2.Text);
+    {$ENDIF}
 end;
 
 constructor TTreeNode.Create(AnOwner: TTreeNodes);
