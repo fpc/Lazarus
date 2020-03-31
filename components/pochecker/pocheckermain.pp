@@ -397,8 +397,6 @@ end;
 procedure TPoCheckerForm.RunSelectedTests;
 var
   TestTypes: TPoTestTypes;
-  TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
-  TotalPercTranslated: Double;
   ResultDlg: TResultDlgForm;
   mr: TModalResult;
 begin
@@ -413,7 +411,7 @@ begin
   try
     PoFamilyList.TestTypes := TestTypes;
 
-    PoFamilyList.RunTests(TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, TotalPercTranslated);
+    PoFamilyList.RunTests;
 
     PoFamilyList.InfoLog.Insert(0, sLastSearchPath);
     PoFamilyList.InfoLog.Insert(1, SelectDirectoryDialog.FileName);
@@ -424,11 +422,6 @@ begin
 
     ResultDlg := TResultDlgForm.Create(nil);
     try
-      ResultDlg.FTotalTranslated := TotalTranslatedCount;
-      ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
-      ResultDlg.FTotalFuzzy := TotalFuzzyCount;
-      ResultDlg.FTotalPercTranslated := TotalPercTranslated;
-
       ResultDlg.Settings := FPoCheckerSettings;
       mr := ResultDlg.ShowModal;
     finally

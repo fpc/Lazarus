@@ -7,7 +7,7 @@ interface
 Uses
   Classes, SysUtils, ContNrs, LCLProc, LazFileUtils,
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
-  PoFamilies, PoCheckerConsts;
+  PoFamilies, PoCheckerConsts, Translations;
 
 type
 
@@ -20,6 +20,7 @@ type
     FOnTestEnd: TTestEndEvent;
     FOnTestStart: TTestStartEvent;
     FPoFamilyStats: TPoFamilyStats;
+    FPoFamilyListStats: TTranslationStatistics;
     FTestTypes: TPoTestTypes;
     function GetItem(Index: Integer): TPoFamily;
     //procedure SetItem(Index: Integer; AValue: TPoFamily);
@@ -34,10 +35,12 @@ type
     destructor Destroy; override;
     procedure Add(PoFamily: TPofamily);
     function Count: Integer;
-    procedure RunTests(out TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer; out TotalPercTranslated: Double);
+    function StatPerc(Value: Integer): Double;
+    procedure RunTests;
     property LangID: TLangID read FLangID;
     property Items[Index: Integer]: TPoFamily read GetItem; // write SetItem;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
+    property PoFamilyListStats: TTranslationStatistics read FPoFamilyListStats;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
     property OnTestStart: TTestStartEvent read FOnTestStart write FOnTestStart;
     property OnTestEnd: TTestEndEvent read FOnTestEnd write FOnTestEnd;
@@ -131,7 +134,12 @@ begin
   Result := FList.Count;
 end;
 
-procedure TPoFamilyList.RunTests(out TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer; out TotalPercTranslated: Double);
+function TPoFamilyList.StatPerc(Value: Integer): Double;
+begin
+  Result := 100 * Value / (PoFamilyListStats.Translated + PoFamilyListStats.Untranslated + PoFamilyListStats.Fuzzy);
+end;
+
+procedure TPoFamilyList.RunTests;
 var
   ErrorCount, NonFuzzyErrorCount, WarningCount: Integer;
   Index, ThisErrorCount, ThisNonFuzzyErrorCount, ThisWarningCount: Integer;
@@ -141,9 +149,9 @@ begin
   ErrorCount := NoError;
   NonFuzzyErrorCount := NoError;
   WarningCount := NoError;
-  TotalTranslatedCount := 0;
-  TotalUntranslatedCount := 0;
-  TotalFuzzyCount := 0;
+  FPoFamilyListStats.Translated := 0;
+  FPoFamilyListStats.Untranslated := 0;
+  FPoFamilyListStats.Fuzzy := 0;
   FPoFamilyStats.Clear;
   for Index := 0 to FList.Count - 1 do
   begin
@@ -156,12 +164,10 @@ begin
     ErrorCount := ErrorCount + ThisErrorCount;
     NonFuzzyErrorCount := NonFuzzyErrorCount + ThisNonFuzzyErrorCount;
     WarningCount := WarningCount + ThisWarningCount;
-    TotalTranslatedCount := TotalTranslatedCount + ThisTranslatedCount;
-    TotalUntranslatedCount := TotalUntranslatedCount + ThisUntranslatedCount;
-    TotalFuzzyCount := TotalFuzzyCount + ThisFuzzyCount;
+    FPoFamilyListStats.Translated := PoFamilyListStats.Translated + ThisTranslatedCount;
+    FPoFamilyListStats.Untranslated := PoFamilyListStats.Untranslated + ThisUntranslatedCount;
+    FPoFamilyListStats.Fuzzy := PoFamilyListStats.Fuzzy + ThisFuzzyCount;
   end;
-
-  TotalPercTranslated := 100 * TotalTranslatedCount / (TotalTranslatedCount + TotalUntranslatedCount + TotalFuzzyCount);
 
   if NonFuzzyErrorCount > 0 then
     InfoLog.Add(Format(sTotalErrorsNonFuzzy, [ErrorCount, NonFuzzyErrorCount]))
@@ -170,15 +176,15 @@ begin
 
   if FLangID <> lang_all then
   begin
-    InfoLog.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
-    InfoLog.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
+    InfoLog.Add(Format(sTotalUntranslatedStrings, [IntToStr(PoFamilyListStats.Untranslated)]));
+    InfoLog.Add(Format(sTotalFuzzyStrings, [IntToStr(PoFamilyListStats.Fuzzy)]));
     InfoLog.Add('');
-    InfoLog.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+    InfoLog.Add(Format(sTotalTranslatedStrings, [IntToStr(PoFamilyListStats.Translated), StatPerc(PoFamilyListStats.Translated)]));
 
-    StatLog.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
-    StatLog.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
+    StatLog.Add(Format(sTotalUntranslatedStrings, [IntToStr(PoFamilyListStats.Untranslated)]));
+    StatLog.Add(Format(sTotalFuzzyStrings, [IntToStr(PoFamilyListStats.Fuzzy)]));
     StatLog.Add('');
-    StatLog.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+    StatLog.Add(Format(sTotalTranslatedStrings, [IntToStr(PoFamilyListStats.Translated), StatPerc(PoFamilyListStats.Translated)]));
   end;
 
   DupLog.Add(Format(sTotalWarnings, [WarningCount]));

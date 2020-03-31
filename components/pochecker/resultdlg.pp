@@ -43,12 +43,6 @@ type
     procedure LoadConfig;
     procedure SaveConfig;
   public
-    // The following fields keep translation statistics calculated when tests were performed.
-    // They will allow to avoid recalculation of these values in GraphStat form.
-    FTotalTranslated: Integer;
-    FTotalUntranslated: Integer;
-    FTotalFuzzy: Integer;
-    FTotalPercTranslated: Double;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end; 
 
@@ -72,9 +66,6 @@ begin
   PoHL := TSynPoSyn.Create(Self);
   LogMemo.Highlighter := PoHL;
   GraphStatBtn.Caption := sShowStatGraph;
-  FTotalTranslated := 0;
-  FTotalUntranslated := 0;
-  FTotalFuzzy := 0;
 end;
 
 procedure TResultDlgForm.CopyMenuItemClick(Sender: TObject);
@@ -127,11 +118,11 @@ begin
     if PoFamilyList.LangID <> lang_all then
     begin
       GraphStatForm.TranslatedLabel.Caption := Format(sTranslatedStringsTotal, [
-        IntToStr(FTotalTranslated), FTotalPercTranslated]);
+        IntToStr(PoFamilyList.PoFamilyListStats.Translated), PoFamilyList.StatPerc(PoFamilyList.PoFamilyListStats.Translated)]);
       GraphStatForm.UnTranslatedLabel.Caption := Format(sUntranslatedStringsTotal
-        , [IntToStr(FTotalUntranslated)]);
+        , [IntToStr(PoFamilyList.PoFamilyListStats.Untranslated)]);
       GraphStatForm.FuzzyLabel.Caption := Format(sFuzzyStringsTotal, [IntToStr(
-        FTotalFuzzy)]);
+        PoFamilyList.PoFamilyListStats.Fuzzy)]);
     end
     else
     begin
