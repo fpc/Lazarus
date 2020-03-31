@@ -766,37 +766,24 @@ var
   ClassIdentNode, HelperForNode, InhNode: TCodeTreeNode;
 begin
   Result:='?';
-
   try
     case CodeNode.Desc of
-
     ctnUnit, ctnProgram, ctnLibrary, ctnPackage:
       Result:=CodeNode.DescAsString+' '+ACodeTool.ExtractSourceName;
-
     ctnTypeSection:
       Result:='Type';
-
     ctnVarSection:
       Result:='Var';
-
     ctnConstSection:
       Result:='Const';
-
     ctnLabelSection:
       Result:='Label';
-
     ctnResStrSection:
       Result:='Resourcestring';
-
-    ctnVarDefinition,
-    ctnConstDefinition,
-    ctnEnumIdentifier,
-    ctnLabel:
+    ctnVarDefinition, ctnConstDefinition, ctnEnumIdentifier, ctnLabel:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
-
     ctnUseUnit:
       Result:=ACodeTool.ExtractDottedIdentifier(CodeNode.StartPos);
-
     ctnTypeDefinition:
       begin
         Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
@@ -814,36 +801,27 @@ begin
             Result:=Result+' '+ACodeTool.ExtractNode(HelperForNode,[]);
         end;
       end;
-
     ctnGenericType:
       Result:=ACodeTool.ExtractDefinitionName(CodeNode);
-
     ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
     ctnClassInterface,ctnCPPClass:
       Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
-
     ctnProcedure:
       Result:=ACodeTool.ExtractProcHead(CodeNode,
                     [// phpWithStart is no needed because there are icons
                      phpWithVarModifiers,
                      phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                      phpWithOfObject]);
-
     ctnProcedureHead:
       Result:='Procedure Header';
-
     ctnProperty:
       Result:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
-
     ctnInterface:
       Result:='Interface';
-
     ctnBeginBlock:
       Result:='Begin block';
-
     ctnAsmBlock:
       Result:='Asm block';
-
     else
       Result:=CodeNode.DescAsString;
     end;
