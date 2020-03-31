@@ -8,12 +8,11 @@ object ResultDlgForm: TResultDlgForm
   ClientHeight = 635
   ClientWidth = 742
   KeyPreview = True
-  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 50

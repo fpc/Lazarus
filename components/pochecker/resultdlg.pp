@@ -24,16 +24,12 @@ type
     CloseBtn: TBitBtn;
     Panel1: TPanel;
     SaveDialog: TSaveDialog;
-    FLog: TStringList;
-    FStatLog: TStringList;
-    FDupLog: TStringList;
     LogMemo: TSynEdit;
     GeneralTabSheet: TTabSheet;
     StatisticsTabSheet: TTabSheet;
     DuplicatesTabSheet: TTabSheet;
     DupMemo: TSynEdit;
     procedure CopyMenuItemClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -54,9 +50,6 @@ type
     FTotalUntranslated: Integer;
     FTotalFuzzy: Integer;
     FTotalPercTranslated: Double;
-    property Log: TStringList read FLog write FLog;
-    property StatLog: TStringList read FStatLog write FStatLog;
-    property DupLog: TStringList read FDupLog write FDupLog;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end; 
@@ -78,23 +71,12 @@ begin
 
   LogMemo.Lines.Clear;
   StatMemo.Lines.Clear;
-  FLog := TStringList.Create;
-  FStatLog := TStringList.Create;
-  FDupLog := TStringList.Create;
   PoHL := TSynPoSyn.Create(Self);
   LogMemo.Highlighter := PoHL;
   GraphStatBtn.Caption := sShowStatGraph;
   FTotalTranslated := 0;
   FTotalUntranslated := 0;
   FTotalFuzzy := 0;
-end;
-
-procedure TResultDlgForm.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  FLog.Clear;
-  FStatLog.Clear;
-  FDupLog.Clear;
 end;
 
 procedure TResultDlgForm.CopyMenuItemClick(Sender: TObject);
@@ -108,9 +90,6 @@ end;
 
 procedure TResultDlgForm.FormDestroy(Sender: TObject);
 begin
-  FLog.Free;
-  FStatLog.Free;
-  FDupLog.Free;
   SaveConfig;
 end;
 
@@ -131,9 +110,9 @@ end;
 
 procedure TResultDlgForm.FormShow(Sender: TObject);
 begin
-  LogMemo.Lines.Assign(FLog);
-  StatMemo.Lines.Assign(FStatLog);
-  DupMemo.Lines.Assign(FDupLog);
+  LogMemo.Lines.Assign(PoFamilyList.InfoLog);
+  StatMemo.Lines.Assign(PoFamilyList.StatLog);
+  DupMemo.Lines.Assign(PoFamilyList.DupLog);
   GraphStatBtn.Visible := (PoFamilyStats <> nil) and (PoFamilyStats.Count > 0);
   LoadConfig;
   WindowState := Settings.ResultsFormWindowState;

@@ -428,10 +428,6 @@ begin
       ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
       ResultDlg.FTotalFuzzy := TotalFuzzyCount;
       ResultDlg.FTotalPercTranslated := TotalPercTranslated;
-      ResultDlg.Log.Assign(PoFamilyList.InfoLog);
-      ResultDlg.StatLog.Assign(PoFamilyList.StatLog);
-
-      ResultDlg.DupLog.Assign(PoFamilyList.DupLog);
 
       ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
       ResultDlg.Settings := FPoCheckerSettings;
