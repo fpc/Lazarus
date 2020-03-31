@@ -53,7 +53,6 @@ type
     procedure RefreshCurrMenuItemClick(Sender: TObject);
   private
     { private declarations }
-    FPoFamilyList: TPoFamilyList;
     FPoFamilyStats: TPoFamilyStats;
     FImgList: TImageList;
     FOldHintHidePause: Integer;
@@ -71,7 +70,6 @@ type
     procedure ConfigureContextPopUp(AdvancedMode: boolean);
   public
     { public declarations }
-    property PoFamilyList: TPoFamilyList read FPoFamilyList write FPoFamilyList;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end;

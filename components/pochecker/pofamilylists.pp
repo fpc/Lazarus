@@ -43,6 +43,9 @@ type
     property OnTestEnd: TTestEndEvent read FOnTestEnd write FOnTestEnd;
   end;
 
+var
+  PoFamilyList: TPoFamilyList;
+
 implementation
 
 { TPoFamilyList }
@@ -180,6 +183,9 @@ begin
 
   DupLog.Add(Format(sTotalWarnings, [WarningCount]));
 end;
+
+initialization
+  PoFamilyList := nil;
 
 end.
 

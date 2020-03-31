@@ -62,8 +62,6 @@ type
     procedure SelectAllMasterFilesBtnClick(Sender: TObject);
     procedure UnselectAllMasterFilesBtnClick(Sender: TObject);
   private
-    //PoFamily: TPoFamily;
-    PoFamilyList: TPoFamilyList;
     FPoCheckerSettings: TPoCheckerSettings;
     procedure OnTestStart(const ATestName, APoFileName: string);
     procedure OnTestEnd(const {%H-}ATestName: string; const {%H-}ErrorCount: integer);
@@ -435,7 +433,6 @@ begin
 
       ResultDlg.DupLog.Assign(PoFamilyList.DupLog);
 
-      ResultDlg.PoFamilyList := PoFamilyList;
       ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
       ResultDlg.Settings := FPoCheckerSettings;
       mr := ResultDlg.ShowModal;
