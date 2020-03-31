@@ -2461,8 +2461,7 @@ begin
     NonModalIDEWindowNames[nmiwSourceNoteBook],alBottom,false,@GetLayoutHandler);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorer],
     nil,@CreateIDEWindow,'72%','120','+170','-200',
-    NonModalIDEWindowNames[nmiwMainIDE],alRight);
-
+     NonModalIDEWindowNames[nmiwSourceNoteBook],alRight);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependencies],
     nil,@CreateIDEWindow,'200','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwFPDocEditor],
