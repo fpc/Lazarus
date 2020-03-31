@@ -9902,6 +9902,8 @@ end;
 procedure TQtLineEdit.setText(const AText: WideString);
 begin
   QLineEdit_setText(QLineEditH(Widget), @AText);
+  if not getEnabled then
+    setSelection(0, 0);
 end;
 
 procedure TQtLineEdit.setTextMargins(ARect: TRect);
