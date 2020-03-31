@@ -38,7 +38,6 @@ type
     procedure SaveAsMenuItemClick(Sender: TObject);
   private
     PoHL: TSynPoSyn;
-    FPoFamilyStats: TPoFamilyStats;
     FSettings: TPoCheckerSettings;
     procedure GetCurrentMemo(var CurrentMemo: TSynEdit);
     procedure LoadConfig;
@@ -50,7 +49,6 @@ type
     FTotalUntranslated: Integer;
     FTotalFuzzy: Integer;
     FTotalPercTranslated: Double;
-    property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end; 
 
@@ -113,7 +111,7 @@ begin
   LogMemo.Lines.Assign(PoFamilyList.InfoLog);
   StatMemo.Lines.Assign(PoFamilyList.StatLog);
   DupMemo.Lines.Assign(PoFamilyList.DupLog);
-  GraphStatBtn.Visible := (PoFamilyStats <> nil) and (PoFamilyStats.Count > 0);
+  GraphStatBtn.Visible := (PoFamilyList.PoFamilyStats <> nil) and (PoFamilyList.PoFamilyStats.Count > 0);
   LoadConfig;
   WindowState := Settings.ResultsFormWindowState;
 end;
@@ -124,7 +122,6 @@ var
 begin
   GraphStatForm := TGraphStatForm.Create(nil);
   try
-    GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
     GraphStatForm.Settings := Self.Settings;
 
     if PoFamilyList.LangID <> lang_all then

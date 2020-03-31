@@ -429,7 +429,6 @@ begin
       ResultDlg.FTotalFuzzy := TotalFuzzyCount;
       ResultDlg.FTotalPercTranslated := TotalPercTranslated;
 
-      ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
       ResultDlg.Settings := FPoCheckerSettings;
       mr := ResultDlg.ShowModal;
     finally
