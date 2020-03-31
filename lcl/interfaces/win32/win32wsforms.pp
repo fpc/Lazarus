@@ -754,7 +754,7 @@ const
  { wsNormal     } SW_SHOWNORMAL, // to restore from minimzed/maximized we need to use SW_SHOWNORMAL instead of SW_SHOW
  { wsMinimized  } SW_SHOWMINIMIZED,
  { wsMaximized  } SW_SHOWMAXIMIZED,
- { wsFullScreen } SW_SHOWNORMAL  // win32 has no fullscreen window state
+ { wsFullScreen } SW_SHOWMAXIMIZED  // win32 has no fullscreen window state
   );
 var
   Flags: DWord;
