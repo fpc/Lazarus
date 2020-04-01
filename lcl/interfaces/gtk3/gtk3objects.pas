@@ -1119,6 +1119,7 @@ constructor TGtk3DeviceContext.Create(AWidget: PGtkWidget;
 var
   W: gint;
   H: gint;
+  ACairo:pcairo_t;
   ARect: TGdkRectangle;
   AWindow: PGdkWindow;
   x: gint;
@@ -1146,15 +1147,22 @@ begin
 
   if AWidget = nil then
   begin
-    AWindow := gdk_get_default_root_window;
+   (* AWindow := gdk_get_default_root_window;
     AWindow^.get_geometry(@x, @y, @w, @h);
     w:=1; h:=1;
     // ParentPixmap := gdk_pixbuf_get_from_window(AWindow, x, y, w, h);
     // Widget := gdk_cairo_create(AWindow);
     // gdk_cairo_set_source_pixbuf(Widget, ParentPixmap, 0, 0);
-    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_RGB24, w, h);
+    //CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_RGB24, w, h);
+    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+    Widget := cairo_create(CairoSurface);   *)
+
+    ACairo := gdk_cairo_create(gdk_get_default_root_window);
+    gdk_cairo_get_clip_rectangle(ACairo, @ARect);
+    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, ARect.width, ARect.height);
     Widget := cairo_create(CairoSurface);
-    ParentPixmap := gdk_pixbuf_get_from_surface(CairoSurface, 0, 0, 1, 1);
+
+    ParentPixmap := gdk_pixbuf_get_from_surface(CairoSurface, 0, 0, ARect.width, ARect.height);
     FOwnsSurface := True;
   end else
   begin
@@ -1498,6 +1506,9 @@ begin
     gdk_cairo_set_source_pixbuf(Widget, Image, 0, 0);
     with targetRect^ do
       cairo_rectangle(Widget, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
+
+    cairo_set_operator (Widget, CAIRO_OPERATOR_OVER);
+
 
     cairo_matrix_init_identity(@M);
     cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);

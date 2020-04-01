@@ -319,9 +319,9 @@ begin
         ADesc.BluePrec := 8;
 
         ADesc.AlphaShift := 24;
-        ADesc.RedShift := 16;
+        ADesc.RedShift := 0;
         ADesc.GreenShift := 8;
-        ADesc.BlueShift := 0;
+        ADesc.BlueShift := 16;
       end;
   end;
   (*

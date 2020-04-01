@@ -191,9 +191,9 @@ begin
   Desc.BluePrec := 8;
 
   Desc.AlphaShift := 24;
-  Desc.RedShift := 16;
+  Desc.RedShift := 0;
   Desc.GreenShift := 8;
-//  Desc.BlueShift := 0;
+  Desc.BlueShift := 16;
 
   // Qt wants dword-aligned data
   Desc.MaskLineEnd := rileDWordBoundary;

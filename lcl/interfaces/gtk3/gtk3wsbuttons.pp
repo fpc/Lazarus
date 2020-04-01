@@ -137,7 +137,7 @@ begin
       resolution.GetRawImage(ABitBtn.ImageIndex,raw);
       { convice the bitmap it has actually another format }
       AGlyph.BeginUpdate();
-      raw.Description.Init_BPP32_R8G8B8A8_BIO_TTB(resolution.Width,resolution.Height);
+     // raw.Description.Init_BPP32_R8G8B8A8_BIO_TTB(resolution.Width,resolution.Height);
       AGlyph.LoadFromRawImage(raw,false);
       AGlyph.EndUpdate();
     end else

@@ -4048,7 +4048,7 @@ begin
           resolution.GetRawImage(btn.ImageIndex,raw);
           { convince the bitmap it has actually another format }
           bmp.BeginUpdate();
-          raw.Description.Init_BPP32_R8G8B8A8_BIO_TTB(resolution.Width,resolution.Height);
+          //raw.Description.Init_BPP32_R8G8B8A8_BIO_TTB(resolution.Width,resolution.Height);
           bmp.LoadFromRawImage(raw,false);
           bmp.EndUpdate();
           pb:=TGtk3Image(bmp.Handle).Handle;
