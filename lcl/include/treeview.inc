@@ -4360,6 +4360,8 @@ begin
       if (fScrollBars in [ssAutoBoth, ssAutoVertical])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
         //DebugLn(['TCustomTreeView.UpdateScrollbars Hide Vertical.']);
+        ScrollInfo.nPos:=0;
+        SetScrollInfo(Handle, SB_VERT, ScrollInfo, false);
         FLastVertScrollInfo.cbSize:=0;
         SetShowScrollBar(SB_VERT, false);
       end else begin
