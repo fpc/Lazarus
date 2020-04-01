@@ -674,6 +674,7 @@ begin
   end
   else begin
     lTimer := XTimerListHead;
+    if not Assigned(lTimer) then exit;
     lTimeoutInterval:= trunc((lTimer.Expires-now)*KMsToDateTime);
     if lTimeoutInterval < 0 then lTimeoutInterval:= 0; // we missed a timer: a quick look to
     // pending messages then go process the timer

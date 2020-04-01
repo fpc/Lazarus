@@ -118,9 +118,9 @@ function GetDoubleClickTime: UINT; override;*)
 function GetFocus: HWND; override;
 (*function GetForegroundWindow: HWND; override;*)
 function GetKeyState(nVirtKey: Integer): Smallint; override;
-//function GetMapMode(DC: HDC): Integer; override;
+(*function GetMapMode(DC: HDC): Integer; override;*)
 function GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
-//function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
+(*function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;*)
 function GetParent(Handle : HWND): HWND; override;
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;

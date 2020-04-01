@@ -1243,11 +1243,12 @@ function TWin32WidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer
 begin
   Result := Integer(Windows.EndPaint(Handle, @PS));
 end;
+*)
 
-function TWin32WidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+function TCDWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 begin
   Result := MultiMon.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
-end;*)
+end;
 
 type
   TProcRedirRec = record
@@ -1921,7 +1922,7 @@ begin
   Result := Windows.GetMapMode(DC);
 end;
 
-function TWin32WidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: LCLType.PMonitorInfo): Boolean;
+function TCDWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: LCLType.PMonitorInfo): Boolean;
 {$IFDEF WindowsUnicodeSupport}
 var
   LocalInfo: TMonitorInfoExW;
