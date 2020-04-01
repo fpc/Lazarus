@@ -6824,6 +6824,7 @@ var
   OldBkColor: TColorRef;
   RestoreClip: Boolean;
   AClipRect: TRect;
+  AWidgetID: LongWord;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -6845,7 +6846,8 @@ begin
     begin
       with SrcQDC.getDeviceSize do
         TmpPixmap := QPixmap_create(x, y);
-      QPixmap_grabWindow(TmpPixmap, QWidget_winId(SrcQDC.Parent), 0, 0);
+      AWidgetID := QWidget_winId(SrcQDC.Parent);
+      QPixmap_grabWindow(TmpPixmap, AWidgetID, 0, 0);
       Image := QImage_create();
       QPixmap_toImage(TmpPixmap, Image);
       QPixmap_destroy(TmpPixmap);
