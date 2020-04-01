@@ -114,6 +114,8 @@ type
     procedure SetDefaultAppFontName;
   protected
     FPenForSetPixel: QPenH;
+    FInGetPixel: boolean;
+
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
     FStockLtGrayBrush: HBRUSH;

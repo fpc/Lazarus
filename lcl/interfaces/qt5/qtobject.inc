@@ -40,6 +40,8 @@ begin
   FAppEvenFilterHook := nil;
   FAppFocusChangedHook := nil;
   FPenForSetPixel := nil;
+  FInGetPixel := False;
+
   QtGDIObjects := TQtGDIObjects.Create;
   InitStockItems;
   QtWidgetSet := Self;
@@ -1253,16 +1255,48 @@ end;
 function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 var
   Color: QColorH;
+  Pixmap: QPixmapH;
+  Image: QImageH;
+  Widget: QWidgetH;
+  Rgb: QRgb;
+  AWindow: QWindowH;
 begin
   Result := clNone;
 
   if not IsValidDC(CanvasHandle) then Exit;
   
-  if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
+  if (TQtDeviceContext(CanvasHandle).vImage <> nil) and
+    (TQtDeviceContext(CanvasHandle).vImage.Handle <> nil) then
   begin
     Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
     Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
     QColor_destroy(Color);
+  end else
+  if (TQtDeviceContext(CanvasHandle).Widget <> nil) and (TQtDeviceContext(CanvasHandle).Parent <> nil) then
+  begin
+    Widget := TQtDeviceContext(CanvasHandle).Parent;
+    if FInGetPixel then
+      raise Exception.CreateFmt('TQtWidgetSet.DCGetPixel called recursively, probably from Paint method of QWidget %u.',[PtrUInt(Widget)]);
+    FInGetPixel := true;
+    try
+      Pixmap:= QPixmap_create(1,1);
+      Image := QImage_create(1,1, QImageFormat_ARGB32);
+      AWindow := QWidget_windowHandle(Widget);
+      if AWindow <> nil then
+        QScreen_grabWindow(QWindow_screen(AWindow), Pixmap, QWidget_winId(Widget), X, Y, 1, 1)
+      else
+        QScreen_grabWindow(QGuiApplication_primaryScreen(), Pixmap, QWidget_winId(Widget), X, Y, 1, 1);
+      QPixmap_toImage(PixMap, Image);
+      Rgb := QImage_Pixel(Image, 0,0);
+      Color := QColor_create(Rgb);
+      Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
+    finally
+      QPixmap_destroy(Pixmap);
+      QImage_destroy(Image);
+      if Color <> nil then
+        QColor_destroy(Color);
+      FInGetPixel := false;
+    end;
   end;
 end;
 
@@ -1293,7 +1327,8 @@ begin
       ColorRef := TColorRef(ColorToRGB(AColor));
       QColor_fromRgb(@Color, Red(ColorRef), Green(ColorRef), Blue(ColorRef));
       AQColor := QColor_create(PQColor(@Color));
-      QImage_setPixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y, QColor_rgb(AQColor));
+      if QImage_valid(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y) then
+        QImage_setPixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y, QColor_rgb(AQColor));
       QColor_destroy(AQColor);
     end else
     begin
