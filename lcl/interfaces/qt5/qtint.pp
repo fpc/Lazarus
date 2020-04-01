@@ -110,6 +110,7 @@ type
     procedure QtRestoreStayOnTop(const ASystemTopAlso: Boolean = False);
     procedure SetDefaultAppFontName;
   protected
+    FPenForSetPixel: QPenH;
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
     FStockLtGrayBrush: HBRUSH;

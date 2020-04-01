@@ -87,7 +87,7 @@ begin
   FCachedMenuBarHeight := -1;
   FAppEvenFilterHook := nil;
   FAppFocusChangedHook := nil;
-
+  FPenForSetPixel := nil;
   QtGDIObjects := TQtGDIObjects.Create;
   InitStockItems;
   QtWidgetSet := Self;
@@ -174,6 +174,12 @@ begin
 
   FSocketEventMap.Free;
   FGlobalActions.Free;
+
+  if FPenForSetPixel <> nil then
+  begin
+    QPen_destroy(FPenForSetPixel);
+    FPenForSetPixel := nil;
+  end;
 
   System.DoneCriticalsection(CriticalSection);
 
@@ -1364,10 +1370,13 @@ begin
        using painter save/restore, or saved Pen in devicecontext which
        may be null. Issue #27620}
       Pen := QPen_create(QPainter_pen(Painter));
+      if FPenForSetPixel = nil then
+        FPenForSetPixel := QPen_Create();
       try
         ColorRef := TColorRef(ColorToRGB(AColor));
         QColor_fromRgb(@Color, Red(ColorRef), Green(ColorRef), Blue(ColorRef));
-        QPainter_setPen(Painter, PQColor(@Color));
+        QPen_setColor(FPenForSetPixel, PQColor(@Color));
+        QPainter_setPen(Painter, FPenForSetPixel);
         QPainter_drawPoint(Painter, X,Y);
       finally
         QPainter_setPen(Painter, Pen);
