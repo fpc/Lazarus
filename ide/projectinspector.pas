@@ -114,7 +114,9 @@ type
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -190,11 +192,15 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function OnTreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
-    procedure OnProjectBeginUpdate(Sender: TObject);
-    procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
+    procedure ProjectBeginUpdate(Sender: TObject);
+    procedure ProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
     procedure DoOnPackageListAvailable(Sender: TObject);
     function FindOnlinePackageLink(const ADependency: TPkgDependency): TPackageLink;
+    function CanUpdate(Flag: TProjectInspectorFlag): boolean;
+    procedure UpdateProjectFiles;
+    procedure UpdateButtons;
+    procedure UpdatePending;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var {%H-}Done: Boolean);
@@ -203,11 +209,7 @@ type
     destructor Destroy; override;
     function IsUpdateLocked: boolean; inline;
     procedure UpdateTitle;
-    procedure UpdateProjectFiles;
     procedure UpdateRequiredPackages;
-    procedure UpdateButtons;
-    procedure UpdatePending;
-    function CanUpdate(Flag: TProjectInspectorFlag): boolean;
     function GetSingleSelectedDependency: TPkgDependency;
     function TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
   public
@@ -571,6 +573,17 @@ procedure TProjectInspectorForm.FormCreate(Sender: TObject);
 begin
   if OPMInterface <> nil then
     OPMInterface.OnPackageListAvailable := @DoOnPackageListAvailable;
+end;
+
+procedure TProjectInspectorForm.FormActivate(Sender: TObject);
+begin
+  ItemsTreeView.OnSelectionChanged := @ItemsTreeViewSelectionChanged;
+end;
+
+procedure TProjectInspectorForm.FormDeactivate(Sender: TObject);
+begin
+  // Prevent calling handler when the tree gets updated with a project.
+  ItemsTreeView.OnSelectionChanged := Nil;
 end;
 
 procedure TProjectInspectorForm.FormDropFiles(Sender: TObject;
@@ -964,18 +977,19 @@ end;
 procedure TProjectInspectorForm.SetLazProject(const AValue: TProject);
 begin
   if FLazProject=AValue then exit;
-  if FLazProject<>nil then begin
+  if FLazProject<>nil then begin       // Old Project
     dec(FUpdateLock,LazProject.UpdateLock);
     FLazProject.OnBeginUpdate:=nil;
     FLazProject.OnEndUpdate:=nil;
   end;
   FLazProject:=AValue;
-  if FLazProject<>nil then begin
+  if FLazProject<>nil then begin       // New Project
     inc(FUpdateLock,LazProject.UpdateLock);
-    FLazProject.OnBeginUpdate:=@OnProjectBeginUpdate;
-    FLazProject.OnEndUpdate:=@OnProjectEndUpdate;
-  end;
-  UpdateAll;
+    FLazProject.OnBeginUpdate:=@ProjectBeginUpdate;
+    FLazProject.OnEndUpdate:=@ProjectEndUpdate;
+  end
+  else // Only update when no project. ProjectEndUpdate will update a project.
+    UpdateAll;
 end;
 
 procedure TProjectInspectorForm.SetShowDirectoryHierarchy(const AValue: boolean);
@@ -1182,7 +1196,6 @@ begin
   finally
     ItemsTreeView.EndUpdate;
   end;
-  UpdateButtons;
 end;
 
 procedure TProjectInspectorForm.UpdateRequiredPackages;
@@ -1257,13 +1270,12 @@ begin
   UpdateButtons;
 end;
 
-procedure TProjectInspectorForm.OnProjectBeginUpdate(Sender: TObject);
+procedure TProjectInspectorForm.ProjectBeginUpdate(Sender: TObject);
 begin
   BeginUpdate;
 end;
 
-procedure TProjectInspectorForm.OnProjectEndUpdate(Sender: TObject;
-  ProjectChanged: boolean);
+procedure TProjectInspectorForm.ProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
 begin
   if ProjectChanged then
     UpdateAll;
@@ -1345,11 +1357,10 @@ end;
 
 procedure TProjectInspectorForm.IdleHandler(Sender: TObject; var Done: Boolean);
 begin
-  if IsUpdateLocked then begin
-    IdleConnected:=false;
-    exit;
-  end;
-  UpdatePending;
+  if IsUpdateLocked then
+    IdleConnected:=false
+  else
+    UpdatePending;
 end;
 
 function TProjectInspectorForm.GetSingleSelectedDependency: TPkgDependency;
@@ -1487,17 +1498,12 @@ end;
 
 procedure TProjectInspectorForm.UpdateAll(Immediately: boolean);
 begin
-  ItemsTreeView.BeginUpdate;
-  try
-    UpdateTitle;
-    UpdateProjectFiles;
-    UpdateRequiredPackages;
-    UpdateButtons;
-    if Immediately then
-      UpdatePending;
-  finally
-    ItemsTreeView.EndUpdate;
-  end;
+  UpdateTitle;
+  UpdateProjectFiles;
+  UpdateRequiredPackages;
+  UpdateButtons;
+  if Immediately then
+    UpdatePending;
 end;
 
 procedure TProjectInspectorForm.UpdateTitle;
@@ -1506,13 +1512,10 @@ var
   IconStream: TStream;
 begin
   if not CanUpdate(pifNeedUpdateTitle) then exit;
-
   Icon.Clear;
   if LazProject=nil then
-  begin
-    Caption:=lisMenuProjectInspector;
-  end else
-  begin
+    Caption:=lisMenuProjectInspector
+  else begin
     NewCaption:=LazProject.GetTitle;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(LazProject.ProjectInfoFile);
@@ -1545,12 +1548,10 @@ var
   CanOpenCount: Integer;
 begin
   if not CanUpdate(pifNeedUpdateButtons) then exit;
-
-  if LazProject<>nil then begin
-    AddBitBtn.Enabled:=true;
-
-    CanRemoveCount:=0;
-    CanOpenCount:=0;
+  CanRemoveCount:=0;
+  CanOpenCount:=0;
+  if Assigned(LazProject) then
+  begin
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
       if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
@@ -1566,41 +1567,30 @@ begin
         end;
       end;
     end;
-
-    RemoveBitBtn.Enabled:=(CanRemoveCount>0);
-    OpenButton.Enabled:=(CanOpenCount>0);
-    OptionsBitBtn.Enabled:=true;
-  end else begin
-    AddBitBtn.Enabled:=false;
-    RemoveBitBtn.Enabled:=false;
-    OpenButton.Enabled:=false;
-    OptionsBitBtn.Enabled:=false;
   end;
+  AddBitBtn.Enabled:=Assigned(LazProject);
+  RemoveBitBtn.Enabled:=(CanRemoveCount>0);
+  OpenButton.Enabled:=(CanOpenCount>0);
+  OptionsBitBtn.Enabled:=Assigned(LazProject);
 end;
 
 procedure TProjectInspectorForm.UpdatePending;
 begin
-  ItemsTreeView.BeginUpdate;
-  try
-    if pifNeedUpdateFiles in FFlags then
-      UpdateProjectFiles;
-    if pifNeedUpdateDependencies in FFlags then
-      UpdateRequiredPackages;
-    if pifNeedUpdateTitle in FFlags then
-      UpdateTitle;
-    if pifNeedUpdateButtons in FFlags then
-      UpdateButtons;
-    IdleConnected:=false;
-  finally
-    ItemsTreeView.EndUpdate;
-  end;
+  if pifNeedUpdateFiles in FFlags then
+    UpdateProjectFiles;
+  if pifNeedUpdateDependencies in FFlags then
+    UpdateRequiredPackages;
+  if pifNeedUpdateTitle in FFlags then
+    UpdateTitle;
+  if pifNeedUpdateButtons in FFlags then
+    UpdateButtons;
+  IdleConnected:=false;
 end;
 
 function TProjectInspectorForm.CanUpdate(Flag: TProjectInspectorFlag): boolean;
 begin
   Result:=false;
   if csDestroying in ComponentState then exit;
-  if LazProject=nil then exit;
   if IsUpdateLocked then begin
     Include(fFlags,Flag);
     IdleConnected:=true;
