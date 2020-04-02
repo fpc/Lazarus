@@ -7499,6 +7499,7 @@ function TFindDeclarationTool.FindAncestorOfClassInheritance(
 var
   InheritanceNode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;
+  SpecializeNode : TCodeTreeNode;
   AncestorContext: TFindContext;
   AncestorStartPos: LongInt;
   ExprType: TExpressionType;
@@ -7578,9 +7579,14 @@ begin
     if (AncestorContext.Node.Desc in [ctnTypeDefinition,ctnGenericType]) then
     begin
       Params:=TFindDeclarationParams.Create;
+      if IdentifierNode.Desc=ctnSpecialize then begin
+         SpecializeNode:=IdentifierNode;
+         Params.SetGenericParamValues(Self, SpecializeNode);
+      end;
       try
         Params.Flags:=fdfDefaultForExpressions+[fdfFindChildren];
         AncestorContext:=AncestorContext.Tool.FindBaseTypeOfNode(Params,AncestorContext.Node);
+        ResultParams.GenParams:=Params.GenParams;
       finally
         Params.Free;
       end;
