@@ -4093,7 +4093,7 @@ var
   SrcDCOrigin: TPoint;
   DstDCOrigin: TPoint;
   SrcWholeWidth, SrcWholeHeight: integer;
-  DstWholeWidth, DstWholeHeight: integer;
+  DstWholeWidth, DstWholeHeight, AOldRop: integer;
 begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   {$IFDEF VerboseStretchCopyArea}
@@ -4266,6 +4266,7 @@ begin
   {$ENDIF}
 
   {$IFDEF VerboseGtkToDos}{$note tode remove, earlier checks require drawable <> nil}{$ENDIF}
+  AOldRop := SetROP2(DestDC, Rop);
   if SrcDevContext.Drawable = nil
   then begin
     if DstDevContext.Drawable = nil
@@ -4281,6 +4282,7 @@ begin
     else
       Result := DrawableToDrawable;
   end;
+  SetROP2(DestDC, AOldRop);
 
   if TempPixmap <> nil
   then gdk_pixmap_unref(TempPixmap);
