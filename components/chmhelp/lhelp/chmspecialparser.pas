@@ -47,13 +47,13 @@ type
     constructor Create(ATreeView: TTreeView; ASitemap: TChmSiteMap; StopBoolean: PBoolean; AChm: TObject);
     procedure DoFill(ParentNode: TTreeNode);
   end;
-  
+
 implementation
 
 uses
   LConvEncoding, LazUTF8, HTMLDefs;
 
-function ToUTF8(AText: ansistring): String;
+function ToUTF8(const AText: AnsiString): String;
 var
   encoding: String;
 begin
@@ -64,29 +64,37 @@ begin
     Result := AText;
 end;
 
-function FixEscapedHTML(AText: string): string;
+function FixEscapedHTML(const AText: String): String;
 var
-  i: Integer;
-  ampstr: string;
-  ws: widestring;
-  entity: widechar;
+  AmpPos, i: Integer;
+  AmpStr: String;
+  ws: WideString;
+  Entity: WideChar;
 begin
   Result := '';
   i := 1;
-  while i <= Length(AText) do begin
-    if AText[i]='&' then begin
-      ampStr := '';
-      inc(i);
-      while AText[i] <> ';' do begin
-        ampStr := ampStr + AText[i];
-        inc(i);
-      end;
-      ws := UTF8Encode(ampStr);
-      if ResolveHTMLEntityReference(ws, entity) then
-        Result := Result + UnicodeToUTF8(cardinal(entity))
+  while i <= Length(AText) do
+  begin
+    if AText[i]='&' then
+    begin
+      AmpPos:= i;
+      repeat
+        inc(i);   // First round passes beyond '&', then search for ';'.
+      until (i > Length(AText)) or (AText[i] = ';');
+      if i > Length(AText) then
+        // Not HTML Entity, only ampersand by itself. Copy the rest of AText at one go.
+        Result := Result + RightStr(AText, i-AmpPos)
       else
-        Result := Result + '?';
-    end else
+      begin            // ';' was found, this may be an HTML entity like "&xxx;".
+        AmpStr := Copy(AText, AmpPos+1, i-AmpPos-1);
+        ws := UTF8Encode(AmpStr);
+        if ResolveHTMLEntityReference(ws, Entity) then
+          Result := Result + UnicodeToUTF8(cardinal(Entity))
+        else
+          Result := Result + '?';
+      end;
+    end
+    else
       Result := Result + AText[i];
     inc(i);
   end;
