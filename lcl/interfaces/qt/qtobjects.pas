@@ -3429,6 +3429,7 @@ var
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
   ScaledImage: QImageH;
+  TempScaledImage: QImageH;
   ScaledMask: QImageH;
   NewRect: TRect;
   ARenderHint: Boolean;
@@ -3468,12 +3469,14 @@ begin
     if NeedScaling then
     begin
       ScaledImage := QImage_create();
-      QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
-      QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
+      TempScaledImage := QImage_Create();
+      QImage_copy(Image, TempScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
+      QImage_scaled(TempScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
             LocalRect.Bottom - LocalRect.Top);
       NewRect := sourceRect^;
       NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
       NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
+      QImage_destroy(TempScaledImage);
     end;
     // TODO: check maskRect
     APixmap := QPixmap_create();
@@ -3488,10 +3491,12 @@ begin
         if ScaledImage <> nil then
         begin
           ScaledMask := QImage_create();
-          QImage_copy(Mask, ScaledMask, 0, 0, QImage_width(Mask), QImage_height(Mask));
-          QImage_scaled(ScaledMask, ScaledMask, LocalRect.Right - LocalRect.Left,
+          TempScaledImage := QImage_create();
+          QImage_copy(Mask, TempScaledImage, 0, 0, QImage_width(Mask), QImage_height(Mask));
+          QImage_scaled(TempScaledImage, ScaledMask, LocalRect.Right - LocalRect.Left,
               LocalRect.Bottom - LocalRect.Top);
           QPixmap_fromImage(ATemp, ScaledMask, flags);
+          QImage_destroy(TempScaledImage);
           QImage_destroy(ScaledMask);
         end else
           QPixmap_fromImage(ATemp, mask, flags);
@@ -3546,14 +3551,16 @@ begin
 
         if NeedScaling then
         begin
-          QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
+          TempScaledImage := QImage_create();
+          QImage_scaled(ScaledImage, TempScaledImage, LocalRect.Right - LocalRect.Left,
           LocalRect.Bottom - LocalRect.Top);
 
           NewRect := sourceRect^;
           NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
           NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
 
-          QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, @NewRect, flags);
+          QPainter_drawImage(Widget, PRect(@LocalRect), TempScaledImage, @NewRect, flags);
+          QImage_destroy(TempScaledImage);
         end else
           QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, sourceRect, flags);
 
@@ -3566,8 +3573,9 @@ begin
       if NeedScaling then
       begin
         ScaledImage := QImage_create();
+        TempScaledImage := QImage_create();
         try
-          QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
+          QImage_copy(Image, TempScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
           {use smooth transformation when scaling image. issue #29883
            check if antialiasing is on, if not then don''t call smoothTransform. issue #330011}
           ARenderHints := QPainter_renderHints(Widget);
@@ -3577,7 +3585,7 @@ begin
           else
             ATransformation := QtFastTransformation;
 
-          QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
+          QImage_scaled(TempScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
             LocalRect.Bottom - LocalRect.Top, QtIgnoreAspectRatio, ATransformation);
           NewRect := sourceRect^;
           NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
@@ -3585,6 +3593,7 @@ begin
           QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, @NewRect, flags);
         finally
           QImage_destroy(ScaledImage);
+          QImage_destroy(TempScaledImage);
         end;
       end else
       begin
