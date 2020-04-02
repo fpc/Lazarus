@@ -7219,6 +7219,7 @@ end;
 procedure TCustomGrid.DoEditorShow;
 var
   ParentChanged: Boolean;
+  Column: TGridColumn;
 begin
   {$ifdef dbgGrid}DebugLnEnter('grid.DoEditorShow [',Editor.ClassName,'] INIT');{$endif}
   ScrollToCell(FCol,FRow, True);
@@ -7235,8 +7236,9 @@ begin
     Editor.Parent:=Self;
   if (FEditor = FStringEditor) or (FEditor = FButtonStringEditor) then
   begin
-    if FCol-FFixedCols<Columns.Count then
-      FStringEditor.Alignment:=Columns[FCol-FFixedCols].Alignment
+    Column:=ColumnFromGridColumn(FCol);
+    if Column<>nil then
+      FStringEditor.Alignment:=Column.Alignment
     else
       FStringEditor.Alignment:=taLeftJustify;
   end;
