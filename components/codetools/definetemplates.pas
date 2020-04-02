@@ -3760,10 +3760,8 @@ end;
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean;
 begin
   Result:=false;
-  AFilename:=ResolveDots(aFilename);
-  //debugln(['IsFPCExecutable ',AFilename]);
-  //debugln(['IsFPCompiler START ',aFilename]);
-  if aFilename='' then begin
+  AFilename:=ResolveDots(AFilename);
+  if AFilename='' then begin
     ErrorMsg:='missing file name';
     exit;
   end;
@@ -3814,13 +3812,13 @@ var
   Lines: TStringList;
   i: Integer;
 begin
-  Result:=IsCTExecutable(AFilename,ErrorMsg);
-  if not Result then exit;
+  Result:=False;
+  if not IsCTExecutable(AFilename,ErrorMsg) then exit;
   Kind:=pcFPC;
 
   // allow scripts like fpc.sh and fpc.bat
   ShortFilename:=ExtractFileNameOnly(AFilename);
-  //debugln(['IsFPCompiler Short=',ShortFilename]);
+  //debugln(['IsCompilerExecutable Short=',ShortFilename]);
 
   // check ppc*.exe
   if CompareText(LeftStr(ShortFilename,3),'ppc')=0 then
@@ -3834,7 +3832,7 @@ begin
 
   // dcc*.exe
   if (CompareFilenames(LeftStr(ShortFilename,3),'dcc')=0)
-      and ((ExeExt='') or (CompareFileExt(ShortFilename,ExeExt)=0))
+      and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
   then begin
     Kind:=pcDelphi;
     exit(true);
@@ -3878,7 +3876,6 @@ begin
     exit(true);
 
   ErrorMsg:='fpc executable should start with fpc or ppc';
-  Result:=false;
 end;
 
 function IsFPCExecutable(AFilename: string; out ErrorMsg: string; Run: boolean
@@ -3897,7 +3894,7 @@ begin
 
   // allow scripts like fpc*.sh and fpc*.bat
   ShortFilename:=LowerCase(ExtractFileNameOnly(AFilename));
-  //debugln(['IsFPCompiler Short=',ShortFilename]);
+  //debugln(['IsFPCExecutable Short=',ShortFilename]);
   if (LeftStr(ShortFilename,3)='fpc') then
     exit(true);
 
