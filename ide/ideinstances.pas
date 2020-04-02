@@ -627,6 +627,7 @@ end;
 procedure TUniqueServer.StartUnique(const aServerPrefix: string);
 var
   I: Integer;
+  Tmp: String;
 begin
   if Active then
     StopServer;
@@ -635,11 +636,12 @@ begin
   while not Active do
   begin
     Inc(I);
-    if I < 10 then
-      ServerID := aServerPrefix+'0'+IntToStr(I)
-    else
-      ServerID := aServerPrefix+IntToStr(I);
-    StartServer;
+    ServerID := aServerPrefix+Format('%.2d',[I]);
+    // FileName is composed of TempDir and ServerID. Make sure TempDir exists.
+    Tmp := GetTempDir(Global);        // Use TIPCBase.Global property also here.
+    if not DirectoryExists(Tmp) then
+      ForceDirectories(Tmp);
+    StartServer;  // This uses the FileName in TempDir.
   end;
 end;
 
