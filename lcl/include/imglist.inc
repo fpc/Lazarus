@@ -2798,9 +2798,9 @@ begin
       raise EResNotFound.CreateFmt(SResNotFound,[AResourceName]);
 
     E := TEntry.Create;
-    FImageIndexes.Add(E);
     E.GlyphName := AResourceName;
     E.ImageIndex := Result;
+    FImageIndexes.Add(E);
   end;
 end;
 
