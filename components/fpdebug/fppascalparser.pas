@@ -600,7 +600,7 @@ end;
 
 function TFpPasParserValueCastToPointer.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
-  if (FValue.FieldFlags * [svfAddress, svfCardinal] <> [])
+  if (FValue.FieldFlags * [svfAddress, svfOrdinal] <> [])
   then
     Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress]
   else
@@ -618,7 +618,7 @@ var
 begin
   Result := 0;
   f := FValue.FieldFlags;
-  if svfCardinal in f then
+  if svfOrdinal in f then
     Result := FValue.AsCardinal
   else
   if svfAddress in f then begin

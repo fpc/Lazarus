@@ -1365,6 +1365,13 @@ begin
       FPrettyPrinter.MemManager := AContext.MemManager;
 
       ResValue := APasExpr.ResultValue;
+      if ResValue = nil then begin
+        AResText := 'Error';
+        if AWatchValue <> nil then
+          AWatchValue.Validity := ddsInvalid;
+        exit;
+      end;
+
       if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
       then begin
         CastName := '';
