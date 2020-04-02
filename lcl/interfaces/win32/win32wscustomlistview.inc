@@ -129,7 +129,16 @@ var
     end;
     if (DataInfo^.item.mask and LVIF_IMAGE) <> 0 then
     begin
-      DataInfo^.item.iImage := listitem.ImageIndex;
+      if DataInfo^.item.iSubItem = 0 then
+        DataInfo^.item.iImage := listitem.ImageIndex
+      else
+      begin
+        idx := DataInfo^.item.iSubItem - 1;
+        if idx < listitem.SubItems.Count then
+          DataInfo^.item.iImage := listitem.SubItemImages[idx]
+        else
+          DataInfo^.item.iImage := -1;
+      end;
       if Assigned(ALV.StateImages) then
       begin
         DataInfo^.item.state := IndexToStateImageMask(listitem.StateIndex + 1);
