@@ -390,12 +390,14 @@ var
   Context: TQtDeviceContext absolute ADC;
   Widget: TQtWidget;
   Window: TQtMainWindow;
-  Pixmap: TQtPixmap;
   DCSize: TSize;
   APoint: TQtPoint;
   ARect, GRect: TRect;
   OffsetY: Integer;
-  NewHandle: QPixmapH;
+  Pixmap, NewHandle: QPixmapH;
+  AWidgetID: PtrUInt;
+  AWindow: QWindowH;
+  AScreen: QScreenH;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
     Exit;
@@ -418,25 +420,33 @@ begin
     cx := Right - Left;
     cy := Bottom - Top;
   end;
-  Pixmap := TQtPixmap.Create(@DCSize);
+  Pixmap := QPixmap_create(PSize(@DCSize));
   try
     OffsetRect(GRect, -ARect.Left, -ARect.Top);
-    Pixmap.grabWidget(Widget.Widget, 0, 0);
+
+    AWidgetID := QWidget_winId(Widget.Widget);
+    AWindow := QWidget_windowHandle(Widget.Widget);
+    if AWindow <> nil then
+      AScreen := QWindow_screen(AWindow)
+    else
+      AScreen := QGuiApplication_primaryScreen();
+
+    QScreen_grabWindow(AScreen, Pixmap, AWidgetID, 0, 0);
 
     // apply offset if we have main menu
     APoint := QtPoint(X, Y + OffsetY);
-    ARect := Rect(0, 0, Pixmap.getWidth, Pixmap.getHeight);
+    ARect := Rect(0, 0, QPixmap_width(Pixmap), QPixmap_height(Pixmap));
     // also scale pixmap by height of menu, so it's catched in our image.
     if OffsetY <> 0 then
     begin
       NewHandle := QPixmap_create();
-      QPixmap_scaled(Pixmap.Handle, NewHandle, Pixmap.GetWidth, Pixmap.GetHeight - OffsetY);
+      QPixmap_scaled(Pixmap, NewHandle, QPixmap_width(Pixmap), QPixmap_height(Pixmap) - OffsetY);
       Context.drawPixmap(@APoint, NewHandle, @ARect);
       QPixmap_destroy(NewHandle);
     end else
-      Context.drawPixmap(@APoint, Pixmap.Handle, @ARect);
+      Context.drawPixmap(@APoint, Pixmap, @ARect);
   finally
-    Pixmap.Free;
+    QPixmap_destroy(Pixmap);
   end;
 end;
 
