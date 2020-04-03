@@ -6921,6 +6921,17 @@ begin
     //issue #32137
     TmpImage := QImage_Create();
     QImage_copy(SrcQDC.vImage.Handle, TmpImage, XSrc, YSrc, SrcWidth, SrcHeight);
+
+    // #11713, #25590
+    if (QMask = nil) and (QImage_format(TmpImage) = QImageFormat_RGB32) then
+    begin
+      Image := QImage_create();
+      QImage_convertToFormat(TmpImage, Image, QImageFormat_ARGB32);
+      QImage_destroy(TmpImage);
+      TmpImage := QImage_create(Image);
+      QImage_destroy(Image);
+    end;
+
     TmpPixmap := QPixmap_create();
     QPixmap_fromImage(TmpPixmap, TmpImage);
 
