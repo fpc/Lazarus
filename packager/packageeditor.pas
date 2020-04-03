@@ -3403,6 +3403,10 @@ begin
     begin
       EnvironmentOptions.LastOpenPackages.Remove(LazPackage.Filename);
       MainIDE.SaveEnvironment;
+      if not CompileBitBtn.Enabled then begin
+        DebugLn(['TPackageEditorForm.CanCloseEditor ', Caption, ' compiling, do not close.']);
+        Result:=mrCancel;
+      end;
     end;
   end;
   //debugln(['TPackageEditorForm.CanCloseEditor Result=',dbgs(Result),' ',Caption]);
