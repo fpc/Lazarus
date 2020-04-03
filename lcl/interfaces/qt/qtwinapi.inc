@@ -6825,6 +6825,94 @@ var
   RestoreClip: Boolean;
   AClipRect: TRect;
   AWidgetID: LongWord;
+
+  function NeedScaling(const ADstRect, ASrcRect: TRect): boolean;
+  var
+    R: TRect;
+    TgtW, TgtH,
+    ClpW, ClpH: integer;
+  begin
+
+    if not DstQDC.getClipping or EqualRect(ADstRect, ASrcRect) then
+      exit(False);
+
+    R := DstQDC.getClipRegion.getBoundingRect;
+
+    TgtW := ADstRect.Right - ADstRect.Left;
+    TgtH := ADstRect.Bottom - ADstRect.Top;
+    ClpW := R.Right - R.Left;
+    ClpH := R.Bottom - R.Top;
+
+    Result := PtInRect(R, Point(R.Left + 1, R.Top + 1)) and
+      (((ClpW <= TgtW) and (ClpH <= TgtH)) or ((TgtW < SrcWidth) and (TgtH < SrcHeight)));
+  end;
+
+  procedure RenderPixmap(APixmap: QPixmapH; AMaskImg: QImageH; const AHighQuality: boolean);
+  var
+    ATempPixmap: QPixmapH;
+    ABitmap: QBitmapH;
+    AMaskPix, AScaledPix: QPixmapH;
+    ARenderHints: QPainterRenderHints;
+    ARenderHint: Boolean;
+  begin
+    ATempPixmap := QPixmap_create();
+
+    ARenderHints := QPainter_renderHints(DstQDC.Widget);
+    ARenderHint := (AHighQuality and not EqualRect(DstRect, SrcRect)) and
+      ((ARenderHints and QPainterAntialiasing <> 0) or (ARenderHints and QPainterSmoothPixmapTransform <> 0) or
+       (ARenderHints and QPainterHighQualityAntialiasing <> 0));
+
+    if ARenderHint and (ARenderHints and QPainterSmoothPixmapTransform <> 0) then
+      ARenderHint := False; // do not touch render hints
+
+    if NeedScaling(DstRect, SrcRect) then
+      QPixmap_scaled(APixmap, ATempPixmap, Width, Height)
+    else
+    if (Width <> SrcWidth) or (Height <> SrcHeight) then
+      QPixmap_copy(APixmap, ATempPixmap, 0, 0, Width, Height)
+    else
+      QPixmap_copy(APixmap, ATempPixmap, 0, 0, QPixmap_width(APixmap), QPixmap_height(APixmap));
+
+    if AMaskImg <> nil then
+    begin
+      // apply mask to pixmap
+      AScaledPix := nil;
+      AMaskPix := QPixmap_create();
+      QPixmap_fromImage(AMaskPix, AMaskImg);
+      try
+        if NeedScaling(DstRect, SrcRect) then
+        begin
+          AScaledPix := QPixmap_create();
+          QPixmap_scaled(AMaskPix, AScaledPix, Width, Height);
+          ABitmap := QBitmap_Create(AScaledPix);
+        end else
+        if (Width <> SrcWidth) or (Height <> SrcHeight) then
+        begin
+          AScaledPix := QPixmap_create();
+          QPixmap_copy(AMaskPix, AScaledPix, 0, 0, Width, Height);
+          ABitmap := QBitmap_Create(AScaledPix);
+        end else
+          ABitmap := QBitmap_Create(AMaskPix);
+        QPixmap_setMask(ATempPixmap, ABitmap);
+        QBitmap_Destroy(ABitmap);
+        if AScaledPix <> nil then
+          QPixmap_destroy(AScaledPix);
+      finally
+        QPixmap_destroy(AMaskPix);
+      end;
+    end;
+
+    if ARenderHint then
+      QPainter_setRenderHint(DstQDC.Widget, QPainterSmoothPixmapTransform, True);
+
+    QPainter_drawPixmap(DstQDC.Widget, X, Y, Width, Height, ATempPixmap);
+
+    if ARenderHint then
+      QPainter_setRenderHint(DstQDC.Widget, QPainterSmoothPixmapTransform, not ARenderHint);
+
+    QPixmap_destroy(ATempPixmap);
+  end;
+
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -6840,23 +6928,6 @@ begin
   Result := False;
 
   SrcMatrix := QPainter_transform(SrcQDC.Widget);
-  if SrcQDC.vImage = nil then
-  begin
-    if SrcQDC.Parent <> nil then
-    begin
-      with SrcQDC.getDeviceSize do
-        TmpPixmap := QPixmap_create(x, y);
-      AWidgetID := QWidget_winId(SrcQDC.Parent);
-      QPixmap_grabWindow(TmpPixmap, AWidgetID, 0, 0);
-      Image := QImage_create();
-      QPixmap_toImage(TmpPixmap, Image);
-      QPixmap_destroy(TmpPixmap);
-    end
-    else
-      Exit;
-  end
-  else
-    Image := SrcQDC.vImage.Handle;
 
   QTransform_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
   // our map can have some transformations
@@ -6893,14 +6964,55 @@ begin
   DstRect := Bounds(X, Y, Width, Height);
   SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
   MaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
-  // #0011187 - makes painting wrong
-  //DstQDC.CorrectCoordinates(DstRect);
-  //DstQDC.CorrectCoordinates(SrcRect);
-  //DstQDC.CorrectCoordinates(MaskRect);
+
   if Mask <> 0 then
     QMask := TQtImage(Mask).Handle
   else
     QMask := nil;
+
+  if ((Rop = SRCCOPY) and (SrcQDC.vImage <> nil) and (SrcQDC.vImage.Handle <> nil))
+    and not ((DstRect.Right < DstRect.Left) or (DstRect.Bottom < DstRect.Top)) then
+  begin
+    //issue #32137
+    TmpImage := QImage_Create();
+    QImage_copy(SrcQDC.vImage.Handle, TmpImage, XSrc, YSrc, SrcWidth, SrcHeight);
+    TmpPixmap := QPixmap_create();
+    QPixmap_fromImage(TmpPixmap, TmpImage);
+
+    RenderPixmap(TmpPixmap, QMask,
+      QImage_format(SrcQDC.vImage.Handle) = QImageFormat_ARGB32);
+    QImage_destroy(TmpImage);
+    QPixmap_destroy(TmpPixmap);
+    exit;
+  end else
+  if SrcQDC.vImage = nil then
+  begin
+    if SrcQDC.Parent <> nil then
+    begin
+      AWidgetID := QWidget_winId(SrcQDC.Parent);
+
+      if (Rop = SRCCOPY) and not ((DstRect.Right < DstRect.Left) or (DstRect.Bottom < DstRect.Top)) then
+      begin
+        TmpPixmap := QPixmap_create();
+        QPixmap_grabWindow(TmpPixmap, AWidgetID, XSrc,  YSrc, SrcWidth, SrcHeight);
+        RenderPixmap(TmpPixmap, QMask, QPixmap_hasAlphaChannel(TmpPixmap));
+        QPixmap_destroy(TmpPixmap);
+        exit;
+      end else
+      begin
+        with SrcQDC.getDeviceSize do
+          TmpPixmap := QPixmap_create(x, y);
+        QPixmap_grabWindow(TmpPixmap, AWidgetID, 0, 0);
+        Image := QImage_create();
+        QPixmap_toImage(TmpPixmap, Image);
+        QPixmap_destroy(TmpPixmap);
+      end;
+    end
+    else
+      Exit;
+  end
+  else
+    Image := SrcQDC.vImage.Handle;
 
   if (DstRect.Right < DstRect.Left) or (DstRect.Bottom < DstRect.Top) then
   begin
