@@ -41,6 +41,22 @@
       <element name="TMaskCharType.mcAnyChar"><short/></element>
       <!-- enumeration value Visibility: default -->
       <element name="TMaskCharType.mcAnyText"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMaskOption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMaskOption.moCaseSensitive"><short>Compare case sensitive.</short></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMaskOption.moDisableSets"><short>Disable set processing. "[" and "]" are treated as <link id="TMask">literal characters</link>.</short></element>
+      <!-- set type Visibility: default -->
+      <element name="MaskOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TCharSet">
         <short/>
@@ -104,7 +120,12 @@
       <!-- object Visibility: default -->
       <element name="TMask">
         <short>The TMask class represents a mask.</short>
-        <descr/>
+        <descr><p>A mask is a compare pattern build of wildcards, sets and literal characters.</p>
+<p>Each <b>literal character</b> must match a single character in the string. Case sensitivity depends on the option <link id="TMaskOption">moCaseSensitive</link>.<br/>
+A <b>set</b> starts with "[" and ends with "]". Each element of a set is a literal character and or a range. A range is defined as first-last literal charcter. One character of a set must match a single character in the string. A set [!...] matches if the character is not in the set. The option <link id="TMaskOption">moDisableSets</link> disables set processing.<br/> 
+<b>Wildcards</b> are * and ?. An asterisk matches any number of characters. A question mark matches a single character.</p>
+<p>'Hello world' matches to the mask 'H?ll[xoy] w*d'.</p>
+</descr>  
         <errors/>
         <seealso/>
       </element>
@@ -117,9 +138,7 @@
       <!-- constructor Visibility: public -->
       <element name="TMask.Create">
         <short>Creates new mask for matching.</short>
-        <descr>
-          <p>Creates new mask for matching. Matching is case-insensitive. The mask consist of literal elements such as:</p>
-        </descr>
+        <descr>Creates new <link id="TMask">mask</link> for matching.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -134,7 +153,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TMask.Matches">
-        <short>If the file name matches the mask.</short>
+        <short>Test if a filename matches the mask.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -143,6 +162,17 @@
       <element name="TMask.Matches.Result"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TMask.Matches.AFileName"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TMask.MatchesWindowsMask">
+        <short>Test if a filename matches the mask. Implements some special rules for a Windows© filesystem comparison.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMask.MatchesWindowsMask.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMask.MatchesWindowsMask.AFileName"><short/></element>
       <!-- object Visibility: default -->
       <element name="TParseStringList">
         <short>The TParseStringList class is used to parse text into the list of strings.</short>
@@ -196,7 +226,7 @@
       <element name="TMaskList.GetItem.Index"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TMaskList.Create">
-        <short>Creates new list of masks from passed value, each item is separated by separator.</short>
+        <short>Creates new list of masks from passed value, each item is separated by the parameter Separator.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -214,7 +244,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TMaskList.Matches">
-        <short>If the file name matches at least one of mask list items.</short>
+        <short>Test if the file name matches at least one of mask list items.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -223,6 +253,17 @@
       <element name="TMaskList.Matches.Result"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TMaskList.Matches.AFileName"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TMaskList.MatchesWindowsMask">
+        <short>Test if the file name matches at least one of mask list items. Implements some special rules for a Windows© filesystem comparison.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMaskList.MatchesWindowsMask.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMaskList.MatchesWindowsMask.AFileName"><short/></element>
       <!-- property Visibility: public -->
       <element name="TMaskList.Count">
         <short>The count of mask list items.</short>
@@ -239,7 +280,7 @@
       <element name="TMaskList.Items.Index"><short/></element>
       <!-- function Visibility: default -->
       <element name="MatchesMask">
-        <short>If the file name matches the passed mask.</short>
+        <short>Test if the file name matches the passed mask.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -251,8 +292,21 @@
       <!-- argument Visibility: default -->
       <element name="MatchesMask.Mask"><short/></element>
       <!-- function Visibility: default -->
+      <element name="MatchesWindowsMask">
+        <short>Test if the file name matches the passed mask. Implements some special rules for a Windows© filesystem comparison.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="MatchesWindowsMask.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesWindowsMask.FileName"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesWindowsMask.Mask"><short/></element>
+      <!-- function Visibility: default -->
       <element name="MatchesMaskList">
-        <short>If the file name matches at least one of passed masks separated by separator.</short>
+        <short>Test if the file name matches at least one of passed masks separated by the parameter Separator.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -265,6 +319,21 @@
       <element name="MatchesMaskList.Mask"><short/></element>
       <!-- argument Visibility: default -->
       <element name="MatchesMaskList.Separator"><short/></element>
+      <!-- function Visibility: default -->
+      <element name="MatchesWindowsMaskList">
+        <short>Test if the file name matches at least one of passed masks separated by the parameter Separator. Implements some special rules for a Windows© filesystem comparison.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="MatchesWindowsMaskList.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesWindowsMaskList.FileName"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesWindowsMaskList.Mask"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesWindowsMaskList.Separator"><short/></element>
     </module>
     <!-- Masks -->
   </package>
