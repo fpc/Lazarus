@@ -56,6 +56,7 @@ type
     procedure CreatePopupMenus(TheOwner: TComponent);
     function CalcMainIDEHeight: Integer;
     function CalcNonClientHeight: Integer;
+    function FindCompScrollBox: TScrollBox;
   protected
     procedure DoActive;
     procedure WndProc(var Message: TLMessage); override;
@@ -442,7 +443,7 @@ begin
         begin
           Constraints.MaxHeight := ANewHeight;
           Constraints.MinHeight := ANewHeight;
-          ClientHeight := ANewHeight;
+          ClientHeight := ANewHeight; // <- Value is -28 when issue #34377 happens.
         end else if ClientHeight <> ANewHeight then
           ClientHeight := ANewHeight;
       end else
@@ -454,6 +455,55 @@ begin
     end;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDEBar.DoSetMainIDEHeight'){$ENDIF};
+  end;
+end;
+
+function TMainIDEBar.CalcMainIDEHeight: Integer;
+var
+  NewHeight: Integer;
+  I: Integer;
+  CompScrollBox: TScrollBox;
+  SBControl: TControl;
+begin
+  Result := 0;
+  if (EnvironmentOptions=Nil) or (CoolBar=Nil) or (ComponentPageControl=Nil) then
+    Exit;
+
+  // IDE Coolbar height
+  if EnvironmentOptions.Desktop.IDECoolBarOptions.Visible then
+  begin
+    for I := 0 to CoolBar.Bands.Count-1 do
+    begin
+      NewHeight := CoolBar.Bands[I].Top + CoolBar.Bands[I].Height;
+      Assert(NewHeight >= 0, Format('TMainIDEBar.CalcMainIDEHeight, IDE Coolbar: '+
+        'NewHeight %d < 0. Band Top=%d, Band Height=%d.',
+        [NewHeight, CoolBar.Bands[I].Top, CoolBar.Bands[I].Height]) );
+      Result := Max(Result, NewHeight);
+    end;
+  end;
+
+  // Component palette height
+  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible
+  and Assigned(ComponentPageControl.ActivePage) then
+  begin
+    CompScrollBox := FindCompScrollBox;
+    if CompScrollBox=Nil then Exit;
+    for I := 0 to CompScrollBox.ControlCount-1 do
+    begin
+      SBControl := CompScrollBox.Controls[I];
+      NewHeight := SBControl.Top + SBControl.Height +  //button height
+        //page control non-client height (tabs, borders).
+        ComponentPageControl.Height - CompScrollBox.ClientHeight;
+      Assert(NewHeight >= 0, Format('TMainIDEBar.CalcMainIDEHeight, Component palette : '+
+        'NewHeight %d < 0. Cntrl.Top=%d, Cntrl.Height=%d, '+
+        'PageControl.Height=%d, ScrollBox.ClientHeight=%d.',
+        [NewHeight, SBControl.Top, SBControl.Height,
+         ComponentPageControl.Height, CompScrollBox.ClientHeight]) );
+      Result := Max(Result, NewHeight);
+
+      if not EnvironmentOptions.Desktop.AutoAdjustIDEHeightFullCompPal then
+        Break;  //we need only one button (we calculate one line only)
+    end;
   end;
 end;
 
@@ -511,6 +561,16 @@ begin
   //Carbon tested - behaves correctly
   Result := 0;
   {$ENDIF}
+end;
+
+function TMainIDEBar.FindCompScrollBox: TScrollBox;
+var
+  I: Integer;
+begin
+  for I := 0 to ComponentPageControl.ActivePage.ControlCount-1 do
+    if (ComponentPageControl.ActivePage.Controls[I] is TScrollBox) then
+      Exit(TScrollBox(ComponentPageControl.ActivePage.Controls[I]));
+  Result := nil;
 end;
 
 procedure TMainIDEBar.SetMainIDEHeightEvent(Sender: TObject);
@@ -749,52 +809,6 @@ procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
   EnvironmentOptions.Desktop.IDECoolBarOptions.Width := CoolBar.Width;
   SetMainIDEHeight;
-end;
-
-function TMainIDEBar.CalcMainIDEHeight: Integer;
-var
-  NewHeight: Integer;
-  I: Integer;
-  ComponentScrollBox: TScrollBox;
-  SBControl: TControl;
-begin
-  Result := 0;
-  if not (Assigned(EnvironmentOptions) and Assigned(CoolBar) and Assigned(ComponentPageControl)) then
-    Exit;
-
-  if EnvironmentOptions.Desktop.IDECoolBarOptions.Visible then
-  begin
-    for I := 0 to CoolBar.Bands.Count-1 do
-    begin
-      NewHeight := CoolBar.Bands[I].Top + CoolBar.Bands[I].Height;
-      Result := Max(Result, NewHeight);
-    end;
-  end;
-
-  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible
-  and Assigned(ComponentPageControl.ActivePage) then
-  begin
-    ComponentScrollBox := nil;
-    for I := 0 to ComponentPageControl.ActivePage.ControlCount-1 do
-    if (ComponentPageControl.ActivePage.Controls[I] is TScrollBox) then
-    begin
-      ComponentScrollBox := TScrollBox(ComponentPageControl.ActivePage.Controls[I]);
-      Break;
-    end;
-
-    if Assigned(ComponentScrollBox) then
-    for I := 0 to ComponentScrollBox.ControlCount-1 do
-    begin
-      SBControl := ComponentScrollBox.Controls[I];
-      NewHeight :=
-        SBControl.Top + SBControl.Height +  //button height
-        ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
-      Result := Max(Result, NewHeight);
-
-      if not EnvironmentOptions.Desktop.AutoAdjustIDEHeightFullCompPal then
-        Break;  //we need only one button (we calculate one line only)
-    end;
-  end;
 end;
 
 procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
