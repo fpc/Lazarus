@@ -73,8 +73,7 @@ CONFIG -= warn_on
 CONFIG -= create_prl
 CONFIG -= link_prl
 
-CONFIG -= release
-CONFIG += debug
+CONFIG += release
 CONFIG += dll
 CONFIG += warn_off
   
