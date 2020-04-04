@@ -20,6 +20,8 @@ constructor TDBLookupListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLookup:= TDBLookup.Create(Self);
+  EmptyValue := '';
+  DisplayEmpty := '';
   FDataLink.OnActiveChange:= @ActiveChange;
 end;
 
@@ -39,6 +41,16 @@ procedure TDBLookupListBox.ActiveChange(Sender: TObject);
 begin
   if FDataLink.Active then
     UpdateLookup;
+end;
+
+function TDBLookupListBox.GetDisplayEmpty: String;
+begin
+  Result := FLookup.DisplayEmpty;
+end;
+
+function TDBLookupListBox.GetEmptyValue: string;
+begin
+  Result := FLookup.EmptyValue;
 end;
 
 procedure TDBLookupListBox.DataChange(Sender: TObject);
@@ -132,6 +144,18 @@ end;
 function TDBLookupListBox.GetNullValueKey: TShortCut;
 begin
   Result := FLookup.NullValueKey;
+end;
+
+procedure TDBLookupListBox.SetDisplayEmpty(AValue: String);
+begin
+  FLookup.DisplayEmpty := AValue;
+  UpdateLookup;
+end;
+
+procedure TDBLookupListBox.SetEmptyValue(AValue: String);
+begin
+  FLookup.EmptyValue := AValue;
+  UpdateLookup;
 end;
 
 function TDBLookupListBox.GetScrollListDataset: Boolean;

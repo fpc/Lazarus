@@ -123,6 +123,8 @@ Type
     FDataFieldNames: string;
     FKeyFieldNames: string;
     FListFieldName: string;
+    FEmptyValue: string;
+    FDisplayEmpty: string;
     FListFieldIndex: Integer;
     FDataFields: TList;  // Data Fields to lookup/edit
     FKeyFields: TList;   // Keyfields in lookup dataset
@@ -169,6 +171,8 @@ Type
     property ListSource: TDataSource read GetListSource write SetListSource;
     property NullValueKey: TShortcut read FNullValueKey write FNullValueKey;
     property ScrollListDataset: Boolean read FScrollListDataset write FScrollListDataset;
+    property EmptyValue : String read FEmptyValue write FEmptyVAlue;
+    property DisplayEmpty : String read FDisplayEmpty write FDisplayEmpty;
   end;
 
   { TDBEdit }
@@ -451,6 +455,8 @@ Type
   private
     FLookup: TDBLookup;
     procedure ActiveChange(Sender: TObject);
+    function GetDisplayEmpty: String;
+    function GetEmptyValue: String;
     function GetKeyField: string;
     function GetKeyValue: Variant;
     function GetListField: string;
@@ -459,6 +465,8 @@ Type
     function GetLookupCache: boolean;
     function GetNullValueKey: TShortCut;
     function GetScrollListDataset: Boolean;
+    procedure SetDisplayEmpty(AValue: String);
+    procedure SetEmptyValue(AValue: String);
     procedure SetKeyField(const Value: string);
     procedure SetKeyValue(const AValue: Variant);
     procedure SetListField(const Value: string);
@@ -504,6 +512,8 @@ Type
     property ListSource: TDataSource read GetListSource write SetListSource;
     property LookupCache: boolean read GetLookupCache  write SetLookupCache;
     property NullValueKey: TShortCut read GetNullValueKey write SetNullValueKey default 0;
+    property EmptyValue: String read GetEmptyValue write SetEmptyValue;
+    property DisplayEmpty: String read GetDisplayEmpty write SetDisplayEmpty;
 //    property MultiSelect;
     property OnClick;
     property OnDblClick;
@@ -852,6 +862,8 @@ Type
   private
     FLookup: TDBLookup;
     procedure ActiveChange(Sender: TObject);
+    function GetDisplayEmpty: String;
+    function GetEmptyValue: String;
     function GetKeyField: string;
     function GetKeyValue: variant;
     function GetListField: string;
@@ -860,6 +872,8 @@ Type
     function GetLookupCache: boolean;
     function GetNullValueKey: TShortCut;
     function GetScrollListDataset: Boolean;
+    procedure SetDisplayEmpty(AValue: String);
+    procedure SetEmptyValue(AValue: String);
     procedure SetKeyField(const Value: string);
     procedure SetKeyValue(const AValue: variant);
     procedure SetListField(const Value: string);
@@ -915,6 +929,8 @@ Type
     property LookupCache: boolean read GetLookupCache  write SetLookupCache;
 //    property MaxLength default -1;
     property NullValueKey: TShortCut read GetNullValueKey write SetNullValueKey default 0;
+    property EmptyValue: String read GetEmptyValue write SetEmptyValue;
+    property DisplayEmpty: String read GetDisplayEmpty write SetDisplayEmpty;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
