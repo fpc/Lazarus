@@ -103,6 +103,9 @@ end;
 class function TQtWSMenuItem.CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
 var
   ImgList: TCustomImageList;
+  AImage: TQtImage;
+  AImgList: TImageList;
+  Bmp: TBitmap;
 begin
   Result := TQtMenu.Create(AMenuItem);
   Result.FDeleteLater := False;
@@ -129,7 +132,23 @@ begin
         Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
       end else
       if Assigned(AMenuItem.Bitmap) then
-        Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+      begin
+        AImage := TQtImage(AMenuItem.Bitmap.Handle);
+        if not AMenuItem.Bitmap.Transparent then
+        begin
+          AImgList := TImageList.Create(nil);
+          AImgList.Width := AMenuItem.Bitmap.Width;
+          AImgList.Height := AMenuItem.Bitmap.Height;
+          AImgList.AddMasked(AMenuItem.Bitmap, AMenuItem.Bitmap.Canvas.Pixels[0, AMenuItem.Bitmap.Height -1]);
+          Bmp := TBitmap.Create;
+          AImgList.GetBitmap(0, Bmp);
+          AImage := TQtImage(Bmp.Handle);
+          Result.setImage(AImage);
+          Bmp.Free;
+          AImgList.Free;
+        end else
+          Result.setImage(AImage);
+      end;
     end else
       Result.setImage(nil);
   end;
