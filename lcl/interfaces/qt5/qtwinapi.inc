@@ -6821,27 +6821,22 @@ var
     if AMaskImg <> nil then
     begin
       // apply mask to pixmap
-      AScaledPix := nil;
+      AScaledPix := QPixmap_create();
       AMaskPix := QPixmap_create();
       QPixmap_fromImage(AMaskPix, AMaskImg);
       try
-        if NeedScaling(DstRect, SrcRect) then
-        begin
-          AScaledPix := QPixmap_create();
-          QPixmap_scaled(AMaskPix, AScaledPix, Width, Height);
-          ABitmap := QBitmap_Create(AScaledPix);
-        end else
-        if (Width <> SrcWidth) or (Height <> SrcHeight) then
-        begin
-          AScaledPix := QPixmap_create();
-          QPixmap_copy(AMaskPix, AScaledPix, 0, 0, Width, Height);
-          ABitmap := QBitmap_Create(AScaledPix);
-        end else
-          ABitmap := QBitmap_Create(AMaskPix);
+
+        if IsRectEmpty(MaskRect) then
+          QPixmap_copy(AMaskPix, AScaledPix, 0, 0, Min(Width, QPixmap_Width(AMaskPix)), Min(Height, QPixmap_Height(AMaskPix)) )
+        else
+          QPixmap_copy(AMaskPix, AScaledPix, MaskRect.Left, MaskRect.Top,
+            MaskRect.Right - MaskRect.Left, MaskRect.Bottom - MaskRect.Top);
+
+        ABitmap := QBitmap_Create(AScaledPix);
+
         QPixmap_setMask(ATempPixmap, ABitmap);
         QBitmap_Destroy(ABitmap);
-        if AScaledPix <> nil then
-          QPixmap_destroy(AScaledPix);
+        QPixmap_destroy(AScaledPix);
       finally
         QPixmap_destroy(AMaskPix);
       end;
@@ -6923,7 +6918,7 @@ begin
     QImage_copy(SrcQDC.vImage.Handle, TmpImage, XSrc, YSrc, SrcWidth, SrcHeight);
 
     // #11713, #25590
-    if (QMask = nil) and (QImage_format(TmpImage) = QImageFormat_RGB32) then
+    if (QImage_format(TmpImage) = QImageFormat_RGB32) then
     begin
       Image := QImage_create();
       QImage_convertToFormat(TmpImage, Image, QImageFormat_ARGB32);
