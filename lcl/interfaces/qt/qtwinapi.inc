@@ -6882,8 +6882,8 @@ var
       QPixmap_fromImage(AMaskPix, AMaskImg);
       try
 
-        if IsRectEmpty(MaskRect) then
-          QPixmap_copy(AMaskPix, AScaledPix, 0, 0, Min(Width, QPixmap_Width(AMaskPix)), Min(Height, QPixmap_Height(AMaskPix)) )
+        if IsRectEmpty(MaskRect) or (MaskRect.Size <> DstRect.Size) then
+          QPixmap_scaled(AMaskPix, AScaledPix, Width, Height)
         else
           QPixmap_copy(AMaskPix, AScaledPix, MaskRect.Left, MaskRect.Top,
             MaskRect.Right - MaskRect.Left, MaskRect.Bottom - MaskRect.Top);
