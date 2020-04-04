@@ -4222,6 +4222,8 @@ end;
 
 function TPkgManager.DoCompilePackage(APackage: TIDEPackage;
   Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
+var
+  OldToolStatus: TLazToolStatus;
 begin
   Result:=mrCancel;
 
@@ -4253,7 +4255,13 @@ begin
   if Result<>mrOk then exit;
 
   // compile
+  if LazarusIDE<>nil then begin
+    OldToolStatus:=LazarusIDE.ToolStatus;
+    LazarusIDE.ToolStatus:=itBuilder;
+  end;
   Result:=PackageGraph.CompilePackage(TLazPackage(APackage),Flags,false);
+  if LazarusIDE<>nil then
+    LazarusIDE.ToolStatus:=OldToolStatus;
 end;
 
 function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage;
