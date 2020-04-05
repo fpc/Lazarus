@@ -196,7 +196,7 @@ type
     procedure ProjectBeginUpdate(Sender: TObject);
     procedure ProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
-    procedure DoOnPackageListAvailable(Sender: TObject);
+    procedure PackageListAvailable(Sender: TObject);
     function FindOnlinePackageLink(const ADependency: TPkgDependency): TPackageLink;
     function CanUpdate(Flag: TProjectInspectorFlag): boolean;
     procedure UpdateProjectFiles;
@@ -577,8 +577,13 @@ end;
 
 procedure TProjectInspectorForm.FormCreate(Sender: TObject);
 begin
+  if LazarusIDE.IDEStarted and (LazProject=nil) then
+    begin // User opens this window for the very first time. Set active project.
+    LazProject:=Project1;
+    UpdateAll;
+  end;
   if OPMInterface <> nil then
-    OPMInterface.OnPackageListAvailable := @DoOnPackageListAvailable;
+    OPMInterface.OnPackageListAvailable := @PackageListAvailable;
 end;
 
 procedure TProjectInspectorForm.FormActivate(Sender: TObject);
@@ -1308,7 +1313,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.DoOnPackageListAvailable(Sender: TObject);
+procedure TProjectInspectorForm.PackageListAvailable(Sender: TObject);
 var
   CurDependency: TPkgDependency;
   i: Integer;
