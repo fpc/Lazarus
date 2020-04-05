@@ -233,8 +233,8 @@ type
     procedure setCheckAction(aSelector: SEL); message 'setCheckAction:';
     procedure setTextAction(aSelector: SEL); message 'setTextAction:';
     procedure resizeSubviewsWithOldSize(oldSize: NSSize); override;
-    procedure setIdentifier(identifier_: NSString); message 'setIdentifier:'; {$if FPC_FULLVERSION >= 30300}override;{$endif}
-    function identifier: NSString; message 'identifier'; {$if FPC_FULLVERSION >= 30300}override;{$endif}
+    procedure setIdentifier(identifier_: NSString); message 'setIdentifier:'; {$if FPC_FULLVERSION >= 30200}override;{$endif}
+    function identifier: NSString; message 'identifier'; {$if FPC_FULLVERSION >= 30200}override;{$endif}
     function textFrame: NSRect; message 'textFrame';
     procedure lclSetEnabled(AEnabled: Boolean); override;
   end;

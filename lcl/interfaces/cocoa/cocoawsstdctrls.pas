@@ -2270,7 +2270,7 @@ var
 begin
   view := GetListBox(ACustomListBox);
   ListBoxSetStyle(view, TCustomListBox(ACustomListBox).Style);
-  view.setNeedsDisplay;
+  view.setNeedsDisplay_(true);
 end;
 
 class procedure TCocoaWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);

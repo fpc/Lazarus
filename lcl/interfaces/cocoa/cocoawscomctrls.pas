@@ -2091,7 +2091,7 @@ begin
     lSlider.setTickMarkPosition(NSTickMarkAbove)
   else
     lSlider.setTickMarkPosition(NSTickMarkBelow);
-  lSlider.setNeedsDisplay;
+  lSlider.setNeedsDisplay_(true);
 end;
 
 {------------------------------------------------------------------------------

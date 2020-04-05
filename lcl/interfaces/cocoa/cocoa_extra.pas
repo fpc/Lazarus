@@ -74,7 +74,7 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
-{$if FPC_FULLVERSION < 30301}
+{$if FPC_FULLVERSION < 30200}
   NSAppearance = objcclass external(NSObject)
     function name: NSString; message 'name';
     class function currentAppearance: NSAppearance; message 'currentAppearance';
@@ -298,6 +298,14 @@ const
   NSTableViewAnimationSlideDown  = $20; // Animates a row in or out by sliding downward.
   NSTableViewAnimationSlideLeft  = $30; // Animates a row in by sliding from the left. Animates a row out by sliding towards the left.
   NSTableViewAnimationSlideRight = $40; // Animates a row in by sliding from the right. Animates a row out by sliding towards the right.
+
+
+{$if FPC_FULLVERSION >= 30200}
+// all of the sudden those are gone! in FPC 3.2.0rc
+const
+  NSVariableStatusItemLength = -1;
+  NSSquareStatusItemLength = -2;
+{$endif}
 
 implementation
 

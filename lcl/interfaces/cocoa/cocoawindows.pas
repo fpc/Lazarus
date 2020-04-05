@@ -1041,7 +1041,7 @@ end;
 
 procedure TCocoaWindowContentDocument.setNeedsDisplay_(aflag: LCLObjCBoolean);
 begin
-  inherited setNeedsDisplay;
+  inherited setNeedsDisplay_(aflag);
   if Assigned(overlay) then overlay.setNeedsDisplay_(aflag);
 end;
 

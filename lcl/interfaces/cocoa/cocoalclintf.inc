@@ -285,7 +285,7 @@ begin
             Continue;
           end;
 
-          aButton := anAlert.addButtonWithTitle(NSLocalizedString(NSSTR(ButtonCaption[Buttons[I]])));
+          aButton := anAlert.addButtonWithTitle(NSSTR(ButtonCaption[Buttons[I]]));
           aButton.setKeyEquivalentModifierMask(0);
 
           if I = DefaultIndex then
