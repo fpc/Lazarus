@@ -9,59 +9,59 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
-msgstr ""
+msgstr "Böngészés"
 
 #: strpas2jsdesign.pjsdbrowsertoopenhtmlpage
 msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
 msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
-msgstr ""
+msgstr "Böngésző a HTML lapok megnyitásához, makró $(Pas2JSBrowser)"
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
-msgstr ""
+msgstr "Kezdő HTML lap létrehozása"
 
 #: strpas2jsdesign.pjsddirectorynotfound
 #, object-pascal-format
 msgid "directory \"%s\" not found"
-msgstr ""
+msgstr "a(z) \"%s\" könyvtár nem található"
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
-msgstr ""
+msgstr "a fájlnév eleje nem \"pas2js\""
 
 #: strpas2jsdesign.pjsdfilenotexecutable
 #, object-pascal-format
 msgid "file \"%s\" not executable"
-msgstr ""
+msgstr "a(z) \"%s\" fájl nem futtatható állomány"
 
 #: strpas2jsdesign.pjsdfilenotfound
 #, object-pascal-format
 msgid "file \"%s\" not found"
-msgstr ""
+msgstr "a(z) \"%s\" fájl nem található"
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelcaption
 msgid "HTTP Server extra command-line options (one per line)"
-msgstr ""
+msgstr "Extra parancssori paraméterek a HTTP kiszolgáló számára (soronként egy)"
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelhint
 msgid "Add extra command-line options for the command which starts the webserver."
-msgstr ""
+msgstr "Extra parancssori paraméterek megadása a webkiszolgálót indító parancs számára."
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
-msgstr ""
+msgstr "HTML lap karbantartása"
 
 #: strpas2jsdesign.pjsdmissingpathtopas2js
 msgid "missing path to pas2js"
-msgstr ""
+msgstr "a pas2js útvonala hiányzik"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
-msgstr "Fut egy pas2js program node.js-ben"
+msgstr "Egy pas2js program, mely node.js-ben futtatható"
 
 #: strpas2jsdesign.pjsdnodejsapplication
 msgid "Node.js Application"
@@ -69,129 +69,129 @@ msgstr "Node.js alkalmazás"
 
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
-msgstr ""
+msgstr "NodeJS projekt beállítások"
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
-msgstr ""
+msgstr "Pas2JS projekt beállítások"
 
 #: strpas2jsdesign.pjsdpas2jscurrentprojecturl
 msgid "Pas2JS current project URL"
-msgstr ""
+msgstr "Pas2JS aktuális projekt URL"
 
 #: strpas2jsdesign.pjsdpas2jsexecutable
 msgid "Pas2JS executable"
-msgstr ""
+msgstr "Pas2JS alkalmazás"
 
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
-msgstr ""
+msgstr "Pas2JS kiválasztott böngésző alkalmazás"
 
 #: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
 msgid "Pas2JS selected NodeJS excutable"
-msgstr ""
+msgstr "Pas2JS kiválasztott NodeJS alkalmazás"
 
 #: strpas2jsdesign.pjsdpas2jswebserverexe
 msgid "Pas2JS webserver executable"
-msgstr ""
+msgstr "Pas2JS webkiszolgáló alkalmazás"
 
 #: strpas2jsdesign.pjsdpas2jswebserverport
 msgid "Pas2JS webserver port"
-msgstr ""
+msgstr "Pas2JS webkiszolgáló port"
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
-msgstr ""
+msgstr "A Node.js alkalmazás útvonala, makró $(Pas2JSNodeJS)"
 
 #: strpas2jsdesign.pjsdpathofxmacropas2js
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
-msgstr ""
+msgstr "%s útvonala, makró $(pas2js)"
 
 #: strpas2jsdesign.pjsdpathofxmacropas2jswebserver
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdpathofxmacropas2jswebserver"
 msgid "Path of %s, macro $(Pas2JSWebServer)"
-msgstr ""
+msgstr "%s útvonala, makró $(Pas2JSWebServer)"
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
-msgstr ""
+msgstr "A portok lefoglalása e porttól kezdődik, makró $(Pas2JSWebServerPort)"
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
-msgstr ""
+msgstr "A projekt HTML lapja:"
 
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
-msgstr ""
+msgstr "A projekt egy webböngészős (pas2js) projekt"
 
 #: strpas2jsdesign.pjsdprojectneedsahttpserver
 msgid "Project needs a HTTP server"
-msgstr ""
+msgstr "A projektnek egy HTTP kiszolgálóra van szüksége"
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
-msgstr ""
+msgstr "A fordítás parancs alaphelyzetbe állítása"
 
 #: strpas2jsdesign.pjsdresetruncommand
 msgid "Reset Run command"
-msgstr ""
+msgstr "A futtatás parancs alaphelyzetbe állítása"
 
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
-msgstr ""
+msgstr "Az RTL csak a lap minden erőforrásának betöltése után induljon"
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
-msgstr ""
+msgstr "A böngésző alkalmazás kiválasztása"
 
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
-msgstr ""
+msgstr "A Node.js alkalmazás kiválasztása"
 
 #: strpas2jsdesign.pjsdselectpas2jsexecutable
 msgid "Select pas2js executable"
-msgstr ""
+msgstr "A pas2js alkalmazás kiválasztása"
 
 #: strpas2jsdesign.pjsdselectxexecutable
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdselectxexecutable"
 msgid "Select %s executable"
-msgstr ""
+msgstr "%s alkalmazás kiválasztása"
 
 #: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
-msgstr ""
+msgstr "A kiszolgáló példányainak indítása ezen a porton kezdődik, a port sorszáma minden új projekt esetén nagyobb lesz"
 
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
-msgstr ""
+msgstr "HTTP kiszolgáló indítása ezen a porton"
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
-msgstr ""
+msgstr "Webböngésző alkalmazásobjektum használata"
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use Browser Console unit to display writeln() output"
-msgstr ""
+msgstr "Böngészőkonzol használata a writeln() kimenet megjelenítésére"
 
 #: strpas2jsdesign.pjsdusenodejsapplicationobject
 msgid "Use NodeJS Application object"
-msgstr ""
+msgstr "NodeJS alkalmazásobjektum használata"
 
 #: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
 msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr ""
+msgstr "Ez a böngésző legyen használva amikor egy böngészős projekt URL-je vagy HTML lapja megnyitásra kerül"
 
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
-msgstr ""
+msgstr "Az alkalmazás indításához ezt az URL-t használja"
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser"
-msgstr "Fut egy pas2js program a webböngészőben"
+msgstr "Egy pas2js program, mely a webböngészőben futtatható"
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
@@ -199,15 +199,14 @@ msgstr "Webböngésző alkalmazás"
 
 #: strpas2jsdesign.pjsdwebprojectpas2js
 msgid "Web Project (pas2js)"
-msgstr ""
+msgstr "Web projekt (pas2js)"
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
-msgstr ""
+msgstr "Használhatók az IDE makrók, mint a $MakeExe(). Teljes útvonal nélkül a PATH-ban felsorolt helyeken lesz keresve a(z) %s."
 
 #: strpas2jsdesign.spasjswebservercaption
-#, fuzzy
 msgctxt "strpas2jsdesign.spasjswebservercaption"
 msgid "Pas2JS WebServers"
 msgstr "Pas2JS webkiszolgálók"

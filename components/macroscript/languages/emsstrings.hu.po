@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: emsstrings.emsactive
 msgid "Scripting active."
@@ -29,7 +29,7 @@ msgstr "Szkriptek használata kikapcsolva. Az önellenőrzés sikertelen volt."
 
 #: emsstrings.emsnotactiveverbose
 msgid "EditorMacroScript failed its self-test and is not active. Some macros may not work."
-msgstr ""
+msgstr "Az EditorMacroScript önellenőrzése sikertelen volt és ezért nem aktív. Lehet, hogy néhány makró nem működik."
 
 #: emsstrings.emsnotsupported
 msgid "Scripting not active. Not supported on this platform or CPU."

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -2319,7 +2319,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
 msgid "Include code templates"
-msgstr ""
+msgstr "Kód sablonok belevétele"
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
@@ -3269,7 +3269,7 @@ msgstr "Nem aktív szerkesztőben nem villog a beszúrási jel"
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"
-msgstr ""
+msgstr "ANSI kódlap UTF-8 (Windows 10 1903+)"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -3288,7 +3288,6 @@ msgid "Create Application Bundle"
 msgstr "Alkalmazásköteg létrehozása"
 
 #: lazarusidestrconsts.dlgpodebugger
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgpodebugger"
 msgid "Debugger"
 msgstr "Hibakereső"
@@ -3664,7 +3663,7 @@ msgstr "Az összes gyermek-vezérlő kijelölése a szülővel együtt."
 
 #: lazarusidestrconsts.dlgselectallnoscroll
 msgid "Do not scroll on Select-All / Paragraph or To-Brace"
-msgstr ""
+msgstr "Ne legyen görgetés az Összes/Bekezdés/Zárójelezett rész kijelölése esetén"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -7003,7 +7002,7 @@ msgstr "Láthatóság"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
-msgstr ""
+msgstr "Kombinált listák"
 
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
@@ -8378,7 +8377,7 @@ msgstr "Hibakereső"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
 msgid "Debugger Backend:"
-msgstr ""
+msgstr "Hibakereső háttérprogram:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -8482,7 +8481,7 @@ msgstr "Szál"
 #: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
 #, object-pascal-format
 msgid "Unknown Debugger backend \"%s\""
-msgstr ""
+msgstr "Ismeretlen hibakereső háttérprogram: \"%s\""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
@@ -8490,7 +8489,7 @@ msgstr "Eseménynapló színeinek használata"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
 msgid "-- Use IDE default Debugger --"
-msgstr ""
+msgstr "-- Az IDE alapértelmezett hibakeresőjének használata --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
@@ -8994,7 +8993,7 @@ msgstr "A kijelölést fókuszálva rajzolja ki, még akkor is ha az üzenetek a
 
 #: lazarusidestrconsts.lisdropdowncount
 msgid "Drop Down Count"
-msgstr ""
+msgstr "Legördített elemek száma"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -11727,15 +11726,15 @@ msgstr "Csomagfájl megnyitása"
 #: lazarusidestrconsts.liskmopenrecent
 msgctxt "lazarusidestrconsts.liskmopenrecent"
 msgid "Open Recent"
-msgstr ""
+msgstr "Legutóbbi megnyitása"
 
 #: lazarusidestrconsts.liskmopenrecentpackage
 msgid "Open recent package"
-msgstr ""
+msgstr "Legutóbbi csomag megnyitása"
 
 #: lazarusidestrconsts.liskmopenrecentproject
 msgid "Open recent project"
-msgstr ""
+msgstr "Legutóbbi projekt megnyitása"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components"
@@ -12432,11 +12431,11 @@ msgstr "Ennek bejelölésekor a projekt régi (2.0 vagy korábbi) Lazarus válto
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckbox
 msgid "Maximize compatibility of package file (LPK)"
-msgstr ""
+msgstr "Csomagfájlok maximális kompatibilitása (LPK)"
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckboxhint
 msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
-msgstr ""
+msgstr "Ennek bejelölésekor a csomag régi (2.0 vagy korábbi) Lazarus változatokkal is megnyitható lesz."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
@@ -13835,7 +13834,7 @@ msgstr "Bekezdés kijelölése"
 
 #: lazarusidestrconsts.lismenuselecttobrace
 msgid "Select to Brace"
-msgstr "Kijelölés zárójelig"
+msgstr "Zárójelezett rész kijelölése"
 
 #: lazarusidestrconsts.lismenuselectword
 msgid "Select Word"
@@ -20154,15 +20153,15 @@ msgstr "Fel"
 
 #: lazarusidestrconsts.lisupdateapplicationcreateform
 msgid "Update Application.CreateForm statements in main unit"
-msgstr ""
+msgstr "Application.CreateForm állományok frissítése a fő unit-ban"
 
 #: lazarusidestrconsts.lisupdateapplicationscaledstatement
 msgid "Update Application.Scaled statement in main unit"
-msgstr ""
+msgstr "Application.Scaled állományok frissítése a fő unit-ban"
 
 #: lazarusidestrconsts.lisupdateapplicationtitlestatement
 msgid "Update Application.Title statement in main unit"
-msgstr ""
+msgstr "Application.Title állományok frissítése a fő unit-ban"
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"
@@ -20845,7 +20844,7 @@ msgstr "Karakterkészlet:"
 
 #: lazarusidestrconsts.rscloseall
 msgid "Close all pages"
-msgstr ""
+msgstr "Összes lap bezárása"
 
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
@@ -20853,15 +20852,15 @@ msgstr "Aktuális lap bezárása"
 
 #: lazarusidestrconsts.rscloseleft
 msgid "Close page(s) on the left"
-msgstr ""
+msgstr "Lapok bezárása a bal oldalon"
 
 #: lazarusidestrconsts.rscloseothers
 msgid "Close other page(s)"
-msgstr ""
+msgstr "Többi lap bezárása"
 
 #: lazarusidestrconsts.rscloseright
 msgid "Close page(s) on the right"
-msgstr ""
+msgstr "Lapok bezárása a jobb oldalon"
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
@@ -21381,15 +21380,15 @@ msgstr "Másolás"
 
 #: lazarusidestrconsts.srkmeccopyadd
 msgid "Copy (Add to Clipboard)"
-msgstr ""
+msgstr "Másolás (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
 msgid "Copy current line (Add to Clipboard)"
-msgstr ""
+msgstr "Aktuális sor másolása (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
 msgid "Copy current line"
-msgstr ""
+msgstr "Aktuális sor másolása"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -21410,15 +21409,15 @@ msgstr "Kivágás"
 
 #: lazarusidestrconsts.srkmeccutadd
 msgid "Cut (Add to Clipboard)"
-msgstr ""
+msgstr "Kivágás (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
 msgid "Cut current line (Add to Clipboard)"
-msgstr ""
+msgstr "Aktuális sor kivágása (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
 msgid "Cut current line"
-msgstr ""
+msgstr "Aktuális sor kivágása"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -21463,11 +21462,11 @@ msgstr "Beszúrási jel mozgatása lefelé"
 
 #: lazarusidestrconsts.srkmecduplicateline
 msgid "Duplicate line (or lines in selection)"
-msgstr ""
+msgstr "Sor (vagy kijelölt sorok) duplikálása"
 
 #: lazarusidestrconsts.srkmecduplicateselection
 msgid "Duplicate selection"
-msgstr ""
+msgstr "Kijelölés megkettőzése"
 
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
@@ -21788,27 +21787,27 @@ msgstr "Lapfül mozgatása a jobb szélre"
 
 #: lazarusidestrconsts.srkmecmovelinedown
 msgid "Move line down"
-msgstr ""
+msgstr "Sor mozgatása lefelé"
 
 #: lazarusidestrconsts.srkmecmovelineup
 msgid "Move line up"
-msgstr ""
+msgstr "Sor mozgatása felfelé"
 
 #: lazarusidestrconsts.srkmecmoveselectdown
 msgid "Move selection down"
-msgstr ""
+msgstr "Kijelölés mozgatása lefelé"
 
 #: lazarusidestrconsts.srkmecmoveselectleft
 msgid "Move selection left"
-msgstr ""
+msgstr "Kijelölés mozgatása balra"
 
 #: lazarusidestrconsts.srkmecmoveselectright
 msgid "Move selection right"
-msgstr ""
+msgstr "Kijelölés mozgatása jobbra"
 
 #: lazarusidestrconsts.srkmecmoveselectup
 msgid "Move selection up"
-msgstr ""
+msgstr "Kijelölés mozgatása felfelé"
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgctxt "lazarusidestrconsts.srkmecmultipaste"
@@ -22322,7 +22321,7 @@ msgstr "töréspont ki-/bekapcsolása"
 
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
-msgstr ""
+msgstr "Töréspont be- és kikapcsolása"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"

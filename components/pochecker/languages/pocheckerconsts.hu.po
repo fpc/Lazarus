@@ -381,7 +381,7 @@ msgstr "Összes kijelölése"
 
 #: pocheckerconsts.sselectedtranslationsarenotavailable
 msgid "Selected translations are not available."
-msgstr ""
+msgstr "A kiválasztott fordítások nem érhetők el."
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"

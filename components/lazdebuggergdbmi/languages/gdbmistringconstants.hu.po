@@ -144,16 +144,16 @@ msgstr "A \"Kihagyás\"-ra nyomva folytatható a hibakeresés, Ez NEM biztonság
 
 #: gdbmistringconstants.gdbmisfailedinitproc
 msgid "Failed to execute the initialization process"
-msgstr ""
+msgstr "Az előkészítési folyamat végrehajtása nem sikerült"
 
 #: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
 #, object-pascal-format
 msgid "Failed on wait on exit. Status: %d Code: %d"
-msgstr ""
+msgstr "Nem sikerült megvárni a folyamat végét. Állapot: %d  Kód: %d"
 
 #: gdbmistringconstants.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
-msgstr ""
+msgstr "A GDB nem támogatja az aszinkron módot"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"

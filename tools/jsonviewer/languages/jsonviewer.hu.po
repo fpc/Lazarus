@@ -402,7 +402,7 @@ msgstr "Szövegértékek idézőjelben"
 
 #: tmainform.misaveformatted.caption
 msgid "Save Formatted JSON"
-msgstr ""
+msgstr "Formázott JSON mentése"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
