@@ -691,23 +691,23 @@ msgstr "A lista indexe a határon kívül esik (%d)"
 
 #: lclstrconsts.rsmacosmenuhide
 msgid "Hide %s"
-msgstr ""
+msgstr "%s elrejtése"
 
 #: lclstrconsts.rsmacosmenuhideothers
 msgid "Hide Others"
-msgstr ""
+msgstr "Többi elrejtése"
 
 #: lclstrconsts.rsmacosmenuquit
 msgid "Quit %s"
-msgstr ""
+msgstr "%s befejezése"
 
 #: lclstrconsts.rsmacosmenuservices
 msgid "Services"
-msgstr ""
+msgstr "Szolgáltatások"
 
 #: lclstrconsts.rsmacosmenushowall
 msgid "Show All"
-msgstr ""
+msgstr "Összes megjelenítése"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
