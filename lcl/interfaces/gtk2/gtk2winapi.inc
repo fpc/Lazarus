@@ -4359,7 +4359,10 @@ begin
         ARect.Top:=0;
       end;
       CurGDKWindow:=ClientWindow;
-      while (CurGDKWindow<>MainWindow) do begin
+      while (CurGDKWindow<>MainWindow) do
+      begin
+        if not GDK_IS_WINDOW(CurGDKWindow) then
+          break;
         gdk_window_get_position(CurGDKWindow,@ClientOrigin.x,@ClientOrigin.y);
         inc(ARect.Left,ClientOrigin.x);
         inc(ARect.Top,ClientOrigin.y);
