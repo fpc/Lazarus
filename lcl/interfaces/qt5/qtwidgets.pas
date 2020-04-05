@@ -6733,8 +6733,40 @@ function TQtWindowArea.MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean
   ): TPoint;
 var
   Pt: TPoint;
+  ARet, AParam: TQtPoint;
+  R: TRect;
 begin
   Result := inherited MapToGlobal(APt);
+
+  if ((Result.X < 0) or (Result.Y < 0)) and Assigned(FOwner) and (FOwner is TQtMainWindow) and
+    not TQtMainWindow(FOwner).IsMDIChild and
+    not (csDesigning in TQtMainWindow(FOwner).LCLObject.ComponentState)  then
+  begin
+    QWidget_geometry(Widget, @R);
+    if (R.Left >=0) and (R.Top >=0) then {this is valid geometry}
+      exit;
+    {all we know is when mapToGlobal returns wrong result is that geometry is wrong}
+    if Assigned(FOwner) and (FOwner is TQtMainWindow) and not TQtMainWindow(FOwner).IsMdiChild then
+    begin
+      ARet.X := 0;
+      ARet.Y := 0;
+      AParam.X := APt.X;
+      AParam.Y := APt.Y;
+      if Assigned(TQtMainWindow(FOwner).MenuBar) and TQtMainWindow(FOwner).MenuBar.getVisible then
+      begin
+        QWidget_mapToGlobal(TQtMainWindow(FOwner).MenuBar.Widget, @ARet, @AParam);
+        inc(ARet.Y, QWidget_height(TQtMainWindow(FOwner).MenuBar.Widget));
+        Result.X := ARet.X;
+        Result.Y := ARet.Y;
+      end else
+      begin
+        QWidget_mapToGlobal(TQtMainWindow(FOwner).Widget, @ARet, @AParam);
+        Result.X := ARet.X;
+        Result.Y := ARet.Y;
+      end;
+    end;
+  end;
+
   if AWithScrollOffset then
   begin
     Pt := ScrolledOffset;
