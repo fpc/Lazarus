@@ -540,15 +540,6 @@ begin
 
   Result := WindowClientRect.Top - WindowRect.Top;
 
-  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
-  // ToDo: fix this properly for QT.
-  //  Result can be negative (-560) when both Coolbar and Palette are hidden.
-  if Result < 0 then
-  begin
-    DebugLn(['TMainIDEBar.CalcNonClientHeight: Height ',Result,' is below zero. Forcing it to 55.']);
-    Result := 55;
-  end;
-  {$ENDIF LCLQt}
   Assert(Result >= 0, 'TMainIDEBar.CalcNonClientHeight: Result '+IntToStr(Result)+' is below zero.');
 
   {$IFDEF LCLWin32}
