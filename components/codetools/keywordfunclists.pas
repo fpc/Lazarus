@@ -966,6 +966,7 @@ begin
     Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IS'           ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CBLOCK'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   IsKeyWordProcedureAnonymousSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureAnonymousSpecifier');
