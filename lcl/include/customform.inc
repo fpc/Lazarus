@@ -716,7 +716,8 @@ begin
       if FIsFirstOnActivate then
         begin
           FIsFirstOnActivate := False;
-          Activate;
+          if FActive then
+            Activate;
         end;
     end;
   FDelayedWMMove := False;
