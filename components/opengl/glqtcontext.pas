@@ -309,6 +309,9 @@ var
   AttrList: TContextAttribs;
   NewQtWidget: TQtGLWidget;
   direct: boolean;
+  {$IFDEF LCLQt5}
+  AWinFormat: QSurfaceFormatH;
+  {$ENDIF}
   {$IFDEF VerboseMultiSampling}
   samp_buf, visual_id, red_size, blue_size, green_size, alpha_size: integer;
   {$ENDIF}
@@ -328,7 +331,23 @@ begin
       DefaultScreen(NewQtWidget.xdisplay), @attrList.AttributeList[0]);
     direct := false;
     {$IFDEF LCLQt5}
+    QWindow_setSurfaceType(QWidget_windowHandle(NewQtWidget.Widget), QSurfaceSurfaceTypeOpenGLSurface);
+
+    AWinFormat := QSurfaceFormat_Create();
+    if DoubleBuffered then
+      QSurfaceFormat_setSwapBehavior(AWinFormat, QSurfaceSwapBehaviorDoubleBuffer);
+    QSurfaceFormat_setSamples(AWinFormat, Integer(MultiSampling));
+    QSurfaceFormat_setDepthBufferSize(AWinFormat, DepthBits);
+    QSurfaceFormat_setStencilBufferSize(AWinFormat, Integer(StencilBits));
+    QSurfaceFormat_setRenderableType(AWinFormat, QSurfaceFormatRenderableTypeOpenGL);
+    QSurfaceFormat_setAlphaBufferSize(AWinFormat, AlphaBits);
+    QWindow_destroyPlatformResources(QWidget_windowHandle(NewQtWidget.Widget));
+    QWindow_setFormat(QWidget_windowHandle(NewQtWidget.Widget), AWinFormat);
+    QWindow_createPlatformResources(QWidget_windowHandle(NewQtWidget.Widget));
+    QSurfaceFormat_destroy(AWinFormat);
+
     NewQtWidget.GetGLXDrawable;
+
     {$ENDIF}
     {$IFDEF ModernGL}
     if GLX_version_1_3(NewQtWidget.xdisplay) then
