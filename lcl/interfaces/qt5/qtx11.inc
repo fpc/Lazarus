@@ -296,7 +296,6 @@ var
    ScreenNum: Integer;
    XClient: TXClientMessageEvent;
    WMAtom: TAtom;
-   APlatform: WideString;
 begin
   if IsWayland then
     exit;

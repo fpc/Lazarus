@@ -631,7 +631,7 @@ var
     begin
       AWidget := QWidgetH(Sender);
       QObject_objectName(Sender, @AName);
-      if UTF8Copy(AName, 1, 16) = 'qtlclsystrayicon' then
+      if Copy(AName, 1, 16) = 'qtlclsystrayicon' then
       begin
         for i := 0 to SysTrayIconsList.Count - 1 do
         begin
@@ -677,7 +677,7 @@ var
               RGeom := TQtSystemTrayIcon(SysTrayIconsList.Items[i]).GetGeometry;
               if (QApplication_widgetAt(RGeom.Left, RGeom.Top) = AWidget) then
               begin
-                AName := 'qtlclsystrayicon_' + dbgHex(PtrUInt(AWidget));
+                AName := UTF8ToUTF16('qtlclsystrayicon_' + dbgHex(PtrUInt(AWidget)));
                 QObject_setObjectName(Sender, @AName);
                 TQtSystemTrayIcon(SysTrayIconsList.Items[i]).AttachSysTrayWidget(AWidget);
                 {$IFDEF DEBUGSYSTRAYICON}

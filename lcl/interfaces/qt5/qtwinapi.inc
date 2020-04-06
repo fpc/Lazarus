@@ -1313,8 +1313,6 @@ var
   Pt: TPoint;
   ClipRect: TRect;
   B: Boolean;
-  S: String;
-  i: Integer;
 
   procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
     var TextLeft,TextTop: Integer);
