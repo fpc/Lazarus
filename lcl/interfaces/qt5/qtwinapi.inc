@@ -747,14 +747,11 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
-var
-  QtRegion: TQtRegion;
 begin
-  QtRegion := TQtRegion.Create(True, X1, Y1, X2, Y2);
-  Result := HRGN(QtRegion);
+  Result := HRGN(TQtRegion.Create(True, X1, Y1, X2, Y2));
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
-     ' QRegionH: ', dbghex(PtrInt(QtRegion.Widget)));
+     ' QRegionH: ', dbghex(PtrUInt(TQtRegion(Result).Widget)));
   {$endif}
 end;
 
@@ -789,6 +786,7 @@ begin
   if not IsValidDC(hDC) then exit;
 
   TQtDeviceContext(hDC).Free;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
