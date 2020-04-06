@@ -1549,7 +1549,7 @@ begin
   mn := GetManTicks(self);
   if mn.AddTick(atick) then
   begin
-    if mn.draw then self.setNeedsDisplay;
+    if mn.draw then self.setNeedsDisplay_(true);
   end;
 end;
 
@@ -1560,7 +1560,7 @@ begin
   mn := GetManTicks(self);
   if mn.draw=adraw then Exit;
   mn.draw:=adraw;
-  self.setNeedsDisplay;
+  self.setNeedsDisplay_(true);
 end;
 
 procedure TCocoaSlider.lclExpectedKeys(var wantTabs, wantArrows, wantReturn,

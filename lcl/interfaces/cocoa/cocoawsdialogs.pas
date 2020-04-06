@@ -92,7 +92,7 @@ type
   public
     colorPanel: NSColorPanel;
     ColorDialog: TColorDialog;
-    DontPickColorOnClose: Boolean;
+    didPickColor: Boolean;
     // NSWindowDelegateProtocol
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     //
@@ -482,6 +482,8 @@ begin
   ACommonDialog.UserChoice := mrCancel;
 
   colorPanel := NSColorPanel.sharedColorPanel();
+  if (colorPanel.respondsToSelector(ObjCSelector('setRestorable:'))) then
+    colorPanel.setRestorable(false);
   colorPanel.setColor(ColorToNSColor(ColorDialog.Color));
 
   colorDelegate := TColorPanelDelegate.alloc.init();
@@ -557,6 +559,8 @@ begin
   ACommonDialog.UserChoice := mrCancel;
 
   fontPanel := NSFontPanel.sharedFontPanel();
+  if (fontPanel.respondsToSelector(ObjCSelector('setRestorable:'))) then
+    fontPanel.setRestorable(false);
   inFont := TCocoaFont(FontDialog.Font.Handle);
   fn := inFont.Font;
   if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then
@@ -617,7 +621,7 @@ end;
 
 procedure TColorPanelDelegate.windowWillClose(notification: NSNotification);
 begin
-  if not DontPickColorOnClose then
+  if didPickColor then
   begin
     ColorDialog.UserChoice := mrOk;
     doPickColor();
@@ -627,21 +631,19 @@ end;
 
 procedure TColorPanelDelegate.doPickColor();
 begin
-  ColorDialog.Color := NSColorToRGB(colorPanel.color);
+  ColorDialog.Color := NSColorToColorRef(colorPanel.color);
 end;
 
 procedure TColorPanelDelegate.pickColor();
 begin
   ColorDialog.UserChoice := mrCancel;
-  DontPickColorOnClose := True;
+  didPickColor := True;
   doPickColor();
   exit();
 end;
 
 procedure TColorPanelDelegate.exit();
 begin
-  ColorDialog.UserChoice := mrOk;
-  DontPickColorOnClose := True;
   colorPanel.close();
 end;
 

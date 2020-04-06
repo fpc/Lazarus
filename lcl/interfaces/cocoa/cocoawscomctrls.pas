@@ -1127,8 +1127,18 @@ end;
 class procedure TCocoaWSCustomListView.ColumnSetAlignment(
   const ALV: TCustomListView; const AIndex: Integer;
   const AColumn: TListColumn; const AAlignment: TAlignment);
+var
+  lTableLV: TCocoaTableListView;
+  lNSColumn: NSTableColumn;
+const
+  txtAlign : array[TAlignment] of NSTextAlignment = (
+    NSLeftTextAlignment, NSRightTextAlignment, NSCenterTextAlignment
+  );
 begin
-  inherited ColumnSetAlignment(ALV, AIndex, AColumn, AAlignment);
+  if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
+  lTableLV.lclSetColumnAlign(lNSColumn, txtAlign[AAlignment]);
+  lTableLV.setNeedsDisplayInRect(lTableLV.rectOfColumn(AIndex));
+  lTableLV.headerView.setNeedsDisplayInRect( lTableLV.headerView.headerRectOfColumn(AIndex) );
 end;
 
 class procedure TCocoaWSCustomListView.ColumnSetAutoSize(
@@ -2081,7 +2091,7 @@ begin
     lSlider.setTickMarkPosition(NSTickMarkAbove)
   else
     lSlider.setTickMarkPosition(NSTickMarkBelow);
-  lSlider.setNeedsDisplay;
+  lSlider.setNeedsDisplay_(true);
 end;
 
 {------------------------------------------------------------------------------

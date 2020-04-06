@@ -648,6 +648,7 @@ procedure TLCLListBoxCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
 var
   DrawStruct: TDrawListItemStruct;
 begin
+  if not listview.isOwnerDraw then Exit;
   DrawStruct.ItemState := state;
   DrawStruct.Area := r;
   DrawStruct.DC := HDC(ctx);
@@ -1930,7 +1931,7 @@ var
   btn: NSButton;
   cl: NSButtonCell;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, CocoaToggleBezel, CocoaToggleType);
+  btn := AllocButton(AWinControl, TLCLCheckBoxCallback, AParams, CocoaToggleBezel, CocoaToggleType);
   cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
   Result := TLCLIntfHandle(btn);
@@ -2074,7 +2075,7 @@ end;
 procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 begin
   if not Assigned(list) then Exit;
-  list.isCustomDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+  list.isOwnerDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
   list.isDynamicRowHeight := AStyle = lbOwnerDrawVariable;
   //todo: if flag isCustomRowHeight changes in runtime
   //      noteHeightOfRowsWithIndexesChanged, should be sent to listview
@@ -2269,7 +2270,7 @@ var
 begin
   view := GetListBox(ACustomListBox);
   ListBoxSetStyle(view, TCustomListBox(ACustomListBox).Style);
-  view.setNeedsDisplay;
+  view.setNeedsDisplay_(true);
 end;
 
 class procedure TCocoaWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);

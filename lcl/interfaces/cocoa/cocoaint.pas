@@ -39,7 +39,7 @@ uses
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
-  IntfGraphics, Graphics, CocoaWSFactory, Interfaces, CocoaWSDialogs;
+  IntfGraphics, Graphics, CocoaWSFactory;
 
 type
 
@@ -445,7 +445,6 @@ end;
 {$ifdef COCOALOOPOVERRIDE}
 procedure TCocoaApplication.run;
 begin
-  setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
   aloop();
 end;
 {$endif}
@@ -550,6 +549,10 @@ begin
     inherited sendEvent(theEvent);
 
     if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
+
+     // todo: this should be called for "Default" or "Modal" loops
+     NSApp.updateWindows;
+
   finally
 
     // Focus change notification used to be in makeFirstResponder method
@@ -668,7 +671,6 @@ begin
   end;
   {$else}
   CheckSynchronize;
-  NSApp.updateWindows;
   if Assigned(Application) then
     TCrackerApplication(Application).ProcessAsyncCallQueue;
   {$endif}

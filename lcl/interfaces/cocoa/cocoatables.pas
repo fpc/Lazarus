@@ -78,7 +78,7 @@ type
 
     isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
-    isCustomDraw : Boolean;
+    isOwnerDraw : Boolean;
     isDynamicRowHeight: Boolean;
     CustomRowHeight: Integer;
 
@@ -97,6 +97,7 @@ type
     procedure resetCursorRects; override;
 
     procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
+    procedure drawRect(dirtyRect: NSRect); override;
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -125,6 +126,7 @@ type
     function lclGetIconRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetIconRect:::';
 
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
+    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); message 'lclSetColumn:Align:';
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -201,6 +203,7 @@ type
     procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
+    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
   end;
 
   TCellCocoaTableListView1013 = objcclass(TCellCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
@@ -230,8 +233,8 @@ type
     procedure setCheckAction(aSelector: SEL); message 'setCheckAction:';
     procedure setTextAction(aSelector: SEL); message 'setTextAction:';
     procedure resizeSubviewsWithOldSize(oldSize: NSSize); override;
-    procedure setIdentifier(identifier_: NSString); message 'setIdentifier:'; {$if FPC_FULLVERSION >= 30300}override;{$endif}
-    function identifier: NSString; message 'identifier'; {$if FPC_FULLVERSION >= 30300}override;{$endif}
+    procedure setIdentifier(identifier_: NSString); message 'setIdentifier:'; {$if FPC_FULLVERSION >= 30200}override;{$endif}
+    function identifier: NSString; message 'identifier'; {$if FPC_FULLVERSION >= 30200}override;{$endif}
     function textFrame: NSRect; message 'textFrame';
     procedure lclSetEnabled(AEnabled: Boolean); override;
   end;
@@ -467,6 +470,12 @@ begin
   // as well as number of total items in the table should be marked as modified
 end;
 
+procedure TCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
+  aalignment: NSTextAlignment);
+begin
+
+end;
+
 function TCocoaTableListView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := NSViewCanFocus(Self);
@@ -502,7 +511,6 @@ var
   ItemState: TOwnerDrawState;
 begin
   inherited;
-  if not isCustomDraw then Exit;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
@@ -516,6 +524,13 @@ begin
   finally
     ctx.Free;
   end;
+end;
+
+procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
+begin
+  inherited drawRect(dirtyRect);
+  if CheckMainThread and Assigned(callback) then
+    callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): Integer;
@@ -944,6 +959,14 @@ end;
 procedure TCellCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
 begin
   noteNumberOfRowsChanged;
+end;
+
+procedure TCellCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
+  aalignment: NSTextAlignment);
+begin
+  if not Assigned(acolumn) then Exit;
+  NSCell(acolumn.headerCell).setAlignment( aalignment );
+  NSCell(acolumn.dataCell).setAlignment( aalignment );
 end;
 
 function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
