@@ -334,6 +334,13 @@ begin
     QWindow_setSurfaceType(QWidget_windowHandle(NewQtWidget.Widget), QSurfaceSurfaceTypeOpenGLSurface);
 
     AWinFormat := QSurfaceFormat_Create();
+
+    if MajorVersion > 0 then
+    begin
+      QSurfaceFormat_setMajorVersion(AWinFormat, MajorVersion);
+      QSurfaceFormat_setMinorVersion(AWinFormat, MinorVersion);
+    end;
+
     if DoubleBuffered then
       QSurfaceFormat_setSwapBehavior(AWinFormat, QSurfaceSwapBehaviorDoubleBuffer);
     QSurfaceFormat_setSamples(AWinFormat, Integer(MultiSampling));
@@ -364,9 +371,11 @@ begin
       // AttrList.ContextFlags:=Attribs.ContextFlags or GLX_CONTEXT_DEBUG_BIT_ARB;
       if (MultiSampling > 1) and GLX_ARB_multisample(XDisplay,ScreenNum) then begin
          AttrList.MultiSampling := MultiSampling;
-      end else begin
+      end else
+      begin
         AttrList.MultiSampling:=0;
-        {$IFDEF UNIX}writeln('Multi-sampling not supported');{$ENDIF}
+        if MultiSampling > 1 then
+          {$IFDEF UNIX}writeln('Multi-sampling not supported');{$ENDIF}
       end;
       FBConfigsCount:=0;
       FBConfigs:=glXChooseFBConfig(XDisplay, ScreenNum, @AttrList.AttributeList[0], FBConfigsCount);
