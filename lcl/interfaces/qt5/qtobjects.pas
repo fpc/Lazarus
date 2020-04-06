@@ -3285,11 +3285,8 @@ begin
 end;
 
 function TQtDeviceContext.getDepth: integer;
-var
-  device: QPaintDeviceH;
 begin
-  device := QPainter_device(Widget);
-  Result := QPaintDevice_depth(Device);
+  Result := QPaintDevice_depth(QPainter_device(Widget));
 end;
 
 function TQtDeviceContext.getDeviceSize: TPoint;
