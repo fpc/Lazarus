@@ -389,31 +389,18 @@ class procedure TQtWSWinControl.PaintTo(const AWinControl: TWinControl;
 var
   Context: TQtDeviceContext absolute ADC;
   Widget: TQtWidget;
-  Window: TQtMainWindow;
   DCSize: TSize;
   APoint: TQtPoint;
-  ARect, GRect: TRect;
-  OffsetY: Integer;
-  Pixmap, NewHandle: QPixmapH;
-  AWidgetID: PtrUInt;
-  AWindow: QWindowH;
-  AScreen: QScreenH;
+  ARect: TRect;
+  Pixmap: QPixmapH;
+  ASourceRegion: QRegionH;
+  AFlags: Integer;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
     Exit;
 
   Widget := TQtWidget(AWinControl.Handle);
   ARect := Widget.getFrameGeometry;
-  GRect := Widget.getGeometry;
-
-  // calculate OffsetY only in case when we are form
-  if (AWinControl.FCompStyle = csForm) and Assigned(TCustomForm(AWinControl).Menu) then
-  begin
-    Window := TQtMainWindow(TCustomForm(AWinControl).Handle);
-    if Window.MenuBar.getVisible then
-      OffsetY := Window.MenuBar.getHeight;
-  end else
-    OffsetY := 0;
 
   with DCSize, ARect do
   begin
@@ -422,29 +409,17 @@ begin
   end;
   Pixmap := QPixmap_create(PSize(@DCSize));
   try
-    OffsetRect(GRect, -ARect.Left, -ARect.Top);
+    APoint := QtPoint(0, 0);
+    ASourceRegion := QRegion_Create(0, 0, DCSize.cx, DCSize.cy);
+    AFlags := QWidgetDrawChildren;
+    if (Widget is TQtMainWindow) then
+      AFlags := AFlags or QWidgetDrawWindowBackground;
+    QWidget_render(Widget.Widget, QPaintDeviceH(Pixmap), @APoint, ASourceRegion, AFlags);
+    QRegion_destroy(ASourceRegion);
 
-    AWidgetID := QWidget_winId(Widget.Widget);
-    AWindow := QWidget_windowHandle(Widget.Widget);
-    if AWindow <> nil then
-      AScreen := QWindow_screen(AWindow)
-    else
-      AScreen := QGuiApplication_primaryScreen();
-
-    QScreen_grabWindow(AScreen, Pixmap, AWidgetID, 0, 0);
-
-    // apply offset if we have main menu
-    APoint := QtPoint(X, Y + OffsetY);
+    APoint := QtPoint(X, Y);
     ARect := Rect(0, 0, QPixmap_width(Pixmap), QPixmap_height(Pixmap));
-    // also scale pixmap by height of menu, so it's catched in our image.
-    if OffsetY <> 0 then
-    begin
-      NewHandle := QPixmap_create();
-      QPixmap_scaled(Pixmap, NewHandle, QPixmap_width(Pixmap), QPixmap_height(Pixmap) - OffsetY);
-      Context.drawPixmap(@APoint, NewHandle, @ARect);
-      QPixmap_destroy(NewHandle);
-    end else
-      Context.drawPixmap(@APoint, Pixmap, @ARect);
+    Context.drawPixmap(@APoint, Pixmap, @ARect);
   finally
     QPixmap_destroy(Pixmap);
   end;
