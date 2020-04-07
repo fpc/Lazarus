@@ -520,14 +520,12 @@ begin
     ARequiredPackage:=PkgComponent.PkgFile.LazPackage;
     ARequiredPackage:=TLazPackage(PackageEditingInterface.RedirectPackageDependency(ARequiredPackage));
     NewDependency:=TPkgDependency.Create;
-    try
-      NewDependency.DependencyType:=pdtLazarus;
-      NewDependency.PackageName:=ARequiredPackage.Name;
-      if CheckAddingPackageDependency(LazPackage,NewDependency,false,false)=mrOK then
-        PackageGraph.AddDependencyToPackage(LazPackage, NewDependency);
-    finally
+    NewDependency.DependencyType:=pdtLazarus;
+    NewDependency.PackageName:=ARequiredPackage.Name;
+    if CheckAddingPackageDependency(LazPackage,NewDependency,false,false)=mrOK then
+      PackageGraph.AddDependencyToPackage(LazPackage, NewDependency)
+    else
       NewDependency.Free;
-    end;
   end;
   ModalResult:=mrOk;
 end;
