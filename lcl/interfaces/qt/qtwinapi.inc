@@ -6990,7 +6990,7 @@ begin
       QImage_format(SrcQDC.vImage.Handle) = QImageFormat_ARGB32);
     QImage_destroy(TmpImage);
     QPixmap_destroy(TmpPixmap);
-    exit;
+    exit(True);
   end else
   if SrcQDC.vImage = nil then
   begin
@@ -7004,7 +7004,7 @@ begin
         QPixmap_grabWindow(TmpPixmap, AWidgetID, XSrc,  YSrc, SrcWidth, SrcHeight);
         RenderPixmap(TmpPixmap, QMask, QPixmap_hasAlphaChannel(TmpPixmap));
         QPixmap_destroy(TmpPixmap);
-        exit;
+        exit(True);
       end else
       begin
         with SrcQDC.getDeviceSize do
