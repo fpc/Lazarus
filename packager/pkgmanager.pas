@@ -80,47 +80,43 @@ type
   { TPkgManager }
 
   TPkgManager = class(TBasePkgManager)
-    // events - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  private
+    // event handlers - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // package editor
-    function OnPackageEditorAddToProject(Sender: TObject; APackage: TLazPackage;
-                                     OnlyTestIfPossible: boolean): TModalResult;
-    function OnPackageEditorCompilePackage(Sender: TObject;
-                          APackage: TLazPackage;
+    function PackageEditorAddToProject(Sender: TObject; APackage: TLazPackage;
+                                       OnlyTestIfPossible: boolean): TModalResult;
+    function PackageEditorCompilePackage(Sender: TObject; APackage: TLazPackage;
                           CompileClean, CompileRequired: boolean): TModalResult;
-    procedure OnPackageEditorCopyMoveFiles(Sender: TObject);
-    function OnPackageEditorCreateFile(Sender: TObject;
-                                       Params: TAddToPkgResult): TModalResult;
-    function OnPackageEditorCreateMakefile(Sender: TObject;
+    procedure PackageEditorCopyMoveFiles(Sender: TObject);
+    function PackageEditorCreateFile(Sender: TObject;
+                                     Params: TAddToPkgResult): TModalResult;
+    function PackageEditorCreateMakefile(Sender: TObject;
+                                         APackage: TLazPackage): TModalResult;
+    function PackageEditorCreateFpmakeFile(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
-    function OnPackageEditorCreateFpmakeFile(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
-    function OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
+    function PackageEditorDeleteAmbiguousFiles(Sender: TObject;
       {%H-}APackage: TLazPackage; const Filename: string): TModalResult;
-    procedure OnPackageEditorDragDropTreeView(Sender, Source: TObject;
-      X, Y: Integer);
-    function OnPackageEditorDragOverTreeView(Sender, Source: TObject;
-      X, Y: Integer; out TargetTVNode: TTreeNode;
-      out TargetTVType: TTreeViewInsertMarkType): boolean;
-    function OnPackageEditorFindInFiles(Sender: TObject; APackage: TLazPackage
+    procedure PackageEditorDragDropTreeView(Sender, Source: TObject; X, Y: Integer);
+    function PackageEditorDragOverTreeView(Sender, Source: TObject; X, Y: Integer;
+      out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType): boolean;
+    function PackageEditorFindInFiles(Sender: TObject; APackage: TLazPackage
       ): TModalResult;
-    function OnPackageEditorInstallPackage(Sender: TObject;
+    function PackageEditorInstallPackage(Sender: TObject;
+                                         APackage: TLazPackage): TModalResult;
+    function PackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage): TModalResult;
+    function PackageEditorOpenPkgFile(Sender: TObject; PkgFile: TPkgFile): TModalResult;
+    function PackageEditorPublishPackage(Sender: TObject; APackage: TLazPackage): TModalResult;
+    function PackageEditorRevertPackage(Sender: TObject; APackage: TLazPackage): TModalResult;
+    function PackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
+                                      SaveAs: boolean): TModalResult;
+    function PackageEditorUninstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
-    function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage): TModalResult;
-    function OnPackageEditorOpenPkgFile(Sender: TObject; PkgFile: TPkgFile): TModalResult;
-    function OnPackageEditorPublishPackage(Sender: TObject;
-      APackage: TLazPackage): TModalResult;
-    function OnPackageEditorRevertPackage(Sender: TObject; APackage: TLazPackage
-      ): TModalResult;
-    function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
-                                        SaveAs: boolean): TModalResult;
-    function OnPackageEditorUninstallPackage(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
-    function OnPackageEditorViewPkgSource(Sender: TObject;
-                                          APackage: TLazPackage): TModalResult;
-    procedure OnAfterWritePackage(Sender: TObject; Restore: boolean);
-    procedure OnBeforeReadPackage(Sender: TObject);
-    procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
-    procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
+    function PackageEditorViewPkgSource(Sender: TObject;
+                                        APackage: TLazPackage): TModalResult;
+    procedure AfterWritePackage(Sender: TObject; Restore: boolean);
+    procedure BeforeReadPackage(Sender: TObject);
+    procedure PackageEditorFreeEditor(APackage: TLazPackage);
+    procedure PackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; out TheUnitName: string;
                               out HasRegisterProc: boolean);
     function PackageGraphCheckInterPkgFiles(IDEObject: TObject;
@@ -153,15 +149,11 @@ type
     procedure MainIDEitmPkgNewPackageClick(Sender: TObject);
     procedure MainIDEitmPackageLinksClicked(Sender: TObject);
 
-    // component palette
-    procedure IDEComponentPaletteOpenPackage(Sender: TObject);
-    procedure IDEComponentPaletteOpenUnit(Sender: TObject);
-
     // source editor
-    procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
+    procedure OpenPackageForCurrentSrcEditFile(Sender: TObject);
 
     // LCL
-    procedure OnApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure ApplicationIdleHandler(Sender: TObject; var {%H-}Done: Boolean);
 
     // misc
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
@@ -169,13 +161,19 @@ type
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
                                           out Directory: string);
     procedure PackageFileLoaded(Sender: TObject);
-    procedure OnCheckInstallPackageList(PkgIDList: TObjectList;
+    procedure CheckInstallPackageListHandler(PkgIDList: TObjectList;
                                      RemoveConflicts: boolean; out Ok: boolean);
     function DoBeforeCompilePackages(aPkgList: TFPList): TModalResult;
     function LoadDependencyList(FirstDependency: TPkgDependency;
                                 Quiet: boolean): TModalResult;
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+  public
+    // component palette
+    procedure IDEComponentPaletteOpenPackage(Sender: TObject);
+    procedure IDEComponentPaletteOpenUnit(Sender: TObject);
+    // end event handlers - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   private
     // helper functions
     FLastLazarusSrcDir: string;
@@ -469,7 +467,7 @@ begin
   PkgIDList:=nil;
   try
     if ShowEditInstallPkgsDialog(PackageGraph.FirstAutoInstallDependency,
-      @OnCheckInstallPackageList,PkgIDList,RebuildIDE)<>mrOk
+      @CheckInstallPackageListHandler,PkgIDList,RebuildIDE)<>mrOk
     then exit;
 
     Flags:=[piiifSkipChecks,piiifClear];
@@ -528,7 +526,7 @@ begin
   DoCallNotifyHandler(pihtPackageFileLoaded,Sender);
 end;
 
-procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TObjectList;
+procedure TPkgManager.CheckInstallPackageListHandler(PkgIDList: TObjectList;
   RemoveConflicts: boolean; out Ok: boolean);
 var
   Flags: TPkgInstallInIDEFlags;
@@ -623,7 +621,7 @@ begin
   Result:=mrOk;
 end;
 
-procedure TPkgManager.OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
+procedure TPkgManager.OpenPackageForCurrentSrcEditFile(Sender: TObject);
 var
   APackage: TIDEPackage;
 begin
@@ -694,20 +692,20 @@ begin
     DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent],false);
 end;
 
-procedure TPkgManager.OnAfterWritePackage(Sender: TObject; Restore: boolean);
+procedure TPkgManager.AfterWritePackage(Sender: TObject; Restore: boolean);
 begin
   //debugln(['TPkgManager.OnAfterWritePackage ',DbgSName(APackage),' Restore=',Restore]);
   if Restore then
     (Sender as TPackageIDEOptions).Package.RestoreOptions;
 end;
 
-procedure TPkgManager.OnBeforeReadPackage(Sender: TObject);
+procedure TPkgManager.BeforeReadPackage(Sender: TObject);
 begin
   //debugln(['TPkgManager.OnBeforeReadPackage ',DbgSName(APackage)]);
   (Sender as TPackageIDEOptions).Package.BackupOptions;
 end;
 
-function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
+function TPkgManager.PackageEditorCompilePackage(Sender: TObject;
   APackage: TLazPackage; CompileClean, CompileRequired: boolean): TModalResult;
 var
   Flags: TPkgCompileFlags;
@@ -719,18 +717,18 @@ begin
   Result:=DoCompilePackage(APackage,Flags,false);
 end;
 
-procedure TPkgManager.OnPackageEditorCopyMoveFiles(Sender: TObject);
+procedure TPkgManager.PackageEditorCopyMoveFiles(Sender: TObject);
 begin
   CopyMoveFiles(Sender);
 end;
 
-function TPkgManager.OnPackageEditorCreateMakefile(Sender: TObject;
+function TPkgManager.PackageEditorCreateMakefile(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoCreatePackageMakefile(APackage,false);
 end;
 
-function TPkgManager.OnPackageEditorCreateFpmakeFile(Sender: TObject;
+function TPkgManager.PackageEditorCreateFpmakeFile(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoCreatePackageFpmakefile(APackage,false);
@@ -779,7 +777,7 @@ end;
   ToDo: Use FPC's resource type (.res)
 {$ENDIF}
 
-function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
+function TPkgManager.PackageEditorCreateFile(Sender: TObject;
   Params: TAddToPkgResult): TModalResult;
 var
   LE: String;
@@ -797,7 +795,7 @@ begin
     IconLRSFilename:=ChangeFileExt(Params.UnitFilename,'')+'_icon.lrs';
     CodeBuf:=CodeToolBoss.CreateFile(IconLRSFilename);
     if CodeBuf=nil then begin
-      debugln(['Error: (lazarus) [TPkgManager.OnPackageEditorCreateFile] file create failed: ',IconLRSFilename]);
+      debugln(['Error: (lazarus) [TPkgManager.PackageEditorCreateFile] file create failed: ',IconLRSFilename]);
       exit;
     end;
     FIconLRSSource:='';
@@ -872,19 +870,19 @@ begin
   end;
 end;
 
-function TPkgManager.OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
+function TPkgManager.PackageEditorDeleteAmbiguousFiles(Sender: TObject;
   APackage: TLazPackage; const Filename: string): TModalResult;
 begin
   Result:=BuildBoss.DeleteAmbiguousFiles(Filename);
 end;
 
-procedure TPkgManager.OnPackageEditorDragDropTreeView(Sender, Source: TObject;
+procedure TPkgManager.PackageEditorDragDropTreeView(Sender, Source: TObject;
   X, Y: Integer);
 begin
   FilesEditDragDrop(Sender, Source, X, Y);
 end;
 
-function TPkgManager.OnPackageEditorDragOverTreeView(Sender, Source: TObject;
+function TPkgManager.PackageEditorDragOverTreeView(Sender, Source: TObject;
   X, Y: Integer; out TargetTVNode: TTreeNode;
   out TargetTVType: TTreeViewInsertMarkType): boolean;
 var
@@ -898,31 +896,31 @@ begin
     aDependencyCount, aDirectoryCount, TargetTVNode, TargetTVType);
 end;
 
-function TPkgManager.OnPackageEditorFindInFiles(Sender: TObject;
+function TPkgManager.PackageEditorFindInFiles(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=ShowFindInPackageFilesDlg(APackage);
 end;
 
-function TPkgManager.OnPackageEditorAddToProject(Sender: TObject;
+function TPkgManager.PackageEditorAddToProject(Sender: TObject;
   APackage: TLazPackage; OnlyTestIfPossible: boolean): TModalResult;
 begin
   Result:=AddProjectDependency(Project1,APackage,OnlyTestIfPossible);
 end;
 
-function TPkgManager.OnPackageEditorInstallPackage(Sender: TObject;
+function TPkgManager.PackageEditorInstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoInstallPackage(APackage);
 end;
 
-function TPkgManager.OnPackageEditorPublishPackage(Sender: TObject;
+function TPkgManager.PackageEditorPublishPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoPublishPackage(APackage,[],true);
 end;
 
-function TPkgManager.OnPackageEditorRevertPackage(Sender: TObject;
+function TPkgManager.PackageEditorRevertPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   if (not FilenameIsAbsolute(APackage.Filename))
@@ -931,25 +929,25 @@ begin
   Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],false);
 end;
 
-function TPkgManager.OnPackageEditorUninstallPackage(Sender: TObject;
+function TPkgManager.PackageEditorUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoUninstallPackage(APackage,[],false);
 end;
 
-function TPkgManager.OnPackageEditorOpenPkgFile(Sender: TObject;
+function TPkgManager.PackageEditorOpenPkgFile(Sender: TObject;
   PkgFile: TPkgFile): TModalResult;
 begin
   Result:=DoOpenPkgFile(PkgFile);
 end;
 
-procedure TPkgManager.OnPackageEditorFreeEditor(APackage: TLazPackage);
+procedure TPkgManager.PackageEditorFreeEditor(APackage: TLazPackage);
 begin
   APackage.Editor:=nil;
   PackageGraph.ClosePackage(APackage);
 end;
 
-procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
+procedure TPkgManager.PackageEditorGetUnitRegisterInfo(Sender: TObject;
   const AFilename: string; out TheUnitName: string; out HasRegisterProc: boolean);
 begin
   DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
@@ -961,13 +959,13 @@ begin
   Result:=CheckInterPkgFiles(IDEObject,PkgList,FilesChanged);
 end;
 
-function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
+function TPkgManager.PackageEditorOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoOpenPackage(APackage,[],false);
 end;
 
-function TPkgManager.OnPackageEditorSavePackage(Sender: TObject;
+function TPkgManager.PackageEditorSavePackage(Sender: TObject;
   APackage: TLazPackage; SaveAs: boolean): TModalResult;
 begin
   if SaveAs then
@@ -976,7 +974,7 @@ begin
     Result:=DoSavePackage(APackage,[]);
 end;
 
-function TPkgManager.OnPackageEditorViewPkgSource(Sender: TObject;
+function TPkgManager.PackageEditorViewPkgSource(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoOpenPackageSource(APackage);
@@ -1105,7 +1103,7 @@ begin
   end;
 end;
 
-procedure TPkgManager.OnApplicationIdle(Sender: TObject; var Done: Boolean);
+procedure TPkgManager.ApplicationIdleHandler(Sender: TObject; var Done: Boolean);
 begin
   if PackageGraph = nil then Exit;
   if MainIDE.ToolStatus<>itNone then exit;
@@ -2964,30 +2962,30 @@ begin
 
   // package editors
   PackageEditors:=TPackageEditors.Create;
-  PackageEditors.OnAddToProject:=@OnPackageEditorAddToProject;
-  PackageEditors.OnAfterWritePackage:=@OnAfterWritePackage;
-  PackageEditors.OnBeforeReadPackage:=@OnBeforeReadPackage;
-  PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
-  PackageEditors.OnCopyMoveFiles:=@OnPackageEditorCopyMoveFiles;
-  PackageEditors.OnCreateFpmakeFile:=@OnPackageEditorCreateFpmakeFile;
-  PackageEditors.OnCreateMakefile:=@OnPackageEditorCreateMakefile;
-  PackageEditors.OnCreateNewFile:=@OnPackageEditorCreateFile;
-  PackageEditors.OnDeleteAmbiguousFiles:=@OnPackageEditorDeleteAmbiguousFiles;
-  PackageEditors.OnDragDropTreeView:=@OnPackageEditorDragDropTreeView;
-  PackageEditors.OnDragOverTreeView:=@OnPackageEditorDragOverTreeView;
-  PackageEditors.OnShowFindInFiles:=@OnPackageEditorFindInFiles;
-  PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
+  PackageEditors.OnAddToProject:=@PackageEditorAddToProject;
+  PackageEditors.OnAfterWritePackage:=@AfterWritePackage;
+  PackageEditors.OnBeforeReadPackage:=@BeforeReadPackage;
+  PackageEditors.OnCompilePackage:=@PackageEditorCompilePackage;
+  PackageEditors.OnCopyMoveFiles:=@PackageEditorCopyMoveFiles;
+  PackageEditors.OnCreateFpmakeFile:=@PackageEditorCreateFpmakeFile;
+  PackageEditors.OnCreateMakefile:=@PackageEditorCreateMakefile;
+  PackageEditors.OnCreateNewFile:=@PackageEditorCreateFile;
+  PackageEditors.OnDeleteAmbiguousFiles:=@PackageEditorDeleteAmbiguousFiles;
+  PackageEditors.OnDragDropTreeView:=@PackageEditorDragDropTreeView;
+  PackageEditors.OnDragOverTreeView:=@PackageEditorDragOverTreeView;
+  PackageEditors.OnShowFindInFiles:=@PackageEditorFindInFiles;
+  PackageEditors.OnFreeEditor:=@PackageEditorFreeEditor;
   PackageEditors.OnGetIDEFileInfo:=@MainIDE.GetIDEFileState;
-  PackageEditors.OnGetUnitRegisterInfo:=@OnPackageEditorGetUnitRegisterInfo;
-  PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
+  PackageEditors.OnGetUnitRegisterInfo:=@PackageEditorGetUnitRegisterInfo;
+  PackageEditors.OnInstallPackage:=@PackageEditorInstallPackage;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
-  PackageEditors.OnOpenPackage:=@OnPackageEditorOpenPackage;
-  PackageEditors.OnOpenPkgFile:=@OnPackageEditorOpenPkgFile;
-  PackageEditors.OnPublishPackage:=@OnPackageEditorPublishPackage;
-  PackageEditors.OnRevertPackage:=@OnPackageEditorRevertPackage;
-  PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
-  PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
-  PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSource;
+  PackageEditors.OnOpenPackage:=@PackageEditorOpenPackage;
+  PackageEditors.OnOpenPkgFile:=@PackageEditorOpenPkgFile;
+  PackageEditors.OnPublishPackage:=@PackageEditorPublishPackage;
+  PackageEditors.OnRevertPackage:=@PackageEditorRevertPackage;
+  PackageEditors.OnSavePackage:=@PackageEditorSavePackage;
+  PackageEditors.OnUninstallPackage:=@PackageEditorUninstallPackage;
+  PackageEditors.OnViewPackageSource:=@PackageEditorViewPkgSource;
 
   // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -3007,7 +3005,7 @@ begin
   LazPackageDescriptors.AddDefaultPackageDescriptors;
 
   // idle handler
-  Application.AddOnIdleHandler(@OnApplicationIdle,true);
+  Application.AddOnIdleHandler(@ApplicationIdleHandler,true);
 end;
 
 destructor TPkgManager.Destroy;
@@ -3136,7 +3134,7 @@ begin
   GetPackageOfCurrentSourceEditor(APackage);
   if APackage<>nil then
     AddMenuItemProc(Format(lisOpenPackage2, [APackage.Name]), true,
-                    @OnOpenPackageForCurrentSrcEditFile);
+                    @OpenPackageForCurrentSrcEditFile);
 end;
 
 procedure TPkgManager.TranslateResourceStrings;
