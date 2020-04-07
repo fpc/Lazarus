@@ -6895,6 +6895,7 @@ function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
     QFrame_setFrameShape(QAbstractScrollAreaH(ScrollArea.Widget), QFrameNoFrame);
     QWidget_setBackgroundRole(ScrollArea.viewportWidget, QPaletteNoRole);
     QWidget_setAutoFillBackground(ScrollArea.viewportWidget, False);
+    setProperty(ScrollArea.viewportWidget, 'lclwidget', Int64(PtrUInt(Self)));
 
     // we must set minimum heigth / width to 1 otherwise we'll have strange
     // effect eg. with main ide bar window (small size and cannot resize).
