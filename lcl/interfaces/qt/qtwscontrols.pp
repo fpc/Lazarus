@@ -387,54 +387,36 @@ class procedure TQtWSWinControl.PaintTo(const AWinControl: TWinControl;
 var
   Context: TQtDeviceContext absolute ADC;
   Widget: TQtWidget;
-  Window: TQtMainWindow;
-  Pixmap: TQtPixmap;
   DCSize: TSize;
   APoint: TQtPoint;
-  ARect, GRect: TRect;
-  OffsetY: Integer;
-  NewHandle: QPixmapH;
+  ARect: TRect;
+  Pixmap: QPixmapH;
+  ASourceRegion: QRegionH;
+  AFlags: Integer;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
-    Exit;
-
   Widget := TQtWidget(AWinControl.Handle);
   ARect := Widget.getFrameGeometry;
-  GRect := Widget.getGeometry;
-
-  // calculate OffsetY only in case when we are form
-  if (AWinControl.FCompStyle = csForm) and Assigned(TCustomForm(AWinControl).Menu) then
-  begin
-    Window := TQtMainWindow(TCustomForm(AWinControl).Handle);
-    if Window.MenuBar.getVisible then
-      OffsetY := Window.MenuBar.getHeight;
-  end else
-    OffsetY := 0;
 
   with DCSize, ARect do
   begin
     cx := Right - Left;
     cy := Bottom - Top;
   end;
-  Pixmap := TQtPixmap.Create(@DCSize);
+  Pixmap := QPixmap_create(PSize(@DCSize));
   try
-    OffsetRect(GRect, -ARect.Left, -ARect.Top);
-    Pixmap.grabWidget(Widget.Widget, 0, 0);
+    APoint := QtPoint(0, 0);
+    ASourceRegion := QRegion_Create(0, 0, DCSize.cx, DCSize.cy);
+    AFlags := QWidgetDrawChildren;
+    if (Widget is TQtMainWindow) then
+      AFlags := AFlags or QWidgetDrawWindowBackground;
+    QWidget_render(Widget.Widget, QPaintDeviceH(Pixmap), @APoint, ASourceRegion, AFlags);
+    QRegion_destroy(ASourceRegion);
 
-    // apply offset if we have main menu
-    APoint := QtPoint(X, Y + OffsetY);
-    ARect := Rect(0, 0, Pixmap.getWidth, Pixmap.getHeight);
-    // also scale pixmap by height of menu, so it's catched in our image.
-    if OffsetY <> 0 then
-    begin
-      NewHandle := QPixmap_create();
-      QPixmap_scaled(Pixmap.Handle, NewHandle, Pixmap.GetWidth, Pixmap.GetHeight - OffsetY);
-      Context.drawPixmap(@APoint, NewHandle, @ARect);
-      QPixmap_destroy(NewHandle);
-    end else
-      Context.drawPixmap(@APoint, Pixmap.Handle, @ARect);
+    APoint := QtPoint(X, Y);
+    ARect := Rect(0, 0, QPixmap_width(Pixmap), QPixmap_height(Pixmap));
+    Context.drawPixmap(@APoint, Pixmap, @ARect);
   finally
-    Pixmap.Free;
+    QPixmap_destroy(Pixmap);
   end;
 end;
 
