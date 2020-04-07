@@ -2263,7 +2263,6 @@ begin
   finally
     Deps.Free;
   end;
-
 end;
 
 function TPackageEditorForm.PkgNameToFormName(const PkgName: string): string;

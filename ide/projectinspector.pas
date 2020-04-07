@@ -578,8 +578,8 @@ end;
 procedure TProjectInspectorForm.FormCreate(Sender: TObject);
 begin
   if LazarusIDE.IDEStarted and (LazProject=nil) then
-    begin // User opens this window for the very first time. Set active project.
-    LazProject:=Project1;
+  begin   // User opens this window for the very first time. Set active project.
+    LazProject := Project1;
     UpdateAll;
   end;
   if OPMInterface <> nil then
@@ -588,6 +588,7 @@ end;
 
 procedure TProjectInspectorForm.FormActivate(Sender: TObject);
 begin
+  //DebugLn('* TProjectInspectorForm.FormActivate *');
   ItemsTreeView.OnSelectionChanged := @ItemsTreeViewSelectionChanged;
 end;
 
