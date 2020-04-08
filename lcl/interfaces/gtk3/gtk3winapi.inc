@@ -3436,37 +3436,7 @@ begin
     exit;
   if IsValidGDIObject(GDIObj) then
   begin
-    if TObject(GDIObj) is TGtk3Pen then
-    begin
-      // DebugLn('TGtk3WidgetSet.SelectObject PEN ');
-      Result := HGDIOBJ(TGtk3DeviceContext(DC).CurrentPen);
-      TGtk3DeviceContext(DC).CurrentPen:= TGtk3Pen(GDIObj);
-    end else
-    if TObject(GDIObj) is TGtk3Brush then
-    begin
-      Result := HGDIOBJ(TGtk3DeviceContext(DC).CurrentBrush);
-      // DebugLn('TGtk3WidgetSet.SelectObject BRUSH ',dbgHex(Result),'  ',TimeToStr(Now()));
-      TGtk3DeviceContext(DC).CurrentBrush:= TGtk3Brush(GDIObj);
-    end else
-    if TObject(GDIObj) is TGtk3Font then
-    begin
-      Result := HGDIOBJ(TGtk3DeviceContext(DC).CurrentFont);
-      TGtk3DeviceContext(DC).CurrentFont:= TGtk3Font(GDIObj);
-      // DebugLn('TGtk3WidgetSet.SelectObject Font ');
-    end else
-    if TObject(GDIObj) is TGtk3Region then
-    begin
-      Debugln('WARNING: TGtk3WidgetSet.SelectObject missing result for TGtk3Region.');
-      Result := 0;
-      SelectClipRGN(DC, GdiObj);
-    end else
-    if TObject(GDIObj) is TGtk3Image then
-    begin
-      // Debugln('WARNING: TGtk3WidgetSet.SelectObject missing result for TGtk3Image.');
-      Result := HGDIOBJ(TGtk3DeviceContext(DC).CurrentImage);
-      // TGtk3DeviceContext(DC).SetCurrentImage(TGtk3Image(GdiObj));
-      TGtk3DeviceContext(DC).SetImage(TGtk3Image(GdiObj));
-    end;
+    Result:=HGDIOBJ(TGtk3ContextObject(GDIOBJ).Select(TGtk3DeviceContext(DC)));
   end;
 end;
 

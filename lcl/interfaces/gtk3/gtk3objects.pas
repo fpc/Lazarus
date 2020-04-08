@@ -50,8 +50,10 @@ type
   TGtk3ContextObject = class(TGtk3Object)
   private
     FShared: Boolean;
+    fContext:TGtk3DeviceContext;
   public
     constructor Create; override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;virtual;
     property Shared: Boolean read FShared write FShared;
   end;
 
@@ -66,6 +68,7 @@ type
   public
     constructor Create(ACairo: Pcairo_t; AWidget: PGtkWidget = nil);
     constructor Create(ALogFont: TLogFont; const ALongFontName: String);
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
     destructor Destroy; override;
     procedure UpdateLogFont;
     property FontName: String read FFontName write FFontName;
@@ -79,14 +82,15 @@ type
   TGtk3Brush = class(TGtk3ContextObject)
   private
     FColor: TColor;
-    FContext: TGtk3DeviceContext;
     FStyle: LongWord;
     procedure SetColor(AValue: TColor);
     procedure SetStyle(AStyle:longword);
   public
     brush_pattern:pcairo_pattern_t;
+    pat_buf:pdword;
     LogBrush: TLogBrush;
     constructor Create; override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
     destructor Destroy;override;
     procedure UpdatePattern;
     property Color: TColor read FColor write SetColor;
@@ -105,7 +109,6 @@ type
     FStyle: TFPPenStyle;
     FWidth: Integer;
     FColor: TColor;
-    FContext: TGtk3DeviceContext;
     FIsExtPen: Boolean;
     procedure SetColor(AValue: TColor);
     procedure setCosmetic(b: Boolean);
@@ -113,6 +116,7 @@ type
   public
     LogPen: TLogPen;
     constructor Create; override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
     property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
 
@@ -134,6 +138,7 @@ type
     property Handle: Pcairo_region_t read FHandle write FHandle;
     constructor Create(CreateHandle: Boolean); virtual; overload;
     constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
     destructor Destroy; override;
     function GetExtents: TRect;
     function ContainsRect(ARect: TRect): Boolean;
@@ -153,6 +158,7 @@ type
     constructor Create(vHandle: PGdkPixbuf); overload;
     constructor Create(AData: PByte; width: Integer; height: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
     constructor Create(AData: PByte; width: Integer; height: Integer; bytesPerLine: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
     destructor Destroy; override;
     procedure CopyFrom(AImage: PGdkPixbuf; x, y, w, h: integer);
     function height: Integer;
@@ -301,30 +307,10 @@ var
 
   function create_stipple(stipple_data:pbyte;width,height:integer):pcairo_pattern_t;forward;
 
-  const COLOR_A_PRE = $3093BA52;
-  const COLOR_B_PRE = $30FFFFFF;
-  (*function PREMULTIPLY(argb:dword);inline                                                                          \
-        ((argb & 0xFF << 24) |                                                                         \
-         ((((argb & 0xFF << 16) >> 16) * ((argb & 0xFF << 24) >> 24) / 0xFF) << 16) |                  \
-         ((((argb & 0xFF << 8) >> 8) * ((argb & 0xFF << 24) >> 24) / 0xFF) << 8) |                     \
-         ((((argb & 0xFF << 0) >> 0) * ((argb & 0xFF << 24) >> 24) / 0xFF) << 0))
-  #define COLOR_A_PRE PREMULTIPLY (COLOR_A)
-  #define COLOR_B_PRE PREMULTIPLY (COLOR_B)
-  *)
+  const clr_A = $FF008000;//$3093BA52;
+  const clr_B = $FFFFFFFF;//$30FFFFFF;
+
   const
-       stipple_data: array[0..8 * 8-1] of dword = (
-            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
-            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
-            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
-            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE,
-            COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
-
-            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
-            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
-            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
-            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE, COLOR_A_PRE,
-            COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE, COLOR_B_PRE);
-
         (* the stipple patten should look like that
          *	    1 1 1 0  0 0 0 1
          *	    1 1 0 0  0 0 1 1
@@ -337,6 +323,83 @@ var
          *	    1 1 1 1  0 0 0 0
          *)
 
+       stipple_bdiag: array[0..8 * 8-1] of dword = (
+            clr_A, clr_A, clr_A, clr_B, clr_B, clr_B, clr_B, clr_A,
+            clr_A, clr_A, clr_B, clr_B, clr_B, clr_B, clr_A, clr_A,
+            clr_A, clr_B, clr_B, clr_B, clr_B, clr_A, clr_A, clr_A,
+            clr_B, clr_B, clr_B, clr_B, clr_A, clr_A, clr_A, clr_A,
+            //-----------------------------------------------------
+            clr_B, clr_B, clr_B, clr_A, clr_A, clr_A, clr_A, clr_B,
+            clr_B, clr_B, clr_A, clr_A, clr_A, clr_A, clr_B, clr_B,
+            clr_B, clr_A, clr_A, clr_A, clr_A, clr_B, clr_B, clr_B,
+            clr_A, clr_A, clr_A, clr_A, clr_B, clr_B, clr_B, clr_B);
+
+        stipple_fdiag: array[0..8 * 8-1] of dword = (
+            clr_A, clr_A, clr_A, clr_A, clr_B, clr_B, clr_B, clr_B,
+            clr_B, clr_A, clr_A, clr_A, clr_A, clr_B, clr_B, clr_B,
+            clr_B, clr_B, clr_A, clr_A, clr_A, clr_A, clr_B, clr_B,
+            clr_B, clr_B, clr_B, clr_A, clr_A, clr_A, clr_A, clr_B,
+            //-----------------------------------------------------
+            clr_B, clr_B, clr_B, clr_B, clr_A, clr_A, clr_A, clr_A,
+            clr_A, clr_B, clr_B, clr_B, clr_B, clr_A, clr_A, clr_A,
+            clr_A, clr_A, clr_B, clr_B, clr_B, clr_B, clr_A, clr_A,
+            clr_A, clr_A, clr_A, clr_B, clr_B, clr_B, clr_B, clr_A);
+
+
+
+       //bsHorizontal
+       stipple_horz: array[0..15] of dword = (
+          clr_B, clr_B, clr_B, clr_B,
+          clr_B, clr_B, clr_B, clr_B,
+          clr_B, clr_B, clr_B, clr_B,
+          clr_A, clr_A, clr_A, clr_A
+       );
+
+       stipple_vert: array[0..15] of dword = (
+          clr_A, clr_B, clr_B, clr_B,
+          clr_A, clr_B, clr_B, clr_B,
+          clr_A, clr_B, clr_B, clr_B,
+          clr_A, clr_B, clr_B, clr_B
+       );
+
+      (* , bsVertical, bsFDiagonal,
+                   bsBDiagonal, bsCross, bsDiagCross, bsImage, bsPattern);*)
+
+
+       stipple_cross0: array[0..8] of dword = (
+          clr_B, clr_A, clr_B,
+          clr_A, clr_A, clr_A,
+          clr_B, clr_A, clr_B
+       );
+
+       stipple_cross1: array[0..63] of dword = (
+          clr_B, clr_B, clr_B, clr_A, clr_A, clr_B, clr_B, clr_B,
+          clr_B, clr_B, clr_B, clr_A, clr_A, clr_B, clr_B, clr_B,
+          clr_B, clr_B, clr_B, clr_A, clr_A, clr_B, clr_B, clr_B,
+          clr_A, clr_A, clr_A, clr_A, clr_A, clr_A, clr_A, clr_A,
+          clr_A, clr_A, clr_A, clr_A, clr_A, clr_A, clr_A, clr_A,
+          clr_B, clr_B, clr_B, clr_A, clr_A, clr_B, clr_B, clr_B,
+          clr_B, clr_B, clr_B, clr_A, clr_A, clr_B, clr_B, clr_B,
+          clr_B, clr_B, clr_B, clr_A, clr_A, clr_B, clr_B, clr_B
+       );
+
+       stipple_dcross0: array[0..8] of dword = (
+          clr_A, clr_B, clr_A,
+          clr_B, clr_A, clr_B,
+          clr_A, clr_B, clr_A
+       );
+
+       stipple_dcross: array[0..63] of dword = (
+          clr_A, clr_B, clr_B, clr_B, clr_B, clr_B, clr_B, clr_A,
+          clr_A, clr_A, clr_B, clr_B, clr_B, clr_B, clr_A, clr_A,
+          clr_B, clr_A, clr_A, clr_B, clr_B, clr_A, clr_A, clr_B,
+          clr_B, clr_B, clr_A, clr_A, clr_A, clr_A, clr_B, clr_B,
+          //----------------------------------------------------
+          clr_B, clr_B, clr_B, clr_A, clr_A, clr_B, clr_B, clr_B,
+          clr_B, clr_B, clr_A, clr_A, clr_A, clr_A, clr_B, clr_B,
+          clr_B, clr_A, clr_A, clr_B, clr_B, clr_A, clr_A, clr_B,
+          clr_A, clr_A, clr_B, clr_B, clr_B, clr_B, clr_A, clr_A
+       );
 
 function Gtk3DefaultContext: TGtk3DeviceContext;
 begin
@@ -388,6 +451,12 @@ begin
   FShared := False;
 end;
 
+function TGtk3ContextObject.Select(ACtx:TGtk3DeviceContext): TGtk3ContextObject;
+begin
+  DbgS('Default context object selected, please implement');
+  Result:=nil;
+end;
+
 { TGtk3Region }
 
 constructor TGtk3Region.Create(CreateHandle: Boolean);
@@ -407,6 +476,14 @@ begin
   ARect.width := x2 - x1;
   ARect.height := y2 - y1;
   FHandle := cairo_region_create_rectangle(@ARect);
+end;
+
+function TGtk3Region.Select(ACtx: TGtk3DeviceContext): TGtk3ContextObject;
+begin
+  fContext:=ACtx;
+  if not Assigned(fContext) then exit(nil);
+  fContext.setClipRegion(Self);
+  Result:=Self;
 end;
 
 destructor TGtk3Region.Destroy;
@@ -592,6 +669,14 @@ begin
   g_object_unref(AContext);
 end;
 
+function TGtk3Font.Select(ACtx:TGtk3DeviceContext): TGtk3ContextObject;
+begin
+  fContext:=ACtx;
+  if not Assigned(fContext) then exit(nil);
+  Result := fContext.CurrentFont;
+  fContext.CurrentFont:= Self;
+end;
+
 destructor TGtk3Font.Destroy;
 begin
   if Assigned(FLayout) then
@@ -759,6 +844,14 @@ begin
   end;
 end;
 
+function TGtk3Image.Select(ACtx: TGtk3DeviceContext): TGtk3ContextObject;
+begin
+  fContext:=ACtx;
+  if not Assigned(ACtx) then exit(nil);
+  Result := fContext.CurrentImage;
+  fContext.SetImage(Self);
+end;
+
 destructor TGtk3Image.Destroy;
 begin
   if FHandle <> nil then
@@ -864,6 +957,14 @@ begin
   FPenMode := pmCopy; // default pen mode
 end;
 
+function TGtk3Pen.Select(ACtx:TGtk3DeviceContext): TGtk3ContextObject;
+begin
+  fContext:=ACtx;
+  if not Assigned(fContext) then exit(nil);
+  Result := FContext.CurrentPen;
+  fContext.CurrentPen := Self;
+end;
+
 procedure TGtk3Pen.setCosmetic(b: Boolean);
 begin
   FCosmetic := B;
@@ -905,26 +1006,94 @@ end;
 constructor TGtk3Brush.Create;
 begin
   inherited Create;
-  {$note IMPORTANT TODO: use cairo_pattern_t for brush }
-  // cairo_pattern_create_for_surface();
-  FContext := nil;
   FColor := clNone;
   FillChar(LogBrush, SizeOf(TLogBrush), #0);
+end;
+
+function TGtk3Brush.Select(ACtx:TGtk3DeviceContext): TGtk3ContextObject;
+begin
+  fContext:=ACtx;
+  if not Assigned(fContext) then exit(nil);
+  Result := fContext.CurrentBrush;
+  Self.UpdatePattern;
+  fContext.CurrentBrush := Self;
 end;
 
 destructor TGtk3Brush.Destroy;
 begin
   if Assigned(brush_pattern) then
     cairo_pattern_destroy(brush_pattern);
+  if Assigned(pat_buf) then
+  freeandnil(pat_buf);
   inherited Destroy;
 end;
 
 procedure TGtk3Brush.UpdatePattern;
+var
+  w,h,i,j:integer;
+  clr:dword;
+  rgb:array[0..3] of byte absolute clr;
+  pat_sample,psrc,pdst:pdword;
 begin
+  if Self.LogBrush.lbStyle<>BS_HATCHED then exit;
+
   if Assigned(Self.brush_pattern) then
+  begin
      cairo_pattern_destroy(brush_pattern);
-  self.brush_pattern:=create_stipple(@stipple_data,8,8); // this stipple_data is 8x8
+     freeandnil(pat_buf);
+  end;
+  case TBrushStyle(Self.LogBrush.lbHatch+ord(bsHorizontal)) of
+  bsHorizontal:
+    begin
+      w:=4; h:=4;
+      pat_sample:=@stipple_horz;
+    end;
+  bsVertical:
+    begin
+      w:=4; h:=4;
+      pat_sample:=@stipple_vert;
+    end;
+  bsFDiagonal:
+    begin
+      w:=8; h:=8;
+      pat_sample:=@stipple_fdiag;
+    end;
+  bsBDiagonal:
+    begin
+      w:=8; h:=8;
+      pat_sample:=@stipple_bdiag;
+    end;
+  bsCross:
+    begin
+      w:=8; h:=8;
+      pat_sample:=@stipple_cross1;
+    end;
+  bsDiagCross:
+    begin
+      w:=8; h:=8;
+      pat_sample:=@stipple_dcross;
+    end;
+  else
+    exit
+  end;
+  psrc:=pat_sample;
+  getmem(pat_buf,w*h*sizeof(dword));
+  pdst:=pat_buf;
+  clr:=ColorToRgb(Self.Color);
+  for i:=0 to h-1 do
+  for j:=0 to w-1 do
+  begin
+    case psrc^ of
+    clr_A: pdst^:=$ff000000 or (rgb[0] shl 16) or (rgb[1] shl 8) or (rgb[2]);
+    clr_B: pdst^:=$ffffffff;
+    end;
+    inc(psrc); inc(pdst);
+  end;
+  {GTK3 states the buffer must exist, until image that uses the buffer - destroyed}
+  brush_pattern:=create_stipple(PByte(pat_buf),w,w);
 end;
+
+
 
 function create_stipple(stipple_data:pbyte;width,height:integer):pcairo_pattern_t;
 var

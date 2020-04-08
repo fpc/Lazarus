@@ -60,6 +60,7 @@ type
 
 
 implementation
+uses gtk3objects,lazgdkpixbuf2;
 
 { TGtk3WSCustomImageListResolution }
 
@@ -94,6 +95,9 @@ class procedure TGtk3WSCustomImageListResolution.Draw(AList: TCustomImageListRes
 begin
   inherited Draw(AList, AIndex, ACanvas, ABounds, ABkColor, ABlendColor,
     ADrawEffect, AStyle, AImageType);
+{  TGtk3DeviceContext(ACanvas.Handle).drawImglistRes(AList,
+  AIndex,ABounds,ABkColor,
+  ABlendColor,ADrawEffect,AStyle, AImageType);}
 end;
 
 class procedure TGtk3WSCustomImageListResolution.Insert(AList: TCustomImageListResolution;
