@@ -308,6 +308,8 @@ type
     function testAttribute(const AAttribute: QtWidgetAttribute): boolean;
     function windowFlags: QtWindowFlags;
     function windowModality: QtWindowModality;
+    function grabWindow(const X, Y, Width, Height: integer; AWidget: QWidgetH=
+      nil): QPixmapH;
     property ChildOfComplexWidget: TChildOfComplexWidget read FChildOfComplexWidget write FChildOfComplexWidget;
     property Context: HDC read GetContext;
     {$IFDEF QtUseAccurateFrame}
@@ -4136,7 +4138,7 @@ var
   Color: TQColor;
   R: TRect;
 begin
-  if CanSendLCLMessage and (LCLObject is TWinControl) then
+  if CanSendLCLMessage and (LCLObject is TWinControl) and (FContext = 0) then
   begin
     if LCLObject.Color = clDefault then
       Color := Palette.DefaultColor
@@ -4175,7 +4177,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
   {$endif}
-  if CanSendLCLMessage and (LCLObject is TWinControl) then
+  if CanSendLCLMessage and (LCLObject is TWinControl) and (FContext = 0) then
   begin
     FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
@@ -5114,6 +5116,31 @@ end;
 function TQtWidget.windowModality: QtWindowModality;
 begin
   Result := QWidget_windowModality(Widget);
+end;
+
+function TQtWidget.grabWindow(const X, Y, Width, Height: integer; AWidget: QWidgetH): QPixmapH;
+var
+  AWidgetID: PtrUInt;
+  AWindow: QWindowH;
+  AScreen: QScreenH;
+begin
+  if AWidget = nil then
+    AWidget := Widget;
+  if (Width > 0) and (Height > 0) then
+    Result := QPixmap_create(Width, Height)
+  else
+    Result := QPixmap_create();
+  AWidgetID := QWidget_winId(AWidget);
+  AWindow := QWidget_windowHandle(AWidget);
+  if AWindow <> nil then
+    AScreen := QWindow_screen(AWindow)
+  else
+    AScreen := QGuiApplication_primaryScreen();
+
+  if (Width > 0) and (Height > 0) then
+    QScreen_grabWindow(AScreen, Result, AWidgetID, X,  Y, Width, Height)
+  else
+    QScreen_grabWindow(AScreen, Result, AWidgetID, X,  Y);
 end;
 
 procedure TQtWidget.setWindowModality(windowModality: QtWindowModality);
@@ -6308,7 +6335,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   end;
 begin
   Result := False;
-  if (LCLObject <> nil) and (QEvent_type(Event) = QEventPaint) then
+  if (LCLObject <> nil) and (QEvent_type(Event) = QEventPaint) and (FContext = 0) then
     Result := PaintBtn
   else
     Result:=inherited EventFilter(Sender, Event);
@@ -16884,7 +16911,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.DrawItem ', dbgsName(LCLObject));
   {$endif}
-  if CanSendLCLMessage and (LCLObject is TWinControl) then
+  if CanSendLCLMessage and (LCLObject is TWinControl) and (FContext = 0) then
   begin
     FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
