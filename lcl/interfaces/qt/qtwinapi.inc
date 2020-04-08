@@ -6881,12 +6881,18 @@ var
       AMaskPix := QPixmap_create();
       QPixmap_fromImage(AMaskPix, AMaskImg);
       try
-
         if IsRectEmpty(MaskRect) or (MaskRect.Size <> DstRect.Size) then
-          QPixmap_scaled(AMaskPix, AScaledPix, Width, Height)
-        else
+        begin
+          if (QPixmap_width(ATempPixmap) < (DstRect.Right - DstRect.Left)) or
+            (QPixmap_Height(ATempPixmap) < (DstRect.Bottom - DstRect.Top)) then
+            QPixmap_scaled(AMaskPix, AScaledPix, QPixmap_width(ATempPixmap), QPixmap_height(ATempPixmap))
+          else
+            QPixmap_scaled(AMaskPix, AScaledPix, Width, Height);
+        end else
+        begin
           QPixmap_copy(AMaskPix, AScaledPix, MaskRect.Left, MaskRect.Top,
             MaskRect.Right - MaskRect.Left, MaskRect.Bottom - MaskRect.Top);
+        end;
 
         ABitmap := QBitmap_Create(AScaledPix);
 
