@@ -730,14 +730,11 @@ end;
 function TQtWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
   Desc: TRawImageDescription absolute ARawImage.Description;
-
-  //SrcWidth, SrcHeight: Integer;
-  WinID: PtrUInt;
   DCSize: TSize;
   APixmap: QPixmapH;
   Image: QImageH;
   Context: TQtDeviceContext;
-  AScreen: QScreenH;
+  AWnd: HWND;
   
   procedure RawImage_FromImage(AImage: QImageH);
   begin
@@ -770,26 +767,14 @@ begin
 
   if Context.Parent <> nil then
   begin
-    WinID := QWidget_winId(Context.Parent);
-    APixmap := QPixmap_create();
-    try
-      // if you have dual monitors then getDeviceSize return
-      // more width than screen width, but grabWindow will only grab one
-      // screen, so its width will be less
-      // Solution: we can either pass prefered size to grabWindow or
-      // correct Description size after. I see the first solution as more correct.
-      if (WinID > 0) and (QWidget_windowHandle(Context.Parent) <> nil) then
-        AScreen := QWindow_screen(QWidget_windowHandle(Context.Parent))
-      else
-        AScreen := QGuiApplication_primaryScreen();
-      QScreen_grabWindow(AScreen, APixmap, WinID, 0, 0, DCSize.cx, DCSize.cy);
-      Image := QImage_Create;
-      QPixmap_toImage(APixmap, Image);
-      RawImage_FromImage(Image);
-      QImage_destroy(Image);
-    finally
-      QPixmap_destroy(APixmap);
-    end;
+    AWnd := HwndFromWidgetH(Context.Parent);
+    // AWnd should never be 0 at this point
+    APixmap := TQtWidget(AWnd).grabWindow(0, 0, DCSize.cx, DCSize.cy, Context.Parent);
+    Image := QImage_Create;
+    QPixmap_toImage(APixmap, Image);
+    RawImage_FromImage(Image);
+    QImage_destroy(Image);
+    QPixmap_destroy(APixmap);
   end else
   begin
     if Context.vImage <> nil then
