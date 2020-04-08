@@ -1458,7 +1458,7 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  if ACtl is TGtk3Window then
+  if {ACtl is TGtk3Window} ACtl.WidgetType*[wtWindow,wtDialog]<>[] then
   begin
     Msg.Width := Word(NewSize.cx);
     Msg.Height := Word(NewSize.cy);
@@ -1771,7 +1771,6 @@ function TGtk3Widget.GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t
 var
   Msg: TLMPaint;
   AStruct: TPaintStruct;
-  P: TPoint;
   AClipRect: TGdkRectangle;
   localClip:TRect;
 begin
@@ -1809,39 +1808,6 @@ begin
 
   Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
   Msg.PaintStruct^.hdc := FContext;
-
-  // P := Point(0, 0);
-
-  P := Self.getClientOffset;
-  if wtCustomControl in WidgetType then
-  begin
-    // ofsetting
-    P := Point(0, 0);
-    //TGtk3DeviceContext(Msg.DC).TranslateCairoToDevice;
-    //P.X := Round(TGtk3CustomControl(Self).getHorizontalScrollbar^.get_adjustment^.get_value);
-    //P.Y := Round(TGtk3CustomControl(Self).getVerticalScrollbar^.get_adjustment^.get_value);
-  end else
-  if wtScrollingWinControl in WidgetType then
-  begin
-    P := Point(0, 0);
-    //DebugLn('GtkEventPaint Scrollable ScrollX=',dbgs(TGtk3ScrollableWin(Self).ScrollX),
-    //  ' scrollY=',dbgs(TGtk3ScrollableWin(Self).ScrollY),' P=',dbgs(P));
-    //Inc(P.X, TGtk3ScrollableWin(Self).ScrollX);
-    //Inc(P.Y, TGtk3ScrollableWin(Self).ScrollY);
-    // cairo_surface_get_device_offset(cairo_get_target(AContext), @dx, @dy);
-    // TGtk3DeviceContext(Msg.DC).TranslateCairoToDevice;
-  end else
-  if wtGroupBox in WidgetType then
-  begin
-    // why is gtk3 so crazy about parent/child relation ?!?
-    // in this case child PGtkFixed has same top (+top caption) as parent TGtkFrame ... crap
-    // debugln('groupbox paint offset ',dbgs(p));
-    TGtk3DeviceContext(Msg.DC).TranslateCairoToDevice;
-    P := Point(0, 0);
-  end;
-
-  {$NOTE Currently TGtk3DeviceContext(Msg.DC).Translate(P) is creating incorrect offsets inside TPages for TLabel and maybe others}
-  TGtk3DeviceContext(Msg.DC).Translate(P);
 
   try
     try
