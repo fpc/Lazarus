@@ -7614,7 +7614,7 @@ begin
               R.Top := R.Top - FFrameMargins.Top;
               if (R.Left <> QWidget_x(Widget)) or (R.Top <> QWidget_y(Widget)) then
               begin
-                DebugLn('WARNING: QEventActivationChange(*TRUE*) ',GetWindowManager,' wm strange position: ',Format('X11 x %d y %d Qt x %d y %d',[R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
+                DebugLn('WARNING: QEventActivationChange *TRUE* ',GetWindowManager,' wm strange position: ',Format('X11 x %d y %d Qt x %d y %d',[R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
                 FFormHasInvalidPosition := True;
               end;
             end;
@@ -17165,7 +17165,6 @@ end;
 
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
-  ScrollBar: QScrollBarH;
   ASize: TSize;
   AResizeEvent: QResizeEventH;
 begin
