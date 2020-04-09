@@ -6868,8 +6868,8 @@ var
     if NeedScaling(DstRect, SrcRect) then
       QPixmap_scaled(APixmap, ATempPixmap, Width, Height)
     else
-    if (Width <> SrcWidth) or (Height <> SrcHeight) then
-      QPixmap_copy(APixmap, ATempPixmap, 0, 0, Width, Height)
+    if ((Width <> SrcWidth) or (Height <> SrcHeight)) then
+      QPixmap_scaled(APixmap, ATempPixmap, Width, Height)
     else
       QPixmap_copy(APixmap, ATempPixmap, 0, 0, QPixmap_width(APixmap), QPixmap_height(APixmap));
 
