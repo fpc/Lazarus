@@ -2209,12 +2209,6 @@ end;
 
 function TGtk3WidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer;
   Buf: Pointer): Integer;
-var
-  aObject: TObject;
-  ALogFont: PLogFont absolute Buf;
-  ALogPen: PLogPen absolute Buf;
-  //AExtLogPen: PExtLogPen absolute Buf;
-  ALogBrush: PLogBrush absolute Buf;
 begin
   Result := 0;
   if not IsValidGDIObject(GDIObj) then
@@ -2224,49 +2218,7 @@ begin
     {$endif}
     Exit;
   end;
-  aObject := TObject(GdiObj);
-  DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject));
-  if aObject is TGtk3Pen then
-  begin
-    if Buf = nil then
-      Result := SizeOf(TLogPen)
-    else
-    begin
-      Result := SizeOf(TLogPen);
-      ALogPen^ := TGtk3Pen(aObject).LogPen;
-    end;
-  end else
-  if aObject is TGtk3Brush then
-  begin
-    if Buf = nil then
-    begin
-      // DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject),' Buffer is empty ',dbgHex(PtrUInt(ALogBrush)));
-      Result := SizeOf(TLogBrush);
-    end else
-    if BufSize >= SizeOf(TLogBrush) then
-    begin
-      Result := SizeOf(TLogBrush);
-      // ALogBrush^ := TGtk3Brush(aObject).Color;
-      ALogBrush^ := TGtk3Brush(AObject).LogBrush;
-      // DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject),' ALogBrush ',dbgHex(PtrUInt(ALogBrush)));
-    end;
-  end else
-  if aObject is TGtk3Font then
-  begin
-    if Buf = nil then
-    begin
-      // DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject),' Buffer is empty ',dbgHex(PtrUInt(ALogBrush)));
-      Result := SizeOf(TLogFont);
-    end else
-    if BufSize >= SizeOf(TLogFont) then
-    begin
-      Result := SizeOf(TLogFont);
-      // ALogBrush^ := TGtk3Brush(aObject).Color;
-       TGtk3Font(AObject).UpdateLogFont;
-      ALogFont^ := TGtk3Font(AObject).LogFont;
-      // DebugLn('TGtk3WidgetSet.GetObject ',dbgsName(aObject),' ALogBrush ',dbgHex(PtrUInt(ALogBrush)));
-    end;
-  end;
+  Result:=TGtk3ContextObject(GDIObj).Get(bufsize, buf);
 end;
 
 function TGtk3WidgetSet.GetParent(Handle: HWND): HWND;

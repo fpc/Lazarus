@@ -21,13 +21,13 @@ unit gtk3objects;
 interface
 
 uses
-  Classes, SysUtils, Types, FPCanvas,
+  Classes, SysUtils, Types, math, FPCanvas,
   // LazUtils
   LazUTF8, IntegerList, LazStringUtils,
   // LCL
   LCLType, LCLProc, Graphics,
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazGdkPixbuf2,
-  LazPango1, LazPangoCairo1, LazCairo1;
+  LazPango1, LazPangoCairo1, LazCairo1, gtk3procs;
 
 type
   TGtk3DeviceContext = class;
@@ -54,6 +54,7 @@ type
   public
     constructor Create; override;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;virtual;
+    function Get(szbuf:integer;pbuf:pointer):integer;virtual;abstract;
     property Shared: Boolean read FShared write FShared;
   end;
 
@@ -69,6 +70,7 @@ type
     constructor Create(ACairo: Pcairo_t; AWidget: PGtkWidget = nil);
     constructor Create(ALogFont: TLogFont; const ALongFontName: String);
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
+    function Get(szbuf:integer;pbuf:pointer):integer;override;
     destructor Destroy; override;
     procedure UpdateLogFont;
     property FontName: String read FFontName write FFontName;
@@ -91,6 +93,7 @@ type
     LogBrush: TLogBrush;
     constructor Create; override;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
+    function Get(szbuf:integer;pbuf:pointer):integer;override;
     destructor Destroy;override;
     procedure UpdatePattern;
     property Color: TColor read FColor write SetColor;
@@ -117,6 +120,7 @@ type
     LogPen: TLogPen;
     constructor Create; override;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
+    function Get(szbuf:integer;pbuf:pointer):integer;override;
     property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
 
@@ -139,6 +143,7 @@ type
     constructor Create(CreateHandle: Boolean); virtual; overload;
     constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
+    function Get(szbuf:integer;pbuf:pointer):integer;override;
     destructor Destroy; override;
     function GetExtents: TRect;
     function ContainsRect(ARect: TRect): Boolean;
@@ -159,6 +164,7 @@ type
     constructor Create(AData: PByte; width: Integer; height: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
     constructor Create(AData: PByte; width: Integer; height: Integer; bytesPerLine: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
+    function Get(szbuf:integer;pbuf:pointer):integer;override;
     destructor Destroy; override;
     procedure CopyFrom(AImage: PGdkPixbuf; x, y, w, h: integer);
     function height: Integer;
@@ -290,7 +296,7 @@ function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 
 implementation
 
-uses gtk3int, gtk3procs;
+uses gtk3int;
 
 const
   PixelOffset = 0.5; // Cairo API needs 0.5 pixel offset to not make blurry lines
@@ -486,6 +492,11 @@ begin
   Result:=Self;
 end;
 
+function TGtk3Region.Get(szbuf: integer; pbuf: pointer): integer;
+begin
+  Result:=0;
+end;
+
 destructor TGtk3Region.Destroy;
 begin
   if Assigned(FHandle) then
@@ -677,6 +688,14 @@ begin
   fContext.CurrentFont:= Self;
 end;
 
+function TGtk3Font.Get(szbuf: integer; pbuf: pointer): integer;
+begin
+  Result:=sizeof(Self.LogFont);
+  if pbuf=nil then exit;
+  Self.UpdateLogFont;
+  move(LogFont,pbuf^,min(szbuf,Result));
+end;
+
 destructor TGtk3Font.Destroy;
 begin
   if Assigned(FLayout) then
@@ -852,6 +871,11 @@ begin
   fContext.SetImage(Self);
 end;
 
+function TGtk3Image.Get(szbuf: integer; pbuf: pointer): integer;
+begin
+  Result:=0;
+end;
+
 destructor TGtk3Image.Destroy;
 begin
   if FHandle <> nil then
@@ -965,6 +989,13 @@ begin
   fContext.CurrentPen := Self;
 end;
 
+function TGtk3Pen.Get(szbuf: integer; pbuf: pointer): integer;
+begin
+  Result:=sizeof(LogPen);
+  if pbuf=nil then exit;
+  move(LogPen,pbuf^,min(result,szbuf));
+end;
+
 procedure TGtk3Pen.setCosmetic(b: Boolean);
 begin
   FCosmetic := B;
@@ -1017,6 +1048,13 @@ begin
   Result := fContext.CurrentBrush;
   Self.UpdatePattern;
   fContext.CurrentBrush := Self;
+end;
+
+function TGtk3Brush.Get(szbuf: integer; pbuf: pointer): integer;
+begin
+  Result:=sizeof(LogBrush);
+  if pbuf=nil then exit;
+  move(LogBrush,pbuf^,min(Result,szbuf));
 end;
 
 destructor TGtk3Brush.Destroy;

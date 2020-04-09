@@ -6552,7 +6552,7 @@ begin
     else
     begin
       for i := 0 to Parent.ControlCount - 1 do
-        if Parent.Controls[i] is TRadioButton and
+        if (Parent.Controls[i] is TRadioButton) and
            TWinControl(Parent.Controls[i]).HandleAllocated then
         begin
           rb := TRadioButton(Parent.Controls[i]);
