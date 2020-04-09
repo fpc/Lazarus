@@ -477,7 +477,9 @@ begin
 
   if ADrawable = nil then
   begin
-    Visual := gdk_visual_get_system;
+    Visual := gdk_visual_get_system^.get_best;
+    if Visual = nil then
+      Visual := gdk_visual_get_system;
     IsBitmap := False;
   end else
   begin
