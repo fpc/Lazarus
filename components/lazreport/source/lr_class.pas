@@ -3748,7 +3748,7 @@ begin
       fs := Round((-GetFontData(Self.Font.Handle).Height * 72 / Self.Font.PixelsPerInch))
     else
       fs := Self.Font.Size;
-    ACanvas.Font.Height := -Round(fs * Self.Font.PixelsPerInch / 72 * ScaleY);
+    ACanvas.Font.Height := -Round(fs * 96 / 72 * ScaleY);
   end;
   {$IFDEF DebugLR}
   DebugLnExit('AssignFont (%s) DONE: Self.Font.Size=%d aCanvas.Font.Size=%d',
@@ -4026,7 +4026,7 @@ begin
     size := Round((-GetFontData(WCanvas.Font.Handle).Height * 72 / WCanvas.Font.PixelsPerInch))
   else
     size := WCanvas.Font.Size;
-  WCanvas.Font.Height := -Round(size * WCanvas.Font.PixelsPerInch / 72);
+  WCanvas.Font.Height := -Round(size * 96 / 72);
   {$IFDEF DebugLR}
   DebugLnEnter('TfrMemoView.WrapMemo INI Font.PPI=%d Font.Size=%d Canvas.Font.PPI=%d WCanvas.Font.Size=%d',
     [Font.PixelsPerInch, Font.Size,Canvas.Font.PixelsPerInch,WCanvas.Font.Size]);
