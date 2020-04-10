@@ -37,10 +37,11 @@ type
     cpsfFindUniquePositions
     );
   TComponentPasteSelectionFlags = set of TComponentPasteSelectionFlag;
+{$IFDEF EnableCompEditorHookHandlers}
   TComponentEditorDesignerHookType = (
     cedhtModified
     );
-
+{$ENDIF}
   TUndoOpType = (
     uopNone,
     uopAdd,
@@ -58,17 +59,20 @@ type
     FChangeStamp: int64;
   protected
     FForm: TCustomForm;
+    {$IFDEF EnableCompEditorHookHandlers}
     FHandlers: array[TComponentEditorDesignerHookType] of TMethodList;
-    function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
     function GetHandlerCount(HookType: TComponentEditorDesignerHookType): integer;
     procedure AddHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
     procedure RemoveHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
+    {$ENDIF}
+    function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
     function GetShowNonVisualComponents: boolean; virtual; abstract;
     procedure SetShowNonVisualComponents(AValue: boolean); virtual; abstract;
   public
     FUndoState: TUndoCompState;
-
+    {$IFDEF EnableCompEditorHookHandlers}
     destructor Destroy; override;
+    {$ENDIF}
     procedure Modified; override;
     function CopySelection: boolean; virtual; abstract;
     function CutSelection: boolean; virtual; abstract;
@@ -106,11 +110,12 @@ type
     property Form: TCustomForm read FForm;
     property ChangeStamp: int64 read FChangeStamp;// increased on calling Modified
     procedure DisconnectComponent; virtual;
-  public
-    // Handlers
+  public        // Handlers
+    {$IFDEF EnableCompEditorHookHandlers}
     procedure RemoveAllHandlersForObject(const HandlerObject: TObject);
     procedure AddHandlerModified(const OnModified: TNotifyEvent);
     procedure RemoveHandlerModified(const OnModified: TNotifyEvent);
+    {$ENDIF}
   end;
 
 
@@ -1657,6 +1662,25 @@ end;
 
 { TComponentEditorDesigner }
 
+procedure TComponentEditorDesigner.DisconnectComponent;
+begin
+  if Form=nil then exit;
+  Form.Designer:=nil;
+  FForm:=nil;
+end;
+
+procedure TComponentEditorDesigner.Modified;
+begin
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(FChangeStamp);
+  {$IFDEF EnableCompEditorHookHandlers}
+  FHandlers[cedhtModified].CallNotifyEvents(Self);
+  {$ENDIF}
+end;
+
+{$IFDEF EnableCompEditorHookHandlers}
 function TComponentEditorDesigner.GetHandlerCount(
   HookType: TComponentEditorDesignerHookType): integer;
 begin
@@ -1687,22 +1711,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TComponentEditorDesigner.Modified;
-begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=Low(FChangeStamp);
-  FHandlers[cedhtModified].CallNotifyEvents(Self);
-end;
-
-procedure TComponentEditorDesigner.DisconnectComponent;
-begin
-  if Form=nil then exit;
-  Form.Designer:=nil;
-  FForm:=nil;
-end;
-
 procedure TComponentEditorDesigner.RemoveAllHandlersForObject(
   const HandlerObject: TObject);
 var
@@ -1724,6 +1732,7 @@ procedure TComponentEditorDesigner.RemoveHandlerModified(
 begin
   RemoveHandler(cedhtModified,TMethod(OnModified));
 end;
+{$ENDIF}
 
 initialization
   RegisterComponentEditorProc := @DefaultRegisterComponentEditorProc;
