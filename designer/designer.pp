@@ -2413,7 +2413,6 @@ var
 var
   SenderParentForm: TCustomForm;
   SelectedPersistent: TSelectedControl;
-  CompEditor: TBaseComponentEditor;
   DesignSender, MouseDownControl: TControl;
   RubberBandWasActive, Handled: Boolean;
   p, PopupPos: TPoint;
@@ -2530,11 +2529,11 @@ begin
           Selection.AssignPersistent(MouseDownComponent);
           if (ssDouble in MouseDownShift) and (Selection.SelectionForm = Form) then
           begin        // Double Click -> invoke 'Edit' of the component editor
-            CompEditor:=TheFormEditor.GetComponentEditor(MouseDownComponent);
-            Assert(Assigned(CompEditor),
+            PopupMenuComponentEditor := GetComponentEditorForSelection;
+            Assert(Assigned(PopupMenuComponentEditor),
                   'TDesigner.MouseUpOnControl: no component editor found for '
                   +MouseDownComponent.Name+':'+MouseDownComponent.ClassName);
-            CompEditor.Edit;
+            PopupMenuComponentEditor.Edit;
           end;
         end;
       end
