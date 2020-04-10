@@ -294,7 +294,6 @@ type
     function CopySelectionToStream(AllComponentsStream: TStream): boolean; override;
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               PasteFlags: TComponentPasteSelectionFlags): Boolean; override;
-    function InvokeComponentEditor(AComponent: TComponent): boolean; override;
     function ChangeClass: boolean; override;
 
     procedure DoProcessCommand(Sender: TObject; var Command: word;
@@ -1709,41 +1708,6 @@ begin
   Result:=DoDeleteSelectedPersistents;
 end;
 
-function TDesigner.InvokeComponentEditor(AComponent: TComponent): boolean;
-var
-  CompEditor: TBaseComponentEditor;
-begin
-  Result:=false;
-  DebugLn('TDesigner.InvokeComponentEditor A ',AComponent.Name,':',AComponent.ClassName);
-  CompEditor:=TheFormEditor.GetComponentEditor(AComponent);
-  if CompEditor=nil then begin
-    DebugLn('TDesigner.InvokeComponentEditor',
-      ' WARNING: no component editor found for ',
-        AComponent.Name,':',AComponent.ClassName);
-    exit;
-  end;
-  DebugLn('TDesigner.InvokeComponentEditor B ',CompEditor.ClassName);
-  try
-    CompEditor.Edit;
-    Result:=true;
-  except
-    on E: Exception do begin
-      DebugLn('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
-      IDEMessageDialog(Format(lisErrorIn, [CompEditor.ClassName]),
-        Format(lisTheComponentEditorOfClassHasCreatedTheError,
-               [CompEditor.ClassName, LineEnding, E.Message]),
-        mtError,[mbOk]);
-    end;
-  end;
-  try
-    CompEditor.Free;
-  except
-    on E: Exception do begin
-      DebugLn('TDesigner.InvokeComponentEditor ERROR freeing component editor: ',E.Message);
-    end;
-  end;
-end;
-
 function TDesigner.ChangeClass: boolean;
 begin
   if (Selection.Count=1) and (not Selection.LookupRootSelected) then
@@ -2455,22 +2419,6 @@ var
     Form.Invalidate;
   end;
 
-  procedure PointSelect;
-  begin
-    if not (ssShift in Shift) then
-    begin
-      // select only the mouse down component
-      Selection.AssignPersistent(MouseDownComponent);
-      if (ssDouble in MouseDownShift) and (Selection.SelectionForm = Form) then
-      begin
-        // Double Click -> invoke 'Edit' of the component editor
-        FShiftState := Shift;
-        InvokeComponentEditor(MouseDownComponent);
-        FShiftState := [];
-      end;
-    end;
-  end;
-
   procedure DisableRubberBand;
   begin
     if Selection.RubberbandActive then
@@ -2482,6 +2430,7 @@ var
   i, j: Integer;
   SelectedPersistent: TSelectedControl;
   MouseDownControl: TControl;
+  CompEditor: TBaseComponentEditor;
   p: types.TPoint;
 begin
   FHintTimer.Enabled := False;
@@ -2493,10 +2442,8 @@ begin
   DesignSender:=GetDesignControl(Sender);
   SenderParentForm:=GetDesignerForm(DesignSender);
   //DebugLn(['TDesigner.MouseUpOnControl DesignSender=',dbgsName(DesignSender),' SenderParentForm=',dbgsName(SenderParentForm),' ',TheMessage.XPos,',',TheMessage.YPos]);
-  if (MouseDownComponent=nil) or (SenderParentForm=nil)
-  or (SenderParentForm<>Form)
-  or ((Selection.SelectionForm<>nil)
-    and (Selection.SelectionForm<>Form)) then
+  if (MouseDownComponent=nil) or (SenderParentForm=nil) or (SenderParentForm<>Form)
+  or ( (Selection.SelectionForm<>nil) and (Selection.SelectionForm<>Form) ) then
   begin
     MouseDownComponent:=nil;
     MouseDownSender:=nil;
@@ -2591,22 +2538,24 @@ begin
       begin
         // new selection
         if RubberBandWasActive then
-        begin
-          // rubberband selection
-          RubberbandSelect;
-        end else
-        begin
-          // point selection
-          PointSelect;
+          RubberbandSelect     // rubberband selection
+        else if not (ssShift in Shift) then
+        begin          // point selection, select only the mouse down component
+          Selection.AssignPersistent(MouseDownComponent);
+          if (ssDouble in MouseDownShift) and (Selection.SelectionForm = Form) then
+          begin        // Double Click -> invoke 'Edit' of the component editor
+            CompEditor:=TheFormEditor.GetComponentEditor(MouseDownComponent);
+            Assert(Assigned(CompEditor),
+                  'TDesigner.MouseUpOnControl: no component editor found for '
+                  +MouseDownComponent.Name+':'+MouseDownComponent.ClassName);
+            CompEditor.Edit;
+          end;
         end;
       end
       else
         Selection.UpdateBounds;
     end else
-    begin
-      // create new a component on the form
-      DoAddComponent;
-    end;
+      DoAddComponent;  // create new a component on the form
   end
   else if Button=mbRight then
   begin
@@ -2615,8 +2564,8 @@ begin
     Selection.EndUpdate;
     if EnvironmentOptions.RightClickSelects
     and (not Selection.IsSelected(MouseDownComponent))
-    and (Shift - [ssRight] = []) then
-      PointSelect;
+    and (Shift - [ssRight] = []) then    // select only the mouse down component
+      Selection.AssignPersistent(MouseDownComponent);
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
     PopupPos := Form.ClientToScreen(MouseUpPos);
@@ -2777,10 +2726,9 @@ begin
           end;
         end
         else
-        begin
-          // rubberband sizing (selection or creation)
+        begin          // rubberband sizing (selection or creation)
           Selection.RubberBandBounds := Rect(MouseDownPos.X, MouseDownPos.Y,
-                                                    LastMouseMovePos.X, LastMouseMovePos.Y);
+                                             LastMouseMovePos.X, LastMouseMovePos.Y);
           if SelectedCompClass = nil then
             Selection.RubberbandType := rbtSelection
           else

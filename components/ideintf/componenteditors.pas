@@ -81,7 +81,6 @@ type
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               Flags: TComponentPasteSelectionFlags
                               ): Boolean; virtual; abstract;
-    function InvokeComponentEditor(AComponent: TComponent): boolean; virtual; abstract;
     function ChangeClass: boolean; virtual; abstract;
 
     function CanUndo: Boolean; virtual; abstract;
