@@ -1,4 +1,4 @@
-unit sqlitecompstrings;
+unit SqliteCompStrings;
 
 {$mode objfpc}{$H+}
 

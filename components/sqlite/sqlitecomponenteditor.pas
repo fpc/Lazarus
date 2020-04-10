@@ -13,7 +13,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, LResources, Forms, Controls, Dialogs, StdCtrls,
   Buttons, customsqliteds, ComponentEditors, LazarusPackageIntf, LazIdeIntf,
-  fieldseditor, sqlitecompstrings;
+  FieldsEditor, SqliteCompStrings;
 
 type
 

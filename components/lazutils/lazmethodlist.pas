@@ -14,7 +14,7 @@ unit LazMethodList;
 interface
 
 uses
-  Classes, SysUtils, RtlConsts; 
+  Classes, SysUtils, RtlConsts;
 
 type
   { TMethodList - array of TMethod }

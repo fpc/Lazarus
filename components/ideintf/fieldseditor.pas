@@ -9,7 +9,7 @@
  Modified Date: 20.10.2010
  By: Marcelo Borges de Paula
 }
-unit fieldseditor;
+unit FieldsEditor;
 
 {$mode objfpc}{$H+}
 
@@ -102,7 +102,7 @@ type
     property ComponentEditor: TFieldsComponentEditor write FComponentEditor;
   end;
 
-  { TActionListComponentEditor }
+  { TFieldsComponentEditor }
 
   TFieldsComponentEditor = class(TComponentEditor)
   public
