@@ -2154,8 +2154,7 @@ begin
   end;
 end;
 
-procedure TDesigner.MouseDownOnControl(Sender: TControl;
-  var TheMessage: TLMMouse);
+procedure TDesigner.MouseDownOnControl(Sender: TControl; var TheMessage: TLMMouse);
 var
   CompIndex:integer;
   SelectedCompClass: TRegisteredComponent;
@@ -2243,8 +2242,7 @@ begin
   if Button=mbLeft then begin
     // left button
     // -> check if a grabber was activated
-    Selection.ActiveGrabber:=
-      Selection.GrabberAtPos(MouseDownPos.X, MouseDownPos.Y);
+    Selection.ActiveGrabber:=Selection.GrabberAtPos(MouseDownPos.X, MouseDownPos.Y);
     SetCaptureControl(ParentForm);
 
     if SelectedCompClass = nil then begin
@@ -2319,12 +2317,7 @@ procedure TDesigner.MouseUpOnControl(Sender : TControl; var TheMessage:TLMMouse)
 var
   Button: TMouseButton;
   Shift: TShiftState;
-  SenderParentForm: TCustomForm;
-  RubberBandWasActive: boolean;
-  PopupPos: TPoint;
   SelectedCompClass: TRegisteredComponent;
-  SelectionChanged, NewRubberbandSelection: boolean;
-  DesignSender: TControl;
 
   procedure DoAddComponent;
   var
@@ -2369,16 +2362,15 @@ var
       NewWidth:=0;
       NewHeight:=0;
     end;
-
     //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
     if NewComponentClass = nil then exit;
-
-    AddComponent(SelectedCompClass, NewComponentClass, NewParent, NewLeft, NewTop, NewWidth, NewHeight);
+    AddComponent(SelectedCompClass,NewComponentClass,NewParent,NewLeft,NewTop,NewWidth,NewHeight);
   end;
 
   procedure RubberbandSelect;
   var
     MaxParentComponent: TComponent;
+    SelectionChanged, NewRubberSelection: boolean;
   begin
     if (ssShift in Shift)
     and (Selection.SelectionForm<>nil)
@@ -2391,8 +2383,7 @@ var
     end;
 
     // check if start new selection or add/remove:
-    NewRubberbandSelection:= (not (ssShift in Shift))
-      or (Selection.SelectionForm<>Form);
+    NewRubberSelection:= (not (ssShift in Shift)) or (Selection.SelectionForm<>Form);
     // update non visual components
     MoveNonVisualComponentsIntoForm;
     // if user press the Control key, then component candidates are only
@@ -2406,7 +2397,7 @@ var
       MaxParentComponent:=FLookupRoot;
     SelectionChanged:=false;
     Selection.SelectWithRubberBand(
-      FLookupRoot,Mediator,NewRubberbandSelection,ssShift in Shift,
+      FLookupRoot,Mediator,NewRubberSelection,ssShift in Shift,
       SelectionChanged,MaxParentComponent);
     if Selection.Count=0 then begin
       Selection.Add(FLookupRoot);
@@ -2419,19 +2410,14 @@ var
     Form.Invalidate;
   end;
 
-  procedure DisableRubberBand;
-  begin
-    if Selection.RubberbandActive then
-      Selection.RubberbandActive := False;
-  end;
-
 var
-  Handled: Boolean;
-  i, j: Integer;
+  SenderParentForm: TCustomForm;
   SelectedPersistent: TSelectedControl;
-  MouseDownControl: TControl;
   CompEditor: TBaseComponentEditor;
-  p: types.TPoint;
+  DesignSender, MouseDownControl: TControl;
+  RubberBandWasActive, Handled: Boolean;
+  p, PopupPos: TPoint;
+  i, j: Integer;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2560,7 +2546,7 @@ begin
   else if Button=mbRight then
   begin
     // right click -> popup menu
-    DisableRubberBand;
+    Selection.RubberbandActive := False;
     Selection.EndUpdate;
     if EnvironmentOptions.RightClickSelects
     and (not Selection.IsSelected(MouseDownComponent))
@@ -2572,8 +2558,7 @@ begin
     FDesignerPopupMenu.Popup(PopupPos.X, PopupPos.Y);
     Selection.BeginUpdate;
   end;
-
-  DisableRubberBand;
+  Selection.RubberbandActive := False;
   LastMouseMovePos.X:=-1;
   if (not Selection.OnlyVisualComponentsSelected and ShowComponentCaptions)
   or (dfHasSized in FFlags) then
@@ -4252,16 +4237,16 @@ procedure TDesigner.HintTimer(Sender: TObject);
     end;
   end;
 
-  function GetSelectionSizeHintText: String;
-  begin
-    Result := Format('%d x %d', [Selection.Width, Selection.Height]);
-  end;
-
   function ParentComponent(AComponent: TComponent): TComponent;
   begin
     Result := AComponent.GetParentComponent;
     if (Result = nil) and ComponentIsIcon(AComponent) then
       Result := AComponent.Owner;
+  end;
+
+  function GetSelectionSizeHintText: String;
+  begin
+    Result := Format('%d x %d', [Selection.Width, Selection.Height]);
   end;
 
   function GetSelectionPosHintText: String;
@@ -4330,7 +4315,6 @@ begin
     // components are either resize or move
     if (Selection.LookupRoot <> Form) or (Selection.Count = 0) then
       Exit;
-
     if Selection.ActiveGrabber <> nil then
       AHint := GetSelectionSizeHintText
     else
