@@ -2292,9 +2292,10 @@ begin
   if Count=0 then
     SetCustomForm;
   UpdateBounds;
-  SaveBounds;
   DoChange;
   EndUpdate;
+  // BoundsHaveChangedSinceLastResize does not recognize a deleted comp selection,
+  SaveBounds(false);   // thus force saving bounds now (not later).
 end;
 
 procedure TControlSelection.Clear;
