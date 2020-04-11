@@ -2408,7 +2408,6 @@ begin
     QEventDeactivateControl: result:='QEventDeactivateControl';
     QEventContextMenu: result:='QEventContextMenu';
     QEventInputMethod: result:='QEventInputMethod';
-    QEventAccessibilityPrepare: result:='QEventAccessibilityPrepare';
     QEventTabletMove: result:='QEventTabletMove';
     QEventLocaleChange: result:='QEventLocaleChange';
     QEventLanguageChange: result:='QEventLanguageChange';
@@ -2438,7 +2437,6 @@ begin
     QEventFileOpen: result:='QEventFileOpen';
     QEventShortcut: result:='QEventShortcut';
     QEventWhatsThisClicked: result:='QEventWhatsThisClicked';
-    QEventAccessibilityHelp: result:='QEventAccessibilityHelp';
     QEventToolBarChange: result:='QEventToolBarChange';
     QEventApplicationActivated: result:='QEventApplicationActivated';
     QEventApplicationDeactivated: result:='QEventApplicationDeactivated';
@@ -2449,11 +2447,9 @@ begin
     QEventHoverEnter: result:='QEventHoverEnter';
     QEventHoverLeave: result:='QEventHoverLeave';
     QEventHoverMove: result:='QEventHoverMove';
-    QEventAccessibilityDescription: result:='QEventAccessibilityDescription';
     QEventParentAboutToChange: result:='QEventParentAboutToChange';
     QEventWinEventAct: result:='QEventWinEventAct';
     QEventAcceptDropsChange: result:='QEventAcceptDropsChange';
-    QEventMenubarUpdated: result:='QEventMenubarUpdated';
     QEventZeroTimerEvent: result:='QEventZeroTimerEvent';
     QEventNonClientAreaMouseMove: result:='QEventNonClientAreaMouseMove';
     QEventNonClientAreaMouseButtonPress: result:='QEventNonClientAreaMouseButtonPress';
@@ -2472,7 +2468,6 @@ begin
     QEventUngrabMouse: result := 'QEventUngrabMouse';
     QEventGrabKeyboard: result := 'QEventGrabKeyboard';
     QEventUngrabKeyboard: result := 'QEventUngrabKeyboard';
-    QEventCocoaRequestModal: result := 'QEventCocoaRequestModal';
     QEventUser: result:='QEventUser';
     QEventMaxUser: result:='QEventMaxUser';
     200: Result := 'QEventCloseSoftwareInputPanel';
@@ -7530,7 +7525,18 @@ begin
   {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
   if (QEvent_type(Event)=QEventWindowActivate) or
     (QEvent_type(Event)=QEventWindowDeactivate) or
+    (QEvent_type(Event)=QEventShow) or
     (QEvent_type(Event)=QEventShowToParent) or
+    (QEvent_type(Event)=QEventShowWindowRequest) or
+    (QEvent_type(Event)=QEventResize) or
+    (QEvent_type(Event)=QEventContentsRectChange) or
+    (QEvent_type(Event)=QEventUpdateLater) or
+    (QEvent_type(Event)=QEventUpdateRequest) or
+    (QEvent_type(Event)=QEventPaint) or
+    (QEvent_type(Event)=QEventWinIdChange) or
+    (QEvent_type(Event)=QEventExpose) or
+    (QEvent_type(Event)=QEventWindowTitleChange) or
+    (QEvent_type(Event)=QEventActivationChange) or
     (QEvent_type(Event)=QEventWindowStateChange) then
       WriteLn('TQtMainWindow.EventFilter: Sender=', IntToHex(PtrUInt(Sender),8),
       ' LCLObject=', dbgsName(LCLObject),
