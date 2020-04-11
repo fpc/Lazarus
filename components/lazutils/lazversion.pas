@@ -22,10 +22,10 @@ interface
 const
   laz_major = 2;
   laz_minor = 0;
-  laz_release = 8;
+  laz_release = 9;
   laz_patch = 0;
   laz_fullversion = ((laz_major *  100 + laz_minor) * 100 + laz_release) * 100 + laz_patch;
-  laz_version = '2.0.8.0';
+  laz_version = '2.0.9.0';
 
 implementation
 
