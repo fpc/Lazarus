@@ -6866,13 +6866,10 @@ begin
         end;
       end;
 
-      // leave if no further action is needed
-      if NoBuildNeeded then
-        exit;
-
       // create application bundle
       if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-      and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
+      and ((MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
+          or (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCocoa]))
       then begin
         Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName);
         if not (Result in [mrOk,mrIgnore]) then begin
@@ -6885,6 +6882,11 @@ begin
           exit;
         end;
       end;
+
+
+      // leave if no further action is needed
+      if NoBuildNeeded then
+        exit;
 
       if (AReason in Project1.CompilerOptions.CompileReasons)
       and (not (pbfDoNotCompileProject in Flags)) then begin
