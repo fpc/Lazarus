@@ -317,6 +317,8 @@ type
     procedure ViewPkgTodosClick(Sender: TObject);
   private
     FIdleConnected: boolean;
+    FCompiling: boolean;
+    FCompileDesignTimePkg: boolean;
     FLazPackage: TLazPackage;
     FNextSelectedPart: TPENodeData;// select this file/dependency on next update
     FFilesNode: TTreeNode;
@@ -367,7 +369,6 @@ type
     procedure FileOptionsChange(Sender: TObject);
   protected
     fFlags: TPEFlags;
-    FCompileDesignTimePkg: boolean;
     procedure SetLazPackage(const AValue: TLazPackage); override;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
@@ -3204,7 +3205,9 @@ begin
     end;
   end;
   CompileBitBtn.Enabled:=False;
+  FCompiling:=True;
   PackageEditors.CompilePackage(LazPackage,CompileClean,CompileRequired);
+  FCompiling:=False;
   UpdateTitle;
   UpdateButtons;
   UpdateStatusBar;
@@ -3402,8 +3405,8 @@ begin
     begin
       EnvironmentOptions.LastOpenPackages.Remove(LazPackage.Filename);
       MainIDE.SaveEnvironment;
-      if not CompileBitBtn.Enabled then begin
-        DebugLn(['TPackageEditorForm.CanCloseEditor ', Caption, ' compiling, do not close.']);
+      if FCompiling then begin
+        DebugLn(['TPackageEditorForm.CanCloseEditor: ', Caption, ' compiling, do not close.']);
         Result:=mrCancel;
       end;
     end;
