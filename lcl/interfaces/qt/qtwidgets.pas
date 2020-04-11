@@ -660,6 +660,10 @@ type
     ScrollArea: TQtWindowArea;
     {$ENDIF}
     destructor Destroy; override;
+
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+
     procedure Activate; override;
     function CanAdjustClientRectOnResize: Boolean; override;
     function getAcceptDropFiles: Boolean; override;
@@ -4347,8 +4351,8 @@ begin
   InResizeEvent := True;
   try
     // do not loop with LCL but do not apply it to TQtMainWindow !
-    if not (csDesigning in LCLObject.ComponentState) then
-      if not (ClassType = TQtMainWindow) and InUpdate then
+    if not (csDesigning in LCLObject.ComponentState) and
+      not ((ClassType = TQtMainWindow) or (ClassType = TQtWindowArea)) and InUpdate then
     begin
       AQtClientRect := Rect(0, 0, 0, 0);
       if FOwner <> nil then
@@ -7162,6 +7166,20 @@ begin
   {$ENDIF}
 
   inherited Destroy;
+end;
+
+procedure TQtMainWindow.BeginUpdate;
+begin
+  inherited BeginUpdate;
+  if Assigned(ScrollArea) then
+    ScrollArea.BeginUpdate;
+end;
+
+procedure TQtMainWindow.EndUpdate;
+begin
+  if Assigned(ScrollArea) then
+    ScrollArea.EndUpdate;
+  inherited EndUpdate;
 end;
 
 procedure TQtMainWindow.Activate;
