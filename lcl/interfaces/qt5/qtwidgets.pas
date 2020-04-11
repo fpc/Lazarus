@@ -663,6 +663,10 @@ type
     ScrollArea: TQtWindowArea;
     {$ENDIF}
     destructor Destroy; override;
+
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+
     procedure Activate; override;
     function CanAdjustClientRectOnResize: Boolean; override;
     function getAcceptDropFiles: Boolean; override;
@@ -6814,6 +6818,28 @@ begin
     QEventMouseButtonDblClick, QEventMouseMove, QEventWheel, QEventPaint,
     QEventHoverEnter, QEventHoverMove, QEventHoverLeave, QEventResize]) then
     exit;
+
+  {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
+  if (QEvent_type(Event)=QEventWindowActivate) or
+    (QEvent_type(Event)=QEventWindowDeactivate) or
+    (QEvent_type(Event)=QEventShow) or
+    (QEvent_type(Event)=QEventShowToParent) or
+    (QEvent_type(Event)=QEventShowWindowRequest) or
+    (QEvent_type(Event)=QEventResize) or
+    (QEvent_type(Event)=QEventContentsRectChange) or
+    (QEvent_type(Event)=QEventUpdateLater) or
+    (QEvent_type(Event)=QEventUpdateRequest) or
+    (QEvent_type(Event)=QEventPaint) or
+    (QEvent_type(Event)=QEventWinIdChange) or
+    (QEvent_type(Event)=QEventExpose) or
+    (QEvent_type(Event)=QEventWindowTitleChange) or
+    (QEvent_type(Event)=QEventActivationChange) or
+    (QEvent_type(Event)=QEventWindowStateChange) then
+      WriteLn(' TQtWindowArea.EventFilter: Sender=', IntToHex(PtrUInt(Sender),8),
+      ' LCLObject=', dbgsName(LCLObject),
+      ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
+  {$endif}
+
   Result := inherited EventFilter(Sender, Event);
 end;
 
@@ -6822,11 +6848,32 @@ function TQtWindowArea.ScrollViewEventFilter(Sender: QObjectH; Event: QEventH
 var
   ASize: TSize;
   AResizeEvent: QResizeEventH;
-  ScrollBar: QScrollBarH;
 begin
   Result := False;
   if LCLObject = nil then
     exit;
+
+  {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
+  if (QEvent_type(Event)=QEventWindowActivate) or
+    (QEvent_type(Event)=QEventWindowDeactivate) or
+    (QEvent_type(Event)=QEventShow) or
+    (QEvent_type(Event)=QEventShowToParent) or
+    (QEvent_type(Event)=QEventShowWindowRequest) or
+    (QEvent_type(Event)=QEventResize) or
+    (QEvent_type(Event)=QEventContentsRectChange) or
+    (QEvent_type(Event)=QEventUpdateLater) or
+    (QEvent_type(Event)=QEventUpdateRequest) or
+    (QEvent_type(Event)=QEventPaint) or
+    (QEvent_type(Event)=QEventWinIdChange) or
+    (QEvent_type(Event)=QEventExpose) or
+    (QEvent_type(Event)=QEventWindowTitleChange) or
+    (QEvent_type(Event)=QEventActivationChange) or
+    (QEvent_type(Event)=QEventWindowStateChange) then
+      WriteLn('  TQtWindowAreaViewport.EventFilter: Sender=', IntToHex(PtrUInt(Sender),8),
+      ' LCLObject=', dbgsName(LCLObject),
+      ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
+  {$endif}
+
   BeginEventProcessing;
   try
     if (QEvent_Type(Event) in [QEventContextMenu, QEventHoverEnter, QEventPaint,
@@ -7136,6 +7183,20 @@ begin
   {$ENDIF}
 
   inherited Destroy;
+end;
+
+procedure TQtMainWindow.BeginUpdate;
+begin
+  inherited BeginUpdate;
+  if Assigned(ScrollArea) then
+    ScrollArea.BeginUpdate;
+end;
+
+procedure TQtMainWindow.EndUpdate;
+begin
+  if Assigned(ScrollArea) then
+    ScrollArea.EndUpdate;
+  inherited EndUpdate;
 end;
 
 procedure TQtMainWindow.Activate;
