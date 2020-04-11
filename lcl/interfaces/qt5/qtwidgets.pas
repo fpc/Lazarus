@@ -180,6 +180,7 @@ type
     procedure Release; override;
     procedure Destroyed; cdecl; override;
   public
+    function WinIDNeeded: boolean; virtual;
     function CanAdjustClientRectOnResize: Boolean; virtual;
     function CanChangeFontColor: Boolean; virtual;
     function CanSendLCLMessage: Boolean;
@@ -707,6 +708,7 @@ type
     property IsFrameWindow: Boolean read FIsFrameWindow write FIsFrameWindow; {check if our LCLObject is TCustomFrame}
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
+    function WinIDNeeded: boolean; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function CWEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -720,6 +722,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
+    function WinIDNeeded: boolean; override;
     procedure InitializeWidget; override;
     procedure DeInitializeWidget; override;
     function CanPaintBackground: Boolean; override;
@@ -2281,6 +2284,11 @@ procedure TQtWidget.Destroyed; cdecl;
 begin
   Widget := nil;
   Release;
+end;
+
+function TQtWidget.WinIDNeeded: boolean;
+begin
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -4502,7 +4510,7 @@ end;
 
   Changes the color of a widget
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SetColor(const Value: PQColor);
+procedure TQtWidget.setColor(const Value: PQColor);
 begin
   Palette.setColor(Value);
 end;
@@ -4524,12 +4532,12 @@ end;
 
   Changes the text color of a widget
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SetTextColor(const Value: PQColor);
+procedure TQtWidget.setTextColor(const Value: PQColor);
 begin
   Palette.setTextColor(Value);
 end;
 
-procedure TQtWidget.SetCursor(const ACursor: QCursorH);
+procedure TQtWidget.setCursor(const ACursor: QCursorH);
 begin
   {$IFDEF DARWIN}
   if not QWidget_isVisible(Widget) then
@@ -4673,7 +4681,7 @@ begin
   Result := QWidget_layoutDirection(Widget);
 end;
 
-function TQtWidget.getVisible: boolean;
+function TQtWidget.getVisible: Boolean;
 begin
   if Widget = nil then
     exit(False);
@@ -5659,12 +5667,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TQtWidget._AddRef: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+function TQtWidget._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1; // no ref counting
 end;
 
-function TQtWidget._Release: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+function TQtWidget._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -8223,6 +8231,17 @@ procedure TQtMainWindow.setRealPopupParent(NewParent: QWidgetH);
 begin
   FPopupParent := NewParent;
   UpdateParent;
+end;
+
+function TQtMainWindow.WinIDNeeded: boolean;
+begin
+  Result := False;
+  {$IFDEF HASX11}
+  if Assigned(LCLObject) and not IsFormDesign(LCLObject) and
+    not IsMdiChild and (LCLObject.Parent = nil) and not testAttribute(QtWA_Mapped) and
+    QWidget_isTopLevel(Widget) then
+    Result := True;
+  {$ENDIF}
 end;
 
 procedure TQtMainWindow.AttachEvents;
@@ -18450,6 +18469,11 @@ begin
   {$IFDEF QTSCROLLABLEFORMS}
   ScrollArea := nil;
   {$ENDIF}
+end;
+
+function TQtHintWindow.WinIDNeeded: boolean;
+begin
+  Result := False;
 end;
 
 procedure TQtHintWindow.InitializeWidget;
