@@ -41,7 +41,7 @@ uses
   IDEDialogs,
   // IDE
   LazarusIDEStrConsts, InputHistory, EnvironmentOpts,
-  PackageSystem, PackageDefs;
+  PackageSystem, PackageDefs, ProjPackChecks;
   
 type
 
@@ -412,6 +412,7 @@ var
   PkgFile: TPkgFile;
   PkgComponent: TPkgComponent;
   ARequiredPackage: TLazPackage;
+  NewDependency: TPkgDependency;
   ThePath: String;
 begin
   fParams.Clear;
@@ -516,10 +517,13 @@ begin
     fParams.UsedUnitname:=PkgComponent.GetUnitName;
     ARequiredPackage:=PkgComponent.PkgFile.LazPackage;
     ARequiredPackage:=TLazPackage(PackageEditingInterface.RedirectPackageDependency(ARequiredPackage));
-    if (LazPackage<>ARequiredPackage)
-    and not LazPackage.Requires(PkgComponent.PkgFile.LazPackage)
-    then
-      PackageGraph.AddDependencyToPackage(LazPackage, ARequiredPackage);
+    NewDependency:=TPkgDependency.Create;
+    NewDependency.DependencyType:=pdtLazarus;
+    NewDependency.PackageName:=ARequiredPackage.Name;
+    if CheckAddingPackageDependency(LazPackage,NewDependency,false,false)=mrOK then
+      PackageGraph.AddDependencyToPackage(LazPackage, NewDependency)
+    else
+      NewDependency.Free;
   end;
   ModalResult:=mrOk;
 end;
