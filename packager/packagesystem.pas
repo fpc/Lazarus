@@ -45,7 +45,7 @@ uses
   MemCheck,
   {$ENDIF}
   // FPC
-  Classes, SysUtils, contnrs, strutils, Laz_AVL_Tree,
+  Classes, SysUtils, contnrs, strutils, Laz_AVL_Tree, fpmkunit,
   // LCL
   Forms, Controls, Dialogs, LCLProc,
   // LazUtils
@@ -4829,6 +4829,22 @@ var
       Result:=StringReplace(Result,PathDelim,'/',[rfReplaceAll]);
   end;
 
+  function PkgVersionToFPVersionString(const v: TPkgVersion): string;
+  var
+    FPVersion: TFPVersion;
+  begin
+    FPVersion := TFPVersion.Create;
+    try
+      FPVersion.Major := v.Major;
+      FPVersion.Minor := v.Minor;
+      FPVersion.Micro := v.Release;
+      FPVersion.Build := v.Build;
+      Result := FPVersion.AsString;
+    finally
+      FPVersion.Free;
+    end;
+  end;
+
 var
   s: String;
   e: string;
@@ -4929,7 +4945,8 @@ begin
   s:=s+'  with Installer do'+e;
   s:=s+'    begin'+e;
   s:=s+'    P:=AddPackage('''+lowercase(APackage.Name)+''');'+e;
-  s:=s+'    P.Version:='''+APackage.Version.AsString+''';'+e;
+
+  s:=s+'    P.Version:='''+PkgVersionToFPVersionString(APackage.Version)+''';'+e;
   s:=s+''+e;
   s:=s+'    P.Directory:=ADirectory;'+e;
   s:=s+''+e;
