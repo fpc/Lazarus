@@ -466,8 +466,6 @@ begin
       ButtonImageList.himl := 0;
     end;
     Windows.SendMessage(BitBtnHandle, BCM_SETIMAGELIST, 0, LPARAM(@ButtonImageList));
-    if NewBitmap <> 0 then
-      DeleteObject(NewBitmap);
   end else
   begin
     OldBitmap := HBITMAP(Windows.SendMessage(BitBtnHandle, BM_GETIMAGE, IMAGE_BITMAP, 0));
@@ -478,6 +476,8 @@ begin
       DeleteObject(OldBitmap);
   end;
   DeleteDC(hdcNewBitmap);
+  if NewBitmap <> 0 then
+      DeleteObject(NewBitmap);
   ReleaseDC(BitBtnHandle, BitBtnDC);
   BitBtn.Invalidate;
 end;
