@@ -3401,13 +3401,16 @@ begin
       else
         LazPackage.Modified:=false; // clear modified flag, so that it will be closed
     end;
-    if (Result=mrOK) and not MainIDE.IDEIsClosing then
+    if not MainIDE.IDEIsClosing then
     begin
-      EnvironmentOptions.LastOpenPackages.Remove(LazPackage.Filename);
-      MainIDE.SaveEnvironment;
       if FCompiling then begin
         DebugLn(['TPackageEditorForm.CanCloseEditor: ', Caption, ' compiling, do not close.']);
         Result:=mrCancel;
+      end;
+      if Result=mrOK then
+      begin
+        EnvironmentOptions.LastOpenPackages.Remove(LazPackage.Filename);
+        MainIDE.SaveEnvironment;
       end;
     end;
   end;
