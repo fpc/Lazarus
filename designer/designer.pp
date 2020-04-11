@@ -294,6 +294,7 @@ type
     function CopySelectionToStream(AllComponentsStream: TStream): boolean; override;
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               PasteFlags: TComponentPasteSelectionFlags): Boolean; override;
+    function InvokeComponentEditor(AComponent: TComponent): boolean; override;
     function ChangeClass: boolean; override;
 
     procedure DoProcessCommand(Sender: TObject; var Command: word;
@@ -1706,6 +1707,31 @@ end;
 function TDesigner.DeleteSelection: boolean;
 begin
   Result:=DoDeleteSelectedPersistents;
+end;
+
+function TDesigner.InvokeComponentEditor(AComponent: TComponent): boolean;
+begin
+  Result:=false;
+  DebugLn('TDesigner.InvokeComponentEditor A ',AComponent.Name,':',AComponent.ClassName);
+  PopupMenuComponentEditor:=TheFormEditor.GetComponentEditor(AComponent);
+  if PopupMenuComponentEditor=nil then begin
+    DebugLn('TDesigner.InvokeComponentEditor WARNING: no component editor found for ',
+            AComponent.Name,':',AComponent.ClassName);
+    exit;
+  end;
+  DebugLn('TDesigner.InvokeComponentEditor B ',PopupMenuComponentEditor.ClassName);
+  try
+    PopupMenuComponentEditor.Edit;
+    Result:=true;
+  except
+    on E: Exception do begin
+      DebugLn('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
+      IDEMessageDialog(Format(lisErrorIn, [PopupMenuComponentEditor.ClassName]),
+        Format(lisTheComponentEditorOfClassHasCreatedTheError,
+               [PopupMenuComponentEditor.ClassName, LineEnding, E.Message]),
+        mtError,[mbOk]);
+    end;
+  end;
 end;
 
 function TDesigner.ChangeClass: boolean;
