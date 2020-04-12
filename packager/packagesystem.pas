@@ -4845,6 +4845,19 @@ var
     end;
   end;
 
+  function TextToString(const s: string): string;
+  var
+    LineEndingStr: string;
+    i: Integer;
+  begin
+    LineEndingStr := '';
+    for i := 1 to length(LineEnding) do
+      LineEndingStr := LineEndingStr + '#' + IntToStr(Ord(String(sLineBreak)[i]));
+    Result := AnsiQuotedStr(Trim(s), '''');
+    Result := ReplaceStr(Result, #13#10, ''''+LineEndingStr+'''');
+    Result := ReplaceStr(Result, #10, ''''+LineEndingStr+'''');
+  end;
+
 var
   s: String;
   e: string;
@@ -4949,6 +4962,15 @@ begin
   s:=s+'    P.Version:='''+PkgVersionToFPVersionString(APackage.Version)+''';'+e;
   s:=s+''+e;
   s:=s+'    P.Directory:=ADirectory;'+e;
+  s:=s+''+e;
+
+  if APackage.Author<>'' then
+    s:=s+'    P.Author:='+TextToString(APackage.Author)+';'+e;
+  if APackage.License<>'' then
+    s:=s+'    P.License:='+TextToString(APackage.License)+';'+e;
+  if APackage.Description<>'' then
+    s:=s+'    P.Description:='+TextToString(APackage.Description)+';'+e;
+
   s:=s+''+e;
   if APackage.PackageType in [lptDesignTime, lptRunAndDesignTime] then
     s:=s+'    P.Flags.Add(''LazarusDsgnPkg'');'+e+e;
