@@ -103,6 +103,7 @@ begin
       fStatusText := newStatus;
       Synchronize(@Showstatus);
     end;
+    sleep(50); // alternatively the thread may wait for an event. E.g., external I/O
   end;
 end;
 
