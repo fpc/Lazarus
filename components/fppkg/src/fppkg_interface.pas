@@ -94,9 +94,9 @@ function TFppkgInterfaceEx.ConstructFpMakeDependenciesFileSection(APackage: TIDE
 var
   VariantList: TFppkgPackageVariantList;
   Variant: TFppkgPackageVariant;
-  i, j, k: Integer;
   Found: Boolean;
   FilterStr: string;
+  ResourceStr: string;
 
   function ProcessTargetInfo(AFile: TLazPackageFile; variable: string; out FilterStr: string): Boolean;
   var
@@ -128,6 +128,24 @@ var
     end;
   end;
 
+  function ProcessResourceFiles(AFile: TLazPackageFile): string;
+  var
+    PackageFile: TLazPackageFile;
+    j: Integer;
+    BaseName: String;
+  begin
+    Result := '';
+    BaseName := ChangeFileExt(AFile.Filename, '');
+    for j := 0 to APackage.FileCount -1 do
+      begin
+      PackageFile := APackage.Files[j];
+      if (PackageFile.FileType = pftLFM) and SameText(BaseName, ChangeFileExt(PackageFile.Filename, '')) then
+        Result := Result + '    T.ResourceFiles.Add('''+ ExtractFileName(PackageFile.Filename) +''');' + sLineBreak;
+      end;
+  end;
+
+var
+  i, j, k: Integer;
 begin
   Result := '';
   VariantList := TFppkgPackageVariantList.Create(True);
@@ -160,7 +178,13 @@ begin
             Result := Result + '    D := T.Dependencies.AddUnit('''+APackage.files[i].Unit_Name+''');' + LineEnding;
             Result := Result + FilterStr;
             end;
-          end;
+          end
+        else if APackage.Files[i].FileType = pftInclude then
+          if ProcessTargetInfo(APackage.Files[i], 'D', FilterStr) then
+            begin
+            Result := Result + '    D := T.Dependencies.AddInclude('''+APackage.files[i].GetShortFilename(False)+''');' + LineEnding;
+            Result := Result + FilterStr;
+            end;
 
       for i := 0 to APackage.FileCount-1 do
         if (APackage.Files[i].FileType=pftUnit) then
@@ -179,6 +203,8 @@ begin
                   begin
                   Result := Result + '    T := ' + GetComponentName(Variant.Items[k].Name) +'VariantItem.Targets.AddImplicitUnit('''+APackage.Files[i].GetShortFilename(False)+''');' + LineEnding;
                   Result:=Result+FilterStr;
+                  if ResourceStr <> '' then
+                    Result := Result+ResourceStr;
                   end;
                 end;
               end;
@@ -190,8 +216,10 @@ begin
               begin
               Result:=Result+'    T := P.Targets.AddImplicitUnit('''+APackage.Files[i].GetShortFilename(False)+''');'+LineEnding;
               Result:=Result+FilterStr;
+              ResourceStr := ProcessResourceFiles(APackage.Files[i]);
+              if ResourceStr <> '' then
+                Result := Result+ResourceStr;
               end;
-
             end;
           end;
     finally

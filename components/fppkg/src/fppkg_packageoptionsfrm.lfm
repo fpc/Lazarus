@@ -1,43 +1,42 @@
 object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
   Left = 0
-  Height = 1565
+  Height = 745
   Top = 0
-  Width = 1040
-  ClientHeight = 1565
-  ClientWidth = 1040
-  DesignTimePPI = 192
+  Width = 520
+  ClientHeight = 745
+  ClientWidth = 520
   ParentFont = False
   TabOrder = 0
-  DesignLeft = 2768
-  DesignTop = 392
+  DesignLeft = 2800
+  DesignTop = 522
   object gbBuildMethod: TGroupBox
     Left = 0
-    Height = 152
+    Height = 76
     Top = 0
-    Width = 1040
+    Width = 520
     Align = alTop
     Caption = 'Build method'
-    ClientHeight = 132
-    ClientWidth = 1038
+    ClientHeight = 39
+    ClientWidth = 518
     ParentFont = False
     TabOrder = 0
     object Panel1: TPanel
-      Left = 20
-      Height = 80
-      Top = 20
-      Width = 998
+      Left = 10
+      Height = 40
+      Top = 10
+      Width = 498
       Align = alTop
-      BorderSpacing.Around = 20
+      BorderSpacing.Around = 10
       BevelOuter = bvNone
-      ClientHeight = 80
-      ClientWidth = 998
+      ClientHeight = 40
+      ClientWidth = 498
       ParentFont = False
       TabOrder = 0
       object cbBuildMethod: TComboBox
-        Left = 201
-        Height = 80
+        Left = 101
+        Height = 40
         Top = 0
-        Width = 797
+        Width = 397
         Align = alClient
         ItemHeight = 0
         ParentFont = False
@@ -45,13 +44,13 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
         TabOrder = 0
       end
       object Label1: TLabel
-        Left = 6
-        Height = 68
-        Top = 6
-        Width = 109
+        Left = 3
+        Height = 34
+        Top = 3
+        Width = 55
         Align = alLeft
-        BorderSpacing.Right = 80
-        BorderSpacing.Around = 6
+        BorderSpacing.Right = 40
+        BorderSpacing.Around = 3
         Caption = 'Package'
         Layout = tlCenter
         ParentColor = False
@@ -61,94 +60,94 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
   end
   object gbPackageVariant: TGroupBox
     Left = 0
-    Height = 1203
-    Top = 362
-    Width = 1040
+    Height = 564
+    Top = 181
+    Width = 520
     Align = alClient
     Caption = 'Package variants'
-    ClientHeight = 1183
-    ClientWidth = 1038
+    ClientHeight = 527
+    ClientWidth = 518
     ParentFont = False
     TabOrder = 1
     object Panel2: TPanel
       Left = 0
-      Height = 336
-      Top = 100
-      Width = 1038
+      Height = 168
+      Top = 50
+      Width = 518
       Align = alTop
       BevelOuter = bvNone
-      ClientHeight = 336
-      ClientWidth = 1038
+      ClientHeight = 168
+      ClientWidth = 518
       ParentFont = False
       TabOrder = 0
       object lbPackageVariant: TListBox
-        Left = 20
-        Height = 240
-        Top = 76
-        Width = 392
+        Left = 10
+        Height = 119
+        Top = 39
+        Width = 196
         Align = alLeft
-        BorderSpacing.Around = 20
+        BorderSpacing.Around = 10
         ItemHeight = 0
         OnClick = lbPackageVariantClick
         ParentFont = False
-        ScrollWidth = 390
+        ScrollWidth = 194
         TabOrder = 0
         TopIndex = -1
       end
       object Label2: TLabel
-        Left = 20
-        Height = 36
-        Top = 20
-        Width = 998
+        Left = 10
+        Height = 19
+        Top = 10
+        Width = 498
         Align = alTop
-        BorderSpacing.Around = 20
+        BorderSpacing.Around = 10
         Caption = 'Possible variants:'
         ParentColor = False
         ParentFont = False
       end
       object Panel4: TPanel
-        Left = 432
-        Height = 260
-        Top = 76
-        Width = 606
+        Left = 216
+        Height = 129
+        Top = 39
+        Width = 302
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 260
-        ClientWidth = 606
+        ClientHeight = 129
+        ClientWidth = 302
         ParentFont = False
         TabOrder = 1
         object Panel5: TPanel
           Left = 0
-          Height = 100
+          Height = 50
           Top = 0
-          Width = 606
+          Width = 302
           Align = alTop
           BevelOuter = bvNone
-          ClientHeight = 100
-          ClientWidth = 606
+          ClientHeight = 50
+          ClientWidth = 302
           ParentFont = False
           TabOrder = 0
           object Button3: TButton
             Left = 0
-            Height = 60
-            Top = 20
-            Width = 150
+            Height = 30
+            Top = 10
+            Width = 75
             Action = aAddPackageVariantItem
             Align = alLeft
-            BorderSpacing.Top = 20
-            BorderSpacing.Right = 20
-            BorderSpacing.Bottom = 20
+            BorderSpacing.Top = 10
+            BorderSpacing.Right = 10
+            BorderSpacing.Bottom = 10
             ParentFont = False
             TabOrder = 0
           end
           object Button4: TButton
-            Left = 170
-            Height = 60
-            Top = 20
-            Width = 150
+            Left = 85
+            Height = 30
+            Top = 10
+            Width = 75
             Action = aDeletePackageVariantItem
             Align = alLeft
-            BorderSpacing.Around = 20
+            BorderSpacing.Around = 10
             ParentFont = False
             TabOrder = 1
           end
@@ -157,22 +156,22 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
     end
     object Panel3: TPanel
       Left = 0
-      Height = 100
+      Height = 50
       Top = 0
-      Width = 1038
+      Width = 518
       Align = alTop
       BevelOuter = bvNone
-      ClientHeight = 100
-      ClientWidth = 1038
+      ClientHeight = 50
+      ClientWidth = 518
       ParentFont = False
       TabOrder = 1
       object cbPackageVariants: TComboBox
-        Left = 20
-        Height = 60
-        Top = 20
-        Width = 328
+        Left = 10
+        Height = 30
+        Top = 10
+        Width = 163
         Align = alClient
-        BorderSpacing.Around = 20
+        BorderSpacing.Around = 10
         ItemHeight = 0
         OnChange = cbPackageVariantsChange
         ParentFont = False
@@ -180,65 +179,65 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
         TabOrder = 0
       end
       object Button1: TButton
-        Left = 368
-        Height = 60
-        Top = 20
-        Width = 286
+        Left = 183
+        Height = 30
+        Top = 10
+        Width = 143
         Action = aAddPackageVariant
         Align = alRight
-        BorderSpacing.Around = 20
+        BorderSpacing.Around = 10
         ParentFont = False
         TabOrder = 1
       end
       object Button2: TButton
-        Left = 674
-        Height = 60
-        Top = 20
-        Width = 344
+        Left = 336
+        Height = 30
+        Top = 10
+        Width = 172
         Action = aDeletePackageVariant
         Align = alRight
-        BorderSpacing.Around = 20
+        BorderSpacing.Around = 10
         ParentFont = False
         TabOrder = 2
       end
     end
     object pPackageVariantItem: TPanel
       Left = 0
-      Height = 747
-      Top = 436
-      Width = 1038
+      Height = 309
+      Top = 218
+      Width = 518
       Align = alClient
       BevelOuter = bvNone
-      ClientHeight = 747
-      ClientWidth = 1038
+      ClientHeight = 309
+      ClientWidth = 518
       ParentFont = False
       TabOrder = 2
       object lPackageItem: TLabel
-        Left = 20
-        Height = 36
-        Top = 20
-        Width = 998
+        Left = 10
+        Height = 19
+        Top = 10
+        Width = 498
         Align = alTop
-        BorderSpacing.Around = 20
+        BorderSpacing.Around = 10
         Caption = 'Package variant [] - []'
         ParentColor = False
         ParentFont = False
       end
       inline seCompilerOptions: TSynEdit
-        Left = 20
-        Height = 251
-        Top = 76
-        Width = 998
+        Left = 10
+        Height = 60
+        Top = 39
+        Width = 498
         Align = alClient
-        BorderSpacing.Around = 20
-        Font.Height = 26
+        BorderSpacing.Around = 10
+        Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 113
+        Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -691,11 +690,11 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
         OnChange = seCompilerOptionsChange
         inline SynLeftGutterPartList1: TSynGutterPartList
           object SynGutterMarks1: TSynGutterMarks
-            Width = 48
+            Width = 24
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 33
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -705,19 +704,18 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
             LeadingZeros = False
           end
           object SynGutterChanges1: TSynGutterChanges
-            Width = 8
+            Width = 4
             MouseActions = <>
             ModifiedColor = 59900
             SavedColor = clGreen
           end
           object SynGutterSeparator1: TSynGutterSeparator
-            Width = 4
+            Width = 2
             MouseActions = <>
             MarkupInfo.Background = clWhite
             MarkupInfo.Foreground = clGray
           end
           object SynGutterCodeFolding1: TSynGutterCodeFolding
-            Width = 20
             MouseActions = <>
             MarkupInfo.Background = clNone
             MarkupInfo.Foreground = clGray
@@ -728,70 +726,70 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
       end
       object Panel6: TPanel
         Left = 0
-        Height = 400
-        Top = 347
-        Width = 1038
+        Height = 200
+        Top = 109
+        Width = 518
         Align = alBottom
         BevelOuter = bvNone
-        ClientHeight = 400
-        ClientWidth = 1038
+        ClientHeight = 200
+        ClientWidth = 518
         ParentFont = False
         TabOrder = 1
         object lbPackageFiles: TListBox
-          Left = 20
-          Height = 304
-          Top = 76
-          Width = 420
+          Left = 10
+          Height = 151
+          Top = 39
+          Width = 210
           Align = alLeft
-          BorderSpacing.Around = 20
+          BorderSpacing.Around = 10
           ItemHeight = 0
           ParentFont = False
-          ScrollWidth = 418
+          ScrollWidth = 208
           TabOrder = 0
           TopIndex = -1
         end
         object Panel7: TPanel
-          Left = 460
-          Height = 324
-          Top = 76
-          Width = 578
+          Left = 230
+          Height = 161
+          Top = 39
+          Width = 288
           Align = alClient
           BevelOuter = bvNone
-          ClientHeight = 324
-          ClientWidth = 578
+          ClientHeight = 161
+          ClientWidth = 288
           ParentFont = False
           TabOrder = 1
           object Panel8: TPanel
             Left = 0
-            Height = 100
+            Height = 50
             Top = 0
-            Width = 578
+            Width = 288
             Align = alTop
             BevelOuter = bvNone
-            ClientHeight = 100
-            ClientWidth = 578
+            ClientHeight = 50
+            ClientWidth = 288
             ParentFont = False
             TabOrder = 0
             object Button5: TButton
-              Left = 388
-              Height = 60
-              Top = 20
-              Width = 150
+              Left = 194
+              Height = 30
+              Top = 10
+              Width = 75
               Action = aFileAdd
               Align = alLeft
-              BorderSpacing.Around = 20
+              BorderSpacing.Around = 10
               ParentFont = False
               TabOrder = 0
             end
             object cbProjectFiles: TComboBox
-              Left = 20
-              Height = 60
-              Top = 20
-              Width = 348
+              Left = 10
+              Height = 30
+              Top = 10
+              Width = 174
               Align = alLeft
               AutoComplete = True
               AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-              BorderSpacing.Around = 20
+              BorderSpacing.Around = 10
               ItemHeight = 0
               ParentFont = False
               Sorted = True
@@ -801,35 +799,35 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
           end
           object Panel9: TPanel
             Left = 0
-            Height = 100
-            Top = 224
-            Width = 578
+            Height = 50
+            Top = 111
+            Width = 288
             Align = alBottom
             BevelOuter = bvNone
-            ClientHeight = 100
-            ClientWidth = 578
+            ClientHeight = 50
+            ClientWidth = 288
             ParentFont = False
             TabOrder = 1
             object Button6: TButton
-              Left = 20
-              Height = 60
-              Top = 20
-              Width = 204
+              Left = 10
+              Height = 30
+              Top = 10
+              Width = 102
               Action = aFileRemove
               Align = alLeft
-              BorderSpacing.Around = 20
+              BorderSpacing.Around = 10
               ParentFont = False
               TabOrder = 0
             end
           end
         end
         object lPackageItem1: TLabel
-          Left = 20
-          Height = 36
-          Top = 20
-          Width = 998
+          Left = 10
+          Height = 19
+          Top = 10
+          Width = 498
           Align = alTop
-          BorderSpacing.Around = 20
+          BorderSpacing.Around = 10
           Caption = 'Package-files linked to this variant'
           ParentColor = False
           ParentFont = False
@@ -839,30 +837,30 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
   end
   object GroupBox1: TGroupBox
     Left = 0
-    Height = 210
-    Top = 152
-    Width = 1040
+    Height = 105
+    Top = 76
+    Width = 520
     Align = alTop
     Caption = 'Custom FPMake code'
-    ClientHeight = 190
-    ClientWidth = 1038
+    ClientHeight = 68
+    ClientWidth = 518
     ParentFont = False
     TabOrder = 2
     inline seCustomFPMakeCode: TSynEdit
-      Left = 20
-      Height = 150
-      Top = 20
-      Width = 998
+      Left = 10
+      Height = 48
+      Top = 10
+      Width = 498
       Align = alClient
-      BorderSpacing.Around = 20
-      Font.Height = 26
+      BorderSpacing.Around = 10
+      Font.Height = 13
       Font.Name = 'DejaVu Sans Mono'
       Font.Pitch = fpFixed
       Font.Quality = fqNonAntialiased
       ParentColor = False
       ParentFont = False
       TabOrder = 0
-      Gutter.Width = 113
+      Gutter.Width = 57
       Gutter.MouseActions = <>
       RightGutter.Width = 0
       RightGutter.MouseActions = <>
@@ -1314,11 +1312,11 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
       LineHighlightColor.Foreground = clNone
       inline SynLeftGutterPartList1: TSynGutterPartList
         object SynGutterMarks1: TSynGutterMarks
-          Width = 48
+          Width = 24
           MouseActions = <>
         end
         object SynGutterLineNumber1: TSynGutterLineNumber
-          Width = 33
+          Width = 17
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
@@ -1328,19 +1326,18 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
           LeadingZeros = False
         end
         object SynGutterChanges1: TSynGutterChanges
-          Width = 8
+          Width = 4
           MouseActions = <>
           ModifiedColor = 59900
           SavedColor = clGreen
         end
         object SynGutterSeparator1: TSynGutterSeparator
-          Width = 4
+          Width = 2
           MouseActions = <>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
         end
         object SynGutterCodeFolding1: TSynGutterCodeFolding
-          Width = 20
           MouseActions = <>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
@@ -1351,8 +1348,8 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
     end
   end
   object ActionList: TActionList
-    Left = 720
-    Top = 448
+    Left = 360
+    Top = 224
     object aAddPackageVariant: TAction
       Caption = 'Add package variant'
       OnExecute = aAddPackageVariantExecute
