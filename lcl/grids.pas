@@ -42,7 +42,7 @@ uses
   LazFileUtils, DynamicArray, Maps, LazUTF8, LazUtf8Classes, Laz2_XMLCfg,
   LazLoggerBase, LazUtilities, LCSVUtils, IntegerList
 {$ifdef WINDOWS}
-  ,messages
+  ,messages, imm
 {$endif}
   ;
 
@@ -1351,6 +1351,7 @@ type
   protected
     procedure IMEStartComposition(var Msg:TMessage); message WM_IME_STARTCOMPOSITION;
     procedure IMEComposition(var Msg:TMessage); message WM_IME_COMPOSITION;
+    procedure IMEEndComposition(var Msg:TMessage); message WM_IME_ENDCOMPOSITION;
 {$endif}
   end;
 
@@ -9990,29 +9991,36 @@ begin
 end;
 
 {$ifdef WINDOWS}
+// editor focusing make bad on IME input.
 procedure TCustomGrid.IMEStartComposition(var Msg: TMessage);
 begin
-  // enable editor
-  SelectEditor;
-  EditorShow(True);
-  if Editor<>nil then
-    Msg.Result:=SendMessage(Editor.Handle,Msg.msg,Msg.wParam,Msg.lParam);
+  EditorSetValue;
+  if EditingAllowed(FCol) and CanEditShow and (not FEditorShowing) and
+     (Editor<>nil) and (not Editor.Visible) and (not EditorLocked) then
+  begin
+    // prepare IME input on Editor
+    Editor.Visible:=True;
+    FEditorOldValue := GetCells(FCol,FRow);
+    EditorSelectAll;
+    FGridState := gsNormal;
+    Editor.Dispatch(Msg);
+  end;
 end;
 
 procedure TCustomGrid.IMEComposition(var Msg: TMessage);
-var
-  wc : pWideChar;
-  s : string;
 begin
-  wc := @Msg.wParamlo;
-  s := Ansistring(WideCharLenToString(wc,1));
-  // check valid mbcs
-  if (Length(s)>0) and (s[1]<>'?') then
-    Msg.wParamlo:=swap(pword(@s[1])^);
-  // send first mbcs to editor
-  if Editor<>nil then
-    Msg.Result:=SendMessage(Editor.Handle,Msg.msg,Msg.wParam,Msg.lParam);
+  if EditingAllowed(FCol) and CanEditShow and (not FEditorShowing) and
+     (Editor<>nil) and (not Editor.Visible) and (not EditorLocked) then
+    Editor.Dispatch(Msg);
 end;
+
+procedure TCustomGrid.IMEEndComposition(var Msg: TMessage);
+begin
+  if EditingAllowed(FCol) and CanEditShow and (not FEditorShowing) and
+     (Editor<>nil) and (not Editor.Visible) and (not EditorLocked) then
+    Editor.Dispatch(Msg);
+end;
+
 {$endif}
 
 function TCustomGrid.ClearCols: Boolean;
