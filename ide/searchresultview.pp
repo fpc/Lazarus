@@ -159,10 +159,8 @@ type
     ToolBar: TToolBar;
     SearchAgainButton: TToolButton;
     CloseTabs: TToolBar;
-    ToolButton1: TToolButton;
     ClosePageButton: TToolButton;
     SearchInListEdit: TTreeFilterEdit;
-    ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     tbbCloseAll: TToolButton;
     procedure actNextPageExecute(Sender: TObject);

@@ -13,7 +13,6 @@ object SearchResultsView: TSearchResultsView
   OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
-  LCLVersion = '2.1.0.0'
   object ResultsNoteBook: TPageControl
     Left = 0
     Height = 249
@@ -70,7 +69,7 @@ object SearchResultsView: TSearchResultsView
       Left = 53
       Height = 23
       Top = 2
-      Width = 542
+      Width = 550
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 2
@@ -83,10 +82,10 @@ object SearchResultsView: TSearchResultsView
       OnChange = SearchInListChange
     end
     object CloseTabs: TToolBar
-      Left = 600
+      Left = 616
       Height = 22
       Top = 3
-      Width = 118
+      Width = 102
       Align = alNone
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Around = 2
@@ -97,50 +96,36 @@ object SearchResultsView: TSearchResultsView
       TabOrder = 2
       Wrapable = False
       object tbbCloseLeft: TToolButton
-        AnchorSideRight.Control = ToolButton1
         Left = 2
         Top = 0
         Action = actCloseLeft
       end
       object tbbCloseRight: TToolButton
-        Left = 64
+        Left = 48
         Top = 0
         Action = actCloseRight
       end
       object tbbCloseOthers: TToolButton
-        Left = 33
+        Left = 25
         Top = 0
         Action = actCloseOthers
       end
-      object ToolButton1: TToolButton
-        Left = 25
-        Height = 22
-        Top = 0
-        Style = tbsSeparator
-      end
       object ToolButton3: TToolButton
-        Left = 87
+        Left = 71
         Height = 22
         Top = 0
         Style = tbsSeparator
       end
       object tbbCloseAll: TToolButton
-        Left = 95
+        Left = 79
         Top = 0
         Action = actCloseAll
-      end
-      object ToolButton2: TToolButton
-        Left = 56
-        Height = 22
-        Top = 0
-        Caption = 'ToolButton2'
-        Style = tbsSeparator
       end
     end
   end
   object popList: TPopupMenu
-    Left = 129
-    Top = 48
+    left = 129
+    top = 48
     object mniCopyItem: TMenuItem
       Caption = 'Copy Item'
       OnClick = mniCopyItemClick
@@ -166,8 +151,8 @@ object SearchResultsView: TSearchResultsView
     end
   end
   object ActionList: TActionList
-    Left = 32
-    Top = 48
+    left = 32
+    top = 48
     object actClosePage: TAction
       ImageIndex = 1
       OnExecute = ClosePageButtonClick

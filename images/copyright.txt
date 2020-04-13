@@ -33,6 +33,10 @@ actions directory:
 	previous_word.png
 	restore_default.png
 	restore_defaults.png
+	tab_close_All.png
+	tab_close_L.png
+	tab_close_LR.png
+	tab_close_R.png
 
 debugger directory:
 	debugger_call_stack.png
