@@ -30,9 +30,11 @@ uses
   SysUtils, Classes, laz.VirtualTrees,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls, ButtonPanel,
+  // IdeIntf
+   PackageIntf,
   // OpkMan
   opkman_installer, opkman_common, opkman_const, opkman_downloader, opkman_zipper,
-  opkman_options, opkman_maindm;
+  opkman_options, opkman_maindm, opkman_serializablepackages;
 
 type
 
@@ -403,6 +405,7 @@ var
   Msg: String;
   Node: PVirtualNode;
   Data: PData;
+  LazarusPkg: TLazarusPackage;
 begin
   Node := FVST.AddChild(nil);
   Data := FVST.GetNodeData(Node);
@@ -432,6 +435,17 @@ begin
     PackageInstaller.OnPackageInstallError := nil;
     PackageInstaller.NeedToBreak := True;
     Close;
+    if MessageDlgEx(rsMainFrm_VSTText_Open + ' "' + APackageName + '" ?', mtConfirmation, [mbYes, mbNo], Self) = mrYes then
+    begin
+      LazarusPkg := SerializablePackages.FindLazarusPackage(APackageName);
+       if (LazarusPkg <> nil) and (FileExists(LazarusPkg.PackageAbsolutePath)) then
+       begin
+         if PackageEditingInterface.DoOpenPackageFile(LazarusPkg.PackageAbsolutePath, [], True) <> mrOk then
+           MessageDlgEx(rsMainFrm_VSTText_Open_Error, mtError, [mbOk], TForm(FVST.Parent.Parent));
+       end
+       else
+         MessageDlgEx(rsMainFrm_VSTText_Open_Notfound, mtError, [mbOk], TForm(FVST.Parent.Parent));
+    end
   end;
   Application.ProcessMessages;
 end;

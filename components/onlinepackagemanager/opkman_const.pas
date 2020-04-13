@@ -54,8 +54,8 @@ const
   cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-i386-win32.zip';
   {$endif}
   cExtractDir = 'ExtractDir';
-  cSubmitURL_Zip =  'aHR0cDovL2xhemFydXNvcG0uMDAwd2ViaG9zdGFwcC5jb20vemlwLnBocA==';
-  cSubmitURL_JSON = 'aHR0cDovL2xhemFydXNvcG0uMDAwd2ViaG9zdGFwcC5jb20vanNvbi5waHA=';
+  cSubmitURL_Zip =  'aHR0cDovL2xhemFydXNvcG0ub3JnL3ppcC5waHA=';
+  cSubmitURL_JSON = 'aHR0cDovL2xhemFydXNvcG0ub3JnL2pzb24ucGhw';
   cSep = '#@$%^';
 
 resourcestring
@@ -139,6 +139,9 @@ resourcestring
   rsMainFrm_VSTText_PackageCategory27 = 'Games and Game Engines';
   rsMainFrm_VSTText_Desc = 'Description for package';
   rsMainFrm_VSTText_Lic = 'License info for package';
+  rsMainFrm_VSTText_Open = 'Open';
+  rsMainFrm_VSTText_Open_Notfound = 'Package file not found';
+  rsMainFrm_VSTText_Open_Error = 'Cannot open package file';
   rsMainFrm_VSTText_ComDesc = 'Community description for metapackage';
   rsMainFrm_cbAll_Caption = 'All/None';
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
