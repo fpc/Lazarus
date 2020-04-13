@@ -1087,6 +1087,22 @@ msgctxt "opkman_const.rsmainfrm_vsttext_license"
 msgid "License"
 msgstr "许可:"
 
+#: opkman_const.rsmainfrm_vsttext_open
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_open"
+msgid "Open"
+msgstr "打开"
+
+#: opkman_const.rsmainfrm_vsttext_open_error
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_open_error"
+msgid "Cannot open package file."
+msgstr "不能打开包文件."
+
+#: opkman_const.rsmainfrm_vsttext_open_notfound
+msgid "Package file not found."
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
 msgstr "包分类"
@@ -1796,6 +1812,7 @@ msgid "No valid download link found."
 msgstr "没有有效的下载链接找到."
 
 #: opkman_const.rsprogressfrm_error7
+msgctxt "opkman_const.rsprogressfrm_error7"
 msgid "Cannot open package file."
 msgstr "不能打开包文件."
 

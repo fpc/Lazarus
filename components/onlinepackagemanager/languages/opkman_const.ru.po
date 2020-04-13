@@ -1054,6 +1054,20 @@ msgctxt "opkman_const.rsmainfrm_vsttext_license"
 msgid "License"
 msgstr "Лицензия"
 
+#: opkman_const.rsmainfrm_vsttext_open
+msgctxt "opkman_const.rsmainfrm_vsttext_open"
+msgid "Open"
+msgstr "Открыть"
+
+#: opkman_const.rsmainfrm_vsttext_open_error
+msgctxt "opkman_const.rsmainfrm_vsttext_open_error"
+msgid "Cannot open package file."
+msgstr "Невозможно открыть файл пакета."
+
+#: opkman_const.rsmainfrm_vsttext_open_notfound
+msgid "Package file not found."
+msgstr "Файл пакета не найден."
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
 msgstr "Категория пакета"
@@ -1761,6 +1775,7 @@ msgid "No valid download link found."
 msgstr "Не найдено корректной ссылки для загрузки."
 
 #: opkman_const.rsprogressfrm_error7
+msgctxt "opkman_const.rsprogressfrm_error7"
 msgid "Cannot open package file."
 msgstr "Невозможно открыть файл пакета."
 

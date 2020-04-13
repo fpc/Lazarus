@@ -1086,6 +1086,22 @@ msgctxt "opkman_const.rsmainfrm_vsttext_license"
 msgid "License"
 msgstr "Lisenssi"
 
+#: opkman_const.rsmainfrm_vsttext_open
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_open"
+msgid "Open"
+msgstr "Avaa"
+
+#: opkman_const.rsmainfrm_vsttext_open_error
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_open_error"
+msgid "Cannot open package file."
+msgstr "Ei voi avata pakettitiedostoa."
+
+#: opkman_const.rsmainfrm_vsttext_open_notfound
+msgid "Package file not found."
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
 msgstr "Paketin luokka"
@@ -1795,6 +1811,7 @@ msgid "No valid download link found."
 msgstr "Kelvollista latausosoitetta ei löydy."
 
 #: opkman_const.rsprogressfrm_error7
+msgctxt "opkman_const.rsprogressfrm_error7"
 msgid "Cannot open package file."
 msgstr "Ei voi avata pakettitiedostoa."
 

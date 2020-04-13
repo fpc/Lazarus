@@ -140,8 +140,8 @@ resourcestring
   rsMainFrm_VSTText_Desc = 'Description for package';
   rsMainFrm_VSTText_Lic = 'License info for package';
   rsMainFrm_VSTText_Open = 'Open';
-  rsMainFrm_VSTText_Open_Notfound = 'Package file not found';
-  rsMainFrm_VSTText_Open_Error = 'Cannot open package file';
+  rsMainFrm_VSTText_Open_Notfound = 'Package file not found.';
+  rsMainFrm_VSTText_Open_Error = 'Cannot open package file.';
   rsMainFrm_VSTText_ComDesc = 'Community description for metapackage';
   rsMainFrm_cbAll_Caption = 'All/None';
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
