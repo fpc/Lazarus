@@ -5307,6 +5307,48 @@ begin
   Result := QtButtonToResult(Result);
 end;
 
+function TQtWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord
+  ): HMONITOR;
+var
+  AQtPoint: TQtPoint;
+  Monitor: Integer;
+begin
+  Result := MONITOR_UNIMPL;
+  AQtPoint := QtPoint(ptScreenCoords.x, ptScreenCoords.y);
+  Monitor := QDesktopWidget_screenNumber(QApplication_desktop(), PQtPoint(@AQtPoint));
+  if (Monitor >= 0) then
+    Result := HMONITOR(Monitor + 1);
+end;
+
+function TQtWidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord
+  ): HMONITOR;
+var
+  AQtPoint: TQtPoint;
+  Monitor: Integer;
+begin
+  Result := MONITOR_UNIMPL;
+  Monitor := -1;
+  if lprcScreenCoords <> nil then
+  begin
+    AQtPoint := QtPoint(lprcScreenCoords^.Left, lprcScreenCoords^.Top);
+    Monitor := QDesktopWidget_screenNumber(QApplication_desktop(), PQtPoint(@AQtPoint));
+  end;
+  if (Monitor >= 0) then
+    Result := HMONITOR(Monitor + 1);
+end;
+
+function TQtWidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+var
+  Monitor: Integer;
+begin
+  Result := MONITOR_UNIMPL;
+  Monitor := -1;
+  if (hwnd > 0) and IsValidHandle(hWnd) then
+    Monitor := QDesktopWidget_screenNumber(QApplication_desktop(), TQtWidget(hWnd).Widget);
+  if (Monitor >= 0) then
+    Result := HMONITOR(Monitor + 1);
+end;
+
 {------------------------------------------------------------------------------
   Function: MoveToEx
   Params:  none
