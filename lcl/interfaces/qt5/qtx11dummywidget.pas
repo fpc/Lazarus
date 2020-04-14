@@ -69,12 +69,13 @@ begin
     writeln('ShowDummyWidget(start) WindowManager="',GetWindowManager,'" Compositing enabled="',QX11Info_isCompositingManagerRunning,'" IsWayland="',IsWayland,'" MaxLoops=',AMaxLoops);
     ATicks := GetTickCount64;
     {$ENDIF}
-    if (ALeft <= 0) and (ATop <= 0) and (AWidth <= 0) and (AHeight <= 0) then
+    if (ALeft <= 0) or (ATop <= 0) or (AWidth <= 0) or (AHeight <= 0) then
     begin
       //move off visible screen, some wm's does not allow such construct.
-      QWidget_move(Widget, -200, 0);
+      QScreen_geometry(QGuiApplication_primaryScreen(), @R);
+      QWidget_move(Widget, R.CenterPoint.x, R.CenterPoint.y);
       //set some reasonable size
-      QWidget_resize(Widget, 100, 75);
+      QWidget_resize(Widget, 75, 32);
     end else
     begin
       QWidget_move(Widget, ALeft + 1, ATop + 1);
