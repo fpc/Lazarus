@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="LCL"/>
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
@@ -130,7 +130,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Minor="1"/>
-    <Files Count="485">
+    <Files Count="487">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1630,779 +1630,789 @@ end;"/>
         <UnitName Value="QtWSStdCtrls"/>
       </Item321>
       <Item322>
-        <Filename Value="qt/qtx11.inc"/>
-        <Type Value="Include"/>
-      </Item322>
-      <Item323>
-        <Filename Value="cocoa/cocoawsbuttons.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="cocoawsbuttons"/>
-      </Item323>
-      <Item324>
-        <Filename Value="customdrawn/wincallback.inc"/>
-        <Type Value="Include"/>
-      </Item324>
-      <Item325>
-        <Filename Value="customdrawn/customdrawn_winproc.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawn_winproc"/>
-      </Item325>
-      <Item326>
-        <Filename Value="customdrawn/alllclintfunits.pas"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item326>
-      <Item327>
-        <Filename Value="customdrawn/customdrawndefines.inc"/>
-        <Type Value="Include"/>
-      </Item327>
-      <Item328>
-        <Filename Value="customdrawn/customdrawnint.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnInt"/>
-      </Item328>
-      <Item329>
-        <Filename Value="customdrawn/customdrawnobject.inc"/>
-        <Type Value="Include"/>
-      </Item329>
-      <Item330>
-        <Filename Value="customdrawn/customdrawnobject_cocoa.inc"/>
-        <Type Value="Include"/>
-      </Item330>
-      <Item331>
-        <Filename Value="customdrawn/customdrawnobject_win.inc"/>
-        <Type Value="Include"/>
-      </Item331>
-      <Item332>
-        <Filename Value="customdrawn/customdrawnwscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSControls"/>
-      </Item332>
-      <Item333>
-        <Filename Value="customdrawn/customdrawnwsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSFactory"/>
-      </Item333>
-      <Item334>
-        <Filename Value="customdrawn/customdrawnwsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSForms"/>
-      </Item334>
-      <Item335>
-        <Filename Value="customdrawn/interfaces.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item335>
-      <Item336>
-        <Filename Value="customdrawn/customdrawnwsforms_win.inc"/>
-        <Type Value="Include"/>
-        <UnitName Value="customdrawnwsforms_win"/>
-      </Item336>
-      <Item337>
-        <Filename Value="customdrawn/customdrawnwsforms_x11.inc"/>
-        <Type Value="Include"/>
-        <UnitName Value="customdrawnwsforms_x11"/>
-      </Item337>
-      <Item338>
-        <Filename Value="customdrawn/customdrawnobject_x11.inc"/>
-        <Type Value="Include"/>
-        <UnitName Value="customdrawnobject_x11"/>
-      </Item338>
-      <Item339>
-        <Filename Value="customdrawn/cocoagdiobjects.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaGDIObjects"/>
-      </Item339>
-      <Item340>
-        <Filename Value="customdrawn/customdrawn_cocoaproc.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawn_cocoaproc"/>
-      </Item340>
-      <Item341>
-        <Filename Value="customdrawn/cocoautils.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaUtils"/>
-      </Item341>
-      <Item342>
-        <Filename Value="customdrawn/customdrawnlclintf.inc"/>
-        <Type Value="Include"/>
-      </Item342>
-      <Item343>
-        <Filename Value="customdrawn/customdrawnlclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item343>
-      <Item344>
-        <Filename Value="customdrawn/customdrawnwinapi_cocoa.inc"/>
-        <Type Value="Include"/>
-      </Item344>
-      <Item345>
-        <Filename Value="customdrawn/customdrawnwinapi_win.inc"/>
-        <Type Value="Include"/>
-      </Item345>
-      <Item346>
-        <Filename Value="customdrawn/customdrawnwinapi.inc"/>
-        <Type Value="Include"/>
-      </Item346>
-      <Item347>
-        <Filename Value="customdrawn/customdrawnwinapih.inc"/>
-        <Type Value="Include"/>
-      </Item347>
-      <Item348>
-        <Filename Value="customdrawn/customdrawnwsforms_cocoa.inc"/>
-        <Type Value="Include"/>
-      </Item348>
-      <Item349>
-        <Filename Value="customdrawn/customdrawnproc.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawnproc"/>
-      </Item349>
-      <Item350>
-        <Filename Value="customdrawn/customdrawn_x11proc.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawn_x11proc"/>
-      </Item350>
-      <Item351>
-        <Filename Value="customdrawn/customdrawnwinapi_x11.inc"/>
-        <Type Value="Include"/>
-      </Item351>
-      <Item352>
-        <Filename Value="customdrawn/customdrawn_androidproc.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawn_androidproc"/>
-      </Item352>
-      <Item353>
-        <Filename Value="customdrawn/customdrawnobject_android.inc"/>
-        <Type Value="Include"/>
-      </Item353>
-      <Item354>
-        <Filename Value="customdrawn/customdrawnwinapi_android.inc"/>
-        <Type Value="Include"/>
-      </Item354>
-      <Item355>
-        <Filename Value="customdrawn/customdrawnwsforms_android.inc"/>
-        <Type Value="Include"/>
-      </Item355>
-      <Item356>
-        <Filename Value="customdrawn/android/android_native_app_glue.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="android_native_app_glue"/>
-      </Item356>
-      <Item357>
-        <Filename Value="customdrawn/android/asset_manager.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="asset_manager"/>
-      </Item357>
-      <Item358>
-        <Filename Value="customdrawn/android/configuration.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="configuration"/>
-      </Item358>
-      <Item359>
-        <Filename Value="customdrawn/android/egl.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="egl"/>
-      </Item359>
-      <Item360>
-        <Filename Value="customdrawn/android/gles.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gles"/>
-      </Item360>
-      <Item361>
-        <Filename Value="customdrawn/android/input.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="input"/>
-      </Item361>
-      <Item362>
-        <Filename Value="customdrawn/android/jni.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="jni"/>
-      </Item362>
-      <Item363>
-        <Filename Value="customdrawn/android/keycodes.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="keycodes"/>
-      </Item363>
-      <Item364>
-        <Filename Value="customdrawn/android/log.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="log"/>
-      </Item364>
-      <Item365>
-        <Filename Value="customdrawn/android/looper.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="looper"/>
-      </Item365>
-      <Item366>
-        <Filename Value="customdrawn/android/native_activity.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="native_activity"/>
-      </Item366>
-      <Item367>
-        <Filename Value="customdrawn/android/native_window.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="native_window"/>
-      </Item367>
-      <Item368>
-        <Filename Value="customdrawn/android/rect.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="rect"/>
-      </Item368>
-      <Item369>
-        <Filename Value="customdrawn/android/bitmap.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="bitmap"/>
-      </Item369>
-      <Item370>
-        <Filename Value="customdrawn/customdrawnwsstdctrls.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSStdCtrls"/>
-      </Item370>
-      <Item371>
-        <Filename Value="customdrawn/customdrawnwscomctrls.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSComCtrls"/>
-      </Item371>
-      <Item372>
-        <Filename Value="customdrawn/customdrawnwsextctrls.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSExtCtrls"/>
-      </Item372>
-      <Item373>
-        <Filename Value="customdrawn/customdrawnprivate.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawnprivate"/>
-      </Item373>
-      <Item374>
-        <Filename Value="customdrawn/customdrawnlclintf_android.inc"/>
-        <Type Value="Include"/>
-      </Item374>
-      <Item375>
-        <Filename Value="customdrawn/customdrawnlclintf_cocoa.inc"/>
-        <Type Value="Include"/>
-      </Item375>
-      <Item376>
-        <Filename Value="customdrawn/customdrawnlclintf_win.inc"/>
-        <Type Value="Include"/>
-      </Item376>
-      <Item377>
-        <Filename Value="customdrawn/customdrawnlclintf_x11.inc"/>
-        <Type Value="Include"/>
-      </Item377>
-      <Item378>
-        <Filename Value="customdrawn/customdrawntrayicon_android.inc"/>
-        <Type Value="Include"/>
-      </Item378>
-      <Item379>
-        <Filename Value="customdrawn/customdrawntrayicon_cocoa.inc"/>
-        <Type Value="Include"/>
-      </Item379>
-      <Item380>
-        <Filename Value="customdrawn/customdrawntrayicon_win.inc"/>
-        <Type Value="Include"/>
-      </Item380>
-      <Item381>
-        <Filename Value="cocoa/cocoacaret.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaCaret"/>
-      </Item381>
-      <Item382>
-        <Filename Value="customdrawn/customdrawntrayicon_x11.inc"/>
-        <Type Value="Include"/>
-      </Item382>
-      <Item383>
-        <Filename Value="customdrawn/customdrawnwslazdeviceapis.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSLazDeviceAPIS"/>
-      </Item383>
-      <Item384>
-        <Filename Value="nogui/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item384>
-      <Item385>
-        <Filename Value="nogui/interfaces.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item385>
-      <Item386>
-        <Filename Value="nogui/noguiint.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="NoGUIInt"/>
-      </Item386>
-      <Item387>
-        <Filename Value="nogui/noguiwsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="NoGUIWSFactory"/>
-      </Item387>
-      <Item388>
-        <Filename Value="customdrawn/customdrawnwsspin.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawnwsspin"/>
-      </Item388>
-      <Item389>
-        <Filename Value="customdrawn/customdrawnwsbuttons.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawnwsbuttons"/>
-      </Item389>
-      <Item390>
-        <Filename Value="customdrawn/customdrawnwsdialogs.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawnwsdialogs"/>
-      </Item390>
-      <Item391>
-        <Filename Value="customdrawn/customdrawnwsmenus_cocoa.inc"/>
-        <Type Value="Include"/>
-      </Item391>
-      <Item392>
-        <Filename Value="customdrawn/customdrawnwsmenus.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CustomDrawnWSMenus"/>
-      </Item392>
-      <Item393>
-        <Filename Value="gtk2/gtk2disableliboverlay.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gtk2disableliboverlay"/>
-      </Item393>
-      <Item394>
-        <Filename Value="gtk3/gtk3int.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gtk3int"/>
-      </Item394>
-      <Item395>
-        <Filename Value="gtk3/gtk3winapih.inc"/>
-        <Type Value="Include"/>
-      </Item395>
-      <Item396>
-        <Filename Value="gtk3/interfaces.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="interfaces"/>
-      </Item396>
-      <Item397>
-        <Filename Value="gtk3/gtk3cellrenderer.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3CellRenderer"/>
-      </Item397>
-      <Item398>
-        <Filename Value="gtk3/gtk3lclintf.inc"/>
-        <Type Value="Include"/>
-      </Item398>
-      <Item399>
-        <Filename Value="gtk3/gtk3lclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item399>
-      <Item400>
-        <Filename Value="gtk3/gtk3object.inc"/>
-        <Type Value="Include"/>
-      </Item400>
-      <Item401>
-        <Filename Value="gtk3/gtk3objects.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gtk3objects"/>
-      </Item401>
-      <Item402>
-        <Filename Value="gtk3/gtk3private.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gtk3private"/>
-      </Item402>
-      <Item403>
-        <Filename Value="gtk3/gtk3procs.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gtk3procs"/>
-      </Item403>
-      <Item404>
-        <Filename Value="gtk3/gtk3widgets.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gtk3widgets"/>
-      </Item404>
-      <Item405>
-        <Filename Value="gtk3/gtk3winapi.inc"/>
-        <Type Value="Include"/>
-      </Item405>
-      <Item406>
-        <Filename Value="gtk3/gtk3wsbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSButtons"/>
-      </Item406>
-      <Item407>
-        <Filename Value="gtk3/gtk3wschecklst.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSCheckLst"/>
-      </Item407>
-      <Item408>
-        <Filename Value="gtk3/gtk3wscomctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSComCtrls"/>
-      </Item408>
-      <Item409>
-        <Filename Value="gtk3/gtk3wscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSControls"/>
-      </Item409>
-      <Item410>
-        <Filename Value="gtk3/gtk3wsextctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSExtCtrls"/>
-      </Item410>
-      <Item411>
-        <Filename Value="gtk3/gtk3wsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSFactory"/>
-      </Item411>
-      <Item412>
-        <Filename Value="gtk3/gtk3wsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSForms"/>
-      </Item412>
-      <Item413>
-        <Filename Value="gtk3/gtk3wsimglist.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSImgList"/>
-      </Item413>
-      <Item414>
-        <Filename Value="gtk3/gtk3wsmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSMenus"/>
-      </Item414>
-      <Item415>
-        <Filename Value="gtk3/gtk3wsspin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSSpin"/>
-      </Item415>
-      <Item416>
-        <Filename Value="gtk3/gtk3wsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSStdCtrls"/>
-      </Item416>
-      <Item417>
-        <Filename Value="gtk3/gtk3defines.inc"/>
-        <Type Value="Include"/>
-      </Item417>
-      <Item418>
-        <Filename Value="gtk3/gtk3wscalendar.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk3WSCalendar"/>
-      </Item418>
-      <Item419>
-        <Filename Value="gtk3/gtk3bindings/lazatk1.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazAtk1"/>
-      </Item419>
-      <Item420>
-        <Filename Value="gtk3/gtk3bindings/lazcairo1.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazCairo1"/>
-      </Item420>
-      <Item421>
-        <Filename Value="gtk3/gtk3bindings/lazgdk3.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazGdk3"/>
-      </Item421>
-      <Item422>
-        <Filename Value="gtk3/gtk3bindings/lazgdkpixbuf2.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazGdkPixbuf2"/>
-      </Item422>
-      <Item423>
-        <Filename Value="gtk3/gtk3bindings/lazgio2.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazGio2"/>
-      </Item423>
-      <Item424>
-        <Filename Value="gtk3/gtk3bindings/lazglib2.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazGLib2"/>
-      </Item424>
-      <Item425>
-        <Filename Value="gtk3/gtk3bindings/lazgmodule2.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazGModule2"/>
-      </Item425>
-      <Item426>
-        <Filename Value="gtk3/gtk3bindings/lazgobject2.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazGObject2"/>
-      </Item426>
-      <Item427>
-        <Filename Value="gtk3/gtk3bindings/lazgtk3.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazGtk3"/>
-      </Item427>
-      <Item428>
-        <Filename Value="cocoa/cocoawsdialogs.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSDialogs"/>
-      </Item428>
-      <Item429>
-        <Filename Value="gtk3/gtk3bindings/lazpango1.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazPango1"/>
-      </Item429>
-      <Item430>
-        <Filename Value="gtk3/gtk3bindings/lazpangocairo1.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazPangoCairo1"/>
-      </Item430>
-      <Item431>
-        <Filename Value="cocoa/cocoalclintf.inc"/>
-        <Type Value="Include"/>
-      </Item431>
-      <Item432>
-        <Filename Value="cocoa/cocoalclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item432>
-      <Item433>
-        <Filename Value="cocoa/cocoathemes.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaThemes"/>
-      </Item433>
-      <Item434>
-        <Filename Value="cocoa/cocoawscomctrls.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSComCtrls"/>
-      </Item434>
-      <Item435>
-        <Filename Value="cocoa/cocoadatepicker.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaDatePicker"/>
-      </Item435>
-      <Item436>
         <Filename Value="qt/qtsystemtrayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtsystemtrayicon"/>
+      </Item322>
+      <Item323>
+        <Filename Value="qt/qtx11.inc"/>
+        <Type Value="Include"/>
+      </Item323>
+      <Item324>
+        <Filename Value="qt/qtx11dummywidget.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtx11dummywidget"/>
+      </Item324>
+      <Item325>
+        <Filename Value="cocoa/cocoawsbuttons.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoawsbuttons"/>
+      </Item325>
+      <Item326>
+        <Filename Value="customdrawn/wincallback.inc"/>
+        <Type Value="Include"/>
+      </Item326>
+      <Item327>
+        <Filename Value="customdrawn/customdrawn_winproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawn_winproc"/>
+      </Item327>
+      <Item328>
+        <Filename Value="customdrawn/alllclintfunits.pas"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item328>
+      <Item329>
+        <Filename Value="customdrawn/customdrawndefines.inc"/>
+        <Type Value="Include"/>
+      </Item329>
+      <Item330>
+        <Filename Value="customdrawn/customdrawnint.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnInt"/>
+      </Item330>
+      <Item331>
+        <Filename Value="customdrawn/customdrawnobject.inc"/>
+        <Type Value="Include"/>
+      </Item331>
+      <Item332>
+        <Filename Value="customdrawn/customdrawnobject_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item332>
+      <Item333>
+        <Filename Value="customdrawn/customdrawnobject_win.inc"/>
+        <Type Value="Include"/>
+      </Item333>
+      <Item334>
+        <Filename Value="customdrawn/customdrawnwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSControls"/>
+      </Item334>
+      <Item335>
+        <Filename Value="customdrawn/customdrawnwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSFactory"/>
+      </Item335>
+      <Item336>
+        <Filename Value="customdrawn/customdrawnwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSForms"/>
+      </Item336>
+      <Item337>
+        <Filename Value="customdrawn/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item337>
+      <Item338>
+        <Filename Value="customdrawn/customdrawnwsforms_win.inc"/>
+        <Type Value="Include"/>
+        <UnitName Value="customdrawnwsforms_win"/>
+      </Item338>
+      <Item339>
+        <Filename Value="customdrawn/customdrawnwsforms_x11.inc"/>
+        <Type Value="Include"/>
+        <UnitName Value="customdrawnwsforms_x11"/>
+      </Item339>
+      <Item340>
+        <Filename Value="customdrawn/customdrawnobject_x11.inc"/>
+        <Type Value="Include"/>
+        <UnitName Value="customdrawnobject_x11"/>
+      </Item340>
+      <Item341>
+        <Filename Value="customdrawn/cocoagdiobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaGDIObjects"/>
+      </Item341>
+      <Item342>
+        <Filename Value="customdrawn/customdrawn_cocoaproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawn_cocoaproc"/>
+      </Item342>
+      <Item343>
+        <Filename Value="customdrawn/cocoautils.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaUtils"/>
+      </Item343>
+      <Item344>
+        <Filename Value="customdrawn/customdrawnlclintf.inc"/>
+        <Type Value="Include"/>
+      </Item344>
+      <Item345>
+        <Filename Value="customdrawn/customdrawnlclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item345>
+      <Item346>
+        <Filename Value="customdrawn/customdrawnwinapi_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item346>
+      <Item347>
+        <Filename Value="customdrawn/customdrawnwinapi_win.inc"/>
+        <Type Value="Include"/>
+      </Item347>
+      <Item348>
+        <Filename Value="customdrawn/customdrawnwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item348>
+      <Item349>
+        <Filename Value="customdrawn/customdrawnwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item349>
+      <Item350>
+        <Filename Value="customdrawn/customdrawnwsforms_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item350>
+      <Item351>
+        <Filename Value="customdrawn/customdrawnproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnproc"/>
+      </Item351>
+      <Item352>
+        <Filename Value="customdrawn/customdrawn_x11proc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawn_x11proc"/>
+      </Item352>
+      <Item353>
+        <Filename Value="customdrawn/customdrawnwinapi_x11.inc"/>
+        <Type Value="Include"/>
+      </Item353>
+      <Item354>
+        <Filename Value="customdrawn/customdrawn_androidproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawn_androidproc"/>
+      </Item354>
+      <Item355>
+        <Filename Value="customdrawn/customdrawnobject_android.inc"/>
+        <Type Value="Include"/>
+      </Item355>
+      <Item356>
+        <Filename Value="customdrawn/customdrawnwinapi_android.inc"/>
+        <Type Value="Include"/>
+      </Item356>
+      <Item357>
+        <Filename Value="customdrawn/customdrawnwsforms_android.inc"/>
+        <Type Value="Include"/>
+      </Item357>
+      <Item358>
+        <Filename Value="customdrawn/android/android_native_app_glue.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="android_native_app_glue"/>
+      </Item358>
+      <Item359>
+        <Filename Value="customdrawn/android/asset_manager.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="asset_manager"/>
+      </Item359>
+      <Item360>
+        <Filename Value="customdrawn/android/configuration.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="configuration"/>
+      </Item360>
+      <Item361>
+        <Filename Value="customdrawn/android/egl.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="egl"/>
+      </Item361>
+      <Item362>
+        <Filename Value="customdrawn/android/gles.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gles"/>
+      </Item362>
+      <Item363>
+        <Filename Value="customdrawn/android/input.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="input"/>
+      </Item363>
+      <Item364>
+        <Filename Value="customdrawn/android/jni.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="jni"/>
+      </Item364>
+      <Item365>
+        <Filename Value="customdrawn/android/keycodes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="keycodes"/>
+      </Item365>
+      <Item366>
+        <Filename Value="customdrawn/android/log.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="log"/>
+      </Item366>
+      <Item367>
+        <Filename Value="customdrawn/android/looper.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="looper"/>
+      </Item367>
+      <Item368>
+        <Filename Value="customdrawn/android/native_activity.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="native_activity"/>
+      </Item368>
+      <Item369>
+        <Filename Value="customdrawn/android/native_window.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="native_window"/>
+      </Item369>
+      <Item370>
+        <Filename Value="customdrawn/android/rect.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="rect"/>
+      </Item370>
+      <Item371>
+        <Filename Value="customdrawn/android/bitmap.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="bitmap"/>
+      </Item371>
+      <Item372>
+        <Filename Value="customdrawn/customdrawnwsstdctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSStdCtrls"/>
+      </Item372>
+      <Item373>
+        <Filename Value="customdrawn/customdrawnwscomctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSComCtrls"/>
+      </Item373>
+      <Item374>
+        <Filename Value="customdrawn/customdrawnwsextctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSExtCtrls"/>
+      </Item374>
+      <Item375>
+        <Filename Value="customdrawn/customdrawnprivate.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnprivate"/>
+      </Item375>
+      <Item376>
+        <Filename Value="customdrawn/customdrawnlclintf_android.inc"/>
+        <Type Value="Include"/>
+      </Item376>
+      <Item377>
+        <Filename Value="customdrawn/customdrawnlclintf_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item377>
+      <Item378>
+        <Filename Value="customdrawn/customdrawnlclintf_win.inc"/>
+        <Type Value="Include"/>
+      </Item378>
+      <Item379>
+        <Filename Value="customdrawn/customdrawnlclintf_x11.inc"/>
+        <Type Value="Include"/>
+      </Item379>
+      <Item380>
+        <Filename Value="customdrawn/customdrawntrayicon_android.inc"/>
+        <Type Value="Include"/>
+      </Item380>
+      <Item381>
+        <Filename Value="customdrawn/customdrawntrayicon_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item381>
+      <Item382>
+        <Filename Value="customdrawn/customdrawntrayicon_win.inc"/>
+        <Type Value="Include"/>
+      </Item382>
+      <Item383>
+        <Filename Value="cocoa/cocoacaret.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaCaret"/>
+      </Item383>
+      <Item384>
+        <Filename Value="customdrawn/customdrawntrayicon_x11.inc"/>
+        <Type Value="Include"/>
+      </Item384>
+      <Item385>
+        <Filename Value="customdrawn/customdrawnwslazdeviceapis.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSLazDeviceAPIS"/>
+      </Item385>
+      <Item386>
+        <Filename Value="nogui/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item386>
+      <Item387>
+        <Filename Value="nogui/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item387>
+      <Item388>
+        <Filename Value="nogui/noguiint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="NoGUIInt"/>
+      </Item388>
+      <Item389>
+        <Filename Value="nogui/noguiwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="NoGUIWSFactory"/>
+      </Item389>
+      <Item390>
+        <Filename Value="customdrawn/customdrawnwsspin.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnwsspin"/>
+      </Item390>
+      <Item391>
+        <Filename Value="customdrawn/customdrawnwsbuttons.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnwsbuttons"/>
+      </Item391>
+      <Item392>
+        <Filename Value="customdrawn/customdrawnwsdialogs.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnwsdialogs"/>
+      </Item392>
+      <Item393>
+        <Filename Value="customdrawn/customdrawnwsmenus_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item393>
+      <Item394>
+        <Filename Value="customdrawn/customdrawnwsmenus.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSMenus"/>
+      </Item394>
+      <Item395>
+        <Filename Value="gtk2/gtk2disableliboverlay.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk2disableliboverlay"/>
+      </Item395>
+      <Item396>
+        <Filename Value="gtk3/gtk3int.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk3int"/>
+      </Item396>
+      <Item397>
+        <Filename Value="gtk3/gtk3winapih.inc"/>
+        <Type Value="Include"/>
+      </Item397>
+      <Item398>
+        <Filename Value="gtk3/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="interfaces"/>
+      </Item398>
+      <Item399>
+        <Filename Value="gtk3/gtk3cellrenderer.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3CellRenderer"/>
+      </Item399>
+      <Item400>
+        <Filename Value="gtk3/gtk3lclintf.inc"/>
+        <Type Value="Include"/>
+      </Item400>
+      <Item401>
+        <Filename Value="gtk3/gtk3lclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item401>
+      <Item402>
+        <Filename Value="gtk3/gtk3object.inc"/>
+        <Type Value="Include"/>
+      </Item402>
+      <Item403>
+        <Filename Value="gtk3/gtk3objects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk3objects"/>
+      </Item403>
+      <Item404>
+        <Filename Value="gtk3/gtk3private.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk3private"/>
+      </Item404>
+      <Item405>
+        <Filename Value="gtk3/gtk3procs.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk3procs"/>
+      </Item405>
+      <Item406>
+        <Filename Value="gtk3/gtk3widgets.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk3widgets"/>
+      </Item406>
+      <Item407>
+        <Filename Value="gtk3/gtk3winapi.inc"/>
+        <Type Value="Include"/>
+      </Item407>
+      <Item408>
+        <Filename Value="gtk3/gtk3wsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSButtons"/>
+      </Item408>
+      <Item409>
+        <Filename Value="gtk3/gtk3wschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSCheckLst"/>
+      </Item409>
+      <Item410>
+        <Filename Value="gtk3/gtk3wscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSComCtrls"/>
+      </Item410>
+      <Item411>
+        <Filename Value="gtk3/gtk3wscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSControls"/>
+      </Item411>
+      <Item412>
+        <Filename Value="gtk3/gtk3wsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSExtCtrls"/>
+      </Item412>
+      <Item413>
+        <Filename Value="gtk3/gtk3wsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSFactory"/>
+      </Item413>
+      <Item414>
+        <Filename Value="gtk3/gtk3wsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSForms"/>
+      </Item414>
+      <Item415>
+        <Filename Value="gtk3/gtk3wsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSImgList"/>
+      </Item415>
+      <Item416>
+        <Filename Value="gtk3/gtk3wsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSMenus"/>
+      </Item416>
+      <Item417>
+        <Filename Value="gtk3/gtk3wsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSSpin"/>
+      </Item417>
+      <Item418>
+        <Filename Value="gtk3/gtk3wsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSStdCtrls"/>
+      </Item418>
+      <Item419>
+        <Filename Value="gtk3/gtk3defines.inc"/>
+        <Type Value="Include"/>
+      </Item419>
+      <Item420>
+        <Filename Value="gtk3/gtk3wscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSCalendar"/>
+      </Item420>
+      <Item421>
+        <Filename Value="gtk3/gtk3bindings/lazatk1.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazAtk1"/>
+      </Item421>
+      <Item422>
+        <Filename Value="gtk3/gtk3bindings/lazcairo1.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazCairo1"/>
+      </Item422>
+      <Item423>
+        <Filename Value="gtk3/gtk3bindings/lazgdk3.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazGdk3"/>
+      </Item423>
+      <Item424>
+        <Filename Value="gtk3/gtk3bindings/lazgdkpixbuf2.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazGdkPixbuf2"/>
+      </Item424>
+      <Item425>
+        <Filename Value="gtk3/gtk3bindings/lazgio2.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazGio2"/>
+      </Item425>
+      <Item426>
+        <Filename Value="gtk3/gtk3bindings/lazglib2.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazGLib2"/>
+      </Item426>
+      <Item427>
+        <Filename Value="gtk3/gtk3bindings/lazgmodule2.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazGModule2"/>
+      </Item427>
+      <Item428>
+        <Filename Value="gtk3/gtk3bindings/lazgobject2.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazGObject2"/>
+      </Item428>
+      <Item429>
+        <Filename Value="gtk3/gtk3bindings/lazgtk3.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazGtk3"/>
+      </Item429>
+      <Item430>
+        <Filename Value="cocoa/cocoawsdialogs.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSDialogs"/>
+      </Item430>
+      <Item431>
+        <Filename Value="gtk3/gtk3bindings/lazpango1.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazPango1"/>
+      </Item431>
+      <Item432>
+        <Filename Value="gtk3/gtk3bindings/lazpangocairo1.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazPangoCairo1"/>
+      </Item432>
+      <Item433>
+        <Filename Value="cocoa/cocoalclintf.inc"/>
+        <Type Value="Include"/>
+      </Item433>
+      <Item434>
+        <Filename Value="cocoa/cocoalclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item434>
+      <Item435>
+        <Filename Value="cocoa/cocoathemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaThemes"/>
+      </Item435>
+      <Item436>
+        <Filename Value="cocoa/cocoawscomctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSComCtrls"/>
       </Item436>
       <Item437>
+        <Filename Value="cocoa/cocoadatepicker.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaDatePicker"/>
+      </Item437>
+      <Item438>
         <Filename Value="gtk3/gtk3wsdialogs.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3WSDialogs"/>
-      </Item437>
-      <Item438>
+      </Item438>
+      <Item439>
         <Filename Value="gtk3/gtk3wsextdlgs.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3WSExtDlgs"/>
-      </Item438>
-      <Item439>
-        <Filename Value="win32/win32pagecontrol.inc"/>
-        <Type Value="Include"/>
       </Item439>
       <Item440>
+        <Filename Value="win32/win32pagecontrol.inc"/>
+        <Type Value="Include"/>
+      </Item440>
+      <Item441>
         <Filename Value="qt5/alllclintfunits.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
-      </Item440>
-      <Item441>
+      </Item441>
+      <Item442>
         <Filename Value="qt5/interfaces.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="interfaces"/>
-      </Item441>
-      <Item442>
+      </Item442>
+      <Item443>
         <Filename Value="qt5/qt5.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qt5"/>
-      </Item442>
-      <Item443>
-        <Filename Value="qt5/qt56.pas"/>
-        <Type Value="Include"/>
       </Item443>
       <Item444>
+        <Filename Value="qt5/qt56.pas"/>
+        <Type Value="Include"/>
+      </Item444>
+      <Item445>
         <Filename Value="qt5/qtcaret.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtCaret"/>
-      </Item444>
-      <Item445>
-        <Filename Value="qt5/qtdefines.inc"/>
-        <Type Value="Include"/>
       </Item445>
       <Item446>
+        <Filename Value="qt5/qtdefines.inc"/>
+        <Type Value="Include"/>
+      </Item446>
+      <Item447>
         <Filename Value="qt5/qtint.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtint"/>
-      </Item446>
-      <Item447>
-        <Filename Value="qt5/qtlclintf.inc"/>
-        <Type Value="Include"/>
       </Item447>
       <Item448>
-        <Filename Value="qt5/qtlclintfh.inc"/>
+        <Filename Value="qt5/qtlclintf.inc"/>
         <Type Value="Include"/>
       </Item448>
       <Item449>
-        <Filename Value="qt5/qtobject.inc"/>
+        <Filename Value="qt5/qtlclintfh.inc"/>
         <Type Value="Include"/>
       </Item449>
       <Item450>
+        <Filename Value="qt5/qtobject.inc"/>
+        <Type Value="Include"/>
+      </Item450>
+      <Item451>
         <Filename Value="qt5/qtobjects.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtobjects"/>
-      </Item450>
-      <Item451>
-        <Filename Value="qt5/qtpagecontrol.inc"/>
-        <Type Value="Include"/>
       </Item451>
       <Item452>
+        <Filename Value="qt5/qtpagecontrol.inc"/>
+        <Type Value="Include"/>
+      </Item452>
+      <Item453>
         <Filename Value="qt5/qtprivate.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtprivate"/>
-      </Item452>
-      <Item453>
+      </Item453>
+      <Item454>
         <Filename Value="qt5/qtproc.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtproc"/>
-      </Item453>
-      <Item454>
+      </Item454>
+      <Item455>
         <Filename Value="qt5/qtsystemtrayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtsystemtrayicon"/>
-      </Item454>
-      <Item455>
+      </Item455>
+      <Item456>
         <Filename Value="qt5/qtthemes.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtThemes"/>
-      </Item455>
-      <Item456>
+      </Item456>
+      <Item457>
         <Filename Value="qt5/qtwidgets.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtwidgets"/>
-      </Item456>
-      <Item457>
-        <Filename Value="qt5/qtwinapi.inc"/>
-        <Type Value="Include"/>
       </Item457>
       <Item458>
-        <Filename Value="qt5/qtwinapih.inc"/>
+        <Filename Value="qt5/qtwinapi.inc"/>
         <Type Value="Include"/>
       </Item458>
       <Item459>
+        <Filename Value="qt5/qtwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item459>
+      <Item460>
         <Filename Value="qt5/qtwsbuttons.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSButtons"/>
-      </Item459>
-      <Item460>
+      </Item460>
+      <Item461>
         <Filename Value="qt5/qtwscalendar.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSCalendar"/>
-      </Item460>
-      <Item461>
+      </Item461>
+      <Item462>
         <Filename Value="qt5/qtwschecklst.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSCheckLst"/>
-      </Item461>
-      <Item462>
+      </Item462>
+      <Item463>
         <Filename Value="qt5/qtwscomctrls.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSComCtrls"/>
-      </Item462>
-      <Item463>
+      </Item463>
+      <Item464>
         <Filename Value="qt5/qtwscontrols.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSControls"/>
-      </Item463>
-      <Item464>
+      </Item464>
+      <Item465>
         <Filename Value="qt5/qtwsdesigner.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSDesigner"/>
-      </Item464>
-      <Item465>
+      </Item465>
+      <Item466>
         <Filename Value="qt5/qtwsdialogs.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSDialogs"/>
-      </Item465>
-      <Item466>
+      </Item466>
+      <Item467>
         <Filename Value="qt5/qtwsextctrls.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSExtCtrls"/>
-      </Item466>
-      <Item467>
+      </Item467>
+      <Item468>
         <Filename Value="qt5/qtwsextdlgs.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSExtDlgs"/>
-      </Item467>
-      <Item468>
+      </Item468>
+      <Item469>
         <Filename Value="qt5/qtwsfactory.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSFactory"/>
-      </Item468>
-      <Item469>
+      </Item469>
+      <Item470>
         <Filename Value="qt5/qtwsforms.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSForms"/>
-      </Item469>
-      <Item470>
+      </Item470>
+      <Item471>
         <Filename Value="qt5/qtwsgrids.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSGrids"/>
-      </Item470>
-      <Item471>
+      </Item471>
+      <Item472>
         <Filename Value="qt5/qtwsimglist.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSImgList"/>
-      </Item471>
-      <Item472>
+      </Item472>
+      <Item473>
         <Filename Value="qt5/qtwsmenus.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSMenus"/>
-      </Item472>
-      <Item473>
+      </Item473>
+      <Item474>
         <Filename Value="qt5/qtwspairsplitter.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSPairSplitter"/>
-      </Item473>
-      <Item474>
+      </Item474>
+      <Item475>
         <Filename Value="qt5/qtwsspin.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSSpin"/>
-      </Item474>
-      <Item475>
+      </Item475>
+      <Item476>
         <Filename Value="qt5/qtwsstdctrls.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSStdCtrls"/>
-      </Item475>
-      <Item476>
-        <Filename Value="qt5/qtx11.inc"/>
-        <Type Value="Include"/>
       </Item476>
       <Item477>
-        <Filename Value="win32/win32treeview.inc"/>
+        <Filename Value="qt5/qtx11.inc"/>
         <Type Value="Include"/>
       </Item477>
       <Item478>
+        <Filename Value="qt5/qtx11dummywidget.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtx11dummywidget"/>
+      </Item478>
+      <Item479>
+        <Filename Value="win32/win32treeview.inc"/>
+        <Type Value="Include"/>
+      </Item479>
+      <Item480>
         <Filename Value="cocoa/cocoatabcontrols.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaTabControls"/>
-      </Item478>
-      <Item479>
+      </Item480>
+      <Item481>
         <Filename Value="cocoa/cocoabuttons.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaButtons"/>
-      </Item479>
-      <Item480>
+      </Item481>
+      <Item482>
         <Filename Value="cocoa/cocoawindows.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWindows"/>
-      </Item480>
-      <Item481>
+      </Item482>
+      <Item483>
         <Filename Value="cocoa/cocoatables.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaTables"/>
-      </Item481>
-      <Item482>
+      </Item483>
+      <Item484>
         <Filename Value="cocoa/cocoatextedits.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaTextEdits"/>
-      </Item482>
-      <Item483>
+      </Item484>
+      <Item485>
         <Filename Value="cocoa/cocoascrollers.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaScrollers"/>
-      </Item483>
-      <Item484>
+      </Item485>
+      <Item486>
         <Filename Value="cocoa/cocoawsclipboard.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsclipboard"/>
-      </Item484>
-      <Item485>
+      </Item486>
+      <Item487>
         <Filename Value="cocoa/cocoawschecklst.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSCheckLst"/>
-      </Item485>
+      </Item487>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
