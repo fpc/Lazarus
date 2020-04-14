@@ -4497,7 +4497,7 @@ begin
   {$IFDEF HASX11}
   if (TQtWidget(Handle) is TQtMainWindow) and Assigned(TQtWidget(Handle).LCLObject) and
     (TQtWidget(Handle).LCLObject.Parent = nil) and
-    not TQtMainWindow(Handle).FirstPaintEvent and not IsRectEmpty(QtWidgetSet.GetDummyWidgetFrame) then
+    not TQtMainWindow(Handle).FirstPaintEvent and (QtWidgetSet.GetDummyWidgetFrame <> Rect(0, 0, 0, 0)) then
   begin
     AForm := TCustomForm(TQtWidget(Handle).LCLObject);
     if not (AForm.FormStyle in [fsMDIChild, fsSplash]) and (AForm.BorderStyle <> bsNone) and
