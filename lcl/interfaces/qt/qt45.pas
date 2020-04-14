@@ -1187,6 +1187,7 @@ const
     QtWA_WState_WindowOpacitySet = 119 { $77 };
     QtWA_TranslucentBackground = 120 { $78 };
     QtWA_AttributeCount = 121 { $79 };
+    QtWA_X11DoNotAcceptFocus = 132;
 
 type
   QtKey = cardinal; //  Qt::Key (4)

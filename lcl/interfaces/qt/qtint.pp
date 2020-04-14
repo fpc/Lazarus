@@ -44,6 +44,9 @@ uses
   LMessages, LCLMessageGlue, LCLStrConsts,
   Controls, ExtCtrls, Forms, StdCtrls, GraphType, GraphUtil, Themes,
   // WS
+  {$IFDEF HASX11}
+  qtx11dummywidget,
+  {$ENDIF}
   qtproc;
 
 type
@@ -128,6 +131,9 @@ type
     FStockWhitePen: HPEN;
     FStockSystemFont: HFONT;
     FStockDefaultDC: HDC;
+    {$IFDEF HASX11}
+    FWSFrameRect: TRect;
+    {$ENDIF}
     
     function CreateThemeServices: TThemeServices; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -151,6 +157,10 @@ type
     procedure AppSetTitle(const ATitle: string); override;
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
+    {$IFDEF HASX11}
+    function CreateDummyWidgetFrame(const ALeft, ATop, AWidth, AHeight: integer): boolean;
+    function GetDummyWidgetFrame: TRect;
+    {$ENDIF}
   public
     constructor Create; override;
     destructor Destroy; override;

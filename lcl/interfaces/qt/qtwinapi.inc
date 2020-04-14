@@ -4530,7 +4530,8 @@ end;
 function TQtWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   APos: TQtPoint;
-  R: TRect;
+  R, AFrame: TRect;
+  AForm: TCustomForm;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowRect]');
@@ -4547,6 +4548,27 @@ begin
     exit(-1);
   end;
   {$ENDIF}
+
+  {$IFDEF HASX11}
+  if (TQtWidget(Handle) is TQtMainWindow) and Assigned(TQtWidget(Handle).LCLObject) and
+    (TQtWidget(Handle).LCLObject.Parent = nil) and
+    not TQtMainWindow(Handle).FirstPaintEvent and not IsRectEmpty(QtWidgetSet.GetDummyWidgetFrame) then
+  begin
+    AForm := TCustomForm(TQtWidget(Handle).LCLObject);
+    if not (AForm.FormStyle in [fsMDIChild, fsSplash]) and (AForm.BorderStyle <> bsNone) and
+      not IsFormDesign(AForm) then
+    begin
+      R := AForm.BoundsRect;
+      AFrame := QtWidgetSet.GetDummyWidgetFrame;
+      // apply frame size to lcl form.
+      R.Right += AFrame.Left + AFrame.Right;
+      R.Bottom += AFrame.Top + AFrame.Bottom;
+      ARect := R; //this is now real size under x11 even on unmapped window :)
+      exit(-1);
+    end;
+  end;
+  {$ENDIF}
+
   APos := QtPoint(0,0);
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
 
