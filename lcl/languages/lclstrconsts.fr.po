@@ -949,7 +949,7 @@ msgid "Purple"
 msgstr "Violet"
 
 #: lclstrconsts.rsqtoptiondisableaccurateframe
-msgid "-disableaccurateframe, as of lazarus r62972 Qt and Qt5 interface implements fully accurate window frame under x11 which is used by GetWindowRect() mostly. Use option to disable this feature."
+msgid "-disableaccurateframe, disables fully accurate window frame under X11. This feature is implemented for Qt and Qt5 interfaces and used mostly by GetWindowRect()."
 msgstr ""
 
 #: lclstrconsts.rsqtoptiondograb

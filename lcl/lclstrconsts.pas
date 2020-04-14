@@ -204,9 +204,9 @@ resourceString
     +'in the widget, while overTheSpot makes the input appear in a box '
     +'floating over the widget and is not inserted until the editing is done.';
 
-  rsqtOptionDisableAccurateFrame = '-disableaccurateframe, as of lazarus r62972 '
-    +'Qt and Qt5 interface implements fully accurate window frame under x11 which '
-    +'is used by GetWindowRect() mostly. Use option to disable this feature.';
+  rsqtOptionDisableAccurateFrame = '-disableaccurateframe, disables fully accurate '
+    +'window frame under X11. This feature is implemented for Qt and Qt5 interfaces '
+    +'and used mostly by GetWindowRect().';
 
   // win32 interface
   rsWin32Warning = 'Warning:';
