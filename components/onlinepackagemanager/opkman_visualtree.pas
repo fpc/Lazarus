@@ -75,6 +75,7 @@ type
     IsUpdated: Boolean;
     SVNURL: String;
     CommunityDescription: String;
+    ExternalDependencies: String;
     InstallState: Integer;
     ButtonID: Integer;
     Button: TSpeedButton;
@@ -490,7 +491,17 @@ begin
        GrandChildData^.DataType := 19;
        Inc(UniqueID);
        GrandChildData^.ButtonID := UniqueID;
-       Data^.CommunityDescription := SerializablePackages.Items[I].CommunityDescription;;
+       Data^.CommunityDescription := SerializablePackages.Items[I].CommunityDescription;
+       //add external dependecies(DataType = 20) - added 2020.04.14
+       GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
+       GrandChildData := FVST.GetNodeData(GrandChildNode);
+       GrandChildData^.ExternalDependencies := SerializablePackages.Items[I].ExternalDependecies;
+       GrandChildData^.DataType := 20;
+       Inc(UniqueID);
+       GrandChildData^.ButtonID := UniqueID;
+       Data^.ExternalDependencies := SerializablePackages.Items[I].ExternalDependecies;
+
     end;
     FVST.SortTree(0, laz.VirtualTrees.sdAscending);
     ExpandEx;
@@ -557,6 +568,15 @@ begin
                MetaPackageData := VST.GetNodeData(MetaPackageNode);
                Text := Data^.CommunityDescription;
                FrmCaption := rsMainFrm_VSTText_ComDesc  + ' "' + MetaPackageData^.PackageDisplayName + '"';
+             end;
+           end;
+       20: begin
+             MetaPackageNode := ParentNode^.Parent;
+             if MetaPackageNode <> nil then
+             begin
+               MetaPackageData := VST.GetNodeData(MetaPackageNode);
+               Text := Data^.ExternalDependencies;
+               FrmCaption := rsMainFrm_VSTText_ExternalDependencies  + ' "' + MetaPackageData^.PackageDisplayName + '"';
              end;
            end;
       end;
@@ -1209,7 +1229,7 @@ begin
         FVST.RepaintNode(Node);
       end;
     end;
-    if Data^.DataType in [3..19] then
+    if Data^.DataType in [3..20] then
     begin
       FVST.IsDisabled[Node] := FVST.IsDisabled[Node^.Parent];
       ParentData := FVST.GetNodeData(Node^.Parent);
@@ -1457,7 +1477,8 @@ begin
            ImageIndex := 25
          else
            ImageIndex := 1;
-      else
+     20: ImageIndex := 9
+     else
         ImageIndex := Data^.DataType
     end;
   end;
@@ -1529,6 +1550,7 @@ begin
        17: CellText := rsMainFrm_VSTText_HomePageURL;
        18: CellText := rsMainFrm_VSTText_DownloadURL;
        19: CellText := rsMainFrm_VSTText_CommunityDescription;
+       20: CellText := rsMainFrm_VSTText_ExternalDependecies
       end;
     end
     else if Column = 1 then
@@ -1631,6 +1653,7 @@ begin
        17: CellText := Data^.HomePageURL;
        18: CellText := Data^.DownloadURL;
        19: CellText := GetDisplayString(Data^.CommunityDescription);
+       20: CellText := GetDisplayString(Data^.ExternalDependencies);
       end;
     end
     else if Column = 5 then
@@ -1840,7 +1863,8 @@ begin
          ((Data^.DataType = 2) and (Data^.PackageState in [psExtracted, psInstalled])) or
          ((Data^.DataType = 3) and (Trim(Data^.Description) <> '')) or
          ((Data^.DataType = 9) and (Trim(Data^.License) <> '')) or
-         ((Data^.DataType = 19) and (Trim(Data^.CommunityDescription) <> ''))
+         ((Data^.DataType = 19) and (Trim(Data^.CommunityDescription) <> '')) or
+         ((Data^.DataType = 20) and (Trim(Data^.ExternalDependencies) <> ''))
         ) then
     begin
       Data := FVST.GetNodeData(FHoverNode);
@@ -2006,6 +2030,7 @@ begin
     17: HintText := Data^.HomePageURL;
     18: HintText := Data^.DownloadURL;
     19: HintText := Data^.CommunityDescription;
+    20: HintText := Data^.ExternalDependencies;
    else
        HintText := '';
   end;

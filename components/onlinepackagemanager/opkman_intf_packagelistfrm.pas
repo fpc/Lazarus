@@ -7,7 +7,7 @@ interface
 uses
    SysUtils, Classes, laz.VirtualTrees,
   // LCL
-  Forms, Controls, Buttons, Graphics, ExtCtrls, StdCtrls, LCLType, ButtonPanel,
+  Forms, Controls, Buttons, Graphics, ExtCtrls, LCLType, ButtonPanel,
   Menus,
   //IDEIntf
   PackageIntf,

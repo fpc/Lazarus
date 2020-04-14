@@ -1,12 +1,12 @@
 object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
-  Left = 511
-  Height = 600
-  Top = 198
-  Width = 800
+  Left = 429
+  Height = 687
+  Top = 173
+  Width = 904
   BorderIcons = [biSystemMenu]
   Caption = 'CreateRepositoryPackagesFrm'
-  ClientHeight = 600
-  ClientWidth = 800
+  ClientHeight = 687
+  ClientWidth = 904
   Constraints.MinHeight = 450
   Constraints.MinWidth = 650
   OnCreate = FormCreate
@@ -16,9 +16,9 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   LCLVersion = '2.1.0.0'
   object pnMessage: TPanel
     Left = 247
-    Height = 502
+    Height = 589
     Top = 57
-    Width = 553
+    Width = 657
     Align = alClient
     BevelOuter = bvNone
     Caption = 'No items to show'
@@ -35,7 +35,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   end
   object pnPackages: TPanel
     Left = 0
-    Height = 502
+    Height = 589
     Top = 57
     Width = 245
     Align = alLeft
@@ -46,11 +46,11 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
     Left = 0
     Height = 57
     Top = 0
-    Width = 800
+    Width = 904
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 57
-    ClientWidth = 800
+    ClientWidth = 904
     TabOrder = 2
     object lbPackagedir: TLabel
       AnchorSideLeft.Control = pnBrowse
@@ -69,7 +69,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
       Left = 0
       Height = 2
       Top = 55
-      Width = 800
+      Width = 904
       Align = alBottom
     end
     object edPackageDir: TDirectoryEdit
@@ -82,7 +82,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
       Left = 80
       Height = 23
       Top = 17
-      Width = 714
+      Width = 818
       OnAcceptDirectory = edPackageDirAcceptDirectory
       ShowHidden = False
       ButtonWidth = 23
@@ -96,24 +96,24 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   end
   object pnData: TPanel
     Left = 247
-    Height = 502
+    Height = 589
     Top = 57
-    Width = 553
+    Width = 657
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 502
-    ClientWidth = 553
+    ClientHeight = 589
+    ClientWidth = 657
     TabOrder = 3
     object pnPackageData: TPanel
       Left = 0
-      Height = 187
-      Top = 315
-      Width = 553
+      Height = 110
+      Top = 479
+      Width = 657
       Align = alClient
       BevelOuter = bvNone
       BorderStyle = bsSingle
-      ClientHeight = 183
-      ClientWidth = 549
+      ClientHeight = 106
+      ClientWidth = 653
       TabOrder = 1
       Visible = False
       object lbLazCompatibility: TLabel
@@ -141,7 +141,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         ParentColor = False
       end
       object lbOF1: TLabel
-        Left = 524
+        Left = 628
         Height = 15
         Top = 14
         Width = 5
@@ -153,7 +153,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         ParentFont = False
       end
       object lbOF3: TLabel
-        Left = 524
+        Left = 628
         Height = 15
         Top = 50
         Width = 5
@@ -165,7 +165,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         ParentFont = False
       end
       object lbOF4: TLabel
-        Left = 524
+        Left = 628
         Height = 15
         Top = 85
         Width = 5
@@ -180,17 +180,17 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 9
-        Width = 351
+        Width = 455
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 23
-        ClientWidth = 351
+        ClientWidth = 455
         ParentColor = False
         TabOrder = 0
         object spLazCompatibility: TSpeedButton
           Tag = 2
-          Left = 328
+          Left = 432
           Height = 23
           Top = 0
           Width = 23
@@ -204,7 +204,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
           Left = 0
           Height = 23
           Top = 0
-          Width = 328
+          Width = 432
           Align = alClient
           AutoSize = False
           ParentShowHint = False
@@ -217,17 +217,17 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 45
-        Width = 351
+        Width = 455
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 23
-        ClientWidth = 351
+        ClientWidth = 455
         ParentColor = False
         TabOrder = 1
         object spFPCCompatibility: TSpeedButton
           Tag = 3
-          Left = 328
+          Left = 432
           Height = 23
           Top = 0
           Width = 23
@@ -241,7 +241,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
           Left = 0
           Height = 23
           Top = 0
-          Width = 328
+          Width = 432
           Align = alClient
           AutoSize = False
           ParentShowHint = False
@@ -254,17 +254,17 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 79
-        Width = 351
+        Width = 455
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 23
-        ClientWidth = 351
+        ClientWidth = 455
         ParentColor = False
         TabOrder = 2
         object spSupportedWidgetset: TSpeedButton
           Tag = 4
-          Left = 328
+          Left = 432
           Height = 23
           Top = 0
           Width = 23
@@ -278,7 +278,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
           Left = 0
           Height = 23
           Top = 0
-          Width = 328
+          Width = 432
           Align = alClient
           AutoSize = False
           ParentShowHint = False
@@ -290,14 +290,14 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
     end
     object pnCategory: TPanel
       Left = 0
-      Height = 315
+      Height = 479
       Top = 0
-      Width = 553
+      Width = 657
       Align = alTop
       BevelOuter = bvNone
       BorderStyle = bsSingle
-      ClientHeight = 311
-      ClientWidth = 549
+      ClientHeight = 475
+      ClientWidth = 653
       TabOrder = 0
       Visible = False
       object lbCategory: TLabel
@@ -309,7 +309,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         ParentColor = False
       end
       object lbOF2: TLabel
-        Left = 524
+        Left = 628
         Height = 15
         Top = 14
         Width = 5
@@ -340,7 +340,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 83
-        Width = 350
+        Width = 454
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 2
       end
@@ -348,7 +348,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 118
-        Width = 350
+        Width = 454
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 3
       end
@@ -365,7 +365,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 152
-        Width = 350
+        Width = 454
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 4
         Visible = False
@@ -382,7 +382,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 48
-        Width = 350
+        Width = 454
         Anchors = [akTop, akLeft, akRight]
         OnKeyPress = edDisplayNameKeyPress
         TabOrder = 1
@@ -391,17 +391,17 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 23
         Top = 9
-        Width = 351
+        Width = 455
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 23
-        ClientWidth = 351
+        ClientWidth = 455
         ParentColor = False
         TabOrder = 0
         object spCategories: TSpeedButton
           Tag = 1
-          Left = 328
+          Left = 432
           Height = 23
           Top = 0
           Width = 23
@@ -415,7 +415,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
           Left = 0
           Height = 23
           Top = 0
-          Width = 328
+          Width = 432
           Align = alClient
           AutoSize = False
           ParentShowHint = False
@@ -428,7 +428,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Left = 170
         Height = 152
         Top = 152
-        Width = 350
+        Width = 454
         TabOrder = 5
       end
       object lbComDescr: TLabel
@@ -439,11 +439,26 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         Caption = 'lbComDescr'
         ParentColor = False
       end
+      object lbExternalDependencies: TLabel
+        Left = 9
+        Height = 15
+        Top = 314
+        Width = 125
+        Caption = 'lbExternalDependencies'
+        ParentColor = False
+      end
+      object mExternalDependencies: TMemo
+        Left = 170
+        Height = 152
+        Top = 314
+        Width = 454
+        TabOrder = 6
+      end
     end
   end
   object spMain: TSplitter
     Left = 245
-    Height = 502
+    Height = 589
     Top = 57
     Width = 2
     AutoSnap = False
@@ -454,13 +469,13 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   object pnButtons: TPanel
     Left = 0
     Height = 41
-    Top = 559
-    Width = 800
+    Top = 646
+    Width = 904
     Align = alBottom
     BevelOuter = bvNone
     BorderStyle = bsSingle
     ClientHeight = 37
-    ClientWidth = 796
+    ClientWidth = 900
     TabOrder = 5
     object cbJSONForUpdates: TCheckBox
       AnchorSideLeft.Control = pnButtons
@@ -479,7 +494,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = pnButtons
       AnchorSideRight.Side = asrBottom
-      Left = 375
+      Left = 479
       Height = 29
       Top = 4
       Width = 415

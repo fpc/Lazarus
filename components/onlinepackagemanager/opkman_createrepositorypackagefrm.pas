@@ -60,6 +60,7 @@ type
     edSVNURL: TEdit;
     edHomePageURL: TEdit;
     lbCategory: TLabel;
+    lbExternalDependencies: TLabel;
     lbDownloadURL: TLabel;
     lbDisplayName: TLabel;
     lbSVNURL: TLabel;
@@ -74,6 +75,7 @@ type
     lbSupportedWidgetSet: TLabel;
     lbComDescr: TLabel;
     mComDescr: TMemo;
+    mExternalDependencies: TMemo;
     pnB: TPanel;
     pnButtons: TPanel;
     pnCategories: TPanel;
@@ -194,6 +196,7 @@ type
     FDownloadURL: String;
     FSVNURL: String;
     FCommunityDescription: String;
+    FExternalDependencies: String;
   end;
 
 procedure TCreateRepositoryPackagesFrm.FormCreate(Sender: TObject);
@@ -211,6 +214,7 @@ begin
   lbDownloadURL.Caption := rsCreateRepositoryPackageFrm_lbDownloadURL_Caption;
   lbSVNURL.Caption := rsCreateRepositoryPackageFrm_lbSVNURL_Caption;
   lbComDescr.Caption := rsMainFrm_VSTText_CommunityDescription + ':';
+  lbExternalDependencies.Caption := rsMainFrm_VSTText_ExternalDependecies + ':';
 
   bHelp.Caption := rsCreateRepositoryPackageFrm_bHelp_Caption;
   bHelp.Hint := rsCreateRepositoryPackageFrm_bHelp_Hint;
@@ -476,6 +480,7 @@ begin
         RootData^.FDownloadURL := '';
         RootData^.FSVNURL := '';
         RootData^.FCommunityDescription := '';
+        RootData^.FExternalDependencies := '';
         RootData^.FDataType := 0;
         FPackageName := RootData^.FName;
         for I := 0 to PackageList.Count - 1 do
@@ -748,6 +753,7 @@ begin
          Data^.FDownloadURL :=   edDownloadURL.Text;
          Data^.FSVNURL := edSVNURL.Text;
          Data^.FCommunityDescription := mComDescr.Text;
+         Data^.FExternalDependencies := mExternalDependencies.Text;
        end;
     1: begin
          Data^.FLazCompatibility := edLazCompatibility.Text;
@@ -797,6 +803,7 @@ begin
     edDownloadURL.Text := Data^.FDownloadURL;
     edSVNURL.Text := Data^.FSVNURL;
     mComDescr.Text := Data^.FCommunityDescription;
+    mExternalDependencies.Text := Data^.FExternalDependencies;
   end
   else if Level = 1 then
   begin
@@ -1076,6 +1083,7 @@ begin
       MetaPkg.DownloadURL := RootData^.FDownloadURL;
       MetaPkg.SVNURL := RootData^.FSVNURL;
       MetaPkg.CommunityDescription := RootData^.FCommunityDescription;
+      MetaPkg.ExternalDependecies := RootData^.FExternalDependencies;
       Node := FVSTPackages.GetFirstChild(RootNode);
       while Assigned(Node) do
       begin

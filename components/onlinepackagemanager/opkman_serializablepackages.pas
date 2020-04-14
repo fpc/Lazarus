@@ -172,6 +172,7 @@ type
     FDisplayName: String;
     FCategory: String;
     FCommunityDescription: String;
+    FExternalDependencies: String;
     FRepositoryFileName: String;
     FRepositoryFileSize: Int64;
     FRepositoryFileHash: String;
@@ -214,7 +215,8 @@ type
     property Name: String read FName write FName;
     property DisplayName: String read FDisplayName write FDisplayName;
     property Category: String read FCategory write FCategory;
-    property CommunityDescription: string read FCommunityDescription write FCommunityDescription;
+    property CommunityDescription: String read FCommunityDescription write FCommunityDescription;
+    property ExternalDependecies: String read FExternalDependencies write FExternalDependencies;
     property Checked: Boolean read FChecked write FChecked;
     property RepositoryFileName: String read FRepositoryFileName write FRepositoryFileName;
     property RepositoryFileSize: int64 read FRepositoryFileSize write FRepositoryFileSize;
@@ -856,6 +858,7 @@ begin
     AMetaPackage.DisplayName := PackageData.Get('DisplayName');
     AMetaPackage.Category := PackageData.Get('Category');
     AMetaPackage.CommunityDescription := PackageData.Get('CommunityDescription');
+    AMetaPackage.ExternalDependecies := PackageData.Get('ExternalDependecies');
     AMetaPackage.RepositoryFileName := PackageData.Get('RepositoryFileName');
     AMetaPackage.RepositoryFileSize := PackageData.Get('RepositoryFileSize');
     AMetaPackage.RepositoryFileHash := PackageData.Get('RepositoryFileHash');
@@ -1311,6 +1314,7 @@ begin
     APackageData.Add('DisplayName', AMetaPackage.DisplayName);
     APackageData.Add('Category', AMetaPackage.Category);
     APackageData.Add('CommunityDescription', AMetaPackage.CommunityDescription);
+    APackageData.Add('ExternalDependecies', AMetaPackage.ExternalDependecies);
     APackageData.Add('RepositoryFileName', AMetaPackage.RepositoryFileName);
     APackageData.Add('RepositoryFileSize', AMetaPackage.RepositoryFileSize);
     APackageData.Add('RepositoryFileHash', AMetaPackage.RepositoryFileHash);
