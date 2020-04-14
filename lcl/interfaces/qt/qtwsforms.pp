@@ -651,7 +651,7 @@ begin
     end else
     if (ACustomForm.FormStyle = fsSplash) then
     begin
-      QWidget_update(Widget.GetContainerWidget);
+      QWidget_repaint(Widget.GetContainerWidget);
       QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
     end;
   end;
