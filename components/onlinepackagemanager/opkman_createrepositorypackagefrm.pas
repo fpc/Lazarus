@@ -214,7 +214,7 @@ begin
   lbDownloadURL.Caption := rsCreateRepositoryPackageFrm_lbDownloadURL_Caption;
   lbSVNURL.Caption := rsCreateRepositoryPackageFrm_lbSVNURL_Caption;
   lbComDescr.Caption := rsMainFrm_VSTText_CommunityDescription + ':';
-  lbExternalDependencies.Caption := rsMainFrm_VSTText_ExternalDependecies + ':';
+  lbExternalDependencies.Caption := rsMainFrm_VSTText_ExternalDeps + ':';
 
   bHelp.Caption := rsCreateRepositoryPackageFrm_bHelp_Caption;
   bHelp.Hint := rsCreateRepositoryPackageFrm_bHelp_Hint;

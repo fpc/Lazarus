@@ -576,7 +576,7 @@ begin
              begin
                MetaPackageData := VST.GetNodeData(MetaPackageNode);
                Text := Data^.ExternalDependencies;
-               FrmCaption := rsMainFrm_VSTText_ExternalDependencies  + ' "' + MetaPackageData^.PackageDisplayName + '"';
+               FrmCaption := rsMainFrm_VSTText_ExternalMetaPackageDeps  + ' "' + MetaPackageData^.PackageDisplayName + '"';
              end;
            end;
       end;
@@ -1550,7 +1550,7 @@ begin
        17: CellText := rsMainFrm_VSTText_HomePageURL;
        18: CellText := rsMainFrm_VSTText_DownloadURL;
        19: CellText := rsMainFrm_VSTText_CommunityDescription;
-       20: CellText := rsMainFrm_VSTText_ExternalDependecies
+       20: CellText := rsMainFrm_VSTText_ExternalDeps
       end;
     end
     else if Column = 1 then

@@ -88,7 +88,7 @@ resourcestring
   rsMainFrm_VSTText_PackageInfo = 'Package info';
   rsMainFrm_VSTText_Category = 'Category';
   rsMainFrm_VSTText_CommunityDescription = 'Community description';
-  rsMainFrm_VSTText_ExternalDependecies = 'External dependencies';
+  rsMainFrm_VSTText_ExternalDeps = 'External dependencies';
   rsMainFrm_VSTText_RepositoryFilename = 'Repository filename';
   rsMainFrm_VSTText_RepositoryFileSize = 'Repository filesize';
   rsMainFrm_VSTText_RepositoryFileHash = 'Repository filehash';
@@ -144,7 +144,7 @@ resourcestring
   rsMainFrm_VSTText_Open_Notfound = 'Package file not found.';
   rsMainFrm_VSTText_Open_Error = 'Cannot open package file.';
   rsMainFrm_VSTText_ComDesc = 'Community description for metapackage';
-  rsMainFrm_VSTText_ExternalDependencies = 'External dependencies for metapackage';
+  rsMainFrm_VSTText_ExternalMetaPackageDeps = 'External dependencies for metapackage';
   rsMainFrm_cbAll_Caption = 'All/None';
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
   rsMainFrm_lbFilter_Caption = 'Filter by:';

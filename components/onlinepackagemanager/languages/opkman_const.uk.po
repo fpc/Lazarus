@@ -1017,6 +1017,16 @@ msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "External link (JSON)"
 msgstr "Зовнішнє посилання (JSON)"
 
+#: opkman_const.rsmainfrm_vsttext_externaldeps
+msgctxt "opkman_const.rsmainfrm_vsttext_externaldeps"
+msgid "External dependencies"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_externalmetapackagedeps
+msgctxt "opkman_const.rsmainfrm_vsttext_externalmetapackagedeps"
+msgid "External dependencies for metapackage"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
 msgid "FPC compatibility"
