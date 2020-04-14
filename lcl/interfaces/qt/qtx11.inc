@@ -211,22 +211,30 @@ begin
             XFree(Data);
             Data := nil;
           end;
-          if WMWindow = 0 then
-            exit;
-          WMAtom := XInternAtom(Display,'UTF8_STRING', False);
-          if XGetWindowProperty(Display, WMWindow,
-            XInternAtom(Display,'_NET_WM_NAME', False), 0, 1024, False,
-            WMAtom, @typeReturned, @formatReturned, @nitemsReturned,
-            @unused, @data) = Success then
+          if WMWindow > 0 then
           begin
-            if (typeReturned = WMAtom) and (formatReturned = 8) then
-              Result := StrPas(Data);
-            if Data <> nil then
-              XFree(Data);
-            Data := nil;
+            WMAtom := XInternAtom(Display,'UTF8_STRING', False);
+            if XGetWindowProperty(Display, WMWindow,
+              XInternAtom(Display,'_NET_WM_NAME', False), 0, 1024, False,
+              WMAtom, @typeReturned, @formatReturned, @nitemsReturned,
+              @unused, @data) = Success then
+            begin
+              if (typeReturned = WMAtom) and (formatReturned = 8) then
+                Result := StrPas(Data);
+              if Data <> nil then
+                XFree(Data);
+              Data := nil;
+            end;
           end;
        end;
     end;
+  end;
+  if Result = '' then
+  begin
+    // usually older window managers does not support _NET_SUPPORTING_WM_CHECK
+    Result := GetEnvironmentVariableUTF8('XDG_SESSION_DESKTOP');
+    if Result = '' then
+      Result := GetEnvironmentVariableUTF8('DESKTOP_SESSION');
   end;
 end;
 
