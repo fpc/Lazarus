@@ -10264,6 +10264,7 @@ lcl/interfaces/qt/qtwspairsplitter.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtwsspin.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtwsstdctrls.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtx11.inc svneol=native#text/plain
+lcl/interfaces/qt/qtx11dummywidget.pas svneol=native#text/plain
 lcl/interfaces/qt5/Makefile svneol=native#text/plain
 lcl/interfaces/qt5/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/qt5/Makefile.fpc svneol=native#text/plain
