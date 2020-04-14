@@ -11018,6 +11018,7 @@ lcl/interfaces/qt5/qtwspairsplitter.pp svneol=native#text/plain
 lcl/interfaces/qt5/qtwsspin.pp svneol=native#text/plain
 lcl/interfaces/qt5/qtwsstdctrls.pp svneol=native#text/plain
 lcl/interfaces/qt5/qtx11.inc svneol=native#text/plain
+lcl/interfaces/qt5/qtx11dummywidget.pas svneol=native#text/plain
 lcl/interfaces/win32/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/win32/README.txt svneol=native#text/plain
 lcl/interfaces/win32/alllclintfunits.pas svneol=native#text/plain
