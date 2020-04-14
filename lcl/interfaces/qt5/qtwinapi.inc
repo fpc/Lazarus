@@ -7081,14 +7081,17 @@ end;
   retrieves or sets the value of one of the system-wide parameters
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
+var
+  AScreen: QScreenH;
+  R: TRect;
 begin
   case uiAction of
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := QApplication_wheelScrollLines;
-    SPI_GETWORKAREA: begin
-      TRect(pvParam^):=Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
-                              GetSystemMetrics(SM_YVIRTUALSCREEN),
-                              GetSystemMetrics(SM_CXVIRTUALSCREEN),
-                              GetSystemMetrics(SM_CYVIRTUALSCREEN));
+    SPI_GETWORKAREA:
+    begin
+      AScreen := QGuiApplication_primaryScreen();
+      QScreen_availableGeometry(AScreen, @R);
+      TRect(pvParam^) := R;
       Result:=True;
     end;
   else
