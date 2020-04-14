@@ -1477,7 +1477,7 @@ begin
            ImageIndex := 25
          else
            ImageIndex := 1;
-     20: ImageIndex := 9
+     20: ImageIndex := 10
      else
         ImageIndex := Data^.DataType
     end;
