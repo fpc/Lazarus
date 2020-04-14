@@ -31,7 +31,8 @@ type
   end;
 
 implementation
-uses LCLProc, qtint;
+{.$DEFINE DEBUGQTFRAMESIZE}
+uses {$IFDEF DEBUGQTFRAMESIZE}LCLProc,{$ENDIF}qtint;
 
 { TDummyWidget }
 
@@ -45,7 +46,6 @@ begin
   TheObject := AValue;
 end;
 
-{$DEFINE DEBUGQTFRAMESIZE}
 function TDummyWidget.ShowDummyWidget(const ALeft, ATop, AWidth,
   AHeight: integer): boolean;
 var
