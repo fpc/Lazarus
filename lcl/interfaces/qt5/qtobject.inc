@@ -63,6 +63,8 @@ begin
   if (FWindowManagerName = 'marco') or // issue #35782 (FWindowManagerName = 'gnome shell') or
     (UTF8Pos('mutter', FWindowManagerName) > 0) then
     FWindowManagerName := 'metacity';
+  if not FIsLibraryInstance then
+    FWSFrameRect := Rect(0, 0, 0, 0);
   {$ENDIF}
   {$IFDEF DARWIN}
   // do not swap meta and ctrl keys, issue #20897
@@ -495,6 +497,26 @@ begin
   Result := True;
   QtRestoreStayOnTop(ASystemTopAlso);
 end;
+
+{$IFDEF HASX11}
+function TQtWidgetSet.CreateDummyWidgetFrame(const ALeft, ATop, AWidth,
+  AHeight: integer): boolean;
+var
+  ADummy: TDummyWidget;
+begin
+  Result := False;
+  ADummy := TDummyWidget.Create;
+  ADummy.ShowDummyWidget(ALeft, ATop, AWidth, AHeight);
+  FWSFrameRect := ADummy.GetWidgetFrame;
+  ADummy.Free;
+  Result := not IsRectEmpty(FWSFrameRect);
+end;
+
+function TQtWidgetSet.GetDummyWidgetFrame: TRect;
+begin
+  Result := FWSFrameRect;
+end;
+{$ENDIF}
 
 procedure TQtWidgetSet.SetOverrideCursor(const AValue: TObject);
 begin

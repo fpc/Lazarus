@@ -186,6 +186,9 @@ var
   Str: WideString;
   APopupParent: TCustomForm;
   AForm: TCustomForm;
+  {$IFDEF HASX11}
+  AWindowManager: String;
+  {$ENDIF}
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -234,6 +237,19 @@ begin
   {$IFDEF QtUseAccurateFrame}
   if QtMainWindow.IsFramedWidget then
     QtMainWindow.FrameMargins := QtWidgetSet.WSFrameMargins;
+  {$ENDIF}
+
+  {$IFDEF HASX11}
+  if QtMainWindow.IsMainForm and not Application.HasOption('disableaccurateframe') then
+  begin
+    AWindowManager := LowerCase(GetWindowManager);
+    //Kwin,Openbox,wmaker-common - ok
+    if Application.HasOption('hideaccurateframe') or not
+    ( (AWindowManager = 'kwin') or (AWindowManager = 'openbox') or (AWindowManager = 'wmaker-common') ) then
+      QtWidgetSet.CreateDummyWidgetFrame(AWinControl.Left, AWinControl.Top, AWinControl.Width, AWinControl.Height)
+    else
+      QtWidgetSet.CreateDummyWidgetFrame(-1, -1, -1, -1); {only mentioned window managers literally move dummy widget out of screen - no flickering}
+  end;
   {$ENDIF}
 
   // Sets Various Events

@@ -639,6 +639,7 @@ type
   TQtMainWindow = class(TQtWidget)
   private
     FBlocked: Boolean;
+    FFirstPaintEvent: boolean;
     FIsFrameWindow: Boolean;
     LayoutWidget: QBoxLayoutH;
     FCWEventHook: QObject_hookH;
@@ -706,6 +707,7 @@ type
     procedure setRealPopupParent(NewParent: QWidgetH);
     property Blocked: Boolean read FBlocked write FBlocked;
     property IsFrameWindow: Boolean read FIsFrameWindow write FIsFrameWindow; {check if our LCLObject is TCustomFrame}
+    property FirstPaintEvent: boolean read FFirstPaintEvent write FFirstPaintEvent; {only for x11 - if firstpaintevent arrived we are 100% sure that frame is 100% accurate}
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
     function WinIDNeeded: boolean; override;
@@ -6997,6 +6999,7 @@ begin
   FFormHasInvalidPosition := False;
   {$ENDIF}
 
+  FFirstPaintEvent := False;
   FBlocked := False;
   FShowOnTaskBar := False;
   QtFormBorderStyle := Ord(bsSizeable);
@@ -7075,6 +7078,8 @@ begin
       if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil then
         raise Exception.Create('MDIChild can be added to MDIForm only !');
 
+      FFirstPaintEvent := True;
+
       Result := QMdiSubWindow_create(nil, QtWindow);
 
       // QMdiSubWindow already have an layout
@@ -7086,8 +7091,10 @@ begin
     begin
       if not IsFrameWindow and (TCustomForm(LCLObject).FormStyle = fsSplash) and
         not (csDesigning in LCLObject.ComponentState) then
-        Result := QWidget_create(nil, QtSplashScreen)
-      else
+      begin
+        FFirstPaintEvent := True;
+        Result := QWidget_create(nil, QtSplashScreen);
+      end else
         Result := QWidget_create(nil, QtWindow);
 
       QWidget_setAttribute(Result, QtWA_Hover);
@@ -7611,6 +7618,11 @@ begin
       ' LCLObject=', dbgsName(LCLObject),
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
+
+  {$IFDEF HASX11}
+  if (QEvent_type(Event) = QEventPaint) and not FFirstPaintEvent then
+    FFirstPaintEvent := True;
+  {$ENDIF}
 
   {$IFDEF QTSCROLLABLEFORMS}
   if Assigned(ScrollArea) and not IsMDIChild then
@@ -18454,6 +18466,7 @@ function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  FFirstPaintEvent := True;
   FHasPaint := True;
   FNeedRestoreVisible := False;
   if AParams.WndParent <> 0 then
