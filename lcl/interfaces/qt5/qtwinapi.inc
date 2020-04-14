@@ -2754,6 +2754,7 @@ begin
     +b(rsqtOptionX11CMap)
     +b(rsqtOptionX11IM)
     +b(rsqtOptionX11InputStyle)
+    +b(rsqtOptionDisableAccurateFrame)
     {$ENDIF}
     ;
 end;

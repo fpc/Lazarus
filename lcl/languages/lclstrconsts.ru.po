@@ -948,6 +948,10 @@ msgstr "Свойство %s не существует"
 msgid "Purple"
 msgstr "Лиловый"
 
+#: lclstrconsts.rsqtoptiondisableaccurateframe
+msgid "-disableaccurateframe, as of lazarus r62972 Qt and Qt5 interface implements fully accurate window frame under x11 which is used by GetWindowRect() mostly. Use option to disable this feature."
+msgstr ""
+
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
 msgstr "-dograb (только в X11), запуск в отладчике может повлечь неявный -nograb, используйте -dograb для отмены. Требуется QT_DEBUG."
