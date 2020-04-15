@@ -1287,6 +1287,7 @@ end;
 
 destructor TfrDesignerPage.destroy;
 begin
+  fGuides.Free;
   fPaintSel.Free;
   inherited destroy;
 end;
