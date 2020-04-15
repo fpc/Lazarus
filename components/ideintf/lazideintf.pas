@@ -24,7 +24,7 @@ uses
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf,
   // IdeIntf
-  IDEOptEditorIntf, SrcEditorIntf, IDEWindowIntf, PropEdits;
+  IDEOptEditorIntf, SrcEditorIntf, IDEWindowIntf;
 
 type
   TIDEDirective = (
@@ -1123,10 +1123,6 @@ procedure TLazIDEInterface.RemoveHandlerOnShowSourceOfActiveDesignerForm(
 begin
   RemoveHandler(lihtShowSourceOfActiveDesignerForm,TMethod(OnShowSourceOfActiveDesignerForm));
 end;
-
-initialization
-  RegisterPropertyEditor(TypeInfo(AnsiString),
-    THTMLBrowserHelpViewer,'BrowserPath',TFileNamePropertyEditor);
 
 end.
 

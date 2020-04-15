@@ -1685,5 +1685,9 @@ begin
 end;
 
 
+initialization
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    THTMLBrowserHelpViewer,'BrowserPath',TFileNamePropertyEditor);
+
 end.
 
