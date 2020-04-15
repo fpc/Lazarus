@@ -2329,6 +2329,7 @@ var
   vlMsg  : PMSg;
   i: Integer;
 begin
+  vlMsg:=nil; //issue #27662
   repeat
     // send cached LCL messages to the gtk
     //DebugLn(['TGtk2WidgetSet.AppProcessMessages SendCachedLCLMessages']);
@@ -2413,6 +2414,8 @@ begin
 
     // proceed until all messages are handled
   until (not PendingGtkMessagesExists) or Application.Terminated;
+  if (vlMsg = nil) and IsMultiThread then //no message was handled -> CheckSynchronize. issue #27662
+    CheckSynchronize;
 end;
 
 {------------------------------------------------------------------------------
