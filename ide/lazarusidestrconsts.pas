@@ -5650,6 +5650,7 @@ resourcestring
   lisLocals = 'Local Variables';
   lisLocalsNotEvaluated = 'Locals not evaluated';
   lisEvaluateModify = '&Evaluate/Modify';
+  lisEvaluateAll = 'Evaluate all';
   lisLocalsDlgCopyName = '&Copy Name';
   lisLocalsDlgCopyValue = 'C&opy Value';
   lisLocalsDlgCopyNameValue = 'Co&py Name and Value';

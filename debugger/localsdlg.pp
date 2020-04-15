@@ -51,6 +51,7 @@ type
     actCopyValue: TAction;
     actCopyAll: TAction;
     actCopyRAWValue: TAction;
+    actEvaluateAll: TAction;
     actWath: TAction;
     ActionList1: TActionList;
     lvLocals: TListView;
@@ -62,11 +63,13 @@ type
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
     PopupMenu1: TPopupMenu;
     procedure actCopyAllExecute(Sender: TObject);
     procedure actCopyAllUpdate(Sender: TObject);
     procedure actCopyNameExecute(Sender: TObject);
     procedure actCopyValueExecute(Sender: TObject);
+    procedure actEvaluateAllExecute(Sender: TObject);
     procedure actEvaluateExecute(Sender: TObject);
     procedure actInspectExecute(Sender: TObject);
     procedure actInspectUpdate(Sender: TObject);
@@ -74,9 +77,12 @@ type
     procedure actWathExecute(Sender: TObject);
   private
     FUpdateFlags: set of (ufNeedUpdating);
+    EvaluateAllCallbackCaption: string;
     procedure CopyRAWValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
     procedure CopyValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
+      ResultText: String; ResultDBGType: TDBGType);
+    procedure EvaluateAllCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
 
     procedure LocalsChanged(Sender: TObject);
@@ -98,6 +104,7 @@ type
   end;
 
 function ValueToRAW(const AValue: string): string;
+function ExtractValue(const AValue, AType: string): string;
 
 implementation
 
@@ -221,6 +228,19 @@ begin
     ProcessOther;
 end;
 
+function ExtractValue(const AValue, AType: string): string;
+var
+  StringStart: SizeInt;
+begin
+  Result := AValue;
+  if (StringCase(Lowercase(AType), ['^char', '^widechar'])>=0) then
+  begin
+    StringStart := Pos('''', Result);
+    if StringStart>0 then
+      Delete(Result, 1, StringStart-1);
+  end;
+end;
+
 { TLocalsDlg }
 
 constructor TLocalsDlg.Create(AOwner: TComponent);
@@ -239,6 +259,7 @@ begin
   actInspect.Caption := lisInspect;
   actWath.Caption := lisWatch;
   actEvaluate.Caption := lisEvaluateModify;
+  actEvaluateAll.Caption := lisEvaluateAll;
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
   actCopyRAWValue.Caption := lisLocalsDlgCopyRAWValue;
@@ -323,6 +344,17 @@ begin
     Clipboard.AsText := lvLocals.Selected.SubItems[0];
     Clipboard.Close;
   end
+end;
+
+procedure TLocalsDlg.actEvaluateAllExecute(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to lvLocals.Items.Count-1 do
+  begin
+    EvaluateAllCallbackCaption := lvLocals.Items[I].Caption;
+    DebugBoss.Evaluate(EvaluateAllCallbackCaption, @EvaluateAllCallback, []);
+  end;
 end;
 
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
@@ -482,6 +514,21 @@ begin
   lvLocals.EndUpdate;
 end;
 
+procedure TLocalsDlg.EvaluateAllCallback(Sender: TObject; ASuccess: Boolean;
+  ResultText: String; ResultDBGType: TDBGType);
+var
+  Item: TListItem;
+begin
+  if ASuccess then
+  begin
+    ResultText := ExtractValue(ResultText, ResultDBGType.TypeName);
+    Item := lvLocals.Items.FindCaption(0, EvaluateAllCallbackCaption, False, True, False, False);
+    if Assigned(Item) then
+      Item.SubItems[0] := ResultText+' ('+ResultDBGType.Value.AsString+')'; // xxx
+  end;
+  FreeAndNil(ResultDBGType);
+end;
+
 function TLocalsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
   if (AColId - 1 >= 0) and (AColId - 1 < lvLocals.ColumnCount) then begin
@@ -502,20 +549,11 @@ end;
 
 procedure TLocalsDlg.CopyRAWValueEvaluateCallback(Sender: TObject;
   ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
-var
-  StringStart: SizeInt;
 begin
   Clipboard.Open;
   if ASuccess then
-  begin
-    if (StringCase(Lowercase(ResultDBGType.TypeName), ['^char', '^widechar'])>=0) then
-    begin
-      StringStart := Pos('''', ResultText);
-      if StringStart>0 then
-        Delete(ResultText, 1, StringStart-1);
-    end;
-    Clipboard.AsText := ValueToRAW(ResultText);
-  end else
+    Clipboard.AsText := ValueToRAW(ExtractValue(ResultText, ResultDBGType.TypeName))
+  else
     Clipboard.AsText := ValueToRAW(lvLocals.Selected.SubItems[0]);
   Clipboard.Close;
   FreeAndNil(ResultDBGType);
@@ -523,20 +561,11 @@ end;
 
 procedure TLocalsDlg.CopyValueEvaluateCallback(Sender: TObject;
   ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
-var
-  StringStart: SizeInt;
 begin
   Clipboard.Open;
   if ASuccess then
-  begin
-    if (StringCase(Lowercase(ResultDBGType.TypeName), ['^char', '^widechar'])>=0) then
-    begin
-      StringStart := Pos('''', ResultText);
-      if StringStart>0 then
-        Delete(ResultText, 1, StringStart-1);
-    end;
-    Clipboard.AsText := ResultText;
-  end else
+    Clipboard.AsText := ExtractValue(ResultText, ResultDBGType.TypeName)
+  else
     Clipboard.AsText := lvLocals.Selected.SubItems[0];
   Clipboard.Close;
   FreeAndNil(ResultDBGType);

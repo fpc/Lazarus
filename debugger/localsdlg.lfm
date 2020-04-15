@@ -10,7 +10,7 @@ object LocalsDlg: TLocalsDlg
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object lvLocals: TListView
     Left = 0
     Height = 200
@@ -34,8 +34,8 @@ object LocalsDlg: TLocalsDlg
     ViewStyle = vsReport
   end
   object ActionList1: TActionList
-    left = 152
-    top = 80
+    Left = 152
+    Top = 80
     object actInspect: TAction
       Category = 'main'
       Caption = 'actInspect'
@@ -81,10 +81,17 @@ object LocalsDlg: TLocalsDlg
       OnExecute = actCopyRAWValueExecute
       OnUpdate = actInspectUpdate
     end
+    object actEvaluateAll: TAction
+      Category = 'main'
+      Caption = 'actEvaluateAll'
+      OnExecute = actEvaluateAllExecute
+      OnUpdate = actCopyAllUpdate
+      ShortCut = 16466
+    end
   end
   object PopupMenu1: TPopupMenu
-    left = 38
-    top = 75
+    Left = 38
+    Top = 75
     object MenuItem1: TMenuItem
       Action = actInspect
     end
@@ -93,6 +100,9 @@ object LocalsDlg: TLocalsDlg
     end
     object MenuItem3: TMenuItem
       Action = actEvaluate
+    end
+    object MenuItem9: TMenuItem
+      Action = actEvaluateAll
     end
     object MenuItem4: TMenuItem
       Caption = '-'
