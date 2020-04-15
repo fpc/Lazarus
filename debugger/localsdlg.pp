@@ -77,7 +77,7 @@ type
     procedure actWathExecute(Sender: TObject);
   private
     FUpdateFlags: set of (ufNeedUpdating);
-    EvaluateAllCallbackCaption: string;
+    EvaluateAllCallbackItem: TListItem;
     procedure CopyRAWValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
     procedure CopyValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
@@ -352,9 +352,10 @@ var
 begin
   for I := 0 to lvLocals.Items.Count-1 do
   begin
-    EvaluateAllCallbackCaption := lvLocals.Items[I].Caption;
-    DebugBoss.Evaluate(EvaluateAllCallbackCaption, @EvaluateAllCallback, []);
+    EvaluateAllCallbackItem := lvLocals.Items[I];
+    DebugBoss.Evaluate(EvaluateAllCallbackItem.Caption, @EvaluateAllCallback, []);
   end;
+  EvaluateAllCallbackItem := nil;
 end;
 
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
@@ -516,15 +517,11 @@ end;
 
 procedure TLocalsDlg.EvaluateAllCallback(Sender: TObject; ASuccess: Boolean;
   ResultText: String; ResultDBGType: TDBGType);
-var
-  Item: TListItem;
 begin
   if ASuccess then
   begin
-    ResultText := ExtractValue(ResultText, ResultDBGType.TypeName);
-    Item := lvLocals.Items.FindCaption(0, EvaluateAllCallbackCaption, False, True, False, False);
-    if Assigned(Item) then
-      Item.SubItems[0] := ResultText+' ('+ResultDBGType.Value.AsString+')'; // xxx
+    if Assigned(EvaluateAllCallbackItem) then
+      EvaluateAllCallbackItem.SubItems[0] := ExtractValue(ResultText, ResultDBGType.TypeName);
   end;
   FreeAndNil(ResultDBGType);
 end;
