@@ -68,6 +68,7 @@ object LocalsDlg: TLocalsDlg
       Caption = 'actCopyValue'
       OnExecute = actCopyValueExecute
       OnUpdate = actInspectUpdate
+      ShortCut = 24643
     end
     object actCopyAll: TAction
       Category = 'copy'
@@ -80,6 +81,7 @@ object LocalsDlg: TLocalsDlg
       Caption = 'actCopyRAWValue'
       OnExecute = actCopyRAWValueExecute
       OnUpdate = actInspectUpdate
+      ShortCut = 16451
     end
     object actEvaluateAll: TAction
       Category = 'main'
