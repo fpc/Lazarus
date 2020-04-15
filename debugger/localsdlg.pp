@@ -37,8 +37,8 @@ interface
 
 uses
   SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLoggerBase, strutils,
-  IDEWindowIntf, DebuggerStrConst,
-  ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
+  IDEWindowIntf, DebuggerStrConst, ComCtrls, ActnList, Menus, BaseDebugManager,
+  Debugger, DebuggerDlg, DbgIntfDebuggerBase, LazStringUtils;
 
 type
 
@@ -74,6 +74,11 @@ type
     procedure actWathExecute(Sender: TObject);
   private
     FUpdateFlags: set of (ufNeedUpdating);
+    procedure CopyRAWValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
+      ResultText: String; ResultDBGType: TDBGType);
+    procedure CopyValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
+      ResultText: String; ResultDBGType: TDBGType);
+
     procedure LocalsChanged(Sender: TObject);
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
@@ -250,9 +255,12 @@ end;
 
 procedure TLocalsDlg.actCopyRAWValueExecute(Sender: TObject);
 begin
-  Clipboard.Open;
-  Clipboard.AsText := ValueToRAW(lvLocals.Selected.SubItems[0]);
-  Clipboard.Close;
+  if not DebugBoss.Evaluate(lvLocals.Selected.Caption, @CopyRAWValueEvaluateCallback, []) then
+  begin
+    Clipboard.Open;
+    Clipboard.AsText := ValueToRAW(lvLocals.Selected.SubItems[0]);
+    Clipboard.Close;
+  end;
 end;
 
 procedure TLocalsDlg.actWathExecute(Sender: TObject);
@@ -309,9 +317,12 @@ end;
 
 procedure TLocalsDlg.actCopyValueExecute(Sender: TObject);
 begin
-  Clipboard.Open;
-  Clipboard.AsText := lvLocals.Selected.SubItems[0];
-  Clipboard.Close;
+  if not DebugBoss.Evaluate(lvLocals.Selected.Caption, @CopyValueEvaluateCallback, []) then
+  begin
+    Clipboard.Open;
+    Clipboard.AsText := lvLocals.Selected.SubItems[0];
+    Clipboard.Close;
+  end
 end;
 
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
@@ -487,6 +498,48 @@ begin
     COL_LOCALS_NAME:   lvLocals.Column[0].Width := ASize;
     COL_LOCALS_VALUE:  lvLocals.Column[1].Width := ASize;
   end;
+end;
+
+procedure TLocalsDlg.CopyRAWValueEvaluateCallback(Sender: TObject;
+  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+var
+  StringStart: SizeInt;
+begin
+  Clipboard.Open;
+  if ASuccess then
+  begin
+    if (StringCase(Lowercase(ResultDBGType.TypeName), ['^char', '^widechar'])>=0) then
+    begin
+      StringStart := Pos('''', ResultText);
+      if StringStart>0 then
+        Delete(ResultText, 1, StringStart-1);
+    end;
+    Clipboard.AsText := ValueToRAW(ResultText);
+  end else
+    Clipboard.AsText := ValueToRAW(lvLocals.Selected.SubItems[0]);
+  Clipboard.Close;
+  FreeAndNil(ResultDBGType);
+end;
+
+procedure TLocalsDlg.CopyValueEvaluateCallback(Sender: TObject;
+  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+var
+  StringStart: SizeInt;
+begin
+  Clipboard.Open;
+  if ASuccess then
+  begin
+    if (StringCase(Lowercase(ResultDBGType.TypeName), ['^char', '^widechar'])>=0) then
+    begin
+      StringStart := Pos('''', ResultText);
+      if StringStart>0 then
+        Delete(ResultText, 1, StringStart-1);
+    end;
+    Clipboard.AsText := ResultText;
+  end else
+    Clipboard.AsText := lvLocals.Selected.SubItems[0];
+  Clipboard.Close;
+  FreeAndNil(ResultDBGType);
 end;
 
 initialization
