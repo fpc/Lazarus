@@ -4550,15 +4550,16 @@ begin
   end;
   {$ENDIF}
 
-  {$IFDEF HASX11}
   if (TQtWidget(Handle) is TQtMainWindow) and Assigned(TQtWidget(Handle).LCLObject) and
     (TQtWidget(Handle).LCLObject.Parent = nil) and
-    not TQtMainWindow(Handle).FirstPaintEvent and (QtWidgetSet.GetDummyWidgetFrame <> Rect(0, 0, 0, 0)) then
+    not TQtMainWindow(Handle).FirstPaintEvent
+    {$IFDEF HASX11}and (QtWidgetSet.GetDummyWidgetFrame <> Rect(0, 0, 0, 0)){$ENDIF} then
   begin
     AForm := TCustomForm(TQtWidget(Handle).LCLObject);
     if not (AForm.FormStyle in [fsMDIChild, fsSplash]) and (AForm.BorderStyle <> bsNone) and
       not IsFormDesign(AForm) then
     begin
+      {$IFDEF HASX11}
       R := AForm.BoundsRect;
       AFrame := QtWidgetSet.GetDummyWidgetFrame;
       // apply frame size to lcl form.
@@ -4566,9 +4567,11 @@ begin
       R.Bottom += AFrame.Top + AFrame.Bottom;
       ARect := R; //this is now real size under x11 even on unmapped window :)
       exit(-1);
+      {$ELSE}
+      QWidget_winID(TQtWidget(Handle).Widget);
+      {$ENDIF}
     end;
   end;
-  {$ENDIF}
 
   APos := QtPoint(0,0);
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);

@@ -7619,6 +7619,11 @@ begin
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
 
+  {$IFDEF MSWINDOWS}
+  if (QEvent_type(Event) = QEventWinIDChange) and not FFirstPaintEvent then
+     FFirstPaintEvent := True;
+  {$ENDIF}
+
   {$IFDEF HASX11}
   if (QEvent_type(Event) = QEventPaint) and not FFirstPaintEvent then
     FFirstPaintEvent := True;

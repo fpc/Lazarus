@@ -1777,6 +1777,7 @@ const
     QEventUngrabKeyboard = 189 { $bd };
     QEventCocoaRequestModal = 190 { $be };
     QEventMacGLClearDrawable = 191 { $bf };
+    QEventWinIdChange = 203 { $cb };
     QEventUser = 1000 { $3e8 };
     QEventMaxUser = 65535 { $ffff };
 
