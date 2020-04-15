@@ -9671,6 +9671,10 @@ msgstr "Ausdruck berechnen"
 msgid "E&valuate"
 msgstr "Berechnen"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr "Ausw&erten/Ändern"

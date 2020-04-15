@@ -10064,6 +10064,10 @@ msgstr "חשב את הביטוי"
 msgid "E&valuate"
 msgstr "חשב"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr ""

@@ -9629,6 +9629,10 @@ msgstr "Vyhodnotit výraz"
 msgid "E&valuate"
 msgstr "&Vyhodnocení"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr "Vyhodnotit/Změnit"

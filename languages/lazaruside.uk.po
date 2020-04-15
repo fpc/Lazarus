@@ -9586,6 +9586,10 @@ msgstr "Оцінити вираз"
 msgid "E&valuate"
 msgstr "О&цінити"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr "&Оцінити/Змінити"

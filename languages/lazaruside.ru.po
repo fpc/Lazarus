@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-02-25 00:25+0300\n"
+"PO-Revision-Date: 2020-04-15 18:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9580,6 +9580,10 @@ msgstr "Вычислить выражение"
 #: lazarusidestrconsts.lisevaluate
 msgid "E&valuate"
 msgstr "&Вычислить"
+
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr "Вычислить все"
 
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"

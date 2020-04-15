@@ -9546,6 +9546,10 @@ msgstr "Eval ifadesi"
 msgid "E&valuate"
 msgstr "Değe&rlendir"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr "&Değiştir/değerlendir"

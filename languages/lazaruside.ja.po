@@ -9713,6 +9713,10 @@ msgstr "式を評価"
 msgid "E&valuate"
 msgstr "評価(&v)"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr "評価/修正(&E)"

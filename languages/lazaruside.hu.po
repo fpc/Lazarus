@@ -9583,6 +9583,10 @@ msgstr "Kifejezés kiértékelése"
 msgid "E&valuate"
 msgstr "Kiérték&elés"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr "Kiértékelés/Módosítás"

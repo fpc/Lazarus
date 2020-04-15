@@ -9717,6 +9717,10 @@ msgstr "Apskaičiuoti reiškinį"
 msgid "E&valuate"
 msgstr "Ap&skaičiuoti"
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"
 msgstr "Į&vertinti/keisti"

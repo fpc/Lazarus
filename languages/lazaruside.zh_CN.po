@@ -9872,6 +9872,10 @@ msgstr "表达式:"
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
 #: lazarusidestrconsts.lisevaluatemodify
 #, fuzzy
 msgid "&Evaluate/Modify"
