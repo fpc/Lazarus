@@ -5884,17 +5884,9 @@ begin
     SM_CYMENU:
       begin
         Result := 24; // default gtk2 menusize inside menubar.
-
         P := GetStyleWidget(lgsMenu);
         if P <> nil then
-        begin
           Result := GTK_Widget(P)^.requisition.Height;
-
-          P := GetStyleWidget(lgsMenuBar);
-          if P <> nil then
-            Result := Result + GTK_Widget(P)^.requisition.Height;
-        end;
-        inc(Result, FCachedBorderSize);
       end;
     SM_CYSMCAPTION:
       begin
