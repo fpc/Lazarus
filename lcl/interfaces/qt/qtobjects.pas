@@ -692,7 +692,7 @@ type
     property PrintRange: QPrinterPrintRange read getPrintRange write setPrintRange;
     property PrinterState: QPrinterPrinterState read getPrinterState;
     property PrintProgram: WideString read getPrintProgram write setPrintProgram;
-    property PrintQuality: QPrinterPrinterMode read FPrintQuality write FPrintQuality;
+    property PrintQuality: QPrinterPrinterMode read FPrintQuality;
     property Resolution: Integer read getResolution write setResolution;
   end;
   
