@@ -1604,7 +1604,6 @@ begin
     FImages[lvil].FreeNotification(self);
   end;
 
-  if not HandleAllocated then Exit;
   SetImageListWS(lvil);
 end;
 
@@ -1624,7 +1623,6 @@ begin
 
   FImagesWidth[lvil] := AValue;
 
-  if not HandleAllocated then Exit;
   SetImageListWS(lvil);
 end;
 
@@ -1632,6 +1630,8 @@ procedure TCustomListView.SetImageListWS(const ALvil: TListViewImageList);
 var
   R: TCustomImageListResolution;
 begin
+  if not HandleAllocated then
+    Exit;
   if FImages[ALvil]<>nil then
     R := FImages[ALvil].ResolutionForPPI[FImagesWidth[ALvil], Font.PixelsPerInch, 1].Resolution // to-do: support scaling factor
   else
