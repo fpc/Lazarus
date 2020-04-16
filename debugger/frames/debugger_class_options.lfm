@@ -25,8 +25,7 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       Top = 0
       Caption = 'tbSelect'
       DropdownMenu = tbDropMenu
-      OnClick = tbSelectClick
-      Style = tbsDropDown
+      Style = tbsButtonDrop
     end
     object tbAddNew: TToolButton
       Left = 78

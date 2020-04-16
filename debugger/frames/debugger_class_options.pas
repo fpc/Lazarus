@@ -71,7 +71,6 @@ type
     procedure tbAddNewClick(Sender: TObject);
     procedure tbCopyClick(Sender: TObject);
     procedure tbDeleteClick(Sender: TObject);
-    procedure tbSelectClick(Sender: TObject);
   private
     FDebuggerFileHistory: TStringList;
     FInOdNameExit: Boolean;
@@ -265,11 +264,6 @@ begin
   FillNameDropDown;
   UpdateDebuggerClassDropDown;
   FetchDebuggerSpecificOptions;
-end;
-
-procedure TDebuggerClassOptionsFrame.tbSelectClick(Sender: TObject);
-begin
-  tbSelect.CheckMenuDropdown;
 end;
 
 function TDebuggerClassOptionsFrame.SelectedDebuggerClass: TDebuggerClass;
