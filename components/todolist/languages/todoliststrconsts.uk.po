@@ -21,9 +21,57 @@ msgstr "Файли CSV"
 msgid "Refresh"
 msgstr "Оновити"
 
+#: todoliststrconsts.errscanfilefailed
+#, object-pascal-format
+msgid ""
+"Finding ToDo items failed in file %0:s.\n"
+"Is it a valid source file?\n"
+"The rest of the file has been skipped."
+msgstr ""
+
+#: todoliststrconsts.excinvalidparsestate
+msgid "Invalid parse state."
+msgstr ""
+
+#: todoliststrconsts.lisalternatetokens
+msgid "Use Alternate Tokens"
+msgstr ""
+
+#: todoliststrconsts.lisalternatetokenshint
+msgid "Standard token is #todo etc. Alternate is without the #"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Вставити макрос"
+
+#: todoliststrconsts.lisfilteritem0
+msgid "All"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem1
+msgid "ToDo Only"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem2
+msgid "Done Only"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem3
+msgid "Note Only"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem4
+msgid "ToDo & Done"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem5
+msgid "ToDo & Note"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem6
+msgid "Done & Note"
+msgstr ""
 
 #: todoliststrconsts.lishelp
 msgid "Help"
@@ -46,6 +94,14 @@ msgstr "Доповнює параметри \"%s\" і \"%s\" модулями з
 msgid "Text"
 msgstr "Текст"
 
+#: todoliststrconsts.lisshowwhat
+msgid "Show"
+msgstr ""
+
+#: todoliststrconsts.lisshowwhathint
+msgid "Select which ToDo types to list"
+msgstr ""
+
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
 msgstr "Редактор"
@@ -56,7 +112,9 @@ msgid "Add units in source editor"
 msgstr "Додати модулі в редактор коду"
 
 #: todoliststrconsts.listddinserttodo
-msgid "Insert ToDo"
+#, fuzzy
+#| msgid "Insert ToDo"
+msgid "Insert a ToDo/Done/Note"
 msgstr "Вставити ToDo"
 
 #: todoliststrconsts.listodoexport
@@ -111,6 +169,14 @@ msgstr "Власник"
 msgid "Priority"
 msgstr "Пріоритет"
 
+#: todoliststrconsts.listodoltype
+msgid "Type"
+msgstr ""
+
+#: todoliststrconsts.listodotodotype
+msgid "ToDo type"
+msgstr ""
+
 #: todoliststrconsts.listodoused
 msgid "Used"
 msgstr "Використані"
@@ -126,4 +192,8 @@ msgstr "Категорія"
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
 msgstr "Перегляд списку ToDo"
+
+#: todoliststrconsts.rsexporttodoit
+msgid "Export ToDo items to CSV"
+msgstr ""
 

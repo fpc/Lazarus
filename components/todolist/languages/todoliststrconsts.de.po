@@ -19,9 +19,57 @@ msgstr "CSV-Dateien"
 msgid "Refresh"
 msgstr "Aktualisieren"
 
+#: todoliststrconsts.errscanfilefailed
+#, object-pascal-format
+msgid ""
+"Finding ToDo items failed in file %0:s.\n"
+"Is it a valid source file?\n"
+"The rest of the file has been skipped."
+msgstr ""
+
+#: todoliststrconsts.excinvalidparsestate
+msgid "Invalid parse state."
+msgstr ""
+
+#: todoliststrconsts.lisalternatetokens
+msgid "Use Alternate Tokens"
+msgstr ""
+
+#: todoliststrconsts.lisalternatetokenshint
+msgid "Standard token is #todo etc. Alternate is without the #"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Makro einfügen"
+
+#: todoliststrconsts.lisfilteritem0
+msgid "All"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem1
+msgid "ToDo Only"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem2
+msgid "Done Only"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem3
+msgid "Note Only"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem4
+msgid "ToDo & Done"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem5
+msgid "ToDo & Note"
+msgstr ""
+
+#: todoliststrconsts.lisfilteritem6
+msgid "Done & Note"
+msgstr ""
 
 #: todoliststrconsts.lishelp
 msgid "Help"
@@ -44,6 +92,14 @@ msgstr "Erweitert \"%s\" und \"%s\" Einstellungen durch Units von verwendeten Pa
 msgid "Text"
 msgstr "Text"
 
+#: todoliststrconsts.lisshowwhat
+msgid "Show"
+msgstr ""
+
+#: todoliststrconsts.lisshowwhathint
+msgid "Select which ToDo types to list"
+msgstr ""
+
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
 msgstr "Editor"
@@ -54,7 +110,9 @@ msgid "Add units in source editor"
 msgstr "Fügt Units im Quelltexteditor zu"
 
 #: todoliststrconsts.listddinserttodo
-msgid "Insert ToDo"
+#, fuzzy
+#| msgid "Insert ToDo"
+msgid "Insert a ToDo/Done/Note"
 msgstr "ToDo einfügen"
 
 #: todoliststrconsts.listodoexport
@@ -109,6 +167,14 @@ msgstr "Eigentümer"
 msgid "Priority"
 msgstr "Priorität"
 
+#: todoliststrconsts.listodoltype
+msgid "Type"
+msgstr ""
+
+#: todoliststrconsts.listodotodotype
+msgid "ToDo type"
+msgstr ""
+
 #: todoliststrconsts.listodoused
 msgid "Used"
 msgstr "Verwendet"
@@ -124,4 +190,8 @@ msgstr "Kategorie"
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
 msgstr "ToDo-Liste anzeigen"
+
+#: todoliststrconsts.rsexporttodoit
+msgid "Export ToDo items to CSV"
+msgstr ""
 

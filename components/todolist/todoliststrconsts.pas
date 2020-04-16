@@ -24,8 +24,8 @@ unit ToDoListStrConsts;
 
 interface
 
-uses
-  Classes, SysUtils;
+const
+  csvHeader = 'Done,Description,Priority,Module,Line,Owner,Category';
 
 resourcestring
   lisTodolistRefresh='Refresh todo items';
@@ -61,23 +61,23 @@ resourcestring
   lisFilterItem0 = 'All';
   lisFilterItem1 = 'ToDo Only';
   lisFilterItem2 = 'Done Only';
-  lisFilterItem3 = 'Notes Only';
+  lisFilterItem3 = 'Note Only';
   lisFilterItem4 = 'ToDo & Done';
-  lisFilterItem5 = 'ToDo & Notes';
-  lisFilterItem6 = 'Done & Notes';
+  lisFilterItem5 = 'ToDo & Note';
+  lisFilterItem6 = 'Done & Note';
 
   lisShowWhat = 'Show';
   lisShowWhatHint = 'Select which ToDo types to list';
+  lisToDoToDoType = 'ToDo type';
   lisAlternateTokens = 'Use Alternate Tokens';
   lisAlternateTokensHint = 'Standard token is #todo etc. Alternate is without the #';
 
   excInvalidParseState = 'Invalid parse state.';
-  csvHeader = 'Done,Description,Priority,Module,Line,Owner,Category';
 
   errScanfileFailed = 'Finding ToDo items failed in file %0:s.' + LineEnding +
                        'Is it a valid source file?' + LineEnding +
                        'The rest of the file has been skipped.';
-  rsExportTodoIt = 'Export todo items to CSV';
+  rsExportTodoIt = 'Export ToDo items to CSV';
 
 implementation
 

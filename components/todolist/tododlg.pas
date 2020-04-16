@@ -178,6 +178,7 @@ begin
   PriorityLabel.Caption:=lisToDoLPriority;
   OwnerLabel.Caption:=lisToDoLOwner;
   CategoryLabel.Caption:=listToDoLCategory;
+  grpboxToDoType.Caption:=lisToDoToDoType;
   grpboxToDoType.Tag:=Ord(tdToDo);
   rdoToDo.Tag := Ord(tdToDo);
   rdoDone.Tag:=Ord(tdDone);
