@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-04-15 01:31+0300\n"
+"PO-Revision-Date: 2020-04-16 16:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -949,10 +949,8 @@ msgid "Purple"
 msgstr "Лиловый"
 
 #: lclstrconsts.rsqtoptiondisableaccurateframe
-#, fuzzy
-#| msgid "-disableaccurateframe, disables fully accurate window frame under X11. This feature is implemented for Qt and Qt5 interfaces and used mostly by GetWindowRect()."
-msgid "-disableaccurateframe, disables fully accurate window frame under X11. This feature is implemented for Qt,Qt5 and Gtk2 interfaces and used mostly by GetWindowRect()."
-msgstr "-disableaccurateframe, отключает определение точных границ окна в X11. Эта возможность реализована для интерфейсов Qt и Qt5 и используется преимущественно GetWindowRect()."
+msgid "-disableaccurateframe, disables fully accurate window frame under X11. This feature is implemented for Qt, Qt5 and Gtk2 interfaces and used mostly by GetWindowRect()."
+msgstr "-disableaccurateframe, отключает определение точных границ окна в X11. Эта возможность реализована для интерфейсов Qt, Qt5 и Gtk2 и используется преимущественно GetWindowRect()."
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
