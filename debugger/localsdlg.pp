@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLoggerBase, strutils,
   IDEWindowIntf, DebuggerStrConst, ComCtrls, ActnList, Menus, BaseDebugManager,
-  Debugger, DebuggerDlg, DbgIntfDebuggerBase, LazStringUtils;
+  Debugger, DebuggerDlg, DbgIntfDebuggerBase;
 
 type
 
@@ -104,7 +104,7 @@ type
   end;
 
 function ValueToRAW(const AValue: string): string;
-function ExtractValue(const AValue, AType: string): string;
+function ExtractValue(AValue: string; AType: string = ''): string;
 
 implementation
 
@@ -228,12 +228,19 @@ begin
     ProcessOther;
 end;
 
-function ExtractValue(const AValue, AType: string): string;
+function ExtractValue(AValue: string; AType: string): string;
 var
   StringStart: SizeInt;
 begin
   Result := AValue;
-  if (StringCase(Lowercase(AType), ['^char', '^widechar'])>=0) then
+  if (AType='') and (AValue<>'') and CharInSet(AValue[1], ['a'..'z', 'A'..'Z']) then // no type - guess from AValue
+  begin
+    StringStart := Pos('(', AValue);
+    if StringStart>0 then
+      AType := Copy(AValue, 1, StringStart-1);
+  end;
+  AType := Lowercase(AType);
+  if (Pos('char', AType)>0) or (Pos('string', AType)>0) then // extract string value
   begin
     StringStart := Pos('''', Result);
     if StringStart>0 then
@@ -427,12 +434,12 @@ begin
           // New entry
           Item := lvLocals.Items.Add;
           Item.Caption := Locals.Names[n];
-          Item.SubItems.Add(Locals.Values[n]);
+          Item.SubItems.Add(ExtractValue(Locals.Values[n]));
         end
         else begin
           // Existing entry
           Item := TListItem(List.Objects[idx]);
-          Item.SubItems[0] := Locals.Values[n];
+          Item.SubItems[0] := ExtractValue(Locals.Values[n]);
           List.Delete(idx);
         end;
       end;
