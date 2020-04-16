@@ -1,7 +1,7 @@
 object IDETodoWindow: TIDETodoWindow
-  Left = 415
+  Left = 714
   Height = 300
-  Top = 398
+  Top = 510
   Width = 837
   ActiveControl = lvTodo
   Caption = 'IDETodoWindow'
@@ -11,48 +11,49 @@ object IDETodoWindow: TIDETodoWindow
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  OnShow = FormShow
+  OnShow = DoUpdateToDos
   Position = poScreenCenter
-  SessionProperties = 'chkListed.Checked;chkUsed.Checked;chkSourceEditor.Checked;chkPackages.Checked'
+  SessionProperties = 'cboShowWhat.ItemIndex;chkListed.Checked;chkPackages.Checked;chkSourceEditor.Checked;chkUsed.Checked;lvTodo.Columns'
   LCLVersion = '2.1.0.0'
   object lvTodo: TListView
     Left = 6
-    Height = 203
-    Top = 91
+    Height = 240
+    Top = 54
     Width = 825
     Align = alClient
+    AutoSortIndicator = True
     BorderSpacing.Around = 6
     Columns = <    
       item
-        Caption = 'Done'
-        Width = 100
+        Caption = 'Type'
+        Width = 40
       end    
       item
         Caption = 'Description'
-        Width = 700
+        Width = 400
       end    
       item
         Caption = 'Priority'
-        Width = 100
+        Width = 40
       end    
       item
         Caption = 'Module'
-        Width = 100
+        Width = 60
       end    
       item
         Caption = 'Line'
-        Width = 100
+        Width = 40
       end    
       item
         Caption = 'Owner'
-        Width = 100
       end    
       item
         Caption = 'Category'
       end>
+    ReadOnly = True
     RowSelect = True
     ScrollBars = ssAutoBoth
-    SortType = stText
+    SortType = stData
     TabOrder = 1
     ViewStyle = vsReport
     OnClick = lvTodoClick
@@ -60,7 +61,7 @@ object IDETodoWindow: TIDETodoWindow
   end
   object ToolBar: TToolBar
     Left = 0
-    Height = 85
+    Height = 48
     Top = 0
     Width = 837
     AutoSize = True
@@ -78,97 +79,140 @@ object IDETodoWindow: TIDETodoWindow
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 56
+      Left = 48
       Top = 2
       Action = acGoto
       AutoSize = True
     end
     object tbExport: TToolButton
-      Left = 103
+      Left = 95
       Top = 2
       Action = acExport
       AutoSize = True
     end
     object N1: TToolButton
-      Left = 151
+      Left = 142
       Height = 46
       Top = 2
       Caption = 'N1'
       Style = tbsDivider
     end
     object grbOptions: TGroupBox
-      Left = 156
-      Height = 83
+      AnchorSideTop.Side = asrCenter
+      Left = 262
+      Height = 39
       Top = 2
-      Width = 281
+      Width = 221
       AutoSize = True
       Caption = 'Options'
-      ClientHeight = 53
-      ClientWidth = 277
+      ClientHeight = 19
+      ClientWidth = 217
       TabOrder = 0
       object chkListed: TCheckBox
         Left = 0
-        Height = 53
+        Height = 19
         Top = 0
-        Width = 65
+        Width = 51
         Align = alLeft
         Caption = '&Listed'
         Checked = True
-        OnChange = chkListedChange
+        OnChange = DoUpdateToDos
         State = cbChecked
         TabOrder = 0
       end
       object chkUsed: TCheckBox
-        Left = 65
-        Height = 53
+        Left = 51
+        Height = 19
         Top = 0
-        Width = 60
+        Width = 46
         Align = alLeft
         Caption = '&Used'
         Checked = True
-        OnChange = chkUsedChange
+        OnChange = DoUpdateToDos
         State = cbChecked
         TabOrder = 1
       end
       object chkSourceEditor: TCheckBox
-        Left = 125
-        Height = 53
+        Left = 97
+        Height = 19
         Top = 0
-        Width = 66
+        Width = 51
         Align = alLeft
         Caption = 'Editor'
         Checked = True
-        OnChange = chkSourceEditorChange
+        OnChange = DoUpdateToDos
         State = cbChecked
         TabOrder = 2
       end
       object chkPackages: TCheckBox
-        Left = 191
-        Height = 53
+        Left = 148
+        Height = 19
         Top = 0
-        Width = 86
+        Width = 69
         Align = alLeft
         Caption = '&Packages'
-        OnChange = chkPackagesChange
+        OnChange = DoUpdateToDos
         TabOrder = 3
       end
     end
     object tbHelp: TToolButton
-      Left = 437
+      Left = 483
       Top = 2
       Action = acHelp
     end
+    object pnlShowWhat: TPanel
+      Left = 147
+      Height = 46
+      Top = 2
+      Width = 115
+      BevelOuter = bvNone
+      ClientHeight = 46
+      ClientWidth = 115
+      TabOrder = 1
+      object lblShowWhat: TLabel
+        Left = 0
+        Height = 15
+        Top = 3
+        Width = 29
+        Caption = 'Show'
+        ParentColor = False
+      end
+      object cboShowWhat: TComboBox
+        AnchorSideLeft.Control = pnlShowWhat
+        AnchorSideTop.Control = lblShowWhat
+        AnchorSideTop.Side = asrBottom
+        Left = 4
+        Height = 23
+        Top = 22
+        Width = 106
+        BorderSpacing.Around = 4
+        ItemHeight = 15
+        ItemIndex = 0
+        Items.Strings = (
+          'All'
+          'ToDo Only'
+          'Done Only'
+          'Notes Only'
+          'ToDo and Done'
+          'ToDo and Notes'
+          'Done and Notes'
+        )
+        OnChange = DoUpdateToDos
+        TabOrder = 0
+        Text = 'All'
+      end
+    end
   end
   object ActionList: TActionList
-    left = 648
-    top = 10
+    Left = 648
+    Top = 10
     object acGoto: TAction
       Caption = 'Goto'
       OnExecute = acGotoExecute
     end
     object acRefresh: TAction
       Caption = 'Refresh'
-      OnExecute = acRefreshExecute
+      OnExecute = DoUpdateToDos
     end
     object acExport: TAction
       Caption = 'Export'
@@ -184,16 +228,15 @@ object IDETodoWindow: TIDETodoWindow
     DefaultExt = '.csv'
     Filter = 'csv|*.csv'
     Options = [ofCreatePrompt, ofEnableSizing, ofViewDetail]
-    left = 448
-    top = 11
+    Left = 584
+    Top = 11
   end
   object XMLPropStorage: TXMLPropStorage
     StoredValues = <>
-    FileName = 'todolistoptions.xml'
     Active = False
     OnRestoringProperties = XMLPropStorageRestoringProperties
     OnRestoreProperties = XMLPropStorageRestoreProperties
-    left = 544
-    top = 11
+    Left = 544
+    Top = 11
   end
 end

@@ -21,7 +21,10 @@
 (*
 Modified by Gerard Visent <gerardusmercator@gmail.com> on 5/11/2007
 - Extended to allow adding Owner, Category and priority
+Modified by Kevin Jesshope <KevinOfOz@gmail.com> 15 Mar 2020
+- See ToDoListCore for details
 *)
+
 unit ToDoDlg;
 
 {$mode objfpc}{$H+}
@@ -32,11 +35,11 @@ uses
   Classes, SysUtils,
   // LCL
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  Buttons, ButtonPanel, Menus, Spin,
+  Buttons, ButtonPanel, Menus, Spin, XMLPropStorage,
   // IdeIntf
   IDECommands, MenuIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
   // TodoList
-  TodoList, ToDoListStrConsts;
+  ToDoList, ToDoListStrConsts, ToDoListCore;
 
 type
 
@@ -44,15 +47,23 @@ type
 
   TTodoDialog = class(TForm)
     BtnPanel: TButtonPanel;
+    chkAlternateTokens: TCheckBox;
+    grpboxToDoType: TGroupBox;
     OwnerEdit: TEdit;
     CategoryEdit: TEdit;
     CategoryLabel: TLabel;
     PriorityEdit: TSpinEdit;
     PriorityLabel: TLabel;
     OwnerLabel: TLabel;
+    rdoToDo: TRadioButton;
+    rdoDone: TRadioButton;
+    rdoNote: TRadioButton;
     TodoLabel: TLabel;
     TodoMemo: TMemo;
+    XMLPropStorage: TXMLPropStorage;
+    procedure FormCloseQuery(Sender: TObject; var {%H-}CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
+    procedure rdoToDoTypeChange(Sender: TObject);
   end;
   
 var
@@ -69,7 +80,13 @@ procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
 
 implementation
 
+uses
+  LazFileUtils;
+
 {$R *.lfm}
+
+const
+  DefaultTodoListCfgFile = 'todolistdialogoptions.xml';
 
 procedure Register;
 var
@@ -161,6 +178,30 @@ begin
   PriorityLabel.Caption:=lisToDoLPriority;
   OwnerLabel.Caption:=lisToDoLOwner;
   CategoryLabel.Caption:=listToDoLCategory;
+  grpboxToDoType.Tag:=Ord(tdToDo);
+  rdoToDo.Tag := Ord(tdToDo);
+  rdoDone.Tag:=Ord(tdDone);
+  rdoNote.Tag:=Ord(tdNote);
+  chkAlternateTokens.Caption:=lisAlternateTokens;
+  chkAlternateTokens.Hint:=lisAlternateTokensHint;
+  XMLPropStorage.FileName := Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
+    DefaultTodoListCfgFile);
+  XMLPropStorage.Active := True;
+end;
+
+procedure TTodoDialog.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  XMLPropStorage.Save;
+end;
+
+procedure TTodoDialog.rdoToDoTypeChange(Sender: TObject);
+var
+  lRadioButton: TRadioButton;
+  lGroupBox: TGroupBox;
+begin
+  lRadioButton := Sender as TRadioButton;
+  lGroupBox := lRadioButton.Parent as TGroupBox;
+  lGroupBox.Tag := lRadioButton.Tag;
 end;
 
 function ExecuteTodoDialog: TTodoItem;
@@ -173,9 +214,12 @@ begin
   if aTodoDialog.ModalResult = mrOk then
   begin
     Result := TTodoItem.Create(nil);
-    Result.AltNotation := True; // TODO: Should be an option in the future
     Result.Category    := aTodoDialog.CategoryEdit.Text;
-    Result.Done        := False;
+    Result.ToDoType    := TToDoType(aTodoDialog.grpboxToDoType.Tag);
+    if aTodoDialog.chkAlternateTokens.Checked then
+      Result.TokenStyle:=tsAlternate
+    else
+      Result.TokenStyle:=tsNormal;
     Result.Owner       := aTodoDialog.OwnerEdit.Text;
     Result.Text        := aTodoDialog.TodoMemo.Text;
     Result.Priority    := aTodoDialog.PriorityEdit.Value;

@@ -32,6 +32,7 @@ resourcestring
   lisTodoListGotoLine='Goto selected source line';
   lisCTInsertMacro = 'Insert Macro';
   lisToDoLDone = 'Done';
+  lisToDoLType = 'Type';
   lisToDoLDescription = 'Description';
   lisToDoLPriority = 'Priority';
   lisToDoLFile  = 'Module';
@@ -51,11 +52,32 @@ resourcestring
   lisSourceEditor = 'Editor';
   lisSourceEditorHint = 'Add units in source editor';
   dlgUnitDepRefresh = 'Refresh';
-  lisTDDInsertToDo = 'Insert ToDo';
+  lisTDDInsertToDo = 'Insert a ToDo/Done/Note';
   lisViewToDoList = 'View ToDo List';
   lisToDoList = 'ToDo List';
   lisPkgFileTypeText = 'Text';
   dlgFilterCsv = 'CSV files';
+
+  lisFilterItem0 = 'All';
+  lisFilterItem1 = 'ToDo Only';
+  lisFilterItem2 = 'Done Only';
+  lisFilterItem3 = 'Notes Only';
+  lisFilterItem4 = 'ToDo & Done';
+  lisFilterItem5 = 'ToDo & Notes';
+  lisFilterItem6 = 'Done & Notes';
+
+  lisShowWhat = 'Show';
+  lisShowWhatHint = 'Select which ToDo types to list';
+  lisAlternateTokens = 'Use Alternate Tokens';
+  lisAlternateTokensHint = 'Standard token is #todo etc. Alternate is without the #';
+
+  excInvalidParseState = 'Invalid parse state.';
+  csvHeader = 'Done,Description,Priority,Module,Line,Owner,Category';
+
+  errScanfileFailed = 'Finding ToDo items failed in file %0:s.' + LineEnding +
+                       'Is it a valid source file?' + LineEnding +
+                       'The rest of the file has been skipped.';
+  rsExportTodoIt = 'Export todo items to CSV';
 
 implementation
 

@@ -8,7 +8,7 @@ unit ToDoListLaz;
 interface
 
 uses
-  ToDoDlg, TodoList, ToDoListStrConsts, LazarusPackageIntf;
+  ToDoDlg, ToDoList, ToDoListCore, ToDoListStrConsts, LazarusPackageIntf;
 
 implementation
 

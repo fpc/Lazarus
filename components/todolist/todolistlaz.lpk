@@ -1,66 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="ToDoListLaz"/>
     <Type Value="DesignTime"/>
     <AddToProjectUsesSection Value="True"/>
-    <Author Value="Olivier GUILBAUD &lt;golivier@free.fr>, Gerard Visent &lt;gerardusmercator@gmail.com>, Mattias Gaertner, Alexander du Plessis, Silvio Clecio"/>
+    <Author Value="Olivier GUILBAUD &lt;golivier@free.fr>, Gerard Visent &lt;gerardusmercator@gmail.com>, Mattias Gaertner, Alexander du Plessis, Silvio Clecio, Kevin Jesshope &lt;KevinOfOz@gmail.com>"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Description Value="A todo list window for the Lazarus IDE
-"/>
+    <Description Value="A todo/done/note list window for the Lazarus IDE"/>
     <License Value="GPL-2
 "/>
-    <Version Major="1" Release="2"/>
-    <Files Count="5">
-      <Item1>
-        <Filename Value="tododlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item1>
-      <Item2>
+    <Version Major="1" Release="3"/>
+    <Files>
+      <Item>
         <Filename Value="tododlg.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="ToDoDlg"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
+        <Filename Value="tododlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="todolist.pas"/>
+        <UnitName Value="ToDoList"/>
+      </Item>
+      <Item>
         <Filename Value="todolist.lfm"/>
         <Type Value="LFM"/>
-      </Item3>
-      <Item4>
-        <Filename Value="todolist.pas"/>
-        <UnitName Value="TodoList"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
+        <Filename Value="todolistcore.pas"/>
+        <UnitName Value="ToDoListCore"/>
+      </Item>
+      <Item>
         <Filename Value="todoliststrconsts.pas"/>
         <UnitName Value="ToDoListStrConsts"/>
-      </Item5>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="3">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="IDEIntf"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="CodeTools"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
 </CONFIG>
