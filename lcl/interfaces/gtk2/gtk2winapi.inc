@@ -4622,7 +4622,8 @@ begin
     +b(rsgtkOptionSync)
     +b(rsgtkOptionNoXshm)
     +b(rsgtkOptionName)
-    +b(rsgtkOptionClass);
+    +b(rsgtkOptionClass)
+    +b(rsqtOptionDisableAccurateFrame);
 end;
 
 {------------------------------------------------------------------------------
@@ -6261,6 +6262,9 @@ var
   Widget: PGTKWidget;
   GRect: TGdkRectangle;
   P: TPoint;
+  AInfo: PWidgetInfo;
+  AForm: TCustomForm;
+  R, AFrame: TRect;
 begin
   Result := 0; // error
   if Handle = 0 then
@@ -6279,6 +6283,26 @@ begin
     Result := 1; // success
   end else
   begin
+    {$IFDEF HASX}
+    AInfo := GetWidgetInfo(Widget);
+    if (AInfo^.LCLObject is TCustomForm) and not AInfo^.FirstPaint then
+    begin
+      AForm := TCustomForm(AInfo^.LCLObject);
+      if not IsFormDesign(AForm) and (AForm.BorderStyle <> bsNone) and
+        not (AForm.FormStyle in [fsMDIChild, fsSplash])
+      and (Gtk2WidgetSet.GetDummyWidgetFrame <> Rect(0, 0, 0, 0)) and
+      not GDK_IS_WINDOW(Widget^.window) then
+      begin
+        R := AForm.BoundsRect;
+        AFrame := Gtk2WidgetSet.GetDummyWidgetFrame;
+        // apply frame size to lcl form.
+        R.Right += AFrame.Left + AFrame.Right;
+        R.Bottom += AFrame.Top + AFrame.Bottom;
+        ARect := R; //this is now real size under x11 even on unmapped window :)
+        exit(-1);
+      end;
+    end;
+    {$ENDIF}
     ARect.TopLeft := GetWidgetOrigin(Widget);
     if (ARect.Top <> -1) or (ARect.Left <> -1)
     or (Widget^.allocation.width <> 1) or (Widget^.allocation.height <> 1) then
@@ -9679,11 +9703,21 @@ end;
 
 function TGtk2WidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
   pvParam: Pointer; fWinIni: DWord): LongBool;
+{$IFDEF HASX}
+var
+  ax, ay, awidth, aheight: gint;
+{$ENDIF}
 begin
   Result:=True;
   Case uiAction of
     SPI_GETWHEELSCROLLLINES: PDword(pvParam)^ := 3;
-    SPI_GETWORKAREA: begin
+    SPI_GETWORKAREA:
+    begin
+      {$IFDEF HASX}
+      if XGetWorkarea(ax, ay, awidth, aheight) <> -1 then
+        TRect(pvParam^) := Bounds(ax, ay, awidth, aheight)
+      else
+      {$ENDIF}
       TRect(pvParam^):=Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
                               GetSystemMetrics(SM_YVIRTUALSCREEN),
                               GetSystemMetrics(SM_CXVIRTUALSCREEN),

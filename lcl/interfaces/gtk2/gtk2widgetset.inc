@@ -952,6 +952,7 @@ begin
   FMainPoll := nil;
   if not FIsLibraryInstance then
   begin
+    FWSFrameRect := Rect(0, 0, 0, 0);
     Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
     g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
   end else
@@ -1772,6 +1773,26 @@ begin
 end;
 
 {$ifdef Unix}
+
+{$IFDEF HASX}
+function TGtk2WidgetSet.CreateDummyWidgetFrame(const ALeft, ATop, AWidth,
+  AHeight: integer): boolean;
+var
+  ADummy: TDummyWidget;
+begin
+  Result := False;
+  ADummy := TDummyWidget.Create;
+  ADummy.ShowDummyWidget(ALeft, ATop, AWidth, AHeight);
+  FWSFrameRect := ADummy.GetWidgetFrame;
+  ADummy.Free;
+  Result := not IsRectEmpty(FWSFrameRect);
+end;
+
+function TGtk2WidgetSet.GetDummyWidgetFrame: TRect;
+begin
+  Result := FWSFrameRect;
+end;
+{$ENDIF}
 
 procedure TGtk2WidgetSet.PrepareSynchronize(AObject: TObject);
 { This method is the WakeMainThread of the unit classes.
@@ -6424,6 +6445,204 @@ begin
   else
     Result:=nil;
 end;
+
+{$IFDEF HASX}
+{.$DEFINE DEBUGGTK2FRAMESIZE}
+
+function Gtk2DummyWidgetEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): gboolean; cdecl;
+begin
+  Result := CallBackDefaultReturn;
+  if (AEvent^._type = GDK_EXPOSE) then
+    TDummyWidget(AData).FFirstPaintEvent := True;
+end;
+
+constructor TDummyWidget.Create;
+begin
+  inherited Create;
+  FFrameRect := Rect(0, 0, 0, 0);
+  Widget := gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_decorated(PGtkWindow(Widget), True);
+  gtk_window_set_accept_focus(PGtkWindow(Widget), False);
+  gtk_window_set_focus_on_map(PGtkWindow(Widget), False);
+  gtk_window_set_keep_below(PGtkWindow(Widget), True);
+  gtk_window_set_skip_taskbar_hint(PGtkWindow(Widget), True);
+  gtk_widget_set_parent_window(Widget, gdk_get_default_root_window);
+  if Assigned(gtk_window_set_opacity) and Gtk2WidgetSet.compositeManagerRunning then
+    gtk_window_set_opacity(PGtkWindow(Widget), 0.5);
+
+  g_signal_connect(PGtkObject(Widget), 'event',
+    gtk_signal_func(@Gtk2DummyWidgetEvent), Self);
+end;
+
+function TDummyWidget.ShowDummyWidget(const ALeft, ATop, AWidth,
+  AHeight: integer): boolean;
+var
+  R: TRect;
+  {$IFDEF DEBUGGTK2FRAMESIZE}
+  ATicks: QWord;
+  {$ENDIF}
+  ALoop: integer;
+  AMaxLoops: integer;
+  aRequisition: TGtkRequisition;
+  AAllocation: TGtkAllocation;
+begin
+  Result := Assigned(Widget);
+  if Result then
+  begin
+    if Gtk2WidgetSet.compositeManagerRunning then
+      AMaxLoops := 200000
+    else
+      AMaxLoops := 20000;
+    {$IFDEF DEBUGGTK2FRAMESIZE}
+    writeln('ShowDummyWidget(start) WindowManager="',Gtk2WidgetSet.GetWindowManager,'" Compositing enabled="',Gtk2WidgetSet.compositeManagerRunning,'" IsWayland="UNKNOWN" MaxLoops=',AMaxLoops);
+    ATicks := GetTickCount64;
+    {$ENDIF}
+    if (ALeft <= 0) or (ATop <= 0) or (AWidth <= 0) or (AHeight <= 0) then
+    begin
+      gdk_screen_get_monitor_geometry(gdk_screen_get_default, 0, @R);
+      aRequisition.width := 75;
+      aRequisition.height := 32;
+      AAllocation.x := R.CenterPoint.x;
+      AAllocation.y := R.CenterPoint.y;
+      AAllocation.width := aRequisition.Width;
+      AAllocation.height := aRequisition.height;
+      gtk_widget_size_allocate(Widget,@AAllocation);
+    end else
+    begin
+      aRequisition.width := AWidth - 1;
+      aRequisition.height := AHeight - 1;
+      AAllocation.x := ALeft + 1;
+      AAllocation.y := ATop + 1;
+      AAllocation.width := aRequisition.Width;
+      AAllocation.height := aRequisition.height;
+      gtk_widget_size_allocate(Widget,@AAllocation);
+    end;
+    gtk_widget_show(Widget);
+    gtk_widget_map(Widget);
+    gtk_window_move(PGtkWindow(Widget), AAllocation.x, AAllocation.y);
+    gtk_window_resize(PGtkWindow(Widget), AAllocation.width, AAllocation.height);
+
+    {We are waiting until dummy window is laid out on screen by window manager
+     ALoop variable is needed to avoid infinite loop.
+     Usually we get result in about 20-30msec on modern X11 without compositing,
+     but 30-100 msec on wm with compositing enabled.
+     Older X11 or slower machine might need more loops to get result,
+     but it won't be over 200 msec in any case.}
+
+    ALoop := 0; // avoid infinite loop
+    while not GDK_IS_WINDOW(Widget^.window) do
+    begin
+      inc(ALoop);
+
+      while g_main_context_pending(g_main_context_default) do
+      begin
+        if not g_main_context_iteration(g_main_context_default, False) then
+          break;
+      end;
+
+      if ALoop > AMaxLoops then
+        break;
+    end;
+
+    {$IFDEF DEBUGGTK2FRAMESIZE}
+    writeln('ShowDummyWidget: 1st LOOP=',ALoop);
+    {$ENDIF}
+
+    ALoop := 0; // avoid infinite loop
+    while not FFirstPaintEvent do
+    begin
+      inc(ALoop);
+
+      while g_main_context_pending(g_main_context_default) do
+      begin
+        if not g_main_context_iteration(g_main_context_default, False) then
+          break;
+      end;
+
+      if ALoop > AMaxLoops then
+        break;
+    end;
+
+    {$IFDEF DEBUGGTK2FRAMESIZE}
+    writeln('ShowDummyWidget: 2st LOOP=',ALoop);
+    {$ENDIF}
+    R := Rect(0 ,0, 0, 0);
+    ALoop := 0; // avoid infinite loop
+    // now wait until R.Top > 0
+    while (R.Top <= 0) do //
+    begin
+      inc(ALoop);
+      R := GetWidgetFrame;
+
+      while g_main_context_pending(g_main_context_default) do
+      begin
+        if not g_main_context_iteration(g_main_context_default, False) then
+          break;
+      end;
+
+      if ALoop > AMaxLoops then
+        break;
+    end;
+    {$IFDEF DEBUGGTK2FRAMESIZE}
+    writeln('ShowDummyWidget: 3nd LOOP=',ALoop,' LAST R=',dbgs(R));
+    writeln('ShowDummyWidget: *finished* FRAME=',dbgs(GetWidgetFrame),' in ',GetTickCount64 - ATicks,' msec ');
+    {$ENDIF}
+  end;
+end;
+
+destructor TDummyWidget.Destroy;
+begin
+  if Assigned(Widget) then
+  begin
+    HideWidget;
+    gtk_widget_destroy(Widget);
+    Widget := nil;
+  end;
+  inherited Destroy;
+end;
+
+function TDummyWidget.GetWidgetFrame: TRect;
+var
+  AFrame, AGeometry: TRect;
+  DeskX, DeskY, PosX, PosY, AWidth, AHeight: gint;
+  GRect: TGdkRectangle;
+begin
+  Result := FFrameRect;
+  if not Assigned(Widget) then
+    exit;
+  if not GDK_IS_WINDOW(Widget^.window) then
+    exit;
+  if not gdk_window_is_visible(Widget^.window) then
+    exit;
+
+  gdk_window_get_frame_extents(Widget^.window, @GRect);
+  gdk_window_get_deskrelative_origin(Widget^.window, @DeskX, @DeskY);
+
+  AFrame := RectFromGdkRect(GRect);
+  gtk_window_get_position(PGtkWindow(Widget), @PosX, @PosY);
+  gtk_window_get_size(PGtkWindow(Widget), @AWidth, @AHeight);
+
+  AGeometry := Bounds(PosX, PosY, AWidth, AHeight);
+  FFrameRect := Rect(DeskX - PosX, DeskY - PosY, (AFrame.Right - AGeometry.Right) - (DeskX - PosX), (AFrame.Bottom - AGeometry.Bottom) - (DeskY - PosY)); // hardcoded just to proove GetWindowRect
+
+  if FFrameRect.Top < 0 then
+    FFrameRect.Top := 0;
+
+  Result := FFrameRect;
+end;
+
+procedure TDummyWidget.SendToBack;
+begin
+  if Assigned(Widget) then
+    gtk_window_set_keep_above(PGtkWindow(Widget), True);
+end;
+
+procedure TDummyWidget.HideWidget;
+begin
+  if Assigned(Widget) then
+    gtk_widget_hide(Widget);
+end;
+{$ENDIF}
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}

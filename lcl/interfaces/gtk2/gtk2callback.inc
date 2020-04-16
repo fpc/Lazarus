@@ -76,12 +76,20 @@ function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget;
   Area: PGDKRectangle; RepaintAll, IsAfterGtk: boolean): GBoolean;
 var
   Msg: TLMGtkPaint;
+  AInfo: PWidgetInfo;
 begin
   //DebugLn(['DeliverGtkPaintMessage ',DbgSName(TObject(Target)),' Widget=',GetWidgetDebugReport(Widget),' RepaintAll=',RepaintAll,' AfterGtk=',IsAfterGtk,' Area=',dbgs(Area)]);
   // default is, that a control receives the paint message after gtk (including the child paints)
   // In case of TCustomControl, there is no gtk painting only the
   // child paintings. Let the TCustomControl paint the background.
   // ToDo: Eventually there must be a 'before paint message'.
+
+  if (TObject(Target) is TCustomForm) then
+  begin
+    AInfo := GetWidgetInfo(Widget);
+    AInfo^.FirstPaint := True;
+  end;
+
   if IsAfterGtk then
   begin
     if TObject(Target) is TCustomControl then exit(false);

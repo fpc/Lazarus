@@ -487,6 +487,7 @@ type
     UserData: Pointer;
     FormBorderStyle: Integer;         // used only by forms
     FormWindowState: TGdkEventWindowState; // used only by forms to stop infinite loops eg. issue #16505
+    FirstPaint: boolean; // for accurate frame - forms only
   end;
 
   //TODO: remove

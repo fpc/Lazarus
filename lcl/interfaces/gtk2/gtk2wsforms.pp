@@ -417,6 +417,10 @@ begin
     P := gtk_hbox_new(false, 0);
   end;
 
+  if (AWinControl = Application.MainForm) and
+    not Application.HasOption('disableaccurateframe') then
+      Gtk2WidgetSet.CreateDummyWidgetFrame(-1, -1, -1, -1);
+
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
   WidgetInfo^.FormBorderStyle := Ord(ABorderStyle);
 

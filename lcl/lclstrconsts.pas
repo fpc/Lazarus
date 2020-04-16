@@ -205,7 +205,7 @@ resourceString
     +'floating over the widget and is not inserted until the editing is done.';
 
   rsqtOptionDisableAccurateFrame = '-disableaccurateframe, disables fully accurate '
-    +'window frame under X11. This feature is implemented for Qt and Qt5 interfaces '
+    +'window frame under X11. This feature is implemented for Qt,Qt5 and Gtk2 interfaces '
     +'and used mostly by GetWindowRect().';
 
   // win32 interface

@@ -51,6 +51,24 @@ uses
 
 type
 
+  { TDummyWidget }
+
+  TDummyWidget = class(TObject) {needed for accurate frame on x11}
+  private
+    FFrameRect: TRect;
+    FFirstPaintEvent: boolean;
+    FWidget: PGtkWidget;
+  public
+    constructor Create; overload;
+    destructor Destroy; override;
+    function GetWidgetFrame: TRect;
+    function ShowDummyWidget(const ALeft, ATop, AWidth,
+      AHeight: integer): boolean;
+    procedure SendToBack;
+    procedure HideWidget;
+    property Widget: PGtkWidget read FWidget write FWidget;
+  end;
+
   { TGtk2WidgetSet }
 
   TGtk2WidgetSet = class(TWidgetSet)
@@ -248,6 +266,7 @@ type
   private
     {$IFDEF HASX}
     FDesktopWidget: PGtkWidget;
+    FWSFrameRect: TRect;
     {$ENDIF}
     procedure Gtk2Create;
     procedure Gtk2Destroy;
@@ -285,6 +304,10 @@ type
     {$I gtk2lclintfh.inc}
   public
     {$IFDEF HASX}
+    function CreateDummyWidgetFrame(const ALeft, ATop, AWidth,
+      AHeight: integer): boolean;
+    function GetDummyWidgetFrame: TRect;
+
     function compositeManagerRunning: Boolean;
     function GetDesktopWidget: PGtkWidget;
     //function X11Raise(AHandle: HWND): boolean; currently not used

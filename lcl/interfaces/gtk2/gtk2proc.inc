@@ -4106,6 +4106,7 @@ begin
   if Result = nil then Exit;
   
   Result^.LCLObject := AObject;
+  Result^.FirstPaint := False;
   // in most cases the created widget is the core widget so default to it
   Result^.CoreWidget := AWidget;
   Result^.Style := AParams.Style;
@@ -9314,13 +9315,15 @@ begin
              XInternAtom(xdisplay, '_NET_WORKAREA', false),
              0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
              @bytes_after, gpointer(@current_desktop));
-  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then begin
+  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
+  begin
     result:=res;
     ax:=current_desktop[0];
     ay:=current_desktop[1];
     awidth:=current_desktop[2];
     aheight:=current_desktop[3];
-  end else begin
+  end else
+  begin
     ax:=0;
     ay:=0;
     awidth:=0;
