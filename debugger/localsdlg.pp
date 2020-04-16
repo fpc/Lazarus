@@ -150,10 +150,22 @@ var
     begin
       Inc(I);
       xNum := '';
-      while (I <= M) and (AValue[I] in ['0'..'9']) do
-      begin
-        xNum := xNum + AValue[I]; // not really fast, but OK for this purpose
+      if (I <= M) and (AValue[I]='$') then
+      begin // hex
+        xNum := xNum + AValue[I];
         Inc(I);
+        while (I <= M) and (AValue[I] in ['0'..'9', 'A'..'F', 'a'..'f']) do
+        begin
+          xNum := xNum + AValue[I]; // not really fast, but OK for this purpose
+          Inc(I);
+        end;
+      end else
+      begin // dec
+        while (I <= M) and (AValue[I] in ['0'..'9']) do
+        begin
+          xNum := xNum + AValue[I]; // not really fast, but OK for this purpose
+          Inc(I);
+        end;
       end;
       if TryStrToInt(xNum, xCharOrd) then
       begin
