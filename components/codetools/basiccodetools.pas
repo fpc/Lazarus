@@ -344,14 +344,13 @@ function SplitCompilerDirective(const Directive:string;
    out DirectiveName,Parameters:string):boolean;
 
 // createform
-function AddCreateFormToProgram(Source:TSourceLog;
+{function AddCreateFormToProgram(Source:TSourceLog;
    const AClassName,AName:string):boolean;
 function RemoveCreateFormFromProgram(Source:TSourceLog;
    const AClassName,AName:string):boolean;
-function CreateFormExistsInProgram(const Source,
-   AClassName,AName:string):boolean;
+function CreateFormExistsInProgram(const Source,AClassName,AName:string):boolean;
 function ListAllCreateFormsInProgram(const Source:string):TStrings;
-
+}
 // resource code
 function FindResourceInCode(const Source, AddCode:string;
    out Position,EndPosition:integer):boolean;
@@ -974,16 +973,14 @@ begin
   until Atom<>',';
   // unit not used
 end;
-
+{
 function AddCreateFormToProgram(Source:TSourceLog;
   const AClassName,AName:string):boolean;
-// insert 'Application.CreateForm(<AClassName>,<AName>);'
-// in front of 'Application.Run;'
+// insert 'Application.CreateForm(<AClassName>,<AName>);' in front of 'Application.Run;'
 var Position, EndPosition: integer;
 begin
   Result:=false;
-  Position:=SearchCodeInSource(Source.Source,'application.run',1
-    ,EndPosition,false);
+  Position:=SearchCodeInSource(Source.Source,'application.run',1,EndPosition,false);
   if Position<1 then exit;
   if EndPosition=0 then ;
   Source.Insert(Position,
@@ -1007,8 +1004,7 @@ begin
   Result:=true;
 end;
 
-function CreateFormExistsInProgram(const Source,
-  AClassName,AName:string):boolean;
+function CreateFormExistsInProgram(const Source,AClassName,AName:string):boolean;
 var Position,EndPosition:integer;
 begin
   Position:=SearchCodeInSource(Source,
@@ -1035,7 +1031,7 @@ begin
     end;
   until Position<1;
 end;
-
+}
 function FindResourceInCode(const Source, AddCode:string;
    out Position,EndPosition:integer):boolean;
 var Find,Atom:string;
