@@ -487,8 +487,8 @@ procedure TCustomButtonPanel.Notification(AComponent: TComponent;
 var
   btn: TPanelButton;
 begin
-  if Operation=opRemove
-  then begin
+  if Operation=opRemove then
+  begin
     for btn := Low(btn) to High(btn) do
     begin
       if FButtons[btn] <> AComponent then Continue;
@@ -497,7 +497,8 @@ begin
     end;
   end;
   inherited Notification(AComponent, Operation);
-  UpdateSizes;
+  if AComponent is TPanelBitBtn then
+    UpdateSizes;
 end;
 
 constructor TCustomButtonPanel.Create(AOwner: TComponent);
