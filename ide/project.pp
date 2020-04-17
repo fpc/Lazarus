@@ -611,7 +611,7 @@ type
     fSavedChangeStamp: int64;
     fItems: TFPList;
     FLazProject: TProject;
-    fOnChanged: TMethodList;
+    fChangedHandlers: TMethodList;
     // Variables used by LoadFromXMLConfig and SaveToXMLConfig
     FXMLConfig: TXMLConfig;
     FGlobalMatrixOptions: TBuildMatrixOptions;
@@ -671,6 +671,8 @@ type
     property SharedMatrixOptions: TBuildMatrixOptions read FSharedMatrixOptions;
     property SessionMatrixOptions: TBuildMatrixOptions read FSessionMatrixOptions;
     property ManyBuildModes: TStringList read FManyBuildModes;
+    property ChangedHandlers: TMethodList read fChangedHandlers;
+
   end;
 
   { TProjectIDEOptions }
@@ -7000,7 +7002,7 @@ end;
 constructor TProjectBuildModes.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fOnChanged:=TMethodList.Create;
+  fChangedHandlers:=TMethodList.Create;
   fItems:=TFPList.Create;
   FChangeStamp:=CTInvalidChangeStamp;
   fSavedChangeStamp:=FChangeStamp;
@@ -7013,7 +7015,7 @@ end;
 
 destructor TProjectBuildModes.Destroy;
 begin
-  FreeAndNil(fOnChanged);
+  FreeAndNil(fChangedHandlers);
   Clear;
   FreeAndNil(FManyBuildModes);
   FreeAndNil(FSharedMatrixOptions);
@@ -7024,9 +7026,11 @@ end;
 
 procedure TProjectBuildModes.Clear;
 begin
-  while Count>0 do Delete(Count-1);
+  while Count>0 do
+    Delete(Count-1);
   SharedMatrixOptions.Clear;
   SessionMatrixOptions.Clear;
+  //fChangedHandlers.Clear;
 end;
 
 function TProjectBuildModes.IsEqual(OtherModes: TProjectBuildModes): boolean;
@@ -7062,6 +7066,7 @@ begin
     SharedMatrixOptions.Assign(OtherModes.SharedMatrixOptions);
     SessionMatrixOptions.Assign(OtherModes.SessionMatrixOptions);
     ManyBuildModes.Assign(OtherModes.ManyBuildModes);
+    ChangedHandlers.Assign(OtherModes.ChangedHandlers);
     if WithModified then
       Modified:=OtherModes.Modified;
     FAssigning:=False;
@@ -7129,17 +7134,17 @@ end;
 procedure TProjectBuildModes.IncreaseChangeStamp;
 begin
   CTIncreaseChangeStamp(FChangeStamp);
-  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
+  if fChangedHandlers<>nil then fChangedHandlers.CallNotifyEvents(Self);
 end;
 
 procedure TProjectBuildModes.AddOnChangedHandler(const Handler: TNotifyEvent);
 begin
-  fOnChanged.Add(TMethod(Handler));
+  fChangedHandlers.Add(TMethod(Handler));
 end;
 
 procedure TProjectBuildModes.RemoveOnChangedHandler(const Handler: TNotifyEvent);
 begin
-  fOnChanged.Remove(TMethod(Handler));
+  fChangedHandlers.Remove(TMethod(Handler));
 end;
 
 function TProjectBuildModes.IsModified(InSession: boolean): boolean;

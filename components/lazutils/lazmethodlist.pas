@@ -47,6 +47,8 @@ type
     function Count: integer;
     function NextDownIndex(var Index: integer): boolean;
     function IndexOf(const AMethod: TMethod): integer;
+    procedure Assign(Source: TMethodList);
+    procedure Clear;
     procedure Delete(Index: integer);
     procedure Remove(const AMethod: TMethod);
     procedure Add(const AMethod: TMethod);
@@ -177,7 +179,7 @@ end;
 
 destructor TMethodList.Destroy;
 begin
-  ReAllocMem(FItems,0);
+  Clear;
   inherited Destroy;
 end;
 
@@ -216,6 +218,20 @@ begin
     end;
   end else
     Result:=-1;
+end;
+
+procedure TMethodList.Assign(Source: TMethodList);
+var
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to Source.Count-1 do
+    Add(Source.Items[i]);
+end;
+
+procedure TMethodList.Clear;
+begin
+  ReAllocMem(FItems,0);
 end;
 
 procedure TMethodList.Delete(Index: integer);
