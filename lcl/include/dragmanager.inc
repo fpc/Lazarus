@@ -39,6 +39,8 @@ type
   TDragPerformer = class(TDragDockCommon)
   private
     FDragObject: TDragObject;
+    FDragCursor: TCursor;
+    FDragCursorApplied: Boolean;
   protected
     function Dragging(AControl: TControl): boolean; override;
     procedure DragStarted(APosition: TPoint); override;
@@ -157,6 +159,7 @@ end;
 procedure TDragPerformer.DragStarted(APosition: TPoint);
 //Imput device has moved beyond tresholt limits (or immediate docking)
 begin
+  FDragCursorApplied := False;
   if FDragObject = nil then Exit;
   FDragImageList := FDragObject.GetDragImages;
   if FDragImageList <> nil then
@@ -201,8 +204,14 @@ begin
     end
     else
       FDragImageList.EndDrag;
+  end
+  else begin
+    Screen.BeginTempCursor(DragCursor);
+    if FDragCursorApplied then
+      Screen.EndTempCursor(FDragCursor);
+    FDragCursor := DragCursor;
+    FDragCursorApplied := True;
   end;
-  WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
 end;
 
 procedure TDragPerformer.DragStop(ADropped : Boolean);
@@ -219,8 +228,10 @@ begin
     SetCaptureControl(nil);
 
     if FDragImageList <> nil then
-      FDragImageList.EndDrag;
-    WidgetSet.SetCursor(Screen.Cursors[Screen.RealCursor]);
+      FDragImageList.EndDrag
+    else
+    if FDragCursorApplied then
+      Screen.EndTempCursor(FDragCursor);
     if (ADragObjectCopy.DragTarget <> nil) and (ADragObjectCopy.DragTarget is TControl) then
       TargetPos := ADragObjectCopy.DragTargetPos //controls can override the position
     else
