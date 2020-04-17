@@ -28,7 +28,10 @@ begin
   if FIsLibraryInstance then
     App := QApplicationH(QCoreApplication_instance())
   else
+  begin
+    QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True);
     App := QApplication_Create(@argc, argv);
+  end;
   QCoreApplication_setAttribute(QtAA_DontCreateNativeWidgetSiblings, True);
   {$IFDEF QtUseNativeEventLoop}
   FMainTimerID := -1;
