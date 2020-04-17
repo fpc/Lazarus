@@ -26,11 +26,14 @@ type
     FPrinterHandle: TQtPrinter;
     FDefaultPaperIndex: Integer;
     FPapers: array of TPaperRec;
+    FCachePapersInitialized: boolean;
+    procedure DoInitializeCachePapers;
+    procedure CachePapers(OnlySupportedByPrinter:boolean);
+
 
     procedure BeginPage;
     procedure EndPage;
-    
-    procedure CachePapers(OnlySupportedByPrinter:boolean);
+
     procedure EnumQPrinters(Lst: TStrings);
     function IndexOfPaper(const Paper: string; RetDefault: boolean=true): Integer;
     function IndexOfPageSize(const PageSize: QtLCLPrinterPageSize): Integer;
@@ -72,7 +75,7 @@ type
     procedure DoDestroy; override;
   public
     procedure Validate;
-    function GetPaperSize(Const Str: String): {$IFDEF LCLQt5}QPagedPaintDevicePageSize{$ELSE}QPrinterPageSize{$ENDIF};
+    function GetPaperSize(Const Str: String): QtLCLPrinterPageSize;
   public
     constructor Create; override;
     function Write(const {%H-}Buffer; {%H-}Count:Integer; out Written: Integer): Boolean; override;

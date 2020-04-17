@@ -23,6 +23,7 @@ function TQtPrinters.GetPaperSize(const Str: String): QtLCLPrinterPageSize;
 var
   i: Integer;
 begin
+  DoInitializeCachePapers;
   i := IndexOfPaper(Str);
   if i>=0 then
     result := FPapers[i].PageSize
@@ -258,6 +259,7 @@ var
   i: Integer;
 begin
   result := -1;
+  DoInitializeCachePapers;
   for i:=0 to Length(FPapers)-1 do
   begin
     if FPapers[i].PaperName=Paper then begin
@@ -274,6 +276,7 @@ var
   i: Integer;
 begin
   result := -1;
+  DoInitializeCachePapers;
   for i:=0 to Length(FPapers)-1 do begin
     if FPapers[i].PageSize=PageSize then begin
       result := i;
@@ -287,7 +290,7 @@ end;
 constructor TQtPrinters.Create;
 begin
   inherited Create;
-  CachePapers(false);
+  FCachePapersInitialized := False;
 end;
 
 procedure TQtPrinters.DoDestroy;
@@ -295,6 +298,15 @@ begin
   FPapers := nil;
   QtDefaultPrinter.endDoc;
   inherited DoDestroy;
+end;
+
+procedure TQtPrinters.DoInitializeCachePapers;
+begin
+  if not FCachePapersInitialized then
+  begin
+    FCachePapersInitialized := True;
+    CachePapers(false);
+  end;
 end;
 
 function TQtPrinters.Write(const Buffer; Count: Integer; out Written: Integer): Boolean;
@@ -322,6 +334,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.Validate()');
   {$ENDIF}
+  DoInitializeCachePapers;
   // if target paper is not supported, use the default
   P := DoGetPaperName;
   if PaperSize.SupportedPapers.IndexOf(P) = -1 then
@@ -397,6 +410,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoEnumPrinters()');
   {$ENDIF}
+  DoInitializeCachePapers;
   Str := QtDefaultPrinter.PrinterName;
   EnumQPrinters(Lst);
   i := Lst.IndexOf(Str{%H-});
@@ -419,6 +433,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoEnumPapers()');
   {$ENDIF}
+  DoInitializeCachePapers;
   Lst.Clear;
   for Paper in FPapers do
     Lst.Add(Paper.PaperName);
@@ -428,6 +443,7 @@ function TQtPrinters.DoGetPaperName: string;
 var
   i: Integer;
 begin
+  DoInitializeCachePapers;
   i := IndexOfPageSize(QtDefaultPrinter.PageSize);
   if i>=0 then
     result := FPapers[i].PaperName
@@ -440,6 +456,7 @@ end;
 
 function TQtPrinters.DoGetDefaultPaperName: string;
 begin
+  DoInitializeCachePapers;
   if Length(FPapers)>0 then
     result := FPapers[FDefaultPaperIndex].PaperName
   else
@@ -454,6 +471,7 @@ var
   O: TPrinterOrientation;
   i: Integer;
 begin
+  DoInitializeCachePapers;
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoSetPaperName() AName=',AName);
   {$ENDIF}
@@ -467,11 +485,12 @@ begin
     raise Exception.Create('TQtPrinters: Paper '+AName+' not supported.');
 end;
 
-function TQtPrinters.DoGetPaperRect(aName: string; Var aPaperRc: TPaperRect
-			): Integer;
+function TQtPrinters.DoGetPaperRect(aName: string; var aPaperRc: TPaperRect
+  ): Integer;
 var
   i: Integer;
 begin
+  DoInitializeCachePapers;
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoGetPaperRect() AName=', AName);
   {$ENDIF}
@@ -491,6 +510,7 @@ function TQtPrinters.DoSetPrinter(aName: string): Integer;
 var
   StrList: TStringList;
 begin
+  DoInitializeCachePapers;
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoSetPrinter() aName=', aName);
   {$ENDIF}
@@ -520,7 +540,8 @@ end;
 
 function TQtPrinters.DoGetCopies: Integer;
 begin
-  Result := inherited DoGetCopies;
+  DoInitializeCachePapers;
+  inherited DoGetCopies;
   Result := QtDefaultPrinter.NumCopies;
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoGetCopies() Result=', IntToStr(Result));
@@ -532,6 +553,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoSetCopies() AValue=', IntToStr(AValue));
   {$ENDIF}
+  DoInitializeCachePapers;
   inherited DoSetCopies(AValue);
   QtDefaultPrinter.NumCopies := AValue;
 end;
@@ -540,6 +562,7 @@ function TQtPrinters.DoGetOrientation: TPrinterOrientation;
 var
   O: QPrinterOrientation;
 begin
+  DoInitializeCachePapers;
   Result := inherited DoGetOrientation;
   O := QtDefaultPrinter.Orientation;
   case O of
@@ -558,7 +581,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoSetOrientation() AValue=', IntToStr(Ord(AValue)));
   {$ENDIF}
-
+  DoInitializeCachePapers;
   inherited DoSetOrientation(aValue);
 
   case AValue of
@@ -576,6 +599,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.GetPrinterType() Result=', IntToStr(Ord(Result)));
   {$ENDIF}
+  DoInitializeCachePapers;
   Result := inherited GetPrinterType;
   {no type at this moment, QPrinterInfo (qt-4.4) should have this}
   Result := ptLocal;
@@ -585,6 +609,7 @@ function TQtPrinters.DoGetPrinterState: TPrinterState;
 var
   State: QPrinterPrinterState;
 begin
+  DoInitializeCachePapers;
   Result := inherited DoGetPrinterState;
   Result := psNoDefine;
   
@@ -602,6 +627,7 @@ end;
 
 function TQtPrinters.GetCanPrint: Boolean;
 begin
+  DoInitializeCachePapers;
   Result := inherited GetCanPrint;
   Result := (DoGetPrinterState <> psStopped);
   {$IFDEF VERBOSE_QT_PRINTING}
@@ -611,6 +637,7 @@ end;
 
 function TQtPrinters.GetCanRenderCopies: Boolean;
 begin
+  DoInitializeCachePapers;
   Result := inherited GetCanRenderCopies;
   Result := True;
   {$IFDEF VERBOSE_QT_PRINTING}
