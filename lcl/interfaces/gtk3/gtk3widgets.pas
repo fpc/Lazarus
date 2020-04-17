@@ -794,11 +794,21 @@ type
   { TGtk3Dialog }
 
   TGtk3Dialog = class(TGtk3Widget)
+  private
+    class function CloseCB(dlg:TGtk3Dialog): GBoolean; cdecl;
+    class function CloseQueryCB(w:PGtkWidget;dlg:TGtk3Dialog): GBoolean; cdecl;
+    class function DestroyCB(dlg:TGtk3Dialog): GBoolean; cdecl;
+    class function ResponseCB(response_id:gint; dlg: TGtk3Dialog): GBoolean; cdecl;
+    class function RealizeCB(dlg:TGtk3Dialog): GBoolean; cdecl;
   protected
+    function response_handler(response_id:gint):boolean;virtual;
+    function close_handler():boolean;virtual;
+    procedure SetCallbacks;virtual;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     CommonDialog: TCommonDialog;
     procedure InitializeWidget; override;
+    procedure CloseDialog;virtual;
   end;
 
   { TGtk3FileDialog }
@@ -815,9 +825,31 @@ type
 
   TGtk3FontSelectionDialog = class(TGtk3Dialog)
   protected
-    function CreateWidget(const Params: TCreateParams): PGtkWidget; override;
+    procedure InitializeWidget; override;
+    function response_handler(resp_id:gint):boolean;override;
   public
     constructor Create(const ACommonDialog: TCommonDialog); virtual; overload;
+  end;
+
+  { TGtk3ColorSelectionDialog }
+
+  TGtk3ColorSelectionDialog = class(TGtk3Dialog)
+  protected
+    procedure InitializeWidget;override;
+  public
+    constructor Create(const ACommonDialog: TCommonDialog); virtual; overload;
+  end;
+
+  { TGtk3newColorSelectionDialog }
+
+  TGtk3newColorSelectionDialog = class(TGtk3Dialog)
+  protected
+    function response_handler(resp_id:gint):boolean;override;
+  public
+    constructor Create(const ACommonDialog: TCommonDialog); virtual; overload;
+    procedure InitializeWidget;override;
+    class procedure color_to_rgba(clr:TColor;var rgba:TgdkRGBA);
+    class function rgba_to_color(const rgba:TgdkRGBA):TColor;
   end;
 
   { TGtk3GLArea }
@@ -1458,7 +1490,13 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  if {ACtl is TGtk3Window} ACtl.WidgetType*[wtWindow,wtDialog]<>[] then
+  if ACtl.WidgetType*[wtEntry,wtComboBox,wtGroupBox,wtScrollBar,wtSpinEdit]<>[] then
+  begin
+    Msg.Width := ACtl.LCLObject.Width;//Word(NewSize.cx);
+    Msg.Height := ACtl.LCLObject.Height;//Word(NewSize.cy);
+  end else
+  if {ACtl is TGtk3Window} ACtl.WidgetType*[wtWindow,wtDialog,
+     {wtScrollingWinControl,}wtScrollingWin,wtNotebook,wtContainer]<>[] then
   begin
     Msg.Width := Word(NewSize.cx);
     Msg.Height := Word(NewSize.cy);
@@ -1673,6 +1711,7 @@ begin
 
   // DebugLn('Gtk3ScrollEvent for ', dbgsName(TGtk3Widget(AData).LCLObject),' Result ',dbgs(Result));
 end;
+
 
 { TGtk3SplitterSide }
 
@@ -4061,9 +4100,14 @@ end;
 { TGtk3Page }
 
 procedure TGtk3Page.setText(const AValue: String);
+var
+  bs:string;
 begin
   if Assigned(FPageLabel) then
-    FPageLabel^.set_text(PChar(AValue));
+  begin
+    bs:=ReplaceAmpersandsWithUnderscores(Avalue);
+    FPageLabel^.set_text(PChar(bs));
+  end;
 end;
 
 function TGtk3Page.getText: String;
@@ -4078,6 +4122,7 @@ function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := FWidgetType + [wtContainer];
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
+  FPageLabel^.set_use_underline(true);
   Self.FHasPaint:=true;
   // ref it to save it in case TabVisble is set to false
   FPageLabel^.ref;
@@ -7117,6 +7162,151 @@ end;
 
 { TGtk3Dialog }
 
+procedure TGtk3Dialog.SetCallbacks;
+begin
+  // common callbacks for all kind of dialogs
+  g_signal_connect_data(fWidget,
+    'destroy', TGCallback(@TGtk3Dialog.DestroyCB), Self, nil, 0);
+  g_signal_connect_data(fWidget,
+    'delete-event', TGCallback(@TGtk3Dialog.CloseQueryCB), Self, nil, 0);
+
+  g_signal_connect_data(fWidget,
+    'response', TGCallback(@Tgtk3DIalog.ResponseCB), Self, nil, 0);
+
+  g_signal_connect_data(fWidget,
+    'close', TGCallback(@Tgtk3DIalog.CloseCB), Self, nil, 0);
+
+
+(*  g_signal_connect_data(fWidget,
+    'key-press-event', TGCallback(@GTKDialogKeyUpDownCB), Self, nil, 0);
+  g_signal_connect_data(fWidget,
+    'key-release-event', TGCallback(@GTKDialogKeyUpDownCB), Self, nil, 0);*)
+
+  g_signal_connect_data(fWidget,
+    'realize', TGCallback(@Tgtk3Dialog.RealizeCB), Self, nil, 0);
+end;
+
+class function Tgtk3Dialog.RealizeCB(dlg: TGtk3Dialog): GBoolean; cdecl;
+begin
+  Result := False;
+  if (dlg=nil) then exit;
+  // actually key intercepion is not required
+  {if dlg.FWidget^.get_has_window and Gtk3IsGdkWindow(dlg.FWidget^.window) then
+  begin
+    gdk_window_set_events(dlg.FWidget^.window,
+      gdk_window_get_events(dlg.FWidget^.window)
+        or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
+
+  end;}
+  if (wtDialog in dlg.WidgetType) then
+  begin
+    if Assigned(dlg.CommonDialog) then
+      TCommonDialog(dlg.CommonDialog).DoShow;
+  end;
+  Result := True;
+end;
+
+
+class function TGtk3Dialog.DestroyCB(dlg:TGtk3Dialog): GBoolean; cdecl;
+begin
+  Result := True;
+//  if (AWidget=nil) then ;
+  if not Assigned(dlg) then exit;
+  dlg.CommonDialog.UserChoice := mrCancel;
+  dlg.CommonDialog.Close;
+end;
+
+class function TGtk3Dialog.ResponseCB(response_id:gint; dlg: TGtk3Dialog): GBoolean; cdecl;
+begin
+  if Assigned(dlg) then
+    Result:=dlg.response_handler(response_id)
+  else
+    Result:= false;
+end;
+
+function TGtk3Dialog.response_handler(response_id:gint):boolean;
+begin
+ (* case response_id of
+  GTK_RESPONSE_NONE:;
+  GTK_RESPONSE_REJECT: ;
+  GTK_RESPONSE_ACCEPT:;
+  GTK_RESPONSE_DELETE_EVENT:;
+  GTK_RESPONSE_OK:;
+  GTK_RESPONSE_CANCEL:;
+  GTK_RESPONSE_CLOSE:;
+  GTK_RESPONSE_YES:;
+  GTK_RESPONSE_NO:;
+  GTK_RESPONSE_APPLY:;
+  GTK_RESPONSE_HELP:;
+  end;*)
+  if response_id=GTK_RESPONSE_YES then
+  begin
+    Self.CommonDialog.UserChoice:=mrYes;
+    CloseDialog;
+  end else
+  if response_id=GTK_RESPONSE_NO then
+  begin
+    Self.CommonDialog.UserChoice:=mrNo;
+    CloseDialog;
+  end else
+  if response_id=GTK_RESPONSE_OK then
+  begin
+    Self.CommonDialog.UserChoice:=mrOk;
+    CloseDialog;
+  end else
+  if response_id=GTK_RESPONSE_CANCEL then
+  begin
+    Self.CommonDialog.UserChoice:=mrCancel;
+    CloseDialog;
+  end else
+  if response_id=GTK_RESPONSE_CLOSE then
+  begin
+    Self.CommonDialog.UserChoice:=mrClose;
+    CloseDialog;
+  end;
+  Result:=false;
+end;
+
+function TGtk3Dialog.close_handler(): boolean;
+begin
+  Result:=false;
+end;
+
+class function TGtk3Dialog.CloseCB(dlg: TGtk3Dialog): GBoolean;
+  cdecl;
+begin
+  if Assigned(dlg) then
+    Result:=dlg.close_handler()
+  else
+    Result:= true;
+end;
+
+class function TGtk3Dialog.CloseQueryCB(w:PGtkWidget;dlg:TGtk3Dialog): GBoolean;
+  cdecl;
+var
+  theDialog : TCommonDialog;
+  CanClose: boolean;
+  AHandle: HWND;
+begin
+  Result := False; // true = do nothing, false = destroy or hide window
+  if (dlg=nil) then exit;
+  // data is not the commondialog. Get it manually.
+//  AHandle := HwndFromGtkWidget(AWidget);
+  if (dlg <> nil) and (wtDialog in TGtk3Widget(dlg).WidgetType) then
+  begin
+    theDialog := dlg.CommonDialog;
+    if theDialog = nil then exit;
+    if theDialog.OnCanClose<>nil then
+    begin
+      CanClose:=True;
+      theDialog.DoCanClose(CanClose);
+      Result := not CanClose;
+    end;
+  end;
+end;
+
+
+
 function TGtk3Dialog.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := [wtWidget, wtDialog];
@@ -7127,6 +7317,12 @@ end;
 procedure TGtk3Dialog.InitializeWidget;
 begin
   g_object_set_data(FWidget,'lclwidget', Self);
+end;
+
+procedure TGtk3Dialog.CloseDialog;
+begin
+  if fWidget<>nil then
+    fWidget^.destroy_;
 end;
 
 
@@ -7200,10 +7396,37 @@ end;
 
 { TGtk3FontSelectionDialog }
 
-function TGtk3FontSelectionDialog.CreateWidget(const Params: TCreateParams
-  ): PGtkWidget;
+procedure TGtk3FontSelectionDialog.InitializeWidget;
 begin
-  Result := TGtkFontSelectionDialog.new;
+  fWidget:=TGtkFontChooserDialog.new(PChar(CommonDialog.Title),nil);
+  inherited InitializeWidget;
+end;
+
+function TGtk3FontSelectionDialog.response_handler(resp_id: gint): boolean;
+var
+  fnt:TFont;
+  pch:PgtkFontChooser;
+  pfc:PPangoFontFace;
+  pfd:PPangoFontDescription;
+  sz:integer;
+  sname:string;
+begin
+  if resp_id=GTK_RESPONSE_OK then
+  begin
+    fnt:=TFontDialog(CommonDialog).Font;
+    pch:=PGtkFontChooser(fWidget);
+    pfc:=pch^.get_font_face();
+    pfd:=pfc^.describe;
+    { this stuff is implemened in gtk3objects.Tgtk3Font.UpdateLogFont
+      so this is backward mapping of properties }
+    sname:=pfd^.get_family();
+    sz:=pfd^.get_size() div PANGO_SCALE;
+    fnt.Name:=sname;
+   // fnt.Size:=sz;
+
+
+  end;
+  Result:=inherited response_handler(resp_id);
 end;
 
 constructor TGtk3FontSelectionDialog.Create(const ACommonDialog: TCommonDialog);
@@ -7223,7 +7446,121 @@ begin
 
   // FHasPaint := False;
   CommonDialog := ACommonDialog;
+  InitializeWidget;
+  Self.SetCallbacks;
 end;
+
+{ TGtk3ColorSelectionDialog }
+
+procedure TGtk3ColorSelectionDialog.InitializeWidget;
+var
+  clr:TColor;
+  rgba:TGdkRGBA;
+begin
+  fWidget := TGtkColorSelectionDialog.new(PChar(Self.CommonDialog.Title));
+  clr:=ColorToRgb(TColorDialog(Self.CommonDialog).Color);
+  rgba.red:=Red(clr)/255;
+  rgba.blue:=Blue(clr)/255;
+  rgba.green:=Green(clr)/255;
+  rgba.alpha:=(clr shl 24)/255;
+  gtk_color_selection_set_current_rgba (
+     PgtkColorSelection(PGtkColorSelectionDialog(fWidget)^.color_selection),
+     @rgba);
+end;
+
+constructor TGtk3ColorSelectionDialog.Create(const ACommonDialog: TCommonDialog
+  );
+begin
+  inherited Create;
+  FContext := 0;
+  FHasPaint := False;
+  FWidget := nil;
+  FOwner := nil;
+  FCentralWidget := nil;
+  FOwnWidget := True;
+  // Initializes the properties
+  FProps := nil;
+  LCLObject := nil;
+  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
+  FWidgetType := [wtWidget, wtDialog];
+
+  // FHasPaint := False;
+  CommonDialog := ACommonDialog;
+  TGtk3Widget(Self).InitializeWidget;
+  Self.SetCallbacks;
+end;
+
+
+{ TGtk3newColorSelectionDialog }
+
+procedure TGtk3newColorSelectionDialog.InitializeWidget;
+var
+  rgba:TGdkRGBA;
+begin
+  fWidget:= TGtkColorChooserDialog.new(PChar(Self.CommonDialog.Title),nil);
+  self.color_to_rgba(TColorDialog(Self.CommonDialog).Color,rgba);
+  PGtkColorChooser(fWidget)^.use_alpha:=false;
+  PGtkColorChooser(fWidget)^.set_rgba(@rgba);
+  inherited;
+end;
+
+function TGtk3newColorSelectionDialog.response_handler(resp_id: gint): boolean;
+var
+  clr:TColor;
+  rgba:TGdkRGBA;
+begin
+  if resp_id=GTK_RESPONSE_OK then
+  begin
+    PGtkColorChooser(fWidget)^.get_rgba(@rgba);
+    clr:=self.rgba_to_color(rgba);
+    TColorDialog(Self.CommonDialog).Color:=clr;
+  end;
+  Result:=inherited response_handler(resp_id);
+end;
+
+constructor TGtk3newColorSelectionDialog.Create(const ACommonDialog: TCommonDialog
+  );
+begin
+  inherited Create;
+  FContext := 0;
+  FHasPaint := False;
+  FWidget := nil;
+  FOwner := nil;
+  FCentralWidget := nil;
+  FOwnWidget := True;
+  // Initializes the properties
+  FProps := nil;
+  LCLObject := nil;
+  FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
+  FWidgetType := [wtWidget, wtDialog];
+
+  // FHasPaint := False;
+  CommonDialog := ACommonDialog;
+  TGtk3Widget(Self).InitializeWidget;
+  Self.SetCallbacks;
+end;
+
+class procedure TGtk3newColorSelectionDialog.color_to_rgba(clr: TColor;
+  var rgba: TgdkRGBA);
+begin
+  clr:=ColorToRgb(clr);
+  rgba.red:=Red(clr)/255;
+  rgba.blue:=Blue(clr)/255;
+  rgba.green:=Green(clr)/255;
+  rgba.alpha:=(clr shl 24)/255;
+end;
+
+class function TGtk3newColorSelectionDialog.rgba_to_color(const rgba: TgdkRGBA
+  ): TColor;
+var
+  q:array[0..3] of byte absolute Result;
+begin
+  q[0]:= round(255*rgba.red);
+  q[1]:= round(255*rgba.green);
+  q[2]:= round(255*rgba.blue);
+  q[3]:= round(255*rgba.alpha);
+end;
+
 
 { TGtk3GLArea }
 

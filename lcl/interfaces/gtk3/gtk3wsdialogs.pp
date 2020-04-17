@@ -85,7 +85,6 @@ type
 
   TGtk3WSColorDialog = class(TWSColorDialog)
   protected
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: TGtk3Dialog); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
@@ -100,7 +99,6 @@ type
 
   TGtk3WSFontDialog = class(TWSFontDialog)
   protected
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: TGtk3Dialog); virtual;
   published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
@@ -1554,117 +1552,17 @@ end;
 
 { TGtk3WSColorDialog }
 
-
-class procedure TGtk3WSColorDialog.SetCallbacks(const AGtkWidget: PGtkWidget;
-  const AWidgetInfo: TGtk3Dialog);
-begin
-  TGtk3WSCommonDialog.SetCallbacks(AGtkWidget, AWidgetInfo);
-  (* TODO: must hack into colorselection dialog to get button pointers.
-  g_signal_connect_data(PGtkColorSelectionDialog(AGtkWidget)^.ok_button,
-    'clicked', TGCallback(@gtkDialogOKclickedCB), AWidgetInfo, nil, 0);
-  g_signal_connect_data(PGtkObject(PGtkColorSelectionDialog(AGtkWidget)^.cancel_button),
-    'clicked', TGCallback(@gtkDialogCancelclickedCB), AWidgetInfo, nil, 0);
-  *)
-end;
-
 class function TGtk3WSColorDialog.CreateHandle(
   const ACommonDialog: TCommonDialog): THandle;
-var
-  Widget: PGtkWidget;
-  // WidgetInfo: PWidgetInfo;
 begin
-  (*
-  Widget := gtk_color_selection_dialog_new(PChar(ACommonDialog.Title));
-
-  Result := THandle({%H-}PtrUInt(Widget));
-  WidgetInfo := CreateWidgetInfo(Widget);
-  WidgetInfo^.LCLObject := ACommonDialog;
-  TGtk3WSCommonDialog.SetSizes(Widget, WidgetInfo);
-  // SetCallbacks(Widget, WidgetInfo);
-  *)
+  Result:=THandle(TGtk3newColorSelectionDialog.Create(ACommonDialog));
 end;
 
 { TGtk3WSFontDialog }
 
-
-class procedure TGtk3WSFontDialog.SetCallbacks(const AGtkWidget: PGtkWidget;
-  const AWidgetInfo: TGtk3Dialog);
-begin
-  TGtk3WSCommonDialog.SetCallbacks(AGtkWidget, AWidgetInfo);
-  // connect Ok, Cancel and Apply Button
-  (*TODO: must hack into private to get button pointers
-  g_signal_connect_data(
-    PGtkObject(PGtkFontSelectionDialog(AGtkWidget)^.ok_button),
-    'clicked', TGCallback(@gtkDialogOKclickedCB), AWidgetInfo, nil, 0);
-  g_signal_connect_data(
-    PGtkObject(PGtkFontSelectionDialog(AGtkWidget)^.cancel_button),
-    'clicked', TGCallback(@gtkDialogCancelclickedCB), AWidgetInfo, nil, 0);
-  g_signal_connect_data(
-    PGtkObject(PGtkFontSelectionDialog(AGtkWidget)^.apply_button),
-    'clicked', TGCallback(@gtkDialogApplyclickedCB), AWidgetInfo, nil, 0);
-  *)
-end;
-
 class function TGtk3WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-var
-  FontDesc: PPangoFontDescription;
-  TmpStr: pChar;
-
-  Widget: PGtkWidget;
-  // WidgetInfo: PWidgetInfo;
-  FontDialog: TFontDialog absolute ACommonDialog;
 begin
-
-  (*
-  GtkFontSelectionDialog is deprecated since gtk3-3.2, we must use
-  GtkFontChooserDialog - >   gtk_font_chooser_dialog_new();
-  Widget := gtk_font_selection_dialog_new(PChar(ACommonDialog.Title));
-
-  if fdApplyButton in FontDialog.Options then
-    gtk_widget_show(PGtkFontSelectionDialog(Widget)^.apply_button);
-  // set preview text
-  if FontDialog.PreviewText <> '' then
-    gtk_font_selection_dialog_set_preview_text(PGtkFontSelectionDialog(Widget),
-      PChar(FontDialog.PreviewText));
-
-  // set font name in XLFD format
-  if IsFontNameXLogicalFontDesc(FontDialog.Font.Name) then
-    gtk_font_selection_dialog_set_font_name(PGtkFontSelectionDialog(Widget),
-      PChar(FontDialog.Font.Name))
-  else
-  begin
-    FontDesc := pango_font_description_new;
-    with FontDialog.Font do
-    begin
-      pango_font_description_set_size(FontDesc, Size * PANGO_SCALE);
-
-      if fsBold in Style then
-        pango_font_description_set_weight(FontDesc, PANGO_WEIGHT_BOLD)
-      else
-        pango_font_description_set_weight(FontDesc, PANGO_WEIGHT_NORMAL);
-
-      if fsItalic in Style then
-        pango_font_description_set_style(FontDesc, PANGO_STYLE_ITALIC)
-      else
-        pango_font_description_set_style(FontDesc, PANGO_STYLE_NORMAL);
-
-      pango_font_description_set_family(FontDesc, PChar(Name));
-    end;
-    TmpStr := pango_font_description_to_string(FontDesc);
-    gtk_font_selection_dialog_set_font_name(PGtkFontSelectionDialog(Widget), TmpStr);
-    g_free(TmpStr);
-    pango_font_description_free(FontDesc);
-  end;
-
-  { This functionality does not seem to be available in GTK2 }
-  // Honor selected TFontDialogOption flags
-
-  Result := THandle({%H-}PtrUInt(Widget));
-  WidgetInfo := CreateWidgetInfo(Widget);
-  WidgetInfo^.LCLObject := ACommonDialog;
-  TGtk3WSCommonDialog.SetSizes(Widget, WidgetInfo);
-  // SetCallbacks(Widget, WidgetInfo);
-  *)
+  Result:=THandle(TGtk3FontSelectionDialog.Create(ACommonDialog));
 end;
 
 end.

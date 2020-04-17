@@ -285,8 +285,8 @@ end;
 
 function RegisterColorDialog: Boolean; alias : 'WSRegisterColorDialog';
 begin
-  // RegisterWSComponent(TColorDialog, TGtk3WSColorDialog);
-  Result := False;
+  RegisterWSComponent(TColorDialog, TGtk3WSColorDialog);
+  Result := True;
 end;
 
 function RegisterColorButton: Boolean; alias : 'WSRegisterColorButton';
@@ -297,8 +297,8 @@ end;
 
 function RegisterFontDialog: Boolean; alias : 'WSRegisterFontDialog';
 begin
-  // RegisterWSComponent(TFontDialog, TGtk3WSFontDialog);
-  Result := False;
+  RegisterWSComponent(TFontDialog, TGtk3WSFontDialog);
+  Result := True;
 end;
 
 // StdCtrls
