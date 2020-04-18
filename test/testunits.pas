@@ -32,7 +32,7 @@ uses
   // lazutils
   TestLazUtils, TestLazUTF8, TestLazUTF16, TestLConvEncoding, TestAvgLvlTree,
   // lcltests
-  testpen, TestPreferredSize, TestTextStrings
+  testpen, TestPreferredSize, TestTextStrings, TestListView
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
   , testpagecontrol, idesemiautotests, lclsemiautotests

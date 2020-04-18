@@ -225,8 +225,8 @@ begin
   FreeAndNil(FForm);
 
   FForm := TForm.CreateNew(nil);
-  FForm.Top := Screen.DesktopTop + 1;
-  FForm.Left := Screen.DesktopLeft + 1;
+  FForm.Top := Screen.Monitors[0].Top + 1;
+  FForm.Left := Screen.Monitors[0].Left + 1;
   FForm.Height := 200;
   FForm.Width := 500;
   FForm.Show;

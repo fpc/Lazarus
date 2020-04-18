@@ -11520,6 +11520,7 @@ test/lazutils/testpaswstring.lpi svneol=native#text/plain
 test/lazutils/testpaswstring.pas svneol=native#text/plain
 test/lazutils/testunicode.lpi svneol=native#text/plain
 test/lazutils/testunicode.pas svneol=native#text/pascal
+test/lcltests/testlistview.pas svneol=native#text/pascal
 test/lcltests/testmethodcompare.pas svneol=native#text/plain
 test/lcltests/testpagecontrol.pas svneol=native#text/pascal
 test/lcltests/testpen.pas svneol=native#text/plain

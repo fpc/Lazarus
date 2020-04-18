@@ -53,7 +53,7 @@
         <PackageName Value="CodeTools"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="14">
+    <Units Count="15">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -117,6 +117,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="TestMenuIntf"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="lcltests\testlistview.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestListView"/>
+      </Unit14>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
