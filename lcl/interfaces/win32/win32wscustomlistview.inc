@@ -56,6 +56,12 @@ type
 // Msg handlers
 ////////////////////////////////////////////////////////////////////////////////
 
+var
+  ListViewWindProcInfo: record
+    ActiveListView: TCustomListView;
+    NoMouseUp: Boolean;
+  end;
+
 function ListViewParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
       Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
       var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
@@ -241,6 +247,10 @@ begin
           HandleListViewOwnerData(TCustomListViewAccess(AWinControl));
         NM_CUSTOMDRAW:
           HandleListViewCustomDraw(TCustomListViewAccess(AWinControl));
+        LVN_BEGINDRAG, LVN_BEGINRDRAG: begin
+            if ListViewWindProcInfo.ActiveListView = AWinControl then
+              ListViewWindProcInfo.NoMouseUp := True;
+          end;
       end;
     end;
   end;
@@ -766,6 +776,13 @@ var
   AMsg: UINT;
 begin
   case Msg of
+    WM_CONTEXTMENU:
+      begin
+        if ListViewWindProcInfo.ActiveListView <> nil then begin
+          Result := 1;
+          exit;
+        end;
+      end;
     WM_LBUTTONDOWN, WM_RBUTTONDOWN:
       begin
         // A ListView doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
@@ -777,23 +794,27 @@ begin
         WindowInfo := GetWin32WindowInfo(Window);
         ListView := TListView(WindowInfo^.WinControl);
         ListItem := ListView.GetItemAt(WindowInfo^.MouseX, WindowInfo^.MouseY);
+        ListViewWindProcInfo.ActiveListView := ListView;
+        ListViewWindProcInfo.NoMouseUp := False;
+        try
 
-        if Msg = WM_LBUTTONDOWN
-        then AMsg := LM_LBUTTONUP
-        else AMsg := LM_RBUTTONUP;
+          if Msg = WM_LBUTTONDOWN
+          then AMsg := LM_LBUTTONUP
+          else AMsg := LM_RBUTTONUP;
 
-        // for multiselected listbox the message has to be send after current
-        // message or the list item selecting does not work, also see issue #33330
-        if not Assigned(ListItem) and ListView.MultiSelect then
-        begin
           Result := WindowProc(Window, Msg, WParam, LParam);
-          if not (Msg = WM_LBUTTONDBLCLK) and ((Msg = WM_LBUTTONDOWN) or not Assigned(ListView.PopupMenu)) then
+          // for multiselected listbox the message has to be send after current
+          // message or the list item selecting does not work, also see issue #33330
+          if (not ListViewWindProcInfo.NoMouseUp) and
+             (Assigned(ListItem) or ListView.MultiSelect)
+          then
+          begin
             PostMessage(Window, AMsg, 0, MakeLParam(WindowInfo^.MouseX, WindowInfo^.MouseY));
-          Exit;
+          end;
+        finally
+          ListViewWindProcInfo.ActiveListView:= nil;
         end;
-
-        if Assigned(ListItem) then
-          PostMessage(Window, AMsg, 0, MakeLParam(WindowInfo^.MouseX, WindowInfo^.MouseY));
+        exit;
       end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
