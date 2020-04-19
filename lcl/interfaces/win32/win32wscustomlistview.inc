@@ -769,11 +769,19 @@ end;
 
 function ListViewProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+
+  function GetClientCursorPos(ClientWindow: HWND) : TPoint;
+  begin
+    Windows.GetCursorPos(Result);
+      Windows.ScreenToClient(ClientWindow, Result);
+  end;
+
 var
   WindowInfo: PWin32WindowInfo;
   ListItem: TListItem;
   ListView: TCustomListView;
   AMsg: UINT;
+  MPos: TPoint;
 begin
   case Msg of
     WM_CONTEXTMENU:
@@ -793,7 +801,7 @@ begin
 
         WindowInfo := GetWin32WindowInfo(Window);
         ListView := TListView(WindowInfo^.WinControl);
-        ListItem := ListView.GetItemAt(WindowInfo^.MouseX, WindowInfo^.MouseY);
+        ListItem := ListView.GetItemAt(GET_X_LPARAM(LParam), GET_Y_LPARAM(LParam));
         ListViewWindProcInfo.ActiveListView := ListView;
         ListViewWindProcInfo.NoMouseUp := False;
         try
@@ -809,7 +817,8 @@ begin
              (Assigned(ListItem) or ListView.MultiSelect)
           then
           begin
-            PostMessage(Window, AMsg, 0, MakeLParam(WindowInfo^.MouseX, WindowInfo^.MouseY));
+            MPos := GetClientCursorPos(Window);
+            PostMessage(Window, AMsg, 0, MakeLParam(MPos.X, MPos.Y));
           end;
         finally
           ListViewWindProcInfo.ActiveListView:= nil;
