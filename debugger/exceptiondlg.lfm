@@ -3,6 +3,7 @@ object IDEExceptionDlg: TIDEExceptionDlg
   Height = 113
   Top = 376
   Width = 612
+  ActiveControl = btnBreak
   AutoSize = True
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
@@ -10,7 +11,27 @@ object IDEExceptionDlg: TIDEExceptionDlg
   ClientHeight = 113
   ClientWidth = 612
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
+  object btnBreak: TBitBtn
+    AnchorSideTop.Control = lblMessage
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnContinue
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 432
+    Height = 25
+    Top = 82
+    Width = 75
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'btnBreak'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
   object lblMessage: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -37,26 +58,6 @@ object IDEExceptionDlg: TIDEExceptionDlg
     BorderSpacing.Around = 6
     Caption = 'cbIgnoreExceptionType'
     TabOrder = 0
-  end
-  object btnBreak: TBitBtn
-    AnchorSideTop.Control = lblMessage
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = btnContinue
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 432
-    Height = 25
-    Top = 82
-    Width = 75
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'btnBreak'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    ModalResult = 1
-    TabOrder = 1
   end
   object btnContinue: TBitBtn
     AnchorSideTop.Control = lblMessage
