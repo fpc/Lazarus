@@ -1,49 +1,57 @@
-The package was originally put together by:
-  Mattias Gaertner <mattias@freepascal.org>
+Format: http://dep.debian.net/deps/dep5
+Upstream-Name: lazarus-project
+Upstream-Contact: Mattias Gaertner <mattias@freepascal.org>
+Source: svn http://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_8
 
-From sources obtained from:
-  CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
+Files: *
+Copyright: Lazarus team 2020 <lazarus@lists.lazarus-ide.org>
+License: modified LGPL2
+ COPYING.modifiedLGPL.txt
 
-The Lazarus sources consists of several parts and each part has its own
-license. Three licenses are in use. The GPL 2, a modified LGPL and the MPL. In
-general, each file contains a header, describing the license of the file.
+Files: ide/* designer/* debugger/* packager/* converter/* tools/* components/codetools/*
+Copyright: Lazarus team 2020 <lazarus@lists.lazarus-ide.org>
+License: GPL2
+ /usr/share/common-licenses/GPL-2
 
-The license directory tree:
+Files: components/synedit/*
+Copyright: Lazarus team 2020 <lazarus@lists.lazarus-ide.org>
+License: MPL 1.1 or GPL2
+ The contents of this file are subject to the Mozilla Public License
+ Version 1.1 (the "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+ http://www.mozilla.org/MPL/
 
-<lazarus>/
- |
- +- ide             (mostly GPL2, but with a few files under modified LGPL)
- |
- +- designer        (mostly GPL2, but with a few files under modified LGPL)
- |
- +- debugger        (GPL2)
- |
- +- packager        (GPL2)
- |
- +- tools           (GPL2)
- |
- +- examples        (GPL2)
- |
- +- lcl             (modified LGPL, see there)
- |
- +- components/
-    |
-    +- synedit      (MPL - Mozilla public license)
-    |
-    +- codetools    (GPL 2)
-    |
-    +- gtk
-    |  |
-    |  +- gtkglarea (modified LGPL, with one exception: nvgl.pp)
-    |
-    +- xxx There are various packages under various licenses. Mostly the
-           modified LGPL. See the license in the package files for details.
-           
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ the specific language governing rights and limitations under the License.
 
-The IDE files are the files in the <lazarus>, designer, packager and debugger
-directory. They are under the GPL 2, with the following exceptions:
-transfermacros.pp, wordcompletion.pp, patheditordlg.pas, outputfilter.pas,
-inputfiledialog.pas, findreplacedialog.pp, findinfilesdlg.pas
-These files are under the modified LGPL as described in COPYING.modifiedLGPL.
+ The Original Code is: SynEdit.pas, released 2000-04-07.
+ The Original Code is based on mwCustomEdit.pas by Martin Waldenburg, part of
+ the mwEdit component suite.
+ Portions created by Martin Waldenburg are Copyright (C) 1998 Martin Waldenburg.
+ All Rights Reserved.
 
-/usr/share/common-licenses/LGPL-2
+ Contributors to the SynEdit and mwEdit projects are listed in the
+ Contributors.txt file.
+
+ Alternatively, the contents of this file may be used under the terms of the
+ GNU General Public License Version 2 or later (the "GPL"), in which case
+ the provisions of the GPL are applicable instead of those above.
+ If you wish to allow use of your version of this file only under the terms
+ of the GPL and not to allow others to use your version of this file
+ under the MPL, indicate your decision by deleting the provisions above and
+ replace them with the notice and other provisions required by the GPL.
+ If you do not delete the provisions above, a recipient may use your version
+ of this file under either the MPL or the GPL.
+
+Files: components/chmhelp/packages/help/design/*.png
+Copyright: Roland Hahn
+License: Public domain
+
+Files: lcl/images/*
+Copyright: see lcl/images/copyright.txt
+License: various
+
+Files: images/*
+Copyright: see images/copyright.txt
+License: various
