@@ -9617,7 +9617,7 @@ msgstr "A&valiar"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
-msgstr ""
+msgstr "Avaliar tudo"
 
 #: lazarusidestrconsts.lisevaluatemodify
 msgid "&Evaluate/Modify"

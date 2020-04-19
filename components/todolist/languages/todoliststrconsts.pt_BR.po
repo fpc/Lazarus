@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,18 +26,21 @@ msgid ""
 "Is it a valid source file?\n"
 "The rest of the file has been skipped."
 msgstr ""
+"Localização de itens \"ToDo\" falhou no arquivo %0:s.\n"
+"É um arquivo fonte válido?\n"
+"O resto do arquivo foi ignorado."
 
 #: todoliststrconsts.excinvalidparsestate
 msgid "Invalid parse state."
-msgstr ""
+msgstr "Estado de análise inválido."
 
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
-msgstr ""
+msgstr "Usar símbolo substituto"
 
 #: todoliststrconsts.lisalternatetokenshint
 msgid "Standard token is #todo etc. Alternate is without the #"
-msgstr ""
+msgstr "Símbolo padrão é #todo etc. Substituto é sem o #"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
@@ -45,31 +48,31 @@ msgstr "Inserir Macro"
 
 #: todoliststrconsts.lisfilteritem0
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 #: todoliststrconsts.lisfilteritem1
 msgid "ToDo Only"
-msgstr ""
+msgstr "Apenas \"ToDo\""
 
 #: todoliststrconsts.lisfilteritem2
 msgid "Done Only"
-msgstr ""
+msgstr "Apenas \"Feito\""
 
 #: todoliststrconsts.lisfilteritem3
 msgid "Note Only"
-msgstr ""
+msgstr "Apenas \"Nota\""
 
 #: todoliststrconsts.lisfilteritem4
 msgid "ToDo & Done"
-msgstr ""
+msgstr "ToDo e Feito"
 
 #: todoliststrconsts.lisfilteritem5
 msgid "ToDo & Note"
-msgstr ""
+msgstr "ToDo e Nota"
 
 #: todoliststrconsts.lisfilteritem6
 msgid "Done & Note"
-msgstr ""
+msgstr "Feito e Nota"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
@@ -94,11 +97,11 @@ msgstr "Texto"
 
 #: todoliststrconsts.lisshowwhat
 msgid "Show"
-msgstr ""
+msgstr "Exibir"
 
 #: todoliststrconsts.lisshowwhathint
 msgid "Select which ToDo types to list"
-msgstr ""
+msgstr "Selecionar quais tipos \"ToDo\" listar"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
@@ -110,10 +113,8 @@ msgid "Add units in source editor"
 msgstr "Adiciona unidades no editor de código"
 
 #: todoliststrconsts.listddinserttodo
-#, fuzzy
-#| msgid "Insert ToDo"
 msgid "Insert a ToDo/Done/Note"
-msgstr "Inserir \"ToDo\""
+msgstr "Inserir \"ToDo/Feito/Nota\""
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -169,11 +170,11 @@ msgstr "Prioridade"
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: todoliststrconsts.listodotodotype
 msgid "ToDo type"
-msgstr ""
+msgstr "Tipo \"ToDo\""
 
 #: todoliststrconsts.listodoused
 msgid "Used"
@@ -193,5 +194,5 @@ msgstr "Exibir lista \"ToDo\""
 
 #: todoliststrconsts.rsexporttodoit
 msgid "Export ToDo items to CSV"
-msgstr ""
+msgstr "Exportar itens \"ToDo\" para CSV"
 

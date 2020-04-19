@@ -718,12 +718,12 @@ msgid "The following repository packages are not available externally. The packa
 msgstr "Os seguintes repositórios de pacotes não estão disponíveis externamente. Os pacotes serão ignorados. Continuar?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository packages are available externally."
 msgid ""
 "None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
 "Options->General->Check for package updates."
-msgstr "Nenhum dos repositórios de pacotes marcados estão disponíveis externamente."
+msgstr ""
+"Nenhum dos repositórios de pacotes marcados estão disponíveis externamente. Por favor, certifique-se que as atualizações de pacote estejam habilitadas por padrão.\n"
+"Opções->Geral->Verificar atualizações pacotes."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
@@ -1018,12 +1018,12 @@ msgstr "Vínculo externo (JSON)"
 #: opkman_const.rsmainfrm_vsttext_externaldeps
 msgctxt "opkman_const.rsmainfrm_vsttext_externaldeps"
 msgid "External dependencies"
-msgstr ""
+msgstr "Dependências externas"
 
 #: opkman_const.rsmainfrm_vsttext_externalmetapackagedeps
 msgctxt "opkman_const.rsmainfrm_vsttext_externalmetapackagedeps"
 msgid "External dependencies for metapackage"
-msgstr ""
+msgstr "Dependências externas para o meta pacote"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1064,20 +1064,18 @@ msgid "License"
 msgstr "Licença"
 
 #: opkman_const.rsmainfrm_vsttext_open
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open"
 msgid "Open"
 msgstr "Abrir"
 
 #: opkman_const.rsmainfrm_vsttext_open_error
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open_error"
 msgid "Cannot open package file."
-msgstr "Impossível abrir o arquivo do pacote"
+msgstr "Impossível abrir o arquivo do pacote."
 
 #: opkman_const.rsmainfrm_vsttext_open_notfound
 msgid "Package file not found."
-msgstr ""
+msgstr "Pacote não encontrado."
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
@@ -1408,11 +1406,11 @@ msgstr "Se esta opção estiver marcada os pacotes serão sempre baixados novame
 
 #: opkman_const.rsoptions_cbloadjsonlocally_caption
 msgid "If available, parse the JSON from local source"
-msgstr ""
+msgstr "Se disponível, analisar o JSON da fonte local"
 
 #: opkman_const.rsoptions_cbloadjsonlocally_hint
 msgid "If this option is checked the JSON is parsed from a local source (useful if the internet connection is slow). After 25 local parses, OPM will attempt a live update."
-msgstr ""
+msgstr "Se este opção estiver marcada o JSON é analisado de uma fonte local (útil se a conexão com a internet for lenta). Após 25 análises locais, GPO tentará uma atualização ao vivo."
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"
