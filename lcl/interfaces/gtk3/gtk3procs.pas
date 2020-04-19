@@ -665,10 +665,10 @@ begin
     Result := Result or MK_LBUTTON;
 
   if AState and GDK_BUTTON2_MASK <> 0 then
-    Result := Result or MK_RBUTTON;
+    Result := Result or MK_MBUTTON;
 
   if AState and GDK_BUTTON3_MASK <> 0 then
-    Result := Result or MK_MBUTTON;
+    Result := Result or MK_RBUTTON;
 
   if AState and GDK_BUTTON4_MASK <> 0 then
     Result := Result or MK_XBUTTON1;
