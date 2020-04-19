@@ -141,13 +141,30 @@ begin
   Result:=inherited ClipboardFormatToMimeType(FormatID);
 end;
 
+const
+  sPrimary = 'PRIMARY';
+  sClipboard = 'CLIPBOARD';
+
 function TGtk3WidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
+var
+  pclp:PGtkClipboard;
+  pc:pgchar;
+  pcname:PgdkAtom;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ClipboardGetData not implemented ...');
-  {$ENDIF}
-  Result:=inherited ClipboardGetData(ClipboardType, FormatID, Stream);
+  case ClipboardType of
+  ctPrimarySelection: pcname:=TGdkAtom.intern(sPrimary,false);
+  ctSecondarySelection: pcname:=nil;
+  ctClipboard: pcname:=TGdkAtom.intern(sClipboard,false);
+  end;
+  if not Assigned(pcname) then exit;
+  pclp:=TGtkClipboard.get(pcname);
+  if not Assigned(pclp) then exit(false);
+  // text handling
+  //pclp^.request_text(@ClipboardTextReceivedFunc,Stream);
+  pc:=pclp^.wait_for_text;
+  Stream.Write(pc^,strlen(pc));
+  Result:=true;
 end;
 
 function TGtk3WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
@@ -162,12 +179,24 @@ end;
 function TGtk3WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
+var
+  pclp:PGtkClipboard;
+  pc:pgchar;
+  pcname:PgdkAtom;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ClipboardGetOwnerShip not implemented ...');
-  {$ENDIF}
-  Result:=inherited ClipboardGetOwnerShip(ClipboardType, OnRequestProc,
-    FormatCount, Formats);
+  case ClipboardType of
+  ctPrimarySelection: pcname:=TGdkAtom.intern(sPrimary,false);
+  ctSecondarySelection: pcname:=nil;
+  ctClipboard: pcname:=TGdkAtom.intern(sClipboard,false);
+  end;
+  if not Assigned(pcname) then exit;
+  pclp:=TGtkClipboard.get(pcname);
+  if not Assigned(pclp) then exit(false);
+{  // text handling
+  //pclp^.request_text(@ClipboardTextReceivedFunc,Stream);
+  pc:=pclp^.wait_for_text;
+  Stream.Write(pc^,strlen(pc)); }
+  Result:=true;
 end;
 
 function TGtk3WidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;

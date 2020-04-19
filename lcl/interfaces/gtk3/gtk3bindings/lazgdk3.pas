@@ -2880,14 +2880,17 @@ type
   PPGdkEvent = ^PGdkEvent;
   PGdkEvent = ^TGdkEvent;
 
-  PPPGdkAtom = ^PPGdkAtom;
-  PPGdkAtom = ^PGdkAtom;
+  //typedef struct _GdkAtom *GdkAtom;
+  {PPPGdkAtom = ^PPGdkAtom;}
+  PPGdkAtom = ^GdkAtom;
   PGdkAtom = ^TGdkAtom;
+  GdkAtom = PGdkAtom; // pointer alias
   TGdkAtom = object
     function name: Pgchar; cdecl; inline;
     function intern(atom_name: Pgchar; only_if_exists: gboolean): PGdkAtom; cdecl; inline; static;
     function intern_static_string(atom_name: Pgchar): PGdkAtom; cdecl; inline; static;
   end;
+
   TGdkDisplay = object(TGObject)
     function get_default: PGdkDisplay; cdecl; inline; static;
     function open(display_name: Pgchar): PGdkDisplay; cdecl; inline; static;
