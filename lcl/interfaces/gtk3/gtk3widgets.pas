@@ -7242,27 +7242,22 @@ begin
   if response_id=GTK_RESPONSE_YES then
   begin
     Self.CommonDialog.UserChoice:=mrYes;
-    CloseDialog;
   end else
   if response_id=GTK_RESPONSE_NO then
   begin
     Self.CommonDialog.UserChoice:=mrNo;
-    CloseDialog;
   end else
   if response_id=GTK_RESPONSE_OK then
   begin
     Self.CommonDialog.UserChoice:=mrOk;
-    CloseDialog;
   end else
   if response_id=GTK_RESPONSE_CANCEL then
   begin
     Self.CommonDialog.UserChoice:=mrCancel;
-    CloseDialog;
   end else
   if response_id=GTK_RESPONSE_CLOSE then
   begin
     Self.CommonDialog.UserChoice:=mrClose;
-    CloseDialog;
   end;
   Result:=false;
 end;
@@ -7409,7 +7404,8 @@ var
   pfc:PPangoFontFace;
   pfd:PPangoFontDescription;
   sz:integer;
-  sname:string;
+  sface,sfamily:string;
+  fnts:TfontStyles;
 begin
   if resp_id=GTK_RESPONSE_OK then
   begin
@@ -7419,11 +7415,19 @@ begin
     pfd:=pfc^.describe;
     { this stuff is implemened in gtk3objects.Tgtk3Font.UpdateLogFont
       so this is backward mapping of properties }
-    sname:=pfd^.get_family();
-    sz:=pfd^.get_size() div PANGO_SCALE;
-    fnt.Name:=sname;
-   // fnt.Size:=sz;
+    sfamily:=pfd^.get_family();
+    sface:=lowercase(pch^.get_font_face()^.get_face_name());
 
+    sz:=pch^.get_font_size() div PANGO_SCALE;
+    fnt.Name:=sfamily;
+    fnt.Size:=sz;
+    fnts:=[];
+    if (pos('bold',sface)>0) then
+      include(fnts,fsBold);
+
+    if (pos('italic',sface)>0) then
+      include(fnts,fsItalic);
+    fnt.Style:=fnts;
 
   end;
   Result:=inherited response_handler(resp_id);
