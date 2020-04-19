@@ -8561,7 +8561,8 @@ begin
   try
     i := 0;
     OldCaretX := CaretX;
-    SelText := '';
+    if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
+      SelText := '';
     // With a multi-line block the caret may have advanced, avoid negative spaces
     if CaretX > OldCaretX then
       OldCaretX := CaretX;
@@ -8593,13 +8594,15 @@ begin
     // i now contains the needed spaces
     Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,
                                   not (eoTabsToSpaces in Options));
-    //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
-    OldCaretX := CaretX;
-    //debugln('TCustomSynEdit.DoTabKey Before SetSelText Line="',DbgStr(GetLineText),'"');
-    SetSelTextExternal(Spaces);
-    //debugln('TCustomSynEdit.DoTabKey After SetSelText Line="',DbgStr(GetLineText),'"');
-    CaretX := OldCaretX + i;
-    //debugln('TCustomSynEdit.DoTabKey StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd),' Spaces="',Spaces,'"');
+
+    if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then begin
+      SetSelTextExternal(Spaces);
+    end
+    else begin
+      FCaret.IncAutoMoveOnEdit;
+      FTheLinesView.EditInsert(FCaret.BytePos, FCaret.LinePos, Spaces);
+      FCaret.DecAutoMoveOnEdit;
+    end;
   finally
     InternalEndUndoBlock;
   end;
