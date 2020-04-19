@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, types, math, fpcunit, Interfaces, LCLType, LCLIntf, Forms, ComCtrls,
-  Controls, StdCtrls, LMessages, LCLProc, testglobals, Keyboard,
+  Controls, StdCtrls, LMessages, LCLProc, Menus, testglobals, Keyboard,
   MouseAndKeyInput, MouseInputIntf, LazLogger
   {$IFDEF WINDOWS} ,JwaWinUser, WinMouseInput {$ENDIF}
   ;
@@ -33,6 +33,7 @@ type
     evMsgContext,
     evMsgLDown, evMsgLUp, evMsgLDbl,
     evMsgRDown, evMsgRUp, evMsgRDbl,
+    evMenu, evMenuItem,
     evMarker
   );
 
@@ -98,6 +99,11 @@ type
     procedure WMRButtonDBLCLK(var Message: TLMRButtonDblClk); message LM_RBUTTONDBLCLK;
   end;
 
+  TClickPoint = record
+    x, y: Integer;
+    btn: TMouseButton;
+  end;
+
   { TTestThread }
 
   TTestThread = class(TTHread)
@@ -105,6 +111,7 @@ type
     FButton: TMouseButton;
     FPos, FupPos: TPoint;
     FExtraPos: Array of TPoint;
+    FClick2Pos: Array of TClickPoint;
     FShiftDown, FShiftUp: TShiftState;
 
     FWaitForMainProcessMessages: cardinal;
@@ -118,10 +125,12 @@ type
     constructor Create(Button: TMouseButton; Pos: TPoint; ShiftDown, ShiftUp: TShiftState);
     constructor Create(Button: TMouseButton; DownPos, UpPos: TPoint; ShiftDown, ShiftUp: TShiftState);
     constructor Create(Button: TMouseButton; DownPos, UpPos: TPoint; ExtraPos: array of TPoint; ShiftDown, ShiftUp: TShiftState);
+    constructor Create(Button: TMouseButton; DownPos, UpPos: TPoint; ExtraPos: array of TPoint; Click2Pos: array of TClickPoint; ShiftDown, ShiftUp: TShiftState);
 
     class procedure Run(Button: TMouseButton; Pos: TPoint; ShiftDown, ShiftUp: TShiftState);
     class procedure Run(Button: TMouseButton; DownPos, UpPos: TPoint; ShiftDown, ShiftUp: TShiftState);
     class procedure Run(Button: TMouseButton; DownPos, UpPos: TPoint; ExtraPos: array of TPoint; ShiftDown, ShiftUp: TShiftState);
+    class procedure Run(Button: TMouseButton; DownPos, UpPos: TPoint; ExtraPos: array of TPoint; Click2Pos: array of TClickPoint; ShiftDown, ShiftUp: TShiftState);
 
 
     procedure Execute; override;
@@ -141,6 +150,7 @@ type
     FForm : TForm;
     FButton: TButton;
     FListView: TListViewForTest;
+    FPopUp: TPopupMenu;
     FTestEvents: array of TLvTestEvent;
     FTestError: String;
     FInDrag: (idFalse, idStarted, idTrue);
@@ -160,6 +170,8 @@ type
     procedure LvDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure LvEndDrag(Sender, Target: TObject; X, Y: Integer);
+    procedure OnMenuItemClick(Sender: TObject);
+    procedure OnMenuPopUp(Sender: TObject);
 
   protected
     property  Form: TForm read FForm;
@@ -194,11 +206,14 @@ type
       RowSel: Boolean = False;
       ReadOnly: Boolean = True
   );
+    function  CreatePopUp: TPopupMenu;
+    procedure AttachPopUp;
   published
     procedure TestClick;
     procedure TestClickRight;
     procedure TestClickNoneDragJitter;
     procedure TestDrag;
+    procedure TestPopUp;
   end;
 
 implementation
@@ -210,6 +225,19 @@ var
 {$ENDIF}
 
   TheTestCase: TTestListView;
+
+operator := (p: TPoint): TClickPoint;
+begin
+  result.x := p.x;
+  result.y := p.y;
+  result.btn := mbLeft;
+end;
+
+function RBtn(p: TPoint): TClickPoint;
+begin
+  result := p;
+  result.btn := mbRight;
+end;
 
 function cp(AIdx, ASubIdx: Integer; APart: TDisplayCode = drLabel; APos: TClickInnerPos = ipTopLeft): TClickPos;
 begin
@@ -260,6 +288,16 @@ begin
   Result.Shift := Shift;
   Result.SelMask := SelMask;
   Result.SelIdx := SelIdx;
+end;
+
+function ev(t: TLvTestEventType;
+  xy: TPoint;
+  ItemIdx: Integer; // for expectation only
+  Shift: TShiftState = [];
+  SelMask: TSelMask = [TSelMaskMarker]; SelIdx: integer = -2
+): TLvTestEvent; overload;
+begin
+  Result := ev(t, xy.x, xy.y, ItemIdx, Shift, SelMask, SelIdx);
 end;
 
 function ev(t: TLvTestEventType;
@@ -336,7 +374,7 @@ begin
     for i := 0 to TSelMaskMarker-1 do
       if (i in t.SelMask) then
         sm := sm + IntToStr(i) + ',';
-  Result := Format('%-15s [%s]  XY: (%d, %d) Idx: %d   Sel: %d / %s',
+  Result := Format('%-15s [%s]  XY: (%d, %d) ItmIdx: %d   Sel: %d [%s]',
     [dbgs(t.Event), ShiftToStr(t.Shift), t.x,t.y, t.ItemIdx, t.SelIdx, sm ]
   );
 end;
@@ -429,6 +467,23 @@ begin
   inherited Create(False);
 end;
 
+constructor TTestThread.Create(Button: TMouseButton; DownPos, UpPos: TPoint;
+  ExtraPos: array of TPoint; Click2Pos: array of TClickPoint; ShiftDown,
+  ShiftUp: TShiftState);
+begin
+  FButton := Button;
+  FPos := DownPos;
+  FupPos := UpPos;
+  SetLength(FExtraPos, Length(ExtraPos));
+  Move(ExtraPos[0], FExtraPos[0], SizeOf(FExtraPos[0])*Length(ExtraPos));
+  SetLength(FClick2Pos, Length(Click2Pos));
+  Move(Click2Pos[0], FClick2Pos[0], SizeOf(FClick2Pos[0])*Length(Click2Pos));
+  FShiftDown := ShiftDown;
+  FShiftUp := ShiftUp;
+  FRunMode := rmClickMove;
+  inherited Create(False);
+end;
+
 class procedure TTestThread.Run(Button: TMouseButton; Pos: TPoint; ShiftDown,
   ShiftUp: TShiftState);
 var
@@ -459,6 +514,17 @@ begin
   s.Destroy;
 end;
 
+class procedure TTestThread.Run(Button: TMouseButton; DownPos, UpPos: TPoint;
+  ExtraPos: array of TPoint; Click2Pos: array of TClickPoint; ShiftDown,
+  ShiftUp: TShiftState);
+var
+  s: TTestThread;
+begin
+  s := TTestThread.Create(Button, DownPos, UpPos, ExtraPos, Click2Pos, ShiftDown, ShiftUp);
+  s.MainThreadLoop;
+  s.Destroy;
+end;
+
 procedure TTestThread.Execute;
 var
   i: Integer;
@@ -471,7 +537,7 @@ begin
     WaitForMain;
   end;
 
-  if FRunMode = rmClickMove then begin
+  if FRunMode in [rmClickMove] then begin
     FTestMouseInput.Move([], FUpPos.x, FUpPos.y);
     WaitForMain;
   end;
@@ -481,6 +547,13 @@ begin
 
   FTestMouseInput.UnApplyKey([ssShift, ssCtrl]);
   WaitForMain;
+
+  for i := 0 to length(FClick2Pos) - 1 do begin
+    FTestMouseInput.Down(FClick2Pos[i].btn, [], FClick2Pos[i].x, FClick2Pos[i].y);
+    WaitForMain;
+    FTestMouseInput.Up(FClick2Pos[i].btn, [], FClick2Pos[i].x, FClick2Pos[i].y);
+    WaitForMain;
+  end;
 
   InterLockedExchange(FDone, 1);
 end;
@@ -751,6 +824,19 @@ begin
   FInDrag := idFalse;
 end;
 
+procedure TTestListView.OnMenuItemClick(Sender: TObject);
+begin
+  AddTestEvent(ev(evMenuItem, TMenuItem(Sender).Tag));
+end;
+
+procedure TTestListView.OnMenuPopUp(Sender: TObject);
+var
+  p: TPoint;
+begin
+  p := FListView.ScreenToClient(Point(TPopupMenu(Sender).PopupPoint.x, TPopupMenu(Sender).PopupPoint.y));
+  AddTestEvent(ev(evMenu, p.x, p.y, [], GetSelMask, GetSelIdx));
+end;
+
 function TTestListView.GetSelMask: TSelMask;
 var
   i: Integer;
@@ -906,7 +992,10 @@ begin
       AssertEquals(AName + ' Y', e.y, g.y);
 
     if e.ItemIdx <> -2 then
-      AssertEquals(AName + ' ItemIDx', e.ItemIdx, ItemIdx(g.x, g.y));
+      if e.Event = evMenuItem then
+        AssertEquals(AName + ' ItemIDx', e.ItemIdx, g.ItemIdx)
+      else
+        AssertEquals(AName + ' ItemIDx', e.ItemIdx, ItemIdx(g.x, g.y));
 
     AssertEquals(AName + ' Shift', ShiftToStr(e.Shift), ShiftToStr(g.Shift));
 
@@ -992,6 +1081,7 @@ end;
 procedure TTestListView.RecreateForm;
 begin
   FreeAndNil(FForm);
+  FPopUp := nil;
   FListView := nil;
 
   FForm := TForm.CreateNew(nil);
@@ -1051,6 +1141,29 @@ begin
   FListView.RowSelect := RowSel;
   FListView.ReadOnly := ReadOnly;
   Application.ProcessMessages;
+end;
+
+function TTestListView.CreatePopUp: TPopupMenu;
+var
+  i: Integer;
+  m: TMenuItem;
+begin
+  Result := TPopupMenu.Create(FForm);
+  Result.OnPopup := @OnMenuPopUp;
+  for i := 1 to 3 do begin
+    m := TMenuItem.Create(FForm);
+    m.Tag := i;
+    m.Caption := 'menu ' + IntToStr(i);
+    m.OnClick := @OnMenuItemClick;
+    Result.Items.Add(m);
+  end;
+end;
+
+procedure TTestListView.AttachPopUp;
+begin
+  if FPopUp = nil then
+    FPopUp := CreatePopUp;
+  FListView.PopupMenu := FPopUp;
 end;
 
 procedure TTestListView.TestClick;
@@ -1717,6 +1830,332 @@ begin
         ev(evStoreSelection, NO_SEL)
       ]);
     end;
+
+  end;
+
+  AssertEquals('', FTestError);
+end;
+
+procedure TTestListView.TestPopUp;
+var
+  Multi: Boolean;
+  ViewSt: TViewStyle;
+  TstName: String;
+  ExpSel: TSelMask;
+  p99, p98, p1, p2, p3, p4,
+  pp99, pp98, pp1, pp2, pp3, pp4,
+  xy98, xy99, xy1, xy2, xy4: TPoint;
+begin
+  sleep(500);
+  FTestError := '';
+  (* *****
+     PopUpMenu
+   * *****)
+
+  for Multi  in Boolean do
+  for ViewSt in TViewStyle do // (vsIcon, vsSmallIcon, vsList, vsReport);
+  begin
+    CreateListView(ViewSt, MaxColumnPerStyle[ViewSt], dmManual, Multi, False);
+    AttachPopUp;
+
+    TstName := Format('TestClick %s  Multi: %s ',
+      [dbgs(ViewSt), dbgs(Multi) ]
+    );
+
+    p1  := ItemScreenXY(1);
+    p2  := ItemScreenXY(2);
+    p3  := ItemScreenXY(3);
+    p4  := ItemScreenXY(4);
+    p99 := ItemScreenXY(99);
+    p98 := AddToPoint(ItemScreenXY(99), -10, 0);
+    xy1  := ItemXY(1);
+    xy2  := ItemXY(2);
+    xy4  := ItemXY(4);
+    xy99 := ItemXY(99);
+    xy98 := AddToPoint(ItemXY(99), -10, 0);
+
+    pp1  := AddToPoint(p1, 5, 5); // menu item
+    pp2  := AddToPoint(p2, 5, 5);
+    pp3  := AddToPoint(p3, 5, 5);
+    pp4  := AddToPoint(p4, 5, 5);
+    pp99 := AddToPoint(p99, 5, 5);
+    pp98 := AddToPoint(p98, 5, 5);
+
+
+    (* *****
+       Simple pop up click
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p2, p2, [], [pp2], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('pop item '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], [2], 2),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], [2], 2),
+      ev(evMsgContext),
+      ev(evContextPop, 2, [], [2], 2),
+      ev(evMenu, xy2, 2, [], [2], 2),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, [2], 2)
+    ]);
+
+    (* *********
+       right down, then mouse move, then pop
+     * *********)
+
+    (* *****
+       item => other item
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p3, p2, [], [pp2], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('down item, pop other item '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], [3], 3),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], [3], 3),
+      ev(evMsgContext),
+      ev(evContextPop, 2, [], [3], 3),
+      ev(evMenu, xy2, 2, [], [3], 3),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, [3], 3)
+    ]);
+
+    (* *****
+       item => empty
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p3, p99, [], [pp99], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('down item, pop empty'+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], [3], 3),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], [3], 3),
+      ev(evMsgContext),
+      ev(evContextPop, -1, [], [3], 3),
+      ev(evMenu, xy99, -1, [], [3], 3),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, [3], 3)
+    ]);
+
+
+
+    (* *********
+       pop first menu, then while open pop 2nd menu
+     * *********)
+
+    (* *****
+       pop up item, then other item
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p2, p2, [], [RBtn(p1), pp1], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('pop item, pop other item '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], [2], 2),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], [2], 2),
+      ev(evMsgContext),
+      ev(evContextPop, 2, [], [2], 2),
+      ev(evMenu, xy2, 2, [], [2], 2),
+
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], [1], 1),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], [1], 1),
+      ev(evMsgContext),
+      ev(evContextPop, 1, [], [1], 1),
+      ev(evMenu, xy1, 1, [], [1], 1),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, [1], 1)
+    ]);
+
+    (* *****
+       pop up item, then empty
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p2, p2, [], [RBtn(p99), pp99], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('pop item, pop empty '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], [2], 2),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], [2], 2),
+      ev(evMsgContext),
+      ev(evContextPop, 2, [], [2], 2),
+      ev(evMenu, xy2, 2, [], [2], 2),
+
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], NO_SEL),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], NO_SEL),
+      ev(evMsgContext),
+      ev(evContextPop, -1, [], NO_SEL),
+      ev(evMenu, xy99, -1, [], NO_SEL),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, NO_SEL)
+    ]);
+
+
+
+
+    (* *********
+     * *********)
+
+    (* *****
+       pop up over empty
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    FListView.Items[1].Selected := True;
+    TTestThread.Run(mbRight, p99, p99, [], [pp99], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('pop empty '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], NO_SEL),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], NO_SEL),
+      ev(evMsgContext),
+      ev(evContextPop, -1, [], NO_SEL),
+      ev(evMenu, xy99, -1, [], NO_SEL),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, NO_SEL)
+    ]);
+
+
+    (* *********
+       right down, then mouse move, then pop
+     * *********)
+
+    (* *****
+       empty => other empty
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p99, p98, [], [pp98], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('down empty, pop other empty'+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], NO_SEL),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], NO_SEL),
+      ev(evMsgContext),
+      ev(evContextPop, -1, [], NO_SEL),
+      ev(evMenu, xy98, -1, [], NO_SEL),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, NO_SEL)
+    ]);
+
+    (* *****
+       empty => item
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p99, p4, [], [pp4], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    if Multi then
+      ExpSel := [4]
+    else
+      ExpSel := NO_SEL;
+
+    CheckTestEvents('down empty, pop item '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], ExpSel),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], ExpSel),
+      ev(evMsgContext),
+      ev(evContextPop, 4, [], ExpSel),
+      ev(evMenu, xy4, 4, [], ExpSel),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, ExpSel)
+    ]);
+
+
+    (* *********
+       pop first menu, then while open pop 2nd menu
+     * *********)
+
+    (* *****
+       pop up empty, then other empty
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p99, p99, [], [RBtn(p98), pp98], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('pop empty, pop other item '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], NO_SEL),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], NO_SEL),
+      ev(evMsgContext),
+      ev(evContextPop, -1, [], NO_SEL),
+      ev(evMenu, xy99, -1, [], NO_SEL),
+
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], NO_SEL),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], NO_SEL),
+      ev(evMsgContext),
+      ev(evContextPop, -1, [], NO_SEL),
+      ev(evMenu, xy98, -1, [], NO_SEL),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, NO_SEL)
+    ]);
+
+    (* *****
+       pop up empty, then item
+     * *****)
+    ClearTestEvents;
+    FListView.ClearSelection;
+    TTestThread.Run(mbRight, p99, p99, [], [RBtn(p1), pp1], [], []);
+    StoreSelectionState;
+    ClickButton;
+
+    CheckTestEvents('pop empty, pop other item '+TstName, [
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], NO_SEL),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], NO_SEL),
+      ev(evMsgContext),
+      ev(evContextPop, -1, [], NO_SEL),
+      ev(evMenu, xy99, -1, [], NO_SEL),
+
+      ev(evMsgRDown),
+      ev(evMouseDown, [ssRight], [1], 1),
+      ev(evMsgRUp),
+      ev(evMouseUp, [], [1], 1),
+      ev(evMsgContext),
+      ev(evContextPop, 1, [], [1], 1),
+      ev(evMenu, xy1, 1, [], [1], 1),
+      ev(evMenuItem, 1),
+      ev(evStoreSelection, [1], 1)
+    ]);
+
 
   end;
 
