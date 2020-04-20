@@ -390,6 +390,8 @@ var
 begin
   if not (diDisAss in FFlags) then begin
     ReadCode;
+    if diCodeReadError in FFlags then
+      exit;
     a := @FCodeBin[0];
     FAsmDecoder.Disassemble(a, FInstruction);
     FInstrLen := a - @FCodeBin[0];
@@ -416,6 +418,8 @@ var
 begin
   Result := False;
   ReadCode;
+  if diCodeReadError in FFlags then
+    exit;
   a := @FCodeBin[0];
 
   if (FAsmDecoder.FProcess.Mode = dm64) then begin
@@ -438,12 +442,16 @@ end;
 function TX86AsmInstruction.IsReturnInstruction: boolean;
 begin
   Disassemble;
+  if diCodeReadError in FFlags then
+    exit(False);
   Result := (FInstruction.OpCode = OPret) or (FInstruction.OpCode = OPretf);
 end;
 
 function TX86AsmInstruction.IsLeaveStackFrame: boolean;
 begin
   Disassemble;
+  if diCodeReadError in FFlags then
+    exit(False);
   Result := (FInstruction.OpCode = OPleave);
 end;
 
@@ -480,12 +488,16 @@ end;
 function TX86AsmInstruction.InstructionLength: Integer;
 begin
   Disassemble;
+  if diCodeReadError in FFlags then
+    exit(0);
   Result := FInstrLen;
 end;
 
 function TX86AsmInstruction.X86OpCode: TOpCode;
 begin
   Disassemble;
+  if diCodeReadError in FFlags then
+    exit(OPX_Invalid);
   Result := FInstruction.OpCode;
 end;
 
