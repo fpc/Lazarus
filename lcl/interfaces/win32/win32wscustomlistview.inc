@@ -793,35 +793,44 @@ begin
       end;
     WM_LBUTTONDOWN, WM_RBUTTONDOWN:
       begin
-        // A ListView doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
-        // because it keeps the message in its own event loop,
-        // see msdn article about "Default List-View Message Processing"
-        // therefore we take this notification and create a
-        // LM_LBUTTONUP, LM_RBUTTONUP message out of it
+      (*
+         A ListView doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
+         because it keeps the message in its own event loop,
+         see msdn article about "Default List-View Message Processing"
+         therefore we take this notification and create a
+         LM_LBUTTONUP, LM_RBUTTONUP message out of it.
+
+         - When the ListView starts dragging (LVN_BEGIN(R)DRAG), it will get the
+           mouse up
+         - The WindProg for the WM_LBUTTONUP, WM_RBUTTONUP does not always
+           return immediately (multi select). It will return on either mouse up
+           or BeginDrag.
+           The LCL mouse down event is executed with the same delay.
+         - Also see issue #33330
+      *)
 
         WindowInfo := GetWin32WindowInfo(Window);
         ListView := TListView(WindowInfo^.WinControl);
         ListItem := ListView.GetItemAt(GET_X_LPARAM(LParam), GET_Y_LPARAM(LParam));
+
+        if Msg = WM_LBUTTONDOWN
+        then AMsg := LM_LBUTTONUP
+        else AMsg := LM_RBUTTONUP;
+
         ListViewWindProcInfo.ActiveListView := ListView;
         ListViewWindProcInfo.NoMouseUp := False;
         try
-
-          if Msg = WM_LBUTTONDOWN
-          then AMsg := LM_LBUTTONUP
-          else AMsg := LM_RBUTTONUP;
-
           Result := WindowProc(Window, Msg, WParam, LParam);
-          // for multiselected listbox the message has to be send after current
-          // message or the list item selecting does not work, also see issue #33330
-          if (not ListViewWindProcInfo.NoMouseUp) and
-             (Assigned(ListItem) or ListView.MultiSelect)
-          then
-          begin
-            MPos := GetClientCursorPos(Window);
-            PostMessage(Window, AMsg, 0, MakeLParam(MPos.X, MPos.Y));
-          end;
         finally
           ListViewWindProcInfo.ActiveListView:= nil;
+        end;
+
+        if (not ListViewWindProcInfo.NoMouseUp) and
+           (Assigned(ListItem) or ListView.MultiSelect)
+        then
+        begin
+          MPos := GetClientCursorPos(Window);
+          PostMessage(Window, AMsg, 0, Windows.MakeLParam(MPos.X, MPos.Y));
         end;
         exit;
       end;
