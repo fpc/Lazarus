@@ -1492,12 +1492,12 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  if ACtl.WidgetType*[wtEntry,wtComboBox,wtGroupBox,wtScrollBar,wtSpinEdit]<>[] then
+  if ACtl.WidgetType*[wtEntry,wtComboBox,wtScrollBar,wtSpinEdit]<>[] then
   begin
     Msg.Width := ACtl.LCLObject.Width;//Word(NewSize.cx);
     Msg.Height := ACtl.LCLObject.Height;//Word(NewSize.cy);
   end else
-  if {ACtl is TGtk3Window} ACtl.WidgetType*[wtWindow,wtDialog,
+  if {ACtl is TGtk3Window} ACtl.WidgetType*[wtWindow,wtDialog,wtGroupBox,
      {wtScrollingWinControl,}wtScrollingWin,wtNotebook,wtContainer]<>[] then
   begin
     Msg.Width := Word(NewSize.cx);
@@ -3125,8 +3125,8 @@ begin
   FHasPaint := True;
   //dont use layout for now
   FWidgetType := [wtWidget, wtContainer, wtGroupBox];
-  Result := TGtkFrame.new('');
-  // FCentralWidget := TGtkLayout.new(nil, nil);
+  Result := TGtkFrame.new(PChar(Self.LCLObject.Caption));
+  //FCentralWidget := TGtkLayout.new(nil,nil);
   FCentralWidget := TGtkFixed.new;
   PGtkBin(Result)^.add(FCentralWidget);
   FCentralWidget^.set_has_window(True);
