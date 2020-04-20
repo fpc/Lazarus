@@ -3550,8 +3550,8 @@ end;
 function TX86AsmDecoder.ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal
   ): Boolean;
 begin
-  FLastErrWasMem := not FProcess.ReadData(AnAddress, ALen, FCodeBin[0], ALen);
-  Result := FLastErrWasMem;
+  Result := FProcess.ReadData(AnAddress, ALen, FCodeBin[0], ALen);
+  FLastErrWasMem := not Result;
 end;
 
 constructor TX86AsmDecoder.Create(AProcess: TDbgProcess);
