@@ -6555,7 +6555,7 @@ begin
     if Result<>mrOk then begin
       DebugLn(['LoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed AnUnitInfo=',AnUnitInfo.Filename]);
     end;
-    case  Result of
+    case Result of
     mrAbort: exit;
     mrOk: ;
     mrIgnore:
@@ -7008,7 +7008,7 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     not found, user wants to skip this step and continue
 }
 
-  function TryLFM(LFMFilename: string; out TheModalResult: TModalResult): boolean;
+  function TryLFM(LFMFilename: string): TModalResult;
   var
     UnitFilename: String;
     CurUnitInfo: TUnitInfo;
@@ -7017,15 +7017,13 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     LFMType: String;
     UnitCode: TCodeBuffer;
   begin
-    Result:=false;
-    TheModalResult:=mrCancel;
     // load lfm
-    TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
-    if TheModalResult<>mrOk then begin
+    Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
+    if Result<>mrOk then begin
       {$IFDEF VerboseLFMSearch}
       debugln(['  TryLFM LoadCodeBuffer failed ',LFMFilename]);
       {$ENDIF}
-      exit(TheModalResult=mrAbort);
+      exit;
     end;
     // check if the unit component is already loaded
     UnitFilename:=ChangeFileExt(LFMFilename,'.pas');
@@ -7035,54 +7033,52 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
       CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
     end;
     ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
-    if CurUnitInfo<>nil then begin
-      if (CurUnitInfo.Component<>nil) then begin
-        // component already loaded
-        if SysUtils.CompareText(CurUnitInfo.Component.ClassName,LFMClassName)<>0
-        then begin
-          {$IFDEF VerboseLFMSearch}
-          debugln(['  TryLFM ERROR lfmclass=',LFMClassName,' unit.component=',DbgSName(CurUnitInfo.Component)]);
-          {$ENDIF}
-          IDEMessageDialog('Error','Unable to load "'+LFMFilename+'".'
-            +' The component '+DbgSName(CurUnitInfo.Component)
-            +' is already loaded for unit "'+CurUnitInfo.Filename+'"'#13
-            +'LFM contains a different class name "'+LFMClassName+'".',
-            mtError,[mbCancel]);
-          TheModalResult:=mrAbort;
-          exit(true);
-        end;
-        ComponentUnitInfo:=CurUnitInfo;
-        AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
-        TheModalResult:=mrOK;
-        exit(true);
-      end;
-    end else begin
+    if CurUnitInfo=nil then
+    begin
       // load unit source
       UnitFilename:=ChangeFileExt(LFMFilename,'.pas');
       if not FileExistsCached(UnitFilename) then
         UnitFilename:=ChangeFileExt(LFMFilename,'.pp');
-      TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
-      if TheModalResult<>mrOk then exit(TheModalResult=mrAbort);
+      Result:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
+      if Result<>mrOk then
+        exit;
       // create unit info
       CurUnitInfo:=TUnitInfo.Create(UnitCode);
       CurUnitInfo.ReadUnitNameFromSource(true);
       Project1.AddFile(CurUnitInfo,false);
+    end
+    else if (CurUnitInfo.Component<>nil) then
+    begin
+      // component already loaded
+      if SysUtils.CompareText(CurUnitInfo.Component.ClassName,LFMClassName)<>0
+      then begin
+        {$IFDEF VerboseLFMSearch}
+        debugln(['  TryLFM ERROR lfmclass=',LFMClassName,' unit.component=',DbgSName(CurUnitInfo.Component)]);
+        {$ENDIF}
+        IDEMessageDialog('Error','Unable to load "'+LFMFilename+'".'
+          +' The component '+DbgSName(CurUnitInfo.Component)
+          +' is already loaded for unit "'+CurUnitInfo.Filename+'"'#13
+          +'LFM contains a different class name "'+LFMClassName+'".',
+          mtError,[mbCancel]);
+        exit(mrAbort);
+      end;
+      ComponentUnitInfo:=CurUnitInfo;
+      AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
+      exit(mrOK);
     end;
 
     // load resource hidden
-    TheModalResult:=LoadLFM(CurUnitInfo,LFMCode,
-                              Flags+[ofLoadHiddenResource],[]);
-    if (TheModalResult=mrOk) then begin
+    Result:=LoadLFM(CurUnitInfo,LFMCode,Flags+[ofLoadHiddenResource],[]);
+    if Result=mrOk then
+    begin
       ComponentUnitInfo:=CurUnitInfo;
       AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
       {$if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
       debugln('LoadComponentDependencyHidden Wanted=',AComponentClassName,' Class=',AComponentClass.ClassName);
       {$endif}
-      TheModalResult:=mrOk;
-      exit(true);
     end else begin
       debugln('LoadComponentDependencyHidden Failed to load component ',AComponentClassName);
-      TheModalResult:=mrCancel;
+      Result:=mrCancel;
     end;
   end;
 
@@ -7113,12 +7109,14 @@ begin
   try
     // search component lfm
     {$if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
-    debugln('LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
+    debugln('LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,
+      ' AComponentClass=',dbgsName(AComponentClass));
     {$endif}
     Result:=FindComponentClass(AnUnitInfo,AComponentClassName,Quiet,
       ComponentUnitInfo,AComponentClass,LFMFilename,AncestorClass);
     { $if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
-    debugln('LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass),' AncestorClass=',DbgSName(AncestorClass),' LFMFilename=',LFMFilename);
+    debugln('LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,
+      ' AComponentClass=',dbgsName(AComponentClass),' AncestorClass=',DbgSName(AncestorClass),' LFMFilename=',LFMFilename);
     { $endif}
 
     //- AComponentClass<>nil and ComponentUnitInfo<>nil
@@ -7130,10 +7128,8 @@ begin
     //- AncestorClass<>nil
     //   componentclass does not exist, but the ancestor is a registered class
 
-    if (Result=mrOk) and (AComponentClass=nil) and (LFMFilename<>'') then begin
-      TryLFM(LFMFilename,Result);
-      exit;
-    end;
+    if (Result=mrOk) and (AComponentClass=nil) and (LFMFilename<>'') then
+      exit(TryLFM(LFMFilename));
 
     if MustHaveLFM and (AComponentClass=nil) then
       Result:=mrCancel;

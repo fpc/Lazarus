@@ -2146,23 +2146,21 @@ end;
 
 function TUnitInfo.ShortFilename: string;
 begin
-  if Project<>nil then begin
-    Result:=Project.RemoveProjectPathFromFilename(Filename);
-  end else begin
+  if Project<>nil then
+    Result:=Project.RemoveProjectPathFromFilename(Filename)
+  else
     Result:=Filename;
-  end;
 end;
 
 function TUnitInfo.NeedsSaveToDisk: boolean;
 begin
   Result:=IsVirtual or Modified or ChangedOnDisk(true);
   //DebugLn(['TUnitInfo.NeedsSaveToDisk ',filename,' Result=',Result,' Modified=',Modified]);
-  if not Result then begin
-    if Source<>nil then
-      Result:=Source.FileOnDiskNeedsUpdate
-    else
-      Result:=not FileExistsUTF8(Filename);
-  end;
+  if Result then Exit;
+  if Source<>nil then
+    Result:=Source.FileOnDiskNeedsUpdate
+  else
+    Result:=not FileExistsUTF8(Filename);
 end;
 
 procedure TUnitInfo.UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
