@@ -1325,11 +1325,6 @@ begin
   end;
 end;
 
-procedure dbgcolor(msg: string; C:TQColor);
-begin
-  debugLn(msg+' spec=%x alpha=%x r=%x g=%x b=%x pad=%x',[c.ColorSpec,c.Alpha,c.r,c.g,c.b,c.pad]);
-end;
-
 procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 var
   Color: TQColor;
