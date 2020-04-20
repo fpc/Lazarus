@@ -79,6 +79,8 @@ type
     FIsSteppedOut: Boolean;
     FHiddenBreakpoint: TFpInternalBreakpoint;
     FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakFrameAddr, FHiddenBreakStackPtrAddr: TDBGPtr;
+    FWasAtJumpInstruction: Boolean;
+    FJumpPadCount: Integer;
     function GetIsSteppedOut: Boolean;
   protected
     function IsAtHiddenBreak: Boolean; inline;
@@ -88,6 +90,8 @@ type
     procedure SetHiddenBreak(AnAddr: TDBGPtr);
     procedure RemoveHiddenBreak;
     function CheckForCallAndSetBreak: boolean; // True, if break is newly set
+    procedure StoreWasAtJumpInstruction;
+    function  IsAtJumpPad: Boolean;
 
     procedure Init; override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
@@ -477,6 +481,22 @@ begin
     {$POP}
 end;
 
+procedure TDbgControllerHiddenBreakStepBaseCmd.StoreWasAtJumpInstruction;
+begin
+  FWasAtJumpInstruction := NextInstruction.IsJumpInstruction;
+end;
+
+function TDbgControllerHiddenBreakStepBaseCmd.IsAtJumpPad: Boolean;
+begin
+  Result := FWasAtJumpInstruction and
+            NextInstruction.IsJumpInstruction(False) and
+            not FController.FCurrentThread.IsAtStartOfLine; // TODO: check for lines with line=0
+  if Result then
+    inc(FJumpPadCount);
+  if FJumpPadCount > 2 then
+    Result := False;
+end;
+
 procedure TDbgControllerHiddenBreakStepBaseCmd.Init;
 begin
   FStoredStackPointer := FThread.GetStackPointerRegisterValue;
@@ -499,6 +519,8 @@ begin
     r := NextInstruction.IsReturnInstruction
   else
     r := False;
+
+  FWasAtJumpInstruction := False;
   InternalContinue(AProcess, AThread);
   if r and
      (FHiddenBreakpoint = nil)
@@ -621,6 +643,8 @@ begin
     end;
   end;
 
+  if FState <> siRunningStepOut then
+    StoreWasAtJumpInstruction;
   FProcess.Continue(FProcess, FThread, FState <> siRunningStepOut);
 end;
 
@@ -644,6 +668,8 @@ begin
 
   if (FState = siSteppingCurrent) then begin
     Finished := HasSteppedAwayFromOriginLine;
+    if Finished then
+      Finished := not IsAtJumpPad;
   end
   else begin
     // we stepped into
@@ -689,6 +715,9 @@ begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverLineCmd.DoContinue: FProcess=AProcess');
   if (AThread = FThread) then
   CheckForCallAndSetBreak;
+
+  if FHiddenBreakpoint = nil then
+    StoreWasAtJumpInstruction;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
 
@@ -710,10 +739,14 @@ begin
   if IsAtOrOutOfHiddenBreakFrame then
       RemoveHiddenBreak;
 
-  if FHiddenBreakpoint <> nil then
-    Finished := False
-  else
+  if FHiddenBreakpoint <> nil then begin
+    Finished := False;
+  end
+  else begin
     Finished := HasSteppedAwayFromOriginLine;
+    if Finished then
+      Finished := not IsAtJumpPad;
+  end;
 
   if Finished then
     AnEvent := deFinishedStep

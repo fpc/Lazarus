@@ -405,6 +405,7 @@ type
     function IsCallInstruction: boolean; virtual;
     function IsReturnInstruction: boolean; virtual;
     function IsLeaveStackFrame: boolean; virtual;
+    function IsJumpInstruction(IncludeConditional: Boolean = True; IncludeUncoditional: Boolean = True): boolean; virtual;
     function InstructionLength: Integer; virtual;
   end;
 
@@ -1290,6 +1291,12 @@ begin
 end;
 
 function TDbgAsmInstruction.IsLeaveStackFrame: boolean;
+begin
+  Result := False;
+end;
+
+function TDbgAsmInstruction.IsJumpInstruction(IncludeConditional: Boolean;
+  IncludeUncoditional: Boolean): boolean;
 begin
   Result := False;
 end;

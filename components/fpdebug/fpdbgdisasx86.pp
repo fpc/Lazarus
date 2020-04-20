@@ -224,6 +224,7 @@ type
     function IsCallInstruction: boolean; override;
     function IsReturnInstruction: boolean; override;
     function IsLeaveStackFrame: boolean; override;
+    function IsJumpInstruction(IncludeConditional: Boolean = True; IncludeUncoditional: Boolean = True): boolean; override;
     function InstructionLength: Integer; override;
     function X86OpCode: TOpCode;
     property X86Instruction: TInstruction read FInstruction; // only valid after call to X86OpCode
@@ -444,6 +445,36 @@ function TX86AsmInstruction.IsLeaveStackFrame: boolean;
 begin
   Disassemble;
   Result := (FInstruction.OpCode = OPleave);
+end;
+
+function TX86AsmInstruction.IsJumpInstruction(IncludeConditional: Boolean;
+  IncludeUncoditional: Boolean): boolean;
+var
+  a: PByte;
+begin
+  (* Excluding
+     E1, E2  loop
+     E3   JCXZ   Jump short if eCX register is 0
+  *)
+  Result := False;
+  ReadCode;
+  if diCodeReadError in FFlags then
+    exit;
+  a := @FCodeBin[0];
+
+  if IncludeConditional and (a^ in [$70..$7F]) then
+    exit(True);
+  if IncludeConditional and (a^ = $0F) and (a[1] in [$80..$8F]) then
+    exit(True);
+
+  if IncludeUncoditional and (a^ in [$E9..$EB]) then
+    exit(True);
+
+  if IncludeUncoditional and (a^ in [$FF]) then begin
+    Disassemble;
+    exit(FInstruction.OpCode = OPjmp);
+  end;
+
 end;
 
 function TX86AsmInstruction.InstructionLength: Integer;
