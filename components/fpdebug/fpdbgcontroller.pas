@@ -811,7 +811,7 @@ begin
   then
     FIsSteppedOut := True;
 
-  if IsSteppedOut then begin
+  if IsSteppedOut or IsAtHiddenBreak then begin
     UpdateThreadStepInfoAfterStepOut;
 
     if IsAtOrOutOfHiddenBreakFrame then
