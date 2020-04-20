@@ -31,6 +31,7 @@ uses
   cocoa_extra, CocoaPrivate;
 
 type
+  TSetDocumentViewType = {$if FPC_FULLVERSION = 30200}id{$else}NSView{$endif};
 
   { TCocoaScrollView }
 
@@ -50,9 +51,7 @@ type
     procedure resetCursorRects; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
-    procedure setDocumentView(aView:
-      {$if FPC_FULLVERSION < 30200}NSView{$else}id{$endif}
-    ); override;
+    procedure setDocumentView(aView:  TSetDocumentViewType); override;
     procedure scrollContentViewBoundsChanged(notify: NSNotification); message 'scrollContentViewBoundsChanged:';
     procedure resetScrollRect; message 'resetScrollRect';
 
@@ -648,7 +647,7 @@ begin
   Result:=documentView;
 end;
 
-procedure TCocoaScrollView.setDocumentView(aView: {$if FPC_FULLVERSION < 30200}NSView{$else}id{$endif});
+procedure TCocoaScrollView.setDocumentView(aView: TSetDocumentViewType);
 begin
   inherited setDocumentView(aView);
   resetScrollRect;
