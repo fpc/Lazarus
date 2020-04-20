@@ -437,9 +437,11 @@ type
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
+    Lock:integer;
     MenuItem: TMenuItem;
     constructor Create(const AMenuItem: TMenuItem); virtual; overload;
     procedure InitializeWidget; override;
+    procedure SetCheck(ACheck:boolean);
     property Caption: string read GetCaption write SetCaption;
   end;
 
@@ -4610,10 +4612,17 @@ var
   Msg: TLMessage;
 begin
   // DebugLn('Gtk3MenuItemActivated ',dbgsName(TGtk3MenuItem(Adata)));
-  FillChar(Msg, SizeOf(Msg), #0);
-  Msg.Msg := LM_ACTIVATE;
-  if Assigned(TGtk3MenuItem(AData).MenuItem) then
-    TGtk3MenuItem(AData).MenuItem.Dispatch(Msg);
+  if Assigned(TGtk3MenuItem(AData).MenuItem) and (TGtk3MenuItem(AData).Lock=0) then
+  begin
+    inc(TGtk3MenuItem(AData).Lock);
+    try
+      FillChar(Msg, SizeOf(Msg), #0);
+      Msg.Msg := LM_ACTIVATE;
+      TGtk3MenuItem(AData).MenuItem.Dispatch(Msg);
+    finally
+      dec(TGtk3MenuItem(AData).Lock);
+    end;
+  end;
 end;
 
 procedure TGtk3MenuItem.InitializeWidget;
@@ -4632,6 +4641,12 @@ begin
   g_signal_connect_data(FWidget,'activate',TGCallBack(@Gtk3MenuItemActivated), Self, nil, 0);
   // must hide all by default
   // FWidget^.hide;
+end;
+
+procedure TGtk3MenuItem.SetCheck(ACheck: boolean);
+begin
+  if Self.IsValidHandle and (lock=0)  then
+    PGtkCheckMenuItem(fWidget)^.active:=ACheck;
 end;
 
 
