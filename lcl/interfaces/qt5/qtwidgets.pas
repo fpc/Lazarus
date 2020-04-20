@@ -11107,7 +11107,7 @@ end;
 procedure TQtTabWidget.setCurrentWidget(APage: TQtWidget; const AIsMoved: Boolean);
 begin
   QTabWidget_setCurrentWidget(QTabWidgetH(Widget), APage.Widget);
-  if AisMoved then
+  if AIsMoved and (Assigned(LCLObject) and not (csDesigning in LCLObject.ComponentState)) then
     APage.setFocus;
 end;
 
@@ -18620,7 +18620,8 @@ begin
       exit;
     end;
   end else
-  if (QEvent_type(Event) = QEventShow) then
+  if (QEvent_type(Event) = QEventShow) and Assigned(LCLObject) and
+    not (csDesigning in LCLObject.ComponentState) then
   begin
     if Assigned(DragManager) and DragManager.IsDragging then
       ACapture := GetCapture
