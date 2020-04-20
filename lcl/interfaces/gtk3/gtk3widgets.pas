@@ -2243,27 +2243,64 @@ begin
     4:
     begin
       if MButton = GTK3_LEFT_BUTTON then
-        Msg.Msg := LM_LBUTTONDOWN
+      begin
+        Msg.Msg := LM_LBUTTONDOWN;
+        Msg.Keys := Msg.Keys or MK_LBUTTON;
+      end
       else
       if MButton = GTK3_RIGHT_BUTTON then
-        Msg.Msg := LM_RBUTTONDOWN
+      begin
+        Msg.Msg := LM_RBUTTONDOWN;
+        Msg.Keys := Msg.Keys or MK_RBUTTON;
+      end
       else
       if MButton = GTK3_MIDDLE_BUTTON then
+      begin
         Msg.Msg := LM_MBUTTONDOWN;
+        Msg.Keys := Msg.Keys or MK_MBUTTON;
+      end;
     end;
     // GDK_BUTTON2_PRESS -> double click
-    5: Msg.Msg := LM_LBUTTONDBLCLK;
+    5: // GDK_DOUBLE_BUTTON_PRESS
+    begin
+      if MButton = GTK3_LEFT_BUTTON then
+      begin
+        Msg.Msg := LM_LBUTTONDBLCLK;
+        Msg.Keys := Msg.Keys or MK_LBUTTON;
+      end
+      else
+      if MButton = GTK3_RIGHT_BUTTON then
+      begin
+        Msg.Msg := LM_RBUTTONDBLCLK;
+        Msg.Keys := Msg.Keys or MK_RBUTTON;
+      end
+      else
+      if MButton = GTK3_MIDDLE_BUTTON then
+      begin
+        Msg.Msg := LM_MBUTTONDBLCLK;
+        Msg.Keys := Msg.Keys or MK_MBUTTON;
+      end;
+    end;
     // GDK_BUTTON_RELEASE: TGdkEventType = 7;
     7:
     begin
       if MButton = GTK3_LEFT_BUTTON then
-        Msg.Msg := LM_LBUTTONUP
+      begin
+        Msg.Msg := LM_LBUTTONUP;
+        Msg.Keys := Msg.Keys or MK_LBUTTON;
+      end
       else
       if MButton = GTK3_RIGHT_BUTTON then
-        Msg.Msg := LM_RBUTTONUP
+      begin
+        Msg.Msg := LM_RBUTTONUP;
+        Msg.Keys := Msg.Keys or MK_RBUTTON;
+      end
       else
       if MButton = GTK3_MIDDLE_BUTTON then
+      begin
         Msg.Msg := LM_MBUTTONUP;
+        Msg.Keys := Msg.Keys or MK_MBUTTON;
+      end;
     end;
   end;
 
