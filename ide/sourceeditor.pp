@@ -4733,7 +4733,8 @@ begin
       if Ctrl and (ABrkPoint <> nil)
       then ABrkPoint.Enabled := False;
     finally
-      ABrkPoint.EndUpdate;
+      if ABrkPoint <> nil then
+        ABrkPoint.EndUpdate;
       DebugBoss.UnLockCommandProcessing;
     end;
   end;
