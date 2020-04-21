@@ -768,6 +768,7 @@ type
     function getHorizontalScrollbar: PGtkScrollbar; override;
     function getVerticalScrollbar: PGtkScrollbar; override;
     function GetScrolledWindow: PGtkScrolledWindow; override;
+    class function decoration_flags(Aform: TCustomForm): longint;
   public
     destructor Destroy; override;
     procedure Activate; override;
@@ -6921,9 +6922,43 @@ begin
   // DeliverMessage(Msg);
 end;
 
+class function TGtk3Window.decoration_flags(Aform:TCustomForm):longint;
+var
+  icns:TBorderIcons;
+  bs:TFormBorderStyle;
+begin
+  result:=0;
+  icns:=AForm.BorderIcons;
+  bs:=AForm.BorderStyle;
+
+  case bs of
+  bsSingle: result:=result or GDK_DECOR_BORDER;
+  bsDialog:
+      result:=result or GDK_DECOR_BORDER or GDK_DECOR_TITLE;
+  bsSizeable:
+    begin
+      if biMaximize in icns then
+        result:=result or GDK_DECOR_MAXIMIZE;
+      if biMinimize in icns then
+        result:=result or GDK_DECOR_MINIMIZE;
+      Result:=result or GDK_DECOR_BORDER or GDK_DECOR_RESIZEH or GDK_DECOR_TITLE;
+    end;
+  bsSizeToolWin:
+    Result:=result or GDK_DECOR_BORDER or GDK_DECOR_RESIZEH or GDK_DECOR_TITLE;
+  bsToolWindow:
+    Result:=result or GDK_DECOR_BORDER;
+  bsNone: result:=0;
+  end;
+
+  if result and GDK_DECOR_TITLE <> 0 then
+  if biSystemMenu in icns then
+     result:=result or GDK_DECOR_MENU;
+end;
+
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AForm: TCustomForm;
+  decor:longint;
 begin
   FIcon := nil;
   FScrollX := 0;
@@ -6935,10 +6970,18 @@ begin
   if not Assigned(LCLObject.Parent) then
   begin
     Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
+
+    gtk_widget_realize(Result);
+    decor:=decoration_flags(AForm);
+    gdk_window_set_decorations(Result^.window, decor);
+    if AForm.AlphaBlend then
+    gtk_widget_set_opacity(Result, TForm(LCLObject).AlphaBlendValue/255);
+
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow];
   end else
   begin
     Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+    gtk_widget_realize(Result);
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   end;
 
