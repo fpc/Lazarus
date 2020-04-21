@@ -132,7 +132,7 @@ type
 implementation
 
 uses qtint, LCLIntf
-  {$IF DEFINED(VerboseQtResize) OR DEFINED(DEBUGQTUSEACCURATEFRAME)}, LCLProc{$ENDIF}
+  {$IF DEFINED(VerboseQtResize)}, LCLProc{$ENDIF}
   ;
 
 { TQtWSCustomFrame }
@@ -233,11 +233,6 @@ begin
     if APopupParent<>nil then
       QtMainWindow.setRealPopupParent(TQtWidget(APopupParent.Handle).Widget);
   end;
-
-  {$IFDEF QtUseAccurateFrame}
-  if QtMainWindow.IsFramedWidget then
-    QtMainWindow.FrameMargins := QtWidgetSet.WSFrameMargins;
-  {$ENDIF}
 
   {$IFDEF HASX11}
   if QtMainWindow.IsMainForm and not Application.HasOption('disableaccurateframe') then
@@ -1031,16 +1026,6 @@ begin
   Result := False;
   if AWinControl.HandleAllocated then
   begin
-    {$IFDEF QTUSEACCURATEFRAME}
-    if TQtMainWindow(AWinControl.Handle).IsFramedWidget then
-    begin
-      AClientRect := TQtMainWindow(AWinControl.Handle).getClientBounds;
-      {$IFDEF DEBUGQTUSEACCURATEFRAME}
-      DebugLn(Format('******TQtWSCustomForm.GetDefaultClientRect(%s): %s LCL l %d t %d w %d h %d',[dbgsName(AWinControl), dbgs(AClientRect), ALeft, ATop, aWidth, AHeight]));
-      {$ENDIF}
-      Result := True;
-    end else
-    {$ENDIF}
     if TQtMainWindow(AWinControl.Handle).testAttribute(QtWA_PendingResizeEvent) then
     begin
       if Assigned(TCustomForm(AWinControl).Menu) then

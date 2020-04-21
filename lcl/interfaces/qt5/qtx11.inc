@@ -422,7 +422,7 @@ begin
   XMapWindow(QX11Info_display(), TWindow(AWinID));
 end;
 
-{$IFDEF QtUseAccurateFrame}
+{$IFDEF QtUseX11Extras}
 
 function GetX11WindowRealized(AWinID: PtrUInt): boolean;
 var

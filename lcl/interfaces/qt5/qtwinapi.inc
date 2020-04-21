@@ -3893,15 +3893,6 @@ begin
       end;
     SM_CXBORDER, SM_CYBORDER:
       begin
-        //The height of a window border, in pixels
-        {$IFDEF QtUseAccurateFrame}
-        if (nIndex = SM_CYBORDER) and (WSFrameMargins.Top > 0) then
-          Result := WSFrameMargins.Bottom
-        else
-        if (nIndex = SM_CXBORDER) and (WSFrameMargins.Top > 0) then
-          Result := WSFrameMargins.Left
-        else
-        {$ENDIF}
         Result := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil);
       end;
     SM_CXCURSOR:
@@ -4079,11 +4070,6 @@ begin
       end;
     SM_CYCAPTION:
       begin
-        {$IFDEF QtUseAccurateFrame}
-        if WSFrameMargins.Top > 0 then
-          Result := WSFrameMargins.Top
-        else
-        {$ENDIF}
         Result := GetPixelMetric(QStylePM_TitleBarHeight, nil, nil);
       end;
     SM_CYKANJIWINDOW:
@@ -4486,14 +4472,6 @@ begin
   if not IsValidHandle(Handle) then
     exit;
 
-  {$IFDEF QTUSEACCURATEFRAME}
-  if TQtWidget(Handle).IsFramedWidget then
-  begin
-    ARect := TQtWidget(Handle).getFrameGeometry;
-    exit(-1);
-  end;
-  {$ENDIF}
-
   if (TQtWidget(Handle) is TQtMainWindow) and Assigned(TQtWidget(Handle).LCLObject) and
     (TQtWidget(Handle).LCLObject.Parent = nil) and
     not TQtMainWindow(Handle).FirstPaintEvent
@@ -4566,11 +4544,7 @@ begin
   {$endif}
   if Handle = 0 then
     Exit(False);
-  {$IFDEF QTUSEACCURATEFRAME}
-  if TQtWidget(Handle).IsFramedWidget then
-    ASize := TQtWidget(handle).getFrameSize
-  else
-  {$ENDIF}
+
   ASize := TQtWidget(Handle).getSize;
   Height := ASize.cy;
   Width := ASize.cx;

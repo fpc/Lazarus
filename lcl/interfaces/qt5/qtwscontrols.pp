@@ -537,20 +537,7 @@ begin
   TQtWidget(AWinControl.Handle).BeginUpdate;
   with R do
   begin
-    {$IF DEFINED(QTUSEACCURATEFRAME) AND DEFINED(HASX11)}
-    // DO NOT TOUCH THIS UNTIL COMPLETE PROBLEM IS INVESTIGATED
-    // WITH OPENBOX WM. Qt most of time have wrong assumption about position.
-    if TQtWidget(AWinControl.Handle).IsFramedWidget and
-        GetX11WindowRealized(QWidget_winID(TQtWidget(AWinControl.Handle).Widget)) and
-      (GetWindowManager = 'Openbox') then
-    begin
-      SetX11WindowPos(QWidget_winID(TQtWidget(AWinControl.Handle).Widget), Left, Top);
-      // QApplication_syncX;
-    end else
-      TQtWidget(AWinControl.Handle).move(Left, Top);
-    {$ELSE}
     TQtWidget(AWinControl.Handle).move(Left, Top);
-    {$ENDIF}
     TQtWidget(AWinControl.Handle).resize(Right, Bottom);
   end;
   TQtWidget(AWinControl.Handle).EndUpdate;
