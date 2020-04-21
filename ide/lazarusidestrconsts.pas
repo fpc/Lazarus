@@ -4045,6 +4045,7 @@ resourcestring
 
   // new dialog
   lisNewDlgNoItemSelected = 'No item selected';
+  lisUnitMustSaveBeforeInherit = 'Unit "%s" must be saved before it can be inherited from. Save now?';
   lisErrorOpeningComponent = 'Error opening component';
   lisUnableToOpenAncestorComponent = 'Unable to open ancestor component';
   lisNewDlgPleaseSelectAnItemFirst = 'Please select an item first.';

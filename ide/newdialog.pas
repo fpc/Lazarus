@@ -190,7 +190,6 @@ var
   AnUnitInfo: TUnitInfo;
   InhCompItem: TFileDescInheritedComponent;
 begin
-
   ANode := ItemsTreeView.Selected;
   if (ANode = nil) or (ANode.Data = nil) or
     (not (TObject(ANode.Data) is TNewIDEItemTemplate)) then
@@ -211,9 +210,6 @@ begin
   // if the selected item is an inherited one
   if FNewItem is TNewItemProjectFile then
   begin
-    //
-    InputHistories.NewProjectType:=FNewItem.Name;
-
     NewFile:=TNewItemProjectFile(FNewItem);
     if (NewFile.Descriptor is TFileDescInheritedItem) then
     begin
@@ -224,9 +220,25 @@ begin
         if Assigned(AInheritedNode) then begin
           // load the ancestor component
           AnUnitInfo:=TUnitInfo(AInheritedNode.Data);
+
+          // Save the unit if not done yet.
+          if AnUnitInfo.IsVirtual then
+          begin
+            if IDEQuestionDialog(lisSave,
+                    Format(lisUnitMustSaveBeforeInherit, [AnUnitInfo.Filename]),
+                    mtInformation, [mrOK,mrCancel]) <> mrOK
+            then begin
+              FNewItem := nil;
+              ModalResult:=mrNone;
+              Exit;
+            end;
+            LazarusIDE.DoSaveProject([]);
+          end;
+          InputHistories.NewProjectType:=FNewItem.Name;
+
           if LazarusIDE.DoOpenComponent(AnUnitInfo.Filename,
-            [ofOnlyIfExists,ofQuiet,ofLoadHiddenResource,ofUseCache],[],
-            AncestorComponent)<>mrOk then
+                    [ofOnlyIfExists,ofQuiet,ofLoadHiddenResource,ofUseCache],[],
+                    AncestorComponent)<>mrOk then
           begin
             IDEMessageDialog(lisErrorOpeningComponent,
               lisUnableToOpenAncestorComponent, mtError, [mbCancel]);
@@ -266,10 +278,9 @@ Begin
 
     // Loop trough project units which have a component
     for i := 0 to Project1.UnitCount-1 do begin
-      if (not Project1.Units[i].IsPartOfProject)
-      or (not FilenameIsPascalUnit(Project1.Units[i].Filename)) then
-        continue;
-      if Project1.Units[i].ComponentName<>'' then
+      if Project1.Units[i].IsPartOfProject
+      and FilenameIsPascalUnit(Project1.Units[i].Filename)
+      and (Project1.Units[i].ComponentName<>'') then
         aComponentList.AddObject(Project1.Units[i].ComponentName, Project1.Units[i]);
     end;
     // Sort lists (by component name)
