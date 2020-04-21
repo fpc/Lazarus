@@ -503,7 +503,14 @@ begin
     { ~bk 2019.12.11
        https://docs.microsoft.com/en-us/windows/win32/controls/sbm-setscrollinfo
        says that "they should use the SetScrollInfo function".}
-    SetScrollInfo(Handle, SB_CTL, ScrollInfo, IsEnabled);
+    { However, this is sent while processing an incoming notification on user
+      action. SetScrollInfo acts immediately, and misplaces the scrollbar.
+      If it is not enabled this can not happen. And using SetScrollInfo we can
+      avoid enabling it by accident. }
+    if IsEnabled then
+      SendMessage(Handle, SBM_SETSCROLLINFO, WParam(True), LParam(@ScrollInfo))
+    else
+      SetScrollInfo(Handle, SB_CTL, ScrollInfo, IsEnabled);;
     case Kind of
       sbHorizontal:
         SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or SBS_HORZ);
