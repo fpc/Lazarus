@@ -15,7 +15,4 @@
   {enable this define if you have problems when dialogs are shown behind application}
   {.$DEFINE TQTMESSAGEBOXUSEPARENT}
   {$ENDIF}
-  {$IFDEF HASX11}
-  {.$DEFINE QtUseAccurateFrame}
-  {$ENDIF}
 {$ENDIF}

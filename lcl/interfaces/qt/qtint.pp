@@ -60,9 +60,6 @@ type
     {$IFDEF QtUseNativeEventLoop}
     FMainTimerID: integer;
     {$ENDIF}
-    {$IFDEF QtUseAccurateFrame}
-    FWSFrameMargins: TRect;
-    {$ENDIF}
     FIsLibraryInstance: Boolean;
 
     // cache for WindowFromPoint
@@ -104,9 +101,6 @@ type
     // qt style does not have pixel metric for themed menubar (menu) height
     // so we must calculate it somehow.
     FCachedMenuBarHeight: Integer;
-    {$IFDEF QtUseAccurateFrame}
-    function GetFrameMargins: TRect;
-    {$ENDIF}
     function GetMenuHeight: Integer;
 
     procedure ClearCachedColors;
@@ -237,10 +231,6 @@ type
     property AppActive: Boolean read FAppActive;
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
 
-    {$IFDEF QtUseAccurateFrame}
-    property WSFrameMargins: TRect read GetFrameMargins write FWSFrameMargins;
-    {$ENDIF}
-
     {do not create new QApplication object if we are called from library }
     property IsLibraryInstance: Boolean read FIsLibraryInstance;
 
@@ -291,7 +281,7 @@ type
   function GetKdeSessionVersion: integer;
   {force mapping}
   procedure MapX11Window(AWinID: LongWord);
-  {$IFDEF QtUseAccurateFrame}
+  {$IFDEF QtUseX11Extras}
   function GetX11WindowRealized(AWinID: LongWord): boolean;
   function GetX11WindowAttributes(AWinID: LongWord; out ALeft, ATop, AWidth, AHeight, ABorder: integer): boolean;
   function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
