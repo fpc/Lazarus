@@ -15,7 +15,7 @@ object MainForm: TMainForm
     Width = 637
     MultiLine = True
     OnChange = TabControlChange
-    TabIndex = 5
+    TabIndex = 0
     Tabs.Strings = (
       'Line series'
       'Bar series'
@@ -81,6 +81,7 @@ object MainForm: TMainForm
         Stacked = True
         Source = ListChartSource
         Styles = ChartStyles
+        ToolTargets = [nptPoint, nptYList, nptCustom]
       end
       object BarSeries: TBarSeries
         Legend.Multiplicity = lmStyle
@@ -212,7 +213,7 @@ object MainForm: TMainForm
       Left = 8
       Height = 19
       Top = 8
-      Width = 113
+      Width = 114
       BorderSpacing.Left = 8
       BorderSpacing.Top = 8
       BorderSpacing.Bottom = 8
@@ -225,7 +226,7 @@ object MainForm: TMainForm
     object DatapointInfo: TLabel
       AnchorSideLeft.Control = CbDragXY
       AnchorSideLeft.Side = asrBottom
-      Left = 145
+      Left = 146
       Height = 15
       Top = 11
       Width = 73

@@ -286,6 +286,14 @@ begin
           ser.XValue[ATool.PointIndex],
           ser.YValues[ATool.PointIndex, ATool.YIndex],
           ATool.YIndex
+        ])
+      else
+      if (ATool.PointIndex = -1) and (ser.Source.YCount > 1) and (ATool.YIndex > -1) then
+        Result := Format('"%s": on segment, x = %.2f, y = %.2f (y index %d)', [
+          ser.Title,
+          ser.GraphToAxisX(ATool.NearestGraphPoint.X),
+          ser.GraphToAxisY(ATool.NearestGraphPoint.Y),
+          ATool.YIndex
         ]);
     end;
   end;
