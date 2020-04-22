@@ -812,6 +812,8 @@ begin
   PrepareGraphPoints(ext, true);
   dmin := AResults.FDist;
   for levelIndex := 0 to Source.YCount-1 do begin
+    if levelIndex > 0 then
+      UpdateGraphPoints(levelIndex, FStacked);
     ip1 := ParentChart.GraphToImage(FGraphPoints[0]);
     for pointIndex := 1 to FUpBound - FLoBound do begin
       ip2 := ParentChart.GraphToImage(FGraphPoints[pointIndex]);
@@ -827,7 +829,6 @@ begin
     end;
     if not ((nptYList in AParams.FTargets) and (nptYList in ToolTargets)) then
       break;
-    UpdateGraphPoints(levelIndex, FStacked);
   end;
 
   if dmin < AResults.FDist then
