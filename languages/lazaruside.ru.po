@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-04-15 18:17+0300\n"
+"PO-Revision-Date: 2020-04-23 01:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -20083,6 +20083,11 @@ msgstr "Идентификатор модуля существует"
 #, object-pascal-format
 msgid "%s unit %s in package %s"
 msgstr "%s Модуль %s в пакете %s"
+
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr "Перед наследованием от модуля \"%s\" его требуется сохранить. Сделать это сейчас?"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"

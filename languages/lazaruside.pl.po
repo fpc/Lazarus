@@ -20629,6 +20629,11 @@ msgstr "Identyfikator modułu istnieje"
 msgid "%s unit %s in package %s"
 msgstr "%s moduł %s w pakiecie %s"
 
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Moduł o tej nazwie jest już w projekcie"

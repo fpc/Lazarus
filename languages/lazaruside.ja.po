@@ -20332,6 +20332,11 @@ msgstr "ユニットの識別子が存在します"
 msgid "%s unit %s in package %s"
 msgstr "%s unit %s in package %s"
 
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "ユニット名がすでにプロジェクトに存在します"

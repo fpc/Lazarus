@@ -20135,6 +20135,11 @@ msgstr "Identificador de unidade existe"
 msgid "%s unit %s in package %s"
 msgstr "%s unidade %s no pacote %s"
 
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Nome de unidade já existe no projeto"

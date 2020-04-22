@@ -21225,6 +21225,11 @@ msgstr "מזהה היחידה קיים"
 msgid "%s unit %s in package %s"
 msgstr "יחידה s% בחבילה %s%s"
 
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "שם היחידה כבר קיים בפרוייקט"

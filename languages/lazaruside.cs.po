@@ -20161,6 +20161,11 @@ msgstr "Identifikátor jednotky již existuje"
 msgid "%s unit %s in package %s"
 msgstr "%s jednotka %s v balíčku %s"
 
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Jméno jednotky je už v projektu"

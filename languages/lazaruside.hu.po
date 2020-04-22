@@ -20084,6 +20084,11 @@ msgstr "A unit-azonosító létezik"
 msgid "%s unit %s in package %s"
 msgstr "%s unit %s a(z) %s csomagban"
 
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "A unit-név már szerepel a projektben"
